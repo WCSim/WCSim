@@ -123,13 +123,13 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // were set above.
  G4Colour  grey    (0.5, 0.5, 0.5) ;
 
-  G4double expHallLength = 2.0*WCLength;
+  G4double expHallLength = 1.5*WCLength;
 
   G4cout << " expHallLength = " << expHallLength / m << G4endl;
   G4double expHallHalfLength = 0.5*expHallLength;
 
   G4Box* solidExpHall = new G4Box("expHall",
-				 200.0,
+				  expHallHalfLength,
 				  expHallHalfLength,
 				  expHallHalfLength);
   
