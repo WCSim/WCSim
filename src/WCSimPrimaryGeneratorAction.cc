@@ -124,7 +124,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    mode = atoi(token[1]);
 
 	    // Read the Vertex line
-	    //Please change *cm to *m if you are running Genie vector files corrected for vertices using Tim's perl script
 	    token = readInLine(inputFile, lineSize, inBuf);
 	    vtx = G4ThreeVector(atof(token[1])*cm,
 				atof(token[2])*cm,
@@ -154,7 +153,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 				      atof(token[5]));
 
 	    // Read the info line, basically a dummy
-            // Please change token[2] to token[1] if you are running Genie vector files corrected for vertices using Tim's perl script
 	    token=readInLine(inputFile, lineSize, inBuf);
 	    G4cout << "Vector File Record Number " << token[2] << G4endl;
             vecRecNumber = atoi(token[2]);
