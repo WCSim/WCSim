@@ -126,9 +126,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    // Read the Vertex line
 
 	    token = readInLine(inputFile, lineSize, inBuf);
-	    vtx = G4ThreeVector(atof(token[1])*cm,
-				atof(token[2])*cm,
-				atof(token[3])*cm);
+	    vtx = G4ThreeVector(atof(token[1])*m,
+				atof(token[2])*m,
+				atof(token[3])*m);
 	    
             // true : Generate vertex in Rock , false : Generate vertex in WC tank
             SetGenerateVertexInRock(false);
@@ -155,8 +155,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 	    // Read the info line, basically a dummy
 	    token=readInLine(inputFile, lineSize, inBuf);
-	    G4cout << "Vector File Record Number " << token[2] << G4endl;
-            vecRecNumber = atoi(token[2]);
+	    G4cout << "Vector File Record Number " << token[1] << G4endl;
+            vecRecNumber = atoi(token[1]);
 	    
 	    // Now read the outgoing particles
 	    // These we will simulate.
