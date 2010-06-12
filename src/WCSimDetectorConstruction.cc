@@ -63,6 +63,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //DUSEL_100kton_10inch_HQE_30perCent_Gd();
   //DUSEL_150kton_10inch_HQE_30perCent();
  // SetMailBox300KTGeometry();
+ //SetMailBox100kTGeometry();
 
 
   //----------------------------------------------------- 
@@ -116,12 +117,11 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   else logicWCBox = ConstructWC(); 
 
   G4cout << " WCLength       = " << WCLength/m << " m"<< G4endl;
-  G4cout << " WCRadius       = " << WCRadius<< " m"<< G4endl;
+
   //-------------------------------
 
   // Now make the detector Hall.  The lengths of the subdectors 
   // were set above.
- G4Colour  grey    (0.5, 0.5, 0.5) ;
 
   G4double expHallLength = 1.5*WCLength;
 
@@ -135,19 +135,14 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   
   G4LogicalVolume* logicExpHall = 
     new G4LogicalVolume(solidExpHall,
-			G4Material::GetMaterial("Rock"),
+			G4Material::GetMaterial("Vacuum"),
 			"expHall",
 			0,0,0);
 
   // Now set the visualization attributes of the logical volumes.
-  //G4VisAttributes* exp_vat= new G4VisAttributes(grey);
-  // logicExpHall->SetVisAttributes(grey);
 
-   // logicWCBox->SetVisAttributes(G4VisAttributes::Invisible);
-
-   logicExpHall->SetVisAttributes(G4VisAttributes::Invisible);
-   //logicExpHall->SetVisAttributes(exp_vat);
- logicExpHall->SetVisAttributes(grey);
+  //   logicWCBox->SetVisAttributes(G4VisAttributes::Invisible);
+  logicExpHall->SetVisAttributes(G4VisAttributes::Invisible);
 
   //-----------------------------------------------------
   // Create and place the physical Volumes
@@ -158,7 +153,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
     new G4PVPlacement(0,G4ThreeVector(),
   		      logicExpHall,
   		      "expHall",
-  		      0,false,0);
+  		      0,false,0,true);
 
   // Water Cherenkov Detector (WC) mother volume
   // WC Box, nice to turn on for x and y views to provide a frame:
