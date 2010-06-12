@@ -216,6 +216,30 @@ void WCSimDetectorConstruction::ConstructMaterials()
   //Glass->AddMaterial(Al2O3, 2.3*perCent);  
   //Put in 2.3 percent if the other 4 materials = 0.1 percent
 
+  //---Rock
+ 
+  //  a = 16.00*g/mole;  G4Element* elO  = new G4Element("Oxygen","O", 8,a);
+  //  a = 28.09*g/mole;  G4Element* elSi = new G4Element("Silicon", "Si", 14., a); 
+  //  a = 26.98*g/mole;  G4Element* elAl = new G4Element("Aluminum", "Al", 13, a);  
+  //  a = 55.85*g/mole;  G4Element* elFe = new G4Element("Iron","Fe", 26,a);
+  a = 40.08*g/mole;  G4Element* elCa = new G4Element("Calcium","Ca", 20,a);
+  //  a = 22.99*g/mole;  G4Element* elNa = new G4Element("Sodium", "Na", 11, a);  
+  a = 39.10*g/mole;  G4Element* elK = new G4Element("Potassium","K", 19,a);
+  a = 24.30*g/mole;  G4Element* elMg = new G4Element("Magnesium","Mg",12,a);
+ 
+  density = 2.7*g/cm3; 
+  G4Material* Rock = new G4Material("Rock", density, 8);
+  
+  //From Daya-Bay 
+  Rock->AddElement(elO,  48.50*perCent);
+  Rock->AddElement(elSi, 34.30*perCent);
+  Rock->AddElement(elAl,  8.00*perCent);
+  Rock->AddElement(elFe,  2.00*perCent);
+  Rock->AddElement(elCa,  0.20*perCent);
+  Rock->AddElement(elNa,  2.40*perCent);
+  Rock->AddElement(elK,   4.50*perCent);
+  Rock->AddElement(elMg,  0.10*perCent);
+
 // -------------------------------------------------------------
 // Generate & Add Material Properties Table
 // -------------------------------------------------------------
