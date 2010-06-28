@@ -727,7 +727,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 					  "LW_plus",        // its name
 					  logic_WC_MB_tank_H20,      // its mother  volume, the WC water tank
 					  false,           // no boolean operations
-					  0);              // copy number 
+					  1);              // copy number 
 	
 	
 	
@@ -964,14 +964,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 					  "WD_minus",					// its name
 					  logic_WC_MB_tank_H20,			// its mother  volume, the WC water tank
 					  false,						// no boolean operations
-					  0);							// copy number
+					  2);							// copy number
 	// Ok now the positive face.
 	new G4PVPlacement(WDTranslate_plus*rotation_WxD_plus,					// rotate from xy plane to xz plane 
 					  logic_WC_Active_WxD_plus,				// its logical volume				  
 					  "WD_plus",					// its name
 					  logic_WC_MB_tank_H20,			// its mother  volume, the WC water tank
 					  false,						// no boolean operations
-					  0);							// copy number 
+					  3);							// copy number 
 	
 	
 	
@@ -1157,14 +1157,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 					  "LD_minus",        // its name
 					  logic_WC_MB_tank_H20,      // its mother  volume, the WC water tank
 					  false,           // no boolean operations
-					  0);              // copy number 
+					  4);              // copy number 
 	//Second side is on + axis
 	new G4PVPlacement(LDTranslate_plus*rotation_LxD_plus,    // rotate from xy plane to xz plane and put on -y axis--the PMT's should be looking inward
 					  logic_WC_Active_LxD_plus,     // its logical volume				  
 					  "LD_plus",        // its name
 					  logic_WC_MB_tank_H20,      // its mother  volume, the WC water tank
 					  false,           // no boolean operations
-					  0);              // copy number 											
+					  5);              // copy number 											
 	
 	
 	
