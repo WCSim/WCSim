@@ -57,8 +57,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Set the default WC geometry.  This can be changed later.
   //-----------------------------------------------------
 
- // SetSuperKGeometry();
-  DUSEL_100kton_10inch_40perCent();
+  SetSuperKGeometry();
+ // DUSEL_100kton_10inch_40perCent();
   //DUSEL_100kton_10inch_HQE_30perCent();
   //DUSEL_100kton_10inch_HQE_30perCent_Gd();
   //DUSEL_150kton_10inch_HQE_30perCent();
@@ -70,7 +70,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Set whether or not Pi0-specific info is saved
   //-----------------------------------------------------
 
-  SavePi0Info(false);
+  SavePi0Info(true);
 
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry
@@ -95,7 +95,12 @@ void WCSimDetectorConstruction::UpdateGeometry()
  
  }
 
-WCSimDetectorConstruction::~WCSimDetectorConstruction(){;}
+WCSimDetectorConstruction::~WCSimDetectorConstruction(){
+  for (int i=0;i<fpmts.size();i++){
+    delete fpmts.at(i);
+  }
+  fpmts.clear();
+}
 
 
 G4VPhysicalVolume* WCSimDetectorConstruction::Construct()

@@ -1,4 +1,5 @@
 #include "WCSimDetectorConstruction.hh"
+#include "WCSimPmtInfo.hh"
 
 #include "G4Material.hh"
 #include "G4Element.hh"
@@ -82,19 +83,37 @@ void WCSimDetectorConstruction::GetWCGeom
 
   // Note WC can be off-center... get both extremities
   static G4float zmin=100000,zmax=-100000.;
+  static G4float xmin=100000,xmax=-100000.;
+  static G4float ymin=100000,ymax=-100000.;
   if (aDepth == 0) { // Reset for this traversal
+    xmin=100000,xmax=-100000.; 
+    ymin=100000,ymax=-100000.; 
     zmin=100000,zmax=-100000.; 
   }
 
  // aah ->old version
-    if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName() == "WCPMTGlass")){
+  //if ((aPV->GetName() == "WCPMTGlass")){
+  if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName() == "WCPMTGlass")){
 //	if ((aPV->GetName().contains("BlackSheet")) || (aPV->GetName()=="WCCapPMT") || (aPV->GetName().contains("PMTGlass_"))){//aah new version--does effectively the same thing, finds max and min z maybe less efficiently since more volumes may be found, but it is done only once per run.	
-    G4float z =  aTransform.getTranslation().getZ()/cm;
-    if (z<zmin){zmin=z;}
-    if (z>zmin){zmax=z;}
+      G4float x =  aTransform.getTranslation().getX()/cm;
+      G4float y =  aTransform.getTranslation().getY()/cm;
+      G4float z =  aTransform.getTranslation().getZ()/cm;
+      
+      if (x<xmin){xmin=x;}
+      if (x>xmax){xmax=x;}
 
-    WCCylInfo[1] = zmax-zmin;
-    //G4cout << "determin hight: " << zmin << "  " << zmax << " " << aPV->GetName()<<" " << z  << G4endl;
+      if (y<ymin){ymin=y;}
+      if (y>ymax){ymax=y;}
+
+      if (z<zmin){zmin=z;}
+      if (z>zmax){zmax=z;}
+     
+
+ 
+      WCCylInfo[0] = xmax-xmin;
+      WCCylInfo[1] = ymax-ymin;
+      WCCylInfo[2] = zmax-zmin;
+      //      G4cout << "determin hight: " << zmin << "  " << zmax << " " << aPV->GetName()<<" " << z  << G4endl;
   } 
 }
 
@@ -171,11 +190,12 @@ if (aPV->GetName() == "WCPMTGlass"){
     
     // Put the transform for this tube into the map keyed by its ID
     tubeIDMap[totalNumPMTs] = aTransform;
-    /*
-      G4cout <<  "depth " << depth.str() << G4endl;
-      G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
-      G4cout << "tubeCylLocation[" << totalNumPMTs  << "]= " << tubeCylLocation[totalNumPMTs] << "\n";
-    */
+   
+    
+    // G4cout <<  "depth " << depth.str() << G4endl;
+//     G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
+    //G4cout << "tubeCylLocation[" << totalNumPMTs  << "]= " << tubeCylLocation[totalNumPMTs] << "\n";
+      
     // Print
     //     G4cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
     //     	   << " Pos:" << aTransform.getTranslation()/cm 
@@ -294,11 +314,30 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   // (JF) Get first tube transform for filling in detector radius
   // the height is still done with WCCylInfo above
   G4Transform3D firstTransform = tubeIDMap[2];
-  G4double innerradius = sqrt(pow(firstTransform.getTranslation().getX()/cm,2)
+  innerradius = sqrt(pow(firstTransform.getTranslation().getX()/cm,2)
                             + pow(firstTransform.getTranslation().getY()/cm,2));
 
-  geoFile << setw(8)<< innerradius;
-  geoFile << setw(8)<<WCCylInfo[1];
+  //  G4cout << innerradius << "\t" << WCCylInfo[0] << "\t" << WCCylInfo[1] << "\t" << WCCylInfo[2] << G4endl;
+
+  //G4int geo_type;
+
+  // if (fabs(2*innerradius - WCCylInfo[0])<0.02* innerradius && fabs(2*innerradius - WCCylInfo[1]) < 0.02 * innerradius){
+//     //cylinder
+//     geo_type = 0;
+//   }else{
+//     //mail box
+//     geo_type = 1;
+//   }
+
+  //G4cout << geo_type << G4endl;
+
+  if (isMailbox == false){
+    geoFile << setw(8)<< innerradius;
+    geoFile << setw(8)<<WCCylInfo[2];
+  }else{
+    geoFile << setw(8)<< 0;
+    geoFile << setw(8)<< 0;
+  }
   geoFile << setw(10)<<totalNumPMTs;
   geoFile << setw(8)<<WCPMTSize << setw(4)  <<G4endl;
 
@@ -308,6 +347,13 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   G4double maxZ=0.0;// used to tell if pmt is on the top/bottom cap
   G4double minZ=0.0;// or the barrel
   G4int cylLocation;
+
+
+  // clear before add new stuff in
+  for (int i=0;i<fpmts.size();i++){
+    delete fpmts.at(i);
+  }
+  fpmts.clear();
 
   // Grab the tube information from the tubeID Map and dump to file.
   for ( int tubeID = 1; tubeID <= totalNumPMTs; tubeID++){
@@ -337,8 +383,21 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
 	    << " " << setw(7) << pmtOrientation.z()
  	    << " " << setw(3) << cylLocation
  	    << G4endl;
+     
+     WCSimPmtInfo *new_pmt = new WCSimPmtInfo(cylLocation,
+					      newTransform.getTranslation().getX()/cm,
+					      newTransform.getTranslation().getY()/cm,
+					      newTransform.getTranslation().getZ()/cm,
+					      pmtOrientation.x(),
+					      pmtOrientation.y(),
+					      pmtOrientation.z(),
+					      tubeID);
+     
+     fpmts.push_back(new_pmt);
+
   }
   geoFile.close();
+
 
 } 
 
@@ -453,3 +512,14 @@ void WCSimDetectorConstruction::DescribeAndDescendGeometry
 		     aDepth+1, newTransform, registrationRoutine);
 }
 
+
+
+G4double WCSimDetectorConstruction::GetGeo_Dm(G4int i){
+  if (i>=0&&i<=2){
+    return WCCylInfo[i];
+  }else if(i==3){
+    return innerradius;
+  }else{
+    return 0;
+  }
+}

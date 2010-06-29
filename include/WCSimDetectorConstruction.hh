@@ -1,6 +1,8 @@
 #ifndef WCSimDetectorConstruction_H
 #define WCSimDetectorConstruction_H 1
 
+#include "WCSimPmtInfo.hh"
+
 #include "G4Transform3D.hh"
 #include "G4VUserDetectorConstruction.hh"
 #include "G4LogicalVolume.hh"
@@ -10,6 +12,7 @@
 
 #include <fstream>
 #include <map>
+#include <vector>
 //#include <hash_map.h>
 // warning : hash_map is not part of the standard
 #include <ext/hash_map>
@@ -75,7 +78,13 @@ public:
   G4double GetPMTSize()           {return WCPMTRadius;}
   G4String GetPMTName()			  {return WCPMTName;}
   G4int    GetMyConfiguration()   {return myConfiguration;}
+  G4double GetGeo_Dm(G4int);
+  G4int    GetTotalNumPmts() {return totalNumPMTs;}
 
+  G4double GetPMTSize1() {return WCPMTSize;}
+
+  G4ThreeVector GetWCOffset(){return WCOffset;}
+  
   // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
   static G4Transform3D GetTubeTransform(int tubeNo){return tubeIDMap[tubeNo];}
@@ -88,6 +97,8 @@ public:
   void   SetIsUpright(G4bool choice) {isUpright = choice;}
   void   SetIsMailbox(G4bool choice) {isMailbox = choice;}
   G4bool GetIsMailbox() {return isMailbox;}
+
+  std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
 private:
 
@@ -220,7 +231,7 @@ private:
   std::ofstream geoFile;   // File for text output
 
   G4int totalNumPMTs;      // The number of PMTs for this configuration     
-  G4double WCCylInfo[2];    // Info for the geometry tree: radius & length
+  G4double WCCylInfo[3];    // Info for the geometry tree: radius & length or mail box, length, width and depth
   G4double WCPMTSize;       // Info for the geometry tree: pmt size
   G4ThreeVector WCOffset;   // Info for the geometry tree: WC center offset
 
@@ -233,7 +244,10 @@ private:
   // Variables related to configuration
 
   G4int myConfiguration;   // Detector Config Parameter
-   
+  G4double innerradius;
+ 
+  std::vector<WCSimPmtInfo*> fpmts;
+  
 };
 
 #endif

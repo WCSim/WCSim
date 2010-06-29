@@ -15,16 +15,19 @@
 #include "TStreamerInfo.h"
 #include "WCSimRootEvent.hh"
 #include "WCSimRootGeom.hh"
+#include "WCSimPmtInfo.hh"
+
+#include <vector>
 
 int pawc_[500000];                // Declare the PAWC common
 struct ntupleStruct jhfNtuple;
 
-WCSimRunAction::WCSimRunAction()
+WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test)
 {
   ntuples = 1;
 
   // Messenger to allow IO options
-
+  wcsimdetector = test;
   messenger = new WCSimRunActionMessenger(this);
 
 }
@@ -106,54 +109,107 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 }
 
 void WCSimRunAction::FillGeoTree(){
-
- // Fill the geometry tree
-
-  // Open and read the geometry file
+  // Fill the geometry tree
+  G4int geo_type;
+  G4double mailbox[3];
+  G4double cylinfo[3];
+  G4double pmtradius;
+  G4int numpmt;
+  G4int orientation;
+  Float_t offset[3];
   
-  std::ifstream geoFile;
-  geoFile.open("geofile.txt", std::ios::in);
-  int itube=0;
-  if (geoFile){
-    G4double cylinfo[2];
-    G4double pmtradius;
-    G4int numpmt;
-    G4int orientation;
+  Int_t tubeNo;
+  Float_t pos[3];
+  Float_t rot[3];
+  Int_t cylLoc;
 
-    geoFile>> cylinfo[0]>>cylinfo[1]>>numpmt>>pmtradius >> orientation;
-    wcsimrootgeom-> SetWCCylRadius(cylinfo[0]);
-    wcsimrootgeom-> SetWCCylLength(cylinfo[1]);
-    wcsimrootgeom-> SetWCPMTRadius(pmtradius);
-    wcsimrootgeom-> SetOrientation(orientation);
-
-    Float_t offset[3];
-    geoFile>>offset[0]>>offset[1]>>offset[2];
-    wcsimrootgeom-> SetWCOffset(offset[0],offset[1],offset[2]);
-
-
-    // Now the tube list
-    Int_t tubeNo;
-    while (geoFile>>tubeNo){
-      Float_t pos[3];
-      Float_t rot[3];
-      Int_t cylLoc;
-      geoFile>>pos[0]>>pos[1]>>pos[2]>>rot[0]>>rot[1]>>rot[2]>>cylLoc;
-      //      G4cout<< itube<<" "<<tubeNo<<" "<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<" "<<rot[0]<<" "<<rot[1]<<" "<<rot[2]<<G4endl;
-      wcsimrootgeom-> SetPMT(itube,tubeNo,cylLoc,rot,pos);
-      itube++;
-
-    }
-    if (itube != numpmt) {
-	G4cout << "Mismatch between number of pmts and pmt list in geofile.txt!!"<<G4endl;
-	G4cout << itube <<" vs. "<< numpmt <<G4endl;
-    }
-    geoFile.close();
+  if (wcsimdetector->GetIsMailbox()==false){
+    geo_type = 0;
+  }else{
+    geo_type = 1;
   }
-
-  wcsimrootgeom-> SetWCNumPMT(itube);
+  wcsimrootgeom-> SetGeo_Type(geo_type);
+  
+  if (geo_type ==1){
+    //mailbox
+    mailbox[0] = wcsimdetector->GetGeo_Dm(0);
+    mailbox[1] = wcsimdetector->GetGeo_Dm(1);
+    mailbox[2] = wcsimdetector->GetGeo_Dm(2);
+    wcsimrootgeom->SetMailBox_x(mailbox[0]);
+    wcsimrootgeom->SetMailBox_y(mailbox[1]);
+    wcsimrootgeom->SetMailBox_z(mailbox[2]);
+  }else{
+    //cylinder
+    cylinfo[1] = wcsimdetector->GetGeo_Dm(3);
+    cylinfo[2] = wcsimdetector->GetGeo_Dm(2);
+    wcsimrootgeom-> SetWCCylRadius(cylinfo[1]);
+    wcsimrootgeom-> SetWCCylLength(cylinfo[2]);
+  }
+  pmtradius = wcsimdetector->GetPMTSize1();
+  numpmt = wcsimdetector->GetTotalNumPmts();
+  orientation = 0;
+  
+  wcsimrootgeom-> SetWCPMTRadius(pmtradius);
+  wcsimrootgeom-> SetOrientation(orientation);
+  
+  G4ThreeVector offset1= wcsimdetector->GetWCOffset();
+  offset[0] = offset1[0];
+  offset[1] = offset1[1];
+  offset[2] = offset1[2];
+  wcsimrootgeom-> SetWCOffset(offset[0],offset[1],offset[2]);
+  
+  std::vector<WCSimPmtInfo*> *fpmts = wcsimdetector->Get_Pmts();
+  WCSimPmtInfo *pmt;
+  for (int i=0;i!=fpmts->size();i++){
+    pmt = ((WCSimPmtInfo*)fpmts->at(i));
+    pos[0] = pmt->Get_transx();
+    pos[1] = pmt->Get_transy();
+    pos[2] = pmt->Get_transz();
+    rot[0] = pmt->Get_orienx();
+    rot[1] = pmt->Get_orieny();
+    rot[2] = pmt->Get_orienz();
+    tubeNo = pmt->Get_tubeid();
+    cylLoc = pmt->Get_cylocation();
+    wcsimrootgeom-> SetPMT(i,tubeNo,cylLoc,rot,pos);
+  }
+  if (fpmts->size() != numpmt) {
+    G4cout << "Mismatch between number of pmts and pmt list in geofile.txt!!"<<G4endl;
+    G4cout << fpmts->size() <<" vs. "<< numpmt <<G4endl;
+  }
+  
+  wcsimrootgeom-> SetWCNumPMT(numpmt);
   
   geoTree->Fill();
   TFile* hfile = geoTree->GetCurrentFile();
   hfile->Write(); 
-
 }
+
+
+// void WCSimRunAction::FillGeoTree(){
+
+//     // Now the tube list
+//     Int_t tubeNo;
+//     while (geoFile>>tubeNo){
+//       Float_t pos[3];
+//       Float_t rot[3];
+//       Int_t cylLoc;
+//       geoFile>>pos[0]>>pos[1]>>pos[2]>>rot[0]>>rot[1]>>rot[2]>>cylLoc;
+//       //      G4cout<< itube<<" "<<tubeNo<<" "<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<" "<<rot[0]<<" "<<rot[1]<<" "<<rot[2]<<G4endl;
+//       wcsimrootgeom-> SetPMT(itube,tubeNo,cylLoc,rot,pos);
+//       itube++;
+
+//     }
+//     if (itube != numpmt) {
+// 	G4cout << "Mismatch between number of pmts and pmt list in geofile.txt!!"<<G4endl;
+// 	G4cout << itube <<" vs. "<< numpmt <<G4endl;
+//     }
+//     geoFile.close();
+//   }
+
+//   wcsimrootgeom-> SetWCNumPMT(itube);
+  
+//   geoTree->Fill();
+//   TFile* hfile = geoTree->GetCurrentFile();
+//   hfile->Write(); 
+
+// }

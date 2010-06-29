@@ -41,15 +41,15 @@ EXTRALIBS += $(ROOTLIBS)
 EXTRA_LINK_DEPENDENCIES := 
 
 .PHONY: all
-all: lib bin
+all: rootcint lib bin shared libWCSim.a
 
 # Note dependencies not yet set up right yet
 
 ROOTSO    := libWCSimRoot.so
 
-ROOTSRC  := ./src/WCSimRootEvent.cc ./include/WCSimRootEvent.hh ./src/WCSimRootGeom.cc ./include/WCSimRootGeom.hh ./include/WCSimRootLinkDef.hh
+ROOTSRC  := ./src/WCSimRootEvent.cc ./include/WCSimRootEvent.hh ./src/WCSimRootGeom.cc ./include/WCSimRootGeom.hh ./include/WCSimPmtInfo.hh ./include/WCSimRootLinkDef.hh
 
-ROOTOBJS  := $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimRootDict.o 
+ROOTOBJS  := $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimRootDict.o 
 
 shared: $(ROOTSRC) $(ROOTOBJS) 
 	g++ -shared -O $(ROOTOBJS) -o $(ROOTSO)
@@ -57,9 +57,9 @@ shared: $(ROOTSRC) $(ROOTOBJS)
 libWCSim.a : $(ROOTOBJS)
 	$(RM) $@
 	ar clq $@ $(ROOTOBJS) 
-	$(RANLIB) $@
+#	$(RANLIB) $@
 
 rootcint : $(ROOTSRC)
-	rootcint  -f ./src/WCSimRootDict.cc -c -I./include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh WCSimRootLinkDef.hh
+	rootcint  -f ./src/WCSimRootDict.cc -c -I./include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimRootLinkDef.hh
 
 include $(G4INSTALL)/config/binmake.gmk

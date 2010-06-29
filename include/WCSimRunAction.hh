@@ -9,6 +9,7 @@
 #include "TTree.h"
 #include "WCSimRootEvent.hh"
 #include "WCSimRootGeom.hh"
+#include "WCSimDetectorConstruction.hh"
 
 class G4Run;
 class WCSimRunActionMessenger;
@@ -16,7 +17,7 @@ class WCSimRunActionMessenger;
 class WCSimRunAction : public G4UserRunAction
 {
 public:
-  WCSimRunAction();
+  WCSimRunAction(WCSimDetectorConstruction*);
   ~WCSimRunAction();
 
 public:
@@ -51,6 +52,7 @@ private:
   TTree* geoTree;
   WCSimRootEvent* wcsimrootsuperevent;
   WCSimRootGeom* wcsimrootgeom;
+  WCSimDetectorConstruction* wcsimdetector;
 
   int numberOfEventsGenerated;
   int numberOfTimesWaterTubeHit;

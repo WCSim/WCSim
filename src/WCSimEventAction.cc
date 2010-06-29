@@ -100,8 +100,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // To use Do like This:
   // --------------------
   //   if (WCHC)
-  //     for (G4int i=0; i< WCHC->entries() ;i++)
-  //       G4cout << (*WCHC)[i]->GetTotalPe() << G4endl;
+ //  G4cout << WCHC->entries() << G4endl;
+//   for (G4int i=0; i< WCHC->entries() ;i++)
+//     (*WCHC)[i]->Print();
 
   // ----------------------------------------------------------------------
   //  Get Digitized Hit Collection
@@ -453,7 +454,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 			      stop,
 			      start,
 			      jhfNtuple.parent[k],
-			      jhfNtuple.time[k]); 
+			     jhfNtuple.time[k],0); 
   }
 
   // the rest of the tracks come from WCSimTrajectory
@@ -586,7 +587,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				  stop,
 				  start,
 				  parentType,
-				  ttime); 
+				 ttime,id); 
       }
       
 
@@ -612,7 +613,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	
 	    //amb79
 		G4cout<<"Pi0 data: " << id <<G4endl;
-	wcsimrootevent->SetPi0Info(pi0Vtx, gammaID, gammaE, gammaVtx);
+		wcsimrootevent->SetPi0Info(pi0Vtx, gammaID, gammaE, gammaVtx);
 	  }
 	}
       }
