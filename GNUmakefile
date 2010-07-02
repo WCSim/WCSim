@@ -57,7 +57,6 @@ shared: $(ROOTSRC) $(ROOTOBJS)
 libWCSim.a : $(ROOTOBJS)
 	$(RM) $@
 	ar clq $@ $(ROOTOBJS) 
-#	$(RANLIB) $@
 
 rootcint : $(ROOTSRC)
 	rootcint  -f ./src/WCSimRootDict.cc -c -I./include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimRootLinkDef.hh
