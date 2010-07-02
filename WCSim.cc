@@ -3,9 +3,6 @@
 #include "G4UImanager.hh"
 #include "G4UIterminal.hh"
 #include "G4UItcsh.hh"
-#include "G4UIGAG.hh"
-#include "G4VisExecutive.hh"
-#include "G4TrajectoryDrawByParticleID.hh"
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPhysicsList.hh"
 #include "WCSimPhysicsMessenger.hh"
@@ -57,31 +54,8 @@ int main(int argc,char** argv)
   UI->ApplyCommand("/control/execute jobOptions.mac");
 
   // Visualization
-  //G4VisManager* visManager = new WCSimVisManager;
-  G4VisManager* visManager = new G4VisExecutive;
+  G4VisManager* visManager = new WCSimVisManager;
   visManager->Initialize();
-
-  //create new drawByParticleID model
-  G4TrajectoryDrawByParticleID* mymodel = new G4TrajectoryDrawByParticleID;
-  
-  //Configure model
-  mymodel->SetDefault("cyan");
-  mymodel->Set("gamma","green");
-  mymodel->Set("nu_e","yellow");
-  mymodel->Set("nu_mu","yellow");
-  mymodel->Set("anti_nu_e","yellow");
-  mymodel->Set("anti_nu_mu","yellow");
-  mymodel->Set("e-","blue");
-  mymodel->Set("mu-","black");
-  mymodel->Set("e+","red");
-  mymodel->Set("mu+","white");
-  mymodel->Set("proton","magenta");
-  mymodel->Set("neutron","Grey");
-
-  
-
-  
-  visManager->RegisterModel(mymodel);
 
   // Set user action classes
   WCSimPrimaryGeneratorAction* myGeneratorAction = new 
