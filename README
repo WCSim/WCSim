@@ -1,7 +1,6 @@
 Current notes and how to build:
 
-See below on more info on compiling and making shared libraries for
-external scripts.  You should have a recent and working version of
+You should have a recent and working version of
 ROOT and GEANT4.  You also need all of the G4 data files including
 hadron xsecs etc.  Those are the only requirements.  The code should
 work with gcc 4.3.
@@ -11,34 +10,7 @@ make clean
 make rootcint
 make
 
---------------------------------------------
-Notes from Alex Beutel 8/09:
+If you want to use these libraries with an external program then also do:
 
-[note from Chris: we took out the upright option... double check the
-relation between this and the flag in the geometry file.
-This is a job for Johannes.]
-
-Mailbox geometry needs a lot of work.  There are many warnings and
-errors when run as currently set up.  Also still need to add PMTs to
-top semi-ciruclar caps.  This also does not use standard configuration
-variables as used in all other geometries.
-
-When adding configurations, make sure to also add appropriately to
-WCSimDetectorMessenger and keep mind the orientation variable which is
-in RootGeom and written to the geomfile.txt.  This may want to be
-rewritten to be called geometry because mailbox isn't really an
-orientation.  However, this is important to be adapted into superscan
-similarly to how I used it in TJ's root display.
-
-To compile:
-make clean
-make rootcint
-make
-
-When linking do both:
-make shared
-make libWCSim.a  	<-- this will generate an error for part of it, don't worry about it
-
-For compiling TJs RootDisplay point system variable G42KMWORKDIR at this folder as seen below:
-
-setenv G42KMWORKDIR "/var/phy/project/hep/neutrino/work/amb79/justwater"
+make shared      [ For root programs]
+make libWCSim.a  [ Also necessary for the event display?]
