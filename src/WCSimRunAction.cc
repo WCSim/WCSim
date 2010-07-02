@@ -183,33 +183,3 @@ void WCSimRunAction::FillGeoTree(){
   TFile* hfile = geoTree->GetCurrentFile();
   hfile->Write(); 
 }
-
-
-// void WCSimRunAction::FillGeoTree(){
-
-//     // Now the tube list
-//     Int_t tubeNo;
-//     while (geoFile>>tubeNo){
-//       Float_t pos[3];
-//       Float_t rot[3];
-//       Int_t cylLoc;
-//       geoFile>>pos[0]>>pos[1]>>pos[2]>>rot[0]>>rot[1]>>rot[2]>>cylLoc;
-//       //      G4cout<< itube<<" "<<tubeNo<<" "<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<" "<<rot[0]<<" "<<rot[1]<<" "<<rot[2]<<G4endl;
-//       wcsimrootgeom-> SetPMT(itube,tubeNo,cylLoc,rot,pos);
-//       itube++;
-
-//     }
-//     if (itube != numpmt) {
-// 	G4cout << "Mismatch between number of pmts and pmt list in geofile.txt!!"<<G4endl;
-// 	G4cout << itube <<" vs. "<< numpmt <<G4endl;
-//     }
-//     geoFile.close();
-//   }
-
-//   wcsimrootgeom-> SetWCNumPMT(itube);
-  
-//   geoTree->Fill();
-//   TFile* hfile = geoTree->GetCurrentFile();
-//   hfile->Write(); 
-
-// }
