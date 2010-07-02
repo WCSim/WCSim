@@ -100,10 +100,10 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // To use Do like This:
   // --------------------
   //   if (WCHC)
- //  G4cout << WCHC->entries() << G4endl;
-//   for (G4int i=0; i< WCHC->entries() ;i++)
-//     (*WCHC)[i]->Print();
-
+  //     for (G4int i=0; i< WCHC->entries() ;i++)
+  //       G4cout << (*WCHC)[i]->GetTotalPe() << G4endl;
+  
+  
   // ----------------------------------------------------------------------
   //  Get Digitized Hit Collection
   // ----------------------------------------------------------------------
