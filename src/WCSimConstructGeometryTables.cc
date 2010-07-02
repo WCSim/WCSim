@@ -206,100 +206,6 @@ if (aPV->GetName() == "WCPMTGlass"){
   }
 }
 
-
-// (JF) This is not needed for DUSEL Detectors
-/*
-// Maximilien Fechner : needed because the 1KT geometry is treated 
-// differently
-// WARNING : this routine is "hard-coded", and relies on the way the
-// Construction routine works, on the K2K-1KT geometry, and
-// on the original geofile.txt output (from spring 2004)
-
-void WCSimDetectorConstruction::DescribeAndRegisterPMT_1KT
-(G4VPhysicalVolume* aPV ,int aDepth, int replicaNo,
- const G4Transform3D& aTransform) 
-{
-  static std::string replicaNoString[10];
-  static int traversedBarrelTubes = 0;
-  static int traversedCapTubes = 0;
-  int NumPMT = 0; // M F 
-  
-
-#ifndef USE_STRSTREAM
-  std::stringstream depth;
-#else
-  char buffer[100];
-  std::strstream depth(buffer,100);
-#endif
-
-  depth << replicaNo;
-#ifdef USE_STRSTREAM
-  depth << std::ends;
-#endif
-  
-  replicaNoString[aDepth] = depth.str();
-
-  if ((aPV->GetName() == "WCCapPMTGlass") || (aPV->GetName() == "WCPMTGlass")){
-    // increment the total number of tubes
-    totalNumPMTs++;
-
-	// Put the location of this tube into the location map so we can find
-	// its ID later.  It is coded by its tubeTag string.
-
-	std::string tubeTag(aPV->GetName());
-    for (int i=0; i <= aDepth; i++)
-      tubeTag += ":" + replicaNoString[i];
-    //MF : not any more, doesn't work with 1KT software
-    //    tubeLocationMap[tubeTag] = totalNumPMTs;
-    
-    // Record where tube is in the cylinder
-    
-    if (aPV->GetName() == "WCPMTGlass"){    
-      // same as always : first the caps, then the barrel
-      if ( aDepth == 3 ) {
-	G4int num  = std::atoi(replicaNoString[aDepth].c_str()) + 1;
-	if ( num >= 225) {  // in the outermost rings
-	  tubeCylLocation[num] = wall;
-	  tubeLocationMap[tubeTag] = num ;
-	  NumPMT = num;      
-	}
-      } else { //replicated rings in the middle
-	traversedBarrelTubes++;
-	tubeCylLocation[traversedBarrelTubes+262] = wall;
-	tubeLocationMap[tubeTag] = traversedBarrelTubes+262;
-	NumPMT = traversedBarrelTubes  + 262;
-      }
-    } else {   // It's a cap pmt
-      // Get which endcap 
-      G4int capdepth = 2;
-      G4int endcap = std::atoi(replicaNoString[capdepth].c_str());
-      //      G4cout << "endcap " << endcap << "\n";
-      //// If the cap is replica 1, it's endcap1.  If replica 0, it's endcap 2
-      traversedCapTubes++;
-      tubeLocationMap[tubeTag] = traversedCapTubes;
-      tubeCylLocation[traversedCapTubes] = ( (traversedCapTubes <= 112) ? endcap2: endcap1); 
-      NumPMT = traversedCapTubes;
-    }
-    
-    // Put the transform for this tube into the map keyed by its ID
-    tubeIDMap[NumPMT] = aTransform;
-    
-    //    G4cout <<  "depth " << depth.str() << G4endl;
-    //G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
-    //G4cout << "tubeCylLocation[" << NumPMT  << "]= " << tubeCylLocation[NumPMT] << "\n";
-    
-    // Print
-//     G4cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
-//     	   << " Pos:" << aTransform.getTranslation()/cm 
-//     	   << " Rot:" << aTransform.getRotation().getTheta()/deg 
-//     	   << "," << aTransform.getRotation().getPhi()/deg 
-//     	   << "," << aTransform.getRotation().getPsi()/deg
-//     	   << G4endl; 
-  }
-
-}
-*/
-
 // Utilities to do stuff with the info we have found.
 
 // Output to WC geometry text file
@@ -316,20 +222,6 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   G4Transform3D firstTransform = tubeIDMap[2];
   innerradius = sqrt(pow(firstTransform.getTranslation().getX()/cm,2)
                             + pow(firstTransform.getTranslation().getY()/cm,2));
-
-  //  G4cout << innerradius << "\t" << WCCylInfo[0] << "\t" << WCCylInfo[1] << "\t" << WCCylInfo[2] << G4endl;
-
-  //G4int geo_type;
-
-  // if (fabs(2*innerradius - WCCylInfo[0])<0.02* innerradius && fabs(2*innerradius - WCCylInfo[1]) < 0.02 * innerradius){
-//     //cylinder
-//     geo_type = 0;
-//   }else{
-//     //mail box
-//     geo_type = 1;
-//   }
-
-  //G4cout << geo_type << G4endl;
 
   if (isMailbox == false){
     geoFile << setw(8)<< innerradius;
