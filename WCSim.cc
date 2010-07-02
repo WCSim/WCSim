@@ -112,8 +112,6 @@ int main(int argc,char** argv)
     
     // Visualization Macro
     UI->ApplyCommand("/control/execute vis.mac");
-    
-
 
     // Start Interactive Mode
     session->SessionStart();
@@ -122,24 +120,10 @@ int main(int argc,char** argv)
   }
   else           // Batch mode
   { 
-
-    // Start UI Session
-    //G4UIsession* session =  new G4UIterminal(new G4UItcsh);
-    //G4UIsession* session = new G4UIGAG();
-
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
 
-    // Visualization Macro
-    //   UI->ApplyCommand("/control/execute vis.mac");//K.Z.: dangerous position for such command, has to
-                                                      //removed.
     UI->ApplyCommand(command+fileName);
-
-    // Start Interactive Mode
-    // session->SessionStart();
-    
-
-    //delete session;
   }
 
   delete visManager;
