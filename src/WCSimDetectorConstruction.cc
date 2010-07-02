@@ -57,20 +57,20 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Set the default WC geometry.  This can be changed later.
   //-----------------------------------------------------
 
-  SetSuperKGeometry();
- // DUSEL_100kton_10inch_40perCent();
+  //SetSuperKGeometry();
+  DUSEL_100kton_10inch_40perCent();
   //DUSEL_100kton_10inch_HQE_30perCent();
   //DUSEL_100kton_10inch_HQE_30perCent_Gd();
   //DUSEL_150kton_10inch_HQE_30perCent();
- // SetMailBox300KTGeometry();
- //SetMailBox100kTGeometry();
+  // SetMailBox300KTGeometry();
+  //SetMailBox100kTGeometry();
 
 
   //----------------------------------------------------- 
   // Set whether or not Pi0-specific info is saved
   //-----------------------------------------------------
 
-  SavePi0Info(true);
+  SavePi0Info(false);
 
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry
