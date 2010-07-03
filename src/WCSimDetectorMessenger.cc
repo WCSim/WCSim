@@ -40,6 +40,12 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTSize->SetCandidates("20inch 10inch");
   PMTSize->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+  SavePi0 = new G4UIcmdWithAString("/WCSim/SavePi0", this);
+  SavePi0->SetGuidance("true or false");
+  SavePi0->SetParameterName("SavePi0",false);
+  SavePi0->SetCandidates("true false");
+  SavePi0->AvailableForStates(G4State_PreInit, G4State_Idle);
+
   WCConstruct = new G4UIcmdWithoutParameter("/WCSim/Construct", this);
   WCConstruct->SetGuidance("Update detector construction with new settings.");
 }
@@ -47,6 +53,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 WCSimDetectorMessenger::~WCSimDetectorMessenger()
 {
   delete PMTConfig;
+  delete SavePi0;
   delete tubeCmd;
   delete distortionCmd;
   delete WCSimDir;
@@ -77,6 +84,17 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 			G4cout << "That geometry choice not defined!" << G4endl;
 	}
   
+	if (command == SavePi0){
+	  G4cout << "Set the flag for saving pi0 info " << newValue << G4endl;
+	  if (newValue=="true"){
+	    WCSimDetector->SavePi0Info(true);
+	  }else if (newValue == "false"){
+	    WCSimDetector->SavePi0Info(false);
+	  }else{
+	  
+	  }
+	}
+
 	if(command == PMTSize) {
 		G4cout << "SET PMT SIZE" << G4endl;
 		if ( newValue == "20inch"){

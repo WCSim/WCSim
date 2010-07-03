@@ -24,6 +24,9 @@
 #/WCSim/WCgeom 150kTMailbox_10inch_40perCent
 /WCSim/Construct
 
+# command to choose save or not save the pi0 info 07/03/10 (XQ)
+/WCSim/SavePi0 false
+
 /vis/scene/create
 /vis/open OGLIX
 /vis/viewer/set/upVector 0 0 1
