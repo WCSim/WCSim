@@ -4,6 +4,7 @@
 #ifdef G4VIS_USE
 
 #include "WCSimVisManager.hh"
+#include "G4TrajectoryDrawByParticleID.hh"
 
 // Supported drivers...
 
@@ -109,12 +110,32 @@ void WCSimVisManager::RegisterGraphicsSystems () {
   RegisterGraphicsSystem (new G4VRML2);
 #endif
 
+  //create new drawByParticleID model
+  G4TrajectoryDrawByParticleID* mymodel = new G4TrajectoryDrawByParticleID;
+  
+  //Configure model
+  mymodel->SetDefault("cyan");
+  mymodel->Set("gamma","green");
+  mymodel->Set("nu_e","yellow");
+  mymodel->Set("nu_mu","yellow");
+  mymodel->Set("anti_nu_e","yellow");
+  mymodel->Set("anti_nu_mu","yellow");
+  mymodel->Set("e-","blue");
+  mymodel->Set("mu-","black");
+  mymodel->Set("e+","red");
+  mymodel->Set("mu+","white");
+  mymodel->Set("proton","magenta");
+  mymodel->Set("neutron","Grey");
+
   if (fVerbose > 0) {
     G4cout <<
       "\nYou have successfully chosen to use the following graphics systems."
 	 << G4endl;
     PrintAvailableGraphicsSystems ();
   }
+  RegisterModel(mymodel);
+
+
 }
 
 #endif

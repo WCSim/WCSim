@@ -14,3 +14,19 @@ If you want to use these libraries with an external program then also do:
 
 make shared      [ For root programs]
 make libWCSim.a  [ Also necessary for the event display?]
+
+
+
+####################################################################
+Color Convention for visualization
+Added in the WCSimVismanager.cc
+-------------------------------------------------------------------
+gamma green
+neutrino yellow
+electron blue
+muon-   black
+positron red
+muon+ white
+proton magneta
+neutron grey
+####################################################################
