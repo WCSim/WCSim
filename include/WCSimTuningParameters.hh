@@ -14,6 +14,15 @@ class WCSimTuningParameters
   G4double GetRayff() {return rayff;}
   void SetRayff(G4double rparam) {rayff=rparam;}
 
+  G4double GetBsrff() {return bsrff;}
+  void SetBsrff(G4double rparam) {bsrff=rparam;}
+
+  G4double GetAbwff() {return abwff;}
+  void SetAbwff(G4double rparam) {abwff=rparam;}
+
+  G4double GetRgcff() {return rgcff;}
+  void SetRgcff(G4double rparam) {rgcff=rparam;}
+
   private:
 
   // The messenger
@@ -24,6 +33,9 @@ class WCSimTuningParameters
   // is created
 
   G4double rayff;
+  G4double bsrff;
+  G4double abwff;
+  G4double rgcff;
 
 };
 

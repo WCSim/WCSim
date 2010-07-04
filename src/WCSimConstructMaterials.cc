@@ -329,20 +329,25 @@ void WCSimDetectorConstruction::ConstructMaterials()
       1.38362, 1.39074, 1.39956, 1.41075, 1.42535};
    
 
-   
+    G4double ABWFF = 1.0;
+
+    // Get from the tuning parameters
+    ABWFF = WCSimTuningParams->GetAbwff();
+
    G4double ABSORPTION_water[NUMENTRIES_water] = //old
-     { 22.8154*cm, 28.6144*cm, 35.9923*cm, 45.4086*cm, 57.4650*cm,
-       72.9526*cm, 92.9156*cm, 118.737*cm, 152.255*cm, 195.925*cm,
-       202.429*cm, 224.719*cm, 236.407*cm, 245.700*cm, 289.017*cm,
-       305.810*cm, 316.456*cm, 326.797*cm, 347.222*cm, 414.938*cm,
-       636.943*cm, 934.579*cm, 1245.33*cm, 1402.52*cm, 1550.39*cm,
-       1745.20*cm, 1883.24*cm, 2016.13*cm, 2442.18*cm, 3831.28*cm,
-       4652.89*cm, 5577.04*cm, 6567.08*cm, 7559.88*cm, 8470.06*cm,
-       9205.54*cm, 9690.95*cm, 9888.36*cm, 9804.50*cm, 9482.17*cm,
-       8982.77*cm, 8369.39*cm, 7680.31*cm, 6902.11*cm, 6183.84*cm,
-       5522.27*cm, 4914.33*cm, 4357.09*cm, 3847.72*cm, 3383.51*cm,
-       2961.81*cm, 2580.08*cm, 2235.83*cm, 1926.66*cm, 1650.21*cm,
-       1404.21*cm, 1186.44*cm, 994.742*cm, 827.027*cm, 681.278*cm};
+     { 22.8154*cm*ABWFF, 28.6144*cm*ABWFF, 35.9923*cm*ABWFF, 45.4086*cm*ABWFF, 57.4650*cm*ABWFF,
+       72.9526*cm*ABWFF, 92.9156*cm*ABWFF, 118.737*cm*ABWFF, 152.255*cm*ABWFF, 195.925*cm*ABWFF,
+       202.429*cm*ABWFF, 224.719*cm*ABWFF, 236.407*cm*ABWFF, 245.700*cm*ABWFF, 289.017*cm*ABWFF,
+       305.810*cm*ABWFF, 316.456*cm*ABWFF, 326.797*cm*ABWFF, 347.222*cm*ABWFF, 414.938*cm*ABWFF,
+       636.943*cm*ABWFF, 934.579*cm*ABWFF, 1245.33*cm*ABWFF, 1402.52*cm*ABWFF, 1550.39*cm*ABWFF,
+       1745.20*cm*ABWFF, 1883.24*cm*ABWFF, 2016.13*cm*ABWFF, 2442.18*cm*ABWFF, 3831.28*cm*ABWFF,
+       4652.89*cm*ABWFF, 5577.04*cm*ABWFF, 6567.08*cm*ABWFF, 7559.88*cm*ABWFF, 8470.06*cm*ABWFF,
+       9205.54*cm*ABWFF, 9690.95*cm*ABWFF, 9888.36*cm*ABWFF, 9804.50*cm*ABWFF, 9482.17*cm*ABWFF,
+       8982.77*cm*ABWFF, 8369.39*cm*ABWFF, 7680.31*cm*ABWFF, 6902.11*cm*ABWFF, 6183.84*cm*ABWFF,
+       5522.27*cm*ABWFF, 4914.33*cm*ABWFF, 4357.09*cm*ABWFF, 3847.72*cm*ABWFF, 3383.51*cm*ABWFF,
+       2961.81*cm*ABWFF, 2580.08*cm*ABWFF, 2235.83*cm*ABWFF, 1926.66*cm*ABWFF, 1650.21*cm*ABWFF,
+       1404.21*cm*ABWFF, 1186.44*cm*ABWFF, 994.742*cm*ABWFF, 827.027*cm*ABWFF, 681.278*cm*ABWFF};
+
     /*
    G4double ABSORPTION_water[NUMENTRIES_water] = //new
      {25.3504*cm, 31.7938*cm, 39.9915*cm, 50.454*cm, 63.85*cm, 
@@ -371,13 +376,14 @@ void WCSimDetectorConstruction::ConstructMaterials()
    
   // april 2005 : reduced reflections, let's increase scattering...
   // sep 09: for the large detector like superK the old values are muc better
-    G4double RAYFF = 1.0/1.65;  //old
+   //G4double RAYFF = 1.0/1.65;  //old
    //    G4double RAYFF = 1.0/1.5;  
 
-    // Get from the tuning parameters
+   G4double RAYFF = 0.625;
 
-    RAYFF = WCSimTuningParams->GetRayff();
-    //    printf("RAYFF: %f\n",RAYFF);
+   // Get from the tuning parameters
+   RAYFF = WCSimTuningParams->GetRayff();
+   //    printf("RAYFF: %f\n",RAYFF);
 
    G4double RAYLEIGH_water[NUMENTRIES_water] = {
      167024.4*cm*RAYFF, 158726.7*cm*RAYFF, 150742*cm*RAYFF,
@@ -483,11 +489,37 @@ void WCSimDetectorConstruction::ConstructMaterials()
    //depending on whether SK1 or SK2 simulation is used.  
    //The BlackSheetFudgeFactor is set to true if you want to use the 
    //SK2 values, false if not.
-   G4double SK1SK2FF = 1.0;
+   //G4double SK1SK2FF = 1.0;
    //G4bool BlackSheetFudgeFactor=false;
-   G4bool BlackSheetFudgeFactor=true;
+   //G4bool BlackSheetFudgeFactor=true;
    //   if (BlackSheetFudgeFactor) SK1SK2FF=SK1SK2FF*2.7;
-   if (BlackSheetFudgeFactor) SK1SK2FF=SK1SK2FF*1.55;
+   //if (BlackSheetFudgeFactor) SK1SK2FF=SK1SK2FF*1.55;
+
+   //July 1, 2010, F. Beroz: changed SK1SK2FF to BSRFF to avoid confusion,
+   // since this parameter is not from SK.
+
+   G4double BSRFF = 1.0;
+   
+   // Get from the tuning parameters
+   BSRFF = WCSimTuningParams->GetBsrff();
+
+   G4double REFLECTIVITY_blacksheet[NUMENTRIES_water] =
+     { 0.055*BSRFF, 0.055*BSRFF, 
+       0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 
+       0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 
+       0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 
+       0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 
+       0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 
+       0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 
+       0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 0.055*BSRFF, 
+       0.055*BSRFF, 0.057*BSRFF, 0.059*BSRFF, 0.060*BSRFF, 
+       0.059*BSRFF, 0.058*BSRFF, 0.057*BSRFF, 0.055*BSRFF, 
+       0.050*BSRFF, 0.045*BSRFF, 0.045*BSRFF, 0.045*BSRFF, 
+       0.045*BSRFF, 0.045*BSRFF, 0.045*BSRFF, 0.045*BSRFF,
+       0.045*BSRFF, 0.045*BSRFF, 0.045*BSRFF, 0.045*BSRFF,
+       0.045*BSRFF, 0.045*BSRFF, 0.045*BSRFF, 0.045*BSRFF,
+       0.045*BSRFF, 0.045*BSRFF, 0.045*BSRFF, 0.045*BSRFF,
+       0.045*BSRFF, 0.045*BSRFF };
 
    /*
    G4double REFLECTIVITY_blacksheet[NUMENTRIES] =
@@ -501,6 +533,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
        0.045*SK1SK2FF, 0.045*SK1SK2FF, 0.045*SK1SK2FF, 0.045*SK1SK2FF };
    */
    
+   /*
    G4double REFLECTIVITY_blacksheet[NUMENTRIES_water] =
      { 0.055*SK1SK2FF, 0.055*SK1SK2FF, 
        0.055*SK1SK2FF, 0.055*SK1SK2FF, 0.055*SK1SK2FF, 0.055*SK1SK2FF, 
@@ -518,7 +551,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
        0.045*SK1SK2FF, 0.045*SK1SK2FF, 0.045*SK1SK2FF, 0.045*SK1SK2FF,
        0.045*SK1SK2FF, 0.045*SK1SK2FF, 0.045*SK1SK2FF, 0.045*SK1SK2FF ,
        0.045*SK1SK2FF, 0.045*SK1SK2FF };
-
+   */
 
    //utter fiction at this stage
    G4double EFFICIENCY[NUMENTRIES_water] =
@@ -611,8 +644,18 @@ void WCSimDetectorConstruction::ConstructMaterials()
      {0.0, 0.0};
    //     { 0.2, 0.2 };
    */
+
+
+   G4double RGCFF = 0.0;
+   RGCFF = WCSimTuningParams->GetRgcff();
+ 
    G4double REFLECTIVITY_glasscath[NUM] =
-     { 0.0, 0.0 };
+     //{ 0.0+RGCFF, 0.0+RGCFF };
+     //{ RGCFF, RGCFF };
+     //{ 0.0, 0.0 };
+     { 1.0*RGCFF, 1.0*RGCFF };
+
+
    G4double EFFICIENCY_glasscath[NUM] =
      { 0.0, 0.0 };
 

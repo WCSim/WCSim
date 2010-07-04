@@ -9,7 +9,10 @@ WCSimTuningParameters::WCSimTuningParameters()
 
  TuningMessenger = new WCSimTuningMessenger(this);
  // Default values
- rayff=0.61;
+ rayff=0.625;
+ bsrff=1.0;
+ abwff=1.0;
+ rgcff=0.0;
 
 }
 
