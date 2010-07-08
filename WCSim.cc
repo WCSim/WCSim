@@ -80,7 +80,6 @@ int main(int argc,char** argv)
   runManager->SetUserAction(myGeneratorAction);
 
 
-
   WCSimRunAction* myRunAction = new WCSimRunAction(WCSimdetector);
   runManager->SetUserAction(myRunAction);
 
