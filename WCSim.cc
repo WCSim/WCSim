@@ -3,6 +3,9 @@
 #include "G4UImanager.hh"
 #include "G4UIterminal.hh"
 #include "G4UItcsh.hh"
+#include "G4PhysListFactory.hh"
+#include "G4VModularPhysicsList.hh"
+
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPhysicsList.hh"
 #include "WCSimPhysicsMessenger.hh"
@@ -41,7 +44,21 @@ int main(int argc,char** argv)
 
   runManager->SetUserInitialization(WCSimdetector);
 
-  runManager->SetUserInitialization(new WCSimPhysicsList);
+  // Physics List name defined via 2nd argument
+  // (Modified from hadr00 example --David Webber 7-8-10)
+  G4PhysListFactory factory;
+  G4VModularPhysicsList* phys = 0;
+  G4String physName = "";
+  if (argc==3) physName = argv[2];
+
+  if (factory.IsReferencePhysList(physName)) {
+    phys = factory.GetReferencePhysList(physName);
+    runManager->SetUserInitialization(phys);
+  } else {
+    runManager->SetUserInitialization(new WCSimPhysicsList); // WCSim default
+  }
+  // Physics List is defined via environment variable PHYSLIST
+  //  if(!phys) phys = factory.ReferencePhysList(); -- hadr00 default
 
   //=================================
   // Added by JLR 2005-07-05
@@ -62,13 +79,13 @@ int main(int argc,char** argv)
     WCSimPrimaryGeneratorAction(WCSimdetector);
   runManager->SetUserAction(myGeneratorAction);
 
-  
+
 
   WCSimRunAction* myRunAction = new WCSimRunAction(WCSimdetector);
   runManager->SetUserAction(myRunAction);
 
   runManager->SetUserAction(new WCSimEventAction(myRunAction, WCSimdetector,
-						  myGeneratorAction));
+        myGeneratorAction));
   runManager->SetUserAction(new WCSimTrackingAction);
 
   runManager->SetUserAction(new WCSimStackingAction(WCSimdetector));
@@ -83,13 +100,13 @@ int main(int argc,char** argv)
 
     // Start UI Session
     G4UIsession* session =  new G4UIterminal(new G4UItcsh);
-    
+
     // Visualization Macro
     UI->ApplyCommand("/control/execute vis.mac");
 
     // Start Interactive Mode
     session->SessionStart();
-    
+
     delete session;
   }
   else           // Batch mode
