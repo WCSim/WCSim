@@ -3,12 +3,9 @@
 #include "G4UImanager.hh"
 #include "G4UIterminal.hh"
 #include "G4UItcsh.hh"
-#include "G4PhysListFactory.hh"
-#include "G4VModularPhysicsList.hh"
-
 #include "WCSimDetectorConstruction.hh"
-#include "WCSimPhysicsList.hh"
-#include "WCSimPhysicsMessenger.hh"
+#include "WCSimPhysicsListFactory.hh"
+#include "WCSimPhysicsListFactoryMessenger.hh"
 #include "WCSimTuningParameters.hh"
 #include "WCSimTuningMessenger.hh"
 #include "WCSimPrimaryGeneratorAction.hh"
@@ -27,7 +24,7 @@ int main(int argc,char** argv)
 
   // get the pointer to the UI manager
   G4UImanager* UI = G4UImanager::GetUIpointer();
-  
+
   // Set up the tuning parameters that need to be read before the detector
   //  construction is done
   WCSimTuningParameters* tuningpars = new WCSimTuningParameters();
@@ -44,21 +41,8 @@ int main(int argc,char** argv)
 
   runManager->SetUserInitialization(WCSimdetector);
 
-  // Physics List name defined via 2nd argument
-  // (Modified from hadr00 example --David Webber 7-8-10)
-  G4PhysListFactory factory;
-  G4VModularPhysicsList* phys = 0;
-  G4String physName = "";
-  if (argc==3) physName = argv[2];
-
-  if (factory.IsReferencePhysList(physName)) {
-    phys = factory.GetReferencePhysList(physName);
-    runManager->SetUserInitialization(phys);
-  } else {
-    runManager->SetUserInitialization(new WCSimPhysicsList); // WCSim default
-  }
-  // Physics List is defined via environment variable PHYSLIST
-  //  if(!phys) phys = factory.ReferencePhysList(); -- hadr00 default
+  // Added selectable physics lists 2010-07 by DMW
+  runManager->SetUserInitialization(new WCSimPhysicsListFactory());
 
   //=================================
   // Added by JLR 2005-07-05
@@ -68,7 +52,7 @@ int main(int argc,char** argv)
   // by the program BEFORE the runManager is initialized.
   // If file does not exist, default model will be used.
   // Currently, default model is set to BINARY
-  UI->ApplyCommand("/control/execute jobOptions.mac");
+  UI->ApplyCommand("/control/execute jobOptions.mac");   // note: does not affect new physics lists.
 
   // Visualization
   G4VisManager* visManager = new WCSimVisManager;
@@ -90,6 +74,10 @@ int main(int argc,char** argv)
   runManager->SetUserAction(new WCSimStackingAction(WCSimdetector));
 
   runManager->SetUserAction(new WCSimSteppingAction);
+
+  // drop into session before initialization.  I do this to debug physics list messenger hooks.
+  G4UIsession* session =  new G4UIterminal(new G4UItcsh);
+  session->SessionStart();
 
   // Initialize G4 kernel
   runManager->Initialize();
