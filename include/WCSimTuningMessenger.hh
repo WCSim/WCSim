@@ -11,6 +11,8 @@ class WCSimTuningParameters;
 class G4UIdirectory;
 class G4UIcommand;
 class G4UIcmdWithADouble;
+class G4UIcmdWithABool; //jl145
+
 
 class WCSimTuningMessenger: public G4UImessenger
 {
@@ -30,6 +32,9 @@ private:
   G4UIcmdWithADouble* Abwff;
   G4UIcmdWithADouble* Rgcff;
 
+  //For Top Veto - jl145
+  G4UIcmdWithADouble* TVSpacing;
+  G4UIcmdWithABool* TopVeto;
 
 };
 

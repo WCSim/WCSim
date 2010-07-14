@@ -14,6 +14,10 @@ WCSimTuningParameters::WCSimTuningParameters()
  abwff=1.0;
  rgcff=0.0;
 
+ //jl145 - For Top Veto
+ tvspacing = 100.0;
+ topveto = false;
+
 }
 
 WCSimTuningParameters::~WCSimTuningParameters()

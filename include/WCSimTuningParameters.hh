@@ -23,6 +23,13 @@ class WCSimTuningParameters
   G4double GetRgcff() {return rgcff;}
   void SetRgcff(G4double rparam) {rgcff=rparam;}
 
+  //For Top Veto - jl145
+  G4double GetTVSpacing() {return tvspacing;}
+  void SetTVSpacing(G4double tparam) {tvspacing=tparam;}
+
+  G4bool GetTopVeto() {return topveto;}
+  void SetTopVeto(G4double tparam) {topveto=tparam;}
+
   private:
 
   // The messenger
@@ -36,6 +43,9 @@ class WCSimTuningParameters
   G4double bsrff;
   G4double abwff;
   G4double rgcff;
+  //For Top Veto - jl145
+  G4double tvspacing;
+  G4bool topveto;
 
 };
 

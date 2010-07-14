@@ -169,6 +169,14 @@ void WCSimDetectorConstruction::ConstructMaterials()
   Blacksheet->AddElement(elC, 1);
   Blacksheet->AddElement(elH, 2);
 
+  //---Tyvek - jl145
+
+  density = 0.38*g/cm3;  //cf. DuPont product handbook
+  G4Material* Tyvek
+    = new G4Material("Tyvek",density,2);
+  Tyvek->AddElement(elC, 1);  //polyethylene
+  Tyvek->AddElement(elH, 2);
+
   //---Glass
  
   density = 2.20*g/cm3;
@@ -659,6 +667,33 @@ void WCSimDetectorConstruction::ConstructMaterials()
    G4double EFFICIENCY_glasscath[NUM] =
      { 0.0, 0.0 };
 
+
+   // jl145 ----
+   //
+   OpWaterTySurface =
+     new G4OpticalSurface("WaterTyCellSurface");
+
+   OpWaterTySurface->SetType(dielectric_dielectric);
+   OpWaterTySurface->SetModel(unified);
+   OpWaterTySurface->SetFinish(groundbackpainted); //a guess, but seems to work
+   OpWaterTySurface->SetSigmaAlpha(0.5); //cf. A. Chavarria's ~30deg
+
+   G4double RINDEX_tyvek[NUM] =
+     { 1.5, 1.5 }; // polyethylene permittivity is ~2.25
+   G4double TySPECULARLOBECONSTANT[NUM] =
+     { 0.75, 0.75 }; // crudely estimated from A. Chavarria's thesis
+   G4double TySPECULARSPIKECONSTANT[NUM] =
+     { 0.0, 0.0 };
+   G4double TyBACKSCATTERCONSTANT[NUM] =
+     { 0.0, 0.0 };
+   // Lambertian prob is therefore 0.25
+
+   G4double TyREFLECTIVITY[NUM] =
+     { 0.94, 0.94 }; //cf. DuPont
+   //
+   // ----
+
+
    G4MaterialPropertiesTable *myMPT1 = new G4MaterialPropertiesTable();
    // M Fechner : new   ; wider range for lambda
    myMPT1->AddProperty("RINDEX", ENERGY_water, RINDEX1, NUMENTRIES_water);
@@ -692,6 +727,13 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myMPT5->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_glass, NUMENTRIES_water);
    Glass->SetMaterialPropertiesTable(myMPT5);
     
+   // jl145 ----
+   // Abs legnth is same as blacksheet, very small.
+   G4MaterialPropertiesTable *myMPT6 = new G4MaterialPropertiesTable();
+   myMPT6->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
+   Tyvek->SetMaterialPropertiesTable(myMPT6);
+
+
    //	------------- Surfaces --------------
 
    // Blacksheet
@@ -714,5 +756,16 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myST2->AddProperty("EFFICIENCY", PP, EFFICIENCY_glasscath, NUM);
    //myST2->AddProperty("ABSLENGTH", PP, abslength_paint , NUM);
    OpGlassCathodeSurface->SetMaterialPropertiesTable(myST2);
+
+   //Tyvek - jl145
+   G4MaterialPropertiesTable *myST3 = new G4MaterialPropertiesTable();
+   myST3->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
+   myST3->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
+   myST3->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
+   myST3->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
+   myST3->AddProperty("REFLECTIVITY", PP, TyREFLECTIVITY, NUM);
+   myST3->AddProperty("EFFICIENCY", PP, EFFICIENCY_blacksheet, NUM);
+   //use same efficiency as blacksheet, which is 0
+   OpWaterTySurface->SetMaterialPropertiesTable(myST3);
 
 }

@@ -31,6 +31,7 @@
 
 #include "G4SDManager.hh"
 #include "WCSimWCSD.hh"
+#include "WCSimTuningParameters.hh" //jl145
 
 void WCSimDetectorConstruction::SetSuperKGeometry()
 {
@@ -1224,7 +1225,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructWC()
   G4double outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
-  WCLength    = WCIDHeight + 2.*WCBlackSheetThickness + 2.*m;
+  WCLength    = WCIDHeight + 2*2.3*m;	//jl145 - reflects top veto blueprint, cf. Farshid Feyzi
   G4double WCRadius    = (WCIDDiameter/2. + WCBlackSheetThickness + 1.5*m)/cos(dPhi/2.) ; // TODO: OD 
  
   // now we know the extend of the detector and are able to tune the tolerance
@@ -1248,7 +1249,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructWC()
   G4Tubs* solidWC = new G4Tubs("WC",
 			       0.0*m,
 			       WCRadius+2.*m, 
-			       .5*WCLength+2.*m,
+			       .5*WCLength+4.2*m,	//jl145 - per blueprint
 			       0.*deg,
 			       360.*deg);
   
@@ -1270,7 +1271,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructWC()
   G4Tubs* solidWCBarrel = new G4Tubs("WCBarrel",
 				     0.0*m,
 				     WCRadius+1.*m, // add a bit of extra space
-				     .5*WCLength+1.*m,
+				     .5*WCLength,  //jl145 - per blueprint
 				     0.*deg,
 				     360.*deg);
   
@@ -1884,6 +1885,131 @@ else {
         logicWCCapBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
 
 
+  //jl145------------------------------------------------
+  // Add top veto volume
+  //-----------------------------------------------------
+
+  G4bool WCTopVeto = (WCSimTuningParams->GetTopVeto());
+
+  G4LogicalVolume* logicWCTopVeto;
+
+  if(WCTopVeto){
+
+	  G4double WCTyvekThickness = 1.0*mm; //completely made up
+
+	  G4VSolid* solidWCTopVeto;
+	  solidWCTopVeto =
+			new G4Tubs(			"WCTopVeto",
+								0.0*m,
+								WCIDRadius + WCTyvekThickness,
+								0.5*m + WCTyvekThickness,
+								0.*deg,
+								360.*deg);
+
+	  logicWCTopVeto = 
+			new G4LogicalVolume(solidWCTopVeto,
+								G4Material::GetMaterial(water),
+								"WCTopVeto",
+								0,0,0);
+
+	  G4VPhysicalVolume* physiWCTopVeto =
+			new G4PVPlacement(	0,
+								G4ThreeVector(0.,0.,WCIDHeight/2
+													+1.0*m),
+								logicWCTopVeto,
+								"WCTopVeto",
+								logicWCBarrel,
+								false,0,true);
+
+	  //Add the top veto Tyvek
+	  //-----------------------------------------------------
+
+	  G4VSolid* solidWCTVTyvek;
+	  solidWCTVTyvek =
+			new G4Tubs(			"WCTVTyvek",
+								0.0*m,
+								WCIDRadius,
+								WCTyvekThickness/2,
+								0.*deg,
+								360.*deg);
+
+
+	  G4LogicalVolume* logicWCTVTyvek =
+			new G4LogicalVolume(solidWCTVTyvek,
+								G4Material::GetMaterial("Tyvek"),
+								"WCTVTyvek",
+								0,0,0);
+
+	  //Bottom
+	  G4VPhysicalVolume* physiWCTVTyvekBot =
+			new G4PVPlacement(	0,
+		                  		G4ThreeVector(0.,0.,-0.5*m
+													-WCTyvekThickness/2),
+								logicWCTVTyvek,
+		               			"WCTVTyvekBot",
+		          				logicWCTopVeto,
+				 				false,0,true);
+
+	  G4LogicalBorderSurface * WaterTyTVSurfaceBot =
+			new G4LogicalBorderSurface(	"WaterTyTVSurfaceBot",
+										physiWCTopVeto,
+										physiWCTVTyvekBot,
+										OpWaterTySurface);
+
+	  //Top
+	  G4VPhysicalVolume* physiWCTVTyvekTop =
+			new G4PVPlacement(	0,
+		                  		G4ThreeVector(0.,0.,0.5*m
+													+WCTyvekThickness/2),
+								logicWCTVTyvek,
+		               			"WCTVTyvekTop",
+		          				logicWCTopVeto,
+				 				false,0,true);
+
+	  G4LogicalBorderSurface * WaterTyTVSurfaceTop =
+			new G4LogicalBorderSurface(	"WaterTyTVSurfaceTop",
+										physiWCTopVeto,
+										physiWCTVTyvekTop,
+										OpWaterTySurface);
+
+	  //Side
+	  G4VSolid* solidWCTVTyvekSide;
+	  solidWCTVTyvekSide =
+			new G4Tubs(			"WCTVTyvekSide",
+								WCIDRadius,
+								WCIDRadius + WCTyvekThickness,
+								0.5*m + WCTyvekThickness,
+								0.*deg,
+								360.*deg);
+
+
+	  G4LogicalVolume* logicWCTVTyvekSide =
+			new G4LogicalVolume(solidWCTVTyvekSide,
+								G4Material::GetMaterial("Tyvek"),
+								"WCTVTyvekSide",
+								0,0,0);
+
+	  G4VPhysicalVolume* physiWCTVTyvekSide =
+			new G4PVPlacement(	0,
+		                  		G4ThreeVector(0.,0.,0.),
+								logicWCTVTyvekSide,
+		               			"WCTVTyvekSide",
+		          				logicWCTopVeto,
+				 				false,0,true);
+
+	  G4LogicalBorderSurface * WaterTyTVSurfaceSide =
+			new G4LogicalBorderSurface(	"WaterTyTVSurfaceSide",
+										physiWCTopVeto,
+										physiWCTVTyvekSide,
+										OpWaterTySurface);
+
+  }
+
+  //
+  //
+  //jl145------------------------------------------------
+
+
   //////////// M Fechner : I need to  declare the PMT  here in order to
   // place the PMTs in the truncated cells
   //-----------------------------------------------------
@@ -1958,6 +2084,68 @@ else {
 
   G4cout << "total on cap: " << icopy << "\n";
   G4cout << "Coverage was calculated to be: " << (icopy*WCPMTRadius*WCPMTRadius/(WCIDRadius*WCIDRadius)) << "\n";
+
+
+  //jl145------------------------------------------------
+  // Add top veto PMTs
+  //-----------------------------------------------------
+
+  if(WCTopVeto){
+
+	  G4double WCTVPMTSpacing = (WCSimTuningParams->GetTVSpacing())*cm;
+	  G4double WCTVEdgeLimit = WCCapEdgeLimit;
+	  G4int TVNCell = WCTVEdgeLimit/WCTVPMTSpacing + 2;
+
+	  icopy = 0;
+
+	  for ( int i = -TVNCell ; i <  TVNCell; i++) {
+		for (int j = -TVNCell ; j <  TVNCell; j++)   {
+
+		  xoffset = i*WCTVPMTSpacing + WCTVPMTSpacing*0.5;
+		  yoffset = j*WCTVPMTSpacing + WCTVPMTSpacing*0.5;
+
+		  G4ThreeVector cellpos =
+		  		G4ThreeVector(	xoffset, yoffset,
+								-1.0*PMTOffset-0.5*m);
+
+		  if ((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) < WCTVEdgeLimit) {
+
+		    G4VPhysicalVolume* physiCapPMTGlass =
+		    		new G4PVPlacement(	0,						// no rotation
+		    							cellpos,				// its position
+		    							logicGlassFaceWCPMT,	// its logical volume
+		    							"WCPMTGlass",			// its name 
+		    							logicWCTopVeto,			// its mother volume
+		    							false,					// no boolean os
+		    							icopy);					// every PMT need a unique id.
+
+		    G4VPhysicalVolume* physiCapPMT =
+		    		new G4PVPlacement(	0,						// no rotation
+		    							cellpos,				// its position
+		    							logicWCPMT,				// its logical volume
+		    							"WCPMT",				// its name 
+		    							logicWCTopVeto,			// its mother volume
+		    							false,					// no boolean os
+		    							icopy);					// every PMT need a unique id.
+
+		    G4LogicalBorderSurface* GlassCathodeCapSurface =
+		    		new G4LogicalBorderSurface("GlassCathodeSurface",
+		    									physiCapPMTGlass,physiCapPMT,
+		    									OpGlassCathodeSurface);
+		    icopy++;
+		  }
+		}
+	  }
+
+	  G4double WCTVEfficiency = icopy*WCPMTRadius*WCPMTRadius/((WCIDRadius)*(WCIDRadius));
+	  G4cout << "Total on top veto: " << icopy << "\n";
+	  G4cout << "Coverage was calculated to be: " << WCTVEfficiency << "\n";
+
+  }
+
+  //
+  //
+  //jl145------------------------------------------------
 
 
     ///////////////   Barrel PMT placement

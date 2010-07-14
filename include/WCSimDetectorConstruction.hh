@@ -118,6 +118,8 @@ private:
 
   G4OpticalSurface * OpGlassCathodeSurface;
 
+  //Tyvek surface - jl145
+  G4OpticalSurface * OpWaterTySurface;
 
   // The messenger we use to change the geometry.
 

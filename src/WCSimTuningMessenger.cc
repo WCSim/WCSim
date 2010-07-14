@@ -5,6 +5,8 @@
 #include "G4UIcommand.hh"
 #include "G4UIparameter.hh"
 #include "G4UIcmdWithADouble.hh"
+#include "G4UIcmdWithABool.hh" //jl145
+
 
 WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):WCSimTuningParams(WCTuningPars) { 
   WCSimDir = new G4UIdirectory("/WCSim/tuning/");
@@ -30,6 +32,17 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   Rgcff->SetParameterName("Rgcff",true);
   Rgcff->SetDefaultValue(0.0);
 
+  //jl145 - for Top Veto
+  TVSpacing = new G4UIcmdWithADouble("/WCSim/tuning/tvspacing",this);
+  TVSpacing->SetGuidance("Set the Top Veto PMT Spacing, in cm.");
+  TVSpacing->SetParameterName("TVSpacing",true);
+  TVSpacing->SetDefaultValue(100.0);
+
+  TopVeto = new G4UIcmdWithABool("/WCSim/tuning/topveto",this);
+  TopVeto->SetGuidance("Turn Top Veto simulation on/off");
+  TopVeto->SetParameterName("TopVeto",true);
+  TopVeto->SetDefaultValue(0);
+
 }
 
 WCSimTuningMessenger::~WCSimTuningMessenger()
@@ -38,6 +51,11 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
   delete Bsrff;
   delete Abwff;
   delete Rgcff;
+
+  //jl145 - for Top Veto
+  delete TVSpacing;
+  delete TopVeto;
+
   delete WCSimDir;
 }
 
@@ -82,6 +100,24 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
   printf("Setting cathode reflectivity parameter %f\n",Rgcff->GetNewDoubleValue(newValue));
 
+  }
+
+
+  //jl145 - For Top Veto
+
+  else if(command == TVSpacing) {
+    // Set the Top Veto PMT Spacing
+    WCSimTuningParams->SetTVSpacing(TVSpacing->GetNewDoubleValue(newValue));
+    printf("Setting Top Veto PMT Spacing %f\n",TVSpacing->GetNewDoubleValue(newValue));
+  }
+
+  else if(command == TopVeto) {
+    // Set the Top Veto on/off
+    WCSimTuningParams->SetTopVeto(TopVeto->GetNewBoolValue(newValue));
+    if(TopVeto->GetNewBoolValue(newValue))
+      printf("Setting Top Veto On\n");
+    else
+      printf("Setting Top Veto Off\n");
   }
 
 

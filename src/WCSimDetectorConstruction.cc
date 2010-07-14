@@ -128,7 +128,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // Now make the detector Hall.  The lengths of the subdectors 
   // were set above.
 
-  G4double expHallLength = 1.5*WCLength;
+  G4double expHallLength = 3.*WCLength; //jl145 - extra space to simulate cosmic muons more easily
 
   G4cout << " expHallLength = " << expHallLength / m << G4endl;
   G4double expHallHalfLength = 0.5*expHallLength;
