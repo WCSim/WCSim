@@ -4,6 +4,8 @@
 #include "G4UIterminal.hh"
 #include "G4UItcsh.hh"
 #include "WCSimDetectorConstruction.hh"
+#include "WCSimPhysicsList.hh"
+#include "WCSimPhysicsMessenger.hh"
 #include "WCSimPhysicsListFactory.hh"
 #include "WCSimPhysicsListFactoryMessenger.hh"
 #include "WCSimTuningParameters.hh"
@@ -42,7 +44,8 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(WCSimdetector);
 
   // Added selectable physics lists 2010-07 by DMW
-  runManager->SetUserInitialization(new WCSimPhysicsListFactory());
+  // Set up the messenger hooks here, initialize the actual list after loading jobOptions.mac
+  WCSimPhysicsListFactory *physFactory = new WCSimPhysicsListFactory();
 
   //=================================
   // Added by JLR 2005-07-05
@@ -52,7 +55,11 @@ int main(int argc,char** argv)
   // by the program BEFORE the runManager is initialized.
   // If file does not exist, default model will be used.
   // Currently, default model is set to BINARY
-  UI->ApplyCommand("/control/execute jobOptions.mac");   // note: does not affect new physics lists.
+  UI->ApplyCommand("/control/execute jobOptions.mac");
+
+  // Initialize the physics factory to register the selected physics.
+  physFactory->InitializeList();
+  runManager->SetUserInitialization(physFactory);
 
   // Visualization
   G4VisManager* visManager = new WCSimVisManager;
@@ -75,9 +82,6 @@ int main(int argc,char** argv)
 
   runManager->SetUserAction(new WCSimSteppingAction);
 
-  // drop into session before initialization.  I do this to debug physics list messenger hooks.
-  G4UIsession* session =  new G4UIterminal(new G4UItcsh);
-  session->SessionStart();
 
   // Initialize G4 kernel
   runManager->Initialize();

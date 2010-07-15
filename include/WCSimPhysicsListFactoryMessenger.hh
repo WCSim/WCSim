@@ -12,13 +12,14 @@ class G4UIcmdWithAString;
 class WCSimPhysicsListFactoryMessenger: public G4UImessenger
 {
 public:
-  WCSimPhysicsListFactoryMessenger(WCSimPhysicsListFactory*);
+  WCSimPhysicsListFactoryMessenger(WCSimPhysicsListFactory*, G4String);
   ~WCSimPhysicsListFactoryMessenger();
 
   void SetNewValue(G4UIcommand* command, G4String newValue);
 
 private:
   WCSimPhysicsListFactory* thisWCSimPhysicsListFactory;
+  G4String ValidListsString;
 
   G4UIdirectory*      WCSimDir;
   G4UIcmdWithAString* physListCmd;

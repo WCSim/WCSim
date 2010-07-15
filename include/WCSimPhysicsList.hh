@@ -1,11 +1,13 @@
 
 #ifndef WCSimPhysicsList_h
 #define WCSimPhysicsList_h 1
-#include "G4VUserPhysicsList.hh"
+//#include "G4VUserPhysicsList.hh"
+#include "G4VPhysicsConstructor.hh"
 #include "WCSimPhysicsMessenger.hh"
 #include "globals.hh"
 
-class WCSimPhysicsList: public G4VUserPhysicsList
+//class WCSimPhysicsList: public G4VUserPhysicsList
+class WCSimPhysicsList: public G4VPhysicsConstructor
 {
   public:
     WCSimPhysicsList();

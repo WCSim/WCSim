@@ -1,43 +1,93 @@
-WCSimPhysicsListFactory::WCSimPhysicsListFactory():  G4VUserPhysicsList(), PhysicsMessenger(0)
+#include "WCSimPhysicsListFactory.hh"
+
+/* This code draws upon examples/extended/fields/field04 for inspiration */
+
+
+
+WCSimPhysicsListFactory::WCSimPhysicsListFactory() :  G4VModularPhysicsList()
 {
  defaultCutValue = 1.0*mm;
  SetVerboseLevel(1);
+ 
+ PhysicsListName="NULL_LIST"; // default list is set in WCSimPhysicsListFactoryMessenger to QGSP_BERT
+ factory = new G4PhysListFactory();
+ // TODO create opticalPhyscics object?
+ 
+ std::vector<G4String> ValidListsVector = factory->AvailablePhysLists();
+ ValidListsVector.push_back("WCSim");// add deprecated WCSimPhysicsList.cc as a selectable option
+ G4int nlists = ValidListsVector.size();
+ G4cout << "There are " << nlists << " available physics lists, and they are: " << G4endl;
+ for (G4int i=0; i<nlists; i++){
+   G4cout << "  " << ValidListsVector[i] << G4endl;
+   ValidListsString += ValidListsVector[i];
+   ValidListsString += " ";
+ }
+ //G4cout << "ValidListsString=" << ValidListsString << G4endl;
 
- PhysicsMessenger = new WCSimPhysicsMessenger(this);
+ PhysicsMessenger = new WCSimPhysicsListFactoryMessenger(this, ValidListsString);
 
 }
 
 WCSimPhysicsListFactory::~WCSimPhysicsListFactory()
 {
   delete PhysicsMessenger;
-  PhysicsMessenger = 0;
-}
+  PhysicsMessenger = NULL;
 
+}
 
 void WCSimPhysicsListFactory::ConstructParticle()
 {
+  G4VModularPhysicsList::ConstructParticle();
 }
-
 
 void WCSimPhysicsListFactory::ConstructProcess()
 {
+  G4VModularPhysicsList::ConstructProcess();
 }
 
 void WCSimPhysicsListFactory::SetCuts()
 {
-}
-
-
-void WCSimPhysicsListFactory::SetFactory(){
-  G4PhysListFactory factory;
-  G4VModularPhysicsList* phys = 0;
-  G4String physName = "";
-  if (argc==3) physName = argv[2];
-
-  if (factory.IsReferencePhysList(physName)) {
-    phys = factory.GetReferencePhysList(physName);
-    runManager->SetUserInitialization(phys);
-  } else {
-    runManager->SetUserInitialization(new WCSimPhysicsList); // WCSim default
+  // same as WCSimPhysicsList
+  if (verboseLevel >0){
+    G4cout << "WCSimPhysicsListFactory::SetCuts:";
+    G4cout << "CutLength : " << G4BestUnit(defaultCutValue,"Length") << G4endl;
   }
+
+  // set cut values for gamma at first and for e- second and next for e+,
+  // because some processes for e+/e- need cut values for gamma
+  //
+  SetCutValue(defaultCutValue, "gamma");
+  SetCutValue(defaultCutValue, "e-");
+  SetCutValue(defaultCutValue, "e+");
+
+  if (verboseLevel>0) DumpCutValuesTable();
+
 }
+
+void WCSimPhysicsListFactory::SetList(G4String newvalue){
+  G4cout << "Setting Physics list to " << newvalue << " and delaying initialization" << G4endl;
+  PhysicsListName = newvalue;
+}
+
+void WCSimPhysicsListFactory::InitializeList(){
+  G4cout << "Initializing physics list " << PhysicsListName << G4endl;
+
+  G4VModularPhysicsList* phys = 0;
+
+  if (factory->IsReferencePhysList(PhysicsListName)) {
+    phys=factory->GetReferencePhysList(PhysicsListName);
+    for (G4int i = 0; ; ++i) {
+      G4VPhysicsConstructor* elem =
+        const_cast<G4VPhysicsConstructor*> (phys->GetPhysics(i));
+      if (elem == NULL) break;
+      G4cout << "RegisterPhysics: " << elem->GetPhysicsName() << G4endl;
+      RegisterPhysics(elem);
+    }
+    RegisterPhysics(new G4OpticalPhysics());
+  } else if (PhysicsListName == "WCSim") {
+    //G4cout << "WCSim physics list not yet implemented" << G4endl;
+    RegisterPhysics(new WCSimPhysicsList());
+  } else {
+    G4cout << "Physics list " << PhysicsListName << " is not understood" << G4endl;
+  }
+} 

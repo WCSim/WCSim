@@ -6,34 +6,35 @@
 #include "globals.hh"
 #include "G4UIcmdWithAString.hh"
 
-WCSimPhysicsListFactoryMessenger::WCSimPhysicsListFactoryMessenger(WCSimPhysicsListFactory* WCSimPhysFactory)
-  :WCSimPhysicsListFactory(WCSimPhysFactory)
+WCSimPhysicsListFactoryMessenger::WCSimPhysicsListFactoryMessenger(WCSimPhysicsListFactory* WCSimPhysFactory, G4String inValidListsString)
+  :thisWCSimPhysicsListFactory(WCSimPhysFactory), ValidListsString(inValidListsString)
 {
+ 
+  G4String defaultList="QGSP_BIC_HP";
   
-  //WCSimDir = new G4UIdirectory("/WCSim/physics/list/");
-  //WCSimDir->SetGuidance("Commands to change secondary interaction model for protons");
+  physListCmd = new G4UIcmdWithAString("/WCSim/physics/list",this);
+  G4String cmd_hint = "Available options: " + ValidListsString;
+  physListCmd->SetGuidance(cmd_hint);
+  physListCmd->SetGuidance("See http://geant4.cern.ch/support/proc_mod_catalog/physics_lists/useCases.shtml");
+  physListCmd->SetGuidance("    http://geant4.cern.ch/support/proc_mod_catalog/physics_lists/referencePL.shtml");
+  physListCmd->SetGuidance("Note: The WCSim option selects a deprecated physics list, but is useful for comparisons");
+  physListCmd->SetGuidance("Note: I think physics list is locked-in after initialization");
+  
+  physListCmd->SetDefaultValue(defaultList);
+  physListCmd->SetCandidates(ValidListsString);  // TODO get list of physics lists from G4PhysicsListFactory
 
-  hadmodelCmd = new G4UIcmdWithAString("/WCSim/physics/list",this);
-  hadmodelCmd->SetGuidance("Available options: ");
-  hadmodelCmd->SetGuidance("QGSP_BERT"); // TODO get list of physics lists from G4PhysicsListFactory
-  hadmodelCmd->SetGuidance("Description:");
-  //hadmodelCmd->SetGuidance("GHEISHA = standard, fast G4 hadronic interaction model");
-  //hadmodelCmd->SetGuidance("BERTINI = Bertini cascade model");
-  //hadmodelCmd->SetGuidance("BINARY  = Binary cascade model (2KM default)");
-  hadmodelCmd->SetDefaultValue("QGSP_BERT");
-  hadmodelCmd->SetCandidates("QGSP_BERT");  // TODO get list of physics lists from G4PhysicsListFactory
-
+  SetNewValue(physListCmd, defaultList);
 }
 
 WCSimPhysicsListFactoryMessenger::~WCSimPhysicsListFactoryMessenger()
 {
-  delete hadmodelCmd;
-  delete WCSimDir;
+  delete physListCmd;
+  //delete WCSimDir;
 }
 
-void WCSimPhysicsMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
+void WCSimPhysicsListFactoryMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-  if (command == hadmodelCmd)
-    WCSimPhysics->SetSecondaryHad(newValue);
+  if (command == physListCmd)
+    thisWCSimPhysicsListFactory->SetList(newValue);
 
 }
