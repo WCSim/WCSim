@@ -18,6 +18,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTConfig->SetGuidance("Available options are:\n"
                           "SuperK\n"
                           "DUSEL_100kton_10inch_40perCent\n"
+                          "DUSEL_100kton_10inch_HQE_15perCent\n"
                           "DUSEL_100kton_10inch_HQE_30perCent\n"
                           "DUSEL_100kton_10inch_HQE_30perCent_Gd\n"
                           "DUSEL_150kton_10inch_HQE_30perCent\n"
@@ -26,6 +27,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTConfig->SetParameterName("PMTConfig", false);
   PMTConfig->SetCandidates("SuperK "
                           "DUSEL_100kton_10inch_40perCent "
+                          "DUSEL_100kton_10inch_15perCent "
                           "DUSEL_100kton_10inch_HQE_30perCent "
                           "DUSEL_100kton_10inch_HQE_30perCent_Gd "
                           "DUSEL_150kton_10inch_HQE_30perCent "
@@ -74,6 +76,8 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 			WCSimDetector->SetSuperKGeometry();
 		} else if(newValue == "DUSEL_100kton_10inch_40perCent") {
 			WCSimDetector->DUSEL_100kton_10inch_40perCent();
+        } else if(newValue == "DUSEL_100kton_10inch_HQE_15perCent"){
+            WCSimDetector->DUSEL_100kton_10inch_HQE_15perCent();
 		} else if(newValue == "DUSEL_100kton_10inch_HQE_30perCent") {
 			WCSimDetector->DUSEL_100kton_10inch_HQE_30perCent();
 		} else if(newValue == "DUSEL_100kton_10inch_HQE_30perCent_Gd") {

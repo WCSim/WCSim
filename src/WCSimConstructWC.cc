@@ -75,6 +75,29 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
   WCAddGd               = false;
 }
 
+void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_15perCent()
+{
+  WCPMTName             = "10inchHQE";
+  WCPMTRadius           = .127*m;
+  WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
+  WCIDDiameter          = 53.0*m;
+  WCIDHeight            = 60.0*m;
+  WCBarrelPMTOffset	    = WCPMTRadius;
+  WCPMTperCellHorizontal = 4.0;
+  WCPMTperCellVertical	 = 3.0;
+  WCPMTPercentCoverage	 = 15.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
+                                    (10.0*WCPMTRadius));
+  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
+                                    2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
+                                    WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCPMTGlassThickness   = .55*cm;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+}
+
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
 {
   WCPMTName             = "10inchHQE";

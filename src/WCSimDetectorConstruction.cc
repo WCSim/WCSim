@@ -58,7 +58,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //-----------------------------------------------------
 
   //SetSuperKGeometry();
-  DUSEL_100kton_10inch_40perCent();
+  //DUSEL_100kton_10inch_40perCent();
+  DUSEL_100kton_10inch_HQE_15perCent();
   //DUSEL_100kton_10inch_HQE_30perCent();
   //DUSEL_100kton_10inch_HQE_30perCent_Gd();
   //DUSEL_150kton_10inch_HQE_30perCent();
