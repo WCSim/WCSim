@@ -83,9 +83,11 @@ void WCSimPhysicsListFactory::InitializeList(){
       G4cout << "RegisterPhysics: " << elem->GetPhysicsName() << G4endl;
       RegisterPhysics(elem);
     }
+    G4cout << "RegisterPhysics: OpticalPhysics" << G4endl; 
     RegisterPhysics(new G4OpticalPhysics());
   } else if (PhysicsListName == "WCSim") {
     //G4cout << "WCSim physics list not yet implemented" << G4endl;
+    G4cout << "RegisterPhysics: WCSim" << G4endl; 
     RegisterPhysics(new WCSimPhysicsList());
   } else {
     G4cout << "Physics list " << PhysicsListName << " is not understood" << G4endl;
