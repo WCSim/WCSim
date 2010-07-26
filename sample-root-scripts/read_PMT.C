@@ -26,6 +26,11 @@ void read_PMT(char *filename=NULL) {
 
   WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent();
   wcsimT->SetBranchAddress("wcsimrootevent",&wcsimrootsuperevent);
+
+  // Force deletion to prevent memory leak when issuing multiple
+  // calls to GetEvent()
+  tree->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
+
   wcsimT->GetEvent(0); 
 
   // In the default vis.mac, only one event is run.  I suspect you could loop over more events, if they existed.

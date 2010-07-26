@@ -39,6 +39,7 @@
   // Open the file
   TFile file("../wcsim.root");
   
+  
   // Get the a pointer to the tree from the file
   TTree *tree = (TTree*)file->Get("wcsimT");
   
@@ -53,6 +54,9 @@
   // Set the branch address for reading from the tree
   TBranch *branch = tree->GetBranch("wcsimrootevent");
   branch->SetAddress(&wcsimrootsuperevent);
+
+  // Force deletion to prevent memory leak 
+  tree->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
 
   // start with the main "subevent", as it contains most of the info
   // and always exists.
