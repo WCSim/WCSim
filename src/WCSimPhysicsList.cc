@@ -24,9 +24,10 @@
 #include "G4HadronCaptureProcess.hh" //amb79
 
 
-WCSimPhysicsList::WCSimPhysicsList():  G4VUserPhysicsList(), PhysicsMessenger(0)
+//WCSimPhysicsList::WCSimPhysicsList():  G4VUserPhysicsList(), PhysicsMessenger(0)
+WCSimPhysicsList::WCSimPhysicsList():  G4VPhysicsConstructor(), PhysicsMessenger(0)
 {
- defaultCutValue = 1.0*mm;
+ //defaultCutValue = 1.0*mm;
  SetVerboseLevel(1);
 
  PhysicsMessenger = new WCSimPhysicsMessenger(this);
@@ -60,7 +61,7 @@ void WCSimPhysicsList::ConstructParticle()
 
 void WCSimPhysicsList::ConstructProcess()
 {
-  AddTransportation();
+  //AddTransportation();
   ConstructEM();
   ConstructlArStepLimiter();
   ConstructGeneral();
@@ -721,7 +722,7 @@ void WCSimPhysicsList::SetSecondaryHad(G4String hadval)
 }
 
 //----set cut values----
-
+/*
 void WCSimPhysicsList::SetCuts()
 {
   if (verboseLevel >0){
@@ -738,3 +739,4 @@ void WCSimPhysicsList::SetCuts()
 
   if (verboseLevel>0) DumpCutValuesTable();
 }
+*/

@@ -6,6 +6,8 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPhysicsList.hh"
 #include "WCSimPhysicsMessenger.hh"
+#include "WCSimPhysicsListFactory.hh"
+#include "WCSimPhysicsListFactoryMessenger.hh"
 #include "WCSimTuningParameters.hh"
 #include "WCSimTuningMessenger.hh"
 #include "WCSimPrimaryGeneratorAction.hh"
@@ -24,7 +26,7 @@ int main(int argc,char** argv)
 
   // get the pointer to the UI manager
   G4UImanager* UI = G4UImanager::GetUIpointer();
-  
+
   // Set up the tuning parameters that need to be read before the detector
   //  construction is done
   WCSimTuningParameters* tuningpars = new WCSimTuningParameters();
@@ -41,7 +43,9 @@ int main(int argc,char** argv)
 
   runManager->SetUserInitialization(WCSimdetector);
 
-  runManager->SetUserInitialization(new WCSimPhysicsList);
+  // Added selectable physics lists 2010-07 by DMW
+  // Set up the messenger hooks here, initialize the actual list after loading jobOptions.mac
+  WCSimPhysicsListFactory *physFactory = new WCSimPhysicsListFactory();
 
   //=================================
   // Added by JLR 2005-07-05
@@ -53,6 +57,10 @@ int main(int argc,char** argv)
   // Currently, default model is set to BINARY
   UI->ApplyCommand("/control/execute jobOptions.mac");
 
+  // Initialize the physics factory to register the selected physics.
+  physFactory->InitializeList();
+  runManager->SetUserInitialization(physFactory);
+
   // Visualization
   G4VisManager* visManager = new WCSimVisManager;
   visManager->Initialize();
@@ -62,18 +70,18 @@ int main(int argc,char** argv)
     WCSimPrimaryGeneratorAction(WCSimdetector);
   runManager->SetUserAction(myGeneratorAction);
 
-  
 
   WCSimRunAction* myRunAction = new WCSimRunAction(WCSimdetector);
   runManager->SetUserAction(myRunAction);
 
   runManager->SetUserAction(new WCSimEventAction(myRunAction, WCSimdetector,
-						  myGeneratorAction));
+        myGeneratorAction));
   runManager->SetUserAction(new WCSimTrackingAction);
 
   runManager->SetUserAction(new WCSimStackingAction(WCSimdetector));
 
   runManager->SetUserAction(new WCSimSteppingAction);
+
 
   // Initialize G4 kernel
   runManager->Initialize();
@@ -83,13 +91,13 @@ int main(int argc,char** argv)
 
     // Start UI Session
     G4UIsession* session =  new G4UIterminal(new G4UItcsh);
-    
+
     // Visualization Macro
     UI->ApplyCommand("/control/execute vis.mac");
 
     // Start Interactive Mode
     session->SessionStart();
-    
+
     delete session;
   }
   else           // Batch mode
