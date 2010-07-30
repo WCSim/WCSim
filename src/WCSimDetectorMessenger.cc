@@ -27,7 +27,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTConfig->SetParameterName("PMTConfig", false);
   PMTConfig->SetCandidates("SuperK "
                           "DUSEL_100kton_10inch_40perCent "
-                          "DUSEL_100kton_10inch_15perCent "
+                          "DUSEL_100kton_10inch_HQE_15perCent "
                           "DUSEL_100kton_10inch_HQE_30perCent "
                           "DUSEL_100kton_10inch_HQE_30perCent_Gd "
                           "DUSEL_150kton_10inch_HQE_30perCent "
