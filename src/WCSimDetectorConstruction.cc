@@ -72,6 +72,11 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //-----------------------------------------------------
 
   SavePi0Info(false);
+  
+  //-----------------------------------------------------
+  // Set the default method for implementing the PMT QE
+  //-----------------------------------------------------
+  SetPMT_QE_Method(1);
 
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry

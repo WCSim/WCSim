@@ -47,6 +47,19 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SavePi0->SetParameterName("SavePi0",false);
   SavePi0->SetCandidates("true false");
   SavePi0->AvailableForStates(G4State_PreInit, G4State_Idle);
+  
+  
+  PMTQEMethod = new G4UIcmdWithAString("/WCSim/PMTQEMethod", this);
+  PMTQEMethod->SetGuidance("Set the PMT configuration.");
+  PMTQEMethod->SetGuidance("Available options are:\n"
+			     "Stacking_Only\n"
+			     "Stacking_And_SensitiveDetector\n"
+			     "SensitiveDetector_Only\n");
+  PMTQEMethod->SetParameterName("PMTQEMethod", false);
+  PMTQEMethod->SetCandidates("Stacking_Only "
+			     "Stacking_And_SensitiveDetector "
+			     "SensitiveDetector_Only ");
+  PMTQEMethod->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   WCConstruct = new G4UIcmdWithoutParameter("/WCSim/Construct", this);
   WCConstruct->SetGuidance("Update detector construction with new settings.");
@@ -56,6 +69,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
 {
   delete PMTConfig;
   delete SavePi0;
+  delete PMTQEMethod;
   delete tubeCmd;
   delete distortionCmd;
   delete WCSimDir;
@@ -76,16 +90,16 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 			WCSimDetector->SetSuperKGeometry();
 		} else if(newValue == "DUSEL_100kton_10inch_40perCent") {
 			WCSimDetector->DUSEL_100kton_10inch_40perCent();
-        } else if(newValue == "DUSEL_100kton_10inch_HQE_15perCent"){
-            WCSimDetector->DUSEL_100kton_10inch_HQE_15perCent();
+		}else if(newValue == "DUSEL_100kton_10inch_HQE_15perCent"){
+		  WCSimDetector->DUSEL_100kton_10inch_HQE_15perCent();
 		} else if(newValue == "DUSEL_100kton_10inch_HQE_30perCent") {
-			WCSimDetector->DUSEL_100kton_10inch_HQE_30perCent();
+		  WCSimDetector->DUSEL_100kton_10inch_HQE_30perCent();
 		} else if(newValue == "DUSEL_100kton_10inch_HQE_30perCent_Gd") {
-			WCSimDetector->DUSEL_100kton_10inch_HQE_30perCent_Gd();
+		  WCSimDetector->DUSEL_100kton_10inch_HQE_30perCent_Gd();
 		} else if(newValue == "DUSEL_150kton_10inch_HQE_30perCent") {
-			WCSimDetector->DUSEL_150kton_10inch_HQE_30perCent();
+		  WCSimDetector->DUSEL_150kton_10inch_HQE_30perCent();
 		} else
-			G4cout << "That geometry choice not defined!" << G4endl;
+		  G4cout << "That geometry choice not defined!" << G4endl;
 	}
   
 	if (command == SavePi0){
@@ -95,9 +109,27 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  }else if (newValue == "false"){
 	    WCSimDetector->SavePi0Info(false);
 	  }else{
-	  
+	    
 	  }
 	}
+
+	if (command == PMTQEMethod){
+	  G4cout << "Set PMT QE Method " << newValue << " ";
+	  if (newValue == "Stacking_Only"){
+	    WCSimDetector->SetPMT_QE_Method(1);
+	    G4cout << "1";
+	  }else if (newValue == "Stacking_And_SensitiveDetector"){
+	    WCSimDetector->SetPMT_QE_Method(2);
+	    G4cout << "2";
+	  }else if (newValue == "SensitiveDetector_Only"){
+	    WCSimDetector->SetPMT_QE_Method(3);
+	    G4cout << "3";
+	  }else{
+	    
+	  }
+	  G4cout << G4endl;
+	}
+
 
 	if(command == PMTSize) {
 		G4cout << "SET PMT SIZE" << G4endl;

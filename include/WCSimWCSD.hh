@@ -3,6 +3,7 @@
 
 #include "G4VSensitiveDetector.hh"
 #include "WCSimWCHit.hh"
+#include "WCSimDetectorConstruction.hh"
 
 class G4Step;
 class G4HCofThisEvent;
@@ -10,7 +11,7 @@ class G4HCofThisEvent;
 class WCSimWCSD : public G4VSensitiveDetector
 {
  public:
-  WCSimWCSD(G4String);
+  WCSimWCSD(G4String,WCSimDetectorConstruction*);
   ~WCSimWCSD();
   
   void   Initialize(G4HCofThisEvent*);
@@ -20,6 +21,7 @@ class WCSimWCSD : public G4VSensitiveDetector
  private:
 
   G4int HCID;
+  WCSimDetectorConstruction* fdet;
   WCSimWCHitsCollection* hitsCollection;
   std::map<int,int> PMTHitMap;   // Whether a PMT was hit already
 

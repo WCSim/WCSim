@@ -5,6 +5,7 @@
 #include "G4Step.hh"
 #include "G4ThreeVector.hh"
 #include "G4SDManager.hh"
+#include "Randomize.hh"
 #include "G4ios.hh"
 
 #include <sstream>
@@ -12,7 +13,7 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimTrackInformation.hh"
 
-WCSimWCSD::WCSimWCSD(G4String name)
+WCSimWCSD::WCSimWCSD(G4String name,WCSimDetectorConstruction* myDet)
 :G4VSensitiveDetector(name)
 {
   // Place the name of this collection on the list.  We can have more than one
@@ -24,7 +25,9 @@ WCSimWCSD::WCSimWCSD(G4String name)
 
   G4String HCname;
   collectionName.insert(HCname="glassFaceWCPMT");
-
+  
+  fdet = myDet;
+  
   HCID = -1;
 }
 
@@ -74,6 +77,10 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   G4int    trackID           = aStep->GetTrack()->GetTrackID();
   G4String volumeName        = aStep->GetTrack()->GetVolume()->GetName();
+  
+  //XQ Add the wavelength there
+  G4float  wavelength = (2.0*M_PI*197.3)/( aStep->GetTrack()->GetTotalEnergy()/eV);
+  
   G4double energyDeposition  = aStep->GetTotalEnergyDeposit();
   G4double hitTime           = aStep->GetPreStepPoint()->GetGlobalTime();
 
@@ -118,34 +125,51 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   // Get the tube ID from the tubeTag
   G4int replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
 
-  // If this tube hasn't been hit add it to the collection
-  if (PMTHitMap[replicaNumber] == 0)
-  {
-    WCSimWCHit* newHit = new WCSimWCHit();
-    newHit->SetTubeID(replicaNumber);
-    newHit->SetTrackID(trackID);
-    newHit->SetEdep(energyDeposition); 
-    newHit->SetLogicalVolume(thePhysical->GetLogicalVolume());
-
-    G4AffineTransform aTrans = theTouchable->GetHistory()->GetTopTransform();
-    newHit->SetRot(aTrans.NetRotation());
-    
-    aTrans.Invert();
-    newHit->SetPos(aTrans.NetTranslation());
-    
-    // Set the hitMap value to the collection hit number
-    PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
-    
-    (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
-    (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
-    
-//     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
-//       newHit->Print();
+  
+  G4float ratio = 1.;
+  G4float maxQE;
+  G4float photonQE;
+  if (fdet->GetPMT_QE_Method()==1){
+    photonQE = 1.1;
+  }else if (fdet->GetPMT_QE_Method()==2){
+    maxQE = fdet->GetPMTQE(wavelength,0,240,660,ratio);
+    photonQE = fdet->GetPMTQE(wavelength,1,240,660,ratio);
+    photonQE = photonQE/maxQE;
+  }else if (fdet->GetPMT_QE_Method()==3){
+    ratio = 1./(1.-0.25);
+    photonQE = fdet->GetPMTQE(wavelength,1,240,660,ratio);
   }
-  else {
-    (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
-    (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
-
+  
+  if (G4UniformRand() <= photonQE){
+    // If this tube hasn't been hit add it to the collection
+    if (PMTHitMap[replicaNumber] == 0)
+      {
+	WCSimWCHit* newHit = new WCSimWCHit();
+	newHit->SetTubeID(replicaNumber);
+	newHit->SetTrackID(trackID);
+	newHit->SetEdep(energyDeposition); 
+	newHit->SetLogicalVolume(thePhysical->GetLogicalVolume());
+	
+	G4AffineTransform aTrans = theTouchable->GetHistory()->GetTopTransform();
+	newHit->SetRot(aTrans.NetRotation());
+	
+	aTrans.Invert();
+	newHit->SetPos(aTrans.NetTranslation());
+	
+	// Set the hitMap value to the collection hit number
+	PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
+	
+	(*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+	(*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
+	
+	//     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
+	//       newHit->Print();
+      }
+    else {
+      (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+      (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
+      
+    }
   }
 
   return true;

@@ -81,8 +81,12 @@ public:
   G4int    GetMyConfiguration()   {return myConfiguration;}
   G4double GetGeo_Dm(G4int);
   G4int    GetTotalNumPmts() {return totalNumPMTs;}
+  
+  G4int    GetPMT_QE_Method(){return PMT_QE_Method;}
 
   G4double GetPMTSize1() {return WCPMTSize;}
+
+  G4float GetPMTQE(G4float, G4int, G4float, G4float, G4float);
 
   G4ThreeVector GetWCOffset(){return WCOffset;}
   
@@ -93,6 +97,8 @@ public:
   // Related to Pi0 analysis
   G4bool SavePi0Info()              {return pi0Info_isSaved;}
   void   SavePi0Info(G4bool choice) {pi0Info_isSaved=choice;}
+  
+  void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
 
   // Geometry options
   void   SetIsUpright(G4bool choice) {isUpright = choice;}
@@ -171,6 +177,18 @@ private:
   // toggle between MRDScint and MRDk2k
 
   G4bool pi0Info_isSaved;
+
+
+  // XQ 08/17/10
+  //   PMT_QE_Method == 1
+  //   Only use it in the stacking function (no WLS)
+  //   PMT_QE_Method == 2
+  //   Use Part of it in the stacking function (MAX QE)
+  //   Put the rest of it in the sensitive detector according to QE/Max_QE
+  //   PMT_QE_Method == 3
+  //   Put all of it in the sensitive detector according to QE
+  //   Good for low energy photons
+  G4int PMT_QE_Method;
 
   G4double WCLength;
 
