@@ -52,8 +52,14 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag
   // ratio, fudge factor to increase QE for certain purpose
 
   // return 0 for wavelenght outside the range
-  if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl || PhotonWavelength <=280 || PhotonWavelength >=660){
-    return 0;
+  if (flag==1){
+    if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl || PhotonWavelength <=280 || PhotonWavelength >=660){
+      return 0;
+    }
+  }else if (flag==0){
+    if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl){
+      return 0;
+    }
   }
   
   //define the wavelength and QE for different detectors
