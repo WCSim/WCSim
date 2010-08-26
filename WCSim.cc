@@ -63,7 +63,7 @@ int main(int argc,char** argv)
  
   //K.Z. 2010-08: Moving the choice of the physics lists and 
   //the hadronic model for wcsim default physcis lists to the right
-  //place, i.e. after initializing the physics factoy
+  //place, i.e. after initializing the physics factory
   
   UI->ApplyCommand("/control/execute jobOptions.mac");
 
