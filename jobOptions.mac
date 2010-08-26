@@ -1,14 +1,14 @@
-#/WCSim/physics/list QGSP_BIC_HP #preferred?
-/WCSim/physics/list WCSim #old list
-#/WCSim/physics/list LBE #broken
-
-
-# Choose hadronic interaction model.
+# First choose the hadronic interaction model.
 # Note: WCSim physics list only
-# Note2: Probably broken because this file is read before WCSim object instantiation
 # Options:
 #   GHEISHA   (Original Geant4 model)
 #   BERTINI   (Bertini intra-nuclear cascade model)
 #   BINARY    (Binary intra-nuclear cascade model) -- this is the default
 /WCSim/physics/secondaries/model BINARY
 
+
+# Then choose the appropriate physics lists:
+
+#/WCSim/physics/list QGSP_BIC_HP #preferred?
+/WCSim/physics/list WCSim #old list
+#/WCSim/physics/list LBE # now working

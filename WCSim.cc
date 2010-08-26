@@ -55,11 +55,17 @@ int main(int argc,char** argv)
   // by the program BEFORE the runManager is initialized.
   // If file does not exist, default model will be used.
   // Currently, default model is set to BINARY
-  UI->ApplyCommand("/control/execute jobOptions.mac");
+  //  UI->ApplyCommand("/control/execute jobOptions.mac");
 
   // Initialize the physics factory to register the selected physics.
   physFactory->InitializeList();
   runManager->SetUserInitialization(physFactory);
+ 
+  //K.Z. 2010-08: Moving the choice of the physics lists and 
+  //the hadronic model for wcsim default physcis lists to the right
+  //place, i.e. after initializing the physics factoy
+  
+  UI->ApplyCommand("/control/execute jobOptions.mac");
 
   // Visualization
   G4VisManager* visManager = new WCSimVisManager;
