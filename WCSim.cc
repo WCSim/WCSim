@@ -47,6 +47,11 @@ int main(int argc,char** argv)
   // Set up the messenger hooks here, initialize the actual list after loading jobOptions.mac
   WCSimPhysicsListFactory *physFactory = new WCSimPhysicsListFactory();
 
+    
+  // Initialize the physics factory to register the selected physics.
+  physFactory->InitializeList();
+  runManager->SetUserInitialization(physFactory);
+ 
   //=================================
   // Added by JLR 2005-07-05
   //=================================
@@ -54,16 +59,10 @@ int main(int argc,char** argv)
   // protons & neutrons. This file must be read in
   // by the program BEFORE the runManager is initialized.
   // If file does not exist, default model will be used.
-  // Currently, default model is set to BINARY
-  //  UI->ApplyCommand("/control/execute jobOptions.mac");
-
-  // Initialize the physics factory to register the selected physics.
-  physFactory->InitializeList();
-  runManager->SetUserInitialization(physFactory);
- 
+  // Currently, default model is set to BINARY.
   //K.Z. 2010-08: Moving the choice of the physics lists and 
   //the hadronic model for wcsim default physcis lists to the right
-  //place, i.e. after initializing the physics factory
+  //place, after initializing the physics list factory
   
   UI->ApplyCommand("/control/execute jobOptions.mac");
 
