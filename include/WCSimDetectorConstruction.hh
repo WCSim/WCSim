@@ -97,7 +97,7 @@ public:
   // Related to Pi0 analysis
   G4bool SavePi0Info()              {return pi0Info_isSaved;}
   void   SavePi0Info(G4bool choice) {pi0Info_isSaved=choice;}
-  
+  void Set_addWLS(Int_t);
   void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
 
   // Geometry options
@@ -199,6 +199,7 @@ private:
   G4double sphereRadius;
   G4double PMTOffset;
   G4LogicalVolume* logicWCPMT;
+  G4LogicalVolume* logicWLSFaceWCPMT;
   G4LogicalVolume* logicGlassFaceWCPMT;
 
   // WC geometry parameters
@@ -243,7 +244,7 @@ private:
   // amb79: to universally make changes in structure and geometry
   bool isUpright, isMailbox;
   
-
+  bool addWLS;
   // amb79: debug to display all parts
   bool debugMode;
 

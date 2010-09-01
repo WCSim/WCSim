@@ -103,15 +103,19 @@ class WCSimRootCherenkovHitTime : public TObject {
 private:
   // See jhfNtuple.h for the meaning of these data members:
   Float_t fTruetime;
+  Float_t fwavelength;
+  Int_t fQe_flag;
   Int_t   fPrimaryParentID;
 
 public:
   WCSimRootCherenkovHitTime() {}
-  WCSimRootCherenkovHitTime(Float_t truetime,
+  WCSimRootCherenkovHitTime(Float_t truetime,Float_t wavelength, Int_t qeflag,
 			    Int_t   primaryParentID);
   virtual ~WCSimRootCherenkovHitTime() { }
 
   Float_t   GetTruetime() { return fTruetime;}
+  Float_t   GetWavelength() { return fwavelength;}
+  Int_t     GetQe_flag() {return fQe_flag;}
   Int_t     GetParentID() { return fPrimaryParentID;}
 
   ClassDef(WCSimRootCherenkovHitTime,1)  
@@ -271,6 +275,7 @@ public:
   Int_t               GetNumTubesHit()       const {return fNumTubesHit;}
   Int_t               GetNumDigiTubesHit()   const {return fNumDigitizedTubes;}
   Int_t               GetNtrack()            const {return fNtrack; }
+  Int_t               GetNcherenkovhittimes() const {return fNcherenkovhittimes;};
   Int_t               GetNcherenkovhits()     const {return fNcherenkovhits; }
   Int_t               GetNcherenkovdigihits() const {return fNcherenkovdigihits;}
   Float_t             GetSumQ()              const { return fSumQ;}
@@ -293,6 +298,8 @@ public:
 
   WCSimRootCherenkovHit   *AddCherenkovHit(Int_t                tubeID,
 					  std::vector<Float_t> truetime,
+					   std::vector<Float_t> traveldis,
+					   std::vector<Int_t> qeflag,
 					  std::vector<Int_t>   primParID);
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}

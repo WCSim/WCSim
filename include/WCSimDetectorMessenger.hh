@@ -33,6 +33,7 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithAString* PMTSize;
   G4UIcmdWithAString* SavePi0;
   G4UIcmdWithAString* PMTQEMethod;
+  G4UIcmdWithAString* AddWLS;
   G4UIcmdWithAString* tubeCmd;
   G4UIcmdWithAString* distortionCmd;
   G4UIcmdWithoutParameter* WCConstruct;
