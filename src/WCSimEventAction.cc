@@ -92,7 +92,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
   if (HCE)
   { 
-    G4String name =   "glassFaceWCPMT";
+    G4String name =   "GlassFaceWCPMT";
     G4int collectionID = SDman->GetCollectionID(name);
     WCHC = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
   }
@@ -632,6 +632,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     for (k=0;k<WCHC->entries();k++){
     
       std::vector<float> truetime;
+      std::vector<float> wavelength;
+      std::vector<int> qeflag;
       std::vector<int>   primaryParentID;
 
       int tubeID  = (*WCHC)[k]->GetTubeID();
@@ -640,11 +642,13 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       for (int l=0;l<totalpe;l++)
       {
 	truetime.push_back((*WCHC)[k]->GetTime(l));
+	wavelength.push_back((*WCHC)[k]->GetWL(l));
+	qeflag.push_back((*WCHC)[k]->GetQeflag(l));
 	primaryParentID.push_back((*WCHC)[k]->GetParentID(l));
       }
 
       wcsimrootevent->AddCherenkovHit(tubeID,
-				      truetime,
+				      truetime,wavelength,qeflag,
 				      primaryParentID); 
     } 
   }

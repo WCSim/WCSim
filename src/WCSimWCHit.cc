@@ -55,7 +55,7 @@ void WCSimWCHit::Draw()
 
     G4String volumeName        = pLogV->GetName();
 
-    if ( volumeName == "glassFaceWCPMT" ||  volumeName == "glassFaceWCPMT_refl")
+    if ( volumeName == "GlassFaceWCPMT" ||  volumeName == "GlassFaceWCPMT_refl")
     { 
     	//G4cout << "PE: " << totalPe << " Max Pe " << maxPe << G4endl;
 		//numbpmthit++;

@@ -24,7 +24,7 @@ WCSimWCSD::WCSimWCSD(G4String name,WCSimDetectorConstruction* myDet)
   // GetCollectionID()
 
   G4String HCname;
-  collectionName.insert(HCname="glassFaceWCPMT");
+  collectionName.insert(HCname="GlassFaceWCPMT");
   
   fdet = myDet;
   
@@ -81,6 +81,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   //XQ Add the wavelength there
   G4float  wavelength = (2.0*M_PI*197.3)/( aStep->GetTrack()->GetTotalEnergy()/eV);
   
+
   G4double energyDeposition  = aStep->GetTotalEnergyDeposit();
   G4double hitTime           = aStep->GetPreStepPoint()->GetGlobalTime();
 
@@ -139,8 +140,9 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     ratio = 1./(1.-0.25);
     photonQE = fdet->GetPMTQE(wavelength,1,240,660,ratio);
   }
-  
+  G4double qe_flag = 0;
   if (G4UniformRand() <= photonQE){
+    qe_flag = 1;
     // If this tube hasn't been hit add it to the collection
     if (PMTHitMap[replicaNumber] == 0)
       {
@@ -159,17 +161,20 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	// Set the hitMap value to the collection hit number
 	PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
 	
-	(*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+	(*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime,wavelength,qe_flag);
 	(*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
 	
 	//     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
 	//       newHit->Print();
       }
     else {
-      (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+      (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime,wavelength,qe_flag);
       (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
-      
     }
+  }else{
+    // for test purpose
+    // (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime,wavelength,qe_flag);
+//     (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
   }
 
   return true;

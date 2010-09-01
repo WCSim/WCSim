@@ -184,12 +184,12 @@ G4double WCSimWCDigitizer::rn1pe(){
 void WCSimWCDigitizer::Digitize()
 {
   DigitsCollection = new WCSimWCDigitsCollection
-    ("/WCSim/glassFaceWCPMT",collectionName[0]); 
+    ("/WCSim/GlassFaceWCPMT",collectionName[0]); 
    
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   
   // Get the Associated Hit collection IDs
-  G4int WCHCID = DigiMan->GetHitsCollectionID("glassFaceWCPMT");
+  G4int WCHCID = DigiMan->GetHitsCollectionID("GlassFaceWCPMT");
 
   // The Hits collection
   WCSimWCHitsCollection* WCHC = 

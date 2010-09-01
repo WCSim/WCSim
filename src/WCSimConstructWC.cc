@@ -128,6 +128,14 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag
   return wavelengthQE;
 }
 
+void WCSimDetectorConstruction::Set_addWLS(Int_t flag){
+  if (flag==0){
+    addWLS = false;
+  }else{
+    addWLS = true;
+  }
+}
+
 
 void WCSimDetectorConstruction::SetSuperKGeometry()
 {
@@ -146,6 +154,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCPMTGlassThickness   = .4*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  addWLS = false;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
@@ -169,6 +178,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
   WCPMTGlassThickness   = .55*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  addWLS = false;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_15perCent()
@@ -192,6 +202,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_15perCent()
   WCPMTGlassThickness   = .55*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  addWLS = false;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
@@ -215,6 +226,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
   WCPMTGlassThickness   = .55*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  addWLS = false;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
@@ -238,7 +250,9 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
   WCPMTGlassThickness   = .55*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = true;
+  addWLS = false;
 }
+
 
 void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
 {
@@ -261,6 +275,7 @@ void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
   WCPMTGlassThickness   = .55*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  addWLS = false;
 }
 
 
@@ -288,6 +303,7 @@ void WCSimDetectorConstruction::SetMailBox100kTGeometry()  // This should setup 
 	//	WC_MB_Fid_Width           = 1.000*m+2*WC_MB_Veto_Thickness;// tiny test detector!
 	//	WC_MB_Fid_Depth           = 1.0*m+2*WC_MB_Veto_Thickness;// tiny test detector!
     WCAddGd               = false;
+    addWLS = false;
 }
 void WCSimDetectorConstruction::SetMailBox150kTGeometry_10inch_HQE_30perCent()  // This should setup a 150kT (metric) Fiducial Volume
 {
@@ -308,6 +324,7 @@ void WCSimDetectorConstruction::SetMailBox150kTGeometry_10inch_HQE_30perCent()  
 	WC_MB_Fid_Width			= (40.0*m+2*WC_MB_Veto_Thickness);
 	WC_MB_Fid_Depth         = (55.0*m+2*WC_MB_Veto_Thickness);	// how deep is the bottom layer of tubes at. Tank depth is a little more.
     WCAddGd               = false;
+    addWLS = false;
 }
 
 void WCSimDetectorConstruction::SetMailBox150kTGeometry_10inch_40perCent()  // This should setup a 150kT (metric) Fiducial Volume
@@ -329,6 +346,7 @@ void WCSimDetectorConstruction::SetMailBox150kTGeometry_10inch_40perCent()  // T
 	WC_MB_Fid_Width			= (40.0*m+2*WC_MB_Veto_Thickness);
 	WC_MB_Fid_Depth         = (55.0*m+2*WC_MB_Veto_Thickness);	// how deep is the bottom layer of tubes at. Tank depth is a little more.
 	WCAddGd               = false;
+	addWLS = false;
 }
 
 void WCSimDetectorConstruction::SetMailBox300kTGeometry()    // This should setup a 300kT (metric) Fiducial Volume
@@ -350,6 +368,7 @@ void WCSimDetectorConstruction::SetMailBox300kTGeometry()    // This should setu
 	WC_MB_Fid_Width         = (40.0*m+2*WC_MB_Veto_Thickness);	// this gives a volume of 299.2 metric tons
 	WC_MB_Fid_Depth         = (55.0*m+2*WC_MB_Veto_Thickness);	// how deep is the bottom layer of tubes at. Tank depth is a little more.
     WCAddGd               = false;
+    addWLS = false;
 }
 //aah
 
@@ -360,57 +379,140 @@ void WCSimDetectorConstruction::SetMailBox300kTGeometry()    // This should setu
 //PMT logical volume construction.
 void WCSimDetectorConstruction::ConstructPMT()
 {
-  sphereRadius = (WCPMTExposeHeight*WCPMTExposeHeight+ WCPMTRadius*WCPMTRadius)/(2*WCPMTExposeHeight);
-  PMTOffset =  sphereRadius - WCPMTExposeHeight;
 
-  // the PMT is the top part of a hemisphere. The origin of the coordinate system is
-  // at the center of the spere. Thus you have to place the PMTs PMTOffset behind the
-  // blacksheet surface.
-  G4Box* cutOfTubs = new G4Box("cutOf",
-			  sphereRadius+1.*cm,
-			  sphereRadius+1.*cm,
-			  PMTOffset);
+  if (addWLS){
+    sphereRadius = (WCPMTExposeHeight*WCPMTExposeHeight+ WCPMTRadius*WCPMTRadius)/(2*WCPMTExposeHeight);
+    PMTOffset =  sphereRadius - WCPMTExposeHeight;
+    
+    // the PMT is the top part of a hemisphere. The origin of the coordinate system is
+    // at the center of the spere. Thus you have to place the PMTs PMTOffset behind the
+    // blacksheet surface.
+    G4Box* cutOfTubs = new G4Box("cutOf",
+				 sphereRadius+1.*cm,
+				 sphereRadius+1.*cm,
+				 PMTOffset);
+    
+    G4Sphere* tmpSolidWCPMT = new G4Sphere("tmpWCPMT",
+					   0.0*m,(sphereRadius-WCPMTGlassThickness),
+					   0.0*deg,360.0*deg,
+					   0.0*deg,90.0*deg);
+    
+    G4SubtractionSolid* solidWCPMT =  new G4SubtractionSolid("WCPMT",tmpSolidWCPMT,cutOfTubs);
 
-  G4Sphere* tmpSolidWCPMT = new G4Sphere("tmpWCPMT",
-					 0.0*m,(sphereRadius-WCPMTGlassThickness),
-				      0.0*deg,360.0*deg,
-				      0.0*deg,90.0*deg);
-  
-  G4SubtractionSolid* solidWCPMT =  new G4SubtractionSolid("WCPMT",tmpSolidWCPMT,cutOfTubs);
+    logicWCPMT = 
+      new G4LogicalVolume(solidWCPMT,
+			  G4Material::GetMaterial("Air"),
+			  "WCPMT",
+			  0,0,0);
+    
+    
+    Double_t wls_thickness = 10.*2.54e-3*cm;
+       
+    G4Sphere* tmpWLSWCPMT = new G4Sphere("tmpWLSWCPMT",
+					 (sphereRadius-wls_thickness),
+					 sphereRadius,
+					 0.0*deg,360.0*deg,
+					 0.0*deg,90.0*deg);
+    G4SubtractionSolid* WLSWCPMT = new G4SubtractionSolid("WLSFaceWCPMT",tmpWLSWCPMT,cutOfTubs);
+    
+    logicWLSFaceWCPMT = 
+      new G4LogicalVolume(WLSWCPMT,
+			  G4Material::GetMaterial("acrylic_wls_film"),
+			  "WLSFaceWCPMT",
+			  0,0,0);
 
-  G4Sphere* tmpGlassWCPMT = new G4Sphere("tmpGlassFaceWCPMT",
-                                      (sphereRadius-WCPMTGlassThickness),
-				      sphereRadius,
-                                      0.0*deg,360.0*deg,
-                                      0.0*deg,90.0*deg);
-  
-  G4SubtractionSolid* glassWCPMT = new G4SubtractionSolid("GlassFaceWCPMT",tmpGlassWCPMT,cutOfTubs); 
+    G4Sphere* tmpGlassWCPMT = new G4Sphere("tmpGlassWCPMT",
+					 (sphereRadius-WCPMTGlassThickness),
+					 sphereRadius-wls_thickness,
+					 0.0*deg,360.0*deg,
+					 0.0*deg,90.0*deg);
+    G4SubtractionSolid* glassWCPMT = new G4SubtractionSolid("glassFaceWCPMT",tmpGlassWCPMT,cutOfTubs);
+    
+    
+    logicGlassFaceWCPMT =
+      new G4LogicalVolume(glassWCPMT,
+			  G4Material::GetMaterial("Glass"),
+			  "GlassFaceWCPMT",
+			  0,0,0);
+    
+    
+   
 
-  logicWCPMT = 
-    new G4LogicalVolume(solidWCPMT,
-			G4Material::GetMaterial("Air"),
-			"WCPMT",
-			0,0,0);
+    // Set Visual Attributes
+    
+    G4VisAttributes* PMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+    //  PMTVisAtt->SetForceWireframe(true);
+    
+    PMTVisAtt->SetForceSolid(true);
+    logicWCPMT->SetVisAttributes(PMTVisAtt);
+    //  logicGlassFaceWCPMT->SetVisAttributes(PMTVisAtt);
+    logicWLSFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible); 
+    logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible); 
+    
 
-  logicGlassFaceWCPMT =
-    new G4LogicalVolume(glassWCPMT,
-                        G4Material::GetMaterial("Glass"),
-                        "glassFaceWCPMT",
-                        0,0,0);
+    if(!debugMode) {
+      logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+      logicWLSFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible); 
+      logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible); 
+    }
 
-// Set Visual Attributes
+   
+    
 
-  G4VisAttributes* PMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
-  //  PMTVisAtt->SetForceWireframe(true);
- 
-  PMTVisAtt->SetForceSolid(true);
-  logicWCPMT->SetVisAttributes(PMTVisAtt);
-//  logicGlassFaceWCPMT->SetVisAttributes(PMTVisAtt);
-  logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible); 
 
-if(!debugMode) {
-  logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
-  logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible); 
+  }else{
+    sphereRadius = (WCPMTExposeHeight*WCPMTExposeHeight+ WCPMTRadius*WCPMTRadius)/(2*WCPMTExposeHeight);
+    PMTOffset =  sphereRadius - WCPMTExposeHeight;
+    
+    // the PMT is the top part of a hemisphere. The origin of the coordinate system is
+    // at the center of the spere. Thus you have to place the PMTs PMTOffset behind the
+    // blacksheet surface.
+    G4Box* cutOfTubs = new G4Box("cutOf",
+				 sphereRadius+1.*cm,
+				 sphereRadius+1.*cm,
+				 PMTOffset);
+    
+    G4Sphere* tmpSolidWCPMT = new G4Sphere("tmpWCPMT",
+					   0.0*m,(sphereRadius-WCPMTGlassThickness),
+					   0.0*deg,360.0*deg,
+					   0.0*deg,90.0*deg);
+    
+    G4SubtractionSolid* solidWCPMT =  new G4SubtractionSolid("WCPMT",tmpSolidWCPMT,cutOfTubs);
+    
+    G4Sphere* tmpGlassWCPMT = new G4Sphere("tmpGlassFaceWCPMT",
+					   (sphereRadius-WCPMTGlassThickness),
+					   sphereRadius,
+					   0.0*deg,360.0*deg,
+					   0.0*deg,90.0*deg);
+    
+    G4SubtractionSolid* glassWCPMT = new G4SubtractionSolid("glassFaceWCPMT",tmpGlassWCPMT,cutOfTubs); 
+    
+    logicWCPMT = 
+      new G4LogicalVolume(solidWCPMT,
+			  G4Material::GetMaterial("Air"),
+			  "WCPMT",
+			  0,0,0);
+    
+    logicGlassFaceWCPMT =
+      new G4LogicalVolume(glassWCPMT,
+			  G4Material::GetMaterial("Glass"),
+			  "GlassFaceWCPMT",
+			  0,0,0);
+    
+    // Set Visual Attributes
+    
+    G4VisAttributes* PMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+    //  PMTVisAtt->SetForceWireframe(true);
+    
+    PMTVisAtt->SetForceSolid(true);
+    logicWCPMT->SetVisAttributes(PMTVisAtt);
+    //  logicGlassFaceWCPMT->SetVisAttributes(PMTVisAtt);
+    logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible); 
+    
+    if(!debugMode) {
+      logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+      logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible); 
+    }
   }
 }
 
@@ -576,8 +678,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	G4LogicalVolume* logic_WC_Active_LxW_plus=new G4LogicalVolume(WC_Active_LxW,G4Material::GetMaterial(water),"LxWActive_plus",0,0,0);
 	G4VPhysicalVolume* phys_WC_Active_LxW_minus;
 	G4VPhysicalVolume* phys_WC_ActiveGlass_LxW_minus;
+	G4VPhysicalVolume* phys_WC_WLS_LxW_minus;
 	G4VPhysicalVolume* phys_WC_Active_LxW_plus;
 	G4VPhysicalVolume* phys_WC_ActiveGlass_LxW_plus;
+	G4VPhysicalVolume* phys_WC_WLS_LxW_plus;
 	G4Box* WC_BlacksheetLxW = new G4Box("WC_BlackSheetLxW",WC_MB_Fid_Length/2+WC_ActiveLayer_Depth-WCBlackSheetThickness,
 										WC_MB_Fid_Width/2+WC_ActiveLayer_Depth-WCBlackSheetThickness,WCBlackSheetThickness/2.);		//blacksheet material	
 	G4LogicalVolume* logic_WC_BlacksheetLxW = new G4LogicalVolume(WC_BlacksheetLxW,G4Material::GetMaterial("Blacksheet"),"LagicBlacksheet_LxW",0,0,0);
@@ -607,6 +711,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 			G4ThreeVector cellpos_minus = G4ThreeVector(xoffset, yoffset, -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness);//-1.0*PMTOffset);  
 			
 			
+			if (addWLS){
+			  phys_WC_WLS_LxW_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
+			    new G4PVPlacement(0,                         // no rotation
+					      cellpos_minus,                   // its position
+					      logicWLSFaceWCPMT,                // its logical volume
+					      //"LxW_PMTGlass_minus", // its name
+					      "WCPMTWLS",// (JF) replaced above 
+					      logic_WC_Active_LxW_minus,         // its mother volume
+					      false,                     // no boolean os
+					      icopy);                        // every PMT needs an unique id in this physical volume
+			}
+			
+
 			phys_WC_ActiveGlass_LxW_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
 												new G4PVPlacement(0,                         // no rotation
 																  cellpos_minus,                   // its position
@@ -627,6 +744,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 													  false,                     // no boolean os
 													  icopy);                        // every PMT needs an unique id in this physical volume		
 			
+			if (addWLS){
+			  phys_WC_WLS_LxW_plus =					// put PMT's into top face (eventually it will be rotated and moved to the top)
+			  new G4PVPlacement(0,                         // no rotation
+					    cellpos_plus,                   // its position
+					    logicWLSFaceWCPMT,                // its logical volume
+					    //"LxW_PMTGlass_plus", // its name
+					    "WCPMTWLS",// (JF) replaced above 
+					    logic_WC_Active_LxW_plus,         // its mother volume
+					    false,                     // no boolean os
+					    icopy);                        // every PMT needs an unique id in this physical volume
+			}
+
+
 			phys_WC_ActiveGlass_LxW_plus =					// put PMT's into top face (eventually it will be rotated and moved to the top)
 												new G4PVPlacement(0,                         // no rotation
 																  cellpos_plus,                   // its position
@@ -867,8 +997,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	
 	
 	
-	G4VPhysicalVolume* phys_WC_Active_WxD_plus, * phys_WC_ActiveGlass_WxD_plus;
-	G4VPhysicalVolume* phys_WC_Active_WxD_minus, * phys_WC_ActiveGlass_WxD_minus;								  
+	G4VPhysicalVolume* phys_WC_Active_WxD_plus, * phys_WC_ActiveGlass_WxD_plus,* phys_WC_WLS_WxD_plus;
+	G4VPhysicalVolume* phys_WC_Active_WxD_minus, * phys_WC_ActiveGlass_WxD_minus,* phys_WC_WLS_WxD_minus;								  
 	
 	
 	// Loop over the W,D dimensions
@@ -891,6 +1021,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 			G4ThreeVector cellpos_plus = G4ThreeVector(-xoffset, yoffset, -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness);
 			G4ThreeVector cellpos_minus = G4ThreeVector(xoffset, yoffset, -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness); //  This should make final geometry +&- mirror images of each other (probably not necessary)
 			
+			if (addWLS){
+			  phys_WC_WLS_WxD_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
+			    new G4PVPlacement(0,                         // no rotation
+					      cellpos_minus,                   // its position
+					      logicWLSFaceWCPMT,                // its logical volume
+					      //"WxD_PMTGlass_minus", // its name
+					      "WCPMTWLS",// (JF) replaced above 
+					      logic_WC_Active_WxD_minus,         // its mother volume
+					      false,                     // no boolean os
+					      icopy);                        // every PMT needs an unique id in this physical volume
+			}
+
+
 			phys_WC_ActiveGlass_WxD_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
 			new G4PVPlacement(0,                         // no rotation
 							  cellpos_minus,                   // its position
@@ -901,6 +1044,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 							  false,                     // no boolean os
 							  icopy);                        // every PMT needs an unique id in this physical volume
 			
+
+
 			phys_WC_Active_WxD_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
 			new G4PVPlacement(0,                         // no rotation
 							  cellpos_minus,                   // its position
@@ -911,6 +1056,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 							  false,                     // no boolean os
 							  icopy);                        // every PMT needs an unique id in this physical volume		
 			
+			if (addWLS){
+			  phys_WC_WLS_WxD_plus =					// put PMT's into top face (eventually it will be rotated and moved to the top)
+			    new G4PVPlacement(0,                         // no rotation
+					      cellpos_plus,                   // its position
+					      logicWLSFaceWCPMT,                // its logical volume
+					      //"WxD_PMTGlass_plus", // its name
+					      "WCPMTWLS",// (JF) replaced above 
+					      logic_WC_Active_WxD_plus,         // its mother volume
+					      false,                     // no boolean os
+					      icopy);                        // every PMT needs an unique id in this physical volume
+			}
+
+
 			phys_WC_ActiveGlass_WxD_plus =					// put PMT's into top face (eventually it will be rotated and moved to the top)
 			new G4PVPlacement(0,                         // no rotation
 							  cellpos_plus,                   // its position
@@ -1105,8 +1263,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	G4LogicalVolume* logic_WC_Active_LxD_plus = new G4LogicalVolume(WC_Active_LxD,G4Material::GetMaterial(water),"LxDActive_plus",0,0,0);
 	G4Box* WC_BlacksheetLxD = new G4Box("WC_BlackSheetLxD",WC_MB_Fid_Length/2,WC_MB_Fid_Depth/2,WCBlackSheetThickness/2.);//blacksheet material	
 	G4LogicalVolume* logic_WC_BlacksheetLxD = new G4LogicalVolume(WC_BlacksheetLxD,G4Material::GetMaterial("Blacksheet"),"LagicBlacksheet_LxD",0,0,0);							  								  
-	G4VPhysicalVolume* phys_WC_Active_LxD_plus, * phys_WC_ActiveGlass_LxD_plus;
-	G4VPhysicalVolume* phys_WC_Active_LxD_minus, * phys_WC_ActiveGlass_LxD_minus;								  
+	G4VPhysicalVolume* phys_WC_Active_LxD_plus, * phys_WC_ActiveGlass_LxD_plus, * phys_WC_WLS_LxD_plus;
+	G4VPhysicalVolume* phys_WC_Active_LxD_minus, * phys_WC_ActiveGlass_LxD_minus, * phys_WC_WLS_LxD_minus;								  
 	
 	// Loop over the L,D dimensions to put ion PMT's
 	
@@ -1130,6 +1288,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 			G4ThreeVector cellpos_plus = G4ThreeVector(xoffset, -yoffset, -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness);
 			G4ThreeVector cellpos_minus = G4ThreeVector(xoffset, yoffset, -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness);
 		
+
+			if (addWLS){
+			  phys_WC_WLS_LxD_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
+			    new G4PVPlacement(0,                         // no rotation
+					      cellpos_minus,                   // its position
+					      logicWLSFaceWCPMT,                // its logical volume
+					      //"LxD_PMTGlass_minus", // its name
+					      "WCPMTWLS",// (JF) replaced above 
+					      logic_WC_Active_LxD_minus,         // its mother volume
+					      false,                     // no boolean os
+					      icopy);                        // every PMT needs an unique id in this physical volume
+			}
+
 			phys_WC_ActiveGlass_LxD_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
 			new G4PVPlacement(0,                         // no rotation
 							  cellpos_minus,                   // its position
@@ -1150,6 +1321,21 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 							  false,                     // no boolean os
 							  icopy);                        // every PMT needs an unique id in this physical volume		
 			
+		
+
+
+			if (addWLS){
+			  phys_WC_WLS_LxD_plus =					// put PMT's into top face (eventually it will be rotated and moved to the top)
+			    new G4PVPlacement(0,                         // no rotation
+					      cellpos_plus,                   // its position
+					      logicWLSFaceWCPMT,                // its logical volume
+					      //"LxD_PMTGlass_plus", // its name
+					      "WCPMTWLS",// (JF) replaced above 
+					      logic_WC_Active_LxD_plus,         // its mother volume
+					      false,                     // no boolean os
+					      icopy);                        // every PMT needs an unique id in this physical volume
+			}
+
 			phys_WC_ActiveGlass_LxD_plus =					// put PMT's into top face (eventually it will be rotated and moved to the top)
 			new G4PVPlacement(0,                         // no rotation
 							  cellpos_plus,                   // its position
@@ -1297,7 +1483,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	
 	if (!aWCPMT) 
 	{
-	  aWCPMT = new WCSimWCSD( "/WCSim/glassFaceWCPMT", this );
+	  aWCPMT = new WCSimWCSD( "/WCSim/GlassFaceWCPMT", this );
 		SDman->AddNewDetector( aWCPMT );
 		G4cout << "Got to sensitive detector code \n";
 	}
@@ -2170,6 +2356,18 @@ else {
 	+ WCBarrelPMTRadius*WCBarrelPMTRadius;
       if ( (comp > WCPMTRadius*WCPMTRadius) && ((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) < WCCapEdgeLimit) ) {
 
+
+	if (addWLS){
+	  G4VPhysicalVolume* physiCapPMTWLS =
+	  new G4PVPlacement(0,                         // no rotation
+			    cellpos,                   // its position
+			    logicWLSFaceWCPMT,         // its logical volume
+			    "WCPMTWLS", // its name 
+			    logicWCCap,         // its mother volume
+			    false,                 // no boolean os
+			    icopy);              // every PMT need a unique id.
+	}
+
 	G4VPhysicalVolume* physiCapPMTGlass =
 	  new G4PVPlacement(0,                         // no rotation
 			    cellpos,                   // its position
@@ -2280,6 +2478,21 @@ else {
       G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius+PMTOffset,
 						 -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 						 -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
+
+      
+      if (addWLS){
+	G4VPhysicalVolume* physiWCBarrelPMTWLS =
+	new G4PVPlacement(WCPMTRotation,                      // its rotation
+			  PMTPosition, 
+			  logicWLSFaceWCPMT,            // its logical volume
+			  "WCPMTWLS",            // its name
+			  logicWCBarrelCell,         // its mother volume
+			  false,                     // no boolean operations
+			  (int)(i*WCPMTperCellVertical+j),
+			  true);              
+      }
+
+
       G4VPhysicalVolume* physiWCBarrelPMTGlass =
 	new G4PVPlacement(WCPMTRotation,                      // its rotation
 			  PMTPosition, 
@@ -2306,6 +2519,19 @@ else {
 				      physiWCBarrelPMTGlass,physiWCBarrelPMT,
 				       OpGlassCathodeSurface);
       
+      if (addWLS){
+	G4VPhysicalVolume* physiWCBarrelBorderPMTWLS =
+	new G4PVPlacement(WCPMTRotation,                        // its rotation
+			  PMTPosition,
+			  logicWLSFaceWCPMT,            // its logical volume
+			  "WCPMTWLS",             // its name
+			  logicWCBarrelBorderCell,        // its mother volume
+			  false,                     // no boolean operations
+			  (int)(i*WCPMTperCellVertical+j+WCPMTperCellVertical*WCPMTperCellVertical)
+			  ,true);                     // no particular field
+      }
+
+
   G4VPhysicalVolume* physiWCBarrelBorderPMTGlass =
 	new G4PVPlacement(WCPMTRotation,                        // its rotation
 			  PMTPosition,
@@ -2358,6 +2584,27 @@ else {
 			       -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
 	PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry 
 	                                            //axes of the cell 
+	if (addWLS){
+	  G4VPhysicalVolume* physiWCBarrelPMTWLS =
+	  new G4PVPlacement(WCPMTRotation,             // its rotation
+			    PMTPosition, 
+			    logicWLSFaceWCPMT,         // its logical volume
+			    "WCPMTWLS",             // its name
+			    logicWCExtraTowerCell,         // its mother volume
+			    false,                     // no boolean operations
+			    (int)(i*WCPMTperCellVertical+j+50), //TODO: the 
+			                              //+50 is to have 
+			                             //an unique id for each 
+			                             //PMT. You should this 
+			                             //by a
+						    // variable to make sure, 
+			                            //that the value is
+						    // big enough even 
+			                            //for gigantic cells.
+			    true);                       
+	}
+
+
 
 	G4VPhysicalVolume* physiWCBarrelPMTGlass =
 	  new G4PVPlacement(WCPMTRotation,             // its rotation
@@ -2402,6 +2649,19 @@ else {
 					 physiWCBarrelPMTGlass,physiWCBarrelPMT,
 					 OpGlassCathodeSurface);
 	
+	if (addWLS){
+	  G4VPhysicalVolume* physiWCBarrelBorderPMTWLS =
+	  new G4PVPlacement(WCPMTRotation,                          // its rotation
+			    PMTPosition,
+			    logicWLSFaceWCPMT,                // its logical volume
+			    "WCPMTWLS",             // its name
+			    logicWCExtraBorderCell,         // its mother volume
+			    false,                     // no boolean operations
+			    (int)(i*WCPMTperCellVertical+j+100)
+			    ,true);                        // no particular field
+	}
+
+
 	G4VPhysicalVolume* physiWCBarrelBorderPMTGlass =
 	  new G4PVPlacement(WCPMTRotation,                          // its rotation
 			    PMTPosition,
@@ -2586,7 +2846,7 @@ else {
 
   if (!aWCPMT) 
   {
-    aWCPMT = new WCSimWCSD( "/WCSim/glassFaceWCPMT",this );
+    aWCPMT = new WCSimWCSD( "/WCSim/GlassFaceWCPMT",this );
     SDman->AddNewDetector( aWCPMT );
   }
   logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );

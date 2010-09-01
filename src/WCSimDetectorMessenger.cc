@@ -48,6 +48,12 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SavePi0->SetCandidates("true false");
   SavePi0->AvailableForStates(G4State_PreInit, G4State_Idle);
   
+  AddWLS = new G4UIcmdWithAString("/WCSim/AddWLS",this);
+  AddWLS->SetGuidance("true or false");
+  AddWLS->SetParameterName("AddWLS",false);
+  AddWLS->SetCandidates("true false");
+  AddWLS->AvailableForStates(G4State_PreInit, G4State_Idle);
+
   
   PMTQEMethod = new G4UIcmdWithAString("/WCSim/PMTQEMethod", this);
   PMTQEMethod->SetGuidance("Set the PMT configuration.");
@@ -67,6 +73,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 
 WCSimDetectorMessenger::~WCSimDetectorMessenger()
 {
+  delete AddWLS;
   delete PMTConfig;
   delete SavePi0;
   delete PMTQEMethod;
@@ -112,6 +119,18 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	    
 	  }
 	}
+
+	if (command == AddWLS){
+	  G4cout << "Set the flag for including WLS " << newValue << G4endl;
+	  if (newValue=="true"){
+	    WCSimDetector->Set_addWLS(1);
+	  }else if (newValue == "false"){
+	    WCSimDetector->Set_addWLS(0);
+	  }else{
+	  }
+	}
+
+
 
 	if (command == PMTQEMethod){
 	  G4cout << "Set PMT QE Method " << newValue << " ";

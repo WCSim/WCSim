@@ -211,6 +211,14 @@ void WCSimDetectorConstruction::ConstructMaterials()
 //   blackAcryl -> AddElement(elC, 4);
 //   blackAcryl -> AddElement(elO, 2);
 
+    
+  // adding acrylic as the WLS film Add X. Qian
+  density = 1.18*g/cm3;
+  G4Material* acrylic_wls_film = new G4Material("acrylic_wls_film",density,3);
+  acrylic_wls_film->AddElement(elH,0.08055);
+  acrylic_wls_film->AddElement(elC,0.59984);
+  acrylic_wls_film->AddElement(elO,0.31961);
+
   density = 2.23*g/cm3;
   G4Material* Glass
     = new G4Material("Glass",density,4);
@@ -416,6 +424,33 @@ void WCSimDetectorConstruction::ConstructMaterials()
      1004.528*cm*RAYFF, 833.9666*cm*RAYFF, 686.1063*cm*RAYFF
    };
 
+    //assume 100 times larger than the rayleigh scattering for now. 
+   G4double MIE_water[NUMENTRIES_water] = {
+     167024.4*m*RAYFF, 158726.7*m*RAYFF, 150742*m*RAYFF,
+     143062.5*m*RAYFF, 135680.2*m*RAYFF, 128587.4*m*RAYFF,
+     121776.3*m*RAYFF, 115239.5*m*RAYFF, 108969.5*m*RAYFF,
+     102958.8*m*RAYFF, 97200.35*m*RAYFF, 91686.86*m*RAYFF,
+     86411.33*m*RAYFF, 81366.79*m*RAYFF, 76546.42*m*RAYFF,
+     71943.46*m*RAYFF, 67551.29*m*RAYFF, 63363.36*m*RAYFF,
+     59373.25*m*RAYFF, 55574.61*m*RAYFF, 51961.24*m*RAYFF,
+     48527.00*m*RAYFF, 45265.87*m*RAYFF, 42171.94*m*RAYFF,
+     39239.39*m*RAYFF, 36462.50*m*RAYFF, 33835.68*m*RAYFF,
+     31353.41*m*RAYFF, 29010.30*m*RAYFF, 26801.03*m*RAYFF,
+     24720.42*m*RAYFF, 22763.36*m*RAYFF, 20924.88*m*RAYFF,
+     19200.07*m*RAYFF, 17584.16*m*RAYFF, 16072.45*m*RAYFF,
+     14660.38*m*RAYFF, 13343.46*m*RAYFF, 12117.33*m*RAYFF,
+     10977.70*m*RAYFF, 9920.416*m*RAYFF, 8941.407*m*RAYFF,
+     8036.711*m*RAYFF, 7202.470*m*RAYFF, 6434.927*m*RAYFF,
+     5730.429*m*RAYFF, 5085.425*m*RAYFF, 4496.467*m*RAYFF,
+     3960.210*m*RAYFF, 3473.413*m*RAYFF, 3032.937*m*RAYFF,
+     2635.746*m*RAYFF, 2278.907*m*RAYFF, 1959.588*m*RAYFF,
+     1675.064*m*RAYFF, 1422.710*m*RAYFF, 1200.004*m*RAYFF,
+     1004.528*m*RAYFF, 833.9666*m*RAYFF, 686.1063*m*RAYFF
+   };
+
+   G4double MIE_water_const[3]={0.99,0.99,0.8};// gforward, gbackward, forward backward ratio
+
+
    //From SFDETSIM
    /*
    G4double RINDEX_glass[NUMENTRIES] =
@@ -578,6 +613,81 @@ void WCSimDetectorConstruction::ConstructMaterials()
        0.001*m,0.001*m,0.001*m,0.001*m,0.001*m,0.001*m,
        0.001*m,0.001*m,0.001*m,0.001*m,0.001*m,0.001*m};
       
+
+   G4double RAYLEIGH_vacuum[NUMENTRIES_water] =
+     { 10000*m,10000*m,10000*m,10000*m,10000*m,10000*m,
+       10000*m,10000*m,10000*m,10000*m,10000*m,10000*m,
+       10000*m,10000*m,10000*m,10000*m,10000*m,10000*m,
+       10000*m,10000*m,10000*m,10000*m,10000*m,10000*m,
+       10000*m,10000*m,10000*m,10000*m,10000*m,10000*m,
+       10000*m,10000*m,10000*m,10000*m,10000*m,10000*m,
+       10000*m,10000*m,10000*m,10000*m,10000*m,10000*m,
+       10000*m,10000*m,10000*m,10000*m,10000*m,10000*m,
+       10000*m,10000*m,10000*m,10000*m,10000*m,10000*m,
+       10000*m,10000*m,10000*m,10000*m,10000*m,10000*m};
+
+    //utter fiction at this stage, does not matter
+   G4double MIE_air[NUMENTRIES_water] =
+     { 0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m};
+
+      // absorption length for acrylic
+   G4double ABSORPTION_WLS[NUMENTRIES_water]={12.0106*cm, 12.0106*cm, 8.15463*cm, 8.1707*cm, 4.97081*cm, 8.15463*cm, 
+					      8.15463*cm, 8.15463*cm, 6.17999*cm, 6.17284*cm, 6.17284*cm, 6.17284*cm, 
+					      6.17284*cm, 4.15611*cm, 6.17284*cm, 6.16886*cm, 6.17131*cm, 4.96598*cm, 
+					      4.15554*cm, 4.15543*cm, 4.96598*cm, 4.15386*cm, 4.15254*cm, 4.15301*cm, 
+					      3.57002*cm, 3.57002*cm, 3.13035*cm, 3.13008*cm, 3.13008*cm, 2.78668*cm, 
+					      2.78668*cm, 2.51134*cm, 2.51117*cm, 2.51109*cm, 2.28524*cm, 2.28489*cm, 
+					      2.09661*cm, 1.93674*cm, 1.93674*cm, 1.79953*cm, 1.68047*cm, 1.48418*cm, 
+					      1.40227*cm, 1.32881*cm, 1.20295*cm, 1.0533*cm, 0.936758*cm, 0.843439*cm, 
+					      0.744562*cm, 0.666425*cm, 0.603125*cm, 0.527904*cm, 0.469379*cm, 0.408924*cm, 
+					      0.333711*cm, 0.251208*cm, 0.181283*cm, 0.140244*cm, 0.110381*cm, 0.0695699*cm};
+
+   //index of refraction of acrylic
+   G4double RINDEX_WLS[NUMENTRIES_water]={1.48796, 1.48811, 1.48827, 1.48842, 1.48858, 1.48873, 
+					  1.48889, 1.48905, 1.4892, 1.48936, 1.48952, 1.48982, 
+					  1.49011, 1.49041, 1.4907, 1.491, 1.49129, 1.49159, 
+					  1.49188, 1.49218, 1.49247, 1.49294, 1.49343, 1.49392, 
+					  1.49441, 1.495, 1.49567, 1.49634, 1.497, 1.49767, 
+					  1.49834, 1.49903, 1.49975, 1.50047, 1.50119, 1.5019, 
+					  1.50301, 1.50439, 1.50577, 1.50783, 1.51063, 1.51343, 
+					  1.51622, 1.51902, 1.52182, 1.52462, 1.52742, 1.53021, 
+					  1.53301, 1.53583, 1.54504, 1.55425, 1.56345, 1.57266, 
+					  1.58187, 1.59107, 1.60028, 1.60949, 1.61869, 1.6279};
+   
+
+   G4double wls_abs[NUMENTRIES_water]={1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
+				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
+				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
+				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
+				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
+				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
+				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
+				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 0.0226002*cm, 0.01*cm, 
+				       0.01*cm, 0.01*cm, 0.01*cm, 0.0170268*cm, 0.0356053*cm, 0.0634218*cm, 
+				       0.156279*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm};
+
+   G4double wls_emi[NUMENTRIES_water]={0, 0, 0, 0, 0, 0, 
+				       0, 0, 0, 0, 0, 0, 
+				       0, 0, 0, 0, 0, 0, 
+				       0, 0, 0, 0, 0, 0, 
+				       0, 0, 0, 0, 0, 0, 
+				       0, 0, 0.0199944, 0.0599985, 0.0999964, 0.159989, 
+				       0.21999, 0.299984, 0.399986, 0.499987, 0.833304, 1.24995, 
+				       1.59997, 1.5, 1.50008, 0.9, 0.266694, 0, 
+				       0, 0, 0, 0, 0, 0, 
+				       0, 0, 0, 0, 0, 0};
+
+   G4double MIE_air_const[3]={0.99,0.99,0.8};// gforward, gbackward, forward backward ratio
+
    //Not used yet, fictional values
    //G4double SPECULARLOBECONSTANT1[NUMENTRIES] =
    //{ 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001,
@@ -700,6 +810,13 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myMPT1->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water, NUMENTRIES_water);
    // M Fechner: new, don't let G4 compute it.
    myMPT1->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water);
+   
+
+     // myMPT1->AddProperty("MIEHG",ENERGY_water,MIE_water,NUMENTRIES_water);
+//    myMPT1->AddConstProperty("MIEHG_FORWARD",MIE_water_const[0]);
+//    myMPT1->AddConstProperty("MIEHG_BACKWARD",MIE_water_const[1]);
+//    myMPT1->AddConstProperty("MIEHG_FORWARD_RATIO",MIE_water_const[2]);
+
    Water->SetMaterialPropertiesTable(myMPT1);
    //Gd doped water has the same optical properties as pure water
    DopedWater->SetMaterialPropertiesTable(myMPT1);
@@ -710,6 +827,13 @@ void WCSimDetectorConstruction::ConstructMaterials()
    // M Fechner : what is that ?????
    myMPT2->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
    myMPT2->AddProperty("RAYLEIGH",ENERGY_water, RAYLEIGH_air, NUMENTRIES_water);
+
+      // myMPT2->AddProperty("MIEHG",ENERGY_water,MIE_air,NUMENTRIES_water);
+//    myMPT2->AddConstProperty("MIEHG_FORWARD",MIE_air_const[0]);
+//    myMPT2->AddConstProperty("MIEHG_BACKWARD",MIE_air_const[1]);
+//    myMPT2->AddConstProperty("MIEHG_FORWARD_RATIO",MIE_air_const[2]);
+
+
    Air->SetMaterialPropertiesTable(myMPT2);
    
    G4MaterialPropertiesTable *myMPT3 = new G4MaterialPropertiesTable();
@@ -732,6 +856,16 @@ void WCSimDetectorConstruction::ConstructMaterials()
    G4MaterialPropertiesTable *myMPT6 = new G4MaterialPropertiesTable();
    myMPT6->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
    Tyvek->SetMaterialPropertiesTable(myMPT6);
+
+
+     //acrylic part
+   G4MaterialPropertiesTable *myMPT7 = new G4MaterialPropertiesTable();
+   myMPT7->AddProperty("RINDEX",ENERGY_water,RINDEX_WLS,NUMENTRIES_water);
+   myMPT7->AddProperty("ABSLENGTH",ENERGY_water,ABSORPTION_WLS,NUMENTRIES_water);
+   myMPT7->AddProperty("WLSABSLENGTH",ENERGY_water,wls_abs,NUMENTRIES_water);
+   myMPT7->AddProperty("WLSCOMPONENT",ENERGY_water,wls_emi,NUMENTRIES_water);
+   myMPT7->AddConstProperty("WLSTIMECONSTANT",6.0*ns);
+   acrylic_wls_film->SetMaterialPropertiesTable(myMPT7);
 
 
    //	------------- Surfaces --------------
