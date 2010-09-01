@@ -30,3 +30,9 @@ muon+ white
 proton magneta
 neutron grey
 ####################################################################
+
+####################################################################
+This version is for Light Collector
+09/01/10 XQ
+Change GNUMakefile, and change WCSim.cc to WCSim_LC.cc
+####################################################################

@@ -5,7 +5,7 @@
 
 G4DEBUG = 1
 
-name := WCSim
+name := WCSim_LC
 G4TARGET := $(name)
 G4EXLIB := true
 
@@ -49,7 +49,7 @@ ROOTSO    := libWCSimRoot.so
 
 ROOTSRC  := ./src/WCSimRootEvent.cc ./include/WCSimRootEvent.hh ./src/WCSimRootGeom.cc ./include/WCSimRootGeom.hh ./include/WCSimPmtInfo.hh ./include/WCSimRootLinkDef.hh
 
-ROOTOBJS  := $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimRootDict.o 
+ROOTOBJS  := $(G4WORKDIR)/tmp/Linux-g++/WCSim_LC/WCSimRootEvent.o $(G4WORKDIR)/tmp/Linux-g++/WCSim_LC/WCSimRootGeom.o $(G4WORKDIR)/tmp/Linux-g++/WCSim_LC/WCSimPmtInfo.o $(G4WORKDIR)/tmp/Linux-g++/WCSim_LC/WCSimRootDict.o 
 
 shared: $(ROOTSRC) $(ROOTOBJS) 
 	g++ -shared -O $(ROOTOBJS) -o $(ROOTSO)
