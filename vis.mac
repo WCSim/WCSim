@@ -10,7 +10,7 @@
 #
 # The tube size is fixed for SK to 20"
 # These are fixed geometries for validation
-#/WCSim/WCgeom SuperK
+/WCSim/WCgeom SuperK
 # Currently by defualt the DUSEL configurations are 10 inch.
 # you can overide this with the WCPMTsize command.
 # The mailbox will still give errors as of 8/28/09 (CWW)
@@ -36,9 +36,13 @@
 # Good for the low energy running. 
 #/WCSim/PMTQEMethod     Stacking_Only 
 #/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
-#/WCSim/PMTQEMethod     SensitiveDetector_Only
+/WCSim/PMTQEMethod     SensitiveDetector_Only
 
-#/WCSim/Construct
+# need to before the construct command
+/WCSim/AddWLS true
+
+
+/WCSim/Construct
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 /WCSim/SavePi0 false
@@ -72,10 +76,10 @@
 #/gun/particle pi0
 /gun/energy 1000 MeV
 /gun/direction 1 0 0 
-/gun/position 1 0 0 
+/gun/position 0 0 0 
 
 ## change the name of the output root file, default = wcsim.root
 /WCSimIO/RootFile wcsim.root
 
-/run/beamOn 1
+/run/beamOn 10
 #exit
