@@ -558,6 +558,61 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	//	G4double WCPMT_surfacearea=2*pi*WCPMTRadius*WCPMTRadius;//this is the surface area of a hemisphere
 	G4double WCPMT_crossarea=pi*WCPMTRadius*WCPMTRadius;// this is just the front face crossectional area---this is our standard definition
 	G4double WC_MB_PMT_Spacing = sqrt(100.*WCPMT_crossarea/WCPMTPercentCoverage);	// factor 100 to conver % to fraction
+
+	//**************************try to use replica--here I am making the unit PMT Cell  ***replica
+	//make fundamental square PMT cell, equal to PMT spacing on large side and depth=WC_ActiveLayer_Depth--I will put PMT and blacksheet in this volume  ***replica
+	G4Box* WC_PMT_Cell = new G4Box("PMT_cell",WC_MB_PMT_Spacing/2,WC_MB_PMT_Spacing/2,WC_ActiveLayer_Depth/2);	//***replica
+	G4LogicalVolume* logic_WC_PMT_Cell= new G4LogicalVolume(WC_PMT_Cell,G4Material::GetMaterial(water),"logic_PMT_Cell",0,0,0);	//***replica
+	G4Box* WC_Blacksheet_Cell = new G4Box("WC_BlackSheet_Cell",WC_MB_PMT_Spacing/2,WC_MB_PMT_Spacing/2,WCBlackSheetThickness/2.);		//blacksheet material to fit in cell ***replica
+	G4LogicalVolume* logic_WC_Blacksheet_Cell=new G4LogicalVolume(WC_Blacksheet_Cell,G4Material::GetMaterial("Blacksheet"),"logic_WC_Blacksheet_Cell",0,0,0);	//***replica
+	// Lets put this stuff+PMT into the cell		//***replica
+	//First the glass					//***replica
+	G4VPhysicalVolume* phys_WC_GlassFacePMT_Cell=	//this id is needed in order to enable some surface features	//***replica
+	new G4PVPlacement(0,                         // no rotation			//***replica
+					  G4ThreeVector(0., 0., -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness),                   // its position	//***replica
+					  logicGlassFaceWCPMT,                // its logical volume   //***replica
+					  "WCPMTGlass",// its name //***replica
+					  logic_WC_PMT_Cell,         // its mother volume	//***replica
+					  false,                     // no boolean os	//***replica
+					  0);   
+	// Next the PMT (sensitive volume)	//***replica
+	G4VPhysicalVolume* phys_WC_PMT_Cell=	//***replica
+	new G4PVPlacement(0,                         // no rotation	//***replica
+					  G4ThreeVector(0., 0., -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness),                   // its position	//***replica
+					  logicWCPMT,                // its logical volume	//***replica
+					  "WCPMT",// its name		//***replica
+					  logic_WC_PMT_Cell,         // its mother volume	//***replica
+					  false,                     // no boolean os		//***replica
+					  0);	//***replica
+	// Next the blacksheet	//***replica
+	G4VPhysicalVolume* phys_WC_Blacksheet_Cell=	//***replica
+	new G4PVPlacement(0,                         // no rotation	//***replica
+					  G4ThreeVector(0,0,(-WC_ActiveLayer_Depth+WCBlackSheetThickness)/2),    // its position	//***replica
+					  logic_WC_Blacksheet_Cell,                // its logical volume	//***replica
+					  "LW_Blacksheet", // its name	//***replica
+					  logic_WC_PMT_Cell,         // its mother volume	//***replica
+					  false,                     // no boolean os	//***replica
+					  0);                        // copy #.				  //***replica
+	
+	// Turn on the special features of the surface	//***replica
+	//glass reflections				//***replica
+	new G4LogicalBorderSurface("GlassCathodeSurface",	//***replica
+							   phys_WC_GlassFacePMT_Cell,phys_WC_PMT_Cell,	//***replica
+							   OpGlassCathodeSurface); //***replica
+	// Blacksheet reflections	//***replica
+	new G4LogicalBorderSurface("WaterBS_LW_PolySurface",	//***replica
+							   phys_WC_PMT_Cell,phys_WC_Blacksheet_Cell,	//***replica
+							   OpWaterBSSurface);	//***replica
+	
+	if (!debugMode)	{
+		logic_WC_PMT_Cell->SetVisAttributes(G4VisAttributes::Invisible);//*replica
+		logic_WC_Blacksheet_Cell->SetVisAttributes(G4VisAttributes::Invisible);//*replica
+	}
+	//*******************************************************************************	//***replica
+	
+
+
+
 	//Length dimension
 	G4int WC_MB_NumPMT_L		=(1+ int((WC_MB_Fid_Length-2*sphereRadius)/WC_MB_PMT_Spacing));	//# PMT's along length
 	G4double WC_MB_PMT_offset_L	=(WC_MB_Fid_Length-(WC_MB_NumPMT_L-1)*WC_MB_PMT_Spacing)/2;		//Offset in length dimension
@@ -580,7 +635,21 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	G4VPhysicalVolume* phys_WC_ActiveGlass_LxW_plus;
 	G4Box* WC_BlacksheetLxW = new G4Box("WC_BlackSheetLxW",WC_MB_Fid_Length/2+WC_ActiveLayer_Depth-WCBlackSheetThickness,
 										WC_MB_Fid_Width/2+WC_ActiveLayer_Depth-WCBlackSheetThickness,WCBlackSheetThickness/2.);		//blacksheet material	
-	G4LogicalVolume* logic_WC_BlacksheetLxW = new G4LogicalVolume(WC_BlacksheetLxW,G4Material::GetMaterial("Blacksheet"),"LagicBlacksheet_LxW",0,0,0);
+	//*************************replica***********************
+	
+	//need to cutout center rectangle that will fit the replica pmtvolumes (already with blacksheet)   ***replica
+	G4Box* WC_BlacksheetLxW_donuthole = new G4Box("WC_BlackSheetLxW_donuthole",WC_MB_NumPMT_L*WC_MB_PMT_Spacing/2, //***replica
+												  WC_MB_NumPMT_W*WC_MB_PMT_Spacing/2,WCBlackSheetThickness/2.);				//***replica
+	
+	G4SubtractionSolid*  WC_BlacksheetLxW_donut= new G4SubtractionSolid("WC_BlacksheetLxW_donut",WC_BlacksheetLxW,WC_BlacksheetLxW_donuthole,0,G4ThreeVector(0.,0.,0.));	//this is now the blacksheet that will suround the PMT volumes  ***replica							
+	//***replica
+	
+	G4LogicalVolume* logic_WC_BlacksheetLxW = new G4LogicalVolume(WC_BlacksheetLxW_donut,G4Material::GetMaterial("Blacksheet"),"LagicBlacksheet_LxW",0,0,0);				 //***replica														
+	
+	//*********************************replica*******************************
+
+
+
 	G4Box* WC_BlacksheetLxW_corner_L= new G4Box("WC_BlackSheetLxW_corner_L",WC_MB_Fid_Length/2+WC_ActiveLayer_Depth,WCBlackSheetThickness/2.,WC_ActiveLayer_Depth/2.);//Blacksheeet corner--to lite-tite the fiducial volume--This should already be oriented correctly
 	G4LogicalVolume* logic_WC_BlacksheetLxW_corner_L=new G4LogicalVolume(WC_BlacksheetLxW_corner_L,G4Material::GetMaterial("Blacksheet"),"LagicBlacksheet_LxW",0,0,0);
 	G4Box* WC_BlacksheetLxW_corner_W= new G4Box("WC_BlackSheetLxW_corner_W",WCBlackSheetThickness/2.,WC_MB_Fid_Width/2+WC_ActiveLayer_Depth,WC_ActiveLayer_Depth/2.);//Blacksheet corner--lite-tite the fiducial volume--This should already be oriented correctly
@@ -588,120 +657,67 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	
 	
 	G4double xmin=WC_MB_Fid_Length, xmax=-WC_MB_Fid_Length, ymin=WC_MB_Fid_Width, ymax=-WC_MB_Fid_Width;
-	
-	// Loop over the L,W dimensions
 	G4int icopy=0,num_pmt=0;
-	for ( G4int i = 0 ; i < WC_MB_NumPMT_L ; i++) {    //loop over tubes in length direction)
-		for (G4int j = 0 ; j <  WC_MB_NumPMT_W; j++)   {  // loop over tubes in width direction
-			
-			
-			G4double xoffset = i* WC_MB_PMT_Spacing + WC_MB_PMT_offset_L-WC_MB_Fid_Length/2;//start laying them in from -length/2 side
-			G4double yoffset = j*WC_MB_PMT_Spacing + WC_MB_PMT_offset_W-WC_MB_Fid_Width/2;//likewise for -width/2 side
-			if (xoffset <xmin) xmin=xoffset;
-			if (xoffset >xmax) xmax=xoffset;
-			if (yoffset <ymin) ymin=yoffset;
-			if (yoffset >ymax) ymax=yoffset;
-			
-			
-			G4ThreeVector cellpos_plus = G4ThreeVector(xoffset, -yoffset, -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness);//
-			G4ThreeVector cellpos_minus = G4ThreeVector(xoffset, yoffset, -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness);//-1.0*PMTOffset);  
-			
-			
-			phys_WC_ActiveGlass_LxW_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
-												new G4PVPlacement(0,                         // no rotation
-																  cellpos_minus,                   // its position
-																  logicGlassFaceWCPMT,                // its logical volume
-																  //"LxW_PMTGlass_minus", // its name
-                                                                  "WCPMTGlass",// (JF) replaced above 
-																  logic_WC_Active_LxW_minus,         // its mother volume
-																  false,                     // no boolean os
-																  icopy);                        // every PMT needs an unique id in this physical volume
-			
-			phys_WC_Active_LxW_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
-									new G4PVPlacement(0,                         // no rotation
-													  cellpos_minus,                   // its position
-													  logicWCPMT,                // its logical volume
-													  //"LxW_PMT_minus", // its name
-                                                      "WCPMT",// (JF) replaced above  
-													  logic_WC_Active_LxW_minus,         // its mother volume
-													  false,                     // no boolean os
-													  icopy);                        // every PMT needs an unique id in this physical volume		
-			
-			phys_WC_ActiveGlass_LxW_plus =					// put PMT's into top face (eventually it will be rotated and moved to the top)
-												new G4PVPlacement(0,                         // no rotation
-																  cellpos_plus,                   // its position
-																  logicGlassFaceWCPMT,                // its logical volume
-																  //"LxW_PMTGlass_plus", // its name
-                                                                  "WCPMTGlass",// (JF) replaced above 
-																  logic_WC_Active_LxW_plus,         // its mother volume
-																  false,                     // no boolean os
-																  icopy);                        // every PMT needs an unique id in this physical volume
-							  
-			phys_WC_Active_LxW_plus =					// put PMT's into top face (eventually it will be rotated and moved to the top)
-									new G4PVPlacement(0,                         // no rotation
-													  cellpos_plus,                   // its position
-													  logicWCPMT,                // its logical volume
-													  //"LxW_PMT_plus", // its name
-                                                      "WCPMT",// (JF) replaced above 
-													  logic_WC_Active_LxW_plus,         // its mother volume
-													  false,                     // no boolean os
-													  icopy);                        // every PMT needs an unique id in this physical volume
-			
-							  
-			new G4LogicalBorderSurface("GlassCathodeSurface",
-									   phys_WC_ActiveGlass_LxW_minus,phys_WC_Active_LxW_minus,
-									   OpGlassCathodeSurface); 
-			new G4LogicalBorderSurface("GlassCathodeSurface",
-									   phys_WC_ActiveGlass_LxW_plus,phys_WC_Active_LxW_plus,
-									   OpGlassCathodeSurface); 						  
-							  /* example from cap PMT  (cylinder)
-							   G4VPhysicalVolume* physiCapPMTGlass =
-							   new G4PVPlacement(0,                         // no rotation
-							   cellpos,                   // its position
-							   logicGlassFaceWCPMT,         // its logical volume
-							   "WCCapPMTGlass", // its name 
-							   logicWCCap,         // its mother volume
-							   false,                 // no boolean os
-							   icopy);              // every PMT need a unique id.
-							   
-							   G4VPhysicalVolume* physiCapPMT =
-							   new G4PVPlacement(0,                         // no rotation
-							   cellpos,                   // its position
-							   logicWCPMT,                // its logical volume
-							   "WCCapPMT", // its name 
-							   logicWCCap,         // its mother volume
-							   false,                 // no boolean os
-							   icopy);               // every PMT need a unique id.
-							   
-							   
 
-							  
-							  
-							  */
-							
-			
-			
-			icopy++;
-		}
+	//***replica
+	// will build up pmt volume in two steps, one making a row of pmt volumes, then making a rectangle out of the rows.
+	
+	G4Box *LxW_PMT_Row =	new G4Box("LxW_PMT_Row",WC_MB_NumPMT_L*WC_MB_PMT_Spacing/2,WC_MB_PMT_Spacing/2,WC_ActiveLayer_Depth/2.);
+	G4LogicalVolume* logic_LxW_PMT_Row= new G4LogicalVolume(LxW_PMT_Row,G4Material::GetMaterial(water),"logic_LxW_PMT_Row",0,0,0);
+	G4Box * LxW_PMT_Volume=new G4Box("LxW_PMT_Volume",WC_MB_NumPMT_L*WC_MB_PMT_Spacing/2,WC_MB_NumPMT_W*WC_MB_PMT_Spacing/2,WC_ActiveLayer_Depth/2);	//this is entire PMT volume
+	G4LogicalVolume* logic_LxW_PMT_Volume= new G4LogicalVolume(LxW_PMT_Volume,G4Material::GetMaterial(water),"logic_LxW_PMT_Volume",0,0,0);
+	
+	G4VPhysicalVolume* physiWC_LxW_PMT_Row = 
+	new G4PVReplica("WC_PMT_Row",
+					logic_WC_PMT_Cell,
+					logic_LxW_PMT_Row,
+					kXAxis,
+					WC_MB_NumPMT_L,
+					WC_MB_PMT_Spacing,
+					0.); 
+	
+	G4VPhysicalVolume* physiWC_LxW_PMT_Volume = 
+	new G4PVReplica("WC_LxW_PMT_Volume",
+					logic_LxW_PMT_Row,
+					logic_LxW_PMT_Volume,
+					kYAxis,
+					WC_MB_NumPMT_W,
+					WC_MB_PMT_Spacing,
+					0.); 
+	
+	//Now we should have PMT's placed in the PMT "Donut_Hole"
+	if (!debugMode)	{
+		logic_LxW_PMT_Row->SetVisAttributes(G4VisAttributes::Invisible);//*replica
+		logic_LxW_PMT_Volume->SetVisAttributes(G4VisAttributes::Invisible);//*replica
 	}
+	//Now put into face volumes
+	phys_WC_Active_LxW_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
+	new G4PVPlacement(0,                         // no rotation
+					  G4ThreeVector(0.,0.,0.),                   // its position
+					  logic_LxW_PMT_Volume,                // its logical volume
+					  //"LxW_PMT_minus", // its name
+					  "WCPMT",// (JF) replaced above  
+					  logic_WC_Active_LxW_minus,         // its mother volume
+					  false,                     // no boolean os
+					  0);                        // every PMT needs an unique id in this physical volume		??? what to do here!??
 	
+	
+	phys_WC_Active_LxW_plus =					// put PMT's into bottom face--eventually it will be translated to bottom face
+	new G4PVPlacement(0,                         // no rotation
+					  G4ThreeVector(0.,0.,0.),                   // its position
+					  logic_LxW_PMT_Volume,                // its logical volume
+					  //"LxW_PMT_minus", // its name
+					  "WCPMT",// (JF) replaced above  
+					  logic_WC_Active_LxW_plus,         // its mother volume
+					  false,                     // no boolean os
+					  0);                        // every PMT needs an unique id in this physical volume		??? what to do here!??
+	
+	//end ****replica					
 
-	/*
-	new G4LogicalBorderSurface("GlassCathodeSurface",
-							   phys_WC_ActiveGlass_LxW_minus,phys_WC_Active_LxW_minus,
-							   OpGlassCathodeSurface); 
-	new G4LogicalBorderSurface("GlassCathodeSurface",
-							    phys_WC_ActiveGlass_LxW_plus,phys_WC_Active_LxW_plus,
-							   OpGlassCathodeSurface); 		
-							   
-															*/								
-	G4cout << "total on LxW Surface: " << 2*icopy << "\n";
-	G4cout << "Coverage was calculated to be: " << (icopy*WCPMT_crossarea/(WC_MB_Fid_Length*WC_MB_Fid_Width)) << "\n";
-	//								G4cout << "halflength, xmin, xmax= " << WC_MB_Fid_Length/2<<" "<<xmin<<" "<<xmax << "\n";
-	//								G4cout << "halfwidth, ymin, ymax=" << WC_MB_Fid_Width/2<<" "<<ymin<<" "<<ymax << "\n";
-	//								G4cout << "\n";
-	
-	num_pmt+=icopy;
+	G4cout << "total on LxW Surface: " << 2*WC_MB_NumPMT_L*WC_MB_NumPMT_W << "\n";	//***replica (modded original)
+	G4cout << "Coverage was calculated to be: " << (WC_MB_NumPMT_L*WC_MB_NumPMT_W *WCPMT_crossarea/(WC_MB_Fid_Length*WC_MB_Fid_Width)) << "\n";
+	num_pmt+=2*WC_MB_NumPMT_L*WC_MB_NumPMT_W;  //***replica	
+
 	
 	//add blacksheet
 	
@@ -861,7 +877,23 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	G4LogicalVolume* logic_WC_Active_WxD_minus = new G4LogicalVolume(WC_Active_WxD,G4Material::GetMaterial(water),"WxDActive_minus",0,0,0);
 	G4LogicalVolume* logic_WC_Active_WxD_plus = new G4LogicalVolume(WC_Active_WxD,G4Material::GetMaterial(water),"WxDActive_plus",0,0,0);
 	G4Box* WC_BlacksheetWxD = new G4Box("WC_BlackSheetWxD",WC_MB_Fid_Depth/2,WC_MB_Fid_Width/2+WC_ActiveLayer_Depth-WCBlackSheetThickness/2.,WCBlackSheetThickness/2.);			//blacksheet material	
-	G4LogicalVolume* logic_WC_BlacksheetWxD = new G4LogicalVolume(WC_BlacksheetWxD,G4Material::GetMaterial("Blacksheet"),"LagicBlacksheet_WxD",0,0,0);							  
+
+	//*********************************************replica*******************************
+	//need to cutout center rectangle that will fit the replica pmtvolumes (already with blacksheet)   ***replica
+	G4Box* WC_BlacksheetWxD_donuthole = new G4Box("WC_BlackSheetWxD_donuthole",WC_MB_NumPMT_D*WC_MB_PMT_Spacing/2, //***replica
+												  WC_MB_NumPMT_W*WC_MB_PMT_Spacing/2,WCBlackSheetThickness/2.);				//***replica
+	
+	G4SubtractionSolid*  WC_BlacksheetWxD_donut= new G4SubtractionSolid("WC_BlacksheetWxD_donut",WC_BlacksheetWxD,WC_BlacksheetWxD_donuthole,0,G4ThreeVector(0.,0.,0.));	//this is now the blacksheet that will suround the PMT volumes  ***replica							
+	//***replica
+	
+	G4LogicalVolume* logic_WC_BlacksheetWxD = new G4LogicalVolume(WC_BlacksheetWxD_donut,G4Material::GetMaterial("Blacksheet"),"LagicBlacksheet_WxD",0,0,0);				 //***replica														
+	
+	
+	
+	//*********************************************replica*******************************
+	
+
+//	G4LogicalVolume* logic_WC_BlacksheetWxD = new G4LogicalVolume(WC_BlacksheetWxD,G4Material::GetMaterial("Blacksheet"),"LagicBlacksheet_WxD",0,0,0);							  
 	G4Box* WC_BlacksheetWxD_corner= new G4Box("WC_BlackSheetWxD_corner",WC_MB_Fid_Depth/2,WCBlackSheetThickness/2.,WC_ActiveLayer_Depth/2.);//Blacksheet corner---This should already be oriented correctly
 	G4LogicalVolume* logic_WC_BlacksheetWxD_corner=new G4LogicalVolume(WC_BlacksheetWxD_corner,G4Material::GetMaterial("Blacksheet"),"LagicBlacksheet_WxD_corner",0,0,0);
 	
@@ -871,105 +903,74 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	G4VPhysicalVolume* phys_WC_Active_WxD_minus, * phys_WC_ActiveGlass_WxD_minus;								  
 	
 	
-	// Loop over the W,D dimensions
 	icopy=0;
 	xmin=WC_MB_Fid_Depth, xmax=-WC_MB_Fid_Depth, ymin=WC_MB_Fid_Width, ymax=-WC_MB_Fid_Width;
+	//***replica
+	// will build up pmt volume in two steps, one making a row of pmt volumes, then making a rectangle out of the rows. for this config, "D" runs on X axis, "W" is on Y axis
 	
-	for ( G4int i = 0 ; i < WC_MB_NumPMT_D ; i++) {    //loop over tubes in depth direction--the depth coordinate is on "x" axis
-		for (G4int j = 0 ; j <  WC_MB_NumPMT_W; j++)   {  // loop over tubes inwidth direction--the width coordinate is on "y" axis
-			
-			
-			G4double yoffset = j* WC_MB_PMT_Spacing + WC_MB_PMT_offset_W-WC_MB_Fid_Width/2;//start laying them in from -width/2 side
-			G4double xoffset = i*WC_MB_PMT_Spacing + WC_MB_PMT_offset_D-WC_MB_Fid_Depth/2;//likewise for -depth/2 side
-			
-			
-			if (xoffset <xmin) xmin=xoffset;
-			if (xoffset >xmax) xmax=xoffset;
-			if (yoffset <ymin) ymin=yoffset;
-			if (yoffset >ymax) ymax=yoffset;		  
-			
-			G4ThreeVector cellpos_plus = G4ThreeVector(-xoffset, yoffset, -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness);
-			G4ThreeVector cellpos_minus = G4ThreeVector(xoffset, yoffset, -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness); //  This should make final geometry +&- mirror images of each other (probably not necessary)
-			
-			phys_WC_ActiveGlass_WxD_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
-			new G4PVPlacement(0,                         // no rotation
-							  cellpos_minus,                   // its position
-							  logicGlassFaceWCPMT,                // its logical volume
-							  //"WxD_PMTGlass_minus", // its name
-                              "WCPMTGlass",// (JF) replaced above 
-							  logic_WC_Active_WxD_minus,         // its mother volume
-							  false,                     // no boolean os
-							  icopy);                        // every PMT needs an unique id in this physical volume
-			
-			phys_WC_Active_WxD_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
-			new G4PVPlacement(0,                         // no rotation
-							  cellpos_minus,                   // its position
-							  logicWCPMT,                // its logical volume
-							  //"WxD_PMT_minus", // its name
-                              "WCPMT",// (JF) replaced above  
-							  logic_WC_Active_WxD_minus,         // its mother volume
-							  false,                     // no boolean os
-							  icopy);                        // every PMT needs an unique id in this physical volume		
-			
-			phys_WC_ActiveGlass_WxD_plus =					// put PMT's into top face (eventually it will be rotated and moved to the top)
-			new G4PVPlacement(0,                         // no rotation
-							  cellpos_plus,                   // its position
-							  logicGlassFaceWCPMT,                // its logical volume
-							  //"WxD_PMTGlass_plus", // its name
-                              "WCPMTGlass",// (JF) replaced above 
-							  logic_WC_Active_WxD_plus,         // its mother volume
-							  false,                     // no boolean os
-							  icopy);                        // every PMT needs an unique id in this physical volume
-			
-			phys_WC_Active_WxD_plus =					// put PMT's into top face (eventually it will be rotated and moved to the top)
-			new G4PVPlacement(0,                         // no rotation
-							  cellpos_plus,                   // its position
-							  logicWCPMT,                // its logical volume
-							  //"WxD_PMT_plus", // its name
-                              "WCPMT",// (JF) replaced above 
-							  logic_WC_Active_WxD_plus,         // its mother volume
-							  false,                     // no boolean os
-							  icopy);                        // every PMT needs an unique id in this physical volume
-			
-			
-				/*  old PMT version
-				phys_WC_Active_WxD_minus =
-			new G4PVPlacement(0,                         // no rotation
-							  cellpos_minus,                   // its position
-							  logicWCPMT,                // its logical volume
-							  "WxD_PMTGlass_minus", // its name 
-							  logic_WC_Active_WxD_minus,         // its mother volume
-							  false,                     // no boolean os
-							  icopy);                        // every PMT needs an unique id.
-			
-			phys_WC_Active_WxD_plus =
-			new G4PVPlacement(0,                         // no rotation
-							  cellpos_plus,                   // its position
-							  logicWCPMT,                // its logical volume
-							  "WxD_PMTGlass_plus", // its name 
-							  logic_WC_Active_WxD_plus,         // its mother volume
-							  false,                     // no boolean os
-							  icopy);                        // every PMT needs an unique id.
-			*/
-			new G4LogicalBorderSurface("GlassCathodeSurface",
-									   phys_WC_ActiveGlass_WxD_minus,phys_WC_Active_WxD_minus,
-									   OpGlassCathodeSurface); 
-			new G4LogicalBorderSurface("GlassCathodeSurface",
-									   phys_WC_ActiveGlass_WxD_plus,phys_WC_Active_WxD_plus,
-									   OpGlassCathodeSurface); 					
-			icopy++;
-		}
+	
+	G4Box * WxD_PMT_Row =	new G4Box("WxD_PMT_Row",WC_MB_NumPMT_D*WC_MB_PMT_Spacing/2,WC_MB_PMT_Spacing/2,WC_ActiveLayer_Depth/2.);
+	G4LogicalVolume* logic_WxD_PMT_Row= new G4LogicalVolume(WxD_PMT_Row,G4Material::GetMaterial(water),"logic_WxD_PMT_Row",0,0,0);
+	G4Box * WxD_PMT_Volume=new G4Box("WxD_PMT_Volume",WC_MB_NumPMT_D*WC_MB_PMT_Spacing/2,WC_MB_NumPMT_W*WC_MB_PMT_Spacing/2,WC_ActiveLayer_Depth/2);	//this is entire PMT volume
+	G4LogicalVolume* logic_WxD_PMT_Volume= new G4LogicalVolume(WxD_PMT_Volume,G4Material::GetMaterial(water),"logic_WxD_PMT_Volume",0,0,0);
+	
+	G4VPhysicalVolume* physiWC_WxD_PMT_Row = 
+	new G4PVReplica("WC_PMT_Row",
+					logic_WC_PMT_Cell,
+					logic_WxD_PMT_Row,
+					kXAxis,
+					WC_MB_NumPMT_D,
+					WC_MB_PMT_Spacing,
+					0.); 
+	
+	G4VPhysicalVolume* physiWC_WxD_PMT_Volume = 
+	new G4PVReplica("WC_PMT_Volume",
+					logic_WxD_PMT_Row,
+					logic_WxD_PMT_Volume,
+					kYAxis,
+					WC_MB_NumPMT_W,
+					WC_MB_PMT_Spacing,
+					0.); 
+	
+	//Now we should have PMT's placed in the PMT "Donut_Hole"
+	
+	//Now put into face volumes
+	phys_WC_Active_WxD_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
+	new G4PVPlacement(0,                         // no rotation
+					  G4ThreeVector(0.,0.,0.),                   // its position
+					  logic_WxD_PMT_Volume,                // its logical volume
+					  //"LxW_PMT_minus", // its name
+					  "WCPMT",// (JF) replaced above  
+					  logic_WC_Active_WxD_minus,         // its mother volume
+					  false,                     // no boolean os
+					  0);                        // every PMT needs an unique id in this physical volume		??? what to do here!??
+	
+	
+	phys_WC_Active_WxD_plus =					// put PMT's into bottom face--eventually it will be translated to bottom face
+	new G4PVPlacement(0,                         // no rotation
+					  G4ThreeVector(0.,0.,0.),                   // its position
+					  logic_WxD_PMT_Volume,                // its logical volume
+					  //"LxW_PMT_minus", // its name
+					  "WCPMT",// (JF) replaced above  
+					  logic_WC_Active_WxD_plus,         // its mother volume
+					  false,                     // no boolean os
+					  0);                        // every PMT needs an unique id in this physical volume		??? what to do here!??
+	
+	
+	
+	if (!debugMode)	{
+		logic_WxD_PMT_Row->SetVisAttributes(G4VisAttributes::Invisible);//*replica
+		logic_WxD_PMT_Volume->SetVisAttributes(G4VisAttributes::Invisible);//*replica
 	}
 	
 	
+	//end ****replica	
 	
-
 								
+	G4cout << "total on WxD Surface: " << 2*WC_MB_NumPMT_W*WC_MB_NumPMT_D << "\n";//****replica modified original
+	G4cout << "Coverage was calculated to be: " << (WC_MB_NumPMT_W*WC_MB_NumPMT_D*WCPMT_crossarea/(WC_MB_Fid_Width*WC_MB_Fid_Depth)) << "\n";// ***replica--modified original
+	num_pmt+=2*WC_MB_NumPMT_W*WC_MB_NumPMT_D;  //***replica	
 	
-	
-	G4cout << "total on WxD Surface: " << 2*icopy << "\n";
-	G4cout << "Coverage was calculated to be: " << (icopy*WCPMT_crossarea/(WC_MB_Fid_Width*WC_MB_Fid_Depth)) << "\n";
-	num_pmt+=icopy;
 	//				G4cout << "halflength, xmin, xmax= " << WC_MB_Fid_Depth/2<<" "<<xmin<<" "<<xmax << "\n";
 	//				G4cout << "halfwidth, ymin, ymax=" << WC_MB_Fid_Width/2<<" "<<ymin<<" "<<ymax << "\n";
 	//				G4cout << "\n";							
@@ -1104,7 +1105,22 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	G4LogicalVolume* logic_WC_Active_LxD_minus = new G4LogicalVolume(WC_Active_LxD,G4Material::GetMaterial(water),"LxDActive_minus",0,0,0);
 	G4LogicalVolume* logic_WC_Active_LxD_plus = new G4LogicalVolume(WC_Active_LxD,G4Material::GetMaterial(water),"LxDActive_plus",0,0,0);
 	G4Box* WC_BlacksheetLxD = new G4Box("WC_BlackSheetLxD",WC_MB_Fid_Length/2,WC_MB_Fid_Depth/2,WCBlackSheetThickness/2.);//blacksheet material	
-	G4LogicalVolume* logic_WC_BlacksheetLxD = new G4LogicalVolume(WC_BlacksheetLxD,G4Material::GetMaterial("Blacksheet"),"LagicBlacksheet_LxD",0,0,0);							  								  
+
+	//*********************************************replica*******************************
+	//need to cutout center rectangle that will fit the replica pmtvolumes (already with blacksheet)   ***replica
+	G4Box* WC_BlacksheetLxD_donuthole = new G4Box("WC_BlackSheetLxD_donuthole",WC_MB_NumPMT_L*WC_MB_PMT_Spacing/2, //***replica
+												  WC_MB_NumPMT_D*WC_MB_PMT_Spacing/2,WCBlackSheetThickness/2.);				//***replica
+	
+	G4SubtractionSolid*  WC_BlacksheetLxD_donut= new G4SubtractionSolid("WC_BlacksheetLxD_donut",WC_BlacksheetLxD,WC_BlacksheetLxD_donuthole,0,G4ThreeVector(0.,0.,0.));	//this is now the blacksheet that will suround the PMT volumes  ***replica							
+	//***replica
+	
+	G4LogicalVolume* logic_WC_BlacksheetLxD = new G4LogicalVolume(WC_BlacksheetLxD_donut,G4Material::GetMaterial("Blacksheet"),"LagicBlacksheet_LxD",0,0,0);				 //***replica														
+	
+	
+	
+	//*********************************************replica*******************************
+	
+
 	G4VPhysicalVolume* phys_WC_Active_LxD_plus, * phys_WC_ActiveGlass_LxD_plus;
 	G4VPhysicalVolume* phys_WC_Active_LxD_minus, * phys_WC_ActiveGlass_LxD_minus;								  
 	
@@ -1112,108 +1128,75 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	
 	icopy=0;
 	xmin=WC_MB_Fid_Length, xmax=-WC_MB_Fid_Length, ymin=WC_MB_Fid_Depth, ymax=-WC_MB_Fid_Depth;
+
+	//***replica
+	// will build up pmt volume in two steps, one making a row of pmt volumes, then making a rectangle out of the rows. for this config, "D" runs on X axis, "W" is on Y axis
 	
-	for (G4int i = 0 ; i < WC_MB_NumPMT_L ; i++) {    //loop over tubes in length direction)
-		for (G4int j = 0 ; j <  WC_MB_NumPMT_D; j++)   {  // loop over tubes in depth direction
-			
-			
-			G4double xoffset = i* WC_MB_PMT_Spacing + WC_MB_PMT_offset_L-WC_MB_Fid_Length/2;//start laying them in from -length/2 side
-			G4double yoffset = j*WC_MB_PMT_Spacing + WC_MB_PMT_offset_D-WC_MB_Fid_Depth/2;//likewise for -depth/2 side
-			
-			
-			if (xoffset <xmin) xmin=xoffset;
-			if (xoffset >xmax) xmax=xoffset;
-			if (yoffset <ymin) ymin=yoffset;
-			if (yoffset >ymax) ymax=yoffset;		  
-			
-			
-			G4ThreeVector cellpos_plus = G4ThreeVector(xoffset, -yoffset, -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness);
-			G4ThreeVector cellpos_minus = G4ThreeVector(xoffset, yoffset, -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness);
-		
-			phys_WC_ActiveGlass_LxD_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
-			new G4PVPlacement(0,                         // no rotation
-							  cellpos_minus,                   // its position
-							  logicGlassFaceWCPMT,                // its logical volume
-							  //"LxD_PMTGlass_minus", // its name
-                              "WCPMTGlass",// (JF) replaced above 
-							  logic_WC_Active_LxD_minus,         // its mother volume
-							  false,                     // no boolean os
-							  icopy);                        // every PMT needs an unique id in this physical volume
-			
-			phys_WC_Active_LxD_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
-			new G4PVPlacement(0,                         // no rotation
-							  cellpos_minus,                   // its position
-							  logicWCPMT,                // its logical volume
-							  //"LxD_PMT_minus", // its name
-                              "WCPMT",// (JF) replaced above 
-							  logic_WC_Active_LxD_minus,         // its mother volume
-							  false,                     // no boolean os
-							  icopy);                        // every PMT needs an unique id in this physical volume		
-			
-			phys_WC_ActiveGlass_LxD_plus =					// put PMT's into top face (eventually it will be rotated and moved to the top)
-			new G4PVPlacement(0,                         // no rotation
-							  cellpos_plus,                   // its position
-							  logicGlassFaceWCPMT,                // its logical volume
-							  //"LxD_PMTGlass_plus", // its name
-                              "WCPMTGlass",// (JF) replaced above 
-							  logic_WC_Active_LxD_plus,         // its mother volume
-							  false,                     // no boolean os
-							  icopy);                        // every PMT needs an unique id in this physical volume
-			
-			phys_WC_Active_LxD_plus =					// put PMT's into top face (eventually it will be rotated and moved to the top)
-			new G4PVPlacement(0,                         // no rotation
-							  cellpos_plus,                   // its position
-							  logicWCPMT,                // its logical volume
-							  //"LxD_PMT_plus", // its name
-                              "WCPMT",// (JF) replaced above 
-							  logic_WC_Active_LxD_plus,         // its mother volume
-							  false,                     // no boolean os
-							  icopy);                        // every PMT needs an unique id in this physical volume
-			
-			
-			/*  old PMT version
-			phys_WC_Active_LxD_minus =
-			new G4PVPlacement(0,                         // no rotation
-							  cellpos_minus,                   // its position
-							  logicWCPMT,                // its logical volume
-							  "LxD_PMTGlass_minus", // its name 
-							  logic_WC_Active_LxD_minus,         // its mother volume
-							  false,                     // no boolean os
-							  icopy);                        // every PMT needs an unique id.
-			
-			phys_WC_Active_LxD_plus =
-			new G4PVPlacement(0,                         // no rotation
-							  cellpos_plus,                   // its position
-							  logicWCPMT,                // its logical volume
-							  "LxD_PMTGlass_plus", // its name 
-							  logic_WC_Active_LxD_plus,         // its mother volume
-							  false,                     // no boolean os
-							  icopy);                        // every PMT needs an unique id.
-			*/
-			new G4LogicalBorderSurface("GlassCathodeSurface",
-									   phys_WC_ActiveGlass_LxD_minus,phys_WC_Active_LxD_minus,
-									   OpGlassCathodeSurface); 
-			new G4LogicalBorderSurface("GlassCathodeSurface",
-									   phys_WC_ActiveGlass_LxD_plus,phys_WC_Active_LxD_plus,
-									   OpGlassCathodeSurface); 	
-			icopy++;
-		}
+	
+	G4Box * LxD_PMT_Row =	new G4Box("LxD_PMT_Row",WC_MB_NumPMT_L*WC_MB_PMT_Spacing/2,WC_MB_PMT_Spacing/2,WC_ActiveLayer_Depth/2.);
+	G4LogicalVolume* logic_LxD_PMT_Row= new G4LogicalVolume(LxD_PMT_Row,G4Material::GetMaterial(water),"logic_LxD_PMT_Row",0,0,0);
+	G4Box * LxD_PMT_Volume=new G4Box("LxD_PMT_Volume",WC_MB_NumPMT_L*WC_MB_PMT_Spacing/2,WC_MB_NumPMT_D*WC_MB_PMT_Spacing/2,WC_ActiveLayer_Depth/2);	//this is entire PMT volume
+	G4LogicalVolume* logic_LxD_PMT_Volume= new G4LogicalVolume(LxD_PMT_Volume,G4Material::GetMaterial(water),"logic_LxD_PMT_Volume",0,0,0);
+	
+	G4VPhysicalVolume* physiWC_LxD_PMT_Row = 
+	new G4PVReplica("WC_PMT_Row",
+					logic_WC_PMT_Cell,
+					logic_LxD_PMT_Row,
+					kXAxis,
+					WC_MB_NumPMT_L,
+					WC_MB_PMT_Spacing,
+					0.); 
+	
+	G4VPhysicalVolume* physiWC_LxD_PMT_Volume = 
+	new G4PVReplica("WC_PMT_Volume",
+					logic_LxD_PMT_Row,
+					logic_LxD_PMT_Volume,
+					kYAxis,
+					WC_MB_NumPMT_D,
+					WC_MB_PMT_Spacing,
+					0.); 
+	
+	//Now we should have PMT's placed in the PMT "Donut_Hole"
+	
+	//Now put into face volumes
+	phys_WC_Active_LxD_minus =					// put PMT's into bottom face--eventually it will be translated to bottom face
+	new G4PVPlacement(0,                         // no rotation
+					  G4ThreeVector(0.,0.,0.),                   // its position
+					  logic_LxD_PMT_Volume,                // its logical volume
+					  //"LxD_PMT_minus", // its name
+					  "WCPMT",// (JF) replaced above  
+					  logic_WC_Active_LxD_minus,         // its mother volume
+					  false,                     // no boolean os
+					  0);                        // every PMT needs an unique id in this physical volume		??? what to do here!??
+	
+	
+	phys_WC_Active_LxD_plus =					// put PMT's into bottom face--eventually it will be translated to bottom face
+	new G4PVPlacement(0,                         // no rotation
+					  G4ThreeVector(0.,0.,0.),                   // its position
+					  logic_LxD_PMT_Volume,                // its logical volume
+					  //"LxD_PMT_minus", // its name
+					  "WCPMT",// (JF) replaced above  
+					  logic_WC_Active_LxD_plus,         // its mother volume
+					  false,                     // no boolean os
+					  0);                        // every PMT needs an unique id in this physical volume		??? what to do here!??
+	
+	
+	
+	if (!debugMode)	{
+		logic_LxD_PMT_Row->SetVisAttributes(G4VisAttributes::Invisible);//*replica
+		logic_LxD_PMT_Volume->SetVisAttributes(G4VisAttributes::Invisible);//*replica
 	}
 	
-
-									
+	//end ****replica	
 	
-	
-	G4cout << "total on LxD Surface: " << 2*icopy << "\n";
-	G4cout << "Coverage was calculated to be: " << (icopy*WCPMT_crossarea/(WC_MB_Fid_Length*WC_MB_Fid_Depth)) << "\n";
 	
 	//				G4cout << "halflength, xmin, xmax= " << WC_MB_Fid_Length/2<<" "<<xmin<<" "<<xmax << "\n";
 	//				G4cout << "halfwidth, ymin, ymax=" << WC_MB_Fid_Depth/2<<" "<<ymin<<" "<<ymax << "\n";
 	//				G4cout << "\n";
-	
-	num_pmt+=icopy;
-	G4cout << "total number of PMT: " << 2*num_pmt << "\n";
-	
+	G4cout << "total on LxD Surface: " << 2* WC_MB_NumPMT_L* WC_MB_NumPMT_D << "\n";
+	G4cout << "Coverage was calculated to be: " << (WC_MB_NumPMT_L* WC_MB_NumPMT_D*WCPMT_crossarea/(WC_MB_Fid_Length*WC_MB_Fid_Depth)) << "\n";
+	num_pmt+=2* WC_MB_NumPMT_L* WC_MB_NumPMT_D;
+	G4cout << "total number of PMT: " << num_pmt << "\n";	
 	
 	//add blacksheet
 	
