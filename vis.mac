@@ -71,7 +71,7 @@
 /gun/particle e-
 #/gun/particle pi0
 /gun/energy 1000 MeV
-/gun/direction 0 1 0 
+/gun/direction 1 0 0 
 /gun/position 1 0 0 
 
 ## change the name of the output root file, default = wcsim.root
