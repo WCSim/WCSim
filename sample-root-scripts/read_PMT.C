@@ -29,7 +29,7 @@ void read_PMT(char *filename=NULL) {
 
   // Force deletion to prevent memory leak when issuing multiple
   // calls to GetEvent()
-  tree->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
+  wcsimT->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
 
   wcsimT->GetEvent(0); 
 
