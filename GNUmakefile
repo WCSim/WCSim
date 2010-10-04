@@ -49,10 +49,10 @@ ROOTSO    := libWCSimRoot.so
 
 ROOTSRC  := ./src/WCSimRootEvent.cc ./include/WCSimRootEvent.hh ./src/WCSimRootGeom.cc ./include/WCSimRootGeom.hh ./include/WCSimPmtInfo.hh ./include/WCSimRootLinkDef.hh
 
-ROOTOBJS  := $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/Linux-g++/WCSim/WCSimRootDict.o 
+ROOTOBJS  := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootDict.o 
 
 shared: $(ROOTSRC) $(ROOTOBJS) 
-	g++ -shared -O $(ROOTOBJS) -o $(ROOTSO)
+	g++ -shared -O $(ROOTOBJS) -o $(ROOTSO) $(ROOTLIBS)
 
 libWCSim.a : $(ROOTOBJS)
 	$(RM) $@
