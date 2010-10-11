@@ -569,7 +569,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	//First the glass					//***replica
 	G4VPhysicalVolume* phys_WC_GlassFacePMT_Cell=	//this id is needed in order to enable some surface features	//***replica
 	new G4PVPlacement(0,                         // no rotation			//***replica
-					  G4ThreeVector(0., 0., -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness),                   // its position	//***replica
+					  G4ThreeVector(0., 0., -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness-PMTOffset),                   // its position	//***replica//"-PMTOffset" butts glass envelope up to blacksheet-aah 10/11/2010
 					  logicGlassFaceWCPMT,                // its logical volume   //***replica
 					  "WCPMTGlass",// its name //***replica
 					  logic_WC_PMT_Cell,         // its mother volume	//***replica
@@ -578,7 +578,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMailboxWC()
 	// Next the PMT (sensitive volume)	//***replica
 	G4VPhysicalVolume* phys_WC_PMT_Cell=	//***replica
 	new G4PVPlacement(0,                         // no rotation	//***replica
-					  G4ThreeVector(0., 0., -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness),                   // its position	//***replica
+					  G4ThreeVector(0., 0., -WC_ActiveLayer_Depth/2.+WCBlackSheetThickness-PMTOffset),                   // its position	//***replica//"-PMTOffset" butts glass envelope up to blacksheet-aah 10/11/2010
 					  logicWCPMT,                // its logical volume	//***replica
 					  "WCPMT",// its name		//***replica
 					  logic_WC_PMT_Cell,         // its mother volume	//***replica
