@@ -146,8 +146,18 @@ if ((aPV->GetName() == "WCPMTGlass"))
     
     // Put the location of this tube into the location map so we can find
     // its ID later.  It is coded by its tubeTag string.
-    
-    std::string tubeTag(aPV->GetName());
+    // This scheme must match that used in WCSimWCSD::ProcessHits()
+
+    std::string tubeTag;
+    G4LogicalVolume *mother = aPV->GetMotherLogical();
+    if (mother != NULL) {
+      // Prepend name of mother if it exists to distinguish different
+      // PMT hierarchies
+      tubeTag += mother->GetName();
+      tubeTag += ":";
+    }
+
+    tubeTag += aPV->GetName();
     for (int i=0; i <= aDepth; i++)
       tubeTag += ":" + replicaNoString[i];
     tubeLocationMap[tubeTag] = totalNumPMTs;

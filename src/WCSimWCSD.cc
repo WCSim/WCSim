@@ -105,6 +105,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   // G4cout << volumeName << " hit by optical Photon! " << G4endl;
     
   // Make the tubeTag string based on the replica numbers
+  // See WCSimDetectorConstruction::DescribeAndRegisterPMT() for matching
+  // tag construction.
 #ifndef USE_STRSTREAM
   std::stringstream tubeTag;
 #else
@@ -112,7 +114,12 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   std::ostrstream tubeTag(buffer,100);
 #endif
 
-  tubeTag << theTouchable->GetVolume()->GetName(); 
+  // Start tubeTag with mother to distinguish different PMT hierarchies
+  G4LogicalVolume *theMother = thePhysical->GetMotherLogical();
+  if (theMother != NULL)
+    tubeTag << theMother->GetName() << ":";
+
+  tubeTag << thePhysical->GetName(); 
   for (G4int i = theTouchable->GetHistoryDepth()-1 ; i >= 0; i--)
     tubeTag << ":" << theTouchable->GetVolume(i)->GetCopyNo(); 
 
