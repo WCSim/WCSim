@@ -83,8 +83,11 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag
   const G4float TenInch_maxQE = 0.24;
   
   // (JF) High QE tubes (Data from Hamamatsu/IceCube)
+  // (JF) The data point was origionally copied wrong,
+  // the QE at 420 nm should be 0.3168 instead of 0.3368
+  // fixed on 11/15/2010
   const G4float TenInchHQE[20] =
-    { 0.00, .0502, .2017, .2933, .3306, .3396, .3320, .3368, .2915, .2655, 
+    { 0.00, .0502, .2017, .2933, .3306, .3396, .3320, .3168, .2915, .2655, 
       .2268,  .1971, .1641, .1102, .0727, .0499, .0323, .0178, .0061, 0.00};
   
   const G4float TenInch_maxHQE = 0.3396;
