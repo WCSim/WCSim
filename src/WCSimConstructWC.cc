@@ -2150,10 +2150,11 @@ else {
 
       
       G4ThreeVector cellpos = G4ThreeVector(xoffset, yoffset, -1.0*PMTOffset);     
+      G4double WCBarrelEffRadius = WCIDDiameter/2. - WCCapPMTSpacing;
 
       double comp = xoffset*xoffset + yoffset*yoffset 
-	- 2.0 * WCBarrelPMTRadius * sqrt(xoffset*xoffset+yoffset*yoffset)
-	+ WCBarrelPMTRadius*WCBarrelPMTRadius;
+	- 2.0 * WCBarrelEffRadius * sqrt(xoffset*xoffset+yoffset*yoffset)
+	+ WCBarrelEffRadius*WCBarrelEffRadius;
       if ( (comp > WCPMTRadius*WCPMTRadius) && ((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) < WCCapEdgeLimit) ) {
 
 	G4VPhysicalVolume* physiCapPMTGlass =
