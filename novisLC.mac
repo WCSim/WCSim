@@ -1,0 +1,48 @@
+# Sampe setup macro with no visualization
+
+/run/verbose 0
+/tracking/verbose 0
+/hits/verbose 0
+
+## select the input nuance-formatted vector file
+## you can of course use your own
+#/mygen/vecfile inputvectorfile
+#/mygen/vecfile h2o.2km.001-009x3_G4.kin
+#/mygen/vecfile mu+.out
+
+# Or you can use the G4 Particle Gun
+
+#Generator filling uniformely the FV
+/mygen/generator fill
+/gun/particle e-
+/gun/energy 500 MeV
+
+#Normal generator
+#/mygen/generator normal
+#/gun/particle e-
+#/gun/direction 0 0 -1 
+#/gun/position 0 0 0 cm 
+#/gun/energy 50 MeV
+
+## change the name of the output root file, default = wcsim.root
+#/WCSimIO/RootFile wcsim.root
+
+## select the geometry
+
+#/WCSim/WCgeom DUSEL_100kton_10inch_40perCent
+#/WCSim/WCgeom DUSEL_100kton_10inch_HQE_30perCent
+#/WCSim/WCgeom DUSEL_100kton_10inch_HQE_30perCent_Gd
+#/WCSim/WCgeom DUSEL_150kton_10inch_HQE_30perCent
+#/WCSim/WCgeom 150kTMailbox_10inch_HQE_30perCent
+#/WCSim/WCgeom 150kTMailbox_10inch_40perCent
+#/WCSim/Construct
+
+##Light Collector setup: true for yes and false for no, the default is true
+#/WCSim/ConstructLC false
+#/WCSim/Construct
+
+
+/WCSimIO/RootFile test_LC.root
+/run/beamOn 10
+
+

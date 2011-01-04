@@ -1,0 +1,30 @@
+#ifndef WCSimRunActionMessenger_h
+#define WCSimRunActionMessenger_h 1
+
+class WCSimRunAction;
+class G4UIdirectory;
+class G4UIcmdWithAString;
+
+#include "G4UImessenger.hh"
+#include "globals.hh"
+
+class WCSimRunActionMessenger: public G4UImessenger
+{
+ public:
+  WCSimRunActionMessenger(WCSimRunAction* mpga);
+  ~WCSimRunActionMessenger();
+  
+ public:
+  void     SetNewValue(G4UIcommand* command, G4String newValues);
+  
+ private:
+  WCSimRunAction* WCSimRun;
+
+ private: //commands
+  G4UIdirectory*      WCSimIODir;
+  G4UIcmdWithAString* RootFile;
+};
+
+#endif
+
+
