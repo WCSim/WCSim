@@ -27,7 +27,7 @@
 //WCSimPhysicsList::WCSimPhysicsList():  G4VUserPhysicsList(), PhysicsMessenger(0)
 WCSimPhysicsList::WCSimPhysicsList():  G4VPhysicsConstructor(), PhysicsMessenger(0)
 {
- //defaultCutValue = 1.0*mm;
+ //defaultCutValue = 1.0*mm; //moved to WCSimPhysicsListFactory.cc
  SetVerboseLevel(1);
 
  PhysicsMessenger = new WCSimPhysicsMessenger(this);
@@ -526,6 +526,12 @@ void WCSimPhysicsList::ConstructHad()
 	  else if (binaryhad) {
 	    G4BinaryCascade* theBinaryModel = new G4BinaryCascade();
 	    theInelasticProcess->RegisterMe(theBinaryModel);
+
+	    G4LEProtonInelastic* theLEInelasticModel = new G4LEProtonInelastic;
+	    theLEInelasticModel->SetMinEnergy(10.1*GeV);
+	    theLEInelasticModel->SetMaxEnergy( 45.*GeV );
+	    theInelasticProcess->RegisterMe(theLEInelasticModel);
+
 	  }
 	  else {
 	    G4cout << "No secondary interaction model chosen! Using G4 BINARY." << G4endl;
@@ -594,6 +600,11 @@ void WCSimPhysicsList::ConstructHad()
 	    G4BinaryCascade* theBinaryModel = new G4BinaryCascade();
 	    theBinaryModel->SetMinEnergy(19*MeV);
 	    theInelasticProcess->RegisterMe(theBinaryModel);
+
+      G4LENeutronInelastic* theInelasticModel = new G4LENeutronInelastic;
+      theInelasticModel->SetMinEnergy(10.1*GeV);
+      theInelasticModel->SetMaxEnergy( 45.*GeV );
+      theInelasticProcess->RegisterMe(theInelasticModel);
 	  }
 	  else {
 	    G4cout << "No secondary interaction model chosen! Using G4 BINARY." << G4endl;
@@ -722,7 +733,7 @@ void WCSimPhysicsList::SetSecondaryHad(G4String hadval)
 }
 
 //----set cut values----
-/*
+/* Setting cuts occurs in WCSimPhysicsListFactory.cc
 void WCSimPhysicsList::SetCuts()
 {
   if (verboseLevel >0){
