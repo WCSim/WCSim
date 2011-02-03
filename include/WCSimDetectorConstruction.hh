@@ -62,6 +62,7 @@ public:
   void DUSEL_100kton_10inch_HQE_30perCent();
   void DUSEL_100kton_10inch_HQE_30perCent_Gd();
   void DUSEL_150kton_10inch_HQE_30perCent();
+  void DUSEL_200kton_10inch_HQE_15perCent();
   void UpdateGeometry();
   
   	//Related to MailBox Geometry   aah

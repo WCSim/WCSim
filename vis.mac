@@ -21,6 +21,7 @@
 #/WCSim/WCgeom DUSEL_100kton_10inch_HQE_30perCent
 #/WCSim/WCgeom DUSEL_100kton_10inch_HQE_30perCent_Gd
 #/WCSim/WCgeom DUSEL_150kton_10inch_HQE_30perCent
+/WCSim/WCgeom DUSEL_200kton_10inch_HQE_15perCent
 #/WCSim/WCgeom 150kTMailbox_10inch_HQE_30perCent
 #/WCSim/WCgeom 150kTMailbox_10inch_40perCent
 
@@ -38,7 +39,7 @@
 #/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
 
-#/WCSim/Construct
+/WCSim/Construct
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 /WCSim/SavePi0 false
@@ -58,7 +59,7 @@
 
 /vis/scene/add/hits
 /vis/scene/add/trajectories
-#/vis/scene/endOfEventAction accumulate
+/vis/scene/endOfEventAction accumulate
 
 ## select the input nuance-formatted vector file
 ## you can of course use your own
@@ -68,11 +69,11 @@
 
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
-/gun/particle e-
+/gun/particle mu-
 #/gun/particle pi0
 /gun/energy 1000 MeV
 /gun/direction 1 0 0 
-/gun/position 1 0 0 
+/gun/position 0 0 0 
 
 ## change the name of the output root file, default = wcsim.root
 /WCSimIO/RootFile wcsim.root

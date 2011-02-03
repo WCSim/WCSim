@@ -137,14 +137,14 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCPMTName             ="20inch";
   WCPMTRadius           =.254*m;  
   WCPMTExposeHeight     =.18*m; 
-  WCIDDiameter          = 33.7*m;
-  WCIDHeight            = 36.1*m; 
-  WCBarrelPMTOffset     = 0.109*m;
+  WCIDDiameter          = 33.7*m; //inner detector diameter
+  WCIDHeight            = 36.1*m; //"" "" height
+  WCBarrelPMTOffset     = 0.109*m; //offset from vertical
   WCBarrelNumPMTHorizontal  = 150; 
   WCBarrelNRings        = 17.;
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3; 
-  WCCapPMTSpacing       = 0.707*m; // spaceing like in skdetsim
+  WCCapPMTSpacing       = 0.707*m; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = 16.9*m;
   WCPMTGlassThickness   = .4*cm;
   WCBlackSheetThickness = 2.0*cm;
@@ -264,6 +264,29 @@ void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
   WCPMTGlassThickness   = .55*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+}
+
+void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_15perCent()
+{
+	WCPMTName             = "10inchHQE";
+	WCPMTRadius           = .127*m;
+	WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
+	WCIDDiameter          = 62.21*m;
+	WCIDHeight            = 79.96*m;
+	WCBarrelPMTOffset	    = WCPMTRadius;
+	WCPMTperCellHorizontal = 4.0;
+	WCPMTperCellVertical	 = 3.0;
+	WCPMTPercentCoverage	 = 15.0;
+	WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
+									 (10.0*WCPMTRadius));
+	WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
+															   2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
+								   WCPMTperCellVertical));
+	WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+	WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+	WCPMTGlassThickness   = .55*cm;
+	WCBlackSheetThickness = 2.0*cm;
+	WCAddGd               = false;
 }
 
 
