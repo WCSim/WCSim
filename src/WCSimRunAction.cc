@@ -8,6 +8,9 @@
 
 #include "jhfNtuple.h"
 
+#ifdef REFLEX_DICTIONARY
+#include "Cintex/Cintex.h"
+#endif
 #include "TROOT.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -43,6 +46,10 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
   numberOfEventsGenerated = 0;
   numberOfTimesWaterTubeHit = 0;
   numberOfTimesCatcherHit = 0;
+
+#ifdef REFLEX_DICTIONARY
+  ROOT::Cintex::Cintex::Enable();
+#endif
 
   // Needed for Root 4.00/04
   WCSimRootEvent::Class()->GetStreamerInfo()->Optimize(kFALSE);
