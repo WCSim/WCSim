@@ -58,11 +58,11 @@ public:
   // Related to the WC geometry
   void SetSuperKGeometry();
   void DUSEL_100kton_10inch_40perCent();
-  void DUSEL_100kton_10inch_HQE_15perCent();
+  void DUSEL_100kton_10inch_HQE_12perCent();
   void DUSEL_100kton_10inch_HQE_30perCent();
   void DUSEL_100kton_10inch_HQE_30perCent_Gd();
   void DUSEL_150kton_10inch_HQE_30perCent();
-  void DUSEL_200kton_10inch_HQE_15perCent();
+  void DUSEL_200kton_10inch_HQE_12perCent();
   void UpdateGeometry();
   
   	//Related to MailBox Geometry   aah

@@ -174,7 +174,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
   WCAddGd               = false;
 }
 
-void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_15perCent()
+void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
 {
   WCPMTName             = "10inchHQE";
   WCPMTRadius           = .127*m;
@@ -184,7 +184,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_15perCent()
   WCBarrelPMTOffset	    = WCPMTRadius;
   WCPMTperCellHorizontal = 4.0;
   WCPMTperCellVertical	 = 3.0;
-  WCPMTPercentCoverage	 = 15.0;
+  WCPMTPercentCoverage	 = 12.0;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
                                     (10.0*WCPMTRadius));
   WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
@@ -266,7 +266,7 @@ void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
   WCAddGd               = false;
 }
 
-void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_15perCent()
+void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
 {
 	WCPMTName             = "10inchHQE";
 	WCPMTRadius           = .127*m;
@@ -276,7 +276,7 @@ void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_15perCent()
 	WCBarrelPMTOffset	    = WCPMTRadius;
 	WCPMTperCellHorizontal = 4.0;
 	WCPMTperCellVertical	 = 3.0;
-	WCPMTPercentCoverage	 = 15.0;
+	WCPMTPercentCoverage	 = 12.0;
 	WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
 									 (10.0*WCPMTRadius));
 	WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
