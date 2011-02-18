@@ -34,6 +34,8 @@ const int WCSimWCDigitizer::GlobalThreshold = 25 ; // # hit PMTs
 // use skdetsim's 1pe distribution
 
 const double WCSimWCDigitizer::PMTDarkRate = 4.0; // kHz
+
+/* original values from rn1pe.F (apdetsim) */ 
 const G4float qpe0[501] = {
     // 1
       0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
@@ -150,7 +152,6 @@ const G4float qpe0[501] = {
 };
 
 
-
 extern "C" void skrn1pe_(float* );
 //extern "C" void rn1pe_(float* ); // 1Kton
 
@@ -167,17 +168,26 @@ WCSimWCDigitizer::~WCSimWCDigitizer() {;}
 
 G4double WCSimWCDigitizer::rn1pe(){
   G4double random = G4UniformRand();
+  G4double random2 = G4UniformRand();
   G4int i;
   for(i = 0; i < 501; i++){
     if (random <= qpe0[i]) break;
   }
   if(i==500)
     random = G4UniformRand();
-#ifndef TUNED_1PE
-  return (G4double(i-50) + random)/22.83;
-#else
-  return (G4double(i-50) + random)*0.95/22.83;
-#endif
+
+  /* GC: 2 Feb 2011
+     Small bug fixed: 
+     A new random number (random2) must be added to the binning.
+     The TUNED_1PE statement has never taken into account, so it can be removed
+  */
+// #ifndef TUNED_1PE
+//  return (G4double(i-50) + random)/22.83;
+// #else
+//  return (G4double(i-50) + random)*0.95/22.83;
+// #endif
+
+  return (G4double(i-50) + random2)/22.83;
 }
 
 
@@ -190,7 +200,7 @@ void WCSimWCDigitizer::Digitize()
   
   // Get the Associated Hit collection IDs
   G4int WCHCID = DigiMan->GetHitsCollectionID("glassFaceWCPMT");
-
+  
   // The Hits collection
   WCSimWCHitsCollection* WCHC = 
     (WCSimWCHitsCollection*)(DigiMan->GetHitsCollection(WCHCID));
@@ -338,12 +348,14 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCHitsCollection* WCHC,G4int G)
 {
 
   G4float timingConstant = 0.0;
-  
+
   if (round(PMTSize) == 0.254*m)      // 20 inch tube
-    //      timingConstant = 3.0;      // sqrt(3.0ns) @1pe + 1ns = 2.7 ns  
+    //timingConstant = 3.0;      // sqrt(3.0ns) @1pe + 1ns = 2.7 ns  
     // M Fechner : essai 
     //      timingConstant = 8.3885;
+
     timingConstant = 10.0;  //actual value is 13 nanoseconds
+
   else if (round(PMTSize) == 0.1016*m) // 8 inch tube
     //      timingConstant = .58;      // sqrt(.58ns) @1pe + 1ns = 1.76 ns  
     timingConstant = 1.890; // same scaling, M Fechner
@@ -378,6 +390,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCHitsCollection* WCHC,G4int G)
       // means that we need to increase the collected light by 
       // (efficiency-1)*100% to 
       // match K2K 1KT data  : maybe due to PMT curvature ?
+
       G4double efficiency = 0.985; // with skrn1pe (AP tuning) & 30% QE increase in stacking action
       
       // Get the information from the hit
@@ -434,7 +447,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCHitsCollection* WCHC,G4int G)
 	  // looking at SK's jitter function for 20" tubes
 	  if (timingResolution < 0.58) timingResolution=0.58;
 	  
-	  G4double digihittime = -TriggerTimes[G]
+	  G4double digihittime = // M. Smy: fix later -TriggerTimes[G]
 	    + WCSimWCDigitizer::offset
 	    + firstHitTime
 	    + G4RandGauss::shoot(0.0,timingResolution);
