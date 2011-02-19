@@ -35,7 +35,7 @@ const int WCSimWCDigitizer::GlobalThreshold = 25 ; // # hit PMTs
 
 const double WCSimWCDigitizer::PMTDarkRate = 4.0; // kHz
 
-/* original values from rn1pe.F (apdetsim) */ 
+/* GC: original values from rn1pe.F (apdetsim) */ 
 const G4float qpe0[501] = {
     // 1
       0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
@@ -175,17 +175,6 @@ G4double WCSimWCDigitizer::rn1pe(){
   }
   if(i==500)
     random = G4UniformRand();
-
-  /* GC: 2 Feb 2011
-     Small bug fixed: 
-     A new random number (random2) must be added to the binning.
-     The TUNED_1PE statement has never taken into account, so it can be removed
-  */
-// #ifndef TUNED_1PE
-//  return (G4double(i-50) + random)/22.83;
-// #else
-//  return (G4double(i-50) + random)*0.95/22.83;
-// #endif
 
   return (G4double(i-50) + random2)/22.83;
 }
@@ -447,7 +436,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCHitsCollection* WCHC,G4int G)
 	  // looking at SK's jitter function for 20" tubes
 	  if (timingResolution < 0.58) timingResolution=0.58;
 	  
-	  G4double digihittime = // M. Smy: fix later -TriggerTimes[G]
+	  G4double digihittime = -TriggerTimes[G]
 	    + WCSimWCDigitizer::offset
 	    + firstHitTime
 	    + G4RandGauss::shoot(0.0,timingResolution);
