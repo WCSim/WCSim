@@ -1,0 +1,13 @@
+/run/verbose 0
+/tracking/verbose 0
+/hits/verbose 0
+/WCSim/SavePi0 false
+/mygen/generator normal
+/gun/particle e-
+/gun/energy 1000 MeV
+/gun/direction 1 0 0 
+/gun/position 1 0 0 
+
+/WCSimIO/RootFile electron.root
+
+/run/beamOn 100

@@ -5,6 +5,7 @@
 #include "WCSimWCHit.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCDigitizer.hh"
+#include "WCSimLBNEDigitizer.hh"
 #include "WCSimDetectorConstruction.hh"
 
 #include "G4Event.hh"
@@ -22,6 +23,7 @@
 #include "G4DigiManager.hh"
 #include "G4UnitsTable.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
+#include "TF1.h"
 
 #include <set>
 #include <iomanip>
@@ -36,6 +38,8 @@
 
 #define _SAVE_RAW_HITS
 
+const bool use_old_digi = false;
+
 WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun, 
 				     WCSimDetectorConstruction* myDetector, 
 				     WCSimPrimaryGeneratorAction* myGenerator)
@@ -44,8 +48,50 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
 {
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
 
-  WCSimWCDigitizer* WCDM = new WCSimWCDigitizer( "WCReadout");
-  DMman->AddNewModule(WCDM);
+  if (use_old_digi) {
+    WCSimWCDigitizer* WCDM = new WCSimWCDigitizer( "WCReadout");
+    DMman->AddNewModule(WCDM);
+  } else {
+    WCSimLBNEDigitizer* lbneDM = new WCSimLBNEDigitizer("WCReadout");
+    WCSimDaqChannelConfig fChannelConfig;
+    WCSimLBNEDigitizerConfig fConfig;
+    fChannelConfig.pmtPulseMu = 2.26;
+    fChannelConfig.pmtPulseSigma = 0.23;
+    fChannelConfig.pmtPulsePeakTime = exp(fChannelConfig.pmtPulseMu - fChannelConfig.pmtPulseSigma * fChannelConfig.pmtPulseSigma);
+    
+    fChannelConfig.integrationDiscriminatorThreshold = 0.01;
+    fChannelConfig.integrationLag = 10.0;
+    fChannelConfig.integrationWindow = 400.0;
+    fChannelConfig.pedestalChargeRMS = 0.0; // no pedestal smearing
+
+    fChannelConfig.triggerDiscriminatorThreshold = fChannelConfig.integrationDiscriminatorThreshold;
+    fChannelConfig.triggerCoincidenceWindow = 200.0;
+    
+    fConfig.nhitThreshold = 25;
+    fConfig.gateBeginDelta = -400.0;
+    fConfig.gateEndDelta = 950.0;
+    fConfig.pmtDarkRate = 0.0; // no dark hits
+    fConfig.cableDelay = 800.0;
+    
+    TF1 *gauss = new TF1("gauss","exp(-0.5 * (x-[0])**2 / [1]**2)", -10, 10);
+    
+    TH1D *fTimeDist = new TH1D("timeDist", ";Time (ns)", 100, -10, 10);
+    gauss->SetParameters(0.0, 3.0);
+    fTimeDist->FillRandom("gauss", 10000);
+    
+    TH1D *fChargeDist = new TH1D("chargeDist", ";Time (ns)", 100, 0, 2);
+    gauss->SetParameters(1.0, 0.1);
+    fChargeDist->FillRandom("gauss", 10000);
+    
+    lbneDM->SetConfig(fConfig);
+    lbneDM->SetChannelConfig(fChannelConfig);
+    lbneDM->SetTimeDistribution(fTimeDist);
+    lbneDM->SetChargeDistribution(fChargeDist);
+    
+    delete gauss;
+    
+    DMman->AddNewModule(lbneDM);
+  }
 }
 
 WCSimEventAction::~WCSimEventAction(){}
@@ -110,31 +156,39 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
   // Get a pointer to the Digitizing Module Manager
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
+  
+  if (use_old_digi) {
+    // Get a pointer to the WC Digitizer module
+    WCSimWCDigitizer* WCDM =
+      (WCSimWCDigitizer*)DMman->FindDigitizerModule("WCReadout");
 
-  // Get a pointer to the WC Digitizer module
-  WCSimWCDigitizer* WCDM =
-    (WCSimWCDigitizer*)DMman->FindDigitizerModule("WCReadout");
+    // new MFechner, aug 2006
+    // need to clear up the old info inside Digitizer
+    WCDM->ReInitialize();
 
-  // new MFechner, aug 2006
-  // need to clear up the old info inside Digitizer
-  WCDM->ReInitialize();
+    // Figure out what size PMTs we are using in the WC detector.
+    G4float PMTSize = detectorConstructor->GetPMTSize();
+    WCDM->SetPMTSize(PMTSize);
 
-  // Figure out what size PMTs we are using in the WC detector.
-  G4float PMTSize = detectorConstructor->GetPMTSize();
-  WCDM->SetPMTSize(PMTSize);
+    // Digitize the hits
+    //  TStopwatch* ms = new TStopwatch();
+    // ms->Start();
+    WCDM->Digitize();
+    //ms->Stop();
+    //std::cout << " Digtization :  Real = " << ms->RealTime() 
+    //	    << " ; CPU = " << ms->CpuTime() << "\n";  
+    } else {
+      WCSimLBNEDigitizer* WCDM =
+        (WCSimLBNEDigitizer*)DMman->FindDigitizerModule("WCReadout");
 
-  // Digitize the hits
-  //  TStopwatch* ms = new TStopwatch();
-  // ms->Start();
-  WCDM->Digitize();
-  //ms->Stop();
-  //std::cout << " Digtization :  Real = " << ms->RealTime() 
-  //	    << " ; CPU = " << ms->CpuTime() << "\n";  
+      WCDM->SetNumPmts(detectorConstructor->GetTotalNumPmts());
+      WCDM->Digitize();
+    }
 
-  // Get the digitized collection for the WC
-  G4int WCDCID = DMman->GetDigiCollectionID("WCDigitizedCollection");
-  WCSimWCDigitsCollection * WCDC = (WCSimWCDigitsCollection*)
-    DMman->GetDigiCollection(WCDCID);
+    // Get the digitized collection for the WC
+    G4int WCDCID = DMman->GetDigiCollectionID("WCDigitizedCollection");
+    WCSimWCDigitsCollection * WCDC = (WCSimWCDigitsCollection*)
+      DMman->GetDigiCollection(WCDCID);
   
   // To use Do like This:
   // --------------------
@@ -388,8 +442,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   WCSimRootTrigger* wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   // get number of gates
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
-  WCSimWCDigitizer* WCDM =
-    (WCSimWCDigitizer*)DMman->FindDigitizerModule("WCReadout");
+  WCSimAbstractDigitizer* WCDM =
+    (WCSimAbstractDigitizer*)DMman->FindDigitizerModule("WCReadout");
   int ngates = WCDM->NumberOfGatesInThisEvent(); 
   G4cout << "ngates =  " << ngates << "\n";
   for (int index = 0 ; index < ngates ; index++) 
@@ -663,6 +717,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	G4float gatestart;
 	int countdigihits = 0;
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
+	
+
 	for (k=0;k<WCDC->entries();k++)
 	  {
 	    if ( (*WCDC)[k]->HasHitsInGate(index)) {
@@ -670,7 +726,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 						  (*WCDC)[k]->GetTime(index),
 						  (*WCDC)[k]->GetTubeID());  
 	      sumq_tmp = sumq_tmp + (*WCDC)[k]->GetPe(index);
-	      
+
+
 	      countdigihits++;
 	      wcsimrootevent->SetNumDigitizedTubes(countdigihits);
 	      wcsimrootevent->SetSumQ(sumq_tmp);

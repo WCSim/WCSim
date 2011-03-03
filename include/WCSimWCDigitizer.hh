@@ -1,7 +1,7 @@
 #ifndef WCSimWCDigitizer_h
 #define WCSimWCDigitizer_h 1
 
-#include "G4VDigitizerModule.hh"
+#include "WCSimAbstractDigitizer.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"
 #include "globals.hh"
@@ -10,7 +10,7 @@
 #include <vector>
 
 
-class WCSimWCDigitizer : public G4VDigitizerModule
+class WCSimWCDigitizer : public WCSimAbstractDigitizer
 {
 public:
   
@@ -22,15 +22,15 @@ public:
   void ReInitialize() { DigiHitMap.clear(); TriggerTimes.clear(); }
     
 
-  int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
+  virtual int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
   
 public:
   void MakeHitsHistogram(WCSimWCHitsCollection*);
   void FindNumberOfGates();
   void FindNumberOfGatesFast();
   void DigitizeGate(WCSimWCHitsCollection* WCHC,G4int G);
-  void Digitize();
-  G4double GetTriggerTime(int i) { return TriggerTimes[i];}
+  virtual void Digitize();
+  virtual G4double GetTriggerTime(int i) { return TriggerTimes[i];}
 
   static G4double GetLongTime() { return LongTime;}
   static G4double GetPMTDarkRate() { return PMTDarkRate;}

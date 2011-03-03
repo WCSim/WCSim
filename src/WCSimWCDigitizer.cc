@@ -155,7 +155,7 @@ extern "C" void skrn1pe_(float* );
 //extern "C" void rn1pe_(float* ); // 1Kton
 
 WCSimWCDigitizer::WCSimWCDigitizer(G4String name)
-  :G4VDigitizerModule(name)
+  : WCSimAbstractDigitizer(name)
 {
   G4String colName = "WCDigitizedCollection";
   collectionName.push_back(colName);  
