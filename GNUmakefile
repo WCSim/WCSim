@@ -40,7 +40,7 @@ EXTRALIBS += $(ROOTLIBS)
 
 EXTRA_LINK_DEPENDENCIES := 
 
-.PHONY: all
+.PHONY: all test
 all: rootcint lib bin shared libWCSim.a
 
 # Note dependencies not yet set up right yet
@@ -62,5 +62,8 @@ libWCSim.a : $(ROOTOBJS)
 	rootcint  -f ./src/WCSimRootDict.cc -c -I./include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimRootLinkDef.hh
 
 rootcint: ./src/WCSimRootDict.cc
+
+test: $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/libWCSim.a
+	$(MAKE) -C test
 
 include $(G4INSTALL)/config/binmake.gmk
