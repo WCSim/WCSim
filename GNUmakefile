@@ -40,7 +40,7 @@ EXTRALIBS += $(ROOTLIBS)
 
 EXTRA_LINK_DEPENDENCIES := 
 
-.PHONY: all test
+.PHONY: all verification
 all: rootcint lib bin shared libWCSim.a
 
 # Note dependencies not yet set up right yet
@@ -63,7 +63,7 @@ libWCSim.a : $(ROOTOBJS)
 
 rootcint: ./src/WCSimRootDict.cc
 
-test: $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/libWCSim.a
-	$(MAKE) -C test
+verification: $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/libWCSim.a
+	$(MAKE) -C verification
 
 include $(G4INSTALL)/config/binmake.gmk
