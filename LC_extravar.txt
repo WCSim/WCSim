@@ -1,0 +1,23 @@
+
+#Karim ZBIRI, 03/22/2011
+
+Description of the extra variables introduced into WCSimConstructWC.cc for 
+winston cone purpose:
+
+The configuration of the geometry in WCSim is based on the PMT radius, i.e.
+the cell dimension, the pmt spacing...etc. John Felde made the geometry
+setup, it is suitable to refer to his several presentations available 
+on docdb about the subject. 
+To insert the cones within the geometry, but at the same time
+being able to not affect the coverage which depends on the pmt dimension
+a new variable is introduced: WCPMTRadiusEff, this variable controls the 
+dimension of the cell to let to accommodate the cones. There is also another 
+variable: offset, the role of this variable is to adjust the cone on 
+the pmt by avoiding any overlap between them.
+There is also, the boolean variable "addLC", which is set through the
+file.mac, it is used to set or not the winston cone.
+
+The coordinates of the cones are taken with respect to those of the pmts, 
+this is also the case for the symmetry operations.The logical and physical 
+volumes of the cones are declared in similar way to the pmts's ones, as 
+described in Geant4 manual.

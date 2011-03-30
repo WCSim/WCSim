@@ -1,0 +1,30 @@
+/vis/viewer/select viewer-0
+
+#/vis/open OGLSX
+
+/vis/drawVolume WCBarrelCell
+/vis/viewer/set/style surface 
+/vis/viewer/set/culling global true
+/vis/viewer/set/upVector 0 0 1
+/vis/viewer/set/viewpointThetaPhi 125 160 deg
+
+/vis/geometry/set/visibility WCPMT -1 1
+/vis/geometry/set/forceSolid WCPMT -1 1
+#/vis/geometry/set/forceWireframe WCPMT -1 1
+/vis/geometry/set/colour WCPMT -1 1 0 0 0.05
+
+/vis/geometry/set/visibility LC_plastic -1 1
+/vis/geometry/set/forceSolid LC_plastic -1 1
+/vis/geometry/set/colour LC_plastic -1 0 1 0 0.05
+
+/vis/geometry/set/visibility GlassFaceWCPMT -1 1
+/vis/geometry/set/forceSolid GlassFaceWCPMT -1 1
+
+#/vis/viewer/zoom 1.5
+/vis/viewer/flush
+
+#/vis/ogl/set/printMode vectored
+#/vis/ogl/set/transparency 1
+#/vis/ogl/set/printSize 2000 2000
+#/vis/ogl/set/printFilename wls
+#/vis/ogl/printEPS

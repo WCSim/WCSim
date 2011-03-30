@@ -1,0 +1,45 @@
+
+#Karim ZBIRI, 03/21/2011
+
+Note for the Light Cone code usage:
+
+0- very important: do not forget to set the adequate option for the the PMT QE.
+
+1- the command ConstructLC setup the Winston cone: 
+true to set the Winston cone, otherwise false.
+
+2- the command ConstructWLSP setup the WLS Plates: 
+true to set the WLS Plates, otherwise false.
+
+3- the command ConstructWLS setup the WLS: 
+true to set the WLS, otherwise false.
+
+4- There is an additional primary particles generator to fill uniformely
+the FV, to use it do the following:
+
+i- /mygen/generator fill
+
+ii-Set the type of the particles and its energy as usual with the commands
+/gun/particle and /gun/energy
+
+iii-There is a file "genfile.txt" containing the positions and the directions
+of 1e5 particles, generated for the 100kton configuration. If more statistics 
+are needed a biggest file might be generated in the same format. Make sure 
+to have the right path to this file into the WCSimPrimaryGeneratorAction.cc.
+
+Get a look at novisLC.mac, it is a typical file.mac example.
+
+
+#Xin Qian 03/29/11
+Update: 
+1. Resolve the bug that one has to recompile the code to change the LC options
+1.1 I have to move the material definition in WLSP to material construction
+1.2 I also have to move the plate_size into WCSimConstructWC.cc ConstructWLSP
+
+2. Add a few script into the analysis directory for plotting purpose
+
+3. Validate the WLSP code with William
+
+4. Validate the WLS film code. 
+
+5. Go throug the code/ Check against old WCSim_WLS and WCSim_SVN
