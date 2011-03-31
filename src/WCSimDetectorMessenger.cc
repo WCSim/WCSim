@@ -219,11 +219,20 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	if(command == ConstructWLSP) {
 	  
 	  WCSimDetector->setWLSP(ConstructWLSP->GetNewBoolValue(newValue));
+	  if (WCSimDetector->getWLSP() && WCSimDetector->getLC()){
+	    G4cout << "You can not turn on both WLSP and LC. Turn off both WLSP and LC" << G4endl;
+	    WCSimDetector->setWLSP(false);
+	    WCSimDetector->setLC(false);
+	  }
 	}
 
 	if(command == ConstructLC) {
-	  
 	  WCSimDetector->setLC(ConstructLC->GetNewBoolValue(newValue));
+	  if (WCSimDetector->getWLSP() && WCSimDetector->getLC()){
+	    G4cout << "You can not turn on both WLSP and LC. Turn off both WLSP and LC" << G4endl;
+	    WCSimDetector->setWLSP(false);
+	    WCSimDetector->setLC(false);
+	  }
 	}
 
 	if(command == WCConstruct) {

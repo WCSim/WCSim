@@ -72,12 +72,14 @@ public:
 
   G4bool addWLS;
   void setWLS(G4bool);
+  G4bool getWLS(){return addWLS;};
 
   void ConstructLC();
   G4bool addLC;
   WCSimLC *logiLC;
   G4double  offset;
   void setLC(G4bool);
+  G4bool getLC(){return addLC;};
   
 
 
@@ -87,6 +89,7 @@ public:
   G4bool addWLSP;
   G4double WLSP_offset;
   void setWLSP(G4bool);
+  G4bool getWLSP(){return addWLSP;};
   G4int Plate_size;
   void setWLSP_size(G4int);
 
