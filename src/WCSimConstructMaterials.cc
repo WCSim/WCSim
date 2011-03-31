@@ -639,17 +639,19 @@ void WCSimDetectorConstruction::ConstructMaterials()
        0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
        0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m};
 
-      // absorption length for acrylic
-   G4double ABSORPTION_WLS[NUMENTRIES_water]={12.0106*cm, 12.0106*cm, 8.15463*cm, 8.1707*cm, 4.97081*cm, 8.15463*cm, 
-					      8.15463*cm, 8.15463*cm, 6.17999*cm, 6.17284*cm, 6.17284*cm, 6.17284*cm, 
-					      6.17284*cm, 4.15611*cm, 6.17284*cm, 6.16886*cm, 6.17131*cm, 4.96598*cm, 
-					      4.15554*cm, 4.15543*cm, 4.96598*cm, 4.15386*cm, 4.15254*cm, 4.15301*cm, 
-					      3.57002*cm, 3.57002*cm, 3.13035*cm, 3.13008*cm, 3.13008*cm, 2.78668*cm, 
-					      2.78668*cm, 2.51134*cm, 2.51117*cm, 2.51109*cm, 2.28524*cm, 2.28489*cm, 
-					      2.09661*cm, 1.93674*cm, 1.93674*cm, 1.79953*cm, 1.68047*cm, 1.48418*cm, 
-					      1.40227*cm, 1.32881*cm, 1.20295*cm, 1.0533*cm, 0.936758*cm, 0.843439*cm, 
-					      0.744562*cm, 0.666425*cm, 0.603125*cm, 0.527904*cm, 0.469379*cm, 0.408924*cm, 
-					      0.333711*cm, 0.251208*cm, 0.181283*cm, 0.140244*cm, 0.110381*cm, 0.0695699*cm};
+   G4double wls_factor = 2.;
+
+   // absorption length for acrylic
+   G4double ABSORPTION_WLS[NUMENTRIES_water]={12.0106*wls_factor*cm, 12.0106*wls_factor*cm, 8.15463*wls_factor*cm, 8.1707*wls_factor*cm, 4.97081*wls_factor*cm, 8.15463*wls_factor*cm, 
+					      8.15463*wls_factor*cm, 8.15463*wls_factor*cm, 6.17999*wls_factor*cm, 6.17284*wls_factor*cm, 6.17284*wls_factor*cm, 6.17284*wls_factor*cm, 
+					      6.17284*wls_factor*cm, 4.15611*wls_factor*cm, 6.17284*wls_factor*cm, 6.16886*wls_factor*cm, 6.17131*wls_factor*cm, 4.96598*wls_factor*cm, 
+					      4.15554*wls_factor*cm, 4.15543*wls_factor*cm, 4.96598*wls_factor*cm, 4.15386*wls_factor*cm, 4.15254*wls_factor*cm, 4.15301*wls_factor*cm, 
+					      3.57002*wls_factor*cm, 3.57002*wls_factor*cm, 3.13035*wls_factor*cm, 3.13008*wls_factor*cm, 3.13008*wls_factor*cm, 2.78668*wls_factor*cm, 
+					      2.78668*wls_factor*cm, 2.51134*wls_factor*cm, 2.51117*wls_factor*cm, 2.51109*wls_factor*cm, 2.28524*wls_factor*cm, 2.28489*wls_factor*cm, 
+					      2.09661*wls_factor*cm, 1.93674*wls_factor*cm, 1.93674*wls_factor*cm, 1.79953*wls_factor*cm, 1.68047*wls_factor*cm, 1.48418*wls_factor*cm, 
+					      1.40227*wls_factor*cm, 1.32881*wls_factor*cm, 1.20295*wls_factor*cm, 1.0533*wls_factor*cm, 0.936758*wls_factor*cm, 0.843439*wls_factor*cm, 
+					      0.744562*wls_factor*cm, 0.666425*wls_factor*cm, 0.603125*wls_factor*cm, 0.527904*wls_factor*cm, 0.469379*wls_factor*cm, 0.408924*wls_factor*cm, 
+					      0.333711*wls_factor*cm, 0.251208*wls_factor*cm, 0.181283*wls_factor*cm, 0.140244*wls_factor*cm, 0.110381*wls_factor*cm, 0.0695699*wls_factor*cm};
 
    //index of refraction of acrylic
    G4double RINDEX_WLS[NUMENTRIES_water]={1.48796, 1.48811, 1.48827, 1.48842, 1.48858, 1.48873, 
@@ -663,17 +665,18 @@ void WCSimDetectorConstruction::ConstructMaterials()
 					  1.53301, 1.53583, 1.54504, 1.55425, 1.56345, 1.57266, 
 					  1.58187, 1.59107, 1.60028, 1.60949, 1.61869, 1.6279};
    
+   G4double wls_abs_factor = 0.7;
 
-   G4double wls_abs[NUMENTRIES_water]={1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
-				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
-				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
-				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
-				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
-				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
-				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 
-				       1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 0.0226002*cm, 0.01*cm, 
-				       0.01*cm, 0.01*cm, 0.01*cm, 0.0170268*cm, 0.0356053*cm, 0.0634218*cm, 
-				       0.156279*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm, 1e+09*cm};
+   G4double wls_abs[NUMENTRIES_water]={1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 
+				       1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 
+				       1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 
+				       1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 
+				       1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 
+				       1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 
+				       1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 
+				       1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 0.0226002*wls_abs_factor*cm, 0.01*wls_abs_factor*cm, 
+				       0.01*wls_abs_factor*cm, 0.01*wls_abs_factor*cm, 0.01*wls_abs_factor*cm, 0.0170268*wls_abs_factor*cm, 0.0356053*wls_abs_factor*cm, 0.0634218*wls_abs_factor*cm, 
+				       0.156279*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm, 1e+09*wls_abs_factor*cm};
 
    G4double wls_emi[NUMENTRIES_water]={0, 0, 0, 0, 0, 0, 
 				       0, 0, 0, 0, 0, 0, 
