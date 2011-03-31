@@ -78,6 +78,8 @@ public:
   WCSimLC *logiLC;
   G4double  offset;
   void setLC(G4bool);
+  
+
 
   void ConstructWLSP();
   WCSimWLSP_LC *logiWLSPLC;
@@ -85,7 +87,8 @@ public:
   G4bool addWLSP;
   G4double WLSP_offset;
   void setWLSP(G4bool);
-
+  G4int Plate_size;
+  void setWLSP_size(G4int);
 
   	//Related to MailBox Geometry   aah
 	void SetMailBox100kTGeometry();

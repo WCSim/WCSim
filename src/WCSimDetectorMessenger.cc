@@ -61,10 +61,18 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   ConstructLC->SetParameterName("ContructLC",false);
 
   SavePi0 = new G4UIcmdWithAString("/WCSim/SavePi0", this);
-  SavePi0->SetGuidance("true or false");
+  SavePi0->SetGuidance("true or false\n");
   SavePi0->SetParameterName("SavePi0",false);
-  SavePi0->SetCandidates("true false");
+  SavePi0->SetCandidates("true " 
+			 "false ");
   SavePi0->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  WLSPSIZE = new G4UIcmdWithAString("/WCSim/WLSPSIZE", this);
+  WLSPSIZE->SetGuidance("0 or 1\n");
+  WLSPSIZE->SetParameterName("WLSPSIZE",false);
+  WLSPSIZE->SetCandidates("0 "
+			  "1 ");
+  WLSPSIZE->AvailableForStates(G4State_PreInit, G4State_Idle);
   
   
   PMTQEMethod = new G4UIcmdWithAString("/WCSim/PMTQEMethod", this);
@@ -90,6 +98,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete ConstructLC;
   delete PMTSize;
   delete PMTConfig;
+  delete WLSPSIZE;
   delete SavePi0;
   delete PMTQEMethod;
   delete tubeCmd;
@@ -164,6 +173,17 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		}else
 			G4cout << "That PMT size is not defined!" << G4endl;	
 	}	
+
+	if (command == WLSPSIZE){
+	  G4cout << "SET WLSP SIZE" << G4endl;
+	  if (newValue == "0"){
+	    WCSimDetector->setWLSP_size(0);
+	  }else if (newValue == "1"){
+	    WCSimDetector->setWLSP_size(1);
+	  }else{
+	    WCSimDetector->setWLSP_size(1);
+	  }
+	}
 
 	if(command == ConstructWLS) {
 	 

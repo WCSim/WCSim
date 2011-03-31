@@ -512,7 +512,6 @@ void WCSimDetectorConstruction::ConstructWLSP()
   G4Material* plat_material = man->FindOrBuildMaterial("G4_PLEXIGLASS");
   G4Material* plate_material;
 
-  int Plate_size = 1;
 
   if (Plate_size == 0){
     plate_material= man->FindOrBuildMaterial("BC408");

@@ -143,11 +143,7 @@ else
    G4double Rsigma_alpha = 0.2;  //0.2 for tyvek
    //G4OpticalSurface* 
    OpReflectorSurface = new G4OpticalSurface("ReflectorSurface");
-   
-   
-   G4LogicalSkinSurface* ReflectorSurface = 
-     new G4LogicalSkinSurface("WLSP_ReflectorSurface", this, OpReflectorSurface);
-   
+      
    OpReflectorSurface->SetType(dielectric_metal);
    OpReflectorSurface->SetFinish(ground);
    OpReflectorSurface->SetSigmaAlpha(Rsigma_alpha);
@@ -175,6 +171,9 @@ else
    
    OpReflectorSurface->SetMaterialPropertiesTable(ReST1);
  }
+
+G4LogicalSkinSurface* ReflectorSurface = 
+   new G4LogicalSkinSurface("WLSP_ReflectorSurface", this, OpReflectorSurface);
 
 
 
