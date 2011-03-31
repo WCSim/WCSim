@@ -57,9 +57,10 @@
 /gun/position 1 0 0 
 
 /WCSim/ConstructWLS false
-/WCSim/ConstructWLSP true
+/WCSim/ConstructWLSP false
 /WCSim/ConstructLC false
-/WCSim/WLSPSIZE 0
+/WCSim/WLSPSIZE 1
+/WCSim/PMTCollEff off
 /WCSim/Construct
 
 ## change the name of the output root file, default = wcsim.root

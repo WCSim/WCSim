@@ -109,6 +109,8 @@ public:
   G4int    GetTotalNumPmts() {return totalNumPMTs;}
   
   G4int    GetPMT_QE_Method(){return PMT_QE_Method;}
+  G4int    GetPMT_Coll_Eff(){return PMT_Coll_Eff;}
+
 
   G4double GetPMTSize1() {return WCPMTSize;}
 
@@ -125,6 +127,7 @@ public:
   void   SavePi0Info(G4bool choice) {pi0Info_isSaved=choice;}
   
   void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
+  void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
 
   // Geometry options
   void   SetIsUpright(G4bool choice) {isUpright = choice;}
@@ -215,6 +218,11 @@ private:
   //   Put all of it in the sensitive detector according to QE
   //   Good for low energy photons
   G4int PMT_QE_Method;
+
+  //XQ 03/31/11
+  // 0 to not use collection efficiency
+  // 1 to use
+  G4int PMT_Coll_Eff;
 
   G4double WCLength;
 

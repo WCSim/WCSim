@@ -107,16 +107,29 @@ private:
   Int_t fQe_flag;
   Int_t   fPrimaryParentID;
 
+  Double_t local_pos_x,local_pos_y,local_pos_z;
+  Double_t local_dir_x,local_dir_y,local_dir_z;
+
 public:
   WCSimRootCherenkovHitTime() {}
   WCSimRootCherenkovHitTime(Float_t truetime,Float_t wavelength, Int_t qeflag,
-			    Int_t   primaryParentID);
+			    Int_t   primaryParentID,
+			    Double_t local_x,Double_t local_y, Double_t local_z,
+			    Double_t local_dx,Double_t local_dy, Double_t local_dz
+			    );
   virtual ~WCSimRootCherenkovHitTime() { }
 
   Float_t   GetTruetime() { return fTruetime;}
   Float_t   GetWavelength() { return fwavelength;}
   Int_t     GetQe_flag() {return fQe_flag;}
   Int_t     GetParentID() { return fPrimaryParentID;}
+  Double_t  GetPosX(){return local_pos_x;};
+  Double_t  GetPosY(){return local_pos_y;};
+  Double_t  GetPosZ(){return local_pos_z;};
+  Double_t  GetDirX(){return local_dir_x;};
+  Double_t  GetDirY(){return local_dir_y;};
+  Double_t  GetDirZ(){return local_dir_z;};
+  
 
   ClassDef(WCSimRootCherenkovHitTime,1)  
 };
@@ -300,7 +313,14 @@ public:
 					  std::vector<Float_t> truetime,
 					   std::vector<Float_t> wavelength,
 					   std::vector<Int_t> qeflag,
-					  std::vector<Int_t>   primParID);
+					   std::vector<Int_t>   primParID,
+					   std::vector<Double_t>,
+					   std::vector<Double_t>,
+					   std::vector<Double_t>,
+					   std::vector<Double_t>,
+					   std::vector<Double_t>,
+					   std::vector<Double_t>
+					   );
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
 

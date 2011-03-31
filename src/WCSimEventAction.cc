@@ -635,6 +635,13 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       std::vector<float> wavelength;
       std::vector<int> qeflag;
       std::vector<int>   primaryParentID;
+      std::vector<double> local_x;
+      std::vector<double> local_y;
+      std::vector<double> local_z;
+      std::vector<double> local_dx;
+      std::vector<double> local_dy;
+      std::vector<double> local_dz;
+      
 
       int tubeID  = (*WCHC)[k]->GetTubeID();
       int totalpe = (*WCHC)[k]->GetTotalPe();
@@ -645,11 +652,19 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	wavelength.push_back((*WCHC)[k]->GetWL(l));
 	qeflag.push_back((*WCHC)[k]->GetQeflag(l));
 	primaryParentID.push_back((*WCHC)[k]->GetParentID(l));
+	local_x.push_back((*WCHC)[k]->GetLocalPosX(l));
+	local_y.push_back((*WCHC)[k]->GetLocalPosY(l));
+	local_z.push_back((*WCHC)[k]->GetLocalPosZ(l));
+	local_dx.push_back((*WCHC)[k]->GetLocalDirX(l));
+	local_dy.push_back((*WCHC)[k]->GetLocalDirY(l));
+	local_dz.push_back((*WCHC)[k]->GetLocalDirZ(l));
       }
 
       wcsimrootevent->AddCherenkovHit(tubeID,
 				      truetime,wavelength,qeflag,
-				      primaryParentID); 
+				      primaryParentID,
+				      local_x,local_y,local_z,
+				      local_dx,local_dy,local_dz); 
     } 
   }
 

@@ -59,6 +59,7 @@ class WCSimWCHit : public G4VHit
   void SetTrackID      (G4int track)                { trackID = track; };
   void SetEdep         (G4double de)                { edep = de; };
   void SetPos          (G4ThreeVector xyz)          { pos = xyz; };
+  
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
   void AddParentID     (G4int primParentID)
@@ -67,7 +68,9 @@ class WCSimWCHit : public G4VHit
   // This is temporarily used for the drawing scale
   void SetMaxPe(G4int number = 0)  {maxPe   = number;};
 
-  void AddPe(G4float hitTime, G4float hitWL, G4int qe_flag)  
+  void AddPe(G4float hitTime, G4float hitWL, G4int qe_flag,
+	     G4double lpos_x, G4double lpos_y, G4double lpos_z,
+	     G4double ldir_x, G4double ldir_y, G4double ldir_z)  
   {
     // First increment the totalPe number
     totalPe++; 
@@ -78,14 +81,34 @@ class WCSimWCHit : public G4VHit
     time.push_back(hitTime);
     wave_length.push_back(hitWL);
     qeflag.push_back(qe_flag);
+    local_pos_x.push_back(lpos_x);
+    local_pos_y.push_back(lpos_y);
+    local_pos_z.push_back(lpos_z);
+    local_dir_x.push_back(ldir_x);
+    local_dir_y.push_back(ldir_y);
+    local_dir_z.push_back(ldir_z);
+    
   }
  
   G4int         GetTubeID()     { return tubeID; };
   G4int         GetTrackID()    { return trackID; };
   G4ThreeVector GetPos()        { return pos; };
+
+
+  
+  
+
   G4int         GetTotalPe()    { return totalPe;};
   G4float       GetTime(int i)  { return time[i];};
   G4float       GetWL(int i) {return wave_length[i];};
+
+  G4double       GetLocalPosX(int i) {return local_pos_x[i];};
+  G4double       GetLocalPosY(int i) {return local_pos_y[i];};
+  G4double       GetLocalPosZ(int i) {return local_pos_z[i];};
+  G4double       GetLocalDirX(int i) {return local_dir_x[i];};
+  G4double       GetLocalDirY(int i) {return local_dir_y[i];};
+  G4double       GetLocalDirZ(int i) {return local_dir_z[i];};
+
   G4int         GetQeflag(int i) {return qeflag[i];}
   G4int         GetParentID(int i) { return primaryParentID[i];};
   
@@ -151,6 +174,8 @@ class WCSimWCHit : public G4VHit
   G4RotationMatrix rot;
   G4LogicalVolume* pLogV;
 
+ 
+
   // This is temporarily used for the drawing scale
   // Since its static *every* WChit sees the same value for this.
 
@@ -159,6 +184,14 @@ class WCSimWCHit : public G4VHit
   G4int                 totalPe;
   std::vector<G4float>  time;
   std::vector<G4float>  wave_length;
+
+  std::vector<G4double>  local_pos_x;
+  std::vector<G4double>  local_pos_y;
+  std::vector<G4double>  local_pos_z;
+  std::vector<G4double>  local_dir_x;
+  std::vector<G4double>  local_dir_y;
+  std::vector<G4double>  local_dir_z;
+
   std::vector<G4int>     qeflag;
   std::vector<G4int>    primaryParentID;
   G4int                 totalPeInGate;
