@@ -17,6 +17,7 @@
 #include "WCSimTrackingAction.hh"
 #include "WCSimSteppingAction.hh"
 #include "WCSimVisManager.hh"
+#include "WCSimRandomParameters.hh"
 #include <iostream>
 
 int main(int argc,char** argv)
@@ -33,6 +34,9 @@ int main(int argc,char** argv)
 
   // Get the tuning parameters
   UI->ApplyCommand("/control/execute tuning_parameters.mac");
+
+  // define random number generator parameters
+  WCSimRandomParameters *randomparameters = new WCSimRandomParameters();
 
   // UserInitialization classes (mandatory)
   enum DetConfiguration {wfm=1,fwm=2};
