@@ -121,7 +121,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   tubeTag << thePhysical->GetName(); 
   for (G4int i = theTouchable->GetHistoryDepth()-1 ; i >= 0; i--)
-    tubeTag << ":" << theTouchable->GetVolume(i)->GetCopyNo(); 
+    tubeTag << ":" << theTouchable->GetCopyNumber(i); 
+  //  tubeTag << ":" << theTouchable->GetVolume(i)->GetCopyNo(); 
 
 #ifdef USE_STRSTREAM
   tubeTag << std::ends;
