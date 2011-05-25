@@ -489,13 +489,13 @@ void WCSimDetectorConstruction::ConstructPMT()
 					 sphereRadius-wls_thickness,
 					 0.0*deg,360.0*deg,
 					 0.0*deg,glassdim);
-    G4SubtractionSolid* glassWCPMT = new G4SubtractionSolid("glassFaceWCPMT",tmpGlassWCPMT,cutOfTubs);
+    G4SubtractionSolid* glassWCPMT = new G4SubtractionSolid("GlassFaceWCPMT",tmpGlassWCPMT,cutOfTubs);
     
     
     logicGlassFaceWCPMT =
       new G4LogicalVolume(glassWCPMT,
 			  G4Material::GetMaterial("Glass"),
-			  "GlassFaceWCPMT",
+			  "glassFaceWCPMT",
 			  0,0,0);
     
     
