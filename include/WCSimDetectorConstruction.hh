@@ -76,6 +76,8 @@ public:
 
   void ConstructLC();
   G4bool addLC;
+  G4bool DaddLC; // default option for LCs
+  
   WCSimLC *logiLC;
   G4double  offset;
   void setLC(G4bool);
@@ -87,6 +89,8 @@ public:
   WCSimWLSP_LC *logiWLSPLC;
   WCSimWLSP_Reflector *logiWLSPReflector;
   G4bool addWLSP;
+  G4bool DaddWLSP; // default option for LCs
+
   G4double WLSP_offset;
   void setWLSP(G4bool);
   G4bool getWLSP(){return addWLSP;};

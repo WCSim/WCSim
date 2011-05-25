@@ -15,8 +15,8 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   genCmd->SetGuidance(" Available generators : muline, normal");
   genCmd->SetParameterName("generator",true);
   genCmd->SetDefaultValue("muline");
-  // genCmd->SetCandidates("muline normal");
-  genCmd->SetCandidates("muline normal fill");
+  genCmd->SetCandidates("muline normal");
+  
 
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
@@ -40,19 +40,12 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     {
       myAction->SetMulineEvtGenerator(true);
       myAction->SetNormalEvtGenerator(false);
-      myAction->SetNormalEvtFillGenerator(false);
+      
     }
     else if ( newValue == "normal")
     {
       myAction->SetMulineEvtGenerator(false);
       myAction->SetNormalEvtGenerator(true);
-       myAction->SetNormalEvtFillGenerator(false);
-   }
-    else if ( newValue == "fill")
-    {
-      myAction->SetMulineEvtGenerator(false);
-      myAction->SetNormalEvtGenerator(false);
-      myAction->SetNormalEvtFillGenerator(true);
     }
    }
 
@@ -74,8 +67,6 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
     { cv = "muline"; }
     if(myAction->IsUsingNormalEvtGenerator())
     { cv = "normal"; }
-    if(myAction->IsUsingNormalEvtFillGenerator())
-    { cv = "fill"; }
   }
   
   return cv;

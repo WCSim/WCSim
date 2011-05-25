@@ -21,8 +21,8 @@ public:
 public:
   void GeneratePrimaries(G4Event* anEvent);
 
-  //source file for genpos primaries
-  std::ifstream genFile;   
+ 
+
   
   // Normal gun setting calls these functions to fill jhfNtuple and Root tree
   void SetVtx(G4ThreeVector i)     { vtx = i; };
@@ -61,7 +61,7 @@ private:
   // Variables set by the messenger
   G4bool   useMulineEvt;
   G4bool   useNormalEvt;
-  G4bool   useNormalEvtFill;
+  
   std::fstream inputFile;
   G4String vectorFileName;
   G4bool   GenerateVertexInRock;
@@ -92,10 +92,10 @@ public:
   inline G4bool IsUsingNormalEvtGenerator()  { return useNormalEvt; }
 
   
-  inline void SetNormalEvtFillGenerator(G4bool choice) { useNormalEvtFill = choice; }
-  inline G4bool IsUsingNormalEvtFillGenerator()  { return useNormalEvtFill; }
+ 
   
- inline void OpenVectorFile(G4String fileName) 
+  
+  inline void OpenVectorFile(G4String fileName) 
   {
     if ( inputFile.is_open() ) 
       inputFile.close();

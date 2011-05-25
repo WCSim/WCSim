@@ -34,6 +34,7 @@ const int WCSimWCDigitizer::GlobalThreshold = 25 ; // # hit PMTs
 // use skdetsim's 1pe distribution
 
 const double WCSimWCDigitizer::PMTDarkRate = 4.0; // kHz
+/* GC: original values from rn1pe.F (apdetsim) */ 
 const G4float qpe0[501] = {
     // 1
       0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
@@ -167,29 +168,29 @@ WCSimWCDigitizer::~WCSimWCDigitizer() {;}
 
 G4double WCSimWCDigitizer::rn1pe(){
   G4double random = G4UniformRand();
+  G4double random2 = G4UniformRand();
+
   G4int i;
   for(i = 0; i < 501; i++){
     if (random <= qpe0[i]) break;
   }
   if(i==500)
     random = G4UniformRand();
-#ifndef TUNED_1PE
-  return (G4double(i-50) + random)/22.83;
-#else
-  return (G4double(i-50) + random)*0.95/22.83;
-#endif
+
+  return (G4double(i-50) + random2)/22.83;
+
 }
 
 
 void WCSimWCDigitizer::Digitize()
 {
   DigitsCollection = new WCSimWCDigitsCollection
-    ("/WCSim/GlassFaceWCPMT",collectionName[0]); 
+    ("/WCSim/glassFaceWCPMT",collectionName[0]); 
    
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   
   // Get the Associated Hit collection IDs
-  G4int WCHCID = DigiMan->GetHitsCollectionID("GlassFaceWCPMT");
+  G4int WCHCID = DigiMan->GetHitsCollectionID("glassFaceWCPMT");
 
   // The Hits collection
   WCSimWCHitsCollection* WCHC = 

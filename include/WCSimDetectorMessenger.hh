@@ -13,7 +13,7 @@ class G4UIcmdWithAString;
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithABool.hh"
-#include "G4UIcmdWithADoubleAndUnit.hh"
+
 
 class WCSimDetectorMessenger: public G4UImessenger
 {

@@ -63,6 +63,7 @@ public:
   Float_t   GetM() const { return fM;}
   Float_t   GetP() const { return fP;}
   Float_t   GetE() const { return fE;}
+  Int_t     GetStartvol() { return fStartvol;}
   Int_t     GetStopvol() { return fStopvol;}
   Float_t   GetDir(Int_t i=0) {return (i<3) ? fDir[i] : 0;} 
   Float_t   GetPdir(Int_t i=0) {return (i<3) ? fPdir[i] : 0;}

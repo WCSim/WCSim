@@ -82,10 +82,10 @@ TStopwatch* mystopw = new TStopwatch();
   fNtrack = 0;
 
   // TClonesArray of WCSimRootCherenkovHits
-    fCherenkovHits = new TClonesArray("WCSimRootCherenkovHit", 
-					    10000);
-    fCherenkovHitTimes = new TClonesArray("WCSimRootCherenkovHitTime", 
-					  10000);
+  fCherenkovHits = new TClonesArray("WCSimRootCherenkovHit", 
+				    10000);
+  fCherenkovHitTimes = new TClonesArray("WCSimRootCherenkovHitTime", 
+					10000);
   fNcherenkovhits = 0;
   fNcherenkovhittimes = 0;
 
@@ -319,7 +319,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vecto
   }
 
   Int_t WC_Index[2];
-WC_Index[0] = fNcherenkovhittimes-truetime.size(); //fCherenkovHitCounter-truetime.size();
+  WC_Index[0] = fNcherenkovhittimes-truetime.size(); //fCherenkovHitCounter-truetime.size();
   WC_Index[1] = truetime.size();
 
   TClonesArray &cherenkovhits = *fCherenkovHits;

@@ -62,11 +62,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   messenger = new WCSimPrimaryGeneratorMessenger(this);
   useMulineEvt = true;
   useNormalEvt = false;
-  useNormalEvtFill = false;
- 
-  //Fill generator source position
- 
-   genFile.open("genfile.txt", std::ios::in);
+  
   
 }
 
@@ -79,7 +75,7 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
              << " = " << _counterRock/(G4double)_counterCublic << G4endl;
   }
 
-  genFile.close();
+  
   inputFile.close();
   delete particleGun;
   delete messenger;
@@ -241,33 +237,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     SetBeamPDG(pdg);
   }
 
-  else if (useNormalEvtFill)
-    {    
-      // filling uniformly the FV
-      G4double x0,y0,z0,r1;    
-       G4double m1,m2,m3;
-
   
-       genFile >> x0 >> y0 >> z0 >> m1 >> m2 >> m3;
-
-
-  particleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-  particleGun->SetParticleMomentumDirection(G4ThreeVector(m1,m2,m3));
-  particleGun->GeneratePrimaryVertex(anEvent);
-  
-  G4ThreeVector P  =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
-  G4ThreeVector vtx=anEvent->GetPrimaryVertex()->GetPosition();
-  G4double m       =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
-  G4int pdg        =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
-  
-  G4ThreeVector dir  = P.unit();
-  G4double E         = std::sqrt((P.dot(P))+(m*m));
-  
-  SetVtx(vtx);
-  SetBeamEnergy(E);
-  SetBeamDir(dir);
-  SetBeamPDG(pdg); 
-    }
 
 }
 

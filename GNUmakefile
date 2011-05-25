@@ -27,7 +27,6 @@ else
 GEANT4_7_0 = 1
 endif
 
-CPPFLAGS += -g
 
 ifdef GEANT4_7_0
 CPPFLAGS += -DGEANT4_7_0 

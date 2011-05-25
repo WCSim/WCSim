@@ -137,6 +137,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCPMTName             ="20inch";
   WCPMTRadius           =.254*m;  
   WCPMTExposeHeight     =.18*m; 
+  WCPMTRadiusEff        =  WCPMTExposeHeight ;
   WCIDDiameter          = 33.7*m; //inner detector diameter
   WCIDHeight            = 36.1*m; //"" "" height
   WCBarrelPMTOffset     = 0.109*m; //offset from vertical
@@ -149,9 +150,8 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCPMTGlassThickness   = .4*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-  // addWLS = false;
-  addLC=false; 
-  addWLSP=false;
+  DaddLC=false; 
+  DaddWLSP=false;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
@@ -162,20 +162,22 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 53.0*m;
   WCIDHeight            = 60.0*m;
-  WCBarrelPMTOffset	    = WCPMTRadiusEff;
+  WCBarrelPMTOffset	    = WCPMTRadius;
   WCPMTperCellHorizontal = 4.0;
   WCPMTperCellVertical	 = 3.0;
   WCPMTPercentCoverage	 = 40.0;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
                                     (10.0*WCPMTRadius));
   WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-                                    2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
+							     2*(WCBarrelPMTOffset+WCPMTRadiusEff))/(pi*WCIDDiameter)))/
                                     WCPMTperCellVertical));
   WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCPMTGlassThickness   = .55*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  DaddLC=false; 
+  DaddWLSP=false;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
@@ -186,20 +188,22 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 53.0*m;
   WCIDHeight            = 60.0*m;
-  WCBarrelPMTOffset	    = WCPMTRadiusEff;
+  WCBarrelPMTOffset	    = WCPMTRadius;
   WCPMTperCellHorizontal = 4.0;
   WCPMTperCellVertical	 = 3.0;
   WCPMTPercentCoverage	 = 12.0;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
                                     (10.0*WCPMTRadius));
   WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-                                    2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
+							     2*(WCBarrelPMTOffset+WCPMTRadiusEff))/(pi*WCIDDiameter)))/
                                     WCPMTperCellVertical));
   WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCPMTGlassThickness   = .55*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  DaddLC=true; 
+  DaddWLSP=true;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
@@ -210,20 +214,22 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 53.0*m;
   WCIDHeight            = 60.0*m;
-  WCBarrelPMTOffset	    = WCPMTRadiusEff;
+  WCBarrelPMTOffset	    = WCPMTRadius;
   WCPMTperCellHorizontal = 4.0;
   WCPMTperCellVertical	 = 3.0;
   WCPMTPercentCoverage	 = 30.0;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
-                                    (10.0*WCPMTRadius));
+				   (10.0*WCPMTRadius));
   WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-                                    2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
-                                    WCPMTperCellVertical));
+							     2*(WCBarrelPMTOffset+WCPMTRadiusEff))/(pi*WCIDDiameter)))/
+				 WCPMTperCellVertical));
   WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCPMTGlassThickness   = .55*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  DaddLC=false; 
+  DaddWLSP=false;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
@@ -234,20 +240,22 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 53.0*m;
   WCIDHeight            = 60.0*m;
-  WCBarrelPMTOffset	    = WCPMTRadiusEff;
+  WCBarrelPMTOffset	    = WCPMTRadius;
   WCPMTperCellHorizontal = 4.0;
   WCPMTperCellVertical	 = 3.0;
   WCPMTPercentCoverage	 = 30.0;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
-                                    (10.0*WCPMTRadius));
+				   (10.0*WCPMTRadius));
   WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-                                    2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
-                                    WCPMTperCellVertical));
+							     2*(WCBarrelPMTOffset+WCPMTRadiusEff))/(pi*WCIDDiameter)))/
+				 WCPMTperCellVertical));
   WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCPMTGlassThickness   = .55*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = true;
+  DaddLC=false; 
+  DaddWLSP=false;
 }
 
 void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
@@ -258,44 +266,48 @@ void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 64.0*m;
   WCIDHeight            = 60.0*m;
-  WCBarrelPMTOffset	    = WCPMTRadiusEff;
+  WCBarrelPMTOffset	    = WCPMTRadius;
   WCPMTperCellHorizontal = 4.0;
   WCPMTperCellVertical	 = 3.0;
   WCPMTPercentCoverage	 = 30.0;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
-                                    (10.0*WCPMTRadius));
+				   (10.0*WCPMTRadius));
   WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-                                    2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
-                                    WCPMTperCellVertical));
+							     2*(WCBarrelPMTOffset+WCPMTRadiusEff))/(pi*WCIDDiameter)))/
+				 WCPMTperCellVertical));
   WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCPMTGlassThickness   = .55*cm;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  DaddLC=false; 
+  DaddWLSP=false;
 }
 
 void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
 {
-	WCPMTName             = "10inchHQE";
-	WCPMTRadiusEff        = 0.275*m;
- 	WCPMTRadius           = .127*m;
-	WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
-	WCIDDiameter          = 62.21*m;
-	WCIDHeight            = 79.96*m;
-	WCBarrelPMTOffset	    = WCPMTRadiusEff;
-	WCPMTperCellHorizontal = 4.0;
-	WCPMTperCellVertical	 = 3.0;
-	WCPMTPercentCoverage	 = 12.0;
-	WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
-									 (10.0*WCPMTRadius));
-	WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-															   2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
-								   WCPMTperCellVertical));
-	WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
-	WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
-	WCPMTGlassThickness   = .55*cm;
-	WCBlackSheetThickness = 2.0*cm;
-	WCAddGd               = false;
+  WCPMTName             = "10inchHQE";
+  WCPMTRadiusEff        = 0.275*m;
+  WCPMTRadius           = .127*m;
+  WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
+  WCIDDiameter          = 62.21*m;
+  WCIDHeight            = 79.96*m;
+  WCBarrelPMTOffset	    = WCPMTRadius;
+  WCPMTperCellHorizontal = 4.0;
+  WCPMTperCellVertical	 = 3.0;
+  WCPMTPercentCoverage	 = 12.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
+				   (10.0*WCPMTRadius));
+  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
+							     2*(WCBarrelPMTOffset+WCPMTRadiusEff))/(pi*WCIDDiameter)))/
+				 WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCPMTGlassThickness   = .55*cm;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+  DaddLC=true; 
+  DaddWLSP=true;
 }
 
 
@@ -304,87 +316,99 @@ void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
 void WCSimDetectorConstruction::SetMailBox100kTGeometry()  // This should setup a 100kT (metric) Fiducial Volume
 {
 	// PMT stuff
-    WCPMTName               = "10inch";//normal QE 10 inch tube
-	WCPMTRadius				= .127*m; 
-	WCPMTExposeHeight		= WCPMTRadius - 0.01*m;
-	WCPMTGlassThickness		= .55*cm;
-	WCPMTPercentCoverage	= 10;	//% coverage
-	WCBlackSheetThickness	= 2.0*cm;
-	//Tank and Cavern Dimensions
-	WC_MB_Tank_Airgap		=2.0*m;	//Arbitrary here, but this is just the height of air between the top of the outer Veto_thickness and the beginning of the Cavern Dome
-	WC_MB_Dome_Height_fraction		=0.2;	//fraction should be <=0.5 
-	WC_MB_Veto_Thickness		=2.0*m;	// This is just the spacing (in water) between the outer side of the Blacksheet and the beginning of the fiducial volume
-	WC_MB_Buffer_Thickness	=2.5*m; //Distance between wall and beginning of the Fiducial volume
-	//Fiducial VOlume Stuff--these numbers are taken from table 9.1 of DUSEL LCAB Report #2, 7/2009, adjusted to Fiducial Volume (F.V.) and 2.5m gap between wall and F.V.
-	WC_MB_Fid_Length          = (45.3333*m+2*WC_MB_Veto_Thickness);// strictly speaking this isn't the fiducial length anymore, but increased by the veto thickness
-	WC_MB_Fid_Width           = (40.0*m+2*WC_MB_Veto_Thickness);
-	WC_MB_Fid_Depth           = (55.0*m+2*WC_MB_Veto_Thickness);	// how deep is the bottom layer of tubes at. Tank depth is a little more.
-	//	WC_MB_Fid_Length          = 1.0*m+2*WC_MB_Veto_Thickness;// tiny test detector!
-	//	WC_MB_Fid_Width           = 1.000*m+2*WC_MB_Veto_Thickness;// tiny test detector!
-	//	WC_MB_Fid_Depth           = 1.0*m+2*WC_MB_Veto_Thickness;// tiny test detector!
-    WCAddGd               = false;
+  WCPMTName               = "10inch";//normal QE 10 inch tube
+  WCPMTRadius				= .127*m; 
+  WCPMTExposeHeight		= WCPMTRadius - 0.01*m;
+  WCPMTRadiusEff        =  WCPMTExposeHeight ;
+  WCPMTGlassThickness		= .55*cm;
+  WCPMTPercentCoverage	= 10;	//% coverage
+  WCBlackSheetThickness	= 2.0*cm;
+  //Tank and Cavern Dimensions
+  WC_MB_Tank_Airgap		=2.0*m;	//Arbitrary here, but this is just the height of air between the top of the outer Veto_thickness and the beginning of the Cavern Dome
+  WC_MB_Dome_Height_fraction		=0.2;	//fraction should be <=0.5 
+  WC_MB_Veto_Thickness		=2.0*m;	// This is just the spacing (in water) between the outer side of the Blacksheet and the beginning of the fiducial volume
+  WC_MB_Buffer_Thickness	=2.5*m; //Distance between wall and beginning of the Fiducial volume
+  //Fiducial VOlume Stuff--these numbers are taken from table 9.1 of DUSEL LCAB Report #2, 7/2009, adjusted to Fiducial Volume (F.V.) and 2.5m gap between wall and F.V.
+  WC_MB_Fid_Length          = (45.3333*m+2*WC_MB_Veto_Thickness);// strictly speaking this isn't the fiducial length anymore, but increased by the veto thickness
+  WC_MB_Fid_Width           = (40.0*m+2*WC_MB_Veto_Thickness);
+  WC_MB_Fid_Depth           = (55.0*m+2*WC_MB_Veto_Thickness);	// how deep is the bottom layer of tubes at. Tank depth is a little more.
+  //	WC_MB_Fid_Length          = 1.0*m+2*WC_MB_Veto_Thickness;// tiny test detector!
+  //	WC_MB_Fid_Width           = 1.000*m+2*WC_MB_Veto_Thickness;// tiny test detector!
+  //	WC_MB_Fid_Depth           = 1.0*m+2*WC_MB_Veto_Thickness;// tiny test detector!
+  WCAddGd               = false;
+  DaddLC=false; 
+  DaddWLSP=false;
 }
 void WCSimDetectorConstruction::SetMailBox150kTGeometry_10inch_HQE_30perCent()  // This should setup a 150kT (metric) Fiducial Volume
 {
-	// PMT stuff
-    WCPMTName               = "10inchHQE";//high qe 10 " tube
-	WCPMTRadius				= .127*m; 
-	WCPMTExposeHeight		= WCPMTRadius - 0.01*m;
-	WCPMTGlassThickness		= .55*cm;
-	WCPMTPercentCoverage	= 30;	//% coverage
-	WCBlackSheetThickness	= 2.0*cm;
-	//Tank and Cavern Dimensions
-	WC_MB_Tank_Airgap		=2.0*m;	//Arbitrary here, but this is just the height of air between the top of the outer Veto_thickness and the beginning of the Cavern Dome
-	WC_MB_Dome_Height_fraction	=0.2;//fraction should be <=0.5
-	WC_MB_Veto_Thickness	=2.0*m;// This is just the spacing (in water) between the outer side of the Blacksheet and the beginning of the fiducial volume
-	WC_MB_Buffer_Thickness	=2.5*m; //Distance between wall and beginning of the Fiducial volume
-	//Fiducial VOlume Stuff--these numbers are taken from table 9.1 of DUSEL LCAB Report #2, 7/2009, adjusted to Fiducial Volume (F.V.) and 2.5m gap between wall and F.V.
-	WC_MB_Fid_Length		= (68.0*m+2*WC_MB_Veto_Thickness);	// strictly speaking this isn't the fiducial length anymore, but increased by the veto thickness
-	WC_MB_Fid_Width			= (40.0*m+2*WC_MB_Veto_Thickness);
-	WC_MB_Fid_Depth         = (55.0*m+2*WC_MB_Veto_Thickness);	// how deep is the bottom layer of tubes at. Tank depth is a little more.
-    WCAddGd               = false;
+  // PMT stuff
+  WCPMTName               = "10inchHQE";//high qe 10 " tube
+  WCPMTRadius				= .127*m; 
+  WCPMTExposeHeight		= WCPMTRadius - 0.01*m;
+  WCPMTRadiusEff        =  WCPMTExposeHeight ;
+  WCPMTGlassThickness		= .55*cm;
+  WCPMTPercentCoverage	= 30;	//% coverage
+  WCBlackSheetThickness	= 2.0*cm;
+  //Tank and Cavern Dimensions
+  WC_MB_Tank_Airgap		=2.0*m;	//Arbitrary here, but this is just the height of air between the top of the outer Veto_thickness and the beginning of the Cavern Dome
+  WC_MB_Dome_Height_fraction	=0.2;//fraction should be <=0.5
+  WC_MB_Veto_Thickness	=2.0*m;// This is just the spacing (in water) between the outer side of the Blacksheet and the beginning of the fiducial volume
+  WC_MB_Buffer_Thickness	=2.5*m; //Distance between wall and beginning of the Fiducial volume
+  //Fiducial VOlume Stuff--these numbers are taken from table 9.1 of DUSEL LCAB Report #2, 7/2009, adjusted to Fiducial Volume (F.V.) and 2.5m gap between wall and F.V.
+  WC_MB_Fid_Length		= (68.0*m+2*WC_MB_Veto_Thickness);	// strictly speaking this isn't the fiducial length anymore, but increased by the veto thickness
+  WC_MB_Fid_Width			= (40.0*m+2*WC_MB_Veto_Thickness);
+  WC_MB_Fid_Depth         = (55.0*m+2*WC_MB_Veto_Thickness);	// how deep is the bottom layer of tubes at. Tank depth is a little more.
+  WCAddGd               = false;
+  DaddLC=false; 
+  DaddWLSP=false;
 }
 
 void WCSimDetectorConstruction::SetMailBox150kTGeometry_10inch_40perCent()  // This should setup a 150kT (metric) Fiducial Volume
 {
-	// PMT stuff
-    WCPMTName               = "10inch";//normal qe 10 inch tube
-	WCPMTRadius				= .127*m; 
-	WCPMTExposeHeight		= WCPMTRadius - 0.01*m;
-	WCPMTGlassThickness		= .55*cm;
-	WCPMTPercentCoverage	= 40;	//% coverage
-	WCBlackSheetThickness	= 2.0*cm;
-	//Tank and Cavern Dimensions
-	WC_MB_Tank_Airgap		=2.0*m;	//Arbitrary here, but this is just the height of air between the top of the outer Veto_thickness and the beginning of the Cavern Dome
-	WC_MB_Dome_Height_fraction	=0.2;//fraction should be <=0.5
-	WC_MB_Veto_Thickness	=2.0*m;// This is just the spacing (in water) between the outer side of the Blacksheet and the beginning of the fiducial volume
-	WC_MB_Buffer_Thickness	=2.5*m; //Distance between wall and beginning of the Fiducial volume
-	//Fiducial VOlume Stuff--these numbers are taken from table 9.1 of DUSEL LCAB Report #2, 7/2009, adjusted to Fiducial Volume (F.V.) and 2.5m gap between wall and F.V.
-	WC_MB_Fid_Length		= (68.0*m+2*WC_MB_Veto_Thickness);	// strictly speaking this isn't the fiducial length anymore, but increased by the veto thickness
-	WC_MB_Fid_Width			= (40.0*m+2*WC_MB_Veto_Thickness);
-	WC_MB_Fid_Depth         = (55.0*m+2*WC_MB_Veto_Thickness);	// how deep is the bottom layer of tubes at. Tank depth is a little more.
-	WCAddGd               = false;
+  // PMT stuff
+  WCPMTName               = "10inch";//normal qe 10 inch tube
+  WCPMTRadius				= .127*m; 
+  WCPMTExposeHeight		= WCPMTRadius - 0.01*m;
+  WCPMTRadiusEff        =  WCPMTExposeHeight ;
+  WCPMTGlassThickness		= .55*cm;
+  WCPMTPercentCoverage	= 40;	//% coverage
+  WCBlackSheetThickness	= 2.0*cm;
+  //Tank and Cavern Dimensions
+  WC_MB_Tank_Airgap		=2.0*m;	//Arbitrary here, but this is just the height of air between the top of the outer Veto_thickness and the beginning of the Cavern Dome
+  WC_MB_Dome_Height_fraction	=0.2;//fraction should be <=0.5
+  WC_MB_Veto_Thickness	=2.0*m;// This is just the spacing (in water) between the outer side of the Blacksheet and the beginning of the fiducial volume
+  WC_MB_Buffer_Thickness	=2.5*m; //Distance between wall and beginning of the Fiducial volume
+  //Fiducial VOlume Stuff--these numbers are taken from table 9.1 of DUSEL LCAB Report #2, 7/2009, adjusted to Fiducial Volume (F.V.) and 2.5m gap between wall and F.V.
+  WC_MB_Fid_Length		= (68.0*m+2*WC_MB_Veto_Thickness);	// strictly speaking this isn't the fiducial length anymore, but increased by the veto thickness
+  WC_MB_Fid_Width			= (40.0*m+2*WC_MB_Veto_Thickness);
+  WC_MB_Fid_Depth         = (55.0*m+2*WC_MB_Veto_Thickness);	// how deep is the bottom layer of tubes at. Tank depth is a little more.
+  WCAddGd               = false;
+  DaddLC=false; 
+  DaddWLSP=false;
 }
 
 void WCSimDetectorConstruction::SetMailBox300kTGeometry()    // This should setup a 300kT (metric) Fiducial Volume
 {
-	// PMT stuff
-    WCPMTName               = "10inch";//normal qe 10 inch tube
-	WCPMTRadius				=.127*m;
-	WCPMTExposeHeight		=WCPMTRadius - 0.01*m;
-	WCPMTGlassThickness		= .55*cm;
-	WCPMTPercentCoverage	= 10;	//% coverage
-	WCBlackSheetThickness	= 2.0*cm;
-	//Tank and Cavern Dimensions
-	WC_MB_Tank_Airgap		=2.0*m;	//Arbitrary here, but this is just the height of air between the top of the outer Veto_thickness and the beginning of the Cavern Dome
-	WC_MB_Dome_Height_fraction	=0.2;//fraction should be <=0.5
-	WC_MB_Veto_Thickness	=2.0*m;// This is just the spacing (in water) between the outer side of the Blacksheet and the beginning of the fiducial volume
-	WC_MB_Buffer_Thickness	=2.5*m; //Distance between wall and beginning of the Fiducial volume
-	//Fiducial VOlume Stuff--these numbers are taken from table 9.1 of DUSEL LCAB Report #2, 7/2009, adjusted to Fiducial Volume (F.V.) and 2.5m gap between wall and F.V.
-	WC_MB_Fid_Length        =( 136.0*m+2*WC_MB_Veto_Thickness);	//	// strictly speaking this isn't the fiducial length anymore, but increased by the veto thickness
-	WC_MB_Fid_Width         = (40.0*m+2*WC_MB_Veto_Thickness);	// this gives a volume of 299.2 metric tons
-	WC_MB_Fid_Depth         = (55.0*m+2*WC_MB_Veto_Thickness);	// how deep is the bottom layer of tubes at. Tank depth is a little more.
-    WCAddGd               = false;
+  // PMT stuff
+  WCPMTName               = "10inch";//normal qe 10 inch tube
+  WCPMTRadius				=.127*m;
+  WCPMTExposeHeight		=WCPMTRadius - 0.01*m;
+  WCPMTRadiusEff        =  WCPMTExposeHeight ;
+  WCPMTGlassThickness		= .55*cm;
+  WCPMTPercentCoverage	= 10;	//% coverage
+  WCBlackSheetThickness	= 2.0*cm;
+  //Tank and Cavern Dimensions
+  WC_MB_Tank_Airgap		=2.0*m;	//Arbitrary here, but this is just the height of air between the top of the outer Veto_thickness and the beginning of the Cavern Dome
+  WC_MB_Dome_Height_fraction	=0.2;//fraction should be <=0.5
+  WC_MB_Veto_Thickness	=2.0*m;// This is just the spacing (in water) between the outer side of the Blacksheet and the beginning of the fiducial volume
+  WC_MB_Buffer_Thickness	=2.5*m; //Distance between wall and beginning of the Fiducial volume
+  //Fiducial VOlume Stuff--these numbers are taken from table 9.1 of DUSEL LCAB Report #2, 7/2009, adjusted to Fiducial Volume (F.V.) and 2.5m gap between wall and F.V.
+  WC_MB_Fid_Length        =( 136.0*m+2*WC_MB_Veto_Thickness);	//	// strictly speaking this isn't the fiducial length anymore, but increased by the veto thickness
+  WC_MB_Fid_Width         = (40.0*m+2*WC_MB_Veto_Thickness);	// this gives a volume of 299.2 metric tons
+  WC_MB_Fid_Depth         = (55.0*m+2*WC_MB_Veto_Thickness);	// how deep is the bottom layer of tubes at. Tank depth is a little more.
+  WCAddGd               = false;
+  DaddLC=false; 
+  DaddWLSP=false;
 }
 //aah
 
@@ -396,9 +420,20 @@ void WCSimDetectorConstruction::SetMailBox300kTGeometry()    // This should setu
 void WCSimDetectorConstruction::ConstructPMT()
 {
   if(addWLS)  G4cout<<"WLS coat is added "<<G4endl;
- if(addWLSP)  G4cout<<"WLS Plates are added "<<G4endl;
-  if(addLC)  G4cout<<"Winston Cones are added "<<G4endl;
- 
+  if(addWLSP){
+    if (DaddWLSP){
+      G4cout<<"WLS Plates are added "<<G4endl;
+    }else{
+      G4cout<<"WLS Plates are not supported in this configuration   "<<G4endl;
+    }
+  }
+  if(addLC){
+    if (DaddLC){
+      G4cout<<"Winston Cones are added "<<G4endl;
+    }else {
+      G4cout<<"Winston Cones are not supported in this configuration  "<<G4endl;
+    }
+  }
   //if (addWLS)
   //  {
     sphereRadius = (WCPMTExposeHeight*WCPMTExposeHeight+ WCPMTRadius*WCPMTRadius)/(2*WCPMTExposeHeight);
@@ -432,6 +467,7 @@ void WCSimDetectorConstruction::ConstructPMT()
     // G4cout<<"PMT glass dim= "<<glassdim/deg<<" deg "<<G4endl;
     if(addWLS)
       {
+	// hard coded WLS film thickness! X.Q. 2011.5.25 
       wls_thickness = 10.*2.54e-3*cm;
        
     G4Sphere* tmpWLSWCPMT = new G4Sphere("tmpWLSWCPMT",
@@ -525,7 +561,7 @@ void WCSimDetectorConstruction::ConstructWLSP()
   G4Material* refl_material = man->FindOrBuildMaterial("G4_POLYETHYLENE");
   G4Material* refl1_material = man->FindOrBuildMaterial("Tyvek_wlsp");
   logiWLSPReflector = new WCSimWLSP_Reflector("WLSPReflector",refl_material,refl1_material,Plate_size);
-  WLSP_offset=10.0 *mm;//original
+  WLSP_offset=35.0 *mm;//original
   logiWLSPReflector->SetInvisible();
 
  //     logiWLSPLC->SetVisAttributes(G4VisAttributes::Invisible); 
@@ -1436,12 +1472,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructWC()
   // angle per regular cell:
   G4double dPhi        =  totalAngle/ WCBarrelRingNPhi;
   // it's hight:
-  G4double barrelCellHeight  = (WCIDHeight-2.*WCBarrelPMTOffset)/WCBarrelNRings;
+  G4double barrelCellHeight  = (WCIDHeight-2.*(WCBarrelPMTOffset+WCPMTRadiusEff+1.*mm))/WCBarrelNRings;
   // the hight of all regular cells together:
-  G4double mainAnnulusHeight = WCIDHeight -2.*WCBarrelPMTOffset -2.*barrelCellHeight;
+  G4double mainAnnulusHeight = WCIDHeight -2.*(WCBarrelPMTOffset+WCPMTRadiusEff+1.*mm) -2.*barrelCellHeight;
   
   
-  G4double innerAnnulusRadius = WCIDRadius - WCPMTExposeHeight-1.*mm-11.8*cm; 
+  G4double innerAnnulusRadius = WCIDRadius -1.*mm - WCPMTRadiusEff;//- WCPMTExposeHeight-1.*mm-11.8*cm; 
   G4double outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
@@ -1458,11 +1494,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructWC()
 //---------------------------------------------
   //The light collector
   //---------------------------------------------
-  // if(addLC) ConstructLC(); //adding Winston Cones
-//   if(addWLSP) ConstructWLSP(); //adding WLS Plates
+  // if(addLC && DaddLC) ConstructLC(); //adding Winston Cones
+//   if(addWLSP && DaddWLSP) ConstructWLSP(); //adding WLS Plates
 
-  if(1) ConstructLC(); //adding Winston Cones
-  if(1) ConstructWLSP(); //adding WLS Plates  
+  ConstructLC(); //adding Winston Cones
+  ConstructWLSP(); //adding WLS Plates  
  //--------------------------------------------
 
   //Decide if adding Gd
@@ -1562,7 +1598,7 @@ if(!debugMode)
   // extra rings for the top and bottom of the annulus
   //---------------------------------------------------
   G4double borderAnnulusZ[3] = {-barrelCellHeight/2.,
-                                -barrelCellHeight/2.,
+                                -barrelCellHeight/2.,//+(WCIDRadius-innerAnnulusRadius),
 				barrelCellHeight/2.};
   G4double borderAnnulusRmin[3] = { WCIDRadius, innerAnnulusRadius, innerAnnulusRadius};
   G4double borderAnnulusRmax[3] = {outerAnnulusRadius, outerAnnulusRadius,outerAnnulusRadius};
@@ -1960,9 +1996,10 @@ physiWCTowerCell =
   G4double capZ[4] = { -WCBlackSheetThickness-1.*mm,
                       WCBarrelPMTOffset,
 		      WCBarrelPMTOffset,
-		      WCBarrelPMTOffset+(WCIDRadius-innerAnnulusRadius)-WCPMTRadiusEff} ;
+		      WCBarrelPMTOffset+(WCIDRadius-innerAnnulusRadius)} ;
   G4double capRmin[4] = {  0. , 0., 0., 0.} ;
-  G4double capRmax[4] = {outerAnnulusRadius, outerAnnulusRadius,  WCIDRadius, innerAnnulusRadius};
+  //  G4double capRmax[4] = {outerAnnulusRadius, outerAnnulusRadius,  WCIDRadius, innerAnnulusRadius};
+  G4double capRmax[4] = {outerAnnulusRadius, outerAnnulusRadius, outerAnnulusRadius, outerAnnulusRadius};
   G4VSolid* solidWCCap;
   if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
     solidWCCap
@@ -2042,7 +2079,7 @@ physiWCTowerCell =
   // add cap blacksheet
   // -------------------------------------------------------------------
   
-  G4double capBlackSheetZ[4] = {-WCBlackSheetThickness, 0., 0., WCBarrelPMTOffset-1.*mm};
+  G4double capBlackSheetZ[4] = {-WCBlackSheetThickness, 0., 0., WCBarrelPMTOffset};
   G4double capBlackSheetRmin[4] = {0., 0., WCIDRadius, WCIDRadius};
   G4double capBlackSheetRmax[4] = {WCIDRadius+WCBlackSheetThickness, 
                                    WCIDRadius+WCBlackSheetThickness,
@@ -2286,7 +2323,7 @@ physiWCTowerCell =
       //      if ( (comp > WCPMTRadius*WCPMTRadius) && ((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) < WCCapEdgeLimit) ) {
             if (((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) < WCCapEdgeLimit) ) {
 
- if(addLC) {
+ if(addLC && DaddLC) {
 
 	  G4ThreeVector LCpos = G4ThreeVector(xoffset, yoffset, offset);
 	  G4VPhysicalVolume* physiCapLC=
@@ -2297,11 +2334,10 @@ physiWCTowerCell =
 			      logicWCCap,         
 			      false,                 
 			      icopy
-			      //  , true
 			      );            
  }
 
- if(addWLSP) {
+ if(addWLSP && DaddWLSP) {
 
    G4ThreeVector WLSPCone_pos = G4ThreeVector(xoffset, yoffset, WLSP_offset);
    G4ThreeVector WLSPRefl_pos = G4ThreeVector(xoffset, yoffset, WLSP_offset);
@@ -2314,7 +2350,6 @@ G4VPhysicalVolume* physiCapWLSPRefl=
 			      logicWCCap,         
 			      false,                 
 			      icopy
-			      // , true
 			      );      
  
  // G4cout<<"logiWLSPReflector Material: "<< logiWLSPReflector->GetMaterial()->GetName()  <<G4endl;
@@ -2328,7 +2363,6 @@ G4VPhysicalVolume* physiCapWLSPCone=
 			      logicWCCap,         
 			      false,                 
 			      icopy
-			      // , true
 			      );   
  G4LogicalBorderSurface* CapWLSPPlasticSurface = new G4LogicalBorderSurface("WLSP_PlasticSurface",
 							    //  physiCapWLSPCone,physiWCCap,
@@ -2467,7 +2501,7 @@ if (addWLS){
    G4ThreeVector WLSPCone_position;
    G4ThreeVector WLSPRefl_position;
 
-   if(addLC) {	
+   if(addLC && DaddLC) {	
       LCPosition =  G4ThreeVector(WCIDRadius-offset,
 				  -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 				  -barrelCellHeight/2.+(j+0.5)*verticalSpacing); 
@@ -2483,7 +2517,7 @@ if (addWLS){
 			    true); 
       }
 
- if(addWLSP) {
+ if(addWLSP && DaddWLSP) {
 
     WLSPCone_position = G4ThreeVector(WCIDRadius-WLSP_offset,
 				  -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
@@ -2556,7 +2590,7 @@ G4VPhysicalVolume* physiWCBarrelWLSPCone=
 				      physiWCBarrelPMTGlass,physiWCBarrelPMT,
 				       OpGlassCathodeSurface);
       
-if(addLC) {
+if(addLC && DaddLC) {
 		 LCPosition =  G4ThreeVector(WCIDRadius-offset,
 					   -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 					   -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
@@ -2572,7 +2606,7 @@ if(addLC) {
 			    true); 
       }
 
-if(addWLSP) {
+if(addWLSP && DaddWLSP) {
 
     WLSPCone_position = G4ThreeVector(WCIDRadius-WLSP_offset,
 				  -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
@@ -2677,7 +2711,7 @@ G4LogicalBorderSurface* BarrelBorderWLSPPlasticSurface = new G4LogicalBorderSurf
 	G4ThreeVector WLSPCone_position;
 	G4ThreeVector WLSPRefl_position;
 
-	if(addLC) {  
+	if(addLC && DaddLC) {  
 	    LCPosition =  G4ThreeVector(WCIDRadius/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.)-offset,
 					towerWidth/2.-(i+0.5)*horizontalSpacing,
 					-barrelCellHeight/2.+(j+0.5)*verticalSpacing);
@@ -2695,7 +2729,7 @@ G4LogicalBorderSurface* BarrelBorderWLSPPlasticSurface = new G4LogicalBorderSurf
 			    true); 
       }
 
-if(addWLSP) {
+if(addWLSP && DaddWLSP) {
 
     WLSPCone_position =  G4ThreeVector(WCIDRadius/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.)-WLSP_offset,
 					towerWidth/2.-(i+0.5)*horizontalSpacing,
@@ -2797,7 +2831,7 @@ G4LogicalBorderSurface* BarrelWLSPPlasticSurface = new G4LogicalBorderSurface("W
 	    = new G4LogicalBorderSurface("GlassCathodeSurface",
 					 physiWCBarrelPMTGlass,physiWCBarrelPMT,
 					 OpGlassCathodeSurface);
-if(addLC) {
+if(addLC && DaddLC) {
 
   	G4VPhysicalVolume* physiWCBarrelBorderLC=
 	  new G4PVPlacement(WCPMTRotation,                      // its rotation
@@ -2810,7 +2844,7 @@ if(addLC) {
 			    true); 
       }	
 
-if(addWLSP) {
+if(addWLSP && DaddWLSP) {
 
  G4VPhysicalVolume* physiWCBarrelBorderWLSPRefl=
 	    new G4PVPlacement(WCPMTRotation,                         

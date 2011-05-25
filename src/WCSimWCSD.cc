@@ -24,7 +24,7 @@ WCSimWCSD::WCSimWCSD(G4String name,WCSimDetectorConstruction* myDet)
   // GetCollectionID()
 
   G4String HCname;
-  collectionName.insert(HCname="GlassFaceWCPMT");
+  collectionName.insert(HCname="glassFaceWCPMT");
   
   fdet = myDet;
   
@@ -128,14 +128,22 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   // G4cout << volumeName << " hit by optical Photon! " << G4endl;
     
   // Make the tubeTag string based on the replica numbers
+   // See WCSimDetectorConstruction::DescribeAndRegisterPMT() for matching
+  // tag construction.
 #ifndef USE_STRSTREAM
   std::stringstream tubeTag;
 #else
   char buffer[100];
   std::ostrstream tubeTag(buffer,100);
 #endif
+  
+  // Start tubeTag with mother to distinguish different PMT hierarchies
+  G4LogicalVolume *theMother = thePhysical->GetMotherLogical();
+  if (theMother != NULL)
+    tubeTag << theMother->GetName() << ":";
 
-  tubeTag << theTouchable->GetVolume()->GetName(); 
+  tubeTag << thePhysical->GetName(); 
+
   for (G4int i = theTouchable->GetHistoryDepth()-1 ; i >= 0; i--)
     tubeTag << ":" << theTouchable->GetCopyNumber(i); 
     //   tubeTag << ":" << theTouchable->GetVolume(i)->GetCopyNo(); 
@@ -227,11 +235,12 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
        }
      }
-  }else{
+  }
+  //else{
     // for test purpose
     // (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime,wavelength,qe_flag);
     //     (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
-  }
+  //}
 
   return true;
 }

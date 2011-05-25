@@ -92,7 +92,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
   if (HCE)
   { 
-    G4String name =   "GlassFaceWCPMT";
+    G4String name =   "glassFaceWCPMT";
     G4int collectionID = SDman->GetCollectionID(name);
     WCHC = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
   }
