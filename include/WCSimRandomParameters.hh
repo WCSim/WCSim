@@ -30,24 +30,32 @@ public:
     switch (rng)
       {
         case RANDOM_E_RANLUX:
-	  printf("Setting the random number generator to RANLUX\n");
-	  CLHEP::RanluxEngine *newluxengine = new CLHEP::RanluxEngine(31415,4);  // highest luxury level
-	  CLHEP::HepRandom::setTheEngine(newluxengine);
+	  {
+	    printf("Setting the random number generator to RANLUX\n");
+	    CLHEP::RanluxEngine *newluxengine = new CLHEP::RanluxEngine(31415,4);  // highest luxury level
+	    CLHEP::HepRandom::setTheEngine(newluxengine);
+	  }
 	  break;
-        case RANDOM_E_RANECU:
-	  printf("Setting the random number generator to RANECU\n");
-	  CLHEP::RanecuEngine *newecuengine = new CLHEP::RanecuEngine();
-	  CLHEP::HepRandom::setTheEngine(newecuengine);
+      case RANDOM_E_RANECU:
+	  {
+	    printf("Setting the random number generator to RANECU\n");
+	    CLHEP::RanecuEngine *newecuengine = new CLHEP::RanecuEngine();
+	    CLHEP::HepRandom::setTheEngine(newecuengine);
+	  }
 	  break;
+	  
         case RANDOM_E_HEPJAMES:
-	  printf("Setting the random number generator to HEPJAMES\n");
-	  CLHEP::HepJamesRandom *newjamesengine = new CLHEP::HepJamesRandom();
-	  CLHEP::HepRandom::setTheEngine(newjamesengine);
-
+	  {
+	    printf("Setting the random number generator to HEPJAMES\n");
+	    CLHEP::HepJamesRandom *newjamesengine = new CLHEP::HepJamesRandom();
+	    CLHEP::HepRandom::setTheEngine(newjamesengine);
+	  }  
 	  break;
-        default:
+      default:
+	{
 	  printf("Random number generator type not understood: %d\n",rng);
 	  exit(0);
+	}
       }
   };
   int GetSeed() {return CLHEP::HepRandom::getTheSeed();}
