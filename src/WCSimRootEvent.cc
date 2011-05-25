@@ -351,14 +351,14 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,Float_t wa
   // Create a WCSimRootCherenkovHit object and fill it with stuff
     fTruetime        = truetime; 
     fwavelength = wavelength;
-    fQe_flag = qeflag;
+   //  fQe_flag = qeflag;
     fPrimaryParentID = primParID;
-    local_pos_x = local_x;
-    local_pos_y = local_y;
-    local_pos_z = local_z;
-    local_dir_x = local_dx;
-    local_dir_y = local_dy;
-    local_dir_z = local_dz;
+    // local_pos_x = local_x;
+//     local_pos_y = local_y;
+//     local_pos_z = local_z;
+//     local_dir_x = local_dx;
+//     local_dir_y = local_dy;
+//     local_dir_z = local_dz;
 }
 
 //_____________________________________________________________________________
