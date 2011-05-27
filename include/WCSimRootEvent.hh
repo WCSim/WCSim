@@ -132,7 +132,7 @@ public:
 //   Double_t  GetDirZ(){return local_dir_z;};
   
 
-  ClassDef(WCSimRootCherenkovHitTime,1)  
+  ClassDef(WCSimRootCherenkovHitTime,2)  
 };
 
 
