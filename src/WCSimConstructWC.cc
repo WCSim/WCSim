@@ -425,6 +425,7 @@ void WCSimDetectorConstruction::ConstructPMT()
       G4cout<<"WLS Plates are added "<<G4endl;
     }else{
       G4cout<<"WLS Plates are not supported in this configuration   "<<G4endl;
+      exit(0);
     }
   }
   if(addLC){
@@ -432,6 +433,7 @@ void WCSimDetectorConstruction::ConstructPMT()
       G4cout<<"Winston Cones are added "<<G4endl;
     }else {
       G4cout<<"Winston Cones are not supported in this configuration  "<<G4endl;
+      exit(0);
     }
   }
   //if (addWLS)
