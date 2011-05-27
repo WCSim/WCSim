@@ -152,6 +152,10 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCAddGd               = false;
   DaddLC=false; 
   DaddWLSP=false;
+  WLSP_offset = 35.0 *mm;
+  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
+  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  WLSP_inradius = WCPMTRadius;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
@@ -178,6 +182,10 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
   WCAddGd               = false;
   DaddLC=false; 
   DaddWLSP=false;
+   WLSP_offset = 35.0 *mm;
+  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
+  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  WLSP_inradius = WCPMTRadius;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
@@ -204,6 +212,10 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
   WCAddGd               = false;
   DaddLC=true; 
   DaddWLSP=true;
+  WLSP_offset = 35.0 *mm;
+  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
+  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  WLSP_inradius = WCPMTRadius;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
@@ -230,6 +242,10 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
   WCAddGd               = false;
   DaddLC=false; 
   DaddWLSP=false;
+   WLSP_offset = 35.0 *mm;
+  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
+  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  WLSP_inradius = WCPMTRadius;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
@@ -256,6 +272,10 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
   WCAddGd               = true;
   DaddLC=false; 
   DaddWLSP=false;
+   WLSP_offset = 35.0 *mm;
+  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
+  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  WLSP_inradius = WCPMTRadius;
 }
 
 void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
@@ -282,6 +302,10 @@ void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
   WCAddGd               = false;
   DaddLC=false; 
   DaddWLSP=false;
+   WLSP_offset = 35.0 *mm;
+  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
+  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  WLSP_inradius = WCPMTRadius;
 }
 
 void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
@@ -308,6 +332,10 @@ void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
   WCAddGd               = false;
   DaddLC=true; 
   DaddWLSP=true;
+  WLSP_offset = 35.0 *mm;
+  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
+  WLSP_outradius_large = 1.2*((20.0 * 25.4)/2)*mm;
+  WLSP_inradius = WCPMTRadius;
 }
 
 
@@ -336,6 +364,10 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_12perCent()
   WCAddGd               = false;
   DaddLC=true; 
   DaddWLSP=true;
+   WLSP_offset = 35.0 *mm;
+  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
+  WLSP_outradius_large = 1.2*((20.0 * 25.4)/2)*mm;
+  WLSP_inradius = WCPMTRadius;
 }
 
 
@@ -578,20 +610,23 @@ void WCSimDetectorConstruction::ConstructWLSP()
   G4Material* plat_material = man->FindOrBuildMaterial("G4_PLEXIGLASS");
   G4Material* plate_material;
 
-
+  G4double WCWLSP_radius;
   if (Plate_size == 0){
     plate_material= man->FindOrBuildMaterial("BC408");
+    WCWLSP_radius = WLSP_outradius_small;;
   }else{
     plate_material= man->FindOrBuildMaterial("BC408_high");
+    WCWLSP_radius = WLSP_outradius_large;
   }
 
-  
-  logiWLSPLC = new WCSimWLSP_LC("WLSPLC",plat_material,plate_material,Plate_size);
+  logiWLSPLC = new WCSimWLSP_LC("WLSPLC",plat_material,plate_material,WLSP_inradius,WCWLSP_radius);
+
+  // logiWLSPLC = new WCSimWLSP_LC("WLSPLC",plat_material,plate_material,Plate_size);
   logiWLSPLC->SetInvisible();
   G4Material* refl_material = man->FindOrBuildMaterial("G4_POLYETHYLENE");
   G4Material* refl1_material = man->FindOrBuildMaterial("Tyvek_wlsp");
-  logiWLSPReflector = new WCSimWLSP_Reflector("WLSPReflector",refl_material,refl1_material,Plate_size);
-  WLSP_offset=35.0 *mm;//original
+  logiWLSPReflector = new WCSimWLSP_Reflector("WLSPReflector",refl_material,refl1_material,WCWLSP_radius);
+  //WLSP_offset=35.0 *mm;//original
   logiWLSPReflector->SetInvisible();
 
  //     logiWLSPLC->SetVisAttributes(G4VisAttributes::Invisible); 

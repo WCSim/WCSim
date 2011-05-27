@@ -17,8 +17,8 @@
 /vis/geometry/set/forceSolid WLSFaceWCPMT -1 1
 /vis/geometry/set/colour WLSFaceWCPMT -1 0 1 0 0.05
 
-/vis/geometry/set/visibility GlassFaceWCPMT -1 1
-/vis/geometry/set/forceSolid GlassFaceWCPMT -1 1
+/vis/geometry/set/visibility glassFaceWCPMT -1 1
+/vis/geometry/set/forceSolid glassFaceWCPMT -1 1
 
 /vis/viewer/zoom 1.5
 /vis/viewer/flush

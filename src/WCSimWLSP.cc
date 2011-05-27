@@ -26,26 +26,31 @@ WCSimWLSP_LC::WCSimWLSP_LC(
       const G4String &name, 
       G4Material* cone_Material,    
       G4Material* plate_material, 
-      int Plate_size    
+      //    int Plate_size,
+      G4double LC_rmin1,
+      G4double LC_rmax1
       ) : G4LogicalVolume(new G4Box("temp",10,10,10), cone_Material, name)
 {
   
     LC_z = (0.010/2)*m; //Plate thickness, since cylinders (G4Tubs) are                 	                 
                     //defined by a half height, I divide by 2.
  
-
-     LC_rmin = (10.0 * 0.0254/2)*m; //inner radius of disk, PMT diameter==>Original
+    LC_rmin = LC_rmin1;
+    LC_rmax = LC_rmax1;
+      
+    
+    //  LC_rmin = (10.0 * 0.0254/2)*m; //inner radius of disk, PMT diameter==>Original
 
     //  LC_rmin = 0.97*(10.0 * 0.0254/2)*m; //optimized==>TO TRY with extended rmax
 
-if (Plate_size == 0)
-{
-    LC_rmax = ((20.0 * 25.4)/2)*mm; //outer radius of disk, our prototypes are 20" diameter==>Original
- }
- else
-   {
-     LC_rmax = 1.265*((20.0 * 25.4)/2)*mm; //Extended,max=1.27==>TO TRY with the optimized rmin
-   }
+// if (Plate_size == 0)
+// {
+//     LC_rmax = ((20.0 * 25.4)/2)*mm; //outer radius of disk, our prototypes are 20" diameter==>Original
+//  }
+//  else
+//    {
+//      LC_rmax = 1.265*((20.0 * 25.4)/2)*mm; //Extended,max=1.27==>TO TRY with the optimized rmin
+//    }
  
  LC_pmin = 0.0;    //Starting and ending polar angle for LC
  LC_pmax = twopi;  //For a full disk these need to be 0 and 2pi
@@ -96,22 +101,24 @@ WCSimWLSP_Reflector::WCSimWLSP_Reflector(
       const G4String &name, 
       G4Material* reflector_Material,
       G4Material* reflect_Material,
-      int Plate_size
+      // int Plate_size
+      G4double LC_rmax1
       ) : G4LogicalVolume(new G4Box("temp",10,10,10), reflector_Material, name)
 {
-    LC_z = (0.010/2)*m; //Plate thickness, since cylinders (G4Tubs) are                 	                 
+  LC_z = (0.010/2)*m; //Plate thickness, since cylinders (G4Tubs) are                 	                 
                     //defined by a half height, I divide by 2.
 
-      LC_rmin = (10.0 * 0.0254/2)*m; //inner radius of disk, PMT diameter
+  //LC_rmin = (10.0 * 0.0254/2)*m; //inner radius of disk, PMT diameter
+  LC_rmax = LC_rmax1;
 
-if (Plate_size == 0)
-{
-    LC_rmax = ((20.0 * 25.4)/2)*mm; //outer radius of disk, our prototypes are 20" diameter==>Original
-}
-else
-{
-    LC_rmax = 1.265*((20.0 * 25.4)/2)*mm; //Extended,max=1.27==>TO TRY with the optimized rmin
-}
+  // if (Plate_size == 0)
+  // {
+  //     LC_rmax = ((20.0 * 25.4)/2)*mm; //outer radius of disk, our prototypes are 20" diameter==>Original
+  // }
+  // else
+  // {
+  //     LC_rmax = 1.265*((20.0 * 25.4)/2)*mm; //Extended,max=1.27==>TO TRY with the optimized rmin
+// }
 
 
 

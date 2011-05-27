@@ -13,8 +13,9 @@ public:
 		  const G4String &name, 		 
 		  G4Material* cone_Material,
 		  G4Material* plate_Material,
-		  int plate_size
-  		 );
+		  G4double LC_rmin1,
+		  G4double LC_rmax1
+		  );
  
  
   void SetInvisible();
@@ -33,7 +34,7 @@ public:
 		  const G4String &name, 		 
 		  G4Material* reflector_Material,
 		  G4Material* reflect_Material,
-		  int plate_size
+		  G4double LC_rmax1
   		 );
  
  

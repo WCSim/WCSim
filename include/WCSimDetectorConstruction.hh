@@ -93,6 +93,9 @@ public:
   G4bool DaddWLSP; // default option for LCs
 
   G4double WLSP_offset;
+  G4double WLSP_inradius;
+  G4double WLSP_outradius_small;
+  G4double WLSP_outradius_large;
   void setWLSP(G4bool);
   G4bool getWLSP(){return addWLSP;};
   G4int Plate_size;
