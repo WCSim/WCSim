@@ -76,14 +76,14 @@
 /gun/position 0 0 0  
 
 /WCSim/ConstructWLS false
-/WCSim/ConstructWLSP false
+/WCSim/ConstructWLSP true
 /WCSim/ConstructLC false
-#/WCSim/WLSPSIZE 1
+/WCSim/WLSPSIZE 1
 /WCSim/Construct
 
 
 ## change the name of the output root file, default = wcsim.root
 /WCSimIO/RootFile wcsim.root
 /gun/direction 0 1 0 
-/run/beamOn 1
+#/run/beamOn 1
 #exit
