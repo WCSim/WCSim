@@ -311,6 +311,34 @@ void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
 }
 
 
+// plate holder for 12 inch 12% coverage at 200 kT X. Q. 2011/05/27
+void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_12perCent()
+{
+  WCPMTName             = "10inchHQE";
+  WCPMTRadiusEff        = 0.275*m;
+  WCPMTRadius           = .127*m;
+  WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
+  WCIDDiameter          = 62.21*m;
+  WCIDHeight            = 79.96*m;
+  WCBarrelPMTOffset	    = WCPMTRadius;
+  WCPMTperCellHorizontal = 4.0;
+  WCPMTperCellVertical	 = 3.0;
+  WCPMTPercentCoverage	 = 12.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
+				   (10.0*WCPMTRadius));
+  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
+							     2*(WCBarrelPMTOffset+WCPMTRadiusEff))/(pi*WCIDDiameter)))/
+				 WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCPMTGlassThickness   = .55*cm;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+  DaddLC=true; 
+  DaddWLSP=true;
+}
+
+
 //aah
 
 void WCSimDetectorConstruction::SetMailBox100kTGeometry()  // This should setup a 100kT (metric) Fiducial Volume

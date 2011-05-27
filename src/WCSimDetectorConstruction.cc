@@ -63,13 +63,14 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Set the default WC geometry.  This can be changed later.
   //-----------------------------------------------------
 
-  //SetSuperKGeometry();
-  DUSEL_100kton_10inch_40perCent();
+  SetSuperKGeometry();
+  //DUSEL_100kton_10inch_40perCent();
   //  DUSEL_100kton_10inch_HQE_12perCent();
   //  DUSEL_100kton_10inch_HQE_30perCent();
   //DUSEL_100kton_10inch_HQE_30perCent_Gd();
   //DUSEL_150kton_10inch_HQE_30perCent();
- // DUSEL_200kton_10inch_HQE_12perCent();
+  // DUSEL_200kton_10inch_HQE_12perCent();
+  // DUSEL_200kton_12inch_HQE_12perCent();
   // SetMailBox300KTGeometry();
   //SetMailBox100kTGeometry();
 
