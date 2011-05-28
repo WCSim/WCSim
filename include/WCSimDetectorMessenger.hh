@@ -12,6 +12,7 @@ class G4UIcmdWithAString;
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithoutParameter.hh"
+#include "G4UIcmdWithABool.hh"
 
 class WCSimDetectorMessenger: public G4UImessenger
 {
@@ -33,6 +34,8 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithAString* PMTSize;
   G4UIcmdWithAString* SavePi0;
   G4UIcmdWithAString* PMTQEMethod;
+  G4UIcmdWithAString* PMTCollEff;
+
   G4UIcmdWithAString* tubeCmd;
   G4UIcmdWithAString* distortionCmd;
   G4UIcmdWithoutParameter* WCConstruct;

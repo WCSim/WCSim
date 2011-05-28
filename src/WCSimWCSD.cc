@@ -61,11 +61,34 @@ void WCSimWCSD::Initialize(G4HCofThisEvent* HCE)
   delete newHit;
 }
 
+G4float WCSimWCSD::connect(G4float x, G4int ncount, G4float *wave_length, G4float *quantity){
+  // linear interpolate the quantity function versus wave_length
+  if (x < *wave_length || x >=*(wave_length+ncount-1)){
+    return 0;
+  }else{
+    for (Int_t i=0;i!=ncount;i++){
+      if (x>=*(wave_length+i) && x < *(wave_length+i+1)){
+	return (x-*(wave_length+i))/(*(wave_length+i+1)-*(wave_length+i))* (*(quantity+i+1)) + (*(wave_length+i+1)-x)/(*(wave_length+i+1)-*(wave_length+i)) * (*(quantity+i));
+      }
+    }
+  }
+}
+
+
 G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
   G4StepPoint*       preStepPoint = aStep->GetPreStepPoint();
   G4TouchableHandle  theTouchable = preStepPoint->GetTouchableHandle();
   G4VPhysicalVolume* thePhysical  = theTouchable->GetVolume();
+
+
+  //XQ 3/30/11 try to get the local position try to add the position and direction
+  G4ThreeVector worldPosition = preStepPoint->GetPosition();
+  G4ThreeVector localPosition = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
+  G4ThreeVector worldDirection = preStepPoint->GetMomentumDirection();
+  G4ThreeVector localDirection = theTouchable->GetHistory()->GetTopTransform().TransformAxis(worldDirection);
+
+  
 
   WCSimTrackInformation* trackinfo 
     = (WCSimTrackInformation*)(aStep->GetTrack()->GetUserInformation());
@@ -133,6 +156,14 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   // Get the tube ID from the tubeTag
   G4int replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
 
+    
+  G4float collection_angle[10]={0,10,20,30,40,50,60,70,80,90};
+  G4float collection_eff[10]={100,100,99,95,90,85,80,69,35,13};
+  
+  G4float theta_angle;
+  G4float eff;
+
+
   
   G4float ratio = 1.;
   G4float maxQE;
@@ -148,36 +179,49 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     photonQE = fdet->GetPMTQE(wavelength,1,240,660,ratio);
   }
   
+   G4double qe_flag = 0;
+
   if (G4UniformRand() <= photonQE){
-    // If this tube hasn't been hit add it to the collection
-    if (PMTHitMap[replicaNumber] == 0)
-      {
-	WCSimWCHit* newHit = new WCSimWCHit();
-	newHit->SetTubeID(replicaNumber);
-	newHit->SetTrackID(trackID);
-	newHit->SetEdep(energyDeposition); 
-	newHit->SetLogicalVolume(thePhysical->GetLogicalVolume());
-	
-	G4AffineTransform aTrans = theTouchable->GetHistory()->GetTopTransform();
-	newHit->SetRot(aTrans.NetRotation());
-	
-	aTrans.Invert();
-	newHit->SetPos(aTrans.NetTranslation());
-	
-	// Set the hitMap value to the collection hit number
-	PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
-	
-	(*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
-	(*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
-	
-	//     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
-	//       newHit->Print();
-      }
-    else {
-      (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
-      (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
-      
-    }
+    
+     G4double local_x = localPosition.x();
+     G4double local_y = localPosition.y();
+     G4double local_z = localPosition.z();
+     theta_angle = acos(fabs(local_z)/sqrt(pow(local_x,2)+pow(local_y,2)+pow(local_z,2)))/3.1415926*180.;
+     eff = connect(theta_angle,10,collection_angle,collection_eff)/100.;
+     if (G4UniformRand() <= eff || fdet->GetPMT_Coll_Eff()==0){
+
+       qe_flag = 1;
+
+       // If this tube hasn't been hit add it to the collection
+       if (PMTHitMap[replicaNumber] == 0)
+	 {
+	   WCSimWCHit* newHit = new WCSimWCHit();
+	   newHit->SetTubeID(replicaNumber);
+	   newHit->SetTrackID(trackID);
+	   newHit->SetEdep(energyDeposition); 
+	   newHit->SetLogicalVolume(thePhysical->GetLogicalVolume());
+	   
+	   G4AffineTransform aTrans = theTouchable->GetHistory()->GetTopTransform();
+	   newHit->SetRot(aTrans.NetRotation());
+	   
+	   aTrans.Invert();
+	   newHit->SetPos(aTrans.NetTranslation());
+	   
+	   // Set the hitMap value to the collection hit number
+	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
+	   
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
+	   
+	   //     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
+	   //       newHit->Print();
+	 }
+       else {
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
+	 
+       }
+     }
   }
 
   return true;

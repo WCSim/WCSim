@@ -15,6 +15,8 @@ class WCSimWCSD : public G4VSensitiveDetector
   ~WCSimWCSD();
   
   void   Initialize(G4HCofThisEvent*);
+  G4float connect(G4float, G4int, G4float*, G4float*);
+
   G4bool ProcessHits(G4Step*, G4TouchableHistory*);
   void   EndOfEvent(G4HCofThisEvent*);
   
