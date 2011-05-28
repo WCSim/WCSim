@@ -61,14 +61,14 @@ void WCSimWCSD::Initialize(G4HCofThisEvent* HCE)
   delete newHit;
 }
 
-G4float WCSimWCSD::connect(G4float x, G4int ncount, G4float *wave_length, G4float *quantity){
-  // linear interpolate the quantity function versus wave_length
-  if (x < *wave_length || x >=*(wave_length+ncount-1)){
+G4float WCSimWCSD::Interpolate_func(G4float x, G4int ncount, G4float *angle, G4float *quantity){
+  // linear interpolate the quantity function versus angle
+  if (x < *angle || x >=*(angle+ncount-1)){
     return 0;
   }else{
     for (Int_t i=0;i!=ncount;i++){
-      if (x>=*(wave_length+i) && x < *(wave_length+i+1)){
-	return (x-*(wave_length+i))/(*(wave_length+i+1)-*(wave_length+i))* (*(quantity+i+1)) + (*(wave_length+i+1)-x)/(*(wave_length+i+1)-*(wave_length+i)) * (*(quantity+i));
+      if (x>=*(angle+i) && x < *(angle+i+1)){
+	return (x-*(angle+i))/(*(angle+i+1)-*(angle+i))* (*(quantity+i+1)) + (*(angle+i+1)-x)/(*(angle+i+1)-*(angle+i)) * (*(quantity+i));
       }
     }
   }
@@ -161,7 +161,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4float collection_eff[10]={100,100,99,95,90,85,80,69,35,13};
   
   G4float theta_angle;
-  G4float eff;
+  G4float effectiveAngularEfficiency;
 
 
   
@@ -179,7 +179,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     photonQE = fdet->GetPMTQE(wavelength,1,240,660,ratio);
   }
   
-   G4double qe_flag = 0;
+  
 
   if (G4UniformRand() <= photonQE){
     
@@ -187,10 +187,10 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      G4double local_y = localPosition.y();
      G4double local_z = localPosition.z();
      theta_angle = acos(fabs(local_z)/sqrt(pow(local_x,2)+pow(local_y,2)+pow(local_z,2)))/3.1415926*180.;
-     eff = connect(theta_angle,10,collection_angle,collection_eff)/100.;
-     if (G4UniformRand() <= eff || fdet->GetPMT_Coll_Eff()==0){
+     effectiveAngularEfficiency = Interpolate_func(theta_angle,10,collection_angle,collection_eff)/100.;
+     if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
 
-       qe_flag = 1;
+      
 
        // If this tube hasn't been hit add it to the collection
        if (PMTHitMap[replicaNumber] == 0)
