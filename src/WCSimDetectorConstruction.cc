@@ -90,14 +90,11 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
 
 #include "G4GeometryManager.hh"
 #include "G4LogicalBorderSurface.hh"
+#include "G4LogicalSkinSurface.hh"
+
 void WCSimDetectorConstruction::UpdateGeometry()
 {
-  G4GeometryManager::GetInstance()->OpenGeometry();
-
-  G4PhysicalVolumeStore::GetInstance()->Clean();
-  G4LogicalVolumeStore::GetInstance()->Clean();
-  G4SolidStore::GetInstance()->Clean();
-  G4LogicalBorderSurface::CleanSurfaceTable();
+ 
   
   G4bool geomChanged = true;
   G4RunManager::GetRunManager()->DefineWorldVolume(Construct(), geomChanged);
@@ -114,6 +111,14 @@ WCSimDetectorConstruction::~WCSimDetectorConstruction(){
 
 G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 {  
+  G4GeometryManager::GetInstance()->OpenGeometry();
+
+  G4PhysicalVolumeStore::GetInstance()->Clean();
+  G4LogicalVolumeStore::GetInstance()->Clean();
+  G4SolidStore::GetInstance()->Clean();
+  G4LogicalBorderSurface::CleanSurfaceTable();
+  G4LogicalSkinSurface::CleanSurfaceTable();
+
   totalNumPMTs = 0;
   
   //-----------------------------------------------------
