@@ -416,6 +416,34 @@ void WCSimDetectorConstruction::ConstructMaterials()
      1004.528*cm*RAYFF, 833.9666*cm*RAYFF, 686.1063*cm*RAYFF
    };
 
+
+     //assume 100 times larger than the rayleigh scattering for now. 
+   G4double MIE_water[NUMENTRIES_water] = {
+     167024.4*m*RAYFF, 158726.7*m*RAYFF, 150742*m*RAYFF,
+     143062.5*m*RAYFF, 135680.2*m*RAYFF, 128587.4*m*RAYFF,
+     121776.3*m*RAYFF, 115239.5*m*RAYFF, 108969.5*m*RAYFF,
+     102958.8*m*RAYFF, 97200.35*m*RAYFF, 91686.86*m*RAYFF,
+     86411.33*m*RAYFF, 81366.79*m*RAYFF, 76546.42*m*RAYFF,
+     71943.46*m*RAYFF, 67551.29*m*RAYFF, 63363.36*m*RAYFF,
+     59373.25*m*RAYFF, 55574.61*m*RAYFF, 51961.24*m*RAYFF,
+     48527.00*m*RAYFF, 45265.87*m*RAYFF, 42171.94*m*RAYFF,
+     39239.39*m*RAYFF, 36462.50*m*RAYFF, 33835.68*m*RAYFF,
+     31353.41*m*RAYFF, 29010.30*m*RAYFF, 26801.03*m*RAYFF,
+     24720.42*m*RAYFF, 22763.36*m*RAYFF, 20924.88*m*RAYFF,
+     19200.07*m*RAYFF, 17584.16*m*RAYFF, 16072.45*m*RAYFF,
+     14660.38*m*RAYFF, 13343.46*m*RAYFF, 12117.33*m*RAYFF,
+     10977.70*m*RAYFF, 9920.416*m*RAYFF, 8941.407*m*RAYFF,
+     8036.711*m*RAYFF, 7202.470*m*RAYFF, 6434.927*m*RAYFF,
+     5730.429*m*RAYFF, 5085.425*m*RAYFF, 4496.467*m*RAYFF,
+     3960.210*m*RAYFF, 3473.413*m*RAYFF, 3032.937*m*RAYFF,
+     2635.746*m*RAYFF, 2278.907*m*RAYFF, 1959.588*m*RAYFF,
+     1675.064*m*RAYFF, 1422.710*m*RAYFF, 1200.004*m*RAYFF,
+     1004.528*m*RAYFF, 833.9666*m*RAYFF, 686.1063*m*RAYFF
+   };
+
+   G4double MIE_water_const[3]={0.99,0.99,0.8};// gforward, gbackward, forward backward ratio
+
+
    //From SFDETSIM
    /*
    G4double RINDEX_glass[NUMENTRIES] =
@@ -578,6 +606,22 @@ void WCSimDetectorConstruction::ConstructMaterials()
        0.001*m,0.001*m,0.001*m,0.001*m,0.001*m,0.001*m,
        0.001*m,0.001*m,0.001*m,0.001*m,0.001*m,0.001*m};
       
+       //utter fiction at this stage, does not matter
+   G4double MIE_air[NUMENTRIES_water] =
+     { 0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
+       0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m};
+
+   G4double MIE_air_const[3]={0.99,0.99,0.8};// gforward, gbackward, forward backward ratio
+
+     
    //Not used yet, fictional values
    //G4double SPECULARLOBECONSTANT1[NUMENTRIES] =
    //{ 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001,
@@ -700,6 +744,14 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myMPT1->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water, NUMENTRIES_water);
    // M Fechner: new, don't let G4 compute it.
    myMPT1->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water);
+
+  //  myMPT1->AddProperty("MIEHG",ENERGY_water,MIE_water,NUMENTRIES_water);
+//    myMPT1->AddConstProperty("MIEHG_FORWARD",MIE_water_const[0]);
+//    myMPT1->AddConstProperty("MIEHG_BACKWARD",MIE_water_const[1]);
+//    myMPT1->AddConstProperty("MIEHG_FORWARD_RATIO",MIE_water_const[2]);
+
+
+
    Water->SetMaterialPropertiesTable(myMPT1);
    //Gd doped water has the same optical properties as pure water
    DopedWater->SetMaterialPropertiesTable(myMPT1);
@@ -710,6 +762,12 @@ void WCSimDetectorConstruction::ConstructMaterials()
    // M Fechner : what is that ?????
    myMPT2->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
    myMPT2->AddProperty("RAYLEIGH",ENERGY_water, RAYLEIGH_air, NUMENTRIES_water);
+
+   // myMPT2->AddProperty("MIEHG",ENERGY_water,MIE_air,NUMENTRIES_water);
+//       myMPT2->AddConstProperty("MIEHG_FORWARD",MIE_air_const[0]);
+//       myMPT2->AddConstProperty("MIEHG_BACKWARD",MIE_air_const[1]);
+//       myMPT2->AddConstProperty("MIEHG_FORWARD_RATIO",MIE_air_const[2]);
+   
    Air->SetMaterialPropertiesTable(myMPT2);
    
    G4MaterialPropertiesTable *myMPT3 = new G4MaterialPropertiesTable();
