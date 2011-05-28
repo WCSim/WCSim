@@ -102,6 +102,10 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag
 	  wavelengthQE = TenInchHQE[i] + 
 	    (TenInchHQE[i+1]-TenInchHQE[i])/(wavelength[i+1]-wavelength[i])*
 	    (PhotonWavelength - wavelength[i]);
+	}else if (GetPMTName()=="12inchHQE"){
+	  wavelengthQE = TenInchHQE[i] + 
+	    (TenInchHQE[i+1]-TenInchHQE[i])/(wavelength[i+1]-wavelength[i])*
+	    (PhotonWavelength - wavelength[i]);
 	}else if(GetPMTName()=="10inch"){
 	  wavelengthQE = TenInchQE[i] + 
 	    (TenInchQE[i+1]-TenInchQE[i])/(wavelength[i+1]-wavelength[i])*
@@ -117,6 +121,8 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag
     }
   }else if (flag == 0){
     if (GetPMTName()=="10inchHQE"){
+      wavelengthQE = TenInch_maxHQE;
+    }else if (GetPMTName()=="12inchHQE"){
       wavelengthQE = TenInch_maxHQE;
     }else if(GetPMTName()=="10inch"){
       wavelengthQE = TenInch_maxQE;
@@ -158,6 +164,11 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
+  LC_rmin = 126.5 * mm;
+  LC_rmax = 209.672 * mm;
+  LC_a = 155.97 * mm;
+  LC_b = 584.525 * mm;
+  LC_d= 95.48* mm;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
@@ -190,6 +201,11 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
+  LC_rmin = 126.5 * mm;
+  LC_rmax = 209.672 * mm;
+  LC_a = 155.97 * mm;
+  LC_b = 584.525 * mm;
+  LC_d= 95.48* mm;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
@@ -222,6 +238,11 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
+  LC_rmin = 126.5 * mm;
+  LC_rmax = 209.672 * mm;
+  LC_a = 155.97 * mm;
+  LC_b = 584.525 * mm;
+  LC_d= 95.48* mm;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
@@ -254,6 +275,11 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
+  LC_rmin = 126.5 * mm;
+  LC_rmax = 209.672 * mm;
+  LC_a = 155.97 * mm;
+  LC_b = 584.525 * mm;
+  LC_d= 95.48* mm;
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
@@ -286,6 +312,11 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
+  LC_rmin = 126.5 * mm;
+  LC_rmax = 209.672 * mm;
+  LC_a = 155.97 * mm;
+  LC_b = 584.525 * mm;
+  LC_d= 95.48* mm;
 }
 
 void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
@@ -318,6 +349,11 @@ void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
+  LC_rmin = 126.5 * mm;
+  LC_rmax = 209.672 * mm;
+  LC_a = 155.97 * mm;
+  LC_b = 584.525 * mm;
+  LC_d= 95.48* mm;
 }
 
 void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
@@ -350,15 +386,21 @@ void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
   WLSP_outradius_large = 1.2*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
+  LC_rmin = 126.5 * mm;
+  LC_rmax = 209.672 * mm;
+  LC_a = 155.97 * mm;
+  LC_b = 584.525 * mm;
+  LC_d= 95.48* mm;
 }
 
 
-// plate holder for 12 inch 12% coverage at 200 kT X. Q. 2011/05/27
+// 12 inch 12% coverage at 200 kT X. Q. 2011/05/27
+// assume same performance as 10 inch tube
 void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_12perCent()
 {
-  WCPMTName             = "10inchHQE";
-  WCPMTRadiusEff        = 0.2*m;
-  WCPMTRadius           = .127*m;
+  WCPMTName             = "12inchHQE";
+  WCPMTRadiusEff        = 0.25*m;
+  WCPMTRadius           = 0.1524*m;
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 62.21*m;
   WCIDHeight            = 79.96*m;
@@ -381,9 +423,14 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_12perCent()
   LCoffset = 5.0 *mm;
   WLSP_offset = 35.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
-  WLSP_outradius_large = 1.2*((20.0 * 25.4)/2)*mm;
+  WLSP_outradius_large = 1.5*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
+  LC_rmin = 152.4 * mm;
+  LC_rmax = (209.672 +152.4-127)* mm;
+  LC_a = 165.97 * mm;
+  LC_b = 584.525 * mm;
+  LC_d= 95.48* mm;
 }
 
 
@@ -610,7 +657,7 @@ void WCSimDetectorConstruction::ConstructLC()
   
   G4NistManager* man = G4NistManager::Instance();
   G4Material* conc_material = man->FindOrBuildMaterial("G4_PLEXIGLASS");
-  logiLC = new WCSimLC("LC", conc_material);
+  logiLC = new WCSimLC("LC", conc_material,LC_rmin,LC_rmax,LC_a,LC_b,LC_d);
   logiLC->SetInvisible();
    
   

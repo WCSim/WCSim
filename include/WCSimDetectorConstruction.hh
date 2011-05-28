@@ -92,6 +92,12 @@ public:
   G4bool addWLSP;
   G4bool DaddWLSP; // default option for LCs
 
+  G4double LC_rmin;
+  G4double LC_rmax;
+  G4double LC_a;
+  G4double LC_b;
+  G4double LC_d;
+
   G4double WLSP_offset;
   G4double WLSP_inradius;
   G4double WLSP_outradius_small;

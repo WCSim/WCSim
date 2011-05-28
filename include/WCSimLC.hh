@@ -10,7 +10,12 @@ class WCSimLC : public G4LogicalVolume {
 public:
           WCSimLC(		  
 		  const G4String &name, 		 
-		  G4Material* bulkMaterial
+		  G4Material* bulkMaterial,
+		  G4double LC_rmin1,
+		  G4double LC_rmax1,
+		  G4double LC_a1,
+		  G4double LC_b1,
+		  G4double LC_d1
   		 );
  
   void SetInvisible();

@@ -19,37 +19,42 @@ G4OpticalSurface*  WCSimLC::our_Mirror_opsurf = NULL;
 
 WCSimLC::WCSimLC(
       const G4String &name, 
-      G4Material* bulkMaterial    
+      G4Material* bulkMaterial,
+      G4double LC_rmin1,
+      G4double LC_rmax1,
+      G4double LC_a1,
+      G4double LC_b1,
+      G4double LC_d1
       ) : G4LogicalVolume(new G4Box("temp",10,10,10), bulkMaterial, name)
 {
 
-double rmin= 126.5;
-double rmax= 209.672;
+double rmin= LC_rmin1;
+double rmax= LC_rmax1;
 int n = 0;
 
 //parameters of ellipse
 
-  double a,b,c,d;
-a = 155.97*millimeter;
-b = 584.525*millimeter;
-  //c = - 572.848*millimeter;
-d = 95.48*millimeter;
-   
-  //we will set c (z position of ellipse center, by requesting that z = 0 at r_min); it is close to above value, but in this way, the match will be exact
-
-c = -b*sqrt(1 - (rmin-d)*(rmin-d)/(a*a));
+ double a,b,c,d;
+ a = LC_a1;
+ b = LC_b1;
+ //c = - 572.848*millimeter;
+ d = LC_d1;
  
-double z_test;
-z_test = -c - b*sqrt(1 - (rmin-d)*(rmin-d)/(a*a)); 
-//cout << "z_test = " << z_test << endl;
+ //we will set c (z position of ellipse center, by requesting that z = 0 at r_min); it is close to above value, but in this way, the match will be exact
+ 
+ c = -b*sqrt(1 - (rmin-d)*(rmin-d)/(a*a));
+ 
+ double z_test;
+ z_test = -c - b*sqrt(1 - (rmin-d)*(rmin-d)/(a*a)); 
+ //cout << "z_test = " << z_test << endl;
+ 
+ double r = rmin;
 
-double r = rmin;
-
-const int ring_number = 1000;
-
-  double rin[ring_number], rout[ring_number],z[ring_number];
-
-  while (r < rmax) {
+ const int ring_number = 1000;
+ 
+ double rin[ring_number], rout[ring_number],z[ring_number];
+ 
+ while (r < rmax) {
     rin[n] = r;
     rout[n] = rin[n] + 1;
     z[n] = -c - b*sqrt(1 - (r-d)*(r-d)/(a*a)); 

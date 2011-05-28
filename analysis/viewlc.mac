@@ -3,6 +3,7 @@
 #/vis/open OGLSX
 
 /vis/drawVolume WCBarrelCell
+#/vis/drawVolume WCLC
 /vis/viewer/set/style surface 
 /vis/viewer/set/culling global true
 /vis/viewer/set/upVector 0 0 1
