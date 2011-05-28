@@ -152,6 +152,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCAddGd               = false;
   DaddLC=false; 
   DaddWLSP=false;
+  SK_flag = 1; //special flag for just SK geometry
   LCoffset = 5.0 *mm;
   WLSP_offset = 35.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
@@ -188,6 +189,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
+  SK_flag = 0; //special flag for just SK geometry
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
@@ -219,6 +221,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
+  SK_flag = 0; //special flag for just SK geometry
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
@@ -250,6 +253,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
+  SK_flag = 0; //special flag for just SK geometry
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
@@ -281,6 +285,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
+  SK_flag = 0; //special flag for just SK geometry
 }
 
 void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
@@ -312,6 +317,7 @@ void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
+  SK_flag = 0; //special flag for just SK geometry
 }
 
 void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
@@ -343,6 +349,7 @@ void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.2*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
+  SK_flag = 0; //special flag for just SK geometry
 }
 
 
@@ -376,6 +383,7 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_12perCent()
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.2*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
+  SK_flag = 0; //special flag for just SK geometry
 }
 
 
@@ -1545,12 +1553,23 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructWC()
   // angle per regular cell:
   G4double dPhi        =  totalAngle/ WCBarrelRingNPhi;
   // it's hight:
-  G4double barrelCellHeight  = (WCIDHeight-2.*(WCBarrelPMTOffset+WCPMTRadiusEff+1.*mm))/WCBarrelNRings;
+  G4double barrelCellHeight;
+  G4double mainAnnulusHeight;
+  G4double innerAnnulusRadius;
+  if (SK_flag==1){
+    barrelCellHeight = (WCIDHeight-2.*WCBarrelPMTOffset)/WCBarrelNRings;
+    mainAnnulusHeight = WCIDHeight -2.*WCBarrelPMTOffset -2.*barrelCellHeight;
+    innerAnnulusRadius = WCIDRadius - WCPMTExposeHeight-1.*mm;
+  }else{
+    barrelCellHeight = (WCIDHeight-2.*(WCBarrelPMTOffset+WCPMTRadiusEff+1.*mm))/WCBarrelNRings;
+    mainAnnulusHeight = WCIDHeight -2.*(WCBarrelPMTOffset+WCPMTRadiusEff+1.*mm) -2.*barrelCellHeight;
+    innerAnnulusRadius = WCIDRadius -1.*mm - WCPMTRadiusEff;//- WCPMTExposeHeight-1.*mm-11.8*cm; 
+  }
   // the hight of all regular cells together:
-  G4double mainAnnulusHeight = WCIDHeight -2.*(WCBarrelPMTOffset+WCPMTRadiusEff+1.*mm) -2.*barrelCellHeight;
+   
   
   
-  G4double innerAnnulusRadius = WCIDRadius -1.*mm - WCPMTRadiusEff;//- WCPMTExposeHeight-1.*mm-11.8*cm; 
+   
   G4double outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
@@ -1673,6 +1692,11 @@ if(!debugMode)
   G4double borderAnnulusZ[3] = {-barrelCellHeight/2.,
                                 -barrelCellHeight/2.,//+(WCIDRadius-innerAnnulusRadius),
 				barrelCellHeight/2.};
+
+  if (SK_flag==1){
+    borderAnnulusZ[1] = -barrelCellHeight/2.+(WCIDRadius-innerAnnulusRadius);
+  }
+
   G4double borderAnnulusRmin[3] = { WCIDRadius, innerAnnulusRadius, innerAnnulusRadius};
   G4double borderAnnulusRmax[3] = {outerAnnulusRadius, outerAnnulusRadius,outerAnnulusRadius};
   G4Polyhedra* solidWCBarrelBorderRing = new G4Polyhedra("WCBarrelBorderRing",
@@ -2071,8 +2095,19 @@ physiWCTowerCell =
 		      WCBarrelPMTOffset,
 		      WCBarrelPMTOffset+(WCIDRadius-innerAnnulusRadius)} ;
   G4double capRmin[4] = {  0. , 0., 0., 0.} ;
-  //  G4double capRmax[4] = {outerAnnulusRadius, outerAnnulusRadius,  WCIDRadius, innerAnnulusRadius};
-  G4double capRmax[4] = {outerAnnulusRadius, outerAnnulusRadius, outerAnnulusRadius, outerAnnulusRadius};
+  G4double capRmax[4];
+  if (SK_flag==1){
+    capRmax[0]  = outerAnnulusRadius;
+    capRmax[1]  = outerAnnulusRadius;
+    capRmax[2]  = WCIDRadius;
+    capRmax[3]  = innerAnnulusRadius;
+
+  }else{
+    capRmax[0] = outerAnnulusRadius;
+    capRmax[1] = outerAnnulusRadius;
+    capRmax[2]  = outerAnnulusRadius;
+    capRmax[3] = outerAnnulusRadius;
+  }
   G4VSolid* solidWCCap;
   if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
     solidWCCap

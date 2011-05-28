@@ -181,6 +181,8 @@ private:
 
   G4bool WCAddGd;
 
+  G4int SK_flag;
+
   // Code for traversing the geometry and assigning tubeIDs.
 
   // First make a typedef for the pointer to the member fcn.  The
