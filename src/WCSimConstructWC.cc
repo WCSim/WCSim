@@ -152,6 +152,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCAddGd               = false;
   DaddLC=false; 
   DaddWLSP=false;
+  LCoffset = 5.0 *mm;
   WLSP_offset = 35.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
@@ -161,7 +162,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
 {
   WCPMTName             = "10inch";
-  WCPMTRadiusEff        = 0.275*m;
+  WCPMTRadiusEff        = 0.200*m;
   WCPMTRadius           = .127*m;
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 53.0*m;
@@ -182,7 +183,8 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
   WCAddGd               = false;
   DaddLC=false; 
   DaddWLSP=false;
-   WLSP_offset = 35.0 *mm;
+  LCoffset = 5.0 *mm;
+  WLSP_offset = 35.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
@@ -191,7 +193,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
 {
   WCPMTName             = "10inchHQE";
-  WCPMTRadiusEff        = 0.275*m;
+  WCPMTRadiusEff        = 0.200*m;
   WCPMTRadius           = .127*m;
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 53.0*m;
@@ -212,6 +214,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
   WCAddGd               = false;
   DaddLC=true; 
   DaddWLSP=true;
+  LCoffset = 5.0 *mm;
   WLSP_offset = 35.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
@@ -221,7 +224,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
 {
   WCPMTName             = "10inchHQE";
-  WCPMTRadiusEff        = 0.275*m;
+  WCPMTRadiusEff        = 0.2*m;
   WCPMTRadius           = .127*m;
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 53.0*m;
@@ -242,7 +245,8 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
   WCAddGd               = false;
   DaddLC=false; 
   DaddWLSP=false;
-   WLSP_offset = 35.0 *mm;
+  LCoffset = 5.0 *mm;
+  WLSP_offset = 35.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
@@ -251,7 +255,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
 {
   WCPMTName             = "10inchHQE";
-  WCPMTRadiusEff        = 0.275*m;
+  WCPMTRadiusEff        = 0.2*m;
   WCPMTRadius           = .127*m;
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 53.0*m;
@@ -272,7 +276,8 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
   WCAddGd               = true;
   DaddLC=false; 
   DaddWLSP=false;
-   WLSP_offset = 35.0 *mm;
+  LCoffset = 5.0 *mm;
+  WLSP_offset = 35.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
@@ -281,7 +286,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
 void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
 {
   WCPMTName             = "10inchHQE";
-  WCPMTRadiusEff        = 0.275*m;
+  WCPMTRadiusEff        = 0.2*m;
   WCPMTRadius           = .127*m;
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 64.0*m;
@@ -302,7 +307,8 @@ void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
   WCAddGd               = false;
   DaddLC=false; 
   DaddWLSP=false;
-   WLSP_offset = 35.0 *mm;
+  LCoffset = 5.0 *mm;
+  WLSP_offset = 35.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
@@ -311,7 +317,7 @@ void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
 void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
 {
   WCPMTName             = "10inchHQE";
-  WCPMTRadiusEff        = 0.275*m;
+  WCPMTRadiusEff        = 0.2*m;
   WCPMTRadius           = .127*m;
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 62.21*m;
@@ -332,6 +338,7 @@ void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
   WCAddGd               = false;
   DaddLC=true; 
   DaddWLSP=true;
+  LCoffset = 5.0 *mm;
   WLSP_offset = 35.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.2*((20.0 * 25.4)/2)*mm;
@@ -343,7 +350,7 @@ void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
 void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_12perCent()
 {
   WCPMTName             = "10inchHQE";
-  WCPMTRadiusEff        = 0.275*m;
+  WCPMTRadiusEff        = 0.2*m;
   WCPMTRadius           = .127*m;
   WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
   WCIDDiameter          = 62.21*m;
@@ -364,7 +371,8 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_12perCent()
   WCAddGd               = false;
   DaddLC=true; 
   DaddWLSP=true;
-   WLSP_offset = 35.0 *mm;
+  LCoffset = 5.0 *mm;
+  WLSP_offset = 35.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.2*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
@@ -597,7 +605,7 @@ void WCSimDetectorConstruction::ConstructLC()
   logiLC = new WCSimLC("LC", conc_material);
   logiLC->SetInvisible();
    
-  offset = 5.0 *mm;
+  
 
  //     logiLC->SetVisAttributes(G4VisAttributes::Invisible); 
 }
@@ -2390,7 +2398,7 @@ physiWCTowerCell =
 
  if(addLC && DaddLC) {
 
-	  G4ThreeVector LCpos = G4ThreeVector(xoffset, yoffset, offset);
+	  G4ThreeVector LCpos = G4ThreeVector(xoffset, yoffset, LCoffset);
 	  G4VPhysicalVolume* physiCapLC=
 	    new G4PVPlacement(0,                         
 			      LCpos,                   
@@ -2567,7 +2575,7 @@ if (addWLS){
    G4ThreeVector WLSPRefl_position;
 
    if(addLC && DaddLC) {	
-      LCPosition =  G4ThreeVector(WCIDRadius-offset,
+      LCPosition =  G4ThreeVector(WCIDRadius-LCoffset,
 				  -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 				  -barrelCellHeight/2.+(j+0.5)*verticalSpacing); 
         
@@ -2656,7 +2664,7 @@ G4VPhysicalVolume* physiWCBarrelWLSPCone=
 				       OpGlassCathodeSurface);
       
 if(addLC && DaddLC) {
-		 LCPosition =  G4ThreeVector(WCIDRadius-offset,
+		 LCPosition =  G4ThreeVector(WCIDRadius-LCoffset,
 					   -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 					   -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
   
@@ -2777,7 +2785,7 @@ G4LogicalBorderSurface* BarrelBorderWLSPPlasticSurface = new G4LogicalBorderSurf
 	G4ThreeVector WLSPRefl_position;
 
 	if(addLC && DaddLC) {  
-	    LCPosition =  G4ThreeVector(WCIDRadius/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.)-offset,
+	    LCPosition =  G4ThreeVector(WCIDRadius/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.)-LCoffset,
 					towerWidth/2.-(i+0.5)*horizontalSpacing,
 					-barrelCellHeight/2.+(j+0.5)*verticalSpacing);
 

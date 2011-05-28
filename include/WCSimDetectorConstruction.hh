@@ -80,7 +80,7 @@ public:
   G4bool DaddLC; // default option for LCs
   
   WCSimLC *logiLC;
-  G4double  offset;
+  G4double  LCoffset;
   void setLC(G4bool);
   G4bool getLC(){return addLC;};
   
@@ -120,7 +120,7 @@ public:
   G4int    GetTotalNumPmts() {return totalNumPMTs;}
   
   G4int    GetPMT_QE_Method(){return PMT_QE_Method;}
-  G4int    GetPMT_Coll_Eff(){return PMT_Coll_Eff;}
+  G4int    UsePMT_Coll_Eff(){return PMT_Coll_Eff;}
 
 
   G4double GetPMTSize1() {return WCPMTSize;}
