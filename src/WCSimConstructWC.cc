@@ -2240,6 +2240,12 @@ physiWCTowerCell =
                                    WCIDRadius+WCBlackSheetThickness,
 				   WCIDRadius+WCBlackSheetThickness,
 				   WCIDRadius+WCBlackSheetThickness};
+
+  if (SK_flag!=1){
+    // Not the SK case, extend the black sheet
+    capBlackSheetZ[3] = WCBarrelPMTOffset+(WCIDRadius-innerAnnulusRadius);
+  }
+
   G4VSolid* solidWCCapBlackSheet;
   if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
     solidWCCapBlackSheet
