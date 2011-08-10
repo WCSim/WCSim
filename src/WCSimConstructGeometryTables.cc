@@ -62,7 +62,8 @@ void WCSimDetectorConstruction::GetWCGeom
     //G4double outerRadius = solidWCPMT->GetOuterRadius()/cm;
 
     // Stash info in data member
-    WCPMTSize = WCPMTRadius;// I think this is just a variable no if needed
+    // AH Need to store this in CM for it to be understood by SK code
+    WCPMTSize = WCPMTRadius/cm;// I think this is just a variable no if needed
 //  }
 // (JF) None of this is needed anymore.  Values are calculated when writing file
 /*   
@@ -266,12 +267,16 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     G4Vector3D pmtOrientation = newTransform * nullOrient;
     //cyl_location cylLocation = tubeCylLocation[tubeID];
 
+    // AH for PMTs on the top their Z-orientation is off 
+    // because of the reflection transformation.  Flip it
+    // back to global instead of relative to the mother volume
+    double pmtZOrientFix = 1;
     // Figure out if pmt is on top/bottom or barrel
     // print key: 0-top, 1-barrel, 2-bottom
     if (pmtOrientation.z()!=1.0)//barrel pmt
     {cylLocation=1;}
     else if (newTransform.getTranslation().getZ() > 0.0)//top
-    {cylLocation=0;}
+    {cylLocation=0; pmtZOrientFix = -1.0;}
     else // bottom
     {cylLocation=2;}
     
@@ -282,7 +287,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
  	    << " " << setw(8) << newTransform.getTranslation().getZ()/cm
 	    << " " << setw(7) << pmtOrientation.x()
 	    << " " << setw(7) << pmtOrientation.y()
-	    << " " << setw(7) << pmtOrientation.z()
+	    << " " << setw(7) << pmtOrientation.z()*pmtZOrientFix
  	    << " " << setw(3) << cylLocation
  	    << G4endl;
      
@@ -292,7 +297,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
 					      newTransform.getTranslation().getZ()/cm,
 					      pmtOrientation.x(),
 					      pmtOrientation.y(),
-					      pmtOrientation.z(),
+					      pmtOrientation.z()*pmtZOrientFix,
 					      tubeID);
      
      fpmts.push_back(new_pmt);
