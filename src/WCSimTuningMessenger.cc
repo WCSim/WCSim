@@ -56,7 +56,7 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
   delete Bsrff;
   delete Abwff;
   delete Rgcff;
-  ////delete Mieff;
+  delete Mieff;
 
   //jl145 - for Top Veto
   delete TVSpacing;
