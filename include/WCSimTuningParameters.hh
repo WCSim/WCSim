@@ -23,6 +23,9 @@ class WCSimTuningParameters
   G4double GetRgcff() {return rgcff;}
   void SetRgcff(G4double rparam) {rgcff=rparam;}
 
+  G4double GetMieff() {return mieff;}
+  void SetMieff(G4double rparam) {mieff=rparam;}
+
   //For Top Veto - jl145
   G4double GetTVSpacing() {return tvspacing;}
   void SetTVSpacing(G4double tparam) {tvspacing=tparam;}
@@ -43,6 +46,8 @@ class WCSimTuningParameters
   G4double bsrff;
   G4double abwff;
   G4double rgcff;
+  G4double mieff;
+
   //For Top Veto - jl145
   G4double tvspacing;
   G4bool topveto;

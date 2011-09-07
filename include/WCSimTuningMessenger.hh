@@ -31,6 +31,7 @@ private:
   G4UIcmdWithADouble* Bsrff;
   G4UIcmdWithADouble* Abwff;
   G4UIcmdWithADouble* Rgcff;
+  G4UIcmdWithADouble* Mieff;
 
   //For Top Veto - jl145
   G4UIcmdWithADouble* TVSpacing;
