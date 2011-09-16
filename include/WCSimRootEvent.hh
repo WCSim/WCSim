@@ -105,11 +105,11 @@ private:
   // See jhfNtuple.h for the meaning of these data members:
   Float_t fTruetime;
   Float_t fwavelength;
-  // Int_t fQe_flag;
+  Int_t fQe_flag;
   Int_t   fPrimaryParentID;
 
-  // Double_t local_pos_x,local_pos_y,local_pos_z;
-//   Double_t local_dir_x,local_dir_y,local_dir_z;
+  Double_t local_pos_x,local_pos_y,local_pos_z;
+  Double_t local_dir_x,local_dir_y,local_dir_z;
 
 public:
   WCSimRootCherenkovHitTime() {}
@@ -122,14 +122,14 @@ public:
 
   Float_t   GetTruetime() { return fTruetime;}
   Float_t   GetWavelength() { return fwavelength;}
-  // Int_t     GetQe_flag() {return fQe_flag;}
+  Int_t     GetQe_flag() {return fQe_flag;}
   Int_t     GetParentID() { return fPrimaryParentID;}
-  // Double_t  GetPosX(){return local_pos_x;};
-//   Double_t  GetPosY(){return local_pos_y;};
-//   Double_t  GetPosZ(){return local_pos_z;};
-//   Double_t  GetDirX(){return local_dir_x;};
-//   Double_t  GetDirY(){return local_dir_y;};
-//   Double_t  GetDirZ(){return local_dir_z;};
+  Double_t  GetPosX(){return local_pos_x;};
+  Double_t  GetPosY(){return local_pos_y;};
+  Double_t  GetPosZ(){return local_pos_z;};
+  Double_t  GetDirX(){return local_dir_x;};
+  Double_t  GetDirY(){return local_dir_y;};
+  Double_t  GetDirZ(){return local_dir_z;};
   
 
   ClassDef(WCSimRootCherenkovHitTime,2)  
