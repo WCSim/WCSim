@@ -12,10 +12,12 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
 
   genCmd = new G4UIcmdWithAString("/mygen/generator",this);
   genCmd->SetGuidance("Select primary generator.");
-  genCmd->SetGuidance(" Available generators : muline, normal");
+  //T. Akiri: Addition of laser
+  genCmd->SetGuidance(" Available generators : muline, normal, laser");
   genCmd->SetParameterName("generator",true);
   genCmd->SetDefaultValue("muline");
-  genCmd->SetCandidates("muline normal");
+  //T. Akiri: Addition of laser
+  genCmd->SetCandidates("muline normal laser");
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
   fileNameCmd->SetGuidance("Select the file of vectors.");
@@ -38,11 +40,19 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     {
       myAction->SetMulineEvtGenerator(true);
       myAction->SetNormalEvtGenerator(false);
+      myAction->SetLaserEvtGenerator(false);
     }
     else if ( newValue == "normal")
     {
       myAction->SetMulineEvtGenerator(false);
       myAction->SetNormalEvtGenerator(true);
+      myAction->SetLaserEvtGenerator(false);
+    }
+    else if ( newValue == "laser")   //T. Akiri: Addition of laser
+    {
+      myAction->SetMulineEvtGenerator(false);
+      myAction->SetNormalEvtGenerator(false);
+      myAction->SetLaserEvtGenerator(true);
     }
   }
 
@@ -61,9 +71,11 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
   if( command==genCmd )
   {
     if(myAction->IsUsingMulineEvtGenerator())
-    { cv = "muline"; }
-    if(myAction->IsUsingNormalEvtGenerator())
-    { cv = "normal"; }
+      { cv = "muline"; }
+    else if(myAction->IsUsingNormalEvtGenerator())
+      { cv = "normal"; }
+    else if(myAction->IsUsingLaserEvtGenerator())
+      { cv = "laser"; }   //T. Akiri: Addition of laser
   }
   
   return cv;

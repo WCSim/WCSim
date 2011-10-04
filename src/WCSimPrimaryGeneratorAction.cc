@@ -4,6 +4,7 @@
 
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
+#include "G4GeneralParticleSource.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4ThreeVector.hh"
@@ -36,6 +37,9 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 					  WCSimDetectorConstruction* myDC)
   :myDetector(myDC)
 {
+  //T. Akiri: Initialize GPS to allow for the laser use 
+  MyGPS = new G4GeneralParticleSource();
+
   // Initialize to zero
   mode = 0;
   vtxvol = 0;
@@ -74,6 +78,7 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
   }
   inputFile.close();
   delete particleGun;
+  delete MyGPS;   //T. Akiri: Delete the GPS variable
   delete messenger;
 }
 
@@ -232,7 +237,23 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     SetBeamDir(dir);
     SetBeamPDG(pdg);
   }
-
+  else if (useLaserEvt)
+    {
+      //T. Akiri: Create the GPS LASER event
+      MyGPS->GeneratePrimaryVertex(anEvent);
+      
+      G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
+      G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
+      G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
+      
+      G4ThreeVector dir  = P.unit();
+      G4double E         = std::sqrt((P.dot(P)));
+      
+      SetVtx(vtx);
+      SetBeamEnergy(E);
+      SetBeamDir(dir);
+      SetBeamPDG(pdg);
+    }
 }
 
 // Returns a vector with the tokens

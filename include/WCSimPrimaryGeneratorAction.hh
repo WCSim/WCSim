@@ -9,6 +9,7 @@
 
 class WCSimDetectorConstruction;
 class G4ParticleGun;
+class G4GeneralParticleSource;
 class G4Event;
 class WCSimPrimaryGeneratorMessenger;
 
@@ -52,12 +53,14 @@ public:
 
 private:
   WCSimDetectorConstruction*      myDetector;
-  G4ParticleGun*                   particleGun;
+  G4ParticleGun*                  particleGun;
+  G4GeneralParticleSource*        MyGPS;  //T. Akiri: GPS to run Laser
   WCSimPrimaryGeneratorMessenger* messenger;
 
   // Variables set by the messenger
   G4bool   useMulineEvt;
   G4bool   useNormalEvt;
+  G4bool   useLaserEvt;  //T. Akiri: Laser flag
   std::fstream inputFile;
   G4String vectorFileName;
   G4bool   GenerateVertexInRock;
@@ -86,6 +89,10 @@ public:
 
   inline void SetNormalEvtGenerator(G4bool choice) { useNormalEvt = choice; }
   inline G4bool IsUsingNormalEvtGenerator()  { return useNormalEvt; }
+
+  //T. Akiri: Addition of function for the laser flag
+  inline void SetLaserEvtGenerator(G4bool choice) { useLaserEvt = choice; }
+  inline G4bool IsUsingLaserEvtGenerator()  { return useLaserEvt; }
 
   inline void OpenVectorFile(G4String fileName) 
   {
