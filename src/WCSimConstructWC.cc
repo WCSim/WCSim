@@ -137,7 +137,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCPMTName             ="20inch";
   WCPMTRadius           =.254*m;  
   WCPMTExposeHeight     =.18*m; 
-  WCIDDiameter          = 33.6815*m //16.900*2*cos(2*pi*rad/75)*m; //inner detector diameter
+  WCIDDiameter          = 33.6815*m; //16.900*2*cos(2*pi*rad/75)*m; //inner detector diameter
   WCIDHeight            = 36.200*m; //"" "" height
   WCBarrelPMTOffset     = 0.0715*m; //offset from vertical
   WCBarrelNumPMTHorizontal  = 150; 
