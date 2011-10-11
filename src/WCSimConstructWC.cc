@@ -289,6 +289,25 @@ void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
 	WCAddGd               = false;
 }
 
+void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_10perCent()
+{
+	WCPMTName             = "10inchHQE"; //still using QE from 10 inch tube
+	WCPMTRadius           = .1524*m;
+	WCPMTExposeHeight	    = WCPMTRadius - 0.01*m; //guess
+	WCIDDiameter          = 63.30*m;
+	WCIDHeight            = 76.60*m;
+	WCBarrelPMTOffset	    = .5744*m;
+	WCPMTperCellHorizontal = 2.0;
+	WCPMTperCellVertical	 = 2.0;
+	WCBarrelNumPMTHorizontal = 232;
+	WCBarrelNRings        = 44;
+	WCCapPMTSpacing       = .8574*m;
+	WCCapEdgeLimit        = WCIDDiameter/2.0 - 0.02*m;
+	WCPMTGlassThickness   = .55*cm; //guess
+	WCBlackSheetThickness = 2.0*cm; //excess, should be just as light-tight
+	WCAddGd               = false;
+}
+
 
 //aah
 

@@ -350,7 +350,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCHitsCollection* WCHC,G4int G)
     timingConstant = 1.890; // same scaling, M Fechner
   else if (round(PMTSize) == 0.127*m) //10 inch tube
     timingConstant = 2.0; // (JF) Need real value
-  else if (round(PMTSize) == 0.1524*m) //12 inch tube
+  else if (round(PMTSize) == round(0.1524*m)) //12 inch tube
     timingConstant = 2.0;// (JF) Need the real value
   else
     {
