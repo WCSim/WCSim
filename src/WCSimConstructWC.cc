@@ -293,21 +293,39 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_10perCent()
 {
 	WCPMTName             = "10inchHQE"; //still using QE from 10 inch tube
 	WCPMTRadius           = .1524*m;
-	WCPMTExposeHeight	    = WCPMTRadius - 0.01*m; //guess
+	WCPMTExposeHeight	    = .118*m;
 	WCIDDiameter          = 63.30*m;
 	WCIDHeight            = 76.60*m;
-	WCBarrelPMTOffset	    = .5744*m;
-	WCPMTperCellHorizontal = 2.0;
-	WCPMTperCellVertical	 = 2.0;
+	WCBarrelPMTOffset	    = .1537*m;
+	WCPMTperCellHorizontal = 1.0;
+	WCPMTperCellVertical	 = 1.0;
 	WCBarrelNumPMTHorizontal = 232;
-	WCBarrelNRings        = 44;
-	WCCapPMTSpacing       = .8574*m;
-	WCCapEdgeLimit        = WCIDDiameter/2.0 - 0.02*m;
+	WCBarrelNRings        = 89;
+	WCCapPMTSpacing       = .8572*m;
+	WCCapEdgeLimit        = 31.424*m;
 	WCPMTGlassThickness   = .55*cm; //guess
 	WCBlackSheetThickness = 2.0*cm; //excess, should be just as light-tight
 	WCAddGd               = false;
 }
 
+void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_14perCent()
+{
+	WCPMTName             = "10inchHQE"; //still using QE from 10 inch tube
+	WCPMTRadius           = .1524*m;
+	WCPMTExposeHeight	    = .118*m;
+	WCIDDiameter          = 63.30*m;
+	WCIDHeight            = 76.60*m;
+	WCBarrelPMTOffset	    = .1951*m;
+	WCPMTperCellHorizontal = 1.0;
+	WCPMTperCellVertical	 = 1.0;
+	WCBarrelNumPMTHorizontal = 274;
+	WCBarrelNRings        = 105;
+	WCCapPMTSpacing       = .7258*m;
+	WCCapEdgeLimit        = 31.624*m;
+	WCPMTGlassThickness   = .55*cm; //guess
+	WCBlackSheetThickness = 2.0*cm; //excess, should be just as light-tight
+	WCAddGd               = false;
+}
 
 //aah
 

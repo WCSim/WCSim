@@ -65,6 +65,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //DUSEL_150kton_10inch_HQE_30perCent();
   //DUSEL_200kton_10inch_HQE_12perCent();
   //DUSEL_200kton_12inch_HQE_10perCent();
+  //DUSEL_200kton_12inch_HQE_14perCent();
   // SetMailBox300KTGeometry();
   //SetMailBox100kTGeometry();
 
