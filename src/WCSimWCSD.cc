@@ -130,28 +130,22 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   // Make the tubeTag string based on the replica numbers
   // See WCSimDetectorConstruction::DescribeAndRegisterPMT() for matching
   // tag construction.
-#ifndef USE_STRSTREAM
+
   std::stringstream tubeTag;
-#else
-  char buffer[100];
-  std::ostrstream tubeTag(buffer,100);
-#endif
 
   // Start tubeTag with mother to distinguish different PMT hierarchies
-  G4LogicalVolume *theMother = thePhysical->GetMotherLogical();
-  if (theMother != NULL)
-    tubeTag << theMother->GetName() << ":";
+//  G4LogicalVolume *theMother = thePhysical->GetMotherLogical();
+//  if (theMother != NULL)
+//    tubeTag << theMother->GetName() << ":";
 
-  tubeTag << thePhysical->GetName(); 
-  for (G4int i = theTouchable->GetHistoryDepth()-1 ; i >= 0; i--)
-    tubeTag << ":" << theTouchable->GetCopyNumber(i); 
+//  tubeTag << thePhysical->GetName(); 
+  for (G4int i = theTouchable->GetHistoryDepth()-1 ; i >= 0; i--){
+    tubeTag << ":" << theTouchable->GetVolume(i)->GetName();
+    tubeTag << "-" << theTouchable->GetCopyNumber(i);
+  }
   //  tubeTag << ":" << theTouchable->GetVolume(i)->GetCopyNo(); 
 
-#ifdef USE_STRSTREAM
-  tubeTag << std::ends;
-#endif
-
-//   G4cout << tubeTag.str() << G4endl;
+//  G4cout << tubeTag.str() << G4endl;
 
   // Get the tube ID from the tubeTag
   G4int replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());

@@ -2360,7 +2360,7 @@ else {
 			  "WCPMTGlass",             // its name
 			  logicWCBarrelBorderCell,        // its mother volume
 			  false,                     // no boolean operations
-			  (int)(i*WCPMTperCellVertical+j+WCPMTperCellVertical*WCPMTperCellVertical)
+			  (int)(i*WCPMTperCellVertical+j)
 			  ,true);                     // no particular field
 
      G4VPhysicalVolume* physiWCBarrelBorderPMT =
@@ -2370,7 +2370,7 @@ else {
 			  "WCPMT",             // its name
 			  logicWCBarrelBorderCell,         // its mother volume
 			  false,                     // no boolean operations
-			  (int)(i*WCPMTperCellVertical+j+WCPMTperCellVertical*WCPMTperCellVertical)
+			  (int)(i*WCPMTperCellVertical+j)
 			  ,true);                      // no particular field
 
 	G4LogicalBorderSurface *  GlassCathodeBarrelBorderSurface
@@ -2413,15 +2413,7 @@ else {
 			    "WCPMTGlass",             // its name
 			    logicWCExtraTowerCell,         // its mother volume
 			    false,                     // no boolean operations
-			    (int)(i*WCPMTperCellVertical+j+50), //TODO: the 
-			                              //+50 is to have 
-			                             //an unique id for each 
-			                             //PMT. You should this 
-			                             //by a
-						    // variable to make sure, 
-			                            //that the value is
-						    // big enough even 
-			                            //for gigantic cells.
+			    (int)(i*WCPMTperCellVertical+j),
 			    true);                       
 
 	G4VPhysicalVolume* physiWCBarrelPMT =
@@ -2431,17 +2423,7 @@ else {
 			    "WCPMT",             // its name
 			    logicWCExtraTowerCell,         // its mother volume
 			    false,                     // no boolean operations
-			    (int)(i*WCPMTperCellVertical+j+50), //TODO: the +50 
-			                                         //is to have 
-			                                         //an unique 
-			                                        // id for each 
-			                                        //PMT. You 
-			                                       //should this by a
-								// variable to 
-			                                       //make sure, 
-			                                      //that the value is
-							     // big enough even 
-			                                   //for gigantic cells.
+			    (int)(i*WCPMTperCellVertical+j),
 			    true);                       
 
 	G4LogicalBorderSurface *  GlassCathodeBarrelSurface
@@ -2456,7 +2438,7 @@ else {
 			    "WCPMTGlass",             // its name
 			    logicWCExtraBorderCell,         // its mother volume
 			    false,                     // no boolean operations
-			    (int)(i*WCPMTperCellVertical+j+100)
+			    (int)(i*WCPMTperCellVertical+j)
 			    ,true);                        // no particular field
 
 	G4VPhysicalVolume* physiWCBarrelBorderPMT =
@@ -2466,7 +2448,7 @@ else {
 			    "WCPMT",             // its name
 			    logicWCExtraBorderCell,         // its mother volume
 			    false,                     // no boolean operations
-			    (int)(i*WCPMTperCellVertical+j+100)
+			    (int)(i*WCPMTperCellVertical+j)
 			    ,true);                        // no particular field
 
 	G4LogicalBorderSurface *  GlassCathodeBarreBorderlSurface

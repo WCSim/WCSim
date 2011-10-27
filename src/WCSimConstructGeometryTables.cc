@@ -122,21 +122,15 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT
 (G4VPhysicalVolume* aPV ,int aDepth, int replicaNo,
  const G4Transform3D& aTransform) 
 {
-  static std::string replicaNoString[10];
+  static std::string replicaNoString[20];
 
-#ifndef USE_STRSTREAM
   std::stringstream depth;
-#else
-  char buffer[100];
-  std::strstream depth(buffer,100);
-#endif
+  std::stringstream pvname;
 
   depth << replicaNo;
-#ifdef USE_STRSTREAM
-  depth << std::ends;
-#endif
-  
-  replicaNoString[aDepth] = depth.str();
+  pvname << aPV->GetName();
+
+  replicaNoString[aDepth] = pvname.str() + "-" + depth.str();
 
 //aah original line->
 if ((aPV->GetName() == "WCPMTGlass"))
@@ -150,17 +144,18 @@ if ((aPV->GetName() == "WCPMTGlass"))
     // This scheme must match that used in WCSimWCSD::ProcessHits()
 
     std::string tubeTag;
-    G4LogicalVolume *mother = aPV->GetMotherLogical();
-    if (mother != NULL) {
+//    G4LogicalVolume *mother = aPV->GetMotherLogical();
+//    if (mother != NULL) {
       // Prepend name of mother if it exists to distinguish different
       // PMT hierarchies
-      tubeTag += mother->GetName();
-      tubeTag += ":";
-    }
+//      tubeTag += mother->GetName();
+//      tubeTag += ":";
+//    }
 
-    tubeTag += aPV->GetName();
+//    tubeTag += aPV->GetName();
     for (int i=0; i <= aDepth; i++)
       tubeTag += ":" + replicaNoString[i];
+//  G4cout << tubeTag << G4endl;
     tubeLocationMap[tubeTag] = totalNumPMTs;
     
     // Record where tube is in the cylinder
