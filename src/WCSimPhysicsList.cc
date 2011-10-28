@@ -10,6 +10,7 @@
 #include "G4BaryonConstructor.hh"
 #include "G4BosonConstructor.hh"
 #include "G4IonConstructor.hh"
+#include "G4ShortLivedConstructor.hh"
 #include "G4ProcessManager.hh"
 #include "G4ProcessVector.hh"
 #include "G4ParticleTypes.hh"
@@ -49,11 +50,13 @@ void WCSimPhysicsList::ConstructParticle()
   G4BaryonConstructor baryonConstructor;
   G4BosonConstructor bosonConstructor;
   G4IonConstructor ionConstructor;
+  G4ShortLivedConstructor ShortLivedConstructor;
   leptonConstructor.ConstructParticle();
   mesonConstructor.ConstructParticle();
   baryonConstructor.ConstructParticle();
   bosonConstructor.ConstructParticle();
   ionConstructor.ConstructParticle();
+  ShortLivedConstructor.ConstructParticle();
   G4OpticalPhoton::OpticalPhotonDefinition();
 }
 
