@@ -262,18 +262,16 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     G4Vector3D pmtOrientation = newTransform * nullOrient;
     //cyl_location cylLocation = tubeCylLocation[tubeID];
 
-    // AH for PMTs on the top their Z-orientation is off 
-    // because of the reflection transformation.  Flip it
-    // back to global instead of relative to the mother volume
-    double pmtZOrientFix = 1;
     // Figure out if pmt is on top/bottom or barrel
     // print key: 0-top, 1-barrel, 2-bottom
-    if (pmtOrientation.z()!=1.0)//barrel pmt
-    {cylLocation=1;}
-    else if (newTransform.getTranslation().getZ() > 0.0)//top
-    {cylLocation=0; pmtZOrientFix = -1.0;}
-    else // bottom
+    if (pmtOrientation*newTransform.getTranslation() > 0)//veto pmt
+    {cylLocation=3;}
+    else if (pmtOrientation.z()==1.0)//bottom
     {cylLocation=2;}
+    else if (pmtOrientation.z()==-1.0)//top
+    {cylLocation=0;}
+    else // barrel
+    {cylLocation=1;}
     
     geoFile.precision(9);
      geoFile << setw(4) << tubeID 
@@ -282,7 +280,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
  	    << " " << setw(8) << newTransform.getTranslation().getZ()/cm
 	    << " " << setw(7) << pmtOrientation.x()
 	    << " " << setw(7) << pmtOrientation.y()
-	    << " " << setw(7) << pmtOrientation.z()*pmtZOrientFix
+	    << " " << setw(7) << pmtOrientation.z()
  	    << " " << setw(3) << cylLocation
  	    << G4endl;
      
@@ -292,7 +290,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
 					      newTransform.getTranslation().getZ()/cm,
 					      pmtOrientation.x(),
 					      pmtOrientation.y(),
-					      pmtOrientation.z()*pmtZOrientFix,
+					      pmtOrientation.z(),
 					      tubeID);
      
      fpmts.push_back(new_pmt);

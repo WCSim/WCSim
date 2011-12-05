@@ -141,8 +141,13 @@ private:
   G4LogicalVolume*   ConstructMailboxWC();
   G4LogicalVolume*   ConstructWC();
   void  ConstructPMT();
+  G4LogicalVolume* ConstructCaps(G4int zflip);
 
   void  ConstructMaterials();
+
+  G4LogicalVolume* logicWCBarrelCellBlackSheet;
+  G4LogicalVolume* logicWCTowerBlackSheet;
+  G4double capAssemblyHeight;
 
   G4bool WCAddGd;
 
@@ -241,6 +246,17 @@ private:
   
   G4double WCCapEdgeLimit;
   G4double WCBlackSheetThickness;
+
+// raise scope of derived parameters
+  G4double WCIDRadius;
+  G4double totalAngle;
+  G4double dPhi;
+  G4double barrelCellHeight;
+  G4double mainAnnulusHeight;
+  G4double innerAnnulusRadius;
+  G4double outerAnnulusRadius;
+  G4String water;
+
 
  //for 1kt
   G4double WCDiameter;
