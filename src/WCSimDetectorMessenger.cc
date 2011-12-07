@@ -162,12 +162,54 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   WLSP_offset->SetGuidance("WLSP_offset");
   WLSP_offset->SetDefaultValue(1e9);
   WLSP_offset->AvailableForStates(G4State_Idle);
-
   
   WLSP_outradius = new G4UIcmdWithADouble("/WCSim/WLSP_outradius",this);
   WLSP_outradius->SetGuidance("WLSP_outradius");
   WLSP_outradius->SetDefaultValue(1e9);
   WLSP_outradius->AvailableForStates(G4State_Idle);
+
+  LC_reflectivity = new G4UIcmdWithADouble("/WCSim/LC_reflectivity",this);
+  LC_reflectivity->SetGuidance("LC_reflectivity");
+  LC_reflectivity->SetDefaultValue(0.9);
+  LC_reflectivity->AvailableForStates(G4State_Idle);
+
+  WLSP_reflectivity = new G4UIcmdWithADouble("/WCSim/WLSP_reflectivity",this);
+  WLSP_reflectivity->SetGuidance("WLSP_reflectivity");
+  WLSP_reflectivity->SetDefaultValue(0.9);
+  WLSP_reflectivity->AvailableForStates(G4State_Idle);
+
+  LC_material = new G4UIcmdWithAString("/WCSim/LC_material", this);
+  LC_material->SetGuidance("Set the PMT Collection Efficiency configuration.");
+  LC_material->SetGuidance("Available options are:\n"
+			  "1\n"
+			  "2\n"
+			  "3\n"
+			  "4\n"
+			  "5\n");
+  LC_material->SetParameterName("LC_material", false);
+  LC_material->SetCandidates("1 "
+			     "2 "
+			     "3 "
+			     "4 "
+			     "5 ");
+  LC_material->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+
+  WLSP_material = new G4UIcmdWithAString("/WCSim/WLSP_material", this);
+  WLSP_material->SetGuidance("Set the PMT Collection Efficiency configuration.");
+  WLSP_material->SetGuidance("Available options are:\n"
+			  "1\n"
+			  "2\n"
+			  "3\n"
+			  "4\n"
+			  "5\n");
+  WLSP_material->SetParameterName("WLSP_material", false);
+  WLSP_material->SetCandidates("1 "
+			     "2 "
+			     "3 "
+			     "4 "
+			     "5 ");
+  WLSP_material->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   WCConstruct = new G4UIcmdWithoutParameter("/WCSim/Construct", this);
   WCConstruct->SetGuidance("Update detector construction with new settings.");
@@ -182,6 +224,11 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete LC_b;
   delete LC_d;
   
+  delete LC_material;
+  delete WLSP_material;
+  delete LC_reflectivity;
+  delete WLSP_reflectivity;
+
   delete WLSP_offset;
   delete WLSP_outradius;
 
@@ -204,28 +251,92 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
 void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {    
 
+  if (command == LC_reflectivity){
+    G4cout << "LC reflectivity " << LC_reflectivity->GetNewDoubleValue(newValue) << G4endl;
+    WCSimDetector->Set_LC_reflectivity(LC_reflectivity->GetNewDoubleValue(newValue));
+  }
+  if (command == WLSP_reflectivity){
+    G4cout << "WLSP reflectivity " << WLSP_reflectivity->GetNewDoubleValue(newValue) << G4endl;
+    WCSimDetector->Set_WLSP_reflectivity(WLSP_reflectivity->GetNewDoubleValue(newValue));
+  }
+  
+  if (command == LC_material){
+    G4cout << "Set LC Material " << newValue << " ";
+    if (newValue == "1"){
+      WCSimDetector->SetLC_material(1);
+      G4cout << "1";
+    }else if (newValue == "2"){
+      WCSimDetector->SetLC_material(2);
+      G4cout << "2";
+    }else if (newValue == "3"){
+      WCSimDetector->SetLC_material(3);
+      G4cout << "3";
+    }else if (newValue == "4"){
+      WCSimDetector->SetLC_material(4);
+      G4cout << "4";
+    }else if (newValue == "5"){
+      WCSimDetector->SetLC_material(5);
+      G4cout << "5";  
+    }else{
+      
+    }
+    G4cout << G4endl;
+  }
+
+  if (command == WLSP_material){
+    G4cout << "Set WLSP Material " << newValue << " ";
+    if (newValue == "1"){
+      WCSimDetector->SetWLSP_material(1);
+      G4cout << "1";
+    }else if (newValue == "2"){
+      WCSimDetector->SetWLSP_material(2);
+      G4cout << "2";
+    }else if (newValue == "3"){
+      WCSimDetector->SetWLSP_material(3);
+      G4cout << "3";
+    }else if (newValue == "4"){
+      WCSimDetector->SetWLSP_material(4);
+      G4cout << "4";
+    }else if (newValue == "5"){
+      WCSimDetector->SetWLSP_material(5);
+      G4cout << "5";  
+    }else{
+      
+    }
+    G4cout << G4endl;
+  }
+
+
   if (command == LCoffset){
+    G4cout << "LCoffset " <<LCoffset->GetNewDoubleValue(newValue) << G4endl;
     WCSimDetector->Set_LCoffset(LCoffset->GetNewDoubleValue(newValue));
   }
   if (command == LC_rmin){
+    G4cout << "LC_rmin " <<LC_rmin->GetNewDoubleValue(newValue) << G4endl;
     WCSimDetector->Set_LC_rmin(LC_rmin->GetNewDoubleValue(newValue));
   }
   if (command == LC_rmax){
+    G4cout << "LC_rmax " <<LC_rmax->GetNewDoubleValue(newValue) << G4endl;
     WCSimDetector->Set_LC_rmax(LC_rmax->GetNewDoubleValue(newValue));
   }
   if (command == LC_a){
+    G4cout << "LC_a " <<LC_a->GetNewDoubleValue(newValue) << G4endl;
     WCSimDetector->Set_LC_a(LC_a->GetNewDoubleValue(newValue));
   }
   if (command == LC_b){
+    G4cout << "LC_b " <<LC_b->GetNewDoubleValue(newValue) << G4endl;
     WCSimDetector->Set_LC_b(LC_b->GetNewDoubleValue(newValue));
   }
   if (command == LC_d){
+    G4cout << "LC_d " <<LC_d->GetNewDoubleValue(newValue) << G4endl;
     WCSimDetector->Set_LC_d(LC_d->GetNewDoubleValue(newValue));
   }
   if (command == WLSP_offset){
+    G4cout << "WLSP_offset " <<WLSP_offset->GetNewDoubleValue(newValue) << G4endl;
     WCSimDetector->Set_WLSP_offset(WLSP_offset->GetNewDoubleValue(newValue));
   }
   if (command == WLSP_outradius){
+    G4cout << "WLSP_outradius " <<WLSP_outradius->GetNewDoubleValue(newValue) << G4endl;
     WCSimDetector->Set_WLSP_outradius(WLSP_outradius->GetNewDoubleValue(newValue));
   }
 

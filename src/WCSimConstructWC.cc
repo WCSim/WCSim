@@ -730,8 +730,20 @@ void WCSimDetectorConstruction::ConstructLC()
 {
   
   G4NistManager* man = G4NistManager::Instance();
-  G4Material* conc_material = man->FindOrBuildMaterial("G4_PLEXIGLASS");
-  logiLC = new WCSimLC("LC", conc_material,LC_rmin,LC_rmax,LC_a,LC_b,LC_d);
+  G4Material* conc_material;
+  if (LC_material==1){
+    conc_material= man->FindOrBuildMaterial("G4_PLEXIGLASS");
+  }else if (LC_material==2){
+    conc_material= man->FindOrBuildMaterial("G4_PLEXIGLASS");
+  }else if (LC_material==3){
+    conc_material= man->FindOrBuildMaterial("G4_PLEXIGLASS");
+  }else if (LC_material==4){
+    conc_material= man->FindOrBuildMaterial("G4_PLEXIGLASS");
+  }else if (LC_material==5){
+    conc_material= man->FindOrBuildMaterial("G4_PLEXIGLASS");
+  }
+
+  logiLC = new WCSimLC("LC", conc_material,LC_rmin,LC_rmax,LC_a,LC_b,LC_d,LC_reflectivity);
   logiLC->SetInvisible();
    
   
@@ -757,8 +769,17 @@ void WCSimDetectorConstruction::ConstructWLSP()
   G4Material* plate_material;
 
   G4double WCWLSP_radius;
-  
-  plate_material= man->FindOrBuildMaterial("BC408_high");
+  if (WLSP_material==1){
+    plate_material= man->FindOrBuildMaterial("BC408_high");
+  }else if (WLSP_material==2){
+    plate_material= man->FindOrBuildMaterial("BC408_high");
+  }else if (WLSP_material==3){
+    plate_material= man->FindOrBuildMaterial("BC408_high");
+  }else if (WLSP_material==4){
+    plate_material= man->FindOrBuildMaterial("BC408_high");
+  }else if (WLSP_material==5){
+    plate_material= man->FindOrBuildMaterial("BC408_high");
+  }
   WCWLSP_radius = WLSP_outradius;
   
 

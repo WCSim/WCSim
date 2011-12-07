@@ -24,7 +24,8 @@ WCSimLC::WCSimLC(
       G4double LC_rmax1,
       G4double LC_a1,
       G4double LC_b1,
-      G4double LC_d1
+      G4double LC_d1,
+      G4double LC_refl
       ) : G4LogicalVolume(new G4Box("temp",10,10,10), bulkMaterial, name)
 {
 
@@ -120,8 +121,8 @@ int n = 0;
     G4MaterialPropertiesTable* propMirror=
       new G4MaterialPropertiesTable();
     propMirror->AddProperty("REFLECTIVITY", new G4MaterialPropertyVector());
-    propMirror->AddEntry("REFLECTIVITY", twopi*hbarc/(800.0e-9*m), 0.9);
-    propMirror->AddEntry("REFLECTIVITY", twopi*hbarc/(200.0e-9*m), 0.9);
+    propMirror->AddEntry("REFLECTIVITY", twopi*hbarc/(800.0e-9*m), LC_refl);
+    propMirror->AddEntry("REFLECTIVITY", twopi*hbarc/(200.0e-9*m), LC_refl);
     our_Mirror_opsurf->SetMaterialPropertiesTable( propMirror );
   }
  

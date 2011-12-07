@@ -43,6 +43,12 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithAString* PMT_Timing_Var;
   G4UIcmdWithAString* tubeCmd;
   G4UIcmdWithAString* distortionCmd;
+
+  G4UIcmdWithAString* LC_material; //should choose
+  G4UIcmdWithAString* WLSP_material; //should choose
+  G4UIcmdWithADouble* LC_reflectivity; //cone reflectivity
+  G4UIcmdWithADouble* WLSP_reflectivity; // edge reflectivity
+
   G4UIcmdWithoutParameter* WCConstruct;
 
   G4UIcmdWithADouble* LCoffset;

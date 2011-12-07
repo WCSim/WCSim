@@ -98,6 +98,11 @@
 #/WCSim/WLSP_offset 0
 #/WCSim/WLSP_outradius 178
 
+/WCSim/LC_material 1
+/WCSim/WLSP_material 1
+/WCSim/LC_reflectivity 0.9
+#/WCSim/WLSP_reflectivity 0.9
+
 /WCSim/Construct
 
 

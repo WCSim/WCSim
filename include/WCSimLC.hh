@@ -15,7 +15,8 @@ public:
 		  G4double LC_rmax1,
 		  G4double LC_a1,
 		  G4double LC_b1,
-		  G4double LC_d1
+		  G4double LC_d1,
+		  G4double LC_refl
   		 );
  
   void SetInvisible();

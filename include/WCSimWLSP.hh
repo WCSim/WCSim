@@ -15,7 +15,7 @@ public:
 		  G4Material* plate_Material,
 		  G4double LC_rmin1,
 		  G4double LC_rmax1,
-                G4String shape
+		  G4String shape
 		  );
  
  
@@ -36,7 +36,7 @@ public:
 		  G4Material* reflector_Material,
 		  G4Material* reflect_Material,
 		  G4double LC_rmax1,
-                G4String shape
+		  G4String shape
   		 );
  
  

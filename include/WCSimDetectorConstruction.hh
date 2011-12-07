@@ -103,6 +103,23 @@ public:
   G4bool addWLSP;
   G4bool DaddWLSP; // default option for LCs
 
+  G4int LC_material;
+  G4int Get_LC_material(){return LC_material;};
+  void SetLC_material(G4int value) {LC_material = value;};
+
+  G4int WLSP_material;
+  G4int Get_WLSP_material(){return WLSP_material;};
+  void SetWLSP_material(G4int value) {WLSP_material = value;};
+  
+  G4double LC_reflectivity;
+  G4double Get_LC_reflectivity(){return LC_reflectivity;};
+  void Set_LC_reflectivity(G4double value){LC_reflectivity = value;};
+
+  G4double WLSP_reflectivity;
+  G4double Get_WLSP_reflectivity(){return WLSP_reflectivity;};
+  void Set_WLSP_reflectivity(G4double value){WLSP_reflectivity = value;};
+  
+
   G4double LCoffset;
   G4double LC_rmin;
   G4double LC_rmax;
