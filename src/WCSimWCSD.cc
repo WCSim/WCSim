@@ -220,7 +220,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      }
      hitTime += pmt_time_corr;
 
-     std::cout << pmt_time_corr << std::endl;
+     //  std::cout << pmt_time_corr << std::endl;
 
      if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
 
