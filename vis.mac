@@ -80,6 +80,7 @@
 /WCSim/ConstructLC false
 /WCSim/WLSPSIZE 1
 /WCSim/PMTCollEff off
+/WCSim/PMT_Timing_Var on
 /WCSim/PMTCollEff_Method 2
 /WCSim/Construct
 

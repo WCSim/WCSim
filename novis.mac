@@ -62,6 +62,7 @@
 /WCSim/WLSPSIZE 1
 /WCSim/PMTCollEff off
 /WCSim/PMTCollEff_Method 2
+/WCSim/PMT_Timing_Var on
 /WCSim/Construct
 
 ## change the name of the output root file, default = wcsim.root

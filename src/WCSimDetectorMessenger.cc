@@ -89,6 +89,16 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			     "SensitiveDetector_Only ");
   PMTQEMethod->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+  PMT_Timing_Var = new G4UIcmdWithAString("/WCSim/PMT_Timing_Var", this);
+  PMT_Timing_Var->SetGuidance("Set the PMT configuration.");
+  PMT_Timing_Var->SetGuidance("Available options are:\n"
+			      "on\n"
+			      "off\n");
+  PMT_Timing_Var->SetParameterName("PMT_Timing_Var", false);
+  PMT_Timing_Var->SetCandidates("on "
+				"off ");
+  PMT_Timing_Var->AvailableForStates(G4State_PreInit, G4State_Idle);
+
   
   PMTCollEff = new G4UIcmdWithAString("/WCSim/PMTCollEff", this);
   PMTCollEff->SetGuidance("Set the PMT configuration.");
@@ -129,7 +139,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete PMTQEMethod;
   delete PMTCollEff;
   delete PMTCollEff_Method;
-
+  delete PMT_Timing_Var;
   delete tubeCmd;
   delete distortionCmd;
   delete WCSimDir;
@@ -195,6 +205,19 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  G4cout << G4endl;
 	}
 
+	if (command == PMT_Timing_Var){
+	  G4cout << "Set PMT Timing Variation " << newValue << " ";
+	  if (newValue == "on"){
+	    WCSimDetector->SetPMT_Timing_Var(1);
+	    G4cout << "1";
+	  }else if (newValue == "off"){
+	    WCSimDetector->SetPMT_Timing_Var(0);
+	    G4cout << "0";
+	  }
+	  G4cout << G4endl;
+	}
+
+
 	if (command == PMTCollEff){
 	  G4cout << "Set PMT Collection Efficiency " << newValue << " ";
 	  if (newValue == "on"){
@@ -206,6 +229,9 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  }
 	  G4cout << G4endl;
 	}
+
+
+
 
 	if (command == PMTCollEff_Method){
 	  G4cout << "Set PMT Collection Efficiency Method " << newValue << " ";

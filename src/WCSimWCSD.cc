@@ -163,6 +163,15 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4float collection_eff_db[2][10]={{100,100,99,95,90,85,80,69,35,13}, // 10 inch
 				    {100.,99.33,100.,98.89,97.23,95.392,93.52,86.3,55.6,26.25} // Penn's measurement of 12 inch PMT
   };
+
+  // add in position dependence timing variations
+  //center of mean shift
+  G4float pmt_timing_center[10]={-0.1585,-0.188037,-0.114125,0.0108234,0.151367,-0.0643322,-0.446126,-0.694123,-0.463073,-0.011125};
+  //sigma of mean shift, we have to add this part, since in principle we can have different timing in azimuthal angles.
+  // Here we did a very naive approximation on this part to speed up. 
+  G4float pmt_timing_sigma[10]={0.169304,0.160181,0.180895,0.214357,0.242133,0.364881,0.755061,1.47378,1.6562,1.37735};
+  // timing resolution 
+  G4float pmt_timing_smear[10]={1.1715,1.16763,1.17955,1.18753,1.20617,1.19932,1.21371,1.38257,1.43092,1.68762};
   
   
   G4float theta_angle;
@@ -199,6 +208,19 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
        effectiveAngularEfficiency = Interpolate_func(theta_angle,10,collection_angle,collection_eff_db[0])/100.;
      }
      // std::cout << fdet->GetPMT_Coll_Eff_Method() << "\t" << effectiveAngularEfficiency << std::endl;
+
+     G4float pmt_tc,pmt_ts,pmt_tsm,pmt_time_corr; 
+     if (fdet->GetPMT_Timing_Var()==1){
+       pmt_tc = Interpolate_func(theta_angle,10,collection_angle,pmt_timing_center);
+       pmt_ts = Interpolate_func(theta_angle,10,collection_angle,pmt_timing_sigma);
+       pmt_tsm = Interpolate_func(theta_angle,10,collection_angle,pmt_timing_smear);
+       pmt_time_corr = pmt_tc + G4RandGauss::shoot(0.,1.)*sqrt(pmt_ts*pmt_ts+pmt_tsm+pmt_tsm);
+     }else{
+       pmt_time_corr = 0.;
+     }
+     hitTime += pmt_time_corr;
+
+     std::cout << pmt_time_corr << std::endl;
 
      if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
 
