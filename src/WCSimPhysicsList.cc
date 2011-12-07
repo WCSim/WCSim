@@ -10,6 +10,7 @@
 #include "G4BaryonConstructor.hh"
 #include "G4BosonConstructor.hh"
 #include "G4IonConstructor.hh"
+#include "G4ShortLivedConstructor.hh"
 #include "G4ProcessManager.hh"
 #include "G4ProcessVector.hh"
 #include "G4ParticleTypes.hh"
@@ -49,11 +50,13 @@ void WCSimPhysicsList::ConstructParticle()
   G4BaryonConstructor baryonConstructor;
   G4BosonConstructor bosonConstructor;
   G4IonConstructor ionConstructor;
+  G4ShortLivedConstructor ShortLivedConstructor;
   leptonConstructor.ConstructParticle();
   mesonConstructor.ConstructParticle();
   baryonConstructor.ConstructParticle();
   bosonConstructor.ConstructParticle();
   ionConstructor.ConstructParticle();
+  ShortLivedConstructor.ConstructParticle();
   G4OpticalPhoton::OpticalPhotonDefinition();
 }
 
@@ -243,15 +246,17 @@ void WCSimPhysicsList::ConstructlArStepLimiter(){
 #include "G4OpAbsorption.hh"
 #include "G4OpRayleigh.hh"
 #include "G4OpWLS.hh"
+#include "G4OpMieHG.hh"
 #include "G4OpBoundaryProcess.hh"
 
 void WCSimPhysicsList::ConstructOp(){
 
   G4Cerenkov*           theCherenkovProcess        = new G4Cerenkov("Cerenkov");
-  G4OpAbsorption*       theAbsorptionProcess         = new G4OpAbsorption();
-  G4OpRayleigh*         theRayleighScatteringProcess = new G4OpRayleigh();
+  G4OpAbsorption*      theAbsorptionProcess         = new G4OpAbsorption();
+  G4OpRayleigh*        theRayleighScatteringProcess = new G4OpRayleigh();
   G4OpWLS*              theWLSProcess                = new G4OpWLS();
-  G4OpBoundaryProcess*  theBoundaryProcess          = new G4OpBoundaryProcess();
+  G4OpMieHG*  theMieHGScatteringProcess = new G4OpMieHG();
+  G4OpBoundaryProcess* theBoundaryProcess          = new G4OpBoundaryProcess();
 
 //   theCherenkovProcess->DumpPhysicsTable();
 //   theAbsorptionProcess->DumpPhysicsTable();
@@ -260,9 +265,10 @@ void WCSimPhysicsList::ConstructOp(){
   theCherenkovProcess->SetVerboseLevel(0);
   theAbsorptionProcess->SetVerboseLevel(0);
   theRayleighScatteringProcess->SetVerboseLevel(0);
+  theMieHGScatteringProcess->SetVerboseLevel(0);
   theBoundaryProcess->SetVerboseLevel(0);
   theWLSProcess->SetVerboseLevel(0);
-
+  
   theWLSProcess->UseTimeProfile("exponential");
 
   G4int MaxNumPhotons = 300;
@@ -299,6 +305,7 @@ void WCSimPhysicsList::ConstructOp(){
 	//     G4cout << "warning direct light only\n";
 	pmanager->AddDiscreteProcess(theRayleighScatteringProcess);
 	pmanager->AddDiscreteProcess(theWLSProcess);
+	pmanager->AddDiscreteProcess(theMieHGScatteringProcess);
 	pmanager->AddDiscreteProcess(theBoundaryProcess);
 	
       }
