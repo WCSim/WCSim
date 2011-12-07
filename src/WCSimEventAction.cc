@@ -633,6 +633,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     
       std::vector<float> truetime;
       std::vector<float> wavelength;
+      std::vector<float> wlsflag;
       std::vector<int> qeflag;
       std::vector<int>   primaryParentID;
       std::vector<double> local_x;
@@ -650,6 +651,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       {
 	truetime.push_back((*WCHC)[k]->GetTime(l));
 	wavelength.push_back((*WCHC)[k]->GetWL(l));
+	wlsflag.push_back((*WCHC)[k]->GetWLSflag(l));
 	qeflag.push_back((*WCHC)[k]->GetQeflag(l));
 	primaryParentID.push_back((*WCHC)[k]->GetParentID(l));
 	local_x.push_back((*WCHC)[k]->GetLocalPosX(l));
@@ -661,7 +663,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       }
 
       wcsimrootevent->AddCherenkovHit(tubeID,
-				      truetime,wavelength,qeflag,
+				      truetime,wavelength,wlsflag,qeflag,
 				      primaryParentID,
 				      local_x,local_y,local_z,
 				      local_dx,local_dy,local_dz); 

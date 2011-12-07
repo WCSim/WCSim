@@ -68,7 +68,7 @@ class WCSimWCHit : public G4VHit
   // This is temporarily used for the drawing scale
   void SetMaxPe(G4int number = 0)  {maxPe   = number;};
 
-  void AddPe(G4float hitTime, G4float hitWL, G4int qe_flag,
+  void AddPe(G4float hitTime, G4float hitWL, G4float hitWLSflag, G4int qe_flag,
 	     G4double lpos_x, G4double lpos_y, G4double lpos_z,
 	     G4double ldir_x, G4double ldir_y, G4double ldir_z)  
   {
@@ -80,6 +80,7 @@ class WCSimWCHit : public G4VHit
 
     time.push_back(hitTime);
     wave_length.push_back(hitWL);
+    wls_flag.push_back(hitWLSflag);
     qeflag.push_back(qe_flag);
     local_pos_x.push_back(lpos_x);
     local_pos_y.push_back(lpos_y);
@@ -101,6 +102,7 @@ class WCSimWCHit : public G4VHit
   G4int         GetTotalPe()    { return totalPe;};
   G4float       GetTime(int i)  { return time[i];};
   G4float       GetWL(int i) {return wave_length[i];};
+  G4float       GetWLSflag(int i) {return wls_flag[i];};
 
   G4double       GetLocalPosX(int i) {return local_pos_x[i];};
   G4double       GetLocalPosY(int i) {return local_pos_y[i];};
@@ -184,7 +186,8 @@ class WCSimWCHit : public G4VHit
   G4int                 totalPe;
   std::vector<G4float>  time;
   std::vector<G4float>  wave_length;
-
+  std::vector<G4float>  wls_flag;
+  
   std::vector<G4double>  local_pos_x;
   std::vector<G4double>  local_pos_y;
   std::vector<G4double>  local_pos_z;

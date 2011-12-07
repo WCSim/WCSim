@@ -300,7 +300,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vector<Float_t> truetime, std::vector<Float_t> wavelength, 
+WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vector<Float_t> truetime, std::vector<Float_t> wavelength,   std::vector<Float_t> wlsflag,
 							 std::vector<Int_t> qeflag ,std::vector<Int_t> primParID,
 							 std::vector<Double_t> local_x, std::vector<Double_t> local_y, std::vector<Double_t> local_z,
 							 std::vector<Double_t> local_dx,std::vector<Double_t> local_dy,std::vector<Double_t> local_dz)
@@ -313,7 +313,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vecto
     fCherenkovHitCounter++;
 
   WCSimRootCherenkovHitTime *cherenkovhittime = 
-    new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],wavelength[i],qeflag[i],primParID[i],
+    new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],wavelength[i],wlsflag[i],qeflag[i],primParID[i],
 									    local_x[i],local_y[i],local_z[i],
 									    local_dx[i],local_dy[i],local_dz[i]);
   }
@@ -342,7 +342,7 @@ WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
   fTotalPe[1] = totalPe[1];
 }
 
-WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,Float_t wavelength, Int_t qeflag,
+WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,Float_t wavelength, Float_t wlsflag, Int_t qeflag,
 						     Int_t primParID,
 						     Double_t local_x,Double_t local_y, Double_t local_z,
 						     Double_t local_dx,Double_t local_dy, Double_t local_dz
@@ -351,6 +351,7 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,Float_t wa
   // Create a WCSimRootCherenkovHit object and fill it with stuff
     fTruetime        = truetime; 
     fwavelength = wavelength;
+    fwlsflag = wlsflag;
     fQe_flag = qeflag;
     fPrimaryParentID = primParID;
     local_pos_x = local_x;

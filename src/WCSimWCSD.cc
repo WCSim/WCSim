@@ -7,6 +7,7 @@
 #include "G4SDManager.hh"
 #include "Randomize.hh"
 #include "G4ios.hh"
+#include "G4VProcess.hh"
 
 #include <sstream>
 
@@ -102,6 +103,19 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   
   //XQ Add the wavelength there
   G4float  wavelength = (2.0*M_PI*197.3)/( aStep->GetTrack()->GetTotalEnergy()/eV);
+  G4float wlsflag = 0.0;
+  
+  G4Track * theTrack = aStep->GetTrack();
+  const G4VProcess* originofphoton = theTrack->GetCreatorProcess();
+  G4String originstring;
+  originstring = originofphoton->GetProcessName();
+
+//G4cout << originstring << G4endl;
+  
+  if(originstring == "OpWLS")
+    {
+      wlsflag = 1.0;
+    }
   
 
   G4double energyDeposition  = aStep->GetTotalEnergyDeposit();
@@ -244,7 +258,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   // Set the hitMap value to the collection hit number
 	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
 	   
-	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime,wavelength,qe_flag,
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime,wavelength, wlsflag,qe_flag,
 								localPosition.x(),
 								localPosition.y(),
 								localPosition.z(),
@@ -258,7 +272,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   //       newHit->Print();
 	 }
        else {
-	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime,wavelength,qe_flag,
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime,wavelength, wlsflag,qe_flag,
 							      localPosition.x(),
 							      localPosition.y(),
 							      localPosition.z(),

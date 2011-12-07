@@ -105,6 +105,7 @@ private:
   // See jhfNtuple.h for the meaning of these data members:
   Float_t fTruetime;
   Float_t fwavelength;
+  Float_t fwlsflag;
   Int_t fQe_flag;
   Int_t   fPrimaryParentID;
 
@@ -113,7 +114,7 @@ private:
 
 public:
   WCSimRootCherenkovHitTime() {}
-  WCSimRootCherenkovHitTime(Float_t truetime,Float_t wavelength, Int_t qeflag,
+  WCSimRootCherenkovHitTime(Float_t truetime,Float_t wavelength, Float_t wlsflag, Int_t qeflag,
 			    Int_t   primaryParentID,
 			    Double_t local_x,Double_t local_y, Double_t local_z,
 			    Double_t local_dx,Double_t local_dy, Double_t local_dz
@@ -122,6 +123,7 @@ public:
 
   Float_t   GetTruetime() { return fTruetime;}
   Float_t   GetWavelength() { return fwavelength;}
+  Float_t   GetWLSflag() { return fwlsflag;}
   Int_t     GetQe_flag() {return fQe_flag;}
   Int_t     GetParentID() { return fPrimaryParentID;}
   Double_t  GetPosX(){return local_pos_x;};
@@ -313,6 +315,7 @@ public:
   WCSimRootCherenkovHit   *AddCherenkovHit(Int_t                tubeID,
 					  std::vector<Float_t> truetime,
 					   std::vector<Float_t> wavelength,
+					   std::vector<Float_t> wlsflag,
 					   std::vector<Int_t> qeflag,
 					   std::vector<Int_t>   primParID,
 					   std::vector<Double_t>,
