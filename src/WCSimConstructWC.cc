@@ -743,6 +743,15 @@ void WCSimDetectorConstruction::ConstructLC()
 void WCSimDetectorConstruction::ConstructWLSP()
 {
   
+  G4String p_shape;
+  if (Plate_shape == 0){
+    p_shape = "circle";
+  }else if (Plate_shape == 1){
+    p_shape = "square";
+  }else if (Plate_shape == 2){
+    p_shape = "clover";
+  }
+
   G4NistManager* man = G4NistManager::Instance();
   G4Material* plat_material = man->FindOrBuildMaterial("G4_PLEXIGLASS");
   G4Material* plate_material;
@@ -753,12 +762,12 @@ void WCSimDetectorConstruction::ConstructWLSP()
   WCWLSP_radius = WLSP_outradius;
   
 
-  logiWLSPLC = new WCSimWLSP_LC("WLSPLC",plat_material,plate_material,WLSP_inradius,WCWLSP_radius);
+  logiWLSPLC = new WCSimWLSP_LC("WLSPLC",plat_material,plate_material,WLSP_inradius,WCWLSP_radius,p_shape);
 
   logiWLSPLC->SetInvisible();
   G4Material* refl_material = man->FindOrBuildMaterial("G4_POLYETHYLENE");
   G4Material* refl1_material = man->FindOrBuildMaterial("Tyvek_wlsp");
-  logiWLSPReflector = new WCSimWLSP_Reflector("WLSPReflector",refl_material,refl1_material,WCWLSP_radius);
+  logiWLSPReflector = new WCSimWLSP_Reflector("WLSPReflector",refl_material,refl1_material,WCWLSP_radius,p_shape);
   //WLSP_offset=35.0 *mm;//original
   logiWLSPReflector->SetInvisible();
 
