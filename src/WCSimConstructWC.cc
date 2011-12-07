@@ -427,7 +427,8 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_12perCent()
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
   LC_rmin = 152.4 * mm;
-  LC_rmax = (209.672 +152.4-127)* mm;
+  // LC_rmax = (209.672 +152.4-127)* mm;
+  LC_rmax =  217.382 * mm;
   LC_a = 165.97 * mm;
   LC_b = 584.525 * mm;
   LC_d= 95.48* mm;
@@ -465,7 +466,8 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_10perCent()
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
   LC_rmin = 152.4 * mm;
-  LC_rmax = (209.672 +152.4-127)* mm;
+  //LC_rmax = (209.672 +152.4-127)* mm;
+  LC_rmax =  217.382 * mm;
   LC_a = 165.97 * mm;
   LC_b = 584.525 * mm;
   LC_d= 95.48* mm;
@@ -502,7 +504,8 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_13perCent()
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
   LC_rmin = 152.4 * mm;
-  LC_rmax = (209.672 +152.4-127)* mm;
+  //LC_rmax = (209.672 +152.4-127)* mm;
+  LC_rmax =  217.382 * mm;
   LC_a = 165.97 * mm;
   LC_b = 584.525 * mm;
   LC_d= 95.48* mm;
