@@ -101,6 +101,17 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTCollEff->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   
+  PMTCollEff_Method = new G4UIcmdWithAString("/WCSim/PMTCollEff_Method", this);
+  PMTCollEff_Method->SetGuidance("Set the PMT Collection Efficiency configuration.");
+  PMTCollEff_Method->SetGuidance("Available options are:\n"
+			  "1\n"
+			  "2\n");
+  PMTCollEff_Method->SetParameterName("PMTCollEff_Method", false);
+  PMTCollEff_Method->SetCandidates("1 "
+			    "2 ");
+  PMTCollEff_Method->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  
 
   WCConstruct = new G4UIcmdWithoutParameter("/WCSim/Construct", this);
   WCConstruct->SetGuidance("Update detector construction with new settings.");
@@ -117,6 +128,8 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete SavePi0;
   delete PMTQEMethod;
   delete PMTCollEff;
+  delete PMTCollEff_Method;
+
   delete tubeCmd;
   delete distortionCmd;
   delete WCSimDir;
@@ -190,6 +203,18 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  }else if (newValue == "off"){
 	    WCSimDetector->SetPMT_Coll_Eff(0);
 	    G4cout << "0";
+	  }
+	  G4cout << G4endl;
+	}
+
+	if (command == PMTCollEff_Method){
+	  G4cout << "Set PMT Collection Efficiency Method " << newValue << " ";
+	  if (newValue == "1"){
+	    WCSimDetector->SetPMT_Coll_Eff_Method(1);
+	    G4cout << "1";
+	  }else if (newValue == "2"){
+	    WCSimDetector->SetPMT_Coll_Eff_Method(2);
+	    G4cout << "2";
 	  }
 	  G4cout << G4endl;
 	}

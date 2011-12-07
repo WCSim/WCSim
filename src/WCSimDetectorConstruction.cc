@@ -87,6 +87,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   SetPMT_QE_Method(1);
   //default to use collection efficiency
   SetPMT_Coll_Eff(1);
+  SetPMT_Coll_Eff_Method(1);
 
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry

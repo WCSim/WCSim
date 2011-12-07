@@ -160,7 +160,10 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   
   G4float collection_angle[10]={0,10,20,30,40,50,60,70,80,90};
-  G4float collection_eff[10]={100,100,99,95,90,85,80,69,35,13};
+  G4float collection_eff_db[2][10]={{100,100,99,95,90,85,80,69,35,13}, // 10 inch
+				    {100.,99.33,100.,98.89,97.23,95.392,93.52,86.3,55.6,26.25} // Penn's measurement of 12 inch PMT
+  };
+  
   
   G4float theta_angle;
   G4float effectiveAngularEfficiency;
@@ -188,7 +191,15 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      G4double local_y = localPosition.y();
      G4double local_z = localPosition.z();
      theta_angle = acos(fabs(local_z)/sqrt(pow(local_x,2)+pow(local_y,2)+pow(local_z,2)))/3.1415926*180.;
-     effectiveAngularEfficiency = Interpolate_func(theta_angle,10,collection_angle,collection_eff)/100.;
+     if (fdet->GetPMT_Coll_Eff_Method()==1){
+       effectiveAngularEfficiency = Interpolate_func(theta_angle,10,collection_angle,collection_eff_db[0])/100.;
+     }else if (fdet->GetPMT_Coll_Eff_Method()==2){
+       effectiveAngularEfficiency = Interpolate_func(theta_angle,10,collection_angle,collection_eff_db[1])/100.;
+     }else{
+       effectiveAngularEfficiency = Interpolate_func(theta_angle,10,collection_angle,collection_eff_db[0])/100.;
+     }
+     // std::cout << fdet->GetPMT_Coll_Eff_Method() << "\t" << effectiveAngularEfficiency << std::endl;
+
      if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
 
        qe_flag = 1;

@@ -127,6 +127,7 @@ public:
   
   G4int    GetPMT_QE_Method(){return PMT_QE_Method;}
   G4int    UsePMT_Coll_Eff(){return PMT_Coll_Eff;}
+  G4int    GetPMT_Coll_Eff_Method(){return PMT_Coll_Eff_Method;}
 
 
   G4double GetPMTSize1() {return WCPMTSize;}
@@ -145,6 +146,7 @@ public:
   
   void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
   void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
+  void   SetPMT_Coll_Eff_Method(G4int choice){PMT_Coll_Eff_Method = choice;}
 
   // Geometry options
   void   SetIsUpright(G4bool choice) {isUpright = choice;}
@@ -242,6 +244,9 @@ private:
   // 0 to not use collection efficiency
   // 1 to use
   G4int PMT_Coll_Eff;
+  // 1 for 10 inch PMT
+  // 2 for 12 inch Penn's measurement
+  G4int PMT_Coll_Eff_Method;
 
   G4double WCLength;
 

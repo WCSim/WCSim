@@ -38,6 +38,7 @@ class WCSimDetectorMessenger: public G4UImessenger
 
   G4UIcmdWithAString* PMTQEMethod;
   G4UIcmdWithAString* PMTCollEff;
+  G4UIcmdWithAString* PMTCollEff_Method;
   G4UIcmdWithAString* tubeCmd;
   G4UIcmdWithAString* distortionCmd;
   G4UIcmdWithoutParameter* WCConstruct;

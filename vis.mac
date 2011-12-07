@@ -10,7 +10,7 @@
 #
 # The tube size is fixed for SK to 20"
 # These are fixed geometries for validation
-#/WCSim/WCgeom SuperK
+# /WCSim/WCgeom SuperK
 # Currently by default the DUSEL configurations are 10 inch.
 # you can overide this with the WCPMTsize command.
 # The mailbox will still give errors as of 8/28/09 (CWW)
@@ -36,8 +36,8 @@
 # distribution. This option is in particular important for the WLS
 # 3. The last option means all the QE are applied at the detector
 # Good for the low energy running. 
-#/WCSim/PMTQEMethod     Stacking_Only 
-/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
+/WCSim/PMTQEMethod     Stacking_Only 
+#/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
 
 
@@ -69,16 +69,18 @@
 
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
-/gun/particle e-
+/gun/particle mu-
 #/gun/particle pi0
-/gun/energy 1000 MeV
+/gun/energy 200 MeV
 /gun/direction 0 1 0 
 /gun/position 0 0 0  
 
 /WCSim/ConstructWLS false
 /WCSim/ConstructWLSP false
-/WCSim/ConstructLC true
+/WCSim/ConstructLC false
 /WCSim/WLSPSIZE 1
+/WCSim/PMTCollEff off
+/WCSim/PMTCollEff_Method 2
 /WCSim/Construct
 
 
