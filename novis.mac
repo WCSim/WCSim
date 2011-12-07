@@ -39,7 +39,6 @@
 #/WCSim/WCgeom DUSEL_200kton_10inch_HQE_12perCent
 #/WCSim/WCgeom 150kTMailbox_10inch_HQE_30perCent
 #/WCSim/WCgeom 150kTMailbox_10inch_40perCent
-#/WCSim/Construct
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 /WCSim/SavePi0 true
@@ -67,6 +66,17 @@
 /WCSim/PMTCollEff off
 /WCSim/PMTCollEff_Method 2
 /WCSim/PMT_Timing_Var on
+
+#/WCSim/LCoffset 0
+#/WCSim/LC_rmin 0
+#/WCSim/LC_rmax 0
+#/WCSim/LC_a 0
+#/WCSim/LC_b 0
+#/WCSim/LC_d 0
+
+#/WCSim/WLSP_offset 0
+#/WCSim/WLSP_outradius 178
+
 /WCSim/Construct
 
 ## change the name of the output root file, default = wcsim.root

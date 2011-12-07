@@ -4,6 +4,7 @@
 class WCSimDetectorConstruction;
 class G4UIdirectory;
 class G4UIcmdWithAString;
+class G4UIcmdWithADouble;
 
 #include "G4UImessenger.hh"
 #include "globals.hh"
@@ -43,6 +44,17 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithAString* tubeCmd;
   G4UIcmdWithAString* distortionCmd;
   G4UIcmdWithoutParameter* WCConstruct;
+
+  G4UIcmdWithADouble* LCoffset;
+  G4UIcmdWithADouble* LC_rmin;
+  G4UIcmdWithADouble* LC_rmax;
+  G4UIcmdWithADouble* LC_a;
+  G4UIcmdWithADouble* LC_b;
+  G4UIcmdWithADouble* LC_d;
+  
+  G4UIcmdWithADouble* WLSP_offset;
+  G4UIcmdWithADouble* WLSP_outradius;
+  
 
   //Winston cone and WLS options: K.Z.
   G4UIcmdWithABool* ConstructWLS;

@@ -5,6 +5,7 @@
 #include "G4UIcommand.hh"
 #include "G4UIparameter.hh"
 #include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithADouble.hh"
 
 
 WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimDet)
@@ -127,6 +128,46 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTCollEff_Method->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   
+  LCoffset = new G4UIcmdWithADouble("/WCSim/LCoffset",this);
+  LCoffset->SetGuidance("LCoffset");
+  LCoffset->SetDefaultValue(1e9);
+  LCoffset->AvailableForStates(G4State_Idle);
+
+  LC_rmin = new G4UIcmdWithADouble("/WCSim/LC_rmin",this);
+  LC_rmin->SetGuidance("LC_rmin");
+  LC_rmin->SetDefaultValue(1e9);
+  LC_rmin->AvailableForStates(G4State_Idle);
+
+  LC_rmax = new G4UIcmdWithADouble("/WCSim/LC_rmax",this);
+  LC_rmax->SetGuidance("LC_rmax");
+  LC_rmax->SetDefaultValue(1e9);
+  LC_rmax->AvailableForStates(G4State_Idle);
+
+  LC_a = new G4UIcmdWithADouble("/WCSim/LC_a",this);
+  LC_a->SetGuidance("LC_a");
+  LC_a->SetDefaultValue(1e9);
+  LC_a->AvailableForStates(G4State_Idle);
+
+  LC_b = new G4UIcmdWithADouble("/WCSim/LC_b",this);
+  LC_b->SetGuidance("LC_b");
+  LC_b->SetDefaultValue(1e9);
+  LC_b->AvailableForStates(G4State_Idle);
+
+  LC_d = new G4UIcmdWithADouble("/WCSim/LC_d",this);
+  LC_d->SetGuidance("LC_d");
+  LC_d->SetDefaultValue(1e9);
+  LC_d->AvailableForStates(G4State_Idle);
+
+  WLSP_offset = new G4UIcmdWithADouble("/WCSim/WLSP_offset",this);
+  WLSP_offset->SetGuidance("WLSP_offset");
+  WLSP_offset->SetDefaultValue(1e9);
+  WLSP_offset->AvailableForStates(G4State_Idle);
+
+  
+  WLSP_outradius = new G4UIcmdWithADouble("/WCSim/WLSP_outradius",this);
+  WLSP_outradius->SetGuidance("WLSP_outradius");
+  WLSP_outradius->SetDefaultValue(1e9);
+  WLSP_outradius->AvailableForStates(G4State_Idle);
 
   WCConstruct = new G4UIcmdWithoutParameter("/WCSim/Construct", this);
   WCConstruct->SetGuidance("Update detector construction with new settings.");
@@ -134,6 +175,16 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 
 WCSimDetectorMessenger::~WCSimDetectorMessenger()
 {
+  delete LCoffset;
+  delete LC_rmin;
+  delete LC_rmax;
+  delete LC_a;
+  delete LC_b;
+  delete LC_d;
+  
+  delete WLSP_offset;
+  delete WLSP_outradius;
+
   delete ConstructWLS;
   delete ConstructWLSP;
   delete ConstructLC;
@@ -152,6 +203,32 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
 
 void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {    
+
+  if (command == LCoffset){
+    WCSimDetector->Set_LCoffset(LCoffset->GetNewDoubleValue(newValue));
+  }
+  if (command == LC_rmin){
+    WCSimDetector->Set_LC_rmin(LC_rmin->GetNewDoubleValue(newValue));
+  }
+  if (command == LC_rmax){
+    WCSimDetector->Set_LC_rmax(LC_rmax->GetNewDoubleValue(newValue));
+  }
+  if (command == LC_a){
+    WCSimDetector->Set_LC_a(LC_a->GetNewDoubleValue(newValue));
+  }
+  if (command == LC_b){
+    WCSimDetector->Set_LC_b(LC_b->GetNewDoubleValue(newValue));
+  }
+  if (command == LC_d){
+    WCSimDetector->Set_LC_d(LC_d->GetNewDoubleValue(newValue));
+  }
+  if (command == WLSP_offset){
+    WCSimDetector->Set_WLSP_offset(WLSP_offset->GetNewDoubleValue(newValue));
+  }
+  if (command == WLSP_outradius){
+    WCSimDetector->Set_WLSP_outradius(WLSP_outradius->GetNewDoubleValue(newValue));
+  }
+
 	if( command == PMTConfig ) { 
 		WCSimDetector->SetIsMailbox(false);
 		WCSimDetector->SetIsUpright(false);

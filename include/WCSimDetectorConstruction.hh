@@ -83,11 +83,19 @@ public:
   G4bool DaddLC; // default option for LCs
   
   WCSimLC *logiLC;
-  G4double  LCoffset;
+ 
   void setLC(G4bool);
   G4bool getLC(){return addLC;};
   
+  void Set_LCoffset(double value) {if (LCoffset!=1e9) LCoffset = value * mm;};
+  void Set_LC_rmin(double value) {if (LC_rmin!=1e9) LC_rmin = value * mm;};
+  void Set_LC_rmax(double value) {if (LC_rmax!=1e9) LC_rmax = value * mm;};
+  void Set_LC_a(double value) {if (LC_a!=1e9) LC_a = value * mm;};
+  void Set_LC_b(double value) {if (LC_b!=1e9) LC_b = value * mm;};
+  void Set_LC_d(double value) {if (LC_d!=1e9) LC_d = value * mm;};
 
+  void Set_WLSP_offset(double value) {if (WLSP_offset!=1e9) WLSP_offset = value * mm;};
+  void Set_WLSP_outradius(double value) {if (WLSP_outradius!=1e9) WLSP_outradius = value * mm;};
 
   void ConstructWLSP();
   WCSimWLSP_LC *logiWLSPLC;
@@ -95,6 +103,7 @@ public:
   G4bool addWLSP;
   G4bool DaddWLSP; // default option for LCs
 
+  G4double LCoffset;
   G4double LC_rmin;
   G4double LC_rmax;
   G4double LC_a;

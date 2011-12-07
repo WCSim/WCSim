@@ -87,6 +87,17 @@
 /WCSim/PMTCollEff off
 /WCSim/PMT_Timing_Var on
 /WCSim/PMTCollEff_Method 2
+
+#/WCSim/LCoffset 0
+#/WCSim/LC_rmin 0
+#/WCSim/LC_rmax 0
+#/WCSim/LC_a 0
+#/WCSim/LC_b 0
+#/WCSim/LC_d 0
+
+#/WCSim/WLSP_offset 0
+#/WCSim/WLSP_outradius 178
+
 /WCSim/Construct
 
 
