@@ -421,7 +421,7 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_12perCent()
   DaddLC=true; 
   DaddWLSP=true;
   LCoffset = 5.0 *mm;
-  WLSP_offset = 35.0 *mm;
+  WLSP_offset = 42.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
@@ -460,7 +460,7 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_10perCent()
   DaddLC=true; 
   DaddWLSP=true;
   LCoffset = 5.0 *mm;
-  WLSP_offset = 35.0 *mm;
+  WLSP_offset = 42.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
@@ -498,7 +498,7 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_13perCent()
   DaddLC=true; 
   DaddWLSP=true;
   LCoffset = 5.0 *mm;
-  WLSP_offset = 35.0 *mm;
+  WLSP_offset = 42.0 *mm;
   WLSP_outradius_small = (20.0 * 25.4)/2*mm;
   WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;

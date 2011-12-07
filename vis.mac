@@ -78,8 +78,8 @@
 /gun/position 0 0 0  
 
 /WCSim/ConstructWLS false
-/WCSim/ConstructWLSP false
-/WCSim/ConstructLC true
+/WCSim/ConstructWLSP true
+/WCSim/ConstructLC false
 /WCSim/WLSPSIZE 1
 /WCSim/PMTCollEff off
 /WCSim/PMT_Timing_Var on
