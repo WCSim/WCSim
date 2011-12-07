@@ -434,6 +434,81 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_12perCent()
 }
 
 
+void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_10perCent()
+{
+  WCPMTName             = "12inchHQE";
+  WCPMTRadiusEff        = 0.25*m;
+  WCPMTRadius           = 0.1524*m;
+  WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
+  WCIDDiameter          = 62.21*m;
+  WCIDHeight            = 79.96*m;
+  WCBarrelPMTOffset	    = WCPMTRadius;
+  WCPMTperCellHorizontal = 4.0;
+  WCPMTperCellVertical	 = 3.0;
+  WCPMTPercentCoverage	 = 10.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
+				   (10.0*WCPMTRadius));
+  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
+							     2*(WCBarrelPMTOffset+WCPMTRadiusEff))/(pi*WCIDDiameter)))/
+				 WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCPMTGlassThickness   = .55*cm;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+  DaddLC=true; 
+  DaddWLSP=true;
+  LCoffset = 5.0 *mm;
+  WLSP_offset = 35.0 *mm;
+  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
+  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  WLSP_inradius = WCPMTRadius;
+  SK_flag = 0; //special flag for just SK geometry
+  LC_rmin = 152.4 * mm;
+  LC_rmax = (209.672 +152.4-127)* mm;
+  LC_a = 165.97 * mm;
+  LC_b = 584.525 * mm;
+  LC_d= 95.48* mm;
+}
+
+void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_13perCent()
+{
+  WCPMTName             = "12inchHQE";
+  WCPMTRadiusEff        = 0.25*m;
+  WCPMTRadius           = 0.1524*m;
+  WCPMTExposeHeight	    = WCPMTRadius - 0.01*m;
+  WCIDDiameter          = 62.21*m;
+  WCIDHeight            = 79.96*m;
+  WCBarrelPMTOffset	    = WCPMTRadius;
+  WCPMTperCellHorizontal = 4.0;
+  WCPMTperCellVertical	 = 3.0;
+  WCPMTPercentCoverage	 = 13.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
+				   (10.0*WCPMTRadius));
+  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
+							     2*(WCBarrelPMTOffset+WCPMTRadiusEff))/(pi*WCIDDiameter)))/
+				 WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCPMTGlassThickness   = .55*cm;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+  DaddLC=true; 
+  DaddWLSP=true;
+  LCoffset = 5.0 *mm;
+  WLSP_offset = 35.0 *mm;
+  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
+  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  WLSP_inradius = WCPMTRadius;
+  SK_flag = 0; //special flag for just SK geometry
+  LC_rmin = 152.4 * mm;
+  LC_rmax = (209.672 +152.4-127)* mm;
+  LC_a = 165.97 * mm;
+  LC_b = 584.525 * mm;
+  LC_d= 95.48* mm;
+}
+
+
 //aah
 
 void WCSimDetectorConstruction::SetMailBox100kTGeometry()  // This should setup a 100kT (metric) Fiducial Volume
