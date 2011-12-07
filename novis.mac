@@ -61,7 +61,9 @@
 /WCSim/ConstructWLS false
 /WCSim/ConstructWLSP false
 /WCSim/ConstructLC false
-/WCSim/WLSPSIZE 1
+/WCSim/WLSPSHAPE circle
+#/WCSim/WLSPSHAPE square
+#/WCSim/WLSPSHAPE clover
 /WCSim/PMTCollEff off
 /WCSim/PMTCollEff_Method 2
 /WCSim/PMT_Timing_Var on

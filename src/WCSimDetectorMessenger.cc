@@ -73,12 +73,13 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			 "false ");
   SavePi0->AvailableForStates(G4State_PreInit, G4State_Idle);
 
-  WLSPSIZE = new G4UIcmdWithAString("/WCSim/WLSPSIZE", this);
-  WLSPSIZE->SetGuidance("0 or 1\n");
-  WLSPSIZE->SetParameterName("WLSPSIZE",false);
-  WLSPSIZE->SetCandidates("0 "
-			  "1 ");
-  WLSPSIZE->AvailableForStates(G4State_PreInit, G4State_Idle);
+  WLSPSHAPE = new G4UIcmdWithAString("/WCSim/WLSPSHAPE", this);
+  WLSPSHAPE->SetGuidance("circle, square and clover\n");
+  WLSPSHAPE->SetParameterName("WLSPSHAPE",false);
+  WLSPSHAPE->SetCandidates("circle "
+			   "square "
+			   "clover ");
+  WLSPSHAPE->AvailableForStates(G4State_PreInit, G4State_Idle);
   
   
   PMTQEMethod = new G4UIcmdWithAString("/WCSim/PMTQEMethod", this);
@@ -138,7 +139,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete ConstructLC;
   delete PMTSize;
   delete PMTConfig;
-  delete WLSPSIZE;
+  delete WLSPSHAPE;
   delete SavePi0;
   delete PMTQEMethod;
   delete PMTCollEff;
@@ -264,14 +265,16 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 			G4cout << "That PMT size is not defined!" << G4endl;	
 	}	
 
-	if (command == WLSPSIZE){
-	  G4cout << "SET WLSP SIZE" << G4endl;
-	  if (newValue == "0"){
-	    WCSimDetector->setWLSP_size(0);
-	  }else if (newValue == "1"){
-	    WCSimDetector->setWLSP_size(1);
+	if (command == WLSPSHAPE){
+	  G4cout << "SET WLSP SHAPE " << newValue << G4endl;
+	  if (newValue == "circle"){
+	    WCSimDetector->setWLSP_shape(0);
+	  }else if (newValue == "square"){
+	    WCSimDetector->setWLSP_shape(1);
+	  }else if (newValue == "clover"){
+	    WCSimDetector->setWLSP_shape(2);
 	  }else{
-	    WCSimDetector->setWLSP_size(1);
+	    WCSimDetector->setWLSP_shape(0);
 	  }
 	}
 

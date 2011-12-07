@@ -161,8 +161,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   SK_flag = 1; //special flag for just SK geometry
   LCoffset = 5.0 *mm;
   WLSP_offset = 35.0 *mm;
-  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
-  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  WLSP_outradius = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   LC_rmin = 126.5 * mm;
   LC_rmax = 209.672 * mm;
@@ -197,8 +196,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
   DaddWLSP=false;
   LCoffset = 5.0 *mm;
   WLSP_offset = 35.0 *mm;
-  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
-  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  WLSP_outradius = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
   LC_rmin = 126.5 * mm;
@@ -234,8 +232,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
   DaddWLSP=true;
   LCoffset = 5.0 *mm;
   WLSP_offset = 35.0 *mm;
-  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
-  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  WLSP_outradius = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
   LC_rmin = 126.5 * mm;
@@ -271,8 +268,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
   DaddWLSP=false;
   LCoffset = 5.0 *mm;
   WLSP_offset = 35.0 *mm;
-  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
-  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  WLSP_outradius = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
   LC_rmin = 126.5 * mm;
@@ -308,8 +304,8 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
   DaddWLSP=false;
   LCoffset = 5.0 *mm;
   WLSP_offset = 35.0 *mm;
-  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
-  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  
+  WLSP_outradius = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
   LC_rmin = 126.5 * mm;
@@ -345,8 +341,8 @@ void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
   DaddWLSP=false;
   LCoffset = 5.0 *mm;
   WLSP_offset = 35.0 *mm;
-  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
-  WLSP_outradius_large = 1.265*((20.0 * 25.4)/2)*mm;
+  
+  WLSP_outradius = 1.265*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
   LC_rmin = 126.5 * mm;
@@ -382,8 +378,8 @@ void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
   DaddWLSP=true;
   LCoffset = 5.0 *mm;
   WLSP_offset = 35.0 *mm;
-  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
-  WLSP_outradius_large = 1.2*((20.0 * 25.4)/2)*mm;
+  
+  WLSP_outradius = 1.2*((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
   LC_rmin = 126.5 * mm;
@@ -422,8 +418,8 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_12perCent()
   DaddWLSP=true;
   LCoffset = 5.0 *mm;
   WLSP_offset = 42.0 *mm;
-  WLSP_outradius_small = (27.0 * 25.4)/2*mm;
-  WLSP_outradius_large = ((27.0 * 25.4)/2)*mm;
+ 
+  WLSP_outradius = ((27.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
   LC_rmin = 152.4 * mm;
@@ -461,8 +457,8 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_10perCent()
   DaddWLSP=true;
   LCoffset = 5.0 *mm;
   WLSP_offset = 42.0 *mm;
-  WLSP_outradius_small = (27.0 * 25.4)/2*mm;
-  WLSP_outradius_large = ((27.0 * 25.4)/2)*mm;
+  
+  WLSP_outradius = ((27.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
   LC_rmin = 152.4 * mm;
@@ -499,8 +495,8 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_13perCent()
   DaddWLSP=true;
   LCoffset = 5.0 *mm;
   WLSP_offset = 42.0 *mm;
-  WLSP_outradius_small = (20.0 * 25.4)/2*mm;
-  WLSP_outradius_large = ((20.0 * 25.4)/2)*mm;
+  
+  WLSP_outradius = ((20.0 * 25.4)/2)*mm;
   WLSP_inradius = WCPMTRadius;
   SK_flag = 0; //special flag for just SK geometry
   LC_rmin = 152.4 * mm;
@@ -752,17 +748,13 @@ void WCSimDetectorConstruction::ConstructWLSP()
   G4Material* plate_material;
 
   G4double WCWLSP_radius;
-  if (Plate_size == 0){
-    plate_material= man->FindOrBuildMaterial("BC408");
-    WCWLSP_radius = WLSP_outradius_small;;
-  }else{
-    plate_material= man->FindOrBuildMaterial("BC408_high");
-    WCWLSP_radius = WLSP_outradius_large;
-  }
+  
+  plate_material= man->FindOrBuildMaterial("BC408_high");
+  WCWLSP_radius = WLSP_outradius;
+  
 
   logiWLSPLC = new WCSimWLSP_LC("WLSPLC",plat_material,plate_material,WLSP_inradius,WCWLSP_radius);
 
-  // logiWLSPLC = new WCSimWLSP_LC("WLSPLC",plat_material,plate_material,Plate_size);
   logiWLSPLC->SetInvisible();
   G4Material* refl_material = man->FindOrBuildMaterial("G4_POLYETHYLENE");
   G4Material* refl1_material = man->FindOrBuildMaterial("Tyvek_wlsp");

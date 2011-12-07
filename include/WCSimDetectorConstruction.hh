@@ -103,12 +103,12 @@ public:
 
   G4double WLSP_offset;
   G4double WLSP_inradius;
-  G4double WLSP_outradius_small;
-  G4double WLSP_outradius_large;
+  
+  G4double WLSP_outradius;
   void setWLSP(G4bool);
   G4bool getWLSP(){return addWLSP;};
-  G4int Plate_size;
-  void setWLSP_size(G4int);
+  G4int Plate_shape;
+  void setWLSP_shape(G4int);
 
   //Related to MailBox Geometry   aah
   void SetMailBox100kTGeometry();

@@ -33,7 +33,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   addWLSP= false;
   addLC= false;
 
-  Plate_size = 1;
+  Plate_shape = 0;
  
   debugMode = false;
 //-----------------------------------------------------
@@ -234,7 +234,7 @@ void WCSimDetectorConstruction::setLC(G4bool doLC)
 addLC= doLC;
 }
 
-void WCSimDetectorConstruction::setWLSP_size(G4int size)
+void WCSimDetectorConstruction::setWLSP_shape(G4int shape)
 { 
-Plate_size = size;
+Plate_shape = shape;
 }
