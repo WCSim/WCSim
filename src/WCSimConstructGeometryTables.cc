@@ -94,7 +94,7 @@ void WCSimDetectorConstruction::GetWCGeom
 
  // aah ->old version
   //if ((aPV->GetName() == "WCPMTGlass")){
-  if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName() == "WCPMTGlass")){
+  if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName() == "GlassFaceWCPMT")){
 //	if ((aPV->GetName().contains("BlackSheet")) || (aPV->GetName()=="WCCapPMT") || (aPV->GetName().contains("PMTGlass_"))){//aah new version--does effectively the same thing, finds max and min z maybe less efficiently since more volumes may be found, but it is done only once per run.	
       G4float x =  aTransform.getTranslation().getX()/cm;
       G4float y =  aTransform.getTranslation().getY()/cm;
@@ -133,7 +133,7 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT
   replicaNoString[aDepth] = pvname.str() + "-" + depth.str();
 
 //aah original line->
-if ((aPV->GetName() == "WCPMTGlass"))
+if ((aPV->GetName() == "GlassFaceWCPMT"))
 //	if ((aPV->GetName().contains("PMTGlass")))//aah I believe this works for all
   {
     // First increment the number of PMTs in the tank.
@@ -155,7 +155,7 @@ if ((aPV->GetName() == "WCPMTGlass"))
 //    tubeTag += aPV->GetName();
     for (int i=0; i <= aDepth; i++)
       tubeTag += ":" + replicaNoString[i];
-//  G4cout << tubeTag << G4endl;
+  G4cout << tubeTag << G4endl;
     tubeLocationMap[tubeTag] = totalNumPMTs;
     
     // Record where tube is in the cylinder
