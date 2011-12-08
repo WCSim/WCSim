@@ -71,14 +71,14 @@
 
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
-/gun/particle mu-
+/gun/particle e-
 #/gun/particle pi0
-/gun/energy 200 MeV
+/gun/energy 1000 MeV
 /gun/direction 0 1 0 
 /gun/position 0 0 0  
 
 /WCSim/ConstructWLS false
-/WCSim/ConstructWLSP true
+/WCSim/ConstructWLSP false
 /WCSim/ConstructLC false
 #/WCSim/WLSPSHAPE circle
 #/WCSim/WLSPSHAPE square

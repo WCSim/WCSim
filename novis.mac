@@ -83,5 +83,5 @@
 ## change the name of the output root file, default = wcsim.root
 /WCSimIO/RootFile wcsim.root
 
-/run/beamOn 10
+/run/beamOn 100
 #exit
