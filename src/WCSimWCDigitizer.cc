@@ -234,6 +234,7 @@ void WCSimWCDigitizer::MakeHitsHistogram(WCSimWCHitsCollection* WCHC)
 	if ( tc < MinTime ) MinTime = tc; // find the earliest hit
 	for ( G4int ip = 0 ; ip < (*WCHC)[i]->GetTotalPe() ; ip++)
 	  {
+	    
 	    tc = (*WCHC)[i]->GetTime(ip);
 	    if ( tc < WCSimWCDigitizer::LongTime)
 	    { 

@@ -649,7 +649,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
       for (int l=0;l<totalpe;l++)
       {
-	truetime.push_back((*WCHC)[k]->GetTime(l));
+	truetime.push_back((*WCHC)[k]->GetRawTime(l));
 	wavelength.push_back((*WCHC)[k]->GetWL(l));
 	wlsflag.push_back((*WCHC)[k]->GetWLSflag(l));
 	qeflag.push_back((*WCHC)[k]->GetQeflag(l));

@@ -195,6 +195,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4float pmt_timing_smear[10]={1.1715,1.16763,1.17955,1.18753,1.20617,1.19932,1.21371,1.38257,1.43092,1.68762};
   
   
+  
+
   G4float theta_angle;
   G4float effectiveAngularEfficiency;
 
@@ -239,9 +241,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      }else{
        pmt_time_corr = 0.;
      }
-     hitTime += pmt_time_corr;
-
-     //  std::cout << pmt_time_corr << std::endl;
+     
 
      if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
 
@@ -265,7 +265,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   // Set the hitMap value to the collection hit number
 	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
 	   
-	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime,wavelength, wlsflag,qe_flag,
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime,pmt_time_corr,wavelength, wlsflag,qe_flag,
 								localPosition.x(),
 								localPosition.y(),
 								localPosition.z(),
@@ -279,7 +279,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   //       newHit->Print();
 	 }
        else {
-	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime,wavelength, wlsflag,qe_flag,
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime,pmt_time_corr,wavelength, wlsflag,qe_flag,
 							      localPosition.x(),
 							      localPosition.y(),
 							      localPosition.z(),
