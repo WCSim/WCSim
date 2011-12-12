@@ -22,13 +22,12 @@ void WCSimDetectorConstruction::ConstructPMT()
 
   //All components of the PMT are now contained in a single logical volume logicWCPMT.
   //Origin is on the blacksheet, faces positive z-direction.
-  G4Polycone* solidWCPMT;
 
   G4double PMTHolderZ[2] = {0, WCPMTExposeHeight};
   G4double PMTHolderR[2] = {WCPMTRadius, WCPMTRadius};
   G4double PMTHolderr[2] = {0,0};
 
-  solidWCPMT =
+  G4Polycone* solidWCPMT =
    new G4Polycone("WCPMT",                    
 			0.0*deg,
 			360.0*deg,
@@ -122,5 +121,48 @@ void WCSimDetectorConstruction::ConstructPMT()
   						physiGlassFaceWCPMT,
   						physiInteriorWCPMT,
   						OpGlassCathodeSurface);
+
+
+  if (addWinstonCones) {
+    //Add Winston Cones
+    G4int coneSegments = 20; //made up
+
+    G4double coneRadiusMin = 152.4 * mm;
+    G4double coneRadiusMax = 217.382 * mm;
+    G4double coneVertSMA = 584.525 * mm; //semi-major axis, perp. to blacksheet
+    G4double coneHorizSMA = 165.97 * mm; //semi-major axis, parallel to blacksheet
+    G4double coneHorizOffset = 95.48 * mm; //distance from ellipse vertical axis to rotation axis
+    
+    G4double coneThickness = 1 * mm; //made up
+        
+    G4double coneThetaMin = asin( (coneRadiusMin-coneHorizOffset) / coneHorizSMA);
+    G4double coneThetaMax = asin( (coneRadiusMax-coneHorizOffset) / coneHorizSMA);
+
+    //set distance between blacksheet and ellipse horiz axis so radiusmin is on blacksheet
+    G4double coneVertOffset = coneVertSMA * cos(coneThetaMin);
+
+    G4double coneInnerRadius [coneSegments+1];
+    G4double coneOuterRadius [coneSegments+1];
+    G4double coneHeight [coneSegments+1];
+    
+    G4double coneTheta;
+
+    for (int i=0; i <= coneSegments; i++){
+      coneTheta = coneThetaMin + i/coneSegments*(contThetaMax-ConeThetaMin);
+
+      coneInnerRadius[i] = coneHorizOffset + coneHorizSMA*sin(coneTheta);
+      coneHeight[i] = coneVertOffset - coneVertSMA*cos(coneTheta);
+
+      coneOuterRadius[i] = coneInnerRadius[i] + coneThickness * sqrt(1+cot(coneTheta)*coneHorizSMA/coneVertSMA);
+    }
+
+    G4PolyCone* solidWinstonCone =
+      new G4PolyCone(	"WCPMT",                    
+				0.0*deg,
+				360.0*deg,
+    				coneSegments+1,
+    				coneHeight,
+    				coneOuterRadius,
+    				coneInnerRadius);
 
 }
