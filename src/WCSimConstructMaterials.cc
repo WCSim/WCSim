@@ -9,6 +9,8 @@
 #include "G4LogicalBorderSurface.hh"
 #include "G4LogicalSkinSurface.hh"
 #include "G4OpBoundaryProcess.hh"
+#include "G4NistManager.hh"
+
 
 void WCSimDetectorConstruction::ConstructMaterials()
 {
@@ -247,6 +249,12 @@ void WCSimDetectorConstruction::ConstructMaterials()
   Rock->AddElement(elNa,  2.40*perCent);
   Rock->AddElement(elK,   4.50*perCent);
   Rock->AddElement(elMg,  0.10*perCent);
+
+  //Plexiglass for Winston Cones
+  /*G4NistManager* man = G4NistManager::Instance();
+  man->SetVerbose(1);
+  G4Material* Plexiglass  = man->FindOrBuildMaterial("G4_PLEXIGLASS");*/
+
 
 // -------------------------------------------------------------
 // Generate & Add Material Properties Table

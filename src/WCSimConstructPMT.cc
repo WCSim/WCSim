@@ -10,43 +10,19 @@
 #include "G4PVPlacement.hh"
 #include "G4LogicalBorderSurface.hh"
 
+using namespace std;
+
 
 //PMT logical volume construction.
 
 void WCSimDetectorConstruction::ConstructPMT()
 {
 
+  G4bool addWinstonCones = true; //test, need to add messenger
+
   sphereRadius = (WCPMTExposeHeight*WCPMTExposeHeight+ WCPMTRadius*WCPMTRadius)
   			/(2*WCPMTExposeHeight);
   PMTOffset =  sphereRadius - WCPMTExposeHeight;
-
-  //All components of the PMT are now contained in a single logical volume logicWCPMT.
-  //Origin is on the blacksheet, faces positive z-direction.
-
-  G4double PMTHolderZ[2] = {0, WCPMTExposeHeight};
-  G4double PMTHolderR[2] = {WCPMTRadius, WCPMTRadius};
-  G4double PMTHolderr[2] = {0,0};
-
-  G4Polycone* solidWCPMT =
-   new G4Polycone("WCPMT",                    
-			0.0*deg,
-			360.0*deg,
-    			2,
-    			PMTHolderZ,
-    			PMTHolderR,
-    			PMTHolderr);
-
-
-  logicWCPMT =
-	new G4LogicalVolume(	solidWCPMT,
-					G4Material::GetMaterial("Water"),
-					"WCPMT",
-					0,0,0);
-
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
-  WCPMTVisAtt->SetForceWireframe(true);
-  logicWCPMT->SetVisAttributes(WCPMTVisAtt);
-
 
   //Need a volume to cut away excess behind blacksheet
   G4Box* solidCutOffTubs =
@@ -74,15 +50,6 @@ void WCSimDetectorConstruction::ConstructPMT()
 					"InteriorWCPMT",
 					0,0,0);
 
-  G4VPhysicalVolume* physiInteriorWCPMT =
-  	new G4PVPlacement(0,
-  				G4ThreeVector(0, 0, -1.0*PMTOffset),
-  				logicInteriorWCPMT,
-  				"InteriorWCPMT",
-  				logicWCPMT,
-  				false,
-  				0);
-
 
   //Create PMT Glass Face
   G4Sphere* tmpGlassFaceWCPMT =
@@ -103,28 +70,17 @@ void WCSimDetectorConstruction::ConstructPMT()
 					"GlassFaceWCPMT",
 					0,0,0);
 
-  G4VPhysicalVolume* physiGlassFaceWCPMT =
-  	new G4PVPlacement(0,
-  				G4ThreeVector(0, 0, -1.0*PMTOffset),
-  				logicGlassFaceWCPMT,
-  				"GlassFaceWCPMT",
-  				logicWCPMT,
-  				false,
-  				0);
-
   logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
 
+  G4double holderHeight = WCPMTExposeHeight;
+  G4double holderRadius = WCPMTRadius;
 
-  //Add Logical Border Surface
-  G4LogicalBorderSurface*  GlassCathodeSurface =
-  	new G4LogicalBorderSurface(	"GlassCathodeSurface",
-  						physiGlassFaceWCPMT,
-  						physiInteriorWCPMT,
-  						OpGlassCathodeSurface);
 
+  //Add Winston Cones
+  G4LogicalVolume* logicWinstonConeWCPMT;
 
   if (addWinstonCones) {
-    //Add Winston Cones
+
     G4int coneSegments = 20; //made up
 
     G4double coneRadiusMin = 152.4 * mm;
@@ -147,22 +103,102 @@ void WCSimDetectorConstruction::ConstructPMT()
     
     G4double coneTheta;
 
+    //fill in the shape vectors
     for (int i=0; i <= coneSegments; i++){
-      coneTheta = coneThetaMin + i/coneSegments*(contThetaMax-ConeThetaMin);
+      coneTheta = coneThetaMin + i/coneSegments*(coneThetaMax-coneThetaMin);
 
       coneInnerRadius[i] = coneHorizOffset + coneHorizSMA*sin(coneTheta);
       coneHeight[i] = coneVertOffset - coneVertSMA*cos(coneTheta);
 
-      coneOuterRadius[i] = coneInnerRadius[i] + coneThickness * sqrt(1+cot(coneTheta)*coneHorizSMA/coneVertSMA);
+      coneOuterRadius[i] = coneInnerRadius[i] + coneThickness * sqrt(1+coneHorizSMA/coneVertSMA/tan(coneTheta));
     }
 
-    G4PolyCone* solidWinstonCone =
-      new G4PolyCone(	"WCPMT",                    
+    G4Polycone* solidWinstonConeWCPMT =
+    	new G4Polycone(	"WinstonConeWCPMT",                    
 				0.0*deg,
 				360.0*deg,
     				coneSegments+1,
     				coneHeight,
-    				coneOuterRadius,
-    				coneInnerRadius);
+    				coneInnerRadius,
+    				coneOuterRadius);
+
+    logicWinstonConeWCPMT =
+    	new G4LogicalVolume(	solidWinstonConeWCPMT,
+					G4Material::GetMaterial("Glass"),
+					"WinstonConeWCPMT",
+					0,0,0);
+
+    //make space for cone
+    holderHeight = max( holderHeight, coneHeight[coneSegments] );
+    holderRadius = max( holderRadius, coneRadiusMax );
+
+  }
+
+
+  //All components of the PMT are now contained in a single logical volume logicWCPMT.
+  //Origin is on the blacksheet, faces positive z-direction.
+
+  G4double PMTHolderZ[2] = {0, holderHeight};
+  G4double PMTHolderR[2] = {holderRadius, holderRadius};
+  G4double PMTHolderr[2] = {0,0};
+
+  G4Polycone* solidWCPMT =
+   new G4Polycone("WCPMT",                    
+			0.0*deg,
+			360.0*deg,
+    			2,
+    			PMTHolderZ,
+    			PMTHolderr,
+    			PMTHolderR);
+
+
+  logicWCPMT =
+	new G4LogicalVolume(	solidWCPMT,
+					G4Material::GetMaterial("Water"),
+					"WCPMT",
+					0,0,0);
+
+  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  WCPMTVisAtt->SetForceWireframe(true);
+  logicWCPMT->SetVisAttributes(WCPMTVisAtt);
+
+  //put components in holder volume
+  G4VPhysicalVolume* physiInteriorWCPMT =
+  	new G4PVPlacement(0,
+  				G4ThreeVector(0, 0, -1.0*PMTOffset),
+  				logicInteriorWCPMT,
+  				"InteriorWCPMT",
+  				logicWCPMT,
+  				false,
+  				0);
+
+  G4VPhysicalVolume* physiGlassFaceWCPMT =
+  	new G4PVPlacement(0,
+  				G4ThreeVector(0, 0, -1.0*PMTOffset),
+  				logicGlassFaceWCPMT,
+  				"GlassFaceWCPMT",
+  				logicWCPMT,
+  				false,
+  				0);
+
+  if (addWinstonCones) {
+    G4VPhysicalVolume* physiWinstonConeWCPMT =
+  	  new G4PVPlacement(	0,
+  					G4ThreeVector(0, 0, 0),
+  					logicWinstonConeWCPMT,
+  					"WinstonConeWCPMT",
+  					logicWCPMT,
+  					false,
+  					0);
+  }
+
+
+  //Add Logical Border Surface
+  G4LogicalBorderSurface*  GlassCathodeSurface =
+  	new G4LogicalBorderSurface(	"GlassCathodeSurface",
+  						physiGlassFaceWCPMT,
+  						physiInteriorWCPMT,
+  						OpGlassCathodeSurface);
+
 
 }

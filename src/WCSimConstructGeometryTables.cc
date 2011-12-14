@@ -155,7 +155,7 @@ if ((aPV->GetName() == "GlassFaceWCPMT"))
 //    tubeTag += aPV->GetName();
     for (int i=0; i <= aDepth; i++)
       tubeTag += ":" + replicaNoString[i];
-  G4cout << tubeTag << G4endl;
+//  G4cout << tubeTag << G4endl;
     tubeLocationMap[tubeTag] = totalNumPMTs;
     
     // Record where tube is in the cylinder
