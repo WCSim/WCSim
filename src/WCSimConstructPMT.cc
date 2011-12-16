@@ -81,7 +81,7 @@ void WCSimDetectorConstruction::ConstructPMT()
 
   if (addWinstonCones) {
 
-    G4int coneSegments = 20; //made up
+    const G4int coneSegments = 20; //made up
 
     G4double coneRadiusMin = 152.4 * mm;
     G4double coneRadiusMax = 217.382 * mm;
@@ -94,8 +94,9 @@ void WCSimDetectorConstruction::ConstructPMT()
     G4double coneThetaMin = asin( (coneRadiusMin-coneHorizOffset) / coneHorizSMA);
     G4double coneThetaMax = asin( (coneRadiusMax-coneHorizOffset) / coneHorizSMA);
 
-    //set distance between blacksheet and ellipse horiz axis so radiusmin is on blacksheet
-    G4double coneVertOffset = coneVertSMA * cos(coneThetaMin);
+    //set distance between blacksheet and ellipse horiz axis
+    //so radiusmin is slightly above blacksheet.
+    G4double coneVertOffset = coneVertSMA * cos(coneThetaMin) + .1*mm;
 
     G4double coneInnerRadius [coneSegments+1];
     G4double coneOuterRadius [coneSegments+1];
@@ -105,12 +106,18 @@ void WCSimDetectorConstruction::ConstructPMT()
 
     //fill in the shape vectors
     for (int i=0; i <= coneSegments; i++){
-      coneTheta = coneThetaMin + i/coneSegments*(coneThetaMax-coneThetaMin);
+      coneTheta = coneThetaMin + i*(coneThetaMax-coneThetaMin)/float(coneSegments);
 
       coneInnerRadius[i] = coneHorizOffset + coneHorizSMA*sin(coneTheta);
       coneHeight[i] = coneVertOffset - coneVertSMA*cos(coneTheta);
 
       coneOuterRadius[i] = coneInnerRadius[i] + coneThickness * sqrt(1+coneHorizSMA/coneVertSMA/tan(coneTheta));
+
+    //G4cout << coneTheta<<G4endl;
+    //G4cout << coneInnerRadius[i]<<G4endl;
+    //G4cout << coneOuterRadius[i]<<G4endl;
+    //G4cout << coneHeight[i]<<G4endl<<G4endl;
+
     }
 
     G4Polycone* solidWinstonConeWCPMT =
