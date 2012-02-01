@@ -1894,7 +1894,7 @@ else {
 						 -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
 
 
-      /*G4VPhysicalVolume* physiWCBarrelPMT =
+      G4VPhysicalVolume* physiWCBarrelPMT =
 	new G4PVPlacement(WCPMTRotation,              // its rotation
 			  PMTPosition, 
 			  logicWCPMT,                // its logical volume
@@ -1902,7 +1902,7 @@ else {
 			  logicWCBarrelCell,         // its mother volume
 			  false,                     // no boolean operations
 			  (int)(i*WCPMTperCellVertical+j),
-			  true);                       */ //test
+			  true);
       
    // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
      // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
@@ -2390,7 +2390,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 						 -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 						 (-barrelCellHeight/2.+(j+0.5)*verticalSpacing)*zflip);
 
-    /* G4VPhysicalVolume* physiWCBarrelBorderPMT =
+     G4VPhysicalVolume* physiWCBarrelBorderPMT =
 	new G4PVPlacement(WCPMTRotation,                      // its rotation
 			  PMTPosition,
 			  logicWCPMT,                // its logical volume
@@ -2398,7 +2398,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			  logicWCBarrelBorderCell,         // its mother volume
 			  false,                     // no boolean operations
 			  (int)(i*WCPMTperCellVertical+j)
-			  ,true);                      // no particular field */ //test
+			  ,true);                      // no particular field
 
 
    // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 

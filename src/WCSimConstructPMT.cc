@@ -89,7 +89,7 @@ void WCSimDetectorConstruction::ConstructPMT()
     G4double coneHorizSMA = 165.97 * mm; //semi-major axis, parallel to blacksheet
     G4double coneHorizOffset = 95.48 * mm; //distance from ellipse vertical axis to rotation axis
     
-    G4double coneThickness = 1 * mm; //made up
+    G4double coneThickness = 3 * mm;
         
     G4double coneThetaMin = asin( (coneRadiusMin-coneHorizOffset) / coneHorizSMA);
     G4double coneThetaMax = asin( (coneRadiusMax-coneHorizOffset) / coneHorizSMA);
