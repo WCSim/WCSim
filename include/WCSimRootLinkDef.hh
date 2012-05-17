@@ -6,7 +6,7 @@
 
 #pragma link C++ class WCSimRootCherenkovDigiHit+;
 #pragma link C++ class WCSimRootCherenkovHit+;
-#pragma link C++ class WCSimRootCherenkovHitTime+;
+#pragma link C++ class WCSimRootCherenkovHitCoordinate+;
 #pragma link C++ class WCSimRootTrack+;
 #pragma link C++ class WCSimRootEventHeader+;
 #pragma link C++ class WCSimRootTrigger+;
