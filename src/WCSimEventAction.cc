@@ -95,6 +95,25 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     G4String name =   "glassFaceWCPMT";
     G4int collectionID = SDman->GetCollectionID(name);
     WCHC = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
+    
+    G4cout<<"TEST OUTPUT *********************   "<<WCHC->entries()<<G4endl;
+    for(int ii=0; ii<WCHC->entries(); ii++){
+      
+      int totalpe = (*WCHC)[ii]->GetTotalPe();
+
+      for (int l=0;l<totalpe;l++)
+      {
+	//G4cout<<"HitTimes: "<<(*WCHC)[ii]->GetTime(l)<<G4endl;
+	std::vector<G4float> theHit = (*WCHC)[ii]->GetPEvector(l);
+	G4cout<<"HitCoordinates on PMT "<<ii<<": "<<theHit.at(0)<<" "<<theHit.at(1)<<" "<<theHit.at(2)<<" "<<theHit.at(3)<<G4endl;
+
+	//sqrt(theHit.at(1)*theHit.at(1) + theHit.at(2)*theHit.at(2))<<G4endl;
+	//G4ThreeVector m3v = (*WCHC)[ii]->GetPos();
+	//G4cout<<"HitPositions: "<<m3v.getX()<<" "<<m3v.getY()<<" "<<m3v.getZ()<<G4endl;
+      }
+      
+    }
+    
   }
 
   // To use Do like This:
@@ -631,7 +650,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     wcsimrootevent->SetNumTubesHit(WCHC->entries());
     for (k=0;k<WCHC->entries();k++){
     
-      std::vector<float> truetime;
+      std::vector< std::vector<float> > truehits;
       std::vector<int>   primaryParentID;
 
       int tubeID  = (*WCHC)[k]->GetTubeID();
@@ -639,12 +658,12 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
       for (int l=0;l<totalpe;l++)
       {
-	truetime.push_back((*WCHC)[k]->GetTime(l));
+	truehits.push_back((*WCHC)[k]->GetPEvector(l));
 	primaryParentID.push_back((*WCHC)[k]->GetParentID(l));
       }
 
       wcsimrootevent->AddCherenkovHit(tubeID,
-				      truetime,
+				      truehits,
 				      primaryParentID); 
     } 
   }
