@@ -106,6 +106,14 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   
   G4double energyDeposition  = aStep->GetTotalEnergyDeposit();
   G4double hitTime           = aStep->GetPreStepPoint()->GetGlobalTime();
+  G4double hitX              = (aStep->GetPreStepPoint()->GetPosition()).x();
+  G4double hitY              = (aStep->GetPreStepPoint()->GetPosition()).y();
+  G4double hitZ              = (aStep->GetPreStepPoint()->GetPosition()).z();
+  std::vector<G4float> theHit;
+  theHit.push_back(hitTime);
+  theHit.push_back(hitX);
+  theHit.push_back(hitY);
+  theHit.push_back(hitZ);
 
   G4ParticleDefinition *particleDefinition = 
     aStep->GetTrack()->GetDefinition();
@@ -204,14 +212,16 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   // Set the hitMap value to the collection hit number
 	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
 	   
-	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+	   //	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(theHit);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
 	   
 	   //     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
 	   //       newHit->Print();
 	 }
        else {
-	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+	 //	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(theHit);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
 	 
        }
