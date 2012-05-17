@@ -67,6 +67,20 @@ class WCSimWCHit : public G4VHit
   // This is temporarily used for the drawing scale
   void SetMaxPe(G4int number = 0)  {maxPe   = number;};
 
+  void AddPe(std::vector<G4float> aHit){
+
+    G4float hitTime = aHit.at(0);
+
+    // First increment the totalPe number
+    totalPe++; 
+
+    if (totalPe > maxPe) 
+      maxPe = totalPe;
+
+    time.push_back(hitTime);
+    PEvector.push_back(aHit);
+  }
+
   void AddPe(G4float hitTime)  
   {
     // First increment the totalPe number
@@ -84,6 +98,8 @@ class WCSimWCHit : public G4VHit
   G4int         GetTotalPe()    { return totalPe;};
   G4float       GetTime(int i)  { return time[i];};
   G4int         GetParentID(int i) { return primaryParentID[i];};
+
+  std::vector<G4float> GetPEvector(int i) {return PEvector[i];}
   
   void SortHitTimes() {   sort(time.begin(),time.end()); }
 
@@ -154,6 +170,7 @@ class WCSimWCHit : public G4VHit
 
   G4int                 totalPe;
   std::vector<G4float>  time;
+  std::vector< std::vector<G4float> >  PEvector;
   std::vector<G4int>    primaryParentID;
   G4int                 totalPeInGate;
 };
