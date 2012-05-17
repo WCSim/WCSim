@@ -99,23 +99,27 @@ public:
   ClassDef(WCSimRootCherenkovHit,1)  
 };
 
-class WCSimRootCherenkovHitTime : public TObject {
+class WCSimRootCherenkovHitCoordinate : public TObject {
 
 private:
   // See jhfNtuple.h for the meaning of these data members:
+  std::vector<Float_t> fTrueHit;
   Float_t fTruetime;
   Int_t   fPrimaryParentID;
 
 public:
-  WCSimRootCherenkovHitTime() {}
-  WCSimRootCherenkovHitTime(Float_t truetime,
+  WCSimRootCherenkovHitCoordinate() {}
+  WCSimRootCherenkovHitCoordinate(Float_t truetime, 
 			    Int_t   primaryParentID);
-  virtual ~WCSimRootCherenkovHitTime() { }
+  WCSimRootCherenkovHitCoordinate(std::vector<Float_t> truehit,
+			    Int_t   primaryParentID);
+  virtual ~WCSimRootCherenkovHitCoordinate() { }
 
   Float_t   GetTruetime() { return fTruetime;}
+  std::vector<Float_t>    GetTrueHit() { return fTrueHit;}
   Int_t     GetParentID() { return fPrimaryParentID;}
 
-  ClassDef(WCSimRootCherenkovHitTime,1)  
+  ClassDef(WCSimRootCherenkovHitCoordinate,1)  
 };
 
 
@@ -223,7 +227,7 @@ private:
 
   Int_t                fCherenkovHitCounter;
   Int_t                fNcherenkovhittimes;      // Number of hits in the array
-  TClonesArray         *fCherenkovHitTimes;      //-> Array of WCSimRootCherenkovHits
+  TClonesArray         *fCherenkovHitCoordinates;      //-> Array of WCSimRootCherenkovHits
 
   Int_t                fNumDigitizedTubes;  // Number of digitized tubes
   Int_t                fNcherenkovdigihits;  // Number of digihits in the array
@@ -295,8 +299,12 @@ public:
   WCSimRootCherenkovHit   *AddCherenkovHit(Int_t                tubeID,
 					  std::vector<Float_t> truetime,
 					  std::vector<Int_t>   primParID);
+
+  WCSimRootCherenkovHit   *AddCherenkovHit(Int_t                tubeID,
+					   std::vector< std::vector<Float_t> > truehits,
+					  std::vector<Int_t>   primParID);
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
-  TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
+  TClonesArray        *GetCherenkovHitCoordinates() const {return fCherenkovHitCoordinates;}
 
   WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
 						  Float_t t, 
