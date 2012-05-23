@@ -57,6 +57,7 @@ public:
 
   // Related to the WC geometry
   void SetSuperKGeometry();
+  void DUSEL_100kton_10inch_85perCent();
   void DUSEL_100kton_10inch_40perCent();
   void DUSEL_100kton_10inch_HQE_12perCent();
   void DUSEL_100kton_10inch_HQE_30perCent();
