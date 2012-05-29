@@ -63,18 +63,22 @@ public:
   void DUSEL_100kton_10inch_HQE_30perCent();
   void DUSEL_100kton_10inch_HQE_30perCent_Gd();
   void DUSEL_150kton_10inch_HQE_30perCent();
+  void DUSEL_200kton_10inch_HQE_85perCent();
   void DUSEL_200kton_10inch_HQE_12perCent();
   void DUSEL_200kton_12inch_HQE_10perCent();
   void DUSEL_200kton_12inch_HQE_14perCent();
   void UpdateGeometry();
   
-  	//Related to MailBox Geometry   aah
-	void SetMailBox100kTGeometry();
-	void SetMailBox150kTGeometry_10inch_HQE_30perCent();
-	void SetMailBox150kTGeometry_10inch_40perCent();
-	void SetMailBox300kTGeometry();
-	G4double WC_MB_Fid_Length,WC_MB_Fid_Width,WC_MB_Fid_Depth; //Fiducial Volume sizes--note, this "fiducial" should probably be called the "active volume". The PMT's are just outside.
-	G4double WC_MB_Tank_Airgap, WC_MB_Dome_Height_fraction,WC_MB_Veto_Thickness,WC_MB_Buffer_Thickness;// Dimensions to determine WaterTank and Cavern Sizes (Veto may or may not be actual veto detector),WC_MB_Buffer_Thickness is distance between wall to PMT top
+  //Related to ANNIE Geometry
+  void ANNIE();
+
+  //Related to MailBox Geometry   aah
+  void SetMailBox100kTGeometry();
+  void SetMailBox150kTGeometry_10inch_HQE_30perCent();
+  void SetMailBox150kTGeometry_10inch_40perCent();
+  void SetMailBox300kTGeometry();
+  G4double WC_MB_Fid_Length,WC_MB_Fid_Width,WC_MB_Fid_Depth; //Fiducial Volume sizes--note, this "fiducial" should probably be called the "active volume". The PMT's are just outside.
+  G4double WC_MB_Tank_Airgap, WC_MB_Dome_Height_fraction,WC_MB_Veto_Thickness,WC_MB_Buffer_Thickness;// Dimensions to determine WaterTank and Cavern Sizes (Veto may or may not be actual veto detector),WC_MB_Buffer_Thickness is distance between wall to PMT top
 	//End of Mailbox Variables
 	
 
@@ -140,6 +144,7 @@ private:
 
   // The Construction routines
   G4LogicalVolume*   ConstructMailboxWC();
+  G4LogicalVolume*   ConstructANNIE();
   G4LogicalVolume*   ConstructWC();
   void  ConstructPMT();
   G4LogicalVolume* ConstructCaps(G4int zflip);
@@ -270,7 +275,7 @@ private:
 
   // amb79: to universally make changes in structure and geometry
   bool isUpright, isMailbox;
-  
+  G4int DetectorType;
 
   // amb79: debug to display all parts
   bool debugMode;
