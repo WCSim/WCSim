@@ -28,6 +28,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Decide if (only for the case of !1kT detector) should be upright or horizontal
   isUpright = false;
   isMailbox =false;
+  DetectorType=0; // 0,  1 = mailbox,  2 = ANNIE
 
   debugMode = false;
 //-----------------------------------------------------
@@ -58,15 +59,17 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //-----------------------------------------------------
 
   //SetSuperKGeometry();
-  DUSEL_100kton_10inch_85perCent();
+  //  DUSEL_100kton_10inch_85perCent();
   //DUSEL_100kton_10inch_40perCent();
   //DUSEL_100kton_10inch_HQE_12perCent();
   //DUSEL_100kton_10inch_HQE_30perCent();
   //DUSEL_100kton_10inch_HQE_30perCent_Gd();
   //DUSEL_150kton_10inch_HQE_30perCent();
+  DUSEL_200kton_10inch_HQE_85perCent();
   //DUSEL_200kton_10inch_HQE_12perCent();
   //DUSEL_200kton_12inch_HQE_10perCent();
   //DUSEL_200kton_12inch_HQE_14perCent();
+  // ANNIE();
   // SetMailBox300KTGeometry();
   //SetMailBox100kTGeometry();
 
@@ -134,9 +137,10 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // on their size and detector ordering.
 
   G4LogicalVolume* logicWCBox;
-  // Select between cylinder and mailbox
-  if (isMailbox) logicWCBox = ConstructMailboxWC();
-  else logicWCBox = ConstructWC(); 
+  // Select between cylinder and mailbox and ANNIE
+  if (DetectorType==2) logicWCBox = ConstructANNIE();
+  else if (DetectorType==1) logicWCBox = ConstructMailboxWC();
+  else if (DetectorType==0) logicWCBox = ConstructWC(); 
 
   G4cout << " WCLength       = " << WCLength/m << " m"<< G4endl;
 
