@@ -15,6 +15,7 @@ If you want to use these libraries with an external program then also do:
 make shared      [ For root programs]
 make libWCSim.a  [ Also necessary for the event display?]
 
+More detailed information about the simulation is available in doc/DetectorDocumentation.pdf.
 
 
 ####################################################################
