@@ -114,6 +114,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   theHit.push_back(hitX);
   theHit.push_back(hitY);
   theHit.push_back(hitZ);
+  theHit.push_back(wavelength);
 
   G4ParticleDefinition *particleDefinition = 
     aStep->GetTrack()->GetDefinition();
