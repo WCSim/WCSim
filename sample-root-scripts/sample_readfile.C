@@ -1,8 +1,8 @@
 // Simple example of reading a generated Root file
 {
   // Clear global scope
-  gROOT->Reset();
-  
+  //gROOT->Reset();
+  /*
   gStyle->SetOptStat(0);
   gStyle->SetCanvasColor(0);
   gStyle->SetTitleColor(1);
@@ -31,13 +31,13 @@
   gStyle->SetTitleSize(0.04,"Y");
   gStyle->SetTitleBorderSize(0);
   gStyle->SetCanvasBorderMode(0);
-
+  */
   // Load the library with class dictionary info
   // (create with "gmake shared")
-  gSystem.Load("../libWCSimRoot.so");
+  //gSystem.Load("../libWCSimRoot.so");
 
   // Open the file
-  TFile file("../wcsim.root");
+  TFile file("wcsim.root");
   
   // Get the a pointer to the tree from the file
   TTree *tree = (TTree*)file->Get("wcsimT");
@@ -57,11 +57,22 @@
   // Force deletion to prevent memory leak 
   tree->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
 
+
+  // Geometry tree - only need 1 "event"
+  TTree *geotree = (TTree*)file->Get("wcsimGeoT");
+  WCSimRootGeom *geo = 0; 
+  geotree.SetBranchAddress("wcsimrootgeom", &geo);
+  std::cout << "Geotree has " << geotree.GetEntries() << " entries" << std::endl;
+  if (geotree.GetEntries() == 0) {
+      exit(9);
+  }
+  geotree.GetEntry(0);
+
   // start with the main "subevent", as it contains most of the info
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h1 = new TH1F("PMT Hits", "PMT Hits on 1.5 GeV Muon in Geant4", 100, 1000, 9000);
+  TH1F *h1 = new TH1F("PMT Hits", "PMT Hits from 1.0 GeV Electron in Geant4", 100, 1000, 9000);
   
   // Now loop over events
   for (int ev=0; ev<nevent; ev++)
@@ -145,6 +156,7 @@
       int tubeNumber     = wcsimrootcherenkovhit->GetTubeID();
       int timeArrayIndex = wcsimrootcherenkovhit->GetTotalPe(0);
       int peForTube      = wcsimrootcherenkovhit->GetTotalPe(1);
+      WCSimRootPMT pmt   = geo->GetPMT(tubeNumber-1);
       totalPe += peForTube;
      
       if ( i < 10 ) // Only print first XX=10 tubes
