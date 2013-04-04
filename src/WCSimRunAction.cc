@@ -118,7 +118,6 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 void WCSimRunAction::FillGeoTree(){
   // Fill the geometry tree
   G4int geo_type;
-  G4double mailbox[3];
   G4double cylinfo[3];
   G4double pmtradius;
   G4int numpmt;
@@ -130,28 +129,16 @@ void WCSimRunAction::FillGeoTree(){
   Float_t rot[3];
   Int_t cylLoc;
 
-  if (wcsimdetector->GetIsMailbox()==false){
-    geo_type = 0;
-  }else{
-    geo_type = 1;
-  }
+  geo_type = 0;
+  // geo_type 1 is for defunct mailbox design
   wcsimrootgeom-> SetGeo_Type(geo_type);
   
-  if (geo_type ==1){
-    //mailbox
-    mailbox[0] = wcsimdetector->GetGeo_Dm(0);
-    mailbox[1] = wcsimdetector->GetGeo_Dm(1);
-    mailbox[2] = wcsimdetector->GetGeo_Dm(2);
-    wcsimrootgeom->SetMailBox_x(mailbox[0]);
-    wcsimrootgeom->SetMailBox_y(mailbox[1]);
-    wcsimrootgeom->SetMailBox_z(mailbox[2]);
-  }else{
     //cylinder
     cylinfo[1] = wcsimdetector->GetGeo_Dm(3);
     cylinfo[2] = wcsimdetector->GetGeo_Dm(2);
     wcsimrootgeom-> SetWCCylRadius(cylinfo[1]);
     wcsimrootgeom-> SetWCCylLength(cylinfo[2]);
-  }
+
   pmtradius = wcsimdetector->GetPMTSize1();
   numpmt = wcsimdetector->GetTotalNumPmts();
   orientation = 0;

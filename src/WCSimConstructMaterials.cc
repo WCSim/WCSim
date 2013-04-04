@@ -719,7 +719,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
      new G4OpticalSurface("WaterBSCellSurface");
 
    OpWaterBSSurface->SetType(dielectric_dielectric);
-   OpWaterBSSurface->SetModel(unified);
+   OpWaterBSSurface->SetModel(unified); // deprecated in 4.9.6
    OpWaterBSSurface->SetFinish(groundfrontpainted);
    OpWaterBSSurface->SetSigmaAlpha(0.1);
 
@@ -741,7 +741,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    OpGlassCathodeSurface =
      new G4OpticalSurface("GlassCathodeSurface");
    OpGlassCathodeSurface->SetType(dielectric_dielectric);
-   OpGlassCathodeSurface->SetModel(unified);
+   OpGlassCathodeSurface->SetModel(unified);  // deprecated in 4.9.6
    //   OpGlassCathodeSurface->SetFinish(groundbackpainted);
    OpGlassCathodeSurface->SetFinish(polished);
    //OpGlassCathodeSurface->SetSigmaAlpha(0.002);
@@ -782,7 +782,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
      new G4OpticalSurface("WaterTyCellSurface");
 
    OpWaterTySurface->SetType(dielectric_dielectric);
-   OpWaterTySurface->SetModel(unified);
+   OpWaterTySurface->SetModel(unified);  // deprecated in 4.9.6
    OpWaterTySurface->SetFinish(groundbackpainted); //a guess, but seems to work
    OpWaterTySurface->SetSigmaAlpha(0.5); //cf. A. Chavarria's ~30deg
 

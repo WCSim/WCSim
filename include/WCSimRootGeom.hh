@@ -54,9 +54,6 @@ private:
   Float_t                fWCCylRadius;  // Radius of WC tank
   Float_t                fWCCylLength;  // Length of WC tank
   
-  Float_t                fMailBox_x; //mailbox x
-  Float_t                fMailBox_y; //mailbox y
-  Float_t                fMailBox_z; //mailbox z
   Int_t                  fgeo_type;  // mailbox or cylinder?
 
   Float_t                fWCPMTRadius; // Radius of PMT
@@ -79,10 +76,6 @@ public:
   void  SetWCCylRadius(Float_t f) {fWCCylRadius=f;}
   void  SetWCCylLength(Float_t f) {fWCCylLength=f;}
 
-  void SetMailBox_x(Float_t f){fMailBox_x = f;}
-  void SetMailBox_y(Float_t f){fMailBox_y = f;}
-  void SetMailBox_z(Float_t f){fMailBox_z = f;}
-
   void SetGeo_Type(Int_t f){fgeo_type = f;}
 
   void  SetWCNumPMT(Int_t i) {fWCNumPMT= i;}
@@ -95,9 +88,6 @@ public:
   Float_t GetWCCylRadius() const {return fWCCylRadius;}
   Float_t GetWCCylLength() const {return fWCCylLength;}
 
-  Float_t GetMailBox_x() const {return fMailBox_x;}
-  Float_t GetMailBox_y() const {return fMailBox_y;}
-  Float_t GetMailBox_z() const {return fMailBox_z;}
   Int_t GetGeo_Type() const {return fgeo_type;}
   
 

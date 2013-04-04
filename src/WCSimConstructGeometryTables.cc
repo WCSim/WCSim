@@ -39,63 +39,35 @@ void WCSimDetectorConstruction::GetWCGeom
  const G4Transform3D& aTransform) 
 {
 
-  // Grab mishmash of useful information from the tree while traversing it
-  // This information will later be written to the geometry file
-  // (Alternatively one might define accessible constants)
+    // Grab mishmash of useful information from the tree while traversing it
+    // This information will later be written to the geometry file
+    // (Alternatively one might define accessible constants)
   
- //aah original line-> if ((aPV->GetName() == "WCBarrel")){
-	if ((aPV->GetName() == "WCBarrel")||(aPV->GetName() == "physiMBTank")){//last condition is the Mailbox Physical Tank name.
+    if ((aPV->GetName() == "WCBarrel")){
     // Stash info in data member
     WCOffset = G4ThreeVector(aTransform.getTranslation().getX()/cm,
 			     aTransform.getTranslation().getY()/cm,
 			     aTransform.getTranslation().getZ()/cm);
-  }
+    }
 
 	
-	//aah---original line->  if ((aPV->GetName() == "WCCapPMTGlass") || (aPV->GetName() == "WCPMTGlass")){
-	//if ((aPV->GetName().contains("PMTGlass"))){    //aah--new version
-
-    //(JF) all volumes have the same name now
-//    if ((aPV->GetName() == "WCPMTGlass"){
-    // Assume all the PMTs are the same size
-   // G4Sphere* solidWCPMT = (G4Sphere *)aPV->GetLogicalVolume()->GetSolid();
-    //G4double outerRadius = solidWCPMT->GetOuterRadius()/cm;
 
     // Stash info in data member
     // AH Need to store this in CM for it to be understood by SK code
     WCPMTSize = WCPMTRadius/cm;// I think this is just a variable no if needed
-//  }
-// (JF) None of this is needed anymore.  Values are calculated when writing file
-/*   
-	WCCylInfo[0] = 0;//aah  in case not a cylinder at all--eg Mailbox
-	
-  if ((aPV->GetName() == "WCPMTGlass")){
 
-    //    G4Tubs* CylInfo[0] 
-    //    G4double innerRadius = solidWCBSCell->GetInnerRadius()/cm;
-    // M Fechner : it is no longer a cylinder
-    
-    G4double innerRadius = sqrt(pow(aTransform.getTranslation().getX()/cm,2) + pow(aTransform.getTranslation().getY()/cm,2));
-    //    G4double innerRadius = aTransform.getTranslation().getZ()/cm;
-  // Stash info in data member
-    WCCylInfo[0] = innerRadius;
-  } 
-*/
 
-  // Note WC can be off-center... get both extremities
-  static G4float zmin=100000,zmax=-100000.;
-  static G4float xmin=100000,xmax=-100000.;
-  static G4float ymin=100000,ymax=-100000.;
-  if (aDepth == 0) { // Reset for this traversal
-    xmin=100000,xmax=-100000.; 
-    ymin=100000,ymax=-100000.; 
-    zmin=100000,zmax=-100000.; 
-  }
+    // Note WC can be off-center... get both extremities
+    static G4float zmin=100000,zmax=-100000.;
+    static G4float xmin=100000,xmax=-100000.;
+    static G4float ymin=100000,ymax=-100000.;
+    if (aDepth == 0) { // Reset for this traversal
+        xmin=100000,xmax=-100000.; 
+        ymin=100000,ymax=-100000.; 
+        zmin=100000,zmax=-100000.; 
+    }
 
- // aah ->old version
-  //if ((aPV->GetName() == "WCPMTGlass")){
-  if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName() == "GlassFaceWCPMT")){
-//	if ((aPV->GetName().contains("BlackSheet")) || (aPV->GetName()=="WCCapPMT") || (aPV->GetName().contains("PMTGlass_"))){//aah new version--does effectively the same thing, finds max and min z maybe less efficiently since more volumes may be found, but it is done only once per run.	
+    if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName() == "GlassFaceWCPMT")){
       G4float x =  aTransform.getTranslation().getX()/cm;
       G4float y =  aTransform.getTranslation().getY()/cm;
       G4float z =  aTransform.getTranslation().getZ()/cm;
@@ -118,9 +90,8 @@ void WCSimDetectorConstruction::GetWCGeom
   } 
 }
 
-void WCSimDetectorConstruction::DescribeAndRegisterPMT
-(G4VPhysicalVolume* aPV ,int aDepth, int replicaNo,
- const G4Transform3D& aTransform) 
+void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,int aDepth, int replicaNo,
+                                                       const G4Transform3D& aTransform) 
 {
   static std::string replicaNoString[20];
 
@@ -132,10 +103,8 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT
 
   replicaNoString[aDepth] = pvname.str() + "-" + depth.str();
 
-//aah original line->
-if ((aPV->GetName() == "GlassFaceWCPMT"))
-//	if ((aPV->GetName().contains("PMTGlass")))//aah I believe this works for all
-  {
+  if ((aPV->GetName() == "GlassFaceWCPMT")) {
+
     // First increment the number of PMTs in the tank.
     totalNumPMTs++;  
     
@@ -144,63 +113,17 @@ if ((aPV->GetName() == "GlassFaceWCPMT"))
     // This scheme must match that used in WCSimWCSD::ProcessHits()
 
     std::string tubeTag;
-//    G4LogicalVolume *mother = aPV->GetMotherLogical();
-//    if (mother != NULL) {
-      // Prepend name of mother if it exists to distinguish different
-      // PMT hierarchies
-//      tubeTag += mother->GetName();
-//      tubeTag += ":";
-//    }
-
-//    tubeTag += aPV->GetName();
     for (int i=0; i <= aDepth; i++)
       tubeTag += ":" + replicaNoString[i];
-//  G4cout << tubeTag << G4endl;
+    // G4cout << tubeTag << G4endl;
     tubeLocationMap[tubeTag] = totalNumPMTs;
-    
-    // Record where tube is in the cylinder
-    // (JF) This distinction was useful for 2km detector
-    // not so much for DUSEL
-/*    
-//aah original
-if (aPV->GetName() == "WCPMTGlass"){
-//if ((aPV->GetName()=="WCPMTGlass") || (aPV->GetName().contains("D_PMTGlass")))
-//aah  also find the Mailbox pmt's on side wall (LxD_PMTGlass or WxD_PMTGlass!)
-   
-      tubeCylLocation[totalNumPMTs] = wall;
-    }
-    else 
-    {   // It's a cap pmt
-      // Get which endcap 
-		if ((aPV->GetName() == "WCCapPMTGlass")) //aah
-		{									//aah      
-      //// Cap tubes could be at either of two possible depths..
-      //// Get the depth of the cap, up either 3 or 4
-      ////      G4int capdepth = (aDepth==6 ? aDepth-4 : aDepth-3);
-      //// M F : NOT TRUE ANY MORE : WE REMOVED THE CAP CELLS , THE
-      //// DEPTHS ARE DIFFERENT !!!
-      
-      G4int capdepth = 2;
-      G4int endcap = std::atoi(replicaNoString[capdepth].c_str());
-      //      G4cout << "endcap " << endcap << "\n";
-      //// If the cap is replica 1, it's endcap1.  If replica 0, it's endcap 2
-      tubeCylLocation[totalNumPMTs] = (endcap ? endcap1: endcap2);
-		}  //aah
-		else	//aah
-		{		//aah
-			if ((aPV->GetName() == "LXW_PMT_plus"))tubeCylLocation[totalNumPMTs]=endcap1;	//top plane  aah
-			if ((aPV->GetName() == "LXW_PMT_minus"))tubeCylLocation[totalNumPMTs]=endcap2;   //bottom plane  aah
-		}				//aah
-    }
-*/    
     
     // Put the transform for this tube into the map keyed by its ID
     tubeIDMap[totalNumPMTs] = aTransform;
    
     
     // G4cout <<  "depth " << depth.str() << G4endl;
-//     G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
-    //G4cout << "tubeCylLocation[" << totalNumPMTs  << "]= " << tubeCylLocation[totalNumPMTs] << "\n";
+    // G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
       
     // Print
     //     G4cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
@@ -229,13 +152,8 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   innerradius = sqrt(pow(firstTransform.getTranslation().getX()/cm,2)
                             + pow(firstTransform.getTranslation().getY()/cm,2));
 
-  if (isMailbox == false){
-    geoFile << setw(8)<< innerradius;
-    geoFile << setw(8)<<WCCylInfo[2];
-  }else{
-    geoFile << setw(8)<< 0;
-    geoFile << setw(8)<< 0;
-  }
+  geoFile << setw(8)<< innerradius;
+  geoFile << setw(8)<<WCCylInfo[2];
   geoFile << setw(10)<<totalNumPMTs;
   geoFile << setw(8)<<WCPMTSize << setw(4)  <<G4endl;
 

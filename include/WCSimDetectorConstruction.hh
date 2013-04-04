@@ -67,15 +67,6 @@ public:
   void DUSEL_200kton_12inch_HQE_14perCent();
   void UpdateGeometry();
   
-  	//Related to MailBox Geometry   aah
-	void SetMailBox100kTGeometry();
-	void SetMailBox150kTGeometry_10inch_HQE_30perCent();
-	void SetMailBox150kTGeometry_10inch_40perCent();
-	void SetMailBox300kTGeometry();
-	G4double WC_MB_Fid_Length,WC_MB_Fid_Width,WC_MB_Fid_Depth; //Fiducial Volume sizes--note, this "fiducial" should probably be called the "active volume". The PMT's are just outside.
-	G4double WC_MB_Tank_Airgap, WC_MB_Dome_Height_fraction,WC_MB_Veto_Thickness,WC_MB_Buffer_Thickness;// Dimensions to determine WaterTank and Cavern Sizes (Veto may or may not be actual veto detector),WC_MB_Buffer_Thickness is distance between wall to PMT top
-	//End of Mailbox Variables
-	
 
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
@@ -107,8 +98,6 @@ public:
 
   // Geometry options
   void   SetIsUpright(G4bool choice) {isUpright = choice;}
-  void   SetIsMailbox(G4bool choice) {isMailbox = choice;}
-  G4bool GetIsMailbox() {return isMailbox;}
 
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
@@ -138,7 +127,6 @@ private:
   WCSimDetectorMessenger* messenger;
 
   // The Construction routines
-  G4LogicalVolume*   ConstructMailboxWC();
   G4LogicalVolume*   ConstructWC();
   void  ConstructPMT();
   G4LogicalVolume* ConstructCaps(G4int zflip);
@@ -268,7 +256,7 @@ private:
   G4double WCBarrelLength;
 
   // amb79: to universally make changes in structure and geometry
-  bool isUpright, isMailbox;
+  bool isUpright;
   
 
   // amb79: debug to display all parts

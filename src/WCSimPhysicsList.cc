@@ -281,7 +281,7 @@ void WCSimPhysicsList::ConstructOp(){
   // theCherenkovProcess->SetTrackSecondariesFirst(true);
 
   G4OpticalSurfaceModel themodel = unified;
-  theBoundaryProcess->SetModel(themodel);
+  theBoundaryProcess->SetModel(themodel);   // deprecated in 4.9.6
 
   theParticleIterator->reset();
   while( (*theParticleIterator)() )

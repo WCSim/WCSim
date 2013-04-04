@@ -22,23 +22,21 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
                           "DUSEL_100kton_10inch_HQE_30perCent\n"
                           "DUSEL_100kton_10inch_HQE_30perCent_Gd\n"
                           "DUSEL_150kton_10inch_HQE_30perCent\n"
-						  "DUSEL_200kton_10inch_HQE_12perCent\n"
-						  "DUSEL_200kton_12inch_HQE_10perCent\n"
-						  "DUSEL_200kton_12inch_HQE_14perCent\n"
-                          "150kTMailbox_10inch_HQE_30perCent\n"
-						  "150kTMailbox_10inch_40perCent");
+                          "DUSEL_200kton_10inch_HQE_12perCent\n"
+                          "DUSEL_200kton_12inch_HQE_10perCent\n"
+                          "DUSEL_200kton_12inch_HQE_14perCent\n"
+                         );
   PMTConfig->SetParameterName("PMTConfig", false);
   PMTConfig->SetCandidates("SuperK "
-                          "DUSEL_100kton_10inch_40perCent "
-                          "DUSEL_100kton_10inch_HQE_12perCent "
-                          "DUSEL_100kton_10inch_HQE_30perCent "
-                          "DUSEL_100kton_10inch_HQE_30perCent_Gd "
-                          "DUSEL_150kton_10inch_HQE_30perCent "
-						  "DUSEL_200kton_10inch_HQE_12perCent "
-						  "DUSEL_200kton_12inch_HQE_10perCent "
-						  "DUSEL_200kton_12inch_HQE_14perCent "
-                          "150kTMailbox_10inch_HQE_30perCent "
-						  "150kTMailbox_10inch_40perCent ");
+                           "DUSEL_100kton_10inch_40perCent "
+                           "DUSEL_100kton_10inch_HQE_12perCent "
+                           "DUSEL_100kton_10inch_HQE_30perCent "
+                           "DUSEL_100kton_10inch_HQE_30perCent_Gd "
+                           "DUSEL_150kton_10inch_HQE_30perCent "
+                           "DUSEL_200kton_10inch_HQE_12perCent "
+                           "DUSEL_200kton_12inch_HQE_10perCent "
+                           "DUSEL_200kton_12inch_HQE_14perCent "
+                           );
   PMTConfig->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   PMTSize = new G4UIcmdWithAString("/WCSim/WCPMTsize",this);
@@ -98,15 +96,8 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
 void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {    
 	if( command == PMTConfig ) { 
-		WCSimDetector->SetIsMailbox(false);
 		WCSimDetector->SetIsUpright(false);
-		if ( newValue == "150kTMailbox_10inch_HQE_30perCent") {
-			WCSimDetector->SetIsMailbox(true);
-			WCSimDetector->SetMailBox150kTGeometry_10inch_HQE_30perCent();//aah
-		} else if ( newValue == "150kTMailbox_10inch_40perCent") {
-			WCSimDetector->SetIsMailbox(true);
-			WCSimDetector->SetMailBox150kTGeometry_10inch_40perCent();//aah
-		} else if(newValue == "SuperK") {
+                if(newValue == "SuperK") {
 			WCSimDetector->SetSuperKGeometry();
 		} else if(newValue == "DUSEL_100kton_10inch_40perCent") {
 			WCSimDetector->DUSEL_100kton_10inch_40perCent();
