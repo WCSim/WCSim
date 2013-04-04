@@ -12,7 +12,6 @@
 #/WCSim/WCgeom SuperK
 # Currently by defualt the DUSEL configurations are 10 inch.
 # you can overide this with the WCPMTsize command.
-# The mailbox will still give errors as of 8/28/09 (CWW)
 # WCPMTsize command commented out on 10/1/09 (CWW)
 #
 #/WCSim/WCgeom DUSEL_100kton_10inch_40perCent
@@ -23,8 +22,6 @@
 #/WCSim/WCgeom DUSEL_200kton_10inch_HQE_12perCent
 #/WCSim/WCgeom DUSEL_200kton_12inch_HQE_10perCent
 #/WCSim/WCgeom DUSEL_200kton_12inch_HQE_14perCent
-#/WCSim/WCgeom 150kTMailbox_10inch_HQE_30perCent
-#/WCSim/WCgeom 150kTMailbox_10inch_40perCent
 #/WCSim/Construct
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
