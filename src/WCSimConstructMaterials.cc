@@ -248,6 +248,23 @@ void WCSimDetectorConstruction::ConstructMaterials()
   Rock->AddElement(elK,   4.50*perCent);
   Rock->AddElement(elMg,  0.10*perCent);
 
+
+
+  // Potential alternative material definitions for HK
+  // Get nist material manager
+  //G4NistManager* nist = G4NistManager::Instance();
+  //nist->FindOrBuildMaterial("G4_AIR");
+  //nist->FindOrBuildMaterial("G4_WATER");
+  //nist->FindOrBuildMaterial("G4_Galactic");
+  //nist->FindOrBuildMaterial("G4_Pyrex_Glass");
+  //nist->FindOrBuildMaterial("G4_POLYETHYLENE");
+
+
+
+
+
+
+
 // -------------------------------------------------------------
 // Generate & Add Material Properties Table
 // -------------------------------------------------------------

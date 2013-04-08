@@ -6,7 +6,7 @@
 /hits/verbose 0
 
 ## select the geometry
-# Default config if you do nothing is currently DUSEL100KT
+# Default config if you do nothing is currently SuperK
 #
 # The tube size is fixed for SK to 20"
 # These are fixed geometries for validation
@@ -15,6 +15,7 @@
 # you can overide this with the WCPMTsize command.
 # WCPMTsize command commented out on 10/1/09 (CWW)
 #
+#/WCSim/WCgeom HyperK
 #/WCSim/WCgeom DUSEL_100kton_10inch_40perCent
 #/WCSim/WCgeom DUSEL_100kton_10inch_HQE_12perCent
 #/WCSim/WCgeom DUSEL_100kton_10inch_HQE_30perCent
@@ -47,17 +48,26 @@
 /WCSim/SavePi0 true
 
 /vis/scene/create
-/vis/open OGLSX
-/vis/viewer/set/upVector 0 0 1
+/vis/open OGLSX 1000x1000-0+0
+#/vis/open OGLSX
+
+# Vis Settings for SK
+/vis/viewer/zoom 1.2
 /vis/viewer/set/viewpointThetaPhi 45 45 deg
 #/vis/viewer/set/viewpointThetaPhi 120 90 deg
+
+# Vis settings for HK
+#/vis/viewer/set/upVector 0 1 0
+#/vis/viewer/set/viewpointThetaPhi 50 165 deg
+#/vis/viewer/zoom 1.6
+#/vis/ogl/set/printMode pixmap
+#/vis/ogl/printEPS
 
 #/vis/open RayTracer
 #/vis/viewer/set/upVector 0 0 1
 #/vis/rayTracer/eyePosition 70 0 70
 #/vis/rayTracer/trace
 
-#/vis/viewer/zoom 1.2
 
 /vis/scene/add/hits
 /vis/scene/add/trajectories

@@ -43,7 +43,8 @@ void WCSimDetectorConstruction::GetWCGeom
     // This information will later be written to the geometry file
     // (Alternatively one might define accessible constants)
   
-    if ((aPV->GetName() == "WCBarrel")){
+    if ((aPV->GetName() == "WCBarrel") ||
+        (aPV->GetName() == "WorldBox")) {    // last condition is the HyperK Envelope name.
     // Stash info in data member
     WCOffset = G4ThreeVector(aTransform.getTranslation().getX()/cm,
 			     aTransform.getTranslation().getY()/cm,
@@ -152,8 +153,13 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   innerradius = sqrt(pow(firstTransform.getTranslation().getX()/cm,2)
                             + pow(firstTransform.getTranslation().getY()/cm,2));
 
-  geoFile << setw(8)<< innerradius;
-  geoFile << setw(8)<<WCCylInfo[2];
+  if (isHyperK){
+    geoFile << setw(8)<< 0;
+    geoFile << setw(8)<< 0;
+  }else{
+    geoFile << setw(8)<< innerradius;
+    geoFile << setw(8)<<WCCylInfo[2];
+  }
   geoFile << setw(10)<<totalNumPMTs;
   geoFile << setw(8)<<WCPMTSize << setw(4)  <<G4endl;
 

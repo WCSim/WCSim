@@ -99,6 +99,15 @@ public:
   // Geometry options
   void   SetIsUpright(G4bool choice) {isUpright = choice;}
 
+  // *** Begin HyperK Geometry ***
+
+  void   SetIsHyperK(G4bool choice) {isHyperK = choice;}
+  G4bool GetIsHyperK() {return isHyperK;}
+
+  void SetHyperKGeometry();
+
+  // *** End HyperK Geometry ***
+
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
 private:
@@ -128,7 +137,8 @@ private:
 
   // The Construction routines
   G4LogicalVolume*   ConstructWC();
-  void  ConstructPMT();
+  G4LogicalVolume* ConstructPMT(G4double,G4double);
+
   G4LogicalVolume* ConstructCaps(G4int zflip);
 
   void  ConstructMaterials();
@@ -200,9 +210,6 @@ private:
 
   // WC PMT parameters
   G4String WCPMTName;
-  G4double sphereRadius;
-  G4double PMTOffset;
-  G4LogicalVolume* logicWCPMT;
   G4LogicalVolume* logicGlassFaceWCPMT;
 
   // WC geometry parameters
@@ -257,7 +264,66 @@ private:
 
   // amb79: to universally make changes in structure and geometry
   bool isUpright;
-  
+
+  // *** Begin HyperK Geometry ***
+
+    void MatchWCSimAndHyperK();
+    G4LogicalVolume* ConstructHyperK();
+
+    G4Material* FindMaterial(G4String);
+
+    G4VSolid* ConstructHalf(G4double, G4double);
+
+    G4LogicalVolume* ConstructRadialPMT(G4bool,
+                                        G4double, G4double,
+                                        G4double, G4double,
+                                        G4double, G4double);
+
+    G4LogicalVolume* ConstructEndWallPMT();
+
+    G4LogicalVolume* ConstructCeilingPMT(G4bool,
+                                         G4double, G4double,
+                                         G4double, G4double);
+
+    G4bool isHyperK;
+
+    G4double waterTank_TopR;
+    G4double waterTank_BotR;
+    G4double waterTank_Height;
+    G4double waterTank_UpperA;
+    G4double waterTank_LowerB;
+    G4double waterTank_Length;
+
+    G4double innerPMT_TopR;
+    G4double innerPMT_BotR;
+    G4double innerPMT_TopW;
+    G4double innerPMT_BotW;
+    G4double innerPMT_Height;
+    G4double innerPMT_Radius;
+    G4double innerPMT_Expose;
+    G4double innerPMT_Rpitch;
+    G4double innerPMT_Apitch;
+
+    G4double outerPMT_TopR;
+    G4double outerPMT_BotR;
+    G4double outerPMT_TopW;
+    G4double outerPMT_BotW;
+    G4double outerPMT_Height;
+    G4double outerPMT_Radius;
+    G4double outerPMT_Expose;
+    G4double outerPMT_TopRpitch;
+    G4double outerPMT_BotRpitch;
+    G4double outerPMT_Apitch;
+
+    G4double blackSheetThickness;
+
+    G4int innerPMT_TopN;
+    G4int innerPMT_BotN;
+
+    G4bool checkOverlaps;
+    G4LogicalVolume* waterTankLV;
+
+  // *** End HyperK Geometry ***
 
   // amb79: debug to display all parts
   bool debugMode;

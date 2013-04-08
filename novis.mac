@@ -5,7 +5,7 @@
 /hits/verbose 0
 
 ## select the geometry
-# Default config if you do nothing is currently DUSEL100KT
+# Default config if you do nothing is currently SuperK
 #
 # The tube size is fixed for SK to 20"
 # These are fixed geometries for validation
@@ -14,6 +14,7 @@
 # you can overide this with the WCPMTsize command.
 # WCPMTsize command commented out on 10/1/09 (CWW)
 #
+#/WCSim/WCgeom HyperK
 #/WCSim/WCgeom DUSEL_100kton_10inch_40perCent
 #/WCSim/WCgeom DUSEL_100kton_10inch_HQE_12perCent
 #/WCSim/WCgeom DUSEL_100kton_10inch_HQE_30perCent

@@ -27,6 +27,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
 	
   // Decide if (only for the case of !1kT detector) should be upright or horizontal
   isUpright = false;
+  isHyperK  = false;
 
   debugMode = false;
 //-----------------------------------------------------
@@ -56,9 +57,10 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Set the default WC geometry.  This can be changed later.
   //-----------------------------------------------------
 
-  //SetSuperKGeometry();
+  SetSuperKGeometry();
+  //SetHyperKGeometry();
   //DUSEL_100kton_10inch_40perCent();
-  DUSEL_100kton_10inch_HQE_12perCent();
+  //DUSEL_100kton_10inch_HQE_12perCent();
   //DUSEL_100kton_10inch_HQE_30perCent();
   //DUSEL_100kton_10inch_HQE_30perCent_Gd();
   //DUSEL_150kton_10inch_HQE_30perCent();
@@ -130,7 +132,9 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // on their size and detector ordering.
 
   G4LogicalVolume* logicWCBox;
-  logicWCBox = ConstructWC(); 
+  // Select between HyperK and cylinder
+  if (isHyperK) logicWCBox = ConstructHyperK();
+  else logicWCBox = ConstructWC(); 
 
   G4cout << " WCLength       = " << WCLength/m << " m"<< G4endl;
 

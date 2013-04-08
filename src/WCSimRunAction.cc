@@ -129,15 +129,24 @@ void WCSimRunAction::FillGeoTree(){
   Float_t rot[3];
   Int_t cylLoc;
 
-  geo_type = 0;
+  if (wcsimdetector->GetIsHyperK()) {
+      geo_type = 2;
+  }
+  else {
+      geo_type = 0;
+  }
   // geo_type 1 is for defunct mailbox design
+
   wcsimrootgeom-> SetGeo_Type(geo_type);
-  
-    //cylinder
-    cylinfo[1] = wcsimdetector->GetGeo_Dm(3);
-    cylinfo[2] = wcsimdetector->GetGeo_Dm(2);
-    wcsimrootgeom-> SetWCCylRadius(cylinfo[1]);
-    wcsimrootgeom-> SetWCCylLength(cylinfo[2]);
+
+  if (geo_type == 0) {
+      //cylinder
+      cylinfo[1] = wcsimdetector->GetGeo_Dm(3);
+      cylinfo[2] = wcsimdetector->GetGeo_Dm(2);
+      wcsimrootgeom-> SetWCCylRadius(cylinfo[1]);
+      wcsimrootgeom-> SetWCCylLength(cylinfo[2]);
+  }
+
 
   pmtradius = wcsimdetector->GetPMTSize1();
   numpmt = wcsimdetector->GetTotalNumPmts();
