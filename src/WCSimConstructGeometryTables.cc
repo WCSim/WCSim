@@ -68,7 +68,7 @@ void WCSimDetectorConstruction::GetWCGeom
         zmin=100000,zmax=-100000.; 
     }
 
-    if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName() == "GlassFaceWCPMT")){
+    if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName() == "glassFaceWCPMT")){
       G4float x =  aTransform.getTranslation().getX()/cm;
       G4float y =  aTransform.getTranslation().getY()/cm;
       G4float z =  aTransform.getTranslation().getZ()/cm;
@@ -104,7 +104,7 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
 
   replicaNoString[aDepth] = pvname.str() + "-" + depth.str();
 
-  if ((aPV->GetName() == "GlassFaceWCPMT")) {
+  if ((aPV->GetName() == "glassFaceWCPMT")) {
 
     // First increment the number of PMTs in the tank.
     totalNumPMTs++;  

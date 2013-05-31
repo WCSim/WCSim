@@ -16,6 +16,12 @@
 G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                                                          G4double expose)
 {
+    // Gray wireframe visual style
+  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  WCPMTVisAtt->SetForceWireframe(true);
+
+
+
   G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
   G4double PMTOffset =  sphereRadius - expose;
 
@@ -42,9 +48,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                             "WCPMT",
                             0,0,0);
 
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
-  WCPMTVisAtt->SetForceWireframe(true);
-  logicWCPMT->SetVisAttributes(WCPMTVisAtt);
+  //logicWCPMT->SetVisAttributes(WCPMTVisAtt);
+  logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
 
 
   //Need a volume to cut away excess behind blacksheet
@@ -82,6 +87,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                   false,
                   0);
 
+  logicInteriorWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+
 
   //Create PMT Glass Face
   G4Sphere* tmpGlassFaceWCPMT =
@@ -92,28 +99,28 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                        0.0*deg,90.0*deg);
   
   G4SubtractionSolid* solidGlassFaceWCPMT =
-      new G4SubtractionSolid(    "GlassFaceWCPMT",
+      new G4SubtractionSolid(    "glassFaceWCPMT",
                                  tmpGlassFaceWCPMT,
                                  solidCutOffTubs); 
 
   logicGlassFaceWCPMT =
     new G4LogicalVolume(    solidGlassFaceWCPMT,
                             G4Material::GetMaterial("Glass"),
-                            "GlassFaceWCPMT",
+                            "glassFaceWCPMT",
                             0,0,0);
 
   G4VPhysicalVolume* physiGlassFaceWCPMT =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, -1.0*PMTOffset),
                         logicGlassFaceWCPMT,
-                        "GlassFaceWCPMT",
+                        "glassFaceWCPMT",
                         logicWCPMT,
                         false,
                         0,
                         checkOverlaps);
 
-  logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
-
+  //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+  logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
 
   //Add Logical Border Surface
   G4LogicalBorderSurface*  GlassCathodeSurface =
