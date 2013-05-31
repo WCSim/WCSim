@@ -218,6 +218,7 @@ private:
   G4double WCPMTExposeHeight;
   G4double WCPMTGlassThickness;
   G4double WCBarrelPMTOffset;
+  G4LogicalVolume* logicWCPMT;
 
   G4double WCIDDiameter;
 
