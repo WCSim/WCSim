@@ -35,26 +35,29 @@
 # distribution. This option is in particular important for the WLS
 # 3. The last option means all the QE are applied at the detector
 # Good for the low energy running. 
-#/WCSim/PMTQEMethod     Stacking_Only 
-/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
+/WCSim/PMTQEMethod     Stacking_Only 
+#/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
 
 # turn on or off the collection efficiency (05/27/11 XQ)
-/WCSim/PMTCollEff on
+#/WCSim/PMTCollEff on
 
 #/WCSim/Construct
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
-/WCSim/SavePi0 true
+#/WCSim/SavePi0 true
+/WCSim/SavePi0 false
 
 /vis/scene/create
 /vis/open OGLSX 1000x1000-0+0
+/vis/ogl/set/printSize 1000 1000
 #/vis/open OGLSX
 
 # Vis Settings for SK
 /vis/viewer/zoom 1.2
-/vis/viewer/set/viewpointThetaPhi 45 45 deg
-#/vis/viewer/set/viewpointThetaPhi 120 90 deg
+#/vis/viewer/set/viewpointThetaPhi 45 45 deg
+/vis/viewer/set/viewpointThetaPhi 110 0 deg
+/vis/viewer/set/upVector 0 0 1
 
 # Vis settings for HK
 #/vis/viewer/set/upVector 0 1 0
@@ -81,10 +84,9 @@
 
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
-/gun/particle e-
-#/gun/particle pi0
+/gun/particle mu+
 /gun/energy 1000 MeV
-/gun/direction 0 1 0 
+/gun/direction 0 1 0
 /gun/position 0 0 0 
 
 ## change the name of the output root file, default = wcsim.root

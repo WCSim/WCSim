@@ -25,6 +25,20 @@
 #/WCSim/WCgeom DUSEL_200kton_12inch_HQE_14perCent
 #/WCSim/Construct
 
+#Added for the PMT QE option 08/17/10 (XQ)
+# 1. Stacking only mean when the photon is generated
+# the QE is applied to reduce the total number of photons
+# 2. Stacking and sensitivity detector
+# In the stacking part, the maximum QE is applied to reduce
+# the total number of photons
+# On the detector side, the rest of QE are applied according to QE/QE_max
+# distribution. This option is in particular important for the WLS
+# 3. The last option means all the QE are applied at the detector
+# Good for the low energy running.
+/WCSim/PMTQEMethod     Stacking_Only
+#/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
+#/WCSim/PMTQEMethod     SensitiveDetector_Only
+
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 /WCSim/SavePi0 false
 
