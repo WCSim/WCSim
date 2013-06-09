@@ -1,6 +1,8 @@
 #ifndef WCSimWCDigitizer_h
 #define WCSimWCDigitizer_h 1
 
+#include "WCSimDarkRateMessenger.hh"
+#include "WCSimDetectorConstruction.hh"
 #include "G4VDigitizerModule.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"
@@ -14,7 +16,7 @@ class WCSimWCDigitizer : public G4VDigitizerModule
 {
 public:
   
-  WCSimWCDigitizer(G4String name);
+  WCSimWCDigitizer(G4String name, WCSimDetectorConstruction*);
   ~WCSimWCDigitizer();
   
   void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
@@ -25,17 +27,21 @@ public:
   int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
   
 public:
+
+  void AddPMTDarkRate(WCSimWCHitsCollection*);
   void MakeHitsHistogram(WCSimWCHitsCollection*);
   void FindNumberOfGates();
   void FindNumberOfGatesFast();
   void DigitizeGate(WCSimWCHitsCollection* WCHC,G4int G);
   void Digitize();
+  void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
   G4double GetTriggerTime(int i) { return TriggerTimes[i];}
 
   static G4double GetLongTime() { return LongTime;}
-  static G4double GetPMTDarkRate() { return PMTDarkRate;}
   static G4double GetEventGateDown() { return eventgatedown;}
   static G4double GetEventGateUp() { return eventgateup;}
+  G4double GetPMTDarkRate(){ return PMTDarkRate; }
+
 private:
   static void Threshold(double& pe,int& iflag){
     double x = pe+0.1; iflag=0;
@@ -67,7 +73,8 @@ private:
   static const double eventgatedown; // ns
   static const double LongTime; // ns
   static const int GlobalThreshold; //number of hit PMTs within an <=200ns sliding window that decides the global trigger t0
-  static const double PMTDarkRate; // kHz
+  WCSimDarkRateMessenger *DarkRateMessenger;
+  double PMTDarkRate; // kHz
 
   G4int triggerhisto[20000]; // for finding t0
   G4float RealOffset;  // t0 = offset corrected for trigger start
@@ -79,7 +86,7 @@ private:
   std::map<int,int> DigiHitMap; // need to check if a hit already exists..
 
   WCSimWCDigitsCollection*  DigitsCollection;  
-
+  WCSimDetectorConstruction* myDetector;
 
 };
 

@@ -48,6 +48,9 @@
 #/WCSim/SavePi0 true
 /WCSim/SavePi0 false
 
+# command to set dark noise frequency 13/06/09
+#/DarkRate/SetDarkRate 4 kHz
+
 /vis/scene/create
 /vis/open OGLSX 1000x1000-0+0
 /vis/ogl/set/printSize 1000 1000

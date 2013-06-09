@@ -43,8 +43,7 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
    detectorConstructor(myDetector)
 {
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
-
-  WCSimWCDigitizer* WCDM = new WCSimWCDigitizer( "WCReadout");
+  WCSimWCDigitizer* WCDM = new WCSimWCDigitizer( "WCReadout", myDetector);
   DMman->AddNewModule(WCDM);
 }
 

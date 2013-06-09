@@ -85,6 +85,8 @@ class WCSimWCHit : public G4VHit
   G4float       GetTime(int i)  { return time[i];};
   G4int         GetParentID(int i) { return primaryParentID[i];};
   
+  G4LogicalVolume* GetLogicalVolume() {return pLogV;};
+
   void SortHitTimes() {   sort(time.begin(),time.end()); }
 
 
