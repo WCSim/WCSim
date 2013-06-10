@@ -210,7 +210,9 @@ private:
 
   // WC PMT parameters
   G4String WCPMTName;
+  G4LogicalVolume* logicWCPMT;
   G4LogicalVolume* logicGlassFaceWCPMT;
+  static std::map<G4double, G4LogicalVolume*> PMTMap;
 
   // WC geometry parameters
 
@@ -218,7 +220,6 @@ private:
   G4double WCPMTExposeHeight;
   G4double WCPMTGlassThickness;
   G4double WCBarrelPMTOffset;
-  G4LogicalVolume* logicWCPMT;
 
   G4double WCIDDiameter;
 

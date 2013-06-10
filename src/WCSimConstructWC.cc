@@ -29,10 +29,10 @@
 #include "G4GeometryTolerance.hh"
 #include "G4GeometryManager.hh"
 
-
-#include "G4SDManager.hh"
-#include "WCSimWCSD.hh"
 #include "WCSimTuningParameters.hh" //jl145
+
+#include "G4SystemOfUnits.hh"
+#include "G4PhysicalConstants.hh"
 
 G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag, G4float low_wl, G4float high_wl, G4float ratio){
   // XQ  08/17/10
@@ -999,18 +999,6 @@ else {
                   logicWCBarrel,
                   false, 0,true);
 
-
-  G4SDManager* SDman = G4SDManager::GetSDMpointer();
-
-  if (!aWCPMT) 
-  {
-    aWCPMT = new WCSimWCSD( "/WCSim/glassFaceWCPMT",this );
-    SDman->AddNewDetector( aWCPMT );
-  }
-  logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
-
-
-
   return logicWC;
 }
 
@@ -1356,6 +1344,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   // -----------------------------------------------------
   
   //G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
+  logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
 
   G4double xoffset;
   G4double yoffset;

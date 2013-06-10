@@ -330,14 +330,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                     pmtCellLV,
                     false,0,checkOverlaps);
 
-  G4SDManager* SDman = G4SDManager::GetSDMpointer(); 
-  if (!aWCPMT)
-  {
-    aWCPMT = new WCSimWCSD( "/WCSim/glassFaceWCPMT",this );
-    SDman->AddNewDetector( aWCPMT );
-  }
-  logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
-
   //
   // always return the physical HyperK volume
   //

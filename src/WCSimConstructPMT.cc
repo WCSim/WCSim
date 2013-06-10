@@ -10,12 +10,23 @@
 #include "G4PVPlacement.hh"
 #include "G4LogicalBorderSurface.hh"
 
+#include "G4SDManager.hh"
+#include "WCSimWCSD.hh"
+
+#include "G4SystemOfUnits.hh"
 
 //PMT logical volume construction.
+
+std::map<G4double, G4LogicalVolume*> WCSimDetectorConstruction::PMTMap;
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                                                          G4double expose)
 {
+  G4double key = radius + expose;
+
+  std::map<G4double, G4LogicalVolume*>::iterator it = PMTMap.find(key);
+  if (it != PMTMap.end()) return it->second;
+
     // Gray wireframe visual style
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
@@ -42,7 +53,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                   PMTHolderR);// R Outer
 
 
-  G4LogicalVolume* logicWCPMT =
+//  G4LogicalVolume* logicWCPMT =
+    logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
                             G4Material::GetMaterial("Water"),
                             "WCPMT",
@@ -122,12 +134,21 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
 
+  if (!aWCPMT)
+  {
+    G4SDManager* SDman = G4SDManager::GetSDMpointer();
+    aWCPMT = new WCSimWCSD( "/WCSim/glassFaceWCPMT",this );
+    SDman->AddNewDetector( aWCPMT );
+  }
+  logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
+
+  PMTMap[key] = logicGlassFaceWCPMT;
+
   //Add Logical Border Surface
-  G4LogicalBorderSurface*  GlassCathodeSurface =
-      new G4LogicalBorderSurface(    "GlassCathodeSurface",
-                                     physiGlassFaceWCPMT,
-                                     physiInteriorWCPMT,
-                                     OpGlassCathodeSurface);
+  new G4LogicalBorderSurface("GlassCathodeSurface",
+                             physiGlassFaceWCPMT,
+                             physiInteriorWCPMT,
+                             OpGlassCathodeSurface);
 
   return logicWCPMT;
 }
