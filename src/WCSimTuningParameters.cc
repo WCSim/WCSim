@@ -9,10 +9,10 @@ WCSimTuningParameters::WCSimTuningParameters()
 
  TuningMessenger = new WCSimTuningMessenger(this);
  // Default values
- rayff=0.625;
- bsrff=1.0;
- abwff=1.0;
- rgcff=0.0;
+ rayff=0.75;
+ bsrff=2.50;
+ abwff=1.30;
+ rgcff=0.32;
  mieff=0.0;
 
  //jl145 - For Top Veto

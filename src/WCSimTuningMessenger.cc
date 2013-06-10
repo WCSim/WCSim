@@ -15,22 +15,22 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   Rayff = new G4UIcmdWithADouble("/WCSim/tuning/rayff",this);
   Rayff->SetGuidance("Set the Rayleigh scattering parameter");
   Rayff->SetParameterName("Rayff",true);
-  Rayff->SetDefaultValue(0.625);
+  Rayff->SetDefaultValue(0.75);
 
   Bsrff = new G4UIcmdWithADouble("/WCSim/tuning/bsrff",this);
   Bsrff->SetGuidance("Set the Blacksheet reflection parameter");
   Bsrff->SetParameterName("Bsrff",true);
-  Bsrff->SetDefaultValue(1.0);
+  Bsrff->SetDefaultValue(2.50);
 
   Abwff = new G4UIcmdWithADouble("/WCSim/tuning/abwff",this);
   Abwff->SetGuidance("Set the water attenuation parameter");
   Abwff->SetParameterName("Abwff",true);
-  Abwff->SetDefaultValue(1.0);
+  Abwff->SetDefaultValue(1.30);
 
   Rgcff = new G4UIcmdWithADouble("/WCSim/tuning/rgcff",this);
   Rgcff->SetGuidance("Set the cathode reflectivity parameter");
   Rgcff->SetParameterName("Rgcff",true);
-  Rgcff->SetDefaultValue(0.0);
+  Rgcff->SetDefaultValue(0.32);
 
   Mieff = new G4UIcmdWithADouble("/WCSim/tuning/mieff",this);
   Mieff->SetGuidance("Set the Mie scattering parameter");
