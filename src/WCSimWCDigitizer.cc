@@ -210,7 +210,11 @@ void WCSimWCDigitizer::Digitize()
     MakeHitsHistogram(WCHC);
     //FindNumberOfGates(); //get list of t0 and number of triggers.
     FindNumberOfGatesFast(); //get list of t0 and number of triggers.
+
+    if(this->PMTDarkRate>1E-307){
     AddPMTDarkRate(WCHC);
+    }
+
     for ( int i = 0 ; i < this->NumberOfGatesInThisEvent(); i++)
     {
 	DigitizeGate(WCHC,i);
@@ -246,7 +250,7 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCHitsCollection* WCHC)
     list.assign( number_pmts, 0 );
 
     for( int h = 0; h < number_entries; h++ )
-    {
+      {
         list[(*WCHC)[h]->GetTubeID()-1] = h+1;
     }
 

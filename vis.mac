@@ -49,6 +49,7 @@
 /WCSim/SavePi0 false
 
 # command to set dark noise frequency 13/06/09
+# default dark noise frequency is 0 kHz
 #/DarkRate/SetDarkRate 4 kHz
 
 /vis/scene/create
