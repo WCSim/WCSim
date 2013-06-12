@@ -84,9 +84,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                     tmpSolidInteriorWCPMT,
                     solidCutOffTubs);
 
+  // "Air" here is not true air, but a modified material
+  // with n = 1 and a very short absorption length
   G4LogicalVolume* logicInteriorWCPMT =
     new G4LogicalVolume(    solidInteriorWCPMT,
-                    G4Material::GetMaterial("Vacuum"),
+                    G4Material::GetMaterial("Air"),
                     "InteriorWCPMT",
                     0,0,0);
 
