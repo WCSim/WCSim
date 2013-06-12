@@ -51,6 +51,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   WCSimDetectorConstruction::tubeIDMap.clear();
   //WCSimDetectorConstruction::tubeCylLocation.clear();// (JF) Removed
   WCSimDetectorConstruction::tubeLocationMap.clear();
+  WCSimDetectorConstruction::PMTLogicalVolumes.clear();
   totalNumPMTs = 0;
   WCPMTExposeHeight= 0.;
   //-----------------------------------------------------
@@ -119,6 +120,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   G4SolidStore::GetInstance()->Clean();
   G4LogicalBorderSurface::CleanSurfaceTable();
   G4LogicalSkinSurface::CleanSurfaceTable();
+  WCSimDetectorConstruction::PMTLogicalVolumes.clear();
 
   totalNumPMTs = 0;
   

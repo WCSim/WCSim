@@ -339,6 +339,7 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_14perCent()
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructWC()
 {
+    G4cout << "**** Building Cylindrical Detector ****" << G4endl;
 
   //-----------------------------------------------------
   // Positions
@@ -854,8 +855,7 @@ else {
   // K.Zbiri: The PMT volume and the PMT glass are now put in parallel. 
   // The PMT glass is the sensitive volume in this new configuration.
 
-  logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
-  //G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
+  G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
 
   
 
@@ -1343,8 +1343,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   // Add top and bottom PMTs
   // -----------------------------------------------------
   
-  //G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
-  logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
+  G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
 
   G4double xoffset;
   G4double yoffset;

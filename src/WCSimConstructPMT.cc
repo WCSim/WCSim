@@ -17,15 +17,15 @@
 
 //PMT logical volume construction.
 
-WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTMap;
+WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                                                          G4double expose)
 {
   PMTKey_t key(radius,expose);
 
-  PMTMap_t::iterator it = PMTMap.find(key);
-  if (it != PMTMap.end()) {
+  PMTMap_t::iterator it = PMTLogicalVolumes.find(key);
+  if (it != PMTLogicalVolumes.end()) {
       //G4cout << "Restore PMT" << G4endl;
       return it->second;
   }
@@ -58,15 +58,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                   PMTHolderR);// R Outer
 
 
-//  G4LogicalVolume* logicWCPMT =
-    logicWCPMT =
+  G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
                             G4Material::GetMaterial("Water"),
                             "WCPMT",
                             0,0,0);
 
   //logicWCPMT->SetVisAttributes(WCPMTVisAtt);
-  logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
 
 
   //Need a volume to cut away excess behind blacksheet
@@ -122,7 +121,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                                  tmpGlassFaceWCPMT,
                                  solidCutOffTubs); 
 
-  logicGlassFaceWCPMT =
+  G4LogicalVolume *logicGlassFaceWCPMT =
     new G4LogicalVolume(    solidGlassFaceWCPMT,
                             G4Material::GetMaterial("Glass"),
                             "glassFaceWCPMT",
@@ -149,7 +148,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
   }
   logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
 
-  PMTMap[key] = logicWCPMT;
+  PMTLogicalVolumes[key] = logicWCPMT;
 
   //Add Logical Border Surface
   new G4LogicalBorderSurface("GlassCathodeSurface",

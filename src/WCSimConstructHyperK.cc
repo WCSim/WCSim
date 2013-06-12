@@ -83,6 +83,7 @@ void WCSimDetectorConstruction::MatchWCSimAndHyperK()
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
 {
+  G4cout << "**** Construct HyperK Detector ****" << G4endl;
 
   // ------------- Volumes --------------
 
