@@ -17,15 +17,20 @@
 
 //PMT logical volume construction.
 
-std::map<G4double, G4LogicalVolume*> WCSimDetectorConstruction::PMTMap;
+WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTMap;
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                                                          G4double expose)
 {
-  G4double key = radius + expose;
+  PMTKey_t key(radius,expose);
 
-  std::map<G4double, G4LogicalVolume*>::iterator it = PMTMap.find(key);
-  if (it != PMTMap.end()) return it->second;
+  PMTMap_t::iterator it = PMTMap.find(key);
+  if (it != PMTMap.end()) {
+      //G4cout << "Restore PMT" << G4endl;
+      return it->second;
+  }
+
+  //G4cout << "Create PMT" << G4endl;
 
     // Gray wireframe visual style
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
@@ -144,7 +149,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
   }
   logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
 
-  PMTMap[key] = logicGlassFaceWCPMT;
+  PMTMap[key] = logicWCPMT;
 
   //Add Logical Border Surface
   new G4LogicalBorderSurface("GlassCathodeSurface",

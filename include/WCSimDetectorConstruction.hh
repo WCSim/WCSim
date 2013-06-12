@@ -212,7 +212,10 @@ private:
   G4String WCPMTName;
   G4LogicalVolume* logicWCPMT;
   G4LogicalVolume* logicGlassFaceWCPMT;
-  static std::map<G4double, G4LogicalVolume*> PMTMap;
+
+  typedef std::pair<G4double, G4double> PMTKey_t;
+  typedef std::map<PMTKey_t, G4LogicalVolume*> PMTMap_t;
+  static PMTMap_t PMTMap;
 
   // WC geometry parameters
 
