@@ -85,6 +85,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
 {
   G4cout << "**** Construct HyperK Detector ****" << G4endl;
 
+  PMTCopyNo = 0;
+
   // ------------- Volumes --------------
 
   checkOverlaps = true;
@@ -174,7 +176,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                     ConstructPMT(innerPMT_Radius,innerPMT_Expose),
                     "PMT",
                     pmtCellLV,
-                    false,0,checkOverlaps);
+                    false,PMTCopyNo++,checkOverlaps);
 
   pmtCellLV = ConstructRadialPMT(false, innerPMT_BotR, innerPMT_Height,
                                  waterTank_LowerB,innerPMT_Expose,
@@ -189,7 +191,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                     ConstructPMT(innerPMT_Radius,innerPMT_Expose),
                     "PMT",
                     pmtCellLV,
-                    false,0,checkOverlaps);
+                    false,PMTCopyNo++,checkOverlaps);
 
   pmtCellLV = ConstructRadialPMT(true,  outerPMT_TopR, outerPMT_Height,
                                  waterTank_UpperA, outerPMT_Expose,
@@ -218,7 +220,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                     ConstructPMT(outerPMT_Radius,outerPMT_Expose),
                     "PMT",
                     pmtCellLV,
-                    false,0,checkOverlaps);
+                    false,PMTCopyNo++,checkOverlaps);
 
   angle = phi - dphi;
 
@@ -232,7 +234,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                     ConstructPMT(outerPMT_Radius,outerPMT_Expose),
                     "PMT",
                     pmtCellLV,
-                    false,0,checkOverlaps);
+                    false,PMTCopyNo++,checkOverlaps);
 
   pmtCellLV = ConstructRadialPMT(false, outerPMT_BotR, outerPMT_Height,
                                  waterTank_LowerB, outerPMT_Expose,
@@ -258,7 +260,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                     ConstructPMT(outerPMT_Radius,outerPMT_Expose),
                     "PMT",
                     pmtCellLV,
-                    false,0,checkOverlaps);
+                    false,PMTCopyNo++,checkOverlaps);
 
   angle = phi - dphi;
 
@@ -272,7 +274,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                     ConstructPMT(outerPMT_Radius,outerPMT_Expose),
                     "PMT",
                     pmtCellLV,
-                    false,0,checkOverlaps);
+                    false,PMTCopyNo++,checkOverlaps);
 
   // End Wall PMTs
 
@@ -285,7 +287,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                     ConstructPMT(innerPMT_Radius,innerPMT_Expose),
                     "PMT",
                     pmtCellLV,
-                    false,0,checkOverlaps);
+                    false,PMTCopyNo++,checkOverlaps);
 
   // Top and Bottom PMTs
 
@@ -299,7 +301,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                     ConstructPMT(innerPMT_Radius,innerPMT_Expose),
                     "PMT",
                     pmtCellLV,
-                    false,0,checkOverlaps);
+                    false,PMTCopyNo++,checkOverlaps);
 
   pmtCellLV = ConstructCeilingPMT(false, innerPMT_BotW,   innerPMT_Height,
                                          innerPMT_Apitch, innerPMT_Expose);
@@ -308,7 +310,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                     ConstructPMT(innerPMT_Radius,innerPMT_Expose),
                     "PMT",
                     pmtCellLV,
-                    false,0,checkOverlaps);
+                    false,PMTCopyNo++,checkOverlaps);
 
   pmtCellLV = ConstructCeilingPMT(true,  outerPMT_TopW,   outerPMT_Height,
                                   outerPMT_Apitch, outerPMT_Expose);
@@ -320,7 +322,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                     ConstructPMT(outerPMT_Radius,outerPMT_Expose),
                     "PMT",
                     pmtCellLV,
-                    false,0,checkOverlaps);
+                    false,PMTCopyNo++,checkOverlaps);
 
   pmtCellLV = ConstructCeilingPMT(false, outerPMT_BotW,   outerPMT_Height,
                                   outerPMT_Apitch, outerPMT_Expose);
@@ -329,7 +331,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                     ConstructPMT(outerPMT_Radius,outerPMT_Expose),
                     "PMT",
                     pmtCellLV,
-                    false,0,checkOverlaps);
+                    false,PMTCopyNo++,checkOverlaps);
 
   //
   // always return the physical HyperK volume
@@ -439,7 +441,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRadialPMT(G4bool top,
                                      -phi/2.,phi),
                           FindMaterial("G4_WATER"),
                           "PMTAnnulus");
-//  pmtAnnulusLV->SetVisAttributes(G4VisAttributes::Invisible);
+  pmtAnnulusLV->SetVisAttributes(G4VisAttributes::Invisible);
 
   G4LogicalVolume* blackSheetALV = NULL;
   if (inner) {
@@ -461,7 +463,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRadialPMT(G4bool top,
                                      -phi/2.,phi),
                           FindMaterial("G4_WATER"),
                           "PMTRings");
-//  pmtRingLV->SetVisAttributes(G4VisAttributes::Invisible);
+  pmtRingLV->SetVisAttributes(G4VisAttributes::Invisible);
 
   G4LogicalVolume* pmtCellLV
     = new G4LogicalVolume(new G4Tubs("PMTCell",
@@ -470,7 +472,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRadialPMT(G4bool top,
                                      -dphi/2.,dphi),
                           FindMaterial("G4_WATER"),
                           "PMTCell");
-//  pmtCellLV->SetVisAttributes(G4VisAttributes::Invisible);
+  pmtCellLV->SetVisAttributes(G4VisAttributes::Invisible);
 
 //-----------------------------------------------------------------
 //

@@ -325,6 +325,8 @@ private:
     G4bool checkOverlaps;
     G4LogicalVolume* waterTankLV;
 
+    G4int PMTCopyNo;
+
   // *** End HyperK Geometry ***
 
   // amb79: debug to display all parts
