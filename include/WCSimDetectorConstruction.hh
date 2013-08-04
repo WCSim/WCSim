@@ -326,6 +326,7 @@ private:
     G4LogicalVolume* waterTankLV;
 
     G4int PMTCopyNo;
+    G4int wallSlabCopyNo;
 
   // *** End HyperK Geometry ***
 

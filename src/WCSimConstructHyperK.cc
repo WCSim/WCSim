@@ -86,6 +86,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
   G4cout << "**** Construct HyperK Detector ****" << G4endl;
 
   PMTCopyNo = 0;
+  wallSlabCopyNo = 0;
 
   // ------------- Volumes --------------
 
@@ -626,15 +627,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructEndWallPMT()
     G4double zpos = waterTank_Length/2.-innerPMT_Apitch/2.;
 
     new G4PVPlacement(0,   G4ThreeVector(xpos,ypos, zpos),
-                      pmtSlabLV,"PMTSlab",waterTankLV,false,0,checkOverlaps);
+                      pmtSlabLV,"PMTSlab",waterTankLV,false,wallSlabCopyNo++,checkOverlaps);
     new G4PVPlacement(rotm,G4ThreeVector(xpos,ypos,-zpos),
-                      pmtSlabLV,"PMTSlab",waterTankLV,false,1,checkOverlaps);
+                      pmtSlabLV,"PMTSlab",waterTankLV,false,wallSlabCopyNo++,checkOverlaps);
     if ( i > 0 ) {
        xpos = -xpos;
        new G4PVPlacement(0,   G4ThreeVector(xpos,ypos, zpos),
-                         pmtSlabLV,"PMTSlab",waterTankLV,false,3,checkOverlaps);
+                         pmtSlabLV,"PMTSlab",waterTankLV,false,wallSlabCopyNo++,checkOverlaps);
        new G4PVPlacement(rotm,G4ThreeVector(xpos,ypos,-zpos),
-                         pmtSlabLV,"PMTSlab",waterTankLV,false,4,checkOverlaps);
+                         pmtSlabLV,"PMTSlab",waterTankLV,false,wallSlabCopyNo++,checkOverlaps);
     }
 
     i++;

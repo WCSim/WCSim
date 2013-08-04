@@ -117,6 +117,14 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     for (int i=0; i <= aDepth; i++)
       tubeTag += ":" + replicaNoString[i];
     // G4cout << tubeTag << G4endl;
+    
+    if ( tubeLocationMap.find(tubeTag) != tubeLocationMap.end() ) {
+        G4cerr << "Repeated tube tag: " << tubeTag << G4endl;
+        G4cerr << "Assigned to both tube #" << tubeLocationMap[tubeTag] << " and #" << totalNumPMTs << G4endl;
+        G4cerr << "Cannot continue -- hits will not be recorded correctly."  << G4endl;
+        G4cerr << "Please make sure that logical volumes with multiple placements are each given a unique copy number" << G4endl;
+        assert(false);
+    }
     tubeLocationMap[tubeTag] = totalNumPMTs;
     
     // Put the transform for this tube into the map keyed by its ID
