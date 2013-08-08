@@ -34,7 +34,7 @@
   */
   // Load the library with class dictionary info
   // (create with "gmake shared")
-  //gSystem.Load("../libWCSimRoot.so");
+  gSystem.Load("../libWCSimRoot.so");
 
   // Open the file
   TFile file("wcsim.root");
