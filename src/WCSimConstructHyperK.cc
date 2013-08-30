@@ -726,19 +726,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCeilingPMT(G4bool top,
 
   if (top) {
      new G4PVPlacement(0,G4ThreeVector(xpos,ypos,zpos),
-                       pmtSlabLV,"PMTSlab",waterTankLV,false,0,checkOverlaps);
+                       pmtSlabLV,"PMTSlab",waterTankLV,false,wallSlabCopyNo++,checkOverlaps);
      ypos += size/2. + blackSheetThickness/2.;
      if (inner) new G4PVPlacement(0,G4ThreeVector(xpos,ypos,zpos),
-                 blackSheetYLV,"blackSheet",waterTankLV,false,0,checkOverlaps);
+                 blackSheetYLV,"blackSheet",waterTankLV,false,wallSlabCopyNo++,checkOverlaps);
   } else {
      ypos = (-height+size/2.) - waterTank_Height/4.;
      G4RotationMatrix* rotm = new G4RotationMatrix();
      rotm->rotateZ(180.*degree);
      new G4PVPlacement(rotm,G4ThreeVector(xpos,ypos,zpos),
-                       pmtSlabLV,"PMTSlab",waterTankLV,false,1,checkOverlaps);
+                       pmtSlabLV,"PMTSlab",waterTankLV,false,wallSlabCopyNo++,checkOverlaps);
      ypos -= size/2. + blackSheetThickness/2.;
      if (inner) new G4PVPlacement(0,G4ThreeVector(xpos,ypos,zpos),
-                 blackSheetYLV,"blackSheet",waterTankLV,false,1,checkOverlaps);
+                 blackSheetYLV,"blackSheet",waterTankLV,false,wallSlabCopyNo++,checkOverlaps);
 
   }
 
