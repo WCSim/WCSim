@@ -194,11 +194,16 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 		      false,
 		      0);
 
+  // Reset the tubeID and tubeLocation maps before refiling them
+  tubeIDMap.clear();
+  tubeLocationMap.clear();
+
+
   // Traverse and print the geometry Tree
   
   //  TraverseReplicas(physiWCBox, 0, G4Transform3D(), 
   //	   &WCSimDetectorConstruction::PrintGeometryTree) ;
-
+  
   TraverseReplicas(physiWCBox, 0, G4Transform3D(), 
 	           &WCSimDetectorConstruction::DescribeAndRegisterPMT) ;
   
