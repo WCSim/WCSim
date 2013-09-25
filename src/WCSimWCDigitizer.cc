@@ -270,6 +270,10 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCHitsCollection* WCHC)
             // equivelent. If that changes the following line would be replaced
             // by a random number with a weight factor.
 	    int noise_pmt = static_cast<int>( G4UniformRand() * number_pmts );
+
+	    if ( current_time >= TriggerTimes[i] + (eventgateup - eventgatedown ) )
+	      break;
+
 	    if( list[ noise_pmt ] == 0 )
 	    {
 	      WCSimWCHit* ahit = new WCSimWCHit();
@@ -300,9 +304,9 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCHitsCollection* WCHC)
 	      ahit->SetPos(pmt_position);
 
 	      WCHC->insert(ahit);
-	      list[ noise_pmt ] = WCHC->entries() - 1;
+	      list[ noise_pmt ] = WCHC->entries();
 	    }
-	    (*WCHC)[ list[noise_pmt] ]->AddPe(current_time);
+	    (*WCHC)[ list[noise_pmt]-1 ]->AddPe(current_time);
         }
     }    
     
@@ -373,7 +377,7 @@ void WCSimWCDigitizer::FindNumberOfGatesFast()
 	    //RealOffset = _mGateKeeper->first*5.0;
 	    RealOffset = _mNextGate->first*5.0;
 	    TriggerTimes.push_back(RealOffset);
-	    std::cerr << "found a trigger..." << RealOffset/5.0  <<"\n";
+	    //std::cerr << "found a trigger..." << RealOffset/5.0  <<"\n";
 	    _mGateKeeper = GateMap.lower_bound( _mNextGate->first + G4int(WCSimWCDigitizer::eventgateup )/5. );
 	    std::cerr.flush();
 	    break;
@@ -414,8 +418,8 @@ void WCSimWCDigitizer::FindNumberOfGates()
 	    RealOffset = float(j)*5.0;
 	    TriggerTimes.push_back(RealOffset);
 	    I = j+G4int(WCSimWCDigitizer::eventgateup )/5. ;
-	    std::cerr << "found a trigger..." << j
-		      << " ; new start = " << I << "\n";
+	    //std::cerr << "found a trigger..." << j
+	    //<< " ; new start = " << I << "\n";
 	    std::cerr.flush();
 	    break;
 	  }
@@ -562,7 +566,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCHitsCollection* WCHC,G4int G)
 		(*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(G,digihittime);
 	      }
 	    }
-	  else { G4cout << "discarded negative time hit\n";}
+	  else { }//G4cout << "discarded negative time hit\n";}
 
 	} // Loop over hits
 
