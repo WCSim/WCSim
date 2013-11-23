@@ -79,6 +79,11 @@ doxy:
 	fi
 
 clean_wcsim:
-	$(RM) -r $(G4WORKDIR);  $(RM) *.o *.a *.so *~ */*~; rm -r doc/doxygen
+	echo  $(G4WORKDIR); 
+	$(RM) -r $(G4WORKDIR); $(RM) *.o *.a *.so *~ */*~ src/WCSimRootDict.h src/WCSimRootDict.cc; 
+	@if [ -d "doc/doxygen" ]; \
+		then \
+		rm -r doc/doxygen; \
+	fi	
 
 include $(G4INSTALL)/config/binmake.gmk
