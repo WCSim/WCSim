@@ -40,6 +40,13 @@ EXTRALIBS += $(ROOTLIBS)
 
 EXTRA_LINK_DEPENDENCIES := 
 
+DOXYGEN_VERSION := $(shell doxygen --version 2>/dev/null)
+ifdef DOXYGEN_VERSION
+DOXYGEN_EXISTS = 1
+else
+DOXYGEN_EXISTS = 0
+endif
+
 .PHONY: all
 all: rootcint lib bin shared libWCSim.a
 
@@ -62,5 +69,16 @@ libWCSim.a : $(ROOTOBJS)
 	rootcint  -f ./src/WCSimRootDict.cc -c -I./include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimRootLinkDef.hh
 
 rootcint: ./src/WCSimRootDict.cc
+
+doxy:
+	@if [ ${DOXYGEN_EXISTS} = 1 ]; \
+	then \
+		doxygen WCSim_doxygen_config; \
+	else\
+		echo "Error: doxygen program not found in path. Exiting"; \
+	fi
+
+clean_wcsim:
+	$(RM) -r $(G4WORKDIR);  $(RM) *.o *.a *.so *~ */*~; rm -r doc/doxygen
 
 include $(G4INSTALL)/config/binmake.gmk
