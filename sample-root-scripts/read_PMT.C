@@ -1,3 +1,6 @@
+#include <stdio.h>     
+#include <stdlib.h>    
+
 void read_PMT(char *filename=NULL) {
   /* A simple script to plot aspects of phototube hits 
    * This code is rather cavalier; I should be checking return values, etc.
@@ -8,7 +11,13 @@ void read_PMT(char *filename=NULL) {
    */
 
   gROOT->Reset();
-  gSystem->Load("../libWCSimRoot.so");
+  char* wcsimdirenv;
+  wcsimdirenv = getenv ("WCSIMDIR");
+  if(wcsimdirenv !=  NULL){
+    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
+  }else{
+    gSystem->Load("../libWCSimRoot.so");
+  }
   gStyle->SetOptStat(1);
 
   TFile *f;

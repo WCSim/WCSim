@@ -1,5 +1,9 @@
+#include <iostream>
+#include <TH1F.h>
+#include <stdio.h>     
+#include <stdlib.h>    
 // Simple example of reading a generated Root file
-
+void testgeo(char *filename=NULL)
 {
 
   // Clear global scope
@@ -7,10 +11,25 @@
 
   // Load the library with class dictionary info
   // (create with "gmake shared")
-  gSystem.Load("../libWCSimRoot.so");
+  char* wcsimdirenv;
+  wcsimdirenv = getenv ("WCSIMDIR");
+  if(wcsimdirenv !=  NULL){
+    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
+  }else{
+    gSystem->Load("../libWCSimRoot.so");
+  }
 
   // Open the file
-  TFile file("../wcsim.root");
+  TFile *file; 
+  if (filename==NULL){
+    file = new TFile("../wcsim.root","read");
+  }else{
+    file = new TFile(filename,"read");
+  }
+  if (!file->IsOpen()){
+    cout << "Error, could not open input file: " << filename << endl;
+    return -1;
+  }
   
   // Get the a pointer to the tree from the file
   TTree *gtree = (TTree*)file->Get("wcsimGeoT");
