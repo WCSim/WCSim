@@ -14,8 +14,8 @@ EXTRALIBS += $(ROOTLIBS)
 
 CXX = g++
 
+G4WORKDIR := .
 G4TMPDIR := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim
-
 
 
 
@@ -29,7 +29,21 @@ ROOTSRC  := ./src/WCSimRootEvent.cc ./include/WCSimRootEvent.hh ./src/WCSimRootG
 ROOTOBJS  := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootDict.o 
 
 
+
+
+
+.PHONY: directories
+
+all: directories libWCSimRoot.so
+
+directories: $(G4TMPDIR)
+
+$(G4TMPDIR) :
+	mkdir -p $(G4TMPDIR)
+
+
 libWCSimRoot.so : $(ROOTOBJS) 
+	@if [ ! -d $(G4TMPDIR) ] ; then mkdir $(G4TMPDIR) ; echo mkdir $(G4TMPDIR) ;fi
 	@$(CXX) -shared -O $^ -o $(ROOTSO) $(ROOTLIBS)
 
 ./src/WCSimRootDict.cc : $(ROOTSRC)
@@ -37,9 +51,10 @@ libWCSimRoot.so : $(ROOTOBJS)
 
 rootcint: ./src/WCSimRootDict.cc
 
-$(G4TMPDIR)/%.o: src/%.cc 
+$(G4TMPDIR)/%.o: src/%.cc
 	@echo Compiling $*.cc ...
 	@if [ ! -d $(G4TMPDIR) ] ; then mkdir $(G4TMPDIR) ; echo mkdir $(G4TMPDIR) ;fi
 	@echo $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $(G4TMPDIR)/$(*F).o $<
 	@$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $(G4TMPDIR)/$(*F).o $<
+
 
