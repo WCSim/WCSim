@@ -40,6 +40,7 @@ public:
   static G4double GetLongTime() { return LongTime;}
   static G4double GetEventGateDown() { return eventgatedown;}
   static G4double GetEventGateUp() { return eventgateup;}
+  static G4double GetCalibDarkNoise() { return eventgateup;}
   G4double GetPMTDarkRate(){ return PMTDarkRate; }
 
 private:
@@ -71,6 +72,7 @@ private:
   static const double pmtgate; // ns
   static const double eventgateup; // ns
   static const double eventgatedown; // ns
+  static const double calibdarknoise; // ns
   static const double LongTime; // ns
   static const int GlobalThreshold; //number of hit PMTs within an <=200ns sliding window that decides the global trigger t0
   WCSimDarkRateMessenger *DarkRateMessenger;
