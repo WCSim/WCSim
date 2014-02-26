@@ -135,6 +135,8 @@
     TClonesArray *WCHitsArray = wcsimrootevent->GetCherenkovHitCoordinates();
     
     int totalPe = 0;
+
+    TH1D* colorspectrum = new TH1D("cspect","cspect",100, 200.,800.);
     // Loop through elements in the TClonesArray of WCSimRootCherenkovHits
     for (i=0; i< ncherenkovhits; i++)
     {
@@ -147,7 +149,7 @@
       int peForTube      = wcsimrootcherenkovhit->GetTotalPe(1);
       totalPe += peForTube;
      
-      if ( i < 10 ) // Only print first XX=10 tubes
+      if ( i < 8000 ) // Only print first XX=10 tubes
       {
 	printf("Total pe: %d Hits( ",peForTube);
 	for (int j = timeArrayIndex; j < timeArrayIndex + peForTube; j++)
@@ -158,9 +160,12 @@
 	  printf("(%6.2f ", (HitCoordinate->GetTrueHit()).at(0) );	     
 	  printf(",%6.2f ", (HitCoordinate->GetTrueHit()).at(1) );	     
 	  printf(",%6.2f ", (HitCoordinate->GetTrueHit()).at(2) );	     
-	  printf(",%6.2f)", (HitCoordinate->GetTrueHit()).at(3) );	     
+	  printf(",%6.2f)", (HitCoordinate->GetTrueHit()).at(3) );
+	  cout<<"wavelength="<<(HitCoordinate->GetTrueHit()).at(4);
+	  colorspectrum->Fill( (HitCoordinate->GetTrueHit()).at(4) );
 	}
-	cout << ")" << endl;
+	cout << " )"<<endl;
+       
       }
 
     } // End of loop over Cherenkov hits
@@ -201,4 +206,5 @@
     
   } // End of loop over events
   h1.Draw();
+  colorspectrum->Draw();
 }
