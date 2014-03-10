@@ -260,7 +260,8 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCHitsCollection* WCHC)
     // Add noise to PMT's here, do so for time < LongTime
     double current_time = 0;
 
-    double poisson_mean = 1 / (this->PMTDarkRate * calibdarknoise * 1E-6 * number_pmts);
+    //    double poisson_mean = 1 / (this->PMTDarkRate * calibdarknoise * 1E-6 * number_pmts);
+    double poisson_mean = 1 / (this->PMTDarkRate * this->ConvRate * 1E-6 * number_pmts);
 
     // Only add noise to triggered time windows!
     for( int i = 0; i < TriggerTimes.size(); i++ )
