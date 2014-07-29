@@ -39,7 +39,6 @@ void WCSimDetectorConstruction::SetHyperKGeometry(G4double PartitionLength)
   waterTank_Height = 48000.*mm;
   waterTank_UpperA =  8000.*mm;
   waterTank_LowerB =  6000.*mm;
-  //  waterTank_Length = 247500./((G4double)Partition)*mm;
   waterTank_Length = PartitionLength;
 
   innerPMT_TopR     = 29095.*mm; 
