@@ -5,6 +5,7 @@
 #include "G4UIcommand.hh"
 #include "G4UIparameter.hh"
 #include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithADoubleAndUnit.hh"
 
 WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimDet)
 :WCSimDetector(WCSimDet)
@@ -77,7 +78,14 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			    "off ");
   PMTCollEff->AvailableForStates(G4State_PreInit, G4State_Idle);
 
-
+  G4int Defaultvalue=49500.*mm;
+  PartitionLength = new G4UIcmdWithADoubleAndUnit("/WCSim/PartitionLength", this);
+  PartitionLength->SetGuidance("Set the Length of Hyper-K detector (unit: mm cm m).");
+  PartitionLength->SetParameterName("PartitionLength", true);
+  PartitionLength->SetDefaultValue(Defaultvalue);
+  PartitionLength->SetUnitCategory("Length");
+  PartitionLength->SetDefaultUnit("mm");
+  PartitionLength->SetUnitCandidates("mm cm m");
 
   WCConstruct = new G4UIcmdWithoutParameter("/WCSim/Construct", this);
   WCConstruct->SetGuidance("Update detector construction with new settings.");
@@ -89,6 +97,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete SavePi0;
   delete PMTQEMethod;
   delete PMTCollEff;
+  delete PartitionLength;
 
   delete tubeCmd;
   delete distortionCmd;
@@ -104,7 +113,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
                         WCSimDetector->SetSuperKGeometry();
                 } else if ( newValue == "HyperK") {
                         WCSimDetector->SetIsHyperK(true);
-                        WCSimDetector->SetHyperKGeometry();
+                        WCSimDetector->SetHyperKGeometry(49500.*mm);
 		} else if(newValue == "DUSEL_100kton_10inch_40perCent") {
 			WCSimDetector->DUSEL_100kton_10inch_40perCent();
 		}else if(newValue == "DUSEL_100kton_10inch_HQE_12perCent"){
@@ -164,7 +173,19 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  }
 	  G4cout << G4endl;
 	}
-
+	
+	if (command == PartitionLength){
+	  if(WCSimDetector->GetIsHyperK()){
+	    G4cout << "Set Number of Partition in a cylinder " << newValue << " ";
+	    WCSimDetector->SetIsHyperK(true);
+	    WCSimDetector->SetHyperKGeometry(PartitionLength->GetNewDoubleValue(newValue));
+	  }
+	  else{
+	    G4cout << "The geometory is not Hyper-K!" << G4endl;
+	    G4cout << "Command did not execute" << G4endl;
+	  }
+	}
+	
 
 
 	if(command == PMTSize) {

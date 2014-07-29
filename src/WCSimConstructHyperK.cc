@@ -31,14 +31,16 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void WCSimDetectorConstruction::SetHyperKGeometry()
+//void WCSimDetectorConstruction::SetHyperKGeometry(G4int Partition)
+void WCSimDetectorConstruction::SetHyperKGeometry(G4double PartitionLength)
 {
   waterTank_TopR   = 32000.*mm;
   waterTank_BotR   = 30000.*mm;
   waterTank_Height = 48000.*mm;
   waterTank_UpperA =  8000.*mm;
   waterTank_LowerB =  6000.*mm;
-  waterTank_Length = 49500.*mm;
+  //  waterTank_Length = 247500./((G4double)Partition)*mm;
+  waterTank_Length = PartitionLength;
 
   innerPMT_TopR     = 29095.*mm; 
   innerPMT_BotR     = 27095.*mm;

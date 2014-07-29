@@ -104,7 +104,7 @@ public:
   void   SetIsHyperK(G4bool choice) {isHyperK = choice;}
   G4bool GetIsHyperK() {return isHyperK;}
 
-  void SetHyperKGeometry();
+  void SetHyperKGeometry(G4double PartitionLength);
 
   // *** End HyperK Geometry ***
 
