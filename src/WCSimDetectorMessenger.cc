@@ -78,15 +78,14 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			    "off ");
   PMTCollEff->AvailableForStates(G4State_PreInit, G4State_Idle);
 
-  G4int Defaultvalue=49500.*mm;
-  PartitionLength = new G4UIcmdWithADoubleAndUnit("/WCSim/PartitionLength", this);
-  PartitionLength->SetGuidance("Set the Length of Hyper-K detector (unit: mm cm m).");
-  PartitionLength->SetParameterName("PartitionLength", true);
-  PartitionLength->SetDefaultValue(Defaultvalue);
-  PartitionLength->SetUnitCategory("Length");
-  PartitionLength->SetDefaultUnit("mm");
-  PartitionLength->SetUnitCandidates("mm cm m");
 
+  waterTank_Length = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperK/waterTank_Length", this);
+  waterTank_Length->SetGuidance("Set the Length of Hyper-K detector (unit: mm cm m).");
+  waterTank_Length->SetParameterName("waterTank_length", true);
+  waterTank_Length->SetDefaultValue(49500.);
+  waterTank_Length->SetUnitCategory("Length");
+  waterTank_Length->SetDefaultUnit("mm");
+  waterTank_Length->SetUnitCandidates("mm cm m");
   WCConstruct = new G4UIcmdWithoutParameter("/WCSim/Construct", this);
   WCConstruct->SetGuidance("Update detector construction with new settings.");
 }
@@ -97,7 +96,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete SavePi0;
   delete PMTQEMethod;
   delete PMTCollEff;
-  delete PartitionLength;
+  delete waterTank_Length;
 
   delete tubeCmd;
   delete distortionCmd;
@@ -113,7 +112,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
                         WCSimDetector->SetSuperKGeometry();
                 } else if ( newValue == "HyperK") {
                         WCSimDetector->SetIsHyperK(true);
-                        WCSimDetector->SetHyperKGeometry(49500.*mm);
+			WCSimDetector->SetHyperKGeometry();
 		} else if(newValue == "DUSEL_100kton_10inch_40perCent") {
 			WCSimDetector->DUSEL_100kton_10inch_40perCent();
 		}else if(newValue == "DUSEL_100kton_10inch_HQE_12perCent"){
@@ -174,17 +173,15 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  G4cout << G4endl;
 	}
 	
-	if (command == PartitionLength){
-	  if(WCSimDetector->GetIsHyperK()){
-	    G4cout << "Set Number of Partition in a cylinder " << newValue << " ";
+	if (command == waterTank_Length){
+	    G4cout << "Set Partition Length in a cylinder " << newValue << " ";
+	    WCSimDetector->SetwaterTank_Length(waterTank_Length->GetNewDoubleValue(newValue));
 	    WCSimDetector->SetIsHyperK(true);
-	    WCSimDetector->SetHyperKGeometry(PartitionLength->GetNewDoubleValue(newValue));
-	  }
-	  else{
-	    G4cout << "The geometory is not Hyper-K!" << G4endl;
-	    G4cout << "Command did not execute" << G4endl;
-	  }
 	}
+	else{
+
+	}
+
 	
 
 

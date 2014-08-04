@@ -16,15 +16,16 @@
 # WCPMTsize command commented out on 10/1/09 (CWW)
 #
 #
-#Added for detector length option (ONLY FOR HYPER-K GEOMETRY!!) 2014/07/29 
-#/WCSim/WCgeom HyperK # Detector length changes to default length (49.5 m)
-#
-#/WCSim/PartitionLength 49500 mm # 5 partition in 1 cylinder
-#/WCSim/PartitionLength 61875 mm # 4 partition in 1 cylinder
-#/WCSim/PartitionLength 82500 mm # 3 partition in 1 cylinder
-#/WCSim/PartitionLength 123750 mm # 2 partition in 1 cylinder
-#/WCSim/PartitionLength 247500 mm # 1 partition in 1 cylinder
-#
+#Added for detector length option (ONLY FOR HYPER-K GEOMETRY!!) 2014/07/29. This simulates a segment of the Hyper-K detector of a given length. 
+
+#/WCSim/WCgeom HyperK #default length is 49500 mm unless changed below.
+
+#/WCSim/HyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions(ie. will simulate a detector 1/10 of the HK length)
+#/WCSim/HyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
+#/WCSim/HyperK/waterTank_Length 82500. mm # Equivalent length for 3 partitions
+#/WCSim/HyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
+#/WCSim/HyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
+
 #/WCSim/WCgeom DUSEL_100kton_10inch_40perCent
 #/WCSim/WCgeom DUSEL_100kton_10inch_HQE_12perCent
 #/WCSim/WCgeom DUSEL_100kton_10inch_HQE_30perCent
@@ -104,7 +105,7 @@
 #/mygen/vecfile mu+.out
 
 # Or you can use the G4 Particle Gun
-/mygen/generator normal
+/mygen/generator muline
 /gun/particle mu+
 /gun/energy 1000 MeV
 /gun/direction 0 1 0
@@ -113,5 +114,5 @@
 ## change the name of the output root file, default = wcsim.root
 /WCSimIO/RootFile wcsim.root
 
-/run/beamOn 1
+/run/beamOn 100
 #exit

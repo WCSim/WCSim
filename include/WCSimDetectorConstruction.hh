@@ -77,6 +77,7 @@ public:
   G4int    GetTotalNumPmts() {return totalNumPMTs;}
   
   G4int    GetPMT_QE_Method(){return PMT_QE_Method;}
+  G4double GetwaterTank_Length() {return waterTank_Length;} 
   G4int    UsePMT_Coll_Eff(){return PMT_Coll_Eff;}
 
   G4double GetPMTSize1() {return WCPMTSize;}
@@ -96,6 +97,8 @@ public:
   void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
   void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
 
+  //Partition Length
+  void SetwaterTank_Length(G4double length){waterTank_Length = length;}
   // Geometry options
   void   SetIsUpright(G4bool choice) {isUpright = choice;}
 
@@ -104,7 +107,8 @@ public:
   void   SetIsHyperK(G4bool choice) {isHyperK = choice;}
   G4bool GetIsHyperK() {return isHyperK;}
 
-  void SetHyperKGeometry(G4double PartitionLength);
+  void SetHyperKGeometry();
+
 
   // *** End HyperK Geometry ***
 
@@ -204,6 +208,8 @@ private:
   G4int PMT_Coll_Eff;
 
 
+  
+
   G4double WCLength;
 
   G4double WCPosition;
@@ -288,13 +294,13 @@ private:
                                          G4double, G4double);
 
     G4bool isHyperK;
-
-    G4double waterTank_TopR;
-    G4double waterTank_BotR;
-    G4double waterTank_Height;
-    G4double waterTank_UpperA;
-    G4double waterTank_LowerB;
-    G4double waterTank_Length;
+  
+  G4double waterTank_TopR;
+  G4double waterTank_BotR;
+  G4double waterTank_Height;
+  G4double waterTank_UpperA;
+  G4double waterTank_LowerB;
+  G4double waterTank_Length;
 
     G4double innerPMT_TopR;
     G4double innerPMT_BotR;
