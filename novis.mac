@@ -14,7 +14,19 @@
 # you can overide this with the WCPMTsize command.
 # WCPMTsize command commented out on 10/1/09 (CWW)
 #
-#/WCSim/WCgeom HyperK
+
+#Changes the length of the simulated volume. Is currently only set up for HyperK. 
+
+#/WCSim/WCgeom HyperK #default length is 49500 mm unless changed in /WCSim/HK/PartionLength below.
+
+#/WCSim/HyperK/waterTank_Length 24750. mm # Equivalent length for 10 partitions
+#/WCSim/HyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions
+#/WCSim/HyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
+#/WCSim/HyperK/waterTank_Length 82500. mm # Equivalent length for 3 partitions
+#/WCSim/HyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
+#/WCSim/HyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
+
+
 #/WCSim/WCgeom DUSEL_100kton_10inch_40perCent
 #/WCSim/WCgeom DUSEL_100kton_10inch_HQE_12perCent
 #/WCSim/WCgeom DUSEL_100kton_10inch_HQE_30perCent
@@ -52,12 +64,13 @@
 /mygen/generator normal
 /gun/particle e-
 #/gun/particle pi0
-/gun/energy 1000 MeV
+/gun/energy 500 MeV
 /gun/direction 1 0 0 
-/gun/position 1 0 0 
+/gun/position 0 0 0  
 
 ## change the name of the output root file, default = wcsim.root
+
 /WCSimIO/RootFile wcsim.root
 
-/run/beamOn 1
+/run/beamOn 10
 #exit

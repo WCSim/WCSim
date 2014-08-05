@@ -35,12 +35,15 @@ public:
   void DigitizeGate(WCSimWCHitsCollection* WCHC,G4int G);
   void Digitize();
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
+  void SetConversion(double iconvrate){ ConvRate = iconvrate; }
   G4double GetTriggerTime(int i) { return TriggerTimes[i];}
 
   static G4double GetLongTime() { return LongTime;}
   static G4double GetEventGateDown() { return eventgatedown;}
   static G4double GetEventGateUp() { return eventgateup;}
+  static G4double GetCalibDarkNoise() { return eventgateup;}
   G4double GetPMTDarkRate(){ return PMTDarkRate; }
+  G4double GetConversion(){ return ConvRate; }
 
 private:
   static void Threshold(double& pe,int& iflag){
@@ -71,10 +74,12 @@ private:
   static const double pmtgate; // ns
   static const double eventgateup; // ns
   static const double eventgatedown; // ns
+  static const double calibdarknoise; // ns
   static const double LongTime; // ns
   static const int GlobalThreshold; //number of hit PMTs within an <=200ns sliding window that decides the global trigger t0
   WCSimDarkRateMessenger *DarkRateMessenger;
   double PMTDarkRate; // kHz
+  double ConvRate; // kHz
 
   G4int triggerhisto[20000]; // for finding t0
   G4float RealOffset;  // t0 = offset corrected for trigger start

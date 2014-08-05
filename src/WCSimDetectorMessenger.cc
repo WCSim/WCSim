@@ -5,6 +5,7 @@
 #include "G4UIcommand.hh"
 #include "G4UIparameter.hh"
 #include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithADoubleAndUnit.hh"
 
 WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimDet)
 :WCSimDetector(WCSimDet)
@@ -78,7 +79,13 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTCollEff->AvailableForStates(G4State_PreInit, G4State_Idle);
 
 
-
+  waterTank_Length = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperK/waterTank_Length", this);
+  waterTank_Length->SetGuidance("Set the Length of Hyper-K detector (unit: mm cm m).");
+  waterTank_Length->SetParameterName("waterTank_length", true);
+  waterTank_Length->SetDefaultValue(49500.);
+  waterTank_Length->SetUnitCategory("Length");
+  waterTank_Length->SetDefaultUnit("mm");
+  waterTank_Length->SetUnitCandidates("mm cm m");
   WCConstruct = new G4UIcmdWithoutParameter("/WCSim/Construct", this);
   WCConstruct->SetGuidance("Update detector construction with new settings.");
 }
@@ -89,6 +96,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete SavePi0;
   delete PMTQEMethod;
   delete PMTCollEff;
+  delete waterTank_Length;
 
   delete tubeCmd;
   delete distortionCmd;
@@ -104,7 +112,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
                         WCSimDetector->SetSuperKGeometry();
                 } else if ( newValue == "HyperK") {
                         WCSimDetector->SetIsHyperK(true);
-                        WCSimDetector->SetHyperKGeometry();
+			WCSimDetector->SetHyperKGeometry();
 		} else if(newValue == "DUSEL_100kton_10inch_40perCent") {
 			WCSimDetector->DUSEL_100kton_10inch_40perCent();
 		}else if(newValue == "DUSEL_100kton_10inch_HQE_12perCent"){
@@ -164,7 +172,17 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  }
 	  G4cout << G4endl;
 	}
+	
+	if (command == waterTank_Length){
+	    G4cout << "Set Partition Length in a cylinder " << newValue << " ";
+	    WCSimDetector->SetwaterTank_Length(waterTank_Length->GetNewDoubleValue(newValue));
+	    WCSimDetector->SetIsHyperK(true);
+	}
+	else{
 
+	}
+
+	
 
 
 	if(command == PMTSize) {

@@ -23,6 +23,8 @@
 // changed from 940 (april 2005) by MF
 // 960 is unsuitable
 
+const double WCSimWCDigitizer::calibdarknoise = 1.37676;
+
 const double WCSimWCDigitizer::offset = 950.0 ; // ns
 const double WCSimWCDigitizer::pmtgate = 200.0 ; // ns
 const double WCSimWCDigitizer::eventgateup = 950.0 ; // ns
@@ -33,6 +35,7 @@ const int WCSimWCDigitizer::GlobalThreshold = 25 ; // # hit PMTs
 //const int WCSimWCDigitizer::GlobalThreshold = 12 ; // # hit PMTs
 // try to trigger early to reduce the width.
 //const int WCSimWCDigitizer::GlobalThreshold = 10 ; // # hit PMTs
+
 
 // special version -- based on a suggestion by K. Okumura
 // M F, april 05
@@ -256,7 +259,9 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCHitsCollection* WCHC)
 
     // Add noise to PMT's here, do so for time < LongTime
     double current_time = 0;
-    double poisson_mean = 1 / (this->PMTDarkRate * 1E-6 * number_pmts);
+
+    //    double poisson_mean = 1 / (this->PMTDarkRate * calibdarknoise * 1E-6 * number_pmts);
+    double poisson_mean = 1 / (this->PMTDarkRate * this->ConvRate * 1E-6 * number_pmts);
 
     // Only add noise to triggered time windows!
     for( int i = 0; i < TriggerTimes.size(); i++ )

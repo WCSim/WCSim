@@ -11,6 +11,7 @@ class G4UIcmdWithAString;
 #include "G4UImessenger.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithADouble.hh"
+#include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithABool.hh"
 
@@ -35,6 +36,8 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithAString* SavePi0;
   G4UIcmdWithAString* PMTQEMethod;
   G4UIcmdWithAString* PMTCollEff;
+  G4UIcmdWithADoubleAndUnit* waterTank_Length;
+
 
   G4UIcmdWithAString* tubeCmd;
   G4UIcmdWithAString* distortionCmd;

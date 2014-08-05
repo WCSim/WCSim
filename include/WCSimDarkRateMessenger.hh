@@ -8,6 +8,7 @@
 class G4UIcommand;
 class G4UIdirectory;
 class G4UIcmdWithADoubleAndUnit;
+class G4UIcmdWithADouble;
 class WCSimWCDigitizer;
 
 class WCSimDarkRateMessenger: public G4UImessenger
@@ -24,6 +25,7 @@ private:
 
   G4UIdirectory* WCSimDir;
   G4UIcmdWithADoubleAndUnit* SetFrequency;
+  G4UIcmdWithADouble* SetConversionRate;
 
 };
 
