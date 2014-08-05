@@ -5,6 +5,13 @@ This version of WCSim has been moved to GitHub.  You should make new
 features by making a feature branch off of develop and then ask for a
 pull request.
 
+The repository contains the following branches:
+
+- master: (this is only used for releases).  Do not put development here.
+- development: This is the development branch.  Feature branches start here.
+- feature: These are branches where you work on new features.  
+- archive: these are old historical work branches from the WCSim Duke SVN repository.
+
 -----
 You should have a recent and working version of
 ROOT and GEANT4.  (Known to work with GEANT 4.9.4.p01.)
