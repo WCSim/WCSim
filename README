@@ -1,27 +1,25 @@
 Current notes and how to build:
------
 
-This version of WCSim has been moved to GitHub.  You should make new
-features by making a feature branch off of develop and then ask for a
-pull request.
+WCSim is a very flexible GEANT4 based program for developing and
+simulating large water Cherenkov detectors.
 
-The repository contains the following branches:
+As of August 2014 WCSim has been moved to GitHub.  It can be found at:
 
-- master: This is only for official releases.  Do not put development here.
+https://github.com/WCSim
 
-- development: This is the development branch.  Feature branches start here.
+Information about the branches and WCSim development model can be
+found on the wiki:
 
-- feature: These are branches where you work on new features.  
+https://github.com/WCSim/WCSim/wiki
 
-- archive: These are old historical work branches from the WCSim Duke
-  SVN repository.
+WCSim has very few external dependencies.  It relies on only ROOT and Geant4.
 
------
-You should have a recent and working version of
-ROOT and GEANT4.  (Known to work with GEANT 4.9.4.p01.)
-You also need all of the G4 data files including
-hadron xsecs etc.  Those are the only requirements.  The code should
-work with gcc 4.3.
+Build Instructions:
+
+You should have a recent and working version of ROOT and GEANT4.
+(Known to work with GEANT 4.9.4.p01.)  You also need all of the G4
+data files including hadron xsecs etc.  Those are the only
+requirements.  The code should work with gcc 4.3.
 
 To compile:
 make clean
@@ -33,8 +31,8 @@ If you want to use these libraries with an external program then also do:
 make shared      [ For root programs]
 make libWCSim.a  [ Also necessary for the event display?]
 
-More detailed information about the simulation is available in doc/DetectorDocumentation.pdf.
-
+More detailed information about the simulation is available in
+doc/DetectorDocumentation.pdf.
 
 ####################################################################
 Color Convention for visualization
