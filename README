@@ -1,5 +1,11 @@
 Current notes and how to build:
+-----
 
+This version of WCSim has been moved to GitHub.  You should make new
+features by making a feature branch off of develop and then ask for a
+pull request.
+
+-----
 You should have a recent and working version of
 ROOT and GEANT4.  (Known to work with GEANT 4.9.4.p01.)
 You also need all of the G4 data files including
