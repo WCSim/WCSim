@@ -174,15 +174,16 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	}
 	
 	if (command == waterTank_Length){
-	    G4cout << "Set Partition Length in a cylinder " << newValue << " ";
+	bool isHyperK = WCSimDetector->GetIsHyperK();
+	  if(isHyperK==true){
+	    G4cout << "Set Partition Length in a cylinder " << newValue << " " << G4endl;
 	    WCSimDetector->SetwaterTank_Length(waterTank_Length->GetNewDoubleValue(newValue));
-	    WCSimDetector->SetIsHyperK(true);
+	    //	    WCSimDetector->SetIsHyperK(true);
+	  }
+	  else {
+	    G4cout << "Not HyperK Geometry. Detector length unchanged." << G4endl;
+	  }
 	}
-	else{
-
-	}
-
-	
 
 
 	if(command == PMTSize) {
