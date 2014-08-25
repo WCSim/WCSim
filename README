@@ -12,6 +12,11 @@ https://github.com/WCSim/WCSim/wiki
 
 WCSim has very few external dependencies.  It relies on only ROOT and Geant4.
 
+There is a mailing list which will send you GitHub push/checkin
+notifications here:
+
+https://lists.phy.duke.edu/mailman/listinfo/wcsim-git
+
 Current notes and how to build:
 ---------------------------------
 
