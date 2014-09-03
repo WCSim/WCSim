@@ -105,7 +105,7 @@
 #/mygen/vecfile mu+.out
 
 # Or you can use the G4 Particle Gun
-/mygen/generator muline
+/mygen/generator normal
 /gun/particle mu+
 /gun/energy 1000 MeV
 /gun/direction 0 1 0
