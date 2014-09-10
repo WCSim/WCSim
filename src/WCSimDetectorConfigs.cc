@@ -74,6 +74,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
 /**
  * Transfer HK variables needed elsewhere
  * to their generic WC equivalents.
+ * This should be included in all HK configurations.
  */
 void WCSimDetectorConstruction::MatchWCSimAndHyperK()
 {
