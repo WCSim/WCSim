@@ -1,16 +1,4 @@
 //  -*- mode:c++; tab-width:4;  -*-
-/***********************************************************
- *
- * This file containts the functions which construct a the
- * HyperK detector.  It used by the HK detector 
- * configuration modes.  It is called in the Construct()
- * method in WCSimDetectorConstruction.cc.
- *
- * Sourcefile for the WCSimDetectorConstruction class
- *
- ***********************************************************/
-
-
 #include "WCSimDetectorConstruction.hh"
 
 #include "G4SystemOfUnits.hh"
@@ -43,10 +31,14 @@
 
 
 /***********************************************************
+ *
  * This file containts the functions which construct a the
  * HyperK detector.  It used by the HK detector 
  * configuration modes.  It is called in the Construct()
  * method in WCSimDetectorConstruction.cc.
+ *
+ * Sourcefile for the WCSimDetectorConstruction class
+ *
  ***********************************************************/
 
 

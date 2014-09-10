@@ -1,4 +1,10 @@
 //  -*- mode:c++; tab-width:4;  -*-
+#include "WCSimDetectorConstruction.hh"
+
+#include "globals.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4PhysicalConstants.hh"
+
 /***********************************************************
  *
  * This file contains the PMT QE as a function of 
@@ -10,14 +16,6 @@
  * Sourcefile for the WCSimDetectorConstruction class
  *
  ***********************************************************/
-
-
-#include "WCSimDetectorConstruction.hh"
-
-#include "globals.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4PhysicalConstants.hh"
-
 
 
 G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag, G4float low_wl, G4float high_wl, G4float ratio){

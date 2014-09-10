@@ -1,4 +1,11 @@
 //  -*- mode:c++; tab-width:4;  -*-
+#include "WCSimDetectorConstruction.hh"
+
+#include "globals.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4PhysicalConstants.hh"
+
+
 /***********************************************************
  *
  * This file contains the setup functions for various 
@@ -9,13 +16,6 @@
  * Sourcefile for the WCSimDetectorConstruction class
  *
  ***********************************************************/
-
-
-#include "WCSimDetectorConstruction.hh"
-
-#include "globals.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4PhysicalConstants.hh"
 
 
 
