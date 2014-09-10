@@ -63,19 +63,28 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
 
   blackSheetThickness = 20.*mm;
 
+  // PMT Name specifies behavior
+  // Currently the same for inner and outer
+  WCPMTName             ="20inch";
+  WCPMTGlassThickness   = .55*cm;
+
   innerPMT_TopN = 0;
   innerPMT_BotN = 0;
+
+  isHyperK = true; // Tell DetectorConstruction to build HK geometry
 
   MatchWCSimAndHyperK();
 }
 
+/**
+ * Transfer HK variables needed elsewhere
+ * to their generic WC equivalents.
+ */
 void WCSimDetectorConstruction::MatchWCSimAndHyperK()
 {
   WCLength = waterTank_Length;
   WCPosition = 0.;
   WCPMTRadius = innerPMT_Radius;
-
-  WCPMTName             ="20inch";
 }
 
 
