@@ -31,65 +31,6 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void WCSimDetectorConstruction::SetHyperKGeometry()
-{
-  waterTank_TopR   = 32000.*mm;
-  waterTank_BotR   = 30000.*mm;
-  waterTank_Height = 48000.*mm;
-  waterTank_UpperA =  8000.*mm;
-  waterTank_LowerB =  6000.*mm;
-  waterTank_Length = 49500.*mm;
-
-  innerPMT_TopR     = 29095.*mm; 
-  innerPMT_BotR     = 27095.*mm;
-  innerPMT_TopW     = 12038.*mm;
-  innerPMT_BotW     = 11004.*mm;
-  innerPMT_Height   = 21095.*mm;
-  innerPMT_Radius   = 20. * 25.4*mm / 2.;
-  innerPMT_Expose   =   180.*mm;
-  innerPMT_Rpitch   =   990.*mm;
-  innerPMT_Apitch   =   990.*mm;
-
-  outerPMT_TopR      = innerPMT_TopR + 900.*mm;
-  outerPMT_BotR      = innerPMT_BotR + 900.*mm;
-  outerPMT_TopW      = 12394.*mm;
-  outerPMT_BotW      = 11319.*mm;
-  outerPMT_Height    = innerPMT_Height + 900.*mm;
-  outerPMT_Radius    =  8. * 25.4*mm / 2.;
-  outerPMT_Expose    =  outerPMT_Radius - 10.*mm;
-  outerPMT_TopRpitch = 3. * innerPMT_Rpitch * (outerPMT_TopR/innerPMT_TopR);
-  outerPMT_BotRpitch = 3. * innerPMT_Rpitch * (outerPMT_BotR/innerPMT_BotR);
-  outerPMT_Apitch    = 2. * innerPMT_Apitch;
-
-  blackSheetThickness = 20.*mm;
-
-  // PMT Name specifies behavior
-  // Currently the same for inner and outer
-  WCPMTName             ="20inch";
-  WCPMTGlassThickness   = .55*cm;
-
-  innerPMT_TopN = 0;
-  innerPMT_BotN = 0;
-
-  isHyperK = true; // Tell DetectorConstruction to build HK geometry
-
-  MatchWCSimAndHyperK();
-}
-
-/**
- * Transfer HK variables needed elsewhere
- * to their generic WC equivalents.
- */
-void WCSimDetectorConstruction::MatchWCSimAndHyperK()
-{
-  WCLength = waterTank_Length;
-  WCPosition = 0.;
-  WCPMTRadius = innerPMT_Radius;
-}
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
 {
   G4cout << "**** Construct HyperK Detector ****" << G4endl;
@@ -754,6 +695,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCeilingPMT(G4bool top,
   return pmtCellLV;
 }
 
+/**
+ * Mapping allows HK and SK to eventaully have different materials
+ */
 G4Material* WCSimDetectorConstruction::FindMaterial(G4String name)
 {
     if (name == "G4_AIR") return FindMaterial("Air");
