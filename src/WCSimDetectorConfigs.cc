@@ -1,9 +1,22 @@
 //  -*- mode:c++; tab-width:4;  -*-
+/***********************************************************
+ *
+ * This file contains the setup functions for various 
+ * detector configurations.  These can be set up by 
+ * default in WCSimDetectorConstruction.cc or called
+ * in mac files by adding them to WCSimDetectorMessenger.cc.
+ *
+ * Sourcefile for the WCSimDetectorConstruction class
+ *
+ ***********************************************************/
+
+
 #include "WCSimDetectorConstruction.hh"
 
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
+
 
 
 void WCSimDetectorConstruction::SetSuperKGeometry()

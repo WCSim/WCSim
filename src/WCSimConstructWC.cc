@@ -1,4 +1,16 @@
 //  -*- mode:c++; tab-width:4;  -*-
+/***********************************************************
+ *
+ * This file containts the functions which construct a 
+ * cylindrical WC detector.  It used by both the SK and 
+ * LBNE WC detector modes.  It is called in the Construct()
+ * method in WCSimDetectorConstruction.cc.
+ *
+ * Sourcefile for the WCSimDetectorConstruction class
+ *
+ ***********************************************************/
+
+
 #include "WCSimDetectorConstruction.hh"
 
 #include "G4Material.hh"

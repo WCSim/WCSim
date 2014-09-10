@@ -1,4 +1,17 @@
 //  -*- mode:c++; tab-width:4;  -*-
+/***********************************************************
+ *
+ * This file contains the PMT QE as a function of 
+ * wavelength for variety of PMTs.  It is used in both the
+ * StackingAction and the sensitive detectors so it was 
+ * put here (in WCSimDetectorConstruction) so both pieces of 
+ * code would have access to it.
+ *
+ * Sourcefile for the WCSimDetectorConstruction class
+ *
+ ***********************************************************/
+
+
 #include "WCSimDetectorConstruction.hh"
 
 #include "globals.hh"
