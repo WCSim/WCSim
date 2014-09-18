@@ -92,7 +92,7 @@ public:
   inline int NumberOfGates() { return Gates.size();}
   inline int NumberOfSubEvents() { return (Gates.size()-1);}
   inline bool HasHitsInGate(int number) { return (Gates.count(number)==1); }
-
+  
   G4LogicalVolume* GetLogicalVolume() {return pLogV;};
 
 
@@ -104,7 +104,7 @@ public:
   { primaryParentID.push_back(primParentID); }
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
   G4int         GetTotalPe()    { return totalPe;};
-
+  
   void SetMaxPe(G4int number = 0)  {maxPe   = number;};
 
   void AddPe(G4float hitTime)  

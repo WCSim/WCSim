@@ -102,7 +102,20 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 
     const G4int number_entries = WCHCPMT->entries();
     const G4int number_pmts = myDetector->GetTotalNumPmts();
-    
+    int *PMTindex = new int [number_pmts*2];
+    //   int PMTindex[number_pmts];
+    //initialize PMTindex
+    for (int l=0; l<number_pmts; l++){
+      PMTindex[l] =0;
+    }
+    //Set up proper indices for tubes which have already been hit
+    for (int g=0; g<number_entries; g++){
+      G4int tube = (*WCHCPMT)[g]->GetTubeID();
+      for (int gp=0; gp<(*WCHCPMT)[g]->GetTotalPe(); gp++){
+	PMTindex[tube]++;
+      }
+    }
+
     // Get the info for pmt positions
     std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
     // It works out that the pmts here are ordered !
@@ -122,18 +135,22 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 
     // Add noise to PMT's here, do so for time < LongTime
     double current_time = 0;
-
+    double pe = 0.0;
     //    double poisson_mean = 1 / (this->PMTDarkRate * calibdarknoise * 1E-6 * number_pmts);
     double poisson_mean = 1 / (this->PMTDarkRate * this->ConvRate * 1E-6 * number_pmts);
-
+    G4DigiManager* DMman = G4DigiManager::GetDMpointer();
+    WCSimWCPMT* WCPMT = (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT");
     // Only add noise to triggered time windows!
+   
     for( int i = 0; i < TriggerTimes.size(); i++ )
     {
         current_time = TriggerTimes[i];
-        while( current_time < TriggerTimes[i] + (eventgateup - eventgatedown) )
+
+	while( current_time < TriggerTimes[i] + (eventgateup - eventgatedown) )
         {
             // Get random time ahead for this poisson process
             current_time += -poisson_mean*log( 1-G4UniformRand() );
+	 
             // Now add that hit to a random PMT ( Here we assume all PMT's are
             // equivelent. If that changes the following line would be replaced
             // by a random number with a weight factor.
@@ -146,7 +163,8 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 	    {
 	      //	      WCSimWCHit* ahit = new WCSimWCHit();
 	      WCSimWCDigi* ahit = new WCSimWCDigi();
-	      ahit->SetTubeID( noise_pmt + 1 );
+
+	      ahit->SetTubeID( noise_pmt );
 	      // This Logical volume is GlassFaceWCPMT
 	      ahit->SetLogicalVolume((*WCHCPMT)[0]->GetLogicalVolume());
 	      ahit->SetTrackID(-1);
@@ -171,14 +189,24 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 
 	      ahit->SetRot(pmt_rotation);
 	      ahit->SetPos(pmt_position);
-
+	      ahit->SetTime(PMTindex[noise_pmt],current_time);
+	      pe = WCPMT->rn1pe();
+	      ahit->SetPe(PMTindex[noise_pmt],pe);
 	      WCHCPMT->insert(ahit);
+	      PMTindex[noise_pmt]++;
 	      list[ noise_pmt ] = WCHCPMT->entries();
 	    }
-	    (*WCHCPMT)[ list[noise_pmt]-1 ]->AddPe(current_time);
+	    else{
+	      (*WCHCPMT)[ list[noise_pmt]-1 ]->AddPe(current_time);
+	      (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTubeID(noise_pmt);
+	      pe = WCPMT->rn1pe();
+	      (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPe(PMTindex[noise_pmt],pe);
+	      (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTime(PMTindex[noise_pmt],current_time);
+	      PMTindex[noise_pmt]++;
+	    }
         }
     }    
-    
+    delete [] PMTindex;
     return;
 }
 
@@ -222,7 +250,6 @@ void WCSimWCDigitizer::MakeHitsHistogram(WCSimWCDigitsCollection* WCHCPMT)
     // the map must end with a value below trigger threshold
     // otherwise we will be stuck in infinite loops -- Maximilien Fechner, feb 22, 2007
     GateMap[20001]=0;
-    //   G4cout << "count " << count;
 }
 
 
@@ -351,7 +378,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
   }
   G4double upperbound = TriggerTimes[G]+EvtG8Up;
   G4double efficiency = 0.985; // with skrn1pe (AP tuning) & 30% QE increase in stacking action
-  // G4cout << "lower bound " << lowerbound << " upper bound " << upperbound << G4endl;
+ 
   for (G4int i=0; i < WCHCPMT->entries(); i++)
     {
       //G4double peCutOff = .3;
@@ -370,7 +397,6 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
       //      G4float firstHitTime = (*WCHCPMT)[i]->GetTime(0);
       G4float firstHitTime = (*WCHCPMT)[i]->GetFirstHitTimeInGate(lowerbound,
 							       upperbound);
-      //  G4cout << "firstHitTime " << firstHitTime << G4endl;
       G4double peSmeared=0.0;
       double bound1 = firstHitTime+WCSimWCDigitizer::pmtgate;
       G4float mintime = (upperbound < bound1) ? upperbound : bound1;
@@ -380,8 +406,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 	continue; // move on to the next Hit PMT
       }
       */
-      //  else {
-      //  G4cout << "lower bound " << lowerbound << "upper bound " << upperbound << G4endl;
+     
       for ( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++){
 	tc = (*WCHCPMT)[i]->GetTime(ip);
 	//Add up pe for each time in the gate.
@@ -426,13 +451,11 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 	    + WCSimWCDigitizer::offset
 	    + firstHitTime
 	    + G4RandGauss::shoot(0.0,timingResolution);
-	  //  G4cout << "time " << digihittime << G4endl;
+
 	  if ( digihittime > 0.0 && peSmeared>0.0)
 	  
 	    {
 	      if ( DigiHitMap[tube] == 0) {
-		//G4cout << tube << " " << G << "  " << TriggerTimes[G] << " " << digihittime
-		//       << "  " <<   peSmeared <<" ";
 		WCSimWCDigi* Digi = new WCSimWCDigi();
 
 		Digi->SetTubeID(tube);

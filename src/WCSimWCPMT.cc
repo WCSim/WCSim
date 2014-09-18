@@ -156,7 +156,6 @@ WCSimWCPMT::WCSimWCPMT(G4String name,
   G4String colName = "WCDigitizedCollectionPMT";
   this->myDetector = myDetector;
   collectionName.push_back(colName);
-  G4cout << "colName" << G4endl;
   DigiHitMapPMT.clear();
   
 
@@ -188,7 +187,6 @@ G4double WCSimWCPMT::rn1pe(){
 void WCSimWCPMT::Digitize()
 {
   DigitsCollection = new WCSimWCDigitsCollection ("WCDigitizedCollectionPMT",collectionName[0]);
-
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
  
@@ -237,6 +235,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    if ( DigiHitMapPMT[tube] == 0) {
 	      
 	      WCSimWCDigi* Digi = new WCSimWCDigi();
+	      Digi->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
 	      Digi->AddPe(time_PMT);	
 	      Digi->SetTubeID(tube);
 	      Digi->SetPe(ip,peSmeared);
@@ -247,7 +246,8 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    
 	  
 	      else {
-		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->AddPe(time_PMT);	
+		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->AddPe(time_PMT);
+		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
 		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTubeID(tube);
 		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPe(ip,peSmeared);
 		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTime(ip,time_PMT);
