@@ -2,7 +2,6 @@
 #include "WCSimWCPMT.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"
-#include "WCSimEventAction.hh"
 #include "G4EventManager.hh"
 #include "G4Event.hh"
 #include "G4SDManager.hh"
@@ -10,9 +9,6 @@
 #include "G4ios.hh"
 #include "G4RotationMatrix.hh"
 #include "G4ThreeVector.hh"
-#include "G4RunManager.hh"
-#include "WCSimRunAction.hh"
-
 
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPmtInfo.hh"
@@ -102,10 +98,10 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 
     const G4int number_entries = WCHCPMT->entries();
     const G4int number_pmts = myDetector->GetTotalNumPmts();
-    int *PMTindex = new int [number_pmts*2];
+    int *PMTindex = new int [number_pmts+1];
     //   int PMTindex[number_pmts];
     //initialize PMTindex
-    for (int l=0; l<number_pmts; l++){
+    for (int l=0; l<number_pmts+1; l++){
       PMTindex[l] =0;
     }
     //Set up proper indices for tubes which have already been hit
@@ -226,7 +222,7 @@ void WCSimWCDigitizer::MakeHitsHistogram(WCSimWCDigitsCollection* WCHCPMT)
     MinTime = WCSimWCDigitizer::LongTime;
 
     G4float tc;
-    G4int count=0;
+
     for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
       {
 
@@ -243,7 +239,6 @@ void WCSimWCDigitizer::MakeHitsHistogram(WCSimWCDigitsCollection* WCHCPMT)
 	    {
 	      //triggerhisto[int(floor(tc/5.0))]++;
 	      GateMap[ int(floor(tc/5.0)) ]++;
-	      count ++;
 	    }
 	  }
       }
