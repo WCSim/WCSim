@@ -153,7 +153,7 @@ WCSimWCPMT::WCSimWCPMT(G4String name,
 				   WCSimDetectorConstruction* myDetector)
   :G4VDigitizerModule(name)
 {
-  G4String colName = "WCDigitizedCollectionPMT";
+  G4String colName = "WCRawPMTSignalCollection";
   this->myDetector = myDetector;
   collectionName.push_back(colName);
   DigiHitMapPMT.clear();

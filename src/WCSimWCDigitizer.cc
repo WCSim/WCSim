@@ -61,7 +61,7 @@ void WCSimWCDigitizer::Digitize()
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   
   // Get the PMT collection ID
-  G4int WCHCID = DigiMan->GetDigiCollectionID("WCDigitizedCollectionPMT");
+   G4int WCHCID = DigiMan->GetDigiCollectionID("WCRawPMTSignalCollection");
 
   // Get the PMT Digits collection
   WCSimWCDigitsCollection* WCHCPMT = 
