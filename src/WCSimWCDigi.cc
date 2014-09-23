@@ -1,4 +1,5 @@
 #include "WCSimWCDigi.hh"
+#include "G4RotationMatrix.hh"
 
 G4Allocator<WCSimWCDigi> WCSimWCDigiAllocator;
 
@@ -10,6 +11,7 @@ WCSimWCDigi::WCSimWCDigi()
   //  TriggerTimes.reserve(10);
   pe.clear();
   time.clear();
+  totalPe = 0;
 }
 
 WCSimWCDigi::~WCSimWCDigi(){;}

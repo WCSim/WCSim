@@ -28,11 +28,11 @@ public:
   
 public:
 
-  void AddPMTDarkRate(WCSimWCHitsCollection*);
-  void MakeHitsHistogram(WCSimWCHitsCollection*);
+  void AddPMTDarkRate(WCSimWCDigitsCollection*);
+  void MakeHitsHistogram(WCSimWCDigitsCollection*);
   void FindNumberOfGates();
   void FindNumberOfGatesFast();
-  void DigitizeGate(WCSimWCHitsCollection* WCHC,G4int G);
+  void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
   void Digitize();
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
   void SetConversion(double iconvrate){ ConvRate = iconvrate; }
@@ -47,6 +47,7 @@ public:
 
 private:
   static void Threshold(double& pe,int& iflag){
+    //   CLHEP::HepRandom::setTheSeed(pe+2014);
     double x = pe+0.1; iflag=0;
     double thr; double RDUMMY,err;
     if ( x<1.1) {
@@ -68,7 +69,7 @@ private:
     }
   }
   
-  G4double rn1pe();
+
 
   static const double offset; // hit time offset
   static const double pmtgate; // ns
@@ -85,6 +86,7 @@ private:
   G4float RealOffset;  // t0 = offset corrected for trigger start
   G4float MinTime;  // very first hit time
   G4float PMTSize;
+  G4double peSmeared;
 
   std::vector<G4double> TriggerTimes;
   std::map<G4int, G4int> GateMap;
