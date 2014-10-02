@@ -21,7 +21,12 @@
 
 void WCSimDetectorConstruction::SetSuperKGeometry()
 {
+  if(isHPD==false){
   WCPMTName             ="20inch";
+  }
+  else{
+  WCPMTName             ="20inchHPD";
+  }
   WCPMTRadius           =.254*m;  
   WCPMTExposeHeight     =.18*m; 
   WCIDDiameter          = 33.6815*m; //16.900*2*cos(2*pi*rad/75)*m; //inner detector diameter
@@ -38,7 +43,6 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCAddGd               = false;
 }
 
-
 void WCSimDetectorConstruction::SetHyperKGeometry()
 {
   waterTank_TopR   = 32000.*mm;
@@ -54,7 +58,12 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   innerPMT_BotW     = 11004.*mm;
   innerPMT_Height   = 21095.*mm;
   innerPMT_Radius   = 20. * 25.4*mm / 2.;
+  if(isHPD == false){
   innerPMT_Expose   =   180.*mm;
+  }
+  else{
+  innerPMT_Expose   =   192.*mm;
+  }
   innerPMT_Rpitch   =   990.*mm;
   innerPMT_Apitch   =   990.*mm;
 
@@ -73,8 +82,14 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
 
   // PMT Name specifies behavior
   // Currently the same for inner and outer
+  if(isHPD == false){
   WCPMTName             ="20inch";
   WCPMTGlassThickness   = .55*cm;
+  }
+  else{
+  WCPMTName             ="20inchHPD";
+  WCPMTGlassThickness   = .3*cm;
+  }
 
   innerPMT_TopN = 0;
   innerPMT_BotN = 0;

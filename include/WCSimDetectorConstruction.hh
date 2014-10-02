@@ -57,6 +57,7 @@ public:
 
   // Related to the WC geometry
   void SetSuperKGeometry();
+  void SetSuperKGeometry_withHPD();
   void DUSEL_100kton_10inch_40perCent();
   void DUSEL_100kton_10inch_HQE_12perCent();
   void DUSEL_100kton_10inch_HQE_30perCent();
@@ -99,6 +100,7 @@ public:
 
   //Partition Length
   void SetwaterTank_Length(G4double length){waterTank_Length = length;}
+  void SetWaterTubeLength(G4double length){WCLength = length;}
   // Geometry options
   void   SetIsUpright(G4bool choice) {isUpright = choice;}
 
@@ -111,6 +113,11 @@ public:
 
 
   // *** End HyperK Geometry ***
+
+  // HPD option
+  void   SetIsHPD(G4bool choice) {isHPD = choice;}
+  G4bool GetIsHPD() {return isHPD;}
+
 
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
@@ -294,6 +301,7 @@ private:
                                          G4double, G4double);
 
     G4bool isHyperK;
+    G4bool isHPD;
   
   G4double waterTank_TopR;
   G4double waterTank_BotR;
