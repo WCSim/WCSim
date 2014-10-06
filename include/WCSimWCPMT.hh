@@ -34,7 +34,6 @@ public:
   //  static G4double GetLongTime() { return LongTime;}
   
   G4double rn1pe();
-  G4double hpd1pe_8inch();
   G4double peSmeared;
   // double PMTDarkRate; // kHz
   // double ConvRate; // kHz
