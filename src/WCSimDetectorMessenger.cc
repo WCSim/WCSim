@@ -18,9 +18,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTConfig->SetGuidance("Set the geometry configuration for the WC.");
   PMTConfig->SetGuidance("Available options are:\n"
                           "SuperK\n"
-                          "SuperK_withHPD\n"
                           "HyperK\n"
-                          "HyperK_withHPD\n"
                           "DUSEL_100kton_10inch_40perCent\n"
                           "DUSEL_100kton_10inch_HQE_12perCent\n"
                           "DUSEL_100kton_10inch_HQE_30perCent\n"
@@ -32,9 +30,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
                          );
   PMTConfig->SetParameterName("PMTConfig", false);
   PMTConfig->SetCandidates("SuperK "
-                           "SuperK_withHPD "
                            "HyperK "
-                           "HyperK_withHPD "
                            "DUSEL_100kton_10inch_40perCent "
                            "DUSEL_100kton_10inch_HQE_12perCent "
                            "DUSEL_100kton_10inch_HQE_30perCent "
@@ -112,18 +108,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	if( command == PMTConfig ) { 
 		WCSimDetector->SetIsUpright(false);
                 WCSimDetector->SetIsHyperK(false);
-                WCSimDetector->SetIsHPD(false);
                 if ( newValue == "SuperK") {
-                        WCSimDetector->SetSuperKGeometry();
-                } else if ( newValue == "SuperK_withHPD") {
-			WCSimDetector->SetIsHPD(true);
                         WCSimDetector->SetSuperKGeometry();
                 } else if ( newValue == "HyperK") {
                         WCSimDetector->SetIsHyperK(true);
-			WCSimDetector->SetHyperKGeometry();
-                } else if ( newValue == "HyperK_withHPD") {
-                        WCSimDetector->SetIsHyperK(true);
-                        WCSimDetector->SetIsHPD(true);
 			WCSimDetector->SetHyperKGeometry();
 		} else if(newValue == "DUSEL_100kton_10inch_40perCent") {
 			WCSimDetector->DUSEL_100kton_10inch_40perCent();

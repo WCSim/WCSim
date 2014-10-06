@@ -77,12 +77,6 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag
   
   const G4float TenInch_maxHQE = 0.3396;
   
-  //(Okajima) HQE tubes (Data from EGADS Measurement)
-  const G4float HQE[20] =
-    { 0.00, .0008, .1255, .254962, .2930, .3127, .3130, .2994, .2791, .2491,
-      .2070,  .1758, .1384, .0779, .0473, .0288, .0149, .0062, .0002, .0001};
-  const G4float maxHQE = 0.315;
-
   G4double wavelengthQE = 0;
 
   if (flag == 1){
@@ -93,10 +87,6 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag
 	  wavelengthQE = TenInchHQE[i] + 
 	    (TenInchHQE[i+1]-TenInchHQE[i])/(wavelength[i+1]-wavelength[i])*
 	    (PhotonWavelength - wavelength[i]);
-    }else if(GetPMTName()=="20inchHPD"){  ///////////////Use High QE SK PMT potential (2014/09/25)//////////////////
-      wavelengthQE = HQE[i] +
-        (HQE[i+1]-HQE[i])/(wavelength[i+1]-wavelength[i])*
-        (PhotonWavelength - wavelength[i]);
 	}else if(GetPMTName()=="10inch"){
 	  wavelengthQE = TenInchQE[i] + 
 	    (TenInchQE[i+1]-TenInchQE[i])/(wavelength[i+1]-wavelength[i])*
@@ -113,8 +103,6 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag
   }else if (flag == 0){
     if (GetPMTName()=="10inchHQE"){
       wavelengthQE = TenInch_maxHQE;
-    }else if(GetPMTName()=="20inchHPD"){///////////////Use High QE SK PMT potential (2014/09/25)//////////////////
-      wavelengthQE = maxHQE;
     }else if(GetPMTName()=="10inch"){
       wavelengthQE = TenInch_maxQE;
     }else if(GetPMTName()=="20inch"){
