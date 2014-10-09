@@ -99,6 +99,7 @@ public:
 
   //Partition Length
   void SetwaterTank_Length(G4double length){waterTank_Length = length;}
+  void SetWaterTank_Length(G4double length){WCLength = length;}
   // Geometry options
   void   SetIsUpright(G4bool choice) {isUpright = choice;}
 
