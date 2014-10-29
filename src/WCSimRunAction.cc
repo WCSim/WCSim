@@ -19,6 +19,7 @@
 #include "WCSimRootEvent.hh"
 #include "WCSimRootGeom.hh"
 #include "WCSimPmtInfo.hh"
+#include "skqtfitscat.hh"
 
 #include <vector>
 
@@ -86,6 +87,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
   TBranch *geoBranch = geoTree->Branch("wcsimrootgeom", "WCSimRootGeom", &wcsimrootgeom, bufsize,0);
 
   FillGeoTree();
+  initscattable();
 }
 
 void WCSimRunAction::EndOfRunAction(const G4Run*)
@@ -103,6 +105,8 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 //        << "% through-going (hit Catcher)" << G4endl;
 
   // Close the Root file at the end of the run
+
+  writescattable();
 
   TFile* hfile = WCSimTree->GetCurrentFile();
   hfile->Close();
