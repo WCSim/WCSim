@@ -209,8 +209,6 @@ private:
   G4int PMT_Coll_Eff;
 
 
-  
-
   G4double WCLength;
 
   G4double WCPosition;

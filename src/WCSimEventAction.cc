@@ -35,6 +35,9 @@
 #include "WCSimRootEvent.hh"
 #include "TStopwatch.h"
 
+#include "WCSimOpticalPhotonTrackInfo.hh"
+#include "skqtfitscat.hh"
+
 #define _SAVE_RAW_HITS
 
 WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun, 
@@ -52,10 +55,16 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
 
 WCSimEventAction::~WCSimEventAction(){}
 
-void WCSimEventAction::BeginOfEventAction(const G4Event*){}
+void WCSimEventAction::BeginOfEventAction(const G4Event*){
+   if(WCSimOpticalPhotonTrackInfo::instance()->isEnabled()) 
+    WCSimOpticalPhotonTrackInfo::instance()->reset();
+
+}
 
 void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 {
+  if(WCSimOpticalPhotonTrackInfo::instance()->isEnabled())
+    fillscattable();
 
   // ----------------------------------------------------------------------
   //  Get Particle Table
@@ -133,13 +142,17 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   WCSimWCDigitizer* WCDM =
     (WCSimWCDigitizer*)DMman->FindDigitizerModule("WCReadout");
   
-  //clear old info inside the digitizer
+  // new MFechner, aug 2006
+  // need to clear up the old info inside Digitizer
    WCDM->ReInitialize();
    
    // Figure out what size PMTs we are using in the WC detector.
    G4float PMTSize = detectorConstructor->GetPMTSize();
    WCDM->SetPMTSize(PMTSize);
    
+  // Digitize the hits
+  //  TStopwatch* ms = new TStopwatch();
+  // ms->Start();
    WCDM->Digitize();
    //ms->Stop();
    //std::cout << " Digtization :  Real = " << ms->RealTime() 
@@ -147,23 +160,24 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    
    // Get the digitized collection for the WC
    G4int WCDCID = DMman->GetDigiCollectionID("WCDigitizedCollection");
-   WCSimWCDigitsCollection * WCDC = (WCSimWCDigitsCollection*) DMman->GetDigiCollection(WCDCID);
-
-   /*   
+  WCSimWCDigitsCollection * WCDC = (WCSimWCDigitsCollection*)
+    DMman->GetDigiCollection(WCDCID);
+  
    // To use Do like This:
    // --------------------
-   if(WCDC) 
-     for (G4int i=0; i < WCDC->entries(); i++) 
-       {
-	 G4int   tubeID         = (*WCDC)[i]->GetTubeID();
-	 G4float photoElectrons = (*WCDC)[i]->GetPe(i);
-	 G4float time           = (*WCDC)[i]->GetTime(i);
+   //if(WCDC)
+   //{
+   //  for (G4int i=0; i < WCDC->entries(); i++) 
+   //  {
+	 //G4int   tubeID         = (*WCDC)[i]->GetTubeID();
+	 //G4float photoElectrons = (*WCDC)[i]->GetPe(i);
+	 //G4float time           = (*WCDC)[i]->GetTime(i);
 	 //	 G4cout << "time " << i << " " <<time << G4endl; 
 	 //	 G4cout << "tubeID " << i << " " <<tubeID << G4endl; 
 	 //	 G4cout << "Pe " << i << " " <<photoElectrons << G4endl; 
 	 //   (*WCDC)[i]->Print();
-       }
-   */
+   //  }
+   //}
    
   // ----------------------------------------------------------------------
   //  Fill Ntuple
@@ -454,7 +468,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       pdir[l]=jhfNtuple.pdir[k][l];
       stop[l]=jhfNtuple.stop[k][l];
       start[l]=jhfNtuple.start[k][l];
-	G4cout<< "start[" << k << "][" << l <<"]: "<< jhfNtuple.start[k][l] <<G4endl;
+      //G4cout<< "start[" << k << "][" << l <<"]: "<< jhfNtuple.start[k][l] <<G4endl;
     }
 
     // Add the track to the TClonesArray
@@ -573,7 +587,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	pdir[l]=mom[l];        // momentum-vector 
 	stop[l]=Stop[l]/cm; // stopping point 
 	start[l]=Start[l]/cm; // starting point 
-	G4cout<<"part 2 start["<<l<<"]: "<< start[l] <<G4endl;
+	//G4cout<<"part 2 start["<<l<<"]: "<< start[l] <<G4endl;
       }
 
 
@@ -692,8 +706,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	      wcsimrootevent->SetSumQ(sumq_tmp);
 	    }
 	  }
-	/*
-		G4cout << "checking digi hits ...\n";
+	
+	/*	G4cout << "checking digi hits ...\n";
 	  G4cout << "hits collection size =  " << 
 	  wcsimrootevent->GetCherenkovHits()->GetEntries() << "\n";
 	  G4cout << "hits collection size =  " << 

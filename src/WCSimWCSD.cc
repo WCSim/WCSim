@@ -12,6 +12,7 @@
 
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimTrackInformation.hh"
+#include "WCSimOpticalPhotonTrackInfo.hh"
 
 WCSimWCSD::WCSimWCSD(G4String name,WCSimDetectorConstruction* myDet)
 :G4VSensitiveDetector(name)
@@ -150,7 +151,6 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   // Get the tube ID from the tubeTag
   G4int replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
 
-    
   G4float collection_angle[10]={0,10,20,30,40,50,60,70,80,90};
   G4float collection_eff[10]={100,100,99,95,90,85,80,69,35,13};
   
@@ -177,6 +177,63 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   if (G4UniformRand() <= photonQE){
     
+    // this pmt was hit so save pmtnumber for this photon in photon information singleton
+     WCSimOpticalPhotonTrackInfo* opphotonInfo = WCSimOpticalPhotonTrackInfo::instance();
+     if(opphotonInfo->isEnabled()){
+     int tridx = opphotonInfo->IdExists( aStep->GetTrack()->GetTrackID() );
+
+     if (tridx < 0 ){ 
+ //      opphotonInfo->Print();
+       std::cout<<"Warning tridx<0, WCSimWCSD trackid="<< aStep->GetTrack()->GetTrackID()
+	       <<" step "<< aStep->GetTrack()->GetCurrentStepNumber()
+	       <<" particledef= "<<aStep->GetTrack()->GetParticleDefinition()->GetParticleName()
+	       <<" parent="<<aStep->GetTrack()->GetParentID()
+	       <<" pos=("<<aStep->GetTrack()->GetVertexPosition().x()
+	        <<", "<<aStep->GetTrack()->GetVertexPosition().y()   
+	        <<", "<<aStep->GetTrack()->GetVertexPosition().z()<<") "
+	       <<" dir=("<<aStep->GetTrack()->GetVertexMomentumDirection().x()
+	        <<", "<<aStep->GetTrack()->GetVertexMomentumDirection().y()   
+	        <<", "<<aStep->GetTrack()->GetVertexMomentumDirection().z()<<") "	        
+      <<std::endl; 
+        std::cout<<"<WCSimWCSD> Calling UserStepAction manually for out of order photon "<<std::endl;
+        opphotonInfo->UserSteppingAction( aStep );
+        tridx = opphotonInfo->IdExists( aStep->GetTrack()->GetTrackID() );
+         if (tridx < 0 ){ 
+                    opphotonInfo->Print(); 
+           std::cout<<"Warning tridx STILL < 0, WCSimWCSD trackid="<< aStep->GetTrack()->GetTrackID()
+	       <<" step "<< aStep->GetTrack()->GetCurrentStepNumber()
+	       <<" particledef= "<<aStep->GetTrack()->GetParticleDefinition()->GetParticleName()
+	       <<" parent="<<aStep->GetTrack()->GetParentID()
+	       <<" pos=("<<aStep->GetTrack()->GetVertexPosition().x()
+	        <<", "<<aStep->GetTrack()->GetVertexPosition().y()   
+	        <<", "<<aStep->GetTrack()->GetVertexPosition().z()<<") "
+	       <<" dir=("<<aStep->GetTrack()->GetVertexMomentumDirection().x()
+	        <<", "<<aStep->GetTrack()->GetVertexMomentumDirection().y()   
+	        <<", "<<aStep->GetTrack()->GetVertexMomentumDirection().z()<<") "	     
+           <<std::endl;
+           }
+}
+        
+        
+ 
+     if ( tridx >= 0 ){
+       opphotonInfo->setPMTId( tridx, replicaNumber );
+       opphotonInfo->setPMTPos( tridx, worldPosition );
+       G4ThreeVector iniOpDir = opphotonInfo->getOpDir()[tridx];
+       double theta = iniOpDir.theta(aStep->GetTrack()->GetVertexMomentumDirection());
+       if(std::abs<double>(theta) > 1.0e-6 && opphotonInfo->getIstory()[tridx] != 0){
+          std::cout<<"Photon direction changed without any reflections or scatters! Theta is "<<theta<<std::endl;
+          opphotonInfo->incOther(tridx);
+        }
+       // std::cout<<"WCSimWCSD trackid="<< aStep->GetTrack()->GetTrackID()
+       // 	       <<" step "<< aStep->GetTrack()->GetCurrentStepNumber()
+       // 	       <<" particledef= "<<aStep->GetTrack()->GetParticleDefinition()->GetParticleName()
+       // 	       <<" parent="<<aStep->GetTrack()->GetParentID()
+       // 		<<" PMTid="<<replicaNumber
+       // 		<<" Istory="<< opphotonInfo->getIstory()[ tridx ]
+       // 	       <<std::endl; 
+     }
+    }
      G4double local_x = localPosition.x();
      G4double local_y = localPosition.y();
      G4double local_z = localPosition.z();

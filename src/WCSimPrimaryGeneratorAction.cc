@@ -133,6 +133,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    vtx = G4ThreeVector(atof(token[1])*cm,
 				atof(token[2])*cm,
 				atof(token[3])*cm);
+	    std::cout<<"Vertex at "<<vtx.x()<<", "<<vtx.y()<<", "<<vtx.z()<<std::endl;
 	    
             // true : Generate vertex in Rock , false : Generate vertex in WC tank
             SetGenerateVertexInRock(false);

@@ -12,6 +12,15 @@
 #include "G4PVReplica.hh"
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
+#include "skqtfitscat.hh"
+#include "G4ParticleTypes.hh"
+#include "WCSimOpticalPhotonTrackInfo.hh"
+#include "G4VPhysicalVolume.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4OpBoundaryProcess.hh"
+#include "G4Event.hh"
+#include "G4StepPoint.hh"
+
 
 
 void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
@@ -38,6 +47,9 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 //  std::flush << G4endl;
 //  }
   
+  WCSimOpticalPhotonTrackInfo* trackInfo = WCSimOpticalPhotonTrackInfo::instance();
+  // for each optical photon, record the intial position
+  trackInfo->UserSteppingAction( aStep );
 }
 
 
