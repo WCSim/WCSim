@@ -96,7 +96,7 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
     // 
     // Added by: Morgan Askins (maskins@ucdavis.edu)
 
-    const G4int number_entries = WCHCPMT->entries();
+    G4int number_entries = WCHCPMT->entries();
     const G4int number_pmts = myDetector->GetTotalNumPmts();
     int *PMTindex = new int [number_pmts+1];
     //   int PMTindex[number_pmts];
@@ -122,11 +122,11 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
         return;
 
     std::vector<int> list;
-    list.assign( number_pmts, 0 );
+    list.assign( number_pmts+1, 0 );
 
     for( int h = 0; h < number_entries; h++ )
       {
-        list[(*WCHCPMT)[h]->GetTubeID()-1] = h+1;
+        list[(*WCHCPMT)[h]->GetTubeID()] = h+1; //Make a list of hit PMTs with the TubeID as the index and the value of the array equal to the position in the WCHCPMT + 1. This is used to check if a PMT has been hit and, if so, to add the hit to the proper index of WCHCPMT. 
     }
 
     // Add noise to PMT's here, do so for time < LongTime
@@ -155,7 +155,7 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 	    if ( current_time >= TriggerTimes[i] + (eventgateup - eventgatedown ) )
 	      break;
 
-	    if( list[ noise_pmt ] == 0 )
+	    if( list[ noise_pmt ] == 0 ) // This PMT has not been hit
 	    {
 	      //	      WCSimWCHit* ahit = new WCSimWCHit();
 	      WCSimWCDigi* ahit = new WCSimWCDigi();
@@ -188,12 +188,14 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 	      ahit->SetTime(PMTindex[noise_pmt],current_time);
 	      pe = WCPMT->rn1pe();
 	      ahit->SetPe(PMTindex[noise_pmt],pe);
+	      ahit->AddPe(current_time); // needed to increment TotalPe
 	      WCHCPMT->insert(ahit);
-	      PMTindex[noise_pmt]++;
-	      list[ noise_pmt ] = WCHCPMT->entries();
+	      PMTindex[noise_pmt]++; // increment number of times a PMT has been hit
+	      list[ noise_pmt ] = number_entries; // Add this PMT to the end of the list
+	      number_entries ++; //increment the number of hit PMTs
 	    }
 	    else{
-	      (*WCHCPMT)[ list[noise_pmt]-1 ]->AddPe(current_time);
+	      (*WCHCPMT)[ list[noise_pmt]-1 ]->AddPe(current_time); //The WCHCPMT list runs from 0 to (number of PMTs)-1
 	      (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTubeID(noise_pmt);
 	      pe = WCPMT->rn1pe();
 	      (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPe(PMTindex[noise_pmt],pe);
