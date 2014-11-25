@@ -191,8 +191,9 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 	      ahit->AddPe(current_time); // needed to increment TotalPe
 	      WCHCPMT->insert(ahit);
 	      PMTindex[noise_pmt]++; // increment number of times a PMT has been hit
-	      list[ noise_pmt ] = number_entries; // Add this PMT to the end of the list
 	      number_entries ++; //increment the number of hit PMTs
+	      list[ noise_pmt ] = number_entries; // Add this PMT to the end of the list
+
 	    }
 	    else{
 	      (*WCHCPMT)[ list[noise_pmt]-1 ]->AddPe(current_time); //The WCHCPMT list runs from 0 to (number of PMTs)-1
