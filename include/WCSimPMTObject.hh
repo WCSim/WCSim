@@ -19,6 +19,7 @@ public:
   virtual G4float* GetQE()=0;
   virtual G4float* GetQEWavelength()=0;
   virtual G4float  GetmaxQE()=0;
+  virtual G4float  GettimingConstant()=0;
 };
 
 
@@ -38,6 +39,7 @@ public:
   G4float* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
+  G4float  GettimingConstant();
   
   
 };
@@ -58,6 +60,7 @@ public:
   G4float* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
+  G4float  GettimingConstant();
 };
 
  class PMT10inch : public WCSimPMTObject
@@ -68,13 +71,14 @@ public:
   ~PMT10inch();
  
 public:
-G4String GetPMTName(); 
-G4double GetExposeHeight(); 
-G4double GetRadius(); 
+  G4String GetPMTName(); 
+  G4double GetExposeHeight(); 
+  G4double GetRadius(); 
   G4float* Getqpe();
   G4float* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
+  G4float  GettimingConstant();
  };
 
  class PMT10inchHQE : public WCSimPMTObject
@@ -92,6 +96,7 @@ G4double GetRadius();
   G4float* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
+  G4float  GettimingConstant();
  };
 
  class PMT12inchHQE : public WCSimPMTObject
@@ -109,6 +114,7 @@ G4double GetRadius();
   G4float* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
+  G4float  GettimingConstant();
  };
 
 #endif

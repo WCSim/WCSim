@@ -27,6 +27,7 @@ PMT20inch::~PMT20inch(){}
 G4String PMT20inch::GetPMTName() {G4String PMTName = "20inch"; return PMTName;}
 G4double PMT20inch::GetExposeHeight() {return .18*m;}
 G4double PMT20inch::GetRadius() {return .254*m;}
+G4float PMT20inch::GettimingConstant() {return 10.0;}
 
 G4float* PMT20inch::Getqpe()
    {
@@ -169,6 +170,7 @@ PMT8inch::~PMT8inch(){}
 G4String PMT8inch::GetPMTName() {G4String PMTName = "8inch"; return PMTName;}
 G4double PMT8inch::GetExposeHeight() {return 91.6*mm;}
 G4double PMT8inch::GetRadius() {return 101.6*mm;}
+G4float PMT8inch::GettimingConstant() {return 1.890;}
 
 G4float* PMT8inch::Getqpe() //currently uses the same as 20inch
    {
@@ -309,7 +311,7 @@ PMT10inch::~PMT10inch(){}
 G4String PMT10inch::GetPMTName() {G4String PMTName = "10inch"; return PMTName;}
 G4double PMT10inch::GetExposeHeight() {return 117.*mm;}
 G4double PMT10inch::GetRadius() {return 127.*mm;}
-
+G4float PMT10inch::GettimingConstant() {return 2.0;}
 
 G4float* PMT10inch::Getqpe() //currently uses the same as 20inch
    {
@@ -451,7 +453,7 @@ PMT10inchHQE::~PMT10inchHQE(){}
 G4String PMT10inchHQE::GetPMTName() {G4String PMTName = "10inch"; return PMTName;}
 G4double PMT10inchHQE::GetExposeHeight() {return 117.*mm;}
 G4double PMT10inchHQE::GetRadius() {return 127.*mm;}
-
+G4float PMT10inchHQE::GettimingConstant() {return 2.0;}
 
 G4float* PMT10inchHQE::Getqpe() //currently uses the same as 20inch
    {
@@ -593,7 +595,7 @@ PMT12inchHQE::~PMT12inchHQE(){}
 G4String PMT12inchHQE::GetPMTName() {G4String PMTName = "12inch"; return PMTName;}
 G4double PMT12inchHQE::GetExposeHeight() {return 118.*mm;}
 G4double PMT12inchHQE::GetRadius() {return 152.4*mm;}
-
+G4float PMT12inchHQE::GettimingConstant() {return 2.0;}
 
 G4float* PMT12inchHQE::Getqpe() //currently uses the same as 20inch
    {
