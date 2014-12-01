@@ -2,6 +2,7 @@
 #define WCSimDetectorConstruction_H 1
 
 #include "WCSimPmtInfo.hh"
+#include "WCSimPMTObject.hh"
 
 #include "G4Transform3D.hh"
 #include "G4VUserDetectorConstruction.hh"
@@ -83,6 +84,10 @@ public:
   G4double GetPMTSize1() {return WCPMTSize;}
 
   G4float GetPMTQE(G4float, G4int, G4float, G4float, G4float);
+  
+  WCSimPMTObject *  PMTptr;
+  void    SetPMTPointer(WCSimPMTObject* PMT) {PMTptr = PMT;} //currently you can only save one PMT here. When we move to multiple PMTs as a future upgrade, this can be changed to an array of PMT pointers.
+  WCSimPMTObject*  GetPMTPointer(){return PMTptr;}
 
   G4ThreeVector GetWCOffset(){return WCOffset;}
   
