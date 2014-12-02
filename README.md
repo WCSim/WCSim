@@ -1,3 +1,5 @@
+## Welcome to WCSim
+
 WCSim is a very flexible GEANT4 based program for developing and
 simulating large water Cherenkov detectors.
 
@@ -19,8 +21,7 @@ https://lists.phy.duke.edu/mailman/listinfo/wcsim-git
 
 You can follow issues/requests etc by watching the GitHub respository.
 
-Current notes and how to build:
----------------------------------
+## Current notes and how to build
 
 Build Instructions:
 
@@ -37,21 +38,20 @@ make
 If you want to use these libraries with an external program then also do:
 
 make shared      [ For root programs]
+
 make libWCSim.a  [ Also necessary for the event display?]
 
 More detailed information about the simulation is available in
 doc/DetectorDocumentation.pdf.
 
-####################################################################
-Color Convention for visualization
-Added in the WCSimVismanager.cc
--------------------------------------------------------------------
-gamma green
-neutrino yellow
-electron blue
-muon-   black
-positron red
-muon+ white
-proton magneta
-neutron grey
-####################################################################
+## Color Convention for visualization in the WCSimVismanager.cc
+
+* gamma = green
+* neutrino = yellow
+* electron = blue
+* muon = black
+* positron = red
+* muon+ = white
+* proton = magneta
+* neutron = grey
+
