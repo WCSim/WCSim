@@ -33,7 +33,7 @@ requirements.  The code should work with gcc 4.3.
 To compile: 
 * make clean 
 * make rootcint
-* make <br />
+* make
 
 If you want to use these libraries with an external program then also do:
 * make shared      [ For root programs]
