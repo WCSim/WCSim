@@ -30,21 +30,19 @@ You should have a recent and working version of ROOT and GEANT4.
 data files including hadron xsecs etc.  Those are the only
 requirements.  The code should work with gcc 4.3.
 
-To compile:
-make clean
-make rootcint
-make
+To compile: 
+* make clean 
+* make rootcint
+* make <br />
 
 If you want to use these libraries with an external program then also do:
-
-make shared      [ For root programs]
-
-make libWCSim.a  [ Also necessary for the event display?]
+* make shared      [ For root programs]
+* make libWCSim.a  [ Also necessary for the event display?]
 
 More detailed information about the simulation is available in
 doc/DetectorDocumentation.pdf.
 
-## Color Convention for visualization in the WCSimVismanager.cc
+## Color Convention for visualization used in WCSimVismanager.cc
 
 * gamma = green
 * neutrino = yellow
