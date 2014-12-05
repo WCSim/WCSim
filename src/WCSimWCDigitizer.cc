@@ -150,7 +150,8 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
             // Now add that hit to a random PMT ( Here we assume all PMT's are
             // equivelent. If that changes the following line would be replaced
             // by a random number with a weight factor.
-	    int noise_pmt = static_cast<int>( G4UniformRand() * number_pmts );
+	    int noise_pmt = static_cast<int>( G4UniformRand() * number_pmts ); // This runs from 0 to number_pmts-1.
+	    noise_pmt = noise_pmt+1; //increment by 1 so it can be used as tubeID. Now runs from 1 to number_pmts.
 
 	    if ( current_time >= TriggerTimes[i] + (eventgateup - eventgatedown ) )
 	      break;
@@ -159,7 +160,6 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 	    {
 	      //	      WCSimWCHit* ahit = new WCSimWCHit();
 	      WCSimWCDigi* ahit = new WCSimWCDigi();
-
 	      ahit->SetTubeID( noise_pmt );
 	      // This Logical volume is GlassFaceWCPMT
 	      ahit->SetLogicalVolume((*WCHCPMT)[0]->GetLogicalVolume());
@@ -172,7 +172,7 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 	      // TODO: need to change the format of hit_pos to G4ThreeVector
 	      // and change hit_rot to G4RotationMatrix
 
-	      WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( noise_pmt );
+	      WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( noise_pmt-1 ); //must be -1 to return the geometry info for tubeID of noise_pmt.
 	      hit_pos[0] = 10*pmtinfo->Get_transx();
 	      hit_pos[1] = 10*pmtinfo->Get_transy();
 	      hit_pos[2] = 10*pmtinfo->Get_transz();
@@ -196,7 +196,7 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 
 	    }
 	    else{
-	      (*WCHCPMT)[ list[noise_pmt]-1 ]->AddPe(current_time); //The WCHCPMT list runs from 0 to (number of PMTs)-1
+	      (*WCHCPMT)[ list[noise_pmt]-1 ]->AddPe(current_time); //The WCHCPMT list runs from 0 to number_pmts-1
 	      (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTubeID(noise_pmt);
 	      pe = WCPMT->rn1pe();
 	      (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPe(PMTindex[noise_pmt],pe);
