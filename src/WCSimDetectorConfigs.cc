@@ -66,7 +66,6 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCSimPMTObject* outerPMT = new PMT8inch; //currently doesn't store the pointer to this PMT. If we want to read the qpe or QE for the OD in the future, this will need to be stored.
   outerPMT_Expose = outerPMT->GetExposeHeight();
   outerPMT_Radius = outerPMT->GetRadius();
-  WCPMTName = outerPMT->GetPMTName();
   outerPMT_TopR      = innerPMT_TopR + 900.*mm;
   outerPMT_BotR      = innerPMT_BotR + 900.*mm;
   outerPMT_TopW      = 12394.*mm;
