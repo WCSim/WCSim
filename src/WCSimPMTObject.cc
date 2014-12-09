@@ -27,6 +27,7 @@ PMT20inch::~PMT20inch(){}
 G4String PMT20inch::GetPMTName() {G4String PMTName = "20inch"; return PMTName;}
 G4double PMT20inch::GetExposeHeight() {return .18*m;}
 G4double PMT20inch::GetRadius() {return .254*m;}
+G4double PMT20inch::GetPMTGlassThickness() {return 0.4*cm;}
 float PMT20inch::GettimingResolution(float Q) {
   float timingConstant = 10.0; 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
@@ -176,6 +177,7 @@ PMT8inch::~PMT8inch(){}
 G4String PMT8inch::GetPMTName() {G4String PMTName = "8inch"; return PMTName;}
 G4double PMT8inch::GetExposeHeight() {return 91.6*mm;}
 G4double PMT8inch::GetRadius() {return 101.6*mm;}
+G4double PMT8inch::GetPMTGlassThickness() {return 0.55*cm;} //currently the same as 10inch
 G4float PMT8inch::GettimingResolution(float Q) { 
   float timingConstant = 1.890; 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
@@ -322,6 +324,7 @@ PMT10inch::~PMT10inch(){}
 G4String PMT10inch::GetPMTName() {G4String PMTName = "10inch"; return PMTName;}
 G4double PMT10inch::GetExposeHeight() {return 117.*mm;}
 G4double PMT10inch::GetRadius() {return 127.*mm;}
+G4double PMT10inch::GetPMTGlassThickness() {return 0.55*cm;}
 float PMT10inch::GettimingResolution(float Q) { 
   float timingConstant = 2.0; 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
@@ -470,6 +473,7 @@ PMT10inchHQE::~PMT10inchHQE(){}
 G4String PMT10inchHQE::GetPMTName() {G4String PMTName = "10inch"; return PMTName;}
 G4double PMT10inchHQE::GetExposeHeight() {return 117.*mm;}
 G4double PMT10inchHQE::GetRadius() {return 127.*mm;}
+G4double PMT10inchHQE::GetPMTGlassThickness() {return 0.55*cm;}
 G4float PMT10inchHQE::GettimingResolution(float Q) {
   float timingConstant = 2.0; 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
@@ -617,6 +621,7 @@ PMT12inchHQE::~PMT12inchHQE(){}
 G4String PMT12inchHQE::GetPMTName() {G4String PMTName = "12inch"; return PMTName;}
 G4double PMT12inchHQE::GetExposeHeight() {return 118.*mm;}
 G4double PMT12inchHQE::GetRadius() {return 152.4*mm;}
+G4double PMT12inchHQE::GetPMTGlassThickness() {return 0.55*cm;}
 G4float PMT12inchHQE::GettimingResolution(float Q) {
   float timingConstant = 2.0; 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
