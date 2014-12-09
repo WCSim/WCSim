@@ -343,28 +343,9 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 {
 
   G4float timingConstant = 0.0;
+  WCSimPMTObject * PMT;
+  PMT = myDetector->GetPMTPointer();
  
-  if (round(PMTSize) == 0.254*m)      // 20 inch tube
-    //timingConstant = 3.0;      // sqrt(3.0ns) @1pe + 1ns = 2.7 ns
-    // M Fechner : essai    //      timingConstant = 8.3885;
-
-    timingConstant = 10.0;  //actual value is 13 nanoseconds
-
-  else if (round(PMTSize) == 0.1016*m) // 8 inch tube
-    //      timingConstant = .58;      // sqrt(.58ns) @1pe + 1ns = 1.76 ns
-    timingConstant = 1.890; // same scaling, M Fechner
-  else if (round(PMTSize) == 0.127*m) //10 inch tube
-    timingConstant = 2.0; // (JF) Need real value
-  else if (round(PMTSize) == round(0.1524*m)) //12 inch tube
-    timingConstant = 2.0;// (JF) Need the real value
-  else
-    {
-      G4cout << "Sorry.  Resolution for " << PMTSize/cm
-	     << "cm PMTs is unknown.  Exiting program. "
-	     << G4endl;
-      exit(-1);
-    }
-
   G4double EvtG8Down = WCSimWCDigitizer::eventgatedown;
   G4double EvtG8Up = WCSimWCDigitizer::eventgateup;  // this is a negative number...
 
@@ -441,10 +422,8 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 	  // MF : found 'by hand', fits SK PMT resolution (2002 values ?)
 	  // Add cutoffs
 	  float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
-	  float timingResolution = 0.33 + sqrt(timingConstant/Q);
-	  // looking at SK's jitter function for 20" tubes
-	  if (timingResolution < 0.58) timingResolution=0.58;
-
+	  float timingResolution = PMT->GettimingResolution(Q);
+	  
 	  G4double digihittime = -TriggerTimes[G]
 	    + WCSimWCDigitizer::offset
 	    + firstHitTime
