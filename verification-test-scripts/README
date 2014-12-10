@@ -10,4 +10,4 @@ To use this test, the default method is to clone a copy of the current code from
 
 You can also use this test to compare any two files from any two directories. To use the script this way type:
 root 
-.x verification_HitsChargeTime.C("name_of_first_file", "name_of_second_file")
+.x verification_HitsChargeTime.C("/path/to/first_file", "/path/to/second_file")
