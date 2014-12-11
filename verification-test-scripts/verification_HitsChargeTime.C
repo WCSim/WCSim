@@ -51,8 +51,8 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
   TFile *f;
   // Open the file
   if (filename==NULL){
-    f = new TFile("../wcsim.root","read");
-    filename = "../wcsim.root";
+    f = new TFile("wcsimtest.root","read");
+    filename = "wcsimtest.root";
   }else{
     f = new TFile(filename,"read");
   }
@@ -64,8 +64,8 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
   TFile *f2;
   // Open the file
   if (filename2==NULL){
-    f2 = new TFile("../../WCSim_clean/wcsim.root","read");
-    filename2 = "../../WCSim_clean/wcsim.root";
+    f2 = new TFile("../../WCSim_clean/verification-test-scripts/wcsimtest.root","read");
+    filename2 = "../../WCSim_clean/verification-test-scripts/wcsimtest.root";
   }else{
     f2 = new TFile(filename2,"read");
   }
