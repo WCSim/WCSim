@@ -140,7 +140,7 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
    
     for( int i = 0; i < TriggerTimes.size(); i++ )
     {
-        current_time = TriggerTimes[i];
+        current_time = TriggerTimes[i]+eventgatedown;
 
 	while( current_time < TriggerTimes[i] + (eventgateup - eventgatedown) )
         {
