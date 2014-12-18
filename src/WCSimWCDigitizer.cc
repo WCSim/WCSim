@@ -142,7 +142,7 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
     {
         current_time = TriggerTimes[i]+eventgatedown;
 
-	while( current_time < TriggerTimes[i] + (eventgateup - eventgatedown) )
+	while( current_time < TriggerTimes[i] + eventgateup )
         {
             // Get random time ahead for this poisson process
             current_time += -poisson_mean*log( 1-G4UniformRand() );
@@ -153,7 +153,7 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 	    int noise_pmt = static_cast<int>( G4UniformRand() * number_pmts ); // This runs from 0 to number_pmts-1.
 	    noise_pmt = noise_pmt+1; //increment by 1 so it can be used as tubeID. Now runs from 1 to number_pmts.
 
-	    if ( current_time >= TriggerTimes[i] + (eventgateup - eventgatedown ) )
+	    if ( current_time >= TriggerTimes[i] + eventgateup )
 	      break;
 
 	    if( list[ noise_pmt ] == 0 ) // This PMT has not been hit
