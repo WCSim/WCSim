@@ -404,7 +404,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
       int iflag;
 
       //check if hits in PMT are above threshold
-      WCSimWCDigitizer::Threshold(peSmeared,iflag);
+      PMT->Threshold(peSmeared,iflag);
       peSmeared *= efficiency; // MC tuning correction
     
    

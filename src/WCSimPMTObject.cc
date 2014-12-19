@@ -35,6 +35,30 @@ float PMT20inch::GettimingResolution(float Q) {
   if (timingResolution < 0.58) timingResolution=0.58;
   return timingResolution;
 }
+void PMT20inch::Threshold(double& pe,int& iflag){
+  //   CLHEP::HepRandom::setTheSeed(pe+2014);
+
+  double x = pe+0.1; iflag=0;
+  double thr; double RDUMMY,err;
+  if ( x<1.1) {
+    thr = std::min(1.0,
+		   -0.06374+x*(3.748+x*(-63.23+x*(452.0+x*(-1449.0+x*(2513.0
+								      +x*(-2529.+x*(1472.0+x*(-452.2+x*(51.34+x*2.370))))))))));
+  } else {
+    thr = 1.0;
+  }
+  RDUMMY = G4UniformRand();
+  if (thr < RDUMMY) {
+    pe = 0.0;
+    iflag = 1;
+  }
+  else {
+    err = G4RandGauss::shoot(0.0,0.03);
+    /////      call rngaus(0.0, 0.03, err);                                                                                                                                               
+    pe = pe+err;
+  }
+}
+
 
 G4float* PMT20inch::Getqpe()
    {
@@ -184,6 +208,30 @@ G4float PMT8inch::GettimingResolution(float Q) {
   // looking at SK's jitter function for 20" tubes
   if (timingResolution < 0.58) timingResolution=0.58;
   return timingResolution;}
+void PMT8inch::Threshold(double& pe,int& iflag){
+  //   CLHEP::HepRandom::setTheSeed(pe+2014); 
+
+  double x = pe+0.1; iflag=0;
+  double thr; double RDUMMY,err;
+  if ( x<1.1) {
+    thr = std::min(1.0,
+                   -0.06374+x*(3.748+x*(-63.23+x*(452.0+x*(-1449.0+x*(2513.0
+                                                                      +x*(-2529.+x*(1472.0+x*(-452.2+x*(51.34+x*2.370))))))))));
+  } else {
+    thr = 1.0;
+  }
+  RDUMMY = G4UniformRand();
+  if (thr < RDUMMY) {
+    pe = 0.0;
+    iflag = 1;
+  }
+  else {
+    err = G4RandGauss::shoot(0.0,0.03);
+    /////      call rngaus(0.0, 0.03, err); 
+
+    pe = pe+err;
+  }
+}
 
 G4float* PMT8inch::Getqpe() //currently uses the same as 20inch
    {
@@ -331,6 +379,29 @@ float PMT10inch::GettimingResolution(float Q) {
   // looking at SK's jitter function for 20" tubes
   if (timingResolution < 0.58) timingResolution=0.58;
   return timingResolution;           
+}
+void PMT10inch::Threshold(double& pe,int& iflag){
+  //   CLHEP::HepRandom::setTheSeed(pe+2014);                                                                                                        \
+                                                                                                                                                      
+  double x = pe+0.1; iflag=0;
+  double thr; double RDUMMY,err;
+  if ( x<1.1) {
+    thr = std::min(1.0,
+                   -0.06374+x*(3.748+x*(-63.23+x*(452.0+x*(-1449.0+x*(2513.0
+                                                                      +x*(-2529.+x*(1472.0+x*(-452.2+x*(51.34+x*2.370))))))))));
+  } else {
+    thr = 1.0;
+  }
+  RDUMMY = G4UniformRand();
+  if (thr < RDUMMY) {
+    pe = 0.0;
+    iflag = 1;
+  }
+  else {
+    err = G4RandGauss::shoot(0.0,0.03);
+    /////      call rngaus(0.0, 0.03, err);
+    pe = pe+err;
+  }
 }
 
 G4float* PMT10inch::Getqpe() //currently uses the same as 20inch
@@ -480,6 +551,29 @@ G4float PMT10inchHQE::GettimingResolution(float Q) {
   // looking at SK's jitter function for 20" tubes
   if (timingResolution < 0.58) timingResolution=0.58;
   return timingResolution;}
+void PMT10inchHQE::Threshold(double& pe,int& iflag){
+  //   CLHEP::HepRandom::setTheSeed(pe+2014);
+
+  double x = pe+0.1; iflag=0;
+  double thr; double RDUMMY,err;
+  if ( x<1.1) {
+    thr = std::min(1.0,
+                   -0.06374+x*(3.748+x*(-63.23+x*(452.0+x*(-1449.0+x*(2513.0
+                                                                      +x*(-2529.+x*(1472.0+x*(-452.2+x*(51.34+x*2.370))))))))));
+  } else {
+    thr = 1.0;
+  }
+  RDUMMY = G4UniformRand();
+  if (thr < RDUMMY) {
+    pe = 0.0;
+    iflag = 1;
+  }
+  else {
+    err = G4RandGauss::shoot(0.0,0.03);
+    /////      call rngaus(0.0, 0.03, err);
+    pe = pe+err;
+  }
+}
 
 G4float* PMT10inchHQE::Getqpe() //currently uses the same as 20inch
    {
@@ -628,6 +722,29 @@ G4float PMT12inchHQE::GettimingResolution(float Q) {
   // looking at SK's jitter function for 20" tubes
   if (timingResolution < 0.58) timingResolution=0.58;
   return timingResolution;}
+void PMT12inchHQE::Threshold(double& pe,int& iflag){
+  //   CLHEP::HepRandom::setTheSeed(pe+2014);
+
+  double x = pe+0.1; iflag=0;
+  double thr; double RDUMMY,err;
+  if ( x<1.1) {
+    thr = std::min(1.0,
+                   -0.06374+x*(3.748+x*(-63.23+x*(452.0+x*(-1449.0+x*(2513.0
+                                                                      +x*(-2529.+x*(1472.0+x*(-452.2+x*(51.34+x*2.370))))))))));
+  } else {
+    thr = 1.0;
+  }
+  RDUMMY = G4UniformRand();
+  if (thr < RDUMMY) {
+    pe = 0.0;
+    iflag = 1;
+  }
+  else {
+    err = G4RandGauss::shoot(0.0,0.03);
+    /////      call rngaus(0.0, 0.03, err);
+    pe = pe+err;
+  }
+}
 
 G4float* PMT12inchHQE::Getqpe() //currently uses the same as 20inch
    {
