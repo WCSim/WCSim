@@ -20,6 +20,7 @@ public:
   virtual G4float* GetQEWavelength()=0;
   virtual G4float  GetmaxQE()=0;
   virtual float  GettimingResolution(float)=0;
+  virtual void  Threshold(double&, int&){};
   virtual G4double GetPMTGlassThickness()=0;
 };
 
@@ -41,6 +42,7 @@ public:
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
   float  GettimingResolution(float);
+  void  Threshold(double&, int&);
   G4double GetPMTGlassThickness();
 };
 
@@ -61,6 +63,7 @@ public:
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
   float  GettimingResolution(float);
+  void  Threshold(double&, int&);
   G4double GetPMTGlassThickness();
 };
 
@@ -80,6 +83,7 @@ public:
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
   float  GettimingResolution(float);
+  void  Threshold(double&, int&);
   G4double GetPMTGlassThickness();
  };
 
@@ -99,6 +103,7 @@ public:
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
   float  GettimingResolution(float);
+  void  Threshold(double&, int&);
   G4double GetPMTGlassThickness();
  };
 
@@ -118,13 +123,8 @@ public:
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
   float  GettimingResolution(float);
+  void  Threshold(double&, int&);
   G4double GetPMTGlassThickness();
  };
 
 #endif
-
-
-
-
-
-
