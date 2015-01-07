@@ -103,13 +103,14 @@ void WCSimDetectorConstruction::UpdateGeometry()
  
  }
 
+
+
 WCSimDetectorConstruction::~WCSimDetectorConstruction(){
   for (int i=0;i<fpmts.size();i++){
     delete fpmts.at(i);
   }
   fpmts.clear();
 }
-
 
 G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 {  
@@ -215,4 +216,29 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   
   // Return the pointer to the physical experimental hall
   return physiExpHall;
+}
+
+void WCSimDetectorConstruction::CreatePMTObject(G4String PMTType)
+{
+  if (PMTType == "PMT20inch"){
+     WCSimPMTObject* PMT = new PMT20inch;
+      WCSimDetectorConstruction::SetPMTPointer(PMT);
+  }
+  else if (PMTType == "PMT8inch"){
+    WCSimPMTObject* PMT = new PMT8inch;
+    WCSimDetectorConstruction::SetPMTPointer(PMT);
+  }
+  else if (PMTType == "PMT10inch"){
+    WCSimPMTObject* PMT = new PMT10inch;
+    WCSimDetectorConstruction::SetPMTPointer(PMT);
+  }
+  else if (PMTType == "PMT10inchHQE"){
+    WCSimPMTObject* PMT = new PMT10inchHQE;
+    WCSimDetectorConstruction::SetPMTPointer(PMT);
+  }
+  else if (PMTType == "PMT12inchHQE"){
+    WCSimPMTObject* PMT = new PMT12inchHQE;
+    WCSimDetectorConstruction::SetPMTPointer(PMT);
+  }
+  else { G4cout << "Not a recognized PMT Type" << G4endl;}
 }
