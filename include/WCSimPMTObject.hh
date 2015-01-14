@@ -121,10 +121,24 @@ public:
   G4double GetPMTGlassThickness();
  };
 
+class HPD20inchHQE : public WCSimPMTObject
+{
+
+public:
+  
+  HPD20inchHQE();
+  ~HPD20inchHQE();
+ 
+public:
+  G4String GetPMTName() ;
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4float* Getqpe();
+  G4float* GetQE();
+  G4float* GetQEWavelength();
+  G4float  GetmaxQE();
+  float  GettimingResolution(float);
+  G4double GetPMTGlassThickness();
+};
+
 #endif
-
-
-
-
-
-

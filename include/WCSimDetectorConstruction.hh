@@ -116,6 +116,7 @@ public:
   G4bool GetIsHyperK() {return isHyperK;}
 
   void SetHyperKGeometry();
+  void SetHyperKGeometry_withHPD();
 
 
   // *** End HyperK Geometry ***
