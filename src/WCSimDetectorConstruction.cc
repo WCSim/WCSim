@@ -250,5 +250,5 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType)
     WCSimDetectorConstruction::SetPMTPointer(PMT);
     return PMT;
   }
-  else { G4cout << PMTType << " is not a recognized PMT Type" << G4endl; exit(1);}
+  else { G4cout << PMTType << " is not a recognized PMT Type. Exiting WCSim." << G4endl; exit(1);}
 }
