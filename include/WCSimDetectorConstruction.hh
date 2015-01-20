@@ -149,7 +149,7 @@ private:
   WCSimDetectorMessenger* messenger;
 
   // The Construction routines
-  G4LogicalVolume*   ConstructWC();
+  G4LogicalVolume*   ConstructCylinder();
   G4LogicalVolume* ConstructPMT(G4double,G4double);
 
   G4LogicalVolume* ConstructCaps(G4int zflip);
