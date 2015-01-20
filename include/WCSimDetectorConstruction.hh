@@ -85,7 +85,7 @@ public:
 
   G4float GetPMTQE(G4float, G4int, G4float, G4float, G4float);
 
-  void CreatePMTObject(G4String);
+  WCSimPMTObject *CreatePMTObject(G4String);
 
   WCSimPMTObject *  PMTptr;
   void    SetPMTPointer(WCSimPMTObject* PMT) {PMTptr = PMT;} //currently you can only save one PMT here. When we move to multiple PMTs as a future upgrade, this can be changed to an array of PMT pointers.
