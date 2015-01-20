@@ -21,8 +21,7 @@
 
 void WCSimDetectorConstruction::SetSuperKGeometry()
 {
-  CreatePMTObject("PMT20inch");
-  WCSimPMTObject * PMT = GetPMTPointer();
+  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -42,8 +41,8 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
 
 
 void WCSimDetectorConstruction::SetHyperKGeometry()
-{ CreatePMTObject("PMT20inch");
-  WCSimPMTObject * PMT = GetPMTPointer();
+{
+  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch");
   WCPMTName = PMT->GetPMTName();
   innerPMT_Expose = PMT->GetExposeHeight();
   innerPMT_Radius = PMT->GetRadius();
@@ -86,47 +85,47 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
 }
 
 void WCSimDetectorConstruction::SetHyperKGeometry_withHPD()
-{ CreatePMTObject("HPD20inchHQE");
-  WCSimPMTObject * PMT = GetPMTPointer();
-  WCPMTName = PMT->GetPMTName();
-  innerPMT_Expose = PMT->GetExposeHeight();
-  innerPMT_Radius = PMT->GetRadius();
-  WCPMTGlassThickness = PMT->GetPMTGlassThickness();
-  waterTank_TopR   = 32000.*mm;
-  waterTank_BotR   = 30000.*mm;
-  waterTank_Height = 48000.*mm;
-  waterTank_UpperA =  8000.*mm;
-  waterTank_LowerB =  6000.*mm;
-  waterTank_Length = 49500.*mm;
+{
+   WCSimPMTObject * PMT = CreatePMTObject("HPD20inchHQE");
+   WCPMTName = PMT->GetPMTName();
+   innerPMT_Expose = PMT->GetExposeHeight();
+   innerPMT_Radius = PMT->GetRadius();
+   WCPMTGlassThickness = PMT->GetPMTGlassThickness();
+   waterTank_TopR   = 32000.*mm;
+   waterTank_BotR   = 30000.*mm;
+   waterTank_Height = 48000.*mm;
+   waterTank_UpperA =  8000.*mm;
+   waterTank_LowerB =  6000.*mm;
+   waterTank_Length = 49500.*mm;
+   
+   innerPMT_TopR     = 29095.*mm; 
+   innerPMT_BotR     = 27095.*mm;
+   innerPMT_TopW     = 12038.*mm;
+   innerPMT_BotW     = 11004.*mm;
+   innerPMT_Height   = 21095.*mm;
+   innerPMT_Rpitch   =   990.*mm;
+   innerPMT_Apitch   =   990.*mm;
 
-  innerPMT_TopR     = 29095.*mm; 
-  innerPMT_BotR     = 27095.*mm;
-  innerPMT_TopW     = 12038.*mm;
-  innerPMT_BotW     = 11004.*mm;
-  innerPMT_Height   = 21095.*mm;
-  innerPMT_Rpitch   =   990.*mm;
-  innerPMT_Apitch   =   990.*mm;
+   WCSimPMTObject* outerPMT = new PMT8inch; //currently doesn't store the pointer to this PMT. If we want to read the qpe or QE for the OD in the future, this will need to be stored.
+   outerPMT_Expose = outerPMT->GetExposeHeight();
+   outerPMT_Radius = outerPMT->GetRadius();
+   outerPMT_TopR      = innerPMT_TopR + 900.*mm;
+   outerPMT_BotR      = innerPMT_BotR + 900.*mm;
+   outerPMT_TopW      = 12394.*mm;
+   outerPMT_BotW      = 11319.*mm;
+   outerPMT_Height    = innerPMT_Height + 900.*mm;
+   outerPMT_TopRpitch = 3. * innerPMT_Rpitch * (outerPMT_TopR/innerPMT_TopR);
+   outerPMT_BotRpitch = 3. * innerPMT_Rpitch * (outerPMT_BotR/innerPMT_BotR);
+   outerPMT_Apitch    = 2. * innerPMT_Apitch;
 
-  WCSimPMTObject* outerPMT = new PMT8inch; //currently doesn't store the pointer to this PMT. If we want to read the qpe or QE for the OD in the future, this will need to be stored.
-  outerPMT_Expose = outerPMT->GetExposeHeight();
-  outerPMT_Radius = outerPMT->GetRadius();
-  outerPMT_TopR      = innerPMT_TopR + 900.*mm;
-  outerPMT_BotR      = innerPMT_BotR + 900.*mm;
-  outerPMT_TopW      = 12394.*mm;
-  outerPMT_BotW      = 11319.*mm;
-  outerPMT_Height    = innerPMT_Height + 900.*mm;
-  outerPMT_TopRpitch = 3. * innerPMT_Rpitch * (outerPMT_TopR/innerPMT_TopR);
-  outerPMT_BotRpitch = 3. * innerPMT_Rpitch * (outerPMT_BotR/innerPMT_BotR);
-  outerPMT_Apitch    = 2. * innerPMT_Apitch;
-
-  blackSheetThickness = 20.*mm;
-
-  innerPMT_TopN = 0;
-  innerPMT_BotN = 0;
-
-  isHyperK = true; // Tell DetectorConstruction to build HK geometry
-
-  MatchWCSimAndHyperK();
+   blackSheetThickness = 20.*mm;
+   
+   innerPMT_TopN = 0;
+   innerPMT_BotN = 0;
+   
+   isHyperK = true; // Tell DetectorConstruction to build HK geometry
+   
+   MatchWCSimAndHyperK();
 }
 
 
@@ -155,8 +154,8 @@ void WCSimDetectorConstruction::MatchWCSimAndHyperK()
 
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
-{ CreatePMTObject("PMT10inch");
-  WCSimPMTObject * PMT = GetPMTPointer();
+{
+  WCSimPMTObject * PMT = CreatePMTObject("PMT10inch");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -179,8 +178,8 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
 }
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
-{ CreatePMTObject("PMT10inchHQE");
-  WCSimPMTObject * PMT = GetPMTPointer();
+{ 
+  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -204,8 +203,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
 {
-  CreatePMTObject("PMT10inchHQE");
-  WCSimPMTObject * PMT = GetPMTPointer();
+  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -229,8 +227,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
 {
-  CreatePMTObject("PMT10inchHQE");
-  WCSimPMTObject * PMT = GetPMTPointer();
+  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -254,8 +251,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
 
 void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
 {
-  CreatePMTObject("PMT10inchHQE");
-  WCSimPMTObject * PMT = GetPMTPointer();
+  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -279,33 +275,31 @@ void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
 
 void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
 {
-  CreatePMTObject("PMT10inchHQE");
-  WCSimPMTObject * PMT = GetPMTPointer();
-   WCPMTName = PMT->GetPMTName();
-   WCPMTExposeHeight = PMT->GetExposeHeight();
-   WCPMTRadius = PMT->GetRadius();
-   WCPMTGlassThickness = PMT->GetPMTGlassThickness();
-   WCIDDiameter          = 62.21*m;
-   WCIDHeight            = 79.96*m;
-   WCBarrelPMTOffset	    = WCPMTRadius;
-   WCPMTperCellHorizontal = 4.0;
-   WCPMTperCellVertical	 = 3.0;
-   WCPMTPercentCoverage	 = 12.0;
-   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
-									(10.0*WCPMTRadius));
-	WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-															   2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
-								   WCPMTperCellVertical));
-	WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
-	WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
-	WCBlackSheetThickness = 2.0*cm;
-	WCAddGd               = false;
+  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE");
+  WCPMTName = PMT->GetPMTName();
+  WCPMTExposeHeight = PMT->GetExposeHeight();
+  WCPMTRadius = PMT->GetRadius();
+  WCPMTGlassThickness = PMT->GetPMTGlassThickness();
+  WCIDDiameter          = 62.21*m;
+  WCIDHeight            = 79.96*m;
+  WCBarrelPMTOffset	    = WCPMTRadius;
+  WCPMTperCellHorizontal = 4.0;
+  WCPMTperCellVertical	 = 3.0;
+  WCPMTPercentCoverage	 = 12.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
+								   (10.0*WCPMTRadius));
+  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
+															 2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
+								 WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
 }
 
 void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_10perCent()
 {
-  CreatePMTObject("PMT12inchHQE");
-  WCSimPMTObject * PMT = GetPMTPointer();
+  WCSimPMTObject * PMT = CreatePMTObject("PMT12inchHQE");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -325,23 +319,22 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_10perCent()
 
 void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_14perCent()
 {
-  CreatePMTObject("PMT12inchHQE");
-  WCSimPMTObject * PMT = GetPMTPointer();
+  WCSimPMTObject * PMT = CreatePMTObject("PMT12inchHQE");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
   WCPMTGlassThickness = PMT->GetPMTGlassThickness();
-	WCIDDiameter          = 63.30*m;
-	WCIDHeight            = 76.60*m;
-	WCBarrelPMTOffset	    = .1951*m;
-	WCPMTperCellHorizontal = 1.0;
-	WCPMTperCellVertical	 = 1.0;
-	WCBarrelNumPMTHorizontal = 274;
-	WCBarrelNRings        = 105;
-	WCCapPMTSpacing       = .7258*m;
-	WCCapEdgeLimit        = 31.624*m;
-	WCBlackSheetThickness = 2.0*cm; //excess, should be just as light-tight
-	WCAddGd               = false;
+  WCIDDiameter          = 63.30*m;
+  WCIDHeight            = 76.60*m;
+  WCBarrelPMTOffset	    = .1951*m;
+  WCPMTperCellHorizontal = 1.0;
+  WCPMTperCellVertical	 = 1.0;
+  WCBarrelNumPMTHorizontal = 274;
+  WCBarrelNRings        = 105;
+  WCCapPMTSpacing       = .7258*m;
+  WCCapEdgeLimit        = 31.624*m;
+  WCBlackSheetThickness = 2.0*cm; //excess, should be just as light-tight
+  WCAddGd               = false;
 }
 
 
