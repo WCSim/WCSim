@@ -137,7 +137,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   G4LogicalVolume* logicWCBox;
   // Select between HyperK and cylinder
   if (isHyperK) logicWCBox = ConstructHyperK();
-  else logicWCBox = ConstructWC(); 
+  else logicWCBox = ConstructCylinder(); 
 
   G4cout << " WCLength       = " << WCLength/m << " m"<< G4endl;
 

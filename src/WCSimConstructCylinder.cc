@@ -47,7 +47,7 @@
  ***********************************************************/
 
 
-G4LogicalVolume* WCSimDetectorConstruction::ConstructWC()
+G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 {
     G4cout << "**** Building Cylindrical Detector ****" << G4endl;
 
