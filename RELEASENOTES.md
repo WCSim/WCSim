@@ -1,4 +1,4 @@
-This file contains the release notes for each version of WCSim. Release notes can also be found on the GitHub page under the Releases tab with the Tags radio button selected. 
+This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
                        v1.2.0        
