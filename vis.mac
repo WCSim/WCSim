@@ -60,13 +60,13 @@
 
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz
-#/DarkRate/SetDarkRate 4 kHz
+/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
 # (14/03/10)
 # Factor of Normal PMT is 1.37676
-#/DarkRate/SetConvert 1.37676
+/DarkRate/SetConvert 1.37676
 
 
 /vis/scene/create
