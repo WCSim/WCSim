@@ -1,7 +1,7 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
-                       v1.2.0        
+01/21/2014: Notes for v1.2.0        
 *************************************************************
 Bug Fixes
 * Missing HK variables added so that the HK geometry could be specified as the default and the code won't crash. 
@@ -13,6 +13,7 @@ Structural Changes
 * WCSimPMTQE.cc was created and all quantum efficiency info was put there.
 * WCSimWCDigitizer was split into a PMT collection (in the newly created WCSimWCPMT file) and a digitizer collection.
 * The PMT information was put into a single file called WCSimPMTObject.cc. PMTs now inherit from the newly created WCSimPMTObject class. 
+* WCSimWCConstructWC is now named WCSimConstructCylinder to explicitly show that this function builds cylinderical geometries and should not be used to construct the HK geometry. 
 
 New Features
 * Python script was added to generate kinematics files for simple particles. 
