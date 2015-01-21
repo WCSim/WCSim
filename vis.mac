@@ -60,7 +60,7 @@
 
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz
-#/DarkRate/SetDarkRate 4.2 kHz #value from SKI in SKDETSIM
+#/DarkRate/SetDarkRate 4 kHz
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
