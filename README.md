@@ -53,3 +53,6 @@ doc/DetectorDocumentation.pdf.
 * proton = magneta
 * neutron = grey
 
+```
+WCSim development is supported by the United States National Science Foundation.
+```
