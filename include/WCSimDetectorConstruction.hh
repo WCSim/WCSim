@@ -2,6 +2,7 @@
 #define WCSimDetectorConstruction_H 1
 
 #include "WCSimPmtInfo.hh"
+#include "WCSimPMTObject.hh"
 
 #include "G4Transform3D.hh"
 #include "G4VUserDetectorConstruction.hh"
@@ -84,6 +85,12 @@ public:
 
   G4float GetPMTQE(G4float, G4int, G4float, G4float, G4float);
 
+  WCSimPMTObject *CreatePMTObject(G4String);
+
+  WCSimPMTObject *  PMTptr;
+  void    SetPMTPointer(WCSimPMTObject* PMT) {PMTptr = PMT;} //currently you can only save one PMT here. When we move to multiple PMTs as a future upgrade, this can be changed to an array of PMT pointers.
+  WCSimPMTObject*  GetPMTPointer(){return PMTptr;}
+
   G4ThreeVector GetWCOffset(){return WCOffset;}
   
   // Related to the WC tube IDs
@@ -99,6 +106,7 @@ public:
 
   //Partition Length
   void SetwaterTank_Length(G4double length){waterTank_Length = length;}
+  void SetWaterTubeLength(G4double length){WCLength = length;}
   // Geometry options
   void   SetIsUpright(G4bool choice) {isUpright = choice;}
 
@@ -108,6 +116,7 @@ public:
   G4bool GetIsHyperK() {return isHyperK;}
 
   void SetHyperKGeometry();
+  void SetHyperKGeometry_withHPD();
 
 
   // *** End HyperK Geometry ***
@@ -140,7 +149,7 @@ private:
   WCSimDetectorMessenger* messenger;
 
   // The Construction routines
-  G4LogicalVolume*   ConstructWC();
+  G4LogicalVolume*   ConstructCylinder();
   G4LogicalVolume* ConstructPMT(G4double,G4double);
 
   G4LogicalVolume* ConstructCaps(G4int zflip);

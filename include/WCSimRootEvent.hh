@@ -326,7 +326,7 @@ public:
 
   Int_t GetNumberOfEvents() const { return fEventList->GetEntriesFast();}
   Int_t GetNumberOfSubEvents() const { return (fEventList->GetEntriesFast()-1);}
-  bool HasSubEvents() { return  (fEventList->GetEntriesFast()==1); } 
+  bool HasSubEvents() { return  (fEventList->GetEntriesFast() > 1); } 
 
   //Int_t GetNumberOfEvents() const { return fEventList.size();}
   //Int_t GetNumberOfSubEvents() const { return (fEventList.size()-1);}

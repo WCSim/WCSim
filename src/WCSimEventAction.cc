@@ -5,6 +5,7 @@
 #include "WCSimWCHit.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCDigitizer.hh"
+#include "WCSimWCPMT.hh"
 #include "WCSimDetectorConstruction.hh"
 
 #include "G4Event.hh"
@@ -43,7 +44,9 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
    detectorConstructor(myDetector)
 {
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
+  WCSimWCPMT* WCDMPMT = new WCSimWCPMT( "WCReadoutPMT", myDetector);
   WCSimWCDigitizer* WCDM = new WCSimWCDigitizer( "WCReadout", myDetector);
+  DMman->AddNewModule(WCDMPMT);
   DMman->AddNewModule(WCDM);
 }
 
@@ -109,93 +112,107 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
   // Get a pointer to the Digitizing Module Manager
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
+  
+  // Get a pointer to the WC PMT module
+  WCSimWCPMT* WCDMPMT =
+    (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT");
 
-  // Get a pointer to the WC Digitizer module
-  WCSimWCDigitizer* WCDM =
-    (WCSimWCDigitizer*)DMman->FindDigitizerModule("WCReadout");
-
+ 
   // new MFechner, aug 2006
-  // need to clear up the old info inside Digitizer
-  WCDM->ReInitialize();
-
-  // Figure out what size PMTs we are using in the WC detector.
-  G4float PMTSize = detectorConstructor->GetPMTSize();
-  WCDM->SetPMTSize(PMTSize);
-
-  // Digitize the hits
+  // need to clear up the old info inside PMT
+  WCDMPMT->ReInitialize();
+  
+  
   //  TStopwatch* ms = new TStopwatch();
   // ms->Start();
-  WCDM->Digitize();
-  //ms->Stop();
-  //std::cout << " Digtization :  Real = " << ms->RealTime() 
-  //	    << " ; CPU = " << ms->CpuTime() << "\n";  
-
-  // Get the digitized collection for the WC
-  G4int WCDCID = DMman->GetDigiCollectionID("WCDigitizedCollection");
-  WCSimWCDigitsCollection * WCDC = (WCSimWCDigitsCollection*)
-    DMman->GetDigiCollection(WCDCID);
   
-  // To use Do like This:
-  // --------------------
-  //   if(WCDC) 
-  //     for (G4int i=0; i < WCDC->entries(); i++) 
-  //     {
-  //       G4int   tubeID         = (*WCDC)[i]->GetTubeID();
-  //       G4float photoElectrons = (*WCDC)[i]->GetPe();
-  //       G4float time           = (*WCDC)[i]->GetTime();
+  //Convert the hits to PMT pulse
+  WCDMPMT->Digitize();
+ 
+  //Get a pointer to the WC Digitizer Module
+  WCSimWCDigitizer* WCDM =
+    (WCSimWCDigitizer*)DMman->FindDigitizerModule("WCReadout");
   
-  //       (*WCDC)[i]->Print();
-  //     }
+  //clear old info inside the digitizer
+   WCDM->ReInitialize();
+   
+   // Figure out what size PMTs we are using in the WC detector.
+   G4float PMTSize = detectorConstructor->GetPMTSize();
+   WCDM->SetPMTSize(PMTSize);
+   
+   WCDM->Digitize();
+   //ms->Stop();
+   //std::cout << " Digtization :  Real = " << ms->RealTime() 
+   //	    << " ; CPU = " << ms->CpuTime() << "\n";  
+   
+   // Get the digitized collection for the WC
+   G4int WCDCID = DMman->GetDigiCollectionID("WCDigitizedCollection");
+   WCSimWCDigitsCollection * WCDC = (WCSimWCDigitsCollection*) DMman->GetDigiCollection(WCDCID);
 
-
+   /*   
+   // To use Do like This:
+   // --------------------
+   if(WCDC) 
+     for (G4int i=0; i < WCDC->entries(); i++) 
+       {
+	 G4int   tubeID         = (*WCDC)[i]->GetTubeID();
+	 G4float photoElectrons = (*WCDC)[i]->GetPe(i);
+	 G4float time           = (*WCDC)[i]->GetTime(i);
+	 //	 G4cout << "time " << i << " " <<time << G4endl; 
+	 //	 G4cout << "tubeID " << i << " " <<tubeID << G4endl; 
+	 //	 G4cout << "Pe " << i << " " <<photoElectrons << G4endl; 
+	 //   (*WCDC)[i]->Print();
+       }
+   */
+   
   // ----------------------------------------------------------------------
   //  Fill Ntuple
   // ----------------------------------------------------------------------
 
-  jhfNtuple.mode   = mode;         // interaction mode
-  jhfNtuple.vtxvol = vtxvol;       // volume of vertex
-  // unit mismatch between geant4 and reconstruction, M Fechner
-  //  jhfNtuple.vtx[0] = vtx[0]/1000.; // interaction vertex
-  //jhfNtuple.vtx[1] = vtx[1]/1000.; // interaction vertex
-  //jhfNtuple.vtx[2] = vtx[2]/1000.; // interaction vertex
-  jhfNtuple.vtx[0] = vtx[0]/cm; // interaction vertex
-  jhfNtuple.vtx[1] = vtx[1]/cm; // interaction vertex
-  jhfNtuple.vtx[2] = vtx[2]/cm; // interaction vertex
-  jhfNtuple.vecRecNumber = vecRecNumber; //vectorfile record number
-
-  // mustop, pstop, npar will be filled later
-
-  // Next in the ntuple is an array of tracks.
-  // We will keep count with npar
-
-  G4int npar = 0;
-
-  // First two tracks are special: beam and target
-
-  G4int         beampdg    = generatorAction->GetBeamPDG();
-  G4double      beamenergy = generatorAction->GetBeamEnergy();
-  G4ThreeVector beamdir    = generatorAction->GetBeamDir();
-
-  jhfNtuple.ipnu[npar]    = beampdg;               // id
-  jhfNtuple.flag[npar]    = -1;                    // incoming neutrino
-  jhfNtuple.m[npar]       = 0.0;                   // mass (always a neutrino)
-  jhfNtuple.p[npar]       = beamenergy;            // momentum magnitude
-  jhfNtuple.E[npar]       = beamenergy;            // energy 
-  jhfNtuple.startvol[npar]= -1;                    // starting volume, vtxvol should be referred
-  jhfNtuple.stopvol[npar] = -1;                    // stopping volume 
-  jhfNtuple.dir[npar][0]  = beamdir[0];            // direction 
-  jhfNtuple.dir[npar][1]  = beamdir[1];            // direction 
-  jhfNtuple.dir[npar][2]  = beamdir[2];            // direction 
-  jhfNtuple.pdir[npar][0] = beamenergy*beamdir[0]; // momentum-vector 
-  jhfNtuple.pdir[npar][1] = beamenergy*beamdir[1]; // momentum-vector 
-  jhfNtuple.pdir[npar][2] = beamenergy*beamdir[2]; // momentum-vector 
-  // M Fechner, same as above
-  jhfNtuple.stop[npar][0] = vtx[0]/cm;  // stopping point (not meaningful)
-  jhfNtuple.stop[npar][1] = vtx[1]/cm;  // stopping point (not meaningful)
-  jhfNtuple.stop[npar][2] = vtx[2]/cm;  // stopping point (not meaningful)
-  jhfNtuple.parent[npar] = 0;
-
-  npar++;
+   jhfNtuple.mode   = mode;         // interaction mode
+   jhfNtuple.vtxvol = vtxvol;       // volume of vertex
+   // unit mismatch between geant4 and reconstruction, M Fechner
+   //  jhfNtuple.vtx[0] = vtx[0]/1000.; // interaction vertex
+   //jhfNtuple.vtx[1] = vtx[1]/1000.; // interaction vertex
+   //jhfNtuple.vtx[2] = vtx[2]/1000.; // interaction vertex
+   jhfNtuple.vtx[0] = vtx[0]/cm; // interaction vertex
+   jhfNtuple.vtx[1] = vtx[1]/cm; // interaction vertex
+   jhfNtuple.vtx[2] = vtx[2]/cm; // interaction vertex
+   jhfNtuple.vecRecNumber = vecRecNumber; //vectorfile record number
+   
+   // mustop, pstop, npar will be filled later
+   
+   // Next in the ntuple is an array of tracks.
+   // We will keep count with npar
+   
+   G4int npar = 0;
+   
+   // First two tracks are special: beam and target
+   
+   G4int         beampdg    = generatorAction->GetBeamPDG();
+   G4double      beamenergy = generatorAction->GetBeamEnergy();
+   G4ThreeVector beamdir    = generatorAction->GetBeamDir();
+   
+   jhfNtuple.ipnu[npar]    = beampdg;               // id
+   jhfNtuple.flag[npar]    = -1;                    // incoming neutrino
+   jhfNtuple.m[npar]       = 0.0;                   // mass (always a neutrino)
+   jhfNtuple.p[npar]       = beamenergy;            // momentum magnitude
+   jhfNtuple.E[npar]       = beamenergy;            // energy 
+   jhfNtuple.startvol[npar]= -1;                    // starting volume, vtxvol should be referred
+   jhfNtuple.stopvol[npar] = -1;                    // stopping volume 
+   jhfNtuple.dir[npar][0]  = beamdir[0];            // direction 
+   jhfNtuple.dir[npar][1]  = beamdir[1];            // direction 
+   jhfNtuple.dir[npar][2]  = beamdir[2];            // direction 
+   jhfNtuple.pdir[npar][0] = beamenergy*beamdir[0]; // momentum-vector 
+   jhfNtuple.pdir[npar][1] = beamenergy*beamdir[1]; // momentum-vector 
+   jhfNtuple.pdir[npar][2] = beamenergy*beamdir[2]; // momentum-vector 
+   // M Fechner, same as above
+   jhfNtuple.stop[npar][0] = vtx[0]/cm;  // stopping point (not meaningful)
+   jhfNtuple.stop[npar][1] = vtx[1]/cm;  // stopping point (not meaningful)
+   jhfNtuple.stop[npar][2] = vtx[2]/cm;  // stopping point (not meaningful)
+   jhfNtuple.parent[npar] = 0;
+   
+   npar++;
 
   G4double      targetpmag = 0.0, targetmass = 0.0;
   G4int         targetpdg    = generatorAction->GetTargetPDG();
@@ -253,18 +270,18 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
    G4cout << " Filling Root Event " << G4endl;
 
-//    G4cout << "event_id: " << &event_id << G4endl;
-//    G4cout << "jhfNtuple: " << &jhfNtuple << G4endl;
-//    G4cout << "WCHC: " << &WCHC << G4endl;
-//    G4cout << "WCDC: " << &WCDC << G4endl;
-//    G4cout << "WCFVHC: " << &WCFVHC << G4endl;
-//    G4cout << "WCFVDC: " << &WCFVDC << G4endl;
-//    G4cout << "lArDHC: " << &lArDHC << G4endl;
-//    G4cout << "FGDxHC: " << &FGDxHC << G4endl;
-//    G4cout << "FGDyHC: " << &FGDyHC << G4endl;
-//    G4cout << "MRDxHC: " << &MRDxHC << G4endl;
-//    G4cout << "MRDyHC: " << &MRDyHC << G4endl;
-
+   //   G4cout << "event_id: " << &event_id << G4endl;
+   // G4cout << "jhfNtuple: " << &jhfNtuple << G4endl;
+   //  G4cout << "WCHC: " << &WCHC << G4endl;
+   //  G4cout << "WCDC: " << &WCDC << G4endl;
+   //  G4cout << "WCFVHC: " << &WCFVHC << G4endl;
+   //  G4cout << "WCFVDC: " << &WCFVDC << G4endl;
+   // G4cout << "lArDHC: " << &lArDHC << G4endl;
+   // G4cout << "FGDxHC: " << &FGDxHC << G4endl;
+   // G4cout << "FGDyHC: " << &FGDyHC << G4endl;
+   // G4cout << "MRDxHC: " << &MRDxHC << G4endl;
+   // G4cout << "MRDyHC: " << &MRDyHC << G4endl;
+   
 
   FillRootEvent(event_id,
 		jhfNtuple,
@@ -675,8 +692,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	      wcsimrootevent->SetSumQ(sumq_tmp);
 	    }
 	  }
-	
-	/*	G4cout << "checking digi hits ...\n";
+	/*
+		G4cout << "checking digi hits ...\n";
 	  G4cout << "hits collection size =  " << 
 	  wcsimrootevent->GetCherenkovHits()->GetEntries() << "\n";
 	  G4cout << "hits collection size =  " << 
