@@ -20,4 +20,6 @@ New Features
 * A (very) basic validation script was added in a new directory called verification-test-scripts. The verification_HitsChargeTime.C script checks the hits, charge, and timing of events against a clean copy of the WCSim code. 
 * HPDs were added to the list of possible tubes allowed in WCSim.
 * Hyper-K with HPDs was added as a new detector configuration. 
-
+* Updated the dark rate parameters for normal PMTs.
+* Added the dark rate comands to novis.mac. Uncommented out the dark rate commands in novis.mac and vis.mac.
+* Included the dark rate parameters for the HPDs in vis.mac and novis.mac.
