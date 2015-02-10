@@ -924,14 +924,16 @@ G4float HPD20inchHQE::GetmaxQE(){
   return maxQE;
 }
 
+//Information for the HPD12inchHQE is identical to the HPD20inchHQE, except for GetPMTName, GetRadius and GetExposeHeight. 
+
 HPD12inchHQE::HPD12inchHQE(){}
 
 HPD12inchHQE::~HPD12inchHQE(){}
 
 G4String HPD12inchHQE::GetPMTName() {G4String PMTName = "HPD12inchHQE"; return PMTName;}
-G4double HPD12inchHQE::GetExposeHeight() {return 118.*mm;}
-G4double HPD12inchHQE::GetRadius() {return 152.4*mm;}
-G4double HPD12inchHQE::GetPMTGlassThickness() {return 0.3*cm;}
+G4double HPD12inchHQE::GetExposeHeight() {return 118.*mm;} //Assumed to be the same as the PMT12inchHQE.
+G4double HPD12inchHQE::GetRadius() {return 152.4*mm;} //12 inches
+G4double HPD12inchHQE::GetPMTGlassThickness() {return 0.3*cm;} 
 float HPD12inchHQE::GettimingResolution(float Q) {
   float timingConstant = 5.0; 
   float timingResolution = 0.47 + sqrt(timingConstant/Q); 
