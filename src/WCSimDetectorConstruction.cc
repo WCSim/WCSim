@@ -250,5 +250,10 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType)
     WCSimDetectorConstruction::SetPMTPointer(PMT);
     return PMT;
   }
+  else if (PMTType == "HPD12inchHQE"){
+    WCSimPMTObject* PMT = new HPD12inchHQE;
+    WCSimDetectorConstruction::SetPMTPointer(PMT);
+    return PMT;
+  }
   else { G4cout << PMTType << " is not a recognized PMT Type. Exiting WCSim." << G4endl; exit(1);}
 }
