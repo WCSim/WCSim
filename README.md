@@ -56,5 +56,3 @@ doc/DetectorDocumentation.pdf.
 ```
 WCSim development is supported by the United States National Science Foundation.
 ```
-
-Test
