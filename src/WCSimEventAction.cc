@@ -289,6 +289,10 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 		WCHC,
 		WCDC);
 
+  if(generatorAction->IsUsingNeutEvtGenerator()){
+      CopyNRooTrackerVtx();
+  }
+
 }
 
 G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
@@ -748,3 +752,20 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   wcsimrootsuperevent->ReInitialize();
   
 }
+
+void WCSimEventAction::CopyNRooTrackerVtx()
+{
+  TNRooTrackerVtx* vtx = generatorAction->GetNRooTrackerVtx();
+
+  //Save NEUT vertex truth info in TClonesArray entry 
+  TNRooTrackerVtx* currNeutVtx = new((*fVertices)[fNVtx])NRooTrackerVtx(); 
+  fNVtx += 1; 
+  currNeutVtx->Copy(vtx); 
+  // May want to use this variable for truth matching later
+  currNeutVtx->TruthVertexID = -999;
+                      
+
+
+
+
+
