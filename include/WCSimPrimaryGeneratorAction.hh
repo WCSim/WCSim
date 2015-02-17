@@ -28,7 +28,7 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         void GeneratePrimaries(G4Event* anEvent);
         void SetupBranchAddresses(NRooTrackerVtx* nrootrackervtx);
         void OpenNeutFile(G4String fileName);
-        void InitialiseNeutObjects();
+        void CopyNeutVertex(NRooTrackerVtx* nrootrackervtx);
 
         // Normal gun setting calls these functions to fill jhfNtuple and Root tree
         void SetVtx(G4ThreeVector i)     { vtx = i; };
@@ -97,13 +97,10 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         int fNEntries;
         TFile* fInputNeutFile;
 
-        // Pointers to NEUT Rootracker vertex objects and output tree
-        TClonesArray* fVertices;
-        TTree* fRooTrackerOutputTree;
+        // Pointers to NEUT Rootracker vertex objects
+        // Temporary vertex that is saved if desired, according to WCSimIO macro option
         TTree* fRooTrackerTree;
-        int fNVtx;
-        NRooTrackerVtx* fCurrNeutVtx;
-        NRooTrackerVtx* tempVtx;
+        NRooTrackerVtx* fTmpNeutVtx;
 
     public:
 
@@ -130,7 +127,6 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         }
         inline G4bool IsGeneratingVertexInRock() { return GenerateVertexInRock; }
         inline void SetGenerateVertexInRock(G4bool choice) { GenerateVertexInRock = choice; }
-        inline TTree* GetRooTrackerOutputTree() { return fRooTrackerOutputTree; }
 
 };
 

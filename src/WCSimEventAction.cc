@@ -281,18 +281,12 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    // G4cout << "FGDyHC: " << &FGDyHC << G4endl;
    // G4cout << "MRDxHC: " << &MRDxHC << G4endl;
    // G4cout << "MRDyHC: " << &MRDyHC << G4endl;
-   
 
   FillRootEvent(event_id,
 		jhfNtuple,
 		trajectoryContainer,
 		WCHC,
 		WCDC);
-
-  if(generatorAction->IsUsingNeutEvtGenerator()){
-      CopyNRooTrackerVtx();
-  }
-
 }
 
 G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
@@ -747,25 +741,17 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // as we have events. All the intermediate copies are incomplete, only the
   // last one is useful --> huge waste of disk space.
   hfile->Write("",TObject::kOverwrite);
+
+  // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
+  // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
+  if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingNeutEvtGenerator()){
+      generatorAction->CopyNeutVertex(GetRunAction()->GetNeutVertex());
+      GetRunAction()->FillNeutVertexTree();
+      GetRunAction()->ClearNeutVertexArray();
+  }
   
   // M Fechner : reinitialize the super event after the writing is over
   wcsimrootsuperevent->ReInitialize();
   
 }
-
-void WCSimEventAction::CopyNRooTrackerVtx()
-{
-  TNRooTrackerVtx* vtx = generatorAction->GetNRooTrackerVtx();
-
-  //Save NEUT vertex truth info in TClonesArray entry 
-  TNRooTrackerVtx* currNeutVtx = new((*fVertices)[fNVtx])NRooTrackerVtx(); 
-  fNVtx += 1; 
-  currNeutVtx->Copy(vtx); 
-  // May want to use this variable for truth matching later
-  currNeutVtx->TruthVertexID = -999;
-                      
-
-
-
-
 

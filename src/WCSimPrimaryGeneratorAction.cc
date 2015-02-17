@@ -71,7 +71,6 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     useLaserEvt = false;
 
     fEvNum = 0;
-    fRooTrackerTree = NULL;
     fInputNeutFile = NULL;
     fNEntries = 0;
 }
@@ -226,34 +225,30 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     else if (useNeutEvt)
     { 
-        if ( !inputFile.is_open() )
+        if ( !fInputNeutFile->IsOpen() )
         {
             G4cout << "Set a NEUT vector file using the command /mygen/vecfile name"
                 << G4endl;
             return;
         }
 
-        fNVtx = 0;
-
         //Generate 1 event
-        SetupBranchAddresses(tempVtx); //link tempVtx and current input file
 
         //Load event from file
+
         if (fEvNum<fNEntries){
             fRooTrackerTree->GetEntry(fEvNum);
             fEvNum++;
         }
         else{
             G4cout << "End of File" << G4endl; 
-            EndOfFile=true; 
-            G4RunManager::GetRunManager()->AbortRun(); 
             return; 
         }
 
         //Position in WCSim coordinates
-        xPos = tempVtx->fEvNumtVtx[0]*m;
-        yPos = tempVtx->fEvNumtVtx[1]*m;
-        zPos = tempVtx->fEvNumtVtx[2]*m;
+        xPos = fTmpNeutVtx->EvtVtx[0];
+        yPos = fTmpNeutVtx->EvtVtx[1];
+        zPos = fTmpNeutVtx->EvtVtx[2];
 
         //Check if event is outside detector; skip to next event if so; keep
         //loading events until one is found within the detector or there are
@@ -263,19 +258,17 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
             //Load another event
             if (fEvNum<fNEntries){
                 fRooTrackerTree->GetEntry(fEvNum);
-                G4cout << "Skipped event# " << fEvNum-1 << " in file " << file << " (event vertex outside detector)" << G4endl;
+                G4cout << "Skipped event# " << fEvNum-1 << " (event vertex outside detector)" << G4endl;
                 fEvNum++;
             }
             else{
                 G4cout << "End of File" << G4endl; 
-                EndOfFile=true; 
-                G4RunManager::GetRunManager()->AbortRun(); 
                 return; 
             }
             //Convert coordinates
-            xPos = tempVtx->fEvNumtVtx[0]*m; 
-            yPos = tempVtx->fEvNumtVtx[1]*m; 
-            zPos = tempVtx->fEvNumtVtx[2]*m;
+            xPos = fTmpNeutVtx->EvtVtx[0]; 
+            yPos = fTmpNeutVtx->EvtVtx[1]; 
+            zPos = fTmpNeutVtx->EvtVtx[2];
         }
 
         //Generate particles
@@ -283,40 +276,26 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         //i = 1 is the target nucleus
         //i = 2 is the target nucleon
         //i > 2 are the outgoing particles
-        for (int i = 3; i < tempVtx->StdHepN; i++){
+        for (int i = 3; i < fTmpNeutVtx->StdHepN; i++){
 
-            xDir=tempVtx->StdHepP4[i][0];
-            yDir=tempVtx->StdHepP4[i][1];
-            zDir=tempVtx->StdHepP4[i][2];
+            xDir=fTmpNeutVtx->StdHepP4[i][0];
+            yDir=fTmpNeutVtx->StdHepP4[i][1];
+            zDir=fTmpNeutVtx->StdHepP4[i][2];
 
-            momentum=sqrt(pow(xDir,2)+pow(yDir,2)+pow(zDir,2))*GeV;
-
-            Time=GetTime(nBunches,sigma,bunchSep);
+            double momentum=sqrt(pow(xDir,2)+pow(yDir,2)+pow(zDir,2))*GeV;
 
             G4ThreeVector vtx = G4ThreeVector(xPos, yPos, zPos);
             G4ThreeVector dir = G4ThreeVector(xDir, yDir, zDir);
 
-            particleGun->SetParticleDefinition(particleTable->FindParticle(tempVtx->StdHepPdg[i]));
+            particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpNeutVtx->StdHepPdgTemp[i]));
             particleGun->SetParticleMomentum(momentum);
             particleGun->SetParticlePosition(vtx);
             particleGun->SetParticleMomentumDirection(dir);
-            particleGun->SetParticleTime(Time);
-            particleGun->GeneratePrimaryVertex(anfEvNument);  //Place vertex in stack
+            // Will want to include some beam time structure at some point, but not needed at the moment since we only simulate 1 interaction per events
+            // particleGun->SetParticleTime(time);
+            particleGun->GeneratePrimaryVertex(anEvent);  //Place vertex in stack
         }
-
-        //Save NEUT vertex truth info in TClonesArray entry
-        //Currently only generating one interaction per event, but
-        //will want multiple interactions when simulating near detectors, therefore use TClonesArray to store NRooTracker objects
-        fCurrNeutVtx = new ((*fVertices)[fNVtx]) NRooTrackerVtx();
-        fNVtx += 1;
-        fCurrNeutVtx->Copy(tempVtx);
-        fCurrNeutVtx->TruthVertexID = -999;
-
-        //Add event to truth info tree
-        fRooTrackerOutputTree->Fill();
-        fVertices->Clear();
     }
-
     else if (useNormalEvt)
     {      // manual gun operation
         particleGun->GeneratePrimaryVertex(anEvent);
@@ -392,21 +371,6 @@ vector<string> tokenize( string separators, string input )
     return tokens;
 }
 
-void WCSimPrimaryGeneratorAction::InitialiseNeutObjects()
-{
-    //Setup TClonesArray to store NEUT truth info
-    fVertices = new TClonesArray("NRooTrackerVtx", 1);
-    fVertices->BypassStreamer();
-    fVertices->Clear();
-
-    fRooTrackerOutputTree = new TTree("fRooTrackerOutputTree","Event Vertex Truth Array");
-    fRooTrackerOutputTree->Branch("NVtx",&fNVtx,"NVtx/I");
-    fRooTrackerOutputTree->Branch("NRooTrackerVtx","TClonesArray", &fVertices);
-    fNVtx = 0;
-
-    tempVtx = new NRooTrackerVtx();
-}
-
 void WCSimPrimaryGeneratorAction::OpenNeutFile(G4String fileName)
 {
     if (fInputNeutFile) fInputNeutFile->Delete();
@@ -423,6 +387,9 @@ void WCSimPrimaryGeneratorAction::OpenNeutFile(G4String fileName)
         exit(1);
     }
     fNEntries=fRooTrackerTree->GetEntries();
+
+    fTmpNeutVtx = new NRooTrackerVtx();
+    SetupBranchAddresses(fTmpNeutVtx); //link fTmpNeutVtx and current input file
 }
 
 void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrackervtx){
@@ -436,34 +403,34 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
     fRooTrackerTree->SetBranchAddress("EvtProb",        &(nrootrackervtx->EvtProb) );
     fRooTrackerTree->SetBranchAddress("EvtVtx",          (nrootrackervtx->EvtVtx) );
     fRooTrackerTree->SetBranchAddress("StdHepN",        &(nrootrackervtx->StdHepN) );
-    fRooTrackerTree->SetBranchAddress("StdHepPdg",       (nrootrackervtx->StdHepPdg) );
-    fRooTrackerTree->SetBranchAddress("StdHepStatus",   &(nrootrackervtx->StdHepStatus) );
+    fRooTrackerTree->SetBranchAddress("StdHepPdg",       (nrootrackervtx->StdHepPdgTemp) );
+    fRooTrackerTree->SetBranchAddress("StdHepStatus",    (nrootrackervtx->StdHepStatusTemp) );
     fRooTrackerTree->SetBranchAddress("StdHepX4",        (nrootrackervtx->StdHepX4) );
     fRooTrackerTree->SetBranchAddress("StdHepP4",        (nrootrackervtx->StdHepP4) );
     fRooTrackerTree->SetBranchAddress("StdHepPolz",      (nrootrackervtx->StdHepPolz) );
-    fRooTrackerTree->SetBranchAddress("StdHepFd",        (nrootrackervtx->StdHepFd) );
-    fRooTrackerTree->SetBranchAddress("StdHepLd",        (nrootrackervtx->StdHepLd) );
-    fRooTrackerTree->SetBranchAddress("StdHepFm",        (nrootrackervtx->StdHepFm) );
-    fRooTrackerTree->SetBranchAddress("StdHepLm",        (nrootrackervtx->StdHepLm) );
+    fRooTrackerTree->SetBranchAddress("StdHepFd",        (nrootrackervtx->StdHepFdTemp) );
+    fRooTrackerTree->SetBranchAddress("StdHepLd",        (nrootrackervtx->StdHepLdTemp) );
+    fRooTrackerTree->SetBranchAddress("StdHepFm",        (nrootrackervtx->StdHepFmTemp) );
+    fRooTrackerTree->SetBranchAddress("StdHepLm",        (nrootrackervtx->StdHepLmTemp) );
 
     // NEUT > v5.0.7 && MCP > 1 (>10a)
     fRooTrackerTree->SetBranchAddress("NEnvc",          &(nrootrackervtx->NEnvc)    );
-    fRooTrackerTree->SetBranchAddress("NEipvc",          (nrootrackervtx->NEipvc)   );
+    fRooTrackerTree->SetBranchAddress("NEipvc",          (nrootrackervtx->NEipvcTemp)   );
     fRooTrackerTree->SetBranchAddress("NEpvc",           (nrootrackervtx->NEpvc)    );
-    fRooTrackerTree->SetBranchAddress("NEiorgvc",        (nrootrackervtx->NEiorgvc) );
-    fRooTrackerTree->SetBranchAddress("NEiflgvc",        (nrootrackervtx->NEiflgvc) );
-    fRooTrackerTree->SetBranchAddress("NEicrnvc",        (nrootrackervtx->NEicrnvc) );
+    fRooTrackerTree->SetBranchAddress("NEiorgvc",        (nrootrackervtx->NEiorgvcTemp) );
+    fRooTrackerTree->SetBranchAddress("NEiflgvc",        (nrootrackervtx->NEiflgvcTemp) );
+    fRooTrackerTree->SetBranchAddress("NEicrnvc",        (nrootrackervtx->NEicrnvcTemp) );
 
     fRooTrackerTree->SetBranchAddress("NEnvert",        &(nrootrackervtx->NEnvert)  );
     fRooTrackerTree->SetBranchAddress("NEposvert",       (nrootrackervtx->NEposvert) );
-    fRooTrackerTree->SetBranchAddress("NEiflgvert",      (nrootrackervtx->NEiflgvert) );
+    fRooTrackerTree->SetBranchAddress("NEiflgvert",      (nrootrackervtx->NEiflgvertTemp) );
     fRooTrackerTree->SetBranchAddress("NEnvcvert",      &(nrootrackervtx->NEnvcvert) );
     fRooTrackerTree->SetBranchAddress("NEdirvert",       (nrootrackervtx->NEdirvert) );
-    fRooTrackerTree->SetBranchAddress("NEabspvert",      (nrootrackervtx->NEabspvert) );
-    fRooTrackerTree->SetBranchAddress("NEabstpvert",     (nrootrackervtx->NEabstpvert) );
-    fRooTrackerTree->SetBranchAddress("NEipvert",        (nrootrackervtx->NEipvert)  );
-    fRooTrackerTree->SetBranchAddress("NEiverti",        (nrootrackervtx->NEiverti)  );
-    fRooTrackerTree->SetBranchAddress("NEivertf",        (nrootrackervtx->NEivertf)  );
+    fRooTrackerTree->SetBranchAddress("NEabspvert",      (nrootrackervtx->NEabspvertTemp) );
+    fRooTrackerTree->SetBranchAddress("NEabstpvert",     (nrootrackervtx->NEabstpvertTemp) );
+    fRooTrackerTree->SetBranchAddress("NEipvert",        (nrootrackervtx->NEipvertTemp)  );
+    fRooTrackerTree->SetBranchAddress("NEiverti",        (nrootrackervtx->NEivertiTemp)  );
+    fRooTrackerTree->SetBranchAddress("NEivertf",        (nrootrackervtx->NEivertfTemp)  );
     // end NEUT > v5.0.7 && MCP > 1 (>10a)
 
     // NEUT > v5.1.2 && MCP >= 5
@@ -473,4 +440,7 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
     fRooTrackerTree->SetBranchAddress("NEcrsphi",        &(nrootrackervtx->NEcrsphi)    );
 
 }
-
+void WCSimPrimaryGeneratorAction::CopyNeutVertex(NRooTrackerVtx* nrootrackervtx){
+    nrootrackervtx->Copy(fTmpNeutVtx);
+    nrootrackervtx->TruthVertexID = -999;
+}

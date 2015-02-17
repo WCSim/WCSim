@@ -27,6 +27,8 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   fileNameCmd->SetParameterName("fileName",true);
   fileNameCmd->SetDefaultValue("inputvectorfile");
 
+  genSet = false;
+
 }
 
 WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
@@ -74,7 +76,6 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
   {
     if(genSet){
         if(myAction->IsUsingNeutEvtGenerator()){
-            myAction->InitialiseNeutObjects(newValue);
             myAction->OpenNeutFile(newValue);
         }
         else{
