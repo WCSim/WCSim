@@ -744,10 +744,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
-  if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingNeutEvtGenerator()){
-      generatorAction->CopyNeutVertex(GetRunAction()->GetNeutVertex());
-      GetRunAction()->FillNeutVertexTree();
-      GetRunAction()->ClearNeutVertexArray();
+  if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
+      generatorAction->CopyRootrackerVertex(GetRunAction()->GetRootrackerVertex());
+      GetRunAction()->FillRootrackerVertexTree();
+      GetRunAction()->ClearRootrackerVertexArray();
   }
   
   // M Fechner : reinitialize the super event after the writing is over

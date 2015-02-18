@@ -27,8 +27,8 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     public:
         void GeneratePrimaries(G4Event* anEvent);
         void SetupBranchAddresses(NRooTrackerVtx* nrootrackervtx);
-        void OpenNeutFile(G4String fileName);
-        void CopyNeutVertex(NRooTrackerVtx* nrootrackervtx);
+        void OpenRootrackerFile(G4String fileName);
+        void CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx);
 
         // Normal gun setting calls these functions to fill jhfNtuple and Root tree
         void SetVtx(G4ThreeVector i)     { vtx = i; };
@@ -67,7 +67,7 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
         // Variables set by the messenger
         G4bool   useMulineEvt;
-        G4bool   useNeutEvt;
+        G4bool   useRootrackerEvt;
         G4bool   useNormalEvt;
         G4bool   useLaserEvt;  //T. Akiri: Laser flag
         std::fstream inputFile;
@@ -92,23 +92,23 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         G4int    _counterRock; 
         G4int    _counterCublic;
 
-        // Counters to read NEUT event file
+        // Counters to read Rootracker event file
         int fEvNum;
         int fNEntries;
-        TFile* fInputNeutFile;
+        TFile* fInputRootrackerFile;
 
-        // Pointers to NEUT Rootracker vertex objects
+        // Pointers to Rootracker vertex objects
         // Temporary vertex that is saved if desired, according to WCSimIO macro option
         TTree* fRooTrackerTree;
-        NRooTrackerVtx* fTmpNeutVtx;
+        NRooTrackerVtx* fTmpRootrackerVtx;
 
     public:
 
         inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
         inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
 
-        inline void SetNeutEvtGenerator(G4bool choice) { useNeutEvt = choice; }
-        inline G4bool IsUsingNeutEvtGenerator() { return useNeutEvt; }
+        inline void SetRootrackerEvtGenerator(G4bool choice) { useRootrackerEvt = choice; }
+        inline G4bool IsUsingRootrackerEvtGenerator() { return useRootrackerEvt; }
 
         inline void SetNormalEvtGenerator(G4bool choice) { useNormalEvt = choice; }
         inline G4bool IsUsingNormalEvtGenerator()  { return useNormalEvt; }

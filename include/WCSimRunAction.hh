@@ -49,9 +49,9 @@ public:
   void incrementCatcherHits()     { numberOfTimesCatcherHit++;}
   void SetNtuples(int ntup) {ntuples=ntup;}
 
-  NRooTrackerVtx* GetNeutVertex();
-  void FillNeutVertexTree() { fRooTrackerOutputTree->Fill();}
-  void ClearNeutVertexArray() { 
+  NRooTrackerVtx* GetRootrackerVertex();
+  void FillRootrackerVertexTree() { fRooTrackerOutputTree->Fill();}
+  void ClearRootrackerVertexArray() { 
       fVertices->Clear(); 
       fNVtx = 0;
   }

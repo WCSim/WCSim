@@ -33,7 +33,7 @@ WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test)
   wcsimdetector = test;
   messenger = new WCSimRunActionMessenger(this);
 
-  // By default do not try and save Neut interaction information
+  // By default do not try and save Rootracker interaction information
   SetSaveRooTracker(0);
 
 }
@@ -91,7 +91,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
   FillGeoTree();
 
   if(GetSaveRooTracker()){
-    //Setup TClonesArray to store NEUT truth info
+    //Setup TClonesArray to store Rootracker truth info
     fVertices = new TClonesArray("NRooTrackerVtx", 10);
     fVertices->Clear();
     fNVtx = 0;
@@ -202,8 +202,8 @@ void WCSimRunAction::FillGeoTree(){
   hfile->Write(); 
 }
 
-NRooTrackerVtx* WCSimRunAction::GetNeutVertex(){
-  NRooTrackerVtx* currNeutVtx = new((*fVertices)[fNVtx])NRooTrackerVtx();
+NRooTrackerVtx* WCSimRunAction::GetRootrackerVertex(){
+  NRooTrackerVtx* currRootrackerVtx = new((*fVertices)[fNVtx])NRooTrackerVtx();
   fNVtx += 1;
-  return currNeutVtx;
+  return currRootrackerVtx;
 }

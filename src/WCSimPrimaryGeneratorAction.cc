@@ -66,12 +66,12 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     messenger = new WCSimPrimaryGeneratorMessenger(this);
 
     useMulineEvt = true;
-    useNeutEvt = false;
+    useRootrackerEvt = false;
     useNormalEvt = false;
     useLaserEvt = false;
 
     fEvNum = 0;
-    fInputNeutFile = NULL;
+    fInputRootrackerFile = NULL;
     fNEntries = 0;
 }
 
@@ -85,7 +85,7 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
     }
     inputFile.close();
 
-    if(useNeutEvt) delete fRooTrackerTree;
+    if(useRootrackerEvt) delete fRooTrackerTree;
 
     delete particleGun;
     delete MyGPS;   //T. Akiri: Delete the GPS variable
@@ -223,11 +223,11 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         }
     }
 
-    else if (useNeutEvt)
+    else if (useRootrackerEvt)
     { 
-        if ( !fInputNeutFile->IsOpen() )
+        if ( !fInputRootrackerFile->IsOpen() )
         {
-            G4cout << "Set a NEUT vector file using the command /mygen/vecfile name"
+            G4cout << "Set a Rootracker vector file using the command /mygen/vecfile name"
                 << G4endl;
             return;
         }
@@ -246,9 +246,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         }
 
         //Position in WCSim coordinates
-        xPos = fTmpNeutVtx->EvtVtx[0];
-        yPos = fTmpNeutVtx->EvtVtx[1];
-        zPos = fTmpNeutVtx->EvtVtx[2];
+        xPos = fTmpRootrackerVtx->EvtVtx[0];
+        yPos = fTmpRootrackerVtx->EvtVtx[1];
+        zPos = fTmpRootrackerVtx->EvtVtx[2];
 
         //Check if event is outside detector; skip to next event if so; keep
         //loading events until one is found within the detector or there are
@@ -266,9 +266,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                 return; 
             }
             //Convert coordinates
-            xPos = fTmpNeutVtx->EvtVtx[0]; 
-            yPos = fTmpNeutVtx->EvtVtx[1]; 
-            zPos = fTmpNeutVtx->EvtVtx[2];
+            xPos = fTmpRootrackerVtx->EvtVtx[0]; 
+            yPos = fTmpRootrackerVtx->EvtVtx[1]; 
+            zPos = fTmpRootrackerVtx->EvtVtx[2];
         }
 
         //Generate particles
@@ -276,18 +276,18 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         //i = 1 is the target nucleus
         //i = 2 is the target nucleon
         //i > 2 are the outgoing particles
-        for (int i = 3; i < fTmpNeutVtx->StdHepN; i++){
+        for (int i = 3; i < fTmpRootrackerVtx->StdHepN; i++){
 
-            xDir=fTmpNeutVtx->StdHepP4[i][0];
-            yDir=fTmpNeutVtx->StdHepP4[i][1];
-            zDir=fTmpNeutVtx->StdHepP4[i][2];
+            xDir=fTmpRootrackerVtx->StdHepP4[i][0];
+            yDir=fTmpRootrackerVtx->StdHepP4[i][1];
+            zDir=fTmpRootrackerVtx->StdHepP4[i][2];
 
             double momentum=sqrt(pow(xDir,2)+pow(yDir,2)+pow(zDir,2))*GeV;
 
             G4ThreeVector vtx = G4ThreeVector(xPos, yPos, zPos);
             G4ThreeVector dir = G4ThreeVector(xDir, yDir, zDir);
 
-            particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpNeutVtx->StdHepPdgTemp[i]));
+            particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[i]));
             particleGun->SetParticleMomentum(momentum);
             particleGun->SetParticlePosition(vtx);
             particleGun->SetParticleMomentumDirection(dir);
@@ -371,25 +371,25 @@ vector<string> tokenize( string separators, string input )
     return tokens;
 }
 
-void WCSimPrimaryGeneratorAction::OpenNeutFile(G4String fileName)
+void WCSimPrimaryGeneratorAction::OpenRootrackerFile(G4String fileName)
 {
-    if (fInputNeutFile) fInputNeutFile->Delete();
+    if (fInputRootrackerFile) fInputRootrackerFile->Delete();
 
-    fInputNeutFile = TFile::Open(fileName.data());
-    if (!fInputNeutFile){ 
+    fInputRootrackerFile = TFile::Open(fileName.data());
+    if (!fInputRootrackerFile){ 
         G4cout << "Cannot open: " << fileName << G4endl; 
         exit(1);
     }
 
-    fRooTrackerTree = (TTree*) fInputNeutFile->Get("nRooTracker");
+    fRooTrackerTree = (TTree*) fInputRootrackerFile->Get("nRooTracker");
     if (!fRooTrackerTree){
-        G4cout << "File: " << fileName << " does not contain a NEUT nRooTracker tree - please check you intend to process NEUT events" << G4endl;
+        G4cout << "File: " << fileName << " does not contain a Rootracker nRooTracker tree - please check you intend to process Rootracker events" << G4endl;
         exit(1);
     }
     fNEntries=fRooTrackerTree->GetEntries();
 
-    fTmpNeutVtx = new NRooTrackerVtx();
-    SetupBranchAddresses(fTmpNeutVtx); //link fTmpNeutVtx and current input file
+    fTmpRootrackerVtx = new NRooTrackerVtx();
+    SetupBranchAddresses(fTmpRootrackerVtx); //link fTmpRootrackerVtx and current input file
 }
 
 void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrackervtx){
@@ -431,7 +431,7 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
     fRooTrackerTree->SetBranchAddress("NEipvert",        (nrootrackervtx->NEipvertTemp)  );
     fRooTrackerTree->SetBranchAddress("NEiverti",        (nrootrackervtx->NEivertiTemp)  );
     fRooTrackerTree->SetBranchAddress("NEivertf",        (nrootrackervtx->NEivertfTemp)  );
-    // end NEUT > v5.0.7 && MCP > 1 (>10a)
+    // end Rootracker > v5.0.7 && MCP > 1 (>10a)
 
     // NEUT > v5.1.2 && MCP >= 5
     fRooTrackerTree->SetBranchAddress("NEcrsx",          &(nrootrackervtx->NEcrsx)    );
@@ -440,7 +440,7 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
     fRooTrackerTree->SetBranchAddress("NEcrsphi",        &(nrootrackervtx->NEcrsphi)    );
 
 }
-void WCSimPrimaryGeneratorAction::CopyNeutVertex(NRooTrackerVtx* nrootrackervtx){
-    nrootrackervtx->Copy(fTmpNeutVtx);
+void WCSimPrimaryGeneratorAction::CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx){
+    nrootrackervtx->Copy(fTmpRootrackerVtx);
     nrootrackervtx->TruthVertexID = -999;
 }

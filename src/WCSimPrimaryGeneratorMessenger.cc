@@ -13,13 +13,13 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   genCmd = new G4UIcmdWithAString("/mygen/generator",this);
   genCmd->SetGuidance("Select primary generator.");
   //T. Akiri: Addition of laser
-  //M. Scott: Addition of NEUT input format
-  genCmd->SetGuidance(" Available generators : muline, normal, laser, neut");
+  //M. Scott: Addition of Rootracker input format
+  genCmd->SetGuidance(" Available generators : muline, normal, laser, rootracker");
   genCmd->SetParameterName("generator",true);
   genCmd->SetDefaultValue("muline");
   //T. Akiri: Addition of laser
-  //M. Scott: Addition of NEUT input format
-  genCmd->SetCandidates("muline normal laser neut");
+  //M. Scott: Addition of Rootracker input format
+  genCmd->SetCandidates("muline normal laser rootracker");
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
   fileNameCmd->SetGuidance("Select the file of vectors.");
@@ -45,28 +45,28 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     if (newValue == "muline")
     {
       myAction->SetMulineEvtGenerator(true);
-      myAction->SetNeutEvtGenerator(false);
+      myAction->SetRootrackerEvtGenerator(false);
       myAction->SetNormalEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
     }
     else if ( newValue == "normal")
     {
       myAction->SetMulineEvtGenerator(false);
-      myAction->SetNeutEvtGenerator(false);
+      myAction->SetRootrackerEvtGenerator(false);
       myAction->SetNormalEvtGenerator(true);
       myAction->SetLaserEvtGenerator(false);
     }
     else if ( newValue == "laser")   //T. Akiri: Addition of laser
     {
       myAction->SetMulineEvtGenerator(false);
-      myAction->SetNeutEvtGenerator(false);
+      myAction->SetRootrackerEvtGenerator(false);
       myAction->SetNormalEvtGenerator(false);
       myAction->SetLaserEvtGenerator(true);
     }
-    else if ( newValue == "neut")   //M. Scott: Addition of NEUT events
+    else if ( newValue == "rootracker")   //M. Scott: Addition of Rootracker events
     {
       myAction->SetMulineEvtGenerator(false);
-      myAction->SetNeutEvtGenerator(true);
+      myAction->SetRootrackerEvtGenerator(true);
       myAction->SetNormalEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
     }
@@ -75,8 +75,8 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
   if( command == fileNameCmd )
   {
     if(genSet){
-        if(myAction->IsUsingNeutEvtGenerator()){
-            myAction->OpenNeutFile(newValue);
+        if(myAction->IsUsingRootrackerEvtGenerator()){
+            myAction->OpenRootrackerFile(newValue);
         }
         else{
             myAction->OpenVectorFile(newValue);
@@ -84,7 +84,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
         G4cout << "Input vector file set to " << newValue << G4endl;
     }
     else{
-        G4cout << "Generator has not been set, guessing input vector file is NOT in the NEUT format - this will crash if you are using a NEUT input file" << G4endl;
+        G4cout << "Generator has not been set, guessing input vector file is NOT in the Rootracker format - this will crash if you are using a Rootracker input file" << G4endl;
         G4cout << "Please put the '/mygen/generator' command above the '/mygen/vecfile' command in the mac file." << G4endl;
     }
   }
@@ -102,8 +102,8 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
       { cv = "normal"; }
     else if(myAction->IsUsingLaserEvtGenerator())
       { cv = "laser"; }   //T. Akiri: Addition of laser
-    else if(myAction->IsUsingNeutEvtGenerator())
-      { cv = "neut"; }   //M. Scott: Addition of NEUT events
+    else if(myAction->IsUsingRootrackerEvtGenerator())
+      { cv = "rootracker"; }   //M. Scott: Addition of Rootracker events
   }
   
   return cv;
