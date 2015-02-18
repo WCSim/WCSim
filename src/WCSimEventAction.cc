@@ -281,14 +281,12 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    // G4cout << "FGDyHC: " << &FGDyHC << G4endl;
    // G4cout << "MRDxHC: " << &MRDxHC << G4endl;
    // G4cout << "MRDyHC: " << &MRDyHC << G4endl;
-   
 
   FillRootEvent(event_id,
 		jhfNtuple,
 		trajectoryContainer,
 		WCHC,
 		WCDC);
-
 }
 
 G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
@@ -743,8 +741,17 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // as we have events. All the intermediate copies are incomplete, only the
   // last one is useful --> huge waste of disk space.
   hfile->Write("",TObject::kOverwrite);
+
+  // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
+  // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
+  if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
+      generatorAction->CopyRootrackerVertex(GetRunAction()->GetRootrackerVertex());
+      GetRunAction()->FillRootrackerVertexTree();
+      GetRunAction()->ClearRootrackerVertexArray();
+  }
   
   // M Fechner : reinitialize the super event after the writing is over
   wcsimrootsuperevent->ReInitialize();
   
 }
+

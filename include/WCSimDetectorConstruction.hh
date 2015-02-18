@@ -123,6 +123,9 @@ public:
 
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
+  G4double GetWCIDDiameter(){ return WCIDDiameter; }
+  G4double GetWCIDHeight(){ return WCIDHeight; }
+
 private:
 
   // Tuning parameters

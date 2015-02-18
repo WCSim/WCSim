@@ -33,6 +33,9 @@ WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test)
   wcsimdetector = test;
   messenger = new WCSimRunActionMessenger(this);
 
+  // By default do not try and save Rootracker interaction information
+  SetSaveRooTracker(0);
+
 }
 
 WCSimRunAction::~WCSimRunAction()
@@ -86,6 +89,16 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
   TBranch *geoBranch = geoTree->Branch("wcsimrootgeom", "WCSimRootGeom", &wcsimrootgeom, bufsize,0);
 
   FillGeoTree();
+
+  if(GetSaveRooTracker()){
+    //Setup TClonesArray to store Rootracker truth info
+    fVertices = new TClonesArray("NRooTrackerVtx", 10);
+    fVertices->Clear();
+    fNVtx = 0;
+    fRooTrackerOutputTree = new TTree("fRooTrackerOutputTree","Event Vertex Truth Array");
+    fRooTrackerOutputTree->Branch("NVtx",&fNVtx,"NVtx/I");
+    fRooTrackerOutputTree->Branch("NRooTrackerVtx","TClonesArray", &fVertices);
+  }      
 }
 
 void WCSimRunAction::EndOfRunAction(const G4Run*)
@@ -102,8 +115,10 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 //  G4cout << (float(numberOfTimesCatcherHit)/float(numberOfEventsGenerated))*100.
 //        << "% through-going (hit Catcher)" << G4endl;
 
-  // Close the Root file at the end of the run
 
+
+
+  // Close the Root file at the end of the run
   TFile* hfile = WCSimTree->GetCurrentFile();
   hfile->Close();
 
@@ -185,4 +200,10 @@ void WCSimRunAction::FillGeoTree(){
   geoTree->Fill();
   TFile* hfile = geoTree->GetCurrentFile();
   hfile->Write(); 
+}
+
+NRooTrackerVtx* WCSimRunAction::GetRootrackerVertex(){
+  NRooTrackerVtx* currRootrackerVtx = new((*fVertices)[fNVtx])NRooTrackerVtx();
+  fNVtx += 1;
+  return currRootrackerVtx;
 }

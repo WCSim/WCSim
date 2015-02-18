@@ -57,7 +57,10 @@
 
 ## select the input nuance-formatted vector file
 ## you can of course use your own
-#/mygen/vecfile inputvectorfile
+# Or you can use the G4 Particle Gun below
+# Or a NEUT vector file
+/mygen/generator normal
+#/mygen/vecfile genev_320a_1km_nd2_9xx_test.root
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
 #/mygen/vecfile mu+.out
 
@@ -73,8 +76,6 @@
 /DarkRate/SetConvert 1.367
 #/DarkRate/SetConvert 1.120 #For HPDs
 
-# Or you can use the G4 Particle Gun
-/mygen/generator normal
 /gun/particle e-
 #/gun/particle pi0
 /gun/energy 500 MeV
@@ -82,8 +83,11 @@
 /gun/position 0 0 0  
 
 ## change the name of the output root file, default = wcsim.root
-
 /WCSimIO/RootFile wcsim.root
+
+## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
+## a NEUT vector file as input
+#/WCSimIO/SaveRooTracker 1
 
 /run/beamOn 10
 #exit
