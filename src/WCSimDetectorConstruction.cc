@@ -28,6 +28,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Decide if (only for the case of !1kT detector) should be upright or horizontal
   isUpright = false;
   isHyperK  = false;
+  isNuPrism  = false;
 
   debugMode = false;
 //-----------------------------------------------------
@@ -181,14 +182,18 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // Water Cherenkov Detector (WC) mother volume
   // WC Box, nice to turn on for x and y views to provide a frame:
 
-	  //G4RotationMatrix* rotationMatrix = new G4RotationMatrix;
-	  //rotationMatrix->rotateX(90.*deg);
-	  //rotationMatrix->rotateZ(90.*deg);
+  G4RotationMatrix* rotationMatrix = new G4RotationMatrix;
 
+  if(isNuPrism){
+      rotationMatrix->rotateX(90.*deg);
+  }
+ 
   G4ThreeVector genPosition = G4ThreeVector(0., 0., WCPosition);
+
+  G4Transform3D transform(*rotationMatrix, genPosition);
+
   G4VPhysicalVolume* physiWCBox = 
-    new G4PVPlacement(0,
-		      genPosition,
+    new G4PVPlacement(transform,
 		      logicWCBox,
 		      "WCBox",
 		      logicExpHall,
