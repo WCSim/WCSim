@@ -121,6 +121,10 @@ public:
 
   // *** End HyperK Geometry ***
 
+  // Set if nuPRISM
+  void   SetIsNuPrism(G4bool choice) {isNuPrism = choice;}
+  G4bool GetIsNuPrism() {return isNuPrism;}
+
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
   G4double GetWCIDDiameter(){ return WCIDDiameter; }
@@ -284,6 +288,9 @@ private:
 
   // amb79: to universally make changes in structure and geometry
   bool isUpright;
+
+  // Add bool to indicate whether we load nuPRISM geometry  
+  G4bool isNuPrism;
 
   // *** Begin HyperK Geometry ***
 
