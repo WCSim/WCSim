@@ -66,8 +66,10 @@ public:
   void DUSEL_200kton_10inch_HQE_12perCent();
   void DUSEL_200kton_12inch_HQE_10perCent();
   void DUSEL_200kton_12inch_HQE_14perCent();
+
+  void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter);
+ 
   void UpdateGeometry();
-  
 
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
