@@ -18,7 +18,10 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTConfig->SetGuidance("Set the geometry configuration for the WC.");
   PMTConfig->SetGuidance("Available options are:\n"
                           "SuperK\n"
-                          "HyperK\n"
+			  "SuperK_12inchHPD_14perCent\n"
+			  "SuperK_20inchHPD_14perCent\n"
+			  "Cylinder_12inchHPD_14perCent\n"
+			  "HyperK\n"
                           "HyperK_withHPD\n"
                           "DUSEL_100kton_10inch_40perCent\n"
                           "DUSEL_100kton_10inch_HQE_12perCent\n"
@@ -31,6 +34,9 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
                          );
   PMTConfig->SetParameterName("PMTConfig", false);
   PMTConfig->SetCandidates("SuperK "
+			   "SuperK_12inchHPD_14perCent "
+			   "SuperK_20inchHPD_14perCent "
+			   "Cylinder_12inchHPD_14perCent "
                            "HyperK "
                            "HyperK_withHPD "
                            "DUSEL_100kton_10inch_40perCent "
@@ -112,6 +118,12 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
                 WCSimDetector->SetIsHyperK(false);
                 if ( newValue == "SuperK") {
                         WCSimDetector->SetSuperKGeometry();
+		} else if ( newValue == "SuperK_12inchHPD_14perCent" ) {
+		        WCSimDetector->SuperK_12inchHPD_14perCent();
+		} else if ( newValue == "SuperK_20inchHPD_14perCent" ) {
+		        WCSimDetector->SuperK_20inchHPD_14perCent();
+		} else if (newValue == "Cylinder_12inchHPD_14perCent" ){
+		        WCSimDetector->Cylinder_12inchHPD_14perCent();
                 } else if ( newValue == "HyperK") {
                         WCSimDetector->SetIsHyperK(true);
 			WCSimDetector->SetHyperKGeometry();
