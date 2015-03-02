@@ -11,6 +11,15 @@
 # The tube size is fixed for SK to 20"
 # These are fixed geometries for validation
 #/WCSim/WCgeom SuperK
+
+# Some other SuperK options:
+#/WCSim/WCgeom SuperK_12inchHPD_14perCent
+#/WCSim/WCgeom SuperK_20inchHPD_14perCent
+
+# Generic cylindrical detector with a height of 100m and a 
+# diameter of 69m with 12" HPD and 14% photocoverage
+#/WCSim/WCgeom Cylinder_12inchHPD_14perCent
+
 # Currently by default the DUSEL configurations are 10 inch.
 # you can overide this with the WCPMTsize command.
 # WCPMTsize command commented out on 10/1/09 (CWW)
