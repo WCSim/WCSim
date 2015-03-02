@@ -36,7 +36,17 @@
 #/WCSim/WCgeom DUSEL_200kton_10inch_HQE_12perCent
 #/WCSim/WCgeom DUSEL_200kton_12inch_HQE_10perCent
 #/WCSim/WCgeom DUSEL_200kton_12inch_HQE_14perCent
-#/WCSim/Construct
+
+/WCSim/WCgeom nuPRISM
+
+/WCSim/nuPRISM/SetPMTType PMT8inch
+/WCSim/nuPRISM/SettingsFile /neut/data21/mscott/nuPRISM_Software/genev_320a_1km_nd2_9xx_test.root
+/WCSim/nuPRISM/SetPMTPercentCoverage 40
+/WCSim/nuPRISM/SetDetectorHeight 10. m
+/WCSim/nuPRISM/SetDetectorDiameter 6. m
+/WCSim/nuPRISM/Update
+/WCSim/Construct
+
 
 #Added for the PMT QE option 08/17/10 (XQ)
 # 1. Stacking only mean when the photon is generated
@@ -76,11 +86,11 @@
 /DarkRate/SetConvert 1.367
 #/DarkRate/SetConvert 1.120 #For HPDs
 
-/gun/particle e-
+/gun/particle mu-
 #/gun/particle pi0
 /gun/energy 500 MeV
-/gun/direction 1 0 0 
-/gun/position 0 0 0  
+/gun/direction 0 0 1 
+/gun/position 0 -3800 100000  
 
 ## change the name of the output root file, default = wcsim.root
 /WCSimIO/RootFile wcsim.root
@@ -89,5 +99,5 @@
 ## a NEUT vector file as input
 #/WCSimIO/SaveRooTracker 1
 
-/run/beamOn 10
+/run/beamOn 1
 #exit
