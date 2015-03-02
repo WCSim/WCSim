@@ -138,7 +138,9 @@ void WCSimRunAction::FillGeoTree(){
   G4int numpmt;
   G4int orientation;
   Float_t offset[3];
-  
+ 
+  Float_t rotation[3];
+
   Int_t tubeNo;
   Float_t pos[3];
   Float_t rot[3];
@@ -175,7 +177,25 @@ void WCSimRunAction::FillGeoTree(){
   offset[1] = offset1[1];
   offset[2] = offset1[2];
   wcsimrootgeom-> SetWCOffset(offset[0],offset[1],offset[2]);
-  
+ 
+  G4ThreeVector rotation1= wcsimdetector->GetWCXRotation();
+  rotation[0] = rotation1[0];
+  rotation[1] = rotation1[1];
+  rotation[2] = rotation1[2];
+  wcsimrootgeom-> SetWCXRotation(rotation[0],rotation[1],rotation[2]);
+
+  G4ThreeVector rotation2= wcsimdetector->GetWCYRotation();
+  rotation[0] = rotation2[0];
+  rotation[1] = rotation2[1];
+  rotation[2] = rotation2[2];
+  wcsimrootgeom-> SetWCYRotation(rotation[0],rotation[1],rotation[2]);
+
+  G4ThreeVector rotation3= wcsimdetector->GetWCZRotation();
+  rotation[0] = rotation3[0];
+  rotation[1] = rotation3[1];
+  rotation[2] = rotation3[2];
+  wcsimrootgeom-> SetWCZRotation(rotation[0],rotation[1],rotation[2]);
+
   std::vector<WCSimPmtInfo*> *fpmts = wcsimdetector->Get_Pmts();
   WCSimPmtInfo *pmt;
   for (int i=0;i!=fpmts->size();i++){
