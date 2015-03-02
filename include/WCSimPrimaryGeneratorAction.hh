@@ -104,6 +104,8 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
     public:
 
+        inline TFile* GetInputRootrackerFile(){ return fInputRootrackerFile;}
+
         inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
         inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
 
