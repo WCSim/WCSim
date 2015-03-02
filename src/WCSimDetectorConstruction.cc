@@ -113,6 +113,38 @@ WCSimDetectorConstruction::~WCSimDetectorConstruction(){
   fpmts.clear();
 }
 
+G4ThreeVector WCSimDetectorConstruction::GetTranslationFromSettings()
+{
+    TFile* inFile = TFile::Open(fInputSettingsFilename);
+    if (!inFile){
+        G4ThreeVector trans;
+        return trans;
+    }
+
+    fSettingsTree = (TTree*) inFile->Get("Settings");
+    if (!fSettingsTree){
+        G4ThreeVector trans;
+        return trans;
+    }
+
+    float NuBeamAng;
+    float NuIdfdPos[3];
+    for(int i = 0; i < 3; ++i) NuIdfdPos[i] = 0;
+    fSettingsTree->SetBranchAddress("NuIdfdPos",NuIdfdPos); 
+    fSettingsTree->SetBranchAddress("NuBeamAng",&NuBeamAng); 
+
+    fSettingsTree->GetEntry(0);
+
+    G4ThreeVector trans(0, (NuIdfdPos[1] + TMath::Tan(NuBeamAng)*600.0), NuIdfdPos[2] + 600.0);
+
+    inFile->Close();
+    fInputSettingsFilename = "";
+    fSettingsTree = NULL;
+
+    return trans;
+
+}
+
 G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 {  
   G4GeometryManager::GetInstance()->OpenGeometry();
@@ -147,15 +179,17 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // Now make the detector Hall.  The lengths of the subdectors 
   // were set above.
 
+  G4ThreeVector position = GetTranslationFromSettings();
+
   G4double expHallLength = 3.*WCLength; //jl145 - extra space to simulate cosmic muons more easily
 
   G4cout << " expHallLength = " << expHallLength / m << G4endl;
   G4double expHallHalfLength = 0.5*expHallLength;
 
   G4Box* solidExpHall = new G4Box("expHall",
-				  expHallHalfLength,
-				  expHallHalfLength,
-				  expHallHalfLength);
+				  expHallHalfLength + fabs(position.x())*cm,
+				  expHallHalfLength + fabs(position.y())*cm,
+				  expHallHalfLength + fabs(position.z())*cm);
   
   G4LogicalVolume* logicExpHall = 
     new G4LogicalVolume(solidExpHall,
@@ -183,12 +217,20 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // WC Box, nice to turn on for x and y views to provide a frame:
 
   G4RotationMatrix* rotationMatrix = new G4RotationMatrix;
+  G4ThreeVector genPosition = G4ThreeVector(0., 0., WCPosition);
 
   if(isNuPrism){
       rotationMatrix->rotateX(90.*deg);
+      rotationMatrix->rotateY(0.*deg);
+      rotationMatrix->rotateZ(0.*deg);
+      genPosition.setX(position.x()*cm);
+      genPosition.setY(position.y()*cm);
+      genPosition.setZ(position.z()*cm);
   }
- 
-  G4ThreeVector genPosition = G4ThreeVector(0., 0., WCPosition);
+
+  std::cout << "genPosition.x() = " << genPosition.x() << std::endl; 
+  std::cout << "genPosition.y() = " << genPosition.y() << std::endl; 
+  std::cout << "genPosition.z() = " << genPosition.z() << std::endl; 
 
   G4Transform3D transform(*rotationMatrix, genPosition);
 
