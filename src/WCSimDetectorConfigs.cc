@@ -363,7 +363,7 @@ void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double PM
 
 void WCSimDetectorConstruction::SetDefaultNuPrismGeometry()
 {
-    SetNuPrismGeometry("PMT10inch", 40.0, 10*m, 6*m, 52.48*m);
+    SetNuPrismGeometry("PMT8inch", 40.0, 10*m, 6*m);
 }
 
 
