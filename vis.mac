@@ -13,6 +13,7 @@
 #/WCSim/WCgeom SuperK
 
 # Some other SuperK options:
+#/WCSim/WCgeom SuperK_20inchPMT_20perCent
 #/WCSim/WCgeom SuperK_12inchHPD_14perCent
 #/WCSim/WCgeom SuperK_20inchHPD_14perCent
 
