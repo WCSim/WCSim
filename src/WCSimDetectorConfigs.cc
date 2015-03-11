@@ -39,6 +39,8 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCAddGd               = false;
 }
 
+
+// Note: the actual coverage is 20.27%
 void WCSimDetectorConstruction::SuperK_20inchPMT_20perCent()
 {
   WCSimPMTObject * PMT = CreatePMTObject("PMT20inch");
@@ -51,7 +53,7 @@ void WCSimDetectorConstruction::SuperK_20inchPMT_20perCent()
   WCBarrelPMTOffset     = 0.0715*m; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3; 
-  WCPMTPercentCoverage  = 20.0;
+  WCPMTPercentCoverage  = 20.27;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical));
@@ -62,7 +64,8 @@ void WCSimDetectorConstruction::SuperK_20inchPMT_20perCent()
 }
 
 
-void WCSimDetectorConstruction::SuperK_12inchHPD_14perCent()
+// Note: the actual coverage is 14.59%
+void WCSimDetectorConstruction::SuperK_12inchHPD_15perCent()
 {
   WCSimPMTObject * PMT = CreatePMTObject("HPD12inchHQE");
   WCPMTName           = PMT->GetPMTName();
@@ -74,7 +77,7 @@ void WCSimDetectorConstruction::SuperK_12inchHPD_14perCent()
   WCBarrelPMTOffset     = 0.0715*m; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
-  WCPMTPercentCoverage  = 14.0;
+  WCPMTPercentCoverage  = 14.59;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical));
@@ -85,6 +88,7 @@ void WCSimDetectorConstruction::SuperK_12inchHPD_14perCent()
 }
 
 
+// Note: the actual coverage is 13.51%
 void WCSimDetectorConstruction::SuperK_20inchHPD_14perCent()
 {
   WCSimPMTObject * PMT = CreatePMTObject("HPD20inchHQE");
@@ -97,7 +101,7 @@ void WCSimDetectorConstruction::SuperK_20inchHPD_14perCent()
   WCBarrelPMTOffset     = 0.0715*m; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
-  WCPMTPercentCoverage  = 14.0;
+  WCPMTPercentCoverage  = 13.51;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical));
@@ -108,10 +112,10 @@ void WCSimDetectorConstruction::SuperK_20inchHPD_14perCent()
 }
 
 
-void WCSimDetectorConstruction::Cylinder_12inchHPD_14perCent()
+void WCSimDetectorConstruction::Cylinder_12inchHPD_15perCent()
 {
   // cylindrical detector with a height of 100m and a diameter of 69m 
-  // with 12" HPD and 14% photocoverage
+  // with 12" HPD and 14.59% photocoverage
   WCSimPMTObject * PMT = CreatePMTObject("HPD12inchHQE");
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
@@ -122,7 +126,7 @@ void WCSimDetectorConstruction::Cylinder_12inchHPD_14perCent()
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
-  WCPMTPercentCoverage  = 14.0;
+  WCPMTPercentCoverage  = 14.59;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical));
