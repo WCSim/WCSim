@@ -39,7 +39,7 @@
 
 /WCSim/WCgeom nuPRISM
 
-/WCSim/nuPRISM/SetPMTType PMT8inch
+/WCSim/nuPRISM/SetPMTType PMT20inch
 /WCSim/nuPRISM/SettingsFile /neut/data21/mscott/nuPRISM_Software/genev_320a_1km_nd2_9xx_test.root
 /WCSim/nuPRISM/SetPMTPercentCoverage 40
 /WCSim/nuPRISM/SetDetectorHeight 10. m
@@ -63,14 +63,14 @@
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
-/WCSim/SavePi0 false
+/WCSim/SavePi0 true
 
 ## select the input nuance-formatted vector file
 ## you can of course use your own
 # Or you can use the G4 Particle Gun below
 # Or a NEUT vector file
-/mygen/generator normal
-#/mygen/vecfile genev_320a_1km_nd2_9xx_test.root
+/mygen/generator rootracker
+/mygen/vecfile genev_320a_1km_nd3_9xx_30818.root
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
 #/mygen/vecfile mu+.out
 
@@ -86,18 +86,18 @@
 /DarkRate/SetConvert 1.367
 #/DarkRate/SetConvert 1.120 #For HPDs
 
-/gun/particle mu-
+#/gun/particle mu- 
 #/gun/particle pi0
-/gun/energy 500 MeV
-/gun/direction 0 0 1 
-/gun/position 0 -3800 100000  
+#/gun/energy 500 MeV
+#/gun/direction 0 0 1 
+#/gun/position 0 0 0  
 
 ## change the name of the output root file, default = wcsim.root
-/WCSimIO/RootFile wcsim.root
+/WCSimIO/RootFile wcsim_TestNewNeut.root
 
 ## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
 ## a NEUT vector file as input
-#/WCSimIO/SaveRooTracker 1
+/WCSimIO/SaveRooTracker 1
 
-/run/beamOn 1
+/run/beamOn 10
 #exit
