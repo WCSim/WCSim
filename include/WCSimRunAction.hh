@@ -51,6 +51,7 @@ public:
 
   NRooTrackerVtx* GetRootrackerVertex();
   void FillRootrackerVertexTree() { fRooTrackerOutputTree->Fill();}
+  void FillSettingsTree() { fSettingsOutputTree->Fill();}
   void ClearRootrackerVertexArray() { 
       fVertices->Clear(); 
       fNVtx = 0;
@@ -75,6 +76,7 @@ private:
   TTree* fRooTrackerOutputTree;
   int fNVtx;
   bool SaveRooTracker;
+  TTree* fSettingsOutputTree;
 
   WCSimRunActionMessenger* messenger;
   int ntuples;  // 1 for ntuples to be written

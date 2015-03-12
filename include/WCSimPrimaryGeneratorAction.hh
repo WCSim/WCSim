@@ -100,7 +100,11 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         // Pointers to Rootracker vertex objects
         // Temporary vertex that is saved if desired, according to WCSimIO macro option
         TTree* fRooTrackerTree;
+        TTree* fSettingsTree;
         NRooTrackerVtx* fTmpRootrackerVtx;
+        double fNuPrismRadius;
+        double fNuBeamAng;
+        double fNuPlanePos[3];
 
     public:
 

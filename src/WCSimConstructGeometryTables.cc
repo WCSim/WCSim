@@ -53,16 +53,9 @@ void WCSimDetectorConstruction::GetWCGeom
         WCZRotation = G4ThreeVector(aTransform.getRotation().zx(), aTransform.getRotation().zy(), aTransform.getRotation().zz());
     }
 
-//	WCRotation = G4ThreeVector(aTransform.getTranslation().getX()/cm,
-//			     aTransform.getTranslation().getY()/cm,
-//			     aTransform.getTranslation().getZ()/cm);
-//    }
-
-
     // Stash info in data member
     // AH Need to store this in CM for it to be understood by SK code
     WCPMTSize = WCPMTRadius/cm;// I think this is just a variable no if needed
-
 
     // Note WC can be off-center... get both extremities
     static G4float zmin=100000,zmax=-100000.;
@@ -86,8 +79,7 @@ void WCSimDetectorConstruction::GetWCGeom
       if (y>ymax){ymax=y;}
 
       if (z<zmin){zmin=z;}
-      if (z>zmax){zmax=z;}
-     
+      if (z>zmax){zmax=z;} 
 
  
       WCCylInfo[0] = xmax-xmin;

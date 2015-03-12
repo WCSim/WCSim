@@ -17,6 +17,8 @@
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
 
+#include "TRandom3.h"
+
 using std::vector;
 using std::string;
 using std::fstream;
@@ -238,6 +240,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
         if (fEvNum<fNEntries){
             fRooTrackerTree->GetEntry(fEvNum);
+            fSettingsTree->GetEntry(fEvNum);
             fEvNum++;
         }
         else{
@@ -245,16 +248,18 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
             return; 
         }
 
+        double z_offset = fNuPlanePos[2] + fNuPrismRadius;
+        double y_offset = fNuPlanePos[1] + TMath::Tan(fNuBeamAng)*fNuPrismRadius;
         //Position in WCSim coordinates
         xPos = fTmpRootrackerVtx->EvtVtx[0];
-        yPos = fTmpRootrackerVtx->EvtVtx[1];
-        zPos = fTmpRootrackerVtx->EvtVtx[2];
+        yPos = fTmpRootrackerVtx->EvtVtx[1] - y_offset;
+        zPos = fTmpRootrackerVtx->EvtVtx[2] - z_offset;
 
         //Check if event is outside detector; skip to next event if so; keep
         //loading events until one is found within the detector or there are
         //no more interaction to simulate for this event.
         //The current neut vector files do not correspond directly to the detector dimensions, so only keep those events within the detector
-        while (sqrt(pow(xPos,2)+pow(yPos,2))>myDetector->GetWCIDDiameter()/2. || (abs(zPos)>myDetector->GetWCIDHeight()/2)){
+        while (sqrt(pow(xPos,2)+pow(zPos,2))>myDetector->GetWCIDDiameter()/2. || (abs(yPos)>myDetector->GetWCIDHeight()/2)){
             //Load another event
             if (fEvNum<fNEntries){
                 fRooTrackerTree->GetEntry(fEvNum);
@@ -267,8 +272,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
             }
             //Convert coordinates
             xPos = fTmpRootrackerVtx->EvtVtx[0]; 
-            yPos = fTmpRootrackerVtx->EvtVtx[1]; 
-            zPos = fTmpRootrackerVtx->EvtVtx[2];
+            yPos = fTmpRootrackerVtx->EvtVtx[1] - y_offset; 
+            zPos = fTmpRootrackerVtx->EvtVtx[2] - z_offset;
         }
 
         //Generate particles
@@ -284,7 +289,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
             double momentum=sqrt(pow(xDir,2)+pow(yDir,2)+pow(zDir,2))*GeV;
 
-            G4ThreeVector vtx = G4ThreeVector(xPos, yPos, zPos);
+            G4ThreeVector vtx = G4ThreeVector(xPos*cm, yPos*cm, zPos*cm);
             G4ThreeVector dir = G4ThreeVector(xDir, yDir, zDir);
 
             particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[i]));
@@ -298,6 +303,17 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     }
     else if (useNormalEvt)
     {      // manual gun operation
+
+//        double energy = 1000;
+//        TRandom3 rand(0);
+//        G4ThreeVector dir1 = G4ThreeVector(rand.Uniform(-1,1), rand.Uniform(-1,1),rand.Uniform(-1,1));
+//        dir1 = dir1.unit();
+//        particleGun->SetParticleMomentumDirection(dir1);
+//        particleGun->SetParticleEnergy(rand.Uniform(0.106,1)*energy);
+//
+//        G4ThreeVector pos1 = G4ThreeVector(rand.Uniform(-1,1)*3000, rand.Uniform(-1,1)*5000 - 39000,rand.Uniform(-1,1)*3000 + 1002000);
+//        particleGun->SetParticlePosition(pos1);
+
         particleGun->GeneratePrimaryVertex(anEvent);
 
         G4ThreeVector P  =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
@@ -382,6 +398,7 @@ void WCSimPrimaryGeneratorAction::OpenRootrackerFile(G4String fileName)
     }
 
     fRooTrackerTree = (TTree*) fInputRootrackerFile->Get("nRooTracker");
+    fSettingsTree = (TTree*) fInputRootrackerFile->Get("Settings");
     if (!fRooTrackerTree){
         G4cout << "File: " << fileName << " does not contain a Rootracker nRooTracker tree - please check you intend to process Rootracker events" << G4endl;
         exit(1);
@@ -390,6 +407,11 @@ void WCSimPrimaryGeneratorAction::OpenRootrackerFile(G4String fileName)
 
     fTmpRootrackerVtx = new NRooTrackerVtx();
     SetupBranchAddresses(fTmpRootrackerVtx); //link fTmpRootrackerVtx and current input file
+
+    fSettingsTree->SetBranchAddress("NuBeamAng",&fNuBeamAng);
+    fSettingsTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
+    fSettingsTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
+
 }
 
 void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrackervtx){

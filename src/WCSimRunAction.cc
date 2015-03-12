@@ -98,6 +98,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
     fRooTrackerOutputTree = new TTree("fRooTrackerOutputTree","Event Vertex Truth Array");
     fRooTrackerOutputTree->Branch("NVtx",&fNVtx,"NVtx/I");
     fRooTrackerOutputTree->Branch("NRooTrackerVtx","TClonesArray", &fVertices);
+    //fSettingsOutputTree = new TTree("SettingsTree","Settings tree");
   }      
 }
 

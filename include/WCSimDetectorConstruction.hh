@@ -72,7 +72,6 @@ public:
 
   void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter);
   void SetDefaultNuPrismGeometry();
-  void SetInputSettingsFilename(G4String file) {fInputSettingsFilename = file;}
 
 
   void UpdateGeometry();
@@ -103,8 +102,6 @@ public:
   G4ThreeVector GetWCXRotation(){return WCXRotation;}
   G4ThreeVector GetWCYRotation(){return WCYRotation;}
   G4ThreeVector GetWCZRotation(){return WCZRotation;}
-
-  G4ThreeVector GetTranslationFromSettings();
 
   // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
@@ -316,8 +313,6 @@ private:
   G4bool isNuPrism;
   G4String WCPMTType;
   G4double WCPMTCoverage;
-  G4String fInputSettingsFilename;
-  TTree* fSettingsTree;
 
   // *** Begin HyperK Geometry ***
 

@@ -107,11 +107,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetPMTType->SetCandidates("PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
   SetPMTType->SetDefaultValue("PMT10inch");
 
-  SettingsFile = new G4UIcmdWithAString("/WCSim/nuPRISM/SettingsFile", this);
-  SettingsFile->SetGuidance("Settings file to determine the nuPRISM translation from the Beam coordinate system - should be the same RooTrackerFile as used for input");
-  SettingsFile->SetParameterName("SettingsFile", false);
-  SettingsFile->SetDefaultValue("");
-
   // Next, the PMT coverage
   SetPMTCoverage = new G4UIcmdWithAString("/WCSim/nuPRISM/SetPMTPercentCoverage", this);
   SetPMTCoverage->SetGuidance("Set the PMT percentage coverage to be used for nuPRISM");
@@ -153,7 +148,6 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete SetDetectorHeight;
   delete SetPMTCoverage;
   delete SetPMTType;
-  delete SettingsFile;
 
   delete tubeCmd;
   delete distortionCmd;
@@ -266,7 +260,6 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
         else if (command == SetPMTCoverage) WCSimDetector->SetPMTCoverage(atof(newValue));
         else if (command == SetDetectorHeight) WCSimDetector->SetDetectorHeight(SetDetectorHeight->GetNewDoubleValue(newValue));
         else if (command == SetDetectorDiameter) WCSimDetector->SetDetectorDiameter(SetDetectorDiameter->GetNewDoubleValue(newValue));
-        else if (command == SettingsFile) WCSimDetector->SetInputSettingsFilename(newValue);
         else if (command == UpdateNuPrism){
             WCSimDetector->SetNuPrismGeometry(WCSimDetector->GetPMTType(),
                     WCSimDetector->GetPMTCoverage(),

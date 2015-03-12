@@ -45,7 +45,6 @@ class WCSimDetectorMessenger: public G4UImessenger
 
   //nuPRISM commands
   G4UIcmdWithoutParameter* UpdateNuPrism;
-  G4UIcmdWithAString* SettingsFile;
   G4UIcmdWithAString* SetPMTType;
   G4UIcmdWithAString* SetPMTCoverage;
   G4UIcmdWithADoubleAndUnit* SetDetectorHeight;

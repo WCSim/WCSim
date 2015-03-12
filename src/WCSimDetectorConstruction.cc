@@ -113,37 +113,37 @@ WCSimDetectorConstruction::~WCSimDetectorConstruction(){
   fpmts.clear();
 }
 
-G4ThreeVector WCSimDetectorConstruction::GetTranslationFromSettings()
-{
-    TFile* inFile = TFile::Open(fInputSettingsFilename);
-    if (!inFile){
-        G4ThreeVector trans;
-        return trans;
-    }
-
-    fSettingsTree = (TTree*) inFile->Get("Settings");
-    if (!fSettingsTree){
-        G4ThreeVector trans;
-        return trans;
-    }
-
-    float NuBeamAng;
-    float NuIdfdPos[3];
-    for(int i = 0; i < 3; ++i) NuIdfdPos[i] = 0;
-    fSettingsTree->SetBranchAddress("NuIdfdPos",NuIdfdPos); 
-    fSettingsTree->SetBranchAddress("NuBeamAng",&NuBeamAng); 
-
-    fSettingsTree->GetEntry(0);
-
-    G4ThreeVector trans(0, (NuIdfdPos[1] + TMath::Tan(NuBeamAng)*600.0), NuIdfdPos[2] + 600.0);
-
-    inFile->Close();
-    fInputSettingsFilename = "";
-    fSettingsTree = NULL;
-
-    return trans;
-
-}
+//G4ThreeVector WCSimDetectorConstruction::GetTranslationFromSettings()
+//{
+//    TFile* inFile = TFile::Open(fInputSettingsFilename);
+//    if (!inFile){
+//        G4ThreeVector trans;
+//        return trans;
+//    }
+//
+//    fSettingsTree = (TTree*) inFile->Get("Settings");
+//    if (!fSettingsTree){
+//        G4ThreeVector trans;
+//        return trans;
+//    }
+//
+//    float NuBeamAng;
+//    float NuIdfdPos[3];
+//    for(int i = 0; i < 3; ++i) NuIdfdPos[i] = 0;
+//    fSettingsTree->SetBranchAddress("NuIdfdPos",NuIdfdPos); 
+//    fSettingsTree->SetBranchAddress("NuBeamAng",&NuBeamAng); 
+//
+//    fSettingsTree->GetEntry(0);
+//
+//    G4ThreeVector trans(0, (NuIdfdPos[1] + TMath::Tan(NuBeamAng)*600.0), NuIdfdPos[2] + 600.0);
+//
+//    inFile->Close();
+//    fInputSettingsFilename = "";
+//    fSettingsTree = NULL;
+//
+//    return trans;
+//
+//}
 
 G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 {  
@@ -179,7 +179,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // Now make the detector Hall.  The lengths of the subdectors 
   // were set above.
 
-  G4ThreeVector position = GetTranslationFromSettings();
+  G4ThreeVector position(0,0,0);// = GetTranslationFromSettings();
 
   G4double expHallLength = 3.*WCLength; //jl145 - extra space to simulate cosmic muons more easily
 
@@ -231,6 +231,10 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   std::cout << "genPosition.x() = " << genPosition.x() << std::endl; 
   std::cout << "genPosition.y() = " << genPosition.y() << std::endl; 
   std::cout << "genPosition.z() = " << genPosition.z() << std::endl; 
+  std::cout << "genPosition.x() = " << position.x() << std::endl; 
+  std::cout << "genPosition.y() = " << position.y() << std::endl; 
+  std::cout << "genPosition.z() = " << position.z() << std::endl; 
+
 
   G4Transform3D transform(*rotationMatrix, genPosition);
 
