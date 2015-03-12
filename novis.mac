@@ -39,12 +39,11 @@
 
 /WCSim/WCgeom nuPRISM
 
-/WCSim/nuPRISM/SetPMTType PMT20inch
-/WCSim/nuPRISM/SettingsFile /neut/data21/mscott/nuPRISM_Software/genev_320a_1km_nd2_9xx_test.root
-/WCSim/nuPRISM/SetPMTPercentCoverage 40
-/WCSim/nuPRISM/SetDetectorHeight 10. m
-/WCSim/nuPRISM/SetDetectorDiameter 6. m
-/WCSim/nuPRISM/Update
+#/WCSim/nuPRISM/SetPMTType PMT8inch
+#/WCSim/nuPRISM/SetPMTPercentCoverage 40
+#/WCSim/nuPRISM/SetDetectorHeight 30. m
+#/WCSim/nuPRISM/SetDetectorDiameter 12. m
+#/WCSim/nuPRISM/Update
 /WCSim/Construct
 
 
@@ -93,7 +92,7 @@
 #/gun/position 0 0 0  
 
 ## change the name of the output root file, default = wcsim.root
-/WCSimIO/RootFile wcsim_TestNewNeut.root
+/WCSimIO/RootFile wcsim_TestNEUT.root
 
 ## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
 ## a NEUT vector file as input
