@@ -39,11 +39,16 @@
 
 /WCSim/WCgeom nuPRISM
 
-#/WCSim/nuPRISM/SetPMTType PMT8inch
-#/WCSim/nuPRISM/SetPMTPercentCoverage 40
-#/WCSim/nuPRISM/SetDetectorHeight 30. m
-#/WCSim/nuPRISM/SetDetectorDiameter 12. m
-#/WCSim/nuPRISM/Update
+#Select which PMT to use
+/WCSim/nuPRISM/SetPMTType PMT8inch
+/WCSim/nuPRISM/SetPMTPercentCoverage 20
+#Set height of nuPRISM inner detector
+/WCSim/nuPRISM/SetDetectorHeight 10. m
+#Set vertical position of inner detector, in beam coordinates
+/WCSim/nuPRISM/SetDetectorVerticalPosition -10. m
+#Set diameter of inner detector
+/WCSim/nuPRISM/SetDetectorDiameter 6. m
+/WCSim/nuPRISM/Update
 /WCSim/Construct
 
 
@@ -69,7 +74,7 @@
 # Or you can use the G4 Particle Gun below
 # Or a NEUT vector file
 /mygen/generator rootracker
-/mygen/vecfile genev_320a_1km_nd3_9xx_30818.root
+/mygen/vecfile ../genev_320a_1km_nd3_9xx_30818.root
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
 #/mygen/vecfile mu+.out
 
@@ -92,7 +97,7 @@
 #/gun/position 0 0 0  
 
 ## change the name of the output root file, default = wcsim.root
-/WCSimIO/RootFile wcsim_TestNEUT.root
+/WCSimIO/RootFile wcsim_output.root
 
 ## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
 ## a NEUT vector file as input
