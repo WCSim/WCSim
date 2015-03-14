@@ -70,7 +70,7 @@ public:
   void DUSEL_200kton_12inch_HQE_10perCent();
   void DUSEL_200kton_12inch_HQE_14perCent();
 
-  void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter);
+  void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition);
   void SetDefaultNuPrismGeometry();
 
 
@@ -145,6 +145,9 @@ public:
 
   void   SetDetectorHeight(G4double height) {WCIDHeight = height;}
   G4double GetWCIDHeight(){ return WCIDHeight; }
+
+  void   SetDetectorVerticalPosition(G4double position) {WCIDVerticalPosition = position;}
+  G4double GetWCIDVerticalPosition(){ return WCIDVerticalPosition; }
 
   void   SetDetectorDiameter(G4double diameter) {WCIDDiameter = diameter;}
   G4double GetWCIDDiameter(){ return WCIDDiameter; }
@@ -269,6 +272,7 @@ private:
   G4double WCBackODLength;
   G4double WCFrontODLength;
   G4double WCIDHeight;
+  G4double WCIDVerticalPosition;
 
   G4double WCBarrelRingRadius;
 
