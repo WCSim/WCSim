@@ -181,15 +181,20 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 
   G4ThreeVector position(0,0,0);// = GetTranslationFromSettings();
 
+  if(isNuPrism) position.setY(WCIDVerticalPosition);
+
+  std::cout << "position Y = " << position.y() << std::endl;
+
+
   G4double expHallLength = 3.*WCLength; //jl145 - extra space to simulate cosmic muons more easily
 
   G4cout << " expHallLength = " << expHallLength / m << G4endl;
   G4double expHallHalfLength = 0.5*expHallLength;
 
   G4Box* solidExpHall = new G4Box("expHall",
-				  expHallHalfLength + fabs(position.x())*cm,
-				  expHallHalfLength + fabs(position.y())*cm,
-				  expHallHalfLength + fabs(position.z())*cm);
+				  expHallHalfLength + fabs(position.x()),
+				  expHallHalfLength + fabs(position.y()),
+				  expHallHalfLength + fabs(position.z()));
   
   G4LogicalVolume* logicExpHall = 
     new G4LogicalVolume(solidExpHall,
@@ -223,18 +228,10 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
       rotationMatrix->rotateX(90.*deg);
       rotationMatrix->rotateY(0.*deg);
       rotationMatrix->rotateZ(0.*deg);
-      genPosition.setX(position.x()*cm);
-      genPosition.setY(position.y()*cm);
-      genPosition.setZ(position.z()*cm);
+      genPosition.setX(position.x());
+      genPosition.setY(position.y());
+      genPosition.setZ(position.z());
   }
-
-  std::cout << "genPosition.x() = " << genPosition.x() << std::endl; 
-  std::cout << "genPosition.y() = " << genPosition.y() << std::endl; 
-  std::cout << "genPosition.z() = " << genPosition.z() << std::endl; 
-  std::cout << "genPosition.x() = " << position.x() << std::endl; 
-  std::cout << "genPosition.y() = " << position.y() << std::endl; 
-  std::cout << "genPosition.z() = " << position.z() << std::endl; 
-
 
   G4Transform3D transform(*rotationMatrix, genPosition);
 
