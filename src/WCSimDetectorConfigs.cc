@@ -337,7 +337,7 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_14perCent()
   WCAddGd               = false;
 }
 
-void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter)
+void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition)
 {
     WCSimPMTObject * PMT = CreatePMTObject(PMTType);
     WCPMTName = PMT->GetPMTName();
@@ -347,6 +347,7 @@ void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double PM
 
     WCIDHeight               = detectorHeight;
     WCIDDiameter             = detectorDiameter;
+    WCIDVerticalPosition     = verticalPosition;
 
     WCBarrelPMTOffset     = WCPMTRadius;
     WCPMTperCellHorizontal = 1.0;
@@ -363,7 +364,7 @@ void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double PM
 
 void WCSimDetectorConstruction::SetDefaultNuPrismGeometry()
 {
-    SetNuPrismGeometry("PMT8inch", 40.0, 10*m, 6*m);
+    SetNuPrismGeometry("PMT8inch", 40.0, 10*m, 6*m, 0*m);
 }
 
 
