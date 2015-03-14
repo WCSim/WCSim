@@ -114,6 +114,15 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetPMTCoverage->SetParameterName("PMTCoverage", false);
   SetPMTCoverage->SetDefaultValue("40");
 
+  // Set the vertical position of the nuPRISM-lite detector
+  SetDetectorVerticalPosition = new G4UIcmdWithADoubleAndUnit("/WCSim/nuPRISM/SetDetectorVerticalPosition", this);
+  SetDetectorVerticalPosition->SetGuidance("Set the vertical position of the nuPRISM inner detector (unit mm cm m).");
+  SetDetectorVerticalPosition->SetGuidance("The default will be 0m, so particle guns are easy to create.");
+  SetDetectorVerticalPosition->SetParameterName("DetectorVerticalPosition", false);
+  SetDetectorVerticalPosition->SetDefaultValue(0.0);
+  SetDetectorVerticalPosition->SetUnitCategory("Length");
+  SetDetectorVerticalPosition->SetDefaultUnit("m");
+
   // Set the height of the nuPRISM-lite detector
   SetDetectorHeight = new G4UIcmdWithADoubleAndUnit("/WCSim/nuPRISM/SetDetectorHeight", this);
   SetDetectorHeight->SetGuidance("Set the height of the nuPRISM inner detector (unit mm cm m).");
@@ -146,6 +155,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
 
   delete SetDetectorDiameter;
   delete SetDetectorHeight;
+  delete SetDetectorVerticalPosition;
   delete SetPMTCoverage;
   delete SetPMTType;
 
@@ -259,12 +269,14 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
         if (command == SetPMTType) WCSimDetector->SetPMTType(newValue);
         else if (command == SetPMTCoverage) WCSimDetector->SetPMTCoverage(atof(newValue));
         else if (command == SetDetectorHeight) WCSimDetector->SetDetectorHeight(SetDetectorHeight->GetNewDoubleValue(newValue));
+        else if (command == SetDetectorVerticalPosition) WCSimDetector->SetDetectorVerticalPosition(SetDetectorVerticalPosition->GetNewDoubleValue(newValue));
         else if (command == SetDetectorDiameter) WCSimDetector->SetDetectorDiameter(SetDetectorDiameter->GetNewDoubleValue(newValue));
         else if (command == UpdateNuPrism){
             WCSimDetector->SetNuPrismGeometry(WCSimDetector->GetPMTType(),
                     WCSimDetector->GetPMTCoverage(),
                     WCSimDetector->GetWCIDHeight(),
-                    WCSimDetector->GetWCIDDiameter());
+                    WCSimDetector->GetWCIDDiameter(),
+                    WCSimDetector->GetWCIDVerticalPosition());
         }
     }
 
