@@ -337,7 +337,35 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_14perCent()
   WCAddGd               = false;
 }
 
+void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition)
+{
+    WCSimPMTObject * PMT = CreatePMTObject(PMTType);
+    WCPMTName = PMT->GetPMTName();
+    WCPMTExposeHeight = PMT->GetExposeHeight();
+    WCPMTRadius = PMT->GetRadius();
+    WCPMTGlassThickness = PMT->GetPMTGlassThickness();
 
+    WCIDHeight               = detectorHeight;
+    WCIDDiameter             = detectorDiameter;
+    WCIDVerticalPosition     = verticalPosition;
+
+    WCBarrelPMTOffset     = WCPMTRadius;
+    WCPMTperCellHorizontal = 1.0;
+    WCPMTperCellVertical   = 1.0;
+    WCPMTPercentCoverage   = PMTCoverage;
+    WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage/100.0)/WCPMTRadius);
+
+    WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));
+    WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+    WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+    WCBlackSheetThickness = 2.0*cm;
+    WCAddGd               = false;
+}
+
+void WCSimDetectorConstruction::SetDefaultNuPrismGeometry()
+{
+    SetNuPrismGeometry("PMT8inch", 40.0, 10*m, 6*m, 0*m);
+}
 
 
 

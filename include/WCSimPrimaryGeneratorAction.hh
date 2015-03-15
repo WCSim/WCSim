@@ -100,9 +100,15 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         // Pointers to Rootracker vertex objects
         // Temporary vertex that is saved if desired, according to WCSimIO macro option
         TTree* fRooTrackerTree;
+        TTree* fSettingsTree;
         NRooTrackerVtx* fTmpRootrackerVtx;
+        float fNuPrismRadius;
+        float fNuBeamAng;
+        float fNuPlanePos[3];
 
     public:
+
+        inline TFile* GetInputRootrackerFile(){ return fInputRootrackerFile;}
 
         inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
         inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
