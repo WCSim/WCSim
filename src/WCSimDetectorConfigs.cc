@@ -21,7 +21,7 @@
 
 void WCSimDetectorConstruction::SetSuperKGeometry()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch", "ID");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -42,7 +42,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
 
 void WCSimDetectorConstruction::SetHyperKGeometry()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch", "ID");
   WCPMTName = PMT->GetPMTName();
   innerPMT_Expose = PMT->GetExposeHeight();
   innerPMT_Radius = PMT->GetRadius();
@@ -63,6 +63,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   innerPMT_Apitch   =   990.*mm;
 
   WCSimPMTObject* outerPMT = new PMT8inch; //currently doesn't store the pointer to this PMT. If we want to read the qpe or QE for the OD in the future, this will need to be stored.
+  outerPMT_Name = outerPMT->GetPMTName();
   outerPMT_Expose = outerPMT->GetExposeHeight();
   outerPMT_Radius = outerPMT->GetRadius();
   outerPMT_TopR      = innerPMT_TopR + 900.*mm;
@@ -86,7 +87,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
 
 void WCSimDetectorConstruction::SetHyperKGeometry_withHPD()
 {
-   WCSimPMTObject * PMT = CreatePMTObject("HPD20inchHQE");
+  WCSimPMTObject * PMT = CreatePMTObject("HPD20inchHQE", "ID");
    WCPMTName = PMT->GetPMTName();
    innerPMT_Expose = PMT->GetExposeHeight();
    innerPMT_Radius = PMT->GetRadius();
@@ -155,7 +156,7 @@ void WCSimDetectorConstruction::MatchWCSimAndHyperK()
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("PMT10inch");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT10inch", "ID");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -179,7 +180,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
 { 
-  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE", "ID");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -203,7 +204,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE", "ID");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -227,7 +228,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
 
 void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE", "ID");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -251,7 +252,7 @@ void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
 
 void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE", "ID");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -275,7 +276,7 @@ void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
 
 void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE", "ID");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -299,7 +300,7 @@ void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
 
 void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_10perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("PMT12inchHQE");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT12inchHQE", "ID");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -319,7 +320,7 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_10perCent()
 
 void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_14perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("PMT12inchHQE");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT12inchHQE", "ID");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();

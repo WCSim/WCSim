@@ -135,7 +135,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
 
   new G4PVPlacement(g4rot,
                     G4ThreeVector(r,0.,0.),
-                    ConstructPMT(innerPMT_Radius,innerPMT_Expose),
+                    ConstructPMT(WCPMTName, "ID"),
                     "PMT",
                     pmtCellLV,
                     false,PMTCopyNo++,checkOverlaps);
@@ -150,7 +150,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
 
   new G4PVPlacement(g4rot,
                     G4ThreeVector(r,0.,0.),
-                    ConstructPMT(innerPMT_Radius,innerPMT_Expose),
+                    ConstructPMT(WCPMTName, "ID"),
                     "PMT",
                     pmtCellLV,
                     false,PMTCopyNo++,checkOverlaps);
@@ -179,7 +179,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
            z = -outerPMT_Apitch/4.;
 
   new G4PVPlacement(g4rot, G4ThreeVector(x,y,z),
-                    ConstructPMT(outerPMT_Radius,outerPMT_Expose),
+                    ConstructPMT(outerPMT_Name,"OD"),
                     "PMT",
                     pmtCellLV,
                     false,PMTCopyNo++,checkOverlaps);
@@ -193,7 +193,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
   z = outerPMT_Apitch/4.;
 
   new G4PVPlacement(g4rot, G4ThreeVector(x,y,z),
-                    ConstructPMT(outerPMT_Radius,outerPMT_Expose),
+                    ConstructPMT(outerPMT_Name,"OD"),
                     "PMT",
                     pmtCellLV,
                     false,PMTCopyNo++,checkOverlaps);
@@ -219,7 +219,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
   z = -outerPMT_Apitch/4.;
 
   new G4PVPlacement(g4rot, G4ThreeVector(x,y,z),
-                    ConstructPMT(outerPMT_Radius,outerPMT_Expose),
+                    ConstructPMT(outerPMT_Name,"OD"),
                     "PMT",
                     pmtCellLV,
                     false,PMTCopyNo++,checkOverlaps);
@@ -233,7 +233,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
   z = outerPMT_Apitch/4.;
 
   new G4PVPlacement(g4rot, G4ThreeVector(x,y,z),
-                    ConstructPMT(outerPMT_Radius,outerPMT_Expose),
+                    ConstructPMT(outerPMT_Name,"OD"),
                     "PMT",
                     pmtCellLV,
                     false,PMTCopyNo++,checkOverlaps);
@@ -246,7 +246,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
   g4rot->rotateY(180.*deg);
 
   new G4PVPlacement(g4rot, G4ThreeVector(0.,0.,-innerPMT_Expose/2.),
-                    ConstructPMT(innerPMT_Radius,innerPMT_Expose),
+                    ConstructPMT(WCPMTName, "ID"),
                     "PMT",
                     pmtCellLV,
                     false,PMTCopyNo++,checkOverlaps);
@@ -260,7 +260,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
   g4rot->rotateX(-90.*deg);
 
   new G4PVPlacement(g4rot, G4ThreeVector(0.,0.,0.),
-                    ConstructPMT(innerPMT_Radius,innerPMT_Expose),
+                    ConstructPMT(WCPMTName, "ID"),
                     "PMT",
                     pmtCellLV,
                     false,PMTCopyNo++,checkOverlaps);
@@ -269,7 +269,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                                          innerPMT_Apitch, innerPMT_Expose);
 
   new G4PVPlacement(g4rot, G4ThreeVector(0.,0.,0.),
-                    ConstructPMT(innerPMT_Radius,innerPMT_Expose),
+                    ConstructPMT(WCPMTName, "ID"),
                     "PMT",
                     pmtCellLV,
                     false,PMTCopyNo++,checkOverlaps);
@@ -281,7 +281,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
   g4rot->rotateX(90.*deg);
 
   new G4PVPlacement(g4rot, G4ThreeVector(0.,0.,0.),
-                    ConstructPMT(outerPMT_Radius,outerPMT_Expose),
+                    ConstructPMT(outerPMT_Name,"OD"),
                     "PMT",
                     pmtCellLV,
                     false,PMTCopyNo++,checkOverlaps);
@@ -290,7 +290,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructHyperK()
                                   outerPMT_Apitch, outerPMT_Expose);
 
   new G4PVPlacement(g4rot, G4ThreeVector(0.,0.,0.),
-                    ConstructPMT(outerPMT_Radius,outerPMT_Expose),
+                    ConstructPMT(outerPMT_Name,"OD"),
                     "PMT",
                     pmtCellLV,
                     false,PMTCopyNo++,checkOverlaps);

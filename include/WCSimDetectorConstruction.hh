@@ -85,12 +85,28 @@ public:
 
   G4float GetPMTQE(G4float, G4int, G4float, G4float, G4float);
 
-  WCSimPMTObject *CreatePMTObject(G4String);
+  WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
-  WCSimPMTObject *  PMTptr;
-  void    SetPMTPointer(WCSimPMTObject* PMT) {PMTptr = PMT;} //currently you can only save one PMT here. When we move to multiple PMTs as a future upgrade, this can be changed to an array of PMT pointers.
-  WCSimPMTObject*  GetPMTPointer(){return PMTptr;}
-
+  WCSimPMTObject *  PMTptrID[10];
+  WCSimPMTObject * PMTptrOD[10];
+  int IDPMTCounter;
+  int ODPMTCounter;
+  void SetPMTPointer(WCSimPMTObject* PMT, G4String PMTVolume) {
+    if(PMTVolume == "ID"){
+      PMTptrID[IDPMTCounter] = PMT;
+      IDPMTCounter++;
+    }
+    else if (PMTVolume == "OD"){
+      PMTptrOD[ODPMTCounter] = PMT;
+      ODPMTCounter++;
+    }
+    else {
+       G4cout << PMTVolume << " is not a recognized PMT volume. Exiting WCSim." << G4endl; exit(1);
+    }
+  }
+  WCSimPMTObject* GetPMTPointerID(int PMTTypeNumber){return PMTptrID[PMTTypeNumber];}
+  WCSimPMTObject* GetPMTPointerOD(int PMTTypeNumber){return PMTptrOD[PMTTypeNumber];}
+  
   G4ThreeVector GetWCOffset(){return WCOffset;}
   
   // Related to the WC tube IDs
@@ -150,7 +166,7 @@ private:
 
   // The Construction routines
   G4LogicalVolume*   ConstructCylinder();
-  G4LogicalVolume* ConstructPMT(G4double,G4double);
+  G4LogicalVolume* ConstructPMT(G4String,G4String);
 
   G4LogicalVolume* ConstructCaps(G4int zflip);
 
@@ -225,7 +241,7 @@ private:
 
   // WC PMT parameters
   G4String WCPMTName;
-  typedef std::pair<G4double, G4double> PMTKey_t;
+  typedef std::pair<G4String, G4String> PMTKey_t;
   typedef std::map<PMTKey_t, G4LogicalVolume*> PMTMap_t;
   static PMTMap_t PMTLogicalVolumes;
 
@@ -328,6 +344,7 @@ private:
     G4double outerPMT_Height;
     G4double outerPMT_Radius;
     G4double outerPMT_Expose;
+    G4String outerPMT_Name;
     G4double outerPMT_TopRpitch;
     G4double outerPMT_BotRpitch;
     G4double outerPMT_Apitch;

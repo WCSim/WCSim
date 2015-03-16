@@ -344,7 +344,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 
   G4float timingConstant = 0.0;
   WCSimPMTObject * PMT;
-  PMT = myDetector->GetPMTPointer();
+  PMT = myDetector->GetPMTPointerID(0);
  
   G4double EvtG8Down = WCSimWCDigitizer::eventgatedown;
   G4double EvtG8Up = WCSimWCDigitizer::eventgateup;  // this is a negative number...
