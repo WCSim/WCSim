@@ -14,6 +14,7 @@
 
 # Some other SuperK options:
 #/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_20inchHPD_20perCent # Note: the actual coverage is 20.27%
 #/WCSim/WCgeom SuperK_12inchHPD_15perCent # Note: the actual coverage is 14.59%
 #/WCSim/WCgeom SuperK_20inchHPD_14perCent # Note: the actual coverage is 13.51%
 

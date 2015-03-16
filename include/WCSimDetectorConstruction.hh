@@ -59,6 +59,7 @@ public:
   // Related to the WC geometry
   void SetSuperKGeometry();
   void SuperK_20inchPMT_20perCent();
+  void SuperK_20inchHPD_20perCent();
   void SuperK_12inchHPD_15perCent();
   void SuperK_20inchHPD_14perCent();
   void Cylinder_12inchHPD_15perCent();
