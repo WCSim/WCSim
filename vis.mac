@@ -13,13 +13,13 @@
 #/WCSim/WCgeom SuperK
 
 # Some other SuperK options:
-#/WCSim/WCgeom SuperK_20inchPMT_20perCent
-#/WCSim/WCgeom SuperK_12inchHPD_15perCent
-#/WCSim/WCgeom SuperK_20inchHPD_14perCent
+#/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_12inchHPD_15perCent # Note: the actual coverage is 14.59%
+#/WCSim/WCgeom SuperK_20inchHPD_14perCent # Note: the actual coverage is 13.51%
 
-# Generic cylindrical detector with a height of 100m and a 
-# diameter of 69m with 12" HPD and 14% photocoverage
-#/WCSim/WCgeom Cylinder_12inchHPD_15perCent
+# Generic cylindrical detector with a height of 100m and a
+# diameter of 69m with 12" HPD and 14.59% photocoverage
+#/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
 
 # Currently by default the DUSEL configurations are 10 inch.
 # you can overide this with the WCPMTsize command.
