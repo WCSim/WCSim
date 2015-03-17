@@ -151,6 +151,7 @@ private:
   // The Construction routines
   G4LogicalVolume*   ConstructCylinder();
   G4LogicalVolume* ConstructPMT(G4double,G4double);
+  G4LogicalVolume* ConstructMultiPMT(G4double,G4double);  //TF: don't like this one header file approach...
 
   G4LogicalVolume* ConstructCaps(G4int zflip);
 

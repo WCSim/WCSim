@@ -37,7 +37,7 @@
 
 /***********************************************************
  *
- * This file containts the functions which construct a 
+ * This file contains the functions which construct a 
  * cylindrical WC detector.  It used by both the SK and 
  * LBNE WC detector modes.  It is called in the Construct()
  * method in WCSimDetectorConstruction.cc.
@@ -66,9 +66,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   totalAngle  = 2.0*pi*rad*(WCBarrelRingNPhi*WCPMTperCellHorizontal/WCBarrelNumPMTHorizontal) ;
   // angle per regular cell:
   dPhi        =  totalAngle/ WCBarrelRingNPhi;
-  // it's hight:
+  // it's height:
   barrelCellHeight  = (WCIDHeight-2.*WCBarrelPMTOffset)/WCBarrelNRings;
-  // the hight of all regular cells together:
+  // the height of all regular cells together:
   mainAnnulusHeight = WCIDHeight -2.*WCBarrelPMTOffset -2.*barrelCellHeight;
   
   
@@ -565,7 +565,9 @@ else {
   // K.Zbiri: The PMT volume and the PMT glass are now put in parallel. 
   // The PMT glass is the sensitive volume in this new configuration.
 
-  G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
+  // TF: Args are set to properties of the class which is somehow global (see the ConstructDetector.hh)
+  //     They are set in the WCSimDetectorConfigs and are property of the PMT.
+  G4LogicalVolume* logicWCPMT = ConstructMultiPMT(WCPMTRadius, WCPMTExposeHeight);
 
   
 
@@ -682,7 +684,7 @@ else {
 			    true);                       
 	
 		// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
-		// daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
+		// daughter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 		// this is still the case.
       }
     }
@@ -1053,7 +1055,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   // Add top and bottom PMTs
   // -----------------------------------------------------
   
-  G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
+  G4LogicalVolume* logicWCPMT = ConstructMultiPMT(WCPMTRadius, WCPMTExposeHeight);
 
   G4double xoffset;
   G4double yoffset;
