@@ -296,13 +296,16 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         yDir=fTmpRootrackerVtx->StdHepP4[0][1];
         zDir=fTmpRootrackerVtx->StdHepP4[0][2];
 
-        double momentum=sqrt(pow(xDir,2)+pow(yDir,2)+pow(zDir,2))*GeV;
+        double momentumGeV=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir))*GeV;
+        double momentum=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir));
 
         G4ThreeVector vtx = G4ThreeVector(xPos*m, yPos*m, zPos*m);
         G4ThreeVector dir = G4ThreeVector(-xDir, -yDir, -zDir);
 
+        dir = dir*(momentumGeV/momentum);
+
         particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[0]));
-        particleGun->SetParticleMomentum(momentum);
+        particleGun->SetParticleMomentum(momentumGeV);
         particleGun->SetParticlePosition(vtx);
         particleGun->SetParticleMomentumDirection(dir);
         // Will want to include some beam time structure at some point, but not needed at the moment since we only simulate 1 interaction per events
@@ -319,10 +322,18 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
             yDir=fTmpRootrackerVtx->StdHepP4[i][1];
             zDir=fTmpRootrackerVtx->StdHepP4[i][2];
 
-            double momentum=sqrt(pow(xDir,2)+pow(yDir,2)+pow(zDir,2))*GeV;
+            momentumGeV=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir))*GeV;
+            momentum=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir));
 
-            G4ThreeVector vtx = G4ThreeVector(xPos*m, yPos*m, zPos*m);
-            G4ThreeVector dir = G4ThreeVector(xDir, yDir, zDir);
+            vtx.setX(xPos*m);
+            vtx.setY(yPos*m);
+            vtx.setZ(zPos*m);
+
+            dir.setX(xDir);
+            dir.setY(yDir);
+            dir.setZ(zDir);
+
+            dir = dir*(momentumGeV/momentum);
 
             particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[i]));
             particleGun->SetParticleMomentum(momentum);
