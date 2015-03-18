@@ -1,6 +1,6 @@
-# Sampe setup macro with no visualization
+# Sample setup macro with no visualization
 
-/run/verbose 0
+/run/verbose 1
 /tracking/verbose 0
 /hits/verbose 0
 
@@ -75,10 +75,12 @@
 
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
-/gun/particle e-
+#/gun/particle e-
+/gun/particle mu-
 #/gun/particle pi0
-/gun/energy 500 MeV
-/gun/direction 1 0 0 
+#/gun/energy 500 MeV
+/gun/energy 1 GeV
+/gun/direction 1 0 1 
 /gun/position 0 0 0  
 
 ## change the name of the output root file, default = wcsim.root

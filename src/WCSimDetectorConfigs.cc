@@ -21,7 +21,9 @@
 
 void WCSimDetectorConstruction::SetSuperKGeometry()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch");
+
+  //WCSimPMTObject * PMT = CreatePMTObject("PMT20inch");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT8inch");
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -30,9 +32,9 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCIDHeight            = 36.200*m; //"" "" height
   WCBarrelPMTOffset     = 0.0715*m; //offset from vertical
   WCBarrelNumPMTHorizontal  = 150; 
-  WCBarrelNRings        = 17.;
-  WCPMTperCellHorizontal= 4;
-  WCPMTperCellVertical  = 3; 
+  WCBarrelNRings        = 10;//17.;
+  WCPMTperCellHorizontal= 2;//4;
+  WCPMTperCellVertical  = 2;//3; 
   WCCapPMTSpacing       = 0.707*m; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = 16.9*m;
   WCBlackSheetThickness = 2.0*cm;

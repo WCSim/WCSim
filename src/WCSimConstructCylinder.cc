@@ -567,7 +567,8 @@ else {
 
   // TF: Args are set to properties of the class which is somehow global (see the ConstructDetector.hh)
   //     They are set in the WCSimDetectorConfigs and are property of the PMT.
-  G4LogicalVolume* logicWCPMT = ConstructMultiPMT(WCPMTRadius, WCPMTExposeHeight);
+  //G4LogicalVolume* logicWCPMT = ConstructMultiPMT(WCPMTRadius, WCPMTExposeHeight);
+  G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
 
   
 
@@ -1055,7 +1056,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   // Add top and bottom PMTs
   // -----------------------------------------------------
   
-  G4LogicalVolume* logicWCPMT = ConstructMultiPMT(WCPMTRadius, WCPMTExposeHeight);
+	//G4LogicalVolume* logicWCPMT = ConstructMultiPMT(WCPMTRadius, WCPMTExposeHeight);
+	G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
 
   G4double xoffset;
   G4double yoffset;
