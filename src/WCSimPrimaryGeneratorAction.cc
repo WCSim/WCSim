@@ -224,7 +224,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
             particleGun->GeneratePrimaryVertex(anEvent);
         }
     }
-
     else if (useRootrackerEvt)
     { 
         if ( !fInputRootrackerFile->IsOpen() )
@@ -291,41 +290,52 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         //i > 2 are the outgoing particles
 
 	// First simulate the incoming neutrino
-
         xDir=fTmpRootrackerVtx->StdHepP4[0][0];
         yDir=fTmpRootrackerVtx->StdHepP4[0][1];
         zDir=fTmpRootrackerVtx->StdHepP4[0][2];
 
-        double momentum=sqrt(pow(xDir,2)+pow(yDir,2)+pow(zDir,2))*GeV;
+        double momentumGeV=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir))*GeV;
+        double momentum=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir));
 
         G4ThreeVector vtx = G4ThreeVector(xPos*m, yPos*m, zPos*m);
         G4ThreeVector dir = G4ThreeVector(-xDir, -yDir, -zDir);
 
+        dir = dir*(momentumGeV/momentum);
+
         particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[0]));
-        particleGun->SetParticleMomentum(momentum);
+        double kin_energy = momentumGeV;//fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
+        particleGun->SetParticleEnergy(kin_energy);
         particleGun->SetParticlePosition(vtx);
         particleGun->SetParticleMomentumDirection(dir);
         // Will want to include some beam time structure at some point, but not needed at the moment since we only simulate 1 interaction per events
         // particleGun->SetParticleTime(time);
         particleGun->GeneratePrimaryVertex(anEvent);  //Place vertex in stack
-	
+
 	// Now simulate the outgoing particles
-        for (int i = 2; i < fTmpRootrackerVtx->StdHepN; i++){
-	
-            // skip if it's not the lepton, this should be the first particle out of the nucleus
-            if(fabs(fTmpRootrackerVtx->StdHepPdgTemp[i]) > 16) continue;
+        for (int i = 3; i < fTmpRootrackerVtx->StdHepN; i++){
 
             xDir=fTmpRootrackerVtx->StdHepP4[i][0];
             yDir=fTmpRootrackerVtx->StdHepP4[i][1];
             zDir=fTmpRootrackerVtx->StdHepP4[i][2];
 
-            double momentum=sqrt(pow(xDir,2)+pow(yDir,2)+pow(zDir,2))*GeV;
+            momentumGeV=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir))*GeV;
+            momentum=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir));
 
-            G4ThreeVector vtx = G4ThreeVector(xPos*m, yPos*m, zPos*m);
-            G4ThreeVector dir = G4ThreeVector(xDir, yDir, zDir);
+            vtx.setX(xPos*m);
+            vtx.setY(yPos*m);
+            vtx.setZ(zPos*m);
+
+            dir.setX(xDir);
+            dir.setY(yDir);
+            dir.setZ(zDir);
+
+            dir = dir*(momentumGeV/momentum);
 
             particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[i]));
-            particleGun->SetParticleMomentum(momentum);
+
+            double kin_energy = fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
+
+            particleGun->SetParticleEnergy(kin_energy);
             particleGun->SetParticlePosition(vtx);
             particleGun->SetParticleMomentumDirection(dir);
             // Will want to include some beam time structure at some point, but not needed at the moment since we only simulate 1 interaction per events
