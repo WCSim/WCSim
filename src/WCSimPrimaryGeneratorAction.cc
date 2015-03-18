@@ -224,7 +224,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
             particleGun->GeneratePrimaryVertex(anEvent);
         }
     }
-
     else if (useRootrackerEvt)
     { 
         if ( !fInputRootrackerFile->IsOpen() )
@@ -291,7 +290,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         //i > 2 are the outgoing particles
 
 	// First simulate the incoming neutrino
-
         xDir=fTmpRootrackerVtx->StdHepP4[0][0];
         yDir=fTmpRootrackerVtx->StdHepP4[0][1];
         zDir=fTmpRootrackerVtx->StdHepP4[0][2];
@@ -305,18 +303,16 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         dir = dir*(momentumGeV/momentum);
 
         particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[0]));
-        particleGun->SetParticleMomentum(momentumGeV);
+        double kin_energy = momentumGeV;//fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
+        particleGun->SetParticleEnergy(kin_energy);
         particleGun->SetParticlePosition(vtx);
         particleGun->SetParticleMomentumDirection(dir);
         // Will want to include some beam time structure at some point, but not needed at the moment since we only simulate 1 interaction per events
         // particleGun->SetParticleTime(time);
         particleGun->GeneratePrimaryVertex(anEvent);  //Place vertex in stack
-	
+
 	// Now simulate the outgoing particles
-        for (int i = 2; i < fTmpRootrackerVtx->StdHepN; i++){
-	
-            // skip if it's not the lepton, this should be the first particle out of the nucleus
-            if(fabs(fTmpRootrackerVtx->StdHepPdgTemp[i]) > 16) continue;
+        for (int i = 3; i < fTmpRootrackerVtx->StdHepN; i++){
 
             xDir=fTmpRootrackerVtx->StdHepP4[i][0];
             yDir=fTmpRootrackerVtx->StdHepP4[i][1];
@@ -336,7 +332,10 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
             dir = dir*(momentumGeV/momentum);
 
             particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[i]));
-            particleGun->SetParticleMomentum(momentum);
+
+            double kin_energy = fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
+
+            particleGun->SetParticleEnergy(kin_energy);
             particleGun->SetParticlePosition(vtx);
             particleGun->SetParticleMomentumDirection(dir);
             // Will want to include some beam time structure at some point, but not needed at the moment since we only simulate 1 interaction per events
