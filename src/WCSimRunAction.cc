@@ -45,6 +45,28 @@ WCSimRunAction::~WCSimRunAction()
 
 void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
 {
+
+  fSettingsOutputTree = NULL;
+
+  if(GetSaveRooTracker()){
+    //Setup settings tree
+    for(int i = 0; i < 3; ++i){
+        WCXRotation[i] = 0;
+        WCYRotation[i] = 0;
+        WCZRotation[i] = 0;
+    }
+
+    fSettingsInputTree = (TTree*) gDirectory->Get("Settings");
+    if(fSettingsInputTree){
+        fSettingsOutputTree = fSettingsInputTree->CloneTree(0);
+        fSettingsOutputTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/F");
+        fSettingsOutputTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/F");
+        fSettingsOutputTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
+    }
+  }      
+
+
+
 //   G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
   numberOfEventsGenerated = 0;
   numberOfTimesWaterTubeHit = 0;
@@ -88,9 +110,8 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
   wcsimrootgeom = new WCSimRootGeom();
   TBranch *geoBranch = geoTree->Branch("wcsimrootgeom", "WCSimRootGeom", &wcsimrootgeom, bufsize,0);
 
-  FillGeoTree();
-
-  if(GetSaveRooTracker()){
+  //Setup rooTracker tree
+  if(SaveRooTracker){
     //Setup TClonesArray to store Rootracker truth info
     fVertices = new TClonesArray("NRooTrackerVtx", 10);
     fVertices->Clear();
@@ -98,8 +119,10 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
     fRooTrackerOutputTree = new TTree("fRooTrackerOutputTree","Event Vertex Truth Array");
     fRooTrackerOutputTree->Branch("NVtx",&fNVtx,"NVtx/I");
     fRooTrackerOutputTree->Branch("NRooTrackerVtx","TClonesArray", &fVertices);
-    //fSettingsOutputTree = new TTree("SettingsTree","Settings tree");
-  }      
+  }
+
+  FillGeoTree();
+
 }
 
 void WCSimRunAction::EndOfRunAction(const G4Run*)
@@ -178,24 +201,25 @@ void WCSimRunAction::FillGeoTree(){
   offset[1] = offset1[1];
   offset[2] = offset1[2];
   wcsimrootgeom-> SetWCOffset(offset[0],offset[1],offset[2]);
- 
-  G4ThreeVector rotation1= wcsimdetector->GetWCXRotation();
-  rotation[0] = rotation1[0];
-  rotation[1] = rotation1[1];
-  rotation[2] = rotation1[2];
-  wcsimrootgeom-> SetWCXRotation(rotation[0],rotation[1],rotation[2]);
 
-  G4ThreeVector rotation2= wcsimdetector->GetWCYRotation();
-  rotation[0] = rotation2[0];
-  rotation[1] = rotation2[1];
-  rotation[2] = rotation2[2];
-  wcsimrootgeom-> SetWCYRotation(rotation[0],rotation[1],rotation[2]);
-
-  G4ThreeVector rotation3= wcsimdetector->GetWCZRotation();
-  rotation[0] = rotation3[0];
-  rotation[1] = rotation3[1];
-  rotation[2] = rotation3[2];
-  wcsimrootgeom-> SetWCZRotation(rotation[0],rotation[1],rotation[2]);
+  if(SaveRooTracker && fSettingsOutputTree){ 
+      G4ThreeVector rotation1= wcsimdetector->GetWCXRotation();
+      WCXRotation[0] = rotation1[0];
+      WCXRotation[1] = rotation1[1];
+      WCXRotation[2] = rotation1[2];
+    
+      G4ThreeVector rotation2= wcsimdetector->GetWCYRotation();
+      WCYRotation[0] = rotation2[0];
+      WCYRotation[1] = rotation2[1];
+      WCYRotation[2] = rotation2[2];
+    
+      G4ThreeVector rotation3= wcsimdetector->GetWCZRotation();
+      WCZRotation[0] = rotation3[0];
+      WCZRotation[1] = rotation3[1];
+      WCZRotation[2] = rotation3[2];
+      fSettingsInputTree->GetEntry(0); 
+      fSettingsOutputTree->Fill();
+  }
 
   std::vector<WCSimPmtInfo*> *fpmts = wcsimdetector->Get_Pmts();
   WCSimPmtInfo *pmt;
@@ -221,6 +245,8 @@ void WCSimRunAction::FillGeoTree(){
   geoTree->Fill();
   TFile* hfile = geoTree->GetCurrentFile();
   hfile->Write(); 
+  if(SaveRooTracker) fSettingsOutputTree->Write();
+      
 }
 
 NRooTrackerVtx* WCSimRunAction::GetRootrackerVertex(){
