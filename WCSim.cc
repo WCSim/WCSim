@@ -20,6 +20,10 @@
 #include "WCSimRandomParameters.hh"
 #include <iostream>
 
+#ifdef G4UI_USE
+#include "G4UIExecutive.hh"
+#endif
+
 int main(int argc,char** argv)
 {
   // Construct the default run manager
@@ -99,15 +103,22 @@ int main(int argc,char** argv)
   { 
 
     // Start UI Session
-    G4UIsession* session =  new G4UIterminal(new G4UItcsh);
+    //    G4UIsession* session =  new G4UIterminal(new G4UItcsh);
 
+    //using working example N04 for Qt UI Compatible code
+#ifdef G4UI_USE
+    G4UIExecutive * ui = new G4UIExecutive(argc,argv);
+#ifdef G4VIS_USE
     // Visualization Macro
     UI->ApplyCommand("/control/execute vis.mac");
-
+#endif
+    ui->SessionStart();
+    delete ui;
+#endif
     // Start Interactive Mode
-    session->SessionStart();
+    //session->SessionStart();
 
-    delete session;
+    //delete session;
   }
   else           // Batch mode
   { 

@@ -44,6 +44,11 @@
 #include "G4OpenGLStoredXm.hh"
 #endif
 
+#ifdef G4VIS_USE_OPENGLQT
+#include "G4OpenGLImmediateQt.hh"
+#include "G4OpenGLStoredQt.hh"
+#endif
+
 #ifdef G4VIS_USE_OIX
 #include "G4OpenInventorX.hh"
 #endif
@@ -85,6 +90,11 @@ void WCSimVisManager::RegisterGraphicsSystems () {
 #ifdef G4VIS_USE_OPENGLX
   RegisterGraphicsSystem (new G4OpenGLImmediateX);
   RegisterGraphicsSystem (new G4OpenGLStoredX);
+#endif
+
+#ifdef G4VIS_USE_OPENGLQT
+  RegisterGraphicsSystem (new G4OpenGLImmediateQt);
+  RegisterGraphicsSystem (new G4OpenGLStoredQt);
 #endif
 
 #ifdef G4VIS_USE_OPENGLWIN32
