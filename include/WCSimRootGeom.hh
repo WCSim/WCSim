@@ -59,11 +59,8 @@ private:
   Float_t                fWCPMTRadius; // Radius of PMT
   Int_t                  fWCNumPMT;   // Number of PMTs
   Float_t                fWCOffset[3]; // Offset of barrel center in global coords
-  Float_t                fWCXRotation[3]; // Barrel local axis in global coords
-  Float_t                fWCYRotation[3]; // Barrel local axis in global coords
-  Float_t                fWCZRotation[3]; // Barrel local axis in global coords
 
-   Int_t                  fOrientation; //Orientation o detector, 0 is 2km horizontal, 1 is Upright
+  Int_t                  fOrientation; //Orientation o detector, 0 is 2km horizontal, 1 is Upright
 
   // Could make a TClonesArray of PMTs but let's keep it simple
   //   since the arrays just won't be that large
@@ -86,16 +83,6 @@ public:
   void  SetWCPMTRadius(Float_t f) {fWCPMTRadius = f;}
   void  SetWCOffset(Float_t x, Float_t y, Float_t z) 
            {fWCOffset[0]=x; fWCOffset[1]=y; fWCOffset[2] = z;}
-  void  SetWCXRotation(Float_t x, Float_t y, Float_t z) 
-           {fWCXRotation[0]=x; fWCXRotation[1]=y; fWCXRotation[2] = z;}
-  void  SetWCYRotation(Float_t x, Float_t y, Float_t z) 
-           {fWCYRotation[0]=x; fWCYRotation[1]=y; fWCYRotation[2] = z;}
-  void  SetWCZRotation(Float_t x, Float_t y, Float_t z) 
-           {fWCZRotation[0]=x; fWCZRotation[1]=y; fWCZRotation[2] = z;}
-
-
-
-
 
   void  SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, Float_t rot[3], Float_t pos[3], bool expand=true);
   void  SetOrientation(Int_t o) {fOrientation = o;}
@@ -109,10 +96,6 @@ public:
   Int_t GetWCNumPMT() const {return fWCNumPMT;}
   Float_t GetWCPMTRadius() const {return fWCPMTRadius;}
   Float_t GetWCOffset(Int_t i) const {return (i<3) ? fWCOffset[i] : 0.;}
-  Float_t GetWCXRotation(Int_t i) const {return (i<3) ? fWCXRotation[i] : 0.;}
-  Float_t GetWCYRotation(Int_t i) const {return (i<3) ? fWCYRotation[i] : 0.;}
-  Float_t GetWCZRotation(Int_t i) const {return (i<3) ? fWCZRotation[i] : 0.;}
-
    
   Int_t GetOrientation() { return fOrientation; }
   //WCSimRootPMT GetPMT(Int_t i){return *(new WCSimRootPMT());}
