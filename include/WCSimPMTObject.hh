@@ -19,6 +19,8 @@ public:
   virtual G4float* GetQE()=0;
   virtual G4float* GetQEWavelength()=0;
   virtual G4float  GetmaxQE()=0;
+  virtual G4float* GetCE()=0;
+  virtual G4float* GetCEAngle()=0;
   virtual float  GettimingResolution(float)=0;
   virtual G4double GetPMTGlassThickness()=0;
 };
@@ -40,6 +42,8 @@ public:
   G4float* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
+  G4float* GetCE();
+  G4float* GetCEAngle();
   float  GettimingResolution(float);
   G4double GetPMTGlassThickness();
 };
@@ -60,6 +64,8 @@ public:
   G4float* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
+  G4float* GetCE();
+  G4float* GetCEAngle();
   float  GettimingResolution(float);
   G4double GetPMTGlassThickness();
 };
@@ -79,6 +85,8 @@ public:
   G4float* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
+  G4float* GetCE();
+  G4float* GetCEAngle();
   float  GettimingResolution(float);
   G4double GetPMTGlassThickness();
  };
@@ -98,6 +106,8 @@ public:
   G4float* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
+  G4float* GetCE();
+  G4float* GetCEAngle();
   float  GettimingResolution(float);
   G4double GetPMTGlassThickness();
  };
@@ -117,6 +127,8 @@ public:
   G4float* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
+  G4float* GetCE();
+  G4float* GetCEAngle();
   float  GettimingResolution(float);
   G4double GetPMTGlassThickness();
  };
@@ -137,6 +149,8 @@ public:
   G4float* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
+  G4float* GetCE();
+  G4float* GetCEAngle();
   float  GettimingResolution(float);
   G4double GetPMTGlassThickness();
 };
@@ -157,6 +171,8 @@ public:
   G4float* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
+  G4float* GetCE();
+  G4float* GetCEAngle();
   float  GettimingResolution(float);
   G4double GetPMTGlassThickness();
 };

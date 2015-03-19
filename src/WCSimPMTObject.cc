@@ -168,6 +168,16 @@ G4float PMT20inch::GetmaxQE(){
   const G4float maxQE = 0.211;
   return maxQE;
 }
+G4float* PMT20inch::GetCEAngle(){
+  static G4float angle[10] = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
+  return angle;
+}
+G4float* PMT20inch::GetCE(){
+  static G4float CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
+  //  static G4float CE[10]={100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)
+  return CE;
+}
+
 
 
 PMT8inch::PMT8inch(){}
@@ -316,6 +326,17 @@ G4float  PMT8inch::GetmaxQE(){
     const G4float maxQE = 0.211;
   return maxQE;
 }
+
+G4float* PMT8inch::GetCEAngle(){
+  static G4float angle[10] = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
+  return angle;
+}
+G4float* PMT8inch::GetCE(){
+  static G4float CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
+  //  static G4float CE[10]={100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)
+  return CE;
+}
+
 
 PMT10inch::PMT10inch(){}
 
@@ -466,6 +487,17 @@ G4float  PMT10inch::GetmaxQE(){
   return maxQE;
 }
 
+G4float* PMT10inch::GetCEAngle(){
+  static G4float angle[10] = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
+  return angle;
+}
+G4float* PMT10inch::GetCE(){
+  static G4float CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
+  //  static G4float CE[10]={100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)
+  return CE;
+}
+
+
 PMT10inchHQE::PMT10inchHQE(){}
 
 PMT10inchHQE::~PMT10inchHQE(){}
@@ -613,6 +645,17 @@ G4float  PMT10inchHQE::GetmaxQE(){
   const G4float maxQE = 0.3396;
   return maxQE;
 }
+
+G4float* PMT10inchHQE::GetCEAngle(){
+  static G4float angle[10] = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
+  return angle;
+}
+G4float* PMT10inchHQE::GetCE(){
+  static G4float CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
+  //  static G4float CE[10]={100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)
+  return CE;
+}
+
 
 PMT12inchHQE::PMT12inchHQE(){}
 
@@ -763,6 +806,17 @@ G4float  PMT12inchHQE::GetmaxQE()//currently uses the same as the 10inchHQE
   const G4float maxQE = 0.3396;
   return maxQE;
 }
+
+G4float* PMT12inchHQE::GetCEAngle(){
+  static G4float angle[10] = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
+  return angle;
+}
+G4float* PMT12inchHQE::GetCE(){
+  static G4float CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
+  //  static G4float CE[10]={100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)
+  return CE;
+}
+
 
 
 //////////////////////////////////////////////
@@ -924,6 +978,16 @@ G4float HPD20inchHQE::GetmaxQE(){
   return maxQE;
 }
 
+G4float* HPD20inchHQE::GetCEAngle(){
+  static G4float angle[10] = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
+  return angle;
+}
+G4float* HPD20inchHQE::GetCE(){
+  static G4float CE[10] = { 98., 98., 98., 98., 98., 98., 98., 98., 98., 98.};
+  return CE;
+}
+
+
 //Information for the HPD12inchHQE is identical to the HPD20inchHQE, except for GetPMTName, GetRadius and GetExposeHeight. 
 
 HPD12inchHQE::HPD12inchHQE(){}
@@ -1075,3 +1139,13 @@ G4float HPD12inchHQE::GetmaxQE(){
   const G4float maxQE = 0.315;
   return maxQE;
 }
+
+G4float* HPD12inchHQE::GetCEAngle(){
+  static G4float angle[10] = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
+  return angle;
+}
+G4float* HPD12inchHQE::GetCE(){
+  static G4float CE[10] = { 98., 98., 98., 98., 98., 98., 98., 98., 98., 98.};
+  return CE;
+}
+
