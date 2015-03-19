@@ -28,12 +28,13 @@ G4String PMT20inch::GetPMTName() {G4String PMTName = "20inch"; return PMTName;}
 G4double PMT20inch::GetExposeHeight() {return .18*m;}
 G4double PMT20inch::GetRadius() {return .254*m;}
 G4double PMT20inch::GetPMTGlassThickness() {return 0.4*cm;}
-float PMT20inch::GettimingResolution(float Q) {
+float PMT20inch::HitTimeSmearing(float Q) {
   float timingConstant = 10.0; 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
   // looking at SK's jitter function for 20" tubes
   if (timingResolution < 0.58) timingResolution=0.58;
-  return timingResolution;
+  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  return Smearing_factor;
 }
 
 G4float* PMT20inch::Getqpe()
@@ -188,12 +189,14 @@ G4String PMT8inch::GetPMTName() {G4String PMTName = "8inch"; return PMTName;}
 G4double PMT8inch::GetExposeHeight() {return 91.6*mm;}
 G4double PMT8inch::GetRadius() {return 101.6*mm;}
 G4double PMT8inch::GetPMTGlassThickness() {return 0.55*cm;} //currently the same as 10inch
-G4float PMT8inch::GettimingResolution(float Q) { 
+G4float PMT8inch::HitTimeSmearing(float Q) { 
   float timingConstant = 1.890; 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
   // looking at SK's jitter function for 20" tubes
   if (timingResolution < 0.58) timingResolution=0.58;
-  return timingResolution;}
+  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  return Smearing_factor;
+}
 
 G4float* PMT8inch::Getqpe() //currently uses the same as 20inch
    {
@@ -346,12 +349,13 @@ G4String PMT10inch::GetPMTName() {G4String PMTName = "10inch"; return PMTName;}
 G4double PMT10inch::GetExposeHeight() {return 117.*mm;}
 G4double PMT10inch::GetRadius() {return 127.*mm;}
 G4double PMT10inch::GetPMTGlassThickness() {return 0.55*cm;}
-float PMT10inch::GettimingResolution(float Q) { 
+float PMT10inch::HitTimeSmearing(float Q) { 
   float timingConstant = 2.0; 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
   // looking at SK's jitter function for 20" tubes
   if (timingResolution < 0.58) timingResolution=0.58;
-  return timingResolution;           
+  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  return Smearing_factor;
 }
 
 G4float* PMT10inch::Getqpe() //currently uses the same as 20inch
@@ -506,12 +510,14 @@ G4String PMT10inchHQE::GetPMTName() {G4String PMTName = "10inch"; return PMTName
 G4double PMT10inchHQE::GetExposeHeight() {return 117.*mm;}
 G4double PMT10inchHQE::GetRadius() {return 127.*mm;}
 G4double PMT10inchHQE::GetPMTGlassThickness() {return 0.55*cm;}
-G4float PMT10inchHQE::GettimingResolution(float Q) {
+G4float PMT10inchHQE::HitTimeSmearing(float Q) {
   float timingConstant = 2.0; 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
   // looking at SK's jitter function for 20" tubes
   if (timingResolution < 0.58) timingResolution=0.58;
-  return timingResolution;}
+  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  return Smearing_factor;
+}
 
 G4float* PMT10inchHQE::Getqpe() //currently uses the same as 20inch
    {
@@ -665,12 +671,14 @@ G4String PMT12inchHQE::GetPMTName() {G4String PMTName = "12inch"; return PMTName
 G4double PMT12inchHQE::GetExposeHeight() {return 118.*mm;}
 G4double PMT12inchHQE::GetRadius() {return 152.4*mm;}
 G4double PMT12inchHQE::GetPMTGlassThickness() {return 0.55*cm;}
-G4float PMT12inchHQE::GettimingResolution(float Q) {
+G4float PMT12inchHQE::HitTimeSmearing(float Q) {
   float timingConstant = 2.0; 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
   // looking at SK's jitter function for 20" tubes
   if (timingResolution < 0.58) timingResolution=0.58;
-  return timingResolution;}
+  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  return Smearing_factor;
+}
 
 G4float* PMT12inchHQE::Getqpe() //currently uses the same as 20inch
    {
@@ -836,12 +844,13 @@ G4String HPD20inchHQE::GetPMTName() {G4String PMTName = "HPD20inchHQE"; return P
 G4double HPD20inchHQE::GetExposeHeight() {return .192*m;}
 G4double HPD20inchHQE::GetRadius() {return .254*m;}
 G4double HPD20inchHQE::GetPMTGlassThickness() {return 0.3*cm;}
-float HPD20inchHQE::GettimingResolution(float Q) {
+float HPD20inchHQE::HitTimeSmearing(float Q) {
   float timingConstant = 5.0; 
   float timingResolution = 0.47 + sqrt(timingConstant/Q); 
   // looking at SK's jitter function for 20" tubes
   if (timingResolution < 1.2) timingResolution=1.2;
-  return timingResolution;
+  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  return Smearing_factor;
 }
 
 G4float* HPD20inchHQE::Getqpe()
@@ -998,12 +1007,13 @@ G4String HPD12inchHQE::GetPMTName() {G4String PMTName = "HPD12inchHQE"; return P
 G4double HPD12inchHQE::GetExposeHeight() {return 118.*mm;} //Assumed to be the same as the PMT12inchHQE.
 G4double HPD12inchHQE::GetRadius() {return 152.4*mm;} //12 inches
 G4double HPD12inchHQE::GetPMTGlassThickness() {return 0.3*cm;} 
-float HPD12inchHQE::GettimingResolution(float Q) {
+float HPD12inchHQE::HitTimeSmearing(float Q) {
   float timingConstant = 5.0; 
   float timingResolution = 0.47 + sqrt(timingConstant/Q); 
   // looking at SK's jitter function for 20" tubes
   if (timingResolution < 1.2) timingResolution=1.2;
-  return timingResolution;
+  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  return Smearing_factor;
 }
 
 G4float* HPD12inchHQE::Getqpe()
