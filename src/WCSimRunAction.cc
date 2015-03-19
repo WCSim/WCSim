@@ -47,25 +47,30 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
 {
 
   fSettingsOutputTree = NULL;
+  fSettingsInputTree = NULL;
+  for(int i = 0; i < 3; ++i){
+      WCXRotation[i] = 0;
+      WCYRotation[i] = 0;
+      WCZRotation[i] = 0;
+  }
 
-  if(GetSaveRooTracker()){
-    //Setup settings tree
-    for(int i = 0; i < 3; ++i){
-        WCXRotation[i] = 0;
-        WCYRotation[i] = 0;
-        WCZRotation[i] = 0;
+  if(wcsimdetector->GetIsNuPrism()){
+    if(GetSaveRooTracker()){
+      //Setup settings tree
+      fSettingsInputTree = (TTree*) gDirectory->Get("Settings");
     }
-
-    fSettingsInputTree = (TTree*) gDirectory->Get("Settings");
     if(fSettingsInputTree){
-        fSettingsOutputTree = fSettingsInputTree->CloneTree(0);
-        fSettingsOutputTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/F");
-        fSettingsOutputTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/F");
-        fSettingsOutputTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
+      fSettingsOutputTree = fSettingsInputTree->CloneTree(0);
     }
+    else{
+      fSettingsOutputTree = new TTree("Settings","Settings");
+    }
+
+    fSettingsOutputTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/F");
+    fSettingsOutputTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/F");
+    fSettingsOutputTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
+    
   }      
-
-
 
 //   G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
   numberOfEventsGenerated = 0;
@@ -155,6 +160,7 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 }
 
 void WCSimRunAction::FillGeoTree(){
+
   // Fill the geometry tree
   G4int geo_type;
   G4double cylinfo[3];
@@ -202,7 +208,7 @@ void WCSimRunAction::FillGeoTree(){
   offset[2] = offset1[2];
   wcsimrootgeom-> SetWCOffset(offset[0],offset[1],offset[2]);
 
-  if(SaveRooTracker && fSettingsOutputTree){ 
+  if(wcsimdetector->GetIsNuPrism()){ 
       G4ThreeVector rotation1= wcsimdetector->GetWCXRotation();
       WCXRotation[0] = rotation1[0];
       WCXRotation[1] = rotation1[1];
@@ -217,7 +223,7 @@ void WCSimRunAction::FillGeoTree(){
       WCZRotation[0] = rotation3[0];
       WCZRotation[1] = rotation3[1];
       WCZRotation[2] = rotation3[2];
-      fSettingsInputTree->GetEntry(0); 
+      if(fSettingsInputTree) fSettingsInputTree->GetEntry(0); 
       fSettingsOutputTree->Fill();
   }
 
@@ -245,7 +251,7 @@ void WCSimRunAction::FillGeoTree(){
   geoTree->Fill();
   TFile* hfile = geoTree->GetCurrentFile();
   hfile->Write(); 
-  if(SaveRooTracker) fSettingsOutputTree->Write();
+  if(wcsimdetector->GetIsNuPrism()) fSettingsOutputTree->Write();
       
 }
 
