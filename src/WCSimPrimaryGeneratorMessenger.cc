@@ -33,7 +33,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
 
   //C. Vilela: Adding PMTPoisson for generating photoelectrons directly on PMTs according to a Poisson distribution.
   poisCmd = new G4UIcmdWithABool("/mygen/pmtPoisson",this);
-  poisCmd->SetGuidance("Flag for generating photoelectrons directly on PMTs acording to a Poisson distribution");
+  poisCmd->SetGuidance("Flag for generating photoelectrons directly on PMTs according to a Poisson distribution. These PE's will be generated in addition to light produce by any particles generated. Set dark rate to 0 and do not generate any particles for events with only Poisson PE's.");
   poisCmd->SetGuidance("Set poisson mean with /mygen/poissonMean");
   poisCmd->SetParameterName("pmtPoisson", true);
 
