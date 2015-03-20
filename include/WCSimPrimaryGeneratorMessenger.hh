@@ -22,6 +22,9 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   
  private:
   WCSimPrimaryGeneratorAction* myAction;
+  // Boolean to determine whether the neutrino generator has been set yet
+  // Need to know whether we expect to open a ROOT file or a text file
+  bool genSet;
   
  private: //commands
   G4UIdirectory*      mydetDirectory;
