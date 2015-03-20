@@ -48,6 +48,8 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   WCSimWCDigitizer* WCDM = new WCSimWCDigitizer( "WCReadout", myDetector);
   DMman->AddNewModule(WCDMPMT);
   DMman->AddNewModule(WCDM);
+
+  randGen = new TRandom3();
 }
 
 WCSimEventAction::~WCSimEventAction(){}
@@ -116,6 +118,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       bool hitExists = false;
       int hitIndex = -1;
       for (int existingHit = 0; existingHit < WCHC->GetSize(); existingHit++){
+
 	if( (*WCHC)[existingHit]->GetTubeID() == (*pmtIt)->Get_tubeid() ){
 	  
 	  hitExists = true;
@@ -137,8 +140,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       if (! hitExists){
 	WCHC->insert((WCSimWCHit*) new WCSimWCHit() );
 	hitIndex = WCHC->GetSize()-1;
+	
       }
-      
+     
       (*WCHC)[hitIndex]->SetTubeID((*pmtIt)->Get_tubeid());
       (*WCHC)[hitIndex]->SetTrackID(0);
       (*WCHC)[hitIndex]->SetEdep(0.);
