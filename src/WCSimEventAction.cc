@@ -99,6 +99,62 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCHC = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
   }
 
+  // If this option is chosen
+  // pe's will be generated on the pmts.
+  if( generatorAction->IsUsingPoissonPMT() ){
+
+    // Loop through PMTs in detector
+    for (
+	 std::vector<WCSimPmtInfo*>::iterator pmtIt = detectorConstructor->Get_Pmts()->begin();
+	 pmtIt != detectorConstructor->Get_Pmts()->end();
+	 pmtIt++ ){
+      
+      // Generate number of PEs acording to Poisson with macro defined mean
+      int nPoisson = randGen->Poisson(generatorAction->GetPoissonPMTMean());
+      
+      // Check if PMTs have existing hits
+      bool hitExists = false;
+      int hitIndex = -1;
+      for (int existingHit = 0; existingHit < WCHC->GetSize(); existingHit++){
+	if( (*WCHC)[existingHit]->GetTubeID() == (*pmtIt)->Get_tubeid() ){
+	  
+	  hitExists = true;
+	  hitIndex = existingHit;
+
+	  G4cout << "/mygen/pmtPoisson Error: Hits found when placing dummy PEs. Use lower energy primary particles or set '/mygen/pmtPoisson' to false for a real run." << G4endl;
+	  
+	  if ((*WCHC)[existingHit]->GetTotalPe() > nPoisson){
+	    G4cout << "/mygen/pmtPoisson Error: More PEs in original hit than in the Poisson throw. Poisson distribution will be distorted. Use lower energy primary particles or set '/mygen/pmtPoisson' to false for a real run." << G4endl;
+	    
+	  } else {
+	    // Take into account already exising PEs... this is not ideal as they might not be in time.
+	    nPoisson -= (*WCHC)[existingHit]->GetTotalPe();
+	  }
+	}
+	if (hitExists) break;
+      }
+      
+      if (! hitExists){
+	WCHC->insert((WCSimWCHit*) new WCSimWCHit() );
+	hitIndex = WCHC->GetSize()-1;
+      }
+      
+      (*WCHC)[hitIndex]->SetTubeID((*pmtIt)->Get_tubeid());
+      (*WCHC)[hitIndex]->SetTrackID(0);
+      (*WCHC)[hitIndex]->SetEdep(0.);
+      (*WCHC)[hitIndex]->SetPos(detectorConstructor->GetTubeTransform((*pmtIt)->Get_tubeid()).getTranslation());
+      (*WCHC)[hitIndex]->SetRot(detectorConstructor->GetTubeTransform((*pmtIt)->Get_tubeid()).getRotation());
+      
+      // Ignore logical volume for now...
+      for (int pe = 0; pe < nPoisson; pe++) {
+	(*WCHC)[hitIndex]->AddPe(G4RandGauss::shoot(0.0,10.));
+	(*WCHC)[hitIndex]->AddParentID(0); // Make parent a geantino (whatever that is)
+      }
+    }
+  }
+  
+
+
   // To use Do like This:
   // --------------------
   //   if (WCHC)

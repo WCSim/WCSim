@@ -29,6 +29,17 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
 
   genSet = false;
 
+  //C. Vilela: Adding PMTPoisson for generating photoelectrons directly on PMTs according to a Poisson distribution.
+  poisCmd = new G4UIcmdWithABool("/mygen/pmtPoisson",this);
+  poisCmd->SetGuidance("Flag for generating photoelectrons directly on PMTs acording to a Poisson distribution");
+  poisCmd->SetGuidance("Set poisson mean with /mygen/poissonMean");
+  poisCmd->SetParameterName("pmtPoisson", true);
+
+  poisMeanCmd = new G4UIcmdWithADouble("/mygen/poissonMean",this);
+  poisMeanCmd->SetGuidance("Set Poisson mean to be used with /mygen/pmtPoisson. Defaults to 1.");
+  poisMeanCmd->SetParameterName("poissonMean", true);
+  poisMeanCmd->SetDefaultValue(1);
+
 }
 
 WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
@@ -88,6 +99,21 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
         G4cout << "Please put the '/mygen/generator' command above the '/mygen/vecfile' command in the mac file." << G4endl;
     }
   }
+
+  if( command == poisCmd )
+    {
+      if ( poisCmd->GetNewBoolValue(newValue) ){
+	myAction->SetPoissonPMT(true);
+	G4cout << "Running with PoissonPMT flag. Photoelectrons will be generated directly on the PMTs according to a Poisson distribuition. Any hits resulting from physics generated elsewhere will be discarded !!!" << G4endl;
+      }
+      else myAction->SetPoissonPMT(false);
+    }
+  
+  if( command == poisMeanCmd )
+    {
+      myAction->SetPoissonPMTMean(poisMeanCmd->GetNewDoubleValue(newValue));
+      G4cout << "PoissonPMT mean set to: " << poisMeanCmd->GetNewDoubleValue(newValue) << G4endl;
+    }
 }
 
 G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
