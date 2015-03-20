@@ -4,6 +4,8 @@
 class WCSimPrimaryGeneratorAction;
 class G4UIdirectory;
 class G4UIcmdWithAString;
+class G4UIcmdWithABool;
+class G4UIcmdWithADouble;
 
 #include "G4UImessenger.hh"
 #include "globals.hh"
@@ -28,7 +30,9 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIdirectory*      mydetDirectory;
   G4UIcmdWithAString* genCmd;
   G4UIcmdWithAString* fileNameCmd;
-  
+  G4UIcmdWithABool*   poisCmd;
+  G4UIcmdWithADouble* poisMeanCmd;
+
 };
 
 #endif
