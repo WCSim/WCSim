@@ -67,6 +67,26 @@ void WCSimWCDigitizer::Digitize()
   WCSimWCDigitsCollection* WCHCPMT = 
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCHCID));
   
+  // -----------------------------------
+  // Propagate the unique ID from the hit to the digit
+  // Get the HitsCollection and DigitsCollection
+  // Will then assign each digit with the uniqueID previously assigned to
+  // each hit in WCSimWCPMT
+  WCSimWCHitsCollection* WCHC =
+    (WCSimWCHitsCollection*)(DigiMan->GetHitsCollection(DigiMan->GetHitsCollectionID("glassFaceWCPMT")));
+
+  WCSimWCDigitsCollection* WCDC =
+    (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCHCID));
+
+  if(WCHC->entries() == WCDC->entries() && WCHC && WCDC){
+    for (int i=0; i<WCHC->entries(); i++){
+      G4int uniqueID = (*WCHC)[i]->GetWCSimUniqueID();
+      (*WCDC)[i]->SetWCSimUniqueID(uniqueID);
+    }
+  }
+  // ----------------------------
+
+
   if (WCHCPMT) {
 
     MakeHitsHistogram(WCHCPMT);
