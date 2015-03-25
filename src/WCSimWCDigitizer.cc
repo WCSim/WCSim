@@ -165,6 +165,7 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 	      ahit->SetLogicalVolume((*WCHCPMT)[0]->GetLogicalVolume());
 	      ahit->SetTrackID(-1);
 	      ahit->AddParentID(-1);
+	      ahit->SetDigiAsNoise();
 	      // Set the position and rotation of the pmt
 	      Float_t hit_pos[3];
 	      Float_t hit_rot[3];
@@ -440,6 +441,9 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 		Digi->SetPe(G,peSmeared);
 		Digi->SetTime(G,digihittime);
 		DigiHitMap[tube] = DigitsCollection->insert(Digi);
+		// Save the unique ID and noise flag to the digit:
+		Digi->SetWCSimUniqueID((*WCHCPMT)[i]->GetWCSimUniqueID());
+		if((*WCHCPMT)[i]->IsDigiNoise()){Digi->SetDigiAsNoise();}
 	      }
 	      else {
 		//G4cout << "deja vu " << tube << " " << G << "  " << TriggerTimes[G] << " " << digihittime

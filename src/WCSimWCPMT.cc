@@ -86,6 +86,9 @@ void WCSimWCPMT::Digitize()
 
 void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
+
+  int uniqueID = 0;
+
   for (G4int i=0; i < WCHC->entries(); i++)
     {
 
@@ -102,6 +105,10 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       G4int   tube         = (*WCHC)[i]->GetTubeID();
       G4double peSmeared = 0.0;
       double time_PMT;
+
+      // Assign a unique ID to the hit
+      uniqueID++;
+      (*WCHC)[i]->SetWCSimUniqueID(uniqueID);
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
 	    time_PMT = (*WCHC)[i]->GetTime(ip);
