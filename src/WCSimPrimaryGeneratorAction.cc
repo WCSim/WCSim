@@ -105,6 +105,10 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       return;
     }
 
+    //
+    // Documentation describing the nuance text format can be found here: 
+    // http://neutrino.phy.duke.edu/nuance-format/
+    //
     if (useNuanceTextFormat)
       {
 	const int lineSize=100;
