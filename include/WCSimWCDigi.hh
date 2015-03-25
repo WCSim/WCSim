@@ -60,6 +60,9 @@ private:
   G4RotationMatrix rot;
   G4int            trackID;
 
+  G4int            fUniqueID;
+  G4bool           fIsNoise;
+
 public:
   
   inline void SetTubeID(G4int tube) {tubeID = tube;};
@@ -68,6 +71,9 @@ public:
   inline void SetPe(G4int gate,  G4float Q)      {pe[gate]     = Q;};
   inline void SetTime(G4int gate, G4float T)    {time[gate]   = T;};
   
+  inline void SetWCSimUniqueID(G4int id) { fUniqueID = id; }
+  inline void SetDigiAsNoise()           { fIsNoise = true; }
+
   inline G4float GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
   inline G4float GetPe(int gate)     {return pe[gate];};
@@ -76,6 +82,9 @@ public:
   inline int NumberOfSubEvents() { return (Gates.size()-1);}
   inline bool HasHitsInGate(int number) { return (Gates.count(number)==1); }
   
+  inline G4int  GetWCSimUniqueID() { return fUniqueID; }
+  inline G4bool IsDigiNoise()      { return fIsNoise; }
+
   G4LogicalVolume* GetLogicalVolume() {return pLogV;};
 
 
