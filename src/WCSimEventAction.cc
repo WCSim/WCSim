@@ -652,6 +652,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
       int tubeID  = (*WCHC)[k]->GetTubeID();
       int totalpe = (*WCHC)[k]->GetTotalPe();
+      int uniqueID = (*WCHC)[k]->GetWCSimUniqueID();
 
       for (int l=0;l<totalpe;l++)
       {
@@ -661,7 +662,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
       wcsimrootevent->AddCherenkovHit(tubeID,
 				      truetime,
-				      primaryParentID); 
+				      primaryParentID,
+				      uniqueID); 
     } 
   }
 
@@ -684,7 +686,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	    if ( (*WCDC)[k]->HasHitsInGate(index)) {
 	      wcsimrootevent->AddCherenkovDigiHit((*WCDC)[k]->GetPe(index),
 						  (*WCDC)[k]->GetTime(index),
-						  (*WCDC)[k]->GetTubeID());  
+						  (*WCDC)[k]->GetTubeID(),
+						  (*WCDC)[k]->GetWCSimUniqueID(),
+                                                  (*WCDC)[k]->IsDigiNoise());  
 	      sumq_tmp = sumq_tmp + (*WCDC)[k]->GetPe(index);
 	      
 	      countdigihits++;
