@@ -78,6 +78,9 @@ class WCSimWCHit : public G4VHit
     time.push_back(hitTime);
   }
  
+  void SetWCSimUniqueID(G4int id){ fUniqueID = id; }  // Give hit a unique ID (subsequent digits will also have this ID)
+  void SetHitAsNoise()           { fIsNoise = true; } // Label hit as (dark) noise
+
   G4int         GetTubeID()     { return tubeID; };
   G4int         GetTrackID()    { return trackID; };
   G4ThreeVector GetPos()        { return pos; };
@@ -88,6 +91,9 @@ class WCSimWCHit : public G4VHit
   G4LogicalVolume* GetLogicalVolume() {return pLogV;};
 
   void SortHitTimes() {   sort(time.begin(),time.end()); }
+
+  G4int  GetWCSimUniqueID() { return fUniqueID; }
+  G4bool IsHitNoise()       { return fIsNoise; }
 
 
   // low is the trigger time, up is trigger+950ns (end of event)
@@ -158,6 +164,10 @@ class WCSimWCHit : public G4VHit
   std::vector<G4float>  time;
   std::vector<G4int>    primaryParentID;
   G4int                 totalPeInGate;
+
+  G4int  fUniqueID; // Unique ID for each raw hit
+  G4bool fIsNoise;  // Flag - is hit dark noise or not?
+
 };
 
 typedef G4THitsCollection<WCSimWCHit> WCSimWCHitsCollection;

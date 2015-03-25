@@ -18,6 +18,8 @@ G4double avePe=0.0;
 WCSimWCHit::WCSimWCHit() 
 {
   totalPe = 0;
+  fIsNoise = false; // Initialise hit to be a real hit
+  fUniqueID = -9999;
 }
 
 WCSimWCHit::~WCSimWCHit() {}
