@@ -177,4 +177,49 @@ public:
   G4double GetPMTGlassThickness();
 };
 
+class BoxandLine20inchHQE : public WCSimPMTObject
+{
+
+public:
+  
+  BoxandLine20inchHQE();
+  ~BoxandLine20inchHQE();
+ 
+public:
+  G4String GetPMTName() ;
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4float* Getqpe();
+  G4float* GetQE();
+  G4float* GetQEWavelength();
+  G4float  GetmaxQE();
+  G4float* GetCE();
+  G4float* GetCEAngle();
+  float  HitTimeSmearing(float);
+  G4double GetPMTGlassThickness();
+};
+
+class BoxandLine12inchHQE : public WCSimPMTObject
+{
+
+public:
+  
+  BoxandLine12inchHQE();
+  ~BoxandLine12inchHQE();
+ 
+public:
+  G4String GetPMTName() ;
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4float* Getqpe();
+  G4float* GetQE();
+  G4float* GetQEWavelength();
+  G4float  GetmaxQE();
+  G4float* GetCE();
+  G4float* GetCEAngle();
+  float  HitTimeSmearing(float);
+  G4double GetPMTGlassThickness();
+};
+
+
 #endif
