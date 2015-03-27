@@ -26,6 +26,9 @@
 
 WCSimPMTObject::WCSimPMTObject()
 {
+    // By default, each PMT has 100% collection efficiency at all angles
+    // This can be overridden by setting collectionEfficiency to a new vector
+    // in the derived class constructor.
     collectionEfficiencyAngle = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
     collectionEfficiency      = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
 }
