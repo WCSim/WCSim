@@ -567,9 +567,9 @@ else {
 
   // TF: Args are set to properties of the class which is somehow global (see the ConstructDetector.hh)
   //     They are set in the WCSimDetectorConfigs and are property of the PMT.
-  //G4LogicalVolume* logicWCPMT = ConstructMultiPMT(WCPMTRadius, WCPMTExposeHeight);
-  G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
-
+  G4LogicalVolume* logicWCPMT = ConstructMultiPMT(WCPMTRadius, WCPMTExposeHeight);
+  //G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
+  G4String pmtname = "WCMultiPMT";
   
 
   //jl145------------------------------------------------
@@ -599,7 +599,7 @@ else {
 		    		new G4PVPlacement(	0,						// no rotation
 		    							cellpos,				// its position
 		    							logicWCPMT,				// its logical volume
-		    							"WCPMT",				// its name 
+		    							pmtname,//"WCPMT",				// its name 
 		    							logicWCTopVeto,			// its mother volume
 		    							false,					// no boolean os
 		    							icopy);					// every PMT need a unique id.
@@ -639,7 +639,7 @@ else {
 	new G4PVPlacement(WCPMTRotation,              // its rotation
 			  PMTPosition, 
 			  logicWCPMT,                // its logical volume
-			  "WCPMT",             // its name
+			  pmtname,//"WCPMT",             // its name
 			  logicWCBarrelCell,         // its mother volume
 			  false,                     // no boolean operations
 			  (int)(i*WCPMTperCellVertical+j),
@@ -1058,6 +1058,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   
 	G4LogicalVolume* logicWCPMT = ConstructMultiPMT(WCPMTRadius, WCPMTExposeHeight);
 	//G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTRadius, WCPMTExposeHeight);
+	G4String pmtname = "WCMultiPMT";
+
 
   G4double xoffset;
   G4double yoffset;
@@ -1091,7 +1093,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 	  new G4PVPlacement(WCCapPMTRotation,
 			    cellpos,                   // its position
 			    logicWCPMT,                // its logical volume
-			    "WCPMT", // its name 
+			    pmtname, // its name 
 			    logicWCCap,         // its mother volume
 			    false,                 // no boolean os
 			    icopy);               // every PMT need a unique id.

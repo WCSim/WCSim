@@ -121,6 +121,14 @@ public:
 
   // *** End HyperK Geometry ***
 
+  // Getters and Setters for MultiPMT details from macro.
+  void SetmPMT_CylHeight(G4double height){cylinder_height = height;}
+  void SetmPMT_CylRadius(G4double radius){cylinder_radius = radius;}
+
+
+
+
+
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
 private:
@@ -368,6 +376,13 @@ private:
 
   G4int myConfiguration;   // Detector Config Parameter
   G4double innerradius;
+
+  // Variables related to MultiPMTs
+  G4double cylinder_height;
+  G4double cylinder_radius;
+
+
+
  
   std::vector<WCSimPmtInfo*> fpmts;
   

@@ -35,7 +35,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCBarrelNRings        = 10;//17.;
   WCPMTperCellHorizontal= 2;//4;
   WCPMTperCellVertical  = 2;//3; 
-  WCCapPMTSpacing       = 2.1*m;//0.707*m; // distance between centers of top and bottom pmts
+  WCCapPMTSpacing       = 4.2*m;//0.707*m; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = 16.9*m;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;

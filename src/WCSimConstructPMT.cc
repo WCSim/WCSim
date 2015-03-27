@@ -33,8 +33,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
   //G4cout << "Create PMT" << G4endl;
 
     // Gray wireframe visual style
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
-  WCPMTVisAtt->SetForceWireframe(true);
+  //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  //WCPMTVisAtt->SetForceWireframe(true);
+  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0));
+  WCPMTVisAtt->SetForceSolid(true);
+    
+
 
 
 

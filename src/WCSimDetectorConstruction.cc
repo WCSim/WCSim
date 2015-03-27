@@ -31,7 +31,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
 
   debugMode = false;
 //-----------------------------------------------------
-// Initilize SD pointers
+// Initialize SD pointers
 //-----------------------------------------------------
 
       aWCPMT     = NULL;
@@ -54,9 +54,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
   totalNumPMTs = 0;
   WCPMTExposeHeight= 0.;
-  //-----------------------------------------------------
-  // Set the default WC geometry.  This can be changed later.
-  //-----------------------------------------------------
 
   SetSuperKGeometry();
   //SetHyperKGeometry();
@@ -68,7 +65,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //DUSEL_200kton_10inch_HQE_12perCent();
   //DUSEL_200kton_12inch_HQE_10perCent();
   //DUSEL_200kton_12inch_HQE_14perCent();
-
 
   //----------------------------------------------------- 
   // Set whether or not Pi0-specific info is saved
@@ -82,6 +78,16 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   SetPMT_QE_Method(1);
    //default NOT to use collection efficiency
   SetPMT_Coll_Eff(0);
+
+  //---------------------------------------------------
+  // Need to define defaults for all mPMT parameters 
+  //--------------------------------------------------
+  cylinder_height = 453.*mm;
+  cylinder_radius = 166.*mm;
+
+
+
+
 
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry

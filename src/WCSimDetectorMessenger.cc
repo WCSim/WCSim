@@ -51,6 +51,8 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTSize->SetCandidates("20inch 10inch");
   PMTSize->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+
+
   SavePi0 = new G4UIcmdWithAString("/WCSim/SavePi0", this);
   SavePi0->SetGuidance("true or false");
   SavePi0->SetParameterName("SavePi0",false);
@@ -90,6 +92,38 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   waterTank_Length->SetUnitCandidates("mm cm m");
   WCConstruct = new G4UIcmdWithoutParameter("/WCSim/Construct", this);
   WCConstruct->SetGuidance("Update detector construction with new settings.");
+
+
+  // Params: - Cylinder height and radius of mPMT
+  //         - Type of ID PMT (should be enum)
+  //         - Type of OD PMT
+  //         - Params related to filling PMT
+  //         - Orientation of mPMT wrt wall : horizontal/vertical/perp
+  //         - Reflector OFF/Winston/other
+  //         - material of mPMT wall: water/glass/acrylic/
+  //         - acrylic cover ON/OFF
+
+
+  mPMTDir = new G4UIdirectory("/WCSim/mPMT/");
+  mPMTDir->SetGuidance("Commands to change the properties of the multiPMT.");
+
+
+  mPMT_CylHeight = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/CylHeight",this);
+  mPMT_CylHeight->SetGuidance("Set height of cylinder of multiPMT object.");
+  mPMT_CylHeight->SetParameterName("CylHeight", true);
+  mPMT_CylHeight->SetDefaultValue(453.); //mDOM (PINGU), 0 for KM3Net
+  mPMT_CylHeight->SetUnitCategory("Length");
+  mPMT_CylHeight->SetDefaultUnit("mm");
+  mPMT_CylHeight->SetUnitCandidates("mm cm m");
+
+  mPMT_CylRadius = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/CylRadius",this);
+  mPMT_CylRadius->SetGuidance("Set radius of cylinder of multiPMT object.");
+  mPMT_CylRadius->SetParameterName("CylRadius", true);
+  mPMT_CylRadius->SetDefaultValue(166.); //mDOM (PINGU), 0 for KM3Net
+  mPMT_CylRadius->SetUnitCategory("Length");
+  mPMT_CylRadius->SetDefaultUnit("mm");
+  mPMT_CylRadius->SetUnitCandidates("mm cm m");
+
 }
 
 WCSimDetectorMessenger::~WCSimDetectorMessenger()
@@ -102,7 +136,11 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
 
   delete tubeCmd;
   delete distortionCmd;
+
+  delete mPMT_CylHeight;
+  delete mPMT_CylRadius;
   delete WCSimDir;
+  delete mPMTDir;
 }
 
 void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
@@ -190,6 +228,23 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	    G4cout << "Not HyperK Geometry. Detector length unchanged." << G4endl;
 	  }
 	}
+	
+	if (command == mPMT_CylHeight){
+	  //G4cout << "Set Cylinder Height of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
+	  std::cout << "Set Cylinder Height of MultiPMT to " << newValue  << " " << std::endl;
+	  WCSimDetector->SetmPMT_CylHeight(mPMT_CylHeight->GetNewDoubleValue(newValue));
+	}
+
+
+	if (command == mPMT_CylRadius){
+	  //G4cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
+	  std::cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << std::endl;
+	  WCSimDetector->SetmPMT_CylRadius(mPMT_CylRadius->GetNewDoubleValue(newValue));
+	}
+	
+
+
+
 
 
 	if(command == PMTSize) {
