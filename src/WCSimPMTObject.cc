@@ -20,6 +20,40 @@
 #include <cstring>
 #include <iostream>
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// PMT Base Class
+
+WCSimPMTObject::WCSimPMTObject()
+{
+    collectionEfficiencyAngle = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
+    collectionEfficiency      = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
+}
+
+
+G4float  WCSimPMTObject::GetCollectionEfficiency(float angle)
+{
+    return Interpolate_func(angle, 10, collectionEfficiencyAngle, collectionEfficiency)/100.;
+}
+
+G4float WCSimPMTObject::Interpolate_func(G4float x, G4int ncount, G4float *angle, G4float *quantity){
+  // linear interpolate the quantity function versus angle                                                                                                                        
+  if (x < *angle || x >=*(angle+ncount-1)){
+    return 0;
+  }else{
+    for (Int_t i=0;i!=ncount;i++){
+      if (x>=*(angle+i) && x < *(angle+i+1)){
+        return (x-*(angle+i))/(*(angle+i+1)-*(angle+i))* (*(quantity+i+1)) + (*(angle+i+1)-x)/(*(angle+i+1)-*(angle+i)) * (*(quantity+i));
+      }
+    }
+  }
+}
+
+
+
+
+
+
 PMT20inch::PMT20inch(){}
 
 PMT20inch::~PMT20inch(){}
