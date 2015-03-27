@@ -72,7 +72,8 @@
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz
 /DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
-#/DarkRate/SetDarkRate 8.4 kHz #For HPDs, based	 on High QE dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
@@ -80,6 +81,7 @@
 # Factor of Normal PMT is 1.367
 /DarkRate/SetConvert 1.367
 #/DarkRate/SetConvert 1.120 #For HPDs
+#/DarkRate/SetConvert 1.126 #For Box and Line PMTs
 
 /vis/scene/create
 /vis/open OGLSX

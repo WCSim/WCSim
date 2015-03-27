@@ -89,6 +89,8 @@ public:
   G4double GetPMTSize1() {return WCPMTSize;}
 
   G4float GetPMTQE(G4float, G4int, G4float, G4float, G4float);
+  G4float GetPMTCE(G4float);
+  G4float Interpolate_func(G4float, G4int, G4float*, G4float*);
 
   WCSimPMTObject *CreatePMTObject(G4String);
 

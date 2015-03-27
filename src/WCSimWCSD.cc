@@ -61,20 +61,6 @@ void WCSimWCSD::Initialize(G4HCofThisEvent* HCE)
   delete newHit;
 }
 
-G4float WCSimWCSD::Interpolate_func(G4float x, G4int ncount, G4float *angle, G4float *quantity){
-  // linear interpolate the quantity function versus angle
-  if (x < *angle || x >=*(angle+ncount-1)){
-    return 0;
-  }else{
-    for (Int_t i=0;i!=ncount;i++){
-      if (x>=*(angle+i) && x < *(angle+i+1)){
-	return (x-*(angle+i))/(*(angle+i+1)-*(angle+i))* (*(quantity+i+1)) + (*(angle+i+1)-x)/(*(angle+i+1)-*(angle+i)) * (*(quantity+i));
-      }
-    }
-  }
-}
-
-
 G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
   G4StepPoint*       preStepPoint = aStep->GetPreStepPoint();
@@ -151,9 +137,6 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4int replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
 
     
-  G4float collection_angle[10]={0,10,20,30,40,50,60,70,80,90};
-  G4float collection_eff[10]={100,100,99,95,90,85,80,69,35,13};
-  
   G4float theta_angle;
   G4float effectiveAngularEfficiency;
 
@@ -181,7 +164,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      G4double local_y = localPosition.y();
      G4double local_z = localPosition.z();
      theta_angle = acos(fabs(local_z)/sqrt(pow(local_x,2)+pow(local_y,2)+pow(local_z,2)))/3.1415926*180.;
-     effectiveAngularEfficiency = Interpolate_func(theta_angle,10,collection_angle,collection_eff)/100.;
+     effectiveAngularEfficiency = fdet->GetPMTCE(theta_angle);
      if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
 
       
