@@ -7,7 +7,7 @@ As of August 2014 WCSim has been moved to GitHub.  It can be found at:
 
 https://github.com/WCSim
 
-Information about the branches and WCSim development model can be
+Tutorials and information about the branches and WCSim development model can be
 found on the wiki:
 
 https://github.com/WCSim/WCSim/wiki
