@@ -10,7 +10,18 @@
 # The tube size is fixed for SK to 20"
 # These are fixed geometries for validation
 #/WCSim/WCgeom SuperK
-# Currently by defualt the DUSEL configurations are 10 inch.
+
+# Some other SuperK options:
+#/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_20inchHPD_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_12inchHPD_15perCent # Note: the actual coverage is 14.59%
+#/WCSim/WCgeom SuperK_20inchHPD_14perCent # Note: the actual coverage is 13.51%
+
+# Generic cylindrical detector with a height of 100m and a
+# diameter of 69m with 12" HPD and 14.59% photocoverage
+#/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
+
+# Currently by default the DUSEL configurations are 10 inch.
 # you can overide this with the WCPMTsize command.
 # WCPMTsize command commented out on 10/1/09 (CWW)
 #
@@ -65,7 +76,22 @@
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
-/WCSim/SavePi0 true
+#/WCSim/SavePi0 true
+/WCSim/SavePi0 false
+
+# command to set dark noise frequency 13/06/09
+# default dark noise frequency is 0 kHz
+/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+
+# command to multiply the dark rate.
+# Convert dark noise frequency before digitization to after digitization by setting suitable factor
+# (14/03/10)
+# Factor of Normal PMT is 1.367
+/DarkRate/SetConvert 1.367
+#/DarkRate/SetConvert 1.120 #For HPDs
+#/DarkRate/SetConvert 1.126 #For Box and Line PMTs
 
 /vis/scene/create
 /vis/open DAWNFILE
