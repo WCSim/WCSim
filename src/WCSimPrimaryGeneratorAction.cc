@@ -365,7 +365,148 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         SetBeamDir(dir);
         SetBeamPDG(pdg);
     }
-    else if (useLaserEvt)
+
+    //
+    // Documentation describing the nuance text format can be found here: 
+    // http://neutrino.phy.duke.edu/nuance-format/
+    //
+    // The format must be strictly adhered to for it to be processed correctly.
+    // The lines and their meanings from begin through info are fixed, and then
+    // a variable number of tracks may follow.
+    //
+    if (useNuanceTextFormat)
+      {
+	const int lineSize=100;
+	char      inBuf[lineSize];
+	vector<string> token(1);
+	
+	token = readInLine(inputFile, lineSize, inBuf);
+	  
+        if (token.size() == 0) 
+	  {
+	    G4cout << "end of nuance vector file!" << G4endl;
+	  }
+	else if (token[0] != "begin")
+	  {
+	    G4cout << "unexpected line begins with " << token[0] << G4endl;
+	  }
+	else   // normal parsing begins here
+	  {
+	    // Read the nuance line (ignore value now)
+
+	    token = readInLine(inputFile, lineSize, inBuf);
+	    mode = atoi(token[1]);
+
+	    // Read the Vertex line
+	    token = readInLine(inputFile, lineSize, inBuf);
+	    vtx = G4ThreeVector(atof(token[1])*cm,
+				atof(token[2])*cm,
+				atof(token[3])*cm);
+	    
+            // true : Generate vertex in Rock , false : Generate vertex in WC tank
+            SetGenerateVertexInRock(false);
+
+	    // Next we read the incoming neutrino and target
+	    
+	    // First, the neutrino line
+
+	    token=readInLine(inputFile, lineSize, inBuf);
+	    beampdg = atoi(token[1]);
+	    beamenergy = atof(token[2])*MeV;
+	    beamdir = G4ThreeVector(atof(token[3]),
+				    atof(token[4]),
+				    atof(token[5]));
+
+	    // Now read the target line
+
+	    token=readInLine(inputFile, lineSize, inBuf);
+	    targetpdg = atoi(token[1]);
+	    targetenergy = atof(token[2])*MeV;
+	    targetdir = G4ThreeVector(atof(token[3]),
+				      atof(token[4]),
+				      atof(token[5]));
+
+	    // Read the info line, basically a dummy
+	    token=readInLine(inputFile, lineSize, inBuf);
+	    G4cout << "Vector File Record Number " << token[2] << G4endl;
+            vecRecNumber = atoi(token[2]);
+	    
+	    // Now read the outgoing particles
+	    // These we will simulate.
+
+
+	    while ( token=readInLine(inputFile, lineSize, inBuf),
+		    token[0] == "track" )
+	      {
+		// We are only interested in the particles
+		// that leave the nucleus, tagged by "0"
+
+
+		if ( token[6] == "0")
+		  {
+		    G4int pdgid = atoi(token[1]);
+		    G4double energy = atof(token[2])*MeV;
+		    G4ThreeVector dir = G4ThreeVector(atof(token[3]),
+						      atof(token[4]),
+						      atof(token[5]));
+		    particleGun->
+		      SetParticleDefinition(particleTable->
+					    FindParticle(pdgid));
+		    G4double mass = 
+		      particleGun->GetParticleDefinition()->GetPDGMass();
+
+		    G4double ekin = energy - mass;
+
+		    particleGun->SetParticleEnergy(ekin);
+		    //G4cout << "Particle: " << pdgid << " KE: " << ekin << G4endl;
+		    particleGun->SetParticlePosition(vtx);
+		    particleGun->SetParticleMomentumDirection(dir);
+		    particleGun->GeneratePrimaryVertex(anEvent);
+		  }
+	      }
+	  }
+      }
+    else 
+      {    // old muline format  
+	inputFile >> nuEnergy >> energy >> xPos >> yPos >> zPos 
+		  >> xDir >> yDir >> zDir;
+	
+	G4double random_z = ((myDetector->GetWaterTubePosition())
+			     - .5*(myDetector->GetWaterTubeLength()) 
+			     + 1.*m + 15.0*m*G4UniformRand())/m;
+	zPos = random_z;
+	G4ThreeVector vtx = G4ThreeVector(xPos, yPos, random_z);
+	G4ThreeVector dir = G4ThreeVector(xDir,yDir,zDir);
+
+	particleGun->SetParticleEnergy(energy*MeV);
+	particleGun->SetParticlePosition(vtx);
+	particleGun->SetParticleMomentumDirection(dir);
+	particleGun->GeneratePrimaryVertex(anEvent);
+      }
+  }
+
+  else if (useNormalEvt)
+  {      // manual gun operation
+    particleGun->GeneratePrimaryVertex(anEvent);
+
+    G4ThreeVector P  =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
+    G4ThreeVector vtx=anEvent->GetPrimaryVertex()->GetPosition();
+    G4double m       =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
+    G4int pdg        =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
+
+    G4ThreeVector dir  = P.unit();
+    G4double E         = std::sqrt((P.dot(P))+(m*m));
+
+//     particleGun->SetParticleEnergy(E);
+//     particleGun->SetParticlePosition(vtx);
+//     particleGun->SetParticleMomentumDirection(dir);
+
+    SetVtx(vtx);
+    SetBeamEnergy(E);
+    SetBeamDir(dir);
+    SetBeamPDG(pdg);
+  }
+  else if (useLaserEvt)
     {
         //T. Akiri: Create the GPS LASER event
         MyGPS->GeneratePrimaryVertex(anEvent);
