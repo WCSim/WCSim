@@ -622,7 +622,15 @@ else {
 
     ///////////////   Barrel PMT placement
   G4RotationMatrix* WCPMTRotation = new G4RotationMatrix;
+
+  // TODO: user settable
   WCPMTRotation->rotateY(90.*deg);
+
+
+  
+  
+
+
 
   G4double barrelCellWidth = 2.*WCIDRadius*tan(dPhi/2.);
   G4double horizontalSpacing   = barrelCellWidth/WCPMTperCellHorizontal;

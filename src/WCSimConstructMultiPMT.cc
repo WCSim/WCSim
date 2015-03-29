@@ -48,7 +48,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
   // Gray wireframe visual style
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
-  //WCPMTVisAtt->SetForceSolid(true); //DEBUG
+  WCPMTVisAtt->SetForceSolid(true); //DEBUG
 
   //G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
   //G4double PMTOffset =  sphereRadius - expose;
