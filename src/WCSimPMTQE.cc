@@ -48,7 +48,7 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag
   }
   
   WCSimPMTObject *PMT;
-  PMT = GetPMTPointerID(0);
+  PMT = GetPMTPointer("ID");
   G4float *wavelength;
   wavelength = PMT->GetQEWavelength();
   G4float *QE;

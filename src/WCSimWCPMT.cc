@@ -42,7 +42,7 @@ WCSimWCPMT::~WCSimWCPMT(){
 
 G4double WCSimWCPMT::rn1pe(){
   WCSimPMTObject * PMT;
-  PMT = myDetector->GetPMTPointerID(0);
+  PMT = myDetector->GetPMTPointer("ID");
   G4int i;
   G4double random = G4UniformRand();
   G4double random2 = G4UniformRand(); 

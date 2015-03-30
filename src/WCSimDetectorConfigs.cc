@@ -43,7 +43,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
 // Note: the actual coverage is 20.27%
 void WCSimDetectorConstruction::SuperK_20inchPMT_20perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch", "ID");
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
@@ -67,7 +67,7 @@ void WCSimDetectorConstruction::SuperK_20inchPMT_20perCent()
 // Note: the actual coverage is 20.27%
 void WCSimDetectorConstruction::SuperK_20inchHPD_20perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("HPD20inchHQE");
+  WCSimPMTObject * PMT = CreatePMTObject("HPD20inchHQE", "ID");
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
@@ -91,7 +91,7 @@ void WCSimDetectorConstruction::SuperK_20inchHPD_20perCent()
 // Note: the actual coverage is 14.59%
 void WCSimDetectorConstruction::SuperK_12inchHPD_15perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("HPD12inchHQE");
+  WCSimPMTObject * PMT = CreatePMTObject("HPD12inchHQE", "ID");
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
@@ -115,7 +115,7 @@ void WCSimDetectorConstruction::SuperK_12inchHPD_15perCent()
 // Note: the actual coverage is 13.51%
 void WCSimDetectorConstruction::SuperK_20inchHPD_14perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("HPD20inchHQE");
+  WCSimPMTObject * PMT = CreatePMTObject("HPD20inchHQE", "ID");
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
@@ -140,7 +140,7 @@ void WCSimDetectorConstruction::Cylinder_12inchHPD_15perCent()
 {
   // cylindrical detector with a height of 100m and a diameter of 69m 
   // with 12" HPD and 14.59% photocoverage
-  WCSimPMTObject * PMT = CreatePMTObject("HPD12inchHQE");
+  WCSimPMTObject * PMT = CreatePMTObject("HPD12inchHQE", "ID");
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();

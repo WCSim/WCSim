@@ -92,25 +92,26 @@ public:
 
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
-  WCSimPMTObject *  PMTptrID[10];
-  WCSimPMTObject * PMTptrOD[10];
-  int IDPMTCounter;
+  G4int total_array_number;
+  G4int array_index;
   int ODPMTCounter;
-  void SetPMTPointer(WCSimPMTObject* PMT, G4String PMTVolume) {
-    if(PMTVolume == "ID"){
-      PMTptrID[IDPMTCounter] = PMT;
-      IDPMTCounter++;
+  WCSimPMTObject * PMTptr[10];
+  G4String CollectionNameArray[10];
+ 
+ void SetPMTPointer(WCSimPMTObject* PMT, G4String CollectionName) {
+   CollectionNameArray[total_array_number] = CollectionName;
+   PMTptr[total_array_number] = PMT;
+   total_array_number++;
+ }
+  
+  WCSimPMTObject* GetPMTPointer(G4String CollectionName){
+    array_index = 1000; // some large number
+    for (int i=0; i<total_array_number; i++){
+      if (CollectionName == CollectionNameArray[i]){array_index = i; break;}
     }
-    else if (PMTVolume == "OD"){
-      PMTptrOD[ODPMTCounter] = PMT;
-      ODPMTCounter++;
-    }
-    else {
-       G4cout << PMTVolume << " is not a recognized PMT volume. Exiting WCSim." << G4endl; exit(1);
-    }
+    if(array_index == 1000){G4cout << CollectionName << " is not a recognized Collection Name. Exiting WCSim." << G4endl; exit(1);}
+    return PMTptr[array_index];
   }
-  WCSimPMTObject* GetPMTPointerID(int PMTTypeNumber){return PMTptrID[PMTTypeNumber];}
-  WCSimPMTObject* GetPMTPointerOD(int PMTTypeNumber){return PMTptrOD[PMTTypeNumber];}
   
   G4ThreeVector GetWCOffset(){return WCOffset;}
   

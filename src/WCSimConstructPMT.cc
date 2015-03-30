@@ -20,9 +20,9 @@
 
 WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
-G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String PMTVolume)
+G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName)
 {
-  PMTKey_t key(PMTName,PMTVolume);
+  PMTKey_t key(PMTName,CollectionName);
 
   PMTMap_t::iterator it = PMTLogicalVolumes.find(key);
   if (it != PMTLogicalVolumes.end()) {
@@ -39,18 +39,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   G4double expose;
   G4double radius;
 
-  if(PMTVolume == "ID"){
-    WCSimPMTObject *PMTID = GetPMTPointerID(0);
-    expose = PMTID->GetExposeHeight();
-    radius = PMTID->GetRadius();
-  }
-  else if (PMTVolume == "OD"){
-    WCSimPMTObject *PMTOD = GetPMTPointerOD(0);
-    expose = PMTOD->GetExposeHeight();
-    radius = PMTOD->GetRadius();
-  }
-  else {
-    G4cout << PMTVolume << " is not a recognized PMT volume. Exiting WCSim." << G4endl; exit(1);}
+  WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
+  expose = PMT->GetExposeHeight();
+  radius = PMT->GetRadius();
   
   G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
   G4double PMTOffset =  sphereRadius - expose;
