@@ -65,9 +65,9 @@ void WCSimDetectorConstruction::SuperK_20inchPMT_20perCent()
 
 
 // Note: the actual coverage is 20.27%
-void WCSimDetectorConstruction::SuperK_20inchHPD_20perCent()
+void WCSimDetectorConstruction::SuperK_20inchBandL_20perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("HPD20inchHQE", "ID");
+	WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", "ID");
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
@@ -89,9 +89,9 @@ void WCSimDetectorConstruction::SuperK_20inchHPD_20perCent()
 
 
 // Note: the actual coverage is 14.59%
-void WCSimDetectorConstruction::SuperK_12inchHPD_15perCent()
+void WCSimDetectorConstruction::SuperK_12inchBandL_15perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("HPD12inchHQE", "ID");
+  WCSimPMTObject * PMT = CreatePMTObject("BoxandLine12inchHQE", "ID");
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
@@ -113,9 +113,9 @@ void WCSimDetectorConstruction::SuperK_12inchHPD_15perCent()
 
 
 // Note: the actual coverage is 13.51%
-void WCSimDetectorConstruction::SuperK_20inchHPD_14perCent()
+void WCSimDetectorConstruction::SuperK_20inchBandL_14perCent()
 {
-  WCSimPMTObject * PMT = CreatePMTObject("HPD20inchHQE", "ID");
+	WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", "ID");
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();

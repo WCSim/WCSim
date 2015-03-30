@@ -59,9 +59,9 @@ public:
   // Related to the WC geometry
   void SetSuperKGeometry();
   void SuperK_20inchPMT_20perCent();
-  void SuperK_20inchHPD_20perCent();
-  void SuperK_12inchHPD_15perCent();
-  void SuperK_20inchHPD_14perCent();
+  void SuperK_20inchBandL_20perCent();
+  void SuperK_12inchBandL_15perCent();
+  void SuperK_20inchBandL_14perCent();
   void Cylinder_12inchHPD_15perCent();
   void DUSEL_100kton_10inch_40perCent();
   void DUSEL_100kton_10inch_HQE_12perCent();
@@ -89,6 +89,7 @@ public:
   G4double GetPMTSize1() {return WCPMTSize;}
 
   G4float GetPMTQE(G4float, G4int, G4float, G4float, G4float);
+  G4float GetPMTCollectionEfficiency(G4float theta_angle) { return GetPMTPointer()->GetCollectionEfficiency(theta_angle); };
 
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
