@@ -14,6 +14,9 @@ class G4UIcmdWithAString;
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithABool.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithAnInteger.hh"
+
 
 class WCSimDetectorMessenger: public G4UImessenger
 {
@@ -38,11 +41,16 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithAString* PMTCollEff;
   G4UIcmdWithADoubleAndUnit* waterTank_Length;
 
-  G4UIdirectory*                    mPMTDir;
+  G4UIdirectory*             mPMTDir;
   G4UIcmdWithADoubleAndUnit* mPMT_CylHeight;
   G4UIcmdWithADoubleAndUnit* mPMT_CylRadius;
-
-
+  G4UIcmdWithAString*      mPMT_PMTtype_inner;  //enums internally
+  G4UIcmdWithAString*      mPMT_PMTtype_outer;
+  G4UIcmdWithAString*        mPMT_orientation;
+  G4UIcmdWithAString*        mPMT_reflector;
+  G4UIcmdWithAString*        mPMT_material_inner; 
+  G4UIcmdWithAString*        mPMT_material_outer; 
+  
   G4UIcmdWithAString* tubeCmd;
   G4UIcmdWithAString* distortionCmd;
   G4UIcmdWithoutParameter* WCConstruct;

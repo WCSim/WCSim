@@ -623,8 +623,15 @@ else {
     ///////////////   Barrel PMT placement
   G4RotationMatrix* WCPMTRotation = new G4RotationMatrix;
 
-  // TODO: user settable
-  WCPMTRotation->rotateY(90.*deg);
+  //for multiPMT, for single PMT need to test defaults
+  if(orientation == PERPENDICULAR)
+	WCPMTRotation->rotateY(90.*deg); //if mPMT: perp to wall
+  else if(orientation == VERTICAL)
+	WCPMTRotation->rotateY(0.*deg); //if mPMT: vertical/aligned to wall
+  else if(orientation == HORIZONTAL)
+	WCPMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
+  
+  
 
 
   
@@ -700,7 +707,7 @@ else {
 
   }
 
-
+  ///////////////   Top and Bottom 
   G4LogicalVolume* logicTopCapAssembly = ConstructCaps(-1);
   G4LogicalVolume* logicBottomCapAssembly = ConstructCaps(1);
 
@@ -1074,9 +1081,16 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   G4int    icopy = 0;
 
   G4RotationMatrix* WCCapPMTRotation = new G4RotationMatrix;
-  if(zflip==-1){
-    WCCapPMTRotation->rotateY(180.*deg);
+  //if mPMT: perp to wall
+  if(orientation == PERPENDICULAR){
+	if(zflip==-1){
+	  WCCapPMTRotation->rotateY(180.*deg); 
+	}
   }
+  else if (orientation == VERTICAL)
+	WCCapPMTRotation->rotateY(90.*deg);
+  else if (orientation == HORIZONTAL)
+	WCCapPMTRotation->rotateX(90.*deg);
 
   // loop over the cap
   G4int CapNCell = WCCapEdgeLimit/WCCapPMTSpacing + 2;
@@ -1120,7 +1134,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
     ///////////////   Barrel PMT placement
   G4RotationMatrix* WCPMTRotation = new G4RotationMatrix;
-  WCPMTRotation->rotateY(90.*deg);
+  if(orientation == PERPENDICULAR)
+	WCPMTRotation->rotateY(90.*deg); //if mPMT: perp to wall
+  else if(orientation == VERTICAL)
+	WCPMTRotation->rotateY(0.*deg); //if mPMT: vertical/aligned to wall
+  else if(orientation == HORIZONTAL)
+	WCPMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
+  
 
   G4double barrelCellWidth = 2.*WCIDRadius*tan(dPhi/2.);
   G4double horizontalSpacing   = barrelCellWidth/WCPMTperCellHorizontal;
@@ -1136,7 +1156,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 	new G4PVPlacement(WCPMTRotation,                      // its rotation
 			  PMTPosition,
 			  logicWCPMT,                // its logical volume
-			  "WCPMT",             // its name
+			  pmtname,             // its name
 			  logicWCBarrelBorderCell,         // its mother volume
 			  false,                     // no boolean operations
 			  (int)(i*WCPMTperCellVertical+j)

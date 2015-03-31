@@ -4,8 +4,6 @@
 #include "G4UIdirectory.hh"
 #include "G4UIcommand.hh"
 #include "G4UIparameter.hh"
-#include "G4UIcmdWithAString.hh"
-#include "G4UIcmdWithADoubleAndUnit.hh"
 
 WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimDet)
 :WCSimDetector(WCSimDet)
@@ -97,7 +95,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   // Params: - Cylinder height and radius of mPMT: DONE
   //         - Type of ID PMT (should be enum) and Type of OD PMT: Need to reorganize the PMTpart.
   //         - Params related to filling PMT
-  //         - Orientation of mPMT wrt wall : horizontal/vertical/perp: enums?? TODO first
+  //         - Orientation of mPMT wrt wall : horizontal/vertical/perp
   //         - Reflector OFF/Winston/other
   //         - material of mPMT wall: water/glass/acrylic/
   //         - acrylic cover ON/OFF
@@ -118,10 +116,74 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   mPMT_CylRadius = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/CylRadius",this);
   mPMT_CylRadius->SetGuidance("Set radius of cylinder of multiPMT object.");
   mPMT_CylRadius->SetParameterName("CylRadius", true);
-  mPMT_CylRadius->SetDefaultValue(166.); //mDOM (PINGU), 0 for KM3Net
+  mPMT_CylRadius->SetDefaultValue(166.); 
   mPMT_CylRadius->SetUnitCategory("Length");
   mPMT_CylRadius->SetDefaultUnit("mm");
   mPMT_CylRadius->SetUnitCandidates("mm cm m");
+
+  mPMT_PMTtype_inner = new G4UIcmdWithAString("/WCSim/mPMT/PMTtype_inner",this);
+  mPMT_PMTtype_inner->SetGuidance("Set type of PMT for ID.");
+  mPMT_PMTtype_inner->SetParameterName("PMTtype_inner", true);
+  mPMT_PMTtype_inner->SetCandidates("20inNQE "
+				    "20inHQE "
+				    "20inHQE_HPD "
+				    "20inHQE_BL "
+				    "10inNQE "
+				    "10inHQE "
+				    "12inHQE "
+				    "12inHQE_HPD "
+				    "8inNQE "
+				    "2inNQE "
+				    "3inNQE "
+				    ); 
+
+  mPMT_PMTtype_outer = new G4UIcmdWithAString("/WCSim/mPMT/PMTtype_outer",this);
+  mPMT_PMTtype_outer->SetGuidance("Set type of PMT for OD.");
+  mPMT_PMTtype_outer->SetParameterName("PMTtype_outer", true);
+  mPMT_PMTtype_outer->SetCandidates("20inNQE "
+				    "20inHQE "
+				    "20inHQE_HPD "
+				    "20inHQE_BL "
+				    "10inNQE "
+				    "10inHQE "
+				    "12inHQE "
+				    "12inHQE_HPD "
+				    "8inNQE "
+				    "2inNQE "
+				    "3inNQE "
+				    ); 
+
+  mPMT_orientation = new G4UIcmdWithAString("/WCSim/mPMT/orientation",this);
+  mPMT_orientation->SetGuidance("Set orientation of multiPMT cylinder wrt wall.");
+  mPMT_orientation->SetParameterName("orientation", true);
+  mPMT_orientation->SetCandidates("Horizontal "
+				  "Vertical " 
+				  "Perpendicular "
+				  ); 
+
+
+  mPMT_reflector = new G4UIcmdWithAString("/WCSim/mPMT/reflector",this);
+  mPMT_reflector->SetGuidance("Set type of reflector for each single PMT.");
+  mPMT_reflector->SetParameterName("reflector", true);
+  mPMT_reflector->SetCandidates("None "); 
+
+
+  mPMT_material_outer = new G4UIcmdWithAString("/WCSim/mPMT/material_outer",this);
+  mPMT_material_outer->SetGuidance("Set material of outer capsule of multiPMT.");
+  mPMT_material_outer->SetParameterName("material_outer", true);
+  mPMT_material_outer->SetCandidates("Water "
+				     "Glass "
+				     "Acrylic "); 
+
+  mPMT_material_inner = new G4UIcmdWithAString("/WCSim/mPMT/material_inner",this);
+  mPMT_material_inner->SetGuidance("Set material of inner structure next to PMT expose.");
+  mPMT_material_inner->SetParameterName("material_inner", true);
+  mPMT_material_inner->SetCandidates("Water "
+				     "Glass "
+				     "Acrylic "
+				     "BlackSheet "
+				     ); 
+
 
 }
 
@@ -228,6 +290,16 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  }
 	}
 	
+	if(command == PMTSize) {
+		G4cout << "SET PMT SIZE" << G4endl;
+		if ( newValue == "20inch"){
+//			WCSimDetector->Set20inchPMTs();
+		}else if (newValue == "10inch"){
+//			WCSimDetector->Set10inchPMTs();
+		}else
+			G4cout << "That PMT size is not defined!" << G4endl;	
+	}
+
 	if (command == mPMT_CylHeight){
 	  //G4cout << "Set Cylinder Height of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
 	  std::cout << "Set Cylinder Height of MultiPMT to " << newValue  << " " << std::endl;
@@ -241,20 +313,34 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  WCSimDetector->SetmPMT_CylRadius(mPMT_CylRadius->GetNewDoubleValue(newValue));
 	}
 	
-
-
-
-
-
-	if(command == PMTSize) {
-		G4cout << "SET PMT SIZE" << G4endl;
-		if ( newValue == "20inch"){
-//			WCSimDetector->Set20inchPMTs();
-		}else if (newValue == "10inch"){
-//			WCSimDetector->Set10inchPMTs();
-		}else
-			G4cout << "That PMT size is not defined!" << G4endl;	
+	if (command == mPMT_orientation){
+	  if(newValue == "Horizontal")
+	    WCSimDetector->SetmPMT_Orientation(HORIZONTAL);
+	  else if(newValue == "Vertical")
+	    WCSimDetector->SetmPMT_Orientation(VERTICAL);
+	  else if(newValue == "Perpendicular")
+	    WCSimDetector->SetmPMT_Orientation(PERPENDICULAR);
+	  else
+	    G4cout << "Undefined orientation wrt wall: reverting to default Perpendicular" << G4endl;
+	  
 	}
+
+	if (command == mPMT_PMTtype_inner)
+	  std::cout << "Need to implement PMT enums and restructure WCSim to use PMT type ID" << std::endl;
+	if (command == mPMT_PMTtype_outer)
+	  std::cout << "Need to implement PMT enums and restructure WCSim to use PMT type OD" << std::endl;
+	if (command == mPMT_reflector)
+	  std::cout << "Reflector Not Yet implemented" << std::endl;
+
+	
+	
+	
+
+
+
+
+
+
 
 	if(command == WCConstruct) {
 		WCSimDetector->UpdateGeometry();

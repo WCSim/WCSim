@@ -16,6 +16,9 @@
 
 #include "G4SystemOfUnits.hh"
 
+//TODO: move
+#include "G4NistManager.hh"
+
 //PMT logical volume construction.
 //A function of the WCSimDetectorConstruction class
 
@@ -48,7 +51,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
   // Gray wireframe visual style
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
-  WCPMTVisAtt->SetForceSolid(true); //DEBUG
+  //WCPMTVisAtt->SetForceSolid(true); //DEBUG
+
+
 
   //G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
   //G4double PMTOffset =  sphereRadius - expose;
@@ -100,17 +105,76 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
   G4VSolid* solidMultiPMT =
     new G4UnionSolid("WCMultiPMT", temp_sum, mPMT_bottom_sphere);
 
+  G4NistManager *nist_man = G4NistManager::Instance(); //TODO: MOVE to ConstructMaterials
   G4LogicalVolume *logicWCMultiPMT =
     new G4LogicalVolume(    solidMultiPMT,
-			    G4Material::GetMaterial("Water"),
+			    nist_man->FindOrBuildMaterial("G4_PLEXIGLASS"), //Acrylic
+			    //G4Material::GetMaterial("Water"), //TODO: define through material_outer
 			    "WCMultiPMT",
 			    0,0,0);
 
 
-  //needs to be rotated by 90deg for a cylinder during placement!!
+  /////////////////////////////////////////////////////////////////////
+  // NEW : cover the surface with blacksheet, or something else
+  /////
+  //Defines a cylinder
+  //G4double mPMT_zRange[2] = {0, cylinder_height};
+  G4double thickness = 2.*mm; //a 2 mm thick blacksheet or whatever...
+  G4double inner_RRange[2] = {cylinder_radius, cylinder_radius};
+  G4double inner_rRange[2] = {cylinder_radius-thickness,cylinder_radius-thickness};
+  
+  //solids
+  // origin is bottom of upward cylinder
+  G4Polycone* inner_cylinder = 
+    new G4Polycone("inn_cyl",                    
+		   0.0*deg,
+		   360.0*deg,
+		   2,
+		   mPMT_zRange,
+		   inner_rRange, // R Inner
+		   inner_RRange);// R Outer
+  
+  G4Sphere* inner_top_sphere =
+    new G4Sphere(    "WCmPMT_tsphere",
+		     cylinder_radius-thickness,cylinder_radius,
+		     0.0*deg,360.0*deg,
+		     0.0*deg,90.0*deg);
+
+  G4Sphere* inner_bottom_sphere =
+    new G4Sphere(    "WCmPMT_bsphere",
+		     cylinder_radius-thickness,cylinder_radius,
+		     0.0*deg,360.0*deg,
+		     90.0*deg,180.0*deg);
+
+  //Add them up:
+  G4VSolid* inner_temp_sum =
+    //G4VSolid* solidMultiPMT =
+    new G4UnionSolid("inner_Cyl+TopSphere", inner_cylinder, inner_top_sphere,
+		     0, G4ThreeVector(0,0,cylinder_height));
 
 
+  //G4VSolid* solidMultiPMT_inner =
+  //  new G4UnionSolid("WCMultiPMT_inner", inner_temp_sum, inner_bottom_sphere);
+  G4LogicalVolume *logicWCMultiPMT_inner =
+    new G4LogicalVolume(    inner_temp_sum,//solidMultiPMT_inner,
+			    G4Material::GetMaterial("Blacksheet"), //TODO: define through material_inner
+			    "WCMultiPMT_inner",
+			    0,0,0);
+  
+  G4VisAttributes* WCPMTVisAtt2 = new G4VisAttributes(G4Colour(1.0,0.,0.));
+  WCPMTVisAtt2->SetForceSolid(true); //DEBUG
+  logicWCMultiPMT_inner->SetVisAttributes(WCPMTVisAtt2);  //DEBUG
 
+  G4VPhysicalVolume* place_inner =
+    new G4PVPlacement(	0,				// its rotation
+			G4ThreeVector(0,0,0),		// its position
+			logicWCMultiPMT_inner,   	// its logical volume
+			"WCPMT_inner",				// its name 
+			logicWCMultiPMT,			// its mother volume
+			false,					// no boolean os
+			0);					// every PMT need a unique id.
+
+  ////////////////////////////////////////////////////////////////////////////////////
 
 
 

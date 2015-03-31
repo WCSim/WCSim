@@ -47,6 +47,11 @@ namespace __gnu_cxx  {
   };
 }
 
+enum mPMT_orientation{
+  VERTICAL,
+  HORIZONTAL,
+  PERPENDICULAR};
+
 class WCSimDetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
@@ -124,6 +129,7 @@ public:
   // Getters and Setters for MultiPMT details from macro.
   void SetmPMT_CylHeight(G4double height){cylinder_height = height;}
   void SetmPMT_CylRadius(G4double radius){cylinder_radius = radius;}
+  void SetmPMT_Orientation(mPMT_orientation orient){orientation = orient;}
 
 
 
@@ -380,6 +386,7 @@ private:
   // Variables related to MultiPMTs
   G4double cylinder_height;
   G4double cylinder_radius;
+  mPMT_orientation orientation;
 
 
 

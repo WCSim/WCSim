@@ -84,7 +84,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //--------------------------------------------------
   cylinder_height = 453.*mm;
   cylinder_radius = 166.*mm;
-
+  orientation = PERPENDICULAR;
 
 
 
