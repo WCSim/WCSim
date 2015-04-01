@@ -24,19 +24,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // PMT Base Class
 
-WCSimPMTObject::WCSimPMTObject()
-{
-    // By default, each PMT has 100% collection efficiency at all angles
-    // This can be overridden by setting collectionEfficiency to a new vector
-    // in the derived class constructor.
-    collectionEfficiencyAngle = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
-    collectionEfficiency      = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
-}
-
-
 G4float  WCSimPMTObject::GetCollectionEfficiency(float angle)
 {
-    return Interpolate_func(angle, 10, collectionEfficiencyAngle, collectionEfficiency)/100.;
+    return Interpolate_func(angle, 10, GetCollectionEfficiencyAngle(), GetCollectionEfficiencyArray())/100.;
 }
 
 G4float WCSimPMTObject::Interpolate_func(G4float x, G4int ncount, G4float *angle, G4float *quantity){
@@ -50,8 +40,30 @@ G4float WCSimPMTObject::Interpolate_func(G4float x, G4int ncount, G4float *angle
       }
     }
   }
+
+  // Error Condition
+  G4cerr << "Interpolation failure." << G4endl;
+  assert(false);
+  return -999.;
 }
 
+
+// By default, collection efficiency is binned in 10-degree angular bins from 0 to 90
+// This can be overridden by setting GetCE in the derived class
+G4float* WCSimPMTObject::GetCollectionEfficiencyAngle(){
+  static G4float angle[10] = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
+  return angle;
+}
+
+
+// By default, each PMT has 100% collection efficiency at all angles
+// This can be overridden by setting GetCE in the derived class
+G4float* WCSimPMTObject::GetCollectionEfficiencyArray(){
+  static G4float CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
+  // CollectionEfficiency before modification on 2015-03-27 (Different from SKDetSim)
+  // static G4float CE[10]={100,100,99,95,90,85,80,69,35,13}; 
+  return CE;
+}
 
 
 
@@ -59,11 +71,7 @@ G4float WCSimPMTObject::Interpolate_func(G4float x, G4int ncount, G4float *angle
 // 20 inch
 
 
-PMT20inch::PMT20inch()
-{
-//  collectionEfficency = {100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)
-}
-
+PMT20inch::PMT20inch() {}
 PMT20inch::~PMT20inch(){}
 
 G4String PMT20inch::GetPMTName() {G4String PMTName = "20inch"; return PMTName;}
@@ -217,11 +225,7 @@ G4float PMT20inch::GetmaxQE(){
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 8 inch
 
-PMT8inch::PMT8inch()
-{
-    //collectionEfficiency = {100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)  
-}
-
+PMT8inch::PMT8inch(){}
 PMT8inch::~PMT8inch(){}
 
 G4String PMT8inch::GetPMTName() {G4String PMTName = "8inch"; return PMTName;}
@@ -374,11 +378,7 @@ G4float  PMT8inch::GetmaxQE(){
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch
 
-PMT10inch::PMT10inch()
-{
-    // collectionEfficiency = {100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)
-}
-
+PMT10inch::PMT10inch(){}
 PMT10inch::~PMT10inch(){}
 
 G4String PMT10inch::GetPMTName() {G4String PMTName = "10inch"; return PMTName;}
@@ -531,11 +531,7 @@ G4float  PMT10inch::GetmaxQE(){
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch HQE
 
-PMT10inchHQE::PMT10inchHQE()
-{
-    //collectionEfficiency = {100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)
-}
-
+PMT10inchHQE::PMT10inchHQE() {}
 PMT10inchHQE::~PMT10inchHQE(){}
 
 G4String PMT10inchHQE::GetPMTName() {G4String PMTName = "10inch"; return PMTName;}
@@ -688,11 +684,7 @@ G4float  PMT10inchHQE::GetmaxQE(){
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HQE
 
-PMT12inchHQE::PMT12inchHQE()
-{
-    //collectionEfficiency = {100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)    
-}
-
+PMT12inchHQE::PMT12inchHQE(){}
 PMT12inchHQE::~PMT12inchHQE(){}
 
 G4String PMT12inchHQE::GetPMTName() {G4String PMTName = "12inch"; return PMTName;}
@@ -859,11 +851,7 @@ G4float  PMT12inchHQE::GetmaxQE()//currently uses the same as the 10inchHQE
 //                                          //
 //////////////////////////////////////////////
 
-HPD20inchHQE::HPD20inchHQE()
-{
-    collectionEfficiency = { 98., 98., 98., 98., 98., 98., 98., 98., 98., 98.};  
-}
-
+HPD20inchHQE::HPD20inchHQE(){}
 HPD20inchHQE::~HPD20inchHQE(){}
 
 G4String HPD20inchHQE::GetPMTName() {G4String PMTName = "HPD20inchHQE"; return PMTName;}
@@ -1013,6 +1001,10 @@ G4float HPD20inchHQE::GetmaxQE(){
   return maxQE;
 }
 
+G4float* HPD20inchHQE::GetCollectionEfficiencyArray(){
+  static G4float CE[10] = { 98., 98., 98., 98., 98., 98., 98., 98., 98., 98.};
+  return CE;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1020,11 +1012,7 @@ G4float HPD20inchHQE::GetmaxQE(){
 
 //Information for the HPD12inchHQE is identical to the HPD20inchHQE, except for GetPMTName, GetRadius and GetExposeHeight. 
 
-HPD12inchHQE::HPD12inchHQE()
-{
-    collectionEfficiency = { 98., 98., 98., 98., 98., 98., 98., 98., 98., 98.};    
-}
-
+HPD12inchHQE::HPD12inchHQE(){}
 HPD12inchHQE::~HPD12inchHQE(){}
 
 G4String HPD12inchHQE::GetPMTName() {G4String PMTName = "HPD12inchHQE"; return PMTName;}
@@ -1174,6 +1162,10 @@ G4float HPD12inchHQE::GetmaxQE(){
   return maxQE;
 }
 
+G4float* HPD12inchHQE::GetCollectionEfficiencyArray(){
+  static G4float CE[10] = { 98., 98., 98., 98., 98., 98., 98., 98., 98., 98.};
+  return CE;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1189,11 +1181,8 @@ G4float HPD12inchHQE::GetmaxQE(){
 //////////////////////////////////////////////////////////////
 
  
-BoxandLine20inchHQE::BoxandLine20inchHQE()
-{
-    collectionEfficiency = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};   
-}
 
+BoxandLine20inchHQE::BoxandLine20inchHQE(){}
 BoxandLine20inchHQE::~BoxandLine20inchHQE(){}
 
 G4String BoxandLine20inchHQE::GetPMTName() {G4String PMTName = "BoxandLine20inchHQE"; return PMTName;}
@@ -1343,6 +1332,10 @@ G4float BoxandLine20inchHQE::GetmaxQE(){
   const G4float maxQE = 0.315;
   return maxQE;
 }
+G4float* BoxandLine20inchHQE::GetCollectionEfficiencyArray(){  
+  static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
+  return CE;
+}
 
 
 
@@ -1352,11 +1345,7 @@ G4float BoxandLine20inchHQE::GetmaxQE(){
 
 //Information for the BoxandLine12inchHQE is identical to the BoxandLine20inchHQE, except for GetPMTName, GetRadius and GetExposeHeight.
 
-BoxandLine12inchHQE::BoxandLine12inchHQE()
-{
-    collectionEfficiency = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};   
-}
-
+BoxandLine12inchHQE::BoxandLine12inchHQE(){}
 BoxandLine12inchHQE::~BoxandLine12inchHQE(){}
 
 G4String BoxandLine12inchHQE::GetPMTName() {G4String PMTName = "BoxandLine12inchHQE"; return PMTName;}
@@ -1505,4 +1494,8 @@ G4float* BoxandLine12inchHQE::GetQE(){
 G4float BoxandLine12inchHQE::GetmaxQE(){
   const G4float maxQE = 0.315;
   return maxQE;
+}
+G4float* BoxandLine12inchHQE::GetCollectionEfficiencyArray(){  
+  static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
+  return CE;
 }

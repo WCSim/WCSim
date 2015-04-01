@@ -12,8 +12,6 @@ class WCSimPMTObject
 {
 
 public:
-  WCSimPMTObject();
-    
   virtual G4String GetPMTName()=0;
   virtual G4double GetExposeHeight()=0;
   virtual G4double GetRadius()=0;
@@ -25,9 +23,9 @@ public:
   virtual float    HitTimeSmearing(float)=0;
   virtual G4double GetPMTGlassThickness()=0;
 protected:
+  virtual G4float* GetCollectionEfficiencyArray();
+  virtual G4float* GetCollectionEfficiencyAngle();
   G4float Interpolate_func(G4float, G4int, G4float*, G4float*);
-  G4float collectionEfficiencyAngle[10];
-  G4float collectionEfficiency[10];
 };
 
 
@@ -146,6 +144,8 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+protected:
+  G4float* GetCollectionEfficiencyArray();
 };
 
 class HPD12inchHQE : public WCSimPMTObject
@@ -166,6 +166,8 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+protected:
+  G4float* GetCollectionEfficiencyArray();
 };
 
 class BoxandLine20inchHQE : public WCSimPMTObject
@@ -186,6 +188,8 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+protected:
+  G4float* GetCollectionEfficiencyArray();
 };
 
 class BoxandLine12inchHQE : public WCSimPMTObject
@@ -206,6 +210,8 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+protected:
+  G4float* GetCollectionEfficiencyArray();
 };
 
 
