@@ -26,9 +26,9 @@ You can follow issues/requests etc by watching the GitHub respository.
 Build Instructions:
 
 You should have a recent and working version of ROOT and GEANT4.
-(Known to work with GEANT 4.9.4.p01.)  You also need all of the G4
+(Known to work with GEANT 4.9.4.p01 and ROOT v5.28.00)  You also need all of the G4
 data files including hadron xsecs etc.  Those are the only
-requirements.  The code should work with gcc 4.3.
+requirements.  The code should work with gcc 4.4.7.
 
 To compile: 
 * make clean 
