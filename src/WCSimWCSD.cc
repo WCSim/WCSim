@@ -148,12 +148,12 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   if (fdet->GetPMT_QE_Method()==1){
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
-    maxQE = fdet->GetPMTQE(wavelength,0,240,660,ratio);
-    photonQE = fdet->GetPMTQE(wavelength,1,240,660,ratio);
+    maxQE = fdet->GetPMTQE(collectionName[0],wavelength,0,240,660,ratio);
+    photonQE = fdet->GetPMTQE(collectionName[0],wavelength,1,240,660,ratio);
     photonQE = photonQE/maxQE;
   }else if (fdet->GetPMT_QE_Method()==3){
     ratio = 1./(1.-0.25);
-    photonQE = fdet->GetPMTQE(wavelength,1,240,660,ratio);
+    photonQE = fdet->GetPMTQE(collectionName[0],wavelength,1,240,660,ratio);
   }
   
   
@@ -164,7 +164,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      G4double local_y = localPosition.y();
      G4double local_z = localPosition.z();
      theta_angle = acos(fabs(local_z)/sqrt(pow(local_x,2)+pow(local_y,2)+pow(local_z,2)))/3.1415926*180.;
-     effectiveAngularEfficiency = fdet->GetPMTCollectionEfficiency(theta_angle);
+     effectiveAngularEfficiency = fdet->GetPMTCollectionEfficiency(theta_angle, collectionName[0]);
      if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
 
       

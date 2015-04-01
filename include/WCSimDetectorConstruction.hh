@@ -88,8 +88,8 @@ public:
 
   G4double GetPMTSize1() {return WCPMTSize;}
 
-  G4float GetPMTQE(G4float, G4int, G4float, G4float, G4float);
-  G4float GetPMTCollectionEfficiency(G4float theta_angle) { return GetPMTPointer()->GetCollectionEfficiency(theta_angle); };
+  G4float GetPMTQE(G4String,G4float, G4int, G4float, G4float, G4float);
+  G4float GetPMTCollectionEfficiency(G4float theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
 
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
@@ -116,7 +116,7 @@ public:
   
   G4ThreeVector GetWCOffset(){return WCOffset;}
   
-  // Related to the WC tube IDs
+  // Related to the WC tube ID
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
   static G4Transform3D GetTubeTransform(int tubeNo){return tubeIDMap[tubeNo];}
 

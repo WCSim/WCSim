@@ -257,12 +257,12 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
   }
   else if (PMTType == "BoxandLine20inchHQE"){
     WCSimPMTObject* PMT = new BoxandLine20inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT);
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
   else if (PMTType == "BoxandLine12inchHQE"){
     WCSimPMTObject* PMT = new BoxandLine12inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT);
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
 

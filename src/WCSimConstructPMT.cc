@@ -38,7 +38,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   
   G4double expose;
   G4double radius;
-
+  
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
   expose = PMT->GetExposeHeight();
   radius = PMT->GetRadius();
