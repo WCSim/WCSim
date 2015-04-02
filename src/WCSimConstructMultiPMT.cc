@@ -16,6 +16,9 @@
 
 #include "G4SystemOfUnits.hh"
 
+#include  "WCSimMultiPMTParameterisation.hh"
+#include  "G4PVParameterised.hh"
+
 //TODO: move
 #include "G4NistManager.hh"
 
@@ -179,7 +182,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
 
 
   
-  
+
+
+  /*
   //Now we place the nPMTs inside this motherobject on a sphere
   const G4int nPMTs = 2;//31;
   // in rotated frame!
@@ -215,7 +220,56 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
 				p);					// every PMT need a unique id.
     
   }
+  */
+
+
+    // gf
+  WCSimMultiPMTParameterisation* WCSimMultiPMTParameterisation_par;
   
+  G4int NbOfPmt = 15;
+  G4double pmtDistance = 25.5*cm; // distance from the Z axis
+  // G4double pmtWidth = 2.0*cm;   // width of the pmt
+
+
+  G4double pmt_radius=3.81*cm;
+  G4LogicalVolume* logicWCPMT = ConstructPMT(pmt_radius, expose);
+  
+  G4int NbOfTotPmt = WCSimMultiPMTParameterisation_par->CountPMT(NbOfPmt); // Total number of chambers in the circles
+  
+  std::vector<G4double> vAlpha;;
+  std::vector<G4int> vNiC;
+  std::vector<G4int> vCircle;
+
+
+  G4VPVParameterisation* pmtParam =
+    new WCSimMultiPMTParameterisation(
+				      NbOfPmt,	// NoChambers
+				      pmtDistance,	// Z spacing of centers
+				      vNiC,		// Number of chambers in each circle
+				      vAlpha,		// Tilt angle for each circle
+				      vCircle);		// Circle number
+  
+  // dummy value : kZAxis -- modified by parameterised volume
+
+  // gf: this has to fill an hemisphere....the mother logical volume should be the logical volume of 
+  // mPMT_top_sphere or mPMT_bottom_sphere
+
+  G4VPhysicalVolume* hemisphere = 
+    new G4PVParameterised("pmt",       // their name
+			  logicWCPMT,   // their logical volume
+			  logicWCMultiPMT,       // Mother logical volume
+			  kZAxis,          // Are placed along this axis
+			  NbOfTotPmt, // Number of chambers
+			  pmtParam,    // The parametrisation
+			  true); // checking overlaps
+  
+  //
+  
+
+
+  // end gf
+
+
   
   
   logicWCMultiPMT->SetVisAttributes(WCPMTVisAtt);  //DEBUG

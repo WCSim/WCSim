@@ -130,7 +130,8 @@ public:
   void SetmPMT_CylHeight(G4double height){cylinder_height = height;}
   void SetmPMT_CylRadius(G4double radius){cylinder_radius = radius;}
   void SetmPMT_Orientation(mPMT_orientation orient){orientation = orient;}
-
+  void SetmPMT_MaterialOuter(){};
+  void SetmPMT_MaterialInner(){};
 
 
 
@@ -387,7 +388,7 @@ private:
   G4double cylinder_height;
   G4double cylinder_radius;
   mPMT_orientation orientation;
-
+  
 
 
  

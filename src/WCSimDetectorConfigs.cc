@@ -25,8 +25,8 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   //WCSimPMTObject * PMT = CreatePMTObject("PMT20inch");
   WCSimPMTObject * PMT = CreatePMTObject("PMT8inch");
   WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = PMT->GetExposeHeight();
-  WCPMTRadius = 8*25.6/2*mm; //mimic 3inch(dimensions too small for CutOffTubs, also 5inch)      //PMT->GetRadius();
+  WCPMTExposeHeight = 0.9*3*25.6/2*mm; //PMT->GetExposeHeight(); //mimic 3inch ("90% of radius as hack")
+  WCPMTRadius = 3*25.6/2*mm; //mimic 3inch      //PMT->GetRadius();
   WCPMTGlassThickness = PMT->GetPMTGlassThickness();
   WCIDDiameter          = 33.6815*m; //16.900*2*cos(2*pi*rad/75)*m; //inner detector diameter
   WCIDHeight            = 36.200*m; //"" "" height

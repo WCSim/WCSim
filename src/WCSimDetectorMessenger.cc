@@ -331,8 +331,11 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  std::cout << "Need to implement PMT enums and restructure WCSim to use PMT type OD" << std::endl;
 	if (command == mPMT_reflector)
 	  std::cout << "Reflector Not Yet implemented" << std::endl;
-
 	
+	if (command == mPMT_material_outer)
+
+	if (command == mPMT_material_inner)
+
 	
 	
 
