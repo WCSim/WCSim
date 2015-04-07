@@ -13,7 +13,7 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimTrackInformation.hh"
 
-WCSimWCSD::WCSimWCSD(G4String name,WCSimDetectorConstruction* myDet)
+WCSimWCSD::WCSimWCSD(G4String CollectionName, G4String name,WCSimDetectorConstruction* myDet)
 :G4VSensitiveDetector(name)
 {
   // Place the name of this collection on the list.  We can have more than one
@@ -23,8 +23,7 @@ WCSimWCSD::WCSimWCSD(G4String name,WCSimDetectorConstruction* myDet)
   // Which has a "/" in it, I can find this collection later using 
   // GetCollectionID()
 
-  G4String HCname;
-  collectionName.insert(HCname="glassFaceWCPMT");
+  collectionName.insert(CollectionName);
   
   fdet = myDet;
   

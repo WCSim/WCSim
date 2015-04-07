@@ -150,7 +150,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     G4SDManager* SDman = G4SDManager::GetSDMpointer();
     G4String SDName = "/WCSim/";
     SDName += CollectionName;
-    aWCPMT = new WCSimWCSD(SDName,this );
+    aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
     SDman->AddNewDetector( aWCPMT );
   }
   logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
