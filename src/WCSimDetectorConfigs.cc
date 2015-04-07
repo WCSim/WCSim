@@ -182,7 +182,8 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   innerPMT_Rpitch   =   990.*mm;
   innerPMT_Apitch   =   990.*mm;
 
-  WCSimPMTObject* outerPMT = new PMT8inch; //currently doesn't store the pointer to this PMT. If we want to read the qpe or QE for the OD in the future, this will need to be stored.
+  //WCSimPMTObject* outerPMT = new PMT8inch; //currently doesn't store the pointer to this PMT. If we want to read the qpe or QE for the OD in the future, this will need to be stored.
+  WCSimPMTObject * outerPMT = CreatePMTObject("PMT8inch", "glassFaceWCPMT_OD");
   outerPMT_Name = outerPMT->GetPMTName();
   outerPMT_Expose = outerPMT->GetExposeHeight();
   outerPMT_Radius = outerPMT->GetRadius();
@@ -227,7 +228,8 @@ void WCSimDetectorConstruction::SetHyperKGeometry_withHPD()
    innerPMT_Rpitch   =   990.*mm;
    innerPMT_Apitch   =   990.*mm;
 
-   WCSimPMTObject* outerPMT = new PMT8inch; //currently doesn't store the pointer to this PMT. If we want to read the qpe or QE for the OD in the future, this will need to be stored.
+   //   WCSimPMTObject* outerPMT = new PMT8inch; //currently doesn't store the pointer to this PMT. If we want to read the qpe or QE for the OD in the future, this will need to be stored.
+   WCSimPMTObject * outerPMT = CreatePMTObject("PMT8inch", "glassFaceWCPMT_OD");
    outerPMT_Expose = outerPMT->GetExposeHeight();
    outerPMT_Radius = outerPMT->GetRadius();
    outerPMT_TopR      = innerPMT_TopR + 900.*mm;
