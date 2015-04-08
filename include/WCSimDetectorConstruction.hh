@@ -93,27 +93,19 @@ public:
 
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
-  G4int total_array_number;
-  G4int array_index;
-  int ODPMTCounter;
-  WCSimPMTObject * PMTptr[10];
-  G4String CollectionNameArray[10];
+  std::map<G4String, WCSimPMTObject*>  CollectionNameMap; 
+  WCSimPMTObject * PMTptr;
  
- void SetPMTPointer(WCSimPMTObject* PMT, G4String CollectionName) {
-   CollectionNameArray[total_array_number] = CollectionName;
-   PMTptr[total_array_number] = PMT;
-   total_array_number++;
- }
-  
-  WCSimPMTObject* GetPMTPointer(G4String CollectionName){
-    array_index = 1000; // some large number
-    for (int i=0; i<total_array_number; i++){
-      if (CollectionName == CollectionNameArray[i]){array_index = i; break;}
-    }
-    if(array_index == 1000){G4cout << CollectionName << " is not a recognized Collection Name. Exiting WCSim." << G4endl; exit(1);}
-    return PMTptr[array_index];
+  void SetPMTPointer(WCSimPMTObject* PMT, G4String CollectionName){
+    CollectionNameMap[CollectionName] = PMT;
   }
-  
+
+  WCSimPMTObject* GetPMTPointer(G4String CollectionName){
+    PMTptr = CollectionNameMap[CollectionName];
+    if (PMTptr == NULL) {G4cout << CollectionName << " is not a recognized hit collection. Exiting WCSim." << G4endl; exit(1);}
+    return PMTptr;
+  }
+ 
   G4ThreeVector GetWCOffset(){return WCOffset;}
   
   // Related to the WC tube ID
@@ -250,6 +242,7 @@ private:
   G4String WCPMTName;
   typedef std::pair<G4String, G4String> PMTKey_t;
   typedef std::map<PMTKey_t, G4LogicalVolume*> PMTMap_t;
+
   static PMTMap_t PMTLogicalVolumes;
 
   // WC geometry parameters
@@ -386,7 +379,7 @@ private:
   static std::map<int, G4Transform3D> tubeIDMap;
 //  static std::map<int, cyl_location> tubeCylLocation;
   static hash_map<std::string, int, hash<std::string> >  tubeLocationMap; 
-
+ 
   // Variables related to configuration
 
   G4int myConfiguration;   // Detector Config Parameter
