@@ -1,7 +1,16 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
+*************************************************************
+04/08/2015: Notes for v1.3.0        
+*************************************************************
+New Features
+* Added in 12" HPD photosensor option (same as 20" HPD but with a different geometry)
+* New detector configurations added for the Hyper-K design study:  SuperK_20inchPMT_20perCent, SuperK_20inchBandL_20perCent, SuperK_12inchBandL_15perCent, SuperK_20inchBandL_14perCent, Cylinder_12inchHPD_15perCent
+* Added 12" and 20" Box and Line photosensor option
+* Implemented a collection efficiency parameter to deal with the angular efficiency dependence for Box and Line photosensors. By default, the collection efficiency option is turned off (so the collection efficiency is 100%). To enable the collection efficiency parameter, the user must set `/WCSim/PMTCollEff on` in the macro. If the collection efficiency parameter is enabled, the default collection efficiency in the base class is 100%. To use a different collection efficiency, GetCollectionEfficiencyArray() must be specified when defining a PMTObject in WCSimPMTObject.cc. 
+* Added link to the NUANCE format documentation in the comments of WCSimPrimaryActionGenerator.cc
 
 *************************************************************
-01/21/2014: Notes for v1.2.0        
+01/21/2015: Notes for v1.2.0        
 *************************************************************
 Bug Fixes
 * Missing HK variables added so that the HK geometry could be specified as the default and the code won't crash. 
