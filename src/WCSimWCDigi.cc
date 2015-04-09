@@ -12,6 +12,8 @@ WCSimWCDigi::WCSimWCDigi()
   pe.clear();
   time.clear();
   totalPe = 0;
+  fUniqueID = -9999;
+  fIsNoise = false; // Initialise digit as non-noise
 }
 
 WCSimWCDigi::~WCSimWCDigi(){;}

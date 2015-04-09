@@ -85,16 +85,21 @@ class WCSimRootCherenkovHit : public TObject {
 private:
   Int_t fTubeID;
   Int_t fTotalPe[2];
+  Int_t fUniqueID;
 
 public:
   WCSimRootCherenkovHit() {}
   WCSimRootCherenkovHit(Int_t tubeID,
 			Int_t totalPe[2]);
+  WCSimRootCherenkovHit(Int_t tubeID,
+			Int_t totalPe[2],
+			Int_t uniqueID);
 
   virtual ~WCSimRootCherenkovHit() { }
 
   Int_t GetTubeID()       const { return fTubeID;}
   Int_t GetTotalPe(int i) const { return (i<2) ? fTotalPe[i]: 0;}
+  Int_t GetWCSimUniqueID()const { return fUniqueID;}
 
   ClassDef(WCSimRootCherenkovHit,1)  
 };
@@ -105,15 +110,20 @@ private:
   // See jhfNtuple.h for the meaning of these data members:
   Float_t fTruetime;
   Int_t   fPrimaryParentID;
+  Int_t   fUniqueID;
 
 public:
   WCSimRootCherenkovHitTime() {}
   WCSimRootCherenkovHitTime(Float_t truetime,
 			    Int_t   primaryParentID);
+  WCSimRootCherenkovHitTime(Float_t truetime,
+			    Int_t   primaryParentID,
+			    Int_t   uniqueID);
   virtual ~WCSimRootCherenkovHitTime() { }
 
-  Float_t   GetTruetime() { return fTruetime;}
-  Int_t     GetParentID() { return fPrimaryParentID;}
+  Float_t GetTruetime()      { return fTruetime;}
+  Int_t   GetParentID()      { return fPrimaryParentID;}
+  Int_t   GetWCSimUniqueID() { return fUniqueID;}
 
   ClassDef(WCSimRootCherenkovHitTime,1)  
 };
@@ -129,16 +139,21 @@ private:
   Float_t fQ;
   Float_t fT;
   Int_t fTubeId;
+  Int_t fUniqueID;
+  bool  fIsNoise;
 
 public:
   WCSimRootCherenkovDigiHit() {}
   WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid);
+  WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid, Int_t uniqueid, bool isnoise);
 
   virtual ~WCSimRootCherenkovDigiHit() { }
 
   Float_t   GetQ() const { return fQ;}
   Float_t   GetT() const { return fT;}
-  Int_t   GetTubeId() const { return fTubeId;}
+  Int_t     GetTubeId() const { return fTubeId;}
+  Int_t     GetWCSimUniqueID() const { return fUniqueID;}
+  bool      IsDigiNoise()      const { return fIsNoise; }
 
   ClassDef(WCSimRootCherenkovDigiHit,1)  
 };
@@ -295,12 +310,22 @@ public:
   WCSimRootCherenkovHit   *AddCherenkovHit(Int_t                tubeID,
 					  std::vector<Float_t> truetime,
 					  std::vector<Int_t>   primParID);
+  WCSimRootCherenkovHit   *AddCherenkovHit(Int_t                tubeID,
+                                           std::vector<Float_t> truetime,
+                                           std::vector<Int_t>   primParID,
+                                           Int_t uniqueID);
+
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
 
   WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
 						  Float_t t, 
 						  Int_t tubeid);
+  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q,
+                                                   Float_t t,
+                                                   Int_t tubeid,
+                                                   Int_t uniqueid,
+                                                   bool  isnoise);
 //  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
 //						  Float_t t, 
 //						  Int_t tubeid,

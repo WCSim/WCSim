@@ -325,6 +325,33 @@ WC_Index[0] = fNcherenkovhittimes-truetime.size(); //fCherenkovHitCounter-trueti
 
   return cherenkovhit;
 }
+
+WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vector<Float_t> truetime,std::vector<Int_t> primParID,Int_t uniqueID)
+{
+  // Add a new Cherenkov hit to the list of Cherenkov hits
+  TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
+  
+  for (int i =0;i<truetime.size();i++)
+    {
+      fCherenkovHitCounter++;
+      
+      WCSimRootCherenkovHitTime *cherenkovhittime = 
+	new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i],uniqueID);
+    }
+  
+  Int_t WC_Index[2];
+  WC_Index[0] = fNcherenkovhittimes-truetime.size(); //fCherenkovHitCounter-truetime.size();
+  WC_Index[1] = truetime.size();
+  
+  TClonesArray &cherenkovhits = *fCherenkovHits;
+  
+  WCSimRootCherenkovHit *cherenkovhit
+    = new(cherenkovhits[fNcherenkovhits++]) WCSimRootCherenkovHit(tubeID,
+								  WC_Index,
+								  uniqueID);
+  
+  return cherenkovhit;
+}
 //_____________________________________________________________________________
 
 WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
@@ -337,12 +364,34 @@ WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
   fTotalPe[1] = totalPe[1];
 }
 
+WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
+					     Int_t totalPe[2],
+					     Int_t uniqueID)
+{
+  // Create a WCSimRootCherenkovHitIndex object and fill it with stuff
+
+  fTubeID     = tubeID;
+  fTotalPe[0] = totalPe[0];
+  fTotalPe[1] = totalPe[1];
+  fUniqueID   = uniqueID;
+}
+
 WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,
 						     Int_t primParID)
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
     fTruetime        = truetime; 
     fPrimaryParentID = primParID;
+}
+
+WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,
+						     Int_t primParID,
+						     Int_t uniqueID)
+{
+  // Create a WCSimRootCherenkovHit object and fill it with stuff
+    fTruetime        = truetime; 
+    fPrimaryParentID = primParID;
+    fUniqueID        = uniqueID;
 }
 
 //_____________________________________________________________________________
@@ -360,6 +409,24 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q,
  
   return cherenkovdigihit;
 }
+
+WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q, 
+								 Float_t t, 
+								 Int_t tubeid,
+								 Int_t uniqueid,
+								 bool  isnoise)
+{
+  // Add a new digitized hit to the list of digitized hits
+  TClonesArray &cherenkovdigihits = *fCherenkovDigiHits;
+  WCSimRootCherenkovDigiHit *cherenkovdigihit = 
+    new(cherenkovdigihits[fNcherenkovdigihits++]) WCSimRootCherenkovDigiHit(q, 
+									    t, 
+									    tubeid,
+									    uniqueid,
+									    isnoise);
+  
+  return cherenkovdigihit;
+}
 //_____________________________________________________________________________
 
 WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q, 
@@ -371,6 +438,22 @@ WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q,
   fQ = q;
   fT = t;
   fTubeId = tubeid;
+
+}
+
+WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q, 
+						     Float_t t, 
+						     Int_t tubeid,
+						     Int_t uniqueid,
+						     bool  isnoise)
+{
+  // Create a WCSimRootCherenkovDigiHit object and fill it with stuff
+
+  fQ = q;
+  fT = t;
+  fTubeId = tubeid;
+  fUniqueID = uniqueid;
+  fIsNoise  = isnoise;
 
 }
 
