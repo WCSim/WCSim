@@ -178,13 +178,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
 			0);					// every PMT need a unique id.
 
   ////////////////////////////////////////////////////////////////////////////////////
-
-
-
   
-
-
-  /*
+  
   //Now we place the nPMTs inside this motherobject on a sphere
   const G4int nPMTs = 2;//31;
   // in rotated frame!
@@ -220,9 +215,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
 				p);					// every PMT need a unique id.
     
   }
-  */
 
 
+  /*
     // gf
   WCSimMultiPMTParameterisation* WCSimMultiPMTParameterisation_par;
   
@@ -268,7 +263,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
 
 
   // end gf
-
+  */
 
   
   

@@ -130,8 +130,8 @@ public:
   void SetmPMT_CylHeight(G4double height){cylinder_height = height;}
   void SetmPMT_CylRadius(G4double radius){cylinder_radius = radius;}
   void SetmPMT_Orientation(mPMT_orientation orient){orientation = orient;}
-  void SetmPMT_MaterialOuter(){};
-  void SetmPMT_MaterialInner(){};
+  void SetmPMT_MaterialOuter(G4Material outer_material){mPMT_outer_material = G4Material::GetMaterial(outer_material);}
+  void SetmPMT_MaterialInner(G4Material inner_material){mPMT_inner_material = inner_material;}
 
 
 
@@ -388,7 +388,8 @@ private:
   G4double cylinder_height;
   G4double cylinder_radius;
   mPMT_orientation orientation;
-  
+  G4Material mPMT_outer_material;
+  G4Material mPMT_inner_material;
 
 
  

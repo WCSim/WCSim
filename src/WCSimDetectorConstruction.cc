@@ -85,7 +85,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   cylinder_height = 453.*mm;
   cylinder_radius = 166.*mm;
   orientation = PERPENDICULAR;
-
+  mPMT_outer_material = G4Material::GetMaterial("Water");
+  mPMT_inner_material = G4Material::GetMaterial("Blacksheet");
 
 
 
