@@ -38,12 +38,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   
   G4double expose;
   G4double radius;
-  G4double glassthickness;
+  G4double glassThickness;
   
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
   expose = PMT->GetExposeHeight();
   radius = PMT->GetRadius();
-  glassthickness = PMT->GetPMTGlassThickness();
+  glassThickness = PMT->GetPMTGlassThickness();
 
   G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
   G4double PMTOffset =  sphereRadius - expose;
@@ -86,7 +86,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   //Create PMT Interior
   G4Sphere* tmpSolidInteriorWCPMT =
       new G4Sphere(    "tmpInteriorWCPMT",
-                       0.0*m,(sphereRadius-glassthickness),
+                       0.0*m,(sphereRadius-glassThickness),
                        0.0*deg,360.0*deg,
                        0.0*deg,90.0*deg);
 
@@ -118,7 +118,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   //Create PMT Glass Face
   G4Sphere* tmpGlassFaceWCPMT =
       new G4Sphere(    "tmpGlassFaceWCPMT",
-                       (sphereRadius-glassthickness),
+                       (sphereRadius-glassThickness),
                        sphereRadius,
                        0.0*deg,360.0*deg,
                        0.0*deg,90.0*deg);
