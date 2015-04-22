@@ -35,19 +35,14 @@ class WCSimMultiPMTParameterisation : public G4VPVParameterisation
 				G4double apoth,
 				std::vector<G4int>& vNiC,
 				std::vector<G4double>& vAlpha,
-				std::vector<G4int>& vCircle);
+				std::vector<G4int>& vCircle,
+				G4double height);
   
   virtual ~WCSimMultiPMTParameterisation();
-  
-  // MultiPMT methods
-  G4int	CountPMT(G4int NoPmt);
-  G4double	ComputeEta (G4int NoPmt);
-  G4double	ComputeAlpha (G4double alphaOfPrevC, G4double Eta);
-  G4int	ComputeNiC (G4double alphaOfCircle, G4double Eta);
-  
   void ComputeTransformation (const G4int copyNo,
 			      G4VPhysicalVolume* physVol) const;
   
+  // gf va reinserito:
   //void ComputeDimensions (G4Tubs & pmtid_multi, const G4int copyNo,   // DOES NOT exist with G4Tubs
   //                         const G4VPhysicalVolume* physVol) const;
   
@@ -56,15 +51,13 @@ private:
   G4int		fNoPmt;   
   G4double	fApothema;    // The distance from the Z axis
   
-  // // MultiPMT data members
-  // std::vector<G4int>		vNiC;	        // Nb of Chambers in each circle
-  // std::vector<G4double>  	vAlpha;	        // Tilt angle for each circle
-  // std::vector<G4int>		vCircle;	// Circle numbers
-  
   // Local NiC, Alpha and Circle vectors
   std::vector<G4int>	vNiCLocal;
   std::vector<G4double> vAlphaLocal;
   std::vector<G4int>	vCircleLocal;
+
+  G4double   fHeight;
+  
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

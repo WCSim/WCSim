@@ -18,6 +18,9 @@
 // warning : hash_map is not part of the standard
 #include <ext/hash_map>
 
+//instead of using forward declaration, just include:
+#include "G4Material.hh"
+
 
 using __gnu_cxx::hash;
 using __gnu_cxx::hashtable;
@@ -130,8 +133,15 @@ public:
   void SetmPMT_CylHeight(G4double height){cylinder_height = height;}
   void SetmPMT_CylRadius(G4double radius){cylinder_radius = radius;}
   void SetmPMT_Orientation(mPMT_orientation orient){orientation = orient;}
-  void SetmPMT_MaterialOuter(G4Material outer_material){mPMT_outer_material = G4Material::GetMaterial(outer_material);}
-  void SetmPMT_MaterialInner(G4Material inner_material){mPMT_inner_material = inner_material;}
+  //void SetmPMT_MaterialOuter(G4Material outer_material){mPMT_outer_material = G4Material::GetMaterial(outer_material);}
+  //void SetmPMT_MaterialOuter(G4Material outer_material){};//mPMT_outer_material = outer_material;}
+  //void SetmPMT_MaterialInner(G4Material inner_material){};//mPMT_inner_material = inner_material;}
+
+  //Filling mPMT
+  G4int	        CountPMT(G4int NoPmt);
+  G4double	ComputeEta (G4int NoPmt);
+  G4double	ComputeAlpha (G4double alphaOfPrevC, G4double Eta);
+  G4int	        ComputeNiC (G4double alphaOfCircle, G4double Eta);
 
 
 
@@ -388,9 +398,13 @@ private:
   G4double cylinder_height;
   G4double cylinder_radius;
   mPMT_orientation orientation;
-  G4Material mPMT_outer_material;
-  G4Material mPMT_inner_material;
+  //  G4Material mPMT_outer_material;
+  //G4Material mPMT_inner_material;
 
+  //Filling mPMT
+  std::vector<G4int>		vNiC;	        // Nb of Chambers in each circle
+  std::vector<G4double>	        vAlpha;	        // Tilt angel for each circle
+  std::vector<G4int>		vCircle;	// Circle numbers
 
  
   std::vector<WCSimPmtInfo*> fpmts;

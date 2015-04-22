@@ -2,7 +2,6 @@
 #include "WCSimDetectorMessenger.hh"
 #include "WCSimTuningParameters.hh"
 
-#include "G4Material.hh"
 #include "G4Element.hh"
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
@@ -85,8 +84,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   cylinder_height = 453.*mm;
   cylinder_radius = 166.*mm;
   orientation = PERPENDICULAR;
-  mPMT_outer_material = G4Material::GetMaterial("Water");
-  mPMT_inner_material = G4Material::GetMaterial("Blacksheet");
+  //  mPMT_outer_material = G4Material::GetMaterial("Water");
+  //  mPMT_inner_material = G4Material::GetMaterial("Blacksheet");
 
 
 

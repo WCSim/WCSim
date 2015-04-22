@@ -333,9 +333,9 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  std::cout << "Reflector Not Yet implemented" << std::endl;
 	
 	if (command == mPMT_material_outer){
-	  if(newValue == "Water"){
+	  /*if(newValue == "Water"){
 	    WCSimDetector->SetmPMT_MaterialOuter(G4Material::GetMaterial("Water"));
-	  }
+	    }*/
 	}
 	  
 	if (command == mPMT_material_inner)
