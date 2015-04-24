@@ -78,7 +78,7 @@
 #/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
 #/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
->>>>>>> 16c0102eb657f832378dee12c88e3ec6001f7917
+
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
@@ -92,7 +92,7 @@
 /mygen/generator normal
 /gun/particle e-
 #/gun/particle pi0
-/gun/energy 6 MeV
+/gun/energy 100 MeV
 /gun/direction 1 0 0 
 /gun/position 0 0 0  
 

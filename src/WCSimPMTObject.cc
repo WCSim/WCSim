@@ -1202,7 +1202,7 @@ float BoxandLine20inchHQE::HitTimeSmearing(float Q) {
 
 G4float* BoxandLine20inchHQE::Getqpe()
 {
->>>>>>> 16c0102eb657f832378dee12c88e3ec6001f7917
+  
   static G4float qpe0[501]= {
     // 1
     0.000000, 0.000000, 0.000000, 0.000000, 0.000000,

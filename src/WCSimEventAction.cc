@@ -133,6 +133,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   //Convert the hits to PMT pulse
   WCDMPMT->Digitize();
  
+  //We should probably add dark noise hits here
+  
+  
   //Get a pointer to the WC Digitizer Module
   WCSimWCDigitizerSKIV* WCDM =
     (WCSimWCDigitizerSKIV*)DMman->FindDigitizerModule("WCReadout");
