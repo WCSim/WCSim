@@ -11,11 +11,10 @@ class G4HCofThisEvent;
 class WCSimWCSD : public G4VSensitiveDetector
 {
  public:
-  WCSimWCSD(G4String,WCSimDetectorConstruction*);
+  WCSimWCSD(G4String,G4String,WCSimDetectorConstruction*);
   ~WCSimWCSD();
   
   void   Initialize(G4HCofThisEvent*);
-  G4float Interpolate_func(G4float, G4int, G4float*, G4float*);
 
   G4bool ProcessHits(G4Step*, G4TouchableHistory*);
   void   EndOfEvent(G4HCofThisEvent*);
