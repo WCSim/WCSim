@@ -81,7 +81,7 @@ void WCSimWCDigitizerBase::Digitize()
 }
 
 void WCSimWCDigitizerBase::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
-  //In the base class this does nothing
+  // In the base class this does nothing
  
 }
 
