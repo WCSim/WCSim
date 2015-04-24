@@ -108,7 +108,7 @@
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
 /gun/particle mu+
-/gun/energy 1000 MeV
+/gun/energy 20 MeV
 /gun/direction 0 1 0
 /gun/position 0 0 0 
 

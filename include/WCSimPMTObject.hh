@@ -24,6 +24,23 @@ public:
 };
 
 
+class PMTTest : public WCSimPMTObject
+{
+public:
+  PMTTest();
+  ~PMTTest();
+public:
+  G4String GetPMTName() ;
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4float* Getqpe();
+  G4float* GetQE();
+  G4float* GetQEWavelength();
+  G4float GetmaxQE();
+  float GettimingResolution(float);
+  G4double GetPMTGlassThickness();
+};
+
 class PMT20inch : public WCSimPMTObject
 {
 

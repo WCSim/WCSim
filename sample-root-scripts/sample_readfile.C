@@ -92,10 +92,12 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h1 = new TH1F("PMT Hits", "PMT Hits", 200, 0, 8000);
+  TH1F *h1 = new TH1F("PMT Hits", "PMT Hits", 8000, 0, 8000);
   TH1F *hvtx0 = new TH1F("Event VTX0", "Event VTX0", 200, -1500, 1500);
   TH1F *hvtx1 = new TH1F("Event VTX1", "Event VTX1", 200, -1500, 1500);
   TH1F *hvtx2 = new TH1F("Event VTX2", "Event VTX2", 200, -1500, 1500);
+  
+  int num_trig=0;
   
   // Now loop over events
   for (int ev=0; ev<nevent; ev++)
@@ -215,6 +217,7 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
 
     // Get the number of digitized hits
     // Loop over sub events
+   
     if(verbose) cout << "DIGITIZED HITS:" << endl;
     for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++) 
     {
@@ -224,6 +227,8 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
       int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
       if(verbose) printf("Ncherenkovdigihits %d\n", ncherenkovdigihits);
       
+      if(ncherenkovdigihits>0)
+	num_trig++;
       //for (i=0;i<(ncherenkovdigihits>4 ? 4 : ncherenkovdigihits);i++){
       for (i=0;i<ncherenkovdigihits;i++)
       {
@@ -257,4 +262,6 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
   c1->cd(2); hvtx1->Draw();
   c1->cd(3); hvtx2->Draw();
   c1->cd(4); h1->Draw();
+  
+  std::cout<<"num_trig "<<num_trig<<"\n";
 }

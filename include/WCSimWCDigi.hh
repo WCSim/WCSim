@@ -101,6 +101,39 @@ public:
   //  void SortHitTimes() {   sort(time_float.begin(),time_float.end()); }
  void SortHitTimes() {   sort(time_float.begin(),time_float.end()); }
 
+
+  void SortArrayByHitTime() {
+    int i, j;
+    float index,index2;
+    for (i = 1; i < time.size(); ++i)
+      {
+        index = time[i];
+        index2 = pe[i];
+        for (j = i; j > 0 && time[j-1] > index; j--) {
+          time[j] = time[j-1];
+          pe[j] = pe[j-1];
+          //std::cout <<"swapping "<<time[j-1]<<" "<<index<<"\n";
+        }
+        
+        time[j] = index;
+        pe[j] = index2;
+      }    
+  }
+  
+  void insertionSort(int a[], int array_size)
+  {
+    int i, j, index;
+    for (i = 1; i < array_size; ++i)
+      {
+        index = a[i];
+        for (j = i; j > 0 && a[j-1] > index; j--)
+          a[j] = a[j-1];
+        
+        a[j] = index;
+      }
+  }
+
+
   G4float GetFirstHitTimeInGate(G4float low,G4float upevent)
   {
     G4float firsttime;

@@ -337,7 +337,7 @@ public:
     WCSimRootTrigger* tmp = dynamic_cast<WCSimRootTrigger*>( (*fEventList)[0] );
     int num = tmp->GetHeader()->GetEvtNum();
     ++Current; 
-    if ( Current > 9 ) fEventList->Expand(20);
+    if ( Current > 9 ) fEventList->Expand(150);
     fEventList->AddAt(new WCSimRootTrigger(num,Current),Current);
   }
   

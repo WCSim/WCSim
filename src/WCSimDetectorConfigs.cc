@@ -39,6 +39,33 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCAddGd               = false;
 }
 
+void WCSimDetectorConstruction::SetTestGeometry()
+{
+  WCSimPMTObject * PMT = CreatePMTObject("PMT8inch");
+  WCPMTName = PMT->GetPMTName();
+  WCPMTExposeHeight = PMT->GetExposeHeight();
+  WCPMTRadius = PMT->GetRadius();
+  WCPMTGlassThickness = PMT->GetPMTGlassThickness();
+  WCIDDiameter          = 30.0*m; //16.900*2*cos(2*pi*rad/75)*m; //inner detector diameter
+  WCIDHeight            = 20.0*m; //"" "" height
+  WCBarrelPMTOffset     = 0.1*m; //offset from vertical
+  //WCBarrelNumPMTHorizontal  = 150; 
+  //WCBarrelNRings        = 17.;
+  WCPMTperCellHorizontal= 6;
+  WCPMTperCellVertical  = 2; 
+  WCPMTPercentCoverage	 = 40.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
+								   (10.0*WCPMTRadius));
+  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
+															 2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
+								 WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); 
+  // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCBlackSheetThickness = 1.0*cm;
+  WCAddGd               = true;
+}
+
 
 void WCSimDetectorConstruction::SetHyperKGeometry()
 {

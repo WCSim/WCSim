@@ -5,6 +5,8 @@
 #include "WCSimWCHit.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCDigitizer.hh"
+#include "WCSimWCDigitizerBase.hh"
+#include "WCSimWCDigitizerSKIV.hh"
 #include "WCSimWCPMT.hh"
 #include "WCSimDetectorConstruction.hh"
 
@@ -37,6 +39,7 @@
 
 #define _SAVE_RAW_HITS
 
+
 WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun, 
 				     WCSimDetectorConstruction* myDetector, 
 				     WCSimPrimaryGeneratorAction* myGenerator)
@@ -45,7 +48,8 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
 {
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
   WCSimWCPMT* WCDMPMT = new WCSimWCPMT( "WCReadoutPMT", myDetector);
-  WCSimWCDigitizer* WCDM = new WCSimWCDigitizer( "WCReadout", myDetector);
+  //  WCSimWCDigitizer* WCDM = new WCSimWCDigitizer( "WCReadout", myDetector);
+  WCSimWCDigitizerSKIV* WCDM = new WCSimWCDigitizerSKIV( "WCReadout", myDetector);
   DMman->AddNewModule(WCDMPMT);
   DMman->AddNewModule(WCDM);
 }
@@ -130,8 +134,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   WCDMPMT->Digitize();
  
   //Get a pointer to the WC Digitizer Module
-  WCSimWCDigitizer* WCDM =
-    (WCSimWCDigitizer*)DMman->FindDigitizerModule("WCReadout");
+  WCSimWCDigitizerSKIV* WCDM =
+    (WCSimWCDigitizerSKIV*)DMman->FindDigitizerModule("WCReadout");
   
   //clear old info inside the digitizer
    WCDM->ReInitialize();
@@ -141,6 +145,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    WCDM->SetPMTSize(PMTSize);
    
    WCDM->Digitize();
+
+
    //ms->Stop();
    //std::cout << " Digtization :  Real = " << ms->RealTime() 
    //	    << " ; CPU = " << ms->CpuTime() << "\n";  
@@ -148,7 +154,6 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    // Get the digitized collection for the WC
    G4int WCDCID = DMman->GetDigiCollectionID("WCDigitizedCollection");
    WCSimWCDigitsCollection * WCDC = (WCSimWCDigitsCollection*) DMman->GetDigiCollection(WCDCID);
-
    /*   
    // To use Do like This:
    // --------------------
@@ -404,8 +409,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   WCSimRootTrigger* wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   // get number of gates
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
-  WCSimWCDigitizer* WCDM =
-    (WCSimWCDigitizer*)DMman->FindDigitizerModule("WCReadout");
+  WCSimWCDigitizerSKIV* WCDM =
+    (WCSimWCDigitizerSKIV*)DMman->FindDigitizerModule("WCReadout");
   int ngates = WCDM->NumberOfGatesInThisEvent(); 
   G4cout << "ngates =  " << ngates << "\n";
   for (int index = 0 ; index < ngates ; index++) 
@@ -686,7 +691,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 						  (*WCDC)[k]->GetTime(index),
 						  (*WCDC)[k]->GetTubeID());  
 	      sumq_tmp = sumq_tmp + (*WCDC)[k]->GetPe(index);
-	      
+	   
 	      countdigihits++;
 	      wcsimrootevent->SetNumDigitizedTubes(countdigihits);
 	      wcsimrootevent->SetSumQ(sumq_tmp);

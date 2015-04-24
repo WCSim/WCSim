@@ -9,7 +9,7 @@
 #
 # The tube size is fixed for SK to 20"
 # These are fixed geometries for validation
-#/WCSim/WCgeom SuperK
+/WCSim/WCgeom HyperK
 # Currently by defualt the DUSEL configurations are 10 inch.
 # you can overide this with the WCPMTsize command.
 # WCPMTsize command commented out on 10/1/09 (CWW)
@@ -36,7 +36,7 @@
 #/WCSim/WCgeom DUSEL_200kton_10inch_HQE_12perCent
 #/WCSim/WCgeom DUSEL_200kton_12inch_HQE_10perCent
 #/WCSim/WCgeom DUSEL_200kton_12inch_HQE_14perCent
-#/WCSim/Construct
+/WCSim/Construct
 
 #Added for the PMT QE option 08/17/10 (XQ)
 # 1. Stacking only mean when the photon is generated
@@ -63,21 +63,21 @@
 
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz
-/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
+#/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
 #/DarkRate/SetDarkRate 8.4 kHz #For HPDs, based on High QE dark rate from EGADS nov 2014
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
 # (14/03/10)
 # Factor of Normal PMT is 1.367
-/DarkRate/SetConvert 1.367
+#/DarkRate/SetConvert 1.367
 #/DarkRate/SetConvert 1.120 #For HPDs
 
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
 /gun/particle e-
 #/gun/particle pi0
-/gun/energy 500 MeV
+/gun/energy 6 MeV
 /gun/direction 1 0 0 
 /gun/position 0 0 0  
 
@@ -85,5 +85,5 @@
 
 /WCSimIO/RootFile wcsim.root
 
-/run/beamOn 10
+/run/beamOn 1000
 #exit
