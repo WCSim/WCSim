@@ -14,8 +14,6 @@
 #include "WCSimPmtInfo.hh"
 #include "WCSimDarkRateMessenger.hh"
 
-#include <RawSignalHitCollection.hh>
-
 #include <vector>
 // for memset
 #include <cstring>
@@ -81,7 +79,7 @@ void WCSimWCDigitizerBase::Digitize()
 }
 
 void WCSimWCDigitizerBase::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
-  //In the base class this does nothing
+  // In the base class this does nothing
  
 }
 
