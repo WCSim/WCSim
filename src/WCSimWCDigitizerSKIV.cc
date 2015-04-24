@@ -14,6 +14,7 @@
 #include "WCSimPmtInfo.hh"
 #include "WCSimDarkRateMessenger.hh"
 
+
 #include <RawSignalHitCollection.hh>
 
 #include <vector>
