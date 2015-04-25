@@ -7,6 +7,7 @@
 #include "WCSimWCDigitizer.hh"
 #include "WCSimWCDigitizerBase.hh"
 #include "WCSimWCDigitizerSKIV.hh"
+#include "WCSimWCAddDarkNoise.hh"
 #include "WCSimWCPMT.hh"
 #include "WCSimDetectorConstruction.hh"
 
@@ -50,8 +51,10 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   WCSimWCPMT* WCDMPMT = new WCSimWCPMT( "WCReadoutPMT", myDetector);
   //  WCSimWCDigitizer* WCDM = new WCSimWCDigitizer( "WCReadout", myDetector);
   WCSimWCDigitizerSKIV* WCDM = new WCSimWCDigitizerSKIV( "WCReadout", myDetector);
+  WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise( "WCDarkNoise", myDetector); 
   DMman->AddNewModule(WCDMPMT);
   DMman->AddNewModule(WCDM);
+  DMman->AddNewModule(WCDNM);
 }
 
 WCSimEventAction::~WCSimEventAction(){}
@@ -116,7 +119,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
   // Get a pointer to the Digitizing Module Manager
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
-  
+
   // Get a pointer to the WC PMT module
   WCSimWCPMT* WCDMPMT =
     (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT");
@@ -134,8 +137,16 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   WCDMPMT->Digitize();
  
   //We should probably add dark noise hits here
-  
-  
+  //Add Dark noise hits before digitizing
+  //Get a pointer to the WC Digitizer Module                                                                                                                                   
+  WCSimWCAddDarkNoise* WCDNM =
+    (WCSimWCAddDarkNoise*)DMman->FindDigitizerModule("WCDarkNoise");
+
+  //clear old info inside the darknoise routine                                                                                                                                  
+  WCDNM->ReInitialize();  
+
+  WCDNM->AddDarkNoise();
+
   //Get a pointer to the WC Digitizer Module
   WCSimWCDigitizerSKIV* WCDM =
     (WCSimWCDigitizerSKIV*)DMman->FindDigitizerModule("WCReadout");
