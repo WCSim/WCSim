@@ -1,1 +1,0 @@
-/Volumes/Insensitive/hyperk/myWCSim/WCSim/include/WCSimTuningParameters.hh
