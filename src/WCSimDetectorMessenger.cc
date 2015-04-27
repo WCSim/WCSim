@@ -33,7 +33,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
                           "DUSEL_200kton_10inch_HQE_12perCent\n"
                           "DUSEL_200kton_12inch_HQE_10perCent\n"
                           "DUSEL_200kton_12inch_HQE_14perCent\n"
-			 "Test\n"
 			 );
   PMTConfig->SetParameterName("PMTConfig", false);
   PMTConfig->SetCandidates("SuperK "
@@ -52,7 +51,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
                            "DUSEL_200kton_10inch_HQE_12perCent "
                            "DUSEL_200kton_12inch_HQE_10perCent "
                            "DUSEL_200kton_12inch_HQE_14perCent "
-                           "Test"
 			   );
   PMTConfig->AvailableForStates(G4State_PreInit, G4State_Idle);
 
@@ -159,11 +157,6 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		} 
 		else
                   G4cout << "That geometry choice not defined!" << G4endl;
-		//else if(newValue == "Test") {
-		  //WCSimDetector->SetTestGeometry();
-		  //} 
-		//		else
-		//G4cout << "That geometry choice not defined!" << G4endl;
 	}
   
 	if (command == SavePi0){
