@@ -20,16 +20,21 @@ public:
   WCSimWCTriggerBase(G4String name, WCSimDetectorConstruction*);
   ~WCSimWCTriggerBase();
   
-  void ReInitialize() { DigiStoreHitMap.clear(); }
   void Digitize();
 
 private:
-  ApplyTrigger(); // should be overridden in the implementation classes
-  DoTheWork();    //  could be overridden in the implementation classes
+  virtual void ApplyTrigger(WCSimWCDigitsCollection* WCDCPMT) = 0;
+  virtual void DoTheWork   (WCSimWCDigitsCollection* WCDCPMT); // could be overridden in the implementation classes
+                                                               //  by default just calls ApplyTrigger()
+
+protected:
+  WCSimWCDigitsCollection*  DigitsCollection;
 
 
+  //the following methods & data members may be removed
   
 public:
+  void ReInitialize() { DigiHitMap.clear(); }
   void AddNewDigit(int tube, int gate, float digihittime, float peSmeared);
   void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
@@ -57,8 +62,7 @@ private:
   WCSimDetectorConstruction* myDetector;
 
 protected:
-  WCSimWCDigitsCollection*  DigiStore;
-  std::map<int,int> DigiStoreHitMap; // need to check if a hit already exists..
+  std::map<int,int> DigiHitMap; // need to check if a hit already exists..
 
 };
 

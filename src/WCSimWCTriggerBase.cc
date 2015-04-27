@@ -45,7 +45,7 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
   G4String colName = "WCDigitizedCollection";
   this->myDetector = myDetector;
   collectionName.push_back(colName);
-  DigiStoreHitMap.clear();
+  DigiHitMap.clear();
 }
 
 WCSimWCTriggerBase::~WCSimWCTriggerBase(){
@@ -56,8 +56,7 @@ void WCSimWCTriggerBase::Digitize()
   //Input is collection of all digitized hits that passed the threshold
   //Output is all digitized hits which pass the trigger
   
-  DigiStore = new WCSimWCDigitsCollection(collectionName[0],collectionName[0]);
-  DigiStoreHitMap.clear();
+  DigiHitMap.clear();
 
   //This is the output digit collection
   DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
@@ -83,12 +82,8 @@ void WCSimWCTriggerBase::Digitize()
     DoTheWork(WCDCPMT);
   }
   
-  StoreDigiCollection(DigiStore);
+  StoreDigiCollection(DigitsCollection);
 
-}
-
-void WCSimWCTriggerBase::ApplyTrigger(WCSimWCDigitsCollection* WCDCPMT) {
-  // In the base class this does nothing
 }
 
 void WCSimWCTriggerBase::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
