@@ -41,17 +41,19 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
   WCSimWCDigitsCollection* WCHCPMT =
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCHCID));
   
-  if (WCHCPMT) {
+  if (WCHCPMT && this->PMTDarkRate>1E-307) {
     //Determine ranges for adding noise
-    FindDarkNoiseRanges(WCHCPMT);
+    if(DarkMode == 1)
+      FindDarkNoiseRanges(WCHCPMT,this->DarkWindow);
+    else if(DarkMode == 0) {
+      result.push_back(std::pair<float,float>(DarkLow,DarkHigh));
+    }
     //Call routine to add dark noise here.
     //loop over pairs which represent ranges.
     //Add noise to those ranges
     std::vector<std::pair<float, float> >::iterator it2 = result.begin();
     while (it2 != result.end()){
-      if(this->PMTDarkRate>1E-307){
-	AddDarkNoiseBeforeDigi(WCHCPMT,it2->first,it2->second);
-      }
+      AddDarkNoiseBeforeDigi(WCHCPMT,it2->first,it2->second);
       it2++;
     }
   }
@@ -202,7 +204,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 
 
 
-void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT) {
+void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, float width) {
   //Loop over all Hits and assign a time window around each hit
   //store these in the ranges vector as pairs
   for (int g=0; g<WCHCPMT->entries(); g++){
@@ -210,8 +212,8 @@ void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT) 
       float time = (*WCHCPMT)[g]->GetTime(gp);
       //lets assume a 5us window.  So we centre this on the hit time.
       //t1 is the lower limit of the window.
-      float t1=time - 2500.;
-      float t2=time + 2500.;
+      float t1=time - width/2.;
+      float t2=time + width/2.;
       //if t1 is negative set to 0
       if(t1 < 0.)
 	t1=0.;

@@ -88,6 +88,16 @@
 #/DarkRate/SetConvert 1.120 #For HPDs
 #/DarkRate/SetConvert 1.126 #For Box and Line PMTs
 
+#Have added new modes for adding dark noise to event 26/04/15
+#/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
+#/DarkRate/SetDarkLow to /DarkRate/SetDarkHigh [time in ns]
+#/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
+#width /DarkRate/SetDarkWindow [time in ns] around each hit.
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkHigh 100000
+/DarkRate/SetDarkLow 0
+/DarkRate/SetDarkWindow 4000
+
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
 /gun/particle e-
