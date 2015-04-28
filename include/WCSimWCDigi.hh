@@ -60,6 +60,13 @@ private:
   G4RotationMatrix rot;
   G4int            trackID;
 
+  // Stores the unique IDs of each photon making up a digit
+  // There can be more than one digit in an event, hence the vector contains: <digi_number, unique_photon_id>
+  // For example: <0,3>; <0,4>; <0,6>; <1,10>; <1,11>; <1,13>; <1,14>
+  //  The first digit in the event is made of of photons 3,4,6;
+  //  The second digit is made up of photons: 10,11,13,14          
+  std::vector< std::pair<int,float> > fDigiComp; 
+
 public:
   
   inline void SetTubeID(G4int tube) {tubeID = tube;};
@@ -67,6 +74,10 @@ public:
   { Gates.insert(g); TriggerTimes.push_back(t);}
   inline void SetPe(G4int gate,  G4float Q)      {pe[gate]     = Q;};
   inline void SetTime(G4int gate, G4float T)    {time[gate]   = T;};
+  inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
+    fDigiComp.push_back( std::make_pair(digi_number, photon_number) );
+  }
+
   
   inline G4float GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
