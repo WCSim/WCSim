@@ -73,6 +73,10 @@
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
 #/mygen/vecfile mu+.out
 
+#choose the Trigger & Digitizer type (and options)
+/WCSimDAQ/Digitizer SKIV
+/WCSimDAQ/Trigger NHits
+
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz
 /DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.

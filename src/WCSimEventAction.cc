@@ -47,15 +47,26 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   :runAction(myRun), generatorAction(myGenerator), 
    detectorConstructor(myDetector)
 {
+  DAQMessenger = new WCSimWCDAQMessenger(this);
+
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
   WCSimWCPMT* WCDMPMT = new WCSimWCPMT( "WCReadoutPMT", myDetector);
-  //  WCSimWCDigitizer* WCDM = new WCSimWCDigitizer( "WCReadout", myDetector);
-  WCSimWCDigitizerSKIV* WCDM = new WCSimWCDigitizerSKIV( "WCReadout", myDetector);
-  WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise( "WCDarkNoise", myDetector); 
   DMman->AddNewModule(WCDMPMT);
-  DMman->AddNewModule(WCDM);
-  DMman->AddNewModule(WCDNM);
-}
+
+  //choice of dark noise, digitizer, & trigger
+  if(DigitizerChoice == "SKI_SKDETSIM") {
+    //this is the old SKI joint dark noise, digitizer & trigger from SKDETSIM; buggy
+    WCSimWCDigitizer* WCDM = new WCSimWCDigitizer( "WCReadout", myDetector);
+    DMman->AddNewModule(WCDM);
+  }
+  else {
+    if(DigitizerChoice == "SKIV") {
+      WCSimWCDigitizerSKIV* WCDM = new WCSimWCDigitizerSKIV( "WCReadout", myDetector);
+      DMman->AddNewModule(WCDM);
+    }
+    WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise( "WCDarkNoise", myDetector); 
+    DMman->AddNewModule(WCDNM);
+  }//DigitizerChoice == "SKI_SKDETSIM"
 
 WCSimEventAction::~WCSimEventAction(){}
 
@@ -148,17 +159,23 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   WCDNM->AddDarkNoise();
 
   //Get a pointer to the WC Digitizer Module
-  WCSimWCDigitizerSKIV* WCDM =
-    (WCSimWCDigitizerSKIV*)DMman->FindDigitizerModule("WCReadout");
+  if(DigitizerChoice == "SKI_SKDETSIM") {
+    WCSimWCDigitizer* WCDM =
+      (WCSimWCDigitizer*)DMman->FindDigitizerModule("WCReadout");
+  }
+  else {
+    WCSimWCDigitizerBase* WCDM =
+      (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadout");
+  }
   
   //clear old info inside the digitizer
-   WCDM->ReInitialize();
+  WCDM->ReInitialize();
    
-   // Figure out what size PMTs we are using in the WC detector.
-   G4float PMTSize = detectorConstructor->GetPMTSize();
-   WCDM->SetPMTSize(PMTSize);
+  // Figure out what size PMTs we are using in the WC detector.
+  G4float PMTSize = detectorConstructor->GetPMTSize();
+  WCDM->SetPMTSize(PMTSize);
    
-   WCDM->Digitize();
+  WCDM->Digitize();
 
 
    //ms->Stop();
@@ -423,8 +440,14 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   WCSimRootTrigger* wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   // get number of gates
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
-  WCSimWCDigitizerSKIV* WCDM =
-    (WCSimWCDigitizerSKIV*)DMman->FindDigitizerModule("WCReadout");
+  if(DigitizerChoice == "SKI_SKDETSIM") {
+    WCSimWCDigitizer* WCDM =
+      (WCSimWCDigitizer*)DMman->FindDigitizerModule("WCReadout");
+  }
+  else {
+    WCSimWCDigitizerBase* WCDM =
+      (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadout");
+  }
   int ngates = WCDM->NumberOfGatesInThisEvent(); 
   G4cout << "ngates =  " << ngates << "\n";
   for (int index = 0 ; index < ngates ; index++) 
