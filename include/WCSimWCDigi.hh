@@ -65,7 +65,7 @@ private:
   // For example: <0,3>; <0,4>; <0,6>; <1,10>; <1,11>; <1,13>; <1,14>
   //  The first digit in the event is made of of photons 3,4,6;
   //  The second digit is made up of photons: 10,11,13,14          
-  std::vector< std::pair<int,float> > fDigiComp; 
+  std::vector< std::pair<int,int> > fDigiComp; 
 
 public:
   
@@ -74,8 +74,17 @@ public:
   { Gates.insert(g); TriggerTimes.push_back(t);}
   inline void SetPe(G4int gate,  G4float Q)      {pe[gate]     = Q;};
   inline void SetTime(G4int gate, G4float T)    {time[gate]   = T;};
+
+  // Add a digit number and unique photon number to fDigiComp
   inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
     fDigiComp.push_back( std::make_pair(digi_number, photon_number) );
+  }
+  // Add a whole vector for one digit to fDigiComp. Clear input vector once added.
+  void AddDigiCompositionInfo(std::vector< std::pair<int,int> > &digi_comp){
+    for(int i = 0; i < (int) digi_comp.size(); i++){
+      fDigiComp.push_back( digi_comp[i] );
+    }
+    digi_comp.clear();
   }
 
   
@@ -83,6 +92,9 @@ public:
   inline G4int   GetTubeID() {return tubeID;};
   inline G4float GetPe(int gate)     {return pe[gate];};
   inline G4float GetTime(int gate)   {return time[gate];};
+
+  inline std::vector< std::pair<int,int> > GetDigiCompositionInfo(){return fDigiComp;}
+
   inline int NumberOfGates() { return Gates.size();}
   inline int NumberOfSubEvents() { return (Gates.size()-1);}
   inline bool HasHitsInGate(int number) { return (Gates.count(number)==1); }
@@ -116,7 +128,7 @@ public:
   void SortArrayByHitTime() {
     int i, j;
     float index,index2;
-    for (i = 1; i < time.size(); ++i)
+    for (i = 1; i < (int) time.size(); ++i)
       {
         index = time[i];
         index2 = pe[i];

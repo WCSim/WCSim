@@ -115,10 +115,10 @@ void WCSimWCDigitizerSKIV::Digitize()
 
 
 void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
-  std::cout<<"START\n";
+  std::cout<<"START (WCHCPMT->entries() = "<<WCHCPMT->entries()<<std::endl;
   //We must first sort hits by PMT in time.  This is very important as the code
   //assumes that each hit is in time order from lowest to highest.
-
+  
   //Sorting done.  Now we integrate the charge on each PMT.  SK IV has a 400ns 
   //integration gate, discharges for 350ns to calculate the charge and
   //this is followed by a 150ns veto
@@ -126,22 +126,30 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
     {
       //loop over entires in WCHCPMT, each entry corresponds to
-      //the hits on one PMT
-      //Sort hits on this pmt
+      //the photons on one PMT
+
+      //Sort photons on this pmt
       (*WCHCPMT)[i]->SortArrayByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
-      std::cout<<"tube "<<tube<<"\n";
-      //look over all hits on the PMT
+      //std::cout<<"tube "<<tube<<" totalpe = "<<(*WCHCPMT)[i]->GetTotalPe()<<std::endl;
+
+      //look over all photons on the PMT
       //integrate charge and start digitizing
       float intgr_start=0;
       float upperlimit=0;
       G4double efficiency = 0.985; // with skrn1pe (AP tuning) & 30% QE increase in stacking action
       int ngate=0;
-      for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
 
+      // Variables to store photon uniqueid that make up a digit
+      int digi_unique_id   = 0;
+      int photon_unique_id = 0;
+      std::vector< std::pair<int,int> > digi_comp; 
+
+      for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
 	{
 	  float time = (*WCHCPMT)[i]->GetTime(ip);
           float pe = (*WCHCPMT)[i]->GetPe(ip);
+
 	  //start the integration time as the time of the first hit
 	  //Hits must be sorted in time
 	  if(ip==0) {
@@ -154,9 +162,13 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  bool MakeDigit = false;
 	  if(time >= intgr_start && time <= upperlimit) {
 	    peSmeared += pe;
+	    digi_comp.push_back( std::make_pair(digi_unique_id, photon_unique_id) );
+       
 	    //if this is the last digit, make sure to make the digit
-	    if(ip + 1 == (*WCHCPMT)[i]->GetTotalPe())
+	    if(ip + 1 == (*WCHCPMT)[i]->GetTotalPe()){
 	      MakeDigit = true;
+	    }
+	    
 	  }
 	  else {
 	    //this hit is outside the integration time window.
@@ -164,19 +176,19 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    //time period where no hits can be recorded
 	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    MakeDigit = true;
-// 	    int iflag;
-// 	    WCSimWCDigitizerSKIV::Threshold(peSmeared,iflag);
-// 	    if(iflag == 0) {
-// 	      //digitize hit
-// 	      peSmeared *= efficiency;
+	    // 	    int iflag;
+	    // 	    WCSimWCDigitizerSKIV::Threshold(peSmeared,iflag);
+	    // 	    if(iflag == 0) {
+	    // 	      //digitize hit
+	    // 	      peSmeared *= efficiency;
 	    // }
-// 	    else {
-// 	      //reject hit
-// 	    }
+	    // 	    else {
+	    // 	      //reject hit
+	    // 	    }
 	    //Now we need to reject hits that are after the integration
 	    //period to the end of the veto signal
 	  }
-
+	  
 	  //Make digit here
 	  if(MakeDigit) {
 	    int iflag;                                                                                                                                                        
@@ -186,17 +198,23 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      peSmeared *= efficiency;             
 	      WCSimWCDigitizerSKIV::AddNewDigit(tube, ngate, intgr_start, peSmeared);
 	      ngate++;
+	      
+	      digi_unique_id++;
+	      // Save digit composition info
+	      (*WCHCPMT)[i]->AddDigiCompositionInfo(digi_comp);
+	      
 	    }                                                                                                                                                           
 	    else {                                                                                                                                                            
 	      //reject hit                                                                                                                                             
 	    }
 	  }
-	
+	  
 	  //Now try and deal with the next hit
 	  if(time > upperlimit && time <= upperlimit + 350 + 150) {
 	    continue;
 	  }
-	    else if(time > upperlimit + 350 + 150){
+	  else if(time > upperlimit + 350 + 150){
+	    std::cout<<"*** SECOND DIGIT IN EVENT ***"<<std::endl;
 	    //we now need to start integrating from the hit
 	    intgr_start=time;
 	    peSmeared = pe;
@@ -213,14 +231,24 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 		WCSimWCDigitizerSKIV::AddNewDigit(tube, ngate, intgr_start, peSmeared);
 		ngate++;	
 	      }
-		else {
-		  //reject hit                                                                                                                           
-		}
+	      else {
+		//reject hit                                                                                                                           
 	      }
+	    }
 	  }
+	  photon_unique_id++;
 	}
     }   
   std::cout<<"END\n";
+  
+  std::cout<<"\n\n\nCHECK DIGI COMP:"<<std::endl;
+  for (G4int i = 0 ; i < WCHCPMT->entries() ; i++){
+    std::vector< std::pair<int,int> > comp = (*WCHCPMT)[i]->GetDigiCompositionInfo();
+    for(int i = 0; i < (int) comp.size(); i++){
+      std::cout<<"entry "<<i<<" digi "<<comp[i].first<< " p_id "<<comp[i].second<<std::endl;
+    }
+  }
+  
   temporaryTrig();
 }
 
@@ -343,8 +371,7 @@ void WCSimWCDigitizerSKIV::temporaryTrig() {
 	    
 	    float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	    float timingResolution = 0.33 + sqrt(timingConstant/Q);
-	    // looking at SK's jitter function for 20" tubes	\
-	    
+	    // looking at SK's jitter function for 20" tubes
 	    if (timingResolution < 0.58) timingResolution=0.58;
 	    
 	    G4double digihittime = -triggertime
