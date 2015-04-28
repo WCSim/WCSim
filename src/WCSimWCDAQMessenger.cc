@@ -8,19 +8,19 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithAnInteger.hh"
 
-WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimWCEventAction* eventaction):WCSimEvent(eventaction)
+WCSimWCDAQMessenger::WCSimWCDAQMessenger(const WCSimEventAction * const eventaction):WCSimEvent(eventaction)
 {
   Initalize();
   constructor = 0;
 }
 
-WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimWCEventAction* eventaction):WCSimEvent(eventaction)
+WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimWCDigitizerBase* digitizer):WCSimDigitize(digitizer)
 {
   Initalize();
   constructor = 1;
 }
 
-WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimWCEventAction* eventaction):WCSimEvent(eventaction)
+WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimWCTriggerBase* trigger):WCSimTrigger(trigger)
 {
   Initalize();
   constructor = 2;

@@ -48,6 +48,7 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
    detectorConstructor(myDetector)
 {
   DAQMessenger = new WCSimWCDAQMessenger(this);
+  //WCSimDarkRateMessenger * Messenger = new WCSimDarkRateMessenger(this);
 
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
   WCSimWCPMT* WCDMPMT = new WCSimWCPMT( "WCReadoutPMT", myDetector);
@@ -67,6 +68,8 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
     WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise( "WCDarkNoise", myDetector); 
     DMman->AddNewModule(WCDNM);
   }//DigitizerChoice == "SKI_SKDETSIM"
+
+}
 
 WCSimEventAction::~WCSimEventAction(){}
 
@@ -159,12 +162,13 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   WCDNM->AddDarkNoise();
 
   //Get a pointer to the WC Digitizer Module
+  WCSimWCDigitizerBase* WCDM;
   if(DigitizerChoice == "SKI_SKDETSIM") {
-    WCSimWCDigitizer* WCDM =
-      (WCSimWCDigitizer*)DMman->FindDigitizerModule("WCReadout");
+    WCDM =
+      (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadout");
   }
   else {
-    WCSimWCDigitizerBase* WCDM =
+    WCDM =
       (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadout");
   }
   
@@ -440,12 +444,13 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   WCSimRootTrigger* wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   // get number of gates
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
+  WCSimWCDigitizerBase* WCDM;
   if(DigitizerChoice == "SKI_SKDETSIM") {
-    WCSimWCDigitizer* WCDM =
-      (WCSimWCDigitizer*)DMman->FindDigitizerModule("WCReadout");
+    WCDM =
+      (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadout");
   }
   else {
-    WCSimWCDigitizerBase* WCDM =
+    WCDM =
       (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadout");
   }
   int ngates = WCDM->NumberOfGatesInThisEvent(); 

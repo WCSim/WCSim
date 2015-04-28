@@ -11,6 +11,7 @@
 #include "G4TrajectoryContainer.hh"
 #include "WCSimWCHit.hh"
 #include "WCSimWCDigi.hh"
+#include "WCSimWCDAQMessenger.hh"
 
 class WCSimRunAction;
 class WCSimPrimaryGeneratorAction;
