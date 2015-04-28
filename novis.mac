@@ -63,7 +63,7 @@
 #/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
 
-turn on or off the collection efficiency (05/27/11 XQ)
+turn on or off the collection efficiency
 #/WCSim/PMTCollEff on
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
