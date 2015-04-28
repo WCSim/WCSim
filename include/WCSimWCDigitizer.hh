@@ -3,7 +3,7 @@
 
 #include "WCSimDarkRateMessenger.hh"
 #include "WCSimDetectorConstruction.hh"
-#include "WCSimWCDigitizerBase.hh"
+#include "WCSimWCTriggerBase.hh"
 #include "G4VDigitizerModule.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"
@@ -13,7 +13,7 @@
 #include <vector>
 
 
-class WCSimWCDigitizer : public WCSimWCDigitizerBase //G4VDigitizerModule
+class WCSimWCDigitizer : public WCSimWCTriggerBase
 {
 public:
   

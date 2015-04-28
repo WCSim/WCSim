@@ -1,39 +1,20 @@
-#ifndef WCSimWCTriggerBase_h
-#define WCSimWCTriggerBase_h 1
+#ifndef WCSimWCTriggerNHits_h
+#define WCSimWCTriggerNHits_h 1
 
-#include "WCSimDarkRateMessenger.hh"
-#include "WCSimDetectorConstruction.hh"
-#include "G4VDigitizerModule.hh"
-#include "WCSimWCDigi.hh"
-#include "WCSimWCHit.hh"
-#include "globals.hh"
-#include "Randomize.hh"
-#include <map>
-#include <vector>
+#include "WCSimWCTriggerNHits.hh"
 
-
-class WCSimWCTriggerBase : public G4VDigitizerModule
+class WCSimWCTriggerNHits : public WCSimWCTriggerBase
 {
 public:
 
-  WCSimWCTriggerBase(G4String name, WCSimDetectorConstruction*);
-  ~WCSimWCTriggerBase();
-  
   //not recommended to override these methods
-  virtual void Digitize(); //defined virtual because it is overridden in the old class (WCSimWCDigitizer)
-  void Initialize();
-  void Terminate();
-
-  int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
-  G4double GetTriggerTime(int i) { return TriggerTimes[i];}
+  WCSimWCTriggerNHits(G4String name, WCSimDetectorConstruction*);
+  ~WCSimWCTriggerNHits();
+  
+  void Digitize();
 
 private:
-  virtual void ApplyTrigger(WCSimWCDigitsCollection* WCDCPMT) = 0;
-  virtual void DoTheWork   (WCSimWCDigitsCollection* WCDCPMT); // could be overridden in the implementation classes
-                                                               //  by default just calls ApplyTrigger()
-
-  WCSimDetectorConstruction* myDetector;
-  std::vector<G4double> TriggerTimes;
+  virtual void ApplyTrigger(WCSimWCDigitsCollection* WCDCPMT);
 
 protected:
   WCSimWCDigitsCollection*  DigitsCollection;
@@ -59,11 +40,15 @@ private:
   static const double calibdarknoise; // ns
   static const double LongTime; // ns
   static const int GlobalThreshold; //number of hit PMTs within an <=200ns sliding window that decides the global trigger t0
+  double PMTDarkRate; // kHz
+  double ConvRate; // kHz
 
   G4float RealOffset;  // t0 = offset corrected for trigger start
   G4float MinTime;  // very first hit time
+  G4float PMTSize;
+  G4double peSmeared;
 
-
+  WCSimDetectorConstruction* myDetector;
 
 protected:
   std::map<int,int> DigiHitMap; // need to check if a hit already exists..

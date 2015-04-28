@@ -42,6 +42,12 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
 				   WCSimDetectorConstruction* myDetector)
   :G4VDigitizerModule(name)
 {
+  Initialize();
+}
+
+void WCSimWCTriggerBase::Initialize(G4String name,
+			       WCSimDetectorConstruction* myDetector)
+{
   G4String colName = "WCDigitizedCollection";
   this->myDetector = myDetector;
   collectionName.push_back(colName);
@@ -49,7 +55,10 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
 }
 
 WCSimWCTriggerBase::~WCSimWCTriggerBase(){
+  Terminate();
 }
+
+void WCSimWCTriggerBase::Terminate() {}
 
 void WCSimWCTriggerBase::Digitize()
 {
