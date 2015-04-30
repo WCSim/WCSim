@@ -40,13 +40,11 @@ const int WCSimWCTriggerNHits::GlobalThreshold = 22 ; // # hit PMTs
 
 WCSimWCTriggerNHits::WCSimWCTriggerNHits(G4String name,
 				   WCSimDetectorConstruction* myDetector)
-  :G4VDigitizerModule(name)
+  :WCSimWCTriggerBase(name, myDetector)
 {
-  Initialize();
 }
 
 WCSimWCTriggerNHits::~WCSimWCTriggerNHits(){
-  Terminate();
 }
 
 

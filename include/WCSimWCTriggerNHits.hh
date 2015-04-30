@@ -1,7 +1,7 @@
 #ifndef WCSimWCTriggerNHits_h
 #define WCSimWCTriggerNHits_h 1
 
-#include "WCSimWCTriggerNHits.hh"
+#include "WCSimWCTriggerBase.hh"
 
 class WCSimWCTriggerNHits : public WCSimWCTriggerBase
 {
@@ -11,8 +11,6 @@ public:
   WCSimWCTriggerNHits(G4String name, WCSimDetectorConstruction*);
   ~WCSimWCTriggerNHits();
   
-  void Digitize();
-
 private:
   virtual void ApplyTrigger(WCSimWCDigitsCollection* WCDCPMT);
 

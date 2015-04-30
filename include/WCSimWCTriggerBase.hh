@@ -21,8 +21,6 @@ public:
   
   //not recommended to override these methods
   virtual void Digitize(); //defined virtual because it is overridden in the old class (WCSimWCDigitizer)
-  void Initialize();
-  void Terminate();
 
   int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
   G4double GetTriggerTime(int i) { return TriggerTimes[i];}

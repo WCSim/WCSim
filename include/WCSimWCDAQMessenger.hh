@@ -31,6 +31,8 @@ private:
   G4UIcmdWithAString* TriggerChoice;
 
   G4int constructor;
+
+  void Initialize();
 };
 
 #endif

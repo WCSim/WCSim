@@ -7,6 +7,8 @@
 #include "WCSimWCDigitizer.hh"
 #include "WCSimWCDigitizerBase.hh"
 #include "WCSimWCDigitizerSKIV.hh"
+#include "WCSimWCTriggerBase.hh"
+#include "WCSimWCTriggerNHits.hh"
 #include "WCSimWCAddDarkNoise.hh"
 #include "WCSimWCPMT.hh"
 #include "WCSimDetectorConstruction.hh"
@@ -482,7 +484,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   WCSimRootTrigger* wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   // get number of gates
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
-  WCSimWCTriggererBase* WCTM =
+  WCSimWCTriggerBase* WCTM =
     (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout");
   int ngates = WCTM->NumberOfGatesInThisEvent(); 
   G4cout << "ngates =  " << ngates << "\n";

@@ -1,6 +1,7 @@
 #include "WCSimWCDAQMessenger.hh"
-#include "WCSimWCDigitizer.hh"
-#include "WCSimWCAddDarkNoise.hh"
+#include "WCSimEventAction.hh"
+#include "WCSimWCDigitizerBase.hh"
+#include "WCSimWCTriggerBase.hh"
 
 #include "G4UIdirectory.hh"
 #include "G4UIcommand.hh"
@@ -8,25 +9,25 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithAnInteger.hh"
 
-WCSimWCDAQMessenger::WCSimWCDAQMessenger(const WCSimEventAction * const eventaction):WCSimEvent(eventaction)
+WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction * eventaction):WCSimEvent(eventaction)
 {
-  Initalize();
+  Initialize();
   constructor = 0;
 }
 
 WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimWCDigitizerBase* digitizer):WCSimDigitize(digitizer)
 {
-  Initalize();
+  Initialize();
   constructor = 1;
 }
 
 WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimWCTriggerBase* trigger):WCSimTrigger(trigger)
 {
-  Initalize();
+  Initialize();
   constructor = 2;
 }
 
-void WCSimWCDAQMessenger::Initalize()
+void WCSimWCDAQMessenger::Initialize()
 {
   WCSimDAQDir = new G4UIdirectory("/WCSimDAQ/");
   WCSimDAQDir->SetGuidance("Commands to select DAQ options");
