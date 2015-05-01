@@ -19,24 +19,12 @@
 #include <cstring>
 #include <iostream>
 
-// changed from 940 (april 2005) by MF
-// 960 is unsuitable
-
-//RawSignalHitCollection *collection = new RawSignalHitCollection;
-
-const double WCSimWCTriggerNHits::calibdarknoise = 1.37676;
 
 const double WCSimWCTriggerNHits::offset = 950.0 ; // ns
 const double WCSimWCTriggerNHits::pmtgate = 200.0 ; // ns
 const double WCSimWCTriggerNHits::eventgateup = 950.0 ; // ns
 const double WCSimWCTriggerNHits::eventgatedown = -400.0 ; // ns
 const double WCSimWCTriggerNHits::LongTime = 100000.0 ; // ns
-// value in skdetsim
-const int WCSimWCTriggerNHits::GlobalThreshold = 22 ; // # hit PMTs
-//const int WCSimWCTriggerNHits::GlobalThreshold = 12 ; // # hit PMTs
-// try to trigger early to reduce the width.
-//const int WCSimWCTriggerNHits::GlobalThreshold = 10 ; // # hit PMTs
-
 
 WCSimWCTriggerNHits::WCSimWCTriggerNHits(G4String name,
 				   WCSimDetectorConstruction* myDetector)
@@ -48,8 +36,8 @@ WCSimWCTriggerNHits::~WCSimWCTriggerNHits(){
 }
 
 
-void WCSimWCTriggerNHits::ApplyTrigger(WCSimWCDigitsCollection* WCDCPMT) {
+void WCSimWCTriggerNHits::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   //Apply an NHits trigger
-
-  
+  bool remove_hits = false;
+  AlgNHits(WCDCPMT, remove_hits);
 }
