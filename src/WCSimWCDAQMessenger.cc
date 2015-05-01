@@ -12,19 +12,19 @@
 WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction * eventaction):WCSimEvent(eventaction)
 {
   Initialize();
-  constructor = 0;
+  instanceType = kEventAction;
 }
 
 WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimWCDigitizerBase* digitizer):WCSimDigitize(digitizer)
 {
   Initialize();
-  constructor = 1;
+  instanceType = kDigitizer;
 }
 
 WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimWCTriggerBase* trigger):WCSimTrigger(trigger)
 {
   Initialize();
-  constructor = 2;
+  instanceType = kTrigger;
 }
 
 void WCSimWCDAQMessenger::Initialize()
@@ -55,6 +55,16 @@ void WCSimWCDAQMessenger::Initialize()
 			   "NHits "
 			   );
   TriggerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  //NHits trigger specifc options
+  NHitsTriggerDir = new G4UIdirectory("/WCSimDAQ/TriggerNHits/");
+  NHitsTriggerDir->SetGuidance("Commands specific to the NHits trigger");
+
+  NHitsTriggerThreshold = new G4UIcmdWithAnInteger("/WCSimDAQ/TriggerNHits/Threshold", this);
+  NHitsTriggerThreshold->SetGuidance("Set the NHits trigger threshold");
+  NHitsTriggerThreshold->SetParameterName("NHitsThreshold",true);
+  NHitsTriggerThreshold->SetDefaultValue(25);
+
 }
 
 WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
@@ -67,21 +77,24 @@ WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
 void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {
 
-  if (command == DigitizerChoice)
-    {
-      if(constructor == 0) {
-	WCSimEvent->SetDigitizerChoice(newValue); 
-	G4cout << "Digitizer choice set to " << newValue << G4endl;
-	WCSimEvent->CreateDigitizerInstance();
-      }
+  if (command == DigitizerChoice) {
+    if(instanceType == kEventAction) {
+      WCSimEvent->SetDigitizerChoice(newValue); 
+      G4cout << "Digitizer choice set to " << newValue << G4endl;
+      WCSimEvent->CreateDigitizerInstance();
     }
-
-  else if (command == TriggerChoice)
-    {
-      if(constructor == 0) {
-	WCSimEvent->SetTriggerChoice(newValue); 
-	G4cout << "Trigger choice set to " << newValue << G4endl;
-	WCSimEvent->CreateTriggerInstance();
-      }
+  }
+  else if (command == TriggerChoice) {
+    if(instanceType == kEventAction) {
+      WCSimEvent->SetTriggerChoice(newValue); 
+      G4cout << "Trigger choice set to " << newValue << G4endl;
+      WCSimEvent->CreateTriggerInstance();
     }
+  }
+  else if (command == NHitsTriggerThreshold) {
+    if(instanceType == kTrigger) {
+      WCSimTrigger->SetNHitsThreshold(newValue);
+      G4cout << "NHits trigger threshold set to " << newValue << G4endl;
+    }
+  }
 }
