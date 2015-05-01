@@ -93,7 +93,7 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   }
   else if (command == NHitsTriggerThreshold) {
     if(instanceType == kTrigger) {
-      WCSimTrigger->SetNHitsThreshold(newValue);
+      WCSimTrigger->SetNHitsThreshold(NHitsTriggerThreshold->GetNewIntValue(newValue));
       G4cout << "NHits trigger threshold set to " << newValue << G4endl;
     }
   }

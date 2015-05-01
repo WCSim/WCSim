@@ -19,7 +19,6 @@
 #include <cstring>
 #include <iostream>
 
-
 const double WCSimWCTriggerBase::offset = 950.0 ; // ns
 const double WCSimWCTriggerBase::pmtgate = 200.0 ; // ns. integration time
 const double WCSimWCTriggerBase::eventgateup = 950.0 ; // ns. save eventgateup ns after the trigger time
@@ -76,19 +75,16 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 
   int ntrig = 0;
   int window_start_time = 0;
-  WCSimPMTObject * PMT = myDetector->GetPMTPointer("glassFaceWCPMT"); //for hit time smearing
+  std::vector<int> digit_times;
 
-  //float lower=0;
-  //float upper = WCSimWCDigitizerSKIV::pmtgate;
   G4cout << "NUMBER OF ENTRIES IN DIGIT COLLECTION " << WCDCPMT->entries() << G4endl;
 
   // the upper time limit is set to the final possible full trigger window
-  while(window_start_time <= (WCSimWCDigitizerSKIV::LongTime - WCSimWCDigitizerSKIV::pmtgate)) {
+  while(window_start_time <= (WCSimWCTriggerBase::LongTime - WCSimWCTriggerBase::pmtgate)) {
     int n_digits = 0;
-    //float firstinwindow = WCSimWCDigitizerSKIV::LongTime + 1; //a time that is not possible for a hit
     float triggertime; //save each digit time, because the trigger time is the time of the first hit above threshold
     bool triggerfound = false;
-    vector<int> digit_times;
+    digit_times.clear();
     //Loop over each PMT
     for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
       int tube=(*WCDCPMT)[i]->GetTubeID();
@@ -96,11 +92,9 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
       for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
 	int digit_time = (*WCDCPMT)[i]->GetTime(ip);
 	//hit in trigger window?
-	if(digit_time >= window_start_time && digit_time <= (window_start_time + WCSimWCDigitizerSKIV::pmtgate)) {
+	if(digit_time >= window_start_time && digit_time <= (window_start_time + WCSimWCTriggerBase::pmtgate)) {
 	  n_digits++;
 	  digit_times.push_back(digit_time);
-	  //if(firstinwindow > digit_time)
-	  //firstinwindow = digit_time;
 	}
       }//loop over Digits
     }//loop over PMTs
@@ -111,7 +105,6 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
       //The trigger time is the time of the first hit above threshold
       std::sort(digit_times.begin(), digit_times.end());
       triggertime = digit_times[nhitsThreshold];
-      //triggertime = firstinwindow;
       TriggerTimes.push_back(triggertime);
       TriggerTypes.push_back(kNHits);
       triggerfound = true;
@@ -119,7 +112,7 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 
     //move onto the next go through the timing loop
     if(triggerfound) {
-      window_start_time = triggertime + WCSimWCDigitizerSKIV::eventgateup;
+      window_start_time = triggertime + WCSimWCTriggerBase::eventgateup;
     }//triggerfound
     else {
       window_start_time += 10;
@@ -133,12 +126,14 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 
 void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits)
 {
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer("glassFaceWCPMT"); //for hit time smearing
+
   //Loop over triggers
   for(int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
-    triggertime = TriggerTimes[itrigger];
-    triggertype = TriggerTypes[itrigger];
-    float lowerbound = triggertime + WCSimWCDigitizerSKIV::eventgatedown;
-    float upperbound = triggertime + WCSimWCDigitizerSKIV::eventgateup;
+    float         triggertime = TriggerTimes[itrigger];
+    TriggerType_t triggertype = TriggerTypes[itrigger];
+    float lowerbound = triggertime + WCSimWCTriggerBase::eventgatedown;
+    float upperbound = triggertime + WCSimWCTriggerBase::eventgateup;
 
     //loop over PMTs
     for (G4int i = 0; i < WCDCPMT->entries(); i++) {
@@ -153,7 +148,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  //add to DigitsCollection
 	  float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	  G4double digihittime = -triggertime
-	    + WCSimWCDigitizerSKIV::offset
+	    + WCSimWCTriggerBase::offset
 	    + digit_time
 	    + PMT->HitTimeSmearing(Q);
 	  //add hit

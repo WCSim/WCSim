@@ -19,13 +19,6 @@
 #include <cstring>
 #include <iostream>
 
-
-const double WCSimWCTriggerNHits::offset = 950.0 ; // ns
-const double WCSimWCTriggerNHits::pmtgate = 200.0 ; // ns
-const double WCSimWCTriggerNHits::eventgateup = 950.0 ; // ns
-const double WCSimWCTriggerNHits::eventgatedown = -400.0 ; // ns
-const double WCSimWCTriggerNHits::LongTime = 100000.0 ; // ns
-
 WCSimWCTriggerNHits::WCSimWCTriggerNHits(G4String name,
 				   WCSimDetectorConstruction* myDetector)
   :WCSimWCTriggerBase(name, myDetector)

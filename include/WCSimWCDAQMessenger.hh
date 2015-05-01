@@ -3,6 +3,7 @@
 
 #include "G4UImessenger.hh"
 #include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithAnInteger.hh"
 #include "G4UIdirectory.hh"
 
 class G4UIcommand;

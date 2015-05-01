@@ -50,7 +50,7 @@ public:
   G4double GetConversion(){ return ConvRate; }
 
 private:
-  void ApplyTrigger(WCSimWCDigitsCollection* /*WCDCPMT*/) {} //need to implement this method from the base class. Not used in this implementation of the class
+  void DoTheWork(WCSimWCDigitsCollection*) {} //need to implement this method from the base class. Not used in this implementation of the class
   static void Threshold(double& pe,int& iflag){
     //   CLHEP::HepRandom::setTheSeed(pe+2014);
     double x = pe+0.1; iflag=0;
