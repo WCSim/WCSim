@@ -24,7 +24,7 @@ public:
   
   
   //Stuff added for trigger not digitization
-  void ReInitialize() { DigiStoreHitMap.clear(); ; TriggerTimes.clear();}
+  void ReInitialize() { DigiStoreHitMap.clear(); TriggerTimes.clear();}
   int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
   std::vector<G4double> TriggerTimes;
 

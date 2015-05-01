@@ -20,10 +20,11 @@ public:
   ~WCSimWCTriggerBase();
   
   //not recommended to override these methods
-  virtual void Digitize(); //defined virtual because it is overridden in the old class (WCSimWCDigitizer)
+  virtual void Digitize(); //only defined virtual because it is overridden in the old class (WCSimWCDigitizer)
 
   int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
   G4double GetTriggerTime(int i) { return TriggerTimes[i];}
+  void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
 
 private:
   virtual void ApplyTrigger(WCSimWCDigitsCollection* WCDCPMT) = 0;
@@ -32,6 +33,7 @@ private:
 
   WCSimDetectorConstruction* myDetector;
   std::vector<G4double> TriggerTimes;
+  G4float PMTSize;
 
 protected:
   WCSimWCDigitsCollection*  DigitsCollection;

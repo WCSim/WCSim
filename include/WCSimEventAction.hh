@@ -41,6 +41,8 @@ public:
   WCSimRunAction* GetRunAction(){return runAction;}
   void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
   void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
+  void CreateDigitizerInstance();
+  void CreateTriggerInstance();
 
  private:
   G4int WCSimEventFindStartingVolume( G4ThreeVector vtx);

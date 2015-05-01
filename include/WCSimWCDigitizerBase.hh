@@ -29,9 +29,9 @@ public:
   
 public:
   void AddNewDigit(int tube, int gate, float digihittime, float peSmeared);
-  void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);
+  virtual void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
-  void Digitize();
+  virtual void Digitize();
 
   static G4double GetLongTime() { return LongTime;}
   static G4double GetEventGateDown() { return eventgatedown;}

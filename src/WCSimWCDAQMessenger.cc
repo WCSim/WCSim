@@ -66,11 +66,13 @@ WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
 
 void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {
+
   if (command == DigitizerChoice)
     {
       if(constructor == 0) {
 	WCSimEvent->SetDigitizerChoice(newValue); 
 	G4cout << "Digitizer choice set to " << newValue << G4endl;
+	WCSimEvent->CreateDigitizerInstance();
       }
     }
 
@@ -79,6 +81,7 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       if(constructor == 0) {
 	WCSimEvent->SetTriggerChoice(newValue); 
 	G4cout << "Trigger choice set to " << newValue << G4endl;
+	WCSimEvent->CreateTriggerInstance();
       }
     }
 }

@@ -55,31 +55,66 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   WCSimWCPMT* WCDMPMT = new WCSimWCPMT( "WCReadoutPMT", myDetector);
   DMman->AddNewModule(WCDMPMT);
 
-  //choice of dark noise, digitizer, & trigger
-  if(DigitizerChoice == "SKI_SKDETSIM") {
-    //this is the old SKI joint dark noise, digitizer & trigger from SKDETSIM; buggy
-    WCSimWCDigitizer* WCTM = new WCSimWCDigitizer( "WCReadout", myDetector);
-    DMman->AddNewModule(WCTM);
-  }
-  else {
-    //create dark noise module
-    WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise( "WCDarkNoise", myDetector); 
-    DMman->AddNewModule(WCDNM);
-    //create your choice of digitizer module
-    if(DigitizerChoice == "SKIV") {
-      WCSimWCDigitizerSKIV* WCDM = new WCSimWCDigitizerSKIV( "WCReadoutDigits", myDetector);
-      DMman->AddNewModule(WCDM);
-    }
-    //create your choice of trigger module
-    if(TriggerChoice == "NHits") {
-      WCSimWCTriggerNHits* WCTM = new WCSimWCTriggerNHits("WCReadout", myDetector);
-      DMman->AddNewModule(WCTM);
-    }
-  }
-
+  // TD 01/05/2015
+  // The Dark Noise, Digitizer, & Trigger classes were previously constructed here
+  // They have been moved to CreateDigitizerInstances() and CreateTriggerInstances(),
+  // called in WCSimWCDAQMessenger::SetNewValue()
+  // This is in order for different Digitizer and Trigger classes to be chosen
+  // in the .mac file
 }
 
 WCSimEventAction::~WCSimEventAction(){}
+
+void WCSimEventAction::CreateDigitizerInstance()
+{
+  //First, check if we've previously created the WCSimWCDigitizer... instance
+  //Assume that WCSimWCAddDarkNoise instance was created at the same time
+  G4DigiManager* DMman = G4DigiManager::GetDMpointer();
+  WCSimWCDigitizerBase* tempWCDM =
+    (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadoutDigits");
+
+  //Create the Dark Noise and DigitizerBase instances
+  if(!tempWCDM) {
+    //choose whether to create the old combined dark noise + digitizer + trigger class
+    // or the new separated classes
+    if(DigitizerChoice != "SKI_SKDETSIM") {
+      //create dark noise module
+      WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise( "WCDarkNoise", detectorConstructor);
+      DMman->AddNewModule(WCDNM);
+      //create your choice of digitizer module
+      if(DigitizerChoice == "SKIV") {
+        WCSimWCDigitizerSKIV* WCDM = new WCSimWCDigitizerSKIV( "WCReadoutDigits", detectorConstructor);
+	DMman->AddNewModule(WCDM);
+      }
+    }
+  }//!WCTM
+}
+
+void WCSimEventAction::CreateTriggerInstance()
+{
+  //First, check if we've previously created the WCSimWCTrigger... instance
+  G4DigiManager* DMman = G4DigiManager::GetDMpointer();
+  WCSimWCTriggerBase* tempWCTM =
+    (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout");
+
+  //Create the TriggerBase instance
+  if(!tempWCTM) {
+    //choose whether to create the old combined dark noise + digitizer + trigger class
+    // or the new separated classes
+    if(DigitizerChoice == "SKI_SKDETSIM") {
+      //this is the old SKI joint dark noise, digitizer & trigger from SKDETSIM; buggy
+      WCSimWCDigitizer* WCTM = new WCSimWCDigitizer( "WCReadout", detectorConstructor);
+      DMman->AddNewModule(WCTM);
+    }
+    else {
+      //create your choice of trigger module
+      if(TriggerChoice == "NHits") {
+	WCSimWCTriggerNHits* WCTM = new WCSimWCTriggerNHits("WCReadout", detectorConstructor);
+	DMman->AddNewModule(WCTM);
+      }
+    }
+  }//!WCTM
+}
 
 void WCSimEventAction::BeginOfEventAction(const G4Event*){}
 
@@ -160,7 +195,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
   if(DigitizerChoice == "SKI_SKDETSIM") {
     //Get a pointer to the old WC Digitizer Module
-    WCSimWCDigitizer* WCTM;
+    WCSimWCTriggerBase* WCTM =
+      (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout");
 
     //clear old info inside the digitizer
     WCTM->ReInitialize();
