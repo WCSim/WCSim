@@ -45,7 +45,7 @@ WCSimWCDigitizerSKIV::WCSimWCDigitizerSKIV(G4String name,
 //   G4String colName = "WCDigitizedStoreCollection";
 //   this->myDetector = myDetector;
 //   collectionName.push_back(colName);
-  collectionName.push_back("WCDigitizedCollection");
+//  collectionName.push_back("WCDigitizedCollection");
 //   DigiStoreHitMap.clear();
   //  DarkRateMessenger = new WCSimDarkRateMessenger(this);
 }
@@ -88,7 +88,7 @@ WCSimWCDigitizerSKIV::~WCSimWCDigitizerSKIV(){
 void WCSimWCDigitizerSKIV::Digitize()
 {
   
-  DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT","WCDigitizedCollection");
+  DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT","WCDigitizedStoreCollection");
   //collectionName.push_back("WCDigitizedCollection");
   DigiHitMap.clear();
   //Temporary Storage of Digitized hits which is passed to the trigger
@@ -221,7 +221,7 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	}
     }   
   std::cout<<"END\n";
-  temporaryTrig();
+  //temporaryTrig();
 }
 
 
