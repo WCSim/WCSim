@@ -74,6 +74,7 @@
 #/mygen/vecfile mu+.out
 
 #choose the Trigger & Digitizer type (and options)
+# set both to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger classes
 /WCSimDAQ/Digitizer SKIV
 /WCSimDAQ/Trigger NHits
 

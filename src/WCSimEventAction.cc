@@ -77,7 +77,7 @@ void WCSimEventAction::CreateDigitizerInstance()
   if(!tempWCDM) {
     //choose whether to create the old combined dark noise + digitizer + trigger class
     // or the new separated classes
-    if(DigitizerChoice != "SKI_SKDETSIM") {
+    if(DigitizerChoice != "SKI_SKDETSIM" && TriggerChoice != "SKI_SKDETSIM") {
       //create dark noise module
       WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise( "WCDarkNoise", detectorConstructor);
       DMman->AddNewModule(WCDNM);
@@ -101,7 +101,7 @@ void WCSimEventAction::CreateTriggerInstance()
   if(!tempWCTM) {
     //choose whether to create the old combined dark noise + digitizer + trigger class
     // or the new separated classes
-    if(DigitizerChoice == "SKI_SKDETSIM") {
+    if(DigitizerChoice == "SKI_SKDETSIM" || TriggerChoice == "SKI_SKDETSIM") {
       //this is the old SKI joint dark noise, digitizer & trigger from SKDETSIM; buggy
       WCSimWCDigitizer* WCTM = new WCSimWCDigitizer( "WCReadout", detectorConstructor);
       DMman->AddNewModule(WCTM);
