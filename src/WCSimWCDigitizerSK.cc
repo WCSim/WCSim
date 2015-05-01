@@ -1,4 +1,4 @@
-#include "WCSimWCDigitizerSKIV.hh"
+#include "WCSimWCDigitizerSK.hh"
 #include "WCSimWCPMT.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"
@@ -24,21 +24,21 @@
 
 //RawSignalHitCollection *collection = new RawSignalHitCollection;
 
-const double WCSimWCDigitizerSKIV::calibdarknoise = 1.37676;
+const double WCSimWCDigitizerSK::calibdarknoise = 1.37676;
 
-const double WCSimWCDigitizerSKIV::offset = 950.0 ; // ns
-const double WCSimWCDigitizerSKIV::pmtgate = 200.0 ; // ns
-const double WCSimWCDigitizerSKIV::eventgateup = 950.0 ; // ns
-const double WCSimWCDigitizerSKIV::eventgatedown = -400.0 ; // ns
-const double WCSimWCDigitizerSKIV::LongTime = 100000.0 ; // ns
+const double WCSimWCDigitizerSK::offset = 950.0 ; // ns
+const double WCSimWCDigitizerSK::pmtgate = 200.0 ; // ns
+const double WCSimWCDigitizerSK::eventgateup = 950.0 ; // ns
+const double WCSimWCDigitizerSK::eventgatedown = -400.0 ; // ns
+const double WCSimWCDigitizerSK::LongTime = 100000.0 ; // ns
 // value in skdetsim
-const int WCSimWCDigitizerSKIV::GlobalThreshold = 22 ; // # hit PMTs
-//const int WCSimWCDigitizerSKIV::GlobalThreshold = 12 ; // # hit PMTs
+const int WCSimWCDigitizerSK::GlobalThreshold = 22 ; // # hit PMTs
+//const int WCSimWCDigitizerSK::GlobalThreshold = 12 ; // # hit PMTs
 // try to trigger early to reduce the width.
-//const int WCSimWCDigitizerSKIV::GlobalThreshold = 10 ; // # hit PMTs
+//const int WCSimWCDigitizerSK::GlobalThreshold = 10 ; // # hit PMTs
 
 
-WCSimWCDigitizerSKIV::WCSimWCDigitizerSKIV(G4String name,
+WCSimWCDigitizerSK::WCSimWCDigitizerSK(G4String name,
 				   WCSimDetectorConstruction* myDetector)
   :WCSimWCDigitizerBase(name, myDetector)
 {
@@ -50,11 +50,11 @@ WCSimWCDigitizerSKIV::WCSimWCDigitizerSKIV(G4String name,
   //  DarkRateMessenger = new WCSimDarkRateMessenger(this);
 }
 
-WCSimWCDigitizerSKIV::~WCSimWCDigitizerSKIV(){
+WCSimWCDigitizerSK::~WCSimWCDigitizerSK(){
   //DarkRateMessenger = 0;
 }
 
-// void WCSimWCDigitizerSKIV::Digitize()
+// void WCSimWCDigitizerSK::Digitize()
 // {
 //   //Temporary Storage of Digitized hits which is passed to the trigger
 //   DigiStore = new WCSimWCDigitsCollection(collectionName[0],collectionName[0]);
@@ -79,13 +79,13 @@ WCSimWCDigitizerSKIV::~WCSimWCDigitizerSKIV(){
 
 // }
 
-//void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
+//void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 ////In the base class this does nothing
 //
 //
 //}
 
-void WCSimWCDigitizerSKIV::Digitize()
+void WCSimWCDigitizerSK::Digitize()
 {
   
   DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT","WCDigitizedCollection");
@@ -114,7 +114,7 @@ void WCSimWCDigitizerSKIV::Digitize()
 }
 
 
-void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
+void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   std::cout<<"START (WCHCPMT->entries() = "<<WCHCPMT->entries()<<std::endl;
   //We must first sort hits by PMT in time.  This is very important as the code
   //assumes that each hit is in time order from lowest to highest.
@@ -178,7 +178,7 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    MakeDigit = true;
 	    // 	    int iflag;
-	    // 	    WCSimWCDigitizerSKIV::Threshold(peSmeared,iflag);
+	    // 	    WCSimWCDigitizerSK::Threshold(peSmeared,iflag);
 	    // 	    if(iflag == 0) {
 	    // 	      //digitize hit
 	    // 	      peSmeared *= efficiency;
@@ -193,11 +193,11 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  //Make digit here
 	  if(MakeDigit) {
 	    int iflag;                                                                                                                                                        
-	    WCSimWCDigitizerSKIV::Threshold(peSmeared,iflag);                                                                                                                      
+	    WCSimWCDigitizerSK::Threshold(peSmeared,iflag);                                                                                                                      
 	    if(iflag == 0) {                                                                                                                                             
 	      //digitize hit                                                                                                                                  
 	      peSmeared *= efficiency;             
-	      WCSimWCDigitizerSKIV::AddNewDigit(tube, ngate, intgr_start, peSmeared);
+	      WCSimWCDigitizerSK::AddNewDigit(tube, ngate, intgr_start, peSmeared);
 	      ngate++;
 	      
 	      digi_unique_id++;
@@ -226,11 +226,11 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    //as the loop will not evaluate again
 	    if(ip+1 == (*WCHCPMT)[i]->GetTotalPe()) {
 	      int iflag;
-	      WCSimWCDigitizerSKIV::Threshold(peSmeared,iflag);
+	      WCSimWCDigitizerSK::Threshold(peSmeared,iflag);
 	      if(iflag == 0) {
 		//digitize hit                                                                                                                                                  
 		peSmeared *= efficiency;
-		WCSimWCDigitizerSKIV::AddNewDigit(tube, ngate, intgr_start, peSmeared);
+		WCSimWCDigitizerSK::AddNewDigit(tube, ngate, intgr_start, peSmeared);
 		ngate++;	
 
 		digi_unique_id++;
@@ -259,7 +259,7 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 }
 
 
-// void WCSimWCDigitizerSKIV::AddNewDigit(int tube, int gate, float digihittime, float peSmeared) {
+// void WCSimWCDigitizerSK::AddNewDigit(int tube, int gate, float digihittime, float peSmeared) {
 //   //gate is not a trigger, but just the position of the digit in the array
 //   //inside the WCSimWCDigi object
 //   std::cout<<"Adding hit "<<gate<<"\n";
@@ -292,20 +292,20 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 
 
 
-void WCSimWCDigitizerSKIV::temporaryTrig() {
+void WCSimWCDigitizerSK::temporaryTrig() {
   
 
   //Now we will try to find triggers
   int ii=0;
   float lower=0;
-  float upper = WCSimWCDigitizerSKIV::pmtgate;
+  float upper = WCSimWCDigitizerSK::pmtgate;
   int ntrig=0;
   std::cout<<"NUMBER OF ENTRIES "<<DigiStore->entries()<<"\n";
-  while(ii<=WCSimWCDigitizerSKIV::LongTime-WCSimWCDigitizerSKIV::pmtgate) {
+  while(ii<=WCSimWCDigitizerSK::LongTime-WCSimWCDigitizerSK::pmtgate) {
     //loop over PMTs and hits in each PMT.  If nhits > Threshhold then we have a trigger                                                                                         
     int n_pmt=0;
     //a time that is not possible for a hit
-    float firstinwindow=WCSimWCDigitizerSKIV::LongTime+1;
+    float firstinwindow=WCSimWCDigitizerSK::LongTime+1;
     float triggertime;
     bool triggerfound=false;
     for (G4int i = 0 ; i < DigiStore->entries() ; i++) {
@@ -314,7 +314,7 @@ void WCSimWCDigitizerSKIV::temporaryTrig() {
 
       for ( G4int ip = 0 ; ip < (*DigiStore)[i]->GetTotalPe() ; ip++){
 	int tc = (*DigiStore)[i]->GetTime(ip);
-	if(tc>=ii && tc<=ii+WCSimWCDigitizerSKIV::pmtgate) {
+	if(tc>=ii && tc<=ii+WCSimWCDigitizerSK::pmtgate) {
 	  //hit in trigger window
 	  n_pmt++;
 	  if(firstinwindow > tc)
@@ -323,14 +323,14 @@ void WCSimWCDigitizerSKIV::temporaryTrig() {
 	}
       }
       //if over threshold issue trigger
-      if(n_pmt > WCSimWCDigitizerSKIV::GlobalThreshold) {
+      if(n_pmt > WCSimWCDigitizerSK::GlobalThreshold) {
 	ntrig++;
 	triggertime=firstinwindow;
 	TriggerTimes.push_back(triggertime);
 	triggerfound = true;
 	break;
-	//	float lowerbound = triggertime+WCSimWCDigitizerSKIV::eventgatedown;
-	//float upperbound = triggertime+WCSimWCDigitizerSKIV::eventgateup;
+	//	float lowerbound = triggertime+WCSimWCDigitizerSK::eventgatedown;
+	//float upperbound = triggertime+WCSimWCDigitizerSK::eventgateup;
       }
     }
     //Check if trigger was issued
@@ -338,8 +338,8 @@ void WCSimWCDigitizerSKIV::temporaryTrig() {
       //trigger was issued with trigger time 'triggertime'
       //Loop over hits create digits for each trigger
       //Time window for hits:
-      float lowerbound = triggertime+WCSimWCDigitizerSKIV::eventgatedown;
-      float upperbound = triggertime+WCSimWCDigitizerSKIV::eventgateup;
+      float lowerbound = triggertime+WCSimWCDigitizerSK::eventgatedown;
+      float upperbound = triggertime+WCSimWCDigitizerSK::eventgateup;
       G4float timingConstant = 0.0;
  
       if (round(PMTSize) == 0.254*m)      // 20 inch tube
@@ -381,7 +381,7 @@ void WCSimWCDigitizerSKIV::temporaryTrig() {
 	    if (timingResolution < 0.58) timingResolution=0.58;
 	    
 	    G4double digihittime = -triggertime
-	      + WCSimWCDigitizerSKIV::offset
+	      + WCSimWCDigitizerSK::offset
 	      + tc
 	      + G4RandGauss::shoot(0.0,timingResolution);
 	    //add hit

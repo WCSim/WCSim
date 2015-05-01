@@ -1,5 +1,5 @@
-#ifndef WCSimWCDigitizerSKIV_h
-#define WCSimWCDigitizerSKIV_h 1
+#ifndef WCSimWCDigitizerSK_h
+#define WCSimWCDigitizerSK_h 1
 
 #include "WCSimWCDigitizerBase.hh"
 #include "WCSimDarkRateMessenger.hh"
@@ -13,12 +13,12 @@
 #include <vector>
 
 
-class WCSimWCDigitizerSKIV : public WCSimWCDigitizerBase 
+class WCSimWCDigitizerSK : public WCSimWCDigitizerBase 
 {
 public:
   
-  WCSimWCDigitizerSKIV(G4String name, WCSimDetectorConstruction*);
-  ~WCSimWCDigitizerSKIV();
+  WCSimWCDigitizerSK(G4String name, WCSimDetectorConstruction*);
+  ~WCSimWCDigitizerSK();
   
   void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
   

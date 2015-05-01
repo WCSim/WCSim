@@ -6,7 +6,7 @@
 #include "WCSimWCDigi.hh"
 #include "WCSimWCDigitizer.hh"
 #include "WCSimWCDigitizerBase.hh"
-#include "WCSimWCDigitizerSKIV.hh"
+#include "WCSimWCDigitizerSK.hh"
 #include "WCSimWCAddDarkNoise.hh"
 #include "WCSimWCPMT.hh"
 #include "WCSimDetectorConstruction.hh"
@@ -50,7 +50,7 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
   WCSimWCPMT* WCDMPMT = new WCSimWCPMT( "WCReadoutPMT", myDetector);
   //  WCSimWCDigitizer* WCDM = new WCSimWCDigitizer( "WCReadout", myDetector);
-  WCSimWCDigitizerSKIV* WCDM = new WCSimWCDigitizerSKIV( "WCReadout", myDetector);
+  WCSimWCDigitizerSK* WCDM = new WCSimWCDigitizerSK( "WCReadout", myDetector);
   WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise( "WCDarkNoise", myDetector); 
   DMman->AddNewModule(WCDMPMT);
   DMman->AddNewModule(WCDM);
@@ -148,8 +148,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   WCDNM->AddDarkNoise();
 
   //Get a pointer to the WC Digitizer Module
-  WCSimWCDigitizerSKIV* WCDM =
-    (WCSimWCDigitizerSKIV*)DMman->FindDigitizerModule("WCReadout");
+  WCSimWCDigitizerSK* WCDM =
+    (WCSimWCDigitizerSK*)DMman->FindDigitizerModule("WCReadout");
   
   //clear old info inside the digitizer
    WCDM->ReInitialize();
@@ -423,8 +423,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   WCSimRootTrigger* wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   // get number of gates
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
-  WCSimWCDigitizerSKIV* WCDM =
-    (WCSimWCDigitizerSKIV*)DMman->FindDigitizerModule("WCReadout");
+  WCSimWCDigitizerSK* WCDM =
+    (WCSimWCDigitizerSK*)DMman->FindDigitizerModule("WCReadout");
   int ngates = WCDM->NumberOfGatesInThisEvent(); 
   G4cout << "ngates =  " << ngates << "\n";
   for (int index = 0 ; index < ngates ; index++) 
