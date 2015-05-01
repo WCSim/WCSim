@@ -131,7 +131,7 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       //Sort photons on this pmt
       (*WCHCPMT)[i]->SortArrayByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
-      //std::cout<<"tube "<<tube<<" totalpe = "<<(*WCHCPMT)[i]->GetTotalPe()<<std::endl;
+      std::cout<<"tube "<<tube<<" totalpe = "<<(*WCHCPMT)[i]->GetTotalPe()<<std::endl;
 
       //look over all photons on the PMT
       //integrate charge and start digitizing
@@ -163,7 +163,8 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  if(time >= intgr_start && time <= upperlimit) {
 	    peSmeared += pe;
 	    digi_comp.push_back( std::make_pair(digi_unique_id, photon_unique_id) );
-       
+      
+	    std::cout<<"INFO: time "<<time<<" digi_id "<<digi_unique_id<<" p_id "<<photon_unique_id<<std::endl;
 	    //if this is the last digit, make sure to make the digit
 	    if(ip + 1 == (*WCHCPMT)[i]->GetTotalPe()){
 	      MakeDigit = true;
@@ -214,12 +215,13 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    continue;
 	  }
 	  else if(time > upperlimit + 350 + 150){
-	    std::cout<<"*** SECOND DIGIT IN EVENT ***"<<std::endl;
+	    std::cout<<"*** PREPARING FOR >1 DIGI ***"<<std::endl;
 	    //we now need to start integrating from the hit
 	    intgr_start=time;
 	    peSmeared = pe;
 	    //Set the limits of the integration window [intgr_start,upperlimit]                                                                                 
 	    upperlimit = intgr_start + pmtgate;
+
 	    //if this is the last hit we must handle the creation of the digit 
 	    //as the loop will not evaluate again
 	    if(ip+1 == (*WCHCPMT)[i]->GetTotalPe()) {
@@ -230,6 +232,10 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 		peSmeared *= efficiency;
 		WCSimWCDigitizerSKIV::AddNewDigit(tube, ngate, intgr_start, peSmeared);
 		ngate++;	
+
+		digi_unique_id++;
+		// Save digit composition info
+		(*WCHCPMT)[i]->AddDigiCompositionInfo(digi_comp);
 	      }
 	      else {
 		//reject hit                                                                                                                           
