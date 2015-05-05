@@ -35,6 +35,8 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
   collectionName.push_back(colName);
   DigiHitMap.clear();
   TriggerTimes.clear();
+
+  DAQMessenger = new WCSimWCDAQMessenger(this);
 }
 
 WCSimWCTriggerBase::~WCSimWCTriggerBase(){
@@ -59,21 +61,9 @@ void WCSimWCTriggerBase::Digitize()
   WCSimWCDigitsCollection* WCDCPMT = 
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCDCID));
 
-  G4cout << "ABOUT TO call DoTheWork with ID" << WCDCID << G4endl;
   // Do the work  
   if (WCDCPMT) {
-    G4cout << "ABOUT TO call DoTheWork" << G4endl;
     DoTheWork(WCDCPMT);
-    G4cout << "FINISHED call DoTheWork" << G4endl;
-  }
-  else {
-    DigiMan->List();
-    for(int i = 0; i < DigiMan->GetDCtable()->entries(); i++) {
-      G4cout << DigiMan->GetDCtable()->GetDMname(i) << " " << DigiMan->GetDCtable()->GetDCname(i) << G4endl;
-      WCSimWCDigitsCollection* tempDC = (WCSimWCDigitsCollection*)DigiMan->GetDigiCollection(i);
-      if(tempDC)
-	G4cout << tempDC->GetName() << "\t" << tempDC->GetDMname() << G4endl;
-    }
   }
   
   StoreDigiCollection(DigitsCollection);
@@ -87,16 +77,22 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 
   int ntrig = 0;
   int window_start_time = 0;
+  int window_end_time   = WCSimWCTriggerBase::LongTime - WCSimWCTriggerBase::pmtgate;
+  float lasthit;
   std::vector<int> digit_times;
+  bool first_loop = true;
 
-  G4cout << "NUMBER OF ENTRIES IN DIGIT COLLECTION " << WCDCPMT->entries() << G4endl;
+  G4cout << "WCSimWCTriggerBase::AlgNHits. Number of entries in input digit collection: " << WCDCPMT->entries() << G4endl;
+
+  
 
   // the upper time limit is set to the final possible full trigger window
-  while(window_start_time <= (WCSimWCTriggerBase::LongTime - WCSimWCTriggerBase::pmtgate)) {
+  while(window_start_time <= window_end_time) {
     int n_digits = 0;
     float triggertime; //save each digit time, because the trigger time is the time of the first hit above threshold
     bool triggerfound = false;
     digit_times.clear();
+    
     //Loop over each PMT
     for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
       int tube=(*WCDCPMT)[i]->GetTubeID();
@@ -108,6 +104,9 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 	  n_digits++;
 	  digit_times.push_back(digit_time);
 	}
+	//get the time of the last hit (to make the loop shorter)
+	if(first_loop && digit_time > lasthit)
+	  lasthit = digit_time;
       }//loop over Digits
     }//loop over PMTs
     
@@ -131,9 +130,16 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
     else {
       window_start_time += 10;
     }
+
+    //shorten the loop using the time of the last hit
+    if(first_loop) {
+      window_end_time = lasthit - (WCSimWCTriggerBase::pmtgate - 10);
+      first_loop = false;
+    }
   }
   
   //call FillDigitsCollection() if at least one trigger was issued
+  G4cout << "Found " << ntrig << " NHit triggers" << G4endl;
   if(ntrig)
     FillDigitsCollection(WCDCPMT, remove_hits);
 }

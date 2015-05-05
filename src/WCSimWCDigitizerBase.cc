@@ -46,7 +46,9 @@ WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
   this->myDetector = myDetector;
   collectionName.push_back(colName);
   DigiStoreHitMap.clear();
+
   //  DarkRateMessenger = new WCSimDarkRateMessenger(this);
+  DAQMessenger = new WCSimWCDAQMessenger(this);
 }
 
 WCSimWCDigitizerBase::~WCSimWCDigitizerBase(){

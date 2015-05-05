@@ -47,7 +47,8 @@ protected:
   std::map<int,int>         DigiHitMap; // need to check if a hit already exists..
 
 private:
-  
+
+  WCSimWCDAQMessenger*       DAQMessenger;
   WCSimDetectorConstruction* myDetector;
   std::vector<G4double>      TriggerTimes;
   std::vector<TriggerType_t> TriggerTypes;

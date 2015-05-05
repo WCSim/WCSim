@@ -77,6 +77,7 @@
 # set both to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger classes
 /DAQ/Digitizer SK
 /DAQ/Trigger NHits
+/DAQ/TriggerNHits/Threshold 10
 
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz

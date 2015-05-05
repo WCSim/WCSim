@@ -80,7 +80,8 @@ private:
   G4double peSmeared;
 
   WCSimDetectorConstruction* myDetector;
-
+  WCSimWCDAQMessenger* DAQMessenger;
+  
 protected:
   WCSimWCDigitsCollection*  DigiStore;
   std::map<int,int> DigiStoreHitMap; // need to check if a hit already exists..

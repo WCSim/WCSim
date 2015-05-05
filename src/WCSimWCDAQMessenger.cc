@@ -85,6 +85,10 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       G4cout << "Digitizer choice set to " << newValue << G4endl;
       WCSimEvent->CreateDigitizerInstance();
     }
+    if(instanceType == kDigitizer) {
+      //WCSimDigitize->SKElectronicsType(newValue);
+      G4cout << "Digitizer choice set to " << newValue << G4endl;
+    }
   }
   else if (command == TriggerChoice) {
     if(instanceType == kEventAction) {
