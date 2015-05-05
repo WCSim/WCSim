@@ -20,8 +20,9 @@
 #include <iostream>
 
 WCSimWCTriggerNHits::WCSimWCTriggerNHits(G4String name,
-				   WCSimDetectorConstruction* myDetector)
-  :WCSimWCTriggerBase(name, myDetector)
+					 WCSimDetectorConstruction* myDetector,
+					 WCSimWCDAQMessenger* myMessenger)
+  :WCSimWCTriggerBase(name, myDetector, myMessenger)
 {
 }
 

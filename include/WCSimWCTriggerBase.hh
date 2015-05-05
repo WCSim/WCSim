@@ -21,7 +21,7 @@ class WCSimWCTriggerBase : public G4VDigitizerModule
   
 public:
 
-  WCSimWCTriggerBase(G4String name, WCSimDetectorConstruction*);
+  WCSimWCTriggerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
   ~WCSimWCTriggerBase();
   
   //not recommended to override this method

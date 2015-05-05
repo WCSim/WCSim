@@ -11,24 +11,6 @@
 
 WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction * eventaction):WCSimEvent(eventaction)
 {
-  Initialize();
-  instanceType = kEventAction;
-}
-
-WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimWCDigitizerBase* digitizer):WCSimDigitize(digitizer)
-{
-  Initialize();
-  instanceType = kDigitizer;
-}
-
-WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimWCTriggerBase* trigger):WCSimTrigger(trigger)
-{
-  Initialize();
-  instanceType = kTrigger;
-}
-
-void WCSimWCDAQMessenger::Initialize()
-{
   WCSimDAQDir = new G4UIdirectory("/DAQ/");
   WCSimDAQDir->SetGuidance("Commands to select DAQ options");
 
@@ -76,29 +58,36 @@ WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
 
 void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {
+  //Because this Messenger class contains options for classes that don't exist when options are
+  // read in (Trigger and Digitizer class options) we need to store each options' value
+  // for use in the Tell*() methods later
 
   if (command == DigitizerChoice) {
-    if(instanceType == kEventAction) {
-      WCSimEvent->SetDigitizerChoice(newValue); 
-      G4cout << "Digitizer choice set to " << newValue << G4endl;
-      WCSimEvent->CreateDigitizerInstance();
-    }
-    if(instanceType == kDigitizer) {
-      //WCSimDigitize->SKElectronicsType(newValue);
-      G4cout << "Digitizer choice set to " << newValue << G4endl;
-    }
+    WCSimEvent->SetDigitizerChoice(newValue); 
+    G4cout << "Digitizer choice set to " << newValue << G4endl;
+    WCSimEvent->CreateDigitizerInstance();
+    StoreDigitizerChoice = newValue;
   }
   else if (command == TriggerChoice) {
-    if(instanceType == kEventAction) {
-      WCSimEvent->SetTriggerChoice(newValue); 
-      G4cout << "Trigger choice set to " << newValue << G4endl;
-      WCSimEvent->CreateTriggerInstance();
-    }
+    WCSimEvent->SetTriggerChoice(newValue); 
+    G4cout << "Trigger choice set to " << newValue << G4endl;
+    WCSimEvent->CreateTriggerInstance();
+    StoreTriggerChoice = newValue;
   }
   else if (command == NHitsTriggerThreshold) {
-    if(instanceType == kTrigger) {
-      WCSimTrigger->SetNHitsThreshold(NHitsTriggerThreshold->GetNewIntValue(newValue));
-      G4cout << "NHits trigger threshold set to " << newValue << G4endl;
-    }
+    StoreSetNHitsThreshold = NHitsTriggerThreshold->GetNewIntValue(newValue);
   }
+}
+
+void WCSimWCDAQMessenger::TellTrigger()
+{
+  G4cout << "Passing Trigger options to the trigger class instance" << G4endl;
+  G4int threshold = StoreSetNHitsThreshold;
+  WCSimTrigger->SetNHitsThreshold(threshold);
+}
+
+void WCSimWCDAQMessenger::TellDigitizer()
+{
+  G4cout << "Passing Digitizer options to the digitizer class instance" << G4endl;
+  //WCSimDigitize->SKDigitizerType(StoreDigitizerChoice);  
 }

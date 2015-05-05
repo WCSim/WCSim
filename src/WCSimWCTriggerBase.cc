@@ -27,7 +27,8 @@ const double WCSimWCTriggerBase::LongTime = 100000.0 ; // ns = 0.1ms. event time
 
 
 WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
-				   WCSimDetectorConstruction* myDetector)
+				       WCSimDetectorConstruction* myDetector,
+				       WCSimWCDAQMessenger* myMessenger)
   :G4VDigitizerModule(name)
 {
   G4String colName = "WCDigitizedCollection";
@@ -36,7 +37,11 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
   DigiHitMap.clear();
   TriggerTimes.clear();
 
-  DAQMessenger = new WCSimWCDAQMessenger(this);
+  if(myMessenger) {
+    DAQMessenger = myMessenger;
+    DAQMessenger->TellMeAboutTheTrigger(this);
+    DAQMessenger->TellTrigger();
+  }
 }
 
 WCSimWCTriggerBase::~WCSimWCTriggerBase(){
@@ -121,7 +126,7 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
       triggerfound = true;
     }
 
-    G4cout << n_digits << " digits found in 200nsec trigger window" << G4endl;
+    G4cout << n_digits << " digits found in 200nsec trigger window. Threshold is: " << nhitsThreshold << G4endl;
 
     //move onto the next go through the timing loop
     if(triggerfound) {

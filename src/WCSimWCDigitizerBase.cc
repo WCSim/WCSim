@@ -39,7 +39,8 @@ const int WCSimWCDigitizerBase::GlobalThreshold = 22 ; // # hit PMTs
 
 
 WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
-				   WCSimDetectorConstruction* myDetector)
+					   WCSimDetectorConstruction* myDetector,
+					   WCSimWCDAQMessenger* myMessenger)
   :G4VDigitizerModule(name)
 {
   G4String colName = "WCDigitizedStoreCollection";
@@ -48,7 +49,11 @@ WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
   DigiStoreHitMap.clear();
 
   //  DarkRateMessenger = new WCSimDarkRateMessenger(this);
-  DAQMessenger = new WCSimWCDAQMessenger(this);
+  if(myMessenger) {
+    DAQMessenger = myMessenger;
+    DAQMessenger->TellMeAboutTheDigitizer(this);
+    DAQMessenger->TellDigitizer();
+  }
 }
 
 WCSimWCDigitizerBase::~WCSimWCDigitizerBase(){

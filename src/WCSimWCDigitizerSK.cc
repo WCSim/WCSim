@@ -39,8 +39,9 @@ const int WCSimWCDigitizerSK::GlobalThreshold = 22 ; // # hit PMTs
 
 
 WCSimWCDigitizerSK::WCSimWCDigitizerSK(G4String name,
-				   WCSimDetectorConstruction* myDetector)
-  :WCSimWCDigitizerBase(name, myDetector)
+				       WCSimDetectorConstruction* myDetector,
+				       WCSimWCDAQMessenger* myMessenger)
+  :WCSimWCDigitizerBase(name, myDetector, myMessenger)
 {
 //   G4String colName = "WCDigitizedStoreCollection";
 //   this->myDetector = myDetector;

@@ -83,7 +83,7 @@ void WCSimEventAction::CreateDigitizerInstance()
       DMman->AddNewModule(WCDNM);
       //create your choice of digitizer module
       if(DigitizerChoice == "SK") {
-        WCSimWCDigitizerSK* WCDM = new WCSimWCDigitizerSK( "WCReadoutDigits", detectorConstructor);
+        WCSimWCDigitizerSK* WCDM = new WCSimWCDigitizerSK( "WCReadoutDigits", detectorConstructor, DAQMessenger);
 	DMman->AddNewModule(WCDM);
       }
     }
@@ -109,7 +109,7 @@ void WCSimEventAction::CreateTriggerInstance()
     else {
       //create your choice of trigger module
       if(TriggerChoice == "NHits") {
-	WCSimWCTriggerNHits* WCTM = new WCSimWCTriggerNHits("WCReadout", detectorConstructor);
+	WCSimWCTriggerNHits* WCTM = new WCSimWCTriggerNHits("WCReadout", detectorConstructor, DAQMessenger);
 	DMman->AddNewModule(WCTM);
       }
     }

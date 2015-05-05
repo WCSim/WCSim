@@ -11,23 +11,20 @@ class WCSimEventAction;
 class WCSimWCDigitizerBase;
 class WCSimWCTriggerBase;
 
-typedef enum EDAQMessengerType {
-  kEventAction,
-  kDigitizer,
-  kTrigger
-} DAQMessengerType_t;
-
 class WCSimWCDAQMessenger: public G4UImessenger
 {
 public:
   WCSimWCDAQMessenger(WCSimEventAction*);
-  WCSimWCDAQMessenger(WCSimWCDigitizerBase*);
-  WCSimWCDAQMessenger(WCSimWCTriggerBase*);
 
   ~WCSimWCDAQMessenger();
 
   void SetNewValue(G4UIcommand* command, G4String newValue);
 
+  void TellTrigger();
+  void TellDigitizer();
+
+  void TellMeAboutTheDigitizer(WCSimWCDigitizerBase* digitizer) { WCSimDigitize = digitizer; }
+  void TellMeAboutTheTrigger  (WCSimWCTriggerBase*   trigger)   { WCSimTrigger  = trigger; }
 
 private:
   WCSimEventAction*   WCSimEvent;
@@ -36,14 +33,14 @@ private:
 
   G4UIdirectory*      WCSimDAQDir;
   G4UIcmdWithAString* DigitizerChoice;
+  G4String            StoreDigitizerChoice;
   G4UIcmdWithAString* TriggerChoice;
+  G4String            StoreTriggerChoice;
 
   G4UIdirectory*        NHitsTriggerDir;
   G4UIcmdWithAnInteger* NHitsTriggerThreshold;
+  G4int                 StoreSetNHitsThreshold;
 
-  DAQMessengerType_t instanceType;
-
-  void Initialize();
 };
 
 #endif

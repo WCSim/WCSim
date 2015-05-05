@@ -8,7 +8,7 @@ class WCSimWCTriggerNHits : public WCSimWCTriggerBase
 public:
 
   //not recommended to override these methods
-  WCSimWCTriggerNHits(G4String name, WCSimDetectorConstruction*);
+  WCSimWCTriggerNHits(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
   ~WCSimWCTriggerNHits();
   
 private:

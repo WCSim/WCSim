@@ -17,7 +17,7 @@ class WCSimWCDigitizerSK : public WCSimWCDigitizerBase
 {
 public:
   
-  WCSimWCDigitizerSK(G4String name, WCSimDetectorConstruction*);
+  WCSimWCDigitizerSK(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
   ~WCSimWCDigitizerSK();
   
   void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
