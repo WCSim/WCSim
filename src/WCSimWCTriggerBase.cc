@@ -59,9 +59,21 @@ void WCSimWCTriggerBase::Digitize()
   WCSimWCDigitsCollection* WCDCPMT = 
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCDCID));
 
+  G4cout << "ABOUT TO call DoTheWork with ID" << WCDCID << G4endl;
   // Do the work  
   if (WCDCPMT) {
+    G4cout << "ABOUT TO call DoTheWork" << G4endl;
     DoTheWork(WCDCPMT);
+    G4cout << "FINISHED call DoTheWork" << G4endl;
+  }
+  else {
+    DigiMan->List();
+    for(int i = 0; i < DigiMan->GetDCtable()->entries(); i++) {
+      G4cout << DigiMan->GetDCtable()->GetDMname(i) << " " << DigiMan->GetDCtable()->GetDCname(i) << G4endl;
+      WCSimWCDigitsCollection* tempDC = (WCSimWCDigitsCollection*)DigiMan->GetDigiCollection(i);
+      if(tempDC)
+	G4cout << tempDC->GetName() << "\t" << tempDC->GetDMname() << G4endl;
+    }
   }
   
   StoreDigiCollection(DigitsCollection);
@@ -109,6 +121,8 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
       TriggerTypes.push_back(kNHits);
       triggerfound = true;
     }
+
+    G4cout << n_digits << " digits found in 200nsec trigger window" << G4endl;
 
     //move onto the next go through the timing loop
     if(triggerfound) {

@@ -88,7 +88,8 @@ WCSimWCDigitizerSKIV::~WCSimWCDigitizerSKIV(){
 void WCSimWCDigitizerSKIV::Digitize()
 {
   
-  DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT","WCDigitizedStoreCollection");
+  DigitsCollection = new WCSimWCDigitsCollection (collectionName[0], collectionName[0]);
+  //DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT","WCDigitizedStoreCollection");
   //collectionName.push_back("WCDigitizedCollection");
   DigiHitMap.clear();
   //Temporary Storage of Digitized hits which is passed to the trigger
@@ -109,13 +110,13 @@ void WCSimWCDigitizerSKIV::Digitize()
     DigitizeHits(WCHCPMT);
   }
   
-  StoreDigiCollection(DigitsCollection);
-
+  //StoreDigiCollection(DigitsCollection);
+  StoreDigiCollection(DigiStore);
 }
 
 
 void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
-  std::cout<<"START\n";
+  G4cout<<"START\n";
   //We must first sort hits by PMT in time.  This is very important as the code
   //assumes that each hit is in time order from lowest to highest.
 
@@ -130,7 +131,7 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       //Sort hits on this pmt
       (*WCHCPMT)[i]->SortArrayByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
-      std::cout<<"tube "<<tube<<"\n";
+      G4cout<<"tube "<<tube<<"\n";
       //look over all hits on the PMT
       //integrate charge and start digitizing
       float intgr_start=0;
@@ -184,7 +185,7 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    if(iflag == 0) {                                                                                                                                             
 	      //digitize hit                                                                                                                                  
 	      peSmeared *= efficiency;             
-	      WCSimWCDigitizerSKIV::AddNewDigit(tube, ngate, intgr_start, peSmeared);
+	      WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared);
 	      ngate++;
 	    }                                                                                                                                                           
 	    else {                                                                                                                                                            
@@ -196,7 +197,7 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  if(time > upperlimit && time <= upperlimit + 350 + 150) {
 	    continue;
 	  }
-	    else if(time > upperlimit + 350 + 150){
+	  else if(time > upperlimit + 350 + 150){
 	    //we now need to start integrating from the hit
 	    intgr_start=time;
 	    peSmeared = pe;
@@ -210,17 +211,17 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      if(iflag == 0) {
 		//digitize hit                                                                                                                                                  
 		peSmeared *= efficiency;
-		WCSimWCDigitizerSKIV::AddNewDigit(tube, ngate, intgr_start, peSmeared);
+		WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared);
 		ngate++;	
 	      }
-		else {
-		  //reject hit                                                                                                                           
-		}
+	      else {
+		//reject hit                                                                                                                           
 	      }
+	    }
 	  }
 	}
     }   
-  std::cout<<"END\n";
+  G4cout<<"END\n";
   //temporaryTrig();
 }
 
@@ -228,7 +229,7 @@ void WCSimWCDigitizerSKIV::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 // void WCSimWCDigitizerSKIV::AddNewDigit(int tube, int gate, float digihittime, float peSmeared) {
 //   //gate is not a trigger, but just the position of the digit in the array
 //   //inside the WCSimWCDigi object
-//   std::cout<<"Adding hit "<<gate<<"\n";
+//   G4cout<<"Adding hit "<<gate<<"\n";
 //   if ( digihittime > 0.0 && peSmeared>0.0)
     
 //     {
@@ -266,7 +267,7 @@ void WCSimWCDigitizerSKIV::temporaryTrig() {
   float lower=0;
   float upper = WCSimWCDigitizerSKIV::pmtgate;
   int ntrig=0;
-  std::cout<<"NUMBER OF ENTRIES "<<DigiStore->entries()<<"\n";
+  G4cout<<"NUMBER OF ENTRIES "<<DigiStore->entries()<<"\n";
   while(ii<=WCSimWCDigitizerSKIV::LongTime-WCSimWCDigitizerSKIV::pmtgate) {
     //loop over PMTs and hits in each PMT.  If nhits > Threshhold then we have a trigger                                                                                         
     int n_pmt=0;
