@@ -82,7 +82,7 @@ void WCSimEventAction::CreateDigitizerInstance()
       WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise( "WCDarkNoise", detectorConstructor);
       DMman->AddNewModule(WCDNM);
       //create your choice of digitizer module
-      if(DigitizerChoice == "SK") {
+      if(DigitizerChoice == "SKI" || DigitizerChoice == "SKIV") {
         WCSimWCDigitizerSK* WCDM = new WCSimWCDigitizerSK( "WCReadoutDigits", detectorConstructor, DAQMessenger);
 	DMman->AddNewModule(WCDM);
       }

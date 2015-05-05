@@ -78,7 +78,7 @@
 # control the NHits trigger threshold
 /DAQ/TriggerNHits/Threshold 25
 # set both to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger classes
-/DAQ/Digitizer SK
+/DAQ/Digitizer SKIV
 /DAQ/Trigger NHits
 
 # command to set dark noise frequency 13/06/09
