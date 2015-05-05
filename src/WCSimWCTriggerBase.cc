@@ -19,6 +19,10 @@
 #include <cstring>
 #include <iostream>
 
+#ifndef WCSIMWCTRIGGERBASE_VERBOSE
+#define WCSIMWCTRIGGERBASE_VERBOSE
+#endif
+
 const double WCSimWCTriggerBase::offset = 950.0 ; // ns
 const double WCSimWCTriggerBase::pmtgate = 200.0 ; // ns. integration time
 const double WCSimWCTriggerBase::eventgateup = 950.0 ; // ns. save eventgateup ns after the trigger time
@@ -83,13 +87,14 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
   int ntrig = 0;
   int window_start_time = 0;
   int window_end_time   = WCSimWCTriggerBase::LongTime - WCSimWCTriggerBase::pmtgate;
+  int window_step_size  = 5; //step the search window along this amount if no trigger is found
   float lasthit;
   std::vector<int> digit_times;
   bool first_loop = true;
 
+#ifdef WCSIMWCTRIGGERBASE_VERBOSE
   G4cout << "WCSimWCTriggerBase::AlgNHits. Number of entries in input digit collection: " << WCDCPMT->entries() << G4endl;
-
-  
+#endif
 
   // the upper time limit is set to the final possible full trigger window
   while(window_start_time <= window_end_time) {
@@ -109,12 +114,13 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 	  n_digits++;
 	  digit_times.push_back(digit_time);
 	}
+	//G4cout << digit_time << G4endl;
 	//get the time of the last hit (to make the loop shorter)
 	if(first_loop && digit_time > lasthit)
 	  lasthit = digit_time;
       }//loop over Digits
     }//loop over PMTs
-    
+
     //if over threshold, issue trigger
     if(n_digits > nhitsThreshold) {
       ntrig++;
@@ -126,18 +132,29 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
       triggerfound = true;
     }
 
-    G4cout << n_digits << " digits found in 200nsec trigger window. Threshold is: " << nhitsThreshold << G4endl;
+#ifdef WCSIMWCTRIGGERBASE_VERBOSE
+    if(n_digits)
+      G4cout << n_digits << " digits found in 200nsec trigger window ["
+	     << window_start_time << ", " << window_start_time + WCSimWCTriggerBase::pmtgate
+	     << "]. Threshold is: " << nhitsThreshold << G4endl;
+#endif
 
     //move onto the next go through the timing loop
     if(triggerfound) {
       window_start_time = triggertime + WCSimWCTriggerBase::eventgateup;
     }//triggerfound
     else {
-      window_start_time += 10;
+      window_start_time += window_step_size;
     }
 
     //shorten the loop using the time of the last hit
     if(first_loop) {
+#ifdef WCSIMWCTRIGGERBASE_VERBOSE
+      G4cout << "Last hit found to be at " << lasthit
+	     << ". Changing window_end_time from " << window_end_time
+	     << " to " << lasthit - (WCSimWCTriggerBase::pmtgate - 10)
+	     << G4endl;
+#endif
       window_end_time = lasthit - (WCSimWCTriggerBase::pmtgate - 10);
       first_loop = false;
     }
@@ -159,6 +176,11 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     TriggerType_t triggertype = TriggerTypes[itrigger];
     float lowerbound = triggertime + WCSimWCTriggerBase::eventgatedown;
     float upperbound = triggertime + WCSimWCTriggerBase::eventgateup;
+
+    G4cout << "Saving trigger " << itrigger << " of type " << triggertype
+	   << " with trigger time " << triggertime
+	   << " in range [" << lowerbound << ", " << upperbound << "]"
+	   << G4endl;
 
     //loop over PMTs
     for (G4int i = 0; i < WCDCPMT->entries(); i++) {
@@ -200,4 +222,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       }//loop over Digits
     }//loop over PMTs
   }//loop over Triggers
+#ifdef WCSIMWCTRIGGERBASE_VERBOSE
+  G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of entries in output digit collection: " << DigitsCollection->entries() << G4endl;
+#endif
 }
