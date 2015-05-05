@@ -17,31 +17,33 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction * eventaction):WCSimEv
   DigitizerChoice = new G4UIcmdWithAString("/DAQ/Digitizer", this);
   DigitizerChoice->SetGuidance("Set the Digitizer type");
   DigitizerChoice->SetGuidance("Available choices are:\n"
-			       "SK\n"
+			       "SKI\n"
+			       "SKIV\n"
 			       "SKI_SKDETSIM (combined trigger & digitization (therefore ignores /DAQ/Trigger); buggy) \n"
 			       );
   DigitizerChoice->SetParameterName("Digitizer", false);
   DigitizerChoice->SetCandidates(
-			   "SK "
-			   "SKI_SKDETSIM "
-			   );
+				 "SKI "
+				 "SKIV "
+				 "SKI_SKDETSIM "
+				 );
   DigitizerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
-
+  
   TriggerChoice = new G4UIcmdWithAString("/DAQ/Trigger", this);
   TriggerChoice->SetGuidance("Set the Trigger type");
   TriggerChoice->SetGuidance("Available choices are:\n"
-			       "NHits\n"
-			       );
+			     "NHits\n"
+			     );
   TriggerChoice->SetParameterName("Trigger", false);
   TriggerChoice->SetCandidates(
-			   "NHits "
-			   );
+			       "NHits "
+			       );
   TriggerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
-
+  
   //NHits trigger specifc options
   NHitsTriggerDir = new G4UIdirectory("/DAQ/TriggerNHits/");
   NHitsTriggerDir->SetGuidance("Commands specific to the NHits trigger");
-
+  
   NHitsTriggerThreshold = new G4UIcmdWithAnInteger("/DAQ/TriggerNHits/Threshold", this);
   NHitsTriggerThreshold->SetGuidance("Set the NHits trigger threshold");
   NHitsTriggerThreshold->SetParameterName("NHitsThreshold",true);
