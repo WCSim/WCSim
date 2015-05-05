@@ -11,6 +11,7 @@
 #include "G4TrajectoryContainer.hh"
 #include "WCSimWCHit.hh"
 #include "WCSimWCDigi.hh"
+#include "WCSimWCDAQMessenger.hh"
 
 class WCSimRunAction;
 class WCSimPrimaryGeneratorAction;
@@ -22,6 +23,7 @@ private:
   WCSimRunAction* runAction;
   WCSimPrimaryGeneratorAction* generatorAction;
   WCSimDetectorConstruction*   detectorConstructor;
+  WCSimWCDAQMessenger* DAQMessenger;
   
 public:
   WCSimEventAction(WCSimRunAction*, WCSimDetectorConstruction*,
@@ -37,10 +39,16 @@ public:
 		     WCSimWCHitsCollection*, 
 		     WCSimWCDigitsCollection*);
   WCSimRunAction* GetRunAction(){return runAction;}
+  void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
+  void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
+  void CreateDigitizerInstance();
+  void CreateTriggerInstance();
 
  private:
   G4int WCSimEventFindStartingVolume( G4ThreeVector vtx);
   G4int WCSimEventFindStoppingVolume( G4String stopVolumeName);
+  G4String DigitizerChoice;
+  G4String TriggerChoice;
 
 };
 

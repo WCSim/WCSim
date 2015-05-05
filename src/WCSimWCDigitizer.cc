@@ -40,7 +40,7 @@ const int WCSimWCDigitizer::GlobalThreshold = 25 ; // # hit PMTs
 
 WCSimWCDigitizer::WCSimWCDigitizer(G4String name,
 				   WCSimDetectorConstruction* myDetector)
-  :G4VDigitizerModule(name)
+  :WCSimWCTriggerBase(name, myDetector)
 {
   G4String colName = "WCDigitizedCollection";
   this->myDetector = myDetector;

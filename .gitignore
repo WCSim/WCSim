@@ -1,0 +1,11 @@
+#ignore build results
+src/WCSimRootDict.cc
+src/WCSimRootDict.h
+libWCSim.a
+libWCSimRoot.so
+make.rootcint.result
+make.result
+
+#ignore run results
+wcsim.root
+geofile.txt

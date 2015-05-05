@@ -45,7 +45,7 @@ WCSimWCDigitizerSK::WCSimWCDigitizerSK(G4String name,
 //   G4String colName = "WCDigitizedStoreCollection";
 //   this->myDetector = myDetector;
 //   collectionName.push_back(colName);
-  collectionName.push_back("WCDigitizedCollection");
+//  collectionName.push_back("WCDigitizedCollection");
 //   DigiStoreHitMap.clear();
   //  DarkRateMessenger = new WCSimDarkRateMessenger(this);
 }
@@ -88,7 +88,8 @@ WCSimWCDigitizerSK::~WCSimWCDigitizerSK(){
 void WCSimWCDigitizerSK::Digitize()
 {
   
-  DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT","WCDigitizedCollection");
+  DigitsCollection = new WCSimWCDigitsCollection (collectionName[0], collectionName[0]);
+  //DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT","WCDigitizedStoreCollection");
   //collectionName.push_back("WCDigitizedCollection");
   DigiHitMap.clear();
   //Temporary Storage of Digitized hits which is passed to the trigger
@@ -109,13 +110,13 @@ void WCSimWCDigitizerSK::Digitize()
     DigitizeHits(WCHCPMT);
   }
   
-  StoreDigiCollection(DigitsCollection);
-
+  //StoreDigiCollection(DigitsCollection);
+  StoreDigiCollection(DigiStore);
 }
 
 
 void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
-  std::cout<<"START (WCHCPMT->entries() = "<<WCHCPMT->entries()<<std::endl;
+  G4cout<<"START (WCHCPMT->entries() = "<<WCHCPMT->entries()<<G4endl;
   //We must first sort hits by PMT in time.  This is very important as the code
   //assumes that each hit is in time order from lowest to highest.
   
@@ -131,9 +132,8 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       //Sort photons on this pmt
       (*WCHCPMT)[i]->SortArrayByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
-      std::cout<<"tube "<<tube<<" totalpe = "<<(*WCHCPMT)[i]->GetTotalPe()<<std::endl;
-
-      //look over all photons on the PMT
+      G4cout<<"tube "<<tube<<" totalpe = "<<(*WCHCPMT)[i]->GetTotalPe()<<G4endl;
+      //look over all hits on the PMT
       //integrate charge and start digitizing
       float intgr_start=0;
       float upperlimit=0;
@@ -196,8 +196,8 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    WCSimWCDigitizerSK::Threshold(peSmeared,iflag);                                                                                                                      
 	    if(iflag == 0) {                                                                                                                                             
 	      //digitize hit                                                                                                                                  
-	      peSmeared *= efficiency;             
-	      WCSimWCDigitizerSK::AddNewDigit(tube, ngate, intgr_start, peSmeared);
+	      peSmeared *= efficiency;
+	      WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared);
 	      ngate++;
 	      
 	      digi_unique_id++;
@@ -215,7 +215,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    continue;
 	  }
 	  else if(time > upperlimit + 350 + 150){
-	    std::cout<<"*** PREPARING FOR >1 DIGI ***"<<std::endl;
+	    G4cout<<"*** PREPARING FOR >1 DIGI ***"<<G4endl;
 	    //we now need to start integrating from the hit
 	    intgr_start=time;
 	    peSmeared = pe;
@@ -230,7 +230,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      if(iflag == 0) {
 		//digitize hit                                                                                                                                                  
 		peSmeared *= efficiency;
-		WCSimWCDigitizerSK::AddNewDigit(tube, ngate, intgr_start, peSmeared);
+		WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared);
 		ngate++;	
 
 		digi_unique_id++;
@@ -245,24 +245,24 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  photon_unique_id++;
 	}
     }   
-  std::cout<<"END\n";
+  G4cout<<"END\n";
   
-  std::cout<<"\n\n\nCHECK DIGI COMP:"<<std::endl;
+  G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++){
     std::vector< std::pair<int,int> > comp = (*WCHCPMT)[i]->GetDigiCompositionInfo();
     for(int i = 0; i < (int) comp.size(); i++){
-      std::cout<<"entry "<<i<<" digi "<<comp[i].first<< " p_id "<<comp[i].second<<std::endl;
+      G4cout<<"entry "<<i<<" digi "<<comp[i].first<< " p_id "<<comp[i].second<<G4endl;
     }
   }
-  
-  temporaryTrig();
+
+  //temporaryTrig();
 }
 
 
 // void WCSimWCDigitizerSK::AddNewDigit(int tube, int gate, float digihittime, float peSmeared) {
 //   //gate is not a trigger, but just the position of the digit in the array
 //   //inside the WCSimWCDigi object
-//   std::cout<<"Adding hit "<<gate<<"\n";
+//   G4cout<<"Adding hit "<<gate<<"\n";
 //   if ( digihittime > 0.0 && peSmeared>0.0)
     
 //     {
@@ -300,7 +300,7 @@ void WCSimWCDigitizerSK::temporaryTrig() {
   float lower=0;
   float upper = WCSimWCDigitizerSK::pmtgate;
   int ntrig=0;
-  std::cout<<"NUMBER OF ENTRIES "<<DigiStore->entries()<<"\n";
+  G4cout<<"NUMBER OF ENTRIES "<<DigiStore->entries()<<"\n";
   while(ii<=WCSimWCDigitizerSK::LongTime-WCSimWCDigitizerSK::pmtgate) {
     //loop over PMTs and hits in each PMT.  If nhits > Threshhold then we have a trigger                                                                                         
     int n_pmt=0;

@@ -3,6 +3,7 @@
 
 #include "WCSimDarkRateMessenger.hh"
 #include "WCSimDetectorConstruction.hh"
+#include "WCSimWCTriggerBase.hh"
 #include "G4VDigitizerModule.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"
@@ -12,7 +13,7 @@
 #include <vector>
 
 
-class WCSimWCDigitizer : public G4VDigitizerModule
+class WCSimWCDigitizer : public WCSimWCTriggerBase
 {
 public:
   
@@ -49,6 +50,7 @@ public:
   G4double GetConversion(){ return ConvRate; }
 
 private:
+  void DoTheWork(WCSimWCDigitsCollection*) {} //need to implement this method from the base class. Not used in this implementation of the class
   static void Threshold(double& pe,int& iflag){
     //   CLHEP::HepRandom::setTheSeed(pe+2014);
     double x = pe+0.1; iflag=0;

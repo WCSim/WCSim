@@ -86,7 +86,7 @@ void WCSimWCDigitizerBase::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, float peSmeared) {
   //gate is not a trigger, but just the position of the digit in the array
   //inside the WCSimWCDigi object
-  std::cout<<"Adding hit "<<gate<<"\n";
+  G4cout<<"Adding hit "<<gate<<" in tube "<<tube;
   if ( digihittime > 0.0 && peSmeared>0.0)
     
     {
@@ -100,6 +100,7 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	Digi->AddPe(digihittime);
 	Digi->SetTime(gate,digihittime);
 	DigiStoreHitMap[tube] = DigiStore->insert(Digi);
+	G4cout << " NEW HIT" << G4endl;
       }
       else {
 	//G4cout << "deja vu " << tube << " " << G << "  " << TriggerTimes[G] << " " << digihittime
@@ -109,9 +110,10 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetPe(gate,peSmeared);
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetTime(gate,digihittime);
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddPe(digihittime);
+	G4cout << " DEJA VU" << G4endl;
       }
     }
-  else { }//G4cout << "discarded negative time hit\n";}
+  //else { G4cout << "discarded negative time hit\n";}
 }
 
 
