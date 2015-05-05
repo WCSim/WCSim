@@ -88,12 +88,12 @@ WCSimWCDigitizerSK::~WCSimWCDigitizerSK(){
 void WCSimWCDigitizerSK::Digitize()
 {
   
-  DigitsCollection = new WCSimWCDigitsCollection (collectionName[0], collectionName[0]);
+  DigitsCollection = new WCSimWCDigitsCollection ("temp","temp");//collectionName[0], collectionName[0]);
   //DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT","WCDigitizedStoreCollection");
   //collectionName.push_back("WCDigitizedCollection");
   DigiHitMap.clear();
   //Temporary Storage of Digitized hits which is passed to the trigger
-  DigiStore = new WCSimWCDigitsCollection();
+  DigiStore = new WCSimWCDigitsCollection(collectionName[0], collectionName[0]);
   DigiStoreHitMap.clear();
 
   //DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
