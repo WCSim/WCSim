@@ -35,6 +35,8 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
   collectionName.push_back(colName);
   DigiHitMap.clear();
   TriggerTimes.clear();
+
+  DAQMessenger = new WCSimWCDAQMessenger(this);
 }
 
 WCSimWCTriggerBase::~WCSimWCTriggerBase(){
