@@ -75,8 +75,8 @@
 
 #choose the Trigger & Digitizer type (and options)
 # set both to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger classes
-/WCSimDAQ/Digitizer SKIV
-/WCSimDAQ/Trigger NHits
+/DAQ/Digitizer SKIV
+/DAQ/Trigger NHits
 
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz

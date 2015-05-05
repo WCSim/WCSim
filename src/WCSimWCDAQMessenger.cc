@@ -29,14 +29,14 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimWCTriggerBase* trigger):WCSimTrigg
 
 void WCSimWCDAQMessenger::Initialize()
 {
-  WCSimDAQDir = new G4UIdirectory("/WCSimDAQ/");
+  WCSimDAQDir = new G4UIdirectory("/DAQ/");
   WCSimDAQDir->SetGuidance("Commands to select DAQ options");
 
-  DigitizerChoice = new G4UIcmdWithAString("/WCSimDAQ/Digitizer", this);
+  DigitizerChoice = new G4UIcmdWithAString("/DAQ/Digitizer", this);
   DigitizerChoice->SetGuidance("Set the Digitizer type");
   DigitizerChoice->SetGuidance("Available choices are:\n"
 			       "SKIV\n"
-			       "SKI_SKDETSIM (combined trigger & digitization (therefore ignores /WCSimDAQ/Trigger); buggy) \n"
+			       "SKI_SKDETSIM (combined trigger & digitization (therefore ignores /DAQ/Trigger); buggy) \n"
 			       );
   DigitizerChoice->SetParameterName("Digitizer", false);
   DigitizerChoice->SetCandidates(
@@ -45,7 +45,7 @@ void WCSimWCDAQMessenger::Initialize()
 			   );
   DigitizerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
 
-  TriggerChoice = new G4UIcmdWithAString("/WCSimDAQ/Trigger", this);
+  TriggerChoice = new G4UIcmdWithAString("/DAQ/Trigger", this);
   TriggerChoice->SetGuidance("Set the Trigger type");
   TriggerChoice->SetGuidance("Available choices are:\n"
 			       "NHits\n"
@@ -57,10 +57,10 @@ void WCSimWCDAQMessenger::Initialize()
   TriggerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   //NHits trigger specifc options
-  NHitsTriggerDir = new G4UIdirectory("/WCSimDAQ/TriggerNHits/");
+  NHitsTriggerDir = new G4UIdirectory("/DAQ/TriggerNHits/");
   NHitsTriggerDir->SetGuidance("Commands specific to the NHits trigger");
 
-  NHitsTriggerThreshold = new G4UIcmdWithAnInteger("/WCSimDAQ/TriggerNHits/Threshold", this);
+  NHitsTriggerThreshold = new G4UIcmdWithAnInteger("/DAQ/TriggerNHits/Threshold", this);
   NHitsTriggerThreshold->SetGuidance("Set the NHits trigger threshold");
   NHitsTriggerThreshold->SetParameterName("NHitsThreshold",true);
   NHitsTriggerThreshold->SetDefaultValue(25);
