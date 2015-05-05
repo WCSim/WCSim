@@ -75,7 +75,7 @@
 
 #choose the Trigger & Digitizer type (and options)
 # set both to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger classes
-/DAQ/Digitizer SKIV
+/DAQ/Digitizer SK
 /DAQ/Trigger NHits
 
 # command to set dark noise frequency 13/06/09

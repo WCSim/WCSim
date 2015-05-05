@@ -35,12 +35,12 @@ void WCSimWCDAQMessenger::Initialize()
   DigitizerChoice = new G4UIcmdWithAString("/DAQ/Digitizer", this);
   DigitizerChoice->SetGuidance("Set the Digitizer type");
   DigitizerChoice->SetGuidance("Available choices are:\n"
-			       "SKIV\n"
+			       "SK\n"
 			       "SKI_SKDETSIM (combined trigger & digitization (therefore ignores /DAQ/Trigger); buggy) \n"
 			       );
   DigitizerChoice->SetParameterName("Digitizer", false);
   DigitizerChoice->SetCandidates(
-			   "SKIV "
+			   "SK "
 			   "SKI_SKDETSIM "
 			   );
   DigitizerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
