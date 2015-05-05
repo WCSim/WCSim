@@ -1,7 +1,7 @@
 #ifndef WCSimWCTriggerBase_h
 #define WCSimWCTriggerBase_h 1
 
-#include "WCSimDarkRateMessenger.hh"
+#include "WCSimWCDAQMessenger.hh"
 #include "WCSimDetectorConstruction.hh"
 #include "G4VDigitizerModule.hh"
 #include "WCSimWCDigi.hh"
