@@ -56,7 +56,7 @@ WCSimRootTrigger::WCSimRootTrigger()
   fNcherenkovdigihits = 0;
   fSumQ = 0;
 
-  fTriggerType = 0;
+  fTriggerType = kTriggerUndefined;
   fTriggerInfo = 0;
   fTriggerTime = 0;
   
@@ -99,7 +99,7 @@ void WCSimRootTrigger::Initialize() //actually allocate memory for things in her
   fNcherenkovdigihits = 0;
   fSumQ = 0;
 
-  fTriggerType = 0;
+  fTriggerType = kTriggerUndefined;
   fTriggerInfo = 0;
   fTriggerTime = 0;
   
@@ -169,7 +169,7 @@ void WCSimRootTrigger::Clear(Option_t *option)
   fCherenkovHitTimes->Delete();   
   fCherenkovDigiHits->Delete();
 
-  fTriggerType = 0;
+  fTriggerType = kTriggerUndefined;
   fTriggerInfo = 0;
   fTriggerTime = 0;
 

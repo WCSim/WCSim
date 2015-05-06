@@ -42,16 +42,18 @@ protected:
   //these are the algorithms that perform triggering
   void AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits);
 
-  WCSimWCDigitsCollection*  DigitsCollection;
-  std::map<int,int>         DigiHitMap; // need to check if a hit already exists..
+  WCSimWCDigitsCollection*   DigitsCollection;
+  std::map<int,int>          DigiHitMap; // need to check if a hit already exists..
 
-private:
-
-  WCSimWCDAQMessenger*       DAQMessenger;
-  WCSimDetectorConstruction* myDetector;
   std::vector<G4double>      TriggerTimes;
   std::vector<TriggerType_t> TriggerTypes;
   std::vector<G4double>      TriggerInfos;
+
+  WCSimWCDAQMessenger*       DAQMessenger;
+  WCSimDetectorConstruction* myDetector;
+
+private:
+
   G4float PMTSize;
   G4int nhitsThreshold;
 

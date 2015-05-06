@@ -1,13 +1,15 @@
 #ifndef WCSimEnumerations_h
 #define WCSimEnumerations_h 1
 
+#include <string>
+
 typedef enum ETriggerType {
   kTriggerUndefined = -1,
   kTriggerNHits,
   kTriggerNHitsSKDETSIM
 } TriggerType_t;
 
-string AsString(TriggerType_t t)
+static std::string EnumAsString(TriggerType_t t)
 {
   switch(t) {
     case (kTriggerNHits) :

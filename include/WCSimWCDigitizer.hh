@@ -19,13 +19,11 @@ public:
   
   WCSimWCDigitizer(G4String name, WCSimDetectorConstruction*);
   ~WCSimWCDigitizer();
-  
-  void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
 
-  void ReInitialize() { DigiHitMap.clear(); TriggerTimes.clear(); }
-    
-
-  int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
+  // "////" indicates declerations that are no longer required due to WCSimWCTriggerBase inheritance
+  ////void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
+  ////void ReInitialize() { DigiHitMap.clear(); TriggerTimes.clear(); }
+  ////int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
 
 
   
@@ -40,7 +38,7 @@ public:
   void Digitize();
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
   void SetConversion(double iconvrate){ ConvRate = iconvrate; }
-  G4double GetTriggerTime(int i) { return TriggerTimes[i];}
+  ////G4double GetTriggerTime(int i) { return TriggerTimes[i];}
 
   static G4double GetLongTime() { return LongTime;}
   static G4double GetEventGateDown() { return eventgatedown;}
@@ -93,12 +91,12 @@ private:
   G4float PMTSize;
   G4double peSmeared;
 
-  std::vector<G4double> TriggerTimes;
+  ////std::vector<G4double> TriggerTimes;
   std::map<G4int, G4int> GateMap;
-  std::map<int,int> DigiHitMap; // need to check if a hit already exists..
+  ////std::map<int,int> DigiHitMap; // need to check if a hit already exists..
 
-  WCSimWCDigitsCollection*  DigitsCollection;  
-  WCSimDetectorConstruction* myDetector;
+  ////WCSimWCDigitsCollection*  DigitsCollection;  
+  ////WCSimDetectorConstruction* myDetector;
 
 };
 
