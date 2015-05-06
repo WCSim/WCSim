@@ -22,14 +22,9 @@
 # diameter of 69m with 12" HPD and 14.59% photocoverage
 #/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
 
-# Currently by default the DUSEL configurations are 10 inch.
-# you can overide this with the WCPMTsize command.
-# WCPMTsize command commented out on 10/1/09 (CWW)
-#
-#
-#Added for detector length option (ONLY FOR HYPER-K GEOMETRY!!) 2014/07/29. This simulates a segment of the Hyper-K detector of a given length. 
-
 #/WCSim/WCgeom HyperK #default length is 49500 mm unless changed below.
+
+#Added for detector length option (ONLY FOR HYPER-K GEOMETRY!!) 2014/07/29. This simulates a segment of the Hyper-K detector of a given length. 
 
 #/WCSim/HyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions(ie. will simulate a detector 1/10 of the HK length)
 #/WCSim/HyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
@@ -63,7 +58,7 @@
 # turn on or off the collection efficiency
 #/WCSim/PMTCollEff on
 
-#/WCSim/Construct
+#/WCSim/Construct # This must be uncommented to construct a new detector configuration.
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 #/WCSim/SavePi0 true
@@ -86,7 +81,7 @@
 /vis/scene/create
 /vis/open OGLSX
 # You can also set the size and position of the window if you like
-#/vis/open OGLSX 1000x1000-0+0
+#/vis/open OGLSX 1000x1000-0+
 /vis/ogl/set/printSize 1000 1000
 
 # Vis Settings for SK
