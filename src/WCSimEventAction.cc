@@ -533,6 +533,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				   0,index+1); // date & # of subevent 
 	wcsimrootevent->SetMode(jhfNtuple.mode);
       }
+      wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
+				     WCTM->GetTriggerInfo(index),
+				     WCTM->GetTriggerTime(index));
     }
   
 
@@ -700,9 +703,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	if (ngates)
 	{
 
-	if ( ttime > WCTM->GetTriggerTime(0)+950. && WCTM->GetTriggerTime(1)+950. > ttime ) choose_event=1; 
-	if ( ttime > WCTM->GetTriggerTime(1)+950. && WCTM->GetTriggerTime(2)+950. > ttime ) choose_event=2; 
-	if (choose_event >= ngates) choose_event = ngates-1; // do not overflow the number of events
+	  if ( ttime > WCTM->GetTriggerTime(0)+950. && WCTM->GetTriggerTime(1)+950. > ttime ) choose_event=1; 
+	  if ( ttime > WCTM->GetTriggerTime(1)+950. && WCTM->GetTriggerTime(2)+950. > ttime ) choose_event=2; 
+	  if (choose_event >= ngates) choose_event = ngates-1; // do not overflow the number of events
 	
 	}
 

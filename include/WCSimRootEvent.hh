@@ -16,6 +16,7 @@
 //#include "G4Transform3D.hh"
 
 // #include "WCSimDetectorConstruction.hh"
+#include "WCSimEnumerations.hh"
 
 class TDirectory;
 
@@ -230,6 +231,11 @@ private:
   Float_t              fSumQ;
   TClonesArray         *fCherenkovDigiHits;  //-> Array of WCSimRootCherenkovDigiHit's
 
+  TriggerType_t        fTriggerType;         // Trigger algorithm that created this trigger
+  Float_t              fTriggerInfo;         // Information about how it passed the trigger (e.g. how many hits in the NHits window)
+                                             //  made a float (instead of int) for generality
+  Float_t              fTriggerTime;         // Time of trigger
+
   bool IsZombie;
 
 public:
@@ -243,6 +249,7 @@ public:
   static void   Reset(Option_t *option ="");
 
   void          SetHeader(Int_t i, Int_t run, Int_t date,Int_t subevtn=1);
+  void          SetTriggerInfo(TriggerType_t trigger_type, Float_t trigger_info, Float_t trigger_time);
   bool          IsASubEvent() {  return (fEvtHdr.GetSubEvtNumber()>=1); }
   void          SetMode(Int_t i) {fMode = i;}
   void          SetVtxvol(Int_t i) {fVtxvol = i;}
@@ -262,19 +269,22 @@ public:
 
   WCSimRootEventHeader *GetHeader()               {return &fEvtHdr; }
   WCSimRootPi0      *GetPi0Info()                 {return &fPi0; }
-  Int_t               GetMode()              const {return fMode;}
-  Int_t               GetVtxvol()            const {return fVtxvol;}
+  Int_t               GetMode()               const {return fMode;}
+  Int_t               GetVtxvol()             const {return fVtxvol;}
   Float_t             GetVtx(Int_t i=0)            {return (i<3) ? fVtx[i]: 0;}
-  Int_t               GetVecRecNumber()      const {return fVecRecNumber;}
-  Int_t               GetJmu()               const {return fJmu;}
-  Int_t               GetJp()                const {return fJp;}
-  Int_t               GetNpar()              const {return fNpar;}
-  Int_t               GetNumTubesHit()       const {return fNumTubesHit;}
-  Int_t               GetNumDigiTubesHit()   const {return fNumDigitizedTubes;}
-  Int_t               GetNtrack()            const {return fNtrack; }
+  Int_t               GetVecRecNumber()       const {return fVecRecNumber;}
+  Int_t               GetJmu()                const {return fJmu;}
+  Int_t               GetJp()                 const {return fJp;}
+  Int_t               GetNpar()               const {return fNpar;}
+  Int_t               GetNumTubesHit()        const {return fNumTubesHit;}
+  Int_t               GetNumDigiTubesHit()    const {return fNumDigitizedTubes;}
+  Int_t               GetNtrack()             const {return fNtrack; }
   Int_t               GetNcherenkovhits()     const {return fNcherenkovhits; }
   Int_t               GetNcherenkovdigihits() const {return fNcherenkovdigihits;}
-  Float_t             GetSumQ()              const { return fSumQ;}
+  Float_t             GetSumQ()               const { return fSumQ;}
+  TriggerType_t       GetTriggerType()        const { return fTriggerType;}
+  Float_t             GetTriggerInfo()        const { return fTriggerInfo;}
+  Float_t             GetTriggerTime()        const { return fTriggerTime;}
 
   WCSimRootTrack         *AddTrack(Int_t ipnu, 
 				    Int_t flag, 
@@ -308,7 +318,7 @@ public:
 
   TClonesArray            *GetCherenkovDigiHits() const {return fCherenkovDigiHits;}
 
-  ClassDef(WCSimRootTrigger,1) //WCSimRootEvent structure
+  ClassDef(WCSimRootTrigger,2) //WCSimRootEvent structure
 };
 
 

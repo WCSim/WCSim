@@ -40,6 +40,8 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
   collectionName.push_back(colName);
   DigiHitMap.clear();
   TriggerTimes.clear();
+  TriggerTypes.clear(); 
+  TriggerInfos.clear(); 
 
   if(myMessenger) {
     DAQMessenger = myMessenger;
@@ -58,6 +60,8 @@ void WCSimWCTriggerBase::Digitize()
   
   DigiHitMap.clear();
   TriggerTimes.clear();
+  TriggerTypes.clear(); 
+  TriggerInfos.clear(); 
 
   //This is the output digit collection
   DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
@@ -128,7 +132,8 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
       std::sort(digit_times.begin(), digit_times.end());
       triggertime = digit_times[nhitsThreshold];
       TriggerTimes.push_back(triggertime);
-      TriggerTypes.push_back(kNHits);
+      TriggerTypes.push_back(kTriggerNHits);
+      TriggerInfos.push_back(n_digits);
       triggerfound = true;
     }
 
@@ -174,12 +179,14 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
   for(int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
     float         triggertime = TriggerTimes[itrigger];
     TriggerType_t triggertype = TriggerTypes[itrigger];
+    float         triggerinfo = TriggerInfos[itrigger];
     float lowerbound = triggertime + WCSimWCTriggerBase::eventgatedown;
     float upperbound = triggertime + WCSimWCTriggerBase::eventgateup;
 
-    G4cout << "Saving trigger " << itrigger << " of type " << triggertype
+    G4cout << "Saving trigger " << itrigger << " of type " << AsString(triggertype)
+	   << " in time range [" << lowerbound << ", " << upperbound << "]"
 	   << " with trigger time " << triggertime
-	   << " in range [" << lowerbound << ", " << upperbound << "]"
+	   << " and additional trigger info " << triggerinfo
 	   << G4endl;
 
     //loop over PMTs
@@ -207,7 +214,6 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    Digi->SetPe    (itrigger,peSmeared);
 	    Digi->AddPe    (digihittime);
 	    Digi->SetTime  (itrigger,digihittime);
-	    //Digi->SetTriggerID(triggertype);
 	    DigiHitMap[tube] = DigitsCollection->insert(Digi);
 	  }
 	  else {
@@ -216,7 +222,6 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetPe  (itrigger, peSmeared);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(itrigger, digihittime);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddPe  (digihittime);
-	    //(*DigitsCollection)[DigiHitMap[tube]-1]->SetTriggerID(triggertype);
 	  }
 	}//digits within trigger window
       }//loop over Digits

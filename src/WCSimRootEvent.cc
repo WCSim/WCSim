@@ -46,8 +46,8 @@ WCSimRootTrigger::WCSimRootTrigger()
   fNtrack = 0;
 
   // TClonesArray of WCSimRootCherenkovHits
-    fCherenkovHits = 0;
-    fCherenkovHitTimes = 0;
+  fCherenkovHits = 0;
+  fCherenkovHitTimes = 0;
   fNcherenkovhits = 0;
   fNcherenkovhittimes = 0;
 
@@ -56,6 +56,10 @@ WCSimRootTrigger::WCSimRootTrigger()
   fNcherenkovdigihits = 0;
   fSumQ = 0;
 
+  fTriggerType = 0;
+  fTriggerInfo = 0;
+  fTriggerTime = 0;
+  
   IsZombie = true;
   
 }
@@ -75,17 +79,17 @@ void WCSimRootTrigger::Initialize() //actually allocate memory for things in her
   // When the constructor is invoked for the first time, the class static
   // variable fgTracks is 0 and the TClonesArray fgTracks is created.
   // Sim. for the other TClonesArray
-TStopwatch* mystopw = new TStopwatch();
+  TStopwatch* mystopw = new TStopwatch();
 
   // TClonesArray of WCSimRootTracks
   fTracks = new TClonesArray("WCSimRootTrack", 10000);
   fNtrack = 0;
 
   // TClonesArray of WCSimRootCherenkovHits
-    fCherenkovHits = new TClonesArray("WCSimRootCherenkovHit", 
-					    10000);
-    fCherenkovHitTimes = new TClonesArray("WCSimRootCherenkovHitTime", 
-					  10000);
+  fCherenkovHits = new TClonesArray("WCSimRootCherenkovHit", 
+				    10000);
+  fCherenkovHitTimes = new TClonesArray("WCSimRootCherenkovHitTime", 
+					10000);
   fNcherenkovhits = 0;
   fNcherenkovhittimes = 0;
 
@@ -94,6 +98,10 @@ TStopwatch* mystopw = new TStopwatch();
 				       10000);
   fNcherenkovdigihits = 0;
   fSumQ = 0;
+
+  fTriggerType = 0;
+  fTriggerInfo = 0;
+  fTriggerTime = 0;
   
   //  std::cout << " Time to allocate the TCAs :  Real = " << mystopw->RealTime() 
   //	    << " ; CPU = " << mystopw->CpuTime() << "\n";
@@ -125,7 +133,8 @@ WCSimRootTrigger::~WCSimRootTrigger()
     delete   fCherenkovHits;      
     delete   fCherenkovHitTimes;   
     delete   fCherenkovDigiHits; 
-  }    mystopw->Stop();
+  }
+  mystopw->Stop();
 
   //  std::cout << " Time to delete the TCAs :  Real = " << mystopw->RealTime() 
   //    << " ; CPU = " << mystopw->CpuTime() << "\n";
@@ -155,10 +164,14 @@ void WCSimRootTrigger::Clear(Option_t *option)
   // remove whatever's in the arrays
   // but don't deallocate the arrays themselves
 
-    fTracks->Delete();            
-    fCherenkovHits->Delete();      
-    fCherenkovHitTimes->Delete();   
-    fCherenkovDigiHits->Delete();  
+  fTracks->Delete();            
+  fCherenkovHits->Delete();      
+  fCherenkovHitTimes->Delete();   
+  fCherenkovDigiHits->Delete();
+
+  fTriggerType = 0;
+  fTriggerInfo = 0;
+  fTriggerTime = 0;
 
   IsZombie = false ; // we DO NOT deallocate the memory
 }
@@ -179,6 +192,17 @@ void WCSimRootTrigger::SetHeader(Int_t i,
 {
   // Set the header values
   fEvtHdr.Set(i, run, date,subevent);
+}
+
+//_____________________________________________________________________________
+
+void WCSimRootTrigger::SetTriggerInfo(TriggerType_t trigger_type,
+				      Float_t trigger_info,
+				      Float_t trigger_time)
+{
+  fTriggerType = trigger_type;
+  fTriggerInfo = trigger_info;
+  fTriggerTime = trigger_time;
 }
 
 //_____________________________________________________________________________

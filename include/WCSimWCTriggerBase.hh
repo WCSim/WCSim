@@ -1,6 +1,7 @@
 #ifndef WCSimWCTriggerBase_h
 #define WCSimWCTriggerBase_h 1
 
+#include "WCSimEnumerations.hh"
 #include "WCSimWCDAQMessenger.hh"
 #include "WCSimDetectorConstruction.hh"
 #include "G4VDigitizerModule.hh"
@@ -10,11 +11,6 @@
 #include "Randomize.hh"
 #include <map>
 #include <vector>
-
-typedef enum ETriggerType {
-  kNHits
-} TriggerType_t;
-
 
 class WCSimWCTriggerBase : public G4VDigitizerModule
 {
@@ -30,10 +26,13 @@ public:
   void ReInitialize() {
     TriggerTimes.clear(); 
     TriggerTypes.clear(); 
+    TriggerInfos.clear(); 
     DigiHitMap.clear();
   }
   int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
-  G4double GetTriggerTime(int i) { return TriggerTimes[i];}
+  G4double      GetTriggerTime(int i) { return TriggerTimes[i];}
+  TriggerType_t GetTriggerType(int i) { return TriggerTypes[i];}
+  G4double      GetTriggerInfo(int i) { return TriggerInfos[i];}
   void SetNHitsThreshold(G4int threshold) { nhitsThreshold = threshold; }
   void SetPMTSize(G4float inputSize) { PMTSize = inputSize; }
 
@@ -52,6 +51,7 @@ private:
   WCSimDetectorConstruction* myDetector;
   std::vector<G4double>      TriggerTimes;
   std::vector<TriggerType_t> TriggerTypes;
+  std::vector<G4double>      TriggerInfos;
   G4float PMTSize;
   G4int nhitsThreshold;
 

@@ -356,6 +356,8 @@ void WCSimWCDigitizer::FindNumberOfGatesFast()
 	    //RealOffset = _mGateKeeper->first*5.0;
 	    RealOffset = _mNextGate->first*5.0;
 	    TriggerTimes.push_back(RealOffset);
+	    TriggerTypes.push_back(kTriggerNHitsSKDETSIM);
+	    TriggerInfos.push_back(acc);
 	    //std::cerr << "found a trigger..." << RealOffset/5.0  <<"\n";
 	    _mGateKeeper = GateMap.lower_bound( _mNextGate->first + G4int(WCSimWCDigitizer::eventgateup )/5. );
 	    std::cerr.flush();
@@ -396,6 +398,8 @@ void WCSimWCDigitizer::FindNumberOfGates()
 	  if ( acc > WCSimWCDigitizer::GlobalThreshold ) {
 	    RealOffset = float(j)*5.0;
 	    TriggerTimes.push_back(RealOffset);
+	    TriggerTypes.push_back(kTriggerNHitsSKDETSIM);
+	    TriggerInfos.push_back(acc);
 	    I = j+G4int(WCSimWCDigitizer::eventgateup )/5. ;
 	    //std::cerr << "found a trigger..." << j
 	    //<< " ; new start = " << I << "\n";
