@@ -85,8 +85,7 @@ for WCgeom in args.WCgeom:
                             for DarkNoiseRate in args.DarkNoiseRate:
                                 for DarkNoiseConvert in args.DarkNoiseConvert:
                                     for DarkNoiseWindow in args.DarkNoiseWindow:
-                                        for GunParticle in args.GunParticle:
-                                            for GunEnergy in args.GunEnergy:
+                                        for GunEnergy in args.GunEnergy:
                                                 #DarkNoiseWindow should be treated specially, as it depends on DarkNoiseMode
                                                 darknoisewindow = ""
                                                 if args.DarkNoiseMode == 0:
@@ -103,7 +102,7 @@ for WCgeom in args.WCgeom:
                                                     sys.exit(1)
 
                                                 #construct the filename
-                                                filenamestub = "wcsim_" + GunEnergy + GunParticle + "_" + WCgeom + "_" + HKwatertanklength + "_" + PMTQEMethod + "_SavePi0" + SavePi0 + "_Digi" + DAQdigitizer + "_Trig" + DAQtrigger + "_Thresh" + DAQnhitsthreshold + "_DarkNoiseM" + str(args.DarkNoiseMode) + "R" + DarkNoiseRate + "W" + DarkNoiseWindow
+                                                filenamestub = "wcsim_" + GunEnergy + args.GunParticle + "_" + WCgeom + "_" + HKwatertanklength + "_" + PMTQEMethod + "_SavePi0" + SavePi0 + "_Digi" + DAQdigitizer + "_Trig" + DAQtrigger + "_Thresh" + DAQnhitsthreshold + "_DarkNoiseM" + str(args.DarkNoiseMode) + "R" + DarkNoiseRate + "W" + DarkNoiseWindow
                                                 #make the text for the config file
                                                 text = "/run/verbose 0 \n" \
                                                     "/tracking/verbose 0 \n" \
@@ -116,13 +115,13 @@ for WCgeom in args.WCgeom:
                                                     "/DAQ/TriggerNHits/Threshold " + DAQnhitsthreshold + "\n" \
                                                     "/DAQ/Digitizer " + DAQdigitizer + "\n" \
                                                     "/DAQ/Trigger " + DAQtrigger + "\n" \
-                                                    "/DarkRate/SetDarkRate " + DarkNoiseRate + "kHz \n" \
+                                                    "/DarkRate/SetDarkRate " + DarkNoiseRate + " kHz \n" \
                                                     "/DarkRate/SetConvert " + DarkNoiseConvert + "\n" \
                                                     "/DarkRate/SetDarkMode " + str(args.DarkNoiseMode) + "\n" \
                                                     "" + darknoisewindow + "" \
                                                     "/mygen/generator normal " + "\n" \
-                                                    "/gun/particle " + GunParticle + "\n" \
-                                                    "/gun/energy " + GunEnergy + "MeV \n" \
+                                                    "/gun/particle " + args.GunParticle + "\n" \
+                                                    "/gun/energy " + GunEnergy + " MeV \n" \
                                                     "/gun/direction " + " ".join(i for i in args.GunDirection) + "\n" \
                                                     "/gun/position " + " ".join(i for i in args.GunPosition) + "\n" \
                                                     "/WCSimIO/RootFile " + filenamestub + ".root" + "\n" \
@@ -139,4 +138,5 @@ for WCgeom in args.WCgeom:
                                                 
                                                 print "file:", counter
                                                 print text
+                                                print command
                                                 counter += 1

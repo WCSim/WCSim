@@ -14,7 +14,7 @@
 //#include "include/WCSimRootGeom.hh"
 
 // Simple example of reading a generated Root file
-int sample_readfile(char *filename=NULL, bool verbose=false)
+int tom_readfile(char *filename=NULL, bool verbose=false)
 {
   // Clear global scope
   //gROOT->Reset();
@@ -103,15 +103,16 @@ int sample_readfile(char *filename=NULL, bool verbose=false)
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h1 = new TH1F("PMT Hits", "PMT Hits", 8000, 0, 8000);
-  TH1F *hvtx0 = new TH1F("Event VTX0", "Event VTX0", 200, -1500, 1500);
-  TH1F *hvtx1 = new TH1F("Event VTX1", "Event VTX1", 200, -1500, 1500);
-  TH1F *hvtx2 = new TH1F("Event VTX2", "Event VTX2", 200, -1500, 1500);
+  TH1F *h1 = new TH1F("h1", "PMT Hits", 8000, 0, 8000);
+  TH1F *hvtx0 = new TH1F("hvtx0", "Event VTX0", 200, -1500, 1500);
+  TH1F *hvtx1 = new TH1F("hvtx1", "Event VTX1", 200, -1500, 1500);
+  TH1F *hvtx2 = new TH1F("hvtx2", "Event VTX2", 200, -1500, 1500);
   TH2I *h2nhits = new TH2I("h2nhits", "NHits from subevent window vs NHits from 200nsec trigger window;NHits saved in subevent;NHits in 200nsec window", 1001, -0.5, 1000.5, 1001, -0.5, 1000.5);
   TH1I *h1nhits = new TH1I("h1nhits", "NHits in the subevent window;NHits;Entries", 1001, -0.5, 1000.5);
   TH1I *h1nhitstrigger = new TH1I("h1nhitstrigger", "NHits in the trigger window;NHits;Entries", 1001, -0.5, 1000.5);
   TH1F *h1pe = new TH1F("h1pe", "Total p.e. in the subevent window;p.e.;Entries", 1001, -0.5, 1000.5);
-  TH1F *h1time = new TH1F("h1time", "Hit time (relative to trigger time);Hit time relative to hit time / ns;Entries", 1350, -400, 9500);
+  TH1F *h1time = new TH1F("h1time", "Hit time (relative to trigger time);Hit time - trigger time / ns;Entries", 1350, -400, 9500);
+  TH1F *h1time2 = new TH1F("h1time", "Hit time (relative to trigger time);Hit time - trigger time / ns;Entries", 1350, -400, 9500);
   int num_trig=0;
   
   // Now loop over events
@@ -240,7 +241,10 @@ int sample_readfile(char *filename=NULL, bool verbose=false)
     {
       wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
       if(verbose) cout << "Sub event number = " << index << "\n";
-      
+      wcsimrootevent->ls();
+      wcsimrootevent->Dump();
+      return -1;
+
       int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
       if(verbose) printf("Ncherenkovdigihits %d\n", ncherenkovdigihits);
 
@@ -280,6 +284,7 @@ int sample_readfile(char *filename=NULL, bool verbose=false)
 	}
 	totalpe += wcsimrootcherenkovdigihit->GetQ();
 	h1time->Fill(wcsimrootcherenkovdigihit->GetT() - trigger_time);
+	h1time2->Fill(wcsimrootcherenkovdigihit->GetT() - 950);
       } // End of loop over Cherenkov digihits
       h1pe->Fill(totalpe);
     } // End of loop over trigger
@@ -302,9 +307,8 @@ int sample_readfile(char *filename=NULL, bool verbose=false)
   
   std::cout<<"num_trig "<<num_trig<<"\n";
 
-  TString fname(filename);
-  TString filenameout = fname.ReplaceAll(".root", "_analysed.root");
-  TFile * fout = new TFile(filenameout.Data(), "RECREATE");
+  TString filenameout(filename);
+  TFile * fout = new TFile(create_filename("analysed_", filenameout).Data(), "RECREATE");
   fout->cd();
   hvtx0->Write();
   hvtx1->Write();
@@ -315,7 +319,32 @@ int sample_readfile(char *filename=NULL, bool verbose=false)
   h1nhitstrigger->Write();
   h1pe->Write();
   h1time->Write();
+  h1time2->Write();
   fout->Close();
   
+  filenameout.ReplaceAll(".root", ".pdf");
+  TCanvas * c2 = new TCanvas();
+  c2->cd();
+  h2nhits->Draw("COLZ");
+  cout << "SPAM " << create_filename("h2nhits_", filenameout).Data() << endl << endl;
+  c2->SaveAs(create_filename("h2nhits_", filenameout).Data());
+  h1nhits->Draw();
+  c2->SaveAs(create_filename("h1nhits_", filenameout).Data());
+  h1nhitstrigger->Draw();
+  c2->SaveAs(create_filename("h1nhitstrigger_", filenameout).Data());
+  h1pe->Draw();
+  c2->SaveAs(create_filename("h1pe_", filenameout).Data());
+  h1time->Draw();
+  c2->SaveAs(create_filename("h1time_", filenameout).Data());
+  h1time2->Draw();
+  c2->SaveAs(create_filename("h1time2_", filenameout).Data());
+
   return 0;
+}
+
+TString create_filename(const char * prefix, TString& filename_string)
+{
+  TString prefix_string(prefix);
+  TString outfilename = prefix + filename_string;
+  return outfilename;
 }
