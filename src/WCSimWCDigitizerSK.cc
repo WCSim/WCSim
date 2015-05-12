@@ -121,10 +121,16 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   //We must first sort hits by PMT in time.  This is very important as the code
   //assumes that each hit is in time order from lowest to highest.
   
-  //Sorting done.  Now we integrate the charge on each PMT.  SK IV has a 400ns 
+  //Sorting done.  Now we integrate the charge on each PMT.
+  //SK IV has a 400ns 
   //integration gate, discharges for 350ns to calculate the charge and
-  //this is followed by a 150ns veto
+  //this is followed by a 150ns veto (500ns total deadtime)
   //Total processing time for a hit is 900ns
+  //SK I has 2 capacitors, allowing zero deadtime
+  int deadtime = 0;
+  if(SKDeadTime)
+    deadtime = 350 + 150;
+
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
     {
       //loop over entires in WCHCPMT, each entry corresponds to
@@ -174,7 +180,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  }
 	  else {
 	    //this hit is outside the integration time window.
-	    //Charge integration is over.  There is now a 350ns + 150ns
+	    //Charge integration is over.  For SKIV, there is now a 350ns + 150ns
 	    //time period where no hits can be recorded
 	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    MakeDigit = true;
@@ -212,10 +218,10 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  }
 	  
 	  //Now try and deal with the next hit
-	  if(time > upperlimit && time <= upperlimit + 350 + 150) {
+	  if(time > upperlimit && time <= upperlimit + deadtime) {
 	    continue;
 	  }
-	  else if(time > upperlimit + 350 + 150){
+	  else if(time > upperlimit + deadtime){
 	    G4cout<<"*** PREPARING FOR >1 DIGI ***"<<G4endl;
 	    //we now need to start integrating from the hit
 	    intgr_start=time;

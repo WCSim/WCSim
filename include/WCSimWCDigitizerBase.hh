@@ -34,6 +34,9 @@ public:
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
   virtual void Digitize();
 
+  //.mac file option setting methods
+  void SKDigitizerType(G4String); 
+
   static G4double GetLongTime() { return LongTime;}
   static G4double GetEventGateDown() { return eventgatedown;}
   static G4double GetEventGateUp() { return eventgateup;}
@@ -82,10 +85,12 @@ private:
 
   WCSimDetectorConstruction* myDetector;
   WCSimWCDAQMessenger* DAQMessenger;
-  
+
 protected:
   WCSimWCDigitsCollection*  DigiStore;
   std::map<int,int> DigiStoreHitMap; // need to check if a hit already exists..
+
+  bool SKDeadTime;
 
 };
 

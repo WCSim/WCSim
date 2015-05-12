@@ -123,4 +123,9 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
   //else { G4cout << "discarded negative time hit\n";}
 }
 
-
+void WCSimWCDigitizerBase::SKDigitizerType(G4String type) {
+  if(type == "SKI")
+    SKDeadTime = false;
+  else if(type == "SKIV")
+    SKDeadTime = true;
+}
