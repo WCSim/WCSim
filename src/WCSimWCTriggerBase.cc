@@ -108,7 +108,7 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
     
     //Loop over each PMT
     for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
-      int tube=(*WCDCPMT)[i]->GetTubeID();
+      //int tube=(*WCDCPMT)[i]->GetTubeID();
       //Loop over each Digit in this PMT
       for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
 	int digit_time = (*WCDCPMT)[i]->GetTime(ip);
@@ -175,18 +175,20 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
   WCSimPMTObject * PMT = myDetector->GetPMTPointer("glassFaceWCPMT"); //for hit time smearing
 
   //Loop over trigger times
-  for(int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
+  for(unsigned int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
     float         triggertime = TriggerTimes[itrigger];
     TriggerType_t triggertype = TriggerTypes[itrigger];
-    float         triggerinfo = TriggerInfos[itrigger];
+    std::vector<Float_t> triggerinfo = TriggerInfos[itrigger];
     float lowerbound = triggertime + WCSimWCTriggerBase::eventgatedown;
     float upperbound = triggertime + WCSimWCTriggerBase::eventgateup;
 
     G4cout << "Saving trigger " << itrigger << " of type " << EnumAsString(triggertype)
 	   << " in time range [" << lowerbound << ", " << upperbound << "]"
 	   << " with trigger time " << triggertime
-	   << " and additional trigger info " << triggerinfo
-	   << G4endl;
+	   << " and additional trigger info";
+    for(std::vector<Float_t>::iterator it = triggerinfo.begin(); it != triggerinfo.end(); ++it)
+      G4cout << " " << *it;
+    G4cout << G4endl;
 
     //loop over PMTs
     for (G4int i = 0; i < WCDCPMT->entries(); i++) {
