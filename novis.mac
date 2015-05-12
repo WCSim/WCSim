@@ -77,6 +77,8 @@
 #WARNING options should be specified before the class choices themselves
 # control the NHits trigger threshold
 /DAQ/TriggerNHits/Threshold 25
+# control the NHits trigger window (ns)
+/DAQ/TriggerNHits/Window 200
 # set both to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger classes
 /DAQ/Digitizer SKIV
 /DAQ/Trigger NHits

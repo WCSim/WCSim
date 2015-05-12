@@ -57,8 +57,7 @@ WCSimRootTrigger::WCSimRootTrigger()
   fSumQ = 0;
 
   fTriggerType = kTriggerUndefined;
-  fTriggerInfo = 0;
-  fTriggerTime = 0;
+  fTriggerInfo.clear();
   
   IsZombie = true;
   
@@ -100,8 +99,7 @@ void WCSimRootTrigger::Initialize() //actually allocate memory for things in her
   fSumQ = 0;
 
   fTriggerType = kTriggerUndefined;
-  fTriggerInfo = 0;
-  fTriggerTime = 0;
+  fTriggerInfo.clear();
   
   //  std::cout << " Time to allocate the TCAs :  Real = " << mystopw->RealTime() 
   //	    << " ; CPU = " << mystopw->CpuTime() << "\n";
@@ -170,8 +168,7 @@ void WCSimRootTrigger::Clear(Option_t *option)
   fCherenkovDigiHits->Delete();
 
   fTriggerType = kTriggerUndefined;
-  fTriggerInfo = 0;
-  fTriggerTime = 0;
+  fTriggerInfo.clear();
 
   IsZombie = false ; // we DO NOT deallocate the memory
 }
@@ -197,12 +194,10 @@ void WCSimRootTrigger::SetHeader(Int_t i,
 //_____________________________________________________________________________
 
 void WCSimRootTrigger::SetTriggerInfo(TriggerType_t trigger_type,
-				      Float_t trigger_info,
-				      Float_t trigger_time)
+				      std::vector<Float_t> trigger_info)
 {
   fTriggerType = trigger_type;
   fTriggerInfo = trigger_info;
-  fTriggerTime = trigger_time;
 }
 
 //_____________________________________________________________________________

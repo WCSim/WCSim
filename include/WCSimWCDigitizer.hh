@@ -21,7 +21,6 @@ public:
   ~WCSimWCDigitizer();
 
   // "////" indicates declerations that are no longer required due to WCSimWCTriggerBase inheritance
-  ////void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
   ////void ReInitialize() { DigiHitMap.clear(); TriggerTimes.clear(); }
   ////int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
 
@@ -39,6 +38,7 @@ public:
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
   void SetConversion(double iconvrate){ ConvRate = iconvrate; }
   ////G4double GetTriggerTime(int i) { return TriggerTimes[i];}
+  void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
 
   static G4double GetLongTime() { return LongTime;}
   static G4double GetEventGateDown() { return eventgatedown;}

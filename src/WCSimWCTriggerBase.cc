@@ -23,8 +23,7 @@
 #define WCSIMWCTRIGGERBASE_VERBOSE
 #endif
 
-const double WCSimWCTriggerBase::offset = 950.0 ; // ns
-const double WCSimWCTriggerBase::pmtgate = 200.0 ; // ns. integration time
+const double WCSimWCTriggerBase::offset = 950.0 ; // ns. apply offset to the digit time
 const double WCSimWCTriggerBase::eventgateup = 950.0 ; // ns. save eventgateup ns after the trigger time
 const double WCSimWCTriggerBase::eventgatedown = -400.0 ; // ns. save eventgateup ns before the trigger time
 const double WCSimWCTriggerBase::LongTime = 100000.0 ; // ns = 0.1ms. event time
@@ -90,7 +89,7 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 
   int ntrig = 0;
   int window_start_time = 0;
-  int window_end_time   = WCSimWCTriggerBase::LongTime - WCSimWCTriggerBase::pmtgate;
+  int window_end_time   = WCSimWCTriggerBase::LongTime - nhitsWindow;
   int window_step_size  = 5; //step the search window along this amount if no trigger is found
   float lasthit;
   std::vector<int> digit_times;
@@ -114,7 +113,7 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
       for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
 	int digit_time = (*WCDCPMT)[i]->GetTime(ip);
 	//hit in trigger window?
-	if(digit_time >= window_start_time && digit_time <= (window_start_time + WCSimWCTriggerBase::pmtgate)) {
+	if(digit_time >= window_start_time && digit_time <= (window_start_time + nhitsWindow)) {
 	  n_digits++;
 	  digit_times.push_back(digit_time);
 	}
@@ -133,14 +132,14 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
       triggertime = digit_times[nhitsThreshold];
       TriggerTimes.push_back(triggertime);
       TriggerTypes.push_back(kTriggerNHits);
-      TriggerInfos.push_back(n_digits);
+      TriggerInfos.push_back(std::vector<Float_t>(1, n_digits));
       triggerfound = true;
     }
 
 #ifdef WCSIMWCTRIGGERBASE_VERBOSE
     if(n_digits)
       G4cout << n_digits << " digits found in 200nsec trigger window ["
-	     << window_start_time << ", " << window_start_time + WCSimWCTriggerBase::pmtgate
+	     << window_start_time << ", " << window_start_time + nhitsWindow
 	     << "]. Threshold is: " << nhitsThreshold << G4endl;
 #endif
 
@@ -157,10 +156,10 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 #ifdef WCSIMWCTRIGGERBASE_VERBOSE
       G4cout << "Last hit found to be at " << lasthit
 	     << ". Changing window_end_time from " << window_end_time
-	     << " to " << lasthit - (WCSimWCTriggerBase::pmtgate - 10)
+	     << " to " << lasthit - (nhitsWindow - 10)
 	     << G4endl;
 #endif
-      window_end_time = lasthit - (WCSimWCTriggerBase::pmtgate - 10);
+      window_end_time = lasthit - (nhitsWindow - 10);
       first_loop = false;
     }
   }

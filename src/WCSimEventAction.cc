@@ -235,10 +235,6 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     //clear old info inside the digitizer
     WCDM->ReInitialize();
 
-    // Figure out what size PMTs we are using in the WC detector.
-    G4float PMTSize = detectorConstructor->GetPMTSize();
-    WCDM->SetPMTSize(PMTSize);
-
     //Digitize the hits
     WCDM->Digitize();
 
@@ -534,8 +530,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	wcsimrootevent->SetMode(jhfNtuple.mode);
       }
       wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
-				     WCTM->GetTriggerInfo(index),
-				     WCTM->GetTriggerTime(index));
+				     WCTM->GetTriggerInfo(index));
     }
   
 
