@@ -24,14 +24,7 @@
 
 //RawSignalHitCollection *collection = new RawSignalHitCollection;
 
-const double WCSimWCDigitizerSK::calibdarknoise = 1.37676;
-
-const double WCSimWCDigitizerSK::offset = 950.0 ; // ns
 const double WCSimWCDigitizerSK::pmtgate = 200.0 ; // ns
-const double WCSimWCDigitizerSK::eventgateup = 950.0 ; // ns
-const double WCSimWCDigitizerSK::eventgatedown = -400.0 ; // ns
-const double WCSimWCDigitizerSK::LongTime = 100000.0 ; // ns
-
 
 WCSimWCDigitizerSK::WCSimWCDigitizerSK(G4String name,
 				       WCSimDetectorConstruction* myDetector,

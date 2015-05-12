@@ -24,14 +24,6 @@
 
 //RawSignalHitCollection *collection = new RawSignalHitCollection;
 
-const double WCSimWCDigitizerBase::calibdarknoise = 1.37676;
-
-const double WCSimWCDigitizerBase::offset = 950.0 ; // ns
-const double WCSimWCDigitizerBase::pmtgate = 200.0 ; // ns
-const double WCSimWCDigitizerBase::eventgateup = 950.0 ; // ns
-const double WCSimWCDigitizerBase::eventgatedown = -400.0 ; // ns
-const double WCSimWCDigitizerBase::LongTime = 100000.0 ; // ns
-
 WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 					   WCSimDetectorConstruction* myDetector,
 					   WCSimWCDAQMessenger* myMessenger)
@@ -77,11 +69,6 @@ void WCSimWCDigitizerBase::Digitize()
   
   StoreDigiCollection(DigiStore);
 
-}
-
-void WCSimWCDigitizerBase::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
-  // In the base class this does nothing
- 
 }
 
 void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, float peSmeared) {

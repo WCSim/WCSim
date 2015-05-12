@@ -45,16 +45,8 @@ private:
       pe = pe+err;
     }
   }
-  
 
-
-  static const double offset; // hit time offset
-  static const double pmtgate; // ns
-  static const double eventgateup; // ns
-  static const double eventgatedown; // ns
-  static const double calibdarknoise; // ns
-  static const double LongTime; // ns
-  
+  static const double pmtgate; // ns  
 };
 
 #endif
