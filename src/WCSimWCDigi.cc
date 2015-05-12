@@ -60,8 +60,8 @@ void WCSimWCDigi::Print()
 
 std::vector<int> WCSimWCDigi::GetDigiCompositionInfo(int gate)
 {
-  vector<int> photon_ids;
-  for(std::vector<std::pair<int,int>>::iterator it = fDigiComp.begin(); it != fDigiComp.end(); ++it) {
+  std::vector<int> photon_ids;
+  for(std::vector< std::pair<int,int> >::iterator it = fDigiComp.begin(); it != fDigiComp.end(); ++it) {
     if(gate == (*it).first)
       photon_ids.push_back((*it).second);
     else {

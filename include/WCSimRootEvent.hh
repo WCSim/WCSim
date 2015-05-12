@@ -130,18 +130,18 @@ private:
   Float_t fQ;
   Float_t fT;
   Int_t fTubeId;
-  vector<int> fPhotonIds;
+  std::vector<int> fPhotonIds;
 
 public:
   WCSimRootCherenkovDigiHit() {}
-  WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid, vector<int> photon_ids);
+  WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid, std::vector<int> photon_ids);
 
   virtual ~WCSimRootCherenkovDigiHit() { }
 
   Float_t     GetQ() const { return fQ;}
   Float_t     GetT() const { return fT;}
   Int_t       GetTubeId() const { return fTubeId;}
-  vector<int> GetPhotonIds() const { return fPhotonIds; }
+  std::vector<int> GetPhotonIds() const { return fPhotonIds; }
 
   ClassDef(WCSimRootCherenkovDigiHit,2)  
 };
@@ -314,7 +314,7 @@ public:
   WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
 						   Float_t t, 
 						   Int_t tubeid,
-						   vector<int> photon_ids);
+						   std::vector<int> photon_ids);
 //  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
 //						  Float_t t, 
 //						  Int_t tubeid,

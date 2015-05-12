@@ -198,21 +198,21 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	if(digit_time >= lowerbound && digit_time <= upperbound) {
 	  //hit in event window
 	  //add it to DigitsCollection
+	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
 	  float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	  G4double digihittime = -triggertime
 	    + WCSimWCTriggerBase::offset
 	    + digit_time
 	    + PMT->HitTimeSmearing(Q);
-	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
 	  //int parentID    = (*WCDCPMT)[i]->GetParentID(ip);
-	  std::vector<std::pair<int,int>> digitized_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo();
-	  std::vector<std::pair<int,int>> triggered_composition;
-	  for(std::vector<std::pair<int,int>>::iterator it = digitized_composition.begin(); it != digitized_composition.end(); ++it) {
-	    if(gate == (*it).first) {
-	      photon_ids.push_back(std::make_pair(itrigger, (*it).second));
+	  std::vector< std::pair<int,int> > digitized_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo();
+	  std::vector< std::pair<int,int> > triggered_composition;
+	  for(std::vector< std::pair<int,int> >::iterator it = digitized_composition.begin(); it != digitized_composition.end(); ++it) {
+	    if((*it).first == ip) {
+	      triggered_composition.push_back(std::make_pair(itrigger, (*it).second));
 	    }
 	    else {
-	      if ((*it).first > gate)
+	      if ((*it).first > ip)
 		break;
 	    }
 	  }//loop over digitized_composition
