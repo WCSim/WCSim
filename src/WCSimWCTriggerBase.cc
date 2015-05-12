@@ -175,7 +175,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 {
   WCSimPMTObject * PMT = myDetector->GetPMTPointer("glassFaceWCPMT"); //for hit time smearing
 
-  //Loop over triggers
+  //Loop over trigger times
   for(int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
     float         triggertime = TriggerTimes[itrigger];
     TriggerType_t triggertype = TriggerTypes[itrigger];
@@ -195,16 +195,27 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       //loop over digits
       for ( G4int ip = 0; ip < (*WCDCPMT)[i]->GetTotalPe(); ip++){
 	int digit_time  = (*WCDCPMT)[i]->GetTime(ip);
-	float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
-	//int parentID    = (*WCDCPMT)[i]->GetParentID(ip);
 	if(digit_time >= lowerbound && digit_time <= upperbound) {
 	  //hit in event window
-	  //add to DigitsCollection
+	  //add it to DigitsCollection
 	  float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	  G4double digihittime = -triggertime
 	    + WCSimWCTriggerBase::offset
 	    + digit_time
 	    + PMT->HitTimeSmearing(Q);
+	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
+	  //int parentID    = (*WCDCPMT)[i]->GetParentID(ip);
+	  std::vector<std::pair<int,int>> digitized_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo();
+	  std::vector<std::pair<int,int>> triggered_composition;
+	  for(std::vector<std::pair<int,int>>::iterator it = digitized_composition.begin(); it != digitized_composition.end(); ++it) {
+	    if(gate == (*it).first) {
+	      photon_ids.push_back(std::make_pair(itrigger, (*it).second));
+	    }
+	    else {
+	      if ((*it).first > gate)
+		break;
+	    }
+	  }//loop over digitized_composition
 	  //add hit
 	  if ( DigiHitMap[tube] == 0) {
 	    WCSimWCDigi* Digi = new WCSimWCDigi();
@@ -214,6 +225,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    Digi->SetPe    (itrigger,peSmeared);
 	    Digi->AddPe    (digihittime);
 	    Digi->SetTime  (itrigger,digihittime);
+	    Digi->AddDigiCompositionInfo(triggered_composition);
 	    DigiHitMap[tube] = DigitsCollection->insert(Digi);
 	  }
 	  else {
@@ -222,6 +234,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetPe  (itrigger, peSmeared);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(itrigger, digihittime);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddPe  (digihittime);
+	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(triggered_composition);
 	  }
 	}//digits within trigger window
       }//loop over Digits
