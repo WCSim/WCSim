@@ -95,12 +95,15 @@ void WCSimWCDAQMessenger::TellTrigger()
   G4cout << "Passing Trigger options to the trigger class instance" << G4endl;
   G4int threshold = StoreSetNHitsThreshold;
   WCSimTrigger->SetNHitsThreshold(threshold);
+  G4cout << "NHits trigger threshold set to " << threshold << G4endl;
   G4int window = StoreSetNHitsWindow;
   WCSimTrigger->SetNHitsWindow(window);
+  G4cout << "NHits trigger window set to " << window << G4endl;
 }
 
 void WCSimWCDAQMessenger::TellDigitizer()
 {
   G4cout << "Passing Digitizer options to the digitizer class instance" << G4endl;
-  WCSimDigitize->SKDigitizerType(StoreDigitizerChoice);  
+  WCSimDigitize->SKDigitizerType(StoreDigitizerChoice);
+  G4cout << "Digitizer choice set to " << StoreDigitizerChoice << G4endl;
 }
