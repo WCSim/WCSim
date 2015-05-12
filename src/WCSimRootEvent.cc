@@ -372,15 +372,17 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,
 //_____________________________________________________________________________
 
 WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q, 
-							       Float_t t, 
-							       Int_t tubeid)
+								 Float_t t, 
+								 Int_t tubeid,
+								 vector<int> photon_ids)
 {
   // Add a new digitized hit to the list of digitized hits
   TClonesArray &cherenkovdigihits = *fCherenkovDigiHits;
   WCSimRootCherenkovDigiHit *cherenkovdigihit = 
     new(cherenkovdigihits[fNcherenkovdigihits++]) WCSimRootCherenkovDigiHit(q, 
-									  t, 
-								       tubeid);
+									    t, 
+									    tubeid,
+									    photon_ids);
  
   return cherenkovdigihit;
 }
@@ -388,14 +390,15 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q,
 
 WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q, 
 						     Float_t t, 
-						     Int_t tubeid)
+						     Int_t tubeid,
+						     vector<int> photon_ids)
 {
   // Create a WCSimRootCherenkovDigiHit object and fill it with stuff
 
   fQ = q;
   fT = t;
   fTubeId = tubeid;
-
+  fPhotonsIds = photon_ids;
 }
 
 // M Fechner, august 2006

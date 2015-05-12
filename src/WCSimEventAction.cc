@@ -803,7 +803,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	    if ( (*WCDC)[k]->HasHitsInGate(index)) {
 	      wcsimrootevent->AddCherenkovDigiHit((*WCDC)[k]->GetPe(index),
 						  (*WCDC)[k]->GetTime(index),
-						  (*WCDC)[k]->GetTubeID());  
+						  (*WCDC)[k]->GetTubeID(),
+						  (*WCDC)[k]->GetDigiCompositionInfo(index));  
 	      sumq_tmp = sumq_tmp + (*WCDC)[k]->GetPe(index);
 	   
 	      countdigihits++;

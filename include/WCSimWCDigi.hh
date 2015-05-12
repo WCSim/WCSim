@@ -94,6 +94,7 @@ public:
   inline G4float GetTime(int gate)   {return time[gate];};
 
   inline std::vector< std::pair<int,int> > GetDigiCompositionInfo(){return fDigiComp;}
+  std::vector<int> GetDigiCompositionInfo(int gate);
 
   inline int NumberOfGates() { return Gates.size();}
   inline int NumberOfSubEvents() { return (Gates.size()-1);}

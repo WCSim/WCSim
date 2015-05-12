@@ -130,18 +130,20 @@ private:
   Float_t fQ;
   Float_t fT;
   Int_t fTubeId;
+  vector<int> fPhotonIds;
 
 public:
   WCSimRootCherenkovDigiHit() {}
-  WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid);
+  WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid, vector<int> photon_ids);
 
   virtual ~WCSimRootCherenkovDigiHit() { }
 
-  Float_t   GetQ() const { return fQ;}
-  Float_t   GetT() const { return fT;}
-  Int_t   GetTubeId() const { return fTubeId;}
+  Float_t     GetQ() const { return fQ;}
+  Float_t     GetT() const { return fT;}
+  Int_t       GetTubeId() const { return fTubeId;}
+  vector<int> GetPhotonIds() const { return fPhotonIds; }
 
-  ClassDef(WCSimRootCherenkovDigiHit,1)  
+  ClassDef(WCSimRootCherenkovDigiHit,2)  
 };
 
 
@@ -268,7 +270,7 @@ public:
 
 
   WCSimRootEventHeader *GetHeader()               {return &fEvtHdr; }
-  WCSimRootPi0      *GetPi0Info()                 {return &fPi0; }
+  WCSimRootPi0       *GetPi0Info()                 {return &fPi0; }
   Int_t               GetMode()               const {return fMode;}
   Int_t               GetVtxvol()             const {return fVtxvol;}
   Float_t             GetVtx(Int_t i=0)            {return (i<3) ? fVtx[i]: 0;}
@@ -287,18 +289,19 @@ public:
   Float_t             GetTriggerTime()        const { return fTriggerTime;}
 
   WCSimRootTrack         *AddTrack(Int_t ipnu, 
-				    Int_t flag, 
-				    Float_t m, 
-				    Float_t p, 
-				    Float_t E, 
-				    Int_t startvol, 
-				    Int_t stopvol, 
-				    Float_t dir[3], 
-				    Float_t pdir[3], 
-				    Float_t stop[3],
-				    Float_t start[3],
-				    Int_t parenttype,
-				   Float_t time,Int_t id);
+				   Int_t flag, 
+				   Float_t m, 
+				   Float_t p, 
+				   Float_t E, 
+				   Int_t startvol, 
+				   Int_t stopvol, 
+				   Float_t dir[3], 
+				   Float_t pdir[3], 
+				   Float_t stop[3],
+				   Float_t start[3],
+				   Int_t parenttype,
+				   Float_t time,
+				   Int_t id);
 
   TClonesArray        *GetTracks() const {return fTracks;}
 
@@ -309,8 +312,9 @@ public:
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
 
   WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
-						  Float_t t, 
-						  Int_t tubeid);
+						   Float_t t, 
+						   Int_t tubeid,
+						   vector<int> photon_ids);
 //  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
 //						  Float_t t, 
 //						  Int_t tubeid,
