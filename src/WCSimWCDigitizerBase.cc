@@ -31,12 +31,6 @@ const double WCSimWCDigitizerBase::pmtgate = 200.0 ; // ns
 const double WCSimWCDigitizerBase::eventgateup = 950.0 ; // ns
 const double WCSimWCDigitizerBase::eventgatedown = -400.0 ; // ns
 const double WCSimWCDigitizerBase::LongTime = 100000.0 ; // ns
-// value in skdetsim
-const int WCSimWCDigitizerBase::GlobalThreshold = 22 ; // # hit PMTs
-//const int WCSimWCDigitizerBase::GlobalThreshold = 12 ; // # hit PMTs
-// try to trigger early to reduce the width.
-//const int WCSimWCDigitizerBase::GlobalThreshold = 10 ; // # hit PMTs
-
 
 WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 					   WCSimDetectorConstruction* myDetector,

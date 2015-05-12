@@ -20,19 +20,12 @@ public:
   WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
   ~WCSimWCDigitizerBase();
   
-  void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
-
   void ReInitialize() { DigiStoreHitMap.clear(); }
-    
-
-
-
   
-public:
   void AddNewDigit(int tube, int gate, float digihittime, float peSmeared);
   virtual void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
-  virtual void Digitize();
+  void Digitize();
 
   //.mac file option setting methods
   void SKDigitizerType(G4String); 
@@ -64,8 +57,6 @@ private:
       pe = pe+err;
     }
   }
-  
-
 
   static const double offset; // hit time offset
   static const double pmtgate; // ns
@@ -73,20 +64,13 @@ private:
   static const double eventgatedown; // ns
   static const double calibdarknoise; // ns
   static const double LongTime; // ns
-  static const int GlobalThreshold; //number of hit PMTs within an <=200ns sliding window that decides the global trigger t0
-  double PMTDarkRate; // kHz
-  double ConvRate; // kHz
 
-  G4int triggerhisto[20000]; // for finding t0
-  G4float RealOffset;  // t0 = offset corrected for trigger start
-  G4float MinTime;  // very first hit time
-  G4float PMTSize;
+protected:
   G4double peSmeared;
 
   WCSimDetectorConstruction* myDetector;
   WCSimWCDAQMessenger* DAQMessenger;
 
-protected:
   WCSimWCDigitsCollection*  DigiStore;
   std::map<int,int> DigiStoreHitMap; // need to check if a hit already exists..
 

@@ -19,29 +19,8 @@ public:
   
   WCSimWCDigitizerSK(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
   ~WCSimWCDigitizerSK();
-  
-  void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
-  
-  
-  //Stuff added for trigger not digitization
-  void ReInitialize() { DigiStoreHitMap.clear(); TriggerTimes.clear();}
-  int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
-  std::vector<G4double> TriggerTimes;
 
-
-  
-public:
-  //void AddNewDigit(int tube, int gate, float digihittime, float peSmeared);
   void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);
-  //void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
-  void Digitize();
-
-  G4double GetTriggerTime(int i) { return TriggerTimes[i];}
-  //static G4double GetLongTime() { return LongTime;}
-  //static G4double GetEventGateDown() { return eventgatedown;}
-  //static G4double GetEventGateUp() { return eventgateup;}
-  
-  void temporaryTrig();
 
 private:
   static void Threshold(double& pe,int& iflag){
@@ -75,25 +54,7 @@ private:
   static const double eventgatedown; // ns
   static const double calibdarknoise; // ns
   static const double LongTime; // ns
-  static const int GlobalThreshold; //number of hit PMTs within an <=200ns sliding window that decides the global trigger t0
-  double PMTDarkRate; // kHz
-  double ConvRate; // kHz
-
-  G4int triggerhisto[20000]; // for finding t0
-  G4float RealOffset;  // t0 = offset corrected for trigger start
-  G4float MinTime;  // very first hit time
-  G4float PMTSize;
-  G4double peSmeared;
-
-  WCSimDetectorConstruction* myDetector;
-
-  //temporary
-  WCSimWCDigitsCollection*  DigitsCollection;
-  std::map<int,int> DigiHitMap; // need to check if a hit already exists..
-
-  //WCSimWCDigitsCollection*  DigiStore;
-  //std::map<int,int> DigiStoreHitMap; // need to check if a hit already exists..
-
+  
 };
 
 #endif
