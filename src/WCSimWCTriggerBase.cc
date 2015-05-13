@@ -97,6 +97,11 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 
 #ifdef WCSIMWCTRIGGERBASE_VERBOSE
   G4cout << "WCSimWCTriggerBase::AlgNHits. Number of entries in input digit collection: " << WCDCPMT->entries() << G4endl;
+  int temp_total_pe = 0;
+  for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
+    temp_total_pe += (*WCDCPMT)[i]->GetTotalPe();
+  }
+  G4cout << "WCSimWCTriggerBase::AlgNHits. " << temp_total_pe << " total p.e. input" << G4endl;
 #endif
 
   // the upper time limit is set to the final possible full trigger window

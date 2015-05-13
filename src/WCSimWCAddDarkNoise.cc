@@ -9,6 +9,7 @@
 #include "G4ios.hh"
 #include "G4RotationMatrix.hh"
 #include "G4ThreeVector.hh"
+#include "G4LogicalVolumeStore.hh"
 
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPmtInfo.hh"
@@ -19,6 +20,10 @@
 // for memset
 #include <cstring>
 #include <iostream>
+
+#ifndef WCSIMWCADDDARKNOISE_VERBOSE
+#define WCSIMWCADDDARKNOISE_VERBOSE
+#endif
 
 WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,
                                    WCSimDetectorConstruction* myDetector)
@@ -58,8 +63,6 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
     }
   }
 }
-
-#include "G4LogicalVolumeStore.hh"
 
 void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPMT, float num1 ,float num2) {
     // Introduces dark noise into each PMT during an event window
@@ -134,6 +137,9 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 
     //poisson distributed noise, number of noise hits to add
     int nnoispmt = CLHEP::RandPoisson::shoot(ave);
+#ifdef WCSIMWCADDDARKNOISE_VERBOSE
+    G4cout << "WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Going to add " << nnoispmt << " dark noise hits in time window [" << num1 << "," << num2 << "]" << G4endl;
+#endif
     for( int i = 0; i < nnoispmt; i++ )
       {
 	//time of noise hit to be generated
@@ -185,7 +191,10 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	    PMTindex[noise_pmt]++;
 	    //	    list[ noise_pmt ] = WCHCPMT->entries();
 	    number_entries ++;
-	    list[ noise_pmt ] = number_entries; // Add this PMT to the end of the list                                                                                         
+	    list[ noise_pmt ] = number_entries; // Add this PMT to the end of the list
+#ifdef WCSIMWCADDDARKNOISE_VERBOSE
+	    G4cout << "WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Added NEW DIGI with dark noise hit at time " << current_time << " to PMT " << noise_pmt << G4endl;
+#endif
 	  }
 	else{
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->AddPe(current_time);
@@ -193,7 +202,9 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPe(PMTindex[noise_pmt],pe);
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTime(PMTindex[noise_pmt],current_time);
 	  PMTindex[noise_pmt]++;
-	  
+#ifdef WCSIMWCADDDARKNOISE_VERBOSE
+	  G4cout << "WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Added to exisiting digi a dark noise hit at time " << current_time << " to PMT " << noise_pmt << G4endl;	  
+#endif
 	}
 		
       }

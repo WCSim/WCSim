@@ -19,6 +19,10 @@
 #include <cstring>
 #include <iostream>
 
+#ifndef WCSIMWCTRIGGERBASE_VERBOSE
+#define WCSIMWCTRIGGERBASE_VERBOSE
+#endif
+
 WCSimWCTriggerNHits2::WCSimWCTriggerNHits2(G4String name,
 					 WCSimDetectorConstruction* myDetector,
 					 WCSimWCDAQMessenger* myMessenger)
@@ -31,11 +35,17 @@ WCSimWCTriggerNHits2::~WCSimWCTriggerNHits2(){
 
 
 void WCSimWCTriggerNHits2::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
+  //This calls 2 trigger algorithms; the second algorithm is called on hits that failed the first algorithm
+  //(for a second trigger working on hits that passed a pretrigger, FillDigitsCollection() needs to have a new option)
+
+  //Make a copy of the input DigitsCollection, so we can remove hits from the copy
+  WCSimWCDigitsCollection* WCDCPMTCopy = new WCSimWCDigitsCollection(*WCDCPMT);
   //Apply an NHits trigger
   bool remove_hits = true;
-  AlgNHits(WCDCPMT, remove_hits);
+  AlgNHits(WCDCPMTCopy, remove_hits);
+  //Apply an NHits trigger with a lower threshold & different saved trigger type
   remove_hits = false;
-  AlgNHitsTest(WCDCPMT, remove_hits);
+  AlgNHitsTest(WCDCPMTCopy, remove_hits);
 }
 
 void WCSimWCTriggerNHits2::AlgNHitsTest(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits) {
@@ -53,7 +63,12 @@ void WCSimWCTriggerNHits2::AlgNHitsTest(WCSimWCDigitsCollection* WCDCPMT, bool r
   bool first_loop = true;
 
 #ifdef WCSIMWCTRIGGERBASE_VERBOSE
-  G4cout << "WCSimWCTriggerBase::AlgNHits. Number of entries in input digit collection: " << WCDCPMT->entries() << G4endl;
+  G4cout << "WCSimWCTriggerBase::AlgNHitsTest. Number of entries in input digit collection: " << WCDCPMT->entries() << G4endl;
+  int temp_total_pe = 0;
+  for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
+    temp_total_pe += (*WCDCPMT)[i]->GetTotalPe();
+  }
+  G4cout << "WCSimWCTriggerBase::AlgNHitsTest. " << temp_total_pe << " total p.e. input" << G4endl;
 #endif
 
   // the upper time limit is set to the final possible full trigger window
@@ -86,7 +101,7 @@ void WCSimWCTriggerNHits2::AlgNHitsTest(WCSimWCDigitsCollection* WCDCPMT, bool r
       ntrig++;
       //The trigger time is the time of the first hit above threshold
       std::sort(digit_times.begin(), digit_times.end());
-      triggertime = digit_times[nhitsThreshold];
+      triggertime = digit_times[nhitsThreshold / 2];
       TriggerTimes.push_back(triggertime);
       TriggerTypes.push_back(kTriggerNHitsTest);
       TriggerInfos.push_back(std::vector<Float_t>(1, n_digits));
@@ -97,7 +112,7 @@ void WCSimWCTriggerNHits2::AlgNHitsTest(WCSimWCDigitsCollection* WCDCPMT, bool r
     if(n_digits)
       G4cout << n_digits << " digits found in 200nsec trigger window ["
 	     << window_start_time << ", " << window_start_time + nhitsWindow
-	     << "]. Threshold is: " << nhitsThreshold << G4endl;
+	     << "]. Threshold is: " << nhitsThreshold / 2 << G4endl;
 #endif
 
     //move onto the next go through the timing loop
@@ -122,7 +137,7 @@ void WCSimWCTriggerNHits2::AlgNHitsTest(WCSimWCDigitsCollection* WCDCPMT, bool r
   }
   
   //call FillDigitsCollection() if at least one trigger was issued
-  G4cout << "Found " << ntrig << " NHit triggers" << G4endl;
+  G4cout << "Found " << ntrig << " NHitTest triggers" << G4endl;
   if(ntrig)
     FillDigitsCollection(WCDCPMT, remove_hits);
 }
