@@ -138,6 +138,9 @@ public:
 
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
+  G4String GetIDCollectionName(){return WCIDCollectionName;}
+
+ 
 private:
 
   // Tuning parameters
@@ -237,9 +240,16 @@ private:
   G4double WCLength;
 
   G4double WCPosition;
+  
+  // Hit collection name parameters
+  G4String WCDetectorName;
+  G4String WCIDCollectionName;
+  G4String WCODCollectionName;
+
 
   // WC PMT parameters
   G4String WCPMTName;
+  G4String WCPMTName_outer;
   typedef std::pair<G4String, G4String> PMTKey_t;
   typedef std::map<PMTKey_t, G4LogicalVolume*> PMTMap_t;
 
@@ -247,7 +257,7 @@ private:
 
   // WC geometry parameters
 
-  G4double WCPMTRadius;
+   G4double WCPMTRadius;
   G4double WCPMTExposeHeight;
   G4double WCBarrelPMTOffset;
 

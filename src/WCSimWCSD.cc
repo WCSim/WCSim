@@ -5,6 +5,7 @@
 #include "G4Step.hh"
 #include "G4ThreeVector.hh"
 #include "G4SDManager.hh"
+#include "G4RunManager.hh"
 #include "Randomize.hh"
 #include "G4ios.hh"
 
@@ -34,34 +35,37 @@ WCSimWCSD::~WCSimWCSD() {}
 
 void WCSimWCSD::Initialize(G4HCofThisEvent* HCE)
 {
-  // Make a new hits collection.  With the name we set in the constructor
-  hitsCollection = new WCSimWCHitsCollection
-    (SensitiveDetectorName,collectionName[0]); 
-  
+  PMTHitMap.clear();
+
   // This is a trick.  We only want to do this once.  When the program
   // starts HCID will equal -1.  Then it will be set to the pointer to
   // this collection.
+
+  hitsCollection = new WCSimWCHitsCollection
+    (SensitiveDetectorName,collectionName[0]); 
   
   // Get the Id of the "0th" collection
-  if (HCID<0)
+  if (HCID<0){
     HCID =  GetCollectionID(0); 
-  
+  }  
   // Add it to the Hit collection of this event.
   HCE->AddHitsCollection( HCID, hitsCollection );  
 
   // Initilize the Hit map to all tubes not hit.
   PMTHitMap.clear();
-
-  // Trick to access the static maxPE variable.  This will go away with the 
+     // Trick to access the static maxPE variable.  This will go away with the 
   // variable.
 
   WCSimWCHit* newHit = new WCSimWCHit();
   newHit->SetMaxPe(0);
   delete newHit;
+
+  StartofFile = 0;
 }
 
 G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-{
+{ 
+     
   G4StepPoint*       preStepPoint = aStep->GetPreStepPoint();
   G4TouchableHandle  theTouchable = preStepPoint->GetTouchableHandle();
   G4VPhysicalVolume* thePhysical  = theTouchable->GetVolume();
@@ -165,9 +169,13 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      theta_angle = acos(fabs(local_z)/sqrt(pow(local_x,2)+pow(local_y,2)+pow(local_z,2)))/3.1415926*180.;
      effectiveAngularEfficiency = fdet->GetPMTCollectionEfficiency(theta_angle, collectionName[0]);
      if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
-
+       G4SDManager* SDman = G4SDManager::GetSDMpointer();
+       G4RunManager* Runman = G4RunManager::GetRunManager();
+       G4int collectionID = SDman->GetCollectionID(volumeName);
+       const G4Event* currentEvent = Runman->GetCurrentEvent();
+       G4HCofThisEvent* HCofEvent = currentEvent->GetHCofThisEvent();
+       hitsCollection = (WCSimWCHitsCollection*)(HCofEvent->GetHC(collectionID));
       
-
        // If this tube hasn't been hit add it to the collection
        if (PMTHitMap[replicaNumber] == 0)
 	 {
@@ -185,7 +193,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   
 	   // Set the hitMap value to the collection hit number
 	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
-	   
+
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
 	   
@@ -199,12 +207,12 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
        }
      }
   }
-
   return true;
 }
 
 void WCSimWCSD::EndOfEvent(G4HCofThisEvent*)
-{
+{ PMTHitMap.clear();  
+  StartofFile = 0;
   if (verboseLevel>0) 
   { 
     G4int numHits = hitsCollection->entries();

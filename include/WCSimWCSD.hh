@@ -25,6 +25,7 @@ class WCSimWCSD : public G4VSensitiveDetector
   WCSimDetectorConstruction* fdet;
   WCSimWCHitsCollection* hitsCollection;
   std::map<int,int> PMTHitMap;   // Whether a PMT was hit already
+  int StartofFile;
 
 };
 

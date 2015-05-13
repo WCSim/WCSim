@@ -124,21 +124,21 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
                        0.0*deg,90.0*deg);
   
   G4SubtractionSolid* solidGlassFaceWCPMT =
-      new G4SubtractionSolid(    "glassFaceWCPMT",
+      new G4SubtractionSolid(    CollectionName,
                                  tmpGlassFaceWCPMT,
                                  solidCutOffTubs); 
 
   G4LogicalVolume *logicGlassFaceWCPMT =
     new G4LogicalVolume(    solidGlassFaceWCPMT,
                             G4Material::GetMaterial("Glass"),
-                            "glassFaceWCPMT",
+                            CollectionName,
                             0,0,0);
 
   G4VPhysicalVolume* physiGlassFaceWCPMT =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, -1.0*PMTOffset),
                         logicGlassFaceWCPMT,
-                        "glassFaceWCPMT",
+                        CollectionName,
                         logicWCPMT,
                         false,
                         0,
@@ -146,15 +146,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
-
-  if (!aWCPMT)
-  {
+  
+  //  if (!aWCPMT)
+  //  {
     G4SDManager* SDman = G4SDManager::GetSDMpointer();
     G4String SDName = "/WCSim/";
     SDName += CollectionName;
     aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
     SDman->AddNewDetector( aWCPMT );
-  }
+    // }
   logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
 
   PMTLogicalVolumes[key] = logicWCPMT;
