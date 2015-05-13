@@ -52,7 +52,7 @@ void WCSimWCDigi::Print()
 {
   G4cout << "TubeID: " << tubeID 
 	 <<"Number of Gates " << NumberOfGates();
-  for (int i = 0 ; i < pe.size() ; i++) {
+  for (unsigned int i = 0 ; i < pe.size() ; i++) {
     G4cout  << "Gate = " << i 
 	    << " PE: "    << pe[i]
 	    << " Time:"   << time[i] << G4endl;
@@ -66,8 +66,7 @@ std::vector<int> WCSimWCDigi::GetDigiCompositionInfo(int gate)
     if(gate == (*it).first)
       photon_ids.push_back((*it).second);
     else if((*it).first > gate)
-	break;
-    }
+      break;
   }
   return photon_ids;
 }
@@ -82,17 +81,17 @@ void WCSimWCDigi::RemoveDigitizedGate(G4int gate)
   //time map and time_float vector
   float gatetime = time[gate];
   time.erase(gate);
-  std::vector<int>::iterator it = std::find(time_float.begin(), time_float.end(), time);
+  std::vector<G4float>::iterator it = std::find(time_float.begin(), time_float.end(), gatetime);
   if(it != time_float.end())
     time_float.erase(it);
   else
-    G4cout << "Could not erase time " << time << " from WCSimWCDigi member time_float" << G4endl;
+    G4cout << "Could not erase time " << gatetime << " from WCSimWCDigi member time_float" << G4endl;
   //digit composition vector
   for(std::vector< std::pair<int,int> >::iterator it = fDigiComp.begin(); it != fDigiComp.end(); ++it) {
     if(gate == (*it).first)
       fDigiComp.erase(it);
     else if((*it).first > gate)
-	break;
+      break;
   }
   //number of entries counter
   totalPe--;

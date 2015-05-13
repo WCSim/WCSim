@@ -48,9 +48,12 @@ private:
   G4ThreeVector    pos;
   G4LogicalVolume* pLogV;
 
-  //lists (meaning vector/map/set) of information for each hit/digit created on the PMT
+  //'Gates' is a digit counter or specifies subevent
+  //'TriggerTimes' specifies e.g. the subevent trigger time
   std::set<int> Gates; // list of gates that were hit  
   std::vector<float> TriggerTimes;
+
+  //lists (meaning vector/map) of information for each hit/digit created on the PMT
   std::map<int,float> pe;   
   std::map<int,float> time; 
   std::vector<G4float>  time_float; //same information as "time" but stored in a vector for quick time sorting

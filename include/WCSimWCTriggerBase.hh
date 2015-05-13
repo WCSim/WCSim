@@ -35,7 +35,7 @@ public:
   std::vector<Float_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
   void SetNHitsThreshold(G4int threshold) { nhitsThreshold = threshold; }
   void SetNHitsWindow(G4int window) { nhitsWindow = window; }
-  virtual void SetPMTSize(G4float inputSize) {}; //function used in old class (WCSimWCDigitizer), called in WCSimEventAction
+  virtual void SetPMTSize(G4float /*inputSize*/) {}; //function used in old class (WCSimWCDigitizer), called in WCSimEventAction
 
 protected:
 
@@ -53,7 +53,7 @@ protected:
   WCSimWCDAQMessenger*       DAQMessenger;
   WCSimDetectorConstruction* myDetector;
 
-private:
+  //private:
 
   G4int nhitsThreshold;
   G4int nhitsWindow;
