@@ -9,9 +9,13 @@ typedef enum ETriggerType {
   kTriggerNHitsSKDETSIM
 } TriggerType_t;
 
-static std::string EnumAsString(TriggerType_t t)
+class WCSimEnumerations
 {
-  switch(t) {
+public:
+
+  static std::string EnumAsString(TriggerType_t t)
+  {
+    switch(t) {
     case (kTriggerNHits) :
       return "NHits";
       break;
@@ -21,8 +25,10 @@ static std::string EnumAsString(TriggerType_t t)
     default:
       return "";
       break;
+    }
+    return "";
   }
-  return "";
-}
+
+};
 
 #endif
