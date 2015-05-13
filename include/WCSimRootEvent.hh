@@ -70,7 +70,7 @@ public:
   Float_t   GetPdir(Int_t i=0) {return (i<3) ? fPdir[i] : 0;}
   Float_t   GetStop(Int_t i=0) {return (i<3) ? fStop[i] : 0;}
   Float_t   GetStart(Int_t i=0) {return (i<3) ? fStart[i] : 0;}
-  Int_t     GetParenttype(Int_t i=0) {return fParenttype;}
+  Int_t     GetParenttype(/*Int_t i=0*/) {return fParenttype;}
   Float_t   GetTime() { return fTime;}
   Int_t     GetId(){return fId;}
 

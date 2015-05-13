@@ -216,7 +216,7 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
     WCSimWCPMT* WCPMT = (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT");
     // Only add noise to triggered time windows!
    
-    for( int i = 0; i < TriggerTimes.size(); i++ )
+    for(unsigned int i = 0; i < TriggerTimes.size(); i++ )
     {
         current_time = TriggerTimes[i]+eventgatedown;
 
@@ -424,7 +424,7 @@ void WCSimWCDigitizer::FindNumberOfGates()
 void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 {
 
-  G4float timingConstant = 0.0;
+  //G4float timingConstant = 0.0;
   WCSimPMTObject * PMT;
   PMT = myDetector->GetPMTPointer("glassFaceWCPMT");
  

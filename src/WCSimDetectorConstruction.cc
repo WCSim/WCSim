@@ -106,7 +106,7 @@ void WCSimDetectorConstruction::UpdateGeometry()
 
 
 WCSimDetectorConstruction::~WCSimDetectorConstruction(){
-  for (int i=0;i<fpmts.size();i++){
+  for (unsigned int i=0;i<fpmts.size();i++){
     delete fpmts.at(i);
   }
   fpmts.clear();

@@ -78,7 +78,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
       PMTindex[l] =0;
     }
     int num_hit_b4=0;
-    int num_hit_after=0;
+    //int num_hit_after=0;
     //    std::cout<<"entries before "<<WCHCPMT->entries()<<"\n";
     //Set up proper indices for tubes which have already been hit
     for (int g=0; g<number_entries; g++){
@@ -120,8 +120,8 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     double pe = 0.0;
     //Calculate the time window size
     double windowsize = num2 - num1;
-    //    double poisson_mean = 1 / (this->PMTDarkRate * calibdarknoise * 1E-6 * number_pmts);
-    double poisson_mean = 1 / (this->PMTDarkRate * this->ConvRate * 1E-6 * number_pmts);
+    //     double poisson_mean = 1 / (this->PMTDarkRate * calibdarknoise * 1E-6 * number_pmts);
+    //double poisson_mean = 1 / (this->PMTDarkRate * this->ConvRate * 1E-6 * number_pmts);
     G4DigiManager* DMman = G4DigiManager::GetDMpointer();
     WCSimWCPMT* WCPMT = (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT");
     // Only add noise to triggered time windows!

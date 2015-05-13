@@ -96,7 +96,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       // (efficiency-1)*100% to
       // match K2K 1KT data  : maybe due to PMT curvature ?
 
-      G4double efficiency = 0.985; // with skrn1pe (AP tuning) & 30% QE increase in stacking action
+      //G4double efficiency = 0.985; // with skrn1pe (AP tuning) & 30% QE increase in stacking action
 
       // Get the information from the hit
       G4int   tube         = (*WCHC)[i]->GetTubeID();

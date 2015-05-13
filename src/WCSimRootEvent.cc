@@ -144,7 +144,7 @@ WCSimRootTrigger::~WCSimRootTrigger()
 
 //_____________________________________________________________________________
 
-void WCSimRootTrigger::Clear(Option_t *option)
+void WCSimRootTrigger::Clear(Option_t */*option*/)
 {
   // To be filled in 
   // Filled in, by MF, 31/08/06  -> Keep all the alloc'ed memory but reset all
@@ -175,7 +175,7 @@ void WCSimRootTrigger::Clear(Option_t *option)
 
 //_____________________________________________________________________________
 
-void WCSimRootTrigger::Reset(Option_t *option)
+void WCSimRootTrigger::Reset(Option_t */*option*/)
 {
 // Static function to reset all static objects for this event
 // To be filled in
@@ -324,22 +324,22 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vecto
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
 
-  for (int i =0;i<truetime.size();i++)
+  for (unsigned int i =0;i<truetime.size();i++)
   {
     fCherenkovHitCounter++;
 
-  WCSimRootCherenkovHitTime *cherenkovhittime = 
-    new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i]);
+    WCSimRootCherenkovHitTime *cherenkovhittime = 
+      new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i]);
   }
 
   Int_t WC_Index[2];
-WC_Index[0] = fNcherenkovhittimes-truetime.size(); //fCherenkovHitCounter-truetime.size();
+  WC_Index[0] = fNcherenkovhittimes-truetime.size(); //fCherenkovHitCounter-truetime.size();
   WC_Index[1] = truetime.size();
 
   TClonesArray &cherenkovhits = *fCherenkovHits;
  
-    WCSimRootCherenkovHit *cherenkovhit
-      = new(cherenkovhits[fNcherenkovhits++]) WCSimRootCherenkovHit(tubeID,
+  WCSimRootCherenkovHit *cherenkovhit
+    = new(cherenkovhits[fNcherenkovhits++]) WCSimRootCherenkovHit(tubeID,
 								  WC_Index);
 
   return cherenkovhit;
@@ -429,12 +429,12 @@ WCSimRootEvent::~WCSimRootEvent()
   //Clear("");
 }
 
-void WCSimRootEvent::Clear(Option_t* o)
+void WCSimRootEvent::Clear(Option_t* /*o*/)
 {
   //nothing for now
 }
 
-void WCSimRootEvent::Reset(Option_t* o)
+void WCSimRootEvent::Reset(Option_t* /*o*/)
 {
   //nothing for now
 }
