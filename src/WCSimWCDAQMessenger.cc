@@ -52,11 +52,13 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction * eventaction):WCSimEv
   NHitsTriggerThreshold->SetGuidance("Set the NHits trigger threshold");
   NHitsTriggerThreshold->SetParameterName("NHitsThreshold",true);
   NHitsTriggerThreshold->SetDefaultValue(25);
+  StoreSetNHitsThreshold = 25;
 
   NHitsTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNHits/Window", this);
   NHitsTriggerWindow->SetGuidance("Set the NHits trigger window (in ns)");
   NHitsTriggerWindow->SetParameterName("NHitsWindow",true);
   NHitsTriggerWindow->SetDefaultValue(200);
+  StoreSetNHitsWindow = 200;
 }
 
 WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
@@ -95,11 +97,9 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 void WCSimWCDAQMessenger::TellTrigger()
 {
   G4cout << "Passing Trigger options to the trigger class instance" << G4endl;
-  G4int threshold = StoreSetNHitsThreshold;
-  WCSimTrigger->SetNHitsThreshold(threshold);
+  WCSimTrigger->SetNHitsThreshold(StoreSetNHitsThreshold);
   G4cout << "NHits trigger threshold set to " << threshold << G4endl;
-  G4int window = StoreSetNHitsWindow;
-  WCSimTrigger->SetNHitsWindow(window);
+  WCSimTrigger->SetNHitsWindow(StoreSetNHitsWindow);
   G4cout << "NHits trigger window set to " << window << G4endl;
 }
 
