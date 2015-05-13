@@ -111,7 +111,7 @@ void WCSimEventAction::CreateTriggerInstance()
 	WCSimWCTriggerNHits* WCTM = new WCSimWCTriggerNHits("WCReadout", detectorConstructor, DAQMessenger);
 	DMman->AddNewModule(WCTM);
       }
-      if(TriggerChoice == "NHits") {
+      else if(TriggerChoice == "NHits2") {
 	WCSimWCTriggerNHits2* WCTM = new WCSimWCTriggerNHits2("WCReadout", detectorConstructor, DAQMessenger);
 	DMman->AddNewModule(WCTM);
       }
