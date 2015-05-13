@@ -1,6 +1,7 @@
 #include "WCSimWCDigi.hh"
 #include "G4RotationMatrix.hh"
 
+
 G4Allocator<WCSimWCDigi> WCSimWCDigiAllocator;
 
 WCSimWCDigi::WCSimWCDigi()
@@ -64,10 +65,35 @@ std::vector<int> WCSimWCDigi::GetDigiCompositionInfo(int gate)
   for(std::vector< std::pair<int,int> >::iterator it = fDigiComp.begin(); it != fDigiComp.end(); ++it) {
     if(gate == (*it).first)
       photon_ids.push_back((*it).second);
-    else {
-      if ((*it).first > gate)
+    else if((*it).first > gate)
 	break;
     }
   }
   return photon_ids;
+}
+
+void WCSimWCDigi::RemoveDigitizedGate(G4int gate)
+{
+  //this removes an element from the maps, vectors, and sets, and counters that were filled by WCSimWCDigitizerBase::AddNewDigit()
+  //Gates and TriggerTimes are NOT set
+
+  //pe map
+  pe.erase(gate);
+  //time map and time_float vector
+  float gatetime = time[gate];
+  time.erase(gate);
+  std::vector<int>::iterator it = std::find(time_float.begin(), time_float.end(), time);
+  if(it != time_float.end())
+    time_float.erase(it);
+  else
+    G4cout << "Could not erase time " << time << " from WCSimWCDigi member time_float" << G4endl;
+  //digit composition vector
+  for(std::vector< std::pair<int,int> >::iterator it = fDigiComp.begin(); it != fDigiComp.end(); ++it) {
+    if(gate == (*it).first)
+      fDigiComp.erase(it);
+    else if((*it).first > gate)
+	break;
+  }
+  //number of entries counter
+  totalPe--;
 }

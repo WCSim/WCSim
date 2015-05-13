@@ -119,7 +119,7 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 	}
 	//G4cout << digit_time << G4endl;
 	//get the time of the last hit (to make the loop shorter)
-	if(first_loop && digit_time > lasthit)
+	if(first_loop && (digit_time > lasthit))
 	  lasthit = digit_time;
       }//loop over Digits
     }//loop over PMTs
@@ -220,23 +220,25 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  //add hit
 	  if ( DigiHitMap[tube] == 0) {
 	    WCSimWCDigi* Digi = new WCSimWCDigi();
-	    Digi->AddParentID(1); //parentID
 	    Digi->SetTubeID(tube);
+	    //Digi->AddParentID(parentID);
 	    Digi->AddGate  (itrigger,triggertime);
+	    Digi->SetTime  (itrigger,digihittime);
 	    Digi->SetPe    (itrigger,peSmeared);
 	    Digi->AddPe    (digihittime);
-	    Digi->SetTime  (itrigger,digihittime);
 	    Digi->AddDigiCompositionInfo(triggered_composition);
 	    DigiHitMap[tube] = DigitsCollection->insert(Digi);
 	  }
 	  else {
 	    //(*DigitsCollection)[DigiHitMap[tube]-1]->AddParentID(parentID);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddGate(itrigger, triggertime);
-	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetPe  (itrigger, peSmeared);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(itrigger, digihittime);
+	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetPe  (itrigger, peSmeared);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddPe  (digihittime);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(triggered_composition);
 	  }
+	  if(remove_hits)
+	    (*WCDCPMT)[i]->RemoveDigitizedGate(ip);
 	}//digits within trigger window
       }//loop over Digits
     }//loop over PMTs

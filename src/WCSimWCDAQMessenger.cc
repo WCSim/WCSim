@@ -33,11 +33,13 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction * eventaction):WCSimEv
   TriggerChoice->SetGuidance("Set the Trigger type");
   TriggerChoice->SetGuidance("Available choices are:\n"
 			     "NHits\n"
+			     "NHits2\n"
 			     "SKI_SKDETSIM (combined trigger & digitization (therefore ignores /DAQ/Digitization); buggy) \n"
 			     );
   TriggerChoice->SetParameterName("Trigger", false);
   TriggerChoice->SetCandidates(
 			       "NHits "
+			       "NHits2 "
 			       "SKI_SKDETSIM "
 			       );
   TriggerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);

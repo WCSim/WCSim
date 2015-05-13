@@ -5,10 +5,9 @@
 #include "WCSimWCHit.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCDigitizer.hh"
-#include "WCSimWCDigitizerBase.hh"
 #include "WCSimWCDigitizerSK.hh"
-#include "WCSimWCTriggerBase.hh"
 #include "WCSimWCTriggerNHits.hh"
+#include "WCSimWCTriggerNHits2.hh"
 #include "WCSimWCAddDarkNoise.hh"
 #include "WCSimWCPMT.hh"
 #include "WCSimDetectorConstruction.hh"
@@ -110,6 +109,10 @@ void WCSimEventAction::CreateTriggerInstance()
       //create your choice of trigger module
       if(TriggerChoice == "NHits") {
 	WCSimWCTriggerNHits* WCTM = new WCSimWCTriggerNHits("WCReadout", detectorConstructor, DAQMessenger);
+	DMman->AddNewModule(WCTM);
+      }
+      if(TriggerChoice == "NHits") {
+	WCSimWCTriggerNHits2* WCTM = new WCSimWCTriggerNHits2("WCReadout", detectorConstructor, DAQMessenger);
 	DMman->AddNewModule(WCTM);
       }
     }
