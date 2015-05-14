@@ -13,7 +13,6 @@ public:
   
 private:
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
-  void AlgNHitsTest(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits); //copy of AlgNHits, with a purposefully lower trigger threshold and different trigger type
 
 };
 

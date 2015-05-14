@@ -29,7 +29,6 @@ WCSimWCTriggerNHits::WCSimWCTriggerNHits(G4String name,
 WCSimWCTriggerNHits::~WCSimWCTriggerNHits(){
 }
 
-
 void WCSimWCTriggerNHits::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   //Apply an NHits trigger
   bool remove_hits = false;

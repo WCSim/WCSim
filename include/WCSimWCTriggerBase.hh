@@ -41,7 +41,7 @@ protected:
 
   virtual void DoTheWork(WCSimWCDigitsCollection* WCDCPMT) = 0; //this should call the trigger algorithms, and handle any temporary DigitsCollection's
   //these are the algorithms that perform triggering
-  void AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits);
+  void AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
 
   WCSimWCDigitsCollection*   DigitsCollection;
   std::map<int,int>          DigiHitMap; // need to check if a hit already exists..
@@ -53,13 +53,13 @@ protected:
   WCSimWCDAQMessenger*       DAQMessenger;
   WCSimDetectorConstruction* myDetector;
 
-  //private:
+private:
 
   G4int nhitsThreshold;
   G4int nhitsWindow;
 
   //takes all trigger times, then loops over all Digits & fills the output DigitsCollection
-  void FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits);
+  void FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType);
   
   static const double offset; // hit time offset
   static const double eventgateup; // ns

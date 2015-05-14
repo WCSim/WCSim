@@ -81,8 +81,16 @@ void WCSimWCTriggerBase::Digitize()
   StoreDigiCollection(DigitsCollection);
 }
 
-void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits) {
+void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test) {
 
+  //if test is true, we run the algorithm with 1/2 the threshold, and kTriggerNHitsTest
+  //for testing multiple trigger algorithms at once
+  int this_nhitsThreshold = ;
+  TriggerType_t this_triggerType = kTriggerNHits;
+  if(test) {
+    this_nhitsThreshold /= 2
+    this_triggerType = kTriggerNHitsTest;
+  }
 
   //Now we will try to find triggers
   //loop over PMTs, and Digits in each PMT.  If nhits > Threshhold in a time window, then we have a trigger
@@ -130,13 +138,13 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
     }//loop over PMTs
 
     //if over threshold, issue trigger
-    if(n_digits > nhitsThreshold) {
+    if(n_digits > this_nhitsThreshold) {
       ntrig++;
       //The trigger time is the time of the first hit above threshold
       std::sort(digit_times.begin(), digit_times.end());
-      triggertime = digit_times[nhitsThreshold];
+      triggertime = digit_times[this_nhitsThreshold];
       TriggerTimes.push_back(triggertime);
-      TriggerTypes.push_back(kTriggerNHits);
+      TriggerTypes.push_back(this_triggerType);
       TriggerInfos.push_back(std::vector<Float_t>(1, n_digits));
       triggerfound = true;
     }
@@ -145,7 +153,7 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
     if(n_digits)
       G4cout << n_digits << " digits found in 200nsec trigger window ["
 	     << window_start_time << ", " << window_start_time + nhitsWindow
-	     << "]. Threshold is: " << nhitsThreshold << G4endl;
+	     << "]. Threshold is: " << this_nhitsThreshold << G4endl;
 #endif
 
     //move onto the next go through the timing loop
@@ -172,17 +180,20 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
   //call FillDigitsCollection() if at least one trigger was issued
   G4cout << "Found " << ntrig << " NHit triggers" << G4endl;
   if(ntrig)
-    FillDigitsCollection(WCDCPMT, remove_hits);
+    FillDigitsCollection(WCDCPMT, remove_hits, this_triggerType);
 }
 
-void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits)
+void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType)
 {
   WCSimPMTObject * PMT = myDetector->GetPMTPointer("glassFaceWCPMT"); //for hit time smearing
 
   //Loop over trigger times
   for(unsigned int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
-    float         triggertime = TriggerTimes[itrigger];
     TriggerType_t triggertype = TriggerTypes[itrigger];
+    //check if we've already saved this trigger
+    if(triggertype != save_triggerType)
+      continue;
+    float         triggertime = TriggerTimes[itrigger];
     std::vector<Float_t> triggerinfo = TriggerInfos[itrigger];
     float lowerbound = triggertime + WCSimWCTriggerBase::eventgatedown;
     float upperbound = triggertime + WCSimWCTriggerBase::eventgateup;
