@@ -11,7 +11,7 @@
 #include "Randomize.hh"
 #include <map>
 #include <vector>
-
+#include <utility> //for std::pair
 
 class WCSimWCDigitizerBase : public G4VDigitizerModule
 {
@@ -22,7 +22,7 @@ public:
   
   void ReInitialize() { DigiStoreHitMap.clear(); }
   
-  void AddNewDigit(int tube, int gate, float digihittime, float peSmeared);
+  void AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector< std::pair<int,int> > digi_comp);
   virtual void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) = 0;
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
   void Digitize();

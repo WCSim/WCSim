@@ -124,13 +124,10 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    if(iflag == 0) {                                                                                                                                             
 	      //digitize hit                                                                                                                                  
 	      peSmeared *= efficiency;
-	      WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared);
+	      WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared, digi_comp);
 	      ngate++;
 	      
-	      digi_unique_id++;
-	      // Save digit composition info
-	      (*WCHCPMT)[i]->AddDigiCompositionInfo(digi_comp);
-	      
+	      digi_unique_id++;	      
 	    }                                                                                                                                                           
 	    else {                                                                                                                                                            
 	      //reject hit                                                                                                                                             
@@ -157,12 +154,10 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      if(iflag == 0) {
 		//digitize hit                                                                                                                                                  
 		peSmeared *= efficiency;
-		WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared);
-		ngate++;	
+		WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared, digi_comp);
+		ngate++;
 
 		digi_unique_id++;
-		// Save digit composition info
-		(*WCHCPMT)[i]->AddDigiCompositionInfo(digi_comp);
 	      }
 	      else {
 		//reject hit                                                                                                                           
@@ -175,8 +170,8 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   G4cout<<"END\n";
   
   G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
-  for (G4int i = 0 ; i < WCHCPMT->entries() ; i++){
-    std::vector< std::pair<int,int> > comp = (*WCHCPMT)[i]->GetDigiCompositionInfo();
+  for (G4int i = 0 ; i < DigiStore->entries() ; i++){
+    std::vector< std::pair<int,int> > comp = (*DigiStore)[i]->GetDigiCompositionInfo();
     for(int i = 0; i < (int) comp.size(); i++){
       G4cout<<"entry "<<i<<" digi "<<comp[i].first<< " p_id "<<comp[i].second<<G4endl;
     }

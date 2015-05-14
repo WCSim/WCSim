@@ -71,7 +71,8 @@ void WCSimWCDigitizerBase::Digitize()
 
 }
 
-void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, float peSmeared) {
+void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector< std::pair<int,int> > digi_comp)
+{
   //gate is not a trigger, but just the position of the digit in the array
   //inside the WCSimWCDigi object
   G4cout<<"Adding hit "<<gate<<" in tube "<<tube;
@@ -87,6 +88,7 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	Digi->SetPe(gate,peSmeared);
 	Digi->AddPe(digihittime);
 	Digi->SetTime(gate,digihittime);
+	Digi->AddDigiCompositionInfo(digi_comp);
 	DigiStoreHitMap[tube] = DigiStore->insert(Digi);
 	G4cout << " NEW HIT" << G4endl;
       }
@@ -98,6 +100,7 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetPe(gate,peSmeared);
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetTime(gate,digihittime);
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddPe(digihittime);
+	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddDigiCompositionInfo(digi_comp);
 	G4cout << " DEJA VU" << G4endl;
       }
     }
