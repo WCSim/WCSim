@@ -468,12 +468,14 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
       }
       */
      
+      std::vector< std::pair<int,int> > triggered_composition;
       for ( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++){
 	tc = (*WCHCPMT)[i]->GetTime(ip);
 	//Add up pe for each time in the gate.
 	if (tc >= lowerbound && tc <= mintime){
 	  G4double   pe = (*WCHCPMT)[i]->GetPe(ip);
 	  peSmeared += pe;
+	  triggered_composition.push_back(std::make_pair(itrigger, i));
 	}
       }
       
@@ -511,7 +513,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 	    + firstHitTime
 	    + hittimesmearing;
 
-	  if ( digihittime > 0.0 && peSmeared>0.0)
+ 	  if ( digihittime > 0.0 && peSmeared>0.0)
 	  
 	    {
 	      if ( DigiHitMap[tube] == 0) {
@@ -521,6 +523,8 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 		Digi->AddGate(G,TriggerTimes[G]);
 		Digi->SetPe(G,peSmeared);
 		Digi->SetTime(G,digihittime);
+		Digi->AddPe(digihittime);
+		Digi->AddDigiCompositionInfo(triggered_composition);
 		DigiHitMap[tube] = DigitsCollection->insert(Digi);
 	      }
 	      else {
@@ -529,6 +533,8 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 		(*DigitsCollection)[DigiHitMap[tube]-1]->AddGate(G,TriggerTimes[G]);
 		(*DigitsCollection)[DigiHitMap[tube]-1]->SetPe(G,peSmeared);
 		(*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(G,digihittime);
+		(*DigitsCollection)[DigiHitMap[tube]-1]->AddPe(digihittime);
+		(*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(triggered_composition);
 	      }
 	    }
 	  else { }//G4cout << "discarded negative time hit\n";}
