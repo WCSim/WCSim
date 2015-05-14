@@ -85,10 +85,10 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 
   //if test is true, we run the algorithm with 1/2 the threshold, and kTriggerNHitsTest
   //for testing multiple trigger algorithms at once
-  int this_nhitsThreshold = ;
+  int this_nhitsThreshold = nhitsThreshold;
   TriggerType_t this_triggerType = kTriggerNHits;
   if(test) {
-    this_nhitsThreshold /= 2
+    this_nhitsThreshold /= 2;
     this_triggerType = kTriggerNHitsTest;
   }
 

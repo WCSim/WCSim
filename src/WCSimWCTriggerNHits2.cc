@@ -48,5 +48,5 @@ void WCSimWCTriggerNHits2::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   //Apply an NHits trigger with a lower threshold & different saved trigger type
   remove_hits = false;
   bool nhits_test = true;
-  AlgNHitsTest(WCDCPMTCopy, remove_hits, nhits_test);
+  AlgNHits(WCDCPMTCopy, remove_hits, nhits_test);
 }

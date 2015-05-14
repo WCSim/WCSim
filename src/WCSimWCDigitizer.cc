@@ -475,7 +475,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 	if (tc >= lowerbound && tc <= mintime){
 	  G4double   pe = (*WCHCPMT)[i]->GetPe(ip);
 	  peSmeared += pe;
-	  triggered_composition.push_back(std::make_pair(itrigger, i));
+	  triggered_composition.push_back(std::make_pair(G, i));
 	}
       }
       
