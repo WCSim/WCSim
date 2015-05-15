@@ -228,10 +228,8 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    if((*it).first == ip) {
 	      triggered_composition.push_back(std::make_pair(itrigger, (*it).second));
 	    }
-	    else {
-	      if ((*it).first > ip)
-		break;
-	    }
+	    else if ((*it).first > ip)
+	      break;
 	  }//loop over digitized_composition
 	  //add hit
 	  if ( DigiHitMap[tube] == 0) {
@@ -262,4 +260,5 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 #ifdef WCSIMWCTRIGGERBASE_VERBOSE
   G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of entries in output digit collection: " << DigitsCollection->entries() << G4endl;
 #endif
+
 }

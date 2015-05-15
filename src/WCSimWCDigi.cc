@@ -1,6 +1,9 @@
 #include "WCSimWCDigi.hh"
 #include "G4RotationMatrix.hh"
 
+#ifndef WCSIMWCDIGI_VERBOSE
+//#define WCSIMWCDIGI_VERBOSE
+#endif
 
 G4Allocator<WCSimWCDigi> WCSimWCDigiAllocator;
 
@@ -62,9 +65,16 @@ void WCSimWCDigi::Print()
 std::vector<int> WCSimWCDigi::GetDigiCompositionInfo(int gate)
 {
   std::vector<int> photon_ids;
+#ifdef WCSIMWCDIGI_VERBOSE
+  G4cout << "WCSimWCDigi::GetDigiCompositionInfo fDigiComp has size " << fDigiComp.size() << G4endl;
+#endif
   for(std::vector< std::pair<int,int> >::iterator it = fDigiComp.begin(); it != fDigiComp.end(); ++it) {
-    if(gate == (*it).first)
+    if(gate == (*it).first) {
       photon_ids.push_back((*it).second);
+#ifdef WCSIMWCDIGI_VERBOSE
+      G4cout << "WCSimWCDigi::GetDigiCompositionInfo found photon with ID " << (*it).second << G4endl;
+#endif
+    }
     else if((*it).first > gate)
       break;
   }

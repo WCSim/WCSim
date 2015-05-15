@@ -37,7 +37,7 @@ WCSimWCDigitizerSK::~WCSimWCDigitizerSK(){
 }
 
 void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
-  G4cout<<"START (WCHCPMT->entries() = "<<WCHCPMT->entries()<<G4endl;
+  G4cout << "WCSimWCDigitizerSK::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
   //We must first sort hits by PMT in time.  This is very important as the code
   //assumes that each hit is in time order from lowest to highest.
   
@@ -167,7 +167,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  photon_unique_id++;
 	}
     }   
-  G4cout<<"END\n";
+  G4cout<<"WCSimWCDigitizerSK::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << "\n";
   
   G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
   for (G4int i = 0 ; i < DigiStore->entries() ; i++){
