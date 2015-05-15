@@ -72,6 +72,15 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       int photon_unique_id = 0;
       std::vector< std::pair<int,int> > digi_comp; 
 
+      /*
+      G4cout << "DEBUGGING TUBE " << tube
+	     << " total pe " << (*WCHCPMT)[i]->GetTotalPe();
+      for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
+	G4cout << " time " << (*WCHCPMT)[i]->GetTime(ip)
+	       << " pe " << (*WCHCPMT)[i]->GetPe(ip);
+      G4cout << G4endl;
+      */
+
       for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
 	{
 	  float time = (*WCHCPMT)[i]->GetTime(ip);
@@ -89,6 +98,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  bool MakeDigit = false;
 	  if(time >= intgr_start && time <= upperlimit) {
 	    peSmeared += pe;
+	    photon_unique_id = ip;
 	    digi_comp.push_back( std::make_pair(digi_unique_id, photon_unique_id) );
       
 	    std::cout<<"INFO: time "<<time<<" digi_id "<<digi_unique_id<<" p_id "<<photon_unique_id<<std::endl;
@@ -127,10 +137,11 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared, digi_comp);
 	      ngate++;
 	      
-	      digi_unique_id++;	      
-	    }                                                                                                                                                           
-	    else {                                                                                                                                                            
-	      //reject hit                                                                                                                                             
+	      digi_unique_id++;
+	      digi_comp.clear();
+	    }
+	    else {
+	      //reject hit
 	    }
 	  }
 	  
@@ -146,6 +157,10 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    //Set the limits of the integration window [intgr_start,upperlimit]                                                                                 
 	    upperlimit = intgr_start + pmtgate;
 
+	    //store the digi composition information
+	    photon_unique_id = ip;
+            digi_comp.push_back( std::make_pair(digi_unique_id, photon_unique_id) );
+
 	    //if this is the last hit we must handle the creation of the digit 
 	    //as the loop will not evaluate again
 	    if(ip+1 == (*WCHCPMT)[i]->GetTotalPe()) {
@@ -158,22 +173,23 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 		ngate++;
 
 		digi_unique_id++;
+		digi_comp.clear();
 	      }
 	      else {
 		//reject hit                                                                                                                           
 	      }
 	    }
 	  }
-	  photon_unique_id++;
-	}
-    }   
+	}//ip (totalpe)
+    }//i (WCHCPMT->entries())
   G4cout<<"WCSimWCDigitizerSK::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << "\n";
   
   G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
   for (G4int i = 0 ; i < DigiStore->entries() ; i++){
     std::vector< std::pair<int,int> > comp = (*DigiStore)[i]->GetDigiCompositionInfo();
+    int tubeid = (*DigiStore)[i]->GetTubeID();
     for(int i = 0; i < (int) comp.size(); i++){
-      G4cout<<"entry "<<i<<" digi "<<comp[i].first<< " p_id "<<comp[i].second<<G4endl;
+      G4cout<<"tube " <<tubeid<<" entry "<<i<<" digi "<<comp[i].first<< " p_id "<<comp[i].second<<G4endl;
     }
   }
 }

@@ -75,7 +75,9 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 {
   //gate is not a trigger, but just the position of the digit in the array
   //inside the WCSimWCDigi object
-  G4cout<<"Adding hit "<<gate<<" in tube "<<tube;
+  G4cout<<"Adding hit "<<gate<<" in tube "<<tube
+	<< " with time " << digihittime << " charge " << peSmeared
+	<< " (made of " << digi_comp.size() << " raw hits)";
   if ( digihittime > 0.0 && peSmeared>0.0)
     
     {
