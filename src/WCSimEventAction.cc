@@ -763,7 +763,13 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
 
   wcsimrootevent->SetNumTubesHit(jhfNtuple.numTubesHit);
+
 #ifdef _SAVE_RAW_HITS
+
+#ifndef _SAVE_RAW_HITS_VERBOSE
+#define _SAVE_RAW_HITS_VERBOSE
+#endif
+
   if (WCHC && WCDC_hits) 
   {
     //add the truth raw hits
@@ -772,21 +778,83 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     //and the order of hits isn't preserved
     //So need to hunt for the hit with the correct time
     G4cout<<"RAW HITS"<<G4endl;
-    wcsimrootevent->SetNumTubesHit(WCDC_hit->entries());
+    wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
     int total_hits = WCHC->entries();
-    for(idigi = 0; idigi < WCDC_hit->entries(); idigi++) {
-      int digi_tubeid = (*WCDC_hit)[idigi]->GetTubeID();
+    std::vector<float> truetime;
+    std::vector<int>   primaryParentID;
+    double hit_time, digi_time;
+    int hit_parentid;
+    //loop over the DigitsCollection
+    for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
+      int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
       if(idigi < total_hits) {
-	int hit_tubeid = (*WCDC_hit)[idigi]->GetTubeID();
-	if(digi_tubeid == hit_tubeid)
+	int hit_tubeid = (*WCHC)[idigi]->GetTubeID();
+	if(digi_tubeid == hit_tubeid) {
+#ifdef _SAVE_RAW_HITS_VERBOSE
 	  G4cout << "Digi and hit tube IDs match for tube " << digi_tubeid << G4endl;
-	else
-	  G4cout << "Digi and hit tube IDs are different for tube " << digi_tubeid << " " << hit_tubeid << G4endl;
-      }
+#endif
+	  //We've found the correct entries in the collections, now need to line up the WCSimWCDigi hits with the WCSimWCHit hits
+	  //(hits we can't find in the WCSimWCHit are noise hits)
+	  //loop over the WCSimWCDigi
+	  for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
+	    digi_time = (*WCDC_hits)[idigi]->GetTime(id);
+	    //loop over the WCSimWCHit to find the corresponding hit
+	    bool found_hit = false;
+	    for(G4int ih = 0; ih < (*WCHC)[idigi]->GetTotalPe(); ih++){
+	      hit_time = (*WCHC)[idigi]->GetTime(ih);
+	      if(abs(hit_time - digi_time) < 1E-6) {
+		found_hit = true;
+		hit_parentid = (*WCHC)[idigi]->GetParentID(ih);
+		break;
+	      }
+	    }//ih
+	    if(found_hit) {
+#ifdef _SAVE_RAW_HITS_VERBOSE
+	      G4cout << "Hit " << id << " in the WCSimWCDigi is a photon hit with time " 
+		     << hit_time << " and parentID " << hit_parentid << G4endl;
+#endif
+	      truetime.push_back(hit_time);
+	      primaryParentID.push_back(hit_parentid);
+	    }
+	    else {
+#ifdef _SAVE_RAW_HITS_VERBOSE
+	      G4cout << "Hit " << id << " in the WCSimWCDigi is a noise hit with time "
+		     << digi_time << G4endl;
+#endif
+	      truetime.push_back(digi_time);
+	      primaryParentID.push_back(-1);
+	    }
+	  }//id
+	}//digi_tubeid == hit_tubeid
+	else {
+	  //This shouldn't happen!
+	  G4cout << "ERROR raw hits not found for tube ID " << digi_tubeid
+		 << " Will save the hit charge output from WCSimWCPMT (parentID will be set to -9)" << G4endl;
+	  //loop over the WCSimWCDigi
+          for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
+	    digi_time = (*WCDC_hits)[idigi]->GetTime(id);
+	    truetime.push_back(digi_time);
+	    primaryParentID.push_back(-9);
+	  }//id
+	}//digi_tubeid != hit_tubeid
+      }//idigi < total_hits
       else {
+#ifdef _SAVE_RAW_HITS_VERBOSE
 	G4cout << "All noise hits for tube " << digi_tubeid << G4endl;
-      }
+#endif
+	for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
+	  digi_time = (*WCDC_hits)[idigi]->GetTime(id);
+	  truetime.push_back(digi_time);
+	  primaryParentID.push_back(-1);
+	}//id
+      }//idigi >= total_hits
+      wcsimrootevent->AddCherenkovHit(digi_tubeid,
+				      truetime,
+				      primaryParentID);
+      truetime.clear();
+      primaryParentID.clear();
     }//idigi
+
     /*
     wcsimrootevent->SetNumTubesHit(WCHC->entries());
     for (k=0;k<WCHC->entries();k++){
@@ -808,9 +876,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				      primaryParentID); 
     } 
     */
-  }
-
-#endif
+  }//if(WCHC && WCDC_hits)
+#endif //_SAVE_RAW_HITS
 
   // Add the digitized hits
 
