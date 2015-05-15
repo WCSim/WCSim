@@ -260,7 +260,11 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    //ms->Stop();
    //std::cout << " Digtization :  Real = " << ms->RealTime() 
    //	    << " ; CPU = " << ms->CpuTime() << "\n";  
-   
+
+   // Get the post-noise hit collection for the WC
+   G4int WCDChitsID = DMman->GetDigiCollectionID("WCRawPMTSignalCollection");
+   WCSimWCDigitsCollection * WCDC_hits = (WCSimWCDigitsCollection*) DMman->GetDigiCollection(WCDChitsID);
+  
    // Get the digitized collection for the WC
    G4int WCDCID = DMman->GetDigiCollectionID("WCDigitizedCollection");
    WCSimWCDigitsCollection * WCDC = (WCSimWCDigitsCollection*) DMman->GetDigiCollection(WCDCID);
@@ -402,6 +406,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 		jhfNtuple,
 		trajectoryContainer,
 		WCHC,
+		WCDC_hits,
 		WCDC);
 
 }
@@ -503,10 +508,11 @@ G4int WCSimEventAction::WCSimEventFindStoppingVolume(G4String stopVolumeName)
 }
 
 void WCSimEventAction::FillRootEvent(G4int event_id, 
-				      const struct ntupleStruct& jhfNtuple,
-				      G4TrajectoryContainer* TC,
-				      WCSimWCHitsCollection* WCHC, 
-				      WCSimWCDigitsCollection* WCDC)
+				     const struct ntupleStruct& jhfNtuple,
+				     G4TrajectoryContainer* TC,
+				     WCSimWCHitsCollection* WCHC,
+				     WCSimWCDigitsCollection* WCDC_hits,
+				     WCSimWCDigitsCollection* WCDC)
 {
   // Fill up a Root event with stuff from the ntuple
 
@@ -758,9 +764,30 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
   wcsimrootevent->SetNumTubesHit(jhfNtuple.numTubesHit);
 #ifdef _SAVE_RAW_HITS
-  if (WCHC) 
+  if (WCHC && WCDC_hits) 
   {
+    //add the truth raw hits
+    //the noise is NOT in the HitsCollection
+    //therefore need to find it in the DigitsCollection from WCSimWCPMT or WCSimWCAddDarkNoise
+    //and the order of hits isn't preserved
+    //So need to hunt for the hit with the correct time
     G4cout<<"RAW HITS"<<G4endl;
+    wcsimrootevent->SetNumTubesHit(WCDC_hit->entries());
+    int total_hits = WCHC->entries();
+    for(idigi = 0; idigi < WCDC_hit->entries(); idigi++) {
+      int digi_tubeid = (*WCDC_hit)[idigi]->GetTubeID();
+      if(idigi < total_hits) {
+	int hit_tubeid = (*WCDC_hit)[idigi]->GetTubeID();
+	if(digi_tubeid == hit_tubeid)
+	  G4cout << "Digi and hit tube IDs match for tube " << digi_tubeid << G4endl;
+	else
+	  G4cout << "Digi and hit tube IDs are different for tube " << digi_tubeid << " " << hit_tubeid << G4endl;
+      }
+      else {
+	G4cout << "All noise hits for tube " << digi_tubeid << G4endl;
+      }
+    }//idigi
+    /*
     wcsimrootevent->SetNumTubesHit(WCHC->entries());
     for (k=0;k<WCHC->entries();k++){
     
@@ -780,6 +807,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				      truetime,
 				      primaryParentID); 
     } 
+    */
   }
 
 #endif

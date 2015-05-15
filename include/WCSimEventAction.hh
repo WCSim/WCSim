@@ -36,7 +36,8 @@ public:
   void FillRootEvent(G4int, 
 		     const struct ntupleStruct&, 
 		     G4TrajectoryContainer*,
-		     WCSimWCHitsCollection*, 
+		     WCSimWCHitsCollection*,
+		     WCSimWCDigitsCollection*,
 		     WCSimWCDigitsCollection*);
   WCSimRunAction* GetRunAction(){return runAction;}
   void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
