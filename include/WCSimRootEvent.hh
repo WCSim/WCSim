@@ -280,6 +280,7 @@ public:
   Int_t               GetNumDigiTubesHit()    const {return fNumDigitizedTubes;}
   Int_t               GetNtrack()             const {return fNtrack; }
   Int_t               GetNcherenkovhits()     const {return fNcherenkovhits; }
+  Int_t               GetNcherenkovhittimes() const {return fNcherenkovhittimes;}
   Int_t               GetNcherenkovdigihits() const {return fNcherenkovdigihits;}
   Float_t             GetSumQ()               const { return fSumQ;}
   TriggerType_t       GetTriggerType()        const { return fTriggerType;}
