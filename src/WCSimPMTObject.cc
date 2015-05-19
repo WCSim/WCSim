@@ -1191,7 +1191,7 @@ G4double BoxandLine20inchHQE::GetRadius() {return .254*m;}
 G4double BoxandLine20inchHQE::GetPMTGlassThickness() {return 0.4*cm;}
 
 float BoxandLine20inchHQE::HitTimeSmearing(float Q) {
-  G4float sig_param[4]={0.6315,0.06277,0.5728,23.9};
+  G4float sig_param[4]={0.6314,0.06260,0.5711,23.96};
   G4float lambda_param[2]={0.4094,0.06852};
   G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
 
@@ -1360,7 +1360,7 @@ G4double BoxandLine12inchHQE::GetRadius() {return 152.4*mm;}
 G4double BoxandLine12inchHQE::GetPMTGlassThickness() {return 0.4*cm;}
 
 float BoxandLine12inchHQE::HitTimeSmearing(float Q) {
-  G4float sig_param[4]={0.6315,0.06277,0.5728,23.9};
+  G4float sig_param[4]={0.6314,0.06260,0.5711,23.96};
   G4float lambda_param[2]={0.4094,0.06852};
 
   G4float highcharge_param[2];
