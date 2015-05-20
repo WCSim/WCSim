@@ -143,6 +143,7 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
       //The trigger time is the time of the first hit above threshold
       std::sort(digit_times.begin(), digit_times.end());
       triggertime = digit_times[this_nhitsThreshold];
+      triggertime -= (int)triggertime % 5;
       TriggerTimes.push_back(triggertime);
       TriggerTypes.push_back(this_triggerType);
       TriggerInfos.push_back(std::vector<Float_t>(1, n_digits));
@@ -221,6 +222,9 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    + WCSimWCTriggerBase::offset
 	    + digit_time
 	    + PMT->HitTimeSmearing(Q);
+	  if(digihittime < 0)
+	    continue;
+
 	  //int parentID    = (*WCDCPMT)[i]->GetParentID(ip);
 	  std::vector< std::pair<int,int> > digitized_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo();
 	  std::vector< std::pair<int,int> > triggered_composition;

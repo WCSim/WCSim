@@ -78,8 +78,8 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
   G4cout<<"Adding hit "<<gate<<" in tube "<<tube
 	<< " with time " << digihittime << " charge " << peSmeared
 	<< " (made of " << digi_comp.size() << " raw hits)";
-  if ( digihittime > 0.0 && peSmeared>0.0)
-    
+
+  //  if ( digihittime > 0.0 && peSmeared>0.0)
     {
       if ( DigiStoreHitMap[tube] == 0) {
 	WCSimWCDigi* Digi = new WCSimWCDigi();
@@ -106,7 +106,7 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	G4cout << " DEJA VU" << G4endl;
       }
     }
-  //else { G4cout << "discarded negative time hit\n";}
+    //else { G4cout << "DIGIT REJECTED" << G4endl; }
 }
 
 void WCSimWCDigitizerBase::SKDigitizerType(G4String type) {

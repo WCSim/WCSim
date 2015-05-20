@@ -140,7 +140,7 @@ void WCSimWCDigitizer::Digitize()
   // Get the PMT Digits collection
   WCSimWCDigitsCollection* WCHCPMT = 
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCHCID));
-  
+
   if (WCHCPMT) {
 
     //TEST
@@ -344,6 +344,8 @@ void WCSimWCDigitizer::FindNumberOfGatesFast()
         RealOffset = 0.0; 				// will need to add the offset later
 									// 40 means + 200ns
 									// so check 39 bins ahead in the histogram..
+
+	bool triggered = false;
 	while ( _mNextGate != GateMap.lower_bound( _mGateKeeper->first + 39)
 	     && _mNextGate->first <= _mGateKeeper->first + 39 		// but not more than 200ns away though!
 	      )
@@ -351,20 +353,21 @@ void WCSimWCDigitizer::FindNumberOfGatesFast()
 
 	  acc += _mNextGate->second;
 
-          if ( acc > WCSimWCDigitizer::GlobalThreshold )
+          if (!triggered &&  acc > WCSimWCDigitizer::GlobalThreshold )
 	  {
 	    //RealOffset = _mGateKeeper->first*5.0;
 	    RealOffset = _mNextGate->first*5.0;
 	    TriggerTimes.push_back(RealOffset);
 	    TriggerTypes.push_back(kTriggerNHitsSKDETSIM);
-	    TriggerInfos.push_back(std::vector<Float_t>(1, acc));
 	    //std::cerr << "found a trigger..." << RealOffset/5.0  <<"\n";
 	    _mGateKeeper = GateMap.lower_bound( _mNextGate->first + G4int(WCSimWCDigitizer::eventgateup )/5. );
 	    std::cerr.flush();
-	    break;
+	    triggered = true;
           }
 	  _mNextGate++;							// look at the next time bin with hits
-	}
+	}//while
+          if ( acc > WCSimWCDigitizer::GlobalThreshold )
+	    TriggerInfos.push_back(std::vector<Float_t>(1, acc));
     }
 
 }
@@ -537,8 +540,12 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 		(*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(triggered_composition);
 	      }
 	    }
-	  else { }//G4cout << "discarded negative time hit\n";}
+	  else { 
+	    //G4cout << "DIGIT REJECTED" << G4endl;
+	  }
 	}
-      //    else { G4cout << iflag << G4endl;}
+      else {
+	//G4cout << "DIGIT REJECTED" << G4endl;
+      }
     } // Loop over hits
 }

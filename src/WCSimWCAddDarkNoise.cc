@@ -201,6 +201,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	  pe = WCPMT->rn1pe();
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPe(PMTindex[noise_pmt],pe);
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTime(PMTindex[noise_pmt],current_time);
+	  (*WCHCPMT)[ list[noise_pmt]-1 ]->AddParentID(-1);
 	  PMTindex[noise_pmt]++;
 #ifdef WCSIMWCADDDARKNOISE_VERBOSE
 	  G4cout << "WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Added to exisiting digi a dark noise hit at time " << current_time << " to PMT " << noise_pmt << G4endl;	  
@@ -226,8 +227,8 @@ void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, 
       float t1=time - width/2.;
       float t2=time + width/2.;
       //if t1 is negative set to 0
-      if(t1 < 0.)
-	t1=0.;
+      //if(t1 < 0.)
+      //t1=0.;
       ranges.push_back(std::pair<float, float>(t1, t2));
     }
   }

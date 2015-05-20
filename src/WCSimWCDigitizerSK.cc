@@ -59,7 +59,13 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       //Sort photons on this pmt
       (*WCHCPMT)[i]->SortArrayByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
-      G4cout<<"tube "<<tube<<" totalpe = "<<(*WCHCPMT)[i]->GetTotalPe()<<G4endl;
+      G4cout<<"tube "<<tube<<" totalpe = "<<(*WCHCPMT)[i]->GetTotalPe();
+      /*
+	G4cout<<" parents =\t";
+      for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
+	G4cout << " " << (*WCHCPMT)[i]->GetParentID(ip);
+      */
+      G4cout <<G4endl;
       //look over all hits on the PMT
       //integrate charge and start digitizing
       float intgr_start=0;
@@ -142,6 +148,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    }
 	    else {
 	      //reject hit
+	      //G4cout << "DIGIT REJECTED" << G4endl;
 	    }
 	  }
 	  
@@ -177,6 +184,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      }
 	      else {
 		//reject hit                                                                                                                           
+		//G4cout << "DIGIT REJECTED" << G4endl;
 	      }
 	    }
 	  }

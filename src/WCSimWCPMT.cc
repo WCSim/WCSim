@@ -105,29 +105,27 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
 	    time_PMT = (*WCHC)[i]->GetTime(ip);
-
 	    peSmeared = rn1pe();
-	   
+	    int parent_id = (*WCHC)[i]->GetParentID(ip);
+
 	    if ( DigiHitMapPMT[tube] == 0) {
-	      
 	      WCSimWCDigi* Digi = new WCSimWCDigi();
 	      Digi->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
 	      Digi->AddPe(time_PMT);	
 	      Digi->SetTubeID(tube);
 	      Digi->SetPe(ip,peSmeared);
 	      Digi->SetTime(ip,time_PMT);
+	      Digi->AddParentID(parent_id);
 	      DigiHitMapPMT[tube] = DigitsCollection->insert(Digi);
-	      }	
- 
-	    
-	  
-	      else {
-		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->AddPe(time_PMT);
-		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
-		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTubeID(tube);
-		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPe(ip,peSmeared);
-		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTime(ip,time_PMT);
-	      }
+	    }	
+	    else {
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->AddPe(time_PMT);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTubeID(tube);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPe(ip,peSmeared);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTime(ip,time_PMT);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->AddParentID(parent_id);
+	    }
       
 	  } // Loop over hits in each PMT
     }// Loop over PMTs
