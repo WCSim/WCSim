@@ -94,7 +94,7 @@ public:
     digi_comp.clear();
   }
 
-  
+  G4int          GetParentID(int i)    { return primaryParentID[i];};
   inline G4float GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
   inline G4float GetPe(int gate)     {return pe[gate];};
@@ -105,7 +105,7 @@ public:
 
   inline int NumberOfGates() { return Gates.size();}
   inline int NumberOfSubEvents() { return (Gates.size()-1);}
-  inline bool HasHitsInGate(int number) { return (Gates.count(number)==1); }
+  inline bool HasHitsInGate(int number) { return (Gates.count(number)>0); }
   
   G4LogicalVolume* GetLogicalVolume() {return pLogV;};
 
