@@ -29,6 +29,7 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         void SetupBranchAddresses(NRooTrackerVtx* nrootrackervtx);
         void OpenRootrackerFile(G4String fileName);
         void CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx);
+        bool GetIsRooTrackerFileFinished(){return !fEvNum<fNEntries;}
 
         // Normal gun setting calls these functions to fill jhfNtuple and Root tree
         void SetVtx(G4ThreeVector i)     { vtx = i; };
@@ -58,6 +59,7 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         G4double GetXDir() {return xDir;};
         G4double GetYDir() {return yDir;};
         G4double GetZDir() {return zDir;};
+
 
     private:
         WCSimDetectorConstruction*      myDetector;

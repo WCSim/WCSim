@@ -55,6 +55,7 @@ public:
       fVertices->Clear(); 
       fNVtx = 0;
   }
+  const G4Run* GetG4Run(){return fG4Run;}
 
 private:
   // MFechner : set by the messenger
@@ -84,6 +85,8 @@ private:
 
   WCSimRunActionMessenger* messenger;
   int ntuples;  // 1 for ntuples to be written
+
+  const G4Run* fG4Run;
 };
 
 #endif

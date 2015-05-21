@@ -46,6 +46,8 @@ WCSimRunAction::~WCSimRunAction()
 void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
 {
 
+  fG4Run = aRun;
+
   fSettingsOutputTree = NULL;
   fSettingsInputTree = NULL;
   for(int i = 0; i < 3; ++i){
@@ -256,6 +258,7 @@ void WCSimRunAction::FillGeoTree(){
 }
 
 NRooTrackerVtx* WCSimRunAction::GetRootrackerVertex(){
+
   NRooTrackerVtx* currRootrackerVtx = new((*fVertices)[fNVtx])NRooTrackerVtx();
   fNVtx += 1;
   return currRootrackerVtx;

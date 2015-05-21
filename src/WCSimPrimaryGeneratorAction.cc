@@ -74,7 +74,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 
     fEvNum = 0;
     fInputRootrackerFile = NULL;
-    fNEntries = 0;
+    fNEntries = 1;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
