@@ -4,6 +4,7 @@
 class WCSimRunAction;
 class G4UIdirectory;
 class G4UIcmdWithAString;
+class G4UIcmdWithABool;
 
 #include "G4UImessenger.hh"
 #include "globals.hh"
@@ -23,6 +24,8 @@ class WCSimRunActionMessenger: public G4UImessenger
  private: //commands
   G4UIdirectory*      WCSimIODir;
   G4UIcmdWithAString* RootFile;
+  G4UIcmdWithABool* RooTracker;
+
 };
 
 #endif

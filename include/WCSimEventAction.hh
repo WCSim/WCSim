@@ -12,6 +12,8 @@
 #include "WCSimWCHit.hh"
 #include "WCSimWCDigi.hh"
 
+#include "TRandom3.h"
+
 class WCSimRunAction;
 class WCSimPrimaryGeneratorAction;
 class G4Event;
@@ -22,6 +24,8 @@ private:
   WCSimRunAction* runAction;
   WCSimPrimaryGeneratorAction* generatorAction;
   WCSimDetectorConstruction*   detectorConstructor;
+
+  TRandom3 * randGen;
   
 public:
   WCSimEventAction(WCSimRunAction*, WCSimDetectorConstruction*,

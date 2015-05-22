@@ -10,6 +10,17 @@
 # The tube size is fixed for SK to 20"
 # These are fixed geometries for validation
 #/WCSim/WCgeom SuperK
+
+# Some other SuperK options:
+#/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_20inchBandL_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_12inchBandL_15perCent # Note: the actual coverage is 14.59%
+#/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
+
+# Generic cylindrical detector with a height of 100m and a 
+# diameter of 69m with 12" HPD and 14.59% photocoverage
+#/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
+
 # Currently by defualt the DUSEL configurations are 10 inch.
 # you can overide this with the WCPMTsize command.
 # WCPMTsize command commented out on 10/1/09 (CWW)
@@ -36,7 +47,21 @@
 #/WCSim/WCgeom DUSEL_200kton_10inch_HQE_12perCent
 #/WCSim/WCgeom DUSEL_200kton_12inch_HQE_10perCent
 #/WCSim/WCgeom DUSEL_200kton_12inch_HQE_14perCent
-#/WCSim/Construct
+
+/WCSim/WCgeom nuPRISM
+
+#Select which PMT to use
+/WCSim/nuPRISM/SetPMTType PMT8inch
+/WCSim/nuPRISM/SetPMTPercentCoverage 20
+#Set height of nuPRISM inner detector
+/WCSim/nuPRISM/SetDetectorHeight 10. m
+#Set vertical position of inner detector, in beam coordinates
+/WCSim/nuPRISM/SetDetectorVerticalPosition -10. m
+#Set diameter of inner detector
+/WCSim/nuPRISM/SetDetectorDiameter 6. m
+/WCSim/nuPRISM/Update
+/WCSim/Construct
+
 
 #Added for the PMT QE option 08/17/10 (XQ)
 # 1. Stacking only mean when the photon is generated
@@ -53,18 +78,22 @@
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
-/WCSim/SavePi0 false
+/WCSim/SavePi0 true
 
 ## select the input nuance-formatted vector file
 ## you can of course use your own
-#/mygen/vecfile inputvectorfile
+# Or you can use the G4 Particle Gun below
+# Or a NEUT vector file
+/mygen/generator rootracker
+/mygen/vecfile ../genev_320a_1km_nd3_9xx_30818.root
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
 #/mygen/vecfile mu+.out
 
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz
 /DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
-#/DarkRate/SetDarkRate 8.4 kHz #For HPDs, based on High QE dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
@@ -72,18 +101,20 @@
 # Factor of Normal PMT is 1.367
 /DarkRate/SetConvert 1.367
 #/DarkRate/SetConvert 1.120 #For HPDs
+#/DarkRate/SetConvert 1.126 #For Box and Line PMTs
 
-# Or you can use the G4 Particle Gun
-/mygen/generator normal
-/gun/particle e-
+#/gun/particle mu- 
 #/gun/particle pi0
-/gun/energy 500 MeV
-/gun/direction 1 0 0 
-/gun/position 0 0 0  
+#/gun/energy 500 MeV
+#/gun/direction 0 0 1 
+#/gun/position 0 0 0  
 
 ## change the name of the output root file, default = wcsim.root
+/WCSimIO/RootFile wcsim_output.root
 
-/WCSimIO/RootFile wcsim.root
+## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
+## a NEUT vector file as input
+/WCSimIO/SaveRooTracker 1
 
 /run/beamOn 10
 #exit
