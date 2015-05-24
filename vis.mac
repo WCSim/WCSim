@@ -17,6 +17,9 @@
 #/WCSim/WCgeom SuperK_20inchBandL_20perCent # Note: the actual coverage is 20.27%
 #/WCSim/WCgeom SuperK_12inchBandL_15perCent # Note: the actual coverage is 14.59%
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
+#/WCSim/WCgeom SuperK_20inchHPD_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_12inchHPD_15perCent # Note: the actual coverage is 14.59%
+#/WCSim/WCgeom SuperK_20inchHPD_14perCent # Note: the actual coverage is 13.51%
 
 # Generic cylindrical detector with a height of 100m and a
 # diameter of 69m with 12" HPD and 14.59% photocoverage
@@ -75,7 +78,8 @@
 # (14/03/10)
 # Factor of Normal PMT is 1.367
 /DarkRate/SetConvert 1.367
-#/DarkRate/SetConvert 1.120 #For HPDs
+#/DarkRate/SetConvert 1.120 #For HPDs (Detector: Cylinder_12inchHPD_15perCent and HyperK_withHPD)
+#/DarkRate/SetConvert 1.082 #For HPD_20150522 (Detector: SuperK_20inchHPD_20perCent, SuperK_20inchHPD_14perCent and SuperK_12inchHPD_15perCent)
 #/DarkRate/SetConvert 1.126 #For Box and Line PMTs
 
 /vis/scene/create
