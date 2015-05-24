@@ -148,6 +148,28 @@ protected:
   G4float* GetCollectionEfficiencyArray();
 };
 
+class HPD20inchHQE_20150522 : public WCSimPMTObject
+{
+
+public:
+  
+  HPD20inchHQE_20150522();
+  ~HPD20inchHQE_20150522();
+ 
+public:
+  G4String GetPMTName() ;
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4float* Getqpe();
+  G4float* GetQE();
+  G4float* GetQEWavelength();
+  G4float  GetmaxQE();
+  float    HitTimeSmearing(float);
+  G4double GetPMTGlassThickness();
+protected:
+  G4float* GetCollectionEfficiencyArray();
+};
+
 class HPD12inchHQE : public WCSimPMTObject
 {
 
@@ -155,6 +177,29 @@ public:
   
   HPD12inchHQE();
   ~HPD12inchHQE();
+ 
+public:
+  G4String GetPMTName() ;
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4float* Getqpe();
+  G4float* GetQE();
+  G4float* GetQEWavelength();
+  G4float  GetmaxQE();
+  float    HitTimeSmearing(float);
+  G4double GetPMTGlassThickness();
+protected:
+  G4float* GetCollectionEfficiencyArray();
+};
+
+
+class HPD12inchHQE_20150522 : public WCSimPMTObject
+{
+
+public:
+  
+  HPD12inchHQE_20150522();
+  ~HPD12inchHQE_20150522();
  
 public:
   G4String GetPMTName() ;
