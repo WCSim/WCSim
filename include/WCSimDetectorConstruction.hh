@@ -257,7 +257,7 @@ private:
 
   // WC geometry parameters
 
-   G4double WCPMTRadius;
+  G4double WCPMTRadius;
   G4double WCPMTExposeHeight;
   G4double WCBarrelPMTOffset;
 
