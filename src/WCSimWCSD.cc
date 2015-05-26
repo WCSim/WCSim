@@ -35,8 +35,7 @@ WCSimWCSD::~WCSimWCSD() {}
 
 void WCSimWCSD::Initialize(G4HCofThisEvent* HCE)
 {
-  PMTHitMap.clear();
-
+ 
   // This is a trick.  We only want to do this once.  When the program
   // starts HCID will equal -1.  Then it will be set to the pointer to
   // this collection.
@@ -60,7 +59,6 @@ void WCSimWCSD::Initialize(G4HCofThisEvent* HCE)
   newHit->SetMaxPe(0);
   delete newHit;
 
-  StartofFile = 0;
 }
 
 G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
@@ -211,8 +209,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 }
 
 void WCSimWCSD::EndOfEvent(G4HCofThisEvent*)
-{ PMTHitMap.clear();  
-  StartofFile = 0;
+{ 
   if (verboseLevel>0) 
   { 
     G4int numHits = hitsCollection->entries();

@@ -153,13 +153,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   G4double mainAnnulusRmin[2] = {innerAnnulusRadius, innerAnnulusRadius};
   G4double mainAnnulusRmax[2] = {outerAnnulusRadius, outerAnnulusRadius};
 
-  mainAnnulusRmax[0]+=4000;
-  mainAnnulusRmax[1]+=4000;
-  printf("fundamental parameters: %lf %lf %lf %lf %lf %lf\n",
-		 mainAnnulusRmin[0],mainAnnulusRmin[1],
-		 mainAnnulusRmax[0],mainAnnulusRmax[1],
-		 mainAnnulusZ[0],mainAnnulusZ[1]);
-
   G4Polyhedra* solidWCBarrelAnnulus = new G4Polyhedra("WCBarrelAnnulus",
                                                    0.*deg, // phi start
                                                    totalAngle, 
@@ -226,8 +219,8 @@ else {
   // Subdivisions of the BarrelRings are cells
   //------------------------------------------------------
 
- printf("***make barrel cells: from %lf to %lf\n",mainAnnulusRmin,mainAnnulusRmax);
- G4Polyhedra* solidWCBarrelCell = new G4Polyhedra("WCBarrelCell",
+
+  G4Polyhedra* solidWCBarrelCell = new G4Polyhedra("WCBarrelCell",
                                                    -dPhi/2.+0.*deg, // phi start
                                                    dPhi, //total Phi
                                                    1, //NPhi-gon
@@ -573,7 +566,7 @@ else {
   // The PMT glass is the sensitive volume in this new configuration.
 
   G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName);
-  // G4LogicalVolume* logicWCPMT_OD = ConstructPMT(WCPMTName_outer, "glassFaceWCPMT_OD");
+
   
 
   //jl145------------------------------------------------
@@ -626,9 +619,8 @@ else {
 
     ///////////////   Barrel PMT placement
   G4RotationMatrix* WCPMTRotation = new G4RotationMatrix;
-  G4RotationMatrix* WCPMTARotation = new G4RotationMatrix;
   WCPMTRotation->rotateY(90.*deg);
-  WCPMTARotation->rotateY(-90.*deg);
+
   G4double barrelCellWidth = 2.*WCIDRadius*tan(dPhi/2.);
   G4double horizontalSpacing   = barrelCellWidth/WCPMTperCellHorizontal;
   G4double verticalSpacing     = barrelCellHeight/WCPMTperCellVertical;
@@ -639,7 +631,7 @@ else {
 						 -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 						 -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
 
-	  G4ThreeVector PMTAPosition =  G4ThreeVector(WCIDRadius+2000, -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,-barrelCellHeight/2.+(j+0.5)*verticalSpacing);
+
       G4VPhysicalVolume* physiWCBarrelPMT =
 	new G4PVPlacement(WCPMTRotation,              // its rotation
 			  PMTPosition, 
@@ -649,14 +641,10 @@ else {
 			  false,                     // no boolean operations
 			  (int)(i*WCPMTperCellVertical+j),
 			  true);                       
-	  double x=PMTAPosition.getX();
-	  double y=PMTAPosition.getY();
-	  double z=PMTAPosition.getZ();
-	  double phi=WCPMTARotation->getPhi();
-	  double theta=WCPMTARotation->getTheta();
-	  double psi=WCPMTARotation->getPsi();
-	  printf("***************\n************\n************\nhere I am: make WCPMT with at position %lf %lf %lf and rotation %lf %lf %lf\n",phi,theta,psi,x,y,z);
-   
+      
+   // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
+     // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
+		// this is still the case.
     }
   }
   //-------------------------------------------------------------
@@ -1066,8 +1054,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   // -----------------------------------------------------
   
 	G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName);
-
-
+	
   G4double xoffset;
   G4double yoffset;
   G4int    icopy = 0;
