@@ -80,7 +80,7 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	<< " (made of " << digi_comp.size() << " raw hits)";
 
   //  if ( digihittime > 0.0 && peSmeared>0.0)
-    {
+  if (peSmeared > 0.0) {
       if ( DigiStoreHitMap[tube] == 0) {
 	WCSimWCDigi* Digi = new WCSimWCDigi();
 	Digi->AddParentID(1);
@@ -105,8 +105,8 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddDigiCompositionInfo(digi_comp);
 	G4cout << " DEJA VU" << G4endl;
       }
-    }
-    //else { G4cout << "DIGIT REJECTED" << G4endl; }
+  }//peSmeared > 0
+  //else { G4cout << "DIGIT REJECTED" << G4endl; }
 }
 
 void WCSimWCDigitizerBase::SKDigitizerType(G4String type) {
