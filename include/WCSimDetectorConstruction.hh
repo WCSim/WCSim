@@ -249,7 +249,6 @@ private:
 
   // WC PMT parameters
   G4String WCPMTName;
-  G4String WCPMTName_outer;
   typedef std::pair<G4String, G4String> PMTKey_t;
   typedef std::map<PMTKey_t, G4LogicalVolume*> PMTMap_t;
 
