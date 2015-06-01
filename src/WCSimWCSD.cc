@@ -103,7 +103,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   // they don't in skdetsim. 
   if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition())
     return false;
-
+  G4String WCIDCollectionName = fdet->GetIDCollectionName();
   // M Fechner : too verbose
   //  if (aStep->GetTrack()->GetTrackStatus() == fAlive) cout << "status is fAlive\n";
   if ((aStep->GetTrack()->GetTrackStatus() == fAlive )
@@ -148,7 +148,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   if (fdet->GetPMT_QE_Method()==1){
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
-    maxQE = fdet->GetPMTQE(volumeName,wavelength,0,240,660,ratio);
+    maxQE = fdet->GetPMTQE(WCIDCollectionName,wavelength,0,240,660,ratio);
     photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
     photonQE = photonQE/maxQE;
   }else if (fdet->GetPMT_QE_Method()==3){

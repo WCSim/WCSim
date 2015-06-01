@@ -146,14 +146,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
-  
+ 
   // Instantiate a new sensitive detector and register this sensitive detector volume with the SD Manager. 
-    G4SDManager* SDman = G4SDManager::GetSDMpointer();
-    G4String SDName = "/WCSim/";
-    SDName += CollectionName;
-    aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
-    SDman->AddNewDetector( aWCPMT );
-
+  G4SDManager* SDman = G4SDManager::GetSDMpointer();
+  G4String SDName = "/WCSim/";
+  SDName += CollectionName;
+  aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
+  SDman->AddNewDetector( aWCPMT );
+  
   logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
 
   PMTLogicalVolumes[key] = logicWCPMT;
