@@ -60,9 +60,7 @@ public:
   void SetSuperKGeometry();
   void SuperK_20inchPMT_20perCent();
   void SuperK_20inchBandL_20perCent();
-  void SuperK_20inchHPD_20perCent();
   void SuperK_12inchBandL_15perCent();
-  void SuperK_12inchHPD_15perCent();
   void SuperK_20inchBandL_14perCent();
   void Cylinder_12inchHPD_15perCent();
   void DUSEL_100kton_10inch_40perCent();
