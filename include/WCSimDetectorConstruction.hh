@@ -138,16 +138,14 @@ public:
 
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
+  G4String GetIDCollectionName(){return WCIDCollectionName;}
+
+ 
 private:
 
   // Tuning parameters
 
   WCSimTuningParameters* WCSimTuningParams;
-
-  // Sensitive Detectors. We declare the pointers here because we need
-  // to check their state if we change the geometry.
-
-  WCSimWCSD*  aWCPMT;
 
   //Water, Blacksheet surface
   G4OpticalSurface * OpWaterBSSurface;
@@ -237,6 +235,12 @@ private:
   G4double WCLength;
 
   G4double WCPosition;
+  
+  // Hit collection name parameters
+  G4String WCDetectorName;
+  G4String WCIDCollectionName;
+  G4String WCODCollectionName;
+
 
   // WC PMT parameters
   G4String WCPMTName;
