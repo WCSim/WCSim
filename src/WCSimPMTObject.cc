@@ -858,8 +858,8 @@ G4double HPD20inchHQE::GetExposeHeight() {return .192*m;}
 G4double HPD20inchHQE::GetRadius() {return .254*m;}
 G4double HPD20inchHQE::GetPMTGlassThickness() {return 0.3*cm;}
 float HPD20inchHQE::HitTimeSmearing(float Q) {
-  G4float sig_param[4]={0.7816,0.1364,0.3635,11.00};
-  G4float lambda_param[2]={0.4081,0.1021};
+  G4float sig_param[4]={0.6718,0.1264,0.4450,11.87};
+  G4float lambda_param[2]={0.3255,0.1142};
 
   G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
 
@@ -1026,8 +1026,8 @@ G4double HPD12inchHQE::GetExposeHeight() {return 118.*mm;} //Assumed to be the s
 G4double HPD12inchHQE::GetRadius() {return 152.4*mm;} //12 inches
 G4double HPD12inchHQE::GetPMTGlassThickness() {return 0.3*cm;} 
 float HPD12inchHQE::HitTimeSmearing(float Q) {
-  G4float sig_param[4]={0.7816,0.1364,0.3635,11.00};
-  G4float lambda_param[2]={0.4081,0.1021};
+  G4float sig_param[4]={0.6718,0.1264,0.4450,11.87};
+  G4float lambda_param[2]={0.3255,0.1142};
 
   G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
 
