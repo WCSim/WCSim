@@ -20,7 +20,7 @@
 #include <iostream>
 
 #ifndef WCSIMWCTRIGGERBASE_VERBOSE
-#define WCSIMWCTRIGGERBASE_VERBOSE
+//#define WCSIMWCTRIGGERBASE_VERBOSE
 #endif
 
 const double WCSimWCTriggerBase::offset = 950.0 ; // ns. apply offset to the digit time
@@ -103,8 +103,8 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
   std::vector<int> digit_times;
   bool first_loop = true;
 
-#ifdef WCSIMWCTRIGGERBASE_VERBOSE
   G4cout << "WCSimWCTriggerBase::AlgNHits. Number of entries in input digit collection: " << WCDCPMT->entries() << G4endl;
+#ifdef WCSIMWCTRIGGERBASE_VERBOSE
   int temp_total_pe = 0;
   for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
     temp_total_pe += (*WCDCPMT)[i]->GetTotalPe();
@@ -199,6 +199,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     float lowerbound = triggertime + WCSimWCTriggerBase::eventgatedown;
     float upperbound = triggertime + WCSimWCTriggerBase::eventgateup;
 
+#ifdef WCSIMWCTRIGGERBASE_VERBOSE
     G4cout << "Saving trigger " << itrigger << " of type " << WCSimEnumerations::EnumAsString(triggertype)
 	   << " in time range [" << lowerbound << ", " << upperbound << "]"
 	   << " with trigger time " << triggertime
@@ -206,6 +207,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     for(std::vector<Float_t>::iterator it = triggerinfo.begin(); it != triggerinfo.end(); ++it)
       G4cout << " " << *it;
     G4cout << G4endl;
+#endif
 
     //loop over PMTs
     for (G4int i = 0; i < WCDCPMT->entries(); i++) {
@@ -261,8 +263,6 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       }//loop over Digits
     }//loop over PMTs
   }//loop over Triggers
-#ifdef WCSIMWCTRIGGERBASE_VERBOSE
   G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of entries in output digit collection: " << DigitsCollection->entries() << G4endl;
-#endif
 
 }

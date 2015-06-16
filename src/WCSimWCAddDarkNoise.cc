@@ -22,7 +22,7 @@
 #include <iostream>
 
 #ifndef WCSIMWCADDDARKNOISE_VERBOSE
-#define WCSIMWCADDDARKNOISE_VERBOSE
+//#define WCSIMWCADDDARKNOISE_VERBOSE
 #endif
 
 WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,

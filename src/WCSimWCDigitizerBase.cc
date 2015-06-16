@@ -19,6 +19,10 @@
 #include <cstring>
 #include <iostream>
 
+#ifndef WCSIMWCDIGITIZERBASE_VERBOSE
+//#define WCSIMWCDIGITIZERBASE_VERBOSE
+#endif
+
 // changed from 940 (april 2005) by MF
 // 960 is unsuitable
 
@@ -75,9 +79,11 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 {
   //gate is not a trigger, but just the position of the digit in the array
   //inside the WCSimWCDigi object
+#ifdef WCSIMWCDIGITIZERBASE_VERBOSE
   G4cout<<"Adding hit "<<gate<<" in tube "<<tube
 	<< " with time " << digihittime << " charge " << peSmeared
 	<< " (made of " << digi_comp.size() << " raw hits)";
+#endif
 
   //  if ( digihittime > 0.0 && peSmeared>0.0)
   if (peSmeared > 0.0) {
@@ -92,7 +98,9 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	Digi->SetTime(gate,digihittime);
 	Digi->AddDigiCompositionInfo(digi_comp);
 	DigiStoreHitMap[tube] = DigiStore->insert(Digi);
+#ifdef WCSIMWCDIGITIZERBASE_VERBOSE
 	G4cout << " NEW HIT" << G4endl;
+#endif
       }
       else {
 	//G4cout << "deja vu " << tube << " " << G << "  " << TriggerTimes[G] << " " << digihittime
@@ -103,7 +111,9 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetTime(gate,digihittime);
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddPe(digihittime);
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddDigiCompositionInfo(digi_comp);
+#ifdef WCSIMWCDIGITIZERBASE_VERBOSE
 	G4cout << " DEJA VU" << G4endl;
+#endif
       }
   }//peSmeared > 0
   //else { G4cout << "DIGIT REJECTED" << G4endl; }

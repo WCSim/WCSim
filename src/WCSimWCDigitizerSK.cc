@@ -24,6 +24,10 @@
 
 //RawSignalHitCollection *collection = new RawSignalHitCollection;
 
+#ifndef WCSIMWCDIGITIZERSK_VERBOSE
+//#define WCSIMWCDIGITIZERSK_VERBOSE
+#endif
+
 const double WCSimWCDigitizerSK::pmtgate = 200.0 ; // ns
 
 WCSimWCDigitizerSK::WCSimWCDigitizerSK(G4String name,
@@ -59,13 +63,17 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       //Sort photons on this pmt
       (*WCHCPMT)[i]->SortArrayByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
+#ifdef WCSIMWCDIGITIZERSK_VERBOSE
       G4cout<<"tube "<<tube<<" totalpe = "<<(*WCHCPMT)[i]->GetTotalPe();
+#endif
       /*
 	G4cout<<" parents =\t";
       for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
 	G4cout << " " << (*WCHCPMT)[i]->GetParentID(ip);
       */
+#ifdef WCSIMWCDIGITIZERSK_VERBOSE
       G4cout <<G4endl;
+#endif
       //look over all hits on the PMT
       //integrate charge and start digitizing
       float intgr_start=0;
@@ -107,7 +115,9 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    photon_unique_id = ip;
 	    digi_comp.push_back( std::make_pair(digi_unique_id, photon_unique_id) );
       
+#ifdef WCSIMWCDIGITIZERSK_VERBOSE
 	    std::cout<<"INFO: time "<<time<<" digi_id "<<digi_unique_id<<" p_id "<<photon_unique_id<<std::endl;
+#endif
 	    //if this is the last digit, make sure to make the digit
 	    if(ip + 1 == (*WCHCPMT)[i]->GetTotalPe()){
 	      MakeDigit = true;
@@ -157,7 +167,9 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    continue;
 	  }
 	  else if(time > upperlimit + deadtime){
+#ifdef WCSIMWCDIGITIZERSK_VERBOSE
 	    G4cout<<"*** PREPARING FOR >1 DIGI ***"<<G4endl;
+#endif
 	    //we now need to start integrating from the hit
 	    intgr_start=time;
 	    peSmeared = pe;
@@ -192,6 +204,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
     }//i (WCHCPMT->entries())
   G4cout<<"WCSimWCDigitizerSK::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << "\n";
   
+#ifdef WCSIMWCDIGITIZERSK_VERBOSE
   G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
   for (G4int i = 0 ; i < DigiStore->entries() ; i++){
     std::vector< std::pair<int,int> > comp = (*DigiStore)[i]->GetDigiCompositionInfo();
@@ -200,4 +213,5 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       G4cout<<"tube " <<tubeid<<" entry "<<i<<" digi "<<comp[i].first<< " p_id "<<comp[i].second<<G4endl;
     }
   }
+#endif
 }

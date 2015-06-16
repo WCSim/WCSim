@@ -39,8 +39,12 @@
 #include "WCSimRootEvent.hh"
 #include "TStopwatch.h"
 
+#ifndef _SAVE_RAW_HITS
 #define _SAVE_RAW_HITS
-
+#ifndef _SAVE_RAW_HITS_VERBOSE
+//#define _SAVE_RAW_HITS_VERBOSE
+#endif
+#endif
 
 WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun, 
 				     WCSimDetectorConstruction* myDetector, 
@@ -765,10 +769,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   wcsimrootevent->SetNumTubesHit(jhfNtuple.numTubesHit);
 
 #ifdef _SAVE_RAW_HITS
-
-#ifndef _SAVE_RAW_HITS_VERBOSE
-#define _SAVE_RAW_HITS_VERBOSE
-#endif
 
   if (WCHC && WCDC_hits) 
   {
