@@ -14,20 +14,22 @@ class WCSimWCTriggerBase;
 class WCSimWCDAQMessenger: public G4UImessenger
 {
 public:
-  WCSimWCDAQMessenger(WCSimEventAction*);
+  WCSimWCDAQMessenger();
 
   ~WCSimWCDAQMessenger();
 
   void SetNewValue(G4UIcommand* command, G4String newValue);
 
+  void TellEventAction();
   void TellTrigger();
   void TellDigitizer();
 
-  void TellMeAboutTheDigitizer(WCSimWCDigitizerBase* digitizer) { WCSimDigitize = digitizer; }
-  void TellMeAboutTheTrigger  (WCSimWCTriggerBase*   trigger)   { WCSimTrigger  = trigger; }
+  void TellMeAboutTheDigitizer  (WCSimWCDigitizerBase* digitizer)   { WCSimDigitize = digitizer; }
+  void TellMeAboutTheTrigger    (WCSimWCTriggerBase*   trigger)     { WCSimTrigger  = trigger; }
+  void TellMeAboutTheEventAction(WCSimEventAction*     eventaction) { WCSimEvent    = eventaction; }
 
 private:
-  WCSimEventAction*   WCSimEvent;
+  WCSimEventAction*     WCSimEvent;
   WCSimWCDigitizerBase* WCSimDigitize;
   WCSimWCTriggerBase*   WCSimTrigger;
 

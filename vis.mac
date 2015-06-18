@@ -65,14 +65,7 @@
 /WCSim/SavePi0 false
 
 #choose the Trigger & Digitizer type (and options)
-#WARNING options should be specified before the class choices themselves
-# control the NHits trigger threshold
-/DAQ/TriggerNHits/Threshold 25
-# control the NHits trigger window (ns)
-/DAQ/TriggerNHits/Window 200
-# set both to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger classes
-/DAQ/Digitizer SKIV
-/DAQ/Trigger NHits
+#this is now done in jobOptions.mac
 
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz

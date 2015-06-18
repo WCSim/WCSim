@@ -15,4 +15,11 @@
 /WCSim/physics/list WCSim # included for backward-compatibility.  Requires jobOptions2.mac
 
 
-
+#choose the Trigger & Digitizer type (and options)
+# set at least one (both to be sure) to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger classes
+/DAQ/Digitizer SKIV
+/DAQ/Trigger NHits
+# control the NHits trigger threshold
+/DAQ/TriggerNHits/Threshold 25
+# control the NHits trigger window (ns)
+/DAQ/TriggerNHits/Window 200

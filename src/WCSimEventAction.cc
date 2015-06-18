@@ -47,81 +47,54 @@
 #endif
 
 WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun, 
-				     WCSimDetectorConstruction* myDetector, 
-				     WCSimPrimaryGeneratorAction* myGenerator)
+				   WCSimDetectorConstruction* myDetector, 
+				   WCSimPrimaryGeneratorAction* myGenerator,
+				   WCSimWCDAQMessenger* myDAQMessenger)
   :runAction(myRun), generatorAction(myGenerator), 
-   detectorConstructor(myDetector)
+   detectorConstructor(myDetector),
+   DAQMessenger(myDAQMessenger)
 {
-  DAQMessenger = new WCSimWCDAQMessenger(this);
+  //Get the DAQ options to know which class to construct
+  DAQMessenger->TellMeAboutTheEventAction(this);
+  DAQMessenger->TellEventAction();
 
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
   WCSimWCPMT* WCDMPMT = new WCSimWCPMT( "WCReadoutPMT", myDetector);
   DMman->AddNewModule(WCDMPMT);
 
-  // TD 01/05/2015
-  // The Dark Noise, Digitizer, & Trigger classes were previously constructed here
-  // They have been moved to CreateDigitizerInstances() and CreateTriggerInstances(),
-  // called in WCSimWCDAQMessenger::SetNewValue()
-  // This is in order for different Digitizer and Trigger classes to be chosen
-  // in the .mac file
-}
+  //choose whether to create the old combined dark noise + digitizer + trigger class
+  // or the new separated classes
+  if(DigitizerChoice != "SKI_SKDETSIM" && TriggerChoice != "SKI_SKDETSIM") {
 
-WCSimEventAction::~WCSimEventAction(){}
+    //create dark noise module
+    WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise( "WCDarkNoise", detectorConstructor);
+    DMman->AddNewModule(WCDNM);
 
-void WCSimEventAction::CreateDigitizerInstance()
-{
-  //First, check if we've previously created the WCSimWCDigitizer... instance
-  //Assume that WCSimWCAddDarkNoise instance was created at the same time
-  G4DigiManager* DMman = G4DigiManager::GetDMpointer();
-  WCSimWCDigitizerBase* tempWCDM =
-    (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadoutDigits");
-
-  //Create the Dark Noise and DigitizerBase instances
-  if(!tempWCDM) {
-    //choose whether to create the old combined dark noise + digitizer + trigger class
-    // or the new separated classes
-    if(DigitizerChoice != "SKI_SKDETSIM" && TriggerChoice != "SKI_SKDETSIM") {
-      //create dark noise module
-      WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise( "WCDarkNoise", detectorConstructor);
-      DMman->AddNewModule(WCDNM);
-      //create your choice of digitizer module
-      if(DigitizerChoice == "SKI" || DigitizerChoice == "SKIV") {
-        WCSimWCDigitizerSK* WCDM = new WCSimWCDigitizerSK( "WCReadoutDigits", detectorConstructor, DAQMessenger);
-	DMman->AddNewModule(WCDM);
-      }
+    //create your choice of digitizer module
+    if(DigitizerChoice == "SKI" || DigitizerChoice == "SKIV") {
+      WCSimWCDigitizerSK* WCDM = new WCSimWCDigitizerSK( "WCReadoutDigits", detectorConstructor, DAQMessenger);
+      DMman->AddNewModule(WCDM);
     }
-  }//!WCTM
-}
 
-void WCSimEventAction::CreateTriggerInstance()
-{
-  //First, check if we've previously created the WCSimWCTrigger... instance
-  G4DigiManager* DMman = G4DigiManager::GetDMpointer();
-  WCSimWCTriggerBase* tempWCTM =
-    (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout");
-
-  //Create the TriggerBase instance
-  if(!tempWCTM) {
-    //choose whether to create the old combined dark noise + digitizer + trigger class
-    // or the new separated classes
-    if(DigitizerChoice == "SKI_SKDETSIM" || TriggerChoice == "SKI_SKDETSIM") {
+    //create your choice of trigger module
+    if(TriggerChoice == "NHits") {
+      WCSimWCTriggerNHits* WCTM = new WCSimWCTriggerNHits("WCReadout", detectorConstructor, DAQMessenger);
+      DMman->AddNewModule(WCTM);
+    }
+    else if(TriggerChoice == "NHits2") {
+      WCSimWCTriggerNHits2* WCTM = new WCSimWCTriggerNHits2("WCReadout", detectorConstructor, DAQMessenger);
+      DMman->AddNewModule(WCTM);
+    }
+  }//not SKI_SKDETSIM
+  else {
       //this is the old SKI joint dark noise, digitizer & trigger from SKDETSIM; buggy
       WCSimWCDigitizer* WCTM = new WCSimWCDigitizer( "WCReadout", detectorConstructor);
       DMman->AddNewModule(WCTM);
-    }
-    else {
-      //create your choice of trigger module
-      if(TriggerChoice == "NHits") {
-	WCSimWCTriggerNHits* WCTM = new WCSimWCTriggerNHits("WCReadout", detectorConstructor, DAQMessenger);
-	DMman->AddNewModule(WCTM);
-      }
-      else if(TriggerChoice == "NHits2") {
-	WCSimWCTriggerNHits2* WCTM = new WCSimWCTriggerNHits2("WCReadout", detectorConstructor, DAQMessenger);
-	DMman->AddNewModule(WCTM);
-      }
-    }
-  }//!WCTM
+  }
+
 }
+
+WCSimEventAction::~WCSimEventAction(){}
 
 void WCSimEventAction::BeginOfEventAction(const G4Event*){}
 

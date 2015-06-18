@@ -9,7 +9,7 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithAnInteger.hh"
 
-WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction * eventaction):WCSimEvent(eventaction)
+WCSimWCDAQMessenger::WCSimWCDAQMessenger()
 {
   WCSimDAQDir = new G4UIdirectory("/DAQ/");
   WCSimDAQDir->SetGuidance("Commands to select DAQ options");
@@ -63,6 +63,10 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction * eventaction):WCSimEv
 
 WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
 {
+  delete NHitsTriggerDir;
+  delete NHitsTriggerThreshold;
+  delete NHitsTriggerWindow;
+
   delete DigitizerChoice;
   delete TriggerChoice;
   delete WCSimDAQDir;
@@ -75,37 +79,44 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   // for use in the Tell*() methods later
 
   if (command == DigitizerChoice) {
-    WCSimEvent->SetDigitizerChoice(newValue); 
     G4cout << "Digitizer choice set to " << newValue << G4endl;
-    WCSimEvent->CreateDigitizerInstance();
     StoreDigitizerChoice = newValue;
   }
   else if (command == TriggerChoice) {
-    WCSimEvent->SetTriggerChoice(newValue); 
     G4cout << "Trigger choice set to " << newValue << G4endl;
-    WCSimEvent->CreateTriggerInstance();
     StoreTriggerChoice = newValue;
   }
   else if (command == NHitsTriggerThreshold) {
+    G4cout << "NHits trigger threshold set to " << newValue << G4endl;
     StoreSetNHitsThreshold = NHitsTriggerThreshold->GetNewIntValue(newValue);
   }
   else if (command == NHitsTriggerWindow) {
+    G4cout << "NHits trigger window set to " << newValue << G4endl;
     StoreSetNHitsWindow = NHitsTriggerWindow->GetNewIntValue(newValue);
   }
+}
+
+void WCSimWCDAQMessenger::TellEventAction()
+{
+  G4cout << "Passing DAQ options to the event action class instance" << G4endl;
+  WCSimEvent->SetDigitizerChoice(StoreDigitizerChoice);
+  G4cout << "\tDigitizer choice set to " << StoreDigitizerChoice << G4endl;
+  WCSimEvent->SetTriggerChoice(StoreTriggerChoice);
+  G4cout << "\tTrigger choice set to " << StoreTriggerChoice << G4endl;
 }
 
 void WCSimWCDAQMessenger::TellTrigger()
 {
   G4cout << "Passing Trigger options to the trigger class instance" << G4endl;
   WCSimTrigger->SetNHitsThreshold(StoreSetNHitsThreshold);
-  G4cout << "NHits trigger threshold set to " << StoreSetNHitsThreshold << G4endl;
+  G4cout << "\tNHits trigger threshold set to " << StoreSetNHitsThreshold << G4endl;
   WCSimTrigger->SetNHitsWindow(StoreSetNHitsWindow);
-  G4cout << "NHits trigger window set to " << StoreSetNHitsWindow << G4endl;
+  G4cout << "\tNHits trigger window set to " << StoreSetNHitsWindow << G4endl;
 }
 
 void WCSimWCDAQMessenger::TellDigitizer()
 {
   G4cout << "Passing Digitizer options to the digitizer class instance" << G4endl;
   WCSimDigitize->SKDigitizerType(StoreDigitizerChoice);
-  G4cout << "Digitizer choice set to " << StoreDigitizerChoice << G4endl;
+  G4cout << "\tDigitizer choice set to " << StoreDigitizerChoice << G4endl;
 }

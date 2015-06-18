@@ -27,7 +27,7 @@ private:
   
 public:
   WCSimEventAction(WCSimRunAction*, WCSimDetectorConstruction*,
-		    WCSimPrimaryGeneratorAction*);
+		   WCSimPrimaryGeneratorAction*, WCSimWCDAQMessenger*);
   ~WCSimEventAction();
   
 public:
@@ -42,15 +42,12 @@ public:
   WCSimRunAction* GetRunAction(){return runAction;}
   void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
   void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
-  void CreateDigitizerInstance();
-  void CreateTriggerInstance();
 
  private:
   G4int WCSimEventFindStartingVolume( G4ThreeVector vtx);
   G4int WCSimEventFindStoppingVolume( G4String stopVolumeName);
   G4String DigitizerChoice;
   G4String TriggerChoice;
-
 };
 
 
