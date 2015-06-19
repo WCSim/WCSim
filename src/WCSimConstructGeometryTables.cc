@@ -104,7 +104,8 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
 
   replicaNoString[aDepth] = pvname.str() + "-" + depth.str();
 
-  if ((aPV->GetName() == "glassFaceWCPMT")) {
+  if (aPV->GetName()== WCIDCollectionName ||aPV->GetName()== WCODCollectionName ) 
+    {
 
     // First increment the number of PMTs in the tank.
     totalNumPMTs++;  

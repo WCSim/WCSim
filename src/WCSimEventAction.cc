@@ -135,10 +135,10 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // Get Hit collection of this event
   G4HCofThisEvent* HCE         = evt->GetHCofThisEvent();
   WCSimWCHitsCollection* WCHC = 0;
-
+  G4String WCIDCollectionName = detectorConstructor->GetIDCollectionName();
   if (HCE)
   { 
-    G4String name =   "glassFaceWCPMT";
+    G4String name =   WCIDCollectionName;
     G4int collectionID = SDman->GetCollectionID(name);
     WCHC = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
   }

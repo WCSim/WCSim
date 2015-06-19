@@ -30,11 +30,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   isHyperK  = false;
 
   debugMode = false;
-//-----------------------------------------------------
-// Initilize SD pointers
-//-----------------------------------------------------
-
-      aWCPMT     = NULL;
 
   myConfiguration = DetConfig;
 

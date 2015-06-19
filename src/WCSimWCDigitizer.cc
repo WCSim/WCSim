@@ -54,80 +54,6 @@ WCSimWCDigitizer::~WCSimWCDigitizer(){
   DarkRateMessenger = 0;
 }
 
-
-// void WCSimWCDigitizer::StoreHitsTEST(WCSimWCDigitsCollection* WCHCPMT) {
-  
-//   //  RawSignalHitCollection *collection = new RawSignalHitCollection;
-  
-//     // Get the info for pmt positions                                                                                                                              
-//     std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
-
-//     for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
-//       {
-        
-// 	int tube = (*WCHCPMT)[i]->GetTubeID();
-// 	// Get the info for pmt positions                                                                                                      
-// 	Float_t hit_pos[3];
-// 	Float_t hit_rot[3];
-// 	//Int_t hit_cylLoc;
-// 	// TODO: need to change the format of hit_pos to G4ThreeVector
-// 	// and change hit_rot to G4RotationMatrix
-	
-// 	WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( tube - 1 ); //must be -1 to return the geometry info for tubeID of noise_pmt.
-// 	hit_pos[0] = 10*pmtinfo->Get_transx();
-// 	hit_pos[1] = 10*pmtinfo->Get_transy();
-// 	hit_pos[2] = 10*pmtinfo->Get_transz();
-// 	hit_rot[0] = pmtinfo->Get_orienx();
-// 	hit_rot[1] = pmtinfo->Get_orieny();
-// 	hit_rot[2] = pmtinfo->Get_orienz();
-// 	//hit_cylLoc = pmtinfo->Get_cylocation();
-// 	G4RotationMatrix pmt_rotation(hit_rot[0], hit_rot[1], hit_rot[2]);
-// 	G4ThreeVector pmt_position(hit_pos[0], hit_pos[1], hit_pos[2]);
-        
-// 	for ( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
-	  
-//           {
-// 	    //create new WCSimWCDigi for each hit
-// 	    float time = (*WCHCPMT)[i]->GetTime(ip);
-// 	    float pe = (*WCHCPMT)[i]->GetPe(ip);
-// 	    WCSimWCDigi* ahit = new WCSimWCDigi();
-// 	    ahit->SetTubeID( tube );
-// 	      // This Logical volume is GlassFaceWCPMT
-// 	      ahit->SetLogicalVolume((*WCHCPMT)[0]->GetLogicalVolume());
-// 	      ahit->SetTrackID(-1);
-// 	      ahit->AddParentID(-1);
-// 	      ahit->SetRot(pmt_rotation);
-// 	      ahit->SetPos(pmt_position);
-// 	      ahit->SetTime(0,time);
-// 	      ahit->SetPe(0,pe);
-// 	      ahit->AddPe(time); // needed to increment TotalPe
-// 	      collection->AddHit(*ahit);
-// 	  }
-//       }
-    
-//     collection->SortHits();
-//     for(int ii=0;ii<collection->GetNumberOfHitPMT();ii++) {
-//       int kk=collection->GetPMTID(ii);
-//       int numhits = collection->GetNumberOfHits(kk);
-//       std::cout<<"Number of hits on Tube "<<kk<<" "<<numhits<<"\n";
-//       if(numhits > 0) {
-// 	//get hit
-// 	for(int ii = 0;ii<numhits;ii++) {
-// 	  std::cout<<collection->GetHit(kk,ii)->GetPe(0)<<" "<<collection->GetHit(kk,ii)->GetTime(0)<<"\n";
-	  
-// 	}
-//       }
-//     }
-//       //}
-// }
-
-
-//void WCSimWCDigitizer::DigitizeTEMP() {
-////Temporary method to implement a SK IV like digitizer
-  
-//}
-
-
 void WCSimWCDigitizer::Digitize()
 {
   DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
@@ -427,9 +353,10 @@ void WCSimWCDigitizer::FindNumberOfGates()
 void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 {
 
-  //G4float timingConstant = 0.0;
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  G4float timingConstant = 0.0;
   WCSimPMTObject * PMT;
-  PMT = myDetector->GetPMTPointer("glassFaceWCPMT");
+  PMT = myDetector->GetPMTPointer(WCIDCollectionName);
  
   G4double EvtG8Down = WCSimWCDigitizer::eventgatedown;
   G4double EvtG8Up = WCSimWCDigitizer::eventgateup;  // this is a negative number...
