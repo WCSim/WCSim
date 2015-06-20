@@ -1,6 +1,6 @@
 # Sampe setup macro with no visualization
 
-/run/verbose 0
+/run/verbose 2
 /tracking/verbose 0
 /hits/verbose 0
 
@@ -9,8 +9,8 @@
 #
 # The tube size is fixed for SK to 20"
 # These are fixed geometries for validation
-/WCSim/WCgeom HyperK
-#/WCSim/WCgeom SuperK
+#/WCSim/WCgeom HyperK
+/WCSim/WCgeom SuperK
 
 # Some other SuperK options:
 #/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%

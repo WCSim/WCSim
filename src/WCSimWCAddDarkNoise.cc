@@ -158,7 +158,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	    //std::cout<<"setting new noise pmt "<<noise_pmt<<" "<<ahit->GetTubeID()<<"\n";
 	    // This Logical volume is GlassFaceWCPMT
 	    //ahit->SetLogicalVolume((*WCHCPMT)[0]->GetLogicalVolume());
-	    ahit->SetLogicalVolume(G4LogicalVolumeStore::GetInstance()->GetVolume("glassFaceWCPMT"));
+	    ahit->SetLogicalVolume(G4LogicalVolumeStore::GetInstance()->GetVolume(myDetector->GetDetectorName()+"-glassFaceWCPMT"));
 	    //std::cout<<"1 "<<(G4LogicalVolumeStore::GetInstance()->GetVolume("glassFaceWCPMT"))->GetName()<<"\n";
 	    //std::cout<<"2 "<<(*WCHCPMT)[0]->GetLogicalVolume()->GetName()<<"\n";
 	    ahit->SetTrackID(-1);

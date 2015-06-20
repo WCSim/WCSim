@@ -226,7 +226,7 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
       
       int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
       if(verbose) printf("Ncherenkovdigihits %d\n", ncherenkovdigihits);
-      
+     
       if(ncherenkovdigihits>0)
 	num_trig++;
       //for (i=0;i<(ncherenkovdigihits>4 ? 4 : ncherenkovdigihits);i++){

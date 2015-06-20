@@ -186,7 +186,9 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 
 void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType)
 {
-  WCSimPMTObject * PMT = myDetector->GetPMTPointer("glassFaceWCPMT"); //for hit time smearing
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  G4float timingConstant = 0.0;
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName); //for hit time smearing
 
   //Loop over trigger times
   for(unsigned int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
