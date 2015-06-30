@@ -113,7 +113,6 @@ int main(int argc,char** argv)
     G4UIsession* session =  new G4UIterminal(new G4UItcsh);
 
     // Visualization Macro
-    file_exists("vis.mac");
     UI->ApplyCommand("/control/execute vis.mac");
 
     // Start Interactive Mode
@@ -126,7 +125,6 @@ int main(int argc,char** argv)
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
 
-    file_exists(fileName.c_str());
     UI->ApplyCommand(command+fileName);
   }
 
