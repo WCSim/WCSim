@@ -13,6 +13,7 @@ void compare_lots(const char* histname, double axis_low, double axis_high, TStri
   TCanvas * c = new TCanvas();
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
+  c->SetTopMargin(0.15);
   c->SetBottomMargin(0.15);
   c->SetLeftMargin(0.15);
   const int max_colors = 7;
@@ -40,6 +41,8 @@ void compare_lots(const char* histname, double axis_low, double axis_high, TStri
   TH1   * h[nhists];
 
   double ymax = 0;
+  double xmin =  999999;
+  double xmax = -999999;
   //for(int i = nhists - 1; i > 0; i--) {
   for(int i = 0; i < nhists; i++) {
     cout << i << "\t";
@@ -59,6 +62,10 @@ void compare_lots(const char* histname, double axis_low, double axis_high, TStri
     }
     if(rebin > 0)
       h[i]->Rebin(rebin);
+    if(h[i]->GetXaxis()->GetBinCenter(h[i]->FindFirstBinAbove(1E-5)) < xmin)
+      xmin = h[i]->GetXaxis()->GetBinCenter(h[i]->FindFirstBinAbove(1E-5));
+    if(h[i]->GetXaxis()->GetBinCenter(h[i]->FindLastBinAbove(1E-5)) > xmax)
+      xmax = h[i]->GetXaxis()->GetBinCenter(h[i]->FindLastBinAbove(1E-5));
     if(axis_low < axis_high)
       h[i]->GetXaxis()->SetRangeUser(axis_low, axis_high);
     if(h[i]->GetMaximum() > ymax)
@@ -68,6 +75,8 @@ void compare_lots(const char* histname, double axis_low, double axis_high, TStri
   ymax *= 1.05;
 
   for(int i = 0; i < looper; i++) {
+    if(axis_low < -9999 && axis_high < -9999)
+      h[i]->GetXaxis()->SetRangeUser(xmin, xmax);      
     h[i]->GetYaxis()->SetRangeUser(0, ymax);
     if(i == 0) {
       h[i]->Draw();
@@ -78,14 +87,19 @@ void compare_lots(const char* histname, double axis_low, double axis_high, TStri
   h[0]->Draw("SAME");
 
 
-  TLegend * l = new TLegend(0.4,0.9,0.9,1.0);
+  TLegend * l = new TLegend(0.4,0.85,0.9,1.0);
   l->SetTextSize(0.042);
   l->SetTextFont(132);
   for(int i = 0; i < looper; i++) {
     l->AddEntry(h[i], label_tokens[i].c_str(), "l");
   }
+  if(nhists == 2) {
+    double prob = h[0]->KolmogorovTest(h[1]);
+    l->AddEntry((TObject*)0, TString::Format("KS prob %.2f", prob), "");
+  }
   l->Draw();
 
+  
   TString filename("compare_");
   filename += histname;
   filename += "_";

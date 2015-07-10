@@ -3,7 +3,7 @@
 import glob, os, argparse, sys
 
 parser = argparse.ArgumentParser(description='Analyse a directory of WCSim output files')
-parser.add_argument('-m','--macroname', type=str, help='Default: $WCSIMDIR/verification-test-scripts/full_scripts_suite/daq_readfile.C')
+parser.add_argument('-m','--macroname', type=str, default='$WCSIMDIR/verification-test-scripts/full_scripts_suite/daq_readfile.C', help='Default: $WCSIMDIR/verification-test-scripts/full_scripts_suite/daq_readfile.C')
 parser.add_argument('-d','--dir', type=str, help='Directory to analyse', default='./')
 parser.add_argument('-n','--nevents', type=int, help='Max number of events to analyse', default=9999999999)
 parser.add_argument('-v','--verbose', action='store_true', help='Run verbosely?')

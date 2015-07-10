@@ -75,6 +75,10 @@ Running
 ### Example
 
 Compare 5, 10, 50 MeV electrons for the SKDETSIM-like and new-style digitisation routines, with/without noise, submitting WCSim jobs locally
-* python $TDEALTRYREPO/hyperkdaq/wcsim/run/generate_mac_files.py--batchmode local --WCgeom SuperK --HKwatertanklength 24750 --PMTQEMethod Stacking_Only --SavePi0 false --DAQdigitizer SKI,SKI_SKDETSIM --DAQtrigger NHits,SKI_SKDETSIM --DAQnhitsthreshold 25 --DAQnhitsignorenoise --DAQnhitswindow 200 --DAQsavefailuresmode 0 --DAQsavefailurestime 250  --DarkNoiseRate 0,8.4 --DarkNoiseConvert 1.367 --DarkNoiseMode 1 --DarkNoiseWindow 2000 --GunParticle e- --GunEnergy 5,10,50 --GunPosition 0,0,0 --GunDirection 1,0,0 --DAQnhitsignorenoise --NEvents 2000
-* python analyse_dir.py --dir .
-* python plot_lots.py  --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_code:Old_code' --mode compare_lots
+* python $WCSIMDIR/verification-test-scripts/full_scripts_suite/generate_mac_files.py--batchmode local --WCgeom SuperK --HKwatertanklength 24750 --PMTQEMethod Stacking_Only --SavePi0 false --DAQdigitizer SKI,SKI_SKDETSIM --DAQtrigger NHits,SKI_SKDETSIM --DAQnhitsthreshold 25 --DAQnhitsignorenoise --DAQnhitswindow 200 --DAQsavefailuresmode 0 --DAQsavefailurestime 250  --DarkNoiseRate 0,8.4 --DarkNoiseConvert 1.367 --DarkNoiseMode 1 --DarkNoiseWindow 2000 --GunParticle e- --GunEnergy 5,10,50 --GunPosition 0,0,0 --GunDirection 1,0,0 --DAQnhitsignorenoise --NEvents 2000
+* python $WCSIMDIR/verification-test-scripts/full_scripts_suite/analyse_dir.py --dir .
+Compare like-for-like
+* python $WCSIMDIR/verification-test-scripts/full_scripts_suite/plot_lots.py --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_code:Old_code' --mode compare_lots
+Compare 5,10,50 MeV on the same plot
+* python $WCSIMDIR/verification-test-scripts/full_scripts_suite/plot_lots.py --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_5MeV:Old_5MeV:New_10MeV:Old_10MeV:New_10MeV:Old_10MeV' --mode compare_lots --diffplots _5e-:_10e-,_50e- --required_filename_part _5e-
+* python /home/other/tdealtry/Documents/myWCSIM/WCSim/verification-test-scripts/full_scripts_suite/plot.py --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_code,Old_code' --mode filesize

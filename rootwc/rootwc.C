@@ -3,7 +3,7 @@ void change_prompt()
     TRint* rint = dynamic_cast<TRint*>(gApplication);
     if (!rint) return;
 
-    rint->SetPrompt("RootWC: What can I do for you master? [%d] ");
+    rint->SetPrompt("RootWC: For all your WCSim needs [%d] ");
 }
 
 void t2k_style()
@@ -110,15 +110,15 @@ void t2k_style()
 
 void rootwc()
 {   
-    TString script_dir = gSystem->Getenv("TDEALTRYREPO");
-    script_dir += "./hyperkdaq/wcsim/wcsimroot";
+    TString script_dir = gSystem->Getenv("WCSIMDIR");
+    script_dir += "/rootwc/";
 
     TString curr_dir = gSystem->pwd();
 
     gSystem->cd(script_dir.Data());
 
-    gROOT->ProcessLine(".x $TDEALTRYREPO/hyperkdaq/wcsim/wcsimroot/loadincs.C");    
-    gROOT->ProcessLine(".x $TDEALTRYREPO/hyperkdaq/wcsim/wcsimroot/loadlibs.C");    
+    gROOT->ProcessLine(".x $WCSIMDIR/rootwc/loadincs.C");    
+    gROOT->ProcessLine(".x $WCSIMDIR/rootwc/loadlibs.C");    
 
     gSystem->cd(curr_dir.Data());
 

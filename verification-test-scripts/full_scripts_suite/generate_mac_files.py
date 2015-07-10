@@ -110,6 +110,10 @@ origdir = os.getcwd()
 DAQfolders = []
 for DAQdigitizer in args.DAQdigitizer:
     for DAQtrigger in args.DAQtrigger:
+        if DAQtrigger == 'SKI_SKDETSIM' and DAQdigitizer != 'SKI_SKDETSIM':
+            continue
+        if DAQtrigger != 'SKI_SKDETSIM' and DAQdigitizer == 'SKI_SKDETSIM':
+            continue
         for DAQnhitsthreshold in args.DAQnhitsthreshold:
             for DAQnhitswindow in args.DAQnhitswindow:
                 for DAQsavefailuresmode in args.DAQsavefailuresmode:

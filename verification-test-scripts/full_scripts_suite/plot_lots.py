@@ -13,7 +13,8 @@ parser = argparse.ArgumentParser(description='Analyse a directory of WCSim outpu
 parser.add_argument('-d','--dir1',  type=str, help='First directory to analyse', default='./')
 parser.add_argument('-i','--dir2',  type=str, help="Second directory to analyse (don't give to look at 'differnce' files in same directory)", default='')
 parser.add_argument('--difference', type=delim_list, help='When running without dir2, look for 2 files in dir1 that are identical but for this difference')
-parser.add_argument('--diffplots',  type=str, help='When running without dir2, look for 2 files in dir1 that are identical but for this difference')
+parser.add_argument('--diffplots',  type=str, help='Look for 2 files in dir1 that are identical but for this difference')
+parser.add_argument('--required_filename_part', type=str, help="When running with both dir1 & dir2, use this to ensure that you don't glob over files you don't want to", default='')
 parser.add_argument('--legend',     type=str, help='Overwrite the legend labels')
 parser.add_argument('-m', '--mode', type=str, help='Run mode. Possibilities: ' + " ".join(m for m in modes), required=True)
 args = parser.parse_args()
@@ -47,44 +48,47 @@ print "cd'ed to", args.dir1
 
 #construct the string to glob over
 glob_prefix = "analysed_wcsim*"
-if(args.mode == "filesize"):
-    glob_prefix = "wcsim_*"
 glob_postfix = "*.root"
 
 globber = glob_prefix + glob_postfix
 if not args.dir2:
     globber = glob_prefix + args.difference[0] + glob_postfix
+elif args.required_filename_part:
+    globber = glob_prefix + args.required_filename_part + glob_postfix
 
-if args.mode == "filesize":
-    fout  = open("filesizes.txt", "w")
-    fout2 = open("filespeed.txt", "w")
-    
 #loop over the files in directory
 print globber
 for file1 in glob.glob(globber):
     #construct the 2nd filename
+    files = file1
     if args.dir2:
         file2 = "../" + args.dir2 + '/' + file1
         file2temp = file2
     else:
         file2temp = file1
-    files = file1
     if args.difference:
         for i in xrange(0, len(args.difference), 2):
             file2temp = file2temp.replace(args.difference[i], args.difference[i+1])
         file2 = file2temp
     if args.diffplots:
+        files += '$' + file2
         for diffs in args.diffplots.split('?'):
             orig = diffs.split(':')[0]
             for d in diffs.split(':')[1].split(','):
-                file3temp = file2
-                print file3temp
-                print "Replacing", orig, "with", d
-                file3temp = file3temp.replace(orig, d)
-                if os.path.isfile(file3temp):
-                    files = files + '$' + file3temp
-                else:
-                    print "Could not find file", file3temp
+                def replace_file(filename, files):
+                    file3temp = filename
+                    print file3temp
+                    print "Replacing", orig, "with", d
+                    file3temp = file3temp.replace(orig, d)
+                    if os.path.isfile(file3temp):
+                        files = files + '$' + file3temp
+                    else:
+                        print "Could not find file", file3temp
+                    return files
+                if args.dir2:
+                    files = replace_file(file1, files)
+                files = replace_file(file2, files)
+                    
     else:
         files = files + "$" + file2
 

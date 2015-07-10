@@ -5,29 +5,23 @@
 # xmin
 # xmax
 # rebinning
+#(set xmin/xmax to -1 to not zoom on the x axis, or set them both to -9999.99 to zoom automatically)
 
 hists = [ 
-    ["h1nhits", 0, 400, -1],
-    ["h1nhits", 0, 100, -1],
-    ["h1nhits", 1500, 2500, 73],
-    ["h1nhits", 250, 700, -1],
-    ["h1nhitstrigger", 0, 400, -1],
-    ["h1time",  500, 2000, -1],
-    ["h1time2",  600, 2400, -1],
-    ["h1pe",    0, 500, -1],
-    ["h1pe",    0, 100, -1],
-    ["h1pe",    3500, 5000, 73],
-    ["h1pe",    350, 750, -1],
-    ["h1peperdigi", 0, 10, -1],
-    ["h1timeperdigi", 600, 1100, -1],
-    ["h1triggertime", 0,300, -1],
-    ["h1triggertime", 0,300, 5],
-    ["h1inttime", 1,400, -1],
-    ["h1inttimenoise", 1,400, -1],
-    ["h1inttimephoton", 1,400, -1],
-    ["h1inttimemix", 1,400, -1],
-    ["h1eventALL_hittime_photon", 0, 400, -1],
-    ["h1eventALL_hittime_noise", -1, -1, -1]
+    ["h1nhits", -9999.99, -9999.99, -1],
+    ["h1nhitstrigger", -9999.99, -9999.99, -1],
+    ["h1time",  -9999.99, -9999.99, -1],
+    ["h1time2", -9999.99, -9999.99, -1],
+    ["h1pe",    -9999.99, -9999.99, -1],
+    ["h1peperdigi", -9999.99, -9999.99, -1],
+    ["h1timeperdigi", -9999.99, -9999.99, -1],
+    ["h1triggertime", -9999.99, -9999.99, -1],
+    ["h1inttime", -9999.99, -9999.99, -1],
+    ["h1inttimenoise", -9999.99, -9999.99, -1],
+    ["h1inttimephoton", -9999.99, -9999.99, -1],
+    ["h1inttimemix", -9999.99, -9999.99, -1],
+    ["h1eventALL_hittime_photon", -9999.99, -9999.99, -1],
+    ["h1eventALL_hittime_noise", -9999.99, -9999.99, -1]
     ]
 
 

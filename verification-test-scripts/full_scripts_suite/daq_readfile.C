@@ -16,10 +16,14 @@
 #include <TLegend.h>
 #include <TROOT.h>
 
+//#define POST_NEW_DAQ_PULL_REQUEST
+
 #if !defined(__CINT__) || defined(__MAKECINT__)
-#include "include/WCSimRootEvent.hh"
-#include "include/WCSimRootGeom.hh"
-#include "include/WCSimEnumerations.hh"
+#include "WCSimRootEvent.hh"
+#include "WCSimRootGeom.hh"
+#ifdef POST_NEW_DAQ_PULL_REQUEST
+#include "WCSimEnumerations.hh"
+#endif
 #endif
 
 using namespace std;
@@ -59,7 +63,7 @@ void integrate_digit_times(vector<double> & digit_times, TH1F * h) {
 
 
 // Simple example of reading a generated Root file
-int tom_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents = 999999999999, bool create_pdfs = false, bool hists_per_event = false)
+int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents = 999999999999, bool create_pdfs = false, bool hists_per_event = false)
 {
 #if !defined(__MAKECINT__)
   // Load the library with class dictionary info
@@ -125,17 +129,19 @@ int tom_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   TH1F *hvtx2 = new TH1F("hvtx2", "Event VTX2", 200, -1500, 1500);
 
   TH1I *h1triggertype = new TH1I("h1triggertype", "Trigger type;Trigger type;Entries", 10, 0, 10);
+#ifdef POST_NEW_DAQ_PULL_REQUEST
   for(int i = -1; i <= kTriggerNHitsTest; i++)
     h1triggertype->GetXaxis()->SetBinLabel(i+2, WCSimEnumerations::EnumAsString((TriggerType_t)i).c_str());
+#endif
 
-  TH2I *h2nhits = new TH2I("h2nhits", "NDigits from subevent window vs NDigits from 200nsec trigger window;NDigits saved in subevent;NDigits in 200nsec window", 1001, -0.5, 1000.5, 1001, -0.5, 1000.5);
+  TH2I *h2nhits = new TH2I("h2nhits", "NDigits from subevent window vs NDigits from 200nsec trigger window;NDigits saved in subevent;NDigits in 200nsec window", 1001, -0.5, 10000.5, 1001, -0.5, 10000.5);
   TH1I *h1nhits = new TH1I("h1nhits", "NDigits in the subevent window;NDigits;Entries", 10001, -0.5, 10000.5);
   TH1I *h1nhitstrigger = new TH1I("h1nhitstrigger", "NDigits in the trigger window;NDigits;Entries", 10001, -0.5, 10000.5);
   TH1F *h1pe = new TH1F("h1pe", "Total p.e. in the subevent window;Total p.e.;Entries", 10001, -0.5, 10000.5);
-  TH1F *h1time = new TH1F("h1time", "Digit time;Digit time (ns);Entries", 1350, -400, 9500);
-  TH1F *h1time_noise = new TH1F("h1time_noise", "Digit time (digits from noise hits only);Digit time (ns);Entries", 1350, -400, 9500);
-  TH1F *h1time_photon = new TH1F("h1time_photon", "Digit time (digits from photon hits only);Digit time (ns);Entries", 1350, -400, 9500);
-  TH1F *h1time_mix = new TH1F("h1time_mix", "Digit time (digits from a mix of noise and photon hits);Digit time (ns);Entries", 1350, -400, 9500);
+  TH1F *h1time = new TH1F("h1time", "Digit time;Digit time (ns);Entries", 18000, -3000, 15000);
+  TH1F *h1time_noise = new TH1F("h1time_noise", "Digit time (digits from noise hits only);Digit time (ns);Entries", 18000, -3000, 15000);
+  TH1F *h1time_photon = new TH1F("h1time_photon", "Digit time (digits from photon hits only);Digit time (ns);Entries", 18000, -3000, 15000);
+  TH1F *h1time_mix = new TH1F("h1time_mix", "Digit time (digits from a mix of noise and photon hits);Digit time (ns);Entries", 18000, -3000, 15000);
   THStack *hStime = new THStack("hStime", "Digit time;Digits time (ns);Entries");
   h1time_noise->SetLineColor(kBlack);
   h1time_photon->SetLineColor(kRed);
@@ -143,23 +149,23 @@ int tom_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   hStime->Add(h1time_noise);
   hStime->Add(h1time_photon);
   hStime->Add(h1time_mix);
-  TH1F *h1time2 = new TH1F("h1time2", "Digit time + trigger time;Digit time + trigger time (ns);Entries", 1350, -400, 9500);
-  TH1F *h1peperdigi = new TH1F("h1peperdigi", "Total p.e. in the subevent window;Total p.e. / NDigits;Entries", 1001, -0.5, 1000.5);
-  TH1F *h1timeperdigi = new TH1F("h1timeperdigi", "Hit time (relative to trigger time);(Hit time - trigger time) / NDigits (ns);Entries", 1350, -400, 9500);
+  TH1F *h1time2 = new TH1F("h1time2", "Digit time + trigger time;Digit time + trigger time (ns);Entries", 18000, -3000, 15000);
+  TH1F *h1peperdigi = new TH1F("h1peperdigi", "Total p.e. in the subevent window;Total p.e. / NDigits;Entries", 1000, 0, 50);
+  TH1F *h1timeperdigi = new TH1F("h1timeperdigi", "Hit time (relative to trigger time);(Hit time - trigger time) / NDigits (ns);Entries", 18000, -3000, 15000);
 
-  TH2F *h2nhits_sep = new TH2F("h2nhits_sep", "NDigits from subevent window vs fraction that are noise;NDigits;Noise fraction", 1001, -0.5, 1000.5, 100, 0, 1);
-  TH2F *h2nhitstrigger_sep = new TH2F("h2nhitstrigger_sep", "NDigits from 200ns trigger window vs fraction that are noise;NDigits;Noise fraction", 1001, -0.5, 1000.5, 100, 0, 1);
+  TH2F *h2nhits_sep = new TH2F("h2nhits_sep", "NDigits from subevent window vs fraction that are noise;NDigits;Noise fraction", 1001, -0.5, 10000.5, 100, 0, 1);
+  TH2F *h2nhitstrigger_sep = new TH2F("h2nhitstrigger_sep", "NDigits from 200ns trigger window vs fraction that are noise;NDigits;Noise fraction", 1001, -0.5, 10000.5, 100, 0, 1);
   TH1F *h1noisefrac = new TH1F("h1noisefrac", "Fraction of hits in this digi that are noise;Noise fraction;Entries", 110,0,1.1);
   TH1F *h1noisefrac_trigger = new TH1F("h1noisefrac_trigger", "Fraction of hits in this trigger that are noise;Noise fraction;Entries", 110,0,1.1);
-  TH1F *h1triggertime = new TH1F("h1triggertime", "Time of trigger;Trigger time;Entries", 1000,0,1000);
-  TH1F *h1inttime = new TH1F("h1inttime", "Number of digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 1000,0,1000);
-  TH1F *h1inttimenoise = new TH1F("h1inttimenoise", "Number of noise digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 1000,0,1000);
-  TH1F *h1inttimephoton = new TH1F("h1inttimephoton", "Number of photon digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 1000,0,1000);
-  TH1F *h1inttimemix = new TH1F("h1inttimemix", "Number of mixed (noise+photon) digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 1000,0,1000);
+  TH1F *h1triggertime = new TH1F("h1triggertime", "Time of trigger;Trigger time;Entries", 10000,0,10000);
+  TH1F *h1inttime = new TH1F("h1inttime", "Number of digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 10000,0,10000);
+  TH1F *h1inttimenoise = new TH1F("h1inttimenoise", "Number of noise digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 10000,0,10000);
+  TH1F *h1inttimephoton = new TH1F("h1inttimephoton", "Number of photon digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 10000,0,10000);
+  TH1F *h1inttimemix = new TH1F("h1inttimemix", "Number of mixed (noise+photon) digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 10000,0,10000);
 
   TH1F *h1eventALL_hittime[2];
-  h1eventALL_hittime[0] = new TH1F("h1eventALL_hittime_photon", "Raw hit time for photons, event ALL;Hit time (ns);Entries",    1000, 0, 1000);
-  h1eventALL_hittime[1] = new TH1F("h1eventALL_hittime_noise",  "Raw hit time for dark noise, event ALL;Hit time (ns);Entries", 1000, 0, 1000);
+  h1eventALL_hittime[0] = new TH1F("h1eventALL_hittime_photon", "Raw hit time for photons, event ALL;Hit time (ns);Entries",    10000, 0, 10000);
+  h1eventALL_hittime[1] = new TH1F("h1eventALL_hittime_noise",  "Raw hit time for dark noise, event ALL;Hit time (ns);Entries", 10000, 0, 10000);
   h1eventALL_hittime[0]->SetLineColor(kBlue);
   //h1eventALL_hittime[0]->SetFillColor(kBlue);
   h1eventALL_hittime[1]->SetLineColor(kRed);
@@ -173,8 +179,8 @@ int tom_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   THStack *hSevent_hittime[nevent];
   if(hists_per_event) {
     for (int ev=0; ev<nevent; ev++) {
-      h1event_hittime[ev][0] = new TH1F(TString::Format("h1event%d_hittime_photon", ev), TString::Format("Raw hit time for photons, event %d;Hit time (ns);Entries", ev), 1000, 0, 1000);
-      h1event_hittime[ev][1] = new TH1F(TString::Format("h1event%d_hittime_noise",  ev), TString::Format("Raw hit time for dark noise, event %d;Hit time (ns);Entries", ev), 1000, 0, 1000);
+      h1event_hittime[ev][0] = new TH1F(TString::Format("h1event%d_hittime_photon", ev), TString::Format("Raw hit time for photons, event %d;Hit time (ns);Entries", ev), 10000, 0, 10000);
+      h1event_hittime[ev][1] = new TH1F(TString::Format("h1event%d_hittime_noise",  ev), TString::Format("Raw hit time for dark noise, event %d;Hit time (ns);Entries", ev), 10000, 0, 10000);
       h1event_hittime[ev][1]->SetLineColor(kRed);
       h1event_hittime[ev][1]->SetFillColor(kRed);
       hSevent_hittime[ev] = new THStack(TString::Format("hSevent%d_hittime", ev), TString::Format("Raw hit time, event %d;Hit time (ns);Entries", ev));
@@ -187,9 +193,9 @@ int tom_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   THStack *hSevent_digittime[nevent];
   if(hists_per_event) {
     for (int ev=0; ev<nevent; ev++) {
-      h1event_digittime[ev][0] = new TH1F(TString::Format("h1event%d_digittime_photon", ev), TString::Format("Digit time (digits from photon hits only), event %d;Digit time (ns);Entries", ev), 1350, -400, 9500);
-      h1event_digittime[ev][1] = new TH1F(TString::Format("h1event%d_digittime_noise",  ev), TString::Format("Digit time (digits from noise hits only), event %d;Digit time (ns);Entries", ev), 1350, -400, 9500);
-      h1event_digittime[ev][2] = new TH1F(TString::Format("h1event%d_digittime_mix",    ev), TString::Format("Digit time (digits from a mix of noise and photon hits), event %d;Digit time (ns);Entries", ev), 1350, -400, 9500);
+      h1event_digittime[ev][0] = new TH1F(TString::Format("h1event%d_digittime_photon", ev), TString::Format("Digit time (digits from photon hits only), event %d;Digit time (ns);Entries", ev), 18000, -3000, 15000);
+      h1event_digittime[ev][1] = new TH1F(TString::Format("h1event%d_digittime_noise",  ev), TString::Format("Digit time (digits from noise hits only), event %d;Digit time (ns);Entries", ev), 18000, -3000, 15000);
+      h1event_digittime[ev][2] = new TH1F(TString::Format("h1event%d_digittime_mix",    ev), TString::Format("Digit time (digits from a mix of noise and photon hits), event %d;Digit time (ns);Entries", ev), 18000, -3000, 15000);
       h1event_digittime[ev][0]->SetLineColor(kBlack);
       h1event_digittime[ev][0]->SetFillColor(kBlack);
       h1event_digittime[ev][1]->SetLineColor(kRed);
@@ -274,14 +280,18 @@ int tom_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     //
 
     int ncherenkovhits     = wcsimrootevent->GetNcherenkovhits();
+#ifdef POST_NEW_DAQ_PULL_REQUEST
     int ncherenkovhittimes = wcsimrootevent->GetNcherenkovhittimes();
+#endif
     int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits(); 
     
     h1->Fill(ncherenkovdigihits);
     if(verbose){
       printf("node id: %i\n", ev);
       printf("Ncherenkovhits (unique PMTs with hits)  %d\n", ncherenkovhits);
+#ifdef POST_NEW_DAQ_PULL_REQUEST
       printf("Ncherenkovhittimes (number of raw hits) %d\n", ncherenkovhittimes);
+#endif
       printf("Ncherenkovdigihits (number of digits)   %d\n", ncherenkovdigihits);
       printf("NumTubesHit       %d\n", wcsimrootevent->GetNumTubesHit());
       printf("NumDigitizedTubes %d\n", wcsimrootevent->GetNumDigiTubesHit());
@@ -347,6 +357,7 @@ int tom_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
       if(verbose) printf("Ncherenkovdigihits %d\n", ncherenkovdigihits);
 
       int trigger_time = wcsimrootevent->GetHeader()->GetDate();
+#ifdef POST_NEW_DAQ_PULL_REQUEST
       TriggerType_t trigger_type = wcsimrootevent->GetTriggerType();
       std::vector<Float_t> trigger_info = wcsimrootevent->GetTriggerInfo();
 
@@ -357,8 +368,10 @@ int tom_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	  h1nhitstrigger->Fill(trigger_info[0]);
 	}
       }
+#endif
       h1nhits->Fill(ncherenkovdigihits);
 
+#ifdef POST_NEW_DAQ_PULL_REQUEST
       h1triggertype->Fill(WCSimEnumerations::EnumAsString(trigger_type).c_str(), 1);
       if(true || verbose) {
 	cout << "Passed trigger "
@@ -373,6 +386,7 @@ int tom_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	}
 	cout << endl;
       }
+#endif
 
       if(ncherenkovdigihits>0)
 	num_trig++;
@@ -413,6 +427,7 @@ int tom_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	else {
 	  if(verbose)
 	    cout << peForTube << " PMT hits found for digit " << i << " with tube ID " << tube_id << endl;
+#ifdef POST_NEW_DAQ_PULL_REQUEST
 	  //loop over the photons ids of hits that made up the digit
 	  vector<int> photon_ids = wcsimrootcherenkovdigihit->GetPhotonIds();
 	  if(verbose)
@@ -449,11 +464,14 @@ int tom_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	      h1eventALL_hittime[0]->Fill(wcsimrootcherenkovhittime->GetTruetime());
 	    }
 	  }//iphoton
+#endif
 	}//hits in this PMT found
+#ifdef POST_NEW_DAQ_PULL_REQUEST
 	if(hists_per_event) {
 	  hSevent_hittime[ev]->SetTitle(TString::Format("Raw hit time, event %d, %s;Hit time (ns);Entries", ev, WCSimEnumerations::EnumAsString(trigger_type).c_str()));
 	  hSevent_digittime[ev]->SetTitle(TString::Format("Digit time, event %d, %s;Digit time (ns);Entries", ev, WCSimEnumerations::EnumAsString(trigger_type).c_str()));
 	}
+#endif
 
 	if(verbose){
 	  //if ( i < 10 ) // Only print first XX=10 tubes
@@ -491,8 +509,10 @@ int tom_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	float noise_fraction = (float)n_noise_hits / (float)(n_noise_hits + n_photon_hits);
 	h1noisefrac->Fill(noise_fraction);
 	h2nhits_sep->Fill(ncherenkovdigihits, noise_fraction);
+#ifdef POST_NEW_DAQ_PULL_REQUEST
 	if(trigger_info.size() > 0)
 	  h2nhitstrigger_sep->Fill(trigger_info[0], noise_fraction);
+#endif
 	n_noise_hits_total += n_noise_hits;
 	n_photon_hits_total += n_photon_hits;
       }//i // End of loop over Cherenkov digihits
