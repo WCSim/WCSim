@@ -27,7 +27,13 @@ You can also use this test to compare any two files from any two directories. To
 
 ### Full scripts suite
 
-An automated way to go from .mac file creation & job submission through to WCSim output analysis and histogram comparison
+An automated way to go from .mac file creation & job submission through to WCSim output analysis and histogram comparison. Steps are:
+ * Creating a series of .mac files
+ * Submitting jobs (either locally, or to a cluster)
+ * Running a 'sample_readfile.C' style macro
+ * Comparing the outputs of the 'sample_readfile.C' macro, either 
+ * a) Identical files in different directories (e.g. checking the results before/after a change)
+ * b) Different files in the same/different directory (e.g. checking how a new feature compares to an old feature)
 
 ## generate_mac_files.py
 
@@ -77,8 +83,9 @@ Running
 Compare 5, 10, 50 MeV electrons for the SKDETSIM-like and new-style digitisation routines, with/without noise, submitting WCSim jobs locally
 * python $WCSIMDIR/verification-test-scripts/full_scripts_suite/generate_mac_files.py--batchmode local --WCgeom SuperK --HKwatertanklength 24750 --PMTQEMethod Stacking_Only --SavePi0 false --DAQdigitizer SKI,SKI_SKDETSIM --DAQtrigger NHits,SKI_SKDETSIM --DAQnhitsthreshold 25 --DAQnhitsignorenoise --DAQnhitswindow 200 --DAQsavefailuresmode 0 --DAQsavefailurestime 250  --DarkNoiseRate 0,8.4 --DarkNoiseConvert 1.367 --DarkNoiseMode 1 --DarkNoiseWindow 2000 --GunParticle e- --GunEnergy 5,10,50 --GunPosition 0,0,0 --GunDirection 1,0,0 --DAQnhitsignorenoise --NEvents 2000
 * python $WCSIMDIR/verification-test-scripts/full_scripts_suite/analyse_dir.py --dir .
-Compare like-for-like
-* python $WCSIMDIR/verification-test-scripts/full_scripts_suite/plot_lots.py --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_code:Old_code' --mode compare_lots
-Compare 5,10,50 MeV on the same plot
-* python $WCSIMDIR/verification-test-scripts/full_scripts_suite/plot_lots.py --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_5MeV:Old_5MeV:New_10MeV:Old_10MeV:New_10MeV:Old_10MeV' --mode compare_lots --diffplots _5e-:_10e-,_50e- --required_filename_part _5e-
-* python /home/other/tdealtry/Documents/myWCSIM/WCSim/verification-test-scripts/full_scripts_suite/plot.py --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_code,Old_code' --mode filesize
+* Compare like-for-like
+ * python $WCSIMDIR/verification-test-scripts/full_scripts_suite/plot_lots.py --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_code:Old_code' --mode compare_lots
+* Compare 5,10,50 MeV on the same plot
+ * python $WCSIMDIR/verification-test-scripts/full_scripts_suite/plot_lots.py --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_5MeV:Old_5MeV:New_10MeV:Old_10MeV:New_10MeV:Old_10MeV' --mode compare_lots --diffplots _5e-:_10e-,_50e- --required_filename_part _5e-
+* Compare speed/filesize
+ * python /home/other/tdealtry/Documents/myWCSIM/WCSim/verification-test-scripts/full_scripts_suite/plot.py --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_code,Old_code' --mode filesize
