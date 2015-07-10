@@ -21,3 +21,60 @@ To use the verification_HitsChargeTime test in the default method, do the follow
 You can also use this test to compare any two files from any two directories. To use the script this way type:
 * root 
 * .x verification_HitsChargeTime.C("/path/to/first_file", "/path/to/second_file")
+
+
+
+
+### Full scripts suite
+
+An automated way to go from .mac file creation & job submission through to WCSim output analysis and histogram comparison
+
+## generate_mac_files.py
+
+This script will generate a series of .mac files for a particle gun for the set of options given, and submit the jobs to run (either locally, or on a cluster)
+Specify position/direction with either 3 vectors, or the allowed options of $WCSIMDIR/sample-root-scripts/MakeKin.py
+Creates subdirectories for each set of 'jobOptions.mac' options specified, and uses filenames to distinguish 'novis.mac' options
+Note: not all possible options are included yet, but can be easily added
+
+## analyse_dir.py
+
+This script will run a given .C analysis script over all files in a given directory
+
+The default macro is daq_readfile.C, based on sample-root-scripts/sample_readfile.C but with (many) more histograms created, dealing mostly with number/times of hits/digits, and whether hits/digits are noise/photon-induced
+
+## plot_lots.py
+
+This script will glob over all files in a given directory, and create histograms comparing multiple other files using compare_lots.C
+The other files either come from:
+* The same directory; use --difference to specify differences e.g. noise rate
+* A different directory
+The 'multiple' files are specified with --diffplots. e.g. _0e-?_10e-:50e-_ will compare 0, 10, and 50 MeV electrons with identical other options
+The histograms to compare are read from the file comparison_hists.py
+
+## plot.py
+
+Very similar to plot_lots.py, but only allows a 1 vs 1 comparison. Has a couple of extra run options:
+* filesize - compares filesize and running time between 2 files (note runtime will only be valid if you used the 'local' runmode in generate_mac_files.py)
+* compare_stacks - creates stacked histogram comparisons (currently only works for 2)
+* compare - calls compare.C, which is very similar to compare_lots.C, just for exactly 2 files
+
+### Usage
+
+Setting up
+* $WCSIMDIR must be setup to point to the folder where WCSim.cc resides
+* $PATH should contain the place where WCSim resides, and also where rootwc lives e.g.:
+export PATH=${WCSIMDIR}/rootwc:${WCSIMDIR}/bin/Linux-g++:${PATH}
+
+Running
+* Run generate_mac_files.py to create WCSim output files
+* Run analyse_dir.py to create the relevant histograms in an output file that can be compared
+* If comparing histograms or stacks, modify comparison_hists.py to choose which histograms/stacks to compare
+* If comparing histograms, run plot_lots.py to make the histograms
+* If comparing speeds/sizes or stacks, run plot.py
+
+### Example
+
+Compare 5, 10, 50 MeV electrons for the SKDETSIM-like and new-style digitisation routines, with/without noise, submitting WCSim jobs locally
+* python $TDEALTRYREPO/hyperkdaq/wcsim/run/generate_mac_files.py--batchmode local --WCgeom SuperK --HKwatertanklength 24750 --PMTQEMethod Stacking_Only --SavePi0 false --DAQdigitizer SKI,SKI_SKDETSIM --DAQtrigger NHits,SKI_SKDETSIM --DAQnhitsthreshold 25 --DAQnhitsignorenoise --DAQnhitswindow 200 --DAQsavefailuresmode 0 --DAQsavefailurestime 250  --DarkNoiseRate 0,8.4 --DarkNoiseConvert 1.367 --DarkNoiseMode 1 --DarkNoiseWindow 2000 --GunParticle e- --GunEnergy 5,10,50 --GunPosition 0,0,0 --GunDirection 1,0,0 --DAQnhitsignorenoise --NEvents 2000
+* python analyse_dir.py --dir .
+* python plot_lots.py  --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_code:Old_code' --mode compare_lots
