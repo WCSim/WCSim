@@ -32,7 +32,7 @@ const double WCSimWCDigitizer::eventgatedown = -400.0 ; // ns
 const double WCSimWCDigitizer::LongTime = 100000.0 ; // ns
 // value in skdetsim
 
-const int WCSimWCDigitizer::GlobalThreshold = 0 ; // # hit PMTs
+const int WCSimWCDigitizer::GlobalThreshold = 25 ; // # hit PMTs
 
 
 
