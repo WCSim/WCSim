@@ -68,8 +68,8 @@ Very similar to plot_lots.py, but only allows a 1 vs 1 comparison. Has a couple 
 
 Setting up
 * $WCSIMDIR must be setup to point to the folder where WCSim.cc resides
-* $PATH should contain the place where WCSim resides, and also where rootwc lives e.g.:
-export PATH=${WCSIMDIR}/rootwc:${WCSIMDIR}/bin/Linux-g++:${PATH}
+* $PATH should contain where rootwc lives e.g.:
+export PATH=${WCSIMDIR}/rootwc:${PATH}
 * The scripts use the argparse module, available in python 2.7. It is included in the directory for convenience
 
 Running

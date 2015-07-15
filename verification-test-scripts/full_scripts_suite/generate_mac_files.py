@@ -59,7 +59,7 @@ parser = argparse.ArgumentParser(description='Run many WCSim jobs with different
 parser.add_argument('--onlycreatefiles', action='store_true', help="Do a test run where you create all the files, but don't run WCSim?")
 parser.add_argument('--batchmode', type=str, required=True, choices=BatchChoices, help='Where to submit the jobs. Required')
 parser.add_argument('--vis', action='store_true', help='Turn on the visulation? Not yet implemented')
-parser.add_argument('--reusedaqfolder', action='store_true', help='Reuse the DAQ folders? (i.e. don\'t exit if mkdir fails)')
+#parser.add_argument('--reusedaqfolder', action='store_true', help='Reuse the DAQ folders? (i.e. don\'t exit if mkdir fails)')
 #options for the .mac files
 # geometry
 parser.add_argument('--WCgeom', type=delim_list, default='SuperK', help='The water tank geometry')
@@ -179,7 +179,7 @@ shutil.copy2(os.path.expandvars("$WCSIMDIR") + "/tuning_parameters.mac", "./")
 #and the exectuable
 if args.batchmode == 'condor':
     if not os.path.islink('WCSim'):
-        os.symlink(os.path.expandvars("$WCSIMDIR") + "/bin/Linux-g++/WCSim", "WCSim")
+        os.symlink(os.path.expandvars("$WCSIMDIR") + "/bin/" + os.path.expandvars("$G4SYSTEM") + "/WCSim", "WCSim")
 
 #make the novis.mac analogue
 counter = 1
@@ -278,7 +278,7 @@ for WCgeom in args.WCgeom:
 
                                     #submit the job
                                     if args.batchmode == 'local':
-                                        command = 'WCSim ' + filenamestub + '.mac &> ' + filenamestub + '.out'
+                                        command = '$WCSIMDIR/bin/$G4SYSTEM/WCSim ' + filenamestub + '.mac &> ' + filenamestub + '.out'
                                     elif args.batchmode == 'condor':
                                         fcondor = open(filenamestub + '.jdl', 'w')
                                         condor = '' \
