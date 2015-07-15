@@ -69,6 +69,7 @@ Very similar to plot_lots.py, but only allows a 1 vs 1 comparison. Has a couple 
 * filesize - compares filesize and running time between 2 files (note runtime will only be valid if you used the 'local' runmode in generate_mac_files.py)
 * compare_stacks - creates stacked histogram comparisons (currently only works for 2)
 * compare - calls compare.C, which is very similar to compare_lots.C, just for exactly 2 files
+* verification_HitsChargeTime - calls verification_HitsChargeTime.C
 
 ### Usage
 

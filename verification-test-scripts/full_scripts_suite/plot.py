@@ -7,7 +7,7 @@ import comparison_hists as ch
 
 delim_list = lambda s: s.split(',')
 
-modes = ["filesize","compare","compare_stacks"]
+modes = ["filesize","compare","compare_stacks","verification_HitsChargeTime"]
 
 parser = argparse.ArgumentParser(description='Analyse a directory of WCSim output files')
 parser.add_argument('-d','--dir1', type=str, help='First directory to analyse', default='./')
@@ -146,6 +146,11 @@ for file1 in glob.glob(globber):
         ts2 = total_seconds(tdelta2)
         result = "{3} & {0} & {1} & {2:.2f}\\% \\\\ \n".format(ts1, ts2, ((ts2 / float(ts1)) * 100) - 100, energy)
         fout2.write(result)
+
+    elif args.mode == 'verification_HitsChargeTime':
+        command = 'rootwc -l -b -q \'$WCSIMDIR/verification-test-scripts/verification_HitsChargeTime.C("'file1 + '","' + file2 + '")\''
+        print command
+        os.system(command)
 
 
 if args.mode == "filesize":
