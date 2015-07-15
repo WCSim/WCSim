@@ -70,6 +70,7 @@ Setting up
 * $WCSIMDIR must be setup to point to the folder where WCSim.cc resides
 * $PATH should contain the place where WCSim resides, and also where rootwc lives e.g.:
 export PATH=${WCSIMDIR}/rootwc:${WCSIMDIR}/bin/Linux-g++:${PATH}
+* The scripts use the argparse module, available in python 2.7. It is included in the directory for convenience
 
 Running
 * Run generate_mac_files.py to create WCSim output files
@@ -81,7 +82,7 @@ Running
 ### Example
 
 Compare 5, 10, 50 MeV electrons for the SKDETSIM-like and new-style digitisation routines, with/without noise, submitting WCSim jobs locally
-* python $WCSIMDIR/verification-test-scripts/full_scripts_suite/generate_mac_files.py--batchmode local --WCgeom SuperK --HKwatertanklength 24750 --PMTQEMethod Stacking_Only --SavePi0 false --DAQdigitizer SKI,SKI_SKDETSIM --DAQtrigger NHits,SKI_SKDETSIM --DAQnhitsthreshold 25 --DAQnhitsignorenoise --DAQnhitswindow 200 --DAQsavefailuresmode 0 --DAQsavefailurestime 250  --DarkNoiseRate 0,8.4 --DarkNoiseConvert 1.367 --DarkNoiseMode 1 --DarkNoiseWindow 2000 --GunParticle e- --GunEnergy 5,10,50 --GunPosition 0,0,0 --GunDirection 1,0,0 --DAQnhitsignorenoise --NEvents 2000
+* python $WCSIMDIR/verification-test-scripts/full_scripts_suite/generate_mac_files.py --batchmode local --WCgeom SuperK --HKwatertanklength 24750 --PMTQEMethod Stacking_Only --SavePi0 false --DAQdigitizer SKI,SKI_SKDETSIM --DAQtrigger NHits,SKI_SKDETSIM --DAQnhitsthreshold 25 --DAQnhitsignorenoise --DAQnhitswindow 200 --DAQsavefailuresmode 0 --DAQsavefailurestime 250  --DarkNoiseRate 0,8.4 --DarkNoiseConvert 1.367 --DarkNoiseMode 1 --DarkNoiseWindow 2000 --GunParticle e- --GunEnergy 5,10,50 --GunPosition 0,0,0 --GunDirection 1,0,0 --DAQnhitsignorenoise --NEvents 2000
 * python $WCSIMDIR/verification-test-scripts/full_scripts_suite/analyse_dir.py --dir .
 * Compare like-for-like
  * python $WCSIMDIR/verification-test-scripts/full_scripts_suite/plot_lots.py --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_code:Old_code' --mode compare_lots
