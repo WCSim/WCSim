@@ -99,7 +99,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   
   G4Tubs* solidWC = new G4Tubs("WC",
 			       0.0*m,
-			       WCRadius+6.*m, 
+			       WCRadius+10.*m, 
 			       .5*WCLength+4.2*m,	//jl145 - per blueprint
 			       0.*deg,
 			       360.*deg);
@@ -124,7 +124,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
   G4Tubs* solidWCBarrel = new G4Tubs("WCBarrel",
 				     0.0*m,
-				     WCRadius+5.*m, // add a bit of extra space
+				     WCRadius+9.*m, // add a bit of extra space
 				     .5*WCLength,  //jl145 - per blueprint
 				     0.*deg,
 				     360.*deg);
@@ -154,7 +154,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
  
   G4double mainAnnulusZ[2] = {-mainAnnulusHeight/2., mainAnnulusHeight/2};
   G4double mainAnnulusRmin[2] = {innerAnnulusRadius, innerAnnulusRadius};
-  G4double mainAnnulusRmax[2] = {outerAnnulusRadius, outerAnnulusRadius};
+  
+  //This line was modified to increase the radius so the outer detectors could fit.
+  G4double mainAnnulusRmax[2] = {outerAnnulusRadius + 8000, outerAnnulusRadius + 8000};
 
   G4Polyhedra* solidWCBarrelAnnulus = new G4Polyhedra("WCBarrelAnnulus",
                                                    0.*deg, // phi start
@@ -636,7 +638,11 @@ else {
 
   for(G4double i = 0; i < WCPMTperCellHorizontal; i++){
     for(G4double j = 0; j < WCPMTperCellVertical; j++){
-      G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius + 2000.,
+      G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius + 2.,
+						 -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
+						 -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
+
+      G4ThreeVector ODPMTPosition =  G4ThreeVector(WCIDRadius + 2000.,
 						 -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 						 -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
 
@@ -653,7 +659,7 @@ else {
 
 	  G4VPhysicalVolume* physiWCBarrelODPMT =
 	new G4PVPlacement(WCPMTODRotation,              // its rotation
-			  PMTPosition, 
+			  ODPMTPosition, 
 			  ODlogicWCPMT,                // its logical volume
 			  "ODWCPMT",             // its name
 			  logicWCBarrelCell,         // its mother volume
@@ -679,9 +685,9 @@ else {
     WCPMTRotation->rotateY(90.*deg);
     WCPMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
                                                  
-	G4RotationMatrix* WCPMTODRotation = new G4RotationMatrix;
-    WCPMTRotation->rotateY(270.*deg);
-    WCPMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
+	G4RotationMatrix* ODWCPMTRotation = new G4RotationMatrix;
+    ODWCPMTRotation->rotateY(270.*deg);
+    ODWCPMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
 
 
 
@@ -708,6 +714,8 @@ else {
 			    (int)(i*WCPMTperCellVertical+j),
 			    true);                       
 	
+//commenting out all ODPMT volumes besides initial barrel.
+
 	G4VPhysicalVolume* physiWCODBarrelPMT =
 	  new G4PVPlacement(WCPMTODRotation,             // its rotation
 			    PMTPosition, 
@@ -716,7 +724,7 @@ else {
 			    logicWCExtraTowerCell,         // its mother volume
 			    false,                     // no boolean operations
 			    (int)(i*WCPMTperCellVertical+j),
-			    true);                       
+			    true);                      
 
 
 		// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
@@ -779,7 +787,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                                 (-barrelCellHeight/2.+(WCIDRadius-innerAnnulusRadius))*zflip,
 				barrelCellHeight/2.*zflip};
   G4double borderAnnulusRmin[3] = { WCIDRadius, innerAnnulusRadius, innerAnnulusRadius};
-  G4double borderAnnulusRmax[3] = {outerAnnulusRadius, outerAnnulusRadius,outerAnnulusRadius};
+  G4double borderAnnulusRmax[3] = {outerAnnulusRadius + 4000, outerAnnulusRadius + 4000,outerAnnulusRadius + 4000};
   G4Polyhedra* solidWCBarrelBorderRing = new G4Polyhedra("WCBarrelBorderRing",
                                                    0.*deg, // phi start
                                                    totalAngle,
@@ -1143,6 +1151,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
 	icopy++;
 
+
+ // Took out to see if initial error went away
 	G4VPhysicalVolume* ODphysiCapPMT =
 	  new G4PVPlacement(ODWCCapPMTRotation,
 			    cellpos,                   // its position
@@ -1182,6 +1192,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 						 -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 						 (-barrelCellHeight/2.+(j+0.5)*verticalSpacing)*zflip);
 
+      G4ThreeVector ODPMTPosition =  G4ThreeVector(WCIDRadius+2000.,
+						 -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
+						 (-barrelCellHeight/2.+(j+0.5)*verticalSpacing)*zflip);
+
      G4VPhysicalVolume* physiWCBarrelBorderPMT =
 	new G4PVPlacement(WCPMTRotation,                      // its rotation
 			  PMTPosition,
@@ -1195,7 +1209,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
  	  G4VPhysicalVolume* ODphysiWCBarrelBorderPMT =
 	new G4PVPlacement(ODWCPMTRotation,                      // its rotation
-			  PMTPosition,
+			  ODPMTPosition,
 			  ODlogicWCPMT,                // its logical volume
 			  "ODWCPMT",             // its name
 			  logicWCBarrelBorderCell,         // its mother volume
