@@ -92,9 +92,11 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   G4HCofThisEvent* HCE         = evt->GetHCofThisEvent();
   WCSimWCHitsCollection* WCHC = 0;
   G4String WCIDCollectionName = detectorConstructor->GetIDCollectionName();
+  G4String WCODCollectionName = detectorConstructor->GetODCollectionName();
   if (HCE)
-  { 
-    G4String name =   WCIDCollectionName;
+    { G4String name;
+      if(detectorConstructor->UseOD==true) name =   WCODCollectionName;
+      else {name =   WCIDCollectionName;}
     G4int collectionID = SDman->GetCollectionID(name);
     WCHC = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
   }

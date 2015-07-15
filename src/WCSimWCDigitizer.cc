@@ -31,7 +31,11 @@ const double WCSimWCDigitizer::eventgateup = 950.0 ; // ns
 const double WCSimWCDigitizer::eventgatedown = -400.0 ; // ns
 const double WCSimWCDigitizer::LongTime = 100000.0 ; // ns
 // value in skdetsim
-const int WCSimWCDigitizer::GlobalThreshold = 25 ; // # hit PMTs
+
+const int WCSimWCDigitizer::GlobalThreshold = 0 ; // # hit PMTs
+
+
+
 //const int WCSimWCDigitizer::GlobalThreshold = 12 ; // # hit PMTs
 // try to trigger early to reduce the width.
 //const int WCSimWCDigitizer::GlobalThreshold = 10 ; // # hit PMTs

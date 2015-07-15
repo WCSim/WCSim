@@ -65,10 +65,14 @@ void WCSimWCPMT::Digitize()
 {
   DigitsCollection = new WCSimWCDigitsCollection ("WCDigitizedCollectionPMT",collectionName[0]);
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  G4String WCODCollectionName = myDetector->GetODCollectionName();
+  
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
  
   // Get the Associated Hit collection IDs
-  G4int WCHCID = DigiMan->GetHitsCollectionID(WCIDCollectionName);
+  
+  if(myDetector->UseOD == true)  G4int WCHCID = DigiMan->GetHitsCollectionID(WCODCollectionName);
+  else{  G4int WCHCID = DigiMan->GetHitsCollectionID(WCODCollectionName);}
 
   // The Hits collection
   WCSimWCHitsCollection* WCHC =

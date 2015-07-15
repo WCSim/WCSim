@@ -38,7 +38,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCCapEdgeLimit        = 16.9*m;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-}
+ }
 
 
 // Note: the actual coverage is 20.27%
