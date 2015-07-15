@@ -280,6 +280,13 @@ private:
   G4double WCCapEdgeLimit;
   G4double WCBlackSheetThickness;
 
+  // WC geometry for Outer Detector
+  
+  G4double WCODDiameter;
+  G4double WCODWallThickness;
+  G4double WCODTopABottomThickness;
+  
+
 // raise scope of derived parameters
   G4double WCIDRadius;
   G4double totalAngle;

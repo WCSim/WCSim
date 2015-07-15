@@ -22,7 +22,12 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
 {
   WCDetectorName = "SuperK";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD"; 
   WCSimPMTObject * PMT = CreatePMTObject("PMT20inch", WCIDCollectionName);
+<<<<<<< HEAD
+=======
+  WCSimPMTObject * outerPMT = CreatePMTObject("PMT8inch", WCODCollectionName);
+>>>>>>> a53045560e0166ac4c20fa1040ec514891ede02b
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -30,16 +35,22 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCIDHeight            = 36.200*m; //"" "" height
   WCBarrelPMTOffset     = 0.0715*m; //offset from vertical
   WCBarrelNumPMTHorizontal  = 150; 
-  WCBarrelNRings        = 17.;
+  WCBarrelNRings        = 17.;  
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3; 
   WCCapPMTSpacing       = 0.707*m; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = 16.9*m;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+<<<<<<< HEAD
   UseOD = false;
  }
-
+=======
+  outerPMT_Name = outerPMT->GetPMTName();
+  outerPMT_Expose = outerPMT->GetExposeHeight();
+  outerPMT_Radius = outerPMT->GetRadius();
+}
+>>>>>>> a53045560e0166ac4c20fa1040ec514891ede02b
 
 // Note: the actual coverage is 20.27%
 void WCSimDetectorConstruction::SuperK_20inchPMT_20perCent()
