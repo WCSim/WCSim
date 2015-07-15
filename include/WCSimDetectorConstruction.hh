@@ -125,7 +125,7 @@ public:
   // Geometry options
   void   SetIsUpright(G4bool choice) {isUpright = choice;}
 
-  G4int UseOD;
+  G4bool UseOD;
   // *** Begin HyperK Geometry ***
 
   void   SetIsHyperK(G4bool choice) {isHyperK = choice;}

@@ -23,7 +23,6 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCDetectorName = "SuperK";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCSimPMTObject * PMT = CreatePMTObject("PMT20inch", WCIDCollectionName);
- 
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight();
   WCPMTRadius = PMT->GetRadius();
@@ -38,6 +37,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCCapEdgeLimit        = 16.9*m;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  UseOD = false;
  }
 
 
