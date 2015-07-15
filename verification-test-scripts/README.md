@@ -35,6 +35,13 @@ An automated way to go from .mac file creation & job submission through to WCSim
  * a) Identical files in different directories (e.g. checking the results before/after a change)
  * b) Different files in the same/different directory (e.g. checking how a new feature compares to an old feature)
 
+## run_verification.py
+
+This script has 3 run modes:
+1. grabcode - checkout the appropriate branch of the 'new' code, and a clean copy of the current official develop code, and compile them
+2. run - call generate_mac_files.py (with some defaults)
+3. analyse - call analyse_dir.py and plot_lots.py
+
 ## generate_mac_files.py
 
 This script will generate a series of .mac files for a particle gun for the set of options given, and submit the jobs to run (either locally, or on a cluster)
@@ -45,8 +52,7 @@ Note: not all possible options are included yet, but can be easily added
 ## analyse_dir.py
 
 This script will run a given .C analysis script over all files in a given directory
-
-The default macro is daq_readfile.C, based on sample-root-scripts/sample_readfile.C but with (many) more histograms created, dealing mostly with number/times of hits/digits, and whether hits/digits are noise/photon-induced
+The default macro is sample_readfile.C
 
 ## plot_lots.py
 
