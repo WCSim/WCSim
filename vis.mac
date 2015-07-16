@@ -56,7 +56,7 @@
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
 
 # turn on or off the collection efficiency
-#/WCSim/PMTCollEff on
+/WCSim/PMTCollEff on
 
 #/WCSim/Construct # This must be uncommented to construct a new detector configuration.
 
