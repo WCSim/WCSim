@@ -90,6 +90,15 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			    "off ");
   PMTCollEff->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+  DigitizedVolume = new G4UIcmdWithAString("/WCSim/DigitizedVolume", this);
+  DigitizedVolume->SetGuidance("Digitize the ID or OD");
+  DigitizedVolume->SetGuidance("Available options are:\n"
+			  "ID\n"
+			  "OD\n");
+  DigitizedVolume->SetParameterName("DigitizedVolume", false);
+  DigitizedVolume->SetCandidates("ID "
+			    "OD ");
+  DigitizedVolume->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   waterTank_Length = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperK/waterTank_Length", this);
   waterTank_Length->SetGuidance("Set the Length of Hyper-K detector (unit: mm cm m).");
@@ -108,6 +117,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete SavePi0;
   delete PMTQEMethod;
   delete PMTCollEff;
+  delete DigitizedVolume;
   delete waterTank_Length;
 
   delete tubeCmd;
@@ -194,6 +204,15 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  }else if (newValue == "off"){
 	    WCSimDetector->SetPMT_Coll_Eff(0);
 	    G4cout << "0";
+	  }
+	  G4cout << G4endl;
+	}
+	if (command == DigitizedVolume){
+	  G4cout << "Setting the digitized volume to be " << newValue << " ";
+	  if (newValue == "ID"){
+	    WCSimDetector->UseOD=false;
+	  }else if (newValue == "OD"){
+	    WCSimDetector->UseOD=true;
 	  }
 	  G4cout << G4endl;
 	}

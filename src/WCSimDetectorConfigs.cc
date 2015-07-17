@@ -39,6 +39,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCCapEdgeLimit        = 16.9*m;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  UseOD = false;
   outerPMT_Name = outerPMT->GetPMTName();
   outerPMT_Expose = outerPMT->GetExposeHeight();
   outerPMT_Radius = outerPMT->GetRadius();
