@@ -403,7 +403,7 @@ private:
 
   //Filling mPMT
   std::vector<G4int>		vNiC;	        // Nb of Chambers in each circle
-  std::vector<G4double>	        vAlpha;	        // Tilt angel for each circle
+  std::vector<G4double>	        vAlpha;	        // Tilt angle for each circle
   std::vector<G4int>		vCircle;	// Circle numbers
 
  

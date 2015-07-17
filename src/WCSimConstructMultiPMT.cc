@@ -34,7 +34,7 @@
 //           - type of multiPMT object: NO, specify in vis.mac (h == 0 is sphere)
 //           - WinstonCone: TODO
 
-G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
+G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double pmt_radius, //TF: both args are PMT properties, used by ConstructPMT and should be replaced by PMTtype
 							      G4double expose)
 {
   /*PMTKey_t key(radius,expose);
@@ -52,21 +52,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
   //WCPMTVisAtt->SetForceWireframe(true);
   WCPMTVisAtt->SetForceSolid(true); //DEBUG
 
-
-
-  //G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
-  //G4double PMTOffset =  sphereRadius - expose;
-
   //All components of the PMT are now contained in a single logical volume logicWCPMT.
   //Origin is on the blacksheet, faces positive z-direction.
   
-
-
-  
   //Define a cylinder with spherical top and bottom
-  //
-  
-  //Defines a cylinder
   
   G4double mPMT_zRange[2] = {0, cylinder_height};
   G4double mPMT_RRange[2] = {cylinder_radius+expose, cylinder_radius+expose};
@@ -167,18 +156,21 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
   // gf
   //WCSimMultiPMTParameterisation* WCSimMultiPMTParameterisation_par;
   
-  G4int NbOfPmt = 13;
-  G4double pmtDistance = cylinder_radius;//+expose; // Radius od the DOM -> TO BE CONFIRMED BY TOM:
+  // for circle 1
+  G4int NbOfPmt = 18;//8;//13;
+  //G4int NbOfPmt = 4; //debug
+  G4double pmtDistance = cylinder_radius; // Inner radius od the DOM 
   G4cout << "Distance from the Z axis = " <<  pmtDistance << " mm" << G4endl;
 
-  G4double pmt_radius = 3.81*cm; //3in, TF: This should be a call to PMTObject with PMTtype as arg
+  // TF, well this is the arg of ConstructMultiPMT, which should be replaced by PMTtype
+  //which should actually be set in the macro file, so this should be a void function call.
   G4LogicalVolume* logicWCPMT = ConstructPMT(pmt_radius, expose);
 
   //The ConstructMultiPMT function gets called multiple times, so only fill the vectors when not empty.
   G4int NbOfTotPmt = 0;
   if(vNiC.size() > 0){
     //TODO: Could also store this value, as vNiC and vAlpha are members of DetectorConfiguration class
-    for(int i = 1; i < vNiC.size();i++){
+    for(int i = 0; i < vNiC.size();i++){
       NbOfTotPmt+=vNiC[i];
     }
   }else
@@ -192,24 +184,28 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
 				      vNiC,		// Number of PMTs in each circle
 				      vAlpha,		// Tilt angle for each circle
 				      vCircle,          // Circle number
-				      cylinder_height);	// For position offsets of circles, should become array!!!! TODO
+				      cylinder_height);	// For position offsets of circles, should become array!!!! TODO, for bottom sphere
   
   // dummy value : kZAxis -- modified by parameterised volume
-
-  // gf: this has to fill an hemisphere....the mother logical volume should be the logical volume of 
-  // mPMT_top_sphere or mPMT_bottom_sphere
-
-  G4VPhysicalVolume* hemisphere = 
-    new G4PVParameterised("pmt",       // their name
-			  logicWCPMT,   // their logical volume
-			  logicWCMultiPMT,       // Mother logical volume
-			  //LogicmPMT_top_sphere,       // Mother logical volume
-			  kZAxis,                     // Are placed along this axis
-			  NbOfTotPmt,                 // Number of PMTs (replica's)
-			  pmtParam_id,                   // The parametrisation
-			  true); // checking overlaps
   
-  //
+  // Mother Volume can only have ONE parametrization, hence need to cut in pieces OR parametrize all at once
+  // TF prefers the latter.
+  G4VPhysicalVolume* hemisphere = 
+    new G4PVParameterised("pmt",                  // their name
+			  logicWCPMT,             // their logical volume
+			  logicWCMultiPMT,        // Mother logical volume
+			  kZAxis,                 // Are placed along this axis
+			  NbOfTotPmt,             // Number of PMTs (replica's)
+			  pmtParam_id,            // The parametrisation
+			  false);                  // checking overlaps
+  
+  // Need a 5mm tolerance
+  if(hemisphere->CheckOverlaps(1000,5,1)){
+    G4cout << "Hemisphere has overlapping PMTs: Retry" << G4endl;
+    G4LogicalVolume* emptyLogic;
+    return emptyLogic;
+  }
+    
   
 
 
@@ -219,7 +215,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
 
   /////////////////////////////////////////////////////////////////////
   // NEW : cover the surface with blacksheet, or something else
-
+  /// TODO: Cover bottom circle (<theta_min) with absorbing black felt)?
+  //////////
   
   /////
   //Defines a cylinder
@@ -282,7 +279,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
   */
   
   
-  logicWCMultiPMT->SetVisAttributes(WCPMTVisAtt);  //DEBUG
+  //logicWCMultiPMT->SetVisAttributes(WCPMTVisAtt);  //DEBUG
+
+
+
   //logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible); 
   
   /*
@@ -297,7 +297,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double radius,
     //PMTLogicalVolumes[key] = logicWCPMT;
     */
   return logicWCMultiPMT;
-  //return LogicmPMT_top_sphere;
 }
 
 
@@ -309,41 +308,70 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
   
   // First element of vNiC and vAlpha vectors is added manually
   // to allow recursive calculation of the following
+  // TF: not needed:
+  /*
   vNiC.push_back(NoPmt);
   vNiC.push_back(NoPmt);
   vAlpha.push_back(-fEta);
-  
+  */
+
   G4int NoCircle = 1;
-  G4double alphaNext = ComputeAlpha(vAlpha[NoCircle-1], fEta);
+  G4double alphaNext = fEta;  //+offset;
+  G4double alphaPrev = alphaNext;
   G4double NiCNext = NoPmt;
-  
-  vAlpha.push_back(alphaNext);
-  
-  G4cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle] << G4endl;
-  NoCircle++;
-  
+
+  // Remove the ones where alpha is below the minimum (to look over neighbouring mPMTs)
+  // Theta_min = eta + atan(R/r) with R radius of sphere, and r the distance between mPMTs
+  G4double theta_min = 13.*pi/180;
+  if(alphaNext > theta_min + fEta){
+    vAlpha.push_back(alphaNext);
+    vNiC.push_back(NoPmt);
+    G4cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << G4endl;
+    NoCircle++;
+  }
+    
   // Recursive calculation of vector contents
   do
     {
-      alphaNext = ComputeAlpha(vAlpha[NoCircle-1], fEta);
+      alphaNext = ComputeAlpha(alphaPrev, fEta);//ComputeAlpha(vAlpha[NoCircle-1], fEta);
       NiCNext = ComputeNiC(alphaNext, fEta);
       if(NiCNext<2){break;} // Prevents negative values of NiC
-      vAlpha.push_back(alphaNext);
-      vNiC.push_back(NiCNext);
-      G4cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle] << G4endl;
-      NoCircle++;
-    } while(NiCNext > 2); // No less than 3 chambers in each circle
+      if(alphaNext > theta_min +fEta){
+	vAlpha.push_back(alphaNext);
+	vNiC.push_back(NiCNext);
+	G4cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << G4endl;
+	NoCircle++;
+      }
+      alphaPrev = alphaNext;
+    } while(NiCNext > 2); // No less than 3 detectors in each circle
+
+  // TF: If possible: add top:
+  if(vAlpha[NoCircle-1]+2*fEta < 90.){
+    alphaNext = pi/2;
+    NiCNext = 1;
+    vAlpha.push_back(alphaNext);
+    vNiC.push_back(NiCNext);
+    G4cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << G4endl;
+    NoCircle++;  
+  }
   
+  
+
   // Total number of pmt in the circles
   G4int TotPmt = 0;
-  for(int i = 1; i < vNiC.size();i++){
+  for(int i = 0; i < vNiC.size();i++){
     TotPmt+=vNiC[i];
     for(int j = 0; j < vNiC[i]; j++){
-      vCircle.push_back(i);
+      vCircle.push_back(i); //number circles internally between 0 and N-1
     }
   }
+
+  
+
+
   G4cout << "Total number of pmt: " << TotPmt << G4endl;
   G4cout << "Percentage of covered hemispherical surface = " << TotPmt*(1-std::cos(fEta))*100 << "%" << G4endl;
+  G4cout << "Percentage of covered hemispherical surface above theta_min = " << TotPmt*(1-std::cos(fEta))*100/(1-std::cos(pi/2-theta_min)) << "%" << G4endl;
   G4cout << "Test: vNic: " << vNiC.size() << " vAlpha: " << vAlpha.size() << " vCircle: " << vCircle.size() << G4endl;
 
   return TotPmt;

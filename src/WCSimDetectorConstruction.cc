@@ -81,8 +81,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //---------------------------------------------------
   // Need to define defaults for all mPMT parameters 
   //--------------------------------------------------
-  cylinder_height = 453.*mm;
-  cylinder_radius = 166.*mm;
+  cylinder_height = 50.*mm;//453.*mm;
+  cylinder_radius = 325.*mm;//270.*mm;//176.*mm;//166.*mm;
   orientation = PERPENDICULAR;
   //  mPMT_outer_material = G4Material::GetMaterial("Water");
   //  mPMT_inner_material = G4Material::GetMaterial("Blacksheet");

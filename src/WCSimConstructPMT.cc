@@ -19,6 +19,7 @@
 
 WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
+//TF: ToDo: arg should be PMT type so that radius and expose are just generic function calls.
 G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                                                          G4double expose)
 {
@@ -39,19 +40,26 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
   WCPMTVisAtt->SetForceSolid(true);
     
 
-
-
-
   G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
   G4double PMTOffset =  sphereRadius - expose;
 
   //All components of the PMT are now contained in a single logical volume logicWCPMT.
   //Origin is on the blacksheet, faces positive z-direction.
-  
-  G4double PMTHolderZ[2] = {0, expose};
-  G4double PMTHolderR[2] = {radius, radius};
+
+  //TF: Optional NEW: IF reflector/Winston cone requested, make it here:
+
+  //TODO: Macro option, can be positive and negative, but not smaller than expose
+  // Relative to expose
+  G4double reflectorHeight = 7.5*CLHEP::mm-expose;   //7.5mm from KM3Net JINST
+  // Radius of cone at z=expose+reflectorHeight, relative to PMT radius
+  G4double reflectorRadius = 7.5*CLHEP::mm;  //based on KM3Net JINST
+  G4double reflectorThickness = 1.*CLHEP::mm;
+
+  G4double PMTHolderZ[2] = {0, std::max(expose,expose + reflectorHeight)};
+  G4double PMTHolderR[2] = {radius + reflectorThickness, radius + reflectorThickness + reflectorRadius};
   G4double PMTHolderr[2] = {0,0};
 
+  // IF reflectorParams are non-zero, this will be a solid cone instead of cylinder
   G4Polycone* solidWCPMT = 
    new G4Polycone("WCPMT",                    
                   0.0*deg,
@@ -159,6 +167,43 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                              physiGlassFaceWCPMT,
                              physiInteriorWCPMT,
                              OpGlassCathodeSurface);
+
+
+  //TF: Reflector
+  G4double reflectorZ[2] = {0, expose + reflectorHeight};
+  G4double reflectorR[2] = {radius + reflectorThickness, radius + reflectorThickness + reflectorRadius};
+  G4double reflectorr[2] = {radius,radius + reflectorRadius};
+
+  // IF reflectorParams are non-zero, this will be a solid cone instead of cylinder
+  G4Polycone* reflectorCone = 
+   new G4Polycone("WCPMT",                    
+                  0.0*deg,
+                  360.0*deg,
+                  2,
+                  reflectorZ,
+                  reflectorr, // R Inner
+                  reflectorR);// R Outer
+
+  G4LogicalVolume* logicReflector =
+    new G4LogicalVolume(    reflectorCone,
+                            G4Material::GetMaterial("Ag"), //It actually is Al+ Ag evaporation
+                            "reflectorCone",
+                            0,0,0);
+  //TODO: Figure out how to add optical surface properties
+  
+  G4VPhysicalVolume* reflectorWCPMT =
+      new G4PVPlacement(0,
+                        G4ThreeVector(0, 0, 0),
+                        logicReflector,
+                        "reflectorWCPMT",
+                        logicWCPMT,
+                        false,
+                        0,
+                        checkOverlaps);
+
+  G4VisAttributes* WCPMTVisAtt3 = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
+  WCPMTVisAtt3->SetForceSolid(true);
+  logicReflector->SetVisAttributes(WCPMTVisAtt3);
 
   return logicWCPMT;
 }
