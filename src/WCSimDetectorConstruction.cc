@@ -82,7 +82,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   SetPMT_QE_Method(1);
    //default NOT to use collection efficiency
   SetPMT_Coll_Eff(0);
-
+  // set default visualizer to OGLSX
+  SetVis_Choice("OGLSX");
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry
   //-----------------------------------------------------
