@@ -59,9 +59,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double pmt_radiu
   
   G4double mPMT_zRange[2] = {0, cylinder_height};
   G4double mPMT_RRange[2] = {cylinder_radius+expose, cylinder_radius+expose};
-  //G4double mPMT_rRange[2] = {0,0};
+  G4double mPMT_rRange[2] = {0,0}; //if testing with the PMTbase in ConstructPMT, no inner Container! Also for Top and BottomSphere
   //NEW: only outer shell as mother volume for parametrization, as I want to put a black sheet in there
-  G4double mPMT_rRange[2] = {cylinder_radius,cylinder_radius}; //-1mm??
+  //G4double mPMT_rRange[2] = {cylinder_radius,cylinder_radius}; //-1mm??
 
   //solids
   // origin is bottom of upward cylinder
@@ -76,8 +76,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double pmt_radiu
 
   G4Sphere* mPMT_top_sphere =
     new G4Sphere(    "WCmPMT_tsphere",
-		     //		     0.0*m,cylinder_radius+expose,
-		     cylinder_radius,cylinder_radius+expose, // NEW
+		     0.0*m,cylinder_radius+expose,
+		     //cylinder_radius,cylinder_radius+expose, // NEW
 		     0.0*deg,360.0*deg,
 		     0.0*deg,90.0*deg);
 
@@ -92,8 +92,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double pmt_radiu
 
   G4Sphere* mPMT_bottom_sphere =
     new G4Sphere(    "WCmPMT_bsphere",
-		     //		     0.0*m,cylinder_radius+expose,
-		     cylinder_radius,cylinder_radius+expose,
+		     0.0*m,cylinder_radius+expose,
+		     //cylinder_radius,cylinder_radius+expose,
 		     0.0*deg,360.0*deg,
 		     90.0*deg,180.0*deg);
 
@@ -203,7 +203,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double pmt_radiu
   if(hemisphere->CheckOverlaps(1000,5,1)){
     G4cout << "Hemisphere has overlapping PMTs: Retry" << G4endl;
     G4LogicalVolume* emptyLogic;
-    return emptyLogic;
+    //return emptyLogic;
   }
     
   

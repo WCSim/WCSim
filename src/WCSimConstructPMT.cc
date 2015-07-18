@@ -54,10 +54,21 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
   // Radius of cone at z=expose+reflectorHeight, relative to PMT radius
   G4double reflectorRadius = 7.5*CLHEP::mm;  //based on KM3Net JINST
   G4double reflectorThickness = 1.*CLHEP::mm;
+  G4bool addBase = true;
 
+
+  /* version without a base 
   G4double PMTHolderZ[2] = {0, std::max(expose,expose + reflectorHeight)};
   G4double PMTHolderR[2] = {radius + reflectorThickness, radius + reflectorThickness + reflectorRadius};
   G4double PMTHolderr[2] = {0,0};
+  */
+  G4double baseHeight = 97.*CLHEP::mm - expose + 73.*CLHEP::mm; //the latter are the pins
+  G4double baseRadius = 26.*CLHEP::mm;
+  G4double PMTHolderZ[2] = {-baseHeight+expose, std::max(expose,expose + reflectorHeight)};
+  G4double PMTHolderR[2] = {baseRadius, radius + reflectorThickness + reflectorRadius};
+  G4double PMTHolderr[2] = {0,0};
+
+
 
   // IF reflectorParams are non-zero, this will be a solid cone instead of cylinder
   G4Polycone* solidWCPMT = 
@@ -76,8 +87,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                             "WCPMT",
                             0,0,0);
 
-  //logicWCPMT->SetVisAttributes(WCPMTVisAtt);
-    logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+  G4VisAttributes* WCPMTVisAtt2 = new G4VisAttributes(G4Colour(1.0,0.0,0.0));
+  WCPMTVisAtt2->SetForceSolid(true);
+  logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
+  //  logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
 
 
   //Need a volume to cut away excess behind blacksheet
@@ -186,7 +199,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
 
   G4LogicalVolume* logicReflector =
     new G4LogicalVolume(    reflectorCone,
-                            G4Material::GetMaterial("Ag"), //It actually is Al+ Ag evaporation
+                            G4Material::GetMaterial("Aluminum"), //It actually is Al+ Ag evaporation
                             "reflectorCone",
                             0,0,0);
   //TODO: Figure out how to add optical surface properties
