@@ -18,6 +18,10 @@
 #/WCSim/WCgeom SuperK_12inchBandL_15perCent # Note: the actual coverage is 14.59%
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 
+# Cylindrical detector with a height of 60 m and a diameter of 74 m
+#/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
+/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
+
 # Generic cylindrical detector with a height of 100m and a
 # diameter of 69m with 12" HPD and 14.59% photocoverage
 #/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
@@ -58,7 +62,7 @@
 # turn on or off the collection efficiency
 #/WCSim/PMTCollEff on
 
-#/WCSim/Construct # This must be uncommented to construct a new detector configuration.
+/WCSim/Construct # This must be uncommented to construct a new detector configuration.
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 #/WCSim/SavePi0 true

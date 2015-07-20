@@ -22,6 +22,8 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "SuperK_20inchBandL_20perCent\n"
 			  "SuperK_12inchBandL_15perCent\n"
 			  "SuperK_20inchBandL_14perCent\n"
+			  "Cylinder_60x74_20inchBandL_14perCent\n"
+      			  "Cylinder_60x74_20inchBandL_40perCent\n"
 			  "Cylinder_12inchHPD_15perCent\n"
                           "HyperK\n"
                           "HyperK_withHPD\n"
@@ -40,6 +42,8 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			   "SuperK_20inchBandL_20perCent "
 			   "SuperK_12inchBandL_15perCent "
 			   "SuperK_20inchBandL_14perCent "
+			   "Cylinder_60x74_20inchBandL_14perCent\n"
+      			   "Cylinder_60x74_20inchBandL_40perCent\n"
 			   "Cylinder_12inchHPD_15perCent "
 			   "HyperK "
                            "HyperK_withHPD "
@@ -130,6 +134,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->SuperK_12inchBandL_15perCent();
 		} else if ( newValue == "SuperK_20inchBandL_14perCent" ) {
 		  WCSimDetector->SuperK_20inchBandL_14perCent();
+		} else if ( newValue == "Cylinder_60x74_20inchBandL_14perCent" ) {
+		  WCSimDetector->Cylinder_60x74_20inchBandL_14perCent();
+		} else if ( newValue == "Cylinder_60x74_20inchBandL_40perCent" ) {
+		  WCSimDetector->Cylinder_60x74_20inchBandL_40perCent();
 		} else if (newValue == "Cylinder_12inchHPD_15perCent" ){
 		  WCSimDetector->Cylinder_12inchHPD_15perCent();
                 } else if ( newValue == "HyperK") {
