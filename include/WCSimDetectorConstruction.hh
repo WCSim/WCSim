@@ -169,6 +169,11 @@ private:
   //Tyvek surface - jl145
   G4OpticalSurface * OpWaterTySurface;
 
+  //Reflector skin surface -tf
+  G4OpticalSurface * ReflectorSkinSurface;
+
+
+
   // The messenger we use to change the geometry.
 
   WCSimDetectorMessenger* messenger;

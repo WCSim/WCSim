@@ -15,6 +15,8 @@
 
 #include "G4SystemOfUnits.hh"
 
+#include "G4LogicalSkinSurface.hh"
+
 //PMT logical volume construction.
 
 WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
@@ -202,7 +204,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                             G4Material::GetMaterial("Aluminum"), //It actually is Al+ Ag evaporation
                             "reflectorCone",
                             0,0,0);
-  //TODO: Figure out how to add optical surface properties
+
+  G4VisAttributes* WCPMTVisAtt3 = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
+  WCPMTVisAtt3->SetForceSolid(true);
+  logicReflector->SetVisAttributes(WCPMTVisAtt3);
+
+  new G4LogicalSkinSurface("ReflectorLogSkinSurface",logicReflector,ReflectorSkinSurface);
   
   G4VPhysicalVolume* reflectorWCPMT =
       new G4PVPlacement(0,
@@ -214,9 +221,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
                         0,
                         checkOverlaps);
 
-  G4VisAttributes* WCPMTVisAtt3 = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
-  WCPMTVisAtt3->SetForceSolid(true);
-  logicReflector->SetVisAttributes(WCPMTVisAtt3);
 
   return logicWCPMT;
 }

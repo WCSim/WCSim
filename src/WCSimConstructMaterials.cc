@@ -161,6 +161,24 @@ void WCSimDetectorConstruction::ConstructMaterials()
     = new G4Material("Aluminum",density,1);
   Aluminum->AddElement(elAl, 1);
 
+
+  // TF: --Silver (coating for reflector): higher reflectivity, but cutoff at 400nm + bad for water
+  //       Also exposure to air not good for Silver
+  // cfr. Wikipedia "Optical Coating" 
+
+  a = 107.8682*g/mole;
+  G4Element* elAg = new G4Element("Silver","Ag", 47, a);
+  
+  density = 10.5*g/cm3;
+  G4Material *Silver
+    = new G4Material("Silver",density,1);
+  Silver->AddElement(elAg, 1);
+
+  // ToDo: Add combinations of Al with silver coatings
+  // ...
+
+
+
   //---Black sheet
 
   density = 0.95*g/cm3;
@@ -305,13 +323,13 @@ void WCSimDetectorConstruction::ConstructMaterials()
       1.35002, 1.35153, 1.35321, 1.35507, 1.35717, 1.35955 };
   */
 
-   //From SFDETSIM water absorption
+   //From SKDETSIM water absorption
    const G4int NUMENTRIES_water=60;
 
    G4double ENERGY_water[NUMENTRIES_water] =
      { 1.56962e-09*GeV, 1.58974e-09*GeV, 1.61039e-09*GeV, 1.63157e-09*GeV, 
        1.65333e-09*GeV, 1.67567e-09*GeV, 1.69863e-09*GeV, 1.72222e-09*GeV, 
-       1.74647e-09*GeV, 1.77142e-09*GeV,1.7971e-09*GeV, 1.82352e-09*GeV, 
+       1.74647e-09*GeV, 1.77142e-09*GeV, 1.7971e-09*GeV, 1.82352e-09*GeV, 
        1.85074e-09*GeV, 1.87878e-09*GeV, 1.90769e-09*GeV, 1.93749e-09*GeV, 
        1.96825e-09*GeV, 1.99999e-09*GeV, 2.03278e-09*GeV, 2.06666e-09*GeV,
        2.10169e-09*GeV, 2.13793e-09*GeV, 2.17543e-09*GeV, 2.21428e-09*GeV, 
@@ -525,7 +543,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    G4double MIE_water_const[3]={0.4,0.,1};// gforward, gbackward, forward backward ratio
 
 
-   //From SFDETSIM
+   //From SKDETSIM
    /*
    G4double RINDEX_glass[NUMENTRIES] =
      { 1.600, 1.600, 1.600, 1.600, 1.600, 1.600, 1.600,
@@ -728,7 +746,25 @@ void WCSimDetectorConstruction::ConstructMaterials()
    //  0.001, 0.001, 0.001, 0.001 };
    
    G4double EFFICIENCY_blacksheet[NUMENTRIES_water] =
-    { 0.0 };
+     { 0.0 };
+
+   //TF: Al, Ag and coatings
+   G4double REFLECTIVITY_aluminium[NUMENTRIES_water] =  //start simple with flat 90%
+     { 0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9};
+
+
+
+
+
 
    //	------------- Surfaces --------------
 
@@ -906,5 +942,25 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myST3->AddProperty("EFFICIENCY", PP, EFFICIENCY_blacksheet, NUM);
    //use same efficiency as blacksheet, which is 0
    OpWaterTySurface->SetMaterialPropertiesTable(myST3);
+
+
+   // Surfaces for Al, Ag and future combinations:
+   ReflectorSkinSurface =
+     new G4OpticalSurface("ReflectorSurface");
+   ReflectorSkinSurface->SetType(dielectric_metal);
+   ReflectorSkinSurface->SetModel(unified);  
+   ReflectorSkinSurface->SetFinish(polished);
+
+   G4MaterialPropertiesTable *AlPropTable = new G4MaterialPropertiesTable();
+   AlPropTable->AddProperty("REFLECTIVITY", ENERGY_water, REFLECTIVITY_aluminium, NUMENTRIES_water);
+   //AlPropTable->AddProperty("EFFICIENCY"); //kind of QE, but not necessary
+   ReflectorSkinSurface->SetMaterialPropertiesTable(AlPropTable);
+
+
+   //ToDo:
+   G4MaterialPropertiesTable *AgPropTable = new G4MaterialPropertiesTable();
+   G4MaterialPropertiesTable *AlAg1PropTable = new G4MaterialPropertiesTable();
+   
+
 
 }
