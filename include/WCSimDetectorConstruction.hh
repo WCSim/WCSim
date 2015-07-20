@@ -65,14 +65,6 @@ public:
   void Cylinder_60x74_20inchBandL_14perCent();
   void Cylinder_60x74_20inchBandL_40perCent();
   void Cylinder_12inchHPD_15perCent();
-  void DUSEL_100kton_10inch_40perCent();
-  void DUSEL_100kton_10inch_HQE_12perCent();
-  void DUSEL_100kton_10inch_HQE_30perCent();
-  void DUSEL_100kton_10inch_HQE_30perCent_Gd();
-  void DUSEL_150kton_10inch_HQE_30perCent();
-  void DUSEL_200kton_10inch_HQE_12perCent();
-  void DUSEL_200kton_12inch_HQE_10perCent();
-  void DUSEL_200kton_12inch_HQE_14perCent();
   void UpdateGeometry();
   
 
