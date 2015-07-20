@@ -73,17 +73,19 @@
 #/DarkRate/SetConvert 1.119 #For HPDs
 #/DarkRate/SetConvert 1.126 #For Box and Line PMTs
 
-/vis/scene/create
-/vis/open OGLSX
+##Comment out lines the create, open OGLSX, zoom, viewpointThetaPhi, and upVector lines below if using RayTracer
+
+##/vis/scene/create
+##/vis/open OGLSX
 # You can also set the size and position of the window if you like
 #/vis/open OGLSX 1000x1000-0+0
-/vis/ogl/set/printSize 1000 1000
+#/vis/ogl/set/printSize 1000 1000
 
 # Vis Settings for SK
-/vis/viewer/zoom 1.2
+##/vis/viewer/zoom 1.2
 #/vis/viewer/set/viewpointThetaPhi 45 45 deg
-/vis/viewer/set/viewpointThetaPhi 110 0 deg
-/vis/viewer/set/upVector 0 0 1
+##/vis/viewer/set/viewpointThetaPhi 110 0 deg
+##/vis/viewer/set/upVector 0 0 1
 
 # Vis settings for HK
 #/vis/viewer/set/upVector 0 1 0
@@ -92,15 +94,9 @@
 #/vis/ogl/set/printMode pixmap
 #/vis/ogl/printEPS
 
-#/vis/open RayTracer
-#/vis/viewer/set/upVector 0 0 1
-#/vis/rayTracer/eyePosition 70 0 70
-#/vis/rayTracer/trace
-
-
-/vis/scene/add/hits
-/vis/scene/add/trajectories
-/vis/scene/endOfEventAction accumulate
+##/vis/scene/add/hits
+##/vis/scene/add/trajectories
+##/vis/scene/endOfEventAction accumulate
 
 ## select the input nuance-formatted vector file
 ## you can of course use your own
@@ -109,14 +105,30 @@
 #/mygen/vecfile mu+.out
 
 # Or you can use the G4 Particle Gun
-/mygen/generator normal
-/gun/particle mu+
-/gun/energy 1000 MeV
-/gun/direction 0 1 0
-/gun/position 0 0 0 
+##/mygen/generator normal
+##/gun/particle mu+
+##/gun/energy 1000 MeV
+##/gun/direction 0 1 0
+#3/gun/position 0 0 0 
 
 ## change the name of the output root file, default = wcsim.root
-/WCSimIO/RootFile wcsim.root
+##/WCSimIO/RootFile wcsim.root
 
-/run/beamOn 100
+##/run/beamOn 100
+
+## Errors may arise if using RayTracer and attempting to view the detector from a distance further than 40 meters
+## If this occurs, attempt changing the y-direction
+
+/vis/open RayTracer
+/vis/viewer/set/upVector 0 0 1
+
+/vis/rayTracer/eyePosition -15 0 -15
+/vis/rayTracer/trace g4RayTracer.jpeg
+
+/vis/rayTracer/eyePosition 70 0 70
+/vis/rayTracer/trace g4RayTracer1.jpeg
+
+/vis/rayTracer/eyePosition 0 0 70
+/vis/rayTracer/trace g4RayTracer2.jpeg
+
 #exit

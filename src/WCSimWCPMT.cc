@@ -41,7 +41,9 @@ WCSimWCPMT::~WCSimWCPMT(){
 }
 
 G4double WCSimWCPMT::rn1pe(){
-  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  G4String WCIDCollectionName; 
+    if(myDetector->UseOD == false) WCIDCollectionName = myDetector->GetIDCollectionName();
+    else {WCIDCollectionName = myDetector->GetODCollectionName();}
   WCSimPMTObject * PMT;
   PMT = myDetector->GetPMTPointer(WCIDCollectionName);
   G4int i;
@@ -65,10 +67,14 @@ void WCSimWCPMT::Digitize()
 {
   DigitsCollection = new WCSimWCDigitsCollection ("WCDigitizedCollectionPMT",collectionName[0]);
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  G4String WCODCollectionName = myDetector->GetODCollectionName();
+  
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
  
   // Get the Associated Hit collection IDs
-  G4int WCHCID = DigiMan->GetHitsCollectionID(WCIDCollectionName);
+  G4int WCHCID;
+  if(myDetector->UseOD == true)  WCHCID = DigiMan->GetHitsCollectionID(WCODCollectionName);
+  else{  WCHCID = DigiMan->GetHitsCollectionID(WCIDCollectionName);}
 
   // The Hits collection
   WCSimWCHitsCollection* WCHC =

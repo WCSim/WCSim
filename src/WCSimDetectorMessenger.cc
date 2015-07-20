@@ -42,6 +42,19 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
                            );
   PMTConfig->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+  WCVisChoice = new G4UIcmdWithAString("/WCSim/WCVisChoice",this);
+  WCVisChoice->SetGuidance("Set the visualization style for the WC.");
+  WCVisChoice->SetGuidance("Available options are:\n"
+                          "OGLSX\n"
+			  "RayTracer\n"
+			  );
+  WCVisChoice->SetParameterName("WCVisChoice", false);
+  WCVisChoice->SetCandidates("OGLSX "
+			   "RayTracer "
+                           );
+  WCVisChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+
   PMTSize = new G4UIcmdWithAString("/WCSim/WCPMTsize",this);
   PMTSize->SetGuidance("Set alternate PMT size for the WC (Must be entered after geometry details is set).");
   PMTSize->SetGuidance("Available options 20inch 10inch");
@@ -79,6 +92,17 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTCollEff->AvailableForStates(G4State_PreInit, G4State_Idle);
 
 
+  DigitizedVolume = new G4UIcmdWithAString("/WCSim/DigitizedVolume", this);
+  DigitizedVolume->SetGuidance("Digitize the ID or OD");
+  DigitizedVolume->SetGuidance("Available options are:\n"
+			  "ID\n"
+			  "OD\n");
+  DigitizedVolume->SetParameterName("DigitizedVolume", false);
+  DigitizedVolume->SetCandidates("ID "
+			    "OD ");
+  DigitizedVolume->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+
   waterTank_Length = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperK/waterTank_Length", this);
   waterTank_Length->SetGuidance("Set the Length of Hyper-K detector (unit: mm cm m).");
   waterTank_Length->SetParameterName("waterTank_length", true);
@@ -96,7 +120,9 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete SavePi0;
   delete PMTQEMethod;
   delete PMTCollEff;
+  delete DigitizedVolume;
   delete waterTank_Length;
+  delete WCVisChoice;
 
   delete tubeCmd;
   delete distortionCmd;
@@ -173,7 +199,26 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  }
 	  G4cout << G4endl;
 	}
+	if (command == DigitizedVolume){
+	  G4cout << "Setting the digitized volume to be " << newValue << " ";
+	  if (newValue == "ID"){
+	    WCSimDetector->UseOD=false;
+	  }else if (newValue == "OD"){
+	    WCSimDetector->UseOD=true;
+	  }
+	  G4cout << G4endl;
+	}
 	
+	if (command == WCVisChoice){
+	  G4cout << "Set Vis Choice " << newValue << " ";
+	  if (newValue == "OGLSX"){
+	    WCSimDetector->SetVis_Choice("OGLSX");
+	  }else if (newValue == "RayTracer"){
+	    WCSimDetector->SetVis_Choice("RayTracer");
+	  }
+	  G4cout << G4endl;
+	}
+
 	if (command == waterTank_Length){
 	bool isHyperK = WCSimDetector->GetIsHyperK();
 	  if(isHyperK==true){

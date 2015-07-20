@@ -56,6 +56,10 @@
 #turn on or off the collection efficiency
 /WCSim/PMTCollEff on
 
+#Digitize ID or OD volumes
+
+/WCSim/DigitizedVolume ID
+
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 /WCSim/SavePi0 false
 
@@ -81,9 +85,9 @@
 
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
-/gun/particle e-
+/gun/particle mu-
 #/gun/particle pi0
-/gun/energy 500 MeV
+/gun/energy 5000 MeV
 /gun/direction 1 0 0 
 /gun/position 0 0 0  
 
