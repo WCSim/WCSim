@@ -24,19 +24,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // PMT Base Class
 
-WCSimPMTObject::WCSimPMTObject()
-{
-    // By default, each PMT has 100% collection efficiency at all angles
-    // This can be overridden by setting collectionEfficiency to a new vector
-    // in the derived class constructor.
-    collectionEfficiencyAngle = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
-    collectionEfficiency      = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
-}
-
-
 G4float  WCSimPMTObject::GetCollectionEfficiency(float angle)
 {
-    return Interpolate_func(angle, 10, collectionEfficiencyAngle, collectionEfficiency)/100.;
+    return Interpolate_func(angle, 10, GetCollectionEfficiencyAngle(), GetCollectionEfficiencyArray())/100.;
 }
 
 G4float WCSimPMTObject::Interpolate_func(G4float x, G4int ncount, G4float *angle, G4float *quantity){
@@ -50,8 +40,30 @@ G4float WCSimPMTObject::Interpolate_func(G4float x, G4int ncount, G4float *angle
       }
     }
   }
+
+  // Error Condition
+  G4cerr << "Interpolation failure." << G4endl;
+  assert(false);
+  return -999.;
 }
 
+
+// By default, collection efficiency is binned in 10-degree angular bins from 0 to 90
+// This can be overridden by setting GetCE in the derived class
+G4float* WCSimPMTObject::GetCollectionEfficiencyAngle(){
+  static G4float angle[10] = { 0., 10., 20., 30., 40., 50., 60., 70., 80., 90.};
+  return angle;
+}
+
+
+// By default, each PMT has 100% collection efficiency at all angles
+// This can be overridden by setting GetCE in the derived class
+G4float* WCSimPMTObject::GetCollectionEfficiencyArray(){
+  static G4float CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
+  // CollectionEfficiency before modification on 2015-03-27 (Different from SKDetSim)
+  // static G4float CE[10]={100,100,99,95,90,85,80,69,35,13}; 
+  return CE;
+}
 
 
 
@@ -59,11 +71,7 @@ G4float WCSimPMTObject::Interpolate_func(G4float x, G4int ncount, G4float *angle
 // 20 inch
 
 
-PMT20inch::PMT20inch()
-{
-//  collectionEfficency = {100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)
-}
-
+PMT20inch::PMT20inch() {}
 PMT20inch::~PMT20inch(){}
 
 G4String PMT20inch::GetPMTName() {G4String PMTName = "20inch"; return PMTName;}
@@ -217,11 +225,7 @@ G4float PMT20inch::GetmaxQE(){
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 8 inch
 
-PMT8inch::PMT8inch()
-{
-    //collectionEfficiency = {100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)  
-}
-
+PMT8inch::PMT8inch(){}
 PMT8inch::~PMT8inch(){}
 
 G4String PMT8inch::GetPMTName() {G4String PMTName = "8inch"; return PMTName;}
@@ -374,11 +378,7 @@ G4float  PMT8inch::GetmaxQE(){
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch
 
-PMT10inch::PMT10inch()
-{
-    // collectionEfficiency = {100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)
-}
-
+PMT10inch::PMT10inch(){}
 PMT10inch::~PMT10inch(){}
 
 G4String PMT10inch::GetPMTName() {G4String PMTName = "10inch"; return PMTName;}
@@ -531,11 +531,7 @@ G4float  PMT10inch::GetmaxQE(){
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch HQE
 
-PMT10inchHQE::PMT10inchHQE()
-{
-    //collectionEfficiency = {100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)
-}
-
+PMT10inchHQE::PMT10inchHQE() {}
 PMT10inchHQE::~PMT10inchHQE(){}
 
 G4String PMT10inchHQE::GetPMTName() {G4String PMTName = "10inch"; return PMTName;}
@@ -688,11 +684,7 @@ G4float  PMT10inchHQE::GetmaxQE(){
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HQE
 
-PMT12inchHQE::PMT12inchHQE()
-{
-    //collectionEfficiency = {100,100,99,95,90,85,80,69,35,13}; //CE before modification (Different from SKDetSim)    
-}
-
+PMT12inchHQE::PMT12inchHQE(){}
 PMT12inchHQE::~PMT12inchHQE(){}
 
 G4String PMT12inchHQE::GetPMTName() {G4String PMTName = "12inch"; return PMTName;}
@@ -849,21 +841,16 @@ G4float  PMT12inchHQE::GetmaxQE()//currently uses the same as the 10inchHQE
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 20 inch HPD
 
+////////////////////////////////////////////////////////
+//20" HPD (20150522 ver.) Parameter Source            //
+//                                                    //
+// 1pe resolution: Measured in the air (20" HPD)      //
+// Timing Resolution: Measured in the air (20" HPD)   //
+// QE: HQE R3600 PMT data from Hamamatsu              //
+//                                                    //
+////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////
-//20" HPD Parameter Source                  //
-//                                          //
-// 1pe resolution: EGADS data (8" HPD)      //
-// Timing Resolution: EGADS data (8" HPD)   //
-// QE: HQE R3600 PMT data from Hamamatsu    //
-//                                          //
-//////////////////////////////////////////////
-
-HPD20inchHQE::HPD20inchHQE()
-{
-    collectionEfficiency = { 98., 98., 98., 98., 98., 98., 98., 98., 98., 98.};  
-}
-
+HPD20inchHQE::HPD20inchHQE(){}
 HPD20inchHQE::~HPD20inchHQE(){}
 
 G4String HPD20inchHQE::GetPMTName() {G4String PMTName = "HPD20inchHQE"; return PMTName;}
@@ -871,42 +858,49 @@ G4double HPD20inchHQE::GetExposeHeight() {return .192*m;}
 G4double HPD20inchHQE::GetRadius() {return .254*m;}
 G4double HPD20inchHQE::GetPMTGlassThickness() {return 0.3*cm;}
 float HPD20inchHQE::HitTimeSmearing(float Q) {
-  float timingConstant = 5.0; 
-  float timingResolution = 0.47 + sqrt(timingConstant/Q); 
-  // looking at SK's jitter function for 20" tubes
-  if (timingResolution < 1.2) timingResolution=1.2;
-  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  G4float sig_param[4]={0.6718,0.1264,0.4450,11.87};
+  G4float lambda_param[2]={0.3255,0.1142};
+
+  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
+
+  G4float highcharge_param[2];
+  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
+  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
+  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
+
+  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
+  G4float lambda = lambda_param[0]+lambda_param[1]*Q;
+  G4float Smearing_factor = G4RandGauss::shoot(-0.2,sigma)-1/lambda*log(1-G4UniformRand());
   return Smearing_factor;
 }
 
 G4float* HPD20inchHQE::Getqpe()
    {
   static G4float qpe0[501]= {
-    // 1                                                                                           
-    0.000381, 0.000402, 0.000402, 0.000423, 0.000444,
-    0.000444, 0.000444, 0.000465, 0.000465, 0.000465,
-    0.000465, 0.000465, 0.000486, 0.000486, 0.000529,
-    0.000550, 0.000550, 0.000613, 0.000634, 0.000656,
-    0.000656, 0.000677, 0.000740, 0.000782, 0.000782,
-    0.000782, 0.000782, 0.000782, 0.000782, 0.000782,
-    0.000782, 0.000782, 0.000804, 0.000825, 0.000909,
-    0.000930, 0.000930, 0.001015, 0.001100, 0.001205,
-    0.001374, 0.001480, 0.001649, 0.002136, 0.002855,
-    0.004039, 0.005752, 0.009071, 0.012582, 0.016917,
-    // 2                                                                                           
-    0.023620, 0.031845, 0.042714, 0.048593, 0.059863,
-    0.070013, 0.078577, 0.089933, 0.101584, 0.115138,
-    0.129221, 0.143368, 0.157895, 0.175573, 0.194012,
-    0.214121, 0.236578, 0.264236, 0.293861, 0.326362,
-    0.360174, 0.398406, 0.439069, 0.480831, 0.526231,
-    0.572731, 0.618603, 0.664208, 0.708600, 0.750897,
-    0.790346, 0.826361, 0.858545, 0.886698, 0.910804,
-    0.931009, 0.947585, 0.960897, 0.971362, 0.979414,
-    0.985479, 0.989951, 0.993178, 0.995457, 0.997034,
-    0.998101, 0.998808, 0.999266, 0.999557, 0.999738,
-    // 3                                                                                           
-    0.999848, 0.999914, 0.999952, 0.999974, 0.999986,
-    0.999993, 0.999996, 0.999998, 0.999999, 1.000000,
+    // 1
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000002, 0.000009, 0.000039, 0.000137,
+    0.000422, 0.001131, 0.002658, 0.005518, 0.010223,
+    // 2
+    0.017088, 0.026095, 0.036901, 0.048987, 0.061844,
+    0.075095, 0.088517, 0.102003, 0.115514, 0.129042,
+    0.142597, 0.156204, 0.169913, 0.183812, 0.198050,
+    0.212864, 0.228609, 0.245787, 0.265062, 0.287245,
+    0.313238, 0.343936, 0.380072, 0.422047, 0.469762,
+    0.522511, 0.578971, 0.637303, 0.695364, 0.750974,
+    0.802195, 0.847547, 0.886140, 0.917697, 0.942485,
+    0.961183, 0.974724, 0.984134, 0.990406, 0.994415,
+    0.996872, 0.998316, 0.999128, 0.999566, 0.999793,
+    0.999905, 0.999958, 0.999982, 0.999993, 0.999997,
+    // 3
+    0.999999, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
@@ -915,7 +909,8 @@ G4float* HPD20inchHQE::Getqpe()
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    // 4                                                                                           
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 4
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
@@ -1013,18 +1008,17 @@ G4float HPD20inchHQE::GetmaxQE(){
   return maxQE;
 }
 
-
+G4float* HPD20inchHQE::GetCollectionEfficiencyArray(){
+  static G4float CE[10] = { 98., 98., 98., 98., 98., 98., 98., 98., 98., 98.};
+  return CE;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HPD
 
 //Information for the HPD12inchHQE is identical to the HPD20inchHQE, except for GetPMTName, GetRadius and GetExposeHeight. 
 
-HPD12inchHQE::HPD12inchHQE()
-{
-    collectionEfficiency = { 98., 98., 98., 98., 98., 98., 98., 98., 98., 98.};    
-}
-
+HPD12inchHQE::HPD12inchHQE(){}
 HPD12inchHQE::~HPD12inchHQE(){}
 
 G4String HPD12inchHQE::GetPMTName() {G4String PMTName = "HPD12inchHQE"; return PMTName;}
@@ -1032,42 +1026,50 @@ G4double HPD12inchHQE::GetExposeHeight() {return 118.*mm;} //Assumed to be the s
 G4double HPD12inchHQE::GetRadius() {return 152.4*mm;} //12 inches
 G4double HPD12inchHQE::GetPMTGlassThickness() {return 0.3*cm;} 
 float HPD12inchHQE::HitTimeSmearing(float Q) {
-  float timingConstant = 5.0; 
-  float timingResolution = 0.47 + sqrt(timingConstant/Q); 
-  // looking at SK's jitter function for 20" tubes
-  if (timingResolution < 1.2) timingResolution=1.2;
-  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  G4float sig_param[4]={0.6718,0.1264,0.4450,11.87};
+  G4float lambda_param[2]={0.3255,0.1142};
+
+  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
+
+  G4float highcharge_param[2];
+  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
+  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
+  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
+
+  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
+  G4float lambda = lambda_param[0]+lambda_param[1]*Q;
+  G4float Smearing_factor = G4RandGauss::shoot(-0.2,sigma)-1/lambda*log(1-G4UniformRand());
   return Smearing_factor;
 }
 
 G4float* HPD12inchHQE::Getqpe()
    {
   static G4float qpe0[501]= {
-    // 1                                                                                           
-    0.000381, 0.000402, 0.000402, 0.000423, 0.000444,
-    0.000444, 0.000444, 0.000465, 0.000465, 0.000465,
-    0.000465, 0.000465, 0.000486, 0.000486, 0.000529,
-    0.000550, 0.000550, 0.000613, 0.000634, 0.000656,
-    0.000656, 0.000677, 0.000740, 0.000782, 0.000782,
-    0.000782, 0.000782, 0.000782, 0.000782, 0.000782,
-    0.000782, 0.000782, 0.000804, 0.000825, 0.000909,
-    0.000930, 0.000930, 0.001015, 0.001100, 0.001205,
-    0.001374, 0.001480, 0.001649, 0.002136, 0.002855,
-    0.004039, 0.005752, 0.009071, 0.012582, 0.016917,
-    // 2                                                                                           
-    0.023620, 0.031845, 0.042714, 0.048593, 0.059863,
-    0.070013, 0.078577, 0.089933, 0.101584, 0.115138,
-    0.129221, 0.143368, 0.157895, 0.175573, 0.194012,
-    0.214121, 0.236578, 0.264236, 0.293861, 0.326362,
-    0.360174, 0.398406, 0.439069, 0.480831, 0.526231,
-    0.572731, 0.618603, 0.664208, 0.708600, 0.750897,
-    0.790346, 0.826361, 0.858545, 0.886698, 0.910804,
-    0.931009, 0.947585, 0.960897, 0.971362, 0.979414,
-    0.985479, 0.989951, 0.993178, 0.995457, 0.997034,
-    0.998101, 0.998808, 0.999266, 0.999557, 0.999738,
-    // 3                                                                                           
-    0.999848, 0.999914, 0.999952, 0.999974, 0.999986,
-    0.999993, 0.999996, 0.999998, 0.999999, 1.000000,
+    // 1
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000002, 0.000009, 0.000039, 0.000137,
+    0.000422, 0.001131, 0.002658, 0.005518, 0.010223,
+
+    0.017088, 0.026095, 0.036901, 0.048987, 0.061844,
+    0.075095, 0.088517, 0.102003, 0.115514, 0.129042,
+    0.142597, 0.156204, 0.169913, 0.183812, 0.198050,
+    0.212864, 0.228609, 0.245787, 0.265062, 0.287245,
+    0.313238, 0.343936, 0.380072, 0.422047, 0.469762,
+    0.522511, 0.578971, 0.637303, 0.695364, 0.750974,
+    0.802195, 0.847547, 0.886140, 0.917697, 0.942485,
+    0.961183, 0.974724, 0.984134, 0.990406, 0.994415,
+    0.996872, 0.998316, 0.999128, 0.999566, 0.999793,
+    0.999905, 0.999958, 0.999982, 0.999993, 0.999997,
+
+    0.999999, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
@@ -1174,6 +1176,10 @@ G4float HPD12inchHQE::GetmaxQE(){
   return maxQE;
 }
 
+G4float* HPD12inchHQE::GetCollectionEfficiencyArray(){
+  static G4float CE[10] = { 98., 98., 98., 98., 98., 98., 98., 98., 98., 98.};
+  return CE;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1189,11 +1195,8 @@ G4float HPD12inchHQE::GetmaxQE(){
 //////////////////////////////////////////////////////////////
 
  
-BoxandLine20inchHQE::BoxandLine20inchHQE()
-{
-    collectionEfficiency = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};   
-}
 
+BoxandLine20inchHQE::BoxandLine20inchHQE(){}
 BoxandLine20inchHQE::~BoxandLine20inchHQE(){}
 
 G4String BoxandLine20inchHQE::GetPMTName() {G4String PMTName = "BoxandLine20inchHQE"; return PMTName;}
@@ -1202,10 +1205,16 @@ G4double BoxandLine20inchHQE::GetRadius() {return .254*m;}
 G4double BoxandLine20inchHQE::GetPMTGlassThickness() {return 0.4*cm;}
 
 float BoxandLine20inchHQE::HitTimeSmearing(float Q) {
-  G4float sig_param[4]={0.8928,0.03278,0.07054,16.4};
-  G4float lambda_param[2]={0.4094,0.06852};
+  G4float sig_param[4]={0.6314,0.06260,0.5711,23.96};
+  G4float lambda_param[2]={0.4113,0.07827};
+  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
 
-  G4float sigma = (sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2])*(Q<sig_param[3])+(2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3])/sqrt(Q)+(exp(-sig_param[1]*sig_param[3])+sig_param[2])-2*sig_param[0]*sig_param[1]*sig_param[3]*exp(-sig_param[1]*sig_param[3]))*(Q>sig_param[3]));
+  G4float highcharge_param[2];
+  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
+  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
+  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
+
+  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
   G4float lambda = lambda_param[0]+lambda_param[1]*Q;
   G4float Smearing_factor = G4RandGauss::shoot(-0.2,sigma)-1/lambda*log(1-G4UniformRand());
   return Smearing_factor;
@@ -1343,6 +1352,10 @@ G4float BoxandLine20inchHQE::GetmaxQE(){
   const G4float maxQE = 0.315;
   return maxQE;
 }
+G4float* BoxandLine20inchHQE::GetCollectionEfficiencyArray(){  
+  static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
+  return CE;
+}
 
 
 
@@ -1352,11 +1365,7 @@ G4float BoxandLine20inchHQE::GetmaxQE(){
 
 //Information for the BoxandLine12inchHQE is identical to the BoxandLine20inchHQE, except for GetPMTName, GetRadius and GetExposeHeight.
 
-BoxandLine12inchHQE::BoxandLine12inchHQE()
-{
-    collectionEfficiency = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};   
-}
-
+BoxandLine12inchHQE::BoxandLine12inchHQE(){}
 BoxandLine12inchHQE::~BoxandLine12inchHQE(){}
 
 G4String BoxandLine12inchHQE::GetPMTName() {G4String PMTName = "BoxandLine12inchHQE"; return PMTName;}
@@ -1365,10 +1374,17 @@ G4double BoxandLine12inchHQE::GetRadius() {return 152.4*mm;}
 G4double BoxandLine12inchHQE::GetPMTGlassThickness() {return 0.4*cm;}
 
 float BoxandLine12inchHQE::HitTimeSmearing(float Q) {
-  G4float sig_param[4]={0.8928,0.03278,0.07054,16.4};
-  G4float lambda_param[2]={0.4094,0.06852};
+  G4float sig_param[4]={0.6314,0.06260,0.5711,23.96};
+  G4float lambda_param[2]={0.4113,0.07827};
 
-  G4float sigma = (sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2])*(Q<sig_param[3])+(2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3])/sqrt(Q)+(exp(-sig_param[1]*sig_param[3])+sig_param[2])-2*sig_param[0]*sig_param[1]*sig_param[3]*exp(-sig_param[1]*sig_param[3]))*(Q>sig_param[3]));
+  G4float highcharge_param[2];
+  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
+  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
+
+  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
+  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
+
+  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
   G4float lambda = lambda_param[0]+lambda_param[1]*Q;
   G4float Smearing_factor = G4RandGauss::shoot(-0.2,sigma)-1/lambda*log(1-G4UniformRand());
   return Smearing_factor;
@@ -1505,4 +1521,8 @@ G4float* BoxandLine12inchHQE::GetQE(){
 G4float BoxandLine12inchHQE::GetmaxQE(){
   const G4float maxQE = 0.315;
   return maxQE;
+}
+G4float* BoxandLine12inchHQE::GetCollectionEfficiencyArray(){  
+  static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
+  return CE;
 }

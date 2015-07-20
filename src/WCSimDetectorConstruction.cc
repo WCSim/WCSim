@@ -30,11 +30,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   isHyperK  = false;
 
   debugMode = false;
-//-----------------------------------------------------
-// Initilize SD pointers
-//-----------------------------------------------------
-
-      aWCPMT     = NULL;
 
   myConfiguration = DetConfig;
 
@@ -80,8 +75,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Set the default method for implementing the PMT QE
   //-----------------------------------------------------
   SetPMT_QE_Method(1);
-   //default NOT to use collection efficiency
-  SetPMT_Coll_Eff(0);
+   //default is to use collection efficiency
+  SetPMT_Coll_Eff(1);
 
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry
@@ -218,51 +213,51 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   return physiExpHall;
 }
 
-WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType)
+WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4String CollectionName)
 {
   if (PMTType == "PMT20inch"){
      WCSimPMTObject* PMT = new PMT20inch;
-      WCSimDetectorConstruction::SetPMTPointer(PMT);
+     WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
       return PMT;
   }
   else if (PMTType == "PMT8inch"){
     WCSimPMTObject* PMT = new PMT8inch;
-    WCSimDetectorConstruction::SetPMTPointer(PMT);
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
   else if (PMTType == "PMT10inch"){
     WCSimPMTObject* PMT = new PMT10inch;
-    WCSimDetectorConstruction::SetPMTPointer(PMT);
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
   else if (PMTType == "PMT10inchHQE"){
     WCSimPMTObject* PMT = new PMT10inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT);
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
   else if (PMTType == "PMT12inchHQE"){
     WCSimPMTObject* PMT = new PMT12inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT);
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
   else if (PMTType == "HPD20inchHQE"){
     WCSimPMTObject* PMT = new HPD20inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT);
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
   else if (PMTType == "HPD12inchHQE"){
     WCSimPMTObject* PMT = new HPD12inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT);
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
   else if (PMTType == "BoxandLine20inchHQE"){
     WCSimPMTObject* PMT = new BoxandLine20inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT);
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
   else if (PMTType == "BoxandLine12inchHQE"){
     WCSimPMTObject* PMT = new BoxandLine12inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT);
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
 

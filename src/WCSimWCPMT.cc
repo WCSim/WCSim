@@ -41,8 +41,9 @@ WCSimWCPMT::~WCSimWCPMT(){
 }
 
 G4double WCSimWCPMT::rn1pe(){
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
   WCSimPMTObject * PMT;
-  PMT = myDetector->GetPMTPointer();
+  PMT = myDetector->GetPMTPointer(WCIDCollectionName);
   G4int i;
   G4double random = G4UniformRand();
   G4double random2 = G4UniformRand(); 
@@ -63,11 +64,11 @@ G4double WCSimWCPMT::rn1pe(){
 void WCSimWCPMT::Digitize()
 {
   DigitsCollection = new WCSimWCDigitsCollection ("WCDigitizedCollectionPMT",collectionName[0]);
-
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
  
   // Get the Associated Hit collection IDs
-  G4int WCHCID = DigiMan->GetHitsCollectionID("glassFaceWCPMT");
+  G4int WCHCID = DigiMan->GetHitsCollectionID(WCIDCollectionName);
 
   // The Hits collection
   WCSimWCHitsCollection* WCHC =
