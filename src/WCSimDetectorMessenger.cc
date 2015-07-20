@@ -130,8 +130,6 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
                 } else if ( newValue == "HyperK_withHPD") {
                         WCSimDetector->SetIsHyperK(true);
 			WCSimDetector->SetHyperKGeometry_withHPD();
-		} else if(newValue == "DUSEL_100kton_10inch_40perCent") {
-			WCSimDetector->DUSEL_100kton_10inch_40perCent();
 		} else
 		  G4cout << "That geometry choice not defined!" << G4endl;
 	}
