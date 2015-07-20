@@ -6,6 +6,17 @@
 #
 /control/verbose 2
 /run/verbose 2
+
+#
+# multiPMT params
+#
+#/WCSim/mPMT/CylHeight 453. mm
+#/WCSim/mPMT/CylRadius 166. mm
+#/WCSim/mPMT/orientation Perpendicular
+/WCSim/WCgeom HyperK
+/WCSim/Construct
+
+
 #
 # Use this open statement to create an OpenGL view:
 #/vis/open OGLSX 600x600-0+0

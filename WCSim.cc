@@ -125,7 +125,12 @@ int main(int argc,char** argv)
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
 
+    if(fileName == "vis.mac"){
+      G4cout << "ERROR: Execute without arg for interactive mode" << G4endl;
+      //return -1;
+    }
     UI->ApplyCommand(command+fileName);
+
   }
 
   delete visManager;

@@ -301,15 +301,15 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	}
 
 	if (command == mPMT_CylHeight){
-	  //G4cout << "Set Cylinder Height of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
-	  std::cout << "Set Cylinder Height of MultiPMT to " << newValue  << " " << std::endl;
+	  G4cout << "Set Cylinder Height of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
+	  //std::cout << "Set Cylinder Height of MultiPMT to " << newValue  << " " << std::endl;
 	  WCSimDetector->SetmPMT_CylHeight(mPMT_CylHeight->GetNewDoubleValue(newValue));
 	}
 
 
 	if (command == mPMT_CylRadius){
-	  //G4cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
-	  std::cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << std::endl;
+	  G4cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
+	  //std::cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << std::endl;
 	  WCSimDetector->SetmPMT_CylRadius(mPMT_CylRadius->GetNewDoubleValue(newValue));
 	}
 	
