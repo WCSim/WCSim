@@ -62,6 +62,8 @@ public:
   void SuperK_20inchBandL_20perCent();
   void SuperK_12inchBandL_15perCent();
   void SuperK_20inchBandL_14perCent();
+  void Cylinder_60x74_20inchBandL_14perCent();
+  void Cylinder_60x74_20inchBandL_40perCent();
   void Cylinder_12inchHPD_15perCent();
   void DUSEL_100kton_10inch_40perCent();
   void DUSEL_100kton_10inch_HQE_12perCent();
