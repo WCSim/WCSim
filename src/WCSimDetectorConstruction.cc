@@ -30,11 +30,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   isHyperK  = false;
 
   debugMode = false;
-//-----------------------------------------------------
-// Initilize SD pointers
-//-----------------------------------------------------
-
-      aWCPMT     = NULL;
 
   myConfiguration = DetConfig;
 
@@ -80,10 +75,12 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Set the default method for implementing the PMT QE
   //-----------------------------------------------------
   SetPMT_QE_Method(1);
-   //default NOT to use collection efficiency
-  SetPMT_Coll_Eff(0);
+
+   //default is to use collection efficiency
+  SetPMT_Coll_Eff(1);
   // set default visualizer to OGLSX
   SetVis_Choice("OGLSX");
+
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry
   //-----------------------------------------------------

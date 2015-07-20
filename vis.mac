@@ -56,7 +56,7 @@
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
 
 # turn on or off the collection efficiency
-#/WCSim/PMTCollEff on
+/WCSim/PMTCollEff on
 
 #/WCSim/Construct # This must be uncommented to construct a new detector configuration.
 
@@ -75,7 +75,7 @@
 # (14/03/10)
 # Factor of Normal PMT is 1.367
 /DarkRate/SetConvert 1.367
-#/DarkRate/SetConvert 1.120 #For HPDs
+#/DarkRate/SetConvert 1.119 #For HPDs
 #/DarkRate/SetConvert 1.126 #For Box and Line PMTs
 
 ##Comment out lines the create, open OGLSX, zoom, viewpointThetaPhi, and upVector lines below if using RayTracer
