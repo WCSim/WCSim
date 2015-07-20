@@ -58,11 +58,7 @@
 # turn on or off the collection efficiency
 #/WCSim/PMTCollEff on
 
-## command to set visualization parameters in WCSimConstructPMT and WCSimConstructCylinder
-#/WCSim/WCVisChoice OGLSX
-/WCSim/WCVisChoice RayTracer
-
-/WCSim/Construct # This must be uncommented to construct a new detector configuration.
+#/WCSim/Construct # This must be uncommented to construct a new detector configuration.
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 #/WCSim/SavePi0 true
@@ -81,10 +77,6 @@
 /DarkRate/SetConvert 1.367
 #/DarkRate/SetConvert 1.120 #For HPDs
 #/DarkRate/SetConvert 1.126 #For Box and Line PMTs
-
-# command to set visualization parameters in WCSimConstructPMT and WCSimConstructCylinder
-#/WCSim/WCVisChoice OGLSX
-/WCSim/WCVisChoice RayTracer
 
 ##Comment out lines the create, open OGLSX, zoom, viewpointThetaPhi, and upVector lines below if using RayTracer
 
@@ -129,8 +121,8 @@
 
 ##/run/beamOn 100
 
-## If using RayTracer, do not go further than 40 m in any direction
-
+## Errors may arise if using RayTracer and attempting to view the detector from a distance further than 40 meters
+## If this occurs, attempt changing the y-direction
 
 /vis/open RayTracer
 /vis/viewer/set/upVector 0 0 1
@@ -138,8 +130,10 @@
 /vis/rayTracer/eyePosition -15 0 -15
 /vis/rayTracer/trace g4RayTracer.jpeg
 
-/vis/rayTracer/eyePosition 70 1 70
+/vis/rayTracer/eyePosition 70 0 70
 /vis/rayTracer/trace g4RayTracer1.jpeg
 
+/vis/rayTracer/eyePosition 0 0 70
+/vis/rayTracer/trace g4RayTracer2.jpeg
 
 #exit

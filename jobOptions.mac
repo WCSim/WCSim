@@ -15,4 +15,6 @@
 /WCSim/physics/list WCSim # included for backward-compatibility.  Requires jobOptions2.mac
 
 
-
+## command to set visualization parameters in WCSimConstructPMT and WCSimConstructCylinder
+#/WCSim/WCVisChoice OGLSX
+/WCSim/WCVisChoice RayTracer

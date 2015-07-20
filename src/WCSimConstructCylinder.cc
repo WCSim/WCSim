@@ -143,8 +143,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
 // This volume needs to made invisible to view the blacksheet and PMTs with RayTracer
   if (Vis_Choice == "RayTracer")
-   {logicWCBarrel->SetVisAttributes(G4VisAttributes::Invisible);} 
-
+   //{logicWCBarrel->SetVisAttributes(G4VisAttributes::Invisible);} 
+{}
   else if (Vis_Choice == "OGLSX")
    {//{if(!debugMode)
     //logicWCBarrel->SetVisAttributes(G4VisAttributes::Invisible);} 
@@ -1163,7 +1163,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
    = new G4VisAttributes(G4Colour(1.0,1.0,0.0));
 
 	if(!debugMode)
-        logicWCCapBlackSheet->SetVisAttributes(WCCapBlackSheetVisAtt);
+       //logicWCCapBlackSheet->SetVisAttributes(G4VisAttributes::Invisible); //Use this line if you want to make the blacksheet on the caps invisible to view through
+	   logicWCCapBlackSheet->SetVisAttributes(WCCapBlackSheetVisAtt);
     else
         logicWCCapBlackSheet->SetVisAttributes(WCCapBlackSheetVisAtt);}
 
