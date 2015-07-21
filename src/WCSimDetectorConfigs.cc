@@ -22,20 +22,19 @@
 void WCSimDetectorConstruction::SetSuperKGeometry()
 {
 
-  //WCSimPMTObject * PMT = CreatePMTObject("PMT20inch");
-  WCSimPMTObject * PMT = CreatePMTObject("PMT8inch");
+  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch");
   WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = 15*mm; //PMT->GetExposeHeight(); //from TechSheet for 3in (only photocathode)
-  WCPMTRadius = 50*mm; //from TechSheet: radius of curv = 50mm for 3inch  //PMT->GetRadius();
+  WCPMTExposeHeight = PMT->GetExposeHeight();
+  WCPMTRadius = PMT->GetRadius();
   WCPMTGlassThickness = PMT->GetPMTGlassThickness();
   WCIDDiameter          = 33.6815*m; //16.900*2*cos(2*pi*rad/75)*m; //inner detector diameter
   WCIDHeight            = 36.200*m; //"" "" height
   WCBarrelPMTOffset     = 0.0715*m; //offset from vertical
   WCBarrelNumPMTHorizontal  = 150; 
-  WCBarrelNRings        = 10;//17.;
-  WCPMTperCellHorizontal= 2;//4;
-  WCPMTperCellVertical  = 2;//3; 
-  WCCapPMTSpacing       = 4.2*m;//0.707*m; // distance between centers of top and bottom pmts
+  WCBarrelNRings        = 17.;
+  WCPMTperCellHorizontal= 4;
+  WCPMTperCellVertical  = 3; 
+  WCCapPMTSpacing       = 0.707*m; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = 16.9*m;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -341,5 +340,25 @@ void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_14perCent()
 
 
 
+void WCSimDetectorConstruction::SetTestmPMTGeometry()
+{
+
+  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch"); //start with 20inch properties
+  WCPMTName = PMT->GetPMTName();
+  WCPMTExposeHeight = 15*mm; //PMT->GetExposeHeight(); //from TechSheet for 3in (only photocathode)
+  WCPMTRadius = 50*mm; //from TechSheet: radius of curv = 50mm for 3inch  //PMT->GetRadius();
+  WCPMTGlassThickness = PMT->GetPMTGlassThickness();
+  WCIDDiameter          = 33.6815*m; //16.900*2*cos(2*pi*rad/75)*m; //inner detector diameter
+  WCIDHeight            = 36.200*m; //"" "" height
+  WCBarrelPMTOffset     = 0.0715*m; //offset from vertical
+  WCBarrelNumPMTHorizontal  = 150; 
+  WCBarrelNRings        = 10; //all for easier visualization debugging
+  WCPMTperCellHorizontal= 2;
+  WCPMTperCellVertical  = 2;
+  WCCapPMTSpacing       = 4.2*m; // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = 16.9*m;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+}
 
 

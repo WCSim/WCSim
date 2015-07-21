@@ -54,7 +54,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   totalNumPMTs = 0;
   WCPMTExposeHeight= 0.;
 
-  SetSuperKGeometry();
+  //SetSuperKGeometry();
+  SetTestmPMTGeometry();    //ToDo: clean up ConstructPMT so the above works again.
   //SetHyperKGeometry();
   //DUSEL_100kton_10inch_40perCent();
   //DUSEL_100kton_10inch_HQE_12perCent();

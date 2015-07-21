@@ -44,29 +44,17 @@ void WCSimMultiPMTParameterisation::ComputeTransformation
   G4RotationMatrix* rotm = new G4RotationMatrix(); // Rotation matrix for each chamber
   G4double angle = ((vNiCLocal[vCircleLocal[copyNo]]-2)*CLHEP::pi/vNiCLocal[vCircleLocal[copyNo]]); // Internal angle of each polygon
   G4ThreeVector origin(0,0,0); 
-  //const G4double chambSize = fApothema/std::tan(angle/2);
-
   origin.setRThetaPhi(fApothema,CLHEP::halfpi-vAlphaLocal[vCircleLocal[copyNo]],copyNo*(CLHEP::pi-angle));
   // TF: Positioning vector, for an offset single hemisphere (for now)
   origin.setZ(origin.getZ()+fHeight);
 
-  // TF: should be better documented
-  //rotm->rotateX(CLHEP::halfpi);
-  //rotm->rotateY((CLHEP::halfpi-(copyNo*angle))); //TF: strange as Y is a symmetry axis now, so rotation doesn't matter, unless Y' is meant
-  //rotm->rotateX((std::pow(-1,copyNo)*vAlphaLocal[vCircleLocal[copyNo]]));
-    
   // rotation of mother volume wrt daughter, hence minus sign.
   rotm->rotateZ(-origin.getPhi());
   rotm->rotateY(-acos((origin.getZ()-fHeight)/fApothema)); //over Y', origin.getTheta() is incorrect!
 
-  /*
-  std::cout << copyNo << " " << origin.getX() << " " << origin.getY() << " " << origin.getZ() << std::endl;
-  std::cout << copyNo << " " << origin.getPhi() << " " << origin.getTheta() << std::endl;
-  std::cout << copyNo << " " << rotm->getPhi() << " " << rotm->getTheta() << std::endl;
-  std::cout << copyNo << " " << acos((origin.getZ()-fHeight)/fApothema) << " " << origin.getTheta() << std::endl; */
+
   physVol->SetTranslation(origin);
   physVol->SetRotation(rotm);
-  //physVol->SetRotation(0);
 
 }
 

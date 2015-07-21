@@ -35,11 +35,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
 
   //G4cout << "Create PMT" << G4endl;
 
-    // Gray wireframe visual style
+  // Gray wireframe visual style
   //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   //WCPMTVisAtt->SetForceWireframe(true);
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0));
   WCPMTVisAtt->SetForceSolid(true);
+  
+ 
+  
     
 
   G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
@@ -56,23 +59,33 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
   // Radius of cone at z=expose+reflectorHeight, relative to PMT radius
   G4double reflectorRadius = 7.5*CLHEP::mm;  //based on KM3Net JINST
   G4double reflectorThickness = 1.*CLHEP::mm;
-  G4bool addBase = true;
 
 
-  /* version without a base 
-  G4double PMTHolderZ[2] = {0, std::max(expose,expose + reflectorHeight)};
-  G4double PMTHolderR[2] = {radius + reflectorThickness, radius + reflectorThickness + reflectorRadius};
+  // TODO: Base is PMT property! Should not hard coded here.
+  G4bool addPMTBase = false; 
+  G4double baseHeight = 0.;
+  G4double baseRadius = 0.;
+  if(addPMTBase){
+    G4double basePinLength = 73.*CLHEP::mm;
+    baseHeight = 97.*CLHEP::mm - expose + basePinLength; //97mm includes the PMT top as well.
+    baseRadius = 26.*CLHEP::mm;
+  } else {
+    // version without a base but with optional reflectorCone
+    baseHeight = expose;
+    baseRadius = radius + reflectorThickness;
+  }
+  G4double PMTHolderZ[2] = {-baseHeight+expose, 
+			    std::max(expose,expose + reflectorHeight)};
+  G4double PMTHolderR[2] = {baseRadius, 
+			    radius + reflectorThickness + reflectorRadius};
   G4double PMTHolderr[2] = {0,0};
-  */
-  G4double baseHeight = 97.*CLHEP::mm - expose + 73.*CLHEP::mm; //the latter are the pins
-  G4double baseRadius = 26.*CLHEP::mm;
-  G4double PMTHolderZ[2] = {-baseHeight+expose, std::max(expose,expose + reflectorHeight)};
-  G4double PMTHolderR[2] = {baseRadius, radius + reflectorThickness + reflectorRadius};
-  G4double PMTHolderr[2] = {0,0};
-
-
 
   // IF reflectorParams are non-zero, this will be a solid cone instead of cylinder
+  // Used to think a solid cone was needed as outer volume to prevent the Daughters
+  // from being larger than the volume (
+  // TODO : Prevent Daughters from escaping the MotherVolume, make it solidCone again?
+
+
   G4Polycone* solidWCPMT = 
    new G4Polycone("WCPMT",                    
                   0.0*deg,
@@ -91,8 +104,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
 
   G4VisAttributes* WCPMTVisAtt2 = new G4VisAttributes(G4Colour(1.0,0.0,0.0));
   WCPMTVisAtt2->SetForceSolid(true);
-  logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
-  //  logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+  if(addPMTBase) 
+    logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
+  else
+    logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
 
 
   //Need a volume to cut away excess behind blacksheet
