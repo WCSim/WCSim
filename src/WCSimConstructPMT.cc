@@ -33,19 +33,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   //G4cout << "Create PMT" << G4endl;
 
 
-if (Vis_Choice == "OGLSX")
-   { // Gray wireframe visual style
-    // used in OGLSX visualizer
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
-  WCPMTVisAtt->SetForceWireframe(true);}
-
-else if (Vis_Choice == "RayTracer"){
+if (Vis_Choice == "RayTracer"){
     // Blue wireframe visual style
     // Used in the RayTracer visualizer
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
   WCPMTVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
   WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown 
 }
+
+else
+   { // Gray wireframe visual style
+    // used in OGLSX visualizer
+  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  WCPMTVisAtt->SetForceWireframe(true);}
 
   G4double expose;
   G4double radius;
@@ -82,16 +82,17 @@ else if (Vis_Choice == "RayTracer"){
                             "WCPMT",
                             0,0,0);
 
-if (Vis_Choice == "OGLSX"){
-// Makes the volume containg the PMT invisible for normal visualization
-    logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);}
-else if (Vis_Choice == "RayTracer"){
+if (Vis_Choice == "RayTracer"){
 // Makes the volume containing the PMT visible, solid, and forces the auxiliary edges to be viewed.
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
   WCPMTVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
   WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown 
 
     logicWCPMT->SetVisAttributes(WCPMTVisAtt);}
+
+else{
+// Makes the volume containg the PMT invisible for normal visualization
+    logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);}
 
   //Need a volume to cut away excess behind blacksheet
   G4Box* solidCutOffTubs =
@@ -130,17 +131,18 @@ else if (Vis_Choice == "RayTracer"){
                   false,
                   0);
 
-if (Vis_Choice == "OGLSX"){
-// Making the inner portion of the detector invisible for OGLSX visualization
-  logicInteriorWCPMT->SetVisAttributes(G4VisAttributes::Invisible);}
-
-else if (Vis_Choice == "RayTracer"){
+if (Vis_Choice == "RayTracer"){
 // Adding color and forcing the inner portion of the PMT's to be viewed
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
   WCPMTVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
   WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown 
 
   logicInteriorWCPMT->SetVisAttributes(WCPMTVisAtt);}
+
+else {
+// Making the inner portion of the detector invisible for OGLSX visualization
+  logicInteriorWCPMT->SetVisAttributes(G4VisAttributes::Invisible);}
+
 
   //Create PMT Glass Face
   G4Sphere* tmpGlassFaceWCPMT =
@@ -182,7 +184,7 @@ else if (Vis_Choice == "RayTracer"){
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
 
-  else if (Vis_Choice == "RayTracer"){
+  if (Vis_Choice == "RayTracer"){
     // Blue wireframe visual style
     // Used in the RayTracer visualizer
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
@@ -190,8 +192,16 @@ else if (Vis_Choice == "RayTracer"){
   WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown 
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
 
-  logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
- 
+  logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
+
+  else
+   { // Gray wireframe visual style
+    // used in OGLSX visualizer
+  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  WCPMTVisAtt->SetForceWireframe(true);
+  //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+  logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
+
   // Instantiate a new sensitive detector and register this sensitive detector volume with the SD Manager. 
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
   G4String SDName = "/WCSim/";

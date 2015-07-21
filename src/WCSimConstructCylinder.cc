@@ -143,9 +143,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
 // This volume needs to made invisible to view the blacksheet and PMTs with RayTracer
   if (Vis_Choice == "RayTracer")
-   //{logicWCBarrel->SetVisAttributes(G4VisAttributes::Invisible);} 
-{}
-  else if (Vis_Choice == "OGLSX")
+   {logicWCBarrel->SetVisAttributes(G4VisAttributes::Invisible);} 
+
+  else
    {//{if(!debugMode)
     //logicWCBarrel->SetVisAttributes(G4VisAttributes::Invisible);} 
    }
@@ -313,19 +313,10 @@ else {
  // Change made here to have the if statement contain the !debugmode to be consistent
  // This code gives the Blacksheet its color. 
 
-if (Vis_Choice == "OGLSX"){
+if (Vis_Choice == "RayTracer"){
 
    G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
-      = new G4VisAttributes(G4Colour(0.2,0.9,0.2));
-      if(!debugMode)
-        logicWCBarrelCellBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
-      else
-        logicWCBarrelCellBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);}
-
-else if (Vis_Choice == "RayTracer"){
-
-   G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
-      = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // Primarily green color
+      = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
      WCBarrelBlackSheetCellVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
 	 WCBarrelBlackSheetCellVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
       if(!debugMode)
@@ -333,6 +324,14 @@ else if (Vis_Choice == "RayTracer"){
       else
 		logicWCBarrelCellBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);}
 
+else {
+
+   G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
+      = new G4VisAttributes(G4Colour(0.2,0.9,0.2));
+      if(!debugMode)
+        logicWCBarrelCellBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
+      else
+        logicWCBarrelCellBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);}
 
  //-----------------------------------------------------------
  // add extra tower if nessecary
@@ -457,7 +456,7 @@ else if (Vis_Choice == "RayTracer"){
   if (Vis_Choice == "OGLSX"){
 
    G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
-      = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // Primarily green color
+      = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
 
 	if(!debugMode)
 	  {logicWCTowerBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);}
@@ -467,7 +466,7 @@ else if (Vis_Choice == "RayTracer"){
   if (Vis_Choice == "RayTracer"){
    
     G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
-      = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // Primarily green color
+      = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
      WCBarrelBlackSheetCellVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
 	 WCBarrelBlackSheetCellVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
 
@@ -475,6 +474,18 @@ else if (Vis_Choice == "RayTracer"){
 	  logicWCTowerBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
 	else
 	  logicWCTowerBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);}
+
+  else {
+
+   G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
+      = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
+
+	if(!debugMode)
+	  {logicWCTowerBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);}
+	else
+	  {logicWCTowerBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);}}
+  
+
 }
 
   //jl145------------------------------------------------
@@ -863,17 +874,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
 // These lines of code below will turn the border rings invisible. 
 
-// used for OGLSX
- if (Vis_Choice == "OGLSX"){
-
-  if(!debugMode)
-        {logicWCBarrelBorderCell->SetVisAttributes(G4VisAttributes::Invisible);}
-  else {
-        G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
-        tmpVisAtt->SetForceWireframe(true);
-        logicWCBarrelBorderCell->SetVisAttributes(tmpVisAtt);}}
-
-
 // used for RayTracer
  if (Vis_Choice == "RayTracer"){
 
@@ -888,6 +888,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
         logicWCBarrelBorderCell->SetVisAttributes(tmpVisAtt);
 		logicWCBarrelBorderCell->SetVisAttributes(G4VisAttributes::Invisible);}}
 
+// used for OGLSX
+ else {
+
+  if(!debugMode)
+        {logicWCBarrelBorderCell->SetVisAttributes(G4VisAttributes::Invisible);}
+  else {
+        G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
+        tmpVisAtt->SetForceWireframe(true);
+        logicWCBarrelBorderCell->SetVisAttributes(tmpVisAtt);}}
 
 
   //------------------------------------------------------------
@@ -1046,14 +1055,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 		      false,                       // no boolean operations
 		      0,true);                          // Copy #
 
-// used for OGLSX
- if (Vis_Choice == "OGLSX"){
-  if(!debugMode){  
-    logicWCCap->SetVisAttributes(G4VisAttributes::Invisible);
-  } else
-	{G4VisAttributes* tmpVisAtt2 = new G4VisAttributes(G4Colour(.6,0.5,0.5));
-    tmpVisAtt2->SetForceWireframe(true);
-    logicWCCap->SetVisAttributes(tmpVisAtt2);}}
 
 // used for RayTracer
  if (Vis_Choice == "RayTracer"){
@@ -1067,6 +1068,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 	
 	G4VisAttributes* tmpVisAtt2 = new G4VisAttributes(G4Colour(0.6,0.5,0.5));
 	tmpVisAtt2->SetForceSolid(true);
+    logicWCCap->SetVisAttributes(tmpVisAtt2);}}
+
+// used for OGLSX
+ else{
+  if(!debugMode){  
+    logicWCCap->SetVisAttributes(G4VisAttributes::Invisible);
+  } else
+	{G4VisAttributes* tmpVisAtt2 = new G4VisAttributes(G4Colour(.6,0.5,0.5));
+    tmpVisAtt2->SetForceWireframe(true);
     logicWCCap->SetVisAttributes(tmpVisAtt2);}}
 
   //---------------------------------------------------------------------

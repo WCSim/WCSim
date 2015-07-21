@@ -110,16 +110,16 @@
 #/mygen/vecfile mu+.out
 
 # Or you can use the G4 Particle Gun
-##/mygen/generator normal
-##/gun/particle mu+
-##/gun/energy 1000 MeV
-##/gun/direction 0 1 0
-#3/gun/position 0 0 0 
+#/mygen/generator normal
+#/gun/particle mu+
+#/gun/energy 1000 MeV
+#/gun/direction 0 1 0
+#/gun/position 0 0 0 
 
 ## change the name of the output root file, default = wcsim.root
-##/WCSimIO/RootFile wcsim.root
+#/WCSimIO/RootFile wcsim.root
 
-##/run/beamOn 100
+#/run/beamOn 100
 
 ## Errors may arise if using RayTracer and attempting to view the detector from a distance further than 40 meters
 ## If this occurs, attempt changing the y-direction
@@ -130,7 +130,7 @@
 /vis/rayTracer/eyePosition -15 0 -15
 /vis/rayTracer/trace g4RayTracer.jpeg
 
-/vis/rayTracer/eyePosition 70 0 70
+/vis/rayTracer/eyePosition 70 1 70
 /vis/rayTracer/trace g4RayTracer1.jpeg
 
 /vis/rayTracer/eyePosition 0 0 70
