@@ -203,7 +203,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double pmt_radiu
   if(hemisphere->CheckOverlaps(1000,5,1)){
     G4cout << "Hemisphere has overlapping PMTs: Retry" << G4endl;
     G4LogicalVolume* emptyLogic;
-    //return emptyLogic;
+    return emptyLogic;
   }
     
   
