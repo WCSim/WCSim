@@ -325,12 +325,11 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
 
   WCDetectorName = "TestmPMT";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch", WCIDCollectionName);
+  WCSimPMTObject * PMT = CreatePMTObject("PMT3inchR12199_02", WCIDCollectionName);
 
   WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = 15*mm; //PMT->GetExposeHeight(); //from TechSheet for 3in (only photocathode)
-  WCPMTRadius = 50*mm; //from TechSheet: radius of curv = 50mm for 3inch  //PMT->GetRadius();
-  WCPMTGlassThickness = PMT->GetPMTGlassThickness();
+  WCPMTExposeHeight = PMT->GetExposeHeight(); //from TechSheet for 3in (only photocathode)
+  WCPMTRadius = PMT->GetRadius(); //from TechSheet: radius of curv = 50mm for 3inch 
   WCIDDiameter          = 33.6815*m; //16.900*2*cos(2*pi*rad/75)*m; //inner detector diameter
   WCIDHeight            = 36.200*m; //"" "" height
   WCBarrelPMTOffset     = 0.0715*m; //offset from vertical

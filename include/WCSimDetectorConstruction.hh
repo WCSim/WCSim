@@ -190,7 +190,7 @@ private:
   G4LogicalVolume*   ConstructCylinder();
 
   G4LogicalVolume* ConstructPMT(G4String,G4String);
-  G4LogicalVolume* ConstructMultiPMT(G4double,G4double); //TF ToDo: update args
+  G4LogicalVolume* ConstructMultiPMT(G4String,G4String); //TF ToDo: update args
 
 
   G4LogicalVolume* ConstructCaps(G4int zflip);

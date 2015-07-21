@@ -35,9 +35,9 @@
 //           - type of multiPMT object: NO, specify in vis.mac (h == 0 is sphere)
 //           - WinstonCone: NO, specify in vis.mac
 
-// For MultiPMT: pmt_radius and expose have different meaning, namely where to locate the sphere on the blacksheet ID/OD separator
-G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double pmt_radius, //TF: both args are PMT properties, used by ConstructPMT and should be replaced by PMTtype
-							      G4double expose)
+// For MultiPMT: expose have different meaning, namely where to locate the sphere on the blacksheet ID/OD separator
+//TF: both args are PMT properties, used by ConstructPMT and should be replaced by PMTtype
+G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, G4String CollectionName)
 {
   /*PMTKey_t key(radius,expose);
   
@@ -58,7 +58,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double pmt_radiu
   //Origin is on the blacksheet, faces positive z-direction.
   
   //Define a cylinder with spherical top and bottom
-  
+  WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
+  G4double expose =  PMT->GetExposeHeight(); // THIS is the PMT expose, which I'm currently using for pressure vessel construction
+  // this is NOT the "expose" of the mPMT
+
   G4double mPMT_zRange[2] = {0, cylinder_height};
   G4double mPMT_RRange[2] = {cylinder_radius+expose, cylinder_radius+expose};
   G4double mPMT_rRange[2] = {0,0}; //if testing with the PMTbase in ConstructPMT, no inner Container! Also for Top and BottomSphere
@@ -117,44 +120,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double pmt_radiu
 			    "WCMultiPMT",
 			    0,0,0);
 
-
-  ////////////////////////////////////////////////////////////////////////////////////
   /*
-    
-  //Now we place the nPMTs inside this motherobject on a sphere
-  const G4int nPMTs = 2;//31;
-  // in rotated frame!
-  G4ThreeVector pos_offset[nPMTs] = {G4ThreeVector(0,0,-cylinder_radius),
-				     G4ThreeVector(0,0,cylinder_height+cylinder_radius)}; //make this more user friendly/defineable later
-  std::pair<G4double,G4double> orientation[nPMTs] = {std::pair<G4double, G4double>(180.*deg,0.*deg),
-						     std::pair<G4double, G4double>(0.*deg,0.*deg)}; //theta,phi
-  
-  //Loop over and place the PMTs.
-  for(int p = 0; p < nPMTs; p++){
-    
-    G4RotationMatrix* WCPMTRotation = new G4RotationMatrix;
-    WCPMTRotation->setTheta(orientation[p].first);
-    WCPMTRotation->setPhi(orientation[p].second);
-    
-    G4LogicalVolume* logicWCPMT = ConstructPMT(radius, expose);
-    
-    //G4VisAttributes* WCsPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0));
-    //WCsPMTVisAtt->SetForceWireframe(true);
-    //logicWCPMT->SetVisAttributes(WCsPMTVisAtt);
+   * ToDo : Also have an alternate filling option according to some array. BUT do that
+   * in the parametrization somehow (eg. looping over an array or so)
+   */
 
-    G4VPhysicalVolume* singlePMT =
-      new G4PVPlacement(	WCPMTRotation,				// its rotation
-				pos_offset[p],				// its position
-				logicWCPMT,				// its logical volume
-				"WCPMT",				// its name 
-				logicWCMultiPMT,			// its mother volume
-				false,					// no boolean os
-				p);					// every PMT need a unique id.
-    
-  }
-  
-
-  */  
   // for circle 1
   G4int NbOfPmt = 18; // This is the only free param of the fill-PMT alg 
   G4double pmtDistance = cylinder_radius; // Inner radius od the DOM 
@@ -162,7 +132,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double pmt_radiu
 
   // TF, well this is the arg of ConstructMultiPMT, which should be replaced by PMTtype
   // which should actually be set in the macro file, so this should be a void function call.
-  G4LogicalVolume* logicWCPMT = ConstructPMT(pmt_radius, expose);
+  G4LogicalVolume* logicWCPMT = ConstructPMT(PMTName, CollectionName);
 
   //The ConstructMultiPMT function gets called multiple times, so only fill the vectors when not empty.
   G4int NbOfTotPmt = 0;
