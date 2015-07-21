@@ -16,5 +16,5 @@
 
 
 ## command to set visualization parameters in WCSimConstructPMT and WCSimConstructCylinder
-#/WCSim/WCVisChoice OGLSX
-/WCSim/WCVisChoice RayTracer
+/WCSim/WCVisChoice OGLSX
+#/WCSim/WCVisChoice RayTracer
