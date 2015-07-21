@@ -84,7 +84,7 @@
 /vis/open OGLSX
 # You can also set the size and position of the window if you like
 #/vis/open OGLSX 1000x1000-0+0
-#/vis/ogl/set/printSize 1000 1000
+/vis/ogl/set/printSize 1000 1000
 
 # Vis Settings for SK
 /vis/viewer/zoom 1.2
