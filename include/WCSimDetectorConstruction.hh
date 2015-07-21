@@ -66,15 +66,14 @@ public:
 
   // Related to the WC geometry
   void SetSuperKGeometry();
-  void DUSEL_100kton_10inch_40perCent();
-  void DUSEL_100kton_10inch_HQE_12perCent();
-  void DUSEL_100kton_10inch_HQE_30perCent();
-  void DUSEL_100kton_10inch_HQE_30perCent_Gd();
-  void DUSEL_150kton_10inch_HQE_30perCent();
-  void DUSEL_200kton_10inch_HQE_12perCent();
-  void DUSEL_200kton_12inch_HQE_10perCent();
-  void DUSEL_200kton_12inch_HQE_14perCent();
   void SetTestmPMTGeometry();
+  void SuperK_20inchPMT_20perCent();
+  void SuperK_20inchBandL_20perCent();
+  void SuperK_12inchBandL_15perCent();
+  void SuperK_20inchBandL_14perCent();
+  void Cylinder_60x74_20inchBandL_14perCent();
+  void Cylinder_60x74_20inchBandL_40perCent();
+  void Cylinder_12inchHPD_15perCent();
   void UpdateGeometry();
   
 
@@ -92,17 +91,27 @@ public:
 
   G4double GetPMTSize1() {return WCPMTSize;}
 
-  G4float GetPMTQE(G4float, G4int, G4float, G4float, G4float);
+  G4float GetPMTQE(G4String,G4float, G4int, G4float, G4float, G4float);
+  G4float GetPMTCollectionEfficiency(G4float theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
 
-  WCSimPMTObject *CreatePMTObject(G4String);
+  WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
-  WCSimPMTObject *  PMTptr;
-  void    SetPMTPointer(WCSimPMTObject* PMT) {PMTptr = PMT;} //currently you can only save one PMT here. When we move to multiple PMTs as a future upgrade, this can be changed to an array of PMT pointers.
-  WCSimPMTObject*  GetPMTPointer(){return PMTptr;}
+  std::map<G4String, WCSimPMTObject*>  CollectionNameMap; 
+  WCSimPMTObject * PMTptr;
+ 
+  void SetPMTPointer(WCSimPMTObject* PMT, G4String CollectionName){
+    CollectionNameMap[CollectionName] = PMT;
+  }
 
+  WCSimPMTObject* GetPMTPointer(G4String CollectionName){
+    PMTptr = CollectionNameMap[CollectionName];
+    if (PMTptr == NULL) {G4cout << CollectionName << " is not a recognized hit collection. Exiting WCSim." << G4endl; exit(1);}
+    return PMTptr;
+  }
+ 
   G4ThreeVector GetWCOffset(){return WCOffset;}
   
-  // Related to the WC tube IDs
+  // Related to the WC tube ID
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
   static G4Transform3D GetTubeTransform(int tubeNo){return tubeIDMap[tubeNo];}
 
@@ -149,16 +158,14 @@ public:
 
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
+  G4String GetIDCollectionName(){return WCIDCollectionName;}
+
+ 
 private:
 
   // Tuning parameters
 
   WCSimTuningParameters* WCSimTuningParams;
-
-  // Sensitive Detectors. We declare the pointers here because we need
-  // to check their state if we change the geometry.
-
-  WCSimWCSD*  aWCPMT;
 
   //Water, Blacksheet surface
   G4OpticalSurface * OpWaterBSSurface;
@@ -181,8 +188,10 @@ private:
 
   // The Construction routines
   G4LogicalVolume*   ConstructCylinder();
-  G4LogicalVolume* ConstructPMT(G4double,G4double);
-  G4LogicalVolume* ConstructMultiPMT(G4double,G4double);  //TF: don't like this one header file approach...
+
+  G4LogicalVolume* ConstructPMT(G4String,G4String);
+  G4LogicalVolume* ConstructMultiPMT(G4double,G4double); //TF ToDo: update args
+
 
   G4LogicalVolume* ConstructCaps(G4int zflip);
 
@@ -254,18 +263,24 @@ private:
   G4double WCLength;
 
   G4double WCPosition;
+  
+  // Hit collection name parameters
+  G4String WCDetectorName;
+  G4String WCIDCollectionName;
+  G4String WCODCollectionName;
+
 
   // WC PMT parameters
   G4String WCPMTName;
-  typedef std::pair<G4double, G4double> PMTKey_t;
+  typedef std::pair<G4String, G4String> PMTKey_t;
   typedef std::map<PMTKey_t, G4LogicalVolume*> PMTMap_t;
+
   static PMTMap_t PMTLogicalVolumes;
 
   // WC geometry parameters
 
   G4double WCPMTRadius;
   G4double WCPMTExposeHeight;
-  G4double WCPMTGlassThickness;
   G4double WCBarrelPMTOffset;
 
   G4double WCIDDiameter;
@@ -360,6 +375,7 @@ private:
     G4double outerPMT_Height;
     G4double outerPMT_Radius;
     G4double outerPMT_Expose;
+    G4String outerPMT_Name;
     G4double outerPMT_TopRpitch;
     G4double outerPMT_BotRpitch;
     G4double outerPMT_Apitch;
@@ -394,7 +410,7 @@ private:
   static std::map<int, G4Transform3D> tubeIDMap;
 //  static std::map<int, cyl_location> tubeCylLocation;
   static hash_map<std::string, int, hash<std::string> >  tubeLocationMap; 
-
+ 
   // Variables related to configuration
 
   G4int myConfiguration;   // Detector Config Parameter

@@ -16,7 +16,81 @@
 /WCSim/WCgeom HyperK
 /WCSim/Construct
 
+###############################
+# TODO: adapt to default vis.mac
+#################################
+# The tube size is fixed for SK to 20in
+# These are fixed geometries for validation
+#/WCSim/WCgeom SuperK
 
+# Some other SuperK options:
+#/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_20inchBandL_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_12inchBandL_15perCent # Note: the actual coverage is 14.59%
+#/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
+
+# Cylindrical detector with a height of 60 m and a diameter of 74 m
+#/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
+#/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
+
+# Generic cylindrical detector with a height of 100m and a
+# diameter of 69m with 12in HPD and 14.59% photocoverage
+#/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
+
+#/WCSim/WCgeom HyperK #default length is 49500 mm unless changed below.
+
+#Added for detector length option (ONLY FOR HYPER-K GEOMETRY!!) 2014/07/29. This simulates a segment of the Hyper-K detector of a given length. 
+
+#/WCSim/HyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions(ie. will simulate a detector 1/10 of the HK length)
+#/WCSim/HyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
+#/WCSim/HyperK/waterTank_Length 82500. mm # Equivalent length for 3 partitions
+#/WCSim/HyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
+#/WCSim/HyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
+
+#Added for the PMT QE option 08/17/10 (XQ)
+# 1. Stacking only mean when the photon is generated
+# the QE is applied to reduce the total number of photons
+# 2. Stacking and sensitivity detector
+# In the stacking part, the maximum QE is applied to reduce 
+# the total number of photons
+# On the detector side, the rest of QE are applied according to QE/QE_max
+# distribution. This option is in particular important for the WLS
+# 3. The last option means all the QE are applied at the detector
+# Good for the low energy running. 
+/WCSim/PMTQEMethod     Stacking_Only 
+#/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
+#/WCSim/PMTQEMethod     SensitiveDetector_Only
+
+# turn on or off the collection efficiency
+/WCSim/PMTCollEff on
+
+#/WCSim/Construct # This must be uncommented to construct a new detector configuration.
+
+# command to choose save or not save the pi0 info 07/03/10 (XQ)
+#/WCSim/SavePi0 true
+/WCSim/SavePi0 false
+
+# command to set dark noise frequency 13/06/09
+# default dark noise frequency is 0 kHz
+/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20in R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20in R3600 dark rate from EGADS nov 2014
+
+# command to multiply the dark rate.
+# Convert dark noise frequency before digitization to after digitization by setting suitable factor
+# (14/03/10)
+# Factor of Normal PMT is 1.367
+/DarkRate/SetConvert 1.367
+#/DarkRate/SetConvert 1.119 #For HPDs
+#/DarkRate/SetConvert 1.126 #For Box and Line PMTs
+
+
+
+
+
+
+###########
+# from example N04L definitely works!
 #
 # Use this open statement to create an OpenGL view:
 #/vis/open OGLSX 600x600-0+0
@@ -87,3 +161,31 @@
 #
 # For file-based drivers, use this to create an empty detector view:
 #/vis/viewer/flush
+
+
+###########################
+## default vis.mac does not work with my visualizer
+
+#####/vis/scene/create
+#####/vis/open OGLSX
+# You can also set the size and position of the window if you like
+#/vis/open OGLSX 1000x1000-0+0
+#####/vis/ogl/set/printSize 1000 1000
+
+# Vis Settings for SK
+#####/vis/viewer/zoom 1.2
+#/vis/viewer/set/viewpointThetaPhi 45 45 deg
+####/vis/viewer/set/viewpointThetaPhi 110 0 deg
+####/vis/viewer/set/upVector 0 0 1
+
+# Vis settings for HK
+#/vis/viewer/set/upVector 0 1 0
+#/vis/viewer/set/viewpointThetaPhi 50 165 deg
+#/vis/viewer/zoom 1.6
+#/vis/ogl/set/printMode pixmap
+#/vis/ogl/printEPS
+
+#/vis/open RayTracer
+#/vis/viewer/set/upVector 0 0 1
+#/vis/rayTracer/eyePosition 70 0 70
+#/vis/rayTracer/trace

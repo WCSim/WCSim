@@ -12,6 +12,7 @@
 
 #include "G4SDManager.hh"
 #include "WCSimWCSD.hh"
+#include "WCSimPMTObject.hh"
 
 #include "G4SystemOfUnits.hh"
 
@@ -21,11 +22,10 @@
 
 WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
-//TF: ToDo: arg should be PMT type so that radius and expose are just generic function calls.
-G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
-                                                         G4double expose)
+//TF: ToDo: arg should be PMT type (enum instead of String, and PMTs should be objects of one simple class.)
+G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName)
 {
-  PMTKey_t key(radius,expose);
+  PMTKey_t key(PMTName,CollectionName);
 
   PMTMap_t::iterator it = PMTLogicalVolumes.find(key);
   if (it != PMTLogicalVolumes.end()) {
@@ -33,16 +33,21 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
       return it->second;
   }
 
-
   // Gray wireframe visual style
   //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   //WCPMTVisAtt->SetForceWireframe(true);
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0));
   WCPMTVisAtt->SetForceSolid(true);
   
- 
+  G4double expose;
+  G4double radius;
+  G4double glassThickness;
   
-    
+  WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
+  expose = PMT->GetExposeHeight();
+  radius = PMT->GetRadius();
+  glassThickness = PMT->GetPMTGlassThickness();
+
 
   G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
   G4double PMTOffset =  sphereRadius - expose;
@@ -120,7 +125,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
   //Create PMT Interior
   G4Sphere* tmpSolidInteriorWCPMT =
       new G4Sphere(    "tmpInteriorWCPMT",
-                       0.0*m,(sphereRadius-WCPMTGlassThickness),
+                       0.0*m,(sphereRadius-glassThickness),
                        0.0*deg,360.0*deg,
                        0.0*deg,90.0*deg);
 
@@ -152,27 +157,27 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
   //Create PMT Glass Face
   G4Sphere* tmpGlassFaceWCPMT =
       new G4Sphere(    "tmpGlassFaceWCPMT",
-                       (sphereRadius-WCPMTGlassThickness),
+                       (sphereRadius-glassThickness),
                        sphereRadius,
                        0.0*deg,360.0*deg,
                        0.0*deg,90.0*deg);
   
   G4SubtractionSolid* solidGlassFaceWCPMT =
-      new G4SubtractionSolid(    "glassFaceWCPMT",
+      new G4SubtractionSolid(    CollectionName,
                                  tmpGlassFaceWCPMT,
                                  solidCutOffTubs); 
 
   G4LogicalVolume *logicGlassFaceWCPMT =
     new G4LogicalVolume(    solidGlassFaceWCPMT,
                             G4Material::GetMaterial("Glass"),
-                            "glassFaceWCPMT",
+                            CollectionName,
                             0,0,0);
 
   G4VPhysicalVolume* physiGlassFaceWCPMT =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, -1.0*PMTOffset),
                         logicGlassFaceWCPMT,
-                        "glassFaceWCPMT",
+                        CollectionName,
                         logicWCPMT,
                         false,
                         0,
@@ -180,13 +185,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4double radius,
 
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
-
-  if (!aWCPMT)
-  {
-    G4SDManager* SDman = G4SDManager::GetSDMpointer();
-    aWCPMT = new WCSimWCSD( "/WCSim/glassFaceWCPMT",this );
-    SDman->AddNewDetector( aWCPMT );
-  }
+ 
+  // Instantiate a new sensitive detector and register this sensitive detector volume with the SD Manager. 
+  G4SDManager* SDman = G4SDManager::GetSDMpointer();
+  G4String SDName = "/WCSim/";
+  SDName += CollectionName;
+  WCSimWCSD* aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
+  SDman->AddNewDetector( aWCPMT );
+  
   logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
 
   PMTLogicalVolumes[key] = logicWCPMT;
