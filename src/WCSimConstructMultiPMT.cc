@@ -30,10 +30,12 @@
 //WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
 // Options : - PMT type (let's do ONE type per multiPMT), currently represented by radius, but don't like that
-//           - expose: how much the individual PMTs stick out of the blacksheet. Let's keep this approach for now and make the surface of our multiPMT a black sheet.
+//           - expose: how much the individual PMTs stick out of the blacksheet. 
+//             Let's keep this approach for now and make the surface of our multiPMT a black sheet.
 //           - type of multiPMT object: NO, specify in vis.mac (h == 0 is sphere)
-//           - WinstonCone: TODO
+//           - WinstonCone: NO, specify in vis.mac
 
+// For MultiPMT: pmt_radius and expose have different meaning, namely where to locate the sphere on the blacksheet ID/OD separator
 G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double pmt_radius, //TF: both args are PMT properties, used by ConstructPMT and should be replaced by PMTtype
 							      G4double expose)
 {
@@ -153,17 +155,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4double pmt_radiu
   
 
   */  
-  // gf
-  //WCSimMultiPMTParameterisation* WCSimMultiPMTParameterisation_par;
-  
   // for circle 1
-  G4int NbOfPmt = 18;//8;//13;
-  //G4int NbOfPmt = 4; //debug
+  G4int NbOfPmt = 18; // This is the only free param of the fill-PMT alg 
   G4double pmtDistance = cylinder_radius; // Inner radius od the DOM 
   G4cout << "Distance from the Z axis = " <<  pmtDistance << " mm" << G4endl;
 
   // TF, well this is the arg of ConstructMultiPMT, which should be replaced by PMTtype
-  //which should actually be set in the macro file, so this should be a void function call.
+  // which should actually be set in the macro file, so this should be a void function call.
   G4LogicalVolume* logicWCPMT = ConstructPMT(pmt_radius, expose);
 
   //The ConstructMultiPMT function gets called multiple times, so only fill the vectors when not empty.
@@ -306,21 +304,12 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
 
   G4double fEta = ComputeEta(NoPmt); // PMT viewing angle
   
-  // First element of vNiC and vAlpha vectors is added manually
-  // to allow recursive calculation of the following
-  // TF: not needed:
-  /*
-  vNiC.push_back(NoPmt);
-  vNiC.push_back(NoPmt);
-  vAlpha.push_back(-fEta);
-  */
-
   G4int NoCircle = 1;
-  G4double alphaNext = fEta;  //+offset;
+  G4double alphaNext = fEta; 
   G4double alphaPrev = alphaNext;
   G4double NiCNext = NoPmt;
 
-  // Remove the ones where alpha is below the minimum (to look over neighbouring mPMTs)
+  // Only fill the ones where alpha is above the minimum (to look over neighbouring mPMTs)
   // Theta_min = eta + atan(R/r) with R radius of sphere, and r the distance between mPMTs
   G4double theta_min = 13.*pi/180;
   if(alphaNext > theta_min + fEta){
@@ -345,7 +334,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
       alphaPrev = alphaNext;
     } while(NiCNext > 2); // No less than 3 detectors in each circle
 
-  // TF: If possible: add top:
+  // TF: If possible, add top:
   if(vAlpha[NoCircle-1]+2*fEta < 90.){
     alphaNext = pi/2;
     NiCNext = 1;
@@ -365,9 +354,6 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
       vCircle.push_back(i); //number circles internally between 0 and N-1
     }
   }
-
-  
-
 
   G4cout << "Total number of pmt: " << TotPmt << G4endl;
   G4cout << "Percentage of covered hemispherical surface = " << TotPmt*(1-std::cos(fEta))*100 << "%" << G4endl;

@@ -95,7 +95,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 
   // Params: - Cylinder height and radius of mPMT: DONE
   //         - Type of ID PMT (should be enum) and Type of OD PMT: Need to reorganize the PMTpart.
-  //         - Params related to filling PMT
+  //         - Params related to filling PMT: TODO and test 1 PMT case
   //         - Orientation of mPMT wrt wall : horizontal/vertical/perp
   //         - Reflector OFF/Winston/other
   //         - material of mPMT wall: water/glass/acrylic/
