@@ -328,8 +328,8 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   WCSimPMTObject * PMT = CreatePMTObject("PMT3inchR12199_02", WCIDCollectionName);
 
   WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = PMT->GetExposeHeight(); //from TechSheet for 3in (only photocathode)
-  WCPMTRadius = PMT->GetRadius(); //from TechSheet: radius of curv = 50mm for 3inch 
+  WCPMTExposeHeight = PMT->GetExposeHeight(); 
+  WCPMTRadius = PMT->GetRadius(); 
   WCIDDiameter          = 33.6815*m; //16.900*2*cos(2*pi*rad/75)*m; //inner detector diameter
   WCIDHeight            = 36.200*m; //"" "" height
   WCBarrelPMTOffset     = 0.0715*m; //offset from vertical
@@ -339,6 +339,30 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   WCPMTperCellVertical  = 2;
   WCCapPMTSpacing       = 4.2*m; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = 16.9*m;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+}
+
+
+void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
+{ 
+  WCDetectorName = "Cylinder_60x74_3inchmPMT_14perCent()";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  WCSimPMTObject * PMT = CreatePMTObject("PMT3inchR12199_02", WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = PMT->GetRadius();
+  WCIDDiameter          = 74.0*m;
+  WCIDHeight            = 60.0*m;
+  WCBarrelPMTOffset     = cylinder_radius; //mPMT cylinder Radius //WCPMTRadius; //offset from vertical
+  WCPMTperCellHorizontal= 4;
+  WCPMTperCellVertical  = 3;
+  WCPMTPercentCoverage  = 13.51;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*cylinder_radius));//WCPMTRadius));
+  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - cylinder_radius;//WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
 }

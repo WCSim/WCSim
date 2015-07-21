@@ -13,7 +13,7 @@
 #/WCSim/mPMT/CylHeight 453. mm
 #/WCSim/mPMT/CylRadius 166. mm
 #/WCSim/mPMT/orientation Perpendicular
-/WCSim/WCgeom HyperK
+/WCSim/WCgeom Cylinder_60x74_3inchmPMT_14perCent #TestmPMT
 /WCSim/Construct
 
 ###############################
