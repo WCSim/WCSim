@@ -220,6 +220,11 @@ G4float PMT20inch::GetmaxQE(){
   return maxQE;
 }
 
+G4float* PMT20inch::GetCollectionEfficiencyArray(){
+  static G4float CE[10] = { 73., 73., 73., 73., 73., 73., 73., 73., 73., 73.};
+  return CE;
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

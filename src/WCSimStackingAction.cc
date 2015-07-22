@@ -23,13 +23,13 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
   G4String WCIDCollectionName = DetConstruct->GetIDCollectionName();
   G4ClassificationOfNewTrack classification    = fWaiting;
   G4ParticleDefinition*      particleType      = aTrack->GetDefinition();
-  
+  G4float correctionfactor = 1/0.73; //Collection factor for 20inchPMT CE setting
 
   // Make sure it is an optical photon
   if( particleType == G4OpticalPhoton::OpticalPhotonDefinition() )
     {
       G4float photonWavelength = (2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/eV);
-      G4float ratio = 1./(1.0-0.25);
+      G4float ratio = 1./(1.0-0.25)*correctionfactor;
       G4float wavelengthQE = 0;
       if(aTrack->GetCreatorProcess()==NULL) {
 	wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,240,660,ratio);
@@ -41,7 +41,7 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
 	  G4float photonWavelength = (2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/eV);
 	  // MF : translated from skdetsim : better to increase the number of photons
 	  // than to throw in a global factor  at Digitization time !
-	  G4float ratio = 1./(1.0-0.25);
+	  G4float ratio = 1./(1.0-0.25)*correctionfactor;
 	  // XQ: get the maximum QE and multiply it by the ratio
 	  // only work for the range between 240 nm and 660 nm for now 
 	  // Even with WLS

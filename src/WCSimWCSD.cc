@@ -145,6 +145,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4float ratio = 1.;
   G4float maxQE;
   G4float photonQE;
+  G4float correctionfactor=1/0.73; // correction factor for 20inchPMT CE setting
+  ratio = ratio*correctionfactor;
   if (fdet->GetPMT_QE_Method()==1){
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
@@ -152,7 +154,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
     photonQE = photonQE/maxQE;
   }else if (fdet->GetPMT_QE_Method()==3){
-    ratio = 1./(1.-0.25);
+    ratio = 1./(1.-0.25)*correctionfactor;
     photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
   }
   
