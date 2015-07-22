@@ -56,7 +56,7 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
 {
   //Get the DAQ options to know which class to construct
   DAQMessenger->TellMeAboutTheEventAction(this);
-  DAQMessenger->TellEventAction();
+  DAQMessenger->SetEventActionOptions();
 
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
   WCSimWCPMT* WCDMPMT = new WCSimWCPMT( "WCReadoutPMT", myDetector);

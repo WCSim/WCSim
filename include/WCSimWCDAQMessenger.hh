@@ -20,9 +20,9 @@ public:
 
   void SetNewValue(G4UIcommand* command, G4String newValue);
 
-  void TellEventAction();
-  void TellTrigger();
-  void TellDigitizer();
+  void SetEventActionOptions();
+  void SetTriggerOptions();
+  void SetDigitizerOptions();
 
   void TellMeAboutTheDigitizer  (WCSimWCDigitizerBase* digitizer)   { WCSimDigitize = digitizer; }
   void TellMeAboutTheTrigger    (WCSimWCTriggerBase*   trigger)     { WCSimTrigger  = trigger; }

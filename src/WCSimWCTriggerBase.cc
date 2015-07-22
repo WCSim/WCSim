@@ -30,12 +30,11 @@ const double WCSimWCTriggerBase::LongTime = 100000.0 ; // ns = 0.1ms. event time
 
 
 WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
-				       WCSimDetectorConstruction* myDetector,
+				       WCSimDetectorConstruction* inDetector,
 				       WCSimWCDAQMessenger* myMessenger)
-  :G4VDigitizerModule(name)
+  :G4VDigitizerModule(name), myDetector(inDetector)
 {
   G4String colName = "WCDigitizedCollection";
-  this->myDetector = myDetector;
   collectionName.push_back(colName);
   DigiHitMap.clear();
   TriggerTimes.clear();
@@ -45,7 +44,7 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
   if(myMessenger) {
     DAQMessenger = myMessenger;
     DAQMessenger->TellMeAboutTheTrigger(this);
-    DAQMessenger->TellTrigger();
+    DAQMessenger->SetTriggerOptions();
   }
 }
 
@@ -186,9 +185,15 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 
 void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType)
 {
+  //Adds the digits within the trigger window to the output WCSimWCDigitsCollection
+  // optionally removes digits from the input digits collection (when running different Alg* methods concurently) 
+  // so they are not used in subsequent trigger decisions or saved twice
+  //Also, only save digits of a specific type (again for when running different Alg* methods concurently)
+
+  //Get the PMT info for hit time smearing
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
   G4float timingConstant = 0.0;
-  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName); //for hit time smearing
 
   //Loop over trigger times
   for(unsigned int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
@@ -198,6 +203,8 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       continue;
     float         triggertime = TriggerTimes[itrigger];
     std::vector<Float_t> triggerinfo = TriggerInfos[itrigger];
+
+    //these are the boundary of the trigger gate: we want to add all digits within these bounds to the output collection
     float lowerbound = triggertime + WCSimWCTriggerBase::eventgatedown;
     float upperbound = triggertime + WCSimWCTriggerBase::eventgateup;
 
@@ -214,12 +221,14 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     //loop over PMTs
     for (G4int i = 0; i < WCDCPMT->entries(); i++) {
       int tube=(*WCDCPMT)[i]->GetTubeID();
-      //loop over digits
+      //loop over digits in this PMT
       for ( G4int ip = 0; ip < (*WCDCPMT)[i]->GetTotalPe(); ip++){
 	int digit_time  = (*WCDCPMT)[i]->GetTime(ip);
 	if(digit_time >= lowerbound && digit_time <= upperbound) {
 	  //hit in event window
 	  //add it to DigitsCollection
+
+	  //first smear the charge & time
 	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
 	  float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	  G4double digihittime = -triggertime
@@ -230,6 +239,10 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    continue;
 
 	  //int parentID    = (*WCDCPMT)[i]->GetParentID(ip);
+
+	  //get the composition information for the triggered digit
+	  //WCDCPMT stores this information in pairs of (digit id, photon id)
+	  //need to loop to ensure we get all the photons associated with the current digit (digit ip)
 	  std::vector< std::pair<int,int> > digitized_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo();
 	  std::vector< std::pair<int,int> > triggered_composition;
 	  for(std::vector< std::pair<int,int> >::iterator it = digitized_composition.begin(); it != digitized_composition.end(); ++it) {
@@ -239,8 +252,10 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    else if ((*it).first > ip)
 	      break;
 	  }//loop over digitized_composition
+
 	  //add hit
 	  if ( DigiHitMap[tube] == 0) {
+	    //this PMT has no digits saved yet; create a new WCSimWCDigi
 	    WCSimWCDigi* Digi = new WCSimWCDigi();
 	    Digi->SetTubeID(tube);
 	    //Digi->AddParentID(parentID);
@@ -252,6 +267,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    DigiHitMap[tube] = DigitsCollection->insert(Digi);
 	  }
 	  else {
+	    //this PMT has digits saved already; add information to the WCSimWCDigi
 	    //(*DigitsCollection)[DigiHitMap[tube]-1]->AddParentID(parentID);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddGate(itrigger, triggertime);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(itrigger, digihittime);

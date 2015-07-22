@@ -29,12 +29,11 @@
 //RawSignalHitCollection *collection = new RawSignalHitCollection;
 
 WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
-					   WCSimDetectorConstruction* myDetector,
+					   WCSimDetectorConstruction* inDetector,
 					   WCSimWCDAQMessenger* myMessenger)
-  :G4VDigitizerModule(name)
+  :G4VDigitizerModule(name), myDetector(inDetector)
 {
   G4String colName = "WCDigitizedStoreCollection";
-  this->myDetector = myDetector;
   collectionName.push_back(colName);
   DigiStoreHitMap.clear();
 
@@ -42,7 +41,7 @@ WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
   if(myMessenger) {
     DAQMessenger = myMessenger;
     DAQMessenger->TellMeAboutTheDigitizer(this);
-    DAQMessenger->TellDigitizer();
+    DAQMessenger->SetDigitizerOptions();
   }
 }
 

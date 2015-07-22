@@ -26,15 +26,15 @@
 #endif
 
 WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,
-                                   WCSimDetectorConstruction* myDetector)
-  :G4VDigitizerModule(name)
+					 WCSimDetectorConstruction* inDetector)
+  :G4VDigitizerModule(name), myDetector(inDetector)
 {
-  this->myDetector = myDetector;
   DigiHitMap.clear();
   DarkRateMessenger = new WCSimDarkRateMessenger(this);
 }
 
 WCSimWCAddDarkNoise::~WCSimWCAddDarkNoise(){
+  delete DarkRateMessenger;
   DarkRateMessenger = 0;
 }
 
@@ -46,7 +46,7 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
   WCSimWCDigitsCollection* WCHCPMT =
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCHCID));
   
-  if (WCHCPMT && this->PMTDarkRate>1E-307) {
+  if ((WCHCPMT != NULL) && (this->PMTDarkRate > 1E-307)) {
     //Determine ranges for adding noise
     if(DarkMode == 1)
       FindDarkNoiseRanges(WCHCPMT,this->DarkWindow);
@@ -87,13 +87,10 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     for (int g=0; g<number_entries; g++){
       G4int tube = (*WCHCPMT)[g]->GetTubeID();
       //std::cout<<"totalpe "<<tube<<" "<<(*WCHCPMT)[g]->GetTotalPe()<<"\n";
-      for (int gp=0; gp<(*WCHCPMT)[g]->GetTotalPe(); gp++){
-	//should this be tube-1?
-	PMTindex[tube]++;
-	num_hit_b4++;
-	//	std::cout<<"TotalPe "<<(*WCHCPMT)[g]->GetTotalPe()<<" "<<PMTindex[tube]<<"\n";
-      }
-      
+      //should this be tube-1?
+      PMTindex[tube] += (*WCHCPMT)[g]->GetTotalPe();
+      num_hit_b4     += (*WCHCPMT)[g]->GetTotalPe();
+      //std::cout<<"TotalPe "<<(*WCHCPMT)[g]->GetTotalPe()<<" "<<PMTindex[tube]<<"\n";
     }
 
     // Get the info for pmt positions

@@ -96,7 +96,7 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   }
 }
 
-void WCSimWCDAQMessenger::TellEventAction()
+void WCSimWCDAQMessenger::SetEventActionOptions()
 {
   G4cout << "Passing DAQ options to the event action class instance" << G4endl;
   WCSimEvent->SetDigitizerChoice(StoreDigitizerChoice);
@@ -105,7 +105,7 @@ void WCSimWCDAQMessenger::TellEventAction()
   G4cout << "\tTrigger choice set to " << StoreTriggerChoice << G4endl;
 }
 
-void WCSimWCDAQMessenger::TellTrigger()
+void WCSimWCDAQMessenger::SetTriggerOptions()
 {
   G4cout << "Passing Trigger options to the trigger class instance" << G4endl;
   WCSimTrigger->SetNHitsThreshold(StoreSetNHitsThreshold);
@@ -114,7 +114,7 @@ void WCSimWCDAQMessenger::TellTrigger()
   G4cout << "\tNHits trigger window set to " << StoreSetNHitsWindow << G4endl;
 }
 
-void WCSimWCDAQMessenger::TellDigitizer()
+void WCSimWCDAQMessenger::SetDigitizerOptions()
 {
   G4cout << "Passing Digitizer options to the digitizer class instance" << G4endl;
   WCSimDigitize->SKDigitizerType(StoreDigitizerChoice);
