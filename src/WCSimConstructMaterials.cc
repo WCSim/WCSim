@@ -189,6 +189,9 @@ void WCSimDetectorConstruction::ConstructMaterials()
     = new G4Material("SilGel",density,1);
   SilGel->AddElement(elSi, 1);
 
+  G4MaterialPropertiesTable *SilGelPropTable = new G4MaterialPropertiesTable();
+  SilGelPropTable->AddConstProperty("RINDEX", 1.404);
+  SilGel->SetMaterialPropertiesTable(SilGelPropTable);
 
   // TF: Add Acrylic from G4 database:
   G4Material* Acrylic 
@@ -920,6 +923,14 @@ void WCSimDetectorConstruction::ConstructMaterials()
       182.15*m, 175.75*m, 168.92*m, 162.60*m, 154.80*m, 144.51*m, 133.51*m, 120.19*m, 105.93*m, 90.91*m, 75.76*m, 61.35*m, 
       48.54*m, 37.88*m, 29.41*m};
 
+
+   //Acrylic
+   G4MaterialPropertiesTable *AcrPropTable = new G4MaterialPropertiesTable();
+   AcrPropTable->AddProperty("RINDEX", ENERGY_skAcrylic, RINDEX_skAcrylic, 306);
+   AcrPropTable->AddProperty("ABSLENGTH", ENERGY_skAcrylic, ABSORPTION_skAcrylic, 306);
+   Acrylic->SetMaterialPropertiesTable(AcrPropTable);
+   
+
    //	------------- Surfaces --------------
 
    OpWaterBSSurface =
@@ -1114,38 +1125,4 @@ void WCSimDetectorConstruction::ConstructMaterials()
    //ToDo:
    G4MaterialPropertiesTable *AgPropTable = new G4MaterialPropertiesTable();
    G4MaterialPropertiesTable *AlAg1PropTable = new G4MaterialPropertiesTable();
-
-
-
-
-
-
-
-
-   //Acrylic: need to make a boundary between water and acrylic (logicalBorderSurface in ConstructCylinder)
-   OpWaterAcrylicSurface =
-     new G4OpticalSurface("WaterAcrylicSurface");
-   OpGlassCathodeSurface->SetType(dielectric_dielectric);
-   OpGlassCathodeSurface->SetModel(unified);  
-   OpGlassCathodeSurface->SetFinish(polished);
-   G4MaterialPropertiesTable *AcrPropTable = new G4MaterialPropertiesTable();
-   AcrPropTable->AddProperty("RINDEX", ENERGY_skAcrylic, RINDEX_skAcrylic, 306);
-   AcrPropTable->AddProperty("ABSLENGTH", ENERGY_skAcrylic, ABSORPTION_skAcrylic, 306);
-   OpWaterAcrylicSurface->SetMaterialPropertiesTable(AcrPropTable);
-
-   
-   //Optical Gel: need to make a boundary then between acrylic and gel
-   //                                                  gel and reflector
-   //                                                  gel and PMTglass
-   OpGelSurface =
-     new G4OpticalSurface("GlassCathodeSurface");
-   OpGelSurface->SetType(dielectric_dielectric);
-   OpGelSurface->SetModel(unified);  
-   OpGelSurface->SetFinish(polished);
-   G4MaterialPropertiesTable *SilGelPropTable = new G4MaterialPropertiesTable();
-   SilGelPropTable->AddConstProperty("RINDEX", 1.404);
-   OpGelSurface->SetMaterialPropertiesTable(SilGelPropTable);
-
-
-
 }

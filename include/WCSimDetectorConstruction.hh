@@ -181,12 +181,6 @@ private:
   //Reflector skin surface -tf
   G4OpticalSurface * ReflectorSkinSurface;
 
-  // Acrylic surface - tf
-  G4OpticalSurface * OpWaterAcrylicSurface;
-  
-  // One of the?? Gel surfaces - tf
-  G4OpticalSurface * OpGelSurface;
-
 
 
   // The messenger we use to change the geometry.
