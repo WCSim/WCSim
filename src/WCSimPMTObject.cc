@@ -1544,7 +1544,7 @@ PMT3inchR12199_02::~PMT3inchR12199_02(){}
 
 G4String PMT3inchR12199_02::GetPMTName() {G4String PMTName = "PMT3inchR12199_02"; return PMTName;}
 G4double PMT3inchR12199_02::GetExposeHeight() {return .015*m;}  //from TechSheet for 3in (only photocathode)
-G4double PMT3inchR12199_02::GetRadius() {return .050*m;}        //radius of curvature
+G4double PMT3inchR12199_02::GetRadius() {return .050*m;}        //radius of curvature, only cap of sphere is actual PMT photocathode area, namely the top expose height part.
 G4double PMT3inchR12199_02::GetPMTGlassThickness() {return 0.4*cm;}
 
 float PMT3inchR12199_02::HitTimeSmearing(float Q) {
@@ -1680,19 +1680,21 @@ G4float* PMT3inchR12199_02::Getqpe()
     0.0  };
   return qpe0;
 }
+
+// TF: Used WebPlotDigitizer on Fig.2a from VLVnT13 proceedings, red curve (average)
 G4float* PMT3inchR12199_02::GetQEWavelength(){
-  static G4float wavelength_value[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
+  static G4float wavelength_value[21] = { 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660., 680., 700.};
   return wavelength_value;
 }
 
 G4float* PMT3inchR12199_02::GetQE(){
-  static G4float QE[20] =
-    { 0.00, .0008, .1255, .254962, .2930, .3127, .3130, .2994, .2791, .2491,
-      .2070,  .1758, .1384, .0779, .0473, .0288, .0149, .0062, .0002, .0001};  
+  static G4float QE[21] =
+    { .0787, .1838, .2401, .2521, .2695, .2676, .2593, .2472, .2276,
+      .1970,  .1777, .1547, .1033, .0727, .0587, .0470, .0372, .0285, .0220, .0130, .0084};
   return QE;
 }
 G4float PMT3inchR12199_02::GetmaxQE(){
-  const G4float maxQE = 0.315;
+  const G4float maxQE = 0.271; //red curve from VLVnT13 proc on R12199-02.
   return maxQE;
 }
 G4float* PMT3inchR12199_02::GetCollectionEfficiencyArray(){  

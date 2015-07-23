@@ -19,8 +19,6 @@
 #include  "WCSimMultiPMTParameterisation.hh"
 #include  "G4PVParameterised.hh"
 
-//TODO: move
-#include "G4NistManager.hh"
 
 //PMT logical volume construction.
 //A function of the WCSimDetectorConstruction class
@@ -112,11 +110,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   G4VSolid* solidMultiPMT =
     new G4UnionSolid("WCMultiPMT", temp_sum, mPMT_bottom_sphere);
 
-  G4NistManager *nist_man = G4NistManager::Instance(); //TODO: MOVE to ConstructMaterials
   G4LogicalVolume *logicWCMultiPMT =
     new G4LogicalVolume(    solidMultiPMT,
-			    nist_man->FindOrBuildMaterial("G4_PLEXIGLASS"), //Acrylic
-			    //G4Material::GetMaterial("Water"), //TODO: define through material_outer
+			    G4Material::GetMaterial("G4_PLEXIGLASS"), //TODO: define through material_outer
 			    "WCMultiPMT",
 			    0,0,0);
 
