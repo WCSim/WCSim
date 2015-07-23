@@ -149,7 +149,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
                   "InteriorWCPMT",
                   logicWCPMT,
                   false,
-                  0);
+		  0,
+		  checkOverlaps);
 
   logicInteriorWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
 

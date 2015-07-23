@@ -126,8 +126,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   G4double pmtDistance = cylinder_radius; // Inner radius od the DOM 
   G4cout << "Distance from the Z axis = " <<  pmtDistance << " mm" << G4endl;
 
-  // TF, well this is the arg of ConstructMultiPMT, which should be replaced by PMTtype
-  // which should actually be set in the macro file, so this should be a void function call.
   G4LogicalVolume* logicWCPMT = ConstructPMT(PMTName, CollectionName);
 
   //The ConstructMultiPMT function gets called multiple times, so only fill the vectors when not empty.
