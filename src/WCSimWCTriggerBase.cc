@@ -41,10 +41,15 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
   TriggerTypes.clear(); 
   TriggerInfos.clear(); 
 
-  if(myMessenger) {
+  if(myMessenger != NULL) {
     DAQMessenger = myMessenger;
     DAQMessenger->TellMeAboutTheTrigger(this);
     DAQMessenger->SetTriggerOptions();
+  }
+  else {
+    G4cerr << "WCSimWCDAQMessenger pointer is NULL when passed to WCSimWCTriggerBase constructor. Exiting..."
+           << G4endl;
+    exit(-1);
   }
 }
 

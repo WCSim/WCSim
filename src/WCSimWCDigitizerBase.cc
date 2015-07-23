@@ -38,10 +38,15 @@ WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
   DigiStoreHitMap.clear();
 
   //  DarkRateMessenger = new WCSimDarkRateMessenger(this);
-  if(myMessenger) {
+  if(myMessenger != NULL) {
     DAQMessenger = myMessenger;
     DAQMessenger->TellMeAboutTheDigitizer(this);
     DAQMessenger->SetDigitizerOptions();
+  }
+  else {
+    G4cerr << "WCSimWCDAQMessenger pointer is NULL when passed to WCSimWCDigitizerBase constructor. Exiting..." 
+	   << G4endl;
+    exit(-1);
   }
 }
 
