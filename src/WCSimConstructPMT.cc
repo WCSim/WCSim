@@ -57,11 +57,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
   //TF: Optional NEW: IF reflector/Winston cone requested, make it here:
 
-  //TODO: Macro option, can be positive and negative, but not smaller than expose
-  // Relative to expose
-  G4double reflectorHeight = 7.5*CLHEP::mm-expose;   //7.5mm from KM3Net JINST
-  // Radius of cone at z=expose+reflectorHeight, relative to PMT radius
-  G4double reflectorRadius = 7.5*CLHEP::mm;  //based on KM3Net JINST
+  //TODO: Macro option, can be positive and negative
+  G4double reflectorHeight = 7.5*CLHEP::mm;   //7.5mm from KM3Net JINST
+  // Radius of cone at z=reflectorHeight
+  G4double reflectorRadius = 38.5*CLHEP::mm;  //based on KM3Net JINST
   G4double reflectorThickness = 1.*CLHEP::mm;
 
 
@@ -79,9 +78,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     baseRadius = radius + reflectorThickness;
   }
   G4double PMTHolderZ[2] = {-baseHeight+expose, 
-			    std::max(expose,expose + reflectorHeight)};
+			    std::max(expose,reflectorHeight)};
   G4double PMTHolderR[2] = {baseRadius, 
-			    radius + reflectorThickness + reflectorRadius};
+			    std::max(radius,reflectorRadius) + reflectorThickness};
   G4double PMTHolderr[2] = {0,0};
 
   // IF reflectorParams are non-zero, this will be a solid cone instead of cylinder
@@ -99,10 +98,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
                   PMTHolderr, // R Inner
                   PMTHolderR);// R Outer
 
-
+  G4Material *material_around_pmt = G4Material::GetMaterial("Water");
+  if(reflectorHeight > 0.1*mm) //or make this a user option? Now: reflector means vessel => gel.
+    material_around_pmt = G4Material::GetMaterial("SilGel");
   G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
-                            G4Material::GetMaterial("Water"),
+                            material_around_pmt,
                             "WCPMT",
                             0,0,0);
 
@@ -205,34 +206,34 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
                              OpGlassCathodeSurface);
 
 
-  //TF: Reflector
-  G4double reflectorZ[2] = {0, expose + reflectorHeight};
-  G4double reflectorR[2] = {radius + reflectorThickness, radius + reflectorThickness + reflectorRadius};
-  G4double reflectorr[2] = {radius,radius + reflectorRadius};
-
-  // IF reflectorParams are non-zero, this will be a solid cone instead of cylinder
-  G4Polycone* reflectorCone = 
-   new G4Polycone("WCPMT",                    
-                  0.0*deg,
-                  360.0*deg,
-                  2,
-                  reflectorZ,
-                  reflectorr, // R Inner
-                  reflectorR);// R Outer
-
-  G4LogicalVolume* logicReflector =
-    new G4LogicalVolume(    reflectorCone,
-                            G4Material::GetMaterial("Aluminum"), //It actually is Al+ Ag evaporation
-                            "reflectorCone",
-                            0,0,0);
-
-  G4VisAttributes* WCPMTVisAtt3 = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
-  WCPMTVisAtt3->SetForceSolid(true);
-  logicReflector->SetVisAttributes(WCPMTVisAtt3);
-
-  new G4LogicalSkinSurface("ReflectorLogSkinSurface",logicReflector,ReflectorSkinSurface);
-  
-  G4VPhysicalVolume* reflectorWCPMT =
+  // TF: Optional Reflector
+  if(reflectorHeight > 0.1*mm && (reflectorRadius-radius) > -5*mm){
+    G4double reflectorZ[2] = {0, reflectorHeight};
+    G4double reflectorR[2] = {radius + reflectorThickness, reflectorThickness + reflectorRadius};
+    G4double reflectorr[2] = {radius,reflectorRadius};
+    
+    G4Polycone* reflectorCone = 
+      new G4Polycone("WCPMT",                    
+		     0.0*deg,
+		     360.0*deg,
+		     2,
+		     reflectorZ,
+		     reflectorr, // R Inner
+		     reflectorR);// R Outer
+    
+    G4LogicalVolume* logicReflector =
+      new G4LogicalVolume(    reflectorCone,
+			      G4Material::GetMaterial("Aluminum"), //It actually is Al+ Ag evaporation
+			      "reflectorCone",
+			      0,0,0);
+    
+    G4VisAttributes* WCPMTVisAtt3 = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
+    WCPMTVisAtt3->SetForceSolid(true);
+    logicReflector->SetVisAttributes(WCPMTVisAtt3);
+    
+    new G4LogicalSkinSurface("ReflectorLogSkinSurface",logicReflector,ReflectorSkinSurface);
+    
+    G4VPhysicalVolume* reflectorWCPMT =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, 0),
                         logicReflector,
@@ -241,7 +242,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
                         false,
                         0,
                         checkOverlaps);
-
+  }
 
   return logicWCPMT;
 }
