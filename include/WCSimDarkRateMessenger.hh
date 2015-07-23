@@ -25,6 +25,8 @@ public:
   void SetNewValue(G4UIcommand* command, G4String newValue);
 
 private:
+  void Initialize();
+
   WCSimWCDigitizer* WCSimDigitize;
   WCSimWCAddDarkNoise* WCSimAddDarkNoise;
 

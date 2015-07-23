@@ -10,114 +10,90 @@
 
 WCSimDarkRateMessenger::WCSimDarkRateMessenger(WCSimWCDigitizer* darkratepoint):WCSimDigitize(darkratepoint)
 {
-  WCSimDir = new G4UIdirectory("/DarkRate/");
-  WCSimDir->SetGuidance("Commands to change the dark noise frequency of the simulation");
-  
-  SetFrequency = new G4UIcmdWithADoubleAndUnit("/DarkRate/SetDarkRate",this);
-  SetFrequency->SetGuidance("Commands to change the dark noise frequency of the simulation");
-  SetFrequency->SetParameterName("DarkRate",true);
-  SetFrequency->SetDefaultValue(0);
-  //kilohertz is 10e-6
-  SetFrequency->SetUnitCategory("Frequency");
-
-  SetFrequency->SetDefaultUnit("kHz");
-
-  
-  SetFrequency->SetUnitCandidates("Hz kHz MHz GHz");
-
-  SetConversionRate = new G4UIcmdWithADouble("/DarkRate/SetConvert",this);
-  SetConversionRate->SetGuidance("Caribrate the frequency of dark noise after digitization");
-  SetConversionRate->SetParameterName("DigiCorr",true);
-  SetConversionRate->SetDefaultValue(1);
-  
-  //Mode 0 - Add dark rate in window defined by /DarkRate/SetDarkLow and /DarkRate/SetDarkHigh
-  //If not set default is 0 and 100000ns
-  //Mode 1 - Add dark rate to a window of size /DarkRate/SetDarkWindow around each hit
-  SetDarkMode = new G4UIcmdWithAnInteger("/DarkRate/SetDarkMode",this);
-  SetDarkMode->SetGuidance("Set the mode of adding dark noise to the event");
-  SetDarkMode->SetParameterName("DarkMode",true);
-  SetDarkMode->SetDefaultValue(0);
-  
-  SetDarkLow = new G4UIcmdWithADoubleAndUnit("/DarkRate/SetDarkLow",this);
-  SetDarkLow->SetGuidance("Set the lower GEANT time limit to add dark noise");
-  SetDarkLow->SetParameterName("DarkLow",true);
-  SetDarkLow->SetDefaultValue(0.);
-  SetDarkLow->SetUnitCategory("Time");
-  SetDarkLow->SetDefaultUnit("ns");
-
-  SetDarkHigh = new G4UIcmdWithADoubleAndUnit("/DarkRate/SetDarkHigh",this);
-  SetDarkHigh->SetGuidance("Set the upper GEANT time limit to add dark noise");
-  SetDarkHigh->SetParameterName("DarkHigh",true);
-  SetDarkHigh->SetDefaultValue(100000.);
-  SetDarkHigh->SetUnitCategory("Time");
-  SetDarkHigh->SetDefaultUnit("ns");
-
-  SetDarkWindow = new G4UIcmdWithADoubleAndUnit("/DarkRate/SetDarkWindow",this);
-  SetDarkWindow->SetGuidance("Set the window width to add dark noise");
-  SetDarkWindow->SetParameterName("DarkLow",true);
-  SetDarkWindow->SetDefaultValue(5000.);
-  SetDarkWindow->SetUnitCategory("Time");
-  SetDarkWindow->SetDefaultUnit("ns");
-
-
   //inform the DarkRateMessenger which constructor was called
   constructor = 0;
+
+  Initialize();
 }
 
 WCSimDarkRateMessenger::WCSimDarkRateMessenger(WCSimWCAddDarkNoise* darkratepoint):WCSimAddDarkNoise(darkratepoint)
 {
+  //inform the DarkRateMessenger which constructor was called
+  constructor = 1;
+
+  Initialize();
+}
+
+void WCSimDarkRateMessenger::Initialize()
+{
   WCSimDir = new G4UIdirectory("/DarkRate/");
   WCSimDir->SetGuidance("Commands to change the dark noise frequency of the simulation");
   
+  double const conversion_to_kHz = 1000000;
+  double defaultFrequency = 0;
   SetFrequency = new G4UIcmdWithADoubleAndUnit("/DarkRate/SetDarkRate",this);
   SetFrequency->SetGuidance("Commands to change the dark noise frequency of the simulation");
   SetFrequency->SetParameterName("DarkRate",true);
-  SetFrequency->SetDefaultValue(0);
+  SetFrequency->SetDefaultValue(defaultFrequency * conversion_to_kHz);
   //kilohertz is 10e-6
   SetFrequency->SetUnitCategory("Frequency");
-
   SetFrequency->SetDefaultUnit("kHz");
-
-  
   SetFrequency->SetUnitCandidates("Hz kHz MHz GHz");
+  if(constructor == 0)
+    WCSimDigitize->SetDarkRate(defaultFrequency * conversion_to_kHz);
+  else if(constructor == 1)
+    WCSimAddDarkNoise->SetDarkRate(defaultFrequency * conversion_to_kHz);
 
+  double defaultConvRate = 1;
   SetConversionRate = new G4UIcmdWithADouble("/DarkRate/SetConvert",this);
   SetConversionRate->SetGuidance("Caribrate the frequency of dark noise after digitization");
   SetConversionRate->SetParameterName("DigiCorr",true);
-  SetConversionRate->SetDefaultValue(1);
-
+  SetConversionRate->SetDefaultValue(defaultConvRate);
+  if(constructor == 0)
+    WCSimDigitize->SetConversion(defaultConvRate);
+  else if(constructor == 1)
+    WCSimAddDarkNoise->SetConversion(defaultConvRate);
 
   //Mode 0 - Add dark rate in window defined by /DarkRate/SetDarkLow and /DarkRate/SetDarkHigh
   //If not set default is 0 and 100000ns
   //Mode 1 - Add dark rate to a window of size /DarkRate/SetDarkWindow around each hit
+  int defaultDarkMode = 0;
   SetDarkMode = new G4UIcmdWithAnInteger("/DarkRate/SetDarkMode",this);
   SetDarkMode->SetGuidance("Set the mode of adding dark noise to the event");
   SetDarkMode->SetParameterName("DarkMode",true);
-  SetDarkMode->SetDefaultValue(0);
+  SetDarkMode->SetDefaultValue(defaultDarkMode);
+  if(constructor == 1)
+    WCSimAddDarkNoise->SetDarkMode(defaultDarkMode);
   
+  double defaultDarkLow = 0;
   SetDarkLow = new G4UIcmdWithADoubleAndUnit("/DarkRate/SetDarkLow",this);
   SetDarkLow->SetGuidance("Set the lower GEANT time limit to add dark noise");
   SetDarkLow->SetParameterName("DarkLow",true);
-  SetDarkLow->SetDefaultValue(0.);
+  SetDarkLow->SetDefaultValue(defaultDarkLow);
   SetDarkLow->SetUnitCategory("Time");
   SetDarkLow->SetDefaultUnit("ns");
+  if(constructor == 1)
+    WCSimAddDarkNoise->SetDarkLow(defaultDarkLow);
 
+  double defaultDarkHigh = 100000;
   SetDarkHigh = new G4UIcmdWithADoubleAndUnit("/DarkRate/SetDarkHigh",this);
   SetDarkHigh->SetGuidance("Set the upper GEANT time limit to add dark noise");
   SetDarkHigh->SetParameterName("DarkHigh",true);
-  SetDarkHigh->SetDefaultValue(100000.);
+  SetDarkHigh->SetDefaultValue(defaultDarkHigh);
   SetDarkHigh->SetUnitCategory("Time");
   SetDarkHigh->SetDefaultUnit("ns");
+  if(constructor == 1)
+    WCSimAddDarkNoise->SetDarkHigh(defaultDarkHigh);
 
+  double defaultDarkWindow = 5000;
   SetDarkWindow = new G4UIcmdWithADoubleAndUnit("/DarkRate/SetDarkWindow",this);
   SetDarkWindow->SetGuidance("Set the window width to add dark noise");
-  SetDarkWindow->SetParameterName("DarkLow",true);
-  SetDarkWindow->SetDefaultValue(5000.);
+  SetDarkWindow->SetParameterName("DarkWindow",true);
+  SetDarkWindow->SetDefaultValue(defaultDarkWindow);
   SetDarkWindow->SetUnitCategory("Time");
   SetDarkWindow->SetDefaultUnit("ns");
-
-  //inform the DarkRateMessenger which constructor was called   
-  constructor = 1;
+  if(constructor == 1)
+    WCSimAddDarkNoise->SetDarkWindow(defaultDarkWindow);
 }
 
 WCSimDarkRateMessenger::~WCSimDarkRateMessenger()

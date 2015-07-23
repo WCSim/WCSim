@@ -17,7 +17,7 @@
 
 #choose the Trigger & Digitizer type (and options)
 # set at least one (both to be sure) to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger classes
-/DAQ/Digitizer SKI_SKDETSIM
+/DAQ/Digitizer SKI
 /DAQ/Trigger NHits
 # control the NHits trigger threshold
 /DAQ/TriggerNHits/Threshold 25
