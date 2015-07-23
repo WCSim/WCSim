@@ -23,12 +23,6 @@ public:
   //not recommended to override this method
   virtual void Digitize(); //only defined virtual because it is overridden in the old class (WCSimWCDigitizer)
 
-  void ReInitialize() {
-    TriggerTimes.clear(); 
-    TriggerTypes.clear(); 
-    TriggerInfos.clear(); 
-    DigiHitMap.clear();
-  }
   int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
   Float_t              GetTriggerTime(int i) { return TriggerTimes[i];}
   TriggerType_t        GetTriggerType(int i) { return TriggerTypes[i];}
@@ -52,6 +46,13 @@ protected:
 
   WCSimWCDAQMessenger*       DAQMessenger;
   WCSimDetectorConstruction* myDetector;
+
+  void ReInitialize() {
+    TriggerTimes.clear(); 
+    TriggerTypes.clear(); 
+    TriggerInfos.clear(); 
+    DigiHitMap.clear();
+  }
 
 private:
 

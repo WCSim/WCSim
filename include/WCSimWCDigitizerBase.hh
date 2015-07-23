@@ -20,8 +20,6 @@ public:
   WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
   ~WCSimWCDigitizerBase();
   
-  void ReInitialize() { DigiStoreHitMap.clear(); }
-  
   void AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector< std::pair<int,int> > digi_comp);
   virtual void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) = 0;
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
@@ -31,6 +29,8 @@ public:
   void SKDigitizerType(G4String); 
 
 protected:
+  void ReInitialize() { DigiStoreHitMap.clear(); }
+  
   G4double peSmeared;
 
   WCSimDetectorConstruction* myDetector;

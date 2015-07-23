@@ -36,10 +36,8 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
 {
   G4String colName = "WCDigitizedCollection";
   collectionName.push_back(colName);
-  DigiHitMap.clear();
-  TriggerTimes.clear();
-  TriggerTypes.clear(); 
-  TriggerInfos.clear(); 
+
+  ReInitialize();
 
   if(myMessenger != NULL) {
     DAQMessenger = myMessenger;
@@ -61,10 +59,7 @@ void WCSimWCTriggerBase::Digitize()
   //Input is collection of all digitized hits that passed the threshold
   //Output is all digitized hits which pass the trigger
   
-  DigiHitMap.clear();
-  TriggerTimes.clear();
-  TriggerTypes.clear(); 
-  TriggerInfos.clear(); 
+  ReInitialize();
 
   //This is the output digit collection
   DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);

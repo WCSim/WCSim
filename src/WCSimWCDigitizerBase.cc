@@ -35,7 +35,7 @@ WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 {
   G4String colName = "WCDigitizedStoreCollection";
   collectionName.push_back(colName);
-  DigiStoreHitMap.clear();
+  ReInitialize();
 
   //  DarkRateMessenger = new WCSimDarkRateMessenger(this);
   if(myMessenger != NULL) {
@@ -56,9 +56,11 @@ WCSimWCDigitizerBase::~WCSimWCDigitizerBase(){
 
 void WCSimWCDigitizerBase::Digitize()
 {
+  //Clear the DigiStoreHitMap
+  ReInitialize();
+
   //Temporary Storage of Digitized hits which is passed to the trigger
   DigiStore = new WCSimWCDigitsCollection(collectionName[0],collectionName[0]);
-  DigiStoreHitMap.clear();
 
   //DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
 

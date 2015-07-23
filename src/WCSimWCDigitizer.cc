@@ -45,7 +45,7 @@ WCSimWCDigitizer::WCSimWCDigitizer(G4String name,
   G4String colName = "WCDigitizedCollection";
   this->myDetector = myDetector;
   collectionName.push_back(colName);
-  DigiHitMap.clear();
+  ReInitialize();
 
   DarkRateMessenger = new WCSimDarkRateMessenger(this);
 }
@@ -56,6 +56,8 @@ WCSimWCDigitizer::~WCSimWCDigitizer(){
 
 void WCSimWCDigitizer::Digitize()
 {
+  ReInitialize();
+
   DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();

@@ -178,8 +178,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCSimWCTriggerBase* WCTM =
       (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout");
 
+    // this is now done internally in Digitize()
     //clear old info inside the digitizer
-    WCTM->ReInitialize();
+    //WCTM->ReInitialize();
 
     // Figure out what size PMTs we are using in the WC detector.
     G4float PMTSize = detectorConstructor->GetPMTSize();
@@ -212,8 +213,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCSimWCDigitizerBase* WCDM =
       (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadoutDigits");
 
+    // this is now done internally in Digitize()
     //clear old info inside the digitizer
-    WCDM->ReInitialize();
+    //WCDM->ReInitialize();
 
     //Digitize the hits
     WCDM->Digitize();
@@ -225,8 +227,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCSimWCTriggerBase* WCTM =
       (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout");
   
-    //clear old info inside the digitizer
-    WCTM->ReInitialize();
+    // this is now done internally in Digitize()
+    //clear old info inside the trigger
+    //WCTM->ReInitialize();
 
     //Apply the trigger
     // This takes the digits, and places them into trigger gates
