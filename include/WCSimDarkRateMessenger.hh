@@ -4,7 +4,6 @@
 
 #include "G4UImessenger.hh"
 
-
 class G4UIcommand;
 class G4UIdirectory;
 class G4UIcmdWithADoubleAndUnit;
@@ -18,7 +17,6 @@ class WCSimDarkRateMessenger: public G4UImessenger
 public:
   WCSimDarkRateMessenger(WCSimWCDigitizer*);
   WCSimDarkRateMessenger(WCSimWCAddDarkNoise*);
-
 
   ~WCSimDarkRateMessenger();
 
@@ -39,6 +37,7 @@ private:
   G4UIcmdWithADoubleAndUnit* SetDarkWindow;
   
   G4int constructor;
+  G4String initaliseString;
 };
 
 #endif

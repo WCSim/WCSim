@@ -50,13 +50,13 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger()
   
   NHitsTriggerThreshold = new G4UIcmdWithAnInteger("/DAQ/TriggerNHits/Threshold", this);
   NHitsTriggerThreshold->SetGuidance("Set the NHits trigger threshold");
-  NHitsTriggerThreshold->SetParameterName("NHitsThreshold",true);
+  NHitsTriggerThreshold->SetParameterName("NHitsThreshold",false);
   NHitsTriggerThreshold->SetDefaultValue(25);
   StoreSetNHitsThreshold = 25;
 
   NHitsTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNHits/Window", this);
   NHitsTriggerWindow->SetGuidance("Set the NHits trigger window (in ns)");
-  NHitsTriggerWindow->SetParameterName("NHitsWindow",true);
+  NHitsTriggerWindow->SetParameterName("NHitsWindow",false);
   NHitsTriggerWindow->SetDefaultValue(200);
   StoreSetNHitsWindow = 200;
 }
