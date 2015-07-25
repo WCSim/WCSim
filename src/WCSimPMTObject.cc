@@ -1543,8 +1543,8 @@ PMT3inchR12199_02::PMT3inchR12199_02(){}
 PMT3inchR12199_02::~PMT3inchR12199_02(){}
 
 G4String PMT3inchR12199_02::GetPMTName() {G4String PMTName = "PMT3inchR12199_02"; return PMTName;}
-G4double PMT3inchR12199_02::GetExposeHeight() {return .015*m;}  //from TechSheet for 3in (only photocathode)
-G4double PMT3inchR12199_02::GetRadius() {return .050*m;}        //radius of curvature, only cap of sphere is actual PMT photocathode area, namely the top expose height part.
+G4double PMT3inchR12199_02::GetExposeHeight() {return .0153*m;}  //from TechSheet for 3in (only photocathode)
+G4double PMT3inchR12199_02::GetRadius() {return .036*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
 G4double PMT3inchR12199_02::GetPMTGlassThickness() {return 0.4*cm;}
 
 float PMT3inchR12199_02::HitTimeSmearing(float Q) {

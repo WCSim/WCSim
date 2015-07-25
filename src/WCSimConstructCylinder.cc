@@ -96,7 +96,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   //-----------------------------------------------------
 
   checkOverlaps = true; //TODO: get from .mac file: true for making geo, false for running
-  
+  checkOverlapsPMT = false; // for mPMT the cylindrical part and bottom sphere (OD) will stick
+                            // into the wall, so will overlap by construction!!
   // The water barrel is placed in an tubs of air
   
   G4Tubs* solidWC = new G4Tubs("WC",
@@ -611,7 +612,10 @@ else {
 		    							logicWCTopVeto,			// its mother volume
 		    							false,					// no boolean os
 		    							icopy,				// every PMT need a unique id.
-										checkOverlaps);	
+										checkOverlapsPMT);	
+
+			//no overlap check as mPMT will be overlapping by construction (OD + cylinder sticks into
+			// wall)
 
 		    icopy++;
 		  }
@@ -668,7 +672,7 @@ else {
 			  false,                     // no boolean operations
 			  (int)(i*WCPMTperCellVertical+j),
 					  //true);                       
-					  checkOverlaps);
+					  checkOverlapsPMT);
       
    // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
      // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
@@ -708,7 +712,7 @@ else {
 			    false,                     // no boolean operations
 			    (int)(i*WCPMTperCellVertical+j),
 						//true);                       
-						checkOverlaps);
+						checkOverlapsPMT);
 	
 		// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
 		// daughter volumes to the PMTs (e.g. a acryl cover) you have to check, if
@@ -1131,7 +1135,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			    logicWCCap,         // its mother volume
 			    false,                 // no boolean os
 						icopy,           // every PMT need a unique id.
-						checkOverlaps);    
+						checkOverlapsPMT);    
 	
  // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
     // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
@@ -1173,7 +1177,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			  logicWCBarrelBorderCell,         // its mother volume
 			  false,                     // no boolean operations
 			  (int)(i*WCPMTperCellVertical+j)
-					  ,checkOverlaps);//true);                      // no particular field
+					  ,checkOverlapsPMT);//true);                      // no particular field
 
 
    // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
@@ -1213,7 +1217,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			    logicWCExtraBorderCell,         // its mother volume
 			    false,                     // no boolean operations
 			    (int)(i*WCPMTperCellVertical+j)
-						,checkOverlaps);//true);                        // no particular field
+						,checkOverlapsPMT);//true);                        // no particular field
 
 		// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
 		// daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if

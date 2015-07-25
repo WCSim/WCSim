@@ -387,6 +387,7 @@ private:
     G4int innerPMT_BotN;
 
     G4bool checkOverlaps;
+    G4bool checkOverlapsPMT;
     G4LogicalVolume* waterTankLV;
 
     G4int PMTCopyNo;

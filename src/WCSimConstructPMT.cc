@@ -45,11 +45,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
   expose = PMT->GetExposeHeight();
-  radius = PMT->GetRadius();
+  radius = PMT->GetRadius();  //r at height = expose
   glassThickness = PMT->GetPMTGlassThickness();
 
-
-  G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
+  //sphereRadius R: radius of curvature, based on spherical approx near exposeHeight
+  //if radius of spherical cap at exposeHeight = PMTradius r (eg. 20"/2)
+  //then from r = sqrt(R*R - (R-expose)*(R-expose)), we get:
+  G4double sphereRadius = (expose*expose + radius*radius)/(2*expose);
   G4double PMTOffset =  sphereRadius - expose;
 
   //All components of the PMT are now contained in a single logical volume logicWCPMT.
@@ -57,10 +59,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
   //TF: Optional NEW: IF reflector/Winston cone requested, make it here:
 
-  //TODO: Macro option, can be positive and negative
+  //TODO: Macro option (angle and height), can be positive and negative
   G4double reflectorHeight = 7.5*CLHEP::mm;   //7.5mm from KM3Net JINST
   // Radius of cone at z=reflectorHeight
-  G4double reflectorRadius = 38.5*CLHEP::mm;  //based on KM3Net JINST
+  //based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
+  G4double reflectorRadius = radius + reflectorHeight * tan(CLHEP::pi/4);  
   G4double reflectorThickness = 1.*CLHEP::mm;
 
 
@@ -71,7 +74,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   if(addPMTBase){
     G4double basePinLength = 73.*CLHEP::mm;
     baseHeight = 97.*CLHEP::mm - expose + basePinLength; //97mm includes the PMT top as well.
-    baseRadius = 26.*CLHEP::mm;
+    baseRadius = 26.*CLHEP::mm; //for R121990-02
   } else {
     // version without a base but with optional reflectorCone
     baseHeight = expose;

@@ -334,7 +334,7 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   WCIDHeight            = 36.200*m; //"" "" height
   WCBarrelPMTOffset     = 0.0715*m; //offset from vertical
   WCBarrelNumPMTHorizontal  = 150; 
-  WCBarrelNRings        = 10; //all for easier visualization debugging
+  WCBarrelNRings        = 5; //all for easier visualization debugging
   WCPMTperCellHorizontal= 2;
   WCPMTperCellVertical  = 2;
   WCCapPMTSpacing       = 4.2*m; // distance between centers of top and bottom pmts
