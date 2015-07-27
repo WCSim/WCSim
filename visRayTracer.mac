@@ -10,81 +10,13 @@
 
 ## select the geometry
 # Default config if you do nothing is currently SuperK
-#
-# The tube size is fixed for SK to 20"
-# These are fixed geometries for validation
 #/WCSim/WCgeom SuperK
 
 # Some other SuperK options:
-#/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
-#/WCSim/WCgeom SuperK_20inchBandL_20perCent # Note: the actual coverage is 20.27%
-#/WCSim/WCgeom SuperK_12inchBandL_15perCent # Note: the actual coverage is 14.59%
-#/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 
-# Generic cylindrical detector with a height of 100m and a
-# diameter of 69m with 12" HPD and 14.59% photocoverage
-#/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
-
-#/WCSim/WCgeom HyperK #default length is 49500 mm unless changed below.
-
-#Added for detector length option (ONLY FOR HYPER-K GEOMETRY!!) 2014/07/29. This simulates a segment of the Hyper-K detector of a given length. 
-
-#/WCSim/HyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions(ie. will simulate a detector 1/10 of the HK length)
-#/WCSim/HyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
-#/WCSim/HyperK/waterTank_Length 82500. mm # Equivalent length for 3 partitions
-#/WCSim/HyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
-#/WCSim/HyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
-
-#/WCSim/WCgeom DUSEL_100kton_10inch_40perCent
-#/WCSim/WCgeom DUSEL_100kton_10inch_HQE_12perCent
-#/WCSim/WCgeom DUSEL_100kton_10inch_HQE_30perCent
-#/WCSim/WCgeom DUSEL_100kton_10inch_HQE_30perCent_Gd
-#/WCSim/WCgeom DUSEL_150kton_10inch_HQE_30perCent
-#/WCSim/WCgeom DUSEL_200kton_10inch_HQE_12perCent
-#/WCSim/WCgeom DUSEL_200kton_12inch_HQE_10perCent
-#/WCSim/WCgeom DUSEL_200kton_12inch_HQE_14perCent
-
-#Added for the PMT QE option 08/17/10 (XQ)
-# 1. Stacking only mean when the photon is generated
-# the QE is applied to reduce the total number of photons
-# 2. Stacking and sensitivity detector
-# In the stacking part, the maximum QE is applied to reduce 
-# the total number of photons
-# On the detector side, the rest of QE are applied according to QE/QE_max
-# distribution. This option is in particular important for the WLS
-# 3. The last option means all the QE are applied at the detector
-# Good for the low energy running. 
-/WCSim/PMTQEMethod     Stacking_Only 
-#/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
-#/WCSim/PMTQEMethod     SensitiveDetector_Only
-
-# turn on or off the collection efficiency
-/WCSim/PMTCollEff on
-
-/WCSim/Construct # This must be uncommented to construct a new detector configuration.
-
-# command to choose save or not save the pi0 info 07/03/10 (XQ)
-#/WCSim/SavePi0 true
-/WCSim/SavePi0 false
-
-# command to set dark noise frequency 13/06/09
-# default dark noise frequency is 0 kHz
-/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
-#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
-#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
-
-# command to multiply the dark rate.
-# Convert dark noise frequency before digitization to after digitization by setting suitable factor
-# (14/03/10)
-# Factor of Normal PMT is 1.367
-/DarkRate/SetConvert 1.367
-#/DarkRate/SetConvert 1.119 #For HPDs
-#/DarkRate/SetConvert 1.126 #For Box and Line PMTs
 
 ## Errors may arise if using RayTracer and attempting to view the detector from a distance further than 40 meters
 ## If this occurs, attempt changing the y-direction
-
-# To use RayTracer change the command at the bottom of jobOptions.mac to RayTracer
 
 /vis/open RayTracer
 /vis/viewer/set/upVector 0 0 1
