@@ -220,7 +220,11 @@ G4float PMT20inch::GetmaxQE(){
   return maxQE;
 }
 
-
+// Should be actual PMT Dark Rate, not effective dark rate in detector including other LE noise
+G4float PMT20inch::GetDarkRate(){
+  const G4float rate = 4.2*CLHEP::kHz;   //SKI value set in SKDETSim. ToDo: verify actual PMT DN!
+  return rate;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 8 inch
@@ -373,6 +377,10 @@ G4float  PMT8inch::GetmaxQE(){
   return maxQE;
 }
 
+G4float PMT8inch::GetDarkRate(){
+  const G4float rate = 4.2*CLHEP::kHz;   //??
+  return rate;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -527,6 +535,10 @@ G4float  PMT10inch::GetmaxQE(){
   return maxQE;
 }
 
+G4float PMT10inch::GetDarkRate(){
+  const G4float rate = 3.*CLHEP::kHz;   //R-7081??
+  return rate;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch HQE
@@ -680,6 +692,10 @@ G4float  PMT10inchHQE::GetmaxQE(){
   return maxQE;
 }
 
+G4float PMT10inchHQE::GetDarkRate(){
+  const G4float rate = 3*CLHEP::kHz;   //R7081 HQE (need verification)
+  return rate;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HQE
@@ -835,6 +851,11 @@ G4float  PMT12inchHQE::GetmaxQE()//currently uses the same as the 10inchHQE
   return maxQE;
 }
 
+
+G4float PMT12inchHQE::GetDarkRate(){
+  const G4float rate = 4.2*CLHEP::kHz;   //??
+  return rate;
+}
 
 
 
@@ -1013,6 +1034,12 @@ G4float* HPD20inchHQE::GetCollectionEfficiencyArray(){
   return CE;
 }
 
+
+G4float HPD20inchHQE::GetDarkRate(){
+  const G4float rate = 8.4*CLHEP::kHz;   //Based on HQE 20in R3600 rate from EGADS Nov 2014, needs to be updated with latest values (ToDo)
+  return rate;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HPD
 
@@ -1181,6 +1208,10 @@ G4float* HPD12inchHQE::GetCollectionEfficiencyArray(){
   return CE;
 }
 
+G4float HPD12inchHQE::GetDarkRate(){
+  const G4float rate = 3.0*CLHEP::kHz;   //from previous novis.mac. Need better motivated setting!
+  return rate;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 20 inch HQE Box and Line PMT
@@ -1357,6 +1388,10 @@ G4float* BoxandLine20inchHQE::GetCollectionEfficiencyArray(){
   return CE;
 }
 
+G4float BoxandLine20inchHQE::GetDarkRate(){
+  const G4float rate = 10.*CLHEP::kHz;   //from presentation 1st HyperK meeting, July 2015.
+  return rate;
+}
 
 
 
@@ -1525,4 +1560,10 @@ G4float BoxandLine12inchHQE::GetmaxQE(){
 G4float* BoxandLine12inchHQE::GetCollectionEfficiencyArray(){  
   static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
   return CE;
+}
+
+
+G4float BoxandLine12inchHQE::GetDarkRate(){
+  const G4float rate = 4.43*CLHEP::kHz;   //R11780 HQE value from Table4, NIMA 712 p162-173 (2013)
+  return rate;
 }
