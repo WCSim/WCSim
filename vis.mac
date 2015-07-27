@@ -120,22 +120,4 @@
 /WCSimIO/RootFile wcsim.root
 
 /run/beamOn 100
-
-## Errors may arise if using RayTracer and attempting to view the detector from a distance further than 40 meters
-## If this occurs, attempt changing the y-direction
-
-# To use RayTracer, uncomment the lines below, and change the command at the bottom of jobOptions.mac to RayTracer
-
-#/vis/open RayTracer
-#/vis/viewer/set/upVector 0 0 1
-
-#/vis/rayTracer/eyePosition -15 0 -15
-#/vis/rayTracer/trace g4RayTracer.jpeg
-
-#/vis/rayTracer/eyePosition 70 1 70
-#/vis/rayTracer/trace g4RayTracer1.jpeg
-
-#/vis/rayTracer/eyePosition 0 0 70
-#/vis/rayTracer/trace g4RayTracer2.jpeg
-
 #exit
