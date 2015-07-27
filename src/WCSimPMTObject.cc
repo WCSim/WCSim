@@ -14,7 +14,6 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPmtInfo.hh"
 
-
 #include <vector>
 // for memset
 #include <cstring>
@@ -222,7 +221,7 @@ G4float PMT20inch::GetmaxQE(){
 
 // Should be actual PMT Dark Rate, not effective dark rate in detector including other LE noise
 G4float PMT20inch::GetDarkRate(){
-  const G4float rate = 4.2*CLHEP::kHz;   //SKI value set in SKDETSim. ToDo: verify actual PMT DN!
+  const G4float rate = 4.2*CLHEP::kilohertz;   //SKI value set in SKDETSim. ToDo: verify actual PMT DN!
   return rate;
 }
 
@@ -378,7 +377,7 @@ G4float  PMT8inch::GetmaxQE(){
 }
 
 G4float PMT8inch::GetDarkRate(){
-  const G4float rate = 4.2*CLHEP::kHz;   //??
+  const G4float rate = 4.2*CLHEP::kilohertz;   //??
   return rate;
 }
 
@@ -536,7 +535,7 @@ G4float  PMT10inch::GetmaxQE(){
 }
 
 G4float PMT10inch::GetDarkRate(){
-  const G4float rate = 3.*CLHEP::kHz;   //R-7081??
+  const G4float rate = 3.*CLHEP::kilohertz;   //R-7081??
   return rate;
 }
 
@@ -693,7 +692,7 @@ G4float  PMT10inchHQE::GetmaxQE(){
 }
 
 G4float PMT10inchHQE::GetDarkRate(){
-  const G4float rate = 3*CLHEP::kHz;   //R7081 HQE (need verification)
+  const G4float rate = 3*CLHEP::kilohertz;   //R7081 HQE (need verification)
   return rate;
 }
 
@@ -853,7 +852,7 @@ G4float  PMT12inchHQE::GetmaxQE()//currently uses the same as the 10inchHQE
 
 
 G4float PMT12inchHQE::GetDarkRate(){
-  const G4float rate = 4.2*CLHEP::kHz;   //??
+  const G4float rate = 4.2*CLHEP::kilohertz;   //??
   return rate;
 }
 
@@ -1036,7 +1035,7 @@ G4float* HPD20inchHQE::GetCollectionEfficiencyArray(){
 
 
 G4float HPD20inchHQE::GetDarkRate(){
-  const G4float rate = 8.4*CLHEP::kHz;   //Based on HQE 20in R3600 rate from EGADS Nov 2014, needs to be updated with latest values (ToDo)
+  const G4float rate = 8.4*CLHEP::kilohertz;   //Based on HQE 20in R3600 rate from EGADS Nov 2014, needs to be updated with latest values (ToDo)
   return rate;
 }
 
@@ -1209,7 +1208,7 @@ G4float* HPD12inchHQE::GetCollectionEfficiencyArray(){
 }
 
 G4float HPD12inchHQE::GetDarkRate(){
-  const G4float rate = 3.0*CLHEP::kHz;   //from previous novis.mac. Need better motivated setting!
+  const G4float rate = 3.0*CLHEP::kilohertz;   //from previous novis.mac. Need better motivated setting!
   return rate;
 }
 
@@ -1389,7 +1388,7 @@ G4float* BoxandLine20inchHQE::GetCollectionEfficiencyArray(){
 }
 
 G4float BoxandLine20inchHQE::GetDarkRate(){
-  const G4float rate = 10.*CLHEP::kHz;   //from presentation 1st HyperK meeting, July 2015.
+  const G4float rate = 10.*CLHEP::kilohertz;   //from presentation 1st HyperK meeting, July 2015.
   return rate;
 }
 
@@ -1564,6 +1563,6 @@ G4float* BoxandLine12inchHQE::GetCollectionEfficiencyArray(){
 
 
 G4float BoxandLine12inchHQE::GetDarkRate(){
-  const G4float rate = 4.43*CLHEP::kHz;   //R11780 HQE value from Table4, NIMA 712 p162-173 (2013)
+  const G4float rate = 4.43*CLHEP::kilohertz;   //R11780 HQE value from Table4, NIMA 712 p162-173 (2013)
   return rate;
 }
