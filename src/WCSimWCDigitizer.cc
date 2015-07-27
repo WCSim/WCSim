@@ -46,6 +46,15 @@ WCSimWCDigitizer::WCSimWCDigitizer(G4String name,
   collectionName.push_back(colName);
   DigiHitMap.clear();
 
+  // Grab DarkRate from the PMT itself.
+  // Can be overwritten by the DarkRateMessenger.
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  WCSimPMTObject * PMT;
+  double const conversion_to_kHz = 1000000; //ToDo: remove this and treat DarkRate in CLHEP units throughout the class.
+  PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+  PMTDarkRate = PMT->GetDarkRate()*conversion_to_kHz;
+
+  // If specified, DarkRateMessenger will overwrite the PMT Type DarkRate
   DarkRateMessenger = new WCSimDarkRateMessenger(this);
 }
 
@@ -58,6 +67,7 @@ void WCSimWCDigitizer::Digitize()
 {
   DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
 
+  
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   
   // Get the PMT collection ID
@@ -73,7 +83,8 @@ void WCSimWCDigitizer::Digitize()
      //FindNumberOfGates(); //get list of t0 and number of triggers.
     FindNumberOfGatesFast(); //get list of t0 and number of triggers.
  
-    if(this->PMTDarkRate>1E-307){
+   
+    if(PMTDarkRate > 1E-307){
       AddPMTDarkRate(WCHCPMT);
     }
     
