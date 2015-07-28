@@ -47,8 +47,6 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
-protected:
-  G4float* GetCollectionEfficiencyArray();
 };
 
 class PMT8inch : public WCSimPMTObject

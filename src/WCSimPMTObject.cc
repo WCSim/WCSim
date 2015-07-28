@@ -213,19 +213,11 @@ G4float* PMT20inch::GetQEWavelength(){
 
 G4float* PMT20inch::GetQE(){  
   static G4float QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
-
-
   return QE;
 }
 G4float PMT20inch::GetmaxQE(){
   const G4float maxQE = 0.211;
   return maxQE;
-}
-
-G4float* PMT20inch::GetCollectionEfficiencyArray(){
-  static G4float CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};//temporary value. It will be changed in future.
-  //  static G4float CE[10] = { 73., 73., 73., 73., 73., 73., 73., 73., 73., 73.};
-  return CE;
 }
 
 
@@ -1352,7 +1344,6 @@ G4float* BoxandLine20inchHQE::GetQEWavelength(){
 
 G4float* BoxandLine20inchHQE::GetQE(){
   G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 1.9 times the 20" PMTS based on Hamamatsu measurement. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
-  // set R3600 C.E. to 73% and not to change the R3600 output.
   static G4float QE[20] =
     { 0.00*correctionFactor, .0008*correctionFactor, .1255*correctionFactor, .254962*correctionFactor, .2930*correctionFactor, .3127*correctionFactor, .3130*correctionFactor, .2994*correctionFactor, .2791*correctionFactor, .2491*correctionFactor,
       .2070*correctionFactor,  .1758*correctionFactor, .1384*correctionFactor, .0779*correctionFactor, .0473*correctionFactor, .0288*correctionFactor, .0149*correctionFactor, .0062*correctionFactor, .0002*correctionFactor, .0001*correctionFactor};  
@@ -1360,7 +1351,7 @@ G4float* BoxandLine20inchHQE::GetQE(){
   return QE;
 }
 G4float BoxandLine20inchHQE::GetmaxQE(){
-  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to set R3600 C.E. to 73% and not to change the R3600 output.
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 1.9 times the 20" PMTS based on Hamamatsu measurement. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
   const G4float maxQE = 0.315*correctionFactor;
   return maxQE;
 }
@@ -1525,7 +1516,7 @@ G4float* BoxandLine12inchHQE::GetQEWavelength(){
 }
 
 G4float* BoxandLine12inchHQE::GetQE(){
-  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to set R3600 C.E. to 73% and not to change the R3600 output.
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 1.9 times the 20" PMTS based on Hamamatsu measurement. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
   static G4float QE[20] =
     { 0.00*correctionFactor, .0008*correctionFactor, .1255*correctionFactor, .254962*correctionFactor, .2930*correctionFactor, .3127*correctionFactor, .3130*correctionFactor, .2994*correctionFactor, .2791*correctionFactor, .2491*correctionFactor,
       .2070*correctionFactor,  .1758*correctionFactor, .1384*correctionFactor, .0779*correctionFactor, .0473*correctionFactor, .0288*correctionFactor, .0149*correctionFactor, .0062*correctionFactor, .0002*correctionFactor, .0001*correctionFactor};  
@@ -1533,7 +1524,7 @@ G4float* BoxandLine12inchHQE::GetQE(){
   return QE;
 }
 G4float BoxandLine12inchHQE::GetmaxQE(){
-  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to set R3600 C.E. to 73% and not to change the R3600 output.
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 1.9 times the 20" PMTS based on Hamamatsu measurement. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
   const G4float maxQE = 0.315*correctionFactor;
   return maxQE;
 }
