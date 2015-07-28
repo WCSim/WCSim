@@ -14,6 +14,7 @@
 
 # Some other SuperK options:
 
+/WCSim/Construct # This must be uncommented to construct a new detector configuration.
 
 ## Errors may arise if using RayTracer and attempting to view the detector from a distance further than 40 meters
 ## If this occurs, attempt changing the y-direction
