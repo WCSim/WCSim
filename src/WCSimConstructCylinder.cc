@@ -214,11 +214,11 @@ if(!debugMode)
 
 if(!debugMode)
   {G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(0,0.5,1.));
-  tmpVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
-  tmpVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
+  tmpVisAtt->SetForceWireframe(true);// This line is used to give definition to the rings in OGLSX Visualizer
   logicWCBarrelRing->SetVisAttributes(tmpVisAtt);
-  //If you want the rings on the Annulus to show, then comment out the line below.
-  logicWCBarrelRing->SetVisAttributes(G4VisAttributes::Invisible);}
+  //If you want the rings on the Annulus to show in OGLSX, then comment out the line below.
+  logicWCBarrelRing->SetVisAttributes(G4VisAttributes::Invisible);
+  }
 else {
         G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(0,0.5,1.));
         tmpVisAtt->SetForceWireframe(true);
@@ -256,11 +256,11 @@ else {
 
   if(!debugMode)
   	{G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
-  	tmpVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
-	tmpVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
-  	logicWCBarrelCell->SetVisAttributes(tmpVisAtt);
-	//If you want the columns on the Annulus to show, then comment out the line below.
-  	logicWCBarrelCell->SetVisAttributes(G4VisAttributes::Invisible);}
+  	tmpVisAtt->SetForceWireframe(true);// This line is used to give definition to the cells in OGLSX Visualizer
+  	logicWCBarrelCell->SetVisAttributes(tmpVisAtt); 
+	//If you want the columns on the Annulus to show in OGLSX, then comment out the line below.
+  	logicWCBarrelCell->SetVisAttributes(G4VisAttributes::Invisible);
+	}
   else {
   	G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
   	tmpVisAtt->SetForceWireframe(true);
