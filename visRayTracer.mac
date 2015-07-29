@@ -12,9 +12,7 @@
 # Default config if you do nothing is currently SuperK
 #/WCSim/WCgeom SuperK
 
-# Some other SuperK options:
-
-/WCSim/Construct # This must be uncommented to construct a new detector configuration.
+/WCSim/Construct # This must be uncommented to use RayTracer
 
 ## Errors may arise if using RayTracer and attempting to view the detector from a distance further than 40 meters
 ## If this occurs, attempt changing the y-direction
