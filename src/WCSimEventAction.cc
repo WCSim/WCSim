@@ -200,8 +200,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCSimWCAddDarkNoise* WCDNM =
       (WCSimWCAddDarkNoise*)DMman->FindDigitizerModule("WCDarkNoise");
     
+    // this is now done internally in AddDarkNoise()
     //clear old info inside the darknoise routine
-    WCDNM->ReInitialize();  
+    //WCDNM->ReInitialize();  
 
     //Add the dark noise
     WCDNM->AddDarkNoise();

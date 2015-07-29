@@ -29,8 +29,8 @@ WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,
 					 WCSimDetectorConstruction* inDetector)
   :G4VDigitizerModule(name), myDetector(inDetector)
 {
-  DigiHitMap.clear();
   DarkRateMessenger = new WCSimDarkRateMessenger(this);
+  ReInitialize();
 }
 
 WCSimWCAddDarkNoise::~WCSimWCAddDarkNoise(){
@@ -39,6 +39,9 @@ WCSimWCAddDarkNoise::~WCSimWCAddDarkNoise(){
 }
 
 void WCSimWCAddDarkNoise::AddDarkNoise(){
+  //clear the result and range vectors
+  ReInitialize();
+
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   // Get the PMT collection ID                                                                                                                                             
   G4int WCHCID = DigiMan->GetDigiCollectionID("WCRawPMTSignalCollection");
@@ -56,10 +59,8 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
     //Call routine to add dark noise here.
     //loop over pairs which represent ranges.
     //Add noise to those ranges
-    std::vector<std::pair<float, float> >::iterator it2 = result.begin();
-    while (it2 != result.end()){
+    for(std::vector<std::pair<float, float> >::iterator it2 = result.begin(); it2 != result.end(); it2++) {
       AddDarkNoiseBeforeDigi(WCHCPMT,it2->first,it2->second);
-      it2++;
     }
   }
 }
@@ -232,20 +233,24 @@ void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, 
   
   //we need to ensure that the ranges found above are sorted first
   //for the algorithm below to work
-  //output are pairs stored in the result vector
   sort(ranges.begin(),ranges.end());
+
+  //the ranges vector contains overlapping ranges
+  //this loop removes overlaps
+  //output are pairs stored in the result vector
   std::vector<std::pair<float, float> >::iterator it = ranges.begin();
   std::pair<float, float> current = *(it)++;
-  while (it != ranges.end()){
+  for( ; it != ranges.end(); it++) {
     if (current.second >= it->first){
       current.second = std::max(current.second, it->second); 
-    } else {
+    }
+    else {
       result.push_back(current);
       current = *(it);
     }
-    it++;
   }
   result.push_back(current);
-  //now we should have a vector of range pairs to pass to the
+
+  //now we should have a vector of non-overlapping range pairs to pass to the
   //dark noise routine
 }
