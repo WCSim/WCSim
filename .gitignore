@@ -5,6 +5,8 @@ libWCSim.a
 libWCSimRoot.so
 make.rootcint.result
 make.result
+bin/
+tmp/
 
 #ignore run results
 wcsim.root
