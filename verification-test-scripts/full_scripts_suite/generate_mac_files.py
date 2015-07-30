@@ -52,7 +52,7 @@ def ListAsString(l):
 parser = argparse.ArgumentParser(description='Run many WCSim jobs with different options. Use , to delimit multiple options')
 #options about how to run this script
 parser.add_argument('--onlycreatefiles', action='store_true', help="Do a test run where you create all the files, but don't run WCSim?")
-parser.add_argument('--batchmode', type=str, default='local', choices=BatchChoices, help='Where to submit the jobs. Required')
+parser.add_argument('--batchmode', type=str, default='local', choices=BatchChoices, help='Where to submit the jobs. Choices: '+ListAsString(BatchChoices)+' (default local)')
 parser.add_argument('--vis', action='store_true', help='Turn on the visulation? Not yet implemented')
 #parser.add_argument('--reusedaqfolder', action='store_true', help='Reuse the DAQ folders? (i.e. don\'t exit if mkdir fails)')
 #options for the .mac files
@@ -76,7 +76,7 @@ parser.add_argument('--DarkNoiseConvert', type=delim_list, default='1.367', help
 #parser.add_argument('--DarkNoiseWindow', type=delim_list, default='1500', help=' Mode 0: Apply dark noise in range x:y (use : as delimeter!). Mode 1: Apply dark noise in a window around each hit (+-window/2). Specify multiple (for the same mode) with a comma separated list (default 1500)')
 # pmt
 parser.add_argument('--PMTQEMethod', type=delim_list, default='Stacking_Only', help='How the QE is applied? Specify multiple with comma separated list. Choices: '+ListAsString(PMTQEMethod_choices)+' (default Stacking_Only)')
-parser.add_argument('--PMTCollEff', type=delim_list, default='off', help='Turn on/off the PMT collection efficiency? Specify multiple with comma separated list. Choices: '+ListAsString(PMTCollEff_choices)+' (default off)')
+parser.add_argument('--PMTCollEff', type=delim_list, default='on', help='Turn on/off the PMT collection efficiency? Specify multiple with comma separated list. Choices: '+ListAsString(PMTCollEff_choices)+' (default off)')
 # other
 parser.add_argument('--SavePi0', action='store_true', help='Save Pi0 info?')
 # particle gun
@@ -86,8 +86,6 @@ parser.add_argument('--GunPosition', type=delim_list_str, default='0,0,0', help=
 parser.add_argument('--GunDirection', type=delim_list_str, default='1,0,0', help='Particle gun direction. Either a comma-separated 3 vector OR exactly one of '+ListAsString(GunDirectionChoices)+' (default 1,0,0)')
 parser.add_argument('--NEvents', type=int, default=10, help='Number of events per configuration (default 10)')
 
-args = parser.parse_args()
-
 def check_input_list(arglist, allowed, parser):
     #check for options that aren't allowed
     for arg in arglist:
@@ -96,202 +94,209 @@ def check_input_list(arglist, allowed, parser):
             parser.print_help()
             sys.exit(1)
             
-check_input_list(args.WCgeom, WCgeom_choices, parser)
-check_input_list(args.PMTQEMethod, PMTQEMethod_choices, parser)
-check_input_list(args.PMTCollEff, PMTCollEff_choices, parser)
-#check_input_list(args.DAQdigitizer, DAQdigitizer_choices, parser)
-#check_input_list(args.DAQtrigger, DAQtrigger_choices, parser)
-if (type(args.GunPosition) is list and len(args.GunPosition) != 3) \
-    or (type(args.GunDirection) is list and len(args.GunDirection) != 3):
-    print "GunPosition and GunDirection are three vectors. Specify exactly 3 options!"
-    parser.print_help()
-    sys.exit(1)
-if (type(args.GunPosition) is str and args.GunPosition not in GunPositionChoices):
-    print "GunPosition", args.GunPosition, "not one of", GunPositionChoices
-    parser.print_help()
-    sys.exit(1)
-if (type(args.GunDirection) is str and args.GunDirection not in GunDirectionChoices):
-    print "GunDirection", args.GunDirection, "not one of", GunDirectionChoices
-    parser.print_help()
-    sys.exit(1)
-if type(args.GunDirection) != type(args.GunPosition):
-    print "Must use consistent GunPosition and GunDirection options (i.e. both 3 vectors or both MakeKin.py str options)"
-    parser.print_help()
-    sys.exit(1)
+def main(args_to_parse = None):
+    args = parser.parse_args(args_to_parse)
+    
+    check_input_list(args.WCgeom, WCgeom_choices, parser)
+    check_input_list(args.PMTQEMethod, PMTQEMethod_choices, parser)
+    check_input_list(args.PMTCollEff, PMTCollEff_choices, parser)
+    #check_input_list(args.DAQdigitizer, DAQdigitizer_choices, parser)
+    #check_input_list(args.DAQtrigger, DAQtrigger_choices, parser)
+    if (type(args.GunPosition) is list and len(args.GunPosition) != 3) \
+        or (type(args.GunDirection) is list and len(args.GunDirection) != 3):
+        print "GunPosition and GunDirection are three vectors. Specify exactly 3 options!"
+        parser.print_help()
+        sys.exit(1)
+    if (type(args.GunPosition) is str and args.GunPosition not in GunPositionChoices):
+        print "GunPosition", args.GunPosition, "not one of", GunPositionChoices
+        parser.print_help()
+        sys.exit(1)
+    if (type(args.GunDirection) is str and args.GunDirection not in GunDirectionChoices):
+        print "GunDirection", args.GunDirection, "not one of", GunDirectionChoices
+        parser.print_help()
+        sys.exit(1)
+    if type(args.GunDirection) != type(args.GunPosition):
+        print "Must use consistent GunPosition and GunDirection options (i.e. both 3 vectors or both MakeKin.py str options)"
+        parser.print_help()
+        sys.exit(1)
 
-origdir = os.getcwd()
+    origdir = os.getcwd()
 
-"""
-#make the jobOptions.mac file(s)
-DAQfolders = []
-for DAQdigitizer in args.DAQdigitizer:
-    for DAQtrigger in args.DAQtrigger:
-        if DAQtrigger == 'SKI_SKDETSIM' and DAQdigitizer != 'SKI_SKDETSIM':
-            continue
-        if DAQtrigger != 'SKI_SKDETSIM' and DAQdigitizer == 'SKI_SKDETSIM':
-            continue
-        for DAQnhitsthreshold in args.DAQnhitsthreshold:
-            for DAQnhitswindow in args.DAQnhitswindow:
-                for DAQsavefailuresmode in args.DAQsavefailuresmode:
-                    for DAQsavefailurestime in args.DAQsavefailurestime:
-                            # go to the specific folder for this jobOptions
-                            foldername = DAQdigitizer + "_" + DAQtrigger + "_fails" + DAQsavefailuresmode + "_"
-                            if DAQsavefailuresmode:
-                                foldername = foldername + DAQsavefailurestime + "_"
-                            if (DAQtrigger.find("NHits") != -1) or (DAQtrigger.find("SKI_SKDETSIM") == 0):
-                                foldername = foldername + "NHits" + str(DAQnhitsthreshold) + "_" + str(DAQnhitswindow)
-                            os.chdir(origdir)
-                            try:
-                                os.mkdir(foldername)
-                            except OSError:
-                                print "Folder", foldername, "already exists"
-                                if not args.reusedaqfolder:
-                                    print "Exiting..."
-                                    sys.exit(1)
-                            os.chdir(foldername)
-                            DAQfolders.append(foldername)
-                            noise_agnostic = 'true' if args.DAQnhitsignorenoise else 'false'
-                            #create the jopOptions.mac file
-                            text = "/WCSim/physics/list WCSim" + "\n" \
-                                "/DAQ/Digitizer " + DAQdigitizer + "\n" \
-                                "/DAQ/Trigger " + DAQtrigger + "\n" \
-                                "/DAQ/TriggerSaveFailures/Mode " + DAQsavefailuresmode + "\n" \
-                                "/DAQ/TriggerSaveFailures/TriggerTime " + DAQsavefailurestime + "\n"
-                            if DAQtrigger in DAQtrigger_nhits_choices:
-                                text += "/DAQ/TriggerNHits/Threshold " + DAQnhitsthreshold + "\n" \
-                                    "/DAQ/TriggerNHits/Window " + DAQnhitswindow + "\n" \
-                                    "/DAQ/TriggerNHits/AdjustForNoise " + noise_agnostic + "\n"
-                            #create the file
-                            f = open('jobOptions.mac', 'w')
-                            f.write(text)
-                            f.close()
-"""
-
-#don't forget the other .mac files
-shutil.copy2(os.path.expandvars("$WCSIMDIR") + "/jobOptions.mac", "./")
-shutil.copy2(os.path.expandvars("$WCSIMDIR") + "/jobOptions2.mac", "./")
-shutil.copy2(os.path.expandvars("$WCSIMDIR") + "/tuning_parameters.mac", "./")
-#and the exectuable
-if args.batchmode == 'condor':
-    if not os.path.islink('WCSim'):
-        os.symlink(os.path.expandvars("$WCSIMDIR") + "/bin/" + os.path.expandvars("$G4SYSTEM") + "/WCSim", "WCSim")
-
-#make the novis.mac analogue
-counter = 1
-for WCgeom in args.WCgeom:
-    for HKwatertanklength in args.HKwatertanklength:
-        for PMTQEMethod in args.PMTQEMethod:
-            for PMTCollEff in args.PMTCollEff:
-                #for DAQfolder in DAQfolders:
-                    for DarkNoiseRate in args.DarkNoiseRate:
-                        for DarkNoiseConvert in args.DarkNoiseConvert:
-                            #for DarkNoiseWindow in args.DarkNoiseWindow:
-                                for GunEnergy in args.GunEnergy:
-                                    """
-                                    os.chdir(origdir + "/" + DAQfolder)
-                                    #DarkNoiseWindow should be treated specially, as it depends on DarkNoiseMode
-                                    darknoisewindow = 
-                                    if args.DarkNoiseMode == 1:
-                                        try:
-                                            int(DarkNoiseWindow)
-                                        except ValueError:
-                                            print "For DarkNoiseMode == 1, DarkNoiseWindow should be a single number (not colon separated)"
-                                            sys.exit(1)
-                                            darknoisewindow = "/DarkRate/SetDarkWindow " + DarkNoiseWindow + "\n"
-                                    elif args.DarkNoiseMode == 0:
-                                        darknoisewindow = "/DarkRate/SetDarkLow  " + DarkNoiseWindow.split(':')[0] + "\n" \
-                                            "/DarkRate/SetDarkHigh " + DarkNoiseWindow.split(':')[1] + "\n"
-                                    else:
+    """
+    #make the jobOptions.mac file(s)
+    DAQfolders = []
+    for DAQdigitizer in args.DAQdigitizer:
+        for DAQtrigger in args.DAQtrigger:
+            if DAQtrigger == 'SKI_SKDETSIM' and DAQdigitizer != 'SKI_SKDETSIM':
+                continue
+            if DAQtrigger != 'SKI_SKDETSIM' and DAQdigitizer == 'SKI_SKDETSIM':
+                continue
+            for DAQnhitsthreshold in args.DAQnhitsthreshold:
+                for DAQnhitswindow in args.DAQnhitswindow:
+                    for DAQsavefailuresmode in args.DAQsavefailuresmode:
+                        for DAQsavefailurestime in args.DAQsavefailurestime:
+                                # go to the specific folder for this jobOptions
+                                foldername = DAQdigitizer + "_" + DAQtrigger + "_fails" + DAQsavefailuresmode + "_"
+                                if DAQsavefailuresmode:
+                                    foldername = foldername + DAQsavefailurestime + "_"
+                                if (DAQtrigger.find("NHits") != -1) or (DAQtrigger.find("SKI_SKDETSIM") == 0):
+                                    foldername = foldername + "NHits" + str(DAQnhitsthreshold) + "_" + str(DAQnhitswindow)
+                                os.chdir(origdir)
+                                try:
+                                    os.mkdir(foldername)
+                                except OSError:
+                                    print "Folder", foldername, "already exists"
+                                    if not args.reusedaqfolder:
+                                        print "Exiting..."
                                         sys.exit(1)
-                                    """
+                                os.chdir(foldername)
+                                DAQfolders.append(foldername)
+                                noise_agnostic = 'true' if args.DAQnhitsignorenoise else 'false'
+                                #create the jopOptions.mac file
+                                text = "/WCSim/physics/list WCSim" + "\n" \
+                                    "/DAQ/Digitizer " + DAQdigitizer + "\n" \
+                                    "/DAQ/Trigger " + DAQtrigger + "\n" \
+                                    "/DAQ/TriggerSaveFailures/Mode " + DAQsavefailuresmode + "\n" \
+                                    "/DAQ/TriggerSaveFailures/TriggerTime " + DAQsavefailurestime + "\n"
+                                if DAQtrigger in DAQtrigger_nhits_choices:
+                                    text += "/DAQ/TriggerNHits/Threshold " + DAQnhitsthreshold + "\n" \
+                                        "/DAQ/TriggerNHits/Window " + DAQnhitswindow + "\n" \
+                                        "/DAQ/TriggerNHits/AdjustForNoise " + noise_agnostic + "\n"
+                                #create the file
+                                f = open('jobOptions.mac', 'w')
+                                f.write(text)
+                                f.close()
+    """
 
-                                    if type(args.GunPosition) is str:
-                                        #if GunPosition and GunDirection are string's
-                                        #we need to call MakeKin.py to generate distributions of different positions/directions
-                                        command = '$WCSIMDIR/sample-root-scripts/MakeKin.py -N 1 ' \
-                                        '-n ' + str(args.NEvents) + ' ' \
-                                        '-t ' + args.GunParticle  + ' ' \
-                                        '-e ' + GunEnergy  + ' ' \
-                                        '-v ' + args.GunPosition  + ' ' \
-                                        '-d ' + args.GunDirection
+    #don't forget the other .mac files
+    shutil.copy2(os.path.expandvars("$WCSIMDIR") + "/jobOptions.mac", "./")
+    shutil.copy2(os.path.expandvars("$WCSIMDIR") + "/jobOptions2.mac", "./")
+    shutil.copy2(os.path.expandvars("$WCSIMDIR") + "/tuning_parameters.mac", "./")
+    #and the exectuable
+    if args.batchmode == 'condor':
+        if not os.path.islink('WCSim'):
+            os.symlink(os.path.expandvars("$WCSIMDIR") + "/bin/" + os.path.expandvars("$G4SYSTEM") + "/WCSim", "WCSim")
+
+    #make the novis.mac analogue
+    counter = 1
+    for WCgeom in args.WCgeom:
+        for HKwatertanklength in args.HKwatertanklength:
+            for PMTQEMethod in args.PMTQEMethod:
+                for PMTCollEff in args.PMTCollEff:
+                    #for DAQfolder in DAQfolders:
+                        for DarkNoiseRate in args.DarkNoiseRate:
+                            for DarkNoiseConvert in args.DarkNoiseConvert:
+                                #for DarkNoiseWindow in args.DarkNoiseWindow:
+                                    for GunEnergy in args.GunEnergy:
+                                        """
+                                        os.chdir(origdir + "/" + DAQfolder)
+                                        #DarkNoiseWindow should be treated specially, as it depends on DarkNoiseMode
+                                        darknoisewindow = 
+                                        if args.DarkNoiseMode == 1:
+                                            try:
+                                                int(DarkNoiseWindow)
+                                            except ValueError:
+                                                print "For DarkNoiseMode == 1, DarkNoiseWindow should be a single number (not colon separated)"
+                                                sys.exit(1)
+                                                darknoisewindow = "/DarkRate/SetDarkWindow " + DarkNoiseWindow + "\n"
+                                        elif args.DarkNoiseMode == 0:
+                                            darknoisewindow = "/DarkRate/SetDarkLow  " + DarkNoiseWindow.split(':')[0] + "\n" \
+                                                "/DarkRate/SetDarkHigh " + DarkNoiseWindow.split(':')[1] + "\n"
+                                        else:
+                                            sys.exit(1)
+                                        """
+
+                                        if type(args.GunPosition) is str:
+                                            #if GunPosition and GunDirection are string's
+                                            #we need to call MakeKin.py to generate distributions of different positions/directions
+                                            command = '$WCSIMDIR/sample-root-scripts/MakeKin.py -N 1 ' \
+                                            '-n ' + str(args.NEvents) + ' ' \
+                                            '-t ' + args.GunParticle  + ' ' \
+                                            '-e ' + GunEnergy  + ' ' \
+                                            '-v ' + args.GunPosition  + ' ' \
+                                            '-d ' + args.GunDirection
+                                            print command
+                                            os.system(command)
+                                            #now create the .kin filename
+                                            kinname = "%s_%.0fMeV__%s_%s_%03i.kin" % (args.GunParticle.replace("+","plus").replace("-","minus"), float(GunEnergy), args.GunPosition, args.GunDirection, 0)
+                                            print kinname
+                                            #and finally get the .mac options
+                                            gunoptions = '/mygen/vecfile ' + kinname + '\n'
+                                        else:
+                                            #we're using the simple GEANT4 particle gun
+                                            gunoptions = "/gun/particle " + args.GunParticle + "\n" \
+                                                "/gun/energy " + GunEnergy + " MeV \n" \
+                                                "/gun/direction " + " ".join(i for i in args.GunDirection) + "\n" \
+                                                "/gun/position " + " ".join(i for i in args.GunPosition) + "\n"
+
+                                        #the detector construction options
+                                        if WCgeom == 'SuperK':
+                                            constructoptions = ''
+                                        else:
+                                            constructoptions = "/WCSim/WCgeom " + WCgeom + "\n"
+                                            if WCgeom in HKwatertargetlength_choices:
+                                                constructoptions += "/WCSim/HyperK/waterTank_Length " + HKwatertanklength + "\n"
+                                            constructoptions += "/WCSim/Construct \n"
+
+                                        #construct the filename
+                                        #filenamestub = "wcsim_" + GunEnergy + args.GunParticle + "_" + WCgeom + "_" + (HKwatertanklength if (WCgeom in HKwatertargetlength_choices) else "") + "_" + PMTQEMethod + "_PMTCollEff_" + PMTCollEff + ("_SavePi0" if args.SavePi0 else "") + "_DarkNoiseM" + str(args.DarkNoiseMode) + "R" + DarkNoiseRate + "W" + DarkNoiseWindow.strip()
+                                        filenamestub = "wcsim_" + GunEnergy + args.GunParticle + "_" + WCgeom + "_" + (HKwatertanklength if (WCgeom in HKwatertargetlength_choices) else "") + "_" + PMTQEMethod + "_PMTCollEff_" + PMTCollEff + ("_SavePi0" if args.SavePi0 else "") + "_DarkNoise" + DarkNoiseRate
+                                        #make the text for the config file
+                                        darknoisewindow = '' ####TODO remove this line when the new dark noise options go in
+                                        text = "/run/verbose 0 \n" \
+                                            "/tracking/verbose 0 \n" \
+                                            "/hits/verbose 0 \n" \
+                                            "" + constructoptions + "" \
+                                            "/WCSim/PMTQEMethod " + PMTQEMethod + "\n" \
+                                            "/WCSim/SavePi0 " + ("true" if args.SavePi0 else "false") + "\n" \
+                                            "/DarkRate/SetDarkRate " + DarkNoiseRate + " kHz \n" \
+                                            "/DarkRate/SetConvert " + DarkNoiseConvert + "\n" \
+                                            "" + darknoisewindow + "" \
+                                            "/mygen/generator normal " + "\n" \
+                                            "" + gunoptions + "" \
+                                            "/WCSimIO/RootFile " + filenamestub + ".root" + "\n" \
+                                            "/run/beamOn " + str(args.NEvents) + "\n"
+
+                                        #create the config file
+                                        f = open(filenamestub + '.mac', 'w')
+                                        f.write(text)
+                                        f.close()
+
+                                        #print the run information
+                                        print "\n\nfile:", counter
+                                        print '\n jopOptions.mac:'
+                                        ftemp = open('jobOptions.mac', 'r')
+                                        for l in ftemp.readlines():
+                                            print l,
+                                        ftemp.close()
+                                        print '\n', filenamestub + '.mac:'
+                                        print text
+
+                                        #submit the job
+                                        if args.batchmode == 'local':
+                                            command = '$WCSIMDIR/bin/$G4SYSTEM/WCSim ' + filenamestub + '.mac &> ' + filenamestub + '.out'
+                                        elif args.batchmode == 'condor':
+                                            fcondor = open(filenamestub + '.jdl', 'w')
+                                            condor = '' \
+                                              'executable     = WCSim \n' \
+                                              'universe       = vanilla \n' \
+                                              'arguments      = ' + filenamestub + '.mac \n' \
+                                              'output         = ' + filenamestub + '.out \n' \
+                                              'error          = ' + filenamestub + '.err \n' \
+                                              'log            = ' + filenamestub + '.log \n' \
+                                              'request_memory = 1000 \n' \
+                                              'queue 1 \n'
+                                            fcondor.write(condor)
+                                            fcondor.close()
+                                            command = 'condor_submit ' + filenamestub + '.jdl'
+
                                         print command
-                                        os.system(command)
-                                        #now create the .kin filename
-                                        kinname = "%s_%.0fMeV__%s_%s_%03i.kin" % (args.GunParticle.replace("+","plus").replace("-","minus"), float(GunEnergy), args.GunPosition, args.GunDirection, 0)
-                                        print kinname
-                                        #and finally get the .mac options
-                                        gunoptions = '/mygen/vecfile ' + kinname + '\n'
-                                    else:
-                                        #we're using the simple GEANT4 particle gun
-                                        gunoptions = "/gun/particle " + args.GunParticle + "\n" \
-                                            "/gun/energy " + GunEnergy + " MeV \n" \
-                                            "/gun/direction " + " ".join(i for i in args.GunDirection) + "\n" \
-                                            "/gun/position " + " ".join(i for i in args.GunPosition) + "\n"
+                                        if not args.onlycreatefiles:
+                                            os.system(command)
+                                        else:
+                                            print 'test run; not actually running WCSim'
+                                        counter += 1
+
                                         
-                                    #the detector construction options
-                                    if WCgeom == 'SuperK':
-                                        constructoptions = ''
-                                    else:
-                                        constructoptions = "/WCSim/WCgeom " + WCgeom + "\n"
-                                        if WCgeom in HKwatertargetlength_choices:
-                                            constructoptions += "/WCSim/HyperK/waterTank_Length " + HKwatertanklength + "\n"
-                                        constructoptions += "/WCSim/Construct \n"
-
-                                    #construct the filename
-                                    #filenamestub = "wcsim_" + GunEnergy + args.GunParticle + "_" + WCgeom + "_" + (HKwatertanklength if (WCgeom in HKwatertargetlength_choices) else "") + "_" + PMTQEMethod + "_PMTCollEff_" + PMTCollEff + ("_SavePi0" if args.SavePi0 else "") + "_DarkNoiseM" + str(args.DarkNoiseMode) + "R" + DarkNoiseRate + "W" + DarkNoiseWindow.strip()
-                                    filenamestub = "wcsim_" + GunEnergy + args.GunParticle + "_" + WCgeom + "_" + (HKwatertanklength if (WCgeom in HKwatertargetlength_choices) else "") + "_" + PMTQEMethod + "_PMTCollEff_" + PMTCollEff + ("_SavePi0" if args.SavePi0 else "") + "_DarkNoise" + DarkNoiseRate
-                                    #make the text for the config file
-                                    darknoisewindow = '' ####TODO remove this line when the new dark noise options go in
-                                    text = "/run/verbose 0 \n" \
-                                        "/tracking/verbose 0 \n" \
-                                        "/hits/verbose 0 \n" \
-                                        "" + constructoptions + "" \
-                                        "/WCSim/PMTQEMethod " + PMTQEMethod + "\n" \
-                                        "/WCSim/SavePi0 " + ("true" if args.SavePi0 else "false") + "\n" \
-                                        "/DarkRate/SetDarkRate " + DarkNoiseRate + " kHz \n" \
-                                        "/DarkRate/SetConvert " + DarkNoiseConvert + "\n" \
-                                        "" + darknoisewindow + "" \
-                                        "/mygen/generator normal " + "\n" \
-                                        "" + gunoptions + "" \
-                                        "/WCSimIO/RootFile " + filenamestub + ".root" + "\n" \
-                                        "/run/beamOn " + str(args.NEvents) + "\n"
-
-                                    #create the config file
-                                    f = open(filenamestub + '.mac', 'w')
-                                    f.write(text)
-                                    f.close()
-
-                                    #print the run information
-                                    print "\n\nfile:", counter
-                                    print '\n jopOptions.mac:'
-                                    ftemp = open('jobOptions.mac', 'r')
-                                    for l in ftemp.readlines():
-                                        print l,
-                                    ftemp.close()
-                                    print '\n', filenamestub + '.mac:'
-                                    print text
-
-                                    #submit the job
-                                    if args.batchmode == 'local':
-                                        command = '$WCSIMDIR/bin/$G4SYSTEM/WCSim ' + filenamestub + '.mac &> ' + filenamestub + '.out'
-                                    elif args.batchmode == 'condor':
-                                        fcondor = open(filenamestub + '.jdl', 'w')
-                                        condor = '' \
-                                          'executable     = WCSim \n' \
-                                          'universe       = vanilla \n' \
-                                          'arguments      = ' + filenamestub + '.mac \n' \
-                                          'output         = ' + filenamestub + '.out \n' \
-                                          'error          = ' + filenamestub + '.err \n' \
-                                          'log            = ' + filenamestub + '.log \n' \
-                                          'request_memory = 1000 \n' \
-                                          'queue 1 \n'
-                                        fcondor.write(condor)
-                                        fcondor.close()
-                                        command = 'condor_submit ' + filenamestub + '.jdl'
-                                        
-                                    print command
-                                    if not args.onlycreatefiles:
-                                        os.system(command)
-                                    else:
-                                        print 'test run; not actually running WCSim'
-                                    counter += 1
+if __name__ == "__main__":
+    main()

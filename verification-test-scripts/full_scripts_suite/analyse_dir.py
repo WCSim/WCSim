@@ -16,25 +16,31 @@ def py_bool_to_string(arg):
         return "true"
     else:
         return "false"
-verbose        = py_bool_to_string(args.verbose)
 
-try:
-    os.chdir(args.dir)
-except:
-    print "Cannot cd to directory", args.dir, "exiting..."
-    sys.exit(1)
-print "cd'ed to", args.dir
+def main(args_to_parse = None):
+    
+    verbose        = py_bool_to_string(args.verbose)
 
-prefix = 'root'
-if args.compiled_mode:
-    prefix = 'rootwc'
-prefix += " '" + args.macroname
-if args.compiled_mode:
-    prefix += '+'
+    try:
+        os.chdir(args.dir)
+    except:
+        print "Cannot cd to directory", args.dir, "exiting..."
+        sys.exit(1)
+    print "cd'ed to", args.dir
 
-for file1 in glob.glob("wcsim_*.root"):
-    command = prefix + '("' + file1 + '",' + verbose + (',' + args.additional_macro_options if args.additional_macro_options else '') + ")' -l -b -q"
-    print command
-    os.system(command)
-    if args.onlyonefile:
-        break
+    prefix = 'root'
+    if args.compiled_mode:
+        prefix = 'rootwc'
+    prefix += " '" + args.macroname
+    if args.compiled_mode:
+        prefix += '+'
+
+    for file1 in glob.glob("wcsim_*.root"):
+        command = prefix + '("' + file1 + '",' + verbose + (',' + args.additional_macro_options if args.additional_macro_options else '') + ")' -l -b -q"
+        print command
+        os.system(command)
+        if args.onlyonefile:
+            break
+
+if __name__ == "__main__":
+    main()

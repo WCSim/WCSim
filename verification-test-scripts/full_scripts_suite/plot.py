@@ -148,7 +148,7 @@ for file1 in glob.glob(globber):
         fout2.write(result)
 
     elif args.mode == 'verification_HitsChargeTime':
-        command = 'rootwc -l -b -q \'$WCSIMDIR/verification-test-scripts/verification_HitsChargeTime.C("'file1 + '","' + file2 + '")\''
+        command = 'rootwc -l -b -q \'$WCSIMDIR/verification-test-scripts/verification_HitsChargeTime.C("' + file1 + '","' + file2 + '")\''
         print command
         os.system(command)
 

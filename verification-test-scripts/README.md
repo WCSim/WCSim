@@ -9,7 +9,7 @@ The purpose of these scripts is to ensure that the changes being committed will 
 
 This script will test a .root output file from your version of WCSim against the committed version of the code. 
 This test plots the number of digitized hits, the average charge, and the average time. 
-A ks test is printed to the screen. This test also prints to the screen a comparison of the first event in the files to see if the number of hit tubes, number of digitized tubes, and number of pe hit times match. 
+A KS test is printed to the screen. This test also prints to the screen a comparison of the first event in the files to see if the number of hit tubes, number of digitized tubes, and number of pe hit times match. 
 
 ### Usage
 To use the verification_HitsChargeTime test in the default method, do the following steps:
@@ -97,3 +97,21 @@ Compare 5, 10, 50 MeV electrons for the SKDETSIM-like and new-style digitisation
  * python $WCSIMDIR/verification-test-scripts/full_scripts_suite/plot_lots.py --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_5MeV:Old_5MeV:New_10MeV:Old_10MeV:New_10MeV:Old_10MeV' --mode compare_lots --diffplots _5e-:_10e-,_50e- --required_filename_part _5e-
 * Compare speed/filesize
  * python /home/other/tdealtry/Documents/myWCSIM/WCSim/verification-test-scripts/full_scripts_suite/plot.py --dir1 SKI_NHits_fails0_250_NHits25_200 --dir2 SKI_SKDETSIM_SKI_SKDETSIM_fails0_250_NHits25_200 --legend 'New_code,Old_code' --mode filesize
+
+### run_verification.py
+
+This is a level up. Ideally this'll run on a buildbot somewhere in the future.
+It's run in 4 steps:
+* Checkout & compile clean versions of the code - both the latest & greatest version of WCSim's develop branch, and a branch of your choosing from the repo of your choosing
+  * python run_verification.py --setup-script SETUP_SCRIPT grabcode --new-repo NEW_REPO --new-branch NEW_BRANCH
+
+* Run WCSim particle guns in the two fresh copies of the code. Can be run locally, or on a cluster. Calls generate_mac_files.py
+  * python run_verification.py --setup-script SETUP_SCRIPT run [--low-energy] [--batchmode {local,condor}]
+
+* Analyse the output of the WCSim runs. Calls analyse_dir.py. Not yet implemented
+  * python run_verification.py --setup-script SETUP_SCRIPT analyse
+
+* Compare the output of the analyse. Calls plot_lots.py. Not yet implemented
+  * python run_verification.py --setup-script SETUP_SCRIPT compare
+
+Note: be careful of where you put the grabcode,run,analyse,compare arguments in the argument list. They go AFTER the common arguments (e.g. --setup-script) and BEFORE the unique arguments (e.g. --new-repo)
