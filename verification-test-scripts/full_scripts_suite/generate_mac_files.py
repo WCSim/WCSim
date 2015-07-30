@@ -28,21 +28,16 @@ delim_list_str = lambda s: s.split(',') if len(s.split(',')) == 3 else s
 #DAQdigitizer_choices = ['SKIV', 'SKI', 'SKI_SKDETSIM']
 #DAQtrigger_choices = ['NHits', 'SKI_SKDETSIM', 'NHits2']
 #DAQtrigger_nhits_choices = ['NHits', 'SKI_SKDETSIM', 'NHits2']
-WCgeom_choices = ['HyperK', 'SuperK', \
-                'SuperK_20inchPMT_20perCent', \
-                'SuperK_20inchBandL_20perCent', \
-                'SuperK_12inchBandL_15perCent', \
-                'SuperK_20inchBandL_14perCent', \
-                'Cylinder_12inchHPD_15perCent', \
-                'HyperK_withHPD', \
-                'DUSEL_100kton_10inch_40perCent', \
-                'DUSEL_100kton_10inch_HQE_12perCent', \
-                'DUSEL_100kton_10inch_HQE_30perCent', \
-                'DUSEL_100kton_10inch_HQE_30perCent_Gd', \
-                'DUSEL_150kton_10inch_HQE_30perCent', \
-                'DUSEL_200kton_10inch_HQE_12perCent', \
-                'DUSEL_200kton_12inch_HQE_10perCent', \
-                'DUSEL_200kton_12inch_HQE_14perCent' ]
+WCgeom_choices = ['HyperK', \
+                      'HyperK_withHPD', \
+                      'SuperK', \
+                      'SuperK_20inchPMT_20perCent', \
+                      'SuperK_20inchBandL_20perCent', \
+                      'SuperK_12inchBandL_15perCent', \
+                      'SuperK_20inchBandL_14perCent', \
+                      'Cylinder_12inchHPD_15perCent', \
+                      'Cylinder_60x74_20inchBandL_14perCent', \
+                      'Cylinder_60x74_20inchBandL_40perCent']
 HKwatertargetlength_choices = ['HyperK', 'HyperK_withHPD']
 PMTQEMethod_choices = ['Stacking_Only', 'Stacking_And_SensitiveDetector', 'SensitiveDetector_Only']
 PMTCollEff_choices = ['on', 'off']
@@ -52,17 +47,17 @@ GunParticleChoices=['e-','e+','mu-','mu+','pi-','pi+','pi0','gamma','p+','n0']
 BatchChoices=['local','condor']
 
 def ListAsString(l):
-    return ' '.join(str(o)+',' for o in l)
+    return ' '.join(str(o)+',' for o in l)[:-1]
 
 parser = argparse.ArgumentParser(description='Run many WCSim jobs with different options. Use , to delimit multiple options')
 #options about how to run this script
 parser.add_argument('--onlycreatefiles', action='store_true', help="Do a test run where you create all the files, but don't run WCSim?")
-parser.add_argument('--batchmode', type=str, required=True, choices=BatchChoices, help='Where to submit the jobs. Required')
+parser.add_argument('--batchmode', type=str, default='local', choices=BatchChoices, help='Where to submit the jobs. Required')
 parser.add_argument('--vis', action='store_true', help='Turn on the visulation? Not yet implemented')
 #parser.add_argument('--reusedaqfolder', action='store_true', help='Reuse the DAQ folders? (i.e. don\'t exit if mkdir fails)')
 #options for the .mac files
 # geometry
-parser.add_argument('--WCgeom', type=delim_list, default='SuperK', help='The water tank geometry')
+parser.add_argument('--WCgeom', type=delim_list, default='SuperK', help='The water tank geometry. Specify multiple with comma separated list. Choices: '+ListAsString(WCgeom_choices)+' (default SuperK)')
 parser.add_argument('--HKwatertanklength', type=delim_list, default='49500', help='The size of a HyperK geometry (mm)')
 """
 # trigger & digitization
