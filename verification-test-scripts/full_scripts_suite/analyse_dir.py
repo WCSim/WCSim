@@ -9,6 +9,7 @@ parser.add_argument('-d','--dir', type=str, help='Directory to analyse. Default 
 parser.add_argument('-v','--verbose', action='store_true', help='Run verbosely?')
 parser.add_argument('-f','--onlyonefile', action='store_true', help='Run only one file?')
 parser.add_argument('--additional-macro-options', type=str, default='', help='If your macro has more options than just filename & verbosity, specify the remaining arguments here. Recommended to wrap the command in \'\', then "" are dealt with correctly. WARNING: no whitespace allowed!')
+parser.add_argument('--batchmode', type=str, default='local', choices=['local','condor'], help='Where to submit the jobs')
 args = parser.parse_args()
 
 def py_bool_to_string(arg):
@@ -16,6 +17,7 @@ def py_bool_to_string(arg):
         return "true"
     else:
         return "false"
+<<<<<<< Updated upstream
 
 def main(args_to_parse = None):
     
@@ -28,15 +30,54 @@ def main(args_to_parse = None):
         sys.exit(1)
     print "cd'ed to", args.dir
 
+    #create the start of the command (i.e. the macroname, compiled mode/not, the executable to use)
     prefix = 'root'
     if args.compiled_mode:
         prefix = 'rootwc'
     prefix += " '" + args.macroname
     if args.compiled_mode:
         prefix += '+'
+    
+    filenamestub = 'analysewcsim'
+    if args.batchmode == 'condor' and not os.path.islink('rootwc'):
+        os.symlink(os.path.expanduser("~/Documents/myWCSIM/WCSim/rootwc/rootwc"), "rootwc")
 
-    for file1 in glob.glob("wcsim_*.root"):
-        command = prefix + '("' + file1 + '",' + verbose + (',' + args.additional_macro_options if args.additional_macro_options else '') + ")' -l -b -q"
+    #loop through all the relevant files in the directory, and run the analysis script
+    for i, file1 in enumerate(glob.glob("wcsim_*.root")):
+        #create the arguments passed to the executable
+        commandstub = '("' + file1 + '",' + verbose + (',' + args.additional_macro_options if args.additional_macro_options else '') + ")"
+
+        #run in local mode
+        if args.batchmode == 'local':
+            command = prefix + commandstub + "' -l -b -q"
+        #run in condor batch mode
+        elif args.batchmode == 'condor':
+            filename = filenamestub + '_' + str(i)
+            froot = open(filename + '.C', 'w')
+            root = 'void ' + filename + '() { \n' \
+                '  gROOT->ProcessLine(".L ' + args.macroname + '+"); \n' \
+                '  ' + args.macroname.split('/')[-1].rsplit('.',1)[0] + commandstub + '; \n' \
+                '}'
+            froot.write(root)
+            froot.close()
+            fcondor = open(filename + '.jdl', 'w')
+            condor = '' \
+                'executable     = rootwc \n' \
+                'universe       = vanilla \n' \
+                'arguments      = -b -q ' + filename + '.C \n' \
+                'input          = ' + file1 + ' \n' \
+                'transfer_input_files = ' + filename + '.C \n' \
+                'output         = ' + filename + '.out \n' \
+                'error          = ' + filename + '.err \n' \
+                'log            = ' + filename + '.log \n' \
+                'request_memory = 1000 \n' \
+                'getenv         = True \n' \
+                'queue 1 \n'
+            fcondor.write(condor)
+            fcondor.close()
+            command = 'condor_submit ' + filename + '.jdl'
+
+        #run the command
         print command
         os.system(command)
         if args.onlyonefile:
