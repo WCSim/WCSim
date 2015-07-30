@@ -11,6 +11,16 @@ def MkDirOrCheckIsEmpty(dirpath):
             print 'Directory', dirpath, 'is not empty. Exiting...'
             sys.exit(1)
 
+def MkDirOrCheckIsEmptyForWork(dirpath):
+    if not os.path.isdir(dirpath):
+        os.mkdir(dirpath)
+    else:
+        listdir = os.listdir(dirpath)
+        if listdir and listdir != ['new', 'clean']:
+            print 'Directory', dirpath, 'is not empty. Exiting...'
+            print os.listdir(dirpath)
+            sys.exit(1)
+
 origdir = os.getcwd()
 
 def RunCommand(command):
@@ -23,15 +33,17 @@ def RunCommand(command):
     except OSError as e:
         print >>sys.stderr, command, "Execution failed:", e
 
-def SourceWCSim(setupscript, wcsimdir = os.getcwd()):
+def SourceWCSim(setupscript, wcsimdir):
         RunCommand('source ' + setupscript)
         os.environ['WCSIMDIR'] = wcsimdir
+        os.environ['G4WORKDIR'] = wcsimdir
         os.environ['PATH'] = wcsimdir + '/bin/' + os.environ['G4SYSTEM'] + '/:' + wcsimdir + '/rootwc/' + ':' + os.environ['PATH']
         os.environ['LD_LIBRARY_PATH'] = wcsimdir + ':' + os.environ['LD_LIBRARY_PATH']
         #print os.environ['WCSIMDIR']
+        #print os.environ['G4WORKDIR']
         #print os.environ['PATH']
         #print os.environ['LD_LIBRARY_PATH']
-    
+
         
 def grabcode(args):
     MkDirOrCheckIsEmpty(args.clean_dir)
@@ -41,7 +53,7 @@ def grabcode(args):
         RunCommand('git clone ' + repopath)
         os.chdir('WCSim')
         RunCommand('git checkout ' + repobranch)
-        SourceWCSim(setupscript)
+        SourceWCSim(setupscript, os.getcwd())
         RunCommand('make rootcint')
         RunCommand('make')
         os.chdir(origdir)
@@ -52,12 +64,12 @@ def grabcode(args):
 def run(args):
     clean_work_dir = args.work_dir + '/clean/'
     new_work_dir = args.work_dir + '/new/'
-    #MkDirOrCheckIsEmpty(args.work_dir)
+    MkDirOrCheckIsEmptyForWork(args.work_dir)
     MkDirOrCheckIsEmpty(clean_work_dir)
     MkDirOrCheckIsEmpty(new_work_dir)
     def RunWCSim(runoption, dirpath, wcsimdirpath, setupscript):
         os.chdir(dirpath)
-        SourceWCSim(setupscript, wcsimdirpath + '/WCSim/')
+        SourceWCSim(setupscript, origdir + '/' + wcsimdirpath + '/WCSim/')
         gmf.main(runoption.split())
         os.chdir(origdir)
     run_options = []
@@ -66,7 +78,7 @@ def run(args):
         run_options.append('--NEvents 1000 --GunParticle e- --GunDirection 1,0,0 --GunPosition 0,0,0 --GunEnergy 5,10,20,50 --batchmode '+args.batchmode)
     for runoption in run_options:
         RunWCSim(runoption, clean_work_dir, args.clean_dir, args.setup_script)
-        RunWCSim(runoption, new_work_dir, args.work_dir, args.setup_script)
+        RunWCSim(runoption, new_work_dir, args.new_dir, args.setup_script)
 
         
 def analyse(args):
