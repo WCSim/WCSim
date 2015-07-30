@@ -17,7 +17,6 @@ def py_bool_to_string(arg):
         return "true"
     else:
         return "false"
-<<<<<<< Updated upstream
 
 def main(args_to_parse = None):
     

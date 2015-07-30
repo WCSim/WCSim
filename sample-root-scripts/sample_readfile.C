@@ -3,7 +3,7 @@
 #include <stdio.h>     
 #include <stdlib.h>    
 // Simple example of reading a generated Root file
-void sample_readfile(char *filename=NULL, bool verbose=false)
+void sample_readfile(char *filename=NULL, bool verbose=false, char *save_hists=NULL)
 {
   // Clear global scope
   //gROOT->Reset();
@@ -58,6 +58,11 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
     cout << "Error, could not open input file: " << filename << endl;
     return -1;
   }
+
+  //Output file
+  TFile *fout;
+  if(save_hists != NULL)
+    fout = new TFile(save_hists, "RECREATE");
   
   // Get the a pointer to the tree from the file
   TTree *tree = (TTree*)file->Get("wcsimT");
@@ -257,4 +262,14 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
   c1->cd(2); hvtx1->Draw();
   c1->cd(3); hvtx2->Draw();
   c1->cd(4); h1->Draw();
+
+  //save histograms to an output file
+  if(save_hists != NULL) {
+    fout.cd();
+    hvtx0->Write();
+    hvtx1->Write();
+    hvtx2->Write();
+    h1->Write();
+    fout.Close()
+  }
 }
