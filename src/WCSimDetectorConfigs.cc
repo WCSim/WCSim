@@ -39,9 +39,26 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCCapEdgeLimit        = 16.9*m;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  
   outerPMT_Name = outerPMT->GetPMTName();
   outerPMT_Expose = outerPMT->GetExposeHeight();
   outerPMT_Radius = outerPMT->GetRadius();
+  WCIDODRadialSeperation= 1.1*m;      // Radial distance between the inner and outer detector
+  WCODDiameter          = WCIDDiameter + WCIDODRadialSeperation; //Inner detector distance plus distance between inner and outer
+  WCIDODCapSeperation= 0.55*m;         // Distance between the inner detector and outer detector caps.
+  WCODHeight            = WCIDHeight + WCIDODCapSeperation; //"" "" height
+  WCODBarrelPMTOffset     = 0.0715*m; //offset from vertical
+  WCODPMTperCellHorizontal= 4;
+  WCODPMTperCellVertical  = 3; 
+
+  WCODPMTPercentCoverage  = 10.;
+  WCODBarrelNumPMTHorizontal = round(WCODDiameter*sqrt(pi*WCODPMTPercentCoverage)/(10.0*outerPMT_Radius));
+  WCODBarrelNRings           = round(((WCODBarrelNumPMTHorizontal*((WCODHeight-2*WCODBarrelPMTOffset)/(pi*WCODDiameter)))
+                                      /WCODPMTperCellVertical));
+  WCODCapPMTSpacing       = (pi*WCODDiameter/WCODBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCODCapEdgeLimit        = WCODDiameter/2.0 - outerPMT_Radius;
+  WCODBlackSheetThickness = 2.0*cm;
+
 }
 
 // Note: the actual coverage is 20.27%

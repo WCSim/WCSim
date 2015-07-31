@@ -77,6 +77,7 @@ public:
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
   G4double GetPMTSize()           {return WCPMTRadius;}
+  G4double GetODPMTSize()         {return WCODPMTRadius;}
   G4String GetPMTName()			  {return WCPMTName;}
   G4int    GetMyConfiguration()   {return myConfiguration;}
   G4double GetGeo_Dm(G4int);
@@ -118,6 +119,8 @@ public:
   
   void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
   void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
+  void   SetVis_Choice(G4String choice){Vis_Choice = choice;}
+  G4String GetVis_Choice() {return Vis_Choice;}
 
   //Partition Length
   void SetwaterTank_Length(G4double length){waterTank_Length = length;}
@@ -166,12 +169,17 @@ private:
   G4LogicalVolume* ConstructPMT(G4String,G4String);
 
   G4LogicalVolume* ConstructCaps(G4int zflip);
+  G4LogicalVolume* ConstructODCaps(G4int zflip);
 
   void  ConstructMaterials();
 
   G4LogicalVolume* logicWCBarrelCellBlackSheet;
   G4LogicalVolume* logicWCTowerBlackSheet;
   G4double capAssemblyHeight;
+
+  G4LogicalVolume* logicWCODBarrelCellBlackSheet;
+  G4LogicalVolume* logicWCODTowerBlackSheet;
+  G4double ODcapAssemblyHeight;
 
   G4bool WCAddGd;
 
@@ -229,7 +237,10 @@ private:
   // 1 to use
   G4int PMT_Coll_Eff;
 
-
+  //NP 06/17/15
+  // "OGLSX" for classic visualization
+  // "RayTracer" for RayTracer visualization
+  G4String Vis_Choice;
   
 
   G4double WCLength;
@@ -280,10 +291,31 @@ private:
 
   // WC geometry for Outer Detector
   
+  G4double WCODPMTRadius;
+  G4double WCODPMTExposeHeight;
+
   G4double WCODDiameter;
+  G4double WCODtoTyvekDistance;
+  
   G4double WCODWallThickness;
   G4double WCODTopABottomThickness;
   
+  G4double WCIDODRadialSeperation;
+  G4double WCIDODCapSeperation;
+  G4double WCODHeight;
+  G4double WCODBarrelPMTOffset;
+  G4double WCODPMTperCellHorizontal;
+  G4double WCODPMTperCellVertical;
+  G4double WCODPMTPercentCoverage;
+  
+  G4double WCODBarrelRingNPhi;
+  G4double WCODBarrelNRings;
+
+  G4double WCODBarrelNumPMTHorizontal;
+  G4double WCODCapPMTSpacing;
+  G4double WCODCapEdgeLimit;
+  G4double WCODBlackSheetThickness;
+  G4double WCODCapEdgeWidth;//jh TODO: not used
 
 // raise scope of derived parameters
   G4double WCIDRadius;
@@ -294,6 +326,16 @@ private:
   G4double innerAnnulusRadius;
   G4double outerAnnulusRadius;
   G4String water;
+
+// raise scope of derived parameters for OD
+
+  G4double WCODRadius;
+  G4double ODtotalAngle;
+  G4double ODdPhi;
+  G4double ODbarrelCellHeight;
+  G4double ODmainAnnulusHeight;
+  G4double ODinnerAnnulusRadius;
+  G4double ODouterAnnulusRadius;
 
 
  //for 1kt
