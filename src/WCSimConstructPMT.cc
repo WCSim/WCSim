@@ -57,15 +57,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   //All components of the PMT are now contained in a single logical volume logicWCPMT.
   //Origin is on the blacksheet, faces positive z-direction.
 
-  //TF: Optional NEW: IF reflector/Winston cone requested, make it here:
-
-  //TODO: Macro option (angle and height), can be positive and negative
-  G4double reflectorHeight = 7.5*CLHEP::mm;   //7.5mm from KM3Net JINST
-  // Radius of cone at z=reflectorHeight
-  //based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
-  G4double reflectorRadius = radius + reflectorHeight * tan(CLHEP::pi/4);  
+  //Optional reflectorCone:
+  G4double reflectorRadius = radius + id_reflector_height * tan(id_reflector_angle);
   G4double reflectorThickness = 1.*CLHEP::mm;
-
 
   // TODO: Base is PMT property! Should not hard coded here.
   G4bool addPMTBase = false; 
@@ -81,7 +75,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     baseRadius = radius + reflectorThickness;
   }
   G4double PMTHolderZ[2] = {-baseHeight+expose, 
-			    std::max(expose,reflectorHeight)};
+			    std::max(expose,id_reflector_height)};
   G4double PMTHolderR[2] = {baseRadius, 
 			    std::max(radius,reflectorRadius) + reflectorThickness};
   G4double PMTHolderr[2] = {0,0};
@@ -102,7 +96,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
                   PMTHolderR);// R Outer
 
   G4Material *material_around_pmt = G4Material::GetMaterial("Water");
-  if(reflectorHeight > 0.1*mm) //or make this a user option? Now: reflector means vessel => gel.
+  if(id_reflector_height > 0.1*mm) //or make this a user option? Now: reflector means vessel => gel.
     material_around_pmt = G4Material::GetMaterial("SilGel");
   G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
@@ -210,8 +204,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
 
   // TF: Optional Reflector
-  if(reflectorHeight > 0.1*mm && (reflectorRadius-radius) > -5*mm){
-    G4double reflectorZ[2] = {0, reflectorHeight};
+  if(id_reflector_height > 0.1*mm && (reflectorRadius-radius) > -5*mm){
+    G4double reflectorZ[2] = {0, id_reflector_height};
     G4double reflectorR[2] = {radius + reflectorThickness, reflectorThickness + reflectorRadius};
     G4double reflectorr[2] = {radius,reflectorRadius};
     

@@ -46,17 +46,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
       }*/
   
   //G4cout << "Create PMT" << G4endl;
-  
+
+
   //All components of the PMT are now contained in a single logical volume logicWCPMT.
   //Origin is on the blacksheet, faces positive z-direction.
- 
+
+  // NEW: for default SK-style without acrylic cover:
+  if(cylinder_radius <= 1.*CLHEP::mm && cylinder_height <= 1.*CLHEP::mm){
+    return ConstructPMT(PMTName, CollectionName);
+  }
+
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
   G4double expose =  PMT->GetExposeHeight(); // THIS is the PMT expose, which I'm currently using for pressure vessel construction
   // this is NOT the "expose" of the mPMT
-
-  //using NEMO article safety margin of 0.03 for t/D
-  G4double acrylic_thickness = 0.03*2*(cylinder_radius+expose);
-
 
   /////////////////////////
   /// Outer logical volume: fill with water (cfr same starting point as ConstructPMT)
@@ -64,10 +66,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
   // origin on blacksheet wall is origin of spherical top for ID, change if we want to use the 
   // cylindrical part in ID.
-  G4double mPMT_zRange_outer[2] = {-cylinder_height - cylinder_radius - acrylic_thickness - expose, 
-				   cylinder_radius + acrylic_thickness + expose};
-  G4double mPMT_RRange_outer[2] = {cylinder_radius + expose + acrylic_thickness, 
-				   cylinder_radius + expose + acrylic_thickness};
+  G4double mPMT_zRange_outer[2] = {-cylinder_height - cylinder_radius - mPMT_outer_material_d - expose, 
+				   cylinder_radius + mPMT_outer_material_d + expose};
+  G4double mPMT_RRange_outer[2] = {cylinder_radius + expose + mPMT_outer_material_d, 
+				   cylinder_radius + expose + mPMT_outer_material_d};
   G4double mPMT_rRange_outer[2] = {0., 0.};
   
   G4Polycone* solidMultiPMT = 
@@ -94,8 +96,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   ////////////
 
   G4double mPMT_zRange_vessel[2] = {0, cylinder_height};
-  G4double mPMT_RRange_vessel[2] = {cylinder_radius + expose + acrylic_thickness, 
-				    cylinder_radius + expose + acrylic_thickness};
+  G4double mPMT_RRange_vessel[2] = {cylinder_radius + expose + mPMT_outer_material_d, 
+				    cylinder_radius + expose + mPMT_outer_material_d};
   G4double mPMT_rRange_vessel[2] = {cylinder_radius + expose,cylinder_radius + expose};
 
   //Define a cylinder with spherical top and bottom
@@ -112,14 +114,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
   G4Sphere* mPMT_top_sphere_vessel =
     new G4Sphere(    "WCmPMT_tsphere_vessel",
-		     cylinder_radius + expose,cylinder_radius + expose + acrylic_thickness, 
+		     cylinder_radius + expose,cylinder_radius + expose + mPMT_outer_material_d, 
 		     0.0*deg,360.0*deg,
 		     0.0*deg,90.0*deg);
 
 
   G4Sphere* mPMT_bottom_sphere_vessel =
     new G4Sphere(    "WCmPMT_bsphere_vessel",
-		     cylinder_radius + expose, cylinder_radius + expose + acrylic_thickness,
+		     cylinder_radius + expose, cylinder_radius + expose + mPMT_outer_material_d,
 		     0.0*deg,360.0*deg,
 		     90.0*deg,180.0*deg);
 
@@ -135,7 +137,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   //Acrylic/Water cover of the mPMT
   G4LogicalVolume *logicWCMultiPMT_vessel =
     new G4LogicalVolume(    solidMultiPMT_vessel,
-			    G4Material::GetMaterial("G4_PLEXIGLASS"), //TODO: define through material_vessel
+			    G4Material::GetMaterial(mPMT_outer_material),//"G4_PLEXIGLASS"), 
 			    "WCMultiPMT_vessel",
 			    0,0,0);
   
@@ -272,7 +274,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   /////
   //Defines a cylinder
   //G4double mPMT_zRange[2] = {0, cylinder_height};
-  G4double thickness = 2.*mm; //a 2 mm thick blacksheet or whatever...
+  G4double thickness = mPMT_inner_material_d; //...everything else should be air
   G4double inner_RRange[2] = {cylinder_radius, cylinder_radius};
   G4double inner_rRange[2] = {cylinder_radius-thickness,cylinder_radius-thickness};
   
@@ -310,7 +312,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     new G4UnionSolid("WCMultiPMT_inner", inner_temp_sum, inner_bottom_sphere);
   G4LogicalVolume *logicWCMultiPMT_inner =
     new G4LogicalVolume(    solidMultiPMT_inner,
-			    G4Material::GetMaterial("Blacksheet"), //TODO: define through material_inner
+			    G4Material::GetMaterial(mPMT_inner_material),//"Blacksheet"), 
 			    "WCMultiPMT_inner",
 			    0,0,0);
   
@@ -340,8 +342,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   
   //logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
   logicWCMultiPMT_inner->SetVisAttributes(VisAttRed);
-  //logicWCMultiPMT_vessel->SetVisAttributes(WCPMTVisAtt5);  
-  //logicWCMultiPMT_container->SetVisAttributes(VisAttYellow); 
+  logicWCMultiPMT_vessel->SetVisAttributes(WCPMTVisAtt5);  
+  logicWCMultiPMT_container->SetVisAttributes(VisAttYellow); 
 
   // Should I also keep track of the mPMT modules in some map??
   //PMTLogicalVolumes[key] = logicWCPMT;
@@ -354,7 +356,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
 {
 
-  G4double fEta = ComputeEta(NoPmt); // PMT viewing angle
+  G4double fEta = ComputeEta(NoPmt); // PMT viewing angle, viewing_angle (CONVERT TO DEG)
   
   G4int NoCircle = 1;
   G4double alphaNext = fEta; 
@@ -363,7 +365,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
 
   // Only fill the ones where alpha is above the minimum (to look over neighbouring mPMTs)
   // Theta_min = eta + atan(R/r) with R radius of sphere, and r the distance between mPMTs
-  G4double theta_min = 13.*pi/180;
+  G4double theta_min = 13.*pi/180; //atan((cylinder_radius+expose+outer_thickness)/id_spacing)
   if(alphaNext > theta_min + fEta){
     vAlpha.push_back(alphaNext);
     vNiC.push_back(NoPmt);

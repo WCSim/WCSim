@@ -144,9 +144,19 @@ public:
   void SetmPMT_CylHeight(G4double height){cylinder_height = height;}
   void SetmPMT_CylRadius(G4double radius){cylinder_radius = radius;}
   void SetmPMT_Orientation(mPMT_orientation orient){orientation = orient;}
-  //void SetmPMT_MaterialOuter(G4Material outer_material){mPMT_outer_material = G4Material::GetMaterial(outer_material);}
-  //void SetmPMT_MaterialOuter(G4Material outer_material){};//mPMT_outer_material = outer_material;}
-  //void SetmPMT_MaterialInner(G4Material inner_material){};//mPMT_inner_material = inner_material;}
+  void SetmPMT_ReflectorHeight(G4double ref_height){id_reflector_height = ref_height;}
+  void SetmPMT_ReflectorAngle(G4double ref_angle){id_reflector_angle = ref_angle;}
+  void SetmPMT_MaterialOuter(G4String outer_material){
+    mPMT_outer_material = outer_material;
+    if(outer_material == "Acrylic")
+      mPMT_outer_material = "G4_PLEXIGLASS";
+    }
+  void SetmPMT_MaterialInner(G4String inner_material){mPMT_inner_material = inner_material;}
+  void SetmPMT_MaterialOuterThickness(G4double thickness){mPMT_outer_material_d = thickness;}
+  void SetmPMT_MaterialInnerThickness(G4double thickness){mPMT_inner_material_d = thickness;}
+  void SetmPMT_nID(G4int nPMTs){nID_PMTs = nPMTs;}
+  void SetmPMT_viewingAngle(G4double eta){viewing_angle = eta;}
+  void SetSpacing(G4double spacing){id_spacing = spacing;} 
 
   //Filling mPMT
   G4int	        CountPMT(G4int NoPmt);
@@ -422,8 +432,17 @@ private:
   G4double cylinder_height;
   G4double cylinder_radius;
   mPMT_orientation orientation;
-  //  G4Material mPMT_outer_material;
-  //G4Material mPMT_inner_material;
+  G4String mPMT_outer_material;
+  G4String mPMT_inner_material;
+  G4double mPMT_outer_material_d;
+  G4double mPMT_inner_material_d;
+  G4double id_reflector_height;
+  G4double id_reflector_angle;
+  G4int nID_PMTs;
+  G4double viewing_angle;
+  G4double id_spacing;
+  G4String mPMT_ID_PMT; //or ideally ENUM
+  G4String mPMT_OD_PMT;
 
   //Filling mPMT
   std::vector<G4int>		vNiC;	        // Nb of Chambers in each circle

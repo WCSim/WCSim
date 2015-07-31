@@ -44,12 +44,18 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIdirectory*             mPMTDir;
   G4UIcmdWithADoubleAndUnit* mPMT_CylHeight;
   G4UIcmdWithADoubleAndUnit* mPMT_CylRadius;
-  G4UIcmdWithAString*      mPMT_PMTtype_inner;  //enums internally
-  G4UIcmdWithAString*      mPMT_PMTtype_outer;
   G4UIcmdWithAString*        mPMT_orientation;
-  G4UIcmdWithAString*        mPMT_reflector;
   G4UIcmdWithAString*        mPMT_material_inner; 
-  G4UIcmdWithAString*        mPMT_material_outer; 
+  G4UIcmdWithAString*        mPMT_material_outer;
+  G4UIcmdWithADoubleAndUnit* mPMT_material_inner_thickness; 
+  G4UIcmdWithADoubleAndUnit* mPMT_material_outer_thickness; 
+  G4UIcmdWithADoubleAndUnit* mPMT_ID_reflector_height;
+  G4UIcmdWithADoubleAndUnit* mPMT_ID_reflector_angle;
+  G4UIcmdWithAnInteger*      mPMT_nID_PMTs;
+  G4UIcmdWithADoubleAndUnit* mPMT_eta;
+  G4UIcmdWithADoubleAndUnit* mPMT_spacing;
+  //G4UIcmdWithAString*        mPMT_PMTtype_inner;  //enums internally
+  //G4UIcmdWithAString*        mPMT_PMTtype_outer; 
   
   G4UIcmdWithAString* tubeCmd;
   G4UIcmdWithAString* distortionCmd;

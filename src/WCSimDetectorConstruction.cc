@@ -49,8 +49,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   totalNumPMTs = 0;
   WCPMTExposeHeight= 0.;
 
-  //SetSuperKGeometry();
-  SetTestmPMTGeometry();    //ToDo: clean up ConstructPMT so the above works again.
+  SetSuperKGeometry();
+  //SetTestmPMTGeometry();  
   //SetHyperKGeometry();
 
   //----------------------------------------------------- 
@@ -68,14 +68,24 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
 
   //---------------------------------------------------
   // Need to define defaults for all mPMT parameters 
+  // defaults are chosen that they are valid for a SK detector
   //--------------------------------------------------
-  cylinder_height = 50.*mm;//453.*mm;
-  cylinder_radius = 325.*mm;//270.*mm;//176.*mm;//166.*mm; //RETUNE R?? R seems unnaturally small now (230mm)
+  cylinder_height = 0.1*mm;
+  cylinder_radius = 0.1*mm;
   orientation = PERPENDICULAR;
-  //  mPMT_outer_material = G4Material::GetMaterial("Water");
-  //  mPMT_inner_material = G4Material::GetMaterial("Blacksheet");
-
-
+  mPMT_ID_PMT = "PMT3in_R12199_02";
+  mPMT_OD_PMT = "";
+  mPMT_outer_material = "";
+  mPMT_inner_material = "";
+  mPMT_outer_material_d = 0.*CLHEP::mm;
+  mPMT_inner_material_d = 0.*CLHEP::mm;
+  // Radius of cone at z=reflectorHeight
+  id_reflector_height = 0.*CLHEP::mm;
+  id_reflector_angle = 0.*CLHEP::rad; 
+  // parameters related to filling the ID mPMT
+  nID_PMTs = 1;   //per mPMT
+  viewing_angle = 0.*CLHEP::deg;
+  id_spacing = 1.33*CLHEP::m;
 
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry

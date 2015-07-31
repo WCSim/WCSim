@@ -110,7 +110,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   mPMT_CylHeight = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/CylHeight",this);
   mPMT_CylHeight->SetGuidance("Set height of cylinder of multiPMT object.");
   mPMT_CylHeight->SetParameterName("CylHeight", true);
-  mPMT_CylHeight->SetDefaultValue(453.); //mDOM (PINGU), 0 for KM3Net
+  mPMT_CylHeight->SetDefaultValue(50.); //mDOM (PINGU), 0 for KM3Net
   mPMT_CylHeight->SetUnitCategory("Length");
   mPMT_CylHeight->SetDefaultUnit("mm");
   mPMT_CylHeight->SetUnitCandidates("mm cm m");
@@ -118,42 +118,10 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   mPMT_CylRadius = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/CylRadius",this);
   mPMT_CylRadius->SetGuidance("Set radius of cylinder of multiPMT object.");
   mPMT_CylRadius->SetParameterName("CylRadius", true);
-  mPMT_CylRadius->SetDefaultValue(166.); 
+  mPMT_CylRadius->SetDefaultValue(325.); 
   mPMT_CylRadius->SetUnitCategory("Length");
   mPMT_CylRadius->SetDefaultUnit("mm");
   mPMT_CylRadius->SetUnitCandidates("mm cm m");
-
-  mPMT_PMTtype_inner = new G4UIcmdWithAString("/WCSim/mPMT/PMTtype_inner",this);
-  mPMT_PMTtype_inner->SetGuidance("Set type of PMT for ID.");
-  mPMT_PMTtype_inner->SetParameterName("PMTtype_inner", true);
-  mPMT_PMTtype_inner->SetCandidates("20inNQE "
-				    "20inHQE "
-				    "20inHQE_HPD "
-				    "20inHQE_BL "
-				    "10inNQE "
-				    "10inHQE "
-				    "12inHQE "
-				    "12inHQE_HPD "
-				    "8inNQE "
-				    "2inNQE "
-				    "3inNQE "
-				    ); 
-
-  mPMT_PMTtype_outer = new G4UIcmdWithAString("/WCSim/mPMT/PMTtype_outer",this);
-  mPMT_PMTtype_outer->SetGuidance("Set type of PMT for OD.");
-  mPMT_PMTtype_outer->SetParameterName("PMTtype_outer", true);
-  mPMT_PMTtype_outer->SetCandidates("20inNQE "
-				    "20inHQE "
-				    "20inHQE_HPD "
-				    "20inHQE_BL "
-				    "10inNQE "
-				    "10inHQE "
-				    "12inHQE "
-				    "12inHQE_HPD "
-				    "8inNQE "
-				    "2inNQE "
-				    "3inNQE "
-				    ); 
 
   mPMT_orientation = new G4UIcmdWithAString("/WCSim/mPMT/orientation",this);
   mPMT_orientation->SetGuidance("Set orientation of multiPMT cylinder wrt wall.");
@@ -163,12 +131,40 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				  "Perpendicular "
 				  ); 
 
+  // untested/unfinished
+  // ? Make this part of DetectorConfigs as is currently the case?
+  // Let DetectorConfigs grab from here?
+  /*
+  mPMT_PMTtype_inner = new G4UIcmdWithAString("/WCSim/mPMT/PMTtype_inner",this);
+  mPMT_PMTtype_inner->SetGuidance("Set type of PMT for ID.");
+  mPMT_PMTtype_inner->SetParameterName("PMTtype_inner", true);
+  mPMT_PMTtype_inner->SetCandidates("PMT20inch "
+				    "PMT8inch "
+				    "PMT10inch "
+				    "PMT10inchHQE "
+				    "PMT12inchHQE "
+				    "HPD20inchHQE "
+				    "HPD12inchHQE "
+				    "BoxandLine20inchHQE "
+				    "BoxandLine12inchHQE "
+				    "PMT3inchR12199_02 "
+				    ); 
 
-  mPMT_reflector = new G4UIcmdWithAString("/WCSim/mPMT/reflector",this);
-  mPMT_reflector->SetGuidance("Set type of reflector for each single PMT.");
-  mPMT_reflector->SetParameterName("reflector", true);
-  mPMT_reflector->SetCandidates("None "); 
-
+  mPMT_PMTtype_outer = new G4UIcmdWithAString("/WCSim/mPMT/PMTtype_outer",this);
+  mPMT_PMTtype_outer->SetGuidance("Set type of PMT for OD.");
+  mPMT_PMTtype_outer->SetParameterName("PMTtype_outer", true);
+  mPMT_PMTtype_outer->SetCandidates("PMT20inch "
+				    "PMT8inch "
+				    "PMT10inch "
+				    "PMT10inchHQE "
+				    "PMT12inchHQE "
+				    "HPD20inchHQE "
+				    "HPD12inchHQE "
+				    "BoxandLine20inchHQE "
+				    "BoxandLine12inchHQE "
+				    "PMT3inchR12199_02 "
+				    ); 
+  */
 
   mPMT_material_outer = new G4UIcmdWithAString("/WCSim/mPMT/material_outer",this);
   mPMT_material_outer->SetGuidance("Set material of outer capsule of multiPMT.");
@@ -181,10 +177,73 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   mPMT_material_inner->SetGuidance("Set material of inner structure next to PMT expose.");
   mPMT_material_inner->SetParameterName("material_inner", true);
   mPMT_material_inner->SetCandidates("Water "
-				     "Glass "
-				     "Acrylic "
-				     "BlackSheet "
-				     ); 
+				     "BlackSheet");    //ToDo: add some better absorbing variant of blackSheet
+
+  //NEW: Thickness of outer and inner material
+  mPMT_material_outer_thickness = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/material_outer_thickness",this);
+  mPMT_material_outer_thickness->SetGuidance("Set thickness of outer (pressure) vessel of multiPMT.");
+  mPMT_material_outer_thickness->SetParameterName("material_outer_thickness", true);
+  mPMT_material_outer_thickness->SetDefaultValue(20.); 
+  mPMT_material_outer_thickness->SetUnitCategory("Length");
+  mPMT_material_outer_thickness->SetDefaultUnit("mm");
+  mPMT_material_outer_thickness->SetUnitCandidates("mm cm m");
+
+
+  mPMT_material_inner_thickness = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/material_inner_thickness",this);
+  mPMT_material_inner_thickness->SetGuidance("Set material of inner (support) structure next to PMT expose.");
+  mPMT_material_inner_thickness->SetParameterName("material_inner_thickness", true);
+  mPMT_material_inner_thickness->SetDefaultValue(2.); 
+  mPMT_material_inner_thickness->SetUnitCategory("Length");
+  mPMT_material_inner_thickness->SetDefaultUnit("mm");
+  mPMT_material_inner_thickness->SetUnitCandidates("mm cm m");
+
+  // NEW: 
+  mPMT_ID_reflector_height = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/reflectorHeightID",this);
+  mPMT_ID_reflector_height->SetGuidance("Set height of reflector cone for each ID PMT.");
+  mPMT_ID_reflector_height->SetParameterName("reflectorHeightID", true);
+  mPMT_ID_reflector_height->SetDefaultValue(7.5); 
+  mPMT_ID_reflector_height->SetUnitCategory("Length");
+  mPMT_ID_reflector_height->SetDefaultUnit("mm");
+  mPMT_ID_reflector_height->SetUnitCandidates("mm cm m");
+
+
+  mPMT_ID_reflector_angle = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/reflectorAngleID",this);
+  mPMT_ID_reflector_angle->SetGuidance("Set angle of reflector cone wrt PMT axis for each ID PMT.");
+  mPMT_ID_reflector_angle->SetParameterName("reflectorAngleID", true);
+  mPMT_ID_reflector_angle->SetDefaultValue(45.); 
+  mPMT_ID_reflector_angle->SetUnitCategory("Angle");
+  mPMT_ID_reflector_angle->SetDefaultUnit("deg");
+  mPMT_ID_reflector_angle->SetUnitCandidates("deg rad");
+
+
+  // Options related to mPMT filling:
+  // Npmts in first circle, well eta is more unique!!
+  // theta_min : should just be atan(R/r)
+  // eta
+  // totNpmt
+  mPMT_nID_PMTs = new G4UIcmdWithAnInteger("/WCSim/mPMT/nID_PMTs",this);
+  mPMT_nID_PMTs->SetGuidance("Set angle of reflector cone wrt PMT axis for each ID PMT.");
+  mPMT_nID_PMTs->SetParameterName("reflectorAngleID", true);
+  mPMT_nID_PMTs->SetDefaultValue(20.); 
+  
+  //ToDo: calculate from known parameters instead
+  mPMT_eta = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/viewing_angle",this);
+  mPMT_eta->SetGuidance("Set viewing angle for unique optimal filling of hemisphere.");
+  mPMT_eta->SetParameterName("mPMTeta", true);
+  mPMT_eta->SetDefaultValue(10.); 
+  mPMT_eta->SetUnitCategory("Angle");
+  mPMT_eta->SetDefaultUnit("deg");
+  mPMT_eta->SetUnitCandidates("deg rad");
+  
+  //ToDo: Calculate from the granularity and photocathode coverage instead. 
+  mPMT_spacing = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/spacing",this);
+  mPMT_spacing->SetGuidance("Set distance between mPMTs for calculation minimum angle of small PMTs to avoid shadowing.");
+  mPMT_spacing->SetParameterName("mPMTspacing", true);
+  mPMT_spacing->SetDefaultValue(1.33); 
+  mPMT_spacing->SetUnitCategory("Length");
+  mPMT_spacing->SetDefaultUnit("m");
+  mPMT_spacing->SetUnitCandidates("mm cm m");
+
 
 
 }
@@ -328,25 +387,42 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	    G4cout << "Undefined orientation wrt wall: reverting to default Perpendicular" << G4endl;
 	  
 	}
-
+	if (command == mPMT_ID_reflector_height){
+	  G4cout << "Set Height of reflector cone to " << newValue  << " " << G4endl;	
+	  WCSimDetector->SetmPMT_ReflectorHeight(mPMT_ID_reflector_height->GetNewDoubleValue(newValue));
+	}
+	if (command == mPMT_ID_reflector_angle){
+	  G4cout << "Set Angle of reflector cone to " << newValue  << " " << G4endl;	
+	  WCSimDetector->SetmPMT_ReflectorAngle(mPMT_ID_reflector_angle->GetNewDoubleValue(newValue));
+	}
+	if (command == mPMT_material_outer){
+	  WCSimDetector->SetmPMT_MaterialOuter(newValue);
+	}
+	if (command == mPMT_material_inner){
+	  WCSimDetector->SetmPMT_MaterialInner(newValue);
+	}
+	if(command == mPMT_material_outer_thickness){
+	  WCSimDetector->SetmPMT_MaterialOuterThickness(mPMT_material_outer_thickness->GetNewDoubleValue(newValue));
+	}
+	if(command == mPMT_material_inner_thickness){
+	  WCSimDetector->SetmPMT_MaterialInnerThickness(mPMT_material_inner_thickness->GetNewDoubleValue(newValue));
+	}
+	if(command == mPMT_nID_PMTs){
+	  WCSimDetector->SetmPMT_nID(mPMT_nID_PMTs->GetNewIntValue(newValue));
+	}
+	if(command == mPMT_eta){
+	  WCSimDetector->SetmPMT_viewingAngle(mPMT_eta->GetNewDoubleValue(newValue));
+	}
+	if(command == mPMT_spacing){
+	  WCSimDetector->SetSpacing(mPMT_spacing->GetNewDoubleValue(newValue));
+	}
+	/*
 	if (command == mPMT_PMTtype_inner)
 	  std::cout << "Need to implement PMT enums and restructure WCSim to use PMT type ID" << std::endl;
 	if (command == mPMT_PMTtype_outer)
 	  std::cout << "Need to implement PMT enums and restructure WCSim to use PMT type OD" << std::endl;
-	if (command == mPMT_reflector)
-	  std::cout << "Reflector Not Yet implemented" << std::endl;
-	
-	/*
-	if (command == mPMT_material_outer){
-	  if(newValue == "Water"){
-	    WCSimDetector->SetmPMT_MaterialOuter(G4Material::GetMaterial("Water"));
-	    }
-	}
-	  
-	if (command == mPMT_material_inner){
-	}
 	*/
-	
+
 	if(command == WCConstruct) {
 	  WCSimDetector->UpdateGeometry();
 	}

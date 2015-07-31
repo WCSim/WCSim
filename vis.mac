@@ -13,6 +13,16 @@
 #/WCSim/mPMT/CylHeight 453. mm
 #/WCSim/mPMT/CylRadius 166. mm
 #/WCSim/mPMT/orientation Perpendicular
+#/WCSim/mPMT/material_outer Acrylic
+#/WCSim/mPMT/material_outer_thickness 4. mm
+#/WCSim/mPMT/material_inner Water
+#/WCSim/mPMT/material_inner_thickness 6. mm
+#/WCSim/mPMT/reflectorHeightID  8. mm
+#/WCSim/mPMT/reflectorAngleID 30 deg
+#/WCSim/mPMT/nID_PMTs 30
+#/WCSim/mPMT/viewing_angle 15 deg
+#/WCSim/mPMT/spacing 1.2 m
+
 /WCSim/WCgeom Cylinder_60x74_3inchmPMT_14perCent #TestmPMT
 /WCSim/Construct
 
