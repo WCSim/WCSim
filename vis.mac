@@ -81,8 +81,8 @@
 
 # Vis Settings for SK
 /vis/viewer/zoom 1.2
-/vis/viewer/set/viewpointThetaPhi 45 45 deg
-#/vis/viewer/set/viewpointThetaPhi 110 0 deg
+#/vis/viewer/set/viewpointThetaPhi 45 45 deg
+/vis/viewer/set/viewpointThetaPhi 110 0 deg
 /vis/viewer/set/upVector 0 0 1
 
 # Vis settings for HK
