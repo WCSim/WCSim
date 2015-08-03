@@ -341,10 +341,10 @@ void WCSimWCDigitizer::FindNumberOfGates()
 
 void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 {
-
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
   G4float timingConstant = 0.0;
   WCSimPMTObject * PMT;
-  PMT = myDetector->GetPMTPointer();
+  PMT = myDetector->GetPMTPointer(WCIDCollectionName);
  
   G4double EvtG8Down = WCSimWCDigitizer::eventgatedown;
   G4double EvtG8Up = WCSimWCDigitizer::eventgateup;  // this is a negative number...

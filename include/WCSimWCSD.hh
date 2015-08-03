@@ -11,7 +11,7 @@ class G4HCofThisEvent;
 class WCSimWCSD : public G4VSensitiveDetector
 {
  public:
-  WCSimWCSD(G4String,WCSimDetectorConstruction*);
+  WCSimWCSD(G4String,G4String,WCSimDetectorConstruction*);
   ~WCSimWCSD();
   
   void   Initialize(G4HCofThisEvent*);
