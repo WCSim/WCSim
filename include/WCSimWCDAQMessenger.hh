@@ -41,9 +41,9 @@ private:
 
   G4UIdirectory*        NHitsTriggerDir;
   G4UIcmdWithAnInteger* NHitsTriggerThreshold;
-  G4int                 StoreSetNHitsThreshold;
+  G4int                 StoreNHitsThreshold;
   G4UIcmdWithAnInteger* NHitsTriggerWindow;
-  G4int                 StoreSetNHitsWindow;
+  G4int                 StoreNHitsWindow;
 
 };
 

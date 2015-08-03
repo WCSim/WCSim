@@ -52,13 +52,13 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger()
   NHitsTriggerThreshold->SetGuidance("Set the NHits trigger threshold");
   NHitsTriggerThreshold->SetParameterName("NHitsThreshold",false);
   NHitsTriggerThreshold->SetDefaultValue(25);
-  StoreSetNHitsThreshold = 25;
+  StoreNHitsThreshold = 25;
 
   NHitsTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNHits/Window", this);
   NHitsTriggerWindow->SetGuidance("Set the NHits trigger window (in ns)");
   NHitsTriggerWindow->SetParameterName("NHitsWindow",false);
   NHitsTriggerWindow->SetDefaultValue(200);
-  StoreSetNHitsWindow = 200;
+  StoreNHitsWindow = 200;
 }
 
 WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
@@ -88,11 +88,11 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   }
   else if (command == NHitsTriggerThreshold) {
     G4cout << "NHits trigger threshold set to " << newValue << G4endl;
-    StoreSetNHitsThreshold = NHitsTriggerThreshold->GetNewIntValue(newValue);
+    StoreNHitsThreshold = NHitsTriggerThreshold->GetNewIntValue(newValue);
   }
   else if (command == NHitsTriggerWindow) {
     G4cout << "NHits trigger window set to " << newValue << G4endl;
-    StoreSetNHitsWindow = NHitsTriggerWindow->GetNewIntValue(newValue);
+    StoreNHitsWindow = NHitsTriggerWindow->GetNewIntValue(newValue);
   }
 }
 
@@ -108,10 +108,10 @@ void WCSimWCDAQMessenger::SetEventActionOptions()
 void WCSimWCDAQMessenger::SetTriggerOptions()
 {
   G4cout << "Passing Trigger options to the trigger class instance" << G4endl;
-  WCSimTrigger->SetNHitsThreshold(StoreSetNHitsThreshold);
-  G4cout << "\tNHits trigger threshold set to " << StoreSetNHitsThreshold << G4endl;
-  WCSimTrigger->SetNHitsWindow(StoreSetNHitsWindow);
-  G4cout << "\tNHits trigger window set to " << StoreSetNHitsWindow << G4endl;
+  WCSimTrigger->SetNHitsThreshold(StoreNHitsThreshold);
+  G4cout << "\tNHits trigger threshold set to " << StoreNHitsThreshold << G4endl;
+  WCSimTrigger->SetNHitsWindow(StoreNHitsWindow);
+  G4cout << "\tNHits trigger window set to " << StoreNHitsWindow << G4endl;
 }
 
 void WCSimWCDAQMessenger::SetDigitizerOptions()
