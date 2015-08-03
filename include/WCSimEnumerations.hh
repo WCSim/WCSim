@@ -8,7 +8,7 @@ typedef enum ETriggerType {
   kTriggerNHits,
   kTriggerNHitsSKDETSIM,
   kTriggerNHitsTest,
-  kTriggerFailure
+  kTriggerFailure // this should always be the last entry (for looping)
 } TriggerType_t;
 
 class WCSimEnumerations
