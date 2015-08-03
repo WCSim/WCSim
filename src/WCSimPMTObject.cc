@@ -1343,7 +1343,7 @@ G4float* BoxandLine20inchHQE::GetQEWavelength(){
 }
 
 G4float* BoxandLine20inchHQE::GetQE(){
-  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.3 times the 20" PMTS based on Hamamatsu measurement. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.32 times the 20" PMTS based on Hamamatsu measurement. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
   static G4float QE[20] =
     { 0.00*correctionFactor, .0008*correctionFactor, .1255*correctionFactor, .254962*correctionFactor, .2930*correctionFactor, .3127*correctionFactor, .3130*correctionFactor, .2994*correctionFactor, .2791*correctionFactor, .2491*correctionFactor,
       .2070*correctionFactor,  .1758*correctionFactor, .1384*correctionFactor, .0779*correctionFactor, .0473*correctionFactor, .0288*correctionFactor, .0149*correctionFactor, .0062*correctionFactor, .0002*correctionFactor, .0001*correctionFactor};  
@@ -1351,7 +1351,7 @@ G4float* BoxandLine20inchHQE::GetQE(){
   return QE;
 }
 G4float BoxandLine20inchHQE::GetmaxQE(){
-  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.3 times the 20" PMTS based on Hamamatsu measurement. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.32 times the 20" PMTS based on Hamamatsu measurement. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
   const G4float maxQE = 0.315*correctionFactor;
   return maxQE;
 }
@@ -1516,7 +1516,7 @@ G4float* BoxandLine12inchHQE::GetQEWavelength(){
 }
 
 G4float* BoxandLine12inchHQE::GetQE(){
-  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.3 times the 20" PMTS based on Hamamatsu measurement. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.32 times the 20" PMTS based on Hamamatsu measurement. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
   static G4float QE[20] =
     { 0.00*correctionFactor, .0008*correctionFactor, .1255*correctionFactor, .254962*correctionFactor, .2930*correctionFactor, .3127*correctionFactor, .3130*correctionFactor, .2994*correctionFactor, .2791*correctionFactor, .2491*correctionFactor,
       .2070*correctionFactor,  .1758*correctionFactor, .1384*correctionFactor, .0779*correctionFactor, .0473*correctionFactor, .0288*correctionFactor, .0149*correctionFactor, .0062*correctionFactor, .0002*correctionFactor, .0001*correctionFactor};  
@@ -1524,7 +1524,7 @@ G4float* BoxandLine12inchHQE::GetQE(){
   return QE;
 }
 G4float BoxandLine12inchHQE::GetmaxQE(){
-  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.3 times the 20" PMTS based on Hamamatsu measurement. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.32 times the 20" PMTS based on Hamamatsu measurement. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
   const G4float maxQE = 0.315*correctionFactor;
   return maxQE;
 }
