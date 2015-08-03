@@ -87,9 +87,9 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
     }
   }//not SKI_SKDETSIM
   else {
-      //this is the old SKI joint dark noise, digitizer & trigger from SKDETSIM; buggy
-      WCSimWCDigitizer* WCTM = new WCSimWCDigitizer( "WCReadout", detectorConstructor);
-      DMman->AddNewModule(WCTM);
+    //this is the old SKI joint dark noise, digitizer & trigger from SKDETSIM; buggy
+    WCSimWCDigitizer* WCTM = new WCSimWCDigitizer( "WCReadout", detectorConstructor, DAQMessenger);
+    DMman->AddNewModule(WCTM);
   }
 
 }
@@ -231,6 +231,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     // this is now done internally in Digitize()
     //clear old info inside the trigger
     //WCTM->ReInitialize();
+
+    //tell it the dark noise rate (for calculating the average dark occupancy -> can adjust the NHits threshold)
+    WCTM->SetDarkRate(WCDNM->GetDarkRate());
 
     //Apply the trigger
     // This takes the digits, and places them into trigger gates

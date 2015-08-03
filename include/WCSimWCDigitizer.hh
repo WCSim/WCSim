@@ -2,6 +2,7 @@
 #define WCSimWCDigitizer_h 1
 
 #include "WCSimDarkRateMessenger.hh"
+#include "WCSimWCDAQMessenger.hh"
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimWCTriggerBase.hh"
 #include "G4VDigitizerModule.hh"
@@ -17,7 +18,7 @@ class WCSimWCDigitizer : public WCSimWCTriggerBase
 {
 public:
   
-  WCSimWCDigitizer(G4String name, WCSimDetectorConstruction*);
+  WCSimWCDigitizer(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
   ~WCSimWCDigitizer();
 
   // "////" indicates declerations that are no longer required due to WCSimWCTriggerBase inheritance
@@ -35,7 +36,6 @@ public:
   void FindNumberOfGatesFast();
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
   void Digitize();
-  void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
   void SetConversion(double iconvrate){ ConvRate = iconvrate; }
   ////G4double GetTriggerTime(int i) { return TriggerTimes[i];}
   void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
@@ -82,7 +82,6 @@ private:
   static const double LongTime; // ns
   static const int GlobalThreshold; //number of hit PMTs within an <=200ns sliding window that decides the global trigger t0
   WCSimDarkRateMessenger *DarkRateMessenger;
-  double PMTDarkRate; // kHz
   double ConvRate; // kHz
 
   G4int triggerhisto[20000]; // for finding t0

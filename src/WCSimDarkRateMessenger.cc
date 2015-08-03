@@ -8,7 +8,8 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithAnInteger.hh"
 
-WCSimDarkRateMessenger::WCSimDarkRateMessenger(WCSimWCDigitizer* darkratepoint):WCSimDigitize(darkratepoint)
+WCSimDarkRateMessenger::WCSimDarkRateMessenger(WCSimWCDigitizer* darkratepoint)
+  : WCSimDigitize(darkratepoint)
 {
   //inform the DarkRateMessenger which constructor was called
   constructor = 0;
@@ -16,7 +17,8 @@ WCSimDarkRateMessenger::WCSimDarkRateMessenger(WCSimWCDigitizer* darkratepoint):
   Initialize();
 }
 
-WCSimDarkRateMessenger::WCSimDarkRateMessenger(WCSimWCAddDarkNoise* darkratepoint):WCSimAddDarkNoise(darkratepoint)
+WCSimDarkRateMessenger::WCSimDarkRateMessenger(WCSimWCAddDarkNoise* darkratepoint)
+  : WCSimAddDarkNoise(darkratepoint)
 {
   //inform the DarkRateMessenger which constructor was called
   constructor = 1;
@@ -110,51 +112,57 @@ void WCSimDarkRateMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     double const conversion_to_kHz = 1000000;
     if(constructor == 0)
       WCSimDigitize->SetDarkRate(conversion_to_kHz * SetFrequency->GetNewDoubleValue(newValue));
-    else 
+    else if(constructor == 1)
       WCSimAddDarkNoise->SetDarkRate(conversion_to_kHz * SetFrequency->GetNewDoubleValue(newValue));
-    printf("Setting Dark Rate %f %s\n",conversion_to_kHz * SetFrequency->GetNewDoubleValue(newValue), initaliseString.c_str());
+    G4cout << "Setting Dark Rate " << conversion_to_kHz * SetFrequency->GetNewDoubleValue(newValue)
+	   << initaliseString.c_str() << G4endl;
   }
   else if(command == SetConversionRate){
     if(constructor == 0)
       WCSimDigitize->SetConversion(SetConversionRate->GetNewDoubleValue(newValue));
-    else
+    else if(constructor == 1)
       WCSimAddDarkNoise->SetConversion(SetConversionRate->GetNewDoubleValue(newValue));
-    printf("Setting Dark Rate Conversion value %f %s\n",SetConversionRate->GetNewDoubleValue(newValue), initaliseString.c_str());
+    G4cout << "Setting Dark Rate Conversion value " << SetConversionRate->GetNewDoubleValue(newValue)
+	   << initaliseString.c_str() << G4endl;
   }
   else if(command == SetDarkMode){
     if(constructor == 0){
       //      WCSimDigitize->SetDarkMode(SetDarkMode->GetNewDoubleValue(newValue));
       }
-    else {
+    else if(constructor == 1) {
       WCSimAddDarkNoise->SetDarkMode(SetDarkMode->GetNewIntValue(newValue));
-      printf("Setting DarkMode value %d %s\n",SetDarkMode->GetNewIntValue(newValue), initaliseString.c_str());
+      G4cout << "Setting DarkMode value " << SetDarkMode->GetNewIntValue(newValue)
+	     << initaliseString.c_str() << G4endl;
     }
   }
   else if(command == SetDarkLow){
     if(constructor == 0){
       //      WCSimDigitize->SetDarkLow(SetDarkLow->GetNewDoubleValue(newValue));
     }   
-    else {
+    else if(constructor == 1) {
       WCSimAddDarkNoise->SetDarkLow(SetDarkLow->GetNewDoubleValue(newValue));
-      printf("Setting DarkLow value %f %s\n",SetDarkLow->GetNewDoubleValue(newValue), initaliseString.c_str());
+      G4cout << "Setting DarkLow value " << SetDarkLow->GetNewDoubleValue(newValue)
+	     << initaliseString.c_str() << G4endl;
     }
   }
   else if(command == SetDarkHigh){
     if(constructor == 0) {
       //      WCSimDigitize->SetDarkHigh(SetDarkHigh->GetNewDoubleValue(newValue));
     }   
-    else {
+    else if(constructor == 1) {
       WCSimAddDarkNoise->SetDarkHigh(SetDarkHigh->GetNewDoubleValue(newValue));
-      printf("Setting DarkHigh value %f %s\n",SetDarkHigh->GetNewDoubleValue(newValue), initaliseString.c_str());
+      G4cout << "Setting DarkHigh value " << SetDarkHigh->GetNewDoubleValue(newValue)
+	     << initaliseString.c_str() << G4endl;
     }
   }
   else if(command == SetDarkWindow){
     if(constructor == 0){
       //      WCSimDigitize->SetDarkWidth(SetDarkWidth->GetNewDoubleValue(newValue));
       }
-    else {
+    else if(constructor == 1) {
       WCSimAddDarkNoise->SetDarkWindow(SetDarkWindow->GetNewDoubleValue(newValue));
-      printf("Setting DarkWindow value %f %s\n",SetDarkWindow->GetNewDoubleValue(newValue), initaliseString.c_str());
+      G4cout << "Setting DarkWindow value " << SetDarkWindow->GetNewDoubleValue(newValue)
+	     << initaliseString.c_str() << G4endl;
     }
   }
 

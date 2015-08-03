@@ -49,11 +49,26 @@ public:
   ///Get the additional trigger information associated with the ith trigger
   std::vector<Float_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
 
+  //
   // Trigger algorithm option set methods
+  //
+
+  // NHits options
   ///Set the threshold for the NHits trigger
   void SetNHitsThreshold(G4int threshold) { nhitsThreshold = threshold; }
   ///Set the time window for the NHits trigger
   void SetNHitsWindow(G4int window) { nhitsWindow = window; }
+  ///Automatically adjust the NHits threshold based on the average noise occupancy?
+  void SetNHitsAdjustForNoise    (G4bool adjust)      { nhitsAdjustForNoise = adjust; }
+
+  // Save trigger failures options
+  ///Set the mode for saving failed triggers (0:save only triggered events, 1:save both triggered events & failed events, 2:save only failed events)
+  void SetSaveFailuresMode       (G4int mode )        { saveFailuresMode = mode; }
+  ///Set the dummy trigger time for the failed triggers
+  void SetSaveFailuresTime       (G4double time )     { saveFailuresTime = time; }
+  
+  ///Knowledge of the dark rate (use for automatically adjusting for noise)
+  void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
 
   ///DEPRECATED function used in old class (WCSimWCDigitizer), and called in WCSimEventAction
   virtual void SetPMTSize(G4float /*inputSize*/) {};
@@ -100,21 +115,30 @@ protected:
     DigiHitMap.clear();
   }
 
+  double PMTDarkRate;    ///< Dark noise rate of the PMTs
+
+  // Trigger algorithm options
+  //NHits
+  G4int  nhitsThreshold;      ///< The threshold for the NHits trigger
+  G4int  nhitsWindow;         ///< The time window for the NHits trigger
+  G4bool nhitsAdjustForNoise; ///< Automatically adjust the NHits trigger threshold based on the average dark noise rate?
+  //Save failures
+  G4int    saveFailuresMode; ///< The mode for saving events which don't pass triggers
+  G4double saveFailuresTime; ///< The dummy trigger time for failed events
+
 private:
+  ///modify the NHits threshold based on the average dark noise rate
+  void AdjustNHitsThresholdForNoise();
 
   ///takes all trigger times, then loops over all Digits & fills the output DigitsCollection
   void FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType);
   
-  // Trigger algorithm options
-  G4int nhitsThreshold; ///< The threshold for the NHits trigger
-  G4int nhitsWindow;    ///< The time window for the NHits trigger
-
   static const double offset;        ///< Hit time offset (ns)
   static const double eventgateup;   ///< Digits are saved up to trigger time + eventgateup (ns)
   static const double eventgatedown; ///< Digits are saved starting from trigger time - eventgatedown (ns)
   static const double LongTime;      ///< An arbitrary long time to use in loops (ns)
 
-
+  bool   digitizeCalled; ///< Has Digitize() been called yet?
 };
 
 #endif

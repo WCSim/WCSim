@@ -49,13 +49,36 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
            << G4endl;
     exit(-1);
   }
+  digitizeCalled = false;
 }
 
 WCSimWCTriggerBase::~WCSimWCTriggerBase(){
 }
 
+void WCSimWCTriggerBase::AdjustNHitsThresholdForNoise()
+{
+  int npmts = this->myDetector->GetTotalNumPmts();
+  double trigger_window_seconds = nhitsWindow * 1E-9;
+  double dark_rate_Hz = PMTDarkRate * 1000;
+  double average_occupancy = dark_rate_Hz * trigger_window_seconds * npmts;
+  
+  G4cout << "Average number of PMTs in detector active in a " << nhitsWindow
+	 << "ns window with a dark noise rate of " << PMTDarkRate
+	 << "kHz is " << average_occupancy
+	 << " (" << npmts << " total PMTs)"
+	 << G4endl
+	 << "Updating the NHits threshold, from " << nhitsThreshold
+	 << " to " << nhitsThreshold + round(average_occupancy) << G4endl;
+  nhitsThreshold += round(average_occupancy);
+}
+
 void WCSimWCTriggerBase::Digitize()
 {
+  if(nhitsAdjustForNoise && !digitizeCalled) {
+    AdjustNHitsThresholdForNoise();
+    digitizeCalled = true;
+  }
+
   //Input is collection of all digitized hits that passed the threshold
   //Output is all digitized hits which pass the trigger
   
@@ -80,7 +103,8 @@ void WCSimWCTriggerBase::Digitize()
   StoreDigiCollection(DigitsCollection);
 }
 
-void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test) {
+void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test)
+{
 
   //if test is true, we run the algorithm with 1/2 the threshold, and kTriggerNHitsTest
   //for testing multiple trigger algorithms at once
@@ -177,10 +201,10 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
     }
   }
   
-  //call FillDigitsCollection() if at least one trigger was issued
   G4cout << "Found " << ntrig << " NHit triggers" << G4endl;
-  if(ntrig)
-    FillDigitsCollection(WCDCPMT, remove_hits, this_triggerType);
+  //call FillDigitsCollection() whether any triggers are found or not
+  // (what's saved depends on saveFailuresMode)
+  FillDigitsCollection(WCDCPMT, remove_hits, this_triggerType);
 }
 
 void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType)
@@ -190,16 +214,33 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
   // so they are not used in subsequent trigger decisions or saved twice
   //Also, only save digits of a specific type (again for when running different Alg* methods concurently)
 
+  // Add dummy triggers / exit without saving triggers as required
+  //
+  //saveFailuresMode = 0 - save only triggered events
+  //saveFailuresMode = 1 - save both triggered & not triggered events
+  //saveFailuresMode = 2 - save only not triggered events
+  if(TriggerTimes.size()) {
+    if(saveFailuresMode == 2)
+      return;
+  }
+  else {
+    if(saveFailuresMode == 0)
+      return;
+    TriggerTypes.push_back(kTriggerFailure);
+    TriggerTimes.push_back(saveFailuresTime);
+    TriggerInfos.push_back(std::vector<Float_t>(1, -1));
+    save_triggerType = kTriggerFailure;
+  }
+
   //Get the PMT info for hit time smearing
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
-  G4float timingConstant = 0.0;
 
   //Loop over trigger times
   for(unsigned int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
     TriggerType_t triggertype = TriggerTypes[itrigger];
     //check if we've already saved this trigger
-    if(triggertype != save_triggerType)
+    if(triggertype != save_triggerType && save_triggerType != kTriggerUndefined)
       continue;
     float         triggertime = TriggerTimes[itrigger];
     std::vector<Float_t> triggerinfo = TriggerInfos[itrigger];

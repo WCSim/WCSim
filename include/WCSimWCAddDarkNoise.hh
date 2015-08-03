@@ -26,6 +26,7 @@ public:
   //As it inherits from G4VDigitizerModule it needs a digitize class.  Not used
   void Digitize() { }
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
+  double GetDarkRate() { return PMTDarkRate; }
   void SetConversion(double iconvrate){ ConvRate = iconvrate; }
   void SetDarkMode(int imode){DarkMode = imode;}
   void SetDarkHigh(int idarkhigh){DarkHigh = idarkhigh;}
