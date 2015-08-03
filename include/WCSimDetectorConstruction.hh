@@ -62,15 +62,9 @@ public:
   void SuperK_20inchBandL_20perCent();
   void SuperK_12inchBandL_15perCent();
   void SuperK_20inchBandL_14perCent();
+  void Cylinder_60x74_20inchBandL_14perCent();
+  void Cylinder_60x74_20inchBandL_40perCent();
   void Cylinder_12inchHPD_15perCent();
-  void DUSEL_100kton_10inch_40perCent();
-  void DUSEL_100kton_10inch_HQE_12perCent();
-  void DUSEL_100kton_10inch_HQE_30perCent();
-  void DUSEL_100kton_10inch_HQE_30perCent_Gd();
-  void DUSEL_150kton_10inch_HQE_30perCent();
-  void DUSEL_200kton_10inch_HQE_12perCent();
-  void DUSEL_200kton_12inch_HQE_10perCent();
-  void DUSEL_200kton_12inch_HQE_14perCent();
   void UpdateGeometry();
   
 
@@ -119,6 +113,8 @@ public:
   
   void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
   void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
+  void   SetVis_Choice(G4String choice){Vis_Choice = choice;}
+  G4String GetVis_Choice() {return Vis_Choice;}
 
   //Partition Length
   void SetwaterTank_Length(G4double length){waterTank_Length = length;}
@@ -230,7 +226,10 @@ private:
   // 1 to use
   G4int PMT_Coll_Eff;
 
-
+  //NP 06/17/15
+  // "OGLSX" for classic visualization
+  // "RayTracer" for RayTracer visualization
+  G4String Vis_Choice;
   
 
   G4double WCLength;

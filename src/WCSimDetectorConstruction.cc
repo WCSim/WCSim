@@ -55,15 +55,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
 
   SetSuperKGeometry();
   //SetHyperKGeometry();
-  //DUSEL_100kton_10inch_40perCent();
-  //DUSEL_100kton_10inch_HQE_12perCent();
-  //DUSEL_100kton_10inch_HQE_30perCent();
-  //DUSEL_100kton_10inch_HQE_30perCent_Gd();
-  //DUSEL_150kton_10inch_HQE_30perCent();
-  //DUSEL_200kton_10inch_HQE_12perCent();
-  //DUSEL_200kton_12inch_HQE_10perCent();
-  //DUSEL_200kton_12inch_HQE_14perCent();
-
 
   //----------------------------------------------------- 
   // Set whether or not Pi0-specific info is saved
@@ -75,8 +66,11 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Set the default method for implementing the PMT QE
   //-----------------------------------------------------
   SetPMT_QE_Method(1);
-   //default NOT to use collection efficiency
-  SetPMT_Coll_Eff(0);
+
+   //default is to use collection efficiency
+  SetPMT_Coll_Eff(1);
+  // set default visualizer to OGLSX
+  SetVis_Choice("OGLSX");
 
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry

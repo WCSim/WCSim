@@ -139,6 +139,51 @@ void WCSimDetectorConstruction::SuperK_20inchBandL_14perCent()
   WCAddGd               = false;
 }
 
+void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_14perCent()
+{ 
+  WCDetectorName = "Cylinder_60x74_20inchBandL_14perCent()";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = PMT->GetRadius();
+  WCIDDiameter          = 74.0*m;
+  WCIDHeight            = 60.0*m;
+  WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
+  WCPMTperCellHorizontal= 4;
+  WCPMTperCellVertical  = 3;
+  WCPMTPercentCoverage  = 13.51;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+}
+
+void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_40perCent()
+{ 
+  WCDetectorName = "Cylinder_60x74_20inchBandL_40perCent";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = PMT->GetRadius();
+  WCIDDiameter          = 74.0*m;
+  WCIDHeight            = 60.0*m;
+  WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
+  WCPMTperCellHorizontal= 4;
+  WCPMTperCellVertical  = 3;
+  WCPMTPercentCoverage  = 40.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+}
 
 void WCSimDetectorConstruction::Cylinder_12inchHPD_15perCent()
 { 
@@ -272,212 +317,6 @@ void WCSimDetectorConstruction::MatchWCSimAndHyperK()
   WCPosition = 0.;
   WCPMTRadius = innerPMT_Radius;
 }
-
-
-
-
-
-
-/********************************************************************
- *
- * Various LBNE WC Configurations
- *
- ********************************************************************/
-
-
-void WCSimDetectorConstruction::DUSEL_100kton_10inch_40perCent()
-{ 
-  WCDetectorName = "DUSEL_100kton_10inch_40perCent";
-  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  WCSimPMTObject * PMT = CreatePMTObject("PMT10inch", WCIDCollectionName);
-  WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = PMT->GetExposeHeight();
-  WCPMTRadius = PMT->GetRadius();
-  WCIDDiameter          = 53.0*m;
-  WCIDHeight            = 60.0*m;
-  WCBarrelPMTOffset	    = WCPMTRadius;
-  WCPMTperCellHorizontal = 4.0;
-  WCPMTperCellVertical	 = 3.0;
-  WCPMTPercentCoverage	 = 40.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
-                                    (10.0*WCPMTRadius));
-  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-                                    2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
-                                    WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
-  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
-  WCBlackSheetThickness = 2.0*cm;
-  WCAddGd               = false;
-}
-
-void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_12perCent()
-{ 
-  WCDetectorName = "DUSEL_100kton_10inch_HQE_12perCent";
-  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE", WCIDCollectionName);
-  WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = PMT->GetExposeHeight();
-  WCPMTRadius = PMT->GetRadius();
-  WCIDDiameter          = 53.0*m;
-  WCIDHeight            = 60.0*m;
-  WCBarrelPMTOffset	    = WCPMTRadius;
-  WCPMTperCellHorizontal = 4.0;
-  WCPMTperCellVertical	 = 3.0;
-  WCPMTPercentCoverage	 = 12.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
-                                    (10.0*WCPMTRadius));
-  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-                                    2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
-                                    WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
-  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
-  WCBlackSheetThickness = 2.0*cm;
-  WCAddGd               = false;
-}
-
-void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent()
-{
-  WCDetectorName = "DUSEL_100kton_10inch_HQE_30perCent";
-  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE", WCIDCollectionName);
-  WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = PMT->GetExposeHeight();
-  WCPMTRadius = PMT->GetRadius();
-  WCIDDiameter          = 53.0*m;
-  WCIDHeight            = 60.0*m;
-  WCBarrelPMTOffset	    = WCPMTRadius;
-  WCPMTperCellHorizontal = 4.0;
-  WCPMTperCellVertical	 = 3.0;
-  WCPMTPercentCoverage	 = 30.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
-                                    (10.0*WCPMTRadius));
-  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-                                    2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
-                                    WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
-  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
-  WCBlackSheetThickness = 2.0*cm;
-  WCAddGd               = false;
-}
-
-void WCSimDetectorConstruction::DUSEL_100kton_10inch_HQE_30perCent_Gd()
-{
-  WCDetectorName = "DUSEL_100kton_10inch_HQE_30perCent_Gd";
-  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE", WCIDCollectionName);
-  WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = PMT->GetExposeHeight();
-  WCPMTRadius = PMT->GetRadius();
-  WCIDDiameter          = 53.0*m;
-  WCIDHeight            = 60.0*m;
-  WCBarrelPMTOffset	    = WCPMTRadius;
-  WCPMTperCellHorizontal = 4.0;
-  WCPMTperCellVertical	 = 3.0;
-  WCPMTPercentCoverage	 = 30.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
-                                    (10.0*WCPMTRadius));
-  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-                                    2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
-                                    WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
-  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
-  WCBlackSheetThickness = 2.0*cm;
-  WCAddGd               = true;
-}
-
-void WCSimDetectorConstruction::DUSEL_150kton_10inch_HQE_30perCent()
-{
-  WCDetectorName = "DUSEL_150kton_10inch_HQE_30perCent";
-  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE", WCIDCollectionName);
-  WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = PMT->GetExposeHeight();
-  WCPMTRadius = PMT->GetRadius();
-  WCIDDiameter          = 64.0*m;
-  WCIDHeight            = 60.0*m;
-  WCBarrelPMTOffset	    = WCPMTRadius;
-  WCPMTperCellHorizontal = 4.0;
-  WCPMTperCellVertical	 = 3.0;
-  WCPMTPercentCoverage	 = 30.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
-                                    (10.0*WCPMTRadius));
-  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-                                    2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
-                                    WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
-  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
-  WCBlackSheetThickness = 2.0*cm;
-  WCAddGd               = false;
-}
-
-void WCSimDetectorConstruction::DUSEL_200kton_10inch_HQE_12perCent()
-{
-  WCDetectorName = "DUSEL_200kton_10inch_HQE_12perCent";
-  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  WCSimPMTObject * PMT = CreatePMTObject("PMT10inchHQE", WCIDCollectionName);
-  WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = PMT->GetExposeHeight();
-  WCPMTRadius = PMT->GetRadius();
-  WCIDDiameter          = 62.21*m;
-  WCIDHeight            = 79.96*m;
-  WCBarrelPMTOffset	    = WCPMTRadius;
-  WCPMTperCellHorizontal = 4.0;
-  WCPMTperCellVertical	 = 3.0;
-  WCPMTPercentCoverage	 = 12.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/
-								   (10.0*WCPMTRadius));
-  WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-
-															 2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/
-								 WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
-  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
-  WCBlackSheetThickness = 2.0*cm;
-  WCAddGd               = false;
-}
-
-void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_10perCent()
-{
-  WCDetectorName = "DUSEL_200kton_12inch_HQE_10perCent";
-  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  WCSimPMTObject * PMT = CreatePMTObject("PMT12inchHQE", WCIDCollectionName);
-  WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = PMT->GetExposeHeight();
-  WCPMTRadius = PMT->GetRadius();
-  	WCIDDiameter          = 63.30*m;
-	WCIDHeight            = 76.60*m;
-	WCBarrelPMTOffset	    = .1537*m;
-	WCPMTperCellHorizontal = 1.0;
-	WCPMTperCellVertical	 = 1.0;
-	WCBarrelNumPMTHorizontal = 232;
-	WCBarrelNRings        = 89;
-	WCCapPMTSpacing       = .8572*m;
-	WCCapEdgeLimit        = 31.424*m;
-	WCBlackSheetThickness = 2.0*cm; //excess, should be just as light-tight
-	WCAddGd               = false;
-}
-
-void WCSimDetectorConstruction::DUSEL_200kton_12inch_HQE_14perCent()
-{
-  WCDetectorName = "DUSEL_200kton_12inch_HQE_14perCent";
-  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  WCSimPMTObject * PMT = CreatePMTObject("PMT12inchHQE", WCIDCollectionName);
-  WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = PMT->GetExposeHeight();
-  WCPMTRadius = PMT->GetRadius();
-  WCIDDiameter          = 63.30*m;
-  WCIDHeight            = 76.60*m;
-  WCBarrelPMTOffset	    = .1951*m;
-  WCPMTperCellHorizontal = 1.0;
-  WCPMTperCellVertical	 = 1.0;
-  WCBarrelNumPMTHorizontal = 274;
-  WCBarrelNRings        = 105;
-  WCCapPMTSpacing       = .7258*m;
-  WCCapEdgeLimit        = 31.624*m;
-  WCBlackSheetThickness = 2.0*cm; //excess, should be just as light-tight
-  WCAddGd               = false;
-}
-
-
 
 
 
