@@ -44,6 +44,7 @@ WCSimWCDigitizer::WCSimWCDigitizer(G4String name,
 				   WCSimWCDAQMessenger* daqMessenger)
   :WCSimWCTriggerBase(name, myDetector, daqMessenger)
 {
+  triggerClassName = "SKI_SKDETSIM";
   G4String colName = "WCDigitizedCollection";
   this->myDetector = myDetector;
   collectionName.push_back(colName);

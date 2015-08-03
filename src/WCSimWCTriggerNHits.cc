@@ -24,6 +24,7 @@ WCSimWCTriggerNHits::WCSimWCTriggerNHits(G4String name,
 					 WCSimWCDAQMessenger* myMessenger)
   :WCSimWCTriggerBase(name, myDetector, myMessenger)
 {
+  triggerClassName = "NHits";
 }
 
 WCSimWCTriggerNHits::~WCSimWCTriggerNHits(){

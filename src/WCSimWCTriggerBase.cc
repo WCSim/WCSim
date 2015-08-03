@@ -32,7 +32,7 @@ const double WCSimWCTriggerBase::LongTime = 100000.0 ; // ns = 0.1ms. event time
 WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
 				       WCSimDetectorConstruction* inDetector,
 				       WCSimWCDAQMessenger* myMessenger)
-  :G4VDigitizerModule(name), myDetector(inDetector)
+  :G4VDigitizerModule(name), myDetector(inDetector), triggerClassName("")
 {
   G4String colName = "WCDigitizedCollection";
   collectionName.push_back(colName);

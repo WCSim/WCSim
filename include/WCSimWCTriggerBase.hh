@@ -126,6 +126,8 @@ protected:
   G4int    saveFailuresMode; ///< The mode for saving events which don't pass triggers
   G4double saveFailuresTime; ///< The dummy trigger time for failed events
 
+  G4String triggerClassName; ///< Save the name of the trigger class
+
 private:
   ///modify the NHits threshold based on the average dark noise rate
   void AdjustNHitsThresholdForNoise();
