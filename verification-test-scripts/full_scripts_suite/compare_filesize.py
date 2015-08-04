@@ -4,7 +4,7 @@ import glob, os, argparse, sys, time, re
 from datetime import datetime
 from datetime import timedelta
 
-parser = argparse.ArgumentParser(description='Analyse a directory of WCSim output files')
+parser = argparse.ArgumentParser(description='Analyse a directory of WCSim output files', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('-d','--dir1', type=str, help='First directory to analyse', default='./')
 parser.add_argument('-i','--dir2', type=str, help='Second directory to analyse', default='./')
 args = parser.parse_args()

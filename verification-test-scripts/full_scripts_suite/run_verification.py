@@ -89,10 +89,10 @@ def compare(args):
     pass
 
 
-parser = argparse.ArgumentParser(description='Analyse a directory of WCSim output files')
-parser.add_argument('--setup-script', required=True, help='The setup script to source ROOT, GEANT, etc. This SHOULDN"T setup WCSim')
-parser.add_argument('--clean-dir', type=str, default='./wcsim-clean', help='Empty (or not yet created) directory to download the official develop branch into. Default ./wcsim-clean')
-parser.add_argument('--new-dir', type=str, default='./wcsim-new', help='Empty (or not yet created) directory to download the branch you want to merge. Default ./wcsim-new')
+parser = argparse.ArgumentParser(description='Analyse a directory of WCSim output files', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument('--setup-script', required=True, help='The setup script to source ROOT, GEANT, etc.')
+parser.add_argument('--clean-dir', type=str, default='./wcsim-clean', help='Empty (or not yet created) directory to download the official develop branch into.')
+parser.add_argument('--new-dir', type=str, default='./wcsim-new', help='Empty (or not yet created) directory to download the branch you want to merge.')
 subparsers = parser.add_subparsers(help='')
 
 parser_grabcode = subparsers.add_parser('grabcode', help='grabcode - download & compile fresh versions of WCSim')
@@ -100,9 +100,9 @@ parser_grabcode.add_argument('--new-repo', type=str, required=True, help='The re
 parser_grabcode.add_argument('--new-branch', type=str, required=True, help='The branch to checkout the new code from. E.g. feature/issue10')
 parser_grabcode.set_defaults(func=grabcode)
 
-parser_run = subparsers.add_parser('run', help='run - run WCSim with identical options in the two fresh copies of WCSim')
-parser_run.add_argument('--batchmode', type=str, default='local', choices=gmf.BatchChoices, help='Where to submit the jobs. Choices: '+gmf.ListAsString(gmf.BatchChoices)+' (default local)')
-parser_run.add_argument('--work-dir', type=str, default='./wcsim-work', help='Empty (or not yet created) directory to save the output of WCSim to. Default ./wcsim-work')
+parser_run = subparsers.add_parser('run', help='run - run WCSim with identical options in the two fresh copies of WCSim', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser_run.add_argument('--batchmode', type=str, default='local', choices=gmf.BatchChoices, help='Where to submit the jobs.')
+parser_run.add_argument('--work-dir', type=str, default='./wcsim-work', help='Empty (or not yet created) directory to save the output of WCSim to.')
 parser_run.add_argument('--low-energy', action='store_true', help='Run the low energy verification?')
 parser_run.set_defaults(func=run)
 

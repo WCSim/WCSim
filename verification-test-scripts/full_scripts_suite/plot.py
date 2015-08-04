@@ -9,12 +9,12 @@ delim_list = lambda s: s.split(',')
 
 modes = ["filesize","compare","compare_stacks","verification_HitsChargeTime"]
 
-parser = argparse.ArgumentParser(description='Analyse a directory of WCSim output files')
+parser = argparse.ArgumentParser(description='Analyse a directory of WCSim output files', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('-d','--dir1', type=str, help='First directory to analyse', default='./')
-parser.add_argument('-i','--dir2', type=str, help="Second directory to analyse (don't give to look at 'differnce' files in same directory)", default='')
+parser.add_argument('-i','--dir2', type=str, help="Second directory to analyse (don't give to look at 'difference' files in same directory)", default='')
 parser.add_argument('--difference', type=delim_list, help='When running without dir2, look for 2 files in dir1 that are identical but for this difference')
 parser.add_argument('--legend', type=delim_list, help='Overwrite the legend labels')
-parser.add_argument('-m', '--mode', type=str, help='Run mode. Possibilities: ' + " ".join(m for m in modes), required=True)
+parser.add_argument('-m', '--mode', type=str, help='Run mode.', choices=modes, required=True)
 args = parser.parse_args()
 
 if args.mode not in modes:
