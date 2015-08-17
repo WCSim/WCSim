@@ -30,7 +30,7 @@ public:
   ///Create WCSimWCTriggerBase instance with knowledge of the detector and DAQ options
   WCSimWCTriggerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
   
-  ~WCSimWCTriggerBase();
+  virtual ~WCSimWCTriggerBase();
 
   /**
    * \brief The main user-callable routine of the class. Gets the input & creates the output WCSimWCDigitsCollection's, then calls DoTheWork()
