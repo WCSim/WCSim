@@ -58,7 +58,11 @@ for file1 in glob.glob(globber):
     #construct the 2nd filename
     files = file1
     if args.dir2:
-        file2 = "../" + args.dir2 + '/' + file1
+        prelude = ""
+        for i in  args.dir2.split('/'):
+            if i:
+                prelude += "../"
+        file2 = prelude + args.dir2 + '/' + file1
         file2temp = file2
     else:
         file2temp = file1

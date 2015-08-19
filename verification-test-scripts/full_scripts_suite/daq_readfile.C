@@ -130,14 +130,14 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 
   TH1I *h1triggertype = new TH1I("h1triggertype", "Trigger type;Trigger type;Entries", 10, 0, 10);
 #ifdef POST_NEW_DAQ_PULL_REQUEST
-  for(int i = -1; i <= kTriggerNHitsTest; i++)
+  for(int i = -1; i <= kTriggerFailure; i++)
     h1triggertype->GetXaxis()->SetBinLabel(i+2, WCSimEnumerations::EnumAsString((TriggerType_t)i).c_str());
 #endif
 
   TH2I *h2nhits = new TH2I("h2nhits", "NDigits from subevent window vs NDigits from 200nsec trigger window;NDigits saved in subevent;NDigits in 200nsec window", 1001, -0.5, 10000.5, 1001, -0.5, 10000.5);
   TH1I *h1nhits = new TH1I("h1nhits", "NDigits in the subevent window;NDigits;Entries", 10001, -0.5, 10000.5);
   TH1I *h1nhitstrigger = new TH1I("h1nhitstrigger", "NDigits in the trigger window;NDigits;Entries", 10001, -0.5, 10000.5);
-  TH1F *h1pe = new TH1F("h1pe", "Total p.e. in the subevent window;Total p.e.;Entries", 10001, -0.5, 10000.5);
+  TH1F *h1pe = new TH1F("h1pe", "Total p.e. in the subevent window;Total p.e.;Entries", 20001, -0.5, 20000.5);
   TH1F *h1time = new TH1F("h1time", "Digit time;Digit time (ns);Entries", 18000, -3000, 15000);
   TH1F *h1time_noise = new TH1F("h1time_noise", "Digit time (digits from noise hits only);Digit time (ns);Entries", 18000, -3000, 15000);
   TH1F *h1time_photon = new TH1F("h1time_photon", "Digit time (digits from photon hits only);Digit time (ns);Entries", 18000, -3000, 15000);
@@ -163,14 +163,17 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   TH1F *h1inttimephoton = new TH1F("h1inttimephoton", "Number of photon digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 10000,0,10000);
   TH1F *h1inttimemix = new TH1F("h1inttimemix", "Number of mixed (noise+photon) digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 10000,0,10000);
 
+  TH1F *h1hittime = new TH1F("h1hittime", "Raw hit time;Hit time (ns);Entries",    20000, -10000, 10000);
+  TH1F *h1hittime_photon = new TH1F("h1hittime_photon", "Raw hit time (photons);Hit time (ns);Entries",    20000, -10000, 10000);
+  TH1F *h1hittime_noise  = new TH1F("h1hittime_noise",  "Raw hit time (dark noise);Hit time (ns);Entries",    20000, -10000, 10000);
   TH1F *h1eventALL_hittime[2];
-  h1eventALL_hittime[0] = new TH1F("h1eventALL_hittime_photon", "Raw hit time for photons, event ALL;Hit time (ns);Entries",    10000, 0, 10000);
-  h1eventALL_hittime[1] = new TH1F("h1eventALL_hittime_noise",  "Raw hit time for dark noise, event ALL;Hit time (ns);Entries", 10000, 0, 10000);
+  h1eventALL_hittime[0] = new TH1F("h1eventALL_hittime_photon", "Raw hit time for photons in digits, event ALL;Hit time (ns);Entries",    10000, 0, 10000);
+  h1eventALL_hittime[1] = new TH1F("h1eventALL_hittime_noise",  "Raw hit time for dark noise in digits, event ALL;Hit time (ns);Entries", 10000, -10000, 10000);
   h1eventALL_hittime[0]->SetLineColor(kBlue);
   //h1eventALL_hittime[0]->SetFillColor(kBlue);
   h1eventALL_hittime[1]->SetLineColor(kRed);
   //h1eventALL_hittime[1]->SetFillColor(kRed);
-  THStack *hSeventALL_hittime = new THStack("hSeventALL_hittime", "Raw hit time, event ALL;Hit time (ns);Entries");
+  THStack *hSeventALL_hittime = new THStack("hSeventALL_hittime", "Raw hit time in digits, event ALL;Hit time (ns);Entries");
   hSeventALL_hittime->Add(h1eventALL_hittime[1]);
   hSeventALL_hittime->Add(h1eventALL_hittime[0]);
 
@@ -179,11 +182,11 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   THStack *hSevent_hittime[nevent];
   if(hists_per_event) {
     for (int ev=0; ev<nevent; ev++) {
-      h1event_hittime[ev][0] = new TH1F(TString::Format("h1event%d_hittime_photon", ev), TString::Format("Raw hit time for photons, event %d;Hit time (ns);Entries", ev), 10000, 0, 10000);
-      h1event_hittime[ev][1] = new TH1F(TString::Format("h1event%d_hittime_noise",  ev), TString::Format("Raw hit time for dark noise, event %d;Hit time (ns);Entries", ev), 10000, 0, 10000);
+      h1event_hittime[ev][0] = new TH1F(TString::Format("h1event%d_hittime_photon", ev), TString::Format("Raw hit time for photons in digits, event %d;Hit time (ns);Entries", ev), 10000, 0, 10000);
+      h1event_hittime[ev][1] = new TH1F(TString::Format("h1event%d_hittime_noise",  ev), TString::Format("Raw hit time for dark noise digits, event %d;Hit time (ns);Entries", ev), 10000, 0, 10000);
       h1event_hittime[ev][1]->SetLineColor(kRed);
       h1event_hittime[ev][1]->SetFillColor(kRed);
-      hSevent_hittime[ev] = new THStack(TString::Format("hSevent%d_hittime", ev), TString::Format("Raw hit time, event %d;Hit time (ns);Entries", ev));
+      hSevent_hittime[ev] = new THStack(TString::Format("hSevent%d_hittime", ev), TString::Format("Raw hit time in digits, event %d;Hit time (ns);Entries", ev));
       hSevent_hittime[ev]->Add(h1event_hittime[ev][1]);
       hSevent_hittime[ev]->Add(h1event_hittime[ev][0]);
     }//ev
@@ -373,7 +376,7 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 
 #ifdef POST_NEW_DAQ_PULL_REQUEST
       h1triggertype->Fill(WCSimEnumerations::EnumAsString(trigger_type).c_str(), 1);
-      if(true || verbose) {
+      if(verbose) {
 	cout << "Passed trigger "
 	     << WCSimEnumerations::EnumAsString(trigger_type)
 	     << " with timestamp " << trigger_time
@@ -390,6 +393,26 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 
       if(ncherenkovdigihits>0)
 	num_trig++;
+
+
+      // Loop through elements in the TClonesArray of WCSimRootCherenkovHits
+      for (int ipmt = 0; ipmt < ncherenkovhits; ipmt++) {
+	TObject * Hit = (wcsimrootevent->GetCherenkovHits())->At(ipmt);
+	WCSimRootCherenkovHit * wcsimrootcherenkovhit =
+	  dynamic_cast<WCSimRootCherenkovHit*>(Hit);
+	int timeArrayIndex = wcsimrootcherenkovhit->GetTotalPe(0);
+	int peForTube      = wcsimrootcherenkovhit->GetTotalPe(1);
+	for(int iphoton = 0; iphoton < peForTube; iphoton++) {
+	  TObject * HitTime = (wcsimrootevent->GetCherenkovHitTimes())->At(timeArrayIndex + iphoton);
+	  WCSimRootCherenkovHitTime * wcsimrootcherenkovhittime =
+	    dynamic_cast<WCSimRootCherenkovHitTime*>(HitTime);
+	  h1hittime->Fill(wcsimrootcherenkovhittime->GetTruetime());
+	  if(wcsimrootcherenkovhittime->GetParentID() == -1)
+	    h1hittime_noise->Fill(wcsimrootcherenkovhittime->GetTruetime());
+	  else
+	    h1hittime_photon->Fill(wcsimrootcherenkovhittime->GetTruetime());
+	}//iphoton
+      }//ipmt
 
       // Loop through elements in the TClonesArray of WCSimRootCherenkovDigHits
       float totalpe = 0, totaltime = 0;
@@ -437,8 +460,8 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	    if(verbose)
 	      cout << "Attempting to look for photon " << this_photon+1 << " in WCSimRootCherenkovHitTime array...";
 	    if(this_photon >= peForTube) {
-	      if(verbose)
-		cout << " There are only " << peForTube << " photons in this PMT" << endl;
+	      //if(verbose)
+	      cerr << " There are only " << peForTube << " photons in this PMT" << endl;
 	      continue;
 	    }
 	    //now look in the WCSimRootCherenkovHitTime array to count the number of photon / dark noise hits
@@ -571,6 +594,9 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
       hSevent_hittime[ev]->Write();
     }
   }
+  h1hittime->Write();
+  h1hittime_photon->Write();
+  h1hittime_noise->Write();
   h1eventALL_hittime[0]->Write();
   h1eventALL_hittime[1]->Write();
   hSeventALL_hittime->Write();

@@ -8,8 +8,9 @@ void split_args(TString str, vector<string> & vec, const char * delim = ":") {
   }//i
 }
 
-void compare_lots(const char* histname, double axis_low, double axis_high, TString infilenames, TString labels, const char * filenamestub, int rebin = -1)
+void compare_lots(const char* histname, double axis_low, double axis_high, TString infilenames, TString labels, const char * filenamestub, int rebin = -1, bool dashed = false, bool kolmotest = false)
 {
+
   TCanvas * c = new TCanvas();
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
@@ -18,6 +19,10 @@ void compare_lots(const char* histname, double axis_low, double axis_high, TStri
   c->SetLeftMargin(0.15);
   const int max_colors = 7;
   Color_t colors[max_colors] = { kBlack, kBlue, kRed, kGreen+2, kOrange, kMagenta, kCyan };
+  if(dashed) {
+    colors[1] = kRed;
+    colors[2] = kBlue;
+  }
 
   //check the input filenames - should be at least 2
   vector<string> infilename_tokens, label_tokens;
@@ -43,6 +48,7 @@ void compare_lots(const char* histname, double axis_low, double axis_high, TStri
   double ymax = 0;
   double xmin =  999999;
   double xmax = -999999;
+  double autorebin = 1;
   //for(int i = nhists - 1; i > 0; i--) {
   for(int i = 0; i < nhists; i++) {
     cout << i << "\t";
@@ -62,12 +68,29 @@ void compare_lots(const char* histname, double axis_low, double axis_high, TStri
     }
     if(rebin > 0)
       h[i]->Rebin(rebin);
-    if(h[i]->GetXaxis()->GetBinCenter(h[i]->FindFirstBinAbove(1E-5)) < xmin)
-      xmin = h[i]->GetXaxis()->GetBinCenter(h[i]->FindFirstBinAbove(1E-5));
-    if(h[i]->GetXaxis()->GetBinCenter(h[i]->FindLastBinAbove(1E-5)) > xmax)
-      xmax = h[i]->GetXaxis()->GetBinCenter(h[i]->FindLastBinAbove(1E-5));
+    else if(rebin == -99) {
+      //do some automatic rebinning. It's not perfect.
+      if(i == 0) {
+	double integral = h[i]->Integral();
+	while(h[i]->GetMaximum() < (integral * 0.1)) {
+	  h[i]->Rebin(2);
+	  autorebin *= 2;
+	}
+      }
+      else {
+	h[i]->Rebin(autorebin);
+      }
+    }//rebin
+    //for automatic zooming on the x axis
+    double smallnum = 5;
+    if(h[i]->GetXaxis()->GetBinCenter(h[i]->FindFirstBinAbove(smallnum)) < xmin)
+      xmin = h[i]->GetXaxis()->GetBinCenter(h[i]->FindFirstBinAbove(smallnum));
+    if(h[i]->GetXaxis()->GetBinCenter(h[i]->FindLastBinAbove(smallnum)) > xmax)
+      xmax = h[i]->GetXaxis()->GetBinCenter(h[i]->FindLastBinAbove(smallnum));
+    //predefined zoom
     if(axis_low < axis_high)
       h[i]->GetXaxis()->SetRangeUser(axis_low, axis_high);
+    //to see the full range on the y axis
     if(h[i]->GetMaximum() > ymax)
       ymax = h[i]->GetMaximum();
     h[i]->SetLineColor(colors[i]);
@@ -78,6 +101,8 @@ void compare_lots(const char* histname, double axis_low, double axis_high, TStri
     if(axis_low < -9999 && axis_high < -9999)
       h[i]->GetXaxis()->SetRangeUser(xmin, xmax);      
     h[i]->GetYaxis()->SetRangeUser(0, ymax);
+    if(dashed && i == 0)
+      h[i]->SetLineStyle(kDashed);
     if(i == 0) {
       h[i]->Draw();
     }
@@ -95,7 +120,8 @@ void compare_lots(const char* histname, double axis_low, double axis_high, TStri
   }
   if(nhists == 2) {
     double prob = h[0]->KolmogorovTest(h[1]);
-    l->AddEntry((TObject*)0, TString::Format("KS prob %.2f", prob), "");
+    if(kolmotest)
+      l->AddEntry((TObject*)0, TString::Format("KS prob %.2f", prob), "");
   }
   l->Draw();
 
