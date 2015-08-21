@@ -87,8 +87,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 			    "WCMultiPMT",
 			    0,0,0);
 
-  // TODO: if AddBase: no innerVessel, and make material for outer vessel just water.
-  //      
 
 
   ///////////
@@ -247,13 +245,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 			  kZAxis,                 // Are placed along this axis
 			  NbOfTotPmt,             // Number of PMTs (replica's)
 			  pmtParam_id,            // The parametrisation
-			  false);                  // checking overlaps
+			  true);                  // checking overlaps
   
-  // Need a 5mm tolerance
-  if(hemisphere->CheckOverlaps(1000,5,1)){
+  // Need a 4mm tolerance 
+  if(hemisphere->CheckOverlaps(1000,4,1)){
     G4cout << "Hemisphere has overlapping PMTs: Retry" << G4endl;
     G4LogicalVolume* emptyLogic;
-    return emptyLogic;
+    //return emptyLogic;
   }
   
   G4VPhysicalVolume* place_container =
@@ -268,65 +266,72 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     
 
   /////////////////////////////////////////////////////////////////////
-  // NEW : cover the surface with blacksheet or something else/better?
+  // Cover the surface with black material/paint/...sheet 
   //////////
   
-  /////
-  //Defines a cylinder
-  //G4double mPMT_zRange[2] = {0, cylinder_height};
-  G4double thickness = mPMT_inner_material_d; //...everything else should be air
-  G4double inner_RRange[2] = {cylinder_radius, cylinder_radius};
-  G4double inner_rRange[2] = {cylinder_radius-thickness,cylinder_radius-thickness};
+  G4bool addPMTBase = false; //ToDo: one parameter for both ConstructMultiPMT and ConstructPMT
+  if(!addPMTBase){
+    /////
+    //Defines a cylinder
+    //G4double mPMT_zRange[2] = {0, cylinder_height};
+    G4double thickness = mPMT_inner_material_d; //...everything else should be air
+    G4double inner_RRange[2] = {cylinder_radius, cylinder_radius};
+    G4double inner_rRange[2] = {cylinder_radius-thickness,cylinder_radius-thickness};
+    
+    //solids
+    // origin is bottom of upward cylinder
+    G4Polycone* inner_cylinder = 
+      new G4Polycone("inn_cyl",                    
+		     0.0*deg,
+		     360.0*deg,
+		     2,
+		     mPMT_zRange,
+		     inner_rRange, // R Inner
+		     inner_RRange);// R Outer
+    
+    G4Sphere* inner_top_sphere =
+      new G4Sphere(    "WCmPMT_tsphere",
+		       cylinder_radius-thickness,cylinder_radius,
+		       0.0*deg,360.0*deg,
+		       0.0*deg,90.0*deg);
+    
+    G4Sphere* inner_bottom_sphere =
+      new G4Sphere(    "WCmPMT_bsphere",
+		       cylinder_radius-thickness,cylinder_radius,
+		       0.0*deg,360.0*deg,
+		       90.0*deg,180.0*deg);
+    
+    //Add them up:
+    G4VSolid* inner_temp_sum =
+      //G4VSolid* solidMultiPMT =
+      new G4UnionSolid("inner_Cyl+TopSphere", inner_cylinder, inner_top_sphere,
+		       0, G4ThreeVector(0,0,cylinder_height));
+    
+    
+    G4VSolid* solidMultiPMT_inner =
+      new G4UnionSolid("WCMultiPMT_inner", inner_temp_sum, inner_bottom_sphere);
+    G4LogicalVolume *logicWCMultiPMT_inner =
+      new G4LogicalVolume(    solidMultiPMT_inner,
+			      G4Material::GetMaterial(mPMT_inner_material),//"Blacksheet"), 
+			      "WCMultiPMT_inner",
+			      0,0,0);
+    
+    
+    G4VPhysicalVolume* place_inner =
+      new G4PVPlacement(	0,				// its rotation
+				G4ThreeVector(0,0,-cylinder_height),		// its position
+				logicWCMultiPMT_inner,   	// its logical volume
+				"WCPMT_inner",				// its name 
+				logicWCMultiPMT,			// its mother volume
+				false,					// no boolean os
+				0, 
+				checkOverlaps);			
   
-  //solids
-  // origin is bottom of upward cylinder
-  G4Polycone* inner_cylinder = 
-    new G4Polycone("inn_cyl",                    
-		   0.0*deg,
-		   360.0*deg,
-		   2,
-		   mPMT_zRange,
-		   inner_rRange, // R Inner
-		   inner_RRange);// R Outer
-  
-  G4Sphere* inner_top_sphere =
-    new G4Sphere(    "WCmPMT_tsphere",
-		     cylinder_radius-thickness,cylinder_radius,
-		     0.0*deg,360.0*deg,
-		     0.0*deg,90.0*deg);
 
-  G4Sphere* inner_bottom_sphere =
-    new G4Sphere(    "WCmPMT_bsphere",
-		     cylinder_radius-thickness,cylinder_radius,
-		     0.0*deg,360.0*deg,
-		     90.0*deg,180.0*deg);
-
-  //Add them up:
-  G4VSolid* inner_temp_sum =
-    //G4VSolid* solidMultiPMT =
-    new G4UnionSolid("inner_Cyl+TopSphere", inner_cylinder, inner_top_sphere,
-		     0, G4ThreeVector(0,0,cylinder_height));
-
-
-  G4VSolid* solidMultiPMT_inner =
-    new G4UnionSolid("WCMultiPMT_inner", inner_temp_sum, inner_bottom_sphere);
-  G4LogicalVolume *logicWCMultiPMT_inner =
-    new G4LogicalVolume(    solidMultiPMT_inner,
-			    G4Material::GetMaterial(mPMT_inner_material),//"Blacksheet"), 
-			    "WCMultiPMT_inner",
-			    0,0,0);
-  
-  
-  G4VPhysicalVolume* place_inner =
-    new G4PVPlacement(	0,				// its rotation
-			G4ThreeVector(0,0,-cylinder_height),		// its position
-			logicWCMultiPMT_inner,   	// its logical volume
-			"WCPMT_inner",				// its name 
-			logicWCMultiPMT,			// its mother volume
-			false,					// no boolean os
-			0, 
-			checkOverlaps);			
-  
+    G4VisAttributes* VisAttRed = new G4VisAttributes(G4Colour(1.0,0.,0.));
+    VisAttRed->SetForceSolid(true); 
+    //logicWCMultiPMT_inner->SetVisAttributes(VisAttRed);
+  }
   
   /* Set all visualization here for better overview. */
   // Gray wireframe visual style
@@ -337,13 +342,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   WCPMTVisAtt5->SetForceSolid(true); 
   G4VisAttributes* VisAttYellow = new G4VisAttributes(G4Colour(1.0,1.,0.));
   VisAttYellow->SetForceSolid(true); 
-  G4VisAttributes* VisAttRed = new G4VisAttributes(G4Colour(1.0,0.,0.));
-  VisAttRed->SetForceSolid(true); 
+  
   
   //logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
-  logicWCMultiPMT_inner->SetVisAttributes(VisAttRed);
   logicWCMultiPMT_vessel->SetVisAttributes(WCPMTVisAtt5);  
-  logicWCMultiPMT_container->SetVisAttributes(VisAttYellow); 
+  //logicWCMultiPMT_container->SetVisAttributes(VisAttYellow); 
 
   // Should I also keep track of the mPMT modules in some map??
   //PMTLogicalVolumes[key] = logicWCPMT;
@@ -376,7 +379,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
   // Recursive calculation of vector contents
   do
     {
-      alphaNext = ComputeAlpha(alphaPrev, fEta);//ComputeAlpha(vAlpha[NoCircle-1], fEta);
+      alphaNext = ComputeAlpha(alphaPrev, fEta);
       NiCNext = ComputeNiC(alphaNext, fEta);
       if(NiCNext<2){break;} // Prevents negative values of NiC
       if(alphaNext > theta_min +fEta){
@@ -419,10 +422,12 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+//NoPmt is number of PMT is first circle
 G4double WCSimDetectorConstruction::ComputeEta(G4int NoPmt)
 {
+  // From eq. 11 in Meas. Sci. Technol. 10 (1999) 1015–1019, where a_{c-1} = n_{c-1} = 0.
   G4double cospi = std::cos(pi/NoPmt);
-  G4double etaLocal = std::atan(std::sqrt(1-std::pow(cospi,2)));
+  G4double etaLocal = std::atan(std::sqrt(1 - cospi*cospi));
   return etaLocal;
 }
 
@@ -438,10 +443,10 @@ G4double WCSimDetectorConstruction::ComputeAlpha (G4double alphaOfPrevC, G4doubl
 
 G4int WCSimDetectorConstruction::ComputeNiC (G4double alphaOfCircle, G4double Eta)
 {
-  G4double	cos2eta	  = std::pow(std::cos(Eta),2);
-  G4double	sin2alpha = std::pow(std::sin(alphaOfCircle),2);
+  G4double	cos2eta	  = std::cos(Eta) * std::cos(Eta);
+  G4double	sin2alpha = std::sin(alphaOfCircle) * std::sin(alphaOfCircle);
   G4double	cosalpha  = std::cos(alphaOfCircle);
-  G4double	arccos	  = std::acos(std::sqrt(cos2eta-sin2alpha)/cosalpha);
-  G4int		NiCLocal  = std::floor(pi/arccos);
+  G4double	arccos	  = std::acos(std::sqrt(cos2eta-sin2alpha)/cosalpha); //eq. 10
+  G4int		NiCLocal  = std::floor(pi/arccos); //eq. 7
   return NiCLocal;
 }
