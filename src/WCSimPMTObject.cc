@@ -1402,7 +1402,7 @@ G4float BoxandLine20inchHQE::GetDarkRate(){
    * 8.4kHz comes from average of HQE R3600-02's in EGADS (ref. Nakayama-san)
    * Actual values of latest version of B&L PMT still being studied. ToDo: update when ready.
    */
-  const G4float rate = 8.4*CLHEPL::kilohertz;
+  const G4float rate = 8.4*CLHEP::kilohertz;
   return rate;
 }
 
