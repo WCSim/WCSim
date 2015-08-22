@@ -66,7 +66,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   G4double baseHeight = 0.;
   G4double baseRadius = 0.;
   if(addPMTBase){
-    G4double basePinLength = 73.*CLHEP::mm;
+    G4double basePinLength = 28.*CLHEP::mm; //TF measurement: pins + base + transformer.
     baseHeight = 97.*CLHEP::mm - expose + basePinLength; //97mm includes the PMT top as well.
     baseRadius = 26.*CLHEP::mm; //for R121990-02
   } else {
@@ -79,12 +79,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   G4double PMTHolderR[2] = {baseRadius, 
 			    std::max(radius,reflectorRadius) + reflectorThickness};
   G4double PMTHolderr[2] = {0,0};
-
-  // IF reflectorParams are non-zero, this will be a solid cone instead of cylinder
-  // Used to think a solid cone was needed as outer volume to prevent the Daughters
-  // from being larger than the volume (
-  // TODO : Prevent Daughters from escaping the MotherVolume, make it solidCone again?
-
 
   G4Polycone* solidWCPMT = 
    new G4Polycone("WCPMT",                    

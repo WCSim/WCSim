@@ -66,10 +66,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
   // origin on blacksheet wall is origin of spherical top for ID, change if we want to use the 
   // cylindrical part in ID.
-  G4double mPMT_zRange_outer[2] = {-cylinder_height - cylinder_radius - mPMT_outer_material_d - expose, 
-				   cylinder_radius + mPMT_outer_material_d + expose};
-  G4double mPMT_RRange_outer[2] = {cylinder_radius + expose + mPMT_outer_material_d, 
-				   cylinder_radius + expose + mPMT_outer_material_d};
+  G4double dist_PMTglass_innerPressureVessel = 2.5*CLHEP::mm; // from KM3Net tech drawing. Don't put PMT directly against pressure vessel. Gel helps transition in refractive indices.
+  G4double mPMT_zRange_outer[2] = {-cylinder_height - cylinder_radius - mPMT_outer_material_d - expose - dist_PMTglass_innerPressureVessel, 
+				   cylinder_radius + mPMT_outer_material_d + expose
+				   + dist_PMTglass_innerPressureVessel};
+  G4double mPMT_RRange_outer[2] = {cylinder_radius + expose + mPMT_outer_material_d
+				   + dist_PMTglass_innerPressureVessel, 
+				   cylinder_radius + expose + mPMT_outer_material_d 
+				   + dist_PMTglass_innerPressureVessel};
   G4double mPMT_rRange_outer[2] = {0., 0.};
   
   G4Polycone* solidMultiPMT = 
@@ -94,9 +98,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   ////////////
 
   G4double mPMT_zRange_vessel[2] = {0, cylinder_height};
-  G4double mPMT_RRange_vessel[2] = {cylinder_radius + expose + mPMT_outer_material_d, 
-				    cylinder_radius + expose + mPMT_outer_material_d};
-  G4double mPMT_rRange_vessel[2] = {cylinder_radius + expose,cylinder_radius + expose};
+  G4double mPMT_RRange_vessel[2] = {cylinder_radius + expose + mPMT_outer_material_d 
+				    + dist_PMTglass_innerPressureVessel, 
+				    cylinder_radius + expose + mPMT_outer_material_d
+				    + dist_PMTglass_innerPressureVessel};
+  G4double mPMT_rRange_vessel[2] = {cylinder_radius + expose + dist_PMTglass_innerPressureVessel, 
+				    cylinder_radius + expose + dist_PMTglass_innerPressureVessel};
 
   //Define a cylinder with spherical top and bottom
   //solids
@@ -112,14 +119,16 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
   G4Sphere* mPMT_top_sphere_vessel =
     new G4Sphere(    "WCmPMT_tsphere_vessel",
-		     cylinder_radius + expose,cylinder_radius + expose + mPMT_outer_material_d, 
+		     cylinder_radius + expose + dist_PMTglass_innerPressureVessel,
+		     cylinder_radius + expose + dist_PMTglass_innerPressureVessel + mPMT_outer_material_d, 
 		     0.0*deg,360.0*deg,
 		     0.0*deg,90.0*deg);
 
 
   G4Sphere* mPMT_bottom_sphere_vessel =
     new G4Sphere(    "WCmPMT_bsphere_vessel",
-		     cylinder_radius + expose, cylinder_radius + expose + mPMT_outer_material_d,
+		     cylinder_radius + expose + dist_PMTglass_innerPressureVessel, 
+		     cylinder_radius + expose + dist_PMTglass_innerPressureVessel + mPMT_outer_material_d,
 		     0.0*deg,360.0*deg,
 		     90.0*deg,180.0*deg);
 
@@ -150,12 +159,17 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 			checkOverlaps);			
 
   /////////////////
- 
+   // This is the area between the outer shell and the inner shell. In this space, the PMTs will live
+  // in their SiliconGel Cylinders with their reflectorcones, pushed against the Acrylic OuterShell.
+  ///////////////
+  G4bool addPMTBase = false; //ToDo: one parameter for both ConstructMultiPMT and ConstructPMT
   G4double mPMT_zRange[2] = {0, cylinder_height};
-  G4double mPMT_RRange[2] = {cylinder_radius+expose, cylinder_radius+expose};
-  //  G4double mPMT_rRange[2] = {0,0}; //if testing with the PMTbase in ConstructPMT, no inner Container! Also for Top and BottomSphere
+  G4double mPMT_RRange[2] = {cylinder_radius + expose + dist_PMTglass_innerPressureVessel,
+			     cylinder_radius + expose + dist_PMTglass_innerPressureVessel};
   //NEW: only outer shell as mother volume for parametrization, as I want to put a black sheet in there
-  G4double mPMT_rRange[2] = {cylinder_radius,cylinder_radius}; //-1mm??
+  G4double mPMT_rRange[2] = {cylinder_radius,cylinder_radius}; 
+  if(addPMTBase)
+    mPMT_rRange = {0,0}; 
 
   //solids
   // origin is bottom of upward cylinder
@@ -168,18 +182,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 		   mPMT_rRange, // R Inner
 		   mPMT_RRange);// R Outer
 
+  G4double radius_min = cylinder_radius;
+  if(addPMTBase)
+    radius_min = 0.;
   G4Sphere* mPMT_top_sphere =
     new G4Sphere(    "WCmPMT_tsphere",
-		     //0.0*m,cylinder_radius+expose,
-		     cylinder_radius,cylinder_radius+expose, // NEW
+		     radius_min,cylinder_radius+expose + dist_PMTglass_innerPressureVessel, // NEW
 		     0.0*deg,360.0*deg,
 		     0.0*deg,90.0*deg);
 
 
   G4Sphere* mPMT_bottom_sphere =
     new G4Sphere(    "WCmPMT_bsphere",
-		     0.0*m,cylinder_radius+expose,
-		     //cylinder_radius,cylinder_radius+expose,
+		     radius_min,cylinder_radius+expose + dist_PMTglass_innerPressureVessel, // NEW
 		     0.0*deg,360.0*deg,
 		     90.0*deg,180.0*deg);
 
@@ -192,11 +207,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   G4VSolid* multiPMT_container =
     new G4UnionSolid("WCMultiPMT", temp_sum, mPMT_bottom_sphere);
 
-  // This is the area between the outer shell and the inner shell. In this space, the PMTs will live
-  // in their SiliconGel Cylinders with their reflectorcones, pushed against the Acrylic OuterShell.
   G4LogicalVolume *logicWCMultiPMT_container =
     new G4LogicalVolume(    multiPMT_container,
-			    G4Material::GetMaterial("Air"),
+			    //G4Material::GetMaterial("Air"),
+			    G4Material::GetMaterial("SilGel"), //whole area between pressure vessel and support structure is optical gel!
 			    "WCMultiPMT_container",
 			    0,0,0);
 
@@ -251,7 +265,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   if(hemisphere->CheckOverlaps(1000,4,1)){
     G4cout << "Hemisphere has overlapping PMTs: Retry" << G4endl;
     G4LogicalVolume* emptyLogic;
-    //return emptyLogic;
+    return emptyLogic;
   }
   
   G4VPhysicalVolume* place_container =
@@ -269,7 +283,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   // Cover the surface with black material/paint/...sheet 
   //////////
   
-  G4bool addPMTBase = false; //ToDo: one parameter for both ConstructMultiPMT and ConstructPMT
   if(!addPMTBase){
     /////
     //Defines a cylinder
@@ -345,7 +358,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   
   
   //logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
-  logicWCMultiPMT_vessel->SetVisAttributes(WCPMTVisAtt5);  
+  //logicWCMultiPMT_vessel->SetVisAttributes(WCPMTVisAtt5);  
   //logicWCMultiPMT_container->SetVisAttributes(VisAttYellow); 
 
   // Should I also keep track of the mPMT modules in some map??

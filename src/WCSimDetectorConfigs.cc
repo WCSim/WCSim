@@ -325,7 +325,7 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
 
   WCDetectorName = "TestmPMT";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  WCSimPMTObject * PMT = CreatePMTObject("PMT3inchR12199_02", WCIDCollectionName);
+  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch"/*"PMT3inchR12199_02"*/, WCIDCollectionName);
 
   WCPMTName = PMT->GetPMTName();
   WCPMTExposeHeight = PMT->GetExposeHeight(); 
@@ -344,13 +344,13 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
 
   //mPMT params:
   cylinder_height = 50.*mm;//453.*mm;
-  cylinder_radius = 325.*mm;//270.*mm;//176.*mm;//166.*mm; //RETUNE R?? R seems unnaturally small now (230mm)
+  cylinder_radius = 245.*mm;//270.*mm;//176.*mm;//166.*mm; //RETUNE R?? R seems unnaturally small now (230mm)
   orientation = PERPENDICULAR;
-  mPMT_ID_PMT = "PMT3in_R12199_02";
+  mPMT_ID_PMT = "PMT3in_R12199_02"; //ToDo: not yet used
   mPMT_OD_PMT = "PMT8inch";
   mPMT_outer_material = "G4_PLEXIGLASS";
   mPMT_inner_material = "Blacksheet";
-  mPMT_outer_material_d = 0.03*2*(cylinder_radius + WCPMTExposeHeight)*CLHEP::mm;
+  mPMT_outer_material_d = 0.03*2*(cylinder_radius + WCPMTExposeHeight + 2.5)*CLHEP::mm;
   mPMT_inner_material_d = 2.*CLHEP::mm; //a 2 mm thick blacksheet or whatever
   // Radius of cone at z=reflectorHeight
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
@@ -394,7 +394,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
   mPMT_OD_PMT = "PMT8inch";
   mPMT_outer_material = "G4_PLEXIGLASS";
   mPMT_inner_material = "Blacksheet";
-  mPMT_outer_material_d = 0.03*2*(cylinder_radius + WCPMTExposeHeight)*CLHEP::mm; //using NEMO article safety margin of 0.03 for t/D
+  mPMT_outer_material_d = 0.03*2*(cylinder_radius + WCPMTExposeHeight + 2.5)*CLHEP::mm; //using NEMO article safety margin of 0.03 for t/D
   mPMT_inner_material_d = 2.*CLHEP::mm; //a 2 mm thick blacksheet or whatever
   // Radius of cone at z=reflectorHeight
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
