@@ -23,7 +23,7 @@ class WCSimWCDigitizerBase : public G4VDigitizerModule
 public:
   
   WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
-  ~WCSimWCDigitizerBase();
+  virtual ~WCSimWCDigitizerBase();
   
   void AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector< std::pair<int,int> > digi_comp);
   virtual void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) = 0;
