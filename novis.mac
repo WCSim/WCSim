@@ -98,7 +98,7 @@
 /mygen/generator normal
 /gun/particle e-
 #/gun/particle pi0
-/gun/energy 10 MeV
+/gun/energy 500 MeV
 /gun/direction 1 0 0 
 /gun/position 0 0 0  
 
@@ -106,5 +106,5 @@
 
 /WCSimIO/RootFile wcsim.root
 
-/run/beamOn 1000
+/run/beamOn 10
 #exit

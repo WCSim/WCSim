@@ -16,7 +16,7 @@
 
 
 #choose the Trigger & Digitizer type (and options)
-# set at least one (both to be sure) to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger classes
+# set at least one of the following two options (both /DAQ/Digitizer and /DAQ/Trigger to be sure) to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger class (WCSimWCDigitizer)
 /DAQ/Digitizer SKI
 /DAQ/Trigger NHits
 #do we want to save only triggered events (mode 0), both triggered events & failed events (mode 1), or only failed events (mode 2)?

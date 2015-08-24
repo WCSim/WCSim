@@ -40,6 +40,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCAddGd               = false;
 }
 
+
 // Note: the actual coverage is 20.27%
 void WCSimDetectorConstruction::SuperK_20inchPMT_20perCent()
 {
