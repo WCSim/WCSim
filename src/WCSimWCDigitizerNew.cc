@@ -1,4 +1,4 @@
-#include "WCSimWCDigitizerSK.hh"
+#include "WCSimWCDigitizerBase.hh"
 #include "WCSimWCPMT.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"
@@ -19,14 +19,131 @@
 #include <cstring>
 #include <iostream>
 
+
+
+// *******************************************
+// BASE CLASS
+// *******************************************
+
+#ifndef WCSIMWCDIGITIZER_VERBOSE
+//#define WCSIMWCDIGITIZER_VERBOSE
+#endif
+
 // changed from 940 (april 2005) by MF
 // 960 is unsuitable
 
 //RawSignalHitCollection *collection = new RawSignalHitCollection;
 
-#ifndef WCSIMWCDIGITIZERSK_VERBOSE
-//#define WCSIMWCDIGITIZERSK_VERBOSE
+WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
+					   WCSimDetectorConstruction* inDetector,
+					   WCSimWCDAQMessenger* myMessenger)
+  :G4VDigitizerModule(name), myDetector(inDetector)
+{
+  G4String colName = "WCDigitizedStoreCollection";
+  collectionName.push_back(colName);
+  ReInitialize();
+
+  //  DarkRateMessenger = new WCSimDarkRateMessenger(this);
+  if(myMessenger != NULL) {
+    DAQMessenger = myMessenger;
+    DAQMessenger->TellMeAboutTheDigitizer(this);
+    DAQMessenger->SetDigitizerOptions();
+  }
+  else {
+    G4cerr << "WCSimWCDAQMessenger pointer is NULL when passed to WCSimWCDigitizerBase constructor. Exiting..." 
+	   << G4endl;
+    exit(-1);
+  }
+}
+
+WCSimWCDigitizerBase::~WCSimWCDigitizerBase(){
+  //DarkRateMessenger = 0;
+}
+
+void WCSimWCDigitizerBase::Digitize()
+{
+  //Clear the DigiStoreHitMap
+  ReInitialize();
+
+  //Temporary Storage of Digitized hits which is passed to the trigger
+  DigiStore = new WCSimWCDigitsCollection(collectionName[0],collectionName[0]);
+
+  //DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
+
+  G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
+  
+  // Get the PMT collection ID
+   G4int WCHCID = DigiMan->GetDigiCollectionID("WCRawPMTSignalCollection");
+
+  // Get the PMT Digits collection
+  WCSimWCDigitsCollection* WCHCPMT = 
+    (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCHCID));
+  
+  if (WCHCPMT) {
+    DigitizeHits(WCHCPMT);
+  }
+  
+  StoreDigiCollection(DigiStore);
+
+}
+
+void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector< std::pair<int,int> > digi_comp)
+{
+  //gate is not a trigger, but just the position of the digit in the array
+  //inside the WCSimWCDigi object
+#ifdef WCSIMWCDIGITIZER_VERBOSE
+  G4cout<<"Adding hit "<<gate<<" in tube "<<tube
+	<< " with time " << digihittime << " charge " << peSmeared
+	<< " (made of " << digi_comp.size() << " raw hits)";
 #endif
+
+  //  if ( digihittime > 0.0 && peSmeared>0.0)
+  if (peSmeared > 0.0) {
+      if ( DigiStoreHitMap[tube] == 0) {
+	WCSimWCDigi* Digi = new WCSimWCDigi();
+	Digi->AddParentID(1);
+	
+	Digi->SetTubeID(tube);
+	//	Digi->AddGate(gate,digihittime);
+	Digi->SetPe(gate,peSmeared);
+	Digi->AddPe(digihittime);
+	Digi->SetTime(gate,digihittime);
+	Digi->AddDigiCompositionInfo(digi_comp);
+	DigiStoreHitMap[tube] = DigiStore->insert(Digi);
+#ifdef WCSIMWCDIGITIZER_VERBOSE
+	G4cout << " NEW HIT" << G4endl;
+#endif
+      }
+      else {
+	//G4cout << "deja vu " << tube << " " << G << "  " << TriggerTimes[G] << " " << digihittime
+	//     << "  " <<   peSmeared <<" ";
+	//(*DigitsCollection)[GigiStoreHitMap[tube]-1]->AddParentID(parentID);
+	//(*DigiStore)[DigiStoreHitMap[tube]-1]->AddGate(gate,digihittime);
+	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetPe(gate,peSmeared);
+	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetTime(gate,digihittime);
+	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddPe(digihittime);
+	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddDigiCompositionInfo(digi_comp);
+#ifdef WCSIMWCDIGITIZER_VERBOSE
+	G4cout << " DEJA VU" << G4endl;
+#endif
+      }
+  }//peSmeared > 0
+  //else { G4cout << "DIGIT REJECTED" << G4endl; }
+}
+
+void WCSimWCDigitizerBase::SKDigitizerType(G4String type) {
+  if(type == "SKI")
+    SKDeadTime = false;
+  else if(type == "SKIV")
+    SKDeadTime = true;
+}
+
+
+
+
+// *******************************************
+// DERIVED CLASS
+// *******************************************
 
 const double WCSimWCDigitizerSK::pmtgate = 200.0 ; // ns
 
@@ -63,7 +180,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       //Sort photons on this pmt
       (*WCHCPMT)[i]->SortArrayByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
-#ifdef WCSIMWCDIGITIZERSK_VERBOSE
+#ifdef WCSIMWCDIGITIZER_VERBOSE
       G4cout<<"tube "<<tube<<" totalpe = "<<(*WCHCPMT)[i]->GetTotalPe();
 #endif
       /*
@@ -71,7 +188,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
 	G4cout << " " << (*WCHCPMT)[i]->GetParentID(ip);
       */
-#ifdef WCSIMWCDIGITIZERSK_VERBOSE
+#ifdef WCSIMWCDIGITIZER_VERBOSE
       G4cout <<G4endl;
 #endif
       //look over all hits on the PMT
@@ -115,7 +232,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    photon_unique_id = ip;
 	    digi_comp.push_back( std::make_pair(digi_unique_id, photon_unique_id) );
       
-#ifdef WCSIMWCDIGITIZERSK_VERBOSE
+#ifdef WCSIMWCDIGITIZER_VERBOSE
 	    std::cout<<"INFO: time "<<time<<" digi_id "<<digi_unique_id<<" p_id "<<photon_unique_id<<std::endl;
 #endif
 	    //if this is the last digit, make sure to make the digit
@@ -167,7 +284,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    continue;
 	  }
 	  else if(time > upperlimit + deadtime){
-#ifdef WCSIMWCDIGITIZERSK_VERBOSE
+#ifdef WCSIMWCDIGITIZER_VERBOSE
 	    G4cout<<"*** PREPARING FOR >1 DIGI ***"<<G4endl;
 #endif
 	    //we now need to start integrating from the hit
@@ -204,7 +321,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
     }//i (WCHCPMT->entries())
   G4cout<<"WCSimWCDigitizerSK::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << "\n";
   
-#ifdef WCSIMWCDIGITIZERSK_VERBOSE
+#ifdef WCSIMWCDIGITIZER_VERBOSE
   G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
   for (G4int i = 0 ; i < DigiStore->entries() ; i++){
     std::vector< std::pair<int,int> > comp = (*DigiStore)[i]->GetDigiCompositionInfo();

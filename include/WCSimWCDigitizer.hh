@@ -4,7 +4,7 @@
 #include "WCSimDarkRateMessenger.hh"
 #include "WCSimWCDAQMessenger.hh"
 #include "WCSimDetectorConstruction.hh"
-#include "WCSimWCTriggerBase.hh"
+#include "WCSimWCTrigger.hh"
 #include "G4VDigitizerModule.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"

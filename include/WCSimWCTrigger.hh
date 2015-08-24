@@ -1,15 +1,5 @@
-/**
- * \class WCSimWCTriggerBase
- *
- * \brief The base class for WCSim triggering algorithms
- *
- * Concrete implementations of a trigger class should inherit from this class.
- * Minimally, only DoTheWork() needs to be implemented in the implementation class.
- *
- */
-
-#ifndef WCSimWCTriggerBase_h
-#define WCSimWCTriggerBase_h 1
+#ifndef WCSimWCTrigger_h
+#define WCSimWCTrigger_h 1
 
 #include "WCSimEnumerations.hh"
 #include "WCSimWCDAQMessenger.hh"
@@ -21,6 +11,22 @@
 #include "Randomize.hh"
 #include <map>
 #include <vector>
+
+
+
+// *******************************************
+// BASE CLASS
+// *******************************************
+
+/**
+ * \class WCSimWCTriggerBase
+ *
+ * \brief The base class for WCSim triggering algorithms
+ *
+ * Concrete implementations of a trigger class should inherit from this class.
+ * Minimally, only DoTheWork() needs to be implemented in the implementation class.
+ *
+ */
 
 class WCSimWCTriggerBase : public G4VDigitizerModule
 {
@@ -143,12 +149,56 @@ private:
   bool   digitizeCalled; ///< Has Digitize() been called yet?
 };
 
-#endif
+
+
+// *******************************************
+// DERIVED CLASSES
+// *******************************************
+
+
+/**
+ * \class WCSimWCTriggerNHits
+ *
+ * \brief A simple NHits trigger class
+ *
+ */
+
+class WCSimWCTriggerNHits : public WCSimWCTriggerBase
+{
+public:
+
+  ///Create WCSimWCTriggerNHits instance with knowledge of the detector and DAQ options
+  WCSimWCTriggerNHits(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+
+  ~WCSimWCTriggerNHits();
+  
+private:
+  ///Calls the workhorse of this class: AlgNHits
+  void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
+
+};
+
+
+/**
+ * \class WCSimWCTriggerNHits2
+ *
+ * \brief An (incomplete) example of running two trigger algorithms, one after the other
+ *
+ */
+
+class WCSimWCTriggerNHits2 : public WCSimWCTriggerBase
+{
+public:
+
+  //not recommended to override these methods
+  WCSimWCTriggerNHits2(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+  ~WCSimWCTriggerNHits2();
+  
+private:
+  void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
+
+};
 
 
 
-
-
-
-
-
+#endif //WCSimWCTrigger_h

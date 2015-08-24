@@ -1,7 +1,7 @@
 #include "WCSimWCDAQMessenger.hh"
 #include "WCSimEventAction.hh"
-#include "WCSimWCDigitizerBase.hh"
-#include "WCSimWCTriggerBase.hh"
+#include "WCSimWCDigitizerNew.hh"
+#include "WCSimWCTrigger.hh"
 
 #include "G4UIdirectory.hh"
 #include "G4UIcommand.hh"

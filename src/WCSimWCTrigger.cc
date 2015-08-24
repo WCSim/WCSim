@@ -1,4 +1,4 @@
-#include "WCSimWCTriggerBase.hh"
+#include "WCSimWCTrigger.hh"
 #include "WCSimWCPMT.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"
@@ -19,8 +19,14 @@
 #include <cstring>
 #include <iostream>
 
-#ifndef WCSIMWCTRIGGERBASE_VERBOSE
-//#define WCSIMWCTRIGGERBASE_VERBOSE
+
+
+// *******************************************
+// BASE CLASS
+// *******************************************
+
+#ifndef WCSIMWCTRIGGER_VERBOSE
+//#define WCSIMWCTRIGGER_VERBOSE
 #endif
 
 const double WCSimWCTriggerBase::offset = 950.0 ; // ns. apply offset to the digit time
@@ -127,7 +133,7 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
   bool first_loop = true;
 
   G4cout << "WCSimWCTriggerBase::AlgNHits. Number of entries in input digit collection: " << WCDCPMT->entries() << G4endl;
-#ifdef WCSIMWCTRIGGERBASE_VERBOSE
+#ifdef WCSIMWCTRIGGER_VERBOSE
   int temp_total_pe = 0;
   for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
     temp_total_pe += (*WCDCPMT)[i]->GetTotalPe();
@@ -173,7 +179,7 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
       triggerfound = true;
     }
 
-#ifdef WCSIMWCTRIGGERBASE_VERBOSE
+#ifdef WCSIMWCTRIGGER_VERBOSE
     if(n_digits)
       G4cout << n_digits << " digits found in 200nsec trigger window ["
 	     << window_start_time << ", " << window_start_time + nhitsWindow
@@ -190,7 +196,7 @@ void WCSimWCTriggerBase::AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_
 
     //shorten the loop using the time of the last hit
     if(first_loop) {
-#ifdef WCSIMWCTRIGGERBASE_VERBOSE
+#ifdef WCSIMWCTRIGGER_VERBOSE
       G4cout << "Last hit found to be at " << lasthit
 	     << ". Changing window_end_time from " << window_end_time
 	     << " to " << lasthit - (nhitsWindow - 10)
@@ -249,7 +255,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     float lowerbound = triggertime + WCSimWCTriggerBase::eventgatedown;
     float upperbound = triggertime + WCSimWCTriggerBase::eventgateup;
 
-#ifdef WCSIMWCTRIGGERBASE_VERBOSE
+#ifdef WCSIMWCTRIGGER_VERBOSE
     G4cout << "Saving trigger " << itrigger << " of type " << WCSimEnumerations::EnumAsString(triggertype)
 	   << " in time range [" << lowerbound << ", " << upperbound << "]"
 	   << " with trigger time " << triggertime
@@ -324,4 +330,64 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
   }//loop over Triggers
   G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of entries in output digit collection: " << DigitsCollection->entries() << G4endl;
 
+}
+
+
+
+
+// *******************************************
+// DERIVED CLASS
+// *******************************************
+
+WCSimWCTriggerNHits::WCSimWCTriggerNHits(G4String name,
+					 WCSimDetectorConstruction* myDetector,
+					 WCSimWCDAQMessenger* myMessenger)
+  :WCSimWCTriggerBase(name, myDetector, myMessenger)
+{
+  triggerClassName = "NHits";
+}
+
+WCSimWCTriggerNHits::~WCSimWCTriggerNHits()
+{
+}
+
+void WCSimWCTriggerNHits::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
+  //Apply an NHits trigger
+  bool remove_hits = false;
+  AlgNHits(WCDCPMT, remove_hits);
+}
+
+
+
+// *******************************************
+// DERIVED CLASS
+// *******************************************
+
+WCSimWCTriggerNHits2::WCSimWCTriggerNHits2(G4String name,
+					 WCSimDetectorConstruction* myDetector,
+					 WCSimWCDAQMessenger* myMessenger)
+  :WCSimWCTriggerBase(name, myDetector, myMessenger)
+{
+  triggerClassName = "NHits2";
+}
+
+WCSimWCTriggerNHits2::~WCSimWCTriggerNHits2(){
+}
+
+
+void WCSimWCTriggerNHits2::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
+  //This calls 2 trigger algorithms; the second algorithm is called on hits that failed the first algorithm
+  //(for a second trigger working on hits that passed a pretrigger, FillDigitsCollection() needs to have a new option)
+
+  //Make a copy of the input DigitsCollection, so we can remove hits from the copy
+  WCSimWCDigitsCollection* WCDCPMTCopy = new WCSimWCDigitsCollection(*WCDCPMT);
+  
+  //Apply an NHits trigger
+  bool remove_hits = true;
+  AlgNHits(WCDCPMTCopy, remove_hits);
+
+  //Apply an NHits trigger with a lower threshold & different saved trigger type
+  remove_hits = false;
+  bool nhits_test = true;
+  AlgNHits(WCDCPMTCopy, remove_hits, nhits_test);
 }
