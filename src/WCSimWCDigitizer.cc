@@ -61,7 +61,7 @@ void WCSimWCDigitizer::Digitize()
 {
   ReInitialize();
 
-  DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
+  DigitsCollection = new WCSimWCTriggeredDigitsCollection("/WCSim/glassFaceWCPMT",collectionName[0]);
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   
@@ -471,14 +471,14 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 	  
 	    {
 	      if ( DigiHitMap[tube] == 0) {
-		WCSimWCDigi* Digi = new WCSimWCDigi();
+		WCSimWCDigiTrigger* Digi = new WCSimWCDigiTrigger();
 
 		Digi->SetTubeID(tube);
 		Digi->AddGate(G,TriggerTimes[G]);
 		Digi->SetPe(G,peSmeared);
 		Digi->SetTime(G,digihittime);
 		Digi->AddPe(digihittime);
-		Digi->AddDigiCompositionInfo(triggered_composition);
+		Digi->AddDigiCompositionInfo(G,triggered_composition);
 		DigiHitMap[tube] = DigitsCollection->insert(Digi);
 	      }
 	      else {
@@ -488,7 +488,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 		(*DigitsCollection)[DigiHitMap[tube]-1]->SetPe(G,peSmeared);
 		(*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(G,digihittime);
 		(*DigitsCollection)[DigiHitMap[tube]-1]->AddPe(digihittime);
-		(*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(triggered_composition);
+		(*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(G,triggered_composition);
 	      }
 	    }
 	  else { 

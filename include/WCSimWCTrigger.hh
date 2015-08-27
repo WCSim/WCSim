@@ -12,7 +12,8 @@
 #include <map>
 #include <vector>
 
-
+class WCSimWCDigiTrigger;
+typedef G4TDigiCollection<WCSimWCDigiTrigger> WCSimWCTriggeredDigitsCollection;
 
 // *******************************************
 // BASE CLASS
@@ -39,7 +40,7 @@ public:
   virtual ~WCSimWCTriggerBase();
 
   /**
-   * \brief The main user-callable routine of the class. Gets the input & creates the output WCSimWCDigitsCollection's, then calls DoTheWork()
+   * \brief The main user-callable routine of the class. Gets the input & creates the output WCSimWCTriggeredDigitsCollection's, then calls DoTheWork()
    *
    * The virtual keyword for this method is DEPRECATED
    * It is only defined virtual now because it is overridden in the old class (WCSimWCDigitizer)
@@ -103,8 +104,8 @@ protected:
    */
   void AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
 
-  WCSimWCDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
-  std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCDigitsCollection
+  WCSimWCTriggeredDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
+  std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
 
   std::vector<Float_t>                TriggerTimes; ///< The times of the triggers
   std::vector<TriggerType_t>          TriggerTypes; ///< The type of the triggers
@@ -148,6 +149,115 @@ private:
 
   bool   digitizeCalled; ///< Has Digitize() been called yet?
 };
+
+// *******************************************
+// CONTAINER CLASS
+// *******************************************
+
+class WCSimWCDigiTrigger : public G4VDigi
+{
+public:
+
+  WCSimWCDigiTrigger();
+  ~WCSimWCDigiTrigger();
+  WCSimWCDigiTrigger(const WCSimWCDigiTrigger&);
+  const WCSimWCDigiTrigger& operator=(const WCSimWCDigiTrigger&);
+  int operator==(const WCSimWCDigiTrigger&) const;
+
+  inline void* operator new(size_t);
+  inline void  operator delete(void*);
+
+  void Draw() {}
+  void Print();
+
+  inline void SetTubeID(G4int tube) { tubeID = tube; }
+  inline void AddGate  (G4int gate, float t)   { Gates.insert(gate); } //TriggerTimes.insert(t);   }
+  inline void AddPe    (G4float hitTime)  { totalPe++; } //time_float.insert(hitTime); }
+  inline void SetPe    (G4int gate, G4float Q) {   pe.insert(std::pair<int,float>(gate,Q)); }
+  inline void SetTime  (G4int gate, G4float T) { time.insert(std::pair<int,float>(gate,T)); }
+
+  /// Add a whole vector for one digit to fDigiComp. Clear input vector once added.
+  void AddDigiCompositionInfo(G4int gate, std::vector< std::pair<int,int> > &digi_comp){
+    fDigiComp.insert(std::pair<int, std::vector< std::pair<int,int> > >(gate, digi_comp));
+    digi_comp.clear();
+  }
+
+  inline G4int   GetTubeID() {return tubeID;}
+  inline std::vector<G4float> GetPe      (int gate) { return FindInMultimap(gate, pe); }
+  inline std::vector<G4float> GetTime    (int gate) { return FindInMultimap(gate, time); }
+  //inline std::vector<std::pair<int,int> > GetDigiCompositionInfo(int gate) { return FindInMultimap(gate, fDigiComp); }
+  std::vector<std::pair<int,int> > GetDigiCompositionInfo(int gate)
+  {
+    std::vector< std::pair<int,int> > v;
+    std::multimap<int, std::vector<std::pair<int,int> > >::iterator it = fDigiComp.begin();
+    for (; it != fDigiComp.end(); ++it) {
+      if((it->first) == gate)
+	v.insert(v.end(), it->second.begin(), it->second.end());
+    }
+    return v;
+  }
+  std::vector<int> GetDigiCompositionInfo(int gate, int digitid)
+  {
+    std::vector<std::pair<int,int> > comp_in_gate = GetDigiCompositionInfo(gate);
+    std::vector<int> v;
+    for(unsigned int i = 0; i < comp_in_gate.size(); i++)
+      if(comp_in_gate[i].first == digitid)
+	v.push_back(comp_in_gate[i].second);
+    return v;
+  }
+
+  inline int NumberOfGates()     { return Gates.size();      }
+  inline int NumberOfSubEvents() { return Gates.size() - 1;  }
+  inline bool HasHitsInGate(int gate) { return Gates.count(gate) > 0; }
+
+private:
+  //PMT parameters
+  G4int   tubeID;
+
+  //'Gates' is specifies subevent
+  std::set<int> Gates;
+  //'TriggerTimes' specifies e.g. the subevent trigger time
+  //std::vector<float> TriggerTimes;
+
+  //lists (meaning multimap) of information for each digit created on the PMT
+  std::multimap<int,float> pe;   //charge
+  std::multimap<int,float> time; //time
+  // Stores the unique IDs of each photon making up a digit
+  // There can be more than one digit in an event, hence the vector contains: <digi_number, unique_photon_id>
+  // For example: <0,3>; <0,4>; <0,6>; <1,10>; <1,11>; <1,13>; <1,14>
+  //  The first digit in the event is made of of photons 3,4,6;
+  //  The second digit is made up of photons: 10,11,13,14
+  std::multimap<int, std::vector<std::pair<int,int> > > fDigiComp;
+
+  //integrated hit/digit parameters
+  G4int                 totalPe;
+
+  template <typename T> std::vector<T> FindInMultimap(const int compare, typename std::multimap<int,T> &map)
+  {
+    typename std::vector<T> v;
+    typename std::multimap<int,T>::iterator it = map.begin();
+    for (; it != map.end(); ++it) {
+      if((it->first) == compare)
+	v.push_back(it->second);
+    }
+    return v;
+  }
+
+};
+
+extern G4Allocator<WCSimWCDigiTrigger> WCSimWCDigiTriggerAllocator;
+
+inline void* WCSimWCDigiTrigger::operator new(size_t)
+{
+  void* aDigi;
+  aDigi = (void*) WCSimWCDigiTriggerAllocator.MallocSingle();
+  return aDigi;
+}
+
+inline void WCSimWCDigiTrigger::operator delete(void* aDigi)
+{
+  WCSimWCDigiTriggerAllocator.FreeSingle((WCSimWCDigiTrigger*) aDigi);
+}
 
 
 

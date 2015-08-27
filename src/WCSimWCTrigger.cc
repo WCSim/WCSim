@@ -91,7 +91,7 @@ void WCSimWCTriggerBase::Digitize()
   ReInitialize();
 
   //This is the output digit collection
-  DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
+  DigitsCollection = new WCSimWCTriggeredDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
 
@@ -303,14 +303,14 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  //add hit
 	  if ( DigiHitMap[tube] == 0) {
 	    //this PMT has no digits saved yet; create a new WCSimWCDigi
-	    WCSimWCDigi* Digi = new WCSimWCDigi();
+	    WCSimWCDigiTrigger* Digi = new WCSimWCDigiTrigger();
 	    Digi->SetTubeID(tube);
 	    //Digi->AddParentID(parentID);
 	    Digi->AddGate  (itrigger,triggertime);
 	    Digi->SetTime  (itrigger,digihittime);
 	    Digi->SetPe    (itrigger,peSmeared);
 	    Digi->AddPe    (digihittime);
-	    Digi->AddDigiCompositionInfo(triggered_composition);
+	    Digi->AddDigiCompositionInfo(itrigger,triggered_composition);
 	    DigiHitMap[tube] = DigitsCollection->insert(Digi);
 	  }
 	  else {
@@ -320,7 +320,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(itrigger, digihittime);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetPe  (itrigger, peSmeared);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddPe  (digihittime);
-	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(triggered_composition);
+	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(itrigger,triggered_composition);
 	  }
 	  if(remove_hits)
 	    (*WCDCPMT)[i]->RemoveDigitizedGate(ip);
@@ -332,6 +332,68 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 
 }
 
+
+
+
+// *******************************************
+// CONTAINER CLASS
+// *******************************************
+
+G4Allocator<WCSimWCDigiTrigger> WCSimWCDigiTriggerAllocator;
+
+WCSimWCDigiTrigger::WCSimWCDigiTrigger()
+{
+  Gates.clear();
+  tubeID = 0;
+  pe.clear();
+  time.clear();
+  fDigiComp.clear();
+  totalPe = 0;
+}
+
+WCSimWCDigiTrigger::~WCSimWCDigiTrigger(){;}
+
+WCSimWCDigiTrigger::WCSimWCDigiTrigger(const WCSimWCDigiTrigger& right)
+  :G4VDigi()
+{
+  // in principle assignment = is defined for containers...
+  Gates = right.Gates;
+  tubeID = right.tubeID;
+  pe     = right.pe;
+  time   = right.time;
+  fDigiComp = right.fDigiComp;
+  totalPe = right.totalPe;
+}
+
+const WCSimWCDigiTrigger& WCSimWCDigiTrigger::operator=(const WCSimWCDigiTrigger& right)
+{
+  Gates = right.Gates;
+  tubeID = right.tubeID;
+  pe     = right.pe;
+  time   = right.time;
+  fDigiComp = right.fDigiComp;
+  totalPe = right.totalPe;
+  return *this;
+}
+
+void WCSimWCDigiTrigger::Print()
+{
+  G4cout << "TubeID: " << tubeID
+         << ", Number of Gates: " << NumberOfGates()
+	 << G4endl;
+  std::multimap<int,float>::iterator it_pe   = pe.begin();
+  std::multimap<int,float>::iterator it_time = time.begin();
+  for( ; it_pe != pe.end(), it_time != time.end(); ++it_pe, ++it_time) {
+    if(it_pe->first != it_time->first) {
+      G4cerr << "WCSimWCDigiTrigger::Print() pe and time gate counters disagree!" << G4endl;
+      exit(-1);
+    }
+    G4cout  << "Gate = " << it_pe->first
+            << " PE: "   << it_pe->second
+            << " Time: " << it_time->second
+	    << G4endl;
+  }
+}
 
 
 

@@ -250,7 +250,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   
    // Get the digitized collection for the WC
    G4int WCDCID = DMman->GetDigiCollectionID("WCDigitizedCollection");
-   WCSimWCDigitsCollection * WCDC = (WCSimWCDigitsCollection*) DMman->GetDigiCollection(WCDCID);
+   WCSimWCTriggeredDigitsCollection * WCDC = (WCSimWCTriggeredDigitsCollection*) DMman->GetDigiCollection(WCDCID);
    /*   
    // To use Do like This:
    // --------------------
@@ -495,7 +495,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				     G4TrajectoryContainer* TC,
 				     WCSimWCHitsCollection* WCHC,
 				     WCSimWCDigitsCollection* WCDC_hits,
-				     WCSimWCDigitsCollection* WCDC)
+				     WCSimWCTriggeredDigitsCollection* WCDC)
 {
   // Fill up a Root event with stuff from the ntuple
 
@@ -873,17 +873,22 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	for (k=0;k<WCDC->entries();k++)
 	  {
 	    if ( (*WCDC)[k]->HasHitsInGate(index)) {
-	      wcsimrootevent->AddCherenkovDigiHit((*WCDC)[k]->GetPe(index),
-						  (*WCDC)[k]->GetTime(index),
-						  (*WCDC)[k]->GetTubeID(),
-						  (*WCDC)[k]->GetDigiCompositionInfo(index));  
-	      sumq_tmp = sumq_tmp + (*WCDC)[k]->GetPe(index);
-	   
-	      countdigihits++;
-	      wcsimrootevent->SetNumDigitizedTubes(countdigihits);
-	      wcsimrootevent->SetSumQ(sumq_tmp);
-	    }
-	  }
+	      std::vector<float> vec_pe   = (*WCDC)[k]->GetPe(index);
+	      std::vector<float> vec_time = (*WCDC)[k]->GetTime(index);
+	      assert(vec_pe.size() == vec_time.size());
+	      for(unsigned int iv = 0; iv < vec_pe.size(); iv++) {
+		std::vector<int> digicomp = (*WCDC)[k]->GetDigiCompositionInfo(index, iv);
+		assert(digicomp.size() > 0);
+		wcsimrootevent->AddCherenkovDigiHit(vec_pe[iv], vec_time[iv],
+						    (*WCDC)[k]->GetTubeID(),
+						    digicomp);
+		sumq_tmp += vec_pe[iv];
+		countdigihits++;
+	      }//iv
+	    }//Digit exists in Gate
+	  }//k
+	wcsimrootevent->SetNumDigitizedTubes(countdigihits);
+	wcsimrootevent->SetSumQ(sumq_tmp);
 	/*
 		G4cout << "checking digi hits ...\n";
 	  G4cout << "hits collection size =  " << 

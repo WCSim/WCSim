@@ -11,6 +11,7 @@
 #include "G4TrajectoryContainer.hh"
 #include "WCSimWCHit.hh"
 #include "WCSimWCDigi.hh"
+#include "WCSimWCTrigger.hh"
 #include "WCSimWCDAQMessenger.hh"
 
 class WCSimRunAction;
@@ -38,7 +39,7 @@ public:
 		     G4TrajectoryContainer*,
 		     WCSimWCHitsCollection*,
 		     WCSimWCDigitsCollection*,
-		     WCSimWCDigitsCollection*);
+		     WCSimWCTriggeredDigitsCollection*);
   WCSimRunAction* GetRunAction(){return runAction;}
   void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
   void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
