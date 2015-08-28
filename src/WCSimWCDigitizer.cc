@@ -422,14 +422,14 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
       }
       */
      
-      std::vector< std::pair<int,int> > triggered_composition;
+      std::vector<int> triggered_composition;
       for ( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++){
 	tc = (*WCHCPMT)[i]->GetTime(ip);
 	//Add up pe for each time in the gate.
 	if (tc >= lowerbound && tc <= mintime){
 	  G4double   pe = (*WCHCPMT)[i]->GetPe(ip);
 	  peSmeared += pe;
-	  triggered_composition.push_back(std::make_pair(G, ip));
+	  triggered_composition.push_back(ip);
 	}
       }
       

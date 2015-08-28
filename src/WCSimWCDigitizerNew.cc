@@ -28,9 +28,6 @@
 #ifndef WCSIMWCDIGITIZER_VERBOSE
 //#define WCSIMWCDIGITIZER_VERBOSE
 #endif
-#ifndef WCSIMWCDIGITIZER_MULTIDIGIT_VERBOSE
-//#define WCSIMWCDIGITIZER_MULTIDIGIT_VERBOSE
-#endif
 
 // changed from 940 (april 2005) by MF
 // 960 is unsuitable
@@ -97,7 +94,11 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 #ifdef WCSIMWCDIGITIZER_VERBOSE
   G4cout<<"Adding hit "<<gate<<" in tube "<<tube
 	<< " with time " << digihittime << " charge " << peSmeared
-	<< " (made of " << digi_comp.size() << " raw hits)";
+	<< " (made of " << digi_comp.size() << " raw hits with IDs ";
+  for(unsigned int iv = 0; iv < digi_comp.size(); iv++)
+    G4cout << " " << digi_comp[iv].first
+	   << "," << digi_comp[iv].second;
+  G4cout << ")";
 #endif
 
   //  if ( digihittime > 0.0 && peSmeared>0.0)
@@ -128,16 +129,6 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddDigiCompositionInfo(digi_comp);
 #ifdef WCSIMWCDIGITIZER_VERBOSE
 	G4cout << " DEJA VU" << G4endl;
-#endif
-#ifdef WCSIMWCDIGITIZER_MULTIDIGIT_VERBOSE
-	G4cout << "Added new digit to already hit PMT " << tube
-	       << " pe "   << peSmeared
-	       << " time " << digihittime
-	       << " digi composition";
-	for(unsigned int iv = 0; iv < digi_comp.size(); iv++)
-	  G4cout << " " << digi_comp[iv].first
-		 << "," << digi_comp[iv].second;
-	G4cout << G4endl;
 #endif
       }
   }//peSmeared > 0
@@ -318,7 +309,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    continue;
 	  }
 	  else if(time > upperlimit + deadtime){
-#ifdef WCSIMWCDIGITIZER_MULTIDIGIT_VERBOSE
+#ifdef WCSIMWCDIGITIZER_VERBOSE
 	    G4cout<<"*** PREPARING FOR >1 DIGI ***"<<G4endl;
 #endif
 	    //we now need to start integrating from the hit

@@ -177,8 +177,8 @@ public:
   inline void SetTime  (G4int gate, G4float T) { time.insert(std::pair<int,float>(gate,T)); }
 
   /// Add a whole vector for one digit to fDigiComp. Clear input vector once added.
-  void AddDigiCompositionInfo(G4int gate, std::vector< std::pair<int,int> > &digi_comp){
-    fDigiComp.insert(std::pair<int, std::vector< std::pair<int,int> > >(gate, digi_comp));
+  void AddDigiCompositionInfo(G4int gate, std::vector<int> &digi_comp){
+    fDigiComp.insert(std::pair<int, std::vector<int> >(gate, digi_comp));
     digi_comp.clear();
   }
 
@@ -186,23 +186,14 @@ public:
   inline std::vector<G4float> GetPe      (int gate) { return FindInMultimap(gate, pe); }
   inline std::vector<G4float> GetTime    (int gate) { return FindInMultimap(gate, time); }
   //inline std::vector<std::pair<int,int> > GetDigiCompositionInfo(int gate) { return FindInMultimap(gate, fDigiComp); }
-  std::vector<std::pair<int,int> > GetDigiCompositionInfo(int gate)
+  std::vector<std::vector<int> > GetDigiCompositionInfo(int gate)
   {
-    std::vector< std::pair<int,int> > v;
-    std::multimap<int, std::vector<std::pair<int,int> > >::iterator it = fDigiComp.begin();
+    std::vector<std::vector<int> > v;
+    std::multimap<int, std::vector<int> >::iterator it = fDigiComp.begin();
     for (; it != fDigiComp.end(); ++it) {
       if((it->first) == gate)
-	v.insert(v.end(), it->second.begin(), it->second.end());
+	v.push_back(it->second);
     }
-    return v;
-  }
-  std::vector<int> GetDigiCompositionInfo(int gate, int digitid)
-  {
-    std::vector<std::pair<int,int> > comp_in_gate = GetDigiCompositionInfo(gate);
-    std::vector<int> v;
-    for(unsigned int i = 0; i < comp_in_gate.size(); i++)
-      if(comp_in_gate[i].first == digitid)
-	v.push_back(comp_in_gate[i].second);
     return v;
   }
 
@@ -220,17 +211,12 @@ private:
   //std::vector<float> TriggerTimes;
 
   //lists (meaning multimap) of information for each digit created on the PMT
-  std::multimap<int,float> pe;   //charge
-  std::multimap<int,float> time; //time
-  // Stores the unique IDs of each photon making up a digit
-  // There can be more than one digit in an event, hence the vector contains: <digi_number, unique_photon_id>
-  // For example: <0,3>; <0,4>; <0,6>; <1,10>; <1,11>; <1,13>; <1,14>
-  //  The first digit in the event is made of of photons 3,4,6;
-  //  The second digit is made up of photons: 10,11,13,14
-  std::multimap<int, std::vector<std::pair<int,int> > > fDigiComp;
+  std::multimap<int,float> pe;   ///< Digit charge
+  std::multimap<int,float> time; ///< Digit time
+  std::multimap<int, std::vector<int> > fDigiComp;   ///< Stores the unique IDs of each photon making up a digit
 
   //integrated hit/digit parameters
-  G4int                 totalPe;
+  G4int                 totalPe; ///< Total charge on digit
 
   template <typename T> std::vector<T> FindInMultimap(const int compare, typename std::multimap<int,T> &map)
   {
