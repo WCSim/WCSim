@@ -300,6 +300,17 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	      break;
 	  }//loop over digitized_composition
 
+#ifdef WCSIMWCTRIGGER_VERBOSE
+	  G4cout << "Saving digit on PMT " << tube
+		 << " time " << digihittime
+		 << " pe "   << peSmeared
+		 << " digicomp";
+	  for(unsigned int iv = 0; iv < triggered_composition.size(); iv++)
+	    G4cout << " " << triggered_composition[iv];
+	  G4cout << G4endl;
+#endif
+	  assert(triggered_composition.size());
+
 	  //add hit
 	  if ( DigiHitMap[tube] == 0) {
 	    //this PMT has no digits saved yet; create a new WCSimWCDigi

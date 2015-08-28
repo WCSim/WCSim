@@ -87,7 +87,7 @@ void WCSimWCDigitizerBase::Digitize()
 
 }
 
-void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector< std::pair<int,int> > digi_comp)
+bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector< std::pair<int,int> > digi_comp)
 {
   //gate is not a trigger, but just the position of the digit in the array
   //inside the WCSimWCDigi object
@@ -131,12 +131,14 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	G4cout << " DEJA VU" << G4endl;
 #endif
       }
+      return true;
   }//peSmeared > 0
   else {
 #ifdef WCSIMWCDIGITIZER_VERBOSE
     G4cout << "DIGIT REJECTED with charge " << peSmeared
 	   << " time " << digihittime << G4endl;
 #endif
+    return false;
   }
 }
 
@@ -288,12 +290,12 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    if(iflag == 0) {                                                                                                                                             
 	      //digitize hit                                                                                                                                  
 	      peSmeared *= efficiency;
-	      WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared, digi_comp);
-	      ngate++;
-
+	      bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared, digi_comp);
+	      if(accepted) {
+		ngate++;
+		digi_unique_id++;
+	      }
 	      assert(digi_comp.size());
-	      
-	      digi_unique_id++;
 	      digi_comp.clear();
 	    }
 	    else {
@@ -301,6 +303,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 #ifdef WCSIMWCDIGITIZER_VERBOSE
 	      G4cout << "DIGIT REJECTED with time " << intgr_start << G4endl;
 #endif
+	      digi_comp.clear();
 	    }
 	  }
 	  
@@ -330,12 +333,12 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      if(iflag == 0) {
 		//digitize hit                                                                                                                                                  
 		peSmeared *= efficiency;
-		WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared, digi_comp);
-		ngate++;
-
+		bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared, digi_comp);
+		if(accepted) {
+		  ngate++;
+		  digi_unique_id++;
+		}
 		assert(digi_comp.size());
-
-		digi_unique_id++;
 		digi_comp.clear();
 	      }
 	      else {
@@ -343,6 +346,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 #ifdef WCSIMWCDIGITIZER_VERBOSE
 		G4cout << "DIGIT REJECTED with time " << intgr_start << G4endl;
 #endif
+		digi_comp.clear();
 	      }
 	    }
 	  }
