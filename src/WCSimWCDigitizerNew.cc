@@ -28,6 +28,9 @@
 #ifndef WCSIMWCDIGITIZER_VERBOSE
 //#define WCSIMWCDIGITIZER_VERBOSE
 #endif
+#ifndef WCSIMWCDIGITIZER_MULTIDIGIT_VERBOSE
+//#define WCSIMWCDIGITIZER_MULTIDIGIT_VERBOSE
+#endif
 
 // changed from 940 (april 2005) by MF
 // 960 is unsuitable
@@ -126,9 +129,24 @@ void WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 #ifdef WCSIMWCDIGITIZER_VERBOSE
 	G4cout << " DEJA VU" << G4endl;
 #endif
+#ifdef WCSIMWCDIGITIZER_MULTIDIGIT_VERBOSE
+	G4cout << "Added new digit to already hit PMT " << tube
+	       << " pe "   << peSmeared
+	       << " time " << digihittime
+	       << " digi composition";
+	for(unsigned int iv = 0; iv < digi_comp.size(); iv++)
+	  G4cout << " " << digi_comp[iv].first
+		 << "," << digi_comp[iv].second;
+	G4cout << G4endl;
+#endif
       }
   }//peSmeared > 0
-  //else { G4cout << "DIGIT REJECTED" << G4endl; }
+  else {
+#ifdef WCSIMWCDIGITIZER_VERBOSE
+    G4cout << "DIGIT REJECTED with charge " << peSmeared
+	   << " time " << digihittime << G4endl;
+#endif
+  }
 }
 
 void WCSimWCDigitizerBase::SKDigitizerType(G4String type) {
@@ -181,14 +199,16 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       (*WCHCPMT)[i]->SortArrayByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-      G4cout<<"tube "<<tube<<" totalpe = "<<(*WCHCPMT)[i]->GetTotalPe();
-#endif
+      G4cout << "tube " << tube
+	     << " totalpe = " << (*WCHCPMT)[i]->GetTotalPe()
+	     << " times";
+      for(int ip = 0; ip < (*WCHCPMT)[i]->GetTotalPe(); ip++)
+	G4cout << " " << (*WCHCPMT)[i]->GetTime(ip);
       /*
 	G4cout<<" parents =\t";
       for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
 	G4cout << " " << (*WCHCPMT)[i]->GetParentID(ip);
       */
-#ifdef WCSIMWCDIGITIZER_VERBOSE
       G4cout <<G4endl;
 #endif
       //look over all hits on the PMT
@@ -226,6 +246,15 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    upperlimit = intgr_start + pmtgate;
 	  }
 	  
+#ifdef WCSIMWCDIGITIZER_VERBOSE
+	  G4cout << "ip "    << ip
+		 << " pe "   << pe
+		 << " time " << time
+		 << " intgr_start " << intgr_start
+		 << " upperlimit "  << upperlimit
+		 << G4endl;
+#endif
+
 	  bool MakeDigit = false;
 	  if(time >= intgr_start && time <= upperlimit) {
 	    peSmeared += pe;
@@ -241,7 +270,8 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    }
 	    
 	  }
-	  else {
+	  //if ensures we don't append the same digit multiple times while in the integration window
+	  else if(digi_comp.size()) {
 	    //this hit is outside the integration time window.
 	    //Charge integration is over.  For SKIV, there is now a 350ns + 150ns
 	    //time period where no hits can be recorded
@@ -269,13 +299,17 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      peSmeared *= efficiency;
 	      WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared, digi_comp);
 	      ngate++;
+
+	      assert(digi_comp.size());
 	      
 	      digi_unique_id++;
 	      digi_comp.clear();
 	    }
 	    else {
 	      //reject hit
-	      //G4cout << "DIGIT REJECTED" << G4endl;
+#ifdef WCSIMWCDIGITIZER_VERBOSE
+	      G4cout << "DIGIT REJECTED with time " << intgr_start << G4endl;
+#endif
 	    }
 	  }
 	  
@@ -284,7 +318,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    continue;
 	  }
 	  else if(time > upperlimit + deadtime){
-#ifdef WCSIMWCDIGITIZER_VERBOSE
+#ifdef WCSIMWCDIGITIZER_MULTIDIGIT_VERBOSE
 	    G4cout<<"*** PREPARING FOR >1 DIGI ***"<<G4endl;
 #endif
 	    //we now need to start integrating from the hit
@@ -308,12 +342,16 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 		WCSimWCDigitizerBase::AddNewDigit(tube, ngate, intgr_start, peSmeared, digi_comp);
 		ngate++;
 
+		assert(digi_comp.size());
+
 		digi_unique_id++;
 		digi_comp.clear();
 	      }
 	      else {
-		//reject hit                                                                                                                           
-		//G4cout << "DIGIT REJECTED" << G4endl;
+		//reject hit
+#ifdef WCSIMWCDIGITIZER_VERBOSE
+		G4cout << "DIGIT REJECTED with time " << intgr_start << G4endl;
+#endif
 	      }
 	    }
 	  }

@@ -44,6 +44,9 @@
 //#define _SAVE_RAW_HITS_VERBOSE
 #endif
 #endif
+#ifndef MULTIDIGIT_VERBOSE
+#define MULTIDIGIT_VERBOSE
+#endif
 
 WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun, 
 				   WCSimDetectorConstruction* myDetector, 
@@ -875,15 +878,27 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	    if ( (*WCDC)[k]->HasHitsInGate(index)) {
 	      std::vector<float> vec_pe   = (*WCDC)[k]->GetPe(index);
 	      std::vector<float> vec_time = (*WCDC)[k]->GetTime(index);
+	      const int tubeID = (*WCDC)[k]->GetTubeID();
 	      assert(vec_pe.size() == vec_time.size());
 	      for(unsigned int iv = 0; iv < vec_pe.size(); iv++) {
 		std::vector<int> digicomp = (*WCDC)[k]->GetDigiCompositionInfo(index, iv);
 		assert(digicomp.size() > 0);
 		wcsimrootevent->AddCherenkovDigiHit(vec_pe[iv], vec_time[iv],
-						    (*WCDC)[k]->GetTubeID(),
-						    digicomp);
+						    tubeID, digicomp);
 		sumq_tmp += vec_pe[iv];
 		countdigihits++;
+#ifdef MULTIDIGIT_VERBOSE
+		if(iv > 0) {
+		  G4cout << "Adding digit " << iv 
+			 << " for PMT " << tubeID
+			 << " pe "   << vec_pe[iv]
+			 << " time " << vec_time[iv]
+			 << " digicomp";
+		  for(unsigned int ivv = 0; ivv < digicomp.size(); ivv++)
+		    G4cout << " " << digicomp[ivv];
+		  G4cout << G4endl;
+		}//iv > 0
+#endif
 	      }//iv
 	    }//Digit exists in Gate
 	  }//k
