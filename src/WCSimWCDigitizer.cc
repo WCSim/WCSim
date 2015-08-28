@@ -474,20 +474,20 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 		WCSimWCDigiTrigger* Digi = new WCSimWCDigiTrigger();
 
 		Digi->SetTubeID(tube);
-		Digi->AddGate(G,TriggerTimes[G]);
+		Digi->AddGate(G);
 		Digi->SetPe(G,peSmeared);
 		Digi->SetTime(G,digihittime);
-		Digi->AddPe(digihittime);
+		Digi->AddPe();
 		Digi->AddDigiCompositionInfo(G,triggered_composition);
 		DigiHitMap[tube] = DigitsCollection->insert(Digi);
 	      }
 	      else {
 		//G4cout << "deja vu " << tube << " " << G << "  " << TriggerTimes[G] << " " << digihittime
 		//     << "  " <<   peSmeared <<" ";
-		(*DigitsCollection)[DigiHitMap[tube]-1]->AddGate(G,TriggerTimes[G]);
+		(*DigitsCollection)[DigiHitMap[tube]-1]->AddGate(G);
 		(*DigitsCollection)[DigiHitMap[tube]-1]->SetPe(G,peSmeared);
 		(*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(G,digihittime);
-		(*DigitsCollection)[DigiHitMap[tube]-1]->AddPe(digihittime);
+		(*DigitsCollection)[DigiHitMap[tube]-1]->AddPe();
 		(*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(G,triggered_composition);
 	      }
 	    }

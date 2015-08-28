@@ -306,20 +306,20 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    WCSimWCDigiTrigger* Digi = new WCSimWCDigiTrigger();
 	    Digi->SetTubeID(tube);
 	    //Digi->AddParentID(parentID);
-	    Digi->AddGate  (itrigger,triggertime);
+	    Digi->AddGate  (itrigger);
 	    Digi->SetTime  (itrigger,digihittime);
 	    Digi->SetPe    (itrigger,peSmeared);
-	    Digi->AddPe    (digihittime);
+	    Digi->AddPe    ();
 	    Digi->AddDigiCompositionInfo(itrigger,triggered_composition);
 	    DigiHitMap[tube] = DigitsCollection->insert(Digi);
 	  }
 	  else {
 	    //this PMT has digits saved already; add information to the WCSimWCDigi
 	    //(*DigitsCollection)[DigiHitMap[tube]-1]->AddParentID(parentID);
-	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddGate(itrigger, triggertime);
+	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddGate(itrigger);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(itrigger, digihittime);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetPe  (itrigger, peSmeared);
-	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddPe  (digihittime);
+	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddPe  ();
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(itrigger,triggered_composition);
 	  }
 	  if(remove_hits)

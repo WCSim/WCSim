@@ -171,8 +171,8 @@ public:
   void Print();
 
   inline void SetTubeID(G4int tube) { tubeID = tube; }
-  inline void AddGate  (G4int gate, float t)   { Gates.insert(gate); } //TriggerTimes.insert(t);   }
-  inline void AddPe    (G4float hitTime)  { totalPe++; } //time_float.insert(hitTime); }
+  inline void AddGate  (G4int gate) { Gates.insert(gate); }
+  inline void AddPe    ()           { totalPe++; }
   inline void SetPe    (G4int gate, G4float Q) {   pe.insert(std::pair<int,float>(gate,Q)); }
   inline void SetTime  (G4int gate, G4float T) { time.insert(std::pair<int,float>(gate,T)); }
 
@@ -185,7 +185,6 @@ public:
   inline G4int   GetTubeID() {return tubeID;}
   inline std::vector<G4float> GetPe      (int gate) { return FindInMultimap(gate, pe); }
   inline std::vector<G4float> GetTime    (int gate) { return FindInMultimap(gate, time); }
-  //inline std::vector<std::pair<int,int> > GetDigiCompositionInfo(int gate) { return FindInMultimap(gate, fDigiComp); }
   std::vector<std::vector<int> > GetDigiCompositionInfo(int gate)
   {
     std::vector<std::vector<int> > v;
@@ -202,13 +201,9 @@ public:
   inline bool HasHitsInGate(int gate) { return Gates.count(gate) > 0; }
 
 private:
-  //PMT parameters
-  G4int   tubeID;
+  G4int tubeID; ///< PMT id of the digit
 
-  //'Gates' is specifies subevent
-  std::set<int> Gates;
-  //'TriggerTimes' specifies e.g. the subevent trigger time
-  //std::vector<float> TriggerTimes;
+  std::set<int> Gates;  ///< 'Gates' specifies subevent
 
   //lists (meaning multimap) of information for each digit created on the PMT
   std::multimap<int,float> pe;   ///< Digit charge
