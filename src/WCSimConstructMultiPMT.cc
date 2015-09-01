@@ -27,11 +27,11 @@
 // TF: uncomment here or in ConstructPMT??
 //WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
-// Options : - PMT type (let's do ONE type per multiPMT), currently represented by radius, but don't like that
-//           - expose: how much the individual PMTs stick out of the blacksheet. 
-//             Let's keep this approach for now and make the surface of our multiPMT a black sheet.
-//           - type of multiPMT object: NO, specify in vis.mac (h == 0 is sphere)
-//           - WinstonCone: NO, specify in vis.mac
+// Options: - PMT type (let's do ONE type per multiPMT)
+//          - expose: how much the individual PMTs stick out of the blacksheet. 
+//            Let's keep this approach for now and make the surface of our multiPMT a black sheet.
+//          - type of multiPMT object: NO, specify in vis.mac (h == 0 is sphere)
+//          - WinstonCone: NO, specify in vis.mac
 
 // For MultiPMT: expose have different meaning, namely where to locate the sphere on the blacksheet ID/OD separator
 //TF: both args are PMT properties, used by ConstructPMT and should be replaced by PMTtype
@@ -59,6 +59,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
   G4double expose =  PMT->GetExposeHeight(); // THIS is the PMT expose, which I'm currently using for pressure vessel construction
   // this is NOT the "expose" of the mPMT
+
+  // for circle 1
+  G4int NbOfPmt = nID_PMTs;//18;//18; // This is the only free param of the fill-PMT alg 
+
+
 
   /////////////////////////
   /// Outer logical volume: fill with water (cfr same starting point as ConstructPMT)
@@ -168,7 +173,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 			     cylinder_radius + expose + dist_PMTglass_innerPressureVessel};
   //NEW: only outer shell as mother volume for parametrization, as I want to put a black sheet in there
   G4double mPMT_rRange[2] = {cylinder_radius,cylinder_radius}; 
-  if(addPMTBase)
+  if(addPMTBase || NbOfPmt == 1)
     mPMT_rRange = {0,0}; 
 
   //solids
@@ -183,7 +188,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 		   mPMT_RRange);// R Outer
 
   G4double radius_min = cylinder_radius;
-  if(addPMTBase)
+  if(addPMTBase || NbOfPmt == 1)
     radius_min = 0.;
   G4Sphere* mPMT_top_sphere =
     new G4Sphere(    "WCmPMT_tsphere",
@@ -220,8 +225,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
    * in the parametrization somehow (eg. looping over an array or so)
    */
 
-  // for circle 1
-  G4int NbOfPmt = 18; // This is the only free param of the fill-PMT alg 
   G4double pmtDistance = cylinder_radius; // Inner radius od the DOM 
   G4cout << "Distance from the Z axis = " <<  pmtDistance << " mm" << G4endl;
 
@@ -230,12 +233,52 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   //The ConstructMultiPMT function gets called multiple times, so only fill the vectors when not empty.
   G4int NbOfTotPmt = 0;
   if(vNiC.size() > 0){
-    //TODO: Could also store this value, as vNiC and vAlpha are members of DetectorConfiguration class
     for(int i = 0; i < vNiC.size();i++){
       NbOfTotPmt+=vNiC[i];
     }
-  }else
-    NbOfTotPmt = CountPMT(NbOfPmt); // Total number of PMTs in the circles, defines vNiC and vAlpha
+  } else 
+    if(NbOfPmt > 1)
+      NbOfTotPmt = CountPMT(NbOfPmt); // Total number of PMTs in the circles, defines vNiC and vAlpha
+    else{
+      G4VPhysicalVolume* singlePMT =
+	new G4PVPlacement(0,
+			  G4ThreeVector(0, 0, cylinder_height),
+			  logicWCPMT,                       // its logical volume
+			  "pmt",
+			  logicWCMultiPMT_container,        // Mother logical volume,
+			  false,
+			  0,
+			  checkOverlaps);  
+      
+      G4VPhysicalVolume* place_container =
+	new G4PVPlacement(0,			            // its rotation
+			  G4ThreeVector(0,0,-cylinder_height),		// its position
+			  logicWCMultiPMT_container,   	    // its logical volume
+			  "WCPMT_container",		    // its name 
+			  logicWCMultiPMT,		    // its mother volume
+			  false,			    // no boolean os
+			  0, 
+			  checkOverlaps);			
+    
+
+        /* Set all visualization here for better overview. */
+      // Gray wireframe visual style
+      G4VisAttributes* VisAttGrey = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+      //VisAttGrey->SetForceWireframe(true);
+      VisAttGrey->SetForceSolid(true); 
+      G4VisAttributes* WCPMTVisAtt5 = new G4VisAttributes(G4Colour(.0,1.,1.));
+      WCPMTVisAtt5->SetForceSolid(true); 
+      G4VisAttributes* VisAttYellow = new G4VisAttributes(G4Colour(1.0,1.,0.));
+      VisAttYellow->SetForceSolid(true); 
+      
+      
+      //logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
+      //logicWCMultiPMT_vessel->SetVisAttributes(WCPMTVisAtt5);  
+      //logicWCMultiPMT_container->SetVisAttributes(VisAttYellow); 
+      
+      return logicWCMultiPMT;
+      
+    }
   
   //Fill top sphere (or let the parametrisation figure out the whole filling? Yes!)
   G4VPVParameterisation* pmtParam_id =
@@ -265,7 +308,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   if(hemisphere->CheckOverlaps(1000,4,1)){
     G4cout << "Hemisphere has overlapping PMTs: Retry" << G4endl;
     G4LogicalVolume* emptyLogic;
-    return emptyLogic;
+    return emptyLogic; // ToDo: better error catching
   }
   
   G4VPhysicalVolume* place_container =

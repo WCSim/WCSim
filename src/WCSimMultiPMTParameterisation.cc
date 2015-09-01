@@ -41,7 +41,7 @@ void WCSimMultiPMTParameterisation::ComputeTransformation
 (const G4int copyNo, G4VPhysicalVolume* physVol) const
 {
    // Note: copyNo will start with zero!
-  G4RotationMatrix* rotm = new G4RotationMatrix(); // Rotation matrix for each chamber
+  G4RotationMatrix* rotm = new G4RotationMatrix(); // Rotation matrix for each PMT
   G4double angle = ((vNiCLocal[vCircleLocal[copyNo]]-2)*CLHEP::pi/vNiCLocal[vCircleLocal[copyNo]]); // Internal angle of each polygon
   G4ThreeVector origin(0,0,0); 
   origin.setRThetaPhi(fApothema,CLHEP::halfpi-vAlphaLocal[vCircleLocal[copyNo]],copyNo*(CLHEP::pi-angle));
