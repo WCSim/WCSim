@@ -326,7 +326,7 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   WCDetectorName = "TestmPMT";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
 
-  mPMT_ID_PMT = "PMT20inch";//"PMT3in_R12199_02"; 
+  mPMT_ID_PMT = "PMT3inchR12199_02";//"PMT20inch" (combine with nPMT=1);//"PMT3inchR12199_02"; 
   mPMT_OD_PMT = "PMT8inch";         //ToDo: not yet used
 
   WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
@@ -358,7 +358,7 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
   id_reflector_angle = CLHEP::pi/4*CLHEP::rad; // Based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
   // parameters related to filling the ID mPMT
-  nID_PMTs = 1;//33;
+  nID_PMTs = 18;//33;//1;//33;
   viewing_angle = 10.*CLHEP::deg;
   id_spacing = 1.33*CLHEP::m;
 
@@ -370,7 +370,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
 { 
   WCDetectorName = "Cylinder_60x74_3inchmPMT_14perCent()";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  mPMT_ID_PMT = "PMT3in_R12199_02";
+  mPMT_ID_PMT = "PMT3inchR12199_02";
   mPMT_OD_PMT = "PMT8inch";
 
   WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);

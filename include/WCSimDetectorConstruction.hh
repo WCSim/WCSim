@@ -159,6 +159,8 @@ public:
   void SetSpacing(G4double spacing){id_spacing = spacing;} 
 
   //Filling mPMT
+  G4int         FillCircles(void);
+  // DEPRECATED:
   G4int	        CountPMT(G4int NoPmt);
   G4double	ComputeEta (G4int NoPmt);
   G4double	ComputeAlpha (G4double alphaOfPrevC, G4double Eta);

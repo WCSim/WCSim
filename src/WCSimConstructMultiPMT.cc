@@ -231,15 +231,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   G4LogicalVolume* logicWCPMT = ConstructPMT(PMTName, CollectionName);
 
   //The ConstructMultiPMT function gets called multiple times, so only fill the vectors when not empty.
+  
   G4int NbOfTotPmt = 0;
   if(vNiC.size() > 0){
     for(int i = 0; i < vNiC.size();i++){
       NbOfTotPmt+=vNiC[i];
     }
   } else 
-    if(NbOfPmt > 1)
-      NbOfTotPmt = CountPMT(NbOfPmt); // Total number of PMTs in the circles, defines vNiC and vAlpha
+    if(NbOfPmt > 1){
+      NbOfTotPmt = FillCircles();
+      //NbOfTotPmt = CountPMT(NbOfPmt); // Total number of PMTs in the circles, defines vNiC and vAlpha, OLDER VERSION
+    }
     else{
+      // For single PMT WITH acrylic cover
       G4VPhysicalVolume* singlePMT =
 	new G4PVPlacement(0,
 			  G4ThreeVector(0, 0, cylinder_height),
@@ -306,9 +310,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   
   // Need a 4mm tolerance 
   if(hemisphere->CheckOverlaps(1000,4,1)){
-    G4cout << "Hemisphere has overlapping PMTs: Retry" << G4endl;
-    G4LogicalVolume* emptyLogic;
-    return emptyLogic; // ToDo: better error catching
+    G4cerr << "Hemisphere has overlapping PMTs: Retry" << G4endl;
+    return NULL; 
   }
   
   G4VPhysicalVolume* place_container =
@@ -411,7 +414,20 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 }
 
 
-
+/*
+ * Method based on the number of PMTs in the first circle
+ * Then the rest will be filled according to closest packing
+ * Result are filled vNiC, vAlpha and vCircle vectors.
+ * Return total number of PMTs
+ *
+ * Downside : - uses same fEta (from first circle) for all.
+ *            - assumes the viewing angle eta from the first circle
+ *              is the minimum one, which is not always true.
+ *            - needs an empirical number of PMTs in circle 1 to start with
+ *              and cannot properly deal with a minimum opening angle.
+ *            - calculate configuration for each WCSim MC (slow).
+ *             => DEPRECATE at some point.
+ */
 G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
 {
 
@@ -442,6 +458,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
 	vAlpha.push_back(alphaNext);
 	vNiC.push_back(NiCNext);
 	G4cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << G4endl;
+	std::cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << std::endl;
 	NoCircle++;
       }
       alphaPrev = alphaNext;
@@ -454,6 +471,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
     vAlpha.push_back(alphaNext);
     vNiC.push_back(NiCNext);
     G4cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << G4endl;
+    std::cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << std::endl;
     NoCircle++;  
   }
   
@@ -467,14 +485,79 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
       vCircle.push_back(i); //number circles internally between 0 and N-1
     }
   }
-
-  G4cout << "Total number of pmt: " << TotPmt << G4endl;
-  G4cout << "Percentage of covered hemispherical surface = " << TotPmt*(1-std::cos(fEta))*100 << "%" << G4endl;
-  G4cout << "Percentage of covered hemispherical surface above theta_min = " << TotPmt*(1-std::cos(fEta))*100/(1-std::cos(pi/2-theta_min)) << "%" << G4endl;
-  G4cout << "Test: vNic: " << vNiC.size() << " vAlpha: " << vAlpha.size() << " vCircle: " << vCircle.size() << G4endl;
+ 
+  std::cout << "Total number of pmt: " << TotPmt << std::endl;
+  std::cout << "Percentage of covered hemispherical surface = " << TotPmt*(1-std::cos(fEta))*100 << "%" << std::endl;
+  std::cout << "Percentage of covered hemispherical surface above theta_min = " << TotPmt*(1-std::cos(fEta))*100/(1-std::cos(pi/2-theta_min)) << "%" << std::endl;
+  std::cout << "Test: vNic: " << vNiC.size() << " vAlpha: " << vAlpha.size() << " vCircle: " << vCircle.size() << std::endl;
 
   return TotPmt;
 }
+
+/*
+ * Different approach (more practical)
+ * We know total number of PMTs and have a minimum alpha.
+ * Using findClosestPacking.py to find combination with maximum viewing angle.
+ * This results in the number of circles and the number of PMTs per circle.
+ * Need to fill the vectors
+ */
+G4int WCSimDetectorConstruction::FillCircles(void){
+
+  //Read in text file (instead of setting 8 numbers) with configuration
+  // and pre-calculated values
+  //Fill vAlpha, vNiC, vCircle
+  std::vector<float> vEta;
+  
+
+  std::ifstream config("mPMTconfig_30_13_3.txt");//"test.txt"); //userdefined string
+  if(!config)
+    G4cerr << "Can not find file" << G4endl;
+  
+  std::string line, item;
+  getline(config,line);
+  std::istringstream value(line);
+  while(getline(value, item, ' ')){
+    if(atoi(item.c_str()) > 0)
+      vNiC.push_back(atoi(item.c_str()));
+  }
+  getline(config,line);
+  std::istringstream value2(line);
+  while(getline(value2, item, ' ')){
+    vEta.push_back(atof(item.c_str())*CLHEP::deg);
+  }
+  G4double min_eta = *std::min_element(vEta.begin(),vEta.end());
+
+  getline(config,line);
+  std::istringstream value3(line);
+  while(getline(value3, item, ' ')){
+    vAlpha.push_back(atof(item.c_str())*CLHEP::deg);
+  }
+    
+  for(int i = 0; i < vNiC.size(); i++) {
+    std::cout << "test " << vNiC[i] << " " << vAlpha[i]/CLHEP::deg << " " << vEta[i]/CLHEP::deg << std::endl;
+  }
+
+
+ // Total number of pmt in the circles
+  G4int TotPmt = 0;
+  for(int i = 0; i < vNiC.size();i++){
+    TotPmt+=vNiC[i];
+    for(int j = 0; j < vNiC[i]; j++){
+      vCircle.push_back(i); //number circles internally between 0 and N-1
+    }
+  }
+
+
+  G4double theta_min = 13.*CLHEP::deg; //atan((cylinder_radius+expose+outer_thickness)/id_spacing)  
+  std::cout << "Total number of pmt: " << TotPmt << std::endl;
+  std::cout << "Percentage of covered hemispherical surface = " << TotPmt*(1-std::cos(min_eta))*100 << "%" << std::endl;
+  std::cout << "Percentage of covered hemispherical surface above theta_min = " << TotPmt*(1-std::cos(min_eta))*100/(1-std::cos(pi/2-theta_min)) << "%" << std::endl;
+  std::cout << "Test: vNic: " << vNiC.size() << " vAlpha: " << vAlpha.size() << " vCircle: " << vCircle.size() << std::endl;
+
+  return TotPmt; //a little redundant as this is a user input
+}
+ 
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

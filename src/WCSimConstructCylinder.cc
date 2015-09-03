@@ -313,7 +313,7 @@ else {
 
 
  //-----------------------------------------------------------
- // add extra tower if nessecary
+ // add extra tower if necessary
  // ---------------------------------------------------------
  
   // we have to declare the logical Volumes 
@@ -577,6 +577,11 @@ else {
   // TF: Args are set to properties of the class which is somehow global (see the ConstructDetector.hh)
   //     They are set in the WCSimDetectorConfigs and are property of the PMT.
   G4LogicalVolume* logicWCPMT = ConstructMultiPMT(WCPMTName, WCIDCollectionName);
+  if(!logicWCPMT){
+    G4cerr << "Overlapping PMTs in multiPMT" << G4endl;
+    return NULL; 
+  }
+
   //G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName);
   G4String pmtname = "WCMultiPMT";
   

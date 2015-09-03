@@ -49,8 +49,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   totalNumPMTs = 0;
   WCPMTExposeHeight= 0.;
 
-  SetSuperKGeometry();
-  //SetTestmPMTGeometry();  
+  //SetSuperKGeometry();
+  SetTestmPMTGeometry();  
   //SetHyperKGeometry();
 
   //----------------------------------------------------- 
@@ -73,7 +73,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   cylinder_height = 0.1*mm;
   cylinder_radius = 0.1*mm;
   orientation = PERPENDICULAR;
-  mPMT_ID_PMT = "PMT3in_R12199_02";
+  mPMT_ID_PMT = "PMT3inchR12199_02";
   mPMT_OD_PMT = "";
   mPMT_outer_material = "";
   mPMT_inner_material = "";
@@ -104,6 +104,7 @@ void WCSimDetectorConstruction::UpdateGeometry()
   
   G4bool geomChanged = true;
   G4RunManager::GetRunManager()->DefineWorldVolume(Construct(), geomChanged);
+  // ToDo: need some error catching here for NULL Construct() cases
  
  }
 
@@ -142,7 +143,11 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // Select between HyperK and cylinder
   if (isHyperK) logicWCBox = ConstructHyperK();
   else logicWCBox = ConstructCylinder(); 
-
+  
+  if(!logicWCBox){
+    G4cerr << "Something went wrong in ConstructCylinder" << G4endl;
+    return NULL;
+  }
   G4cout << " WCLength       = " << WCLength/m << " m"<< G4endl;
 
   //-------------------------------
