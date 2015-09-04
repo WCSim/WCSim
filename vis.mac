@@ -12,18 +12,19 @@
 #
 /WCSim/WCgeom TestmPMT #Cylinder_60x74_3inchmPMT_14perCent #TestmPMT
 ## possibility to overwrite some params of the TestmPMT geom
-/WCSim/mPMT/CylHeight 10 mm
-/WCSim/mPMT/CylRadius 285 mm #240 mm without PMT bases and pins 
+/WCSim/mPMT/CylHeight 200 mm
+/WCSim/mPMT/CylRadius 245 mm #240 mm without PMT bases and pins 
 #/WCSim/mPMT/orientation Perpendicular
 #/WCSim/mPMT/material_outer Acrylic
 #/WCSim/mPMT/material_outer_thickness 4. mm
 #/WCSim/mPMT/material_inner Water
 #/WCSim/mPMT/material_inner_thickness 6. mm
-/WCSim/mPMT/reflectorHeightID  0.1 mm
-/WCSim/mPMT/reflectorAngleID 45 deg
+#/WCSim/mPMT/reflectorHeightID  0.1 mm
+#/WCSim/mPMT/reflectorAngleID 45 deg
 #/WCSim/mPMT/nID_PMTs 30
-#/WCSim/mPMT/viewing_angle 15 deg
+#/WCSim/mPMT/configfile mPMTconfig_30_13_3.txt
 #/WCSim/mPMT/spacing 1.2 m
+
 
 /WCSim/Construct
 
