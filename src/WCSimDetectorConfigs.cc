@@ -327,7 +327,8 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
 
   mPMT_ID_PMT = "PMT3inchR12199_02";//"PMT20inch" (combine with nPMT=1);//"PMT3inchR12199_02"; 
-  mPMT_OD_PMT = "PMT8inch";         //ToDo: not yet used
+  mPMT_OD_PMT = "PMT8inch";         // Only used for the unique string name of mPMT for now!
+                                    
 
   WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
 
@@ -347,8 +348,8 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   WCAddGd               = false;
 
   //mPMT params:
-  cylinder_height = 50.*mm;//453.*mm;
-  cylinder_radius = 245.*mm;//270.*mm;//176.*mm;//166.*mm; 
+  cylinder_height = 50.*mm;
+  cylinder_radius = 245.*mm;
   orientation = PERPENDICULAR;
   mPMT_outer_material = "G4_PLEXIGLASS";
   mPMT_inner_material = "Blacksheet";
@@ -358,9 +359,8 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
   id_reflector_angle = CLHEP::pi/4*CLHEP::rad; // Based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
   // parameters related to filling the ID mPMT
-  nID_PMTs = 18;//33;//1;//33;
-  viewing_angle = 10.*CLHEP::deg;
-  id_spacing = 1.33*CLHEP::m;
+  nID_PMTs = 33;//1;//33;
+  config_file = "mPMTconfig_33_13_1.txt"; //mPMTconfig_30_13_3.txt
 
 }
 
@@ -392,8 +392,8 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
   WCAddGd               = false;
 
   //mPMT params:
-  cylinder_height = 50.*CLHEP::mm;//453.*mm;
-  cylinder_radius = 325.*CLHEP::mm;//270.*mm;//176.*mm;//166.*mm; //RETUNE R?? R seems unnaturally small now (230mm)
+  cylinder_height = 50.*CLHEP::mm;
+  cylinder_radius = 245.*CLHEP::mm;
   orientation = PERPENDICULAR;
   mPMT_outer_material = "G4_PLEXIGLASS";
   mPMT_inner_material = "Blacksheet";
@@ -404,7 +404,6 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
   id_reflector_angle = CLHEP::pi/4*CLHEP::rad; // Based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
   // parameters related to filling the ID mPMT
   nID_PMTs = 33;
-  viewing_angle = 10.*CLHEP::deg;
-  id_spacing = 1.33*CLHEP::m;
+  config_file = "mPMTconfig_33_13_1.txt";
 
 }

@@ -52,8 +52,7 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithADoubleAndUnit* mPMT_ID_reflector_height;
   G4UIcmdWithADoubleAndUnit* mPMT_ID_reflector_angle;
   G4UIcmdWithAnInteger*      mPMT_nID_PMTs;
-  G4UIcmdWithADoubleAndUnit* mPMT_eta;
-  G4UIcmdWithADoubleAndUnit* mPMT_spacing;
+  G4UIcmdWithAString*        mPMT_config;
   //G4UIcmdWithAString*        mPMT_PMTtype_inner;  //enums internally
   //G4UIcmdWithAString*        mPMT_PMTtype_outer; 
   

@@ -49,8 +49,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   totalNumPMTs = 0;
   WCPMTExposeHeight= 0.;
 
-  //SetSuperKGeometry();
-  SetTestmPMTGeometry();  
+  SetSuperKGeometry();
+  //SetTestmPMTGeometry();  
   //SetHyperKGeometry();
 
   //----------------------------------------------------- 
@@ -84,8 +84,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   id_reflector_angle = 0.*CLHEP::rad; 
   // parameters related to filling the ID mPMT
   nID_PMTs = 1;   //per mPMT
-  viewing_angle = 0.*CLHEP::deg;
-  id_spacing = 1.33*CLHEP::m;
+  config_file = "";
 
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry

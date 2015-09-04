@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import math
 import numpy as np
-from scipy.optimize import root, brentq
+from scipy.optimize import root, brentq #root needs scipy 0.11.0 (python > 2.7?)
 
+print 'Make sure you have scipy > 0.11.0 or adjust the rootsolver function'
 #eq. 11 from Meas. Sci. Technol. 10 (1999) 1015-1019.
 def view_angle_func(x,alpha_prev,eta_prev, n_in_circ):
     if np.cos(x*math.pi/180)*np.cos(x*math.pi/180) - np.sin((alpha_prev + x + eta_prev)*math.pi/180)*np.sin((alpha_prev + x + eta_prev)*math.pi/180) < 0:
@@ -12,9 +13,9 @@ def view_angle_func(x,alpha_prev,eta_prev, n_in_circ):
                      np.sin((alpha_prev + x + eta_prev)*math.pi/180))/np.cos((alpha_prev+x+eta_prev)*math.pi/180) - np.cos(math.pi/n_in_circ)
 
 
-
-nPMT = 32
-min_angle = 13
+id_spacing = 1.33 # meter (1 PD/1.5m^2)
+nPMT = 33
+min_angle = 13   # np.arctan( radius + expose + outer_thickness + dist_glass_to_cover/ id_spacing) : (245mm + 15.3mm + 16 mm + 2.5 mm / sqrt(1500 mm))
 configs = []
 # Circle 1
 i = nPMT
@@ -86,7 +87,15 @@ for conf in configs:
     elif len(view_angles) == 1:
         view_angles_conf.append(view_angles[0])
         
-print max(view_angles_conf)
+opt_view_angle = max(view_angles_conf)
+print "Optimal viewing angle %.2lf " %(opt_view_angle)
+
+print "Total number of PMTs: %i" %(nPMT)
+print "Percentage of covered hemispherical surface = %.2lf %%" %(nPMT*(1-np.cos(opt_view_angle*math.pi/180))*100)
+print "Percentage of covered hemispherical surface above min. tilt= %.2lf %%" %(nPMT*(1-np.cos(opt_view_angle*math.pi/180))*100/
+                                                                               (1-np.cos(math.pi/2 - min_angle*math.pi/180)))
+
+
 
 
 i = 0

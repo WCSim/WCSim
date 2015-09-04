@@ -217,34 +217,16 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 
 
   // Options related to mPMT filling:
-  // Npmts in first circle, well eta is more unique!!
-  // theta_min : should just be atan(R/r)
-  // eta
-  // totNpmt
+  // Total number of ID PMTs: used to cross check with provided configfile
   mPMT_nID_PMTs = new G4UIcmdWithAnInteger("/WCSim/mPMT/nID_PMTs",this);
   mPMT_nID_PMTs->SetGuidance("Set angle of reflector cone wrt PMT axis for each ID PMT.");
   mPMT_nID_PMTs->SetParameterName("reflectorAngleID", true);
   mPMT_nID_PMTs->SetDefaultValue(20.); 
   
-  //ToDo: calculate from known parameters instead
-  mPMT_eta = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/viewing_angle",this);
-  mPMT_eta->SetGuidance("Set viewing angle for unique optimal filling of hemisphere.");
-  mPMT_eta->SetParameterName("mPMTeta", true);
-  mPMT_eta->SetDefaultValue(10.); 
-  mPMT_eta->SetUnitCategory("Angle");
-  mPMT_eta->SetDefaultUnit("deg");
-  mPMT_eta->SetUnitCandidates("deg rad");
-  
-  //ToDo: Calculate from the granularity and photocathode coverage instead. 
-  mPMT_spacing = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/spacing",this);
-  mPMT_spacing->SetGuidance("Set distance between mPMTs for calculation minimum angle of small PMTs to avoid shadowing.");
-  mPMT_spacing->SetParameterName("mPMTspacing", true);
-  mPMT_spacing->SetDefaultValue(1.33); 
-  mPMT_spacing->SetUnitCategory("Length");
-  mPMT_spacing->SetDefaultUnit("m");
-  mPMT_spacing->SetUnitCandidates("mm cm m");
-
-
+  //
+  mPMT_config = new G4UIcmdWithAString("/WCSim/mPMT/configfile",this);
+  mPMT_config->SetGuidance("Set filename for config file with viewing angles and tilt angles.");
+  mPMT_config->SetParameterName("mPMTconfig", true);
 
 }
 
@@ -410,11 +392,8 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	if(command == mPMT_nID_PMTs){
 	  WCSimDetector->SetmPMT_nID(mPMT_nID_PMTs->GetNewIntValue(newValue));
 	}
-	if(command == mPMT_eta){
-	  WCSimDetector->SetmPMT_viewingAngle(mPMT_eta->GetNewDoubleValue(newValue));
-	}
-	if(command == mPMT_spacing){
-	  WCSimDetector->SetSpacing(mPMT_spacing->GetNewDoubleValue(newValue));
+	if(command == mPMT_config){
+	  WCSimDetector->SetmPMT_Config(newValue);
 	}
 	/*
 	if (command == mPMT_PMTtype_inner)

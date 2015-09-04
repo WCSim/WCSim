@@ -155,8 +155,7 @@ public:
   void SetmPMT_MaterialOuterThickness(G4double thickness){mPMT_outer_material_d = thickness;}
   void SetmPMT_MaterialInnerThickness(G4double thickness){mPMT_inner_material_d = thickness;}
   void SetmPMT_nID(G4int nPMTs){nID_PMTs = nPMTs;}
-  void SetmPMT_viewingAngle(G4double eta){viewing_angle = eta;}
-  void SetSpacing(G4double spacing){id_spacing = spacing;} 
+  void SetmPMT_Config(G4String inputfile){config_file = inputfile;}
 
   //Filling mPMT
   G4int         FillCircles(void);
@@ -441,8 +440,7 @@ private:
   G4double id_reflector_height;
   G4double id_reflector_angle;
   G4int nID_PMTs;
-  G4double viewing_angle;
-  G4double id_spacing;
+  G4String config_file;
   G4String mPMT_ID_PMT; //or ideally ENUM
   G4String mPMT_OD_PMT;
 

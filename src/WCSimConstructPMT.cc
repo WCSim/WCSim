@@ -19,14 +19,14 @@
 #include "G4LogicalSkinSurface.hh"
 
 //PMT logical volume construction.
+//WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
-WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
-
-//TF: ToDo: arg should be PMT type (enum instead of String, and PMTs should be objects of one simple class.)
+//ToDo: use enum instead of string for PMTtype, and PMTs should be objects of one simple class.
 G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName)
 {
   PMTKey_t key(PMTName,CollectionName);
 
+  // Return pre-created PMT Logical Volume if it already exists.
   PMTMap_t::iterator it = PMTLogicalVolumes.find(key);
   if (it != PMTLogicalVolumes.end()) {
       //G4cout << "Restore PMT" << G4endl;
@@ -39,13 +39,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0));
   WCPMTVisAtt->SetForceSolid(true);
   
-  G4double expose;
-  G4double radius;
-  G4double glassThickness;
+  G4double expose = 0.;
+  G4double radius = 0.;
+  G4double glassThickness = 0.;
   
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
   expose = PMT->GetExposeHeight();
-  radius = PMT->GetRadius();  //r at height = expose
+  radius = PMT->GetRadius();                            //r at height = expose
   glassThickness = PMT->GetPMTGlassThickness();
 
   //sphereRadius R: radius of curvature, based on spherical approx near exposeHeight
@@ -60,8 +60,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   //Optional reflectorCone:
   G4double reflectorRadius = radius + id_reflector_height * tan(id_reflector_angle);
   G4double reflectorThickness = 1.*CLHEP::mm;
+  if(reflectorRadius < 1.*CLHEP::mm)
+    reflectorThickness = 0.*CLHEP::mm;
 
-  // TODO: Base is PMT property! Should not hard coded here.
+  // ToDo: Base is PMT property! Should not hard coded here.
   G4bool addPMTBase = false; 
   G4double baseHeight = 0.;
   G4double baseRadius = 0.;
@@ -90,7 +92,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
                   PMTHolderR);// R Outer
 
   G4Material *material_around_pmt = G4Material::GetMaterial("Water");
-  if(id_reflector_height > 0.1*mm) //or make this a user option? Now: reflector means vessel => gel.
+  if(id_reflector_height > 0.1*CLHEP::mm && 
+     (cylinder_radius > 1.*CLHEP::mm || cylinder_height > 1.*CLHEP::mm)) //or make this a user option? 
     material_around_pmt = G4Material::GetMaterial("SilGel");
   G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
@@ -113,8 +116,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
             sphereRadius+1.*cm,
             PMTOffset);
 
+  ////////////////////////////
+  ///  Create PMT Interior ///
+  ////////////////////////////
 
-  //Create PMT Interior
   G4Sphere* tmpSolidInteriorWCPMT =
       new G4Sphere(    "tmpInteriorWCPMT",
                        0.0*m,(sphereRadius-glassThickness),
@@ -146,8 +151,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
   logicInteriorWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
 
+  /////////////////////////////
+  /// Create PMT Glass Face ///
+  /////////////////////////////
 
-  //Create PMT Glass Face
   G4Sphere* tmpGlassFaceWCPMT =
       new G4Sphere(    "tmpGlassFaceWCPMT",
                        (sphereRadius-glassThickness),
@@ -179,16 +186,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
  
-  // Instantiate a new sensitive detector and register this sensitive detector volume with the SD Manager. 
-  G4SDManager* SDman = G4SDManager::GetSDMpointer();
-  G4String SDName = "/WCSim/";
-  SDName += CollectionName;
-  WCSimWCSD* aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
-  SDman->AddNewDetector( aWCPMT );
-  
-  logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
-
-  PMTLogicalVolumes[key] = logicWCPMT;
 
   //Add Logical Border Surface
   new G4LogicalBorderSurface("GlassCathodeSurface",
@@ -198,7 +195,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
 
   // TF: Optional Reflector
-  if(id_reflector_height > 0.1*mm && (reflectorRadius-radius) > -5*mm){
+  if(id_reflector_height > 0.1*CLHEP::mm && (reflectorRadius-radius) > -5*CLHEP::mm){
     G4double reflectorZ[2] = {0, id_reflector_height};
     G4double reflectorR[2] = {radius + reflectorThickness, reflectorThickness + reflectorRadius};
     G4double reflectorr[2] = {radius,reflectorRadius};
@@ -234,6 +231,17 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
                         0,
                         checkOverlaps);
   }
+
+  // Instantiate a new sensitive detector and register this sensitive detector volume with the SD Manager. 
+  G4SDManager* SDman = G4SDManager::GetSDMpointer();
+  G4String SDName = "/WCSim/";
+  SDName += CollectionName;
+  WCSimWCSD* aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
+  SDman->AddNewDetector( aWCPMT );
+  
+  logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
+
+  PMTLogicalVolumes[key] = logicWCPMT;
 
   return logicWCPMT;
 }
