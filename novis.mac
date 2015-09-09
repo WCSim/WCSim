@@ -1,6 +1,6 @@
 # Sampe setup macro with no visualization
 
-/run/verbose 2
+/run/verbose 0
 /tracking/verbose 0
 /hits/verbose 0
 
@@ -9,8 +9,7 @@
 #
 # The tube size is fixed for SK to 20"
 # These are fixed geometries for validation
-#/WCSim/WCgeom HyperK
-/WCSim/WCgeom SuperK
+#/WCSim/WCgeom SuperK
 
 # Some other SuperK options:
 #/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
@@ -99,7 +98,6 @@
 /DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
 #/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
-
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
