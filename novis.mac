@@ -67,7 +67,32 @@
 #/mygen/vecfile mu+.out
 
 #choose the Trigger & Digitizer type (and options)
-#this is now done in jobOptions.mac
+# set at least one of the following two options (both /DAQ/Digitizer and /DAQ/Trigger to be clear) to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger class (WCSimWCDigitizer)
+# note that only one of the two set to SKI_SKDETSIM will only use WCSimWCDigitizer for everything (i.e. you can't use the SKI Digitizer with the old trigger)
+/DAQ/Digitizer SKI
+/DAQ/Trigger NHits
+#trigger algorithm development options
+# do we want to save only triggered events (mode 0), both triggered events & failed events (mode 1), or only failed events (mode 2)?
+/DAQ/TriggerSaveFailures/Mode 0
+# what trigger time to use for the failed events?
+/DAQ/TriggerSaveFailures/TriggerTime 100
+#NHits trigger options
+# control the NHits trigger threshold
+/DAQ/TriggerNHits/Threshold 25
+# control the NHits trigger window (ns)
+/DAQ/TriggerNHits/Window 200
+# automatically adjust the NHits threshold depending on the average noise occupancy during the trigger window
+/DAQ/TriggerNHits/AdjustForNoise false
+
+#this is a temporary workaround for needing to construct the dark noise messenger (done in the old digitizer / new adddarknoise class) before the dark noise options below are read
+#this workaround can be removed after a forthcoming major code change:
+# - removal of old WCSimWCDigitizer
+#then this can be removed by:
+# - construct WCSimWCAddDarkNoise instance in the WCSimEventAction constructor
+# - remove any references to /DAQ/Construct in WCSimWCDAQMessenger
+# - make WCSimEventAction::CreateDAQInstances() private
+# - call WCSimEventAction::CreateDAQInstances() in BeginOfEventAction() (actually already there, but need to test to make sure the instances are created early enough)
+/DAQ/Construct
 
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz

@@ -11,7 +11,8 @@
 
 #include <string>
 
-WCSimWCDAQMessenger::WCSimWCDAQMessenger()
+WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
+  WCSimEvent(eventaction)
 {
   WCSimDAQDir = new G4UIdirectory("/DAQ/");
   WCSimDAQDir->SetGuidance("Commands to select DAQ options");
@@ -83,10 +84,17 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger()
   NHitsTriggerAdjustForNoise->SetParameterName("NHitsAdjustForNoise",true);
   NHitsTriggerAdjustForNoise->SetDefaultValue(false);
   StoreNHitsAdjustForNoise = false;
+
+
+  //TODO remove this
+  DAQConstruct = new G4UIcmdWithoutParameter("/DAQ/Construct", this);
+  DAQConstruct->SetGuidance("Create the DAQ class instances");
 }
 
 WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
 {
+  delete DAQConstruct; //TODO remove this
+
   delete SaveFailuresTriggerDir;
   delete SaveFailuresTriggerMode;
   delete SaveFailuresTriggerTime;
@@ -109,10 +117,12 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
   if (command == DigitizerChoice) {
     G4cout << "Digitizer choice set to " << newValue << G4endl;
+    WCSimEvent->SetDigitizerChoice(newValue);
     StoreDigitizerChoice = newValue;
   }
   else if (command == TriggerChoice) {
     G4cout << "Trigger choice set to " << newValue << G4endl;
+    WCSimEvent->SetTriggerChoice(newValue);
     StoreTriggerChoice = newValue;
   }
 
@@ -151,15 +161,12 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     G4cout << "NHits trigger window set to " << newValue << G4endl;
     StoreNHitsWindow = NHitsTriggerWindow->GetNewIntValue(newValue);
   }
-}
 
-void WCSimWCDAQMessenger::SetEventActionOptions()
-{
-  G4cout << "Passing DAQ options to the event action class instance" << G4endl;
-  WCSimEvent->SetDigitizerChoice(StoreDigitizerChoice);
-  G4cout << "\tDigitizer choice set to " << StoreDigitizerChoice << G4endl;
-  WCSimEvent->SetTriggerChoice(StoreTriggerChoice);
-  G4cout << "\tTrigger choice set to " << StoreTriggerChoice << G4endl;
+  //TODO remove this
+  else if(command == DAQConstruct) {
+    G4cout << "Calling WCSimEventAction::CreateDAQInstances()" << G4endl;
+    WCSimEvent->CreateDAQInstances();
+  }
 }
 
 void WCSimWCDAQMessenger::SetTriggerOptions()

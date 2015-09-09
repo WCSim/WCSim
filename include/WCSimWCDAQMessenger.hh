@@ -7,6 +7,7 @@
 #include "G4UIcmdWithAnInteger.hh"
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIdirectory.hh"
+#include "G4UIcmdWithoutParameter.hh"
 
 class G4UIcommand;
 class WCSimEventAction;
@@ -16,19 +17,17 @@ class WCSimWCTriggerBase;
 class WCSimWCDAQMessenger: public G4UImessenger
 {
 public:
-  WCSimWCDAQMessenger();
+  WCSimWCDAQMessenger(WCSimEventAction*);
 
   ~WCSimWCDAQMessenger();
 
   void SetNewValue(G4UIcommand* command, G4String newValue);
 
-  void SetEventActionOptions();
   void SetTriggerOptions();
   void SetDigitizerOptions();
 
   void TellMeAboutTheDigitizer  (WCSimWCDigitizerBase* digitizer)   { WCSimDigitize = digitizer; }
   void TellMeAboutTheTrigger    (WCSimWCTriggerBase*   trigger)     { WCSimTrigger  = trigger; }
-  void TellMeAboutTheEventAction(WCSimEventAction*     eventaction) { WCSimEvent    = eventaction; }
 
 private:
   WCSimEventAction*     WCSimEvent;
@@ -40,6 +39,8 @@ private:
   G4String            StoreDigitizerChoice;
   G4UIcmdWithAString* TriggerChoice;
   G4String            StoreTriggerChoice;
+
+  G4UIcmdWithoutParameter* DAQConstruct; //TODO remove this
 
   G4UIdirectory*        SaveFailuresTriggerDir;
   G4UIcmdWithAnInteger* SaveFailuresTriggerMode;

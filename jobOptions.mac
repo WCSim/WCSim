@@ -13,19 +13,3 @@
 #/WCSim/physics/list QGSP_BIC_HP #preferred for energies below 5 GeV
 #/WCSim/physics/list LBE # preferred for low-background experiments.  
 /WCSim/physics/list WCSim # included for backward-compatibility.  Requires jobOptions2.mac
-
-
-#choose the Trigger & Digitizer type (and options)
-# set at least one of the following two options (both /DAQ/Digitizer and /DAQ/Trigger to be sure) to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger class (WCSimWCDigitizer)
-/DAQ/Digitizer SKI
-/DAQ/Trigger NHits
-#do we want to save only triggered events (mode 0), both triggered events & failed events (mode 1), or only failed events (mode 2)?
-/DAQ/TriggerSaveFailures/Mode 0
-#what trigger time to use for the failed events?
-/DAQ/TriggerSaveFailures/TriggerTime 100
-# control the NHits trigger threshold
-/DAQ/TriggerNHits/Threshold 25
-# control the NHits trigger window (ns)
-/DAQ/TriggerNHits/Window 200
-#automatically adjust the NHits threshold depending on the average noise occupancy during the trigger window
-/DAQ/TriggerNHits/AdjustForNoise false

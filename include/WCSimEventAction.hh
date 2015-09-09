@@ -28,7 +28,7 @@ private:
   
 public:
   WCSimEventAction(WCSimRunAction*, WCSimDetectorConstruction*,
-		   WCSimPrimaryGeneratorAction*, WCSimWCDAQMessenger*);
+		   WCSimPrimaryGeneratorAction*);
   ~WCSimEventAction();
   
 public:
@@ -44,11 +44,15 @@ public:
   void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
   void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
 
- private:
+  void  CreateDAQInstances(); //TODO make this private
+
+private:
   G4int WCSimEventFindStartingVolume( G4ThreeVector vtx);
   G4int WCSimEventFindStoppingVolume( G4String stopVolumeName);
+
   G4String DigitizerChoice;
   G4String TriggerChoice;
+  bool     ConstructedDAQClasses;
 };
 
 
