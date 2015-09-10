@@ -239,12 +239,12 @@ else {
 
   else
    { // Gray wireframe visual style
-    // used in OGLSX visualizer
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
-  WCPMTVisAtt->SetForceWireframe(true);
-  //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
-  logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
- 
+     // used in OGLSX visualizer
+     G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+     WCPMTVisAtt->SetForceWireframe(true);
+     //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+     logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
+   }
 
   //Add Logical Border Surface
   new G4LogicalBorderSurface("GlassCathodeSurface",
@@ -290,9 +290,6 @@ else {
                         0,
                         checkOverlaps);
   }
-=======
-  logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
->>>>>>> develop
 
   // Instantiate a new sensitive detector and register this sensitive detector volume with the SD Manager. 
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
