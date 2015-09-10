@@ -34,6 +34,7 @@ class WCSimDetectorMessenger: public G4UImessenger
   
   G4UIdirectory*      WCSimDir;
   G4UIcmdWithAString* PMTConfig;
+  G4UIcmdWithAString* WCVisChoice;
   G4UIcmdWithAString* PMTGeomDetails;
   G4UIcmdWithAString* PMTSize;
   G4UIcmdWithAString* SavePi0;

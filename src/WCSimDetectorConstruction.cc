@@ -63,8 +63,11 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Set the default method for implementing the PMT QE
   //-----------------------------------------------------
   SetPMT_QE_Method(1);
+
    //default is to use collection efficiency
   SetPMT_Coll_Eff(1);
+  // set default visualizer to OGLSX
+  SetVis_Choice("OGLSX");
 
   //---------------------------------------------------
   // Need to define defaults for all mPMT parameters 
