@@ -64,6 +64,9 @@
 # note that only one of the two set to SKI_SKDETSIM will only use WCSimWCDigitizer for everything (i.e. you can't use the SKI Digitizer with the old trigger)
 /DAQ/Digitizer SKI
 /DAQ/Trigger NHits
+#generic digitizer options
+# how long is the digitizer dead before	a new hit on the same PMT can be recorded?
+/DAQ/DigitizerOpt/DeadTime 0
 #trigger algorithm development options
 # do we want to save only triggered events (mode 0), both triggered events & failed events (mode 1), or only failed events (mode 2)?
 /DAQ/TriggerSaveFailures/Mode 0

@@ -31,7 +31,7 @@ public:
   void Digitize();
 
   //.mac file option setting methods
-  void SKDigitizerType(G4String); 
+  void SetDigitizerDeadTime(int deadtime) { DigitizerDeadTime = deadtime; };
 
 protected:
   void ReInitialize() { DigiStoreHitMap.clear(); }
@@ -44,7 +44,8 @@ protected:
   WCSimWCDigitsCollection*  DigiStore;
   std::map<int,int> DigiStoreHitMap; // need to check if a hit already exists..
 
-  bool SKDeadTime;
+  //.mac file option setting variables (need to be put in the base class)
+  int DigitizerDeadTime;
 
 };
 
@@ -56,12 +57,12 @@ protected:
 
 
 // SKI-based digitizer class
-class WCSimWCDigitizerSK : public WCSimWCDigitizerBase 
+class WCSimWCDigitizerSKI : public WCSimWCDigitizerBase 
 {
 public:
   
-  WCSimWCDigitizerSK(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
-  ~WCSimWCDigitizerSK();
+  WCSimWCDigitizerSKI(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+  ~WCSimWCDigitizerSKI();
 
   void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);
 

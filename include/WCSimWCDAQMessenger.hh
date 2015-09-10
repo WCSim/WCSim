@@ -42,6 +42,10 @@ private:
 
   G4UIcmdWithoutParameter* DAQConstruct; //TODO remove this
 
+  G4UIdirectory*        DigitizerDir;
+  G4UIcmdWithAnInteger* DigitizerDeadTime;
+  G4int                 StoreDigitizerDeadTime;
+
   G4UIdirectory*        SaveFailuresTriggerDir;
   G4UIcmdWithAnInteger* SaveFailuresTriggerMode;
   G4int                 StoreSaveFailuresMode;
@@ -55,6 +59,8 @@ private:
   G4int                 StoreNHitsWindow;
   G4UIcmdWithABool*     NHitsTriggerAdjustForNoise;
   G4bool                StoreNHitsAdjustForNoise;
+
+  G4String initaliseString;
 };
 
 #endif

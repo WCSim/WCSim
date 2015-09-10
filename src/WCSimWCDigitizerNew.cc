@@ -142,47 +142,31 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
   }
 }
 
-void WCSimWCDigitizerBase::SKDigitizerType(G4String type) {
-  if(type == "SKI")
-    SKDeadTime = false;
-  else if(type == "SKIV")
-    SKDeadTime = true;
-}
-
-
-
 
 // *******************************************
 // DERIVED CLASS
 // *******************************************
 
-const double WCSimWCDigitizerSK::pmtgate = 200.0 ; // ns
+const double WCSimWCDigitizerSKI::pmtgate = 200.0 ; // ns
 
-WCSimWCDigitizerSK::WCSimWCDigitizerSK(G4String name,
+WCSimWCDigitizerSKI::WCSimWCDigitizerSKI(G4String name,
 				       WCSimDetectorConstruction* myDetector,
 				       WCSimWCDAQMessenger* myMessenger)
   :WCSimWCDigitizerBase(name, myDetector, myMessenger)
 {
 }
 
-WCSimWCDigitizerSK::~WCSimWCDigitizerSK(){
+WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
 }
 
-void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
-  G4cout << "WCSimWCDigitizerSK::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
+void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
+  G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
   //We must first sort hits by PMT in time.  This is very important as the code
   //assumes that each hit is in time order from lowest to highest.
   
   //Sorting done.  Now we integrate the charge on each PMT.
-  //SK IV has a 400ns 
-  //integration gate, discharges for 350ns to calculate the charge and
-  //this is followed by a 150ns veto (500ns total deadtime)
-  //Total processing time for a hit is 900ns
-  //SK I has 2 capacitors, allowing zero deadtime
-  int deadtime = 0;
-  if(SKDeadTime)
-    deadtime = 350 + 150;
-
+  // Integration occurs for WCSimWCDigitizerSKI::pmtgate ns (fixed constant)
+  // Digitizer is then dead for DigitizerDeadTime ns (user set)
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
     {
       //loop over entires in WCHCPMT, each entry corresponds to
@@ -266,12 +250,12 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  //if ensures we don't append the same digit multiple times while in the integration window
 	  else if(digi_comp.size()) {
 	    //this hit is outside the integration time window.
-	    //Charge integration is over.  For SKIV, there is now a 350ns + 150ns
+	    //Charge integration is over.  The is now a DigitizerDeadTime ns dead
 	    //time period where no hits can be recorded
 	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    MakeDigit = true;
 	    // 	    int iflag;
-	    // 	    WCSimWCDigitizerSK::Threshold(peSmeared,iflag);
+	    // 	    WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
 	    // 	    if(iflag == 0) {
 	    // 	      //digitize hit
 	    // 	      peSmeared *= efficiency;
@@ -286,7 +270,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  //Make digit here
 	  if(MakeDigit) {
 	    int iflag;                                                                                                                                                        
-	    WCSimWCDigitizerSK::Threshold(peSmeared,iflag);                                                                                                                      
+	    WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);                                                                                                                      
 	    if(iflag == 0) {                                                                                                                                             
 	      //digitize hit                                                                                                                                  
 	      peSmeared *= efficiency;
@@ -308,10 +292,10 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  }
 	  
 	  //Now try and deal with the next hit
-	  if(time > upperlimit && time <= upperlimit + deadtime) {
+	  if(time > upperlimit && time <= upperlimit + DigitizerDeadTime) {
 	    continue;
 	  }
-	  else if(time > upperlimit + deadtime){
+	  else if(time > upperlimit + DigitizerDeadTime){
 #ifdef WCSIMWCDIGITIZER_VERBOSE
 	    G4cout<<"*** PREPARING FOR >1 DIGI ***"<<G4endl;
 #endif
@@ -329,7 +313,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    //as the loop will not evaluate again
 	    if(ip+1 == (*WCHCPMT)[i]->GetTotalPe()) {
 	      int iflag;
-	      WCSimWCDigitizerSK::Threshold(peSmeared,iflag);
+	      WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
 	      if(iflag == 0) {
 		//digitize hit                                                                                                                                                  
 		peSmeared *= efficiency;
@@ -352,7 +336,7 @@ void WCSimWCDigitizerSK::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  }
 	}//ip (totalpe)
     }//i (WCHCPMT->entries())
-  G4cout<<"WCSimWCDigitizerSK::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << "\n";
+  G4cout<<"WCSimWCDigitizerSKI::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << "\n";
   
 #ifdef WCSIMWCDIGITIZER_VERBOSE
   G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;

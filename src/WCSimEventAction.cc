@@ -84,8 +84,8 @@ void WCSimEventAction::CreateDAQInstances()
     DMman->AddNewModule(WCDNM);
 
     //create your choice of digitizer module
-    if(DigitizerChoice == "SKI" || DigitizerChoice == "SKIV") {
-      WCSimWCDigitizerSK* WCDM = new WCSimWCDigitizerSK("WCReadoutDigits", detectorConstructor, DAQMessenger);
+    if(DigitizerChoice == "SKI") {
+      WCSimWCDigitizerSKI* WCDM = new WCSimWCDigitizerSKI("WCReadoutDigits", detectorConstructor, DAQMessenger);
       DMman->AddNewModule(WCDM);
     }
     else {
