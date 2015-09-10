@@ -59,12 +59,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   
   G4cout << "Create mPMT" << G4endl;
 
-  std::ifstream fin("/home/tfeusels/Geant4/build/geant4.9.6.p04/data/G4EMLOW6.32/brem_SB/br1");
-  if( !fin.is_open()) {
-    std::cout << " NOT OPEN " << std::endl;
-  }  else
-    std::cout << " OPEN " << std::endl;
-  
   //All components of the PMT are now contained in a single logical volume logicWCPMT.
   //Origin is on the blacksheet, faces positive z-direction.
 
