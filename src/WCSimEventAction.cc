@@ -94,12 +94,12 @@ void WCSimEventAction::CreateDAQInstances()
     }
 
     //create your choice of trigger module
-    if(TriggerChoice == "NHits") {
-      WCSimWCTriggerNHits* WCTM = new WCSimWCTriggerNHits("WCReadout", detectorConstructor, DAQMessenger);
+    if(TriggerChoice == "NDigits") {
+      WCSimWCTriggerNDigits* WCTM = new WCSimWCTriggerNDigits("WCReadout", detectorConstructor, DAQMessenger);
       DMman->AddNewModule(WCTM);
     }
-    else if(TriggerChoice == "NHits2") {
-      WCSimWCTriggerNHits2* WCTM = new WCSimWCTriggerNHits2("WCReadout", detectorConstructor, DAQMessenger);
+    else if(TriggerChoice == "NDigits2") {
+      WCSimWCTriggerNDigits2* WCTM = new WCSimWCTriggerNDigits2("WCReadout", detectorConstructor, DAQMessenger);
       DMman->AddNewModule(WCTM);
     }
     else {
@@ -243,7 +243,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCSimWCTriggerBase* WCTM =
       (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout");
   
-    //tell it the dark noise rate (for calculating the average dark occupancy -> can adjust the NHits threshold)
+    //tell it the dark noise rate (for calculating the average dark occupancy -> can adjust the NDigits threshold)
     WCTM->SetDarkRate(WCDNM->GetDarkRate());
 
     //Apply the trigger

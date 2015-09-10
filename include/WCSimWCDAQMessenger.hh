@@ -52,13 +52,13 @@ private:
   G4UIcmdWithADouble*   SaveFailuresTriggerTime;
   G4double              StoreSaveFailuresTime;
 
-  G4UIdirectory*        NHitsTriggerDir;
-  G4UIcmdWithAnInteger* NHitsTriggerThreshold;
-  G4int                 StoreNHitsThreshold;
-  G4UIcmdWithAnInteger* NHitsTriggerWindow;
-  G4int                 StoreNHitsWindow;
-  G4UIcmdWithABool*     NHitsTriggerAdjustForNoise;
-  G4bool                StoreNHitsAdjustForNoise;
+  G4UIdirectory*        NDigitsTriggerDir;
+  G4UIcmdWithAnInteger* NDigitsTriggerThreshold;
+  G4int                 StoreNDigitsThreshold;
+  G4UIcmdWithAnInteger* NDigitsTriggerWindow;
+  G4int                 StoreNDigitsWindow;
+  G4UIcmdWithABool*     NDigitsTriggerAdjustForNoise;
+  G4bool                StoreNDigitsAdjustForNoise;
 
   G4String initaliseString;
 };

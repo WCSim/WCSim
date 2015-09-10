@@ -90,6 +90,8 @@ private:
   G4float PMTSize;
   G4double peSmeared;
 
+  int nhitsThreshold;
+
   ////std::vector<G4double> TriggerTimes;
   std::map<G4int, G4int> GateMap;
   ////std::map<int,int> DigiHitMap; // need to check if a hit already exists..

@@ -60,13 +60,13 @@ public:
   // Trigger algorithm option set methods
   //
 
-  // NHits options
-  ///Set the threshold for the NHits trigger
-  void SetNHitsThreshold(G4int threshold) { nhitsThreshold = threshold; }
-  ///Set the time window for the NHits trigger
-  void SetNHitsWindow(G4int window) { nhitsWindow = window; }
-  ///Automatically adjust the NHits threshold based on the average noise occupancy?
-  void SetNHitsAdjustForNoise    (G4bool adjust)      { nhitsAdjustForNoise = adjust; }
+  // NDigits options
+  ///Set the threshold for the NDigits trigger
+  void SetNDigitsThreshold(G4int threshold) { ndigitsThreshold = threshold; }
+  ///Set the time window for the NDigits trigger
+  void SetNDigitsWindow(G4int window) { ndigitsWindow = window; }
+  ///Automatically adjust the NDigits threshold based on the average noise occupancy?
+  void SetNDigitsAdjustForNoise    (G4bool adjust)      { ndigitsAdjustForNoise = adjust; }
 
   // Save trigger failures options
   ///Set the mode for saving failed triggers (0:save only triggered events, 1:save both triggered events & failed events, 2:save only failed events)
@@ -88,21 +88,21 @@ protected:
   //these are the algorithms that perform triggering
   //they are stored here so that different trigger classes can use the same algorithms without copying code
   /**
-   * \brief An NHits trigger algorithm
+   * \brief An NDigits trigger algorithm
    *
    * Looks through the input WCSimWCDigitsCollection and integrates the number of hits in a (specified) time window
    * If the integral passes above a (specified) threshold, a trigger is issued
    *
-   * The trigger type is kTriggerNHits
+   * The trigger type is kTriggerNDigits
    *
    * The trigger time is the time of the first digit above threshold
    *
    * The trigger information is the number of hits in the time window (i.e. the number of hits that caused the trigger to fire)
    *
    * Currently setup with the optional 'test' argument which runs the algorithm with half the hit threshold
-   * for testing purposes. Triggers issued in this mode have type kTriggerNHitsTest
+   * for testing purposes. Triggers issued in this mode have type kTriggerNDigitsTest
    */
-  void AlgNHits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
+  void AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
 
   WCSimWCTriggeredDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
   std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
@@ -125,10 +125,10 @@ protected:
   double PMTDarkRate;    ///< Dark noise rate of the PMTs
 
   // Trigger algorithm options
-  //NHits
-  G4int  nhitsThreshold;      ///< The threshold for the NHits trigger
-  G4int  nhitsWindow;         ///< The time window for the NHits trigger
-  G4bool nhitsAdjustForNoise; ///< Automatically adjust the NHits trigger threshold based on the average dark noise rate?
+  //NDigits
+  G4int  ndigitsThreshold;      ///< The threshold for the NDigits trigger
+  G4int  ndigitsWindow;         ///< The time window for the NDigits trigger
+  G4bool ndigitsAdjustForNoise; ///< Automatically adjust the NDigits trigger threshold based on the average dark noise rate?
   //Save failures
   G4int    saveFailuresMode; ///< The mode for saving events which don't pass triggers
   G4double saveFailuresTime; ///< The dummy trigger time for failed events
@@ -136,8 +136,8 @@ protected:
   G4String triggerClassName; ///< Save the name of the trigger class
 
 private:
-  ///modify the NHits threshold based on the average dark noise rate
-  void AdjustNHitsThresholdForNoise();
+  ///modify the NDigits threshold based on the average dark noise rate
+  void AdjustNDigitsThresholdForNoise();
 
   ///takes all trigger times, then loops over all Digits & fills the output DigitsCollection
   void FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType);
@@ -248,42 +248,42 @@ inline void WCSimWCDigiTrigger::operator delete(void* aDigi)
 
 
 /**
- * \class WCSimWCTriggerNHits
+ * \class WCSimWCTriggerNDigits
  *
- * \brief A simple NHits trigger class
+ * \brief A simple NDigits trigger class
  *
  */
 
-class WCSimWCTriggerNHits : public WCSimWCTriggerBase
+class WCSimWCTriggerNDigits : public WCSimWCTriggerBase
 {
 public:
 
-  ///Create WCSimWCTriggerNHits instance with knowledge of the detector and DAQ options
-  WCSimWCTriggerNHits(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+  ///Create WCSimWCTriggerNDigits instance with knowledge of the detector and DAQ options
+  WCSimWCTriggerNDigits(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
 
-  ~WCSimWCTriggerNHits();
+  ~WCSimWCTriggerNDigits();
   
 private:
-  ///Calls the workhorse of this class: AlgNHits
+  ///Calls the workhorse of this class: AlgNDigits
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
 };
 
 
 /**
- * \class WCSimWCTriggerNHits2
+ * \class WCSimWCTriggerNDigits2
  *
  * \brief An (incomplete) example of running two trigger algorithms, one after the other
  *
  */
 
-class WCSimWCTriggerNHits2 : public WCSimWCTriggerBase
+class WCSimWCTriggerNDigits2 : public WCSimWCTriggerBase
 {
 public:
 
   //not recommended to override these methods
-  WCSimWCTriggerNHits2(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
-  ~WCSimWCTriggerNHits2();
+  WCSimWCTriggerNDigits2(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+  ~WCSimWCTriggerNDigits2();
   
 private:
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);

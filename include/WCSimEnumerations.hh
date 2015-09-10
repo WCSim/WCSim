@@ -5,9 +5,9 @@
 
 typedef enum ETriggerType {
   kTriggerUndefined = -1,
-  kTriggerNHits,
+  kTriggerNDigits,
   kTriggerNHitsSKDETSIM,
-  kTriggerNHitsTest,
+  kTriggerNDigitsTest,
   kTriggerFailure // this should always be the last entry (for looping)
 } TriggerType_t;
 
@@ -18,14 +18,14 @@ public:
   static std::string EnumAsString(TriggerType_t t)
   {
     switch(t) {
-    case (kTriggerNHits) :
-      return "NHits";
+    case (kTriggerNDigits) :
+      return "NDigits";
       break;
     case (kTriggerNHitsSKDETSIM) :
       return "NHits_SKDETSIM";
       break;
-    case (kTriggerNHitsTest) :
-      return "NHits_TEST";
+    case (kTriggerNDigitsTest) :
+      return "NDigits_TEST";
       break;
     case (kTriggerFailure) :
       return "No_trigger_passed";

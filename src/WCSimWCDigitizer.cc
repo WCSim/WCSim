@@ -32,7 +32,7 @@ const double WCSimWCDigitizer::eventgateup = 950.0 ; // ns
 const double WCSimWCDigitizer::eventgatedown = -400.0 ; // ns
 const double WCSimWCDigitizer::LongTime = 100000.0 ; // ns
 // value in skdetsim
-//replaced with the user parameter nhitsThreshold
+//replaced with the user parameter /DAQ/TriggerNDigits/Threshold
 //const int WCSimWCDigitizer::GlobalThreshold = 25 ; // # hit PMTs
 //const int WCSimWCDigitizer::GlobalThreshold = 12 ; // # hit PMTs
 // try to trigger early to reduce the width.
@@ -51,6 +51,11 @@ WCSimWCDigitizer::WCSimWCDigitizer(G4String name,
   ReInitialize();
 
   DarkRateMessenger = new WCSimDarkRateMessenger(this);
+
+  //the nhits threshold value is read into the base class from /DAQ/TriggerNDigits/Threshold
+  // into the variable ndigitsThreshold
+  //in this class use this synonym for clarity
+  nhitsThreshold = ndigitsThreshold;
 }
 
 WCSimWCDigitizer::~WCSimWCDigitizer(){
@@ -378,7 +383,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 {
 
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-  G4float timingConstant = 0.0;
+  //G4float timingConstant = 0.0;
   WCSimPMTObject * PMT;
   PMT = myDetector->GetPMTPointer(WCIDCollectionName);
  

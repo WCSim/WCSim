@@ -36,18 +36,18 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreDigitizerChoice = defaultDigitizer;
   SetNewValue(DigitizerChoice, defaultDigitizer);
 
-  G4String defaultTrigger = "NHits";
+  G4String defaultTrigger = "NDigits";
   TriggerChoice = new G4UIcmdWithAString("/DAQ/Trigger", this);
   TriggerChoice->SetGuidance("Set the Trigger type");
   TriggerChoice->SetGuidance("Available choices are:\n"
-			     "NHits\n"
-			     "NHits2\n"
+			     "NDigits\n"
+			     "NDigits2\n"
 			     "SKI_SKDETSIM (combined trigger & digitization (therefore ignores /DAQ/Digitization); buggy) \n"
 			     );
   TriggerChoice->SetParameterName("Trigger", false);
   TriggerChoice->SetCandidates(
-			       "NHits "
-			       "NHits2 "
+			       "NDigits "
+			       "NDigits2 "
 			       "SKI_SKDETSIM "
 			       );
   TriggerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
@@ -89,33 +89,33 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreSaveFailuresTime = defaultSaveFailuresTriggerTime;
   SetNewValue(SaveFailuresTriggerTime, G4UIcommand::ConvertToString(defaultSaveFailuresTriggerTime));
 
-  //NHits trigger specifc options
-  NHitsTriggerDir = new G4UIdirectory("/DAQ/TriggerNHits/");
-  NHitsTriggerDir->SetGuidance("Commands specific to the NHits trigger");
+  //NDigits trigger specifc options
+  NDigitsTriggerDir = new G4UIdirectory("/DAQ/TriggerNDigits/");
+  NDigitsTriggerDir->SetGuidance("Commands specific to the NDigits trigger");
   
-  int defaultNHitsTriggerThreshold = 25;
-  NHitsTriggerThreshold = new G4UIcmdWithAnInteger("/DAQ/TriggerNHits/Threshold", this);
-  NHitsTriggerThreshold->SetGuidance("Set the NHits trigger threshold");
-  NHitsTriggerThreshold->SetParameterName("NHitsThreshold",false);
-  NHitsTriggerThreshold->SetDefaultValue(defaultNHitsTriggerThreshold);
-  StoreNHitsThreshold = defaultNHitsTriggerThreshold;
-  SetNewValue(NHitsTriggerThreshold, G4UIcommand::ConvertToString(defaultNHitsTriggerThreshold));
+  int defaultNDigitsTriggerThreshold = 25;
+  NDigitsTriggerThreshold = new G4UIcmdWithAnInteger("/DAQ/TriggerNDigits/Threshold", this);
+  NDigitsTriggerThreshold->SetGuidance("Set the NDigits trigger threshold");
+  NDigitsTriggerThreshold->SetParameterName("NDigitsThreshold",false);
+  NDigitsTriggerThreshold->SetDefaultValue(defaultNDigitsTriggerThreshold);
+  StoreNDigitsThreshold = defaultNDigitsTriggerThreshold;
+  SetNewValue(NDigitsTriggerThreshold, G4UIcommand::ConvertToString(defaultNDigitsTriggerThreshold));
 
-  int defaultNHitsTriggerWindow = 200;
-  NHitsTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNHits/Window", this);
-  NHitsTriggerWindow->SetGuidance("Set the NHits trigger window (in ns)");
-  NHitsTriggerWindow->SetParameterName("NHitsWindow",false);
-  NHitsTriggerWindow->SetDefaultValue(defaultNHitsTriggerWindow);
-  StoreNHitsWindow = defaultNHitsTriggerWindow;
-  SetNewValue(NHitsTriggerWindow, G4UIcommand::ConvertToString(defaultNHitsTriggerWindow));
+  int defaultNDigitsTriggerWindow = 200;
+  NDigitsTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNDigits/Window", this);
+  NDigitsTriggerWindow->SetGuidance("Set the NDigits trigger window (in ns)");
+  NDigitsTriggerWindow->SetParameterName("NDigitsWindow",false);
+  NDigitsTriggerWindow->SetDefaultValue(defaultNDigitsTriggerWindow);
+  StoreNDigitsWindow = defaultNDigitsTriggerWindow;
+  SetNewValue(NDigitsTriggerWindow, G4UIcommand::ConvertToString(defaultNDigitsTriggerWindow));
 
-  bool defaultNHitsTriggerAdjustForNoise = false;
-  NHitsTriggerAdjustForNoise = new G4UIcmdWithABool("/DAQ/TriggerNHits/AdjustForNoise", this);
-  NHitsTriggerAdjustForNoise->SetGuidance("Adjust the NHits trigger threshold automatically dependent on the average noise rate");
-  NHitsTriggerAdjustForNoise->SetParameterName("NHitsAdjustForNoise",true);
-  NHitsTriggerAdjustForNoise->SetDefaultValue(defaultNHitsTriggerAdjustForNoise);
-  StoreNHitsAdjustForNoise = defaultNHitsTriggerAdjustForNoise;
-  SetNewValue(NHitsTriggerAdjustForNoise, G4UIcommand::ConvertToString(defaultNHitsTriggerAdjustForNoise));
+  bool defaultNDigitsTriggerAdjustForNoise = false;
+  NDigitsTriggerAdjustForNoise = new G4UIcmdWithABool("/DAQ/TriggerNDigits/AdjustForNoise", this);
+  NDigitsTriggerAdjustForNoise->SetGuidance("Adjust the NDigits trigger threshold automatically dependent on the average noise rate");
+  NDigitsTriggerAdjustForNoise->SetParameterName("NDigitsAdjustForNoise",true);
+  NDigitsTriggerAdjustForNoise->SetDefaultValue(defaultNDigitsTriggerAdjustForNoise);
+  StoreNDigitsAdjustForNoise = defaultNDigitsTriggerAdjustForNoise;
+  SetNewValue(NDigitsTriggerAdjustForNoise, G4UIcommand::ConvertToString(defaultNDigitsTriggerAdjustForNoise));
 
 
   //TODO remove this
@@ -133,10 +133,10 @@ WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
   delete SaveFailuresTriggerMode;
   delete SaveFailuresTriggerTime;
 
-  delete NHitsTriggerDir;
-  delete NHitsTriggerThreshold;
-  delete NHitsTriggerWindow;
-  delete NHitsTriggerAdjustForNoise;
+  delete NDigitsTriggerDir;
+  delete NDigitsTriggerThreshold;
+  delete NDigitsTriggerWindow;
+  delete NDigitsTriggerAdjustForNoise;
 
   delete DigitizerDir;
   delete DigitizerDeadTime;
@@ -190,19 +190,19 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     StoreSaveFailuresTime = SaveFailuresTriggerTime->GetNewDoubleValue(newValue);
   }
 
-  //NHits trigger
-  else if (command == NHitsTriggerThreshold) {
-    G4cout << "NHits trigger threshold set to " << newValue << initaliseString.c_str() << G4endl;
-    StoreNHitsThreshold = NHitsTriggerThreshold->GetNewIntValue(newValue);
+  //NDigits trigger
+  else if (command == NDigitsTriggerThreshold) {
+    G4cout << "NDigits trigger threshold set to " << newValue << initaliseString.c_str() << G4endl;
+    StoreNDigitsThreshold = NDigitsTriggerThreshold->GetNewIntValue(newValue);
   }
-  else if (command == NHitsTriggerAdjustForNoise) {
-    StoreNHitsAdjustForNoise = NHitsTriggerAdjustForNoise->GetNewBoolValue(newValue);
-    if(StoreNHitsAdjustForNoise)
-      G4cout << "Will adjust NHits trigger threshold using average dark noise rate" << initaliseString.c_str() << G4endl;
+  else if (command == NDigitsTriggerAdjustForNoise) {
+    StoreNDigitsAdjustForNoise = NDigitsTriggerAdjustForNoise->GetNewBoolValue(newValue);
+    if(StoreNDigitsAdjustForNoise)
+      G4cout << "Will adjust NDigits trigger threshold using average dark noise rate" << initaliseString.c_str() << G4endl;
   }
-  else if (command == NHitsTriggerWindow) {
-    G4cout << "NHits trigger window set to " << newValue << initaliseString.c_str() << G4endl;
-    StoreNHitsWindow = NHitsTriggerWindow->GetNewIntValue(newValue);
+  else if (command == NDigitsTriggerWindow) {
+    G4cout << "NDigits trigger window set to " << newValue << initaliseString.c_str() << G4endl;
+    StoreNDigitsWindow = NDigitsTriggerWindow->GetNewIntValue(newValue);
   }
 
   //TODO remove this
@@ -228,13 +228,13 @@ void WCSimWCDAQMessenger::SetTriggerOptions()
   WCSimTrigger->SetSaveFailuresTime(StoreSaveFailuresTime);
   G4cout << "\tTrigger time for events which fail all triggers will be set to " << StoreSaveFailuresTime << G4endl;
 
-  WCSimTrigger->SetNHitsThreshold(StoreNHitsThreshold);
-  G4cout << "\tNHits trigger threshold set to " << StoreNHitsThreshold << G4endl;
-  WCSimTrigger->SetNHitsAdjustForNoise(StoreNHitsAdjustForNoise);
-  if(StoreNHitsAdjustForNoise)
-    G4cout << "\tWill adjust NHits trigger threshold using average dark noise rate" << G4endl;
-  WCSimTrigger->SetNHitsWindow(StoreNHitsWindow);
-  G4cout << "\tNHits trigger window set to " << StoreNHitsWindow << G4endl;
+  WCSimTrigger->SetNDigitsThreshold(StoreNDigitsThreshold);
+  G4cout << "\tNDigits trigger threshold set to " << StoreNDigitsThreshold << G4endl;
+  WCSimTrigger->SetNDigitsAdjustForNoise(StoreNDigitsAdjustForNoise);
+  if(StoreNDigitsAdjustForNoise)
+    G4cout << "\tWill adjust NDigits trigger threshold using average dark noise rate" << G4endl;
+  WCSimTrigger->SetNDigitsWindow(StoreNDigitsWindow);
+  G4cout << "\tNDigits trigger window set to " << StoreNDigitsWindow << G4endl;
 }
 
 void WCSimWCDAQMessenger::SetDigitizerOptions()
