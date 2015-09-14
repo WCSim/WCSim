@@ -45,6 +45,8 @@ private:
   G4UIdirectory*        DigitizerDir;
   G4UIcmdWithAnInteger* DigitizerDeadTime;
   G4int                 StoreDigitizerDeadTime;
+  G4UIcmdWithAnInteger* DigitizerIntegrationWindow;
+  G4int                 StoreDigitizerIntegrationWindow;
 
   G4UIdirectory*        SaveFailuresTriggerDir;
   G4UIcmdWithAnInteger* SaveFailuresTriggerMode;
@@ -60,7 +62,7 @@ private:
   G4UIcmdWithABool*     NDigitsTriggerAdjustForNoise;
   G4bool                StoreNDigitsAdjustForNoise;
 
-  G4String initaliseString;
+  G4String initialiseString;
 };
 
 #endif

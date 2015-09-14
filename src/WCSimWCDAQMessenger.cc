@@ -14,7 +14,7 @@
 WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   WCSimEvent(eventaction)
 {
-  initaliseString = " (this is a default set; it may be overwritten by user commands)";
+  initialiseString = " (this is a default set; it may be overwritten by user commands)";
 
   WCSimDAQDir = new G4UIdirectory("/DAQ/");
   WCSimDAQDir->SetGuidance("Commands to select DAQ options");
@@ -60,13 +60,21 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   DigitizerDir = new G4UIdirectory("/DAQ/DigitizerOpt/");
   DigitizerDir->SetGuidance("Generic commands for digitizers");
 
-  int defaultDigitizerDeadTime = 0;
+  int defaultDigitizerDeadTime = -99;
   DigitizerDeadTime = new G4UIcmdWithAnInteger("/DAQ/DigitizerOpt/DeadTime", this);
   DigitizerDeadTime->SetGuidance("The deadtime for the digitizer (in ns)");
   DigitizerDeadTime->SetParameterName("DigitizerDeadTime",true);
   DigitizerDeadTime->SetDefaultValue(defaultDigitizerDeadTime);
   StoreDigitizerDeadTime = defaultDigitizerDeadTime;
-  SetNewValue(DigitizerDeadTime, G4UIcommand::ConvertToString(defaultDigitizerDeadTime));
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
+  int defaultDigitizerIntegrationWindow = -99;
+  DigitizerIntegrationWindow = new G4UIcmdWithAnInteger("/DAQ/DigitizerOpt/IntegrationWindow", this);
+  DigitizerIntegrationWindow->SetGuidance("The integration window for the digitizer (in ns)");
+  DigitizerIntegrationWindow->SetParameterName("DigitizerIntegrationWindow",true);
+  DigitizerIntegrationWindow->SetDefaultValue(defaultDigitizerIntegrationWindow);
+  StoreDigitizerIntegrationWindow = defaultDigitizerIntegrationWindow;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
 
 
   //Save failure trigger specific options
@@ -122,7 +130,7 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   DAQConstruct = new G4UIcmdWithoutParameter("/DAQ/Construct", this);
   DAQConstruct->SetGuidance("Create the DAQ class instances");
 
-  initaliseString = "";
+  initialiseString = "";
 }
 
 WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
@@ -140,6 +148,7 @@ WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
 
   delete DigitizerDir;
   delete DigitizerDeadTime;
+  delete DigitizerIntegrationWindow;
 
   delete DigitizerChoice;
   delete TriggerChoice;
@@ -153,20 +162,24 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   // for use in the Tell*() methods later
 
   if (command == DigitizerChoice) {
-    G4cout << "Digitizer choice set to " << newValue << initaliseString.c_str() << G4endl;
+    G4cout << "Digitizer choice set to " << newValue << initialiseString.c_str() << G4endl;
     WCSimEvent->SetDigitizerChoice(newValue);
     StoreDigitizerChoice = newValue;
   }
   else if (command == TriggerChoice) {
-    G4cout << "Trigger choice set to " << newValue << initaliseString.c_str() << G4endl;
+    G4cout << "Trigger choice set to " << newValue << initialiseString.c_str() << G4endl;
     WCSimEvent->SetTriggerChoice(newValue);
     StoreTriggerChoice = newValue;
   }
 
   //Generic digitizer options
   else if (command == DigitizerDeadTime) {
-    G4cout << "Digitizer deadtime set to " << newValue << initaliseString.c_str() << G4endl;
+    G4cout << "Digitizer deadtime set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
     StoreDigitizerDeadTime = DigitizerDeadTime->GetNewIntValue(newValue);
+  }
+  else if (command == DigitizerIntegrationWindow) {
+    G4cout << "Digitizer integration window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
+    StoreDigitizerIntegrationWindow = DigitizerIntegrationWindow->GetNewIntValue(newValue);
   }
 
   //Save failures "trigger"
@@ -183,25 +196,25 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       G4cerr << "Unknown value of /DAQ/TriggerSaveFailures/Mode " << StoreSaveFailuresMode << " Exiting..." << G4endl;
       exit(-1);
     }
-    G4cout << failuremode << initaliseString.c_str() << G4endl;
+    G4cout << failuremode << initialiseString.c_str() << G4endl;
   }
   else if (command == SaveFailuresTriggerTime) {
-    G4cout << "Trigger time for events which fail all triggers will be set to " << newValue << initaliseString.c_str() << G4endl;
+    G4cout << "Trigger time for events which fail all triggers will be set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
     StoreSaveFailuresTime = SaveFailuresTriggerTime->GetNewDoubleValue(newValue);
   }
 
   //NDigits trigger
   else if (command == NDigitsTriggerThreshold) {
-    G4cout << "NDigits trigger threshold set to " << newValue << initaliseString.c_str() << G4endl;
+    G4cout << "NDigits trigger threshold set to " << newValue << initialiseString.c_str() << G4endl;
     StoreNDigitsThreshold = NDigitsTriggerThreshold->GetNewIntValue(newValue);
   }
   else if (command == NDigitsTriggerAdjustForNoise) {
     StoreNDigitsAdjustForNoise = NDigitsTriggerAdjustForNoise->GetNewBoolValue(newValue);
     if(StoreNDigitsAdjustForNoise)
-      G4cout << "Will adjust NDigits trigger threshold using average dark noise rate" << initaliseString.c_str() << G4endl;
+      G4cout << "Will adjust NDigits trigger threshold using average dark noise rate" << initialiseString.c_str() << G4endl;
   }
   else if (command == NDigitsTriggerWindow) {
-    G4cout << "NDigits trigger window set to " << newValue << initaliseString.c_str() << G4endl;
+    G4cout << "NDigits trigger window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
     StoreNDigitsWindow = NDigitsTriggerWindow->GetNewIntValue(newValue);
   }
 
@@ -226,7 +239,7 @@ void WCSimWCDAQMessenger::SetTriggerOptions()
     failuremode = "Saving only failed events";
   G4cout << "\t" << failuremode << G4endl;
   WCSimTrigger->SetSaveFailuresTime(StoreSaveFailuresTime);
-  G4cout << "\tTrigger time for events which fail all triggers will be set to " << StoreSaveFailuresTime << G4endl;
+  G4cout << "\tTrigger time for events which fail all triggers will be set to " << StoreSaveFailuresTime << " ns" << G4endl;
 
   WCSimTrigger->SetNDigitsThreshold(StoreNDigitsThreshold);
   G4cout << "\tNDigits trigger threshold set to " << StoreNDigitsThreshold << G4endl;
@@ -234,12 +247,18 @@ void WCSimWCDAQMessenger::SetTriggerOptions()
   if(StoreNDigitsAdjustForNoise)
     G4cout << "\tWill adjust NDigits trigger threshold using average dark noise rate" << G4endl;
   WCSimTrigger->SetNDigitsWindow(StoreNDigitsWindow);
-  G4cout << "\tNDigits trigger window set to " << StoreNDigitsWindow << G4endl;
+  G4cout << "\tNDigits trigger window set to " << StoreNDigitsWindow << " ns" << G4endl;
 }
 
 void WCSimWCDAQMessenger::SetDigitizerOptions()
 {
   G4cout << "Passing Digitizer options to the digitizer class instance" << G4endl;
-  WCSimDigitize->SetDigitizerDeadTime(StoreDigitizerDeadTime);
-  G4cout << "\tDigitizer deadtime set to " << StoreDigitizerDeadTime << G4endl;
+  if(StoreDigitizerDeadTime >= 0) {
+    WCSimDigitize->SetDigitizerDeadTime(StoreDigitizerDeadTime);
+    G4cout << "\tDigitizer deadtime set to " << StoreDigitizerDeadTime << " ns"  << G4endl;
+  }
+  if(StoreDigitizerIntegrationWindow >= 0) {
+    WCSimDigitize->SetDigitizerIntegrationWindow(StoreDigitizerIntegrationWindow);
+    G4cout << "\tDigitizer integration window set to " << StoreDigitizerIntegrationWindow << " ns" << G4endl;
+  }
 }

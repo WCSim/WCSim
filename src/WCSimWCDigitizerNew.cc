@@ -36,14 +36,18 @@
 
 WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 					   WCSimDetectorConstruction* inDetector,
-					   WCSimWCDAQMessenger* myMessenger)
-  :G4VDigitizerModule(name), myDetector(inDetector)
+					   WCSimWCDAQMessenger* myMessenger,
+					   DigitizerType_t digitype)
+  :G4VDigitizerModule(name), myDetector(inDetector), DigitizerType(digitype)
 {
   G4String colName = "WCDigitizedStoreCollection";
   collectionName.push_back(colName);
   ReInitialize();
 
-  //  DarkRateMessenger = new WCSimDarkRateMessenger(this);
+  //set the options to digitizer-specific defaults
+  DigitizerDeadTime          = GetDefaultDeadTime();
+  DigitizerIntegrationWindow = GetDefaultIntegrationWindow();
+
   if(myMessenger != NULL) {
     DAQMessenger = myMessenger;
     DAQMessenger->TellMeAboutTheDigitizer(this);
@@ -54,10 +58,37 @@ WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 	   << G4endl;
     exit(-1);
   }
+
+  G4cout << "Using digitizer deadtime " << DigitizerDeadTime << " ns" << G4endl;
+  G4cout << "Using digitizer integration window " << DigitizerIntegrationWindow << " ns" << G4endl;
 }
 
 WCSimWCDigitizerBase::~WCSimWCDigitizerBase(){
   //DarkRateMessenger = 0;
+}
+
+int WCSimWCDigitizerBase::GetDefaultDeadTime()
+{
+  switch(DigitizerType) {
+  case kDigitizerSKI:
+    return 0;
+    break;
+  default:
+    G4cerr << "WCSimWCDigitizerBase::GetDefaultDeadTime() Unknown value of DigitizerType_t " << DigitizerType << G4endl;
+    exit(-1);
+  }
+}
+
+int WCSimWCDigitizerBase::GetDefaultIntegrationWindow()
+{
+  switch(DigitizerType) {
+  case kDigitizerSKI:
+    return 400;
+    break;
+  default:
+    G4cerr << "WCSimWCDigitizerBase::GetDefaultIntegrationWindow() Unknown value of DigitizerType_t " << DigitizerType << G4endl;
+    exit(-1);
+  }
 }
 
 void WCSimWCDigitizerBase::Digitize()
@@ -147,12 +178,10 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 // DERIVED CLASS
 // *******************************************
 
-const double WCSimWCDigitizerSKI::pmtgate = 200.0 ; // ns
-
 WCSimWCDigitizerSKI::WCSimWCDigitizerSKI(G4String name,
-				       WCSimDetectorConstruction* myDetector,
-				       WCSimWCDAQMessenger* myMessenger)
-  :WCSimWCDigitizerBase(name, myDetector, myMessenger)
+					 WCSimDetectorConstruction* myDetector,
+					 WCSimWCDAQMessenger* myMessenger)
+  : WCSimWCDigitizerBase(name, myDetector, myMessenger, kDigitizerSKI)
 {
 }
 
@@ -165,7 +194,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   //assumes that each hit is in time order from lowest to highest.
   
   //Sorting done.  Now we integrate the charge on each PMT.
-  // Integration occurs for WCSimWCDigitizerSKI::pmtgate ns (fixed constant)
+  // Integration occurs for DigitizerIntegrationWindow ns (user set)
   // Digitizer is then dead for DigitizerDeadTime ns (user set)
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
     {
@@ -220,7 +249,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    intgr_start=time;
 	    peSmeared = 0;
 	    //Set the limits of the integration window [intgr_start,upperlimit]                                                                                            
-	    upperlimit = intgr_start + pmtgate;
+	    upperlimit = intgr_start + DigitizerIntegrationWindow;
 	  }
 	  
 #ifdef WCSIMWCDIGITIZER_VERBOSE
@@ -303,7 +332,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    intgr_start=time;
 	    peSmeared = pe;
 	    //Set the limits of the integration window [intgr_start,upperlimit]                                                                                 
-	    upperlimit = intgr_start + pmtgate;
+	    upperlimit = intgr_start + DigitizerIntegrationWindow;
 
 	    //store the digi composition information
 	    photon_unique_id = ip;
