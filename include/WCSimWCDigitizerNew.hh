@@ -52,9 +52,10 @@ protected:
 
   DigitizerType_t DigitizerType; ///< Enumeration to say which digitizer we've constructed
 
-private:
-  int GetDefaultDeadTime();          ///< Set the default digitizer-specific deadtime (in ns) (overridden by .mac)
-  int GetDefaultIntegrationWindow(); ///< Set the default digitizer-specific integration window (in ns) (overridden by .mac)
+  virtual int GetDefaultDeadTime() = 0;          ///< Set the default digitizer-specific deadtime (in ns) (overridden by .mac)
+  virtual int GetDefaultIntegrationWindow() = 0; ///< Set the default digitizer-specific integration window (in ns) (overridden by .mac)
+
+  void GetVariables(); ///< Get the default deadtime, etc. from the derived class, and override with read from the .mac file
 };
 
 
@@ -75,6 +76,8 @@ public:
   void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);
 
 private:
+  int GetDefaultDeadTime()          { return 0; }   ///< SKI digitizer deadtime is 0 ns
+  int GetDefaultIntegrationWindow() { return 400; } ///< SKI digitizer integration window is 400 ns
 
   static void Threshold(double& pe,int& iflag){
     //   CLHEP::HepRandom::setTheSeed(pe+2014);

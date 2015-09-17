@@ -38,57 +38,42 @@ WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 					   WCSimDetectorConstruction* inDetector,
 					   WCSimWCDAQMessenger* myMessenger,
 					   DigitizerType_t digitype)
-  :G4VDigitizerModule(name), myDetector(inDetector), DigitizerType(digitype)
+  :G4VDigitizerModule(name), myDetector(inDetector), DAQMessenger(myMessenger), DigitizerType(digitype)
 {
   G4String colName = "WCDigitizedStoreCollection";
   collectionName.push_back(colName);
   ReInitialize();
 
-  //set the options to digitizer-specific defaults
-  DigitizerDeadTime          = GetDefaultDeadTime();
-  DigitizerIntegrationWindow = GetDefaultIntegrationWindow();
-
-  if(myMessenger != NULL) {
-    DAQMessenger = myMessenger;
-    DAQMessenger->TellMeAboutTheDigitizer(this);
-    DAQMessenger->SetDigitizerOptions();
-  }
-  else {
+  if(DAQMessenger == NULL) {
     G4cerr << "WCSimWCDAQMessenger pointer is NULL when passed to WCSimWCDigitizerBase constructor. Exiting..." 
 	   << G4endl;
     exit(-1);
   }
-
-  G4cout << "Using digitizer deadtime " << DigitizerDeadTime << " ns" << G4endl;
-  G4cout << "Using digitizer integration window " << DigitizerIntegrationWindow << " ns" << G4endl;
 }
 
 WCSimWCDigitizerBase::~WCSimWCDigitizerBase(){
   //DarkRateMessenger = 0;
 }
 
-int WCSimWCDigitizerBase::GetDefaultDeadTime()
+void WCSimWCDigitizerBase::GetVariables()
 {
-  switch(DigitizerType) {
-  case kDigitizerSKI:
-    return 0;
-    break;
-  default:
-    G4cerr << "WCSimWCDigitizerBase::GetDefaultDeadTime() Unknown value of DigitizerType_t " << DigitizerType << G4endl;
-    exit(-1);
-  }
-}
+  //set the options to digitizer-specific defaults
+  DigitizerDeadTime          = GetDefaultDeadTime();
+  DigitizerIntegrationWindow = GetDefaultIntegrationWindow();
 
-int WCSimWCDigitizerBase::GetDefaultIntegrationWindow()
-{
-  switch(DigitizerType) {
-  case kDigitizerSKI:
-    return 400;
-    break;
-  default:
-    G4cerr << "WCSimWCDigitizerBase::GetDefaultIntegrationWindow() Unknown value of DigitizerType_t " << DigitizerType << G4endl;
+  //read the .mac file to override them
+  if(DAQMessenger != NULL) {
+    DAQMessenger->TellMeAboutTheDigitizer(this);
+    DAQMessenger->SetDigitizerOptions();
+  }
+  else {
+    G4cerr << "WCSimWCDAQMessenger pointer is NULL when used in WCSimWCDigitizerBase::GetVariables(). Exiting..." 
+	   << G4endl;
     exit(-1);
   }
+
+  G4cout << "Using digitizer deadtime " << DigitizerDeadTime << " ns" << G4endl;
+  G4cout << "Using digitizer integration window " << DigitizerIntegrationWindow << " ns" << G4endl;
 }
 
 void WCSimWCDigitizerBase::Digitize()
@@ -183,6 +168,7 @@ WCSimWCDigitizerSKI::WCSimWCDigitizerSKI(G4String name,
 					 WCSimWCDAQMessenger* myMessenger)
   : WCSimWCDigitizerBase(name, myDetector, myMessenger, kDigitizerSKI)
 {
+  GetVariables();
 }
 
 WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
