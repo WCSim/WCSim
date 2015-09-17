@@ -65,7 +65,10 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   DMman->AddNewModule(WCDMPMT);
 }
 
-WCSimEventAction::~WCSimEventAction(){}
+WCSimEventAction::~WCSimEventAction()
+{
+  delete DAQMessenger;
+}
 
 void WCSimEventAction::CreateDAQInstances()
 {
