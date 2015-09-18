@@ -68,7 +68,7 @@ void WCSimDetectorConstruction::GetWCGeom
         zmin=100000,zmax=-100000.; 
     }
 
-    if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName() == "glassFaceWCPMT")){
+    if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName().find("glassFaceWCPMT") != std::string::npos)){ 
       G4float x =  aTransform.getTranslation().getX()/cm;
       G4float y =  aTransform.getTranslation().getY()/cm;
       G4float z =  aTransform.getTranslation().getZ()/cm;
@@ -87,7 +87,7 @@ void WCSimDetectorConstruction::GetWCGeom
       WCCylInfo[0] = xmax-xmin;
       WCCylInfo[1] = ymax-ymin;
       WCCylInfo[2] = zmax-zmin;
-      //      G4cout << "determin hight: " << zmin << "  " << zmax << " " << aPV->GetName()<<" " << z  << G4endl;
+      //      G4cout << "determine height: " << zmin << "  " << zmax << " " << aPV->GetName()<<" " << z  << G4endl;
   } 
 }
 
@@ -104,6 +104,9 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
 
   replicaNoString[aDepth] = pvname.str() + "-" + depth.str();
 
+ 
+  //TF: To Consider: add a separate table for mPMT positions? Need to use its orientation anyway
+  // Could be useful for the near future. Need to add an == WCMultiPMT here then.
   if (aPV->GetName()== WCIDCollectionName ||aPV->GetName()== WCODCollectionName ) 
     {
 
@@ -132,17 +135,17 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     tubeIDMap[totalNumPMTs] = aTransform;
    
     
-    // G4cout <<  "depth " << depth.str() << G4endl;
-    // G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
+     std::cout <<  "depth " << depth.str() << std::endl;
+     std::cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
       
-    // Print
-    //     G4cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
-    //     	   << " Pos:" << aTransform.getTranslation()/cm 
-    //     	   << " Rot:" << aTransform.getRotation().getTheta()/deg 
-    //     	   << "," << aTransform.getRotation().getPhi()/deg 
-    //     	   << "," << aTransform.getRotation().getPsi()/deg
-    //     	   << G4endl; 
-  }
+     // Print
+     std::cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
+	       << " Pos:" << aTransform.getTranslation()/cm 
+	       << " Rot:" << aTransform.getRotation().getTheta()/deg 
+	       << "," << aTransform.getRotation().getPhi()/deg 
+	       << "," << aTransform.getRotation().getPsi()/deg
+	       << std::endl; 
+    }
 }
 
 // Utilities to do stuff with the info we have found.
@@ -326,15 +329,27 @@ void WCSimDetectorConstruction::DescribeAndDescendGeometry
 {
   // Calculate the new transform relative to the old transform
 
+  std::cout << aPV->GetName() << std::endl;
+  //TF: mPMT structure: this will work for n == 1, but not for n > 1 as we're using the Parameterised Replica's.
+  //   This means the actual translation and rotation is set by the parametrization and not by the single PMT's physical volume.
+
+  // We just have to multiply again?? Or replace??
+
+
   G4Transform3D* transform = 
     new G4Transform3D(*(aPV->GetObjectRotation()), aPV->GetTranslation());
 
   G4Transform3D newTransform = aTransform * (*transform);
   delete transform; 
 
+  std::cout << aPV->GetObjectRotation()->getPhi() << " " << aPV->GetObjectRotation()->getTheta() << " " 
+	    << aPV->GetObjectRotation()->getPsi() << std::endl;
+  std::cout << aPV->GetTranslation().x() << " " << aPV->GetTranslation().y() << " " 
+	    << aPV->GetTranslation().z() << std::endl;
+
   // Call the routine we use to print out geometry descriptions, make
-  // tables, etc.  The routine was passed here as a paramater.  It needs to
-  // be a memeber function of the class
+  // tables, etc.  The routine was passed here as a parameter.  It needs to
+  // be a member function of the class
 
   (this->*registrationRoutine)(aPV, aDepth, replicaNo, newTransform);
 

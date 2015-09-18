@@ -66,7 +66,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   //Optional reflectorCone:
   G4double reflectorRadius = radius + id_reflector_height * tan(id_reflector_angle);
   G4double reflectorThickness = 1.*CLHEP::mm;
-  if(reflectorRadius < 1.*CLHEP::mm)
+  if((reflectorRadius - radius) < 1.*CLHEP::mm)
     reflectorThickness = 0.*CLHEP::mm;
 
   // ToDo: Base is PMT property! Should not hard coded here.
@@ -101,6 +101,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   if(id_reflector_height > 0.1*CLHEP::mm && 
      (cylinder_radius > 1.*CLHEP::mm || cylinder_height > 1.*CLHEP::mm)) //or make this a user option? 
     material_around_pmt = G4Material::GetMaterial("SilGel");
+    //material_around_pmt = G4Material::GetMaterial("Water");
   G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
                             material_around_pmt,
@@ -234,10 +235,10 @@ else {
      
     // Gray wireframe visual style
     // used in OGLSX visualizer
-    //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
-    //WCPMTVisAtt->SetForceWireframe(true);
-    G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0));
-    WCPMTVisAtt->SetForceSolid(true);
+     G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));  //better for seeing hits
+    WCPMTVisAtt->SetForceWireframe(true);
+     //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0)); //better for seeing geometry
+     //WCPMTVisAtt->SetForceSolid(true);
     //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
      logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
     

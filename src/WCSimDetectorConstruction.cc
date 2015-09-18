@@ -49,8 +49,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   totalNumPMTs = 0;
   WCPMTExposeHeight= 0.;
 
-  SetSuperKGeometry();
-  //SetTestmPMTGeometry();  
+  //SetSuperKGeometry();
+  SetTestmPMTGeometry();  
   //SetHyperKGeometry();
 
   //----------------------------------------------------- 
@@ -206,7 +206,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 		      false,
 		      0);
 
-  // Reset the tubeID and tubeLocation maps before refiling them
+  // Reset the tubeID and tubeLocation maps before refilling them
   tubeIDMap.clear();
   tubeLocationMap.clear();
 

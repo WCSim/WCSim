@@ -1694,13 +1694,19 @@ G4float* PMT3inchR12199_02::GetQEWavelength(){
 }
 
 G4float* PMT3inchR12199_02::GetQE(){
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  // TF: While the main reason is the 20" SK PMT, this correction factor has been applied
+  // to the B&L PMT. Therefore all PMTs have to corrected in a similar way, unfortunately.
+
   static G4float QE[21] =
-    { .0787, .1838, .2401, .2521, .2695, .2676, .2593, .2472, .2276,
-      .1970,  .1777, .1547, .1033, .0727, .0587, .0470, .0372, .0285, .0220, .0130, .0084};
+    { .0787*correctionFactor, .1838*correctionFactor, .2401*correctionFactor, .2521*correctionFactor, .2695*correctionFactor, .2676*correctionFactor, .2593*correctionFactor, .2472*correctionFactor, .2276*correctionFactor,
+      .1970*correctionFactor,  .1777*correctionFactor, .1547*correctionFactor, .1033*correctionFactor, .0727*correctionFactor, .0587*correctionFactor, .0470*correctionFactor, .0372*correctionFactor, .0285*correctionFactor, .0220*correctionFactor, .0130*correctionFactor, .0084*correctionFactor};
   return QE;
 }
 G4float PMT3inchR12199_02::GetmaxQE(){
-  const G4float maxQE = 0.271; //red curve from VLVnT13 proc on R12199-02.
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+
+  const G4float maxQE = 0.271*correctionFactor; //red curve from VLVnT13 proc on R12199-02.
   return maxQE;
 }
 G4float* PMT3inchR12199_02::GetCollectionEfficiencyArray(){  

@@ -184,14 +184,11 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
 
   // TF: Add Wacker SilGel for optical coupling (from wacker.com)
+  // ToDo: update once final type of gel is decided and/or play with the gel in MC!!!
   density = 0.98*g/cm3;
   G4Material *SilGel
     = new G4Material("SilGel",density,1);
   SilGel->AddElement(elSi, 1);
-
-  G4MaterialPropertiesTable *SilGelPropTable = new G4MaterialPropertiesTable();
-  SilGelPropTable->AddConstProperty("RINDEX", 1.404);
-  SilGel->SetMaterialPropertiesTable(SilGelPropTable);
 
   // TF: Add Acrylic from G4 database:
   G4Material* Acrylic 
@@ -924,12 +921,15 @@ void WCSimDetectorConstruction::ConstructMaterials()
       48.54*m, 37.88*m, 29.41*m};
 
 
-   //Acrylic
-   G4MaterialPropertiesTable *AcrPropTable = new G4MaterialPropertiesTable();
-   AcrPropTable->AddProperty("RINDEX", ENERGY_skAcrylic, RINDEX_skAcrylic, 306);
-   AcrPropTable->AddProperty("ABSLENGTH", ENERGY_skAcrylic, ABSORPTION_skAcrylic, 306);
-   Acrylic->SetMaterialPropertiesTable(AcrPropTable);
-   
+   // Can not use AddConstProperty for RINDEX (see http://hypernews.slac.stanford.edu/HyperNews/geant4/get/opticalphotons/379/1.html)
+   // ToDo: update with actual wavelength dependence, once known.
+    G4double RINDEX_SilGel[NUMENTRIES_water] = 
+     {1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
+      1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
+      1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
+      1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
+      1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
+      1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404};
 
    //	------------- Surfaces --------------
 
@@ -1033,7 +1033,6 @@ void WCSimDetectorConstruction::ConstructMaterials()
 //    myMPT1->AddConstProperty("MIEHG_FORWARD_RATIO",MIE_water_const[2]);
 
 
-
    Water->SetMaterialPropertiesTable(myMPT1);
    //Gd doped water has the same optical properties as pure water
    DopedWater->SetMaterialPropertiesTable(myMPT1);
@@ -1072,6 +1071,20 @@ void WCSimDetectorConstruction::ConstructMaterials()
    G4MaterialPropertiesTable *myMPT6 = new G4MaterialPropertiesTable();
    myMPT6->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
    Tyvek->SetMaterialPropertiesTable(myMPT6);
+
+   /// SilGel : Currently based on WackerSilGel 612, BUT should be adjusted to best one (R&D)
+   G4MaterialPropertiesTable *SilGelPropTable = new G4MaterialPropertiesTable();
+   SilGelPropTable->AddProperty("RINDEX", ENERGY_water, RINDEX_SilGel, NUMENTRIES_water);
+   SilGelPropTable->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water, NUMENTRIES_water); //ToDo: get measurement of optical properties of the optical gel. From slides: better than 40cm above 350nm.
+   SilGelPropTable->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water); //ToDo: get actual Rayleigh scattering in gel
+   SilGel->SetMaterialPropertiesTable(SilGelPropTable);
+
+   //Acrylic
+   G4MaterialPropertiesTable *AcrPropTable = new G4MaterialPropertiesTable();
+   AcrPropTable->AddProperty("RINDEX", ENERGY_skAcrylic, RINDEX_skAcrylic, 306);
+   AcrPropTable->AddProperty("ABSLENGTH", ENERGY_skAcrylic, ABSORPTION_skAcrylic, 306);
+   Acrylic->SetMaterialPropertiesTable(AcrPropTable);
+
 
 
    //	------------- Surfaces --------------
