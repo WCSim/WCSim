@@ -67,12 +67,20 @@ public:
   void SetNDigitsWindow(G4int window) { ndigitsWindow = window; }
   ///Automatically adjust the NDigits threshold based on the average noise occupancy?
   void SetNDigitsAdjustForNoise    (G4bool adjust)      { ndigitsAdjustForNoise = adjust; }
+  ///Set the pretrigger window for the NDigits trigger (value will be forced negative)
+  void SetNDigitsPreTriggerWindow(G4int window)  { ndigitsPreTriggerWindow  = - abs(window); }
+  ///Set the posttrigger window for the NDigits trigger (value will be forced positive)
+  void SetNDigitsPostTriggerWindow(G4int window) { ndigitsPostTriggerWindow = + abs(window); }
 
   // Save trigger failures options
   ///Set the mode for saving failed triggers (0:save only triggered events, 1:save both triggered events & failed events, 2:save only failed events)
   void SetSaveFailuresMode       (G4int mode )        { saveFailuresMode = mode; }
   ///Set the dummy trigger time for the failed triggers
   void SetSaveFailuresTime       (G4double time )     { saveFailuresTime = time; }
+  ///Set the pretrigger window for the SaveFailures trigger (value will be forced negative)
+  void SetSaveFailuresPreTriggerWindow(G4int window)  { saveFailuresPreTriggerWindow  = - abs(window); }
+  ///Set the posttrigger window for the SaveFailures trigger (value will be forced positive)
+  void SetSaveFailuresPostTriggerWindow(G4int window) { saveFailuresPostTriggerWindow = + abs(window); }
   
   ///Knowledge of the dark rate (use for automatically adjusting for noise)
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
@@ -80,10 +88,29 @@ public:
   ///DEPRECATED function used in old class (WCSimWCDigitizer), and called in WCSimEventAction
   virtual void SetPMTSize(G4float /*inputSize*/) {};
 
+
+
 protected:
 
   ///This should call the trigger algorithms, and handle any temporary DigitsCollection's
   virtual void DoTheWork(WCSimWCDigitsCollection* WCDCPMT) = 0;
+
+  /// Get the default threshold, etc. from the derived class, and override with read from the .mac file
+  void GetVariables();
+
+  ///Set the default trigger class specific NDigits window (in ns) (overridden by .mac)
+  virtual int GetDefaultNDigitsWindow()            { return 200; }
+  ///Set the default trigger class specific NDigits threshold (in ns) (overridden by .mac)
+  virtual int GetDefaultNDigitsThreshold()         { return 25; }
+  ///Set the default trigger class specific NDigits pretrigger window (in ns) (overridden by .mac)
+  virtual int GetDefaultNDigitsPreTriggerWindow()  { return -400; }
+  ///Set the default trigger class specific NDigits posttrigger window (in ns) (overridden by .mac)
+  virtual int GetDefaultNDigitsPostTriggerWindow() { return 950; }
+
+  ///Get the pretrigger window for a given trigger algorithm
+  int GetPreTriggerWindow(TriggerType_t t);
+  ///Get the posttrigger window for a given trigger algorithm
+  int GetPostTriggerWindow(TriggerType_t t);
 
   //these are the algorithms that perform triggering
   //they are stored here so that different trigger classes can use the same algorithms without copying code
@@ -126,12 +153,16 @@ protected:
 
   // Trigger algorithm options
   //NDigits
-  G4int  ndigitsThreshold;      ///< The threshold for the NDigits trigger
-  G4int  ndigitsWindow;         ///< The time window for the NDigits trigger
-  G4bool ndigitsAdjustForNoise; ///< Automatically adjust the NDigits trigger threshold based on the average dark noise rate?
+  G4int  ndigitsThreshold;         ///< The threshold for the NDigits trigger
+  G4int  ndigitsWindow;            ///< The time window for the NDigits trigger
+  G4bool ndigitsAdjustForNoise;    ///< Automatically adjust the NDigits trigger threshold based on the average dark noise rate?
+  G4int  ndigitsPreTriggerWindow;  ///< The pretrigger window to save before an NDigits trigger
+  G4int  ndigitsPostTriggerWindow; ///< The posttrigger window to save after an NDigits trigger
   //Save failures
-  G4int    saveFailuresMode; ///< The mode for saving events which don't pass triggers
-  G4double saveFailuresTime; ///< The dummy trigger time for failed events
+  G4int    saveFailuresMode;              ///< The mode for saving events which don't pass triggers
+  G4double saveFailuresTime;              ///< The dummy trigger time for failed events
+  G4int    saveFailuresPreTriggerWindow;  ///< The pretrigger window to save before an SaveFailures trigger
+  G4int    saveFailuresPostTriggerWindow; ///< The posttrigger window to save after an SaveFailures trigger
 
   G4String triggerClassName; ///< Save the name of the trigger class
 
@@ -143,8 +174,6 @@ private:
   void FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType);
   
   static const double offset;        ///< Hit time offset (ns)
-  static const double eventgateup;   ///< Digits are saved up to trigger time + eventgateup (ns)
-  static const double eventgatedown; ///< Digits are saved starting from trigger time - eventgatedown (ns)
   static const double LongTime;      ///< An arbitrary long time to use in loops (ns)
 
   bool   digitizeCalled; ///< Has Digitize() been called yet?
@@ -267,6 +296,10 @@ private:
   ///Calls the workhorse of this class: AlgNDigits
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
+  int GetDefaultNDigitsWindow();
+  int GetDefaultNDigitsThreshold()         { return 50;   }
+  int GetDefaultNDigitsPreTriggerWindow()  { return -400; }
+  int GetDefaultNDigitsPostTriggerWindow() { return 950;  }
 };
 
 
@@ -288,6 +321,10 @@ public:
 private:
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
+  int GetDefaultNDigitsWindow();
+  int GetDefaultNDigitsThreshold()         { return 50;   }
+  int GetDefaultNDigitsPreTriggerWindow()  { return -400; }
+  int GetDefaultNDigitsPostTriggerWindow() { return 950;  }
 };
 
 

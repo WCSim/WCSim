@@ -74,14 +74,20 @@
 /DAQ/TriggerSaveFailures/Mode 0
 # what trigger time to use for the failed events (ns)?
 /DAQ/TriggerSaveFailures/TriggerTime 100
+# the digits in which range around the trigger time (ns) should be saved with the evnt
+#/DAQ/TriggerSaveFailures/PreTriggerWindow  -400
+#/DAQ/TriggerSaveFailures/PostTriggerWindow +950
 #NDigits trigger options
 # control the NDigits trigger threshold
 # (note in SKI_SKDETSIM, this is actually the value used for the NHits trigger (NHits != NDigits))
-/DAQ/TriggerNDigits/Threshold 25
+#/DAQ/TriggerNDigits/Threshold 25
 # control the NDigits trigger window (ns)
-/DAQ/TriggerNDigits/Window 200
+#/DAQ/TriggerNDigits/Window 200
 # automatically adjust the NDigits threshold depending on the average noise occupancy during the trigger window
 /DAQ/TriggerNDigits/AdjustForNoise false
+# the digits in which range around the trigger time (ns) should be saved with the evnt
+#/DAQ/TriggerNDigits/PreTriggerWindow  -400
+#/DAQ/TriggerNDigits/PostTriggerWindow +950
 
 #this is a temporary workaround for needing to construct the dark noise messenger (done in the old digitizer / new adddarknoise class) before the dark noise options below are read
 #this workaround can be removed after a forthcoming major code change:

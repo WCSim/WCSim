@@ -53,6 +53,10 @@ private:
   G4int                 StoreSaveFailuresMode;
   G4UIcmdWithADouble*   SaveFailuresTriggerTime;
   G4double              StoreSaveFailuresTime;
+  G4UIcmdWithAnInteger* SaveFailuresPreTriggerWindow;
+  G4int                 StoreSaveFailuresPreWindow;
+  G4UIcmdWithAnInteger* SaveFailuresPostTriggerWindow;
+  G4int                 StoreSaveFailuresPostWindow;
 
   G4UIdirectory*        NDigitsTriggerDir;
   G4UIcmdWithAnInteger* NDigitsTriggerThreshold;
@@ -61,6 +65,10 @@ private:
   G4int                 StoreNDigitsWindow;
   G4UIcmdWithABool*     NDigitsTriggerAdjustForNoise;
   G4bool                StoreNDigitsAdjustForNoise;
+  G4UIcmdWithAnInteger* NDigitsPreTriggerWindow;
+  G4int                 StoreNDigitsPreWindow;
+  G4UIcmdWithAnInteger* NDigitsPostTriggerWindow;
+  G4int                 StoreNDigitsPostWindow;
 
   G4String initialiseString;
 };

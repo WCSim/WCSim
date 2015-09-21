@@ -41,9 +41,6 @@ public:
   void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
 
   static G4double GetLongTime() { return LongTime;}
-  static G4double GetEventGateDown() { return eventgatedown;}
-  static G4double GetEventGateUp() { return eventgateup;}
-  static G4double GetCalibDarkNoise() { return eventgateup;}
   G4double GetPMTDarkRate(){ return PMTDarkRate; }
   G4double GetConversion(){ return ConvRate; }
 
@@ -72,12 +69,13 @@ private:
     }
   }
   
-
+  int GetDefaultNDigitsWindow()     { return 200;  }
+  int GetDefaultNDigitsThreshold()  { return 25;   }
+  int GetDefaultPreTriggerWindow()  { return -400; }
+  int GetDefaultPostTriggerWindow() { return 950; }
 
   static const double offset; // hit time offset
   static const double pmtgate; // ns
-  static const double eventgateup; // ns
-  static const double eventgatedown; // ns
   static const double calibdarknoise; // ns
   static const double LongTime; // ns
   static const int GlobalThreshold; //number of hit PMTs within an <=200ns sliding window that decides the global trigger t0

@@ -29,36 +29,96 @@
 //#define WCSIMWCTRIGGER_VERBOSE
 #endif
 
-const double WCSimWCTriggerBase::offset = 950.0 ; // ns. apply offset to the digit time
-const double WCSimWCTriggerBase::eventgateup = 950.0 ; // ns. save eventgateup ns after the trigger time
-const double WCSimWCTriggerBase::eventgatedown = -400.0 ; // ns. save eventgateup ns before the trigger time
-const double WCSimWCTriggerBase::LongTime = 100000.0 ; // ns = 0.1ms. event time
+const double WCSimWCTriggerBase::offset = 950.0; // ns. apply offset to the digit time
+const double WCSimWCTriggerBase::LongTime = 1E6; // ns = 1ms. event time
 
 
 WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
 				       WCSimDetectorConstruction* inDetector,
 				       WCSimWCDAQMessenger* myMessenger)
-  :G4VDigitizerModule(name), myDetector(inDetector), triggerClassName("")
+  :G4VDigitizerModule(name), DAQMessenger(myMessenger), myDetector(inDetector), triggerClassName("")
 {
   G4String colName = "WCDigitizedCollection";
   collectionName.push_back(colName);
 
   ReInitialize();
 
-  if(myMessenger != NULL) {
-    DAQMessenger = myMessenger;
-    DAQMessenger->TellMeAboutTheTrigger(this);
-    DAQMessenger->SetTriggerOptions();
-  }
-  else {
+  if(DAQMessenger == NULL) {
     G4cerr << "WCSimWCDAQMessenger pointer is NULL when passed to WCSimWCTriggerBase constructor. Exiting..."
            << G4endl;
     exit(-1);
   }
+
   digitizeCalled = false;
 }
 
 WCSimWCTriggerBase::~WCSimWCTriggerBase(){
+}
+
+
+void WCSimWCTriggerBase::GetVariables()
+{
+  //set the options to class-specific defaults
+  ndigitsThreshold         = GetDefaultNDigitsThreshold();
+  ndigitsWindow            = GetDefaultNDigitsWindow();
+  ndigitsPreTriggerWindow  = GetDefaultNDigitsPreTriggerWindow();
+  ndigitsPostTriggerWindow = GetDefaultNDigitsPostTriggerWindow();
+
+  //read the .mac file to override them
+  if(DAQMessenger != NULL) {
+    DAQMessenger->TellMeAboutTheTrigger(this);
+    DAQMessenger->SetTriggerOptions();
+  }
+  else {
+    G4cerr << "WCSimWCDAQMessenger pointer is NULL when used in WCSimWCTriggerBase::GetVariables(). Exiting..." 
+	   << G4endl;
+    exit(-1);
+  }
+
+  G4cout << "Using NDigits threshold " << ndigitsThreshold << G4endl
+	 << "Using NDigits trigger window " << ndigitsWindow << G4endl
+	 << "Using NDigits event pretrigger window " << ndigitsPreTriggerWindow << G4endl
+	 << "Using NDigits event posttrigger window " << ndigitsPostTriggerWindow << G4endl
+	 << "Using SaveFailures event pretrigger window " << saveFailuresPreTriggerWindow << G4endl
+	 << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << G4endl;
+}
+
+int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
+{
+  switch(t) {
+  case kTriggerNDigits:
+  case kTriggerNDigitsTest:
+  case kTriggerNHitsSKDETSIM:
+    return ndigitsPreTriggerWindow;
+    break;
+  case kTriggerFailure:
+    return saveFailuresPreTriggerWindow;
+    break;
+  default:
+    G4cerr << "WCSimWCTriggerBase::GetPreTriggerWindow() Unknown trigger type " << t
+	   << "\t" << WCSimEnumerations::EnumAsString(t) << G4endl;
+    exit(-1);
+    break;
+  }
+}
+
+int WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
+{
+  switch(t) {
+  case kTriggerNDigits:
+  case kTriggerNDigitsTest:
+  case kTriggerNHitsSKDETSIM:
+    return ndigitsPostTriggerWindow;
+    break;
+  case kTriggerFailure:
+    return saveFailuresPostTriggerWindow;
+    break;
+  default:
+    G4cerr << "WCSimWCTriggerBase::GetPostTriggerWindow() Unknown trigger type " << t
+	   << "\t" << WCSimEnumerations::EnumAsString(t) << G4endl;
+    exit(-1);
+    break;
+  }
 }
 
 void WCSimWCTriggerBase::AdjustNDigitsThresholdForNoise()
@@ -188,7 +248,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
 
     //move onto the next go through the timing loop
     if(triggerfound) {
-      window_start_time = triggertime + WCSimWCTriggerBase::eventgateup;
+      window_start_time = triggertime + GetPostTriggerWindow(TriggerTypes.back());
     }//triggerfound
     else {
       window_start_time += window_step_size;
@@ -252,8 +312,8 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     std::vector<Float_t> triggerinfo = TriggerInfos[itrigger];
 
     //these are the boundary of the trigger gate: we want to add all digits within these bounds to the output collection
-    float lowerbound = triggertime + WCSimWCTriggerBase::eventgatedown;
-    float upperbound = triggertime + WCSimWCTriggerBase::eventgateup;
+    float lowerbound = triggertime + GetPreTriggerWindow(triggertype);
+    float upperbound = triggertime + GetPostTriggerWindow(triggertype);
 
 #ifdef WCSIMWCTRIGGER_VERBOSE
     G4cout << "Saving trigger " << itrigger << " of type " << WCSimEnumerations::EnumAsString(triggertype)
@@ -418,6 +478,7 @@ WCSimWCTriggerNDigits::WCSimWCTriggerNDigits(G4String name,
   :WCSimWCTriggerBase(name, myDetector, myMessenger)
 {
   triggerClassName = "NDigits";
+  GetVariables();
 }
 
 WCSimWCTriggerNDigits::~WCSimWCTriggerNDigits()
@@ -430,7 +491,11 @@ void WCSimWCTriggerNDigits::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   AlgNDigits(WCDCPMT, remove_hits);
 }
 
-
+int WCSimWCTriggerNDigits::GetDefaultNDigitsWindow()
+{
+  G4cerr << "This depends on maximum travel distance of photon aka. geometry" << G4endl;
+  return 200;
+}
 
 // *******************************************
 // DERIVED CLASS
@@ -442,6 +507,7 @@ WCSimWCTriggerNDigits2::WCSimWCTriggerNDigits2(G4String name,
   :WCSimWCTriggerBase(name, myDetector, myMessenger)
 {
   triggerClassName = "NDigits2";
+  GetVariables();
 }
 
 WCSimWCTriggerNDigits2::~WCSimWCTriggerNDigits2(){
@@ -463,4 +529,10 @@ void WCSimWCTriggerNDigits2::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   remove_hits = false;
   bool ndigits_test = true;
   AlgNDigits(WCDCPMTCopy, remove_hits, ndigits_test);
+}
+
+int WCSimWCTriggerNDigits2::GetDefaultNDigitsWindow()
+{
+  G4cerr << "This depends on maximum travel distance of photon aka. geometry" << G4endl;
+  return 200;
 }
