@@ -75,7 +75,8 @@ void WCSimWCTriggerBase::GetVariables()
     exit(-1);
   }
 
-  G4cout << "Using NDigits threshold " << ndigitsThreshold << G4endl
+  G4cout << "Using NDigits threshold " << ndigitsThreshold
+	 << (ndigitsAdjustForNoise ? " (will be adjusted for noise)" : "") << G4endl
 	 << "Using NDigits trigger window " << ndigitsWindow << G4endl
 	 << "Using NDigits event pretrigger window " << ndigitsPreTriggerWindow << G4endl
 	 << "Using NDigits event posttrigger window " << ndigitsPostTriggerWindow << G4endl
