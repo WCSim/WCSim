@@ -9,6 +9,8 @@ typedef enum ETriggerType {
   kTriggerNDigits,
   kTriggerNHitsSKDETSIM,
   kTriggerNDigitsTest,
+  kTriggerNoTrig,
+  kTriggerTestVertex,
   kTriggerFailure // this should always be the last entry (for looping)
 } TriggerType_t;
 
@@ -49,6 +51,10 @@ public:
     case (kTriggerFailure) :
       return "No_trigger_passed";
       break;
+    case (kTriggerNoTrig) :
+      return "NoTrigger";
+    case (kTriggerTestVertex) :
+      return "TestVertexTrigger";
     default:
       return "";
       break;

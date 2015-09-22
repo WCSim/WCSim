@@ -49,6 +49,8 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
 			       "NDigits "
 			       "NDigits2 "
 			       "SKI_SKDETSIM "
+			       "NoTrigger "
+			       "TestVertex "
 			       );
   TriggerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
   TriggerChoice->SetDefaultValue(defaultTrigger);

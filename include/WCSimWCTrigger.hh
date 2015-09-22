@@ -103,6 +103,8 @@ protected:
    * for testing purposes. Triggers issued in this mode have type kTriggerNDigitsTest
    */
   void AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
+  void AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
+  void AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
 
   WCSimWCTriggeredDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
   std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
@@ -135,13 +137,28 @@ protected:
 
   G4String triggerClassName; ///< Save the name of the trigger class
 
+    //maps for the Alfons vertex trigger
+  std::vector<std::vector<int> > nhitsVTXmap;
+  std::vector<int> nhitsmap;
+  std::vector<G4ThreeVector> vtxVector;
+  G4int windowVTX;
+  
+  std::vector<int> digit_times;
+  std::vector<std::pair<int,int> > PossibleTrigger;
+  std::vector<int> PossibleTriggerCount;
+  //std::vector<std::pair<int, std::pair<int,int> > > Possibletrigger2;//vtxindex, time, count
+  std::vector<std::pair<int,int> > PossibleTrigger2;
+  std::vector<int> PossibleTriggerCount2;
+  std::vector<std::pair<int,int> > TriggerPairsCorT;
+  std::vector<std::pair<int,int> > TriggerNormT;
+
 private:
   ///modify the NDigits threshold based on the average dark noise rate
   void AdjustNDigitsThresholdForNoise();
 
   ///takes all trigger times, then loops over all Digits & fills the output DigitsCollection
   void FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType);
-  
+  void FillDigitsCollectionNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType);
   static const double offset;        ///< Hit time offset (ns)
   static const double eventgateup;   ///< Digits are saved up to trigger time + eventgateup (ns)
   static const double eventgatedown; ///< Digits are saved starting from trigger time - eventgatedown (ns)
@@ -270,6 +287,23 @@ private:
 };
 
 
+
+class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
+{
+public:
+
+  ///Create WCSimWCTriggerNDigits instance with knowledge of the detector and DAQ options
+  WCSimWCTriggerNoTrigger(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+
+  ~WCSimWCTriggerNoTrigger();
+  
+private:
+  ///Calls the workhorse of this class: AlgNDigits
+  void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
+
+};
+
+
 /**
  * \class WCSimWCTriggerNDigits2
  *
@@ -290,6 +324,27 @@ private:
 
 };
 
+/**
+ * \class WCSimWCTestVertexTrigger
+ *
+ * \brief A simple NDigits trigger class
+ *
+ */
+
+class WCSimWCTriggerTestVertex : public WCSimWCTriggerBase
+{
+public:
+
+  ///Create WCSimWCTestVertexTrigger instance with knowledge of the detector and DAQ options
+  WCSimWCTriggerTestVertex(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+
+  ~WCSimWCTriggerTestVertex();
+  
+private:
+  ///Calls the workhorse of this class: AlgNDigits
+  void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
+
+};
 
 
 #endif //WCSimWCTrigger_h

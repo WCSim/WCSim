@@ -18,7 +18,7 @@
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 
 # Cylindrical detector with a height of 60 m and a diameter of 74 m
-#/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
+/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 #/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
 
 # Generic cylindrical detector with a height of 100m and a 
@@ -37,7 +37,7 @@
 #/WCSim/HyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
 
 
-#/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
+/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
 
 #Added for the PMT QE option 08/17/10 (XQ)
 # 1. Stacking only mean when the photon is generated
@@ -69,7 +69,8 @@
 # set at least one of the following two options (both /DAQ/Digitizer and /DAQ/Trigger to be clear) to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger class (WCSimWCDigitizer)
 # note that only one of the two set to SKI_SKDETSIM will only use WCSimWCDigitizer for everything (i.e. you can't use the SKI Digitizer with the old trigger)
 /DAQ/Digitizer SKI
-/DAQ/Trigger NDigits
+#/DAQ/Trigger NDigits
+/DAQ/Trigger TestVertex
 #generic digitizer options (defaults are class-specific. Can be overridden here)
 # how long is the digitizer dead before a new hit on the same PMT can be recorded (ns)?
 #/DAQ/DigitizerOpt/DeadTime 0
@@ -83,11 +84,11 @@
 #NDigits trigger options
 # control the NDigits trigger threshold
 # (note in SKI_SKDETSIM, this is actually the value used for the NHits trigger (NHits != NDigits))
-/DAQ/TriggerNDigits/Threshold 25
+/DAQ/TriggerNDigits/Threshold 12
 # control the NDigits trigger window (ns)
-/DAQ/TriggerNDigits/Window 200
+/DAQ/TriggerNDigits/Window 20
 # automatically adjust the NDigits threshold depending on the average noise occupancy during the trigger window
-/DAQ/TriggerNDigits/AdjustForNoise false
+/DAQ/TriggerNDigits/AdjustForNoise true
 
 #this is a temporary workaround for needing to construct the dark noise messenger (done in the old digitizer / new adddarknoise class) before the dark noise options below are read
 #this workaround can be removed after a forthcoming major code change:
@@ -101,17 +102,17 @@
 
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz
-/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
-#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
+/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
 # (14/03/10)
 # Factor of Normal PMT is 1.367
-/DarkRate/SetConvert 1.367
+#/DarkRate/SetConvert 1.367
 #/DarkRate/SetConvert 1.119 #For HPDs
-#/DarkRate/SetConvert 1.126 #For Box and Line PMTs
+/DarkRate/SetConvert 1.126 #For Box and Line PMTs
 
 #Have added new modes for adding dark noise to event 26/04/15
 #/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
@@ -121,13 +122,13 @@
 /DarkRate/SetDarkMode 1
 /DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkLow 0
-/DarkRate/SetDarkWindow 4000
+/DarkRate/SetDarkWindow 2000
 
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
 /gun/particle e-
 #/gun/particle pi0
-/gun/energy 500 MeV
+/gun/energy 4 MeV
 /gun/direction 1 0 0 
 /gun/position 0 0 0  
 
@@ -135,5 +136,5 @@
 
 /WCSimIO/RootFile wcsim.root
 
-/run/beamOn 10
+/run/beamOn 1000
 #exit

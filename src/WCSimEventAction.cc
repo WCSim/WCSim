@@ -105,6 +105,14 @@ void WCSimEventAction::CreateDAQInstances()
       WCSimWCTriggerNDigits2* WCTM = new WCSimWCTriggerNDigits2("WCReadout", detectorConstructor, DAQMessenger);
       DMman->AddNewModule(WCTM);
     }
+    else if(TriggerChoice == "NoTrigger") {
+      WCSimWCTriggerNoTrigger* WCTM = new WCSimWCTriggerNoTrigger("WCReadout", detectorConstructor, DAQMessenger);
+      DMman->AddNewModule(WCTM);
+    }
+    else if(TriggerChoice == "TestVertex") {
+      WCSimWCTriggerTestVertex* WCTM = new WCSimWCTriggerTestVertex("WCReadout", detectorConstructor, DAQMessenger);
+      DMman->AddNewModule(WCTM);
+    }
     else {
       G4cerr << "Unknown TriggerChoice " << TriggerChoice << G4endl;
       exit(-1);

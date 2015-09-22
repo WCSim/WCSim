@@ -228,6 +228,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   {      // manual gun operation
     particleGun->GeneratePrimaryVertex(anEvent);
 
+    //To prevent occasional seg fault from an un assigned targetpdg 
+    targetpdg = 2212; //ie. proton
+
     G4ThreeVector P  =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
     G4ThreeVector vtx=anEvent->GetPrimaryVertex()->GetPosition();
     G4double m       =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
