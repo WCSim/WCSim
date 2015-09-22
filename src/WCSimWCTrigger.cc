@@ -83,6 +83,16 @@ void WCSimWCTriggerBase::GetVariables()
 	 << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << G4endl;
 }
 
+int WCSimWCTriggerBase::GetMaximumPhotonTravelTime()
+{
+  double d = myDetector->GetIDDiameter();
+  double h = myDetector->GetIDHeight();
+  double max_distance = sqrt(d*d + h*h);
+  double speed    = 299792458 * 0.75 * m / s;
+  double max_time = ((int(max_distance / speed) + 50) / 100) * 100;
+  return max_time;
+}
+
 int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
 {
   switch(t) {
@@ -491,12 +501,6 @@ void WCSimWCTriggerNDigits::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   AlgNDigits(WCDCPMT, remove_hits);
 }
 
-int WCSimWCTriggerNDigits::GetDefaultNDigitsWindow()
-{
-  G4cerr << "This depends on maximum travel distance of photon aka. geometry" << G4endl;
-  return 200;
-}
-
 // *******************************************
 // DERIVED CLASS
 // *******************************************
@@ -529,10 +533,4 @@ void WCSimWCTriggerNDigits2::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   remove_hits = false;
   bool ndigits_test = true;
   AlgNDigits(WCDCPMTCopy, remove_hits, ndigits_test);
-}
-
-int WCSimWCTriggerNDigits2::GetDefaultNDigitsWindow()
-{
-  G4cerr << "This depends on maximum travel distance of photon aka. geometry" << G4endl;
-  return 200;
 }

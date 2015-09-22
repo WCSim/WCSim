@@ -98,8 +98,11 @@ protected:
   /// Get the default threshold, etc. from the derived class, and override with read from the .mac file
   void GetVariables();
 
+  /// Get the maximum travel time across the ID tank (assumes cylinderical geometry)
+  int GetMaximumPhotonTravelTime();
+
   ///Set the default trigger class specific NDigits window (in ns) (overridden by .mac)
-  virtual int GetDefaultNDigitsWindow()            { return 200; }
+  virtual int GetDefaultNDigitsWindow()            { return GetMaximumPhotonTravelTime(); }
   ///Set the default trigger class specific NDigits threshold (in ns) (overridden by .mac)
   virtual int GetDefaultNDigitsThreshold()         { return 25; }
   ///Set the default trigger class specific NDigits pretrigger window (in ns) (overridden by .mac)
@@ -296,10 +299,10 @@ private:
   ///Calls the workhorse of this class: AlgNDigits
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
-  int GetDefaultNDigitsWindow();
-  int GetDefaultNDigitsThreshold()         { return 50;   }
-  int GetDefaultNDigitsPreTriggerWindow()  { return -400; }
-  int GetDefaultNDigitsPostTriggerWindow() { return 950;  }
+  int GetDefaultNDigitsWindow()            { return ((GetMaximumPhotonTravelTime() + 50) / 100) * 100; } ///< Round to nearest 100 ns
+  int GetDefaultNDigitsThreshold()         { return 25;   } ///< SK NDigits threshold ~25
+  int GetDefaultNDigitsPreTriggerWindow()  { return -400; } ///< SK SLE trigger window ~-400
+  int GetDefaultNDigitsPostTriggerWindow() { return 950;  } ///< SK SLE trigger window ~+950
 };
 
 
@@ -321,10 +324,10 @@ public:
 private:
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
-  int GetDefaultNDigitsWindow();
-  int GetDefaultNDigitsThreshold()         { return 50;   }
-  int GetDefaultNDigitsPreTriggerWindow()  { return -400; }
-  int GetDefaultNDigitsPostTriggerWindow() { return 950;  }
+  int GetDefaultNDigitsWindow()            { return ((GetMaximumPhotonTravelTime() + 50) / 100) * 100; } ///< Round to nearest 100 ns
+  int GetDefaultNDigitsThreshold()         { return 50;   } ///< 2 * SK NDigits threshold ~25
+  int GetDefaultNDigitsPreTriggerWindow()  { return -400; } ///< SK SLE trigger window ~-400
+  int GetDefaultNDigitsPostTriggerWindow() { return 950;  } ///< SK SLE trigger window ~+950
 };
 
 

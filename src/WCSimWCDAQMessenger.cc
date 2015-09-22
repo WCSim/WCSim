@@ -134,7 +134,7 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreNDigitsWindow = defaultNDigitsTriggerWindow;
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
 
-  bool defaultNDigitsTriggerAdjustForNoise = false;
+  bool defaultNDigitsTriggerAdjustForNoise = true;
   NDigitsTriggerAdjustForNoise = new G4UIcmdWithABool("/DAQ/TriggerNDigits/AdjustForNoise", this);
   NDigitsTriggerAdjustForNoise->SetGuidance("Adjust the NDigits trigger threshold automatically dependent on the average noise rate");
   NDigitsTriggerAdjustForNoise->SetParameterName("NDigitsAdjustForNoise",true);
