@@ -299,7 +299,7 @@ private:
   ///Calls the workhorse of this class: AlgNDigits
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
-  int GetDefaultNDigitsWindow()            { return ((GetMaximumPhotonTravelTime() + 50) / 100) * 100; } ///< Round to nearest 100 ns
+  int GetDefaultNDigitsWindow()            { return 200;  } ///< SK max light travel time ~200 ns
   int GetDefaultNDigitsThreshold()         { return 25;   } ///< SK NDigits threshold ~25
   int GetDefaultNDigitsPreTriggerWindow()  { return -400; } ///< SK SLE trigger window ~-400
   int GetDefaultNDigitsPostTriggerWindow() { return 950;  } ///< SK SLE trigger window ~+950
@@ -324,7 +324,7 @@ public:
 private:
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
-  int GetDefaultNDigitsWindow()            { return ((GetMaximumPhotonTravelTime() + 50) / 100) * 100; } ///< Round to nearest 100 ns
+  int GetDefaultNDigitsWindow()            { return 200;  } ///< SK max light travel time ~200 ns
   int GetDefaultNDigitsThreshold()         { return 50;   } ///< 2 * SK NDigits threshold ~25
   int GetDefaultNDigitsPreTriggerWindow()  { return -400; } ///< SK SLE trigger window ~-400
   int GetDefaultNDigitsPostTriggerWindow() { return 950;  } ///< SK SLE trigger window ~+950
