@@ -87,7 +87,7 @@
 # control the NDigits trigger threshold
 # (note in SKI_SKDETSIM, this is actually the value used for the NHits trigger (NHits != NDigits))
 #/DAQ/TriggerNDigits/Threshold 25
-# control the NDigits trigger window (ns) Default is the maximum photon travel time in the ID, rounded to nearest 100 ns
+# control the NDigits trigger window (ns)
 #/DAQ/TriggerNDigits/Window 200
 # automatically adjust the NDigits threshold depending on the average noise occupancy during the trigger window
 #/DAQ/TriggerNDigits/AdjustForNoise true

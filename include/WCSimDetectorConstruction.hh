@@ -86,10 +86,6 @@ public:
   G4float GetPMTQE(G4String,G4float, G4int, G4float, G4float, G4float);
   G4float GetPMTCollectionEfficiency(G4float theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
 
-  //ID tank size
-  G4double GetIDDiameter() { return WCIDDiameter; }
-  G4double GetIDHeight()   { return WCIDHeight;   }
-
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
   std::map<G4String, WCSimPMTObject*>  CollectionNameMap; 
