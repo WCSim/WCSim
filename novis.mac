@@ -110,7 +110,6 @@
 /DAQ/Construct
 
 
-# command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz
 /DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
 #/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
@@ -118,17 +117,16 @@
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
-# (14/03/10)
-# Factor of Normal PMT is 1.367
-/DarkRate/SetConvert 1.367
+/DarkRate/SetConvert 1.367  #For Normal PMT
 #/DarkRate/SetConvert 1.119 #For HPDs
 #/DarkRate/SetConvert 1.126 #For Box and Line PMTs
 
-#Have added new modes for adding dark noise to event 26/04/15
+# Select which time window(s) to add dark noise to
 #/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
 #/DarkRate/SetDarkLow to /DarkRate/SetDarkHigh [time in ns]
 #/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
-#width /DarkRate/SetDarkWindow [time in ns] around each hit.
+#width /DarkRate/SetDarkWindow [time in ns] around each hit
+#i.e. hit time ± (/DarkRate/SetDarkWindow) / 2
 /DarkRate/SetDarkMode 1
 /DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkLow 0
