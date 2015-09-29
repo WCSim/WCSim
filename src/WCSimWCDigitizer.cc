@@ -19,23 +19,11 @@
 #include <cstring>
 #include <iostream>
 
-// changed from 940 (april 2005) by MF
-// 960 is unsuitable
-
-//RawSignalHitCollection *collection = new RawSignalHitCollection;
-
 const double WCSimWCDigitizer::calibdarknoise = 1.37676;
 
 const double WCSimWCDigitizer::offset = 950.0 ; // ns
 const double WCSimWCDigitizer::pmtgate = 200.0 ; // ns
 const double WCSimWCDigitizer::LongTime = 100000.0 ; // ns
-// value in skdetsim
-//replaced with the user parameter /DAQ/TriggerNDigits/Threshold
-//const int WCSimWCDigitizer::GlobalThreshold = 25 ; // # hit PMTs
-//const int WCSimWCDigitizer::GlobalThreshold = 12 ; // # hit PMTs
-// try to trigger early to reduce the width.
-//const int WCSimWCDigitizer::GlobalThreshold = 10 ; // # hit PMTs
-
 
 WCSimWCDigitizer::WCSimWCDigitizer(G4String name,
 				   WCSimDetectorConstruction* myDetector,
@@ -78,11 +66,6 @@ void WCSimWCDigitizer::Digitize()
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCHCID));
 
   if (WCHCPMT) {
-
-    //TEST
-    //Store Raw Hits in RawSignalHitCollection
-    //StoreHitsTEST(WCHCPMT);
-
     MakeHitsHistogram(WCHCPMT);
      //FindNumberOfGates(); //get list of t0 and number of triggers.
     FindNumberOfGatesFast(); //get list of t0 and number of triggers.
