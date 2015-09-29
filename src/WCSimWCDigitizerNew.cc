@@ -29,11 +29,6 @@
 //#define WCSIMWCDIGITIZER_VERBOSE
 #endif
 
-// changed from 940 (april 2005) by MF
-// 960 is unsuitable
-
-//RawSignalHitCollection *collection = new RawSignalHitCollection;
-
 WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 					   WCSimDetectorConstruction* inDetector,
 					   WCSimWCDAQMessenger* myMessenger,
@@ -52,7 +47,6 @@ WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 }
 
 WCSimWCDigitizerBase::~WCSimWCDigitizerBase(){
-  //DarkRateMessenger = 0;
 }
 
 void WCSimWCDigitizerBase::GetVariables()
@@ -78,13 +72,14 @@ void WCSimWCDigitizerBase::GetVariables()
 
 void WCSimWCDigitizerBase::Digitize()
 {
+  //Input is WCSimWCDigitsCollection with raw PMT hits (photon + dark noise)
+  //Output is WCSimWCDigitsCollection with digitied PMT hits
+
   //Clear the DigiStoreHitMap
   ReInitialize();
 
   //Temporary Storage of Digitized hits which is passed to the trigger
   DigiStore = new WCSimWCDigitsCollection(collectionName[0],collectionName[0]);
-
-  //DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   
@@ -117,14 +112,12 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
   G4cout << ")";
 #endif
 
-  //  if ( digihittime > 0.0 && peSmeared>0.0)
   if (peSmeared > 0.0) {
       if ( DigiStoreHitMap[tube] == 0) {
 	WCSimWCDigi* Digi = new WCSimWCDigi();
 	Digi->AddParentID(1);
 	
 	Digi->SetTubeID(tube);
-	//	Digi->AddGate(gate,digihittime);
 	Digi->SetPe(gate,peSmeared);
 	Digi->AddPe(digihittime);
 	Digi->SetTime(gate,digihittime);
@@ -135,10 +128,6 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 #endif
       }
       else {
-	//G4cout << "deja vu " << tube << " " << G << "  " << TriggerTimes[G] << " " << digihittime
-	//     << "  " <<   peSmeared <<" ";
-	//(*DigitsCollection)[GigiStoreHitMap[tube]-1]->AddParentID(parentID);
-	//(*DigiStore)[DigiStoreHitMap[tube]-1]->AddGate(gate,digihittime);
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetPe(gate,peSmeared);
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetTime(gate,digihittime);
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddPe(digihittime);
@@ -176,18 +165,14 @@ WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
 
 void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
-  //We must first sort hits by PMT in time.  This is very important as the code
-  //assumes that each hit is in time order from lowest to highest.
   
-  //Sorting done.  Now we integrate the charge on each PMT.
-  // Integration occurs for DigitizerIntegrationWindow ns (user set)
-  // Digitizer is then dead for DigitizerDeadTime ns (user set)
+  //loop over entires in WCHCPMT, each entry corresponds to
+  //the photons on one PMT
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
     {
-      //loop over entires in WCHCPMT, each entry corresponds to
-      //the photons on one PMT
 
-      //Sort photons on this pmt
+      //We must first sort hits by PMT in time.  This is very important as the code
+      //assumes that each hit is in time order from lowest to highest.
       (*WCHCPMT)[i]->SortArrayByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
 #ifdef WCSIMWCDIGITIZER_VERBOSE
@@ -203,6 +188,11 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       */
       G4cout <<G4endl;
 #endif
+
+      //Sorting done.  Now we integrate the charge on each PMT.
+      // Integration occurs for DigitizerIntegrationWindow ns (user set)
+      // Digitizer is then dead for DigitizerDeadTime ns (user set)
+
       //look over all hits on the PMT
       //integrate charge and start digitizing
       float intgr_start=0;
@@ -215,15 +205,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       int photon_unique_id = 0;
       std::vector< std::pair<int,int> > digi_comp; 
 
-      /*
-      G4cout << "DEBUGGING TUBE " << tube
-	     << " total pe " << (*WCHCPMT)[i]->GetTotalPe();
-      for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
-	G4cout << " time " << (*WCHCPMT)[i]->GetTime(ip)
-	       << " pe " << (*WCHCPMT)[i]->GetPe(ip);
-      G4cout << G4endl;
-      */
-
+      //loop over the hits on this PMT
       for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
 	{
 	  float time = (*WCHCPMT)[i]->GetTime(ip);
@@ -267,25 +249,15 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    //this hit is outside the integration time window.
 	    //Charge integration is over.  The is now a DigitizerDeadTime ns dead
 	    //time period where no hits can be recorded
-	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    MakeDigit = true;
-	    // 	    int iflag;
-	    // 	    WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
-	    // 	    if(iflag == 0) {
-	    // 	      //digitize hit
-	    // 	      peSmeared *= efficiency;
-	    // }
-	    // 	    else {
-	    // 	      //reject hit
-	    // 	    }
-	    //Now we need to reject hits that are after the integration
-	    //period to the end of the veto signal
 	  }
 	  
 	  //Make digit here
 	  if(MakeDigit) {
-	    int iflag;                                                                                                                                                        
-	    WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);                                                                                                                      
+	    int iflag;
+	    WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
+
+	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    if(iflag == 0) {                                                                                                                                             
 	      //digitize hit                                                                                                                                  
 	      peSmeared *= efficiency;
@@ -308,6 +280,8 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  
 	  //Now try and deal with the next hit
 	  if(time > upperlimit && time <= upperlimit + DigitizerDeadTime) {
+	    //Now we need to reject hits that are after the integration
+	    //period to the end of the veto signal
 	    continue;
 	  }
 	  else if(time > upperlimit + DigitizerDeadTime){

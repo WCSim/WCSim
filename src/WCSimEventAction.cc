@@ -824,7 +824,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	}//digi_tubeid == hit_tubeid
 	else {
 	  //This shouldn't happen!
-	  G4cout << "ERROR raw hits not found for tube ID " << digi_tubeid
+	  G4cerr << "ERROR raw hits not found for tube ID " << digi_tubeid
 		 << " Will save the hit charge output from WCSimWCPMT (parentID will be set to -9)" << G4endl;
 	  //loop over the WCSimWCDigi
           for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
@@ -850,28 +850,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       truetime.clear();
       primaryParentID.clear();
     }//idigi
-
-    /*
-    wcsimrootevent->SetNumTubesHit(WCHC->entries());
-    for (k=0;k<WCHC->entries();k++){
-    
-      std::vector<float> truetime;
-      std::vector<int>   primaryParentID;
-
-      int tubeID  = (*WCHC)[k]->GetTubeID();
-      int totalpe = (*WCHC)[k]->GetTotalPe();
-
-      for (int l=0;l<totalpe;l++)
-      {
-	truetime.push_back((*WCHC)[k]->GetTime(l));
-	primaryParentID.push_back((*WCHC)[k]->GetParentID(l));
-      }
-
-      wcsimrootevent->AddCherenkovHit(tubeID,
-				      truetime,
-				      primaryParentID); 
-    } 
-    */
   }//if(WCHC && WCDC_hits)
 #endif //_SAVE_RAW_HITS
 
@@ -917,18 +895,20 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	  }//k
 	wcsimrootevent->SetNumDigitizedTubes(countdigihits);
 	wcsimrootevent->SetSumQ(sumq_tmp);
-	/*
-		G4cout << "checking digi hits ...\n";
-	  G4cout << "hits collection size =  " << 
+
+#ifdef SAVE_DIGITS_VERBOSE
+	G4cout << "checking digi hits ...\n";
+	G4cout << "hits collection size =  " << 
 	  wcsimrootevent->GetCherenkovHits()->GetEntries() << "\n";
-	  G4cout << "hits collection size =  " << 
+	G4cout << "hits collection size =  " << 
 	  wcsimrootevent->GetCherenkovHitTimes()->GetEntries() << "\n";
-	  G4cout << "digihits collection size =  " << 
+	G4cout << "digihits collection size =  " << 
 	  wcsimrootevent->GetCherenkovDigiHits()->GetEntries() << "\n";
-	  G4cout << "tracks collection size =  " << 
+	G4cout << "tracks collection size =  " << 
 	  wcsimrootevent->GetTracks()->GetEntries() 
-	  <<" get ntracks = " <<  wcsimrootevent->GetNtrack() << "\n";
-	*/
+	       <<" get ntracks = " <<  wcsimrootevent->GetNtrack() << "\n";
+#endif
+
 	gatestart = WCTM->GetTriggerTime(index);
 	WCSimRootEventHeader*HH = wcsimrootevent->GetHeader();
 	HH->SetDate(int(gatestart));

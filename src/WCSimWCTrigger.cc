@@ -346,8 +346,6 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  if(digihittime < 0)
 	    continue;
 
-	  //int parentID    = (*WCDCPMT)[i]->GetParentID(ip);
-
 	  //get the composition information for the triggered digit
 	  //WCDCPMT stores this information in pairs of (digit id, photon id)
 	  //need to loop to ensure we get all the photons associated with the current digit (digit ip)
@@ -374,10 +372,9 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 
 	  //add hit
 	  if ( DigiHitMap[tube] == 0) {
-	    //this PMT has no digits saved yet; create a new WCSimWCDigi
+	    //this PMT has no digits saved yet; create a new WCSimWCDigiTrigger
 	    WCSimWCDigiTrigger* Digi = new WCSimWCDigiTrigger();
 	    Digi->SetTubeID(tube);
-	    //Digi->AddParentID(parentID);
 	    Digi->AddGate  (itrigger);
 	    Digi->SetTime  (itrigger,digihittime);
 	    Digi->SetPe    (itrigger,peSmeared);
@@ -386,8 +383,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    DigiHitMap[tube] = DigitsCollection->insert(Digi);
 	  }
 	  else {
-	    //this PMT has digits saved already; add information to the WCSimWCDigi
-	    //(*DigitsCollection)[DigiHitMap[tube]-1]->AddParentID(parentID);
+	    //this PMT has digits saved already; add information to the WCSimWCDigiTrigger
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddGate(itrigger);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(itrigger, digihittime);
 	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetPe  (itrigger, peSmeared);
