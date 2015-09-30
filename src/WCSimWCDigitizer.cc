@@ -38,12 +38,12 @@ WCSimWCDigitizer::WCSimWCDigitizer(G4String name,
 
   DarkRateMessenger = new WCSimDarkRateMessenger(this);
 
+  GetVariables();
+
   //the nhits threshold value is read into the base class from /DAQ/TriggerNDigits/Threshold
   // into the variable ndigitsThreshold
   //in this class use this synonym for clarity
   nhitsThreshold = ndigitsThreshold;
-
-  GetVariables();
 }
 
 WCSimWCDigitizer::~WCSimWCDigitizer(){
