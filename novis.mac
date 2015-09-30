@@ -76,7 +76,7 @@
 # how long is the digitizer dead before a new hit on the same PMT can be recorded (ns)?
 #/DAQ/DigitizerOpt/DeadTime 0
 # how long does the digitizer integrate for (ns)?
-/DAQ/DigitizerOpt/IntegrationWindow 200
+#/DAQ/DigitizerOpt/IntegrationWindow 200
 
 #trigger algorithm development options (defaults are set in WCSimWCDAQMessenger. Can be overidden here)
 # do we want to save only triggered events (mode 0), both triggered events & failed events (mode 1), or only failed events (mode 2)?
