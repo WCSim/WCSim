@@ -22,7 +22,7 @@ using std::setw;
 // to the traversal code.
 
 void WCSimDetectorConstruction::PrintGeometryTree
-(G4VPhysicalVolume* aPV ,int aDepth, int replicaNo, 
+(G4VPhysicalVolume* aPV ,int aDepth, int /*replicaNo*/, 
  const G4Transform3D& aTransform) 
 {
   for (int levels = 0; levels < aDepth; levels++) G4cout << " ";
@@ -35,7 +35,7 @@ void WCSimDetectorConstruction::PrintGeometryTree
 }
 
 void WCSimDetectorConstruction::GetWCGeom
-(G4VPhysicalVolume* aPV ,int aDepth, int replicaNo, 
+(G4VPhysicalVolume* aPV ,int aDepth, int /*replicaNo*/, 
  const G4Transform3D& aTransform) 
 {
 
@@ -175,13 +175,13 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   geoFile << setw(8)<< WCOffset(0)<< setw(8)<<WCOffset(1)<<
     setw(8) << WCOffset(2)<<G4endl;
 
-  G4double maxZ=0.0;// used to tell if pmt is on the top/bottom cap
-  G4double minZ=0.0;// or the barrel
+  //G4double maxZ=0.0;// used to tell if pmt is on the top/bottom cap
+  //G4double minZ=0.0;// or the barrel
   G4int cylLocation;
 
 
   // clear before add new stuff in
-  for (int i=0;i<fpmts.size();i++){
+  for (unsigned int i=0;i<fpmts.size();i++){
     delete fpmts.at(i);
   }
   fpmts.clear();
