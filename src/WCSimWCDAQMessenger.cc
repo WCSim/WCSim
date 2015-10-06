@@ -24,12 +24,10 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   DigitizerChoice->SetGuidance("Set the Digitizer type");
   DigitizerChoice->SetGuidance("Available choices are:\n"
 			       "SKI\n"
-			       "SKI_SKDETSIM (combined trigger & digitization (therefore ignores /DAQ/Trigger); buggy) \n"
 			       );
   DigitizerChoice->SetParameterName("Digitizer", false);
   DigitizerChoice->SetCandidates(
 				 "SKI "
-				 "SKI_SKDETSIM "
 				 );
   DigitizerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
   DigitizerChoice->SetDefaultValue(defaultDigitizer);
@@ -42,13 +40,11 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   TriggerChoice->SetGuidance("Available choices are:\n"
 			     "NDigits\n"
 			     "NDigits2\n"
-			     "SKI_SKDETSIM (combined trigger & digitization (therefore ignores /DAQ/Digitization); buggy) \n"
 			     );
   TriggerChoice->SetParameterName("Trigger", false);
   TriggerChoice->SetCandidates(
 			       "NDigits "
 			       "NDigits2 "
-			       "SKI_SKDETSIM "
 			       );
   TriggerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
   TriggerChoice->SetDefaultValue(defaultTrigger);
@@ -302,7 +298,7 @@ void WCSimWCDAQMessenger::SetTriggerOptions()
   }
 
   if(StoreNDigitsThreshold >= 0) {
-    WCSimTrigger->SetNDigitsThreshold(StoreNDigitsThreshold);
+   WCSimTrigger->SetNDigitsThreshold(StoreNDigitsThreshold);
     G4cout << "\tNDigits trigger threshold set to " << StoreNDigitsThreshold << G4endl;
   }
   WCSimTrigger->SetNDigitsAdjustForNoise(StoreNDigitsAdjustForNoise);
