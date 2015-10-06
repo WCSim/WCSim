@@ -1,4 +1,4 @@
-#include "WCSimWCDigitizerNew.hh"
+#include "WCSimWCDigitizer.hh"
 #include "WCSimWCPMT.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"

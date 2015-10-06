@@ -4,7 +4,7 @@
 #include "WCSimPrimaryGeneratorAction.hh"
 #include "WCSimWCHit.hh"
 #include "WCSimWCDigi.hh"
-#include "WCSimWCDigitizerNew.hh"
+#include "WCSimWCDigitizer.hh"
 #include "WCSimWCTrigger.hh"
 #include "WCSimWCAddDarkNoise.hh"
 #include "WCSimWCPMT.hh"

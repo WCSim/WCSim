@@ -1,5 +1,5 @@
-#ifndef WCSimWCDigitizerNew_h
-#define WCSimWCDigitizerNew_h 1
+#ifndef WCSimWCDigitizer_h
+#define WCSimWCDigitizer_h 1
 
 #include "WCSimDarkRateMessenger.hh"
 #include "WCSimWCDAQMessenger.hh"
@@ -104,4 +104,4 @@ private:
 };
 
 
-#endif //WCSimWCDigitizerNew_h
+#endif //WCSimWCDigitizer_h
