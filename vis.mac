@@ -59,10 +59,51 @@
 #/WCSim/SavePi0 true
 /WCSim/SavePi0 false
 
-#choose the Trigger & Digitizer type (and options)
-#this is now done in jobOptions.mac
 
-# command to set dark noise frequency 13/06/09
+#choose the Trigger & Digitizer type (and options)
+# set at least one of the following two options (both /DAQ/Digitizer and /DAQ/Trigger to be clear) to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger class (WCSimWCDigitizer)
+# note that only one of the two set to SKI_SKDETSIM will only use WCSimWCDigitizer for everything (i.e. you can't use the SKI Digitizer with the old trigger)
+/DAQ/Digitizer SKI
+/DAQ/Trigger NDigits
+
+#generic digitizer options (defaults are class-specific. Can be overridden here)
+# how long is the digitizer dead before a new hit on the same PMT can be recorded (ns)?
+#/DAQ/DigitizerOpt/DeadTime 0
+# how long does the digitizer integrate for (ns)?
+#/DAQ/DigitizerOpt/IntegrationWindow 200
+
+#trigger algorithm development options (defaults are set in WCSimWCDAQMessenger. Can be overidden here)
+# do we want to save only triggered events (mode 0), both triggered events & failed events (mode 1), or only failed events (mode 2)?
+#/DAQ/TriggerSaveFailures/Mode 0
+# what trigger time to use for the failed events (ns)?
+#/DAQ/TriggerSaveFailures/TriggerTime 100
+# the digits in which range around the trigger time (ns) should be saved with the event
+#/DAQ/TriggerSaveFailures/PreTriggerWindow  -400
+#/DAQ/TriggerSaveFailures/PostTriggerWindow +950
+
+#options for NDigits-like triggers (defaults are class-specific. Can be overridden here)
+# control the NDigits trigger threshold
+# (note in SKI_SKDETSIM, this is actually the value used for the NHits trigger (NHits != NDigits))
+#/DAQ/TriggerNDigits/Threshold 25
+# the trigger counts digits (looking for threshold) in this window (ns)
+#/DAQ/TriggerNDigits/Window 200
+# automatically adjust the NDigits threshold depending on the average noise occupancy during the trigger window
+#/DAQ/TriggerNDigits/AdjustForNoise true
+# the digits in which range around the trigger time (ns) should be saved with the event
+#/DAQ/TriggerNDigits/PreTriggerWindow  -400
+#/DAQ/TriggerNDigits/PostTriggerWindow +950
+
+#this is a temporary workaround for needing to construct the dark noise messenger (done in the old digitizer / new adddarknoise class) before the dark noise options below are read
+#this workaround can be removed after a forthcoming major code change:
+# - removal of old WCSimWCDigitizer
+#then this can be removed by:
+# - construct WCSimWCAddDarkNoise instance in the WCSimEventAction constructor
+# - remove any references to /DAQ/Construct in WCSimWCDAQMessenger
+# - make WCSimEventAction::CreateDAQInstances() private
+# - call WCSimEventAction::CreateDAQInstances() in BeginOfEventAction() (actually already there, but need to test to make sure the instances are created early enough)
+/DAQ/Construct
+
+
 # default dark noise frequency is 0 kHz
 /DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
 #/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
@@ -70,11 +111,21 @@
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
-# (14/03/10)
-# Factor of Normal PMT is 1.367
-/DarkRate/SetConvert 1.367
+/DarkRate/SetConvert 1.367  #For Normal PMT
 #/DarkRate/SetConvert 1.119 #For HPDs
 #/DarkRate/SetConvert 1.126 #For Box and Line PMTs
+
+# Select which time window(s) to add dark noise to
+#/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
+#/DarkRate/SetDarkLow to /DarkRate/SetDarkHigh [time in ns]
+#/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
+#width /DarkRate/SetDarkWindow [time in ns] around each hit
+#i.e. hit time ± (/DarkRate/SetDarkWindow) / 2
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkHigh 100000
+/DarkRate/SetDarkLow 0
+/DarkRate/SetDarkWindow 4000
+
 
 /vis/scene/create
 /vis/open OGLSX
@@ -114,7 +165,7 @@
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
 /gun/particle mu+
-/gun/energy 20 MeV
+/gun/energy 1000 MeV
 /gun/direction 0 1 0
 /gun/position 0 0 0 
 

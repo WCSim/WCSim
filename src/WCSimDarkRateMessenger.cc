@@ -127,8 +127,7 @@ void WCSimDarkRateMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   }
   else if(command == SetDarkMode){
     if(constructor == 0){
-      //      WCSimDigitize->SetDarkMode(SetDarkMode->GetNewDoubleValue(newValue));
-      }
+    }
     else if(constructor == 1) {
       WCSimAddDarkNoise->SetDarkMode(SetDarkMode->GetNewIntValue(newValue));
       G4cout << "Setting DarkMode value " << SetDarkMode->GetNewIntValue(newValue)
@@ -137,7 +136,6 @@ void WCSimDarkRateMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   }
   else if(command == SetDarkLow){
     if(constructor == 0){
-      //      WCSimDigitize->SetDarkLow(SetDarkLow->GetNewDoubleValue(newValue));
     }   
     else if(constructor == 1) {
       WCSimAddDarkNoise->SetDarkLow(SetDarkLow->GetNewDoubleValue(newValue));
@@ -147,7 +145,6 @@ void WCSimDarkRateMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   }
   else if(command == SetDarkHigh){
     if(constructor == 0) {
-      //      WCSimDigitize->SetDarkHigh(SetDarkHigh->GetNewDoubleValue(newValue));
     }   
     else if(constructor == 1) {
       WCSimAddDarkNoise->SetDarkHigh(SetDarkHigh->GetNewDoubleValue(newValue));
@@ -157,8 +154,7 @@ void WCSimDarkRateMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   }
   else if(command == SetDarkWindow){
     if(constructor == 0){
-      //      WCSimDigitize->SetDarkWidth(SetDarkWidth->GetNewDoubleValue(newValue));
-      }
+    }
     else if(constructor == 1) {
       WCSimAddDarkNoise->SetDarkWindow(SetDarkWindow->GetNewDoubleValue(newValue));
       G4cout << "Setting DarkWindow value " << SetDarkWindow->GetNewDoubleValue(newValue)
