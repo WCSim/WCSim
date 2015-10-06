@@ -5,16 +5,15 @@ Script to create and run a lot of WCSim .mac files
 
 Run examples:
 
-e.g. 10000 events per configuration  in the SK geometry, with the SKI digitizer, 25 NHits trigger (automatically adjusted for dark noise rate), 0 or 8.4 kHZ dark noise in a window 2000 ns (+/-1000ns) around hits, with 5,10,20,50 MeV electrons using a fixed position & direction
+e.g. 10000 events per configuration in the HyperK geometry, 0 or 8.4 kHZ dark noise, with 5,10,20,50 MeV electrons using a fixed position & direction
 (produces 8 files total)
 
-python generate_mac_files.py --batchmode local --WCgeom SuperK --HKwatertanklength 24750 --PMTQEMethod Stacking_Only --SavePi0 false --DAQdigitizer SKI --DAQtrigger NHits --DAQnhitsthreshold 25 --DAQnhitsignorenoise --DAQnhitswindow 200 --DAQsavefailuresmode 0 --DAQsavefailurestime 250 --DarkNoiseRate 0,8.4 --DarkNoiseConvert 1.367 --DarkNoiseMode 1 --DarkNoiseWindow 2000 --GunParticle e- --GunEnergy 5,10,20,50 --GunPosition 0,0,0 --GunDirection 1,0,0 --NEvents 10000
+python generate_mac_files.py --batchmode local --WCgeom HyperK --DarkNoiseRate 0,8.4 --GunParticle e- --GunEnergy 5,10,20,50 --GunPosition 0,0,0 --GunDirection 1,0,0 --NEvents 10000
 
 e.g. the same, but producing the particles at random positions and directions
 (produces 8 files total)
 
-python generate_mac_files.py --batchmode local --WCgeom SuperK --HKwatertanklength 24750 --PMTQEMethod Stacking_Only --SavePi0 false --DAQdigitizer SKI --DAQtrigger NHits --DAQnhitsthreshold 25 --DAQnhitsignorenoise --DAQnhitswindow 200 --DAQsavefailuresmode 0 --DAQsavefailurestime 250 --DarkNoiseRate 0,8.4 --DarkNoiseConvert 1.367 --DarkNoiseMode 1 --DarkNoiseWindow 2000 --GunParticle e- --GunEnergy 5,10,20,50 --GunPosition random --GunDirection 4pi --NEvents 10000
-
+python generate_mac_files.py --batchmode local --WCgeom HyperK --DarkNoiseRate 0,8.4 --GunParticle e- --GunEnergy 5,10,20,50 --GunPosition random --GunDirection 4pi --NEvents 10000
 """
 
 import argparse
@@ -22,13 +21,14 @@ import shutil
 import sys
 import os
 import itertools
+from collections import OrderedDict
 
 delim_list = lambda s: list(set(s.split(',')))
 delim_list_str = lambda s: s.split(',') if len(s.split(',')) == 3 else s
 
 DAQdigitizer_choices = ['SKI']
-DAQtrigger_choices = ['NHits', 'NHits2']
-DAQtrigger_nhits_choices = ['NHits', 'NHits2']
+DAQtrigger_choices = ['NDigits', 'NDigits2']
+DAQtrigger_ndigits_choices = ['NDigits', 'NDigits2']
 WCgeom_choices = ['HyperK', \
                       'HyperK_withHPD', \
                       'SuperK', \
@@ -54,26 +54,26 @@ parser = argparse.ArgumentParser(description='Run many WCSim jobs with different
 #options about how to run this script
 parser.add_argument('--onlycreatefiles', action='store_true', help="Do a test run where you create all the files, but don't run WCSim?")
 parser.add_argument('--batchmode', type=str, default='local', choices=BatchChoices, help='Where to submit the jobs.')
-parser.add_argument('--vis', action='store_true', help='Turn on the visulation? Not yet implemented')
-parser.add_argument('--reusedaqfolder', action='store_true', help='Reuse the DAQ folders? (i.e. don\'t exit if mkdir fails)')
 #options for the .mac files
 # geometry
 parser.add_argument('--WCgeom', type=delim_list, default='SuperK', help='The water tank geometry. Specify multiple with comma separated list. Choices: '+ListAsString(WCgeom_choices))
 parser.add_argument('--HKwatertanklength', type=delim_list, default='49500', help='The size of a HyperK geometry (mm)')
 # trigger & digitization
+parser.add_argument('--DAQdigitizer', type=delim_list, default='SKI', help='Which digitizer class to use? Specify multiple with comma separated list. Choices: '+ListAsString(DAQdigitizer_choices))
+parser.add_argument('--DAQtrigger', type=delim_list, default='NDigits', help='Which trigger class to use? Specify multiple with comma separated list. Choices: '+ListAsString(DAQtrigger_choices))
+#generic digitizer options
+parser.add_argument('--DAQdigideadtime', type=delim_list, default='0', help='What value of the digitizer deadtime should be used (i.e. how long can the digitizer not create new digits)? Specify multiple with comma separated list')
+parser.add_argument('--DAQdigiintwindow', type=delim_list, default='200', help='What value of the digitizer integration window should be used (i.e. how long does the digitizer integrate for)? Specify multiple with comma separated list')
+#ndigits trigger
+parser.add_argument('--DAQndigitsthreshold', type=delim_list, default='25', help='What value of the ndigits trigger threshold should be used (i.e. number of hits/digits)? Specify multiple with comma separated list')
+parser.add_argument('--DAQndigitswindow', type=delim_list, default='200', help='What value of the ndigits trigger window should be used (ns)? Specify multiple with comma separated list')
+parser.add_argument('--DAQndigitsignorenoise', action='store_true', help='Adjust the NDigits threshold automatically for the dark noise rate?')
+parser.add_argument('--DAQndigitssavewindow', type=delim_list, default='-400:+950', help='What value of the pre/post trigger window should digits be saved in (for the ndigits trigger)? Separate pre/post with a ":". Specify multiple pairs with a comma separated list')
+#save failures trigger
 parser.add_argument('--DAQsavefailuresmode', type=delim_list, default='0', help='Save failed triggers mode. 0: save only events which pass the trigger. 1: save only events which fail the trigger. 2: save both')
 parser.add_argument('--DAQsavefailurestime', type=delim_list, default='200', help='For mode 1 & 2, give events which fail the trigger the trigger time')
-parser.add_argument('--DAQdigitizer', type=delim_list, default='SKI', help='Which digitizer class to use? Specify multiple with comma separated list. Choices: '+ListAsString(DAQdigitizer_choices))
-parser.add_argument('--DAQtrigger', type=delim_list, default='NHits', help='Which trigger class to use? Specify multiple with comma separated list. Choices: '+ListAsString(DAQtrigger_choices))
-#nhits trigger
-parser.add_argument('--DAQnhitsthreshold', type=delim_list, default='25', help='What value of the nhits trigger threshold should be used (i.e. number of hits/digits)? Specify multiple with comma separated list')
-parser.add_argument('--DAQnhitswindow', type=delim_list, default='200', help='What value of the nhits trigger window should be used (ns)? Specify multiple with comma separated list')
-parser.add_argument('--DAQnhitsignorenoise', action='store_true', help='Adjust the NHits threshold automatically for the dark noise rate?')
-#local nhits trigger
-parser.add_argument('--DAQlocalnhitsneighbours', type=delim_list, default='50', help='What value of the localnhits trigger neighbours should be used (i.e. number of hits/digits)? Specify multiple with comma separated list')
-parser.add_argument('--DAQlocalnhitsthreshold', type=delim_list, default='10', help='What value of the localnhits trigger threshold should be used (i.e. number of hits/digits)? Specify multiple with comma separated list')
-parser.add_argument('--DAQlocalnhitswindow', type=delim_list, default='50', help='What value of the localnhits trigger window should be used (ns)? Specify multiple with comma separated list')
-# dark noise
+parser.add_argument('--DAQsavefailuressavewindow', type=delim_list, default='-400:+950', help='What value of the pre/post trigger window should digits be saved in (for the save failures)? Separate pre/post with a ":". Specify multiple pairs with a comma separated list')
+#dark noise
 parser.add_argument('--DarkNoiseRate', type=delim_list, default='4.2', help='Dark noise rate (kHz). Specify multiple with comma separated list')
 parser.add_argument('--DarkNoiseConvert', type=delim_list, default='1.367', help='Convert dark noise frequency before digitization to after digitization by setting suitable factor. Specify multiple with comma separated list')
 parser.add_argument('--DarkNoiseMode', type=int, default=1, choices=[0,1], help='0: apply noise in a specified time window. 1: apply noise around hits. Choose exactly one')
@@ -94,8 +94,28 @@ def check_input_list(arglist, allowed, parser):
     #check for options that aren't allowed
     for arg in arglist:
         if arg not in allowed:
-            print arg, "is incorrect"
             parser.print_help()
+            print arg, "is an incorrect option"
+            sys.exit(1)
+
+def check_input_pairs(args):
+    for arg in args:
+        opt_str = arg.split(':')
+        opt_int = []
+        if len(opt_str) != 2:
+            parser.print_help()
+            print arg, "must be a (common separated list of) colon-separated monotonically-increasing int pair(s). Not a pair!"
+            sys.exit(1)
+        for i in opt_str:
+            try:
+                opt_int.append(int(i))
+            except:
+                parser.print_help()
+                print arg, "must be a (common separated list of) colon-separated monotonically-increasing int pair(s). Not ints:", i
+                sys.exit(1)
+        if opt_int[1] < opt_int[0]:
+            parser.print_help()
+            print arg, "must be a (common separated list of) colon-separated monotonically-increasing int pair(s). Not monotonically-increasing"
             sys.exit(1)
 
 def main(args_to_parse = None):
@@ -109,23 +129,34 @@ def main(args_to_parse = None):
     check_input_list(args.DAQtrigger, DAQtrigger_choices, parser)
     if (type(args.GunPosition) is list and len(args.GunPosition) != 3) \
         or (type(args.GunDirection) is list and len(args.GunDirection) != 3):
-        print "GunPosition and GunDirection are three vectors. Specify exactly 3 options!"
         parser.print_help()
+        print "GunPosition and GunDirection are three vectors. Specify exactly 3 options!"
         sys.exit(1)
     if (type(args.GunPosition) is str and args.GunPosition not in GunPositionChoices):
-        print "GunPosition", args.GunPosition, "not one of", GunPositionChoices
         parser.print_help()
+        print "GunPosition", args.GunPosition, "not one of", GunPositionChoices
         sys.exit(1)
     if (type(args.GunDirection) is str and args.GunDirection not in GunDirectionChoices):
-        print "GunDirection", args.GunDirection, "not one of", GunDirectionChoices
         parser.print_help()
+        print "GunDirection", args.GunDirection, "not one of", GunDirectionChoices
         sys.exit(1)
     if type(args.GunDirection) != type(args.GunPosition):
-        print "Must use consistent GunPosition and GunDirection options (i.e. both 3 vectors or both MakeKin.py str options)"
         parser.print_help()
+        print "Must use consistent GunPosition and GunDirection options (i.e. both 3 vectors or both MakeKin.py str options)"
         sys.exit(1)
-
-
+    if args.DarkNoiseMode == 0:
+        check_input_pairs(args.DarkNoiseWindow)
+    elif args.DarkNoiseMode == 1:
+        for w in args.DarkNoiseWindow:
+            try:
+                int(w)
+            except:
+                parser.print_help()
+                print "DarkNoiseWindow must be a (comma separated list of) single int value(s) when running in mode 1"
+                sys.exit(1)
+    check_input_pairs(args.DAQndigitssavewindow)
+    check_input_pairs(args.DAQsavefailuressavewindow)
+    
     
     #Grab the other .mac files
     shutil.copy2(os.path.expandvars("$WCSIMDIR") + "/jobOptions.mac", "./")
@@ -142,111 +173,168 @@ def main(args_to_parse = None):
         verboptions = "/run/verbose 0 \n" \
             "/tracking/verbose 0 \n" \
             "/hits/verbose 0 \n"
-        return [verboptions]
+        return [[verboptions], ['']]
 
     def ConstructGeometry(args):
         #the detector construction options
         geoms = []
         filestubs = []
-        for WCgeom in args.WCgeom:
-            for HKwatertanklength in args.HKwatertanklength:
-                constructoptions = ''
-                if WCgeom == 'SuperK':
-                    pass
-                else:
-                    constructoptions = "/WCSim/WCgeom " + WCgeom + "\n"
-                filestub = WCgeom
-                if WCgeom in HKwatertargetlength_choices:
-                    constructoptions += "/WCSim/HyperK/waterTank_Length " + HKwatertanklength + "\n"
-                    filestub += "_" + HKwatertanklength
-                constructoptions += "/WCSim/Construct \n"
-                geoms.append(constructoptions)
-                filestubs.append(filestub)
+        # permutations
+        permutationDict = OrderedDict()
+        permutationDict['/WCSim/WCgeom']  = [x for x in args.WCgeom]
+        permutationDict['/WCSim/HyperK/waterTank_Length'] = [x for x in args.HKwatertanklength]
+        # create a list of dictionaries for each permutation of the parameter values
+        permutationDictList = [ dict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
+        for pDict in permutationDictList:
+            #get the options
+            geomoptions = ''
+            for k,v in pDict.iteritems():
+                #SuperK is the default
+                if k == '/WCSim/WCgeom' and v == 'SuperK':
+                    break
+                #HK length only relevant for some geometries
+                if k == '/WCSim/HyperK/waterTank_Length':
+                    thisgeom = geomoptions.split()[1].strip()
+                    if thisgeom not in HKwatertargetlength_choices:
+                        break
+                geomoptions += k + ' ' + v + '\n'
+            if geomoptions != '':
+                geomoptions += "/WCSim/Construct \n"
+            geoms.append(geomoptions)
+            #assemble the filename
+            filestub = pDict['/WCSim/WCgeom']
+            if filestub in HKwatertargetlength_choices:
+                filestub += '_' + pDict['/WCSim/HyperK/waterTank_Length']
+            filestubs.append(filestub)
         return [geoms, filestubs]
 
     def ConstructPMT(args):
         #the PMT behaviour options
         pmts = []
         filestubs = []
-        for PMTQEMethod in args.PMTQEMethod:
-            for PMTCollEff in args.PMTCollEff:
-                pmtoptions = "/WCSim/PMTQEMethod " + PMTQEMethod + "\n" \
-                    "/WCSim/CollEff " + PMTCollEff + "\n"
-                pmts.append(pmtoptions)
-                filestubs.append(PMTQEMethod + "_PMTCollEff_" + PMTCollEff)
+        # permutations
+        permutationDict = OrderedDict()
+        permutationDict['/WCSim/PMTQEMethod'] = [x for x in args.PMTQEMethod]
+        permutationDict['/WCSim/CollEff']     = [x for x in args.PMTCollEff]
+        # create a list of dictionaries for each permutation of the parameter values
+        permutationDictList = [ dict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
+        for pDict in permutationDictList:
+            #get the options
+            pmtoptions = ''
+            for k,v in pDict.iteritems():
+                pmtoptions += k + ' ' + v + '\n'
+            pmts.append(pmtoptions)
+            #assemble the filename
+            filestub = pDict['/WCSim/PMTQEMethod'] + '_PMTCollEff_' + pDict['/WCSim/CollEff']
+            filestubs.append(filestub)
         return [pmts, filestubs]
 
     def ConstructDAQ(args):
         #make the DAQ digitizer / trigger options
         daqs = []
         filestubs = []
-        for DAQdigitizer in args.DAQdigitizer:
-            for DAQtrigger in args.DAQtrigger:
-                for DAQsavefailuresmode in args.DAQsavefailuresmode:
-                    for DAQsavefailurestime in args.DAQsavefailurestime:
-                        for DAQnhitsthreshold in args.DAQnhitsthreshold:
-                            for DAQnhitswindow in args.DAQnhitswindow:
-                                for DAQlocalnhitsneighbours in args.DAQlocalnhitsneighbours:
-                                    for DAQlocalnhitsthreshold in args.DAQlocalnhitsthreshold:
-                                        for DAQlocalnhitswindow in args.DAQlocalnhitswindow:
-                                            filestub = DAQdigitizer + "_" + DAQtrigger + "_fails" + DAQsavefailuresmode
-                                            if DAQsavefailuresmode != '0':
-                                                filestub += "_" + DAQsavefailurestime
-                                            if DAQtrigger in DAQtrigger_nhits_choices:
-                                                filestub += "_NHits" + str(DAQnhitsthreshold) + "_" + str(DAQnhitswindow)
-                                            if DAQtrigger in DAQtrigger_localnhits_choices:
-                                                filestub += "_LocalNHits" + str(DAQlocalnhitsneighbours) + "_" \
-                                                                  + str(DAQlocalnhitsthreshold) + "_" \
-                                                                  + str(DAQlocalnhitswindow)
-                                            noise_agnostic = 'true' if args.DAQnhitsignorenoise else 'false'
-                                            daqoptions = "/DAQ/Digitizer " + DAQdigitizer + "\n" \
-                                                "/DAQ/Trigger " + DAQtrigger + "\n" \
-                                                "/DAQ/TriggerSaveFailures/Mode " + DAQsavefailuresmode + "\n" \
-                                                "/DAQ/TriggerSaveFailures/TriggerTime " + DAQsavefailurestime + "\n"
-                                            if DAQtrigger in DAQtrigger_nhits_choices:
-                                                daqoptions += "/DAQ/TriggerNHits/Threshold " + DAQnhitsthreshold + "\n" \
-                                                    "/DAQ/TriggerNHits/Window " + DAQnhitswindow + "\n" \
-                                                    "/DAQ/TriggerNHits/AdjustForNoise " + noise_agnostic + "\n"
-                                            if DAQtrigger in DAQtrigger_localnhits_choices:
-                                                daqoptions += "/DAQ/TriggerLocalNHits/Neighbours " + DAQlocalnhitsneighbours + "\n" \
-                                                    "/DAQ/TriggerLocalNHits/Threshold " + DAQlocalnhitsthreshold + "\n" \
-                                                    "/DAQ/TriggerLocalNHits/Window " + DAQlocalnhitswindow + "\n" \
-                                                    "/DAQ/TriggerLocalNHits/AdjustForNoise " + noise_agnostic + "\n"
-                                            daqs.append(daqoptions)
-                                            filestubs.append(filestub)
+        # permutations
+        permutationDict = OrderedDict()
+        permutationDict['/DAQ/Digitizer']                             = [x for x in args.DAQdigitizer]
+        permutationDict['/DAQ/Trigger']                               = [x for x in args.DAQtrigger]
+        permutationDict['/DAQ/DigitizerOpt/DeadTime']                 = [x for x in args.DAQdigideadtime]
+        permutationDict['/DAQ/DigitizerOpt/IntegrationWindow']        = [x for x in args.DAQdigiintwindow]
+        permutationDict['/DAQ/TriggerSaveFailures/Mode']              = [x for x in args.DAQsavefailuresmode]
+        permutationDict['/DAQ/TriggerSaveFailures/TriggerTime']       = [x for x in args.DAQsavefailurestime]
+        permutationDict['/DAQ/TriggerSaveFailures/PreTriggerWindow']  = [x.split(':')[0] for x in args.DAQndigitssavewindow]
+        permutationDict['/DAQ/TriggerSaveFailures/PostTriggerWindow'] = [x.split(':')[1] for x in args.DAQndigitssavewindow]
+        # create a list of dictionaries for each permutation of the parameter values
+        permutationDictList = [ dict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
+        for pDict in permutationDictList:
+            #only run if both Trigger & Digitizer are both or neither SKI_SKDETSIM
+            if pDict['/DAQ/Digitizer'] == 'SKI_SKDETSIM' and pDict['/DAQ/Trigger'] != 'SKI_SKDETSIM':
+                continue
+            if pDict['/DAQ/Digitizer'] != 'SKI_SKDETSIM' and pDict['/DAQ/Trigger'] == 'SKI_SKDETSIM':
+                continue
+            #get the options
+            daqoptions = ''
+            for k,v in pDict.iteritems():
+                daqoptions += k + ' ' + v + '\n'
+            #get the filename
+            filestub = pDict['/DAQ/Digitizer'] + '_digi' + pDict['/DAQ/DigitizerOpt/DeadTime'] + '_' \
+                + pDict['/DAQ/DigitizerOpt/IntegrationWindow'] + '_' \
+                + pDict['/DAQ/Trigger'] + '_fails' + pDict['/DAQ/TriggerSaveFailures/Mode']
+            if pDict['/DAQ/TriggerSaveFailures/Mode'] != '0':
+                filestub += "_" + pDict['/DAQ/TriggerSaveFailures/TriggerTime']
+            #get the NDigits options/filestubs
+            additionaloptions   = []
+            if pDict['/DAQ/Trigger'] in DAQtrigger_ndigits_choices:
+                additionaloptions.append(ConstructNDigitsTrigger(args))
+            #assemble the complete set of options
+            permutationDictO = OrderedDict()
+            permutationDictF = OrderedDict()
+            for i, optionset in enumerate(additionaloptions):
+                permutationDictO[i] = optionset[0]
+                permutationDictF[i] = optionset[1]
+            permutationDictListO = [ dict(zip(permutationDictO, v)) for v in itertools.product(*permutationDictO.values()) ]
+            permutationDictListF = [ dict(zip(permutationDictF, v)) for v in itertools.product(*permutationDictF.values()) ]
+            for pDictO,pDictF in itertools.izip(permutationDictListO, permutationDictListF):
+                theseoptions = daqoptions
+                thesefile    = filestub
+                for (kO,vO), (kF, vF) in itertools.izip(pDictO.iteritems(), pDictF.iteritems()):
+                    theseoptions += vO
+                    thesefile += '_' + vF
+                daqs.append(theseoptions)
+                filestubs.append(thesefile)
         return [daqs, filestubs]
 
+    def ConstructNDigitsTrigger(args):
+        #make the NDigits type trigger options
+        commands  = []
+        filestubs = []
+        # permutations
+        permutationDict = OrderedDict()
+        permutationDict['/DAQ/TriggerNDigits/Threshold']         = [x for x in args.DAQndigitsthreshold]
+        permutationDict['/DAQ/TriggerNDigits/Window']            = [x for x in args.DAQndigitswindow]
+        permutationDict['/DAQ/TriggerNDigits/AdjustForNoise']    = ['true' if args.DAQndigitsignorenoise else 'false']
+        permutationDict['/DAQ/TriggerNDigits/PreTriggerWindow']  = [x.split(':')[0] for x in args.DAQndigitssavewindow]
+        permutationDict['/DAQ/TriggerNDigits/PostTriggerWindow'] = [x.split(':')[1] for x in args.DAQndigitssavewindow]
+        # create a list of dictionaries for each permutation of the parameter values
+        permutationDictList = [ dict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
+        for pDict in permutationDictList:
+            #get the options
+            options = ''
+            for k,v in pDict.iteritems():
+                options += k + ' ' + v + '\n'
+            commands.append(options)
+            #assemble the filename
+            filestub = 'NDigits' + pDict['/DAQ/TriggerNDigits/Threshold'] + '_' + pDict['/DAQ/TriggerNDigits/Window']
+            filestubs.append(filestub)
+        return [commands, filestubs]
 
     def ConstructDarkNoise(args):
         noises = []
         filestubs = []
-        for DarkNoiseRate in args.DarkNoiseRate:
-            for DarkNoiseConvert in args.DarkNoiseConvert:
-                for DarkNoiseWindow in args.DarkNoiseWindow:
-                    #DarkNoiseWindow should be treated specially, as it depends on DarkNoiseMode
-                    darknoisewindow = ""
-                    if args.DarkNoiseMode == 1:
-                        try:
-                            int(DarkNoiseWindow)
-                        except ValueError:
-                            print "For DarkNoiseMode == 1, DarkNoiseWindow should be a single number (not colon separated)"
-                            sys.exit(1)
-                        darknoisewindow = "/DarkRate/SetDarkWindow " + DarkNoiseWindow + "\n"
-                    elif args.DarkNoiseMode == 0:
-                        if len(DarkNoiseWindow.split(':')[0]) != 2:
-                            print "For DarkNoiseMode == 0, DarkNoiseWindow should be exactly two numbers, separated with a colon"
-                            sys.exit(1)
-                        darknoisewindow = "/DarkRate/SetDarkLow  " + DarkNoiseWindow.split(':')[0] + "\n" \
-                            "/DarkRate/SetDarkHigh " + DarkNoiseWindow.split(':')[1] + "\n"
-                    else:
-                        print "Unknown DarkNoiseMode", args.DarkNoiseMode
-                        sys.exit(1)
-                    darkoptions = "/DarkRate/SetDarkRate " + DarkNoiseRate + " kHz \n" \
-                        "/DarkRate/SetConvert " + DarkNoiseConvert + "\n" \
-                        "/DarkRate/SetDarkMode " + str(args.DarkNoiseMode) + "\n" \
-                        "" + darknoisewindow
-                    noises.append(darkoptions)
-                    filestubs.append("DarkNoiseM" + str(args.DarkNoiseMode) + "R" + DarkNoiseRate + "W" + DarkNoiseWindow.strip())
+        # permutations
+        permutationDict = OrderedDict()
+        permutationDict['/DarkRate/SetDarkRate'] = [x for x in args.DarkNoiseRate]
+        permutationDict['/DarkRate/SetConvert']  = [x for x in args.DarkNoiseConvert]
+        permutationDict['/DarkRate/SetDarkMode'] = [str(args.DarkNoiseMode)]
+        if args.DarkNoiseMode == 1:
+            permutationDict['/DarkRate/SetDarkWindow'] = [x for x in args.DarkNoiseWindow]
+        elif args.DarkNoiseMode == 0:
+            permutationDict['/DarkRate/SetDarkLow']  = [x.split(':')[0] for x in args.DarkNoiseWindow]
+            permutationDict['/DarkRate/SetDarkHigh'] = [x.split(':')[1] for x in args.DarkNoiseWindow]
+        # create a list of dictionaries for each permutation of the parameter values
+        permutationDictList = [ dict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
+        for pDict in permutationDictList:
+            #get the options
+            darkoptions = ''
+            for k,v in pDict.iteritems():
+                darkoptions += k + ' ' + v + '\n'
+            noises.append(darkoptions)
+            #assemble the filename
+            filestub = 'DarkNoiseM' + pDict['/DarkRate/SetDarkMode'] + 'C' + pDict['/DarkRate/SetConvert'] + 'R' + pDict['/DarkRate/SetDarkRate'] + 'W'
+            if args.DarkNoiseMode == 1:
+                filestub += pDict['/DarkRate/SetDarkWindow']
+            elif args.DarkNoiseMode == 0:
+                filestub += pDict['/DarkRate/SetDarkLow'] + ':' + pDict['/DarkRate/SetDarkHigh']
+            filestubs.append(filestub)
         return [noises, filestubs]
 
     def ConstructParticleGun(args):
@@ -282,24 +370,40 @@ def main(args_to_parse = None):
         return [guns, filestubs]
 
     #construct the .mac options and parts of filenames for the different groups
-    o1     = ConstructVerbosity(args)
-    o2, f2 = ConstructGeometry(args)
-    o3, f3 = ConstructPMT(args)
-    o4, f4 = ConstructDAQ(args)
-    o5, f5 = ConstructDarkNoise(args)
-    o6, f6 = ConstructParticleGun(args)
-    options   = [x1 + x2 + x3 + x4 + x5 + x6 for x1 in o1 for x2 in o2 for x3 in o3 for x4 in o4 for x5 in o5 for x6 in o6]
-    #remember f1 doesn't exist
-    filestubs = [x6 + '_' + x2 + '_' + x3 + '_' + x4 + '_' + x5 for x2 in f2 for x3 in f3 for x4 in f4 for x5 in f5 for x6 in f6]
+    tempoptions = []
+    tempoptions.append(ConstructVerbosity(args))
+    tempoptions.append(ConstructParticleGun(args))
+    tempoptions.append(ConstructGeometry(args))
+    tempoptions.append(ConstructPMT(args))
+    tempoptions.append(ConstructDAQ(args))
+    tempoptions.append(ConstructDarkNoise(args))
 
-    counter = 1
-    for text, filenamestub in itertools.izip(options, filestubs):
-        filenamestub = 'wcsim_' + filenamestub + ("_SavePi0" if args.SavePi0 else "")
-        #add the final bits to the text
-        text += "/WCSimIO/RootFile " + filenamestub + ".root" + "\n" \
+    #assemble the complete set of options
+    options = []
+    filestubs = []
+    permutationDictO = OrderedDict()
+    permutationDictF = OrderedDict()
+    for i, optionset in enumerate(tempoptions):
+        permutationDictO[i] = optionset[0]
+        permutationDictF[i] = optionset[1]
+    permutationDictListO = [ dict(zip(permutationDictO, v)) for v in itertools.product(*permutationDictO.values()) ]
+    permutationDictListF = [ dict(zip(permutationDictF, v)) for v in itertools.product(*permutationDictF.values()) ]
+    for pDictO,pDictF in itertools.izip(permutationDictListO, permutationDictListF):
+        theseoptions = ''
+        thesefile    = 'wcsim'
+        for (kO,vO), (kF, vF) in itertools.izip(pDictO.iteritems(), pDictF.iteritems()):
+            theseoptions += vO
+            thesefile    += '_' + vF
+        #add the final bits to the options
+        theseoptions += "/WCSimIO/RootFile " + thesefile + ".root" + "\n" \
             "/WCSim/SavePi0 " + ("true" if args.SavePi0 else "false") + "\n" \
             "/run/beamOn " + str(args.NEvents) + "\n"
-            
+        options.append(theseoptions)
+        filestubs.append(thesefile)
+        
+    #loop over every options set
+    counter = 1
+    for text, filenamestub in itertools.izip(options, filestubs):
         #write the novis.mac style file
         f = open(filenamestub + '.mac', 'w')
         f.write(text)
@@ -346,3 +450,5 @@ def Submit(filenamestub, args):
                                
 if __name__ == "__main__":
     main()
+
+    print "\n\n\nTODO fix defaults - certain variables should be allowed to be not written in the .mac file (e.g. if DarkRate == -99)"
