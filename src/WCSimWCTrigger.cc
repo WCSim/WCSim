@@ -84,6 +84,16 @@ void WCSimWCTriggerBase::GetVariables()
 	 << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << " ns" << G4endl;
 }
 
+int WCSimWCTriggerBase::GetMaximumPhotonTravelTime()
+{
+  double d = myDetector->GetIDDiameter();
+  double h = myDetector->GetIDHeight();
+  double max_distance = sqrt(d*d + h*h);
+  double speed    = 299792458 * 0.75 * m / s;
+  double max_time = max_distance / speed;
+  return max_time;
+}
+
 int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
 {
   switch(t) {

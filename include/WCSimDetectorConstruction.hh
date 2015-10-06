@@ -77,6 +77,10 @@ public:
   G4double GetGeo_Dm(G4int);
   G4int    GetTotalNumPmts() {return totalNumPMTs;}
   
+  //ID tank size
+  G4double GetIDDiameter() { return WCIDDiameter; }
+  G4double GetIDHeight()   { return WCIDHeight;   }
+
   G4int    GetPMT_QE_Method(){return PMT_QE_Method;}
   G4double GetwaterTank_Length() {return waterTank_Length;} 
   G4int    UsePMT_Coll_Eff(){return PMT_Coll_Eff;}
