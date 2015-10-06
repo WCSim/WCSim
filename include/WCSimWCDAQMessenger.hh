@@ -7,6 +7,7 @@
 #include "G4UIcmdWithAnInteger.hh"
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIdirectory.hh"
+#include "G4UIcmdWithoutParameter.hh"
 
 class G4UIcommand;
 class WCSimEventAction;
@@ -16,19 +17,17 @@ class WCSimWCTriggerBase;
 class WCSimWCDAQMessenger: public G4UImessenger
 {
 public:
-  WCSimWCDAQMessenger();
+  WCSimWCDAQMessenger(WCSimEventAction*);
 
   ~WCSimWCDAQMessenger();
 
   void SetNewValue(G4UIcommand* command, G4String newValue);
 
-  void SetEventActionOptions();
   void SetTriggerOptions();
   void SetDigitizerOptions();
 
   void TellMeAboutTheDigitizer  (WCSimWCDigitizerBase* digitizer)   { WCSimDigitize = digitizer; }
   void TellMeAboutTheTrigger    (WCSimWCTriggerBase*   trigger)     { WCSimTrigger  = trigger; }
-  void TellMeAboutTheEventAction(WCSimEventAction*     eventaction) { WCSimEvent    = eventaction; }
 
 private:
   WCSimEventAction*     WCSimEvent;
@@ -41,19 +40,37 @@ private:
   G4UIcmdWithAString* TriggerChoice;
   G4String            StoreTriggerChoice;
 
+  G4UIcmdWithoutParameter* DAQConstruct; //TODO remove this
+
+  G4UIdirectory*        DigitizerDir;
+  G4UIcmdWithAnInteger* DigitizerDeadTime;
+  G4int                 StoreDigitizerDeadTime;
+  G4UIcmdWithAnInteger* DigitizerIntegrationWindow;
+  G4int                 StoreDigitizerIntegrationWindow;
+
   G4UIdirectory*        SaveFailuresTriggerDir;
   G4UIcmdWithAnInteger* SaveFailuresTriggerMode;
   G4int                 StoreSaveFailuresMode;
   G4UIcmdWithADouble*   SaveFailuresTriggerTime;
   G4double              StoreSaveFailuresTime;
+  G4UIcmdWithAnInteger* SaveFailuresPreTriggerWindow;
+  G4int                 StoreSaveFailuresPreWindow;
+  G4UIcmdWithAnInteger* SaveFailuresPostTriggerWindow;
+  G4int                 StoreSaveFailuresPostWindow;
 
-  G4UIdirectory*        NHitsTriggerDir;
-  G4UIcmdWithAnInteger* NHitsTriggerThreshold;
-  G4int                 StoreNHitsThreshold;
-  G4UIcmdWithAnInteger* NHitsTriggerWindow;
-  G4int                 StoreNHitsWindow;
-  G4UIcmdWithABool*     NHitsTriggerAdjustForNoise;
-  G4bool                StoreNHitsAdjustForNoise;
+  G4UIdirectory*        NDigitsTriggerDir;
+  G4UIcmdWithAnInteger* NDigitsTriggerThreshold;
+  G4int                 StoreNDigitsThreshold;
+  G4UIcmdWithAnInteger* NDigitsTriggerWindow;
+  G4int                 StoreNDigitsWindow;
+  G4UIcmdWithABool*     NDigitsTriggerAdjustForNoise;
+  G4bool                StoreNDigitsAdjustForNoise;
+  G4UIcmdWithAnInteger* NDigitsPreTriggerWindow;
+  G4int                 StoreNDigitsPreWindow;
+  G4UIcmdWithAnInteger* NDigitsPostTriggerWindow;
+  G4int                 StoreNDigitsPostWindow;
+
+  G4String initialiseString;
 };
 
 #endif

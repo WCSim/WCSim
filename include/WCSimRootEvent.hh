@@ -234,7 +234,7 @@ private:
   TClonesArray         *fCherenkovDigiHits;  //-> Array of WCSimRootCherenkovDigiHit's
 
   TriggerType_t        fTriggerType;         // Trigger algorithm that created this trigger
-  std::vector<Float_t> fTriggerInfo;         // Information about how it passed the trigger (e.g. how many hits in the NHits window)
+  std::vector<Float_t> fTriggerInfo;         // Information about how it passed the trigger (e.g. how many hits in the NDigits window)
 
   bool IsZombie;
 

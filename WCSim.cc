@@ -60,9 +60,6 @@ int main(int argc,char** argv)
   // Set up the messenger hooks here, initialize the actual list after loading jobOptions.mac
   WCSimPhysicsListFactory *physFactory = new WCSimPhysicsListFactory();
 
-  //Create a DAQ messenger to be able to read the DAQ class choices from jobOptions.mac
-  WCSimWCDAQMessenger *myDAQMessenger = new WCSimWCDAQMessenger();
-
   // Currently, default model is set to BINARY
   file_exists("jobOptions.mac");
   UI->ApplyCommand("/control/execute jobOptions.mac");
@@ -98,7 +95,7 @@ int main(int argc,char** argv)
   runManager->SetUserAction(myRunAction);
 
   runManager->SetUserAction(new WCSimEventAction(myRunAction, WCSimdetector,
-						 myGeneratorAction, myDAQMessenger));
+						 myGeneratorAction));
   runManager->SetUserAction(new WCSimTrackingAction);
 
   runManager->SetUserAction(new WCSimStackingAction(WCSimdetector));
