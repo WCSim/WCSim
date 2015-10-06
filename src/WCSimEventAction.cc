@@ -77,8 +77,12 @@ WCSimEventAction::~WCSimEventAction()
 
 void WCSimEventAction::CreateDAQInstances()
 {
-  if(ConstructedDAQClasses)
-    return;
+  if(ConstructedDAQClasses) {
+    G4cerr << "WCSimEventAction::CreateDAQInstances() has already been called. Exiting..." << G4endl;
+    exit(-1);
+  }
+
+  G4cout << "Creating digitizer and trigger class instances in WCSimEventAction::CreateDAQInstances()" << G4endl;
 
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
 

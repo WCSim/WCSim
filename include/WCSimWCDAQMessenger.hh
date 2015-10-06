@@ -40,8 +40,6 @@ private:
   G4UIcmdWithAString* TriggerChoice;
   G4String            StoreTriggerChoice;
 
-  G4UIcmdWithoutParameter* DAQConstruct; //TODO remove this
-
   G4UIdirectory*        DigitizerDir;
   G4UIcmdWithAnInteger* DigitizerDeadTime;
   G4int                 StoreDigitizerDeadTime;

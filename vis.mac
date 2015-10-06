@@ -90,16 +90,6 @@
 #/DAQ/TriggerNDigits/PreTriggerWindow  -400
 #/DAQ/TriggerNDigits/PostTriggerWindow +950
 
-#this is a temporary workaround for needing to construct the dark noise messenger (done in the old digitizer / new adddarknoise class) before the dark noise options below are read
-#this workaround can be removed after a forthcoming major code change:
-# - removal of old WCSimWCDigitizer
-#then this can be removed by:
-# - construct WCSimWCAddDarkNoise instance in the WCSimEventAction constructor
-# - remove any references to /DAQ/Construct in WCSimWCDAQMessenger
-# - make WCSimEventAction::CreateDAQInstances() private
-# - call WCSimEventAction::CreateDAQInstances() in BeginOfEventAction() (actually already there, but need to test to make sure the instances are created early enough)
-/DAQ/Construct
-
 
 # default dark noise frequency is 0 kHz
 /DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.

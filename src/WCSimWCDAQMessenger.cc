@@ -154,17 +154,11 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreNDigitsPostWindow = defaultNDigitsPostTriggerWindow;
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
 
-  //TODO remove this
-  DAQConstruct = new G4UIcmdWithoutParameter("/DAQ/Construct", this);
-  DAQConstruct->SetGuidance("Create the DAQ class instances");
-
   initialiseString = "";
 }
 
 WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
 {
-  delete DAQConstruct; //TODO remove this
-
   delete SaveFailuresTriggerDir;
   delete SaveFailuresTriggerMode;
   delete SaveFailuresTriggerTime;
@@ -264,12 +258,6 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   else if (command == NDigitsPostTriggerWindow) {
     G4cout << "NDigits posttrigger window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
     StoreNDigitsPostWindow = NDigitsPostTriggerWindow->GetNewIntValue(newValue);
-  }
-
-  //TODO remove this
-  else if(command == DAQConstruct) {
-    G4cout << "Calling WCSimEventAction::CreateDAQInstances()" << G4endl;
-    WCSimEvent->CreateDAQInstances();
   }
 }
 
