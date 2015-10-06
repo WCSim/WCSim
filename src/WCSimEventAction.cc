@@ -60,8 +60,14 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   DAQMessenger = new WCSimWCDAQMessenger(this);
 
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
+
+  //create PMT response module
   WCSimWCPMT* WCDMPMT = new WCSimWCPMT( "WCReadoutPMT", myDetector);
   DMman->AddNewModule(WCDMPMT);
+
+  //create dark noise module
+  WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise("WCDarkNoise", detectorConstructor);
+  DMman->AddNewModule(WCDNM);
 }
 
 WCSimEventAction::~WCSimEventAction()
@@ -75,11 +81,6 @@ void WCSimEventAction::CreateDAQInstances()
     return;
 
   G4DigiManager* DMman = G4DigiManager::GetDMpointer();
-
-  //TODO move the WCSimWCAddDarkNoise creation to the constructor
-  //create dark noise module
-  WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise("WCDarkNoise", detectorConstructor);
-  DMman->AddNewModule(WCDNM);
 
   //create your choice of digitizer module
   if(DigitizerChoice == "SKI") {
