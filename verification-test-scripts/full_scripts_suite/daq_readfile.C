@@ -16,14 +16,10 @@
 #include <TLegend.h>
 #include <TROOT.h>
 
-//#define POST_NEW_DAQ_PULL_REQUEST
-
 #if !defined(__CINT__) || defined(__MAKECINT__)
 #include "WCSimRootEvent.hh"
 #include "WCSimRootGeom.hh"
-#ifdef POST_NEW_DAQ_PULL_REQUEST
 #include "WCSimEnumerations.hh"
-#endif
 #endif
 
 using namespace std;
@@ -129,10 +125,8 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   TH1F *hvtx2 = new TH1F("hvtx2", "Event VTX2", 200, -1500, 1500);
 
   TH1I *h1triggertype = new TH1I("h1triggertype", "Trigger type;Trigger type;Entries", 10, 0, 10);
-#ifdef POST_NEW_DAQ_PULL_REQUEST
   for(int i = -1; i <= kTriggerFailure; i++)
     h1triggertype->GetXaxis()->SetBinLabel(i+2, WCSimEnumerations::EnumAsString((TriggerType_t)i).c_str());
-#endif
 
   TH2I *h2nhits = new TH2I("h2nhits", "NDigits from subevent window vs NDigits from 200nsec trigger window;NDigits saved in subevent;NDigits in 200nsec window", 1001, -0.5, 10000.5, 1001, -0.5, 10000.5);
   TH1I *h1nhits = new TH1I("h1nhits", "NDigits in the subevent window;NDigits;Entries", 10001, -0.5, 10000.5);
@@ -283,18 +277,14 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     //
 
     int ncherenkovhits     = wcsimrootevent->GetNcherenkovhits();
-#ifdef POST_NEW_DAQ_PULL_REQUEST
     int ncherenkovhittimes = wcsimrootevent->GetNcherenkovhittimes();
-#endif
     int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits(); 
     
     h1->Fill(ncherenkovdigihits);
     if(verbose){
       printf("node id: %i\n", ev);
       printf("Ncherenkovhits (unique PMTs with hits)  %d\n", ncherenkovhits);
-#ifdef POST_NEW_DAQ_PULL_REQUEST
       printf("Ncherenkovhittimes (number of raw hits) %d\n", ncherenkovhittimes);
-#endif
       printf("Ncherenkovdigihits (number of digits)   %d\n", ncherenkovdigihits);
       printf("NumTubesHit       %d\n", wcsimrootevent->GetNumTubesHit());
       printf("NumDigitizedTubes %d\n", wcsimrootevent->GetNumDigiTubesHit());
@@ -360,21 +350,18 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
       if(verbose) printf("Ncherenkovdigihits %d\n", ncherenkovdigihits);
 
       int trigger_time = wcsimrootevent->GetHeader()->GetDate();
-#ifdef POST_NEW_DAQ_PULL_REQUEST
       TriggerType_t trigger_type = wcsimrootevent->GetTriggerType();
       std::vector<Float_t> trigger_info = wcsimrootevent->GetTriggerInfo();
 
       h1triggertime->Fill(trigger_time);
       if(trigger_info.size() > 0) {
-	if((trigger_type == kTriggerNHits) || (trigger_type == kTriggerNHitsSKDETSIM) || (trigger_type == kTriggerNHitsTest)) {
+	if((trigger_type == kTriggerNDigits) || (trigger_type == kTriggerNDigitsTest)) {
 	  h2nhits->Fill(ncherenkovdigihits, trigger_info[0]);
 	  h1nhitstrigger->Fill(trigger_info[0]);
 	}
       }
-#endif
       h1nhits->Fill(ncherenkovdigihits);
 
-#ifdef POST_NEW_DAQ_PULL_REQUEST
       h1triggertype->Fill(WCSimEnumerations::EnumAsString(trigger_type).c_str(), 1);
       if(verbose) {
 	cout << "Passed trigger "
@@ -383,13 +370,12 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	     << " and " << ncherenkovdigihits
 	     << " hits in the saved subevent region";
 	if(trigger_info.size() > 0) {
-	  if((trigger_type == kTriggerNHits) || (trigger_type == kTriggerNHitsSKDETSIM) || (trigger_type == kTriggerNHitsTest))
+	  if((trigger_type == kTriggerNDigits) || (trigger_type == kTriggerNDigitsTest))
 	    cout << " (" << trigger_info[0]
 		 << " in the 200nsec region)";
 	}
 	cout << endl;
       }
-#endif
 
       if(ncherenkovdigihits>0)
 	num_trig++;
@@ -450,7 +436,6 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	else {
 	  if(verbose)
 	    cout << peForTube << " PMT hits found for digit " << i << " with tube ID " << tube_id << endl;
-#ifdef POST_NEW_DAQ_PULL_REQUEST
 	  //loop over the photons ids of hits that made up the digit
 	  vector<int> photon_ids = wcsimrootcherenkovdigihit->GetPhotonIds();
 	  if(verbose)
@@ -487,14 +472,11 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	      h1eventALL_hittime[0]->Fill(wcsimrootcherenkovhittime->GetTruetime());
 	    }
 	  }//iphoton
-#endif
 	}//hits in this PMT found
-#ifdef POST_NEW_DAQ_PULL_REQUEST
 	if(hists_per_event) {
 	  hSevent_hittime[ev]->SetTitle(TString::Format("Raw hit time, event %d, %s;Hit time (ns);Entries", ev, WCSimEnumerations::EnumAsString(trigger_type).c_str()));
 	  hSevent_digittime[ev]->SetTitle(TString::Format("Digit time, event %d, %s;Digit time (ns);Entries", ev, WCSimEnumerations::EnumAsString(trigger_type).c_str()));
 	}
-#endif
 
 	if(verbose){
 	  //if ( i < 10 ) // Only print first XX=10 tubes
@@ -532,10 +514,8 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	float noise_fraction = (float)n_noise_hits / (float)(n_noise_hits + n_photon_hits);
 	h1noisefrac->Fill(noise_fraction);
 	h2nhits_sep->Fill(ncherenkovdigihits, noise_fraction);
-#ifdef POST_NEW_DAQ_PULL_REQUEST
 	if(trigger_info.size() > 0)
 	  h2nhitstrigger_sep->Fill(trigger_info[0], noise_fraction);
-#endif
 	n_noise_hits_total += n_noise_hits;
 	n_photon_hits_total += n_photon_hits;
       }//i // End of loop over Cherenkov digihits
