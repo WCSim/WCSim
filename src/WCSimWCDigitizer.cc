@@ -14,49 +14,47 @@
 #include "WCSimPmtInfo.hh"
 #include "WCSimDarkRateMessenger.hh"
 
-
 #include <vector>
 // for memset
 #include <cstring>
 #include <iostream>
 
-// changed from 940 (april 2005) by MF
-// 960 is unsuitable
-
 const double WCSimWCDigitizer::calibdarknoise = 1.37676;
 
 const double WCSimWCDigitizer::offset = 950.0 ; // ns
 const double WCSimWCDigitizer::pmtgate = 200.0 ; // ns
-const double WCSimWCDigitizer::eventgateup = 950.0 ; // ns
-const double WCSimWCDigitizer::eventgatedown = -400.0 ; // ns
 const double WCSimWCDigitizer::LongTime = 100000.0 ; // ns
-// value in skdetsim
-const int WCSimWCDigitizer::GlobalThreshold = 25 ; // # hit PMTs
-//const int WCSimWCDigitizer::GlobalThreshold = 12 ; // # hit PMTs
-// try to trigger early to reduce the width.
-//const int WCSimWCDigitizer::GlobalThreshold = 10 ; // # hit PMTs
-
 
 WCSimWCDigitizer::WCSimWCDigitizer(G4String name,
-				   WCSimDetectorConstruction* myDetector)
-  :G4VDigitizerModule(name)
+				   WCSimDetectorConstruction* myDetector,
+				   WCSimWCDAQMessenger* daqMessenger)
+  :WCSimWCTriggerBase(name, myDetector, daqMessenger)
 {
+  triggerClassName = "SKI_SKDETSIM";
   G4String colName = "WCDigitizedCollection";
   this->myDetector = myDetector;
   collectionName.push_back(colName);
-  DigiHitMap.clear();
+  ReInitialize();
 
   DarkRateMessenger = new WCSimDarkRateMessenger(this);
+
+  GetVariables();
+
+  //the nhits threshold value is read into the base class from /DAQ/TriggerNDigits/Threshold
+  // into the variable ndigitsThreshold
+  //in this class use this synonym for clarity
+  nhitsThreshold = ndigitsThreshold;
 }
 
 WCSimWCDigitizer::~WCSimWCDigitizer(){
   DarkRateMessenger = 0;
 }
 
-
 void WCSimWCDigitizer::Digitize()
 {
-  DigitsCollection = new WCSimWCDigitsCollection ("/WCSim/glassFaceWCPMT",collectionName[0]);
+  ReInitialize();
+
+  DigitsCollection = new WCSimWCTriggeredDigitsCollection("/WCSim/glassFaceWCPMT",collectionName[0]);
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   
@@ -66,9 +64,8 @@ void WCSimWCDigitizer::Digitize()
   // Get the PMT Digits collection
   WCSimWCDigitsCollection* WCHCPMT = 
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCHCID));
-  
-  if (WCHCPMT) {
 
+  if (WCHCPMT) {
     MakeHitsHistogram(WCHCPMT);
      //FindNumberOfGates(); //get list of t0 and number of triggers.
     FindNumberOfGatesFast(); //get list of t0 and number of triggers.
@@ -77,6 +74,25 @@ void WCSimWCDigitizer::Digitize()
       AddPMTDarkRate(WCHCPMT);
     }
     
+    //saveFailuresMode = 0 - save only triggered events
+    //saveFailuresMode = 1 - save both triggered & not triggered events
+    //saveFailuresMode = 2 - save only not triggered events
+    if(this->NumberOfGatesInThisEvent()) {
+      if(saveFailuresMode == 2) {
+	StoreDigiCollection(DigitsCollection);
+	return;
+      }
+    }
+    else {
+      if(saveFailuresMode == 0) {
+	StoreDigiCollection(DigitsCollection);
+	return;
+      }
+      TriggerTypes.push_back(kTriggerFailure);
+      TriggerTimes.push_back(saveFailuresTime);
+      TriggerInfos.push_back(std::vector<Float_t>(1, -1));
+    }
+
     for ( int i = 0 ; i < this->NumberOfGatesInThisEvent(); i++)
     {
 	DigitizeGate(WCHCPMT,i);
@@ -84,7 +100,7 @@ void WCSimWCDigitizer::Digitize()
   }
 
   StoreDigiCollection(DigitsCollection);
-
+ 
 }
 
 void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
@@ -138,11 +154,11 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
     WCSimWCPMT* WCPMT = (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT");
     // Only add noise to triggered time windows!
    
-    for( int i = 0; i < TriggerTimes.size(); i++ )
+    for(unsigned int i = 0; i < TriggerTimes.size(); i++ )
     {
-        current_time = TriggerTimes[i]+eventgatedown;
+        current_time = TriggerTimes[i]+GetPreTriggerWindow(kTriggerNHitsSKDETSIM);
 
-	while( current_time < TriggerTimes[i] + eventgateup )
+	while( current_time < TriggerTimes[i] + GetPostTriggerWindow(kTriggerNHitsSKDETSIM) )
         {
             // Get random time ahead for this poisson process
             current_time += -poisson_mean*log( 1-G4UniformRand() );
@@ -153,7 +169,7 @@ void WCSimWCDigitizer::AddPMTDarkRate(WCSimWCDigitsCollection* WCHCPMT)
 	    int noise_pmt = static_cast<int>( G4UniformRand() * number_pmts ); // This runs from 0 to number_pmts-1.
 	    noise_pmt = noise_pmt+1; //increment by 1 so it can be used as tubeID. Now runs from 1 to number_pmts.
 
-	    if ( current_time >= TriggerTimes[i] + eventgateup )
+	    if ( current_time >= TriggerTimes[i] + GetPostTriggerWindow(kTriggerNHitsSKDETSIM) )
 	      break;
 
 	    if( list[ noise_pmt ] == 0 ) // This PMT has not been hit
@@ -266,27 +282,31 @@ void WCSimWCDigitizer::FindNumberOfGatesFast()
         RealOffset = 0.0; 				// will need to add the offset later
 									// 40 means + 200ns
 									// so check 39 bins ahead in the histogram..
+
+	bool triggered = false;
 	while ( _mNextGate != GateMap.lower_bound( _mGateKeeper->first + 39)
-	     && _mNextGate->first <= _mGateKeeper->first + 39 		// but not more than 200ns away though!
+		&& _mNextGate->first <= _mGateKeeper->first + 39 		// but not more than 200ns away though!
 	      )
 	{
 
 	  acc += _mNextGate->second;
 
-          if ( acc > WCSimWCDigitizer::GlobalThreshold )
+          if (!triggered &&  acc > nhitsThreshold)
 	  {
 	    //RealOffset = _mGateKeeper->first*5.0;
 	    RealOffset = _mNextGate->first*5.0;
 	    TriggerTimes.push_back(RealOffset);
+	    TriggerTypes.push_back(kTriggerNHitsSKDETSIM);
 	    //std::cerr << "found a trigger..." << RealOffset/5.0  <<"\n";
-	    _mGateKeeper = GateMap.lower_bound( _mNextGate->first + G4int(WCSimWCDigitizer::eventgateup )/5. );
+	    _mGateKeeper = GateMap.lower_bound( _mNextGate->first + G4int(GetPostTriggerWindow(kTriggerNHitsSKDETSIM) )/5. );
 	    std::cerr.flush();
-	    break;
+	    triggered = true;
           }
 	  _mNextGate++;							// look at the next time bin with hits
-	}
+	}//while
+	if ( acc > nhitsThreshold)
+	  TriggerInfos.push_back(std::vector<Float_t>(1, acc));
     }
-
 }
 
 void WCSimWCDigitizer::FindNumberOfGates()
@@ -315,10 +335,12 @@ void WCSimWCDigitizer::FindNumberOfGates()
 	    {
 	      acc += triggerhisto[k-1];
 	    }
-	  if ( acc > WCSimWCDigitizer::GlobalThreshold ) {
+	  if ( acc > nhitsThreshold) {
 	    RealOffset = float(j)*5.0;
 	    TriggerTimes.push_back(RealOffset);
-	    I = j+G4int(WCSimWCDigitizer::eventgateup )/5. ;
+	    TriggerTypes.push_back(kTriggerNHitsSKDETSIM);
+	    TriggerInfos.push_back(std::vector<Float_t>(1, acc));
+	    I = j+G4int(GetPostTriggerWindow(kTriggerNHitsSKDETSIM) )/5. ;
 	    //std::cerr << "found a trigger..." << j
 	    //<< " ; new start = " << I << "\n";
 	    std::cerr.flush();
@@ -329,7 +351,8 @@ void WCSimWCDigitizer::FindNumberOfGates()
       compte = 0;
       for (int index = I ; index < SearchWindow ; index++)
 	compte += triggerhisto[index];
-      if ( compte < WCSimWCDigitizer::GlobalThreshold ) break;
+      if ( compte < nhitsThreshold) 
+	break;
       if (j==SearchWindow) break; //means we've looped all over and found nothing
       I++;
     }
@@ -341,13 +364,14 @@ void WCSimWCDigitizer::FindNumberOfGates()
 
 void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 {
+
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-  G4float timingConstant = 0.0;
+  //G4float timingConstant = 0.0;
   WCSimPMTObject * PMT;
   PMT = myDetector->GetPMTPointer(WCIDCollectionName);
  
-  G4double EvtG8Down = WCSimWCDigitizer::eventgatedown;
-  G4double EvtG8Up = WCSimWCDigitizer::eventgateup;  // this is a negative number...
+  G4double EvtG8Down = GetPreTriggerWindow(kTriggerNHitsSKDETSIM);  // this is a negative number...
+  G4double EvtG8Up   = GetPostTriggerWindow(kTriggerNHitsSKDETSIM);
 
   G4float tc;
   G4double lowerbound;
@@ -386,12 +410,14 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
       }
       */
      
+      std::vector<int> triggered_composition;
       for ( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++){
 	tc = (*WCHCPMT)[i]->GetTime(ip);
 	//Add up pe for each time in the gate.
 	if (tc >= lowerbound && tc <= mintime){
 	  G4double   pe = (*WCHCPMT)[i]->GetPe(ip);
 	  peSmeared += pe;
+	  triggered_composition.push_back(ip);
 	}
       }
       
@@ -429,28 +455,36 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 	    + firstHitTime
 	    + hittimesmearing;
 
-	  if ( digihittime > 0.0 && peSmeared>0.0)
+ 	  if ( digihittime > 0.0 && peSmeared>0.0)
 	  
 	    {
 	      if ( DigiHitMap[tube] == 0) {
-		WCSimWCDigi* Digi = new WCSimWCDigi();
+		WCSimWCDigiTrigger* Digi = new WCSimWCDigiTrigger();
 
 		Digi->SetTubeID(tube);
-		Digi->AddGate(G,TriggerTimes[G]);
+		Digi->AddGate(G);
 		Digi->SetPe(G,peSmeared);
 		Digi->SetTime(G,digihittime);
+		Digi->AddPe();
+		Digi->AddDigiCompositionInfo(G,triggered_composition);
 		DigiHitMap[tube] = DigitsCollection->insert(Digi);
 	      }
 	      else {
 		//G4cout << "deja vu " << tube << " " << G << "  " << TriggerTimes[G] << " " << digihittime
 		//     << "  " <<   peSmeared <<" ";
-		(*DigitsCollection)[DigiHitMap[tube]-1]->AddGate(G,TriggerTimes[G]);
+		(*DigitsCollection)[DigiHitMap[tube]-1]->AddGate(G);
 		(*DigitsCollection)[DigiHitMap[tube]-1]->SetPe(G,peSmeared);
 		(*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(G,digihittime);
+		(*DigitsCollection)[DigiHitMap[tube]-1]->AddPe();
+		(*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(G,triggered_composition);
 	      }
 	    }
-	  else { }//G4cout << "discarded negative time hit\n";}
+	  else { 
+	    //G4cout << "DIGIT REJECTED" << G4endl;
+	  }
 	}
-      //    else { G4cout << iflag << G4endl;}
+      else {
+	//G4cout << "DIGIT REJECTED" << G4endl;
+      }
     } // Loop over hits
 }

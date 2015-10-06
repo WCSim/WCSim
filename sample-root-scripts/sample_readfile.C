@@ -106,6 +106,8 @@ void sample_readfile(char *filename=NULL, bool verbose=false, bool save_hists=fa
   TH1F *hvtx1 = new TH1F("hvtx1", "Event VTX1", 200, -1500, 1500);
   TH1F *hvtx2 = new TH1F("hvtx2", "Event VTX2", 200, -1500, 1500);
   
+  int num_trig=0;
+  
   // Now loop over events
   for (int ev=0; ev<nevent; ev++)
   {
@@ -224,6 +226,7 @@ void sample_readfile(char *filename=NULL, bool verbose=false, bool save_hists=fa
 
     // Get the number of digitized hits
     // Loop over sub events
+   
     if(verbose) cout << "DIGITIZED HITS:" << endl;
     for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++) 
     {
@@ -232,7 +235,9 @@ void sample_readfile(char *filename=NULL, bool verbose=false, bool save_hists=fa
       
       int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
       if(verbose) printf("Ncherenkovdigihits %d\n", ncherenkovdigihits);
-      
+     
+      if(ncherenkovdigihits>0)
+	num_trig++;
       //for (i=0;i<(ncherenkovdigihits>4 ? 4 : ncherenkovdigihits);i++){
       for (i=0;i<ncherenkovdigihits;i++)
       {
@@ -278,4 +283,6 @@ void sample_readfile(char *filename=NULL, bool verbose=false, bool save_hists=fa
     h1->Write();
     fout->Close();
   }
+  
+  std::cout<<"num_trig "<<num_trig<<"\n";
 }
