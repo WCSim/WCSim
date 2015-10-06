@@ -79,9 +79,17 @@ void WCSimWCTriggerBase::GetVariables()
 	 << (ndigitsAdjustForNoise ? " (will be adjusted for noise)" : "") << G4endl
 	 << "Using NDigits trigger window " << ndigitsWindow << " ns" << G4endl
 	 << "Using NDigits event pretrigger window " << ndigitsPreTriggerWindow << " ns" << G4endl
-	 << "Using NDigits event posttrigger window " << ndigitsPostTriggerWindow << " ns" << G4endl
-	 << "Using SaveFailures event pretrigger window " << saveFailuresPreTriggerWindow << " ns" << G4endl
-	 << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << " ns" << G4endl;
+	 << "Using NDigits event posttrigger window " << ndigitsPostTriggerWindow << " ns" << G4endl;
+  if(saveFailuresMode == 0)
+    G4cout << "Saving only triggered digits" << G4endl;
+  else if(saveFailuresMode == 1)
+    G4cout << "Saving both triggered and not-triggered digits" << G4endl;
+  else if(saveFailuresMode == 2)
+    G4cout << "Saving only not-triggered digits" << G4endl;
+  if(saveFailuresMode > 0)
+    G4cout << "Using SaveFailures trigger time" << saveFailuresTime << " ns" << G4endl
+	   << "Using SaveFailures event pretrigger window " << saveFailuresPreTriggerWindow << " ns" << G4endl
+	   << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << " ns" << G4endl;
 }
 
 int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
