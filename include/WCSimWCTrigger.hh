@@ -39,13 +39,8 @@ public:
   
   virtual ~WCSimWCTriggerBase();
 
-  /**
-   * \brief The main user-callable routine of the class. Gets the input & creates the output WCSimWCTriggeredDigitsCollection's, then calls DoTheWork()
-   *
-   * The virtual keyword for this method is DEPRECATED
-   * It is only defined virtual now because it is overridden in the old class (WCSimWCDigitizer)
-   */
-  virtual void Digitize();
+  ///The main user-callable routine of the class. Gets the input & creates the output WCSimWCTriggeredDigitsCollection's, then calls DoTheWork()
+  void Digitize();
 
   ///Returns the number of trigger gates in the event (i.e. the number of triggers passed)
   int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
@@ -84,10 +79,6 @@ public:
   
   ///Knowledge of the dark rate (use for automatically adjusting for noise)
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
-
-  ///DEPRECATED function used in old class (WCSimWCDigitizer), and called in WCSimEventAction
-  virtual void SetPMTSize(G4float /*inputSize*/) {};
-
 
 
 protected:
