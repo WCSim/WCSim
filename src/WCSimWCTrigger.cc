@@ -89,7 +89,6 @@ int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
   switch(t) {
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
-  case kTriggerNHitsSKDETSIM:
     return ndigitsPreTriggerWindow;
     break;
   case kTriggerFailure:
@@ -108,7 +107,6 @@ int WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
   switch(t) {
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
-  case kTriggerNHitsSKDETSIM:
     return ndigitsPostTriggerWindow;
     break;
   case kTriggerFailure:
