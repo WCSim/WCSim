@@ -68,10 +68,10 @@ parser.add_argument('--DAQdigiintwindow', type=delim_list, default='200', help='
 #ndigits trigger
 parser.add_argument('--DAQndigitsthreshold', type=delim_list, default='25', help='What value of the ndigits trigger threshold should be used (i.e. number of hits/digits)? Specify multiple with comma separated list')
 parser.add_argument('--DAQndigitswindow', type=delim_list, default='200', help='What value of the ndigits trigger window should be used (ns)? Specify multiple with comma separated list')
-parser.add_argument('--DAQndigitsignorenoise', action='store_true', help='Adjust the NDigits threshold automatically for the dark noise rate?')
+parser.add_argument('--DAQndigitsdontignorenoise', action='store_true', help='Don\'t adjust the NDigits threshold automatically for the dark noise rate?')
 parser.add_argument('--DAQndigitssavewindow', type=delim_list, default='-400:+950', help='What value of the pre/post trigger window should digits be saved in (for the ndigits trigger)? Separate pre/post with a ":". Specify multiple pairs with a comma separated list')
 #save failures trigger
-parser.add_argument('--DAQsavefailuresmode', type=delim_list, default='0', help='Save failed triggers mode. 0: save only events which pass the trigger. 1: save only events which fail the trigger. 2: save both')
+parser.add_argument('--DAQsavefailuresmode', type=delim_list, default='0', help='Save failed triggers mode. 0: save only events which pass the trigger. 1: save both. 2: save only events which fail the trigger')
 parser.add_argument('--DAQsavefailurestime', type=delim_list, default='200', help='For mode 1 & 2, give events which fail the trigger the trigger time')
 parser.add_argument('--DAQsavefailuressavewindow', type=delim_list, default='-400:+950', help='What value of the pre/post trigger window should digits be saved in (for the save failures)? Separate pre/post with a ":". Specify multiple pairs with a comma separated list')
 #dark noise
@@ -242,8 +242,8 @@ def main(args_to_parse = None):
         permutationDict['/DAQ/DigitizerOpt/IntegrationWindow']        = [x for x in args.DAQdigiintwindow]
         permutationDict['/DAQ/TriggerSaveFailures/Mode']              = [x for x in args.DAQsavefailuresmode]
         permutationDict['/DAQ/TriggerSaveFailures/TriggerTime']       = [x for x in args.DAQsavefailurestime]
-        permutationDict['/DAQ/TriggerSaveFailures/PreTriggerWindow']  = [x.split(':')[0] for x in args.DAQndigitssavewindow]
-        permutationDict['/DAQ/TriggerSaveFailures/PostTriggerWindow'] = [x.split(':')[1] for x in args.DAQndigitssavewindow]
+        permutationDict['/DAQ/TriggerSaveFailures/PreTriggerWindow']  = [x.split(':')[0] for x in args.DAQsavefailuressavewindow]
+        permutationDict['/DAQ/TriggerSaveFailures/PostTriggerWindow'] = [x.split(':')[1] for x in args.DAQsavefailuressavewindow]
         # create a list of dictionaries for each permutation of the parameter values
         permutationDictList = [ dict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
         for pDict in permutationDictList:
@@ -295,7 +295,7 @@ def main(args_to_parse = None):
         permutationDict = OrderedDict()
         permutationDict['/DAQ/TriggerNDigits/Threshold']         = [x for x in args.DAQndigitsthreshold]
         permutationDict['/DAQ/TriggerNDigits/Window']            = [x for x in args.DAQndigitswindow]
-        permutationDict['/DAQ/TriggerNDigits/AdjustForNoise']    = ['true' if args.DAQndigitsignorenoise else 'false']
+        permutationDict['/DAQ/TriggerNDigits/AdjustForNoise']    = ['true' if not args.DAQndigitsdontignorenoise else 'false']
         permutationDict['/DAQ/TriggerNDigits/PreTriggerWindow']  = [x.split(':')[0] for x in args.DAQndigitssavewindow]
         permutationDict['/DAQ/TriggerNDigits/PostTriggerWindow'] = [x.split(':')[1] for x in args.DAQndigitssavewindow]
         # create a list of dictionaries for each permutation of the parameter values
