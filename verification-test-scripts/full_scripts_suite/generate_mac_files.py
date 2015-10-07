@@ -61,6 +61,7 @@ parser.add_argument('--HKwatertanklength', type=delim_list, default='49500', hel
 # trigger & digitization
 parser.add_argument('--DAQdigitizer', type=delim_list, default='SKI', help='Which digitizer class to use? Specify multiple with comma separated list. Choices: '+ListAsString(DAQdigitizer_choices))
 parser.add_argument('--DAQtrigger', type=delim_list, default='NDigits', help='Which trigger class to use? Specify multiple with comma separated list. Choices: '+ListAsString(DAQtrigger_choices))
+parser.add_argument('--DAQconstruct', action='store_true', help='Append the /DAQ/Construct line to the end of the DAQ options. TODO remove after PR115 merge')
 #generic digitizer options
 parser.add_argument('--DAQdigideadtime', type=delim_list, default='0', help='What value of the digitizer deadtime should be used (i.e. how long can the digitizer not create new digits)? Specify multiple with comma separated list')
 parser.add_argument('--DAQdigiintwindow', type=delim_list, default='200', help='What value of the digitizer integration window should be used (i.e. how long does the digitizer integrate for)? Specify multiple with comma separated list')
@@ -279,6 +280,9 @@ def main(args_to_parse = None):
                 for (kO,vO), (kF, vF) in itertools.izip(pDictO.iteritems(), pDictF.iteritems()):
                     theseoptions += vO
                     thesefile += '_' + vF
+                #append the Construct line TODO remove this
+                if args.DAQconstruct:
+                    theseoptions += '/DAQ/Construct \n'
                 daqs.append(theseoptions)
                 filestubs.append(thesefile)
         return [daqs, filestubs]
