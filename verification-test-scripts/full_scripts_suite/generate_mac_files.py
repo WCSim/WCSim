@@ -215,7 +215,7 @@ def main(args_to_parse = None):
         # permutations
         permutationDict = OrderedDict()
         permutationDict['/WCSim/PMTQEMethod'] = [x for x in args.PMTQEMethod]
-        permutationDict['/WCSim/CollEff']     = [x for x in args.PMTCollEff]
+        permutationDict['/WCSim/PMTCollEff']     = [x for x in args.PMTCollEff]
         # create a list of dictionaries for each permutation of the parameter values
         permutationDictList = [ dict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
         for pDict in permutationDictList:
@@ -225,7 +225,7 @@ def main(args_to_parse = None):
                 pmtoptions += k + ' ' + v + '\n'
             pmts.append(pmtoptions)
             #assemble the filename
-            filestub = pDict['/WCSim/PMTQEMethod'] + '_PMTCollEff_' + pDict['/WCSim/CollEff']
+            filestub = pDict['/WCSim/PMTQEMethod'] + '_PMTCollEff_' + pDict['/WCSim/PMTCollEff']
             filestubs.append(filestub)
         return [pmts, filestubs]
 
