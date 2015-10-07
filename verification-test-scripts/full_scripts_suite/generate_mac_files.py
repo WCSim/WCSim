@@ -185,7 +185,7 @@ def main(args_to_parse = None):
         permutationDict['/WCSim/WCgeom']  = [x for x in args.WCgeom]
         permutationDict['/WCSim/HyperK/waterTank_Length'] = [x for x in args.HKwatertanklength]
         # create a list of dictionaries for each permutation of the parameter values
-        permutationDictList = [ dict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
+        permutationDictList = [ OrderedDict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
         for pDict in permutationDictList:
             #get the options
             geomoptions = ''
@@ -218,7 +218,7 @@ def main(args_to_parse = None):
         permutationDict['/WCSim/PMTQEMethod'] = [x for x in args.PMTQEMethod]
         permutationDict['/WCSim/PMTCollEff']     = [x for x in args.PMTCollEff]
         # create a list of dictionaries for each permutation of the parameter values
-        permutationDictList = [ dict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
+        permutationDictList = [ OrderedDict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
         for pDict in permutationDictList:
             #get the options
             pmtoptions = ''
@@ -245,7 +245,7 @@ def main(args_to_parse = None):
         permutationDict['/DAQ/TriggerSaveFailures/PreTriggerWindow']  = [x.split(':')[0] for x in args.DAQsavefailuressavewindow]
         permutationDict['/DAQ/TriggerSaveFailures/PostTriggerWindow'] = [x.split(':')[1] for x in args.DAQsavefailuressavewindow]
         # create a list of dictionaries for each permutation of the parameter values
-        permutationDictList = [ dict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
+        permutationDictList = [ OrderedDict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
         for pDict in permutationDictList:
             #only run if both Trigger & Digitizer are both or neither SKI_SKDETSIM
             if pDict['/DAQ/Digitizer'] == 'SKI_SKDETSIM' and pDict['/DAQ/Trigger'] != 'SKI_SKDETSIM':
@@ -272,8 +272,8 @@ def main(args_to_parse = None):
             for i, optionset in enumerate(additionaloptions):
                 permutationDictO[i] = optionset[0]
                 permutationDictF[i] = optionset[1]
-            permutationDictListO = [ dict(zip(permutationDictO, v)) for v in itertools.product(*permutationDictO.values()) ]
-            permutationDictListF = [ dict(zip(permutationDictF, v)) for v in itertools.product(*permutationDictF.values()) ]
+            permutationDictListO = [ OrderedDict(zip(permutationDictO, v)) for v in itertools.product(*permutationDictO.values()) ]
+            permutationDictListF = [ OrderedDict(zip(permutationDictF, v)) for v in itertools.product(*permutationDictF.values()) ]
             for pDictO,pDictF in itertools.izip(permutationDictListO, permutationDictListF):
                 theseoptions = daqoptions
                 thesefile    = filestub
@@ -299,7 +299,7 @@ def main(args_to_parse = None):
         permutationDict['/DAQ/TriggerNDigits/PreTriggerWindow']  = [x.split(':')[0] for x in args.DAQndigitssavewindow]
         permutationDict['/DAQ/TriggerNDigits/PostTriggerWindow'] = [x.split(':')[1] for x in args.DAQndigitssavewindow]
         # create a list of dictionaries for each permutation of the parameter values
-        permutationDictList = [ dict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
+        permutationDictList = [ OrderedDict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
         for pDict in permutationDictList:
             #get the options
             options = ''
@@ -325,7 +325,7 @@ def main(args_to_parse = None):
             permutationDict['/DarkRate/SetDarkLow']  = [x.split(':')[0] for x in args.DarkNoiseWindow]
             permutationDict['/DarkRate/SetDarkHigh'] = [x.split(':')[1] for x in args.DarkNoiseWindow]
         # create a list of dictionaries for each permutation of the parameter values
-        permutationDictList = [ dict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
+        permutationDictList = [ OrderedDict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
         for pDict in permutationDictList:
             #get the options
             darkoptions = ''
@@ -390,14 +390,15 @@ def main(args_to_parse = None):
     for i, optionset in enumerate(tempoptions):
         permutationDictO[i] = optionset[0]
         permutationDictF[i] = optionset[1]
-    permutationDictListO = [ dict(zip(permutationDictO, v)) for v in itertools.product(*permutationDictO.values()) ]
-    permutationDictListF = [ dict(zip(permutationDictF, v)) for v in itertools.product(*permutationDictF.values()) ]
+    permutationDictListO = [ OrderedDict(zip(permutationDictO, v)) for v in itertools.product(*permutationDictO.values()) ]
+    permutationDictListF = [ OrderedDict(zip(permutationDictF, v)) for v in itertools.product(*permutationDictF.values()) ]
     for pDictO,pDictF in itertools.izip(permutationDictListO, permutationDictListF):
         theseoptions = ''
         thesefile    = 'wcsim'
         for (kO,vO), (kF, vF) in itertools.izip(pDictO.iteritems(), pDictF.iteritems()):
             theseoptions += vO
-            thesefile    += '_' + vF
+            if vF:
+                thesefile    += '_' + vF
         #add the final bits to the options
         theseoptions += "/WCSimIO/RootFile " + thesefile + ".root" + "\n" \
             "/WCSim/SavePi0 " + ("true" if args.SavePi0 else "false") + "\n" \
