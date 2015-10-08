@@ -364,12 +364,6 @@ void WCSimWCDigitizer::FindNumberOfGates()
 
 void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 {
-
-  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-  //G4float timingConstant = 0.0;
-  WCSimPMTObject * PMT;
-  PMT = myDetector->GetPMTPointer(WCIDCollectionName);
- 
   G4double EvtG8Down = GetPreTriggerWindow(kTriggerNHitsSKDETSIM);  // this is a negative number...
   G4double EvtG8Up   = GetPostTriggerWindow(kTriggerNHitsSKDETSIM);
 
@@ -445,15 +439,9 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 	  // hits can appear to be negative (if the t0 is triggered much later)
 	  // they have to be removed otherwise nothing will work.
 
-	  // MF : found 'by hand', fits SK PMT resolution (2002 values ?)
-	  // Add cutoffs
-	  float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
-	  float hittimesmearing = PMT->HitTimeSmearing(Q);
-
 	  G4double digihittime = -TriggerTimes[G]
 	    + WCSimWCDigitizer::offset
-	    + firstHitTime
-	    + hittimesmearing;
+	    + firstHitTime;
 
  	  if ( digihittime > 0.0 && peSmeared>0.0)
 	  
