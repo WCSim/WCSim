@@ -116,7 +116,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 
 	    //apply time smearing
 	    float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
-	    peSmeared += PMT->HitTimeSmearing(Q);
+	    time_PMT += PMT->HitTimeSmearing(Q);
 
 	    if ( DigiHitMapPMT[tube] == 0) {
 	      WCSimWCDigi* Digi = new WCSimWCDigi();
