@@ -7,9 +7,6 @@
 void write_all_hits()
 {
 
-  ofstream myfile;
-  myfile.open ("all_hits.txt");
-
   // open input file
   TFile *f = new TFile("output.root","READ");
   
@@ -86,24 +83,39 @@ void write_all_hits()
   int tube_id;
   Float_t time;
 
-  primary_events_tree->GetEvent(0); 
+  std::string event_file_base = "all_hits_";
+  std::string event_file_suffix = ".txt";
+
+  for(int ievent=0; ievent<primary_events_tree->GetEntries(); ievent++){
+    // loop on primary events
+    primary_events_tree->GetEvent(ievent); 
+
+    ofstream myfile_hits;
+    int nchar = (ceil(log10(ievent+1))+1);
+    char * num =  (char*)malloc(sizeof(char)*nchar);
+    sprintf(num, "%d", ievent + 1);
+    std::string event_file = event_file_base + num + event_file_suffix;
+    myfile_hits.open (event_file.c_str());
+
   
-  for(int itrigger=0; itrigger<trigger_ntrack->size(); itrigger++){
-    // loop on triggers in the event
-    
-    for(int idigitizedhit=0; idigitizedhit<(digitized_hit_tube_id->at(itrigger)).size(); idigitizedhit++){
-      // loop on digitized hits in the trigger
+    for(int itrigger=0; itrigger<trigger_ntrack->size(); itrigger++){
+      // loop on triggers in the event
       
-      tube_id = (digitized_hit_tube_id->at(itrigger)).at(idigitizedhit);
-      time = (digitized_hit_time->at(itrigger)).at(idigitizedhit);
-      
-      myfile << tube_id << "  " << time << " \n";
+      for(int idigitizedhit=0; idigitizedhit<(digitized_hit_tube_id->at(itrigger)).size(); idigitizedhit++){
+	// loop on digitized hits in the trigger
+	
+	tube_id = (digitized_hit_tube_id->at(itrigger)).at(idigitizedhit);
+	time = (digitized_hit_time->at(itrigger)).at(idigitizedhit);
+	
+	myfile_hits << tube_id << "  " << time << " \n";
+	
+      }
       
     }
-    
-  }
 
-  myfile.close();
+    myfile_hits.close();
+
+  }
 
   exit(0);
 

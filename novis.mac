@@ -132,12 +132,12 @@
 /gun/particle e-
 ##/gun/particle pi0
 /gun/energy 4 MeV
-#/gun/direction 1 0 0 
-#/gun/position 0 0 0  
+/gun/direction 1 0 0 
+/gun/position -1000. 0 2000.  
 
 ## change the name of the output root file, default = wcsim.root
 
 /WCSimIO/RootFile wcsim.root
 
-/run/beamOn 10
+/run/beamOn 100
 #exit
