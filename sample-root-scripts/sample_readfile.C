@@ -229,6 +229,10 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
      
       if(ncherenkovdigihits>0)
 	num_trig++;
+      else
+	continue;
+      std::cout<<"num_trig "<<num_trig<<"\n";
+      h1->Fill(ncherenkovdigihits);
       //for (i=0;i<(ncherenkovdigihits>4 ? 4 : ncherenkovdigihits);i++){
       for (i=0;i<ncherenkovdigihits;i++)
       {
@@ -244,7 +248,8 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
 	    printf("q, t, tubeid: %f %f %d \n",wcsimrootcherenkovdigihit->GetQ(),
 		   wcsimrootcherenkovdigihit->GetT(),wcsimrootcherenkovdigihit->GetTubeId());
 	}
-      } // End of loop over Cherenkov digihits
+      }
+      // End of loop over Cherenkov digihits
     } // End of loop over trigger
     
     // reinitialize super event between loops.

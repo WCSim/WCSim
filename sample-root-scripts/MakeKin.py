@@ -119,8 +119,12 @@ def partPrint(p, f, recno):
     f.write("$ begin\n")
     f.write("$ nuance 0\n")
     if randvert:
-        rad = 3368.15/2. - 20. #cm
-        height = 3620.0 - 20. #cm
+        #SK
+        #rad = 3368.15/2. - 20. #cm
+        #height = 3620.0 - 20. #cm
+        #HK - 60x74m
+        rad = 7400./2. - 20.
+        height = 6000. - 20.
         while True:
             x = random.uniform(-rad,rad)
             y = random.uniform(-rad,rad)

@@ -366,7 +366,6 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
  
 
   nhitsVTXmap.clear();
-  nhitsmap.clear();
   vtxVector.clear();
   digit_times.clear();
  
@@ -427,7 +426,7 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
   for(int i=-1*height;i <= height;i=i+5000) {
     for(int j=-1*radius;j<=radius;j=j+5000) {
       for(int k=-1*radius;k<=radius;k=k+5000) {
-	if(sqrt(j*j+k*k) > radius)
+	if(sqrt(pow(j,2)+pow(k,2)) > radius)
 	  continue;
 	vtxVector.push_back(G4ThreeVector(j*1.,k*1.,i*1.));
 	n_vtx++;
@@ -435,7 +434,7 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
     }
   }
  
-   nhitsmap.resize(time_bins);
+
    nhitsVTXmap.resize(n_vtx);
    for(int i = 0;i<n_vtx;i++) 
      nhitsVTXmap.at(i).resize(time_bins);
@@ -476,7 +475,7 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
       diff_y = hit_pos[1]-vtxVector.at(j).y();                                                                                                               
       diff_z = hit_pos[2]-vtxVector.at(j).z();
       //distance in mm
-      dist_tube = sqrt(diff_x*diff_x+diff_y*diff_y+diff_z*diff_z);
+      dist_tube = sqrt(pow(diff_x,2)+pow(diff_y,2)+pow(diff_z,2));
       //time for light to travel this distance in ns
       tofPMT = dist_tube/cLightH20;
       //Loop over each Digit in this PMT                                                                                                         
@@ -484,16 +483,13 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
 	int digit_time = (*WCDCPMT)[i]->GetTime(ip);
 	if(digit_time >= WCSimWCTriggerBase::LongTime)
 	  continue;
-	
-	int digit_time_5ns = digit_time/window_step_size;
-	//only fill the non-corrected map once, the first time
-	if(j==0) {
-	  nhitsmap[int(floor(digit_time_5ns))]++;
-	}
-	//time is shifted by 400ns in order to ensure non-zero times (correcting for speed of light)
-	if(int(floor(digit_time_5ns-tofPMT/window_step_size+600./window_step_size)) < 0)
+	double cor_time = (digit_time - tofPMT + 600)/window_step_size;
+	//time is shifted by 600ns in order to ensure non-zero times (correcting for speed of light)
+	if(int(floor(cor_time)) < 0) {
 	  continue;
-	nhitsVTXmap.at(j)[int(floor(digit_time_5ns-tofPMT/window_step_size + 600./window_step_size))]++;
+	  
+	}
+	nhitsVTXmap.at(j)[int(floor(cor_time))]++;
 	//Also add a hit to the next bin
 	//nhitsVTXmap.at(j)[int(floor(digit_time_5ns-tofPMT/window_step_size + 600./window_step_size)) + 1]++;
 	
