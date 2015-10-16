@@ -71,7 +71,8 @@
 # note that only one of the two set to SKI_SKDETSIM will only use WCSimWCDigitizer for everything (i.e. you can't use the SKI Digitizer with the old trigger)
 /DAQ/Digitizer SKI
 #/DAQ/Trigger NDigits
-/DAQ/Trigger TestVertex
+#/DAQ/Trigger TestVertex
+/DAQ/Trigger NoTrigger
 #generic digitizer options (defaults are class-specific. Can be overridden here)
 # how long is the digitizer dead before a new hit on the same PMT can be recorded (ns)?
 #/DAQ/DigitizerOpt/DeadTime 0
@@ -138,5 +139,5 @@
 
 /WCSimIO/RootFile wcsim.root
 
-/run/beamOn 100
+/run/beamOn 10
 #exit
