@@ -81,6 +81,7 @@ public:
   virtual void SetPMTSize(G4float /*inputSize*/) {};
 
   int event_number;
+  bool output_txt;
 
 protected:
 
