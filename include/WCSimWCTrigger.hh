@@ -80,6 +80,8 @@ public:
   ///DEPRECATED function used in old class (WCSimWCDigitizer), and called in WCSimEventAction
   virtual void SetPMTSize(G4float /*inputSize*/) {};
 
+  int event_number;
+
 protected:
 
   ///This should call the trigger algorithms, and handle any temporary DigitsCollection's

@@ -57,6 +57,8 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
     exit(-1);
   }
   digitizeCalled = false;
+
+  event_number = 1;
 }
 
 WCSimWCTriggerBase::~WCSimWCTriggerBase(){
@@ -345,6 +347,59 @@ void WCSimWCTriggerBase::FillDigitsCollectionNoTrigger(WCSimWCDigitsCollection* 
 
 
 void WCSimWCTriggerBase::AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test) {
+
+  ofstream myfile_hits;
+  int nchar = (ceil(log10(event_number))+1);
+  char * num =  (char*)malloc(sizeof(char)*nchar);
+  sprintf(num, "%d", event_number);
+  std::string event_file_base = "all_hits_";
+  std::string event_file_suffix = ".txt";
+  std::string event_file = event_file_base + num + event_file_suffix;
+  event_number++;
+  myfile_hits.open (event_file.c_str());
+
+  for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
+    int tube=(*WCDCPMT)[i]->GetTubeID();
+    for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
+      int digit_time = (*WCDCPMT)[i]->GetTime(ip);
+      myfile_hits << tube << "  " << digit_time << " \n";
+    }
+  }
+  myfile_hits.close();
+
+  std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
+
+  ofstream myfile_pmts;
+  myfile_pmts.open ("all_pmts.txt");
+
+  for (G4int i = 0 ; i < pmts->size() ; i++) {
+
+    WCSimPmtInfo* pmtinfo;
+    pmtinfo = (WCSimPmtInfo*)pmts->at( i );
+
+    myfile_pmts << pmtinfo->Get_tubeid() << "  " << pmtinfo->Get_transx() << "  " << pmtinfo->Get_transy() << "  " << pmtinfo->Get_transz() << " \n";
+  }
+  myfile_pmts.close();
+
+
+  float radius,height;
+  height = 0;
+  radius = 0;
+  if(myDetector->GetDetectorName() == "SuperK" || myDetector->GetDetectorName() == "SuperK_20inchPMT_20perCent" ||
+     myDetector->GetDetectorName() == "SuperK_20inchBandL_20perCent" || myDetector->GetDetectorName() == "SuperK_12inchBandL_15perCent" ||
+     myDetector->GetDetectorName() == "SuperK_20inchBandL_14perCent" ||
+     myDetector->GetDetectorName() == "Cylinder_60x74_20inchBandL_14perCent()" ||
+     myDetector->GetDetectorName() == "Cylinder_60x74_20inchBandL_40perCent()") {
+    height = myDetector->GetWaterTubeLength()/2.;
+    radius = myDetector->GetWaterTubeRadius();
+  }
+
+  ofstream myfile_detector;
+  myfile_detector.open ("detector.txt");
+  myfile_detector << height*2./10. << "  " << radius/10. << " 25.4 \n";
+  myfile_detector.close();
+
+
   //Does not doanything, just writes out all hits
   TriggerType_t this_triggerType = kTriggerNoTrig;
   std::vector<Float_t> triggerinfo;
@@ -365,6 +420,24 @@ void WCSimWCTriggerBase::AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool rem
 void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test)
 {
  
+  ofstream myfile_hits;
+  int nchar = (ceil(log10(event_number))+1);
+  char * num =  (char*)malloc(sizeof(char)*nchar);
+  sprintf(num, "%d", event_number);
+  std::string event_file_base = "all_hits_";
+  std::string event_file_suffix = ".txt";
+  std::string event_file = event_file_base + num + event_file_suffix;
+  event_number++;
+  myfile_hits.open (event_file.c_str());
+
+  for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
+    int tube=(*WCDCPMT)[i]->GetTubeID();
+    for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
+      int digit_time = (*WCDCPMT)[i]->GetTime(ip);
+      myfile_hits << tube << "  " << digit_time << " \n";
+    }
+  }
+  myfile_hits.close();
 
   nhitsVTXmap.clear();
   vtxVector.clear();
@@ -372,6 +445,18 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
  
   // Get the info for pmt positions                                                                                                                                              
   std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
+
+  ofstream myfile_pmts;
+  myfile_pmts.open ("all_pmts.txt");
+
+  for (G4int i = 0 ; i < pmts->size() ; i++) {
+
+    WCSimPmtInfo* pmtinfo;
+    pmtinfo = (WCSimPmtInfo*)pmts->at( i );
+
+    myfile_pmts << pmtinfo->Get_tubeid() << "  " << pmtinfo->Get_transx() << "  " << pmtinfo->Get_transy() << "  " << pmtinfo->Get_transz() << " \n";
+  }
+  myfile_pmts.close();
 
   //Now we will try to find triggers
   //loop over PMTs, and Digits in each PMT. 
@@ -423,6 +508,18 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
   //generate a box of verticies.  Save only those within the radius given.
   //5m = 5000mm spacing
   //
+
+
+
+  ofstream myfile_detector;
+  myfile_detector.open ("detector.txt");
+  myfile_detector << height*2./10. << "  " << radius/10. << " 25.4 \n";
+  myfile_detector.close();
+
+  ofstream myfile_log;
+  myfile_log.open ("trigger_log.txt");
+
+
   int n_vtx = 0;
   for(int i=-1*height;i <= height;i=i+5000) {
     for(int j=-1*radius;j<=radius;j=j+5000) {
@@ -455,6 +552,7 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
    
   //speed of light in water
   double cLightH20 = CLHEP::c_light/1.3330; 
+  myfile_log << " c_light " << CLHEP::c_light << " cLightH20 " << cLightH20 << " \n";
   
   int tube;
   WCSimPmtInfo* pmtinfo;
@@ -539,11 +637,14 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
 	//20ns bins
 	//std::cout<<"Possible "<<(count+2)*window_step_size<<" "<<maxnpmt<<"\n";
 	//Possibletrigger2[floor(count/2)]=(std::make_pair(vtxindex,std::make_pair(count*window_step_size,maxnpmt)));
+	myfile_log << " time " << (count+2)*window_step_size << " vertex (" << vtxVector.at(vtxindex).x() << ", " << vtxVector.at(vtxindex).y() << ", " << vtxVector.at(vtxindex).z() << ") npmts " << maxnpmt << " \n";
       }
       //      else {
       count++;
       //}
     }
+
+    myfile_log << " n candidates: " << PossibleTrigger.size() << " \n";
 
 //     //sort the possible triggers by time  
 //    std::sort(PossibleTrigger.begin(), PossibleTrigger.end(), sort_pair_second<int, int>());
@@ -622,6 +723,9 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
 	int triggertime = PossibleTrigger2.at(i).second; 
 	triggertime -= (int)triggertime % 5;
 	std::cout<<"TRIGGER "<<triggertime<<" "<<PossibleTriggerCount2.at(i)<<"\n";
+
+	myfile_log << " triggertime: " << triggertime << ", npmts: " << PossibleTriggerCount2.at(i) << ", x: " << vtxVector.at((Float_t)PossibleTrigger2.at(i).first).x() << ", y: " << vtxVector.at((Float_t)PossibleTrigger2.at(i).first).y() << ", z: " << vtxVector.at((Float_t)PossibleTrigger2.at(i).first).z() << " \n";
+
 	//std::vector<Float_t> triggerinfo;
 	triggerinfo.clear();
 	triggerinfo.push_back(vtxVector.at((Float_t)PossibleTrigger2.at(i).first).x());
@@ -636,6 +740,9 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
     }
 
     FillDigitsCollection(WCDCPMT, remove_hits, kTriggerTestVertex);
+
+    myfile_log.close();
+
 }
 
 
