@@ -238,6 +238,12 @@ void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, 
   //the ranges vector contains overlapping ranges
   //this loop removes overlaps
   //output are pairs stored in the result vector
+  if(ranges.size() == 0)
+    {
+      //push back a range of 0 and 0 and return
+      result.push_back(std::make_pair(0.,0.));
+      return;
+    }
   std::vector<std::pair<float, float> >::iterator it = ranges.begin();
   std::pair<float, float> current = *(it)++;
   for( ; it != ranges.end(); it++) {
