@@ -3,9 +3,11 @@
 #include <stdio.h>     
 #include <stdlib.h>    
 #include <vector>
+#include <TFile.h>
+#include <TTree.h>
+#include <fstream>
 
-void write_all_pmts()
-{
+int main(){
 
   ofstream myfile;
   myfile.open ("all_pmts.txt");
@@ -35,7 +37,7 @@ void write_all_pmts()
 
   exit(0);
 
-  return;
+  return 1;
 
 }
 

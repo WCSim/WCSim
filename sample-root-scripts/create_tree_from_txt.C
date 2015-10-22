@@ -3,7 +3,9 @@
 #include <stdio.h>     
 #include <stdlib.h>    
 #include <vector>
-
+#include <TFile.h>
+#include <TTree.h>
+#include <math.h>
 
 int read_number_of_pmts();
 bool read_pmts();
@@ -31,8 +33,7 @@ int * host_times;  // time of a hit
 bool create_from_emerald = true;
 
 
-void create_tree_from_txt()
-{
+int main(){
 
 
 
@@ -302,6 +303,8 @@ void create_tree_from_txt()
   fo->Write();
 
   exit(0);
+
+  return 1;
 
 }
 

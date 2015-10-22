@@ -3,9 +3,12 @@
 #include <stdio.h>     
 #include <stdlib.h>    
 #include <vector>
+#include <TFile.h>
+#include <TTree.h>
+#include <fstream>
+#include <math.h>       /* log10 */
 
-void write_all_hits()
-{
+int main(){
 
   // open input file
   TFile *f = new TFile("output.root","READ");
@@ -119,7 +122,7 @@ void write_all_hits()
 
   exit(0);
 
-  return;
+  return 1;
 
 }
 

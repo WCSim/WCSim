@@ -3,8 +3,11 @@
 #include <stdio.h>     
 #include <stdlib.h>    
 #include <vector>
+#include <TFile.h>
+#include <TTree.h>
+#include <fstream>
 
-void write_detector(){
+int main(){
 
   ofstream myfile;
   myfile.open ("detector.txt");
@@ -30,7 +33,7 @@ void write_detector(){
 
   exit(0);
 
-  return;
+  return 1;
 
 
 }

@@ -3,9 +3,10 @@
 #include <stdio.h>     
 #include <stdlib.h>    
 #include <vector>
+#include <TFile.h>
+#include <TTree.h>
 
-void read_tree()
-{
+int main(){
 
   // open input file
   TFile *f = new TFile("output.root","READ");
@@ -266,11 +267,11 @@ void read_tree()
 
   of->cd();
 
-  h_track_ipnu->GetNbinsX() > 11 && h_track_ipnu->GetXaxis()->SetBinLabel(h_track_ipnu->FindBin(11.),"e^{-}");
-  h_track_ipnu->GetNbinsX() > 12 && h_track_ipnu->GetXaxis()->SetBinLabel(h_track_ipnu->FindBin(12),"#nu_{e}");
-  h_track_ipnu->GetNbinsX() > 13 && h_track_ipnu->GetXaxis()->SetBinLabel(h_track_ipnu->FindBin(13),"#mu^{-}");
-  h_track_ipnu->GetNbinsX() > 14 && h_track_ipnu->GetXaxis()->SetBinLabel(h_track_ipnu->FindBin(14),"#nu_{#mu}");
-  h_track_ipnu->GetNbinsX() > 22 && h_track_ipnu->GetXaxis()->SetBinLabel(h_track_ipnu->FindBin(22),"#gamma");
+  if( h_track_ipnu->GetNbinsX() > 11) h_track_ipnu->GetXaxis()->SetBinLabel(h_track_ipnu->FindBin(11.),"e^{-}");
+  if( h_track_ipnu->GetNbinsX() > 12) h_track_ipnu->GetXaxis()->SetBinLabel(h_track_ipnu->FindBin(12),"#nu_{e}");
+  if( h_track_ipnu->GetNbinsX() > 13) h_track_ipnu->GetXaxis()->SetBinLabel(h_track_ipnu->FindBin(13),"#mu^{-}");
+  if( h_track_ipnu->GetNbinsX() > 14) h_track_ipnu->GetXaxis()->SetBinLabel(h_track_ipnu->FindBin(14),"#nu_{#mu}");
+  if( h_track_ipnu->GetNbinsX() > 22) h_track_ipnu->GetXaxis()->SetBinLabel(h_track_ipnu->FindBin(22),"#gamma");
 
   of->Write();
 
@@ -286,7 +287,7 @@ void read_tree()
 
   delete digitized_hit_tube_id;  delete digitized_hit_Q;  delete digitized_hit_time;   delete digitized_hit_photon_ids;
 
-  return;
+  return 1;
 
 }
 

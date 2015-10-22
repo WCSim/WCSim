@@ -8,8 +8,16 @@
 #include <limits>
 #include <algorithm>
 #include <math.h>       /* log10 */
+#include <TFile.h>
+#include <TTree.h>
+#include <TH2F.h>
+#include <TPaveText.h>
+#include <TROOT.h>
+#include <TStyle.h>
+#include <TPad.h>
+#include <TCanvas.h>
 
-string number_with_digits(int i, int n);
+std::string number_with_digits(int i, int n);
 
 int n_digits = 5;
 double time_bin_size = 10.; // ns
@@ -20,8 +28,10 @@ bool use_time_range = true;
 
 bool plot_from_txt = true;
 
-void plot_tree(int ievent = 0, int itrigger = 0)
-{
+int main(){
+
+  int ievent = 0; 
+  int itrigger = 0;
 
   // open input and output files
 #if !plot_from_txt
@@ -407,13 +417,13 @@ void plot_tree(int ievent = 0, int itrigger = 0)
 
   delete digitized_hit_tube_id;  delete digitized_hit_Q;  delete digitized_hit_time;  
 
-  return;
+  return 1;
 
 }
 
-string number_with_digits(int i, int n){
+std::string number_with_digits(int i, int n){
 
-  string output="";
+  std::string output="";
 
   int number_of_non_zero_digits = (int)(log10(i));
 
@@ -422,7 +432,7 @@ string number_with_digits(int i, int n){
 
   char c[20];
   sprintf(c,"%d",i);
-  string sval(c);
+  std::string sval(c);
   output+=sval;
 
 
