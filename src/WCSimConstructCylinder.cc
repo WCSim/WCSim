@@ -71,9 +71,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   // the height of all regular cells together:
   mainAnnulusHeight = WCIDHeight -2.*WCBarrelPMTOffset -2.*barrelCellHeight;
   
-  
-  innerAnnulusRadius = WCIDRadius - WCPMTExposeHeight-1.*mm;
+  //TF: has to change for mPMT vessel:
+  //innerAnnulusRadius = WCIDRadius - WCPMTExposeHeight-1.*mm;
+  innerAnnulusRadius = WCIDRadius - WCPMTExposeHeight - cylinder_height - cylinder_radius - mPMT_outer_material_d
+	- 2.5*mm -1.*mm;
+  //TF: need to add a Polyhedra on the other side of the outerAnnulusRadius for the OD
   outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
+
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
   WCLength    = WCIDHeight + 2*2.3*m;	//jl145 - reflects top veto blueprint, cf. Farshid Feyzi
@@ -96,8 +100,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   //-----------------------------------------------------
 
   checkOverlaps = true; //TODO: get from .mac file: true for making geo, false for running
-  checkOverlapsPMT = false; // for mPMT the cylindrical part and bottom sphere (OD) will stick
-                            // into the wall, so will overlap by construction!!
+  checkOverlapsPMT = true; // NO overlaps, as these will mess up the G4Navigator, hence tracking and yield
   // The water barrel is placed in an tubs of air
   
   G4Tubs* solidWC = new G4Tubs("WC",
@@ -188,8 +191,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					  //true);
  		  checkOverlaps);  //macro Param for faster execution once we have our G4Geom
 
-if(!debugMode)
-   logicWCBarrelAnnulus->SetVisAttributes(G4VisAttributes::Invisible); //amb79
+  if(!debugMode)
+	logicWCBarrelAnnulus->SetVisAttributes(G4VisAttributes::Invisible); //amb79
   //-----------------------------------------------------
   // Subdivide the BarrelAnnulus into rings
   //-----------------------------------------------------
@@ -221,10 +224,10 @@ if(!debugMode)
 
 if(!debugMode)
   {G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(0,0.5,1.));
-  tmpVisAtt->SetForceWireframe(true);// This line is used to give definition to the rings in OGLSX Visualizer
-  logicWCBarrelRing->SetVisAttributes(tmpVisAtt);
-  //If you want the rings on the Annulus to show in OGLSX, then comment out the line below.
-  logicWCBarrelRing->SetVisAttributes(G4VisAttributes::Invisible);
+	tmpVisAtt->SetForceWireframe(true);// This line is used to give definition to the rings in OGLSX Visualizer
+	logicWCBarrelRing->SetVisAttributes(tmpVisAtt);
+	//If you want the rings on the Annulus to show in OGLSX, then comment out the line below.
+	logicWCBarrelRing->SetVisAttributes(G4VisAttributes::Invisible);
   }
 else {
         G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(0,0.5,1.));
@@ -263,10 +266,10 @@ else {
 
   if(!debugMode)
   	{G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
-  	tmpVisAtt->SetForceWireframe(true);// This line is used to give definition to the cells in OGLSX Visualizer
+  	tmpVisAtt->SetForceSolid(true);// This line is used to give definition to the cells in OGLSX Visualizer
   	logicWCBarrelCell->SetVisAttributes(tmpVisAtt); 
 	//If you want the columns on the Annulus to show in OGLSX, then comment out the line below.
-  	logicWCBarrelCell->SetVisAttributes(G4VisAttributes::Invisible);
+  	//logicWCBarrelCell->SetVisAttributes(G4VisAttributes::Invisible);
 	}
   else {
   	G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
@@ -418,8 +421,12 @@ else {
 		      kZAxis,
 		      (G4int)WCBarrelNRings-2,
 		      barrelCellHeight);
-    logicWCExtraTowerCell->SetVisAttributes(G4VisAttributes::Invisible);
-    
+    //logicWCExtraTowerCell->SetVisAttributes(G4VisAttributes::Invisible);
+    G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
+  	tmpVisAtt->SetForceSolid(true);// This line is used to give definition to the cells in OGLSX Visualizer
+  	logicWCExtraTowerCell->SetVisAttributes(tmpVisAtt); 
+	//TF vis.
+
     //---------------------------------------------
     // add blacksheet to this cells
     //--------------------------------------------
@@ -884,8 +891,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
 
                   
-  if(!debugMode) 
-    logicWCBarrelBorderRing->SetVisAttributes(G4VisAttributes::Invisible); 
+  if(!debugMode){ 
+    //logicWCBarrelBorderRing->SetVisAttributes(G4VisAttributes::Invisible); 
+    G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
+  	tmpVisAtt->SetForceSolid(true);// This line is used to give definition to the cells in OGLSX Visualizer
+  	logicWCBarrelBorderRing->SetVisAttributes(tmpVisAtt); 
+	//TF vis.
+  }
+
   //----------------------------------------------------
   // Subdevide border rings into cells
   // --------------------------------------------------
@@ -1003,7 +1016,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                   logicCapAssembly,
 						false, 0,checkOverlaps);//true);
 
-    logicWCExtraBorderCell->SetVisAttributes(G4VisAttributes::Invisible);
+    //logicWCExtraBorderCell->SetVisAttributes(G4VisAttributes::Invisible);
+    G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
+  	tmpVisAtt->SetForceSolid(true);// This line is used to give definition to the cells in OGLSX Visualizer
+  	logicWCExtraBorderCell->SetVisAttributes(tmpVisAtt); 
+	//TF vis.
+
 
     G4VPhysicalVolume* physiWCExtraBorderBlackSheet =
       new G4PVPlacement(0,
@@ -1114,7 +1132,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 // used for OGLSX
  else{
   if(!debugMode){  
-    logicWCCap->SetVisAttributes(G4VisAttributes::Invisible);
+    //logicWCCap->SetVisAttributes(G4VisAttributes::Invisible);
+    G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
+  	tmpVisAtt->SetForceSolid(true);// This line is used to give definition to the cells in OGLSX Visualizer
+  	logicWCCap->SetVisAttributes(tmpVisAtt); 
+	//TF vis.
+
   } else
 	{G4VisAttributes* tmpVisAtt2 = new G4VisAttributes(G4Colour(.6,0.5,0.5));
     tmpVisAtt2->SetForceWireframe(true);

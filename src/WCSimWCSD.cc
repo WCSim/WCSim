@@ -14,6 +14,8 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimTrackInformation.hh"
 
+#include "WCSimSteppingAction.hh"
+
 WCSimWCSD::WCSimWCSD(G4String CollectionName, G4String name,WCSimDetectorConstruction* myDet)
 :G4VSensitiveDetector(name)
 {
@@ -51,7 +53,7 @@ void WCSimWCSD::Initialize(G4HCofThisEvent* HCE)
   // Add it to the Hit collection of this event.
   HCE->AddHitsCollection( HCID, hitsCollection );  
 
-  // Initilize the Hit map to all tubes not hit.
+  // Initialize the Hit map to all tubes not hit.
   PMTHitMap.clear();
   // Trick to access the static maxPE variable.  This will go away with the 
   // variable.
@@ -131,7 +133,10 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   }
   //  tubeTag << ":" << theTouchable->GetVolume(i)->GetCopyNo(); 
 
-//  G4cout << tubeTag.str() << G4endl;
+  // Debug:
+  //  G4cout << "================================================" << G4endl;
+  //  G4cout << tubeTag.str() << std::endl;
+  //  G4cout << "================================================" << G4endl;
 
   // Get the tube ID from the tubeTag
   G4int replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
@@ -217,6 +222,13 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent*)
     G4cout << "There are " << numHits << " hits in the WC: " << G4endl;
     for (G4int i=0; i < numHits; i++) 
       (*hitsCollection)[i]->Print();
+
+    // TF switch off detailed debug TODO
+    G4cout << "Through mPMTLV " << WCSimSteppingAction::n_photons_through_mPMTLV << G4endl;
+    G4cout << "Through Acrylic " << WCSimSteppingAction::n_photons_through_acrylic << G4endl;
+    G4cout << "Through Gel " << WCSimSteppingAction::n_photons_through_gel << G4endl;
+    G4cout << "On Blacksheet " << WCSimSteppingAction::n_photons_on_blacksheet << G4endl;
+    G4cout << "On small PMT " << WCSimSteppingAction::n_photons_on_smallPMT << G4endl;
   } 
 }
 

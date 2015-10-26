@@ -51,7 +51,7 @@ void WCSimMultiPMTParameterisation::ComputeTransformation
   // For output to txt file for AutoCad/Solidworks
   //G4cout << "PMT " << copyNo << " (theta,phi): (" << (CLHEP::halfpi-vAlphaLocal[vCircleLocal[copyNo]])*(180./CLHEP::pi)  << "," <<  origin.getPhi()*(180./CLHEP::pi) << ")" << G4endl;
   // rotation of mother volume wrt daughter, hence minus sign.
-rotm->rotateZ(-origin.getPhi());
+  rotm->rotateZ(-origin.getPhi());
   rotm->rotateY(-acos((origin.getZ()-fHeight)/fApothema)); //over Y', origin.getTheta() is incorrect!
 
 

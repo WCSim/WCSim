@@ -13,9 +13,11 @@
 #include "G4VisAttributes.hh"
 #include "G4Tubs.hh"
 #include "G4Sphere.hh"
+#include "G4VPVParameterisation.hh"
 
 #include <sstream>
 #include <iomanip>
+
 
 using std::setw;
 // These routines are object registration routines that you can pass
@@ -135,16 +137,16 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     tubeIDMap[totalNumPMTs] = aTransform;
    
     
-     std::cout <<  "depth " << depth.str() << std::endl;
-     std::cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
-      
-     // Print
-     std::cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
-	       << " Pos:" << aTransform.getTranslation()/cm 
-	       << " Rot:" << aTransform.getRotation().getTheta()/deg 
-	       << "," << aTransform.getRotation().getPhi()/deg 
-	       << "," << aTransform.getRotation().getPsi()/deg
-	       << std::endl; 
+    // G4cout <<  "depth " << depth.str() << G4endl;
+    // G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
+    
+    // Print
+    //     G4cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
+    //	   << " Pos:" << aTransform.getTranslation()/cm 
+    //	   << " Rot:" << aTransform.getRotation().getTheta()/deg 
+    //	   << "," << aTransform.getRotation().getPhi()/deg 
+    //	   << "," << aTransform.getRotation().getPsi()/deg
+    //	   << G4endl; 
     }
 }
 
@@ -269,52 +271,62 @@ void WCSimDetectorConstruction::TraverseReplicas
     G4bool   consuming;
 
     aPV->GetReplicationData(axis,nReplicas,width,offset,consuming);
-    
+
     for (int n = 0; n < nReplicas; n++) 
-    {
-      switch(axis) {
-      default:
-      case kXAxis:
-	aPV->SetTranslation(G4ThreeVector
-			    (-width*(nReplicas-1)*0.5+n*width,0,0));
-	aPV->SetRotation(0);
-	break;
-      case kYAxis:
-	aPV->SetTranslation(G4ThreeVector
-			    (0,-width*(nReplicas-1)*0.5+n*width,0));
-	aPV->SetRotation(0);
-	break;
-      case kZAxis:
-	aPV->SetTranslation(G4ThreeVector
-			    (0,0,-width*(nReplicas-1)*0.5+n*width));
-	aPV->SetRotation(0);
-	break;
-      case kRho:
-	//Lib::Out::putL("GeometryVisitor::visit: WARNING:");
-	//Lib::Out::putL(" built-in replicated volumes replicated");
-	//Lib::Out::putL(" in radius are not yet properly visualizable.");
-	aPV->SetTranslation(G4ThreeVector(0,0,0));
-	aPV->SetRotation(0);
-	break;
-      case kPhi:
-	{
-	  G4RotationMatrix rotation;
-          rotation.rotateZ(-(offset+(n+0.5)*width));
-          // Minus Sign because for the physical volume we need the
-          // coordinate system rotation.
-          aPV->SetTranslation(G4ThreeVector(0,0,0));
-          aPV->SetRotation(&rotation);
+      {
+	//TF: for mPMT parameterization
+	// because kZAxis is a dummy value altered by Parameterised volume in MultiPMTParam
+	if(aPV->IsParameterised() ){
+	  //G4cout << "Replica No. " << n << G4endl;
+	  //use the actual translation and rotation of the replica.
+	  (aPV->GetParameterisation())->ComputeTransformation(n,aPV); 
 	}
-	break;
+	
+	else{
 
-      } // axis switch
-
+	  switch(axis) {
+	  default:
+	  case kXAxis:
+	    aPV->SetTranslation(G4ThreeVector
+				(-width*(nReplicas-1)*0.5+n*width,0,0));
+	    aPV->SetRotation(0);
+	    break;
+	  case kYAxis:
+	    aPV->SetTranslation(G4ThreeVector
+				(0,-width*(nReplicas-1)*0.5+n*width,0));
+	    aPV->SetRotation(0);
+	    break;
+	  case kZAxis:
+	    aPV->SetTranslation(G4ThreeVector
+				(0,0,-width*(nReplicas-1)*0.5+n*width));
+	    aPV->SetRotation(0);
+	    break;
+	  case kRho:
+	    //Lib::Out::putL("GeometryVisitor::visit: WARNING:");
+	    //Lib::Out::putL(" built-in replicated volumes replicated");
+	    //Lib::Out::putL(" in radius are not yet properly visualizable.");
+	    aPV->SetTranslation(G4ThreeVector(0,0,0));
+	    aPV->SetRotation(0);
+	    break;
+	  case kPhi:
+	    {
+	      G4RotationMatrix rotation;
+	      rotation.rotateZ(-(offset+(n+0.5)*width));
+	      // Minus Sign because for the physical volume we need the
+	      // coordinate system rotation.
+	      aPV->SetTranslation(G4ThreeVector(0,0,0));
+	      aPV->SetRotation(&rotation);
+	    }
+	    break;
+	    
+	  } // axis switch
+	}
       DescribeAndDescendGeometry(aPV, aDepth, n, aTransform, 
 				 registrationRoutine);
 
     }   // num replicas for loop
   }     // if replicated
-  else 
+  else
     DescribeAndDescendGeometry(aPV, aDepth, aPV->GetCopyNo(), aTransform, 
 			       registrationRoutine);
   
@@ -327,25 +339,20 @@ void WCSimDetectorConstruction::DescribeAndDescendGeometry
 (G4VPhysicalVolume* aPV ,int aDepth, int replicaNo, 
  const G4Transform3D& aTransform,  DescriptionFcnPtr registrationRoutine)
 {
+
   // Calculate the new transform relative to the old transform
-
-  std::cout << aPV->GetName() << std::endl;
-  //TF: mPMT structure: this will work for n == 1, but not for n > 1 as we're using the Parameterised Replica's.
-  //   This means the actual translation and rotation is set by the parametrization and not by the single PMT's physical volume.
-
-  // We just have to multiply again?? Or replace??
-
-
   G4Transform3D* transform = 
     new G4Transform3D(*(aPV->GetObjectRotation()), aPV->GetTranslation());
 
   G4Transform3D newTransform = aTransform * (*transform);
   delete transform; 
 
-  std::cout << aPV->GetObjectRotation()->getPhi() << " " << aPV->GetObjectRotation()->getTheta() << " " 
-	    << aPV->GetObjectRotation()->getPsi() << std::endl;
-  std::cout << aPV->GetTranslation().x() << " " << aPV->GetTranslation().y() << " " 
-	    << aPV->GetTranslation().z() << std::endl;
+  /*
+  G4cout << aPV->GetObjectRotation()->getPhi() << " " << aPV->GetObjectRotation()->getTheta() << " " 
+	    << aPV->GetObjectRotation()->getPsi() << G4endl;
+  G4cout << aPV->GetTranslation().x() << " " << aPV->GetTranslation().y() << " " 
+	    << aPV->GetTranslation().z() << G4endl;
+  */
 
   // Call the routine we use to print out geometry descriptions, make
   // tables, etc.  The routine was passed here as a parameter.  It needs to
@@ -354,7 +361,7 @@ void WCSimDetectorConstruction::DescribeAndDescendGeometry
   (this->*registrationRoutine)(aPV, aDepth, replicaNo, newTransform);
 
   int nDaughters = aPV->GetLogicalVolume()->GetNoDaughters();
-  
+    
   for (int iDaughter = 0; iDaughter < nDaughters; iDaughter++) 
     TraverseReplicas(aPV->GetLogicalVolume()->GetDaughter(iDaughter),
 		     aDepth+1, newTransform, registrationRoutine);

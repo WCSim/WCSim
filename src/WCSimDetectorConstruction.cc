@@ -224,6 +224,9 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 		   &WCSimDetectorConstruction::GetWCGeom) ;
   
   DumpGeometryTableToFile();
+
+  
+
   
   // Return the pointer to the physical experimental hall
   return physiExpHall;

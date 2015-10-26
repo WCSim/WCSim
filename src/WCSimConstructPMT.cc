@@ -101,7 +101,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   if(id_reflector_height > 0.1*CLHEP::mm && 
      (cylinder_radius > 1.*CLHEP::mm || cylinder_height > 1.*CLHEP::mm)) //or make this a user option? 
     material_around_pmt = G4Material::GetMaterial("SilGel");
-    //material_around_pmt = G4Material::GetMaterial("Water");
+  
   G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
                             material_around_pmt,
@@ -291,14 +291,14 @@ else {
 
   // Instantiate a new sensitive detector and register this sensitive detector volume with the SD Manager. 
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
-  G4String SDName = "/WCSim/";
+   G4String SDName = "/WCSim/";
   SDName += CollectionName;
   WCSimWCSD* aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
   SDman->AddNewDetector( aWCPMT );
   
 
   logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
-
+  
   PMTLogicalVolumes[key] = logicWCPMT;
 
   return logicWCPMT;

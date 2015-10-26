@@ -1339,6 +1339,7 @@ G4float* BoxandLine20inchHQE::Getqpe()
     0.0  };
   return qpe0;
 }
+
 G4float* BoxandLine20inchHQE::GetQEWavelength(){
   static G4float wavelength_value[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
   return wavelength_value;
@@ -1356,7 +1357,7 @@ G4float BoxandLine20inchHQE::GetmaxQE(){
   G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
   const G4float maxQE = 0.315*correctionFactor;
   return maxQE;
-}
+  } 
 G4float* BoxandLine20inchHQE::GetCollectionEfficiencyArray(){  
   static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
   return CE;
@@ -1685,7 +1686,9 @@ G4float* PMT3inchR12199_02::Getqpe()
     // Dummy element for noticing if the loop reached the end of the array                        
     0.0  };
   return qpe0;
+
 }
+
 
 // TF: Used WebPlotDigitizer on Fig.2a from VLVnT13 proceedings, red curve (average)
 G4float* PMT3inchR12199_02::GetQEWavelength(){
@@ -1709,6 +1712,7 @@ G4float PMT3inchR12199_02::GetmaxQE(){
   const G4float maxQE = 0.271*correctionFactor; //red curve from VLVnT13 proc on R12199-02.
   return maxQE;
 }
+
 G4float* PMT3inchR12199_02::GetCollectionEfficiencyArray(){  
   static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
   return CE;

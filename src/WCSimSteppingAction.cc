@@ -12,6 +12,14 @@
 #include "G4PVReplica.hh"
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
+#include "G4OpBoundaryProcess.hh"
+#include "tls.hh"
+
+G4int WCSimSteppingAction::n_photons_through_mPMTLV = 0;
+G4int WCSimSteppingAction::n_photons_through_acrylic = 0;
+G4int WCSimSteppingAction::n_photons_through_gel = 0;
+G4int WCSimSteppingAction::n_photons_on_blacksheet = 0;
+G4int WCSimSteppingAction::n_photons_on_smallPMT = 0;
 
 
 void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
@@ -26,6 +34,90 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 
   G4SDManager* SDman   = G4SDManager::GetSDMpointer();
   G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
+
+  
+  // Debug for photon tracking
+  G4StepPoint* thePrePoint = aStep->GetPreStepPoint();
+  G4VPhysicalVolume* thePrePV = thePrePoint->GetPhysicalVolume();
+
+  G4StepPoint* thePostPoint = aStep->GetPostStepPoint();
+  G4VPhysicalVolume* thePostPV = thePostPoint->GetPhysicalVolume();
+
+  G4OpBoundaryProcessStatus boundaryStatus=Undefined;
+  //static G4ThreadLocal G4OpBoundaryProcess* boundary=NULL;
+  G4OpBoundaryProcess* boundary=NULL;
+  
+  //find the boundary process only once
+  if(!boundary){
+    G4ProcessManager* pm
+      = aStep->GetTrack()->GetDefinition()->GetProcessManager();
+    G4int nprocesses = pm->GetProcessListLength();
+    G4ProcessVector* pv = pm->GetProcessList();
+    G4int i;
+    for( i=0;i<nprocesses;i++){
+      if((*pv)[i]->GetProcessName()=="OpBoundary"){
+	boundary = (G4OpBoundaryProcess*)(*pv)[i];
+	break;
+      }
+    }
+  }
+
+  G4ParticleDefinition *particleType = track->GetDefinition();
+  if(particleType == G4OpticalPhoton::OpticalPhotonDefinition()){
+    if( (thePrePV->GetName().find("MultiPMT") != std::string::npos) &&
+	(thePostPV->GetName().find("vessel") != std::string::npos) )
+      n_photons_through_mPMTLV++;
+    
+    if( (thePostPV->GetName().find("container") != std::string::npos) &&
+	(thePrePV->GetName().find("vessel") != std::string::npos))
+      n_photons_through_acrylic++;
+    
+    if( (thePrePV->GetName().find("container") != std::string::npos) )
+      n_photons_through_gel++;
+
+    if( (thePrePV->GetName().find("container") != std::string::npos) &&
+	(thePostPV->GetName().find("inner") != std::string::npos) )
+      n_photons_on_blacksheet++;
+
+    if( (thePrePV->GetName().find("container") != std::string::npos) &&
+	(thePostPV->GetName().find("pmt") != std::string::npos) )
+      n_photons_on_smallPMT++;
+	
+
+    /*
+    if( (thePrePV->GetName().find("pmt") != std::string::npos)){
+      std::cout << "Photon between " << thePrePV->GetName() <<
+	" and " << thePostPV->GetName() << " because " << 
+	thePostPoint->GetProcessDefinedStep()->GetProcessName() << 
+	" and boundary status: " <<  boundary->GetStatus() << " with track status " << track->GetTrackStatus() << std::endl;
+      
+	}*/
+
+
+
+    if(track->GetTrackStatus() == fStopAndKill){
+      if(boundary->GetStatus() == NoRINDEX){
+	std::cout << "Optical photon is killed because of missing refractive index in either " << thePrePoint->GetMaterial()->GetName() << " or " << thePostPoint->GetMaterial()->GetName() << std::endl;
+	
+      }
+      /* Debug :  
+      if( (thePrePV->GetName().find("PMT") != std::string::npos) ||
+	  (thePrePV->GetName().find("pmt") != std::string::npos)){
+	
+	if(boundary->GetStatus() != StepTooSmall){
+	  //	if(thePostPoint->GetProcessDefinedStep()->GetProcessName() != "Transportation")
+	  std::cout << "Killed photon between " << thePrePV->GetName() <<
+	    " and " << thePostPV->GetName() << " because " << 
+	    thePostPoint->GetProcessDefinedStep()->GetProcessName() << 
+	    " and boundary status: " <<  boundary->GetStatus() <<
+	    std::endl;
+	}
+	}	*/
+      
+    }
+  }
+
+
 
   //debugging 
 //  G4Track* theTrack = aStep->GetTrack();
@@ -142,7 +234,7 @@ void WCSimSteppingAction::Distortion(G4double x,G4double y)
 //   //G4cout<<" Gx "<<EvGx<<" Gy "<<EvGy<<" EField "<<EField<<" velocity "<<velocity<<" quenching "<<quenching<<G4endl;
 
 
-//   ret[0]=x;
+  //ret[0]=5;
 //   if(yy>0)
 //     ret[1]=2*y0/dt -steps;
 //   else

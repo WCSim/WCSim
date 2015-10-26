@@ -1059,6 +1059,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    
    G4MaterialPropertiesTable *myMPT4 = new G4MaterialPropertiesTable();
    myMPT4->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
+   myMPT4->AddProperty("RINDEX", ENERGY_water, RINDEX_blacksheet, NUMENTRIES_water); //TF fix
    Blacksheet->SetMaterialPropertiesTable(myMPT4);
    
    G4MaterialPropertiesTable *myMPT5 = new G4MaterialPropertiesTable();
