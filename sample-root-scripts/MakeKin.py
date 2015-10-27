@@ -23,24 +23,40 @@ for pname, no in pid.items():
 
 
 parser = OptionParser()
+optdefault = 1
 parser.add_option("-N", "--nfiles", dest="nfiles",
-                  help="number of files of particles to produce",
+                  help="number of files of particles to produce. Default: %s" \
+                      % (optdefault),
                   metavar="#", default=1)                  
+optdefault = 100
 parser.add_option("-n", "--npart", dest="npart",
-                  help="number of particles to simulate per file", 
+                  help="number of particles to simulate per file. Default: %s" \
+                  % (optdefault),
                   metavar="#", default=100)
+optchoices = pid.keys()
+optdefault = "mu-"
 parser.add_option("-t", "--type", dest="type",
-                  help="Particle type to be generated",
-                  metavar="TYPE",default="mu-")
+                  help="Particle type to be generated. Choices: %s. Default: %s" \
+                      % (optchoices, optdefault),
+                  metavar="TYPE",
+                  choices=optchoices, default=optdefault)
+optdefault = 1000.0
 parser.add_option("-e", "--energy", dest="energy",
-                  help="Particle energy to be generated in MeV",
+                  help="Particle energy to be generated in MeV. Default: %s" \
+                      % (optdefault),
                   metavar="ENERGY",default=1000.0)
+optchoices = ["center", "random", "minusx", "plusx", "minusz", "plusz"]
+optdefault = optchoices[0]
 parser.add_option("-v", "--vertex", dest="vertname",
-                  help="Type of vertex (center*, random, minusx, plusx, minusz, plusz)",
-                  default="center")
+                  help="Type of vertex. Choices: %s. Default: %s" \
+                      % (optchoices, optdefault),
+                  choices=optchoices, default=optdefault)
+optchoices = ["4pi", "towall", "tocap"]
+optdefault = optchoices[0]
 parser.add_option("-d", "--direction", dest="dirname",
-                  help="Type of direction (4pi*, towall, tocap)",
-                  default="4pi")
+                  help="Type of direction. Choices: %s. Default: %s" \
+                      % (optchoices, optdefault),
+                  choices=optchoices, default=optdefault)
 optchoices = ["SuperK","Cylinder_60x74_20inchBandL_14perCent","Cylinder_60x74_20inchBandL_40perCent"]
 optdefault = optchoices[0]
 parser.add_option("-w", "--detector", dest="detector",
