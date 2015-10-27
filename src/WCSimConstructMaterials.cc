@@ -931,6 +931,33 @@ void WCSimDetectorConstruction::ConstructMaterials()
       1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
       1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404};
 
+
+    //Reference: A. D. Rakić, A. B. Djurišic, J. M. Elazar, and M. L. Majewski. Optical properties of metallic films for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998)
+    // from http://refractiveindex.info/?shelf=3d&book=metals&page=aluminium
+    G4double ENERGY_Al[64] =
+      {1.644*eV, 1.678*eV, 1.713*eV, 1.748*eV, 1.785*eV, 1.822*eV, 
+       1.860*eV, 1.898*eV, 1.938*eV, 1.978*eV, 2.019*eV, 2.061*eV, 
+       2.104*eV, 2.148*eV, 2.193*eV, 2.238*eV, 2.285*eV, 2.332*eV, 
+       2.381*eV, 2.430*eV, 2.481*eV, 2.532*eV, 2.585*eV, 2.639*eV, 
+       2.693*eV, 2.749*eV, 2.807*eV, 2.865*eV, 2.925*eV, 2.985*eV, 
+       3.047*eV, 3.111*eV, 3.175*eV, 3.241*eV, 3.309*eV, 3.378*eV, 
+       3.448*eV, 3.519*eV, 3.593*eV, 3.667*eV, 3.744*eV, 3.821*eV, 
+       3.901*eV, 3.982*eV, 4.065*eV, 4.149*eV, 4.235*eV, 4.324*eV, 
+       4.413*eV, 4.505*eV, 4.599*eV, 4.694*eV, 4.792*eV, 4.892*eV, 
+       4.993*eV, 5.097*eV, 5.203*eV, 5.311*eV, 5.422*eV, 5.534*eV, 
+       5.649*eV, 5.767*eV, 5.887*eV, 6.009*eV};
+
+    G4double RINDEX_Al[64] =
+      {2.299, 2.096, 1.911, 1.752, 1.623, 1.518, 1.432, 
+       1.361, 1.299, 1.245, 1.196, 1.150, 1.106, 1.063, 
+       1.022, 0.982, 0.942, 0.903, 0.865, 0.827, 0.790, 
+       0.754, 0.719, 0.686, 0.653, 0.622, 0.592, 0.564, 
+       0.536, 0.511, 0.486, 0.463, 0.441, 0.420, 0.401, 
+       0.382, 0.365, 0.349, 0.333, 0.318, 0.305, 0.292, 
+       0.279, 0.268, 0.257, 0.246, 0.236, 0.227, 0.218, 
+       0.210, 0.202, 0.194, 0.187, 0.180, 0.173, 0.166, 
+       0.160, 0.154, 0.149, 0.143, 0.138, 0.133, 0.128, 0.123};
+
    //	------------- Surfaces --------------
 
    OpWaterBSSurface =
@@ -1131,9 +1158,11 @@ void WCSimDetectorConstruction::ConstructMaterials()
    ReflectorSkinSurface->SetFinish(polished);
 
    G4MaterialPropertiesTable *AlPropTable = new G4MaterialPropertiesTable();
+   AlPropTable->AddProperty("RINDEX", ENERGY_Al, RINDEX_Al, 64);
    AlPropTable->AddProperty("REFLECTIVITY", ENERGY_water, REFLECTIVITY_aluminium, NUMENTRIES_water);
    //AlPropTable->AddProperty("EFFICIENCY"); //kind of QE, but not necessary
    ReflectorSkinSurface->SetMaterialPropertiesTable(AlPropTable);
+
 
 
    //ToDo:

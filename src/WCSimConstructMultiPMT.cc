@@ -77,7 +77,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
   // origin on blacksheet wall is origin of spherical top for ID, 
   // change if we want to use the cylindrical part in ID.
-  G4double dist_PMTglass_innerPressureVessel = 2.5*CLHEP::mm; // from KM3Net tech drawing. Don't put PMT directly against pressure vessel. Gel helps transition in refractive indices.
+  G4double dist_PMTglass_innerPressureVessel = 2.6*CLHEP::mm; // from KM3Net tech drawing. Don't put PMT directly against pressure vessel. Gel helps transition in refractive indices. Also prevents daughters from sticking out vessel. Smaller will create Overlaps! Avoid Overlaps!!!
 
 
   G4double mPMT_zRange_outer[2] = {0,                         // must be zero or it will collide with the blacksheet and mess up the G4Navigator

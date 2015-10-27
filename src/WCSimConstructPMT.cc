@@ -84,7 +84,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   }
   G4double PMTHolderZ[2] = {-baseHeight+expose, 
 			    std::max(expose,id_reflector_height)};
-  G4double PMTHolderR[2] = {baseRadius, 
+  G4double PMTHolderR[2] = {std::max(radius,reflectorRadius) + reflectorThickness, //baseRadius, (too tight)
 			    std::max(radius,reflectorRadius) + reflectorThickness};
   G4double PMTHolderr[2] = {0,0};
 
@@ -237,8 +237,8 @@ else {
     // used in OGLSX visualizer
      G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));  //better for seeing hits
     WCPMTVisAtt->SetForceWireframe(true);
-     //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0)); //better for seeing geometry
-     //WCPMTVisAtt->SetForceSolid(true);
+    //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0)); //better for seeing geometry
+    //WCPMTVisAtt->SetForceSolid(true);
     //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
      logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
     
@@ -258,7 +258,7 @@ else {
     G4double reflectorr[2] = {radius,reflectorRadius};
     
     G4Polycone* reflectorCone = 
-      new G4Polycone("WCPMT",                    
+      new G4Polycone("WCPMT_reflect",                    
 		     0.0*deg,
 		     360.0*deg,
 		     2,
