@@ -931,6 +931,15 @@ void WCSimDetectorConstruction::ConstructMaterials()
       1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
       1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404};
 
+    // From Lew Classen (Erlangen) with PHOTON_NRG_MIN = .1*eV, and MAX = 7*eV
+    G4double ENERGY_SilGel[18] = { .1*eV,
+				   2.034*eV,2.13*eV,2.18*eV,2.22*eV,2.25*eV,2.3*eV,
+				   2.34*eV, 2.43*eV, 2.53*eV, 2.67*eV, 2.79*eV,
+				   3.1*eV, 3.28*eV, 3.56*eV, 3.77*eV,4.136*eV, 7.*eV};
+    G4double ABSORPTION_SilGel[18] = { 0*m,
+				       .975*m, .975*m, .966*m, .935*m, .890*m, .898*m,
+				       .876*m, .844*m, .786*m, .727*m,  .674*m,
+				       .566*m, .485*m, .360*m, .220*m, .220*m, 0*m };
 
     // If necessary:
     //Reference: A. D. Rakić, A. B. Djurišic, J. M. Elazar, and M. L. Majewski. Optical properties of metallic films for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998)
@@ -1105,7 +1114,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    /// SilGel : Currently based on WackerSilGel 612, BUT should be adjusted to best one (R&D)
    G4MaterialPropertiesTable *SilGelPropTable = new G4MaterialPropertiesTable();
    SilGelPropTable->AddProperty("RINDEX", ENERGY_water, RINDEX_SilGel, NUMENTRIES_water);
-   SilGelPropTable->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water, NUMENTRIES_water); //ToDo: get measurement of optical properties of the optical gel. From slides: better than 40cm above 350nm.
+   SilGelPropTable->AddProperty("ABSLENGTH",ENERGY_SilGel, ABSORPTION_SilGel, 18); //ToDo: get measurement of optical properties of the optical gel. From slides: better than 40cm above 350nm.
    SilGelPropTable->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water); //ToDo: get actual Rayleigh scattering in gel
    SilGel->SetMaterialPropertiesTable(SilGelPropTable);
 

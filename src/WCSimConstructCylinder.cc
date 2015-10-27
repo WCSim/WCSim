@@ -74,7 +74,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   //TF: has to change for mPMT vessel:
   //innerAnnulusRadius = WCIDRadius - WCPMTExposeHeight-1.*mm;
   innerAnnulusRadius = WCIDRadius - WCPMTExposeHeight - cylinder_height - cylinder_radius - mPMT_outer_material_d
-	- 2.5*mm -1.*mm;
+	- 4.5*mm -1.*mm;
   //TF: need to add a Polyhedra on the other side of the outerAnnulusRadius for the OD
   outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
 

@@ -77,7 +77,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
   // origin on blacksheet wall is origin of spherical top for ID, 
   // change if we want to use the cylindrical part in ID.
-  G4double dist_PMTglass_innerPressureVessel = 2.6*CLHEP::mm; // from KM3Net tech drawing. Don't put PMT directly against pressure vessel. Gel helps transition in refractive indices. Also prevents daughters from sticking out vessel. Smaller will create Overlaps! Avoid Overlaps!!!
+  G4double dist_PMTglass_innerPressureVessel = 4.5*CLHEP::mm; // from KM3Net tech drawing. Don't put PMT directly against pressure vessel. Gel helps transition in refractive indices. Also prevents daughters from sticking out vessel. Smaller will create Overlaps! Avoid Overlaps!!!
 
 
   G4double mPMT_zRange_outer[2] = {0,                         // must be zero or it will collide with the blacksheet and mess up the G4Navigator
@@ -357,14 +357,38 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     /////
     //Defines a cylinder
     // origin is in the center of upward cylinder
-    G4Tubs* inner_cylinder = 
-      new G4Tubs("inn_cyl",                    
-		 0.,
-		 cylinder_radius,
-		 cylinder_height/2,
-		 0.0*deg,
-		 360.0*deg);
-    
+    if(cylinder_height > 0){
+      G4Tubs* inner_cylinder = 
+	new G4Tubs("inn_cyl",                    
+		   0.,
+		   cylinder_radius,
+		   cylinder_height/2,
+		   0.0*deg,
+		   360.0*deg);
+      
+      G4LogicalVolume *logic_mPMT_cylinder_inner =
+	new G4LogicalVolume(    inner_cylinder,
+				G4Material::GetMaterial(mPMT_inner_material),//"Blacksheet"), 
+				"WCMultiPMT_inner_cyl",
+				0,0,0);
+      
+      
+      G4VPhysicalVolume* place_inner_cylinder =
+	new G4PVPlacement(	0,       				// its rotation
+				G4ThreeVector(0,0,0),           	// its position
+				logic_mPMT_cylinder_inner,   	        // its logical volume
+				"WCPMT_inner_cyl",			// its name 
+				logic_mPMT_cylinder_vessel,        // its mother volume
+				false,					// no boolean os
+				0, 
+				checkOverlaps);			
+      
+      new G4LogicalSkinSurface("FoamSurfaceCyl",logic_mPMT_cylinder_inner, OpGelFoamSurface);
+      G4VisAttributes* VisAttRed = new G4VisAttributes(G4Colour(1.0,0.,0.));
+      VisAttRed->SetForceSolid(true); 
+      logic_mPMT_cylinder_inner->SetVisAttributes(VisAttRed);
+
+    }
     G4Sphere* inner_top_sphere =
       new G4Sphere( "WCmPMT_tsphere",
 		    0,cylinder_radius,
@@ -393,7 +417,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     
     G4VisAttributes* VisAttRed = new G4VisAttributes(G4Colour(1.0,0.,0.));
     VisAttRed->SetForceSolid(true); 
-    logic_mPMT_top_sphere_inner->SetVisAttributes(VisAttRed);
+    //logic_mPMT_top_sphere_inner->SetVisAttributes(VisAttRed);
   }
   
   /* Set all visualization here for better overview. */
@@ -411,7 +435,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   //logic_mPMT_top_sphere_vessel->SetVisAttributes(WCPMTVisAtt5);  
   //logic_mPMT_cylinder_vessel->SetVisAttributes(WCPMTVisAtt5);  
   //logic_mPMT_cylinder_container->SetVisAttributes(VisAttYellow); 
-  logic_mPMT_top_sphere_container->SetVisAttributes(VisAttYellow); 
+  //logic_mPMT_top_sphere_container->SetVisAttributes(VisAttYellow); 
   
 
   // Keep track of already created mPMT logical volumes in same map as for PMTs
