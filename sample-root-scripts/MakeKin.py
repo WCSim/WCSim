@@ -14,6 +14,11 @@ pid = {"pi0":111, "pi+":211, "k0l":130, "k0s":310, "k+":321,
        "nutau":16, "nutaubar":-16,
        "p+":2212, "n0":2112}
 
+#holds detector [radius, height] in cm
+detectors = {"SuperK":[3368.15/2., 3620.],
+             "Cylinder_60x74_20inchBandL_14perCent":[7400./2., 6000.],
+             "Cylinder_60x74_20inchBandL_40perCent":[7400./2., 6000.]}
+
 for pname, no in pid.items():
     if pname.endswith('+'):
         pid[pname.replace('+','-')] = -1*pid[pname]
@@ -57,8 +62,8 @@ parser.add_option("-d", "--direction", dest="dirname",
                   help="Type of direction. Choices: %s. Default: %s" \
                       % (optchoices, optdefault),
                   choices=optchoices, default=optdefault)
-optchoices = ["SuperK","Cylinder_60x74_20inchBandL_14perCent","Cylinder_60x74_20inchBandL_40perCent"]
-optdefault = optchoices[0]
+optchoices = detectors.keys()
+optdefault = "SuperK"
 parser.add_option("-w", "--detector", dest="detector",
                   help="Detector water volume to use (for vertex positioning). Choices: %s. Default: %s" \
                       % (optchoices, optdefault),
@@ -95,35 +100,23 @@ elif options.vertname == "wall":
 elif options.vertname == "minusx":
     if options.detector == "SuperK":
         particle["vertex"] = (-1000,0,0)
-    elif options.detector == "Cylinder_60x74_20inchBandL_40perCent" or options.detector == "Cylinder_60x74_20inchBandL_14perCent":
-        particle["vertex"] = (-1000. * 7400. / 3368.15, 0, 0)
     else:
-        print "Unknown detector option", options.detector
-        sys.exit(1)
+        particle["vertex"] = (-1000. * detectors[options.detector][0] / detectors["SuperK"][0], 0, 0)
 elif options.vertname == "plusx":
     if options.detector == "SuperK":
-        particle["vertex"] = (1000,0,0)
-    elif options.detector == "Cylinder_60x74_20inchBandL_40perCent" or options.detector == "Cylinder_60x74_20inchBandL_14perCent":
-        particle["vertex"] = (1000. * 7400. / 3368.15, 0, 0)
+        particle["vertex"] = (+1000,0,0)
     else:
-        print "Unknown detector option", options.detector
-        sys.exit(1)
+        particle["vertex"] = (+1000. * detectors[options.detector][0] / detectors["SuperK"][0], 0, 0)
 elif options.vertname == "minusz":
     if options.detector == "SuperK":
         particle["vertex"] = (0, 0, -1000)
-    elif options.detector == "Cylinder_60x74_20inchBandL_40perCent" or options.detector == "Cylinder_60x74_20inchBandL_14perCent":
-        particle["vertex"] = (0, 0, -1000. * 6000. / 3620.)
     else:
-        print "Unknown detector option", options.detector
-        sys.exit(1)
+        particle["vertex"] = (0, 0, -1000. * detectors[options.detector][1] / detectors["SuperK"][1])
 elif options.vertname == "plusz":
     if options.detector == "SuperK":
         particle["vertex"] = (0, 0, +1000)
-    elif options.detector == "Cylinder_60x74_20inchBandL_40perCent" or options.detector == "Cylinder_60x74_20inchBandL_14perCent":
-        particle["vertex"] = (0, 0, +1000. * 6000. / 3620.)
     else:
-        print "Unknown detector option", options.detector
-        sys.exit(1)
+        particle["vertex"] = (0, 0, +1000. * detectors[options.detector][1] / detectors["SuperK"][1])
 else:
     print >>sys.stderr, "Don't understand vertex",opttions.vertname
     sys.exit(2)
@@ -158,17 +151,8 @@ def partPrint(p, f, recno):
     f.write("$ begin\n")
     f.write("$ nuance 0\n")
     if randvert:
-        rad = 0
-        height = 0
-        if options.detector == "SuperK":
-            rad    = 3368.15/2. - 20. #cm
-            height = 3620.0     - 20. #cm
-        elif options.detector == "Cylinder_60x74_20inchBandL_40perCent" or options.detector == "Cylinder_60x74_20inchBandL_14perCent":
-            rad    = 7400.0/2. - 20. #cm
-            height = 6000.0    - 20. #cm
-        else:
-            print "Unknown detector option", options.detector
-            sys.exit(1)
+        rad    = detectors[options.detector][0] - 20.
+        height = detectors[options.detector][1] - 20.
         while True:
             x = random.uniform(-rad,rad)
             y = random.uniform(-rad,rad)
