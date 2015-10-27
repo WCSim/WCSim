@@ -89,6 +89,7 @@ private:
   G4double peSmeared;
 
   int nhitsThreshold;
+  int nhitsWindowBins;
 
   ////std::vector<G4double> TriggerTimes;
   std::map<G4int, G4int> GateMap;

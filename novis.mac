@@ -73,6 +73,7 @@
 /DAQ/Trigger NDigits
 
 #generic digitizer options (defaults are class-specific. Can be overridden here)
+#note that these options have no effect on the SKI_SKDETSIM trigger
 # how long is the digitizer dead before a new hit on the same PMT can be recorded (ns)?
 #/DAQ/DigitizerOpt/DeadTime 0
 # how long does the digitizer integrate for (ns)?
