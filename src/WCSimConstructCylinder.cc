@@ -269,7 +269,7 @@ else {
   	tmpVisAtt->SetForceSolid(true);// This line is used to give definition to the cells in OGLSX Visualizer
   	logicWCBarrelCell->SetVisAttributes(tmpVisAtt); 
 	//If you want the columns on the Annulus to show in OGLSX, then comment out the line below.
-  	//logicWCBarrelCell->SetVisAttributes(G4VisAttributes::Invisible);
+  	logicWCBarrelCell->SetVisAttributes(G4VisAttributes::Invisible);
 	}
   else {
   	G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
@@ -421,10 +421,11 @@ else {
 		      kZAxis,
 		      (G4int)WCBarrelNRings-2,
 		      barrelCellHeight);
-    //logicWCExtraTowerCell->SetVisAttributes(G4VisAttributes::Invisible);
+    
     G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
   	tmpVisAtt->SetForceSolid(true);// This line is used to give definition to the cells in OGLSX Visualizer
-  	logicWCExtraTowerCell->SetVisAttributes(tmpVisAtt); 
+  	//logicWCExtraTowerCell->SetVisAttributes(tmpVisAtt); 
+	logicWCExtraTowerCell->SetVisAttributes(G4VisAttributes::Invisible);
 	//TF vis.
 
     //---------------------------------------------
@@ -892,10 +893,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
                   
   if(!debugMode){ 
-    //logicWCBarrelBorderRing->SetVisAttributes(G4VisAttributes::Invisible); 
+
     G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
   	tmpVisAtt->SetForceSolid(true);// This line is used to give definition to the cells in OGLSX Visualizer
-  	logicWCBarrelBorderRing->SetVisAttributes(tmpVisAtt); 
+  	//logicWCBarrelBorderRing->SetVisAttributes(tmpVisAtt); 
+    logicWCBarrelBorderRing->SetVisAttributes(G4VisAttributes::Invisible); 
 	//TF vis.
   }
 
@@ -1016,10 +1018,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                   logicCapAssembly,
 						false, 0,checkOverlaps);//true);
 
-    //logicWCExtraBorderCell->SetVisAttributes(G4VisAttributes::Invisible);
+    
     G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
   	tmpVisAtt->SetForceSolid(true);// This line is used to give definition to the cells in OGLSX Visualizer
-  	logicWCExtraBorderCell->SetVisAttributes(tmpVisAtt); 
+  	//logicWCExtraBorderCell->SetVisAttributes(tmpVisAtt); 
+	logicWCExtraBorderCell->SetVisAttributes(G4VisAttributes::Invisible);
 	//TF vis.
 
 
@@ -1132,10 +1135,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 // used for OGLSX
  else{
   if(!debugMode){  
-    //logicWCCap->SetVisAttributes(G4VisAttributes::Invisible);
+
     G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
   	tmpVisAtt->SetForceSolid(true);// This line is used to give definition to the cells in OGLSX Visualizer
-  	logicWCCap->SetVisAttributes(tmpVisAtt); 
+  	//logicWCCap->SetVisAttributes(tmpVisAtt); 
+    logicWCCap->SetVisAttributes(G4VisAttributes::Invisible);
 	//TF vis.
 
   } else

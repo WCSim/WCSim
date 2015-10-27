@@ -194,6 +194,8 @@ private:
   //Reflector skin surface -tf
   G4OpticalSurface * ReflectorSkinSurface;
 
+  //Foam for mPMT: Gel - absorbing support structure -tf
+  G4OpticalSurface * OpGelFoamSurface;
 
 
   // The messenger we use to change the geometry.

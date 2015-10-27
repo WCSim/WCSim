@@ -10,7 +10,7 @@
 #include "G4Polycone.hh"
 #include "G4Tubs.hh"
 #include "G4PVPlacement.hh"
-#include "G4LogicalBorderSurface.hh"
+#include "G4LogicalSkinSurface.hh"
 
 #include "G4SDManager.hh"
 #include "WCSimWCSD.hh"
@@ -174,15 +174,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   ///    In this space, the PMTs will live.                             ///
   /////////////////////////////////////////////////////////////////////////
 
-  G4bool addPMTBase = true;////false; //ToDo: one parameter for both ConstructMultiPMT and ConstructPMT
-  //NEW: only outer shell as mother volume for parametrization, as I want to put a black sheet in there
+  G4bool addPMTBase = false; //ToDo: one parameter for both ConstructMultiPMT and ConstructPMT
 
   // origin is center of upward cylinder
   G4LogicalVolume *logic_mPMT_cylinder_container;
+  //necessary to make concentric shells because can Mother can only contain parametrized daughters.
+  G4double innerR_container = cylinder_radius;   
+  if(addPMTBase || nID_PMTs == 1)
+    innerR_container = 0;
+
   if( cylinder_height > 0.){
     G4Tubs* mPMT_cylinder_container = 
       new G4Tubs("WCmPMT_cyl_container",                    
-		 0.,
+		 innerR_container,
 		 cylinder_radius + expose + dist_PMTglass_innerPressureVessel,
 		 cylinder_height/2.,
 		 0.0*deg,
@@ -198,7 +202,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   }
   G4Sphere* mPMT_top_sphere_container =
     new G4Sphere(    "WCmPMT_tsphere_cont",
-		     0,cylinder_radius+expose + dist_PMTglass_innerPressureVessel, 
+		     innerR_container,cylinder_radius+expose + dist_PMTglass_innerPressureVessel, 
 		     0.0*deg,360.0*deg,
 		     0.0*deg,90.0*deg);
   
@@ -265,11 +269,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     VisAttYellow->SetForceSolid(true); 
     
     
-    logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
-    logic_mPMT_top_sphere_vessel->SetVisAttributes(WCPMTVisAtt5);  
-    logic_mPMT_cylinder_vessel->SetVisAttributes(WCPMTVisAtt5);  
-    logic_mPMT_cylinder_container->SetVisAttributes(VisAttYellow); 
-    logic_mPMT_top_sphere_container->SetVisAttributes(VisAttYellow); 
+    //logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
+    //logic_mPMT_top_sphere_vessel->SetVisAttributes(WCPMTVisAtt5);  
+    //logic_mPMT_cylinder_vessel->SetVisAttributes(WCPMTVisAtt5);  
+    //logic_mPMT_cylinder_container->SetVisAttributes(VisAttYellow); 
+    //logic_mPMT_top_sphere_container->SetVisAttributes(VisAttYellow); 
     
     return logicWCMultiPMT;
   }
@@ -352,63 +356,44 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   if(!addPMTBase){
     /////
     //Defines a cylinder
-    G4double mPMT_zRange[2] = {0, cylinder_height};
-    G4double thickness = mPMT_inner_material_d; //...everything else should be air
-    G4double inner_RRange[2] = {cylinder_radius, cylinder_radius};
-    G4double inner_rRange[2] = {cylinder_radius-thickness,cylinder_radius-thickness};
-    
-    // origin is bottom of upward cylinder
-    G4Polycone* inner_cylinder = 
-      new G4Polycone("inn_cyl",                    
-		     0.0*deg,
-		     360.0*deg,
-		     2,
-		     mPMT_zRange,
-		     inner_rRange,   // R Inner
-		     inner_RRange);  // R Outer
+    // origin is in the center of upward cylinder
+    G4Tubs* inner_cylinder = 
+      new G4Tubs("inn_cyl",                    
+		 0.,
+		 cylinder_radius,
+		 cylinder_height/2,
+		 0.0*deg,
+		 360.0*deg);
     
     G4Sphere* inner_top_sphere =
-      new G4Sphere(    "WCmPMT_tsphere",
-		       cylinder_radius-thickness,cylinder_radius,
-		       0.0*deg,360.0*deg,
-		       0.0*deg,90.0*deg);
+      new G4Sphere( "WCmPMT_tsphere",
+		    0,cylinder_radius,
+		    0.0*deg,360.0*deg,
+		    0.0*deg,90.0*deg);
     
-    G4Sphere* inner_bottom_sphere =
-      new G4Sphere(    "WCmPMT_bsphere",
-		       cylinder_radius-thickness,cylinder_radius,
-		       0.0*deg,360.0*deg,
-		       90.0*deg,180.0*deg);
-    
-    //Add them up:
-    G4VSolid* inner_temp_sum =
-      //G4VSolid* solidMultiPMT =
-      new G4UnionSolid("inner_Cyl+TopSphere", inner_cylinder, inner_top_sphere,
-		       0, G4ThreeVector(0,0,cylinder_height));
-    
-    
-    G4VSolid* solidMultiPMT_inner =
-      new G4UnionSolid("WCMultiPMT_inner", inner_temp_sum, inner_bottom_sphere);
-    G4LogicalVolume *logicWCMultiPMT_inner =
-      new G4LogicalVolume(    solidMultiPMT_inner,
+
+    G4LogicalVolume *logic_mPMT_top_sphere_inner =
+      new G4LogicalVolume(    inner_top_sphere,
 			      G4Material::GetMaterial(mPMT_inner_material),//"Blacksheet"), 
-			      "WCMultiPMT_inner",
+			      "WCMultiPMT_inner_top",
 			      0,0,0);
     
     
     G4VPhysicalVolume* place_inner =
       new G4PVPlacement(	0,       				// its rotation
-				G4ThreeVector(0,0,-cylinder_height),	// its position
-				logicWCMultiPMT_inner,   	        // its logical volume
-				"WCPMT_inner",				// its name 
-				logicWCMultiPMT,			// its mother volume
+				G4ThreeVector(0,0,0),           	// its position
+				logic_mPMT_top_sphere_inner,   	        // its logical volume
+				"WCPMT_inner_top",			// its name 
+				logic_mPMT_top_sphere_vessel,        // its mother volume
 				false,					// no boolean os
 				0, 
 				checkOverlaps);			
   
-
+    new G4LogicalSkinSurface("FoamSurfaceTop",logic_mPMT_top_sphere_inner, OpGelFoamSurface);
+    
     G4VisAttributes* VisAttRed = new G4VisAttributes(G4Colour(1.0,0.,0.));
     VisAttRed->SetForceSolid(true); 
-    //logicWCMultiPMT_inner->SetVisAttributes(VisAttRed);
+    logic_mPMT_top_sphere_inner->SetVisAttributes(VisAttRed);
   }
   
   /* Set all visualization here for better overview. */
@@ -422,10 +407,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   VisAttYellow->SetForceSolid(true); 
   
   
-  logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
-  logic_mPMT_top_sphere_vessel->SetVisAttributes(WCPMTVisAtt5);  
-  logic_mPMT_cylinder_vessel->SetVisAttributes(WCPMTVisAtt5);  
-  logic_mPMT_cylinder_container->SetVisAttributes(VisAttYellow); 
+  //logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
+  //logic_mPMT_top_sphere_vessel->SetVisAttributes(WCPMTVisAtt5);  
+  //logic_mPMT_cylinder_vessel->SetVisAttributes(WCPMTVisAtt5);  
+  //logic_mPMT_cylinder_container->SetVisAttributes(VisAttYellow); 
   logic_mPMT_top_sphere_container->SetVisAttributes(VisAttYellow); 
   
 
