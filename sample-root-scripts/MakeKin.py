@@ -107,13 +107,6 @@ else:
 
 
 
-nue=12
-nuebar=-12
-numu=14
-numubar=-14
-nutau=16
-nutaubar=-16
-
 nu =   {"type":pid["numu"], "energy":energy+1000.0,
         "direction":(1, 0, 0)}
 prot = {"type":pid["p+"], "energy":935.9840,
