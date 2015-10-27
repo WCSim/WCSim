@@ -41,6 +41,12 @@ parser.add_option("-v", "--vertex", dest="vertname",
 parser.add_option("-d", "--direction", dest="dirname",
                   help="Type of direction (4pi*, towall, tocap)",
                   default="4pi")
+optchoices = ["SuperK","Cylinder_60x74_20inchBandL_14perCent","Cylinder_60x74_20inchBandL_40perCent"]
+optdefault = optchoices[0]
+parser.add_option("-w", "--detector", dest="detector",
+                  help="Detector water volume to use (for vertex positioning). Choices: %s. Default: %s" \
+                      % (optchoices, optdefault),
+                  choices=optchoices, default=optdefault)
 
 (options, args) = parser.parse_args()
 
@@ -119,8 +125,17 @@ def partPrint(p, f, recno):
     f.write("$ begin\n")
     f.write("$ nuance 0\n")
     if randvert:
-        rad = 3368.15/2. - 20. #cm
-        height = 3620.0 - 20. #cm
+        rad = 0
+        height = 0
+        if options.detector == "SuperK":
+            rad    = 3368.15/2. - 20. #cm
+            height = 3620.0     - 20. #cm
+        elif options.detector == "Cylinder_60x74_20inchBandL_40perCent" or options.detector == "Cylinder_60x74_20inchBandL_14perCent":
+            rad    = 7400.0/2. - 20. #cm
+            height = 6000.0    - 20. #cm
+        else:
+            print "Unknown detector option", options.detector
+            sys.exit(1)
         while True:
             x = random.uniform(-rad,rad)
             y = random.uniform(-rad,rad)
@@ -154,7 +169,7 @@ def printTrack(p, f, code=0):
 for fileno in range(nfiles):
     typestr = options.type.replace("+","plus").replace("-","minus")
     
-    filename="%s_%.0fMeV_%s_%s_%03i.kin" % (typestr, energy, options.vertname, options.dirname, fileno)
+    filename="%s_%.0fMeV_%s_%s_%s_%03i.kin" % (typestr, energy, options.vertname, options.dirname, options.detector, fileno)
 
     outfile = open(filename, 'w')
 
