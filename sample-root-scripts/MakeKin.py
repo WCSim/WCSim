@@ -93,13 +93,37 @@ elif options.vertname == "wall":
     print >>sys.stderr, "Wall not implemented yet"
     sys.exit(3)
 elif options.vertname == "minusx":
-    particle["vertex"] = (-1000,0,0)
+    if options.detector == "SuperK":
+        particle["vertex"] = (-1000,0,0)
+    elif options.detector == "Cylinder_60x74_20inchBandL_40perCent" or options.detector == "Cylinder_60x74_20inchBandL_14perCent":
+        particle["vertex"] = (-1000. * 7400. / 3368.15, 0, 0)
+    else:
+        print "Unknown detector option", options.detector
+        sys.exit(1)
 elif options.vertname == "plusx":
-    particle["vertex"] = (1000,0,0)
+    if options.detector == "SuperK":
+        particle["vertex"] = (1000,0,0)
+    elif options.detector == "Cylinder_60x74_20inchBandL_40perCent" or options.detector == "Cylinder_60x74_20inchBandL_14perCent":
+        particle["vertex"] = (1000. * 7400. / 3368.15, 0, 0)
+    else:
+        print "Unknown detector option", options.detector
+        sys.exit(1)
 elif options.vertname == "minusz":
-    particle["vertex"] = (0,0,-1000)
+    if options.detector == "SuperK":
+        particle["vertex"] = (0, 0, -1000)
+    elif options.detector == "Cylinder_60x74_20inchBandL_40perCent" or options.detector == "Cylinder_60x74_20inchBandL_14perCent":
+        particle["vertex"] = (0, 0, -1000. * 6000. / 3620.)
+    else:
+        print "Unknown detector option", options.detector
+        sys.exit(1)
 elif options.vertname == "plusz":
-    particle["vertex"] = (0,0,1000)
+    if options.detector == "SuperK":
+        particle["vertex"] = (0, 0, +1000)
+    elif options.detector == "Cylinder_60x74_20inchBandL_40perCent" or options.detector == "Cylinder_60x74_20inchBandL_14perCent":
+        particle["vertex"] = (0, 0, +1000. * 6000. / 3620.)
+    else:
+        print "Unknown detector option", options.detector
+        sys.exit(1)
 else:
     print >>sys.stderr, "Don't understand vertex",opttions.vertname
     sys.exit(2)
