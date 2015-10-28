@@ -32,12 +32,12 @@ optdefault = 1
 parser.add_option("-N", "--nfiles", dest="nfiles",
                   help="number of files of particles to produce. Default: %s" \
                       % (optdefault),
-                  metavar="#", default=1)                  
+                  metavar="#", default=optdefault)
 optdefault = 100
 parser.add_option("-n", "--npart", dest="npart",
                   help="number of particles to simulate per file. Default: %s" \
                   % (optdefault),
-                  metavar="#", default=100)
+                  metavar="#", default=optdefault)
 optchoices = pid.keys()
 optdefault = "mu-"
 parser.add_option("-t", "--type", dest="type",
@@ -49,7 +49,7 @@ optdefault = 1000.0
 parser.add_option("-e", "--energy", dest="energy",
                   help="Particle energy to be generated in MeV. Default: %s" \
                       % (optdefault),
-                  metavar="ENERGY",default=1000.0)
+                  metavar="ENERGY",default=optdefault)
 optchoices = ["center", "random", "minusx", "plusx", "minusz", "plusz"]
 optdefault = optchoices[0]
 parser.add_option("-v", "--vertex", dest="vertname",
