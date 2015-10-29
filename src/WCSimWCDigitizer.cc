@@ -45,8 +45,8 @@ WCSimWCDigitizer::WCSimWCDigitizer(G4String name,
   //in this class use this synonym for clarity
   nhitsThreshold  = ndigitsThreshold;
   if(nhitsWindowBins % 5) {
-    G4cerr << "Option /DAQ/TriggerNDigits/Window must be exactly divisble by 5 when running with SKI_SKDETSIM" << endl;
-      exit(-1);
+    G4cerr << "Option /DAQ/TriggerNDigits/Window must be exactly divisble by 5 when running with SKI_SKDETSIM" << G4endl;
+    exit(-1);
   }
   nhitsWindowBins = ndigitsWindow / 5;
 }
