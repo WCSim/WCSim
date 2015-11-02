@@ -72,6 +72,11 @@
 # how long does the digitizer integrate for (ns)?
 #/DAQ/DigitizerOpt/IntegrationWindow 200
 
+#generic trigger options (defaults are class-specfic. Can be overrideen here)
+# restrict the number of digits per PMT per trigger to be <= 1?
+# (note this has no effect on SKI_SKDETSIM (the restriction is always on))
+/DAQ/RestrictDigitsPerTrigger true
+
 #trigger algorithm development options (defaults are set in WCSimWCDAQMessenger. Can be overidden here)
 # do we want to save only triggered events (mode 0), both triggered events & failed events (mode 1), or only failed events (mode 2)?
 #/DAQ/TriggerSaveFailures/Mode 0
