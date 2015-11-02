@@ -39,6 +39,8 @@ private:
   G4String            StoreDigitizerChoice;
   G4UIcmdWithAString* TriggerChoice;
   G4String            StoreTriggerChoice;
+  G4UIcmdWithABool*   RestrictDigitsPerTrigger;
+  G4bool              StoreRestrictDigitsPerTrigger;
 
   G4UIcmdWithoutParameter* DAQConstruct; //TODO remove this
 

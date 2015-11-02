@@ -55,6 +55,14 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreTriggerChoice = defaultTrigger;
   SetNewValue(TriggerChoice, defaultTrigger);
 
+  bool defaultRestrictDigitsPerTrigger = true;
+  RestrictDigitsPerTrigger = new G4UIcmdWithABool("/DAQ/RestrictDigitsPerTrigger", this);
+  RestrictDigitsPerTrigger->SetGuidance("Restrict the number of digits per PMT per trigger to <=1?");
+  RestrictDigitsPerTrigger->SetParameterName("RestrictDigitsPerTrigger",true);
+  RestrictDigitsPerTrigger->SetDefaultValue(defaultRestrictDigitsPerTrigger);
+  StoreNDigitsAdjustForNoise = defaultRestrictDigitsPerTrigger;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
 
   //Generic digitizer specific options
   DigitizerDir = new G4UIdirectory("/DAQ/DigitizerOpt/");
@@ -188,6 +196,7 @@ WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
 
   delete DigitizerChoice;
   delete TriggerChoice;
+  delete RestrictDigitsPerTrigger;
   delete WCSimDAQDir;
 }
 
@@ -206,6 +215,11 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     G4cout << "Trigger choice set to " << newValue << initialiseString.c_str() << G4endl;
     WCSimEvent->SetTriggerChoice(newValue);
     StoreTriggerChoice = newValue;
+  }
+  else if (command == RestrictDigitsPerTrigger) {
+    StoreRestrictDigitsPerTrigger = RestrictDigitsPerTrigger->GetNewBoolValue(newValue);
+    if(StoreRestrictDigitsPerTrigger)
+      G4cout << "Will restrict number of digits per PMT per trigger to <= 1" << initialiseString.c_str() << G4endl;
   }
 
   //Generic digitizer options
@@ -280,6 +294,10 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 void WCSimWCDAQMessenger::SetTriggerOptions()
 {
   G4cout << "Passing Trigger options to the trigger class instance" << G4endl;
+
+  WCSimTrigger->SetRestrictDigitsPerTrigger(StoreRestrictDigitsPerTrigger);
+  if(StoreRestrictDigitsPerTrigger)
+    G4cout << "\tWill restrict number of digits per PMT per trigger to <= 1" << G4endl;
 
   WCSimTrigger->SetSaveFailuresMode(StoreSaveFailuresMode);
   std::string failuremode;
