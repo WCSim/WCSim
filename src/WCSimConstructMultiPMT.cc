@@ -334,19 +334,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 			0, 
 			checkOverlaps);			
     
-  /*
-  G4SDManager* SDman = G4SDManager::GetSDMpointer();
-  G4String SDName = "/WCSim/";
-  SDName += CollectionName;
-  WCSimWCSD* aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
-  SDman->AddNewDetector( aWCPMT );
-  
-
-  //logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
-  logicWCPMT->SetSensitiveDetector( aWCPMT );
-  */
-
-
 
 
   ///////////////////////////////////////////////////////////////
@@ -386,7 +373,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
       new G4LogicalSkinSurface("FoamSurfaceCyl",logic_mPMT_cylinder_inner, OpGelFoamSurface);
       G4VisAttributes* VisAttRed = new G4VisAttributes(G4Colour(1.0,0.,0.));
       VisAttRed->SetForceSolid(true); 
-      logic_mPMT_cylinder_inner->SetVisAttributes(VisAttRed);
+      //logic_mPMT_cylinder_inner->SetVisAttributes(VisAttRed);
 
     }
     G4Sphere* inner_top_sphere =
@@ -457,7 +444,7 @@ G4int WCSimDetectorConstruction::FillCircles(void){
   // and pre-calculated values
   //Fill vAlpha, vNiC, vCircle
   std::vector<float> vEta;
-  
+  vEta.clear();
   
   std::ifstream config(config_file); 
   if(!config){

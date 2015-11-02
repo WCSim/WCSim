@@ -49,26 +49,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   totalNumPMTs = 0;
   WCPMTExposeHeight= 0.;
 
-  //SetSuperKGeometry();
-  SetTestmPMTGeometry();  
-  //SetHyperKGeometry();
-
-  //----------------------------------------------------- 
-  // Set whether or not Pi0-specific info is saved
-  //-----------------------------------------------------
-
-  SavePi0Info(false);
-  
-  //-----------------------------------------------------
-  // Set the default method for implementing the PMT QE
-  //-----------------------------------------------------
-  SetPMT_QE_Method(1);
-
-   //default is to use collection efficiency
-  SetPMT_Coll_Eff(1);
-  // set default visualizer to OGLSX
-  SetVis_Choice("OGLSX");
-
   //---------------------------------------------------
   // Need to define defaults for all mPMT parameters 
   // defaults are chosen that they are valid for a SK detector
@@ -89,6 +69,30 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   nID_PMTs = 1;   //per mPMT
   config_file = "";
 
+
+
+
+  SetSuperKGeometry();
+  //SetTestmPMTGeometry();  
+  //SetHyperKGeometry();
+
+  //----------------------------------------------------- 
+  // Set whether or not Pi0-specific info is saved
+  //-----------------------------------------------------
+
+  SavePi0Info(false);
+  
+  //-----------------------------------------------------
+  // Set the default method for implementing the PMT QE
+  //-----------------------------------------------------
+  SetPMT_QE_Method(1);
+
+   //default is to use collection efficiency
+  SetPMT_Coll_Eff(1);
+  // set default visualizer to OGLSX
+  SetVis_Choice("OGLSX");
+
+
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry
   //-----------------------------------------------------
@@ -108,7 +112,7 @@ void WCSimDetectorConstruction::UpdateGeometry()
   G4RunManager::GetRunManager()->DefineWorldVolume(Construct(), geomChanged);
   // ToDo: need some error catching here for NULL Construct() cases
  
- }
+}
 
 
 
@@ -129,6 +133,10 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   G4LogicalBorderSurface::CleanSurfaceTable();
   G4LogicalSkinSurface::CleanSurfaceTable();
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
+  //TF: for new mPMT
+  vNiC.clear();
+  vAlpha.clear();
+  vCircle.clear();
 
   totalNumPMTs = 0;
   

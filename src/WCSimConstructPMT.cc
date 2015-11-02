@@ -291,7 +291,7 @@ else {
 
   // Instantiate a new sensitive detector and register this sensitive detector volume with the SD Manager. 
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
-   G4String SDName = "/WCSim/";
+  G4String SDName = "/WCSim/";
   SDName += CollectionName;
   WCSimWCSD* aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
   SDman->AddNewDetector( aWCPMT );
