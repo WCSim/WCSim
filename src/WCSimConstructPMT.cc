@@ -293,12 +293,15 @@ else {
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
   G4String SDName = "/WCSim/";
   SDName += CollectionName;
-  WCSimWCSD* aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
-  SDman->AddNewDetector( aWCPMT );
+  G4VSensitiveDetector *theSD = SDman->FindSensitiveDetector(SDName, false);
+  if(!theSD){
+    
+    WCSimWCSD* aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
+    SDman->AddNewDetector( aWCPMT );
   
-
-  logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
-  
+    logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
+  } else
+    logicGlassFaceWCPMT->SetSensitiveDetector( theSD );
   PMTLogicalVolumes[key] = logicWCPMT;
 
   return logicWCPMT;
