@@ -179,13 +179,6 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
        G4HCofThisEvent* HCofEvent = currentEvent->GetHCofThisEvent();
        hitsCollection = (WCSimWCHitsCollection*)(HCofEvent->GetHC(collectionID));
       
-
-       if(replicaNumber == 6138){
-	 std::cout << "Test Map " << std::endl;
-	 for (std::map<int,int>::iterator it=PMTHitMap.begin(); it!=PMTHitMap.end(); ++it)
-	   std::cout << it->first << " " << it->second << std::endl;
-       }
-       
        
        // If this tube hasn't been hit add it to the collection	 
        if (this->PMTHitMap[replicaNumber] == 0)
@@ -210,32 +203,13 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   
 	   //     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
 	   //       newHit->Print();
-	   if(replicaNumber == 6138){
-	     std::cout << "Test ";
-	     std::cout << "hitsCollection " << (*hitsCollection)[PMTHitMap[replicaNumber]-1] << std::endl;
-	     std::cout << "hitsCollection " << (*hitsCollection)[PMTHitMap[replicaNumber]-1]->GetTotalPe() << std::endl;
-	   }
 	     
 	 }
        else {
-	 hitsCollection->PrintAllHits();
-	 std::cout << "replicaNumber " << replicaNumber << " " << PMTHitMap[replicaNumber]-1 << std::endl;
-	 std::cout << "hitsCollection " << (*hitsCollection)[PMTHitMap[replicaNumber]-1] << std::endl;
-	 std::cout << "hitsCollection " << (*hitsCollection)[PMTHitMap[replicaNumber]-1]->GetTotalPe() << std::endl;
-
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
 	 
-	 std::cout << "hitsCollection " << (*hitsCollection)[PMTHitMap[replicaNumber]-1]->GetTotalPe() << std::endl;
        }
-
-       if(replicaNumber == 6138){
-	 std::cout << "Test2 Map " << std::endl;
-	 for (std::map<int,int>::iterator it=PMTHitMap.begin(); it!=PMTHitMap.end(); ++it)
-	   std::cout << it->first << " " << it->second << std::endl;
-       }
-
-
 
      }
   }
