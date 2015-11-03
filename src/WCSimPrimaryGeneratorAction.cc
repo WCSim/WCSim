@@ -101,6 +101,14 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     // Temporary kludge to turn on/off vector text format 
     G4bool useNuanceTextFormat = true;
 
+    //
+    // Documentation describing the nuance text format can be found here: 
+    // http://neutrino.phy.duke.edu/nuance-format/
+    //
+    // The format must be strictly adhered to for it to be processed correctly.
+    // The lines and their meanings from begin through info are fixed, and then
+    // a variable number of tracks may follow.
+    //
     // Do for every event
     if (useMulineEvt)
     { 

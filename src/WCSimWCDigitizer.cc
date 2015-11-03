@@ -344,7 +344,7 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 
   G4float timingConstant = 0.0;
   WCSimPMTObject * PMT;
-  PMT = myDetector->GetPMTPointer();
+  PMT = myDetector->GetPMTPointer("glassFaceWCPMT");
  
   G4double EvtG8Down = WCSimWCDigitizer::eventgatedown;
   G4double EvtG8Up = WCSimWCDigitizer::eventgateup;  // this is a negative number...
@@ -422,12 +422,12 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
 	  // MF : found 'by hand', fits SK PMT resolution (2002 values ?)
 	  // Add cutoffs
 	  float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
-	  float timingResolution = PMT->GettimingResolution(Q);
-	  
+	  float hittimesmearing = PMT->HitTimeSmearing(Q);
+
 	  G4double digihittime = -TriggerTimes[G]
 	    + WCSimWCDigitizer::offset
 	    + firstHitTime
-	    + G4RandGauss::shoot(0.0,timingResolution);
+	    + hittimesmearing;
 
 	  if ( digihittime > 0.0 && peSmeared>0.0)
 	  

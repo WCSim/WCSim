@@ -13,7 +13,7 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimTrackInformation.hh"
 
-WCSimWCSD::WCSimWCSD(G4String name,WCSimDetectorConstruction* myDet)
+WCSimWCSD::WCSimWCSD(G4String CollectionName, G4String name,WCSimDetectorConstruction* myDet)
 :G4VSensitiveDetector(name)
 {
   // Place the name of this collection on the list.  We can have more than one
@@ -23,8 +23,7 @@ WCSimWCSD::WCSimWCSD(G4String name,WCSimDetectorConstruction* myDet)
   // Which has a "/" in it, I can find this collection later using 
   // GetCollectionID()
 
-  G4String HCname;
-  collectionName.insert(HCname="glassFaceWCPMT");
+  collectionName.insert(CollectionName);
   
   fdet = myDet;
   
@@ -60,20 +59,6 @@ void WCSimWCSD::Initialize(G4HCofThisEvent* HCE)
   newHit->SetMaxPe(0);
   delete newHit;
 }
-
-G4float WCSimWCSD::Interpolate_func(G4float x, G4int ncount, G4float *angle, G4float *quantity){
-  // linear interpolate the quantity function versus angle
-  if (x < *angle || x >=*(angle+ncount-1)){
-    return 0;
-  }else{
-    for (Int_t i=0;i!=ncount;i++){
-      if (x>=*(angle+i) && x < *(angle+i+1)){
-	return (x-*(angle+i))/(*(angle+i+1)-*(angle+i))* (*(quantity+i+1)) + (*(angle+i+1)-x)/(*(angle+i+1)-*(angle+i)) * (*(quantity+i));
-      }
-    }
-  }
-}
-
 
 G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
@@ -151,9 +136,6 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4int replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
 
     
-  G4float collection_angle[10]={0,10,20,30,40,50,60,70,80,90};
-  G4float collection_eff[10]={100,100,99,95,90,85,80,69,35,13};
-  
   G4float theta_angle;
   G4float effectiveAngularEfficiency;
 
@@ -165,12 +147,12 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   if (fdet->GetPMT_QE_Method()==1){
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
-    maxQE = fdet->GetPMTQE(wavelength,0,240,660,ratio);
-    photonQE = fdet->GetPMTQE(wavelength,1,240,660,ratio);
+    maxQE = fdet->GetPMTQE(collectionName[0],wavelength,0,240,660,ratio);
+    photonQE = fdet->GetPMTQE(collectionName[0],wavelength,1,240,660,ratio);
     photonQE = photonQE/maxQE;
   }else if (fdet->GetPMT_QE_Method()==3){
     ratio = 1./(1.-0.25);
-    photonQE = fdet->GetPMTQE(wavelength,1,240,660,ratio);
+    photonQE = fdet->GetPMTQE(collectionName[0],wavelength,1,240,660,ratio);
   }
   
   
@@ -181,7 +163,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      G4double local_y = localPosition.y();
      G4double local_z = localPosition.z();
      theta_angle = acos(fabs(local_z)/sqrt(pow(local_x,2)+pow(local_y,2)+pow(local_z,2)))/3.1415926*180.;
-     effectiveAngularEfficiency = Interpolate_func(theta_angle,10,collection_angle,collection_eff)/100.;
+     effectiveAngularEfficiency = fdet->GetPMTCollectionEfficiency(theta_angle, collectionName[0]);
      if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
 
       
