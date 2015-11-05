@@ -289,17 +289,21 @@ else {
                         checkOverlaps);
   }
 
+  G4SDManager* SDman = G4SDManager::GetSDMpointer();
+  G4String SDName = "/WCSim/";
+  SDName += CollectionName;
   
-  if( ! aWCPMT ) {
+  // If there is no such sensitive detector with that SDName yet.
+  // make a new one
+  if( ! SDman->FindSensitiveDetector(SDName, false) ) {
     
-    // Instantiate a new sensitive detector and register this sensitive detector volume with the SD Manager. 
-    G4SDManager* SDman = G4SDManager::GetSDMpointer();
-    G4String SDName = "/WCSim/";
-    SDName += CollectionName;
+    // Instantiate a new sensitive detector 
+    // and register this sensitive detector volume with the SD Manager. 
   
     aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
     SDman->AddNewDetector( aWCPMT );
   }
+  
   logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
 
   

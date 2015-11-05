@@ -368,7 +368,7 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
 // Note: using cylinder_radius (mPMT radius) instead of PMT radius for detector construction. Important!
 void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
 { 
-  WCDetectorName = "Cylinder_60x74_3inchmPMT_14perCent()";
+  WCDetectorName = "Cylinder_60x74_3inchmPMT_14perCent";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   mPMT_ID_PMT = "PMT3inchR12199_02";
   mPMT_OD_PMT = "PMT8inch";
