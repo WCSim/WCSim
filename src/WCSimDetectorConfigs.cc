@@ -407,3 +407,46 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
   config_file = "mPMTconfig_33_13_1.txt";
 
 }
+
+// Note: using cylinder_radius (mPMT radius) instead of PMT radius for detector construction. Important!
+void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
+{ 
+  WCDetectorName = "Cylinder_60x74_3inchmPMT_40perCent";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  mPMT_ID_PMT = "PMT3inchR12199_02";
+  mPMT_OD_PMT = "PMT8inch";
+
+  WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = PMT->GetRadius();
+  WCIDDiameter          = 74.0*m;
+  WCIDHeight            = 60.0*m;
+  WCBarrelPMTOffset     = cylinder_radius; //mPMT cylinder Radius //WCPMTRadius; //offset from vertical
+  WCPMTperCellHorizontal= 4;
+  WCPMTperCellVertical  = 3;
+  WCPMTPercentCoverage  = 13.51;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*cylinder_radius));//WCPMTRadius));
+  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - cylinder_radius;//WCPMTRadius;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+
+  //mPMT params:
+  cylinder_height = 50.*CLHEP::mm;
+  cylinder_radius = 245.*CLHEP::mm;   //TODO: Retune
+  orientation = PERPENDICULAR;
+  mPMT_outer_material = "G4_PLEXIGLASS";
+  mPMT_inner_material = "Blacksheet";
+  mPMT_outer_material_d = 0.03*2*(cylinder_radius + WCPMTExposeHeight + 2.5)*CLHEP::mm; //using NEMO article safety margin of 0.03 for t/D
+  mPMT_inner_material_d = 2.*CLHEP::mm; //a 2 mm thick blacksheet or whatever
+  // Radius of cone at z=reflectorHeight
+  id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
+  id_reflector_angle = CLHEP::pi/4*CLHEP::rad; // Based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
+  // parameters related to filling the ID mPMT
+  nID_PMTs = 33;
+  config_file = "mPMTconfig_33_13_1.txt";   //TODO: Retune
+
+}
