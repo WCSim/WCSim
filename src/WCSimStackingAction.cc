@@ -23,6 +23,14 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
   G4String WCIDCollectionName = DetConstruct->GetIDCollectionName();
   G4ClassificationOfNewTrack classification    = fWaiting;
   G4ParticleDefinition*      particleType      = aTrack->GetDefinition();
+
+
+  // Reset products of radioactive decay to start at time zero
+  if( aTrack->GetParentID() == 1 )// && aTrack->GetGlobalTime() > 1 * second )
+    {
+      (const_cast<G4Track *>(aTrack))->SetGlobalTime(0);
+    }
+
   
 
   // Make sure it is an optical photon

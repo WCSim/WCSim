@@ -1,8 +1,9 @@
 # Sampe setup macro with no visualization
 
-/run/verbose 0
-/tracking/verbose 0
-/hits/verbose 0
+/run/verbose 2
+/tracking/verbose 2
+/hits/verbose 2
+/grdm/verbose 3
 
 ## select the geometry
 # Default config if you do nothing is currently SuperK
@@ -59,12 +60,13 @@
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 /WCSim/SavePi0 false
 
+
 ## select the input nuance-formatted vector file
 ## you can of course use your own
 #/mygen/vecfile inputvectorfile
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
 #/mygen/vecfile mu+.out
-
+/mygen/vecfile PMT_Bi214_0MeV_randompmt_4pi_000.kin
 
 #choose the Trigger & Digitizer type (and options)
 # set at least one of the following two options (both /DAQ/Digitizer and /DAQ/Trigger to be clear) to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger class (WCSimWCDigitizer)
@@ -85,7 +87,7 @@
 #NDigits trigger options
 # control the NDigits trigger threshold
 # (note in SKI_SKDETSIM, this is actually the value used for the NHits trigger (NHits != NDigits))
-/DAQ/TriggerNDigits/Threshold 15
+/DAQ/TriggerNDigits/Threshold 14
 
 # control the NDigits trigger window (ns)
 /DAQ/TriggerNDigits/Window 20
@@ -121,22 +123,36 @@
 #/DarkRate/SetDarkLow to /DarkRate/SetDarkHigh [time in ns]
 #/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
 #width /DarkRate/SetDarkWindow [time in ns] around each hit.
-/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkMode 0
 /DarkRate/SetDarkHigh 10000
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 2000
 
+#/grdm/noVolumes
+#/grdm/selectVolume Cylinder_60x74_20inchBandL_14perCent()-glassFaceWCPMT
+#/grdm/selectVolume WCBarrel
+
 # Or you can use the G4 Particle Gun
-/mygen/generator normal
-/gun/particle e-
+#/mygen/generator normal
+##/gun/particle e-
 ##/gun/particle pi0
-/gun/energy 4 MeV
-#/gun/direction 1 0 0 
-#/gun/position 0 0 0  
+#/gun/particle ion 
+#/gun/ion 19 40
+#/gun/energy 0 MeV
+##/gun/direction 1 0 0 
+##/gun/position 0 0 0  
+
+#/mygen/generator laser
+#/gps/energy 0 keV
+#/gps/particle ion
+#/gps/ion 83 214 0  0
+
+/grdm/analogueMC 0
+/grdm/BRbias 0
 
 ## change the name of the output root file, default = wcsim.root
 
 /WCSimIO/RootFile wcsim.root
 
-/run/beamOn 100
+/run/beamOn 1000
 #exit

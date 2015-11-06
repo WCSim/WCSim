@@ -54,7 +54,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   particleGun = new G4ParticleGun(n_particle);
   particleGun->SetParticleEnergy(1.0*GeV);
   particleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.0));
-
+ 
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
   particleGun->
@@ -188,9 +188,38 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		    G4ThreeVector dir = G4ThreeVector(atof(token[3]),
 						      atof(token[4]),
 						      atof(token[5]));
-		    particleGun->
-		      SetParticleDefinition(particleTable->
-					    FindParticle(pdgid));
+		    std::cout<<"PDGcode "<<pdgid<<"\n";
+		    //must handle the case of an ion speratly from other particles
+		    //check PDG code if we have an ion.
+		    //PDG code format for ions ±10LZZZAAAI
+		    char strPDG[11];
+		    char strA[10]={0};
+		    char strZ[10]={0};
+		    
+
+		    long int A=0,Z=0;
+		    //		    A=strotl(strPDG,&str);
+		    if(abs(pdgid) >= 1000000000)
+		      {
+			//ion
+			sprintf(strPDG,"%i",abs(pdgid));
+			strncpy(strZ, &strPDG[3], 3);
+			strncpy(strA, &strPDG[6], 3);
+			strA[3]='\0';
+			strZ[3]='\0';
+			A=atoi(strA);
+			Z=atoi(strZ);
+			G4ParticleDefinition* ion;
+			ion =  particleTable->GetIon(Z, A, 0.);
+			particleGun->SetParticleDefinition(ion);
+			particleGun->SetParticleCharge(0);
+		      }
+		    else {
+		      //not ion
+		      particleGun->
+			SetParticleDefinition(particleTable->
+					      FindParticle(pdgid));
+		    }
 		    G4double mass = 
 		      particleGun->GetParticleDefinition()->GetPDGMass();
 
@@ -200,7 +229,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		    //G4cout << "Particle: " << pdgid << " KE: " << ekin << G4endl;
 		    particleGun->SetParticlePosition(vtx);
 		    particleGun->SetParticleMomentumDirection(dir);
-		    particleGun->GeneratePrimaryVertex(anEvent);
+		    particleGun->GeneratePrimaryVertex(anEvent); 
 		  }
 	      }
 	  }
@@ -235,7 +264,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4ThreeVector vtx=anEvent->GetPrimaryVertex()->GetPosition();
     G4double m       =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
     G4int pdg        =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
-
+   
     G4ThreeVector dir  = P.unit();
     G4double E         = std::sqrt((P.dot(P))+(m*m));
 
@@ -250,20 +279,21 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
   else if (useLaserEvt)
     {
+      targetpdg = 2212; //ie. proton 
       //T. Akiri: Create the GPS LASER event
       MyGPS->GeneratePrimaryVertex(anEvent);
       
-      G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
-      G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
-      G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
+       G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
+       G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
+       G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
       
-      G4ThreeVector dir  = P.unit();
-      G4double E         = std::sqrt((P.dot(P)));
+//       G4ThreeVector dir  = P.unit();
+       G4double E         = std::sqrt((P.dot(P)));
       
-      SetVtx(vtx);
-      SetBeamEnergy(E);
-      SetBeamDir(dir);
-      SetBeamPDG(pdg);
+//       SetVtx(vtx);
+       SetBeamEnergy(E);
+       //       SetBeamDir(dir);
+       SetBeamPDG(pdg);
     }
 }
 
