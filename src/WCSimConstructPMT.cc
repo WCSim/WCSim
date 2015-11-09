@@ -80,11 +80,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   } else {
     // version without a base but with optional reflectorCone
     baseHeight = expose;
-    baseRadius = radius + reflectorThickness;
+    baseRadius = std::max(radius,reflectorRadius) + reflectorThickness; //radius + reflectorThickness; too tight
   }
   G4double PMTHolderZ[2] = {-baseHeight+expose, 
 			    std::max(expose,id_reflector_height)};
-  G4double PMTHolderR[2] = {std::max(radius,reflectorRadius) + reflectorThickness, //baseRadius, (too tight)
+  G4double PMTHolderR[2] = {baseRadius, 
 			    std::max(radius,reflectorRadius) + reflectorThickness};
   G4double PMTHolderr[2] = {0,0};
 

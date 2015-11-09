@@ -568,6 +568,7 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
 
+      /*
       else if (particleName == "neutron") 
 	{
 	  // elastic scattering
@@ -663,7 +664,7 @@ void WCSimPhysicsList::ConstructHad()
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
-
+      */
       else if (particleName == "deuteron") 
 	{
 	  pmanager->AddDiscreteProcess(theElasticProcess);

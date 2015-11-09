@@ -436,7 +436,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
 
   //mPMT params:
   cylinder_height = 50.*CLHEP::mm;
-  cylinder_radius = 245.*CLHEP::mm;   //TODO: Retune
+  cylinder_radius = 255.*CLHEP::mm;   
   orientation = PERPENDICULAR;
   mPMT_outer_material = "G4_PLEXIGLASS";
   mPMT_inner_material = "Blacksheet";
@@ -446,7 +446,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
   id_reflector_angle = CLHEP::pi/4*CLHEP::rad; // Based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
   // parameters related to filling the ID mPMT
-  nID_PMTs = 33;
-  config_file = "mPMTconfig_33_13_1.txt";   //TODO: Retune
+  nID_PMTs = 34;
+  config_file = "mPMTconfig_34_22.5_2.txt"; 
 
 }
