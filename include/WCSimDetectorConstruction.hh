@@ -68,6 +68,7 @@ public:
   void UpdateGeometry();
   
 
+  G4String GetDetectorName()      {return WCDetectorName;}
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
   G4double GetPMTSize()           {return WCPMTRadius;}

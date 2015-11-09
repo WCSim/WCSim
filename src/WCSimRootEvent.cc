@@ -46,8 +46,8 @@ WCSimRootTrigger::WCSimRootTrigger()
   fNtrack = 0;
 
   // TClonesArray of WCSimRootCherenkovHits
-    fCherenkovHits = 0;
-    fCherenkovHitTimes = 0;
+  fCherenkovHits = 0;
+  fCherenkovHitTimes = 0;
   fNcherenkovhits = 0;
   fNcherenkovhittimes = 0;
 
@@ -56,6 +56,9 @@ WCSimRootTrigger::WCSimRootTrigger()
   fNcherenkovdigihits = 0;
   fSumQ = 0;
 
+  fTriggerType = kTriggerUndefined;
+  fTriggerInfo.clear();
+  
   IsZombie = true;
   
 }
@@ -75,17 +78,17 @@ void WCSimRootTrigger::Initialize() //actually allocate memory for things in her
   // When the constructor is invoked for the first time, the class static
   // variable fgTracks is 0 and the TClonesArray fgTracks is created.
   // Sim. for the other TClonesArray
-TStopwatch* mystopw = new TStopwatch();
+  TStopwatch* mystopw = new TStopwatch();
 
   // TClonesArray of WCSimRootTracks
   fTracks = new TClonesArray("WCSimRootTrack", 10000);
   fNtrack = 0;
 
   // TClonesArray of WCSimRootCherenkovHits
-    fCherenkovHits = new TClonesArray("WCSimRootCherenkovHit", 
-					    10000);
-    fCherenkovHitTimes = new TClonesArray("WCSimRootCherenkovHitTime", 
-					  10000);
+  fCherenkovHits = new TClonesArray("WCSimRootCherenkovHit", 
+				    10000);
+  fCherenkovHitTimes = new TClonesArray("WCSimRootCherenkovHitTime", 
+					10000);
   fNcherenkovhits = 0;
   fNcherenkovhittimes = 0;
 
@@ -94,6 +97,9 @@ TStopwatch* mystopw = new TStopwatch();
 				       10000);
   fNcherenkovdigihits = 0;
   fSumQ = 0;
+
+  fTriggerType = kTriggerUndefined;
+  fTriggerInfo.clear();
   
   //  std::cout << " Time to allocate the TCAs :  Real = " << mystopw->RealTime() 
   //	    << " ; CPU = " << mystopw->CpuTime() << "\n";
@@ -125,7 +131,8 @@ WCSimRootTrigger::~WCSimRootTrigger()
     delete   fCherenkovHits;      
     delete   fCherenkovHitTimes;   
     delete   fCherenkovDigiHits; 
-  }    mystopw->Stop();
+  }
+  mystopw->Stop();
 
   //  std::cout << " Time to delete the TCAs :  Real = " << mystopw->RealTime() 
   //    << " ; CPU = " << mystopw->CpuTime() << "\n";
@@ -137,7 +144,7 @@ WCSimRootTrigger::~WCSimRootTrigger()
 
 //_____________________________________________________________________________
 
-void WCSimRootTrigger::Clear(Option_t *option)
+void WCSimRootTrigger::Clear(Option_t */*option*/)
 {
   // To be filled in 
   // Filled in, by MF, 31/08/06  -> Keep all the alloc'ed memory but reset all
@@ -155,17 +162,20 @@ void WCSimRootTrigger::Clear(Option_t *option)
   // remove whatever's in the arrays
   // but don't deallocate the arrays themselves
 
-    fTracks->Delete();            
-    fCherenkovHits->Delete();      
-    fCherenkovHitTimes->Delete();   
-    fCherenkovDigiHits->Delete();  
+  fTracks->Delete();            
+  fCherenkovHits->Delete();      
+  fCherenkovHitTimes->Delete();   
+  fCherenkovDigiHits->Delete();
+
+  fTriggerType = kTriggerUndefined;
+  fTriggerInfo.clear();
 
   IsZombie = false ; // we DO NOT deallocate the memory
 }
 
 //_____________________________________________________________________________
 
-void WCSimRootTrigger::Reset(Option_t *option)
+void WCSimRootTrigger::Reset(Option_t */*option*/)
 {
 // Static function to reset all static objects for this event
 // To be filled in
@@ -179,6 +189,15 @@ void WCSimRootTrigger::SetHeader(Int_t i,
 {
   // Set the header values
   fEvtHdr.Set(i, run, date,subevent);
+}
+
+//_____________________________________________________________________________
+
+void WCSimRootTrigger::SetTriggerInfo(TriggerType_t trigger_type,
+				      std::vector<Float_t> trigger_info)
+{
+  fTriggerType = trigger_type;
+  fTriggerInfo = trigger_info;
 }
 
 //_____________________________________________________________________________
@@ -305,22 +324,22 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vecto
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
 
-  for (int i =0;i<truetime.size();i++)
+  for (unsigned int i =0;i<truetime.size();i++)
   {
     fCherenkovHitCounter++;
 
-  WCSimRootCherenkovHitTime *cherenkovhittime = 
-    new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i]);
+    WCSimRootCherenkovHitTime *cherenkovhittime = 
+      new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i]);
   }
 
   Int_t WC_Index[2];
-WC_Index[0] = fNcherenkovhittimes-truetime.size(); //fCherenkovHitCounter-truetime.size();
+  WC_Index[0] = fNcherenkovhittimes-truetime.size(); //fCherenkovHitCounter-truetime.size();
   WC_Index[1] = truetime.size();
 
   TClonesArray &cherenkovhits = *fCherenkovHits;
  
-    WCSimRootCherenkovHit *cherenkovhit
-      = new(cherenkovhits[fNcherenkovhits++]) WCSimRootCherenkovHit(tubeID,
+  WCSimRootCherenkovHit *cherenkovhit
+    = new(cherenkovhits[fNcherenkovhits++]) WCSimRootCherenkovHit(tubeID,
 								  WC_Index);
 
   return cherenkovhit;
@@ -348,15 +367,17 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,
 //_____________________________________________________________________________
 
 WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q, 
-							       Float_t t, 
-							       Int_t tubeid)
+								 Float_t t, 
+								 Int_t tubeid,
+								 std::vector<int> photon_ids)
 {
   // Add a new digitized hit to the list of digitized hits
   TClonesArray &cherenkovdigihits = *fCherenkovDigiHits;
   WCSimRootCherenkovDigiHit *cherenkovdigihit = 
     new(cherenkovdigihits[fNcherenkovdigihits++]) WCSimRootCherenkovDigiHit(q, 
-									  t, 
-								       tubeid);
+									    t, 
+									    tubeid,
+									    photon_ids);
  
   return cherenkovdigihit;
 }
@@ -364,14 +385,15 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q,
 
 WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q, 
 						     Float_t t, 
-						     Int_t tubeid)
+						     Int_t tubeid,
+						     std::vector<int> photon_ids)
 {
   // Create a WCSimRootCherenkovDigiHit object and fill it with stuff
 
   fQ = q;
   fT = t;
   fTubeId = tubeid;
-
+  fPhotonIds = photon_ids;
 }
 
 // M Fechner, august 2006
@@ -407,12 +429,12 @@ WCSimRootEvent::~WCSimRootEvent()
   //Clear("");
 }
 
-void WCSimRootEvent::Clear(Option_t* o)
+void WCSimRootEvent::Clear(Option_t* /*o*/)
 {
   //nothing for now
 }
 
-void WCSimRootEvent::Reset(Option_t* o)
+void WCSimRootEvent::Reset(Option_t* /*o*/)
 {
   //nothing for now
 }

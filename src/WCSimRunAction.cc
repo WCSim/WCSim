@@ -40,7 +40,7 @@ WCSimRunAction::~WCSimRunAction()
 
 }
 
-void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
+void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
 {
 //   G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
   numberOfEventsGenerated = 0;
@@ -163,7 +163,7 @@ void WCSimRunAction::FillGeoTree(){
   
   std::vector<WCSimPmtInfo*> *fpmts = wcsimdetector->Get_Pmts();
   WCSimPmtInfo *pmt;
-  for (int i=0;i!=fpmts->size();i++){
+  for (unsigned int i=0;i!=fpmts->size();i++){
     pmt = ((WCSimPmtInfo*)fpmts->at(i));
     pos[0] = pmt->Get_transx();
     pos[1] = pmt->Get_transy();
@@ -175,7 +175,7 @@ void WCSimRunAction::FillGeoTree(){
     cylLoc = pmt->Get_cylocation();
     wcsimrootgeom-> SetPMT(i,tubeNo,cylLoc,rot,pos);
   }
-  if (fpmts->size() != numpmt) {
+  if (fpmts->size() != (unsigned int)numpmt) {
     G4cout << "Mismatch between number of pmts and pmt list in geofile.txt!!"<<G4endl;
     G4cout << fpmts->size() <<" vs. "<< numpmt <<G4endl;
   }
