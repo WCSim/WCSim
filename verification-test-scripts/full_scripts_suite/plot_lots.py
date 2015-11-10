@@ -102,7 +102,8 @@ for file1 in glob.glob(globber):
         sys.exit(1)
         #continue
 
-    filestub = file1.split('_')[2] + file1.split('_')[-1].rsplit('.',1)[0]
+    #filestub = file1.split('_')[2] + file1.split('_')[-1].rsplit('.',1)[0] + '_' + file1.split('_',3)[-1].split('Stacking')[0]
+    filestub = file1.rsplit('.',1)[0].split('_',2)[-1]
 
     #now we have the files to compare, run the relevant root macro(s)
     if args.mode == "compare_lots":
