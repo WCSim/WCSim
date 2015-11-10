@@ -48,7 +48,7 @@ def main(args_to_parse = None):
 
         #run in local mode
         if args.batchmode == 'local':
-            command = prefix + commandstub + "' -l -b -q"
+            command = prefix + ('+' if (args.compiled_mode and i == 0) else '') + commandstub + "' -l -b -q"
         #run in condor batch mode
         elif args.batchmode == 'condor':
             filename = filenamestub + '_' + str(i)
