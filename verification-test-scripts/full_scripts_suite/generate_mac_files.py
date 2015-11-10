@@ -26,9 +26,9 @@ from collections import OrderedDict
 delim_list = lambda s: list(set(s.split(',')))
 delim_list_str = lambda s: s.split(',') if len(s.split(',')) == 3 else s
 
-DAQdigitizer_choices = ['SKI']
-DAQtrigger_choices = ['NDigits', 'NDigits2']
-DAQtrigger_ndigits_choices = ['NDigits', 'NDigits2']
+DAQdigitizer_choices = ['SKI','SKI_SKDETSIM']
+DAQtrigger_choices = ['NDigits', 'NDigits2','SKI_SKDETSIM']
+DAQtrigger_ndigits_choices = ['NDigits', 'NDigits2','SKI_SKDETSIM']
 WCgeom_choices = ['HyperK', \
                       'HyperK_withHPD', \
                       'SuperK', \
@@ -353,14 +353,15 @@ def main(args_to_parse = None):
                     '-t ' + args.GunParticle  + ' ' \
                     '-e ' + GunEnergy  + ' ' \
                     '-v ' + args.GunPosition  + ' ' \
-                    '-d ' + args.GunDirection
+                    '-d ' + args.GunDirection + ' ' \
+                    '-w ' + args.WCgeom[0]
                 print command
                 os.system(command)
                 #now create the .kin filename
-                kinname = "%s_%.0fMeV__%s_%s_%03i.kin" % (args.GunParticle.replace("+","plus").replace("-","minus"), float(GunEnergy), args.GunPosition, args.GunDirection, 0)
+                kinname = "%s_%.0fMeV_%s_%s_%s_%03i.kin" % (args.GunParticle.replace("+","plus").replace("-","minus"), float(GunEnergy), args.GunPosition, args.GunDirection, args.WCgeom[0], 0)
                 print kinname
                 #and finally get the .mac options
-                gunoptions = '/mygen/vecfile ' + kinname + '\n'
+                gunoptions = '/mygen/vecfile ' + os.getcwd() + '/' + kinname + '\n'
                 guns.append(gunoptions)
             else:
                 #we're using the simple GEANT4 particle gun
@@ -457,3 +458,4 @@ if __name__ == "__main__":
     main()
 
     print "\n\n\nTODO fix defaults - certain variables should be allowed to be not written in the .mac file (e.g. if DarkRate == -99)"
+    print "\n\n\nTODO call ConstructParticleGun() from ConstructGeometry()"
