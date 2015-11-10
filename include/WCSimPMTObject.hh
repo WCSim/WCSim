@@ -29,7 +29,6 @@ protected:
   G4float Interpolate_func(G4float, G4int, G4float*, G4float*);
 };
 
-
 class PMT20inch : public WCSimPMTObject
 {
 

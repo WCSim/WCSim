@@ -68,6 +68,7 @@ public:
   void UpdateGeometry();
   
 
+  G4String GetDetectorName()      {return WCDetectorName;}
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
   G4double GetPMTSize()           {return WCPMTRadius;}
@@ -112,6 +113,8 @@ public:
   
   void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
   void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
+  void   SetVis_Choice(G4String choice){Vis_Choice = choice;}
+  G4String GetVis_Choice() {return Vis_Choice;}
 
   //Partition Length
   void SetwaterTank_Length(G4double length){waterTank_Length = length;}
@@ -223,7 +226,10 @@ private:
   // 1 to use
   G4int PMT_Coll_Eff;
 
-
+  //NP 06/17/15
+  // "OGLSX" for classic visualization
+  // "RayTracer" for RayTracer visualization
+  G4String Vis_Choice;
   
 
   G4double WCLength;
