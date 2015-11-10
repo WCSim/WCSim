@@ -69,6 +69,7 @@ void WCSimDetectorConstruction::GetWCGeom
     }
 
     if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName() == "glassFaceWCPMT")){
+    if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName().find("glassFaceWCPMT") != std::string::npos)){ 
       G4float x =  aTransform.getTranslation().getX()/cm;
       G4float y =  aTransform.getTranslation().getY()/cm;
       G4float z =  aTransform.getTranslation().getZ()/cm;
