@@ -413,8 +413,8 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
      myDetector->GetDetectorName() == "SuperK_20inchBandL_14perCent" ||
      myDetector->GetDetectorName() == "Cylinder_60x74_20inchBandL_14perCent()" ||
      myDetector->GetDetectorName() == "Cylinder_60x74_20inchBandL_40perCent()") {
-    height = myDetector->GetWaterTubeLength()/2.;
-    radius = myDetector->GetWaterTubeRadius();
+    height = myDetector->GetWaterTubeLength()/2.-1640-1000.;
+    radius = myDetector->GetWaterTubeRadius()-1604-1000.;
   }
   std::cout<<"HEIGHT "<<height*2.<<" Radius "<<radius<<"\n";
   //  height = 60000./2.; //mm middle of tank == 0 so half the height                                                                       
