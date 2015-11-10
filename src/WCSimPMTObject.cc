@@ -234,6 +234,13 @@ G4float PMT20inch::GetDarkRate(){
   return rate;
 }
 
+// Convert dark noise frequency to one before applying threshold of 0.25 pe, as that is what
+// will be simulated (WCSimWCDigitizer.cc ~L.160
+G4float PMT20inch::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 8 inch
 
@@ -390,6 +397,10 @@ G4float PMT8inch::GetDarkRate(){
   return rate;
 }
 
+G4float PMT8inch::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch
@@ -548,6 +559,11 @@ G4float PMT10inch::GetDarkRate(){
   return rate;
 }
 
+G4float PMT10inch::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch HQE
 
@@ -703,6 +719,11 @@ G4float  PMT10inchHQE::GetmaxQE(){
 G4float PMT10inchHQE::GetDarkRate(){
   const G4float rate = 3*CLHEP::kilohertz;   //Ref??R7081 HQE?? (need verification)
   return rate;
+}
+
+G4float PMT10inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -865,6 +886,10 @@ G4float PMT12inchHQE::GetDarkRate(){
   return rate;
 }
 
+G4float PMT12inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1048,6 +1073,11 @@ G4float HPD20inchHQE::GetDarkRate(){
   return rate;
 }
 
+G4float HPD20inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.119;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HPD
 
@@ -1219,6 +1249,11 @@ G4float* HPD12inchHQE::GetCollectionEfficiencyArray(){
 G4float HPD12inchHQE::GetDarkRate(){
   const G4float rate = 3.0*CLHEP::kilohertz;   //from previous novis.mac. Need better motivated setting!
   return rate;
+}
+
+G4float HPD12inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.119;
+  return factor;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1409,6 +1444,10 @@ G4float BoxandLine20inchHQE::GetDarkRate(){
   return rate;
 }
 
+G4float BoxandLine20inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.126;
+  return factor;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1587,4 +1626,9 @@ G4float BoxandLine12inchHQE::GetDarkRate(){
   // A different reference: 4.43*CLHEP::kilohertz;   //R11780 HQE value from Table4, NIMA 712 p162-173 (2013)
   const G4float rate = 3.0*CLHEP::kilohertz;
   return rate;
+}
+
+G4float BoxandLine12inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.126;
+  return factor;
 }

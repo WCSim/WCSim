@@ -43,8 +43,9 @@ WCSimWCDigitizer::WCSimWCDigitizer(G4String name,
   double const conversion_to_kHz = 1000000; //ToDo: remove this and treat DarkRate in CLHEP units throughout the class.
   PMT = myDetector->GetPMTPointer(WCIDCollectionName);
   PMTDarkRate = PMT->GetDarkRate()*conversion_to_kHz;
+  ConvRate = PMT->GetDarkRateConversionFactor();
 
-  // If specified, DarkRateMessenger will overwrite the PMT Type DarkRate
+  // If specified, DarkRateMessenger will overwrite the PMT Type DarkRate and/or ConversionFactor
   DarkRateMessenger = new WCSimDarkRateMessenger(this);
 
   GetVariables();
