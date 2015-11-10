@@ -129,9 +129,12 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     h1triggertype->GetXaxis()->SetBinLabel(i+2, WCSimEnumerations::EnumAsString((TriggerType_t)i).c_str());
 
   TH2I *h2nhits = new TH2I("h2nhits", "NDigits from subevent window vs NDigits from 200nsec trigger window;NDigits saved in subevent;NDigits in 200nsec window", 1001, -0.5, 10000.5, 1001, -0.5, 10000.5);
-  TH1I *h1nhits = new TH1I("h1nhits", "NDigits in the subevent window;NDigits;Entries", 10001, -0.5, 10000.5);
-  TH1I *h1nhitstrigger = new TH1I("h1nhitstrigger", "NDigits in the trigger window;NDigits;Entries", 10001, -0.5, 10000.5);
-  TH1F *h1pe = new TH1F("h1pe", "Total p.e. in the subevent window;Total p.e.;Entries", 20001, -0.5, 20000.5);
+  TH1I *h1ndigihits = new TH1I("h1ndigihits", "NDigits in the subevent window;NDigits;Entries", 10001, -0.5, 10000.5);
+  TH1I *h1nrawhits = new TH1I("h1nrawhits", "NHits in the subevent window;NHits;Entries", 10001, -0.5, 10000.5);
+  TH1I *h1ntubeshitraw  = new TH1I("h1ntubeshitraw",  "Number of PMTs with raw hit in the subevent window;NPMTs with raw hits;Entries", 10001, -0.5, 10000.5);
+  TH1I *h1ntubeshitdigi = new TH1I("h1ntubeshitdigi", "Number of PMTs with digits in the subevent window;NPMTs with digits;Entries", 10001, -0.5, 10000.5);
+  TH1I *h1ndigihitstrigger = new TH1I("h1ndigihitstrigger", "NDigits in the trigger window;NDigits;Entries", 10001, -0.5, 10000.5);
+  TH1F *h1pe = new TH1F("h1pe", "Total p.e. in the subevent window;Total p.e.;Entries", 100001, -0.5, 100000.5);
   TH1F *h1time = new TH1F("h1time", "Digit time;Digit time (ns);Entries", 18000, -3000, 15000);
   TH1F *h1time_noise = new TH1F("h1time_noise", "Digit time (digits from noise hits only);Digit time (ns);Entries", 18000, -3000, 15000);
   TH1F *h1time_photon = new TH1F("h1time_photon", "Digit time (digits from photon hits only);Digit time (ns);Entries", 18000, -3000, 15000);
@@ -357,10 +360,13 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
       if(trigger_info.size() > 0) {
 	if((trigger_type == kTriggerNDigits) || (trigger_type == kTriggerNDigitsTest)) {
 	  h2nhits->Fill(ncherenkovdigihits, trigger_info[0]);
-	  h1nhitstrigger->Fill(trigger_info[0]);
+	  h1ndigihitstrigger->Fill(trigger_info[0]);
 	}
       }
-      h1nhits->Fill(ncherenkovdigihits);
+      h1ndigihits->Fill(ncherenkovdigihits);
+      h1nrawhits->Fill(wcsimrootevent->GetNcherenkovhittimes());
+      h1ntubeshitraw->Fill(wcsimrootevent->GetNumTubesHit());
+      h1ntubeshitdigi->Fill(wcsimrootevent->GetNumDigiTubesHit());
 
       h1triggertype->Fill(WCSimEnumerations::EnumAsString(trigger_type).c_str(), 1);
       if(verbose) {
@@ -551,8 +557,11 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   h1noisefrac_trigger->Write();
   h2nhits_sep->Write();
   h2nhitstrigger_sep->Write();
-  h1nhits->Write();
-  h1nhitstrigger->Write();
+  h1ndigihits->Write();
+  h1nrawhits->Write();
+  h1ntubeshitraw->Write();
+  h1ntubeshitdigi->Write();
+  h1ndigihitstrigger->Write();
   h1pe->Write();
   h1time->Write();
   h1time_photon->Write();
@@ -602,10 +611,12 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     c2->cd();
     h2nhits->Draw("COLZ");
     c2->SaveAs(create_filename("h2nhits_", filenameout).Data());
-    h1nhits->Draw();
-    c2->SaveAs(create_filename("h1nhits_", filenameout).Data());
-    h1nhitstrigger->Draw();
-    c2->SaveAs(create_filename("h1nhitstrigger_", filenameout).Data());
+    h1ndigihits->Draw();
+    c2->SaveAs(create_filename("h1ndigihits_", filenameout).Data());
+    h1nrawhits->Draw();
+    c2->SaveAs(create_filename("h1nrawhits_", filenameout).Data());
+    h1ndigihitstrigger->Draw();
+    c2->SaveAs(create_filename("h1ndigihitstrigger_", filenameout).Data());
     h1pe->Draw();
     c2->SaveAs(create_filename("h1pe_", filenameout).Data());
     h1time->Draw();

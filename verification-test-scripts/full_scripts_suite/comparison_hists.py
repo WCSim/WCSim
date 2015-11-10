@@ -8,7 +8,10 @@
 #(set xmin/xmax to -1 to not zoom on the x axis, or set them both to -9999.99 to zoom automatically)
 
 hists = [ 
-    ["h1nhits", -9999.99, -9999.99, -1],
+    ["h1ndigihits", -9999.99, -9999.99, -1],
+    ["h1nrawhits", -9999.99, -9999.99, -1],
+    ["h1ntubeshitraw", -9999.99, -9999.99, -1],
+    ["h1ntubeshitdigi", -9999.99, -9999.99, -1],
     ["h1time",  -9999.99, -9999.99, -1],
     ["h1time2", -9999.99, -9999.99, -1],
     ["h1pe",    -9999.99, -9999.99, -1],
