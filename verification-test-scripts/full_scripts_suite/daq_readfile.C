@@ -33,7 +33,7 @@ TString create_filename(const char * prefix, TString& filename_string)
 }
 
 // Simple example of reading a generated Root file
-int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents = 999999999999, bool create_pdfs = false, bool hists_per_event = false)
+int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents = 999999999999, int max_ntriggers = -1, bool create_pdfs = false, bool hists_per_event = false)
 {
 #if !defined(__MAKECINT__)
   // Load the library with class dictionary info
@@ -82,7 +82,7 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   WCSimRootGeom *geo = 0; 
   geotree->SetBranchAddress("wcsimrootgeom", &geo);
   if(verbose) std::cout << "Geotree has " << geotree->GetEntries() << " entries" << std::endl;
-  if (geotree->GetEntries() == 0) {
+  if(geotree->GetEntries() == 0) {
     cout << "geotree not found!" << endl;
       exit(9);
   }
@@ -93,9 +93,9 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   WCSimRootTrigger* wcsimrootevent;
 
   //book histograms
-  TH1F *hvtx0 = new TH1F("hvtx0", "Event VTX0", 200, -1500, 1500);
-  TH1F *hvtx1 = new TH1F("hvtx1", "Event VTX1", 200, -1500, 1500);
-  TH1F *hvtx2 = new TH1F("hvtx2", "Event VTX2", 200, -1500, 1500);
+  TH1F *h1vtx0 = new TH1F("h1vtx0", "Event VTX0", 200, -1500, 1500);
+  TH1F *h1vtx1 = new TH1F("h1vtx1", "Event VTX1", 200, -1500, 1500);
+  TH1F *h1vtx2 = new TH1F("h1vtx2", "Event VTX2", 200, -1500, 1500);
 
   TH1I *h1triggertype = new TH1I("h1triggertype", "Trigger type;Trigger type;Entries", 10, 0, 10);
   for(int i = -1; i <= kTriggerFailure; i++)
@@ -134,16 +134,6 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   TH1F *h1hittime = new TH1F("h1hittime", "Raw hit time;Hit time (ns);Entries",    20000, -10000, 10000);
   TH1F *h1hittime_photon = new TH1F("h1hittime_photon", "Raw hit time (photons);Hit time (ns);Entries",    20000, -10000, 10000);
   TH1F *h1hittime_noise  = new TH1F("h1hittime_noise",  "Raw hit time (dark noise);Hit time (ns);Entries",    20000, -10000, 10000);
-  TH1F *h1eventALL_hittime[2];
-  h1eventALL_hittime[0] = new TH1F("h1eventALL_hittime_photon", "Raw hit time for photons in digits, event ALL;Hit time (ns);Entries",    10000, 0, 10000);
-  h1eventALL_hittime[1] = new TH1F("h1eventALL_hittime_noise",  "Raw hit time for dark noise in digits, event ALL;Hit time (ns);Entries", 10000, -10000, 10000);
-  h1eventALL_hittime[0]->SetLineColor(kBlue);
-  //h1eventALL_hittime[0]->SetFillColor(kBlue);
-  h1eventALL_hittime[1]->SetLineColor(kRed);
-  //h1eventALL_hittime[1]->SetFillColor(kRed);
-  THStack *hSeventALL_hittime = new THStack("hSeventALL_hittime", "Raw hit time in digits, event ALL;Hit time (ns);Entries");
-  hSeventALL_hittime->Add(h1eventALL_hittime[1]);
-  hSeventALL_hittime->Add(h1eventALL_hittime[0]);
 
   //hit times per event
   TH1F *h1event_hittime[nevent][2];
@@ -189,8 +179,10 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     tree->GetEntry(ev);
     wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
 
+    const int ntriggers = wcsimrootsuperevent->GetNumberOfEvents();
+
     if(verbose || ((ev % 100) == 0))
-      cout << "Event " << ev << " of " << nevent << " has " << wcsimrootsuperevent->GetNumberOfEvents() << " triggers" << endl;
+      cout << "Event " << ev << " of " << nevent << " has " << ntriggers << " triggers" << endl;
 
     if(verbose){
       printf("********************************************************");
@@ -204,126 +196,116 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
       printf("Vtx %f %f %f\n", wcsimrootevent->GetVtx(0),
 	     wcsimrootevent->GetVtx(1),wcsimrootevent->GetVtx(2));
     }
-    hvtx0->Fill(wcsimrootevent->GetVtx(0));
-    hvtx1->Fill(wcsimrootevent->GetVtx(1));
-    hvtx2->Fill(wcsimrootevent->GetVtx(2));
+    h1vtx0->Fill(wcsimrootevent->GetVtx(0));
+    h1vtx1->Fill(wcsimrootevent->GetVtx(1));
+    h1vtx2->Fill(wcsimrootevent->GetVtx(2));
 
     if(verbose){
       printf("Jmu %d\n", wcsimrootevent->GetJmu());
       printf("Npar %d\n", wcsimrootevent->GetNpar());
-      printf("Ntrack %d\n", wcsimrootevent->GetNtrack());
     }
     // Now read the tracks in the event
     
     // Get the number of tracks
-    int ntrack = wcsimrootevent->GetNtrack();
-    if(verbose) printf("ntracks=%d\n",ntrack);
+    const int ntracks = wcsimrootevent->GetNtrack();
+    if(verbose) printf("ntracks=%d\n",ntracks);
     
-    int i;
     // Loop through elements in the TClonesArray of WCSimTracks
-    for (i=0; i<ntrack; i++)
+    for (int itrack = 0; itrack < ntracks; itrack++)
     {
-      TObject *element = (wcsimrootevent->GetTracks())->At(i);      
+      TObject *element = (wcsimrootevent->GetTracks())->At(itrack);      
       WCSimRootTrack *wcsimroottrack = dynamic_cast<WCSimRootTrack*>(element);
       if(verbose){
 	printf("Track ipnu: %d\n",wcsimroottrack->GetIpnu());
 	printf("Track parent ID: %d\n",wcsimroottrack->GetParenttype());
 	for (int j=0; j<3; j++)
-	  printf("Track dir: %d %f\n",j, wcsimroottrack->GetDir(j));
+	  printf("Track dir: %d %f\n", j, wcsimroottrack->GetDir(j));
       }
-    }  // End of loop over tracks
+    }  //itrack // End of loop over tracks
     
-    // Now look at the Cherenkov hits
-    
-    // Get the number of Cherenkov hits.
-    // Note... this is *NOT* the number of photons that hit tubes.
-    // It is the number of tubes hit with Cherenkov photons.
-    // The number of digitized tubes will be smaller because of the threshold.
-    // Each hit "raw" tube has several photon hits.  The times are recorded.
-    // See http://nwg.phy.bnl.gov/DDRD/cgi-bin/private/ShowDocument?docid=245
-    // for more information on the structure of the root file.
-    //  
-    // The following code prints out the hit times for the first 10 tubes and also
-    // adds up the total pe.
-    // 
-    // For digitized info (one time/charge tube after a trigger) use
-    // the digitized information.
-    //
-
-    int ncherenkovhits     = wcsimrootevent->GetNcherenkovhits();
-    int ncherenkovhittimes = wcsimrootevent->GetNcherenkovhittimes();
-    int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits(); 
-    
+    //get number of hits and digits
+    const int ncherenkovhits      = wcsimrootevent->GetNcherenkovhits();
+    const int ncherenkovhittimes  = wcsimrootevent->GetNcherenkovhittimes();
+    const int ntubeshit           = wcsimrootevent->GetNumTubesHit();
+    const int ncherenkovdigihits0 = wcsimrootevent->GetNcherenkovdigihits(); 
+    const int ntubesdigihit0      = wcsimrootevent->GetNumDigiTubesHit();
     if(verbose){
       printf("node id: %i\n", ev);
       printf("Ncherenkovhits (unique PMTs with hits)  %d\n", ncherenkovhits);
       printf("Ncherenkovhittimes (number of raw hits) %d\n", ncherenkovhittimes);
-      printf("Ncherenkovdigihits (number of digits)   %d\n", ncherenkovdigihits);
+      printf("Ncherenkovdigihits (number of digits) in trigger 0   %d\n", ncherenkovdigihits0);
       printf("NumTubesHit       %d\n", wcsimrootevent->GetNumTubesHit());
-      printf("NumDigitizedTubes %d\n", wcsimrootevent->GetNumDigiTubesHit());
-      cout << "RAW HITS:" << endl;
+      printf("NumDigitizedTubes in trigger 0 %d\n", wcsimrootevent->GetNumDigiTubesHit());
     }
+
+    //
+    // Now look at the raw Cherenkov+noise hits
+    //
+    if(verbose)
+      cout << "RAW HITS:" << endl;
 
     // Grab the big arrays of times and parent IDs
     TClonesArray *timeArray = wcsimrootevent->GetCherenkovHitTimes();
     
+    //calculate total p.e. in event
     int totalPe = 0;
     // Loop through elements in the TClonesArray of WCSimRootCherenkovHits
-    for (i=0; i< ncherenkovhits; i++)
-    {
-      TObject *Hit = (wcsimrootevent->GetCherenkovHits())->At(i);
-      WCSimRootCherenkovHit *wcsimrootcherenkovhit = 
+    for(int ipmt = 0; ipmt < ncherenkovhits; ipmt++) {
+      TObject * Hit = (wcsimrootevent->GetCherenkovHits())->At(ipmt);
+      WCSimRootCherenkovHit * wcsimrootcherenkovhit =
 	dynamic_cast<WCSimRootCherenkovHit*>(Hit);
-
-      int tubeNumber     = wcsimrootcherenkovhit->GetTubeID();
       int timeArrayIndex = wcsimrootcherenkovhit->GetTotalPe(0);
       int peForTube      = wcsimrootcherenkovhit->GetTotalPe(1);
+      int tubeNumber     = wcsimrootcherenkovhit->GetTubeID();
       WCSimRootPMT pmt   = geo->GetPMT(tubeNumber-1);
       totalPe += peForTube;
-
-     
-      //if ( i < 10 ) // Only print first XX=10 tubes
-      {
-	if(verbose) printf("Total pe for tube %d: %d times( ", tubeNumber, peForTube);
-	for (int j = timeArrayIndex; j < timeArrayIndex + peForTube; j++)
-	{
-
-	  TObject *element = (wcsimrootevent->GetCherenkovHitTimes())->At(j);
-	  WCSimRootCherenkovHitTime* HitTime = 
-	    dynamic_cast<WCSimRootCherenkovHitTime*>(element);
-	  
-	  if(verbose) printf("%6.2f ", HitTime->GetTruetime() );	     
+      if(verbose)
+	printf("Total pe for tube %d: %d times( ", tubeNumber, peForTube);
+      for(int irawhit = 0; irawhit < peForTube; irawhit++) {
+	TObject * HitTime = (wcsimrootevent->GetCherenkovHitTimes())->At(timeArrayIndex + irawhit);
+	WCSimRootCherenkovHitTime * wcsimrootcherenkovhittime =
+	  dynamic_cast<WCSimRootCherenkovHitTime*>(HitTime);
+	double truetime = wcsimrootcherenkovhittime->GetTruetime();
+	if(verbose)
+	  printf("%6.2f ", truetime);
+	h1hittime->Fill(truetime);
+	if(wcsimrootcherenkovhittime->GetParentID() == -1) {
+	  h1hittime_noise->Fill(truetime);
+	  if(hists_per_event)
+	    h1event_hittime[ev][1]->Fill(truetime);
 	}
-	if(verbose) cout << ")" << endl;
-      }
+	else {
+	  h1hittime_photon->Fill(truetime);
+	  if(hists_per_event)
+	    h1event_hittime[ev][0]->Fill(truetime);
+	}
+      }//irawhit
+      if(verbose)
+	cout << ")" << endl;
+    }//ipmt
+    if(verbose)
+      cout << "Total Pe : " << totalPe << endl;
 
-    } // End of loop over Cherenkov hits
-    if(verbose) cout << "Total Pe : " << totalPe << endl;
-    
-    // Look at digitized hit info
+    //    
+    // Now look at digitized hit info
+    //
+    if(verbose)
+      cout << "DIGITIZED HITS:" << endl;
 
-    //Store the digit times of pure noise or pure photon digits
-    // to make NHits in 200nsec window plots
-    vector<double> digit_times;
-    vector<double> digit_times_noise;
-    vector<double> digit_times_photon;
-    vector<double> digit_times_mix;
-
-    // Get the number of digitized hits
-    // Loop over sub events
-   
-    if(verbose) cout << "DIGITIZED HITS:" << endl;
-    for (int index = 0 ; index < 1; index++) //wcsimrootsuperevent->GetNumberOfEvents(); index++) 
-    {
+    // Digi hits are arranged in subevents, so loop over these first
+    const int ntriggers_loop = max_ntriggers > 0 ? TMath::Min(max_ntriggers, ntriggers) : ntriggers;
+    for (int itrigger = 0 ; itrigger < ntriggers_loop; itrigger++) {
       int n_noise_hits_total = 0, n_photon_hits_total = 0;
-      wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
-      if(verbose) cout << "Sub event number = " << index << "\n";
+      wcsimrootevent = wcsimrootsuperevent->GetTrigger(itrigger);
+      if(verbose)
+	cout << "Sub event number = " << itrigger << "\n";
 
-      int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
-      if(verbose) printf("Ncherenkovdigihits %d\n", ncherenkovdigihits);
+      const int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
+      if(verbose)
+	printf("Ncherenkovdigihits %d\n", ncherenkovdigihits);
 
-      int trigger_time = wcsimrootevent->GetHeader()->GetDate();
-      TriggerType_t trigger_type = wcsimrootevent->GetTriggerType();
+      const int            trigger_time = wcsimrootevent->GetHeader()->GetDate();
+      const TriggerType_t  trigger_type = wcsimrootevent->GetTriggerType();
       std::vector<Float_t> trigger_info = wcsimrootevent->GetTriggerInfo();
 
       h1triggertime->Fill(trigger_time);
@@ -352,36 +334,16 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	cout << endl;
       }
 
-      if(ncherenkovdigihits>0)
+      if(ncherenkovdigihits > 0)
 	num_trig++;
-
-
-      // Loop through elements in the TClonesArray of WCSimRootCherenkovHits
-      for (int ipmt = 0; ipmt < ncherenkovhits; ipmt++) {
-	TObject * Hit = (wcsimrootevent->GetCherenkovHits())->At(ipmt);
-	WCSimRootCherenkovHit * wcsimrootcherenkovhit =
-	  dynamic_cast<WCSimRootCherenkovHit*>(Hit);
-	int timeArrayIndex = wcsimrootcherenkovhit->GetTotalPe(0);
-	int peForTube      = wcsimrootcherenkovhit->GetTotalPe(1);
-	for(int iphoton = 0; iphoton < peForTube; iphoton++) {
-	  TObject * HitTime = (wcsimrootevent->GetCherenkovHitTimes())->At(timeArrayIndex + iphoton);
-	  WCSimRootCherenkovHitTime * wcsimrootcherenkovhittime =
-	    dynamic_cast<WCSimRootCherenkovHitTime*>(HitTime);
-	  h1hittime->Fill(wcsimrootcherenkovhittime->GetTruetime());
-	  if(wcsimrootcherenkovhittime->GetParentID() == -1)
-	    h1hittime_noise->Fill(wcsimrootcherenkovhittime->GetTruetime());
-	  else
-	    h1hittime_photon->Fill(wcsimrootcherenkovhittime->GetTruetime());
-	}//iphoton
-      }//ipmt
 
       // Loop through elements in the TClonesArray of WCSimRootCherenkovDigHits
       float totalpe = 0, totaltime = 0;
-      for (i=0;i<ncherenkovdigihits;i++) {
+      for(int idigipmt = 0; idigipmt < ncherenkovdigihits; idigipmt++) {
 	//get the digit
 	if(verbose)
-	  cout << "Getting digit " << i << endl;
-	TObject *element = (wcsimrootevent->GetCherenkovDigiHits())->At(i);
+	  cout << "Getting digit " << idigipmt << endl;
+	TObject *element = (wcsimrootevent->GetCherenkovDigiHits())->At(idigipmt);
     	WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = 
     	  dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
 	
@@ -406,94 +368,89 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	int n_noise_hits = 0, n_photon_hits = 0, n_unknown_hits = 0;
 	if(timeArrayIndex == -1) {
 	  if(verbose)
-	    cout << "No PMT hits found for digit " << i << " with tube ID " << tube_id << endl;
+	    cout << "No PMT hits found for digit " << idigipmt << " with tube ID " << tube_id << endl;
 	}
 	else {
 	  if(verbose)
-	    cout << peForTube << " PMT hits found for digit " << i << " with tube ID " << tube_id << endl;
-	  //loop over the photons ids of hits that made up the digit
-	  vector<int> photon_ids = wcsimrootcherenkovdigihit->GetPhotonIds();
+	    cout << peForTube << " PMT hits found for digit " << idigipmt << " with tube ID " << tube_id << endl;
+	  //loop over the rawhits ids of hits that made up the digit
+	  vector<int> rawhit_ids = wcsimrootcherenkovdigihit->GetPhotonIds();
 	  if(verbose)
-	    cout << photon_ids.size() << " photons made up this digit" << endl;
-	  for(unsigned int iphoton = 0; iphoton < photon_ids.size(); iphoton++) {
-	    int this_photon = photon_ids[iphoton];
+	    cout << rawhit_ids.size() << " rawhits made up this digit" << endl;
+	  for(unsigned int irawhit = 0; irawhit < rawhit_ids.size(); irawhit++) {
+	    int this_rawhit = rawhit_ids[irawhit];
 	    if(verbose)
-	      cout << "Attempting to look for photon " << this_photon+1 << " in WCSimRootCherenkovHitTime array...";
-	    if(this_photon >= peForTube) {
+	      cout << "Attempting to look for rawhit " << this_rawhit+1 << " in WCSimRootCherenkovHitTime array...";
+	    if(this_rawhit >= peForTube) {
 	      //if(verbose)
-	      cerr << " There are only " << peForTube << " photons in this PMT" << endl;
+	      cerr << " There are only " << peForTube << " rawhits in this PMT" << endl;
 	      continue;
 	    }
 	    //now look in the WCSimRootCherenkovHitTime array to count the number of photon / dark noise hits
-	    TObject *Hit = (wcsimrootevent->GetCherenkovHitTimes())->At(timeArrayIndex + this_photon);
+	    TObject *Hit = (wcsimrootevent->GetCherenkovHitTimes())->At(timeArrayIndex + this_rawhit);
 	    WCSimRootCherenkovHitTime *wcsimrootcherenkovhittime =
 	      dynamic_cast<WCSimRootCherenkovHitTime*>(Hit);
+	    const double hittime  = wcsimrootcherenkovhittime->GetTruetime();
+	    const int    parentid = wcsimrootcherenkovhittime->GetParentID();
 	    if(verbose)
-	      cout << " hit time " << wcsimrootcherenkovhittime->GetTruetime() << " " << wcsimrootcherenkovhittime->GetParentID() << endl;
-	    if(wcsimrootcherenkovhittime->GetParentID() == -1) {
+	      cout << " hit time " << hittime << " " << parentid << endl;
+	    if(parentid == -1) {
 	      n_noise_hits++;
-	      if(hists_per_event)
-		h1event_hittime[ev][1]->Fill(wcsimrootcherenkovhittime->GetTruetime());
-	      h1eventALL_hittime[1]->Fill(wcsimrootcherenkovhittime->GetTruetime());
 	    }
-	    else if(wcsimrootcherenkovhittime->GetParentID() < 0) {
+	    else if(parentid < 0) {
 	      n_unknown_hits++;
-	      cout << "HIT PARENT UNKNOWN " << wcsimrootcherenkovhittime->GetParentID() << endl;
 	    }
 	    else {
 	      n_photon_hits++;
-	      if(hists_per_event)
-		h1event_hittime[ev][0]->Fill(wcsimrootcherenkovhittime->GetTruetime());
-	      h1eventALL_hittime[0]->Fill(wcsimrootcherenkovhittime->GetTruetime());
 	    }
-	  }//iphoton
+	  }//irawhit
 	}//hits in this PMT found
 	if(hists_per_event) {
 	  hSevent_hittime[ev]->SetTitle(TString::Format("Raw hit time, event %d, %s;Hit time (ns);Entries", ev, WCSimEnumerations::EnumAsString(trigger_type).c_str()));
 	  hSevent_digittime[ev]->SetTitle(TString::Format("Digit time, event %d, %s;Digit time (ns);Entries", ev, WCSimEnumerations::EnumAsString(trigger_type).c_str()));
 	}
 
+	const double digitime = wcsimrootcherenkovdigihit->GetT();
+
 	if(verbose){
-	  //if ( i < 10 ) // Only print first XX=10 tubes
-	    printf("q, t, tubeid, nphotonhits, nnoisehits, nunknownhits: %f %f %d  %d %d %d\n",
-		   wcsimrootcherenkovdigihit->GetQ(),
-		   wcsimrootcherenkovdigihit->GetT(),
-		   wcsimrootcherenkovdigihit->GetTubeId(),
-		   n_photon_hits,
-		   n_noise_hits,
-		   n_unknown_hits);
+	  printf("q, t, tubeid, nphotonhits, nnoisehits, nunknownhits: %f %f %d  %d %d %d\n",
+		 wcsimrootcherenkovdigihit->GetQ(),
+		 digitime,
+		 wcsimrootcherenkovdigihit->GetTubeId(),
+		 n_photon_hits,
+		 n_noise_hits,
+		 n_unknown_hits);
 	}
 	if(n_noise_hits && !n_photon_hits) {
-	  digit_times_noise.push_back(wcsimrootcherenkovdigihit->GetT());
-	  h1digitime_noise->Fill(wcsimrootcherenkovdigihit->GetT());
+	  h1digitime_noise->Fill(digitime);
 	  if(hists_per_event)
-	    h1event_digittime[ev][1]->Fill(wcsimrootcherenkovdigihit->GetT());
+	    h1event_digittime[ev][1]->Fill(digitime);
 	}
 	else if(!n_noise_hits && n_photon_hits) {
-	  digit_times_photon.push_back(wcsimrootcherenkovdigihit->GetT());
-	  h1digitime_photon->Fill(wcsimrootcherenkovdigihit->GetT());
+	  h1digitime_photon->Fill(digitime);
 	  if(hists_per_event)
-	    h1event_digittime[ev][0]->Fill(wcsimrootcherenkovdigihit->GetT());
+	    h1event_digittime[ev][0]->Fill(digitime);
 	}
 	else {
-	  digit_times_mix.push_back(wcsimrootcherenkovdigihit->GetT());
-	  h1digitime_mix->Fill(wcsimrootcherenkovdigihit->GetT());
+	  h1digitime_mix->Fill(digitime);
 	  if(hists_per_event)
-	    h1event_digittime[ev][2]->Fill(wcsimrootcherenkovdigihit->GetT());
+	    h1event_digittime[ev][2]->Fill(digitime);
 	}
-	digit_times.push_back(wcsimrootcherenkovdigihit->GetT());
 	totalpe   += wcsimrootcherenkovdigihit->GetQ();
-	totaltime += wcsimrootcherenkovdigihit->GetT();
-	h1digitime->Fill(wcsimrootcherenkovdigihit->GetT());
-	h1digiplustriggertime->Fill(wcsimrootcherenkovdigihit->GetT() + trigger_time);
+	totaltime += digitime;
+	h1digitime->Fill(digitime);
+	h1digiplustriggertime->Fill(digitime + trigger_time);
 	float noise_fraction = (float)n_noise_hits / (float)(n_noise_hits + n_photon_hits);
 	h1noisefrac->Fill(noise_fraction);
 	h2nhits_sep->Fill(ncherenkovdigihits, noise_fraction);
-	if(trigger_info.size() > 0)
-	  h2nhitstrigger_sep->Fill(trigger_info[0], noise_fraction);
+	if(trigger_info.size() > 0) {
+	  if((trigger_type == kTriggerNDigits) || (trigger_type == kTriggerNDigitsTest)) {
+	    h2nhitstrigger_sep->Fill(trigger_info[0], noise_fraction);
+	  }
+	}
 	n_noise_hits_total += n_noise_hits;
 	n_photon_hits_total += n_photon_hits;
-      }//i // End of loop over Cherenkov digihits
+      }//idigipmt // End of loop over Cherenkov digihits
       h1pe->Fill(totalpe);
       if(ncherenkovdigihits) {
 	h1peperdigi->Fill(totalpe / ncherenkovdigihits);
@@ -501,7 +458,7 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
       }
       float noise_fraction_total = (float)n_noise_hits_total / (float)(n_noise_hits_total + n_photon_hits_total);
       h1noisefrac_trigger->Fill(noise_fraction_total);
-    }//index // End of loop over triggers
+    }//itrigger // End of loop over triggers
     
     // reinitialize super event between loops.
     wcsimrootsuperevent->ReInitialize();
@@ -513,9 +470,9 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   TString filenameout(filename);
   TFile * fout = new TFile(create_filename("analysed_", filenameout).Data(), "RECREATE");
   fout->cd();
-  hvtx0->Write();
-  hvtx1->Write();
-  hvtx2->Write();
+  h1vtx0->Write();
+  h1vtx1->Write();
+  h1vtx2->Write();
   h1noisefrac->Write();
   h1noisefrac_trigger->Write();
   h2nhits_sep->Write();
@@ -545,9 +502,6 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   h1hittime->Write();
   h1hittime_photon->Write();
   h1hittime_noise->Write();
-  h1eventALL_hittime[0]->Write();
-  h1eventALL_hittime[1]->Write();
-  hSeventALL_hittime->Write();
   if(hists_per_event) {
     for (int ev=0; ev<nevent; ev++) {
       h1event_digittime[ev][0]->Write();
@@ -602,15 +556,6 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     c2->SaveAs(create_filename("h2nhits_sep_", filenameout).Data());
     h2nhitstrigger_sep->Draw("COLZ");
     c2->SaveAs(create_filename("h2nhitstrigger_sep_", filenameout).Data());
-
-    hSeventALL_hittime->Draw();
-    l = new TLegend(0.4,0.9,0.9,1.0);
-    l->SetTextSize(0.042);
-    l->SetTextFont(132);
-    l->AddEntry(h1eventALL_hittime[0], "Photon", "l");
-    l->AddEntry(h1eventALL_hittime[1], "Noise",  "l");
-    l->Draw();
-    c2->SaveAs(create_filename("hSeventALL_hittime_", filenameout).Data());
 
     h1triggertype->Draw();
     c2->SaveAs(create_filename("h1triggertype_", filenameout).Data());

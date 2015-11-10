@@ -8,27 +8,28 @@
 #(set xmin/xmax to -1 to not zoom on the x axis, or set them both to -9999.99 to zoom automatically)
 
 hists = [ 
+    ["h1vtx0", -9999.99, -9999.99, -1],
+    ["h1vtx1", -9999.99, -9999.99, -1],
+    ["h1vtx2", -9999.99, -9999.99, -1],
+    ["h1triggertype", -9999.99, -9999.99, -1],
     ["h1ndigihits", -9999.99, -9999.99, -1],
     ["h1nrawhits", -9999.99, -9999.99, -1],
     ["h1ntubeshitraw", -9999.99, -9999.99, -1],
     ["h1ntubeshitdigi", -9999.99, -9999.99, -1],
-    ["h1time",  -9999.99, -9999.99, -1],
-    ["h1time2", -9999.99, -9999.99, -1],
+    ["h1ndigihitstrigger", -9999.99, -9999.99, -1],
     ["h1pe",    -9999.99, -9999.99, -1],
+    ["h1digitime",  -9999.99, -9999.99, -1],
+    ["h1digitime_noise",  -9999.99, -9999.99, -1],
+    ["h1digitime_photon",  -9999.99, -9999.99, -1],
+    ["h1digitime_mix",  -9999.99, -9999.99, -1],
+    ["h1digiplustriggertime", -9999.99, -9999.99, -1],
     ["h1triggertime", -9999.99, -9999.99, -1],
-    ["h1eventALL_hittime_photon", -9999.99, -9999.99, -1],
-    ["h1eventALL_hittime_noise", -9999.99, -9999.99, -1],
+    ["h1peperdigi", -9999.99, -9999.99, -1],
+    ["h1timeperdigi", -9999.99, -9999.99, -1],
     ["h1hittime", -9999.99, -9999.99, -1],
     ["h1hittime_photon", -9999.99, -9999.99, -1],
     ["h1hittime_noise", -9999.99, -9999.99, -1],
-    ["h1nhitstrigger", -9999.99, -9999.99, -1],
-    ["h1peperdigi", -9999.99, -9999.99, -1],
-    ["h1timeperdigi", -9999.99, -9999.99, -1],
-    ["h1inttime", -9999.99, -9999.99, -1],
-    ["h1inttimenoise", -9999.99, -9999.99, -1],
-    ["h1inttimephoton", -9999.99, -9999.99, -1],
-    ["h1inttimemix", -9999.99, -9999.99, -1]
-    ]
+]
 
 
 #arguments:
