@@ -32,32 +32,6 @@ TString create_filename(const char * prefix, TString& filename_string)
   return outfilename;
 }
 
-int GLOBALTIME = 0;
-int GLOBALTIMEWINDOW = 200;
-
-bool IsInRange(int i) {
-  return (i >= GLOBALTIME && i < GLOBALTIME + GLOBALTIMEWINDOW);
-}
-
-void integrate_digit_times(vector<double> & digit_times, TH1F * h) {
-  if(!digit_times.size())
-    return;
-  //sort the digit hit times
-  std::sort(digit_times.begin(), digit_times.end());
-  //the max 'itime' in the loop is the time of the last hit - 200
-  // (use -199 to ensure we actually go through the loop at -200)
-  int max = digit_times[digit_times.size()-1];
-  max -= max % 5;
-  max -= 199;
-  GLOBALTIMEWINDOW = 200;
-  for(int itime = 0; itime < max; itime += 5) {
-    GLOBALTIME = itime;
-    int counter = std::count_if(digit_times.begin(), digit_times.end(), IsInRange);
-    h->Fill(counter);
-  }
-}
-
-
 // Simple example of reading a generated Root file
 int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents = 999999999999, bool create_pdfs = false, bool hists_per_event = false)
 {
@@ -119,7 +93,6 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   WCSimRootTrigger* wcsimrootevent;
 
   //book histograms
-  TH1F *h1 = new TH1F("h1", "PMT Hits", 8000, 0, 8000);
   TH1F *hvtx0 = new TH1F("hvtx0", "Event VTX0", 200, -1500, 1500);
   TH1F *hvtx1 = new TH1F("hvtx1", "Event VTX1", 200, -1500, 1500);
   TH1F *hvtx2 = new TH1F("hvtx2", "Event VTX2", 200, -1500, 1500);
@@ -128,25 +101,28 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   for(int i = -1; i <= kTriggerFailure; i++)
     h1triggertype->GetXaxis()->SetBinLabel(i+2, WCSimEnumerations::EnumAsString((TriggerType_t)i).c_str());
 
-  TH2I *h2nhits = new TH2I("h2nhits", "NDigits from subevent window vs NDigits from 200nsec trigger window;NDigits saved in subevent;NDigits in 200nsec window", 1001, -0.5, 10000.5, 1001, -0.5, 10000.5);
   TH1I *h1ndigihits = new TH1I("h1ndigihits", "NDigits in the subevent window;NDigits;Entries", 10001, -0.5, 10000.5);
   TH1I *h1nrawhits = new TH1I("h1nrawhits", "NHits in the subevent window;NHits;Entries", 10001, -0.5, 10000.5);
   TH1I *h1ntubeshitraw  = new TH1I("h1ntubeshitraw",  "Number of PMTs with raw hit in the subevent window;NPMTs with raw hits;Entries", 10001, -0.5, 10000.5);
   TH1I *h1ntubeshitdigi = new TH1I("h1ntubeshitdigi", "Number of PMTs with digits in the subevent window;NPMTs with digits;Entries", 10001, -0.5, 10000.5);
   TH1I *h1ndigihitstrigger = new TH1I("h1ndigihitstrigger", "NDigits in the trigger window;NDigits;Entries", 10001, -0.5, 10000.5);
+
   TH1F *h1pe = new TH1F("h1pe", "Total p.e. in the subevent window;Total p.e.;Entries", 100001, -0.5, 100000.5);
-  TH1F *h1time = new TH1F("h1time", "Digit time;Digit time (ns);Entries", 18000, -3000, 15000);
-  TH1F *h1time_noise = new TH1F("h1time_noise", "Digit time (digits from noise hits only);Digit time (ns);Entries", 18000, -3000, 15000);
-  TH1F *h1time_photon = new TH1F("h1time_photon", "Digit time (digits from photon hits only);Digit time (ns);Entries", 18000, -3000, 15000);
-  TH1F *h1time_mix = new TH1F("h1time_mix", "Digit time (digits from a mix of noise and photon hits);Digit time (ns);Entries", 18000, -3000, 15000);
-  THStack *hStime = new THStack("hStime", "Digit time;Digits time (ns);Entries");
-  h1time_noise->SetLineColor(kBlack);
-  h1time_photon->SetLineColor(kRed);
-  h1time_mix->SetLineColor(kCyan);
-  hStime->Add(h1time_noise);
-  hStime->Add(h1time_photon);
-  hStime->Add(h1time_mix);
-  TH1F *h1time2 = new TH1F("h1time2", "Digit time + trigger time;Digit time + trigger time (ns);Entries", 18000, -3000, 15000);
+
+  TH1F *h1digitime = new TH1F("h1digitime", "Digit time;Digit time (ns);Entries", 18000, -3000, 15000);
+  TH1F *h1digitime_noise = new TH1F("h1digitime_noise", "Digit time (digits from noise hits only);Digit time (ns);Entries", 18000, -3000, 15000);
+  TH1F *h1digitime_photon = new TH1F("h1digitime_photon", "Digit time (digits from photon hits only);Digit time (ns);Entries", 18000, -3000, 15000);
+  TH1F *h1digitime_mix = new TH1F("h1digitime_mix", "Digit time (digits from a mix of noise and photon hits);Digit time (ns);Entries", 18000, -3000, 15000);
+  THStack *hSdigitime = new THStack("hSdigitime", "Digit time;Digits time (ns);Entries");
+  h1digitime_noise->SetLineColor(kBlack);
+  h1digitime_photon->SetLineColor(kRed);
+  h1digitime_mix->SetLineColor(kCyan);
+  hSdigitime->Add(h1digitime_noise);
+  hSdigitime->Add(h1digitime_photon);
+  hSdigitime->Add(h1digitime_mix);
+  TH1F *h1digiplustriggertime = new TH1F("h1digiplustriggertime", "Digit time + trigger time;Digit time + trigger time (ns);Entries", 18000, -3000, 15000);
+  TH1F *h1triggertime = new TH1F("h1triggertime", "Time of trigger;Trigger time;Entries", 10000,0,10000);
+
   TH1F *h1peperdigi = new TH1F("h1peperdigi", "Total p.e. in the subevent window;Total p.e. / NDigits;Entries", 1000, 0, 50);
   TH1F *h1timeperdigi = new TH1F("h1timeperdigi", "Hit time (relative to trigger time);(Hit time - trigger time) / NDigits (ns);Entries", 18000, -3000, 15000);
 
@@ -154,11 +130,6 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   TH2F *h2nhitstrigger_sep = new TH2F("h2nhitstrigger_sep", "NDigits from 200ns trigger window vs fraction that are noise;NDigits;Noise fraction", 1001, -0.5, 10000.5, 100, 0, 1);
   TH1F *h1noisefrac = new TH1F("h1noisefrac", "Fraction of hits in this digi that are noise;Noise fraction;Entries", 110,0,1.1);
   TH1F *h1noisefrac_trigger = new TH1F("h1noisefrac_trigger", "Fraction of hits in this trigger that are noise;Noise fraction;Entries", 110,0,1.1);
-  TH1F *h1triggertime = new TH1F("h1triggertime", "Time of trigger;Trigger time;Entries", 10000,0,10000);
-  TH1F *h1inttime = new TH1F("h1inttime", "Number of digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 10000,0,10000);
-  TH1F *h1inttimenoise = new TH1F("h1inttimenoise", "Number of noise digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 10000,0,10000);
-  TH1F *h1inttimephoton = new TH1F("h1inttimephoton", "Number of photon digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 10000,0,10000);
-  TH1F *h1inttimemix = new TH1F("h1inttimemix", "Number of mixed (noise+photon) digits in a sliding 200nsec window;NDigits in 200nsec window;Entries", 10000,0,10000);
 
   TH1F *h1hittime = new TH1F("h1hittime", "Raw hit time;Hit time (ns);Entries",    20000, -10000, 10000);
   TH1F *h1hittime_photon = new TH1F("h1hittime_photon", "Raw hit time (photons);Hit time (ns);Entries",    20000, -10000, 10000);
@@ -283,7 +254,6 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     int ncherenkovhittimes = wcsimrootevent->GetNcherenkovhittimes();
     int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits(); 
     
-    h1->Fill(ncherenkovdigihits);
     if(verbose){
       printf("node id: %i\n", ev);
       printf("Ncherenkovhits (unique PMTs with hits)  %d\n", ncherenkovhits);
@@ -359,7 +329,6 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
       h1triggertime->Fill(trigger_time);
       if(trigger_info.size() > 0) {
 	if((trigger_type == kTriggerNDigits) || (trigger_type == kTriggerNDigitsTest)) {
-	  h2nhits->Fill(ncherenkovdigihits, trigger_info[0]);
 	  h1ndigihitstrigger->Fill(trigger_info[0]);
 	}
       }
@@ -496,27 +465,27 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	}
 	if(n_noise_hits && !n_photon_hits) {
 	  digit_times_noise.push_back(wcsimrootcherenkovdigihit->GetT());
-	  h1time_noise->Fill(wcsimrootcherenkovdigihit->GetT());
+	  h1digitime_noise->Fill(wcsimrootcherenkovdigihit->GetT());
 	  if(hists_per_event)
 	    h1event_digittime[ev][1]->Fill(wcsimrootcherenkovdigihit->GetT());
 	}
 	else if(!n_noise_hits && n_photon_hits) {
 	  digit_times_photon.push_back(wcsimrootcherenkovdigihit->GetT());
-	  h1time_photon->Fill(wcsimrootcherenkovdigihit->GetT());
+	  h1digitime_photon->Fill(wcsimrootcherenkovdigihit->GetT());
 	  if(hists_per_event)
 	    h1event_digittime[ev][0]->Fill(wcsimrootcherenkovdigihit->GetT());
 	}
 	else {
 	  digit_times_mix.push_back(wcsimrootcherenkovdigihit->GetT());
-	  h1time_mix->Fill(wcsimrootcherenkovdigihit->GetT());
+	  h1digitime_mix->Fill(wcsimrootcherenkovdigihit->GetT());
 	  if(hists_per_event)
 	    h1event_digittime[ev][2]->Fill(wcsimrootcherenkovdigihit->GetT());
 	}
 	digit_times.push_back(wcsimrootcherenkovdigihit->GetT());
 	totalpe   += wcsimrootcherenkovdigihit->GetQ();
 	totaltime += wcsimrootcherenkovdigihit->GetT();
-	h1time->Fill(wcsimrootcherenkovdigihit->GetT());
-	h1time2->Fill(wcsimrootcherenkovdigihit->GetT() + trigger_time);
+	h1digitime->Fill(wcsimrootcherenkovdigihit->GetT());
+	h1digiplustriggertime->Fill(wcsimrootcherenkovdigihit->GetT() + trigger_time);
 	float noise_fraction = (float)n_noise_hits / (float)(n_noise_hits + n_photon_hits);
 	h1noisefrac->Fill(noise_fraction);
 	h2nhits_sep->Fill(ncherenkovdigihits, noise_fraction);
@@ -529,10 +498,6 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
       if(ncherenkovdigihits) {
 	h1peperdigi->Fill(totalpe / ncherenkovdigihits);
 	h1timeperdigi->Fill((totaltime) / ncherenkovdigihits);
-	integrate_digit_times(digit_times, h1inttime);
-	integrate_digit_times(digit_times_noise, h1inttimenoise);
-	integrate_digit_times(digit_times_photon, h1inttimephoton);
-	integrate_digit_times(digit_times_mix, h1inttimemix);
       }
       float noise_fraction_total = (float)n_noise_hits_total / (float)(n_noise_hits_total + n_photon_hits_total);
       h1noisefrac_trigger->Fill(noise_fraction_total);
@@ -551,8 +516,6 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   hvtx0->Write();
   hvtx1->Write();
   hvtx2->Write();
-  h1->Write();
-  h2nhits->Write();
   h1noisefrac->Write();
   h1noisefrac_trigger->Write();
   h2nhits_sep->Write();
@@ -563,19 +526,15 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   h1ntubeshitdigi->Write();
   h1ndigihitstrigger->Write();
   h1pe->Write();
-  h1time->Write();
-  h1time_photon->Write();
-  h1time_noise->Write();
-  h1time_mix->Write();
-  hStime->Write();
-  h1time2->Write();
+  h1digitime->Write();
+  h1digitime_photon->Write();
+  h1digitime_noise->Write();
+  h1digitime_mix->Write();
+  hSdigitime->Write();
+  h1digiplustriggertime->Write();
   h1triggertime->Write();
   h1peperdigi->Write();
   h1timeperdigi->Write();
-  h1inttime->Write();
-  h1inttimenoise->Write();
-  h1inttimephoton->Write();
-  h1inttimemix->Write();
   if(hists_per_event) {
     for (int ev=0; ev<nevent; ev++) {
       h1event_hittime[ev][0]->Write();
@@ -609,8 +568,6 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     c2->SetLeftMargin(0.15);
 
     c2->cd();
-    h2nhits->Draw("COLZ");
-    c2->SaveAs(create_filename("h2nhits_", filenameout).Data());
     h1ndigihits->Draw();
     c2->SaveAs(create_filename("h1ndigihits_", filenameout).Data());
     h1nrawhits->Draw();
@@ -619,19 +576,19 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     c2->SaveAs(create_filename("h1ndigihitstrigger_", filenameout).Data());
     h1pe->Draw();
     c2->SaveAs(create_filename("h1pe_", filenameout).Data());
-    h1time->Draw();
-    c2->SaveAs(create_filename("h1time_", filenameout).Data());
-    hStime->Draw();
+    h1digitime->Draw();
+    c2->SaveAs(create_filename("h1digitime_", filenameout).Data());
+    hSdigitime->Draw();
     TLegend * l = new TLegend(0.4,0.9,0.9,1.0);
     l->SetTextSize(0.042);
     l->SetTextFont(132);
-    l->AddEntry(h1time_photon, "Photon", "l");
-    l->AddEntry(h1time_noise, "Noise",  "l");
-    l->AddEntry(h1time_mix, "Mixed",  "l");
+    l->AddEntry(h1digitime_photon, "Photon", "l");
+    l->AddEntry(h1digitime_noise, "Noise",  "l");
+    l->AddEntry(h1digitime_mix, "Mixed",  "l");
     l->Draw();
-    c2->SaveAs(create_filename("hStime_", filenameout).Data());
-    h1time2->Draw();
-    c2->SaveAs(create_filename("h1time2_", filenameout).Data());
+    c2->SaveAs(create_filename("hSdigitime_", filenameout).Data());
+    h1digiplustriggertime->Draw();
+    c2->SaveAs(create_filename("h1digiplustriggertime_", filenameout).Data());
     h1peperdigi->Draw();
     c2->SaveAs(create_filename("h1peperdigi_", filenameout).Data());
     h1timeperdigi->Draw();
