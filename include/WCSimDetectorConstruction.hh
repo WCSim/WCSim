@@ -144,6 +144,11 @@ private:
 
   WCSimTuningParameters* WCSimTuningParams;
 
+  // Sensitive Detectors. We declare the pointers here because we need
+  // to check their state if we change the geometry, otherwise will segfault
+  // between events!
+  WCSimWCSD* aWCPMT;
+
   //Water, Blacksheet surface
   G4OpticalSurface * OpWaterBSSurface;
 
