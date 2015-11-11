@@ -72,7 +72,6 @@
 
 #generic trigger options (defaults are class-specfic. Can be overrideen here)
 # allow the number of digits per PMT per trigger to be > 1?
-# (note this has no effect on SKI_SKDETSIM (always has <= 1))
 #/DAQ/MultiDigitsPerTrigger false
 
 #trigger algorithm development options (defaults are set in WCSimWCDAQMessenger. Can be overidden here)
