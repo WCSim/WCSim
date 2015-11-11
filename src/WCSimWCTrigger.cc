@@ -59,6 +59,7 @@ WCSimWCTriggerBase::~WCSimWCTriggerBase(){
 void WCSimWCTriggerBase::GetVariables()
 {
   //set the options to class-specific defaults
+  multiDigitsPerTrigger    = GetDefaultMultiDigitsPerTrigger();
   ndigitsThreshold         = GetDefaultNDigitsThreshold();
   ndigitsWindow            = GetDefaultNDigitsWindow();
   ndigitsPreTriggerWindow  = GetDefaultNDigitsPreTriggerWindow();
@@ -75,7 +76,8 @@ void WCSimWCTriggerBase::GetVariables()
     exit(-1);
   }
 
-  G4cout << "Using NDigits threshold " << ndigitsThreshold
+  G4cout << (multiDigitsPerTrigger ? "Using mutiple digits per PMT per trigger" : "Using a maximum of 1 digit per PMT per trigger" ) << G4endl
+	 << "Using NDigits threshold " << ndigitsThreshold
 	 << (ndigitsAdjustForNoise ? " (will be adjusted for noise)" : "") << G4endl
 	 << "Using NDigits trigger window " << ndigitsWindow << " ns" << G4endl
 	 << "Using NDigits event pretrigger window " << ndigitsPreTriggerWindow << " ns" << G4endl
@@ -392,6 +394,11 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  }
 	  if(remove_hits)
 	    (*WCDCPMT)[i]->RemoveDigitizedGate(ip);
+
+	  //we've found a digit on this PMT. If we're restricting to just 1 digit per trigger window (e.g. SKI)
+	  // then ignore later digits and break. This takes us to the next PMT
+	  if(!multiDigitsPerTrigger)
+	    break;
 	}//digits within trigger window
       }//loop over Digits
     }//loop over PMTs
