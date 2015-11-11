@@ -55,6 +55,9 @@ public:
   // Trigger algorithm option set methods
   //
 
+  ///Set whether to allow the number of digits per PMT per trigger to go > 1
+  void SetMultiDigitsPerTrigger(G4bool allow_multi) { multiDigitsPerTrigger = allow_multi; }
+
   // NDigits options
   ///Set the threshold for the NDigits trigger
   void SetNDigitsThreshold(G4int threshold) { ndigitsThreshold = threshold; }
@@ -89,6 +92,8 @@ protected:
   /// Get the default threshold, etc. from the derived class, and override with read from the .mac file
   void GetVariables();
 
+  ///Set the default trigger class specific decision of whether to save multiple digits per PMT per trigger (overridden by .mac)
+  virtual bool GetDefaultMultiDigitsPerTrigger()   { return true; }
   ///Set the default trigger class specific NDigits window (in ns) (overridden by .mac)
   virtual int GetDefaultNDigitsWindow()            { return 200; }
   ///Set the default trigger class specific NDigits threshold (in ns) (overridden by .mac)
@@ -143,6 +148,7 @@ protected:
   double PMTDarkRate;    ///< Dark noise rate of the PMTs
 
   // Trigger algorithm options
+  G4bool multiDigitsPerTrigger;    ///< Allow the number of digits per PMT saved in each trigger window to go > 1?
   //NDigits
   G4int  ndigitsThreshold;         ///< The threshold for the NDigits trigger
   G4int  ndigitsWindow;            ///< The time window for the NDigits trigger
@@ -287,10 +293,11 @@ private:
   ///Calls the workhorse of this class: AlgNDigits
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
-  int GetDefaultNDigitsWindow()            { return 200;  } ///< SK max light travel time ~200 ns
-  int GetDefaultNDigitsThreshold()         { return 25;   } ///< SK NDigits threshold ~25
-  int GetDefaultNDigitsPreTriggerWindow()  { return -400; } ///< SK SLE trigger window ~-400
-  int GetDefaultNDigitsPostTriggerWindow() { return 950;  } ///< SK SLE trigger window ~+950
+  bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
+  int  GetDefaultNDigitsWindow()            { return 200;   } ///< SK max light travel time ~200 ns
+  int  GetDefaultNDigitsThreshold()         { return 25;    } ///< SK NDigits threshold ~25
+  int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
+  int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
 };
 
 
@@ -312,10 +319,11 @@ public:
 private:
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
-  int GetDefaultNDigitsWindow()            { return 200;  } ///< SK max light travel time ~200 ns
-  int GetDefaultNDigitsThreshold()         { return 50;   } ///< 2 * SK NDigits threshold ~25
-  int GetDefaultNDigitsPreTriggerWindow()  { return -400; } ///< SK SLE trigger window ~-400
-  int GetDefaultNDigitsPostTriggerWindow() { return 950;  } ///< SK SLE trigger window ~+950
+  bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
+  int  GetDefaultNDigitsWindow()            { return 200;   } ///< SK max light travel time ~200 ns
+  int  GetDefaultNDigitsThreshold()         { return 50;    } ///< 2 * SK NDigits threshold ~25
+  int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
+  int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
 };
 
 

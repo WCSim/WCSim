@@ -15,6 +15,7 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   WCSimEvent(eventaction)
 {
   initialiseString = " (this is a default set; it may be overwritten by user commands)";
+  initialised = false;
 
   WCSimDAQDir = new G4UIdirectory("/DAQ/");
   WCSimDAQDir->SetGuidance("Commands to select DAQ options");
@@ -50,6 +51,15 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   TriggerChoice->SetDefaultValue(defaultTrigger);
   StoreTriggerChoice = defaultTrigger;
   SetNewValue(TriggerChoice, defaultTrigger);
+
+  bool defaultMultiDigitsPerTrigger = false;
+  MultiDigitsPerTrigger = new G4UIcmdWithABool("/DAQ/MultiDigitsPerTrigger", this);
+  MultiDigitsPerTrigger->SetGuidance("Allow the number of digits per PMT per trigger to be > 1?");
+  MultiDigitsPerTrigger->SetParameterName("MultiDigitsPerTrigger",true);
+  MultiDigitsPerTrigger->SetDefaultValue(defaultMultiDigitsPerTrigger);
+  StoreMultiDigitsPerTrigger = defaultMultiDigitsPerTrigger;
+  MultiDigitsPerTriggerSet = false; //this variable is bool & defaults are class specfic; use this to know if the default is overidden
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
 
 
   //Generic digitizer specific options
@@ -155,6 +165,7 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
 
   initialiseString = "";
+  initialised = true;
 }
 
 WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
@@ -178,6 +189,7 @@ WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
 
   delete DigitizerChoice;
   delete TriggerChoice;
+  delete MultiDigitsPerTrigger;
   delete WCSimDAQDir;
 }
 
@@ -196,6 +208,15 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     G4cout << "Trigger choice set to " << newValue << initialiseString.c_str() << G4endl;
     WCSimEvent->SetTriggerChoice(newValue);
     StoreTriggerChoice = newValue;
+  }
+  else if (command == MultiDigitsPerTrigger) {
+    StoreMultiDigitsPerTrigger = MultiDigitsPerTrigger->GetNewBoolValue(newValue);
+    if(!StoreMultiDigitsPerTrigger)
+      G4cout << "Will restrict number of digits per PMT per trigger to <= 1" << initialiseString.c_str() << G4endl;
+    else
+      G4cout << "Will allow number of digits per PMT per trigger to go > 1" << initialiseString.c_str() << G4endl;
+    if(initialised)
+      MultiDigitsPerTriggerSet = true;
   }
 
   //Generic digitizer options
@@ -264,6 +285,14 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 void WCSimWCDAQMessenger::SetTriggerOptions()
 {
   G4cout << "Passing Trigger options to the trigger class instance" << G4endl;
+
+  if(MultiDigitsPerTriggerSet) {
+    WCSimTrigger->SetMultiDigitsPerTrigger(StoreMultiDigitsPerTrigger);
+    if(!StoreMultiDigitsPerTrigger)
+      G4cout << "\tWill restrict number of digits per PMT per trigger to <= 1" << G4endl;
+    else
+      G4cout << "\tWill allow number of digits per PMT per trigger to go > 1" << initialiseString.c_str() << G4endl;
+  }
 
   WCSimTrigger->SetSaveFailuresMode(StoreSaveFailuresMode);
   std::string failuremode;
