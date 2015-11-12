@@ -107,7 +107,7 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   TH1I *h1ntubeshitdigi = new TH1I("h1ntubeshitdigi", "Number of PMTs with digits in the subevent window;NPMTs with digits;Entries", 10001, -0.5, 10000.5);
   TH1I *h1ndigihitstrigger = new TH1I("h1ndigihitstrigger", "NDigits in the trigger window;NDigits;Entries", 10001, -0.5, 10000.5);
 
-  TH1F *h1pe = new TH1F("h1pe", "Total p.e. in the subevent window;Total p.e.;Entries", 100001, -0.5, 100000.5);
+  TH1F *h1digipe = new TH1F("h1digipe", "Total p.e. in the subevent window;Total p.e.;Entries", 100001, -0.5, 100000.5);
 
   TH1F *h1digitime = new TH1F("h1digitime", "Digit time;Digit time (ns);Entries", 18000, -3000, 15000);
   TH1F *h1digitime_noise = new TH1F("h1digitime_noise", "Digit time (digits from noise hits only);Digit time (ns);Entries", 18000, -3000, 15000);
@@ -123,8 +123,8 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   TH1F *h1digiplustriggertime = new TH1F("h1digiplustriggertime", "Digit time + trigger time;Digit time + trigger time (ns);Entries", 18000, -3000, 15000);
   TH1F *h1triggertime = new TH1F("h1triggertime", "Time of trigger;Trigger time;Entries", 10000,0,10000);
 
-  TH1F *h1peperdigi = new TH1F("h1peperdigi", "Total p.e. in the subevent window;Total p.e. / NDigits;Entries", 1000, 0, 50);
-  TH1F *h1timeperdigi = new TH1F("h1timeperdigi", "Hit time (relative to trigger time);(Hit time - trigger time) / NDigits (ns);Entries", 18000, -3000, 15000);
+  TH1F *h1digipeperdigi = new TH1F("h1digipeperdigi", "Total p.e. in the subevent window;Total p.e. / NDigits;Entries", 1000, 0, 50);
+  TH1F *h1digitimeperdigi = new TH1F("h1digitimeperdigi", "Hit time (relative to trigger time);(Hit time - trigger time) / NDigits (ns);Entries", 18000, -3000, 15000);
 
   TH2F *h2nhits_sep = new TH2F("h2nhits_sep", "NDigits from subevent window vs fraction that are noise;NDigits;Noise fraction", 1001, -0.5, 10000.5, 100, 0, 1);
   TH2F *h2nhitstrigger_sep = new TH2F("h2nhitstrigger_sep", "NDigits from 200ns trigger window vs fraction that are noise;NDigits;Noise fraction", 1001, -0.5, 10000.5, 100, 0, 1);
@@ -338,7 +338,7 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	num_trig++;
 
       // Loop through elements in the TClonesArray of WCSimRootCherenkovDigHits
-      float totalpe = 0, totaltime = 0;
+      float totaldigipe = 0, totaldigitime = 0;
       for(int idigipmt = 0; idigipmt < ncherenkovdigihits; idigipmt++) {
 	//get the digit
 	if(verbose)
@@ -411,10 +411,11 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	}
 
 	const double digitime = wcsimrootcherenkovdigihit->GetT();
+	const double digipe   = wcsimrootcherenkovdigihit->GetQ();
 
 	if(verbose){
 	  printf("q, t, tubeid, nphotonhits, nnoisehits, nunknownhits: %f %f %d  %d %d %d\n",
-		 wcsimrootcherenkovdigihit->GetQ(),
+		 digipe,
 		 digitime,
 		 wcsimrootcherenkovdigihit->GetTubeId(),
 		 n_photon_hits,
@@ -436,8 +437,8 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	  if(hists_per_event)
 	    h1event_digittime[ev][2]->Fill(digitime);
 	}
-	totalpe   += wcsimrootcherenkovdigihit->GetQ();
-	totaltime += digitime;
+	totaldigipe   += digipe;
+	totaldigitime += digitime;
 	h1digitime->Fill(digitime);
 	h1digiplustriggertime->Fill(digitime + trigger_time);
 	float noise_fraction = (float)n_noise_hits / (float)(n_noise_hits + n_photon_hits);
@@ -451,10 +452,10 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	n_noise_hits_total += n_noise_hits;
 	n_photon_hits_total += n_photon_hits;
       }//idigipmt // End of loop over Cherenkov digihits
-      h1pe->Fill(totalpe);
+      h1digipe->Fill(totaldigipe);
       if(ncherenkovdigihits) {
-	h1peperdigi->Fill(totalpe / ncherenkovdigihits);
-	h1timeperdigi->Fill((totaltime) / ncherenkovdigihits);
+	h1digipeperdigi->Fill(totaldigipe / ncherenkovdigihits);
+	h1digitimeperdigi->Fill((totaldigitime) / ncherenkovdigihits);
       }
       float noise_fraction_total = (float)n_noise_hits_total / (float)(n_noise_hits_total + n_photon_hits_total);
       h1noisefrac_trigger->Fill(noise_fraction_total);
@@ -482,7 +483,7 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   h1ntubeshitraw->Write();
   h1ntubeshitdigi->Write();
   h1ndigihitstrigger->Write();
-  h1pe->Write();
+  h1digipe->Write();
   h1digitime->Write();
   h1digitime_photon->Write();
   h1digitime_noise->Write();
@@ -490,8 +491,8 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   hSdigitime->Write();
   h1digiplustriggertime->Write();
   h1triggertime->Write();
-  h1peperdigi->Write();
-  h1timeperdigi->Write();
+  h1digipeperdigi->Write();
+  h1digitimeperdigi->Write();
   if(hists_per_event) {
     for (int ev=0; ev<nevent; ev++) {
       h1event_hittime[ev][0]->Write();
@@ -528,8 +529,8 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     c2->SaveAs(create_filename("h1nrawhits_", filenameout).Data());
     h1ndigihitstrigger->Draw();
     c2->SaveAs(create_filename("h1ndigihitstrigger_", filenameout).Data());
-    h1pe->Draw();
-    c2->SaveAs(create_filename("h1pe_", filenameout).Data());
+    h1digipe->Draw();
+    c2->SaveAs(create_filename("h1digipe_", filenameout).Data());
     h1digitime->Draw();
     c2->SaveAs(create_filename("h1digitime_", filenameout).Data());
     hSdigitime->Draw();
@@ -543,10 +544,10 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     c2->SaveAs(create_filename("hSdigitime_", filenameout).Data());
     h1digiplustriggertime->Draw();
     c2->SaveAs(create_filename("h1digiplustriggertime_", filenameout).Data());
-    h1peperdigi->Draw();
-    c2->SaveAs(create_filename("h1peperdigi_", filenameout).Data());
-    h1timeperdigi->Draw();
-    c2->SaveAs(create_filename("h1timeperdigi_", filenameout).Data());
+    h1digipeperdigi->Draw();
+    c2->SaveAs(create_filename("h1digipeperdigi_", filenameout).Data());
+    h1digitimeperdigi->Draw();
+    c2->SaveAs(create_filename("h1digitimeperdigi_", filenameout).Data());
     h1noisefrac->Draw();
     c2->SaveAs(create_filename("h1noisefrac_", filenameout).Data());
     h1noisefrac_trigger->Draw();
