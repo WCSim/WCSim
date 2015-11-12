@@ -335,9 +335,9 @@ def main(args_to_parse = None):
             #assemble the filename
             filestub = 'DarkNoiseM' + pDict['/DarkRate/SetDarkMode'] + 'C' + pDict['/DarkRate/SetConvert'] + 'R' + pDict['/DarkRate/SetDarkRate'] + 'W'
             if args.DarkNoiseMode == 1:
-                filestub += pDict['/DarkRate/SetDarkWindow']
+                filestub += pDict['/DarkRate/SetDarkWindow'].strip()
             elif args.DarkNoiseMode == 0:
-                filestub += pDict['/DarkRate/SetDarkLow'] + ':' + pDict['/DarkRate/SetDarkHigh']
+                filestub += pDict['/DarkRate/SetDarkLow'].strip() + ':' + pDict['/DarkRate/SetDarkHigh'].strip()
             filestubs.append(filestub)
         return [noises, filestubs]
 
