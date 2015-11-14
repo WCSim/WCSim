@@ -128,8 +128,8 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 
   TH2F *h2nhits_sep = new TH2F("h2nhits_sep", "NDigits from subevent window vs fraction that are noise;NDigits;Noise fraction", 1001, -0.5, 10000.5, 100, 0, 1);
   TH2F *h2nhitstrigger_sep = new TH2F("h2nhitstrigger_sep", "NDigits from 200ns trigger window vs fraction that are noise;NDigits;Noise fraction", 1001, -0.5, 10000.5, 100, 0, 1);
-  TH1F *h1noisefrac = new TH1F("h1noisefrac", "Fraction of hits in this digi that are noise;Noise fraction;Entries", 110,0,1.1);
-  TH1F *h1noisefrac_trigger = new TH1F("h1noisefrac_trigger", "Fraction of hits in this trigger that are noise;Noise fraction;Entries", 110,0,1.1);
+  TH1F *h1diginoisefrac = new TH1F("h1diginoisefrac", "Fraction of hits in this digi that are noise;Noise fraction;Entries", 110,0,1.1);
+  TH1F *h1diginoisefrac_trigger = new TH1F("h1diginoisefrac_trigger", "Fraction of hits in this trigger that are noise;Noise fraction;Entries", 110,0,1.1);
 
   TH1F *h1hittime = new TH1F("h1hittime", "Raw hit time;Hit time (ns);Entries",    20000, -10000, 10000);
   TH1F *h1hittime_photon = new TH1F("h1hittime_photon", "Raw hit time (photons);Hit time (ns);Entries",    20000, -10000, 10000);
@@ -170,20 +170,93 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     }//ev
   }
 
+  //create output file for storing histograms and tree
+  TString filenameout(filename);
+  TFile * fout = new TFile(create_filename("analysed_", filenameout).Data(), "RECREATE");
+  fout->cd();
+
+  //create tree to save information on an event-by-event basis
+  TTree * tout = new TTree("validation_per_event", "Event by event validation variables");
+  TTree * tout_trig = new TTree("validation_per_trigger", "Trigger by trigger validation variables");
+  //event id variables
+  int teventnumber, ttriggernumber;
+  tout->Branch("eventnumber", &teventnumber);
+  tout_trig->Branch("eventnumber", &teventnumber);
+  tout_trig->Branch("triggernumber", &ttriggernumber);
+  //per event variables
+  double tvtx0, tvtx1, tvtx2;
+  int    tntriggers, tntracks, tnrawhits, tntubeshitraw;
+  vector<double> tvhittime, tvhittime_noise, tvhittime_photon;
+  tout->Branch("vtx0", &tvtx0);
+  tout->Branch("vtx1", &tvtx1);
+  tout->Branch("vtx2", &tvtx2);
+  tout->Branch("ntriggers", &tntriggers);
+  tout->Branch("ntracks", &tntracks);
+  tout->Branch("nrawhits", &tnrawhits);
+  tout->Branch("ntubeshitraw", &tntubeshitraw);
+  tout->Branch("hittime", &tvhittime);
+  tout->Branch("hittime_noise", &tvhittime_noise);
+  tout->Branch("hittime_photon", &tvhittime_photon);
+  //per trigger variables
+  int ttriggertype;
+  int tndigihits, tntubeshitdigi, tndigihitstrigger;
+  double ttriggertime;
+  double tdigipeperdigi, tdigitimeperdigi;
+  double ttotaldigipe;
+  double ttotaldiginoisefrac;
+  vector<double> tvdigipe;
+  vector<double> tvdigitime, tvdigitime_noise, tvdigitime_photon, tvdigitime_mix;
+  vector<double> tvdigiplustriggertime;
+  vector<double> tvdiginoisefrac;
+  tout_trig->Branch("triggertype", &ttriggertype);
+  tout_trig->Branch("ndigihits", &tndigihits);
+  tout_trig->Branch("ntubeshitdigi", &tntubeshitdigi);
+  tout_trig->Branch("ndigihitstrigger", &tndigihitstrigger);
+  tout_trig->Branch("triggertime", &ttriggertime);
+  tout_trig->Branch("digipeperdigi", &tdigipeperdigi);
+  tout_trig->Branch("digitimeperdigi", &tdigitimeperdigi);
+  tout_trig->Branch("totaldigipe", &ttotaldigipe);
+  tout_trig->Branch("totaldiginoisefrac", &ttotaldiginoisefrac);
+  tout_trig->Branch("digipe", &tvdigipe);
+  tout_trig->Branch("digitime", &tvdigitime);
+  tout_trig->Branch("digitime_noise", &tvdigitime_noise);
+  tout_trig->Branch("digitime_photon", &tvdigitime_photon);
+  tout_trig->Branch("digitime_mix", &tvdigitime_mix);
+  tout_trig->Branch("digiplustriggertime", &tvdigiplustriggertime);
+  tout_trig->Branch("diginoisefrac", &tvdiginoisefrac);
+
   int num_trig = 0;
   
   // Now loop over events
   for (int ev=0; ev<nevent; ev++)
   {
+    teventnumber = ev;
+
+    //Reset per event tree variables
+    tvtx0                 = -999999;
+    tvtx1                 = -999999;
+    tvtx2                 = -999999;
+    tntriggers            = -1;
+    tntracks              = -1;
+    tnrawhits             = -1;
+    tntubeshitraw         = -1;
+    tvhittime.clear();
+    tvhittime_noise.clear();
+    tvhittime_photon.clear();
+
     // Read the event from the tree into the WCSimRootEvent instance
     tree->GetEntry(ev);
     wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
 
     const int ntriggers = wcsimrootsuperevent->GetNumberOfEvents();
+    tntriggers = ntriggers;
 
     if(verbose || ((ev % 100) == 0))
       cout << "Event " << ev << " of " << nevent << " has " << ntriggers << " triggers" << endl;
 
+    const double vtx0 = wcsimrootevent->GetVtx(0);
+    const double vtx1 = wcsimrootevent->GetVtx(1);
+    const double vtx2 = wcsimrootevent->GetVtx(2);
     if(verbose){
       printf("********************************************************");
       printf("Evt, date %d %d\n", wcsimrootevent->GetHeader()->GetEvtNum(),
@@ -193,12 +266,14 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	     wcsimrootsuperevent->GetNumberOfSubEvents());
       
       printf("Vtxvol %d\n", wcsimrootevent->GetVtxvol());
-      printf("Vtx %f %f %f\n", wcsimrootevent->GetVtx(0),
-	     wcsimrootevent->GetVtx(1),wcsimrootevent->GetVtx(2));
+      printf("Vtx %f %f %f\n", vtx0, vtx1, vtx2);
     }
-    h1vtx0->Fill(wcsimrootevent->GetVtx(0));
-    h1vtx1->Fill(wcsimrootevent->GetVtx(1));
-    h1vtx2->Fill(wcsimrootevent->GetVtx(2));
+    h1vtx0->Fill(vtx0);
+    h1vtx1->Fill(vtx1);
+    h1vtx2->Fill(vtx2);
+    tvtx0 = vtx0;
+    tvtx1 = vtx1;
+    tvtx2 = vtx2;
 
     if(verbose){
       printf("Jmu %d\n", wcsimrootevent->GetJmu());
@@ -209,6 +284,7 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     // Get the number of tracks
     const int ntracks = wcsimrootevent->GetNtrack();
     if(verbose) printf("ntracks=%d\n",ntracks);
+    tntracks = ntracks;
     
     // Loop through elements in the TClonesArray of WCSimTracks
     for (int itrack = 0; itrack < ntracks; itrack++)
@@ -237,6 +313,10 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
       printf("NumTubesHit       %d\n", wcsimrootevent->GetNumTubesHit());
       printf("NumDigitizedTubes in trigger 0 %d\n", wcsimrootevent->GetNumDigiTubesHit());
     }
+    h1nrawhits->Fill(ncherenkovhittimes);
+    h1ntubeshitraw->Fill(ntubeshit);
+    tnrawhits     = ncherenkovhittimes;
+    tntubeshitraw = ntubeshit;
 
     //
     // Now look at the raw Cherenkov+noise hits
@@ -269,13 +349,16 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	if(verbose)
 	  printf("%6.2f ", truetime);
 	h1hittime->Fill(truetime);
+	tvhittime.push_back(truetime);
 	if(wcsimrootcherenkovhittime->GetParentID() == -1) {
 	  h1hittime_noise->Fill(truetime);
+	  tvhittime_noise.push_back(truetime);
 	  if(hists_per_event)
 	    h1event_hittime[ev][1]->Fill(truetime);
 	}
 	else {
 	  h1hittime_photon->Fill(truetime);
+	  tvhittime_photon.push_back(truetime);
 	  if(hists_per_event)
 	    h1event_hittime[ev][0]->Fill(truetime);
 	}
@@ -292,15 +375,41 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     if(verbose)
       cout << "DIGITIZED HITS:" << endl;
 
+    //
     // Digi hits are arranged in subevents, so loop over these first
+    //
     const int ntriggers_loop = max_ntriggers > 0 ? TMath::Min(max_ntriggers, ntriggers) : ntriggers;
     for (int itrigger = 0 ; itrigger < ntriggers_loop; itrigger++) {
+
+      ttriggernumber = itrigger;
+
+      //Reset per trigger tree variables
+      ttriggertype          = -1;
+      tndigihits            = -1;
+      tntubeshitdigi        = -1;
+      tndigihitstrigger     = -1;
+      ttriggertime          = -999999;
+      tdigipeperdigi        = -1;
+      tdigitimeperdigi      = -999999;
+      ttotaldigipe          = -1;
+      ttotaldiginoisefrac   = -1;
+      tvdigipe.clear();
+      tvdigitime.clear();
+      tvdigitime_noise.clear();
+      tvdigitime_photon.clear();
+      tvdigitime_mix.clear();
+      tvdigiplustriggertime.clear();
+      tvdiginoisefrac.clear();
+
+      //count the number of noise/photon hits making up all the digits in this trigger
       int n_noise_hits_total = 0, n_photon_hits_total = 0;
+
       wcsimrootevent = wcsimrootsuperevent->GetTrigger(itrigger);
       if(verbose)
 	cout << "Sub event number = " << itrigger << "\n";
 
       const int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
+      const int ntubeshitdigi      = wcsimrootevent->GetNumDigiTubesHit();
       if(verbose)
 	printf("Ncherenkovdigihits %d\n", ncherenkovdigihits);
 
@@ -313,11 +422,10 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	if((trigger_type == kTriggerNDigits) || (trigger_type == kTriggerNDigitsTest)) {
 	  h1ndigihitstrigger->Fill(trigger_info[0]);
 	}
+	tndigihitstrigger = trigger_info[0];
       }
       h1ndigihits->Fill(ncherenkovdigihits);
-      h1nrawhits->Fill(wcsimrootevent->GetNcherenkovhittimes());
-      h1ntubeshitraw->Fill(wcsimrootevent->GetNumTubesHit());
-      h1ntubeshitdigi->Fill(wcsimrootevent->GetNumDigiTubesHit());
+      h1ntubeshitdigi->Fill(ntubeshitdigi);
 
       h1triggertype->Fill(WCSimEnumerations::EnumAsString(trigger_type).c_str(), 1);
       if(verbose) {
@@ -333,6 +441,10 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	}
 	cout << endl;
       }
+      ttriggertype   = (int)trigger_type;
+      tndigihits     = ncherenkovdigihits;
+      tntubeshitdigi = ntubeshitdigi;
+      ttriggertime   = trigger_time;
 
       if(ncherenkovdigihits > 0)
 	num_trig++;
@@ -412,6 +524,9 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 
 	const double digitime = wcsimrootcherenkovdigihit->GetT();
 	const double digipe   = wcsimrootcherenkovdigihit->GetQ();
+	tvdigipe.push_back(digipe);
+	tvdigitime.push_back(digitime);
+	tvdigiplustriggertime.push_back(digitime + trigger_time);
 
 	if(verbose){
 	  printf("q, t, tubeid, nphotonhits, nnoisehits, nunknownhits: %f %f %d  %d %d %d\n",
@@ -426,24 +541,28 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	  h1digitime_noise->Fill(digitime);
 	  if(hists_per_event)
 	    h1event_digittime[ev][1]->Fill(digitime);
+	  tvdigitime_noise.push_back(digitime);
 	}
 	else if(!n_noise_hits && n_photon_hits) {
 	  h1digitime_photon->Fill(digitime);
 	  if(hists_per_event)
 	    h1event_digittime[ev][0]->Fill(digitime);
+	  tvdigitime_photon.push_back(digitime);
 	}
 	else {
 	  h1digitime_mix->Fill(digitime);
 	  if(hists_per_event)
 	    h1event_digittime[ev][2]->Fill(digitime);
+	  tvdigitime_mix.push_back(digitime);
 	}
 	totaldigipe   += digipe;
 	totaldigitime += digitime;
 	h1digitime->Fill(digitime);
 	h1digiplustriggertime->Fill(digitime + trigger_time);
 	float noise_fraction = (float)n_noise_hits / (float)(n_noise_hits + n_photon_hits);
-	h1noisefrac->Fill(noise_fraction);
+	h1diginoisefrac->Fill(noise_fraction);
 	h2nhits_sep->Fill(ncherenkovdigihits, noise_fraction);
+	tvdiginoisefrac.push_back(noise_fraction);
 	if(trigger_info.size() > 0) {
 	  if((trigger_type == kTriggerNDigits) || (trigger_type == kTriggerNDigitsTest)) {
 	    h2nhitstrigger_sep->Fill(trigger_info[0], noise_fraction);
@@ -453,29 +572,43 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	n_photon_hits_total += n_photon_hits;
       }//idigipmt // End of loop over Cherenkov digihits
       h1digipe->Fill(totaldigipe);
+      ttotaldigipe = totaldigipe;
       if(ncherenkovdigihits) {
-	h1digipeperdigi->Fill(totaldigipe / ncherenkovdigihits);
-	h1digitimeperdigi->Fill((totaldigitime) / ncherenkovdigihits);
+	double peperdigi   = totaldigipe   / ncherenkovdigihits;
+	double timeperdigi = totaldigitime / ncherenkovdigihits;
+	h1digipeperdigi->Fill(peperdigi);
+	h1digitimeperdigi->Fill(timeperdigi);
+	tdigipeperdigi   = peperdigi;
+	tdigitimeperdigi = timeperdigi;
       }
       float noise_fraction_total = (float)n_noise_hits_total / (float)(n_noise_hits_total + n_photon_hits_total);
-      h1noisefrac_trigger->Fill(noise_fraction_total);
+      h1diginoisefrac_trigger->Fill(noise_fraction_total);
+      ttotaldiginoisefrac = noise_fraction_total;
+
+      //fill the per trigger output tree
+      tout_trig->Fill();
     }//itrigger // End of loop over triggers
     
     // reinitialize super event between loops.
     wcsimrootsuperevent->ReInitialize();
-    
+
+    //fill the per event output tree
+    tout->Fill();
   }//ev // End of loop over events
   std::cout<<"num_trig "<<num_trig<<"\n";
 
+  //write the trees
+  fout->cd();
+  tout->Write();
+  tout_trig->Write();
+
   //save histograms in .root file
-  TString filenameout(filename);
-  TFile * fout = new TFile(create_filename("analysed_", filenameout).Data(), "RECREATE");
   fout->cd();
   h1vtx0->Write();
   h1vtx1->Write();
   h1vtx2->Write();
-  h1noisefrac->Write();
-  h1noisefrac_trigger->Write();
+  h1diginoisefrac->Write();
+  h1diginoisefrac_trigger->Write();
   h2nhits_sep->Write();
   h2nhitstrigger_sep->Write();
   h1ndigihits->Write();
@@ -548,10 +681,10 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     c2->SaveAs(create_filename("h1digipeperdigi_", filenameout).Data());
     h1digitimeperdigi->Draw();
     c2->SaveAs(create_filename("h1digitimeperdigi_", filenameout).Data());
-    h1noisefrac->Draw();
-    c2->SaveAs(create_filename("h1noisefrac_", filenameout).Data());
-    h1noisefrac_trigger->Draw();
-    c2->SaveAs(create_filename("h1noisefrac_trigger_", filenameout).Data());
+    h1diginoisefrac->Draw();
+    c2->SaveAs(create_filename("h1diginoisefrac_", filenameout).Data());
+    h1diginoisefrac_trigger->Draw();
+    c2->SaveAs(create_filename("h1diginoisefrac_trigger_", filenameout).Data());
 
     h2nhits_sep->Draw("COLZ");
     c2->SaveAs(create_filename("h2nhits_sep_", filenameout).Data());
