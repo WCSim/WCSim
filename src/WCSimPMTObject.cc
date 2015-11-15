@@ -1543,15 +1543,18 @@ G4float* BoxandLine12inchHQE::GetCollectionEfficiencyArray(){
 //     file first.
 //     Once I'm updating these values, immediately test with grabbing from a (txt/ROOT) file as example
 //     for cleaning up the rest. Then making these objects of a class and then making them Enums.
-/////////////
+//
+//   Use full area of half sphere, instead of photocathode area from drawings (dotted line) as we do for 20"
+//   next: use effective CE/QE as function of theta to correctly simulate edge effect (increase in QE, decrease in CE)
+//
 
 
 PMT3inchR12199_02::PMT3inchR12199_02(){}
 PMT3inchR12199_02::~PMT3inchR12199_02(){}
 
 G4String PMT3inchR12199_02::GetPMTName() {G4String PMTName = "PMT3inchR12199_02"; return PMTName;}
-G4double PMT3inchR12199_02::GetExposeHeight() {return .0153*m;}  //from TechSheet for 3in (only photocathode)
-G4double PMT3inchR12199_02::GetRadius() {return .036*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
+G4double PMT3inchR12199_02::GetExposeHeight() {return .0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
+G4double PMT3inchR12199_02::GetRadius() {return .040*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
 G4double PMT3inchR12199_02::GetPMTGlassThickness() {return 0.4*cm;}
 
 float PMT3inchR12199_02::HitTimeSmearing(float Q) {
@@ -1721,13 +1724,14 @@ G4float* PMT3inchR12199_02::GetCollectionEfficiencyArray(){
 /////////////////////////////////////////////////////////////////////
 /// TF: experimental for mPMT/nuPRISM
 ///// Suppose there is a PMT with the same properties as 3" but larger
+////  => same opening angle for photocathode area as 3"
 
 PMT4inchR12199_02::PMT4inchR12199_02(){}
 PMT4inchR12199_02::~PMT4inchR12199_02(){}
 
 G4String PMT4inchR12199_02::GetPMTName() {G4String PMTName = "PMT4inchR12199_02"; return PMTName;}
-G4double PMT4inchR12199_02::GetExposeHeight() {return .0153*m;}  //from TechSheet for 3in (only photocathode)
-G4double PMT4inchR12199_02::GetRadius() {return .036*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
+G4double PMT4inchR12199_02::GetExposeHeight() {return .0276*m;}  //or 0.021 for radius = 48.5mm
+G4double PMT4inchR12199_02::GetRadius() {return .054*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
 G4double PMT4inchR12199_02::GetPMTGlassThickness() {return 0.4*cm;}
 
 float PMT4inchR12199_02::HitTimeSmearing(float Q) {
@@ -1888,7 +1892,7 @@ G4float* PMT4inchR12199_02::GetCollectionEfficiencyArray(){
 ////////////////////////////////////////////////////////////////////////
 ///// TF experimental feature: suppose there is a 5" PMT with the same properties
 //    as 3"
-////////
+////  => same opening angle for photocathode area as 3"
 
 
 
@@ -1896,8 +1900,8 @@ PMT5inchR12199_02::PMT5inchR12199_02(){}
 PMT5inchR12199_02::~PMT5inchR12199_02(){}
 
 G4String PMT5inchR12199_02::GetPMTName() {G4String PMTName = "PMT5inchR12199_02"; return PMTName;}
-G4double PMT5inchR12199_02::GetExposeHeight() {return .0153*m;}  //from TechSheet for 3in (only photocathode)
-G4double PMT5inchR12199_02::GetRadius() {return .036*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
+G4double PMT5inchR12199_02::GetExposeHeight() {return .0338*m;}  //or 0.0259 for radius = 60.75mm
+G4double PMT5inchR12199_02::GetRadius() {return .0675*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
 G4double PMT5inchR12199_02::GetPMTGlassThickness() {return 0.4*cm;}
 
 float PMT5inchR12199_02::HitTimeSmearing(float Q) {
