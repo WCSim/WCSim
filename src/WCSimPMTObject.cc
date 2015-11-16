@@ -235,7 +235,7 @@ G4float PMT20inch::GetDarkRate(){
 }
 
 // Convert dark noise frequency to one before applying threshold of 0.25 pe, as that is what
-// will be simulated (WCSimWCDigitizer.cc ~L.160
+// will be simulated (WCSimWCDigitizer::AddPMTDarkRate)
 G4float PMT20inch::GetDarkRateConversionFactor(){
   const G4float factor = 1.367;
   return factor;
@@ -393,7 +393,7 @@ G4float  PMT8inch::GetmaxQE(){
 }
 
 G4float PMT8inch::GetDarkRate(){
-  const G4float rate = 4.2*CLHEP::kilohertz;   //??
+  const G4float rate = 4.2*CLHEP::kilohertz;   
   return rate;
 }
 

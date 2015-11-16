@@ -47,7 +47,7 @@ void WCSimDarkRateMessenger::Initialize()
 
   double defaultConvRate = 1;
   SetConversionRate = new G4UIcmdWithADouble("/DarkRate/SetConvert",this);
-  SetConversionRate->SetGuidance("Calibrate the frequency of dark noise after digitization"); // TF: shouldn't this be "before threshold of 0.25 pe" instead of after digitization (cfr. Pull Request issue84 discussion)??
+  SetConversionRate->SetGuidance("Calibrate the frequency of dark noise before applying the threshold (typically 0.25pe)"); 
   SetConversionRate->SetParameterName("DigiCorr",false);
   SetConversionRate->SetDefaultValue(defaultConvRate);
  
