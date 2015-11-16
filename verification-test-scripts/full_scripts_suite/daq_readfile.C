@@ -98,8 +98,10 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   TH1F *h1vtx2 = new TH1F("h1vtx2", "Event VTX2", 200, -1500, 1500);
 
   TH1I *h1triggertype = new TH1I("h1triggertype", "Trigger type;Trigger type;Entries", 10, 0, 10);
-  for(int i = -1; i <= kTriggerFailure; i++)
-    h1triggertype->GetXaxis()->SetBinLabel(i+2, WCSimEnumerations::EnumAsString((TriggerType_t)i).c_str());
+  for(int i = -1; i <= kTriggerFailure; i++) {
+    TriggerType_t ttype = (TriggerType_t)i;
+    h1triggertype->GetXaxis()->SetBinLabel(i+2, WCSimEnumerations::EnumAsString(ttype).c_str());
+  }
 
   TH1I *h1ndigihits = new TH1I("h1ndigihits", "NDigits in the subevent window;NDigits;Entries", 10001, -0.5, 10000.5);
   TH1I *h1nrawhits = new TH1I("h1nrawhits", "NHits in the subevent window;NHits;Entries", 10001, -0.5, 10000.5);
