@@ -37,6 +37,8 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCCapEdgeLimit        = 16.9*m;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+
+  InitSinglePMT();
 }
 
 
@@ -62,6 +64,8 @@ void WCSimDetectorConstruction::SuperK_20inchPMT_20perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+
+  InitSinglePMT();
 }
 
 
@@ -87,6 +91,8 @@ void WCSimDetectorConstruction::SuperK_20inchBandL_20perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+
+  InitSinglePMT();
 }
 
 
@@ -112,6 +118,8 @@ void WCSimDetectorConstruction::SuperK_12inchBandL_15perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+
+  InitSinglePMT();
 }
 
 
@@ -137,6 +145,8 @@ void WCSimDetectorConstruction::SuperK_20inchBandL_14perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+
+  InitSinglePMT();
 }
 
 void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_14perCent()
@@ -160,6 +170,8 @@ void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_14perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+
+  InitSinglePMT();
 }
 
 void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_40perCent()
@@ -183,6 +195,8 @@ void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_40perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+
+  InitSinglePMT();
 }
 
 void WCSimDetectorConstruction::Cylinder_12inchHPD_15perCent()
@@ -208,6 +222,8 @@ void WCSimDetectorConstruction::Cylinder_12inchHPD_15perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+
+  InitSinglePMT();
 }
 
 
@@ -256,6 +272,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   isHyperK = true; // Tell DetectorConstruction to build HK geometry
 
   MatchWCSimAndHyperK();
+  InitSinglePMT();
 }
 
 void WCSimDetectorConstruction::SetHyperKGeometry_withHPD()
@@ -303,6 +320,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry_withHPD()
    isHyperK = true; // Tell DetectorConstruction to build HK geometry
    
    MatchWCSimAndHyperK();
+  InitSinglePMT();
 }
 
 
@@ -449,4 +467,22 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
   nID_PMTs = 34;
   config_file = "mPMTconfig_34_22.5_2.txt"; 
 
+}
+
+void WCSimDetectorConstruction::InitSinglePMT(){
+  
+  cylinder_height = 0.1*mm;
+  cylinder_radius = 0.1*mm;
+  orientation = PERPENDICULAR;
+  mPMT_ID_PMT = "";
+  mPMT_OD_PMT = "";
+  mPMT_outer_material = "";
+  mPMT_inner_material = "";
+  mPMT_outer_material_d = 0.*CLHEP::mm;
+  mPMT_inner_material_d = 0.*CLHEP::mm;
+  id_reflector_height = 0.*CLHEP::mm;
+  id_reflector_angle = 0.*CLHEP::rad; 
+  nID_PMTs = 1;   
+  config_file = "";
+  
 }

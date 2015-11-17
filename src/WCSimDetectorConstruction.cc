@@ -133,7 +133,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   G4LogicalBorderSurface::CleanSurfaceTable();
   G4LogicalSkinSurface::CleanSurfaceTable();
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
-  //TF: for new mPMT
+  //TF: for new mPMT (or make this into a function?)
   vNiC.clear();
   vAlpha.clear();
   vCircle.clear();

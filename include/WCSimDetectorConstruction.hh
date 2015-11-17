@@ -66,6 +66,7 @@ public:
 
   // Related to the WC geometry
   void SetSuperKGeometry();
+  void InitSinglePMT();
   void SetTestmPMTGeometry();
   void Cylinder_60x74_3inchmPMT_14perCent();
   void Cylinder_60x74_3inchmPMT_40perCent();

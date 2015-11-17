@@ -82,6 +82,16 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     baseHeight = expose;
     baseRadius = std::max(radius,reflectorRadius) + reflectorThickness; //radius + reflectorThickness; too tight
   }
+  
+
+  G4cout << "========================================================" << G4endl;
+  G4cout << "Expose height for PMT " << CollectionName << " : " << expose << " mm" << G4endl;
+  G4cout << "Radius at expose height : " << radius << " mm" << G4endl;
+  G4cout << "Radius of curvature : " << sphereRadius << " mm" << G4endl;
+  G4cout << "Reflector radius : " << reflectorRadius << " mm" << G4endl;
+  G4cout << "Reflector thickness : " << reflectorThickness << " mm" << G4endl;
+  G4cout << "========================================================" << G4endl;
+
   G4double PMTHolderZ[2] = {-baseHeight+expose, 
 			    std::max(expose,id_reflector_height)};
   G4double PMTHolderR[2] = {baseRadius, 
