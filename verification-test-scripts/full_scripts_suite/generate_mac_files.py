@@ -54,6 +54,7 @@ parser = argparse.ArgumentParser(description='Run many WCSim jobs with different
 #options about how to run this script
 parser.add_argument('--onlycreatefiles', action='store_true', help="Do a test run where you create all the files, but don't run WCSim?")
 parser.add_argument('--batchmode', type=str, default='local', choices=BatchChoices, help='Where to submit the jobs.')
+parser.add_argument('--notifyuseremail', type=str, default='', help='Specify this to get email notifications about jobs')
 #options for the .mac files
 # geometry
 parser.add_argument('--WCgeom', type=delim_list, default='SuperK', help='The water tank geometry. Specify multiple with comma separated list. Choices: '+ListAsString(WCgeom_choices))
@@ -157,7 +158,9 @@ def main(args_to_parse = None):
                 sys.exit(1)
     check_input_pairs(args.DAQndigitssavewindow)
     check_input_pairs(args.DAQsavefailuressavewindow)
-    
+    if args.notifyuseremail != "" and (not "@" in args.notifyuseremail or len(args.notifyuseremail.split()) > 1):
+        print 'Invalid notifyuseremail - contains whitespace and/or has no @ sign'
+        sys.exit(1)
     
     #Grab the other .mac files
     shutil.copy2(os.path.expandvars("$WCSIMDIR") + "/jobOptions.mac", "./")
@@ -433,7 +436,12 @@ def Submit(filenamestub, args):
         command = '$WCSIMDIR/bin/$G4SYSTEM/WCSim ' + filenamestub + '.mac &> ' + filenamestub + '.out'
     elif args.batchmode == 'condor':
         fcondor = open(filenamestub + '.jdl', 'w')
-        condor = '' \
+        condor = ''
+        if args.notifyuseremail is not '':
+            condor += '' \
+                'notify_user    = ' + args.notifyuseremail + '\n' \
+                'notification   = Always \n'
+        condor += '' \
             'executable     = WCSim \n' \
             'universe       = vanilla \n' \
             'arguments      = ' + filenamestub + '.mac \n' \

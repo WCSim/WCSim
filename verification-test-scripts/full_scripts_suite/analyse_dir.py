@@ -10,6 +10,7 @@ parser.add_argument('-v','--verbose', action='store_true', help='Run verbosely?'
 parser.add_argument('-f','--onlyonefile', action='store_true', help='Run only one file?')
 parser.add_argument('--additional-macro-options', type=str, default='', help='If your macro has more options than just filename & verbosity, specify the remaining arguments here. Recommended to wrap the command in \'\', then "" are dealt with correctly. WARNING: no whitespace allowed!')
 parser.add_argument('--batchmode', type=str, default='local', choices=['local','condor'], help='Where to submit the jobs')
+parser.add_argument('--notifyuseremail', type=str, default='', help='Specify this to get email notifications about jobs')
 args = parser.parse_args()
 
 def py_bool_to_string(arg):
@@ -19,7 +20,10 @@ def py_bool_to_string(arg):
         return "false"
 
 def main(args_to_parse = None):
-    
+    if args.notifyuseremail != "" and (not "@" in args.notifyuseremail or len(args.notifyuseremail.split()) > 1):
+        print 'Invalid notifyuseremail - contains whitespace and/or has no @ sign'
+        sys.exit(1)
+
     verbose        = py_bool_to_string(args.verbose)
 
     try:
@@ -39,7 +43,7 @@ def main(args_to_parse = None):
     
     filenamestub = 'analysewcsim'
     if args.batchmode == 'condor' and not os.path.islink('rootwc'):
-        os.symlink(os.path.expanduser("~/Documents/myWCSIM/WCSim/rootwc/rootwc"), "rootwc")
+        os.symlink(os.path.expandvars("$WCSIMDIR") + "/rootwc/rootwc", "rootwc")
 
     #loop through all the relevant files in the directory, and run the analysis script
     for i, file1 in enumerate(glob.glob("wcsim_*.root")):
@@ -60,7 +64,12 @@ def main(args_to_parse = None):
             froot.write(root)
             froot.close()
             fcondor = open(filename + '.jdl', 'w')
-            condor = '' \
+            condor = ''
+            if args.notifyuseremail is not '':
+                condor += '' \
+                    'notify_user    = ' + args.notifyuseremail + '\n' \
+                    'notification   = Always \n'
+            condor += '' \
                 'executable     = rootwc \n' \
                 'universe       = vanilla \n' \
                 'arguments      = -b -q ' + filename + '.C \n' \
