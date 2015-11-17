@@ -228,7 +228,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	{
 	  float time = (*WCHCPMT)[i]->GetTime(ip);
           float pe = (*WCHCPMT)[i]->GetPe(ip);
-
+      
 	  //start the integration time as the time of the first hit
 	  //Hits must be sorted in time
 	  if(ip==0) {

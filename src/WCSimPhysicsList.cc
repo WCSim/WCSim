@@ -311,6 +311,9 @@ void WCSimPhysicsList::ConstructOp(){
 //---General construction
 
 #include "G4Decay.hh"
+#include "G4RadioactiveDecay.hh"
+#include "G4IonTable.hh"
+#include "G4Ions.hh"
 
 void WCSimPhysicsList::ConstructGeneral()
 {
@@ -327,6 +330,25 @@ void WCSimPhysicsList::ConstructGeneral()
       pmanager ->SetProcessOrdering(theDecayProcess, idxAtRest);
     }
   }
+
+ // Declare radioactive decay to the GenericIon in the IonTable.
+  const G4IonTable *theIonTable = 
+    G4ParticleTable::GetParticleTable()->GetIonTable();
+  G4RadioactiveDecay *theRadioactiveDecay = new G4RadioactiveDecay();
+  theRadioactiveDecay->SetVerboseLevel(1);
+  for (G4int i=0; i<theIonTable->Entries(); i++) 
+    {
+      G4String particleName = theIonTable->GetParticle(i)->GetParticleName();
+      G4String particleType = theIonTable->GetParticle(i)->GetParticleType();
+      if (particleName == "GenericIon") 
+	{
+	  G4ProcessManager* pmanager = 
+	    theIonTable->GetParticle(i)->GetProcessManager();
+	  pmanager->SetVerboseLevel(3);
+	  pmanager->AddProcess(theRadioactiveDecay, 0, -1, 1);
+	  pmanager->DumpInfo();
+	} 
+    }
 }
 
 // Elastic processes:

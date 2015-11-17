@@ -3,6 +3,7 @@
 
 #include "globals.hh"
 #include "G4UserStackingAction.hh"
+#include "G4ParticleDefinition.hh"
 #include "WCSimDetectorConstruction.hh"
 
 class G4Track;
@@ -19,8 +20,8 @@ class WCSimStackingAction : public G4UserStackingAction {
     virtual void PrepareNewEvent();
 
   private:
-	  WCSimDetectorConstruction*   DetConstruct;
-
+  WCSimDetectorConstruction*   DetConstruct;
+  G4ParticleDefinition*      particleType_ID0; //The primary particle type
 };
 
 #endif
