@@ -61,6 +61,7 @@ private:
   G4bool   useMulineEvt;
   G4bool   useNormalEvt;
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
+  G4bool   useRadioactiveEvt;
   std::fstream inputFile;
   G4String vectorFileName;
   G4bool   GenerateVertexInRock;
@@ -93,6 +94,9 @@ public:
   //T. Akiri: Addition of function for the laser flag
   inline void SetLaserEvtGenerator(G4bool choice) { useLaserEvt = choice; }
   inline G4bool IsUsingLaserEvtGenerator()  { return useLaserEvt; }
+
+  inline void SetRadioactiveEvtGenerator(G4bool choice) { useRadioactiveEvt = choice; }
+  inline G4bool IsUsingRadioactiveEvtGenerator()  { return useRadioactiveEvt; }
 
   inline void OpenVectorFile(G4String fileName) 
   {

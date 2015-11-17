@@ -108,7 +108,7 @@
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz
 #/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
-/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 
 # command to multiply the dark rate.
@@ -134,19 +134,32 @@
 #/grdm/selectVolume WCBarrel
 
 # Or you can use the G4 Particle Gun
-/mygen/generator normal
-/gun/particle e-
+#/mygen/generator normal
+#/gun/particle e-
 ##/gun/particle pi0
 #/gun/particle ion 
 #/gun/ion 19 40
-/gun/energy 5 MeV
-/gun/direction 1 0 0 
-/gun/position 0 0 0  
+#/gun/energy 5 MeV
+#/gun/direction 1 0 0 
+#/gun/position 0 0 0  
 
 #/mygen/generator laser
 #/gps/energy 0 keV
 #/gps/particle ion
 #/gps/ion 83 214 0  0
+
+/mygen/generator radioactive
+/gps/energy 0 keV
+/gps/position 0 0 0 cm
+/gps/pos/type Volume
+/gps/pos/shape Cylinder
+/gps/pos/radius 37.4 m
+/gps/pos/halfz 30 m
+/gps/pos/rot1 1 0 0 
+/gps/pos/rot2 0 1 0 
+/gps/particle ion
+/gps/ion 81 208 0  0
+/gps/number 10
 
 /grdm/analogueMC 0
 /grdm/BRbias 0
