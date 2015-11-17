@@ -19,7 +19,7 @@
 
 # Cylindrical detector with a height of 60 m and a diameter of 74 m
 #/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
-#/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
+/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
 
 # Generic cylindrical detector with a height of 100m and a 
 # diameter of 69m with 12" HPD and 14.59% photocoverage
@@ -37,7 +37,7 @@
 #/WCSim/HyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
 
 
-#/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
+/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
 
 #Added for the PMT QE option 08/17/10 (XQ)
 # 1. Stacking only mean when the photon is generated
