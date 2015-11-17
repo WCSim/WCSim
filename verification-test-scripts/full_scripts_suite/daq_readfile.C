@@ -91,6 +91,16 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
   // start with the main "subevent", as it contains most of the info
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
+  //The 0th trigger contains:
+  // - track information
+  // - raw hit information
+  // - digit information (for trigger 0)
+  //Subsequent triggers contain:
+  // - digit information (for that trigger) only
+  //Therefore if you want to do truth matching on trigger >= 1,
+  // you need to keep a copy of trigger 0 to read the track/hit info
+  // Store it here
+  WCSimRootTrigger* wcsimroottrigger0;
 
   //book histograms
   TH1F *h1vtx0 = new TH1F("h1vtx0", "Event VTX0", 200, -1500, 1500);
@@ -381,6 +391,9 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
     // Digi hits are arranged in subevents, so loop over these first
     //
     const int ntriggers_loop = max_ntriggers > 0 ? TMath::Min(max_ntriggers, ntriggers) : ntriggers;
+
+    //save a pointer to the 0th WCSimRootTrigger, so can access track/hit information in triggers >= 1
+    wcsimroottrigger0 = wcsimrootevent;
     for (int itrigger = 0 ; itrigger < ntriggers_loop; itrigger++) {
 
       ttriggernumber = itrigger;
@@ -469,7 +482,7 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	for(int ipmt = 0; ipmt < ncherenkovhits; ipmt++) {
 	  if(verbose)
 	    cout << "Getting hit " << ipmt << " of " << ncherenkovhits << endl;
-	  TObject *Hit = (wcsimrootevent->GetCherenkovHits())->At(ipmt);
+	  TObject *Hit = (wcsimroottrigger0->GetCherenkovHits())->At(ipmt);
 	  WCSimRootCherenkovHit *wcsimrootcherenkovhit =
 	    dynamic_cast<WCSimRootCherenkovHit*>(Hit);
 	  int tubeNumber     = wcsimrootcherenkovhit->GetTubeID();
@@ -501,7 +514,7 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
 	      continue;
 	    }
 	    //now look in the WCSimRootCherenkovHitTime array to count the number of photon / dark noise hits
-	    TObject *Hit = (wcsimrootevent->GetCherenkovHitTimes())->At(timeArrayIndex + this_rawhit);
+	    TObject *Hit = (wcsimroottrigger0->GetCherenkovHitTimes())->At(timeArrayIndex + this_rawhit);
 	    WCSimRootCherenkovHitTime *wcsimrootcherenkovhittime =
 	      dynamic_cast<WCSimRootCherenkovHitTime*>(Hit);
 	    const double hittime  = wcsimrootcherenkovhittime->GetTruetime();
@@ -590,14 +603,20 @@ int daq_readfile(char *filename=NULL, bool verbose=false, Long64_t max_nevents =
       //fill the per trigger output tree
       tout_trig->Fill();
     }//itrigger // End of loop over triggers
-    
+
+    wcsimroottrigger0 = 0;
+
     // reinitialize super event between loops.
     wcsimrootsuperevent->ReInitialize();
 
     //fill the per event output tree
     tout->Fill();
   }//ev // End of loop over events
-  std::cout<<"num_trig "<<num_trig<<"\n";
+
+  cout << "---------------------------------" << endl
+       << "Run summary" << endl
+       << "nevent (run over) " << nevent << endl
+       << "num_trig (run over) " << num_trig << endl;
 
   //write the trees
   fout->cd();
