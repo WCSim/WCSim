@@ -40,13 +40,13 @@ bool plot_from_txt = false;
 
 #define ROOTMODE
 #ifdef ROOTMODE
-int plot_tree(int ievent_to_use = 0, int itriggertype = -10, int itrigger = 0){
-  
+int plot_tree(const char * infilename = "output.root", int ievent_to_use = 0, int itriggertype = -10, int itrigger = 0){
+  TFile *f  = new TFile(infilename, "READ");
+  TFile *of = new TFile(Form("plot_%s", infilename), "RECREATE");
 #else
 int main() {
   int ievent_to_use   = 10; 
   int itrigger = 0;
-#endif
 
   // open input and output files
 #if !plot_from_txt
@@ -56,6 +56,8 @@ int main() {
   TFile *f = new TFile("output_from_txt.root","READ");
   TFile *of = new TFile("plot_from_txt.root","RECREATE");
 #endif
+  const char * infilename = "display_event"; //for plot naming
+#endif//!ROOTMODE
 
   // geometry tree
   TTree * geom_tree = (TTree*)f->Get("geom_tree");
@@ -383,9 +385,9 @@ int main() {
     c_display.Update();
 
 
-    figname=Form("figure/display_event_%d_trigger_%d_%d.eps",ievent,itrigger,this_triggertype);
+    figname=Form("figure/plot_%s_%d_trigger_%d_%d.eps",infilename, ievent,itrigger,this_triggertype);
     //c_display.Print(figname.Data());
-    figname=Form("figure/display_event_%d_trigger_%d_%d.pdf",ievent,itrigger,this_triggertype);
+    figname=Form("figure/plot_%s_%d_trigger_%d_%d.pdf",infilename, ievent,itrigger,this_triggertype);
     c_display.Print(figname.Data());
 
     if( make_animation ){
@@ -436,10 +438,10 @@ int main() {
 	h_y0_vs_x0_bottom_time[i].Draw("p");
 	c_display.Modified();
 	c_display.Update();
-      
-	figname=Form("figure/display_event_%d_trigger_%d_%d_time_%s.gif",ievent,itrigger,this_triggertype,number_with_digits(i,n_digits).c_str());
+
+	figname=Form("figure/plot_%s_%d_trigger_%d_%d_time_%s.gif",infilename,ievent,itrigger,this_triggertype,number_with_digits(i,n_digits).c_str());
 	c_display.Print(figname.Data());
-	figname=Form("figure/display_event_%d_trigger_%d_%d.gif+25",ievent,itrigger,this_triggertype);
+	figname=Form("figure/plot_%s_%d_trigger_%d_%d.gif+25",infilename,ievent,itrigger,this_triggertype);
 	//c_display.Print(figname.Data());
       }
     }//make_animation

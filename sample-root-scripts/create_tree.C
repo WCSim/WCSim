@@ -25,8 +25,9 @@
 
 void load_library();
 TFile * get_input_file(char *filename);
+TString create_filename(const char * prefix, TString& filename_string);
 
-void create_tree(char *filename=NULL)
+void create_tree(char *filename=NULL, bool verbose = false)
 {
 
   // load library
@@ -52,7 +53,8 @@ void create_tree(char *filename=NULL)
 
 
   // create output file
-  TFile *fo = new TFile("output.root", "RECREATE");
+  TString filenameout(filename);
+  TFile * fo = new TFile(create_filename("tree_", filenameout).Data(), "RECREATE");
 
   // geometry tree
   TTree geom_tree("geom_tree","geometry tree");
@@ -474,6 +476,14 @@ void load_library(){
 #endif
   return;
 
+}
+
+TString create_filename(const char * prefix, TString& filename_string)
+{
+  //std::cout << "Creating filename from prefix " << prefix << " and filename_string " << filename_string << std::endl;                                                                                                                                                  
+  TString prefix_string(prefix);
+  TString outfilename = prefix_string + filename_string;
+  return outfilename;
 }
 
 TFile * get_input_file(char *filename){
