@@ -4,6 +4,25 @@
 #include <stdlib.h>    
 #include <vector>
 
+#include "TFile.h"
+#include "TTree.h"
+#include "TBranch.h"
+#include "TObject.h"
+#include "TSystem.h"
+
+#if !defined(__CINT__) || defined(__MAKECINT__)
+#include "WCSimRootEvent.hh"
+#include "WCSimRootGeom.hh"
+#include "WCSimEnumerations.hh"
+#endif
+
+#ifdef __MAKECINT__
+#pragma link C++ class std::vector<std::vector<Int_t> >+;
+#pragma link C++ class std::vector<std::vector<Float_t> >+;
+#pragma link C++ class std::vector<std::vector<std::vector<Int_t> > >+;
+#pragma link C++ class std::vector<std::vector<std::vector<Float_t> > >+;
+#endif
+
 void load_library();
 TFile * get_input_file(char *filename);
 
@@ -367,10 +386,10 @@ void create_tree(char *filename=NULL)
 
 	for (int irawhittimes = timeArrayIndex; irawhittimes < timeArrayIndex + peForTube; irawhittimes++)
 	  {
-	    WCSimRootCherenkovHitTime HitTime = dynamic_cast<WCSimRootCherenkovHitTime>(timeArray->At(irawhittimes));
+	    WCSimRootCherenkovHitTime * HitTime = dynamic_cast<WCSimRootCherenkovHitTime*>(timeArray->At(irawhittimes));
 	    
-	    vv_raw_hit_times.push_back(HitTime.GetTruetime());
-	    vv_raw_hit_parent_ids.push_back(HitTime.GetParentID());
+	    vv_raw_hit_times.push_back(HitTime->GetTruetime());
+	    vv_raw_hit_parent_ids.push_back(HitTime->GetParentID());
 	  }
 	
 	v_raw_hit_times.push_back(vv_raw_hit_times);
@@ -402,7 +421,7 @@ void create_tree(char *filename=NULL)
 	// init trigger raw hit time variables
 	vv_digitized_hit_photon_ids.clear();
 	wcsimrootcherenkovdigihit->GetPhotonIds();
-	for(int iph=0; iph<(wcsimrootcherenkovdigihit->GetPhotonIds()).size(); iph++)
+	for(unsigned int iph=0; iph<(wcsimrootcherenkovdigihit->GetPhotonIds()).size(); iph++)
 	  vv_digitized_hit_photon_ids.push_back((wcsimrootcherenkovdigihit->GetPhotonIds()).at(iph));
 
 	v_digitized_hit_photon_ids.push_back(vv_digitized_hit_photon_ids);
@@ -434,6 +453,7 @@ void create_tree(char *filename=NULL)
 
 void load_library(){
 
+#if !defined(__MAKECINT__)
   char* wcsimdirenv;
   wcsimdirenv = getenv ("WCSIMDIR");
   if(wcsimdirenv !=  NULL){
@@ -441,7 +461,7 @@ void load_library(){
   }else{
     gSystem->Load("../libWCSimRoot.so");
   }
-
+#endif
   return;
 
 }
@@ -456,7 +476,7 @@ TFile * get_input_file(char *filename){
     f = new TFile(filename,"read");
   }
   if (!f->IsOpen()){
-    cout << "Error, could not open input file: " << filename << endl;
+    std::cerr << "Error, could not open input file: " << filename << std::endl;
     exit(0);
   }
   
