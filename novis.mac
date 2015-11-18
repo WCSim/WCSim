@@ -59,12 +59,6 @@
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 /WCSim/SavePi0 false
 
-## select the input nuance-formatted vector file
-## you can of course use your own
-#/mygen/vecfile inputvectorfile
-#/mygen/vecfile h2o.2km.001-009x3_G4.kin
-#/mygen/vecfile mu+.out
-
 
 #choose the Trigger & Digitizer type (and options)
 # set at least one of the following two options (both /DAQ/Digitizer and /DAQ/Trigger to be clear) to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger class (WCSimWCDigitizer)
@@ -137,13 +131,33 @@
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
 
+
+## select the input nuance-formatted vector file
+## you can of course use your own
+#/mygen/generator muline
+#/mygen/vecfile inputvectorfile
+#/mygen/vecfile h2o.2km.001-009x3_G4.kin
+#/mygen/vecfile mu+.out
+
 # Or you can use the G4 Particle Gun
+# for a full list of /gun/ commands see:
+# http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
 /mygen/generator normal
 /gun/particle e-
 #/gun/particle pi0
 /gun/energy 500 MeV
 /gun/direction 1 0 0 
 /gun/position 0 0 0  
+
+# Or you can use the G4 General Particle Source
+# you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
+# for a full list of /gps/ commands see:
+# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+#/mygen/generator laser
+#/gps/particle e-
+#/gps/energy 500 MeV
+#/gps/direction 1 0 0
+#/gps/position 0 0 0
 
 ## change the name of the output root file, default = wcsim.root
 
