@@ -101,7 +101,7 @@ int main(int argc,char** argv)
   runManager->SetUserAction(myRunAction);
 
   runManager->SetUserAction(new WCSimEventAction(myRunAction, WCSimdetector,
-        myGeneratorAction));
+						 myGeneratorAction));
   runManager->SetUserAction(new WCSimTrackingAction);
 
   runManager->SetUserAction(new WCSimStackingAction(WCSimdetector));
