@@ -104,9 +104,9 @@ void create_tree(char *filename=NULL)
   int number_of_raw_cherenkov_hits;
   int number_of_digitized_cherenkov_hits;
 
-  std::vector<Int_t> trigger_number, trigger_date, trigger_mode, trigger_vtxvol, trigger_vec_rec_number, trigger_jmu, trigger_jp, trigger_npar, trigger_ntrack, trigger_number_raw_hits, trigger_number_digitized_hits, trigger_number_times;
-
+  std::vector<Int_t> event_number, trigger_number, trigger_date, trigger_mode, trigger_vtxvol, trigger_vec_rec_number, trigger_jmu, trigger_jp, trigger_npar, trigger_ntrack, trigger_number_raw_hits, trigger_number_digitized_hits, trigger_number_times, trigger_type;
   std::vector<Float_t> trigger_vtx_x, trigger_vtx_y, trigger_vtx_z, trigger_sum_q;
+  std::vector<std::vector<Float_t> > trigger_info;
 
   std::vector<Int_t> v_track_ipnu, v_track_parent_type, v_track_flag, v_track_start_volume, v_track_stop_volume, v_track_id;
   std::vector<std::vector<Int_t> > track_ipnu,   track_parent_type,   track_flag,   track_start_volume,   track_stop_volume,   track_id;
@@ -132,6 +132,7 @@ void create_tree(char *filename=NULL)
   std::vector<std::vector<Int_t> > v_digitized_hit_photon_ids;
   std::vector<std::vector<std::vector<Int_t> > > digitized_hit_photon_ids;
 
+  primary_events_tree.Branch("event_number",&event_number);
   primary_events_tree.Branch("trigger_number",&trigger_number);
   primary_events_tree.Branch("trigger_date",&trigger_date);
   primary_events_tree.Branch("trigger_mode",&trigger_mode); // interaction mode
@@ -147,6 +148,8 @@ void create_tree(char *filename=NULL)
   primary_events_tree.Branch("trigger_number_raw_hits",&trigger_number_raw_hits); // Total number of tubes with hits
   primary_events_tree.Branch("trigger_number_digitized_hits",&trigger_number_digitized_hits); // Number of PMTs with digitized hits
   primary_events_tree.Branch("trigger_sum_q",&trigger_sum_q); // sum of q(readout digitized pe) in event
+  primary_events_tree.Branch("trigger_type",&trigger_type); // enumeration of trigger type (stored as int)
+  primary_events_tree.Branch("trigger_info",&trigger_info); // info about why the trigger was passed
   primary_events_tree.Branch("trigger_number_times",&trigger_number_times);
 
   primary_events_tree.Branch("track_ipnu",&track_ipnu); // id of final state particle
@@ -191,6 +194,7 @@ void create_tree(char *filename=NULL)
     wcsimT->GetEvent(ievent); 
 
     // init trigger variables
+    event_number.clear();
     trigger_number.clear();
     trigger_date.clear();
     trigger_mode.clear();
@@ -207,6 +211,8 @@ void create_tree(char *filename=NULL)
     trigger_number_digitized_hits.clear();
     trigger_number_times.clear();
     trigger_sum_q.clear();
+    trigger_type.clear();
+    trigger_info.clear();
 
     // init track variables
     track_ipnu.clear();
@@ -253,7 +259,8 @@ void create_tree(char *filename=NULL)
 
       wcsimrootevent = wcsimrootsuperevent->GetTrigger(itrigger);
 
-      trigger_number.push_back(wcsimrootevent->GetHeader()->GetEvtNum());
+      event_number.push_back(wcsimrootevent->GetHeader()->GetEvtNum());
+      trigger_number.push_back(itrigger); 
       trigger_date.push_back(wcsimrootevent->GetHeader()->GetDate());
       trigger_mode.push_back(wcsimrootevent->GetMode());
       trigger_vtxvol.push_back(wcsimrootevent->GetVtxvol());
@@ -272,6 +279,9 @@ void create_tree(char *filename=NULL)
       trigger_number_digitized_hits.push_back(number_of_digitized_cherenkov_hits);
       trigger_number_times.push_back(wcsimrootevent->GetNcherenkovhittimes());
       trigger_sum_q.push_back(wcsimrootevent->GetSumQ());
+
+      trigger_type.push_back(wcsimrootevent->GetTriggerType());
+      trigger_info.push_back(wcsimrootevent->GetTriggerInfo());
 
       // init trigger track variables
       v_track_ipnu.clear();
