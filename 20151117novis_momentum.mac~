@@ -132,21 +132,14 @@
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
 
-# Or you can use the G4 Particle Gun
 /mygen/generator normal
-/gun/particle e-
-##/gun/particle pi0
-##/gun/energy 500 MeV
-/gun/direction 1 0 0 
-/gun/position 0 0 0  
 
 # use Geant4 /gps
-/gps/particle e-
+/gps/particle mu
 /gps/ene/type Lin
 /gps/ene/intercept 0.1111
 /gps/ene/min 1 GeV
 /gps/ene/max 10 GeV
-
 
 #/gps/pos/type Volume
 #/gps/pos/shape Cylinder
