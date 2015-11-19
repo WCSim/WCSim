@@ -295,6 +295,23 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
        //       SetBeamDir(dir);
        SetBeamPDG(pdg);
     }
+  else if (useRadioactiveEvt)
+    {
+      targetpdg = 2212; //ie. proton 
+      MyGPS->GeneratePrimaryVertex(anEvent);
+      
+       G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
+       G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
+       G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
+      
+//       G4ThreeVector dir  = P.unit();
+       G4double E         = std::sqrt((P.dot(P)));
+      
+       SetVtx(vtx);
+       SetBeamEnergy(E);
+       //       SetBeamDir(dir);
+       SetBeamPDG(pdg);
+    }
 }
 
 // Returns a vector with the tokens
