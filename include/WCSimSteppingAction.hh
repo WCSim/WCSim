@@ -35,7 +35,7 @@ public:
 private:
 
   G4double ret[2];
-
+  bool first2, first3, first4;
 };
 
 

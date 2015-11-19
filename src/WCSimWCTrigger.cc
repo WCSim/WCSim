@@ -276,6 +276,7 @@ void WCSimWCTriggerBase::FillDigitsCollectionNoTrigger(WCSimWCDigitsCollection* 
       //loop over digits in this PMT
       for ( G4int ip = 0; ip < (*WCDCPMT)[i]->GetTotalPe(); ip++){
 	int digit_time  = (*WCDCPMT)[i]->GetTime(ip);
+	std::cout<<"DIGITTIME "<<digit_time<<"\n";
 	if(digit_time >= lowerbound && digit_time <= upperbound) {
 	  //hit in event window
 	  //add it to DigitsCollection

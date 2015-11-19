@@ -23,10 +23,6 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
   G4String WCIDCollectionName = DetConstruct->GetIDCollectionName();
   G4ClassificationOfNewTrack classification    = fWaiting;
   G4ParticleDefinition*      particleType      = aTrack->GetDefinition();
-  if(aTrack->GetParentID() == 0) {
-    particleType_ID0 = particleType;
-  }
-  
 
   // Make sure it is an optical photon
   if( particleType == G4OpticalPhoton::OpticalPhotonDefinition() )

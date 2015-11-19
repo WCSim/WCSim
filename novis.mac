@@ -146,7 +146,7 @@
 #/mygen/generator laser
 #/gps/energy 0 keV
 #/gps/particle ion
-#/gps/ion 83 214 0  0
+#/gps/ion 81 208 0  0
 
 /mygen/generator radioactive
 # Clear the source and tell GPS to make multiple vertices

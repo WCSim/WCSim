@@ -224,7 +224,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		      //not ion
 		      particleGun->
 			SetParticleDefinition(particleTable->
-					      FindParticle(pdgid));
+		      FindParticle(pdgid));
 		    }
 		    G4double mass = 
 		      particleGun->GetParticleDefinition()->GetPDGMass();
@@ -271,6 +271,33 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4double m       =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
     G4int pdg        =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
    
+
+    char strPDG[11];
+    char strA[10]={0};
+    char strZ[10]={0};
+    
+    
+    long int A=0,Z=0;
+    //		    A=strotl(strPDG,&str);
+    if(abs(pdg) >= 1000000000)
+      {
+	//ion
+	sprintf(strPDG,"%i",abs(pdg));
+	strncpy(strZ, &strPDG[3], 3);
+	strncpy(strA, &strPDG[6], 3);
+	strA[3]='\0';
+	strZ[3]='\0';
+	A=atoi(strA);
+	Z=atoi(strZ);
+      }
+    
+    G4ParticleDefinition* ion   = G4ParticleTable::GetParticleTable()->GetIon(Z, A, 0);
+    ion->SetPDGStable(false);
+    ion->SetPDGLifeTime(0.);
+    
+    G4ParticleDefinition* ion2   = G4ParticleTable::GetParticleTable()->GetIon(Z, A, 0);
+    std::cout<<"ion2 "<<ion2->GetPDGLifeTime()<<"\n";
+    
     G4ThreeVector dir  = P.unit();
     G4double E         = std::sqrt((P.dot(P))+(m*m));
 
