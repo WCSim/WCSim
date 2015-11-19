@@ -339,6 +339,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    G4int npar = 0;
    
    // First two tracks are special: beam and target
+   /////////////////////////////////
+   // npar = 0        NEUTRINO /////
+   /////////////////////////////////
    
    G4int         beampdg;
    G4double      beamenergy;
@@ -374,6 +377,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    jhfNtuple.parent[npar] = 0;
    
    npar++;
+   /////////////////////////////////
+   // npar = 1        TARGET ///////
+   /////////////////////////////////
 
   G4double      targetpmag = 0.0, targetmass = 0.0;
   G4int         targetpdg    = generatorAction->GetTargetPDG();
@@ -417,6 +423,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   jhfNtuple.parent[npar] = 0;
 
   npar++;
+  //////////////////////
+  // npar > 1    ///////
+  //////////////////////
 
   // Draw Charged Tracks
   G4int trkid_e=INT_MAX,trkid_v_e=INT_MAX,trkid_gam=INT_MAX;
@@ -736,7 +745,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       pdir[l]=jhfNtuple.pdir[k][l];
       stop[l]=jhfNtuple.stop[k][l];
       start[l]=jhfNtuple.start[k][l];
-	G4cout<< "start[" << k << "][" << l <<"]: "<< jhfNtuple.start[k][l] <<G4endl;
+      //G4cout<< "start[" << k << "][" << l <<"]: "<< jhfNtuple.start[k][l] <<G4endl;
     }
 
     // Add the track to the TClonesArray
@@ -855,7 +864,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	pdir[l]=mom[l];        // momentum-vector 
 	stop[l]=Stop[l]/cm; // stopping point 
 	start[l]=Start[l]/cm; // starting point 
-	G4cout<<"part 2 start["<<l<<"]: "<< start[l] <<G4endl;
+	//G4cout<<"part 2 start["<<l<<"]: "<< start[l] <<G4endl;
       }
 
 

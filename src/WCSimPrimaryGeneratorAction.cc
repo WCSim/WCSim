@@ -72,6 +72,9 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   messenger = new WCSimPrimaryGeneratorMessenger(this);
   useMulineEvt = true;
   useNormalEvt = false;
+  useTl208Evt = true;
+  useBi214Evt = false;
+  useK40Evt = false;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -331,6 +334,16 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   else if (useRadioactiveEvt)
     {
       targetpdg = 2212; //ie. proton 
+
+      MyGPS->SetMultipleVertex(true);
+
+      if (useTl208Evt)
+	MyGPS->SetParticleDefinition(G4ParticleTable::GetParticleTable()->GetIon( 81, 208, 0));
+      else if( useBi214Evt )
+	MyGPS->SetParticleDefinition(G4ParticleTable::GetParticleTable()->GetIon( 83, 214, 0));
+      else if( useK40Evt )
+	MyGPS->SetParticleDefinition(G4ParticleTable::GetParticleTable()->GetIon( 19, 40, 0));
+
 
       // this will generate several primary vertexes
       MyGPS->GeneratePrimaryVertex(anEvent);
