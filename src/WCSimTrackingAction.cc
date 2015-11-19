@@ -32,7 +32,7 @@ WCSimTrackingAction::~WCSimTrackingAction(){;}
 void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
   G4float percentageOfCherenkovPhotonsToDraw = 0.0;
-
+  
   if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()
        || G4UniformRand() < percentageOfCherenkovPhotonsToDraw )
     {
@@ -87,7 +87,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 
   G4Track* theTrack = (G4Track*)aTrack;
   theTrack->SetUserInformation(anInfo);
-
+  
   // pass primary parent ID to children
   G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
   if(secondaries)

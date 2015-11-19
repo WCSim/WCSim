@@ -3,7 +3,7 @@
 #/run/verbose 2
 #/tracking/verbose 2
 #/hits/verbose 2
-/grdm/verbose 3
+#/grdm/verbose 3
 
 ## select the geometry
 # Default config if you do nothing is currently SuperK
@@ -108,7 +108,7 @@
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz
 #/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
-/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 
 # command to multiply the dark rate.
@@ -134,22 +134,23 @@
 #/grdm/selectVolume WCBarrel
 
 # Or you can use the G4 Particle Gun
-#/mygen/generator normal
+/mygen/generator normal
 ##/gun/particle e-
 ##/gun/particle pi0
-#/gun/particle ion 
-#/gun/ion 19 40
-#/gun/energy 0 MeV
+/gun/particle ion 
+/gun/ion 81 208
+/gun/energy 0 MeV
 ##/gun/direction 1 0 0 
-##/gun/position 0 0 0  
+/gun/position 0 0 0  
 
 #/mygen/generator laser
 #/gps/energy 0 keV
 #/gps/particle ion
-#/gps/ion 83 214 0  0
+#/gps/ion 81 208 0  0
 
-/grdm/analogueMC 0
-/grdm/BRbias 0
+/grdm/decayBiasProfile measures.data
+/grdm/analogueMC 1
+/grdm/BRbias 1
 
 ## change the name of the output root file, default = wcsim.root
 
