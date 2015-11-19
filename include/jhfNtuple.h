@@ -3,6 +3,9 @@ struct ntupleStruct
   int mode;             // interaction mode
   int vtxvol;           // volume of vertex
   float vtx[3];         // interaction vertex
+  int nvtxs;           // number of vertexes
+  int vtxsvol[50];           // volume of vertexes
+  float vtxs[50][3];         // interaction vertexes
   int vecRecNumber;     // info event number in inputvetcotfile
   int  jmu;             // index to muon
   int  jp;              // index to proton
@@ -51,6 +54,9 @@ static const char* ntDesc =
 "mode:I,"
 "vtxvol:I,"
 "vtx(3):R,"
+"nvtxs[0,50]:I,"
+"vtxsvol(npar):I,"
+"vtxs(3,npar):R,"
 "vecRecNumber:I,"
 "jmu:I,"
 "jp:I,"

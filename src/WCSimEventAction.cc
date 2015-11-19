@@ -159,8 +159,21 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
   G4int         event_id = evt->GetEventID();
   G4int         mode     = generatorAction->GetMode();
-  G4ThreeVector vtx      = generatorAction->GetVtx();
-  G4int         vtxvol   = WCSimEventFindStartingVolume(vtx);
+
+  G4int         nvtxs   = generatorAction->GetNvtxs();
+  G4ThreeVector vtx;
+  G4int         vtxvol;
+  G4ThreeVector vtxs[50];
+  G4int         vtxsvol[50];
+  if( nvtxs == 1 ){
+    vtx      = generatorAction->GetVtx();
+    vtxvol   = WCSimEventFindStartingVolume(vtx);
+  }else{
+    for( Int_t u=0; u<nvtxs; u++ ){
+      vtxs[u]      = generatorAction->GetVtxs(u);
+      vtxsvol[u]   = WCSimEventFindStartingVolume(vtxs[u]);
+    }
+  }
   G4int         vecRecNumber = generatorAction->GetVecRecNumber();
 
   // ----------------------------------------------------------------------
@@ -298,14 +311,24 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // ----------------------------------------------------------------------
 
    jhfNtuple.mode   = mode;         // interaction mode
-   jhfNtuple.vtxvol = vtxvol;       // volume of vertex
-   // unit mismatch between geant4 and reconstruction, M Fechner
-   //  jhfNtuple.vtx[0] = vtx[0]/1000.; // interaction vertex
-   //jhfNtuple.vtx[1] = vtx[1]/1000.; // interaction vertex
-   //jhfNtuple.vtx[2] = vtx[2]/1000.; // interaction vertex
-   jhfNtuple.vtx[0] = vtx[0]/cm; // interaction vertex
-   jhfNtuple.vtx[1] = vtx[1]/cm; // interaction vertex
-   jhfNtuple.vtx[2] = vtx[2]/cm; // interaction vertex
+   jhfNtuple.nvtxs = nvtxs;       // number of vertexes
+   if( nvtxs == 1 ){
+     jhfNtuple.vtxvol = vtxvol;       // volume of vertex
+     // unit mismatch between geant4 and reconstruction, M Fechner
+     //  jhfNtuple.vtx[0] = vtx[0]/1000.; // interaction vertex
+     //jhfNtuple.vtx[1] = vtx[1]/1000.; // interaction vertex
+     //jhfNtuple.vtx[2] = vtx[2]/1000.; // interaction vertex
+     jhfNtuple.vtx[0] = vtx[0]/cm; // interaction vertex
+     jhfNtuple.vtx[1] = vtx[1]/cm; // interaction vertex
+     jhfNtuple.vtx[2] = vtx[2]/cm; // interaction vertex
+   }else{
+    for( Int_t u=0; u<nvtxs; u++ ){
+      jhfNtuple.vtxsvol[u] = vtxsvol[u];       // volume of vertex
+      jhfNtuple.vtxs[u][0] = vtxs[u][0]/cm; // interaction vertex
+      jhfNtuple.vtxs[u][1] = vtxs[u][1]/cm; // interaction vertex
+      jhfNtuple.vtxs[u][2] = vtxs[u][2]/cm; // interaction vertex
+    }
+   }
    jhfNtuple.vecRecNumber = vecRecNumber; //vectorfile record number
    
    // mustop, pstop, npar will be filled later
@@ -317,10 +340,20 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    
    // First two tracks are special: beam and target
    
-   G4int         beampdg    = generatorAction->GetBeamPDG();
-   G4double      beamenergy = generatorAction->GetBeamEnergy();
-   G4ThreeVector beamdir    = generatorAction->GetBeamDir();
-   
+   G4int         beampdg;
+   G4double      beamenergy;
+   G4ThreeVector beamdir;
+
+   if( nvtxs == 1 ){ 
+     beampdg    = generatorAction->GetBeamPDG();
+     beamenergy = generatorAction->GetBeamEnergy();
+     beamdir    = generatorAction->GetBeamDir();
+   }else{
+      beampdg    = generatorAction->GetBeamPDGs(0);
+      beamenergy = generatorAction->GetBeamEnergies(0);
+      beamdir    = generatorAction->GetBeamDirs(0);
+   }
+  
    jhfNtuple.ipnu[npar]    = beampdg;               // id
    jhfNtuple.flag[npar]    = -1;                    // incoming neutrino
    jhfNtuple.m[npar]       = 0.0;                   // mass (always a neutrino)
@@ -664,10 +697,22 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // Fill other info for this event
 
   wcsimrootevent->SetMode(jhfNtuple.mode);
-  wcsimrootevent->SetVtxvol(jhfNtuple.vtxvol);
-  for (int j=0;j<3;j++)
-  {
-    wcsimrootevent->SetVtx(j,jhfNtuple.vtx[j]);
+
+  wcsimrootevent->SetNvtxs(jhfNtuple.nvtxs);
+  if( jhfNtuple.nvtxs == 1 ){
+    wcsimrootevent->SetVtxvol(jhfNtuple.vtxvol);
+    for (int j=0;j<3;j++)
+      {
+	wcsimrootevent->SetVtx(j,jhfNtuple.vtx[j]);
+      }
+  }else{
+    for( Int_t u=0; u<jhfNtuple.nvtxs; u++ ){
+      wcsimrootevent->SetVtxsvol(u,jhfNtuple.vtxsvol[u]);
+      for (int j=0;j<3;j++)
+	{
+	  wcsimrootevent->SetVtxs(u,j,jhfNtuple.vtxs[u][j]);
+	}
+    }
   }
   wcsimrootevent->SetJmu(jhfNtuple.jmu);
   wcsimrootevent->SetJp(jhfNtuple.jp);

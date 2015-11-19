@@ -27,13 +27,6 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
     particleType_ID0 = particleType;
   }
   
-  // Reset products of radioactive decay to start at time zero
-  if( aTrack->GetParentID() == 1 && particleType_ID0 == G4GenericIon::GenericIonDefinition())// && aTrack->GetGlobalTime() > 1 * second )
-    {
-      (const_cast<G4Track *>(aTrack))->SetGlobalTime(0);
-    }
-
-  
 
   // Make sure it is an optical photon
   if( particleType == G4OpticalPhoton::OpticalPhotonDefinition() )

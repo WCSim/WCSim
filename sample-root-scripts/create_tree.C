@@ -33,6 +33,9 @@ void create_tree(char *filename=NULL, bool verbose = false)
   // load library
   load_library();
 
+  if (filename==NULL)
+    filename="../wcsim.root";
+
   // open input file
   TFile *f = get_input_file(filename);
   
@@ -54,7 +57,7 @@ void create_tree(char *filename=NULL, bool verbose = false)
 
   // create output file
   TString filenameout(filename);
-  TFile * fo = new TFile(create_filename("tree_", filenameout).Data(), "RECREATE");
+  TFile * fo = new TFile("output.root", "RECREATE");
 
   // geometry tree
   TTree geom_tree("geom_tree","geometry tree");
@@ -106,9 +109,10 @@ void create_tree(char *filename=NULL, bool verbose = false)
   int number_of_raw_cherenkov_hits;
   int number_of_digitized_cherenkov_hits;
 
-  std::vector<Int_t> event_number, trigger_number, trigger_date, trigger_mode, trigger_vtxvol, trigger_vec_rec_number, trigger_jmu, trigger_jp, trigger_npar, trigger_ntrack, trigger_number_raw_hits, trigger_number_digitized_hits, trigger_number_times, trigger_type;
-  std::vector<Float_t> trigger_vtx_x, trigger_vtx_y, trigger_vtx_z, trigger_sum_q;
-  std::vector<std::vector<Float_t> > trigger_info;
+  std::vector<Int_t> event_number, trigger_number, trigger_date, trigger_mode, v_trigger_vtxvol, trigger_vec_rec_number, trigger_jmu, trigger_jp, trigger_npar, trigger_ntrack, trigger_number_raw_hits, trigger_number_digitized_hits, trigger_number_times, trigger_type, trigger_nvertex;
+  std::vector<std::vector<Int_t> > trigger_vtxvol;
+  std::vector<Float_t> v_trigger_vtx_x, v_trigger_vtx_y, v_trigger_vtx_z, trigger_sum_q;
+  std::vector<std::vector<Float_t> > trigger_info, trigger_vtx_x, trigger_vtx_y, trigger_vtx_z;
 
   std::vector<Int_t> v_track_ipnu, v_track_parent_type, v_track_flag, v_track_start_volume, v_track_stop_volume, v_track_id;
   std::vector<std::vector<Int_t> > track_ipnu,   track_parent_type,   track_flag,   track_start_volume,   track_stop_volume,   track_id;
@@ -147,6 +151,7 @@ void create_tree(char *filename=NULL, bool verbose = false)
   primary_events_tree.Branch("trigger_jp",&trigger_jp); // index to proton
   primary_events_tree.Branch("trigger_npar",&trigger_npar); // number of final state particles
   primary_events_tree.Branch("trigger_ntrack",&trigger_ntrack);
+  primary_events_tree.Branch("trigger_nvertex",&trigger_nvertex);
   primary_events_tree.Branch("trigger_number_raw_hits",&trigger_number_raw_hits); // Total number of tubes with hits
   primary_events_tree.Branch("trigger_number_digitized_hits",&trigger_number_digitized_hits); // Number of PMTs with digitized hits
   primary_events_tree.Branch("trigger_sum_q",&trigger_sum_q); // sum of q(readout digitized pe) in event
@@ -209,6 +214,7 @@ void create_tree(char *filename=NULL, bool verbose = false)
     trigger_jp.clear();
     trigger_npar.clear();
     trigger_ntrack.clear();
+    trigger_nvertex.clear();
     trigger_number_raw_hits.clear();
     trigger_number_digitized_hits.clear();
     trigger_number_times.clear();
@@ -265,10 +271,26 @@ void create_tree(char *filename=NULL, bool verbose = false)
       trigger_number.push_back(itrigger); 
       trigger_date.push_back(wcsimrootevent->GetHeader()->GetDate());
       trigger_mode.push_back(wcsimrootevent->GetMode());
-      trigger_vtxvol.push_back(wcsimrootevent->GetVtxvol());
-      trigger_vtx_x.push_back(wcsimrootevent->GetVtx(0));
-      trigger_vtx_y.push_back(wcsimrootevent->GetVtx(1));
-      trigger_vtx_z.push_back(wcsimrootevent->GetVtx(2));
+
+      // init trigger vertex variables
+      v_trigger_vtxvol.clear();
+      v_trigger_vtx_x.clear();
+      v_trigger_vtx_y.clear();
+      v_trigger_vtx_z.clear();
+
+      int n_vertexes = wcsimrootevent->GetNvtxs();
+      trigger_nvertex.push_back(n_vertexes);
+      for(int ivertex=0; ivertex<n_vertexes; ivertex++){
+	v_trigger_vtxvol.push_back(wcsimrootevent->GetVtxsvol(ivertex));
+	v_trigger_vtx_x.push_back(wcsimrootevent->GetVtxs(ivertex, 0));
+	v_trigger_vtx_y.push_back(wcsimrootevent->GetVtxs(ivertex, 1));
+	v_trigger_vtx_z.push_back(wcsimrootevent->GetVtxs(ivertex, 2));
+      }
+      trigger_vtxvol.push_back(v_trigger_vtxvol);
+      trigger_vtx_x.push_back(v_trigger_vtx_x);
+      trigger_vtx_y.push_back(v_trigger_vtx_y);
+      trigger_vtx_z.push_back(v_trigger_vtx_z);
+
       trigger_vec_rec_number.push_back(wcsimrootevent->GetVecRecNumber());
       trigger_jmu.push_back(wcsimrootevent->GetJmu());
       trigger_jp.push_back(wcsimrootevent->GetJp());
@@ -490,11 +512,8 @@ TFile * get_input_file(char *filename){
 
   TFile *f;
   // Open the file                                                                                                            
-  if (filename==NULL){
-    f = new TFile("../wcsim.root","read");
-  }else{
-    f = new TFile(filename,"read");
-  }
+  f = new TFile(filename,"read");
+
   if (!f->IsOpen()){
     std::cerr << "Error, could not open input file: " << filename << std::endl;
     exit(0);

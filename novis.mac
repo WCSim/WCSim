@@ -149,6 +149,11 @@
 #/gps/ion 83 214 0  0
 
 /mygen/generator radioactive
+# Clear the source and tell GPS to make multiple vertices
+/gps/source/clear
+/gps/source/multiplevertex true
+# Create the first particle
+/gps/source/add 1
 /gps/energy 0 keV
 /gps/position 0 0 0 cm
 /gps/pos/type Volume
@@ -159,8 +164,27 @@
 /gps/pos/rot2 0 1 0 
 /gps/particle ion
 /gps/ion 81 208 0  0
-/gps/number 10
+# Create the second particle
+/gps/source/add 2
+/gps/energy 0 keV
+/gps/position 0 0 0 cm
+/gps/pos/type Volume
+/gps/pos/shape Cylinder
+/gps/pos/radius 37.4 m
+/gps/pos/halfz 30 m
+/gps/pos/rot1 1 0 0 
+/gps/pos/rot2 0 1 0 
+/gps/particle ion
+/gps/ion 81 208 0  0
 
+### profile file to enforce radioactive decay time
+###   t(1)  I(1)
+###   t(2)  I(2)
+###   t(3)  I(3)
+### times t(i) are in seconds
+### decay intenseity I(i) is distributed flat from t(i) to t(i+1)
+
+/grdm/decayBiasProfile biasprofile.dat
 /grdm/analogueMC 0
 /grdm/BRbias 0
 

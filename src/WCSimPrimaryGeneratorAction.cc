@@ -37,13 +37,19 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 					  WCSimDetectorConstruction* myDC)
   :myDetector(myDC)
 {
+
   //T. Akiri: Initialize GPS to allow for the laser use 
   MyGPS = new G4GeneralParticleSource();
 
   // Initialize to zero
   mode = 0;
+  nvtxs = 0;
   vtxvol = 0;
   vtx = G4ThreeVector(0.,0.,0.);
+  for( Int_t u=0; u<50; u++){
+    vtxsvol[u] = 0;
+    vtxs[u] = G4ThreeVector(0.,0.,0.);
+  }
   nuEnergy = 0.;
   _counterRock=0; // counter for generated in Rock
   _counterCublic=0; // counter generated
@@ -298,19 +304,26 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   else if (useRadioactiveEvt)
     {
       targetpdg = 2212; //ie. proton 
+
+      // this will generate several primary vertexes
       MyGPS->GeneratePrimaryVertex(anEvent);
+
+      G4int number_of_sources = MyGPS->GetNumberofSource();
+      SetNvtxs(number_of_sources);
+      for( G4int u=0; u<number_of_sources; u++){
+      	G4ThreeVector P   =anEvent->GetPrimaryVertex(u)->GetPrimary()->GetMomentum();
+      	G4ThreeVector vtx =anEvent->GetPrimaryVertex(u)->GetPosition();
+      	G4int pdg         =anEvent->GetPrimaryVertex(u)->GetPrimary()->GetPDGcode();
       
-       G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
-       G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
-       G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
-      
-//       G4ThreeVector dir  = P.unit();
-       G4double E         = std::sqrt((P.dot(P)));
-      
-       SetVtx(vtx);
-       SetBeamEnergy(E);
-       //       SetBeamDir(dir);
-       SetBeamPDG(pdg);
+      	//       G4ThreeVector dir  = P.unit();
+      	G4double E         = std::sqrt((P.dot(P)));
+
+      	SetVtxs(u,vtx);
+      	SetBeamEnergies(u,E);
+      	//       SetBeamDir(dir);
+      	SetBeamPDGs(u,pdg);
+      }
+
     }
 }
 
