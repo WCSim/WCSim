@@ -748,6 +748,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // same, april 7th 2005
   std::set<int> pionList;
   std::set<int> antipionList;
+  std::set<int> primaryList;
 
   // Pi0 specific variables
   Float_t pi0Vtx[3];
@@ -777,7 +778,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     if ( trj->GetPDGEncoding() == -13 ) antimuonList.insert(trj->GetTrackID());
     if ( trj->GetPDGEncoding() == 211 ) pionList.insert(trj->GetTrackID());
     if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
-       
+
+    if( trj->GetParentID() == 0 ) primaryList.insert(trj->GetTrackID());
 
     // Process primary tracks or the secondaries from pizero or muons...
 
@@ -821,9 +823,12 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	parentType = -211;
       } else if (pionList.count(trj->GetParentID()) ) {
 	parentType = 211;
+      } else if (primaryList.count(trj->GetParentID()) ) {
+	parentType = 1;
       } else {  // no identified parent, but not a primary
 	parentType = 999;
       }
+
 
       // G4cout << parentType << " " << ipnu << " " 
       //	     << id << " " << energy << "\n";
