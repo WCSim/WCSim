@@ -149,29 +149,10 @@
 #/gps/ion 81 208 0  0
 
 /mygen/generator radioactive
-/mygen/isotope Tl208
+/mygen/radioactive_time_window 1.e-6
+/mygen/isotope Tl208 water 3.2e6
 # Clear the source and tell GPS to make multiple vertices
 /gps/source/clear
-# Create the first particle
-/gps/source/add 1
-/gps/energy 0 keV
-/gps/position 0 0 0 cm
-/gps/pos/type Volume
-/gps/pos/shape Cylinder
-/gps/pos/radius 37.4 m
-/gps/pos/halfz 30 m
-/gps/pos/rot1 1 0 0 
-/gps/pos/rot2 0 1 0 
-# Create the second particle
-/gps/source/add 2
-/gps/energy 0 keV
-/gps/position 0 0 0 cm
-/gps/pos/type Volume
-/gps/pos/shape Cylinder
-/gps/pos/radius 37.4 m
-/gps/pos/halfz 30 m
-/gps/pos/rot1 1 0 0 
-/gps/pos/rot2 0 1 0 
 
 ### profile file to enforce radioactive decay time
 ###   t(1)  I(1)

@@ -80,6 +80,9 @@ private:
   G4bool   useTl208Evt;
   G4bool   useBi214Evt;
   G4bool   useK40Evt;
+  G4bool   useWaterEvt;
+  G4double IsotopeActivity;
+  G4double radioactive_time_window;
   std::fstream inputFile;
   G4String vectorFileName;
   G4bool   GenerateVertexInRock;
@@ -125,6 +128,15 @@ public:
 
   inline void SetRadioactiveEvtGenerator(G4bool choice) { useRadioactiveEvt = choice; }
   inline G4bool IsUsingRadioactiveEvtGenerator()  { return useRadioactiveEvt; }
+
+  inline void SetWaterEvtGenerator(G4bool choice) { useWaterEvt = choice; }
+  inline G4bool IsUsingWaterEvtGenerator() { return useWaterEvt; }
+
+  inline void SetIsotopeActivity(G4double choice) { IsotopeActivity = choice; }
+  inline G4double GetIsotopeActivity() { return IsotopeActivity; }
+
+  inline void SetRadioactiveTimeWindow(G4double choice) { radioactive_time_window = choice; }
+  inline G4double GetRadioactiveTimeWindow()  { return radioactive_time_window; }
 
   inline void OpenVectorFile(G4String fileName) 
   {

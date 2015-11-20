@@ -19,6 +19,11 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   //T. Akiri: Addition of laser
   genCmd->SetCandidates("muline normal laser radioactive");
 
+  radioactive_time_window_Cmd = new G4UIcmdWithADouble("/mygen/radioactive_time_window",this);
+  radioactive_time_window_Cmd->SetGuidance("Select time window for radioactivity");
+  radioactive_time_window_Cmd->SetParameterName("radioactive_time_window",true);
+  radioactive_time_window_Cmd->SetDefaultValue(0.);
+
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
   fileNameCmd->SetGuidance("Select the file of vectors.");
   fileNameCmd->SetGuidance(" Enter the file name of the vector file");
@@ -26,11 +31,21 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   fileNameCmd->SetDefaultValue("inputvectorfile");
 
   isotopeCmd = new G4UIcmdWithAString("/mygen/isotope",this);
-  isotopeCmd->SetGuidance("Select radioactive isotpe.");
-  isotopeCmd->SetGuidance(" Available isotopes : Tl208, Bi214, K40");
-  isotopeCmd->SetParameterName("isotope",true);
-  isotopeCmd->SetDefaultValue("Tl208");
-  isotopeCmd->SetCandidates("Tl208 Bi214 K40");
+  isotopeCmd->SetGuidance("Select properties of radioactive isotope");
+  isotopeCmd->SetGuidance("[usage] /mygen/isotope ISOTOPE LOCATION ACTIVITY");
+  isotopeCmd->SetGuidance("     ISOTOPE : Tl208, Bi214, K40");
+  isotopeCmd->SetGuidance("     LOCATION : water");
+  isotopeCmd->SetGuidance("     ACTIVITY : (int) activity of isotope (Bq) ");
+  G4UIparameter* param;
+  param = new G4UIparameter("ISOTOPE",'s',true);
+  param->SetDefaultValue("Tl208");
+  isotopeCmd->SetParameter(param);
+  param = new G4UIparameter("LOCATION",'s',true);
+  param->SetDefaultValue("water");
+  isotopeCmd->SetParameter(param);
+  param = new G4UIparameter("ACTIVITY",'d',true);
+  param->SetDefaultValue("0");
+  isotopeCmd->SetParameter(param);
 
 
 }
@@ -38,6 +53,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
 WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
 {
   delete genCmd;
+  delete radioactive_time_window_Cmd;
   delete mydetDirectory;
   delete isotopeCmd;
 }
@@ -84,27 +100,50 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
 
   if( command==isotopeCmd )
   {
-    if (newValue == "Tl208")
+    IsotopeCommand(newValue);
+  }
+
+  if( command==radioactive_time_window_Cmd )
     {
-      myAction->SetTl208EvtGenerator(true);
-      myAction->SetBi214EvtGenerator(false);
-      myAction->SetK40EvtGenerator(false);
+      myAction->SetRadioactiveTimeWindow(StoD(newValue));
     }
-    else if ( newValue == "Bi214")
-    {
-      myAction->SetTl208EvtGenerator(false);
-      myAction->SetBi214EvtGenerator(true);
-      myAction->SetK40EvtGenerator(false);
-    }
-    else if ( newValue == "K40")
-    {
+
+}
+
+ void  WCSimPrimaryGeneratorMessenger::IsotopeCommand(G4String newValue)
+ {
+
+   G4Tokenizer next( newValue );
+
+   G4String isotope = next();
+   if (isotope == "Tl208")
+     {
+       myAction->SetTl208EvtGenerator(true);
+       myAction->SetBi214EvtGenerator(false);
+       myAction->SetK40EvtGenerator(false);
+     }
+   else if ( isotope == "Bi214")
+     {
+       myAction->SetTl208EvtGenerator(false);
+       myAction->SetBi214EvtGenerator(true);
+       myAction->SetK40EvtGenerator(false);
+     }
+   else if ( isotope == "K40")
+     {
       myAction->SetTl208EvtGenerator(false);
       myAction->SetBi214EvtGenerator(false);
       myAction->SetK40EvtGenerator(true);
-    }
-  }
+     }
 
-}
+   G4String location = next();
+   if (location == "water")
+     {
+       myAction->SetWaterEvtGenerator(true);
+     }
+
+   myAction->SetIsotopeActivity(StoD(next()));
+
+ }
 
 G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
 {

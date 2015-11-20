@@ -73,6 +73,8 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   useTl208Evt = true;
   useBi214Evt = false;
   useK40Evt = false;
+  useWaterEvt = true;
+  IsotopeActivity = 0.;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -332,28 +334,54 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   else if (useRadioactiveEvt)
     {
 
+      // initialize GPS properties
+      MyGPS->ClearAll();
+
       MyGPS->SetMultipleVertex(true);
-
-      G4int number_of_sources = MyGPS->GetNumberofSource();
-
-      for( G4int u=0; u<number_of_sources; u++){
-	targetpdgs[u] = 2212; //ie. proton 
-
+      
+      double average= GetIsotopeActivity() * GetRadioactiveTimeWindow();
+      // random poisson number of verteces based on average
+      int n_verteces = CLHEP::RandPoisson::shoot(average);
+      G4cout << " QQQ act " << GetIsotopeActivity() << " t " <<  GetRadioactiveTimeWindow() << " ave " << average << " n " << n_verteces << G4endl;
+      for(int u=0; u<n_verteces; u++){
+	
+	MyGPS->AddaSource(1.);
+	
 	MyGPS->SetCurrentSourceto(u);
-
+	
 	if (useTl208Evt)
 	  MyGPS->SetParticleDefinition(G4ParticleTable::GetParticleTable()->GetIon( 81, 208, 0));
 	else if( useBi214Evt )
 	  MyGPS->SetParticleDefinition(G4ParticleTable::GetParticleTable()->GetIon( 83, 214, 0));
 	else if( useK40Evt )
 	  MyGPS->SetParticleDefinition(G4ParticleTable::GetParticleTable()->GetIon( 19, 40, 0));
+	
+	if (useWaterEvt){
+	  MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
+	  MyGPS->GetCurrentSource()->GetEneDist()->SetMonoEnergy(0.);
+	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point");
+	  MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(G4ThreeVector(0, 0, 0));
+	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Volume");
+	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisShape("Cylinder");
+	  MyGPS->GetCurrentSource()->GetPosDist()->SetRadius(37.4*m);
+	  MyGPS->GetCurrentSource()->GetPosDist()->SetHalfZ(30.*m);
+	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosRot1(G4ThreeVector(1, 0, 0));
+	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosRot2(G4ThreeVector(0, 1, 0));
+	}
+	
       }
+
+      G4int number_of_sources = MyGPS->GetNumberofSource();
+
+      G4cout << " QQQQ number_of_sources " << number_of_sources << G4endl;
 
       // this will generate several primary vertexes
       MyGPS->GeneratePrimaryVertex(anEvent);
 
       SetNvtxs(number_of_sources);
       for( G4int u=0; u<number_of_sources; u++){
+	targetpdgs[u] = 2212; //ie. proton 
+
       	G4ThreeVector P   =anEvent->GetPrimaryVertex(u)->GetPrimary()->GetMomentum();
       	G4ThreeVector vtx =anEvent->GetPrimaryVertex(u)->GetPosition();
       	G4int pdg         =anEvent->GetPrimaryVertex(u)->GetPrimary()->GetPDGcode();
