@@ -149,6 +149,7 @@
 #/gps/ion 81 208 0  0
 
 /mygen/generator radioactive
+### this window should match the one in biasprofile.dat
 /mygen/radioactive_time_window 1.e-6
 /mygen/isotope Tl208 water 3.2e6
 # Clear the source and tell GPS to make multiple vertices
@@ -161,6 +162,7 @@
 ### times t(i) are in seconds
 ### decay intensity I(i) is distributed flat from t(i) to t(i+1)
 
+### the window in this file should match the radioactive_time_window
 /grdm/decayBiasProfile biasprofile.dat
 /grdm/analogueMC 0
 /grdm/BRbias 0

@@ -342,7 +342,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       double average= GetIsotopeActivity() * GetRadioactiveTimeWindow();
       // random poisson number of verteces based on average
       int n_verteces = CLHEP::RandPoisson::shoot(average);
-      G4cout << " QQQ act " << GetIsotopeActivity() << " t " <<  GetRadioactiveTimeWindow() << " ave " << average << " n " << n_verteces << G4endl;
       for(int u=0; u<n_verteces; u++){
 	
 	MyGPS->AddaSource(1.);
@@ -363,8 +362,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	  MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(G4ThreeVector(0, 0, 0));
 	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Volume");
 	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisShape("Cylinder");
-	  MyGPS->GetCurrentSource()->GetPosDist()->SetRadius(37.4*m);
-	  MyGPS->GetCurrentSource()->GetPosDist()->SetHalfZ(30.*m);
+	  MyGPS->GetCurrentSource()->GetPosDist()->SetRadius(myDetector->GetWaterTubeRadius());
+	  MyGPS->GetCurrentSource()->GetPosDist()->SetHalfZ(myDetector->GetWaterTubeLength()/2.);
 	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosRot1(G4ThreeVector(1, 0, 0));
 	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosRot2(G4ThreeVector(0, 1, 0));
 	}
@@ -372,8 +371,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
 
       G4int number_of_sources = MyGPS->GetNumberofSource();
-
-      G4cout << " QQQQ number_of_sources " << number_of_sources << G4endl;
 
       // this will generate several primary vertexes
       MyGPS->GeneratePrimaryVertex(anEvent);
