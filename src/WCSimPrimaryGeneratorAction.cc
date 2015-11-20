@@ -331,13 +331,14 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     }
   else if (useRadioactiveEvt)
     {
-      targetpdgs[0] = 2212; //ie. proton 
 
       MyGPS->SetMultipleVertex(true);
 
       G4int number_of_sources = MyGPS->GetNumberofSource();
 
       for( G4int u=0; u<number_of_sources; u++){
+	targetpdgs[u] = 2212; //ie. proton 
+
 	MyGPS->SetCurrentSourceto(u);
 
 	if (useTl208Evt)
