@@ -1,8 +1,8 @@
 # Sampe setup macro with no visualization
 
-#/run/verbose 2
-#/tracking/verbose 2
-#/hits/verbose 2
+# /run/verbose 2
+# /tracking/verbose 2
+# /hits/verbose 2
 /grdm/verbose 0
 
 ## select the geometry
@@ -178,7 +178,7 @@
 ###   t(2)  I(2)
 ###   t(3)  I(3)
 ### times t(i) are in seconds
-### decay intenseity I(i) is distributed flat from t(i) to t(i+1)
+### decay intensity I(i) is distributed flat from t(i) to t(i+1)
 
 /grdm/decayBiasProfile biasprofile.dat
 /grdm/analogueMC 0

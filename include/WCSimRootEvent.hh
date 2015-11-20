@@ -208,8 +208,6 @@ private:
   WCSimRootEventHeader    fEvtHdr;  // The header
   // See jhfNtuple.h for the meaning of these data members:
   Int_t                fMode;
-  Int_t                fVtxvol;
-  Float_t              fVtx[3];
   Int_t                fNvtxs;
   Int_t                fVtxsvol[50];
   Float_t              fVtxs[50][3];
@@ -256,9 +254,9 @@ public:
   bool          IsASubEvent() {  return (fEvtHdr.GetSubEvtNumber()>=1); }
   void          SetMode(Int_t i) {fMode = i;}
   void          SetNvtxs(Int_t i) {fNvtxs = i;}
-  void          SetVtxvol(Int_t i) {fVtxvol = i; fVtxsvol[0] = 1;}
+  void          SetVtxvol(Int_t i) {fVtxsvol[0] = i;}
   void          SetVtxsvol(Int_t i, Int_t v) {fVtxsvol[i] = v;}
-  void          SetVtx(Int_t i, Float_t f) {fVtx[i]= ( (i<3) ? f : 0); fNvtxs=1; fVtxs[0][i] = fVtx[i];}
+  void          SetVtx(Int_t i, Float_t f) {fNvtxs=1; fVtxs[0][i] = ( (i<3) ? f : 0);}
   void          SetVtxs(Int_t n, Int_t i, Float_t f) {fVtxs[n][i]= ( (i<3) ? f : 0);}
   void          SetVecRecNumber(Int_t i) {fVecRecNumber = i;}
   void          SetJmu(Int_t i) {fJmu = i;}
@@ -276,8 +274,8 @@ public:
   WCSimRootEventHeader *GetHeader()               {return &fEvtHdr; }
   WCSimRootPi0       *GetPi0Info()                 {return &fPi0; }
   Int_t               GetMode()               const {return fMode;}
-  Int_t               GetVtxvol()             const {return fVtxvol;}
-  Float_t             GetVtx(Int_t i=0)             {return (i<3) ? fVtx[i]: 0;}
+  Int_t               GetVtxvol()             const {return fVtxsvol[0];}
+  Float_t             GetVtx(Int_t i=0)             {return (i<3) ? fVtxs[0][i]: 0;}
   Int_t               GetNvtxs()             const {return fNvtxs;}
   Int_t               GetVtxsvol(Int_t i)             const {return fVtxsvol[i];}
   Float_t             GetVtxs(Int_t n, Int_t i=0)             {return (i<3) ? fVtxs[n][i]: 0;}

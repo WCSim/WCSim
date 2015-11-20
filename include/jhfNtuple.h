@@ -1,8 +1,6 @@
 struct ntupleStruct
 {
   int mode;             // interaction mode
-  int vtxvol;           // volume of vertex
-  float vtx[3];         // interaction vertex
   int nvtxs;           // number of vertexes
   int vtxsvol[50];           // volume of vertexes
   float vtxs[50][3];         // interaction vertexes
@@ -52,8 +50,6 @@ extern struct ntupleStruct jhfNtuple;
 
 static const char* ntDesc =
 "mode:I,"
-"vtxvol:I,"
-"vtx(3):R,"
 "nvtxs[0,50]:I,"
 "vtxsvol(npar):I,"
 "vtxs(3,npar):R,"

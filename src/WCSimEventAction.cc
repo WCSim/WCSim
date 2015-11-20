@@ -161,18 +161,11 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   G4int         mode     = generatorAction->GetMode();
 
   G4int         nvtxs   = generatorAction->GetNvtxs();
-  G4ThreeVector vtx;
-  G4int         vtxvol;
   G4ThreeVector vtxs[50];
   G4int         vtxsvol[50];
-  if( nvtxs == 1 ){
-    vtx      = generatorAction->GetVtx();
-    vtxvol   = WCSimEventFindStartingVolume(vtx);
-  }else{
-    for( Int_t u=0; u<nvtxs; u++ ){
-      vtxs[u]      = generatorAction->GetVtxs(u);
-      vtxsvol[u]   = WCSimEventFindStartingVolume(vtxs[u]);
-    }
+  for( Int_t u=0; u<nvtxs; u++ ){
+    vtxs[u]      = generatorAction->GetVtxs(u);
+    vtxsvol[u]   = WCSimEventFindStartingVolume(vtxs[u]);
   }
   G4int         vecRecNumber = generatorAction->GetVecRecNumber();
 
@@ -312,22 +305,12 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
    jhfNtuple.mode   = mode;         // interaction mode
    jhfNtuple.nvtxs = nvtxs;       // number of vertexes
-   if( nvtxs == 1 ){
-     jhfNtuple.vtxvol = vtxvol;       // volume of vertex
+   for( Int_t u=0; u<nvtxs; u++ ){
+     jhfNtuple.vtxsvol[u] = vtxsvol[u];       // volume of vertex
      // unit mismatch between geant4 and reconstruction, M Fechner
-     //  jhfNtuple.vtx[0] = vtx[0]/1000.; // interaction vertex
-     //jhfNtuple.vtx[1] = vtx[1]/1000.; // interaction vertex
-     //jhfNtuple.vtx[2] = vtx[2]/1000.; // interaction vertex
-     jhfNtuple.vtx[0] = vtx[0]/cm; // interaction vertex
-     jhfNtuple.vtx[1] = vtx[1]/cm; // interaction vertex
-     jhfNtuple.vtx[2] = vtx[2]/cm; // interaction vertex
-   }else{
-    for( Int_t u=0; u<nvtxs; u++ ){
-      jhfNtuple.vtxsvol[u] = vtxsvol[u];       // volume of vertex
-      jhfNtuple.vtxs[u][0] = vtxs[u][0]/cm; // interaction vertex
-      jhfNtuple.vtxs[u][1] = vtxs[u][1]/cm; // interaction vertex
-      jhfNtuple.vtxs[u][2] = vtxs[u][2]/cm; // interaction vertex
-    }
+     jhfNtuple.vtxs[u][0] = vtxs[u][0]/cm; // interaction vertex
+     jhfNtuple.vtxs[u][1] = vtxs[u][1]/cm; // interaction vertex
+     jhfNtuple.vtxs[u][2] = vtxs[u][2]/cm; // interaction vertex
    }
    jhfNtuple.vecRecNumber = vecRecNumber; //vectorfile record number
    
@@ -347,15 +330,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    G4double      beamenergy;
    G4ThreeVector beamdir;
 
-   if( nvtxs == 1 ){ 
-     beampdg    = generatorAction->GetBeamPDG();
-     beamenergy = generatorAction->GetBeamEnergy();
-     beamdir    = generatorAction->GetBeamDir();
-   }else{
-      beampdg    = generatorAction->GetBeamPDGs(0);
-      beamenergy = generatorAction->GetBeamEnergies(0);
-      beamdir    = generatorAction->GetBeamDirs(0);
-   }
+   beampdg    = generatorAction->GetBeamPDGs(0);
+   beamenergy = generatorAction->GetBeamEnergies(0);
+   beamdir    = generatorAction->GetBeamDirs(0);
   
    jhfNtuple.ipnu[npar]    = beampdg;               // id
    jhfNtuple.flag[npar]    = -1;                    // incoming neutrino
@@ -371,9 +348,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    jhfNtuple.pdir[npar][1] = beamenergy*beamdir[1]; // momentum-vector 
    jhfNtuple.pdir[npar][2] = beamenergy*beamdir[2]; // momentum-vector 
    // M Fechner, same as above
-   jhfNtuple.stop[npar][0] = vtx[0]/cm;  // stopping point (not meaningful)
-   jhfNtuple.stop[npar][1] = vtx[1]/cm;  // stopping point (not meaningful)
-   jhfNtuple.stop[npar][2] = vtx[2]/cm;  // stopping point (not meaningful)
+   jhfNtuple.stop[npar][0] = vtxs[0][0]/cm;  // stopping point (not meaningful)
+   jhfNtuple.stop[npar][1] = vtxs[0][1]/cm;  // stopping point (not meaningful)
+   jhfNtuple.stop[npar][2] = vtxs[0][2]/cm;  // stopping point (not meaningful)
    jhfNtuple.parent[npar] = 0;
    
    npar++;
@@ -417,9 +394,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   jhfNtuple.pdir[npar][1] = targetpmag*targetdir[1];  // momentum-vector 
   jhfNtuple.pdir[npar][2] = targetpmag*targetdir[2];  // momentum-vector 
   // M Fechner, same as above
-  jhfNtuple.stop[npar][0] = vtx[0]/cm;  // stopping point (not meaningful)
-  jhfNtuple.stop[npar][1] = vtx[1]/cm;  // stopping point (not meaningful)
-  jhfNtuple.stop[npar][2] = vtx[2]/cm;  // stopping point (not meaningful)
+  jhfNtuple.stop[npar][0] = vtxs[0][0]/cm;  // stopping point (not meaningful)
+  jhfNtuple.stop[npar][1] = vtxs[0][1]/cm;  // stopping point (not meaningful)
+  jhfNtuple.stop[npar][2] = vtxs[0][2]/cm;  // stopping point (not meaningful)
   jhfNtuple.parent[npar] = 0;
 
   npar++;
@@ -473,9 +450,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     jhfNtuple.pdir[npar][1] = trj->GetInitialMomentum().getY();  // momentum-vector 
     jhfNtuple.pdir[npar][2] = trj->GetInitialMomentum().getZ();  // momentum-vector 
     // M Fechner, same as above
-    jhfNtuple.stop[npar][0] = vtx[0]/cm;  // stopping point (not meaningful)
-    jhfNtuple.stop[npar][1] = vtx[1]/cm;  // stopping point (not meaningful)
-    jhfNtuple.stop[npar][2] = vtx[2]/cm;  // stopping point (not meaningful)
+    jhfNtuple.stop[npar][0] = vtxs[0][0]/cm;  // stopping point (not meaningful)
+    jhfNtuple.stop[npar][1] = vtxs[0][1]/cm;  // stopping point (not meaningful)
+    jhfNtuple.stop[npar][2] = vtxs[0][2]/cm;  // stopping point (not meaningful)
     jhfNtuple.parent[npar] = 0;
     
     npar++; 
@@ -502,9 +479,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     jhfNtuple.pdir[npar][1] = trj->GetInitialMomentum().getY();  // momentum-vector 
     jhfNtuple.pdir[npar][2] = trj->GetInitialMomentum().getZ();  // momentum-vector 
     // M Fechner, same as above
-    jhfNtuple.stop[npar][0] = vtx[0]/cm;  // stopping point (not meaningful)
-    jhfNtuple.stop[npar][1] = vtx[1]/cm;  // stopping point (not meaningful)
-    jhfNtuple.stop[npar][2] = vtx[2]/cm;  // stopping point (not meaningful)
+    jhfNtuple.stop[npar][0] = vtxs[0][0]/cm;  // stopping point (not meaningful)
+    jhfNtuple.stop[npar][1] = vtxs[0][1]/cm;  // stopping point (not meaningful)
+    jhfNtuple.stop[npar][2] = vtxs[0][2]/cm;  // stopping point (not meaningful)
     jhfNtuple.parent[npar] = 0;
     
     npar++; 
@@ -532,9 +509,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     jhfNtuple.pdir[npar][1] = trj->GetInitialMomentum().getY();  // momentum-vector 
     jhfNtuple.pdir[npar][2] = trj->GetInitialMomentum().getZ();  // momentum-vector 
     // M Fechner, same as above
-    jhfNtuple.stop[npar][0] = vtx[0]/cm;  // stopping point (not meaningful)
-    jhfNtuple.stop[npar][1] = vtx[1]/cm;  // stopping point (not meaningful)
-    jhfNtuple.stop[npar][2] = vtx[2]/cm;  // stopping point (not meaningful)
+    jhfNtuple.stop[npar][0] = vtxs[0][0]/cm;  // stopping point (not meaningful)
+    jhfNtuple.stop[npar][1] = vtxs[0][1]/cm;  // stopping point (not meaningful)
+    jhfNtuple.stop[npar][2] = vtxs[0][2]/cm;  // stopping point (not meaningful)
     jhfNtuple.parent[npar] = 0;
     
     npar++; 
@@ -708,20 +685,12 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   wcsimrootevent->SetMode(jhfNtuple.mode);
 
   wcsimrootevent->SetNvtxs(jhfNtuple.nvtxs);
-  if( jhfNtuple.nvtxs == 1 ){
-    wcsimrootevent->SetVtxvol(jhfNtuple.vtxvol);
+  for( Int_t u=0; u<jhfNtuple.nvtxs; u++ ){
+    wcsimrootevent->SetVtxsvol(u,jhfNtuple.vtxsvol[u]);
     for (int j=0;j<3;j++)
       {
-	wcsimrootevent->SetVtx(j,jhfNtuple.vtx[j]);
+	wcsimrootevent->SetVtxs(u,j,jhfNtuple.vtxs[u][j]);
       }
-  }else{
-    for( Int_t u=0; u<jhfNtuple.nvtxs; u++ ){
-      wcsimrootevent->SetVtxsvol(u,jhfNtuple.vtxsvol[u]);
-      for (int j=0;j<3;j++)
-	{
-	  wcsimrootevent->SetVtxs(u,j,jhfNtuple.vtxs[u][j]);
-	}
-    }
   }
   wcsimrootevent->SetJmu(jhfNtuple.jmu);
   wcsimrootevent->SetJp(jhfNtuple.jp);

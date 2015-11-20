@@ -24,10 +24,10 @@ public:
   void GeneratePrimaries(G4Event* anEvent);
 
   // Normal gun setting calls these functions to fill jhfNtuple and Root tree
-  void SetVtx(G4ThreeVector i)     {  vtx = i; vtxs[0] = i; nvtxs = 1; };
-  void SetBeamEnergy(G4double i)   { beamenergy = i; beamenergies[0] = i;};
-  void SetBeamDir(G4ThreeVector i) { beamdir = i; beamdirs[0] = i;};
-  void SetBeamPDG(G4int i)         { beampdg = i; beampdgs[0] = i;};
+  void SetVtx(G4ThreeVector i)     { vtxs[0] = i; nvtxs = 1; };
+  void SetBeamEnergy(G4double i)   { beamenergies[0] = i;};
+  void SetBeamDir(G4ThreeVector i) { beamdirs[0] = i;};
+  void SetBeamPDG(G4int i)         { beampdgs[0] = i;};
   void SetNvtxs(G4int i)     { nvtxs = i; };
   void SetVtxs(G4int i, G4ThreeVector v)     { vtxs[i] = v; };
   void SetBeamEnergies(G4int n, G4double i)   { beamenergies[n] = i; };
@@ -38,22 +38,22 @@ public:
   G4int GetVecRecNumber(){return vecRecNumber;}
   G4int GetMode() {return mode;};
   G4int GetNvtxs() {return nvtxs;};
-  G4int GetVtxVol() {return vtxvol;};
+  G4int GetVtxVol() {return vtxsvol[0];};
   G4int GetVtxsVol(G4int i) {return vtxsvol[i];};
-  G4ThreeVector GetVtx() {return vtx;}
+  G4ThreeVector GetVtx() {return vtxs[0];}
   G4ThreeVector GetVtxs(G4int i) {return vtxs[i];}
   G4int GetNpar() {return npar;};
-  G4int GetBeamPDG() {return beampdg;};
+  G4int GetBeamPDG() {return beampdgs[0];};
   G4int GetBeamPDGs(G4int n) {return beampdgs[n];};
-  G4double GetBeamEnergy() {return beamenergy;};
+  G4double GetBeamEnergy() {return beamenergies[0];};
   G4double GetBeamEnergies(G4int n) {return beamenergies[n];};
-  G4ThreeVector GetBeamDir() {return beamdir;};
+  G4ThreeVector GetBeamDir() {return beamdirs[0];};
   G4ThreeVector GetBeamDirs(G4int n) {return beamdirs[n];};
-  G4int GetTargetPDG() {return targetpdg;};
+  G4int GetTargetPDG() {return targetpdgs[0];};
   G4int GetTargetPDGs(G4int n) {return targetpdgs[n];};
-  G4double GetTargetEnergy() {return targetenergy;};
+  G4double GetTargetEnergy() {return targetenergies[0];};
   G4double GetTargetEnergies(G4int n) {return targetenergies[n];};
-  G4ThreeVector GetTargetDir() {return targetdir;};
+  G4ThreeVector GetTargetDir() {return targetdirs[0];};
   G4ThreeVector GetTargetDirs(G4int n) {return targetdirs[n];};
 
   // older ...
@@ -86,17 +86,12 @@ private:
 
   // These go with jhfNtuple
   G4int mode;
-  G4int vtxvol;
-  G4ThreeVector vtx;
   G4int nvtxs;
   G4int vtxsvol[50];
   G4ThreeVector vtxs[50];
   G4int npar;
-  G4int beampdg, targetpdg;
   G4int beampdgs[50], targetpdgs[50];
-  G4ThreeVector beamdir, targetdir;
   G4ThreeVector beamdirs[50], targetdirs[50];
-  G4double beamenergy, targetenergy;
   G4double beamenergies[50], targetenergies[50];
   G4int vecRecNumber;
 
