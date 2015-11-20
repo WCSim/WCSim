@@ -43,6 +43,7 @@ int main(){
     // std::clog << " pmt_number " << pmt_number << " pmt_location " << pmt_location << " pmt dir: (" << pmt_ux << ", " << pmt_uy << ", " << pmt_uz << "), pos: (" << pmt_x << ", " << pmt_y << ", " << pmt_z << ")" << std::endl;
   }
 
+
   // primary events tree
   TTree * primary_events_tree = (TTree*)f->Get("primary_events_tree");
 
@@ -116,7 +117,6 @@ int main(){
   primary_events_tree->SetBranchAddress("digitized_hit_time",&digitized_hit_time);
   primary_events_tree->SetBranchAddress("digitized_hit_photon_ids",&digitized_hit_photon_ids);
 
-
   double max_time = 2.e3;
 
   TH1F *h_trigger_number = new TH1F("h_trigger_number","h_trigger_number",100,1,-1);
@@ -172,6 +172,8 @@ int main(){
   TH1F *h_track_KE4 = new TH1F("h_track_KE4","h_track_KE4",100,1,-1);
   TH1F *h_track_KE5 = new TH1F("h_track_KE5","h_track_KE5",100,1,-1);
   TH1F *h_track_KE6 = new TH1F("h_track_KE6","h_track_KE6",100,1,-1);
+  TH1F *h_track_KE_e = new TH1F("h_track_KE_e","h_track_KE_e",100,1,-1);
+  TH1F *h_track_KE_gamma = new TH1F("h_track_KE_gamma","h_track_KE_gamma",100,1,-1);
   TH1F *h_track_start_volume = new TH1F("h_track_start_volume","h_track_start_volume",100,1,-1);
   TH1F *h_track_stop_volume = new TH1F("h_track_stop_volume","h_track_stop_volume",100,1,-1);
   TH1F *h_track_stop_x = new TH1F("h_track_stop_x","h_track_stop_x",100,1,-1);
@@ -194,8 +196,6 @@ int main(){
   TH1F *h_digitized_hit_time = new TH1F("h_digitized_hit_time","h_digitized_hit_time",100,1,-1);
   TH1F *h_digitized_hit_photon_ids = new TH1F("h_digitized_hit_photon_ids","h_digitized_hit_photon_ids",100,1,-1);
 
-
-
   for(int ievent=0; ievent<primary_events_tree->GetEntries(); ievent++){
     // loop on primary events
     primary_events_tree->GetEvent(ievent); 
@@ -208,8 +208,10 @@ int main(){
       h_trigger_mode->Fill(trigger_mode->at(itrigger));
 
       h_trigger_nvertex->Fill(trigger_nvertex->at(itrigger));
+
       for(int ivertex=0; ivertex<trigger_nvertex->at(itrigger); ivertex++){
 	// loop on triggers in the event
+
 	h_trigger_vtxvol->Fill(trigger_vtxvol->at(itrigger).at(ivertex));
 	h_trigger_vtx_x->Fill(trigger_vtx_x->at(itrigger).at(ivertex));
 	h_trigger_vtx_y->Fill(trigger_vtx_y->at(itrigger).at(ivertex));
@@ -227,6 +229,7 @@ int main(){
       h_trigger_number_digitized_hits->Fill(trigger_number_digitized_hits->at(itrigger));
       h_trigger_sum_q->Fill(trigger_sum_q->at(itrigger));
       h_trigger_number_times->Fill(trigger_number_times->at(itrigger));
+
 
       if( trigger_ntrack->at(itrigger) > 0 ){
        h_track_E1->Fill((track_E->at(itrigger)).at(0));
@@ -275,6 +278,12 @@ int main(){
 	h_track_P->Fill((track_P->at(itrigger)).at(itrack));
 	h_track_E->Fill((track_E->at(itrigger)).at(itrack));
 	h_track_KE->Fill((track_E->at(itrigger)).at(itrack) - (track_M->at(itrigger)).at(itrack));
+
+	if( (track_ipnu->at(itrigger)).at(itrack) == 11 && (track_parent_type->at(itrigger)).at(itrack) == 1 )
+	  h_track_KE_e->Fill((track_E->at(itrigger)).at(itrack) - (track_M->at(itrigger)).at(itrack));
+	if( (track_ipnu->at(itrigger)).at(itrack) == 22 )
+	  h_track_KE_gamma->Fill((track_E->at(itrigger)).at(itrack) - (track_M->at(itrigger)).at(itrack));
+
 	h_track_start_volume->Fill((track_start_volume->at(itrigger)).at(itrack));
 	h_track_stop_volume->Fill((track_stop_volume->at(itrigger)).at(itrack));
 	h_track_stop_x->Fill((track_stop_x->at(itrigger)).at(itrack));

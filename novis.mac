@@ -108,7 +108,7 @@
 # command to set dark noise frequency 13/06/09
 # default dark noise frequency is 0 kHz
 #/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
-#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 
 # command to multiply the dark rate.
@@ -125,7 +125,7 @@
 #/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
 #width /DarkRate/SetDarkWindow [time in ns] around each hit.
 /DarkRate/SetDarkMode 0
-/DarkRate/SetDarkHigh 100000
+/DarkRate/SetDarkHigh 10000
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 2000
 
@@ -150,8 +150,8 @@
 
 /mygen/generator radioactive
 ### this window should match the one in biasprofile.dat
-/mygen/radioactive_time_window 1.e-6
-/mygen/isotope Tl208 water 3.2e6
+/mygen/radioactive_time_window 1.e-5
+/mygen/isotope Tl208 water 3.2e5
 # Clear the source and tell GPS to make multiple vertices
 /gps/source/clear
 
@@ -171,5 +171,5 @@
 
 /WCSimIO/RootFile wcsim.root
 
-/run/beamOn 100
+/run/beamOn 10
 #exit
