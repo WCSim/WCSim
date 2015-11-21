@@ -71,9 +71,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
 
 
 
-
+  SetTestmPMTGeometry();
   //SetSuperKGeometry();
-  SetTestmPMTGeometry();  
   //SetHyperKGeometry();
 
   //----------------------------------------------------- 

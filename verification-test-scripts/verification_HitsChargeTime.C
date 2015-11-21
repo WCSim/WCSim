@@ -117,11 +117,12 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h1 = new TH1F("PMT Hits", "# Digitized Hits", 500, 0, 3000);
+  TH1F *h1 = new TH1F("PMT Hits", "# Digitized Hits", 250, 0, 15000);
   TH1F *time = new TH1F("Average time", "Average time", 600, 900, 2000);
   TH1F *pe = new TH1F("Q/# Digitzed PMT", "Average Charge", 200, 0, 5);
- 
+  TH1F *hit_pmts = new TH1F("Hit PMTs","# Hit PMTs",250,0,15000); 
   
+  std::cout << "nevent: " << nevent << std::endl;
   // Now loop over events
   for (int ev=0; ev<nevent; ev++)
   {
@@ -140,14 +141,14 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
       printf("Vtx %f %f %f\n", wcsimrootevent->GetVtx(0),
 	     wcsimrootevent->GetVtx(1),wcsimrootevent->GetVtx(2));
     }
-    
+    std::cout << "test: " << wcsimrootsuperevent->GetNumberOfEvents() << std::endl;
     for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++) 
       { 
 	int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
 	h1->Fill(ncherenkovdigihits);
 	
-	
-	
+	hit_pmts->Fill(wcsimrootevent->GetNumTubesHit());	
+	std::cout << "test2: " << index << " " << wcsimrootevent->GetNumTubesHit() << std::endl;
 	float totalq = 0.;
 	float totalt = 0.;
 	// Loop through elements in the TClonesArray of WCSimRootCherenkovHits
@@ -218,10 +219,10 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h2 = new TH1F("PMT Hits 2", "Digitized Hits", 500, 0, 3000);
+  TH1F *h2 = new TH1F("PMT Hits 2", "# Digitized Hits", 250, 0, 15000);
   TH1F *time2 = new TH1F("Average time 2", "Average time", 600, 900, 2000);
   TH1F *pe2 = new TH1F("Q/# Digitzed PMT 2", "Q/# Digitzed PMT", 200, 0, 5);
- 
+  TH1F *hit_pmts2 = new TH1F("Hit PMTs 2","# Hit PMTs",250,0,15000);  
   
   // Now loop over events
   for (int ev=0; ev<nevent; ev++)
@@ -247,7 +248,7 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
       { 
 	int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
 	h2->Fill(ncherenkovdigihits);
-
+	hit_pmts2->Fill(wcsimrootevent->GetNumTubesHit());	
 	
 	float totalq = 0.;
 	float totalt = 0.;
@@ -312,4 +313,8 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
  c1->cd(3); time2->Draw("SAME");
   
 
+ c1->cd(4);
+ hit_pmts->Draw();
+ hit_pmts2->SetLineColor(kRed);
+ hit_pmts2->Draw("same");
 }
