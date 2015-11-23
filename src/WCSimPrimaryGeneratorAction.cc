@@ -378,7 +378,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	  int npmts = pmts->size();
 	  int random_pmt_id = CLHEP::RandFlat::shootInt(1,npmts);
 	  WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( random_pmt_id - 1 );
-	  G4ThreeVector random_pmt_center(pmtinfo->Get_transx(), pmtinfo->Get_transy(), pmtinfo->Get_transz());
+	  G4ThreeVector random_pmt_center(pmtinfo->Get_transx()*cm, pmtinfo->Get_transy()*cm, pmtinfo->Get_transz()*cm);
 	  double random_cos_theta = CLHEP::RandFlat::shoot(0., 1.);
 	  double random_sin_theta = sqrt(1. - pow(random_cos_theta,2));
 	  random_sin_theta *= (CLHEP::RandFlat::shootBit() == 0 ? -1 : 1);
@@ -397,7 +397,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	  G4ThreeVector axis_2 = orientation.cross(axis_1);
 	  G4ThreeVector position = random_pmt_center + random_R*(orientation*random_cos_theta + axis_1*random_sin_theta*cos(random_phi) + axis_2*random_sin_theta*sin(random_phi));
 
-	  //	  G4cout << " random id " << random_pmt_id << " of " << npmts << " costheta " << random_cos_theta << " sintheta " << random_sin_theta << " phi " << random_phi << " WCIDCollectionName " << WCIDCollectionName << " PMT_radius " << PMT_radius << " expose " << expose << " sphereRadius " << sphereRadius << " Rmin " << Rmin << " Rmax " << Rmax << " random_R " << random_R << " orientation (" << orientation.x() << ", " << orientation.y() << ", " << orientation.z() << ") position (" << position.x() << ", " << position.y() << ", " << position.z() << ") " << G4endl;
+	  //G4cout << " random id " << random_pmt_id << " of " << npmts << " costheta " << random_cos_theta << " sintheta " << random_sin_theta << " phi " << random_phi << " WCIDCollectionName " << WCIDCollectionName << " PMT_radius " << PMT_radius << " expose " << expose << " sphereRadius " << sphereRadius << " Rmin " << Rmin << " Rmax " << Rmax << " random_R " << random_R << " orientation (" << orientation.x() << ", " << orientation.y() << ", " << orientation.z() << ") center (" << random_pmt_center.x() << ", " << random_pmt_center.y() << ", " << random_pmt_center.z() << ") position (" << position.x() << ", " << position.y() << ", " << position.z() << ") " << G4endl;
 
 	  MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
 	  MyGPS->GetCurrentSource()->GetEneDist()->SetMonoEnergy(0.);
