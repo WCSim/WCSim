@@ -81,6 +81,7 @@ private:
   G4bool   useBi214Evt;
   G4bool   useK40Evt;
   G4bool   useWaterEvt;
+  G4bool   usePMTEvt;
   G4double IsotopeActivity;
   G4double radioactive_time_window;
   std::fstream inputFile;
@@ -131,6 +132,9 @@ public:
 
   inline void SetWaterEvtGenerator(G4bool choice) { useWaterEvt = choice; }
   inline G4bool IsUsingWaterEvtGenerator() { return useWaterEvt; }
+
+  inline void SetPMTEvtGenerator(G4bool choice) { usePMTEvt = choice; }
+  inline G4bool IsUsingPMTEvtGenerator() { return usePMTEvt; }
 
   inline void SetIsotopeActivity(G4double choice) { IsotopeActivity = choice; }
   inline G4double GetIsotopeActivity() { return IsotopeActivity; }

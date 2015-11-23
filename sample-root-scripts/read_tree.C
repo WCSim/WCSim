@@ -1,6 +1,7 @@
 #include <iostream>
 #include <TH1F.h>
 #include <TH2F.h>
+#include <TH3F.h>
 #include <stdio.h>     
 #include <stdlib.h>    
 #include <vector>
@@ -127,6 +128,7 @@ int main(){
   TH1F *h_trigger_vtx_y = new TH1F("h_trigger_vtx_y","h_trigger_vtx_y",100,1,-1);
   TH1F *h_trigger_vtx_z = new TH1F("h_trigger_vtx_z","h_trigger_vtx_z",100,1,-1);
   TH2F *h_trigger_vtx_x_y = new TH2F("h_trigger_vtx_x_y","h_trigger_vtx_x_y",100,1,-1,100,1,-1);
+  TH3F *h_trigger_vtx_x_y_z = new TH3F("h_trigger_vtx_x_y_z","h_trigger_vtx_x_y_z",100,1,-1,100,1,-1,100,1,-1);
   TH1F *h_trigger_vec_rec_number = new TH1F("h_trigger_vec_rec_number","h_trigger_vec_rec_number",100,1,-1);
   TH1F *h_trigger_jmu = new TH1F("h_trigger_jmu","h_trigger_jmu",100,1,-1);
   TH1F *h_trigger_jp = new TH1F("h_trigger_jp","h_trigger_jp",100,1,-1);
@@ -217,6 +219,7 @@ int main(){
 	h_trigger_vtx_y->Fill(trigger_vtx_y->at(itrigger).at(ivertex));
 	h_trigger_vtx_z->Fill(trigger_vtx_z->at(itrigger).at(ivertex));
 	h_trigger_vtx_x_y->Fill(trigger_vtx_x->at(itrigger).at(ivertex), trigger_vtx_y->at(itrigger).at(ivertex));
+	h_trigger_vtx_x_y_z->Fill(trigger_vtx_x->at(itrigger).at(ivertex), trigger_vtx_y->at(itrigger).at(ivertex), trigger_vtx_z->at(itrigger).at(ivertex));
 	std::cout << " ev " << ievent << " tr " << itrigger << " vtx( " << trigger_vtx_x->at(itrigger).at(ivertex) << ", " << trigger_vtx_y->at(itrigger).at(ivertex) << ", " << trigger_vtx_z->at(itrigger).at(ivertex) << ")" << std::endl;
       }
 

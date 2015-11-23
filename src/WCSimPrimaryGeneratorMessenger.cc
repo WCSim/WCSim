@@ -34,7 +34,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   isotopeCmd->SetGuidance("Select properties of radioactive isotope");
   isotopeCmd->SetGuidance("[usage] /mygen/isotope ISOTOPE LOCATION ACTIVITY");
   isotopeCmd->SetGuidance("     ISOTOPE : Tl208, Bi214, K40");
-  isotopeCmd->SetGuidance("     LOCATION : water");
+  isotopeCmd->SetGuidance("     LOCATION : water PMT");
   isotopeCmd->SetGuidance("     ACTIVITY : (int) activity of isotope (Bq) ");
   G4UIparameter* param;
   param = new G4UIparameter("ISOTOPE",'s',true);
@@ -139,6 +139,12 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
    if (location == "water")
      {
        myAction->SetWaterEvtGenerator(true);
+       myAction->SetPMTEvtGenerator(false);
+     }
+   else if (location == "PMT")
+     {
+       myAction->SetWaterEvtGenerator(false);
+       myAction->SetPMTEvtGenerator(true);
      }
 
    myAction->SetIsotopeActivity(StoD(next()));

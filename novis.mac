@@ -19,8 +19,8 @@
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 
 # Cylindrical detector with a height of 60 m and a diameter of 74 m
-#/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
-/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
+/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
+#/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
 
 # Generic cylindrical detector with a height of 100m and a 
 # diameter of 69m with 12" HPD and 14.59% photocoverage
@@ -149,10 +149,13 @@
 #/gps/ion 81 208 0  0
 
 /mygen/generator radioactive
-### this window should match the one in biasprofile.dat
+#this window should match the one in biasprofile.dat
 /mygen/radioactive_time_window 1.e-5
-/mygen/isotope Tl208 water 3.2e5
-# Clear the source and tell GPS to make multiple vertices
+/mygen/isotope Tl208 PMT 3.2e3
+/mygen/isotope Bi214 PMT 3.78e4
+#/mygen/isotope Tl208 water 95.
+#/mygen/isotope Bi214 water 264.
+#Clear the source and tell GPS to make multiple vertices
 /gps/source/clear
 
 ### profile file to enforce radioactive decay time
@@ -171,5 +174,6 @@
 
 /WCSimIO/RootFile wcsim.root
 
-/run/beamOn 10
+/run/beamOn 1000
 #exit
+
