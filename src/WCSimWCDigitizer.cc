@@ -375,8 +375,8 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
   WCSimPMTObject * PMT;
   PMT = myDetector->GetPMTPointer(WCIDCollectionName);
  
-  G4double EvtG8Down = GetPreTriggerWindow(kTriggerNHitsSKDETSIM);  // this is a negative number...
-  G4double EvtG8Up   = GetPostTriggerWindow(kTriggerNHitsSKDETSIM);
+  G4double EvtG8Down = GetPreTriggerWindow(TriggerTypes[G]);  // this is a negative number... (usually)
+  G4double EvtG8Up   = GetPostTriggerWindow(TriggerTypes[G]);
 
   G4float tc;
   G4double lowerbound;
