@@ -304,7 +304,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // ----------------------------------------------------------------------
 
    jhfNtuple.mode   = mode;         // interaction mode
-   jhfNtuple.nvtxs = nvtxs;       // number of vertexes
+   jhfNtuple.nvtxs = nvtxs;       // number of vertices
    for( Int_t u=0; u<nvtxs; u++ ){
      jhfNtuple.vtxsvol[u] = vtxsvol[u];       // volume of vertex
      // unit mismatch between geant4 and reconstruction, M Fechner
@@ -405,7 +405,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    }
 
   ////////////////////////
-  // npar > nverteces  ///
+  // npar > nvertices  ///
   ////////////////////////
 
   // Draw Charged Tracks

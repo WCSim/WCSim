@@ -340,10 +340,16 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       MyGPS->SetMultipleVertex(true);
       
+      std::vector<WCSimPmtInfo*> *pmts;
       double average= GetIsotopeActivity() * GetRadioactiveTimeWindow();
-      // random poisson number of verteces based on average
-      int n_verteces = CLHEP::RandPoisson::shoot(average);
-      for(int u=0; u<n_verteces; u++){
+      if (usePMTEvt){
+	pmts = myDetector->Get_Pmts();
+	average *= pmts->size();
+      }
+
+      // random poisson number of vertices based on average
+      int n_vertices = CLHEP::RandPoisson::shoot(average);
+      for(int u=0; u<n_vertices; u++){
 	
 	MyGPS->AddaSource(1.);
 	
@@ -369,7 +375,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosRot2(G4ThreeVector(0, 1, 0));
 	}
 	else if (usePMTEvt){
-	  std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
 	  int npmts = pmts->size();
 	  int random_pmt_id = CLHEP::RandFlat::shootInt(1,npmts);
 	  WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( random_pmt_id - 1 );
@@ -404,7 +409,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       G4int number_of_sources = MyGPS->GetNumberofSource();
 
-      // this will generate several primary vertexes
+      // this will generate several primary vertices
       MyGPS->GeneratePrimaryVertex(anEvent);
 
       SetNvtxs(number_of_sources);

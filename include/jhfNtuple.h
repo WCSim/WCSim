@@ -1,9 +1,9 @@
 struct ntupleStruct
 {
   int mode;             // interaction mode
-  int nvtxs;           // number of vertexes
-  int vtxsvol[50];           // volume of vertexes
-  float vtxs[50][3];         // interaction vertexes
+  int nvtxs;           // number of vertices
+  int vtxsvol[50];           // volume of vertices
+  float vtxs[50][3];         // interaction vertices
   int vecRecNumber;     // info event number in inputvetcotfile
   int  jmu;             // index to muon
   int  jp;              // index to proton
