@@ -43,7 +43,12 @@ WCSimWCDigitizer::WCSimWCDigitizer(G4String name,
   //the nhits threshold value is read into the base class from /DAQ/TriggerNDigits/Threshold
   // into the variable ndigitsThreshold
   //in this class use this synonym for clarity
-  nhitsThreshold = ndigitsThreshold;
+  nhitsThreshold  = ndigitsThreshold;
+  if(ndigitsWindow % 5) {
+    G4cerr << "Option /DAQ/TriggerNDigits/Window must be exactly divisble by 5 when running with SKI_SKDETSIM" << G4endl;
+    exit(-1);
+  }
+  nhitsWindowBins = ndigitsWindow / 5;
 }
 
 WCSimWCDigitizer::~WCSimWCDigitizer(){
@@ -284,8 +289,8 @@ void WCSimWCDigitizer::FindNumberOfGatesFast()
 									// so check 39 bins ahead in the histogram..
 
 	bool triggered = false;
-	while ( _mNextGate != GateMap.lower_bound( _mGateKeeper->first + 39)
-		&& _mNextGate->first <= _mGateKeeper->first + 39 		// but not more than 200ns away though!
+	while ( _mNextGate != GateMap.lower_bound( _mGateKeeper->first + nhitsWindowBins - 1)
+		&& _mNextGate->first <= _mGateKeeper->first + nhitsWindowBins - 1 		// but not more than 200ns away though!
 	      )
 	{
 
@@ -329,7 +334,7 @@ void WCSimWCDigitizer::FindNumberOfGates()
       RealOffset = 0.0; // will need to add the offset later
       for ( j = I ; j <= SearchWindow ; j++)
 	{                          // 40 corresponds to 200ns
-	  G4int beginning = ( (j+1-40>I) ? (j+1-40) : I );
+	  G4int beginning = ( (j+1-nhitsWindowBins>I) ? (j+1-nhitsWindowBins) : I );
 	  acc = 0;
 	  for ( G4int k = beginning ; k <= j; k++)
 	    {
@@ -370,8 +375,8 @@ void WCSimWCDigitizer::DigitizeGate(WCSimWCDigitsCollection* WCHCPMT,G4int G)
   WCSimPMTObject * PMT;
   PMT = myDetector->GetPMTPointer(WCIDCollectionName);
  
-  G4double EvtG8Down = GetPreTriggerWindow(kTriggerNHitsSKDETSIM);  // this is a negative number...
-  G4double EvtG8Up   = GetPostTriggerWindow(kTriggerNHitsSKDETSIM);
+  G4double EvtG8Down = GetPreTriggerWindow(TriggerTypes[G]);  // this is a negative number... (usually)
+  G4double EvtG8Up   = GetPostTriggerWindow(TriggerTypes[G]);
 
   G4float tc;
   G4double lowerbound;
