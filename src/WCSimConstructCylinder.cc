@@ -99,7 +99,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   // Volumes
   //-----------------------------------------------------
 
-  checkOverlaps = true; //TODO: get from .mac file: true for making geo, false for running
+  checkOverlaps = false; //TODO: get from .mac file: true for making geo, false for running
   checkOverlapsPMT = true; // NO overlaps, as these will mess up the G4Navigator, hence tracking and yield
   // The water barrel is placed in an tubs of air
   
@@ -951,7 +951,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
         {logicWCBarrelBorderCell->SetVisAttributes(G4VisAttributes::Invisible);}
   else {
         G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
-        tmpVisAtt->SetForceWireframe(true);
+        //tmpVisAtt->SetForceWireframe(true);
+		tmpVisAtt->SetForceSolid(true);
         logicWCBarrelBorderCell->SetVisAttributes(tmpVisAtt);}}
 
 
@@ -1021,8 +1022,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
     
     G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
   	tmpVisAtt->SetForceSolid(true);// This line is used to give definition to the cells in OGLSX Visualizer
-  	//logicWCExtraBorderCell->SetVisAttributes(tmpVisAtt); 
-	logicWCExtraBorderCell->SetVisAttributes(G4VisAttributes::Invisible);
+  	logicWCExtraBorderCell->SetVisAttributes(tmpVisAtt); 
+	//logicWCExtraBorderCell->SetVisAttributes(G4VisAttributes::Invisible);
 	//TF vis.
 
 
@@ -1340,7 +1341,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			  logicWCBarrelBorderCell,         // its mother volume
 			  false,                     // no boolean operations
 			  (int)(i*WCPMTperCellVertical+j)
-					  ,checkOverlapsPMT);//true);                      // no particular field
+					  //					  ,checkOverlapsPMT);//true);                      // no particular field
+					  ,true);                      // no particular field
 
 
    // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
@@ -1380,7 +1382,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			    logicWCExtraBorderCell,         // its mother volume
 			    false,                     // no boolean operations
 			    (int)(i*WCPMTperCellVertical+j)
-						,checkOverlapsPMT);//true);                        // no particular field
+						//						,checkOverlapsPMT);//true);                        // no particular field
+						,true);                        // no particular field
 
 		// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
 		// daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
