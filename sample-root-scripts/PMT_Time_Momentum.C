@@ -63,16 +63,25 @@ void PMT_Time_Momentum(char *filename=NULL) {
   TH1D *PE = new TH1D("PEmult","Photoelectron multiplicty", 16,-0.5,15.5);
   PE->SetXTitle("Photoelectrons");
 
+  //-----------------------
+
   TH1D *PMT_hits = new TH1D("PMT_hits","Hits vs PMT detector number", 120000,-0.5,120000-0.5);
 
   int max=wcsimrootevent->GetNcherenkovhits();
   for (int i = 0; i<max; i++){
     WCSimRootCherenkovHit *chit = wcsimrootevent->GetCherenkovHits()->At(i);
     PMT_hits->Fill(chit->GetTubeID());
-    //WCSimRootCherenkovHit has methods GetTubeId(), GetTotalPe(int)
     PE->Fill(chit->GetTotalPe(1));
   }
-  //PE->Draw("");
+  //----------------------------
+
+  TH1D *HvM = new TH1D("HvM","Momentums",16,-0.5,15.5);
+  for (int i = 0; i<max; i++){
+    WCSimRootTrack *track= wcsimrootevent->GetCherenkovHits()->At(i);
+    HvM->Fill(track->GetM());
+    //PMT_hits->Fill(track->GetTubeID());
+    //WCSimRootCherenkovDigiHit *track = wcsimrootevent->GetCherenkovDigiHits()->At(i);
+  }
 
   //----------------------------
 
@@ -83,11 +92,11 @@ void PMT_Time_Momentum(char *filename=NULL) {
   int max = wcsimrootevent->GetNcherenkovdigihits();
   for (int i = 0; i<max; i++){
     WCSimRootCherenkovDigiHit *cDigiHit = wcsimrootevent->GetCherenkovDigiHits()->At(i);
-    //WCSimRootChernkovDigiHit has methods GetTubeId(), GetT(), GetQ()
     QvsT->Fill(cDigiHit->GetT(), cDigiHit->GetQ());
     WCSimRootCherenkovHitTime *cHitTime = wcsimrootevent->GetCherenkovHitTimes()->At(i);
-    //WCSimRootCherenkovHitTime has methods GetTubeId(), GetTruetime()
   }
+
+
 
   TH1 *temp;
   float win_scale=0.75;
@@ -98,10 +107,12 @@ void PMT_Time_Momentum(char *filename=NULL) {
   c1->cd(1);
   QvsT->Draw("colz");
 
-  c1->cd(3);
-  temp=QvsT->ProjectionX();
-  temp->SetTitle("hits vs time");
+  c1->cd(2);
+  temp=QvsT->ProjectionY();
+  temp->SetTitle("charge");
   temp->Draw();
-  c1->GetPad(3)->SetLogy();
+  c1->GetPad(2)->SetLogy();
+
+
 
 }
