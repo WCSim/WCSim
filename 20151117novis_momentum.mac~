@@ -133,9 +133,8 @@
 /DarkRate/SetDarkWindow 4000
 
 /mygen/generator normal
-
 # use Geant4 /gps
-/gps/particle mu
+/gps/particle mu-
 /gps/ene/type Lin
 /gps/ene/intercept 0.1111
 /gps/ene/min 1 GeV

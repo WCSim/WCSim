@@ -132,14 +132,17 @@
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
 
-/mygen/generator normal
-
+/mygen/generator laser
 # use Geant4 /gps
 /gps/particle mu-
 /gps/ene/type Lin
 /gps/ene/intercept 0.1111
 /gps/ene/min 1 GeV
 /gps/ene/max 10 GeV
+
+
+
+/gps/ang/type iso #isotropic
 
 #/gps/pos/type Volume
 #/gps/pos/shape Cylinder
@@ -157,5 +160,5 @@
 
 /WCSimIO/RootFile 20151117wcsim.root
 
-/run/beamOn 10
+/run/beamOn 10 
 #exit

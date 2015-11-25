@@ -97,7 +97,7 @@ void PMT_Time_Momentum(char *filename=NULL) {
     HvM->Fill(track->GetM(),track->GetP());
     //PMT_hits->Fill(track->GetTubeID());
     //WCSimRootCherenkovDigiHit *track = wcsimrootevent->GetCherenkovDigiHits()->At(i);
-    WCSimRootCherenkovDigiHit *track = wcsimrootevent->GetCherenkovDigiHits()->At(i);
+    //WCSimRootCherenkovDigiHit *track = wcsimrootevent->GetCherenkovDigiHits()->At(i);
   }
   //----------------------------
   TH1 *temp;
