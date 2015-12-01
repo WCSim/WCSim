@@ -39,6 +39,9 @@ private:
   G4String            StoreDigitizerChoice;
   G4UIcmdWithAString* TriggerChoice;
   G4String            StoreTriggerChoice;
+  G4UIcmdWithABool*   MultiDigitsPerTrigger;
+  G4bool              StoreMultiDigitsPerTrigger;
+  G4bool              MultiDigitsPerTriggerSet;
 
   G4UIcmdWithoutParameter* DAQConstruct; //TODO remove this
 
@@ -71,6 +74,7 @@ private:
   G4int                 StoreNDigitsPostWindow;
 
   G4String initialiseString;
+  G4bool   initialised;
 };
 
 #endif
