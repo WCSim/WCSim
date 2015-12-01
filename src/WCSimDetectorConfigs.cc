@@ -165,7 +165,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_14perCent()
 
 void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_40perCent()
 { 
-  WCDetectorName = "Cylinder_60x74_20inchBandL_40perCent";
+  WCDetectorName =  "Cylinder_60x74_20inchBandL_40perCent";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
   WCPMTName           = PMT->GetPMTName();
