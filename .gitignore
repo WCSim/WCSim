@@ -11,3 +11,6 @@ tmp/
 #ignore run results
 wcsim.root
 geofile.txt
+
+#ignore temp files
+*~
