@@ -93,7 +93,10 @@ void WCSimTrajectory::ShowTrajectory(std::ostream& os) const
 void WCSimTrajectory::DrawTrajectory(G4int i_mode) const
 {
   // Invoke the default implementation in G4VTrajectory...
-  G4VTrajectory::DrawTrajectory(i_mode);
+  // i_mode is removed in 4.10 - FDL
+  //G4VTrajectory::DrawTrajectory(i_mode);
+  G4VTrajectory::DrawTrajectory();
+
   // ... or override with your own code here.
 }
 
