@@ -133,6 +133,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     else
       // Makes the volume containg the PMT invisible for normal visualization
       logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
   }
 
   //Need a volume to cut away excess behind blacksheet
@@ -246,8 +247,8 @@ else {
     // Gray wireframe visual style
     // used in OGLSX visualizer
      G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));  //better for seeing hits
-    WCPMTVisAtt->SetForceWireframe(true);
-    //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0)); //better for seeing geometry
+     WCPMTVisAtt->SetForceWireframe(true);
+     //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0)); //better for seeing geometry
     //WCPMTVisAtt->SetForceSolid(true);
     //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
      logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);

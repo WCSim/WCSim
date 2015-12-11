@@ -34,7 +34,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3; 
   WCCapPMTSpacing       = 0.707*m; // distance between centers of top and bottom pmts
-  WCCapEdgeLimit        = 16.9*m;
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;//16.9*m;  //TF: last overlap solved.
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
 
