@@ -29,13 +29,13 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCPMTRadius = PMT->GetRadius();
   WCIDDiameter          = 33.6815*m; //16.900*2*cos(2*pi*rad/75)*m; //inner detector diameter
   WCIDHeight            = 36.200*m; //"" "" height
-  WCBarrelPMTOffset     = 0.0715*m; //offset from vertical
+  WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCBarrelNumPMTHorizontal  = 150; 
   WCBarrelNRings        = 17.;
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3; 
   WCCapPMTSpacing       = 0.707*m; // distance between centers of top and bottom pmts
-  WCCapEdgeLimit        = 16.9*m;
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
 }
