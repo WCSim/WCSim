@@ -1015,9 +1015,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
  // -----------------------------------------------------------
   //crucial to match with borderAnnulusZ
   G4double capZ[4] = { (-WCBlackSheetThickness-1.*mm)*zflip,
-					   //WCBarrelPMTOffset*zflip,
-					   //WCBarrelPMTOffset*zflip,
-					   //(WCBarrelPMTOffset+(WCIDRadius-innerAnnulusRadius))*zflip} ;
 					   (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))*zflip,
 					   (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))*zflip,
 					   WCBarrelPMTOffset*zflip} ;
@@ -1119,8 +1116,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   // add cap blacksheet
   // -------------------------------------------------------------------
   
- G4double capBlackSheetZ[4] = //{-WCBlackSheetThickness*zflip, 0., 0., WCBarrelPMTOffset*zflip};
-   {-WCBlackSheetThickness*zflip, 0., 0., (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius)) *zflip};
+ G4double capBlackSheetZ[4] = {-WCBlackSheetThickness*zflip, 0., 0., (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius)) *zflip};
   G4double capBlackSheetRmin[4] = {0., 0., WCIDRadius, WCIDRadius};
   G4double capBlackSheetRmax[4] = {WCIDRadius+WCBlackSheetThickness, 
                                    WCIDRadius+WCBlackSheetThickness,
