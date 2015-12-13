@@ -188,7 +188,7 @@ private:
   // to check their state if we change the geometry, otherwise will segfault
   // between events!
   WCSimWCSD* aWCPMT;
-  
+
   //Water, Blacksheet surface
   G4OpticalSurface * OpWaterBSSurface;
 
@@ -414,6 +414,10 @@ private:
 
     G4bool checkOverlaps;
     G4bool checkOverlapsPMT;
+    G4bool placeBarrelPMTs;
+    G4bool placeCapPMTs;
+    G4bool placeBorderPMTs;
+
     G4LogicalVolume* waterTankLV;
 
     G4int PMTCopyNo;

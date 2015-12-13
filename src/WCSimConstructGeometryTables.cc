@@ -77,13 +77,13 @@ void WCSimDetectorConstruction::GetWCGeom
       
       if (x<xmin){xmin=x;}
       if (x>xmax){xmax=x;}
-
+      
       if (y<ymin){ymin=y;}
       if (y>ymax){ymax=y;}
 
       if (z<zmin){zmin=z;}
       if (z>zmax){zmax=z;}
-     
+      
 
  
       WCCylInfo[0] = xmax-xmin;
