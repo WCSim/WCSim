@@ -1018,7 +1018,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 					   (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))*zflip,
 					   (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))*zflip,
 					   WCBarrelPMTOffset*zflip} ;
-  std::cout << WCBarrelPMTOffset << " TEST " << (WCIDRadius-innerAnnulusRadius) << std::endl;
 
   G4double capRmin[4] = {  0. , 0., 0., 0.} ;
   G4double capRmax[4] = {outerAnnulusRadius, outerAnnulusRadius,  WCIDRadius, innerAnnulusRadius};
