@@ -110,7 +110,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   G4Material *material_around_pmt = G4Material::GetMaterial("Water");
   if(id_reflector_height > 0.1*CLHEP::mm && 
      (cylinder_radius > 1.*CLHEP::mm || cylinder_height > 1.*CLHEP::mm)) //or make this a user option? 
-    material_around_pmt = G4Material::GetMaterial("SilGel");
+    material_around_pmt = G4Material::GetMaterial("Water");
   
   G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
@@ -133,6 +133,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     else
       // Makes the volume containg the PMT invisible for normal visualization
       logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
   }
 
   //Need a volume to cut away excess behind blacksheet
@@ -246,8 +247,8 @@ else {
     // Gray wireframe visual style
     // used in OGLSX visualizer
      G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));  //better for seeing hits
-    WCPMTVisAtt->SetForceWireframe(true);
-    //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0)); //better for seeing geometry
+     WCPMTVisAtt->SetForceWireframe(true);
+     //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0)); //better for seeing geometry
     //WCPMTVisAtt->SetForceSolid(true);
     //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
      logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);

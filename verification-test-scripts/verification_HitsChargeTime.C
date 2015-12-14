@@ -117,11 +117,12 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h1 = new TH1F("PMT Hits", "# Digitized Hits", 250, 0, 15000);
+  TH1F *h1 = new TH1F("PMT Hits", "# Digitized Hits", 500, 0, 10000);
   TH1F *time = new TH1F("Average time", "Average time", 600, 900, 2000);
   TH1F *pe = new TH1F("Q/# Digitzed PMT", "Average Charge", 200, 0, 5);
-  TH1F *hit_pmts = new TH1F("Hit PMTs","# Hit PMTs",250,0,15000); 
-  
+  TH1F *hit_pmts = new TH1F("Hit PMTs","# Hit PMTs",500,0,10000); 
+
+  TH1F *tot_charge = new TH1F("tot","Total Charge in event",300,0,1200);
   std::cout << "nevent: " << nevent << std::endl;
   // Now loop over events
   for (int ev=0; ev<nevent; ev++)
@@ -164,6 +165,8 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
 	    totalq+=q;
 	    totalt+=t;
 	  }
+
+	tot_charge->Fill(totalq);
 	float av_time = totalt/ncherenkovdigihits;
 	float av_q = totalq/ncherenkovdigihits;
       }
@@ -219,11 +222,12 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h2 = new TH1F("PMT Hits 2", "# Digitized Hits", 250, 0, 15000);
+  TH1F *h2 = new TH1F("PMT Hits 2", "# Digitized Hits", 500, 0, 10000);
   TH1F *time2 = new TH1F("Average time 2", "Average time", 600, 900, 2000);
   TH1F *pe2 = new TH1F("Q/# Digitzed PMT 2", "Q/# Digitzed PMT", 200, 0, 5);
-  TH1F *hit_pmts2 = new TH1F("Hit PMTs 2","# Hit PMTs",250,0,15000);  
-  
+  TH1F *hit_pmts2 = new TH1F("Hit PMTs 2","# Hit PMTs",500,0,10000);  
+
+  TH1F *tot_charge2 = new TH1F("tot2","Total Charge in event",300,0,1200);  
   // Now loop over events
   for (int ev=0; ev<nevent; ev++)
   {
@@ -265,6 +269,8 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
 	    totalq+=q;
 	    totalt+=t;
 	  }
+
+	tot_charge2->Fill(totalq);
 	float av_time = totalt/ncherenkovdigihits;
 	float av_q = totalq/ncherenkovdigihits;
       }
@@ -317,4 +323,9 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
  hit_pmts->Draw();
  hit_pmts2->SetLineColor(kRed);
  hit_pmts2->Draw("same");
+
+ TCanvas* c2 = new TCanvas("c2", "Test Plots", 500*n_wide*win_scale, 500*n_high*win_scale);
+ tot_charge->Draw();
+ tot_charge2->SetLineColor(kRed);
+ tot_charge2->Draw("same");
 }

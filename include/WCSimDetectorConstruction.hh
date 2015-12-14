@@ -414,10 +414,10 @@ private:
 
     G4bool checkOverlaps;
     G4bool checkOverlapsPMT;
+
     G4bool placeBarrelPMTs;
     G4bool placeCapPMTs;
     G4bool placeBorderPMTs;
-
     G4LogicalVolume* waterTankLV;
 
     G4int PMTCopyNo;

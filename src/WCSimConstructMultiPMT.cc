@@ -210,7 +210,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   G4LogicalVolume *logic_mPMT_top_sphere_container =
     new G4LogicalVolume(    mPMT_top_sphere_container,
 			    //G4Material::GetMaterial("Air"),
-			    G4Material::GetMaterial("SilGel"), //whole area between pressure vessel and support structure is optical gel!
+			    G4Material::GetMaterial("Water"), //whole area between pressure vessel and support structure is optical gel!
 			    "WCMultiPMT_container_top",
 			    0,0,0);
 

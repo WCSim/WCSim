@@ -344,7 +344,7 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   WCDetectorName = "TestmPMT";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
 
-  mPMT_ID_PMT = "BoxandLine20inchHQE";//"PMT3inchR12199_02"; //"BoxandLine20inchHQE";// (combine with nPMT=1);//"PMT3inchR12199_02"; 
+  mPMT_ID_PMT = "PMT3inchR12199_02"; //"BoxandLine20inchHQE";// (combine with nPMT=1);//"PMT3inchR12199_02"; 
   mPMT_OD_PMT = "PMT8inch";         // Only used for the unique string name of mPMT for now!
                                     
 
