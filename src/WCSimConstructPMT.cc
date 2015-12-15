@@ -110,7 +110,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   G4Material *material_around_pmt = G4Material::GetMaterial("Water");
   if(id_reflector_height > 0.1*CLHEP::mm && 
      (cylinder_radius > 1.*CLHEP::mm || cylinder_height > 1.*CLHEP::mm)) //or make this a user option? 
-    material_around_pmt = G4Material::GetMaterial("Water");
+    material_around_pmt = G4Material::GetMaterial("SilGel");
   
   G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
