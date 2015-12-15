@@ -16,14 +16,17 @@
 
 #include "G4SystemOfUnits.hh"
 
+#include "G4LogicalSkinSurface.hh"
+
 //PMT logical volume construction.
+//WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
-WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
-
+//ToDo: use enum instead of string for PMTtype, and PMTs should be objects of one simple class.
 G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName)
 {
   PMTKey_t key(PMTName,CollectionName);
 
+  // Return pre-created PMT Logical Volume if it already exists.
   PMTMap_t::iterator it = PMTLogicalVolumes.find(key);
   if (it != PMTLogicalVolumes.end()) {
       //G4cout << "Restore PMT" << G4endl;
@@ -33,37 +36,66 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   //G4cout << "Create PMT" << G4endl;
 
 
-if (Vis_Choice == "RayTracer"){
+  if (Vis_Choice == "RayTracer"){
     // Blue wireframe visual style
     // Used in the RayTracer visualizer
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
-  WCPMTVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
-  WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown 
-}
-
-else
-   { // Gray wireframe visual style
-    // used in OGLSX visualizer
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
-  WCPMTVisAtt->SetForceWireframe(true);}
-
-  G4double expose;
-  G4double radius;
-  G4double glassThickness;
+    G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
+    WCPMTVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
+    WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown 
+  }
   
+  
+  G4double expose = 0.;
+  G4double radius = 0.;
+  G4double glassThickness = 0.;
+    
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
   expose = PMT->GetExposeHeight();
-  radius = PMT->GetRadius();
+  radius = PMT->GetRadius();                            //r at height = expose
   glassThickness = PMT->GetPMTGlassThickness();
 
-  G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
+  //sphereRadius R: radius of curvature, based on spherical approx near exposeHeight
+  //if radius of spherical cap at exposeHeight = PMTradius r (eg. 20"/2)
+  //then from r = sqrt(R*R - (R-expose)*(R-expose)), we get:
+  G4double sphereRadius = (expose*expose + radius*radius)/(2*expose);
   G4double PMTOffset =  sphereRadius - expose;
 
   //All components of the PMT are now contained in a single logical volume logicWCPMT.
   //Origin is on the blacksheet, faces positive z-direction.
+
+  //Optional reflectorCone:
+  G4double reflectorRadius = radius + id_reflector_height * tan(id_reflector_angle);
+  G4double reflectorThickness = 1.*CLHEP::mm;
+  if((reflectorRadius - radius) < 1.*CLHEP::mm)
+    reflectorThickness = 0.*CLHEP::mm;
+
+  // ToDo: Base is PMT property! Should not hard coded here.
+  G4bool addPMTBase = false; 
+  G4double baseHeight = 0.;
+  G4double baseRadius = 0.;
+  if(addPMTBase){
+    G4double basePinLength = 28.*CLHEP::mm; //TF measurement: pins + base + transformer.
+    baseHeight = 97.*CLHEP::mm - expose + basePinLength; //97mm includes the PMT top as well.
+    baseRadius = 26.*CLHEP::mm; //for R121990-02
+  } else {
+    // version without a base but with optional reflectorCone
+    baseHeight = expose;
+    baseRadius = std::max(radius,reflectorRadius) + reflectorThickness; //radius + reflectorThickness; too tight
+  }
   
-  G4double PMTHolderZ[2] = {0, expose};
-  G4double PMTHolderR[2] = {radius, radius};
+
+  G4cout << "========================================================" << G4endl;
+  G4cout << "Expose height for PMT " << CollectionName << " : " << expose << " mm" << G4endl;
+  G4cout << "Radius at expose height : " << radius << " mm" << G4endl;
+  G4cout << "Radius of curvature : " << sphereRadius << " mm" << G4endl;
+  G4cout << "Reflector radius : " << reflectorRadius << " mm" << G4endl;
+  G4cout << "Reflector thickness : " << reflectorThickness << " mm" << G4endl;
+  G4cout << "========================================================" << G4endl;
+
+  G4double PMTHolderZ[2] = {-baseHeight+expose, 
+			    std::max(expose,id_reflector_height)};
+  G4double PMTHolderR[2] = {baseRadius, 
+			    std::max(radius,reflectorRadius) + reflectorThickness};
   G4double PMTHolderr[2] = {0,0};
 
   G4Polycone* solidWCPMT = 
@@ -75,24 +107,34 @@ else
                   PMTHolderr, // R Inner
                   PMTHolderR);// R Outer
 
-
+  G4Material *material_around_pmt = G4Material::GetMaterial("Water");
+  if(id_reflector_height > 0.1*CLHEP::mm && 
+     (cylinder_radius > 1.*CLHEP::mm || cylinder_height > 1.*CLHEP::mm)) //or make this a user option? 
+    material_around_pmt = G4Material::GetMaterial("Water");
+  
   G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
-                            G4Material::GetMaterial("Water"),
+                            material_around_pmt,
                             "WCPMT",
                             0,0,0);
 
-if (Vis_Choice == "RayTracer"){
-// Makes the volume containing the PMT visible, solid, and forces the auxiliary edges to be viewed.
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
-  WCPMTVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
-  WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown 
-
-    logicWCPMT->SetVisAttributes(WCPMTVisAtt);}
-
-else{
-// Makes the volume containg the PMT invisible for normal visualization
-    logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);}
+  if (Vis_Choice == "RayTracer"){
+    // Makes the volume containing the PMT visible, solid, and forces the auxiliary edges to be viewed.
+    G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
+    WCPMTVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
+    WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown 
+    
+    logicWCPMT->SetVisAttributes(WCPMTVisAtt);
+  } else{
+    G4VisAttributes* WCPMTVisAtt2 = new G4VisAttributes(G4Colour(1.0,0.0,0.0));
+    WCPMTVisAtt2->SetForceSolid(true);
+    if(addPMTBase) 
+      logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
+    else
+      // Makes the volume containg the PMT invisible for normal visualization
+      logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
+  }
 
   //Need a volume to cut away excess behind blacksheet
   G4Box* solidCutOffTubs =
@@ -101,8 +143,10 @@ else{
             sphereRadius+1.*cm,
             PMTOffset);
 
+  ////////////////////////////
+  ///  Create PMT Interior ///
+  ////////////////////////////
 
-  //Create PMT Interior
   G4Sphere* tmpSolidInteriorWCPMT =
       new G4Sphere(    "tmpInteriorWCPMT",
                        0.0*m,(sphereRadius-glassThickness),
@@ -129,7 +173,8 @@ else{
                   "InteriorWCPMT",
                   logicWCPMT,
                   false,
-                  0);
+		  0,
+		  checkOverlaps);
 
 if (Vis_Choice == "RayTracer"){
 // Adding color and forcing the inner portion of the PMT's to be viewed
@@ -143,8 +188,10 @@ else {
 // Making the inner portion of the detector invisible for OGLSX visualization
   logicInteriorWCPMT->SetVisAttributes(G4VisAttributes::Invisible);}
 
+  /////////////////////////////
+  /// Create PMT Glass Face ///
+  /////////////////////////////
 
-  //Create PMT Glass Face
   G4Sphere* tmpGlassFaceWCPMT =
       new G4Sphere(    "tmpGlassFaceWCPMT",
                        (sphereRadius-glassThickness),
@@ -195,12 +242,63 @@ else {
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
 
   else
-   { // Gray wireframe visual style
+   { 
+     
+    // Gray wireframe visual style
     // used in OGLSX visualizer
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
-  WCPMTVisAtt->SetForceWireframe(true);
-  //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
-  logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
+     G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));  //better for seeing hits
+     WCPMTVisAtt->SetForceWireframe(true);
+     //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0)); //better for seeing geometry
+    //WCPMTVisAtt->SetForceSolid(true);
+    //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+     logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
+    
+   }
+
+  //Add Logical Border Surface
+  new G4LogicalBorderSurface("GlassCathodeSurface",
+                             physiGlassFaceWCPMT,
+                             physiInteriorWCPMT,
+                             OpGlassCathodeSurface);
+
+
+  // TF: Optional Reflector
+  if(id_reflector_height > 0.1*CLHEP::mm && (reflectorRadius-radius) > -5*CLHEP::mm){
+    G4double reflectorZ[2] = {0, id_reflector_height};
+    G4double reflectorR[2] = {radius + reflectorThickness, reflectorThickness + reflectorRadius};
+    G4double reflectorr[2] = {radius,reflectorRadius};
+    
+    G4Polycone* reflectorCone = 
+      new G4Polycone("WCPMT_reflect",                    
+		     0.0*deg,
+		     360.0*deg,
+		     2,
+		     reflectorZ,
+		     reflectorr, // R Inner
+		     reflectorR);// R Outer
+    
+    G4LogicalVolume* logicReflector =
+      new G4LogicalVolume(    reflectorCone,
+			      G4Material::GetMaterial("Aluminum"), //It actually is Al+ Ag evaporation
+			      "reflectorCone",
+			      0,0,0);
+    
+    G4VisAttributes* WCPMTVisAtt3 = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
+    WCPMTVisAtt3->SetForceSolid(true);
+    logicReflector->SetVisAttributes(WCPMTVisAtt3);
+    
+    new G4LogicalSkinSurface("ReflectorLogSkinSurface",logicReflector,ReflectorSkinSurface);
+    
+    G4VPhysicalVolume* reflectorWCPMT =
+      new G4PVPlacement(0,
+                        G4ThreeVector(0, 0, 0),
+                        logicReflector,
+                        "reflectorWCPMT",
+                        logicWCPMT,
+                        false,
+                        0,
+                        checkOverlaps);
+  }
 
   // Instantiate a new sensitive detector 
   // and register this sensitive detector volume with the SD Manager. 
@@ -218,13 +316,8 @@ else {
 
   logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
 
+  
   PMTLogicalVolumes[key] = logicWCPMT;
-
-  //Add Logical Border Surface
-  new G4LogicalBorderSurface("GlassCathodeSurface",
-                             physiGlassFaceWCPMT,
-                             physiInteriorWCPMT,
-                             OpGlassCathodeSurface);
 
   return logicWCPMT;
 }

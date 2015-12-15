@@ -227,12 +227,13 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent*)
     for (G4int i=0; i < numHits; i++) 
       (*hitsCollection)[i]->Print();
 
-    // TF switch off detailed debug TODO
+    /* Detailed debug:
     G4cout << "Through mPMTLV " << WCSimSteppingAction::n_photons_through_mPMTLV << G4endl;
     G4cout << "Through Acrylic " << WCSimSteppingAction::n_photons_through_acrylic << G4endl;
     G4cout << "Through Gel " << WCSimSteppingAction::n_photons_through_gel << G4endl;
     G4cout << "On Blacksheet " << WCSimSteppingAction::n_photons_on_blacksheet << G4endl;
     G4cout << "On small PMT " << WCSimSteppingAction::n_photons_on_smallPMT << G4endl;
+    */
   } 
 }
 

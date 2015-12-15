@@ -295,7 +295,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->Cylinder_60x74_3inchmPMT_14perCent(); // MUST be Called after the mPMT settings, otherwise unknown
 		} else if(newValue == "Cylinder_60x74_3inchmPMT_40perCent" ) {
 		  WCSimDetector->Cylinder_60x74_3inchmPMT_40perCent(); // MUST be Called after the mPMT settings, otherwise unknown
-		} else
+		  } else
 		  G4cout << "That geometry choice not defined!" << G4endl;
 	}
   
