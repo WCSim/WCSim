@@ -97,7 +97,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   // faster running. Checking ALL overlaps is crucial. No overlaps are allowed, otherwise
   // G4Navigator will be confused and result in wrong photon tracking and resulting yields.
   // ToDo: get these options from .mac
-  checkOverlaps = true;   
+  checkOverlaps = false;   
   checkOverlapsPMT = false; 
   // Optionally place parts of the detector. Very useful for visualization and debugging 
   // geometry overlaps in detail.
@@ -109,13 +109,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   //-----------------------------------------------------
   // Volumes
   //-----------------------------------------------------
-
-  checkOverlaps = false; //TODO: get from .mac file: true for making geo, false for running
-  checkOverlapsPMT = true; // NO overlaps, as these will mess up the G4Navigator, hence tracking and yield
-  placeBarrelPMTs = true;
-  placeCapPMTs = true;
-  placeBorderPMTs = true;
-
   // The water barrel is placed in an tubs of air
   
   G4Tubs* solidWC = new G4Tubs("WC",

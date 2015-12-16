@@ -156,7 +156,9 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
 void WCSimDetectorConstruction::DumpGeometryTableToFile()
 {
   // Open a file
-  geoFile.open("geofile.txt", std::ios::out);
+  std::string filename = "geofile_" + WCDetectorName + ".txt";
+  //geoFile.open("geofile.txt", std::ios::out);
+  geoFile.open(filename.c_str(), std::ios::out);
 
   geoFile.precision(2);
   geoFile.setf(std::ios::fixed);
@@ -236,7 +238,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   }
   geoFile.close();
 
-
+  std::cout << "Geofile written" << std::endl;
 } 
 
 

@@ -117,12 +117,20 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h1 = new TH1F("PMT Hits", "# Digitized Hits", 500, 0, 10000);
-  TH1F *time = new TH1F("Average time", "Average time", 600, 900, 2000);
+  TH1F *h1 = new TH1F("PMT Hits", "# Digitized Hits", 500, 0, 15000);
+  TH1F *time = new TH1F("Average time", "Average time", 600, 500, 5000);
   TH1F *pe = new TH1F("Q/# Digitzed PMT", "Average Charge", 200, 0, 5);
-  TH1F *hit_pmts = new TH1F("Hit PMTs","# Hit PMTs",500,0,10000); 
+  TH1F *hit_pmts = new TH1F("Hit PMTs","# Hit PMTs",500,0,25000); 
 
   TH1F *tot_charge = new TH1F("tot","Total Charge in event",200,0,10000);
+
+  TH1F *charge = new TH1F("charge","",200,0,20);
+  TH1F *ttime = new TH1F("ttime","",200,900,2000);
+  TH2F *t_q = new TH2F("tq","",200,900,2000,200,0,20);
+  TH1F *occupancy = new TH1F("occupancy","",20000,0,20000);
+  TH1F *occupancy_mPMT = new TH1F("occupancy_mPMT","",34,0,34);
+  TH1F *occupancy_mPMT2 = new TH1F("occupancy_mPMT2","",200,0,20000);
+ TH1F *nhit_pmt = new TH1F("nhit_pmt","",30,0,30);
   std::cout << "nevent: " << nevent << std::endl;
   // Now loop over events
   for (int ev=0; ev<nevent; ev++)
@@ -143,15 +151,22 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
 	     wcsimrootevent->GetVtx(1),wcsimrootevent->GetVtx(2));
     }
     //std::cout << "test: " << wcsimrootsuperevent->GetNumberOfEvents() << std::endl;
+    //if(wcsimrootevent->GetNumTubesHit() > wcsimrootevent->GetNcherenkovdigihits() + 2000)
+    if(wcsimrootsuperevent->GetNumberOfEvents() > 1)
+    std::cout << "test2: " << ev << " " << wcsimrootsuperevent->GetNumberOfEvents() << " " << wcsimrootevent->GetNumTubesHit() << " " << wcsimrootevent->GetNcherenkovdigihits() << std::endl;
+
     for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++) 
       { 
 	int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
 	h1->Fill(ncherenkovdigihits);
 	
+	//	std::cout << "DEBUG " <<  ev << " " << index << " " << wcsimrootevent->GetNumTubesHit() << std::endl;
 	hit_pmts->Fill(wcsimrootevent->GetNumTubesHit());	
-	//std::cout << "test2: " << index << " " << wcsimrootevent->GetNumTubesHit() << std::endl;
 	float totalq = 0.;
 	float totalt = 0.;
+
+	
+	//TH1F *occup_per_event = new TH1F("occup_per_event","",20000,0,20000);
 	// Loop through elements in the TClonesArray of WCSimRootCherenkovHits
 	for (int i=0; i< ncherenkovdigihits; i++)
 	  {
@@ -162,13 +177,27 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
 	    int tubeNumber     =  (wcsimrootcherenkovdigihit->GetT(),wcsimrootcherenkovdigihit->GetTubeId());
 	    float q = wcsimrootcherenkovdigihit->GetQ();
 	    float t = wcsimrootcherenkovdigihit->GetT();
+	    charge->Fill(q);
+	    ttime->Fill(t);
+	    t_q->Fill(t,q);
+	    occupancy->Fill(tubeNumber);
+	    //occup_per_event->Fill(tubeNumber);
+	    occupancy_mPMT->Fill(tubeNumber%33 == 0 ? 33 : tubeNumber%33);
+	    occupancy_mPMT2->Fill(tubeNumber/33);
 	    totalq+=q;
 	    totalt+=t;
 	  }
-
+	
 	tot_charge->Fill(totalq);
 	float av_time = totalt/ncherenkovdigihits;
 	float av_q = totalq/ncherenkovdigihits;
+
+	/*
+	for(int j = 1; j < 15000; j++ ){//occupancy->GetNbinsX() ; j++){
+	  if(occup_per_event->GetBinContent(j) > 0 )
+	    nhit_pmt->Fill(occup_per_event->GetBinContent(j));
+	    }*/
+
       }
     pe->Fill(av_q);  
     time->Fill(av_time);
@@ -222,12 +251,19 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h2 = new TH1F("PMT Hits 2", "# Digitized Hits", 500, 0, 10000);
-  TH1F *time2 = new TH1F("Average time 2", "Average time", 600, 900, 2000);
+  TH1F *h2 = new TH1F("PMT Hits 2", "# Digitized Hits", 500, 0, 15000);
+  TH1F *time2 = new TH1F("Average time 2", "Average time", 600, 500, 5000);
   TH1F *pe2 = new TH1F("Q/# Digitzed PMT 2", "Q/# Digitzed PMT", 200, 0, 5);
-  TH1F *hit_pmts2 = new TH1F("Hit PMTs 2","# Hit PMTs",500,0,10000);  
+  TH1F *hit_pmts2 = new TH1F("Hit PMTs 2","# Hit PMTs",500,0,25000);  
 
   TH1F *tot_charge2 = new TH1F("tot2","Total Charge in event",200,0,10000);  
+
+  TH1F *charge2 = new TH1F("charge2","",200,0,20);
+  TH1F *ttime2 = new TH1F("ttime2","",200,900,2000);
+  TH1F *occupancy2 = new TH1F("occupancy2","",200,0,500000);
+  TH1F *occupancy2_mPMT = new TH1F("occupancy2_mPMT","",34,0,34);
+  TH1F *occupancy2_mPMT2 = new TH1F("occupancy2_mPMT2","",200,0,20000);
+
   // Now loop over events
   for (int ev=0; ev<nevent; ev++)
   {
@@ -266,6 +302,8 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
 	    int tubeNumber     =  (wcsimrootcherenkovdigihit->GetT(),wcsimrootcherenkovdigihit->GetTubeId());
 	    float q = wcsimrootcherenkovdigihit->GetQ();
 	    float t = wcsimrootcherenkovdigihit->GetT();
+	    charge2->Fill(q);
+	    ttime2->Fill(t);
 	    totalq+=q;
 	    totalt+=t;
 	  }
@@ -303,8 +341,10 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
  TLegend *leg = new TLegend(0.2,0.7,0.55,0.85, "");
  leg->SetFillColor(0);
  leg->SetBorderSize(0);
- leg->AddEntry(h1,filename, "l");
- leg->AddEntry(h2,filename2, "l");
+ // leg->AddEntry(h1,filename, "l");
+ //leg->AddEntry(h2,filename2, "l");
+ leg->AddEntry(h1,"mPMT", "l");
+ leg->AddEntry(h2,"20in", "l");
  leg->Draw();
  
  c1->cd(2);
@@ -328,4 +368,27 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
  tot_charge->Draw();
  tot_charge2->SetLineColor(kRed);
  tot_charge2->Draw("same");
+
+ TCanvas *c3 = new TCanvas();
+ c3->Divide(2,2);
+ c3->cd(1);
+ occupancy_mPMT2->Draw();
+ c3->cd(2);
+ occupancy_mPMT->Draw();
+ c3->cd(3);
+ ttime->Draw();
+ ttime2->SetLineColor(kRed);
+ ttime2->Draw("same");
+ c3->cd(4);
+ charge->Draw();
+ charge2->SetLineColor(kRed);
+ charge2->Draw("same");
+
+
+ TCanvas *c4 = new TCanvas();
+
+ nhit_pmt->Draw();
+
+ TCanvas *c5 = new TCanvas();
+ t_q->Draw("colz");
 }

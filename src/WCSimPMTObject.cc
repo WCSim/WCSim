@@ -1554,7 +1554,7 @@ PMT3inchR12199_02::~PMT3inchR12199_02(){}
 
 G4String PMT3inchR12199_02::GetPMTName() {G4String PMTName = "PMT3inchR12199_02"; return PMTName;}
 G4double PMT3inchR12199_02::GetExposeHeight() {return .0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
-G4double PMT3inchR12199_02::GetRadius() {return .0475*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
+G4double PMT3inchR12199_02::GetRadius() {return .0400*m;}   //.0475*m;}   //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
 G4double PMT3inchR12199_02::GetPMTGlassThickness() {return 0.4*cm;}
 
 float PMT3inchR12199_02::HitTimeSmearing(float Q) {
@@ -1703,10 +1703,16 @@ G4float* PMT3inchR12199_02::GetQE(){
   G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
   // TF: While the main reason is the 20" SK PMT, this correction factor has been applied
   // to the B&L PMT. Therefore all PMTs have to corrected in a similar way, unfortunately.
-
+  /*
   static G4float QE[21] =
     { .0787*correctionFactor, .1838*correctionFactor, .2401*correctionFactor, .2521*correctionFactor, .2695*correctionFactor, .2676*correctionFactor, .2593*correctionFactor, .2472*correctionFactor, .2276*correctionFactor,
       .1970*correctionFactor,  .1777*correctionFactor, .1547*correctionFactor, .1033*correctionFactor, .0727*correctionFactor, .0587*correctionFactor, .0470*correctionFactor, .0372*correctionFactor, .0285*correctionFactor, .0220*correctionFactor, .0130*correctionFactor, .0084*correctionFactor};
+  */
+  // TEST: make QE the same!!
+  static G4float QE[20] =
+    { 0.00*correctionFactor, .0008*correctionFactor, .1255*correctionFactor, .254962*correctionFactor, .2930*correctionFactor, .3127*correctionFactor, .3130*correctionFactor, .2994*correctionFactor, .2791*correctionFactor, .2491*correctionFactor,
+      .2070*correctionFactor,  .1758*correctionFactor, .1384*correctionFactor, .0779*correctionFactor, .0473*correctionFactor, .0288*correctionFactor, .0149*correctionFactor, .0062*correctionFactor, .0002*correctionFactor, .0001*correctionFactor};  
+
   return QE;
 }
 G4float PMT3inchR12199_02::GetmaxQE(){
