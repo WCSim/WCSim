@@ -26,9 +26,9 @@ from collections import OrderedDict
 delim_list = lambda s: list(set(s.split(',')))
 delim_list_str = lambda s: s.split(',') if len(s.split(',')) == 3 else s
 
-DAQdigitizer_choices = ['SKI','SKI_SKDETSIM']
-DAQtrigger_choices = ['NDigits', 'NDigits2','SKI_SKDETSIM']
-DAQtrigger_ndigits_choices = ['NDigits', 'NDigits2','SKI_SKDETSIM']
+DAQdigitizer_choices = ['SKI', 'SKI_SKDETSIM']
+DAQtrigger_choices = ['NDigits', 'NDigits2', 'SKI_SKDETSIM']
+DAQtrigger_ndigits_choices = ['NDigits', 'NDigits2', 'SKI_SKDETSIM']
 WCgeom_choices = ['HyperK', \
                       'HyperK_withHPD', \
                       'SuperK', \
@@ -86,11 +86,13 @@ parser.add_argument('--PMTCollEff', type=delim_list, default='on', help='Turn on
 # other
 parser.add_argument('--SavePi0', action='store_true', help='Save Pi0 info?')
 # particle gun
+parser.add_argument('--GunIsGPS', type=str, choices=['','line','cylinder'], help='Use the G4 General Particle Source? Overridden by specifying MakeKin.py-like options to --GunPosition and --GunDirection')
 parser.add_argument('--GunParticle', type=str, default='e-', choices=GunParticleChoices, help='Particle gun particle. Choose exactly one (default e-)')
 parser.add_argument('--GunEnergy', type=delim_list, default='500', help='Particle gun energy (MeV). Specify multiple with comma separated list')
 parser.add_argument('--GunPosition', type=delim_list_str, default='0,0,0', help='Particle gun position. Either a comma-separated 3 vector OR exactly one of '+ListAsString(GunPositionChoices))
 parser.add_argument('--GunDirection', type=delim_list_str, default='1,0,0', help='Particle gun direction. Either a comma-separated 3 vector OR exactly one of '+ListAsString(GunDirectionChoices))
 parser.add_argument('--NEvents', type=int, default=10, help='Number of events per configuration')
+parser.add_argument('--JobsPerConfig', type=int, default=1, help='Number of jobs per configuration (total events generated = JobsPerConfig * NEvents')
 
 def check_input_list(arglist, allowed, parser):
     #check for options that aren't allowed
@@ -348,6 +350,7 @@ def main(args_to_parse = None):
         guns = []
         filestubs = []
         for GunEnergy in args.GunEnergy:
+            filestub = ''
             if type(args.GunPosition) is str:
                 #if GunPosition and GunDirection are string's
                 #we need to call MakeKin.py to generate distributions of different positions/directions
@@ -366,15 +369,51 @@ def main(args_to_parse = None):
                 #and finally get the .mac options
                 gunoptions = '/mygen/vecfile ' + os.getcwd() + '/' + kinname + '\n'
                 guns.append(gunoptions)
+                filestub += 'makekin_'
+            elif args.GunIsGPS == 'line':
+                #we're using the G4 General particle source
+                #https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+                gunoptions = "/mygen/generator laser \n" \
+                    "/gps/particle " + args.GunParticle + "\n" \
+                    "/gps/energy " + GunEnergy + " MeV \n" \
+                    "/gps/pos/centre " + " ".join(i for i in args.GunPosition) + "\n" \
+                    "/gps/pos/type Plane \n" \
+                    "/gps/pos/shape Rectangle \n" \
+                    "/gps/pos/halfx 3700. cm \n" \
+                    "/gps/pos/halfy 0. cm \n" \
+                    "/gps/pos/rot1 " + " ".join(i for i in args.GunDirection) + "\n" \
+                    "/gps/pos/rot2 " + " ".join(i for i in (args.GunDirection[1:] + args.GunDirection[:1])) + "\n" \
+                    "/gps/verbose 2 \n" \
+                    "/gps/direction " + " ".join(i for i in args.GunDirection) + "\n"
+                guns.append(gunoptions)
+                filestub += 'gps_'
+            elif args.GunIsGPS == 'cylinder':
+                #we're using the G4 General particle source
+                #https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+                gunoptions = "/mygen/generator laser \n" \
+                    "/gps/particle " + args.GunParticle + "\n" \
+                    "/gps/energy " + GunEnergy + " MeV \n" \
+                    "/gps/pos/centre " + " ".join(i for i in args.GunPosition) + "\n" \
+                    "/gps/pos/type Volume \n" \
+                    "/gps/pos/shape Cylinder \n" \
+                    "/gps/pos/radius 3700. cm \n" \
+                    "/gps/pos/halfz 3000. cm \n" \
+                    "/gps/pos/rot1 " + " ".join(i for i in args.GunDirection) + "\n" \
+                    "/gps/pos/rot2 " + " ".join(i for i in (args.GunDirection[1:] + args.GunDirection[:1])) + "\n" \
+                    "/gps/verbose 2 \n" \
+                    "/gps/direction " + " ".join(i for i in args.GunDirection) + "\n"
+                guns.append(gunoptions)
+                filestub += 'gpscyl_'
             else:
                 #we're using the simple GEANT4 particle gun
+                #http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
                 gunoptions = "/mygen/generator normal " + "\n" \
                     "/gun/particle " + args.GunParticle + "\n" \
                     "/gun/energy " + GunEnergy + " MeV \n" \
                     "/gun/direction " + " ".join(i for i in args.GunDirection) + "\n" \
                     "/gun/position " + " ".join(i for i in args.GunPosition) + "\n"
                 guns.append(gunoptions)
-            filestubs.append(GunEnergy + args.GunParticle)
+            filestubs.append(filestub + GunEnergy + args.GunParticle)
         return [guns, filestubs]
 
     #construct the .mac options and parts of filenames for the different groups
@@ -403,12 +442,16 @@ def main(args_to_parse = None):
             theseoptions += vO
             if vF:
                 thesefile    += '_' + vF
-        #add the final bits to the options
-        theseoptions += "/WCSimIO/RootFile " + thesefile + ".root" + "\n" \
-            "/WCSim/SavePi0 " + ("true" if args.SavePi0 else "false") + "\n" \
-            "/run/beamOn " + str(args.NEvents) + "\n"
-        options.append(theseoptions)
-        filestubs.append(thesefile)
+        #loop over jobs
+        for ijob in xrange(args.JobsPerConfig):
+            #add the final bits to the options
+            jobname = thesefile + '.' + str(ijob)
+            joboptions = theseoptions + ""\
+                "/WCSimIO/RootFile " + jobname + ".root" + "\n" \
+                "/WCSim/SavePi0 " + ("true" if args.SavePi0 else "false") + "\n" \
+                "/run/beamOn " + str(args.NEvents) + "\n"
+            options.append(joboptions)
+            filestubs.append(jobname)
         
     #loop over every options set
     counter = 1
