@@ -117,18 +117,18 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h1 = new TH1F("PMT Hits", "# Digitized Hits", 500, 0, 15000);
+  TH1F *h1 = new TH1F("PMT Hits", "# Digitized Hits", 500, 0, 25000);
   TH1F *time = new TH1F("Average time", "Average time", 600, 500, 5000);
   TH1F *pe = new TH1F("Q/# Digitzed PMT", "Average Charge", 200, 0, 5);
-  TH1F *hit_pmts = new TH1F("Hit PMTs","# Hit PMTs",500,0,25000); 
+  TH1F *hit_pmts = new TH1F("Hit PMTs","# Hit PMTs",500,0,35000); 
 
-  TH1F *tot_charge = new TH1F("tot","Total Charge in event",200,0,10000);
+  TH1F *tot_charge = new TH1F("tot","Total Charge in event",200,0,20000);
 
   TH1F *charge = new TH1F("charge","",200,0,20);
   TH1F *ttime = new TH1F("ttime","",200,900,2000);
   TH2F *t_q = new TH2F("tq","",200,900,2000,200,0,20);
   TH1F *occupancy = new TH1F("occupancy","",20000,0,20000);
-  TH1F *occupancy_mPMT = new TH1F("occupancy_mPMT","",34,0,34);
+  TH1F *occupancy_mPMT = new TH1F("occupancy_mPMT","",35,0,35);
   TH1F *occupancy_mPMT2 = new TH1F("occupancy_mPMT2","",200,0,20000);
  TH1F *nhit_pmt = new TH1F("nhit_pmt","",30,0,30);
   std::cout << "nevent: " << nevent << std::endl;
@@ -251,12 +251,12 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h2 = new TH1F("PMT Hits 2", "# Digitized Hits", 500, 0, 15000);
+  TH1F *h2 = new TH1F("PMT Hits 2", "# Digitized Hits", 500, 0, 25000);
   TH1F *time2 = new TH1F("Average time 2", "Average time", 600, 500, 5000);
   TH1F *pe2 = new TH1F("Q/# Digitzed PMT 2", "Q/# Digitzed PMT", 200, 0, 5);
-  TH1F *hit_pmts2 = new TH1F("Hit PMTs 2","# Hit PMTs",500,0,25000);  
+  TH1F *hit_pmts2 = new TH1F("Hit PMTs 2","# Hit PMTs",500,0,35000);  
 
-  TH1F *tot_charge2 = new TH1F("tot2","Total Charge in event",200,0,10000);  
+  TH1F *tot_charge2 = new TH1F("tot2","Total Charge in event",200,0,20000);  
 
   TH1F *charge2 = new TH1F("charge2","",200,0,20);
   TH1F *ttime2 = new TH1F("ttime2","",200,900,2000);

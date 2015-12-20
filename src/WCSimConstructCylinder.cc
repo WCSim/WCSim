@@ -97,13 +97,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   // faster running. Checking ALL overlaps is crucial. No overlaps are allowed, otherwise
   // G4Navigator will be confused and result in wrong photon tracking and resulting yields.
   // ToDo: get these options from .mac
-  checkOverlaps = false;   
+  checkOverlaps = true; 
   checkOverlapsPMT = false; 
   // Optionally place parts of the detector. Very useful for visualization and debugging 
   // geometry overlaps in detail.
   placeBarrelPMTs = true;
   placeCapPMTs = true;
-  placeBorderPMTs = true;
+  placeBorderPMTs = true; 
 
 
   //-----------------------------------------------------
@@ -963,10 +963,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
  else {
 
   if(!debugMode)
-        {logicWCBarrelBorderCell->SetVisAttributes(G4VisAttributes::Invisible);
+        {
 		  G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
 		  tmpVisAtt->SetForceSolid(true);
 		  logicWCBarrelBorderCell->SetVisAttributes(tmpVisAtt);
+		  logicWCBarrelBorderCell->SetVisAttributes(G4VisAttributes::Invisible);
 		}
   else {
         G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
@@ -1043,7 +1044,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
     G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
   	tmpVisAtt->SetForceSolid(true);// This line is used to give definition to the cells in OGLSX Visualizer
   	logicWCExtraBorderCell->SetVisAttributes(tmpVisAtt); 
-	//logicWCExtraBorderCell->SetVisAttributes(G4VisAttributes::Invisible);
+	logicWCExtraBorderCell->SetVisAttributes(G4VisAttributes::Invisible);
 	//TF vis.
 
 
