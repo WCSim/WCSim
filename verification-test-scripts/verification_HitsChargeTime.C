@@ -309,8 +309,10 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
 	  }
 
 	tot_charge2->Fill(totalq);
-	float av_time = totalt/ncherenkovdigihits;
-	float av_q = totalq/ncherenkovdigihits;
+	if(ncherenkovdigihits > 0){
+	  float av_time = totalt/ncherenkovdigihits;
+	  float av_q = totalq/ncherenkovdigihits;
+	}
       }
     pe2->Fill(av_q);  
     time2->Fill(av_time);

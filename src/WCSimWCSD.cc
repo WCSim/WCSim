@@ -142,15 +142,15 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4int replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
 
     
-  G4float theta_angle;
-  G4float effectiveAngularEfficiency;
+  G4float theta_angle = 0.;
+  G4float effectiveAngularEfficiency = 0.;
 
 
   
   G4float ratio = 1.;
-  G4float maxQE;
-  G4float photonQE;
-  if (fdet->GetPMT_QE_Method()==1){
+  G4float maxQE = 0.;
+  G4float photonQE = 0.;
+  if (fdet->GetPMT_QE_Method()==1 || fdet->GetPMT_QE_Method() == 4){
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
     maxQE = fdet->GetPMTQE(WCIDCollectionName,wavelength,0,240,660,ratio);

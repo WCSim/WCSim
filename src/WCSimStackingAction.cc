@@ -50,7 +50,7 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
 	    wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,240,660,ratio);
 	  }else if (DetConstruct->GetPMT_QE_Method()==2){
 	    wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,0,240,660,ratio);
-	  }else if (DetConstruct->GetPMT_QE_Method()==3){
+	  }else if (DetConstruct->GetPMT_QE_Method()==3 || DetConstruct->GetPMT_QE_Method() == 4){
 	    wavelengthQE = 1.1;
 	  }
 	  
