@@ -29,6 +29,7 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         void SetupBranchAddresses(NRooTrackerVtx* nrootrackervtx);
         void OpenRootrackerFile(G4String fileName);
         void CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx);
+        bool GetIsRooTrackerFileFinished(){return (fEvNum==fNEntries);}
 
         // Normal gun setting calls these functions to fill jhfNtuple and Root tree
         void SetVtx(G4ThreeVector i)     { vtx = i; };
@@ -59,6 +60,7 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         G4double GetYDir() {return yDir;};
         G4double GetZDir() {return zDir;};
 
+
     private:
         WCSimDetectorConstruction*      myDetector;
         G4ParticleGun*                  particleGun;
@@ -73,6 +75,8 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         std::fstream inputFile;
         G4String vectorFileName;
         G4bool   GenerateVertexInRock;
+        G4bool   usePoissonPMT;
+        G4double poissonPMTMean;
 
         // These go with jhfNtuple
         G4int mode;
@@ -100,9 +104,15 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         // Pointers to Rootracker vertex objects
         // Temporary vertex that is saved if desired, according to WCSimIO macro option
         TTree* fRooTrackerTree;
+        TTree* fSettingsTree;
         NRooTrackerVtx* fTmpRootrackerVtx;
+        float fNuPrismRadius;
+        float fNuBeamAng;
+        float fNuPlanePos[3];
 
     public:
+
+        inline TFile* GetInputRootrackerFile(){ return fInputRootrackerFile;}
 
         inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
         inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
@@ -128,6 +138,11 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         inline G4bool IsGeneratingVertexInRock() { return GenerateVertexInRock; }
         inline void SetGenerateVertexInRock(G4bool choice) { GenerateVertexInRock = choice; }
 
+        inline void SetPoissonPMT(G4bool choice) { usePoissonPMT = choice; }
+        inline G4bool IsUsingPoissonPMT(){ return usePoissonPMT; }
+  
+        inline void SetPoissonPMTMean(G4double val){ poissonPMTMean = val; }
+        inline G4double GetPoissonPMTMean(){ return poissonPMTMean; }
 };
 
 #endif

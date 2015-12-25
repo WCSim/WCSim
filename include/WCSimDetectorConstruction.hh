@@ -18,6 +18,9 @@
 // warning : hash_map is not part of the standard
 #include <ext/hash_map>
 
+#include "TFile.h"
+#include "TTree.h"
+#include "TMath.h"
 
 using __gnu_cxx::hash;
 using __gnu_cxx::hashtable;
@@ -71,8 +74,12 @@ public:
   void DUSEL_200kton_10inch_HQE_12perCent();
   void DUSEL_200kton_12inch_HQE_10perCent();
   void DUSEL_200kton_12inch_HQE_14perCent();
+
+  void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition);
+  void SetDefaultNuPrismGeometry();
+
+
   void UpdateGeometry();
-  
 
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
@@ -107,8 +114,11 @@ public:
   }
  
   G4ThreeVector GetWCOffset(){return WCOffset;}
-  
-  // Related to the WC tube ID
+  G4ThreeVector GetWCXRotation(){return WCXRotation;}
+  G4ThreeVector GetWCYRotation(){return WCYRotation;}
+  G4ThreeVector GetWCZRotation(){return WCZRotation;}
+
+  // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
   static G4Transform3D GetTubeTransform(int tubeNo){return tubeIDMap[tubeNo];}
 
@@ -136,10 +146,27 @@ public:
 
   // *** End HyperK Geometry ***
 
+  // Set if nuPRISM
+  void   SetIsNuPrism(G4bool choice) {isNuPrism = choice;}
+  G4bool GetIsNuPrism() {return isNuPrism;}
+
+  void   SetPMTType(G4String type) {WCPMTType = type;}
+  G4String GetPMTType() {return WCPMTType;}
+
+  void   SetPMTCoverage(G4double cover) {WCPMTCoverage = cover;}
+  G4double GetPMTCoverage() {return WCPMTCoverage;}
+
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
-  G4double GetWCIDDiameter(){ return WCIDDiameter; }
+  void   SetDetectorHeight(G4double height) {WCIDHeight = height;}
   G4double GetWCIDHeight(){ return WCIDHeight; }
+
+  void   SetDetectorVerticalPosition(G4double position) {WCIDVerticalPosition = position;}
+  G4double GetWCIDVerticalPosition(){ return WCIDVerticalPosition; }
+
+  void   SetDetectorDiameter(G4double diameter) {WCIDDiameter = diameter;}
+  G4double GetWCIDDiameter(){ return WCIDDiameter; }
+
 
 private:
 
@@ -261,6 +288,7 @@ private:
   G4double WCBackODLength;
   G4double WCFrontODLength;
   G4double WCIDHeight;
+  G4double WCIDVerticalPosition;
 
   G4double WCBarrelRingRadius;
 
@@ -300,6 +328,11 @@ private:
 
   // amb79: to universally make changes in structure and geometry
   bool isUpright;
+
+  // Add bool to indicate whether we load nuPRISM geometry  
+  G4bool isNuPrism;
+  G4String WCPMTType;
+  G4double WCPMTCoverage;
 
   // *** Begin HyperK Geometry ***
 
@@ -376,6 +409,9 @@ private:
   G4double WCCylInfo[3];    // Info for the geometry tree: radius & length or mail box, length, width and depth
   G4double WCPMTSize;       // Info for the geometry tree: pmt size
   G4ThreeVector WCOffset;   // Info for the geometry tree: WC center offset
+  G4ThreeVector WCXRotation;   // Info for the geometry tree: WC detector local X axis in the global coordinate system 
+  G4ThreeVector WCYRotation;   // Info for the geometry tree: WC detector local Y axis in the global coordinate system 
+  G4ThreeVector WCZRotation;   // Info for the geometry tree: WC detector local Z axis in the global coordinate system 
 
   // Tube map information
 
