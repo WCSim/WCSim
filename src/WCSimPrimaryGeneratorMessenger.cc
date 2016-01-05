@@ -116,38 +116,11 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
    G4Tokenizer next( newValue );
 
    G4String isotope = next();
-   if (isotope == "Tl208")
-     {
-       myAction->SetTl208EvtGenerator(true);
-       myAction->SetBi214EvtGenerator(false);
-       myAction->SetK40EvtGenerator(false);
-     }
-   else if ( isotope == "Bi214")
-     {
-       myAction->SetTl208EvtGenerator(false);
-       myAction->SetBi214EvtGenerator(true);
-       myAction->SetK40EvtGenerator(false);
-     }
-   else if ( isotope == "K40")
-     {
-      myAction->SetTl208EvtGenerator(false);
-      myAction->SetBi214EvtGenerator(false);
-      myAction->SetK40EvtGenerator(true);
-     }
-
    G4String location = next();
-   if (location == "water")
-     {
-       myAction->SetWaterEvtGenerator(true);
-       myAction->SetPMTEvtGenerator(false);
-     }
-   else if (location == "PMT")
-     {
-       myAction->SetWaterEvtGenerator(false);
-       myAction->SetPMTEvtGenerator(true);
-     }
+   G4double activity = StoD(next());
 
-   myAction->SetIsotopeActivity(StoD(next()));
+   myAction->AddRadioactiveSource(isotope, location, activity);
+
 
  }
 
@@ -165,17 +138,6 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
       { cv = "laser"; }   //T. Akiri: Addition of laser
     else if(myAction->IsUsingRadioactiveEvtGenerator())
       { cv = "radioactive"; }
-  }
-
-
-  if( command==isotopeCmd )
-  {
-    if(myAction->IsUsingTl208EvtGenerator())
-      { cv = "Tl208"; }
-    else if(myAction->IsUsingBi214EvtGenerator())
-      { cv = "Bi214"; }
-    else if(myAction->IsUsingK40EvtGenerator())
-      { cv = "K40"; }
   }
   
   return cv;

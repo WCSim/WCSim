@@ -4,6 +4,7 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ThreeVector.hh"
 #include "globals.hh"
+#include <vector>
 
 #include <fstream>
 
@@ -16,6 +17,13 @@ class G4Generator;
 
 class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
+
+  struct radioactive_source {
+    G4String IsotopeName;
+    G4String IsotopeLocation;
+    G4double IsotopeActivity;
+  };
+
 public:
   WCSimPrimaryGeneratorAction(WCSimDetectorConstruction*);
   ~WCSimPrimaryGeneratorAction();
@@ -77,12 +85,8 @@ private:
   G4bool   useNormalEvt;
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
   G4bool   useRadioactiveEvt;
-  G4bool   useTl208Evt;
-  G4bool   useBi214Evt;
-  G4bool   useK40Evt;
-  G4bool   useWaterEvt;
-  G4bool   usePMTEvt;
-  G4double IsotopeActivity;
+  std::vector<struct radioactive_source> radioactive_sources;
+
   G4double radioactive_time_window;
   std::fstream inputFile;
   G4String vectorFileName;
@@ -118,26 +122,17 @@ public:
   inline void SetLaserEvtGenerator(G4bool choice) { useLaserEvt = choice; }
   inline G4bool IsUsingLaserEvtGenerator()  { return useLaserEvt; }
 
-  inline void SetTl208EvtGenerator(G4bool choice) { useTl208Evt = choice; }
-  inline G4bool IsUsingTl208EvtGenerator() { return useTl208Evt; }
-
-  inline void SetBi214EvtGenerator(G4bool choice) { useBi214Evt = choice; }
-  inline G4bool IsUsingBi214EvtGenerator() { return useBi214Evt; }
-
-  inline void SetK40EvtGenerator(G4bool choice) { useK40Evt = choice; }
-  inline G4bool IsUsingK40EvtGenerator() { return useK40Evt; }
+  inline void AddRadioactiveSource(G4String IsotopeName, G4String IsotopeLocation, G4double IsotopeActivity){
+    struct radioactive_source r;
+    r.IsotopeName = IsotopeName;
+    r.IsotopeLocation = IsotopeLocation;
+    r.IsotopeActivity = IsotopeActivity;
+    radioactive_sources.push_back(r);
+  }
+  inline std::vector<struct radioactive_source> Radioactive_Sources()  { return radioactive_sources; }
 
   inline void SetRadioactiveEvtGenerator(G4bool choice) { useRadioactiveEvt = choice; }
   inline G4bool IsUsingRadioactiveEvtGenerator()  { return useRadioactiveEvt; }
-
-  inline void SetWaterEvtGenerator(G4bool choice) { useWaterEvt = choice; }
-  inline G4bool IsUsingWaterEvtGenerator() { return useWaterEvt; }
-
-  inline void SetPMTEvtGenerator(G4bool choice) { usePMTEvt = choice; }
-  inline G4bool IsUsingPMTEvtGenerator() { return usePMTEvt; }
-
-  inline void SetIsotopeActivity(G4double choice) { IsotopeActivity = choice; }
-  inline G4double GetIsotopeActivity() { return IsotopeActivity; }
 
   inline void SetRadioactiveTimeWindow(G4double choice) { radioactive_time_window = choice; }
   inline G4double GetRadioactiveTimeWindow()  { return radioactive_time_window; }

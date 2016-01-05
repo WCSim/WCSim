@@ -70,12 +70,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   messenger = new WCSimPrimaryGeneratorMessenger(this);
   useMulineEvt = true;
   useNormalEvt = false;
-  useTl208Evt = true;
-  useBi214Evt = false;
-  useK40Evt = false;
-  useWaterEvt = true;
-  usePMTEvt = false;
-  IsotopeActivity = 0.;
+  radioactive_sources.clear();
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -334,77 +329,90 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     }
   else if (useRadioactiveEvt)
     {
-
+      
       // initialize GPS properties
       MyGPS->ClearAll();
-
+      
       MyGPS->SetMultipleVertex(true);
       
       std::vector<WCSimPmtInfo*> *pmts;
-      double average= GetIsotopeActivity() * GetRadioactiveTimeWindow();
-      if (usePMTEvt){
-	pmts = myDetector->Get_Pmts();
-	average *= pmts->size();
-      }
+      
+      std::vector<struct radioactive_source>::iterator it;
+      
+      for ( it = radioactive_sources.begin(); it != radioactive_sources.end(); it++ ){
+	G4String IsotopeName = it->IsotopeName;
+	G4String IsotopeLocation = it->IsotopeLocation;
+	G4double IsotopeActivity = it->IsotopeActivity;
 
-      // random poisson number of vertices based on average
-      int n_vertices = CLHEP::RandPoisson::shoot(average);
-      for(int u=0; u<n_vertices; u++){
-	
-	MyGPS->AddaSource(1.);
-	
-	MyGPS->SetCurrentSourceto(u);
-	
-	if (useTl208Evt)
-	  MyGPS->SetParticleDefinition(G4ParticleTable::GetParticleTable()->GetIon( 81, 208, 0));
-	else if( useBi214Evt )
-	  MyGPS->SetParticleDefinition(G4ParticleTable::GetParticleTable()->GetIon( 83, 214, 0));
-	else if( useK40Evt )
-	  MyGPS->SetParticleDefinition(G4ParticleTable::GetParticleTable()->GetIon( 19, 40, 0));
-	
-	if (useWaterEvt){
-	  MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
-	  MyGPS->GetCurrentSource()->GetEneDist()->SetMonoEnergy(0.);
-	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point");
-	  MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(G4ThreeVector(0, 0, 0));
-	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Volume");
-	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisShape("Cylinder");
-	  MyGPS->GetCurrentSource()->GetPosDist()->SetRadius(myDetector->GetWaterTubeRadius());
-	  MyGPS->GetCurrentSource()->GetPosDist()->SetHalfZ(myDetector->GetWaterTubeLength()/2.);
-	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosRot1(G4ThreeVector(1, 0, 0));
-	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosRot2(G4ThreeVector(0, 1, 0));
+	double average= IsotopeActivity * GetRadioactiveTimeWindow();
+	if (IsotopeLocation.compareTo("PMT") == 0){
+	  pmts = myDetector->Get_Pmts();
+	  average *= pmts->size();
 	}
-	else if (usePMTEvt){
-	  int npmts = pmts->size();
-	  int random_pmt_id = CLHEP::RandFlat::shootInt(1,npmts);
-	  WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( random_pmt_id - 1 );
-	  G4ThreeVector random_pmt_center(pmtinfo->Get_transx()*cm, pmtinfo->Get_transy()*cm, pmtinfo->Get_transz()*cm);
-	  double random_cos_theta = CLHEP::RandFlat::shoot(0., 1.);
-	  double random_sin_theta = sqrt(1. - pow(random_cos_theta,2));
-	  random_sin_theta *= (CLHEP::RandFlat::shootBit() == 0 ? -1 : 1);
-	  double random_phi = CLHEP::RandFlat::shoot(0., 2.*pi*rad);
-	  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-	  WCSimPMTObject *PMT = myDetector->GetPMTPointer(WCIDCollectionName);
-	  double PMT_radius = PMT->GetRadius();
-	  double glassThickness = PMT->GetPMTGlassThickness();
-	  double expose = PMT->GetExposeHeight();
-	  double sphereRadius = (expose*expose+ PMT_radius*PMT_radius)/(2*expose);
-	  double Rmin = sphereRadius-glassThickness;
-	  double Rmax = sphereRadius;
-	  double random_R = CLHEP::RandFlat::shoot(Rmin, Rmax);
-	  G4ThreeVector orientation(pmtinfo->Get_orienx(), pmtinfo->Get_orieny(), pmtinfo->Get_orienz());
-	  G4ThreeVector axis_1 = orientation.orthogonal();
-	  G4ThreeVector axis_2 = orientation.cross(axis_1);
-	  G4ThreeVector position = random_pmt_center + random_R*(orientation*random_cos_theta + axis_1*random_sin_theta*cos(random_phi) + axis_2*random_sin_theta*sin(random_phi));
+	  
+	// random poisson number of vertices based on average
+	int n_vertices = CLHEP::RandPoisson::shoot(average);
 
-	  //G4cout << " random id " << random_pmt_id << " of " << npmts << " costheta " << random_cos_theta << " sintheta " << random_sin_theta << " phi " << random_phi << " WCIDCollectionName " << WCIDCollectionName << " PMT_radius " << PMT_radius << " expose " << expose << " sphereRadius " << sphereRadius << " Rmin " << Rmin << " Rmax " << Rmax << " random_R " << random_R << " orientation (" << orientation.x() << ", " << orientation.y() << ", " << orientation.z() << ") center (" << random_pmt_center.x() << ", " << random_pmt_center.y() << ", " << random_pmt_center.z() << ") position (" << position.x() << ", " << position.y() << ", " << position.z() << ") " << G4endl;
-
-	  MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
-	  MyGPS->GetCurrentSource()->GetEneDist()->SetMonoEnergy(0.);
-	  MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point");
-	  MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(position);
+	for(int u=0; u<n_vertices; u++){
+	    
+	  MyGPS->AddaSource(1.);
+	    
+	  MyGPS->SetCurrentSourceto(MyGPS->GetNumberofSource() - 1);
+	    
+	  if (IsotopeName.compareTo("Tl208") == 0)
+	    MyGPS->SetParticleDefinition(G4ParticleTable::GetParticleTable()->GetIon( 81, 208, 0));
+	  else if (IsotopeName.compareTo("Bi214") == 0)
+	    MyGPS->SetParticleDefinition(G4ParticleTable::GetParticleTable()->GetIon( 83, 214, 0));
+	  else if (IsotopeName.compareTo("K40") == 0)
+	    MyGPS->SetParticleDefinition(G4ParticleTable::GetParticleTable()->GetIon( 19, 40, 0));
+	    
+	  if (IsotopeLocation.compareTo("water") == 0){
+	    MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
+	    MyGPS->GetCurrentSource()->GetEneDist()->SetMonoEnergy(0.);
+	    MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point");
+	    MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(G4ThreeVector(0, 0, 0));
+	    MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Volume");
+	    MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisShape("Cylinder");
+	    MyGPS->GetCurrentSource()->GetPosDist()->SetRadius(myDetector->GetWaterTubeRadius());
+	    MyGPS->GetCurrentSource()->GetPosDist()->SetHalfZ(myDetector->GetWaterTubeLength()/2.);
+	    MyGPS->GetCurrentSource()->GetPosDist()->SetPosRot1(G4ThreeVector(1, 0, 0));
+	    MyGPS->GetCurrentSource()->GetPosDist()->SetPosRot2(G4ThreeVector(0, 1, 0));
+	  }
+	  else if (IsotopeLocation.compareTo("PMT") == 0){
+	    int npmts = pmts->size();
+	    int random_pmt_id = CLHEP::RandFlat::shootInt(1,npmts);
+	    WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( random_pmt_id - 1 );
+	    G4ThreeVector random_pmt_center(pmtinfo->Get_transx()*cm, pmtinfo->Get_transy()*cm, pmtinfo->Get_transz()*cm);
+	    double random_cos_theta = CLHEP::RandFlat::shoot(0., 1.);
+	    double random_sin_theta = sqrt(1. - pow(random_cos_theta,2));
+	    random_sin_theta *= (CLHEP::RandFlat::shootBit() == 0 ? -1 : 1);
+	    double random_phi = CLHEP::RandFlat::shoot(0., 2.*pi*rad);
+	    G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+	    WCSimPMTObject *PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+	    double PMT_radius = PMT->GetRadius();
+	    double glassThickness = PMT->GetPMTGlassThickness();
+	    double expose = PMT->GetExposeHeight();
+	    double sphereRadius = (expose*expose+ PMT_radius*PMT_radius)/(2*expose);
+	    double Rmin = sphereRadius-glassThickness;
+	    double Rmax = sphereRadius;
+	    double random_R = CLHEP::RandFlat::shoot(Rmin, Rmax);
+	    G4ThreeVector orientation(pmtinfo->Get_orienx(), pmtinfo->Get_orieny(), pmtinfo->Get_orienz());
+	    G4ThreeVector axis_1 = orientation.orthogonal();
+	    G4ThreeVector axis_2 = orientation.cross(axis_1);
+	    G4ThreeVector position = random_pmt_center + random_R*(orientation*random_cos_theta + axis_1*random_sin_theta*cos(random_phi) + axis_2*random_sin_theta*sin(random_phi));
+	      
+	    //G4cout << " random id " << random_pmt_id << " of " << npmts << " costheta " << random_cos_theta << " sintheta " << random_sin_theta << " phi " << random_phi << " WCIDCollectionName " << WCIDCollectionName << " PMT_radius " << PMT_radius << " expose " << expose << " sphereRadius " << sphereRadius << " Rmin " << Rmin << " Rmax " << Rmax << " random_R " << random_R << " orientation (" << orientation.x() << ", " << orientation.y() << ", " << orientation.z() << ") center (" << random_pmt_center.x() << ", " << random_pmt_center.y() << ", " << random_pmt_center.z() << ") position (" << position.x() << ", " << position.y() << ", " << position.z() << ") " << G4endl;
+	      
+	    MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
+	    MyGPS->GetCurrentSource()->GetEneDist()->SetMonoEnergy(0.);
+	    MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point");
+	    MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(position);
+	  }
+	    
 	}
-	
+
+	G4cout << " is " << IsotopeName << " of " << radioactive_sources.size() << " loc " << IsotopeLocation << " a " << IsotopeActivity << " nv " << n_vertices << G4endl;
+
       }
 
       G4int number_of_sources = MyGPS->GetNumberofSource();

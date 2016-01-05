@@ -220,7 +220,10 @@ int main(){
 	h_trigger_vtx_z->Fill(trigger_vtx_z->at(itrigger).at(ivertex));
 	h_trigger_vtx_x_y->Fill(trigger_vtx_x->at(itrigger).at(ivertex), trigger_vtx_y->at(itrigger).at(ivertex));
 	h_trigger_vtx_x_y_z->Fill(trigger_vtx_x->at(itrigger).at(ivertex), trigger_vtx_y->at(itrigger).at(ivertex), trigger_vtx_z->at(itrigger).at(ivertex));
-	std::cout << " ev " << ievent << " tr " << itrigger << " vtx( " << trigger_vtx_x->at(itrigger).at(ivertex) << ", " << trigger_vtx_y->at(itrigger).at(ivertex) << ", " << trigger_vtx_z->at(itrigger).at(ivertex) << ")" << std::endl;
+	std::cout << " ev " << ievent << " tr " << itrigger << " vtx( " << trigger_vtx_x->at(itrigger).at(ivertex) << ", " << trigger_vtx_y->at(itrigger).at(ivertex) << ", " << trigger_vtx_z->at(itrigger).at(ivertex) << ")";
+	for(int iu=0; iu< std::min(trigger_ntrack->at(itrigger),1); iu++)
+	  std::cout << " track[" << iu << "] ipnu " << track_ipnu->at(itrigger).at(iu);
+	std::cout << " " << std::endl;
       }
 
       h_trigger_vec_rec_number->Fill(trigger_vec_rec_number->at(itrigger));
