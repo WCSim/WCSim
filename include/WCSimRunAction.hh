@@ -84,6 +84,7 @@ private:
   float WCZRotation[3];
   float WCDetCentre[3];
   float WCDetRadius;
+  float WCDetHeight;
   float fNuPlanePos[3];
   float fNuPrismRadius;
 

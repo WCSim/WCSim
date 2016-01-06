@@ -58,6 +58,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
   }
 
   WCDetRadius = 0;
+  WCDetHeight = 0;
 
   if(wcsimdetector->GetIsNuPrism()){
     if(GetSaveRooTracker()){
@@ -78,7 +79,8 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
     fSettingsOutputTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
     fSettingsOutputTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/F");
     fSettingsOutputTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/F");
-  
+    fSettingsOutputTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/F");
+ 
   }      
 
 //   G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
@@ -238,6 +240,7 @@ void WCSimRunAction::FillGeoTree(){
       WCDetCentre[2] = offset1[2]/100.0;
 
       WCDetRadius = wcsimdetector->GetWCIDDiameter()/2.0;
+      WCDetHeight = wcsimdetector->GetWCIDHeight();
 
       if(fSettingsInputTree){
           fSettingsInputTree->GetEntry(0);
