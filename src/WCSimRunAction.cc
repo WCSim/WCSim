@@ -54,12 +54,17 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
       WCXRotation[i] = 0;
       WCYRotation[i] = 0;
       WCZRotation[i] = 0;
+      WCDetCentre[i] = 0;
   }
+
+  WCDetRadius = 0;
 
   if(wcsimdetector->GetIsNuPrism()){
     if(GetSaveRooTracker()){
       //Setup settings tree
       fSettingsInputTree = (TTree*) gDirectory->Get("Settings");
+      fSettingsInputTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
+      fSettingsInputTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
     }
     if(fSettingsInputTree){
       fSettingsOutputTree = fSettingsInputTree->CloneTree(0);
@@ -71,7 +76,9 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
     fSettingsOutputTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/F");
     fSettingsOutputTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/F");
     fSettingsOutputTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
-    
+    fSettingsOutputTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/F");
+    fSettingsOutputTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/F");
+  
   }      
 
 //   G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
@@ -225,7 +232,20 @@ void WCSimRunAction::FillGeoTree(){
       WCZRotation[0] = rotation3[0];
       WCZRotation[1] = rotation3[1];
       WCZRotation[2] = rotation3[2];
-      if(fSettingsInputTree) fSettingsInputTree->GetEntry(0); 
+
+      WCDetCentre[0] = offset1[0]/100.0;
+      WCDetCentre[1] = offset1[1]/100.0;
+      WCDetCentre[2] = offset1[2]/100.0;
+
+      WCDetRadius = wcsimdetector->GetWCIDDiameter()/2.0;
+
+      if(fSettingsInputTree){
+          fSettingsInputTree->GetEntry(0);
+          double z_offset = fNuPlanePos[2]/100.0 + fNuPrismRadius;
+          WCDetCentre[2] += z_offset;
+          std::cout << "WCDetCentre[2] = " << WCDetCentre[2] << std::endl;
+      }
+
       fSettingsOutputTree->Fill();
   }
 
@@ -254,6 +274,7 @@ void WCSimRunAction::FillGeoTree(){
   TFile* hfile = geoTree->GetCurrentFile();
   hfile->Write(); 
   if(wcsimdetector->GetIsNuPrism()) fSettingsOutputTree->Write();
+//  if(fSettingsInputTree) fSettingsInputTree->Close();
       
 }
 
