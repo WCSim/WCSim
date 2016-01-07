@@ -239,7 +239,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 //     particleGun->SetParticleEnergy(E);
 //     particleGun->SetParticlePosition(vtx);
 //     particleGun->SetParticleMomentumDirection(dir);
-
     SetVtx(vtx);
     SetBeamEnergy(E);
     SetBeamDir(dir);
@@ -252,10 +251,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       
       G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
       G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
+      G4double m       =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass(); // will be 0 for photon anyway, but for other gps particles not
       G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
       
       G4ThreeVector dir  = P.unit();
-      G4double E         = std::sqrt((P.dot(P)));
+      //G4double E         = std::sqrt((P.dot(P)));
+      G4double E         = std::sqrt((P.dot(P))+(m*m));
       
       SetVtx(vtx);
       SetBeamEnergy(E);

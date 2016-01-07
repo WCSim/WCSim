@@ -13,7 +13,6 @@
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
 #include "G4OpBoundaryProcess.hh"
-#include "tls.hh"
 
 G4int WCSimSteppingAction::n_photons_through_mPMTLV = 0;
 G4int WCSimSteppingAction::n_photons_through_acrylic = 0;
@@ -44,7 +43,7 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
   G4VPhysicalVolume* thePostPV = thePostPoint->GetPhysicalVolume();
 
   G4OpBoundaryProcessStatus boundaryStatus=Undefined;
-  //static G4ThreadLocal G4OpBoundaryProcess* boundary=NULL;
+  //static G4ThreadLocal G4OpBoundaryProcess* boundary=NULL;  //doesn't work and needs #include tls.hh from Geant4.9.6 and beyond
   G4OpBoundaryProcess* boundary=NULL;
   
   //find the boundary process only once

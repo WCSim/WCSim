@@ -122,7 +122,7 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
   TH1F *pe = new TH1F("Q/# Digitzed PMT", "Average Charge", 200, 0, 5);
   TH1F *hit_pmts = new TH1F("Hit PMTs","# Hit PMTs",500,0,35000); 
 
-  TH1F *tot_charge = new TH1F("tot","Total Charge in event",200,0,20000);
+  TH1F *tot_charge = new TH1F("tot","Total Charge in event",500,0,20000);
 
   TH1F *charge = new TH1F("charge","",200,0,20);
   TH1F *ttime = new TH1F("ttime","",200,900,2000);
@@ -153,7 +153,7 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
     //std::cout << "test: " << wcsimrootsuperevent->GetNumberOfEvents() << std::endl;
     //if(wcsimrootevent->GetNumTubesHit() > wcsimrootevent->GetNcherenkovdigihits() + 2000)
     if(wcsimrootsuperevent->GetNumberOfEvents() > 1)
-    std::cout << "test2: " << ev << " " << wcsimrootsuperevent->GetNumberOfEvents() << " " << wcsimrootevent->GetNumTubesHit() << " " << wcsimrootevent->GetNcherenkovdigihits() << std::endl;
+      //std::cout << "test2: " << ev << " " << wcsimrootsuperevent->GetNumberOfEvents() << " " << wcsimrootevent->GetNumTubesHit() << " " << wcsimrootevent->GetNcherenkovdigihits() << std::endl;
 
     for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++) 
       { 
@@ -256,7 +256,7 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
   TH1F *pe2 = new TH1F("Q/# Digitzed PMT 2", "Q/# Digitzed PMT", 200, 0, 5);
   TH1F *hit_pmts2 = new TH1F("Hit PMTs 2","# Hit PMTs",500,0,35000);  
 
-  TH1F *tot_charge2 = new TH1F("tot2","Total Charge in event",200,0,20000);  
+  TH1F *tot_charge2 = new TH1F("tot2","Total Charge in event",500,0,20000);  
 
   TH1F *charge2 = new TH1F("charge2","",200,0,20);
   TH1F *ttime2 = new TH1F("ttime2","",200,900,2000);
@@ -367,9 +367,18 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
  hit_pmts2->Draw("same");
 
  TCanvas* c2 = new TCanvas("c2", "Test Plots", 500*n_wide*win_scale, 500*n_high*win_scale);
+ gStyle->SetOptStat(1);
+ gStyle->SetOptFit(111);
+ /* TF1 *func = new TF1("func","gaus(0)",0,20000);
+ func->SetParameters(10,5000,10);
+ TF1 *func2 = new TF1("func2","gaus(0)",0,20000);
+ func2->SetParameters(10,5000,10); */
  tot_charge->Draw();
+ //tot_charge->Fit("gaus","","",tot_charge->GetMean()-1.5*tot_charge->GetRMS(),tot_charge->GetMean()+1.5*tot_charge->GetRMS());
  tot_charge2->SetLineColor(kRed);
  tot_charge2->Draw("same");
+ //tot_charge2->Fit("gaus","","",tot_charge->GetMean()-1.5*tot_charge->GetRMS(),tot_charge->GetMean()+1.5*tot_charge->GetRMS());
+ //std::cout << "Tot charge ratio : " << func->GetParameter(0)/func2->GetParameter(0) << std::endl;
 
  TCanvas *c3 = new TCanvas();
  c3->Divide(2,2);

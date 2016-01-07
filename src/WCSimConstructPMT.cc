@@ -133,7 +133,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     else
       // Makes the volume containg the PMT invisible for normal visualization
       logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
-    logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
+    //logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
   }
 
   //Need a volume to cut away excess behind blacksheet
