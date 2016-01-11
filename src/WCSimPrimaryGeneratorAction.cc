@@ -504,6 +504,16 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
     fRooTrackerTree->SetBranchAddress("NEcrsz",          &(nrootrackervtx->NEcrsz)    );
     fRooTrackerTree->SetBranchAddress("NEcrsphi",        &(nrootrackervtx->NEcrsphi)    );
 
+    fRooTrackerTree->SetBranchAddress("NuParentDecMode", &(nrootrackervtx->NuParentDecMode));
+    fRooTrackerTree->SetBranchAddress("NuNg",            &(nrootrackervtx->NuNg));
+    fRooTrackerTree->SetBranchAddress("NuGp",             (nrootrackervtx->NuGp));
+    fRooTrackerTree->SetBranchAddress("NuGv",             (nrootrackervtx->NuGv));
+    fRooTrackerTree->SetBranchAddress("NuGpid",           (nrootrackervtx->NuGpid));
+    fRooTrackerTree->SetBranchAddress("NuGmat",           (nrootrackervtx->NuGmat));
+    fRooTrackerTree->SetBranchAddress("NuGmec",           (nrootrackervtx->NuGmec));
+    fRooTrackerTree->SetBranchAddress("NuGdistc",         (nrootrackervtx->NuGdistc));
+    fRooTrackerTree->SetBranchAddress("NuGdistal",        (nrootrackervtx->NuGdistal));
+
 }
 void WCSimPrimaryGeneratorAction::CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx){
     nrootrackervtx->Copy(fTmpRootrackerVtx);
