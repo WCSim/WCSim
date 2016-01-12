@@ -1,13 +1,13 @@
 #include <stdio.h>     
 #include <stdlib.h>    
 
-void PMT_Time_Momentum(char *filename=NULL) {
+void 20160111_readPMT_plot_HitvEnergy(char *filename=NULL) {
   /* A simple script to plot aspects of phototube hits 
    * This code is rather cavalier; I should be checking return values, etc.
    * First revision 6-24-10 David Webber
    * 
    * I like to run this macro as 
-   * $ root -l -x 'PMT_Time_Momentum.C("../wcsim.root")'
+   * $ root -l -x 'read_PMT.C("../wcsim.root")'
    */
 
   gROOT->Reset();
@@ -98,11 +98,26 @@ void PMT_Time_Momentum(char *filename=NULL) {
   c1->cd(1);
   QvsT->Draw("colz");
 
+  c1->cd(2);
+  temp=QvsT->ProjectionY();
+  temp->SetTitle("charge");
+  temp->Draw();
+  c1->GetPad(2)->SetLogy();
+
   c1->cd(3);
   temp=QvsT->ProjectionX();
   temp->SetTitle("hits vs time");
   temp->Draw();
   c1->GetPad(3)->SetLogy();
 
-}
+  c1->cd(4);
+  temp=QvsT->ProfileX();
+  temp->SetTitle("average charge vs time");
+  temp->Draw();
 
+  c1->cd(5);
+  temp=PE;
+  temp->Draw();
+  c1->GetPad(5)->SetLogy();
+
+}
