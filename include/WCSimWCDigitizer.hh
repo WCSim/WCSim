@@ -77,7 +77,7 @@ public:
 
 private:
   int GetDefaultDeadTime()          { return 0; }   ///< SKI digitizer deadtime is 0 ns
-  int GetDefaultIntegrationWindow() { return 200; } ///< 
+  int GetDefaultIntegrationWindow() { return 400; } ///< SKI digitizer integration window is 400 ns
 
   static void Threshold(double& pe,int& iflag){
     //   CLHEP::HepRandom::setTheSeed(pe+2014);
