@@ -7,7 +7,6 @@
 typedef enum ETriggerType {
   kTriggerUndefined = -1,
   kTriggerNDigits,
-  kTriggerNHitsSKDETSIM,
   kTriggerNDigitsTest,
   kTriggerFailure // this should always be the last entry (for looping)
 } TriggerType_t;
@@ -39,9 +38,6 @@ public:
     switch(t) {
     case (kTriggerNDigits) :
       return "NDigits";
-      break;
-    case (kTriggerNHitsSKDETSIM) :
-      return "NHits_SKDETSIM";
       break;
     case (kTriggerNDigitsTest) :
       return "NDigits_TEST";

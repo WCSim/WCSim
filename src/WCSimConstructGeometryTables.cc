@@ -68,20 +68,20 @@ void WCSimDetectorConstruction::GetWCGeom
         zmin=100000,zmax=-100000.; 
     }
 
-    if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName() == "glassFaceWCPMT")){
+    if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName().find("glassFaceWCPMT") != std::string::npos)){ 
       G4float x =  aTransform.getTranslation().getX()/cm;
       G4float y =  aTransform.getTranslation().getY()/cm;
       G4float z =  aTransform.getTranslation().getZ()/cm;
       
       if (x<xmin){xmin=x;}
       if (x>xmax){xmax=x;}
-
+      
       if (y<ymin){ymin=y;}
       if (y>ymax){ymax=y;}
 
       if (z<zmin){zmin=z;}
       if (z>zmax){zmax=z;}
-     
+      
 
  
       WCCylInfo[0] = xmax-xmin;

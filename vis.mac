@@ -61,23 +61,11 @@
 
 
 #choose the Trigger & Digitizer type (and options)
-# set at least one of the following two options (both /DAQ/Digitizer and /DAQ/Trigger to be clear) to SKI_SKDETSIM if you want to use the old combined Digitization & Trigger class (WCSimWCDigitizer)
-# note that only one of the two set to SKI_SKDETSIM will only use WCSimWCDigitizer for everything (i.e. you can't use the SKI Digitizer with the old trigger)
 /DAQ/Digitizer SKI
 /DAQ/Trigger NDigits
 
 #grab the other DAQ options (thresholds, timing windows, etc.)
 /control/execute daq.mac
-
-#this is a temporary workaround for needing to construct the dark noise messenger (done in the old digitizer / new adddarknoise class) before the dark noise options below are read
-#this workaround can be removed after a forthcoming major code change:
-# - removal of old WCSimWCDigitizer
-#then this can be removed by:
-# - construct WCSimWCAddDarkNoise instance in the WCSimEventAction constructor
-# - remove any references to /DAQ/Construct in WCSimWCDAQMessenger
-# - make WCSimEventAction::CreateDAQInstances() private
-# - call WCSimEventAction::CreateDAQInstances() in BeginOfEventAction() (actually already there, but need to test to make sure the instances are created early enough)
-/DAQ/Construct
 
 
 # default dark noise frequency is 0 kHz
