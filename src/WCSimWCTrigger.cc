@@ -59,6 +59,7 @@ WCSimWCTriggerBase::~WCSimWCTriggerBase(){
 void WCSimWCTriggerBase::GetVariables()
 {
   //set the options to class-specific defaults
+  multiDigitsPerTrigger    = GetDefaultMultiDigitsPerTrigger();
   ndigitsThreshold         = GetDefaultNDigitsThreshold();
   ndigitsWindow            = GetDefaultNDigitsWindow();
   ndigitsPreTriggerWindow  = GetDefaultNDigitsPreTriggerWindow();
@@ -75,13 +76,22 @@ void WCSimWCTriggerBase::GetVariables()
     exit(-1);
   }
 
-  G4cout << "Using NDigits threshold " << ndigitsThreshold
+  G4cout << (multiDigitsPerTrigger ? "Using mutiple digits per PMT per trigger" : "Using a maximum of 1 digit per PMT per trigger" ) << G4endl
+	 << "Using NDigits threshold " << ndigitsThreshold
 	 << (ndigitsAdjustForNoise ? " (will be adjusted for noise)" : "") << G4endl
 	 << "Using NDigits trigger window " << ndigitsWindow << " ns" << G4endl
 	 << "Using NDigits event pretrigger window " << ndigitsPreTriggerWindow << " ns" << G4endl
-	 << "Using NDigits event posttrigger window " << ndigitsPostTriggerWindow << " ns" << G4endl
-	 << "Using SaveFailures event pretrigger window " << saveFailuresPreTriggerWindow << " ns" << G4endl
-	 << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << " ns" << G4endl;
+	 << "Using NDigits event posttrigger window " << ndigitsPostTriggerWindow << " ns" << G4endl;
+  if(saveFailuresMode == 0)
+    G4cout << "Saving only triggered digits" << G4endl;
+  else if(saveFailuresMode == 1)
+    G4cout << "Saving both triggered and not-triggered digits" << G4endl;
+  else if(saveFailuresMode == 2)
+    G4cout << "Saving only not-triggered digits" << G4endl;
+  if(saveFailuresMode > 0)
+    G4cout << "Using SaveFailures trigger time" << saveFailuresTime << " ns" << G4endl
+	   << "Using SaveFailures event pretrigger window " << saveFailuresPreTriggerWindow << " ns" << G4endl
+	   << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << " ns" << G4endl;
 }
 
 int WCSimWCTriggerBase::GetMaximumPhotonTravelTime()
@@ -99,7 +109,6 @@ int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
   switch(t) {
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
-  case kTriggerNHitsSKDETSIM:
     return ndigitsPreTriggerWindow;
     break;
   case kTriggerFailure:
@@ -118,7 +127,6 @@ int WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
   switch(t) {
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
-  case kTriggerNHitsSKDETSIM:
     return ndigitsPostTriggerWindow;
     break;
   case kTriggerFailure:
@@ -278,7 +286,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
     }
   }
   
-  G4cout << "Found " << ntrig << " NHit triggers" << G4endl;
+  G4cout << "Found " << ntrig << " NDigit triggers" << G4endl;
   //call FillDigitsCollection() whether any triggers are found or not
   // (what's saved depends on saveFailuresMode)
   FillDigitsCollection(WCDCPMT, remove_hits, this_triggerType);
@@ -402,6 +410,11 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  }
 	  if(remove_hits)
 	    (*WCDCPMT)[i]->RemoveDigitizedGate(ip);
+
+	  //we've found a digit on this PMT. If we're restricting to just 1 digit per trigger window (e.g. SKI)
+	  // then ignore later digits and break. This takes us to the next PMT
+	  if(!multiDigitsPerTrigger)
+	    break;
 	}//digits within trigger window
       }//loop over Digits
     }//loop over PMTs

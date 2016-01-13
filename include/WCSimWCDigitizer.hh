@@ -4,7 +4,7 @@
 #include "WCSimDarkRateMessenger.hh"
 #include "WCSimWCDAQMessenger.hh"
 #include "WCSimDetectorConstruction.hh"
-#include "WCSimWCTrigger.hh"
+#include "WCSimEnumerations.hh"
 #include "G4VDigitizerModule.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"
@@ -12,40 +12,73 @@
 #include "Randomize.hh"
 #include <map>
 #include <vector>
+#include <utility> //for std::pair
 
 
-class WCSimWCDigitizer : public WCSimWCTriggerBase
+// *******************************************
+// BASE CLASS
+// *******************************************
+
+class WCSimWCDigitizerBase : public G4VDigitizerModule
 {
 public:
   
-  WCSimWCDigitizer(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
-  ~WCSimWCDigitizer();
-
-  // "////" indicates declerations that are no longer required due to WCSimWCTriggerBase inheritance
-  ////void ReInitialize() { DigiHitMap.clear(); TriggerTimes.clear(); }
-  ////int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
-
-
+  WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, DigitizerType_t);
+  virtual ~WCSimWCDigitizerBase();
   
-public:
-  void StoreHitsTEST(WCSimWCDigitsCollection*);
-
-  void AddPMTDarkRate(WCSimWCDigitsCollection*);
-  void MakeHitsHistogram(WCSimWCDigitsCollection*);
-  void FindNumberOfGates();
-  void FindNumberOfGatesFast();
+  bool AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector< std::pair<int,int> > digi_comp);
+  virtual void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) = 0;
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
   void Digitize();
-  void SetConversion(double iconvrate){ ConvRate = iconvrate; }
-  ////G4double GetTriggerTime(int i) { return TriggerTimes[i];}
-  void SetPMTSize(G4float inputSize) {PMTSize = inputSize;}
 
-  static G4double GetLongTime() { return LongTime;}
-  G4double GetPMTDarkRate(){ return PMTDarkRate; }
-  G4double GetConversion(){ return ConvRate; }
+  //.mac file option setting methods
+  void SetDigitizerDeadTime         (int deadtime) { DigitizerDeadTime = deadtime;         }; ///< Override the default digitizer deadtime (ns)
+  void SetDigitizerIntegrationWindow(int inttime ) { DigitizerIntegrationWindow = inttime; }; ///< Override the default digitizer integration window (ns)
+
+protected:
+  void ReInitialize() { DigiStoreHitMap.clear(); }
+
+  G4double peSmeared;
+
+  WCSimDetectorConstruction* myDetector; ///< Get the geometry information
+  WCSimWCDAQMessenger* DAQMessenger;     ///< Get the /DAQ/ .mac options
+
+  WCSimWCDigitsCollection*  DigiStore;
+  std::map<int,int> DigiStoreHitMap;   ///< Used to check if a digit has already been created on a PMT
+
+  //generic digitizer properties. Defaults set with the GetDefault*() methods. Overidden by .mac options
+  int DigitizerDeadTime;          ///< Digitizer deadtime (ns)
+  int DigitizerIntegrationWindow; ///< Digitizer integration window (ns)
+
+  DigitizerType_t DigitizerType; ///< Enumeration to say which digitizer we've constructed
+
+  virtual int GetDefaultDeadTime() = 0;          ///< Set the default digitizer-specific deadtime (in ns) (overridden by .mac)
+  virtual int GetDefaultIntegrationWindow() = 0; ///< Set the default digitizer-specific integration window (in ns) (overridden by .mac)
+
+  void GetVariables(); ///< Get the default deadtime, etc. from the derived class, and override with read from the .mac file
+};
+
+
+
+// *******************************************
+// DERIVED CLASSES
+// *******************************************
+
+
+// SKI-based digitizer class
+class WCSimWCDigitizerSKI : public WCSimWCDigitizerBase 
+{
+public:
+  
+  WCSimWCDigitizerSKI(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+  ~WCSimWCDigitizerSKI();
+
+  void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);
 
 private:
-  void DoTheWork(WCSimWCDigitsCollection*) {} //need to implement this method from the base class. Not used in this implementation of the class
+  int GetDefaultDeadTime()          { return 0; }   ///< SKI digitizer deadtime is 0 ns
+  int GetDefaultIntegrationWindow() { return 200; } ///< 
+
   static void Threshold(double& pe,int& iflag){
     //   CLHEP::HepRandom::setTheSeed(pe+2014);
     double x = pe+0.1; iflag=0;
@@ -68,43 +101,7 @@ private:
       pe = pe+err;
     }
   }
-  
-  int GetDefaultNDigitsWindow()     { return 200;  }
-  int GetDefaultNDigitsThreshold()  { return 25;   }
-  int GetDefaultPreTriggerWindow()  { return -400; }
-  int GetDefaultPostTriggerWindow() { return 950; }
-
-  static const double offset; // hit time offset
-  static const double pmtgate; // ns
-  static const double calibdarknoise; // ns
-  static const double LongTime; // ns
-  static const int GlobalThreshold; //number of hit PMTs within an <=200ns sliding window that decides the global trigger t0
-  WCSimDarkRateMessenger *DarkRateMessenger;
-  double ConvRate; // kHz
-
-  G4int triggerhisto[20000]; // for finding t0
-  G4float RealOffset;  // t0 = offset corrected for trigger start
-  G4float MinTime;  // very first hit time
-  G4float PMTSize;
-  G4double peSmeared;
-
-  int nhitsThreshold;
-
-  ////std::vector<G4double> TriggerTimes;
-  std::map<G4int, G4int> GateMap;
-  ////std::map<int,int> DigiHitMap; // need to check if a hit already exists..
-
-  ////WCSimWCDigitsCollection*  DigitsCollection;  
-  ////WCSimDetectorConstruction* myDetector;
-
 };
 
-#endif
 
-
-
-
-
-
-
-
+#endif //WCSimWCDigitizer_h

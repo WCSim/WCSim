@@ -39,13 +39,8 @@ public:
   
   virtual ~WCSimWCTriggerBase();
 
-  /**
-   * \brief The main user-callable routine of the class. Gets the input & creates the output WCSimWCTriggeredDigitsCollection's, then calls DoTheWork()
-   *
-   * The virtual keyword for this method is DEPRECATED
-   * It is only defined virtual now because it is overridden in the old class (WCSimWCDigitizer)
-   */
-  virtual void Digitize();
+  ///The main user-callable routine of the class. Gets the input & creates the output WCSimWCTriggeredDigitsCollection's, then calls DoTheWork()
+  void Digitize();
 
   ///Returns the number of trigger gates in the event (i.e. the number of triggers passed)
   int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
@@ -59,6 +54,9 @@ public:
   //
   // Trigger algorithm option set methods
   //
+
+  ///Set whether to allow the number of digits per PMT per trigger to go > 1
+  void SetMultiDigitsPerTrigger(G4bool allow_multi) { multiDigitsPerTrigger = allow_multi; }
 
   // NDigits options
   ///Set the threshold for the NDigits trigger
@@ -85,10 +83,6 @@ public:
   ///Knowledge of the dark rate (use for automatically adjusting for noise)
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
 
-  ///DEPRECATED function used in old class (WCSimWCDigitizer), and called in WCSimEventAction
-  virtual void SetPMTSize(G4float /*inputSize*/) {};
-
-
 
 protected:
 
@@ -101,6 +95,8 @@ protected:
   /// Get the maximum travel time across the ID tank (assumes cylinderical geometry)
   int GetMaximumPhotonTravelTime();
 
+  ///Set the default trigger class specific decision of whether to save multiple digits per PMT per trigger (overridden by .mac)
+  virtual bool GetDefaultMultiDigitsPerTrigger()   { return true; }
   ///Set the default trigger class specific NDigits window (in ns) (overridden by .mac)
   virtual int GetDefaultNDigitsWindow()            { return GetMaximumPhotonTravelTime(); }
   ///Set the default trigger class specific NDigits threshold (in ns) (overridden by .mac)
@@ -155,6 +151,7 @@ protected:
   double PMTDarkRate;    ///< Dark noise rate of the PMTs
 
   // Trigger algorithm options
+  G4bool multiDigitsPerTrigger;    ///< Allow the number of digits per PMT saved in each trigger window to go > 1?
   //NDigits
   G4int  ndigitsThreshold;         ///< The threshold for the NDigits trigger
   G4int  ndigitsWindow;            ///< The time window for the NDigits trigger
@@ -299,13 +296,14 @@ private:
   ///Calls the workhorse of this class: AlgNDigits
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
+  bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
   /** Use the maximum light travel time in the geometry to determine this
    *  SK max light travel time ~220 ns. SK uses 200 ns trigger decision window
    *  Therefore this class rounds to nearest 100 ns */
-  int GetDefaultNDigitsWindow()            { return ((GetMaximumPhotonTravelTime() + 50) / 100) * 100; }
-  int GetDefaultNDigitsThreshold()         { return 25;   } ///< SK NDigits threshold ~25
-  int GetDefaultNDigitsPreTriggerWindow()  { return -400; } ///< SK SLE trigger window ~-400
-  int GetDefaultNDigitsPostTriggerWindow() { return 950;  } ///< SK SLE trigger window ~+950
+  int  GetDefaultNDigitsWindow()            { return ((GetMaximumPhotonTravelTime() + 50) / 100) * 100;   } ///< SK max light travel time ~200 ns
+  int  GetDefaultNDigitsThreshold()         { return 25;    } ///< SK NDigits threshold ~25
+  int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
+  int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
 };
 
 
@@ -327,13 +325,14 @@ public:
 private:
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
+  bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
   /** Use the maximum light travel time in the geometry to determine this
    *  SK max light travel time ~220 ns. SK uses 200 ns trigger decision window
    *  Therefore this class rounds to nearest 100 ns */
-  int GetDefaultNDigitsWindow()            { return ((GetMaximumPhotonTravelTime() + 50) / 100) * 100; }
-  int GetDefaultNDigitsThreshold()         { return 50;   } ///< 2 * SK NDigits threshold ~25
-  int GetDefaultNDigitsPreTriggerWindow()  { return -400; } ///< SK SLE trigger window ~-400
-  int GetDefaultNDigitsPostTriggerWindow() { return 950;  } ///< SK SLE trigger window ~+950
+  int  GetDefaultNDigitsWindow()            { return ((GetMaximumPhotonTravelTime() + 50) / 100) * 100; } ///< SK max light travel time ~200 ns
+  int  GetDefaultNDigitsThreshold()         { return 50;    } ///< 2 * SK NDigits threshold ~25
+  int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
+  int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
 };
 
 
