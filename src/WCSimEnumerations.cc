@@ -22,9 +22,6 @@ std::string WCSimEnumerations::EnumAsString(TriggerType_t t)
   case (kTriggerNDigits) :
     return "NDigits";
     break;
-  case (kTriggerNHitsSKDETSIM) :
-    return "NHits_SKDETSIM";
-    break;
   case (kTriggerNDigitsTest) :
     return "NDigits_TEST";
     break;
