@@ -202,13 +202,19 @@ else {
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
 
-  // Instantiate a new sensitive detector and register this sensitive detector volume with the SD Manager. 
+  // Instantiate a new sensitive detector 
+  // and register this sensitive detector volume with the SD Manager. 
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
   G4String SDName = "/WCSim/";
   SDName += CollectionName;
-  WCSimWCSD* aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
-  SDman->AddNewDetector( aWCPMT );
-  
+
+  // If there is no such sensitive detector with that SDName yet,
+  // make a new one
+  if( ! SDman->FindSensitiveDetector(SDName, false) ) {
+    
+    aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
+    SDman->AddNewDetector( aWCPMT );
+  }
 
   logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
 
