@@ -141,7 +141,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   if (trajectoryContainer) n_trajectories = trajectoryContainer->entries();
 
   if(generatorAction->GetIsRooTrackerFileFinished()){
-      GetRunAction()->EndOfRunAction(GetRunAction()->GetG4Run());
+      const G4Run* run;
+      GetRunAction()->EndOfRunAction(run);
       exit(0);
   }
 

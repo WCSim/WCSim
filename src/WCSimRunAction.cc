@@ -46,8 +46,6 @@ WCSimRunAction::~WCSimRunAction()
 void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
 {
 
-  fG4Run = aRun;
-
   fSettingsOutputTree = NULL;
   fSettingsInputTree = NULL;
   for(int i = 0; i < 3; ++i){
@@ -74,7 +72,6 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     
   }      
 
-//   G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
   numberOfEventsGenerated = 0;
   numberOfTimesWaterTubeHit = 0;
   numberOfTimesCatcherHit = 0;

@@ -55,7 +55,6 @@ public:
       fVertices->Clear(); 
       fNVtx = 0;
   }
-  const G4Run* GetG4Run(){return fG4Run;}
 
 private:
   // MFechner : set by the messenger
