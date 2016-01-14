@@ -20,6 +20,7 @@ WCSimStackingAction::~WCSimStackingAction(){;}
 G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
 (const G4Track* aTrack) 
 {
+  G4String WCIDCollectionName = DetConstruct->GetIDCollectionName();
   G4ClassificationOfNewTrack classification    = fWaiting;
   G4ParticleDefinition*      particleType      = aTrack->GetDefinition();
   
@@ -31,7 +32,7 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
       G4float ratio = 1./(1.0-0.25);
       G4float wavelengthQE = 0;
       if(aTrack->GetCreatorProcess()==NULL) {
-	wavelengthQE  = DetConstruct->GetPMTQE(photonWavelength,1,240,660,ratio);
+	wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,240,660,ratio);
 	if( G4UniformRand() > wavelengthQE )
 	  classification = fKill;
       }
@@ -46,9 +47,9 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
 	  // Even with WLS
 	  G4float wavelengthQE = 0;
 	  if (DetConstruct->GetPMT_QE_Method()==1){
-	    wavelengthQE  = DetConstruct->GetPMTQE(photonWavelength,1,240,660,ratio);
+	    wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,240,660,ratio);
 	  }else if (DetConstruct->GetPMT_QE_Method()==2){
-	    wavelengthQE  = DetConstruct->GetPMTQE(photonWavelength,0,240,660,ratio);
+	    wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,0,240,660,ratio);
 	  }else if (DetConstruct->GetPMT_QE_Method()==3){
 	    wavelengthQE = 1.1;
 	  }
