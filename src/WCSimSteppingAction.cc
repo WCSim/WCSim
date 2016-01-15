@@ -100,7 +100,7 @@ G4int WCSimSteppingAction::G4ThreeVectorToWireTime(G4ThreeVector *pos3d,
 } 
 
 
-void WCSimSteppingAction::Distortion(G4double x,G4double y)
+void WCSimSteppingAction::Distortion(G4double /*x*/,G4double /*y*/)
 {
  
 //   G4double theta,steps,yy,y0,EvGx,EvGy,EField,velocity,tSample,dt;
@@ -150,7 +150,7 @@ void WCSimSteppingAction::Distortion(G4double x,G4double y)
 }
 
 
-double WCSimSteppingAction::FieldLines(G4double x,G4double y,G4int coord)
+double WCSimSteppingAction::FieldLines(G4double /*x*/,G4double /*y*/,G4int /*coord*/)
 { //0.1 kV/mm = field
   //G4double Radius=302;//mm
 //   G4double Radius=602;//mm

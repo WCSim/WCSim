@@ -267,7 +267,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 // Returns a vector with the tokens
 vector<string> tokenize( string separators, string input ) 
 {
-  unsigned int startToken = 0, endToken; // Pointers to the token pos
+  std::size_t startToken = 0, endToken; // Pointers to the token pos
   vector<string> tokens;  // Vector to keep the tokens
   
   if( separators.size() > 0 && input.size() > 0 ) 
