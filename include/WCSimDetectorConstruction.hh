@@ -109,6 +109,13 @@ public:
   G4ThreeVector GetWCXRotation(){return WCXRotation;}
   G4ThreeVector GetWCYRotation(){return WCYRotation;}
   G4ThreeVector GetWCZRotation(){return WCZRotation;}
+  G4ThreeVector GetWCDetCentre(){return WCDetCentre;}
+
+  void SetWCDetCentre(double x, double y, double z){
+      WCDetCentre[0] = x;
+      WCDetCentre[1] = y;
+      WCDetCentre[2] = z;
+  }
 
   // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
@@ -415,6 +422,7 @@ private:
   G4ThreeVector WCXRotation;   // Info for the geometry tree: WC detector local X axis in the global coordinate system 
   G4ThreeVector WCYRotation;   // Info for the geometry tree: WC detector local Y axis in the global coordinate system 
   G4ThreeVector WCZRotation;   // Info for the geometry tree: WC detector local Z axis in the global coordinate system 
+  G4ThreeVector WCDetCentre;
 
   // Tube map information
 

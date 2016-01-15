@@ -81,6 +81,11 @@ private:
   float WCXRotation[3];
   float WCYRotation[3];
   float WCZRotation[3];
+  float WCDetCentre[3];
+  float WCDetRadius;
+  float WCDetHeight;
+  float fNuPlanePos[3];
+  float fNuPrismRadius;
 
   WCSimRunActionMessenger* messenger;
   int ntuples;  // 1 for ntuples to be written
