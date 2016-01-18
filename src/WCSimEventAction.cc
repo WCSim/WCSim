@@ -364,7 +364,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       WCSimTrajectory* trj = 
 	(WCSimTrajectory*)((*(evt->GetTrajectoryContainer()))[i]);
 
-      if (trj->GetCharge() != 0.)
+      //if (trj->GetCharge() != 0.)
  	trj->DrawTrajectory(50);
     }
 
@@ -619,7 +619,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
     // Process primary tracks or the secondaries from pizero or muons...
 
-    if ( trj->GetSaveFlag() )
+    if ( true )//trj->GetSaveFlag() )
     {
       // initial point of the trajectory
       G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;   
@@ -682,9 +682,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
 
       // Add the track to the TClonesArray, watching out for times
-      if ( ! ( (ipnu==22)&&(parentType==999))  ) {
+      if ( true ) { //! ( (ipnu==22)&&(parentType==999))  ) {
 	int choose_event=0;
 
+	/*
 	if (ngates)
 	{
 
@@ -693,6 +694,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	  if (choose_event >= ngates) choose_event = ngates-1; // do not overflow the number of events
 	
 	}
+	*/
 
 	wcsimrootevent= wcsimrootsuperevent->GetTrigger(choose_event);
 	wcsimrootevent->AddTrack(ipnu, 
