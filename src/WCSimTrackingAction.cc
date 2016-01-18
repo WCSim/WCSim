@@ -26,7 +26,7 @@ WCSimTrackingAction::~WCSimTrackingAction(){;}
 
 void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
-  G4float percentageOfCherenkovPhotonsToDraw = 1.0;
+  G4float percentageOfCherenkovPhotonsToDraw = 2.0;
 
   if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()
        || G4UniformRand() < percentageOfCherenkovPhotonsToDraw )
@@ -99,7 +99,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     } 
   }
 
-  if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition() )
+  if ( true ) // aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition() )
     //   if (aTrack->GetDefinition()->GetPDGCharge() == 0) 
   {
     WCSimTrajectory *currentTrajectory = 
