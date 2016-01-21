@@ -351,8 +351,6 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    + WCSimWCTriggerBase::offset
 	    + digit_time
 	    + PMT->HitTimeSmearing(Q);
-	  if(digihittime < 0)
-	    continue;
 
 	  //get the composition information for the triggered digit
 	  //WCDCPMT stores this information in pairs of (digit id, photon id)
