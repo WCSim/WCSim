@@ -157,7 +157,7 @@
 ## change the name of the output root file, default = wcsim.root
 
 #/WCSimIO/RootFile/input_mac wcsim_momentum.root
-/WCSimIO/RootFile wcsim_momentum_electron_10.root
+/WCSimIO/RootFile wcsim_momentum_electron_10_2.root
 
 /run/beamOn 10 
 #exit

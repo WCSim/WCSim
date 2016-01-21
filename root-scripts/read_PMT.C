@@ -7,7 +7,8 @@ void read_PMT(char *filename=NULL) {
    * First revision 6-24-10 David Webber
    * 
    * I like to run this macro as 
-   * $ root -l -x 'read_PMT.C("../wcsim.root")'
+   * $ root -l -x 'read_PMT.C("../wcsim_momentum.root")
+   * $ root -l -x 'read_PMT.C("../wcsim_momentum_electron_10.root")
    */
 
   gROOT->Reset();
@@ -40,6 +41,8 @@ void read_PMT(char *filename=NULL) {
   // calls to GetEvent()
   wcsimT->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
 
+  int nevents = wcsimT->GetEntries();
+  std::cout << "number events " << nevents << std::endl;
   wcsimT->GetEvent(0); 
   WCSimRootTrigger *wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   cout << "Number of digitized tube hits " << wcsimrootevent->GetCherenkovDigiHits()->GetEntries() << endl;
@@ -52,53 +55,55 @@ void read_PMT(char *filename=NULL) {
   WCSimRootTrigger *wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   cout << "Number of digitized tube hits " << wcsimrootevent->GetCherenkovDigiHits()->GetEntries() << endl;
   
-  wcsimT->GetEvent(3); 
+
+
   WCSimRootTrigger *wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   cout << "Number of digitized tube hits " << wcsimrootevent->GetCherenkovDigiHits()->GetEntries() << endl;
   
-  //-----------------------
-
-  TH1D *PE = new TH1D("PEmult","Photoelectron multiplicty", 16,-0.5,15.5);
-  PE->SetXTitle("Photoelectrons");
-
-  TH1D *PMT_hits = new TH1D("PMT_hits","Hits vs PMT detector number", 120000,-0.5,120000-0.5);
-  int max=wcsimrootevent->GetNcherenkovhits();
-  for (int i = 0; i<max; i++){
-    WCSimRootCherenkovHit *chit = wcsimrootevent->GetCherenkovHits()->At(i);
-    PMT_hits->Fill(chit->GetTubeID());
-    //WCSimRootCherenkovHit has methods GetTubeId(), GetTotalPe(int)
-    PE->Fill(chit->GetTotalPe(1));
-  }
  //-----------------------
 
-  TH1D *Pmomen = new TH1D("momentum","momentum", 16,-0.5,15.5);
+  TH1D *Pmomen = new TH1D("momentum","momentum distribution", 100,-0.5,10000);
   Pmomen->SetXTitle("momentum");
 
   TH1D *PMT_momentum = new TH1D("PMT_momentum","Momentum vs PMT detector number", 120000,-0.5,120000-0.5);
-  int max=wcsimrootevent->GetNcherenkovhits();
-  int max=3;
-  for (int i = 0; i<max; i++){
-    WCSimRootTrack *momentum = wcsimrootevent->GetTracks()->At(i); 
-    PMT_hits->Fill(chit->GetTubeID());
-    Pmomen->Fill(momentum->GetP());
+
+  for (int ivt = 0; ivt < nevents; ivt++){
+    wcsimT->GetEvent(ivt);   
+
+    WCSimRootTrack *thistrack = wcsimrootevent->GetTracks()->At(0); 
+    Pmomen->Fill(thistrack->GetP());
   }
 
+//----------------------------
+
+  TH2D *PvH = new TH2D("PvH","momentum vs. hits", 40, -0.5, 10000, 40, -0.5, 40000);
+  PvH->SetXTitle("momentum");
+  PvH->SetYTitle("hits");
+
+   for (int ivt = 0; ivt < nevents; ivt++){
+    wcsimT->GetEvent(ivt);   
+    
+    int nhits = wcsimrootevent->GetCherenkovDigiHits()->GetEntries());
+    //WCSimRootTrack *thistrack = wcsimrootevent->GetTracks()->At(0); 
+    PvH->Fill( thistrack->GetP(), nhits);
+  }
  
  //---------------------------
   TH1 *temp;
   float win_scale=0.75;
-  int n_wide=2;
-  int n_high=1;
+  int n_wide=1;
+  int n_high=2;
   TCanvas *c1 = new TCanvas("c1","c1",700*n_wide*win_scale,500*n_high*win_scale);
   c1->Divide(n_wide,n_high);
 
   c1->cd(1);
-  temp=PE;
+  temp=Pmomen;
   temp->Draw();
-  c1->GetPad(1)->SetLogy();
+  c1->GetPad(1);
 
- c1->cd(2);
-  temp=PE;
-  temp->Draw();
-  c1->GetPad(2)->SetLogy();
+  c1->cd(2);
+  temp=PvH;
+  temp->Draw("COLZ");
+  c1->GetPad(2);
+
 }
