@@ -63,6 +63,7 @@ parser.add_argument('--HKwatertanklength', type=delim_list, default='49500', hel
 parser.add_argument('--DAQdigitizer', type=delim_list, default='SKI', help='Which digitizer class to use? Specify multiple with comma separated list. Choices: '+ListAsString(DAQdigitizer_choices))
 parser.add_argument('--DAQtrigger', type=delim_list, default='NDigits', help='Which trigger class to use? Specify multiple with comma separated list. Choices: '+ListAsString(DAQtrigger_choices))
 parser.add_argument('--DAQconstruct', action='store_true', help='Append the /DAQ/Construct line to the end of the DAQ options. TODO remove after PR115 merge')
+parser.add_argument('--DAQMultiDigitsPerTrigger', action='store_true', help='Allow multiple digits per trigger window?')
 #generic digitizer options
 parser.add_argument('--DAQdigideadtime', type=delim_list, default='0', help='What value of the digitizer deadtime should be used (i.e. how long can the digitizer not create new digits)? Specify multiple with comma separated list')
 parser.add_argument('--DAQdigiintwindow', type=delim_list, default='200', help='What value of the digitizer integration window should be used (i.e. how long does the digitizer integrate for)? Specify multiple with comma separated list')
@@ -192,6 +193,8 @@ def main(args_to_parse = None):
         # create a list of dictionaries for each permutation of the parameter values
         permutationDictList = [ OrderedDict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
         for pDict in permutationDictList:
+            #get the gun
+            [gunopts, gunstubs] = ConstructParticleGun(args, pDict['/WCSim/WCgeom'])
             #get the options
             geomoptions = ''
             for k,v in pDict.iteritems():
@@ -206,12 +209,14 @@ def main(args_to_parse = None):
                 geomoptions += k + ' ' + v + '\n'
             if geomoptions != '':
                 geomoptions += "/WCSim/Construct \n"
-            geoms.append(geomoptions)
+            for gunopt in gunopts:
+                geoms.append(geomoptions + gunopt)
             #assemble the filename
             filestub = pDict['/WCSim/WCgeom']
             if filestub in HKwatertargetlength_choices:
                 filestub += '_' + pDict['/WCSim/HyperK/waterTank_Length']
-            filestubs.append(filestub)
+            for gunstub in gunstubs:
+                filestubs.append(gunstub + '_' + filestub)
         return [geoms, filestubs]
 
     def ConstructPMT(args):
@@ -249,6 +254,7 @@ def main(args_to_parse = None):
         permutationDict['/DAQ/TriggerSaveFailures/TriggerTime']       = [x for x in args.DAQsavefailurestime]
         permutationDict['/DAQ/TriggerSaveFailures/PreTriggerWindow']  = [x.split(':')[0] for x in args.DAQsavefailuressavewindow]
         permutationDict['/DAQ/TriggerSaveFailures/PostTriggerWindow'] = [x.split(':')[1] for x in args.DAQsavefailuressavewindow]
+        permutationDict['/DAQ/MultiDigitsPerTrigger']                 = ['true' if args.DAQMultiDigitsPerTrigger else 'false']
         # create a list of dictionaries for each permutation of the parameter values
         permutationDictList = [ OrderedDict(zip(permutationDict, v)) for v in itertools.product(*permutationDict.values()) ]
         for pDict in permutationDictList:
@@ -267,6 +273,8 @@ def main(args_to_parse = None):
                 + pDict['/DAQ/Trigger'] + '_fails' + pDict['/DAQ/TriggerSaveFailures/Mode']
             if pDict['/DAQ/TriggerSaveFailures/Mode'] != '0':
                 filestub += "_" + pDict['/DAQ/TriggerSaveFailures/TriggerTime']
+            if pDict['/DAQ/MultiDigitsPerTrigger']:
+                filestub += '_multidigipertrig'
             #get the NDigits options/filestubs
             additionaloptions   = []
             if pDict['/DAQ/Trigger'] in DAQtrigger_ndigits_choices:
@@ -346,7 +354,7 @@ def main(args_to_parse = None):
             filestubs.append(filestub)
         return [noises, filestubs]
 
-    def ConstructParticleGun(args):
+    def ConstructParticleGun(args, geom):
         guns = []
         filestubs = []
         for GunEnergy in args.GunEnergy:
@@ -354,21 +362,23 @@ def main(args_to_parse = None):
             if type(args.GunPosition) is str:
                 #if GunPosition and GunDirection are string's
                 #we need to call MakeKin.py to generate distributions of different positions/directions
-                command = '$WCSIMDIR/sample-root-scripts/MakeKin.py -N 1 ' \
+                command = '$WCSIMDIR/sample-root-scripts/MakeKin.py ' \
+                    '-N ' + str(args.JobsPerConfig) + ' ' \
                     '-n ' + str(args.NEvents) + ' ' \
                     '-t ' + args.GunParticle  + ' ' \
                     '-e ' + GunEnergy  + ' ' \
                     '-v ' + args.GunPosition  + ' ' \
                     '-d ' + args.GunDirection + ' ' \
-                    '-w ' + args.WCgeom[0]
+                    '-w ' + geom
                 print command
                 os.system(command)
-                #now create the .kin filename
-                kinname = "%s_%.0fMeV_%s_%s_%s_%03i.kin" % (args.GunParticle.replace("+","plus").replace("-","minus"), float(GunEnergy), args.GunPosition, args.GunDirection, args.WCgeom[0], 0)
-                print kinname
-                #and finally get the .mac options
-                gunoptions = '/mygen/vecfile ' + os.getcwd() + '/' + kinname + '\n'
-                guns.append(gunoptions)
+                for ijob in xrange(args.JobsPerConfig):
+                    #now create the .kin filename
+                    kinname = "%s_%.1fMeV_%s_%s_%s_%03i.kin" % (args.GunParticle.replace("+","plus").replace("-","minus"), float(GunEnergy), args.GunPosition, args.GunDirection, args.WCgeom[0], ijob)
+                    print kinname
+                    #and finally get the .mac options
+                    gunoptions = '/mygen/vecfile ' + os.getcwd() + '/' + kinname + '\n'
+                    guns.append(gunoptions)
                 filestub += 'makekin_'
             elif args.GunIsGPS == 'line':
                 #we're using the G4 General particle source
@@ -413,13 +423,17 @@ def main(args_to_parse = None):
                     "/gun/direction " + " ".join(i for i in args.GunDirection) + "\n" \
                     "/gun/position " + " ".join(i for i in args.GunPosition) + "\n"
                 guns.append(gunoptions)
-            filestubs.append(filestub + GunEnergy + args.GunParticle)
+            nappends = 1
+            if type(args.GunPosition) is str:
+                nappends = args.JobsPerConfig
+            for i in xrange(nappends):
+                filestubs.append(filestub + GunEnergy + args.GunParticle)
         return [guns, filestubs]
 
     #construct the .mac options and parts of filenames for the different groups
     tempoptions = []
     tempoptions.append(ConstructVerbosity(args))
-    tempoptions.append(ConstructParticleGun(args))
+    #tempoptions.append(ConstructParticleGun(args)) #depends on the geometry, so called in ConstructGeometry
     tempoptions.append(ConstructGeometry(args))
     tempoptions.append(ConstructPMT(args))
     tempoptions.append(ConstructDAQ(args))
@@ -442,11 +456,18 @@ def main(args_to_parse = None):
             theseoptions += vO
             if vF:
                 thesefile    += '_' + vF
+
+        looper = xrange(args.JobsPerConfig)
+        if type(args.GunPosition) is str:
+            #need to get the job ID from the .kin (there are already multiple jobs per config)
+            ijob = int(theseoptions[theseoptions.find('.kin')-3:theseoptions.find('.kin')])
+            looper = [ijob]
         #loop over jobs
-        for ijob in xrange(args.JobsPerConfig):
+        for ijob in looper:
             #add the final bits to the options
             jobname = thesefile + '.' + str(ijob)
             joboptions = theseoptions + ""\
+                "/WCSim/random/seed " + str(ijob + 31415) + "\n" \
                 "/WCSimIO/RootFile " + jobname + ".root" + "\n" \
                 "/WCSim/SavePi0 " + ("true" if args.SavePi0 else "false") + "\n" \
                 "/run/beamOn " + str(args.NEvents) + "\n"
@@ -509,4 +530,4 @@ if __name__ == "__main__":
     main()
 
     print "\n\n\nTODO fix defaults - certain variables should be allowed to be not written in the .mac file (e.g. if DarkRate == -99)"
-    print "\n\n\nTODO call ConstructParticleGun() from ConstructGeometry()"
+

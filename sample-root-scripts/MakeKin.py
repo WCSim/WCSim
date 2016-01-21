@@ -186,7 +186,7 @@ def printTrack(p, f, code=0):
 for fileno in range(nfiles):
     typestr = options.type.replace("+","plus").replace("-","minus")
     
-    filename="%s_%.0fMeV_%s_%s_%s_%03i.kin" % (typestr, energy, options.vertname, options.dirname, options.detector, fileno)
+    filename="%s_%.1fMeV_%s_%s_%s_%03i.kin" % (typestr, energy, options.vertname, options.dirname, options.detector, fileno)
 
     outfile = open(filename, 'w')
 
