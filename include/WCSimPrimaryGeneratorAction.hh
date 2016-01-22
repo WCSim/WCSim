@@ -5,6 +5,8 @@
 #include "G4ThreeVector.hh"
 #include "globals.hh"
 
+#include "WCSimEnumerations.hh"
+
 #include <fstream>
 
 class WCSimDetectorConstruction;
@@ -30,7 +32,8 @@ public:
 
   // These go with jhfNtuple
   G4int GetVecRecNumber(){return vecRecNumber;}
-  G4int GetMode() {return mode;};
+  //G4int GetMode() {return mode;};
+  InteractionType_t GetMode() {return mode;};
   G4int GetVtxVol() {return vtxvol;};
   G4ThreeVector GetVtx() {return vtx;}
   G4int GetNpar() {return npar;};
@@ -66,7 +69,8 @@ private:
   G4bool   GenerateVertexInRock;
 
   // These go with jhfNtuple
-  G4int mode;
+  //G4int mode;
+  InteractionType_t mode;
   G4int vtxvol;
   G4ThreeVector vtx;
   G4int npar;

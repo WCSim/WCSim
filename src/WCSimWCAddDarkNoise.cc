@@ -148,19 +148,19 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	    // Set the position and rotation of the pmt
 	    Float_t hit_pos[3];
 	    Float_t hit_rot[3];
-	    // TODO: need to change the format of hit_pos to G4ThreeVector
-	    // and change hit_rot to G4RotationMatrix
 	    
-	    WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( noise_pmt -1 );
-	    hit_pos[0] = 10*pmtinfo->Get_transx();
-	    hit_pos[1] = 10*pmtinfo->Get_transy();
-	    hit_pos[2] = 10*pmtinfo->Get_transz();
+ 	    WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( noise_pmt -1 );
+	    hit_pos[0] = 10*pmtinfo->Get_transx()/CLHEP::cm;
+	    hit_pos[1] = 10*pmtinfo->Get_transy()/CLHEP::cm;
+	    hit_pos[2] = 10*pmtinfo->Get_transz()/CLHEP::cm;
 	    hit_rot[0] = pmtinfo->Get_orienx();
 	    hit_rot[1] = pmtinfo->Get_orieny();
 	    hit_rot[2] = pmtinfo->Get_orienz();
-	    G4RotationMatrix pmt_rotation(hit_rot[0], hit_rot[1], hit_rot[2]);
+	    //G4RotationMatrix pmt_rotation(hit_rot[0], hit_rot[1], hit_rot[2]); // WRONG, takes Euler angles as arg. These are not Euler angles.
+	    //ahit->SetRot(pmt_rotation);
+	    G4ThreeVector pmt_orientation(hit_rot[0], hit_rot[1], hit_rot[2]);
 	    G4ThreeVector pmt_position(hit_pos[0], hit_pos[1], hit_pos[2]);
-	    ahit->SetRot(pmt_rotation);
+	    ahit->SetOrientation(pmt_orientation);
 	    ahit->SetPos(pmt_position);
 	    ahit->SetTime(PMTindex[noise_pmt],current_time);
 	    pe = WCPMT->rn1pe();

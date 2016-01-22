@@ -137,8 +137,8 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     tubeIDMap[totalNumPMTs] = aTransform;
    
     
-    // G4cout <<  "depth " << depth.str() << G4endl;
-    // G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
+    //G4cout <<  "depth " << depth.str() << G4endl;
+    //G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
     
     // Print
     //     G4cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag

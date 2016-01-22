@@ -124,9 +124,12 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
 
   TH1F *tot_charge = new TH1F("tot","Total Charge in event",500,0,20000);
 
-  TH1F *charge = new TH1F("charge","",200,0,20);
+  TH1F *charge = new TH1F("charge","",200,0,1000);
   TH1F *ttime = new TH1F("ttime","",200,900,2000);
   TH2F *t_q = new TH2F("tq","",200,900,2000,200,0,20);
+  //TH2F *tubeID_q = new TH2F("tubeIDq","",150,185100,185250,200,0,100);
+  TH2F *tubeID_q = new TH2F("tubeIDq","",300,1400,1700,100,0,300);
+  TH2F *mPMTid_q = new TH2F("mPMTidq","",34,1,35,100,0,300);
   TH1F *occupancy = new TH1F("occupancy","",20000,0,20000);
   TH1F *occupancy_mPMT = new TH1F("occupancy_mPMT","",35,0,35);
   TH1F *occupancy_mPMT2 = new TH1F("occupancy_mPMT2","",200,0,20000);
@@ -150,10 +153,33 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
       printf("Vtx %f %f %f\n", wcsimrootevent->GetVtx(0),
 	     wcsimrootevent->GetVtx(1),wcsimrootevent->GetVtx(2));
     }
+
+
+    //Calculate distance vertex to center, in z plane
+    // dWall
+    // muon range
+    // end point to center
+    double vtx_x = wcsimrootevent->GetVtx(0);
+    double vtx_y = wcsimrootevent->GetVtx(1);
+    double vtx_z = wcsimrootevent->GetVtx(2);
+    double dist = sqrt(vtx_x*vtx_x + vtx_y * vtx_y);
+    
+    //GetTracks, pick muon, use GetStart and GetStop
+    for (int i = 0; i < wcsimrootevent->GetNtrack() ; i++){
+      WCSimRootTrack *track = dynamic_cast<WCSimRootTrack*>((wcsimrootevent->GetTracks())->At(i));
+      if( track->GetIpnu() == 13 ) { // mu-
+	//GetStart(0)
+	//GetStop(0)
+	break;
+      }
+    }
+
     //std::cout << "test: " << wcsimrootsuperevent->GetNumberOfEvents() << std::endl;
     //if(wcsimrootevent->GetNumTubesHit() > wcsimrootevent->GetNcherenkovdigihits() + 2000)
     if(wcsimrootsuperevent->GetNumberOfEvents() > 1)
       //std::cout << "test2: " << ev << " " << wcsimrootsuperevent->GetNumberOfEvents() << " " << wcsimrootevent->GetNumTubesHit() << " " << wcsimrootevent->GetNcherenkovdigihits() << std::endl;
+      
+      std::cout << wcsimrootsuperevent->GetNumberOfEvents() << std::endl;
 
     for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++) 
       { 
@@ -164,8 +190,9 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
 	hit_pmts->Fill(wcsimrootevent->GetNumTubesHit());	
 	float totalq = 0.;
 	float totalt = 0.;
-
 	
+	std::cout << ncherenkovdigihits << std::endl;
+	std::cout << wcsimrootevent->GetNumTubesHit() << std::endl;
 	//TH1F *occup_per_event = new TH1F("occup_per_event","",20000,0,20000);
 	// Loop through elements in the TClonesArray of WCSimRootCherenkovHits
 	for (int i=0; i< ncherenkovdigihits; i++)
@@ -186,6 +213,9 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
 	    occupancy_mPMT2->Fill(tubeNumber/33);
 	    totalq+=q;
 	    totalt+=t;
+
+	    tubeID_q->Fill(tubeNumber,q);
+	    mPMTid_q->Fill(tubeNumber%33 == 0 ? 33 : tubeNumber%33,q);
 	  }
 	
 	tot_charge->Fill(totalq);
@@ -258,7 +288,7 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
 
   TH1F *tot_charge2 = new TH1F("tot2","Total Charge in event",500,0,20000);  
 
-  TH1F *charge2 = new TH1F("charge2","",200,0,20);
+  TH1F *charge2 = new TH1F("charge2","",200,0,1000);
   TH1F *ttime2 = new TH1F("ttime2","",200,900,2000);
   TH1F *occupancy2 = new TH1F("occupancy2","",200,0,500000);
   TH1F *occupancy2_mPMT = new TH1F("occupancy2_mPMT","",34,0,34);

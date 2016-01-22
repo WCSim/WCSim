@@ -131,7 +131,7 @@ void WCSimVisManager::RegisterGraphicsSystems () {
   mymodel->Set("anti_nu_e","yellow");
   mymodel->Set("anti_nu_mu","yellow");
   mymodel->Set("e-","blue");
-  mymodel->Set("mu-","black");
+  mymodel->Set("mu-","white");
   mymodel->Set("e+","red");
   mymodel->Set("mu+","white");
   mymodel->Set("proton","magenta");

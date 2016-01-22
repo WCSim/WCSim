@@ -25,14 +25,13 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 {
   //DISTORTION must be used ONLY if INNERTUBE or INNERTUBEBIG has been defined in BidoneDetectorConstruction.cc
   
-  const G4Event* evt = G4RunManager::GetRunManager()->GetCurrentEvent();
-
   const G4Track* track       = aStep->GetTrack();
-  G4VPhysicalVolume* volume  = track->GetVolume();
-
-
-  G4SDManager* SDman   = G4SDManager::GetSDMpointer();
-  G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
+  
+  // Not used:
+  //const G4Event* evt = G4RunManager::GetRunManager()->GetCurrentEvent();
+  //G4VPhysicalVolume* volume  = track->GetVolume();
+  //G4SDManager* SDman   = G4SDManager::GetSDMpointer();
+  //G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
 
   
   // Debug for photon tracking
@@ -42,7 +41,7 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
   G4StepPoint* thePostPoint = aStep->GetPostStepPoint();
   G4VPhysicalVolume* thePostPV = thePostPoint->GetPhysicalVolume();
 
-  G4OpBoundaryProcessStatus boundaryStatus=Undefined;
+  //G4OpBoundaryProcessStatus boundaryStatus=Undefined;
   //static G4ThreadLocal G4OpBoundaryProcess* boundary=NULL;  //doesn't work and needs #include tls.hh from Geant4.9.6 and beyond
   G4OpBoundaryProcess* boundary=NULL;
   

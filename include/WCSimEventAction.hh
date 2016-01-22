@@ -46,10 +46,19 @@ public:
 
   void  CreateDAQInstances(); //TODO make this private
 
+  void FillFlatTree(G4int,
+		    const struct ntupleStruct&, 
+		    G4TrajectoryContainer*,
+		    WCSimWCDigitsCollection*,
+		    WCSimWCTriggeredDigitsCollection*);
+  
+
 private:
   G4int WCSimEventFindStartingVolume( G4ThreeVector vtx);
   G4int WCSimEventFindStoppingVolume( G4String stopVolumeName);
 
+
+  G4String vtxVolumeName;         //TF new
   G4String DigitizerChoice;
   G4String TriggerChoice;
   bool     ConstructedDAQClasses;
@@ -57,5 +66,4 @@ private:
 
 
 #endif
-
     

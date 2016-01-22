@@ -112,12 +112,35 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
   G4cout << ")";
 #endif
 
+  // Get the info for pmt positions
+  std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
+  // It works out that the pmts here are ordered !
+  // pmts->at(i) has tubeid i+1
+
+  // Set the position and rotation of the pmt (from WCSimWCAddDarkNoise.cc)
+  Float_t hit_pos[3];
+  Float_t hit_rot[3];
+  
+  WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( tube -1 );
+  hit_pos[0] = 10*pmtinfo->Get_transx()/CLHEP::cm;
+  hit_pos[1] = 10*pmtinfo->Get_transy()/CLHEP::cm;
+  hit_pos[2] = 10*pmtinfo->Get_transz()/CLHEP::cm;
+  hit_rot[0] = pmtinfo->Get_orienx();
+  hit_rot[1] = pmtinfo->Get_orieny();
+  hit_rot[2] = pmtinfo->Get_orienz();
+
+  G4ThreeVector pmt_orientation(hit_rot[0], hit_rot[1], hit_rot[2]);
+  G4ThreeVector pmt_position(hit_pos[0], hit_pos[1], hit_pos[2]);
+
   if (peSmeared > 0.0) {
       if ( DigiStoreHitMap[tube] == 0) {
 	WCSimWCDigi* Digi = new WCSimWCDigi();
-	Digi->AddParentID(1);
+	Digi->AddParentID(1);                           // TF: Why 1??
+	Digi->AddParentID(0);                           // Primary has ParentID == 0
 	
 	Digi->SetTubeID(tube);
+	Digi->SetPos(pmt_position);
+	Digi->SetOrientation(pmt_orientation);
 	Digi->SetPe(gate,peSmeared);
 	Digi->AddPe(digihittime);
 	Digi->SetTime(gate,digihittime);
@@ -166,7 +189,7 @@ WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
 void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
   
-  //loop over entires in WCHCPMT, each entry corresponds to
+  //loop over entries in WCHCPMT, each entry corresponds to
   //the photons on one PMT
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
     {

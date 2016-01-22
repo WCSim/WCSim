@@ -16,16 +16,15 @@
 #include <vector>
 //#include <hash_map.h>
 // warning : hash_map is not part of the standard
-#include <ext/hash_map>
+//#include <ext/hash_map>       //TF: deprecated, but need new C++ features, probably from gcc4.2 onwards
+#include <unordered_map>     //--> need to fix the "using" and namespace statements
 
 //instead of using forward declaration, just include:
 #include "G4Material.hh"
 
 
-using __gnu_cxx::hash;
-using __gnu_cxx::hashtable;
-using __gnu_cxx::hash_map;
-using __gnu_cxx::hash_multimap;
+//using __gnu_cxx::hash;       //deprecated
+//using __gnu_cxx::hash_map;
 
 // (JF) We don't need this distinction for DUSEL
 //enum cyl_location {endcap1,wall,endcap2};
@@ -40,16 +39,18 @@ class WCSimTuningParameters;
 class WCSimDetectorMessenger;
 class WCSimWCSD;
 
+/* Deprecated
 namespace __gnu_cxx  {
-  template<> struct hash< std::string >
+  template<> struct std::hash< std::string >
   {
     size_t operator()( const std::string& x ) const
     {
-      return hash< const char* >()( x.c_str() );
+      return std::hash< const char* >()( x.c_str() );
     }
   };
-}
+  }*/
 
+//Move to G4Enumerations
 enum mPMT_orientation{
   VERTICAL,
   HORIZONTAL,
@@ -159,10 +160,17 @@ public:
       mPMT_outer_material = "G4_PLEXIGLASS";
     }
   void SetmPMT_MaterialInner(G4String inner_material){mPMT_inner_material = inner_material;}
+  void SetmPMT_PMTtype_inner(G4String type){mPMT_ID_PMT = type;}
+  void SetmPMT_PMTtype_outer(G4String type){mPMT_OD_PMT = type;}
   void SetmPMT_MaterialOuterThickness(G4double thickness){mPMT_outer_material_d = thickness;}
   void SetmPMT_MaterialInnerThickness(G4double thickness){mPMT_inner_material_d = thickness;}
   void SetmPMT_nID(G4int nPMTs){nID_PMTs = nPMTs;}
   void SetmPMT_Config(G4String inputfile){config_file = inputfile;}
+
+  int GetmPMT_nID(void){return nID_PMTs;};
+  G4String GetPMTtype_ID(void){return mPMT_ID_PMT;};
+  G4String GetPMTtype_OD(void){return mPMT_OD_PMT;};   //might want to replace the name mPMT by general var name
+
 
   //Filling mPMT
   G4int         FillCircles(void);
@@ -443,7 +451,8 @@ private:
 
   static std::map<int, G4Transform3D> tubeIDMap;
 //  static std::map<int, cyl_location> tubeCylLocation;
-  static hash_map<std::string, int, hash<std::string> >  tubeLocationMap; 
+  //static hash_map<std::string, int, hash<std::string> >  tubeLocationMap_old;                //Deprecated
+  static std::unordered_map<std::string, int, std::hash<std::string> >  tubeLocationMap; 
  
   // Variables related to configuration
 
@@ -462,7 +471,7 @@ private:
   G4double id_reflector_angle;
   G4int nID_PMTs;
   G4String config_file;
-  G4String mPMT_ID_PMT; //or ideally ENUM
+  G4String mPMT_ID_PMT; //or ToDo: ideally ENUM
   G4String mPMT_OD_PMT;
 
   //Filling mPMT

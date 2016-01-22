@@ -130,9 +130,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 			    G4Material::GetMaterial(mPMT_outer_material),//"G4_PLEXIGLASS"), 
 			    "WCMultiPMT_cylinder_vessel",
 			    0,0,0);
-   
-  G4VPhysicalVolume* place_cylinder_vessel =
-    new G4PVPlacement(	0,				         // its rotation
+
+  // Place Cylinder Vessel
+  new G4PVPlacement(	0,				         // its rotation
 			G4ThreeVector(0,0,cylinder_height/2),    // its position
 			logic_mPMT_cylinder_vessel,   	         // its logical volume
 			"WCPMT_cyl_vessel",			 // its name 
@@ -158,8 +158,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 			    "WCMultiPMT_vessel_top",
 			    0,0,0);
   
-  G4VPhysicalVolume* place_vessel_top =
-    new G4PVPlacement(	0,				         // its rotation
+  // Place Vessel Top:
+  new G4PVPlacement(	0,				         // its rotation
 			G4ThreeVector(0,0,cylinder_height),	 // its position
 			logic_mPMT_top_sphere_vessel,   	         // its logical volume
 			"WCPMT_vessel_top",				 // its name 
@@ -236,26 +236,26 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     /////////////////////////////////////////
 
     
-    G4VPhysicalVolume* singlePMT =
-      new G4PVPlacement(0,
-			G4ThreeVector(0, 0, 0),//+cylinder_radius),
-			logicWCPMT,                       // its logical volume
-			"pmt",
-			logic_mPMT_top_sphere_container,        // Mother logical volume,
-			false,
-			0,
-			checkOverlaps);  
+    // singlePMT:
+    new G4PVPlacement(0,
+		      G4ThreeVector(0, 0, 0),//+cylinder_radius),
+		      logicWCPMT,                       // its logical volume
+		      "pmt",
+		      logic_mPMT_top_sphere_container,        // Mother logical volume,
+		      false,
+		      0,
+		      checkOverlaps);  
     
     
-    G4VPhysicalVolume* place_container =
-      new G4PVPlacement(0,			            // its rotation
-			G4ThreeVector(0,0,0),		// its position
-			logic_mPMT_top_sphere_container,   	    // its logical volume
-			"WCPMT_container",		    // its name 
-			logic_mPMT_top_sphere_vessel,	    // its mother volume
-			false,			    // no boolean os
-			0, 
-			checkOverlaps);			
+    //Place Container
+    new G4PVPlacement(0,			            // its rotation
+		      G4ThreeVector(0,0,0),		// its position
+		      logic_mPMT_top_sphere_container,   	    // its logical volume
+		      "WCPMT_container",		    // its name 
+		      logic_mPMT_top_sphere_vessel,	    // its mother volume
+		      false,			    // no boolean os
+		      0, 
+		      checkOverlaps);			
     
     
     /* Set all visualization here for better overview. */
@@ -324,8 +324,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     //return NULL; 
   }
   
-  G4VPhysicalVolume* place_container =
-    new G4PVPlacement(	0,				             // its rotation
+  // Place Container:
+  new G4PVPlacement(	0,				             // its rotation
 			G4ThreeVector(0,0,0),         // its position
 			logic_mPMT_top_sphere_container,   	     // its logical volume
 			"WCPMT_container",		             // its name 
@@ -360,7 +360,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 				0,0,0);
       
       
-      G4VPhysicalVolume* place_inner_cylinder =
+      //Place Inner Cylinder:
 	new G4PVPlacement(	0,       				// its rotation
 				G4ThreeVector(0,0,0),           	// its position
 				logic_mPMT_cylinder_inner,   	        // its logical volume
@@ -390,7 +390,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 			      0,0,0);
     
     
-    G4VPhysicalVolume* place_inner =
+    //Place Inner Structure
       new G4PVPlacement(	0,       				// its rotation
 				G4ThreeVector(0,0,0),           	// its position
 				logic_mPMT_top_sphere_inner,   	        // its logical volume
@@ -464,6 +464,7 @@ G4int WCSimDetectorConstruction::FillCircles(void){
     vEta.push_back(atof(item.c_str())*CLHEP::deg);
   }
   G4double min_eta = *std::min_element(vEta.begin(),vEta.end());
+  G4cout << "Min viewing angle eta from input file for mPMT filling is : " << min_eta << G4endl;
 
   getline(config,line);
   std::istringstream value3(line);
@@ -478,7 +479,7 @@ G4int WCSimDetectorConstruction::FillCircles(void){
 
  // Total number of pmt in the circles
   G4int TotPmt = 0;
-  for(int i = 0; i < vNiC.size();i++){
+  for(size_t i = 0; i < vNiC.size();i++){
     TotPmt+=vNiC[i];
     for(int j = 0; j < vNiC[i]; j++){
       vCircle.push_back(i); //number circles internally between 0 and N-1
@@ -559,7 +560,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
 
   // Total number of pmt in the circles
   G4int TotPmt = 0;
-  for(int i = 0; i < vNiC.size();i++){
+  for(size_t i = 0; i < vNiC.size();i++){
     TotPmt+=vNiC[i];
     for(int j = 0; j < vNiC[i]; j++){
       vCircle.push_back(i); //number circles internally between 0 and N-1

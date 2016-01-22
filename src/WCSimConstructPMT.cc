@@ -289,15 +289,15 @@ else {
     
     new G4LogicalSkinSurface("ReflectorLogSkinSurface",logicReflector,ReflectorSkinSurface);
     
-    G4VPhysicalVolume* reflectorWCPMT =
-      new G4PVPlacement(0,
-                        G4ThreeVector(0, 0, 0),
-                        logicReflector,
-                        "reflectorWCPMT",
+    // reflector PMT Placement:
+    new G4PVPlacement(0,
+		      G4ThreeVector(0, 0, 0),
+		      logicReflector,
+		      "reflectorWCPMT",
                         logicWCPMT,
-                        false,
-                        0,
-                        checkOverlaps);
+		      false,
+		      0,
+		      checkOverlaps);
   }
 
   // Instantiate a new sensitive detector 

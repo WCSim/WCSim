@@ -14,6 +14,8 @@
 #include <vector>
 #include <string>
 
+//#include "WCSimEnumerations.hh"
+
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
 
@@ -41,7 +43,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   MyGPS = new G4GeneralParticleSource();
 
   // Initialize to zero
-  mode = 0;
+  mode = UNKNOWN;    //0;
   vtxvol = 0;
   vtx = G4ThreeVector(0.,0.,0.);
   nuEnergy = 0.;
@@ -134,7 +136,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    // Read the nuance line (ignore value now)
 
 	    token = readInLine(inputFile, lineSize, inBuf);
-	    mode = atoi(token[1]);
+	    mode = BEAM;       //atoi(token[1]);    //break backwards compatibility, should deprecate Nuance though
 
 	    // Read the Vertex line
 	    token = readInLine(inputFile, lineSize, inBuf);
@@ -236,6 +238,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4ThreeVector dir  = P.unit();
     G4double E         = std::sqrt((P.dot(P))+(m*m));
 
+    mode            = PARTICLEGUN;
+
 //     particleGun->SetParticleEnergy(E);
 //     particleGun->SetParticlePosition(vtx);
 //     particleGun->SetParticleMomentumDirection(dir);
@@ -257,7 +261,10 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4ThreeVector dir  = P.unit();
       //G4double E         = std::sqrt((P.dot(P)));
       G4double E         = std::sqrt((P.dot(P))+(m*m));
-      
+      //std::cout << "Energy " << E << " eV " << std::endl;
+
+      mode            = LASER; //actually could also be particle gun here. Gps and laser will be separate soon!!
+
       SetVtx(vtx);
       SetBeamEnergy(E);
       SetBeamDir(dir);

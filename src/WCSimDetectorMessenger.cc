@@ -153,9 +153,8 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				  ); 
 
   // untested/unfinished
-  // ? Make this part of DetectorConfigs as is currently the case?
-  // Let DetectorConfigs grab from here?
-  /*
+  // This makes it possible to overwrite the DetectorConfigs
+  
   mPMT_PMTtype_inner = new G4UIcmdWithAString("/WCSim/mPMT/PMTtype_inner",this);
   mPMT_PMTtype_inner->SetGuidance("Set type of PMT for ID.");
   mPMT_PMTtype_inner->SetParameterName("PMTtype_inner", true);
@@ -169,6 +168,8 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine20inchHQE "
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
+				    "PMT4inchR12199_02 "
+				    "PMT5inchR12199_02 "
 				    ); 
 
   mPMT_PMTtype_outer = new G4UIcmdWithAString("/WCSim/mPMT/PMTtype_outer",this);
@@ -184,8 +185,10 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine20inchHQE "
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
+				    "PMT4inchR12199_02 "
+				    "PMT5inchR12199_02 "
 				    ); 
-  */
+  
 
   mPMT_material_outer = new G4UIcmdWithAString("/WCSim/mPMT/material_outer",this);
   mPMT_material_outer->SetGuidance("Set material of outer capsule of multiPMT.");
@@ -436,12 +439,13 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	if(command == mPMT_config){
 	  WCSimDetector->SetmPMT_Config(newValue);
 	}
-	/*
+	
 	if (command == mPMT_PMTtype_inner)
-	  std::cout << "Need to implement PMT enums and restructure WCSim to use PMT type ID" << std::endl;
+	  WCSimDetector->SetmPMT_PMTtype_inner(newValue);
 	if (command == mPMT_PMTtype_outer)
-	  std::cout << "Need to implement PMT enums and restructure WCSim to use PMT type OD" << std::endl;
-	*/
+	  WCSimDetector->SetmPMT_PMTtype_outer(newValue);
+	
+	
 
 	if(command == WCConstruct) {
 	  WCSimDetector->UpdateGeometry();

@@ -171,7 +171,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      theta_angle = acos(fabs(local_z)/sqrt(pow(local_x,2)+pow(local_y,2)+pow(local_z,2)))/3.1415926*180.;
      effectiveAngularEfficiency = fdet->GetPMTCollectionEfficiency(theta_angle, volumeName);
      if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
-       //Retrieve the pointer to the appropriate hit collection. Since volumeName is the same as the SD name, this works. 
+       //Retrieve the pointer to the appropriate hit collection. 
+       //Since volumeName is the same as the SD name, this works. 
        G4SDManager* SDman = G4SDManager::GetSDMpointer();
        G4RunManager* Runman = G4RunManager::GetRunManager();
        G4int collectionID = SDman->GetCollectionID(volumeName);
@@ -179,7 +180,6 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
        G4HCofThisEvent* HCofEvent = currentEvent->GetHCofThisEvent();
        hitsCollection = (WCSimWCHitsCollection*)(HCofEvent->GetHC(collectionID));
       
-       
        // If this tube hasn't been hit add it to the collection	 
        if (this->PMTHitMap[replicaNumber] == 0)
        //if (PMTHitMap.find(replicaNumber) == PMTHitMap.end())  TF attempt to fix
@@ -210,22 +210,38 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
 	 
        }
-
      }
   }
 
   return true;
 }
 
-void WCSimWCSD::EndOfEvent(G4HCofThisEvent*)
+void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
 {
+
+ 
   if (verboseLevel>0) 
   { 
+    //Need to specify which collection in case multiple geometries are built:
+    //ToDo: bugfix for WCSim Devel !
+    G4String WCIDCollectionName = fdet->GetIDCollectionName();
+    G4SDManager* SDman = G4SDManager::GetSDMpointer();
+    G4int collectionID = SDman->GetCollectionID(WCIDCollectionName);
+    hitsCollection = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
+    
     G4int numHits = hitsCollection->entries();
 
-    G4cout << "There are " << numHits << " hits in the WC: " << G4endl;
+    G4cout << "There are " << numHits << " tubes hit in the WC: " << G4endl;
     for (G4int i=0; i < numHits; i++) 
       (*hitsCollection)[i]->Print();
+    
+      /*
+    {
+      if(abs((*hitsCollection)[i]->GetTubeID() - 1584)  < 5){
+	  std::cout << (*hitsCollection)[i]->GetTubeID() << std::endl;
+	  (*hitsCollection)[i]->Print();
+      }
+      }*/
 
     /* Detailed debug:
     G4cout << "Through mPMTLV " << WCSimSteppingAction::n_photons_through_mPMTLV << G4endl;

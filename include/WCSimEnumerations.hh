@@ -17,6 +17,15 @@ typedef enum EDigitizerType {
   kDigitizerSKI
 } DigitizerType_t;
 
+typedef enum EInteractionMode {
+  UNKNOWN = -1,
+  BEAM = 0,
+  COSMICS = 10,
+  PARTICLEGUN = 20,
+  LASER = 30
+} InteractionType_t;
+
+
 class WCSimEnumerations
 {
 public:

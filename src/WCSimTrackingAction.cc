@@ -20,6 +20,11 @@ WCSimTrackingAction::WCSimTrackingAction()
   ParticleList.insert(311); // kaon0
   ParticleList.insert(-311); // kaon0 bar
   // don't put gammas there or there'll be too many
+
+  //TF: add protons and neutrons
+  ParticleList.insert(2212);
+  ParticleList.insert(2112);
+
 }
 
 WCSimTrackingAction::~WCSimTrackingAction(){;}
@@ -57,10 +62,11 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   // is the particle in the set ?
   // is it a gamma 
   // due to lazy evaluation of the 'or' in C++ the order is important
-  if( aTrack->GetParentID()==0 || 
-      ((creatorProcess!=0) && ProcessList.count(creatorProcess->GetProcessName()) ) || 
-      (ParticleList.count(aTrack->GetDefinition()->GetPDGEncoding()) )
+  if( aTrack->GetParentID()==0 ||                                                        // Primary
+      ((creatorProcess!=0) && ProcessList.count(creatorProcess->GetProcessName()) ) ||   // Only Decay (Michel e-) allowed now.
+      (ParticleList.count(aTrack->GetDefinition()->GetPDGEncoding()) )                  // pi0, pi+-, kaon
       || (aTrack->GetDefinition()->GetPDGEncoding()==22 && aTrack->GetTotalEnergy() > 50.0*MeV)
+      || (abs(aTrack->GetDefinition()->GetPDGEncoding()== 13) && aTrack->GetMomentum().mag() > 110.0*MeV) //mu+- above Cherenkov Threshold in water (119 MeV/c)
       )
   {
     // if so the track is worth saving
