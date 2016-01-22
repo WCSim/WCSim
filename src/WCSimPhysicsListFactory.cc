@@ -11,7 +11,7 @@ WCSimPhysicsListFactory::WCSimPhysicsListFactory() :  G4VModularPhysicsList()
  
  PhysicsListName="NULL_LIST"; // default list is set in WCSimPhysicsListFactoryMessenger to QGSP_BERT
  factory = new G4PhysListFactory();
- // TODO create opticalPhyscics object?
+ // ToDo create opticalPhyscics object?
  
  std::vector<G4String> ValidListsVector = factory->AvailablePhysLists();
  ValidListsVector.push_back("WCSim");// add deprecated WCSimPhysicsList.cc as a selectable option

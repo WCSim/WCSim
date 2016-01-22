@@ -44,7 +44,7 @@ public:
   void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
   void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
 
-  void  CreateDAQInstances(); //TODO make this private
+  void  CreateDAQInstances(); //ToDo make this private
 
   void FillFlatTree(G4int,
 		    const struct ntupleStruct&, 

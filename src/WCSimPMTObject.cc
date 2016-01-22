@@ -20,7 +20,7 @@
 #include <cstring>
 #include <iostream>
 
-//TODO: Clean this up, many of these hard coded things can be read in from (ROOT) files.
+//ToDo: Clean this up, many of these hard coded things can be read in from (ROOT) files.
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

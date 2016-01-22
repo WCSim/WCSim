@@ -224,7 +224,7 @@ private:
   G4LogicalVolume*   ConstructCylinder();
 
   G4LogicalVolume* ConstructPMT(G4String,G4String);
-  G4LogicalVolume* ConstructMultiPMT(G4String,G4String); //TF ToDo: update args
+  G4LogicalVolume* ConstructMultiPMT(G4String,G4String); 
 
 
   G4LogicalVolume* ConstructCaps(G4int zflip);
@@ -338,7 +338,7 @@ private:
 
   G4double WCBarrelNumPMTHorizontal;
   G4double WCCapPMTSpacing;
-  G4double WCCapEdgeWidth;//jh TODO: not used
+  G4double WCCapEdgeWidth;//jh ToDo: not used
   
   G4double WCCapEdgeLimit;
   G4double WCBlackSheetThickness;

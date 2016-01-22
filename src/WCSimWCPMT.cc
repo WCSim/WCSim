@@ -151,7 +151,6 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPe(ip,peSmeared);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTime(ip,time_PMT);
-	      // Not necessary here?? ToDo: check!!!
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTubeID(tube); 
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPos(pmt_position);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetOrientation(pmt_orientation);

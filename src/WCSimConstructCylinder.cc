@@ -80,7 +80,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
   WCLength    = WCIDHeight + 2*2.3*m;	//jl145 - reflects top veto blueprint, cf. Farshid Feyzi
-  WCRadius    = (WCIDDiameter/2. + WCBlackSheetThickness + 1.5*m)/cos(dPhi/2.) ; // TODO: OD 
+  WCRadius    = (WCIDDiameter/2. + WCBlackSheetThickness + 1.5*m)/cos(dPhi/2.) ; // ToDo: OD 
  
   // now we know the extend of the detector and are able to tune the tolerance
   G4GeometryManager::GetInstance()->SetWorldMaximumExtent(WCLength > WCRadius ? WCLength : WCRadius);

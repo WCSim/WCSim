@@ -214,7 +214,7 @@ protected:
 };
 
 
-// TODO: make object of classes instead of infinite cp-pastes
+// ToDo: make object of classes instead of infinite cp-pastes
 class PMT3inchR12199_02 : public WCSimPMTObject
 {
 
@@ -237,7 +237,7 @@ protected:
   G4float* GetCollectionEfficiencyArray();
 };
 
-// TODO: make object of classes instead of infinite cp-pastes
+// ToDo: make object of classes instead of infinite cp-pastes
 class PMT4inchR12199_02 : public WCSimPMTObject
 {
 
@@ -260,7 +260,7 @@ protected:
   G4float* GetCollectionEfficiencyArray();
 };
 
-// TODO: make object of classes instead of infinite cp-pastes
+// ToDo: make object of classes instead of infinite cp-pastes
 class PMT5inchR12199_02 : public WCSimPMTObject
 {
 

@@ -81,7 +81,7 @@ void WCSimEventAction::CreateDAQInstances()
   // or the new separated classes
   if(DigitizerChoice != "SKI_SKDETSIM" && TriggerChoice != "SKI_SKDETSIM") {
 
-    //TODO move the WCSimWCAddDarkNoise creation to the constructor
+    //ToDo move the WCSimWCAddDarkNoise creation to the constructor
     //create dark noise module
     WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise("WCDarkNoise", detectorConstructor);
     DMman->AddNewModule(WCDNM);
@@ -984,7 +984,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
   //point branched struct to the one filled here. 
   eventNtuple *thisNtuple = GetRunAction()->GetMyStruct(); 
   thisNtuple->interaction_mode = jhfNtuple.mode;
-  strcpy(thisNtuple->vtxVolume,vtxVolumeName.c_str());  //ToDo: vtxVolume gets filled multiple times for some reason
+  strcpy(thisNtuple->vtxVolume,vtxVolumeName.c_str());  
   thisNtuple->vtx_x = jhfNtuple.vtx[0];
   thisNtuple->vtx_y = jhfNtuple.vtx[1];
   thisNtuple->vtx_z = jhfNtuple.vtx[2];  //now copying from jhfNuple, in the future replacing jhfNtuple
@@ -1117,8 +1117,8 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
  	thisNtuple->mPMT_pmtid[totNumHits] = (digi_tubeid%nMpmtID_pmts == 0 ? nMpmtID_pmts : digi_tubeid%nMpmtID_pmts ); // No. 1 to nID
 
 	thisNtuple->trackid[totNumHits] = (*WCDC_hits)[idigi]->GetTrackID();
-	G4ThreeVector pos = (*WCDC_hits)[idigi]->GetPos();             // ToDo: I *can* remove it from WCDigi and grab it from theDetector also.
-	thisNtuple->tube_x[totNumHits] = pos[0];        //already in CLHEP::cm
+	G4ThreeVector pos = (*WCDC_hits)[idigi]->GetPos();       // Can also grab it from theDetector also.
+	thisNtuple->tube_x[totNumHits] = pos[0];                 //already in CLHEP::cm
 	thisNtuple->tube_y[totNumHits] = pos[1];
 	thisNtuple->tube_z[totNumHits] = pos[2];
 	thisNtuple->tube_dirx[totNumHits] = pmt->Get_orienx();  //Can now also grab the ThreeVector Orientation from WCDigi
@@ -1156,7 +1156,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
   G4cout << "ngates =  " << ngates << "\n";
 
 
-  // ToDo: What is nGates == 0: I still want to keep untriggered event?
+  // nGates == 0: I still want to keep untriggered event
   if(ngates == 0){
     GetRunAction()->SetEventHeaderNew(0,event_id+1,1);   //ToDo: run 
     std::cout << event_id << std::endl;

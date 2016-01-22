@@ -76,7 +76,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++0x")
 
 add_executable(WCSim WCSim.cc ${sources} ${headers})
-target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree profiler)  #add profiler to use gperftools
+target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree)  #add profiler to use gperftools
 
 
 
