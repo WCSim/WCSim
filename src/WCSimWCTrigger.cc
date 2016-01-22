@@ -507,11 +507,11 @@ void WCSimWCTriggerBase::AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, 
      myDetector->GetDetectorName() == "SuperK_20inchBandL_20perCent" || myDetector->GetDetectorName() == "SuperK_12inchBandL_15perCent" ||
      myDetector->GetDetectorName() == "SuperK_20inchBandL_14perCent" ||
      myDetector->GetDetectorName() == "Cylinder_60x74_20inchBandL_14perCent()" ||
-     myDetector->GetDetectorName() == "Cylinder_60x74_20inchBandL_40perCent()") {
+     myDetector->GetDetectorName() == "Cylinder_60x74_20inchBandL_40perCent") {
     height = myDetector->GetWaterTubeLength()/2.-1640-1000.;
     radius = myDetector->GetWaterTubeRadius()-1604-1000.;
   }
-  std::cout<<"HEIGHT "<<height*2.<<" Radius "<<radius<<"\n";
+  std::cout<< "HEIGHT "<<height*2.<<" Radius "<<radius<<"\n";
   //  height = 60000./2.; //mm middle of tank == 0 so half the height                                                                       
   //radius = 74000./2.; //mm 
   //generate a box of verticies.  Save only those within the radius given.
