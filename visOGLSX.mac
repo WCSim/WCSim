@@ -17,12 +17,6 @@
 #/vis/ogl/set/printMode pixmap
 #/vis/ogl/printEPS
 
-#/vis/open RayTracer
-#/vis/viewer/set/upVector 0 0 1
-#/vis/rayTracer/eyePosition 70 0 70
-#/vis/rayTracer/trace
-
-
 /vis/scene/add/hits
 /vis/scene/add/trajectories
 /vis/scene/endOfEventAction accumulate
