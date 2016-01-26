@@ -9,8 +9,9 @@
 
 WCSimTrackingAction::WCSimTrackingAction()
 {
-  ProcessList.insert("Decay") ;
-  //ProcessList.insert("MuonMinusCaptureAtRest") ;
+  ProcessList.insert("Decay") ;                         // Michel e- from pi+ and mu+
+  ProcessList.insert("muMinusCaptureAtRest") ;          // Includes Muon decay from K-shell: for Michel e- from mu0. This dominates/replaces the mu- decay (noticed when switching off this process in PhysicsList)
+
 //   ProcessList.insert("conv");
   ParticleList.insert(111); // pi0
   ParticleList.insert(211); // pion+
@@ -54,37 +55,62 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 
   WCSimTrackInformation* anInfo;
   if (aTrack->GetUserInformation())
-    anInfo = (WCSimTrackInformation*)(aTrack->GetUserInformation());
+    anInfo = (WCSimTrackInformation*)(aTrack->GetUserInformation());   //eg. propagated to all secondaries blelow.
   else anInfo = new WCSimTrackInformation();
 
+
+  if(aTrack->GetTrackID() == 35860 || aTrack->GetTrackID() == 35901)
+    std::cout << "Wait " << std::endl;
+
   // is it a primary ?
-  // is the process in the set ? 
-  // is the particle in the set ?
-  // is it a gamma 
-  // due to lazy evaluation of the 'or' in C++ the order is important
-  if( aTrack->GetParentID()==0 ||                                                        // Primary
-      ((creatorProcess!=0) && ProcessList.count(creatorProcess->GetProcessName()) ) ||   // Only Decay (Michel e-) allowed now.
-      (ParticleList.count(aTrack->GetDefinition()->GetPDGEncoding()) )                  // pi0, pi+-, kaon
-      || (aTrack->GetDefinition()->GetPDGEncoding()==22 && aTrack->GetTotalEnergy() > 50.0*MeV)
+  // is the process in the set ? eg. Michel e-, but only keep e-
+  // is the particle in the set ? eg. pi0, pi+-, K, p, n
+  // is it a gamma above 50 MeV ? OR gamma from nCapture? ToDo: Oxygen de-excitation
+  // is it a muon that can still produce Cherenkov light?
+  // due to lazy evaluation of the 'or' in C++ the order is important  
+  if( aTrack->GetParentID()==0 ||                                                                            // Primary
+      ((creatorProcess!=0) && ProcessList.count(creatorProcess->GetProcessName())                            
+       && aTrack->GetMomentum().mag() > .5*MeV && abs(aTrack->GetDefinition()->GetPDGEncoding()) == 11) ||   
+      (ParticleList.count(aTrack->GetDefinition()->GetPDGEncoding()) )                                       
+      || (aTrack->GetDefinition()->GetPDGEncoding()==22 && aTrack->GetVertexKineticEnergy() > 4.*MeV)       // Bugfixed: need vertex kinetic energy for gamma, rest is zero. ToDo: check whether pi0 gamma's are saved!
+      || (aTrack->GetDefinition()->GetPDGEncoding()==22 && creatorProcess->GetProcessName() == "nCapture")   
       || (abs(aTrack->GetDefinition()->GetPDGEncoding()== 13) && aTrack->GetMomentum().mag() > 110.0*MeV) //mu+- above Cherenkov Threshold in water (119 MeV/c)
       )
-  {
+    {
     // if so the track is worth saving
     anInfo->WillBeSaved(true);
-
+    
     //      G4cout << "track # " << aTrack->GetTrackID() << " is worth saving\n";
     //      G4cout << "It is a " <<aTrack->GetDefinition()->GetParticleName() << G4endl;
+
+
+    //For Ch hits: use Parent ID of actual mother process:
+    // Decay: keep both decaying particle and Michel e-, Hit Parent ID should be Track ID from Michel e-
+    // Pi0 : keep both pi0 and gamma's, Hit Parent ID should be Track ID from gamma
+    // nCapture: keep both n and gamma, Hit Parent ID should be Track ID from gamma.
+    // Hits from LE electrons from muIonization, etc. : Hit Parent ID should be from Mother particle, not secondary track ID.
+    
+    if (aTrack->GetDefinition()->GetPDGEncoding()==111)
+      pi0List.insert(aTrack->GetTrackID()); // list of all pi0-s 
+    
+    // Be careful with gamma's. I want the ones closest to the actual mother process, not all secondaries.
+    if (aTrack->GetDefinition()->GetPDGEncoding() == 22){
+      if( pi0List.count(aTrack->GetParentID()) ||
+	  (creatorProcess->GetProcessName() == "nCapture") ||
+	  (creatorProcess->GetProcessName() == "NeutronInelastic")	  
+	  )
+	anInfo->SetPrimaryParentID(aTrack->GetTrackID());  
+    }
+    //TF: crucial bugfix: I want this for all tracks that I save to match Ch hits with tracks that can
+    // produce Cherenkov light.
+    else
+      anInfo->SetPrimaryParentID(aTrack->GetTrackID());   
   }
-  else
+  else {
     anInfo->WillBeSaved(false);
+  }
 
-  if (aTrack->GetDefinition()->GetPDGEncoding()==111)
-    pi0List.insert(aTrack->GetTrackID()); // list of all pi0-s 
 
-  if (aTrack->GetParentID()==0 || // primary particle
-      (aTrack->GetDefinition()->GetPDGEncoding()==22 && // primary gamma from
-       pi0List.count(aTrack->GetParentID())))            // a pi0
-    anInfo->SetPrimaryParentID(aTrack->GetTrackID());
 
   G4Track* theTrack = (G4Track*)aTrack;
   theTrack->SetUserInformation(anInfo);
@@ -99,7 +125,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       for(size_t i=0;i<nSeco;i++)
       { 
 	WCSimTrackInformation* infoSec = new WCSimTrackInformation(anInfo);
-                 infoSec->WillBeSaved(false); // ADDED BY MFECHNER, temporary, 30/8/06
+	infoSec->WillBeSaved(false); // ADDED BY MFECHNER, temporary, 30/8/06
 	(*secondaries)[i]->SetUserInformation(infoSec);
       }
     } 

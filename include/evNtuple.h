@@ -22,34 +22,35 @@ struct eventNtuple{
 
   //tracks:
   int nTracks;             // number of final state particles
-  int pid[50];             // id of ith final state particle
-  int flag[50];            // flag: -1 = beam particle (incoming neutrino)
+  int pid[100];             // id of ith final state particle
+  int flag[100];            // flag: -1 = beam particle (incoming neutrino)
                            //       -2 = target
                            //        0 = pGun or Cosmic primary
                            //        1 = outgoing lepton
                            //        2 = most energetic outgoing nucleon
-  float mass[50];          // mass of ith final state particle
-  float p[50];             // momentum of ith final state particle
-  float energy[50];        // energy of ith final state particle
-  int startvol[50];      // starting volume of ith final state particle
-  int stopvol[50];      // stopping volume of ith final state particle
-  float dir_x[50];     // direction of ith final state particle
-  float dir_y[50];     // direction of ith final state particle
-  float dir_z[50];     // direction of ith final state particle
-  float pdir_x[50];    // momentum-vector of ith final state particle
-  float pdir_y[50];    // momentum-vector of ith final state particle
-  float pdir_z[50];    // momentum-vector of ith final state particle
-  float start_x[50];   // starting point of ith final state particle
-  float start_y[50];   // starting point of ith final state particle
-  float start_z[50];   // starting point of ith final state particle
+  float mass[100];          // mass of ith final state particle
+  float p[100];             // momentum of ith final state particle
+  float energy[100];        // energy of ith final state particle
+  int startvol[100];      // starting volume of ith final state particle
+  int stopvol[100];      // stopping volume of ith final state particle
+  float dir_x[100];     // direction of ith final state particle
+  float dir_y[100];     // direction of ith final state particle
+  float dir_z[100];     // direction of ith final state particle
+  float pdir_x[100];    // momentum-vector of ith final state particle
+  float pdir_y[100];    // momentum-vector of ith final state particle
+  float pdir_z[100];    // momentum-vector of ith final state particle
+  float start_x[100];   // starting point of ith final state particle
+  float start_y[100];   // starting point of ith final state particle
+  float start_z[100];   // starting point of ith final state particle
 
-  float stop_x[50];    // stopping point of ith final state particle
-  float stop_y[50];    // stopping point of ith final state particle
-  float stop_z[50];    // stopping point of ith final state particle
-  float length[50];    // TrackLength
+  float stop_x[100];    // stopping point of ith final state particle
+  float stop_y[100];    // stopping point of ith final state particle
+  float stop_z[100];    // stopping point of ith final state particle
+  float length[100];    // TrackLength
 
-  int parent[50];        // ID of parent of ith particle (0 if primary)
-  float time[50];       // creation time of the ith particle
+  int parent[100];      // ID of parent of ith particle (0 if primary)
+  int trackID[100];     // trackID of ith particle (1 if primary)
+  float time[100];      // creation time of the ith particle
   //ToDo: add distance start to wall and stop to wall
 
 

@@ -1045,6 +1045,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
 	
 	thisNtuple->time[thisNtuple->nTracks]    = trj->GetGlobalTime(); 
 	thisNtuple->parent[thisNtuple->nTracks]  = trj->GetParentID();
+	thisNtuple->trackID[thisNtuple->nTracks]  = trj->GetTrackID();
 	
 	//myDetector has some more info for distance calculations!
 	thisNtuple->length[thisNtuple->nTracks]  = (Stop - Start).mag()/CLHEP::cm;

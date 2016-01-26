@@ -192,7 +192,7 @@ void WCSimPhysicsList::ConstructEM()
           pmanager->AddProcess(aG4MuonMinusCaptureAtRest);
           pmanager->SetProcessOrdering(aG4MuonMinusCaptureAtRest,idxAtRest);
         }
-
+      
 
     } else if ((!particle->IsShortLived()) &&
 	       (particle->GetPDGCharge() != 0.0)&&

@@ -171,6 +171,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   tracksTree->Branch("P",(evNtup->p),"P[Ntracks]/Float_t");
   tracksTree->Branch("Energy",(evNtup->energy),"Energy[Ntracks]/Float_t");
   tracksTree->Branch("ParentID",(evNtup->parent),"ParentID[Ntracks]/Int_t");
+  tracksTree->Branch("TrackID",(evNtup->trackID),"TrackID[Ntracks]/Int_t");
   tracksTree->Branch("Time",(evNtup->time),"Time[Ntracks]/Float_t");
 
   tracksTree->Branch("Dirx",(evNtup->dir_x),"Dirx[Ntracks]/Float_t");

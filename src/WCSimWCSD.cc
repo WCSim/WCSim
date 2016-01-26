@@ -76,15 +76,17 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4ThreeVector worldDirection = preStepPoint->GetMomentumDirection();
   G4ThreeVector localDirection = theTouchable->GetHistory()->GetTopTransform().TransformAxis(worldDirection);
 
-  
 
   WCSimTrackInformation* trackinfo 
     = (WCSimTrackInformation*)(aStep->GetTrack()->GetUserInformation());
-  G4int primParentID;
+  
+  G4int primParentID = -1;
   if (trackinfo)
-    primParentID = trackinfo->GetPrimaryParentID();
+    //Skip secondaries and match to mother process, eg. muon, decay particle, gamma from pi0/nCapture.
+    primParentID = trackinfo->GetPrimaryParentID();  //!= ParentID. 
   else // if there is no trackinfo, then it is a primary particle!
-    primParentID = aStep->GetTrack()->GetTrackID();
+    primParentID = aStep->GetTrack()->GetTrackID();    
+
 
   G4int    trackID           = aStep->GetTrack()->GetTrackID();
   G4String volumeName        = aStep->GetTrack()->GetVolume()->GetName();
