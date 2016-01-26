@@ -113,7 +113,7 @@ int main(int argc,char** argv)
     G4UIsession* session =  new G4UIterminal(new G4UItcsh);
 
     // Visualization Macro
-    UI->ApplyCommand("/control/execute vis.mac");
+    UI->ApplyCommand("/control/execute WCSim.mac");
 
     // Start Interactive Mode
     session->SessionStart();
