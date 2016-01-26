@@ -1,6 +1,6 @@
 #include "WCSimWCDAQMessenger.hh"
 #include "WCSimEventAction.hh"
-#include "WCSimWCDigitizerNew.hh"
+#include "WCSimWCDigitizer.hh"
 #include "WCSimWCTrigger.hh"
 
 #include "G4UIdirectory.hh"
@@ -25,12 +25,10 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   DigitizerChoice->SetGuidance("Set the Digitizer type");
   DigitizerChoice->SetGuidance("Available choices are:\n"
 			       "SKI\n"
-			       "SKI_SKDETSIM (combined trigger & digitization (therefore ignores /DAQ/Trigger); buggy) \n"
 			       );
   DigitizerChoice->SetParameterName("Digitizer", false);
   DigitizerChoice->SetCandidates(
 				 "SKI "
-				 "SKI_SKDETSIM "
 				 );
   DigitizerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
   DigitizerChoice->SetDefaultValue(defaultDigitizer);
@@ -43,13 +41,11 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   TriggerChoice->SetGuidance("Available choices are:\n"
 			     "NDigits\n"
 			     "NDigits2\n"
-			     "SKI_SKDETSIM (combined trigger & digitization (therefore ignores /DAQ/Digitization); buggy) \n"
 			     );
   TriggerChoice->SetParameterName("Trigger", false);
   TriggerChoice->SetCandidates(
 			       "NDigits "
 			       "NDigits2 "
-			       "SKI_SKDETSIM "
 			       );
   TriggerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
   TriggerChoice->SetDefaultValue(defaultTrigger);
@@ -168,18 +164,12 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreNDigitsPostWindow = defaultNDigitsPostTriggerWindow;
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
 
-  //TODO remove this
-  DAQConstruct = new G4UIcmdWithoutParameter("/DAQ/Construct", this);
-  DAQConstruct->SetGuidance("Create the DAQ class instances");
-
   initialiseString = "";
   initialised = true;
 }
 
 WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
 {
-  delete DAQConstruct; //TODO remove this
-
   delete SaveFailuresTriggerDir;
   delete SaveFailuresTriggerMode;
   delete SaveFailuresTriggerTime;
@@ -290,12 +280,6 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     G4cout << "NDigits posttrigger window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
     StoreNDigitsPostWindow = NDigitsPostTriggerWindow->GetNewIntValue(newValue);
   }
-
-  //TODO remove this
-  else if(command == DAQConstruct) {
-    G4cout << "Calling WCSimEventAction::CreateDAQInstances()" << G4endl;
-    WCSimEvent->CreateDAQInstances();
-  }
 }
 
 void WCSimWCDAQMessenger::SetTriggerOptions()
@@ -331,7 +315,7 @@ void WCSimWCDAQMessenger::SetTriggerOptions()
   }
 
   if(StoreNDigitsThreshold >= 0) {
-    WCSimTrigger->SetNDigitsThreshold(StoreNDigitsThreshold);
+   WCSimTrigger->SetNDigitsThreshold(StoreNDigitsThreshold);
     G4cout << "\tNDigits trigger threshold set to " << StoreNDigitsThreshold << G4endl;
   }
   WCSimTrigger->SetNDigitsAdjustForNoise(StoreNDigitsAdjustForNoise);
