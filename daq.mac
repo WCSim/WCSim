@@ -1,0 +1,34 @@
+# Macro for controlling DAQ-like options (thresholds, time windows, etc.)
+
+#choose the Trigger & Digitizer type in novis.mac
+
+#generic digitizer options (defaults are class-specific. Can be overridden here)
+# how long is the digitizer dead before a new hit on the same PMT can be recorded (ns)?
+#/DAQ/DigitizerOpt/DeadTime 0
+# how long does the digitizer integrate for (ns)?
+#/DAQ/DigitizerOpt/IntegrationWindow 200
+
+#generic trigger options (defaults are class-specfic. Can be overrideen here)
+# allow the number of digits per PMT per trigger to be > 1?
+#/DAQ/MultiDigitsPerTrigger false
+
+#trigger algorithm development options (defaults are set in WCSimWCDAQMessenger. Can be overidden here)
+# do we want to save only triggered events (mode 0), both triggered events & failed events (mode 1), or only failed events (mode 2)?
+#/DAQ/TriggerSaveFailures/Mode 0
+# what trigger time to use for the failed events (ns)?
+#/DAQ/TriggerSaveFailures/TriggerTime 100
+# the digits in which range around the trigger time (ns) should be saved with the event
+#/DAQ/TriggerSaveFailures/PreTriggerWindow  -400
+#/DAQ/TriggerSaveFailures/PostTriggerWindow +950
+
+#options for NDigits-like triggers (defaults are class-specific. Can be overridden here)
+# control the NDigits trigger threshold
+# (note in SKI_SKDETSIM, this is actually the value used for the NHits trigger (NHits != NDigits))
+#/DAQ/TriggerNDigits/Threshold 25
+# the trigger counts digits (looking for threshold) in this window (ns)
+#/DAQ/TriggerNDigits/Window 200
+# automatically adjust the NDigits threshold depending on the average noise occupancy during the trigger window
+#/DAQ/TriggerNDigits/AdjustForNoise true
+# the digits in which range around the trigger time (ns) should be saved with the event
+#/DAQ/TriggerNDigits/PreTriggerWindow  -400
+#/DAQ/TriggerNDigits/PostTriggerWindow +950
