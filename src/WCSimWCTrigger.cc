@@ -345,8 +345,6 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  G4double digihittime = -triggertime
 	    + WCSimWCTriggerBase::offset
 	    + digit_time;
-	  if(digihittime < 0)
-	    continue;
 
 	  //get the composition information for the triggered digit
 	  //WCDCPMT stores this information in pairs of (digit id, photon id)
