@@ -9,13 +9,11 @@ class G4UIdirectory;
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithADouble;
 class G4UIcmdWithAnInteger;
-class WCSimWCDigitizer;
 class WCSimWCAddDarkNoise;
 
 class WCSimDarkRateMessenger: public G4UImessenger
 {
 public:
-  WCSimDarkRateMessenger(WCSimWCDigitizer*);
   WCSimDarkRateMessenger(WCSimWCAddDarkNoise*);
 
   ~WCSimDarkRateMessenger();
@@ -25,7 +23,6 @@ public:
 private:
   void Initialize();
 
-  WCSimWCDigitizer* WCSimDigitize;
   WCSimWCAddDarkNoise* WCSimAddDarkNoise;
 
   G4UIdirectory* WCSimDir;
@@ -36,7 +33,6 @@ private:
   G4UIcmdWithADoubleAndUnit* SetDarkHigh;
   G4UIcmdWithADoubleAndUnit* SetDarkWindow;
   
-  G4int constructor;
   G4String initaliseString;
 };
 
