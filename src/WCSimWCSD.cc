@@ -225,7 +225,6 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
   if (verboseLevel>0) 
   { 
     //Need to specify which collection in case multiple geometries are built:
-    //ToDo: bugfix for WCSim Devel !
     G4String WCIDCollectionName = fdet->GetIDCollectionName();
     G4SDManager* SDman = G4SDManager::GetSDMpointer();
     G4int collectionID = SDman->GetCollectionID(WCIDCollectionName);
