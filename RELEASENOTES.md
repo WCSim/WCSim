@@ -1,4 +1,27 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
+
+*************************************************************
+01/27/2016: Notes for v1.5.0        
+*************************************************************
+New Features
+* Dark rate can now be added either in a defined time window around each hit, or in a set window of a constant time. 
+* Digits with negative times are now saved (this doesn't affect the current default digitizer, but could have implications for future digitizers that get added in).
+* MakeKin.py can now make vector files with random vertices for the SuperK and HyperK cylinders. 
+* New DAQ-related features can now be controled via macro files. The digitizer and trigger you want to use can be specified, as well as properties of the digitzer and trigger. See daq.mac for available options. 
+
+Bug Fixes
+* Hit PMTs were not being visualized after a change made in the last release. This was fixed. 
+* If you built the same detector configuration twice (for example, if you rebuilt the default configuration) then the program would seg fault. This has now been fixed. 
+* The smearing of the hit time is now applied in WCSimWCPMT, rather than in the digitizer after the trigger decisions have already been made. 
+
+Structural Changes
+* The digitizer and trigger are now separate pieces of code. Furthermore, the digitizer and trigger now inherit from base classes similar to how the PMTs were implemented in v1.2.0. As a result, users can add their own electronics easily.
+* novis.mac has been renamed WCSim.mac and now contains an option to call the visualization commands (visOGLSX.mac for the OGLSX visualization that vis.mac used or visRayTracer.mac for the RayTracer visualization). vis.mac has been removed and visRaytracer.mac is no longer a stand alone macro. 
+* All of the options related to the DAQ are now included in a separate daq.mac file. This file gets called by WCSim.mac. 
+
+Updates
+* doc/DetectorDocumentation.pdf was updated to reflect new DAQ options and the changes made to the default macros. 
+
 *************************************************************
 08/03/2015: Notes for v1.4.0        
 *************************************************************
