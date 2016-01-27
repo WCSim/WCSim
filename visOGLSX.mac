@@ -1,0 +1,24 @@
+/vis/scene/create
+/vis/open OGLSX
+# You can also set the size and position of the window if you like
+#/vis/open OGLSX 1000x1000-0+0
+/vis/ogl/set/printSize 1000 1000
+
+# Vis Settings for SK
+/vis/viewer/zoom 1.2
+#/vis/viewer/set/viewpointThetaPhi 45 45 deg
+/vis/viewer/set/viewpointThetaPhi 110 0 deg
+/vis/viewer/set/upVector 0 0 1
+
+# Vis settings for HK
+#/vis/viewer/set/upVector 0 1 0
+#/vis/viewer/set/viewpointThetaPhi 50 165 deg
+#/vis/viewer/zoom 1.6
+#/vis/ogl/set/printMode pixmap
+#/vis/ogl/printEPS
+
+/vis/scene/add/hits
+/vis/scene/add/trajectories
+/vis/scene/endOfEventAction accumulate
+
+

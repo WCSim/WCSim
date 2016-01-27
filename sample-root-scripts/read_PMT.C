@@ -42,7 +42,7 @@ void read_PMT(char *filename=NULL) {
 
   wcsimT->GetEvent(0); 
 
-  // In the default vis.mac, only one event is run.  I suspect you could loop over more events, if they existed.
+  // Currently only looks at one event.  I suspect you could loop over more events, if they existed.
   WCSimRootTrigger *wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
 
   //--------------------------
