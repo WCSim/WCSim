@@ -33,6 +33,7 @@ WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test)
   wcsimdetector = test;
   messenger = new WCSimRunActionMessenger(this);
 
+  useDefaultROOTout = false;
 }
 
 WCSimRunAction::~WCSimRunAction()
