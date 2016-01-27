@@ -46,7 +46,6 @@ WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
   }
 }
 
-
 WCSimWCDigitizerBase::~WCSimWCDigitizerBase(){
 }
 
@@ -82,7 +81,6 @@ void WCSimWCDigitizerBase::Digitize()
   //Temporary Storage of Digitized hits which is passed to the trigger
   DigiStore = new WCSimWCDigitsCollection(collectionName[0],collectionName[0]);
 
-  
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   
   // Get the PMT collection ID
