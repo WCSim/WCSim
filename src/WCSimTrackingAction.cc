@@ -59,9 +59,6 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   else anInfo = new WCSimTrackInformation();
 
 
-  if(aTrack->GetTrackID() == 35860 || aTrack->GetTrackID() == 35901)
-    std::cout << "Wait " << std::endl;
-
   // is it a primary ?
   // is the process in the set ? eg. Michel e-, but only keep e-
   // is the particle in the set ? eg. pi0, pi+-, K, p, n

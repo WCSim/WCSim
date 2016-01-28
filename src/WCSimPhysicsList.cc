@@ -668,7 +668,7 @@ void WCSimPhysicsList::ConstructHad()
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
-
+      /* */
       else if (particleName == "deuteron") 
 	{
 	  pmanager->AddDiscreteProcess(theElasticProcess);

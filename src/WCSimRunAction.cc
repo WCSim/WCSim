@@ -60,10 +60,8 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   // Create the Root file
 
   // Now controlled by the messenger
-  
   G4String rootname = GetRootFileName();
   
-
   if(useDefaultROOTout){
     TFile* hfile = new TFile(rootname.c_str(),"RECREATE","WCSim ROOT file");
     hfile->SetCompressionLevel(2);
@@ -261,6 +259,9 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
   masterTree->Write();
   file->Close();
 
+  delete evNtup;
+
+
   if(useDefaultROOTout){
 
     // Close the Root file at the end of the run
@@ -269,7 +270,6 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
   
     // Clean up stuff on the heap; I think deletion of hfile and trees
     // is taken care of by the file close
-    
     delete wcsimrootsuperevent; wcsimrootsuperevent=0;
     delete wcsimrootgeom; wcsimrootgeom=0;
   }

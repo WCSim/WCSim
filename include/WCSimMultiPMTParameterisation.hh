@@ -4,6 +4,9 @@
 #include "globals.hh"
 #include "G4VPVParameterisation.hh"
 #include <vector>
+#include "G4RotationMatrix.hh"
+#include "G4ThreeVector.hh"
+
 
 class G4VPhysicalVolume;
 class G4Tubs;
@@ -42,13 +45,10 @@ class WCSimMultiPMTParameterisation : public G4VPVParameterisation
   void ComputeTransformation (const G4int copyNo,
 			      G4VPhysicalVolume* physVol) const;
   
-  // gf va reinserito:
-  //void ComputeDimensions (G4Tubs & pmtid_multi, const G4int copyNo,   // DOES NOT exist with G4Tubs
-  //                         const G4VPhysicalVolume* physVol) const;
   
 private:
   
-  G4int		fNoPmt;   
+  unsigned int	fNoPmt;   
   G4double	fApothema;    // The distance from the Z axis
   
   // Local NiC, Alpha and Circle vectors
@@ -57,7 +57,15 @@ private:
   std::vector<G4int>	vCircleLocal;
 
   G4double   fHeight;
+  std::vector<G4ThreeVector>       vPMTpos;
+  std::vector<G4RotationMatrix*>   vPMTorient;
+
+  //preCalc position and rotation once to reduce CPU time and mem allocation in ComputeTransformation.
+  // The latter is called a lot throughout G4 execution (ie. during tracking for each event).
+  void PreCalculateTransform();
+
   
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

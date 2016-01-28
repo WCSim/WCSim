@@ -10,7 +10,7 @@
 #include "G4PhysicalConstants.hh"
 
 #include <vector>
-
+#include "assert.h"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 WCSimMultiPMTParameterisation::WCSimMultiPMTParameterisation(
@@ -28,6 +28,9 @@ WCSimMultiPMTParameterisation::WCSimMultiPMTParameterisation(
    vAlphaLocal	= vAlpha;
    vCircleLocal = vCircle;
    fHeight      = height;
+   
+   //Fill the position and orientation vectors once (and allocation mem once).
+   PreCalculateTransform();   
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -37,41 +40,42 @@ WCSimMultiPMTParameterisation::~WCSimMultiPMTParameterisation()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// This function gets called a lot, every step for every event. Therefore
+// limit calculation and MEM allocation. Very MEM leak sensitive, eg. defining
+// and calculating RotationMatrix here. Can't change a class member here because it's
+// a const function. Hence, pass vector with precalculated RotationMatrix
 void WCSimMultiPMTParameterisation::ComputeTransformation
 (const G4int copyNo, G4VPhysicalVolume* physVol) const
 {
-   // Note: copyNo will start with zero!
-  G4RotationMatrix* rotm = new G4RotationMatrix(); // Rotation matrix for each PMT
-  G4double angle = ((vNiCLocal[vCircleLocal[copyNo]]-2)*CLHEP::pi/vNiCLocal[vCircleLocal[copyNo]]); // Internal angle of each polygon
-  G4ThreeVector origin(0,0,0); 
-  origin.setRThetaPhi(fApothema,CLHEP::halfpi-vAlphaLocal[vCircleLocal[copyNo]],copyNo*(CLHEP::pi-angle));
-  // TF: Positioning vector, for an offset single hemisphere (for now)
-  origin.setZ(origin.getZ()+fHeight);
-
-  // For output to txt file for AutoCad/Solidworks
-  //G4cout << "PMT " << copyNo << " (theta,phi): (" << (CLHEP::halfpi-vAlphaLocal[vCircleLocal[copyNo]])*(180./CLHEP::pi)  << "," <<  origin.getPhi()*(180./CLHEP::pi) << ")" << G4endl;
-  // rotation of mother volume wrt daughter, hence minus sign.
-  rotm->rotateZ(-origin.getPhi());
-  rotm->rotateY(-acos((origin.getZ()-fHeight)/fApothema)); //over Y', origin.getTheta() is incorrect!
-
-
-  physVol->SetTranslation(origin);
-  physVol->SetRotation(rotm);
+ 
+  physVol->SetTranslation(vPMTpos[copyNo]);
+  physVol->SetRotation(vPMTorient[copyNo]);
 
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-/*
-void WCSimMultiPMTParameterisation::ComputeDimensions
-(G4Tubs& pmtidmulti, const G4int copyNo, const G4VPhysicalVolume*) const
-{
+void WCSimMultiPMTParameterisation::PreCalculateTransform(){
+
   // Note: copyNo will start with zero!
+  for(unsigned int copy = 0; copy < fNoPmt; copy++){
+    G4RotationMatrix* rotm = new G4RotationMatrix(); // Rotation matrix for each PMT
+    
+    G4double angle = ((vNiCLocal[vCircleLocal[copy]]-2)*CLHEP::pi/vNiCLocal[vCircleLocal[copy]]); // Internal angle of each polygon
+    G4ThreeVector origin(0,0,0); 
+    origin.setRThetaPhi(fApothema,CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]],copy*(CLHEP::pi-angle));
+    // TF: Positioning vector, for an offset single hemisphere (for now)
+    origin.setZ(origin.getZ()+fHeight);
+    
+    // For output to txt file for AutoCad/Solidworks
+    //G4cout << "PMT " << copy << " (theta,phi): (" << (CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]])*(180./CLHEP::pi)  << "," <<  origin.getPhi()*(180./CLHEP::pi) << ")" << G4endl;
+    // rotation of mother volume wrt daughter, hence minus sign.
+    rotm->rotateZ(-origin.getPhi());
+    rotm->rotateY(-acos((origin.getZ()-fHeight)/fApothema)); //over Y', origin.getTheta() is incorrect!
 
-  G4double angle = ((fNoPmt-2)*pi/fNoPmt);
-  const G4double chambSize = fApothema/std::tan(angle/2);
-  pmtidmulti.SetZHalfLength(chambSize/5);
-  pmtidmulti.SetOuterRadius(chambSize);
-  G4cout << "Chamber radius = " << chambSize << " cm" << G4endl;
+    vPMTpos.push_back(origin);
+    vPMTorient.push_back(rotm);
 
+  }
+
+  assert(vPMTpos.size() == fNoPmt);
+  assert(vPMTorient.size() == fNoPmt);
 }
-*/

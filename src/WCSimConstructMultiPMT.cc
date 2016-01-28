@@ -302,6 +302,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 				      vAlpha,		// Their tilt angle
 				      vCircle,          // Circle number
 				      0);	// Position offsets of circles, should become array!!!! ToDo, for bottom sphere
+
   
   // dummy value : kZAxis -- modified by parameterised volume
   
