@@ -27,15 +27,12 @@ public:
   void AddPMTDarkRate(WCSimWCDigitsCollection*);
   void MakePeCorrection(WCSimWCHitsCollection*);
   void Digitize();
-  //  void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
   G4double GetTriggerTime(int i) { return TriggerTimes[i];}
-  //  G4double GetPMTDarkRate(){ return PMTDarkRate; }
   // void SetConversion(double iconvrate){ ConvRate = iconvrate; }
   //  static G4double GetLongTime() { return LongTime;}
   
   G4double rn1pe();
   G4double peSmeared;
-  // double PMTDarkRate; // kHz
   // double ConvRate; // kHz
   std::vector<G4double> TriggerTimes;
   std::map<int,int> DigiHitMapPMT; // need to check if a hit already exists..
