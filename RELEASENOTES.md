@@ -1,7 +1,7 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
-01/27/2016: Notes for v1.5.0        
+02/01/2016: Notes for v1.5.0        
 *************************************************************
 New Features
 * Dark rate can now be added either in a defined time window around each hit, or in a set window of a constant time. 
