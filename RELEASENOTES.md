@@ -13,11 +13,13 @@ Bug Fixes
 * Hit PMTs were not being visualized after a change made in the last release. This was fixed. 
 * If you built the same detector configuration twice (for example, if you rebuilt the default configuration) then the program would seg fault. This has now been fixed. 
 * The smearing of the hit time is now applied in WCSimWCPMT, rather than in the digitizer after the trigger decisions have already been made. 
+* The Enumerations files (WCSimEnumerations.cc and WCSimEnumerations.hh) are now compiled with WCSim to allow for ROOT scripts run in non-compiled mode to access that information. 
 
 Structural Changes
 * The digitizer, trigger, and dark noise are now separate pieces of code. Furthermore, the digitizer and trigger now inherit from base classes similar to how the PMTs were implemented in v1.2.0. As a result, users can add their own electronics easily.
 * novis.mac has been renamed WCSim.mac and now contains an option to call the visualization commands (visOGLSX.mac for the OGLSX visualization that vis.mac used or visRayTracer.mac for the RayTracer visualization). vis.mac has been removed and visRaytracer.mac is no longer a stand alone macro. 
 * All of the digitizer and trigger options are now included in a separate daq.mac file. This file gets called by WCSim.mac. The choice of digitizer and trigger is made in WCSim.mac. 
+* Dark rate is now a property of the PMT and is automatically changed when a new PMT is used (rather than having to manually set it in the macro). 
 
 Updates
 * doc/DetectorDocumentation.pdf was updated to reflect new DAQ options and the changes made to the default macros. 
