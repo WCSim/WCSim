@@ -87,6 +87,11 @@ void WCSimWCPMT::Digitize()
 
 void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
+
+  //Get the PMT info for hit time smearing
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+
   for (G4int i=0; i < WCHC->entries(); i++)
     {
 
@@ -97,7 +102,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       // (efficiency-1)*100% to
       // match K2K 1KT data  : maybe due to PMT curvature ?
 
-      G4double efficiency = 0.985; // with skrn1pe (AP tuning) & 30% QE increase in stacking action
+      //G4double efficiency = 0.985; // with skrn1pe (AP tuning) & 30% QE increase in stacking action
 
       // Get the information from the hit
       G4int   tube         = (*WCHC)[i]->GetTubeID();
@@ -106,29 +111,31 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
 	    time_PMT = (*WCHC)[i]->GetTime(ip);
-
 	    peSmeared = rn1pe();
-	   
+	    int parent_id = (*WCHC)[i]->GetParentID(ip);
+
+	    //apply time smearing
+	    float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+	    time_PMT += PMT->HitTimeSmearing(Q);
+
 	    if ( DigiHitMapPMT[tube] == 0) {
-	      
 	      WCSimWCDigi* Digi = new WCSimWCDigi();
 	      Digi->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
 	      Digi->AddPe(time_PMT);	
 	      Digi->SetTubeID(tube);
 	      Digi->SetPe(ip,peSmeared);
 	      Digi->SetTime(ip,time_PMT);
+	      Digi->AddParentID(parent_id);
 	      DigiHitMapPMT[tube] = DigitsCollection->insert(Digi);
-	      }	
- 
-	    
-	  
-	      else {
-		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->AddPe(time_PMT);
-		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
-		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTubeID(tube);
-		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPe(ip,peSmeared);
-		(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTime(ip,time_PMT);
-	      }
+	    }	
+	    else {
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->AddPe(time_PMT);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTubeID(tube);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPe(ip,peSmeared);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTime(ip,time_PMT);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->AddParentID(parent_id);
+	    }
       
 	  } // Loop over hits in each PMT
     }// Loop over PMTs
