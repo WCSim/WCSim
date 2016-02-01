@@ -22,7 +22,7 @@ using std::setw;
 // to the traversal code.
 
 void WCSimDetectorConstruction::PrintGeometryTree
-(G4VPhysicalVolume* aPV ,int aDepth, int replicaNo, 
+(G4VPhysicalVolume* aPV ,int aDepth, int /*replicaNo*/, 
  const G4Transform3D& aTransform) 
 {
   for (int levels = 0; levels < aDepth; levels++) G4cout << " ";
@@ -35,7 +35,7 @@ void WCSimDetectorConstruction::PrintGeometryTree
 }
 
 void WCSimDetectorConstruction::GetWCGeom
-(G4VPhysicalVolume* aPV ,int aDepth, int replicaNo, 
+(G4VPhysicalVolume* aPV ,int aDepth, int /*replicaNo*/, 
  const G4Transform3D& aTransform) 
 {
 
@@ -67,21 +67,20 @@ void WCSimDetectorConstruction::GetWCGeom
         zmin=100000,zmax=-100000.; 
     }
 
-    if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName() == "glassFaceWCPMT")){
+    if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName().find("glassFaceWCPMT") != std::string::npos)){ 
       G4float x =  aTransform.getTranslation().getX()/cm;
       G4float y =  aTransform.getTranslation().getY()/cm;
       G4float z =  aTransform.getTranslation().getZ()/cm;
       
       if (x<xmin){xmin=x;}
       if (x>xmax){xmax=x;}
-
+      
       if (y<ymin){ymin=y;}
       if (y>ymax){ymax=y;}
 
       if (z<zmin){zmin=z;}
-      if (z>zmax){zmax=z;} 
-
- 
+      if (z>zmax){zmax=z;}
+      
       WCCylInfo[0] = xmax-xmin;
       WCCylInfo[1] = ymax-ymin;
       WCCylInfo[2] = zmax-zmin;
@@ -101,7 +100,8 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
 
   replicaNoString[aDepth] = pvname.str() + "-" + depth.str();
 
-  if ((aPV->GetName() == "glassFaceWCPMT")) {
+  if (aPV->GetName()== WCIDCollectionName ||aPV->GetName()== WCODCollectionName ) 
+    {
 
     // First increment the number of PMTs in the tank.
     totalNumPMTs++;  
@@ -171,13 +171,13 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   geoFile << setw(8)<< WCOffset(0)<< setw(8)<<WCOffset(1)<<
     setw(8) << WCOffset(2)<<G4endl;
 
-  G4double maxZ=0.0;// used to tell if pmt is on the top/bottom cap
-  G4double minZ=0.0;// or the barrel
+  //G4double maxZ=0.0;// used to tell if pmt is on the top/bottom cap
+  //G4double minZ=0.0;// or the barrel
   G4int cylLocation;
 
 
   // clear before add new stuff in
-  for (int i=0;i<fpmts.size();i++){
+  for (unsigned int i=0;i<fpmts.size();i++){
     delete fpmts.at(i);
   }
   fpmts.clear();
