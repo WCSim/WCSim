@@ -74,7 +74,8 @@
 /control/execute daq.mac
 
 
-# default dark noise frequency is 0 kHz
+# default dark noise frequency (and conversion factor) is PMT property (NEW), set in the code.
+# Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
 /DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
 #/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
@@ -95,6 +96,11 @@
 /DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
+
+#Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
+#/control/execute visOGLSX.mac
+#/control/execute visRayTracer.mac
+
 
 # Or you can use the G4 Particle Gun
 /mygen/generator normal

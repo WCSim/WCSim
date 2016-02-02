@@ -307,10 +307,6 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     save_triggerType = kTriggerFailure;
   }
 
-  //Get the PMT info for hit time smearing
-  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
-
   //Loop over trigger times
   for(unsigned int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
     TriggerType_t triggertype = TriggerTypes[itrigger];
@@ -344,13 +340,11 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  //hit in event window
 	  //add it to DigitsCollection
 
-	  //first smear the charge & time
+	  //first apply time offsets
 	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
-	  float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	  G4double digihittime = -triggertime
 	    + WCSimWCTriggerBase::offset
-	    + digit_time
-	    + PMT->HitTimeSmearing(Q);
+	    + digit_time;
 
 	  //get the composition information for the triggered digit
 	  //WCDCPMT stores this information in pairs of (digit id, photon id)

@@ -29,6 +29,15 @@ WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,
 					 WCSimDetectorConstruction* inDetector)
   :G4VDigitizerModule(name), myDetector(inDetector)
 {
+  //Grab Dark Rate and Conversion from PMT itself
+  G4String WCIDCollectionName = inDetector->GetIDCollectionName();
+  WCSimPMTObject * PMT;
+  double const conversion_to_kHz = 1000000; //ToDo: remove this and treat DarkRate in CLHEP units throughout the class.
+  PMT = inDetector->GetPMTPointer(WCIDCollectionName);
+  PMTDarkRate = PMT->GetDarkRate()*conversion_to_kHz;
+  ConvRate = PMT->GetDarkRateConversionFactor();
+
+  //If overwritten by user, use user value
   DarkRateMessenger = new WCSimDarkRateMessenger(this);
   ReInitialize();
 }
