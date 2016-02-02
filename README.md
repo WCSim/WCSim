@@ -47,7 +47,8 @@ Build Instructions using CMake:
 CMake is cross-platform software for managing the build process in 
 a compiler-independent way (cmake.org). 
 It is recommended to build ROOT and GEANT4 also through CMake. The 
-latter is very CMake friendly since GEANT 4.9.6.
+latter is very CMake friendly since GEANT 4.9.6, while it started introducing
+builds through CMake from 4.9.4 onwards (http://geant4.web.cern.ch/geant4/support/ReleaseNotes4.9.4.html#10.).
 Using cmake, builds and source code need to well separated and make
 it easier to build many versions of the same software.
 
