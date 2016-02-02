@@ -29,6 +29,15 @@ WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,
 					 WCSimDetectorConstruction* inDetector)
   :G4VDigitizerModule(name), myDetector(inDetector)
 {
+  //Grab Dark Rate and Conversion from PMT itself
+  G4String WCIDCollectionName = inDetector->GetIDCollectionName();
+  WCSimPMTObject * PMT;
+  double const conversion_to_kHz = 1000000; //ToDo: remove this and treat DarkRate in CLHEP units throughout the class.
+  PMT = inDetector->GetPMTPointer(WCIDCollectionName);
+  PMTDarkRate = PMT->GetDarkRate()*conversion_to_kHz;
+  ConvRate = PMT->GetDarkRateConversionFactor();
+
+  //If overwritten by user, use user value
   DarkRateMessenger = new WCSimDarkRateMessenger(this);
   ReInitialize();
 }
@@ -212,6 +221,19 @@ void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, 
   //we need to ensure that the ranges found above are sorted first
   //for the algorithm below to work
   sort(ranges.begin(),ranges.end());
+
+  //check if the vector range has any entries
+  //If no entries this indicates that no digits were
+  //found in the WCSimWCDigitsCollection, which can cause 
+  //segmentation faults in the next part of the code in this method
+  //which searches for overlapping ranges.
+  //Set range vector to have one element from 0 to 0 (so no noise digits will be added)
+  if(ranges.size() == 0)
+    {
+      //push back a range of 0 and 0 and return                                                                                                                              
+      result.push_back(std::make_pair(0.,0.));
+      return;
+    }
 
   //the ranges vector contains overlapping ranges
   //this loop removes overlaps

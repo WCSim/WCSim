@@ -1,5 +1,4 @@
 #include "WCSimDarkRateMessenger.hh"
-#include "WCSimWCDigitizer.hh"
 #include "WCSimWCAddDarkNoise.hh"
 
 #include "G4UIdirectory.hh"
@@ -8,21 +7,9 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithAnInteger.hh"
 
-WCSimDarkRateMessenger::WCSimDarkRateMessenger(WCSimWCDigitizer* darkratepoint)
-  : WCSimDigitize(darkratepoint)
-{
-  //inform the DarkRateMessenger which constructor was called
-  constructor = 0;
-
-  Initialize();
-}
-
 WCSimDarkRateMessenger::WCSimDarkRateMessenger(WCSimWCAddDarkNoise* darkratepoint)
   : WCSimAddDarkNoise(darkratepoint)
 {
-  //inform the DarkRateMessenger which constructor was called
-  constructor = 1;
-
   Initialize();
 }
 
@@ -39,19 +26,18 @@ void WCSimDarkRateMessenger::Initialize()
   SetFrequency->SetGuidance("Commands to change the dark noise frequency of the simulation");
   SetFrequency->SetParameterName("DarkRate",false);
   SetFrequency->SetDefaultValue(defaultFrequency * conversion_to_kHz);
-  //kilohertz is 10e-6
+  //kilohertz is 10e-6 (CLHEP units: 1kHz = 1000 / (1e9 ns) = 1e-6 as ns := 1.)
   SetFrequency->SetUnitCategory("Frequency");
   SetFrequency->SetDefaultUnit("kHz");
   SetFrequency->SetUnitCandidates("Hz kHz MHz GHz");
-  SetNewValue(SetFrequency, G4UIcommand::ConvertToString(defaultFrequency, "kHz"));
+ 
 
   double defaultConvRate = 1;
   SetConversionRate = new G4UIcmdWithADouble("/DarkRate/SetConvert",this);
-  SetConversionRate->SetGuidance("Caribrate the frequency of dark noise after digitization");
+  SetConversionRate->SetGuidance("Calibrate the frequency of dark noise before applying the threshold (typically 0.25pe)"); 
   SetConversionRate->SetParameterName("DigiCorr",false);
   SetConversionRate->SetDefaultValue(defaultConvRate);
-  SetNewValue(SetConversionRate, G4UIcommand::ConvertToString(defaultConvRate));
-
+ 
   //Mode 0 - Add dark rate in window defined by /DarkRate/SetDarkLow and /DarkRate/SetDarkHigh
   //If not set default is 0 and 100000ns
   //Mode 1 - Add dark rate to a window of size /DarkRate/SetDarkWindow around each hit
@@ -109,57 +95,36 @@ void WCSimDarkRateMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   if(command == SetFrequency){
     // Since kHz is 10e-3 for this class we must multiply by a 10e6 factor
     // to make default units in kHz
+    // ToDo: make this consistent with CLHEP unit system. Makes it easier to just using CLHEP!
     double const conversion_to_kHz = 1000000;
-    if(constructor == 0)
-      WCSimDigitize->SetDarkRate(conversion_to_kHz * SetFrequency->GetNewDoubleValue(newValue));
-    else if(constructor == 1)
-      WCSimAddDarkNoise->SetDarkRate(conversion_to_kHz * SetFrequency->GetNewDoubleValue(newValue));
+    WCSimAddDarkNoise->SetDarkRate(conversion_to_kHz * SetFrequency->GetNewDoubleValue(newValue));
     G4cout << "Setting Dark Rate " << conversion_to_kHz * SetFrequency->GetNewDoubleValue(newValue)
 	   << initaliseString.c_str() << G4endl;
   }
   else if(command == SetConversionRate){
-    if(constructor == 0)
-      WCSimDigitize->SetConversion(SetConversionRate->GetNewDoubleValue(newValue));
-    else if(constructor == 1)
-      WCSimAddDarkNoise->SetConversion(SetConversionRate->GetNewDoubleValue(newValue));
+    WCSimAddDarkNoise->SetConversion(SetConversionRate->GetNewDoubleValue(newValue));
     G4cout << "Setting Dark Rate Conversion value " << SetConversionRate->GetNewDoubleValue(newValue)
 	   << initaliseString.c_str() << G4endl;
   }
   else if(command == SetDarkMode){
-    if(constructor == 0){
-    }
-    else if(constructor == 1) {
-      WCSimAddDarkNoise->SetDarkMode(SetDarkMode->GetNewIntValue(newValue));
-      G4cout << "Setting DarkMode value " << SetDarkMode->GetNewIntValue(newValue)
-	     << initaliseString.c_str() << G4endl;
-    }
+    WCSimAddDarkNoise->SetDarkMode(SetDarkMode->GetNewIntValue(newValue));
+    G4cout << "Setting DarkMode value " << SetDarkMode->GetNewIntValue(newValue)
+	   << initaliseString.c_str() << G4endl;
   }
   else if(command == SetDarkLow){
-    if(constructor == 0){
-    }   
-    else if(constructor == 1) {
-      WCSimAddDarkNoise->SetDarkLow(SetDarkLow->GetNewDoubleValue(newValue));
-      G4cout << "Setting DarkLow value " << SetDarkLow->GetNewDoubleValue(newValue)
-	     << initaliseString.c_str() << G4endl;
-    }
+    WCSimAddDarkNoise->SetDarkLow(SetDarkLow->GetNewDoubleValue(newValue));
+    G4cout << "Setting DarkLow value " << SetDarkLow->GetNewDoubleValue(newValue)
+	   << initaliseString.c_str() << G4endl;
   }
   else if(command == SetDarkHigh){
-    if(constructor == 0) {
-    }   
-    else if(constructor == 1) {
-      WCSimAddDarkNoise->SetDarkHigh(SetDarkHigh->GetNewDoubleValue(newValue));
-      G4cout << "Setting DarkHigh value " << SetDarkHigh->GetNewDoubleValue(newValue)
-	     << initaliseString.c_str() << G4endl;
-    }
+    WCSimAddDarkNoise->SetDarkHigh(SetDarkHigh->GetNewDoubleValue(newValue));
+    G4cout << "Setting DarkHigh value " << SetDarkHigh->GetNewDoubleValue(newValue)
+	   << initaliseString.c_str() << G4endl;
   }
   else if(command == SetDarkWindow){
-    if(constructor == 0){
-    }
-    else if(constructor == 1) {
-      WCSimAddDarkNoise->SetDarkWindow(SetDarkWindow->GetNewDoubleValue(newValue));
-      G4cout << "Setting DarkWindow value " << SetDarkWindow->GetNewDoubleValue(newValue)
-	     << initaliseString.c_str() << G4endl;
-    }
+    WCSimAddDarkNoise->SetDarkWindow(SetDarkWindow->GetNewDoubleValue(newValue));
+    G4cout << "Setting DarkWindow value " << SetDarkWindow->GetNewDoubleValue(newValue)
+	   << initaliseString.c_str() << G4endl;
   }
 
 }

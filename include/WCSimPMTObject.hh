@@ -22,6 +22,8 @@ public:
   virtual G4float  GetCollectionEfficiency(float);
   virtual float    HitTimeSmearing(float)=0;
   virtual G4double GetPMTGlassThickness()=0;
+  virtual G4float  GetDarkRate()=0;
+  virtual G4float  GetDarkRateConversionFactor()=0;
 protected:
   virtual G4float* GetCollectionEfficiencyArray();
   virtual G4float* GetCollectionEfficiencyAngle();
@@ -46,6 +48,10 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+  G4float  GetDarkRate();
+  G4float  GetDarkRateConversionFactor();
+
+
 };
 
 class PMT8inch : public WCSimPMTObject
@@ -66,6 +72,8 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+  G4float  GetDarkRate();
+  G4float  GetDarkRateConversionFactor();
 };
 
  class PMT10inch : public WCSimPMTObject
@@ -85,6 +93,8 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+  G4float  GetDarkRate();
+  G4float  GetDarkRateConversionFactor();
  };
 
  class PMT10inchHQE : public WCSimPMTObject
@@ -104,6 +114,8 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+  G4float  GetDarkRate();
+  G4float  GetDarkRateConversionFactor();
  };
 
  class PMT12inchHQE : public WCSimPMTObject
@@ -123,6 +135,8 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+  G4float  GetDarkRate();
+  G4float  GetDarkRateConversionFactor();
  };
 
 class HPD20inchHQE : public WCSimPMTObject
@@ -143,6 +157,8 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+  G4float  GetDarkRate();
+  G4float  GetDarkRateConversionFactor();
 protected:
   G4float* GetCollectionEfficiencyArray();
 };
@@ -165,6 +181,8 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+  G4float  GetDarkRate();
+  G4float  GetDarkRateConversionFactor();
 protected:
   G4float* GetCollectionEfficiencyArray();
 };
@@ -187,6 +205,8 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+  G4float  GetDarkRate();
+  G4float  GetDarkRateConversionFactor();
 protected:
   G4float* GetCollectionEfficiencyArray();
 };
@@ -209,6 +229,8 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+  G4float  GetDarkRate();
+  G4float  GetDarkRateConversionFactor();
 protected:
   G4float* GetCollectionEfficiencyArray();
 };

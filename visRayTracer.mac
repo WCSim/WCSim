@@ -2,16 +2,8 @@
 # The output of the macro file will be three .jpeg files titled g4RayTracer.jpeg, g4RayTracer1.jpeg, and g4RayTracer2.jpeg.
 # The .jpeg files show the geometry of the detector from different viewpoints.
 
-/run/verbose 0
-/tracking/verbose 0
-/hits/verbose 0
-
 ##select RayTracer Visualization
 /WCSim/WCVisChoice RayTracer
-
-## select the geometry
-# Default config if you do nothing is currently SuperK
-#/WCSim/WCgeom SuperK
 
 /WCSim/Construct # This must be uncommented to use RayTracer
 
@@ -30,4 +22,3 @@
 /vis/rayTracer/eyePosition 70 1 20
 /vis/rayTracer/trace g4RayTracer2.jpeg # Viewpoint is outside the detector again, but closer to the top cap in the z direction.
 
-#exit
