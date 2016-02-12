@@ -6,6 +6,7 @@
 #include "WCSimWCDigi.hh"
 #include "WCSimWCDigitizer.hh"
 #include "WCSimWCTrigger.hh"
+#include "WCSimWCTriggerSK4.hh"
 #include "WCSimWCAddDarkNoise.hh"
 #include "WCSimWCPMT.hh"
 #include "WCSimDetectorConstruction.hh"
@@ -105,6 +106,11 @@ void WCSimEventAction::CreateDAQInstances()
     WCSimWCTriggerNDigits2* WCTM = new WCSimWCTriggerNDigits2("WCReadout", detectorConstructor, DAQMessenger);
     DMman->AddNewModule(WCTM);
   }
+  else if(TriggerChoice == "NDigitsSK4") {
+    WCSimWCTriggerNDigitsSK4* WCTM = new WCSimWCTriggerNDigitsSK4("WCReadout", detectorConstructor, DAQMessenger);
+    DMman->AddNewModule(WCTM);
+  }
+
   else {
     G4cerr << "Unknown TriggerChoice " << TriggerChoice << G4endl;
     exit(-1);

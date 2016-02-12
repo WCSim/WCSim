@@ -26,7 +26,7 @@
 // *******************************************
 
 #ifndef WCSIMWCTRIGGER_VERBOSE
-//#define WCSIMWCTRIGGER_VERBOSE
+#define WCSIMWCTRIGGER_VERBOSE
 #endif
 
 const double WCSimWCTriggerBase::offset = 950.0; // ns. apply offset to the digit time
@@ -99,6 +99,10 @@ int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
   switch(t) {
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
+  case kTriggerNDigitsSK4_SHE:
+  case kTriggerNDigitsSK4_HE:
+  case kTriggerNDigitsSK4_LE:
+  case kTriggerNDigitsSK4_SLE:
     return ndigitsPreTriggerWindow;
     break;
   case kTriggerFailure:
@@ -117,6 +121,10 @@ int WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
   switch(t) {
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
+  case kTriggerNDigitsSK4_SHE:
+  case kTriggerNDigitsSK4_HE:
+  case kTriggerNDigitsSK4_LE:
+  case kTriggerNDigitsSK4_SLE:
     return ndigitsPostTriggerWindow;
     break;
   case kTriggerFailure:
