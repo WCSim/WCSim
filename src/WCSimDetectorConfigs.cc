@@ -211,6 +211,11 @@ void WCSimDetectorConstruction::Cylinder_12inchHPD_15perCent()
   WCAddGd               = false;
 }
 
+void WCSimDetectorConstruction::SetHyperKGeometry()
+{
+  WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_40perCent();
+}
+
 void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()
 {
   WCDetectorName = "EggShapedHyperK";

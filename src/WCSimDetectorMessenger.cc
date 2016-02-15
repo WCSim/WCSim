@@ -25,6 +25,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "Cylinder_60x74_20inchBandL_14perCent\n"
 			  "Cylinder_60x74_20inchBandL_40perCent\n"
 			  "Cylinder_12inchHPD_15perCent\n"
+			  "HyperK\n"
 			  "EggShapedHyperK\n"
 			  "EggShapedHyperK_withHPD\n"
 			  );
@@ -37,6 +38,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "Cylinder_60x74_20inchBandL_14perCent "
 			  "Cylinder_60x74_20inchBandL_40perCent "
 			  "Cylinder_12inchHPD_15perCent "
+			  "HyperK "
 			  "EggShapedHyperK "
 			  "EggShapedHyperK_withHPD "
 			  );
@@ -124,9 +126,9 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		WCSimDetector->SetIsEggShapedHyperK(false);
 		if ( newValue == "SuperK") {
 		  WCSimDetector->SetSuperKGeometry();
-		} else if (newValue == "SuperK_20inchPMT_20perCent" ){
+		} else if ( newValue == "SuperK_20inchPMT_20perCent" ){
 		  WCSimDetector->SuperK_20inchPMT_20perCent();
-		} else if (newValue == "SuperK_20inchBandL_20perCent" ){
+		} else if ( newValue == "SuperK_20inchBandL_20perCent" ){
 		  WCSimDetector->SuperK_20inchBandL_20perCent();
 		} else if ( newValue == "SuperK_12inchBandL_15perCent" ) {
 		  WCSimDetector->SuperK_12inchBandL_15perCent();
@@ -136,8 +138,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->Cylinder_60x74_20inchBandL_14perCent();
 		} else if ( newValue == "Cylinder_60x74_20inchBandL_40perCent" ) {
 		  WCSimDetector->Cylinder_60x74_20inchBandL_40perCent();
-		} else if (newValue == "Cylinder_12inchHPD_15perCent" ){
+		} else if ( newValue == "Cylinder_12inchHPD_15perCent" ){
 		  WCSimDetector->Cylinder_12inchHPD_15perCent();
+		} else if ( newValue == "HyperK" ){
+		  WCSimDetector->SetHyperKGeometry();
 		} else if ( newValue == "EggShapedHyperK") {
 		  WCSimDetector->SetIsEggShapedHyperK(true);
 		  WCSimDetector->SetEggShapedHyperKGeometry();
@@ -145,7 +149,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->SetIsEggShapedHyperK(true);
 		  WCSimDetector->SetEggShapedHyperKGeometry_withHPD();
 		} else
-		  G4cout << "That geometry choice not defined!" << G4endl;
+		  G4cout << "That geometry choice is not defined!" << G4endl;
 	}
   
 	if (command == SavePi0){

@@ -65,6 +65,7 @@ public:
   void Cylinder_60x74_20inchBandL_14perCent();
   void Cylinder_60x74_20inchBandL_40perCent();
   void Cylinder_12inchHPD_15perCent();
+  void SetHyperKGeometry();
   void UpdateGeometry();
   
 
