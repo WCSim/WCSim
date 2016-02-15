@@ -162,7 +162,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   innerradius = sqrt(pow(firstTransform.getTranslation().getX()/cm,2)
                             + pow(firstTransform.getTranslation().getY()/cm,2));
 
-  if (isHyperK){
+  if (isEggShapedHyperK){
     geoFile << setw(8)<< 0;
     geoFile << setw(8)<< 0;
   }else{
