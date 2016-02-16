@@ -586,6 +586,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // same, april 7th 2005
   std::set<int> pionList;
   std::set<int> antipionList;
+  // Added by S. Short (Feb 2016)
+  std::set<int> neutronList;
 
   // Pi0 specific variables
   Float_t pi0Vtx[3];
@@ -615,11 +617,13 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     if ( trj->GetPDGEncoding() == -13 ) antimuonList.insert(trj->GetTrackID());
     if ( trj->GetPDGEncoding() == 211 ) pionList.insert(trj->GetTrackID());
     if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
-       
+    // Remember neutrons (S. Short, Feb 2016)
+    if ( trj->GetPDGEncoding() == 2112 ) neutronList.insert(trj->GetTrackID());
 
-    // Process primary tracks or the secondaries from pizero or muons...
 
-    if ( trj->GetSaveFlag() )
+    // Process primary tracks or the secondaries from pizero or muons (or neutrons, Feb 2016)
+
+    if ( trj->GetSaveFlag() || ( neutronList.count(trj->GetParentID())) )
     {
       // initial point of the trajectory
       G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;   
@@ -659,6 +663,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	parentType = -211;
       } else if (pionList.count(trj->GetParentID()) ) {
 	parentType = 211;
+      } else if (neutronList.count(trj->GetParentID()) ){
+	parentType = 2112;
       } else {  // no identified parent, but not a primary
 	parentType = 999;
       }
