@@ -31,6 +31,10 @@ void WCSimWCTriggerNDigitsSK4::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   //clear trigger vectors
   ClearTriggers();
 
+  //clear additional vectors used for SKIV trigger class
+  TriggerStartTimes.clear();
+  TriggerEndTimes.clear();
+
   //SHE trigger
   AddNDigitsSubTrigger(70, 5000, 35000, kTriggerNDigitsSK4_SHE);
   //HE trigger

@@ -60,7 +60,7 @@ private:
   void AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits);
   
   void FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits);
-  
+
   static const double offsetSK4;        ///< Hit time offset (ns)
   static const double LongTimeSK4;      ///< An arbitrary long time to use in loops (ns)
   
