@@ -429,7 +429,7 @@ void WCSimPhysicsList::ConstructHad()
 	  theInelasticProcess->RegisterMe(theBertiniModel);
 
 	  // Added FTFP Model - SS
-	  FTFP_model->SetMinEnergy(5.0*GeV);
+	  FTFP_model->SetMinEnergy(4.0*GeV);
 	  theInelasticProcess->RegisterMe(FTFP_model);
 
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
@@ -447,7 +447,7 @@ void WCSimPhysicsList::ConstructHad()
 	  theInelasticProcess->RegisterMe(theBertiniModel);
 
 	  // Added FTFP Model - SS
-	  FTFP_model->SetMinEnergy(5.0*GeV);
+	  FTFP_model->SetMinEnergy(4.0*GeV);
 	  theInelasticProcess->RegisterMe(FTFP_model);
 
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
@@ -467,7 +467,7 @@ void WCSimPhysicsList::ConstructHad()
           theInelasticProcess->RegisterMe(theBertiniModel);
 
           // Added FTFP Model - SS
-          FTFP_model->SetMinEnergy(5.0*GeV);
+          FTFP_model->SetMinEnergy(4.0*GeV);
           theInelasticProcess->RegisterMe(FTFP_model);
 
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
@@ -485,7 +485,7 @@ void WCSimPhysicsList::ConstructHad()
 	  theInelasticProcess->RegisterMe(theBertiniModel);
 
 	  // Added FTFP Model - SS
-	  FTFP_model->SetMinEnergy(10.0*GeV);
+	  FTFP_model->SetMinEnergy(3.0*GeV);
 	  theInelasticProcess->RegisterMe(FTFP_model);
 	  
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
@@ -503,7 +503,7 @@ void WCSimPhysicsList::ConstructHad()
 	  theInelasticProcess->RegisterMe(theBertiniModel);
 
 	  // Added FTFP Model - SS
-	  FTFP_model->SetMinEnergy(10.0*GeV);
+	  FTFP_model->SetMinEnergy(3.0*GeV);
 	  theInelasticProcess->RegisterMe(FTFP_model);
 
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
@@ -521,7 +521,7 @@ void WCSimPhysicsList::ConstructHad()
 	  theInelasticProcess->RegisterMe(theBertiniModel);
 
 	  // Added FTFP Model - SS
-	  FTFP_model->SetMinEnergy(5.0*GeV);
+	  FTFP_model->SetMinEnergy(4.0*GeV);
 	  theInelasticProcess->RegisterMe(FTFP_model);
 
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
@@ -547,11 +547,12 @@ void WCSimPhysicsList::ConstructHad()
 	  else {
 	    G4cout << "No secondary interaction model chosen! Using G4 BERTINI." << G4endl;
 	    G4CascadeInterface* theBertiniModel = new G4CascadeInterface;
+	    theBertiniModel->SetMaxEnergy(5.0*GeV);
 	    theInelasticProcess->RegisterMe(theBertiniModel);
 	  }
 
 	  // Use FTFP model - FDL
-	  FTFP_model->SetMinEnergy(5.0*GeV);
+	  FTFP_model->SetMinEnergy(4.0*GeV);
 	  theInelasticProcess->RegisterMe(FTFP_model);
 	  
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
@@ -606,7 +607,7 @@ void WCSimPhysicsList::ConstructHad()
 	  }
 	  
 	  // Use FTFP - FDL
-	  FTFP_model->SetMinEnergy(5.0*GeV);
+	  FTFP_model->SetMinEnergy(4.0*GeV);
 	  theInelasticProcess->RegisterMe(FTFP_model);
 
 	  G4NeutronHPInelastic * theLENeutronInelasticModel =
@@ -666,7 +667,7 @@ void WCSimPhysicsList::ConstructHad()
 	  G4BinaryLightIonReaction* ionModel = new G4BinaryLightIonReaction();
 	  ionModel->SetMaxEnergy(10.0*GeV);
 	  theInelasticProcess->RegisterMe(ionModel);
-	  FTFP_model->SetMinEnergy(10.0*GeV);
+	  FTFP_model->SetMinEnergy(3.0*GeV);
 	  theInelasticProcess->RegisterMe(FTFP_model);
 
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
@@ -682,7 +683,7 @@ void WCSimPhysicsList::ConstructHad()
 	  G4BinaryCascade* theBinaryModel = new G4BinaryCascade();
 	  theBinaryModel->SetMaxEnergy(4.0*GeV);
 	  theInelasticProcess->RegisterMe(theBinaryModel);
-	  FTFP_model->SetMinEnergy(4.0*GeV);
+	  FTFP_model->SetMinEnergy(2.0*GeV);
 	  theInelasticProcess->RegisterMe(FTFP_model);
 
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
