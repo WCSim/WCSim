@@ -142,7 +142,7 @@ void WCSimWCTriggerNDigitsSK4::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool
     //move onto the next go through the timing loop
     if(triggerfound) {
       //      window_start_time = triggertime + GetPostTriggerWindow(TriggerTypes.back());
-      window_start_time = triggertime + ndigitsPostTriggerWindow_vec.at(subtrg_num);
+      window_start_time = triggertime + 200;//ndigitsPostTriggerWindow_vec.at(subtrg_num);
     }//triggerfound
     else {
       window_start_time += window_step_size;
@@ -162,6 +162,29 @@ void WCSimWCTriggerNDigitsSK4::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool
   }
   
   G4cout << "Found " << ntrig << " NDigit triggers" << G4endl;
+
+  //Check to see if we need to adjust start gate time or merge triggers
+  for(unsigned int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
+    if(itrigger == 0) continue;
+    float this_time = TriggerTimes[itrigger];
+    float this_start = TriggerStartTimes[itrigger];
+    float this_end = TriggerEndTimes[itrigger];
+    float prev_end = TriggerEndTimes[itrigger-1];
+    if(prev_end <= this_start) continue;
+    else if(prev_end > this_start && prev_end < this_time-200) TriggerStartTimes[itrigger] = prev_end;
+    else{ //merge this trigger with previous trigger
+      TriggerEndTimes[itrigger-1] = this_end;
+      TriggerTimes.erase(TriggerTimes.begin()+itrigger);
+      TriggerTypes.erase(TriggerTypes.begin()+itrigger);
+      TriggerInfos.erase(TriggerInfos.begin()+itrigger);
+      TriggerStartTimes.erase(TriggerStartTimes.begin()+itrigger);
+      TriggerEndTimes.erase(TriggerEndTimes.begin()+itrigger);
+      ntrig--;
+    }
+  }
+
+
+  G4cout << "After removing overlaps, found " << ntrig << " NDigit triggers" << G4endl;
   //call FillDigitsCollection() whether any triggers are found or not
   // (what's saved depends on saveFailuresMode)
   FillDigitsCollection(WCDCPMT, remove_hits);
@@ -200,14 +223,14 @@ void WCSimWCTriggerNDigitsSK4::FillDigitsCollection(WCSimWCDigitsCollection* WCD
     TriggerType_t triggertype = TriggerTypes[itrigger];
     //check if we've already saved this trigger
     //    if(triggertype != save_triggerType && save_triggerType != kTriggerUndefined)
-      //continue;
-      float         triggertime = TriggerTimes[itrigger];
+    //continue;
+    float         triggertime = TriggerTimes[itrigger];
     std::vector<Float_t> triggerinfo = TriggerInfos[itrigger];
     
     //these are the boundary of the trigger gate: we want to add all digits within these bounds to the output collection
     float lowerbound = TriggerStartTimes[itrigger]; //triggertime + GetPreTriggerWindow(triggertype);
     float upperbound = TriggerEndTimes[itrigger]; //triggertime + GetPostTriggerWindow(triggertype);
-
+    
 #ifdef WCSIMWCTRIGGER_VERBOSE
     G4cout << "Saving trigger " << itrigger << " of type " << WCSimEnumerations::EnumAsString(triggertype)
 	   << " in time range [" << lowerbound << ", " << upperbound << "]"
@@ -217,7 +240,7 @@ void WCSimWCTriggerNDigitsSK4::FillDigitsCollection(WCSimWCDigitsCollection* WCD
       G4cout << " " << *it;
     G4cout << G4endl;
 #endif
-
+    
     //loop over PMTs
     for (G4int i = 0; i < WCDCPMT->entries(); i++) {
       int tube=(*WCDCPMT)[i]->GetTubeID();
