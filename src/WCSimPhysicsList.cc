@@ -362,6 +362,7 @@ void WCSimPhysicsList::ConstructGeneral()
 #include "G4NeutronHPInelastic.hh"
 #include "G4NeutronHPInelasticData.hh"
 
+
 //=================================
 // Added by JLR 2005-07-05
 //=================================
@@ -623,13 +624,14 @@ void WCSimPhysicsList::ConstructHad()
 	  G4HadronCaptureProcess* theCaptureProcess =
 	    new G4HadronCaptureProcess;
 	  
-	  G4NeutronHPCapture * theLENeutronCaptureModel = new G4NeutronHPCapture;
-	  theCaptureProcess->RegisterMe(theLENeutronCaptureModel);
-	  G4NeutronHPCaptureData * theNeutronData3 = new G4NeutronHPCaptureData;
-	  theCaptureProcess->AddDataSet(theNeutronData3);
+	  G4NeutronHPCapture* theCaptureModelHP = new G4NeutronHPCapture();
+	  theCaptureProcess->RegisterMe(theCaptureModelHP);
+	  G4NeutronHPCaptureData* theNeutronCaptureData = new G4NeutronHPCaptureData;
+	  theCaptureProcess->AddDataSet(theNeutronCaptureData);
+
 	  pmanager->AddDiscreteProcess(theCaptureProcess);
 	}
-
+      
       else if (particleName == "anti_neutron")
 	{
 	  pmanager->AddDiscreteProcess(theElasticProcess);
