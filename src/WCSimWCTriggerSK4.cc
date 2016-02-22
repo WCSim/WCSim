@@ -26,7 +26,7 @@ WCSimWCTriggerNDigitsSK4::~WCSimWCTriggerNDigitsSK4()
 
 void WCSimWCTriggerNDigitsSK4::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   //Apply an NDigits trigger
-  bool remove_hits = true;
+  bool remove_hits = false;
 
   //clear trigger vectors
   ClearTriggers();
@@ -88,6 +88,7 @@ void WCSimWCTriggerNDigitsSK4::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool
   // the upper time limit is set to the final possible full trigger window
   while(window_start_time <= window_end_time) {
     int n_digits = 0;
+    //    int n_extra_digits = 0;
     float triggertime; //save each digit time, because the trigger time is the time of the first hit above threshold
     bool triggerfound = false;
     digit_times.clear();
@@ -103,6 +104,7 @@ void WCSimWCTriggerNDigitsSK4::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool
 	if(digit_time >= window_start_time && digit_time <= (window_start_time + ndigitsWindow)
 	   && digit_charge > 0) {
 	  n_digits++;
+	  //	  if(ip>0) n_extra_digits++;
 	  digit_times.push_back(digit_time);
 	}
 	//G4cout << digit_time << G4endl;
@@ -135,6 +137,7 @@ void WCSimWCTriggerNDigitsSK4::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool
 #ifdef WCSIMWCTRIGGER_VERBOSE
     if(n_digits)
       G4cout << n_digits << " digits found in 200nsec trigger window ["
+	//      G4cout << n_digits << "(" << n_extra_digits << ") digits found in 200nsec trigger window ["
 	     << window_start_time << ", " << window_start_time + ndigitsWindow
 	     << "]. Threshold is: " << this_ndigitsThreshold_vec.at(subtrg_num) << G4endl;
 #endif
@@ -169,11 +172,13 @@ void WCSimWCTriggerNDigitsSK4::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool
     float this_time = TriggerTimes[itrigger];
     float this_start = TriggerStartTimes[itrigger];
     float this_end = TriggerEndTimes[itrigger];
+    float prev_start = TriggerStartTimes[itrigger-1];
     float prev_end = TriggerEndTimes[itrigger-1];
     if(prev_end <= this_start) continue;
     else if(prev_end > this_start && prev_end < this_time-200) TriggerStartTimes[itrigger] = prev_end;
     else{ //merge this trigger with previous trigger
-      TriggerEndTimes[itrigger-1] = this_end;
+      if(prev_start > this_start) TriggerStartTimes[itrigger-1] = this_start;
+      if(prev_end < this_end) TriggerEndTimes[itrigger-1] = this_end;
       TriggerTimes.erase(TriggerTimes.begin()+itrigger);
       TriggerTypes.erase(TriggerTypes.begin()+itrigger);
       TriggerInfos.erase(TriggerInfos.begin()+itrigger);
