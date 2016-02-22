@@ -25,16 +25,16 @@
 # diameter of 69m with 12" HPD and 14.59% photocoverage
 #/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
 
-#/WCSim/WCgeom HyperK #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
-#/WCSim/WCgeom HyperK_withHPD #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
+#/WCSim/WCgeom EggShapedHyperK #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
+#/WCSim/WCgeom EggShapedHyperK_withHPD #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
 
-#Changes the length of the simulated volume. Is currently only set up for HyperK. 
-#/WCSim/HyperK/waterTank_Length 24750. mm # Equivalent length for 10 partitions
-#/WCSim/HyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions
-#/WCSim/HyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
-#/WCSim/HyperK/waterTank_Length 82500. mm # Equivalent length for 3 partitions
-#/WCSim/HyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
-#/WCSim/HyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
+#Changes the length of the simulated volume. Is currently only set up for the egg-shaped HyperK design.
+#/WCSim/EggShapedHyperK/waterTank_Length 24750. mm # Equivalent length for 10 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 82500. mm # Equivalent length for 3 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
 
 
 #/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
