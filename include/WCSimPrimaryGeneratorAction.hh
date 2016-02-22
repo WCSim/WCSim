@@ -95,12 +95,12 @@ private:
   // These go with jhfNtuple
   G4int mode;
   G4int nvtxs;
-  G4int vtxsvol[50];
-  G4ThreeVector vtxs[50];
+  G4int vtxsvol[200];
+  G4ThreeVector vtxs[200];
   G4int npar;
-  G4int beampdgs[50], targetpdgs[50];
-  G4ThreeVector beamdirs[50], targetdirs[50];
-  G4double beamenergies[50], targetenergies[50];
+  G4int beampdgs[200], targetpdgs[200];
+  G4ThreeVector beamdirs[200], targetdirs[200];
+  G4double beamenergies[200], targetenergies[200];
   G4int vecRecNumber;
 
   G4double nuEnergy;

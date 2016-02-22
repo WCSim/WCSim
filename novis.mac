@@ -151,8 +151,8 @@
 /mygen/generator radioactive
 #this window should match the one in biasprofile.dat
 /mygen/radioactive_time_window 1.e-5
-/mygen/isotope Tl208 PMT 0.219
-/mygen/isotope Bi214 PMT 2.57
+/mygen/isotope Tl208 PMT 2.8
+/mygen/isotope Bi214 PMT 27.
 /mygen/isotope Bi214 water 264.
 #/mygen/isotope Tl208 water 95.
 #Clear the source and tell GPS to make multiple vertices
