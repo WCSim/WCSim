@@ -249,7 +249,9 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 					   Float_t start[3],
 					   Int_t parenttype,
 					   Float_t time,
-					   Int_t id)
+					   Int_t id,
+					   Int_t parentid,
+                                           std::string processName)
 {
   // Add a new WCSimRootTrack to the list of tracks for this event.
   // To avoid calling the very time consuming operator new for each track,
@@ -260,18 +262,21 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
   TClonesArray &tracks = *fTracks;
   WCSimRootTrack *track = 
     new(tracks[fNtrack++]) WCSimRootTrack(ipnu,
-					   flag,
-					   m,
-					   p,
-					   E,
-					   startvol,
-					   stopvol,
-					   dir,
-					   pdir,
-					   stop,
-					   start,
-					   parenttype,
-					  time,id);
+					  flag,
+					  m,
+					  p,
+					  E,
+					  startvol,
+					  stopvol,
+					  dir,
+					  pdir,
+					  stop,
+					  start,
+					  parenttype,
+					  time,
+					  id,
+					  parentid,
+					  processName);
 
   return track;
 }
@@ -280,18 +285,21 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 //_____________________________________________________________________________
 
 WCSimRootTrack::WCSimRootTrack(Int_t ipnu, 
-				 Int_t flag, 
-				 Float_t m, 
-				 Float_t p, 
-				 Float_t E, 
-				 Int_t startvol, 
-				 Int_t stopvol, 
-				 Float_t dir[3], 
-				 Float_t pdir[3], 
-				 Float_t stop[3], 
-				 Float_t start[3],
-				 Int_t parenttype,
-			       Float_t time,Int_t id)
+			       Int_t flag, 
+			       Float_t m, 
+			       Float_t p, 
+			       Float_t E, 
+			       Int_t startvol, 
+			       Int_t stopvol, 
+			       Float_t dir[3], 
+			       Float_t pdir[3], 
+			       Float_t stop[3], 
+			       Float_t start[3],
+			       Int_t parenttype,
+			       Float_t time,
+			       Int_t id,
+			       Int_t parentid,
+			       std::string processName)
 {
 
   // Create a WCSimRootTrack object and fill it with stuff
@@ -314,6 +322,8 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
   fParenttype = parenttype;
   fTime = time;
   fId = id;
+  fParentId = parentid;
+  fProcessName = processName;
 }
 
 
