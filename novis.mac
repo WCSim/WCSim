@@ -153,6 +153,7 @@
 /mygen/radioactive_time_window 1.e-5
 /mygen/isotope Tl208 PMT 2.8
 /mygen/isotope Bi214 PMT 27.
+/mygen/isotope K40 PMT 94.
 /mygen/isotope Bi214 water 264.
 #/mygen/isotope Tl208 water 95.
 #Clear the source and tell GPS to make multiple vertices
