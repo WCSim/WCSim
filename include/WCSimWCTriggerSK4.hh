@@ -15,6 +15,8 @@ public:
 
 private:
 
+  //Maybe replace vectors with single object to maintain 
+  //connection between entries
   std::vector<G4int> ndigitsThreshold_vec;
   std::vector<G4int> ndigitsPreTriggerWindow_vec;
   std::vector<G4int> ndigitsPostTriggerWindow_vec;
