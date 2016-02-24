@@ -110,6 +110,15 @@ void WCSimVisManager::RegisterGraphicsSystems () {
   RegisterGraphicsSystem (new G4VRML2);
 #endif
 
+  if (fVerbose > 0) {
+    G4cout <<
+      "\nYou have successfully chosen to use the following graphics systems."
+	 << G4endl;
+    PrintAvailableGraphicsSystems ();
+  }
+}
+
+void WCSimVisManager::RegisterModelFactories () {
   //create new drawByParticleID model
   G4TrajectoryDrawByParticleID* mymodel = new G4TrajectoryDrawByParticleID;
   
@@ -127,15 +136,7 @@ void WCSimVisManager::RegisterGraphicsSystems () {
   mymodel->Set("proton","magenta");
   mymodel->Set("neutron","Grey");
 
-  if (fVerbose > 0) {
-    G4cout <<
-      "\nYou have successfully chosen to use the following graphics systems."
-	 << G4endl;
-    PrintAvailableGraphicsSystems ();
-  }
   RegisterModel(mymodel);
-
-
 }
 
 #endif
