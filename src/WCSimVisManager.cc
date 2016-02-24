@@ -5,6 +5,7 @@
 
 #include "WCSimVisManager.hh"
 #include "G4TrajectoryDrawByParticleID.hh"
+#include "G4TrajectoryModelFactories.hh"
 
 // Supported drivers...
 
@@ -112,6 +113,8 @@ void WCSimVisManager::RegisterGraphicsSystems () {
 }
 
 void WCSimVisManager::RegisterModelFactories () {
+  RegisterModelFactory(new G4TrajectoryDrawByParticleIDFactory());
+
   //create new drawByParticleID model
   G4TrajectoryDrawByParticleID* mymodel = new G4TrajectoryDrawByParticleID;
   
