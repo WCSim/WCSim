@@ -109,13 +109,6 @@ void WCSimVisManager::RegisterGraphicsSystems () {
   RegisterGraphicsSystem (new G4VRML1);
   RegisterGraphicsSystem (new G4VRML2);
 #endif
-
-  if (fVerbose > 0) {
-    G4cout <<
-      "\nYou have successfully chosen to use the following graphics systems."
-	 << G4endl;
-    PrintAvailableGraphicsSystems ();
-  }
 }
 
 void WCSimVisManager::RegisterModelFactories () {
