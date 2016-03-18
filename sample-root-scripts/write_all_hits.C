@@ -111,8 +111,12 @@ int main(){
 	
 	tube_id = (digitized_hit_tube_id->at(itrigger)).at(idigitizedhit);
 	time = (digitized_hit_time->at(itrigger)).at(idigitizedhit);
+
+	int charge = (int)((digitized_hit_Q->at(itrigger)).at(idigitizedhit) + 0.5);
+	if( charge == 0 ) charge = 1;
 	
-	myfile_hits << tube_id << "  " << time << " \n";
+	for(int mul=0; mul<charge; mul++)
+	  myfile_hits << tube_id << "  " << time << " \n";
 	
       }
       

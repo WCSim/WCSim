@@ -21,7 +21,7 @@ std::string number_with_digits(int i, int n);
 
 int n_digits = 5;
 double time_bin_size = 10.; // ns
-bool make_animation = true;
+bool make_animation = false;
 double _time_min=150.;
 double _time_max=750.;
 bool use_time_range = true;

@@ -209,8 +209,8 @@ private:
   // See jhfNtuple.h for the meaning of these data members:
   Int_t                fMode;
   Int_t                fNvtxs;
-  Int_t                fVtxsvol[200];
-  Float_t              fVtxs[200][3];
+  Int_t                fVtxsvol[900];
+  Float_t              fVtxs[900][3];
   Int_t                fVecRecNumber;       // "info event" number in inputvectorfile 
   Int_t                fJmu;
   Int_t                fJp;

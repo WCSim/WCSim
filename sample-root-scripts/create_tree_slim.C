@@ -278,7 +278,17 @@ void create_tree_slim(char *filename=NULL, bool verbose = false)
       v_trigger_vtx_y.clear();
       v_trigger_vtx_z.clear();
       int n_vertexes = wcsimrootevent->GetNvtxs();
+#if 0
+      trigger_nvertex.push_back(n_vertexes);
+      for(int ivertex=0; ivertex<n_vertexes; ivertex++){
+	v_trigger_vtxvol.push_back(wcsimrootevent->GetVtxsvol(ivertex));
+	v_trigger_vtx_x.push_back(wcsimrootevent->GetVtxs(ivertex, 0));
+	v_trigger_vtx_y.push_back(wcsimrootevent->GetVtxs(ivertex, 1));
+	v_trigger_vtx_z.push_back(wcsimrootevent->GetVtxs(ivertex, 2));
+      }
+#else
       trigger_nvertex.push_back(0);
+#endif
       trigger_vtxvol.push_back(v_trigger_vtxvol);
       trigger_vtx_x.push_back(v_trigger_vtx_x);
       trigger_vtx_y.push_back(v_trigger_vtx_y);
