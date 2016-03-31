@@ -1,0 +1,120 @@
+# Sampe setup macro with no visualization
+
+/run/verbose 0
+/tracking/verbose 0
+/hits/verbose 0
+
+## select the geometry
+# Default config if you do nothing is currently SuperK
+#
+# The tube size is fixed for SK to 20"
+# These are fixed geometries for validation
+#/WCSim/WCgeom SuperK
+
+# Some other SuperK options:
+#/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_20inchBandL_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_12inchBandL_15perCent # Note: the actual coverage is 14.59%
+#/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
+
+# Cylindrical detector with a height of 60 m and a diameter of 74 m
+/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
+#/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
+
+# Generic cylindrical detector with a height of 100m and a 
+# diameter of 69m with 12" HPD and 14.59% photocoverage
+#/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
+
+#/WCSim/WCgeom HyperK #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
+#/WCSim/WCgeom HyperK_withHPD #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
+
+#Changes the length of the simulated volume. Is currently only set up for HyperK. 
+#/WCSim/HyperK/waterTank_Length 24750. mm # Equivalent length for 10 partitions
+#/WCSim/HyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions
+#/WCSim/HyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
+#/WCSim/HyperK/waterTank_Length 82500. mm # Equivalent length for 3 partitions
+#/WCSim/HyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
+#/WCSim/HyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
+
+
+/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
+
+#Added for the PMT QE option 08/17/10 (XQ)
+# 1. Stacking only mean when the photon is generated
+# the QE is applied to reduce the total number of photons
+# 2. Stacking and sensitivity detector
+# In the stacking part, the maximum QE is applied to reduce
+# the total number of photons
+# On the detector side, the rest of QE are applied according to QE/QE_max
+# distribution. This option is in particular important for the WLS
+# 3. The last option means all the QE are applied at the detector
+# Good for the low energy running.
+/WCSim/PMTQEMethod     Stacking_Only
+#/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
+#/WCSim/PMTQEMethod     SensitiveDetector_Only
+
+#turn on or off the collection efficiency
+/WCSim/PMTCollEff on
+
+# command to choose save or not save the pi0 info 07/03/10 (XQ)
+/WCSim/SavePi0 false
+
+## select the input nuance-formatted vector file
+## you can of course use your own
+#/mygen/vecfile inputvectorfile
+#/mygen/vecfile h2o.2km.001-009x3_G4.kin
+#/mygen/vecfile mu+.out
+
+
+#choose the Trigger & Digitizer type (and options)
+/DAQ/Digitizer SKI
+/DAQ/Trigger NDigits
+
+#grab the other DAQ options (thresholds, timing windows, etc.)
+/control/execute daq.mac
+
+
+# default dark noise frequency (and conversion factor) is PMT property (NEW), set in the code.
+# Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
+#/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
+/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+
+# command to multiply the dark rate.
+# Convert dark noise frequency before digitization to after digitization by setting suitable factor
+# Again, this is now a PMT property and can be overridden here
+#/DarkRate/SetConvert 1.367  #For Normal PMT
+#/DarkRate/SetConvert 1.119 #For HPDs
+#/DarkRate/SetConvert 1.126 #For Box and Line PMTs
+
+# Select which time window(s) to add dark noise to
+#/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
+#/DarkRate/SetDarkLow to /DarkRate/SetDarkHigh [time in ns]
+#/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
+#width /DarkRate/SetDarkWindow [time in ns] around each hit
+#i.e. hit time ± (/DarkRate/SetDarkWindow) / 2
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkHigh 100000
+/DarkRate/SetDarkLow 0
+/DarkRate/SetDarkWindow 4000
+
+#Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
+#/control/execute visOGLSX.mac
+#/control/execute visRayTracer.mac
+
+
+# Or you can use the G4 Particle Gun
+/mygen/generator normal
+/gun/particle e-
+#/gun/particle pi0
+/gun/energy 500 MeV
+/gun/direction 1 0 0 
+/gun/position 0 0 0  
+
+## change the name of the output root file, default = wcsim.root
+
+/WCSimIO/RootFile wcsim.root
+
+/run/beamOn 10
+#exit
