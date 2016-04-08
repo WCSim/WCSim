@@ -67,10 +67,6 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
     fCalledAddDarkNoise = true;
   }
 
-  G4cout << "Using dark noise rate " << PMTDarkRate
-	 << " and conversion factor " << ConvRate << G4endl;
-  exit(1);
-
   //clear the result and range vectors
   ReInitialize();
 
