@@ -35,6 +35,7 @@ public:
 
 private:
   void ReInitialize() { ranges.clear(); result.clear();}
+  void SetPMTDarkDefaults();
 
   WCSimDarkRateMessenger *DarkRateMessenger;
   double PMTDarkRate; // kHz
@@ -43,6 +44,7 @@ private:
   double DarkLow; //ns
   double DarkWindow; //ns
   int DarkMode;
+  bool fCalledAddDarkNoise;
 
   WCSimDetectorConstruction* myDetector;
 
