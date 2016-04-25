@@ -107,6 +107,8 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetPMTType = new G4UIcmdWithAString("/WCSim/nuPRISM/SetPMTType", this);
   SetPMTType->SetGuidance("Set the type of PMT to be used for nuPRISM");
   SetPMTType->SetGuidance("Available options are:\n"
+          "PMT3inch\n"
+          "PMT3inchGT\n"
           "PMT5inch\n"
           "PMT8inch\n"
           "PMT10inchHQE\n"
@@ -115,7 +117,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "HPD20inchHQE\n"
           "PMT20inch\n");
   SetPMTType->SetParameterName("PMTType", false);
-  SetPMTType->SetCandidates("PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
+  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
   SetPMTType->SetDefaultValue("PMT10inch");
 
   // Next, the PMT coverage
