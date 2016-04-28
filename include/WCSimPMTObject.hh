@@ -129,6 +129,28 @@ public:
   G4double GetPMTGlassThickness();
 };
 
+class PMT3inchR12199_02 : public WCSimPMTObject
+{
+
+public:
+
+  PMT3inchR12199_02();
+  ~PMT3inchR12199_02();
+
+public:
+  G4String GetPMTName();
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4float* Getqpe();
+  G4float* GetQE();
+  G4float* GetQEWavelength();
+  G4float  GetmaxQE();
+  float    HitTimeSmearing(float);
+  G4double GetPMTGlassThickness();
+protected:
+  G4float* GetCollectionEfficiencyArray();
+};
+
  class PMT10inch : public WCSimPMTObject
 {
 
