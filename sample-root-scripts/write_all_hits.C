@@ -115,6 +115,11 @@ int main(){
 	int charge = (int)((digitized_hit_Q->at(itrigger)).at(idigitizedhit) + 0.5);
 	if( charge == 0 ) charge = 1;
 	
+#if 0 // PMT multiplicity according to npe's
+	;
+#else // each PMT once
+	charge = 1;
+#endif
 	for(int mul=0; mul<charge; mul++)
 	  myfile_hits << tube_id << "  " << time << " \n";
 	
