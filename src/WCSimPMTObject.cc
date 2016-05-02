@@ -534,9 +534,9 @@ PMT3inch::PMT3inch(){}
 PMT3inch::~PMT3inch(){}
 
 G4String PMT3inch::GetPMTName() {G4String PMTName = "3inch"; return PMTName;}
-G4double PMT3inch::GetExposeHeight() {return 34.*mm;} //rough estimation
-G4double PMT3inch::GetRadius() {return 38.*mm;}
-G4double PMT3inch::GetPMTGlassThickness() {return 0.55*cm;} //currently the same as 10inch
+G4double PMT3inch::GetExposeHeight() {return 20.*mm;}
+G4double PMT3inch::GetRadius() {return 40.*mm;}
+G4double PMT3inch::GetPMTGlassThickness() {return 0.40*cm;}
 G4float PMT3inch::HitTimeSmearing(float Q) { 
   float timingConstant = 1.890; // 4ns FWHM when Q=1.0 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
@@ -687,9 +687,9 @@ PMT3inchGT::PMT3inchGT(){}
 PMT3inchGT::~PMT3inchGT(){}
 
 G4String PMT3inchGT::GetPMTName() {G4String PMTName = "3inchGT"; return PMTName;}
-G4double PMT3inchGT::GetExposeHeight() {return 34.*mm;} //rough estimation
-G4double PMT3inchGT::GetRadius() {return 38.*mm;}
-G4double PMT3inchGT::GetPMTGlassThickness() {return 0.55*cm;} //currently the same as 10inch
+G4double PMT3inchGT::GetExposeHeight() {return 20.*mm;}
+G4double PMT3inchGT::GetRadius() {return 40.*mm;}
+G4double PMT3inchGT::GetPMTGlassThickness() {return 0.40*cm;}
 G4float PMT3inchGT::HitTimeSmearing(float Q) { 
   float timingConstant = 0.535; // 2.5ns FWHM when Q=1.0
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
