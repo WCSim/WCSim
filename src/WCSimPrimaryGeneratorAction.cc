@@ -288,14 +288,15 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	strZ[3]='\0';
 	A=atoi(strA);
 	Z=atoi(strZ);
+
+	G4ParticleDefinition* ion   = G4ParticleTable::GetParticleTable()->GetIon(Z, A, 0);
+	ion->SetPDGStable(false);
+	ion->SetPDGLifeTime(0.);
+	
+	G4ParticleDefinition* ion2   = G4ParticleTable::GetParticleTable()->GetIon(Z, A, 0);
+	std::cout<<"ion2 "<<ion2->GetPDGLifeTime()<<"\n";
       }
     
-    G4ParticleDefinition* ion   = G4ParticleTable::GetParticleTable()->GetIon(Z, A, 0);
-    ion->SetPDGStable(false);
-    ion->SetPDGLifeTime(0.);
-    
-    G4ParticleDefinition* ion2   = G4ParticleTable::GetParticleTable()->GetIon(Z, A, 0);
-    std::cout<<"ion2 "<<ion2->GetPDGLifeTime()<<"\n";
     
     G4ThreeVector dir  = P.unit();
     G4double E         = std::sqrt((P.dot(P))+(m*m));
