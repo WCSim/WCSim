@@ -88,13 +88,10 @@ void WCSimWCPMT::Digitize()
 void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
 
-  /* <<<<<<< HEAD
   // Get the info for pmt positions
   std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
   // It works out that the pmts here are ordered !
   // pmts->at(i) has tubeid i+1
-  ======= */
-
 
   //Get the PMT info for hit time smearing
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();

@@ -266,7 +266,7 @@ void WCSimPhysicsList::ConstructOp(){
   theAbsorptionProcess->SetVerboseLevel(0);
   theRayleighScatteringProcess->SetVerboseLevel(0);
   theMieHGScatteringProcess->SetVerboseLevel(0);
-  theBoundaryProcess->SetVerboseLevel(0);
+  theBoundaryProcess->SetVerboseLevel(1);
   theWLSProcess->SetVerboseLevel(0);
   
   theWLSProcess->UseTimeProfile("exponential");

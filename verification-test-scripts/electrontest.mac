@@ -1,8 +1,8 @@
 # Sampe setup macro with no visualization
 
 /run/verbose 0
-/tracking/verbose 0
-/hits/verbose 0
+/tracking/verbose 1
+/hits/verbose 1
 
 ## select the geometry
 # Default config if you do nothing is currently SuperK
@@ -65,5 +65,6 @@
 
 /WCSimIO/RootFile wcsimtest.root
 
-/run/beamOn 1000
+#/run/beamOn 1000
+/run/beamOn 30
 #exit
