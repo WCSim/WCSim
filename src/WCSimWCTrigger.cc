@@ -81,9 +81,17 @@ void WCSimWCTriggerBase::GetVariables()
 	 << (ndigitsAdjustForNoise ? " (will be adjusted for noise)" : "") << G4endl
 	 << "Using NDigits trigger window " << ndigitsWindow << " ns" << G4endl
 	 << "Using NDigits event pretrigger window " << ndigitsPreTriggerWindow << " ns" << G4endl
-	 << "Using NDigits event posttrigger window " << ndigitsPostTriggerWindow << " ns" << G4endl
-	 << "Using SaveFailures event pretrigger window " << saveFailuresPreTriggerWindow << " ns" << G4endl
-	 << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << " ns" << G4endl;
+	 << "Using NDigits event posttrigger window " << ndigitsPostTriggerWindow << " ns" << G4endl;
+  if(saveFailuresMode == 0)
+    G4cout << "Saving only triggered digits" << G4endl;
+  else if(saveFailuresMode == 1)
+    G4cout << "Saving both triggered and not-triggered digits" << G4endl;
+  else if(saveFailuresMode == 2)
+    G4cout << "Saving only not-triggered digits" << G4endl;
+  if(saveFailuresMode > 0)
+    G4cout << "Using SaveFailures trigger time" << saveFailuresTime << " ns" << G4endl
+	   << "Using SaveFailures event pretrigger window " << saveFailuresPreTriggerWindow << " ns" << G4endl
+	   << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << " ns" << G4endl;
 }
 
 int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
@@ -91,7 +99,6 @@ int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
   switch(t) {
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
-  case kTriggerNHitsSKDETSIM:
     return ndigitsPreTriggerWindow;
     break;
   case kTriggerFailure:
@@ -110,7 +117,6 @@ int WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
   switch(t) {
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
-  case kTriggerNHitsSKDETSIM:
     return ndigitsPostTriggerWindow;
     break;
   case kTriggerFailure:
@@ -270,7 +276,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
     }
   }
   
-  G4cout << "Found " << ntrig << " NHit triggers" << G4endl;
+  G4cout << "Found " << ntrig << " NDigit triggers" << G4endl;
   //call FillDigitsCollection() whether any triggers are found or not
   // (what's saved depends on saveFailuresMode)
   FillDigitsCollection(WCDCPMT, remove_hits, this_triggerType);
@@ -300,10 +306,6 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     TriggerInfos.push_back(std::vector<Float_t>(1, -1));
     save_triggerType = kTriggerFailure;
   }
-
-  //Get the PMT info for hit time smearing
-  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
 
   //Loop over trigger times
   for(unsigned int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
@@ -338,15 +340,11 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  //hit in event window
 	  //add it to DigitsCollection
 
-	  //first smear the charge & time
+	  //first apply time offsets
 	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
-	  float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	  G4double digihittime = -triggertime
 	    + WCSimWCTriggerBase::offset
-	    + digit_time
-	    + PMT->HitTimeSmearing(Q);
-	  if(digihittime < 0)
-	    continue;
+	    + digit_time;
 
 	  //get the composition information for the triggered digit
 	  //WCDCPMT stores this information in pairs of (digit id, photon id)

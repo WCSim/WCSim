@@ -43,8 +43,6 @@ private:
   G4bool              StoreMultiDigitsPerTrigger;
   G4bool              MultiDigitsPerTriggerSet;
 
-  G4UIcmdWithoutParameter* DAQConstruct; //ToDo remove this
-
   G4UIdirectory*        DigitizerDir;
   G4UIcmdWithAnInteger* DigitizerDeadTime;
   G4int                 StoreDigitizerDeadTime;

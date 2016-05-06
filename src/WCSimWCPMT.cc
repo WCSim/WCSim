@@ -88,10 +88,18 @@ void WCSimWCPMT::Digitize()
 void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
 
+  /* <<<<<<< HEAD
   // Get the info for pmt positions
   std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
   // It works out that the pmts here are ordered !
   // pmts->at(i) has tubeid i+1
+  ======= */
+
+
+  //Get the PMT info for hit time smearing
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+
 
   for (G4int i=0; i < WCHC->entries(); i++)
     {
@@ -131,7 +139,11 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    time_PMT = (*WCHC)[i]->GetTime(ip);
 	    peSmeared = rn1pe();
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
-	    
+
+	    //apply time smearing
+	    float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+	    time_PMT += PMT->HitTimeSmearing(Q);
+
 	    if ( DigiHitMapPMT[tube] == 0) {
 	      WCSimWCDigi* Digi = new WCSimWCDigi();
 	      Digi->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());

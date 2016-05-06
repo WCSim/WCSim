@@ -123,12 +123,12 @@ int main(int argc,char** argv)
     G4UIExecutive * ui = new G4UIExecutive(argc,argv);
 #ifdef G4VIS_USE
     // Visualization Macro
-    file_exists("vis.mac");
-    UI->ApplyCommand("/control/execute vis.mac");
+    UI->ApplyCommand("/control/execute WCSim.mac");
 #endif
     ui->SessionStart();
     delete ui;
 #endif
+
     // Start Interactive Mode
     //session->SessionStart();
 

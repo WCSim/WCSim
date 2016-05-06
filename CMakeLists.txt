@@ -10,7 +10,7 @@ project(WCSim)
 #
 find_package(ROOT CONFIG REQUIRED)
 if(NOT ROOT_FOUND)
-  message(STATUS "ROOT package not found.")  
+  message(STATUS "ROOT package not found.") 
   return()
 endif()
 
@@ -32,11 +32,11 @@ include_directories(${PROJECT_SOURCE_DIR}/include
 
 ## WCSimRootDict.cc regeneration by rootcint
 ## Use ROOT 5.34.32 as some issues with PARSE_ARGUMENTS were found in older ROOT versions (ROOT 5.34.11)
-ROOT_GENERATE_DICTIONARY(${CMAKE_CURRENT_SOURCE_DIR}/src/WCSimRootDict ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootEvent.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootGeom.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimPmtInfo.hh LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootLinkDef.hh)
+ROOT_GENERATE_DICTIONARY(${CMAKE_CURRENT_SOURCE_DIR}/src/WCSimRootDict ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootEvent.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootGeom.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimPmtInfo.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimEnumerations.hh LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootLinkDef.hh)
 
 
 ## Crucial for reading ROOT classes: make shared object library
-add_library(WCSimRoot SHARED ./src/WCSimRootEvent.cc ./src/WCSimRootGeom.cc ./src/WCSimPmtInfo.cc  ./src/WCSimRootDict.cxx)
+add_library(WCSimRoot SHARED ./src/WCSimRootEvent.cc ./src/WCSimRootGeom.cc ./src/WCSimPmtInfo.cc ./src/WCSimEnumerations.cc ./src/WCSimRootDict.cxx)
 target_link_libraries(WCSimRoot  ${ROOT_LIBRARIES})
 
 
@@ -88,9 +88,11 @@ target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree
 set(WCSIM_SCRIPTS
   jobOptions2.mac
   jobOptions.mac
-  novis.mac
+  WCSim.mac
+  daq.mac
+  visOGLSX.mac
+  visRayTracer.mac
   tuning_parameters.mac
-  vis.mac
   )
 
 foreach(_script ${WCSIM_SCRIPTS})

@@ -86,7 +86,7 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
 
   wcsimT->GetEvent(0); 
 
-  // In the default vis.mac, only one event is run.  I suspect you could loop over more events, if they existed.
+
   WCSimRootTrigger *wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   cout << "Stats for the first event in your version of WCSim using " << filename << endl;
   cout << "Number of tube hits " << wcsimrootevent->GetNumTubesHit() << endl;
@@ -246,7 +246,7 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
 
   wcsimT2->GetEvent(0); 
 
-  // In the default vis.mac, only one event is run.  I suspect you could loop over more events, if they existed.
+
   WCSimRootTrigger *wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
 
   cout << "***********************************************************" << endl;

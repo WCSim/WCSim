@@ -27,8 +27,13 @@
 
 WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,
 					 WCSimDetectorConstruction* inDetector)
-  :G4VDigitizerModule(name), myDetector(inDetector)
+  :G4VDigitizerModule(name), fCalledAddDarkNoise(false), myDetector(inDetector)
 {
+  //Set defaults to be unphysical, so that we know if they have been overwritten by the user
+  PMTDarkRate = -99;
+  ConvRate    = -99;
+
+  //Get the user options
   DarkRateMessenger = new WCSimDarkRateMessenger(this);
   ReInitialize();
 }
@@ -38,7 +43,30 @@ WCSimWCAddDarkNoise::~WCSimWCAddDarkNoise(){
   DarkRateMessenger = 0;
 }
 
+void WCSimWCAddDarkNoise::SetPMTDarkDefaults()
+{
+  //Grab Dark Rate and Conversion from PMT itself
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+  double const conversion_to_kHz = 1000000; //ToDo: remove this and treat DarkRate in CLHEP units throughout the class.
+
+  double defaultPMTDarkRate = PMT->GetDarkRate() * conversion_to_kHz;
+  double defaultConvRate = PMT->GetDarkRateConversionFactor();
+
+  //Only set the defaults if the user hasn't overwritten the unphysical defaults
+  if(PMTDarkRate < -98)
+    PMTDarkRate = defaultPMTDarkRate;
+  if(ConvRate < -98)
+    ConvRate = defaultConvRate;
+}
+
 void WCSimWCAddDarkNoise::AddDarkNoise(){
+  //Grab the PMT-specific defaults
+  if(!fCalledAddDarkNoise) {
+    SetPMTDarkDefaults();
+    fCalledAddDarkNoise = true;
+  }
+
   //clear the result and range vectors
   ReInitialize();
 
