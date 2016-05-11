@@ -262,11 +262,13 @@ void WCSimPhysicsList::ConstructOp(){
 //   theAbsorptionProcess->DumpPhysicsTable();
 //   theRayleighScatteringProcess->DumpPhysicsTable();
 
+
+  //TF Todo: should be expert options in .mac!!!
   theCherenkovProcess->SetVerboseLevel(0);
   theAbsorptionProcess->SetVerboseLevel(0);
   theRayleighScatteringProcess->SetVerboseLevel(0);
   theMieHGScatteringProcess->SetVerboseLevel(0);
-  theBoundaryProcess->SetVerboseLevel(1);
+  theBoundaryProcess->SetVerboseLevel(0);
   theWLSProcess->SetVerboseLevel(0);
   
   theWLSProcess->UseTimeProfile("exponential");

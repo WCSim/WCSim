@@ -979,6 +979,14 @@ void WCSimDetectorConstruction::ConstructMaterials()
    OpWaterBSSurface->SetFinish(groundfrontpainted);
    OpWaterBSSurface->SetSigmaAlpha(0.1);
 
+   BSSkinSurface =
+     new G4OpticalSurface("BSSkinSurface");
+
+   BSSkinSurface->SetType(dielectric_dielectric);
+   BSSkinSurface->SetModel(unified); 
+   BSSkinSurface->SetFinish(groundfrontpainted);
+   BSSkinSurface->SetSigmaAlpha(0.1);
+
    const G4int NUM = 2;
    //   G4double PP[NUM] =
    //{ 2.038E-9*GeV, 4.144E-9*GeV };
@@ -1097,7 +1105,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    
    G4MaterialPropertiesTable *myMPT4 = new G4MaterialPropertiesTable();
    myMPT4->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
-   myMPT4->AddProperty("RINDEX", ENERGY_water, RINDEX_blacksheet, NUMENTRIES_water); //TF fix
+   //myMPT4->AddProperty("RINDEX", ENERGY_water, RINDEX_blacksheet, NUMENTRIES_water); //TF - never required if BS is properly defined as surface.
    Blacksheet->SetMaterialPropertiesTable(myMPT4);
    
    G4MaterialPropertiesTable *myMPT5 = new G4MaterialPropertiesTable();
@@ -1137,6 +1145,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myST1->AddProperty("REFLECTIVITY", ENERGY_water, REFLECTIVITY_blacksheet, NUMENTRIES_water);
    myST1->AddProperty("EFFICIENCY", ENERGY_water, EFFICIENCY_blacksheet, NUMENTRIES_water);
    OpWaterBSSurface->SetMaterialPropertiesTable(myST1);
+
+   BSSkinSurface->SetMaterialPropertiesTable(myST1);
 
    //Glass to Cathode surface inside PMTs
    G4MaterialPropertiesTable *myST2 = new G4MaterialPropertiesTable();

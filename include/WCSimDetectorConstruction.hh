@@ -215,6 +215,11 @@ private:
   //Foam for mPMT: Gel - absorbing support structure -tf
   G4OpticalSurface * OpGelFoamSurface;
 
+  //TF fix for blacksheet errors "missing refractive index"
+  // or "photon travelling faster than c_light" when trying to refract
+  // through blacksheet due to undefined border crossing (after setting n_BS)
+  G4OpticalSurface * BSSkinSurface;
+
 
   // The messenger we use to change the geometry.
 

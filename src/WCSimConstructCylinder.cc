@@ -322,12 +322,15 @@ else {
                       0,
                       checkOverlaps);
 
-
-  G4LogicalBorderSurface * WaterBSBarrelCellSurface 
-    = new G4LogicalBorderSurface("WaterBSBarrelCellSurface",
-                                 physiWCBarrelCell,
-                                 physiWCBarrelCellBlackSheet, 
-                                 OpWaterBSSurface);
+   
+   G4LogicalBorderSurface * WaterBSBarrelCellSurface 
+	 = new G4LogicalBorderSurface("WaterBSBarrelCellSurface",
+								  physiWCBarrelCell,
+								  physiWCBarrelCellBlackSheet, 
+								  OpWaterBSSurface);
+   
+   new G4LogicalSkinSurface("BSBarrelCellSkinSurface",logicWCBarrelCellBlackSheet,
+							BSSkinSurface);
 
  // Change made here to have the if statement contain the !debugmode to be consistent
  // This code gives the Blacksheet its color. 
@@ -473,11 +476,14 @@ else {
 			checkOverlaps);
 
 
-    G4LogicalBorderSurface * WaterBSTowerCellSurface 
-      = new G4LogicalBorderSurface("WaterBSBarrelCellSurface",
-				   physiWCTowerCell,
-				   physiWCTowerBlackSheet, 
-				   OpWaterBSSurface);
+	 G4LogicalBorderSurface * WaterBSTowerCellSurface 
+	   = new G4LogicalBorderSurface("WaterBSBarrelCellSurface",
+									physiWCTowerCell,
+									physiWCTowerBlackSheet, 
+									OpWaterBSSurface);
+
+	 new G4LogicalSkinSurface("BSTowerCellSkinSurface",logicWCTowerBlackSheet,
+							  BSSkinSurface);
 
 // These lines add color to the blacksheet in the extratower. If using RayTracer, comment the first chunk and use the second. The Blacksheet should be green.
 
@@ -1242,12 +1248,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                       0,
 					  checkOverlaps);
 
-   G4LogicalBorderSurface * WaterBSBottomCapSurface 
-      = new G4LogicalBorderSurface("WaterBSCapPolySurface",
-                                   physiWCCap,physiWCCapBlackSheet,
-                                   OpWaterBSSurface);
-
-   G4VisAttributes* WCCapBlackSheetVisAtt 
+  G4LogicalBorderSurface * WaterBSBottomCapSurface 
+	= new G4LogicalBorderSurface("WaterBSCapPolySurface",
+								 physiWCCap,physiWCCapBlackSheet,
+								 OpWaterBSSurface);
+  
+  new G4LogicalSkinSurface("BSBottomCapSkinSurface",logicWCCapBlackSheet,
+						   BSSkinSurface);
+  
+  G4VisAttributes* WCCapBlackSheetVisAtt 
       = new G4VisAttributes(G4Colour(0.9,0.2,0.2));
     
 // used for OGLSX
