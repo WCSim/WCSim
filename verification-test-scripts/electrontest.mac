@@ -65,6 +65,5 @@
 
 /WCSimIO/RootFile wcsimtest.root
 
-#/run/beamOn 1000
-/run/beamOn 150
+/run/beamOn 1000
 #exit
