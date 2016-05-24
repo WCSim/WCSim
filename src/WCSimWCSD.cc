@@ -105,7 +105,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     return false;
   G4String WCIDCollectionName = fdet->GetIDCollectionName();
   // M Fechner : too verbose
-  //  if (aStep->GetTrack()->GetTrackStatus() == fAlive) cout << "status is fAlive\n";
+  //  if (aStep->GetTrack()->GetTrackStatus() == fAlive)G4cout << "status is fAlive\n";
   if ((aStep->GetTrack()->GetTrackStatus() == fAlive )
       &&(particleDefinition == G4OpticalPhoton::OpticalPhotonDefinition()))
     return false;
