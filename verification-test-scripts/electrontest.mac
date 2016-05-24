@@ -47,6 +47,12 @@
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
 #/mygen/vecfile mu+.out
 
+## Dark Noise: default are nominal values from PMT and is ON
+## Switch OFF by setting rate and/or conversion factor to 0 below:
+#/DarkRate/SetDarkRate 0.01 Hz 
+#/DarkRate/SetConvert 0                  # command to multiply the dark rate.
+
+
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
 /gun/particle e-

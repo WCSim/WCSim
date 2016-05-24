@@ -26,19 +26,18 @@ void WCSimDarkRateMessenger::Initialize()
   SetFrequency->SetGuidance("Commands to change the dark noise frequency of the simulation");
   SetFrequency->SetParameterName("DarkRate",false);
   SetFrequency->SetDefaultValue(defaultFrequency * conversion_to_kHz);
-  //kilohertz is 10e-6
+  //kilohertz is 10e-6 (CLHEP units: 1kHz = 1000 / (1e9 ns) = 1e-6 as ns := 1.)
   SetFrequency->SetUnitCategory("Frequency");
   SetFrequency->SetDefaultUnit("kHz");
   SetFrequency->SetUnitCandidates("Hz kHz MHz GHz");
-  SetNewValue(SetFrequency, G4UIcommand::ConvertToString(defaultFrequency, "kHz"));
+ 
 
   double defaultConvRate = 1;
   SetConversionRate = new G4UIcmdWithADouble("/DarkRate/SetConvert",this);
-  SetConversionRate->SetGuidance("Caribrate the frequency of dark noise after digitization");
+  SetConversionRate->SetGuidance("Calibrate the frequency of dark noise before applying the threshold (typically 0.25pe)"); 
   SetConversionRate->SetParameterName("DigiCorr",false);
   SetConversionRate->SetDefaultValue(defaultConvRate);
-  SetNewValue(SetConversionRate, G4UIcommand::ConvertToString(defaultConvRate));
-
+ 
   //Mode 0 - Add dark rate in window defined by /DarkRate/SetDarkLow and /DarkRate/SetDarkHigh
   //If not set default is 0 and 100000ns
   //Mode 1 - Add dark rate to a window of size /DarkRate/SetDarkWindow around each hit
@@ -96,6 +95,7 @@ void WCSimDarkRateMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   if(command == SetFrequency){
     // Since kHz is 10e-3 for this class we must multiply by a 10e6 factor
     // to make default units in kHz
+    // ToDo: make this consistent with CLHEP unit system. Makes it easier to just using CLHEP!
     double const conversion_to_kHz = 1000000;
     WCSimAddDarkNoise->SetDarkRate(conversion_to_kHz * SetFrequency->GetNewDoubleValue(newValue));
     G4cout << "Setting Dark Rate " << conversion_to_kHz * SetFrequency->GetNewDoubleValue(newValue)
