@@ -779,7 +779,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	    bool found_hit = false;
 	    for(G4int ih = 0; ih < (*WCHC)[idigi]->GetTotalPe(); ih++){
 	      hit_time = (*WCHC)[idigi]->GetTime(ih);
-	      if(abs(hit_time - digi_time) < 1E-6) {
+	      if(TMath::Abs(hit_time - digi_time) < 1E-6) {
 		found_hit = true;
 		hit_parentid = (*WCHC)[idigi]->GetParentID(ih);
 		break;
@@ -790,13 +790,17 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	      G4cout << "Hit " << id << " in the WCSimWCDigi is a photon hit with time " 
 		     << hit_time << " and parentID " << hit_parentid << G4endl;
 #endif
-	      truetime.push_back(hit_time);
+	      truetime.push_back(digi_time);
 	      primaryParentID.push_back(hit_parentid);
 	    }
 	    else {
 #ifdef _SAVE_RAW_HITS_VERBOSE
 	      G4cout << "Hit " << id << " in the WCSimWCDigi is a noise hit with time "
 		     << digi_time << G4endl;
+	      G4cout << "\tHit collection has times";
+	      for(G4int ih = 0; ih < (*WCHC)[idigi]->GetTotalPe(); ih++)
+		G4cout << " " << (*WCHC)[idigi]->GetTime(ih);
+	      G4cout << G4endl;
 #endif
 	      truetime.push_back(digi_time);
 	      primaryParentID.push_back(-1);
@@ -823,6 +827,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	  digi_time = (*WCDC_hits)[idigi]->GetTime(id);
 	  truetime.push_back(digi_time);
 	  primaryParentID.push_back(-1);
+#ifdef _SAVE_RAW_HITS_VERBOSE
+	  G4cout << "Hit " << id << " in the WCSimWCDigi is a noise hit with time "
+		 << digi_time << G4endl;
+#endif
 	}//id
       }//idigi >= total_hits
       wcsimrootevent->AddCherenkovHit(digi_tubeid,
