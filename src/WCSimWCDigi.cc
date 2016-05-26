@@ -64,21 +64,12 @@ void WCSimWCDigi::Print()
 
 std::vector<int> WCSimWCDigi::GetDigiCompositionInfo(int gate)
 {
-  std::vector<int> photon_ids;
 #ifdef WCSIMWCDIGI_VERBOSE
   G4cout << "WCSimWCDigi::GetDigiCompositionInfo fDigiComp has size " << fDigiComp.size() << G4endl;
+  for(int i = 0; i < fDigiComp[gate].size(); i++)
+    G4cout << "WCSimWCDigi::GetDigiCompositionInfo found photon with ID " << fDigiComp[gate][i] << G4endl;
 #endif
-  for(std::vector< std::pair<int,int> >::iterator it = fDigiComp.begin(); it != fDigiComp.end(); ++it) {
-    if(gate == (*it).first) {
-      photon_ids.push_back((*it).second);
-#ifdef WCSIMWCDIGI_VERBOSE
-      G4cout << "WCSimWCDigi::GetDigiCompositionInfo found photon with ID " << (*it).second << G4endl;
-#endif
-    }
-    else if((*it).first > gate)
-      break;
-  }
-  return photon_ids;
+  return fDigiComp[gate];
 }
 
 void WCSimWCDigi::RemoveDigitizedGate(G4int gate)
@@ -96,25 +87,16 @@ void WCSimWCDigi::RemoveDigitizedGate(G4int gate)
     time_float.erase(it);
   else
     G4cerr << "Could not erase time " << gatetime << " from WCSimWCDigi member time_float" << G4endl;
+
+  // the following are not necessarily filled, so need to check that they exist before trying to erase them
+  //
   //digit composition vector (pair of digit_id, photon_id)
-  //first remove the entries corresponding to the current gate
-  for(std::vector< std::pair<int,int> >::iterator it = fDigiComp.begin(); it != fDigiComp.end(); ) {
-    if(gate == (*it).first)
-      it = fDigiComp.erase(it);
-    else if((*it).first > gate)
-      break;
-    else
-      ++it;
-  }
-  //now that the entries concerning this gate have been removed, need to reorder the remaining entries
-  std::vector< std::pair<int,int> > temp_comp_vec;
-  for(std::vector< std::pair<int,int> >::iterator it = fDigiComp.begin(); it != fDigiComp.end(); ++it) {
-    if((*it).first > gate)
-      temp_comp_vec.push_back(std::make_pair((*it).first - 1, (*it).second));
-    else
-      temp_comp_vec.push_back(*it);
-  }
-  temp_comp_vec.swap(fDigiComp);
+  if(fDigiComp.find(gate) != fDigiComp.end())
+    fDigiComp.erase(gate);
+  //parent id
+  if(primaryParentID.find(gate) != primaryParentID.end())
+    primaryParentID.erase(gate);
+
   //number of entries counter
   totalPe--;
 }

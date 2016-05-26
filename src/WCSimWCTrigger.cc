@@ -347,17 +347,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    + digit_time;
 
 	  //get the composition information for the triggered digit
-	  //WCDCPMT stores this information in pairs of (digit id, photon id)
-	  //need to loop to ensure we get all the photons associated with the current digit (digit ip)
-	  std::vector< std::pair<int,int> > digitized_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo();
-	  std::vector<int> triggered_composition;
-	  for(std::vector< std::pair<int,int> >::iterator it = digitized_composition.begin(); it != digitized_composition.end(); ++it) {
-	    if((*it).first == ip) {
-	      triggered_composition.push_back((*it).second);
-	    }
-	    else if ((*it).first > ip)
-	      break;
-	  }//loop over digitized_composition
+	  std::vector<int> triggered_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo(ip);
 
 #ifdef WCSIMWCTRIGGER_VERBOSE
 	  G4cout << "Saving digit on PMT " << tube
