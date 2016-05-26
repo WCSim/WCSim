@@ -39,6 +39,10 @@
 
 #/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
 
+#Use mPMT settings 
+/control/execute mPMT.mac         ## NEW
+
+
 #Added for the PMT QE option 08/17/10 (XQ)
 # 1. Stacking only mean when the photon is generated
 # the QE is applied to reduce the total number of photons
@@ -104,7 +108,7 @@
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute visOGLSX.mac
 #/control/execute visRayTracer.mac
-
+#/control/execute visOGLQT.mac             ## NEW
 
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
