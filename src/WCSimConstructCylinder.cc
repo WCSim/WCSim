@@ -74,7 +74,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   
   innerAnnulusRadius = WCIDRadius - WCPMTExposeHeight-1.*mm;
   outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
-
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
   WCLength    = WCIDHeight + 2*2.3*m;	//jl145 - reflects top veto blueprint, cf. Farshid Feyzi
@@ -97,31 +96,17 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   //-----------------------------------------------------
 
   // The water barrel is placed in an tubs of air
-
-  G4String air = "Air";
-  G4Material * air_material = G4Material::GetMaterial(air);
-  double air_thickness = 2.*m;
-  double air_height = 4.2*m;
-  double barrel_thickness = 1.*m;
-  bool make_it_rock = false;
-  if( make_it_rock ){
-	air_material = G4Material::GetMaterial("Silicon");
-	if (!air_material) {
-	  air_material = new G4Material("Silicon", 14., 28.0855*g/mole, 
-									2.33*g/cm3);
-	}
-  }
   
   G4Tubs* solidWC = new G4Tubs("WC",
 			       0.0*m,
-			       WCRadius+air_thickness, 
-			       .5*WCLength+air_height,	//jl145 - per blueprint
+			       WCRadius+2.*m, 
+			       .5*WCLength+4.2*m,	//jl145 - per blueprint
 			       0.*deg,
 			       360.*deg);
   
   G4LogicalVolume* logicWC = 
     new G4LogicalVolume(solidWC,
-			air_material,
+			G4Material::GetMaterial("Air"),
 			"WC",
 			0,0,0);
  
@@ -136,7 +121,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   //-----------------------------------------------------
   G4Tubs* solidWCBarrel = new G4Tubs("WCBarrel",
 				     0.0*m,
-				     WCRadius+barrel_thickness, // add a bit of extra space
+				     WCRadius+1.*m, // add a bit of extra space
 				     .5*WCLength,  //jl145 - per blueprint
 				     0.*deg,
 				     360.*deg);

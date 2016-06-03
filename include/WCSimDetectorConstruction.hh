@@ -71,7 +71,7 @@ public:
   G4String GetDetectorName()      {return WCDetectorName;}
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
-  G4double GetWaterTubeRadius()   {return WCRadius;}  
+  G4double GetWaterTubeRadius()   {return WCRadius;}
   G4double GetPMTSize()           {return WCPMTRadius;}
   G4String GetPMTName()			  {return WCPMTName;}
   G4int    GetMyConfiguration()   {return myConfiguration;}
@@ -144,6 +144,11 @@ private:
   // Tuning parameters
 
   WCSimTuningParameters* WCSimTuningParams;
+
+  // Sensitive Detectors. We declare the pointers here because we need
+  // to check their state if we change the geometry, otherwise will segfault
+  // between events!
+  WCSimWCSD* aWCPMT;
 
   //Water, Blacksheet surface
   G4OpticalSurface * OpWaterBSSurface;

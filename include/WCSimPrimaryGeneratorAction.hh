@@ -144,7 +144,10 @@ public:
 
     vectorFileName = fileName;
     inputFile.open(vectorFileName, std::fstream::in);
-  }
+    if ( !inputFile.is_open() ) {
+      G4cout << "Vector file "<< vectorFileName << "not found"<< G4endl;
+      exit(-1);
+    }  }
   inline G4bool IsGeneratingVertexInRock() { return GenerateVertexInRock; }
   inline void SetGenerateVertexInRock(G4bool choice) { GenerateVertexInRock = choice; }
 

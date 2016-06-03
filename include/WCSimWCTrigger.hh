@@ -39,13 +39,8 @@ public:
   
   virtual ~WCSimWCTriggerBase();
 
-  /**
-   * \brief The main user-callable routine of the class. Gets the input & creates the output WCSimWCTriggeredDigitsCollection's, then calls DoTheWork()
-   *
-   * The virtual keyword for this method is DEPRECATED
-   * It is only defined virtual now because it is overridden in the old class (WCSimWCDigitizer)
-   */
-  virtual void Digitize();
+  ///The main user-callable routine of the class. Gets the input & creates the output WCSimWCTriggeredDigitsCollection's, then calls DoTheWork()
+  void Digitize();
 
   ///Returns the number of trigger gates in the event (i.e. the number of triggers passed)
   int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
@@ -60,6 +55,9 @@ public:
   // Trigger algorithm option set methods
   //
 
+  ///Set whether to allow the number of digits per PMT per trigger to go > 1
+  void SetMultiDigitsPerTrigger(G4bool allow_multi) { multiDigitsPerTrigger = allow_multi; }
+
   // NDigits options
   ///Set the threshold for the NDigits trigger
   void SetNDigitsThreshold(G4int threshold) { ndigitsThreshold = threshold; }
@@ -67,18 +65,23 @@ public:
   void SetNDigitsWindow(G4int window) { ndigitsWindow = window; }
   ///Automatically adjust the NDigits threshold based on the average noise occupancy?
   void SetNDigitsAdjustForNoise    (G4bool adjust)      { ndigitsAdjustForNoise = adjust; }
+  ///Set the pretrigger window for the NDigits trigger (value will be forced negative)
+  void SetNDigitsPreTriggerWindow(G4int window)  { ndigitsPreTriggerWindow  = - abs(window); }
+  ///Set the posttrigger window for the NDigits trigger (value will be forced positive)
+  void SetNDigitsPostTriggerWindow(G4int window) { ndigitsPostTriggerWindow = + abs(window); }
 
   // Save trigger failures options
   ///Set the mode for saving failed triggers (0:save only triggered events, 1:save both triggered events & failed events, 2:save only failed events)
   void SetSaveFailuresMode       (G4int mode )        { saveFailuresMode = mode; }
   ///Set the dummy trigger time for the failed triggers
   void SetSaveFailuresTime       (G4double time )     { saveFailuresTime = time; }
+  ///Set the pretrigger window for the SaveFailures trigger (value will be forced negative)
+  void SetSaveFailuresPreTriggerWindow(G4int window)  { saveFailuresPreTriggerWindow  = - abs(window); }
+  ///Set the posttrigger window for the SaveFailures trigger (value will be forced positive)
+  void SetSaveFailuresPostTriggerWindow(G4int window) { saveFailuresPostTriggerWindow = + abs(window); }
   
   ///Knowledge of the dark rate (use for automatically adjusting for noise)
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
-
-  ///DEPRECATED function used in old class (WCSimWCDigitizer), and called in WCSimEventAction
-  virtual void SetPMTSize(G4float /*inputSize*/) {};
 
   int event_number;
   bool output_txt;
@@ -87,6 +90,25 @@ protected:
 
   ///This should call the trigger algorithms, and handle any temporary DigitsCollection's
   virtual void DoTheWork(WCSimWCDigitsCollection* WCDCPMT) = 0;
+
+  /// Get the default threshold, etc. from the derived class, and override with read from the .mac file
+  void GetVariables();
+
+  ///Set the default trigger class specific decision of whether to save multiple digits per PMT per trigger (overridden by .mac)
+  virtual bool GetDefaultMultiDigitsPerTrigger()   { return true; }
+  ///Set the default trigger class specific NDigits window (in ns) (overridden by .mac)
+  virtual int GetDefaultNDigitsWindow()            { return 200; }
+  ///Set the default trigger class specific NDigits threshold (in ns) (overridden by .mac)
+  virtual int GetDefaultNDigitsThreshold()         { return 25; }
+  ///Set the default trigger class specific NDigits pretrigger window (in ns) (overridden by .mac)
+  virtual int GetDefaultNDigitsPreTriggerWindow()  { return -400; }
+  ///Set the default trigger class specific NDigits posttrigger window (in ns) (overridden by .mac)
+  virtual int GetDefaultNDigitsPostTriggerWindow() { return 950; }
+
+  ///Get the pretrigger window for a given trigger algorithm
+  int GetPreTriggerWindow(TriggerType_t t);
+  ///Get the posttrigger window for a given trigger algorithm
+  int GetPostTriggerWindow(TriggerType_t t);
 
   //these are the algorithms that perform triggering
   //they are stored here so that different trigger classes can use the same algorithms without copying code
@@ -107,7 +129,6 @@ protected:
    */
   void AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
   void AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
-  void AlgTestVertexTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
 
   WCSimWCTriggeredDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
   std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
@@ -130,30 +151,20 @@ protected:
   double PMTDarkRate;    ///< Dark noise rate of the PMTs
 
   // Trigger algorithm options
+  G4bool multiDigitsPerTrigger;    ///< Allow the number of digits per PMT saved in each trigger window to go > 1?
   //NDigits
-  G4int  ndigitsThreshold;      ///< The threshold for the NDigits trigger
-  G4int  ndigitsWindow;         ///< The time window for the NDigits trigger
-  G4bool ndigitsAdjustForNoise; ///< Automatically adjust the NDigits trigger threshold based on the average dark noise rate?
+  G4int  ndigitsThreshold;         ///< The threshold for the NDigits trigger
+  G4int  ndigitsWindow;            ///< The time window for the NDigits trigger
+  G4bool ndigitsAdjustForNoise;    ///< Automatically adjust the NDigits trigger threshold based on the average dark noise rate?
+  G4int  ndigitsPreTriggerWindow;  ///< The pretrigger window to save before an NDigits trigger
+  G4int  ndigitsPostTriggerWindow; ///< The posttrigger window to save after an NDigits trigger
   //Save failures
-  G4int    saveFailuresMode; ///< The mode for saving events which don't pass triggers
-  G4double saveFailuresTime; ///< The dummy trigger time for failed events
+  G4int    saveFailuresMode;              ///< The mode for saving events which don't pass triggers
+  G4double saveFailuresTime;              ///< The dummy trigger time for failed events
+  G4int    saveFailuresPreTriggerWindow;  ///< The pretrigger window to save before an SaveFailures trigger
+  G4int    saveFailuresPostTriggerWindow; ///< The posttrigger window to save after an SaveFailures trigger
 
   G4String triggerClassName; ///< Save the name of the trigger class
-
-    //maps for the Alfons vertex trigger
-  std::vector<std::vector<int> > nhitsVTXmap;
-  std::vector<int> nhitsmap;
-  std::vector<G4ThreeVector> vtxVector;
-  G4int windowVTX;
-  
-  std::vector<int> digit_times;
-  std::vector<std::pair<int,int> > PossibleTrigger;
-  std::vector<int> PossibleTriggerCount;
-  //std::vector<std::pair<int, std::pair<int,int> > > Possibletrigger2;//vtxindex, time, count
-  std::vector<std::pair<int,int> > PossibleTrigger2;
-  std::vector<int> PossibleTriggerCount2;
-  std::vector<std::pair<int,int> > TriggerPairsCorT;
-  std::vector<std::pair<int,int> > TriggerNormT;
 
 private:
   ///modify the NDigits threshold based on the average dark noise rate
@@ -162,9 +173,8 @@ private:
   ///takes all trigger times, then loops over all Digits & fills the output DigitsCollection
   void FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType);
   void FillDigitsCollectionNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType);
+
   static const double offset;        ///< Hit time offset (ns)
-  static const double eventgateup;   ///< Digits are saved up to trigger time + eventgateup (ns)
-  static const double eventgatedown; ///< Digits are saved starting from trigger time - eventgatedown (ns)
   static const double LongTime;      ///< An arbitrary long time to use in loops (ns)
 
   bool   digitizeCalled; ///< Has Digitize() been called yet?
@@ -287,25 +297,27 @@ private:
   ///Calls the workhorse of this class: AlgNDigits
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
+  bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
+  int  GetDefaultNDigitsWindow()            { return 200;   } ///< SK max light travel time ~200 ns
+  int  GetDefaultNDigitsThreshold()         { return 25;    } ///< SK NDigits threshold ~25
+  int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
+  int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
 };
-
-
 
 class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
 {
 public:
-
+  
   ///Create WCSimWCTriggerNDigits instance with knowledge of the detector and DAQ options
   WCSimWCTriggerNoTrigger(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
-
+  
   ~WCSimWCTriggerNoTrigger();
   
 private:
   ///Calls the workhorse of this class: AlgNDigits
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
-
+  
 };
-
 
 /**
  * \class WCSimWCTriggerNDigits2
@@ -325,29 +337,13 @@ public:
 private:
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
+  bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
+  int  GetDefaultNDigitsWindow()            { return 200;   } ///< SK max light travel time ~200 ns
+  int  GetDefaultNDigitsThreshold()         { return 50;    } ///< 2 * SK NDigits threshold ~25
+  int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
+  int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
 };
 
-/**
- * \class WCSimWCTestVertexTrigger
- *
- * \brief A simple NDigits trigger class
- *
- */
-
-class WCSimWCTriggerTestVertex : public WCSimWCTriggerBase
-{
-public:
-
-  ///Create WCSimWCTestVertexTrigger instance with knowledge of the detector and DAQ options
-  WCSimWCTriggerTestVertex(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
-
-  ~WCSimWCTriggerTestVertex();
-  
-private:
-  ///Calls the workhorse of this class: AlgNDigits
-  void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
-
-};
 
 
 #endif //WCSimWCTrigger_h

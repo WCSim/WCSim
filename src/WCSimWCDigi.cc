@@ -95,14 +95,26 @@ void WCSimWCDigi::RemoveDigitizedGate(G4int gate)
   if(it != time_float.end())
     time_float.erase(it);
   else
-    G4cout << "Could not erase time " << gatetime << " from WCSimWCDigi member time_float" << G4endl;
-  //digit composition vector
-  for(std::vector< std::pair<int,int> >::iterator it = fDigiComp.begin(); it != fDigiComp.end(); ++it) {
+    G4cerr << "Could not erase time " << gatetime << " from WCSimWCDigi member time_float" << G4endl;
+  //digit composition vector (pair of digit_id, photon_id)
+  //first remove the entries corresponding to the current gate
+  for(std::vector< std::pair<int,int> >::iterator it = fDigiComp.begin(); it != fDigiComp.end(); ) {
     if(gate == (*it).first)
-      fDigiComp.erase(it);
+      it = fDigiComp.erase(it);
     else if((*it).first > gate)
       break;
+    else
+      ++it;
   }
+  //now that the entries concerning this gate have been removed, need to reorder the remaining entries
+  std::vector< std::pair<int,int> > temp_comp_vec;
+  for(std::vector< std::pair<int,int> >::iterator it = fDigiComp.begin(); it != fDigiComp.end(); ++it) {
+    if((*it).first > gate)
+      temp_comp_vec.push_back(std::make_pair((*it).first - 1, (*it).second));
+    else
+      temp_comp_vec.push_back(*it);
+  }
+  temp_comp_vec.swap(fDigiComp);
   //number of entries counter
   totalPe--;
 }

@@ -39,8 +39,9 @@ private:
   G4String            StoreDigitizerChoice;
   G4UIcmdWithAString* TriggerChoice;
   G4String            StoreTriggerChoice;
-
-  G4UIcmdWithoutParameter* DAQConstruct; //TODO remove this
+  G4UIcmdWithABool*   MultiDigitsPerTrigger;
+  G4bool              StoreMultiDigitsPerTrigger;
+  G4bool              MultiDigitsPerTriggerSet;
 
   G4UIdirectory*        DigitizerDir;
   G4UIcmdWithAnInteger* DigitizerDeadTime;
@@ -53,6 +54,10 @@ private:
   G4int                 StoreSaveFailuresMode;
   G4UIcmdWithADouble*   SaveFailuresTriggerTime;
   G4double              StoreSaveFailuresTime;
+  G4UIcmdWithAnInteger* SaveFailuresPreTriggerWindow;
+  G4int                 StoreSaveFailuresPreWindow;
+  G4UIcmdWithAnInteger* SaveFailuresPostTriggerWindow;
+  G4int                 StoreSaveFailuresPostWindow;
 
   G4UIdirectory*        NDigitsTriggerDir;
   G4UIcmdWithAnInteger* NDigitsTriggerThreshold;
@@ -61,8 +66,13 @@ private:
   G4int                 StoreNDigitsWindow;
   G4UIcmdWithABool*     NDigitsTriggerAdjustForNoise;
   G4bool                StoreNDigitsAdjustForNoise;
+  G4UIcmdWithAnInteger* NDigitsPreTriggerWindow;
+  G4int                 StoreNDigitsPreWindow;
+  G4UIcmdWithAnInteger* NDigitsPostTriggerWindow;
+  G4int                 StoreNDigitsPostWindow;
 
   G4String initialiseString;
+  G4bool   initialised;
 };
 
 #endif
