@@ -19,6 +19,11 @@ WCSimTrackingAction::WCSimTrackingAction()
   ParticleList.insert(-321); // kaon-
   ParticleList.insert(311); // kaon0
   ParticleList.insert(-311); // kaon0 bar
+  
+  ParticleList.insert(11);
+  ParticleList.insert(-11);
+  ParticleList.insert(12);
+  ParticleList.insert(-12);
   // don't put gammas there or there'll be too many
 }
 
@@ -27,7 +32,7 @@ WCSimTrackingAction::~WCSimTrackingAction(){;}
 void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
   G4float percentageOfCherenkovPhotonsToDraw = 0.0;
-
+  
   if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()
        || G4UniformRand() < percentageOfCherenkovPhotonsToDraw )
     {
@@ -82,7 +87,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 
   G4Track* theTrack = (G4Track*)aTrack;
   theTrack->SetUserInformation(anInfo);
-
+  
   // pass primary parent ID to children
   G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
   if(secondaries)

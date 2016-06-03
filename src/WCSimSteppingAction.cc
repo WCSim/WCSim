@@ -23,7 +23,6 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
   const G4Track* track       = aStep->GetTrack();
   G4VPhysicalVolume* volume  = track->GetVolume();
 
-
   G4SDManager* SDman   = G4SDManager::GetSDMpointer();
   G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
 

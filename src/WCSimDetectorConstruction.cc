@@ -129,6 +129,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   else logicWCBox = ConstructCylinder(); 
 
   G4cout << " WCLength       = " << WCLength/m << " m"<< G4endl;
+  G4cout << " WCRadius       = " << WCRadius/m << " m"<< G4endl;
 
   //-------------------------------
 

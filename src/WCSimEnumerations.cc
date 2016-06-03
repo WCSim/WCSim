@@ -28,6 +28,9 @@ std::string WCSimEnumerations::EnumAsString(TriggerType_t t)
   case (kTriggerFailure) :
     return "No_trigger_passed";
     break;
+  case (kTriggerNoTrig) :
+    return "NoTrigger";
+    break;
   default:
     return "";
     break;
