@@ -84,7 +84,6 @@ public:
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
 
   int event_number;
-  bool output_txt;
 
 protected:
 

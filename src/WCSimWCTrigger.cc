@@ -50,6 +50,8 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
   }
 
   digitizeCalled = false;
+  event_number = 1;
+
 }
 
 WCSimWCTriggerBase::~WCSimWCTriggerBase(){
@@ -75,9 +77,6 @@ void WCSimWCTriggerBase::GetVariables()
 	   << G4endl;
     exit(-1);
   }
-
-  event_number = 1;
-  output_txt = false;
 
   G4cout << (multiDigitsPerTrigger ? "Using mutiple digits per PMT per trigger" : "Using a maximum of 1 digit per PMT per trigger" ) << G4endl
 	 << "Using NDigits threshold " << ndigitsThreshold
@@ -539,62 +538,6 @@ void WCSimWCTriggerBase::FillDigitsCollectionNoTrigger(WCSimWCDigitsCollection* 
 
 
 void WCSimWCTriggerBase::AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test) {
-
-  if( output_txt ){
-    ofstream myfile_hits;
-    int nchar = (ceil(log10(event_number))+1);
-    char * num =  (char*)malloc(sizeof(char)*nchar);
-    sprintf(num, "%d", event_number);
-    std::string event_file_base = "all_hits_";
-    std::string event_file_suffix = ".txt";
-    std::string event_file = event_file_base + num + event_file_suffix;
-    event_number++;
-    myfile_hits.open (event_file.c_str());
-    
-    for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
-      int tube=(*WCDCPMT)[i]->GetTubeID();
-      for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
-	int digit_time = (*WCDCPMT)[i]->GetTime(ip);
-	myfile_hits << tube << "  " << digit_time << " \n";
-      }
-    }
-    myfile_hits.close();
-  }
-
-  if( output_txt ){
-    std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
-    
-    ofstream myfile_pmts;
-    myfile_pmts.open ("all_pmts.txt");
-    
-    for (G4int i = 0 ; i < pmts->size() ; i++) {
-      
-      WCSimPmtInfo* pmtinfo;
-      pmtinfo = (WCSimPmtInfo*)pmts->at( i );
-      
-      myfile_pmts << pmtinfo->Get_tubeid() << "  " << pmtinfo->Get_transx() << "  " << pmtinfo->Get_transy() << "  " << pmtinfo->Get_transz() << " \n";
-    }
-    myfile_pmts.close();
-  }
-
-  if( output_txt ){
-    float radius,height;
-    height = 0;
-    radius = 0;
-    if(myDetector->GetDetectorName() == "SuperK" || myDetector->GetDetectorName() == "SuperK_20inchPMT_20perCent" ||
-       myDetector->GetDetectorName() == "SuperK_20inchBandL_20perCent" || myDetector->GetDetectorName() == "SuperK_12inchBandL_15perCent" ||
-       myDetector->GetDetectorName() == "SuperK_20inchBandL_14perCent" ||
-       myDetector->GetDetectorName() == "Cylinder_60x74_20inchBandL_14perCent()" ||
-       myDetector->GetDetectorName() == "Cylinder_60x74_20inchBandL_40perCent()") {
-      height = myDetector->GetWaterTubeLength()/2.;
-      radius = myDetector->GetWaterTubeRadius();
-    }
-    
-    ofstream myfile_detector;
-    myfile_detector.open ("detector.txt");
-    myfile_detector << height*2./10. << "  " << radius/10. << " 25.4 \n";
-    myfile_detector.close();
-  }
 
   //Does not doanything, just writes out all hits
   TriggerType_t this_triggerType = kTriggerNoTrig;
