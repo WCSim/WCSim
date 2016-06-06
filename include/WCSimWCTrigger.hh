@@ -304,13 +304,13 @@ class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
 {
 public:
   
-  ///Create WCSimWCTriggerNDigits instance with knowledge of the detector and DAQ options
+  ///Create WCSimWCTriggerNoTrigger instance with knowledge of the detector and DAQ options
   WCSimWCTriggerNoTrigger(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
   
   ~WCSimWCTriggerNoTrigger();
   
 private:
-  ///Calls the workhorse of this class: AlgNDigits
+  ///Calls the workhorse of this class: AlgNoTrigger
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
   
 };
