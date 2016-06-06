@@ -46,6 +46,7 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   TriggerChoice->SetCandidates(
 			       "NDigits "
 			       "NDigits2 "
+			       "NoTrigger "
 			       );
   TriggerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
   TriggerChoice->SetDefaultValue(defaultTrigger);
