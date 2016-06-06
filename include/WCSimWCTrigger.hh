@@ -83,8 +83,6 @@ public:
   ///Knowledge of the dark rate (use for automatically adjusting for noise)
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
 
-  int event_number;
-
 protected:
 
   ///This should call the trigger algorithms, and handle any temporary DigitsCollection's

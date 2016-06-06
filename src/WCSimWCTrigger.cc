@@ -50,7 +50,6 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
   }
 
   digitizeCalled = false;
-  event_number = 1;
 
 }
 
@@ -184,6 +183,7 @@ void WCSimWCTriggerBase::Digitize()
   }
   
   StoreDigiCollection(DigitsCollection);
+
 }
 
 void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test)
