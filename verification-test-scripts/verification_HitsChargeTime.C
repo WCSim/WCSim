@@ -224,7 +224,7 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
  
   
   // Now loop over events
-  for (int ev=0; ev<nevent; ev++)
+  for (int ev=0; ev<nevent2; ev++)
   {
     // Read the event from the tree into the WCSimRootEvent instance
     wcsimT2->GetEntry(ev);      
