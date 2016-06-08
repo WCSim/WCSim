@@ -3,6 +3,7 @@
 /run/verbose 0
 /tracking/verbose 0
 /hits/verbose 0
+/grdm/verbose 0
 
 ## select the geometry
 # Default config if you do nothing is currently SuperK
@@ -112,6 +113,29 @@
 /gun/energy 500 MeV
 /gun/direction 1 0 0 
 /gun/position 0 0 0  
+
+# /mygen/generator radioactive
+# #this window should match the one in biasprofile.dat
+# /mygen/radioactive_time_window 1.e-4
+# /mygen/isotope Tl208 PMT 2.8
+# /mygen/isotope Bi214 PMT 27.
+# /mygen/isotope K40 PMT 94.
+# /mygen/isotope Bi214 water 264.
+# #/mygen/isotope Tl208 water 95.
+# #Clear the source and tell GPS to make multiple vertices
+# /gps/source/clear
+
+# ### profile file to enforce radioactive decay time
+# ###   t(1)  I(1)
+# ###   t(2)  I(2)
+# ###   t(3)  I(3)
+# ### times t(i) are in seconds
+# ### decay intensity I(i) is distributed flat from t(i) to t(i+1)
+
+# ### the window in this file should match the radioactive_time_window
+# /grdm/decayBiasProfile biasprofile.dat
+# /grdm/analogueMC 0
+# /grdm/BRbias 0
 
 ## change the name of the output root file, default = wcsim.root
 

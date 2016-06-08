@@ -18,6 +18,12 @@ class G4Generator;
 class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
 
+  struct radioactive_source {
+    G4String IsotopeName;
+    G4String IsotopeLocation;
+    G4double IsotopeActivity;
+  };
+
 public:
   WCSimPrimaryGeneratorAction(WCSimDetectorConstruction*);
   ~WCSimPrimaryGeneratorAction();
@@ -78,6 +84,9 @@ private:
   G4bool   useMulineEvt;
   G4bool   useNormalEvt;
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
+  G4bool useRadioactiveEvt;
+  std::vector<struct radioactive_source> radioactive_sources;
+  G4double radioactive_time_window;
   std::fstream inputFile;
   G4String vectorFileName;
   G4bool   GenerateVertexInRock;
@@ -112,7 +121,22 @@ public:
   inline void SetLaserEvtGenerator(G4bool choice) { useLaserEvt = choice; }
   inline G4bool IsUsingLaserEvtGenerator()  { return useLaserEvt; }
 
-
+  inline void AddRadioactiveSource(G4String IsotopeName, G4String IsotopeLocation, G4double IsotopeActivity){
+    struct radioactive_source r;
+    r.IsotopeName = IsotopeName;
+    r.IsotopeLocation = IsotopeLocation;
+    r.IsotopeActivity = IsotopeActivity;
+    radioactive_sources.push_back(r);
+  }
+  inline std::vector<struct radioactive_source> Radioactive_Sources()  { return radioactive_sources; }
+  
+  inline void SetRadioactiveEvtGenerator(G4bool choice) { useRadioactiveEvt = choice; }
+  inline G4bool IsUsingRadioactiveEvtGenerator()  { return useRadioactiveEvt; }
+  
+  inline void SetRadioactiveTimeWindow(G4double choice) { radioactive_time_window = choice; }
+  inline G4double GetRadioactiveTimeWindow()  { return radioactive_time_window; }
+  
+  
   inline void OpenVectorFile(G4String fileName) 
   {
     if ( inputFile.is_open() ) 
