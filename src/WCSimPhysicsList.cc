@@ -330,9 +330,9 @@ void WCSimPhysicsList::ConstructGeneral()
       pmanager ->SetProcessOrdering(theDecayProcess, idxAtRest);
     }
   }
-}
 
-// Declare radioactive decay to the GenericIon in the IonTable.
+
+  // Declare radioactive decay to the GenericIon in the IonTable.
   const G4IonTable *theIonTable = 
     G4ParticleTable::GetParticleTable()->GetIonTable();
   G4RadioactiveDecay *theRadioactiveDecay = new G4RadioactiveDecay();
