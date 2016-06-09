@@ -63,8 +63,8 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
  
   TTree  *wcsimT = f->Get("wcsimT");
   int nevent = wcsimT->GetEntries();
-  WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent();
-  wcsimT->SetBranchAddress("wcsimrootevent",&wcsimrootsuperevent);
+  WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent(); // Create a WCSimRootEvent to put stuff from the tree in
+  wcsimT->SetBranchAddress("wcsimrootevent",&wcsimrootsuperevent); // Set the branch address for reading from the tree
 
   // Force deletion to prevent memory leak when issuing multiple
   // calls to GetEvent()
@@ -86,22 +86,6 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
   int num_digi_tubes = wcsimrootevent->GetNumDigiTubesHit();
   int hit_times = wcsimrootevent->GetCherenkovHitTimes()->GetEntries();
  
-
-  // Create a WCSimRootEvent to put stuff from the tree in
-
-  WCSimRootEvent* wcsimrootsuperevent = new WCSimRootEvent();
-
-  // Set the branch address for reading from the tree
-  TBranch *branch = wcsimT->GetBranch("wcsimrootevent");
-  branch->SetAddress(&wcsimrootsuperevent);
-
-  // Force deletion to prevent memory leak 
-  wcsimT->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
-
-
-   // start with the main "subevent", as it contains most of the info
-  // and always exists.
-  WCSimRootTrigger* wcsimrootevent;
 
   TH1F *h1 = new TH1F("PMT Hits", "# Digitized Hits", 500, 0, 3000);
   TH1F *time = new TH1F("Average time", "Average time", 600, 900, 2000);
@@ -162,8 +146,8 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
 
 TTree  *wcsimT2 = f2->Get("wcsimT");
   int nevent2 = wcsimT2->GetEntries();
-  WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent();
-  wcsimT2->SetBranchAddress("wcsimrootevent",&wcsimrootsuperevent);
+  WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent(); // Create a WCSimRootEvent to put stuff from the tree in
+  wcsimT2->SetBranchAddress("wcsimrootevent",&wcsimrootsuperevent); // Set the branch address for reading from the tree
 
   // Force deletion to prevent memory leak when issuing multiple
   // calls to GetEvent()
@@ -189,22 +173,6 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
   if (abs(hit_times-(wcsimrootevent->GetCherenkovHitTimes()->GetEntries()))> 1.0e-6){cout << "FIRST EVENT TEST FAILED: Number of hit times do not match" << endl;}
   else {cout << "FIRST EVENT TEST PASSED: Number of hit times matches" << endl;}
 
-
-  // Create a WCSimRootEvent to put stuff from the tree in
-
-  WCSimRootEvent* wcsimrootsuperevent = new WCSimRootEvent();
-
-  // Set the branch address for reading from the tree
-  TBranch *branch = wcsimT2->GetBranch("wcsimrootevent");
-  branch->SetAddress(&wcsimrootsuperevent);
-
-  // Force deletion to prevent memory leak 
-  wcsimT2->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
-
-
-   // start with the main "subevent", as it contains most of the info
-  // and always exists.
-  WCSimRootTrigger* wcsimrootevent;
 
   TH1F *h2 = new TH1F("PMT Hits 2", "Digitized Hits", 500, 0, 3000);
   TH1F *time2 = new TH1F("Average time 2", "Average time", 600, 900, 2000);
