@@ -143,6 +143,7 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
     
     for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++) 
       { 
+	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
 	int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
 	h1->Fill(ncherenkovdigihits);
 	
@@ -165,9 +166,10 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
 	  }
 	float av_time = totalt/ncherenkovdigihits;
 	float av_q = totalq/ncherenkovdigihits;
+	pe->Fill(av_q);  
+	time->Fill(av_time);
       }
-    pe->Fill(av_q);  
-    time->Fill(av_time);
+
     // reinitialize super event between loops.
     wcsimrootsuperevent->ReInitialize();
   }// End of loop over events
@@ -245,6 +247,7 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
     
     for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++) 
       { 
+	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
 	int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
 	h2->Fill(ncherenkovdigihits);
 
@@ -266,9 +269,10 @@ TTree  *wcsimT2 = f2->Get("wcsimT");
 	  }
 	float av_time = totalt/ncherenkovdigihits;
 	float av_q = totalq/ncherenkovdigihits;
+	pe2->Fill(av_q);  
+	time2->Fill(av_time);
       }
-    pe2->Fill(av_q);  
-    time2->Fill(av_time);
+
     // reinitialize super event between loops.
     wcsimrootsuperevent->ReInitialize();
   }// End of loop over events
