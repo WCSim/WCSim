@@ -155,7 +155,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   G4ThreeVector vtxs[900];
   G4int         vtxsvol[900];
   for( Int_t u=0; u<nvtxs; u++ ){
-    vtxs[u]      = generatorAction->GetVtxs(u);
+    vtxs[u]      = generatorAction->GetVtx(u);
     vtxsvol[u]   = WCSimEventFindStartingVolume(vtxs[u]);
   }
   G4int         vecRecNumber = generatorAction->GetVecRecNumber();
@@ -310,9 +310,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      G4double      beamenergy;
      G4ThreeVector beamdir;
      
-     beampdg    = generatorAction->GetBeamPDGs(u);
-     beamenergy = generatorAction->GetBeamEnergies(u);
-     beamdir    = generatorAction->GetBeamDirs(u);
+     beampdg    = generatorAction->GetBeamPDG(u);
+     beamenergy = generatorAction->GetBeamEnergy(u);
+     beamdir    = generatorAction->GetBeamDir(u);
   
      jhfNtuple.ipnu[npar]    = beampdg;               // id
      jhfNtuple.flag[npar]    = -1;                    // incoming neutrino
@@ -339,9 +339,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      /////////////////////////////////
      
      G4double      targetpmag = 0.0, targetmass = 0.0;
-     G4int         targetpdg    = generatorAction->GetTargetPDGs(u);
-     G4double      targetenergy = generatorAction->GetTargetEnergies(u);
-     G4ThreeVector targetdir    = generatorAction->GetTargetDirs(u);
+     G4int         targetpdg    = generatorAction->GetTargetPDG(u);
+     G4double      targetenergy = generatorAction->GetTargetEnergy(u);
+     G4ThreeVector targetdir    = generatorAction->GetTargetDir(u);
 
      if (targetpdg!=0) {            // protects against seg-fault
        if (targetpdg > 999)         // 16O nucleus not in pdg table
