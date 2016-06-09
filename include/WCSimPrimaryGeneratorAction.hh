@@ -4,6 +4,7 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ThreeVector.hh"
 #include "globals.hh"
+#include "jhfNtuple.h"
 #include <vector>
 
 #include <fstream>
@@ -74,12 +75,12 @@ private:
   // These go with jhfNtuple
   G4int mode;
   G4int nvtxs;
-  G4int vtxsvol[900];
-  G4ThreeVector vtxs[900];
+  G4int vtxsvol[MAX_N_PRIMARIES];
+  G4ThreeVector vtxs[MAX_N_PRIMARIES];
   G4int npar;
-  G4int beampdgs[900], targetpdgs[900];
-  G4ThreeVector beamdirs[900], targetdirs[900];
-  G4double beamenergies[900], targetenergies[900];
+  G4int beampdgs[MAX_N_PRIMARIES], targetpdgs[MAX_N_PRIMARIES];
+  G4ThreeVector beamdirs[MAX_N_PRIMARIES], targetdirs[MAX_N_PRIMARIES];
+  G4double beamenergies[MAX_N_PRIMARIES], targetenergies[MAX_N_PRIMARIES];
   G4int vecRecNumber;
 
   G4double nuEnergy;

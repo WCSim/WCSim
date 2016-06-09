@@ -152,8 +152,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   G4int         mode     = generatorAction->GetMode();
 
   G4int         nvtxs   = generatorAction->GetNvtxs();
-  G4ThreeVector vtxs[900];
-  G4int         vtxsvol[900];
+  G4ThreeVector vtxs[MAX_N_PRIMARIES];
+  G4int         vtxsvol[MAX_N_PRIMARIES];
   for( Int_t u=0; u<nvtxs; u++ ){
     vtxs[u]      = generatorAction->GetVtx(u);
     vtxsvol[u]   = WCSimEventFindStartingVolume(vtxs[u]);
