@@ -83,7 +83,6 @@ public:
   ///Knowledge of the dark rate (use for automatically adjusting for noise)
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
 
-
 protected:
 
   ///This should call the trigger algorithms, and handle any temporary DigitsCollection's
@@ -126,6 +125,7 @@ protected:
    * for testing purposes. Triggers issued in this mode have type kTriggerNDigitsTest
    */
   void AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
+  void AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
 
   WCSimWCTriggeredDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
   std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
@@ -169,7 +169,7 @@ private:
 
   ///takes all trigger times, then loops over all Digits & fills the output DigitsCollection
   void FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType);
-  
+
   static const double offset;        ///< Hit time offset (ns)
   static const double LongTime;      ///< An arbitrary long time to use in loops (ns)
 
@@ -300,6 +300,20 @@ private:
   int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
 };
 
+class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
+{
+public:
+  
+  ///Create WCSimWCTriggerNoTrigger instance with knowledge of the detector and DAQ options
+  WCSimWCTriggerNoTrigger(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+  
+  ~WCSimWCTriggerNoTrigger();
+  
+private:
+  ///Calls the workhorse of this class: AlgNoTrigger
+  void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
+  
+};
 
 /**
  * \class WCSimWCTriggerNDigits2
