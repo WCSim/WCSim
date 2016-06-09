@@ -434,9 +434,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 //	G4cout << " vertex " << u << " of " << number_of_sources << " (" << vtx.x() << ", " << vtx.y() << ", " << vtx.z() << ")" << G4endl;
 
       	SetVtxs(u,vtx);
-      	SetBeamEnergies(u,E);
+      	SetBeamEnergy(u,E);
       	//       SetBeamDir(dir);
-      	SetBeamPDGs(u,pdg);
+      	SetBeamPDG(u,pdg);
       }
 
     }
