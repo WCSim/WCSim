@@ -3,7 +3,7 @@
 #include <stdio.h>     
 #include <stdlib.h>    
 // Simple example of reading a generated Root file
-void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verbose=false)
+void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename2="../../WCSim_clean/verification-test-scripts/wcsimtest.root", bool verbose=false)
 {
   // Clear global scope
   //gROOT->Reset();
@@ -48,27 +48,13 @@ void verification_HitsChargeTime(char *filename=NULL, char *filename2, bool verb
     gSystem->Load("../libWCSimRoot.so");
   }
 
-  TFile *f;
-  // Open the file
-  if (filename==NULL){
-    f = new TFile("wcsimtest.root","read");
-    filename = "wcsimtest.root";
-  }else{
-    f = new TFile(filename,"read");
-  }
+  TFile *f = new TFile(filename,"read");
   if (!f->IsOpen()){
     cout << "Error, could not open input file: " << filename << endl;
     return -1;
   }
   
-  TFile *f2;
-  // Open the file
-  if (filename2==NULL){
-    f2 = new TFile("../../WCSim_clean/verification-test-scripts/wcsimtest.root","read");
-    filename2 = "../../WCSim_clean/verification-test-scripts/wcsimtest.root";
-  }else{
-    f2 = new TFile(filename2,"read");
-  }
+  TFile *f2 = new TFile(filename2,"read");
   if (!f2->IsOpen()){
     cout << "Error, could not open input file: " << filename2 << endl;
     return -1;
