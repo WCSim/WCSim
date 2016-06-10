@@ -63,35 +63,58 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
  
   TTree  *wcsimT = f->Get("wcsimT");
   int nevent = wcsimT->GetEntries();
-  WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent(); // Create a WCSimRootEvent to put stuff from the tree in
-  wcsimT->SetBranchAddress("wcsimrootevent",&wcsimrootsuperevent); // Set the branch address for reading from the tree
+  TTree  *wcsimT2 = f2->Get("wcsimT");
+  int nevent2 = wcsimT2->GetEntries();
+  
 
-  // Force deletion to prevent memory leak when issuing multiple
-  // calls to GetEvent()
+  // Create a WCSimRootEvent to put stuff from the tree in and set the branch address for reading from the tree
+  WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent();
+  wcsimT->SetBranchAddress("wcsimrootevent",&wcsimrootsuperevent);
+  WCSimRootEvent *wcsimrootsuperevent2 = new WCSimRootEvent();
+  wcsimT2->SetBranchAddress("wcsimrootevent",&wcsimrootsuperevent2);
+
+  // Force deletion to prevent memory leak when issuing multiple calls to GetEvent()
   wcsimT->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
+  wcsimT2->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
 
-  wcsimT->GetEvent(0); 
-
-
+  // Print the first event from the modified WCSim version
+  wcsimT->GetEvent(0);
   WCSimRootTrigger *wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   cout << "Stats for the first event in your version of WCSim using " << filename << endl;
   cout << "Number of tube hits " << wcsimrootevent->GetNumTubesHit() << endl;
   cout << "Number of digitized tube hits " << wcsimrootevent->GetNumDigiTubesHit() << endl;
   cout << "Number of photoelectron hit times " << wcsimrootevent->GetCherenkovHitTimes()->GetEntries() << endl;
 
-  //Save these to compare with the clean version of the code. 
+  // Print the first event from the "clean" WCSim version
+  wcsimT2->GetEvent(0);
+  WCSimRootTrigger *wcsimrootevent2 = wcsimrootsuperevent2->GetTrigger(0);
+  cout << "***********************************************************" << endl;
+  cout << "Stats for the first event of WCSim version on GitHub using "<< filename2 << endl;
+  cout << "Number of tube hits " << wcsimrootevent2->GetNumTubesHit() << endl;
+  cout << "Number of digitized tube hits " << wcsimrootevent2->GetNumDigiTubesHit() << endl;
+  cout << "Number of photoelectron hit times " << wcsimrootevent2->GetCherenkovHitTimes()->GetEntries() << endl;
 
-  int num_tubes =  wcsimrootevent->GetNumTubesHit();
-  int num_digi_tubes = wcsimrootevent->GetNumDigiTubesHit();
-  int hit_times = wcsimrootevent->GetCherenkovHitTimes()->GetEntries();
- 
+  // Compare these two events
+  cout <<  "***********************************************************" << endl;
+  if (abs(wcsimrootevent->GetNumTubesHit() - wcsimrootevent2->GetNumTubesHit())>1.0e-6){cout << "FIRST EVENT TEST FAILED: Number of hit tubes do not match" << endl;}
+  else {cout << "FIRST EVENT TEST PASSED: Number of hit tubes matches" << endl;}
+  if (abs(wcsimrootevent->GetNumDigiTubesHit() - wcsimrootevent2->GetNumDigiTubesHit())>1.0e-6){cout << "FIRST EVENT TEST FAILED: Number of digitized tubes do not match" << endl; }
+  else {cout << "FIRST EVENT TEST PASSED: Number of digitized tubes matches" << endl; }
+  if (abs(wcsimrootevent->GetCherenkovHitTimes()->GetEntries() - wcsimrootevent2->GetCherenkovHitTimes()->GetEntries())> 1.0e-6){cout << "FIRST EVENT TEST FAILED: Number of hit times do not match" << endl;}
+  else {cout << "FIRST EVENT TEST PASSED: Number of hit times matches" << endl;}
 
+
+  // Histograms for the modified WCSim version
   TH1F *hits = new TH1F("PMT Hits", "# Digitized Hits", 500, 0, 3000);
-  TH1F *time = new TH1F("Average time", "Average time", 600, 900, 2000);
+  TH1F *time = new TH1F("Average Time", "Average Time", 600, 900, 2000);
   TH1F *charge = new TH1F("Q/# Digitized PMT", "Average Charge", 200, 0, 5);
- 
-  
-  // Now loop over events
+  // ... and for the "clean" version
+  TH1F *hits2 = new TH1F("PMT Hits 2", "Digitized Hits", 500, 0, 3000);
+  TH1F *time2 = new TH1F("Average Time 2", "Average Time", 600, 900, 2000);
+  TH1F *charge2 = new TH1F("Q/# Digitized PMT 2", "Average Charge", 200, 0, 5);
+
+
+  // Now loop over events from the modified WCSim version and fill the histograms
   for (int ev=0; ev<nevent; ev++){
     // Read the event from the tree into the WCSimRootEvent instance
     wcsimT->GetEntry(ev);      
@@ -138,38 +161,7 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
     wcsimrootsuperevent->ReInitialize();
   }// End of loop over events
 
-  TTree  *wcsimT2 = f2->Get("wcsimT");
-  int nevent2 = wcsimT2->GetEntries();
-  WCSimRootEvent *wcsimrootsuperevent2 = new WCSimRootEvent(); // Create a WCSimRootEvent to put stuff from the tree in
-  wcsimT2->SetBranchAddress("wcsimrootevent",&wcsimrootsuperevent2); // Set the branch address for reading from the tree
 
-  // Force deletion to prevent memory leak when issuing multiple
-  // calls to GetEvent()
-  wcsimT2->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
-
-  wcsimT2->GetEvent(0); 
-
-
-  WCSimRootTrigger *wcsimrootevent2 = wcsimrootsuperevent2->GetTrigger(0);
-
-  cout << "***********************************************************" << endl;
-  cout << "Stats for the first event of WCSim version on GitHub using "<< filename2 << endl;
-  cout << "Number of tube hits " << wcsimrootevent2->GetNumTubesHit() << endl;
-  cout << "Number of digitized tube hits " << wcsimrootevent2->GetNumDigiTubesHit() << endl;
-  cout << "Number of photoelectron hit times " << wcsimrootevent2->GetCherenkovHitTimes()->GetEntries() << endl;
-
-  cout <<  "***********************************************************" << endl;
-  if (abs(num_tubes- wcsimrootevent2->GetNumTubesHit())>1.0e-6){cout << "FIRST EVENT TEST FAILED: Number of hit tubes do not match" << endl;}
-  else {cout << "FIRST EVENT TEST PASSED: Number of hit tubes matches" << endl;}
-  if (abs(num_digi_tubes-wcsimrootevent2->GetNumDigiTubesHit())>1.0e-6){cout << "FIRST EVENT TEST FAILED: Number of digitized tubes do not match" << endl; }
-  else {cout << "FIRST EVENT TEST PASSED: Number of digitized tubes matches" << endl; }
-  if (abs(hit_times-(wcsimrootevent2->GetCherenkovHitTimes()->GetEntries()))> 1.0e-6){cout << "FIRST EVENT TEST FAILED: Number of hit times do not match" << endl;}
-  else {cout << "FIRST EVENT TEST PASSED: Number of hit times matches" << endl;}
-
-
-  TH1F *hits2 = new TH1F("PMT Hits 2", "Digitized Hits", 500, 0, 3000);
-  TH1F *time2 = new TH1F("Average time 2", "Average time", 600, 900, 2000);
-  TH1F *charge2 = new TH1F("Q/# Digitized PMT 2", "Q/# Digitized PMT", 200, 0, 5);
  
   
   // Now loop over events
