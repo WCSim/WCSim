@@ -66,6 +66,10 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
   TTree  *wcsimT2 = f2->Get("wcsimT");
   int nevent2 = wcsimT2->GetEntries();
   
+  if !(nevent == nevent2) {
+    cout << "The input files don’t contain the same number of events. They should probably not be used for verification." << endl;
+    return -1;
+  }
 
   // Create a WCSimRootEvent to put stuff from the tree in and set the branch address for reading from the tree
   WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent();
