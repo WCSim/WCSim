@@ -66,7 +66,7 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
   TTree  *wcsimT2 = f2->Get("wcsimT");
   int nevent2 = wcsimT2->GetEntries();
   
-  if !(nevent == nevent2) {
+  if (nevent != nevent2) {
     cout << "The input files don’t contain the same number of events. They should probably not be used for verification." << endl;
     return -1;
   }
@@ -155,8 +155,8 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
 	    totalq+=q;
 	    totalt+=t;
 	}
-	float av_time = totalt/ncherenkovdigihits;
-	float av_q = totalq/ncherenkovdigihits;
+	float av_time = (ncherenkovdigihits > 0) ? totalt/ncherenkovdigihits : 0;
+	float av_q = (ncherenkovdigihits > 0) ? totalq/ncherenkovdigihits : 0;
 	charge->Fill(av_q);  
 	time->Fill(av_time);
     }
@@ -192,7 +192,6 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
 	int ncherenkovdigihits = wcsimrootevent2->GetNcherenkovdigihits();
 	hits2->Fill(ncherenkovdigihits);
 
-	
 	float totalq = 0.;
 	float totalt = 0.;
 	// Loop through elements in the TClonesArray of WCSimRootCherenkovHits
@@ -206,8 +205,8 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
 	    totalq+=q;
 	    totalt+=t;
 	}
-	float av_time = totalt/ncherenkovdigihits;
-	float av_q = totalq/ncherenkovdigihits;
+	float av_time = (ncherenkovdigihits > 0) ? totalt/ncherenkovdigihits : 0;
+	float av_q = (ncherenkovdigihits > 0) ? totalq/ncherenkovdigihits : 0;
 	charge2->Fill(av_q);  
 	time2->Fill(av_time);
     }
