@@ -758,27 +758,33 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     G4cout<<"RAW HITS"<<G4endl;
 #endif
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
-    std::vector<float> truetime;
+    std::vector<float> truetime, smeartime;
     std::vector<int>   primaryParentID;
-    double hit_time;
+    double hit_time_smear, hit_time_true;
     int hit_parentid;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
-	hit_time = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
+	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
-	truetime.push_back(hit_time);
+	truetime.push_back(hit_time_true);
 	primaryParentID.push_back(hit_parentid);
+#ifdef _SAVE_RAW_HITS_VERBOSE
+	hit_time_smear = (*WCDC_hits)[idigi]->GetTime(id);
+	smeartime.push_back(hit_time_smear);
+#endif
       }//id
 #ifdef _SAVE_RAW_HITS_VERBOSE
       if(digi_tubeid < NPMTS_VERBOSE) {
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
-	       << " with time:primaryparentID";
+	       << " with truetime:smeartime:primaryparentID";
 	for(G4int id = 0; id < truetime.size(); id++) {
-	  G4cout << " " << truetime[id] << ":" << primaryParentID[id];
-	}
+	  G4cout << " " << truetime[id]
+		 << ":" << smeartime[id]
+		 << ":" << primaryParentID[id];
+	}//id
 	G4cout << G4endl;
       }
 #endif
