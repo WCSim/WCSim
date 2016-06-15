@@ -791,6 +791,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       wcsimrootevent->AddCherenkovHit(digi_tubeid,
 				      truetime,
 				      primaryParentID);
+      smeartime.clear();
       truetime.clear();
       primaryParentID.clear();
     }//idigi
