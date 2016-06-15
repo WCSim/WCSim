@@ -195,6 +195,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	    ahit->SetRot(pmt_rotation);
 	    ahit->SetPos(pmt_position);
 	    ahit->SetTime(PMTindex[noise_pmt],current_time);
+	    ahit->SetPreSmearTime(PMTindex[noise_pmt],current_time); //presmear==postsmear for dark noise
 	    pe = WCPMT->rn1pe();
 	    ahit->SetPe(PMTindex[noise_pmt],pe);
 	    //Added this line to increase the totalPe by 1
@@ -213,6 +214,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	  pe = WCPMT->rn1pe();
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPe(PMTindex[noise_pmt],pe);
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTime(PMTindex[noise_pmt],current_time);
+	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPreSmearTime(PMTindex[noise_pmt],current_time); //presmear==postsmear for dark noise
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetParentID(PMTindex[noise_pmt],-1);
 	  PMTindex[noise_pmt]++;
 #ifdef WCSIMWCADDDARKNOISE_VERBOSE

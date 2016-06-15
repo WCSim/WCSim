@@ -752,10 +752,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   if (WCDC_hits) 
   {
     //add the truth raw hits
-    //the noise is NOT in the HitsCollection
-    //therefore need to find it in the DigitsCollection from WCSimWCPMT or WCSimWCAddDarkNoise
-    //and the order of hits isn't preserved
-    //So need to hunt for the hit with the correct time
+    // Both the pre- and post-PMT smearing hit times are accessible
+    // Choose to save just the pre-smeared times for now
 #ifdef _SAVE_RAW_HITS_VERBOSE
     G4cout<<"RAW HITS"<<G4endl;
 #endif
@@ -768,7 +766,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
-	hit_time = (*WCDC_hits)[idigi]->GetTime(id);
+	hit_time = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 	truetime.push_back(hit_time);
 	primaryParentID.push_back(hit_parentid);

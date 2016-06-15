@@ -15,6 +15,7 @@ WCSimWCDigi::WCSimWCDigi()
   //  TriggerTimes.reserve(10);
   pe.clear();
   time.clear();
+  time_presmear.clear();
   totalPe = 0;
 }
 
@@ -31,6 +32,7 @@ WCSimWCDigi::WCSimWCDigi(const WCSimWCDigi& right)
   tubeID = right.tubeID; 
   pe     = right.pe;
   time   = right.time;
+  time_presmear = right.time_presmear;
 }
 
 const WCSimWCDigi& WCSimWCDigi::operator=(const WCSimWCDigi& right)
@@ -39,6 +41,7 @@ const WCSimWCDigi& WCSimWCDigi::operator=(const WCSimWCDigi& right)
   tubeID = right.tubeID; 
   pe     = right.pe;
   time   = right.time;
+  time_presmear = right.time_presmear;
   return *this;
 }
 
@@ -46,6 +49,7 @@ const WCSimWCDigi& WCSimWCDigi::operator=(const WCSimWCDigi& right)
 int WCSimWCDigi::operator==(const WCSimWCDigi& right) const
 { 
  return ( (tubeID==right.tubeID) && (pe==right.pe) && (time==right.time) 
+	  && (time_presmear==right.time_presmear)
 	  && (TriggerTimes==right.TriggerTimes) && (tubeID==right.tubeID) ); 
 }
 
@@ -82,6 +86,7 @@ void WCSimWCDigi::RemoveDigitizedGate(G4int gate)
   //time map and time_float vector
   float gatetime = time[gate];
   time.erase(gate);
+  time_presmear.erase(gate);
   std::vector<G4float>::iterator it = std::find(time_float.begin(), time_float.end(), gatetime);
   if(it != time_float.end())
     time_float.erase(it);

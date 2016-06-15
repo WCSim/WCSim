@@ -55,6 +55,7 @@ private:
 
   //lists (meaning vector/map) of information for each hit/digit created on the PMT
   std::map<int,float> pe;   ///< Charge of each Digi
+  std::map<int,float> time_presmear; ///< Time of each Digi, before smearing
   std::map<int,float> time; ///< Time of each Digi
   std::vector<G4float>  time_float; ///< Same information as "time" but stored in a vector for quick time sorting
   /** \brief IDs of the hits that make up this Digit (do not use for Hits)
@@ -85,6 +86,7 @@ public:
   inline void AddGate(int g,float t) { Gates.insert(g); TriggerTimes.push_back(t);}
   inline void SetPe(G4int gate,  G4float Q)      {pe[gate]     = Q;};
   inline void SetTime(G4int gate, G4float T)    {time[gate]   = T;};
+  inline void SetPreSmearTime(G4int gate, G4float T)    {time_presmear[gate]   = T;};
   inline void SetParentID(G4int gate, G4int parent) { primaryParentID[gate] = parent; };
 
   // Add a digit number and unique photon number to fDigiComp
@@ -103,6 +105,7 @@ public:
   inline G4int   GetTubeID() {return tubeID;};
   inline G4float GetPe(int gate)     {return pe[gate];};
   inline G4float GetTime(int gate)   {return time[gate];};
+  inline G4float GetPreSmearTime(int gate)   {return time_presmear[gate];};
   std::vector<int> GetDigiCompositionInfo(int gate);
   inline std::map< int, std::vector<int> > GetDigiCompositionInfo(){return fDigiComp;}
 
@@ -135,27 +138,29 @@ public:
 
   void SortArrayByHitTime() {
     int i, j;
-    float index,index2;
-    std::vector<int> index3;
-    int index4;
+    float index_time,index_timepresmear,index_pe;
+    std::vector<int> index_digicomp;
+    int index_primaryparentid;
     for (i = 1; i < (int) time.size(); ++i)
       {
-        index  = time[i];
-        index2 = pe[i];
-	index3 = fDigiComp[i];
-	index4 = primaryParentID[i];
-        for (j = i; j > 0 && time[j-1] > index; j--) {
+        index_time  = time[i];
+        index_timepresmear  = time_presmear[i];
+        index_pe = pe[i];
+	index_digicomp = fDigiComp[i];
+	index_primaryparentid = primaryParentID[i];
+        for (j = i; j > 0 && time[j-1] > index_time; j--) {
           time[j] = time[j-1];
           pe[j] = pe[j-1];
 	  fDigiComp[j] = fDigiComp[j-1];
 	  primaryParentID[j] = primaryParentID[j-1];
-          //std::cout <<"swapping "<<time[j-1]<<" "<<index<<"\n";
+          //std::cout <<"swapping "<<time[j-1]<<" "<<index_time<<"\n";
         }
         
-        time[j] = index;
-        pe[j] = index2;
-	fDigiComp[j] = index3;
-	primaryParentID[j] = index4;
+        time[j] = index_time;
+        time_presmear[j] = index_timepresmear;
+        pe[j] = index_pe;
+	fDigiComp[j] = index_digicomp;
+	primaryParentID[j] = index_primaryparentid;
       }    
   }
   
