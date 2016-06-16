@@ -346,9 +346,14 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
 
   mPMT_ID_PMT = "PMT3inchR12199_02"; //"BoxandLine20inchHQE";// (combine with nPMT=1);//"PMT3inchR12199_02"; 
   mPMT_OD_PMT = "PMT8inch";         // Only used for the unique string name of mPMT for now!
+  WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
+  WCPMTName = PMT->GetPMTName();
+  WCPMTExposeHeight = PMT->GetExposeHeight(); 
+  WCPMTRadius = PMT->GetRadius(); 
+
                                     
   //mPMT params:
-  cylinder_height = 0;//50.*mm; //0.1*mm;//50.*mm;
+  cylinder_height = 0.;//50.*mm; //0.1*mm;//50.*mm;
   cylinder_radius = 245.*mm;//260.*mm;//245.*mm;
   orientation = PERPENDICULAR;
   mPMT_outer_material = "G4_PLEXIGLASS";
@@ -363,11 +368,7 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   nID_PMTs = 33;
   config_file = "mPMTconfig_33_13_1.txt";//"mPMTconfig_3_13_2.txt"; //mPMTconfig_30_13_3.txt
 
-  WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
 
-  WCPMTName = PMT->GetPMTName();
-  WCPMTExposeHeight = PMT->GetExposeHeight(); 
-  WCPMTRadius = PMT->GetRadius(); 
   WCIDDiameter          = 33.6815*m; //inner detector diameter
   WCIDHeight            = 36.200*m;
   WCBarrelPMTOffset     = outer_module_radius; //offset from vertical
@@ -380,7 +381,6 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
 
-
 }
 
 
@@ -391,6 +391,12 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   mPMT_ID_PMT = "PMT3inchR12199_02";
   mPMT_OD_PMT = "PMT8inch";
+  WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = 0.254*m;//outer_module_radius;//PMT->GetRadius(); //Actually, this name is very misleading, because it should be moduleRadius (eg. PMT + acrylic), this is used in two places in WCConstructCylinder
+ 
+
 
   //mPMT params go first because detector depends on it:
   cylinder_height = 0.*CLHEP::mm; // the 50mm should exist only for OD and extends behind the iD wall
@@ -414,10 +420,6 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
   // and use the same number of mPMT modules as 20in PMTs, so use same settings.
   // Most important one is WCBarrelNumPMTHorizontal
   // WCBarrelPMTOffset does not change total No. of modules, so use actual outer_module_radius.
-  WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
-  WCPMTName           = PMT->GetPMTName();
-  WCPMTExposeHeight   = PMT->GetExposeHeight();
-  WCPMTRadius         = 0.254*m;//outer_module_radius;//PMT->GetRadius(); //Actually, this name is very misleading, because it should be moduleRadius (eg. PMT + acrylic), this is used in two places in WCConstructCylinder
   WCIDDiameter          = 74.0*m;
   WCIDHeight            = 60.0*m;
   WCBarrelPMTOffset     = outer_module_radius; //mPMT cylinder Radius //WCPMTRadius; //offset from vertical
@@ -442,6 +444,11 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   mPMT_ID_PMT = "PMT3inchR12199_02";
   mPMT_OD_PMT = "PMT8inch";
+  WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = 0.254*m;
+
   //mPMT params:
   cylinder_height = 0.*CLHEP::mm; // the 50mm should exist only for OD and extends behind the iD wall
   cylinder_radius = 255.*CLHEP::mm;   
@@ -460,10 +467,6 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
   config_file = "mPMTconfig_34_22.5_2.txt"; 
 
 
-  WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
-  WCPMTName           = PMT->GetPMTName();
-  WCPMTExposeHeight   = PMT->GetExposeHeight();
-  WCPMTRadius         = 0.254*m;
   WCIDDiameter          = 74.0*m;
   WCIDHeight            = 60.0*m;
   WCBarrelPMTOffset     = outer_module_radius; //mPMT cylinder Radius //WCPMTRadius; //offset from vertical
