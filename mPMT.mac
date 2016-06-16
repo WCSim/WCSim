@@ -15,7 +15,8 @@
 #/WCSim/mPMT/reflectorAngleID 45 deg
 #/WCSim/mPMT/nID_PMTs 34  #for 40%
 #/WCSim/mPMT/configfile mPMTconfig_34_22.5_2.txt #for 40%
-
+/WCSim/mPMT/PMTtype_inner BoxandLine20inchHQE
+#/WCSim/mPMT/PMTtype_outer PMT3inchR12199_02    #no OD yet.
 
 /WCSim/Construct
 

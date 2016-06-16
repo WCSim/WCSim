@@ -91,7 +91,9 @@ set(WCSIM_SCRIPTS
   WCSim.mac
   daq.mac
   visOGLSX.mac
+  visOGLQT.mac
   visRayTracer.mac
+  mPMT.mac
   tuning_parameters.mac
   )
 

@@ -174,7 +174,19 @@ public:
       mPMT_outer_material = "G4_PLEXIGLASS";
     }
   void SetmPMT_MaterialInner(G4String inner_material){mPMT_inner_material = inner_material;}
-  void SetmPMT_PMTtype_inner(G4String type){mPMT_ID_PMT = type;}
+  void SetmPMT_PMTtype_inner(G4String type){
+    mPMT_ID_PMT = type;
+    
+    //ToDo: replace by common function (and the hardcoded 4.5mm)
+    WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
+    WCPMTName = PMT->GetPMTName();
+    WCPMTExposeHeight = PMT->GetExposeHeight(); 
+    WCPMTRadius = PMT->GetRadius(); 
+
+    G4double outer_module_radius = cylinder_radius + WCPMTExposeHeight + cylinder_height + mPMT_outer_material_d + 4.5*mm;
+    WCBarrelPMTOffset = outer_module_radius;
+    WCCapEdgeLimit = WCIDDiameter/2.0 - outer_module_radius;
+   }
   void SetmPMT_PMTtype_outer(G4String type){mPMT_OD_PMT = type;}
   void SetmPMT_MaterialOuterThickness(G4double thickness){
     mPMT_outer_material_d = thickness;
