@@ -149,8 +149,22 @@ public:
   // *** End HyperK Geometry ***
 
   // Getters and Setters for MultiPMT details from macro.
-  void SetmPMT_CylHeight(G4double height){cylinder_height = height;}
-  void SetmPMT_CylRadius(G4double radius){cylinder_radius = radius;}
+  void SetmPMT_CylHeight(G4double height){
+    cylinder_height = height;
+
+    //  ToDO !!!!!!!!!!!!!!!!! One function call instead of copy-paste code!!
+    G4double outer_module_radius = cylinder_radius + WCPMTExposeHeight + cylinder_height + mPMT_outer_material_d + 4.5*mm;
+    WCBarrelPMTOffset = outer_module_radius;
+    WCCapEdgeLimit = WCIDDiameter/2.0 - outer_module_radius;
+
+  }
+  void SetmPMT_CylRadius(G4double radius){
+    cylinder_radius = radius;
+    // WCBarrelPMTOffset is affected, so need to be updated!!
+    G4double outer_module_radius = cylinder_radius + WCPMTExposeHeight + cylinder_height + mPMT_outer_material_d + 4.5*mm;
+    WCBarrelPMTOffset = outer_module_radius;
+    WCCapEdgeLimit = WCIDDiameter/2.0 - outer_module_radius;
+  }                          
   void SetmPMT_Orientation(mPMT_orientation orient){orientation = orient;}
   void SetmPMT_ReflectorHeight(G4double ref_height){id_reflector_height = ref_height;}
   void SetmPMT_ReflectorAngle(G4double ref_angle){id_reflector_angle = ref_angle;}
@@ -162,7 +176,13 @@ public:
   void SetmPMT_MaterialInner(G4String inner_material){mPMT_inner_material = inner_material;}
   void SetmPMT_PMTtype_inner(G4String type){mPMT_ID_PMT = type;}
   void SetmPMT_PMTtype_outer(G4String type){mPMT_OD_PMT = type;}
-  void SetmPMT_MaterialOuterThickness(G4double thickness){mPMT_outer_material_d = thickness;}
+  void SetmPMT_MaterialOuterThickness(G4double thickness){
+    mPMT_outer_material_d = thickness;
+    // WCBarrelPMTOffset is affected, so need to be updated!!
+    G4double outer_module_radius = cylinder_radius + WCPMTExposeHeight + cylinder_height + mPMT_outer_material_d + 4.5*mm;
+    WCBarrelPMTOffset = outer_module_radius;
+    WCCapEdgeLimit = WCIDDiameter/2.0 - outer_module_radius;
+  }
   void SetmPMT_MaterialInnerThickness(G4double thickness){mPMT_inner_material_d = thickness;}
   void SetmPMT_nID(G4int nPMTs){nID_PMTs = nPMTs;}
   void SetmPMT_Config(G4String inputfile){config_file = inputfile;}
