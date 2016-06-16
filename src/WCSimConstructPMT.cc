@@ -92,17 +92,33 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   G4cout << "Reflector thickness : " << reflectorThickness << " mm" << G4endl;
   G4cout << "========================================================" << G4endl;
 
+
+  // To avoid overlaps in mPMT, reduce logicWCPMT at the top 
   G4double PMTHolderZ[2] = {-baseHeight+expose, 
 			    std::max(expose,id_reflector_height)};
   G4double PMTHolderR[2] = {baseRadius, 
 			    std::max(radius,reflectorRadius) + reflectorThickness};
-  G4double PMTHolderr[2] = {0,0};
+  G4double PMTHolderr[2] = {0,0}; 
+
+
+  /*
+  G4double PMTHolderZ[4] = {-baseHeight+expose,
+			    -baseHeight+expose + id_reflector_height,
+			    -baseHeight+expose + id_reflector_height + 2.*CLHEP::mm,
+			    std::max(expose,id_reflector_height)};  //TODO: try  +1mm
+  G4double PMTHolderR[4] = {baseRadius,
+			    std::max(radius,reflectorRadius) + reflectorThickness,
+			    std::max(radius,reflectorRadius) + reflectorThickness,
+			    8.*CLHEP::mm};                         // should be relative to PMT type
+  G4double PMTHolderr[4] = {0,0,0,0}; 
+  */
 
   G4Polycone* solidWCPMT = 
    new G4Polycone("WCPMT",                    
                   0.0*deg,
                   360.0*deg,
                   2,
+		  //4,
                   PMTHolderZ,
                   PMTHolderr, // R Inner
                   PMTHolderR);// R Outer
@@ -132,8 +148,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
       logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
     else
       // Makes the volume containg the PMT invisible for normal visualization
-      logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
-    //logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
+      //logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+      logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
   }
 
   //Need a volume to cut away excess behind blacksheet
@@ -246,10 +262,10 @@ else {
      
     // Gray wireframe visual style
     // used in OGLSX visualizer
-     G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));  //better for seeing hits
-     WCPMTVisAtt->SetForceWireframe(true);
-     //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0)); //better for seeing geometry
-    //WCPMTVisAtt->SetForceSolid(true);
+     //G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));  //better for seeing hits
+     //WCPMTVisAtt->SetForceWireframe(true);
+     G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0)); //better for seeing geometry
+     WCPMTVisAtt->SetForceSolid(true);
     //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
      logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
     
