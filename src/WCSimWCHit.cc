@@ -87,12 +87,12 @@ void WCSimWCHit::Print()
   G4cout << " Tube:"  << std::setw(4) << tubeID 
 	 << " Track:" << std::setw(6) << trackID 
 	 << " Pe:"    << totalPe
-	 << " Pos:"   << pos/cm << G4endl
+	 << " Pos:"   << pos/CLHEP::cm << G4endl
 	 << "\tTime: "; 
 
   for (int i = 0; i < totalPe; i++) 
   {
-    G4cout << time[i]/ns << " ";
+    G4cout << time[i]/CLHEP::ns << " ";
     if ( i%10 == 0 && i != 0) 
       G4cout << G4endl << "\t";
   }
