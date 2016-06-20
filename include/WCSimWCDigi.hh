@@ -141,7 +141,7 @@ public:
         for (j = i; j > 0 && time[j-1] > index; j--) {
           time[j] = time[j-1];
           pe[j] = pe[j-1];
-          //std::cout <<"swapping "<<time[j-1]<<" "<<index<<"\n";
+          //G4cout <<"swapping "<<time[j-1]<<" "<<index<<"\n";
         }
         
         time[j] = index;

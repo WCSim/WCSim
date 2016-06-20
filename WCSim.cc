@@ -18,7 +18,6 @@
 #include "WCSimSteppingAction.hh"
 #include "WCSimVisManager.hh"
 #include "WCSimRandomParameters.hh"
-#include <iostream>
 
 void file_exists(const char * filename) {
   bool exists = access(filename, F_OK) != -1;

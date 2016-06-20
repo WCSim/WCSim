@@ -19,7 +19,6 @@
 #include <utility>
 // for memset
 #include <cstring>
-#include <iostream>
 
 #ifndef WCSIMWCADDDARKNOISE_VERBOSE
 //#define WCSIMWCADDDARKNOISE_VERBOSE
@@ -110,16 +109,16 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
       PMTindex[l] =0;
     }
 
-    //    std::cout<<"entries before "<<WCHCPMT->entries()<<"\n";
+    //    G4cout<<"entries before "<<WCHCPMT->entries()<<"\n";
     //Set up proper indices for tubes which have already been hit
     int num_hit_b4=0;
     for (int g=0; g<number_entries; g++){
       G4int tube = (*WCHCPMT)[g]->GetTubeID();
-      //std::cout<<"totalpe "<<tube<<" "<<(*WCHCPMT)[g]->GetTotalPe()<<"\n";
+      //G4cout<<"totalpe "<<tube<<" "<<(*WCHCPMT)[g]->GetTotalPe()<<"\n";
       //should this be tube-1?
       PMTindex[tube] += (*WCHCPMT)[g]->GetTotalPe();
       num_hit_b4     += (*WCHCPMT)[g]->GetTotalPe();
-      //std::cout<<"TotalPe "<<(*WCHCPMT)[g]->GetTotalPe()<<" "<<PMTindex[tube]<<"\n";
+      //G4cout<<"TotalPe "<<(*WCHCPMT)[g]->GetTotalPe()<<" "<<PMTindex[tube]<<"\n";
     }
 
     // Get the info for pmt positions
@@ -166,11 +165,11 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	    //PMT has no hits yet. Create a new WCSimWCDigi
 	    WCSimWCDigi* ahit = new WCSimWCDigi();
 	    ahit->SetTubeID( noise_pmt);
-	    //std::cout<<"setting new noise pmt "<<noise_pmt<<" "<<ahit->GetTubeID()<<"\n";
+	    //G4cout<<"setting new noise pmt "<<noise_pmt<<" "<<ahit->GetTubeID()<<"\n";
 	    // This Logical volume is GlassFaceWCPMT
 	    ahit->SetLogicalVolume(G4LogicalVolumeStore::GetInstance()->GetVolume(myDetector->GetDetectorName()+"-glassFaceWCPMT"));
-	    //std::cout<<"1 "<<(G4LogicalVolumeStore::GetInstance()->GetVolume("glassFaceWCPMT"))->GetName()<<"\n";
-	    //std::cout<<"2 "<<(*WCHCPMT)[0]->GetLogicalVolume()->GetName()<<"\n";
+	    //G4cout<<"1 "<<(G4LogicalVolumeStore::GetInstance()->GetVolume("glassFaceWCPMT"))->GetName()<<"\n";
+	    //G4cout<<"2 "<<(*WCHCPMT)[0]->GetLogicalVolume()->GetName()<<"\n";
 	    ahit->SetTrackID(-1);
 	    ahit->AddParentID(-1);
 	    // Set the position and rotation of the pmt
