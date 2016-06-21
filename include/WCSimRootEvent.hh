@@ -11,7 +11,6 @@
 #include "TClonesArray.h"
 #include <string>
 #include <vector>
-#include <iostream>
 //#include <map>
 //#include "G4Transform3D.hh"
 
@@ -361,11 +360,11 @@ public:
 
   void ReInitialize() { // need to remove all subevents at the end, or they just get added anyway...
     for ( int i = fEventList->GetLast() ; i>=1 ; i--) {
-      //      std::cout << "removing element # " << i << "...";
+      //      G4cout << "removing element # " << i << "...";
       WCSimRootTrigger* tmp = 
 	dynamic_cast<WCSimRootTrigger*>(fEventList->RemoveAt(i));
       delete tmp;
-      //std::cout <<"done !\n";
+      //G4cout <<"done !\n";
     }
     Current = 0;
     WCSimRootTrigger* tmp = dynamic_cast<WCSimRootTrigger*>( (*fEventList)[0]);

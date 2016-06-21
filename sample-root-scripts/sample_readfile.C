@@ -161,7 +161,7 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
     // It is the number of tubes hit with Cherenkov photons.
     // The number of digitized tubes will be smaller because of the threshold.
     // Each hit "raw" tube has several photon hits.  The times are recorded.
-    // See http://nwg.phy.bnl.gov/DDRD/cgi-bin/private/ShowDocument?docid=245
+    // See chapter 5 of ../doc/DetectorDocumentation.pdf
     // for more information on the structure of the root file.
     //  
     // The following code prints out the hit times for the first 10 tubes and also
