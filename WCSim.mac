@@ -1,4 +1,4 @@
-# Sampe setup macro with no visualization
+# Sample setup macro with no visualization
 
 /run/verbose 0
 /tracking/verbose 0
@@ -107,7 +107,7 @@
 # Or you can use the G4 Particle Gun
 # for a full list of /gun/ commands see:
 # http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
-/mygen/generator normal
+/mygen/generator gun
 /gun/particle e-
 #/gun/particle pi0
 /gun/energy 500 MeV
@@ -118,11 +118,17 @@
 # you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
 # for a full list of /gps/ commands see:
 # https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
-#/mygen/generator laser
+#/mygen/generator gps
 #/gps/particle e-
 #/gps/energy 500 MeV
 #/gps/direction 1 0 0
 #/gps/position 0 0 0
+
+# Or you can use the laser option
+# This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
+# It is used for laser calibration simulation
+#/mygen/generator laser
+
 
 ## change the name of the output root file, default = wcsim.root
 
