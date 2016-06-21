@@ -22,7 +22,7 @@ public:
 public:
   void GeneratePrimaries(G4Event* anEvent);
 
-  // Normal gun setting calls these functions to fill jhfNtuple and Root tree
+  // Gun, laser & gps setting calls these functions to fill jhfNtuple and Root tree
   void SetVtx(G4ThreeVector i)     { vtx = i; };
   void SetBeamEnergy(G4double i)   { beamenergy = i; };
   void SetBeamDir(G4ThreeVector i) { beamdir = i; };
