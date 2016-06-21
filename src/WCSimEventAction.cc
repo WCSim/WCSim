@@ -242,7 +242,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
 #ifdef TIME_DAQ_STEPS
   ms->Stop();
-  std::cout << " Digtization :  Real = " << ms->RealTime() 
+  G4cout << " Digtization :  Real = " << ms->RealTime() 
     	    << " ; CPU = " << ms->CpuTime() << "\n";  
 #endif
 

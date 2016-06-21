@@ -18,7 +18,6 @@
 #include <vector>
 // for memset
 #include <cstring>
-#include <iostream>
 
 
 extern "C" void skrn1pe_(float* );

@@ -17,7 +17,6 @@
 #include <vector>
 // for memset
 #include <cstring>
-#include <iostream>
 
 #ifndef NPMTS_VERBOSE
 #define NPMTS_VERBOSE 10
@@ -244,7 +243,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       
 #ifdef WCSIMWCDIGITIZER_VERBOSE
 	    if(tube < NPMTS_VERBOSE)
-	      std::cout<<"INFO: time "<<time<<" digi_id "<<digi_unique_id<<" p_id "<<photon_unique_id<<std::endl;
+	      G4cout<<"INFO: time "<<time<<" digi_id "<<digi_unique_id<<" p_id "<<photon_unique_id<<G4endl;
 #endif
 	    //if this is the last digit, make sure to make the digit
 	    if(ip + 1 == (*WCHCPMT)[i]->GetTotalPe()){

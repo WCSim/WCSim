@@ -153,7 +153,7 @@ public:
           pe[j] = pe[j-1];
 	  fDigiComp[j] = fDigiComp[j-1];
 	  primaryParentID[j] = primaryParentID[j-1];
-          //std::cout <<"swapping "<<time[j-1]<<" "<<index_time<<"\n";
+          //G4cout <<"swapping "<<time[j-1]<<" "<<index_time<<G4endl;
         }
         
         time[j] = index_time;

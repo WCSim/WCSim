@@ -202,7 +202,7 @@ void pmtremove(TString infile, TString outfile, double removefrac)
 	  // It is the number of tubes hit with Cherenkov photons.
 	  // The number of digitized tubes will be smaller because of the threshold.
 	  // Each hit "raw" tube has several photon hits.  The times are recorded.
-	  // See http://nwg.phy.bnl.gov/DDRD/cgi-bin/private/ShowDocument?docid=245
+	  // See chapter 5 of ../doc/DetectorDocumentation.pdf
 	  // for more information on the structure of the root file.
 	  //  
 	  // For digitized info (one time/charge tube after a trigger) use

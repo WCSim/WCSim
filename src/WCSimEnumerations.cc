@@ -1,5 +1,5 @@
 #include <string>
-#include <iostream>
+#include "G4ios.hh"
 
 #include "WCSimEnumerations.hh"
 
@@ -42,6 +42,6 @@ TriggerType_t WCSimEnumerations::TriggerTypeFromString(std::string s)
       return (TriggerType_t)i;
     }
   }
-  std::cerr << "WCSimEnumerations::TriggerTypeFromString() Unknown string value " << s << std::endl;
+  G4cerr << "WCSimEnumerations::TriggerTypeFromString() Unknown string value " << s << G4endl;
   return kTriggerUndefined;
 }

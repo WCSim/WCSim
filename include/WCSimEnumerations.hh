@@ -2,7 +2,6 @@
 #define WCSimEnumerations_h 1
 
 #include <string>
-#include <iostream>
 
 typedef enum ETriggerType {
   kTriggerUndefined = -1,
