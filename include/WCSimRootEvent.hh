@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "jhfNtuple.h"
 //#include <map>
 //#include "G4Transform3D.hh"
 
@@ -209,8 +210,8 @@ private:
   // See jhfNtuple.h for the meaning of these data members:
   Int_t                fMode;
   Int_t                fNvtxs;
-  Int_t                fVtxsvol[900];
-  Float_t              fVtxs[900][3];
+  Int_t                fVtxsvol[MAX_N_PRIMARIES];
+  Float_t              fVtxs[MAX_N_PRIMARIES][3];
   Int_t                fVecRecNumber;       // "info event" number in inputvectorfile 
   Int_t                fJmu;
   Int_t                fJp;

@@ -58,7 +58,6 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   particleGun = new G4ParticleGun(n_particle);
   particleGun->SetParticleEnergy(1.0*GeV);
   particleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.0));
- 
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
   particleGun->
@@ -106,7 +105,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     {
       G4cout << "Set a vector file using the command /mygen/vecfile name"
 	     << G4endl;
-      return;
+      exit(-1);
     }
 
     //
