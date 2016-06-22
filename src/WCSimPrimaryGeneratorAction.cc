@@ -373,7 +373,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(G4ThreeVector(0, 0, 0));
 	    MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Volume");
 	    MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisShape("Cylinder");
-	    MyGPS->GetCurrentSource()->GetPosDist()->SetRadius(myDetector->GetWaterTubeRadius());
+	    MyGPS->GetCurrentSource()->GetPosDist()->SetRadius(myDetector->GetGeo_Dm(3));
 	    MyGPS->GetCurrentSource()->GetPosDist()->SetHalfZ(myDetector->GetWaterTubeLength()/2.);
 	    MyGPS->GetCurrentSource()->GetPosDist()->SetPosRot1(G4ThreeVector(1, 0, 0));
 	    MyGPS->GetCurrentSource()->GetPosDist()->SetPosRot2(G4ThreeVector(0, 1, 0));
@@ -434,9 +434,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 //	G4cout << " vertex " << u << " of " << number_of_sources << " (" << vtx.x() << ", " << vtx.y() << ", " << vtx.z() << ")" << G4endl;
 
       	SetVtxs(u,vtx);
-      	SetBeamEnergy(u,E);
+      	SetBeamEnergy(E,u);
       	//       SetBeamDir(dir);
-      	SetBeamPDG(u,pdg);
+      	SetBeamPDG(pdg,u);
       }
 
     }
