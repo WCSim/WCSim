@@ -7,7 +7,8 @@ make.rootcint.result
 make.result
 bin/
 tmp/
+doxygen/
 
 #ignore run results
-wcsim.root
+*.root
 geofile.txt
