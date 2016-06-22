@@ -65,11 +65,6 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
   int nevent = wcsimT->GetEntries();
   TTree  *wcsimT2 = f2->Get("wcsimT");
   int nevent2 = wcsimT2->GetEntries();
-  
-  if (nevent != nevent2) {
-    cout << "The input files don’t contain the same number of events. They should probably not be used for verification." << endl;
-    return -1;
-  }
 
   // Create a WCSimRootEvent to put stuff from the tree in and set the branch address for reading from the tree
   WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent();
@@ -106,6 +101,12 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
   else {cout << "FIRST EVENT TEST PASSED: Number of digitized tubes matches" << endl; }
   if (abs(wcsimrootevent->GetCherenkovHitTimes()->GetEntries() - wcsimrootevent2->GetCherenkovHitTimes()->GetEntries())> 1.0e-6){cout << "FIRST EVENT TEST FAILED: Number of hit times do not match" << endl;}
   else {cout << "FIRST EVENT TEST PASSED: Number of hit times matches" << endl;}
+
+  if (nevent != nevent2) {
+    cout <<  "***********************************************************" << endl;
+    cout << "The input files don’t contain the same number of events. Only the first events were compared. To see histograms of the number of hits, deposited charge and hit time, please choose two input files which contain the same number of events." << endl;
+    return -1;
+  }
 
 
   // Histograms for the modified WCSim version
