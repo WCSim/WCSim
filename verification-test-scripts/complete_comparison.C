@@ -1,3 +1,9 @@
+/*
+  Macro that compares the events in two WCSim output files
+  Utilizes the WCSimRoot comparison methods: CompareAllVariables(),
+   to ensure that everything is equivalent
+ */
+
 #include <iostream>
 #include <stdio.h>     
 #include <stdlib.h>    
@@ -65,7 +71,7 @@ WCSimRootEvent * GetRootEvent(TTree * wcsimT, int & nevent)
 }
 
 // Simple example of reading a generated Root file
-void exact_comparison(char *filename1, char *filename2, bool verbose=false, const Long64_t oneevent = -1)
+void complete_comparison(char *filename1, char *filename2, bool verbose=false, const Long64_t oneevent = -1)
 {
 #if !defined(__MAKECINT__)
   // Load the library with class dictionary info
