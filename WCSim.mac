@@ -130,9 +130,20 @@
 
 # Or you can use the laser option
 # This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
+# for a full list of /gps/ commands see:
+# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
 # It is used for laser calibration simulation
 #/mygen/generator laser
-
+#/gps/particle opticalphoton
+#/gps/energy 2.505 eV
+#/gps/direction 1 0 0
+#/gps/position 0 0 0
+#/gps/number 1000
+#/gps/ang/type iso
+#/gps/ang/mintheta 0 deg
+#/gps/ang/maxtheta 30 deg
+#/gps/ang/minphi 0 deg
+#/gps/ang/maxphi 360 deg
 
 ## change the name of the output root file, default = wcsim.root
 
