@@ -6,9 +6,16 @@
 #include "TProcessID.h"
 #include <string>
 #include <vector>
+#include <iostream>
+#include <typeinfo>
 
 #include <TStopwatch.h>
 #include "WCSimRootEvent.hh"
+
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::vector;
 
 #ifndef REFLEX_DICTIONARY
 ClassImp(WCSimRootCherenkovDigiHit)
@@ -20,6 +27,41 @@ ClassImp(WCSimRootEventHeader)
 ClassImp(WCSimRootTrigger)
 ClassImp(WCSimRootEvent)
 #endif
+
+#ifndef VERBOSE_COMPARISON
+//#define VERBOSE_COMPARISON
+#endif
+const double kASmallNum = 1E-6;
+
+bool ComparisonPassed(double val1, double val2, const char * callerclass, const char * callerfunc, const char * tag)
+{
+  if(TMath::Abs(val1 - val2) > kASmallNum) {
+    cerr << callerclass << "::" << callerfunc << " " << tag << " not equal: " << val1 << ", " << val2 << endl;
+    return false;
+  }
+  else {
+#ifdef VERBOSE_COMPARISON
+    cout << callerclass << "::" << callerfunc << " " << tag << " equal: " << val1 << ", " << val2 << endl;
+#endif
+    return true;
+  }
+}
+
+template <typename T> bool ComparisonPassedVec(const vector<T> & val1, const vector<T> & val2, const char * callerclass, const char * callerfunc, const char * tag)
+{
+  bool failed = false;
+  if(val1.size() != val2.size()) {
+    cerr << callerclass << "::" << callerfunc << " " << tag << " have unequal sizes: " << val1.size() << ", " << val2.size() << endl;
+    failed = true;
+  }
+  const int n = TMath::Min(val1.size(), val2.size());
+  for(int i = 0; i < n; i++) {
+    failed = (!ComparisonPassed(val1[i], val2[i], callerclass, callerfunc, TString::Format("%s[%d]", tag, i)));
+  }
+  return !failed;
+}
+
+
 
 //TClonesArray* WCSimRootTrigger::fgTracks = 0;
 //
@@ -316,7 +358,6 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
   fId = id;
 }
 
-
 //_____________________________________________________________________________
 
 WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vector<Float_t> truetime,std::vector<Int_t> primParID)
@@ -441,3 +482,212 @@ void WCSimRootEvent::Reset(Option_t* /*o*/)
 
 
 
+
+//
+//COMPARISON OPERATORS
+//
+//_____________________________________________________________________________
+bool WCSimRootTrack::operator==(const WCSimRootTrack & c)
+{
+  bool failed = false;
+  failed = (!ComparisonPassed(fIpnu, c.GetIpnu(), typeid(*this).name(), __func__, "Ipnu")) || failed;
+  failed = (!ComparisonPassed(fFlag, c.GetFlag(), typeid(*this).name(), __func__, "Flag")) || failed;
+  failed = (!ComparisonPassed(fM, c.GetM(), typeid(*this).name(), __func__, "M")) || failed;
+  failed = (!ComparisonPassed(fP, c.GetP(), typeid(*this).name(), __func__, "P")) || failed;
+  failed = (!ComparisonPassed(fE, c.GetE(), typeid(*this).name(), __func__, "E")) || failed;
+  failed = (!ComparisonPassed(fStartvol, c.GetStartvol(), typeid(*this).name(), __func__, "Startvol")) || failed;
+  failed = (!ComparisonPassed(fStopvol, c.GetStopvol(), typeid(*this).name(), __func__, "Stopvol")) || failed;
+  for(int i = 0; i < 3; i++) {
+    failed = (!ComparisonPassed(fDir[i], c.GetDir(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "Dir", i))) || failed;
+  }//i
+  for(int i = 0; i < 3; i++) {
+    failed = (!ComparisonPassed(fPdir[i], c.GetPdir(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "Pdir", i))) || failed;
+  }//i
+  for(int i = 0; i < 3; i++) {
+    failed = (!ComparisonPassed(fStop[i], c.GetStop(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "Stop", i))) || failed;
+  }//i
+  for(int i = 0; i < 3; i++) {
+    failed = (!ComparisonPassed(fStart[i], c.GetStart(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "Start", i))) || failed;
+  }//i
+  failed = (!ComparisonPassed(fParenttype, c.GetParenttype(), typeid(*this).name(), __func__, "Parenttype")) || failed;
+  failed = (!ComparisonPassed(fTime, c.GetTime(), typeid(*this).name(), __func__, "Time")) || failed;
+  failed = (!ComparisonPassed(fId, c.GetId(), typeid(*this).name(), __func__, "Id")) || failed;
+
+  return !failed;
+}
+
+//_____________________________________________________________________________
+bool WCSimRootCherenkovHit::operator==(const WCSimRootCherenkovHit & c)
+{
+  bool failed = false;
+
+  failed = (!ComparisonPassed(fTubeID, c.GetTubeID(), typeid(*this).name(), __func__, "TubeID")) || failed;
+  for(int i = 0; i < 2; i++) {
+    failed = (!ComparisonPassed(fTotalPe[i], c.GetTotalPe(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "TotalPe", i))) || failed;
+  }//i
+
+  return !failed;
+}
+
+//_____________________________________________________________________________
+bool WCSimRootCherenkovHitTime::operator==(const WCSimRootCherenkovHitTime & c)
+{
+  bool failed = false;
+
+  failed = (!ComparisonPassed(fTruetime, c.GetTruetime(), typeid(*this).name(), __func__, "Truetime")) || failed;
+  failed = (!ComparisonPassed(fPrimaryParentID, c.GetParentID(), typeid(*this).name(), __func__, "PrimaryParentID")) || failed;
+
+  return !failed;
+}
+
+//_____________________________________________________________________________
+bool WCSimRootCherenkovDigiHit::operator==(const WCSimRootCherenkovDigiHit & c)
+{
+  bool failed = false;
+
+  failed = (!ComparisonPassed(fQ, c.GetQ(), typeid(*this).name(), __func__, "Q")) || failed;
+  failed = (!ComparisonPassed(fT, c.GetT(), typeid(*this).name(), __func__, "T")) || failed;
+  failed = (!ComparisonPassed(fTubeId, c.GetTubeId(), typeid(*this).name(), __func__, "TubeId")) || failed;
+  failed = (!ComparisonPassedVec(fPhotonIds, c.GetPhotonIds(), typeid(*this).name(), __func__, "PhotonIds")) || failed;
+
+  return !failed;
+}
+
+//_____________________________________________________________________________
+bool WCSimRootEventHeader::operator==(const WCSimRootEventHeader & c)
+{
+  bool failed = false;
+
+  failed = (!ComparisonPassed(fEvtNum, c.GetEvtNum(), typeid(*this).name(), __func__, "EvtNum")) || failed;
+  failed = (!ComparisonPassed(fRun, c.GetRun(), typeid(*this).name(), __func__, "Run")) || failed;
+  failed = (!ComparisonPassed(fDate, c.GetDate(), typeid(*this).name(), __func__, "Date")) || failed;
+  failed = (!ComparisonPassed(fSubEvtNumber, c.GetSubEvtNumber(), typeid(*this).name(), __func__, "SubEvtNumber")) || failed;
+
+  return !failed;
+}
+
+//_____________________________________________________________________________
+bool WCSimRootPi0::operator==(const WCSimRootPi0 & c)
+{
+  bool failed = false;
+
+  for(int i = 0; i < 3; i++) {
+    failed = (!ComparisonPassed(fPi0Vtx[i], c.GetPi0Vtx(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "Pi0Vtx", i))) || failed;
+  }//i
+  for(int i = 0; i < 2; i++) {
+    failed = (!ComparisonPassed(fGammaID[i], c.GetGammaID(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "GammaID", i))) || failed;
+  }//i
+  for(int i = 0; i < 2; i++) {
+    failed = (!ComparisonPassed(fGammaE[i], c.GetGammaE(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "GammaE", i))) || failed;
+  }//i
+  for(int i = 0; i < 2; i++) {
+    for(int j = 0; j < 3; j++) {
+      failed = (!ComparisonPassed(fGammaVtx[i][j], c.GetGammaVtx(i, j), typeid(*this).name(), __func__, TString::Format("%s[%d][%d]", "GammaVtx", i, j))) || failed;
+    }//j
+  }//i
+
+  return !failed;
+}
+
+//_____________________________________________________________________________
+bool WCSimRootTrigger::operator==(const WCSimRootTrigger & c)
+{
+  bool failed = false;
+
+  //failed = !(fEvtHdr == *(c.GetHeader())) || failed;
+  //failed = !(fPi0 == *(c.GetPi0Info())) || failed;
+
+  //
+  //Check the totals of the arrays of tracks/hits/hittimes/digits
+  //
+  if(this->GetTracks()->GetEntries() != c.GetTracks()->GetEntries()) {
+    cerr << "WCSimRootTrigger::operator==() Different number of tracks: " << this->GetTracks()->GetEntries() << ", " << c.GetTracks()->GetEntries() << endl;
+    failed = true;
+  }
+  if(this->GetCherenkovHits()->GetEntries() != c.GetCherenkovHits()->GetEntries()) {
+    cerr << "WCSimRootTrigger::operator==() Different number of Cherenkov hits: " << this->GetCherenkovHits()->GetEntries() << ", " << c.GetCherenkovHits()->GetEntries() << endl;
+    failed = true;
+  }
+  if(this->GetCherenkovHitTimes()->GetEntries() != c.GetCherenkovHitTimes()->GetEntries()) {
+    cerr << "WCSimRootTrigger::operator==() Different number of Cherenkov hit times: " << this->GetCherenkovHitTimes()->GetEntries() << ", " << c.GetCherenkovHitTimes()->GetEntries() << endl;
+    failed = true;
+  }
+  if(this->GetCherenkovDigiHits()->GetEntries() != c.GetCherenkovDigiHits()->GetEntries()) {
+    cerr << "WCSimRootTrigger::operator==() Different number of Cherenkov digi hits: " << this->GetCherenkovDigiHits()->GetEntries() << ", " << c.GetCherenkovDigiHits()->GetEntries() << endl;
+    failed = true;
+  }
+
+  //check tracks
+  for(int i = 0; i < TMath::Min(this->GetTracks()->GetEntries(), c.GetTracks()->GetEntries()); i++) {
+    failed = !(*((WCSimRootTrack *)(this->GetTracks()->At(i))) == *((WCSimRootTrack *)(c.GetTracks()->At(i)))) || failed;
+  }
+
+  //check hits & hit times
+  for(int i = 0; i < TMath::Min(this->GetCherenkovHits()->GetEntries(), c.GetCherenkovHits()->GetEntries()); i++) {
+#ifdef VERBOSE_COMPARISON
+    cout << "Hit " << i << endl;
+#endif
+    bool thisfailed = !(*(WCSimRootCherenkovHit *)(this->GetCherenkovHits()->At(i)) == *(WCSimRootCherenkovHit *)(c.GetCherenkovHits()->At(i)));
+    failed = thisfailed || failed;
+
+    if(!thisfailed) {
+      //"hit" compared, now check the "hit times" for the same PMT
+      int timepos = ((WCSimRootCherenkovHit *)this->GetCherenkovHits()->At(i))->GetTotalPe(0);
+      int totalpe = ((WCSimRootCherenkovHit *)this->GetCherenkovHits()->At(i))->GetTotalPe(1);
+      for(int j = timepos; j < timepos + totalpe; j++) {
+#ifdef VERBOSE_COMPARISON
+	cout << "Hit Time " << j << endl;
+#endif
+	failed = !(*(WCSimRootCherenkovHitTime *)(this->GetCherenkovHitTimes()->At(j)) == *(WCSimRootCherenkovHitTime *)(c.GetCherenkovHitTimes()->At(j))) || failed;
+      }
+    }
+  }
+
+
+  for(int i = 0; i < TMath::Min(this->GetCherenkovDigiHits()->GetEntries(), c.GetCherenkovDigiHits()->GetEntries()); i++) {
+    failed = !(*(WCSimRootCherenkovDigiHit *)(this->GetCherenkovDigiHits()->At(i)) == *(WCSimRootCherenkovDigiHit *)(c.GetCherenkovDigiHits()->At(i))) || failed;
+  }
+
+
+  failed = (!ComparisonPassed(fMode, c.GetMode(), typeid(*this).name(), __func__, "Mode")) || failed;
+  failed = (!ComparisonPassed(fVtxvol, c.GetVtxvol(), typeid(*this).name(), __func__, "Vtxvol")) || failed;
+  for(int i = 0; i < 3; i++) {
+    failed = (!ComparisonPassed(fVtx[i], c.GetVtx(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "Vtx", i))) || failed;
+  }//i
+  failed = (!ComparisonPassed(fVecRecNumber, c.GetVecRecNumber(), typeid(*this).name(), __func__, "VecRecNumber")) || failed;
+  failed = (!ComparisonPassed(fJmu, c.GetJmu(), typeid(*this).name(), __func__, "Jmu")) || failed;
+  failed = (!ComparisonPassed(fJp, c.GetJp(), typeid(*this).name(), __func__, "Jp")) || failed;
+  failed = (!ComparisonPassed(fNpar, c.GetNpar(), typeid(*this).name(), __func__, "Npar")) || failed;
+  failed = (!ComparisonPassed(fNumTubesHit, c.GetNumTubesHit(), typeid(*this).name(), __func__, "NumTubesHit")) || failed;
+  failed = (!ComparisonPassed(fNumDigitizedTubes, c.GetNumDigiTubesHit(), typeid(*this).name(), __func__, "NumDigitizedTubes")) || failed;
+  failed = (!ComparisonPassed(fNtrack, c.GetNtrack(), typeid(*this).name(), __func__, "Ntrack")) || failed;
+  failed = (!ComparisonPassed(fNcherenkovhits, c.GetNcherenkovhits(), typeid(*this).name(), __func__, "Ncherenkovhits")) || failed;
+  failed = (!ComparisonPassed(fNcherenkovhittimes, c.GetNcherenkovhittimes(), typeid(*this).name(), __func__, "Ncherenkovhittimes")) || failed;
+  failed = (!ComparisonPassed(fNcherenkovdigihits, c.GetNcherenkovdigihits(), typeid(*this).name(), __func__, "Ncherenkovdigihits")) || failed;
+  failed = (!ComparisonPassed(fSumQ, c.GetSumQ(), typeid(*this).name(), __func__, "SumQ")) || failed;
+  failed = (!ComparisonPassed(fTriggerType, c.GetTriggerType(), typeid(*this).name(), __func__, "TriggerType")) || failed;
+  failed = (!ComparisonPassedVec(fTriggerInfo, c.GetTriggerInfo(), typeid(*this).name(), __func__, "TriggerInfo")) || failed;
+
+  return !failed;
+}
+
+//_____________________________________________________________________________
+bool WCSimRootEvent::operator==(const WCSimRootEvent & c)
+{
+  bool failed = false;
+
+  if(this->GetNumberOfEvents() != c.GetNumberOfEvents()) {
+    cerr << "WCSimRootEvent::operator==() Different number of events: " << this->GetNumberOfEvents() << ", " << c.GetNumberOfEvents() << endl;
+    failed = true;
+  }
+  //for(int i = 0; i < TMath::Min(this->GetNumberOfEvents(), c.GetNumberOfEvents()); i++) {
+  //failed = !(*(this->GetTrigger(i)) == *(c.GetTrigger(i))) || failed;
+  //}
+
+  return !failed;
+}
+
+
+//_____________________________________________________________________________
+
+//  LocalWords:  GetCherenkovDigiHits
