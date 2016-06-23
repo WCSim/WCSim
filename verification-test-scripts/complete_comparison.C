@@ -11,6 +11,7 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TSystem.h>
+#include <TMath.h>
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
 #include "WCSimRootEvent.hh"
@@ -54,10 +55,12 @@ TTree * GetTree(const char * filename)
     cerr << "wcsimT tree could not be opened in input file: " << filename << endl;
     exit(-1);
   }
+  return wcsimT;
 }
 
 WCSimRootEvent * GetRootEvent(TTree * wcsimT, int & nevent)
 {
+  cout << wcsimT << endl;
   nevent = wcsimT->GetEntries();
   WCSimRootEvent * wcsimrootsuperevent = 0;
   wcsimT->SetBranchAddress("wcsimrootevent",&wcsimrootsuperevent);
@@ -99,7 +102,7 @@ void complete_comparison(char *filename1, char *filename2, bool verbose=false, c
 
   // Now loop over events
   int nevents_failed = 0, nevents_analysed = 0;
-  int nevent = min(nevents1, nevents2);
+  int nevent = TMath::Min(nevents1, nevents2);
   int ev = 0;
   if(oneevent >= 0) {
     ev = oneevent;
@@ -117,15 +120,15 @@ void complete_comparison(char *filename1, char *filename2, bool verbose=false, c
     }
 
     //compare
-    bool failed = !(*wcsimrootsuperevent1 == *wcsimrootsuperevent2);
-    const int ntriggers = min(wcsimrootsuperevent1->GetNumberOfEvents(), wcsimrootsuperevent2->GetNumberOfEvents());
+    bool failed = !(wcsimrootsuperevent1->CompareAllVariables(wcsimrootsuperevent2));
+    const int ntriggers = TMath::Min(wcsimrootsuperevent1->GetNumberOfEvents(), wcsimrootsuperevent2->GetNumberOfEvents());
     for(int itrig = 0; itrig < ntriggers; itrig++) {
       wcsimrootevent1 = wcsimrootsuperevent1->GetTrigger(itrig);
       wcsimrootevent2 = wcsimrootsuperevent2->GetTrigger(itrig);
       //compare triggers
-      failed = !(*wcsimrootevent1 == *wcsimrootevent2) || failed;
-      failed = !(*(wcsimrootevent1->GetPi0Info()) == *(wcsimrootevent2->GetPi0Info())) || failed;
-      failed = !(*(wcsimrootevent1->GetHeader())  == *(wcsimrootevent2->GetHeader())) || failed;
+      failed = !(wcsimrootevent1->CompareAllVariables(wcsimrootevent2)) || failed;
+      failed = !(wcsimrootevent1->GetPi0Info()->CompareAllVariables(wcsimrootevent2->GetPi0Info())) || failed;
+      failed = !(wcsimrootevent1->GetHeader ()->CompareAllVariables(wcsimrootevent2->GetHeader()))  || failed;
     }
     if(verbose || ev == 0)
       cout << "Event " << ev << " comparison " << (failed ? "FAILED" : "PASSED") << endl;

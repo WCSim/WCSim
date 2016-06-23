@@ -55,9 +55,8 @@ public:
 		  Float_t start[3], 
 		  Int_t parenttype,
 		 Float_t time,Int_t id);
-  
   virtual ~WCSimRootTrack() { }
-  bool operator==(const WCSimRootTrack & c);
+  bool CompareAllVariables(const WCSimRootTrack * c) const;
 
   Int_t     GetIpnu() const { return fIpnu;}
   Int_t     GetFlag() const { return fFlag;}
@@ -93,7 +92,8 @@ public:
 			Int_t totalPe[2]);
 
   virtual ~WCSimRootCherenkovHit() { }
-  bool operator==(const WCSimRootCherenkovHit & c);
+
+  bool CompareAllVariables(const WCSimRootCherenkovHit * c) const;
 
   Int_t GetTubeID()       const { return fTubeID;}
   Int_t GetTotalPe(int i) const { return (i<2) ? fTotalPe[i]: 0;}
@@ -113,7 +113,7 @@ public:
   WCSimRootCherenkovHitTime(Float_t truetime,
 			    Int_t   primaryParentID);
   virtual ~WCSimRootCherenkovHitTime() { }
-  bool operator==(const WCSimRootCherenkovHitTime & c);
+  bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 
   Float_t   GetTruetime() const { return fTruetime;}
   Int_t     GetParentID() const { return fPrimaryParentID;}
@@ -139,7 +139,7 @@ public:
   WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid, std::vector<int> photon_ids);
 
   virtual ~WCSimRootCherenkovDigiHit() { }
-  bool operator==(const WCSimRootCherenkovDigiHit & c);
+  bool CompareAllVariables(const WCSimRootCherenkovDigiHit * c) const;
 
   Float_t     GetQ() const { return fQ;}
   Float_t     GetT() const { return fT;}
@@ -163,7 +163,7 @@ private:
 public:
   WCSimRootEventHeader() : fEvtNum(0), fRun(0), fDate(0), fSubEvtNumber(1) { }
   virtual ~WCSimRootEventHeader() { }
-  bool operator==(const WCSimRootEventHeader & c);
+  bool CompareAllVariables(const WCSimRootEventHeader * c) const;
   void   Set(Int_t i, Int_t r, Int_t d, Int_t s=1) { fEvtNum = i; fRun = r; fDate = d; fSubEvtNumber = s;}
   void SetDate(Int_t d) { fDate=d; }
   Int_t  GetEvtNum() const { return fEvtNum; }
@@ -190,7 +190,7 @@ public:
   WCSimRootPi0() {}
 
   virtual ~WCSimRootPi0() { }
-  bool operator==(const WCSimRootPi0 & c);
+  bool CompareAllVariables(const WCSimRootPi0 * c) const;
 
   void Set(Float_t pi0Vtx[3],
 	   Int_t   gammaID[2],
@@ -247,7 +247,7 @@ public:
   WCSimRootTrigger();
   WCSimRootTrigger(int, int);
   virtual ~WCSimRootTrigger();
-  bool operator==(const WCSimRootTrigger & c);
+  bool CompareAllVariables(const WCSimRootTrigger * c) const;
   
   void Initialize();
 
@@ -273,8 +273,10 @@ public:
 			   Float_t gammaVtx[2][3]);
 
 
-  WCSimRootEventHeader * GetHeader()                 {return &fEvtHdr; }
-  WCSimRootPi0         * GetPi0Info()                {return &fPi0; }
+  WCSimRootEventHeader       * GetHeader()           {return &fEvtHdr; }
+  const WCSimRootEventHeader * GetHeader()     const {return &fEvtHdr; }
+  WCSimRootPi0               * GetPi0Info()          {return &fPi0; }
+  const WCSimRootPi0         * GetPi0Info()    const {return &fPi0; }
   Int_t                GetMode()               const {return fMode;}
   Int_t                GetVtxvol()             const {return fVtxvol;}
   Float_t              GetVtx(Int_t i=0)       const {return (i<3) ? fVtx[i]: 0;}
@@ -334,14 +336,15 @@ class WCSimRootEvent : public TObject {
 public:
   WCSimRootEvent();
   virtual ~WCSimRootEvent();
-  bool operator==(const WCSimRootEvent & c);
+  bool CompareAllVariables(const WCSimRootEvent * c) const;
 
   void          Clear(Option_t *option ="");
   static void   Reset(Option_t *option ="");
   Int_t GetCurrentIndex() { return Current;}
 
   //  WCSimRootTrigger* GetTrigger(int number) { return fEventList[number];}
-  WCSimRootTrigger * GetTrigger(int number) { return (WCSimRootTrigger*) (*fEventList)[number];}
+        WCSimRootTrigger * GetTrigger(int number)       { return (WCSimRootTrigger*) (*fEventList)[number];}
+  const WCSimRootTrigger * GetTrigger(int number) const { return (WCSimRootTrigger*) (*fEventList)[number];}
 
   Int_t GetNumberOfEvents() const { return fEventList->GetEntriesFast();}
   Int_t GetNumberOfSubEvents() const { return (fEventList->GetEntriesFast()-1);}
