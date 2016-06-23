@@ -122,7 +122,7 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
   // Now loop over events from the modified WCSim version and fill the histograms
   for (int ev=0; ev<nevent; ev++){
     // Read the event from the tree into the WCSimRootEvent instance
-    wcsimT->GetEntry(ev);      
+    wcsimT->GetEvent(ev);
     wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
     if(verbose){
       printf("********************************************************");
@@ -172,7 +172,7 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
   // Now loop over events
   for (int ev=0; ev<nevent2; ev++){
     // Read the event from the tree into the WCSimRootEvent instance
-    wcsimT2->GetEntry(ev);      
+    wcsimT2->GetEvent(ev);
     wcsimrootevent2 = wcsimrootsuperevent2->GetTrigger(0);
   
     if(verbose){
