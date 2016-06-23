@@ -121,15 +121,6 @@ void complete_comparison(char *filename1, char *filename2, bool verbose=false, c
 
     //compare
     bool failed = !(wcsimrootsuperevent1->CompareAllVariables(wcsimrootsuperevent2));
-    const int ntriggers = TMath::Min(wcsimrootsuperevent1->GetNumberOfEvents(), wcsimrootsuperevent2->GetNumberOfEvents());
-    for(int itrig = 0; itrig < ntriggers; itrig++) {
-      wcsimrootevent1 = wcsimrootsuperevent1->GetTrigger(itrig);
-      wcsimrootevent2 = wcsimrootsuperevent2->GetTrigger(itrig);
-      //compare triggers
-      failed = !(wcsimrootevent1->CompareAllVariables(wcsimrootevent2)) || failed;
-      failed = !(wcsimrootevent1->GetPi0Info()->CompareAllVariables(wcsimrootevent2->GetPi0Info())) || failed;
-      failed = !(wcsimrootevent1->GetHeader ()->CompareAllVariables(wcsimrootevent2->GetHeader()))  || failed;
-    }
     if(verbose || ev == 0)
       cout << "Event " << ev << " comparison " << (failed ? "FAILED" : "PASSED") << endl;
     if(failed)
