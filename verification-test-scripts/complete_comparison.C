@@ -21,6 +21,8 @@
 
 using namespace std;
 
+class WCSimRootEvent;
+
 void PrintHeaderInfo(WCSimRootEvent * wcsimrootsuperevent, const char * filename)
 {
   WCSimRootTrigger * wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
