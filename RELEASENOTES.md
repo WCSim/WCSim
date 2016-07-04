@@ -7,6 +7,31 @@ Bug Fixes:
 * In v1.5.0, the dark rate was not being set correctly in the case where the default detector was not used (unless the dark rate was explicitly specified in the macro). This release now correctly implements the dark rate based on the photodector type used in the detector configuration, even when the non-default detector configuration is called. 
 
 *************************************************************
+07/04/2016: Notes for v1.6.0        
+*************************************************************
+New Features
+* Pull Request #125: Update code to compile with cmake. Information is included in the README.md file. 
+* Pull Request #151: HyperK detector configuration now reflects the design report specifications (a cylinder with a height of 54.8 m, a diameter of 70.8 m). 
+* Pull Request #151: The egg-shaped Hyper-K design is still available, but is now renamed EggShapedHyperK.
+* Pull Request #163: Error message is now output if vector file specified in the macro does not exist. 
+* Pull Request #170: Some improvements to verification_HitsChargeTime.C, including a check for the same number of events in the two files being compared. 
+
+Bug Fixes
+* Pull Request #165: The raw (undigitized) hit times in the output ROOT file were smeared since v1.5.0. This release returns the raw (undigitized) hit times back to their unsmeared times. 
+* Pull Request #165: There was a related bug that arose from matching the collection of unsmeared hit times to the smeared times, resulting in some wrong times & parent IDs being saved. This release fixes that bug. 
+
+Updates
+* Pull Requests #164 and #183: Swap the remaining instances of cout, cerr, endl for G4cout, G4cerr, G4endl and remove the iostream includes, except in WCSimEnumerations, which is used to analyze the WCSim ROOT files.
+* Pull Request #174: Updated references to documentation of root file structure. The defunct link included in some of the sample ROOT macros was changed to refer users to the WCSim DetectorDocumentation.pdf. 
+
+*************************************************************
+04/11/2016: Notes for v1.5.1        
+*************************************************************
+Bug Fixes:
+
+* In v1.5.0, the dark rate was not being set correctly in the case where the default detector was not used (unless the dark rate was explicitly specified in the macro). This release now correctly implements the dark rate based on the photodector type used in the detector configuration, even when the non-default detector configuration is called. 
+
+*************************************************************
 02/01/2016: Notes for v1.5.0        
 *************************************************************
 New Features

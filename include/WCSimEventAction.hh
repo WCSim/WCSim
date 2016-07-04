@@ -37,7 +37,6 @@ public:
   void FillRootEvent(G4int, 
 		     const struct ntupleStruct&, 
 		     G4TrajectoryContainer*,
-		     WCSimWCHitsCollection*,
 		     WCSimWCDigitsCollection*,
 		     WCSimWCTriggeredDigitsCollection*);
   WCSimRunAction* GetRunAction(){return runAction;}

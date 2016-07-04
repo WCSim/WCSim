@@ -27,7 +27,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
 	
   // Decide if (only for the case of !1kT detector) should be upright or horizontal
   isUpright = false;
-  isHyperK  = false;
+  isEggShapedHyperK  = false;
 
   debugMode = false;
 
@@ -124,9 +124,9 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // on their size and detector ordering.
 
   G4LogicalVolume* logicWCBox;
-  // Select between HyperK and cylinder
-  if (isHyperK) logicWCBox = ConstructHyperK();
-  else logicWCBox = ConstructCylinder(); 
+  // Select between egg-shaped HyperK and cylinder
+  if (isEggShapedHyperK) logicWCBox = ConstructEggShapedHyperK();
+  else logicWCBox = ConstructCylinder();
 
   G4cout << " WCLength       = " << WCLength/m << " m"<< G4endl;
 
