@@ -43,7 +43,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
   // For default SK-style without cover.
   // Not possible to have a mPMT without cover now/yet.
-  if(cylinder_radius <= 1.*CLHEP::mm && cylinder_height <= 1.*CLHEP::mm){
+  if(vessel_radius <= 1.*CLHEP::mm && vessel_cyl_height <= 1.*CLHEP::mm){
     return ConstructPMT(PMTName, CollectionName);
   }
 
@@ -77,16 +77,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
   // origin on blacksheet wall is origin of spherical top for ID, 
   // change if we want to use the cylindrical part in ID.
-  G4double dist_PMTglass_innerPressureVessel = 4.5*CLHEP::mm; // from KM3Net tech drawing. Don't put PMT directly against pressure vessel. Gel helps transition in refractive indices. Also prevents daughters from sticking out vessel. Smaller will create Overlaps! Avoid Overlaps!!!
-
-
   G4double mPMT_zRange_outer[2] = {0,                         // must be zero or it will collide with the blacksheet and mess up the G4Navigator
-				   cylinder_height + cylinder_radius + mPMT_outer_material_d + expose
-				   + dist_PMTglass_innerPressureVessel};
-  G4double mPMT_RRange_outer[2] = {cylinder_radius + expose + mPMT_outer_material_d
-				   + dist_PMTglass_innerPressureVessel, 
-				   cylinder_radius + expose + mPMT_outer_material_d 
-				   + dist_PMTglass_innerPressureVessel};
+				   vessel_cyl_height + vessel_radius};
+  G4double mPMT_RRange_outer[2] = {vessel_radius, 
+				   vessel_radius};
   G4double mPMT_rRange_outer[2] = {0., 0.};
 
   // Although G4Tubs is more natural, Polycone is used to be in control of z position
@@ -115,13 +109,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   // Define a cylinder with spherical top 
   // origin is center of upward cylinder
   G4LogicalVolume *logic_mPMT_cylinder_vessel;
-  if(cylinder_height > 0.){
+  if(vessel_cyl_height > 0.){
     G4Tubs* mPMT_cylinder_vessel = 
       new G4Tubs("WCmPMT_cyl_vessel",
 		 0.,
-		 cylinder_radius + expose + mPMT_outer_material_d 
-		 + dist_PMTglass_innerPressureVessel, 
-		 cylinder_height/2.,
+		 vessel_radius,
+		 vessel_cyl_height/2.,
 		 0.0*deg,
 		 360.0*deg);
 
@@ -133,7 +126,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
   // Place Cylinder Vessel
   new G4PVPlacement(	0,				         // its rotation
-			G4ThreeVector(0,0,cylinder_height/2),    // its position
+			G4ThreeVector(0,0,vessel_cyl_height/2),    // its position
 			logic_mPMT_cylinder_vessel,   	         // its logical volume
 			"WCPMT_cyl_vessel",			 // its name 
 			logicWCMultiPMT,			 // its mother volume
@@ -147,20 +140,53 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   G4Sphere* mPMT_top_sphere_vessel =
     new G4Sphere(    "WCmPMT_tsphere_vessel",
 		     0,
-		     cylinder_radius + expose + dist_PMTglass_innerPressureVessel + mPMT_outer_material_d, 
+		     vessel_radius_curv,
 		     0.0*deg,360.0*deg,
 		     0.0*deg,90.0*deg);
 
-  //Acrylic/Water cover of the mPMT
-  G4LogicalVolume *logic_mPMT_top_sphere_vessel =
-    new G4LogicalVolume(    mPMT_top_sphere_vessel,
-			    G4Material::GetMaterial(mPMT_outer_material),//"G4_PLEXIGLASS"), 
-			    "WCMultiPMT_vessel_top",
-			    0,0,0);
+
+  ///////////////////////////////////////////////////////////////////
+  // NEW: possibility of spherical Caps == sphere minus cylinder
+
+  G4double vessel_cap_height = vessel_radius_curv - sqrt(vessel_radius_curv * vessel_radius_curv - vessel_radius*vessel_radius);
+
+  G4SubtractionSolid * mPMT_top_cap_vessel;
+  G4LogicalVolume * logic_mPMT_top_sphere_vessel;
+  G4double cap_position_offset = 0.*cm;
+
+  if(vessel_radius_curv - vessel_radius < 1.*mm){
+    G4Box*  solidCutOffTubs = 
+      new G4Box(    "cutOffTubs",
+		    vessel_radius + 1.*cm,                      // x/2
+		    vessel_radius + 1.*cm,                      // y/2
+		    vessel_radius_curv - vessel_cap_height);         // z/2
+    
+    mPMT_top_cap_vessel =
+      new G4SubtractionSolid(    "InteriorWCPMT",
+				 mPMT_top_sphere_vessel,
+				 solidCutOffTubs);
+    
+    //Acrylic/Water cover of the mPMT
+    logic_mPMT_top_sphere_vessel =
+      new G4LogicalVolume(    mPMT_top_cap_vessel,
+			      G4Material::GetMaterial(mPMT_outer_material),//"G4_PLEXIGLASS"), 
+			      "WCMultiPMT_vessel_top",
+			      0,0,0);
+    
+    cap_position_offset = -1.0* (vessel_radius_curv - vessel_cap_height); //lower position of cap by the piece that we cut off.
+  } else {
+    //Acrylic/Water cover of the mPMT      
+    logic_mPMT_top_sphere_vessel =
+      new G4LogicalVolume(    mPMT_top_sphere_vessel,
+			      G4Material::GetMaterial(mPMT_outer_material),//"G4_PLEXIGLASS"), 
+			      "WCMultiPMT_vessel_top",
+			      0,0,0);
+  }
+  
   
   // Place Vessel Top:
-  new G4PVPlacement(	0,				         // its rotation
-			G4ThreeVector(0,0,cylinder_height),	 // its position
+    new G4PVPlacement(	0,				                         // its rotation
+			G4ThreeVector(0,0,vessel_cyl_height+cap_position_offset),	 // its position
 			logic_mPMT_top_sphere_vessel,   	         // its logical volume
 			"WCPMT_vessel_top",				 // its name 
 			logicWCMultiPMT,			 // its mother volume
@@ -179,16 +205,24 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   // origin is center of upward cylinder
   G4LogicalVolume *logic_mPMT_cylinder_container;
   //necessary to make concentric shells because can Mother can only contain parametrized daughters.
-  G4double innerR_container = cylinder_radius;   
+  G4double innerR_curv_container = vessel_radius_curv - expose - dist_pmt_vessel - mPMT_outer_material_d;
+  G4double outerR_curv_container = vessel_radius_curv - mPMT_outer_material_d;
+
+  //vessel_curv - vessel_height is conserved for all concentric caps !
+  G4double innerR_container = sqrt( innerR_curv_container*innerR_curv_container -
+				    (vessel_radius_curv - vessel_cap_height)*(vessel_radius_curv - vessel_cap_height) );
+  G4double outerR_container = sqrt( outerR_curv_container*outerR_curv_container -
+				    (vessel_radius_curv - vessel_cap_height)*(vessel_radius_curv - vessel_cap_height) );
+
   if(addPMTBase || nID_PMTs == 1)
     innerR_container = 0;
 
-  if( cylinder_height > 0.){
+  if( vessel_cyl_height > 0.){
     G4Tubs* mPMT_cylinder_container = 
       new G4Tubs("WCmPMT_cyl_container",                    
 		 innerR_container,
-		 cylinder_radius + expose + dist_PMTglass_innerPressureVessel,
-		 cylinder_height/2.,
+		 outerR_container,
+		 vessel_cyl_height/2.,
 		 0.0*deg,
 		 360.0*deg);
     
@@ -202,17 +236,44 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   }
   G4Sphere* mPMT_top_sphere_container =
     new G4Sphere(    "WCmPMT_tsphere_cont",
-		     innerR_container,cylinder_radius+expose + dist_PMTglass_innerPressureVessel, 
+		     innerR_curv_container,outerR_curv_container,
 		     0.0*deg,360.0*deg,
 		     0.0*deg,90.0*deg);
   
-  
-  G4LogicalVolume *logic_mPMT_top_sphere_container =
-    new G4LogicalVolume(    mPMT_top_sphere_container,
-			    //G4Material::GetMaterial("Air"),
-			    G4Material::GetMaterial("SilGel"), //whole area between pressure vessel and support structure is optical gel!
-			    "WCMultiPMT_container_top",
-			    0,0,0);
+
+  G4SubtractionSolid * mPMT_top_cap_container;
+  G4LogicalVolume * logic_mPMT_top_sphere_container;
+
+  if(vessel_radius_curv - vessel_radius < 1.*mm){
+    G4Box*  solidCutOffContainer = 
+      new G4Box(    "cutOffContainer",
+		    outerR_container + 1.*cm, 
+		    outerR_container + 1.*cm,                     
+		    vessel_radius_curv - vessel_cap_height);        
+    
+    mPMT_top_cap_container =
+      new G4SubtractionSolid(    "InteriorWCPMT",
+				 mPMT_top_sphere_container,
+				 solidCutOffContainer);
+    
+
+    logic_mPMT_top_sphere_container =
+      new G4LogicalVolume(    mPMT_top_cap_container,
+			      //G4Material::GetMaterial("Air"),
+			      G4Material::GetMaterial("SilGel"), //whole area between pressure vessel and support structure is optical gel!
+			      "WCMultiPMT_container_top",
+			      0,0,0);
+
+  } else{
+      
+    logic_mPMT_top_sphere_container =
+      new G4LogicalVolume(    mPMT_top_sphere_container,
+			      //G4Material::GetMaterial("Air"),
+			      G4Material::GetMaterial("SilGel"), //whole area between pressure vessel and support structure is optical gel!
+			      "WCMultiPMT_container_top",
+			      0,0,0);
+    
+  }
 
   /////////////////////////////////////////////////////
   /// 4) Fill the mPMT vessel with single (ID) PMTs ///
@@ -223,7 +284,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
    * in the parametrization somehow (eg. looping over an array or so)
    */
 
-  G4double pmtDistance = cylinder_radius; // Inner radius od the DOM 
+  G4double pmtDistance = innerR_container; // Inner radius od the DOM 
   G4cout << "Distance from the Z axis = " <<  pmtDistance << " mm" << G4endl;
 
   G4LogicalVolume* logicWCPMT = ConstructPMT(PMTName, CollectionName);
@@ -238,7 +299,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     
     // singlePMT:
     new G4PVPlacement(0,
-		      G4ThreeVector(0, 0, 0),//+cylinder_radius),
+		      G4ThreeVector(0, 0, cap_position_offset),//+vessel_radius_curv),
 		      logicWCPMT,                       // its logical volume
 		      "pmt",
 		      logic_mPMT_top_sphere_container,        // Mother logical volume,
@@ -301,7 +362,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 				      vNiC,		// # PMTs in each circle
 				      vAlpha,		// Their tilt angle
 				      vCircle,          // Circle number
-				      0);	// Position offsets of circles, should become array!!!! ToDo, for bottom sphere
+				      vAzimOffset,      // The offset in azimuth angle of first PMT in that circle
+				      cap_position_offset);// Position offsets of circles, should become array!!!! ToDo, for bottom sphere
 
   
   // dummy value : kZAxis -- modified by parameterised volume
@@ -345,12 +407,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     /////
     //Defines a cylinder
     // origin is in the center of upward cylinder
-    if(cylinder_height > 0){
+    if(vessel_cyl_height > 0){
       G4Tubs* inner_cylinder = 
 	new G4Tubs("inn_cyl",                    
 		   0.,
-		   cylinder_radius,
-		   cylinder_height/2,
+		   innerR_container,
+		   vessel_cyl_height/2,
 		   0.0*deg,
 		   360.0*deg);
       
@@ -379,18 +441,44 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     }
     G4Sphere* inner_top_sphere =
       new G4Sphere( "WCmPMT_tsphere",
-		    0,cylinder_radius,
+		    0,innerR_curv_container,
 		    0.0*deg,360.0*deg,
 		    0.0*deg,90.0*deg);
     
 
-    G4LogicalVolume *logic_mPMT_top_sphere_inner =
-      new G4LogicalVolume(    inner_top_sphere,
-			      G4Material::GetMaterial(mPMT_inner_material),//"Blacksheet"), 
-			      "WCMultiPMT_inner_top",
-			      0,0,0);
+
+    G4SubtractionSolid * inner_top_cap;
+    G4LogicalVolume * logic_mPMT_top_sphere_inner;
+    if(vessel_radius_curv - vessel_radius < 1.*mm){
+      
+      G4Box*  solidCutOffInner = 
+	new G4Box(    "cutOffInner",
+		      innerR_container + 1.*cm,                      // x/2
+		      innerR_container + 1.*cm,                      // y/2
+		      vessel_radius_curv - vessel_cap_height);         // z/2
+      
+      inner_top_cap =
+	new G4SubtractionSolid(    "InteriorWCPMT",
+				   inner_top_sphere,
+				   solidCutOffInner);
+
+      
+      logic_mPMT_top_sphere_inner =
+	new G4LogicalVolume(    inner_top_cap,
+				G4Material::GetMaterial(mPMT_inner_material),//"Blacksheet"), 
+				"WCMultiPMT_inner_top",
+				0,0,0);
+            
+      
+    } else{
+      logic_mPMT_top_sphere_inner =
+	new G4LogicalVolume(    inner_top_sphere,
+				G4Material::GetMaterial(mPMT_inner_material),//"Blacksheet"), 
+				"WCMultiPMT_inner_top",
+				0,0,0); 
+   }
     
-    
+      
     //Place Inner Structure
       new G4PVPlacement(	0,       				// its rotation
 				G4ThreeVector(0,0,0),           	// its position
@@ -420,10 +508,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   
   
   //logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
-  //logic_mPMT_top_sphere_vessel->SetVisAttributes(WCPMTVisAtt5);  
-  //logic_mPMT_cylinder_vessel->SetVisAttributes(WCPMTVisAtt5);  
-  //logic_mPMT_cylinder_container->SetVisAttributes(VisAttYellow); 
-  //logic_mPMT_top_sphere_container->SetVisAttributes(VisAttYellow); 
+  logic_mPMT_top_sphere_vessel->SetVisAttributes(WCPMTVisAtt5);  
+  logic_mPMT_cylinder_vessel->SetVisAttributes(WCPMTVisAtt5);  
+  logic_mPMT_cylinder_container->SetVisAttributes(VisAttYellow); 
+  logic_mPMT_top_sphere_container->SetVisAttributes(VisAttYellow); 
   
 
   // Keep track of already created mPMT logical volumes in same map as for PMTs
@@ -443,7 +531,7 @@ G4int WCSimDetectorConstruction::FillCircles(void){
 
   //Read in text file (instead of setting 8 numbers) with configuration
   // and pre-calculated values
-  //Fill vAlpha, vNiC, vCircle
+  //Fill vAlpha, vNiC, vCircle, vAzimOffset
   std::vector<float> vEta;
   vEta.clear();
   
@@ -477,8 +565,23 @@ G4int WCSimDetectorConstruction::FillCircles(void){
   // std::cout << "test " << vNiC[i] << " " << vAlpha[i]/CLHEP::deg << " " << vEta[i]/CLHEP::deg << std::endl;
   //}
 
-
- // Total number of pmt in the circles
+  /// NEW: optionally add an azimuth offset line for the first PMT of each circle (by default 0)
+  // necessary for hexagonal orientation
+  getline(config,line);
+  if(!line.empty()){
+    std::istringstream value4(line);
+    while(getline(value4, item, ' ')){
+      vAzimOffset.push_back(atof(item.c_str())*CLHEP::deg);
+    }
+  }
+  else {
+    for(size_t i = 0; i < vNiC.size();i++){
+	vAzimOffset.push_back(0.*CLHEP::deg);
+    }
+    assert(vAzimOffset.size() == vAlpha.size());
+  }
+  
+  // Total number of pmt in the circles
   G4int TotPmt = 0;
   for(size_t i = 0; i < vNiC.size();i++){
     TotPmt+=vNiC[i];
@@ -522,7 +625,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
 
   // Only fill the ones where alpha is above the minimum (to look over neighbouring mPMTs)
   // Theta_min = eta + atan(R/r) with R radius of sphere, and r the distance between mPMTs
-  G4double theta_min = 13.*pi/180; //atan((cylinder_radius+expose+outer_thickness)/id_spacing)
+  G4double theta_min = 13.*pi/180; //atan((vessel_radius_curv)/id_spacing)
   if(alphaNext > theta_min + fEta){
     vAlpha.push_back(alphaNext);
     vNiC.push_back(NoPmt);

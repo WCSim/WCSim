@@ -39,6 +39,7 @@ class WCSimMultiPMTParameterisation : public G4VPVParameterisation
 				std::vector<G4int>& vNiC,
 				std::vector<G4double>& vAlpha,
 				std::vector<G4int>& vCircle,
+				std::vector<G4double>& vAzimOffset,
 				G4double height);
   
   virtual ~WCSimMultiPMTParameterisation();
@@ -55,6 +56,7 @@ private:
   std::vector<G4int>	vNiCLocal;
   std::vector<G4double> vAlphaLocal;
   std::vector<G4int>	vCircleLocal;
+  std::vector<G4double>	vAzimOffsetLocal;
 
   G4double   fHeight;
   std::vector<G4ThreeVector>       vPMTpos;

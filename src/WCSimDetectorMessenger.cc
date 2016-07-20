@@ -390,18 +390,29 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	}
 
 	if (command == mPMT_CylHeight){
-	  G4cout << "Set Cylinder Height of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
+	  G4cout << "Set Vessel Cylinder Height of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
 	  //std::cout << "Set Cylinder Height of MultiPMT to " << newValue  << " " << std::endl;
-	  WCSimDetector->SetmPMT_CylHeight(mPMT_CylHeight->GetNewDoubleValue(newValue));
+	  WCSimDetector->SetmPMT_VesselCylHeight(mPMT_CylHeight->GetNewDoubleValue(newValue));
 	}
 
 
-	if (command == mPMT_CylRadius){
-	  G4cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
+	if (command == mPMT_CylRadiusCurv){
+	  G4cout << "Set Vessel Radius of Curvature of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
 	  //std::cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << std::endl;
-	  WCSimDetector->SetmPMT_CylRadius(mPMT_CylRadius->GetNewDoubleValue(newValue));
+	  WCSimDetector->SetmPMT_VesselRadiusCurv(mPMT_CylRadiusCurv->GetNewDoubleValue(newValue));
 	}
 	
+	if (command == mPMT_CylRadius){
+	  G4cout << "Set Vessel Radius of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
+	  //std::cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << std::endl;
+	  WCSimDetector->SetmPMT_VesselRadius(mPMT_CylRadius->GetNewDoubleValue(newValue));
+	}
+
+	if (command == mPMT_DistPMTVessel){
+	  G4cout << "Set Distance of PMT(s) to pressure vessel to " << newValue  << " " << G4endl; //doesn't work
+	  //std::cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << std::endl;
+	  WCSimDetector->SetmPMT_DistPMTVessel(mPMT_DistPMTVessel->GetNewDoubleValue(newValue));
+	}
 	if (command == mPMT_orientation){
 	  if(newValue == "Horizontal")
 	    WCSimDetector->SetmPMT_Orientation(HORIZONTAL);

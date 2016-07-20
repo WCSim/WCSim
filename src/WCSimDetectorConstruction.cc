@@ -58,8 +58,10 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Need to define defaults for all mPMT parameters 
   // defaults are chosen that they are valid for a SK detector
   //--------------------------------------------------
-  cylinder_height = 0.1*mm;
-  cylinder_radius = 0.1*mm;
+  vessel_cyl_height = 0.1*mm;   // LATER: when tested, default WITH PMT cover!
+  vessel_radius_curv = 0.1*mm;
+  vessel_radius = 0.1*mm;
+  dist_pmt_vessel = 0.*mm;
   orientation = PERPENDICULAR;
   mPMT_ID_PMT = "PMT3inchR12199_02";
   mPMT_OD_PMT = "";
@@ -141,6 +143,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   vNiC.clear();
   vAlpha.clear();
   vCircle.clear();
+  vAzimOffset.clear();
 
   totalNumPMTs = 0;
   

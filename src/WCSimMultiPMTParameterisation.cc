@@ -19,15 +19,17 @@ WCSimMultiPMTParameterisation::WCSimMultiPMTParameterisation(
 	std::vector<G4int>& vNiC,
 	std::vector<G4double>& vAlpha,
 	std::vector<G4int>& vCircle,
+	std::vector<G4double>& vAzimOffset,
 	G4double height)
  : G4VPVParameterisation()
 {
-   fNoPmt	= noPmt;
-   fApothema	= apoth;
-   vNiCLocal	= vNiC;
-   vAlphaLocal	= vAlpha;
-   vCircleLocal = vCircle;
-   fHeight      = height;
+  fNoPmt	        = noPmt;
+  fApothema	        = apoth;
+  vNiCLocal	        = vNiC;
+  vAlphaLocal	        = vAlpha;
+  vAzimOffsetLocal	= vAzimOffset;
+  vCircleLocal          = vCircle;
+  fHeight               = height;
    
    //Fill the position and orientation vectors once (and allocation mem once).
    PreCalculateTransform();   
@@ -59,9 +61,16 @@ void WCSimMultiPMTParameterisation::PreCalculateTransform(){
   for(unsigned int copy = 0; copy < fNoPmt; copy++){
     G4RotationMatrix* rotm = new G4RotationMatrix(); // Rotation matrix for each PMT
     
-    G4double angle = ((vNiCLocal[vCircleLocal[copy]]-2)*CLHEP::pi/vNiCLocal[vCircleLocal[copy]]); // Internal angle of each polygon
+    // previous version: overly complicated as
+    // pi - ((vNiCLocal[vCircleLocal[copy]]-2)*CLHEP::pi/vNiCLocal[vCircleLocal[copy]]) 
+    // = 1/(vNiCLocal[vCircleLocal[copy]]) * (pi * vNiCLocal[vCircleLocal[copy]] - vNiCLocal[vCircleLocal[copy]] * pi + 2pi )
+    // = 2pi / (vNiCLocal[vCircleLocal[copy]]) --> more logical and intuitive
+    //G4double angle = ((vNiCLocal[vCircleLocal[copy]]-2)*CLHEP::pi/vNiCLocal[vCircleLocal[copy]]); // Internal angle of each polygon
+    G4double azimuth = 2.*CLHEP::pi / (vNiCLocal[vCircleLocal[copy]]) + vAzimOffsetLocal[vCircleLocal[copy]]; 
+    
     G4ThreeVector origin(0,0,0); 
-    origin.setRThetaPhi(fApothema,CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]],copy*(CLHEP::pi-angle));
+    // origin.setRThetaPhi(fApothema,CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]],copy*(CLHEP::pi-angle));  // OLD + DID NOT follow the paper for optimal azimuthal angles
+    origin.setRThetaPhi(fApothema,CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]],copy*azimuth);  
     // TF: Positioning vector, for an offset single hemisphere (for now)
     origin.setZ(origin.getZ()+fHeight);
     

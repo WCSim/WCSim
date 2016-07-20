@@ -45,6 +45,8 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIdirectory*             mPMTDir;
   G4UIcmdWithADoubleAndUnit* mPMT_CylHeight;
   G4UIcmdWithADoubleAndUnit* mPMT_CylRadius;
+  G4UIcmdWithADoubleAndUnit* mPMT_CylRadiusCurv;
+  G4UIcmdWithADoubleAndUnit* mPMT_DistPMTVessel;
   G4UIcmdWithAString*        mPMT_orientation;
   G4UIcmdWithAString*        mPMT_material_inner; 
   G4UIcmdWithAString*        mPMT_material_outer;

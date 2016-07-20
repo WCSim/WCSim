@@ -149,22 +149,28 @@ public:
   // *** End HyperK Geometry ***
 
   // Getters and Setters for MultiPMT details from macro.
-  void SetmPMT_CylHeight(G4double height){
-    cylinder_height = height;
+  void SetmPMT_VesselRadius(G4double radius){
+    vessel_radius = radius;
 
-    //  ToDO !!!!!!!!!!!!!!!!! One function call instead of copy-paste code!!
-    G4double outer_module_radius = cylinder_radius + WCPMTExposeHeight + cylinder_height + mPMT_outer_material_d + 4.5*mm;
-    WCBarrelPMTOffset = outer_module_radius;
-    WCCapEdgeLimit = WCIDDiameter/2.0 - outer_module_radius;
+    // WCBarrelPMTOffset is affected, so need to be updated!!
+    G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+    WCBarrelPMTOffset = vessel_tot_height;                          // BarrelPMTOffset needs PMT/mPMT height
+    WCCapEdgeLimit = WCIDDiameter/2.0 - vessel_tot_height;          // CapEdgeLimit needs PMT/mPMT height
+  }                          
+
+  void SetmPMT_VesselRadiusCurv(G4double radius){
+    vessel_radius_curv = radius;
+  }                          
+
+  void SetmPMT_VesselCylHeight(G4double height){
+    vessel_cyl_height = height;
+
+    G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+    WCBarrelPMTOffset = vessel_tot_height;            
+    WCCapEdgeLimit = WCIDDiameter/2.0 - vessel_tot_height;
 
   }
-  void SetmPMT_CylRadius(G4double radius){
-    cylinder_radius = radius;
-    // WCBarrelPMTOffset is affected, so need to be updated!!
-    G4double outer_module_radius = cylinder_radius + WCPMTExposeHeight + cylinder_height + mPMT_outer_material_d + 4.5*mm;
-    WCBarrelPMTOffset = outer_module_radius;
-    WCCapEdgeLimit = WCIDDiameter/2.0 - outer_module_radius;
-  }                          
+  void SetmPMT_DistPMTVessel(G4double dist){dist_pmt_vessel = dist;}
   void SetmPMT_Orientation(mPMT_orientation orient){orientation = orient;}
   void SetmPMT_ReflectorHeight(G4double ref_height){id_reflector_height = ref_height;}
   void SetmPMT_ReflectorAngle(G4double ref_angle){id_reflector_angle = ref_angle;}
@@ -177,23 +183,15 @@ public:
   void SetmPMT_PMTtype_inner(G4String type){
     mPMT_ID_PMT = type;
     
-    //ToDo: replace by common function (and the hardcoded 4.5mm)
+    //ToDo: replace by common function
     WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
     WCPMTName = PMT->GetPMTName();
     WCPMTExposeHeight = PMT->GetExposeHeight(); 
     WCPMTRadius = PMT->GetRadius(); 
-
-    G4double outer_module_radius = cylinder_radius + WCPMTExposeHeight + cylinder_height + mPMT_outer_material_d + 4.5*mm;
-    WCBarrelPMTOffset = outer_module_radius;
-    WCCapEdgeLimit = WCIDDiameter/2.0 - outer_module_radius;
    }
   void SetmPMT_PMTtype_outer(G4String type){mPMT_OD_PMT = type;}
   void SetmPMT_MaterialOuterThickness(G4double thickness){
     mPMT_outer_material_d = thickness;
-    // WCBarrelPMTOffset is affected, so need to be updated!!
-    G4double outer_module_radius = cylinder_radius + WCPMTExposeHeight + cylinder_height + mPMT_outer_material_d + 4.5*mm;
-    WCBarrelPMTOffset = outer_module_radius;
-    WCCapEdgeLimit = WCIDDiameter/2.0 - outer_module_radius;
   }
   void SetmPMT_MaterialInnerThickness(G4double thickness){mPMT_inner_material_d = thickness;}
   void SetmPMT_nID(G4int nPMTs){nID_PMTs = nPMTs;}
@@ -497,8 +495,10 @@ private:
   G4double innerradius;
 
   // Variables related to MultiPMTs
-  G4double cylinder_height;
-  G4double cylinder_radius;
+  G4double vessel_cyl_height;
+  G4double vessel_radius_curv;                        // radius of the sphere to determine curvature of cap of pressure vessel
+  G4double vessel_radius;                             // radius of the pressure vessel (spherical cap)
+  G4double dist_pmt_vessel;                           // distance between glass of pmt and inner radius of pressure vessel (region where water/gel lives)
   mPMT_orientation orientation;
   G4String mPMT_outer_material;
   G4String mPMT_inner_material;
@@ -515,6 +515,7 @@ private:
   std::vector<G4int>		vNiC;	        // Nb of Chambers in each circle
   std::vector<G4double>	        vAlpha;	        // Tilt angle for each circle
   std::vector<G4int>		vCircle;	// Circle numbers
+  std::vector<G4double>		vAzimOffset;	// Azimuthal offset of first PMT in each circle.
 
  
   std::vector<WCSimPmtInfo*> fpmts;
