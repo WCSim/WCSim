@@ -18,7 +18,6 @@
 #include <vector>
 // for memset
 #include <cstring>
-#include <iostream>
 
 
 extern "C" void skrn1pe_(float* );
@@ -87,6 +86,11 @@ void WCSimWCPMT::Digitize()
 
 void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
+
+  //Get the PMT info for hit time smearing
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+
   for (G4int i=0; i < WCHC->entries(); i++)
     {
 
@@ -102,12 +106,16 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       // Get the information from the hit
       G4int   tube         = (*WCHC)[i]->GetTubeID();
       G4double peSmeared = 0.0;
-      double time_PMT;
+      double time_PMT, time_true;
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
-	    time_PMT = (*WCHC)[i]->GetTime(ip);
+	    time_true = (*WCHC)[i]->GetTime(ip);
 	    peSmeared = rn1pe();
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
+
+	    //apply time smearing
+	    float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+	    time_PMT = time_true + PMT->HitTimeSmearing(Q);
 
 	    if ( DigiHitMapPMT[tube] == 0) {
 	      WCSimWCDigi* Digi = new WCSimWCDigi();
@@ -116,7 +124,8 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      Digi->SetTubeID(tube);
 	      Digi->SetPe(ip,peSmeared);
 	      Digi->SetTime(ip,time_PMT);
-	      Digi->AddParentID(parent_id);
+	      Digi->SetPreSmearTime(ip,time_true);
+	      Digi->SetParentID(ip,parent_id);
 	      DigiHitMapPMT[tube] = DigitsCollection->insert(Digi);
 	    }	
 	    else {
@@ -125,7 +134,8 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTubeID(tube);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPe(ip,peSmeared);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTime(ip,time_PMT);
-	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->AddParentID(parent_id);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPreSmearTime(ip,time_true);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetParentID(ip,parent_id);
 	    }
       
 	  } // Loop over hits in each PMT

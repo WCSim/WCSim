@@ -14,11 +14,9 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPmtInfo.hh"
 
-
 #include <vector>
 // for memset
 #include <cstring>
-#include <iostream>
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,7 +218,27 @@ G4float PMT20inch::GetmaxQE(){
   return maxQE;
 }
 
+// Should be actual PMT Dark Rate, not effective dark rate in detector including other LE noise
+G4float PMT20inch::GetDarkRate(){
+  /* From e-mail discussion with A.Konaka and S.Nakayama:
+   * SK-I: 4.2 kHz 
+   * SK-IV:5.7 kHz, both before electronics threshold in skdetsim
+   * Measured DN with 0.25 pe threshold:
+   * SK-I: 3.4 kHz  (2003 SK-NIM: 3 kHz. A.Konaka: "2kHz with hot PMTs removed?") 
+   * SK-IV: 4.5 kHz (higher due to FRP)
+   * ToDo: investigate after updating electronics routing, whether to change value to 3.4 kHz
+   */
 
+  const G4float rate = 4.2*CLHEP::kilohertz;   //SKI value set in SKDETSim. 
+  return rate;
+}
+
+// Convert dark noise frequency to one before applying threshold of 0.25 pe, as that is what
+// will be simulated (WCSimWCDigitizer::AddPMTDarkRate)
+G4float PMT20inch::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 8 inch
@@ -373,7 +391,15 @@ G4float  PMT8inch::GetmaxQE(){
   return maxQE;
 }
 
+G4float PMT8inch::GetDarkRate(){
+  const G4float rate = 4.2*CLHEP::kilohertz;   
+  return rate;
+}
 
+G4float PMT8inch::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch
@@ -527,6 +553,15 @@ G4float  PMT10inch::GetmaxQE(){
   return maxQE;
 }
 
+G4float PMT10inch::GetDarkRate(){
+  const G4float rate = 3.*CLHEP::kilohertz;   //R-7081??
+  return rate;
+}
+
+G4float PMT10inch::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch HQE
@@ -680,6 +715,15 @@ G4float  PMT10inchHQE::GetmaxQE(){
   return maxQE;
 }
 
+G4float PMT10inchHQE::GetDarkRate(){
+  const G4float rate = 3*CLHEP::kilohertz;   //Ref??R7081 HQE?? (need verification)
+  return rate;
+}
+
+G4float PMT10inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HQE
@@ -836,6 +880,15 @@ G4float  PMT12inchHQE::GetmaxQE()//currently uses the same as the 10inchHQE
 }
 
 
+G4float PMT12inchHQE::GetDarkRate(){
+  const G4float rate = 4.2*CLHEP::kilohertz;   //as previous novis.mac (ref?)
+  return rate;
+}
+
+G4float PMT12inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1013,6 +1066,17 @@ G4float* HPD20inchHQE::GetCollectionEfficiencyArray(){
   return CE;
 }
 
+
+G4float HPD20inchHQE::GetDarkRate(){
+  const G4float rate = 8.4*CLHEP::kilohertz;   //Based on HQE 20in R3600 rate from EGADS Nov 2014, needs to be updated with latest values (ToDo)
+  return rate;
+}
+
+G4float HPD20inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.119;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HPD
 
@@ -1181,6 +1245,15 @@ G4float* HPD12inchHQE::GetCollectionEfficiencyArray(){
   return CE;
 }
 
+G4float HPD12inchHQE::GetDarkRate(){
+  const G4float rate = 3.0*CLHEP::kilohertz;   //from previous novis.mac. Need better motivated setting!
+  return rate;
+}
+
+G4float HPD12inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.119;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 20 inch HQE Box and Line PMT
@@ -1360,7 +1433,20 @@ G4float* BoxandLine20inchHQE::GetCollectionEfficiencyArray(){
   return CE;
 }
 
+G4float BoxandLine20inchHQE::GetDarkRate(){
+  /* 
+   * 10.*CLHEP::kilohertz;   //from presentation 1st HyperK Collab meeting, July 2015.
+   * 8.4kHz comes from average of HQE R3600-02's in EGADS (ref. Nakayama-san)
+   * Actual values of latest version of B&L PMT still being studied. ToDo: update when ready.
+   */
+  const G4float rate = 8.4*CLHEP::kilohertz;
+  return rate;
+}
 
+G4float BoxandLine20inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.126;
+  return factor;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1531,4 +1617,17 @@ G4float BoxandLine12inchHQE::GetmaxQE(){
 G4float* BoxandLine12inchHQE::GetCollectionEfficiencyArray(){  
   static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
   return CE;
+}
+
+
+G4float BoxandLine12inchHQE::GetDarkRate(){
+  // Currently using previous defaults of WCSim (ref?)
+  // A different reference: 4.43*CLHEP::kilohertz;   //R11780 HQE value from Table4, NIMA 712 p162-173 (2013)
+  const G4float rate = 3.0*CLHEP::kilohertz;
+  return rate;
+}
+
+G4float BoxandLine12inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.126;
+  return factor;
 }

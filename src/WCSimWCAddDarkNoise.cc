@@ -19,16 +19,24 @@
 #include <utility>
 // for memset
 #include <cstring>
-#include <iostream>
 
 #ifndef WCSIMWCADDDARKNOISE_VERBOSE
 //#define WCSIMWCADDDARKNOISE_VERBOSE
 #endif
 
+#ifndef NPMTS_VERBOSE
+#define NPMTS_VERBOSE 10
+#endif
+
 WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,
 					 WCSimDetectorConstruction* inDetector)
-  :G4VDigitizerModule(name), myDetector(inDetector)
+  :G4VDigitizerModule(name), fCalledAddDarkNoise(false), myDetector(inDetector)
 {
+  //Set defaults to be unphysical, so that we know if they have been overwritten by the user
+  PMTDarkRate = -99;
+  ConvRate    = -99;
+
+  //Get the user options
   DarkRateMessenger = new WCSimDarkRateMessenger(this);
   ReInitialize();
 }
@@ -38,7 +46,30 @@ WCSimWCAddDarkNoise::~WCSimWCAddDarkNoise(){
   DarkRateMessenger = 0;
 }
 
+void WCSimWCAddDarkNoise::SetPMTDarkDefaults()
+{
+  //Grab Dark Rate and Conversion from PMT itself
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+  double const conversion_to_kHz = 1000000; //ToDo: remove this and treat DarkRate in CLHEP units throughout the class.
+
+  double defaultPMTDarkRate = PMT->GetDarkRate() * conversion_to_kHz;
+  double defaultConvRate = PMT->GetDarkRateConversionFactor();
+
+  //Only set the defaults if the user hasn't overwritten the unphysical defaults
+  if(PMTDarkRate < -98)
+    PMTDarkRate = defaultPMTDarkRate;
+  if(ConvRate < -98)
+    ConvRate = defaultConvRate;
+}
+
 void WCSimWCAddDarkNoise::AddDarkNoise(){
+  //Grab the PMT-specific defaults
+  if(!fCalledAddDarkNoise) {
+    SetPMTDarkDefaults();
+    fCalledAddDarkNoise = true;
+  }
+
   //clear the result and range vectors
   ReInitialize();
 
@@ -82,16 +113,16 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
       PMTindex[l] =0;
     }
 
-    //    std::cout<<"entries before "<<WCHCPMT->entries()<<"\n";
+    //    G4cout<<"entries before "<<WCHCPMT->entries()<<"\n";
     //Set up proper indices for tubes which have already been hit
     int num_hit_b4=0;
     for (int g=0; g<number_entries; g++){
       G4int tube = (*WCHCPMT)[g]->GetTubeID();
-      //std::cout<<"totalpe "<<tube<<" "<<(*WCHCPMT)[g]->GetTotalPe()<<"\n";
+      //G4cout<<"totalpe "<<tube<<" "<<(*WCHCPMT)[g]->GetTotalPe()<<"\n";
       //should this be tube-1?
       PMTindex[tube] += (*WCHCPMT)[g]->GetTotalPe();
       num_hit_b4     += (*WCHCPMT)[g]->GetTotalPe();
-      //std::cout<<"TotalPe "<<(*WCHCPMT)[g]->GetTotalPe()<<" "<<PMTindex[tube]<<"\n";
+      //G4cout<<"TotalPe "<<(*WCHCPMT)[g]->GetTotalPe()<<" "<<PMTindex[tube]<<"\n";
     }
 
     // Get the info for pmt positions
@@ -138,13 +169,13 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	    //PMT has no hits yet. Create a new WCSimWCDigi
 	    WCSimWCDigi* ahit = new WCSimWCDigi();
 	    ahit->SetTubeID( noise_pmt);
-	    //std::cout<<"setting new noise pmt "<<noise_pmt<<" "<<ahit->GetTubeID()<<"\n";
+	    //G4cout<<"setting new noise pmt "<<noise_pmt<<" "<<ahit->GetTubeID()<<"\n";
 	    // This Logical volume is GlassFaceWCPMT
 	    ahit->SetLogicalVolume(G4LogicalVolumeStore::GetInstance()->GetVolume(myDetector->GetDetectorName()+"-glassFaceWCPMT"));
-	    //std::cout<<"1 "<<(G4LogicalVolumeStore::GetInstance()->GetVolume("glassFaceWCPMT"))->GetName()<<"\n";
-	    //std::cout<<"2 "<<(*WCHCPMT)[0]->GetLogicalVolume()->GetName()<<"\n";
+	    //G4cout<<"1 "<<(G4LogicalVolumeStore::GetInstance()->GetVolume("glassFaceWCPMT"))->GetName()<<"\n";
+	    //G4cout<<"2 "<<(*WCHCPMT)[0]->GetLogicalVolume()->GetName()<<"\n";
 	    ahit->SetTrackID(-1);
-	    ahit->AddParentID(-1);
+	    ahit->SetParentID(PMTindex[noise_pmt], -1);
 	    // Set the position and rotation of the pmt
 	    Float_t hit_pos[3];
 	    Float_t hit_rot[3];
@@ -163,6 +194,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	    ahit->SetRot(pmt_rotation);
 	    ahit->SetPos(pmt_position);
 	    ahit->SetTime(PMTindex[noise_pmt],current_time);
+	    ahit->SetPreSmearTime(PMTindex[noise_pmt],current_time); //presmear==postsmear for dark noise
 	    pe = WCPMT->rn1pe();
 	    ahit->SetPe(PMTindex[noise_pmt],pe);
 	    //Added this line to increase the totalPe by 1
@@ -172,7 +204,8 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	    number_entries ++;
 	    list[ noise_pmt ] = number_entries; // Add this PMT to the end of the list
 #ifdef WCSIMWCADDDARKNOISE_VERBOSE
-	    G4cout << "WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Added NEW DIGI with dark noise hit at time " << current_time << " to PMT " << noise_pmt << G4endl;
+	    if(noise_pmt < NPMTS_VERBOSE)
+	      G4cout << "WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Added NEW DIGI with dark noise hit at time " << current_time << " to PMT " << noise_pmt << G4endl;
 #endif
 	  }
 	else {
@@ -180,10 +213,12 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	  pe = WCPMT->rn1pe();
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPe(PMTindex[noise_pmt],pe);
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTime(PMTindex[noise_pmt],current_time);
-	  (*WCHCPMT)[ list[noise_pmt]-1 ]->AddParentID(-1);
+	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPreSmearTime(PMTindex[noise_pmt],current_time); //presmear==postsmear for dark noise
+	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetParentID(PMTindex[noise_pmt],-1);
 	  PMTindex[noise_pmt]++;
 #ifdef WCSIMWCADDDARKNOISE_VERBOSE
-	  G4cout << "WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Added to exisiting digi a dark noise hit at time " << current_time << " to PMT " << noise_pmt << G4endl;
+	  if(noise_pmt < NPMTS_VERBOSE)
+	    G4cout << "WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Added to exisiting digi a dark noise hit at time " << current_time << " to PMT " << noise_pmt << G4endl;
 #endif
 	}
 		

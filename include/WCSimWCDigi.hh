@@ -54,15 +54,21 @@ private:
   std::vector<float> TriggerTimes;
 
   //lists (meaning vector/map) of information for each hit/digit created on the PMT
-  std::map<int,float> pe;   
-  std::map<int,float> time; 
-  std::vector<G4float>  time_float; //same information as "time" but stored in a vector for quick time sorting
-  // Stores the unique IDs of each photon making up a digit
-  // There can be more than one digit in an event, hence the vector contains: <digi_number, unique_photon_id>
-  // For example: <0,3>; <0,4>; <0,6>; <1,10>; <1,11>; <1,13>; <1,14>
-  //  The first digit in the event is made of of photons 3,4,6;
-  //  The second digit is made up of photons: 10,11,13,14          
-  std::vector< std::pair<int,int> > fDigiComp; 
+  std::map<int,float> pe;   ///< Charge of each Digi
+  std::map<int,float> time_presmear; ///< Time of each Digi, before smearing
+  std::map<int,float> time; ///< Time of each Digi
+  std::vector<G4float>  time_float; ///< Same information as "time" but stored in a vector for quick time sorting
+  /** \brief IDs of the hits that make up this Digit (do not use for Hits)
+   *
+   * Stores the unique IDs of each photon making up a digit
+   * Each digit can be made from multiple photons, therefore a vector is used
+   * For example: 0:[3,4,6]; 1:[10,11,13,14]
+   *  The first digit in the event is made of of photons 3,4,6;
+   *  The second digit is made up of photons: 10,11,13,14
+   */
+  std::map<int, std::vector<int> > fDigiComp;
+  std::map<int, G4int>    primaryParentID; ///< Primary parent ID of the Hit (do not use for Digits)
+  
 
   //integrated hit/digit parameters
   G4int                 totalPe;
@@ -72,7 +78,6 @@ private:
   G4double         edep;
   static G4int     maxPe;
   G4int            trackID;
-  std::vector<G4int>    primaryParentID;
 
 public:
   void RemoveDigitizedGate(G4int gate);
@@ -81,27 +86,28 @@ public:
   inline void AddGate(int g,float t) { Gates.insert(g); TriggerTimes.push_back(t);}
   inline void SetPe(G4int gate,  G4float Q)      {pe[gate]     = Q;};
   inline void SetTime(G4int gate, G4float T)    {time[gate]   = T;};
+  inline void SetPreSmearTime(G4int gate, G4float T)    {time_presmear[gate]   = T;};
+  inline void SetParentID(G4int gate, G4int parent) { primaryParentID[gate] = parent; };
 
   // Add a digit number and unique photon number to fDigiComp
   inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
-    fDigiComp.push_back( std::make_pair(digi_number, photon_number) );
+    fDigiComp[digi_number].push_back(photon_number);
   }
   // Add a whole vector for one digit to fDigiComp. Clear input vector once added.
-  void AddDigiCompositionInfo(std::vector< std::pair<int,int> > &digi_comp){
-    for(int i = 0; i < (int) digi_comp.size(); i++){
-      fDigiComp.push_back( digi_comp[i] );
-    }
+  void AddDigiCompositionInfo(std::vector<int> & digi_comp){
+    const size_t size = fDigiComp.size();
+    fDigiComp[size] = digi_comp;
     digi_comp.clear();
   }
 
-  G4int          GetParentID(int i)    { return primaryParentID[i];};
+  inline G4int   GetParentID(int gate) { return primaryParentID[gate];};
   inline G4float GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
   inline G4float GetPe(int gate)     {return pe[gate];};
   inline G4float GetTime(int gate)   {return time[gate];};
-
-  inline std::vector< std::pair<int,int> > GetDigiCompositionInfo(){return fDigiComp;}
+  inline G4float GetPreSmearTime(int gate)   {return time_presmear[gate];};
   std::vector<int> GetDigiCompositionInfo(int gate);
+  inline std::map< int, std::vector<int> > GetDigiCompositionInfo(){return fDigiComp;}
 
   inline int NumberOfGates() { return Gates.size();}
   inline int NumberOfSubEvents() { return (Gates.size()-1);}
@@ -114,7 +120,6 @@ public:
   void SetPos          (G4ThreeVector xyz)          { pos = xyz; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
   void SetTrackID      (G4int track)                { trackID = track; };
-  void AddParentID     (G4int primParentID)         { primaryParentID.push_back(primParentID); }
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
   G4int         GetTotalPe()    { return totalPe;};
   
@@ -133,19 +138,29 @@ public:
 
   void SortArrayByHitTime() {
     int i, j;
-    float index,index2;
+    float index_time,index_timepresmear,index_pe;
+    std::vector<int> index_digicomp;
+    int index_primaryparentid;
     for (i = 1; i < (int) time.size(); ++i)
       {
-        index = time[i];
-        index2 = pe[i];
-        for (j = i; j > 0 && time[j-1] > index; j--) {
+        index_time  = time[i];
+        index_timepresmear  = time_presmear[i];
+        index_pe = pe[i];
+	index_digicomp = fDigiComp[i];
+	index_primaryparentid = primaryParentID[i];
+        for (j = i; j > 0 && time[j-1] > index_time; j--) {
           time[j] = time[j-1];
           pe[j] = pe[j-1];
-          //std::cout <<"swapping "<<time[j-1]<<" "<<index<<"\n";
+	  fDigiComp[j] = fDigiComp[j-1];
+	  primaryParentID[j] = primaryParentID[j-1];
+          //G4cout <<"swapping "<<time[j-1]<<" "<<index_time<<G4endl;
         }
         
-        time[j] = index;
-        pe[j] = index2;
+        time[j] = index_time;
+        time_presmear[j] = index_timepresmear;
+        pe[j] = index_pe;
+	fDigiComp[j] = index_digicomp;
+	primaryParentID[j] = index_primaryparentid;
       }    
   }
   

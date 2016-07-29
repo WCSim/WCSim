@@ -17,7 +17,6 @@
 #include <vector>
 // for memset
 #include <cstring>
-#include <iostream>
 
 
 
@@ -307,10 +306,6 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     save_triggerType = kTriggerFailure;
   }
 
-  //Get the PMT info for hit time smearing
-  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
-
   //Loop over trigger times
   for(unsigned int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
     TriggerType_t triggertype = TriggerTypes[itrigger];
@@ -344,28 +339,14 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  //hit in event window
 	  //add it to DigitsCollection
 
-	  //first smear the charge & time
+	  //first apply time offsets
 	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
-	  float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	  G4double digihittime = -triggertime
 	    + WCSimWCTriggerBase::offset
-	    + digit_time
-	    + PMT->HitTimeSmearing(Q);
-	  if(digihittime < 0)
-	    continue;
+	    + digit_time;
 
 	  //get the composition information for the triggered digit
-	  //WCDCPMT stores this information in pairs of (digit id, photon id)
-	  //need to loop to ensure we get all the photons associated with the current digit (digit ip)
-	  std::vector< std::pair<int,int> > digitized_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo();
-	  std::vector<int> triggered_composition;
-	  for(std::vector< std::pair<int,int> >::iterator it = digitized_composition.begin(); it != digitized_composition.end(); ++it) {
-	    if((*it).first == ip) {
-	      triggered_composition.push_back((*it).second);
-	    }
-	    else if ((*it).first > ip)
-	      break;
-	  }//loop over digitized_composition
+	  std::vector<int> triggered_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo(ip);
 
 #ifdef WCSIMWCTRIGGER_VERBOSE
 	  G4cout << "Saving digit on PMT " << tube
