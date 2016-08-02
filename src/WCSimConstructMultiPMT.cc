@@ -207,7 +207,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   ///    In this space, the PMTs will live.                             ///
   /////////////////////////////////////////////////////////////////////////
 
-  G4bool addPMTBase = false; //ToDo: one parameter for both ConstructMultiPMT and ConstructPMT
+    G4bool addPMTBase = true;//false; //ToDo: one parameter for both ConstructMultiPMT and ConstructPMT
 
   // origin is center of upward cylinder
   G4LogicalVolume *logic_mPMT_cylinder_container;

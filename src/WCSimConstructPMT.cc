@@ -70,7 +70,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     reflectorThickness = 0.*CLHEP::mm;
 
   // ToDo: Base is PMT property! Should not hard coded here.
-  G4bool addPMTBase = false; 
+  G4bool addPMTBase = true;//false; 
   G4double baseHeight = 0.;
   G4double baseRadius = 0.;
   if(addPMTBase){
