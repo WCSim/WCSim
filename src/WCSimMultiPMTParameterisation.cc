@@ -66,11 +66,11 @@ void WCSimMultiPMTParameterisation::PreCalculateTransform(){
     // = 1/(vNiCLocal[vCircleLocal[copy]]) * (pi * vNiCLocal[vCircleLocal[copy]] - vNiCLocal[vCircleLocal[copy]] * pi + 2pi )
     // = 2pi / (vNiCLocal[vCircleLocal[copy]]) --> more logical and intuitive
     //G4double angle = ((vNiCLocal[vCircleLocal[copy]]-2)*CLHEP::pi/vNiCLocal[vCircleLocal[copy]]); // Internal angle of each polygon
-    G4double azimuth = 2.*CLHEP::pi / (vNiCLocal[vCircleLocal[copy]]) + vAzimOffsetLocal[vCircleLocal[copy]]; 
+    G4double azimuth = 2.*CLHEP::pi / (vNiCLocal[vCircleLocal[copy]]); 
     
     G4ThreeVector origin(0,0,0); 
     // origin.setRThetaPhi(fApothema,CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]],copy*(CLHEP::pi-angle));  // OLD + DID NOT follow the paper for optimal azimuthal angles
-    origin.setRThetaPhi(fApothema,CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]],copy*azimuth);  
+    origin.setRThetaPhi(fApothema,CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]],copy*azimuth + vAzimOffsetLocal[vCircleLocal[copy]]);  
     // TF: Positioning vector, for an offset single hemisphere (for now)
     origin.setZ(origin.getZ()+fHeight);
     
