@@ -128,21 +128,29 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   mPMTDir->SetGuidance("Commands to change the properties of the multiPMT.");
 
 
-  mPMT_CylHeight = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/CylHeight",this);
-  mPMT_CylHeight->SetGuidance("Set height of cylinder of multiPMT object.");
+  mPMT_CylHeight = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/VesselCylHeight",this);
+  mPMT_CylHeight->SetGuidance("Set height of cylinder of pressure vessel of multiPMT object.");
   mPMT_CylHeight->SetParameterName("CylHeight", true);
   mPMT_CylHeight->SetDefaultValue(50.); //mDOM (PINGU), 0 for KM3Net
   mPMT_CylHeight->SetUnitCategory("Length");
   mPMT_CylHeight->SetDefaultUnit("mm");
   mPMT_CylHeight->SetUnitCandidates("mm cm m");
 
-  mPMT_CylRadius = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/CylRadius",this);
-  mPMT_CylRadius->SetGuidance("Set radius of cylinder of multiPMT object.");
+  mPMT_CylRadius = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/VesselRadius",this);
+  mPMT_CylRadius->SetGuidance("Set vessel radius of multiPMT object.");
   mPMT_CylRadius->SetParameterName("CylRadius", true);
   mPMT_CylRadius->SetDefaultValue(325.); 
   mPMT_CylRadius->SetUnitCategory("Length");
   mPMT_CylRadius->SetDefaultUnit("mm");
   mPMT_CylRadius->SetUnitCandidates("mm cm m");
+
+  mPMT_CylRadiusCurv = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/VesselRadiusCurv",this);
+  mPMT_CylRadiusCurv->SetGuidance("Set vessel radius of curvature of multiPMT object.");
+  mPMT_CylRadiusCurv->SetParameterName("CylRadiusCurv", true);
+  mPMT_CylRadiusCurv->SetDefaultValue(325.); 
+  mPMT_CylRadiusCurv->SetUnitCategory("Length");
+  mPMT_CylRadiusCurv->SetDefaultUnit("mm");
+  mPMT_CylRadiusCurv->SetUnitCandidates("mm cm m");
 
   mPMT_orientation = new G4UIcmdWithAString("/WCSim/mPMT/orientation",this);
   mPMT_orientation->SetGuidance("Set orientation of multiPMT cylinder wrt wall.");

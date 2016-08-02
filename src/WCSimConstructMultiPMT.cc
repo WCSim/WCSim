@@ -41,6 +41,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 {
   
 
+  G4bool showme = true;
+
   // For default SK-style without cover.
   // Not possible to have a mPMT without cover now/yet.
   if(vessel_radius <= 1.*CLHEP::mm && vessel_cyl_height <= 1.*CLHEP::mm){
@@ -154,11 +156,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   G4LogicalVolume * logic_mPMT_top_sphere_vessel;
   G4double cap_position_offset = 0.*cm;
 
-  if(vessel_radius_curv - vessel_radius < 1.*mm){
+  
+  if(vessel_radius_curv - vessel_radius > .1*mm){
     G4Box*  solidCutOffTubs = 
       new G4Box(    "cutOffTubs",
-		    vessel_radius + 1.*cm,                      // x/2
-		    vessel_radius + 1.*cm,                      // y/2
+		    vessel_radius_curv + 1.*cm,                      // x/2
+		    vessel_radius_curv + 1.*cm,                      // y/2
 		    vessel_radius_curv - vessel_cap_height);         // z/2
     
     mPMT_top_cap_vessel =
@@ -173,6 +176,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 			      "WCMultiPMT_vessel_top",
 			      0,0,0);
     
+    std::cout << "DEBUG MODE " << vessel_radius_curv - vessel_cap_height << " " <<vessel_cap_height << std::endl;
+
     cap_position_offset = -1.0* (vessel_radius_curv - vessel_cap_height); //lower position of cap by the piece that we cut off.
   } else {
     //Acrylic/Water cover of the mPMT      
@@ -181,6 +186,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 			      G4Material::GetMaterial(mPMT_outer_material),//"G4_PLEXIGLASS"), 
 			      "WCMultiPMT_vessel_top",
 			      0,0,0);
+
+    
   }
   
   
@@ -244,11 +251,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   G4SubtractionSolid * mPMT_top_cap_container;
   G4LogicalVolume * logic_mPMT_top_sphere_container;
 
-  if(vessel_radius_curv - vessel_radius < 1.*mm){
+  if(vessel_radius_curv - vessel_radius > .1*mm){
     G4Box*  solidCutOffContainer = 
       new G4Box(    "cutOffContainer",
-		    outerR_container + 1.*cm, 
-		    outerR_container + 1.*cm,                     
+		    outerR_curv_container + 1.*cm, 
+		    outerR_curv_container + 1.*cm,                     
 		    vessel_radius_curv - vessel_cap_height);        
     
     mPMT_top_cap_container =
@@ -284,7 +291,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
    * in the parametrization somehow (eg. looping over an array or so)
    */
 
-  G4double pmtDistance = innerR_container; // Inner radius od the DOM 
+  G4double pmtDistance = innerR_curv_container; // Inner radius od the DOM 
   G4cout << "Distance from the Z axis = " <<  pmtDistance << " mm" << G4endl;
 
   G4LogicalVolume* logicWCPMT = ConstructPMT(PMTName, CollectionName);
@@ -299,7 +306,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     
     // singlePMT:
     new G4PVPlacement(0,
-		      G4ThreeVector(0, 0, cap_position_offset),//+vessel_radius_curv),
+		      G4ThreeVector(0, 0, -cap_position_offset),         // raise PMT to be inside the container
 		      logicWCPMT,                       // its logical volume
 		      "pmt",
 		      logic_mPMT_top_sphere_container,        // Mother logical volume,
@@ -310,11 +317,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     
     //Place Container
     new G4PVPlacement(0,			            // its rotation
-		      G4ThreeVector(0,0,0),		// its position
-		      logic_mPMT_top_sphere_container,   	    // its logical volume
+		      G4ThreeVector(0,0,0),	            // its position
+		      logic_mPMT_top_sphere_container,      // its logical volume
 		      "WCPMT_container",		    // its name 
 		      logic_mPMT_top_sphere_vessel,	    // its mother volume
-		      false,			    // no boolean os
+		      false,			            // no boolean os
 		      0, 
 		      checkOverlaps);			
     
@@ -329,13 +336,18 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     G4VisAttributes* VisAttYellow = new G4VisAttributes(G4Colour(1.0,1.,0.));
     VisAttYellow->SetForceSolid(true); 
     
-    
-    //logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
-    //logic_mPMT_top_sphere_vessel->SetVisAttributes(WCPMTVisAtt5);  
-    //logic_mPMT_cylinder_vessel->SetVisAttributes(WCPMTVisAtt5);  
-    //logic_mPMT_cylinder_container->SetVisAttributes(VisAttYellow); 
-    //logic_mPMT_top_sphere_container->SetVisAttributes(VisAttYellow); 
-    
+      if(showme){
+	logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
+	
+	logic_mPMT_top_sphere_vessel->SetVisAttributes(WCPMTVisAtt5);  
+	logic_mPMT_top_sphere_container->SetVisAttributes(VisAttYellow); 
+	if(vessel_cyl_height > 0.){
+	  logic_mPMT_cylinder_vessel->SetVisAttributes(WCPMTVisAtt5);    
+	  logic_mPMT_cylinder_container->SetVisAttributes(VisAttYellow); 
+	}
+      }
+
+
     return logicWCMultiPMT;
   }
   else{
@@ -363,7 +375,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 				      vAlpha,		// Their tilt angle
 				      vCircle,          // Circle number
 				      vAzimOffset,      // The offset in azimuth angle of first PMT in that circle
-				      cap_position_offset);// Position offsets of circles, should become array!!!! ToDo, for bottom sphere
+				      0);// Position offsets of circles, should become array!!!! ToDo, for bottom sphere
 
   
   // dummy value : kZAxis -- modified by parameterised volume
@@ -381,7 +393,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 			  pmtParam_id,                      // The parametrisation
 			  true);                            // checking overlaps
   
-  // Need a 4mm tolerance : still not perfect though because overlaps with mothervolume happen still..
+  // Need a 4mm tolerance : still not perfect though because overlaps with mother volume happen still..
   if(hemisphere->CheckOverlaps(1000,4,1)){
     G4cerr << "Hemisphere has overlapping PMTs: Retry" << G4endl;
     //return NULL; 
@@ -389,14 +401,25 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   
   // Place Container:
   new G4PVPlacement(	0,				             // its rotation
-			G4ThreeVector(0,0,0),         // its position
+			G4ThreeVector(0,0,0),                        // its position
 			logic_mPMT_top_sphere_container,   	     // its logical volume
-			"WCPMT_container",		             // its name 
+			"WCPMT_top_container",		             // its name 
 			logic_mPMT_top_sphere_vessel,		     // its mother volume
 			false,				             // no boolean os
 			0, 
 			checkOverlaps);			
     
+  new G4PVPlacement(	0,				             // its rotation
+			G4ThreeVector(0,0,0),                        // its position
+			logic_mPMT_cylinder_container,   	     // its logical volume
+			"WCPMT_cyl_container",		             // its name 
+			logic_mPMT_cylinder_vessel,		     // its mother volume
+			false,				             // no boolean os
+			0, 
+			checkOverlaps);			
+  
+
+
 
 
   ///////////////////////////////////////////////////////////////
@@ -449,12 +472,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
     G4SubtractionSolid * inner_top_cap;
     G4LogicalVolume * logic_mPMT_top_sphere_inner;
-    if(vessel_radius_curv - vessel_radius < 1.*mm){
+    if(vessel_radius_curv - vessel_radius > .1*mm){
       
       G4Box*  solidCutOffInner = 
 	new G4Box(    "cutOffInner",
-		      innerR_container + 1.*cm,                      // x/2
-		      innerR_container + 1.*cm,                      // y/2
+		      innerR_curv_container + 1.*cm,                      // x/2
+		      innerR_curv_container + 1.*cm,                      // y/2
 		      vessel_radius_curv - vessel_cap_height);         // z/2
       
       inner_top_cap =
@@ -507,12 +530,16 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   VisAttYellow->SetForceSolid(true); 
   
   
-  //logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
-  logic_mPMT_top_sphere_vessel->SetVisAttributes(WCPMTVisAtt5);  
-  logic_mPMT_cylinder_vessel->SetVisAttributes(WCPMTVisAtt5);  
-  logic_mPMT_cylinder_container->SetVisAttributes(VisAttYellow); 
-  logic_mPMT_top_sphere_container->SetVisAttributes(VisAttYellow); 
-  
+  if(showme){
+    logicWCMultiPMT->SetVisAttributes(VisAttGrey); 
+
+    logic_mPMT_top_sphere_vessel->SetVisAttributes(WCPMTVisAtt5);  
+    logic_mPMT_top_sphere_container->SetVisAttributes(VisAttYellow); 
+    if(vessel_cyl_height > 0.){
+      logic_mPMT_cylinder_vessel->SetVisAttributes(WCPMTVisAtt5);    
+      logic_mPMT_cylinder_container->SetVisAttributes(VisAttYellow); 
+    }
+  }
 
   // Keep track of already created mPMT logical volumes in same map as for PMTs
   PMTLogicalVolumes[key] = logicWCMultiPMT;

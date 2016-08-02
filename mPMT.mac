@@ -3,9 +3,25 @@
 #
 /WCSim/WCgeom TestmPMT #Cylinder_60x74_3inchmPMT_14perCent #TestmPMT
 
+
+
+## Some guidance for designing an mPMT configuration:
+## 1) Choose your ID PMT size first (PMTtype_inner)
+## 2) Choose your orientation in a config file for a given number of PMTs
+##    --> configfile and nID_PMTs
+## 3) Choose your reflector size (reflectorHeight and reflectorAngle)
+## 4) Pressure Vessel Cylinder Height will probably be constrained by inner mechanics, HERE IT WILL be sticking out of the ID wall, so only add wh##    at will be sticking out (or for pretty G4 pictures)
+## 5) Choose your VesselRadiusCurv such that the PMTs for a given orientation don't overlap (include base for final version!)
+## 6) You can make the pressure vessel smaller for a given radius of curvature
+##    based on the maximum vessel radius you need for the PMTs and the constraints you have for getting the required module granularity
+## ==> Play with VesselRadius and VesselRadiusCurv AFTER choosing an orientation.
+
+
+
 ## possibility to overwrite some params of the TestmPMT geom
-#/WCSim/mPMT/CylHeight 200 mm
-#/WCSim/mPMT/CylRadius 255 mm #240 mm without PMT bases and pins 
+#/WCSim/mPMT/VesselCylHeight 200 mm
+#/WCSim/mPMT/VesselRadius 255 mm #240 mm without PMT bases and pins
+#/WCSim/mPMT/VesselRadiusCurv 255 mm #240 mm without PMT bases and pins 
 #/WCSim/mPMT/orientation Perpendicular
 #/WCSim/mPMT/material_outer Acrylic
 #/WCSim/mPMT/material_outer_thickness 4. mm
