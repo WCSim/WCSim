@@ -169,7 +169,11 @@ WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
 
 void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
-  
+
+  //Get the PMT info for hit time smearing
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+
   //loop over entires in WCHCPMT, each entry corresponds to
   //the photons on one PMT
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
@@ -266,9 +270,13 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 
 	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    if(iflag == 0) {
+	      //apply time smearing
+	      float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	      //digitize hit
 	      peSmeared *= efficiency;
-	      bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id, intgr_start, peSmeared, digi_comp);
+	      bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
+								intgr_start + PMT->HitTimeSmearing(Q),
+								peSmeared, digi_comp);
 	      if(accepted) {
 		digi_unique_id++;
 	      }
