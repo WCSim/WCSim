@@ -56,6 +56,8 @@ void WCSimWCDigitizerBase::GetVariables()
   //set the options to digitizer-specific defaults
   DigitizerDeadTime          = GetDefaultDeadTime();
   DigitizerIntegrationWindow = GetDefaultIntegrationWindow();
+  DigitizerTimingPrecision   = GetDefaultTimingPrecision();
+  DigitizerPEPrecision       = GetDefaultPEPrecision();
 
   //read the .mac file to override them
   if(DAQMessenger != NULL) {
@@ -68,8 +70,10 @@ void WCSimWCDigitizerBase::GetVariables()
     exit(-1);
   }
 
-  G4cout << "Using digitizer deadtime " << DigitizerDeadTime << " ns" << G4endl;
+  G4cout << "Using digitizer deadtime "           << DigitizerDeadTime          << " ns" << G4endl;
   G4cout << "Using digitizer integration window " << DigitizerIntegrationWindow << " ns" << G4endl;
+  G4cout << "Using digitizer time resolution "    << DigitizerTimingPrecision   << " ns" << G4endl;
+  G4cout << "Using digitizer charge resolution "  << DigitizerPEPrecision       << " p.e." << G4endl;
 }
 
 void WCSimWCDigitizerBase::Digitize()
@@ -114,6 +118,11 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
     G4cout << ")";
   }
 #endif
+
+  //digitised hit information does not have infinite precision
+  //so need to round the charge and time information
+  double digihittime_d = Truncate(digihittime, DigitizerTimingPrecision);
+  double peSmeared_d   = Truncate(peSmeared,   DigitizerPEPrecision);
 
   if (peSmeared > 0.0) {
       if ( DigiStoreHitMap[tube] == 0) {
