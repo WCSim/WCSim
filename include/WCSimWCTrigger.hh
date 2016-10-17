@@ -169,6 +169,27 @@ private:
 
   ///takes all trigger times, then loops over all Digits & fills the output DigitsCollection
   void FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType);
+
+  ///sort the Trigger vectors (Time, Type, Info) by Trigger Time
+  void SortTriggersByTime() {
+    int i, j;
+    TriggerType_t index_type;
+    float index_time;
+    std::vector<float> index_info;
+    for (i = 1; i < (int) TriggerTimes.size(); ++i) {
+      index_time = TriggerTimes[i];
+      index_type = TriggerTypes[i];
+      index_info = TriggerInfos[i];
+      for (j = i; j > 0 && TriggerTimes[j-1] > index_time; j--) {
+	TriggerTimes[j] = TriggerTimes[j-1];
+	TriggerTypes[j] = TriggerTypes[j-1];
+	TriggerInfos[j] = TriggerInfos[j-1];
+      }//j
+      TriggerTimes[j] = index_time;
+      TriggerTypes[j] = index_type;
+      TriggerInfos[j] = index_info;
+    }//i
+  }
   
   static const double offset;        ///< Hit time offset (ns)
   static const double LongTime;      ///< An arbitrary long time to use in loops (ns)
