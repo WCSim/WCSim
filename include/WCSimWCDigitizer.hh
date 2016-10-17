@@ -31,8 +31,8 @@ public:
   void Digitize();
 
   //.mac file option setting methods
-  void SetDigitizerDeadTime         (int deadtime) { DigitizerDeadTime = deadtime;         }; ///< Override the default digitizer deadtime (ns)
-  void SetDigitizerIntegrationWindow(int inttime ) { DigitizerIntegrationWindow = inttime; }; ///< Override the default digitizer integration window (ns)
+  void SetDigitizerDeadTime         (double deadtime) { DigitizerDeadTime = deadtime;         }; ///< Override the default digitizer deadtime (ns)
+  void SetDigitizerIntegrationWindow(double inttime ) { DigitizerIntegrationWindow = inttime; }; ///< Override the default digitizer integration window (ns)
 
 protected:
   void ReInitialize() { DigiStoreHitMap.clear(); }
@@ -46,13 +46,13 @@ protected:
   std::map<int,int> DigiStoreHitMap;   ///< Used to check if a digit has already been created on a PMT
 
   //generic digitizer properties. Defaults set with the GetDefault*() methods. Overidden by .mac options
-  int DigitizerDeadTime;          ///< Digitizer deadtime (ns)
-  int DigitizerIntegrationWindow; ///< Digitizer integration window (ns)
+  double DigitizerDeadTime;          ///< Digitizer deadtime (ns)
+  double DigitizerIntegrationWindow; ///< Digitizer integration window (ns)
 
   DigitizerType_t DigitizerType; ///< Enumeration to say which digitizer we've constructed
 
-  virtual int GetDefaultDeadTime() = 0;          ///< Set the default digitizer-specific deadtime (in ns) (overridden by .mac)
-  virtual int GetDefaultIntegrationWindow() = 0; ///< Set the default digitizer-specific integration window (in ns) (overridden by .mac)
+  virtual double GetDefaultDeadTime() = 0;          ///< Set the default digitizer-specific deadtime (in ns) (overridden by .mac)
+  virtual double GetDefaultIntegrationWindow() = 0; ///< Set the default digitizer-specific integration window (in ns) (overridden by .mac)
 
   void GetVariables(); ///< Get the default deadtime, etc. from the derived class, and override with read from the .mac file
 };
@@ -75,8 +75,8 @@ public:
   void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);
 
 private:
-  int GetDefaultDeadTime()          { return 0; }   ///< SKI digitizer deadtime is 0 ns
-  int GetDefaultIntegrationWindow() { return 200; } ///< 
+  double GetDefaultDeadTime()          { return 0; }   ///< SKI digitizer deadtime is 0 ns
+  double GetDefaultIntegrationWindow() { return 200; } ///< 
 
   static void Threshold(double& pe,int& iflag){
     //   CLHEP::HepRandom::setTheSeed(pe+2014);

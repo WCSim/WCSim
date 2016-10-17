@@ -44,31 +44,31 @@ private:
   G4bool              MultiDigitsPerTriggerSet;
 
   G4UIdirectory*        DigitizerDir;
-  G4UIcmdWithAnInteger* DigitizerDeadTime;
+  G4UIcmdWithADouble*   DigitizerDeadTime;
   G4int                 StoreDigitizerDeadTime;
-  G4UIcmdWithAnInteger* DigitizerIntegrationWindow;
+  G4UIcmdWithADouble*   DigitizerIntegrationWindow;
   G4int                 StoreDigitizerIntegrationWindow;
 
   G4UIdirectory*        SaveFailuresTriggerDir;
-  G4UIcmdWithAnInteger* SaveFailuresTriggerMode;
+  G4UIcmdWithADouble*   SaveFailuresTriggerMode;
   G4int                 StoreSaveFailuresMode;
   G4UIcmdWithADouble*   SaveFailuresTriggerTime;
   G4double              StoreSaveFailuresTime;
-  G4UIcmdWithAnInteger* SaveFailuresPreTriggerWindow;
+  G4UIcmdWithADouble*   SaveFailuresPreTriggerWindow;
   G4int                 StoreSaveFailuresPreWindow;
-  G4UIcmdWithAnInteger* SaveFailuresPostTriggerWindow;
+  G4UIcmdWithADouble*   SaveFailuresPostTriggerWindow;
   G4int                 StoreSaveFailuresPostWindow;
 
   G4UIdirectory*        NDigitsTriggerDir;
   G4UIcmdWithAnInteger* NDigitsTriggerThreshold;
   G4int                 StoreNDigitsThreshold;
-  G4UIcmdWithAnInteger* NDigitsTriggerWindow;
+  G4UIcmdWithADouble*   NDigitsTriggerWindow;
   G4int                 StoreNDigitsWindow;
   G4UIcmdWithABool*     NDigitsTriggerAdjustForNoise;
   G4bool                StoreNDigitsAdjustForNoise;
-  G4UIcmdWithAnInteger* NDigitsPreTriggerWindow;
+  G4UIcmdWithADouble*   NDigitsPreTriggerWindow;
   G4int                 StoreNDigitsPreWindow;
-  G4UIcmdWithAnInteger* NDigitsPostTriggerWindow;
+  G4UIcmdWithADouble*   NDigitsPostTriggerWindow;
   G4int                 StoreNDigitsPostWindow;
 
   G4String initialiseString;

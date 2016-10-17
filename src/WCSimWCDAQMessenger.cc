@@ -66,16 +66,16 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   DigitizerDir = new G4UIdirectory("/DAQ/DigitizerOpt/");
   DigitizerDir->SetGuidance("Generic commands for digitizers");
 
-  int defaultDigitizerDeadTime = -99;
-  DigitizerDeadTime = new G4UIcmdWithAnInteger("/DAQ/DigitizerOpt/DeadTime", this);
+  double defaultDigitizerDeadTime = -99;
+  DigitizerDeadTime = new G4UIcmdWithADouble("/DAQ/DigitizerOpt/DeadTime", this);
   DigitizerDeadTime->SetGuidance("The deadtime for the digitizer (in ns)");
   DigitizerDeadTime->SetParameterName("DigitizerDeadTime",true);
   DigitizerDeadTime->SetDefaultValue(defaultDigitizerDeadTime);
   StoreDigitizerDeadTime = defaultDigitizerDeadTime;
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
 
-  int defaultDigitizerIntegrationWindow = -99;
-  DigitizerIntegrationWindow = new G4UIcmdWithAnInteger("/DAQ/DigitizerOpt/IntegrationWindow", this);
+  double defaultDigitizerIntegrationWindow = -99;
+  DigitizerIntegrationWindow = new G4UIcmdWithADouble("/DAQ/DigitizerOpt/IntegrationWindow", this);
   DigitizerIntegrationWindow->SetGuidance("The integration window for the digitizer (in ns)");
   DigitizerIntegrationWindow->SetParameterName("DigitizerIntegrationWindow",true);
   DigitizerIntegrationWindow->SetDefaultValue(defaultDigitizerIntegrationWindow);
@@ -87,8 +87,8 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   SaveFailuresTriggerDir = new G4UIdirectory("/DAQ/TriggerSaveFailures/");
   SaveFailuresTriggerDir->SetGuidance("Commands specific to the Save Failures trigger");
 
-  int defaultSaveFailuresTriggerMode = 0;
-  SaveFailuresTriggerMode = new G4UIcmdWithAnInteger("/DAQ/TriggerSaveFailures/Mode", this);
+  double defaultSaveFailuresTriggerMode = 0;
+  SaveFailuresTriggerMode = new G4UIcmdWithADouble("/DAQ/TriggerSaveFailures/Mode", this);
   SaveFailuresTriggerMode->SetGuidance("0: save only triggered events; 1: save both triggered and failed events; 2: save only failed events");
   SaveFailuresTriggerMode->SetParameterName("SaveFailuresMode",true);
   SaveFailuresTriggerMode->SetDefaultValue(defaultSaveFailuresTriggerMode);
@@ -103,16 +103,16 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreSaveFailuresTime = defaultSaveFailuresTriggerTime;
   SetNewValue(SaveFailuresTriggerTime, G4UIcommand::ConvertToString(defaultSaveFailuresTriggerTime));
 
-  int defaultSaveFailuresPreTriggerWindow = -400;
-  SaveFailuresPreTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerSaveFailures/PreTriggerWindow", this);
+  double defaultSaveFailuresPreTriggerWindow = -400;
+  SaveFailuresPreTriggerWindow = new G4UIcmdWithADouble("/DAQ/TriggerSaveFailures/PreTriggerWindow", this);
   SaveFailuresPreTriggerWindow->SetGuidance("Set the SaveFailures pretrigger window (in ns)");
   SaveFailuresPreTriggerWindow->SetParameterName("SaveFailuresPreTriggerWindow",false);
   SaveFailuresPreTriggerWindow->SetDefaultValue(defaultSaveFailuresPreTriggerWindow);
   StoreSaveFailuresPreWindow = defaultSaveFailuresPreTriggerWindow;
   SetNewValue(SaveFailuresPreTriggerWindow, G4UIcommand::ConvertToString(defaultSaveFailuresPreTriggerWindow));
 
-  int defaultSaveFailuresPostTriggerWindow = 950;
-  SaveFailuresPostTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerSaveFailures/PostTriggerWindow", this);
+  double defaultSaveFailuresPostTriggerWindow = 950;
+  SaveFailuresPostTriggerWindow = new G4UIcmdWithADouble("/DAQ/TriggerSaveFailures/PostTriggerWindow", this);
   SaveFailuresPostTriggerWindow->SetGuidance("Set the SaveFailures posttrigger window (in ns)");
   SaveFailuresPostTriggerWindow->SetParameterName("SaveFailuresPostTriggerWindow",false);
   SaveFailuresPostTriggerWindow->SetDefaultValue(defaultSaveFailuresPostTriggerWindow);
@@ -132,8 +132,8 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreNDigitsThreshold = defaultNDigitsTriggerThreshold;
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
 
-  int defaultNDigitsTriggerWindow = -99;
-  NDigitsTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNDigits/Window", this);
+  double defaultNDigitsTriggerWindow = -99;
+  NDigitsTriggerWindow = new G4UIcmdWithADouble("/DAQ/TriggerNDigits/Window", this);
   NDigitsTriggerWindow->SetGuidance("Set the NDigits trigger window (in ns)");
   NDigitsTriggerWindow->SetParameterName("NDigitsWindow",false);
   NDigitsTriggerWindow->SetDefaultValue(defaultNDigitsTriggerWindow);
@@ -148,16 +148,16 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreNDigitsAdjustForNoise = defaultNDigitsTriggerAdjustForNoise;
   SetNewValue(NDigitsTriggerAdjustForNoise, G4UIcommand::ConvertToString(defaultNDigitsTriggerAdjustForNoise));
 
-  int defaultNDigitsPreTriggerWindow = -99;
-  NDigitsPreTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNDigits/PreTriggerWindow", this);
+  double defaultNDigitsPreTriggerWindow = -99;
+  NDigitsPreTriggerWindow = new G4UIcmdWithADouble("/DAQ/TriggerNDigits/PreTriggerWindow", this);
   NDigitsPreTriggerWindow->SetGuidance("Set the NDigits pretrigger window (in ns)");
   NDigitsPreTriggerWindow->SetParameterName("NDigitsPreTriggerWindow",false);
   NDigitsPreTriggerWindow->SetDefaultValue(defaultNDigitsPreTriggerWindow);
   StoreNDigitsPreWindow = defaultNDigitsPreTriggerWindow;
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
 
-  int defaultNDigitsPostTriggerWindow = -99;
-  NDigitsPostTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNDigits/PostTriggerWindow", this);
+  double defaultNDigitsPostTriggerWindow = -99;
+  NDigitsPostTriggerWindow = new G4UIcmdWithADouble("/DAQ/TriggerNDigits/PostTriggerWindow", this);
   NDigitsPostTriggerWindow->SetGuidance("Set the NDigits posttrigger window (in ns)");
   NDigitsPostTriggerWindow->SetParameterName("NDigitsPostTriggerWindow",false);
   NDigitsPostTriggerWindow->SetDefaultValue(defaultNDigitsPostTriggerWindow);
@@ -222,16 +222,16 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   //Generic digitizer options
   else if (command == DigitizerDeadTime) {
     G4cout << "Digitizer deadtime set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
-    StoreDigitizerDeadTime = DigitizerDeadTime->GetNewIntValue(newValue);
+    StoreDigitizerDeadTime = DigitizerDeadTime->GetNewDoubleValue(newValue);
   }
   else if (command == DigitizerIntegrationWindow) {
     G4cout << "Digitizer integration window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
-    StoreDigitizerIntegrationWindow = DigitizerIntegrationWindow->GetNewIntValue(newValue);
+    StoreDigitizerIntegrationWindow = DigitizerIntegrationWindow->GetNewDoubleValue(newValue);
   }
 
   //Save failures "trigger"
   else if (command == SaveFailuresTriggerMode) {
-    StoreSaveFailuresMode = SaveFailuresTriggerMode->GetNewIntValue(newValue);
+    StoreSaveFailuresMode = SaveFailuresTriggerMode->GetNewDoubleValue(newValue);
     std::string failuremode;
     if(StoreSaveFailuresMode == 0)
       failuremode = "Saving only triggered events";
@@ -251,11 +251,11 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   }
   else if (command == SaveFailuresPreTriggerWindow) {
     G4cout << "SaveFailures pretrigger window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
-    StoreSaveFailuresPreWindow = SaveFailuresPreTriggerWindow->GetNewIntValue(newValue);
+    StoreSaveFailuresPreWindow = SaveFailuresPreTriggerWindow->GetNewDoubleValue(newValue);
   }
   else if (command == SaveFailuresPostTriggerWindow) {
     G4cout << "SaveFailures posttrigger window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
-    StoreSaveFailuresPostWindow = SaveFailuresPostTriggerWindow->GetNewIntValue(newValue);
+    StoreSaveFailuresPostWindow = SaveFailuresPostTriggerWindow->GetNewDoubleValue(newValue);
   }
 
   //NDigits trigger
@@ -270,15 +270,15 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   }
   else if (command == NDigitsTriggerWindow) {
     G4cout << "NDigits trigger window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
-    StoreNDigitsWindow = NDigitsTriggerWindow->GetNewIntValue(newValue);
+    StoreNDigitsWindow = NDigitsTriggerWindow->GetNewDoubleValue(newValue);
   }
   else if (command == NDigitsPreTriggerWindow) {
     G4cout << "NDigits pretrigger window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
-    StoreNDigitsPreWindow = NDigitsPreTriggerWindow->GetNewIntValue(newValue);
+    StoreNDigitsPreWindow = NDigitsPreTriggerWindow->GetNewDoubleValue(newValue);
   }
   else if (command == NDigitsPostTriggerWindow) {
     G4cout << "NDigits posttrigger window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
-    StoreNDigitsPostWindow = NDigitsPostTriggerWindow->GetNewIntValue(newValue);
+    StoreNDigitsPostWindow = NDigitsPostTriggerWindow->GetNewDoubleValue(newValue);
   }
 }
 

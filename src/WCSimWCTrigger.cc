@@ -93,7 +93,7 @@ void WCSimWCTriggerBase::GetVariables()
 	   << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << " ns" << G4endl;
 }
 
-int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
+double WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
 {
   switch(t) {
   case kTriggerNDigits:
@@ -111,7 +111,7 @@ int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
   }
 }
 
-int WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
+double WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
 {
   switch(t) {
   case kTriggerNDigits:
@@ -193,11 +193,11 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
   //loop over PMTs, and Digits in each PMT.  If ndigits > Threshhold in a time window, then we have a trigger
 
   int ntrig = 0;
-  int window_start_time = 0;
-  int window_end_time   = WCSimWCTriggerBase::LongTime - ndigitsWindow;
-  int window_step_size  = 5; //step the search window along this amount if no trigger is found
+  double window_start_time = 0;
+  double window_end_time   = WCSimWCTriggerBase::LongTime - ndigitsWindow;
+  double window_step_size  = 5; //step the search window along this amount if no trigger is found
   float lasthit;
-  std::vector<int> digit_times;
+  std::vector<double> digit_times;
   bool first_loop = true;
 
   G4cout << "WCSimWCTriggerBase::AlgNDigits. Number of entries in input digit collection: " << WCDCPMT->entries() << G4endl;
@@ -221,7 +221,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
       //int tube=(*WCDCPMT)[i]->GetTubeID();
       //Loop over each Digit in this PMT
       for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
-	int digit_time = (*WCDCPMT)[i]->GetTime(ip);
+	double digit_time = (*WCDCPMT)[i]->GetTime(ip);
 	//hit in trigger window?
 	if(digit_time >= window_start_time && digit_time <= (window_start_time + ndigitsWindow)) {
 	  n_digits++;
@@ -334,7 +334,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       int tube=(*WCDCPMT)[i]->GetTubeID();
       //loop over digits in this PMT
       for ( G4int ip = 0; ip < (*WCDCPMT)[i]->GetTotalPe(); ip++){
-	int digit_time  = (*WCDCPMT)[i]->GetTime(ip);
+	double digit_time  = (*WCDCPMT)[i]->GetTime(ip);
 	if(digit_time >= lowerbound && digit_time <= upperbound) {
 	  //hit in event window
 	  //add it to DigitsCollection
