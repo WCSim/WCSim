@@ -320,9 +320,13 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      int iflag;
 	      WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
 	      if(iflag == 0) {
+		//apply time smearing
+		float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 		//digitize hit
 		peSmeared *= efficiency;
-		bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id, intgr_start, peSmeared, digi_comp);
+		bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
+								  intgr_start + PMT->HitTimeSmearing(Q),
+								  peSmeared, digi_comp);
 		if(accepted) {
 		  digi_unique_id++;
 		}
