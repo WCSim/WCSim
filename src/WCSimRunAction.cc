@@ -129,6 +129,8 @@ void WCSimRunAction::FillGeoTree(){
   Float_t rot[3];
   Int_t cylLoc;
 
+  wcsimrootgeom->SetDetectorName(wcsimdetector->GetDetectorName());
+
   if (wcsimdetector->GetIsEggShapedHyperK()) {
       geo_type = 2;
   }
