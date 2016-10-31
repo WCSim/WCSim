@@ -10,7 +10,7 @@
 WCSimTrackingAction::WCSimTrackingAction()
 {
   ProcessList.insert("Decay") ;
-  ProcessList.insert("MuonMinusCaptureAtRest") ;
+//  ProcessList.insert("muMinusCaptureAtRest");
 //   ProcessList.insert("conv");
   ParticleList.insert(111); // pi0
   ParticleList.insert(211); // pion+
@@ -44,7 +44,6 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   // added by M Fechner
   const G4VProcess* creatorProcess = aTrack->GetCreatorProcess();
   //  if ( creatorProcess )
-  //    G4cout << "process name " << creatorProcess->GetProcessName() << G4endl;
 
 
   WCSimTrackInformation* anInfo;
@@ -57,20 +56,21 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   // is the particle in the set ?
   // is it a gamma 
   // due to lazy evaluation of the 'or' in C++ the order is important
-  if( aTrack->GetParentID()==0 || 
-      ((creatorProcess!=0) && ProcessList.count(creatorProcess->GetProcessName()) ) || 
-      (ParticleList.count(aTrack->GetDefinition()->GetPDGEncoding()) )
-      || (aTrack->GetDefinition()->GetPDGEncoding()==22 && aTrack->GetTotalEnergy() > 50.0*MeV)
+  if( aTrack->GetParentID()==0 
+      || ((creatorProcess!=0) && ProcessList.count(creatorProcess->GetProcessName()))
+      || (ParticleList.count(aTrack->GetDefinition()->GetPDGEncoding()))
+      || (aTrack->GetDefinition()->GetPDGEncoding()==22 && aTrack->GetTotalEnergy() > 1.0*MeV)
+      || (creatorProcess->GetProcessName() == "muMinusCaptureAtRest" && aTrack->GetTotalEnergy() > 1.0*MeV)
       )
   {
     // if so the track is worth saving
     anInfo->WillBeSaved(true);
 
-    //      G4cout << "track # " << aTrack->GetTrackID() << " is worth saving\n";
-    //      G4cout << "It is a " <<aTrack->GetDefinition()->GetParticleName() << G4endl;
+          //G4cout << "track # " << aTrack->GetTrackID() << " is worth saving\n";
+          //G4cout << "It is a " <<aTrack->GetDefinition()->GetParticleName() << G4endl;
   }
-  else
-    anInfo->WillBeSaved(false);
+  else 
+      anInfo->WillBeSaved(false);
 
   if (aTrack->GetDefinition()->GetPDGEncoding()==111)
     pi0List.insert(aTrack->GetTrackID()); // list of all pi0-s 
