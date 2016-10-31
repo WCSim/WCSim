@@ -327,7 +327,10 @@ void WCSimPhysicsList::ConstructGeneral()
       pmanager ->AddProcess(theDecayProcess);
       // set ordering for PostStepDoIt and AtRestDoIt
       pmanager ->SetProcessOrdering(theDecayProcess, idxPostStep);
-      pmanager ->SetProcessOrdering(theDecayProcess, idxAtRest);
+      // Mu minus decay at rest is handled by MuonMinusCaptureAtRest process
+      if(particleName != "mu-"){
+          pmanager ->SetProcessOrdering(theDecayProcess, idxAtRest);
+      }
     }
   }
 }

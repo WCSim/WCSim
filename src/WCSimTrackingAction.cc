@@ -10,7 +10,7 @@
 WCSimTrackingAction::WCSimTrackingAction()
 {
   ProcessList.insert("Decay") ;
-  //ProcessList.insert("MuonMinusCaptureAtRest") ;
+  ProcessList.insert("MuonMinusCaptureAtRest") ;
 //   ProcessList.insert("conv");
   ParticleList.insert(111); // pi0
   ParticleList.insert(211); // pion+
