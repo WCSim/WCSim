@@ -48,7 +48,7 @@ class WCSimPhysicsList: public G4VPhysicsConstructor
     void ConstructEM();
     void ConstructOp();
     void ConstructHad();
-    void ConstructlArStepLimiter();
+    // void ConstructlArStepLimiter();
 
 
 };
