@@ -1,5 +1,11 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
+************************************************************
+04/11/2016: Notes for v1.5.1
+************************************************************
+Bug Fixes:
+* In v1.5.0, the dark rate was not being set correctly in the case where the default detector was not used (unless the dark rate was explicitly specified in the macro). This release now correctly implements the dark rate based on the photodector type used in the detector configuration, even when the non-default detector configuration is called. 
+
 *************************************************************
 07/04/2016: Notes for v1.6.0        
 *************************************************************

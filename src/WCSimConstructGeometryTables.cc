@@ -14,6 +14,9 @@
 #include "G4Tubs.hh"
 #include "G4Sphere.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 #include <sstream>
 #include <iomanip>
 
@@ -46,16 +49,16 @@ void WCSimDetectorConstruction::GetWCGeom
     if ((aPV->GetName() == "WCBarrel") ||
         (aPV->GetName() == "WorldBox")) {    // last condition is the HyperK Envelope name.
     // Stash info in data member
-    WCOffset = G4ThreeVector(aTransform.getTranslation().getX()/cm,
-			     aTransform.getTranslation().getY()/cm,
-			     aTransform.getTranslation().getZ()/cm);
+    WCOffset = G4ThreeVector(aTransform.getTranslation().getX()/CLHEP::cm,
+			     aTransform.getTranslation().getY()/CLHEP::cm,
+			     aTransform.getTranslation().getZ()/CLHEP::cm);
     }
 
 	
 
     // Stash info in data member
     // AH Need to store this in CM for it to be understood by SK code
-    WCPMTSize = WCPMTRadius/cm;// I think this is just a variable no if needed
+    WCPMTSize = WCPMTRadius/CLHEP::cm;// I think this is just a variable no if needed
 
 
     // Note WC can be off-center... get both extremities
@@ -69,9 +72,9 @@ void WCSimDetectorConstruction::GetWCGeom
     }
 
     if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName().find("glassFaceWCPMT") != std::string::npos)){ 
-      G4float x =  aTransform.getTranslation().getX()/cm;
-      G4float y =  aTransform.getTranslation().getY()/cm;
-      G4float z =  aTransform.getTranslation().getZ()/cm;
+      G4float x =  aTransform.getTranslation().getX()/CLHEP::cm;
+      G4float y =  aTransform.getTranslation().getY()/CLHEP::cm;
+      G4float z =  aTransform.getTranslation().getZ()/CLHEP::cm;
       
       if (x<xmin){xmin=x;}
       if (x>xmax){xmax=x;}
@@ -137,7 +140,7 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
       
     // Print
     //     G4cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
-    //     	   << " Pos:" << aTransform.getTranslation()/cm 
+    //     	   << " Pos:" << aTransform.getTranslation()/CLHEP::cm 
     //     	   << " Rot:" << aTransform.getRotation().getTheta()/deg 
     //     	   << "," << aTransform.getRotation().getPhi()/deg 
     //     	   << "," << aTransform.getRotation().getPsi()/deg
@@ -159,8 +162,8 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   // (JF) Get first tube transform for filling in detector radius
   // the height is still done with WCCylInfo above
   G4Transform3D firstTransform = tubeIDMap[2];
-  innerradius = sqrt(pow(firstTransform.getTranslation().getX()/cm,2)
-                            + pow(firstTransform.getTranslation().getY()/cm,2));
+  innerradius = sqrt(pow(firstTransform.getTranslation().getX()/CLHEP::cm,2)
+                            + pow(firstTransform.getTranslation().getY()/CLHEP::cm,2));
 
   if (isEggShapedHyperK){
     geoFile << setw(8)<< 0;
@@ -208,9 +211,9 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     
     geoFile.precision(9);
      geoFile << setw(4) << tubeID 
- 	    << " " << setw(8) << newTransform.getTranslation().getX()/cm
- 	    << " " << setw(8) << newTransform.getTranslation().getY()/cm
- 	    << " " << setw(8) << newTransform.getTranslation().getZ()/cm
+ 	    << " " << setw(8) << newTransform.getTranslation().getX()/CLHEP::cm
+ 	    << " " << setw(8) << newTransform.getTranslation().getY()/CLHEP::cm
+ 	    << " " << setw(8) << newTransform.getTranslation().getZ()/CLHEP::cm
 	    << " " << setw(7) << pmtOrientation.x()
 	    << " " << setw(7) << pmtOrientation.y()
 	    << " " << setw(7) << pmtOrientation.z()
@@ -218,9 +221,9 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
  	    << G4endl;
      
      WCSimPmtInfo *new_pmt = new WCSimPmtInfo(cylLocation,
-					      newTransform.getTranslation().getX()/cm,
-					      newTransform.getTranslation().getY()/cm,
-					      newTransform.getTranslation().getZ()/cm,
+					      newTransform.getTranslation().getX()/CLHEP::cm,
+					      newTransform.getTranslation().getY()/CLHEP::cm,
+					      newTransform.getTranslation().getZ()/CLHEP::cm,
 					      pmtOrientation.x(),
 					      pmtOrientation.y(),
 					      pmtOrientation.z(),
