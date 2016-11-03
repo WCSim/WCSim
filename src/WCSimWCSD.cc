@@ -14,6 +14,9 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimTrackInformation.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 WCSimWCSD::WCSimWCSD(G4String CollectionName, G4String name,WCSimDetectorConstruction* myDet)
 :G4VSensitiveDetector(name)
 {

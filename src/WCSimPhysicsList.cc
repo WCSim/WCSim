@@ -66,7 +66,7 @@ void WCSimPhysicsList::ConstructProcess()
 {
   //AddTransportation();
   ConstructEM();
-  ConstructlArStepLimiter();
+  // ConstructlArStepLimiter();
   ConstructGeneral();
   ConstructOp();
   ConstructHad();
@@ -84,7 +84,13 @@ void WCSimPhysicsList::ConstructProcess()
 #include "G4MuBremsstrahlung.hh"
 #include "G4MuPairProduction.hh"
 #include "G4hIonisation.hh"
+
+#if G4VERSIONCODE < 41000
 #include "G4MuonMinusCaptureAtRest.hh"
+#else
+// FDL replaced in 4.9 by G4MuonMinusCapture
+#include "G4MuonMinusCapture.hh"
+#endif
 
 //K.Z.: New MultipleScattering classes 
 #include "G4eMultipleScattering.hh"
@@ -99,9 +105,15 @@ void WCSimPhysicsList::ConstructEM()
   //replaced by new G4MultipleScattering classes for e+-, mu+-, hadron and ions.
   //K. Zbiri, 12/30/2009
 
+#if G4VERSIONCODE < 41000
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator->value();
+#else
+  aParticleIterator->reset();
+  while( (*aParticleIterator)() ){
+    G4ParticleDefinition* particle = aParticleIterator->value();
+#endif
     G4ProcessManager* pmanager = particle->GetProcessManager();
     G4String particleName = particle->GetParticleName();
      
@@ -187,10 +199,17 @@ void WCSimPhysicsList::ConstructEM()
       // MF , stolen from CWW, april 2005
       if (particleName == "mu-")
         {
+#if G4VERSIONCODE < 41000
           G4VProcess* aG4MuonMinusCaptureAtRest =
             new G4MuonMinusCaptureAtRest();
-          pmanager->AddProcess(aG4MuonMinusCaptureAtRest);
+          pmanager->AddProcess(aG4MuonMinusCaptureAtRest);	  
           pmanager->SetProcessOrdering(aG4MuonMinusCaptureAtRest,idxAtRest);
+#else
+          G4VProcess* aG4MuonMinusCapture =
+	    new G4MuonMinusCapture();
+          pmanager->AddProcess(aG4MuonMinusCapture);
+          pmanager->SetProcessOrdering(aG4MuonMinusCapture, idxAtRest);
+#endif
         }
 
 
@@ -216,31 +235,31 @@ void WCSimPhysicsList::ConstructEM()
   }
 }
 
-#ifdef GEANT4_7_0
-#include "G4StepLimiter.hh"
-#endif
+// #ifdef GEANT4_7_0
+// #include "G4StepLimiter.hh"
+// #endif
 
-void WCSimPhysicsList::ConstructlArStepLimiter(){
+// void WCSimPhysicsList::ConstructlArStepLimiter(){
 
-#ifdef GEANT4_7_0
-  theParticleIterator->reset();
-  while( (*theParticleIterator)() ){
+// #ifdef GEANT4_7_0
+//   theParticleIterator->reset();
+//   while( (*theParticleIterator)() ){
 
-    G4ParticleDefinition* particle = theParticleIterator->value();
-    G4ProcessManager* pmanager = particle->GetProcessManager();
+//     G4ParticleDefinition* particle = theParticleIterator->value();
+//     G4ProcessManager* pmanager = particle->GetProcessManager();
 
-     if ((!particle->IsShortLived()) &&
-	 (particle->GetPDGCharge() != 0.0)&&
-	 (particle->GetParticleName() != "chargedgeantino")) {
-       G4VProcess* stepLimiter = new G4StepLimiter();   
-       pmanager->AddProcess(stepLimiter);
-       pmanager->SetProcessOrdering(stepLimiter,
-				    idxPostStep,
-				    pmanager->GetProcessListLength());
-     }
-  }
-#endif
-}
+//      if ((!particle->IsShortLived()) &&
+// 	 (particle->GetPDGCharge() != 0.0)&&
+// 	 (particle->GetParticleName() != "chargedgeantino")) {
+//        G4VProcess* stepLimiter = new G4StepLimiter();   
+//        pmanager->AddProcess(stepLimiter);
+//        pmanager->SetProcessOrdering(stepLimiter,
+// 				    idxPostStep,
+// 				    pmanager->GetProcessListLength());
+//      }
+//   }
+// #endif
+// }
 
 #include "G4Cerenkov.hh"
 #include "G4OpAbsorption.hh"
@@ -280,10 +299,17 @@ void WCSimPhysicsList::ConstructOp(){
   // theCherenkovProcess->SetMaxBetaChangePerStep(10.0);
   // theCherenkovProcess->SetTrackSecondariesFirst(true);
 
+#if G4VERSIONCODE < 41000
   theParticleIterator->reset();
   while( (*theParticleIterator)() )
   {
     G4ParticleDefinition* particle     = theParticleIterator->value();
+#else
+  aParticleIterator->reset();
+  while( (*aParticleIterator)() )
+  {
+    G4ParticleDefinition* particle     = aParticleIterator->value();
+#endif
     G4ProcessManager*     pmanager     = particle->GetProcessManager();
     G4String              particleName = particle->GetParticleName();
     
@@ -316,9 +342,15 @@ void WCSimPhysicsList::ConstructGeneral()
 {
   // Add Decay Process
   G4Decay* theDecayProcess = new G4Decay();
+#if G4VERSIONCODE < 41000
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator->value();
+#else
+  aParticleIterator->reset();
+  while( (*aParticleIterator)() ){
+    G4ParticleDefinition* particle = aParticleIterator->value();
+#endif    
     G4ProcessManager* pmanager = particle->GetProcessManager();
     if (theDecayProcess->IsApplicable(*particle)) { 
       pmanager ->AddProcess(theDecayProcess);
@@ -348,6 +380,7 @@ void WCSimPhysicsList::ConstructGeneral()
 #include "G4AlphaInelasticProcess.hh"
 
 // Low-energy Models: < 20GeV
+#if G4VERSIONCODE < 41000
 #include "G4LElastic.hh"
 #include "G4LEPionPlusInelastic.hh"
 #include "G4LEPionMinusInelastic.hh"
@@ -374,6 +407,11 @@ void WCSimPhysicsList::ConstructGeneral()
 #include "G4HEAntiProtonInelastic.hh"
 #include "G4HENeutronInelastic.hh"
 #include "G4HEAntiNeutronInelastic.hh"
+#else
+// FDL replaced with G4HadronElastic
+#include "G4HadronElastic.hh"
+#endif
+
 
 // Neutron high-precision models: <20 MeV
 #include "G4NeutronHPElastic.hh"
@@ -382,7 +420,9 @@ void WCSimPhysicsList::ConstructGeneral()
 #include "G4NeutronHPCaptureData.hh"
 #include "G4NeutronHPInelastic.hh"
 #include "G4NeutronHPInelasticData.hh"
+#if G4VERSIONCODE < 41000
 #include "G4LCapture.hh"
+#endif
 
 //=================================
 // Added by JLR 2005-07-05
@@ -392,9 +432,25 @@ void WCSimPhysicsList::ConstructGeneral()
 #include "G4BinaryCascade.hh"
 
 // Stopping processes
+#if G4VERSIONCODE < 41000
 #include "G4PiMinusAbsorptionAtRest.hh"
 #include "G4KaonMinusAbsorptionAtRest.hh"
 #include "G4AntiProtonAnnihilationAtRest.hh"
+#else
+// Replaced by below -FDL
+#include "G4PiMinusAbsorptionBertini.hh"
+#include "G4KaonMinusAbsorptionBertini.hh"
+#include "G4AntiProtonAbsorptionFritiof.hh"
+
+// Include the FTF model - FDL
+#include "G4FTFModel.hh"
+#include "G4LundStringFragmentation.hh"
+#include "G4ExcitedStringDecay.hh"
+#include "G4PreCompoundModel.hh"
+#include "G4GeneratorPrecompoundInterface.hh"
+#include "G4TheoFSGenerator.hh"
+
+#endif
 #include "G4AntiNeutronAnnihilationAtRest.hh"
 
 void WCSimPhysicsList::ConstructHad() 
@@ -409,15 +465,41 @@ void WCSimPhysicsList::ConstructHad()
 // examples/advanced/underground_physics/src/DMXPhysicsList.cc
 // CWW 2/23/05
 //
-  
+
+
   G4HadronElasticProcess* theElasticProcess = new G4HadronElasticProcess;
+#if G4VERSIONCODE < 41000
   G4LElastic* theElasticModel = new G4LElastic;
   theElasticProcess->RegisterMe(theElasticModel);
+#else
+  // Add the FRITIOF model - FDL
+  G4TheoFSGenerator* FTFP_model = new G4TheoFSGenerator();
+  G4GeneratorPrecompoundInterface* theCascade = new G4GeneratorPrecompoundInterface();
+  G4ExcitationHandler* theHandler = new G4ExcitationHandler();
+  G4PreCompoundModel* thePreEquilib = new G4PreCompoundModel(theHandler);
+  theCascade->SetDeExcitation(thePreEquilib);
+  FTFP_model->SetTransport(theCascade);
+  G4LundStringFragmentation* theFragmentation = new G4LundStringFragmentation();
+  G4ExcitedStringDecay* theStringDecay = new G4ExcitedStringDecay(theFragmentation);    
+  G4FTFModel* theStringModel = new G4FTFModel;
+  theStringModel->SetFragmentationModel(theStringDecay);
+  FTFP_model->SetHighEnergyGenerator(theStringModel);
+
+  G4HadronElastic* theElasticModel = new G4HadronElastic;
+  theElasticProcess->RegisterMe(theElasticModel);
+#endif
   
+#if G4VERSIONCODE < 41000
   theParticleIterator->reset();
   while ((*theParticleIterator)()) 
     {
       G4ParticleDefinition* particle = theParticleIterator->value();
+#else
+  aParticleIterator->reset();
+  while ((*aParticleIterator)()) 
+    {
+      G4ParticleDefinition* particle = aParticleIterator->value();
+#endif
       G4ProcessManager* pmanager = particle->GetProcessManager();
       G4String particleName = particle->GetParticleName();
 
@@ -426,12 +508,18 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theElasticProcess);
 	  G4PionPlusInelasticProcess* theInelasticProcess = 
 	    new G4PionPlusInelasticProcess();
+#if G4VERSIONCODE < 41000
 	  G4LEPionPlusInelastic* theLEInelasticModel = 
 	    new G4LEPionPlusInelastic;
 	  theInelasticProcess->RegisterMe(theLEInelasticModel);
 	  G4HEPionPlusInelastic* theHEInelasticModel = 
 	    new G4HEPionPlusInelastic;
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
+#else
+	  // Added Bertini Model - FDL
+	  G4CascadeInterface* bertiniModel = new G4CascadeInterface();
+	  theInelasticProcess->RegisterMe(bertiniModel);
+#endif
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	} 
 
@@ -440,15 +528,25 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theElasticProcess);
 	  G4PionMinusInelasticProcess* theInelasticProcess = 
 	    new G4PionMinusInelasticProcess();
+#if G4VERSIONCODE < 41000
 	  G4LEPionMinusInelastic* theLEInelasticModel = 
 	    new G4LEPionMinusInelastic;
 	  theInelasticProcess->RegisterMe(theLEInelasticModel);
 	  G4HEPionMinusInelastic* theHEInelasticModel = 
 	    new G4HEPionMinusInelastic;
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
+#else
+	  // Added Bertini Model - FDL
+	  G4CascadeInterface* bertiniModel = new G4CascadeInterface();
+	  theInelasticProcess->RegisterMe(bertiniModel);
+#endif
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	  G4String prcNam;
+#if G4VERSIONCODE < 41000
 	  pmanager->AddRestProcess(new G4PiMinusAbsorptionAtRest, ordDefault);
+#else
+	  pmanager->AddRestProcess(new G4PiMinusAbsorptionBertini, ordDefault);
+#endif
 	}
       
       else if (particleName == "kaon+") 
@@ -456,12 +554,18 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theElasticProcess);
 	  G4KaonPlusInelasticProcess* theInelasticProcess = 
 	    new G4KaonPlusInelasticProcess();
+#if G4VERSIONCODE < 41000
 	  G4LEKaonPlusInelastic* theLEInelasticModel = 
 	    new G4LEKaonPlusInelastic;
 	  theInelasticProcess->RegisterMe(theLEInelasticModel);
 	  G4HEKaonPlusInelastic* theHEInelasticModel = 
 	    new G4HEKaonPlusInelastic;
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
+#else
+	  // Added Bertini Model - FDL
+	  G4CascadeInterface* bertiniModel = new G4CascadeInterface();
+	  theInelasticProcess->RegisterMe(bertiniModel);
+#endif
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
       
@@ -470,12 +574,18 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theElasticProcess);
 	  G4KaonZeroSInelasticProcess* theInelasticProcess = 
 	    new G4KaonZeroSInelasticProcess();
+#if G4VERSIONCODE < 41000
 	  G4LEKaonZeroSInelastic* theLEInelasticModel = 
 	    new G4LEKaonZeroSInelastic;
 	  theInelasticProcess->RegisterMe(theLEInelasticModel);
 	  G4HEKaonZeroInelastic* theHEInelasticModel = 
 	    new G4HEKaonZeroInelastic;
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
+#else
+	  // Added Bertini Model - FDL
+	  G4CascadeInterface* bertiniModel = new G4CascadeInterface();
+	  theInelasticProcess->RegisterMe(bertiniModel);
+#endif	  
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
 
@@ -484,12 +594,18 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theElasticProcess);
 	  G4KaonZeroLInelasticProcess* theInelasticProcess = 
 	    new G4KaonZeroLInelasticProcess();
+#if G4VERSIONCODE < 41000
 	  G4LEKaonZeroLInelastic* theLEInelasticModel = 
 	    new G4LEKaonZeroLInelastic;
 	  theInelasticProcess->RegisterMe(theLEInelasticModel);
 	  G4HEKaonZeroInelastic* theHEInelasticModel = 
 	    new G4HEKaonZeroInelastic;
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
+#else
+	  // Added Bertini Model - FDL
+	  G4CascadeInterface* bertiniModel = new G4CascadeInterface();
+	  theInelasticProcess->RegisterMe(bertiniModel);
+#endif	  
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
 
@@ -498,14 +614,24 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theElasticProcess);
 	  G4KaonMinusInelasticProcess* theInelasticProcess = 
 	    new G4KaonMinusInelasticProcess();
+#if G4VERSIONCODE < 41000
 	  G4LEKaonMinusInelastic* theLEInelasticModel = 
 	    new G4LEKaonMinusInelastic;
 	  theInelasticProcess->RegisterMe(theLEInelasticModel);
 	  G4HEKaonMinusInelastic* theHEInelasticModel = 
 	    new G4HEKaonMinusInelastic;
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
+#else
+	  // Added Bertini Model - FDL
+	  G4CascadeInterface* bertiniModel = new G4CascadeInterface();
+	  theInelasticProcess->RegisterMe(bertiniModel);
+#endif
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
+#if G4VERSIONCODE < 41000
 	  pmanager->AddRestProcess(new G4KaonMinusAbsorptionAtRest, ordDefault);
+#else
+	  pmanager->AddRestProcess(new G4KaonMinusAbsorptionBertini, ordDefault);
+#endif
 	}
 
       else if (particleName == "proton") 
@@ -525,6 +651,7 @@ void WCSimPhysicsList::ConstructHad()
 	  // Gheisha = Original Geant4 default 
 	  // Bertini = Bertini intra-nuclear cascade model
 	  // Binary  = Binary intra-nuclear cascade model
+#if G4VERSIONCODE < 41000
 	  if (gheishahad) {
 	    G4LEProtonInelastic* theLEInelasticModel = new G4LEProtonInelastic;
 	    theInelasticProcess->RegisterMe(theLEInelasticModel);
@@ -533,15 +660,27 @@ void WCSimPhysicsList::ConstructHad()
 	    G4CascadeInterface* theBertiniModel = new G4CascadeInterface;
 	    theInelasticProcess->RegisterMe(theBertiniModel);
 	  }
+#else
+      if (gheishahad || bertinihad) {
+	    G4CascadeInterface* theBertiniModel = new G4CascadeInterface;
+	    theInelasticProcess->RegisterMe(theBertiniModel);
+	  }
+#endif	  
 	  else if (binaryhad) {
 	    G4BinaryCascade* theBinaryModel = new G4BinaryCascade();
 	    theInelasticProcess->RegisterMe(theBinaryModel);
 
+#if G4VERSIONCODE < 41000
 	    G4LEProtonInelastic* theLEInelasticModel = new G4LEProtonInelastic;
 	    theLEInelasticModel->SetMinEnergy(10.1*GeV);
 	    theLEInelasticModel->SetMaxEnergy( 45.*GeV );
 	    theInelasticProcess->RegisterMe(theLEInelasticModel);
-
+#else
+	    FTFP_model->SetMinEnergy(10.1*GeV);
+	    FTFP_model->SetMaxEnergy(45.*GeV);
+	    theInelasticProcess->RegisterMe(FTFP_model);
+#endif
+	    
 	  }
 	  else {
 	    G4cout << "No secondary interaction model chosen! Using G4 BINARY." << G4endl;
@@ -549,8 +688,12 @@ void WCSimPhysicsList::ConstructHad()
 	    theInelasticProcess->RegisterMe(theBinaryModel);
 	  }
 
+#if G4VERSIONCODE < 41000
 	  G4HEProtonInelastic* theHEInelasticModel = new G4HEProtonInelastic;
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
+#else
+	  theInelasticProcess->RegisterMe(FTFP_model);
+#endif	  
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
 
@@ -559,12 +702,16 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theElasticProcess);
 	  G4AntiProtonInelasticProcess* theInelasticProcess = 
 	    new G4AntiProtonInelasticProcess();
+#if G4VERSIONCODE < 41000
 	  G4LEAntiProtonInelastic* theLEInelasticModel = 
 	    new G4LEAntiProtonInelastic;
 	  theInelasticProcess->RegisterMe(theLEInelasticModel);
 	  G4HEAntiProtonInelastic* theHEInelasticModel = 
 	    new G4HEAntiProtonInelastic;
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
+#else
+	  theInelasticProcess->RegisterMe(FTFP_model);
+#endif	  
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
 
@@ -573,7 +720,11 @@ void WCSimPhysicsList::ConstructHad()
 	  // elastic scattering
 	  G4HadronElasticProcess* theNeutronElasticProcess = 
 	    new G4HadronElasticProcess;
+#if G4VERSIONCODE < 41000
 	  G4LElastic* theElasticModel1 = new G4LElastic;
+#else
+	  G4HadronElastic* theElasticModel1 = new G4HadronElastic;
+#endif
 	  G4NeutronHPElastic * theElasticNeutron = new G4NeutronHPElastic;
 	  theNeutronElasticProcess->RegisterMe(theElasticModel1);
 	  theElasticModel1->SetMinEnergy(19*MeV);
@@ -597,9 +748,14 @@ void WCSimPhysicsList::ConstructHad()
 	  // BERTINI = Bertini intra-nuclear cascade model
 	  // BINARY  = Binary intra-nuclear cascade model
 	  if (gheishahad) {
+#if G4VERSIONCODE < 41000
 	    G4LENeutronInelastic* theInelasticModel = new G4LENeutronInelastic;
 	    theInelasticModel->SetMinEnergy(19*MeV);
 	    theInelasticProcess->RegisterMe(theInelasticModel);
+#else
+	    FTFP_model->SetMinEnergy(19*MeV);
+	    theInelasticProcess->RegisterMe(FTFP_model);
+#endif
 	  }
 	  else if (bertinihad) {
 	    G4CascadeInterface* theBertiniModel = new G4CascadeInterface;
@@ -611,10 +767,16 @@ void WCSimPhysicsList::ConstructHad()
 	    theBinaryModel->SetMinEnergy(19*MeV);
 	    theInelasticProcess->RegisterMe(theBinaryModel);
 
-      G4LENeutronInelastic* theInelasticModel = new G4LENeutronInelastic;
-      theInelasticModel->SetMinEnergy(10.1*GeV);
-      theInelasticModel->SetMaxEnergy( 45.*GeV );
-      theInelasticProcess->RegisterMe(theInelasticModel);
+#if G4VERSIONCODE < 41000
+	    G4LENeutronInelastic* theInelasticModel = new G4LENeutronInelastic;
+	    theInelasticModel->SetMinEnergy(10.1*GeV);
+	    theInelasticModel->SetMaxEnergy( 45.*GeV );
+	    theInelasticProcess->RegisterMe(theInelasticModel);
+#else
+	    FTFP_model->SetMinEnergy(10.1*GeV);
+	    FTFP_model->SetMaxEnergy(45.*GeV);
+	    theInelasticProcess->RegisterMe(FTFP_model);
+#endif	    
 	  }
 	  else {
 	    G4cout << "No secondary interaction model chosen! Using G4 BINARY." << G4endl;
@@ -623,8 +785,12 @@ void WCSimPhysicsList::ConstructHad()
 	    theInelasticProcess->RegisterMe(theBinaryModel);
 	  }
 	  
+#if G4VERSIONCODE < 41000
 	  G4HENeutronInelastic* theHEInelasticModel = new G4HENeutronInelastic;
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
+#else
+	  theInelasticProcess->RegisterMe(FTFP_model);
+#endif
 	  
 	  G4NeutronHPInelastic * theLENeutronInelasticModel =
 	    new G4NeutronHPInelastic;
@@ -638,9 +804,11 @@ void WCSimPhysicsList::ConstructHad()
 	  // capture
 	  G4HadronCaptureProcess* theCaptureProcess =
 	    new G4HadronCaptureProcess;
+#if G4VERSIONCODE < 41000
 	  G4LCapture* theCaptureModel = new G4LCapture;
 	  theCaptureModel->SetMinEnergy(19*MeV);
 	  theCaptureProcess->RegisterMe(theCaptureModel);
+#endif
 	  G4NeutronHPCapture * theLENeutronCaptureModel = new G4NeutronHPCapture;
 	  theCaptureProcess->RegisterMe(theLENeutronCaptureModel);
 	  G4NeutronHPCaptureData * theNeutronData3 = new G4NeutronHPCaptureData;
@@ -655,12 +823,16 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theElasticProcess);
 	  G4AntiNeutronInelasticProcess* theInelasticProcess = 
 	    new G4AntiNeutronInelasticProcess();
+#if G4VERSIONCODE < 41000
 	  G4LEAntiNeutronInelastic* theLEInelasticModel = 
 	    new G4LEAntiNeutronInelastic;
 	  theInelasticProcess->RegisterMe(theLEInelasticModel);
 	  G4HEAntiNeutronInelastic* theHEInelasticModel = 
 	    new G4HEAntiNeutronInelastic;
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
+#else
+	  theInelasticProcess->RegisterMe(FTFP_model);
+#endif
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
 
@@ -669,9 +841,13 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theElasticProcess);
 	  G4DeuteronInelasticProcess* theInelasticProcess = 
 	    new G4DeuteronInelasticProcess();
+#if G4VERSIONCODE < 41000
 	  G4LEDeuteronInelastic* theLEInelasticModel = 
 	    new G4LEDeuteronInelastic;
 	  theInelasticProcess->RegisterMe(theLEInelasticModel);
+#else
+	  theInelasticProcess->RegisterMe(FTFP_model);
+#endif
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
       
@@ -680,9 +856,13 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theElasticProcess);
 	  G4TritonInelasticProcess* theInelasticProcess = 
 	    new G4TritonInelasticProcess();
+#if G4VERSIONCODE < 41000
 	  G4LETritonInelastic* theLEInelasticModel = 
 	    new G4LETritonInelastic;
 	  theInelasticProcess->RegisterMe(theLEInelasticModel);
+#else
+	  theInelasticProcess->RegisterMe(FTFP_model);
+#endif
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
 
@@ -691,9 +871,13 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theElasticProcess);
 	  G4AlphaInelasticProcess* theInelasticProcess = 
 	    new G4AlphaInelasticProcess();
+#if G4VERSIONCODE < 41000
 	  G4LEAlphaInelastic* theLEInelasticModel = 
 	    new G4LEAlphaInelastic;
 	  theInelasticProcess->RegisterMe(theLEInelasticModel);
+#else
+	  theInelasticProcess->RegisterMe(FTFP_model);
+#endif
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
 

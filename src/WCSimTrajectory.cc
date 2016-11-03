@@ -93,7 +93,11 @@ void WCSimTrajectory::ShowTrajectory(std::ostream& os) const
 void WCSimTrajectory::DrawTrajectory(G4int i_mode) const
 {
   // Invoke the default implementation in G4VTrajectory...
+#if G4VERSIONCODE < 41000
   G4VTrajectory::DrawTrajectory(i_mode);
+#else
+  G4VTrajectory::DrawTrajectory();
+#endif
   // ... or override with your own code here.
 }
 
