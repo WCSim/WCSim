@@ -320,7 +320,7 @@ else {
     
     // reflector PMT Placement:
     new G4PVPlacement(0,
-		      G4ThreeVector(0, 0, id_reflector_z_offset),
+		      G4ThreeVector(0, 0, id_reflector_z_offset+id_reflector_height/2),
 		      logicReflector,
 		      "reflectorWCPMT",
                         logicWCPMT,
