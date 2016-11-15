@@ -1651,26 +1651,25 @@ PMT3inchR12199_02::PMT3inchR12199_02(){}
 PMT3inchR12199_02::~PMT3inchR12199_02(){}
 
 G4String PMT3inchR12199_02::GetPMTName() {G4String PMTName = "PMT3inchR12199_02"; return PMTName;}
-G4double PMT3inchR12199_02::GetExposeHeight() {return .0153*m;}        //.0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
-G4double PMT3inchR12199_02::GetRadius() {return 0.036*m;}               //.0400*m;}   //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
+G4double PMT3inchR12199_02::GetExposeHeight() {return 0.02*m;}          //.0153*m;} //.0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
+    G4double PMT3inchR12199_02::GetRadius() {return 0.04*m;}            //0.036*m;} //.0400*m;}   //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
 G4double PMT3inchR12199_02::GetPMTGlassThickness() {return 0.4*cm;}
 
+
+// Currently based on 8" (instead of 20")
+// But shifted to requirements (2ns TTS FWHM) for 1 pe
 float PMT3inchR12199_02::HitTimeSmearing(float Q) {
-  G4float sig_param[4]={0.6314,0.06260,0.5711,23.96};
-  G4float lambda_param[2]={0.4113,0.07827};
-  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
 
-  G4float highcharge_param[2];
-  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
-  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
-  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
-
-  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
-  G4float lambda = lambda_param[0]+lambda_param[1]*Q;
-  G4float Smearing_factor = G4RandGauss::shoot(-0.2,sigma)-1/lambda*log(1-G4UniformRand());
+  float timingConstant = 1.890; 
+  float timingResolution = 0.5*(0.33 + sqrt(timingConstant/Q));  //factor 0.5 for expected improvement and required TTS
+  // looking at SK's jitter function for 20" tubes
+  if (timingResolution < 0.58) timingResolution=0.58;
+  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
   return Smearing_factor;
 }
 
+
+// To Add!!
 G4float* PMT3inchR12199_02::Getqpe()
 {
   static G4float qpe0[501]= {
@@ -1808,6 +1807,9 @@ G4double* PMT3inchR12199_02::GetQE(){
   static G4double QE[21] =
     { .0787*correctionFactor, .1838*correctionFactor, .2401*correctionFactor, .2521*correctionFactor, .2695*correctionFactor, .2676*correctionFactor, .2593*correctionFactor, .2472*correctionFactor, .2276*correctionFactor,
       .1970*correctionFactor,  .1777*correctionFactor, .1547*correctionFactor, .1033*correctionFactor, .0727*correctionFactor, .0587*correctionFactor, .0470*correctionFactor, .0372*correctionFactor, .0285*correctionFactor, .0220*correctionFactor, .0130*correctionFactor, .0084*correctionFactor};
+  
+
+
   
   /* TEST: make QE the same!! 
   static G4float QE[20] =

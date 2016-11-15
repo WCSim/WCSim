@@ -32,7 +32,7 @@ WCSimTrackingAction::~WCSimTrackingAction(){;}
 
 void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
-  G4float percentageOfCherenkovPhotonsToDraw = 0.0;
+  G4float percentageOfCherenkovPhotonsToDraw = 100.0;
 
   if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()
        || G4UniformRand() < percentageOfCherenkovPhotonsToDraw )

@@ -154,6 +154,9 @@ public:
 
     // WCBarrelPMTOffset is affected, so need to be updated!!
     G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+    // If no acrylic cover/pressure vessel
+    if(vessel_tot_height < WCPMTRadius)
+      vessel_tot_height = WCPMTRadius;
     WCBarrelPMTOffset = vessel_tot_height;                          // BarrelPMTOffset needs PMT/mPMT height
     WCCapEdgeLimit = WCIDDiameter/2.0 - vessel_tot_height;          // CapEdgeLimit needs PMT/mPMT height
   }                          
@@ -166,6 +169,9 @@ public:
     vessel_cyl_height = height;
 
     G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+    // If no acrylic cover/pressure vessel
+    if(vessel_tot_height < WCPMTRadius)
+      vessel_tot_height = WCPMTRadius;
     WCBarrelPMTOffset = vessel_tot_height;            
     WCCapEdgeLimit = WCIDDiameter/2.0 - vessel_tot_height;
 
@@ -173,6 +179,7 @@ public:
   void SetmPMT_DistPMTVessel(G4double dist){dist_pmt_vessel = dist;}
   void SetmPMT_Orientation(mPMT_orientation orient){orientation = orient;}
   void SetmPMT_ReflectorHeight(G4double ref_height){id_reflector_height = ref_height;}
+  void SetmPMT_ReflectorZoffset(G4double ref_zoffset){id_reflector_z_offset = ref_zoffset;}
   void SetmPMT_ReflectorAngle(G4double ref_angle){id_reflector_angle = ref_angle;}
   void SetmPMT_MaterialOuter(G4String outer_material){
     mPMT_outer_material = outer_material;
@@ -193,7 +200,6 @@ public:
   void SetmPMT_MaterialOuterThickness(G4double thickness){
     mPMT_outer_material_d = thickness;
   }
-  void SetmPMT_MaterialInnerThickness(G4double thickness){mPMT_inner_material_d = thickness;}
   void SetmPMT_nID(G4int nPMTs){nID_PMTs = nPMTs;}
   void SetmPMT_Config(G4String inputfile){config_file = inputfile;}
 
@@ -503,8 +509,8 @@ private:
   G4String mPMT_outer_material;
   G4String mPMT_inner_material;
   G4double mPMT_outer_material_d;
-  G4double mPMT_inner_material_d;
   G4double id_reflector_height;
+  G4double id_reflector_z_offset;
   G4double id_reflector_angle;
   G4int nID_PMTs;
   G4String config_file;

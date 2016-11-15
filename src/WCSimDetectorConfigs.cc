@@ -361,9 +361,9 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   mPMT_outer_material = "G4_PLEXIGLASS";
   mPMT_inner_material = "Blacksheet";
   mPMT_outer_material_d = 0.03*2*vessel_radius*CLHEP::mm;
-  mPMT_inner_material_d = 2.*CLHEP::mm; //a 2 mm thick blacksheet or whatever
   // Radius of cone at z=reflectorHeight
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
+  id_reflector_z_offset = 1.1*CLHEP::mm;         //from KM3Net CAD drawings
   id_reflector_angle = CLHEP::pi/4*CLHEP::rad; // Based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
 
   
@@ -412,9 +412,9 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
   mPMT_outer_material = "G4_PLEXIGLASS";
   mPMT_inner_material = "Blacksheet";
   mPMT_outer_material_d = 0.03*2* vessel_radius *CLHEP::mm; //using NEMO article safety margin of 0.03 for t/D
-  mPMT_inner_material_d = 2.*CLHEP::mm; //a 2 mm thick blacksheet or whatever
   // Radius of cone at z=reflectorHeight
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
+  id_reflector_z_offset = 1.1*CLHEP::mm;         //from KM3Net CAD drawings
   id_reflector_angle = CLHEP::pi/4*CLHEP::rad; // Based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
   G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
 
@@ -465,9 +465,9 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
   mPMT_outer_material = "G4_PLEXIGLASS";
   mPMT_inner_material = "Blacksheet";
   mPMT_outer_material_d = 0.03*2*vessel_radius*CLHEP::mm; //using NEMO article safety margin of 0.03 for t/D
-  mPMT_inner_material_d = 2.*CLHEP::mm; //a 2 mm thick blacksheet or whatever
   // Radius of cone at z=reflectorHeight
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
+  id_reflector_z_offset = 1.1*CLHEP::mm;         //from KM3Net CAD drawings
   id_reflector_angle = CLHEP::pi/4*CLHEP::rad; // Based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
   G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
 
@@ -558,8 +558,8 @@ void WCSimDetectorConstruction::InitSinglePMT(){
   mPMT_outer_material = "";
   mPMT_inner_material = "";
   mPMT_outer_material_d = 0.*CLHEP::mm;
-  mPMT_inner_material_d = 0.*CLHEP::mm;
   id_reflector_height = 0.*CLHEP::mm;
+  id_reflector_z_offset = 0.*CLHEP::mm;
   id_reflector_angle = 0.*CLHEP::rad; 
   nID_PMTs = 1;   
   config_file = "";

@@ -206,10 +206,10 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				     "Acrylic "); 
 
   mPMT_material_inner = new G4UIcmdWithAString("/WCSim/mPMT/material_inner",this);
-  mPMT_material_inner->SetGuidance("Set material of inner structure next to PMT expose.");
+  mPMT_material_inner->SetGuidance("Set material of region where PMTs live.");
   mPMT_material_inner->SetParameterName("material_inner", true);
   mPMT_material_inner->SetCandidates("Water "
-				     "BlackSheet");    //ToDo: add some better absorbing variant of blackSheet
+				     "SilGel ");
 
   //NEW: Thickness of outer and inner material
   mPMT_material_outer_thickness = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/material_outer_thickness",this);
@@ -221,14 +221,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   mPMT_material_outer_thickness->SetUnitCandidates("mm cm m");
 
 
-  mPMT_material_inner_thickness = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/material_inner_thickness",this);
-  mPMT_material_inner_thickness->SetGuidance("Set material of inner (support) structure next to PMT expose.");
-  mPMT_material_inner_thickness->SetParameterName("material_inner_thickness", true);
-  mPMT_material_inner_thickness->SetDefaultValue(2.); 
-  mPMT_material_inner_thickness->SetUnitCategory("Length");
-  mPMT_material_inner_thickness->SetDefaultUnit("mm");
-  mPMT_material_inner_thickness->SetUnitCandidates("mm cm m");
-
   // NEW: 
   mPMT_ID_reflector_height = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/reflectorHeightID",this);
   mPMT_ID_reflector_height->SetGuidance("Set height of reflector cone for each ID PMT.");
@@ -237,6 +229,14 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   mPMT_ID_reflector_height->SetUnitCategory("Length");
   mPMT_ID_reflector_height->SetDefaultUnit("mm");
   mPMT_ID_reflector_height->SetUnitCandidates("mm cm m");
+
+  mPMT_ID_reflector_z_offset = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/reflectorZoffsetID",this);
+  mPMT_ID_reflector_z_offset->SetGuidance("Set z position offset of reflector cone for each ID PMT.");
+  mPMT_ID_reflector_z_offset->SetParameterName("reflectorZoffsetID", true);
+  mPMT_ID_reflector_z_offset->SetDefaultValue(12); 
+  mPMT_ID_reflector_z_offset->SetUnitCategory("Length");
+  mPMT_ID_reflector_z_offset->SetDefaultUnit("mm");
+  mPMT_ID_reflector_z_offset->SetUnitCandidates("mm cm m");
 
 
   mPMT_ID_reflector_angle = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/reflectorAngleID",this);
@@ -436,6 +436,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  G4cout << "Set Height of reflector cone to " << newValue  << " " << G4endl;	
 	  WCSimDetector->SetmPMT_ReflectorHeight(mPMT_ID_reflector_height->GetNewDoubleValue(newValue));
 	}
+	if (command == mPMT_ID_reflector_z_offset){
+	  G4cout << "Set Z position offset of reflector cone to " << newValue  << " " << G4endl;	
+	  WCSimDetector->SetmPMT_ReflectorZoffset(mPMT_ID_reflector_z_offset->GetNewDoubleValue(newValue));
+	}
 	if (command == mPMT_ID_reflector_angle){
 	  G4cout << "Set Angle of reflector cone to " << newValue  << " " << G4endl;	
 	  WCSimDetector->SetmPMT_ReflectorAngle(mPMT_ID_reflector_angle->GetNewDoubleValue(newValue));
@@ -448,9 +452,6 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	}
 	if(command == mPMT_material_outer_thickness){
 	  WCSimDetector->SetmPMT_MaterialOuterThickness(mPMT_material_outer_thickness->GetNewDoubleValue(newValue));
-	}
-	if(command == mPMT_material_inner_thickness){
-	  WCSimDetector->SetmPMT_MaterialInnerThickness(mPMT_material_inner_thickness->GetNewDoubleValue(newValue));
 	}
 	if(command == mPMT_nID_PMTs){
 	  WCSimDetector->SetmPMT_nID(mPMT_nID_PMTs->GetNewIntValue(newValue));

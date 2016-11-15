@@ -7,6 +7,7 @@
 #include "G4VisAttributes.hh"
 #include "G4Material.hh"
 #include "G4Polycone.hh"
+#include "G4Cons.hh"
 #include "G4PVPlacement.hh"
 #include "G4LogicalBorderSurface.hh"
 
@@ -70,7 +71,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     reflectorThickness = 0.*CLHEP::mm;
 
   // ToDo: Base is PMT property! Should not hard coded here.
-  G4bool addPMTBase = true;//false; 
+  G4bool addPMTBase = false; 
   G4double baseHeight = 0.;
   G4double baseRadius = 0.;
   if(addPMTBase){
@@ -95,7 +96,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
   // To avoid overlaps in mPMT, reduce logicWCPMT at the top 
   G4double PMTHolderZ[2] = {-baseHeight+expose, 
-			    std::max(expose,id_reflector_height)};
+			    std::max(expose,id_reflector_height+id_reflector_z_offset)};
   G4double PMTHolderR[2] = {baseRadius, 
 			    std::max(radius,reflectorRadius) + reflectorThickness};
   G4double PMTHolderr[2] = {0,0}; 
@@ -126,7 +127,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   G4Material *material_around_pmt = G4Material::GetMaterial("Water");
   if(id_reflector_height > 0.1*CLHEP::mm && 
      (vessel_radius > 1.*CLHEP::mm || vessel_cyl_height > 1.*CLHEP::mm)) //or make this a user option? 
-    material_around_pmt = G4Material::GetMaterial("SilGel");
+    material_around_pmt = G4Material::GetMaterial(mPMT_inner_material); //"SilGel"
   
   G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
@@ -148,8 +149,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
       logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
     else
       // Makes the volume containg the PMT invisible for normal visualization
-      //logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
-      logicWCPMT->SetVisAttributes(WCPMTVisAtt2);
+      logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+      //logicWCPMT->SetVisAttributes(WCPMTVisAtt2);                   //TF debug overlaps with this volume
   }
 
   //Need a volume to cut away excess behind blacksheet
@@ -283,7 +284,7 @@ else {
     G4double reflectorZ[2] = {0, id_reflector_height};
     G4double reflectorR[2] = {radius + reflectorThickness, reflectorThickness + reflectorRadius};
     G4double reflectorr[2] = {radius,reflectorRadius};
-    
+    /* For reference: use Cons instead 
     G4Polycone* reflectorCone = 
       new G4Polycone("WCPMT_reflect",                    
 		     0.0*deg,
@@ -292,7 +293,19 @@ else {
 		     reflectorZ,
 		     reflectorr, // R Inner
 		     reflectorR);// R Outer
-    
+    */
+    /* Some details:
+     *               1.1mm is the gap between reflector and PMT for mechanical construction (KM3NeT support matrix value)
+     *               three degrees of freedom: height, z position and opening angle
+     */
+    G4Cons* reflectorCone =
+      new G4Cons("WCPMT_reflect",
+		 radius + 1.1*CLHEP::mm, radius + 1.1*CLHEP::mm + reflectorThickness, //rmin, rmax
+		 reflectorRadius + 1.1*CLHEP::mm, reflectorRadius + 1.1*CLHEP::mm + reflectorThickness, //Rmin, Rmax
+		 id_reflector_height/2,   //z/2
+		 0, 2*CLHEP::pi);
+
+
     G4LogicalVolume* logicReflector =
       new G4LogicalVolume(    reflectorCone,
 			      G4Material::GetMaterial("Aluminum"), //It actually is Al+ Ag evaporation
@@ -307,7 +320,7 @@ else {
     
     // reflector PMT Placement:
     new G4PVPlacement(0,
-		      G4ThreeVector(0, 0, 0),
+		      G4ThreeVector(0, 0, id_reflector_z_offset),
 		      logicReflector,
 		      "reflectorWCPMT",
                         logicWCPMT,

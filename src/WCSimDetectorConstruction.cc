@@ -68,9 +68,9 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   mPMT_outer_material = "";
   mPMT_inner_material = "";
   mPMT_outer_material_d = 0.*CLHEP::mm;
-  mPMT_inner_material_d = 0.*CLHEP::mm;
   // Radius of cone at z=reflectorHeight
   id_reflector_height = 0.*CLHEP::mm;
+  id_reflector_z_offset = 0.*CLHEP::mm;
   id_reflector_angle = 0.*CLHEP::rad; 
   // parameters related to filling the ID mPMT
   nID_PMTs = 1;   //per mPMT
