@@ -358,7 +358,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
     }
   } else{
     //SPHERE wo CYLINDER inner     
-    if( vessel_cyl_height > 0.){
+    if( vessel_cyl_height < 0.01*mm){
       logic_mPMT_container =
 	new G4LogicalVolume(    mPMT_top_sphere_container,
 				G4Material::GetMaterial(mPMT_inner_material),//"SilGel"), //whole area between pressure vessel and support structure is optical gel!

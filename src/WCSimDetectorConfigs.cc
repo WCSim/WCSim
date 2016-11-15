@@ -359,7 +359,7 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
   dist_pmt_vessel = 5*CLHEP::mm;    // from KM3Net tech drawing. Don't put PMT directly against pressure vessel. Gel helps transition in refractive indices. Also prevents daughters from sticking out vessel. Smaller will create Overlaps! Avoid Overlaps!!!
   orientation = PERPENDICULAR;
   mPMT_outer_material = "G4_PLEXIGLASS";
-  mPMT_inner_material = "Blacksheet";
+  mPMT_inner_material = "SilGel";
   mPMT_outer_material_d = 0.03*2*vessel_radius*CLHEP::mm;
   // Radius of cone at z=reflectorHeight
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
@@ -399,7 +399,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
   WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
-  WCPMTRadius         = 0.254*m;//outer_module_radius;//PMT->GetRadius(); //Actually, this name is very misleading, because it should be moduleRadius (eg. PMT + acrylic), this is used in two places in WCConstructCylinder
+  WCPMTRadius         = 0.254*m;//outer_module_radius;//PMT-T>GetRadius(); //Actually, this name is very misleading, because it should be moduleRadius (eg. PMT + acrylic), this is used in two places in WCConstructCylinder
  
 
 
@@ -410,7 +410,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
   dist_pmt_vessel = 5*CLHEP::mm;
   orientation = PERPENDICULAR;
   mPMT_outer_material = "G4_PLEXIGLASS";
-  mPMT_inner_material = "Blacksheet";
+  mPMT_inner_material = "SilGel";
   mPMT_outer_material_d = 0.03*2* vessel_radius *CLHEP::mm; //using NEMO article safety margin of 0.03 for t/D
   // Radius of cone at z=reflectorHeight
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
@@ -463,7 +463,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
   dist_pmt_vessel = 5*CLHEP::mm;
   orientation = PERPENDICULAR;
   mPMT_outer_material = "G4_PLEXIGLASS";
-  mPMT_inner_material = "Blacksheet";
+  mPMT_inner_material = "SilGel";
   mPMT_outer_material_d = 0.03*2*vessel_radius*CLHEP::mm; //using NEMO article safety margin of 0.03 for t/D
   // Radius of cone at z=reflectorHeight
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
