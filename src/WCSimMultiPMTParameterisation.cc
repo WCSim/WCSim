@@ -83,6 +83,8 @@ void WCSimMultiPMTParameterisation::PreCalculateTransform(){
     vPMTpos.push_back(origin);
     vPMTorient.push_back(rotm);
 
+
+
   }
 
   assert(vPMTpos.size() == fNoPmt);

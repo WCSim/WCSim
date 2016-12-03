@@ -353,18 +353,18 @@ void WCSimDetectorConstruction::SetTestmPMTGeometry()
 
                                     
   //mPMT params:
-  vessel_cyl_height = 0.;//50.*mm; //0.1*mm;//50.*mm;
-  vessel_radius_curv = 270.*CLHEP::mm;//260.*mm;//245.*mm;
-  vessel_radius = 225.*CLHEP::mm;
+  vessel_cyl_height = 10.*mm;//20.0*mm;//50.*mm;
+  vessel_radius_curv = 300.*CLHEP::mm;//260.*mm;//245.*mm;
+  vessel_radius = 300.*CLHEP::mm;
   dist_pmt_vessel = 5*CLHEP::mm;    // from KM3Net tech drawing. Don't put PMT directly against pressure vessel. Gel helps transition in refractive indices. Also prevents daughters from sticking out vessel. Smaller will create Overlaps! Avoid Overlaps!!!
   orientation = PERPENDICULAR;
   mPMT_outer_material = "G4_PLEXIGLASS";
   mPMT_inner_material = "SilGel";
-  mPMT_outer_material_d = 0.03*2*vessel_radius*CLHEP::mm;
+  mPMT_outer_material_d = 10.*CLHEP::mm;
   // Radius of cone at z=reflectorHeight
-  id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
-  id_reflector_z_offset = 1.1*CLHEP::mm;         //from KM3Net CAD drawings
-  id_reflector_angle = CLHEP::pi/4*CLHEP::rad; // Based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
+  id_reflector_height = 10.*CLHEP::mm;           //10. > previous 7mm (deprecated number from JINST)
+  id_reflector_z_offset = 4.8*CLHEP::mm;         //from KM3Net CAD drawings
+  id_reflector_angle = 48*CLHEP::pi/180.*CLHEP::rad; // Based on KM3Net reflector specs
 
   
   // BarrelPMTOffset/WCCapEdgeLimit needs PMT/mPMT height

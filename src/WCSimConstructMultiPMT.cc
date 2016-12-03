@@ -74,8 +74,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
   // origin on blacksheet wall is origin of spherical top for ID, 
   // change if we want to use the cylindrical part in ID.
+
+  // NEW: possibility of spherical Caps == sphere minus cylinder
+  G4double vessel_cap_height = vessel_radius_curv - sqrt(vessel_radius_curv * vessel_radius_curv - vessel_radius*vessel_radius);
+
+
   G4double mPMT_zRange_outer[2] = {0,                         // must be zero or it will collide with the blacksheet and mess up the G4Navigator
-				   vessel_cyl_height + vessel_radius};
+				   vessel_cyl_height + vessel_cap_height};
   G4double mPMT_RRange_outer[2] = {vessel_radius, 
 				   vessel_radius};
   G4double mPMT_rRange_outer[2] = {0., 0.};
@@ -110,9 +115,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 		     0.0*deg,90.0*deg);
 
 
-  // NEW: possibility of spherical Caps == sphere minus cylinder
-  G4double vessel_cap_height = vessel_radius_curv - sqrt(vessel_radius_curv * vessel_radius_curv - vessel_radius*vessel_radius);
-
   G4SubtractionSolid * mPMT_top_cap_vessel;
   //G4LogicalVolume * logic_mPMT_top_sphere_vessel;
   G4double cap_position_offset = 0.*cm;
@@ -133,7 +135,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 				 solidCutOffTubs);
    
 
-    std::cout << "DEBUG MODE " << vessel_radius_curv - vessel_cap_height << " " <<vessel_cap_height << std::endl;
+    //std::cout << "DEBUG MODE " << vessel_radius_curv - vessel_cap_height << " " <<vessel_cap_height << std::endl;
  
     //cap_position_offset = -1.0* (vessel_radius_curv - vessel_cap_height); //lower position of cap by the piece that we cut off.
 
@@ -295,8 +297,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   G4double outerR_container = sqrt( outerR_curv_container*outerR_curv_container -
 				    (vessel_radius_curv - vessel_cap_height)*(vessel_radius_curv - vessel_cap_height) );
   
-  std::cout << "Inner container radii: Rcurv " << innerR_curv_container << ", R: " << innerR_container << std::endl;
-  std::cout << "Outer container radii: Rcurv " << outerR_curv_container << ", R: " << outerR_container << std::endl;
+  //std::cout << "Inner container radii: Rcurv " << innerR_curv_container << ", R: " << innerR_container << std::endl;
+  //std::cout << "Outer container radii: Rcurv " << outerR_curv_container << ", R: " << outerR_container << std::endl;
 
   if(addPMTBase || nID_PMTs == 1)
     innerR_container = 0;
@@ -476,6 +478,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   }
   
   //Fill top sphere (or let the parametrisation figure out the whole filling? Yes!)
+  // raise/lower PMT to be inside the container
+  double pmt_z_offset = 0.;
+  if(vessel_cyl_height >= 0.01*mm)
+    pmt_z_offset = cap_position_offset+vessel_cyl_height/2; // and same for inner structure
+
   G4VPVParameterisation* pmtParam_id =
     new WCSimMultiPMTParameterisation(
 				      nID_PMTs,	        // NoPMTs
@@ -484,7 +491,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 				      vAlpha,		// Their tilt angle
 				      vCircle,          // Circle number
 				      vAzimOffset,      // The offset in azimuth angle of first PMT in that circle
-				      cap_position_offset+vessel_cyl_height/2);// Position offsets of circles, should become array!
+				      pmt_z_offset);//);// Position offsets of circles, should become array!
 
   
   // dummy value : kZAxis -- modified by parameterised volume
@@ -618,7 +625,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
       
     //Place Inner Structure
       new G4PVPlacement(	0,       				// its rotation
-				G4ThreeVector(0,0,cap_position_offset+vessel_cyl_height/2), 	// its position
+				G4ThreeVector(0,0,pmt_z_offset), 	// its position
 				logic_mPMT_top_sphere_inner,   	        // its logical volume
 				"WCPMT_inner_top",			// its name 
 				logic_mPMT_vessel,        // its mother volume

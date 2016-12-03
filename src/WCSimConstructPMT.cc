@@ -66,7 +66,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
   //Optional reflectorCone:
   G4double reflectorRadius = radius + id_reflector_height * tan(id_reflector_angle);
-  G4double reflectorThickness = 1.*CLHEP::mm;
+  G4double reflectorThickness = 0.5*CLHEP::mm;
   if((reflectorRadius - radius) < 1.*CLHEP::mm)
     reflectorThickness = 0.*CLHEP::mm;
 

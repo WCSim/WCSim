@@ -1141,7 +1141,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
   // nGates == 0: I still want to keep untriggered event
   if(ngates == 0){
     GetRunAction()->SetEventHeaderNew(0,event_id+1,1);   //ToDo: run 
-    std::cout << event_id << std::endl;
+    //std::cout << event_id << std::endl; //TF debug
     //General case for a vector triggerInfo:
     //GetRunAction()->SetTriggerInfoNew(kTriggerUndefined, std::vector<G4float>(),0.,0.);
 
