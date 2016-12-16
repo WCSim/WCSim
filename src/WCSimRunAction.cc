@@ -65,9 +65,8 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   hfile->SetCompressionLevel(2);
 
   // Event tree
-  TTree* tree = new TTree("wcsimT","WCSim Tree");
+  WCSimTree = new TTree("wcsimT","WCSim Tree");
 
-  SetTree(tree);
   wcsimrootsuperevent = new WCSimRootEvent(); //empty list
   //  wcsimrootsuperevent->AddSubEvent(); // make at least one event
   wcsimrootsuperevent->Initialize(); // make at least one event
@@ -76,16 +75,20 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   Int_t bufsize = 64000;
 
   //  TBranch *branch = tree->Branch("wcsimrootsuperevent", "Jhf2kmrootsuperevent", &wcsimrootsuperevent, bufsize,0);
-  TBranch *branch = tree->Branch("wcsimrootevent", "WCSimRootEvent", &wcsimrootsuperevent, bufsize,2);
+  TBranch *branch = WCSimTree->Branch("wcsimrootevent", "WCSimRootEvent", &wcsimrootsuperevent, bufsize,2);
 
   // Geometry tree
 
   geoTree = new TTree("wcsimGeoT","WCSim Geometry Tree");
-  SetGeoTree(geoTree);
   wcsimrootgeom = new WCSimRootGeom();
   TBranch *geoBranch = geoTree->Branch("wcsimrootgeom", "WCSimRootGeom", &wcsimrootgeom, bufsize,0);
 
   FillGeoTree();
+
+  // Options tree
+  optionsTree = new TTree("wcsimRootOptionsT","WCSim Options Tree");
+  wcsimrootoptions = new WCSimRootOptions();
+  optionsTree->Branch("wcsimrootoptions", "WCSimRootOptions", &wcsimrootoptions, bufsize, 0);
 }
 
 void WCSimRunAction::EndOfRunAction(const G4Run*)
@@ -102,6 +105,11 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 //  G4cout << (float(numberOfTimesCatcherHit)/float(numberOfEventsGenerated))*100.
 //        << "% through-going (hit Catcher)" << G4endl;
 
+  //Write the options tree
+  G4cout << "EndOfRunAction" << G4endl;
+  optionsTree->Fill();
+  optionsTree->Write();
+  
   // Close the Root file at the end of the run
 
   TFile* hfile = WCSimTree->GetCurrentFile();
@@ -183,6 +191,5 @@ void WCSimRunAction::FillGeoTree(){
   wcsimrootgeom-> SetWCNumPMT(numpmt);
   
   geoTree->Fill();
-  TFile* hfile = geoTree->GetCurrentFile();
-  hfile->Write(); 
+  geoTree->Write();
 }
