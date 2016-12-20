@@ -85,6 +85,22 @@ public:
   double GetSaveFailuresTime() {return SaveFailuresTime;}
   int    GetSaveFailuresPreTriggerWindow() {return SaveFailuresPreTriggerWindow;}
   int    GetSaveFailuresPostTriggerWindow() {return SaveFailuresPostTriggerWindow;}
+  //WCSimTuningParameters sets
+  void SetRayff(double iRayff) {Rayff = iRayff;}
+  void SetBsrff(double iBsrff) {Bsrff = iBsrff;}
+  void SetAbwff(double iAbwff) {Abwff = iAbwff;}
+  void SetRgcff(double iRgcff) {Rgcff = iRgcff;}
+  void SetMieff(double iMieff) {Mieff = iMieff;}
+  void SetTvspacing(double iTvspacing) {Tvspacing = iTvspacing;}
+  void SetTopveto(bool iTopveto) {Topveto = iTopveto;}
+  //WCSimTuningParameters gets
+  double GetRayff() {return Rayff;}
+  double GetBsrff() {return Bsrff;}
+  double GetAbwff() {return Abwff;}
+  double GetRgcff() {return Rgcff;}
+  double GetMieff() {return Mieff;}
+  double GetTvspacing() {return Tvspacing;}
+  bool   GetTopveto() {return Topveto;}
   
 private:
   //WCSimDetector*
@@ -120,6 +136,16 @@ private:
   double SaveFailuresTime; // ns
   int    SaveFailuresPreTriggerWindow; // ns
   int    SaveFailuresPostTriggerWindow; // ns
+
+  //WCSimTuningParameters
+  double Rayff;
+  double Bsrff;
+  double Abwff;
+  double Rgcff;
+  double Mieff;
+  double Tvspacing;
+  bool   Topveto;
+
   
   ClassDef(WCSimRootOptions,1)  //WCSimRootEvent structure
 };

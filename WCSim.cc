@@ -91,6 +91,10 @@ int main(int argc,char** argv)
 
 
   WCSimRunAction* myRunAction = new WCSimRunAction(WCSimdetector);
+
+  //save all the options from WCSimTuningParameters, WCSimPhysicsListFactory
+  tuningpars->SaveOptionsToOutput(myRunAction->GetRootOptions());
+
   runManager->SetUserAction(myRunAction);
 
   runManager->SetUserAction(new WCSimEventAction(myRunAction, WCSimdetector,

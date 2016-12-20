@@ -58,5 +58,13 @@ void WCSimRootOptions::Print()
     << "\tSaveFailuresTime: " << SaveFailuresTime << " ns" << endl
     << "\tSaveFailuresPreTriggerWindow: " << SaveFailuresPreTriggerWindow << " ns" << endl
     << "\tSaveFailuresPostTriggerWindow: " << SaveFailuresPostTriggerWindow << " ns" << endl
+    << "Tuning parameters:" << endl
+    << "\tRayff: " << Rayff << endl
+    << "\tBsrff: " << Bsrff << endl
+    << "\tAbwff: " << Abwff << endl
+    << "\tRgcff: " << Rgcff << endl
+    << "\tMieff: " << Mieff << endl
+    << "\tTvspacing: " << Tvspacing << endl
+    << "\tTopveto: " << Topveto << endl
     << endl;
 }
