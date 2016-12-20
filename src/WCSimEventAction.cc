@@ -59,7 +59,8 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
 				   WCSimPrimaryGeneratorAction* myGenerator)
   :runAction(myRun), generatorAction(myGenerator), 
    detectorConstructor(myDetector),
-   ConstructedDAQClasses(false)
+   ConstructedDAQClasses(false),
+   SavedDAQOptions(false)
 {
   DAQMessenger = new WCSimWCDAQMessenger(this);
 
@@ -120,8 +121,13 @@ void WCSimEventAction::CreateDAQInstances()
 
 void WCSimEventAction::BeginOfEventAction(const G4Event*)
 {
-  if(!ConstructedDAQClasses)
+  if(!ConstructedDAQClasses) {
     CreateDAQInstances();
+
+    //and save options in output file
+    G4DigiManager* DMman = G4DigiManager::GetDMpointer();
+
+  }
 }
 
 void WCSimEventAction::EndOfEventAction(const G4Event* evt)
@@ -393,6 +399,15 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 		WCDC_hits,
 		WCDC);
 
+  //save DAQ options here. This ensures that when the user selects a default option
+  // (e.g. with -99), the saved option value in the output reflects what was run
+  if(!SavedDAQOptions) {
+    WCSimRootOptions * wcsimopt = runAction->GetRootOptions();
+    //Dark noise
+    WCDNM->SaveOptionsToOutput(wcsimopt);
+
+    SavedDAQOptions = true;
+  }
 }
 
 G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)

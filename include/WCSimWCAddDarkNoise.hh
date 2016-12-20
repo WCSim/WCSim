@@ -6,6 +6,7 @@
 #include "G4VDigitizerModule.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"
+#include "WCSimRootOptions.hh"
 #include "globals.hh"
 #include "Randomize.hh"
 #include <map>
@@ -32,7 +33,8 @@ public:
   void SetDarkHigh(int idarkhigh){DarkHigh = idarkhigh;}
   void SetDarkLow(int idarklow){DarkLow = idarklow;}
   void SetDarkWindow(int idarkwindow){DarkWindow = idarkwindow;}
-
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+  
 private:
   void ReInitialize() { ranges.clear(); result.clear();}
   void SetPMTDarkDefaults();
