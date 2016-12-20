@@ -25,6 +25,16 @@ public:
   virtual ~WCSimRootOptions();
   void Print();
 
+  //WCSimDetector* gets
+  void SetDetectorName(string iDetectorName) {DetectorName = iDetectorName;}
+  void SetSavePi0(bool iSavePi0) {SavePi0 = iSavePi0;}
+  void SetPMTQEMethod(bool iPMTQEMethod) {PMTQEMethod = iPMTQEMethod;}
+  void SetPMTCollEff(bool iPMTCollEff) {PMTCollEff = iPMTCollEff;}
+  //WCSimDetector* sets
+  string GetDetectorName() {return DetectorName;}
+  bool   GetSavePi0() {return SavePi0;}
+  int    GetPMTQEMethod() {return PMTQEMethod;}
+  int    GetPMTCollEff() {return PMTCollEff;}
   //WCSimWCAddDarkNoise sets
   void SetPMTDarkRate(double iPMTDarkRate) {PMTDarkRate = iPMTDarkRate;}
   void SetConvRate(double iConvRate) {ConvRate = iConvRate;}
@@ -75,8 +85,14 @@ public:
   double GetSaveFailuresTime() {return SaveFailuresTime;}
   int    GetSaveFailuresPreTriggerWindow() {return SaveFailuresPreTriggerWindow;}
   int    GetSaveFailuresPostTriggerWindow() {return SaveFailuresPostTriggerWindow;}
-
+  
 private:
+  //WCSimDetector*
+  string DetectorName;
+  bool   SavePi0;
+  int    PMTQEMethod;
+  int    PMTCollEff;
+  
   //WCSimWCAddDarkNoise
   double PMTDarkRate; // kHz
   double ConvRate; // kHz
@@ -104,8 +120,7 @@ private:
   double SaveFailuresTime; // ns
   int    SaveFailuresPreTriggerWindow; // ns
   int    SaveFailuresPostTriggerWindow; // ns
-
-
+  
   ClassDef(WCSimRootOptions,1)  //WCSimRootEvent structure
 };
 

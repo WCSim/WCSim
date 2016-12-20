@@ -89,6 +89,9 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   optionsTree = new TTree("wcsimRootOptionsT","WCSim Options Tree");
   wcsimrootoptions = new WCSimRootOptions();
   optionsTree->Branch("wcsimrootoptions", "WCSimRootOptions", &wcsimrootoptions, bufsize, 0);
+
+  //set detector options
+  wcsimdetector->SaveOptionsToOutput(wcsimrootoptions);
 }
 
 void WCSimRunAction::EndOfRunAction(const G4Run*)

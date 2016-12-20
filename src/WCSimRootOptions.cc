@@ -28,6 +28,11 @@ WCSimRootOptions::~WCSimRootOptions()
 void WCSimRootOptions::Print()
 {
   cout
+    << "Detector construction:" << endl
+    << "\tDetectorName: " << DetectorName << endl
+    << "\tSavePi0: " << SavePi0 << endl
+    << "\tPMTQEMethod: " << PMTQEMethod << endl
+    << "\tPMTCollEff: " << PMTCollEff << endl
     << "Dark Noise options:" << endl
     << "\tPMTDarkRate: " << PMTDarkRate << " kHz" << endl
     << "\tConvRate: " << ConvRate << " kHz" << endl
