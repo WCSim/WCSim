@@ -101,6 +101,10 @@ public:
   double GetMieff() {return Mieff;}
   double GetTvspacing() {return Tvspacing;}
   bool   GetTopveto() {return Topveto;}
+  //WCSimPhysicsListFactory sets
+  void SetPhysicsListName(string iPhysicsListName) {PhysicsListName = iPhysicsListName;}
+  //WCSimPhysicsListFactory gets
+  string GetPhysicsListName() {return PhysicsListName;}
   
 private:
   //WCSimDetector*
@@ -146,6 +150,8 @@ private:
   double Tvspacing;
   bool   Topveto;
 
+  //WCSimPhysicsListFactory
+  string PhysicsListName;
   
   ClassDef(WCSimRootOptions,1)  //WCSimRootEvent structure
 };

@@ -66,5 +66,7 @@ void WCSimRootOptions::Print()
     << "\tMieff: " << Mieff << endl
     << "\tTvspacing: " << Tvspacing << endl
     << "\tTopveto: " << Topveto << endl
+    << "Physics List Factory:" << endl
+    << "\tPhysicsListName: " << PhysicsListName << endl
     << endl;
 }

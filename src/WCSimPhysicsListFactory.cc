@@ -93,3 +93,8 @@ void WCSimPhysicsListFactory::InitializeList(){
     G4cout << "Physics list " << PhysicsListName << " is not understood" << G4endl;
   }
 } 
+
+void WCSimPhysicsListFactory::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  wcopt->SetPhysicsListName(PhysicsListName);
+}

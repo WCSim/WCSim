@@ -94,6 +94,7 @@ int main(int argc,char** argv)
 
   //save all the options from WCSimTuningParameters, WCSimPhysicsListFactory
   tuningpars->SaveOptionsToOutput(myRunAction->GetRootOptions());
+  physFactory->SaveOptionsToOutput(myRunAction->GetRootOptions());
 
   runManager->SetUserAction(myRunAction);
 
