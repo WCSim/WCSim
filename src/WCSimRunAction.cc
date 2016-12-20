@@ -33,6 +33,7 @@ WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test)
   wcsimdetector = test;
   messenger = new WCSimRunActionMessenger(this);
 
+  wcsimrootoptions = new WCSimRootOptions();
 }
 
 WCSimRunAction::~WCSimRunAction()
@@ -87,7 +88,6 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
 
   // Options tree
   optionsTree = new TTree("wcsimRootOptionsT","WCSim Options Tree");
-  wcsimrootoptions = new WCSimRootOptions();
   optionsTree->Branch("wcsimrootoptions", "WCSimRootOptions", &wcsimrootoptions, bufsize, 0);
 
   //set detector options
