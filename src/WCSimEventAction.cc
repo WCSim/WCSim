@@ -405,7 +405,11 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCSimRootOptions * wcsimopt = runAction->GetRootOptions();
     //Dark noise
     WCDNM->SaveOptionsToOutput(wcsimopt);
-
+    //Digitizer
+    WCDM->SaveOptionsToOutput(wcsimopt);
+    //Trigger
+    WCTM->SaveOptionsToOutput(wcsimopt);
+    
     SavedDAQOptions = true;
   }
 }

@@ -394,6 +394,22 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 
 }
 
+void WCSimWCTriggerBase::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  wcopt->SetTriggerClassName(triggerClassName);;
+  wcopt->SetMultiDigitsPerTrigger(multiDigitsPerTrigger);;
+  //ndigits
+  wcopt->SetNDigitsThreshold(ndigitsThreshold);;
+  wcopt->SetNDigitsWindow(ndigitsWindow);;
+  wcopt->SetNDigitsAdjustForNoise(ndigitsAdjustForNoise);;
+  wcopt->SetNDigitsPreTriggerWindow(ndigitsPreTriggerWindow);;
+  wcopt->SetNDigitsPostTriggerWindow(ndigitsPostTriggerWindow);;
+  //savefailures
+  wcopt->SetSaveFailuresMode(saveFailuresMode);;
+  wcopt->SetSaveFailuresTime(saveFailuresTime);;
+  wcopt->SetSaveFailuresPreTriggerWindow(saveFailuresPreTriggerWindow);;
+  wcopt->SetSaveFailuresPostTriggerWindow(saveFailuresPostTriggerWindow);;
+}
 
 
 

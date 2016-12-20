@@ -10,8 +10,10 @@
 
 #include "TObject.h"
 #include "TClonesArray.h"
+#include <string>
 
 class TDirectory;
+using std::string;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -37,16 +39,73 @@ public:
   double GetDarkLow() {return DarkLow;}
   double GetDarkWindow() {return DarkWindow;}
   int    GetDarkMode() {return DarkMode;}
-  
+  //WCSimWCDigitizer* sets
+  void SetDigitizerClassName(string iDigitizerClassName) {DigitizerClassName = iDigitizerClassName;}
+  void SetDigitizerDeadTime(int iDigitizerDeadTime) {DigitizerDeadTime = iDigitizerDeadTime;}
+  void SetDigitizerIntegrationWindow(int iDigitizerIntegrationWindow) {DigitizerIntegrationWindow = iDigitizerIntegrationWindow;}
+  //WCSimWCDigitizer* gets
+  string GetDigitizerClassName() {return DigitizerClassName;}
+  int    GetDigitizerDeadTime() {return DigitizerDeadTime;}
+  int    GetDigitizerIntegrationWindow() {return DigitizerIntegrationWindow;}
+  //WCSimWCTrigger* sets
+  void SetTriggerClassName(string itriggerClassName) {TriggerClassName = itriggerClassName;};
+  void SetMultiDigitsPerTrigger(bool imultiDigitsPerTrigger) {MultiDigitsPerTrigger = imultiDigitsPerTrigger;};
+  //ndigits
+  void SetNDigitsThreshold(int indigitsThreshold) {NDigitsThreshold = indigitsThreshold;};
+  void SetNDigitsWindow(int indigitsWindow) {NDigitsWindow = indigitsWindow;};
+  void SetNDigitsAdjustForNoise(bool indigitsAdjustForNoise) {NDigitsAdjustForNoise = indigitsAdjustForNoise;};
+  void SetNDigitsPreTriggerWindow(int indigitsPreTriggerWindow) {NDigitsPreTriggerWindow = indigitsPreTriggerWindow;};
+  void SetNDigitsPostTriggerWindow(int indigitsPostTriggerWindow) {NDigitsPostTriggerWindow = indigitsPostTriggerWindow;};
+  //savefailures
+  void SetSaveFailuresMode(int isaveFailuresMode) {SaveFailuresMode = isaveFailuresMode;};
+  void SetSaveFailuresTime(double isaveFailuresTime) {SaveFailuresTime = isaveFailuresTime;};
+  void SetSaveFailuresPreTriggerWindow(int isaveFailuresPreTriggerWindow) {SaveFailuresPreTriggerWindow = isaveFailuresPreTriggerWindow;};
+  void SetSaveFailuresPostTriggerWindow(int isaveFailuresPostTriggerWindow) {SaveFailuresPostTriggerWindow = isaveFailuresPostTriggerWindow;};
+  //WCSimWCTrigger* gets
+  string GetTriggerClassName() {return TriggerClassName;}
+  bool   GetMultiDigitsPerTrigger() {return MultiDigitsPerTrigger;}
+  //ndigits
+  int    GetNDigitsThreshold() {return NDigitsThreshold;}
+  int    GetNDigitsWindow() {return NDigitsWindow;}
+  bool   GetNDigitsAdjustForNoise() {return NDigitsAdjustForNoise;}
+  int    GetNDigitsPreTriggerWindow() {return NDigitsPreTriggerWindow;}
+  int    GetNDigitsPostTriggerWindow() {return NDigitsPostTriggerWindow;}
+  //savefailures
+  int    GetSaveFailuresMode() {return SaveFailuresMode;}
+  double GetSaveFailuresTime() {return SaveFailuresTime;}
+  int    GetSaveFailuresPreTriggerWindow() {return SaveFailuresPreTriggerWindow;}
+  int    GetSaveFailuresPostTriggerWindow() {return SaveFailuresPostTriggerWindow;}
+
 private:
   //WCSimWCAddDarkNoise
   double PMTDarkRate; // kHz
   double ConvRate; // kHz
-  double DarkHigh; //ns
-  double DarkLow; //ns
-  double DarkWindow; //ns
+  double DarkHigh; // ns
+  double DarkLow; // ns
+  double DarkWindow; // ns
   int    DarkMode;
-  
+
+  //WCSimWCDigitizer*
+  string DigitizerClassName;
+  int    DigitizerDeadTime; // ns
+  int    DigitizerIntegrationWindow; // ns
+
+  //WCSimWCTrigger*
+  string TriggerClassName;
+  bool   MultiDigitsPerTrigger;
+  //ndigits
+  int    NDigitsThreshold; // digitized hits
+  int    NDigitsWindow; // ns
+  bool   NDigitsAdjustForNoise;
+  int    NDigitsPreTriggerWindow; // ns
+  int    NDigitsPostTriggerWindow; // ns
+  //savefailures
+  int    SaveFailuresMode;
+  double SaveFailuresTime; // ns
+  int    SaveFailuresPreTriggerWindow; // ns
+  int    SaveFailuresPostTriggerWindow; // ns
+
+
   ClassDef(WCSimRootOptions,1)  //WCSimRootEvent structure
 };
 

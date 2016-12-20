@@ -1,6 +1,7 @@
 #ifndef WCSimWCTrigger_h
 #define WCSimWCTrigger_h 1
 
+#include "WCSimRootOptions.hh"
 #include "WCSimEnumerations.hh"
 #include "WCSimWCDAQMessenger.hh"
 #include "WCSimDetectorConstruction.hh"
@@ -83,7 +84,9 @@ public:
   ///Knowledge of the dark rate (use for automatically adjusting for noise)
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
 
-
+  ///Save current values of options
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+  
 protected:
 
   ///This should call the trigger algorithms, and handle any temporary DigitsCollection's
