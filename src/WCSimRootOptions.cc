@@ -68,5 +68,6 @@ void WCSimRootOptions::Print()
     << "\tTopveto: " << Topveto << endl
     << "Physics List Factory:" << endl
     << "\tPhysicsListName: " << PhysicsListName << endl
+    << "\tSecondaryHadModel: " << SecondaryHadModel << endl
     << endl;
 }

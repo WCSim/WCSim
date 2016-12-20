@@ -37,6 +37,8 @@ class WCSimPhysicsListFactory : public G4VModularPhysicsList
 
     WCSimPhysicsListFactoryMessenger* PhysicsMessenger;
     G4PhysListFactory* factory;
+
+    WCSimPhysicsList * WCSimPhysList;
 };
 
 #endif

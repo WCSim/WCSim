@@ -103,8 +103,10 @@ public:
   bool   GetTopveto() {return Topveto;}
   //WCSimPhysicsListFactory sets
   void SetPhysicsListName(string iPhysicsListName) {PhysicsListName = iPhysicsListName;}
+  void SetSecondaryHadModel(string iSecondaryHadModel) {SecondaryHadModel = iSecondaryHadModel;}
   //WCSimPhysicsListFactory gets
   string GetPhysicsListName() {return PhysicsListName;}
+  string GetSecondaryHadModel() {return SecondaryHadModel;}
   
 private:
   //WCSimDetector*
@@ -152,6 +154,7 @@ private:
 
   //WCSimPhysicsListFactory
   string PhysicsListName;
+  string SecondaryHadModel;
   
   ClassDef(WCSimRootOptions,1)  //WCSimRootEvent structure
 };

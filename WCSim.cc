@@ -92,7 +92,8 @@ int main(int argc,char** argv)
 
   WCSimRunAction* myRunAction = new WCSimRunAction(WCSimdetector);
 
-  //save all the options from WCSimTuningParameters, WCSimPhysicsListFactory
+  //save all the options from WCSimTuningParameters & WCSimPhysicsListFactory
+  //(set in tuning_parameters.mac & jobOptions*.mac)
   tuningpars->SaveOptionsToOutput(myRunAction->GetRootOptions());
   physFactory->SaveOptionsToOutput(myRunAction->GetRootOptions());
 
