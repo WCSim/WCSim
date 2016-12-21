@@ -1,4 +1,4 @@
-1;95;0c#include "WCSimPhysicsListFactory.hh"
+#include "WCSimPhysicsListFactory.hh"
 
 /* This code draws upon examples/extended/fields/field04 for inspiration */
 
