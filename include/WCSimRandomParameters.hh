@@ -1,16 +1,11 @@
 #ifndef WCSimRandomParameters_h
 #define WCSimRandomParameters_h 1
 #include "WCSimRandomMessenger.hh"
+#include "WCSimRootOptions.hh"
 #include "CLHEP/Random/Random.h"
 #include "CLHEP/Random/RanluxEngine.h"
 #include "CLHEP/Random/JamesRandom.h"
 #include "CLHEP/Random/RanecuEngine.h"
-
-typedef enum {
-  RANDOM_E_RANLUX=1,
-  RANDOM_E_RANECU=2,
-  RANDOM_E_HEPJAMES=3
-} WCSimRandomGenerator;
 
 class WCSimRandomParameters
 {
@@ -24,8 +19,8 @@ public:
     }
   ~WCSimRandomParameters() {delete RandomMessenger;}
 
-  WCSimRandomGenerator GetGenerator() {return generator; }
-  void SetGenerator(WCSimRandomGenerator rng) 
+  WCSimRandomGenerator_t GetGenerator() {return generator; }
+  void SetGenerator(WCSimRandomGenerator_t rng)
   {
     switch (rng)
       {
@@ -66,8 +61,14 @@ public:
       seed = iseed;
     }
 
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt)
+  {
+    wcopt->SetRandomSeed(seed);
+    wcopt->SetRandomGenerator(generator);
+  }
+
 private:
-  WCSimRandomGenerator generator;
+  WCSimRandomGenerator_t generator;
   int seed;
   WCSimRandomMessenger *RandomMessenger;
 };

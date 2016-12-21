@@ -12,6 +12,8 @@
 #include "TClonesArray.h"
 #include <string>
 
+#include "WCSimEnumerations.hh"
+
 class TDirectory;
 using std::string;
 
@@ -113,8 +115,13 @@ public:
   //WCSimPrimaryGeneratorAction gets
   string GetVectorFileName() {return VectorFileName;}
   string GetGeneratorType() {return GeneratorType;}
-  
-  
+  //WCSimRandomParameters sets
+  void SetRandomSeed(int iRandomSeed) {RandomSeed = iRandomSeed;}
+  void SetRandomGenerator(WCSimRandomGenerator_t iRandomGenerator) {RandomGenerator = iRandomGenerator;}
+  //WCSimRandomParameters gets
+  int                    GetRandomSeed() {return RandomSeed;}
+  WCSimRandomGenerator_t GetRandomGenerator() {return RandomGenerator;}
+
 private:
   //WCSimDetector*
   string DetectorName;
@@ -166,6 +173,10 @@ private:
   //WCSimPrimaryGeneratorAction
   string VectorFileName;
   string GeneratorType;
+
+  //WCSimRandomParameters
+  int                    RandomSeed;
+  WCSimRandomGenerator_t RandomGenerator;
   
   ClassDef(WCSimRootOptions,1)  //WCSimRootEvent structure
 };

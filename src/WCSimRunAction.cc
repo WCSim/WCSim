@@ -25,7 +25,8 @@
 int pawc_[500000];                // Declare the PAWC common
 struct ntupleStruct jhfNtuple;
 
-WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test)
+WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test, WCSimRandomParameters* rand)
+  : wcsimrandomparameters(rand)
 {
   ntuples = 1;
 
@@ -90,8 +91,9 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   optionsTree = new TTree("wcsimRootOptionsT","WCSim Options Tree");
   optionsTree->Branch("wcsimrootoptions", "WCSimRootOptions", &wcsimrootoptions, bufsize, 0);
 
-  //set detector options
+  //set detector & random options
   wcsimdetector->SaveOptionsToOutput(wcsimrootoptions);
+  wcsimrandomparameters->SaveOptionsToOutput(wcsimrootoptions);
 }
 
 void WCSimRunAction::EndOfRunAction(const G4Run*)

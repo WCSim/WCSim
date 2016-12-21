@@ -11,6 +11,7 @@
 #include "WCSimRootGeom.hh"
 #include "WCSimRootOptions.hh"
 #include "WCSimDetectorConstruction.hh"
+#include "WCSimRandomParameters.hh"
 
 class G4Run;
 class WCSimRunActionMessenger;
@@ -18,7 +19,7 @@ class WCSimRunActionMessenger;
 class WCSimRunAction : public G4UserRunAction
 {
 public:
-  WCSimRunAction(WCSimDetectorConstruction*);
+  WCSimRunAction(WCSimDetectorConstruction*, WCSimRandomParameters*);
   ~WCSimRunAction();
 
 public:
@@ -54,6 +55,7 @@ private:
   WCSimRootGeom* wcsimrootgeom;
   WCSimRootOptions* wcsimrootoptions;
   WCSimDetectorConstruction* wcsimdetector;
+  WCSimRandomParameters* wcsimrandomparameters;
 
   int numberOfEventsGenerated;
   int numberOfTimesWaterTubeHit;
