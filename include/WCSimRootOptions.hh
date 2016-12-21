@@ -107,6 +107,13 @@ public:
   //WCSimPhysicsListFactory gets
   string GetPhysicsListName() {return PhysicsListName;}
   string GetSecondaryHadModel() {return SecondaryHadModel;}
+  //WCSimPrimaryGeneratorAction sets
+  void SetVectorFileName(string iVectorFileName) {VectorFileName = iVectorFileName;}
+  void SetGeneratorType(string iGeneratorType) {GeneratorType = iGeneratorType;}
+  //WCSimPrimaryGeneratorAction gets
+  string GetVectorFileName() {return VectorFileName;}
+  string GetGeneratorType() {return GeneratorType;}
+  
   
 private:
   //WCSimDetector*
@@ -155,6 +162,10 @@ private:
   //WCSimPhysicsListFactory
   string PhysicsListName;
   string SecondaryHadModel;
+
+  //WCSimPrimaryGeneratorAction
+  string VectorFileName;
+  string GeneratorType;
   
   ClassDef(WCSimRootOptions,1)  //WCSimRootEvent structure
 };

@@ -69,5 +69,8 @@ void WCSimRootOptions::Print()
     << "Physics List Factory:" << endl
     << "\tPhysicsListName: " << PhysicsListName << endl
     << "\tSecondaryHadModel: " << SecondaryHadModel << endl
+    << "WCSimPrimaryGeneratorAction" << endl
+    << "\tVectorFileName: " << VectorFileName << endl
+    << "\tGeneratorType: " << GeneratorType << endl
     << endl;
 }

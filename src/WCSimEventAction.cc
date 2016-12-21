@@ -60,7 +60,7 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   :runAction(myRun), generatorAction(myGenerator), 
    detectorConstructor(myDetector),
    ConstructedDAQClasses(false),
-   SavedDAQOptions(false)
+   SavedOptions(false)
 {
   DAQMessenger = new WCSimWCDAQMessenger(this);
 
@@ -401,7 +401,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
   //save DAQ options here. This ensures that when the user selects a default option
   // (e.g. with -99), the saved option value in the output reflects what was run
-  if(!SavedDAQOptions) {
+  if(!SavedOptions) {
     WCSimRootOptions * wcsimopt = runAction->GetRootOptions();
     //Dark noise
     WCDNM->SaveOptionsToOutput(wcsimopt);
@@ -409,8 +409,10 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCDM->SaveOptionsToOutput(wcsimopt);
     //Trigger
     WCTM->SaveOptionsToOutput(wcsimopt);
+    //Generator
+    generatorAction->SaveOptionsToOutput(wcsimopt);
     
-    SavedDAQOptions = true;
+    SavedOptions = true;
   }
 }
 

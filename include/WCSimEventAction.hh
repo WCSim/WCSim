@@ -53,7 +53,7 @@ private:
   G4String DigitizerChoice;
   G4String TriggerChoice;
   bool     ConstructedDAQClasses;
-  bool     SavedDAQOptions;
+  bool     SavedOptions;
 };
 
 
