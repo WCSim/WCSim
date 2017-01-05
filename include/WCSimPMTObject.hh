@@ -73,13 +73,13 @@ class PMT5inch : public WCSimPMTObject
 {
 
 public:
-  
+
   PMT5inch();
   ~PMT5inch();
- 
+
 public:
-  G4String GetPMTName(); 
-  G4double GetExposeHeight(); 
+  G4String GetPMTName();
+  G4double GetExposeHeight();
   G4double GetRadius();
   G4float* Getqpe();
   G4float* GetQE();
@@ -87,6 +87,69 @@ public:
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
   G4double GetPMTGlassThickness();
+};
+
+class PMT3inch : public WCSimPMTObject
+{
+
+public:
+
+  PMT3inch();
+  ~PMT3inch();
+
+public:
+  G4String GetPMTName();
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4float* Getqpe();
+  G4float* GetQE();
+  G4float* GetQEWavelength();
+  G4float  GetmaxQE();
+  float    HitTimeSmearing(float);
+  G4double GetPMTGlassThickness();
+};
+
+class PMT3inchGT : public WCSimPMTObject
+{
+
+public:
+
+  PMT3inchGT();
+  ~PMT3inchGT();
+
+public:
+  G4String GetPMTName();
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4float* Getqpe();
+  G4float* GetQE();
+  G4float* GetQEWavelength();
+  G4float  GetmaxQE();
+  float    HitTimeSmearing(float);
+  G4double GetPMTGlassThickness();
+};
+
+class PMT3inchR12199_02 : public WCSimPMTObject
+{
+
+public:
+
+  PMT3inchR12199_02();
+  ~PMT3inchR12199_02();
+
+public:
+  G4String GetPMTName();
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4float* Getqpe();
+  G4float* GetQE();
+  G4float* GetQEWavelength();
+  G4float  GetmaxQE();
+  float    HitTimeSmearing(float);
+  G4double GetPMTGlassThickness();
+
+protected:
+  G4float* GetCollectionEfficiencyArray();
 };
 
  class PMT10inch : public WCSimPMTObject
