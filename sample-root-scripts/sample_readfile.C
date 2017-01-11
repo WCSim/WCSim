@@ -2,8 +2,17 @@
 #include <TH1F.h>
 #include <stdio.h>     
 #include <stdlib.h>    
+
+TString create_filename(const char * prefix, TString& filename_string)
+{
+  //std::cout << "Creating filename from prefix " << prefix << " and filename_string " << filename_string << std::endl;                                                                                                         
+  TString prefix_string(prefix);
+  TString outfilename = prefix_string + filename_string;
+  return outfilename;
+}
+
 // Simple example of reading a generated Root file
-void sample_readfile(char *filename=NULL, bool verbose=false)
+void sample_readfile(char *filename=NULL, bool verbose=false, bool save_hists=false)
 {
   // Clear global scope
   //gROOT->Reset();
@@ -58,7 +67,7 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
     cout << "Error, could not open input file: " << filename << endl;
     return -1;
   }
-  
+
   // Get the a pointer to the tree from the file
   TTree *tree = (TTree*)file->Get("wcsimT");
   
@@ -92,10 +101,10 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h1 = new TH1F("PMT Hits", "PMT Hits", 8000, 0, 8000);
-  TH1F *hvtx0 = new TH1F("Event VTX0", "Event VTX0", 200, -1500, 1500);
-  TH1F *hvtx1 = new TH1F("Event VTX1", "Event VTX1", 200, -1500, 1500);
-  TH1F *hvtx2 = new TH1F("Event VTX2", "Event VTX2", 200, -1500, 1500);
+  TH1F *h1 = new TH1F("h1", "PMT Hits", 200, 0, 8000);
+  TH1F *hvtx0 = new TH1F("hvtx0", "Event VTX0", 200, -1500, 1500);
+  TH1F *hvtx1 = new TH1F("hvtx1", "Event VTX1", 200, -1500, 1500);
+  TH1F *hvtx2 = new TH1F("hvtx2", "Event VTX2", 200, -1500, 1500);
   
   int num_trig=0;
   
@@ -265,6 +274,18 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
   c1->cd(2); hvtx1->Draw();
   c1->cd(3); hvtx2->Draw();
   c1->cd(4); h1->Draw();
+
+  //save histograms to an output file
+  if(save_hists) {
+    TString filenameout(filename);
+    TFile * fout = new TFile(create_filename("analysed_", filenameout).Data(), "RECREATE");
+    fout->cd();
+    hvtx0->Write();
+    hvtx1->Write();
+    hvtx2->Write();
+    h1->Write();
+    fout->Close();
+  }
   
   std::cout<<"num_trig "<<num_trig<<"\n";
 }
