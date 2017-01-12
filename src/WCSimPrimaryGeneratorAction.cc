@@ -65,7 +65,9 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     
   messenger = new WCSimPrimaryGeneratorMessenger(this);
   useMulineEvt = true;
-  useNormalEvt = false;
+  useGunEvt    = false;
+  useLaserEvt  = false;
+  useGPSEvt    = false;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -224,7 +226,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
   }
 
-  else if (useNormalEvt)
+  else if (useGunEvt)
   {      // manual gun operation
     particleGun->GeneratePrimaryVertex(anEvent);
 
@@ -256,6 +258,23 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       
       G4ThreeVector dir  = P.unit();
       G4double E         = std::sqrt((P.dot(P)));
+      
+      SetVtx(vtx);
+      SetBeamEnergy(E);
+      SetBeamDir(dir);
+      SetBeamPDG(pdg);
+    }
+  else if (useGPSEvt)
+    {
+      MyGPS->GeneratePrimaryVertex(anEvent);
+      
+      G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
+      G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
+      G4double m        =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
+      G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
+      
+      G4ThreeVector dir  = P.unit();
+      G4double E         = std::sqrt((P.dot(P))+(m*m));
       
       SetVtx(vtx);
       SetBeamEnergy(E);

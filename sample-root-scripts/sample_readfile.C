@@ -157,6 +157,9 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
       
 	for (int j=0; j<3; j++)
 	  printf("Track dir: %d %f\n",j, wcsimroottrack->GetDir(j));
+	printf("Track energy: %f\n", wcsimroottrack->GetE());
+	printf("Track momentum: %f\n", wcsimroottrack->GetP());
+	printf("Track mass: %f\n", wcsimroottrack->GetM());
       }
 
       
