@@ -45,6 +45,8 @@ public:
   void incrementCatcherHits()     { numberOfTimesCatcherHit++;}
   void SetNtuples(int ntup) {ntuples=ntup;}
 
+  void SetUseTimer(bool use) { useTimer = use; }
+  
 private:
   // MFechner : set by the messenger
   std::string RootFileName;

@@ -26,7 +26,7 @@ int pawc_[500000];                // Declare the PAWC common
 struct ntupleStruct jhfNtuple;
 
 WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test)
-  : useTimer(true)
+  : useTimer(false)
 {
   ntuples = 1;
 
