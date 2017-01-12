@@ -296,8 +296,10 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
 {
   if(useMulineEvt)
     return "muline";
-  else if(useNormalEvt)
+  else if(useGunEvt)
     return "gun";
+  else if(useGPSEvt)
+    return "gps";
   else if(useLaserEvt)
     return "laser";
   return "";
