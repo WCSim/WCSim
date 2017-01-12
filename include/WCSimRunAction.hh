@@ -7,6 +7,7 @@
 
 #include "TFile.h"
 #include "TTree.h"
+#include "TStopwatch.h"
 #include "WCSimRootEvent.hh"
 #include "WCSimRootGeom.hh"
 #include "WCSimDetectorConstruction.hh"
@@ -61,6 +62,9 @@ private:
 
   WCSimRunActionMessenger* messenger;
   int ntuples;  // 1 for ntuples to be written
+
+  bool useTimer; ///< Use the timer? Set by Messenger.
+  TStopwatch timer; ///< A timer for runtime analysis
 };
 
 #endif

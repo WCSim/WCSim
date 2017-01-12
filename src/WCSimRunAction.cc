@@ -26,6 +26,7 @@ int pawc_[500000];                // Declare the PAWC common
 struct ntupleStruct jhfNtuple;
 
 WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test)
+  : useTimer(true)
 {
   ntuples = 1;
 
@@ -42,6 +43,11 @@ WCSimRunAction::~WCSimRunAction()
 
 void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
 {
+  if(useTimer) {
+    timer.Reset();
+    timer.Start();
+  }
+  
 //   G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
   numberOfEventsGenerated = 0;
   numberOfTimesWaterTubeHit = 0;
@@ -113,6 +119,12 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
   delete wcsimrootsuperevent; wcsimrootsuperevent=0;
   delete wcsimrootgeom; wcsimrootgeom=0;
 
+  if(useTimer) {
+    timer.Stop();
+    G4cout << "WCSimRunAction ran from BeginOfRunAction() to EndOfRunAction() in:"
+	   << "\t" << timer.CpuTime()  << " seconds (CPU)"
+	   << "\t" << timer.RealTime() << " seconds (real)" << G4endl;
+  }
 }
 
 void WCSimRunAction::FillGeoTree(){
