@@ -54,7 +54,7 @@
 
 
 # Or you can use the G4 Particle Gun
-/mygen/generator normal
+/mygen/generator gun
 /gun/particle e-
 #/gun/particle pi0
 /gun/energy 500 MeV
@@ -66,7 +66,7 @@
 /WCSimIO/RootFile wcsimtest.root
 
 ## set a timer running on WCSimRunAction
-#/WCSimIO/Timer true
+/WCSimIO/Timer true
 
 /run/beamOn 1000
 #exit
