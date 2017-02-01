@@ -1,5 +1,8 @@
 #include "WCSimPhysicsListFactory.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 /* This code draws upon examples/extended/fields/field04 for inspiration */
 
 

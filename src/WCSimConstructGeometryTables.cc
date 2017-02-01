@@ -14,6 +14,9 @@
 #include "G4Tubs.hh"
 #include "G4Sphere.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 #include <sstream>
 #include <iomanip>
 
@@ -137,7 +140,7 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
       
     // Print
     //     G4cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
-    //     	   << " Pos:" << aTransform.getTranslation()/cm 
+    //     	   << " Pos:" << aTransform.getTranslation()/cm
     //     	   << " Rot:" << aTransform.getRotation().getTheta()/deg 
     //     	   << "," << aTransform.getRotation().getPhi()/deg 
     //     	   << "," << aTransform.getRotation().getPsi()/deg
