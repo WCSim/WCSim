@@ -26,7 +26,6 @@ class WCSimPhysicsList: public G4VPhysicsConstructor
 
     G4String SecondaryHadModel;
 
-    G4bool gheishahad;
     G4bool bertinihad;
     G4bool binaryhad;
 

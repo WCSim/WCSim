@@ -28,7 +28,7 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
   // Make sure it is an optical photon
   if( particleType == G4OpticalPhoton::OpticalPhotonDefinition() )
     {
-      G4float photonWavelength = (2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/eV);
+      G4float photonWavelength = (2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/CLHEP::eV);
       G4float ratio = 1./(1.0-0.25);
       G4float wavelengthQE = 0;
       if(aTrack->GetCreatorProcess()==NULL) {
@@ -38,7 +38,7 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
       }
       else if (((G4VProcess*)(aTrack->GetCreatorProcess()))->GetProcessType()!=3)
 	{
-	  G4float photonWavelength = (2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/eV);
+	  G4float photonWavelength = (2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/CLHEP::eV);
 	  // MF : translated from skdetsim : better to increase the number of photons
 	  // than to throw in a global factor  at Digitization time !
 	  G4float ratio = 1./(1.0-0.25);

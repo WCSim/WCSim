@@ -285,9 +285,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    //  jhfNtuple.vtx[0] = vtx[0]/1000.; // interaction vertex
    //jhfNtuple.vtx[1] = vtx[1]/1000.; // interaction vertex
    //jhfNtuple.vtx[2] = vtx[2]/1000.; // interaction vertex
-   jhfNtuple.vtx[0] = vtx[0]/cm; // interaction vertex
-   jhfNtuple.vtx[1] = vtx[1]/cm; // interaction vertex
-   jhfNtuple.vtx[2] = vtx[2]/cm; // interaction vertex
+   jhfNtuple.vtx[0] = vtx[0]/CLHEP::cm; // interaction vertex
+   jhfNtuple.vtx[1] = vtx[1]/CLHEP::cm; // interaction vertex
+   jhfNtuple.vtx[2] = vtx[2]/CLHEP::cm; // interaction vertex
    jhfNtuple.vecRecNumber = vecRecNumber; //vectorfile record number
    
    // mustop, pstop, npar will be filled later
@@ -317,9 +317,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    jhfNtuple.pdir[npar][1] = beamenergy*beamdir[1]; // momentum-vector 
    jhfNtuple.pdir[npar][2] = beamenergy*beamdir[2]; // momentum-vector 
    // M Fechner, same as above
-   jhfNtuple.stop[npar][0] = vtx[0]/cm;  // stopping point (not meaningful)
-   jhfNtuple.stop[npar][1] = vtx[1]/cm;  // stopping point (not meaningful)
-   jhfNtuple.stop[npar][2] = vtx[2]/cm;  // stopping point (not meaningful)
+   jhfNtuple.stop[npar][0] = vtx[0]/CLHEP::cm;  // stopping point (not meaningful)
+   jhfNtuple.stop[npar][1] = vtx[1]/CLHEP::cm;  // stopping point (not meaningful)
+   jhfNtuple.stop[npar][2] = vtx[2]/CLHEP::cm;  // stopping point (not meaningful)
    jhfNtuple.parent[npar] = 0;
    
    npar++;
@@ -360,9 +360,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   jhfNtuple.pdir[npar][1] = targetpmag*targetdir[1];  // momentum-vector 
   jhfNtuple.pdir[npar][2] = targetpmag*targetdir[2];  // momentum-vector 
   // M Fechner, same as above
-  jhfNtuple.stop[npar][0] = vtx[0]/cm;  // stopping point (not meaningful)
-  jhfNtuple.stop[npar][1] = vtx[1]/cm;  // stopping point (not meaningful)
-  jhfNtuple.stop[npar][2] = vtx[2]/cm;  // stopping point (not meaningful)
+  jhfNtuple.stop[npar][0] = vtx[0]/CLHEP::cm;  // stopping point (not meaningful)
+  jhfNtuple.stop[npar][1] = vtx[1]/CLHEP::cm;  // stopping point (not meaningful)
+  jhfNtuple.stop[npar][2] = vtx[2]/CLHEP::cm;  // stopping point (not meaningful)
   jhfNtuple.parent[npar] = 0;
 
   npar++;
@@ -584,20 +584,25 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	G4cout<< "start[" << k << "][" << l <<"]: "<< jhfNtuple.start[k][l] <<G4endl;
     }
 
+    G4String initProcessName = "initial";
+
     // Add the track to the TClonesArray
     wcsimrootevent->AddTrack(jhfNtuple.ipnu[k], 
-			      jhfNtuple.flag[k], 
-			      jhfNtuple.m[k], 
-			      jhfNtuple.p[k], 
-			      jhfNtuple.E[k], 
-			      jhfNtuple.startvol[k], 
-			      jhfNtuple.stopvol[k], 
-			      dir, 
-			      pdir, 
-			      stop,
-			      start,
-			      jhfNtuple.parent[k],
-			     jhfNtuple.time[k],0); 
+			     jhfNtuple.flag[k], 
+			     jhfNtuple.m[k], 
+			     jhfNtuple.p[k], 
+			     jhfNtuple.E[k], 
+			     jhfNtuple.startvol[k], 
+			     jhfNtuple.stopvol[k], 
+			     dir, 
+			     pdir, 
+			     stop,
+			     start,
+			     jhfNtuple.parent[k],
+			     jhfNtuple.time[k],
+			     0,
+			     0,
+			     initProcessName); 
   }
 
   // the rest of the tracks come from WCSimTrajectory
@@ -609,6 +614,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // same, april 7th 2005
   std::set<int> pionList;
   std::set<int> antipionList;
+  // Added by S. Short (Feb 2016)
+  std::set<int> neutronList;
 
   // Pi0 specific variables
   Float_t pi0Vtx[3];
@@ -638,11 +645,13 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     if ( trj->GetPDGEncoding() == -13 ) antimuonList.insert(trj->GetTrackID());
     if ( trj->GetPDGEncoding() == 211 ) pionList.insert(trj->GetTrackID());
     if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
-       
+    // Remember neutrons (S. Short, Feb 2016)
+    if ( trj->GetPDGEncoding() == 2112 ) neutronList.insert(trj->GetTrackID());
 
-    // Process primary tracks or the secondaries from pizero or muons...
 
-    if ( trj->GetSaveFlag() )
+    // Process primary tracks or the secondaries from pizero or muons (or neutrons, Feb 2016)
+
+    if ( trj->GetSaveFlag() || ( neutronList.count(trj->GetParentID())) )
     {
       // initial point of the trajectory
       G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;   
@@ -650,6 +659,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	
       G4int         ipnu   = trj->GetPDGEncoding();
       G4int         id     = trj->GetTrackID();
+      G4int         parentid = trj->GetParentID();
+      G4String      processName = trj->GetCreatorProcessName();
       G4int         flag   = 0;    // will be set later
       G4double      mass   = trj->GetParticleDefinition()->GetPDGMass();
       G4ThreeVector mom    = trj->GetInitialMomentum();
@@ -682,6 +693,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	parentType = -211;
       } else if (pionList.count(trj->GetParentID()) ) {
 	parentType = 211;
+      } else if (neutronList.count(trj->GetParentID()) ){
+	parentType = 2112;
       } else {  // no identified parent, but not a primary
 	parentType = 999;
       }
@@ -698,8 +711,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       {
 	dir[l]= mom[l]/mommag; // direction 
 	pdir[l]=mom[l];        // momentum-vector 
-	stop[l]=Stop[l]/cm; // stopping point 
-	start[l]=Start[l]/cm; // starting point 
+	stop[l]=Stop[l]/CLHEP::cm; // stopping point 
+	start[l]=Start[l]/CLHEP::cm; // starting point 
 	G4cout<<"part 2 start["<<l<<"]: "<< start[l] <<G4endl;
       }
 
@@ -719,18 +732,21 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
 	wcsimrootevent= wcsimrootsuperevent->GetTrigger(choose_event);
 	wcsimrootevent->AddTrack(ipnu, 
-				  flag, 
-				  mass, 
-				  mommag, 
-				  energy,
-				  startvol, 
-				  stopvol, 
-				  dir, 
-				  pdir, 
-				  stop,
-				  start,
-				  parentType,
-				 ttime,id); 
+				 flag, 
+				 mass, 
+				 mommag, 
+				 energy,
+				 startvol, 
+				 stopvol, 
+				 dir, 
+				 pdir, 
+				 stop,
+				 start,
+				 parentType,
+				 ttime,
+				 id,
+				 parentid,
+				 processName); 
       }
       
 

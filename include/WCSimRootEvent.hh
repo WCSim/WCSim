@@ -39,22 +39,27 @@ private:
   Int_t fParenttype;
   Float_t fTime;
   Int_t fId;
+  Int_t fParentId;
+  std::string fProcessName;
 
 public:
   WCSimRootTrack() {}
   WCSimRootTrack(Int_t ipnu, 
-		  Int_t flag, 
-		  Float_t m, 
-		  Float_t p, 
-		  Float_t E, 
-		  Int_t startvol, 
-		  Int_t stopvol, 
-		  Float_t dir[3], 
-		  Float_t pdir[3], 
-		  Float_t stop[3], 
-		  Float_t start[3], 
-		  Int_t parenttype,
-		 Float_t time,Int_t id);
+		 Int_t flag, 
+		 Float_t m, 
+		 Float_t p, 
+		 Float_t E, 
+		 Int_t startvol, 
+		 Int_t stopvol, 
+		 Float_t dir[3], 
+		 Float_t pdir[3], 
+		 Float_t stop[3], 
+		 Float_t start[3], 
+		 Int_t parenttype,
+		 Float_t time,
+		 Int_t id,
+		 Int_t parentid,
+                 std::string processName);
   
   virtual ~WCSimRootTrack() { }
 
@@ -72,6 +77,8 @@ public:
   Int_t     GetParenttype(/*Int_t i=0*/) {return fParenttype;}
   Float_t   GetTime() { return fTime;}
   Int_t     GetId(){return fId;}
+  Int_t     GetParentId(){return fParentId;}
+  std::string GetProcessName(){return fProcessName;}
 
   ClassDef(WCSimRootTrack,1)  
 };
@@ -298,7 +305,9 @@ public:
 				   Float_t start[3],
 				   Int_t parenttype,
 				   Float_t time,
-				   Int_t id);
+				   Int_t id,
+				   Int_t parentid,
+				   std::string processName);
 
   TClonesArray        *GetTracks() const {return fTracks;}
 

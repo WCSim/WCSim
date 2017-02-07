@@ -6,7 +6,7 @@
 
 WCSimPhysicsListFactory::WCSimPhysicsListFactory() :  G4VModularPhysicsList(), WCSimPhysList(0)
 {
- defaultCutValue = 1.0*mm;
+ defaultCutValue = 1.0*CLHEP::mm;
  SetVerboseLevel(1);
  
  PhysicsListName="NULL_LIST"; // default list is set in WCSimPhysicsListFactoryMessenger to QGSP_BERT
