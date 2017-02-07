@@ -19,7 +19,8 @@ class WCSimPhysicsList: public G4VPhysicsConstructor
   // This method sets the model for 
   // hadronic secondary interactions
   void SetSecondaryHad(G4String hadval);
-
+  G4String GetSecondaryHadModel() {return SecondaryHadModel;}
+  
   private:
     WCSimPhysicsMessenger* PhysicsMessenger;
 

@@ -7,6 +7,8 @@
 
 #include <fstream>
 
+#include "WCSimRootOptions.hh"
+
 class WCSimDetectorConstruction;
 class G4ParticleGun;
 class G4GeneralParticleSource;
@@ -50,6 +52,10 @@ public:
   G4double GetXDir() {return xDir;};
   G4double GetYDir() {return yDir;};
   G4double GetZDir() {return zDir;};
+
+  G4String GetGeneratorTypeString();
+  
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
 
 private:
   WCSimDetectorConstruction*      myDetector;

@@ -10,7 +10,9 @@
 #include "TStopwatch.h"
 #include "WCSimRootEvent.hh"
 #include "WCSimRootGeom.hh"
+#include "WCSimRootOptions.hh"
 #include "WCSimDetectorConstruction.hh"
+#include "WCSimRandomParameters.hh"
 
 class G4Run;
 class WCSimRunActionMessenger;
@@ -18,7 +20,7 @@ class WCSimRunActionMessenger;
 class WCSimRunAction : public G4UserRunAction
 {
 public:
-  WCSimRunAction(WCSimDetectorConstruction*);
+  WCSimRunAction(WCSimDetectorConstruction*, WCSimRandomParameters*);
   ~WCSimRunAction();
 
 public:
@@ -29,13 +31,11 @@ public:
   void FillGeoTree();
   TTree* GetTree(){return WCSimTree;}
   TTree* GetGeoTree(){return geoTree;}
+  TTree* GetOptionsTree(){return optionsTree;}
   WCSimRootGeom* GetRootGeom(){return wcsimrootgeom;}
   WCSimRootEvent* GetRootEvent(){return wcsimrootsuperevent;}
+  WCSimRootOptions* GetRootOptions(){return wcsimrootoptions;}
 
-  void SetTree(TTree* tree){WCSimTree=tree;}
-  void SetGeoTree(TTree* tree){geoTree=tree;}
-  void SetRootEvent(WCSimRootEvent* revent){wcsimrootsuperevent=revent;}
-  void SetRootGeom(WCSimRootGeom* rgeom){wcsimrootgeom=rgeom;}
   int  GetNumberOfEventsGenerated() { return numberOfEventsGenerated;}
   int  GetNtuples(){return ntuples;}
 
@@ -53,9 +53,12 @@ private:
   //
   TTree* WCSimTree;
   TTree* geoTree;
+  TTree* optionsTree;
   WCSimRootEvent* wcsimrootsuperevent;
   WCSimRootGeom* wcsimrootgeom;
+  WCSimRootOptions* wcsimrootoptions;
   WCSimDetectorConstruction* wcsimdetector;
+  WCSimRandomParameters* wcsimrandomparameters;
 
   int numberOfEventsGenerated;
   int numberOfTimesWaterTubeHit;
