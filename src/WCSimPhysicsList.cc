@@ -164,8 +164,8 @@ void WCSimPhysicsList::ConstructEM()
                particleName == "mu-"    ) {
     //muon
       //G4VProcess* aMultipleScattering = new G4MultipleScattering();
-			G4VProcess* aMultipleScattering = new G4MuMultipleScattering();
-			G4VProcess* aBremsstrahlung     = new G4MuBremsstrahlung();
+      G4VProcess* aMultipleScattering = new G4MuMultipleScattering();
+      G4VProcess* aBremsstrahlung     = new G4MuBremsstrahlung();
       G4VProcess* aPairProduction     = new G4MuPairProduction();
       G4VProcess* anIonisation        = new G4MuIonisation();
       //
@@ -402,23 +402,23 @@ void WCSimPhysicsList::ConstructHad()
 // are deprecated and will be removed in Geant4 10."
 //
 
-	G4HadronElasticProcess* theElasticProcess = new G4HadronElasticProcess;
-	// Add the FRITIOF model - FDL
-	G4TheoFSGenerator* FTFP_model = new G4TheoFSGenerator();
-	G4GeneratorPrecompoundInterface* theCascade = new G4GeneratorPrecompoundInterface();
-	G4ExcitationHandler* theHandler = new G4ExcitationHandler();
-	G4PreCompoundModel* thePreEquilib = new G4PreCompoundModel(theHandler);
-	theCascade->SetDeExcitation(thePreEquilib);
-	FTFP_model->SetTransport(theCascade);
+  G4HadronElasticProcess* theElasticProcess = new G4HadronElasticProcess;
+  // Add the FRITIOF model - FDL
+  G4TheoFSGenerator* FTFP_model = new G4TheoFSGenerator();
+  G4GeneratorPrecompoundInterface* theCascade = new G4GeneratorPrecompoundInterface();
+  G4ExcitationHandler* theHandler = new G4ExcitationHandler();
+  G4PreCompoundModel* thePreEquilib = new G4PreCompoundModel(theHandler);
+  theCascade->SetDeExcitation(thePreEquilib);
+  FTFP_model->SetTransport(theCascade);
 
-	G4LundStringFragmentation* theFragmentation = new G4LundStringFragmentation();
-	G4ExcitedStringDecay* theStringDecay = new G4ExcitedStringDecay(theFragmentation);
-	G4FTFModel* theStringModel = new G4FTFModel;
-	theStringModel->SetFragmentationModel(theStringDecay);
-	FTFP_model->SetHighEnergyGenerator(theStringModel);
+  G4LundStringFragmentation* theFragmentation = new G4LundStringFragmentation();
+  G4ExcitedStringDecay* theStringDecay = new G4ExcitedStringDecay(theFragmentation);
+  G4FTFModel* theStringModel = new G4FTFModel;
+  theStringModel->SetFragmentationModel(theStringDecay);
+  FTFP_model->SetHighEnergyGenerator(theStringModel);
 
-	G4HadronElastic* theElasticModel = new G4HadronElastic;
-	theElasticProcess->RegisterMe(theElasticModel);
+  G4HadronElastic* theElasticModel = new G4HadronElastic;
+  theElasticProcess->RegisterMe(theElasticModel);
 
   aParticleIterator->reset();
   while ((*aParticleIterator)())
@@ -553,22 +553,22 @@ void WCSimPhysicsList::ConstructHad()
 	  // Gheisha = Original Geant4 default // DISAPPEARED IN G4.10
 	  // Bertini = Bertini intra-nuclear cascade model
 	  // Binary  = Binary intra-nuclear cascade model
-		if (bertinihad) {
-			G4CascadeInterface* theBertiniModel = new G4CascadeInterface;
-			theBertiniModel->SetMaxEnergy(5.0*GeV);
-			theInelasticProcess->RegisterMe(theBertiniModel);
-		}
-		else if (binaryhad) {
-			G4BinaryCascade* theBinaryModel = new G4BinaryCascade();
-			theBinaryModel->SetMaxEnergy(5.0*GeV);
-			theInelasticProcess->RegisterMe(theBinaryModel);
-		}
-		else {
-			G4cout << "No secondary interaction model chosen! Using G4 BERTINI." << G4endl;
-			G4CascadeInterface* theBertiniModel = new G4CascadeInterface;
-			theBertiniModel->SetMaxEnergy(5.0*GeV);
-			theInelasticProcess->RegisterMe(theBertiniModel);
-		}
+	  if (bertinihad) {
+		G4CascadeInterface* theBertiniModel = new G4CascadeInterface;
+		theBertiniModel->SetMaxEnergy(5.0*GeV);
+		theInelasticProcess->RegisterMe(theBertiniModel);
+	  }
+	  else if (binaryhad) {
+		G4BinaryCascade* theBinaryModel = new G4BinaryCascade();
+		theBinaryModel->SetMaxEnergy(5.0*GeV);
+		theInelasticProcess->RegisterMe(theBinaryModel);
+	  }
+	  else {
+		G4cout << "No secondary interaction model chosen! Using G4 BERTINI." << G4endl;
+		G4CascadeInterface* theBertiniModel = new G4CascadeInterface;
+		theBertiniModel->SetMaxEnergy(5.0*GeV);
+		theInelasticProcess->RegisterMe(theBertiniModel);
+	  }
 
 		// Use FTFP model - FDL
 		FTFP_model->SetMinEnergy(4.0*GeV);
@@ -743,7 +743,7 @@ void WCSimPhysicsList::SetSecondaryHad(G4String hadval)
   }
   else {
     G4cout << "Secondary interaction model " << SecondaryHadModel
-	   << " is not a valid choice. BINARY model will be used." << G4endl;
+	   << " is not a valid choice. BERTINI model will be used." << G4endl;
     bertinihad = true;
     binaryhad  = false;
   }
