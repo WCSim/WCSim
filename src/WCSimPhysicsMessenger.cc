@@ -14,14 +14,13 @@ WCSimPhysicsMessenger::WCSimPhysicsMessenger(WCSimPhysicsList* WCSimPhys)
   WCSimDir->SetGuidance("Commands to change secondary interaction model for protons");
 
   hadmodelCmd = new G4UIcmdWithAString("/WCSim/physics/secondaries/model",this);
-  hadmodelCmd->SetGuidance("Available options: GHEISHA BERTINI BINARY");
+  hadmodelCmd->SetGuidance("Available options: BERTINI BINARY");
   hadmodelCmd->SetGuidance("Description:");
-  hadmodelCmd->SetGuidance("GHEISHA = standard, fast G4 hadronic interaction model");
-  hadmodelCmd->SetGuidance("BERTINI = Bertini cascade model");
+  hadmodelCmd->SetGuidance("BERTINI = Bertini cascade model (Geant4.10 default)");
   hadmodelCmd->SetGuidance("BINARY  = Binary cascade model (2KM default)");
   hadmodelCmd->SetParameterName("secondaries", true, false);
-  hadmodelCmd->SetDefaultValue("BINARY");
-  hadmodelCmd->SetCandidates("GHEISHA BERTINI BINARY");
+  hadmodelCmd->SetDefaultValue("BERTINI");
+  hadmodelCmd->SetCandidates("BERTINI BINARY");
 
 }
 
