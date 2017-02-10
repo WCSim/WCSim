@@ -23,3 +23,7 @@ geofile.txt
 
 ##ignore compiled python scripts
 *.pyc
+
+##ignore IDE output (zsoldos)
+.idea/
+cmake-build-debug/
