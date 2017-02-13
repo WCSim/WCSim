@@ -27,3 +27,7 @@ geofile.txt
 ##ignore IDE output (zsoldos)
 .idea/
 cmake-build-debug/
+
+##ignore Macros (zsoldos)
+WCSim.mac
+jobOptions2.mac
