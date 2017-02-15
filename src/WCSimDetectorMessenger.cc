@@ -22,18 +22,12 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "SuperK_20inchBandL_20perCent\n"
 			  "SuperK_12inchBandL_15perCent\n"
 			  "SuperK_20inchBandL_14perCent\n"
+			  "Cylinder_60x74_20inchBandL_14perCent\n"
+      			  "Cylinder_60x74_20inchBandL_40perCent\n"
 			  "Cylinder_12inchHPD_15perCent\n"
                           "HyperK\n"
                           "HyperK_withHPD\n"
                           "nuPRISM\n"
-                          "DUSEL_100kton_10inch_40perCent\n"
-                          "DUSEL_100kton_10inch_HQE_12perCent\n"
-                          "DUSEL_100kton_10inch_HQE_30perCent\n"
-                          "DUSEL_100kton_10inch_HQE_30perCent_Gd\n"
-                          "DUSEL_150kton_10inch_HQE_30perCent\n"
-                          "DUSEL_200kton_10inch_HQE_12perCent\n"
-                          "DUSEL_200kton_12inch_HQE_10perCent\n"
-                          "DUSEL_200kton_12inch_HQE_14perCent\n"
                          );
   PMTConfig->SetParameterName("PMTConfig", false);
   PMTConfig->SetCandidates("SuperK "
@@ -41,20 +35,27 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			   "SuperK_20inchBandL_20perCent "
 			   "SuperK_12inchBandL_15perCent "
 			   "SuperK_20inchBandL_14perCent "
+			   "Cylinder_60x74_20inchBandL_14perCent\n"
+      			   "Cylinder_60x74_20inchBandL_40perCent\n"
 			   "Cylinder_12inchHPD_15perCent "
 			   "HyperK "
                            "HyperK_withHPD "
                            "nuPRISM "
-                           "DUSEL_100kton_10inch_40perCent "
-                           "DUSEL_100kton_10inch_HQE_12perCent "
-                           "DUSEL_100kton_10inch_HQE_30perCent "
-                           "DUSEL_100kton_10inch_HQE_30perCent_Gd "
-                           "DUSEL_150kton_10inch_HQE_30perCent "
-                           "DUSEL_200kton_10inch_HQE_12perCent "
-                           "DUSEL_200kton_12inch_HQE_10perCent "
-                           "DUSEL_200kton_12inch_HQE_14perCent "
                            );
   PMTConfig->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  WCVisChoice = new G4UIcmdWithAString("/WCSim/WCVisChoice",this);
+  WCVisChoice->SetGuidance("Set the visualization style for the WC.");
+  WCVisChoice->SetGuidance("Available options are:\n"
+                          "OGLSX\n"
+			  "RayTracer\n"
+			  );
+  WCVisChoice->SetParameterName("WCVisChoice", false);
+  WCVisChoice->SetCandidates("OGLSX "
+			   "RayTracer "
+                           );
+  WCVisChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
+
 
   PMTSize = new G4UIcmdWithAString("/WCSim/WCPMTsize",this);
   PMTSize->SetGuidance("Set alternate PMT size for the WC (Must be entered after geometry details is set).");
@@ -92,7 +93,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			    "off ");
   PMTCollEff->AvailableForStates(G4State_PreInit, G4State_Idle);
 
-
   waterTank_Length = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperK/waterTank_Length", this);
   waterTank_Length->SetGuidance("Set the Length of Hyper-K detector (unit: mm cm m).");
   waterTank_Length->SetParameterName("waterTank_length", true);
@@ -107,6 +107,10 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetPMTType = new G4UIcmdWithAString("/WCSim/nuPRISM/SetPMTType", this);
   SetPMTType->SetGuidance("Set the type of PMT to be used for nuPRISM");
   SetPMTType->SetGuidance("Available options are:\n"
+          "PMT3inch\n"
+          "PMT3inchGT\n"
+          "PMT3inchR12199_02\n"
+          "PMT5inch\n"
           "PMT8inch\n"
           "PMT10inchHQE\n"
           "PMT10inch\n"
@@ -114,7 +118,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "HPD20inchHQE\n"
           "PMT20inch\n");
   SetPMTType->SetParameterName("PMTType", false);
-  SetPMTType->SetCandidates("PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
+  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
   SetPMTType->SetDefaultValue("PMT10inch");
 
   // Next, the PMT coverage
@@ -162,6 +166,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete PMTQEMethod;
   delete PMTCollEff;
   delete waterTank_Length;
+  delete WCVisChoice;
 
   delete SetDetectorDiameter;
   delete SetDetectorHeight;
@@ -189,33 +194,21 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->SuperK_12inchBandL_15perCent();
 		} else if ( newValue == "SuperK_20inchBandL_14perCent" ) {
 		  WCSimDetector->SuperK_20inchBandL_14perCent();
+		} else if ( newValue == "Cylinder_60x74_20inchBandL_14perCent" ) {
+		  WCSimDetector->Cylinder_60x74_20inchBandL_14perCent();
+		} else if ( newValue == "Cylinder_60x74_20inchBandL_40perCent" ) {
+		  WCSimDetector->Cylinder_60x74_20inchBandL_40perCent();
 		} else if (newValue == "Cylinder_12inchHPD_15perCent" ){
-		  WCSimDetector->Cylinder_12inchHPD_15perCent();
-                } else if ( newValue == "HyperK") {
-                        WCSimDetector->SetIsHyperK(true);
-			WCSimDetector->SetHyperKGeometry();
-                } else if ( newValue == "HyperK_withHPD") {
-                        WCSimDetector->SetIsHyperK(true);
-			WCSimDetector->SetHyperKGeometry_withHPD();
-                } else if ( newValue == "nuPRISM") {
-                    WCSimDetector->SetIsNuPrism(true);
-                    WCSimDetector->SetDefaultNuPrismGeometry();
-		} else if(newValue == "DUSEL_100kton_10inch_40perCent") {
-			WCSimDetector->DUSEL_100kton_10inch_40perCent();
-		} else if(newValue == "DUSEL_100kton_10inch_HQE_12perCent"){
-		  WCSimDetector->DUSEL_100kton_10inch_HQE_12perCent();
-		} else if(newValue == "DUSEL_100kton_10inch_HQE_30perCent") {
-		  WCSimDetector->DUSEL_100kton_10inch_HQE_30perCent();
-		} else if(newValue == "DUSEL_100kton_10inch_HQE_30perCent_Gd") {
-		  WCSimDetector->DUSEL_100kton_10inch_HQE_30perCent_Gd();
-		} else if(newValue == "DUSEL_150kton_10inch_HQE_30perCent") {
-		  WCSimDetector->DUSEL_150kton_10inch_HQE_30perCent(); 
-		} else if(newValue == "DUSEL_200kton_10inch_HQE_12perCent") {
-		  WCSimDetector->DUSEL_200kton_10inch_HQE_12perCent();	
-		} else if(newValue == "DUSEL_200kton_12inch_HQE_10perCent") {
-		  WCSimDetector->DUSEL_200kton_12inch_HQE_10perCent();	
-		} else if(newValue == "DUSEL_200kton_12inch_HQE_14perCent") {
-		  WCSimDetector->DUSEL_200kton_12inch_HQE_14perCent();	
+          WCSimDetector->Cylinder_12inchHPD_15perCent();
+        } else if ( newValue == "HyperK") {
+          WCSimDetector->SetIsHyperK(true);
+		  WCSimDetector->SetHyperKGeometry();
+        } else if ( newValue == "HyperK_withHPD") {
+          WCSimDetector->SetIsHyperK(true);
+		  WCSimDetector->SetHyperKGeometry_withHPD();
+        } else if ( newValue == "nuPRISM") {
+          WCSimDetector->SetIsNuPrism(true);
+          WCSimDetector->SetDefaultNuPrismGeometry();
 		} else
 		  G4cout << "That geometry choice not defined!" << G4endl;
 	}
@@ -260,6 +253,16 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  G4cout << G4endl;
 	}
 	
+	if (command == WCVisChoice){
+	  G4cout << "Set Vis Choice " << newValue << " ";
+	  if (newValue == "OGLSX"){
+	    WCSimDetector->SetVis_Choice("OGLSX");
+	  }else if (newValue == "RayTracer"){
+	    WCSimDetector->SetVis_Choice("RayTracer");
+	  }
+	  G4cout << G4endl;
+	}
+
 	if (command == waterTank_Length){
 	bool isHyperK = WCSimDetector->GetIsHyperK();
 	  if(isHyperK==true){

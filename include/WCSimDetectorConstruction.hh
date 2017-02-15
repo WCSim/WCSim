@@ -65,22 +65,14 @@ public:
   void SuperK_20inchBandL_20perCent();
   void SuperK_12inchBandL_15perCent();
   void SuperK_20inchBandL_14perCent();
+  void Cylinder_60x74_20inchBandL_14perCent();
+  void Cylinder_60x74_20inchBandL_40perCent();
   void Cylinder_12inchHPD_15perCent();
-  void DUSEL_100kton_10inch_40perCent();
-  void DUSEL_100kton_10inch_HQE_12perCent();
-  void DUSEL_100kton_10inch_HQE_30perCent();
-  void DUSEL_100kton_10inch_HQE_30perCent_Gd();
-  void DUSEL_150kton_10inch_HQE_30perCent();
-  void DUSEL_200kton_10inch_HQE_12perCent();
-  void DUSEL_200kton_12inch_HQE_10perCent();
-  void DUSEL_200kton_12inch_HQE_14perCent();
-
   void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition);
   void SetDefaultNuPrismGeometry();
-
-
   void UpdateGeometry();
 
+  G4String GetDetectorName()      {return WCDetectorName;}
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
   G4double GetPMTSize()           {return WCPMTRadius;}
@@ -117,6 +109,13 @@ public:
   G4ThreeVector GetWCXRotation(){return WCXRotation;}
   G4ThreeVector GetWCYRotation(){return WCYRotation;}
   G4ThreeVector GetWCZRotation(){return WCZRotation;}
+  G4ThreeVector GetWCDetCentre(){return WCDetCentre;}
+
+  void SetWCDetCentre(double x, double y, double z){
+      WCDetCentre[0] = x;
+      WCDetCentre[1] = y;
+      WCDetCentre[2] = z;
+  }
 
   // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
@@ -128,6 +127,8 @@ public:
   
   void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
   void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
+  void   SetVis_Choice(G4String choice){Vis_Choice = choice;}
+  G4String GetVis_Choice() {return Vis_Choice;}
 
   //Partition Length
   void SetwaterTank_Length(G4double length){waterTank_Length = length;}
@@ -167,6 +168,7 @@ public:
   void   SetDetectorDiameter(G4double diameter) {WCIDDiameter = diameter;}
   G4double GetWCIDDiameter(){ return WCIDDiameter; }
 
+  G4String GetIDCollectionName(){return WCIDCollectionName;}
 
 private:
 
@@ -175,9 +177,9 @@ private:
   WCSimTuningParameters* WCSimTuningParams;
 
   // Sensitive Detectors. We declare the pointers here because we need
-  // to check their state if we change the geometry.
-
-  WCSimWCSD*  aWCPMT;
+  // to check their state if we change the geometry, otherwise will segfault
+  // between events!
+  WCSimWCSD* aWCPMT;
 
   //Water, Blacksheet surface
   G4OpticalSurface * OpWaterBSSurface;
@@ -261,12 +263,21 @@ private:
   // 1 to use
   G4int PMT_Coll_Eff;
 
-
+  //NP 06/17/15
+  // "OGLSX" for classic visualization
+  // "RayTracer" for RayTracer visualization
+  G4String Vis_Choice;
   
 
   G4double WCLength;
 
   G4double WCPosition;
+  
+  // Hit collection name parameters
+  G4String WCDetectorName;
+  G4String WCIDCollectionName;
+  G4String WCODCollectionName;
+
 
   // WC PMT parameters
   G4String WCPMTName;
@@ -279,7 +290,6 @@ private:
 
   G4double WCPMTRadius;
   G4double WCPMTExposeHeight;
-  G4double WCPMTGlassThickness;
   G4double WCBarrelPMTOffset;
 
   G4double WCIDDiameter;
@@ -412,6 +422,7 @@ private:
   G4ThreeVector WCXRotation;   // Info for the geometry tree: WC detector local X axis in the global coordinate system 
   G4ThreeVector WCYRotation;   // Info for the geometry tree: WC detector local Y axis in the global coordinate system 
   G4ThreeVector WCZRotation;   // Info for the geometry tree: WC detector local Z axis in the global coordinate system 
+  G4ThreeVector WCDetCentre;
 
   // Tube map information
 

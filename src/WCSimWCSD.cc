@@ -5,6 +5,7 @@
 #include "G4Step.hh"
 #include "G4ThreeVector.hh"
 #include "G4SDManager.hh"
+#include "G4RunManager.hh"
 #include "Randomize.hh"
 #include "G4ios.hh"
 
@@ -34,24 +35,24 @@ WCSimWCSD::~WCSimWCSD() {}
 
 void WCSimWCSD::Initialize(G4HCofThisEvent* HCE)
 {
-  // Make a new hits collection.  With the name we set in the constructor
+  // Make a new hits collection. With the name we set in the constructor
   hitsCollection = new WCSimWCHitsCollection
-    (SensitiveDetectorName,collectionName[0]); 
-  
+    (SensitiveDetectorName,collectionName[0]);
+
   // This is a trick.  We only want to do this once.  When the program
   // starts HCID will equal -1.  Then it will be set to the pointer to
   // this collection.
+
   
   // Get the Id of the "0th" collection
-  if (HCID<0)
+  if (HCID<0){
     HCID =  GetCollectionID(0); 
-  
+  }  
   // Add it to the Hit collection of this event.
   HCE->AddHitsCollection( HCID, hitsCollection );  
 
   // Initilize the Hit map to all tubes not hit.
   PMTHitMap.clear();
-
   // Trick to access the static maxPE variable.  This will go away with the 
   // variable.
 
@@ -61,7 +62,7 @@ void WCSimWCSD::Initialize(G4HCofThisEvent* HCE)
 }
 
 G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
-{
+{ 
   G4StepPoint*       preStepPoint = aStep->GetPreStepPoint();
   G4TouchableHandle  theTouchable = preStepPoint->GetTouchableHandle();
   G4VPhysicalVolume* thePhysical  = theTouchable->GetVolume();
@@ -102,7 +103,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   // they don't in skdetsim. 
   if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition())
     return false;
-
+  G4String WCIDCollectionName = fdet->GetIDCollectionName();
   // M Fechner : too verbose
   //  if (aStep->GetTrack()->GetTrackStatus() == fAlive) cout << "status is fAlive\n";
   if ((aStep->GetTrack()->GetTrackStatus() == fAlive )
@@ -147,12 +148,12 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   if (fdet->GetPMT_QE_Method()==1){
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
-    maxQE = fdet->GetPMTQE(collectionName[0],wavelength,0,240,660,ratio);
-    photonQE = fdet->GetPMTQE(collectionName[0],wavelength,1,240,660,ratio);
+    maxQE = fdet->GetPMTQE(WCIDCollectionName,wavelength,0,240,660,ratio);
+    photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
     photonQE = photonQE/maxQE;
   }else if (fdet->GetPMT_QE_Method()==3){
     ratio = 1./(1.-0.25);
-    photonQE = fdet->GetPMTQE(collectionName[0],wavelength,1,240,660,ratio);
+    photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
   }
   
   
@@ -163,11 +164,16 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      G4double local_y = localPosition.y();
      G4double local_z = localPosition.z();
      theta_angle = acos(fabs(local_z)/sqrt(pow(local_x,2)+pow(local_y,2)+pow(local_z,2)))/3.1415926*180.;
-     effectiveAngularEfficiency = fdet->GetPMTCollectionEfficiency(theta_angle, collectionName[0]);
+     effectiveAngularEfficiency = fdet->GetPMTCollectionEfficiency(theta_angle, volumeName);
      if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
-
+       //Retrieve the pointer to the appropriate hit collection. Since volumeName is the same as the SD name, this works. 
+       G4SDManager* SDman = G4SDManager::GetSDMpointer();
+       G4RunManager* Runman = G4RunManager::GetRunManager();
+       G4int collectionID = SDman->GetCollectionID(volumeName);
+       const G4Event* currentEvent = Runman->GetCurrentEvent();
+       G4HCofThisEvent* HCofEvent = currentEvent->GetHCofThisEvent();
+       hitsCollection = (WCSimWCHitsCollection*)(HCofEvent->GetHC(collectionID));
       
-
        // If this tube hasn't been hit add it to the collection
        if (PMTHitMap[replicaNumber] == 0)
 	 {
@@ -185,7 +191,6 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   
 	   // Set the hitMap value to the collection hit number
 	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
-	   
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
 	   

@@ -31,11 +31,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   isNuPrism  = false;
 
   debugMode = false;
-//-----------------------------------------------------
-// Initilize SD pointers
-//-----------------------------------------------------
-
-      aWCPMT     = NULL;
 
   myConfiguration = DetConfig;
 
@@ -61,15 +56,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
 
   SetSuperKGeometry();
   //SetHyperKGeometry();
-  //DUSEL_100kton_10inch_40perCent();
-  //DUSEL_100kton_10inch_HQE_12perCent();
-  //DUSEL_100kton_10inch_HQE_30perCent();
-  //DUSEL_100kton_10inch_HQE_30perCent_Gd();
-  //DUSEL_150kton_10inch_HQE_30perCent();
-  //DUSEL_200kton_10inch_HQE_12perCent();
-  //DUSEL_200kton_12inch_HQE_10perCent();
-  //DUSEL_200kton_12inch_HQE_14perCent();
-
 
   //----------------------------------------------------- 
   // Set whether or not Pi0-specific info is saved
@@ -81,8 +67,11 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Set the default method for implementing the PMT QE
   //-----------------------------------------------------
   SetPMT_QE_Method(1);
-   //default NOT to use collection efficiency
-  SetPMT_Coll_Eff(0);
+
+   //default is to use collection efficiency
+  SetPMT_Coll_Eff(1);
+  // set default visualizer to OGLSX
+  SetVis_Choice("OGLSX");
 
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry
@@ -107,7 +96,7 @@ void WCSimDetectorConstruction::UpdateGeometry()
 
 
 WCSimDetectorConstruction::~WCSimDetectorConstruction(){
-  for (int i=0;i<fpmts.size();i++){
+  for (unsigned int i=0;i<fpmts.size();i++){
     delete fpmts.at(i);
   }
   fpmts.clear();
@@ -275,6 +264,26 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
   }
   else if (PMTType == "PMT8inch"){
     WCSimPMTObject* PMT = new PMT8inch;
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
+    return PMT;
+  }
+  else if (PMTType == "PMT5inch"){
+    WCSimPMTObject* PMT = new PMT5inch;
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
+    return PMT;
+  }
+  else if (PMTType == "PMT3inch"){
+    WCSimPMTObject* PMT = new PMT3inch;
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
+    return PMT;
+  }
+  else if (PMTType == "PMT3inchGT"){
+    WCSimPMTObject* PMT = new PMT3inchGT;
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
+    return PMT;
+  }
+  else if (PMTType == "PMT3inchR12199_02"){
+    WCSimPMTObject* PMT = new PMT3inchR12199_02;
     WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }

@@ -11,6 +11,8 @@
 #include "G4TrajectoryContainer.hh"
 #include "WCSimWCHit.hh"
 #include "WCSimWCDigi.hh"
+#include "WCSimWCTrigger.hh"
+#include "WCSimWCDAQMessenger.hh"
 
 #include "TRandom3.h"
 
@@ -26,10 +28,11 @@ private:
   WCSimDetectorConstruction*   detectorConstructor;
 
   TRandom3 * randGen;
+  WCSimWCDAQMessenger* DAQMessenger;
   
 public:
   WCSimEventAction(WCSimRunAction*, WCSimDetectorConstruction*,
-		    WCSimPrimaryGeneratorAction*);
+		   WCSimPrimaryGeneratorAction*);
   ~WCSimEventAction();
   
 public:
@@ -38,14 +41,23 @@ public:
   void FillRootEvent(G4int, 
 		     const struct ntupleStruct&, 
 		     G4TrajectoryContainer*,
-		     WCSimWCHitsCollection*, 
-		     WCSimWCDigitsCollection*);
+		     WCSimWCHitsCollection*,
+		     WCSimWCDigitsCollection*,
+		     WCSimWCTriggeredDigitsCollection*);
   WCSimRunAction* GetRunAction(){return runAction;}
+  void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
+  void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
 
- private:
+private:
   G4int WCSimEventFindStartingVolume( G4ThreeVector vtx);
   G4int WCSimEventFindStoppingVolume( G4String stopVolumeName);
 
+  ///Create instances of the user-chosen digitizer and trigger classes
+  void  CreateDAQInstances();
+
+  G4String DigitizerChoice;
+  G4String TriggerChoice;
+  bool     ConstructedDAQClasses;
 };
 
 

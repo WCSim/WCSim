@@ -320,11 +320,15 @@ void WCSimPhysicsList::ConstructGeneral()
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator->value();
     G4ProcessManager* pmanager = particle->GetProcessManager();
+    G4String particleName = particle->GetParticleName();
     if (theDecayProcess->IsApplicable(*particle)) { 
       pmanager ->AddProcess(theDecayProcess);
       // set ordering for PostStepDoIt and AtRestDoIt
       pmanager ->SetProcessOrdering(theDecayProcess, idxPostStep);
-      pmanager ->SetProcessOrdering(theDecayProcess, idxAtRest);
+      // Mu minus decay at rest is handled by MuonMinusCaptureAtRest process
+      if(particleName != "mu-"){
+          pmanager ->SetProcessOrdering(theDecayProcess, idxAtRest);
+      }
     }
   }
 }
