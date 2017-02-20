@@ -35,6 +35,25 @@ std::string WCSimEnumerations::EnumAsString(TriggerType_t t)
   return "";
 }
 
+std::string WCSimEnumerations::EnumAsString(WCSimRandomGenerator_t r)
+{
+  switch(r) {
+  case (RANDOM_E_RANLUX) :
+    return "RANLUX";
+    break;
+  case (RANDOM_E_RANECU) :
+    return "RANECU";
+    break;
+  case (RANDOM_E_HEPJAMES) :
+    return "HEPJAMES";
+    break;
+  default:
+    return "";
+    break;
+  }
+  return "";
+}
+
 TriggerType_t WCSimEnumerations::TriggerTypeFromString(std::string s)
 {
   for(int i = int(kTriggerUndefined)+1; i <= kTriggerFailure; i++) {

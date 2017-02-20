@@ -31,7 +31,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
 	
   // Decide if (only for the case of !1kT detector) should be upright or horizontal
   isUpright = false;
-  isHyperK  = false;
+  isEggShapedHyperK  = false;
 
   debugMode = false;
 
@@ -157,8 +157,9 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // on their size and detector ordering.
 
   G4LogicalVolume* logicWCBox;
+
   // Select between HyperK and cylinder
-  if (isHyperK) logicWCBox = ConstructHyperK();
+  if (isEggShapedHyperK) logicWCBox = ConstructEggShapedHyperK();
   else logicWCBox = ConstructCylinder(); 
   
   if(!logicWCBox){
@@ -311,4 +312,12 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
   }
 
   else { G4cout << PMTType << " is not a recognized PMT Type. Exiting WCSim." << G4endl; exit(1);}
+}
+
+void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  wcopt->SetDetectorName(WCDetectorName);
+  wcopt->SetSavePi0(pi0Info_isSaved);
+  wcopt->SetPMTQEMethod(PMT_QE_Method);
+  wcopt->SetPMTCollEff(PMT_Coll_Eff);
 }

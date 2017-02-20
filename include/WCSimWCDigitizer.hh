@@ -1,6 +1,7 @@
 #ifndef WCSimWCDigitizer_h
 #define WCSimWCDigitizer_h 1
 
+#include "WCSimRootOptions.hh"
 #include "WCSimDarkRateMessenger.hh"
 #include "WCSimWCDAQMessenger.hh"
 #include "WCSimDetectorConstruction.hh"
@@ -12,7 +13,6 @@
 #include "Randomize.hh"
 #include <map>
 #include <vector>
-#include <utility> //for std::pair
 
 
 // *******************************************
@@ -26,7 +26,7 @@ public:
   WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, DigitizerType_t);
   virtual ~WCSimWCDigitizerBase();
   
-  bool AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector< std::pair<int,int> > digi_comp);
+  bool AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector<int> digi_comp);
   virtual void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) = 0;
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
   void Digitize();
@@ -35,6 +35,9 @@ public:
   void SetDigitizerDeadTime         (int deadtime) { DigitizerDeadTime = deadtime;         }; ///< Override the default digitizer deadtime (ns)
   void SetDigitizerIntegrationWindow(int inttime ) { DigitizerIntegrationWindow = inttime; }; ///< Override the default digitizer integration window (ns)
 
+  ///Save current values of options
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+  
 protected:
   void ReInitialize() { DigiStoreHitMap.clear(); }
 
@@ -47,6 +50,7 @@ protected:
   std::map<int,int> DigiStoreHitMap;   ///< Used to check if a digit has already been created on a PMT
 
   //generic digitizer properties. Defaults set with the GetDefault*() methods. Overidden by .mac options
+  G4String DigitizerClassName;    ///< Name of the digitizer class being run
   int DigitizerDeadTime;          ///< Digitizer deadtime (ns)
   int DigitizerIntegrationWindow; ///< Digitizer integration window (ns)
 

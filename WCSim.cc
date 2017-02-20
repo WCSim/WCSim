@@ -18,7 +18,6 @@
 #include "WCSimSteppingAction.hh"
 #include "WCSimVisManager.hh"
 #include "WCSimRandomParameters.hh"
-#include <iostream>
 
 
 #ifdef G4UI_USE
@@ -97,7 +96,13 @@ int main(int argc,char** argv)
   runManager->SetUserAction(myGeneratorAction);
 
 
-  WCSimRunAction* myRunAction = new WCSimRunAction(WCSimdetector);
+  WCSimRunAction* myRunAction = new WCSimRunAction(WCSimdetector, randomparameters);
+
+  //save all the options from WCSimTuningParameters & WCSimPhysicsListFactory
+  //(set in tuning_parameters.mac & jobOptions*.mac)
+  tuningpars->SaveOptionsToOutput(myRunAction->GetRootOptions());
+  physFactory->SaveOptionsToOutput(myRunAction->GetRootOptions());
+
   runManager->SetUserAction(myRunAction);
 
   runManager->SetUserAction(new WCSimEventAction(myRunAction, WCSimdetector,

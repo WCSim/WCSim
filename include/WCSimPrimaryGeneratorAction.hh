@@ -9,6 +9,8 @@
 
 #include <fstream>
 
+#include "WCSimRootOptions.hh"
+
 class WCSimDetectorConstruction;
 class G4ParticleGun;
 class G4GeneralParticleSource;
@@ -24,7 +26,7 @@ public:
 public:
   void GeneratePrimaries(G4Event* anEvent);
 
-  // Normal gun setting calls these functions to fill jhfNtuple and Root tree
+  // Gun, laser & gps setting calls these functions to fill jhfNtuple and Root tree
   void SetVtx(G4ThreeVector i)     { vtx = i; };
   void SetBeamEnergy(G4double i)   { beamenergy = i; };
   void SetBeamDir(G4ThreeVector i) { beamdir = i; };
@@ -54,6 +56,10 @@ public:
   G4double GetYDir() {return yDir;};
   G4double GetZDir() {return zDir;};
 
+  G4String GetGeneratorTypeString();
+  
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+
 private:
   WCSimDetectorConstruction*      myDetector;
   G4ParticleGun*                  particleGun;
@@ -62,8 +68,9 @@ private:
 
   // Variables set by the messenger
   G4bool   useMulineEvt;
-  G4bool   useNormalEvt;
+  G4bool   useGunEvt;
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
+  G4bool   useGPSEvt;
   std::fstream inputFile;
   G4String vectorFileName;
   G4bool   GenerateVertexInRock;
@@ -91,12 +98,15 @@ public:
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
   inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
 
-  inline void SetNormalEvtGenerator(G4bool choice) { useNormalEvt = choice; }
-  inline G4bool IsUsingNormalEvtGenerator()  { return useNormalEvt; }
+  inline void SetGunEvtGenerator(G4bool choice) { useGunEvt = choice; }
+  inline G4bool IsUsingGunEvtGenerator()  { return useGunEvt; }
 
   //T. Akiri: Addition of function for the laser flag
   inline void SetLaserEvtGenerator(G4bool choice) { useLaserEvt = choice; }
   inline G4bool IsUsingLaserEvtGenerator()  { return useLaserEvt; }
+
+  inline void SetGPSEvtGenerator(G4bool choice) { useGPSEvt = choice; }
+  inline G4bool IsUsingGPSEvtGenerator()  { return useGPSEvt; }
 
   inline void OpenVectorFile(G4String fileName) 
   {
@@ -105,6 +115,11 @@ public:
 
     vectorFileName = fileName;
     inputFile.open(vectorFileName, std::fstream::in);
+
+    if ( !inputFile.is_open() ) {
+      G4cout << "Vector file " << vectorFileName << " not found" << G4endl;
+      exit(-1);
+    }
   }
   inline G4bool IsGeneratingVertexInRock() { return GenerateVertexInRock; }
   inline void SetGenerateVertexInRock(G4bool choice) { GenerateVertexInRock = choice; }

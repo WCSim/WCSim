@@ -101,7 +101,7 @@ void WCSimRootTrigger::Initialize() //actually allocate memory for things in her
   fTriggerType = kTriggerUndefined;
   fTriggerInfo.clear();
   
-  //  std::cout << " Time to allocate the TCAs :  Real = " << mystopw->RealTime() 
+  //  G4cout << " Time to allocate the TCAs :  Real = " << mystopw->RealTime() 
   //	    << " ; CPU = " << mystopw->CpuTime() << "\n";
   delete mystopw;
   
@@ -134,7 +134,7 @@ WCSimRootTrigger::~WCSimRootTrigger()
   }
   mystopw->Stop();
 
-  //  std::cout << " Time to delete the TCAs :  Real = " << mystopw->RealTime() 
+  //  G4cout << " Time to delete the TCAs :  Real = " << mystopw->RealTime() 
   //    << " ; CPU = " << mystopw->CpuTime() << "\n";
 
   delete mystopw;

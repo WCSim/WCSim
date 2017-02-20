@@ -17,6 +17,9 @@
 #/WCSim/WCgeom SuperK_12inchBandL_15perCent # Note: the actual coverage is 14.59%
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 
+# HyperK (one cylindrical tank with a height of 54.8 m, a diameter of 70.8 m and 40% coverage with 20" B&L PMTs)
+#/WCSim/WCgeom HyperK
+
 # Cylindrical detector with a height of 60 m and a diameter of 74 m
 #/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 #/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
@@ -25,16 +28,17 @@
 # diameter of 69m with 12" HPD and 14.59% photocoverage
 #/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
 
-#/WCSim/WCgeom HyperK #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
-#/WCSim/WCgeom HyperK_withHPD #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
+# Previous, egg-shaped HyperK design:
+#/WCSim/WCgeom EggShapedHyperK #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
+#/WCSim/WCgeom EggShapedHyperK_withHPD #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
 
-#Changes the length of the simulated volume. Is currently only set up for HyperK. 
-#/WCSim/HyperK/waterTank_Length 24750. mm # Equivalent length for 10 partitions
-#/WCSim/HyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions
-#/WCSim/HyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
-#/WCSim/HyperK/waterTank_Length 82500. mm # Equivalent length for 3 partitions
-#/WCSim/HyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
-#/WCSim/HyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
+#Changes the length of the simulated volume. Is currently only set up for the egg-shaped HyperK design.
+#/WCSim/EggShapedHyperK/waterTank_Length 24750. mm # Equivalent length for 10 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions (default)
+#/WCSim/EggShapedHyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 82500. mm # Equivalent length for 3 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
 
 
 #/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
@@ -64,12 +68,6 @@
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 /WCSim/SavePi0 false
-
-## select the input nuance-formatted vector file
-## you can of course use your own
-#/mygen/vecfile inputvectorfile
-#/mygen/vecfile h2o.2km.001-009x3_G4.kin
-#/mygen/vecfile mu+.out
 
 
 #choose the Trigger & Digitizer type (and options)
@@ -110,15 +108,49 @@
 #/control/execute visRayTracer.mac
 #/control/execute visOGLQT.mac             ## NEW
 
+## select the input nuance-formatted vector file
+## you can of course use your own
+#/mygen/generator muline
+#/mygen/vecfile inputvectorfile
+#/mygen/vecfile h2o.2km.001-009x3_G4.kin
+#/mygen/vecfile mu+.out
+
 # Or you can use the G4 Particle Gun
-/mygen/generator normal
-#/gun/particle e-
-/gun/particle mu-
+# for a full list of /gun/ commands see:
+# http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
+/mygen/generator gun
+/gun/particle e-
 #/gun/particle pi0
-#/gun/energy 500 MeV
-/gun/energy 1 GeV
-/gun/direction 1 0 1 
+/gun/energy 500 MeV
+/gun/direction 1 0 0
 /gun/position 0 0 0  
+
+# Or you can use the G4 General Particle Source
+# you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
+# for a full list of /gps/ commands see:
+# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+#/mygen/generator gps
+#/gps/particle e-
+#/gps/energy 500 MeV
+#/gps/direction 1 0 0
+#/gps/position 0 0 0
+
+# Or you can use the laser option
+# This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
+# for a full list of /gps/ commands see:
+# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+# It is used for laser calibration simulation
+#/mygen/generator laser
+#/gps/particle opticalphoton
+#/gps/energy 2.505 eV
+#/gps/direction 1 0 0
+#/gps/position 0 0 0
+#/gps/number 1000
+#/gps/ang/type iso
+#/gps/ang/mintheta 0 deg
+#/gps/ang/maxtheta 30 deg
+#/gps/ang/minphi 0 deg
+#/gps/ang/maxphi 360 deg
 
 ## change the name of the output root file, default = wcsim.root
 

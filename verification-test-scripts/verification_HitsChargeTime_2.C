@@ -119,8 +119,27 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
   TH1F *charge2 = new TH1F("Q/# Digitized PMT 2", "Average Charge", 200, 0, 5);
 
 
-  // Now loop over events from the modified WCSim version and fill the histograms
-  for (int ev=0; ev<nevent; ev++){
+  TH1F *h1 = new TH1F("PMT Hits", "# Digitized Hits", 500, 0, 25000);
+  TH1F *time = new TH1F("Average time", "Average time", 600, 500, 5000);
+  TH1F *pe = new TH1F("Q/# Digitzed PMT", "Average Charge", 200, 0, 5);
+  TH1F *hit_pmts = new TH1F("Hit PMTs","# Hit PMTs",500,0,35000); 
+
+  TH1F *tot_charge = new TH1F("tot","Total Charge in event",500,0,20000);
+
+  TH1F *charge = new TH1F("charge","",200,0,1000);
+  TH1F *ttime = new TH1F("ttime","",200,900,2000);
+  TH2F *t_q = new TH2F("tq","",200,900,2000,200,0,20);
+  //TH2F *tubeID_q = new TH2F("tubeIDq","",150,185100,185250,200,0,100);
+  TH2F *tubeID_q = new TH2F("tubeIDq","",300,1400,1700,100,0,300);
+  TH2F *mPMTid_q = new TH2F("mPMTidq","",34,1,35,100,0,300);
+  TH1F *occupancy = new TH1F("occupancy","",20000,0,20000);
+  TH1F *occupancy_mPMT = new TH1F("occupancy_mPMT","",35,0,35);
+  TH1F *occupancy_mPMT2 = new TH1F("occupancy_mPMT2","",200,0,20000);
+ TH1F *nhit_pmt = new TH1F("nhit_pmt","",30,0,30);
+  std::cout << "nevent: " << nevent << std::endl;
+  // Now loop over events
+  for (int ev=0; ev<nevent; ev++)
+  {
     // Read the event from the tree into the WCSimRootEvent instance
     wcsimT->GetEvent(ev);
     wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
@@ -147,12 +166,30 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
     double vtx_z = wcsimrootevent->GetVtx(2);
     double dist = sqrt(vtx_x*vtx_x + vtx_y * vtx_y);
     
-    for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++){ 
-	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
+    //GetTracks, pick muon, use GetStart and GetStop
+    for (int i = 0; i < wcsimrootevent->GetNtrack() ; i++){
+      WCSimRootTrack *track = dynamic_cast<WCSimRootTrack*>((wcsimrootevent->GetTracks())->At(i));
+      if( track->GetIpnu() == 13 ) { // mu-
+	//GetStart(0)
+	//GetStop(0)
+	break;
+      }
+    }
+
+    //std::cout << "test: " << wcsimrootsuperevent->GetNumberOfEvents() << std::endl;
+    //if(wcsimrootevent->GetNumTubesHit() > wcsimrootevent->GetNcherenkovdigihits() + 2000)
+    if(wcsimrootsuperevent->GetNumberOfEvents() > 1)
+      //std::cout << "test2: " << ev << " " << wcsimrootsuperevent->GetNumberOfEvents() << " " << wcsimrootevent->GetNumTubesHit() << " " << wcsimrootevent->GetNcherenkovdigihits() << std::endl;
+      
+      std::cout << wcsimrootsuperevent->GetNumberOfEvents() << std::endl;
+
+    for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++) 
+      { 
 	int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
-	hits->Fill(ncherenkovdigihits);
+	h1->Fill(ncherenkovdigihits);
 	
-	
+	//	std::cout << "DEBUG " <<  ev << " " << index << " " << wcsimrootevent->GetNumTubesHit() << std::endl;
+	hit_pmts->Fill(wcsimrootevent->GetNumTubesHit());	
 	float totalq = 0.;
 	float totalt = 0.;
 	
@@ -176,23 +213,84 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
 	    occupancy_mPMT2->Fill(tubeNumber/33);
 	    totalq+=q;
 	    totalt+=t;
-	}
-	float av_time = (ncherenkovdigihits > 0) ? totalt/ncherenkovdigihits : 0;
-	float av_q = (ncherenkovdigihits > 0) ? totalq/ncherenkovdigihits : 0;
-	charge->Fill(av_q);  
-	time->Fill(av_time);
-    }
+
+	    tubeID_q->Fill(tubeNumber,q);
+	    mPMTid_q->Fill(tubeNumber%33 == 0 ? 33 : tubeNumber%33,q);
+	  }
+	
+	tot_charge->Fill(totalq);
+	float av_time = totalt/ncherenkovdigihits;
+	float av_q = totalq/ncherenkovdigihits;
+
+	/*
+	for(int j = 1; j < 15000; j++ ){//occupancy->GetNbinsX() ; j++){
+	  if(occup_per_event->GetBinContent(j) > 0 )
+	    nhit_pmt->Fill(occup_per_event->GetBinContent(j));
+	    }*/
+
+      }
+    pe->Fill(av_q);  
+    time->Fill(av_time);
 
     // reinitialize super event between loops.
     wcsimrootsuperevent->ReInitialize();
   }// End of loop over events
 
 
-    for (int index = 0 ; index < wcsimrootsuperevent2->GetNumberOfEvents(); index++){ 
-	wcsimrootevent2 = wcsimrootsuperevent2->GetTrigger(index);
-	int ncherenkovdigihits = wcsimrootevent2->GetNcherenkovdigihits();
-	hits2->Fill(ncherenkovdigihits);
+  // Create a WCSimRootEvent to put stuff from the tree in
 
+  WCSimRootEvent* wcsimrootsuperevent = new WCSimRootEvent();
+
+  // Set the branch address for reading from the tree
+  TBranch *branch = wcsimT2->GetBranch("wcsimrootevent");
+  branch->SetAddress(&wcsimrootsuperevent);
+
+  // Force deletion to prevent memory leak 
+  wcsimT2->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
+
+
+   // start with the main "subevent", as it contains most of the info
+  // and always exists.
+  WCSimRootTrigger* wcsimrootevent;
+
+  TH1F *h2 = new TH1F("PMT Hits 2", "# Digitized Hits", 500, 0, 25000);
+  TH1F *time2 = new TH1F("Average time 2", "Average time", 600, 500, 5000);
+  TH1F *pe2 = new TH1F("Q/# Digitzed PMT 2", "Q/# Digitzed PMT", 200, 0, 5);
+  TH1F *hit_pmts2 = new TH1F("Hit PMTs 2","# Hit PMTs",500,0,35000);  
+
+  TH1F *tot_charge2 = new TH1F("tot2","Total Charge in event",500,0,20000);  
+
+  TH1F *charge2 = new TH1F("charge2","",200,0,1000);
+  TH1F *ttime2 = new TH1F("ttime2","",200,900,2000);
+  TH1F *occupancy2 = new TH1F("occupancy2","",200,0,500000);
+  TH1F *occupancy2_mPMT = new TH1F("occupancy2_mPMT","",34,0,34);
+  TH1F *occupancy2_mPMT2 = new TH1F("occupancy2_mPMT2","",200,0,20000);
+
+  // Now loop over events
+  for (int ev=0; ev<nevent2; ev++){
+    // Read the event from the tree into the WCSimRootEvent instance
+    wcsimT2->GetEvent(ev);
+    wcsimrootevent2 = wcsimrootsuperevent2->GetTrigger(0);
+  
+    if(verbose){
+      printf("********************************************************");
+      printf("Evt, date %d %d\n", wcsimrootevent2->GetHeader()->GetEvtNum(),
+	     wcsimrootevent2->GetHeader()->GetDate());
+      printf("Mode %d\n", wcsimrootevent2->GetMode());
+      printf("Number of subevents %d\n",
+	     wcsimrootsuperevent2->GetNumberOfSubEvents());
+      
+      printf("Vtxvol %d\n", wcsimrootevent2->GetVtxvol());
+      printf("Vtx %f %f %f\n", wcsimrootevent2->GetVtx(0),
+	     wcsimrootevent2->GetVtx(1),wcsimrootevent2->GetVtx(2));
+    }
+    
+    for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++) 
+      { 
+	int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
+	h2->Fill(ncherenkovdigihits);
+	hit_pmts2->Fill(wcsimrootevent->GetNumTubesHit());	
+	
 	float totalq = 0.;
 	float totalt = 0.;
 	// Loop through elements in the TClonesArray of WCSimRootCherenkovHits
@@ -207,13 +305,16 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
 	    ttime2->Fill(t);
 	    totalq+=q;
 	    totalt+=t;
-	}
-	float av_time = (ncherenkovdigihits > 0) ? totalt/ncherenkovdigihits : 0;
-	float av_q = (ncherenkovdigihits > 0) ? totalq/ncherenkovdigihits : 0;
-	charge2->Fill(av_q);  
-	time2->Fill(av_time);
-    }
+	  }
 
+	tot_charge2->Fill(totalq);
+	if(ncherenkovdigihits > 0){
+	  float av_time = totalt/ncherenkovdigihits;
+	  float av_q = totalq/ncherenkovdigihits;
+	}
+      }
+    pe2->Fill(av_q);  
+    time2->Fill(av_time);
     // reinitialize super event between loops.
     wcsimrootsuperevent2->ReInitialize();
   }// End of loop over events
@@ -241,8 +342,10 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
  TLegend *leg = new TLegend(0.2,0.7,0.55,0.85, "");
  leg->SetFillColor(0);
  leg->SetBorderSize(0);
- leg->AddEntry(hits,filename, "l");
- leg->AddEntry(hits2,filename2, "l");
+ // leg->AddEntry(h1,filename, "l");
+ //leg->AddEntry(h2,filename2, "l");
+ leg->AddEntry(h1,"mPMT", "l");
+ leg->AddEntry(h2,"20in", "l");
  leg->Draw();
  
  c1->cd(2);
