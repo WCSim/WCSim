@@ -79,7 +79,6 @@ private:
   G4double         edep;
   static G4int     maxPe;
   G4int            trackID;
-  std::vector<G4int>    primaryParentID;           //TF: this *is* used!
 
 public:
   void RemoveDigitizedGate(G4int gate);

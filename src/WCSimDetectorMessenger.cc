@@ -305,7 +305,6 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		} else if ( newValue == "Cylinder_12inchHPD_15perCent" ){
 		  WCSimDetector->Cylinder_12inchHPD_15perCent();
                 } else if ( newValue == "HyperK") {
-                        WCSimDetector->SetIsHyperK(true);
 			WCSimDetector->SetHyperKGeometry();
 		} else if ( newValue == "EggShapedHyperK") {
 		  WCSimDetector->SetIsEggShapedHyperK(true);

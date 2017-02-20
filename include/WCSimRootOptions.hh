@@ -25,7 +25,7 @@ public:
 
   WCSimRootOptions();
   virtual ~WCSimRootOptions();
-  void Print();
+  void Print(Option_t *option = "") const;
 
   //WCSimDetector* gets
   void SetDetectorName(string iDetectorName) {DetectorName = iDetectorName;}

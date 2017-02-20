@@ -89,6 +89,15 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     geoTree->Branch("wcsimrootgeom", "WCSimRootGeom", &wcsimrootgeom, bufsize,0);
     
     FillGeoTree();
+
+    // Options tree
+    optionsTree = new TTree("wcsimRootOptionsT","WCSim Options Tree");
+    optionsTree->Branch("wcsimrootoptions", "WCSimRootOptions", &wcsimrootoptions, bufsize, 0);
+    
+    //set detector & random options
+    wcsimdetector->SaveOptionsToOutput(wcsimrootoptions);
+    wcsimrandomparameters->SaveOptionsToOutput(wcsimrootoptions);
+
   }
 
   //TF: New Flat tree format:
@@ -230,19 +239,16 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   cherenkovDigiHitsTree->Branch("PMT_diry",(evNtup->digitube_diry),"PMT_diry[NDigiHits]/Float_t");
   cherenkovDigiHitsTree->Branch("PMT_dirz",(evNtup->digitube_dirz),"PMT_dirz[NDigiHits]/Float_t");
 
-  geoTree = new TTree("wcsimGeoT","WCSim Geometry Tree");
-  wcsimrootgeom = new WCSimRootGeom();
-  TBranch *geoBranch = geoTree->Branch("wcsimrootgeom", "WCSimRootGeom", &wcsimrootgeom, bufsize,0);
-
-  FillGeoTree();
-
+  /* TF TODO: Adapt to Flat Tree output!!
   // Options tree
   optionsTree = new TTree("wcsimRootOptionsT","WCSim Options Tree");
   optionsTree->Branch("wcsimrootoptions", "WCSimRootOptions", &wcsimrootoptions, bufsize, 0);
-
+  
   //set detector & random options
   wcsimdetector->SaveOptionsToOutput(wcsimrootoptions);
   wcsimrandomparameters->SaveOptionsToOutput(wcsimrootoptions);
+  */
+
 }
 
 void WCSimRunAction::EndOfRunAction(const G4Run*)
@@ -366,7 +372,7 @@ void WCSimRunAction::FillGeoTree(){
 
 void WCSimRunAction::FillFlatGeoTree(){
 
-  if (wcsimdetector->GetIsHyperK())
+  if (wcsimdetector->GetIsEggShapedHyperK())
     strcpy(geo_type_string,"EggShape");
   else strcpy(geo_type_string,"Cylinder");
   
