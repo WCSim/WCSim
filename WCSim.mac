@@ -51,11 +51,13 @@
 # the total number of photons
 # On the detector side, the rest of QE are applied according to QE/QE_max
 # distribution. This option is in particular important for the WLS
-# 3. The last option means all the QE are applied at the detector
+# 3. The third option means all the QE are applied at the detector
 # Good for the low energy running.
+# 4. Switch off the QE complety, ie. set it at 100%
 /WCSim/PMTQEMethod     Stacking_Only
 #/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
+#/WCSim/PMTQEMethod     DoNotApplyQE
 
 #turn on or off the collection efficiency
 /WCSim/PMTCollEff on

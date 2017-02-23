@@ -174,6 +174,9 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  }else if (newValue == "SensitiveDetector_Only"){
 	    WCSimDetector->SetPMT_QE_Method(3);
 	    G4cout << "3";
+	  }else if (newValue == "DoNotApplyQE"){
+	    WCSimDetector->SetPMT_QE_Method(4);
+	    G4cout << "4";
 	  }else{
 	    
 	  }
