@@ -25,7 +25,7 @@ WCSimRootOptions::~WCSimRootOptions()
 }
 
 //______________________________________________________________________________
-void WCSimRootOptions::Print(Option_t *option) const
+void WCSimRootOptions::Print(Option_t *) const
 {
   cout
     << "Detector construction:" << endl
