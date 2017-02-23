@@ -22,3 +22,5 @@
 /vis/rayTracer/eyePosition 70 1 20
 /vis/rayTracer/trace g4RayTracer2.jpeg # Viewpoint is outside the detector again, but closer to the top cap in the z direction.
 
+# Make default RayTracer background black (RGB values) as OGL
+/vis/rayTracer/backgroundColour 0 0 0
