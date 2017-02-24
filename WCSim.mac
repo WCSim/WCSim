@@ -40,8 +40,19 @@
 #/WCSim/EggShapedHyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
 #/WCSim/EggShapedHyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
 
+/WCSim/WCgeom nuPRISM
 
-#/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
+#Select which PMT to use
+/WCSim/nuPRISM/SetPMTType PMT8inch
+/WCSim/nuPRISM/SetPMTPercentCoverage 40
+#Set height of nuPRISM inner detector
+/WCSim/nuPRISM/SetDetectorHeight 10. m
+#Set vertical position of inner detector, in beam coordinates
+/WCSim/nuPRISM/SetDetectorVerticalPosition -10. m
+#Set diameter of inner detector
+/WCSim/nuPRISM/SetDetectorDiameter 6. m
+/WCSim/nuPRISM/Update
+/WCSim/Construct
 
 #Use mPMT settings 
 /control/execute mPMT.mac         ## NEW
@@ -67,8 +78,7 @@
 /WCSim/PMTCollEff on
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
-/WCSim/SavePi0 false
-
+/WCSim/SavePi0 true
 
 #choose the Trigger & Digitizer type (and options)
 /DAQ/Digitizer SKI
@@ -153,8 +163,11 @@
 #/gps/ang/maxphi 360 deg
 
 ## change the name of the output root file, default = wcsim.root
+/WCSimIO/RootFile wcsim_output.root
 
-/WCSimIO/RootFile wcsim.root
+## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
+## a NEUT vector file as input
+/WCSimIO/SaveRooTracker 1
 
 /run/beamOn 10
 #exit

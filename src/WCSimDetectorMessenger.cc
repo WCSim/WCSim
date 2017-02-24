@@ -26,6 +26,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
                           "HyperK\n"
 			  "EggShapedHyperK\n"
 			  "EggShapedHyperK_withHPD\n"
+                          "nuPRISM\n"
 			  "Cylinder_60x74_3inchmPMT_14perCent\n"
 			  "Cylinder_60x74_3inchmPMT_40perCent\n"
 			  "Cylinder_60x74_3inch_14perCent\n"
@@ -44,6 +45,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			   "HyperK "
 			   "EggShapedHyperK "
 			   "EggShapedHyperK_withHPD "
+                           "nuPRISM "
 			   "Cylinder_60x74_3inchmPMT_14perCent "
 			   "Cylinder_60x74_3inchmPMT_40perCent "
 			   "Cylinder_60x74_3inch_14perCent "
@@ -116,7 +118,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 
   WCConstruct = new G4UIcmdWithoutParameter("/WCSim/Construct", this);
   WCConstruct->SetGuidance("Update detector construction with new settings.");
-
 
   // Params: - Cylinder height and radius of mPMT: DONE
   //         - Type of ID PMT (should be enum) and Type of OD PMT: Need to reorganize the PMTpart.
@@ -263,6 +264,60 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   mPMT_config->SetGuidance("Set filename for config file with viewing angles and tilt angles.");
   mPMT_config->SetParameterName("mPMTconfig", true);
 
+ // First, the PMT type
+  SetPMTType = new G4UIcmdWithAString("/WCSim/nuPRISM/SetPMTType", this);
+  SetPMTType->SetGuidance("Set the type of PMT to be used for nuPRISM");
+  SetPMTType->SetGuidance("Available options are:\n"
+          "PMT3inch\n"
+          "PMT3inchGT\n"
+          "PMT3inchR12199_02\n"
+          "PMT5inch\n"
+          "PMT8inch\n"
+          "PMT10inchHQE\n"
+          "PMT10inch\n"
+          "PMT12inchHQE\n"
+          "HPD20inchHQE\n"
+          "PMT20inch\n");
+  SetPMTType->SetParameterName("PMTType", false);
+  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
+  SetPMTType->SetDefaultValue("PMT10inch");
+
+  // Next, the PMT coverage
+  SetPMTCoverage = new G4UIcmdWithAString("/WCSim/nuPRISM/SetPMTPercentCoverage", this);
+  SetPMTCoverage->SetGuidance("Set the PMT percentage coverage to be used for nuPRISM");
+  SetPMTCoverage->SetGuidance("Any number is allowed (such as 40)");
+  SetPMTCoverage->SetParameterName("PMTCoverage", false);
+  SetPMTCoverage->SetDefaultValue("40");
+
+  // Set the vertical position of the nuPRISM-lite detector
+  SetDetectorVerticalPosition = new G4UIcmdWithADoubleAndUnit("/WCSim/nuPRISM/SetDetectorVerticalPosition", this);
+  SetDetectorVerticalPosition->SetGuidance("Set the vertical position of the nuPRISM inner detector (unit mm cm m).");
+  SetDetectorVerticalPosition->SetGuidance("The default will be 0m, so particle guns are easy to create.");
+  SetDetectorVerticalPosition->SetParameterName("DetectorVerticalPosition", false);
+  SetDetectorVerticalPosition->SetDefaultValue(0.0);
+  SetDetectorVerticalPosition->SetUnitCategory("Length");
+  SetDetectorVerticalPosition->SetDefaultUnit("m");
+
+  // Set the height of the nuPRISM-lite detector
+  SetDetectorHeight = new G4UIcmdWithADoubleAndUnit("/WCSim/nuPRISM/SetDetectorHeight", this);
+  SetDetectorHeight->SetGuidance("Set the height of the nuPRISM inner detector (unit mm cm m).");
+  SetDetectorHeight->SetGuidance("The default will be 52.4m, the full height of nuPRISM.");
+  SetDetectorHeight->SetParameterName("DetectorHeight", false);
+  SetDetectorHeight->SetDefaultValue(52.4);
+  SetDetectorHeight->SetUnitCategory("Length");
+  SetDetectorHeight->SetDefaultUnit("m");
+
+  // Set the diameter of the nuPRISM-lite detector
+  SetDetectorDiameter = new G4UIcmdWithADoubleAndUnit("/WCSim/nuPRISM/SetDetectorDiameter", this);
+  SetDetectorDiameter->SetGuidance("Set the diameter of the nuPRISM inner detector (unit mm cm m).");
+  SetDetectorDiameter->SetGuidance("The default will be 6m, the nominal diameter of nuPRISM.");
+  SetDetectorDiameter->SetParameterName("DetectorDiameter", false);
+  SetDetectorDiameter->SetDefaultValue(6.);
+  SetDetectorDiameter->SetUnitCategory("Length");
+  SetDetectorDiameter->SetDefaultUnit("m");
+
+  UpdateNuPrism = new G4UIcmdWithoutParameter("/WCSim/nuPRISM/Update", this);
+  UpdateNuPrism->SetGuidance("Update nuPRISM detector construction with new settings.");
 }
 
 WCSimDetectorMessenger::~WCSimDetectorMessenger()
@@ -273,6 +328,12 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete PMTCollEff;
   delete waterTank_Length;
   delete WCVisChoice;
+
+  delete SetDetectorDiameter;
+  delete SetDetectorHeight;
+  delete SetDetectorVerticalPosition;
+  delete SetPMTCoverage;
+  delete SetPMTType;
 
   delete tubeCmd;
   delete distortionCmd;
@@ -322,6 +383,9 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->Cylinder_60x74_3inch_14perCent(); // MUST be Called after the mPMT settings, otherwise unknown
 		} else if(newValue == "Cylinder_60x74_3inch_40perCent" ) {
 		  WCSimDetector->Cylinder_60x74_3inch_40perCent(); // MUST be Called after the mPMT settings, otherwise unknown
+                } else if ( newValue == "nuPRISM") {
+		  WCSimDetector->SetIsNuPrism(true);
+		  WCSimDetector->SetDefaultNuPrismGeometry();
 		} else
 		  G4cout << "That geometry choice is not defined!" << G4endl;
 	}
@@ -421,11 +485,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  WCSimDetector->SetmPMT_VesselRadius(mPMT_CylRadius->GetNewDoubleValue(newValue));
 	}
 
-	if (command == mPMT_DistPMTVessel){
-	  G4cout << "Set Distance of PMT(s) to pressure vessel to " << newValue  << " " << G4endl; //doesn't work
-	  //std::cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << std::endl;
-	  WCSimDetector->SetmPMT_DistPMTVessel(mPMT_DistPMTVessel->GetNewDoubleValue(newValue));
-	}
+	
 	if (command == mPMT_orientation){
 	  if(newValue == "Horizontal")
 	    WCSimDetector->SetmPMT_Orientation(HORIZONTAL);
@@ -471,6 +531,26 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  WCSimDetector->SetmPMT_PMTtype_outer(newValue);
 	
 	
+	if (command == mPMT_DistPMTVessel){
+	  G4cout << "Set Distance of PMT(s) to pressure vessel to " << newValue  << " " << G4endl; //doesn't work
+	  //std::cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << std::endl;
+	  WCSimDetector->SetmPMT_DistPMTVessel(mPMT_DistPMTVessel->GetNewDoubleValue(newValue));
+	}
+	// Customize nuPRISM tank setup
+	if( WCSimDetector->GetIsNuPrism()){
+	  if (command == SetPMTType) WCSimDetector->SetPMTType(newValue);
+	  else if (command == SetPMTCoverage) WCSimDetector->SetPMTCoverage(atof(newValue));
+	  else if (command == SetDetectorHeight) WCSimDetector->SetDetectorHeight(SetDetectorHeight->GetNewDoubleValue(newValue));
+	  else if (command == SetDetectorVerticalPosition) WCSimDetector->SetDetectorVerticalPosition(SetDetectorVerticalPosition->GetNewDoubleValue(newValue));
+	  else if (command == SetDetectorDiameter) WCSimDetector->SetDetectorDiameter(SetDetectorDiameter->GetNewDoubleValue(newValue));
+	  else if (command == UpdateNuPrism){
+            WCSimDetector->SetNuPrismGeometry(WCSimDetector->GetPMTType(),
+					      WCSimDetector->GetPMTCoverage(),
+					      WCSimDetector->GetWCIDHeight(),
+					      WCSimDetector->GetWCIDDiameter(),
+					      WCSimDetector->GetWCIDVerticalPosition());
+	  }
+	}
 
 	if(command == WCConstruct) {
 	  WCSimDetector->UpdateGeometry();

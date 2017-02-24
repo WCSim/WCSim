@@ -7,6 +7,7 @@
 
 #include "TFile.h"
 #include "TTree.h"
+#include "TClonesArray.h"
 #include "WCSimRootEvent.hh"
 #include "WCSimRootGeom.hh"
 #include "WCSimRootOptions.hh"
@@ -15,6 +16,8 @@
 #include "evNtuple.h"
 #include "WCSimRandomParameters.hh"
 
+
+#include "TNRooTrackerVtx.hh"
 
 class G4Run;
 class WCSimRunActionMessenger;
@@ -29,9 +32,11 @@ public:
   void BeginOfRunAction(const G4Run*);
   void EndOfRunAction(const G4Run*);
   void SetRootFileName(G4String fname) { RootFileName = fname; }
+  void SetSaveRooTracker(G4bool fsave) { SaveRooTracker = fsave; }
   G4String GetRootFileName() { return RootFileName; }
   void SetOptionalRootFile(G4bool choice) { useDefaultROOTout = choice; }
   G4bool GetRootFileOption() { return useDefaultROOTout; }
+  bool GetSaveRooTracker() { return SaveRooTracker; }
   void FillGeoTree();
   TTree* GetTree(){return WCSimTree;}
   TTree* GetGeoTree(){return geoTree;}
@@ -89,6 +94,13 @@ public:
   //New:
   void FillFlatGeoTree();
 
+  NRooTrackerVtx* GetRootrackerVertex();
+  void FillRootrackerVertexTree() { fRooTrackerOutputTree->Fill();}
+  void ClearRootrackerVertexArray() { 
+      fVertices->Clear(); 
+      fNVtx = 0;
+  }
+
 private:
   // MFechner : set by the messenger
   std::string RootFileName;
@@ -111,9 +123,26 @@ private:
   int numberOfTimesFVWaterTubeHit;
   int numberOfTimesCatcherHit;
 
+  TClonesArray* fVertices;
+  TTree* fRooTrackerOutputTree;
+  int fNVtx;
+  bool SaveRooTracker;
+  TTree* fSettingsOutputTree;
+  TTree* fSettingsInputTree;
+
+  float WCXRotation[3];
+  float WCYRotation[3];
+  float WCZRotation[3];
+  float WCDetCentre[3];
+  float WCDetRadius;
+  float WCDetHeight;
+  float fNuPlanePos[3];
+  float fNuPrismRadius;
+
   WCSimRunActionMessenger* messenger;
   int ntuples;  // 1 for ntuples to be written
 
+<<<<<<< HEAD
   //new: vars for FLAT Trees
   TTree* masterTree;
   TTree* geomTree;
@@ -172,6 +201,7 @@ private:
   //Event info: General, Tracks and Hits
   eventNtuple *evNtup;
     
+  const G4Run* fG4Run;
 };
 
 #endif

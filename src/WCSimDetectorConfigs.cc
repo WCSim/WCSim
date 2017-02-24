@@ -359,7 +359,36 @@ void WCSimDetectorConstruction::MatchWCSimAndEggShapedHyperK()
   WCPMTRadius = innerPMT_Radius;
 }
 
+void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition)
+{
+    WCDetectorName = "NuPRISM";
+    WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+    WCSimPMTObject * PMT = CreatePMTObject(PMTType, WCIDCollectionName);
+    WCPMTName = PMT->GetPMTName();
+    WCPMTExposeHeight = PMT->GetExposeHeight();
+    WCPMTRadius = PMT->GetRadius();
 
+	WCIDHeight               = detectorHeight;
+    WCIDDiameter             = detectorDiameter;
+    WCIDVerticalPosition     = verticalPosition;
+
+	WCBarrelPMTOffset     = WCPMTRadius;
+    WCPMTperCellHorizontal = 1.0;
+    WCPMTperCellVertical   = 1.0;
+    WCPMTPercentCoverage   = PMTCoverage;
+    WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage/100.0)/WCPMTRadius);
+
+    WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));
+    WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+    WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+    WCBlackSheetThickness = 2.0*cm;
+    WCAddGd               = false;
+}
+
+void WCSimDetectorConstruction::SetDefaultNuPrismGeometry()
+{
+    SetNuPrismGeometry("PMT8inch", 40.0, 10*m, 6*m, 0*m);
+}
 
 void WCSimDetectorConstruction::SetTestmPMTGeometry()
 {
@@ -586,5 +615,5 @@ void WCSimDetectorConstruction::InitSinglePMT(){
   id_reflector_angle = 0.*CLHEP::rad; 
   nID_PMTs = 1;   
   config_file = "";
-  
+
 }

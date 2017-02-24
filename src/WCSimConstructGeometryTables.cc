@@ -45,20 +45,19 @@ void WCSimDetectorConstruction::GetWCGeom
     // This information will later be written to the geometry file
     // (Alternatively one might define accessible constants)
   
-    if ((aPV->GetName() == "WCBarrel") ||
-        (aPV->GetName() == "WorldBox")) {    // last condition is the HyperK Envelope name.
+    if ((aPV->GetName() == "WCBox")) {    // last condition is the HyperK Envelope name.
     // Stash info in data member
-    WCOffset = G4ThreeVector(aTransform.getTranslation().getX()/cm,
+        WCOffset = G4ThreeVector(aTransform.getTranslation().getX()/cm,
 			     aTransform.getTranslation().getY()/cm,
 			     aTransform.getTranslation().getZ()/cm);
+        WCXRotation = G4ThreeVector(aTransform.getRotation().xx(), aTransform.getRotation().xy(), aTransform.getRotation().xz());
+        WCYRotation = G4ThreeVector(aTransform.getRotation().yx(), aTransform.getRotation().yy(), aTransform.getRotation().yz());
+        WCZRotation = G4ThreeVector(aTransform.getRotation().zx(), aTransform.getRotation().zy(), aTransform.getRotation().zz());
     }
-
-	
 
     // Stash info in data member
     // AH Need to store this in CM for it to be understood by SK code
     WCPMTSize = WCPMTRadius/cm;// I think this is just a variable no if needed
-
 
     // Note WC can be off-center... get both extremities
     static G4float zmin=100000,zmax=-100000.;
@@ -84,8 +83,6 @@ void WCSimDetectorConstruction::GetWCGeom
       if (z<zmin){zmin=z;}
       if (z>zmax){zmax=z;}
       
-
- 
       WCCylInfo[0] = xmax-xmin;
       WCCylInfo[1] = ymax-ymin;
       WCCylInfo[2] = zmax-zmin;

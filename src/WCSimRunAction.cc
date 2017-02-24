@@ -34,8 +34,11 @@ WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test, WCSimRandomParam
   wcsimdetector = test;
   messenger = new WCSimRunActionMessenger(this);
 
-  useDefaultROOTout = false;
+  useDefaultROOTout = true;  //false;  TF: ToDo, make this false WHEN flat ROOT has RooTracker trees and when FiTQun can read that in.
   wcsimrootoptions = new WCSimRootOptions();
+
+  // By default do not try and save Rootracker interaction information
+  SetSaveRooTracker(0);
 
 }
 
@@ -46,7 +49,42 @@ WCSimRunAction::~WCSimRunAction()
 
 void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
 {
-//   G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
+
+  fSettingsOutputTree = NULL;
+  fSettingsInputTree = NULL;
+  for(int i = 0; i < 3; ++i){
+      WCXRotation[i] = 0;
+      WCYRotation[i] = 0;
+      WCZRotation[i] = 0;
+      WCDetCentre[i] = 0;
+  }
+
+  WCDetRadius = 0;
+  WCDetHeight = 0;
+
+  if(wcsimdetector->GetIsNuPrism()){
+    if(GetSaveRooTracker()){
+      //Setup settings tree
+      fSettingsInputTree = (TTree*) gDirectory->Get("Settings");
+      fSettingsInputTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
+      fSettingsInputTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
+    }
+    if(fSettingsInputTree){
+      fSettingsOutputTree = fSettingsInputTree->CloneTree(0);
+    }
+    else{
+      fSettingsOutputTree = new TTree("Settings","Settings");
+    }
+
+    fSettingsOutputTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/F");
+    fSettingsOutputTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/F");
+    fSettingsOutputTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
+    fSettingsOutputTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/F");
+    fSettingsOutputTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/F");
+    fSettingsOutputTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/F");
+ 
+  }      
+
   numberOfEventsGenerated = 0;
   numberOfTimesWaterTubeHit = 0;
   numberOfTimesCatcherHit = 0;
@@ -97,7 +135,17 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     //set detector & random options
     wcsimdetector->SaveOptionsToOutput(wcsimrootoptions);
     wcsimrandomparameters->SaveOptionsToOutput(wcsimrootoptions);
-
+    
+    //Setup rooTracker tree
+    if(SaveRooTracker){
+      //Setup TClonesArray to store Rootracker truth info
+      fVertices = new TClonesArray("NRooTrackerVtx", 10);
+      fVertices->Clear();
+      fNVtx = 0;
+      fRooTrackerOutputTree = new TTree("fRooTrackerOutputTree","Event Vertex Truth Array");
+      fRooTrackerOutputTree->Branch("NVtx",&fNVtx,"NVtx/I");
+      fRooTrackerOutputTree->Branch("NRooTrackerVtx","TClonesArray", &fVertices);
+    }
   }
 
   //TF: New Flat tree format:
@@ -247,8 +295,19 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   //set detector & random options
   wcsimdetector->SaveOptionsToOutput(wcsimrootoptions);
   wcsimrandomparameters->SaveOptionsToOutput(wcsimrootoptions);
-  */
 
+
+  //Setup rooTracker tree
+  if(SaveRooTracker){
+    //Setup TClonesArray to store Rootracker truth info
+    fVertices = new TClonesArray("NRooTrackerVtx", 10);
+    fVertices->Clear();
+    fNVtx = 0;
+    fRooTrackerOutputTree = new TTree("fRooTrackerOutputTree","Event Vertex Truth Array");
+    fRooTrackerOutputTree->Branch("NVtx",&fNVtx,"NVtx/I");
+    fRooTrackerOutputTree->Branch("NRooTrackerVtx","TClonesArray", &fVertices);
+  }
+  */
 }
 
 void WCSimRunAction::EndOfRunAction(const G4Run*)
@@ -259,6 +318,7 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 // 	 << "% hit FGD or MRD" << G4endl;
 //  G4cout << (float(numberOfTimesCatcherHit)/float(numberOfEventsGenerated))*100.
 //        << "% through-going (hit Catcher)" << G4endl;
+
 
   //Write the options tree
   G4cout << "EndOfRunAction" << G4endl;
@@ -297,9 +357,11 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
     delete wcsimrootgeom; wcsimrootgeom=0;
   }
 
+
 }
 
 void WCSimRunAction::FillGeoTree(){
+
   // Fill the geometry tree
   G4int geo_type;
   G4double cylinfo[3];
@@ -307,7 +369,9 @@ void WCSimRunAction::FillGeoTree(){
   G4int numpmt;
   G4int orientation;
   Float_t offset[3];
-  
+ 
+  Float_t rotation[3];
+
   Int_t tubeNo;
   Float_t pos[3];
   Float_t rot[3];
@@ -344,7 +408,40 @@ void WCSimRunAction::FillGeoTree(){
   offset[1] = offset1[1];
   offset[2] = offset1[2];
   wcsimrootgeom-> SetWCOffset(offset[0],offset[1],offset[2]);
-  
+
+  if(wcsimdetector->GetIsNuPrism()){ 
+      G4ThreeVector rotation1= wcsimdetector->GetWCXRotation();
+      WCXRotation[0] = rotation1[0];
+      WCXRotation[1] = rotation1[1];
+      WCXRotation[2] = rotation1[2];
+    
+      G4ThreeVector rotation2= wcsimdetector->GetWCYRotation();
+      WCYRotation[0] = rotation2[0];
+      WCYRotation[1] = rotation2[1];
+      WCYRotation[2] = rotation2[2];
+    
+      G4ThreeVector rotation3= wcsimdetector->GetWCZRotation();
+      WCZRotation[0] = rotation3[0];
+      WCZRotation[1] = rotation3[1];
+      WCZRotation[2] = rotation3[2];
+
+      WCDetCentre[0] = offset1[0]/100.0;
+      WCDetCentre[1] = offset1[1]/100.0;
+      WCDetCentre[2] = offset1[2]/100.0;
+
+      WCDetRadius = wcsimdetector->GetWCIDDiameter()/2.0;
+      WCDetHeight = wcsimdetector->GetWCIDHeight();
+
+      if(fSettingsInputTree){
+          fSettingsInputTree->GetEntry(0);
+          double z_offset = fNuPlanePos[2]/100.0 + fNuPrismRadius;
+          WCDetCentre[2] += z_offset;
+          std::cout << "WCDetCentre[2] = " << WCDetCentre[2] << std::endl;
+      }
+
+      fSettingsOutputTree->Fill();
+  }
+
   std::vector<WCSimPmtInfo*> *fpmts = wcsimdetector->Get_Pmts();
   WCSimPmtInfo *pmt;
   for (unsigned int i=0;i!=fpmts->size();i++){
@@ -367,7 +464,12 @@ void WCSimRunAction::FillGeoTree(){
   wcsimrootgeom-> SetWCNumPMT(numpmt);
   
   geoTree->Fill();
-  geoTree->Write();
+  TFile* hfile = geoTree->GetCurrentFile();
+  hfile->Write(); 
+  if(wcsimdetector->GetIsNuPrism()) fSettingsOutputTree->Write();
+//  if(fSettingsInputTree) fSettingsInputTree->Close();
+
+  geoTree->Write(); // TF: in WCSim/develop but not in nuPRISM/develop?
 }
 
 void WCSimRunAction::FillFlatGeoTree(){
@@ -425,4 +527,12 @@ void WCSimRunAction::FillFlatGeoTree(){
   geomTree->Fill();
   TFile* flatfile = geomTree->GetCurrentFile();
   flatfile->Write(); 
+
+}
+
+NRooTrackerVtx* WCSimRunAction::GetRootrackerVertex(){
+
+  NRooTrackerVtx* currRootrackerVtx = new((*fVertices)[fNVtx])NRooTrackerVtx();
+  fNVtx += 1;
+  return currRootrackerVtx;
 }

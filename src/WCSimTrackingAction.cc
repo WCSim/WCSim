@@ -9,8 +9,11 @@
 
 WCSimTrackingAction::WCSimTrackingAction()
 {
+
   ProcessList.insert("Decay") ;                         // Michel e- from pi+ and mu+
-  ProcessList.insert("muMinusCaptureAtRest") ;          // Includes Muon decay from K-shell: for Michel e- from mu0. This dominates/replaces the mu- decay (noticed when switching off this process in PhysicsList)
+  //ProcessList.insert("muMinusCaptureAtRest") ;          // Includes Muon decay from K-shell: for Michel e- from mu0. This dominates/replaces the mu- decay (noticed when switching off this process in PhysicsList)                                                   // TF: IMPORTANT: ONLY USE FROM G4.9.6 onwards because buggy/double counting before.
+  ////////// ToDo: switch ON the above when NuPRISM uses G4 >= 4.9.6
+
 
 //   ProcessList.insert("conv");
   ParticleList.insert(111); // pi0
@@ -50,7 +53,6 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   // added by M Fechner
   const G4VProcess* creatorProcess = aTrack->GetCreatorProcess();
   //  if ( creatorProcess )
-  //    G4cout << "process name " << creatorProcess->GetProcessName() << G4endl;
 
 
   WCSimTrackInformation* anInfo;
@@ -58,8 +60,9 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     anInfo = (WCSimTrackInformation*)(aTrack->GetUserInformation());   //eg. propagated to all secondaries blelow.
   else anInfo = new WCSimTrackInformation();
 
-
-  // is it a primary ?
+  /** TF's particle list (ToDo: discuss/converge)
+  
+   // is it a primary ?
   // is the process in the set ? eg. Michel e-, but only keep e-
   // is the particle in the set ? eg. pi0, pi+-, K, p, n
   // is it a gamma above 50 MeV ? OR gamma from nCapture? ToDo: Oxygen de-excitation
@@ -72,6 +75,20 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       || (aTrack->GetDefinition()->GetPDGEncoding()==22 && aTrack->GetVertexKineticEnergy() > 4.*MeV)       // Bugfixed: need vertex kinetic energy for gamma, rest is zero. ToDo: check whether pi0 gamma's are saved!
       || (aTrack->GetDefinition()->GetPDGEncoding()==22 && creatorProcess->GetProcessName() == "nCapture")   
       || (abs(aTrack->GetDefinition()->GetPDGEncoding()== 13) && aTrack->GetMomentum().mag() > 110.0*MeV) //mu+- above Cherenkov Threshold in water (119 MeV/c)
+
+  **/
+    // TF: Currently use the nuPRISM one
+
+    // is it a primary ?
+    // is the process in the set ? 
+    // is the particle in the set ?
+    // is it a gamma 
+    // due to lazy evaluation of the 'or' in C++ the order is important
+    if( aTrack->GetParentID()==0 
+	|| ((creatorProcess!=0) && ProcessList.count(creatorProcess->GetProcessName()))
+	|| (ParticleList.count(aTrack->GetDefinition()->GetPDGEncoding()))
+	|| (aTrack->GetDefinition()->GetPDGEncoding()==22 && aTrack->GetTotalEnergy() > 1.0*MeV)
+      || (creatorProcess->GetProcessName() == "muMinusCaptureAtRest" && aTrack->GetTotalEnergy() > 1.0*MeV)
       )
     {
     // if so the track is worth saving
@@ -106,7 +123,6 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   else {
     anInfo->WillBeSaved(false);
   }
-
 
 
   G4Track* theTrack = (G4Track*)aTrack;
