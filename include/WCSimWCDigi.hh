@@ -46,6 +46,7 @@ private:
   G4int   tubeID;
   G4RotationMatrix rot;
   G4ThreeVector    pos;
+  G4ThreeVector    orient;
   G4LogicalVolume* pLogV;
 
   //'Gates' is a digit counter or specifies subevent
@@ -100,9 +101,14 @@ public:
     digi_comp.clear();
   }
 
-  inline G4int   GetParentID(int gate) { return primaryParentID[gate];};
+
+  inline G4int          GetParentID(int gate)    { return primaryParentID[gate];};
+  inline G4int          GetTrackID()    { return trackID;};
   inline G4float GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
+  inline G4ThreeVector GetPos(){ return pos;};
+  inline G4ThreeVector GetOrientation(){ return orient;};
+  inline G4RotationMatrix GetRot(){ return rot;};
   inline G4float GetPe(int gate)     {return pe[gate];};
   inline G4float GetTime(int gate)   {return time[gate];};
   inline G4float GetPreSmearTime(int gate)   {return time_presmear[gate];};
@@ -118,6 +124,7 @@ public:
 
   void SetEdep         (G4double de)                { edep = de; };
   void SetPos          (G4ThreeVector xyz)          { pos = xyz; };
+  void SetOrientation  (G4ThreeVector xyz)          { orient = xyz; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
   void SetTrackID      (G4int track)                { trackID = track; };
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
@@ -220,12 +227,3 @@ inline void WCSimWCDigi::operator delete(void* aDigi)
 }
 
 #endif
-
-
-
-
-
-
-
-
-

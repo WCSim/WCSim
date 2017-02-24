@@ -4,14 +4,14 @@
 
 
 
-WCSimPhysicsListFactory::WCSimPhysicsListFactory() :  G4VModularPhysicsList()
+WCSimPhysicsListFactory::WCSimPhysicsListFactory() :  G4VModularPhysicsList(), WCSimPhysList(0)
 {
  defaultCutValue = 1.0*mm;
  SetVerboseLevel(1);
  
  PhysicsListName="NULL_LIST"; // default list is set in WCSimPhysicsListFactoryMessenger to QGSP_BERT
  factory = new G4PhysListFactory();
- // TODO create opticalPhyscics object?
+ // ToDo create opticalPhyscics object?
  
  std::vector<G4String> ValidListsVector = factory->AvailablePhysLists();
  ValidListsVector.push_back("WCSim");// add deprecated WCSimPhysicsList.cc as a selectable option
@@ -87,9 +87,19 @@ void WCSimPhysicsListFactory::InitializeList(){
     RegisterPhysics(new G4OpticalPhysics());
   } else if (PhysicsListName == "WCSim") {
     //G4cout << "WCSim physics list not yet implemented" << G4endl;
-    G4cout << "RegisterPhysics: WCSim" << G4endl; 
-    RegisterPhysics(new WCSimPhysicsList());
+    G4cout << "RegisterPhysics: WCSim" << G4endl;
+    WCSimPhysList = new WCSimPhysicsList();
+    RegisterPhysics(WCSimPhysList);
   } else {
     G4cout << "Physics list " << PhysicsListName << " is not understood" << G4endl;
   }
 } 
+
+void WCSimPhysicsListFactory::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  wcopt->SetPhysicsListName(PhysicsListName);
+  if(WCSimPhysList)
+    wcopt->SetSecondaryHadModel(WCSimPhysList->GetSecondaryHadModel());
+  else
+    wcopt->SetSecondaryHadModel("NOTREQUIRED");
+}

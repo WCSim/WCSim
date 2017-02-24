@@ -35,7 +35,8 @@ WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 					   WCSimDetectorConstruction* inDetector,
 					   WCSimWCDAQMessenger* myMessenger,
 					   DigitizerType_t digitype)
-  :G4VDigitizerModule(name), myDetector(inDetector), DAQMessenger(myMessenger), DigitizerType(digitype)
+  :G4VDigitizerModule(name), myDetector(inDetector), DAQMessenger(myMessenger), DigitizerType(digitype),
+   DigitizerClassName("")
 {
   G4String colName = "WCDigitizedStoreCollection";
   collectionName.push_back(colName);
@@ -151,6 +152,13 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
   }
 }
 
+void WCSimWCDigitizerBase::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  wcopt->SetDigitizerClassName(DigitizerClassName);
+  wcopt->SetDigitizerDeadTime(DigitizerDeadTime);
+  wcopt->SetDigitizerIntegrationWindow(DigitizerIntegrationWindow);
+}
+
 
 // *******************************************
 // DERIVED CLASS
@@ -161,6 +169,7 @@ WCSimWCDigitizerSKI::WCSimWCDigitizerSKI(G4String name,
 					 WCSimWCDAQMessenger* myMessenger)
   : WCSimWCDigitizerBase(name, myDetector, myMessenger, kDigitizerSKI)
 {
+  DigitizerClassName = "SKI";
   GetVariables();
 }
 
@@ -353,3 +362,4 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   }//idigi
 #endif
 }
+

@@ -14,6 +14,8 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimTrackInformation.hh"
 
+#include "WCSimSteppingAction.hh"
+
 WCSimWCSD::WCSimWCSD(G4String CollectionName, G4String name,WCSimDetectorConstruction* myDet)
 :G4VSensitiveDetector(name)
 {
@@ -51,7 +53,7 @@ void WCSimWCSD::Initialize(G4HCofThisEvent* HCE)
   // Add it to the Hit collection of this event.
   HCE->AddHitsCollection( HCID, hitsCollection );  
 
-  // Initilize the Hit map to all tubes not hit.
+  // Initialize the Hit map to all tubes not hit.
   PMTHitMap.clear();
   // Trick to access the static maxPE variable.  This will go away with the 
   // variable.
@@ -74,15 +76,17 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4ThreeVector worldDirection = preStepPoint->GetMomentumDirection();
   G4ThreeVector localDirection = theTouchable->GetHistory()->GetTopTransform().TransformAxis(worldDirection);
 
-  
 
   WCSimTrackInformation* trackinfo 
     = (WCSimTrackInformation*)(aStep->GetTrack()->GetUserInformation());
-  G4int primParentID;
+  
+  G4int primParentID = -1;
   if (trackinfo)
-    primParentID = trackinfo->GetPrimaryParentID();
+    //Skip secondaries and match to mother process, eg. muon, decay particle, gamma from pi0/nCapture.
+    primParentID = trackinfo->GetPrimaryParentID();  //!= ParentID. 
   else // if there is no trackinfo, then it is a primary particle!
-    primParentID = aStep->GetTrack()->GetTrackID();
+    primParentID = aStep->GetTrack()->GetTrackID();    
+
 
   G4int    trackID           = aStep->GetTrack()->GetTrackID();
   G4String volumeName        = aStep->GetTrack()->GetVolume()->GetName();
@@ -131,21 +135,24 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   }
   //  tubeTag << ":" << theTouchable->GetVolume(i)->GetCopyNo(); 
 
-//  G4cout << tubeTag.str() << G4endl;
+  // Debug:
+  //  G4cout << "================================================" << G4endl;
+  //  G4cout << tubeTag.str() << std::endl;
+  //  G4cout << "================================================" << G4endl;
 
   // Get the tube ID from the tubeTag
   G4int replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
 
     
-  G4float theta_angle;
-  G4float effectiveAngularEfficiency;
+  G4float theta_angle = 0.;
+  G4float effectiveAngularEfficiency = 0.;
 
 
   
   G4float ratio = 1.;
-  G4float maxQE;
-  G4float photonQE;
-  if (fdet->GetPMT_QE_Method()==1){
+  G4float maxQE = 0.;
+  G4float photonQE = 0.;
+  if (fdet->GetPMT_QE_Method()==1 || fdet->GetPMT_QE_Method() == 4){
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
     maxQE = fdet->GetPMTQE(WCIDCollectionName,wavelength,0,240,660,ratio);
@@ -166,7 +173,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      theta_angle = acos(fabs(local_z)/sqrt(pow(local_x,2)+pow(local_y,2)+pow(local_z,2)))/3.1415926*180.;
      effectiveAngularEfficiency = fdet->GetPMTCollectionEfficiency(theta_angle, volumeName);
      if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
-       //Retrieve the pointer to the appropriate hit collection. Since volumeName is the same as the SD name, this works. 
+       //Retrieve the pointer to the appropriate hit collection. 
+       //Since volumeName is the same as the SD name, this works. 
        G4SDManager* SDman = G4SDManager::GetSDMpointer();
        G4RunManager* Runman = G4RunManager::GetRunManager();
        G4int collectionID = SDman->GetCollectionID(volumeName);
@@ -174,8 +182,9 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
        G4HCofThisEvent* HCofEvent = currentEvent->GetHCofThisEvent();
        hitsCollection = (WCSimWCHitsCollection*)(HCofEvent->GetHC(collectionID));
       
-       // If this tube hasn't been hit add it to the collection
-       if (PMTHitMap[replicaNumber] == 0)
+       // If this tube hasn't been hit add it to the collection	 
+       if (this->PMTHitMap[replicaNumber] == 0)
+       //if (PMTHitMap.find(replicaNumber) == PMTHitMap.end())  TF attempt to fix
 	 {
 	   WCSimWCHit* newHit = new WCSimWCHit();
 	   newHit->SetTubeID(replicaNumber);
@@ -196,6 +205,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   
 	   //     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
 	   //       newHit->Print();
+	     
 	 }
        else {
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
@@ -208,15 +218,39 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   return true;
 }
 
-void WCSimWCSD::EndOfEvent(G4HCofThisEvent*)
+void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
 {
+
+ 
   if (verboseLevel>0) 
   { 
+    //Need to specify which collection in case multiple geometries are built:
+    G4String WCIDCollectionName = fdet->GetIDCollectionName();
+    G4SDManager* SDman = G4SDManager::GetSDMpointer();
+    G4int collectionID = SDman->GetCollectionID(WCIDCollectionName);
+    hitsCollection = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
+    
     G4int numHits = hitsCollection->entries();
 
-    G4cout << "There are " << numHits << " hits in the WC: " << G4endl;
+    G4cout << "There are " << numHits << " tubes hit in the WC: " << G4endl;
     for (G4int i=0; i < numHits; i++) 
       (*hitsCollection)[i]->Print();
+    
+      /*
+    {
+      if(abs((*hitsCollection)[i]->GetTubeID() - 1584)  < 5){
+	  std::cout << (*hitsCollection)[i]->GetTubeID() << std::endl;
+	  (*hitsCollection)[i]->Print();
+      }
+      }*/
+
+    /* Detailed debug:
+    G4cout << "Through mPMTLV " << WCSimSteppingAction::n_photons_through_mPMTLV << G4endl;
+    G4cout << "Through Acrylic " << WCSimSteppingAction::n_photons_through_acrylic << G4endl;
+    G4cout << "Through Gel " << WCSimSteppingAction::n_photons_through_gel << G4endl;
+    G4cout << "On Blacksheet " << WCSimSteppingAction::n_photons_on_blacksheet << G4endl;
+    G4cout << "On small PMT " << WCSimSteppingAction::n_photons_on_smallPMT << G4endl;
+    */
   } 
 }
 

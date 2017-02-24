@@ -22,7 +22,7 @@ WCSimPhysicsListFactoryMessenger::WCSimPhysicsListFactoryMessenger(WCSimPhysicsL
   physListCmd->SetGuidance("Note: I think physics list is locked-in after initialization");
   
   physListCmd->SetDefaultValue(defaultList);
-  physListCmd->SetCandidates(ValidListsString);  // TODO get list of physics lists from G4PhysicsListFactory
+  physListCmd->SetCandidates(ValidListsString);  // ToDo get list of physics lists from G4PhysicsListFactory
 
   SetNewValue(physListCmd, defaultList);
 }

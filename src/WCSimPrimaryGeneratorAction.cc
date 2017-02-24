@@ -14,6 +14,8 @@
 #include <vector>
 #include <string>
 
+//#include "WCSimEnumerations.hh"
+
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
 
@@ -35,13 +37,13 @@ inline int   atoi( const string& s ) {return std::atoi( s.c_str() );}
 
 WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 					  WCSimDetectorConstruction* myDC)
-  :myDetector(myDC)
+  :myDetector(myDC), vectorFileName("")
 {
   //T. Akiri: Initialize GPS to allow for the laser use 
   MyGPS = new G4GeneralParticleSource();
 
   // Initialize to zero
-  mode = 0;
+  mode = UNKNOWN;    //0;
   vtxvol = 0;
   vtx = G4ThreeVector(0.,0.,0.);
   nuEnergy = 0.;
@@ -65,7 +67,9 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     
   messenger = new WCSimPrimaryGeneratorMessenger(this);
   useMulineEvt = true;
-  useNormalEvt = false;
+  useGunEvt    = false;
+  useLaserEvt  = false;
+  useGPSEvt    = false;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -134,7 +138,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    // Read the nuance line (ignore value now)
 
 	    token = readInLine(inputFile, lineSize, inBuf);
-	    mode = atoi(token[1]);
+	    mode = BEAM;       //atoi(token[1]);    //break backwards compatibility, should deprecate Nuance though
 
 	    // Read the Vertex line
 	    token = readInLine(inputFile, lineSize, inBuf);
@@ -224,7 +228,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
   }
 
-  else if (useNormalEvt)
+  else if (useGunEvt)
   {      // manual gun operation
     particleGun->GeneratePrimaryVertex(anEvent);
 
@@ -236,10 +240,11 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4ThreeVector dir  = P.unit();
     G4double E         = std::sqrt((P.dot(P))+(m*m));
 
+    mode            = PARTICLEGUN;
+
 //     particleGun->SetParticleEnergy(E);
 //     particleGun->SetParticlePosition(vtx);
 //     particleGun->SetParticleMomentumDirection(dir);
-
     SetVtx(vtx);
     SetBeamEnergy(E);
     SetBeamDir(dir);
@@ -252,16 +257,60 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       
       G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
       G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
+      G4double m       =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass(); // will be 0 for photon anyway, but for other gps particles not
       G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
       
       G4ThreeVector dir  = P.unit();
-      G4double E         = std::sqrt((P.dot(P)));
+      //G4double E         = std::sqrt((P.dot(P)));
+      G4double E         = std::sqrt((P.dot(P))+(m*m));
+      //std::cout << "Energy " << E << " eV " << std::endl;
+
+      mode            = LASER; //actually could also be particle gun here. Gps and laser will be separate soon!!
+
+      SetVtx(vtx);
+      SetBeamEnergy(E);
+      SetBeamDir(dir);
+      SetBeamPDG(pdg);
+    }
+  else if (useGPSEvt)
+    {
+      MyGPS->GeneratePrimaryVertex(anEvent);
+      
+      G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
+      G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
+      G4double m        =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
+      G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
+      
+      G4ThreeVector dir  = P.unit();
+      G4double E         = std::sqrt((P.dot(P))+(m*m));
       
       SetVtx(vtx);
       SetBeamEnergy(E);
       SetBeamDir(dir);
       SetBeamPDG(pdg);
     }
+}
+
+void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  if(useMulineEvt)
+    wcopt->SetVectorFileName(vectorFileName);
+  else
+    wcopt->SetVectorFileName("");
+  wcopt->SetGeneratorType(GetGeneratorTypeString());
+}
+
+G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
+{
+  if(useMulineEvt)
+    return "muline";
+  else if(useGunEvt)
+    return "gun";
+  else if(useGPSEvt)
+    return "gps";
+  else if(useLaserEvt)
+    return "laser";
+  return "";
 }
 
 // Returns a vector with the tokens

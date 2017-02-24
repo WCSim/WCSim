@@ -27,3 +27,13 @@ WCSimTuningParameters::~WCSimTuningParameters()
   TuningMessenger = 0;
 }
 
+void WCSimTuningParameters::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  wcopt->SetRayff(rayff);
+  wcopt->SetBsrff(bsrff);
+  wcopt->SetAbwff(abwff);
+  wcopt->SetRgcff(rgcff);
+  wcopt->SetMieff(mieff);
+  wcopt->SetTvspacing(tvspacing);
+  wcopt->SetTopveto(topveto);
+}

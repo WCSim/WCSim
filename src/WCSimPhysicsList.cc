@@ -192,7 +192,7 @@ void WCSimPhysicsList::ConstructEM()
           pmanager->AddProcess(aG4MuonMinusCaptureAtRest);
           pmanager->SetProcessOrdering(aG4MuonMinusCaptureAtRest,idxAtRest);
         }
-
+      
 
     } else if ((!particle->IsShortLived()) &&
 	       (particle->GetPDGCharge() != 0.0)&&
@@ -262,6 +262,8 @@ void WCSimPhysicsList::ConstructOp(){
 //   theAbsorptionProcess->DumpPhysicsTable();
 //   theRayleighScatteringProcess->DumpPhysicsTable();
 
+
+  //TF Todo: should be expert options in .mac!!!
   theCherenkovProcess->SetVerboseLevel(0);
   theAbsorptionProcess->SetVerboseLevel(0);
   theRayleighScatteringProcess->SetVerboseLevel(0);
@@ -568,6 +570,11 @@ void WCSimPhysicsList::ConstructHad()
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
 
+      /* From benchmarking with valgrind, this is a dominant slow process
+       * to initialize the HPneutronData and tables.
+       * However, it does have a small effect on the total charge, so do no
+       * uncomment.
+       */
       else if (particleName == "neutron") 
 	{
 	  // elastic scattering
@@ -663,7 +670,7 @@ void WCSimPhysicsList::ConstructHad()
 	  theInelasticProcess->RegisterMe(theHEInelasticModel);
 	  pmanager->AddDiscreteProcess(theInelasticProcess);
 	}
-
+      /* */
       else if (particleName == "deuteron") 
 	{
 	  pmanager->AddDiscreteProcess(theElasticProcess);
