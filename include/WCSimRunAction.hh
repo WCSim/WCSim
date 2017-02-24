@@ -142,7 +142,6 @@ private:
   WCSimRunActionMessenger* messenger;
   int ntuples;  // 1 for ntuples to be written
 
-<<<<<<< HEAD
   //new: vars for FLAT Trees
   TTree* masterTree;
   TTree* geomTree;
