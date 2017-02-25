@@ -1,0 +1,17 @@
+- remove deprecated nuance from WCSim.mac
+- New RootOptions libs.
+- Naming HK -> EggShaped HK (trivial)
+- InteractionMode enum
+- Naming Gun instead of Normal, and add GPS mode
+- Enumerations
+- Flat ROOT file
+- Add mPMT detector configs. (in progress)
+- mPMT options.
+- TrackingAction changes to keep more relevant particles
+- use unordered_map from c++11, so require gcc4.4 or higher and -std=c++0x
+- change color for muons for better visualization in OGLSX OGLQT
+- more optional debugging info for overlaps
+- macro and code for OGLQt visualization
+- Black sheet refractive index and make it into a skinsurface
+- Reoptimize Stacking action code
+- Proper kinetic energy calculation in PrimaryGeneratorAction
