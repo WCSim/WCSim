@@ -40,8 +40,8 @@ int main(int argc,char** argv)
   WCSimTuningParameters* tuningpars = new WCSimTuningParameters();
 
   // Get the tuning parameters
-  file_exists("tuning_parameters.mac");
-  UI->ApplyCommand("/control/execute tuning_parameters.mac");
+  file_exists("macros/tuning_parameters.mac");
+  UI->ApplyCommand("/control/execute macros/tuning_parameters.mac");
 
   // define random number generator parameters
   WCSimRandomParameters *randomparameters = new WCSimRandomParameters();
@@ -60,8 +60,8 @@ int main(int argc,char** argv)
   WCSimPhysicsListFactory *physFactory = new WCSimPhysicsListFactory();
 
   // Currently, default model is set to BINARY
-  file_exists("jobOptions.mac");
-  UI->ApplyCommand("/control/execute jobOptions.mac");
+  file_exists("macros/jobOptions.mac");
+  UI->ApplyCommand("/control/execute macros/jobOptions.mac");
 
   // Initialize the physics factory to register the selected physics.
   physFactory->InitializeList();
@@ -77,8 +77,8 @@ int main(int argc,char** argv)
   // by the program BEFORE the runManager is initialized.
   // If file does not exist, default model will be used.
   // Currently, default model is set to BINARY.
-  file_exists("jobOptions2.mac");
-  UI->ApplyCommand("/control/execute jobOptions2.mac");
+  file_exists("macros/jobOptions2.mac");
+  UI->ApplyCommand("/control/execute macros/jobOptions2.mac");
 
   // Visualization
   G4VisManager* visManager = new WCSimVisManager;
