@@ -394,7 +394,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->SetDefaultNuPrismGeometry();
                 } else if ( newValue == "nuPRISM_mPMT") {
 		  WCSimDetector->SetIsNuPrism(true);
-		  WCSimDetector->SetNuPrism_mPMTGeometry(40.0, 10*m, 6*m, 0*m);
+		  WCSimDetector->SetNuPrism_mPMTGeometry(40.0, 10*m, 8*m, 0*m);
 		} else
 		  G4cout << "That geometry choice is not defined!" << G4endl;
 	}
