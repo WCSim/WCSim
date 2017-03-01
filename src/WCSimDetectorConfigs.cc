@@ -390,6 +390,50 @@ void WCSimDetectorConstruction::SetDefaultNuPrismGeometry()
     SetNuPrismGeometry("PMT8inch", 40.0, 10*m, 6*m, 0*m);
 }
 
+// Trevor Towstego: detector with single module
+// ToDo: check defaults for mPMT.
+void WCSimDetectorConstruction::SetTestSinglemPMTGeometry()
+{
+  WCDetectorName = "TestSinglemPMT";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  
+  mPMT_ID_PMT = "PMT3inchR12199_02";
+  mPMT_OD_PMT = "PMT8inch";
+  
+  WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
+  WCPMTName = PMT->GetPMTName();
+  WCPMTExposeHeight = PMT->GetExposeHeight();
+  WCPMTRadius = PMT->GetRadius();
+  
+  vessel_cyl_height = 0.;
+  vessel_radius_curv = 270.*CLHEP::mm;
+  vessel_radius = 225.*CLHEP::mm;
+  dist_pmt_vessel = 5*CLHEP::mm;
+  orientation = PERPENDICULAR;
+  mPMT_outer_material = "G4_PLEXIGLASS";
+  mPMT_inner_material = "SilGel";
+  mPMT_outer_material_d = 0.03*2*vessel_radius*CLHEP::mm;
+  id_reflector_height = 7.5*CLHEP::mm;
+  id_reflector_z_offset = 1.1*CLHEP::mm; //4.8*CLHEP::mm
+  id_reflector_angle = CLHEP::pi/4*CLHEP::rad;
+  G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+  nID_PMTs = 33;
+  config_file = "mPMTconfig_33_13_1.txt";
+  
+  WCIDDiameter             = 10.0*m;
+  WCIDHeight               = 30.0*m;
+  WCBarrelPMTOffset        = vessel_tot_height;
+  WCBarrelNumPMTHorizontal = 3;
+  WCBarrelNRings           = 3;
+  WCPMTperCellHorizontal   = 1;
+  WCPMTperCellVertical     = 1;
+  WCCapEdgeLimit           = WCIDDiameter/2.0 - vessel_tot_height;
+  WCCapPMTSpacing          = WCIDDiameter*2.0;
+  WCBlackSheetThickness    = 2.0*cm;
+  WCAddGd                  = false;
+}
+
+
 void WCSimDetectorConstruction::SetTestmPMTGeometry()
 {
 

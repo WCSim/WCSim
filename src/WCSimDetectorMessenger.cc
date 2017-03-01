@@ -32,6 +32,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "Cylinder_60x74_3inch_14perCent\n"
 			  "Cylinder_60x74_3inch_40perCent\n"
 			  "TestmPMT\n"
+			  "TestSinglemPMT\n"
                          );
   PMTConfig->SetParameterName("PMTConfig", false);
   PMTConfig->SetCandidates("SuperK "
@@ -51,6 +52,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			   "Cylinder_60x74_3inch_14perCent "
 			   "Cylinder_60x74_3inch_40perCent "
 			   "TestmPMT "
+			   "TestSinglemPMT\n"
                            );
   PMTConfig->AvailableForStates(G4State_PreInit, G4State_Idle);
 
@@ -375,6 +377,8 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->SetEggShapedHyperKGeometry_withHPD();
 		} else if(newValue == "TestmPMT") {
 		  WCSimDetector->SetTestmPMTGeometry();	
+		} else if(newValue == "TestSinglemPMT") {
+		  WCSimDetector->SetTestSinglemPMTGeometry();	
 		} else if(newValue == "Cylinder_60x74_3inchmPMT_14perCent" ) {
 		  WCSimDetector->Cylinder_60x74_3inchmPMT_14perCent(); // MUST be Called after the mPMT settings, otherwise unknown
 		} else if(newValue == "Cylinder_60x74_3inchmPMT_40perCent" ) {

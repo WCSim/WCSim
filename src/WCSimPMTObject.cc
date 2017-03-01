@@ -573,7 +573,7 @@ PMT3inch::~PMT3inch(){}
 G4String PMT3inch::GetPMTName() {G4String PMTName = "3inch"; return PMTName;}
 G4double PMT3inch::GetExposeHeight() {return 20.*mm;}
 G4double PMT3inch::GetRadius() {return 40.*mm;}
-G4double PMT3inch::GetPMTGlassThickness() {return 0.40*cm;}
+G4double PMT3inch::GetPMTGlassThickness() {return 0.10*cm;}
 G4float PMT3inch::HitTimeSmearing(float Q) { 
   float timingConstant = 1.890; // 4ns FWHM when Q=1.0 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
@@ -735,7 +735,7 @@ PMT3inchGT::~PMT3inchGT(){}
 G4String PMT3inchGT::GetPMTName() {G4String PMTName = "3inchGT"; return PMTName;}
 G4double PMT3inchGT::GetExposeHeight() {return 20.*mm;}
 G4double PMT3inchGT::GetRadius() {return 40.*mm;}
-G4double PMT3inchGT::GetPMTGlassThickness() {return 0.40*cm;}
+G4double PMT3inchGT::GetPMTGlassThickness() {return 0.10*cm;}
 G4float PMT3inchGT::HitTimeSmearing(float Q) { 
   float timingConstant = 0.535; // 2.5ns FWHM when Q=1.0
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
@@ -2136,7 +2136,8 @@ PMT3inchR12199_02::~PMT3inchR12199_02(){}
 G4String PMT3inchR12199_02::GetPMTName() {G4String PMTName = "PMT3inchR12199_02"; return PMTName;}
 G4double PMT3inchR12199_02::GetExposeHeight() {return 0.02*m;}          //.0153*m;} //.0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
     G4double PMT3inchR12199_02::GetRadius() {return 0.04*m;}            //0.036*m;} //.0400*m;}   //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
-G4double PMT3inchR12199_02::GetPMTGlassThickness() {return 0.4*cm;}
+G4double PMT3inchR12199_02::GetPMTGlassThickness() {return 0.1*cm;}     // TF: from Hamamatsu Tech Sheet, photocathode >=36mm, so this yields in thickness <= 2.35mm. Currently will use 1mm (larger cathode)
+                                                                        // until measured!
 
 
 // Currently based on 8" (instead of 20")
@@ -2341,7 +2342,7 @@ PMT4inchR12199_02::~PMT4inchR12199_02(){}
 G4String PMT4inchR12199_02::GetPMTName() {G4String PMTName = "PMT4inchR12199_02"; return PMTName;}
 G4double PMT4inchR12199_02::GetExposeHeight() {return .0276*m;}  //or 0.021 for radius = 48.5mm
 G4double PMT4inchR12199_02::GetRadius() {return .054*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
-G4double PMT4inchR12199_02::GetPMTGlassThickness() {return 0.4*cm;}
+G4double PMT4inchR12199_02::GetPMTGlassThickness() {return 0.1*cm;}
 
 float PMT4inchR12199_02::HitTimeSmearing(float Q) {
   G4float sig_param[4]={0.6314,0.06260,0.5711,23.96};
@@ -2523,7 +2524,7 @@ PMT5inchR12199_02::~PMT5inchR12199_02(){}
 G4String PMT5inchR12199_02::GetPMTName() {G4String PMTName = "PMT5inchR12199_02"; return PMTName;}
 G4double PMT5inchR12199_02::GetExposeHeight() {return .0338*m;}  //or 0.0259 for radius = 60.75mm
 G4double PMT5inchR12199_02::GetRadius() {return .0675*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
-G4double PMT5inchR12199_02::GetPMTGlassThickness() {return 0.4*cm;}
+G4double PMT5inchR12199_02::GetPMTGlassThickness() {return 0.1*cm;}
 
 float PMT5inchR12199_02::HitTimeSmearing(float Q) {
   G4float sig_param[4]={0.6314,0.06260,0.5711,23.96};

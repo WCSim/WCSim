@@ -322,8 +322,10 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 
   //Write the options tree
   G4cout << "EndOfRunAction" << G4endl;
-  optionsTree->Fill();
-  optionsTree->Write();
+  if(useDefaultROOTout){
+    optionsTree->Fill();
+    optionsTree->Write();
+  }
   
   // Close the Root file at the end of the run
 

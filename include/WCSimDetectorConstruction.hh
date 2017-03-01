@@ -77,6 +77,7 @@ public:
   void SetSuperKGeometry();
   void InitSinglePMT();
   void SetTestmPMTGeometry();
+  void SetTestSinglemPMTGeometry();
   void Cylinder_60x74_3inchmPMT_14perCent();
   void Cylinder_60x74_3inchmPMT_40perCent();
   void Cylinder_60x74_3inch_14perCent();
