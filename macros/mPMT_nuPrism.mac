@@ -1,0 +1,24 @@
+#
+# multiPMT params
+#
+/WCSim/WCgeom TestmPMT #Cylinder_60x74_3inchmPMT_14perCent #TestmPMT
+
+## possibility to overwrite some params of the TestmPMT geom
+/WCSim/mPMT/VesselCylHeight 20 mm #100 mm
+/WCSim/mPMT/VesselRadiusCurv 328.6 mm 
+/WCSim/mPMT/VesselRadius 242.4 mm              #280 mm       
+#/WCSim/mPMT/orientation Perpendicular
+/WCSim/mPMT/material_outer Acrylic
+/WCSim/mPMT/material_outer_thickness 10. mm
+/WCSim/mPMT/material_inner SilGel
+/WCSim/mPMT/reflectorHeightID 7.5 mm    #12 mm #7.5 mm          #12 mm: EXPERIMENTAL
+/WCSim/mPMT/reflectorZoffsetID 0 mm      #4.8 mm           #EXPERIMENTAL
+#/WCSim/mPMT/reflectorAngleID 45 deg
+/WCSim/mPMT/nID_PMTs 19 #33  #for 40%
+/WCSim/mPMT/configfile mPMTconfig_19_nuPrism.txt #for 40%
+#/WCSim/mPMT/PMTtype_inner BoxandLine20inchHQE
+/WCSim/mPMT/PMTtype_outer PMT3inchR12199_02    #no OD yet.
+
+/WCSim/Construct
+
+

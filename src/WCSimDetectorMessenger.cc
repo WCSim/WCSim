@@ -27,6 +27,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "EggShapedHyperK\n"
 			  "EggShapedHyperK_withHPD\n"
                           "nuPRISM\n"
+                          "nuPRISM_mPMT\n"
 			  "Cylinder_60x74_3inchmPMT_14perCent\n"
 			  "Cylinder_60x74_3inchmPMT_40perCent\n"
 			  "Cylinder_60x74_3inch_14perCent\n"
@@ -47,6 +48,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			   "EggShapedHyperK "
 			   "EggShapedHyperK_withHPD "
                            "nuPRISM "
+                           "nuPRISM_mPMT "
 			   "Cylinder_60x74_3inchmPMT_14perCent "
 			   "Cylinder_60x74_3inchmPMT_40perCent "
 			   "Cylinder_60x74_3inch_14perCent "
@@ -390,6 +392,9 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
                 } else if ( newValue == "nuPRISM") {
 		  WCSimDetector->SetIsNuPrism(true);
 		  WCSimDetector->SetDefaultNuPrismGeometry();
+                } else if ( newValue == "nuPRISM_mPMT") {
+		  WCSimDetector->SetIsNuPrism(true);
+		  WCSimDetector->SetNuPrism_mPMTGeometry(40.0, 10*m, 6*m, 0*m);
 		} else
 		  G4cout << "That geometry choice is not defined!" << G4endl;
 	}

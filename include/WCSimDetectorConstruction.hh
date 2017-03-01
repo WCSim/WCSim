@@ -91,6 +91,7 @@ public:
   void Cylinder_12inchHPD_15perCent();
   void SetHyperKGeometry();
   void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition);
+  void SetNuPrism_mPMTGeometry(G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition);
   void SetDefaultNuPrismGeometry();
   void UpdateGeometry();
 

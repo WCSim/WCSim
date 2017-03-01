@@ -383,12 +383,72 @@ void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double PM
     WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
     WCBlackSheetThickness = 2.0*cm;
     WCAddGd               = false;
+
+	InitSinglePMT();
 }
 
 void WCSimDetectorConstruction::SetDefaultNuPrismGeometry()
 {
     SetNuPrismGeometry("PMT8inch", 40.0, 10*m, 6*m, 0*m);
 }
+
+// NuPRISM with mPMTs
+void WCSimDetectorConstruction::SetNuPrism_mPMTGeometry(G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition)
+{
+    WCDetectorName = "NuPRISM_mPMT";
+    WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+	mPMT_ID_PMT = "PMT3inchR12199_02";    //can be changed in macro through mPMT settings.
+	mPMT_OD_PMT = "PMT3inchR12199_02";
+    WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
+    WCPMTName = PMT->GetPMTName();
+    WCPMTExposeHeight = PMT->GetExposeHeight();
+    WCPMTRadius = PMT->GetRadius();
+
+	//mPMT params go first because detector depends on it:
+	vessel_cyl_height = 40.*CLHEP::mm; // the 50mm should exist only for OD and extends behind the iD wall
+	vessel_radius_curv = 328.6*CLHEP::mm;
+	vessel_radius = 242.4*CLHEP::mm;
+	dist_pmt_vessel = 5*CLHEP::mm;           // Still "work-in-progress"
+	orientation = PERPENDICULAR;
+	mPMT_outer_material = "G4_PLEXIGLASS";
+	mPMT_inner_material = "SilGel";
+	mPMT_outer_material_d = 10*CLHEP::mm;
+
+	// Radius of cone at z=reflectorHeight
+	id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
+	id_reflector_z_offset = 1.1*CLHEP::mm;         //from KM3Net CAD drawings
+	id_reflector_angle = CLHEP::pi/4*CLHEP::rad; // Based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
+	G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+	
+	// parameters related to filling the ID mPMT
+	nID_PMTs = 19;
+	config_file = "mPMTconfig_19_nuPrism.txt";
+
+	
+	// ToDo: adapt to Robert's design!
+	WCIDHeight               = detectorHeight;
+    WCIDDiameter             = detectorDiameter;
+    WCIDVerticalPosition     = verticalPosition;
+
+	WCBarrelPMTOffset     = vessel_tot_height; //WCPMTRadius;
+    WCPMTperCellHorizontal = 1.0;
+    WCPMTperCellVertical   = 1.0;
+    WCPMTPercentCoverage   = PMTCoverage;  
+    WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage/100.0)/WCPMTRadius);
+
+    WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));
+    WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+    WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+    WCBlackSheetThickness = 2.0*cm;
+    WCAddGd               = false;
+}
+
+
+
+
+
+
+
 
 // Trevor Towstego: detector with single module
 // ToDo: check defaults for mPMT.
