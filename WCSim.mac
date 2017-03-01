@@ -55,7 +55,7 @@
 /WCSim/Construct
 
 #Use mPMT settings 
-/control/execute mPMT.mac         ## NEW
+/control/execute macros/mPMT.mac         ## NEW
 
 
 #Added for the PMT QE option 08/17/10 (XQ)
@@ -85,7 +85,7 @@
 /DAQ/Trigger NDigits
 
 #grab the other DAQ options (thresholds, timing windows, etc.)
-/control/execute daq.mac
+/control/execute macros/daq.mac
 
 
 # default dark noise frequency (and conversion factor) is PMT property (NEW), set in the code.
@@ -114,9 +114,9 @@
 /DarkRate/SetDarkWindow 4000
 
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
-#/control/execute visOGLSX.mac
-#/control/execute visRayTracer.mac
-#/control/execute visOGLQT.mac             ## NEW
+#/control/execute macros/visOGLSX.mac
+#/control/execute macros/visRayTracer.mac
+#/control/execute macros/visOGLQT.mac             ## NEW
 
 ## select the input nuance-formatted vector file
 ## you can of course use your own
