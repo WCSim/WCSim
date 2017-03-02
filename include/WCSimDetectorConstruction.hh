@@ -147,7 +147,11 @@ public:
   // Related to Pi0 analysis
   G4bool SavePi0Info()              {return pi0Info_isSaved;}
   void   SavePi0Info(G4bool choice) {pi0Info_isSaved=choice;}
-  
+
+  // Related to neutron capture analysis
+  G4bool SaveCaptureInfo()              {return captureInfo_isSaved;}
+  void   SaveCaptureInfo(G4bool choice) {captureInfo_isSaved=choice;}
+
   void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
   void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
   void   SetVis_Choice(G4String choice){Vis_Choice = choice;}
@@ -411,7 +415,8 @@ private:
   // toggle between lArD readout types
   // toggle between MRDScint and MRDk2k
 
-  G4bool pi0Info_isSaved;
+    G4bool pi0Info_isSaved;
+    G4bool captureInfo_isSaved;
 
 
   // XQ 08/17/10

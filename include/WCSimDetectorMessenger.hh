@@ -38,6 +38,7 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithAString* PMTGeomDetails;
   G4UIcmdWithAString* PMTSize;
   G4UIcmdWithAString* SavePi0;
+  G4UIcmdWithAString* SaveCapture;
   G4UIcmdWithAString* PMTQEMethod;
   G4UIcmdWithAString* PMTCollEff;
   G4UIcmdWithADoubleAndUnit* waterTank_Length;
