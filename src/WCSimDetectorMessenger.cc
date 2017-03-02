@@ -68,6 +68,10 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  );
   WCVisChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+  DopedWater = new G4UIcmdWithABool("/WCSim/DopedWater", this);
+  DopedWater->SetGuidance("Set whether water is doped with Gadolinium");
+  DopedWater->SetParameterName("DopedWater", false);
+  DopedWater->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   PMTSize = new G4UIcmdWithAString("/WCSim/WCPMTsize",this);
   PMTSize->SetGuidance("Set alternate PMT size for the WC (Must be entered after geometry details are set).");
@@ -421,7 +425,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		} else
 		  G4cout << "That geometry choice is not defined!" << G4endl;
 	}
-  
+
 	if (command == SavePi0){
 		G4cout << "Set the flag for saving pi0 info " << newValue << G4endl;
 		if (newValue=="true"){
@@ -498,7 +502,12 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	    G4cout << "Not egg-shaped HyperK Geometry. Detector length unchanged." << G4endl;
 	  }
 	}
-	
+
+	if(command == DopedWater) {
+		G4cout << "Setting Gadolinium doping of water: " << newValue << G4endl;
+		WCSimDetector->SetDopedWater(DopedWater->GetNewBoolValue(newValue));
+	}
+
 	if(command == PMTSize) {
 		G4cout << "SET PMT SIZE" << G4endl;
 		if ( newValue == "20inch"){

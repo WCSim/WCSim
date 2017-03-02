@@ -294,6 +294,8 @@ public:
   }
   G4double GetPMTCoverage() {return WCPMTPercentCoverage;}
 
+    void SetDopedWater(G4bool dopedWater){WCAddGd = dopedWater; }
+
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
   void   SetDetectorHeight(G4double height) {
