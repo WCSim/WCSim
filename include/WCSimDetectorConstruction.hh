@@ -48,6 +48,8 @@ namespace __gnu_cxx  {
   };
 }
 
+void ComputeWCODPMT(G4int NPMT, G4double *NPMTHorizontal, G4double *NPMTVertical);
+
 class WCSimDetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
@@ -140,6 +142,9 @@ public:
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
   G4String GetIDCollectionName(){return WCIDCollectionName;}
+  G4String GetODCollectionName(){return WCODCollectionName;}
+
+  bool GetIsODConstructed(){return isODConstructed;}
 
  
 private:
@@ -174,6 +179,9 @@ private:
   G4LogicalVolume* ConstructCaps(G4int zflip);
 
   void  ConstructMaterials();
+
+  G4LogicalVolume* logicWCBarrelCellODTyvek;
+  G4LogicalVolume* logicWCTowerODTyvek;
 
   G4LogicalVolume* logicWCBarrelCellBlackSheet;
   G4LogicalVolume* logicWCTowerBlackSheet;
@@ -248,8 +256,6 @@ private:
   // Hit collection name parameters
   G4String WCDetectorName;
   G4String WCIDCollectionName;
-  G4String WCODCollectionName;
-
 
   // WC PMT parameters
   G4String WCPMTName;
@@ -287,7 +293,43 @@ private:
   G4double WCCapEdgeLimit;
   G4double WCBlackSheetThickness;
 
-// raise scope of derived parameters
+  // ############################# //
+  // # Outer Detector parameters # //
+  // ############################# //
+
+  bool isODConstructed;
+
+  // Parameters controlled by user
+  G4double WCODDiameter;
+  G4double WCPMTODperCellHorizontal;
+  G4double WCPMTODperCellVertical;
+  G4double WCPMTODPercentCoverage;
+  G4double WCODLateralWaterDepth;
+  G4double WCODHeightWaterDepth;
+  G4double WCODDeadSpace;
+  G4double WCODTyvekSheetThickness;
+
+  G4double WCODCapPMTSpacing;
+  G4double WCODCapEdgeLimit;
+
+
+  // We just need these variables to be global, ease things
+  G4double WCODRadius;
+  G4double WCBarrelNumPMTODHorizontal;
+
+  // OD PMTs parameters
+  G4String WCPMTODName;
+  G4double WCPMTODRadius;
+  G4double WCPMTODExposeHeight;
+
+  // Hit collection name parameters
+  G4String WCODCollectionName;
+
+  // ############################# //
+  // # *** END OD Parameters *** # //
+  // ############################# //
+
+  // raise scope of derived parameters
   G4double WCIDRadius;
   G4double totalAngle;
   G4double dPhi;

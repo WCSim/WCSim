@@ -232,6 +232,31 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+
+  ////////////////////////////////////
+  // OD Parameters --- Beta version //
+  ////////////////////////////////////
+  isODConstructed = true;
+
+  // OD Dimensions //
+  WCODLateralWaterDepth    = 1*m;
+  WCODHeightWaterDepth     = 2*m;
+  WCODDeadSpace            = 600*mm;
+  WCODTyvekSheetThickness  = 2.0*cm; // Au pif
+  WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness);
+
+  // OD PMTs //
+  WCODCollectionName = WCDetectorName + "_OD-glassFaceWCPMT";
+  // WCSimPMTObject *PMTOD = CreatePMTObject("BoxandLine20inchHQE", WCODCollectionName);
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT8inch", WCODCollectionName);
+  WCPMTODName           = PMTOD->GetPMTName();
+  WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
+  WCPMTODRadius         = PMTOD->GetRadius();
+
+  // OD Coverage //
+  WCPMTODperCellHorizontal = 0;
+  WCPMTODperCellVertical   = 0;
+  WCPMTODPercentCoverage   = 1.0; //default 1%
 }
 
 void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()
