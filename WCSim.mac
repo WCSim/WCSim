@@ -27,7 +27,8 @@
 ## OR for single mPMT mode or updating mPMT parameters:
 #/control/execute macros/mPMT_nuPrism1.mac         ## mPMT options: mPMT_nuPrism1.mac and 2.mac
 
-# Set Gadolinium doping
+# Set Gadolinium doping (concentration is in percent)
+/WCSim/DopingConcentration 0.1
 /WCSim/DopedWater true
 
 #Added for the PMT QE option 08/17/10 (XQ)

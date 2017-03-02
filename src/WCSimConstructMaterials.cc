@@ -53,15 +53,10 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
  //---Gd doped Water
 
- a = 157.25*g/mole;
- G4Element* Gd
-    = new G4Element("Gadolinium","Gd", 64,a);
-
  density = 1.00*g/cm3;
- G4Material* DopedWater
-    = new G4Material("Doped Water",density,2);
- DopedWater->AddMaterial(Water,99.9*perCent);
- DopedWater->AddElement(Gd,0.1*perCent);
+ G4Material* DopedWater = new G4Material("Doped Water",density,2);
+ isGdConcentrationSet = false;
+ // Water and gadolinium should now be be added using SetGadoliniumConcentration
 
  //---Ice 
  
@@ -1256,4 +1251,18 @@ void WCSimDetectorConstruction::ConstructMaterials()
    //ToDo:
    G4MaterialPropertiesTable *AgPropTable = new G4MaterialPropertiesTable();
    G4MaterialPropertiesTable *AlAg1PropTable = new G4MaterialPropertiesTable();
+}
+
+void WCSimDetectorConstruction::SetGadoliniumConcentration(G4double percent){
+  if(isGdConcentrationSet){
+    G4cout << "Gadolinium concentration already set" << G4endl;
+    return;
+  }
+  G4Material * Water = G4Material::GetMaterial("Water");
+  G4Material * DopedWater = G4Material::GetMaterial("Doped Water");
+  G4double a = 157.25*g/mole;
+  G4Element* Gd = new G4Element("Gadolinium","Gd", 64,a);
+  DopedWater->AddMaterial(Water,(100.-percent)*perCent);
+  DopedWater->AddElement(Gd,percent*perCent);
+  isGdConcentrationSet = true;
 }

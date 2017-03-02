@@ -73,6 +73,11 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   DopedWater->SetParameterName("DopedWater", false);
   DopedWater->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+  DopingConcentration = new G4UIcmdWithADouble("/WCSim/DopingConcentration", this);
+  DopingConcentration->SetGuidance("Set percentage concentration Gadolinium doping");
+  DopingConcentration->SetParameterName("DopingConcentration", false);
+  DopingConcentration->AvailableForStates(G4State_PreInit, G4State_Idle);
+
   PMTSize = new G4UIcmdWithAString("/WCSim/WCPMTsize",this);
   PMTSize->SetGuidance("Set alternate PMT size for the WC (Must be entered after geometry details are set).");
   PMTSize->SetGuidance("Available options 20inch 10inch");
@@ -506,6 +511,12 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	if(command == DopedWater) {
 		G4cout << "Setting Gadolinium doping of water: " << newValue << G4endl;
 		WCSimDetector->SetDopedWater(DopedWater->GetNewBoolValue(newValue));
+	}
+
+
+	if(command == DopingConcentration) {
+		G4cout << "Setting Gadolinium doping concentration: " << newValue << "percent" << G4endl;
+		WCSimDetector->SetGadoliniumConcentration(DopingConcentration->GetNewDoubleValue(newValue));
 	}
 
 	if(command == PMTSize) {
