@@ -18,7 +18,7 @@
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 
 # HyperK (one cylindrical tank with a height of 54.8 m, a diameter of 70.8 m and 40% coverage with 20" B&L PMTs)
-#/WCSim/WCgeom HyperK
+/WCSim/WCgeom HyperK
 
 # Cylindrical detector with a height of 60 m and a diameter of 74 m
 #/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
@@ -41,7 +41,7 @@
 #/WCSim/EggShapedHyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
 
 
-#/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
+/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
 
 #Added for the PMT QE option 08/17/10 (XQ)
 # 1. Stacking only mean when the photon is generated
@@ -92,10 +92,17 @@
 #/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
 #width /DarkRate/SetDarkWindow [time in ns] around each hit
 #i.e. hit time ± (/DarkRate/SetDarkWindow) / 2
+/DarkRate/SetDetectorElement tank
 /DarkRate/SetDarkMode 1
 /DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
+
+/DarkRate/SetDetectorElement OD
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkHigh 100000
+/DarkRate/SetDarkLow 0
+/DarkRate/SetDarkWindow 4000 
 
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute visOGLSX.mac

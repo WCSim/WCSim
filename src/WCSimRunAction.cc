@@ -70,14 +70,18 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   WCSimTree = new TTree("wcsimT","WCSim Tree");
 
   wcsimrootsuperevent = new WCSimRootEvent(); //empty list
+  wcsimrootsuperevent_OD = new WCSimRootEvent();
   //  wcsimrootsuperevent->AddSubEvent(); // make at least one event
   wcsimrootsuperevent->Initialize(); // make at least one event
+  wcsimrootsuperevent_OD->Initialize(); // make at least one event
   Int_t branchStyle = 1; //new style by default
   TTree::SetBranchStyle(branchStyle);
   Int_t bufsize = 64000;
 
   //  TBranch *branch = tree->Branch("wcsimrootsuperevent", "Jhf2kmrootsuperevent", &wcsimrootsuperevent, bufsize,0);
-  TBranch *branch = WCSimTree->Branch("wcsimrootevent", "WCSimRootEvent", &wcsimrootsuperevent, bufsize,2);
+  // TBranch *branch = WCSimTree->Branch("wcsimrootevent", "WCSimRootEvent", &wcsimrootsuperevent, bufsize,2);
+  wcsimrooteventbranch = WCSimTree->Branch("wcsimrootevent", "WCSimRootEvent", &wcsimrootsuperevent, bufsize,2);
+  wcsimrooteventbranch_OD = WCSimTree->Branch("wcsimrootevent_OD", "WCSimRootEvent", &wcsimrootsuperevent_OD, bufsize,2);
 
   // Geometry tree
 
@@ -99,7 +103,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
 void WCSimRunAction::EndOfRunAction(const G4Run*)
 {
 //G4cout << "Number of Events Generated: "<< numberOfEventsGenerated << G4endl;
-//G4cout << "Number of times MRD hit: " << numberOfTimesMRDHit << G4endl;
+//G4cout << "Number of times OD hit: " << numberOfTimesMRDHit << G4endl;
 //G4cout << "Number of times FGD hit: "    << numberOfTimesFGDHit << G4endl;
 //G4cout << "Number of times lArD hit: "  << numberOfTimeslArDHit << G4endl;
 //G4cout<<"Number of times waterTube hit: " << numberOfTimesWaterTubeHit<<G4endl;
@@ -124,6 +128,7 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
   // is taken care of by the file close
 
   delete wcsimrootsuperevent; wcsimrootsuperevent=0;
+  delete wcsimrootsuperevent_OD; wcsimrootsuperevent_OD=0;
   delete wcsimrootgeom; wcsimrootgeom=0;
 
 }

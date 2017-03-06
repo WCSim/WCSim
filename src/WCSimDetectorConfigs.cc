@@ -246,7 +246,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness);
 
   // OD PMTs //
-  WCODCollectionName = WCDetectorName + "_OD-glassFaceWCPMT";
+  WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
   // WCSimPMTObject *PMTOD = CreatePMTObject("BoxandLine20inchHQE", WCODCollectionName);
   WCSimPMTObject *PMTOD = CreatePMTObject("PMT8inch", WCODCollectionName);
   WCPMTODName           = PMTOD->GetPMTName();

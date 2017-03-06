@@ -20,7 +20,7 @@
 
 WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
-G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName)
+G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName, G4String detectorElement)
 {
   PMTKey_t key(PMTName,CollectionName);
 
@@ -212,7 +212,7 @@ else {
   // make a new one
   if( ! SDman->FindSensitiveDetector(SDName, false) ) {
     
-    aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
+    aWCPMT = new WCSimWCSD(CollectionName,SDName,this,detectorElement);
     SDman->AddNewDetector( aWCPMT );
   }
 

@@ -646,7 +646,7 @@ else {
   // K.Zbiri: The PMT volume and the PMT glass are now put in parallel. 
   // The PMT glass is the sensitive volume in this new configuration.
 
-  G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName);
+  G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName, "tank");
 
 
   /*These lines of code will give color and volume to the PMTs if it hasn't been set in WCSimConstructPMT.cc.
@@ -992,7 +992,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
 		// OD BARREL PMTs
 
-		G4LogicalVolume* logicWCPMTOD = ConstructPMT(WCPMTODName, WCODCollectionName);
+		G4LogicalVolume* logicWCPMTOD = ConstructPMT(WCPMTODName, WCODCollectionName, "OD");
 
 		G4VisAttributes* WClogic
 				= new G4VisAttributes(red);
@@ -1604,7 +1604,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   // Add top and bottom PMTs
   // -----------------------------------------------------
   
-	G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName);
+	G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName, "tank");
 	
 	// If using RayTracer and want to view the detector without caps, comment out the top and bottom PMT's
 
@@ -1761,7 +1761,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
 		// OD BARREL PMTs
 
-    G4LogicalVolume* logicWCPMTOD = ConstructPMT(WCPMTODName, WCODCollectionName);
+    G4LogicalVolume* logicWCPMTOD = ConstructPMT(WCPMTODName, WCODCollectionName, "OD");
 
     G4VisAttributes* WClogic
         = new G4VisAttributes(red);
