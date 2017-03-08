@@ -319,9 +319,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetDetectorDiameter->SetDefaultValue(6.);
   SetDetectorDiameter->SetUnitCategory("Length");
   SetDetectorDiameter->SetDefaultUnit("m");
-
-  UpdateNuPrism = new G4UIcmdWithoutParameter("/WCSim/nuPRISM/Update", this);
-  UpdateNuPrism->SetGuidance("Update nuPRISM detector construction with new settings.");
 }
 
 WCSimDetectorMessenger::~WCSimDetectorMessenger()
@@ -394,7 +391,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->SetDefaultNuPrismGeometry();
                 } else if ( newValue == "nuPRISM_mPMT") {
 		  WCSimDetector->SetIsNuPrism(true);
-		  WCSimDetector->SetNuPrism_mPMTGeometry(40.0, 10*m, 8*m, 0*m);
+		  WCSimDetector->SetNuPrism_mPMTGeometry();
 		} else
 		  G4cout << "That geometry choice is not defined!" << G4endl;
 	}
@@ -552,13 +549,14 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  else if (command == SetDetectorHeight) WCSimDetector->SetDetectorHeight(SetDetectorHeight->GetNewDoubleValue(newValue));
 	  else if (command == SetDetectorVerticalPosition) WCSimDetector->SetDetectorVerticalPosition(SetDetectorVerticalPosition->GetNewDoubleValue(newValue));
 	  else if (command == SetDetectorDiameter) WCSimDetector->SetDetectorDiameter(SetDetectorDiameter->GetNewDoubleValue(newValue));
+	  /* TF: deprecated. Don't remake geometry, just update variables in the setters.
 	  else if (command == UpdateNuPrism){
             WCSimDetector->SetNuPrismGeometry(WCSimDetector->GetPMTType(),
 					      WCSimDetector->GetPMTCoverage(),
 					      WCSimDetector->GetWCIDHeight(),
 					      WCSimDetector->GetWCIDDiameter(),
 					      WCSimDetector->GetWCIDVerticalPosition());
-	  }
+					      } */
 	}
 
 	if(command == WCConstruct) {

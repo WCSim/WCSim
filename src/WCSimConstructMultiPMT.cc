@@ -38,7 +38,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 {
   
 
-  G4bool showme = true;
+  G4bool showme = false;  //true;
   
   // For default SK-style without cover.
   // Not possible to have a mPMT without pressure vessel now/yet.

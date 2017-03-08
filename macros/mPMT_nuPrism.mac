@@ -1,7 +1,8 @@
 #
 # multiPMT params
 #
-/WCSim/WCgeom TestmPMT #Cylinder_60x74_3inchmPMT_14perCent #TestmPMT
+#/WCSim/WCgeom TestmPMT 
+/WCSim/WCgeom nuPRISM_mPMT
 
 ## possibility to overwrite some params of the TestmPMT geom
 /WCSim/mPMT/VesselCylHeight 20 mm #100 mm

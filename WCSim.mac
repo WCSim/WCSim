@@ -7,7 +7,7 @@
 ## select the geometry
 # Default config if you do nothing is currently SuperK
 #
-# The tube size is fixed for SK to 20"
+# The tube size is fixed for SK to 20in
 # These are fixed geometries for validation
 #/WCSim/WCgeom SuperK
 
@@ -17,7 +17,7 @@
 #/WCSim/WCgeom SuperK_12inchBandL_15perCent # Note: the actual coverage is 14.59%
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 
-# HyperK (one cylindrical tank with a height of 54.8 m, a diameter of 70.8 m and 40% coverage with 20" B&L PMTs)
+# HyperK (one cylindrical tank with a height of 54.8 m, a diameter of 70.8 m and 40% coverage with 20in B&L PMTs)
 #/WCSim/WCgeom HyperK
 
 # Cylindrical detector with a height of 60 m and a diameter of 74 m
@@ -25,7 +25,7 @@
 #/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
 
 # Generic cylindrical detector with a height of 100m and a 
-# diameter of 69m with 12" HPD and 14.59% photocoverage
+# diameter of 69m with 12in HPD and 14.59% photocoverage
 #/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
 
 # Previous, egg-shaped HyperK design:
@@ -92,8 +92,8 @@
 # Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
 #/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
 #/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
-#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
-#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20in R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20in R3600 dark rate from EGADS nov 2014
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor

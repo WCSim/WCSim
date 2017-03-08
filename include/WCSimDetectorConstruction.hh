@@ -91,7 +91,7 @@ public:
   void Cylinder_12inchHPD_15perCent();
   void SetHyperKGeometry();
   void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition);
-  void SetNuPrism_mPMTGeometry(G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition);
+  void SetNuPrism_mPMTGeometry();
   void SetDefaultNuPrismGeometry();
   void UpdateGeometry();
 
@@ -248,18 +248,48 @@ public:
   void   SetPMTType(G4String type) {WCPMTType = type;}
   G4String GetPMTType() {return WCPMTType;}
 
-  void   SetPMTCoverage(G4double cover) {WCPMTCoverage = cover;}
-  G4double GetPMTCoverage() {return WCPMTCoverage;}
+  void   SetPMTCoverage(G4double cover) {
+    // TF: do the same as for mPMTs to make "Update" deprecated:
+    //     change the variables from WCDetectorConstruction that
+    //     are affected.
+    WCPMTPercentCoverage = cover;
+    if(WCDetectorName == "NuPRISM_mPMT"){
+      WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage/100.0)/vessel_radius);
+    } else
+      WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage/100.0)/WCPMTRadius);
+    WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));
+    WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+  }
+  G4double GetPMTCoverage() {return WCPMTPercentCoverage;}
 
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
-  void   SetDetectorHeight(G4double height) {WCIDHeight = height;}
+  void   SetDetectorHeight(G4double height) {
+    WCIDHeight = height;
+    // Affects Number of Barrel rings:
+    WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));
+  }
   G4double GetWCIDHeight(){ return WCIDHeight; }
 
   void   SetDetectorVerticalPosition(G4double position) {WCIDVerticalPosition = position;}
   G4double GetWCIDVerticalPosition(){ return WCIDVerticalPosition; }
 
-  void   SetDetectorDiameter(G4double diameter) {WCIDDiameter = diameter;}
+  void   SetDetectorDiameter(G4double diameter) {
+    WCIDDiameter = diameter;
+    // Affects several cylinder parameters:
+    if(WCDetectorName == "NuPRISM_mPMT"){
+      WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage/100.0)/vessel_radius);
+      WCCapEdgeLimit        = WCIDDiameter/2.0 - vessel_radius;
+    } else{
+      WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage/100.0)/WCPMTRadius);
+      WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+    }
+    
+    WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));
+    WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+    
+
+}
   G4double GetWCIDDiameter(){ return WCIDDiameter; }
 
   G4String GetIDCollectionName(){return WCIDCollectionName;}
@@ -452,7 +482,7 @@ private:
   // Add bool to indicate whether we load nuPRISM geometry  
   G4bool isNuPrism;
   G4String WCPMTType;
-  G4double WCPMTCoverage;
+  // G4double WCPMTCoverage; //TF: already using this variable "WCPMTPercentCoverage
 
   // *** Begin egg-shaped HyperK Geometry ***
 
