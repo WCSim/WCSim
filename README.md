@@ -89,11 +89,11 @@ Useful cmake commands:
 * gamma = green
 * neutrino = yellow
 * electron = blue
-* muon = black
 * positron = red
-* muon+ = white
-* proton = magneta
-* neutron = grey
+* muon = white
+* muon+ = silver
+* proton = magenta
+* neutron = cyan
 
 ```
 WCSim development is supported by the United States National Science Foundation.
