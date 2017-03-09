@@ -408,7 +408,7 @@ void WCSimDetectorConstruction::SetNuPrism_mPMTGeometry()
 
 	//mPMT params go first because detector depends on it:
 	vessel_cyl_height = 20.*CLHEP::mm; // the 50mm should exist only for OD and extends behind the iD wall
-	vessel_radius_curv = 332*CLHEP::mm;
+	vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
 	vessel_radius = 254.*CLHEP::mm;
 	dist_pmt_vessel = 2*CLHEP::mm;           // Still "work-in-progress"
 	orientation = PERPENDICULAR;
