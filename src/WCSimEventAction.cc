@@ -656,8 +656,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       pdir[l]=jhfNtuple.pdir[k][l];
       stop[l]=jhfNtuple.stop[k][l];
       start[l]=jhfNtuple.start[k][l];
-      G4cout<< "start[" << k << "][" << l <<"]: "<< jhfNtuple.start[k][l] <<G4endl;
-      G4cout<< "stop[" << k << "][" << l <<"]: "<< jhfNtuple.stop[k][l] <<G4endl;
+      //G4cout<< "start[" << k << "][" << l <<"]: "<< jhfNtuple.start[k][l] <<G4endl;
+      //G4cout<< "stop[" << k << "][" << l <<"]: "<< jhfNtuple.stop[k][l] <<G4endl;
     }
 
     // Add the track to the TClonesArray
