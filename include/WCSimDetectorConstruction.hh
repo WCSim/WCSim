@@ -245,7 +245,23 @@ public:
   void   SetIsNuPrism(G4bool choice) {isNuPrism = choice;}
   G4bool GetIsNuPrism() {return isNuPrism;}
 
-  void   SetPMTType(G4String type) {WCPMTType = type;}
+  void   SetPMTType(G4String type) {
+    WCPMTType = type;
+    //And update everything that is affected by a new PMT
+    WCSimPMTObject * PMT = CreatePMTObject(WCPMTType, WCIDCollectionName);
+    WCPMTName = PMT->GetPMTName();
+    WCPMTExposeHeight = PMT->GetExposeHeight();
+    WCPMTRadius = PMT->GetRadius();
+    
+    WCBarrelPMTOffset     = WCPMTRadius;
+    WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage/100.0)/WCPMTRadius);
+    WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));
+    WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+    
+
+
+
+  }
   G4String GetPMTType() {return WCPMTType;}
 
   void   SetPMTCoverage(G4double cover) {
