@@ -20,7 +20,7 @@
 #include <cstring>
 
 #ifndef HYPER_VERBOSITY
-#define HYPER_VERBOSITY
+// #define HYPER_VERBOSITY
 #endif
 
 extern "C" void skrn1pe_(float* );

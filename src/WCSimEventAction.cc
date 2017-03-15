@@ -54,11 +54,7 @@
 #define NPMTS_VERBOSE 10
 #endif
 
-#ifndef HYPER_VERBOSITY
-#define HYPER_VERBOSITY
-#endif
-
-WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun, 
+WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
 				   WCSimDetectorConstruction* myDetector, 
 				   WCSimPrimaryGeneratorAction* myGenerator)
   :runAction(myRun), generatorAction(myGenerator), 
@@ -78,15 +74,12 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   WCSimWCAddDarkNoise* WCDNM = new WCSimWCAddDarkNoise("WCDarkNoise", detectorConstructor, "tank");
   DMman->AddNewModule(WCDNM);
 
-  // Repeat for OD
-  #ifdef HYPER_VERBOSITY
-  G4cout<<"WCSimEventAction::WCSimEventAction ☆ making new WCSimWCPMT for OD with name WCReadoutPMT_OD"<<G4endl;
-  #endif
+  ////////////////////
+  ///// -- OD -- /////
+  ////////////////////
   WCSimWCPMT* WCDMPMT_OD = new WCSimWCPMT( "WCReadoutPMT_OD", myDetector, "OD");
   DMman->AddNewModule(WCDMPMT_OD);
-  #ifdef HYPER_VERBOSITY
-  G4cout<<"WCSimEventAction::WCSimEventAction ☆ making new WCSimWCAddDarkNoise for OD with name WCDarkNoise_OD"<<G4endl;
-  #endif
+
   WCSimWCAddDarkNoise* WCDNM_OD = new WCSimWCAddDarkNoise("WCDarkNoise_OD", detectorConstructor, "OD");
   DMman->AddNewModule(WCDNM_OD);
 }
@@ -131,19 +124,27 @@ void WCSimEventAction::CreateDAQInstances()
     exit(-1);
   }
 
+  ////////////////////
+  ///// -- OD -- /////
+  ////////////////////
   if(DigitizerChoice=="SKI"){
-    #ifdef HYPER_VERBOSITY
-    G4cout<<"WCSimEventAction::CreateDAQInstances ☆ making new WCSimWCDigitizerSKI for OD with name WCReadoutDigits_OD"<<G4endl;
-    #endif
     WCSimWCDigitizerSKI* WCDM_OD = new WCSimWCDigitizerSKI("WCReadoutDigits_OD", detectorConstructor, DAQMessenger, "OD");
     DMman->AddNewModule(WCDM_OD);
   }
 
-  #ifdef HYPER_VERBOSITY
-  G4cout<<"WCSimEventAction::CreateDAQInstances ☆ making new WCSimWCTriggerOnTankDigits for OD with name WCReadout_OD"<<G4endl;
-  #endif
-  WCSimWCTriggerOnTankDigits* WCTM_OD = new WCSimWCTriggerOnTankDigits("WCReadout_OD", detectorConstructor, DAQMessenger, "OD");
-  DMman->AddNewModule(WCTM_OD);
+  //create your choice of trigger module
+  if(TriggerChoice == "NDigits") {
+    WCSimWCTriggerNDigits* WCTM_OD = new WCSimWCTriggerNDigits("WCReadout_OD", detectorConstructor, DAQMessenger, "OD");
+    DMman->AddNewModule(WCTM_OD);
+  }
+  else if(TriggerChoice == "NDigits2") {
+    WCSimWCTriggerNDigits2* WCTM_OD = new WCSimWCTriggerNDigits2("WCReadout_OD", detectorConstructor, DAQMessenger, "OD");
+    DMman->AddNewModule(WCTM_OD);
+  }
+  else {
+    G4cerr << "Unknown TriggerChoice " << TriggerChoice << G4endl;
+    exit(-1);
+  }
 
   ConstructedDAQClasses = true;
 }
@@ -202,7 +203,11 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   {
     G4String name =   WCIDCollectionName;
     G4int collectionID = SDman->GetCollectionID(name);
-    WCHC = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
+    if(collectionID>-1) WCHC = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
+    G4cout << G4endl;
+    G4cout << "WCSimEventAction::EndOfEventAction ☆ (WCSimWCHitsCollection*)" << WCIDCollectionName
+           << " has " << WCHC->entries() << " entries" << G4endl;
+    G4cout << G4endl;
   }
 
   // To use Do like This:
@@ -305,59 +310,52 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
        }
    */
 
-  // Repeat the steps for the OD and FACC
-  G4cout<<G4endl<<G4endl;
+  // ----------------------------------------------------------------------
+  // Repeat the steps for the OD
+  // ----------------------------------------------------------------------
+
+  WCSimWCHitsCollection* WCHC_OD = 0;
   G4String WCODCollectionName = detectorConstructor->GetODCollectionName();
   if(HCE){
-    G4int collectionID;
-    collectionID = SDman->GetCollectionID(WCODCollectionName);
-    WCSimWCHitsCollection* WCHC_OD = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
-    #ifdef HYPER_VERBOSITY
-    G4cout<<"WCSimEventAction::EndOfEventAction ☆ (WCSimWCHitsCollection*)"<<WCODCollectionName
-          <<" has "<<WCHC_OD->entries()<<" entries"<<G4endl;
-    #endif
+    G4String name = WCODCollectionName;
+    G4int collectionID = SDman->GetCollectionID(name);
+    if(collectionID>-1) WCHC_OD = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
+    G4cout << G4endl;
+    G4cout<< "WCSimEventAction::EndOfEventAction ☆ (WCSimWCHitsCollection*)" << WCODCollectionName
+          << " has " << WCHC_OD->entries() << " entries" << G4endl;
+    G4cout << G4endl;
   }
+
   WCSimWCPMT* WCDMPMT_OD = (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT_OD");
-  if(WCDMPMT_OD==0){G4cout<<"WCReadoutPMT_OD digitzer module not found!"<<G4endl;}
+  if(WCDMPMT_OD == 0) G4cout << "WCReadoutPMT_OD digitzer module not found!" << G4endl;
   WCDMPMT_OD->ReInitialize();
-  #ifdef HYPER_VERBOSITY
-  G4cout<<"WCSimEventAction::EndOfEventAction ☆ Calling Digitize on (WCSimWCPMT*)WCReadoutPMT_OD"<<G4endl;
-  #endif
   WCDMPMT_OD->Digitize();
+
   WCSimWCAddDarkNoise* WCDNM_OD = (WCSimWCAddDarkNoise*)DMman->FindDigitizerModule("WCDarkNoise_OD");
-  if(WCDNM_OD==0){G4cout<<"WCDarkNoise_OD dark noise module not found!"<<G4endl;}
-  #ifdef HYPER_VERBOSITY
-  G4cout<<"WCSimEventAction::EndOfEventAction ☆ Calling AddDarkNoise on (WCSimWCAddDarkNoise*)WCDarkNoise_OD"<<G4endl;
-  #endif
+  if(WCDNM_OD==0) G4cout << "WCDarkNoise_OD dark noise module not found!" << G4endl;
   WCDNM_OD->AddDarkNoise();
+
   WCSimWCDigitizerBase* WCDM_OD = (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadoutDigits_OD");
-  if(WCDM_OD==0){G4cout<<"WCReadoutDigits_OD digitizer module not found!"<<G4endl;}
-  #ifdef HYPER_VERBOSITY
-  G4cout<<"WCSimEventAction::EndOfEventAction ☆ Calling Digitize on (WCSimWCDigitizerBase*)WCReadoutDigits_OD"<<G4endl;
-  #endif
+  if(WCDM_OD==0) G4cout << "WCReadoutDigits_OD digitizer module not found!" << G4endl;
   WCDM_OD->Digitize();
+
   WCSimWCTriggerBase* WCTM_OD = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout_OD");
-  if(WCTM_OD==0){G4cout<<"WCReadout_OD trigger module not found!"<<G4endl;}
+  if(WCTM_OD==0) G4cout << "WCReadout_OD trigger module not found!" <<G4endl;
   WCTM_OD->SetDarkRate(WCDNM_OD->GetDarkRate());
-  #ifdef HYPER_VERBOSITY
-  G4cout<<"WCSimEventAction::EndOfEventAction ☆ Calling Digitize on (WCSimWCTriggerBase*)WCReadout_OD"<<G4endl;
-  #endif
   WCTM_OD->Digitize();
-  /** these are retrieved to pass to FillRootEvent() */
-  #ifdef HYPER_VERBOSITY
-  G4cout<<"WCSimEventAction::EndOfEventAction ☆ retrieving raw hits (WCSimWCDigitsCollection*)WCRawPMTSignalCollection_OD for FillRootEvent, which has ";
-  #endif
+
   G4int WCDChitsID_OD = DMman->GetDigiCollectionID("WCRawPMTSignalCollection_OD");
   WCSimWCDigitsCollection * WCDC_hits_OD = (WCSimWCDigitsCollection*) DMman->GetDigiCollection(WCDChitsID_OD);
-  #ifdef HYPER_VERBOSITY
-  if(WCDC_hits_OD){G4cout<<WCDC_hits_OD->entries();} else {G4cout<<"no";} G4cout<<" entries"<<G4endl;
-  G4cout<<"WCSimEventAction::EndOfEventAction ☆ retrieving readout hits (WCSimWCTriggeredDigitsCollection*)WCDigitizedCollection_OD for FillRootEvent, which has ";
-  #endif
+  // printouts
+  //G4cout<<"WCSimEventAction::EndOfEventAction ☆ retrieving raw hits (WCSimWCDigitsCollection*)WCRawPMTSignalCollection_OD for FillRootEvent, which has ";
+  //if(WCDC_hits_OD){G4cout<<WCDC_hits_OD->entries();} else {G4cout<<"no";} G4cout<<" entries"<<G4endl;
+
   G4int WCDCID_OD = DMman->GetDigiCollectionID("WCDigitizedCollection_OD");
   WCSimWCTriggeredDigitsCollection * WCDC_OD = (WCSimWCTriggeredDigitsCollection*) DMman->GetDigiCollection(WCDCID_OD);
-  #ifdef HYPER_VERBOSITY
-  if(WCDC_hits_OD){G4cout<<WCDC_OD->entries();} else {G4cout<<"no";} G4cout<<" entries"<<G4endl;
-  #endif
+  // printouts
+  //G4cout<<"WCSimEventAction::EndOfEventAction ☆ retrieving readout hits (WCSimWCTriggeredDigitsCollection*)WCDigitizedCollection_OD for FillRootEvent, which has ";
+  //if(WCDC_hits_OD){G4cout<<WCDC_OD->entries();} else {G4cout<<"no";} G4cout<<" entries"<<G4endl;
+
 
   // ----------------------------------------------------------------------
   //  Fill Ntuple
@@ -484,7 +482,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
                 WCDC_hits,
                 WCDC,
                 "tank");
-  G4cout<<"Filling OD Root Event"<<G4endl;
+
   FillRootEvent(event_id,
                 jhfNtuple,
                 trajectoryContainer,
@@ -501,8 +499,6 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // as we have events. All the intermediate copies are incomplete, only the
   // last one is useful --> huge waste of disk space.
   hfile->Write("",TObject::kOverwrite);
-
-  G4cout<<"############# WCSIM FINISH END OF EVENT ACTION  ################"<<G4endl;
 
   //save DAQ options here. This ensures that when the user selects a default option
   // (e.g. with -99), the saved option value in the output reflects what was run

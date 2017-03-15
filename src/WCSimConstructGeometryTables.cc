@@ -135,7 +135,7 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
       tubeIDMap[totalNumPMTs] = aTransform;
     }
 
-    if(aPV->GetName()== WCIDCollectionName) {
+    if(aPV->GetName()== WCODCollectionName) {
       if(ODtubeLocationMap.find(tubeTag) != ODtubeLocationMap.end()) {
         G4cerr << "Repeated tube tag: " << tubeTag << G4endl;
         G4cerr << "Assigned to both tube #" << ODtubeLocationMap[tubeTag] << " and #" << totalNumPMTsOD << G4endl;

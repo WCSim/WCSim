@@ -23,7 +23,7 @@
 #endif
 
 #ifndef HYPER_VERBOSITY
-#define HYPER_VERBOSITY
+// #define HYPER_VERBOSITY
 #endif
 
 // *******************************************
@@ -199,15 +199,10 @@ WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
 }
 
 void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
-  // G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
-	#ifdef HYPER_VERBOSITY
-	if(detectorElement=="OD"){G4cout<<"WCSimWCDigitizerBase::DigitizeHits ☆ digitizing "<<WCHCPMT->entries()<<" entries"<<G4endl;}
-	#endif
-	G4cout << "WCSimWCDigitizerSKI::DigitizeHits START ";
-	if(detectorElement=="tank"){ G4cout<<"WCHCPMT->entries() = ";}
-	if(detectorElement=="OD"){  G4cout<<"HCOD  ->entries() = ";}
 
-	G4cout<< WCHCPMT->entries() << G4endl;
+	if(detectorElement=="tank") G4cout << "TANK # ";
+	if(detectorElement=="OD")   G4cout << "OD # ";
+  G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
 
   //loop over entires in WCHCPMT, each entry corresponds to
   //the photons on one PMT

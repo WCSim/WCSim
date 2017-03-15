@@ -31,7 +31,7 @@
 #endif
 
 #ifndef HYPER_VERBOSITY
-#define HYPER_VERBOSITY
+// #define HYPER_VERBOSITY
 #endif
 
 WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,

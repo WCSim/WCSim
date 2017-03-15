@@ -25,11 +25,11 @@
 // *******************************************
 
 #ifndef WCSIMWCTRIGGER_VERBOSE
-//#define WCSIMWCTRIGGER_VERBOSE
+#define WCSIMWCTRIGGER_VERBOSE
 #endif
 
 #ifndef HYPER_VERBOSITY
-#define HYPER_VERBOSITY
+// #define HYPER_VERBOSITY
 #endif
 
 const double WCSimWCTriggerBase::offset = 950.0; // ns. apply offset to the digit time
@@ -348,18 +348,18 @@ void WCSimWCTriggerBase::AlgTankDigits(WCSimWCDigitsCollection* WCDCPMT, bool re
     multiDigitsPerTrigger = WCTM_tank->GetMultiDigitsPerTrigger();
   }
 
-#ifdef HYPER_VERBOSITY
   if(detectorElement == "OD") {
     G4String untriggeredcollectionname;
     if(detectorElement == "tank") {
       untriggeredcollectionname = "WCDigitizedStoreCollection";
     } else if(detectorElement == "OD") {
       untriggeredcollectionname = "WCDigitizedStoreCollection_OD";
+#ifdef HYPER_VERBOSITY
       G4cout << "WCSimWCTriggerBase::AlgTankDigits ☆ retrieved " << TriggerTimes.size()
              << " trigger times from tank. Finding matching hits in " << untriggeredcollectionname
              << ", which has " << WCDCPMT->entries() << " entries." << G4endl;
-    }
 #endif
+    }
     //WCTriggerBase::offset??
     // then fill this digits collection with the digits from the corresponding triggers
     FillDigitsCollection(WCDCPMT, remove_hits, this_triggerType);
@@ -650,7 +650,7 @@ void WCSimWCTriggerOnTankDigits::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   //Nab the triggered digits from the tank and record all hits that fall within those time windows
   bool remove_hits = false;
   #ifdef HYPER_VERBOSITY
-  if(detectorElement=="mrd"){G4cout<<"WCSimWCTriggerBase::DoTheWork ☆ calling AlgTankDigits"<<G4endl;}
+  if(detectorElement=="OD"){G4cout<<"WCSimWCTriggerBase::DoTheWork ☆ calling AlgTankDigits OD"<<G4endl;}
   #endif
   AlgTankDigits(WCDCPMT, remove_hits);
 }

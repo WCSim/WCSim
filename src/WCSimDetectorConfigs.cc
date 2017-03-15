@@ -219,8 +219,8 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
-  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 70.8/6.*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 54.8/6.*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
@@ -254,9 +254,15 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCPMTODRadius         = PMTOD->GetRadius();
 
   // OD Coverage //
-  WCPMTODperCellHorizontal = 0;
-  WCPMTODperCellVertical   = 0;
+  WCPMTODperCellHorizontal = 2;
+  WCPMTODperCellVertical   = 2;
   WCPMTODPercentCoverage   = 1.0; //default 1%
+
+  // OD caps //
+  WCODCapPMTSpacing = 100*cm;
+  // WCCapPMTSpacing  = (pi*WCIDDiameter/round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius)));
+  WCODCapEdgeLimit = WCIDDiameter/2.0 - WCPMTODRadius;
+
 }
 
 void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()
