@@ -800,7 +800,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
    OpWaterTySurface->SetType(dielectric_dielectric);
    OpWaterTySurface->SetModel(unified); 
-   OpWaterTySurface->SetFinish(groundbackpainted); //a guess, but seems to work
+   // OpWaterTySurface->SetFinish(groundbackpainted); //a guess, but seems to work
    OpWaterTySurface->SetSigmaAlpha(0.5); //cf. A. Chavarria's ~30deg
 
    G4double RINDEX_tyvek[NUM] =
