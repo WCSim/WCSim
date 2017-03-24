@@ -67,19 +67,21 @@ void WCSimMultiPMTParameterisation::PreCalculateTransform(){
     // = 2pi / (vNiCLocal[vCircleLocal[copy]]) --> more logical and intuitive
     //G4double angle = ((vNiCLocal[vCircleLocal[copy]]-2)*CLHEP::pi/vNiCLocal[vCircleLocal[copy]]); // Internal angle of each polygon
     G4double azimuth = 2.*CLHEP::pi / (vNiCLocal[vCircleLocal[copy]]); 
-    
+    G4double phi = copy*azimuth + vAzimOffsetLocal[vCircleLocal[copy]]; 
+    G4double theta = CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]];
+        
     G4ThreeVector origin(0,0,0); 
-    // origin.setRThetaPhi(fApothema,CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]],copy*(CLHEP::pi-angle));  // OLD + DID NOT follow the paper for optimal azimuthal angles
-    origin.setRThetaPhi(fApothema,CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]],copy*azimuth + vAzimOffsetLocal[vCircleLocal[copy]]);  
-    // TF: Positioning vector, for an offset single hemisphere (for now)
-    origin.setZ(origin.getZ()+fHeight);
+    origin.setRThetaPhi(fApothema,theta,phi);  
     
-    // For output to txt file for AutoCad/Solidworks
-    //G4cout << "PMT " << copy << " (theta,phi): (" << (CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]])*(180./CLHEP::pi)  << "," <<  origin.getPhi()*(180./CLHEP::pi) << ")" << G4endl;
-    // rotation of mother volume wrt daughter, hence minus sign.
-    rotm->rotateZ(-origin.getPhi());
-    rotm->rotateY(-acos((origin.getZ()-fHeight)/fApothema)); //over Y', origin.getTheta() is incorrect!
+    // Positioning vector, for an offset single hemisphere
+    origin.setZ(origin.getZ()+fHeight);
 
+    // rotation of mother volume wrt daughter, hence minus sign.
+    rotm->rotateZ(-phi);
+    rotm->rotateY(-theta); //over Y'
+
+    //G4cout << "PMT " << copy << " (theta,phi): (" << theta*(180./CLHEP::pi)  << "," <<  phi*(180./CLHEP::pi) << ")" << G4endl;
+    //G4cout << "PMT " << copy << " (x,y,z): (" << origin.getX()  << "," <<  origin.getY() << "," << origin.getZ() << ")" << G4endl;
     vPMTpos.push_back(origin);
     vPMTorient.push_back(rotm);
 
