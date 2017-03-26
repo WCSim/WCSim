@@ -7,38 +7,6 @@
 ## select the geometry
 # Default config if you do nothing is currently SuperK
 #
-# The tube size is fixed for SK to 20in
-# These are fixed geometries for validation
-#/WCSim/WCgeom SuperK
-
-# Some other SuperK options:
-#/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
-#/WCSim/WCgeom SuperK_20inchBandL_20perCent # Note: the actual coverage is 20.27%
-#/WCSim/WCgeom SuperK_12inchBandL_15perCent # Note: the actual coverage is 14.59%
-#/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
-
-# HyperK (one cylindrical tank with a height of 54.8 m, a diameter of 70.8 m and 40% coverage with 20in B&L PMTs)
-#/WCSim/WCgeom HyperK
-
-# Cylindrical detector with a height of 60 m and a diameter of 74 m
-#/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
-#/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
-
-# Generic cylindrical detector with a height of 100m and a 
-# diameter of 69m with 12in HPD and 14.59% photocoverage
-#/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
-
-# Previous, egg-shaped HyperK design:
-#/WCSim/WCgeom EggShapedHyperK #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
-#/WCSim/WCgeom EggShapedHyperK_withHPD #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
-
-#Changes the length of the simulated volume. Is currently only set up for the egg-shaped HyperK design.
-#/WCSim/EggShapedHyperK/waterTank_Length 24750. mm # Equivalent length for 10 partitions
-#/WCSim/EggShapedHyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions (default)
-#/WCSim/EggShapedHyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
-#/WCSim/EggShapedHyperK/waterTank_Length 82500. mm # Equivalent length for 3 partitions
-#/WCSim/EggShapedHyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
-#/WCSim/EggShapedHyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
 
 /WCSim/WCgeom nuPRISM
 
@@ -55,7 +23,7 @@
 /WCSim/Construct
 
 #Use mPMT settings 
-/control/execute macros/mPMT.mac         ## NEW
+/control/execute macros/mPMT_nuPrism.mac         ## mPMT options: mPMT_nuPrism1.mac and 2.mac
 
 
 #Added for the PMT QE option 08/17/10 (XQ)
@@ -167,7 +135,7 @@
 
 ## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
 ## a NEUT vector file as input
-/WCSimIO/SaveRooTracker 1
+/WCSimIO/SaveRooTracker 0
 
 /run/beamOn 10
 #exit
