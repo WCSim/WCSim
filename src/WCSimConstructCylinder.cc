@@ -34,6 +34,12 @@
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
 
+#ifndef PLACEIDPMTS
+// #define PLACEIDPMTS
+#endif
+#ifndef PLACEODPMTS
+#define PLACEODPMTS
+#endif
 
 /***********************************************************
  *
@@ -117,10 +123,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   
   G4Tubs* solidWC = new G4Tubs("WC",
 			       0.0*m,
-	//		       WCRadius+2.*m,
-	//		       .5*WCLength+4.2*m,	//jl145 - per blueprint
-             WCRadius+1.*m,
-             .5*WCLength+1*m,	//jl145 - per blueprint
+			       WCRadius+2.*m,
+			       .5*WCLength+4.2*m,	//jl145 - per blueprint
 			       0.*deg,
 			       360.*deg);
   
@@ -646,7 +650,7 @@ else {
   // K.Zbiri: The PMT volume and the PMT glass are now put in parallel. 
   // The PMT glass is the sensitive volume in this new configuration.
 
-  G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName);
+  G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName, "tank");
 
 
   /*These lines of code will give color and volume to the PMTs if it hasn't been set in WCSimConstructPMT.cc.
@@ -723,7 +727,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 						 -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 						 -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
 
-
+#ifdef PLACEIDPMTS
       G4VPhysicalVolume* physiWCBarrelPMT =
 	new G4PVPlacement(WCPMTRotation,              // its rotation
 			  PMTPosition, 
@@ -733,7 +737,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 			  false,                     // no boolean operations
 			  (int)(i*WCPMTperCellVertical+j),
 			  true);                       
-      
+#endif
    // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
      // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 		// this is still the case.
@@ -762,7 +766,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 			       -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
 	PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry 
 	                                            //axes of the cell 
-
+#ifdef PLACEIDPMTS
 	G4VPhysicalVolume* physiWCBarrelPMT =
 	  new G4PVPlacement(WCPMTRotation,             // its rotation
 			    PMTPosition, 
@@ -772,7 +776,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 			    false,                     // no boolean operations
 			    (int)(i*WCPMTperCellVertical+j),
 			    true);                       
-	
+#endif
 		// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
 		// daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 		// this is still the case.
@@ -800,88 +804,77 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
 		WCODRadius = outerAnnulusRadius-(WCPMTODExposeHeight + 1.*mm);
 
-		//-----------------------------------------------------
-		// Construct OD mother volume, containing water and cells
-		//-----------------------------------------------------
-		G4Tubs* solidWCODBarrel = new G4Tubs("WCODBarrel",
-																				 WCODRadius,
-																				 WCODRadius+WCODLateralWaterDepth,
-																				 .5*(WCLength+WCODHeightWaterDepth),
-																				 0.*deg,
-																				 360.*deg);
+		//-------------------------------------------------------------
+		// OD Tyvek Caps
+		// ------------------------------------------------------------
 
-		G4LogicalVolume* logicWCODBarrel =
-				new G4LogicalVolume(solidWCODBarrel,
-														G4Material::GetMaterial(water),
-														"WCODBarrel",
+		G4Tubs* solidWCODCapsTyvek = new G4Tubs("WCODCapsTyvek",
+																						0,
+																						WCIDRadius,
+																						.5*(WCODTyvekSheetThickness),
+																						0.*deg,
+																						360.*deg);
+
+		G4LogicalVolume* logicWCODTopCapTyvek =
+				new G4LogicalVolume(solidWCODCapsTyvek,
+														G4Material::GetMaterial("Tyvek"),
+														"WCODTopCapTyvek",
 														0,0,0);
 
-		G4VisAttributes* showWaterOD = new G4VisAttributes(cyan);
-		showWaterOD->SetForceWireframe(true);
-    logicWCODBarrel->SetVisAttributes(G4VisAttributes::Invisible);
-		logicWCODBarrel->SetVisAttributes(showWaterOD);
+		G4LogicalVolume* logicWCODBottomCapTyvek =
+				new G4LogicalVolume(solidWCODCapsTyvek,
+														G4Material::GetMaterial("Tyvek"),
+														"WCODBottomCapTyvek",
+														0,0,0);
 
+		G4VisAttributes* WCCapsODTyvekCellVisAtt
+				= new G4VisAttributes(yellow);
+		WCCapsODTyvekCellVisAtt->SetForceWireframe(true);
 
-		G4VPhysicalVolume* physiWCODBarrel =
+		logicWCODTopCapTyvek->SetVisAttributes(G4VisAttributes::Invisible);
+		logicWCODBottomCapTyvek->SetVisAttributes(G4VisAttributes::Invisible);
+		//// Uncomment following for TYVEK visualization
+		// logicWCODTopCapTyvek->SetVisAttributes(WCCapsODTyvekCellVisAtt);
+		// logicWCODBottomCapTyvek->SetVisAttributes(WCCapsODTyvekCellVisAtt);
+
+		G4ThreeVector CapTyvekPosition(0.,0.,(WCIDHeight + 2*WCODDeadSpace)/2);
+
+		G4VPhysicalVolume* physiWCODTopCapsTyvek =
 				new G4PVPlacement(0,
-													G4ThreeVector(0.,0.,0.),
-													logicWCODBarrel,
-													"WCODBarrel",
-													logicWC,
+													CapTyvekPosition,
+													logicWCODTopCapTyvek,
+													"WCODTopCapsTyvek",
+													logicWCBarrel,
 													false,
 													0);
 
-		// Caps (water)
+		G4LogicalBorderSurface * WaterTyTopCapSurfaceBot =
+				new G4LogicalBorderSurface(	"WaterTyTopCapSurface",
+																		 physiWCBarrel,
+																		 physiWCODTopCapsTyvek,
+																		 OpWaterTySurface);
 
-		G4Tubs* solidWCODCaps = new G4Tubs("WCODCaps",
-																			 0,
-																			 WCODRadius,
-																			 (WCODHeightWaterDepth + WCODDeadSpace + WCODTyvekSheetThickness + WCPMTODExposeHeight)/2,
-																			 0.*deg,
-																			 360.*deg);
+		CapTyvekPosition.setZ(-CapTyvekPosition.getZ());
 
-		G4LogicalVolume* logicWCODTopCap =
-				new G4LogicalVolume(solidWCODCaps,
-														G4Material::GetMaterial(water),
-														"WCODTopCap",
-														0,0,0);
-
-		G4LogicalVolume* logicWCODBottomCap =
-				new G4LogicalVolume(solidWCODCaps,
-														G4Material::GetMaterial(water),
-														"WCODBottomCap",
-														0,0,0);
-
-    logicWCODTopCap->SetVisAttributes(G4VisAttributes::Invisible);
-    logicWCODBottomCap->SetVisAttributes(G4VisAttributes::Invisible);
-		logicWCODTopCap->SetVisAttributes(showWaterOD);
-		logicWCODBottomCap->SetVisAttributes(showWaterOD);
-
-
-		G4VPhysicalVolume* physiWCODTopCaps =
+		G4VPhysicalVolume* physiWCODBottomCapsTyvek =
 				new G4PVPlacement(0,
-													G4ThreeVector(0.,0.,(WCLength - (WCODDeadSpace + WCODTyvekSheetThickness + WCPMTODExposeHeight))/2),
-													logicWCODTopCap,
-													"WCODTopCaps",
-													logicWC,
+													CapTyvekPosition,
+													logicWCODBottomCapTyvek,
+													"WCODBottomCapsTyvek",
+													logicWCBarrel,
 													false,
 													0);
 
-		G4VPhysicalVolume* physiWCODBottomCaps =
-				new G4PVPlacement(0,
-													G4ThreeVector(0.,0.,-(WCLength - (WCODDeadSpace + WCODTyvekSheetThickness + WCPMTODExposeHeight))/2),
-													logicWCODBottomCap,
-													"WCODBottomCaps",
-													logicWC,
-													false,
-													0);
+		G4LogicalBorderSurface * WaterTyBottomCapSurfaceBot =
+				new G4LogicalBorderSurface(	"WaterTyBottomCapSurface",
+																		 physiWCBarrel,
+																		 physiWCODBottomCapsTyvek,
+																		 OpWaterTySurface);
 
 
 		//-------------------------------------------------------------
-		// OD Tyvek
+		// OD Tyvek Barrel side
 		// ------------------------------------------------------------
-
-		// THIS IS ON THE SIDES OF THE BARREL
 
 		G4double annulusODTyvekRmax[2] = {(WCODRadius),
 																			WCODRadius};
@@ -908,7 +901,8 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 		WCBarrelODTyvekCellVisAtt->SetForceWireframe(true);
 
     logicWCBarrelCellODTyvek->SetVisAttributes(G4VisAttributes::Invisible);
-		logicWCBarrelCellODTyvek->SetVisAttributes(WCBarrelODTyvekCellVisAtt);
+		//// Uncomment following for TYVEK visualization
+    logicWCBarrelCellODTyvek->SetVisAttributes(WCBarrelODTyvekCellVisAtt);
 
 
 		G4VPhysicalVolume* physiWCBarrelCellODTyvek =
@@ -922,84 +916,16 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
 		G4LogicalBorderSurface * WaterTyBarrelCellSurfaceBot =
 				new G4LogicalBorderSurface(	"WaterTyBarrelCellSurface",
-																		 physiWCBarrelCell,
+																		 physiWCBarrel,
 																		 physiWCBarrelCellODTyvek,
 																		 OpWaterTySurface);
 
 
-		// THIS IS ON THE TOP/BOTTOM CAPS
+    //-------------------------------------------------------------
+    // OD PMTs Barrel Side
+    // ------------------------------------------------------------
 
-		G4Tubs* solidWCODCapsTyvek = new G4Tubs("WCODCapsTyvek",
-																						0,
-																						WCODRadius,
-																						.5*(WCODTyvekSheetThickness),
-																						0.*deg,
-																						360.*deg);
-
-		G4LogicalVolume* logicWCODTopCapTyvek =
-				new G4LogicalVolume(solidWCODCapsTyvek,
-														G4Material::GetMaterial("Tyvek"),
-														"WCODTopCapTyvek",
-														0,0,0);
-
-		G4LogicalVolume* logicWCODBottomCapTyvek =
-				new G4LogicalVolume(solidWCODCapsTyvek,
-														G4Material::GetMaterial("Tyvek"),
-														"WCODBottomCapTyvek",
-														0,0,0);
-
-		G4VisAttributes* WCCapsODTyvekCellVisAtt
-				= new G4VisAttributes(yellow);
-		WCCapsODTyvekCellVisAtt->SetForceWireframe(true);
-
-    logicWCODTopCapTyvek->SetVisAttributes(G4VisAttributes::Invisible);
-    logicWCODBottomCapTyvek->SetVisAttributes(G4VisAttributes::Invisible);
-		logicWCODTopCapTyvek->SetVisAttributes(WCBarrelODTyvekCellVisAtt);
-		logicWCODBottomCapTyvek->SetVisAttributes(WCBarrelODTyvekCellVisAtt);
-
-		G4RotationMatrix* WCCapPMTRotation = new G4RotationMatrix;
-		WCCapPMTRotation->rotateY(180.*deg);
-
-		G4VPhysicalVolume* physiWCODTopCapsTyvek =
-				new G4PVPlacement(WCCapPMTRotation,
-													G4ThreeVector(0.,0.,-(WCODHeightWaterDepth + WCODDeadSpace + WCPMTODExposeHeight)/2),
-													logicWCODTopCapTyvek,
-													"WCODTopCapsTyvek",
-													logicWCODTopCap,
-													false,
-													0);
-
-		G4LogicalBorderSurface * WaterTyTopCapSurfaceBot =
-				new G4LogicalBorderSurface(	"WaterTyTopCapSurface",
-																		 physiWCODTopCaps,
-																		 physiWCODTopCapsTyvek,
-																		 OpWaterTySurface);
-
-		G4VPhysicalVolume* physiWCODBottomCapsTyvek =
-				new G4PVPlacement(0,
-													G4ThreeVector(0.,0.,(WCODHeightWaterDepth + WCODDeadSpace + WCPMTODExposeHeight)/2),
-													logicWCODBottomCapTyvek,
-													"WCODBottomCapsTyvek",
-													logicWCODBottomCap,
-													false,
-													0);
-
-		G4LogicalBorderSurface * WaterTyBottomCapSurfaceBot =
-				new G4LogicalBorderSurface(	"WaterTyBottomCapSurface",
-																		 physiWCODBottomCaps,
-																		 physiWCODBottomCapsTyvek,
-																		 OpWaterTySurface);
-
-		// OD BARREL PMTs
-
-		G4LogicalVolume* logicWCPMTOD = ConstructPMT(WCPMTODName, WCODCollectionName);
-
-		G4VisAttributes* WClogic
-				= new G4VisAttributes(red);
-		WClogic->SetForceSolid(true);
-		WClogic->SetForceAuxEdgeVisible(true);
-
-		logicWCPMTOD->SetVisAttributes(WClogic);
+		G4LogicalVolume* logicWCPMTOD = ConstructPMT(WCPMTODName, WCODCollectionName, "OD");
 
 		///////////////   Barrel PMT placement
 		G4RotationMatrix* WCPMTODRotation = new G4RotationMatrix;
@@ -1032,12 +958,15 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 		G4double horizontalODSpacing = barrelODCellWidth/WCPMTODperCellHorizontal;
 		G4double verticalODSpacing   = barrelODCellHeight/WCPMTODperCellVertical;
 
+    if(WCODPMTShift > barrelODCellWidth/2. - WCPMTODRadius) WCODPMTShift == 0.*cm;
+
 		for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
 			for(G4double j = 0; j < WCPMTODperCellVertical; j++){
 				G4ThreeVector PMTPosition =  G4ThreeVector(WCODRadius,
-																									 -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing,
+																									 -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
 																									 -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
 
+#ifdef PLACEODPMTS
 				G4VPhysicalVolume* physiWCBarrelPMT =
 						new G4PVPlacement(WCPMTODRotation,              // its rotation
 															PMTPosition,
@@ -1047,6 +976,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 															false,                     // no boolean operations
 															(int)(i*WCPMTODperCellVertical+j),
 															true);
+#endif PLACEODPMTS
 			}
 		}
 
@@ -1054,7 +984,6 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 		//-------------------------------------------------------------
 		// Add PMTs in extra Tower if necessary
 		//------------------------------------------------------------
-
 
 		// EXTRA TOWER PART
 		if(!(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal)){
@@ -1083,7 +1012,8 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 															0,0,0);
 
 			logicWCTowerODTyvek->SetVisAttributes(G4VisAttributes::Invisible);
-			logicWCTowerODTyvek->SetVisAttributes(WCBarrelODTyvekCellVisAtt);
+			//// Uncomment following for TYVEK visualization
+			// logicWCTowerODTyvek->SetVisAttributes(WCBarrelODTyvekCellVisAtt);
 
 
 			G4VPhysicalVolume* physiWCTowerODTyvek =
@@ -1114,6 +1044,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 					PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
 					//axes of the cell
 
+#ifdef PLACEODPMTS
 					G4VPhysicalVolume* physiWCBarrelPMT =
 					  new G4PVPlacement(WCPMTRotation,             // its rotation
 					                    PMTPosition,
@@ -1123,59 +1054,75 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 					                    false,                     // no boolean operations
 					                    (int)(i*WCPMTODperCellVertical+j),
 					                    true);
-
+#endif
 				}
 			}
 
 		}
 
-		//-------------------------------------------------------------
-		// Add PMTs in caps
-		//------------------------------------------------------------
+		//---------------------------------------------------------
+		// Add top and bottom PMTs
+		// -----------------------------------------------------
 
-		G4double WCTVPMTSpacing = 200*cm;
-		G4double WCTVEdgeLimit = WCIDDiameter/2.0 - WCPMTODRadius;
-		G4int TVNCell = WCTVEdgeLimit/WCTVPMTSpacing + 2;
+		G4double xoffset;
+		G4double yoffset;
+		G4int    icopy = 0;
 
-		int icopyTop = 0;
-		int icopyBottom = 0;
+		G4RotationMatrix* WCCapPMTRotation = new G4RotationMatrix;
+		WCCapPMTRotation->rotateY(180.*deg);
 
-		for ( int i = -TVNCell ; i <  TVNCell; i++) {
-			for (int j = -TVNCell; j < TVNCell; j++) {
+		// loop over the cap
+		G4int CapNCell = WCODCapEdgeLimit/WCODCapPMTSpacing + 2;
+		for ( int i = -CapNCell ; i <  CapNCell; i++) {
+			for (int j = -CapNCell ; j <  CapNCell; j++) {
 
-				G4double xoffset = i * WCTVPMTSpacing + WCTVPMTSpacing * 0.5;
-				G4double yoffset = j * WCTVPMTSpacing + WCTVPMTSpacing * 0.5;
+				xoffset = i*WCODCapPMTSpacing + WCODCapPMTSpacing*0.5;
+				yoffset = j*WCODCapPMTSpacing + WCODCapPMTSpacing*0.5;
 
-				G4ThreeVector cellpos =
-						G4ThreeVector(xoffset, yoffset, 1*mm);
+				G4ThreeVector topcellpos = G4ThreeVector(xoffset,
+																								 yoffset,
+																								 ((WCIDHeight + 2*WCODDeadSpace)/2)+WCODTyvekSheetThickness);
 
-				if ((sqrt(xoffset * xoffset + yoffset * yoffset) + WCPMTRadius) < WCTVEdgeLimit) {
+				G4ThreeVector bottomcellpos = G4ThreeVector(xoffset,
+																										yoffset,
+																										-topcellpos.getZ());
 
-					G4VPhysicalVolume *physiTopCapPMT =
-							new G4PVPlacement(0,                        // no rotation
-																cellpos,                // its position
-																logicWCPMTOD,                // its logical volume
-																"WCPMT",                // its name
-																logicWCODTopCapTyvek,            // its mother volume
-																false,                    // no boolean os
-																icopyTop);                    // every PMT need a unique id.
+				if (((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTODRadius) < WCODCapEdgeLimit) ) {
 
-					G4VPhysicalVolume *physiBottomCapPMT =
-							new G4PVPlacement(WCCapPMTRotation,                        // no rotation
-																cellpos,                // its position
-																logicWCPMTOD,                // its logical volume
-																"WCPMT",                // its name
-																logicWCODBottomCapTyvek,            // its mother volume
-																false,                    // no boolean os
-																icopyBottom);                    // every PMT need a unique id.
+#ifdef PLACEODPMTS
+//					G4VPhysicalVolume* physiTopCapPMT =
+//							new G4PVPlacement(0,
+//																topcellpos,                   // its position
+//																logicWCPMTOD,                // its logical volume
+//																"WCPMTOD", // its name
+//																logicWCBarrel,         // its mother volume
+//																false,                 // no boolean os
+//																icopy);               // every PMT need a unique id.
+//					icopy++;
+//
+//					G4VPhysicalVolume* physiBottomCapPMT =
+//							new G4PVPlacement(WCCapPMTRotation,
+//																bottomcellpos,                   // its position
+//																logicWCPMTOD,                // its logical volume
+//																"WCPMTOD", // its name
+//																logicWCBarrel,         // its mother volume
+//																false,                 // no boolean os
+//																icopy);               // every PMT need a unique id.
 
-					icopyTop++;
-					icopyBottom++;
+					// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more
+					// daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
+					// this is still the case.
 
+					icopy++;
+#endif
 				}
 			}
 		}
 
+		G4cout << "#### OD ####" << "\n";
+		G4cout << " total on cap: " << icopy << "\n";
+		G4cout << " Coverage was calculated to be: " << (icopy*WCPMTODRadius*WCPMTODRadius/(WCIDRadius*WCIDRadius)) << "\n";
+		G4cout << "############" << "\n";
 
 	} // END if isODConstructed
 
@@ -1211,7 +1158,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 {
 
-  capAssemblyHeight = (WCIDHeight-mainAnnulusHeight)/2+1*mm+WCBlackSheetThickness+WCODTyvekSheetThickness;
+  capAssemblyHeight = (WCIDHeight-mainAnnulusHeight)/2+1*mm+WCBlackSheetThickness;
 
   G4Tubs* solidCapAssembly = new G4Tubs("CapAssembly",
 							0.0*m,
@@ -1604,7 +1551,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   // Add top and bottom PMTs
   // -----------------------------------------------------
   
-	G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName);
+	G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName, "tank");
 	
 	// If using RayTracer and want to view the detector without caps, comment out the top and bottom PMT's
 
@@ -1635,7 +1582,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
       //      if ( (comp > WCPMTRadius*WCPMTRadius) && ((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) < WCCapEdgeLimit) ) {
             if (((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) < WCCapEdgeLimit) ) {
 
-
+#ifdef PLACEIDPMTS
 	G4VPhysicalVolume* physiCapPMT =
 	  new G4PVPlacement(WCCapPMTRotation,
 			    cellpos,                   // its position
@@ -1644,7 +1591,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			    logicWCCap,         // its mother volume
 			    false,                 // no boolean os
 			    icopy);               // every PMT need a unique id.
-	
+#endif
  // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
     // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 	// this is still the case.
@@ -1670,7 +1617,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
       G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius,
 						 -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 						 (-barrelCellHeight/2.+(j+0.5)*verticalSpacing)*zflip);
-
+#ifdef PLACEIDPMTS
      G4VPhysicalVolume* physiWCBarrelBorderPMT =
 	new G4PVPlacement(WCPMTRotation,                      // its rotation
 			  PMTPosition,
@@ -1680,7 +1627,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			  false,                     // no boolean operations
 			  (int)(i*WCPMTperCellVertical+j)
 			  ,true);                      // no particular field
-
+#endif
 
    // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
      // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
@@ -1710,7 +1657,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			       (-barrelCellHeight/2.+(j+0.5)*verticalSpacing)*zflip);
 	PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry 
 	                                            //axes of the cell 
-	
+#ifdef PLACEIDPMTS
 	G4VPhysicalVolume* physiWCBarrelBorderPMT =
 	  new G4PVPlacement(WCPMTRotation,                          // its rotation
 			    PMTPosition,
@@ -1720,7 +1667,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			    false,                     // no boolean operations
 			    (int)(i*WCPMTperCellVertical+j)
 			    ,true);                        // no particular field
-
+#endif
 		// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
 		// daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 		// this is still the case.
@@ -1759,20 +1706,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 																		 OpWaterTySurface);
 
 
-		// OD BARREL PMTs
+    //-------------------------------------------------------------
+    // OD BARREL PMTs
+    // ------------------------------------------------------------
 
-    G4LogicalVolume* logicWCPMTOD = ConstructPMT(WCPMTODName, WCODCollectionName);
+		G4LogicalVolume* logicWCPMTOD = ConstructPMT(WCPMTODName, WCODCollectionName, "OD");
 
-    G4VisAttributes* WClogic
-        = new G4VisAttributes(red);
-    WClogic->SetForceSolid(true);
-    WClogic->SetForceAuxEdgeVisible(true);
-
-    logicWCPMTOD->SetVisAttributes(WClogic);
-
-    ///////////////   Barrel PMT placement
+		///////////////   Barrel PMT placement
     G4RotationMatrix* WCPMTODRotation = new G4RotationMatrix;
-    WCPMTRotation->rotateY(2700.*deg);
+		WCPMTODRotation->rotateY(270.*deg);
 
     G4double barrelODCellWidth   = 2.*WCODRadius*tan(dPhi/2.);
     G4double horizontalODSpacing = barrelODCellWidth/WCPMTODperCellHorizontal;
@@ -1781,9 +1723,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
     for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
       for(G4double j = 0; j < WCPMTODperCellVertical; j++){
         G4ThreeVector PMTPosition =  G4ThreeVector(WCODRadius+WCODTyvekSheetThickness,
-                                                   -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing,
+                                                   -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                    -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
 
+#ifdef PLACEODPMTS
         G4VPhysicalVolume* physiWCBarrelPMT =
             new G4PVPlacement(WCPMTODRotation,              // its rotation
                               PMTPosition,
@@ -1793,6 +1736,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                               false,                     // no boolean operations
                               (int)(i*WCPMTODperCellVertical+j),
                               true);
+#endif
       }
     }
 
@@ -1830,6 +1774,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
           PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
           //axes of the cell
 
+#ifdef PLACEODPMTS
           G4VPhysicalVolume* physiWCBarrelPMT =
               new G4PVPlacement(WCPMTRotation,             // its rotation
                                 PMTPosition,
@@ -1839,13 +1784,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                                 false,                     // no boolean operations
                                 (int)(i*WCPMTODperCellVertical+j),
                                 true);
+#endif
         }
       }
 
     }
 
   } // END isODConstructed
-
 
   return logicCapAssembly;
 
@@ -1868,8 +1813,8 @@ void ComputeWCODPMT(G4int NPMT, G4double *NPMTHorizontal, G4double *NPMTVertical
       *NPMTVertical   = 2;
       break;
     case 3:
-      *NPMTHorizontal = 1;
-      *NPMTVertical   = 3;
+      *NPMTHorizontal = 2;
+      *NPMTVertical   = 2;
       break;
     case 4:
       *NPMTHorizontal = 2;
