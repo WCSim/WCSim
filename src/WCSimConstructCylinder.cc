@@ -34,13 +34,6 @@
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
 
-#ifndef PLACEIDPMTS
-// #define PLACEIDPMTS
-#endif
-#ifndef PLACEODPMTS
-#define PLACEODPMTS
-#endif
-
 /***********************************************************
  *
  * This file containts the functions which construct a 
@@ -727,7 +720,6 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 						 -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 						 -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
 
-#ifdef PLACEIDPMTS
       G4VPhysicalVolume* physiWCBarrelPMT =
 	new G4PVPlacement(WCPMTRotation,              // its rotation
 			  PMTPosition, 
@@ -737,7 +729,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 			  false,                     // no boolean operations
 			  (int)(i*WCPMTperCellVertical+j),
 			  true);                       
-#endif
+
    // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
      // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 		// this is still the case.
@@ -766,7 +758,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 			       -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
 	PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry 
 	                                            //axes of the cell 
-#ifdef PLACEIDPMTS
+
 	G4VPhysicalVolume* physiWCBarrelPMT =
 	  new G4PVPlacement(WCPMTRotation,             // its rotation
 			    PMTPosition, 
@@ -776,7 +768,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 			    false,                     // no boolean operations
 			    (int)(i*WCPMTperCellVertical+j),
 			    true);                       
-#endif
+
 		// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
 		// daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 		// this is still the case.
@@ -966,7 +958,6 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 																									 -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
 																									 -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
 
-#ifdef PLACEODPMTS
 				G4VPhysicalVolume* physiWCBarrelPMT =
 						new G4PVPlacement(WCPMTODRotation,              // its rotation
 															PMTPosition,
@@ -976,7 +967,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 															false,                     // no boolean operations
 															(int)(i*WCPMTODperCellVertical+j),
 															true);
-#endif PLACEODPMTS
+
 			}
 		}
 
@@ -1044,7 +1035,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 					PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
 					//axes of the cell
 
-#ifdef PLACEODPMTS
+
 					G4VPhysicalVolume* physiWCBarrelPMT =
 					  new G4PVPlacement(WCPMTRotation,             // its rotation
 					                    PMTPosition,
@@ -1054,7 +1045,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 					                    false,                     // no boolean operations
 					                    (int)(i*WCPMTODperCellVertical+j),
 					                    true);
-#endif
+
 				}
 			}
 
@@ -1089,32 +1080,32 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
 				if (((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTODRadius) < WCODCapEdgeLimit) ) {
 
-#ifdef PLACEODPMTS
-//					G4VPhysicalVolume* physiTopCapPMT =
-//							new G4PVPlacement(0,
-//																topcellpos,                   // its position
-//																logicWCPMTOD,                // its logical volume
-//																"WCPMTOD", // its name
-//																logicWCBarrel,         // its mother volume
-//																false,                 // no boolean os
-//																icopy);               // every PMT need a unique id.
-//					icopy++;
-//
-//					G4VPhysicalVolume* physiBottomCapPMT =
-//							new G4PVPlacement(WCCapPMTRotation,
-//																bottomcellpos,                   // its position
-//																logicWCPMTOD,                // its logical volume
-//																"WCPMTOD", // its name
-//																logicWCBarrel,         // its mother volume
-//																false,                 // no boolean os
-//																icopy);               // every PMT need a unique id.
+
+					G4VPhysicalVolume* physiTopCapPMT =
+							new G4PVPlacement(0,
+																topcellpos,                   // its position
+																logicWCPMTOD,                // its logical volume
+																"WCPMTOD", // its name
+																logicWCBarrel,         // its mother volume
+																false,                 // no boolean os
+																icopy);               // every PMT need a unique id.
+					icopy++;
+
+					G4VPhysicalVolume* physiBottomCapPMT =
+							new G4PVPlacement(WCCapPMTRotation,
+																bottomcellpos,                   // its position
+																logicWCPMTOD,                // its logical volume
+																"WCPMTOD", // its name
+																logicWCBarrel,         // its mother volume
+																false,                 // no boolean os
+																icopy);               // every PMT need a unique id.
 
 					// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more
 					// daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 					// this is still the case.
 
 					icopy++;
-#endif
+
 				}
 			}
 		}
@@ -1582,7 +1573,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
       //      if ( (comp > WCPMTRadius*WCPMTRadius) && ((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) < WCCapEdgeLimit) ) {
             if (((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) < WCCapEdgeLimit) ) {
 
-#ifdef PLACEIDPMTS
 	G4VPhysicalVolume* physiCapPMT =
 	  new G4PVPlacement(WCCapPMTRotation,
 			    cellpos,                   // its position
@@ -1591,8 +1581,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			    logicWCCap,         // its mother volume
 			    false,                 // no boolean os
 			    icopy);               // every PMT need a unique id.
-#endif
- // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
+
+ // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more
     // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 	// this is still the case.
 
@@ -1617,7 +1607,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
       G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius,
 						 -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 						 (-barrelCellHeight/2.+(j+0.5)*verticalSpacing)*zflip);
-#ifdef PLACEIDPMTS
+
      G4VPhysicalVolume* physiWCBarrelBorderPMT =
 	new G4PVPlacement(WCPMTRotation,                      // its rotation
 			  PMTPosition,
@@ -1627,7 +1617,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			  false,                     // no boolean operations
 			  (int)(i*WCPMTperCellVertical+j)
 			  ,true);                      // no particular field
-#endif
+
 
    // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
      // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
@@ -1657,7 +1647,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			       (-barrelCellHeight/2.+(j+0.5)*verticalSpacing)*zflip);
 	PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry 
 	                                            //axes of the cell 
-#ifdef PLACEIDPMTS
+
 	G4VPhysicalVolume* physiWCBarrelBorderPMT =
 	  new G4PVPlacement(WCPMTRotation,                          // its rotation
 			    PMTPosition,
@@ -1667,7 +1657,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 			    false,                     // no boolean operations
 			    (int)(i*WCPMTperCellVertical+j)
 			    ,true);                        // no particular field
-#endif
+
 		// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
 		// daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 		// this is still the case.
@@ -1726,7 +1716,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                                                    -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                    -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
 
-#ifdef PLACEODPMTS
+
         G4VPhysicalVolume* physiWCBarrelPMT =
             new G4PVPlacement(WCPMTODRotation,              // its rotation
                               PMTPosition,
@@ -1736,7 +1726,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                               false,                     // no boolean operations
                               (int)(i*WCPMTODperCellVertical+j),
                               true);
-#endif
+
       }
     }
 
@@ -1774,7 +1764,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
           PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
           //axes of the cell
 
-#ifdef PLACEODPMTS
+
           G4VPhysicalVolume* physiWCBarrelPMT =
               new G4PVPlacement(WCPMTRotation,             // its rotation
                                 PMTPosition,
@@ -1784,7 +1774,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                                 false,                     // no boolean operations
                                 (int)(i*WCPMTODperCellVertical+j),
                                 true);
-#endif
+
         }
       }
 
