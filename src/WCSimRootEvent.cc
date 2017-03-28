@@ -237,8 +237,10 @@ void WCSimRootTrigger::SetCaptureParticle(Int_t parent,
 {
     WCSimRootCapture * capture = 0;
     for(int i = 0; i<fCaptures->GetEntriesFast(); i++){
-        if(((WCSimRootCapture*)fCaptures->At(i))->GetCaptureParent() == parent)
-            capture = (WCSimRootCapture*)fCaptures->At(i);
+        if(((WCSimRootCapture*)fCaptures->At(i))->GetCaptureParent() == parent) {
+            capture = (WCSimRootCapture *) fCaptures->At(i);
+            break;
+        }
     }
     if(capture == 0) {
         TClonesArray &captures = *fCaptures;

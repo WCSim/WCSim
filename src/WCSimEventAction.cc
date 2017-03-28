@@ -846,8 +846,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
                  << " Parent: " << trj->GetParentID()
                  << " T:" << ttime
                  << " vtx:(" << start[0] << "," << start[1] << "," << start[2]
-                 << " dir:(" << dir[0] << "," << dir[1] << "," << dir[2]
-                 << " E:" << energy << G4endl;
+                 << ") dir:(" << dir[0] << "," << dir[1] << "," << dir[2]
+                 << ") E:" << energy << G4endl;
           wcsimrootevent->SetCaptureParticle(trj->GetParentID(), ipnu, ttime, start, dir, energy, id);
       }
     }
