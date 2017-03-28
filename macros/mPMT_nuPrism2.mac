@@ -5,7 +5,7 @@
 
 ## possibility to overwrite some params of the TestmPMT geom
 #/WCSim/mPMT/keep_num_mPMTs_fixed true
-/WCSim/mPMT/VesselCylHeight 38 mm
+/WCSim/mPMT/VesselCylHeight 38 mm   # or 277 mm
 /WCSim/mPMT/VesselRadiusCurv 342 mm 
 /WCSim/mPMT/VesselRadius 254 mm  
 #/WCSim/mPMT/orientation Perpendicular
