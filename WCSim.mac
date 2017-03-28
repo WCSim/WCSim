@@ -116,7 +116,7 @@
 #/gun/particle pi0
 /gun/energy 500 MeV
 /gun/direction 1 0 0
-/gun/position -10 0 0 m  
+/gun/position 0 0 0
 
 # Or you can use the G4 General Particle Source
 # you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
