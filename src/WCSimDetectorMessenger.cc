@@ -32,7 +32,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "Cylinder_60x74_3inchmPMT_40perCent\n"
 			  "Cylinder_60x74_3inch_14perCent\n"
 			  "Cylinder_60x74_3inch_40perCent\n"
-			  "TestmPMT\n"
 			  "TestSinglemPMT\n"
                          );
   PMTConfig->SetParameterName("PMTConfig", false);
@@ -53,7 +52,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			   "Cylinder_60x74_3inchmPMT_40perCent "
 			   "Cylinder_60x74_3inch_14perCent "
 			   "Cylinder_60x74_3inch_40perCent "
-			   "TestmPMT "
 			   "TestSinglemPMT\n"
                            );
   PMTConfig->AvailableForStates(G4State_PreInit, G4State_Idle);
@@ -214,12 +212,13 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				     "Acrylic "); 
 
   mPMT_material_inner = new G4UIcmdWithAString("/WCSim/mPMT/material_inner",this);
-  mPMT_material_inner->SetGuidance("Set material of region where PMTs live.");
+  mPMT_material_inner->SetGuidance("Set material of region in between PMTs.");
   mPMT_material_inner->SetParameterName("material_inner", true);
   mPMT_material_inner->SetCandidates("Water "
-				     "SilGel ");
+				     "SilGel "
+				     "Air " );
 
-  //NEW: Thickness of outer and inner material
+  // Thickness of outer and inner material
   mPMT_material_outer_thickness = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/material_outer_thickness",this);
   mPMT_material_outer_thickness->SetGuidance("Set thickness of outer (pressure) vessel of multiPMT.");
   mPMT_material_outer_thickness->SetParameterName("material_outer_thickness", true);
@@ -229,7 +228,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   mPMT_material_outer_thickness->SetUnitCandidates("mm cm m");
 
 
-  // NEW: 
   mPMT_ID_reflector_height = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/reflectorHeightID",this);
   mPMT_ID_reflector_height->SetGuidance("Set height of reflector cone for each ID PMT.");
   mPMT_ID_reflector_height->SetParameterName("reflectorHeightID", true);
@@ -259,14 +257,37 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   // Options related to mPMT filling:
   // Total number of ID PMTs: used to cross check with provided configfile
   mPMT_nID_PMTs = new G4UIcmdWithAnInteger("/WCSim/mPMT/nID_PMTs",this);
-  mPMT_nID_PMTs->SetGuidance("Set angle of reflector cone wrt PMT axis for each ID PMT.");
-  mPMT_nID_PMTs->SetParameterName("reflectorAngleID", true);
+  mPMT_nID_PMTs->SetGuidance("Set number of ID mPMT PMTs.");
+  mPMT_nID_PMTs->SetParameterName("nID_PMTs", true);
   mPMT_nID_PMTs->SetDefaultValue(20.); 
   
-  //
   mPMT_config = new G4UIcmdWithAString("/WCSim/mPMT/configfile",this);
   mPMT_config->SetGuidance("Set filename for config file with viewing angles and tilt angles.");
   mPMT_config->SetParameterName("mPMTconfig", true);
+
+  // NEW!
+  mPMT_numModulesFixed = new G4UIcmdWithABool("/WCSim/mPMT/keep_num_mPMTs_fixed",this);
+  mPMT_numModulesFixed->SetGuidance("Keep the number of mPMT modules in the detector fixed even though mPMT dimensions change.");
+  mPMT_numModulesFixed->SetParameterName("numModulesFixed",true);
+  mPMT_numModulesFixed->SetDefaultValue(false);
+  
+  mPMT_pmtOpeningAngle = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/pmt_opening_angle",this);
+  mPMT_pmtOpeningAngle->SetGuidance("Set size of PMT sub-assembly (opening angle). Must be able to contain reflector if wanted."); 
+  mPMT_pmtOpeningAngle->SetParameterName("pmtOpeningAngle", true);
+  mPMT_pmtOpeningAngle->SetDefaultValue(8.7);
+  mPMT_pmtOpeningAngle->SetUnitCategory("Angle");
+  mPMT_pmtOpeningAngle->SetDefaultUnit("deg");
+  mPMT_pmtOpeningAngle->SetUnitCandidates("deg rad");
+
+  mPMT_material_pmtAssembly = new G4UIcmdWithAString("/WCSim/mPMT/material_pmtAssembly",this);
+  mPMT_material_pmtAssembly->SetGuidance("Set material of region around the PMT itself.");
+  mPMT_material_pmtAssembly->SetParameterName("material_pmtAssembly", true);
+  mPMT_material_pmtAssembly->SetCandidates("Water "
+					   "SilGel "
+					   "Air " );
+
+
+
 
  // First, the PMT type
   SetPMTType = new G4UIcmdWithAString("/WCSim/nuPRISM/SetPMTType", this);
@@ -374,8 +395,6 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		} else if ( newValue == "EggShapedHyperK_withHPD") {
 		  WCSimDetector->SetIsEggShapedHyperK(true);
 		  WCSimDetector->SetEggShapedHyperKGeometry_withHPD();
-		} else if(newValue == "TestmPMT") {
-		  WCSimDetector->SetTestmPMTGeometry();	
 		} else if(newValue == "TestSinglemPMT") {
 		  WCSimDetector->SetTestSinglemPMTGeometry();	
 		} else if(newValue == "Cylinder_60x74_3inchmPMT_14perCent" ) {
@@ -542,6 +561,20 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  //std::cout << "Set Cylinder Radius of MultiPMT to " << newValue  << " " << std::endl;
 	  WCSimDetector->SetmPMT_DistPMTVessel(mPMT_DistPMTVessel->GetNewDoubleValue(newValue));
 	}
+
+	if (command == mPMT_numModulesFixed){
+	  G4cout << "Do you want fix the number of mPMT modules: " << newValue << G4endl;
+	  WCSimDetector->SetmPMT_FixModules(mPMT_numModulesFixed->GetNewBoolValue(newValue));
+	}
+
+	if (command == mPMT_pmtOpeningAngle){
+	  WCSimDetector->SetmPMT_OpeningAngle(mPMT_pmtOpeningAngle->GetNewDoubleValue(newValue));	  
+	}
+
+	if (command == mPMT_material_pmtAssembly){
+	  WCSimDetector->SetmPMT_MaterialPMTassembly(newValue);
+	}
+
 	// Customize nuPRISM tank setup
 	if( WCSimDetector->GetIsNuPrism()){
 	  if (command == SetPMTType) WCSimDetector->SetPMTType(newValue);

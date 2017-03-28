@@ -76,7 +76,6 @@ public:
   // Related to the WC geometry
   void SetSuperKGeometry();
   void InitSinglePMT();
-  void SetTestmPMTGeometry();
   void SetTestSinglemPMTGeometry();
   void Cylinder_60x74_3inchmPMT_14perCent();
   void Cylinder_60x74_3inchmPMT_40perCent();
@@ -176,11 +175,19 @@ public:
 
     // WCBarrelPMTOffset is affected, so need to be updated!!
     G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
-    // If no acrylic cover/pressure vessel
+    // If  no acrylic cover/pressure vessel
     if(vessel_tot_height < WCPMTRadius)
       vessel_tot_height = WCPMTRadius;
     WCBarrelPMTOffset = vessel_tot_height;                          // BarrelPMTOffset needs PMT/mPMT height
-    WCCapEdgeLimit = WCIDDiameter/2.0 - vessel_tot_height;          // CapEdgeLimit needs PMT/mPMT height
+    if(!fix_nModules){
+      WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*vessel_radius));
+      if(WCBarrelNumPMTHorizontal < 1)
+	G4cerr << "Bug in dimensions as less than 1 BarrelPMT specified" << G4endl;
+      WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+      					/WCPMTperCellVertical));
+      WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); 
+      WCCapEdgeLimit = WCIDDiameter/2.0 - vessel_tot_height;          // CapEdgeLimit needs PMT/mPMT height
+    }
   }                          
 
   void SetmPMT_VesselRadiusCurv(G4double radius){
@@ -195,7 +202,8 @@ public:
     if(vessel_tot_height < WCPMTRadius)
       vessel_tot_height = WCPMTRadius;
     WCBarrelPMTOffset = vessel_tot_height;            
-    WCCapEdgeLimit = WCIDDiameter/2.0 - vessel_tot_height;
+    if(!fix_nModules)
+      WCCapEdgeLimit = WCIDDiameter/2.0 - vessel_tot_height;
 
   }
   void SetmPMT_DistPMTVessel(G4double dist){dist_pmt_vessel = dist;}
@@ -229,6 +237,9 @@ public:
   G4String GetPMTtype_ID(void){return mPMT_ID_PMT;};
   G4String GetPMTtype_OD(void){return mPMT_OD_PMT;};   //might want to replace the name mPMT by general var name
 
+  void SetmPMT_MaterialPMTassembly(G4String material){mPMT_material_pmtAssembly = material;}
+  void SetmPMT_FixModules(G4bool fix){fix_nModules = fix;}
+  void SetmPMT_OpeningAngle(G4double angle){mPMT_pmt_openingAngle = angle;}
 
   //Filling mPMT
   G4int         FillCircles(void);
@@ -613,6 +624,10 @@ private:
   G4String config_file;
   G4String mPMT_ID_PMT; //or ToDo: ideally ENUM
   G4String mPMT_OD_PMT;
+  G4bool fix_nModules;
+  G4double mPMT_pmt_openingAngle;
+  G4String mPMT_material_pmtAssembly;
+
 
   //Filling mPMT
   std::vector<G4int>		vNiC;	        // Nb of Chambers in each circle

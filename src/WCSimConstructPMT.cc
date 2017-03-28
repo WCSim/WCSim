@@ -143,7 +143,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 		   0.0*deg,                                             //phiStart
 		   360.0*deg,                                           //Deltaphi
 		   0.0*deg,                                             //thetaStart
-		   8.5*deg);                                            //Deltatheta
+		   mPMT_pmt_openingAngle);                                            //Deltatheta
     // Once we have a full PMT support in (not urgent),
     // replacing the current "inner" black sphere support by using
     // G4Tesselated from CADMesh'ing an STL,
@@ -166,7 +166,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   //ToDo: define defaults for single PMTs and rename variable (optional gel for single 20" PMT)
   G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
-                            G4Material::GetMaterial(mPMT_inner_material),        // Default: SilGel for n > 1, Water for n = 1 
+                            G4Material::GetMaterial(mPMT_material_pmtAssembly),        // Default: SilGel for n > 1, Water for n = 1 
                             "WCPMT",
                             0,0,0);
 
@@ -383,9 +383,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     G4Cons * solidWCPMTsupport =
       new G4Cons("WCPMTsupport",
 		 0.,                                                                      //rmin1
-		 tan(8.5*deg)*(vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight),      //rmax1
+		 tan(mPMT_pmt_openingAngle)*(vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight),      //rmax1
 		 0.,                                                                      //rmin2
-		 tan(8.5*deg)*(vessel_radius_curv - mPMT_outer_material_d
+		 tan(mPMT_pmt_openingAngle)*(vessel_radius_curv - mPMT_outer_material_d
 			       -expose - dist_pmt_vessel),                                //rmax2
 		 (pmtModuleHeight - expose - dist_pmt_vessel)/2,                                   //h/2
 		 0.0*deg,                                                                 //phiStart
@@ -419,11 +419,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
        && (reflectorRadius-radius) > -5*CLHEP::mm){
       
       G4double ReflectorHolderZ[3] = {0, id_reflector_z_offset, id_reflector_z_offset+id_reflector_height};
-      G4double ReflectorHolderR[3] = {tan(8.5*deg)*(vessel_radius_curv - mPMT_outer_material_d
+      G4double ReflectorHolderR[3] = {tan(mPMT_pmt_openingAngle)*(vessel_radius_curv - mPMT_outer_material_d
 						    -expose - dist_pmt_vessel),
-				      tan(8.5*deg)*(vessel_radius_curv - mPMT_outer_material_d
+				      tan(mPMT_pmt_openingAngle)*(vessel_radius_curv - mPMT_outer_material_d
 						    -expose - dist_pmt_vessel+id_reflector_z_offset),
-				      tan(8.5*deg)*(vessel_radius_curv - mPMT_outer_material_d
+				      tan(mPMT_pmt_openingAngle)*(vessel_radius_curv - mPMT_outer_material_d
 						    -expose - dist_pmt_vessel+id_reflector_z_offset
 						    +id_reflector_height)};
       

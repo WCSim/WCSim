@@ -66,20 +66,23 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   orientation = PERPENDICULAR;
   mPMT_ID_PMT = "PMT3inchR12199_02";
   mPMT_OD_PMT = "";
-  mPMT_outer_material = "";
+  mPMT_outer_material = "Water";
   mPMT_inner_material = "";
   mPMT_outer_material_d = 0.*CLHEP::mm;
   // Radius of cone at z=reflectorHeight
   id_reflector_height = 0.*CLHEP::mm;
   id_reflector_z_offset = 0.*CLHEP::mm;
-  id_reflector_angle = 0.*CLHEP::rad; 
+  id_reflector_angle = 0.*CLHEP::deg; 
   // parameters related to filling the ID mPMT
   nID_PMTs = 1;   //per mPMT
   config_file = "";
+  fix_nModules = false;
+  mPMT_material_pmtAssembly = "Water";
+  mPMT_pmt_openingAngle = 0.*CLHEP::deg;
+  
 
 
-
-  //SetTestmPMTGeometry();
+  //SetTestSinglemPMTGeometry();
   SetSuperKGeometry();
   //SetHyperKGeometry();
 

@@ -22,8 +22,9 @@
 /WCSim/nuPRISM/Update
 /WCSim/Construct
 
-#Use mPMT settings 
-/control/execute macros/mPMT_nuPrism.mac         ## mPMT options: mPMT_nuPrism1.mac and 2.mac
+#Use mPMTs settings (uncomment/delete the above)
+#/WCSim/WCgeom nuPRISM_mPMT
+#/control/execute macros/mPMT_nuPrism1.mac         ## mPMT options: mPMT_nuPrism1.mac and 2.mac
 
 
 #Added for the PMT QE option 08/17/10 (XQ)
