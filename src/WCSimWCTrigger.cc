@@ -25,7 +25,7 @@
 // *******************************************
 
 #ifndef WCSIMWCTRIGGER_VERBOSE
-#define WCSIMWCTRIGGER_VERBOSE
+// #define WCSIMWCTRIGGER_VERBOSE
 #endif
 
 #ifndef HYPER_VERBOSITY

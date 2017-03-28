@@ -317,6 +317,7 @@ private:
   G4double WCODCapPMTSpacing;
   G4double WCODCapEdgeLimit;
 
+  G4double WCODPMTShift;
 
   // We just need these variables to be global, ease things
   G4double WCODRadius;

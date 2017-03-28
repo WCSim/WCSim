@@ -321,7 +321,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     G4int collectionID = SDman->GetCollectionID(name);
     if(collectionID>-1) WCHC_OD = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
     G4cout << G4endl;
-    G4cout<< "WCSimEventAction::EndOfEventAction ☆ (WCSimWCHitsCollection*)" << WCODCollectionName
+    G4cout<< "WCSimEventAction::EndOfEventAction() (WCSimWCHitsCollection*)" << WCODCollectionName
           << " has " << WCHC_OD->entries() << " entries" << G4endl;
     G4cout << G4endl;
   }
@@ -332,29 +332,41 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   WCDMPMT_OD->Digitize();
 
   WCSimWCAddDarkNoise* WCDNM_OD = (WCSimWCAddDarkNoise*)DMman->FindDigitizerModule("WCDarkNoise_OD");
-  if(WCDNM_OD==0) G4cout << "WCDarkNoise_OD dark noise module not found!" << G4endl;
+  if(WCDNM_OD == 0) G4cout << "WCDarkNoise_OD dark noise module not found!" << G4endl;
   WCDNM_OD->AddDarkNoise();
 
   WCSimWCDigitizerBase* WCDM_OD = (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadoutDigits_OD");
-  if(WCDM_OD==0) G4cout << "WCReadoutDigits_OD digitizer module not found!" << G4endl;
+  if(WCDM_OD == 0) G4cout << "WCReadoutDigits_OD digitizer module not found!" << G4endl;
   WCDM_OD->Digitize();
 
   WCSimWCTriggerBase* WCTM_OD = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout_OD");
-  if(WCTM_OD==0) G4cout << "WCReadout_OD trigger module not found!" <<G4endl;
+  if(WCTM_OD == 0) G4cout << "WCReadout_OD trigger module not found!" << G4endl;
   WCTM_OD->SetDarkRate(WCDNM_OD->GetDarkRate());
   WCTM_OD->Digitize();
 
   G4int WCDChitsID_OD = DMman->GetDigiCollectionID("WCRawPMTSignalCollection_OD");
   WCSimWCDigitsCollection * WCDC_hits_OD = (WCSimWCDigitsCollection*) DMman->GetDigiCollection(WCDChitsID_OD);
   // printouts
-  //G4cout<<"WCSimEventAction::EndOfEventAction ☆ retrieving raw hits (WCSimWCDigitsCollection*)WCRawPMTSignalCollection_OD for FillRootEvent, which has ";
-  //if(WCDC_hits_OD){G4cout<<WCDC_hits_OD->entries();} else {G4cout<<"no";} G4cout<<" entries"<<G4endl;
+  G4cout << "WCSimEventAction::EndOfEventAction() retrieving raw hits" << G4endl
+         << " (WCSimWCDigitsCollection*)WCRawPMTSignalCollection_OD for FillRootEvent, which has ";
+  if(WCDC_hits_OD){
+    G4cout << WCDC_hits_OD->entries();
+  } else {
+    G4cout << "no";
+  }
+  G4cout << " entries" << G4endl;
 
   G4int WCDCID_OD = DMman->GetDigiCollectionID("WCDigitizedCollection_OD");
   WCSimWCTriggeredDigitsCollection * WCDC_OD = (WCSimWCTriggeredDigitsCollection*) DMman->GetDigiCollection(WCDCID_OD);
   // printouts
-  //G4cout<<"WCSimEventAction::EndOfEventAction ☆ retrieving readout hits (WCSimWCTriggeredDigitsCollection*)WCDigitizedCollection_OD for FillRootEvent, which has ";
-  //if(WCDC_hits_OD){G4cout<<WCDC_OD->entries();} else {G4cout<<"no";} G4cout<<" entries"<<G4endl;
+  G4cout << "WCSimEventAction::EndOfEventAction() retrieving readout hits"
+         << " (WCSimWCTriggeredDigitsCollection*)WCDigitizedCollection_OD for FillRootEvent, which has ";
+  if(WCDC_hits_OD){
+    G4cout << WCDC_OD->entries();
+  } else {
+    G4cout << "no";
+  }
+  G4cout << " entries" << G4endl;
 
 
   // ----------------------------------------------------------------------
