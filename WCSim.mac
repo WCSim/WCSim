@@ -48,7 +48,7 @@
 /WCSim/PMTCollEff on
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
-/WCSim/SavePi0 true
+/WCSim/SavePi0 false
 
 #choose the Trigger & Digitizer type (and options)
 /DAQ/Digitizer SKI
