@@ -24,6 +24,7 @@
 
 #Use mPMTs settings (uncomment/delete the above)
 #/WCSim/WCgeom nuPRISM_mPMT
+#/WCSim/Construct
 #/control/execute macros/mPMT_nuPrism1.mac         ## mPMT options: mPMT_nuPrism1.mac and 2.mac
 
 
