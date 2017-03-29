@@ -15,3 +15,6 @@
 - Black sheet refractive index and make it into a skinsurface
 - Reoptimize Stacking action code
 - Proper kinetic energy calculation in PrimaryGeneratorAction
+- Improved HSV colour scheme for hit charge in visualizer.
+- Restructure ConstructPMT for optical pucks.
+- Fixed glassthickness/photocathode bug.
