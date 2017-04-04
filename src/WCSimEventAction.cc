@@ -993,6 +993,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   TTree* tree = GetRunAction()->GetTree();
   tree->Fill();
 
+
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
   if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
@@ -1001,13 +1002,14 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       GetRunAction()->FillRootrackerVertexTree();
   }
 
-  TFile* hfile = tree->GetCurrentFile();
 
+  TFile* hfile = tree->GetCurrentFile();
+  hfile->cd();                    // make sure tree is ONLY written to CurrentFile and not to all files!
   // MF : overwrite the trees -- otherwise we have as many copies of the tree
   // as we have events. All the intermediate copies are incomplete, only the
   // last one is useful --> huge waste of disk space.
   tree->Write("",TObject::kOverwrite);
-  
+
   // M Fechner : reinitialize the super event after the writing is over
   wcsimrootsuperevent->ReInitialize();
   

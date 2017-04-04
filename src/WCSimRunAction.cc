@@ -322,10 +322,6 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 
   //Write the options tree
   G4cout << "EndOfRunAction" << G4endl;
-  if(useDefaultROOTout){
-    optionsTree->Fill();
-    optionsTree->Write();
-  }
   
   // Close the Root file at the end of the run
 
@@ -351,6 +347,9 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 
     // Close the Root file at the end of the run
     TFile* hfile = WCSimTree->GetCurrentFile();
+    optionsTree->Fill();
+    optionsTree->Write();
+    hfile->Write();
     hfile->Close();
   
     // Clean up stuff on the heap; I think deletion of hfile and trees
@@ -467,11 +466,11 @@ void WCSimRunAction::FillGeoTree(){
   
   geoTree->Fill();
   TFile* hfile = geoTree->GetCurrentFile();
-  hfile->Write(); 
+  //hfile->Write(); 
   if(wcsimdetector->GetIsNuPrism()) fSettingsOutputTree->Write();
 //  if(fSettingsInputTree) fSettingsInputTree->Close();
 
-  geoTree->Write(); // TF: in WCSim/develop but not in nuPRISM/develop?
+  geoTree->Write(); 
 }
 
 void WCSimRunAction::FillFlatGeoTree(){
@@ -529,7 +528,6 @@ void WCSimRunAction::FillFlatGeoTree(){
   geomTree->Fill();
   TFile* flatfile = geomTree->GetCurrentFile();
   flatfile->Write(); 
-
 }
 
 NRooTrackerVtx* WCSimRunAction::GetRootrackerVertex(){

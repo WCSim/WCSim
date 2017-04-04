@@ -39,6 +39,7 @@ public:
   bool GetSaveRooTracker() { return SaveRooTracker; }
   void FillGeoTree();
   TTree* GetTree(){return WCSimTree;}
+  TTree* GetFlatMasterTree(){return masterTree;}
   TTree* GetGeoTree(){return geoTree;}
   TTree* GetOptionsTree(){return optionsTree;}
   WCSimRootGeom* GetRootGeom(){return wcsimrootgeom;}
