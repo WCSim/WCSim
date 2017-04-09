@@ -6,6 +6,7 @@
 #include "G4ios.hh"
 #include "G4VProcess.hh"
 #include "WCSimTrackInformation.hh"
+#include "WCSimTrackingMessenger.hh"
 
 WCSimTrackingAction::WCSimTrackingAction()
 {
@@ -29,16 +30,24 @@ WCSimTrackingAction::WCSimTrackingAction()
   ParticleList.insert(2212);
   ParticleList.insert(2112);
 
+  percentageOfCherenkovPhotonsToDraw = 0.0;
+
+  messenger = new WCSimTrackingMessenger(this);
 }
 
 WCSimTrackingAction::~WCSimTrackingAction(){;}
 
 void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
-  G4float percentageOfCherenkovPhotonsToDraw = 100.0;
+  //TF: userdefined now
+  //G4float percentageOfCherenkovPhotonsToDraw = 100.0;
+  // if larger than zero, will keep trajectories of many secondaries as well
+  // and store them in output file. Difficult to control them all, so best only
+  // use for visualization, not for storing in ROOT.
+
 
   if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()
-       || G4UniformRand() < percentageOfCherenkovPhotonsToDraw )
+       || G4UniformRand() < percentageOfCherenkovPhotonsToDraw/100. )
     {
       WCSimTrajectory* thisTrajectory = new WCSimTrajectory(aTrack);
       fpTrackingManager->SetTrajectory(thisTrajectory);
