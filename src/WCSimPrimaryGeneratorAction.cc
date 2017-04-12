@@ -271,9 +271,10 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         // Calculate offset from neutrino generation plane to centre of nuPRISM detector (in metres)
         double z_offset = fNuPlanePos[2]/100.0 + fNuPrismRadius;
         double y_offset = 0;//(fNuPrismRadius/zDir)*yDir;
+	double x_offset = fNuPlanePos[0]/100.0;
 
         //Subtract offset to get interaction position in WCSim coordinates
-        xPos = fTmpRootrackerVtx->EvtVtx[0];
+        xPos = fTmpRootrackerVtx->EvtVtx[0] - x_offset;
         yPos = fTmpRootrackerVtx->EvtVtx[1] - y_offset;
         zPos = fTmpRootrackerVtx->EvtVtx[2] - z_offset;
 
@@ -282,7 +283,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         //loading events until one is found within the detector or there are
         //no more interaction to simulate for this event.
         //The current neut vector files do not correspond directly to the detector dimensions, so only keep those events within the detector
-        while (sqrt(pow(xPos,2)+pow(zPos,2))*m > (myDetector->GetWCIDDiameter()/2. - 20*cm) || (abs(yPos*m - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2. - 20*cm))){
+	while (sqrt(pow(xPos,2)+pow(zPos,2))*m > (myDetector->GetWCIDDiameter()/2. - 20*cm) || (abs(yPos*m - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2. - 20*cm))){
             //Load another event
             if (fEvNum<fNEntries){
                 fRooTrackerTree->GetEntry(fEvNum);
@@ -294,7 +295,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                 return; 
             }
             //Convert coordinates
-            xPos = fTmpRootrackerVtx->EvtVtx[0]; 
+            xPos = fTmpRootrackerVtx->EvtVtx[0] - x_offset;
             yPos = fTmpRootrackerVtx->EvtVtx[1] - y_offset; 
             zPos = fTmpRootrackerVtx->EvtVtx[2] - z_offset;
         } 

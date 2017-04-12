@@ -65,6 +65,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   if(wcsimdetector->GetIsNuPrism()){
     if(GetSaveRooTracker()){
       //Setup settings tree
+      // Assume the NEUT file is open.
       fSettingsInputTree = (TTree*) gDirectory->Get("Settings");
       fSettingsInputTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
       fSettingsInputTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
@@ -153,7 +154,23 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   TFile* flatfile = new TFile(rootname.c_str(),"RECREATE","WCSim FLAT ROOT file");
   flatfile->SetCompressionLevel(2); //default is 1 (minimal compression)
   masterTree = new TTree("MasterTree","Main WCSim Tree");
-  geomTree = new TTree("Geometry","Geometry Tree");
+  if(wcsimdetector->GetIsNuPrism()){
+    if(GetSaveRooTracker())
+      //Already have fSettingsInputTree and branched it
+      if(fSettingsInputTree){
+	geomTree = fSettingsInputTree->CloneTree(0);
+	geomTree->SetObject("Geometry","Geometry, Software version and generation settings");
+      } else
+	geomTree = new TTree("Geometry","Geometry Tree");
+    
+    geomTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/F");
+    geomTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/F");
+    geomTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
+    geomTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/F");
+    geomTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/F");
+    geomTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/F");
+  } else
+    geomTree = new TTree("Geometry","Geometry Tree");
   // flat branches, only arrays for PMTs themselves
   // define variables in header, so I can fill them in a separate function.
 
@@ -185,7 +202,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   geomTree->Branch("direction_z",dir_z,"direction_z[numPMT_ID]/Double_t");
   geomTree->Branch("phi",phi,"phi[numPMT_ID]/Double_t");
   geomTree->Branch("theta",theta,"theta[numPMT_ID]/Double_t");
-  
+
   //Fill Branches
   //Write Trees
   FillFlatGeoTree();
@@ -337,6 +354,12 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
   triggerTree->Write();
   masterTree->AddFriend("EventInfo");
   eventInfoTree->Write();
+  // Try adding RooTracker tree         WORK IN PROGRESS
+
+
+  //  fSettingsOutputTree->Write(); // not a friend
+  //}
+
   masterTree->Write();
   file->Close();
 
@@ -524,7 +547,40 @@ void WCSimRunAction::FillFlatGeoTree(){
     G4cout << "Mismatch between number of pmts and pmt list in geofile.txt!!"<<G4endl;
     G4cout << fpmts->size() <<" vs. "<< numPMT_id <<G4endl;
   }
-  
+
+  // Merge in nuPRISM settings tree in Geom, which is most natural place
+  if(wcsimdetector->GetIsNuPrism()){ 
+    G4ThreeVector rotation1= wcsimdetector->GetWCXRotation();
+    WCXRotation[0] = rotation1[0];
+    WCXRotation[1] = rotation1[1];
+    WCXRotation[2] = rotation1[2];
+    
+    G4ThreeVector rotation2= wcsimdetector->GetWCYRotation();
+    WCYRotation[0] = rotation2[0];
+    WCYRotation[1] = rotation2[1];
+    WCYRotation[2] = rotation2[2];
+    
+    G4ThreeVector rotation3= wcsimdetector->GetWCZRotation();
+    WCZRotation[0] = rotation3[0];
+    WCZRotation[1] = rotation3[1];
+    WCZRotation[2] = rotation3[2];
+    
+    WCDetCentre[0] = offset1[0]/100.0;
+    WCDetCentre[1] = offset1[1]/100.0;
+    WCDetCentre[2] = offset1[2]/100.0;
+    
+    WCDetRadius = wcsimdetector->GetWCIDDiameter()/2.0;
+    WCDetHeight = wcsimdetector->GetWCIDHeight();
+ 
+    /// TO TEST:
+    if(fSettingsInputTree){
+      fSettingsInputTree->GetEntry(0);
+      double z_offset = fNuPlanePos[2]/100.0 + fNuPrismRadius;
+      WCDetCentre[2] += z_offset;
+      std::cout << "WCDetCentre[2] = " << WCDetCentre[2] << std::endl;
+    }
+  } 
+
   geomTree->Fill();
   TFile* flatfile = geomTree->GetCurrentFile();
   flatfile->Write(); 

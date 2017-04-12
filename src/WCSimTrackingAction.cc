@@ -118,7 +118,9 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     
     // Be careful with gamma's. I want the ones closest to the actual mother process, not all secondaries.
     if (aTrack->GetDefinition()->GetPDGEncoding() == 22){
-      if( pi0List.count(aTrack->GetParentID()) ||
+      // also use lazy evaluation of "or" here:
+      if( aTrack->GetParentID() == 0  || // then this gamma has no creator process (eg. nRooTracker particles)
+	  pi0List.count(aTrack->GetParentID()) ||
 	  (creatorProcess->GetProcessName() == "nCapture") ||
 	  (creatorProcess->GetProcessName() == "NeutronInelastic")	  
 	  )
