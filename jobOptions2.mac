@@ -8,5 +8,5 @@
 # Options:
 #   BERTINI   (Bertini intra-nuclear cascade model)  -- this is the default since G4.10
 #   BINARY    (Binary intra-nuclear cascade model)
-/WCSim/physics/secondaries/model BERTINI
+# /WCSim/physics/secondaries/model BERTINI
 # Do not put any commands below this line
