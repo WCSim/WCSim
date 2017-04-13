@@ -280,9 +280,6 @@ void WCSimPhysicsList::ConstructOp(){
   // theCherenkovProcess->SetMaxBetaChangePerStep(10.0);
   // theCherenkovProcess->SetTrackSecondariesFirst(true);
 
-  G4OpticalSurfaceModel themodel = unified;
-  theBoundaryProcess->SetModel(themodel);   // deprecated in 4.9.6
-
   theParticleIterator->reset();
   while( (*theParticleIterator)() )
   {

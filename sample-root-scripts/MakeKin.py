@@ -14,6 +14,11 @@ pid = {"pi0":111, "pi+":211, "k0l":130, "k0s":310, "k+":321,
        "nutau":16, "nutaubar":-16,
        "p+":2212, "n0":2112}
 
+#holds detector [radius, height] in cm
+detectors = {"SuperK":[3368.15/2., 3620.],
+             "Cylinder_60x74_20inchBandL_14perCent":[7400./2., 6000.],
+             "Cylinder_60x74_20inchBandL_40perCent":[7400./2., 6000.]}
+
 for pname, no in pid.items():
     if pname.endswith('+'):
         pid[pname.replace('+','-')] = -1*pid[pname]
@@ -23,24 +28,46 @@ for pname, no in pid.items():
 
 
 parser = OptionParser()
+optdefault = 1
 parser.add_option("-N", "--nfiles", dest="nfiles",
-                  help="number of files of particles to produce",
-                  metavar="#", default=1)                  
+                  help="number of files of particles to produce. Default: %s" \
+                      % (optdefault),
+                  metavar="#", default=optdefault)
+optdefault = 100
 parser.add_option("-n", "--npart", dest="npart",
-                  help="number of particles to simulate per file", 
-                  metavar="#", default=100)
+                  help="number of particles to simulate per file. Default: %s" \
+                  % (optdefault),
+                  metavar="#", default=optdefault)
+optchoices = pid.keys()
+optdefault = "mu-"
 parser.add_option("-t", "--type", dest="type",
-                  help="Particle type to be generated",
-                  metavar="TYPE",default="mu-")
+                  help="Particle type to be generated. Choices: %s. Default: %s" \
+                      % (optchoices, optdefault),
+                  metavar="TYPE",
+                  choices=optchoices, default=optdefault)
+optdefault = 1000.0
 parser.add_option("-e", "--energy", dest="energy",
-                  help="Particle energy to be generated in MeV",
-                  metavar="ENERGY",default=1000.0)
+                  help="Particle energy to be generated in MeV. Default: %s" \
+                      % (optdefault),
+                  metavar="ENERGY",default=optdefault)
+optchoices = ["center", "random", "minusx", "plusx", "minusz", "plusz"]
+optdefault = optchoices[0]
 parser.add_option("-v", "--vertex", dest="vertname",
-                  help="Type of vertex (center*, random, minusx, plusx, minusz, plusz)",
-                  default="center")
+                  help="Type of vertex. Choices: %s. Default: %s" \
+                      % (optchoices, optdefault),
+                  choices=optchoices, default=optdefault)
+optchoices = ["4pi", "towall", "tocap"]
+optdefault = optchoices[0]
 parser.add_option("-d", "--direction", dest="dirname",
-                  help="Type of direction (4pi*, towall, tocap)",
-                  default="4pi")
+                  help="Type of direction. Choices: %s. Default: %s" \
+                      % (optchoices, optdefault),
+                  choices=optchoices, default=optdefault)
+optchoices = detectors.keys()
+optdefault = "SuperK"
+parser.add_option("-w", "--detector", dest="detector",
+                  help="Detector water volume to use (for vertex positioning). Choices: %s. Default: %s" \
+                      % (optchoices, optdefault),
+                  choices=optchoices, default=optdefault)
 
 (options, args) = parser.parse_args()
 
@@ -71,13 +98,25 @@ elif options.vertname == "wall":
     print >>sys.stderr, "Wall not implemented yet"
     sys.exit(3)
 elif options.vertname == "minusx":
-    particle["vertex"] = (-1000,0,0)
+    if options.detector == "SuperK":
+        particle["vertex"] = (-1000,0,0)
+    else:
+        particle["vertex"] = (-1000. * detectors[options.detector][0] / detectors["SuperK"][0], 0, 0)
 elif options.vertname == "plusx":
-    particle["vertex"] = (1000,0,0)
+    if options.detector == "SuperK":
+        particle["vertex"] = (+1000,0,0)
+    else:
+        particle["vertex"] = (+1000. * detectors[options.detector][0] / detectors["SuperK"][0], 0, 0)
 elif options.vertname == "minusz":
-    particle["vertex"] = (0,0,-1000)
+    if options.detector == "SuperK":
+        particle["vertex"] = (0, 0, -1000)
+    else:
+        particle["vertex"] = (0, 0, -1000. * detectors[options.detector][1] / detectors["SuperK"][1])
 elif options.vertname == "plusz":
-    particle["vertex"] = (0,0,1000)
+    if options.detector == "SuperK":
+        particle["vertex"] = (0, 0, +1000)
+    else:
+        particle["vertex"] = (0, 0, +1000. * detectors[options.detector][1] / detectors["SuperK"][1])
 else:
     print >>sys.stderr, "Don't understand vertex",opttions.vertname
     sys.exit(2)
@@ -101,13 +140,6 @@ else:
 
 
 
-nue=12
-nuebar=-12
-numu=14
-numubar=-14
-nutau=16
-nutaubar=-16
-
 nu =   {"type":pid["numu"], "energy":energy+1000.0,
         "direction":(1, 0, 0)}
 prot = {"type":pid["p+"], "energy":935.9840,
@@ -119,8 +151,8 @@ def partPrint(p, f, recno):
     f.write("$ begin\n")
     f.write("$ nuance 0\n")
     if randvert:
-        rad = 3368.15/2. - 20. #cm
-        height = 3620.0 - 20. #cm
+        rad    = detectors[options.detector][0] - 20.
+        height = detectors[options.detector][1] - 20.
         while True:
             x = random.uniform(-rad,rad)
             y = random.uniform(-rad,rad)
@@ -154,7 +186,7 @@ def printTrack(p, f, code=0):
 for fileno in range(nfiles):
     typestr = options.type.replace("+","plus").replace("-","minus")
     
-    filename="%s_%.0fMeV_%s_%s_%03i.kin" % (typestr, energy, options.vertname, options.dirname, fileno)
+    filename="%s_%.0fMeV_%s_%s_%s_%03i.kin" % (typestr, energy, options.vertname, options.dirname, options.detector, fileno)
 
     outfile = open(filename, 'w')
 

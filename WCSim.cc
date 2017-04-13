@@ -20,6 +20,14 @@
 #include "WCSimRandomParameters.hh"
 #include <iostream>
 
+void file_exists(const char * filename) {
+  bool exists = access(filename, F_OK) != -1;
+  if(!exists) {
+    G4cerr << filename << " not found or inaccessible. Exiting" << G4endl;
+    exit(-1);
+  }
+}
+
 int main(int argc,char** argv)
 {
   // Construct the default run manager
@@ -33,6 +41,7 @@ int main(int argc,char** argv)
   WCSimTuningParameters* tuningpars = new WCSimTuningParameters();
 
   // Get the tuning parameters
+  file_exists("tuning_parameters.mac");
   UI->ApplyCommand("/control/execute tuning_parameters.mac");
 
   // define random number generator parameters
@@ -52,6 +61,7 @@ int main(int argc,char** argv)
   WCSimPhysicsListFactory *physFactory = new WCSimPhysicsListFactory();
 
   // Currently, default model is set to BINARY
+  file_exists("jobOptions.mac");
   UI->ApplyCommand("/control/execute jobOptions.mac");
 
   // Initialize the physics factory to register the selected physics.
@@ -68,6 +78,7 @@ int main(int argc,char** argv)
   // by the program BEFORE the runManager is initialized.
   // If file does not exist, default model will be used.
   // Currently, default model is set to BINARY.
+  file_exists("jobOptions2.mac");
   UI->ApplyCommand("/control/execute jobOptions2.mac");
 
   // Visualization
@@ -84,7 +95,7 @@ int main(int argc,char** argv)
   runManager->SetUserAction(myRunAction);
 
   runManager->SetUserAction(new WCSimEventAction(myRunAction, WCSimdetector,
-        myGeneratorAction));
+						 myGeneratorAction));
   runManager->SetUserAction(new WCSimTrackingAction);
 
   runManager->SetUserAction(new WCSimStackingAction(WCSimdetector));

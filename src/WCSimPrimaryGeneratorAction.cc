@@ -274,7 +274,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         yPos = fTmpRootrackerVtx->EvtVtx[1] - y_offset;
         zPos = fTmpRootrackerVtx->EvtVtx[2] - z_offset;
 
-
         //Check if event is outside detector; skip to next event if so; keep
         //loading events until one is found within the detector or there are
         //no more interaction to simulate for this event.
@@ -399,10 +398,10 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 // Returns a vector with the tokens
 vector<string> tokenize( string separators, string input ) 
 {
-    unsigned int startToken = 0, endToken; // Pointers to the token pos
-    vector<string> tokens;  // Vector to keep the tokens
-
-    if( separators.size() > 0 && input.size() > 0 ) 
+  std::size_t startToken = 0, endToken; // Pointers to the token pos
+  vector<string> tokens;  // Vector to keep the tokens
+  
+  if( separators.size() > 0 && input.size() > 0 ) 
     {
 
         while( startToken < input.size() )
