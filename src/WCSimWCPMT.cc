@@ -87,9 +87,15 @@ void WCSimWCPMT::Digitize()
 void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
 
+  // Get the info for pmt positions
+  std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
+  // It works out that the pmts here are ordered !
+  // pmts->at(i) has tubeid i+1
+
   //Get the PMT info for hit time smearing
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+
 
   for (G4int i=0; i < WCHC->entries(); i++)
     {
@@ -107,6 +113,23 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       G4int   tube         = (*WCHC)[i]->GetTubeID();
       G4double peSmeared = 0.0;
       double time_PMT, time_true;
+      G4int  track_id      = (*WCHC)[i]->GetTrackID();
+      
+      
+      // Set the position and rotation of the pmt (from WCSimWCAddDarkNoise.cc)
+      Float_t hit_pos[3];
+      Float_t hit_rot[3];
+      
+      WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( tube -1 );
+      hit_pos[0] = 10*pmtinfo->Get_transx()/CLHEP::cm;
+      hit_pos[1] = 10*pmtinfo->Get_transy()/CLHEP::cm;
+      hit_pos[2] = 10*pmtinfo->Get_transz()/CLHEP::cm;
+      hit_rot[0] = pmtinfo->Get_orienx();
+      hit_rot[1] = pmtinfo->Get_orieny();
+      hit_rot[2] = pmtinfo->Get_orienz();
+
+      G4ThreeVector pmt_orientation(hit_rot[0], hit_rot[1], hit_rot[2]);
+      G4ThreeVector pmt_position(hit_pos[0], hit_pos[1], hit_pos[2]);
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
 	    time_true = (*WCHC)[i]->GetTime(ip);
@@ -122,8 +145,11 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      Digi->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
 	      Digi->AddPe(time_PMT);	
 	      Digi->SetTubeID(tube);
+	      Digi->SetPos(pmt_position);
+	      Digi->SetOrientation(pmt_orientation);
 	      Digi->SetPe(ip,peSmeared);
 	      Digi->SetTime(ip,time_PMT);
+	      Digi->SetTrackID(track_id);
 	      Digi->SetPreSmearTime(ip,time_true);
 	      Digi->SetParentID(ip,parent_id);
 	      DigiHitMapPMT[tube] = DigitsCollection->insert(Digi);
@@ -131,9 +157,12 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    else {
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->AddPe(time_PMT);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
-	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTubeID(tube);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPe(ip,peSmeared);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTime(ip,time_PMT);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTubeID(tube); 
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPos(pmt_position);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetOrientation(pmt_orientation);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTrackID(track_id);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPreSmearTime(ip,time_true);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetParentID(ip,parent_id);
 	    }

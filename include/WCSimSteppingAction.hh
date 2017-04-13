@@ -16,7 +16,7 @@ public:
   {};
 
   ~WCSimSteppingAction()
-  {};
+  { };
 
   void UserSteppingAction(const G4Step*);
 
@@ -31,6 +31,13 @@ public:
   G4double FieldLines(G4double x,
 		      G4double y,
 		      G4int xy);
+
+
+  static G4int n_photons_through_mPMTLV;
+  static G4int n_photons_through_acrylic;
+  static G4int n_photons_through_gel;
+  static G4int n_photons_on_blacksheet;
+  static G4int n_photons_on_smallPMT;
 
 private:
 

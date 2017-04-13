@@ -56,19 +56,19 @@ WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Float_t orientation[3], F
 void WCSimRootGeom::SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, 
 			    Float_t rot[3], Float_t pos[3], bool expand)
 {
-   if(expand) (*(fPMTArray)).ExpandCreate(i+2);
-
+  if(expand) (*(fPMTArray)).ExpandCreate(i+2);
+  
   // Set PMT values
-TClonesArray &pmtArray = *fPMTArray;
-    WCSimRootPMT *jPMT = new(pmtArray[i]) WCSimRootPMT(tubeno, cyl_loc, rot, pos);
-    //WCSimRootPMT jPMT = *(WCSimRootPMT*)(*fPMTArray)[i];
-    // jPMT.SetTubeNo(tubeno);
-    // jPMT.SetCylLoc(cyl_loc);
-    // int j;
-    // for (j=0;j<3;j++){
-    //   jPMT.SetOrientation(j,rot[j]);
-    //   jPMT.SetPosition(j,pos[j]);
-    // }
+  TClonesArray &pmtArray = *fPMTArray;
+  WCSimRootPMT *jPMT = new(pmtArray[i]) WCSimRootPMT(tubeno, cyl_loc, rot, pos);
+  //WCSimRootPMT jPMT = *(WCSimRootPMT*)(*fPMTArray)[i];
+  // jPMT.SetTubeNo(tubeno);
+  // jPMT.SetCylLoc(cyl_loc);
+  // int j;
+  // for (j=0;j<3;j++){
+  //   jPMT.SetOrientation(j,rot[j]);
+  //   jPMT.SetPosition(j,pos[j]);
+  // }
 
 }
 

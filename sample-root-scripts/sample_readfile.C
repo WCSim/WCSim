@@ -88,6 +88,17 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
   }
   geotree->GetEntry(0);
 
+  // Options tree - only need 1 "event"
+  TTree *opttree = (TTree*)file->Get("wcsimRootOptionsT");
+  WCSimRootOptions *opt = 0; 
+  opttree->SetBranchAddress("wcsimrootoptions", &opt);
+  if(verbose) std::cout << "Optree has " << opttree->GetEntries() << " entries" << std::endl;
+  if (opttree->GetEntries() == 0) {
+    exit(9);
+  }
+  opttree->GetEntry(0);
+  opt->Print();
+
   // start with the main "subevent", as it contains most of the info
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
@@ -146,6 +157,9 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
       
 	for (int j=0; j<3; j++)
 	  printf("Track dir: %d %f\n",j, wcsimroottrack->GetDir(j));
+	printf("Track energy: %f\n", wcsimroottrack->GetE());
+	printf("Track momentum: %f\n", wcsimroottrack->GetP());
+	printf("Track mass: %f\n", wcsimroottrack->GetM());
       }
 
       
