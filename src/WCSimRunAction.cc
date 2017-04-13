@@ -136,7 +136,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     //set detector & random options
     wcsimdetector->SaveOptionsToOutput(wcsimrootoptions);
     wcsimrandomparameters->SaveOptionsToOutput(wcsimrootoptions);
-    
+     
     //Setup rooTracker tree
     if(SaveRooTracker){
       //Setup TClonesArray to store Rootracker truth info
@@ -155,14 +155,14 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   flatfile->SetCompressionLevel(2); //default is 1 (minimal compression)
   masterTree = new TTree("MasterTree","Main WCSim Tree");
   if(wcsimdetector->GetIsNuPrism()){
-    if(GetSaveRooTracker())
+    if(GetSaveRooTracker()){
       //Already have fSettingsInputTree and branched it
       if(fSettingsInputTree){
 	geomTree = fSettingsInputTree->CloneTree(0);
 	geomTree->SetObject("Geometry","Geometry, Software version and generation settings");
       } else
 	geomTree = new TTree("Geometry","Geometry Tree");
-    
+    }
     geomTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/F");
     geomTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/F");
     geomTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
@@ -312,19 +312,174 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   //set detector & random options
   wcsimdetector->SaveOptionsToOutput(wcsimrootoptions);
   wcsimrandomparameters->SaveOptionsToOutput(wcsimrootoptions);
-
+  */
 
   //Setup rooTracker tree
   if(SaveRooTracker){
     //Setup TClonesArray to store Rootracker truth info
-    fVertices = new TClonesArray("NRooTrackerVtx", 10);
-    fVertices->Clear();
-    fNVtx = 0;
-    fRooTrackerOutputTree = new TTree("fRooTrackerOutputTree","Event Vertex Truth Array");
-    fRooTrackerOutputTree->Branch("NVtx",&fNVtx,"NVtx/I");
-    fRooTrackerOutputTree->Branch("NRooTrackerVtx","TClonesArray", &fVertices);
+    //fVertices = new TClonesArray("NRooTrackerVtx", 10);
+    //fVertices->Clear();
+    //fNVtx = 0;
+    evNRooTracker = new NRooTrackerVtx();   // should be an array? Not clear where in WCSim NVtx > 1
+    flatRooTrackerTree = new TTree("RooTracker","Event Vertex Truth Array");
+    flatRooTrackerTree->Branch("Run",&run,"Run/Int_t");
+    flatRooTrackerTree->Branch("Event",&event,"Event/Int_t");
+    flatRooTrackerTree->Branch("SubEvent",&subevent,"SubEvent/Int_t");
+    flatRooTrackerTree->Branch("NVtx",&fNVtx,"NVtx/Int_t");
+    //flat branching
+    flatRooTrackerTree->Branch("NuFluxEntry",&evNRooTracker->NuFluxEntry,"NuFluxEntry/Long_t");
+    flatRooTrackerTree->Branch("NuFileName",&evNRooTracker->NuFileName,"NuFileName[100]/Char_t"); //CAREFUL
+    flatRooTrackerTree->Branch("NuParentDecMode",&evNRooTracker->NuParentDecMode,"NuParentDecMod/Int_t");
+    flatRooTrackerTree->Branch("NuParentPdg",&evNRooTracker->NuParentPdg,"NuParentPdg/Int_t");
+    //// WORK IN PROGRESS
+    double      NuParentDecP4 [4]; 
+    double      NuParentDecX4 [4]; 
+    float       NuCospibm;         
+    float       NuNorm;            
+    double      NuParentProP4 [4]; 
+    double      NuParentProX4 [4]; 
+    float       NuCospi0bm;        
+    float       NuRnu;             
+    float       NuXnu [2];         
+    int         NuIdfd;            
+    int         NuGipart;          
+    float       NuGpos0[3];        
+    float       NuGvec0[3];        
+    float       NuGamom0;          
+    int         NuNg;             
+    float       NuGp[kNgmax][3];  
+    float       NuGcosbm[kNgmax]; 
+    float       NuGv[kNgmax][3];  
+    int         NuGpid[kNgmax];   
+    int         NuGmec[kNgmax];   
+    float       NuEnusk;          
+    float       NuNormsk;         
+    float       NuAnorm;          
+    int         NuGmat[kNgmax];   
+    float       NuGdistc[kNgmax]; 
+    float       NuGdistal[kNgmax];
+    float       NuGdistti[kNgmax];
+    float       NuGdistfe[kNgmax];
+    float       NuVersion;        
+    int         NuTuneid;         
+    int         NuNtrig;          
+    int         NuPint;           
+    float       NuBpos[2];        
+    float       NuBtilt[2];       
+    float       NuBrms[2];        
+    float       NuEmit[2];        
+    float       NuAlpha[2];       
+    float       NuHcur[3];        
+    int         NuRand;           
+    TObjString* EvtCode;       
+    int         EvtNum;        
+    double      EvtXSec;       
+    double      EvtDXSec;      
+    double      EvtWght;              
+    double      EvtProb;              
+    double      EvtVtx[4];            
+    int         StdHepN;              
+    int*        StdHepPdg; //[StdHepN]
+    int         StdHepPdgTemp   [kNStdHepNPmax];
+    int*        StdHepStatus; //[StdHepN] 
+    int         StdHepStatusTemp[kNStdHepNPmax];   
+    double      StdHepX4    [kNStdHepNPmax][4]; 
+    double      StdHepP4    [kNStdHepNPmax][4]; 
+    double      StdHepPolz  [kNStdHepNPmax][3]; 
+    int  StdHepFdTemp    [kNStdHepNPmax];   
+    int  StdHepLdTemp    [kNStdHepNPmax];   
+    int  StdHepFmTemp    [kNStdHepNPmax];   
+    int  StdHepLmTemp    [kNStdHepNPmax];   
+    int*  StdHepFd;    //[StdHepN] 
+    int*  StdHepLd;    //[StdHepN] 
+    int*  StdHepFm;    //[StdHepN] 
+    int*  StdHepLm;    //[StdHepN] 
+    int    NEnvc;                    
+    int    NEipvcTemp[kNEmaxvc];     
+    int*   NEipvc; //[NEnvc]         
+    float  NEpvc[kNEmaxvc][3];       
+    int    NEiorgvcTemp[kNEmaxvc];   
+    int*   NEiorgvc; //[NEnvc]       
+    int    NEiflgvcTemp[kNEmaxvc];   
+    int    NEicrnvcTemp[kNEmaxvc];   
+    int*    NEiflgvc; 
+    int*    NEicrnvc; 
+    float NEcrsx;    
+    float NEcrsy;    
+    float NEcrsz;    
+    float NEcrsphi;    
+    int    NEnvert;                    
+    float  NEposvert[kNEmaxvert][3];   
+    int    NEiflgvertTemp[kNEmaxvert]; 
+    int*   NEiflgvert;
+    int    NEnvcvert;                   
+    float  NEdirvert[kNEmaxvertp][3];   
+    float  NEabspvertTemp[kNEmaxvertp]; 
+    float  NEabstpvertTemp[kNEmaxvertp];
+    int    NEipvertTemp[kNEmaxvertp];   
+    int    NEivertiTemp[kNEmaxvertp];   
+    int    NEivertfTemp[kNEmaxvertp];   
+    float*  NEabspvert; 
+    float*  NEabstpvert;
+    int*    NEipvert;   
+    int*    NEiverti;   
+    int*    NEivertf;   
+    TObjString* GeomPath;
+    TObjString* GeneratorName;
+    TObjString* OrigFileName; 
+    TObjString* OrigTreeName; 
+    int OrigEvtNum;
+    int OrigTreeEntries;
+    double OrigTreePOT;
+    double TimeInSpill;
+    int TruthVertexID;
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
-  */
+  
 }
 
 void WCSimRunAction::EndOfRunAction(const G4Run*)
@@ -354,9 +509,10 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
   triggerTree->Write();
   masterTree->AddFriend("EventInfo");
   eventInfoTree->Write();
-  // Try adding RooTracker tree         WORK IN PROGRESS
-
-
+  if(SaveRooTracker){
+    masterTree->AddFriend("RooTracker");
+    flatRooTrackerTree->Write();
+  }
   //  fSettingsOutputTree->Write(); // not a friend
   //}
 
@@ -572,7 +728,6 @@ void WCSimRunAction::FillFlatGeoTree(){
     WCDetRadius = wcsimdetector->GetWCIDDiameter()/2.0;
     WCDetHeight = wcsimdetector->GetWCIDHeight();
  
-    /// TO TEST:
     if(fSettingsInputTree){
       fSettingsInputTree->GetEntry(0);
       double z_offset = fNuPlanePos[2]/100.0 + fNuPrismRadius;
@@ -592,3 +747,4 @@ NRooTrackerVtx* WCSimRunAction::GetRootrackerVertex(){
   fNVtx += 1;
   return currRootrackerVtx;
 }
+

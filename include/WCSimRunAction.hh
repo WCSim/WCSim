@@ -52,6 +52,7 @@ public:
   TTree *GetTracksTree(){return tracksTree;}
   TTree *GetTriggerTree(){return triggerTree;}
   TTree *GetEventInfoTree(){return eventInfoTree;}
+  TTree *GetFlatRooTrackerTree(){return flatRooTrackerTree;}
 
   void SetEventHeaderNew(G4int run_id, G4int event_id, G4int subevent_id){
     event = event_id;
@@ -77,6 +78,7 @@ public:
   }
 
   eventNtuple * GetMyStruct(){return evNtup;}
+  NRooTrackerVtx * GetMyRooTracker(){return evNRooTracker;}
 
   void SetTree(TTree* tree){WCSimTree=tree;}
   void SetGeoTree(TTree* tree){geoTree=tree;}
@@ -96,7 +98,9 @@ public:
   void FillFlatGeoTree();
 
   NRooTrackerVtx* GetRootrackerVertex();
-  void FillRootrackerVertexTree() { fRooTrackerOutputTree->Fill();}
+  void FillRootrackerVertexTree() { 
+    fRooTrackerOutputTree->Fill();
+  }
   void ClearRootrackerVertexArray() { 
       fVertices->Clear(); 
       fNVtx = 0;
@@ -151,7 +155,7 @@ private:
   TTree* tracksTree;
   TTree* triggerTree;
   TTree* eventInfoTree;
-
+  TTree* flatRooTrackerTree;
 
   // GeoTree
   Char_t geo_type_string[20];   
@@ -200,6 +204,9 @@ private:
   
   //Event info: General, Tracks and Hits
   eventNtuple *evNtup;
+
+  //NRooTracker
+  NRooTrackerVtx *evNRooTracker;
     
   const G4Run* fG4Run;
 };
