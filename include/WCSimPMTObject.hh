@@ -88,6 +88,7 @@ public:
   G4double GetPMTGlassThickness();
 };
 
+
 class PMT3inch : public WCSimPMTObject
 {
 
@@ -149,6 +150,7 @@ public:
 protected:
   G4float* GetCollectionEfficiencyArray();
 };
+
 
  class PMT10inch : public WCSimPMTObject
 {
