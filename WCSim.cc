@@ -4,8 +4,6 @@
 #include "G4UIterminal.hh"
 #include "G4UItcsh.hh"
 #include "WCSimDetectorConstruction.hh"
-#include "WCSimPhysicsList.hh"
-#include "WCSimPhysicsMessenger.hh"
 #include "WCSimPhysicsListFactory.hh"
 #include "WCSimPhysicsListFactoryMessenger.hh"
 #include "WCSimTuningParameters.hh"
@@ -59,26 +57,13 @@ int main(int argc,char** argv)
   // Set up the messenger hooks here, initialize the actual list after loading jobOptions.mac
   WCSimPhysicsListFactory *physFactory = new WCSimPhysicsListFactory();
 
-  // Currently, default model is set to BINARY
+  // Currently, default physics list is set to FTFP_BERT
   file_exists("jobOptions.mac");
   UI->ApplyCommand("/control/execute jobOptions.mac");
 
   // Initialize the physics factory to register the selected physics.
   physFactory->InitializeList();
   runManager->SetUserInitialization(physFactory);
-
-  // If the WCSim physics list was chosen in jobOptions.mac,
-  // then it's hadronic model needs to be selected in jobOptions2.mac
-  //=================================
-  // Added by JLR 2005-07-05
-  //=================================
-  // Choice of hadronic interaction model for 
-  // protons & neutrons. This file must be read in
-  // by the program BEFORE the runManager is initialized.
-  // If file does not exist, default model will be used.
-  // Currently, default model is set to BINARY.
-  file_exists("jobOptions2.mac");
-  UI->ApplyCommand("/control/execute jobOptions2.mac");
 
   // Visualization
   G4VisManager* visManager = new WCSimVisManager;
