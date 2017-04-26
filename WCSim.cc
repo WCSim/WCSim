@@ -58,6 +58,7 @@ int main(int argc,char** argv)
   WCSimPhysicsListFactory *physFactory = new WCSimPhysicsListFactory();
 
   // Currently, default physics list is set to FTFP_BERT
+  // The custom WCSim physics list option is removed in versions later than WCSim1.6.0
   file_exists("jobOptions.mac");
   UI->ApplyCommand("/control/execute jobOptions.mac");
 
