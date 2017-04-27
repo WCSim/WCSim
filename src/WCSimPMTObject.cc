@@ -11,6 +11,9 @@
 #include "G4RotationMatrix.hh"
 #include "G4ThreeVector.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPmtInfo.hh"
 

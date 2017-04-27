@@ -25,7 +25,7 @@ WCSimRootOptions::~WCSimRootOptions()
 }
 
 //______________________________________________________________________________
-void WCSimRootOptions::Print()
+void WCSimRootOptions::Print(Option_t *) const
 {
   cout
     << "Detector construction:" << endl
@@ -68,7 +68,6 @@ void WCSimRootOptions::Print()
     << "\tTopveto: " << Topveto << endl
     << "Physics List Factory:" << endl
     << "\tPhysicsListName: " << PhysicsListName << endl
-    << "\tSecondaryHadModel: " << SecondaryHadModel << endl
     << "WCSimPrimaryGeneratorAction" << endl
     << "\tVectorFileName: " << VectorFileName << endl
     << "\tGeneratorType: " << GeneratorType << endl
