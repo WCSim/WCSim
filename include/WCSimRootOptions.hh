@@ -105,10 +105,8 @@ public:
   bool   GetTopveto() {return Topveto;}
   //WCSimPhysicsListFactory sets
   void SetPhysicsListName(string iPhysicsListName) {PhysicsListName = iPhysicsListName;}
-  void SetSecondaryHadModel(string iSecondaryHadModel) {SecondaryHadModel = iSecondaryHadModel;}
   //WCSimPhysicsListFactory gets
   string GetPhysicsListName() {return PhysicsListName;}
-  string GetSecondaryHadModel() {return SecondaryHadModel;}
   //WCSimPrimaryGeneratorAction sets
   void SetVectorFileName(string iVectorFileName) {VectorFileName = iVectorFileName;}
   void SetGeneratorType(string iGeneratorType) {GeneratorType = iGeneratorType;}
@@ -168,7 +166,6 @@ private:
 
   //WCSimPhysicsListFactory
   string PhysicsListName;
-  string SecondaryHadModel;
 
   //WCSimPrimaryGeneratorAction
   string VectorFileName;
