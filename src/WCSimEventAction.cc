@@ -26,6 +26,9 @@
 #include "G4UnitsTable.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 #include <set>
 #include <iomanip>
 #include <string>
@@ -59,7 +62,8 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
 				   WCSimPrimaryGeneratorAction* myGenerator)
   :runAction(myRun), generatorAction(myGenerator), 
    detectorConstructor(myDetector),
-   ConstructedDAQClasses(false)
+   ConstructedDAQClasses(false),
+   SavedOptions(false)
 {
   DAQMessenger = new WCSimWCDAQMessenger(this);
 
@@ -120,8 +124,13 @@ void WCSimEventAction::CreateDAQInstances()
 
 void WCSimEventAction::BeginOfEventAction(const G4Event*)
 {
-  if(!ConstructedDAQClasses)
+  if(!ConstructedDAQClasses) {
     CreateDAQInstances();
+
+    //and save options in output file
+    G4DigiManager* DMman = G4DigiManager::GetDMpointer();
+
+  }
 }
 
 void WCSimEventAction::EndOfEventAction(const G4Event* evt)
@@ -393,6 +402,21 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 		WCDC_hits,
 		WCDC);
 
+  //save DAQ options here. This ensures that when the user selects a default option
+  // (e.g. with -99), the saved option value in the output reflects what was run
+  if(!SavedOptions) {
+    WCSimRootOptions * wcsimopt = runAction->GetRootOptions();
+    //Dark noise
+    WCDNM->SaveOptionsToOutput(wcsimopt);
+    //Digitizer
+    WCDM->SaveOptionsToOutput(wcsimopt);
+    //Trigger
+    WCTM->SaveOptionsToOutput(wcsimopt);
+    //Generator
+    generatorAction->SaveOptionsToOutput(wcsimopt);
+    
+    SavedOptions = true;
+  }
 }
 
 G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
@@ -894,11 +918,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   
   TTree* tree = GetRunAction()->GetTree();
   tree->Fill();
-  TFile* hfile = tree->GetCurrentFile();
   // MF : overwrite the trees -- otherwise we have as many copies of the tree
   // as we have events. All the intermediate copies are incomplete, only the
   // last one is useful --> huge waste of disk space.
-  hfile->Write("",TObject::kOverwrite);
+  tree->Write("",TObject::kOverwrite);
   
   // M Fechner : reinitialize the super event after the writing is over
   wcsimrootsuperevent->ReInitialize();
