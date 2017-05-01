@@ -15,15 +15,8 @@
 #include <fstream>
 #include <map>
 #include <vector>
-//#include <hash_map.h>
-// warning : hash_map is not part of the standard
-#include <ext/hash_map>
+#include <unordered_map>     //--> need to fix the "using" and namespace statements
 
-
-using __gnu_cxx::hash;
-using __gnu_cxx::hashtable;
-using __gnu_cxx::hash_map;
-using __gnu_cxx::hash_multimap;
 
 // (JF) We don't need this distinction for DUSEL
 //enum cyl_location {endcap1,wall,endcap2};
@@ -38,15 +31,6 @@ class WCSimTuningParameters;
 class WCSimDetectorMessenger;
 class WCSimWCSD;
 
-namespace __gnu_cxx  {
-  template<> struct hash< std::string >
-  {
-    size_t operator()( const std::string& x ) const
-    {
-      return hash< const char* >()( x.c_str() );
-    }
-  };
-}
 
 class WCSimDetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -390,8 +374,8 @@ private:
 
   static std::map<int, G4Transform3D> tubeIDMap;
 //  static std::map<int, cyl_location> tubeCylLocation;
-  static hash_map<std::string, int, hash<std::string> >  tubeLocationMap; 
- 
+  static std::unordered_map<std::string, int, std::hash<std::string> >  tubeLocationMap; 
+
   // Variables related to configuration
 
   G4int myConfiguration;   // Detector Config Parameter

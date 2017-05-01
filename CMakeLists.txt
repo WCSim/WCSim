@@ -1,8 +1,13 @@
 ## Based on CMakeLists.txt from AnaEx02 in examples/extended of Geant4.9.6 ##
 #----------------------------------------------------------------------------
 # Setup the project
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.10 FATAL_ERROR)
 project(WCSim)
+
+if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.4)
+    message(STATUS "GCC version >= 4.4 required!")
+    return()
+endif()
 
 #----------------------------------------------------------------------------
 # Find ROOT (required package) in CONFIG mode. Looking for ROOTConfig.cmake.
@@ -71,6 +76,15 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
+
+# To use <unordered_map>, ie. use C++11 now from GCC 4.4 onwards support for unordered_maps.
+# Had to change G4float to G4double for QE because of double arithmatic inside the array.
+if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.7)
+    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++11")
+else()
+    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++0x")
+endif()
+
 add_executable(WCSim WCSim.cc ${sources} ${headers})
 target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree)
 

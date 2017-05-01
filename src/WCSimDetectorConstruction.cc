@@ -22,7 +22,9 @@
 
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap;
 //std::map<int, cyl_location>  WCSimDetectorConstruction::tubeCylLocation;
-hash_map<std::string, int, hash<std::string> > 
+// std::hash is default hash function actually (http://en.cppreference.com/w/cpp/utility/hash)
+// with operator() already properly defined.
+std::unordered_map<std::string, int, std::hash<std::string> >         
 WCSimDetectorConstruction::tubeLocationMap;
 
 WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuningParameters* WCSimTuningPars):WCSimTuningParams(WCSimTuningPars)
