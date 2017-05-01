@@ -11,6 +11,9 @@
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleTypes.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 //class WCSimDetectorConstruction;
 
 WCSimStackingAction::WCSimStackingAction(WCSimDetectorConstruction* myDet):DetConstruct(myDet) {;}

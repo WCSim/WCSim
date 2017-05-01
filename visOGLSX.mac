@@ -21,4 +21,6 @@
 /vis/scene/add/trajectories
 /vis/scene/endOfEventAction accumulate
 
+# Default background for OGLSX is black, can change it here (but muons are white)
+#/vis/viewer/set/background 0 0 0 1
 
