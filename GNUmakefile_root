@@ -34,7 +34,7 @@ ROOTOBJS  := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tm
 
 .PHONY: directories
 
-all: directories libWCSimRoot.so
+all: directories libWCSimRoot.so rootwc
 
 directories: $(G4TMPDIR)
 
@@ -62,3 +62,9 @@ clean :
 	@rm -f $(G4TMPDIR)/*.o
 	@rm -f ./src/WCSimRootDict.cc
 
+rootwc: FORCE
+	@echo "** Copying scripts to bin..."
+	cp ${G4WORKDIR}/rootwc/rootwc ${G4WORKDIR}/bin/${G4SYSTEM}
+
+FORCE:
+	

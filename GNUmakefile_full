@@ -48,10 +48,9 @@ DOXYGEN_EXISTS = 0
 endif
 
 .PHONY: all
-all: rootcint lib bin shared libWCSim.a
+all: rootcint lib bin shared libWCSim.a rootwc
 
 # Note dependencies not yet set up right yet
-
 ROOTSO    := libWCSimRoot.so
 
 ROOTSRC  := ./src/WCSimRootEvent.cc ./include/WCSimRootEvent.hh ./src/WCSimRootGeom.cc ./include/WCSimRootGeom.hh ./include/WCSimPmtInfo.hh ./src/WCSimEnumerations.cc ./include/WCSimEnumerations.hh ./src/WCSimRootOptions.cc ./include/WCSimRootOptions.hh ./include/WCSimRootLinkDef.hh
@@ -84,6 +83,12 @@ clean_wcsim:
 	@if [ -d "doc/doxygen" ]; \
 		then \
 		rm -r doc/doxygen; \
-	fi	
+	fi
 
+rootwc: FORCE
+	@echo "** Copying scripts to bin..."
+	cp ${G4WORKDIR}/rootwc/rootwc ${G4WORKDIR}/bin/${G4SYSTEM}
+
+FORCE:
+	
 include $(G4INSTALL)/config/binmake.gmk
