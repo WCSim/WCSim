@@ -29,7 +29,7 @@ This test prints to the screen the size of the output trees and top-level branch
 The optional `verbose` boolean flag allows sub-branch sizes to be printed.
 
 ### Usage
-To use the printSizes test in the default method, do the following steps:
+To use the printSizes test in the default method, do the following steps (note that the first 3 steps are equvialent to that for `verification_HitsChargeTime.C`):
 * clone a copy of the current code from GitHub into a directory called `WCSim_clean`. Compile the code. 
 * Go to `WCSim_clean/verification-test-scripts` and run `electrontest.mac` by typing: `../bin/Linux-g++/WCSim electrontest.mac`. This should produce an output file called `wcsimtest.root` in the `verification-test-scripts` directory of `WCSim_clean`. 
 * Go to the `verification-test-scripts` directory of your local WCSim (with your changes you wish to commit) and run the macro `electrontest.mac` in WCSim by typing `../bin/Linux-g++/WCSim electrontest.mac`. This should produce a file called `wcsimtest.root` in your `verification-test-scripts` directory. 
