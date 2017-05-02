@@ -1,9 +1,21 @@
+#include "TSystem.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TCanvas.h"
+
 #include <iostream>
 #include <TH1F.h>
 #include <stdio.h>     
-#include <stdlib.h>    
+#include <stdlib.h>
+
+#if !defined(__CINT__) || defined(__MAKECINT__)
+#include "WCSimRootEvent.hh"
+#include "WCSimRootGeom.hh"
+#include "WCSimRootOptions.hh"
+#endif
+
 // Simple example of reading a generated Root file
-void sample_readfile(char *filename=NULL, bool verbose=false)
+int sample_readfile(char *filename=NULL, bool verbose=false)
 {
   // Clear global scope
   //gROOT->Reset();
@@ -39,6 +51,8 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
   */
   // Load the library with class dictionary info
   // (create with "gmake shared")
+
+#if !defined(__MAKECINT__)
   char* wcsimdirenv;
   wcsimdirenv = getenv ("WCSIMDIR");
   if(wcsimdirenv !=  NULL){
@@ -46,7 +60,8 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
   }else{
     gSystem->Load("../libWCSimRoot.so");
   }
-
+#endif
+  
   TFile *file;
   // Open the file
   if (filename==NULL){
@@ -216,10 +231,10 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
 	if(verbose) printf("Total pe: %d times( ",peForTube);
 	for (int j = timeArrayIndex; j < timeArrayIndex + peForTube; j++)
 	{
-	  WCSimRootCherenkovHitTime HitTime = 
-	    dynamic_cast<WCSimRootCherenkovHitTime>(timeArray->At(j));
+	  WCSimRootCherenkovHitTime* HitTime = 
+	    dynamic_cast<WCSimRootCherenkovHitTime*>(timeArray->At(j));
 	  
-	  if(verbose) printf("%6.2f ", HitTime.GetTruetime() );	     
+	  if(verbose) printf("%6.2f ", HitTime->GetTruetime() );	     
 	}
 	if(verbose) cout << ")" << endl;
       }
@@ -278,4 +293,6 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
   c1->cd(4); h1->Draw();
   
   std::cout<<"num_trig "<<num_trig<<"\n";
+
+  return 0;
 }
