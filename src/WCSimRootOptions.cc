@@ -71,7 +71,7 @@ void WCSimRootOptions::Print(Option_t *) const
     << "WCSimPrimaryGeneratorAction" << endl
     << "\tVectorFileName: " << VectorFileName << endl
     << "\tGeneratorType: " << GeneratorType << endl
-    << "WCSimPrimaryGeneratorAction" << endl
+    << "WCSimRandomParameters" << endl
     << "\tRandomSeed: " << RandomSeed << endl
     << "\tRandomGenerator: " << WCSimEnumerations::EnumAsString(RandomGenerator) << endl
     << endl;
