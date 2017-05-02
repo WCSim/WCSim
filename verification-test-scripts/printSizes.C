@@ -4,7 +4,16 @@
 #include "TMemFile.h"
 #include "TKey.h"
 #include "TBranchRef.h"
- 
+#include "TSystem.h"
+
+#if !defined(__CINT__) || defined(__MAKECINT__)
+#include "WCSimRootEvent.hh"
+#include "WCSimRootGeom.hh"
+#include "WCSimEnumerations.hh"
+#endif
+
+using namespace std;
+
 //
 // This macro can be used to get aggregate information on the size
 // take on disk or in memory by the various branches in a TTree.
@@ -191,6 +200,18 @@ int printSizes(const char *filename1="wcsimtest.root",
 	       const char *filename2="../../WCSim_clean/verification-test-scripts/wcsimtest.root",
 	       bool verbose = false)
 {
+#if !defined(__MAKECINT__)
+  // Load the library with class dictionary info
+  // (create with "gmake shared")
+  char* wcsimdirenv;
+  wcsimdirenv = getenv ("WCSIMDIR");
+  if(wcsimdirenv !=  NULL){
+    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
+  }else{
+    gSystem->Load("../libWCSimRoot.so");
+  }
+#endif
+  
   cout << "Your version of WCSim assumes file: " << filename1 << endl
        << "Stable GitHub version of WCSim assumes file: " << filename2 << endl;
   TFile * f1 = OpenFile(filename1);
