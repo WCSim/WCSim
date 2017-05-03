@@ -505,6 +505,7 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
     fRooTrackerTree->SetBranchAddress("NEcrsphi",        &(nrootrackervtx->NEcrsphi)    );
 
     fRooTrackerTree->SetBranchAddress("NuParentDecMode", &(nrootrackervtx->NuParentDecMode));
+    fRooTrackerTree->SetBranchAddress("NuParentPdg",     &(nrootrackervtx->NuParentPdg));
     fRooTrackerTree->SetBranchAddress("NuNg",            &(nrootrackervtx->NuNg));
     fRooTrackerTree->SetBranchAddress("NuGp",             (nrootrackervtx->NuGp));
     fRooTrackerTree->SetBranchAddress("NuGv",             (nrootrackervtx->NuGv));
