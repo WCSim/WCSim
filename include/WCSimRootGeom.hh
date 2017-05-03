@@ -92,6 +92,7 @@ public:
            {fWCOffset[0]=x; fWCOffset[1]=y; fWCOffset[2] = z;}
 
   void  SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, Float_t rot[3], Float_t pos[3], bool expand=true);
+  void  SetPMT(Int_t i, Int_t tubeno, Int_t mPMTNo, Int_t mPMT_PMTno, Int_t cyl_loc, Float_t rot[3], Float_t pos[3], bool expand=true);
   void  SetOrientation(Int_t o) {fOrientation = o;}
 
   Float_t GetWCCylRadius() const {return fWCCylRadius;}

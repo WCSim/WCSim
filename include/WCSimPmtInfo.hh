@@ -29,7 +29,7 @@ public:
   
   WCSimPmtInfo(Int_t i, Double_t t1, Double_t t2, Double_t t3, Double_t o1, Double_t o2, Double_t o3, Int_t tubeid);
 
-  WCSimPmtInfo(CylinderLocation_t i, Double_t t1, Double_t t2, Double_t t3, Double_t o1, Double_t o2, Double_t o3, Int_t tubeid,  Int_t mPMTid, Int_t mPMT_pmtid);
+  WCSimPmtInfo(Int_t i, Double_t t1, Double_t t2, Double_t t3, Double_t o1, Double_t o2, Double_t o3, Int_t tubeid,  Int_t mPMTid, Int_t mPMT_pmtid);
   
   virtual ~WCSimPmtInfo();
 

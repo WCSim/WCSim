@@ -98,7 +98,6 @@ target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree
 # relies on these scripts being in the current working directory.
 #
 set(WCSIM_SCRIPTS
-  macros/jobOptions2.mac
   macros/jobOptions.mac
   WCSim.mac
   macros/daq.mac
