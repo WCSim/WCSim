@@ -230,7 +230,9 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     {cylLocation=1;}
     
     geoFile.precision(9);
-     geoFile << setw(4) << tubeID 
+     geoFile << setw(4) << tubeID
+	     << " " << setw(4) << mPMTIDMap[tubeID].first
+	     << " " << setw(4) << mPMTIDMap[tubeID].second 
  	    << " " << setw(8) << newTransform.getTranslation().getX()/cm
  	    << " " << setw(8) << newTransform.getTranslation().getY()/cm
  	    << " " << setw(8) << newTransform.getTranslation().getZ()/cm

@@ -599,6 +599,7 @@ private:
   // Tube map information
 
   static std::map<int, G4Transform3D> tubeIDMap;
+  static std::map<int, std::pair< int, int > > mPMTIDMap; //maps tubeID to corresponding mPMT and mPMT_pmt ID
 //  static std::map<int, cyl_location> tubeCylLocation;
   //static hash_map<std::string, int, hash<std::string> >  tubeLocationMap_old;                //Deprecated
   static std::unordered_map<std::string, int, std::hash<std::string> >  tubeLocationMap; 
