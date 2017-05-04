@@ -95,7 +95,7 @@ public:
 
   WCSimRootCherenkovHit(Int_t tubeID,
 			Int_t mPMTID,
-			Int_t mPMT_PMTID;
+			Int_t mPMT_PMTID,
 			Int_t totalPe[2]);
 
   virtual ~WCSimRootCherenkovHit() { }
@@ -105,7 +105,7 @@ public:
   Int_t GetmPMT_PMTID()       const { return fmPMT_PMTID;}
   Int_t GetTotalPe(int i) const { return (i<2) ? fTotalPe[i]: 0;}
 
-  ClassDef(WCSimRootCherenkovHit,1)  
+  ClassDef(WCSimRootCherenkovHit,2)  
 };
 
 class WCSimRootCherenkovHitTime : public TObject {
@@ -156,7 +156,7 @@ public:
   Int_t       GetmPMT_PMTId() const { return fmPMT_PMTId;}
   std::vector<int> GetPhotonIds() const { return fPhotonIds; }
 
-  ClassDef(WCSimRootCherenkovDigiHit,2)  
+  ClassDef(WCSimRootCherenkovDigiHit,3)  
 };
 
 
@@ -393,7 +393,7 @@ private:
   //std::vector<WCSimRootTrigger*> fEventList;
   TObjArray* fEventList;
   Int_t Current;                      //!               means transient, not writable to file
-  ClassDef(WCSimRootEvent,1)
+  ClassDef(WCSimRootEvent,2)
 
 };
 

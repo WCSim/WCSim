@@ -319,7 +319,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vector<Float_t> truetime,std::vector<Int_t> primParID)
+WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID, Int_t mPMTID, Int_t mPMT_PMTID, std::vector<Float_t> truetime,std::vector<Int_t> primParID)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -340,6 +340,8 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vecto
  
   WCSimRootCherenkovHit *cherenkovhit
     = new(cherenkovhits[fNcherenkovhits++]) WCSimRootCherenkovHit(tubeID,
+								  mPMTID,
+								  mPMT_PMTID,
 								  WC_Index);
 
   return cherenkovhit;
@@ -352,6 +354,22 @@ WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
   // Create a WCSimRootCherenkovHitIndex object and fill it with stuff
 
   fTubeID     = tubeID;
+  fTotalPe[0] = totalPe[0];
+  fTotalPe[1] = totalPe[1];
+}
+
+//_____________________________________________________________________________
+
+WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
+					     Int_t mPMTID,
+					     Int_t mPMT_PMTID,
+					     Int_t totalPe[2])
+{
+  // Create a WCSimRootCherenkovHitIndex object and fill it with stuff
+
+  fTubeID     = tubeID;
+  fmPMTID     = mPMTID;
+  fmPMT_PMTID = mPMT_PMTID;
   fTotalPe[0] = totalPe[0];
   fTotalPe[1] = totalPe[1];
 }
@@ -369,6 +387,8 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,
 WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q, 
 								 Float_t t, 
 								 Int_t tubeid,
+								 Int_t mpmtid,
+								 Int_t mpmt_pmtid,
 								 std::vector<int> photon_ids)
 {
   // Add a new digitized hit to the list of digitized hits
@@ -377,6 +397,8 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q,
     new(cherenkovdigihits[fNcherenkovdigihits++]) WCSimRootCherenkovDigiHit(q, 
 									    t, 
 									    tubeid,
+									    mpmtid,
+									    mpmt_pmtid,
 									    photon_ids);
  
   return cherenkovdigihit;
@@ -393,6 +415,23 @@ WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q,
   fQ = q;
   fT = t;
   fTubeId = tubeid;
+  fPhotonIds = photon_ids;
+}
+
+WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q, 
+						     Float_t t, 
+						     Int_t tubeid,
+						     Int_t mpmtid,
+						     Int_t mpmt_pmtid,
+						     std::vector<int> photon_ids)
+{
+  // Create a WCSimRootCherenkovDigiHit object and fill it with stuff
+
+  fQ = q;
+  fT = t;
+  fTubeId = tubeid;
+  fmPMTId = mpmtid;
+  fmPMT_PMTId = mpmt_pmtid;
   fPhotonIds = photon_ids;
 }
 
