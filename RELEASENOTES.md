@@ -1,6 +1,22 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
+04/27/2017: Notes for v1.7.0        
+*************************************************************
+New Features
+* Pull Request #198: Run options (such as dark noise rate, electronics configuration, detector configuration, etc) is now saved in the output ROOT file. 
+* Pull Request #212 (forked from Pull Request #202): WCSim now runs with Geant 4.10.1. Extensive validation was done to ensure the physics output matches what we expect. The custom physics list option was removed and the FTFP_BERT physics list is now the default. 
+
+Bug Fixes
+* Pull Request #191: Digits were being saved multiple times if they were in overlapping trigger windows. This is now fixed. 
+
+Updates
+
+* Pull Request #135: G4 General Particle Source now documented in WCSim.mac.
+* Pull Request #176: Clean up read_PMT.C by removing duplicate line and unifying output. 
+* Pull Request #180: .gitignore file was extended to ignore output and compiled files.
+
+*************************************************************
 07/04/2016: Notes for v1.6.0        
 *************************************************************
 New Features

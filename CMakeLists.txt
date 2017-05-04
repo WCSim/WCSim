@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Based on CMakeLists.txt from AnaEx02 in examples/extended of Geant4.9.6 ##
 #----------------------------------------------------------------------------
 # Setup the project

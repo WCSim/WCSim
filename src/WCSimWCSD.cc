@@ -9,6 +9,9 @@
 #include "Randomize.hh"
 #include "G4ios.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 #include <sstream>
 
 #include "WCSimDetectorConstruction.hh"

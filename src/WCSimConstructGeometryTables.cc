@@ -15,6 +15,9 @@
 #include "G4Sphere.hh"
 #include "G4VPVParameterisation.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 #include <sstream>
 #include <iomanip>
 

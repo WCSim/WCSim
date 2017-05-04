@@ -11,6 +11,9 @@
 #include "G4LogicalSkinSurface.hh"
 #include "G4OpBoundaryProcess.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 void WCSimDetectorConstruction::ConstructMaterials()
 {
   //****Materials Definitions****

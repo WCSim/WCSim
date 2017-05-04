@@ -68,7 +68,6 @@ void WCSimRootOptions::Print(Option_t *) const
     << "\tTopveto: " << Topveto << endl
     << "Physics List Factory:" << endl
     << "\tPhysicsListName: " << PhysicsListName << endl
-    << "\tSecondaryHadModel: " << SecondaryHadModel << endl
     << "WCSimPrimaryGeneratorAction" << endl
     << "\tVectorFileName: " << VectorFileName << endl
     << "\tGeneratorType: " << GeneratorType << endl

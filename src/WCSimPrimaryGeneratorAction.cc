@@ -20,6 +20,8 @@
 #include "G4TransportationManager.hh"
 
 #include "TRandom3.h"
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
 
 using std::vector;
 using std::string;
