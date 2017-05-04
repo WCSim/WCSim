@@ -553,6 +553,8 @@ void WCSimRunAction::FillGeoTree(){
   Float_t rotation[3];
 
   Int_t tubeNo;
+  Int_t mPMTNo = -1;
+  Int_t mPMT_pmtNo = -1;
   Float_t pos[3];
   Float_t rot[3];
   Int_t cylLoc;
@@ -633,8 +635,10 @@ void WCSimRunAction::FillGeoTree(){
     rot[1] = pmt->Get_orieny();
     rot[2] = pmt->Get_orienz();
     tubeNo = pmt->Get_tubeid();
+    mPMTNo = pmt->Get_mPMTid();
+    mPMT_pmtNo = pmt->Get_mPMT_pmtid();
     cylLoc = pmt->Get_cylocation();
-    wcsimrootgeom-> SetPMT(i,tubeNo,cylLoc,rot,pos);
+    wcsimrootgeom-> SetPMT(i,tubeNo,mPMTNo, mPMT_pmtNo, cylLoc,rot,pos);
   }
   if (fpmts->size() != (unsigned int)numpmt) {
     G4cout << "Mismatch between number of pmts and pmt list in geofile.txt!!"<<G4endl;
