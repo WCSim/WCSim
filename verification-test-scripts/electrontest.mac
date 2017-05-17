@@ -67,5 +67,8 @@
 
 /WCSimIO/RootFile wcsimtest.root
 
+## set a timer running on WCSimRunAction
+/WCSimIO/Timer true
+
 /run/beamOn 1000
 #exit
