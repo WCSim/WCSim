@@ -280,3 +280,13 @@ void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, 
   //now we should have a vector of non-overlapping range pairs to pass to the
   //dark noise routine
 }
+
+void WCSimWCAddDarkNoise::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  wcopt->SetPMTDarkRate(PMTDarkRate);
+  wcopt->SetConvRate(ConvRate);
+  wcopt->SetDarkHigh(DarkHigh);
+  wcopt->SetDarkLow(DarkLow);
+  wcopt->SetDarkWindow(DarkWindow);
+  wcopt->SetDarkMode(DarkMode);
+}

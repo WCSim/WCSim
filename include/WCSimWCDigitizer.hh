@@ -1,6 +1,7 @@
 #ifndef WCSimWCDigitizer_h
 #define WCSimWCDigitizer_h 1
 
+#include "WCSimRootOptions.hh"
 #include "WCSimDarkRateMessenger.hh"
 #include "WCSimWCDAQMessenger.hh"
 #include "WCSimDetectorConstruction.hh"
@@ -41,6 +42,9 @@ public:
     return precision * (int)(value / precision);
   }
 
+  ///Save current values of options
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+  
 protected:
   void ReInitialize() { DigiStoreHitMap.clear(); }
 
@@ -53,6 +57,7 @@ protected:
   std::map<int,int> DigiStoreHitMap;   ///< Used to check if a digit has already been created on a PMT
 
   //generic digitizer properties. Defaults set with the GetDefault*() methods. Overidden by .mac options
+  G4String DigitizerClassName;    ///< Name of the digitizer class being run
   int DigitizerDeadTime;          ///< Digitizer deadtime (ns)
   int DigitizerIntegrationWindow; ///< Digitizer integration window (ns)
   double DigitizerTimingPrecision; ///< Digitizer time precision (ns)
