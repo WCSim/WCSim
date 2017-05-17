@@ -19,6 +19,6 @@
 #pragma link C++ class WCSimRootPMT+;
 #pragma link C++ class WCSimPmtInfo+;
 #pragma link C++ class WCSimEnumerations+;
-
+#pragma link C++ class WCSimRootOptions+;
 
 #endif

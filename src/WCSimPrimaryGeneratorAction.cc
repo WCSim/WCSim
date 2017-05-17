@@ -17,6 +17,9 @@
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 using std::vector;
 using std::string;
 using std::fstream;
@@ -35,7 +38,7 @@ inline int   atoi( const string& s ) {return std::atoi( s.c_str() );}
 
 WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 					  WCSimDetectorConstruction* myDC)
-  :myDetector(myDC)
+  :myDetector(myDC), vectorFileName("")
 {
   //T. Akiri: Initialize GPS to allow for the laser use 
   MyGPS = new G4GeneralParticleSource();
@@ -65,7 +68,9 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     
   messenger = new WCSimPrimaryGeneratorMessenger(this);
   useMulineEvt = true;
-  useNormalEvt = false;
+  useGunEvt    = false;
+  useLaserEvt  = false;
+  useGPSEvt    = false;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -224,7 +229,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
   }
 
-  else if (useNormalEvt)
+  else if (useGunEvt)
   {      // manual gun operation
     particleGun->GeneratePrimaryVertex(anEvent);
 
@@ -262,6 +267,45 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamDir(dir);
       SetBeamPDG(pdg);
     }
+  else if (useGPSEvt)
+    {
+      MyGPS->GeneratePrimaryVertex(anEvent);
+      
+      G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
+      G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
+      G4double m        =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
+      G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
+      
+      G4ThreeVector dir  = P.unit();
+      G4double E         = std::sqrt((P.dot(P))+(m*m));
+      
+      SetVtx(vtx);
+      SetBeamEnergy(E);
+      SetBeamDir(dir);
+      SetBeamPDG(pdg);
+    }
+}
+
+void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  if(useMulineEvt)
+    wcopt->SetVectorFileName(vectorFileName);
+  else
+    wcopt->SetVectorFileName("");
+  wcopt->SetGeneratorType(GetGeneratorTypeString());
+}
+
+G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
+{
+  if(useMulineEvt)
+    return "muline";
+  else if(useGunEvt)
+    return "gun";
+  else if(useGPSEvt)
+    return "gps";
+  else if(useLaserEvt)
+    return "laser";
+  return "";
 }
 
 // Returns a vector with the tokens

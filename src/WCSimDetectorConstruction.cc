@@ -17,6 +17,9 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap;
 //std::map<int, cyl_location>  WCSimDetectorConstruction::tubeCylLocation;
 hash_map<std::string, int, hash<std::string> > 
@@ -256,4 +259,12 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
   }
 
   else { G4cout << PMTType << " is not a recognized PMT Type. Exiting WCSim." << G4endl; exit(1);}
+}
+
+void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  wcopt->SetDetectorName(WCDetectorName);
+  wcopt->SetSavePi0(pi0Info_isSaved);
+  wcopt->SetPMTQEMethod(PMT_QE_Method);
+  wcopt->SetPMTCollEff(PMT_Coll_Eff);
 }

@@ -34,9 +34,11 @@
 # distribution. This option is in particular important for the WLS
 # 3. The last option means all the QE are applied at the detector
 # Good for the low energy running.
+# 4. Switch off the QE complety, ie. set it at 100%
 /WCSim/PMTQEMethod     Stacking_Only
 #/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
+#/WCSim/PMTQEMethod     DoNotApplyQE
 
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 /WCSim/SavePi0 false
@@ -54,7 +56,7 @@
 
 
 # Or you can use the G4 Particle Gun
-/mygen/generator normal
+/mygen/generator gun
 /gun/particle e-
 #/gun/particle pi0
 /gun/energy 500 MeV
@@ -64,6 +66,9 @@
 ## change the name of the output root file, default = wcsim.root
 
 /WCSimIO/RootFile wcsimtest.root
+
+## set a timer running on WCSimRunAction
+/WCSimIO/Timer true
 
 /run/beamOn 1000
 #exit
