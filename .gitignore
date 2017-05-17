@@ -7,7 +7,19 @@ make.rootcint.result
 make.result
 bin/
 tmp/
+doxygen/
 
 #ignore run results
-wcsim.root
+*.root
 geofile.txt
+
+#ignore compiled ROOT scripts
+*_C.d
+*_C.so
+*_cxx.d
+*_cxx.so
+*_cc.d
+*_cc.so
+
+##ignore compiled python scripts
+*.pyc

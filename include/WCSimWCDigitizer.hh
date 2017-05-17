@@ -1,6 +1,7 @@
 #ifndef WCSimWCDigitizer_h
 #define WCSimWCDigitizer_h 1
 
+#include "WCSimRootOptions.hh"
 #include "WCSimDarkRateMessenger.hh"
 #include "WCSimWCDAQMessenger.hh"
 #include "WCSimDetectorConstruction.hh"
@@ -34,6 +35,9 @@ public:
   void SetDigitizerDeadTime         (double deadtime) { DigitizerDeadTime = deadtime;         }; ///< Override the default digitizer deadtime (ns)
   void SetDigitizerIntegrationWindow(double inttime ) { DigitizerIntegrationWindow = inttime; }; ///< Override the default digitizer integration window (ns)
 
+  ///Save current values of options
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+  
 protected:
   void ReInitialize() { DigiStoreHitMap.clear(); }
 
@@ -46,8 +50,9 @@ protected:
   std::map<int,int> DigiStoreHitMap;   ///< Used to check if a digit has already been created on a PMT
 
   //generic digitizer properties. Defaults set with the GetDefault*() methods. Overidden by .mac options
-  double DigitizerDeadTime;          ///< Digitizer deadtime (ns)
-  double DigitizerIntegrationWindow; ///< Digitizer integration window (ns)
+  G4String DigitizerClassName;    ///< Name of the digitizer class being run
+  double   DigitizerDeadTime;          ///< Digitizer deadtime (ns)
+  double   DigitizerIntegrationWindow; ///< Digitizer integration window (ns)
 
   DigitizerType_t DigitizerType; ///< Enumeration to say which digitizer we've constructed
 

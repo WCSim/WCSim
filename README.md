@@ -26,9 +26,9 @@ You can follow issues/requests etc by watching the GitHub respository.
 Build Instructions:
 
 You should have a recent and working version of ROOT and GEANT4.
-(Known to work with GEANT 4.9.4.p01 and ROOT v5.28.00)  You also need all of the G4
+(Known to work with GEANT 4.10.1p03 and ROOT v5.28.00)  You also need all of the G4
 data files including hadron xsecs etc.  Those are the only
-requirements.  The code should work with gcc 4.4.7.
+requirements.  The code should work with gcc 4.4.7. For v1.6.0 and earlier, use GEANT 4.9.4.p01.
 
 To compile: 
 * make clean 
@@ -89,11 +89,11 @@ Useful cmake commands:
 * gamma = green
 * neutrino = yellow
 * electron = blue
-* muon = black
 * positron = red
-* muon+ = white
-* proton = magneta
-* neutron = grey
+* muon = white
+* muon+ = silver
+* proton = magenta
+* neutron = cyan
 
 ```
 WCSim development is supported by the United States National Science Foundation.

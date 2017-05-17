@@ -7,6 +7,9 @@
 #include "G4VProcess.hh"
 #include "WCSimTrackInformation.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 WCSimTrackingAction::WCSimTrackingAction()
 {
   ProcessList.insert("Decay") ;
