@@ -12,6 +12,9 @@
 
 #include "TObject.h"
 #include "TClonesArray.h"
+#include <string>
+
+using std::string;
 
 class TDirectory;
 
@@ -51,6 +54,7 @@ class WCSimRootGeom : public TObject {
 private:
 
 	static const Int_t     maxNumPMT = 40000;
+  string                 fDetectorName; // Detector name
   Float_t                fWCCylRadius;  // Radius of WC tank
   Float_t                fWCCylLength;  // Length of WC tank
   
@@ -72,6 +76,7 @@ public:
   virtual ~WCSimRootGeom();
 
   // Sets and gets
+  void  SetDetectorName(string d) { fDetectorName = d; }
 
   void  SetWCCylRadius(Float_t f) {fWCCylRadius=f;}
   void  SetWCCylLength(Float_t f) {fWCCylLength=f;}
@@ -85,6 +90,7 @@ public:
   void  SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, Float_t rot[3], Float_t pos[3], bool expand=true);
   void  SetOrientation(Int_t o) {fOrientation = o;}
 
+  string GetDetectorName() {return fDetectorName;}
   Float_t GetWCCylRadius() const {return fWCCylRadius;}
   Float_t GetWCCylLength() const {return fWCCylLength;}
 
