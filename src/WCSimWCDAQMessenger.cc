@@ -251,7 +251,7 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     StoreDigitizerTimingPrecision = DigitizerTimingPrecision->GetNewDoubleValue(newValue);
   }
   else if (command == DigitizerPEPrecision) {
-    G4cout << "Digitizer charge resolution set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
+    G4cout << "Digitizer charge resolution set to " << newValue << " p.e." << initialiseString.c_str() << G4endl;
     StoreDigitizerPEPrecision = DigitizerPEPrecision->GetNewDoubleValue(newValue);
   }
 
