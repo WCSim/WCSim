@@ -84,6 +84,8 @@ class WCSimRootCherenkovHit : public TObject {
 
 private:
   Int_t fTubeID;
+  Int_t fmPMTID;
+  Int_t fmPMT_PMTID;
   Int_t fTotalPe[2];
 
 public:
@@ -91,12 +93,19 @@ public:
   WCSimRootCherenkovHit(Int_t tubeID,
 			Int_t totalPe[2]);
 
+  WCSimRootCherenkovHit(Int_t tubeID,
+			Int_t mPMTID,
+			Int_t mPMT_PMTID,
+			Int_t totalPe[2]);
+
   virtual ~WCSimRootCherenkovHit() { }
 
   Int_t GetTubeID()       const { return fTubeID;}
+  Int_t GetmPMTID()       const { return fmPMTID;}
+  Int_t GetmPMT_PMTID()       const { return fmPMT_PMTID;}
   Int_t GetTotalPe(int i) const { return (i<2) ? fTotalPe[i]: 0;}
 
-  ClassDef(WCSimRootCherenkovHit,1)  
+  ClassDef(WCSimRootCherenkovHit,2)  
 };
 
 class WCSimRootCherenkovHitTime : public TObject {
@@ -129,20 +138,25 @@ private:
   Float_t fQ;
   Float_t fT;
   Int_t fTubeId;
+  Int_t fmPMTId;
+  Int_t fmPMT_PMTId;
   std::vector<int> fPhotonIds;
 
 public:
   WCSimRootCherenkovDigiHit() {}
   WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid, std::vector<int> photon_ids);
+  WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid, Int_t mpmtid, Int_t mpmt_pmtid, std::vector<int> photon_ids);
 
   virtual ~WCSimRootCherenkovDigiHit() { }
 
   Float_t     GetQ() const { return fQ;}
   Float_t     GetT() const { return fT;}
   Int_t       GetTubeId() const { return fTubeId;}
+  Int_t       GetmPMTId() const { return fmPMTId;}
+  Int_t       GetmPMT_PMTId() const { return fmPMT_PMTId;}
   std::vector<int> GetPhotonIds() const { return fPhotonIds; }
 
-  ClassDef(WCSimRootCherenkovDigiHit,2)  
+  ClassDef(WCSimRootCherenkovDigiHit,3)  
 };
 
 
@@ -303,6 +317,8 @@ public:
   TClonesArray        *GetTracks() const {return fTracks;}
 
   WCSimRootCherenkovHit   *AddCherenkovHit(Int_t                tubeID,
+					   Int_t                mPMTID,
+					   Int_t                mPMT_PMTID,
 					  std::vector<Float_t> truetime,
 					  std::vector<Int_t>   primParID);
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
@@ -311,6 +327,8 @@ public:
   WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
 						   Float_t t, 
 						   Int_t tubeid,
+						   Int_t mpmtid,
+						   Int_t mpmt_pmtid,
 						   std::vector<int> photon_ids);
 //  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
 //						  Float_t t, 
@@ -375,7 +393,7 @@ private:
   //std::vector<WCSimRootTrigger*> fEventList;
   TObjArray* fEventList;
   Int_t Current;                      //!               means transient, not writable to file
-  ClassDef(WCSimRootEvent,1)
+  ClassDef(WCSimRootEvent,2)
 
 };
 

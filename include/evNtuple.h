@@ -3,6 +3,7 @@
 
 // Makes filling branches from EventAction to RunAction very easy, while keeping flat structure.
 #include "WCSimEnumerations.hh"
+
 struct eventNtuple{
 
   //event info:
@@ -101,4 +102,5 @@ struct eventNtuple{
   float   digitube_diry[10000000];        
   float   digitube_dirz[10000000];        
   // Save DigiCompositionInfo? Not now: ToDo, needs to be a 2D array, even in flat_root
+
 };

@@ -8,6 +8,9 @@
 #include "G4RotationMatrix.hh"
 #include <iomanip>
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 G4int WCSimWCHit::maxPe = 0;
 
 G4Allocator<WCSimWCHit> WCSimWCHitAllocator;

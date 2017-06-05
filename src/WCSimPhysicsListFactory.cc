@@ -1,20 +1,22 @@
 #include "WCSimPhysicsListFactory.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 /* This code draws upon examples/extended/fields/field04 for inspiration */
 
 
 
-WCSimPhysicsListFactory::WCSimPhysicsListFactory() :  G4VModularPhysicsList(), WCSimPhysList(0)
+WCSimPhysicsListFactory::WCSimPhysicsListFactory() :  G4VModularPhysicsList()
 {
  defaultCutValue = 1.0*mm;
  SetVerboseLevel(1);
  
- PhysicsListName="NULL_LIST"; // default list is set in WCSimPhysicsListFactoryMessenger to QGSP_BERT
+ PhysicsListName="NULL_LIST"; // default list is set in WCSimPhysicsListFactoryMessenger to FTFP_BERT
  factory = new G4PhysListFactory();
  // ToDo create opticalPhyscics object?
  
  std::vector<G4String> ValidListsVector = factory->AvailablePhysLists();
- ValidListsVector.push_back("WCSim");// add deprecated WCSimPhysicsList.cc as a selectable option
  G4int nlists = ValidListsVector.size();
  G4cout << "There are " << nlists << " available physics lists, and they are: " << G4endl;
  for (G4int i=0; i<nlists; i++){
@@ -47,10 +49,9 @@ void WCSimPhysicsListFactory::ConstructProcess()
 
 void WCSimPhysicsListFactory::SetCuts()
 {
-  // same as WCSimPhysicsList
   if (verboseLevel >0){
-    G4cout << "WCSimPhysicsListFactory::SetCuts:";
-    G4cout << "CutLength : " << G4BestUnit(defaultCutValue,"Length") << G4endl;
+      G4cout << "WCSimPhysicsListFactory::SetCuts:";
+      G4cout << "CutLength : " << G4BestUnit(defaultCutValue,"Length") << G4endl;
   }
 
   // set cut values for gamma at first and for e- second and next for e+,
@@ -85,11 +86,6 @@ void WCSimPhysicsListFactory::InitializeList(){
     }
     G4cout << "RegisterPhysics: OpticalPhysics" << G4endl; 
     RegisterPhysics(new G4OpticalPhysics());
-  } else if (PhysicsListName == "WCSim") {
-    //G4cout << "WCSim physics list not yet implemented" << G4endl;
-    G4cout << "RegisterPhysics: WCSim" << G4endl;
-    WCSimPhysList = new WCSimPhysicsList();
-    RegisterPhysics(WCSimPhysList);
   } else {
     G4cout << "Physics list " << PhysicsListName << " is not understood" << G4endl;
   }
@@ -98,8 +94,4 @@ void WCSimPhysicsListFactory::InitializeList(){
 void WCSimPhysicsListFactory::SaveOptionsToOutput(WCSimRootOptions * wcopt)
 {
   wcopt->SetPhysicsListName(PhysicsListName);
-  if(WCSimPhysList)
-    wcopt->SetSecondaryHadModel(WCSimPhysList->GetSecondaryHadModel());
-  else
-    wcopt->SetSecondaryHadModel("NOTREQUIRED");
 }

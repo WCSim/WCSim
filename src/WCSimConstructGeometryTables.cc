@@ -15,6 +15,9 @@
 #include "G4Sphere.hh"
 #include "G4VPVParameterisation.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 #include <sstream>
 #include <iomanip>
 
@@ -117,8 +120,26 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     // This scheme must match that used in WCSimWCSD::ProcessHits()
 
     std::string tubeTag;
-    for (int i=0; i <= aDepth; i++)
+    int mPMT_pmtno = -1;
+    bool foundString = false;
+    //
+    
+    for (int i=0; i <= aDepth; i++){
       tubeTag += ":" + replicaNoString[i];
+      std::string::size_type position = replicaNoString[i].find("pmt-");
+      if( position == 0) {
+	foundString = true;
+	mPMT_pmtno = atoi(replicaNoString[i].substr(position+4).c_str())+1;
+	if(mPMT_pmtno == 1)
+	  totalNum_mPMTs++;
+      }
+    }
+    if(!foundString){
+      // to distinguish mPMT PMTs from single PMTs:
+      mPMT_pmtno = 0;
+      totalNum_mPMTs++;
+    }
+    
     // G4cout << tubeTag << G4endl;
     
     if ( tubeLocationMap.find(tubeTag) != tubeLocationMap.end() ) {
@@ -133,7 +154,8 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     // Put the transform for this tube into the map keyed by its ID
     tubeIDMap[totalNumPMTs] = aTransform;
    
-    
+
+    mPMTIDMap[totalNumPMTs] = std::make_pair(totalNum_mPMTs,mPMT_pmtno);    
     //G4cout <<  "depth " << depth.str() << G4endl;
     //G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
     
@@ -211,7 +233,9 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     {cylLocation=1;}
     
     geoFile.precision(9);
-     geoFile << setw(4) << tubeID 
+     geoFile << setw(4) << tubeID
+	     << " " << setw(4) << mPMTIDMap[tubeID].first
+	     << " " << setw(4) << mPMTIDMap[tubeID].second 
  	    << " " << setw(8) << newTransform.getTranslation().getX()/cm
  	    << " " << setw(8) << newTransform.getTranslation().getY()/cm
  	    << " " << setw(8) << newTransform.getTranslation().getZ()/cm
@@ -228,7 +252,9 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
 					      pmtOrientation.x(),
 					      pmtOrientation.y(),
 					      pmtOrientation.z(),
-					      tubeID);
+					      tubeID,
+					      mPMTIDMap[tubeID].first,
+					      mPMTIDMap[tubeID].second);
      
      fpmts.push_back(new_pmt);
 

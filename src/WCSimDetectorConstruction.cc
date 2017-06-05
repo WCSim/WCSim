@@ -16,7 +16,11 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap;
+std::map<int, std::pair<int, int> > WCSimDetectorConstruction::mPMTIDMap;
 //std::map<int, cyl_location>  WCSimDetectorConstruction::tubeCylLocation;
 //hash_map<std::string, int, hash<std::string> > 
 //WCSimDetectorConstruction::tubeLocationMap_old;    //deprecated !!
@@ -49,6 +53,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //-----------------------------------------------------
 
   WCSimDetectorConstruction::tubeIDMap.clear();
+  WCSimDetectorConstruction::mPMTIDMap.clear();
   //WCSimDetectorConstruction::tubeCylLocation.clear();// (JF) Removed
   WCSimDetectorConstruction::tubeLocationMap.clear();
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
@@ -275,6 +280,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 
   // Reset the tubeID and tubeLocation maps before refilling them
   tubeIDMap.clear();
+  mPMTIDMap.clear();
   tubeLocationMap.clear();
 
 
