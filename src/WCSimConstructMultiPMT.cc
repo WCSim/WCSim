@@ -787,7 +787,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
 
   // Only fill the ones where alpha is above the minimum (to look over neighbouring mPMTs)
   // Theta_min = eta + atan(R/r) with R radius of sphere, and r the distance between mPMTs
-  G4double theta_min = 13.*pi/180; //atan((vessel_radius_curv)/id_spacing)
+  G4double theta_min = 13.*CLHEP::pi/180; //atan((vessel_radius_curv)/id_spacing)
   if(alphaNext > theta_min + fEta){
     vAlpha.push_back(alphaNext);
     vNiC.push_back(NoPmt);
@@ -813,7 +813,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
 
   // TF: If possible, add top:
   if(vAlpha[NoCircle-1]+2*fEta < 90.){
-    alphaNext = pi/2;
+    alphaNext = CLHEP::pi/2;
     NiCNext = 1;
     vAlpha.push_back(alphaNext);
     vNiC.push_back(NiCNext);
@@ -835,7 +835,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
  
   std::cout << "Total number of pmt: " << TotPmt << std::endl;
   std::cout << "Percentage of covered hemispherical surface = " << TotPmt*(1-std::cos(fEta))*100 << "%" << std::endl;
-  std::cout << "Percentage of covered hemispherical surface above theta_min = " << TotPmt*(1-std::cos(fEta))*100/(1-std::cos(pi/2-theta_min)) << "%" << std::endl;
+  std::cout << "Percentage of covered hemispherical surface above theta_min = " << TotPmt*(1-std::cos(fEta))*100/(1-std::cos(CLHEP::pi/2-theta_min)) << "%" << std::endl;
   std::cout << "Test: vNic: " << vNiC.size() << " vAlpha: " << vAlpha.size() << " vCircle: " << vCircle.size() << std::endl;
 
   return TotPmt;
@@ -850,7 +850,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
 G4double WCSimDetectorConstruction::ComputeEta(G4int NoPmt)
 {
   // From eq. 11 in Meas. Sci. Technol. 10 (1999) 1015–1019, where a_{c-1} = n_{c-1} = 0.
-  G4double cospi = std::cos(pi/NoPmt);
+  G4double cospi = std::cos(CLHEP::pi/NoPmt);
   G4double etaLocal = std::atan(std::sqrt(1 - cospi*cospi));
   return etaLocal;
 }
@@ -871,6 +871,6 @@ G4int WCSimDetectorConstruction::ComputeNiC (G4double alphaOfCircle, G4double Et
   G4double	sin2alpha = std::sin(alphaOfCircle) * std::sin(alphaOfCircle);
   G4double	cosalpha  = std::cos(alphaOfCircle);
   G4double	arccos	  = std::acos(std::sqrt(cos2eta-sin2alpha)/cosalpha); //eq. 10
-  G4int		NiCLocal  = std::floor(pi/arccos); //eq. 7
+  G4int		NiCLocal  = std::floor(CLHEP::pi/arccos); //eq. 7
   return NiCLocal;
 }

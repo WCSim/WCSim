@@ -155,14 +155,13 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   flatfile->SetCompressionLevel(2); //default is 1 (minimal compression)
   masterTree = new TTree("MasterTree","Main WCSim Tree");
   if(wcsimdetector->GetIsNuPrism()){
-    if(GetSaveRooTracker()){
-      //Already have fSettingsInputTree and branched it
-      if(fSettingsInputTree){
-	geomTree = fSettingsInputTree->CloneTree(0);
-	geomTree->SetObject("Geometry","Geometry, Software version and generation settings");
-      } else
-	geomTree = new TTree("Geometry","Geometry Tree");
-    }
+    //Already have fSettingsInputTree and branched it
+    if(fSettingsInputTree){
+      geomTree = fSettingsInputTree->CloneTree(0);
+      geomTree->SetObject("Geometry","Geometry, Software version and generation settings");
+    } else
+      geomTree = new TTree("Geometry","Geometry Tree");
+    
     geomTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/F");
     geomTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/F");
     geomTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
