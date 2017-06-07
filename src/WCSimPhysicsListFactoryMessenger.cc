@@ -10,16 +10,14 @@ WCSimPhysicsListFactoryMessenger::WCSimPhysicsListFactoryMessenger(WCSimPhysicsL
   :thisWCSimPhysicsListFactory(WCSimPhysFactory), ValidListsString(inValidListsString)
 {
  
-//  G4String defaultList="QGSP_BIC_HP";
-  G4String defaultList="WCSim";
+  G4String defaultList="FTFP_BERT";
   
   physListCmd = new G4UIcmdWithAString("/WCSim/physics/list",this);
   G4String cmd_hint = "Available options: " + ValidListsString;
   physListCmd->SetGuidance(cmd_hint);
   physListCmd->SetGuidance("See http://geant4.cern.ch/support/proc_mod_catalog/physics_lists/useCases.shtml");
   physListCmd->SetGuidance("    http://geant4.cern.ch/support/proc_mod_catalog/physics_lists/referencePL.shtml");
-  physListCmd->SetGuidance("Note: The WCSim option selects a deprecated physics list, but is useful for comparisons");
-  physListCmd->SetGuidance("Note: I think physics list is locked-in after initialization");
+  physListCmd->SetGuidance("Note: Physics list is locked-in after initialization");
   
   physListCmd->SetDefaultValue(defaultList);
   physListCmd->SetCandidates(ValidListsString);  // ToDo get list of physics lists from G4PhysicsListFactory

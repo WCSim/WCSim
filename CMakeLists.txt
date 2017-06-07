@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Based on CMakeLists.txt from AnaEx02 in examples/extended of Geant4.9.6 ##
 #----------------------------------------------------------------------------
 # Setup the project
@@ -98,7 +99,6 @@ target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree
 # relies on these scripts being in the current working directory.
 #
 set(WCSIM_SCRIPTS
-  macros/jobOptions2.mac
   macros/jobOptions.mac
   WCSim.mac
   macros/daq.mac

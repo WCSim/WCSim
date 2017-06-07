@@ -26,6 +26,9 @@
 #include "G4UnitsTable.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 #include <set>
 #include <iomanip>
 #include <string>
@@ -845,6 +848,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
   wcsimrootevent->SetNumTubesHit(jhfNtuple.numTubesHit);
 
+  std::vector<WCSimPmtInfo*> *fpmts = detectorConstructor->Get_Pmts();
 #ifdef _SAVE_RAW_HITS
 
   if (WCDC_hits) 
@@ -863,6 +867,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
+      WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(digi_tubeid -1));
+
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
@@ -887,6 +893,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       }
 #endif
       wcsimrootevent->AddCherenkovHit(digi_tubeid,
+				      pmt->Get_mPMTid(),
+				      pmt->Get_mPMT_pmtid(),
 				      truetime,
 				      primaryParentID);
       smeartime.clear();
@@ -919,6 +927,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	      std::vector<float> vec_time                = (*WCDC)[k]->GetTime(index);
 	      std::vector<std::vector<int> > vec_digicomp = (*WCDC)[k]->GetDigiCompositionInfo(index);
 	      const int tubeID                           = (*WCDC)[k]->GetTubeID();
+	      WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(tubeID -1));
 	      assert(vec_pe.size() == vec_time.size());
 	      assert(vec_pe.size() == vec_digicomp.size());
 	      for(unsigned int iv = 0; iv < vec_pe.size(); iv++) {
@@ -936,7 +945,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 #endif
 		assert(vec_digicomp[iv].size() > 0);
 		wcsimrootevent->AddCherenkovDigiHit(vec_pe[iv], vec_time[iv],
-						    tubeID, vec_digicomp[iv]);
+						    tubeID, pmt->Get_mPMTid(), pmt->Get_mPMT_pmtid(), 
+						    vec_digicomp[iv]);
 		sumq_tmp += vec_pe[iv];
 		countdigihits++;
 	      }//iv
@@ -998,7 +1008,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
   if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
       GetRunAction()->ClearRootrackerVertexArray();
-      generatorAction->CopyRootrackerVertex(GetRunAction()->GetRootrackerVertex());
+      generatorAction->CopyRootrackerVertex(GetRunAction()->GetRootrackerVertex()); //will increment NVtx 
       GetRunAction()->FillRootrackerVertexTree();
   }
 
@@ -1220,7 +1230,10 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
     GetRunAction()->GetCherenkovDigiHitsTree()->Fill();
     GetRunAction()->GetTriggerTree()->Fill();
     GetRunAction()->GetEventInfoTree()->Fill();
-    
+    if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
+      generatorAction->CopyRootrackerVertex(GetRunAction()->GetRootrackerVertex());
+      GetRunAction()->GetFlatRooTrackerTree()->Fill();
+    }
     
   }
   
@@ -1297,6 +1310,19 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
     GetRunAction()->GetCherenkovDigiHitsTree()->Fill();
     GetRunAction()->GetTriggerTree()->Fill();
     GetRunAction()->GetEventInfoTree()->Fill();
+    // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
+    // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
+    if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
+      NRooTrackerVtx *thisRooTracker = GetRunAction()->GetMyRooTracker();
+      generatorAction->CopyRootrackerVertex(thisRooTracker);
+
+      std::cout << "Test: " << thisRooTracker->NuParentDecMode << std::endl;
+      GetRunAction()->GetFlatRooTrackerTree()->Fill(); //ok
+    }
+
   }
+
+
+
 }
 

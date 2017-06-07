@@ -21,6 +21,8 @@ class WCSimRootPMT : public TObject {
 
 private:
   Int_t fTubeNo;
+  Int_t fmPMTNo;
+  Int_t fmPMT_PMTNo;
   Int_t fCylLoc;  // endcap1, wall, endcap2
   Float_t fOrientation[3];
   Float_t fPosition[3];
@@ -28,19 +30,24 @@ private:
 public:
   WCSimRootPMT();
   WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Float_t orientation[3], Float_t position[3]);
+  WCSimRootPMT(Int_t tubeNo, Int_t mPMTNo, Int_t mPMT_PMTno, Int_t cylLoc, Float_t orientation[3], Float_t position[3]);
   virtual ~WCSimRootPMT();
 
   void  SetTubeNo(Int_t i) {fTubeNo=i;}
+  void  SetmPMTNo(Int_t i) {fmPMTNo=i;}
+  void  SetmPMT_PMTNo(Int_t i) {fmPMT_PMTNo=i;}
   void  SetCylLoc(Int_t i) {fCylLoc=i;}
   void  SetOrientation(Int_t i, Float_t f) {fOrientation[i]= ( (i<3) ? f : 0);}
   void  SetPosition(Int_t i, Float_t f) {fPosition[i]= ( (i<3) ? f : 0);}
 
   Int_t GetTubeNo() const {return fTubeNo;}
+  Int_t GetmPMTNo() const {return fmPMTNo;}
+  Int_t GetmPMT_PMTNo() const {return fmPMT_PMTNo;}
   Int_t GetCylLoc() const {return fCylLoc;}
   Float_t GetOrientation(Int_t i=0) {return (i<3) ? fOrientation[i] : 0;}
   Float_t GetPosition(Int_t i=0) {return (i<3) ? fPosition[i] : 0;}
 
-  ClassDef(WCSimRootPMT,1)  //WCSimPMT structure
+  ClassDef(WCSimRootPMT,2)  //WCSimPMT structure
 };
 
 
@@ -85,6 +92,7 @@ public:
            {fWCOffset[0]=x; fWCOffset[1]=y; fWCOffset[2] = z;}
 
   void  SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, Float_t rot[3], Float_t pos[3], bool expand=true);
+  void  SetPMT(Int_t i, Int_t tubeno, Int_t mPMTNo, Int_t mPMT_PMTno, Int_t cyl_loc, Float_t rot[3], Float_t pos[3], bool expand=true);
   void  SetOrientation(Int_t o) {fOrientation = o;}
 
   Float_t GetWCCylRadius() const {return fWCCylRadius;}
