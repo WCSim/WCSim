@@ -113,6 +113,10 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //-----------------------------------------------------
 
   messenger = new WCSimDetectorMessenger(this);
+
+
+  // Get WCSIMDIR
+  wcsimdir_path = std::getenv("WCSIMDIR");
 }
 
 #include "G4GeometryManager.hh"

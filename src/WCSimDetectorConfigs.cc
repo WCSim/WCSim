@@ -426,7 +426,7 @@ void WCSimDetectorConstruction::SetNuPrism_mPMTGeometry()
 	
 	// parameters related to filling the ID mPMT
 	nID_PMTs = 19;
-	config_file = "mPMTconfig_19_nuPrism_3ring.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
+	config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
 
 	WCIDHeight               = 10.42*CLHEP::m;
     WCIDDiameter             = 7.42*CLHEP::m;
@@ -480,7 +480,7 @@ void WCSimDetectorConstruction::SetTestSinglemPMTGeometry()
   G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
   // parameters related to filling the ID mPMT
   nID_PMTs = 33;
-  config_file = "mPMTconfig_33_13_1.txt";
+  config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_33_13_1.txt";
 
   WCIDDiameter             = 10.0*m;
   WCIDHeight               = 30.0*m;
@@ -527,7 +527,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
 
   // parameters related to filling the ID mPMT
   nID_PMTs = 33;
-  config_file = "mPMTconfig_33_13_1.txt";
+  config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_33_13_1.txt";
 
   // Note: in principal WCPMTRadius and WCCapEdgeLimit could also use outer_module_radius
   // but then total n mPMT modules change slightly. This configuration wants to have NO overlaps
@@ -580,7 +580,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
 
   // parameters related to filling the ID mPMT
   nID_PMTs = 34;
-  config_file = "mPMTconfig_34_22.5_2.txt"; 
+  config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_34_22.5_2.txt"; 
 
 
   WCIDDiameter          = 74.0*m;

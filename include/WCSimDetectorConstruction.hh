@@ -624,6 +624,7 @@ private:
   G4double id_reflector_z_offset;
   G4double id_reflector_angle;
   G4int nID_PMTs;
+  G4String wcsimdir_path;
   G4String config_file;
   G4String mPMT_ID_PMT; //or ToDo: ideally ENUM
   G4String mPMT_OD_PMT;
