@@ -219,8 +219,8 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
-  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 70.8/6.*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 54.8/6.*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
@@ -232,6 +232,39 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+
+  ////////////////////////////////////
+  // OD Parameters --- Beta version //
+  ////////////////////////////////////
+  isODConstructed = true;
+
+  // OD Dimensions //
+  WCODLateralWaterDepth    = 1.*m;
+  WCODHeightWaterDepth     = 2.*m;
+  WCODDeadSpace            = 600.*mm;
+  WCODTyvekSheetThickness  = 2.0*cm; // Au pif
+  WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness);
+
+  // OD PMTs //
+  WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT8inch", WCODCollectionName);
+  WCPMTODName           = PMTOD->GetPMTName();
+  WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
+  WCPMTODRadius         = PMTOD->GetRadius();
+
+  // OD Coverage //
+  WCPMTODperCellHorizontal = 1;
+  WCPMTODperCellVertical   = 1;
+  WCPMTODPercentCoverage   = 1.0; //default 1%
+
+  // Shift between PMTs inside a cell //
+  WCODPMTShift = 0.*cm;
+
+  // OD caps //
+  // WCODCapPMTSpacing = 100*cm;
+  WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
+  WCODCapEdgeLimit = WCIDDiameter/2.0 - WCPMTODRadius;
+
 }
 
 void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()
