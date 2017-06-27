@@ -219,8 +219,8 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
-  WCIDDiameter          = 70.8/6.*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 54.8/6.*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
@@ -247,14 +247,14 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
 
   // OD PMTs //
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
-  WCSimPMTObject *PMTOD = CreatePMTObject("PMT8inch", WCODCollectionName);
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT3inch", WCODCollectionName);
   WCPMTODName           = PMTOD->GetPMTName();
   WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
   WCPMTODRadius         = PMTOD->GetRadius();
 
   // OD Coverage //
-  WCPMTODperCellHorizontal = 1;
-  WCPMTODperCellVertical   = 1;
+  WCPMTODperCellHorizontal = 0;
+  WCPMTODperCellVertical   = 0;
   WCPMTODPercentCoverage   = 1.0; //default 1%
 
   // Shift between PMTs inside a cell //
