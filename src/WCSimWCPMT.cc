@@ -88,7 +88,7 @@ void WCSimWCPMT::Digitize()
   if(detectorElement=="tank"){
     DigitsCollectionName="WCDigitizedCollection";
     WCCollectionName = myDetector->GetIDCollectionName();
-  } else if(detectorElement=="OD"){
+  }else if(detectorElement=="OD"){
     DigitsCollectionName="WCDigitizedCollection_OD";
     WCCollectionName = myDetector->GetODCollectionName();
   }

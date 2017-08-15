@@ -34,7 +34,7 @@ public:
   void SetDarkHigh(int idarkhigh){DarkHigh = idarkhigh;}
   void SetDarkLow(int idarklow){DarkLow = idarklow;}
   void SetDarkWindow(int idarkwindow){DarkWindow = idarkwindow;}
-  int GetDarkWindow(){return DarkWindow;}
+  int GetDarkWindow(){return (int)(DarkWindow);}
   void SaveOptionsToOutput(WCSimRootOptions * wcopt);
   
 private:

@@ -17,7 +17,7 @@
 #include <vector>
 // for memset
 #include <cstring>
-
+#include <algorithm>
 
 
 // *******************************************
@@ -49,7 +49,7 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
   collectionName.push_back(colName);
 
   #ifdef HYPER_VERBOSITY
-  if(detectorElement=="OD") G4cout<<"WCSimWCTriggerBase::WCSimWCTriggerBase ☆ recording collection name "<<colName<<" for "<<detectorElement<<G4endl;
+  if(detectorElement=="OD") G4cout << "WCSimWCTriggerBase::WCSimWCTriggerBase ☆ recording collection name "<< colName << " for " << detectorElement << G4endl;
   #endif
 
   ReInitialize();
@@ -170,7 +170,7 @@ void WCSimWCTriggerBase::Digitize()
   }
 
   #ifdef HYPER_VERBOSITY
-  if(detectorElement=="OD"){G4cout<<"WCSimWCTriggerBase::Digitize ☆ adjusting threshold for average occupancy"<<G4endl;}
+  if(detectorElement=="OD"){ G4cout << "WCSimWCTriggerBase::Digitize ☆ adjusting threshold for average occupancy" << G4endl; }
   #endif
 
   //Input is collection of all digitized hits that passed the threshold

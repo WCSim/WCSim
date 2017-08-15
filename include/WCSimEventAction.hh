@@ -34,12 +34,12 @@ public:
 public:
   void BeginOfEventAction(const G4Event*);
   void EndOfEventAction(const G4Event*);
-  void FillRootEvent(G4int, 
-										 const struct ntupleStruct&,
-										 G4TrajectoryContainer*,
-										 WCSimWCDigitsCollection*,
-										 WCSimWCTriggeredDigitsCollection*,
-										 G4String detectorElement="tank");
+  void FillRootEvent(G4int,
+					 const struct ntupleStruct&,
+					 G4TrajectoryContainer*,
+					 WCSimWCDigitsCollection*,
+					 WCSimWCTriggeredDigitsCollection*,
+					 G4String detectorElement="tank");
   WCSimRunAction* GetRunAction(){return runAction;}
   void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
   void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
