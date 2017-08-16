@@ -133,6 +133,8 @@ protected:
    */
   void AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
   void AlgTankDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
+  void AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
+
 
   WCSimWCTriggeredDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
   std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
@@ -380,6 +382,28 @@ private:
   int  GetDefaultNDigitsThreshold()         { return 25;    } ///< SK NDigits threshold ~25
   int  GetDefaultNDigitsPreTriggerWindow()  { return -1000;  } ///< Scintillator elements have much longer timescales
   int  GetDefaultNDigitsPostTriggerWindow() { return 2000;   } ///< Scintillator elements have much longer timescales
+};
+
+/**
+ * \class WCSimWCTriggerNoTrigger
+ *
+ * \brief a trigger class that stores all digits within the trigger windows identified by tank events
+ *
+ */
+
+class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
+{
+ public:
+
+  ///Create WCSimWCTriggerNoTrigger instance with knowledge of the detector and DAQ options
+  WCSimWCTriggerNoTrigger(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String);
+
+  ~WCSimWCTriggerNoTrigger();
+
+ private:
+  ///Calls the workhorse of this class: AlgNoTrigger
+  void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
+
 };
 
 #endif //WCSimWCTrigger_h

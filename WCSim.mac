@@ -68,7 +68,8 @@
 
 #choose the Trigger & Digitizer type (and options)
 /DAQ/Digitizer SKI
-/DAQ/Trigger NDigits
+#/DAQ/Trigger NDigits
+/DAQ/Trigger NoTrig
 
 #grab the other DAQ options (thresholds, timing windows, etc.)
 /control/execute macros/daq.mac
@@ -125,7 +126,7 @@
 #/gun/particle pi0
 /gun/energy 2000 MeV
 /gun/direction -1 -1 0
-/gun/position 10 10 0 m
+/gun/position 50 50 0 m
 
 # Or you can use the G4 General Particle Source
 # you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun

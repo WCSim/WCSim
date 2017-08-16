@@ -108,6 +108,9 @@ void WCSimWCTriggerBase::GetVariables()
 int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
 {
   switch(t) {
+  case kTriggerNoTrig:
+    return 0;
+    break;
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
     return ndigitsPreTriggerWindow;
@@ -126,6 +129,9 @@ int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
 int WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
 {
   switch(t) {
+  case kTriggerNoTrig:
+    return WCSimWCTriggerBase::LongTime;
+    break;
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
     return ndigitsPostTriggerWindow;
@@ -366,6 +372,26 @@ void WCSimWCTriggerBase::AlgTankDigits(WCSimWCDigitsCollection* WCDCPMT, bool re
   }
 
 }
+
+void WCSimWCTriggerBase::AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test) {
+
+  //Does not doanything, just writes out all hits
+  TriggerType_t this_triggerType = kTriggerNoTrig;
+  std::vector<Float_t> triggerinfo;
+  Int_t Ndigits=0;
+  for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
+    for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
+      Ndigits++;
+    }
+  }
+  triggerinfo.push_back(Ndigits);
+  TriggerTypes.push_back(kTriggerNoTrig);
+  TriggerInfos.push_back(triggerinfo);
+  TriggerTimes.push_back(0.);
+
+  FillDigitsCollection(WCDCPMT, remove_hits, this_triggerType);
+}
+
 void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection *WCDCPMT, bool remove_hits,
                                               TriggerType_t save_triggerType) {
   //Adds the digits within the trigger window to the output WCSimWCDigitsCollection
@@ -654,3 +680,29 @@ void WCSimWCTriggerOnTankDigits::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   #endif
   AlgTankDigits(WCDCPMT, remove_hits);
 }
+
+// *******************************************
+// DERIVED CLASS
+// *******************************************
+
+
+WCSimWCTriggerNoTrigger::WCSimWCTriggerNoTrigger(G4String name,
+                                                 WCSimDetectorConstruction* myDetector,
+                                                 WCSimWCDAQMessenger* myMessenger, G4String detectorElement)
+    :WCSimWCTriggerBase(name, myDetector, myMessenger, detectorElement)
+{
+  triggerClassName = "NoTrigger";
+}
+
+WCSimWCTriggerNoTrigger::~WCSimWCTriggerNoTrigger()
+{
+}
+
+void WCSimWCTriggerNoTrigger::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
+  //Apply an NDigits trigger
+  bool remove_hits = false;
+  SetMultiDigitsPerTrigger(true);
+  SetSaveFailuresMode(0);
+  AlgNoTrigger(WCDCPMT, remove_hits);
+}
+

@@ -122,6 +122,14 @@ void WCSimEventAction::CreateDAQInstances()
     WCSimWCTriggerNDigits2* WCTM = new WCSimWCTriggerNDigits2("WCReadout", detectorConstructor, DAQMessenger, "tank");
     DMman->AddNewModule(WCTM);
   }
+  else if(TriggerChoice == "TankDigits") {
+    WCSimWCTriggerOnTankDigits* WCTM = new WCSimWCTriggerOnTankDigits("WCReadout", detectorConstructor, DAQMessenger, "tank");
+    DMman->AddNewModule(WCTM);
+  }
+  else if(TriggerChoice == "NoTrig") {
+    WCSimWCTriggerNoTrigger* WCTM = new WCSimWCTriggerNoTrigger("WCReadout", detectorConstructor, DAQMessenger, "tank");
+    DMman->AddNewModule(WCTM);
+  }
   else {
     G4cerr << "Unknown TriggerChoice " << TriggerChoice << G4endl;
     exit(-1);
@@ -143,6 +151,14 @@ void WCSimEventAction::CreateDAQInstances()
   else if(TriggerChoice == "NDigits2") {
     WCSimWCTriggerNDigits2* WCTM_OD = new WCSimWCTriggerNDigits2("WCReadout_OD", detectorConstructor, DAQMessenger, "OD");
     DMman->AddNewModule(WCTM_OD);
+  }
+  else if(TriggerChoice == "TankDigits") {
+    WCSimWCTriggerOnTankDigits* WCTM = new WCSimWCTriggerOnTankDigits("WCReadout_OD", detectorConstructor, DAQMessenger, "OD");
+    DMman->AddNewModule(WCTM);
+  }
+  else if(TriggerChoice == "NoTrig") {
+    WCSimWCTriggerNoTrigger* WCTM = new WCSimWCTriggerNoTrigger("WCReadout_OD", detectorConstructor, DAQMessenger, "OD");
+    DMman->AddNewModule(WCTM);
   }
   else {
     G4cerr << "Unknown TriggerChoice " << TriggerChoice << G4endl;

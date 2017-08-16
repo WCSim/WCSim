@@ -41,11 +41,15 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   TriggerChoice->SetGuidance("Available choices are:\n"
 			     "NDigits\n"
 			     "NDigits2\n"
+                 "TankDigits\n"
+                 "NoTrig\n"
 			     );
   TriggerChoice->SetParameterName("Trigger", false);
   TriggerChoice->SetCandidates(
 			       "NDigits "
 			       "NDigits2 "
+                   "TankDigits "
+                   "NoTrig "
 			       );
   TriggerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
   TriggerChoice->SetDefaultValue(defaultTrigger);
