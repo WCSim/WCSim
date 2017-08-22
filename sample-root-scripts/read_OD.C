@@ -1,0 +1,139 @@
+#include <stdio.h>     
+#include <stdlib.h>    
+
+void read_OD(char *filename=NULL) {
+  /* A simple script to plot aspects of phototube hits 
+   * 
+   * I like to run this macro as 
+   * $ root -l -x 'read_OD.C("../OD.root")'
+   */
+
+  gROOT->Reset();
+  char* wcsimdirenv;
+  wcsimdirenv = getenv ("WCSIMDIR");
+  if(wcsimdirenv !=  NULL){
+    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
+  }else{
+    std::cout << "Can't load WCSim ROOT dictionaries" << std::endl;
+  }
+  gStyle->SetOptStat(1);
+
+  TFile *f;
+  char fTest[128];
+  if (filename==NULL){
+    std::cout << "Please provide filename in option" << std::endl;
+    std::cout << "Will load auto wcsim.root in WCSIMDIR ..." << std::endl;
+    char* name = "wcsim.root";
+    strncpy(fTest, wcsimdirenv, sizeof(fTest));
+    strncat(fTest, "/", (sizeof(fTest) - strlen(fTest)) );
+    strncat(fTest, name, (sizeof(fTest) - strlen(fTest)) );
+    f = new TFile(fTest);
+  }else{
+    f = new TFile(filename);
+  }
+  if (!f->IsOpen()){
+    cout << "Error, could not open input file: " << filename << endl;
+    return -1;
+  }else{
+    if (filename==NULL) cout << "File open bro: " << fTest << endl;
+    else cout << "File open bro: " << filename << endl;
+  }
+
+  TTree  *wcsimT = f->Get("wcsimT");
+
+  WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent();
+  wcsimT->SetBranchAddress("wcsimrootevent_OD",&wcsimrootsuperevent);
+
+  // Force deletion to prevent memory leak when issuing multiple
+  // calls to GetEvent()
+  wcsimT->GetBranch("wcsimrootevent_OD")->SetAutoDelete(kTRUE);
+
+  const long unsigned int nbEntries = wcsimT->GetEntries();
+  cout << "Nb of entries " << wcsimT->GetEntries() << endl;
+
+  //////////////////////////////////////////
+  // HISTOGRAMS DEFINITION /////////////////
+  //////////////////////////////////////////
+
+  TH1D *hPEByEvtsByPMT = new TH1D("hPEByEvtsByPMT","RAW PE by Evts by PMT",100,0,100);
+  hPEByEvtsByPMT->GetXaxis()->SetTitle("raw PE");
+  hPEByEvtsByPMT->SetLineColor(kBlue-4);
+  hPEByEvtsByPMT->SetMarkerColor(kBlue-4);  
+  // hPEByEvtsByPMT->SetFillColor(kBlue-4);  
+  TH1D *hPECollectedByEvtsByPMT = new TH1D("hPECollectedByEvtsByPMT","collected PE by Evts by PMT",100,0,100);
+  hPECollectedByEvtsByPMT->GetXaxis()->SetTitle("digi PE");
+  hPECollectedByEvtsByPMT->SetLineColor(kRed-4);
+  hPECollectedByEvtsByPMT->SetMarkerColor(kRed-4);
+  // hPECollectedByEvtsByPMT->SetFillColor(kRed-4);
+  
+  TH1D *hPEByEvts = new TH1D("hPEByEvts","Total RAW PE by Evts",100,0,100);
+  hPEByEvts->GetXaxis()->SetTitle("raw PE");
+  hPEByEvts->SetLineColor(kBlue-4);
+  hPEByEvts->SetMarkerColor(kBlue-4);
+  hPEByEvts->SetFillColor(kBlue-4);  
+  TH1D *hPECollectedByEvts = new TH1D("hPECollectedByEvts","Total collected PE by Evts",100,0,100);
+  hPECollectedByEvts->GetXaxis()->SetTitle("digi PE");
+  hPECollectedByEvts->SetLineColor(kRed-4);
+  hPECollectedByEvts->SetMarkerColor(kRed-4);
+  hPECollectedByEvts->SetFillColor(kRed-4);
+
+  // END HISTOGRAMS DEFINITION /////////////
+  //////////////////////////////////////////
+
+  for(long unsigned int iEntry = 0; iEntry < nbEntries; iEntry++){
+    // Point to event iEntry inside WCSimTree
+    wcsimT->GetEvent(iEntry); 
+    
+    // Nb of Trigger inside the event
+    const unsigned int nbTriggers = wcsimrootsuperevent->GetNumberOfEvents();
+    const unsigned int nbSubTriggers = wcsimrootsuperevent->GetNumberOfSubEvents();
+
+    for(long unsigned int iTrig = 0; iTrig < nbTriggers; iTrig++){
+      WCSimRootTrigger *wcsimrootevent = wcsimrootsuperevent->GetTrigger(iTrig);
+      
+      // RAW HITS
+      int rawMax = wcsimrootevent->GetNcherenkovhits();
+      int totRawPE = 0;
+      for (int i = 0; i < rawMax; i++){
+	WCSimRootCherenkovHit *chit = wcsimrootevent->GetCherenkovHits()->At(i);
+
+	hPEByEvtsByPMT->Fill(chit->GetTotalPe(1));
+	totRawPE+=chit->GetTotalPe(1);
+      } // END FOR RAW HITS
+
+      hPEByEvts->Fill(totRawPE);
+
+      // DIGI HITS
+      int digiMax = wcsimrootevent->GetNcherenkovdigihits();
+      int totDigiPE = 0;
+      for (int i = 0; i < digiMax; i++){
+	WCSimRootCherenkovDigiHit *cDigiHit = wcsimrootevent->GetCherenkovDigiHits()->At(i);
+	//WCSimRootChernkovDigiHit has methods GetTubeId(), GetT(), GetQ()
+	WCSimRootCherenkovHitTime *cHitTime = wcsimrootevent->GetCherenkovHitTimes()->At(i);
+	//WCSimRootCherenkovHitTime has methods GetTubeId(), GetTruetime()
+
+	hPECollectedByEvtsByPMT->Fill(cDigiHit->GetQ());
+	totDigiPE+=cDigiHit->GetQ();
+      } // END FOR DIGI HITS
+
+      hPECollectedByEvts->Fill(totDigiPE);
+      
+    } // END FOR iTRIG
+    
+  } // END FOR iENTRY
+
+  //////////////////////////////////////////
+  // DRAWING ///////////////////////////////
+  //////////////////////////////////////////
+
+  TCanvas *c1;
+
+  c1 = new TCanvas("cRaw","cRaw",800,600);
+  hPEByEvtsByPMT->Draw("HIST");
+  hPEByEvts->Draw("sameBAR");
+
+  c1 = new TCanvas("cDigi","cDigi",800,600);
+  hPECollectedByEvtsByPMT->Draw("HIST");
+  hPECollectedByEvts->Draw("sameBAR");
+
+} // END MACRO

@@ -247,7 +247,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
 
   // OD PMTs //
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
-  WCSimPMTObject *PMTOD = CreatePMTObject("PMT8inch", WCODCollectionName);
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT5inch", WCODCollectionName);
   WCPMTODName           = PMTOD->GetPMTName();
   WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
   WCPMTODRadius         = PMTOD->GetRadius();

@@ -121,12 +121,12 @@
 # Or you can use the G4 Particle Gun
 # for a full list of /gun/ commands see:
 # http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
-/mygen/generator gun
-/gun/particle mu-
+#/mygen/generator gun
+#/gun/particle mu-
 #/gun/particle pi0
-/gun/energy 2000 MeV
-/gun/direction -1 -1 0
-/gun/position 50 50 0 m
+#/gun/energy 2000 MeV
+#/gun/direction -1 -1 0
+#/gun/position 50 50 0 m
 
 # Or you can use the G4 General Particle Source
 # you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
@@ -162,5 +162,5 @@
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false
 
-/run/beamOn 1
+#/run/beamOn 1
 #exit
