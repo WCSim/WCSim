@@ -9,6 +9,9 @@
 
 #include "WCSimRootOptions.hh"
 
+#include "TH1D.h"
+#include "TH2D.h"
+
 class WCSimDetectorConstruction;
 class G4ParticleGun;
 class G4GeneralParticleSource;
@@ -68,6 +71,7 @@ private:
   G4bool   useGunEvt;
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
   G4bool   useGPSEvt;
+  G4bool   useCosmics;
   std::fstream inputFile;
   G4String vectorFileName;
   G4bool   GenerateVertexInRock;
@@ -89,7 +93,12 @@ private:
 
   G4int    _counterRock; 
   G4int    _counterCublic; 
-public:
+
+  // Use Histograms to generate cosmics
+  TH2D *hFluxCosmics;
+  TH2D *hEmeanCosmics;
+
+ public:
 
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
   inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
@@ -103,6 +112,9 @@ public:
 
   inline void SetGPSEvtGenerator(G4bool choice) { useGPSEvt = choice; }
   inline G4bool IsUsingGPSEvtGenerator()  { return useGPSEvt; }
+
+  inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
+  inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }
 
   inline void OpenVectorFile(G4String fileName) 
   {
