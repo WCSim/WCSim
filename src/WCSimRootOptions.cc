@@ -44,6 +44,8 @@ void WCSimRootOptions::Print(Option_t *) const
     << "\tDigitizerClassName: " << DigitizerClassName << endl
     << "\tDigitizerDeadTime: " << DigitizerDeadTime << " ns" << endl
     << "\tDigitizerIntegrationWindow: " << DigitizerIntegrationWindow << " ns" << endl
+    << "\tDigitizerTimingPrecision: " << DigitizerTimingPrecision << " ns" << endl
+    << "\tDigitizerPEPrecision: " << DigitizerPEPrecision << " ns" << endl
     << "Trigger options:" << endl
     << "\tTriggerClassName: " << TriggerClassName << endl
     << "\tMultiDigitsPerTrigger: " << MultiDigitsPerTrigger << endl
