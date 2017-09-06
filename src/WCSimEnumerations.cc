@@ -25,6 +25,18 @@ std::string WCSimEnumerations::EnumAsString(TriggerType_t t)
   case (kTriggerNDigitsTest) :
     return "NDigits_TEST";
     break;
+  case (kTriggerNDigitsSK4_SHE) :
+    return "NDigits_SK4_SHE";
+    break;
+  case (kTriggerNDigitsSK4_HE) :
+    return "NDigits_SK4_HE";
+    break;
+  case (kTriggerNDigitsSK4_LE) :
+    return "NDigits_SK4_LE";
+    break;
+  case (kTriggerNDigitsSK4_SLE) :
+    return "NDigits_SK4_SLE";
+    break;
   case (kTriggerFailure) :
     return "No_trigger_passed";
     break;
