@@ -17,6 +17,9 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap;
 //std::map<int, cyl_location>  WCSimDetectorConstruction::tubeCylLocation;
 hash_map<std::string, int, hash<std::string> > 
@@ -27,7 +30,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
 	
   // Decide if (only for the case of !1kT detector) should be upright or horizontal
   isUpright = false;
-  isHyperK  = false;
+  isEggShapedHyperK  = false;
 
   debugMode = false;
 
@@ -124,11 +127,11 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // on their size and detector ordering.
 
   G4LogicalVolume* logicWCBox;
-  // Select between HyperK and cylinder
-  if (isHyperK) logicWCBox = ConstructHyperK();
-  else logicWCBox = ConstructCylinder(); 
+  // Select between egg-shaped HyperK and cylinder
+  if (isEggShapedHyperK) logicWCBox = ConstructEggShapedHyperK();
+  else logicWCBox = ConstructCylinder();
 
-  G4cout << " WCLength       = " << WCLength/CLHEP::m << " m"<< G4endl;
+  G4cout << " WCLength       = " << WCLength/m << " m"<< G4endl;
 
   //-------------------------------
 
@@ -137,7 +140,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 
   G4double expHallLength = 3.*WCLength; //jl145 - extra space to simulate cosmic muons more easily
 
-  G4cout << " expHallLength = " << expHallLength / CLHEP::m << G4endl;
+  G4cout << " expHallLength = " << expHallLength / m << G4endl;
   G4double expHallHalfLength = 0.5*expHallLength;
 
   G4Box* solidExpHall = new G4Box("expHall",
@@ -256,4 +259,12 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
   }
 
   else { G4cout << PMTType << " is not a recognized PMT Type. Exiting WCSim." << G4endl; exit(1);}
+}
+
+void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  wcopt->SetDetectorName(WCDetectorName);
+  wcopt->SetSavePi0(pi0Info_isSaved);
+  wcopt->SetPMTQEMethod(PMT_QE_Method);
+  wcopt->SetPMTCollEff(PMT_Coll_Eff);
 }
