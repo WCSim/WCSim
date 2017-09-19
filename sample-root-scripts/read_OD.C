@@ -48,35 +48,39 @@ void read_OD(char *filename=NULL) {
   // calls to GetEvent()
   wcsimT->GetBranch("wcsimrootevent_OD")->SetAutoDelete(kTRUE);
 
-  const long unsigned int nbEntries = wcsimT->GetEntries();
+  // const long unsigned int nbEntries = wcsimT->GetEntries();
+  const long unsigned int nbEntries = 100;
   cout << "Nb of entries " << wcsimT->GetEntries() << endl;
 
   //////////////////////////////////////////
   // HISTOGRAMS DEFINITION /////////////////
   //////////////////////////////////////////
 
-  TH1D *hPEByEvtsByPMT = new TH1D("hPEByEvtsByPMT","RAW PE by Evts by PMT",100,0,100);
+  const int nbBins = 500;
+  const int nbPEMax = nbBins;
+  
+  TH1D *hPEByEvtsByPMT = new TH1D("hPEByEvtsByPMT","RAW PE by Evts by PMT",nbBins,0,nbPEMax);
   hPEByEvtsByPMT->GetXaxis()->SetTitle("raw PE");
   hPEByEvtsByPMT->SetLineColor(kBlue-4);
   hPEByEvtsByPMT->SetMarkerColor(kBlue-4);  
-  // hPEByEvtsByPMT->SetFillColor(kBlue-4);  
-  TH1D *hPECollectedByEvtsByPMT = new TH1D("hPECollectedByEvtsByPMT","collected PE by Evts by PMT",100,0,100);
+  TH1D *hPECollectedByEvtsByPMT = new TH1D("hPECollectedByEvtsByPMT","collected PE by Evts by PMT",nbBins,0,nbPEMax);
   hPECollectedByEvtsByPMT->GetXaxis()->SetTitle("digi PE");
   hPECollectedByEvtsByPMT->SetLineColor(kRed-4);
   hPECollectedByEvtsByPMT->SetMarkerColor(kRed-4);
-  // hPECollectedByEvtsByPMT->SetFillColor(kRed-4);
   
-  TH1D *hPEByEvts = new TH1D("hPEByEvts","Total RAW PE by Evts",100,0,100);
+  TH1D *hPEByEvts = new TH1D("hPEByEvts","Total RAW PE by Evts",nbBins,0,nbPEMax);
   hPEByEvts->GetXaxis()->SetTitle("raw PE");
   hPEByEvts->SetLineColor(kBlue-4);
   hPEByEvts->SetMarkerColor(kBlue-4);
   hPEByEvts->SetFillColor(kBlue-4);  
-  TH1D *hPECollectedByEvts = new TH1D("hPECollectedByEvts","Total collected PE by Evts",100,0,100);
+  TH1D *hPECollectedByEvts = new TH1D("hPECollectedByEvts","Total collected PE by Evts",nbBins,0,nbPEMax);
   hPECollectedByEvts->GetXaxis()->SetTitle("digi PE");
   hPECollectedByEvts->SetLineColor(kRed-4);
   hPECollectedByEvts->SetMarkerColor(kRed-4);
   hPECollectedByEvts->SetFillColor(kRed-4);
 
+  TH1D *hNbTubesHit = new TH1D("hNbTubesHit","Nb of Tubes Hit",1000,0,1000);
+  
   // END HISTOGRAMS DEFINITION /////////////
   //////////////////////////////////////////
 
@@ -88,6 +92,10 @@ void read_OD(char *filename=NULL) {
     const unsigned int nbTriggers = wcsimrootsuperevent->GetNumberOfEvents();
     const unsigned int nbSubTriggers = wcsimrootsuperevent->GetNumberOfSubEvents();
 
+    // cout << "iEntry : " << iEntry << endl;
+    // cout << "nbTrig : " << nbTriggers << endl;
+    // cout << "nbSubTrig : " << nbSubTriggers << endl;
+    
     for(long unsigned int iTrig = 0; iTrig < nbTriggers; iTrig++){
       WCSimRootTrigger *wcsimrootevent = wcsimrootsuperevent->GetTrigger(iTrig);
       
@@ -96,11 +104,12 @@ void read_OD(char *filename=NULL) {
       int totRawPE = 0;
       for (int i = 0; i < rawMax; i++){
 	WCSimRootCherenkovHit *chit = wcsimrootevent->GetCherenkovHits()->At(i);
-
+	
 	hPEByEvtsByPMT->Fill(chit->GetTotalPe(1));
 	totRawPE+=chit->GetTotalPe(1);
       } // END FOR RAW HITS
 
+      hNbTubesHit->Fill(rawMax);
       hPEByEvts->Fill(totRawPE);
 
       // DIGI HITS
@@ -135,5 +144,15 @@ void read_OD(char *filename=NULL) {
   c1 = new TCanvas("cDigi","cDigi",800,600);
   hPECollectedByEvtsByPMT->Draw("HIST");
   hPECollectedByEvts->Draw("sameBAR");
+
+  c1 = new TCanvas("cNbTubesHit","cNbTubesHit",800,600);
+  hNbTubesHit->Draw("HIST");
+
+  cout << "Mean nb of tubes hit by events : " << hNbTubesHit->GetMean()
+       << " +- " << hNbTubesHit->GetRMS() << endl;
+  cout << "Mean raw PE by events : " << hPEByEvts->GetMean()
+       << " +- " << hPEByEvts->GetRMS() << endl;  
+  cout << "Mean PE collected by events : " << hPECollectedByEvts->GetMean()
+       << " +- " << hPECollectedByEvts->GetRMS() << endl;
 
 } // END MACRO

@@ -242,12 +242,12 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCODLateralWaterDepth    = 1.*m;
   WCODHeightWaterDepth     = 2.*m;
   WCODDeadSpace            = 600.*mm;
-  WCODTyvekSheetThickness  = 2.0*cm; // Au pif
+  WCODTyvekSheetThickness  = 2.*mm; // Au pif
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness);
 
   // OD PMTs //
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
-  WCSimPMTObject *PMTOD = CreatePMTObject("PMT5inch", WCODCollectionName);
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT3inch", WCODCollectionName);
   WCPMTODName           = PMTOD->GetPMTName();
   WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
   WCPMTODRadius         = PMTOD->GetRadius();
@@ -255,7 +255,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   // OD Coverage //
   WCPMTODperCellHorizontal = 2;
   WCPMTODperCellVertical   = 2;
-  WCPMTODPercentCoverage   = 1.0; //default 1%
+  WCPMTODPercentCoverage   = 0.6; //default 1%
 
   // Shift between PMTs inside a cell //
   WCODPMTShift = 0.*cm;

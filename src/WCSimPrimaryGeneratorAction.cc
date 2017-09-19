@@ -18,6 +18,7 @@
 #include <iostream>
 #include <iterator>
 #include <TFile.h>
+#include "TRandom3.h"
 
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
@@ -84,6 +85,8 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   vectorFileName = "MuonFlux-HyperK-ThetaPhi.dat";
   inputFile.open(vectorFileName, std::fstream::in);
 
+  gRandom->SetSeed(0);
+  
   if (!inputFile.is_open()) {
     G4cout << "Muon Vector file " << vectorFileName << " not found" << G4endl;
   } else {

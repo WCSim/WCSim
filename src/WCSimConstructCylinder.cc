@@ -35,7 +35,7 @@
 #include "G4PhysicalConstants.hh"
 
 #ifndef PLACEIDPMTS
-#define PLACEIDPMTS
+// #define PLACEIDPMTS
 #endif
 #ifndef PLACEODPMTS
 #define PLACEODPMTS

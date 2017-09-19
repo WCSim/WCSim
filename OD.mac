@@ -60,21 +60,21 @@
 #i.e. hit time ± (/DarkRate/SetDarkWindow) / 2
 /DarkRate/SetDetectorElement tank
 /DarkRate/SetDarkMode 1
-/DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkLow 0
+/DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkWindow 4000
 
 /DarkRate/SetDetectorElement OD
 /DarkRate/SetDarkMode 1
-/DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkLow 0
+/DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkWindow 4000
 
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute macros/visOGLSX.mac
 #/control/execute macros/visRayTracer.mac
 
-#/mygen/generator cosmics
+/mygen/generator cosmics
 
 #/mygen/generator gun
 #/gun/particle mu-
@@ -82,24 +82,24 @@
 #/gun/direction 0 0 -1
 #/gun/position 0 0 50 m
 
-/mygen/generator gps
-/gps/particle mu-
-/gps/pos/type Plane
-/gps/pos/shape Rectangle
-/gps/pos/centre -50 0 0 m
-/gps/pos/halfy 5 m
+#/mygen/generator gps
+#/gps/particle mu-
+#/gps/pos/type Plane
+#/gps/pos/shape Rectangle
+#/gps/pos/centre -50 0 0 m
+#/gps/pos/halfy 10 m
 
-/gps/ene/type Gauss
-/gps/ene/mono 1 GeV
-/gps/ene/sigma 100 MeV
+#/gps/ene/type Gauss
+#/gps/ene/mono 1 GeV
+#/gps/ene/sigma 100 MeV
 
 
-/gps/direction 1 0 0
+#/gps/direction 1 0 0
 
 
 ## change the name of the output root file, default = wcsim.root
 
-/WCSimIO/RootFile OD.root
+/WCSimIO/RootFile OD_3inch_prodCosmics_06percent.root
 
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false
