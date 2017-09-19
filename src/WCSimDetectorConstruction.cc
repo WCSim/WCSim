@@ -128,7 +128,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   if (isHyperK) logicWCBox = ConstructHyperK();
   else logicWCBox = ConstructCylinder(); 
 
-  G4cout << " WCLength       = " << WCLength/m << " m"<< G4endl;
+  G4cout << " WCLength       = " << WCLength/CLHEP::m << " m"<< G4endl;
 
   //-------------------------------
 
@@ -137,7 +137,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 
   G4double expHallLength = 3.*WCLength; //jl145 - extra space to simulate cosmic muons more easily
 
-  G4cout << " expHallLength = " << expHallLength / m << G4endl;
+  G4cout << " expHallLength = " << expHallLength / CLHEP::m << G4endl;
   G4double expHallHalfLength = 0.5*expHallLength;
 
   G4Box* solidExpHall = new G4Box("expHall",
