@@ -8,6 +8,9 @@
 #include "G4RotationMatrix.hh"
 #include <iomanip>
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 G4int WCSimWCHit::maxPe = 0;
 
 G4Allocator<WCSimWCHit> WCSimWCHitAllocator;
@@ -87,12 +90,12 @@ void WCSimWCHit::Print()
   G4cout << " Tube:"  << std::setw(4) << tubeID 
 	 << " Track:" << std::setw(6) << trackID 
 	 << " Pe:"    << totalPe
-	 << " Pos:"   << pos/CLHEP::cm << G4endl
+	 << " Pos:"   << pos/cm << G4endl
 	 << "\tTime: "; 
 
   for (int i = 0; i < totalPe; i++) 
   {
-    G4cout << time[i]/CLHEP::ns << " ";
+    G4cout << time[i]/ns << " ";
     if ( i%10 == 0 && i != 0) 
       G4cout << G4endl << "\t";
   }

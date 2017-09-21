@@ -7,6 +7,9 @@
 #include "G4VProcess.hh"
 #include "WCSimTrackInformation.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 WCSimTrackingAction::WCSimTrackingAction()
 {
   ProcessList.insert("Decay") ;
@@ -60,7 +63,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   if( aTrack->GetParentID()==0 || 
       ((creatorProcess!=0) && ProcessList.count(creatorProcess->GetProcessName()) ) || 
       (ParticleList.count(aTrack->GetDefinition()->GetPDGEncoding()) )
-      || (aTrack->GetDefinition()->GetPDGEncoding()==22 && aTrack->GetTotalEnergy() > 50.0*CLHEP::MeV)
+      || (aTrack->GetDefinition()->GetPDGEncoding()==22 && aTrack->GetTotalEnergy() > 50.0*MeV)
       )
   {
     // if so the track is worth saving

@@ -5,6 +5,7 @@
 #include "G4UIcommand.hh"
 #include "G4UIparameter.hh"
 #include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithABool.hh"
 
 WCSimRunActionMessenger::WCSimRunActionMessenger(WCSimRunAction* WCSimRA)
 :WCSimRun(WCSimRA)
@@ -18,11 +19,16 @@ WCSimRunActionMessenger::WCSimRunActionMessenger(WCSimRunAction* WCSimRA)
   RootFile->SetParameterName("RootFileName",true);
   RootFile->SetDefaultValue("wcsim.root");
 
+  UseTimer = new G4UIcmdWithABool("/WCSimIO/Timer",this);
+  UseTimer->SetGuidance("Use a timer for runtime");
+  UseTimer->SetParameterName("UseTimer",true);
+  UseTimer->SetDefaultValue(false);
 }
 
 WCSimRunActionMessenger::~WCSimRunActionMessenger()
 {
   delete RootFile;
+  delete UseTimer;
   delete WCSimIODir;
 }
 
@@ -33,6 +39,12 @@ void WCSimRunActionMessenger::SetNewValue(G4UIcommand* command,G4String newValue
     {
       WCSimRun->SetRootFileName(newValue);
       G4cout << "Output ROOT file set to " << newValue << G4endl;
+    }
+  else if(command == UseTimer)
+    {
+      bool use = UseTimer->GetNewBoolValue(newValue);
+      WCSimRun->SetUseTimer(use);
+      G4cout << "WCSimRunAction timer " << (use ? "ENABLED" : "DISABLED") << G4endl;
     }
 
 }

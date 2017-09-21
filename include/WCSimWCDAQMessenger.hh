@@ -48,6 +48,10 @@ private:
   G4int                 StoreDigitizerDeadTime;
   G4UIcmdWithAnInteger* DigitizerIntegrationWindow;
   G4int                 StoreDigitizerIntegrationWindow;
+  G4UIcmdWithADouble*   DigitizerTimingPrecision;
+  G4double              StoreDigitizerTimingPrecision;
+  G4UIcmdWithADouble*   DigitizerPEPrecision;
+  G4double              StoreDigitizerPEPrecision;
 
   G4UIdirectory*        SaveFailuresTriggerDir;
   G4UIcmdWithAnInteger* SaveFailuresTriggerMode;
