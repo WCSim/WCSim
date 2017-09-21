@@ -19,6 +19,7 @@
 
 # HyperK (one cylindrical tank with a height of 54.8 m, a diameter of 70.8 m and 40% coverage with 20" B&L PMTs)
 #/WCSim/WCgeom HyperK
+#/WCSim/WCgeom HyperKWithOD
 
 # Cylindrical detector with a height of 60 m and a diameter of 74 m
 #/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
