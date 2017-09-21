@@ -219,8 +219,8 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
-  WCIDDiameter          = 70.8/6.*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 54.8/6.*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
@@ -228,6 +228,30 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+
+}
+
+void WCSimDetectorConstruction::SetHyperKWithODGeometry()
+{
+  WCDetectorName = "HyperK";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = PMT->GetRadius();
+  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
+  WCPMTperCellHorizontal= 4;
+  WCPMTperCellVertical  = 3;
+  WCPMTPercentCoverage  = 40.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+      /WCPMTperCellVertical));
   WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
