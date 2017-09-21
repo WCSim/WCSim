@@ -26,6 +26,9 @@
 #include "G4UnitsTable.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 #include <set>
 #include <iomanip>
 #include <string>
@@ -50,12 +53,17 @@
 //#define TIME_DAQ_STEPS
 #endif
 
+#ifndef NPMTS_VERBOSE
+#define NPMTS_VERBOSE 10
+#endif
+
 WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun, 
 				   WCSimDetectorConstruction* myDetector, 
 				   WCSimPrimaryGeneratorAction* myGenerator)
   :runAction(myRun), generatorAction(myGenerator), 
    detectorConstructor(myDetector),
-   ConstructedDAQClasses(false)
+   ConstructedDAQClasses(false),
+   SavedOptions(false)
 {
   DAQMessenger = new WCSimWCDAQMessenger(this);
 
@@ -120,8 +128,13 @@ void WCSimEventAction::CreateDAQInstances()
 
 void WCSimEventAction::BeginOfEventAction(const G4Event*)
 {
-  if(!ConstructedDAQClasses)
+  if(!ConstructedDAQClasses) {
     CreateDAQInstances();
+
+    //and save options in output file
+    G4DigiManager* DMman = G4DigiManager::GetDMpointer();
+
+  }
 }
 
 void WCSimEventAction::EndOfEventAction(const G4Event* evt)
@@ -242,7 +255,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
 #ifdef TIME_DAQ_STEPS
   ms->Stop();
-  std::cout << " Digtization :  Real = " << ms->RealTime() 
+  G4cout << " Digtization :  Real = " << ms->RealTime() 
     	    << " ; CPU = " << ms->CpuTime() << "\n";  
 #endif
 
@@ -390,10 +403,24 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   FillRootEvent(event_id,
 		jhfNtuple,
 		trajectoryContainer,
-		WCHC,
 		WCDC_hits,
 		WCDC);
 
+  //save DAQ options here. This ensures that when the user selects a default option
+  // (e.g. with -99), the saved option value in the output reflects what was run
+  if(!SavedOptions) {
+    WCSimRootOptions * wcsimopt = runAction->GetRootOptions();
+    //Dark noise
+    WCDNM->SaveOptionsToOutput(wcsimopt);
+    //Digitizer
+    WCDM->SaveOptionsToOutput(wcsimopt);
+    //Trigger
+    WCTM->SaveOptionsToOutput(wcsimopt);
+    //Generator
+    generatorAction->SaveOptionsToOutput(wcsimopt);
+    
+    SavedOptions = true;
+  }
 }
 
 G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
@@ -495,7 +522,6 @@ G4int WCSimEventAction::WCSimEventFindStoppingVolume(G4String stopVolumeName)
 void WCSimEventAction::FillRootEvent(G4int event_id, 
 				     const struct ntupleStruct& jhfNtuple,
 				     G4TrajectoryContainer* TC,
-				     WCSimWCHitsCollection* WCHC,
 				     WCSimWCDigitsCollection* WCDC_hits,
 				     WCSimWCTriggeredDigitsCollection* WCDC)
 {
@@ -751,97 +777,63 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
 #ifdef _SAVE_RAW_HITS
 
-  if (WCHC && WCDC_hits) 
+  if (WCDC_hits) 
   {
     //add the truth raw hits
-    //the noise is NOT in the HitsCollection
-    //therefore need to find it in the DigitsCollection from WCSimWCPMT or WCSimWCAddDarkNoise
-    //and the order of hits isn't preserved
-    //So need to hunt for the hit with the correct time
+    // Both the pre- and post-PMT smearing hit times are accessible
+    // Choose to save just the pre-smeared times for now
+#ifdef _SAVE_RAW_HITS_VERBOSE
     G4cout<<"RAW HITS"<<G4endl;
+#endif
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
-    int total_hits = WCHC->entries();
-    std::vector<float> truetime;
+    std::vector<float> truetime, smeartime;
     std::vector<int>   primaryParentID;
-    double hit_time, digi_time;
+    double hit_time_smear, hit_time_true;
     int hit_parentid;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
-      if(idigi < total_hits) {
-	int hit_tubeid = (*WCHC)[idigi]->GetTubeID();
-	if(digi_tubeid == hit_tubeid) {
+      for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
+	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
+	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
+	truetime.push_back(hit_time_true);
+	primaryParentID.push_back(hit_parentid);
 #ifdef _SAVE_RAW_HITS_VERBOSE
-	  G4cout << "Digi and hit tube IDs match for tube " << digi_tubeid << G4endl;
+	hit_time_smear = (*WCDC_hits)[idigi]->GetTime(id);
+	smeartime.push_back(hit_time_smear);
 #endif
-	  //We've found the correct entries in the collections, now need to line up the WCSimWCDigi hits with the WCSimWCHit hits
-	  //(hits we can't find in the WCSimWCHit are noise hits)
-	  //loop over the WCSimWCDigi
-	  for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
-	    digi_time = (*WCDC_hits)[idigi]->GetTime(id);
-	    //loop over the WCSimWCHit to find the corresponding hit
-	    bool found_hit = false;
-	    for(G4int ih = 0; ih < (*WCHC)[idigi]->GetTotalPe(); ih++){
-	      hit_time = (*WCHC)[idigi]->GetTime(ih);
-	      if(abs(hit_time - digi_time) < 1E-6) {
-		found_hit = true;
-		hit_parentid = (*WCHC)[idigi]->GetParentID(ih);
-		break;
-	      }
-	    }//ih
-	    if(found_hit) {
+      }//id
 #ifdef _SAVE_RAW_HITS_VERBOSE
-	      G4cout << "Hit " << id << " in the WCSimWCDigi is a photon hit with time " 
-		     << hit_time << " and parentID " << hit_parentid << G4endl;
-#endif
-	      truetime.push_back(hit_time);
-	      primaryParentID.push_back(hit_parentid);
-	    }
-	    else {
-#ifdef _SAVE_RAW_HITS_VERBOSE
-	      G4cout << "Hit " << id << " in the WCSimWCDigi is a noise hit with time "
-		     << digi_time << G4endl;
-#endif
-	      truetime.push_back(digi_time);
-	      primaryParentID.push_back(-1);
-	    }
-	  }//id
-	}//digi_tubeid == hit_tubeid
-	else {
-	  //This shouldn't happen!
-	  G4cerr << "ERROR raw hits not found for tube ID " << digi_tubeid
-		 << " Will save the hit charge output from WCSimWCPMT (parentID will be set to -9)" << G4endl;
-	  //loop over the WCSimWCDigi
-          for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
-	    digi_time = (*WCDC_hits)[idigi]->GetTime(id);
-	    truetime.push_back(digi_time);
-	    primaryParentID.push_back(-9);
-	  }//id
-	}//digi_tubeid != hit_tubeid
-      }//idigi < total_hits
-      else {
-#ifdef _SAVE_RAW_HITS_VERBOSE
-	G4cout << "All noise hits for tube " << digi_tubeid << G4endl;
-#endif
-	for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
-	  digi_time = (*WCDC_hits)[idigi]->GetTime(id);
-	  truetime.push_back(digi_time);
-	  primaryParentID.push_back(-1);
+      if(digi_tubeid < NPMTS_VERBOSE) {
+	G4cout << "Adding " << truetime.size()
+	       << " Cherenkov hits in tube " << digi_tubeid
+	       << " with truetime:smeartime:primaryparentID";
+	for(G4int id = 0; id < truetime.size(); id++) {
+	  G4cout << " " << truetime[id]
+		 << ":" << smeartime[id]
+		 << ":" << primaryParentID[id];
 	}//id
-      }//idigi >= total_hits
+	G4cout << G4endl;
+      }
+#endif
       wcsimrootevent->AddCherenkovHit(digi_tubeid,
 				      truetime,
 				      primaryParentID);
+      smeartime.clear();
       truetime.clear();
       primaryParentID.clear();
     }//idigi
-  }//if(WCHC && WCDC_hits)
+  }//if(WCDC_hits)
 #endif //_SAVE_RAW_HITS
 
   // Add the digitized hits
 
   if (WCDC) 
   {
+#ifdef SAVE_DIGITS_VERBOSE
+    G4cout << "DIGI HITS" << G4endl;
+#endif
+
     G4float sumq_tmp = 0.;
     
     for ( int index = 0 ; index < ngates ; index++)
@@ -861,14 +853,16 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	      assert(vec_pe.size() == vec_digicomp.size());
 	      for(unsigned int iv = 0; iv < vec_pe.size(); iv++) {
 #ifdef SAVE_DIGITS_VERBOSE
-		G4cout << "Adding digit " << iv 
-		       << " for PMT " << tubeID
-		       << " pe "   << vec_pe[iv]
-		       << " time " << vec_time[iv]
-		       << " digicomp";
-		for(unsigned int ivv = 0; ivv < vec_digicomp[iv].size(); ivv++)
-		  G4cout << " " << vec_digicomp[iv][ivv];
-		G4cout << G4endl;
+		if(tubeID < NPMTS_VERBOSE) {
+		  G4cout << "Adding digit " << iv 
+			 << " for PMT " << tubeID
+			 << " pe "   << vec_pe[iv]
+			 << " time " << vec_time[iv]
+			 << " digicomp";
+		  for(unsigned int ivv = 0; ivv < vec_digicomp[iv].size(); ivv++)
+		    G4cout << " " << vec_digicomp[iv][ivv];
+		  G4cout << G4endl;
+		}
 #endif
 		assert(vec_digicomp[iv].size() > 0);
 		wcsimrootevent->AddCherenkovDigiHit(vec_pe[iv], vec_time[iv],
@@ -883,9 +877,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
 #ifdef SAVE_DIGITS_VERBOSE
 	G4cout << "checking digi hits ...\n";
-	G4cout << "hits collection size =  " << 
+	G4cout << "hits collection size (number of PMTs hit) =  " << 
 	  wcsimrootevent->GetCherenkovHits()->GetEntries() << "\n";
-	G4cout << "hits collection size =  " << 
+	G4cout << "hits collection size (number of true photon + dark noise hits) =  " << 
 	  wcsimrootevent->GetCherenkovHitTimes()->GetEntries() << "\n";
 	G4cout << "digihits collection size =  " << 
 	  wcsimrootevent->GetCherenkovDigiHits()->GetEntries() << "\n";
@@ -897,7 +891,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	gatestart = WCTM->GetTriggerTime(index);
 	WCSimRootEventHeader*HH = wcsimrootevent->GetHeader();
 	HH->SetDate(int(gatestart));
-      }
+      }//index (loop over ngates)
     
     // end of loop over WC trigger gates --> back to the main sub-event
     wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
@@ -928,11 +922,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   
   TTree* tree = GetRunAction()->GetTree();
   tree->Fill();
-  TFile* hfile = tree->GetCurrentFile();
   // MF : overwrite the trees -- otherwise we have as many copies of the tree
   // as we have events. All the intermediate copies are incomplete, only the
   // last one is useful --> huge waste of disk space.
-  hfile->Write("",TObject::kOverwrite);
+  tree->Write("",TObject::kOverwrite);
   
   // M Fechner : reinitialize the super event after the writing is over
   wcsimrootsuperevent->ReInitialize();

@@ -28,13 +28,29 @@ std::string WCSimEnumerations::EnumAsString(TriggerType_t t)
   case (kTriggerFailure) :
     return "No_trigger_passed";
     break;
-  case (kTriggerNoTrig) :
-    return "NoTrigger";
-    break;
   default:
     return "";
     break;
     }
+  return "";
+}
+
+std::string WCSimEnumerations::EnumAsString(WCSimRandomGenerator_t r)
+{
+  switch(r) {
+  case (RANDOM_E_RANLUX) :
+    return "RANLUX";
+    break;
+  case (RANDOM_E_RANECU) :
+    return "RANECU";
+    break;
+  case (RANDOM_E_HEPJAMES) :
+    return "HEPJAMES";
+    break;
+  default:
+    return "";
+    break;
+  }
   return "";
 }
 

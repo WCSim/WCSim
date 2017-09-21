@@ -3,6 +3,7 @@
 
 #include "WCSimPmtInfo.hh"
 #include "WCSimPMTObject.hh"
+#include "WCSimRootOptions.hh"
 
 #include "G4Transform3D.hh"
 #include "G4VUserDetectorConstruction.hh"
@@ -53,7 +54,9 @@ public:
 
   WCSimDetectorConstruction(G4int DetConfig,WCSimTuningParameters* WCSimTuningPars);
   ~WCSimDetectorConstruction();
-  
+
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+
   G4VPhysicalVolume* Construct();
 
   // Related to the WC geometry
@@ -65,6 +68,7 @@ public:
   void Cylinder_60x74_20inchBandL_14perCent();
   void Cylinder_60x74_20inchBandL_40perCent();
   void Cylinder_12inchHPD_15perCent();
+  void SetHyperKGeometry();
   void UpdateGeometry();
   
 
@@ -122,16 +126,16 @@ public:
   // Geometry options
   void   SetIsUpright(G4bool choice) {isUpright = choice;}
 
-  // *** Begin HyperK Geometry ***
+  // *** Begin Egg-Shaped HyperK Geometry ***
 
-  void   SetIsHyperK(G4bool choice) {isHyperK = choice;}
-  G4bool GetIsHyperK() {return isHyperK;}
+  void   SetIsEggShapedHyperK(G4bool choice) {isEggShapedHyperK = choice;}
+  G4bool GetIsEggShapedHyperK() {return isEggShapedHyperK;}
 
-  void SetHyperKGeometry();
-  void SetHyperKGeometry_withHPD();
+  void SetEggShapedHyperKGeometry();
+  void SetEggShapedHyperKGeometry_withHPD();
 
 
-  // *** End HyperK Geometry ***
+  // *** End Egg-Shaped HyperK Geometry ***
 
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
 
@@ -306,10 +310,10 @@ private:
   // amb79: to universally make changes in structure and geometry
   bool isUpright;
 
-  // *** Begin HyperK Geometry ***
+  // *** Begin egg-shaped HyperK Geometry ***
 
-    void MatchWCSimAndHyperK();
-    G4LogicalVolume* ConstructHyperK();
+    void MatchWCSimAndEggShapedHyperK();
+    G4LogicalVolume* ConstructEggShapedHyperK();
 
     G4Material* FindMaterial(G4String);
 
@@ -326,14 +330,14 @@ private:
                                          G4double, G4double,
                                          G4double, G4double);
 
-    G4bool isHyperK;
-  
-  G4double waterTank_TopR;
-  G4double waterTank_BotR;
-  G4double waterTank_Height;
-  G4double waterTank_UpperA;
-  G4double waterTank_LowerB;
-  G4double waterTank_Length;
+    G4bool isEggShapedHyperK;
+
+    G4double waterTank_TopR;
+    G4double waterTank_BotR;
+    G4double waterTank_Height;
+    G4double waterTank_UpperA;
+    G4double waterTank_LowerB;
+    G4double waterTank_Length;
 
     G4double innerPMT_TopR;
     G4double innerPMT_BotR;
@@ -368,7 +372,7 @@ private:
     G4int PMTCopyNo;
     G4int wallSlabCopyNo;
 
-  // *** End HyperK Geometry ***
+  // *** End egg-shaped HyperK Geometry ***
 
   // amb79: debug to display all parts
   bool debugMode;

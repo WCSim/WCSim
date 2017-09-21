@@ -211,10 +211,32 @@ void WCSimDetectorConstruction::Cylinder_12inchHPD_15perCent()
   WCAddGd               = false;
 }
 
-
 void WCSimDetectorConstruction::SetHyperKGeometry()
 {
   WCDetectorName = "HyperK";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = PMT->GetRadius();
+  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
+  WCPMTperCellHorizontal= 4;
+  WCPMTperCellVertical  = 3;
+  WCPMTPercentCoverage  = 40.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+}
+
+void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()
+{
+  WCDetectorName = "EggShapedHyperK";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD"; 
   WCSimPMTObject * PMT = CreatePMTObject("PMT20inch", WCIDCollectionName);
@@ -254,65 +276,65 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   innerPMT_TopN = 0;
   innerPMT_BotN = 0;
 
-  isHyperK = true; // Tell DetectorConstruction to build HK geometry
+  isEggShapedHyperK = true; // Tell DetectorConstruction to build egg-shaped HK geometry
 
-  MatchWCSimAndHyperK();
+  MatchWCSimAndEggShapedHyperK();
 }
 
-void WCSimDetectorConstruction::SetHyperKGeometry_withHPD()
+void WCSimDetectorConstruction::SetEggShapedHyperKGeometry_withHPD()
 {
-  WCDetectorName = "HyperK_withHPD";
+  WCDetectorName = "EggShapedHyperK_withHPD";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD"; 
+  WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
   WCSimPMTObject * PMT = CreatePMTObject("HPD20inchHQE", WCIDCollectionName);
   WCSimPMTObject * outerPMT = CreatePMTObject("PMT8inch", WCODCollectionName);
-   WCPMTName = PMT->GetPMTName();
-   innerPMT_Expose = PMT->GetExposeHeight();
-   innerPMT_Radius = PMT->GetRadius();
-   waterTank_TopR   = 32000.*mm;
-   waterTank_BotR   = 30000.*mm;
-   waterTank_Height = 48000.*mm;
-   waterTank_UpperA =  8000.*mm;
-   waterTank_LowerB =  6000.*mm;
-   waterTank_Length = 49500.*mm;
-   
-   innerPMT_TopR     = 29095.*mm; 
-   innerPMT_BotR     = 27095.*mm;
-   innerPMT_TopW     = 12038.*mm;
-   innerPMT_BotW     = 11004.*mm;
-   innerPMT_Height   = 21095.*mm;
-   innerPMT_Rpitch   =   990.*mm;
-   innerPMT_Apitch   =   990.*mm;
+  WCPMTName = PMT->GetPMTName();
+  innerPMT_Expose = PMT->GetExposeHeight();
+  innerPMT_Radius = PMT->GetRadius();
+  waterTank_TopR   = 32000.*mm;
+  waterTank_BotR   = 30000.*mm;
+  waterTank_Height = 48000.*mm;
+  waterTank_UpperA =  8000.*mm;
+  waterTank_LowerB =  6000.*mm;
+  waterTank_Length = 49500.*mm;
 
- 
-   outerPMT_Expose = outerPMT->GetExposeHeight();
-   outerPMT_Radius = outerPMT->GetRadius();
-   outerPMT_TopR      = innerPMT_TopR + 900.*mm;
-   outerPMT_BotR      = innerPMT_BotR + 900.*mm;
-   outerPMT_TopW      = 12394.*mm;
-   outerPMT_BotW      = 11319.*mm;
-   outerPMT_Height    = innerPMT_Height + 900.*mm;
-   outerPMT_TopRpitch = 3. * innerPMT_Rpitch * (outerPMT_TopR/innerPMT_TopR);
-   outerPMT_BotRpitch = 3. * innerPMT_Rpitch * (outerPMT_BotR/innerPMT_BotR);
-   outerPMT_Apitch    = 2. * innerPMT_Apitch;
+  innerPMT_TopR     = 29095.*mm;
+  innerPMT_BotR     = 27095.*mm;
+  innerPMT_TopW     = 12038.*mm;
+  innerPMT_BotW     = 11004.*mm;
+  innerPMT_Height   = 21095.*mm;
+  innerPMT_Rpitch   =   990.*mm;
+  innerPMT_Apitch   =   990.*mm;
 
-   blackSheetThickness = 20.*mm;
-   
-   innerPMT_TopN = 0;
-   innerPMT_BotN = 0;
-   
-   isHyperK = true; // Tell DetectorConstruction to build HK geometry
-   
-   MatchWCSimAndHyperK();
+
+  outerPMT_Expose = outerPMT->GetExposeHeight();
+  outerPMT_Radius = outerPMT->GetRadius();
+  outerPMT_TopR      = innerPMT_TopR + 900.*mm;
+  outerPMT_BotR      = innerPMT_BotR + 900.*mm;
+  outerPMT_TopW      = 12394.*mm;
+  outerPMT_BotW      = 11319.*mm;
+  outerPMT_Height    = innerPMT_Height + 900.*mm;
+  outerPMT_TopRpitch = 3. * innerPMT_Rpitch * (outerPMT_TopR/innerPMT_TopR);
+  outerPMT_BotRpitch = 3. * innerPMT_Rpitch * (outerPMT_BotR/innerPMT_BotR);
+  outerPMT_Apitch    = 2. * innerPMT_Apitch;
+
+  blackSheetThickness = 20.*mm;
+
+  innerPMT_TopN = 0;
+  innerPMT_BotN = 0;
+
+  isEggShapedHyperK = true; // Tell DetectorConstruction to build egg-shaped HK geometry
+
+  MatchWCSimAndEggShapedHyperK();
 }
 
 
 /**
- * Transfer HK variables needed elsewhere
+ * Transfer egg-shaped HK variables needed elsewhere
  * to their generic WC equivalents.
- * This should be included in all HK configurations.
+ * This should be included in all egg-shaped HK configurations.
  */
-void WCSimDetectorConstruction::MatchWCSimAndHyperK()
+void WCSimDetectorConstruction::MatchWCSimAndEggShapedHyperK()
 {
   WCLength = waterTank_Length;
   WCPosition = 0.;

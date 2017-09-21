@@ -1,13 +1,14 @@
 #ifndef WCSimTuningParameters_h
 #define WCSimTuningParameters_h 1
 #include "WCSimTuningMessenger.hh"
+#include "WCSimRootOptions.hh"
 #include "globals.hh"
 
 class WCSimTuningParameters
 {
-  public:
-    WCSimTuningParameters();
-    ~WCSimTuningParameters();
+public:
+  WCSimTuningParameters();
+  ~WCSimTuningParameters();
 
 
   // Setters and getters
@@ -33,7 +34,9 @@ class WCSimTuningParameters
   G4bool GetTopVeto() {return topveto;}
   void SetTopVeto(G4double tparam) {topveto=tparam;}
 
-  private:
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+
+private:
 
   // The messenger
   WCSimTuningMessenger* TuningMessenger;
