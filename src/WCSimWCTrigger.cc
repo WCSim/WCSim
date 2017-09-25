@@ -422,9 +422,7 @@ void WCSimWCTriggerBase::AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool rem
   std::vector<Float_t> triggerinfo;
   Int_t Ndigits=0;
   for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
-    for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
-      Ndigits++;
-    }
+    Ndigits += (*WCDCPMT)[i]->GetTotalPe();
   }
   triggerinfo.push_back(Ndigits);
   TriggerTypes.push_back(kTriggerNoTrig);
