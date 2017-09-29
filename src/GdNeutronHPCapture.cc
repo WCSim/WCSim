@@ -100,7 +100,7 @@
       {
         index = theMaterial->GetElement(i)->GetIndex();
         rWeight = NumAtomsPerVolume[i];
-          G4cout << theMaterial->GetElement(i)->GetName() << G4endl;
+        //G4cout << theMaterial->GetElement(i)->GetName() << G4endl;
         xSec[i] = (*(*theCapture)[index]).GetXsec(aThermalE.GetThermalEnergy(aTrack,
   		                                                     theMaterial->GetElement(i),
   								     theMaterial->GetTemperature()));
