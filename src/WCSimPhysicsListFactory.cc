@@ -6,6 +6,7 @@
 #include <G4NeutronRadCapture.hh>
 #include <G4NeutronCaptureXS.hh>
 #include <G4CrossSectionDataSetRegistry.hh>
+#include <G4HadronicInteractionRegistry.hh>
 #include "WCSimPhysicsListFactory.hh"
 
 #include "GdNeutronHPCapture.hh"
@@ -63,6 +64,9 @@ void WCSimPhysicsListFactory::ConstructProcess() {
         if (captureProcess) {
             G4cout << "Removing default nCapture process" << G4endl;
             manager->RemoveProcess(captureProcess);
+            // Due to bug in Geant (fixed in v4.10.2) must remove old NeutronHPCapture from registry, if it exists, to prevent segfault on cleanup
+            G4HadronicInteractionRegistry *registry = G4HadronicInteractionRegistry::Instance();
+            registry->RemoveMe(registry->FindModel("NeutronHPCapture"));
         }
 
         G4HadronCaptureProcess *theCaptureProcess = new G4HadronCaptureProcess;
