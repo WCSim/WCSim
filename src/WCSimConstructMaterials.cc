@@ -1250,7 +1250,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
 void WCSimDetectorConstruction::SetGadoliniumConcentration(G4double percent){
   G4Material * Water = G4Material::GetMaterial("Water");
-  G4Material * DopedWater = G4Material::GetMaterial("Doped Water");
+  G4Material * DopedWater = G4Material::GetMaterial("Doped Water",false);
   //Delete old doped water if it exists
   if(DopedWater) delete DopedWater;
   //Create new doped water material
