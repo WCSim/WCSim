@@ -24,11 +24,11 @@
 #options for NDigits-like triggers (defaults are class-specific. Can be overridden here)
 # control the NDigits trigger threshold
 # (note in SKI_SKDETSIM, this is actually the value used for the NHits trigger (NHits != NDigits))
-/DAQ/TriggerNDigits/Threshold 5
+#/DAQ/TriggerNDigits/Threshold 25
 # the trigger counts digits (looking for threshold) in this window (ns)
-/DAQ/TriggerNDigits/Window 50
+#/DAQ/TriggerNDigits/Window 200
 # automatically adjust the NDigits threshold depending on the average noise occupancy during the trigger window
-/DAQ/TriggerNDigits/AdjustForNoise true
+#/DAQ/TriggerNDigits/AdjustForNoise true
 # the digits in which range around the trigger time (ns) should be saved with the event
-/DAQ/TriggerNDigits/PreTriggerWindow  -100
-/DAQ/TriggerNDigits/PostTriggerWindow +150
+#/DAQ/TriggerNDigits/PreTriggerWindow  -400
+#/DAQ/TriggerNDigits/PostTriggerWindow +950
