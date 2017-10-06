@@ -516,7 +516,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
 	if(command == DopingConcentration) {
 		G4cout << "Setting Gadolinium doping concentration: " << newValue << "percent" << G4endl;
-		WCSimDetector->SetGadoliniumConcentration(DopingConcentration->GetNewDoubleValue(newValue));
+            WCSimDetector->AddDopedWater(DopingConcentration->GetNewDoubleValue(newValue));
 	}
 
 	if(command == PMTSize) {
