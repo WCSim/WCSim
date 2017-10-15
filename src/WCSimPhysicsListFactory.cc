@@ -84,7 +84,7 @@ void WCSimPhysicsListFactory::ConstructProcess() {
             if (nCaptModelChoice.compareTo("GLG4Sim", G4String::ignoreCase) == 0) {
                 G4cout << "Enabling GLG4Sim HP nCapture process" << G4endl;
                 theNeutronHPCapture = new GdNeutronHPCapture();
-            } else if (nCaptModelChoice.compareTo("GLG4Sim", G4String::ignoreCase) == 0) {
+            } else if (nCaptModelChoice.compareTo("HP", G4String::ignoreCase) == 0) {
                 G4cout << "Enabling HP nCapture process" << G4endl;
                 theNeutronHPCapture = new G4NeutronHPCapture();
             }
