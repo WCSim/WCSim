@@ -96,6 +96,9 @@ void WCSimWCTriggerBase::GetVariables()
 int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
 {
   switch(t) {
+  case kTriggerNoTrig:
+    return 0;
+    break;
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
     return ndigitsPreTriggerWindow;
@@ -114,6 +117,9 @@ int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
 int WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
 {
   switch(t) {
+  case kTriggerNoTrig:
+    return WCSimWCTriggerBase::LongTime;
+    break;
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
     return ndigitsPostTriggerWindow;
@@ -197,7 +203,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
   int window_end_time   = WCSimWCTriggerBase::LongTime - ndigitsWindow;
   int window_step_size  = 5; //step the search window along this amount if no trigger is found
   float lasthit;
-  std::vector<int> digit_times;
+  std::vector<G4float> digit_times;
   bool first_loop = true;
 
   G4cout << "WCSimWCTriggerBase::AlgNDigits. Number of entries in input digit collection: " << WCDCPMT->entries() << G4endl;
@@ -221,7 +227,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
       //int tube=(*WCDCPMT)[i]->GetTubeID();
       //Loop over each Digit in this PMT
       for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
-	int digit_time = (*WCDCPMT)[i]->GetTime(ip);
+	G4float digit_time = (*WCDCPMT)[i]->GetTime(ip);
 	//hit in trigger window?
 	if(digit_time >= window_start_time && digit_time <= (window_start_time + ndigitsWindow)) {
 	  n_digits++;
@@ -349,7 +355,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       int tube=(*WCDCPMT)[i]->GetTubeID();
       //loop over digits in this PMT
       for ( G4int ip = 0; ip < (*WCDCPMT)[i]->GetTotalPe(); ip++){
-	int digit_time  = (*WCDCPMT)[i]->GetTime(ip);
+	G4float digit_time  = (*WCDCPMT)[i]->GetTime(ip);
 	if(digit_time >= lowerbound && digit_time <= upperbound) {
 	  //hit in event window
 	  //add it to DigitsCollection
@@ -407,6 +413,23 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
   }//loop over Triggers
   G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of entries in output digit collection: " << DigitsCollection->entries() << G4endl;
 
+}
+
+void WCSimWCTriggerBase::AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test) {
+
+  //Does not doanything, just writes out all hits
+  TriggerType_t this_triggerType = kTriggerNoTrig;
+  std::vector<Float_t> triggerinfo;
+  Int_t Ndigits=0;
+  for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
+    Ndigits += (*WCDCPMT)[i]->GetTotalPe();
+  }
+  triggerinfo.push_back(Ndigits);
+  TriggerTypes.push_back(kTriggerNoTrig);
+  TriggerInfos.push_back(triggerinfo);
+  TriggerTimes.push_back(0.);
+
+  FillDigitsCollection(WCDCPMT, remove_hits, this_triggerType);
 }
 
 void WCSimWCTriggerBase::SaveOptionsToOutput(WCSimRootOptions * wcopt)
@@ -512,6 +535,32 @@ void WCSimWCTriggerNDigits::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   bool remove_hits = false;
   AlgNDigits(WCDCPMT, remove_hits);
 }
+
+// *******************************************
+// DERIVED CLASS
+// *******************************************
+
+
+WCSimWCTriggerNoTrigger::WCSimWCTriggerNoTrigger(G4String name,
+					 WCSimDetectorConstruction* myDetector,
+					 WCSimWCDAQMessenger* myMessenger)
+  :WCSimWCTriggerBase(name, myDetector, myMessenger)
+{
+  triggerClassName = "NoTrigger";
+}
+
+WCSimWCTriggerNoTrigger::~WCSimWCTriggerNoTrigger()
+{
+}
+
+void WCSimWCTriggerNoTrigger::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
+  //Apply an NDigits trigger
+  bool remove_hits = false;
+  SetMultiDigitsPerTrigger(true);
+  SetSaveFailuresMode(0);
+  AlgNoTrigger(WCDCPMT, remove_hits);
+}
+
 
 // *******************************************
 // DERIVED CLASS

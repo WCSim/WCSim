@@ -69,6 +69,7 @@
 #choose the Trigger & Digitizer type (and options)
 /DAQ/Digitizer SKI
 /DAQ/Trigger NDigits
+#/DAQ/Trigger NoTrigger
 
 #grab the other DAQ options (thresholds, timing windows, etc.)
 /control/execute macros/daq.mac
