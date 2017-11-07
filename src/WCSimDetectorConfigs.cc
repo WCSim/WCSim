@@ -266,7 +266,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCODLateralWaterDepth    = 1.*m;
   WCODHeightWaterDepth     = 2.*m;
   WCODDeadSpace            = 600.*mm;
-  WCODTyvekSheetThickness  = 2.0*cm; // Au pif
+  WCODTyvekSheetThickness  = 1.0*mm; // Quite standard I guess
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness);
 
   // OD PMTs //
@@ -276,10 +276,15 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
   WCPMTODRadius         = PMTOD->GetRadius();
 
-  // OD Coverage //
+  // OD Coverage on barrel side //
   WCPMTODperCellHorizontal = 1;
   WCPMTODperCellVertical   = 1;
+
+  // OD Coverage on caps //
   WCPMTODPercentCoverage   = 1.0; //default 1%
+  // NOTE : If you set WCPMTODperCellHorizontal=0 and WCPMTODperCellVertical=0,
+  // then method ComputeWCODPMT() inside ConstructCylinder will automatically compute
+  // the nb of PMTs to put on barrel side according to WCPMTODPercentCoverage
 
   // Shift between PMTs inside a cell //
   WCODPMTShift = 0.*cm;
