@@ -71,6 +71,7 @@ public:
   void Cylinder_60x74_20inchBandL_40perCent();
   void Cylinder_12inchHPD_15perCent();
   void SetHyperKGeometry();
+  void SetHyperKWithODGeometry();
   void UpdateGeometry();
   
 
@@ -82,7 +83,7 @@ public:
   G4int    GetMyConfiguration()   {return myConfiguration;}
   G4double GetGeo_Dm(G4int);
   G4int    GetTotalNumPmts() {return totalNumPMTs;}
-  G4int    GetTotalNumPmtsOD() {return totalNumPMTsOD;}
+  G4int    GetTotalNumODPmts() {return totalNumODPMTs;}
 
   G4int    GetPMT_QE_Method(){return PMT_QE_Method;}
   G4double GetwaterTank_Length() {return waterTank_Length;} 
@@ -430,7 +431,7 @@ private:
   std::ofstream geoFile;   // File for text output
 
   G4int totalNumPMTs;      // The number of PMTs for this configuration     
-  G4int totalNumPMTsOD;      // The number of PMTs for this configuration
+  G4int totalNumODPMTs;      // The number of PMTs for this configuration
   G4double WCCylInfo[3];    // Info for the geometry tree: radius & length or mail box, length, width and depth
   G4double WCPMTSize;       // Info for the geometry tree: pmt size
   G4ThreeVector WCOffset;   // Info for the geometry tree: WC center offset
