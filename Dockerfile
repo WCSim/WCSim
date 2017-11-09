@@ -1,3 +1,5 @@
+### Created by Dr. Benjamin Richards (b.richards@qmul.ac.uk) based on docker file from Stephane Zsoldos (s.zsoldos@qmul.ac.uk)
+
 ### Download base image from cern repo on docker hub
 FROM cern/slc6-base:latest
 
