@@ -101,7 +101,7 @@ RUN export G4INSTALL
 RUN export G4LIB
 
 
-### Get WCSim fork with the OD
+### Get and build WCSim 
 RUN cd $HYPERKDIR \
     && git clone https://github.com/WCSim/WCSim \
     && source $HYPERKDIR/root/bin/thisroot.sh \
