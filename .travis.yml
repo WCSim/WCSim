@@ -19,7 +19,6 @@ script:
   - if [ -e ./exe/bin/Linux-g++/WCSim ]; then true; else false; fi
   - if [ -e wcsim.root ]; then true; else false; fi
 
-
 notifications:
   email:
     recipients:
