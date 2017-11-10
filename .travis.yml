@@ -12,7 +12,7 @@ before_install:
   - docker pull brichards64/wcsim
 
 install:
-  - docker run -v `pwd`:/root/HyperK/WCSim brichards64/wcsim /bin/sh -c " source /root/HyperK/env-WCSim.sh; $ValidationPath/Tests.sh 1; more $ValidationPath/Webpage/Results.html"
+  - docker run -v `pwd`:/root/HyperK/WCSim brichards64/wcsim /bin/sh -c " source /root/HyperK/env-WCSim.sh; cd /root/HyperK/WCSim ; /root/Validation/Tests.sh 1; more /root/Validation/Webpage/Results.html"
 
 script:
   - docker run -v `pwd`:/root/HyperK/WCSim brichards64/wcsim /bin/sh -c "source /root/HyperK/env-WCSim.sh; cd /root/HyperK/WCSim; ./exe/bin/Linux-g++/WCSim WCSim.mac"
