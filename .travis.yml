@@ -12,7 +12,7 @@ before_install:
   - docker pull brichards64/wcsim
 
 install:
-  - git clone https://github.com/wcsimtravis/WCSim.git -b gh-pages 
+  - git clone https://github.com/wcsimtravis/WCSim.git -b gh-pages ./gh-pages
   - docker run -v `pwd`:/root/HyperK/WCSim -v `pwd`/gh-pages:/root/Validation/Webpage brichards64/wcsim /bin/sh -c " source /root/HyperK/env-WCSim.sh; cd /root/HyperK/WCSim ; /root/Validation/Tests.sh 1; more /root/Validation/Webpage/Results.html"
 
 script:
