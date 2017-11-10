@@ -15,9 +15,7 @@ install:
   - docker run -v `pwd`:/root/HyperK/WCSim brichards64/wcsim /bin/sh -c " source /root/HyperK/env-WCSim.sh; cd /root/HyperK/WCSim ; /root/Validation/Tests.sh 1; more /root/Validation/Webpage/Results.html"
 
 script:
-  - docker run -v `pwd`:/root/HyperK/WCSim brichards64/wcsim /bin/sh -c "source /root/HyperK/env-WCSim.sh; cd /root/HyperK/WCSim; ./exe/bin/Linux-g++/WCSim WCSim.mac"
-  - if [ -e ./exe/bin/Linux-g++/WCSim ]; then true; else false; fi
-  - if [ -e wcsim.root ]; then true; else false; fi
+  - docker run -v `pwd`:/root/HyperK/WCSim brichards64/wcsim /bin/sh -c "source /root/HyperK/env-WCSim.sh; cd /root/HyperK/WCSim; /root/Validation/Tests.sh 2;  more /root/Validation/Webpage/Results.html"
 
 notifications:
   email:
