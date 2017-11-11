@@ -12,10 +12,10 @@ before_install:
   - docker pull brichards64/wcsim
 
 install:
-  - docker run -v `pwd`:/root/HyperK/WCSim brichards64/wcsim -env TRAVIS_COMMIT=$TRAVIS_COMMIT -env TRAVIS_COMMIT_MESSAGE=$TRAVIS_COMMITMESSAGE -env GitHubToken=$GitHubToken /bin/sh -c " cd /root && git clone https://github.com/wcsimtravis/Validation.git && source /root/HyperK/env-WCSim.sh &&  echo $ValidationPath && cd /root/HyperK/WCSim && /root/Validation/Tests.sh 1 && more /root/Validation/Webpage/Results.html"
+  - docker run -v `pwd`:/root/HyperK/WCSim -env TRAVIS_COMMIT=$TRAVIS_COMMIT -env TRAVIS_COMMIT_MESSAGE=$TRAVIS_COMMITMESSAGE -env GitHubToken=$GitHubToken brichards64/wcsim /bin/sh -c " cd /root && git clone https://github.com/wcsimtravis/Validation.git && source /root/HyperK/env-WCSim.sh &&  echo $ValidationPath && cd /root/HyperK/WCSim && /root/Validation/Tests.sh 1 && more /root/Validation/Webpage/Results.html"
 
 script:
-  - docker run -v `pwd`:/root/HyperK/WCSim brichards64/wcsim -env TRAVIS_COMMIT=$TRAVIS_COMMIT -env TRAVIS_COMMIT_MESSAGE=$TRAVIS_COMMITMESSAGE -env GitHubToken=$GitHubToken /bin/sh -c "source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && /root/Validation/Tests.sh 2 &&  more /root/Validation/Webpage/Results.html"
+  - docker run -v `pwd`:/root/HyperK/WCSim -env TRAVIS_COMMIT=$TRAVIS_COMMIT -env TRAVIS_COMMIT_MESSAGE=$TRAVIS_COMMITMESSAGE -env GitHubToken=$GitHubToken brichards64/wcsim /bin/sh -c "source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && /root/Validation/Tests.sh 2 &&  more /root/Validation/Webpage/Results.html"
 
 notifications:
   email:
