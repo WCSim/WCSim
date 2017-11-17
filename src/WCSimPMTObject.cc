@@ -567,6 +567,7 @@ G4float PMT5inch::GetDarkRateConversionFactor(){
   return factor;
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 3 inch (transit time spread of 4ns FWHM @1p.e.)
 

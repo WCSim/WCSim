@@ -98,6 +98,7 @@ public:
   G4float  GetDarkRateConversionFactor();
 };
 
+
 class PMT3inch : public WCSimPMTObject
 {
 
@@ -141,6 +142,7 @@ public:
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
 };
+
 
 
  class PMT10inch : public WCSimPMTObject

@@ -273,13 +273,13 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         // Calculate offset from neutrino generation plane to centre of nuPRISM detector (in metres)
         double z_offset = fNuPlanePos[2]/100.0 + fNuPrismRadius;
         double y_offset = 0;//(fNuPrismRadius/zDir)*yDir;
-	double x_offset = fNuPlanePos[0]/100.0;
+      	double x_offset = fNuPlanePos[0]/100.0;
+
 
         //Subtract offset to get interaction position in WCSim coordinates
         xPos = fTmpRootrackerVtx->EvtVtx[0] - x_offset;
         yPos = fTmpRootrackerVtx->EvtVtx[1] - y_offset;
         zPos = fTmpRootrackerVtx->EvtVtx[2] - z_offset;
-
 
         //Check if event is outside detector; skip to next event if so; keep
         //loading events until one is found within the detector or there are
@@ -560,6 +560,7 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
     fRooTrackerTree->SetBranchAddress("NEcrsphi",        &(nrootrackervtx->NEcrsphi)    );
 
     fRooTrackerTree->SetBranchAddress("NuParentDecMode", &(nrootrackervtx->NuParentDecMode));
+    fRooTrackerTree->SetBranchAddress("NuParentPdg",     &(nrootrackervtx->NuParentPdg));
     fRooTrackerTree->SetBranchAddress("NuNg",            &(nrootrackervtx->NuNg));
     fRooTrackerTree->SetBranchAddress("NuGp",             (nrootrackervtx->NuGp));
     fRooTrackerTree->SetBranchAddress("NuGv",             (nrootrackervtx->NuGv));
