@@ -89,7 +89,7 @@ public:
   G4double GetExposeHeight();
   G4double GetRadius();
   G4float* Getqpe();
-  G4float* GetQE();
+  G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
@@ -196,7 +196,7 @@ public:
   G4double GetExposeHeight();
   G4double GetRadius();
   G4float* Getqpe();
-  G4float* GetQE();
+  G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
   float    HitTimeSmearing(float);
