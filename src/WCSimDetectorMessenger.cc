@@ -293,7 +293,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetPMTType = new G4UIcmdWithAString("/WCSim/nuPRISM/SetPMTType", this);
   SetPMTType->SetGuidance("Set the type of PMT to be used for nuPRISM");
   SetPMTType->SetGuidance("Available options are:\n"
-
           "PMT3inch\n"
           "PMT3inchGT\n"
           "PMT3inchR12199_02\n"
