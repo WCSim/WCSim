@@ -2,7 +2,6 @@
 #include "WCSimDetectorMessenger.hh"
 #include "WCSimTuningParameters.hh"
 
-#include "G4Material.hh"
 #include "G4Element.hh"
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
@@ -17,9 +16,18 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap;
+std::map<int, std::pair<int, int> > WCSimDetectorConstruction::mPMTIDMap;
 //std::map<int, cyl_location>  WCSimDetectorConstruction::tubeCylLocation;
-hash_map<std::string, int, hash<std::string> > 
+//hash_map<std::string, int, hash<std::string> > 
+//WCSimDetectorConstruction::tubeLocationMap_old;    //deprecated !!
+
+// std::hash is default hash function actually (http://en.cppreference.com/w/cpp/utility/hash)
+// with operator() already properly defined.
+std::unordered_map<std::string, int, std::hash<std::string> >         
 WCSimDetectorConstruction::tubeLocationMap;
 
 WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuningParameters* WCSimTuningPars):WCSimTuningParams(WCSimTuningPars)
@@ -27,7 +35,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
 	
   // Decide if (only for the case of !1kT detector) should be upright or horizontal
   isUpright = false;
-  isHyperK  = false;
+  isEggShapedHyperK  = false;
   isNuPrism  = false;
 
   debugMode = false;
@@ -45,15 +53,41 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //-----------------------------------------------------
 
   WCSimDetectorConstruction::tubeIDMap.clear();
+  WCSimDetectorConstruction::mPMTIDMap.clear();
   //WCSimDetectorConstruction::tubeCylLocation.clear();// (JF) Removed
   WCSimDetectorConstruction::tubeLocationMap.clear();
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
   totalNumPMTs = 0;
   WCPMTExposeHeight= 0.;
-  //-----------------------------------------------------
-  // Set the default WC geometry.  This can be changed later.
-  //-----------------------------------------------------
 
+  //---------------------------------------------------
+  // Need to define defaults for all mPMT parameters 
+  // defaults are chosen that they are valid for a SK detector
+  //--------------------------------------------------
+  vessel_cyl_height = 0.1*mm;   // LATER: when tested, default WITH PMT cover!
+  vessel_radius_curv = 0.1*mm;
+  vessel_radius = 0.1*mm;
+  dist_pmt_vessel = 0.*mm;
+  orientation = PERPENDICULAR;
+  mPMT_ID_PMT = "PMT3inchR12199_02";
+  mPMT_OD_PMT = "";
+  mPMT_outer_material = "Water";
+  mPMT_inner_material = "";
+  mPMT_outer_material_d = 0.*CLHEP::mm;
+  // Radius of cone at z=reflectorHeight
+  id_reflector_height = 0.*CLHEP::mm;
+  id_reflector_z_offset = 0.*CLHEP::mm;
+  id_reflector_angle = 0.*CLHEP::deg; 
+  // parameters related to filling the ID mPMT
+  nID_PMTs = 1;   //per mPMT
+  config_file = "";
+  fix_nModules = false;
+  mPMT_material_pmtAssembly = "Water";
+  mPMT_pmt_openingAngle = 0.*CLHEP::deg;
+  
+
+
+  //SetTestSinglemPMTGeometry();
   SetSuperKGeometry();
   //SetHyperKGeometry();
 
@@ -73,11 +107,16 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // set default visualizer to OGLSX
   SetVis_Choice("OGLSX");
 
+
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry
   //-----------------------------------------------------
 
   messenger = new WCSimDetectorMessenger(this);
+
+
+  // Get WCSIMDIR
+  wcsimdir_path = std::getenv("WCSIMDIR");
 }
 
 #include "G4GeometryManager.hh"
@@ -90,8 +129,9 @@ void WCSimDetectorConstruction::UpdateGeometry()
   
   G4bool geomChanged = true;
   G4RunManager::GetRunManager()->DefineWorldVolume(Construct(), geomChanged);
+  // ToDo: need some error catching here for NULL Construct() cases
  
- }
+}
 
 
 
@@ -144,6 +184,11 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   G4LogicalBorderSurface::CleanSurfaceTable();
   G4LogicalSkinSurface::CleanSurfaceTable();
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
+  //TF: for new mPMT (or make this into a function?)
+  vNiC.clear();
+  vAlpha.clear();
+  vCircle.clear();
+  vAzimOffset.clear();
 
   totalNumPMTs = 0;
   
@@ -157,10 +202,15 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // on their size and detector ordering.
 
   G4LogicalVolume* logicWCBox;
-  // Select between HyperK and cylinder
-  if (isHyperK) logicWCBox = ConstructHyperK();
-  else logicWCBox = ConstructCylinder(); 
 
+  // Select between HyperK and cylinder
+  if (isEggShapedHyperK) logicWCBox = ConstructEggShapedHyperK();
+  else logicWCBox = ConstructCylinder(); 
+  
+  if(!logicWCBox){
+    G4cerr << "Something went wrong in ConstructCylinder" << G4endl;
+    return NULL;
+  }
   G4cout << " WCLength       = " << WCLength/m << " m"<< G4endl;
 
   //-------------------------------
@@ -232,8 +282,9 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 		      false,
 		      0);
 
-  // Reset the tubeID and tubeLocation maps before refiling them
+  // Reset the tubeID and tubeLocation maps before refilling them
   tubeIDMap.clear();
+  mPMTIDMap.clear();
   tubeLocationMap.clear();
 
 
@@ -250,6 +301,9 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 		   &WCSimDetectorConstruction::GetWCGeom) ;
   
   DumpGeometryTableToFile();
+
+  
+
   
   // Return the pointer to the physical experimental hall
   return physiExpHall;
@@ -260,7 +314,7 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
   if (PMTType == "PMT20inch"){
      WCSimPMTObject* PMT = new PMT20inch;
      WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-      return PMT;
+     return PMT;
   }
   else if (PMTType == "PMT8inch"){
     WCSimPMTObject* PMT = new PMT8inch;
@@ -327,6 +381,29 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
     WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
+  else if (PMTType == "PMT3inchR12199_02"){
+    WCSimPMTObject* PMT = new PMT3inchR12199_02;
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
+    return PMT;
+  }
+    else if (PMTType == "PMT4inchR12199_02"){
+    WCSimPMTObject* PMT = new PMT4inchR12199_02;
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
+    return PMT;
+  }
+    else if (PMTType == "PMT5inchR12199_02"){
+    WCSimPMTObject* PMT = new PMT5inchR12199_02;
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
+    return PMT;
+  }
 
   else { G4cout << PMTType << " is not a recognized PMT Type. Exiting WCSim." << G4endl; exit(1);}
+}
+
+void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  wcopt->SetDetectorName(WCDetectorName);
+  wcopt->SetSavePi0(pi0Info_isSaved);
+  wcopt->SetPMTQEMethod(PMT_QE_Method);
+  wcopt->SetPMTCollEff(PMT_Coll_Eff);
 }

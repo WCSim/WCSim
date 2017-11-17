@@ -17,7 +17,6 @@
 #include <vector>
 // for memset
 #include <cstring>
-#include <iostream>
 
 
 
@@ -307,9 +306,8 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     save_triggerType = kTriggerFailure;
   }
 
-  //Get the PMT info for hit time smearing
-  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+  //make sure the triggers are in time order
+  SortTriggersByTime();
 
   //Loop over trigger times
   for(unsigned int itrigger = 0; itrigger < TriggerTimes.size(); itrigger++) {
@@ -323,6 +321,18 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     //these are the boundary of the trigger gate: we want to add all digits within these bounds to the output collection
     float lowerbound = triggertime + GetPreTriggerWindow(triggertype);
     float upperbound = triggertime + GetPostTriggerWindow(triggertype);
+    //need to check for double-counting - check if the previous upperbound is above the lowerbound
+    if(itrigger) {
+      float upperbound_previous = TriggerTimes[itrigger - 1] + GetPostTriggerWindow(TriggerTypes[itrigger - 1]);
+      if(upperbound_previous > lowerbound) {
+	//also need to check whether the previous upperbound is above the lowerbound
+	//(different trigger windows for different trigger types can mean this trigger is completely contained within another)
+	// if it is, we skip it
+	if(upperbound_previous >= upperbound)
+	  continue;
+	lowerbound = upperbound_previous;
+      }
+    }
 
 #ifdef WCSIMWCTRIGGER_VERBOSE
     G4cout << "Saving trigger " << itrigger << " of type " << WCSimEnumerations::EnumAsString(triggertype)
@@ -344,28 +354,14 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  //hit in event window
 	  //add it to DigitsCollection
 
-	  //first smear the charge & time
+	  //first apply time offsets
 	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
-	  float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	  G4double digihittime = -triggertime
 	    + WCSimWCTriggerBase::offset
-	    + digit_time
-	    + PMT->HitTimeSmearing(Q);
-	  if(digihittime < 0)
-	    continue;
+	    + digit_time;
 
 	  //get the composition information for the triggered digit
-	  //WCDCPMT stores this information in pairs of (digit id, photon id)
-	  //need to loop to ensure we get all the photons associated with the current digit (digit ip)
-	  std::vector< std::pair<int,int> > digitized_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo();
-	  std::vector<int> triggered_composition;
-	  for(std::vector< std::pair<int,int> >::iterator it = digitized_composition.begin(); it != digitized_composition.end(); ++it) {
-	    if((*it).first == ip) {
-	      triggered_composition.push_back((*it).second);
-	    }
-	    else if ((*it).first > ip)
-	      break;
-	  }//loop over digitized_composition
+	  std::vector<int> triggered_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo(ip);
 
 #ifdef WCSIMWCTRIGGER_VERBOSE
 	  G4cout << "Saving digit on PMT " << tube
@@ -413,6 +409,22 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 
 }
 
+void WCSimWCTriggerBase::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+{
+  wcopt->SetTriggerClassName(triggerClassName);;
+  wcopt->SetMultiDigitsPerTrigger(multiDigitsPerTrigger);;
+  //ndigits
+  wcopt->SetNDigitsThreshold(ndigitsThreshold);;
+  wcopt->SetNDigitsWindow(ndigitsWindow);;
+  wcopt->SetNDigitsAdjustForNoise(ndigitsAdjustForNoise);;
+  wcopt->SetNDigitsPreTriggerWindow(ndigitsPreTriggerWindow);;
+  wcopt->SetNDigitsPostTriggerWindow(ndigitsPostTriggerWindow);;
+  //savefailures
+  wcopt->SetSaveFailuresMode(saveFailuresMode);;
+  wcopt->SetSaveFailuresTime(saveFailuresTime);;
+  wcopt->SetSaveFailuresPreTriggerWindow(saveFailuresPreTriggerWindow);;
+  wcopt->SetSaveFailuresPostTriggerWindow(saveFailuresPostTriggerWindow);;
+}
 
 
 

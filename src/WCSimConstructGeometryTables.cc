@@ -13,9 +13,14 @@
 #include "G4VisAttributes.hh"
 #include "G4Tubs.hh"
 #include "G4Sphere.hh"
+#include "G4VPVParameterisation.hh"
+
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
 
 #include <sstream>
 #include <iomanip>
+
 
 using std::setw;
 // These routines are object registration routines that you can pass
@@ -84,6 +89,7 @@ void WCSimDetectorConstruction::GetWCGeom
       WCCylInfo[0] = xmax-xmin;
       WCCylInfo[1] = ymax-ymin;
       WCCylInfo[2] = zmax-zmin;
+      //      G4cout << "determine height: " << zmin << "  " << zmax << " " << aPV->GetName()<<" " << z  << G4endl;
   } 
 }
 
@@ -100,6 +106,9 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
 
   replicaNoString[aDepth] = pvname.str() + "-" + depth.str();
 
+ 
+  //TF: To Consider: add a separate table for mPMT positions? Need to use its orientation anyway
+  // Could be useful for the near future. Need to add an == WCMultiPMT here then.
   if (aPV->GetName()== WCIDCollectionName ||aPV->GetName()== WCODCollectionName ) 
     {
 
@@ -111,8 +120,26 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     // This scheme must match that used in WCSimWCSD::ProcessHits()
 
     std::string tubeTag;
-    for (int i=0; i <= aDepth; i++)
+    int mPMT_pmtno = -1;
+    bool foundString = false;
+    //
+    
+    for (int i=0; i <= aDepth; i++){
       tubeTag += ":" + replicaNoString[i];
+      std::string::size_type position = replicaNoString[i].find("pmt-");
+      if( position == 0) {
+	foundString = true;
+	mPMT_pmtno = atoi(replicaNoString[i].substr(position+4).c_str())+1;
+	if(mPMT_pmtno == 1)
+	  totalNum_mPMTs++;
+      }
+    }
+    if(!foundString){
+      // to distinguish mPMT PMTs from single PMTs:
+      mPMT_pmtno = 0;
+      totalNum_mPMTs++;
+    }
+    
     // G4cout << tubeTag << G4endl;
     
     if ( tubeLocationMap.find(tubeTag) != tubeLocationMap.end() ) {
@@ -127,18 +154,19 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     // Put the transform for this tube into the map keyed by its ID
     tubeIDMap[totalNumPMTs] = aTransform;
    
+
+    mPMTIDMap[totalNumPMTs] = std::make_pair(totalNum_mPMTs,mPMT_pmtno);    
+    //G4cout <<  "depth " << depth.str() << G4endl;
+    //G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
     
-    // G4cout <<  "depth " << depth.str() << G4endl;
-    // G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
-      
     // Print
     //     G4cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
-    //     	   << " Pos:" << aTransform.getTranslation()/cm 
-    //     	   << " Rot:" << aTransform.getRotation().getTheta()/deg 
-    //     	   << "," << aTransform.getRotation().getPhi()/deg 
-    //     	   << "," << aTransform.getRotation().getPsi()/deg
-    //     	   << G4endl; 
-  }
+    //	   << " Pos:" << aTransform.getTranslation()/cm 
+    //	   << " Rot:" << aTransform.getRotation().getTheta()/deg 
+    //	   << "," << aTransform.getRotation().getPhi()/deg 
+    //	   << "," << aTransform.getRotation().getPsi()/deg
+    //	   << G4endl; 
+    }
 }
 
 // Utilities to do stuff with the info we have found.
@@ -147,7 +175,9 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
 void WCSimDetectorConstruction::DumpGeometryTableToFile()
 {
   // Open a file
-  geoFile.open("geofile.txt", std::ios::out);
+  std::string filename = "geofile_" + WCDetectorName + ".txt";
+  //geoFile.open("geofile.txt", std::ios::out);
+  geoFile.open(filename.c_str(), std::ios::out);
 
   geoFile.precision(2);
   geoFile.setf(std::ios::fixed);
@@ -158,7 +188,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   innerradius = sqrt(pow(firstTransform.getTranslation().getX()/cm,2)
                             + pow(firstTransform.getTranslation().getY()/cm,2));
 
-  if (isHyperK){
+  if (isEggShapedHyperK){
     geoFile << setw(8)<< 0;
     geoFile << setw(8)<< 0;
   }else{
@@ -203,7 +233,9 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     {cylLocation=1;}
     
     geoFile.precision(9);
-     geoFile << setw(4) << tubeID 
+     geoFile << setw(4) << tubeID
+	     << " " << setw(4) << mPMTIDMap[tubeID].first
+	     << " " << setw(4) << mPMTIDMap[tubeID].second 
  	    << " " << setw(8) << newTransform.getTranslation().getX()/cm
  	    << " " << setw(8) << newTransform.getTranslation().getY()/cm
  	    << " " << setw(8) << newTransform.getTranslation().getZ()/cm
@@ -220,14 +252,16 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
 					      pmtOrientation.x(),
 					      pmtOrientation.y(),
 					      pmtOrientation.z(),
-					      tubeID);
+					      tubeID,
+					      mPMTIDMap[tubeID].first,
+					      mPMTIDMap[tubeID].second);
      
      fpmts.push_back(new_pmt);
 
   }
   geoFile.close();
 
-
+  std::cout << "Geofile written" << std::endl;
 } 
 
 
@@ -262,52 +296,62 @@ void WCSimDetectorConstruction::TraverseReplicas
     G4bool   consuming;
 
     aPV->GetReplicationData(axis,nReplicas,width,offset,consuming);
-    
+
     for (int n = 0; n < nReplicas; n++) 
-    {
-      switch(axis) {
-      default:
-      case kXAxis:
-	aPV->SetTranslation(G4ThreeVector
-			    (-width*(nReplicas-1)*0.5+n*width,0,0));
-	aPV->SetRotation(0);
-	break;
-      case kYAxis:
-	aPV->SetTranslation(G4ThreeVector
-			    (0,-width*(nReplicas-1)*0.5+n*width,0));
-	aPV->SetRotation(0);
-	break;
-      case kZAxis:
-	aPV->SetTranslation(G4ThreeVector
-			    (0,0,-width*(nReplicas-1)*0.5+n*width));
-	aPV->SetRotation(0);
-	break;
-      case kRho:
-	//Lib::Out::putL("GeometryVisitor::visit: WARNING:");
-	//Lib::Out::putL(" built-in replicated volumes replicated");
-	//Lib::Out::putL(" in radius are not yet properly visualizable.");
-	aPV->SetTranslation(G4ThreeVector(0,0,0));
-	aPV->SetRotation(0);
-	break;
-      case kPhi:
-	{
-	  G4RotationMatrix rotation;
-          rotation.rotateZ(-(offset+(n+0.5)*width));
-          // Minus Sign because for the physical volume we need the
-          // coordinate system rotation.
-          aPV->SetTranslation(G4ThreeVector(0,0,0));
-          aPV->SetRotation(&rotation);
+      {
+	//TF: for mPMT parameterization
+	// because kZAxis is a dummy value altered by Parameterised volume in MultiPMTParam
+	if(aPV->IsParameterised() ){
+	  //G4cout << "Replica No. " << n << G4endl;
+	  //use the actual translation and rotation of the replica.
+	  (aPV->GetParameterisation())->ComputeTransformation(n,aPV); 
 	}
-	break;
+	
+	else{
 
-      } // axis switch
-
+	  switch(axis) {
+	  default:
+	  case kXAxis:
+	    aPV->SetTranslation(G4ThreeVector
+				(-width*(nReplicas-1)*0.5+n*width,0,0));
+	    aPV->SetRotation(0);
+	    break;
+	  case kYAxis:
+	    aPV->SetTranslation(G4ThreeVector
+				(0,-width*(nReplicas-1)*0.5+n*width,0));
+	    aPV->SetRotation(0);
+	    break;
+	  case kZAxis:
+	    aPV->SetTranslation(G4ThreeVector
+				(0,0,-width*(nReplicas-1)*0.5+n*width));
+	    aPV->SetRotation(0);
+	    break;
+	  case kRho:
+	    //Lib::Out::putL("GeometryVisitor::visit: WARNING:");
+	    //Lib::Out::putL(" built-in replicated volumes replicated");
+	    //Lib::Out::putL(" in radius are not yet properly visualizable.");
+	    aPV->SetTranslation(G4ThreeVector(0,0,0));
+	    aPV->SetRotation(0);
+	    break;
+	  case kPhi:
+	    {
+	      G4RotationMatrix rotation;
+	      rotation.rotateZ(-(offset+(n+0.5)*width));
+	      // Minus Sign because for the physical volume we need the
+	      // coordinate system rotation.
+	      aPV->SetTranslation(G4ThreeVector(0,0,0));
+	      aPV->SetRotation(&rotation);
+	    }
+	    break;
+	    
+	  } // axis switch
+	}
       DescribeAndDescendGeometry(aPV, aDepth, n, aTransform, 
 				 registrationRoutine);
 
     }   // num replicas for loop
   }     // if replicated
-  else 
+  else
     DescribeAndDescendGeometry(aPV, aDepth, aPV->GetCopyNo(), aTransform, 
 			       registrationRoutine);
   
@@ -320,22 +364,29 @@ void WCSimDetectorConstruction::DescribeAndDescendGeometry
 (G4VPhysicalVolume* aPV ,int aDepth, int replicaNo, 
  const G4Transform3D& aTransform,  DescriptionFcnPtr registrationRoutine)
 {
-  // Calculate the new transform relative to the old transform
 
+  // Calculate the new transform relative to the old transform
   G4Transform3D* transform = 
     new G4Transform3D(*(aPV->GetObjectRotation()), aPV->GetTranslation());
 
   G4Transform3D newTransform = aTransform * (*transform);
   delete transform; 
 
+  /*
+  G4cout << aPV->GetObjectRotation()->getPhi() << " " << aPV->GetObjectRotation()->getTheta() << " " 
+	    << aPV->GetObjectRotation()->getPsi() << G4endl;
+  G4cout << aPV->GetTranslation().x() << " " << aPV->GetTranslation().y() << " " 
+	    << aPV->GetTranslation().z() << G4endl;
+  */
+
   // Call the routine we use to print out geometry descriptions, make
-  // tables, etc.  The routine was passed here as a paramater.  It needs to
-  // be a memeber function of the class
+  // tables, etc.  The routine was passed here as a parameter.  It needs to
+  // be a member function of the class
 
   (this->*registrationRoutine)(aPV, aDepth, replicaNo, newTransform);
 
   int nDaughters = aPV->GetLogicalVolume()->GetNoDaughters();
-  
+    
   for (int iDaughter = 0; iDaughter < nDaughters; iDaughter++) 
     TraverseReplicas(aPV->GetLogicalVolume()->GetDaughter(iDaughter),
 		     aDepth+1, newTransform, registrationRoutine);

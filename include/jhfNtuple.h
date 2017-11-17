@@ -1,6 +1,8 @@
+#include "WCSimEnumerations.hh"
 struct ntupleStruct
 {
-  int mode;             // interaction mode
+  //int mode;             // interaction mode
+  InteractionType_t mode;             // interaction mode
   int vtxvol;           // volume of vertex
   float vtx[3];         // interaction vertex
   int vecRecNumber;     // info event number in inputvetcotfile
@@ -47,6 +49,7 @@ struct ntupleStruct
 
 extern struct ntupleStruct jhfNtuple;
 
+/* Not used:
 static const char* ntDesc =
 "mode:I,"
 "vtxvol:I,"
@@ -83,4 +86,4 @@ static const char* ntDesc =
 "fvt(fvnumDigTubes):R,"
 "fvtubeid(fvnumDigTubes):I";
 
-
+*/

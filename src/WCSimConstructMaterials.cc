@@ -5,10 +5,14 @@
 #include "G4Element.hh"
 #include "globals.hh"
 #include "G4UnitsTable.hh"
+#include "G4NistManager.hh"
 
 #include "G4LogicalBorderSurface.hh"
 #include "G4LogicalSkinSurface.hh"
 #include "G4OpBoundaryProcess.hh"
+
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
 
 void WCSimDetectorConstruction::ConstructMaterials()
 {
@@ -16,6 +20,10 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
   G4double density;
   G4double a;
+
+
+  G4NistManager *nist_man = G4NistManager::Instance();
+
 
   //---Vacuum
 
@@ -161,6 +169,37 @@ void WCSimDetectorConstruction::ConstructMaterials()
     = new G4Material("Aluminum",density,1);
   Aluminum->AddElement(elAl, 1);
 
+
+  // TF: --Silver (coating for reflector): higher reflectivity, but cutoff at 400nm + bad for water
+  //       Also exposure to air not good for Silver
+  // cfr. Wikipedia "Optical Coating" 
+
+  a = 107.8682*g/mole;
+  G4Element* elAg = new G4Element("Silver","Ag", 47, a);
+  
+  density = 10.5*g/cm3;
+  G4Material *Silver
+    = new G4Material("Silver",density,1);
+  Silver->AddElement(elAg, 1);
+
+  // ToDo: Add combinations of Al with silver coatings
+  // ...
+
+
+  // TF: Add Wacker SilGel for optical coupling (from wacker.com)
+  // ToDo: update once final type of gel is decided and/or play with the gel in MC!!!
+  density = 0.98*g/cm3;
+  G4Material *SilGel
+    = new G4Material("SilGel",density,1);
+  SilGel->AddElement(elSi, 1);
+
+  // TF: Add Acrylic from G4 database:
+  G4Material* Acrylic 
+    = nist_man->FindOrBuildMaterial("G4_PLEXIGLASS");
+
+
+
+
   //---Black sheet
 
   density = 0.95*g/cm3;
@@ -305,13 +344,13 @@ void WCSimDetectorConstruction::ConstructMaterials()
       1.35002, 1.35153, 1.35321, 1.35507, 1.35717, 1.35955 };
   */
 
-   //From SFDETSIM water absorption
+   //From SKDETSIM water absorption
    const G4int NUMENTRIES_water=60;
 
    G4double ENERGY_water[NUMENTRIES_water] =
      { 1.56962e-09*GeV, 1.58974e-09*GeV, 1.61039e-09*GeV, 1.63157e-09*GeV, 
        1.65333e-09*GeV, 1.67567e-09*GeV, 1.69863e-09*GeV, 1.72222e-09*GeV, 
-       1.74647e-09*GeV, 1.77142e-09*GeV,1.7971e-09*GeV, 1.82352e-09*GeV, 
+       1.74647e-09*GeV, 1.77142e-09*GeV, 1.7971e-09*GeV, 1.82352e-09*GeV, 
        1.85074e-09*GeV, 1.87878e-09*GeV, 1.90769e-09*GeV, 1.93749e-09*GeV, 
        1.96825e-09*GeV, 1.99999e-09*GeV, 2.03278e-09*GeV, 2.06666e-09*GeV,
        2.10169e-09*GeV, 2.13793e-09*GeV, 2.17543e-09*GeV, 2.21428e-09*GeV, 
@@ -525,7 +564,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    G4double MIE_water_const[3]={0.4,0.,1};// gforward, gbackward, forward backward ratio
 
 
-   //From SFDETSIM
+   //From SKDETSIM
    /*
    G4double RINDEX_glass[NUMENTRIES] =
      { 1.600, 1.600, 1.600, 1.600, 1.600, 1.600, 1.600,
@@ -537,7 +576,9 @@ void WCSimDetectorConstruction::ConstructMaterials()
    // M Fechner : unphysical, I want to reduce reflections
    // back to the old value 1.55
 
-   G4double RINDEX_glass[NUMENTRIES_water] =
+   
+   /* TF: UNPHYSICAL 
+      G4double RINDEX_glass[NUMENTRIES_water] =
      { 1.600, 1.600, 1.600, 1.600, 1.600, 1.600, 1.600,
        1.600, 1.600, 1.600, 1.600, 1.600, 1.600, 1.600,
        1.600, 1.600, 1.600, 1.600, 1.600, 1.600, 1.600,
@@ -547,6 +588,23 @@ void WCSimDetectorConstruction::ConstructMaterials()
        1.600, 1.600, 1.600, 1.600, 1.600, 1.600, 1.600,
        1.600, 1.600, 1.600, 1.600, 1.600, 1.600, 1.600,
        1.600, 1.600 }; 
+   */
+
+   // Based on analytical formula from http://refractiveindex.info/?shelf=glass&book=HIKARI-BK&page=J-BK7A for Borosilicate glass 
+   G4double RINDEX_glass[NUMENTRIES_water] =
+     { 1.5110, 1.5112, 1.5114, 1.5116, 1.5118, 
+       1.5121, 1.5123, 1.5126, 1.5128, 1.5131, 
+       1.5133, 1.5136, 1.5139, 1.5142, 1.5145, 
+       1.5148, 1.5152, 1.5155, 1.5159, 1.5163, 
+       1.5167, 1.5171, 1.5176, 1.5180, 1.5185, 
+       1.5190, 1.5196, 1.5202, 1.5208, 1.5214, 
+       1.5221, 1.5228, 1.5236, 1.5244, 1.5253, 
+       1.5263, 1.5273, 1.5284, 1.5296, 1.5309, 
+       1.5323, 1.5338, 1.5354, 1.5372, 1.5392, 
+       1.5414, 1.5438, 1.5465, 1.5495, 1.5528, 
+       1.5566, 1.5608, 1.5657, 1.5713, 1.5777, 
+       1.5853, 1.5941, 1.6047, 1.6173, 1.6328 }; 
+   
 
    //G4double RINDEX_blacksheet[NUMENTRIES] =
    //{ 2.500, 2.500, 2.500, 2.500, 2.500, 2.500, 2.500,
@@ -728,8 +786,247 @@ void WCSimDetectorConstruction::ConstructMaterials()
    //  0.001, 0.001, 0.001, 0.001 };
    
    G4double EFFICIENCY_blacksheet[NUMENTRIES_water] =
-    { 0.0 };
+     { 0.0 };
 
+   //TF: Al, Ag and coatings
+   G4double REFLECTIVITY_aluminium[NUMENTRIES_water] =  //start simple with flat 90%
+     { 0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9,
+       0.9,0.9,0.9,0.9,0.9,0.9};
+
+   // TF: Properties acrylic from skdetsim: refractive index and absorption is enough
+
+   // photon energies between 295nm and 600nm, using hc/(e*lambda) up to 3 digits 
+   // ToDo: remove comment: python magic: L = ['%.3f*eV' %(h*c/(i*1e-9*eC)) for i in range(295,601)]
+   //                                     L[::-1] to revert list
+   G4double ENERGY_skAcrylic[306] =
+     { 2.066*eV, 2.070*eV, 2.073*eV, 2.077*eV, 2.080*eV, 2.084*eV, 2.087*eV,
+       2.091*eV, 2.094*eV, 2.098*eV, 2.101*eV, 2.105*eV, 2.109*eV, 2.112*eV,
+       2.116*eV, 2.119*eV, 2.123*eV, 2.127*eV, 2.130*eV, 2.134*eV, 2.138*eV,
+       2.141*eV, 2.145*eV, 2.149*eV, 2.153*eV, 2.156*eV, 2.160*eV, 2.164*eV,
+       2.168*eV, 2.171*eV, 2.175*eV, 2.179*eV, 2.183*eV, 2.187*eV, 2.191*eV,
+       2.194*eV, 2.198*eV, 2.202*eV, 2.206*eV, 2.210*eV, 2.214*eV, 2.218*eV,
+       2.222*eV, 2.226*eV, 2.230*eV, 2.234*eV, 2.238*eV, 2.242*eV, 2.246*eV,
+       2.250*eV, 2.254*eV, 2.258*eV, 2.262*eV, 2.267*eV, 2.271*eV, 2.275*eV,
+       2.279*eV, 2.283*eV, 2.288*eV, 2.292*eV, 2.296*eV, 2.300*eV, 2.305*eV,
+       2.309*eV, 2.313*eV, 2.317*eV, 2.322*eV, 2.326*eV, 2.331*eV, 2.335*eV,
+       2.339*eV, 2.344*eV, 2.348*eV, 2.353*eV, 2.357*eV, 2.362*eV, 2.366*eV,
+       2.371*eV, 2.375*eV, 2.380*eV, 2.384*eV, 2.389*eV, 2.394*eV, 2.398*eV,
+       2.403*eV, 2.407*eV, 2.412*eV, 2.417*eV, 2.422*eV, 2.426*eV, 2.431*eV,
+       2.436*eV, 2.441*eV, 2.445*eV, 2.450*eV, 2.455*eV, 2.460*eV, 2.465*eV,
+       2.470*eV, 2.475*eV, 2.480*eV, 2.485*eV, 2.490*eV, 2.495*eV, 2.500*eV,
+       2.505*eV, 2.510*eV, 2.515*eV, 2.520*eV, 2.525*eV, 2.530*eV, 2.535*eV,
+       2.541*eV, 2.546*eV, 2.551*eV, 2.556*eV, 2.562*eV, 2.567*eV, 2.572*eV,
+       2.578*eV, 2.583*eV, 2.588*eV, 2.594*eV, 2.599*eV, 2.605*eV, 2.610*eV,
+       2.616*eV, 2.621*eV, 2.627*eV, 2.632*eV, 2.638*eV, 2.644*eV, 2.649*eV,
+       2.655*eV, 2.661*eV, 2.666*eV, 2.672*eV, 2.678*eV, 2.684*eV, 2.689*eV,
+       2.695*eV, 2.701*eV, 2.707*eV, 2.713*eV, 2.719*eV, 2.725*eV, 2.731*eV,
+       2.737*eV, 2.743*eV, 2.749*eV, 2.755*eV, 2.761*eV, 2.768*eV, 2.774*eV,
+       2.780*eV, 2.786*eV, 2.792*eV, 2.799*eV, 2.805*eV, 2.811*eV, 2.818*eV,
+       2.824*eV, 2.831*eV, 2.837*eV, 2.844*eV, 2.850*eV, 2.857*eV, 2.863*eV,
+       2.870*eV, 2.877*eV, 2.883*eV, 2.890*eV, 2.897*eV, 2.904*eV, 2.910*eV,
+       2.917*eV, 2.924*eV, 2.931*eV, 2.938*eV, 2.945*eV, 2.952*eV, 2.959*eV,
+       2.966*eV, 2.973*eV, 2.980*eV, 2.988*eV, 2.995*eV, 3.002*eV, 3.009*eV,
+       3.017*eV, 3.024*eV, 3.031*eV, 3.039*eV, 3.046*eV, 3.054*eV, 3.061*eV,
+       3.069*eV, 3.077*eV, 3.084*eV, 3.092*eV, 3.100*eV, 3.107*eV, 3.115*eV,
+       3.123*eV, 3.131*eV, 3.139*eV, 3.147*eV, 3.155*eV, 3.163*eV, 3.171*eV,
+       3.179*eV, 3.187*eV, 3.195*eV, 3.204*eV, 3.212*eV, 3.220*eV, 3.229*eV,
+       3.237*eV, 3.246*eV, 3.254*eV, 3.263*eV, 3.271*eV, 3.280*eV, 3.289*eV,
+       3.297*eV, 3.306*eV, 3.315*eV, 3.324*eV, 3.333*eV, 3.342*eV, 3.351*eV, 
+       3.360*eV, 3.369*eV, 3.378*eV, 3.388*eV, 3.397*eV, 3.406*eV, 3.416*eV, 
+       3.425*eV, 3.434*eV, 3.444*eV, 3.454*eV, 3.463*eV, 3.473*eV, 3.483*eV, 
+       3.493*eV, 3.502*eV, 3.512*eV, 3.522*eV, 3.532*eV, 3.542*eV, 3.553*eV, 
+       3.563*eV, 3.573*eV, 3.583*eV, 3.594*eV, 3.604*eV, 3.615*eV, 3.625*eV, 
+       3.636*eV, 3.647*eV, 3.657*eV, 3.668*eV, 3.679*eV, 3.690*eV, 3.701*eV, 
+       3.712*eV, 3.723*eV, 3.734*eV, 3.746*eV, 3.757*eV, 3.769*eV, 3.780*eV, 
+       3.792*eV, 3.803*eV, 3.815*eV, 3.827*eV, 3.839*eV, 3.850*eV, 3.862*eV, 
+       3.875*eV, 3.887*eV, 3.899*eV, 3.911*eV, 3.924*eV, 3.936*eV, 3.949*eV, 
+       3.961*eV, 3.974*eV, 3.987*eV, 3.999*eV, 4.012*eV, 4.025*eV, 4.039*eV, 
+       4.052*eV, 4.065*eV, 4.078*eV, 4.092*eV, 4.105*eV, 4.119*eV, 4.133*eV, 
+       4.147*eV, 4.161*eV, 4.175*eV, 4.189*eV, 4.203*eV };
+
+   // reverted array from skdetsim acrnsg.F because that one is function of wavelength
+   // instead of photon energy here.
+   // Real part of refractive index (2002: R. Nambu)
+   /* G4double RINDEX_skAcrylic[306] =
+     { 1.50443324, 1.504443389, 1.504455332, 1.504469061, 1.50448457, 1.504501851, 
+       1.504520896, 1.5045417, 1.504564254, 1.504588551, 1.504614584, 1.504642346, 
+       1.50467183, 1.504703029, 1.504735934, 1.50477054, 1.504806839, 1.504844823, 
+       1.504884485, 1.504925819, 1.504968817, 1.505013472, 1.505059776, 1.505107723, 
+       1.505157305, 1.505208515, 1.505261346, 1.505315791, 1.505371841, 1.505429491, 
+       1.505488733, 1.50554956, 1.505611965, 1.505675939, 1.505741477, 1.505808571, 
+       1.505877213, 1.505947398, 1.506019116, 1.506092362, 1.506167127, 1.506243405, 
+       1.506321189, 1.506400471, 1.506481244, 1.506563501, 1.506647235, 1.506732438, 
+       1.506819104, 1.506907224, 1.506996793, 1.507087802, 1.507180244, 1.507274113, 
+       1.507369401, 1.5074661, 1.507564205, 1.507663706, 1.507764598, 1.507866873, 
+       1.507970524, 1.508075544, 1.508181924, 1.508289659, 1.508398741, 1.508509163, 
+       1.508620917, 1.508733997, 1.508848395, 1.508964104, 1.509081116, 1.509199426, 
+       1.509319024, 1.509439905, 1.50956206, 1.509685483, 1.509810167, 1.509936104, 
+       1.510063288, 1.51019171, 1.510321364, 1.510452242, 1.510584337, 1.510717643, 
+       1.510852152, 1.510987856, 1.511124749, 1.511262823, 1.511402071, 1.511542485, 
+       1.51168406, 1.511826787, 1.511970659, 1.512115669, 1.51226181, 1.512409075, 
+       1.512557456, 1.512706946, 1.512857538, 1.513009225, 1.513162, 1.513315855, 
+       1.513470783, 1.513626777, 1.51378383, 1.513941935, 1.514101083, 1.514261269, 
+       1.514422485, 1.514584724, 1.514747978, 1.514912241, 1.515077504, 1.515243762, 
+       1.515411006, 1.51557923, 1.515748426, 1.515918587, 1.516089706, 1.516261775, 
+       1.516434788, 1.516608738, 1.516783616, 1.516959417, 1.517136132, 1.517313754, 
+       1.517492277, 1.517671692, 1.517851994, 1.518033174, 1.518215226, 1.518398141, 
+       1.518581914, 1.518766537, 1.518952002, 1.519138302, 1.519325431, 1.519513381, 
+       1.519702144, 1.519891714, 1.520082084, 1.520273245, 1.520465192, 1.520657916, 
+       1.520851411, 1.521045669, 1.521240683, 1.521436447, 1.521632951, 1.521830191, 
+       1.522028158, 1.522226844, 1.522426244, 1.522626349, 1.522827153, 1.523028648, 
+       1.523230828, 1.523433684, 1.523637209, 1.523841398, 1.524046241, 1.524251732, 
+       1.524457865, 1.524664631, 1.524872023, 1.525080035, 1.525288658, 1.525497887, 
+       1.525707713, 1.525918129, 1.526129129, 1.526340704, 1.526552849, 1.526765554, 
+       1.526978815, 1.527192622, 1.52740697, 1.52762185, 1.527837255, 1.52805318, 
+       1.528269615, 1.528486554, 1.52870399, 1.528921915, 1.529140323, 1.529359205, 
+       1.529578556, 1.529798368, 1.530018632, 1.530239344, 1.530460494, 1.530682076, 
+       1.530904083, 1.531126507, 1.531349341, 1.531572579, 1.531796212, 1.532020234, 
+       1.532244638, 1.532469415, 1.53269456, 1.532920065, 1.533145922, 1.533372124, 
+       1.533598665, 1.533825537, 1.534052732, 1.534280244, 1.534508066, 1.534736189, 
+       1.534964608, 1.535193314, 1.535422301, 1.535651561, 1.535881088, 1.536110873, 
+       1.53634091, 1.536571192, 1.536801711, 1.53703246, 1.537263432, 1.537494619, 
+       1.537726015, 1.537957613, 1.538189404, 1.538421383, 1.538653541, 1.538885871, 
+       1.539118367, 1.539351021, 1.539583826, 1.539816774, 1.540049859, 1.540283073, 
+       1.540516409, 1.54074986, 1.540983419, 1.541217077, 1.54145083, 1.541684668, 
+       1.541918585, 1.542152573, 1.542386626, 1.542620736, 1.542854896, 1.543089099, 
+       1.543323337, 1.543557604, 1.543791892, 1.544026194, 1.544260503, 1.544494811, 
+       1.544729111, 1.544963397, 1.54519766, 1.545431894, 1.545666092, 1.545900246, 
+       1.546134349, 1.546368394, 1.546602374, 1.546836281, 1.547070108, 1.547303849, 
+       1.547537495, 1.54777104, 1.548004477, 1.548237797, 1.548470995, 1.548704063, 
+       1.548936993, 1.549169778, 1.549402412, 1.549634887, 1.549867196, 1.550099331, 
+       1.550331286, 1.550563052, 1.550794624, 1.551025994, 1.551257154, 1.551488097, 
+       1.551718817, 1.551949306, 1.552179556, 1.552409561, 1.552639313, 1.552868806, 
+       1.553098031, 1.553326982, 1.553555652, 1.553784032, 1.554012117, 1.554239899, 
+       1.554467371, 1.554694525, 1.554921354, 1.555147851, 1.55537401, 1.555599822, 
+       1.55582528, 1.556050378, 1.556275107, 1.556499462, 1.556723434, 1.556947017 };
+   */
+
+   // TF: from http://refractiveindex.info/?shelf=organic&book=poly%28methyl_methacrylate%29&page=Szczurowski
+   G4double RINDEX_skAcrylic[306] =
+     {1.4901, 1.4901, 1.4902, 1.4902, 1.4902, 1.4903, 1.4903, 1.4904, 1.4904, 1.4904, 
+      1.4905, 1.4905, 1.4906, 1.4906, 1.4907, 1.4907, 1.4908, 1.4908, 1.4908, 1.4909, 
+      1.4909, 1.4910, 1.4910, 1.4911, 1.4911, 1.4912, 1.4912, 1.4913, 1.4913, 1.4913, 
+      1.4914, 1.4914, 1.4915, 1.4915, 1.4916, 1.4916, 1.4917, 1.4917, 1.4918, 1.4918, 
+      1.4919, 1.4919, 1.4920, 1.4920, 1.4921, 1.4921, 1.4922, 1.4922, 1.4923, 1.4923, 
+      1.4924, 1.4924, 1.4925, 1.4926, 1.4926, 1.4927, 1.4927, 1.4928, 1.4928, 1.4929, 
+      1.4929, 1.4930, 1.4931, 1.4931, 1.4932, 1.4932, 1.4933, 1.4933, 1.4934, 1.4935, 
+      1.4935, 1.4936, 1.4936, 1.4937, 1.4938, 1.4938, 1.4939, 1.4940, 1.4940, 1.4941, 
+      1.4941, 1.4942, 1.4943, 1.4943, 1.4944, 1.4945, 1.4945, 1.4946, 1.4947, 1.4947, 
+      1.4948, 1.4949, 1.4949, 1.4950, 1.4951, 1.4951, 1.4952, 1.4953, 1.4954, 1.4954, 
+      1.4955, 1.4956, 1.4956, 1.4957, 1.4958, 1.4959, 1.4959, 1.4960, 1.4961, 1.4962, 
+      1.4962, 1.4963, 1.4964, 1.4965, 1.4965, 1.4966, 1.4967, 1.4968, 1.4969, 1.4970, 
+      1.4970, 1.4971, 1.4972, 1.4973, 1.4974, 1.4974, 1.4975, 1.4976, 1.4977, 1.4978, 
+      1.4979, 1.4980, 1.4980, 1.4981, 1.4982, 1.4983, 1.4984, 1.4985, 1.4986, 1.4987, 
+      1.4988, 1.4989, 1.4990, 1.4991, 1.4992, 1.4993, 1.4994, 1.4995, 1.4996, 1.4997, 
+      1.4997, 1.4998, 1.5000, 1.5001, 1.5002, 1.5003, 1.5004, 1.5005, 1.5006, 1.5007, 
+      1.5008, 1.5009, 1.5010, 1.5011, 1.5012, 1.5013, 1.5015, 1.5016, 1.5017, 1.5018, 
+      1.5019, 1.5020, 1.5022, 1.5023, 1.5024, 1.5025, 1.5026, 1.5028, 1.5029, 1.5030, 
+      1.5031, 1.5033, 1.5034, 1.5035, 1.5036, 1.5038, 1.5039, 1.5040, 1.5042, 1.5043, 
+      1.5044, 1.5046, 1.5047, 1.5049, 1.5050, 1.5051, 1.5053, 1.5054, 1.5056, 1.5057, 
+      1.5059, 1.5060, 1.5062, 1.5063, 1.5065, 1.5066, 1.5068, 1.5069, 1.5071, 1.5073, 
+      1.5074, 1.5076, 1.5077, 1.5079, 1.5081, 1.5082, 1.5084, 1.5086, 1.5088, 1.5089, 
+      1.5091, 1.5093, 1.5095, 1.5096, 1.5098, 1.5100, 1.5102, 1.5104, 1.5106, 1.5108, 
+      1.5109, 1.5111, 1.5113, 1.5115, 1.5117, 1.5119, 1.5121, 1.5123, 1.5125, 1.5127, 
+      1.5130, 1.5132, 1.5134, 1.5136, 1.5138, 1.5141, 1.5143, 1.5145, 1.5147, 1.5149, 
+      1.5152, 1.5154, 1.5157, 1.5159, 1.5161, 1.5164, 1.5166, 1.5169, 1.5171, 1.5174, 
+      1.5176, 1.5179, 1.5181, 1.5184, 1.5187, 1.5190, 1.5192, 1.5195, 1.5198, 1.5201, 
+      1.5203, 1.5206, 1.5209, 1.5212, 1.5215, 1.5218, 1.5221, 1.5224, 1.5227, 1.5230, 
+      1.5234, 1.5237, 1.5240, 1.5243, 1.5247, 1.5250, 1.5254, 1.5257, 1.5260, 1.5264, 
+      1.5267, 1.5271, 1.5275, 1.5279, 1.5282, 1.5286, 1.5290, 1.5294, 1.5297, 1.5302, 
+      1.5306, 1.5310, 1.5314, 1.5318, 1.5322, 1.5326};
+
+
+   // Table from acrsg.F is abs coeff, so converted to abs length in m and inverted as
+   // it was original a function of wavelength and now photon energy in increased energies.
+   G4double ABSORPTION_skAcrylic[306] =
+     {3472.22*m, 3355.70*m, 3300.33*m, 3412.97*m, 3496.50*m, 3649.64*m, 3861.00*m, 3921.57*m, 3846.15*m, 3703.70*m, 
+      3448.28*m, 3048.78*m, 2932.55*m, 2770.08*m, 2808.99*m, 2906.98*m, 2898.55*m, 2906.98*m, 3003.00*m, 3164.56*m, 
+      3184.71*m, 3246.75*m, 3086.42*m, 2994.01*m, 2994.01*m, 2967.36*m, 3030.30*m, 3039.51*m, 3105.59*m, 2958.58*m, 
+      3012.05*m, 3039.51*m, 2967.36*m, 2932.55*m, 2923.98*m, 2890.17*m, 2857.14*m, 2865.33*m, 2915.45*m, 2898.55*m, 
+      2881.84*m, 2754.82*m, 2702.70*m, 2754.82*m, 2890.17*m, 2840.91*m, 2659.57*m, 2604.17*m, 2624.67*m, 2857.14*m, 
+      2849.00*m, 2849.00*m, 2610.97*m, 2597.40*m, 2688.17*m, 2590.67*m, 2439.02*m, 2380.95*m, 2398.08*m, 2320.19*m, 
+      2369.67*m, 2293.58*m, 2267.57*m, 2262.44*m, 2320.19*m, 2309.47*m, 2237.14*m, 2247.19*m, 2257.34*m, 2336.45*m, 
+      2347.42*m, 2421.31*m, 2439.02*m, 2392.34*m, 2392.34*m, 2500.00*m, 2500.00*m, 2512.56*m, 2481.39*m, 2444.99*m, 
+      2155.17*m, 2053.39*m, 2008.03*m, 2040.82*m, 1988.07*m, 2004.01*m, 1976.28*m, 1834.86*m, 1798.56*m, 1869.16*m, 
+      1808.32*m, 1754.39*m, 1805.05*m, 1841.62*m, 1872.66*m, 1964.64*m, 1976.28*m, 1893.94*m, 1890.36*m, 1908.40*m, 
+      1897.53*m, 1855.29*m, 1886.79*m, 1904.76*m, 1841.62*m, 1855.29*m, 1834.86*m, 1805.05*m, 1733.10*m, 1779.36*m, 
+      1754.39*m, 1788.91*m, 1831.50*m, 1834.86*m, 1869.16*m, 1912.05*m, 2004.01*m, 1968.50*m, 1915.71*m, 1818.18*m, 
+      1795.33*m, 1766.78*m, 1808.32*m, 1766.78*m, 1754.39*m, 1751.31*m, 1776.20*m, 1838.24*m, 1872.66*m, 1919.39*m, 
+      1901.14*m, 1988.07*m, 1926.78*m, 1893.94*m, 1901.14*m, 1851.85*m, 1818.18*m, 1769.91*m, 1727.12*m, 1724.14*m, 
+      1709.40*m, 1689.19*m, 1692.05*m, 1680.67*m, 1697.79*m, 1727.12*m, 1763.67*m, 1697.79*m, 1692.05*m, 1666.67*m, 
+      1600.00*m, 1636.66*m, 1615.51*m, 1610.31*m, 1538.46*m, 1501.50*m, 1519.76*m, 1492.54*m, 1515.15*m, 1457.73*m, 
+      1479.29*m, 1461.99*m, 1470.59*m, 1470.59*m, 1453.49*m, 1512.86*m, 1522.07*m, 1589.83*m, 1577.29*m, 1597.44*m, 
+      1600.00*m, 1672.24*m, 1663.89*m, 1647.45*m, 1661.13*m, 1607.72*m, 1543.21*m, 1488.10*m, 1459.85*m, 1373.63*m, 
+      1326.26*m, 1373.63*m, 1410.44*m, 1406.47*m, 1396.65*m, 1308.90*m, 1328.02*m, 1386.96*m, 1347.71*m, 1297.02*m, 
+      1262.63*m, 1234.57*m, 1283.70*m, 1319.26*m, 1310.62*m, 1319.26*m, 1402.52*m, 1459.85*m, 1464.13*m, 1472.75*m, 
+      1420.45*m, 1432.66*m, 1400.56*m, 1362.40*m, 1358.70*m, 1358.70*m, 1379.31*m, 1360.54*m, 1362.40*m, 1355.01*m, 
+      1342.28*m, 1367.99*m, 1293.66*m, 1221.00*m, 1197.60*m, 1165.50*m, 1119.82*m, 1107.42*m, 1108.65*m, 1040.58*m, 
+      1033.06*m, 1000.00*m, 952.38*m, 925.93*m, 909.09*m, 869.57*m, 800.00*m, 781.25*m, 769.23*m, 729.93*m, 735.29*m, 
+      729.93*m, 709.22*m, 684.93*m, 657.89*m, 645.16*m, 625.00*m, 581.40*m, 568.18*m, 558.66*m, 543.48*m, 540.54*m, 523.56*m, 
+      505.05*m, 490.20*m, 485.44*m, 462.96*m, 450.45*m, 442.48*m, 429.18*m, 420.17*m, 411.52*m, 411.52*m, 393.70*m, 393.70*m, 
+      386.10*m, 381.68*m, 355.87*m, 343.64*m, 331.13*m, 343.64*m, 338.98*m, 335.57*m, 326.80*m, 313.48*m, 303.95*m, 294.12*m, 
+      292.40*m, 280.90*m, 273.97*m, 270.27*m, 265.25*m, 261.78*m, 256.41*m, 250.00*m, 242.13*m, 237.53*m, 233.10*m, 228.83*m, 
+      226.76*m, 223.21*m, 219.30*m, 215.05*m, 211.86*m, 208.77*m, 206.61*m, 201.21*m, 196.85*m, 193.42*m, 189.75*m, 186.22*m, 
+      182.15*m, 175.75*m, 168.92*m, 162.60*m, 154.80*m, 144.51*m, 133.51*m, 120.19*m, 105.93*m, 90.91*m, 75.76*m, 61.35*m, 
+      48.54*m, 37.88*m, 29.41*m};
+
+
+   // Can not use AddConstProperty for RINDEX (see http://hypernews.slac.stanford.edu/HyperNews/geant4/get/opticalphotons/379/1.html)
+   // ToDo: update with actual wavelength dependence, once known.
+    G4double RINDEX_SilGel[NUMENTRIES_water] = 
+     {1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
+      1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
+      1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
+      1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
+      1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
+      1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404};
+
+    // From Lew Classen (Erlangen) with PHOTON_NRG_MIN = .1*eV, and MAX = 7*eV
+    G4double ENERGY_SilGel[18] = { .1*eV,
+				   2.034*eV,2.13*eV,2.18*eV,2.22*eV,2.25*eV,2.3*eV,
+				   2.34*eV, 2.43*eV, 2.53*eV, 2.67*eV, 2.79*eV,
+				   3.1*eV, 3.28*eV, 3.56*eV, 3.77*eV,4.136*eV, 7.*eV};
+    G4double ABSORPTION_SilGel[18] = { 0*m,
+				       .975*m, .975*m, .966*m, .935*m, .890*m, .898*m,
+				       .876*m, .844*m, .786*m, .727*m,  .674*m,
+				       .566*m, .485*m, .360*m, .220*m, .220*m, 0*m };
+
+    // If necessary:
+    //Reference: A. D. Rakić, A. B. Djurišic, J. M. Elazar, and M. L. Majewski. Optical properties of metallic films for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998)
+    // from http://refractiveindex.info/?shelf=3d&book=metals&page=aluminium
+    /*
+    G4double ENERGY_Al[64] =
+      {1.644*eV, 1.678*eV, 1.713*eV, 1.748*eV, 1.785*eV, 1.822*eV, 
+       1.860*eV, 1.898*eV, 1.938*eV, 1.978*eV, 2.019*eV, 2.061*eV, 
+       2.104*eV, 2.148*eV, 2.193*eV, 2.238*eV, 2.285*eV, 2.332*eV, 
+       2.381*eV, 2.430*eV, 2.481*eV, 2.532*eV, 2.585*eV, 2.639*eV, 
+       2.693*eV, 2.749*eV, 2.807*eV, 2.865*eV, 2.925*eV, 2.985*eV, 
+       3.047*eV, 3.111*eV, 3.175*eV, 3.241*eV, 3.309*eV, 3.378*eV, 
+       3.448*eV, 3.519*eV, 3.593*eV, 3.667*eV, 3.744*eV, 3.821*eV, 
+       3.901*eV, 3.982*eV, 4.065*eV, 4.149*eV, 4.235*eV, 4.324*eV, 
+       4.413*eV, 4.505*eV, 4.599*eV, 4.694*eV, 4.792*eV, 4.892*eV, 
+       4.993*eV, 5.097*eV, 5.203*eV, 5.311*eV, 5.422*eV, 5.534*eV, 
+       5.649*eV, 5.767*eV, 5.887*eV, 6.009*eV};
+
+    G4double RINDEX_Al[64] =
+      {2.299, 2.096, 1.911, 1.752, 1.623, 1.518, 1.432, 
+       1.361, 1.299, 1.245, 1.196, 1.150, 1.106, 1.063, 
+       1.022, 0.982, 0.942, 0.903, 0.865, 0.827, 0.790, 
+       0.754, 0.719, 0.686, 0.653, 0.622, 0.592, 0.564, 
+       0.536, 0.511, 0.486, 0.463, 0.441, 0.420, 0.401, 
+       0.382, 0.365, 0.349, 0.333, 0.318, 0.305, 0.292, 
+       0.279, 0.268, 0.257, 0.246, 0.236, 0.227, 0.218, 
+       0.210, 0.202, 0.194, 0.187, 0.180, 0.173, 0.166, 
+       0.160, 0.154, 0.149, 0.143, 0.138, 0.133, 0.128, 0.123};
+    */
    //	------------- Surfaces --------------
 
    OpWaterBSSurface =
@@ -739,6 +1036,14 @@ void WCSimDetectorConstruction::ConstructMaterials()
    OpWaterBSSurface->SetModel(unified); 
    OpWaterBSSurface->SetFinish(groundfrontpainted);
    OpWaterBSSurface->SetSigmaAlpha(0.1);
+
+   BSSkinSurface =
+     new G4OpticalSurface("BSSkinSurface");
+
+   BSSkinSurface->SetType(dielectric_dielectric);
+   BSSkinSurface->SetModel(unified); 
+   BSSkinSurface->SetFinish(groundfrontpainted);
+   BSSkinSurface->SetSigmaAlpha(0.1);
 
    const G4int NUM = 2;
    //   G4double PP[NUM] =
@@ -780,7 +1085,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
 
    G4double RGCFF = 0.0;
-   RGCFF = WCSimTuningParams->GetRgcff();
+   RGCFF = WCSimTuningParams->GetRgcff();   //defaults in mac: 0.32 and flat
  
    G4double REFLECTIVITY_glasscath[NUM] =
      //{ 0.0+RGCFF, 0.0+RGCFF };
@@ -832,7 +1137,6 @@ void WCSimDetectorConstruction::ConstructMaterials()
 //    myMPT1->AddConstProperty("MIEHG_FORWARD_RATIO",MIE_water_const[2]);
 
 
-
    Water->SetMaterialPropertiesTable(myMPT1);
    //Gd doped water has the same optical properties as pure water
    DopedWater->SetMaterialPropertiesTable(myMPT1);
@@ -859,6 +1163,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    
    G4MaterialPropertiesTable *myMPT4 = new G4MaterialPropertiesTable();
    myMPT4->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
+   //myMPT4->AddProperty("RINDEX", ENERGY_water, RINDEX_blacksheet, NUMENTRIES_water); //TF - never required if BS is properly defined as surface.
    Blacksheet->SetMaterialPropertiesTable(myMPT4);
    
    G4MaterialPropertiesTable *myMPT5 = new G4MaterialPropertiesTable();
@@ -872,6 +1177,20 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myMPT6->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
    Tyvek->SetMaterialPropertiesTable(myMPT6);
 
+   /// SilGel : Currently based on WackerSilGel 612, BUT should be adjusted to best one (R&D)
+   G4MaterialPropertiesTable *SilGelPropTable = new G4MaterialPropertiesTable();
+   SilGelPropTable->AddProperty("RINDEX", ENERGY_water, RINDEX_SilGel, NUMENTRIES_water);
+   SilGelPropTable->AddProperty("ABSLENGTH",ENERGY_SilGel, ABSORPTION_SilGel, 18); //ToDo: get measurement of optical properties of the optical gel. From slides: better than 40cm above 350nm.
+   SilGelPropTable->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water); //ToDo: get actual Rayleigh scattering in gel
+   SilGel->SetMaterialPropertiesTable(SilGelPropTable);
+
+   //Acrylic
+   G4MaterialPropertiesTable *AcrPropTable = new G4MaterialPropertiesTable();
+   AcrPropTable->AddProperty("RINDEX", ENERGY_skAcrylic, RINDEX_skAcrylic, 306);
+   AcrPropTable->AddProperty("ABSLENGTH", ENERGY_skAcrylic, ABSORPTION_skAcrylic, 306);
+   Acrylic->SetMaterialPropertiesTable(AcrPropTable);
+
+
 
    //	------------- Surfaces --------------
 
@@ -884,6 +1203,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myST1->AddProperty("REFLECTIVITY", ENERGY_water, REFLECTIVITY_blacksheet, NUMENTRIES_water);
    myST1->AddProperty("EFFICIENCY", ENERGY_water, EFFICIENCY_blacksheet, NUMENTRIES_water);
    OpWaterBSSurface->SetMaterialPropertiesTable(myST1);
+
+   BSSkinSurface->SetMaterialPropertiesTable(myST1);
 
    //Glass to Cathode surface inside PMTs
    G4MaterialPropertiesTable *myST2 = new G4MaterialPropertiesTable();
@@ -907,4 +1228,32 @@ void WCSimDetectorConstruction::ConstructMaterials()
    //use same efficiency as blacksheet, which is 0
    OpWaterTySurface->SetMaterialPropertiesTable(myST3);
 
+
+   // Surfaces for Al, Ag and future combinations:
+   ReflectorSkinSurface =
+     new G4OpticalSurface("ReflectorSurface");
+   ReflectorSkinSurface->SetType(dielectric_metal);
+   ReflectorSkinSurface->SetModel(unified);  
+   ReflectorSkinSurface->SetFinish(polished);
+
+   G4MaterialPropertiesTable *AlPropTable = new G4MaterialPropertiesTable();
+   //AlPropTable->AddProperty("RINDEX", ENERGY_Al, RINDEX_Al, 64);  //not necessary for boundaries if kept within their MotherVolumes.
+   AlPropTable->AddProperty("REFLECTIVITY", ENERGY_water, REFLECTIVITY_aluminium, NUMENTRIES_water);
+   ReflectorSkinSurface->SetMaterialPropertiesTable(AlPropTable);
+
+   OpGelFoamSurface =
+     new G4OpticalSurface("GelFoamSurface");
+
+   OpGelFoamSurface->SetType(dielectric_dielectric);
+   OpGelFoamSurface->SetModel(unified); 
+   OpGelFoamSurface->SetFinish(groundfrontpainted);
+   OpGelFoamSurface->SetSigmaAlpha(0.1);
+
+   OpGelFoamSurface->SetMaterialPropertiesTable(myST1); //TF: same as water-blacksheet for now
+
+
+
+   //ToDo:
+   G4MaterialPropertiesTable *AgPropTable = new G4MaterialPropertiesTable();
+   G4MaterialPropertiesTable *AlAg1PropTable = new G4MaterialPropertiesTable();
 }
