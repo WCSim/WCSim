@@ -447,6 +447,60 @@ void WCSimDetectorConstruction::SetNuPrism_mPMTGeometry()
     WCAddGd               = false;
 }
 
+// Short version of NuPRISM with mPMTs: 6 m tall ID
+// These are defaults that can be altered through the macros
+void WCSimDetectorConstruction::SetNuPrismShort_mPMTGeometry()
+{
+    WCDetectorName = "NuPRISMShort_mPMT";
+    WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+	mPMT_ID_PMT = "PMT3inchR12199_02";    //can be changed in macro through mPMT settings.
+	mPMT_OD_PMT = "PMT3inchR12199_02";
+    WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
+    WCPMTName = PMT->GetPMTName();
+    WCPMTExposeHeight = PMT->GetExposeHeight();
+    WCPMTRadius = PMT->GetRadius();
+
+	//mPMT params go first because detector depends on it:
+	vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
+	vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
+	vessel_radius = 254.*CLHEP::mm;
+	dist_pmt_vessel = 2*CLHEP::mm;      
+	orientation = PERPENDICULAR;
+	mPMT_outer_material = "G4_PLEXIGLASS";
+	mPMT_inner_material = "Air";               // TODO: real air, hence update abs_length
+	mPMT_material_pmtAssembly = "SilGel";
+	mPMT_outer_material_d = 10*CLHEP::mm;
+	
+	// Radius of cone at z=reflectorHeight
+	id_reflector_height = 6.53*CLHEP::mm;        // for a radius of 7.25mm, for hex: 5.4mm (radius of 6mm)
+	id_reflector_z_offset = 4.8*CLHEP::mm;       //from KM3Net CAD drawings
+	id_reflector_angle = 48.*CLHEP::deg;         // Need to be remeasured for different PMT curvature 
+	mPMT_pmt_openingAngle = 8.7*CLHEP::deg;     // for hex: 8.5deg
+	G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+	
+	// parameters related to filling the ID mPMT
+	nID_PMTs = 19;
+	config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
+
+	WCIDHeight               = 6.0*CLHEP::m;
+	WCIDDiameter             = 8.0*CLHEP::m;
+    WCIDVerticalPosition     = 0.;
+	
+	WCBarrelPMTOffset     = vessel_tot_height;
+    WCPMTperCellHorizontal = 2.0; // 2 per phi
+    WCPMTperCellVertical   = 1.0;
+
+	// Numbers below are based on R.Henderson's 832 module tank design
+    WCBarrelNumPMTHorizontal = 40;
+    WCBarrelNRings        = 9; // Scaled from 10.42 m tall detector.
+    WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+	// This is tuned to give a 6-5-5-4-3-1 config in one quarter of the cap
+	// And results in 832 mPMT modules as currently in Robert's Design
+    WCCapEdgeLimit        = 3.3*m; 
+    WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
+    WCAddGd               = false;
+}
+
 void WCSimDetectorConstruction::SetTestSinglemPMTGeometry()
 {
   WCDetectorName = "TestSinglemPMT";

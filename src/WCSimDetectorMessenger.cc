@@ -28,6 +28,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "EggShapedHyperK_withHPD\n"
                           "nuPRISM\n"
                           "nuPRISM_mPMT\n"
+    			  "nuPRISMShort_mPMT\n"
 			  "Cylinder_60x74_3inchmPMT_14perCent\n"
 			  "Cylinder_60x74_3inchmPMT_40perCent\n"
 			  "Cylinder_60x74_3inch_14perCent\n"
@@ -48,6 +49,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			   "EggShapedHyperK_withHPD "
                            "nuPRISM "
                            "nuPRISM_mPMT "
+			   "nuPRISMShort_mPMT "
 			   "Cylinder_60x74_3inchmPMT_14perCent "
 			   "Cylinder_60x74_3inchmPMT_40perCent "
 			   "Cylinder_60x74_3inch_14perCent "
@@ -308,7 +310,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetPMTType = new G4UIcmdWithAString("/WCSim/nuPRISM/SetPMTType", this);
   SetPMTType->SetGuidance("Set the type of PMT to be used for nuPRISM");
   SetPMTType->SetGuidance("Available options are:\n"
-
           "PMT3inch\n"
           "PMT3inchGT\n"
           "PMT3inchR12199_02\n"
@@ -428,6 +429,9 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
                 } else if ( newValue == "nuPRISM_mPMT") {
 		  WCSimDetector->SetIsNuPrism(true);
 		  WCSimDetector->SetNuPrism_mPMTGeometry();
+                } else if ( newValue == "nuPRISMShort_mPMT") {
+		  WCSimDetector->SetIsNuPrism(true);
+		  WCSimDetector->SetNuPrismShort_mPMTGeometry();
 		} else
 		  G4cout << "That geometry choice is not defined!" << G4endl;
 	}

@@ -426,7 +426,7 @@ G4float PMT5inch::HitTimeSmearing(float Q) {
 }
 
 G4float* PMT5inch::Getqpe() //currently uses the same as 20inch
-   {
+{
   static G4float qpe0[501]= {
     // 1
     0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
@@ -541,8 +541,8 @@ G4float* PMT5inch::Getqpe() //currently uses the same as 20inch
     // Dummy element for noticing if the loop reached the end of the array
     0.0 
   };
-   return qpe0;
-  }
+  return qpe0;
+}
 
 //Currenly the PMT QE info is the same as 20 inch.
 G4double* PMT5inch::GetQE(){
@@ -553,7 +553,7 @@ G4float* PMT5inch::GetQEWavelength(){static G4float wavelength[20] = { 280., 300
   return wavelength;}
 
 G4float  PMT5inch::GetmaxQE(){
-    const G4float maxQE = 0.211;
+  const G4float maxQE = 0.211;
   return maxQE;
 }
 
@@ -567,10 +567,8 @@ G4float PMT5inch::GetDarkRateConversionFactor(){
   return factor;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 3 inch (transit time spread of 4ns FWHM @1p.e.)
-
 PMT3inch::PMT3inch(){}
 PMT3inch::~PMT3inch(){}
 

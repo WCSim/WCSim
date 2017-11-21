@@ -80,13 +80,13 @@ class PMT5inch : public WCSimPMTObject
 {
 
 public:
-  
+
   PMT5inch();
   ~PMT5inch();
- 
+
 public:
-  G4String GetPMTName(); 
-  G4double GetExposeHeight(); 
+  G4String GetPMTName();
+  G4double GetExposeHeight();
   G4double GetRadius();
   G4float* Getqpe();
   G4double* GetQE();
@@ -97,7 +97,6 @@ public:
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
 };
-
 
 class PMT3inch : public WCSimPMTObject
 {
@@ -142,7 +141,6 @@ public:
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
 };
-
 
 
  class PMT10inch : public WCSimPMTObject
