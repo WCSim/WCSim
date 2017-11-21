@@ -18,7 +18,7 @@
  ***********************************************************/
 
 
-G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag, G4float low_wl, G4float high_wl, G4float ratio){
+G4float WCSimDetectorConstruction::GetPMTQE(G4String CollectionName, G4float PhotonWavelength, G4int flag, G4float low_wl, G4float high_wl, G4float ratio){
   // XQ  08/17/10
   // Decide to include the QE in the WCSim detector 
   // rathe than hard coded into the StackingAction
@@ -48,10 +48,10 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4float PhotonWavelength, G4int flag
   }
   
   WCSimPMTObject *PMT;
-  PMT = GetPMTPointer();
+  PMT = GetPMTPointer(CollectionName);
   G4float *wavelength;
   wavelength = PMT->GetQEWavelength();
-  G4float *QE;
+  G4double *QE;
   QE = PMT->GetQE();
   G4float maxQE;
   maxQE = PMT->GetmaxQE();

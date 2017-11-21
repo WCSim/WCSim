@@ -59,6 +59,7 @@ class WCSimWCHit : public G4VHit
   void SetTrackID      (G4int track)                { trackID = track; };
   void SetEdep         (G4double de)                { edep = de; };
   void SetPos          (G4ThreeVector xyz)          { pos = xyz; };
+  void SetOrientation  (G4ThreeVector xyz)          { orient = xyz; };
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
   void AddParentID     (G4int primParentID)
@@ -81,6 +82,7 @@ class WCSimWCHit : public G4VHit
   G4int         GetTubeID()     { return tubeID; };
   G4int         GetTrackID()    { return trackID; };
   G4ThreeVector GetPos()        { return pos; };
+  G4ThreeVector GetOrientation()        { return orient; };
   G4int         GetTotalPe()    { return totalPe;};
   G4float       GetTime(int i)  { return time[i];};
   G4int         GetParentID(int i) { return primaryParentID[i];};
@@ -142,10 +144,13 @@ class WCSimWCHit : public G4VHit
 
  private:
   
+  void HSVtoRGB(float& fR, float& fG, float& fB, float& fH, float& fS, float& fV);
+
   G4int            tubeID;
   G4int            trackID;
   G4double         edep;
   G4ThreeVector    pos;
+  G4ThreeVector    orient;
   G4RotationMatrix rot;
   G4LogicalVolume* pLogV;
 

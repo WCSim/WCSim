@@ -4,8 +4,6 @@
 #include "G4UIterminal.hh"
 #include "G4UItcsh.hh"
 #include "WCSimDetectorConstruction.hh"
-#include "WCSimPhysicsList.hh"
-#include "WCSimPhysicsMessenger.hh"
 #include "WCSimPhysicsListFactory.hh"
 #include "WCSimPhysicsListFactoryMessenger.hh"
 #include "WCSimTuningParameters.hh"
@@ -18,7 +16,20 @@
 #include "WCSimSteppingAction.hh"
 #include "WCSimVisManager.hh"
 #include "WCSimRandomParameters.hh"
-#include <iostream>
+
+
+#ifdef G4UI_USE
+#include "G4UIExecutive.hh"
+#endif
+
+void file_exists(const char * filename) {
+  bool exists = access(filename, F_OK) != -1;
+  if(!exists) {
+    G4cerr << filename << " not found or inaccessible. Exiting" << G4endl;
+    exit(-1);
+  }
+}
+
 
 int main(int argc,char** argv)
 {
@@ -33,7 +44,8 @@ int main(int argc,char** argv)
   WCSimTuningParameters* tuningpars = new WCSimTuningParameters();
 
   // Get the tuning parameters
-  UI->ApplyCommand("/control/execute tuning_parameters.mac");
+  file_exists("macros/tuning_parameters.mac");
+  UI->ApplyCommand("/control/execute macros/tuning_parameters.mac");
 
   // define random number generator parameters
   WCSimRandomParameters *randomparameters = new WCSimRandomParameters();
@@ -51,24 +63,14 @@ int main(int argc,char** argv)
   // Set up the messenger hooks here, initialize the actual list after loading jobOptions.mac
   WCSimPhysicsListFactory *physFactory = new WCSimPhysicsListFactory();
 
-  // Currently, default model is set to BINARY
-  UI->ApplyCommand("/control/execute jobOptions.mac");
+  // Currently, default physics list is set to FTFP_BERT
+  // The custom WCSim physics list option is removed in versions later than WCSim1.6.0
+  file_exists("macros/jobOptions.mac");
+  UI->ApplyCommand("/control/execute macros/jobOptions.mac");
 
   // Initialize the physics factory to register the selected physics.
   physFactory->InitializeList();
   runManager->SetUserInitialization(physFactory);
-
-  // If the WCSim physics list was chosen in jobOptions.mac,
-  // then it's hadronic model needs to be selected in jobOptions2.mac
-  //=================================
-  // Added by JLR 2005-07-05
-  //=================================
-  // Choice of hadronic interaction model for 
-  // protons & neutrons. This file must be read in
-  // by the program BEFORE the runManager is initialized.
-  // If file does not exist, default model will be used.
-  // Currently, default model is set to BINARY.
-  UI->ApplyCommand("/control/execute jobOptions2.mac");
 
   // Visualization
   G4VisManager* visManager = new WCSimVisManager;
@@ -80,11 +82,17 @@ int main(int argc,char** argv)
   runManager->SetUserAction(myGeneratorAction);
 
 
-  WCSimRunAction* myRunAction = new WCSimRunAction(WCSimdetector);
+  WCSimRunAction* myRunAction = new WCSimRunAction(WCSimdetector, randomparameters);
+
+  //save all the options from WCSimTuningParameters & WCSimPhysicsListFactory
+  //(set in tuning_parameters.mac & jobOptions*.mac)
+  tuningpars->SaveOptionsToOutput(myRunAction->GetRootOptions());
+  physFactory->SaveOptionsToOutput(myRunAction->GetRootOptions());
+
   runManager->SetUserAction(myRunAction);
 
   runManager->SetUserAction(new WCSimEventAction(myRunAction, WCSimdetector,
-        myGeneratorAction));
+						 myGeneratorAction));
   runManager->SetUserAction(new WCSimTrackingAction);
 
   runManager->SetUserAction(new WCSimStackingAction(WCSimdetector));
@@ -99,22 +107,35 @@ int main(int argc,char** argv)
   { 
 
     // Start UI Session
-    G4UIsession* session =  new G4UIterminal(new G4UItcsh);
+    //    G4UIsession* session =  new G4UIterminal(new G4UItcsh);
 
+    //using working example N04 for Qt UI Compatible code
+#ifdef G4UI_USE
+    G4UIExecutive * ui = new G4UIExecutive(argc,argv);
+#ifdef G4VIS_USE
     // Visualization Macro
-    UI->ApplyCommand("/control/execute vis.mac");
+    UI->ApplyCommand("/control/execute WCSim.mac");
+#endif
+    ui->SessionStart();
+    delete ui;
+#endif
 
     // Start Interactive Mode
-    session->SessionStart();
+    //session->SessionStart();
 
-    delete session;
+    //delete session;
   }
   else           // Batch mode
   { 
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
-
+    file_exists(fileName);
+    if(fileName == "vis.mac"){
+      G4cout << "ERROR: Execute without arg for interactive mode" << G4endl;
+      //return -1;
+    }
     UI->ApplyCommand(command+fileName);
+
   }
 
   delete visManager;

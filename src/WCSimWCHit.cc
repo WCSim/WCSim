@@ -8,6 +8,9 @@
 #include "G4RotationMatrix.hh"
 #include <iomanip>
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 G4int WCSimWCHit::maxPe = 0;
 
 G4Allocator<WCSimWCHit> WCSimWCHitAllocator;
@@ -55,15 +58,35 @@ void WCSimWCHit::Draw()
 
     G4String volumeName        = pLogV->GetName();
 
-    if ( volumeName == "glassFaceWCPMT" ||  volumeName == "glassFaceWCPMT_refl")
+    // volumeName should be compared to ID/OD CollectionName of the SensitiveDetector
+    // instead of accessing those exactly here, just grab the substring: It should be "a" glassFaceWCPMT. Later optional check for OD?
+    if ( volumeName.find("glassFaceWCPMT") != std::string::npos ||
+	 volumeName.find("glassFaceWCPMT_refl") != std::string::npos) //isn't this deprecated??
     { 
+
     	//G4cout << "PE: " << totalPe << " Max Pe " << maxPe << G4endl;
 		//numbpmthit++;
 		//avePe += totalPe;
 		//G4cout << "Ave PE: " << avePe/numbpmthit << " Max PE: " << maxPe << G4endl;
       if ( totalPe > maxPe*.01 )
       {      
-	G4Colour colour(1.,1.-(float(totalPe-.05*maxPe)/float(.95*maxPe)),0.0);
+
+	//Don't like this colour scheme (not enough visual gradient between yellow and red)
+	//G4Colour colour(1.,1.-(float(totalPe-.05*maxPe)/float(.95*maxPe)),0.0);
+
+	// Scale the charge using the HSV or HSL colour scheme
+	// We want to only vary hue, setting saturation to 1 and value to 1 (or lightness to .5)
+	float hue = (1.-(float(totalPe-.05*maxPe)/float(.95*maxPe)))*230;   //go from hue = 230 to 0
+	float saturation = 1.;
+	float value = 1.;
+
+	//convert to rgb
+	float red = 0.;
+	float green = 0.;
+	float blue = 0.;
+	HSVtoRGB(red, green, blue, hue, saturation, value);
+	G4Colour colour(red, green, blue);
+	
 	attribs.SetColour(colour);
 	//    attribs.SetForceWireframe(false);
 	attribs.SetForceSolid(true);
@@ -95,3 +118,60 @@ void WCSimWCHit::Print()
   G4cout << "size: " << time.size() << G4endl;
 }
 
+
+
+/*! \brief Convert HSV to RGB color space (from https://gist.github.com/fairlight1337/4935ae72bcbcc1ba5c72)
+  
+  Converts a given set of HSV values `h', `s', `v' into RGB
+  coordinates. The output RGB values are in the range [0, 1], and
+  the input HSV values are in the ranges h = [0, 360], and s, v =
+  [0, 1], respectively.
+  
+  \param fR Red component, used as output, range: [0, 1]
+  \param fG Green component, used as output, range: [0, 1]
+  \param fB Blue component, used as output, range: [0, 1]
+  \param fH Hue component, used as input, range: [0, 360]
+  \param fS Saturation component, used as input, range: [0, 1]
+  \param fV Value component, used as input, range: [0, 1]
+  
+*/
+void WCSimWCHit::HSVtoRGB(float& fR, float& fG, float& fB, float& fH, float& fS, float& fV) {
+  float fC = fV * fS; // Chroma
+  float fHPrime = fmod(fH / 60.0, 6);
+  float fX = fC * (1 - fabs(fmod(fHPrime, 2) - 1));
+  float fM = fV - fC;
+  
+  if(0 <= fHPrime && fHPrime < 1) {
+    fR = fC;
+    fG = fX;
+    fB = 0;
+  } else if(1 <= fHPrime && fHPrime < 2) {
+    fR = fX;
+    fG = fC;
+    fB = 0;
+  } else if(2 <= fHPrime && fHPrime < 3) {
+    fR = 0;
+    fG = fC;
+    fB = fX;
+  } else if(3 <= fHPrime && fHPrime < 4) {
+    fR = 0;
+    fG = fX;
+    fB = fC;
+  } else if(4 <= fHPrime && fHPrime < 5) {
+    fR = fX;
+    fG = 0;
+    fB = fC;
+  } else if(5 <= fHPrime && fHPrime < 6) {
+    fR = fC;
+    fG = 0;
+    fB = fX;
+  } else {    
+    fR = 0;
+    fG = 0;
+    fB = 0;
+  }
+  
+  fR += fM;
+  fG += fM;
+  fB += fM;
+}

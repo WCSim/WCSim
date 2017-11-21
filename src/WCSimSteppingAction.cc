@@ -12,20 +12,111 @@
 #include "G4PVReplica.hh"
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
+#include "G4OpBoundaryProcess.hh"
+
+G4int WCSimSteppingAction::n_photons_through_mPMTLV = 0;
+G4int WCSimSteppingAction::n_photons_through_acrylic = 0;
+G4int WCSimSteppingAction::n_photons_through_gel = 0;
+G4int WCSimSteppingAction::n_photons_on_blacksheet = 0;
+G4int WCSimSteppingAction::n_photons_on_smallPMT = 0;
 
 
 void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 {
   //DISTORTION must be used ONLY if INNERTUBE or INNERTUBEBIG has been defined in BidoneDetectorConstruction.cc
   
-  const G4Event* evt = G4RunManager::GetRunManager()->GetCurrentEvent();
-
   const G4Track* track       = aStep->GetTrack();
-  G4VPhysicalVolume* volume  = track->GetVolume();
+  
+  // Not used:
+  //const G4Event* evt = G4RunManager::GetRunManager()->GetCurrentEvent();
+  //G4VPhysicalVolume* volume  = track->GetVolume();
+  //G4SDManager* SDman   = G4SDManager::GetSDMpointer();
+  //G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
+
+  
+  // Debug for photon tracking
+  G4StepPoint* thePrePoint = aStep->GetPreStepPoint();
+  G4VPhysicalVolume* thePrePV = thePrePoint->GetPhysicalVolume();
+
+  G4StepPoint* thePostPoint = aStep->GetPostStepPoint();
+  G4VPhysicalVolume* thePostPV = thePostPoint->GetPhysicalVolume();
+
+  //G4OpBoundaryProcessStatus boundaryStatus=Undefined;
+  //static G4ThreadLocal G4OpBoundaryProcess* boundary=NULL;  //doesn't work and needs #include tls.hh from Geant4.9.6 and beyond
+  G4OpBoundaryProcess* boundary=NULL;
+  
+  //find the boundary process only once
+  if(!boundary){
+    G4ProcessManager* pm
+      = aStep->GetTrack()->GetDefinition()->GetProcessManager();
+    G4int nprocesses = pm->GetProcessListLength();
+    G4ProcessVector* pv = pm->GetProcessList();
+    G4int i;
+    for( i=0;i<nprocesses;i++){
+      if((*pv)[i]->GetProcessName()=="OpBoundary"){
+	boundary = (G4OpBoundaryProcess*)(*pv)[i];
+	break;
+      }
+    }
+  }
+
+  G4ParticleDefinition *particleType = track->GetDefinition();
+  if(particleType == G4OpticalPhoton::OpticalPhotonDefinition()){
+    if( (thePrePV->GetName().find("MultiPMT") != std::string::npos) &&
+	(thePostPV->GetName().find("vessel") != std::string::npos) )
+      n_photons_through_mPMTLV++;
+    
+    if( (thePostPV->GetName().find("container") != std::string::npos) &&
+	(thePrePV->GetName().find("vessel") != std::string::npos))
+      n_photons_through_acrylic++;
+    
+    if( (thePrePV->GetName().find("container") != std::string::npos) )
+      n_photons_through_gel++;
+
+    if( (thePrePV->GetName().find("container") != std::string::npos) &&
+	(thePostPV->GetName().find("inner") != std::string::npos) )
+      n_photons_on_blacksheet++;
+
+    if( (thePrePV->GetName().find("container") != std::string::npos) &&
+	(thePostPV->GetName().find("pmt") != std::string::npos) )
+      n_photons_on_smallPMT++;
+	
+
+    /*
+    if( (thePrePV->GetName().find("pmt") != std::string::npos)){
+      std::cout << "Photon between " << thePrePV->GetName() <<
+	" and " << thePostPV->GetName() << " because " << 
+	thePostPoint->GetProcessDefinedStep()->GetProcessName() << 
+	" and boundary status: " <<  boundary->GetStatus() << " with track status " << track->GetTrackStatus() << std::endl;
+      
+	}*/
 
 
-  G4SDManager* SDman   = G4SDManager::GetSDMpointer();
-  G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
+
+    if(track->GetTrackStatus() == fStopAndKill){
+      if(boundary->GetStatus() == NoRINDEX){
+	std::cout << "Optical photon is killed because of missing refractive index in either " << thePrePoint->GetMaterial()->GetName() << " or " << thePostPoint->GetMaterial()->GetName() << 
+	  " : could also be caused by Overlaps with volumes with logicalBoundaries." << std::endl;
+	
+      }
+      /* Debug :  
+      if( (thePrePV->GetName().find("PMT") != std::string::npos) ||
+	  (thePrePV->GetName().find("pmt") != std::string::npos)){
+	
+	if(boundary->GetStatus() != StepTooSmall){
+	  //	if(thePostPoint->GetProcessDefinedStep()->GetProcessName() != "Transportation")
+	  std::cout << "Killed photon between " << thePrePV->GetName() <<
+	    " and " << thePostPV->GetName() << " because " << 
+	    thePostPoint->GetProcessDefinedStep()->GetProcessName() << 
+	    " and boundary status: " <<  boundary->GetStatus() <<
+	    std::endl;
+	}
+	}	*/
+      
+    }
+  }
+
+
 
   //debugging 
 //  G4Track* theTrack = aStep->GetTrack();
@@ -100,7 +191,7 @@ G4int WCSimSteppingAction::G4ThreeVectorToWireTime(G4ThreeVector *pos3d,
 } 
 
 
-void WCSimSteppingAction::Distortion(G4double x,G4double y)
+void WCSimSteppingAction::Distortion(G4double /*x*/,G4double /*y*/)
 {
  
 //   G4double theta,steps,yy,y0,EvGx,EvGy,EField,velocity,tSample,dt;
@@ -142,7 +233,7 @@ void WCSimSteppingAction::Distortion(G4double x,G4double y)
 //   //G4cout<<" Gx "<<EvGx<<" Gy "<<EvGy<<" EField "<<EField<<" velocity "<<velocity<<" quenching "<<quenching<<G4endl;
 
 
-//   ret[0]=x;
+  //ret[0]=5;
 //   if(yy>0)
 //     ret[1]=2*y0/dt -steps;
 //   else
@@ -150,7 +241,7 @@ void WCSimSteppingAction::Distortion(G4double x,G4double y)
 }
 
 
-double WCSimSteppingAction::FieldLines(G4double x,G4double y,G4int coord)
+double WCSimSteppingAction::FieldLines(G4double /*x*/,G4double /*y*/,G4int /*coord*/)
 { //0.1 kV/mm = field
   //G4double Radius=302;//mm
 //   G4double Radius=602;//mm

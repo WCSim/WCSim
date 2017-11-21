@@ -1,0 +1,26 @@
+#
+# multiPMT params
+#
+/WCSim/WCgeom TestmPMT #Cylinder_60x74_3inchmPMT_14perCent #TestmPMT
+
+## possibility to overwrite some params of the TestmPMT geom
+/WCSim/mPMT/VesselCylHeight 100 mm
+/WCSim/mPMT/VesselRadiusCurv 450. mm 
+/WCSim/mPMT/VesselRadius 340 mm 
+#/WCSim/mPMT/orientation Perpendicular
+#/WCSim/mPMT/material_outer Acrylic
+#/WCSim/mPMT/material_outer_thickness 4. mm
+#/WCSim/mPMT/material_inner SilGel
+#/WCSim/mPMT/reflectorHeightID  0.1 mm
+#/WCSim/mPMT/reflectorAngleID 45 deg
+/WCSim/mPMT/nID_PMTs 37  #for 40%
+/WCSim/mPMT/configfile mPMTconfig_37_HK.txt #for 40%
+#/WCSim/mPMT/PMTtype_inner BoxandLine20inchHQE
+/WCSim/mPMT/PMTtype_outer PMT3inchR12199_02    #no OD yet.
+
+/WCSim/Construct
+
+
+## Note: for  mPMTconfig_37_HK.txt, RCurv = 450 mm and R = 340 mm works, but
+## for 40% coverage, at 1 module/0.5m^2, this means only 2cm between each module
+## Note2: enough space for longer base!

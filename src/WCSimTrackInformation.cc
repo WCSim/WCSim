@@ -3,7 +3,7 @@
 
 G4Allocator<WCSimTrackInformation> aWCSimTrackInfoAllocator;
 
-WCSimTrackInformation::WCSimTrackInformation(const G4Track* atrack)
+WCSimTrackInformation::WCSimTrackInformation(const G4Track* /*atrack*/)
 {
   saveit = true;
 }

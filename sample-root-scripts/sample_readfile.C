@@ -88,14 +88,27 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
   }
   geotree->GetEntry(0);
 
+  // Options tree - only need 1 "event"
+  TTree *opttree = (TTree*)file->Get("wcsimRootOptionsT");
+  WCSimRootOptions *opt = 0; 
+  opttree->SetBranchAddress("wcsimrootoptions", &opt);
+  if(verbose) std::cout << "Optree has " << opttree->GetEntries() << " entries" << std::endl;
+  if (opttree->GetEntries() == 0) {
+    exit(9);
+  }
+  opttree->GetEntry(0);
+  opt->Print();
+
   // start with the main "subevent", as it contains most of the info
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  TH1F *h1 = new TH1F("PMT Hits", "PMT Hits", 200, 0, 8000);
+  TH1F *h1 = new TH1F("PMT Hits", "PMT Hits", 8000, 0, 8000);
   TH1F *hvtx0 = new TH1F("Event VTX0", "Event VTX0", 200, -1500, 1500);
   TH1F *hvtx1 = new TH1F("Event VTX1", "Event VTX1", 200, -1500, 1500);
   TH1F *hvtx2 = new TH1F("Event VTX2", "Event VTX2", 200, -1500, 1500);
+  
+  int num_trig=0;
   
   // Now loop over events
   for (int ev=0; ev<nevent; ev++)
@@ -144,6 +157,9 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
       
 	for (int j=0; j<3; j++)
 	  printf("Track dir: %d %f\n",j, wcsimroottrack->GetDir(j));
+	printf("Track energy: %f\n", wcsimroottrack->GetE());
+	printf("Track momentum: %f\n", wcsimroottrack->GetP());
+	printf("Track mass: %f\n", wcsimroottrack->GetM());
       }
 
       
@@ -156,7 +172,7 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
     // It is the number of tubes hit with Cherenkov photons.
     // The number of digitized tubes will be smaller because of the threshold.
     // Each hit "raw" tube has several photon hits.  The times are recorded.
-    // See http://nwg.phy.bnl.gov/DDRD/cgi-bin/private/ShowDocument?docid=245
+    // See chapter 5 of ../doc/DetectorDocumentation.pdf
     // for more information on the structure of the root file.
     //  
     // The following code prints out the hit times for the first 10 tubes and also
@@ -215,6 +231,7 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
 
     // Get the number of digitized hits
     // Loop over sub events
+   
     if(verbose) cout << "DIGITIZED HITS:" << endl;
     for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++) 
     {
@@ -223,7 +240,9 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
       
       int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
       if(verbose) printf("Ncherenkovdigihits %d\n", ncherenkovdigihits);
-      
+     
+      if(ncherenkovdigihits>0)
+	num_trig++;
       //for (i=0;i<(ncherenkovdigihits>4 ? 4 : ncherenkovdigihits);i++){
       for (i=0;i<ncherenkovdigihits;i++)
       {
@@ -257,4 +276,6 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
   c1->cd(2); hvtx1->Draw();
   c1->cd(3); hvtx2->Draw();
   c1->cd(4); h1->Draw();
+  
+  std::cout<<"num_trig "<<num_trig<<"\n";
 }

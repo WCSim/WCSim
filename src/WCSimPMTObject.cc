@@ -11,14 +11,17 @@
 #include "G4RotationMatrix.hh"
 #include "G4ThreeVector.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPmtInfo.hh"
-
 
 #include <vector>
 // for memset
 #include <cstring>
-#include <iostream>
+
+//ToDo: Clean this up, many of these hard coded things can be read in from (ROOT) files.
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,8 +214,8 @@ G4float* PMT20inch::GetQEWavelength(){
   return wavelength_value;
 }
 
-G4float* PMT20inch::GetQE(){  
-  static G4float QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
+G4double* PMT20inch::GetQE(){  
+  static G4double QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
   return QE;
 }
 G4float PMT20inch::GetmaxQE(){
@@ -220,7 +223,27 @@ G4float PMT20inch::GetmaxQE(){
   return maxQE;
 }
 
+// Should be actual PMT Dark Rate, not effective dark rate in detector including other LE noise
+G4float PMT20inch::GetDarkRate(){
+  /* From e-mail discussion with A.Konaka and S.Nakayama:
+   * SK-I: 4.2 kHz 
+   * SK-IV:5.7 kHz, both before electronics threshold in skdetsim
+   * Measured DN with 0.25 pe threshold:
+   * SK-I: 3.4 kHz  (2003 SK-NIM: 3 kHz. A.Konaka: "2kHz with hot PMTs removed?") 
+   * SK-IV: 4.5 kHz (higher due to FRP)
+   * ToDo: investigate after updating electronics routing, whether to change value to 3.4 kHz
+   */
 
+  const G4float rate = 4.2*CLHEP::kilohertz;   //SKI value set in SKDETSim. 
+  return rate;
+}
+
+// Convert dark noise frequency to one before applying threshold of 0.25 pe, as that is what
+// will be simulated (WCSimWCDigitizer::AddPMTDarkRate)
+G4float PMT20inch::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 8 inch
@@ -361,8 +384,8 @@ G4float* PMT8inch::Getqpe() //currently uses the same as 20inch
   }
 
 //Currenly the PMT QE info is the same as 20 inch.
-G4float* PMT8inch::GetQE(){
-  static G4float QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
+G4double* PMT8inch::GetQE(){
+  static G4double QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
   return QE;
 }
 G4float* PMT8inch::GetQEWavelength(){static G4float wavelength[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
@@ -373,7 +396,15 @@ G4float  PMT8inch::GetmaxQE(){
   return maxQE;
 }
 
+G4float PMT8inch::GetDarkRate(){
+  const G4float rate = 4.2*CLHEP::kilohertz;   
+  return rate;
+}
 
+G4float PMT8inch::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 5 inch
@@ -514,8 +545,8 @@ G4float* PMT5inch::Getqpe() //currently uses the same as 20inch
 }
 
 //Currenly the PMT QE info is the same as 20 inch.
-G4float* PMT5inch::GetQE(){
-  static G4float QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
+G4double* PMT5inch::GetQE(){
+  static G4double QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
   return QE;
 }
 G4float* PMT5inch::GetQEWavelength(){static G4float wavelength[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
@@ -526,18 +557,25 @@ G4float  PMT5inch::GetmaxQE(){
   return maxQE;
 }
 
+G4float PMT5inch::GetDarkRate(){
+  const G4float rate = 4.2*CLHEP::kilohertz;   
+  return rate;
+}
 
+G4float PMT5inch::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 3 inch (transit time spread of 4ns FWHM @1p.e.)
-
 PMT3inch::PMT3inch(){}
 PMT3inch::~PMT3inch(){}
 
 G4String PMT3inch::GetPMTName() {G4String PMTName = "3inch"; return PMTName;}
 G4double PMT3inch::GetExposeHeight() {return 20.*mm;}
 G4double PMT3inch::GetRadius() {return 40.*mm;}
-G4double PMT3inch::GetPMTGlassThickness() {return 0.40*cm;}
+G4double PMT3inch::GetPMTGlassThickness() {return 0.10*cm;}
 G4float PMT3inch::HitTimeSmearing(float Q) { 
   float timingConstant = 1.890; // 4ns FWHM when Q=1.0 
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
@@ -667,8 +705,8 @@ G4float* PMT3inch::Getqpe() //currently uses the same as 20inch
 }
 
 //Currenly the PMT QE info is the same as 20 inch.
-G4float* PMT3inch::GetQE(){
-  static G4float QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
+G4double* PMT3inch::GetQE(){
+  static G4double QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
   return QE;
 }
 G4float* PMT3inch::GetQEWavelength(){static G4float wavelength[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
@@ -679,6 +717,15 @@ G4float  PMT3inch::GetmaxQE(){
   return maxQE;
 }
 
+G4float PMT3inch::GetDarkRate(){
+  const G4float rate = 4.2*CLHEP::kilohertz;   
+  return rate;
+}
+
+G4float PMT3inch::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -690,7 +737,7 @@ PMT3inchGT::~PMT3inchGT(){}
 G4String PMT3inchGT::GetPMTName() {G4String PMTName = "3inchGT"; return PMTName;}
 G4double PMT3inchGT::GetExposeHeight() {return 20.*mm;}
 G4double PMT3inchGT::GetRadius() {return 40.*mm;}
-G4double PMT3inchGT::GetPMTGlassThickness() {return 0.40*cm;}
+G4double PMT3inchGT::GetPMTGlassThickness() {return 0.10*cm;}
 G4float PMT3inchGT::HitTimeSmearing(float Q) { 
   float timingConstant = 0.535; // 2.5ns FWHM when Q=1.0
   float timingResolution = 0.33 + sqrt(timingConstant/Q); 
@@ -820,8 +867,8 @@ G4float* PMT3inchGT::Getqpe() //currently uses the same as 20inch
 }
 
 //Currenly the PMT QE info is the same as 20 inch.
-G4float* PMT3inchGT::GetQE(){
-  static G4float QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
+G4double* PMT3inchGT::GetQE(){
+  static G4double QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
   return QE;
 }
 G4float* PMT3inchGT::GetQEWavelength(){static G4float wavelength[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
@@ -832,188 +879,15 @@ G4float  PMT3inchGT::GetmaxQE(){
   return maxQE;
 }
 
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-// TF: Hacked 20 inch HQE Box and Line PMT and adapted to 3inch R12199-02
-//     Will update it later with real properties and add more 3in PMTs after reorganizing this
-//     file first.
-//     Once I'm updating these values, immediately test with grabbing from a (txt/ROOT) file as example
-//     for cleaning up the rest. Then making these objects of a class and then making them Enums.
-//
-//   Use full area of half sphere, instead of photocathode area from drawings (dotted line) as we do for 20"
-//   next: use effective CE/QE as function of theta to correctly simulate edge effect (increase in QE, decrease in CE)
-//
-PMT3inchR12199_02::PMT3inchR12199_02(){}
-PMT3inchR12199_02::~PMT3inchR12199_02(){}
-G4String PMT3inchR12199_02::GetPMTName() {G4String PMTName = "PMT3inchR12199_02"; return PMTName;}
-G4double PMT3inchR12199_02::GetExposeHeight() {return .0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
-G4double PMT3inchR12199_02::GetRadius() {return .0400*m;}   //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
-G4double PMT3inchR12199_02::GetPMTGlassThickness() {return 0.4*cm;}
-float PMT3inchR12199_02::HitTimeSmearing(float Q) {
-  G4float sig_param[4]={0.6314,0.06260,0.5711,23.96};
-  G4float lambda_param[2]={0.4113,0.07827};
-  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
-  G4float highcharge_param[2];
-  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
-  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
-  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
-  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
-  G4float lambda = lambda_param[0]+lambda_param[1]*Q;
-  G4float Smearing_factor = G4RandGauss::shoot(-0.2,sigma)-1/lambda*log(1-G4UniformRand());
-  return Smearing_factor;
-}
-G4float* PMT3inchR12199_02::Getqpe()
-{
-  static G4float qpe0[501]= {
-    // 1
-    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
-    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
-    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
-    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
-    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
-    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
-    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
-    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
-    0.000000, 0.000001, 0.000001, 0.000002, 0.000004,
-    0.000008, 0.000014, 0.000025, 0.000044, 0.000486,
-    // 2
-    0.007195, 0.019406, 0.031920, 0.044503, 0.057189,
-    0.070020, 0.083060, 0.096388, 0.110108, 0.124351,
-    0.139276, 0.155072, 0.171956, 0.190167, 0.209961,
-    0.231594, 0.255310, 0.281319, 0.309777, 0.340762,
-    0.374259, 0.410142, 0.448167, 0.487976, 0.529101,
-    0.570993, 0.613041, 0.654608, 0.695067, 0.733833,
-    0.770390, 0.804317, 0.835304, 0.863151, 0.887777,
-    0.909203, 0.927543, 0.942987, 0.955778, 0.966198,
-    0.974543, 0.981116, 0.986205, 0.990078, 0.992974,
-    0.995104, 0.996642, 0.997734, 0.998495, 0.999017,
-    // 3
-    0.999369, 0.999601, 0.999752, 0.999848, 0.999909,
-    0.999946, 0.999969, 0.999982, 0.999990, 0.999994,
-    0.999997, 0.999998, 0.999999, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    // 4
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    // 5
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    // 6
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    // 7
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    // 8
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    // 9
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    // 10
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    // Dummy element for noticing if the loop reached the end of the array                        
-    0.0  };
-  return qpe0;
-}
-// TF: Used WebPlotDigitizer on Fig.2a from VLVnT13 proceedings, red curve (average)
-G4float* PMT3inchR12199_02::GetQEWavelength(){
-  //TEST: make QE same!!
-  //static G4float wavelength_value[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
-  static G4float wavelength_value[21] = { 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660., 680., 700.};
-  return wavelength_value;
-}
-G4float* PMT3inchR12199_02::GetQE(){
-  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
-  // TF: While the main reason is the 20" SK PMT, this correction factor has been applied
-  // to the B&L PMT. Therefore all PMTs have to corrected in a similar way, unfortunately.
-static G4float QE[21] =
-  { .0787*correctionFactor, .1838*correctionFactor, .2401*correctionFactor, .2521*correctionFactor, .2695*correctionFactor, .2676*correctionFactor, .2593*correctionFactor, .2472*correctionFactor, .2276*correctionFactor,
-    .1970*correctionFactor,  .1777*correctionFactor, .1547*correctionFactor, .1033*correctionFactor, .0727*correctionFactor, .0587*correctionFactor, .0470*correctionFactor, .0372*correctionFactor, .0285*correctionFactor, .0220*correctionFactor, .0130*correctionFactor, .0084*correctionFactor};
-/* TEST: make QE the same!! 
-  static G4float QE[20] =
-    { 0.00*correctionFactor, .0008*correctionFactor, .1255*correctionFactor, .254962*correctionFactor, .2930*correctionFactor, .3127*correctionFactor, .3130*correctionFactor, .2994*correctionFactor, .2791*correctionFactor, .2491*correctionFactor,
-    .2070*correctionFactor,  .1758*correctionFactor, .1384*correctionFactor, .0779*correctionFactor, .0473*correctionFactor, .0288*correctionFactor, .0149*correctionFactor, .0062*correctionFactor, .0002*correctionFactor, .0001*correctionFactor}; 
-*/
- return QE;
-}
-G4float PMT3inchR12199_02::GetmaxQE(){
-  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
-  // TEST: make QE the same!!
-  const G4float maxQE = 0.271*correctionFactor; //red curve from VLVnT13 proc on R12199-02.
-  //const G4float maxQE = 0.315*correctionFactor;
-  return maxQE;
-}
-G4float* PMT3inchR12199_02::GetCollectionEfficiencyArray(){  
-  static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
-  return CE;
+G4float PMT3inchGT::GetDarkRate(){
+  const G4float rate = 4.2*CLHEP::kilohertz;   
+  return rate;
 }
 
-
+G4float PMT3inchGT::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch
@@ -1153,8 +1027,8 @@ G4float* PMT10inch::Getqpe() //currently uses the same as 20inch
    return qpe0;
   }
 
-G4float* PMT10inch::GetQE(){
- static G4float QE[20] =
+G4double* PMT10inch::GetQE(){
+ static G4double QE[20] =
    { 0.00, .0375, .13, .195, .22, .23, .24, .24, .225, .205,
      .18, .16, .14, .085, .065, .05, .035, .02, .005, 0.0};
  return QE;
@@ -1167,6 +1041,15 @@ G4float  PMT10inch::GetmaxQE(){
   return maxQE;
 }
 
+G4float PMT10inch::GetDarkRate(){
+  const G4float rate = 3.*CLHEP::kilohertz;   //R-7081??
+  return rate;
+}
+
+G4float PMT10inch::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch HQE
@@ -1306,8 +1189,8 @@ G4float* PMT10inchHQE::Getqpe() //currently uses the same as 20inch
    return qpe0;
   }
 
-G4float* PMT10inchHQE::GetQE(){
- static G4float QE[20] =
+G4double* PMT10inchHQE::GetQE(){
+ static G4double QE[20] =
    { 0.00, .0502, .2017, .2933, .3306, .3396, .3320, .3168, .2915, .2655, 
       .2268,  .1971, .1641, .1102, .0727, .0499, .0323, .0178, .0061, 0.00};
  return QE;
@@ -1320,6 +1203,15 @@ G4float  PMT10inchHQE::GetmaxQE(){
   return maxQE;
 }
 
+G4float PMT10inchHQE::GetDarkRate(){
+  const G4float rate = 3*CLHEP::kilohertz;   //Ref??R7081 HQE?? (need verification)
+  return rate;
+}
+
+G4float PMT10inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HQE
@@ -1459,9 +1351,9 @@ G4float* PMT12inchHQE::Getqpe() //currently uses the same as 20inch
    return qpe0;
   }
 
-G4float* PMT12inchHQE::GetQE()//currently uses the same as the 10inchHQE
+G4double* PMT12inchHQE::GetQE()//currently uses the same as the 10inchHQE
 {
- static G4float QE[20] =
+ static G4double QE[20] =
    { 0.00, .0502, .2017, .2933, .3306, .3396, .3320, .3168, .2915, .2655, 
       .2268,  .1971, .1641, .1102, .0727, .0499, .0323, .0178, .0061, 0.00};
  return QE;
@@ -1476,20 +1368,28 @@ G4float  PMT12inchHQE::GetmaxQE()//currently uses the same as the 10inchHQE
 }
 
 
+G4float PMT12inchHQE::GetDarkRate(){
+  const G4float rate = 4.2*CLHEP::kilohertz;   //as previous novis.mac (ref?)
+  return rate;
+}
+
+G4float PMT12inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.367;
+  return factor;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 20 inch HPD
 
-
-//////////////////////////////////////////////
-//20" HPD Parameter Source                  //
-//                                          //
-// 1pe resolution: EGADS data (8" HPD)      //
-// Timing Resolution: EGADS data (8" HPD)   //
-// QE: HQE R3600 PMT data from Hamamatsu    //
-//                                          //
-//////////////////////////////////////////////
+////////////////////////////////////////////////////////
+//20" HPD (20150522 ver.) Parameter Source            //
+//                                                    //
+// 1pe resolution: Measured in the air (20" HPD)      //
+// Timing Resolution: Measured in the air (20" HPD)   //
+// QE: HQE R3600 PMT data from Hamamatsu              //
+//                                                    //
+////////////////////////////////////////////////////////
 
 HPD20inchHQE::HPD20inchHQE(){}
 HPD20inchHQE::~HPD20inchHQE(){}
@@ -1499,42 +1399,49 @@ G4double HPD20inchHQE::GetExposeHeight() {return .192*m;}
 G4double HPD20inchHQE::GetRadius() {return .254*m;}
 G4double HPD20inchHQE::GetPMTGlassThickness() {return 0.3*cm;}
 float HPD20inchHQE::HitTimeSmearing(float Q) {
-  float timingConstant = 5.0; 
-  float timingResolution = 0.47 + sqrt(timingConstant/Q); 
-  // looking at SK's jitter function for 20" tubes
-  if (timingResolution < 1.2) timingResolution=1.2;
-  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  G4float sig_param[4]={0.6718,0.1264,0.4450,11.87};
+  G4float lambda_param[2]={0.3255,0.1142};
+
+  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
+
+  G4float highcharge_param[2];
+  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
+  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
+  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
+
+  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
+  G4float lambda = lambda_param[0]+lambda_param[1]*Q;
+  G4float Smearing_factor = G4RandGauss::shoot(-0.2,sigma)-1/lambda*log(1-G4UniformRand());
   return Smearing_factor;
 }
 
 G4float* HPD20inchHQE::Getqpe()
    {
   static G4float qpe0[501]= {
-    // 1                                                                                           
-    0.000381, 0.000402, 0.000402, 0.000423, 0.000444,
-    0.000444, 0.000444, 0.000465, 0.000465, 0.000465,
-    0.000465, 0.000465, 0.000486, 0.000486, 0.000529,
-    0.000550, 0.000550, 0.000613, 0.000634, 0.000656,
-    0.000656, 0.000677, 0.000740, 0.000782, 0.000782,
-    0.000782, 0.000782, 0.000782, 0.000782, 0.000782,
-    0.000782, 0.000782, 0.000804, 0.000825, 0.000909,
-    0.000930, 0.000930, 0.001015, 0.001100, 0.001205,
-    0.001374, 0.001480, 0.001649, 0.002136, 0.002855,
-    0.004039, 0.005752, 0.009071, 0.012582, 0.016917,
-    // 2                                                                                           
-    0.023620, 0.031845, 0.042714, 0.048593, 0.059863,
-    0.070013, 0.078577, 0.089933, 0.101584, 0.115138,
-    0.129221, 0.143368, 0.157895, 0.175573, 0.194012,
-    0.214121, 0.236578, 0.264236, 0.293861, 0.326362,
-    0.360174, 0.398406, 0.439069, 0.480831, 0.526231,
-    0.572731, 0.618603, 0.664208, 0.708600, 0.750897,
-    0.790346, 0.826361, 0.858545, 0.886698, 0.910804,
-    0.931009, 0.947585, 0.960897, 0.971362, 0.979414,
-    0.985479, 0.989951, 0.993178, 0.995457, 0.997034,
-    0.998101, 0.998808, 0.999266, 0.999557, 0.999738,
-    // 3                                                                                           
-    0.999848, 0.999914, 0.999952, 0.999974, 0.999986,
-    0.999993, 0.999996, 0.999998, 0.999999, 1.000000,
+    // 1
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000002, 0.000009, 0.000039, 0.000137,
+    0.000422, 0.001131, 0.002658, 0.005518, 0.010223,
+    // 2
+    0.017088, 0.026095, 0.036901, 0.048987, 0.061844,
+    0.075095, 0.088517, 0.102003, 0.115514, 0.129042,
+    0.142597, 0.156204, 0.169913, 0.183812, 0.198050,
+    0.212864, 0.228609, 0.245787, 0.265062, 0.287245,
+    0.313238, 0.343936, 0.380072, 0.422047, 0.469762,
+    0.522511, 0.578971, 0.637303, 0.695364, 0.750974,
+    0.802195, 0.847547, 0.886140, 0.917697, 0.942485,
+    0.961183, 0.974724, 0.984134, 0.990406, 0.994415,
+    0.996872, 0.998316, 0.999128, 0.999566, 0.999793,
+    0.999905, 0.999958, 0.999982, 0.999993, 0.999997,
+    // 3
+    0.999999, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
@@ -1543,7 +1450,8 @@ G4float* HPD20inchHQE::Getqpe()
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
-    // 4                                                                                           
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 4
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
@@ -1630,8 +1538,8 @@ G4float* HPD20inchHQE::GetQEWavelength(){
   return wavelength_value;
 }
 
-G4float* HPD20inchHQE::GetQE(){
-  static G4float QE[20] =
+G4double* HPD20inchHQE::GetQE(){
+  static G4double QE[20] =
     { 0.00, .0008, .1255, .254962, .2930, .3127, .3130, .2994, .2791, .2491,
       .2070,  .1758, .1384, .0779, .0473, .0288, .0149, .0062, .0002, .0001};  
   return QE;
@@ -1647,6 +1555,16 @@ G4float* HPD20inchHQE::GetCollectionEfficiencyArray(){
 }
 
 
+G4float HPD20inchHQE::GetDarkRate(){
+  const G4float rate = 8.4*CLHEP::kilohertz;   //Based on HQE 20in R3600 rate from EGADS Nov 2014, needs to be updated with latest values (ToDo)
+  return rate;
+}
+
+G4float HPD20inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.119;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HPD
 
@@ -1660,42 +1578,50 @@ G4double HPD12inchHQE::GetExposeHeight() {return 118.*mm;} //Assumed to be the s
 G4double HPD12inchHQE::GetRadius() {return 152.4*mm;} //12 inches
 G4double HPD12inchHQE::GetPMTGlassThickness() {return 0.3*cm;} 
 float HPD12inchHQE::HitTimeSmearing(float Q) {
-  float timingConstant = 5.0; 
-  float timingResolution = 0.47 + sqrt(timingConstant/Q); 
-  // looking at SK's jitter function for 20" tubes
-  if (timingResolution < 1.2) timingResolution=1.2;
-  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  G4float sig_param[4]={0.6718,0.1264,0.4450,11.87};
+  G4float lambda_param[2]={0.3255,0.1142};
+
+  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
+
+  G4float highcharge_param[2];
+  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
+  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
+  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
+
+  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
+  G4float lambda = lambda_param[0]+lambda_param[1]*Q;
+  G4float Smearing_factor = G4RandGauss::shoot(-0.2,sigma)-1/lambda*log(1-G4UniformRand());
   return Smearing_factor;
 }
 
 G4float* HPD12inchHQE::Getqpe()
    {
   static G4float qpe0[501]= {
-    // 1                                                                                           
-    0.000381, 0.000402, 0.000402, 0.000423, 0.000444,
-    0.000444, 0.000444, 0.000465, 0.000465, 0.000465,
-    0.000465, 0.000465, 0.000486, 0.000486, 0.000529,
-    0.000550, 0.000550, 0.000613, 0.000634, 0.000656,
-    0.000656, 0.000677, 0.000740, 0.000782, 0.000782,
-    0.000782, 0.000782, 0.000782, 0.000782, 0.000782,
-    0.000782, 0.000782, 0.000804, 0.000825, 0.000909,
-    0.000930, 0.000930, 0.001015, 0.001100, 0.001205,
-    0.001374, 0.001480, 0.001649, 0.002136, 0.002855,
-    0.004039, 0.005752, 0.009071, 0.012582, 0.016917,
-    // 2                                                                                           
-    0.023620, 0.031845, 0.042714, 0.048593, 0.059863,
-    0.070013, 0.078577, 0.089933, 0.101584, 0.115138,
-    0.129221, 0.143368, 0.157895, 0.175573, 0.194012,
-    0.214121, 0.236578, 0.264236, 0.293861, 0.326362,
-    0.360174, 0.398406, 0.439069, 0.480831, 0.526231,
-    0.572731, 0.618603, 0.664208, 0.708600, 0.750897,
-    0.790346, 0.826361, 0.858545, 0.886698, 0.910804,
-    0.931009, 0.947585, 0.960897, 0.971362, 0.979414,
-    0.985479, 0.989951, 0.993178, 0.995457, 0.997034,
-    0.998101, 0.998808, 0.999266, 0.999557, 0.999738,
-    // 3                                                                                           
-    0.999848, 0.999914, 0.999952, 0.999974, 0.999986,
-    0.999993, 0.999996, 0.999998, 0.999999, 1.000000,
+    // 1
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000002, 0.000009, 0.000039, 0.000137,
+    0.000422, 0.001131, 0.002658, 0.005518, 0.010223,
+
+    0.017088, 0.026095, 0.036901, 0.048987, 0.061844,
+    0.075095, 0.088517, 0.102003, 0.115514, 0.129042,
+    0.142597, 0.156204, 0.169913, 0.183812, 0.198050,
+    0.212864, 0.228609, 0.245787, 0.265062, 0.287245,
+    0.313238, 0.343936, 0.380072, 0.422047, 0.469762,
+    0.522511, 0.578971, 0.637303, 0.695364, 0.750974,
+    0.802195, 0.847547, 0.886140, 0.917697, 0.942485,
+    0.961183, 0.974724, 0.984134, 0.990406, 0.994415,
+    0.996872, 0.998316, 0.999128, 0.999566, 0.999793,
+    0.999905, 0.999958, 0.999982, 0.999993, 0.999997,
+
+    0.999999, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
     1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
@@ -1791,8 +1717,8 @@ G4float* HPD12inchHQE::GetQEWavelength(){
   return wavelength_value;
 }
 
-G4float* HPD12inchHQE::GetQE(){
-  static G4float QE[20] =
+G4double* HPD12inchHQE::GetQE(){
+  static G4double QE[20] =
     { 0.00, .0008, .1255, .254962, .2930, .3127, .3130, .2994, .2791, .2491,
       .2070,  .1758, .1384, .0779, .0473, .0288, .0149, .0062, .0002, .0001};  
   return QE;
@@ -1807,6 +1733,15 @@ G4float* HPD12inchHQE::GetCollectionEfficiencyArray(){
   return CE;
 }
 
+G4float HPD12inchHQE::GetDarkRate(){
+  const G4float rate = 3.0*CLHEP::kilohertz;   //from previous novis.mac. Need better motivated setting!
+  return rate;
+}
+
+G4float HPD12inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.119;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 20 inch HQE Box and Line PMT
@@ -1831,10 +1766,16 @@ G4double BoxandLine20inchHQE::GetRadius() {return .254*m;}
 G4double BoxandLine20inchHQE::GetPMTGlassThickness() {return 0.4*cm;}
 
 float BoxandLine20inchHQE::HitTimeSmearing(float Q) {
-  G4float sig_param[4]={0.8928,0.03278,0.07054,16.4};
-  G4float lambda_param[2]={0.4094,0.06852};
+  G4float sig_param[4]={0.6314,0.06260,0.5711,23.96};
+  G4float lambda_param[2]={0.4113,0.07827};
+  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
 
-  G4float sigma = (sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2])*(Q<sig_param[3])+(2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3])/sqrt(Q)+(exp(-sig_param[1]*sig_param[3])+sig_param[2])-2*sig_param[0]*sig_param[1]*sig_param[3]*exp(-sig_param[1]*sig_param[3]))*(Q>sig_param[3]));
+  G4float highcharge_param[2];
+  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
+  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
+  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
+
+  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
   G4float lambda = lambda_param[0]+lambda_param[1]*Q;
   G4float Smearing_factor = G4RandGauss::shoot(-0.2,sigma)-1/lambda*log(1-G4UniformRand());
   return Smearing_factor;
@@ -1957,27 +1898,44 @@ G4float* BoxandLine20inchHQE::Getqpe()
     0.0  };
   return qpe0;
 }
+
 G4float* BoxandLine20inchHQE::GetQEWavelength(){
   static G4float wavelength_value[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
   return wavelength_value;
 }
 
-G4float* BoxandLine20inchHQE::GetQE(){
-  static G4float QE[20] =
-    { 0.00, .0008, .1255, .254962, .2930, .3127, .3130, .2994, .2791, .2491,
-      .2070,  .1758, .1384, .0779, .0473, .0288, .0149, .0062, .0002, .0001};  
+G4double* BoxandLine20inchHQE::GetQE(){
+  G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  static G4double QE[20] =                 //TF: to resolve "narrowing conversion" error in C++0x, make array G4double
+    {  0.00*correctionFactor, .0008*correctionFactor, .1255*correctionFactor, .254962*correctionFactor, .2930*correctionFactor, .3127*correctionFactor, .3130*correctionFactor, .2994*correctionFactor, .2791*correctionFactor, .2491*correctionFactor,
+      .2070*correctionFactor,  .1758*correctionFactor, .1384*correctionFactor, .0779*correctionFactor, .0473*correctionFactor, .0288*correctionFactor, .0149*correctionFactor, .0062*correctionFactor, .0002*correctionFactor, .0001*correctionFactor};  
+
   return QE;
 }
 G4float BoxandLine20inchHQE::GetmaxQE(){
-  const G4float maxQE = 0.315;
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  const G4float maxQE = 0.315*correctionFactor;
   return maxQE;
-}
+  } 
 G4float* BoxandLine20inchHQE::GetCollectionEfficiencyArray(){  
   static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
   return CE;
 }
 
+G4float BoxandLine20inchHQE::GetDarkRate(){
+  /* 
+   * 10.*CLHEP::kilohertz;   //from presentation 1st HyperK Collab meeting, July 2015.
+   * 8.4kHz comes from average of HQE R3600-02's in EGADS (ref. Nakayama-san)
+   * Actual values of latest version of B&L PMT still being studied. ToDo: update when ready.
+   */
+  const G4float rate = 8.4*CLHEP::kilohertz;
+  return rate;
+}
 
+G4float BoxandLine20inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.126;
+  return factor;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1994,10 +1952,17 @@ G4double BoxandLine12inchHQE::GetRadius() {return 152.4*mm;}
 G4double BoxandLine12inchHQE::GetPMTGlassThickness() {return 0.4*cm;}
 
 float BoxandLine12inchHQE::HitTimeSmearing(float Q) {
-  G4float sig_param[4]={0.8928,0.03278,0.07054,16.4};
-  G4float lambda_param[2]={0.4094,0.06852};
+  G4float sig_param[4]={0.6314,0.06260,0.5711,23.96};
+  G4float lambda_param[2]={0.4113,0.07827};
 
-  G4float sigma = (sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2])*(Q<sig_param[3])+(2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3])/sqrt(Q)+(exp(-sig_param[1]*sig_param[3])+sig_param[2])-2*sig_param[0]*sig_param[1]*sig_param[3]*exp(-sig_param[1]*sig_param[3]))*(Q>sig_param[3]));
+  G4float highcharge_param[2];
+  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
+  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
+
+  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
+  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
+
+  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
   G4float lambda = lambda_param[0]+lambda_param[1]*Q;
   G4float Smearing_factor = G4RandGauss::shoot(-0.2,sigma)-1/lambda*log(1-G4UniformRand());
   return Smearing_factor;
@@ -2125,17 +2090,610 @@ G4float* BoxandLine12inchHQE::GetQEWavelength(){
   return wavelength_value;
 }
 
-G4float* BoxandLine12inchHQE::GetQE(){
-  static G4float QE[20] =
-    { 0.00, .0008, .1255, .254962, .2930, .3127, .3130, .2994, .2791, .2491,
-      .2070,  .1758, .1384, .0779, .0473, .0288, .0149, .0062, .0002, .0001};  
+G4double* BoxandLine12inchHQE::GetQE(){
+  G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  static G4double QE[20] =
+    { 0.00*correctionFactor, .0008*correctionFactor, .1255*correctionFactor, .254962*correctionFactor, .2930*correctionFactor, .3127*correctionFactor, .3130*correctionFactor, .2994*correctionFactor, .2791*correctionFactor, .2491*correctionFactor,
+      .2070*correctionFactor,  .1758*correctionFactor, .1384*correctionFactor, .0779*correctionFactor, .0473*correctionFactor, .0288*correctionFactor, .0149*correctionFactor, .0062*correctionFactor, .0002*correctionFactor, .0001*correctionFactor};  
+
   return QE;
 }
 G4float BoxandLine12inchHQE::GetmaxQE(){
-  const G4float maxQE = 0.315;
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  const G4float maxQE = 0.315*correctionFactor;
   return maxQE;
 }
 G4float* BoxandLine12inchHQE::GetCollectionEfficiencyArray(){  
   static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
   return CE;
 }
+
+G4float BoxandLine12inchHQE::GetDarkRate(){
+  // Currently using previous defaults of WCSim (ref?)
+  // A different reference: 4.43*CLHEP::kilohertz;   //R11780 HQE value from Table4, NIMA 712 p162-173 (2013)
+  const G4float rate = 3.0*CLHEP::kilohertz;
+  return rate;
+}
+
+G4float BoxandLine12inchHQE::GetDarkRateConversionFactor(){
+  const G4float factor = 1.126;
+  return factor;
+}
+ 
+////////////////////////////////////////////////////////////////////////////////////////////////
+// TF: Hacked 20 inch HQE Box and Line PMT and adapted to 3inch R12199-02
+//     Will update it later with real properties and add more 3in PMTs after reorganizing this
+//     file first.
+//     Once I'm updating these values, immediately test with grabbing from a (txt/ROOT) file as example
+//     for cleaning up the rest. Then making these objects of a class and then making them Enums.
+//
+//   Use full area of half sphere, instead of photocathode area from drawings (dotted line) as we do for 20"
+//   next: use effective CE/QE as function of theta to correctly simulate edge effect (increase in QE, decrease in CE)
+//
+
+
+PMT3inchR12199_02::PMT3inchR12199_02(){}
+PMT3inchR12199_02::~PMT3inchR12199_02(){}
+
+G4String PMT3inchR12199_02::GetPMTName() {G4String PMTName = "PMT3inchR12199_02"; return PMTName;}
+G4double PMT3inchR12199_02::GetExposeHeight() {return 0.02*m;}          //.0153*m;} //.0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
+    G4double PMT3inchR12199_02::GetRadius() {return 0.04*m;}            //0.036*m;} //.0400*m;}   //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
+G4double PMT3inchR12199_02::GetPMTGlassThickness() {return 0.1*cm;}     // TF: from Hamamatsu Tech Sheet, photocathode >=36mm, so this yields in thickness <= 2.35mm. Currently will use 1mm (larger cathode)
+                                                                        // until measured!
+
+
+// Currently based on 8" (instead of 20")
+// But shifted to requirements (2ns TTS FWHM) for 1 pe
+float PMT3inchR12199_02::HitTimeSmearing(float Q) {
+
+  float timingConstant = 1.890; 
+  float timingResolution = 0.5*(0.33 + sqrt(timingConstant/Q));  //factor 0.5 for expected improvement and required TTS
+  // looking at SK's jitter function for 20" tubes
+  if (timingResolution < 0.58) timingResolution=0.58;
+  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  return Smearing_factor;
+}
+
+
+// To Add!!
+G4float* PMT3inchR12199_02::Getqpe()
+{
+  static G4float qpe0[501]= {
+    // 1
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000001, 0.000001, 0.000002, 0.000004,
+    0.000008, 0.000014, 0.000025, 0.000044, 0.000486,
+    // 2
+    0.007195, 0.019406, 0.031920, 0.044503, 0.057189,
+    0.070020, 0.083060, 0.096388, 0.110108, 0.124351,
+    0.139276, 0.155072, 0.171956, 0.190167, 0.209961,
+    0.231594, 0.255310, 0.281319, 0.309777, 0.340762,
+    0.374259, 0.410142, 0.448167, 0.487976, 0.529101,
+    0.570993, 0.613041, 0.654608, 0.695067, 0.733833,
+    0.770390, 0.804317, 0.835304, 0.863151, 0.887777,
+    0.909203, 0.927543, 0.942987, 0.955778, 0.966198,
+    0.974543, 0.981116, 0.986205, 0.990078, 0.992974,
+    0.995104, 0.996642, 0.997734, 0.998495, 0.999017,
+    // 3
+    0.999369, 0.999601, 0.999752, 0.999848, 0.999909,
+    0.999946, 0.999969, 0.999982, 0.999990, 0.999994,
+    0.999997, 0.999998, 0.999999, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 4
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 5
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 6
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 7
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 8
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 9
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 10
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // Dummy element for noticing if the loop reached the end of the array                        
+    0.0  };
+  return qpe0;
+
+}
+
+
+// TF: Used WebPlotDigitizer on Fig.2a from VLVnT13 proceedings, red curve (average)
+G4float* PMT3inchR12199_02::GetQEWavelength(){
+
+  //TEST: make QE same!!
+  //static G4float wavelength_value[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
+  static G4float wavelength_value[21] = { 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660., 680., 700.};
+  return wavelength_value;
+}
+
+G4double* PMT3inchR12199_02::GetQE(){
+  G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  // TF: While the main reason is the 20" SK PMT, this correction factor has been applied
+  // to the B&L PMT. Therefore all PMTs have to corrected in a similar way, unfortunately.
+  
+  static G4double QE[21] =
+    { .0787*correctionFactor, .1838*correctionFactor, .2401*correctionFactor, .2521*correctionFactor, .2695*correctionFactor, .2676*correctionFactor, .2593*correctionFactor, .2472*correctionFactor, .2276*correctionFactor,
+      .1970*correctionFactor,  .1777*correctionFactor, .1547*correctionFactor, .1033*correctionFactor, .0727*correctionFactor, .0587*correctionFactor, .0470*correctionFactor, .0372*correctionFactor, .0285*correctionFactor, .0220*correctionFactor, .0130*correctionFactor, .0084*correctionFactor};
+  
+
+
+  
+  /* TEST: make QE the same!! 
+  static G4float QE[20] =
+    { 0.00*correctionFactor, .0008*correctionFactor, .1255*correctionFactor, .254962*correctionFactor, .2930*correctionFactor, .3127*correctionFactor, .3130*correctionFactor, .2994*correctionFactor, .2791*correctionFactor, .2491*correctionFactor,
+    .2070*correctionFactor,  .1758*correctionFactor, .1384*correctionFactor, .0779*correctionFactor, .0473*correctionFactor, .0288*correctionFactor, .0149*correctionFactor, .0062*correctionFactor, .0002*correctionFactor, .0001*correctionFactor}; 
+  */
+  return QE;
+}
+G4float PMT3inchR12199_02::GetmaxQE(){
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+
+  // TEST: make QE the same!!
+  const G4float maxQE = 0.271*correctionFactor; //red curve from VLVnT13 proc on R12199-02.
+  //const G4float maxQE = 0.315*correctionFactor;
+  return maxQE;
+}
+
+G4float* PMT3inchR12199_02::GetCollectionEfficiencyArray(){  
+  static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
+  return CE;
+}
+
+G4float PMT3inchR12199_02::GetDarkRate(){
+  // Realistic/Optimistic value from published (proceedings) measurements.
+  // ToDo : update this value
+  const G4float rate = 200*CLHEP::hertz;
+  return rate;
+}
+
+// Arbitrary at the moment
+G4float  PMT3inchR12199_02::GetDarkRateConversionFactor(){
+  const G4float factor = 1.126;
+  return factor;
+}
+ 
+
+
+/////////////////////////////////////////////////////////////////////
+/// TF: experimental for mPMT/nuPRISM
+///// Suppose there is a PMT with the same properties as 3" but larger
+////  => same opening angle for photocathode area as 3"
+
+PMT4inchR12199_02::PMT4inchR12199_02(){}
+PMT4inchR12199_02::~PMT4inchR12199_02(){}
+
+G4String PMT4inchR12199_02::GetPMTName() {G4String PMTName = "PMT4inchR12199_02"; return PMTName;}
+G4double PMT4inchR12199_02::GetExposeHeight() {return .0276*m;}  //or 0.021 for radius = 48.5mm
+G4double PMT4inchR12199_02::GetRadius() {return .054*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
+G4double PMT4inchR12199_02::GetPMTGlassThickness() {return 0.1*cm;}
+
+float PMT4inchR12199_02::HitTimeSmearing(float Q) {
+  G4float sig_param[4]={0.6314,0.06260,0.5711,23.96};
+  G4float lambda_param[2]={0.4113,0.07827};
+  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
+
+  G4float highcharge_param[2];
+  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
+  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
+  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
+
+  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
+  G4float lambda = lambda_param[0]+lambda_param[1]*Q;
+  G4float Smearing_factor = G4RandGauss::shoot(-0.2,sigma)-1/lambda*log(1-G4UniformRand());
+  return Smearing_factor;
+}
+
+G4float* PMT4inchR12199_02::Getqpe()
+{
+  static G4float qpe0[501]= {
+    // 1
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000001, 0.000001, 0.000002, 0.000004,
+    0.000008, 0.000014, 0.000025, 0.000044, 0.000486,
+    // 2
+    0.007195, 0.019406, 0.031920, 0.044503, 0.057189,
+    0.070020, 0.083060, 0.096388, 0.110108, 0.124351,
+    0.139276, 0.155072, 0.171956, 0.190167, 0.209961,
+    0.231594, 0.255310, 0.281319, 0.309777, 0.340762,
+    0.374259, 0.410142, 0.448167, 0.487976, 0.529101,
+    0.570993, 0.613041, 0.654608, 0.695067, 0.733833,
+    0.770390, 0.804317, 0.835304, 0.863151, 0.887777,
+    0.909203, 0.927543, 0.942987, 0.955778, 0.966198,
+    0.974543, 0.981116, 0.986205, 0.990078, 0.992974,
+    0.995104, 0.996642, 0.997734, 0.998495, 0.999017,
+    // 3
+    0.999369, 0.999601, 0.999752, 0.999848, 0.999909,
+    0.999946, 0.999969, 0.999982, 0.999990, 0.999994,
+    0.999997, 0.999998, 0.999999, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 4
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 5
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 6
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 7
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 8
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 9
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 10
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // Dummy element for noticing if the loop reached the end of the array                        
+    0.0  };
+  return qpe0;
+}
+
+// TF: Used WebPlotDigitizer on Fig.2a from VLVnT13 proceedings, red curve (average)
+G4float* PMT4inchR12199_02::GetQEWavelength(){
+  static G4float wavelength_value[21] = { 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660., 680., 700.};
+  return wavelength_value;
+}
+
+G4double* PMT4inchR12199_02::GetQE(){
+  static G4double QE[21] =
+    { .0787, .1838, .2401, .2521, .2695, .2676, .2593, .2472, .2276,
+      .1970,  .1777, .1547, .1033, .0727, .0587, .0470, .0372, .0285, .0220, .0130, .0084};
+  return QE;
+}
+G4float PMT4inchR12199_02::GetmaxQE(){
+  const G4float maxQE = 0.271; //red curve from VLVnT13 proc on R12199-02.
+  return maxQE;
+}
+G4float* PMT4inchR12199_02::GetCollectionEfficiencyArray(){  
+  static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
+  return CE;
+}
+
+G4float PMT4inchR12199_02::GetDarkRate(){
+  // ToDo : update this value
+  const G4float rate = 200*CLHEP::hertz;
+  return rate;
+}
+
+// Arbitrary at the moment
+G4float  PMT4inchR12199_02::GetDarkRateConversionFactor(){
+  const G4float factor = 1.126;
+  return factor;
+}
+
+////////////////////////////////////////////////////////////////////////
+///// TF experimental feature: suppose there is a 5" PMT with the same properties
+//    as 3"
+////  => same opening angle for photocathode area as 3"
+
+
+
+PMT5inchR12199_02::PMT5inchR12199_02(){}
+PMT5inchR12199_02::~PMT5inchR12199_02(){}
+
+G4String PMT5inchR12199_02::GetPMTName() {G4String PMTName = "PMT5inchR12199_02"; return PMTName;}
+G4double PMT5inchR12199_02::GetExposeHeight() {return .0338*m;}  //or 0.0259 for radius = 60.75mm
+G4double PMT5inchR12199_02::GetRadius() {return .0675*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
+G4double PMT5inchR12199_02::GetPMTGlassThickness() {return 0.1*cm;}
+
+float PMT5inchR12199_02::HitTimeSmearing(float Q) {
+  G4float sig_param[4]={0.6314,0.06260,0.5711,23.96};
+  G4float lambda_param[2]={0.4113,0.07827};
+  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
+
+  G4float highcharge_param[2];
+  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
+  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
+  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
+
+  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
+  G4float lambda = lambda_param[0]+lambda_param[1]*Q;
+  G4float Smearing_factor = G4RandGauss::shoot(-0.2,sigma)-1/lambda*log(1-G4UniformRand());
+  return Smearing_factor;
+}
+
+G4float* PMT5inchR12199_02::Getqpe()
+{
+  static G4float qpe0[501]= {
+    // 1
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000001, 0.000001, 0.000002, 0.000004,
+    0.000008, 0.000014, 0.000025, 0.000044, 0.000486,
+    // 2
+    0.007195, 0.019406, 0.031920, 0.044503, 0.057189,
+    0.070020, 0.083060, 0.096388, 0.110108, 0.124351,
+    0.139276, 0.155072, 0.171956, 0.190167, 0.209961,
+    0.231594, 0.255310, 0.281319, 0.309777, 0.340762,
+    0.374259, 0.410142, 0.448167, 0.487976, 0.529101,
+    0.570993, 0.613041, 0.654608, 0.695067, 0.733833,
+    0.770390, 0.804317, 0.835304, 0.863151, 0.887777,
+    0.909203, 0.927543, 0.942987, 0.955778, 0.966198,
+    0.974543, 0.981116, 0.986205, 0.990078, 0.992974,
+    0.995104, 0.996642, 0.997734, 0.998495, 0.999017,
+    // 3
+    0.999369, 0.999601, 0.999752, 0.999848, 0.999909,
+    0.999946, 0.999969, 0.999982, 0.999990, 0.999994,
+    0.999997, 0.999998, 0.999999, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 4
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 5
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 6
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 7
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 8
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 9
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 10
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // Dummy element for noticing if the loop reached the end of the array                        
+    0.0  };
+  return qpe0;
+}
+
+// TF: Used WebPlotDigitizer on Fig.2a from VLVnT13 proceedings, red curve (average)
+G4float* PMT5inchR12199_02::GetQEWavelength(){
+  static G4float wavelength_value[21] = { 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660., 680., 700.};
+  return wavelength_value;
+}
+
+G4double* PMT5inchR12199_02::GetQE(){
+  static G4double QE[21] =
+    { .0787, .1838, .2401, .2521, .2695, .2676, .2593, .2472, .2276,
+      .1970,  .1777, .1547, .1033, .0727, .0587, .0470, .0372, .0285, .0220, .0130, .0084};
+  return QE;
+}
+G4float PMT5inchR12199_02::GetmaxQE(){
+  const G4float maxQE = 0.271; //red curve from VLVnT13 proc on R12199-02.
+  return maxQE;
+}
+
+G4float* PMT5inchR12199_02::GetCollectionEfficiencyArray(){  
+  static G4float CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
+  return CE;
+}
+
+G4float PMT5inchR12199_02::GetDarkRate(){
+  // Realistic/Optimistic value from published (proceedings) measurements.
+  // ToDo : update this value
+  const G4float rate = 200*CLHEP::hertz;
+  return rate;
+}
+
+// Arbitrary at the moment
+G4float PMT5inchR12199_02::GetDarkRateConversionFactor(){
+  const G4float factor = 1.126;
+  return factor;
+}
+ 
