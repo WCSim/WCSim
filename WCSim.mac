@@ -8,22 +8,23 @@
 # Default config if you do nothing is currently SuperK
 #
 
-/WCSim/WCgeom nuPRISM
+#/WCSim/WCgeom nuPRISM
 
 #Select which PMT to use
-/WCSim/nuPRISM/SetPMTType PMT8inch
-/WCSim/nuPRISM/SetPMTPercentCoverage 40
+#/WCSim/nuPRISM/SetPMTType PMT8inch
+#/WCSim/nuPRISM/SetPMTPercentCoverage 40
 #Set height of nuPRISM inner detector
-/WCSim/nuPRISM/SetDetectorHeight 10. m
+#/WCSim/nuPRISM/SetDetectorHeight 6. m
 #Set vertical position of inner detector, in beam coordinates
-/WCSim/nuPRISM/SetDetectorVerticalPosition -10. m
+#/WCSim/nuPRISM/SetDetectorVerticalPosition 0. m
 #Set diameter of inner detector
-/WCSim/nuPRISM/SetDetectorDiameter 6. m
-/WCSim/Construct
+#/WCSim/nuPRISM/SetDetectorDiameter 8. m
+#/WCSim/Construct
 
 #Use mPMTs settings (uncomment/delete the above)
 #/WCSim/WCgeom nuPRISM_mPMT
-#/WCSim/Construct
+/WCSim/WCgeom nuPRISMShort_mPMT
+/WCSim/Construct
 ## OR for single mPMT mode or updating mPMT parameters:
 #/control/execute macros/mPMT_nuPrism1.mac         ## mPMT options: mPMT_nuPrism1.mac and 2.mac
 
