@@ -18,7 +18,7 @@
 #Set vertical position of inner detector, in beam coordinates
 #/WCSim/nuPRISM/SetDetectorVerticalPosition 0. m
 #Set diameter of inner detector
-/WCSim/nuPRISM/SetDetectorDiameter 8. m
+#/WCSim/nuPRISM/SetDetectorDiameter 8. m
 # Set Gadolinium doping (concentration is in percent)
 #/WCSim/DopingConcentration 0.1
 #/WCSim/DopedWater false
