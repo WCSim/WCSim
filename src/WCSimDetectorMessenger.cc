@@ -70,6 +70,15 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  );
   WCVisChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+  DopedWater = new G4UIcmdWithABool("/WCSim/DopedWater", this);
+  DopedWater->SetGuidance("Set whether water is doped with Gadolinium");
+  DopedWater->SetParameterName("DopedWater", false);
+  DopedWater->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  DopingConcentration = new G4UIcmdWithADouble("/WCSim/DopingConcentration", this);
+  DopingConcentration->SetGuidance("Set percentage concentration Gadolinium doping");
+  DopingConcentration->SetParameterName("DopingConcentration", false);
+  DopingConcentration->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   PMTSize = new G4UIcmdWithAString("/WCSim/WCPMTsize",this);
   PMTSize->SetGuidance("Set alternate PMT size for the WC (Must be entered after geometry details are set).");
@@ -85,6 +94,12 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SavePi0->SetParameterName("SavePi0",false);
   SavePi0->SetCandidates("true false");
   SavePi0->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  SaveCapture = new G4UIcmdWithAString("/WCSim/SaveCapture", this);
+  SaveCapture->SetGuidance("true or false");
+  SaveCapture->SetParameterName("SaveCapture",false);
+  SaveCapture->SetCandidates("true false");
+  SaveCapture->AvailableForStates(G4State_PreInit, G4State_Idle);
   
   
   PMTQEMethod = new G4UIcmdWithAString("/WCSim/PMTQEMethod", this);
@@ -348,6 +363,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
 {
   delete PMTConfig;
   delete SavePi0;
+  delete SaveCapture;
   delete PMTQEMethod;
   delete PMTCollEff;
   delete waterTank_Length;
@@ -419,16 +435,27 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		} else
 		  G4cout << "That geometry choice is not defined!" << G4endl;
 	}
-  
+
 	if (command == SavePi0){
-	  G4cout << "Set the flag for saving pi0 info " << newValue << G4endl;
-	  if (newValue=="true"){
-	    WCSimDetector->SavePi0Info(true);
-	  }else if (newValue == "false"){
-	    WCSimDetector->SavePi0Info(false);
-	  }else{
-	    
-	  }
+		G4cout << "Set the flag for saving pi0 info " << newValue << G4endl;
+		if (newValue=="true"){
+			WCSimDetector->SavePi0Info(true);
+		}else if (newValue == "false"){
+			WCSimDetector->SavePi0Info(false);
+		}else{
+
+		}
+	}
+
+	if (command == SaveCapture){
+		G4cout << "Set the flag for saving neutron capture info " << newValue << G4endl;
+		if (newValue=="true"){
+			WCSimDetector->SaveCaptureInfo(true);
+		}else if (newValue == "false"){
+			WCSimDetector->SaveCaptureInfo(false);
+		}else{
+
+		}
 	}
 
 	if (command == PMTQEMethod){
@@ -485,7 +512,18 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	    G4cout << "Not egg-shaped HyperK Geometry. Detector length unchanged." << G4endl;
 	  }
 	}
-	
+
+	if(command == DopedWater) {
+		G4cout << "Setting Gadolinium doping of water: " << newValue << G4endl;
+		WCSimDetector->SetDopedWater(DopedWater->GetNewBoolValue(newValue));
+	}
+
+
+	if(command == DopingConcentration) {
+		G4cout << "Setting Gadolinium doping concentration: " << newValue << "percent" << G4endl;
+            WCSimDetector->AddDopedWater(DopingConcentration->GetNewDoubleValue(newValue));
+	}
+
 	if(command == PMTSize) {
 		G4cout << "SET PMT SIZE" << G4endl;
 		if ( newValue == "20inch"){

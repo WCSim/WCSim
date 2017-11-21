@@ -15,6 +15,8 @@
 #pragma link C++ class WCSimRootTrigger+;
 #pragma link C++ class WCSimRootEvent+;
 #pragma link C++ class WCSimRootPi0+;
+#pragma link C++ class WCSimRootCapture+;
+#pragma link C++ class WCSimRootCaptureGamma+;
 #pragma link C++ class WCSimRootGeom+;
 #pragma link C++ class WCSimRootPMT+;
 #pragma link C++ class WCSimPmtInfo+;

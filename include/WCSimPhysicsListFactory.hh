@@ -19,6 +19,7 @@ class WCSimPhysicsListFactory : public G4VModularPhysicsList
     ~WCSimPhysicsListFactory();
 
     void SetList(G4String newvalue);  // called by messenger
+    void SetnCaptModel(G4String newvalue);  // called by messenger
     void InitializeList();
 
     //G4String GetPhysicsListName() {return PhysicsListName;}
@@ -33,6 +34,8 @@ class WCSimPhysicsListFactory : public G4VModularPhysicsList
 
     G4String PhysicsListName;
     G4String ValidListsString;
+    
+    G4String nCaptModelChoice;
 
     WCSimPhysicsListFactoryMessenger* PhysicsMessenger;
     G4PhysListFactory* factory;

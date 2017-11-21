@@ -51,18 +51,6 @@ void WCSimDetectorConstruction::ConstructMaterials()
   Water->AddElement(elH, 2);
   Water->AddElement(elO, 1);
 
- //---Gd doped Water
-
- a = 157.25*g/mole;
- G4Element* Gd
-    = new G4Element("Gadolinium","Gd", 64,a);
-
- density = 1.00*g/cm3;
- G4Material* DopedWater
-    = new G4Material("Doped Water",density,2);
- DopedWater->AddMaterial(Water,99.9*perCent);
- DopedWater->AddElement(Gd,0.1*perCent);
-
  //---Ice 
  
  density = 0.92*g/cm3;//Ice
@@ -1138,8 +1126,6 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
 
    Water->SetMaterialPropertiesTable(myMPT1);
-   //Gd doped water has the same optical properties as pure water
-   DopedWater->SetMaterialPropertiesTable(myMPT1);
    // myMPT1->DumpTable();
    
    G4MaterialPropertiesTable *myMPT2 = new G4MaterialPropertiesTable();
@@ -1256,4 +1242,20 @@ void WCSimDetectorConstruction::ConstructMaterials()
    //ToDo:
    G4MaterialPropertiesTable *AgPropTable = new G4MaterialPropertiesTable();
    G4MaterialPropertiesTable *AlAg1PropTable = new G4MaterialPropertiesTable();
+}
+
+void WCSimDetectorConstruction::AddDopedWater(G4double percentGd){
+  G4Material * Water = G4Material::GetMaterial("Water");
+  G4Material * DopedWater = G4Material::GetMaterial("Doped Water", false);
+  //Delete old doped water if it exists
+  if(DopedWater) delete DopedWater;
+  //Create new doped water material
+  DopedWater = new G4Material("Doped Water",1.00*g/cm3,2);
+  //Gd doped water has the same optical properties as pure water
+  DopedWater->SetMaterialPropertiesTable(Water->GetMaterialPropertiesTable());
+  //Set concentration
+  G4double a = 157.25*g/mole;
+  G4Element* Gd = new G4Element("Gadolinium","Gd", 64,a);
+  DopedWater->AddMaterial(Water,(100.-percentGd)*perCent);
+  DopedWater->AddElement(Gd,percentGd*perCent);
 }
