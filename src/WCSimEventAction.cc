@@ -689,14 +689,14 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   std::set<int> pionList;
   std::set<int> antipionList;
 
-  // Pi0 specific variables
-  Float_t pi0Vtx[3];
-  Int_t   gammaID[2];
-  Float_t gammaE[2];
-  Float_t gammaVtx[2][3];
-  Int_t   r = 0;
+    // Pi0 specific variables
+    Float_t pi0Vtx[3];
+    Int_t   gammaID[2];
+    Float_t gammaE[2];
+    Float_t gammaVtx[2][3];
+    Int_t   r = 0;
 
-  G4int n_trajectories = 0;
+    G4int n_trajectories = 0;
   if (TC)
     n_trajectories = TC->entries();
 
@@ -783,38 +783,38 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	//G4cout<<"part 2 stop["<<l<<"]: "<< stop[l] <<G4endl;
       }
 
-
       // Add the track to the TClonesArray, watching out for times
-      if ( ! ( (ipnu==22)&&(parentType==999))  ) {
-	int choose_event=0;
+      if ( trj->GetCreatorProcessName()=="nCapture" ?
+           detectorConstructor->SaveCaptureInfo() :
+           ! ( (ipnu==22)&&(parentType==999)) ) {
+          int choose_event = 0;
 
-	if (ngates)
-	{
+          if (ngates) {
 
-	  if ( ttime > WCTM->GetTriggerTime(0)+950. && WCTM->GetTriggerTime(1)+950. > ttime ) choose_event=1; 
-	  if ( ttime > WCTM->GetTriggerTime(1)+950. && WCTM->GetTriggerTime(2)+950. > ttime ) choose_event=2; 
-	  if (choose_event >= ngates) choose_event = ngates-1; // do not overflow the number of events
-	
-	}
+              if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
+              if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
+              if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
 
-	wcsimrootevent= wcsimrootsuperevent->GetTrigger(choose_event);
-	wcsimrootevent->AddTrack(ipnu, 
-				  flag, 
-				  mass, 
-				  mommag, 
-				  energy,
-				  startvol, 
-				  stopvol, 
-				  dir, 
-				  pdir, 
-				  stop,
-				  start,
-				  parentType,
-				 ttime,id); 
+          }
+
+          wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
+          wcsimrootevent->AddTrack(ipnu,
+                                   flag,
+                                   mass,
+                                   mommag,
+                                   energy,
+                                   startvol,
+                                   stopvol,
+                                   dir,
+                                   pdir,
+                                   stop,
+                                   start,
+                                   parentType,
+                                   ttime, id);
       }
       
 
-      if (detectorConstructor->SavePi0Info() == true)
+      if (detectorConstructor->SavePi0Info())
       {
 	G4cout<<"Pi0 parentType: " << parentType <<G4endl;
 	if (parentType == 111)
@@ -839,6 +839,16 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 		wcsimrootevent->SetPi0Info(pi0Vtx, gammaID, gammaE, gammaVtx);
 	  }
 	}
+      }
+
+      if (detectorConstructor->SaveCaptureInfo() && trj->GetCreatorProcessName()=="nCapture"){
+          G4cout << "Capture particle: " << trj->GetParticleName()
+                 << " Parent: " << trj->GetParentID()
+                 << " T:" << ttime
+                 << " vtx:(" << start[0] << "," << start[1] << "," << start[2]
+                 << ") dir:(" << dir[0] << "," << dir[1] << "," << dir[2]
+                 << ") E:" << energy << G4endl;
+          wcsimrootevent->SetCaptureParticle(trj->GetParentID(), ipnu, ttime, start, dir, energy, id);
       }
     }
   }

@@ -56,6 +56,8 @@ WCSimRootTrigger::WCSimRootTrigger()
   fNcherenkovdigihits = 0;
   fSumQ = 0;
 
+  fCaptures = 0;
+
   fTriggerType = kTriggerUndefined;
   fTriggerInfo.clear();
   
@@ -98,6 +100,10 @@ void WCSimRootTrigger::Initialize() //actually allocate memory for things in her
   fNcherenkovdigihits = 0;
   fSumQ = 0;
 
+  // TClonesArray of WCSimRootCaptures
+  fCaptures = new TClonesArray("WCSimRootCapture", 100);
+  fNcaptures = 0;
+
   fTriggerType = kTriggerUndefined;
   fTriggerInfo.clear();
   
@@ -125,12 +131,14 @@ WCSimRootTrigger::~WCSimRootTrigger()
     fTracks->Delete();            
     fCherenkovHits->Delete();      
     fCherenkovHitTimes->Delete();   
-    fCherenkovDigiHits->Delete();  
+    fCherenkovDigiHits->Delete();
+    fCaptures->Delete();
     
     delete   fTracks;            
     delete   fCherenkovHits;      
     delete   fCherenkovHitTimes;   
-    delete   fCherenkovDigiHits; 
+    delete   fCherenkovDigiHits;
+    delete   fCaptures;
   }
   mystopw->Stop();
 
@@ -159,6 +167,9 @@ void WCSimRootTrigger::Clear(Option_t */*option*/)
   fNcherenkovdigihits = 0;
   fSumQ = 0;
 
+  // TClonesArray of WCSimRootCaptures
+  fNcaptures = 0;
+
   // remove whatever's in the arrays
   // but don't deallocate the arrays themselves
 
@@ -166,6 +177,7 @@ void WCSimRootTrigger::Clear(Option_t */*option*/)
   fCherenkovHits->Delete();      
   fCherenkovHitTimes->Delete();   
   fCherenkovDigiHits->Delete();
+  fCaptures->Delete();
 
   fTriggerType = kTriggerUndefined;
   fTriggerInfo.clear();
@@ -202,41 +214,120 @@ void WCSimRootTrigger::SetTriggerInfo(TriggerType_t trigger_type,
 
 //_____________________________________________________________________________
 
-void WCSimRootTrigger::SetPi0Info(Float_t pi0Vtx[3], 
-				 Int_t   gammaID[2], 
-				 Float_t gammaE[2],
-				 Float_t gammaVtx[2][3])
+void WCSimRootTrigger::SetPi0Info(Float_t pi0Vtx[3],
+                                  Int_t   gammaID[2],
+                                  Float_t gammaE[2],
+                                  Float_t gammaVtx[2][3])
 {
-  fPi0.Set(pi0Vtx, 
-	   gammaID, 
-	   gammaE,
-	   gammaVtx);
+    fPi0.Set(pi0Vtx,
+             gammaID,
+             gammaE,
+             gammaVtx);
 }
 
 //_____________________________________________________________________________
 
-void WCSimRootPi0::Set(Float_t pi0Vtx[3], 
-			Int_t   gammaID[2], 
-			Float_t gammaE[2],
-			Float_t gammaVtx[2][3])
+void WCSimRootTrigger::SetCaptureParticle(Int_t parent,
+                                          Int_t ipnu,
+                                          Float_t time,
+                                          Float_t vtx[3],
+                                          Float_t dir[3],
+                                          Float_t energy,
+                                          Int_t id)
 {
-  for (int i=0;i<2;i++)
-  {
-    fGammaID[i] = gammaID[i];
-    fGammaE[i]  = gammaE[i];
-  }
-
-  for (int j=0;j<3;j++)
-  {
-    fPi0Vtx[j]      = pi0Vtx[j];
-    fGammaVtx[0][j] = gammaVtx[0][j];
-    fGammaVtx[1][j] = gammaVtx[1][j];
-  }
+    WCSimRootCapture * capture = 0;
+    for(int i = 0; i<fCaptures->GetEntriesFast(); i++){
+        if(((WCSimRootCapture*)fCaptures->At(i))->GetCaptureParent() == parent) {
+            capture = (WCSimRootCapture *) fCaptures->At(i);
+            break;
+        }
+    }
+    if(capture == 0) {
+        TClonesArray &captures = *fCaptures;
+        capture = new(captures[fNcaptures++]) WCSimRootCapture(parent);
+    }
+    if(ipnu==22) capture->AddGamma(id, energy, dir);
+    else capture->SetInfo(vtx, time, ipnu);
 }
 
 //_____________________________________________________________________________
 
-WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu, 
+void WCSimRootPi0::Set(Float_t pi0Vtx[3],
+                       Int_t   gammaID[2],
+                       Float_t gammaE[2],
+                       Float_t gammaVtx[2][3])
+{
+    for (int i=0;i<2;i++)
+    {
+        fGammaID[i] = gammaID[i];
+        fGammaE[i]  = gammaE[i];
+    }
+
+    for (int j=0;j<3;j++)
+    {
+        fPi0Vtx[j]      = pi0Vtx[j];
+        fGammaVtx[0][j] = gammaVtx[0][j];
+        fGammaVtx[1][j] = gammaVtx[1][j];
+    }
+}
+
+//_____________________________________________________________________________
+
+WCSimRootCapture::WCSimRootCapture(Int_t captureParent)
+{
+    fCaptureParent = captureParent;
+    fNGamma = 0;
+    fTotalGammaE = 0;
+    fGammas = new TClonesArray("WCSimRootCaptureGamma", 10);
+    IsZombie=false;
+}
+
+//_____________________________________________________________________________
+
+WCSimRootCapture::~WCSimRootCapture()
+{
+    if(!IsZombie) {
+        fGammas->Delete();
+        delete fGammas;
+    }
+}
+
+//_____________________________________________________________________________
+
+void WCSimRootCapture::SetInfo(Float_t captureVtx[3],
+                               Float_t captureT,
+                               Int_t   captureNucleus)
+{
+    for (int i=0;i<3;i++) fCaptureVtx[i] = captureVtx[i];
+    fCaptureT = captureT;
+    fCaptureNucleus = captureNucleus;
+}
+
+//_____________________________________________________________________________
+
+void WCSimRootCapture::AddGamma(Int_t   gammaID,
+                                Float_t gammaE,
+                                Float_t gammaDir[3])
+{
+    TClonesArray &gammas = *fGammas;
+    new(gammas[fNGamma]) WCSimRootCaptureGamma(gammaID, gammaE, gammaDir);
+    fTotalGammaE += gammaE;
+    fNGamma++;
+}
+
+//_____________________________________________________________________________
+
+WCSimRootCaptureGamma::WCSimRootCaptureGamma(Int_t id,
+                                             Float_t energy,
+                                             Float_t *dir) {
+    fID = id;
+    fEnergy = energy;
+    for(int i=0;i<3;i++) fDir[i] = dir[i];
+}
+
+//_____________________________________________________________________________
+
+WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 					   Int_t flag, 
 					   Float_t m, 
 					   Float_t p, 
@@ -477,6 +568,3 @@ void WCSimRootEvent::Reset(Option_t* /*o*/)
 {
   //nothing for now
 }
-
-
-

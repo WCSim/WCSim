@@ -94,7 +94,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   //Decide if adding Gd
   water = "Water";
   if (WCAddGd)
-  {water = "Doped Water";}
+  {
+	  water = "Doped Water";
+	  if(!G4Material::GetMaterial("Doped Water", false)) AddDopedWater();
+  }
 
   // Optionally switch on the checkOverlaps. Once the geometry is debugged, switch off for 
   // faster running. Checking ALL overlaps is crucial. No overlaps are allowed, otherwise
