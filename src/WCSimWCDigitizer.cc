@@ -198,6 +198,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 
   //loop over entires in WCHCPMT, each entry corresponds to
   //the photons on one PMT
+  int absoluteindex=0;
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
     {
 
@@ -264,7 +265,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  bool MakeDigit = false;
 	  if(time >= intgr_start && time <= upperlimit) {
 	    peSmeared += pe;
-	    photon_unique_id = ip;
+	    photon_unique_id = ip+absoluteindex;
 	    digi_comp.push_back(photon_unique_id);
       
 #ifdef WCSIMWCDIGITIZER_VERBOSE
@@ -333,7 +334,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    upperlimit = intgr_start + DigitizerIntegrationWindow;
 
 	    //store the digi composition information
-	    photon_unique_id = ip;
+	    photon_unique_id = ip+absoluteindex;
             digi_comp.push_back(photon_unique_id);
 
 	    //if this is the last hit we must handle the creation of the digit 
@@ -366,6 +367,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    }
 	  }
 	}//ip (totalpe)
+	absoluteindex+=(*WCHCPMT)[i]->GetTotalPe();
     }//i (WCHCPMT->entries())
   G4cout<<"WCSimWCDigitizerSKI::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << "\n";
   
