@@ -36,4 +36,4 @@ notifications:
       - b.richards@qmul.ac.uk
       - erin.osullivan@fysik.su.se
     on_success: never # default: change
-    on_failure: never # default: always
+    on_failure: always # default: always
