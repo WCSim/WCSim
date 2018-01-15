@@ -28,7 +28,7 @@ WCSimDarkRateMessenger* WCSimDarkRateMessenger::GetInstance(){
 
 void WCSimDarkRateMessenger::Initialize()
 {
-  G4cout << "Initializing Dark Rate Messenger for detector element" << detectorElement << G4endl;
+  G4cout << "Initializing Dark Rate Messenger for detector element " << detectorElement << G4endl;
   initaliseString = " (this is a default set; it may be overwritten by user commands)";
 
   if(WCSimDir==0){WCSimDir = new G4UIdirectory("/DarkRate/");}

@@ -13,12 +13,6 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <sstream>
-#include <algorithm>
-#include <iostream>
-#include <iterator>
-#include <TFile.h>
-#include "TRandom3.h"
 
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
@@ -44,95 +38,39 @@ inline int   atoi( const string& s ) {return std::atoi( s.c_str() );}
 
 WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 					  WCSimDetectorConstruction* myDC)
-  :myDetector(myDC), vectorFileName("") {
+  :myDetector(myDC), vectorFileName("")
+{
   //T. Akiri: Initialize GPS to allow for the laser use 
   MyGPS = new G4GeneralParticleSource();
 
   // Initialize to zero
   mode = 0;
   vtxvol = 0;
-  vtx = G4ThreeVector(0., 0., 0.);
+  vtx = G4ThreeVector(0.,0.,0.);
   nuEnergy = 0.;
-  _counterRock = 0; // counter for generated in Rock
-  _counterCublic = 0; // counter generated
-
+  _counterRock=0; // counter for generated in Rock
+  _counterCublic=0; // counter generated
+  
   //---Set defaults. Do once at beginning of session.
-
+  
   G4int n_particle = 1;
   particleGun = new G4ParticleGun(n_particle);
-  particleGun->SetParticleEnergy(1.0 * GeV);
-  particleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.0));
+  particleGun->SetParticleEnergy(1.0*GeV);
+  particleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.0));
 
-  G4ParticleTable *particleTable = G4ParticleTable::GetParticleTable();
+  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
   particleGun->
-      SetParticleDefinition(particleTable->FindParticle(particleName = "mu+"));
+    SetParticleDefinition(particleTable->FindParticle(particleName="mu+"));
 
   particleGun->
-      SetParticlePosition(G4ThreeVector(0. * m, 0. * m, 0. * m));
-
+    SetParticlePosition(G4ThreeVector(0.*m,0.*m,0.*m));
+    
   messenger = new WCSimPrimaryGeneratorMessenger(this);
   useMulineEvt = true;
-  useGunEvt = false;
-  useLaserEvt = false;
-  useGPSEvt = false;
-
-  std::fstream inputFile;
-  G4String vectorFileName;
-  if (inputFile.is_open())
-    inputFile.close();
-
-  vectorFileName = "MuonFlux-HyperK-ThetaPhi.dat";
-  inputFile.open(vectorFileName, std::fstream::in);
-
-  gRandom->SetSeed(0);
-  
-  if (!inputFile.is_open()) {
-    G4cout << "Muon Vector file " << vectorFileName << " not found" << G4endl;
-  } else {
-    G4cout << "Muon Vector file " << vectorFileName << " found" << G4endl;
-    string line;
-    vector<string> token(1);
-
-    double binCos, binPhi;
-    double cosThetaMean, cosThetaMin, cosThetaMax;
-    double phiMean, phiMin, phiMax;
-    double flux;
-    double Emean;
-
-    hFluxCosmics = new TH2D("hFluxCosmics","HK Flux", 180,0,360,100,0,1);
-    hFluxCosmics->GetXaxis()->SetTitle("#phi (deg)");
-    hFluxCosmics->GetYaxis()->SetTitle("cos #theta");
-    hEmeanCosmics = new TH2D("hEmeanCosmics","HK Flux", 180,0,360,100,0,1);
-    hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
-    hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
-
-    while ( getline(inputFile,line) ){
-      token = tokenize(" $", line);
-
-      binCos=(atof(token[0]));
-      binPhi=(atof(token[1]));
-      cosThetaMean=(atof(token[2]));
-      cosThetaMin=(atof(token[3]));
-      cosThetaMax=(atof(token[4]));
-      phiMean=(atof(token[5]));
-      phiMin=(atof(token[6]));
-      phiMax=(atof(token[7]));
-      flux=(atof(token[8]));
-      Emean=(atof(token[9]));
-
-      hFluxCosmics->SetBinContent(binPhi,binCos,flux);
-      hEmeanCosmics->SetBinContent(binPhi,binCos,Emean);
-    }
-
-    TFile *file = new TFile("flux.root","RECREATE");
-    hFluxCosmics->Write();
-    hEmeanCosmics->Write();
-    file->Close();
-
-  }
-
-
+  useGunEvt    = false;
+  useLaserEvt  = false;
+  useGPSEvt    = false;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -346,51 +284,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamDir(dir);
       SetBeamPDG(pdg);
     }
-  else if(useCosmics){
-
-    //////////////////
-    // DEBUG PRINTS
-    G4cout << G4endl;
-    G4cout << "COSMICS bro" << G4endl;
-    G4cout << "###########" << G4endl;
-    //////////////////
-
-    double phiMuon, cosThetaMuon;
-    energy = 0;
-    while((int)(energy) == 0){
-      hFluxCosmics->GetRandom2(phiMuon,cosThetaMuon);
-      energy = hEmeanCosmics->GetBinContent(hFluxCosmics->GetBin(phiMuon,cosThetaMuon))*GeV;
-    }
-
-    G4ThreeVector dir(0,0,0);
-    dir.setRThetaPhi(-1,acos(cosThetaMuon),phiMuon);
-    G4ThreeVector vtx(0,0,0);
-    vtx = -dir;
-    vtx.setR(50*m);
-
-    int pdgid = 13; // MUON
-    particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));
-    G4double mass =particleGun->GetParticleDefinition()->GetPDGMass();
-    G4double ekin = energy - mass;
-
-    //////////////////
-    // DEBUG PRINTS
-    G4cout << G4endl;
-    G4cout << "Generated at position : " << vtx.getX()/m << "m "
-                                         << vtx.getY()/m << "m "
-                                         << vtx.getZ()/m << "m " << G4endl;
-    G4cout << "phi : " << phiMuon << " cosTheta : " << cosThetaMuon << G4endl;
-    G4cout << "E : " << energy/GeV << " GeV" << G4endl;
-    G4cout << G4endl;
-    //////////////////
-
-    particleGun->SetParticleEnergy(ekin);
-    particleGun->SetParticlePosition(vtx);
-    particleGun->SetParticleMomentumDirection(dir);
-    particleGun->GeneratePrimaryVertex(anEvent);
-
-  }
-
 }
 
 void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt)

@@ -62,8 +62,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   // Set the default WC geometry.  This can be changed later.
   //-----------------------------------------------------
 
-  //SetSuperKGeometry();
-  SetHyperKGeometry();
+  SetSuperKGeometry();
+  //SetHyperKGeometry();
 
   //----------------------------------------------------- 
   // Set whether or not Pi0-specific info is saved
@@ -267,16 +267,6 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
   }
   else if (PMTType == "BoxandLine12inchHQE"){
     WCSimPMTObject* PMT = new BoxandLine12inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
-  }
-  else if (PMTType == "PMT5inch"){
-    WCSimPMTObject* PMT = new PMT5inch;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
-  }
-  else if (PMTType == "PMT3inch"){
-    WCSimPMTObject* PMT = new PMT3inch;
     WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }

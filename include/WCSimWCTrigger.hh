@@ -370,11 +370,5 @@ private:
   int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
 };
 
-/**
- * \class WCSimWCTriggerOnTankDigits
- *
- * \brief a trigger class that stores all digits within the trigger windows identified by tank events
- *
- */
 
 #endif //WCSimWCTrigger_h

@@ -6,11 +6,9 @@
 
 # Vis Settings for SK
 /vis/viewer/zoom 1.2
-/vis/viewer/set/viewpointThetaPhi 45 45 deg
-#/vis/viewer/set/viewpointThetaPhi 110 0 deg
+#/vis/viewer/set/viewpointThetaPhi 45 45 deg
+/vis/viewer/set/viewpointThetaPhi 110 0 deg
 /vis/viewer/set/upVector 0 0 1
-/vis/scene/add/axes 0 0 0 10 m
-
 
 # Vis settings for HK
 #/vis/viewer/set/upVector 0 1 0
@@ -22,3 +20,7 @@
 /vis/scene/add/hits
 /vis/scene/add/trajectories
 /vis/scene/endOfEventAction accumulate
+
+# Default background for OGLSX is black, can change it here (but muons are white)
+#/vis/viewer/set/background 0 0 0 1
+
