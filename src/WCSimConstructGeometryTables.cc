@@ -112,7 +112,7 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
 
     // First increment the number of PMTs in the tank.
     if(aPV->GetName()== WCIDCollectionName) totalNumPMTs++;
-    if(aPV->GetName()== WCODCollectionName) totalNumPMTsOD++;
+    if(aPV->GetName()== WCODCollectionName) totalNumODPMTs++;
 
     // Put the location of this tube into the location map so we can find
     // its ID later.  It is coded by its tubeTag string.
@@ -141,16 +141,16 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     if(aPV->GetName()== WCODCollectionName) {
       if(ODtubeLocationMap.find(tubeTag) != ODtubeLocationMap.end()) {
         G4cerr << "Repeated tube tag: " << tubeTag << G4endl;
-        G4cerr << "Assigned to both tube #" << ODtubeLocationMap[tubeTag] << " and #" << totalNumPMTsOD << G4endl;
+        G4cerr << "Assigned to both tube #" << ODtubeLocationMap[tubeTag] << " and #" << totalNumODPMTs << G4endl;
         G4cerr << "Cannot continue -- hits will not be recorded correctly." << G4endl;
         G4cerr << "Please make sure that logical volumes with multiple placements are each given a unique copy number"
                << G4endl;
         assert(false);
       }
-      ODtubeLocationMap[tubeTag] = totalNumPMTsOD;
+      ODtubeLocationMap[tubeTag] = totalNumODPMTs;
 
       // Put the transform for this tube into the map keyed by its ID
-      ODtubeIDMap[totalNumPMTsOD] = aTransform;
+      ODtubeIDMap[totalNumODPMTs] = aTransform;
     }
 
       // G4cout <<  "depth " << depth.str() << G4endl;
@@ -258,7 +258,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   fODpmts.clear();
 
   // Grab the tube information from the tubeID Map and dump to file.
-  for ( int tubeID = 1; tubeID <= totalNumPMTsOD; tubeID++){
+  for ( int tubeID = 1; tubeID <= totalNumODPMTs; tubeID++){
     G4Transform3D newTransform = ODtubeIDMap[tubeID];
 
     // Get tube orientation vector

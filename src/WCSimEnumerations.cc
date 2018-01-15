@@ -25,11 +25,11 @@ std::string WCSimEnumerations::EnumAsString(TriggerType_t t)
   case (kTriggerNDigitsTest) :
     return "NDigits_TEST";
     break;
-  case (kTriggerNoTrig) :
-    return "NoTrigger";
-    break;
   case (kTriggerFailure) :
     return "No_trigger_passed";
+    break;
+  case (kTriggerNoTrig) :
+    return "NoTrigger";
     break;
   default:
     return "";

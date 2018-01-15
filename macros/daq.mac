@@ -7,6 +7,10 @@
 #/DAQ/DigitizerOpt/DeadTime 0
 # how long does the digitizer integrate for (ns)?
 #/DAQ/DigitizerOpt/IntegrationWindow 200
+#The timing resolution for the digitizer (in ns)
+#/DAQ/DigitizerOpt/TimingPrecision 0.4
+#The charge resolution for the digitizer (in p.e.)
+#/DAQ/DigitizerOpt/PEPrecision 0
 
 #generic trigger options (defaults are class-specfic. Can be overrideen here)
 # allow the number of digits per PMT per trigger to be > 1?

@@ -36,7 +36,7 @@ inline vector<string> readInLine(fstream& inFile, int lineSize, char* inBuf)
 {
   // Read in line break it up into tokens
   inFile.getline(inBuf,lineSize);
-  return tokenize(" $", inBuf);
+  return tokenize(" $\r", inBuf);
 }
 
 inline float atof( const string& s ) {return std::atof( s.c_str() );}

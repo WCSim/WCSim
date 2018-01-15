@@ -132,7 +132,6 @@ protected:
    * for testing purposes. Triggers issued in this mode have type kTriggerNDigitsTest
    */
   void AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
-  void AlgTankDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
   void AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
 
 
@@ -331,6 +330,20 @@ private:
   int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
 };
 
+class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
+{
+public:
+  
+  ///Create WCSimWCTriggerNoTrigger instance with knowledge of the detector and DAQ options
+  WCSimWCTriggerNoTrigger(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*,  G4String detectorElement);
+  
+  ~WCSimWCTriggerNoTrigger();
+  
+private:
+  ///Calls the workhorse of this class: AlgNoTrigger
+  void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
+  
+};
 
 /**
  * \class WCSimWCTriggerNDigits2
@@ -363,47 +376,5 @@ private:
  * \brief a trigger class that stores all digits within the trigger windows identified by tank events
  *
  */
-
-class WCSimWCTriggerOnTankDigits : public WCSimWCTriggerBase
-{
-public:
-
-  ///Create WCSimWCTriggerNDigits instance with knowledge of the detector and DAQ options
-  WCSimWCTriggerOnTankDigits(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
-
-  ~WCSimWCTriggerOnTankDigits();
-
-private:
-  ///Calls the workhorse of this class: AlgTankDigits
-  void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
-
-  bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
-  int  GetDefaultNDigitsWindow()            { return 200;   } ///< SK max light travel time ~200 ns
-  int  GetDefaultNDigitsThreshold()         { return 25;    } ///< SK NDigits threshold ~25
-  int  GetDefaultNDigitsPreTriggerWindow()  { return -1000;  } ///< Scintillator elements have much longer timescales
-  int  GetDefaultNDigitsPostTriggerWindow() { return 2000;   } ///< Scintillator elements have much longer timescales
-};
-
-/**
- * \class WCSimWCTriggerNoTrigger
- *
- * \brief a trigger class that stores all digits within the trigger windows identified by tank events
- *
- */
-
-class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
-{
- public:
-
-  ///Create WCSimWCTriggerNoTrigger instance with knowledge of the detector and DAQ options
-  WCSimWCTriggerNoTrigger(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String);
-
-  ~WCSimWCTriggerNoTrigger();
-
- private:
-  ///Calls the workhorse of this class: AlgNoTrigger
-  void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
-
-};
 
 #endif //WCSimWCTrigger_h

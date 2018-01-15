@@ -47,8 +47,7 @@ else
     // used in OGLSX visualizer
   G4VisAttributes* WCPMTVisAtt;
   if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
-  else WCPMTVisAtt = new G4VisAttributes(white);
-  // else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);}
 
   G4double expose;
@@ -185,8 +184,7 @@ else {
     // used in OGLSX visualizer
   G4VisAttributes* WCPMTVisAtt;
   if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
-  else WCPMTVisAtt = new G4VisAttributes(white);
-  // else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
@@ -206,8 +204,7 @@ else {
     // used in OGLSX visualizer
   G4VisAttributes* WCPMTVisAtt;
   if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
-  else WCPMTVisAtt = new G4VisAttributes(white);
-  // else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
     logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}

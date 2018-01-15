@@ -56,7 +56,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   WCSimDetectorConstruction::ODtubeLocationMap.clear();
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
   totalNumPMTs = 0;
-  totalNumPMTsOD = 0;
+  totalNumODPMTs = 0;
   WCPMTExposeHeight= 0.;
   //-----------------------------------------------------
   // Set the default WC geometry.  This can be changed later.
@@ -126,7 +126,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
 
   totalNumPMTs = 0;
-  totalNumPMTsOD = 0;
+  totalNumODPMTs = 0;
 
   //-----------------------------------------------------
   // Create Logical Volumes

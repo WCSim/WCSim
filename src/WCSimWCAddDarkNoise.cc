@@ -179,7 +179,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     #endif
     G4int thenum_pmts;
     if(detectorElement=="tank") thenum_pmts = myDetector->GetTotalNumPmts();
-    else if(detectorElement=="OD") thenum_pmts = myDetector->GetTotalNumPmtsOD();
+    else if(detectorElement=="OD") thenum_pmts = myDetector->GetTotalNumODPmts();
     else G4cout << "### detectorElement undefined ..." << G4endl;
     const G4int number_pmts=thenum_pmts;
     int *PMTindex = new int [number_pmts+1];
