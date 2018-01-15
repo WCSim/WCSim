@@ -23,11 +23,3 @@ geofile.txt
 
 ##ignore compiled python scripts
 *.pyc
-
-##ignore IDE output (zsoldos)
-.idea/
-cmake-build-debug/
-
-##ignore Macros (zsoldos)
-WCSim.mac
-jobOptions2.mac
