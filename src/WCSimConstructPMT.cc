@@ -32,9 +32,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
   //G4cout << "Create PMT" << G4endl;
 
-  G4Colour white(0.3,0.3,0.3) ;  // light white
 
-  if (Vis_Choice == "RayTracer"){
+if (Vis_Choice == "RayTracer"){
     // Blue wireframe visual style
     // Used in the RayTracer visualizer
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
@@ -207,7 +206,7 @@ else {
   else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
-    logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
+  logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
 
   // Instantiate a new sensitive detector 
   // and register this sensitive detector volume with the SD Manager. 
