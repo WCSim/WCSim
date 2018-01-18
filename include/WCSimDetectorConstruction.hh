@@ -152,6 +152,7 @@ public:
 
   bool GetIsODConstructed(){return isODConstructed;}
 
+  G4double GetWCIDHeight(){return WCIDHeight;}
  
 private:
 

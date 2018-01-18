@@ -149,6 +149,12 @@
 #/gps/ang/minphi 0 deg
 #/gps/ang/maxphi 360 deg
 
+# Or you can use a cosmics generator
+# Based on the SuperK flux extrapolated at HyperK site in Mozumi
+# Muons are generated according to this flux and their position is extrapolated outside the tank
+# Useful to study muons tracks in both OD and ID
+#/mygen/generator cosmics
+
 ## change the name of the output root file, default = wcsim.root
 
 /WCSimIO/RootFile wcsim.root
