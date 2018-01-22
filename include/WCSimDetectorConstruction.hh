@@ -97,7 +97,7 @@ public:
 
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
-  WCSimBasicPMTObject *CreateCombinedPMTQE(std::vector<G4String>);
+  void CreateCombinedPMTQE(std::vector<G4String>);
   WCSimBasicPMTObject *CustomPMT;
   void SetCustomPMTObject(WCSimBasicPMTObject *PMT){CustomPMT=PMT;}
   WCSimBasicPMTObject* GetCustomPMTObject(){ return CustomPMT;}

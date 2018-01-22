@@ -271,25 +271,96 @@ void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
   wcopt->SetPMTCollEff(PMT_Coll_Eff);
 }
 
-WCSimBasicPMTObject *WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> CollectionName){
+void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> CollectionName){
+
+  // Show printouts for debugging purposes
+  G4cout << G4endl;
+  G4cout << " ************************* " << G4endl;
+  G4cout << " ** CreateCombinedPMTQE ** " << G4endl;
+  G4cout << " ************************* " << G4endl;
 
   // Define relevant variable
-  std::vector<G4float*> wavelength;
-  std::vector<G4float*> QE;
-  std::vector<G4float> maxQE;
+  // Create array of maps for CollectionName
+  std::vector<std::map<G4float,G4float>> QEMap;
+  std::vector<G4float> maxQEVec;
+  // Need size of QE array
+  std::vector<G4int> NbOfWLBins;
 
   // Recover QE for collection name
   std::vector<WCSimPMTObject*> PMT;
   for(unsigned int iPMT=0;iPMT<CollectionName.size();iPMT++){
+    // Access PMT pointer
     PMT.push_back(GetPMTPointer(CollectionName[iPMT]));
-    wavelength.push_back(PMT[iPMT]->GetQEWavelength());
-    QE.push_back(PMT[iPMT]->GetQE());
-    maxQE.push_back(PMT[iPMT]->GetmaxQE());
+
+    // Recover WL and QE infos
+    G4float *wavelength = (PMT[iPMT]->GetQEWavelength());
+    G4float *QE = (PMT[iPMT]->GetQE());
+
+    std::map<G4float,G4float> hist;
+    G4cout << G4endl;
+    G4cout << "### Recover PMT collection name "
+           << CollectionName[iPMT] << G4endl;
+    for(int iWL=0;iWL<PMT[iPMT]->GetNbOfQEDefined();iWL++){
+      hist[wavelength[iWL]]=QE[iWL];
+      G4cout << "wavelength[" << wavelength[iWL] <<"nm] : " << QE[iWL] << G4endl;
+    }
+
+    QEMap.push_back(hist);
+    maxQEVec.push_back(PMT[iPMT]->GetmaxQE());
+    NbOfWLBins.push_back(PMT[iPMT]->GetNbOfQEDefined());
   }
+
+  // Concatenate WL vec and remove duplicate
+  std::map<G4float,G4float> QE;
+
+  // Recursive algorithm to set new QE for combined PMT collection
+  G4cout << G4endl;
+  for(unsigned int iCol=0; iCol<QEMap.size();iCol++){
+    for(std::map<G4float, G4float>::iterator it=QEMap[iCol].begin(); it!=QEMap[iCol].end(); ++it){
+      if(iCol+1<QEMap.size()){
+        std::map<G4float, G4float>::iterator foundWL = QEMap[iCol+1].find(it->first);
+        if(foundWL == QEMap[iCol+1].end()){
+          G4cout << "Undefined QE in next collection" << G4endl;
+          G4cout << "Will add it" << G4endl;
+          G4cout << " ### " << it->first << "nm : " << it->second << G4endl;
+          QE[it->first]=it->second;
+        } else {
+          G4cout << "New QE defined for " << it->first << "nm is "
+                 << sqrt(it->second*it->second + foundWL->second*foundWL->second) << G4endl;
+          QE[it->first]=sqrt(it->second*it->second + foundWL->second*foundWL->second);
+        }
+      } else {
+        break;
+      }
+    }
+  }
+
+  G4cout << G4endl;
+
+  // Need to make a special case for the last collection
+  int iCol = QEMap.size()-1;
+  if(iCol>0) {
+    for (std::map<G4float, G4float>::iterator it = QEMap[iCol].begin(); it != QEMap[iCol].end(); ++it) {
+      std::map<G4float, G4float>::iterator foundWL = QEMap[iCol - 1].find(it->first);
+      if (foundWL == QEMap[iCol - 1].end()) {
+        G4cout << G4endl;
+        G4cout << "Special case for last collection" << G4endl;
+        G4cout << " ### " << it->first << "nm : " << it->second << G4endl;
+        QE[it->first] = it->second;
+      }
+    }
+  }
+  G4cout << G4endl;
+
+  // Let's debug this one last time :
+  std::map<G4float, G4float>::iterator itr;
+  for(itr = QE.begin(); itr != QE.end(); itr++){
+    G4cout << " ### " << itr->first << "nm : " << itr->second << G4endl;
+  }
+  G4cout << G4endl;
 
   // Create a new PMT with an extended QE array containing all PMT collection
   WCSimBasicPMTObject *newPMT = new WCSimBasicPMTObject();
-
-  return newPMT;
-
+  newPMT->DefineQEHist();
+  SetCustomPMTObject(newPMT);
 }
