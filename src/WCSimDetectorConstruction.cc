@@ -270,3 +270,26 @@ void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
   wcopt->SetPMTQEMethod(PMT_QE_Method);
   wcopt->SetPMTCollEff(PMT_Coll_Eff);
 }
+
+WCSimBasicPMTObject *WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> CollectionName){
+
+  // Define relevant variable
+  std::vector<G4float*> wavelength;
+  std::vector<G4float*> QE;
+  std::vector<G4float> maxQE;
+
+  // Recover QE for collection name
+  std::vector<WCSimPMTObject*> PMT;
+  for(unsigned int iPMT=0;iPMT<CollectionName.size();iPMT++){
+    PMT.push_back(GetPMTPointer(CollectionName[iPMT]));
+    wavelength.push_back(PMT[iPMT]->GetQEWavelength());
+    QE.push_back(PMT[iPMT]->GetQE());
+    maxQE.push_back(PMT[iPMT]->GetmaxQE());
+  }
+
+  // Create a new PMT with an extended QE array containing all PMT collection
+  WCSimBasicPMTObject *newPMT = new WCSimBasicPMTObject();
+
+  return newPMT;
+
+}

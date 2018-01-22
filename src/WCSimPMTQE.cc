@@ -76,5 +76,21 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4String CollectionName, G4float Pho
 }
 
 
+G4float WCSimDetectorConstruction::GetStackingPMTQE(std::vector<G4String> CollectionName) {
 
+  // Define relevant variable
+  std::vector<G4float*> wavelength;
+  std::vector<G4float*> QE;
+  std::vector<G4float> maxQE;
 
+  // Recover QE for collection name
+  std::vector<WCSimPMTObject*> PMT;
+  for(unsigned int iPMT=0;iPMT<CollectionName.size();iPMT++){
+    PMT.push_back(GetPMTPointer(CollectionName[iPMT]));
+    wavelength.push_back(PMT[iPMT]->GetQEWavelength());
+  }
+
+  // Recover optical response of any WLS materials
+  // std::vector<WCSimWLSObject*> WLS;
+
+}

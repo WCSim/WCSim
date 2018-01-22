@@ -1634,3 +1634,23 @@ G4float BoxandLine12inchHQE::GetDarkRateConversionFactor(){
   const G4float factor = 1.126;
   return factor;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// COMBINED PMTS CLASS
+// Goal is to instantiate purely virtual WCSimPMTObject Classes to contained an extended
+//  QE information of several PMTs collection
+// Useful for applying QE in stacking action when several PMTs collection are defined
+
+
+WCSimBasicPMTObject::WCSimBasicPMTObject(){
+  QE=NULL;
+  QEWavelength=NULL;
+  maxQE = 0;
+}
+
+WCSimBasicPMTObject::WCSimBasicPMTObject(G4float *qe, G4float *wl, G4float maxqe) : QE(qe), QEWavelength(wl),maxQE(maxqe){}
+
+WCSimBasicPMTObject::~WCSimBasicPMTObject(){
+  delete QE;
+  delete QEWavelength;
+}

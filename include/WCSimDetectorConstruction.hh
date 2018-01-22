@@ -93,8 +93,14 @@ public:
 
   G4float GetPMTQE(G4String,G4float, G4int, G4float, G4float, G4float);
   G4float GetPMTCollectionEfficiency(G4float theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
+  G4float GetStackingPMTQE(std::vector<G4String>);
 
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
+
+  WCSimBasicPMTObject *CreateCombinedPMTQE(std::vector<G4String>);
+  WCSimBasicPMTObject *CustomPMT;
+  void SetCustomPMTObject(WCSimBasicPMTObject *PMT){CustomPMT=PMT;}
+  WCSimBasicPMTObject* GetCustomPMTObject(){ return CustomPMT;}
 
   std::map<G4String, WCSimPMTObject*>  CollectionNameMap; 
   WCSimPMTObject * PMTptr;

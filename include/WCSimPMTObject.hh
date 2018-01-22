@@ -235,5 +235,27 @@ protected:
   G4float* GetCollectionEfficiencyArray();
 };
 
+class WCSimBasicPMTObject
+{
+
+ public:
+  WCSimBasicPMTObject();
+  WCSimBasicPMTObject(G4float*,G4float*,G4float);
+  ~WCSimBasicPMTObject();
+
+ private:
+  G4float* QE;
+  G4float* QEWavelength;
+  G4float  maxQE;
+
+ public:
+  G4float* GetQE(){ return QE;};
+  G4float* GetQEWavelength(){ return QEWavelength;};
+  G4float  GetmaxQE(){ return maxQE;};
+
+  void SetQE(G4float* qe){ QE=qe;}
+  void SetQEWavelength(G4float* qe){ QEWavelength=qe;}
+  void SetmaxQE(G4float qe){ maxQE=qe;}
+};
 
 #endif
