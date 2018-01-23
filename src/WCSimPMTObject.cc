@@ -1688,7 +1688,29 @@ G4int BoxandLine12inchHQE::GetNbOfQEDefined(){
 WCSimBasicPMTObject::WCSimBasicPMTObject(){
 }
 
-void WCSimBasicPMTObject::DefineQEHist(){
+WCSimBasicPMTObject::WCSimBasicPMTObject(std::map<G4float,G4float> mQE){
+  mapQE=mQE;
+  std::map<G4float, G4float>::iterator itr;
+  for(itr = mQE.begin(); itr != mQE.end(); itr++) {
+    wavelength.push_back(itr->first);
+    QE.push_back(itr->second);
+  }
+}
+
+WCSimBasicPMTObject::WCSimBasicPMTObject(std::vector<G4float> wl,std::vector<G4float> qe,G4float max){
+  wavelength=wl;
+  QE=qe;
+  maxQE=max;
+}
+
+void WCSimBasicPMTObject::DefineQEHist(std::map<G4float,G4float> mapQE){
+  gQE = new TGraph();
+  G4int iPt=0;
+  std::map<G4float, G4float>::iterator itr;
+  for(itr = mapQE.begin(); itr != mapQE.end(); itr++) {
+    gQE->SetPoint(iPt,itr->first,itr->second);
+    iPt++;
+  }
 }
 
 WCSimBasicPMTObject::~WCSimBasicPMTObject(){

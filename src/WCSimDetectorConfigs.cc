@@ -299,6 +299,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCColName.push_back(WCIDCollectionName);
   WCColName.push_back(WCODCollectionName);
   CreateCombinedPMTQE(WCColName);
+  isCombinedPMTCollectionDefined=true;
 }
 
 void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()

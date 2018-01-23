@@ -93,14 +93,14 @@ public:
 
   G4float GetPMTQE(G4String,G4float, G4int, G4float, G4float, G4float);
   G4float GetPMTCollectionEfficiency(G4float theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
-  G4float GetStackingPMTQE(std::vector<G4String>);
+  G4float GetStackingPMTQE(G4float PhotonWavelength, G4int flag, G4float low_wl, G4float high_wl, G4float ratio);
 
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
   void CreateCombinedPMTQE(std::vector<G4String>);
-  WCSimBasicPMTObject *CustomPMT;
-  void SetCustomPMTObject(WCSimBasicPMTObject *PMT){CustomPMT=PMT;}
-  WCSimBasicPMTObject* GetCustomPMTObject(){ return CustomPMT;}
+  WCSimBasicPMTObject *BasicPMT;
+  void SetBasicPMTObject(WCSimBasicPMTObject *PMT){BasicPMT=PMT;}
+  WCSimBasicPMTObject* GetBasicPMTObject(){ return BasicPMT;}
 
   std::map<G4String, WCSimPMTObject*>  CollectionNameMap; 
   WCSimPMTObject * PMTptr;
@@ -157,7 +157,7 @@ public:
   G4String GetODCollectionName(){return WCODCollectionName;}
 
   bool GetIsODConstructed(){return isODConstructed;}
-
+  bool GetIsCombinedPMTCollectionDefined(){return isCombinedPMTCollectionDefined;}
  
 private:
 
@@ -310,6 +310,7 @@ private:
   // ############################# //
 
   bool isODConstructed;
+  bool isCombinedPMTCollectionDefined;
 
   // Parameters controlled by user
   G4double WCODDiameter;

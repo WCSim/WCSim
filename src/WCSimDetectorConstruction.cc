@@ -360,7 +360,8 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> Collec
   G4cout << G4endl;
 
   // Create a new PMT with an extended QE array containing all PMT collection
-  WCSimBasicPMTObject *newPMT = new WCSimBasicPMTObject();
-  newPMT->DefineQEHist();
-  SetCustomPMTObject(newPMT);
+  WCSimBasicPMTObject *newPMT = new WCSimBasicPMTObject(QE);
+  newPMT->SetmaxQE(*std::max_element(maxQEVec.begin(),maxQEVec.end()));
+  newPMT->DefineQEHist(QE);
+  SetBasicPMTObject(newPMT);
 }

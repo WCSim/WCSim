@@ -76,21 +76,27 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4String CollectionName, G4float Pho
 }
 
 
-G4float WCSimDetectorConstruction::GetStackingPMTQE(std::vector<G4String> CollectionName) {
+G4float WCSimDetectorConstruction::GetStackingPMTQE(G4float PhotonWavelength, G4int flag, G4float low_wl, G4float high_wl, G4float ratio) {
 
-  // Define relevant variable
-  std::vector<G4float*> wavelength;
-  std::vector<G4float*> QE;
-  std::vector<G4float> maxQE;
-
-  // Recover QE for collection name
-  std::vector<WCSimPMTObject*> PMT;
-  for(unsigned int iPMT=0;iPMT<CollectionName.size();iPMT++){
-    PMT.push_back(GetPMTPointer(CollectionName[iPMT]));
-    wavelength.push_back(PMT[iPMT]->GetQEWavelength());
+  if (flag==1){
+    if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl || PhotonWavelength <=280 || PhotonWavelength >=660){
+      return 0;
+    }
+  }else if (flag==0){
+    if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl){
+      return 0;
+    }
   }
 
+  // Recover combined PMT object
+  WCSimBasicPMTObject *PMT;
+  PMT = GetBasicPMTObject();
+
   // Recover optical response of any WLS materials
-  // std::vector<WCSimWLSObject*> WLS;
+  // WCSimWLSObject *WLS;
+
+  if(flag==1) return (G4float)(PMT->GetgQE()->Eval(PhotonWavelength,0,"S"))*ratio;
+  else if (flag==0) return PMT->GetmaxQE()*ratio;
+  else return 0;
 
 }

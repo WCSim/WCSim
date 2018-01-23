@@ -250,12 +250,14 @@ class WCSimBasicPMTObject
 
  public:
   WCSimBasicPMTObject();
-  WCSimBasicPMTObject(G4float*,G4float*,G4float);
+  WCSimBasicPMTObject(std::map<G4float,G4float>);
+  WCSimBasicPMTObject(std::vector<G4float>,std::vector<G4float>,G4float);
   ~WCSimBasicPMTObject();
 
  private:
   std::vector<G4float> QE;
-  std::vector<G4float> QEWavelength;
+  std::vector<G4float> wavelength;
+  std::map<G4float,G4float> mapQE;
   G4float  maxQE;
   TGraph   *gQE;
 
@@ -263,16 +265,19 @@ class WCSimBasicPMTObject
   std::vector<G4float> GetQE(){ return QE;};
   void SetQE(std::vector<G4float> qe){ QE=qe;};
 
-  std::vector<G4float> GetQEWavelength(){ return QEWavelength;};
-  void SetQEWavelength(std::vector<G4float> qe){ QEWavelength=qe;};
+  std::vector<G4float> GetWavelength(){ return wavelength;};
+  void SetWavelength(std::vector<G4float> qe){ wavelength=qe;};
 
-  G4float  GetmaxQE(){ return maxQE;};
+  std::map<G4float,G4float> GetMapQE(){ return mapQE;};
+  void SetMapQE(std::map<G4float,G4float> qe){ mapQE=qe;};
+
+  G4float GetmaxQE(){ return maxQE;};
   void SetmaxQE(G4float qe){ maxQE=qe;};
 
   TGraph* GetgQE(){ return gQE;};
   void SetgQE(TGraph *g){ gQE=g;};
 
-  void DefineQEHist();
+  void DefineQEHist(std::map<G4float,G4float>);
 };
 
 #endif
