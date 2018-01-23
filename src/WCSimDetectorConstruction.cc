@@ -281,7 +281,7 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> Collec
 
   // Define relevant variable
   // Create array of maps for CollectionName
-  std::vector<std::map<G4float,G4float>> QEMap;
+  std::vector< std::map<G4float,G4float> > QEMap;
   std::vector<G4float> maxQEVec;
   // Need size of QE array
   std::vector<G4int> NbOfWLBins;
