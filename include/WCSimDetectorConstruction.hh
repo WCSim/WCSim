@@ -189,6 +189,9 @@ private:
   G4LogicalVolume* logicWCBarrelCellODTyvek;
   G4LogicalVolume* logicWCTowerODTyvek;
 
+  G4LogicalVolume* logicWCBarrelCellODWLSPlate;
+  G4LogicalVolume* logicWCTowerODWLSPlate;
+
   G4LogicalVolume* logicWCBarrelCellBlackSheet;
   G4LogicalVolume* logicWCTowerBlackSheet;
   G4double capAssemblyHeight;
@@ -298,6 +301,16 @@ private:
   
   G4double WCCapEdgeLimit;
   G4double WCBlackSheetThickness;
+
+  // ################### //
+  // # Cave parameters # //
+  // ################### //
+
+  G4double CaveTyvekSheetThickness;
+
+  // ############################### //
+  // # *** END Cave Parameters *** # //
+  // ############################### //
 
   // ############################# //
   // # Outer Detector parameters # //
