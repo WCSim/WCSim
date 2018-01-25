@@ -1,3 +1,4 @@
+#include <WCSimWLSProperties.hh>
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimTuningParameters.hh"
 
@@ -179,6 +180,14 @@ void WCSimDetectorConstruction::ConstructMaterials()
     = new G4Material("Tyvek",density,2);
   Tyvek->AddElement(elC, 1);  //polyethylene
   Tyvek->AddElement(elH, 2);
+
+  //---PVT - WLS plates eljen EJ-286
+  // linear formula [CH2CH(C6H4CH3)]n
+  density = 1.032*g/cm3;  // at 20deg
+  G4Material* WLS_PVT
+      = new G4Material("WLS_PVT",density,2);
+  WLS_PVT->AddElement(elC, 9); // PVT
+  WLS_PVT->AddElement(elH, 10);
 
   //---Glass
  
@@ -801,9 +810,15 @@ void WCSimDetectorConstruction::ConstructMaterials()
    OpWaterTySurface =
      new G4OpticalSurface("WaterTyCellSurface");
 
-   OpWaterTySurface->SetType(dielectric_dielectric);
-   OpWaterTySurface->SetModel(unified); 
-   // OpWaterTySurface->SetFinish(groundbackpainted); //a guess, but seems to work
+   // OLD TYVEK PARAMETERS
+   // OpWaterTySurface->SetType(dielectric_dielectric);
+   // OpWaterTySurface->SetModel(unified);
+   // // OpWaterTySurface->SetFinish(groundbackpainted); //a guess, but seems to work
+   // OpWaterTySurface->SetSigmaAlpha(0.5); //cf. A. Chavarria's ~30deg
+   // PROPOSED NEW ONES
+   OpWaterTySurface->SetType(dielectric_LUT); // to use look-up table
+   OpWaterTySurface->SetModel(LUT);
+   OpWaterTySurface->SetFinish(polishedtyvekair); // polished surface with tyvek
    OpWaterTySurface->SetSigmaAlpha(0.5); //cf. A. Chavarria's ~30deg
 
    G4double RINDEX_tyvek[NUM] =
@@ -821,8 +836,58 @@ void WCSimDetectorConstruction::ConstructMaterials()
    //
    // ----
 
+  ///////////////////////
+  // ###### WLS ###### //
+  ///////////////////////
 
-   G4MaterialPropertiesTable *myMPT1 = new G4MaterialPropertiesTable();
+  // SURFACES properties
+  OpWaterWLSSurface =
+      new G4OpticalSurface("WaterWLSSurface");
+
+  OpWaterWLSSurface->SetType(dielectric_dielectric);
+  OpWaterWLSSurface->SetModel(unified);
+  OpWaterWLSSurface->SetFinish(polished); // surface WLS/Water
+  OpWaterWLSSurface->SetSigmaAlpha(0.1); // TODO: What's this?
+
+  // Define normal reflectivity from Fresnel equations
+  const G4int NUMENTRIES_WLS = 33;
+  G4double RefWaterWLS[NUMENTRIES_WLS] =
+      { 0.020836, 0.0207796, 0.0207198, 0.0206584, 0.0205953,
+        0.0205288, 0.0204589, 0.0203874, 0.0203125, 0.0202344,
+        0.0201512, 0.0200647, 0.019975, 0.0198787, 0.0197774,
+        0.0196696, 0.0195553, 0.0194329, 0.0193041, 0.0191639,
+        0.019016, 0.0188553, 0.0186803, 0.0184931, 0.0182871,
+        0.0180644, 0.0178189, 0.0175494, 0.0172519, 0.0169209,
+        0.0165512, 0.0161367, 0.0156689};
+
+
+  OpWLSTySurface =
+      new G4OpticalSurface("WLSTySurface");
+
+  OpWLSTySurface->SetType(dielectric_dielectric);
+  OpWLSTySurface->SetModel(unified);
+  OpWLSTySurface->SetFinish(polished); // surface WLS/Water
+  OpWLSTySurface->SetSigmaAlpha(0.1); // TODO: What's this?
+
+  // Define normal reflectivity from Fresnel equations
+  G4double RefWLSTy[NUM] =
+      {0.00207792,0.00207792};
+
+  // MATERIAL properties
+  EljenEJ286 *WLSProps = new EljenEJ286();
+
+  G4MaterialPropertiesTable *myWLSPlate = new G4MaterialPropertiesTable();
+  myWLSPlate->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
+  myWLSPlate->AddProperty("WLSABSLENGTH",WLSProps->GetPhotonEnergy_ABS(),WLSProps->GetAbs(),WLSProps->GetNumEntries_ABS());
+  myWLSPlate->AddProperty("WLSCOMPONENT",WLSProps->GetPhotonEnergy_EM(),WLSProps->GetEm(),WLSProps->GetNumEntries_EM());
+  myWLSPlate->AddConstProperty("WLSTIMECONSTANT", 1*ns); // TODO: Need measurement
+  WLS_PVT->SetMaterialPropertiesTable(myWLSPlate);
+
+  ///////////////////////
+  // ###### END ###### //
+  ///////////////////////
+
+  G4MaterialPropertiesTable *myMPT1 = new G4MaterialPropertiesTable();
    // M Fechner : new   ; wider range for lambda
    myMPT1->AddProperty("RINDEX", ENERGY_water, RINDEX1, NUMENTRIES_water);
    myMPT1->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water, NUMENTRIES_water);
@@ -910,4 +975,20 @@ void WCSimDetectorConstruction::ConstructMaterials()
    //use same efficiency as blacksheet, which is 0
    OpWaterTySurface->SetMaterialPropertiesTable(myST3);
 
+   ///////////////////////
+   // ###### WLS ###### //
+   ///////////////////////
+
+   G4MaterialPropertiesTable *myST4 = new G4MaterialPropertiesTable();
+   myST4->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
+   myST4->AddProperty("REFLECTIVITY", WLSProps->GetPhotonEnergy(), RefWaterWLS, NUMENTRIES_WLS);
+   OpWaterWLSSurface->SetMaterialPropertiesTable(myST4);
+   G4MaterialPropertiesTable *myST5 = new G4MaterialPropertiesTable();
+   myST5->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
+   myST5->AddProperty("REFLECTIVITY", PP, RefWLSTy, NUM);
+   OpWLSTySurface->SetMaterialPropertiesTable(myST5);
+
+   ///////////////////////
+   // ###### END ###### //
+   ///////////////////////
 }

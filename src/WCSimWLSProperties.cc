@@ -46,8 +46,8 @@ G4double* EljenEJ286::GetPhotonEnergy(){
 ////////// RINDEX //////////
 // ###################### //
 
-G4float* EljenEJ286::GetRIndex(){
-  static G4float RIndex[NUMENTRIES_WLS] =
+G4double* EljenEJ286::GetRIndex(){
+  static G4double RIndex[NUMENTRIES_WLS] =
       { 1.58,
         1.58, 1.58, 1.58, 1.58, 1.58,
         1.58, 1.58, 1.58, 1.58, 1.58,
