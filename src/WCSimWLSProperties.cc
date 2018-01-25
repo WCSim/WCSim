@@ -93,7 +93,7 @@ G4double* EljenEJ286::GetAbs() {
 G4int EljenEJ286::GetNumEntries_EM() { return NUMENTRIES_WLS_EM;}
 
 G4double* EljenEJ286::GetPhotonEnergy_EM() {
-  G4double PhotonEnergy_EM[NUMENTRIES_WLS_EM] =
+  static G4double PhotonEnergy_EM[NUMENTRIES_WLS_EM] =
       { 2.29602*eV, 2.33934*eV, 2.38433*eV, 2.43108*eV, 2.4797*eV,
         2.53031*eV, 2.58302*eV, 2.63798*eV, 2.69533*eV, 2.75523*eV,
         2.81784*eV, 2.88338*eV, 2.95203*eV, 3.02403*eV, 3.09963*eV,

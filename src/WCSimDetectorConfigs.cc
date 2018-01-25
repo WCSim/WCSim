@@ -272,7 +272,9 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCODHeightWaterDepth     = 2.*m;
   WCODDeadSpace            = 600.*mm;
   WCODTyvekSheetThickness  = 1.0*mm; // Quite standard I guess
-  WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness);
+  WCODWLSPlatesThickness   = 1.*cm; //
+  WCODWLSPlatesLength      = 60.*cm; //
+  WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
 
   // OD PMTs //
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";

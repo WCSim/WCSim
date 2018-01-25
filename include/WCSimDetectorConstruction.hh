@@ -338,6 +338,8 @@ private:
   G4double WCODHeightWaterDepth;
   G4double WCODDeadSpace;
   G4double WCODTyvekSheetThickness;
+  G4double WCODWLSPlatesThickness;
+  G4double WCODWLSPlatesLength;
 
   G4double WCODCapPMTSpacing;
   G4double WCODCapEdgeLimit;
