@@ -5,7 +5,6 @@
 #ifndef WCSIM_WCSIMWLSPROPERTIES_HH
 #define WCSIM_WCSIMWLSPROPERTIES_HH
 
-#include "WCSimDetectorConstruction.hh"
 #include "globals.hh"
 
 class WCSimWLSProperties {

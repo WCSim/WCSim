@@ -4,6 +4,7 @@
 #include "WCSimPmtInfo.hh"
 #include "WCSimPMTObject.hh"
 #include "WCSimRootOptions.hh"
+#include "WCSimWLSProperties.hh"
 
 #include "G4Transform3D.hh"
 #include "G4VUserDetectorConstruction.hh"
@@ -114,7 +115,23 @@ public:
     if (PMTptr == NULL) {G4cout << CollectionName << " is not a recognized hit collection. Exiting WCSim." << G4endl; exit(1);}
     return PMTptr;
   }
- 
+
+  WCSimWLSProperties *CreateWLSObject(G4String, G4String);
+
+  std::map<G4String, WCSimWLSProperties*>  WLSNameMap;
+  WCSimWLSProperties *WLSptr;
+
+  void SetWLSPointer(WCSimWLSProperties* WLS, G4String CollectionName){
+    WLSNameMap[CollectionName] = WLS;
+  }
+
+  WCSimWLSProperties* GetWLSPointer(G4String CollectionName){
+    WLSptr = WLSNameMap[CollectionName];
+    if (WLSptr == NULL) {G4cout << CollectionName << " is not a recognized WLS properties. Exiting WCSim." << G4endl; exit(1);}
+    return WLSptr;
+  }
+
+
   G4ThreeVector GetWCOffset(){return WCOffset;}
   
   // Related to the WC tube ID

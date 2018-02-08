@@ -365,3 +365,15 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> Collec
   newPMT->DefineQEHist(QE);
   SetBasicPMTObject(newPMT);
 }
+
+WCSimWLSProperties *WCSimDetectorConstruction::CreateWLSObject(G4String WLSType, G4String CollectionName){
+
+  if (WLSType == "EljenEJ286"){
+    WCSimWLSProperties* WLS = new EljenEJ286;
+    WCSimDetectorConstruction::SetWLSPointer(WLS, CollectionName);
+    return WLS;
+  }
+
+  else { G4cout << WLSType << " is not a recognized WLS Type. Exiting WCSim." << G4endl; exit(1);}
+
+}

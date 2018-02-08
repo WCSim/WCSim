@@ -307,6 +307,10 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCColName.push_back(WCODCollectionName);
   CreateCombinedPMTQE(WCColName);
   isCombinedPMTCollectionDefined=true;
+
+  // TEST WLS collection for stacking action
+  G4String WLSType = "EljenEJ286";
+  CreateWLSObject(WLSType,WCODCollectionName);
 }
 
 void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()
