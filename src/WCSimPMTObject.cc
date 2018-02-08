@@ -1938,7 +1938,7 @@ G4float* PMT3inch::Getqpe() //currently uses the same as 20inch
   return qpe0;
 }
 
-//Currenly the PMT QE info is the same as 20 inch.
+//PMT QE Info extrapolated from ETEL datasheet
 G4float* PMT3inch::GetQE(){
   static G4float QE[20] = { 0.00, .005, .09, .21, .28, .30, .29, .28, .26, .24, .22, .18, .13, .075, .04, .02, .008, 0.00, 0.00, 0.00};
   return QE;
