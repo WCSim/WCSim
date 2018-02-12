@@ -93,9 +93,17 @@ G4float WCSimDetectorConstruction::GetStackingPMTQE(G4float PhotonWavelength, G4
   PMT = GetBasicPMTObject();
 
   // Recover optical response of any WLS materials
-  // WCSimWLSObject *WLS;
+  WCSimWLSProperties *WLS;
+  WLS = GetWLSPointer();
 
-  if(flag==1) return (G4float)(PMT->GetgQE()->Eval(PhotonWavelength,0,"S"))*ratio;
+  if(flag==1){
+    if(PMT && WLS){
+      return (G4float)(std::max(PMT->GetgQE()->Eval(PhotonWavelength,0,"S"),
+                                WLS->GetgAbs()->Eval(PhotonWavelength,0,"S")))*ratio;
+    } else {
+      return (G4float)(PMT->GetgQE()->Eval(PhotonWavelength,0,"S"))*ratio;
+    }
+  }
   else if (flag==0) return PMT->GetmaxQE()*ratio;
   else return 0;
 

@@ -5,6 +5,7 @@
 #ifndef WCSIM_WCSIMWLSPROPERTIES_HH
 #define WCSIM_WCSIMWLSPROPERTIES_HH
 
+#include <TGraph.h>
 #include "globals.hh"
 
 class WCSimWLSProperties {
@@ -18,6 +19,11 @@ class WCSimWLSProperties {
   virtual G4double* GetAbs()=0;
   virtual G4double* GetEm()=0;
 
+ public:
+  TGraph* GetgAbs(){ return gAbs;};
+  TGraph* GetgEm(){ return gEm;};
+  TGraph *gAbs;
+  TGraph *gEm;
 };
 
 class EljenEJ286 : public WCSimWLSProperties{
@@ -40,6 +46,9 @@ class EljenEJ286 : public WCSimWLSProperties{
   G4int     GetNumEntries_EM();
   G4double* GetPhotonEnergy_EM();
   G4double* GetEm();
+
+  void SetgAbs();
+  void SetgEm();
 };
 
 #endif //WCSIM_WCSIMWLSPROPERTIES_HH

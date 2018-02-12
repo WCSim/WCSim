@@ -116,21 +116,10 @@ public:
     return PMTptr;
   }
 
-  WCSimWLSProperties *CreateWLSObject(G4String, G4String);
-
-  std::map<G4String, WCSimWLSProperties*>  WLSNameMap;
+  WCSimWLSProperties *CreateWLSObject(G4String);
   WCSimWLSProperties *WLSptr;
-
-  void SetWLSPointer(WCSimWLSProperties* WLS, G4String CollectionName){
-    WLSNameMap[CollectionName] = WLS;
-  }
-
-  WCSimWLSProperties* GetWLSPointer(G4String CollectionName){
-    WLSptr = WLSNameMap[CollectionName];
-    if (WLSptr == NULL) {G4cout << CollectionName << " is not a recognized WLS properties. Exiting WCSim." << G4endl; exit(1);}
-    return WLSptr;
-  }
-
+  void SetWLSPointer(WCSimWLSProperties *WLS){WLSptr=WLS;}
+  WCSimWLSProperties* GetWLSPointer(){ return WLSptr;}
 
   G4ThreeVector GetWCOffset(){return WCOffset;}
   

@@ -366,11 +366,11 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> Collec
   SetBasicPMTObject(newPMT);
 }
 
-WCSimWLSProperties *WCSimDetectorConstruction::CreateWLSObject(G4String WLSType, G4String CollectionName){
+WCSimWLSProperties *WCSimDetectorConstruction::CreateWLSObject(G4String WLSType){
 
   if (WLSType == "EljenEJ286"){
     WCSimWLSProperties* WLS = new EljenEJ286;
-    WCSimDetectorConstruction::SetWLSPointer(WLS, CollectionName);
+    WCSimDetectorConstruction::SetWLSPointer(WLS);
     return WLS;
   }
 

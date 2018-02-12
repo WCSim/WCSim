@@ -7,6 +7,13 @@
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
 
+const double planck = 4.1357e-15; // ev.s
+const double lightspeed = 299792458e9; // nm/s
+
+double hWL(double E){
+  return planck * (lightspeed/E);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // ELJEN EJ-286
 // http://www.eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286
@@ -76,11 +83,11 @@ G4double* EljenEJ286::GetPhotonEnergy_ABS(){
 }
 
 G4double* EljenEJ286::GetAbs() {
-  G4double attL = 5.*mm; // From Datasheet EJ-286
+  G4double attL = 160.*cm; // From Datasheet EJ-286 and inferred with SG-BC404 // Basically BS
   static G4double AbsPlate[NUMENTRIES_WLS_ABS] =
-  { (1/0.01)*attL, (1/0.3)*attL, (1/0.8)*attL, 1.*attL, 1.*attL,
-        1.*attL, 1.*attL, 1.*attL, 1.*attL, 1.*attL,
-        1.*attL, (1/0.95)*attL, (1/0.9)*attL, (1/0.8)*attL, (1/0.6)*attL};
+      { (1-0.01)*attL, (1-0.05)*attL, (1-0.64)*attL, (1-0.93)*attL, (1-0.999)*attL,
+        (1-0.999)*attL, (1-0.999)*attL, (1-0.999)*attL, (1-0.999)*attL, (1-0.999)*attL,
+        (1-0.99)*attL, (1-0.97)*attL, (1-0.89)*attL, (1-0.71)*attL, (1-0.54)*attL};
   return AbsPlate;
 }
 
@@ -108,4 +115,61 @@ G4double *EljenEJ286::GetEm() {
         0.70, 1., 0.9, 0.3, 0.05,
         0. };
   return EmissionPlate;
+}
+
+// ###################### //
+///////// STACKING /////////
+// ###################### //
+
+void EljenEJ286::SetgAbs(){
+  double AbsAmp[NUMENTRIES_WLS_ABS] =
+      { (0.01), (0.05), (0.64), (0.93), (0.999),
+        (0.999), (0.999), (0.999), (0.999), (0.999),
+        (0.99), (0.97), (0.89), (0.71), (0.54)};
+  gAbs = new TGraph();
+  int iPt=0;
+  const int step = 10;
+
+  // Start by defining to 0 where no data on the WLS is available
+  for(int i=700;i>(int)(round(hWL(GetPhotonEnergy_ABS()[0]))*nm)+step;i=i-step){
+    gAbs->SetPoint(iPt,i,0.);
+    iPt++;
+  }
+
+  // Then fill with point there is data
+  for(int i=0;i<NUMENTRIES_WLS_ABS;i++){
+    gAbs->SetPoint(iPt,round(hWL(GetPhotonEnergy_ABS()[i]))*nm,AbsAmp[i]);
+    iPt++;
+  }
+
+  // Then again set everywhere else to 0
+  for(int i=(int)(round(hWL(GetPhotonEnergy_ABS()[NUMENTRIES_WLS_ABS-1]))*nm)-step;i>200;i=i-step){
+    gAbs->SetPoint(iPt,i,0.);
+    iPt++;
+  }
+}
+
+void EljenEJ286::SetgEm(){
+  gEm = new TGraph();
+  int iPt=0;
+  const int step = 10;
+
+  // Start by defining to 0 where no data on the WLS is available
+  for(int i=700;i>(int)(round(hWL(GetPhotonEnergy_EM()[0]))*nm)+step;i=i-step){
+    gEm->SetPoint(iPt,i,0.);
+    iPt++;
+  }
+
+  // Then fill with point there is data
+  for(int i=0;i<NUMENTRIES_WLS_EM;i++){
+    gEm->SetPoint(iPt,round(hWL(GetPhotonEnergy_EM()[i]))*nm,GetEm()[i]);
+    G4cout << iPt << " " << round(hWL(GetPhotonEnergy_EM()[i]))*nm << " " << GetEm()[i] << G4endl;
+    iPt++;
+  }
+
+  // Then again set everywhere else to 0
+  for(int i=(int)(round(hWL(GetPhotonEnergy_EM()[NUMENTRIES_WLS_EM-1]))*nm)-step;i>200;i=i-step){
+    gEm->SetPoint(iPt,i,0.);
+    iPt++;
+  }
 }
