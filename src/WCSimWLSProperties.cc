@@ -19,7 +19,7 @@ double hWL(double E){
 // http://www.eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286
 #define NUMENTRIES_WLS 33
 
-EljenEJ286::EljenEJ286() {}
+EljenEJ286::EljenEJ286() { SetgAbs(); SetgEm();}
 EljenEJ286::~EljenEJ286(){}
 
 G4String EljenEJ286::GetWLSPlateName() { G4String WLSPlateName = "EljenEJ286"; return WLSPlateName;}

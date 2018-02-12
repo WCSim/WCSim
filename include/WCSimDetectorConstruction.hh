@@ -119,7 +119,10 @@ public:
   WCSimWLSProperties *CreateWLSObject(G4String);
   WCSimWLSProperties *WLSptr;
   void SetWLSPointer(WCSimWLSProperties *WLS){WLSptr=WLS;}
-  WCSimWLSProperties* GetWLSPointer(){ return WLSptr;}
+  WCSimWLSProperties* GetWLSPointer(){
+    if (WLSptr == NULL) {G4cout << " NO WLS POINTER. Exiting WCSim." << G4endl; exit(1);}
+    return WLSptr;
+  }
 
   G4ThreeVector GetWCOffset(){return WCOffset;}
   
