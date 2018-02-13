@@ -7,6 +7,7 @@
 
 #include "TFile.h"
 #include "TTree.h"
+#include "TStopwatch.h"
 #include "WCSimRootEvent.hh"
 #include "WCSimRootGeom.hh"
 #include "WCSimRootOptions.hh"
@@ -44,6 +45,8 @@ public:
   void incrementCatcherHits()     { numberOfTimesCatcherHit++;}
   void SetNtuples(int ntup) {ntuples=ntup;}
 
+  void SetUseTimer(bool use) { useTimer = use; }
+  
 private:
   // MFechner : set by the messenger
   std::string RootFileName;
@@ -64,6 +67,9 @@ private:
 
   WCSimRunActionMessenger* messenger;
   int ntuples;  // 1 for ntuples to be written
+
+  bool useTimer; ///< Use the timer? Set by Messenger.
+  TStopwatch timer; ///< A timer for runtime analysis
 };
 
 #endif

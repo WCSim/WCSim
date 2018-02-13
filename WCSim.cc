@@ -38,8 +38,8 @@ int main(int argc,char** argv)
   WCSimTuningParameters* tuningpars = new WCSimTuningParameters();
 
   // Get the tuning parameters
-  file_exists("tuning_parameters.mac");
-  UI->ApplyCommand("/control/execute tuning_parameters.mac");
+  file_exists("macros/tuning_parameters.mac");
+  UI->ApplyCommand("/control/execute macros/tuning_parameters.mac");
 
   // define random number generator parameters
   WCSimRandomParameters *randomparameters = new WCSimRandomParameters();
@@ -59,8 +59,8 @@ int main(int argc,char** argv)
 
   // Currently, default physics list is set to FTFP_BERT
   // The custom WCSim physics list option is removed in versions later than WCSim1.6.0
-  file_exists("jobOptions.mac");
-  UI->ApplyCommand("/control/execute jobOptions.mac");
+  file_exists("macros/jobOptions.mac");
+  UI->ApplyCommand("/control/execute macros/jobOptions.mac");
 
   // Initialize the physics factory to register the selected physics.
   physFactory->InitializeList();

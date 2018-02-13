@@ -26,6 +26,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "Cylinder_60x74_20inchBandL_40perCent\n"
 			  "Cylinder_12inchHPD_15perCent\n"
 			  "HyperK\n"
+			  "HyperKWithOD\n"
 			  "EggShapedHyperK\n"
 			  "EggShapedHyperK_withHPD\n"
 			  );
@@ -39,6 +40,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "Cylinder_60x74_20inchBandL_40perCent "
 			  "Cylinder_12inchHPD_15perCent "
 			  "HyperK "
+			  "HyperKWithOD "
 			  "EggShapedHyperK "
 			  "EggShapedHyperK_withHPD "
 			  );
@@ -76,11 +78,13 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTQEMethod->SetGuidance("Available options are:\n"
 			     "Stacking_Only\n"
 			     "Stacking_And_SensitiveDetector\n"
-			     "SensitiveDetector_Only\n");
+			     "SensitiveDetector_Only\n"
+			   "DoNotApplyQE");
   PMTQEMethod->SetParameterName("PMTQEMethod", false);
   PMTQEMethod->SetCandidates("Stacking_Only "
 			     "Stacking_And_SensitiveDetector "
-			     "SensitiveDetector_Only ");
+			     "SensitiveDetector_Only "
+			     "DoNotApplyQE");
   PMTQEMethod->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   PMTCollEff = new G4UIcmdWithAString("/WCSim/PMTCollEff", this);
@@ -142,6 +146,8 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->Cylinder_12inchHPD_15perCent();
 		} else if ( newValue == "HyperK" ){
 		  WCSimDetector->SetHyperKGeometry();
+		} else if ( newValue == "HyperKWithOD" ){
+		  WCSimDetector->SetHyperKWithODGeometry();
 		} else if ( newValue == "EggShapedHyperK") {
 		  WCSimDetector->SetIsEggShapedHyperK(true);
 		  WCSimDetector->SetEggShapedHyperKGeometry();
@@ -174,6 +180,9 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  }else if (newValue == "SensitiveDetector_Only"){
 	    WCSimDetector->SetPMT_QE_Method(3);
 	    G4cout << "3";
+	  }else if (newValue == "DoNotApplyQE"){
+	    WCSimDetector->SetPMT_QE_Method(4);
+	    G4cout << "4";
 	  }else{
 	    
 	  }

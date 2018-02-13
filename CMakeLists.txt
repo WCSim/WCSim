@@ -92,16 +92,16 @@ target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
-# build B1. This is so that we can run the executable directly because it
+# build WCSim. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
 set(WCSIM_SCRIPTS
-  jobOptions.mac
+  macros/jobOptions.mac
   WCSim.mac
-  daq.mac
-  visOGLSX.mac
-  visRayTracer.mac
-  tuning_parameters.mac
+  macros/daq.mac
+  macros/visOGLSX.mac
+  macros/visRayTracer.mac
+  macros/tuning_parameters.mac
   )
 
 foreach(_script ${WCSIM_SCRIPTS})
