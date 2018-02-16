@@ -89,13 +89,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   innerAnnulusRadius = WCIDRadius - WCPMTExposeHeight-1.*mm;
   outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
   if(isODConstructed)
-    outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness + WCODWLSPlatesThickness + WCPMTODExposeHeight + 1.*mm;
+    outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness + WCPMTODExposeHeight + 1.*mm;
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
   WCLength    = WCIDHeight + 2*2.3*m;	//jl145 - reflects top veto blueprint, cf. Farshid Feyzi
   WCRadius    = (WCIDDiameter/2. + WCBlackSheetThickness + 1.5*m)/cos(dPhi/2.) ; // TODO: OD
   if(isODConstructed){
-    WCLength    = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness + WCODWLSPlatesThickness);
+    WCLength    = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness);
     WCRadius    = (outerAnnulusRadius + WCODLateralWaterDepth)/cos(dPhi/2.) ;
   }
 
@@ -927,8 +927,8 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 		logicWCODTopCapTyvek->SetVisAttributes(G4VisAttributes::Invisible);
 		logicWCODBottomCapTyvek->SetVisAttributes(G4VisAttributes::Invisible);
 		//// Uncomment following for TYVEK visualization
-		// logicWCODTopCapTyvek->SetVisAttributes(WCCapsODTyvekCellVisAtt);
-		// logicWCODBottomCapTyvek->SetVisAttributes(WCCapsODTyvekCellVisAtt);
+		 logicWCODTopCapTyvek->SetVisAttributes(WCCapsODTyvekCellVisAtt);
+		 logicWCODBottomCapTyvek->SetVisAttributes(WCCapsODTyvekCellVisAtt);
 
 		G4ThreeVector CapTyvekPosition(0.,0.,(WCIDHeight + 2*WCODDeadSpace)/2);
 
@@ -996,7 +996,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
         logicWCBarrelCellODTyvek->SetVisAttributes(G4VisAttributes::Invisible);
 		//// Uncomment following for TYVEK visualization
-        // logicWCBarrelCellODTyvek->SetVisAttributes(WCBarrelODTyvekCellVisAtt);
+         logicWCBarrelCellODTyvek->SetVisAttributes(WCBarrelODTyvekCellVisAtt);
 
 
 		G4VPhysicalVolume* physiWCBarrelCellODTyvek =
@@ -1019,11 +1019,20 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
         // WLS Barrel Side
         // ------------------------------------------------------------
 
-        G4Box *solidWCBarrelCellODWLSPlate =
-            new G4Box("WCBarrelCellODWLS",
+        G4Box *rectangleWLS =
+            new G4Box("rectangleWLS",
                       WCODWLSPlatesThickness/2,
                       WCODWLSPlatesLength/2,
                       WCODWLSPlatesLength/2);
+
+        // Extruded volume for WLS
+        G4Tubs* holeWLS =
+            new G4Tubs("holeWLS",0,WCPMTODRadius,WCODWLSPlatesLength/2,0,twopi);
+        G4RotationMatrix* holeWLSRotation = new G4RotationMatrix;
+        holeWLSRotation->rotateY(90.*deg);
+
+        G4SubtractionSolid* solidWCBarrelCellODWLSPlate =
+            new G4SubtractionSolid("WCBarrelCellODWLS", rectangleWLS, holeWLS, holeWLSRotation, G4ThreeVector(0,0,0));
 
         G4String WLSMaterial = "Air";
         WLSMaterial = "WLS_PVT";
@@ -1088,7 +1097,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
             G4ThreeVector PMTPosition =  G4ThreeVector(WCODRadius,
                                                        -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                        -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
-            G4ThreeVector WLSPlatePosition =  G4ThreeVector(WCODRadius-WCODWLSPlatesThickness/2,
+            G4ThreeVector WLSPlatePosition =  G4ThreeVector(WCODRadius+WCODWLSPlatesThickness/2,
                                                             -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                             -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
 
@@ -1186,13 +1195,13 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
           for(G4double i = 0; i < (WCPMTODperCellHorizontal); i++){
             for(G4double j = 0; j < WCPMTODperCellVertical; j++){
-              G4ThreeVector PMTPosition =  G4ThreeVector(WCODRadius/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
+              G4ThreeVector PMTPosition =  G4ThreeVector((WCODRadius)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
                                                          -towerWidthOD/2.+(i+0.5)*horizontalODSpacing,
                                                          -(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing);
               PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
               //axes of the cell
 
-              G4ThreeVector WLSPlatePosition =  G4ThreeVector((WCODRadius-WCODWLSPlatesThickness/2)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
+              G4ThreeVector WLSPlatePosition =  G4ThreeVector((WCODRadius+WCODWLSPlatesThickness/2)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.) + 1*cm,
                                                               -towerWidthOD/2.+(i+0.5)*horizontalODSpacing,
                                                               -(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing);
               WLSPlatePosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
@@ -1261,7 +1270,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                                                      ((WCIDHeight + 2*WCODDeadSpace)/2)+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
             G4ThreeVector topWLSpos = G4ThreeVector(xoffset,
                                                     yoffset,
-                                                    ((WCIDHeight + 2*WCODDeadSpace)/2)+WCODTyvekSheetThickness);
+                                                    ((WCIDHeight + 2*WCODDeadSpace)/2)+WCODTyvekSheetThickness+WCODWLSPlatesThickness/2);
 
             G4ThreeVector bottomcellpos = G4ThreeVector(xoffset,
                                                         yoffset,
@@ -1943,10 +1952,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
     for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
       for(G4double j = 0; j < WCPMTODperCellVertical; j++){
-        G4ThreeVector PMTPosition =  G4ThreeVector(WCODRadius+WCODTyvekSheetThickness,
+        G4ThreeVector PMTPosition =  G4ThreeVector(WCODRadius,
                                                    -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                    -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
-        G4ThreeVector WLSPlatePosition =  G4ThreeVector(WCODRadius+WCODTyvekSheetThickness-WCODWLSPlatesThickness,
+        G4ThreeVector WLSPlatePosition =  G4ThreeVector(WCODRadius+WCODWLSPlatesThickness/2,
                                                         -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                         -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
 

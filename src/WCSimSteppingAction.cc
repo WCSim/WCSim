@@ -162,12 +162,22 @@ void WLSModel(){
 
   }
 
+}
+
+void WLSPhysicsProcess(const G4Step *aStep){
+
+  G4Track *track = aStep->GetTrack();
+
+  G4String partName = track->GetParticleDefinition()->GetParticleName();
+
+
+}
+
 
 //////////////////////////////////////////////
 ///// BEGINING OF WCSIM STEPPING ACTION //////
 //////////////////////////////////////////////
 
-}
 
 WCSimSteppingAction::WCSimSteppingAction(WCSimRunAction *myRun) : runAction(myRun) {
 
@@ -337,17 +347,17 @@ void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
 
     runAction->GetPhotonTree()->Fill();
 
-    ////// PRINTOUTS //////
-    std::cout << "OpPhoton in " << track->GetVolume()->GetName()
-              << " and going to " << track->GetNextVolume()->GetName()
-              << std::endl;
-    std::cout << "Creator process : " << track->GetCreatorProcess()->GetProcessName() << std::endl;
-    std::cout << "# Track ID : " << track->GetTrackID() << std::endl;
-    std::cout << "# Parent ID : " << track->GetTrackID() << std::endl;
-    std::cout << "# Pos : "
-              << track->GetPosition().x() << " "
-              << track->GetPosition().y() << " "
-              << track->GetPosition().z() << " " << std::endl;
+//    ////// PRINTOUTS //////
+//    std::cout << "OpPhoton in " << track->GetVolume()->GetName()
+//              << " and going to " << track->GetNextVolume()->GetName()
+//              << std::endl;
+//    std::cout << "Creator process : " << track->GetCreatorProcess()->GetProcessName() << std::endl;
+//    std::cout << "# Track ID : " << track->GetTrackID() << std::endl;
+//    std::cout << "# Parent ID : " << track->GetTrackID() << std::endl;
+//    std::cout << "# Pos : "
+//              << track->GetPosition().x() << " "
+//              << track->GetPosition().y() << " "
+//              << track->GetPosition().z() << " " << std::endl;
   }
 
 }
