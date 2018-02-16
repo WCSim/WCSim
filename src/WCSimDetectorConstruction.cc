@@ -270,6 +270,16 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
     WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
+  else if (PMTType == "PMT5inch"){
+    WCSimPMTObject* PMT = new PMT5inch;
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
+    return PMT;
+  }
+  else if (PMTType == "PMT3inch"){
+    WCSimPMTObject* PMT = new PMT5inch;
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
+    return PMT;
+  }
 
   else { G4cout << PMTType << " is not a recognized PMT Type. Exiting WCSim." << G4endl; exit(1);}
 }
@@ -280,6 +290,16 @@ void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
   wcopt->SetSavePi0(pi0Info_isSaved);
   wcopt->SetPMTQEMethod(PMT_QE_Method);
   wcopt->SetPMTCollEff(PMT_Coll_Eff);
+}
+
+//A function to recalculate the dimensions of the HKOD tank if the parameters are changed
+void WCSimDetectorConstruction::UpdateODGeo()
+{
+  WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
+  WCODDiameter = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
+
+  WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
+  WCODCapEdgeLimit = WCIDDiameter/2.0 - WCPMTODRadius;
 }
 
 void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> CollectionName){

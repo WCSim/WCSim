@@ -74,7 +74,8 @@ public:
   void SetHyperKGeometry();
   void SetHyperKWithODGeometry();
   void UpdateGeometry();
-  
+  void UpdateODGeo();
+
 
   G4String GetDetectorName()      {return WCDetectorName;}
   G4double GetWaterTubeLength()   {return WCLength;}
@@ -167,7 +168,36 @@ public:
 
   bool GetIsODConstructed(){return isODConstructed;}
   bool GetIsCombinedPMTCollectionDefined(){return isCombinedPMTCollectionDefined;}
- 
+
+  ///////////////////////////////
+  // MESSENGER methods for OD ///
+  ///////////////////////////////
+
+  void SetWCPMTODSize(G4String WCPMTODSize){
+    if(WCPMTODSize == "PMT8inch" || WCPMTODSize == "PMT5inch" || WCPMTODSize == "PMT3inch"){
+      WCSimPMTObject *PMTOD = CreatePMTObject(WCPMTODSize, WCODCollectionName);
+      WCPMTODName           = PMTOD->GetPMTName();
+      WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
+      WCPMTODRadius         = PMTOD->GetRadius();
+    }
+  }
+
+  void SetWCODLateralWaterDepth(G4double val){WCODLateralWaterDepth = val;}
+  void SetWCODHeightWaterDepth(G4double val){WCODHeightWaterDepth = val;}
+  void SetWCODDeadSpace(G4double val){WCODDeadSpace = val;}
+  void SetWCODTyvekSheetThickness(G4double val){WCODTyvekSheetThickness = val;}
+  void SetWCODWLSPlatesThickness(G4double val){WCODWLSPlatesThickness = val;}
+  void SetWCODWLSPlatesLength(G4double val){WCODWLSPlatesLength = val;}
+  void SetWCPMTODperCellHorizontal(G4double val){WCPMTODperCellHorizontal = val;}
+  void SetWCPMTODperCellVertical(G4double val){WCPMTODperCellVertical = val;}
+  void SetWCPMTODPercentCoverage(G4double val){WCPMTODPercentCoverage = val;}
+  void SetWCODPMTShift(G4double val){WCODPMTShift = val;}
+  void SetODEdited(G4bool val){odEdited = val;}
+  G4bool GetODEdited(){return odEdited;}
+
+  ////////// END OD /////////////
+  ///////////////////////////////
+
 private:
 
   // Tuning parameters
@@ -444,8 +474,10 @@ private:
     G4double outerPMT_TopRpitch;
     G4double outerPMT_BotRpitch;
     G4double outerPMT_Apitch;
+    G4bool odEdited;
 
-    G4double blackSheetThickness;
+
+  G4double blackSheetThickness;
 
     G4int innerPMT_TopN;
     G4int innerPMT_BotN;
