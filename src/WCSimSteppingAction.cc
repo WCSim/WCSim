@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <WCSimRootEvent.hh>
+#include <G4SIunits.hh>
 
 #include "WCSimSteppingAction.hh"
 
@@ -13,6 +15,9 @@
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
 
+WCSimSteppingAction::WCSimSteppingAction(WCSimRunAction *myRun) : runAction(myRun) {
+
+}
 
 void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 {
@@ -28,15 +33,7 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
   G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
 
   //debugging 
-//  G4Track* theTrack = aStep->GetTrack();
-//  const G4DynamicParticle* aParticle = theTrack->GetDynamicParticle();
-//  G4ThreeVector aMomentum = aParticle->GetMomentumDirection();
-//  G4double vx = aMomentum.x();
-//  G4int ix = std::isnan(vx);
-//  if(ix != 0){
-//    G4cout << " PROBLEM! " << theTrack->GetCreatorProcess()->GetProcessName() <<
-//  std::flush << G4endl;
-//  }
+  //DebugWLSPlates(aStep);
   
 }
 
@@ -159,4 +156,44 @@ double WCSimSteppingAction::FieldLines(G4double /*x*/,G4double /*y*/,G4int /*coo
 //   else //y coordinate
 //     return 0.1*((abs(y)/y)*(1-Radius*Radius/((x*x+y*y)*(x*x+y*y))) + abs(y)*(2*Radius*Radius*y/((x*x+y*y)*(x*x+y*y))));
   return 0;
+}
+void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
+
+  G4Track *track = aStep->GetTrack();
+
+  G4String partName = track->GetParticleDefinition()->GetParticleName();
+
+  if(partName=="opticalphoton"){
+
+    photonEvt *pEvt = GetRunAction()->GetPhotonEvt();
+
+    pEvt->trackID = track->GetTrackID();
+    pEvt->parentID = track->GetParentID();
+
+    pEvt->pos[0] = track->GetPosition().x();
+    pEvt->pos[1] = track->GetPosition().y();
+    pEvt->pos[2] = track->GetPosition().z();
+
+    track->GetVolume()->GetName().c_str();
+
+    pEvt->wl = ((2.0*M_PI*197.3)/(track->GetTotalEnergy()/CLHEP::eV));
+
+    if(track->GetCreatorProcess()->GetProcessName()=="Cerenkov") pEvt->proc = 0;
+    else if(track->GetCreatorProcess()->GetProcessName()=="OpWLS") pEvt->proc = 1;
+
+    runAction->GetPhotonTree()->Fill();
+
+    ////// PRINTOUTS //////
+    std::cout << "OpPhoton in " << track->GetVolume()->GetName()
+              << " and going to " << track->GetNextVolume()->GetName()
+              << std::endl;
+    std::cout << "Creator process : " << track->GetCreatorProcess()->GetProcessName() << std::endl;
+    std::cout << "# Track ID : " << track->GetTrackID() << std::endl;
+    std::cout << "# Parent ID : " << track->GetTrackID() << std::endl;
+    std::cout << "# Pos : "
+              << track->GetPosition().x() << " "
+              << track->GetPosition().y() << " "
+              << track->GetPosition().z() << " " << std::endl;
+  }
+
 }

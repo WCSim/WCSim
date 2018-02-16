@@ -1,19 +1,22 @@
 #ifndef WCSimSteppingAction_h
 #define WCSimSteppingAction_h 1
 
+#include <TTree.h>
 #include "G4Event.hh"
 #include "G4UserSteppingAction.hh"
 #include "G4ThreeVector.hh"
+#include "WCSimRunAction.hh"
 
 class G4HCofThisEvent;
 class G4Event;
 
 class WCSimSteppingAction : public G4UserSteppingAction
 {
+ private:
+  WCSimRunAction* runAction;
 
 public:
-  WCSimSteppingAction()
-  {};
+  WCSimSteppingAction(WCSimRunAction*);
 
   ~WCSimSteppingAction()
   {};
@@ -31,6 +34,9 @@ public:
   G4double FieldLines(G4double x,
 		      G4double y,
 		      G4int xy);
+
+  WCSimRunAction* GetRunAction(){return runAction;}
+  void DebugWLSPlates(const G4Step*);
 
 private:
 
