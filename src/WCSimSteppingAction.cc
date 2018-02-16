@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <WCSimRootEvent.hh>
 #include <G4SIunits.hh>
+#include <TRandom.h>
+#include <random>
 
 #include "WCSimSteppingAction.hh"
 
@@ -195,5 +197,164 @@ void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
               << track->GetPosition().y() << " "
               << track->GetPosition().z() << " " << std::endl;
   }
+
+}
+
+//ROOT Includes
+#include "TVector3.h"
+
+#define PI 3.141592654
+
+const double planck = 4.1357e-15; // ev.s
+const double lightspeed = 299792458e9; // nm/s
+
+TH1F *emissionHist;
+
+inline void CreateEmissionHistogram(){
+
+
+  static const int emitArraySize = 15;
+  float emitWavelength[emitArraySize] = {390,400,410,420,430,440,450,460,470,480,490,500,510,520,530};
+  float emit[emitArraySize] =
+      {0.0, 0.1, 0.71, 0.98,
+       0.91, 0.63, 0.49, 0.35,
+       0.20, 0.13, 0.081, 0.052,
+       0.03, 0.021, 0};
+
+  emissionHist = new TH1F("hist","hist", 15, 390., 530.);
+  emissionHist->Sumw2();
+
+  for (int i = 0 ; i < emitArraySize; i++) {
+
+    emissionHist->Fill(emitWavelength[i], emit[i]);
+    emissionHist->SetBinError(i+1, 0);
+  }
+
+
+}
+
+
+
+
+// First we have a structure to hold the values of the emitted photon.
+typedef struct {
+
+  TVector3 direction; // The direction of the emitted photon.
+  TVector3 position; // The position where the emitted photon was created (same as where the incident photon was absorbed).
+  double energy; // The energy value of the emitted photon.
+  double wavelength; // The wavelength of the emitted photon.
+
+} EmittedPhoton;
+
+// This function will determine the probability of an emitted photon will being detected by the PMT.
+// This function uses only the position of the photon's absorption with respect to the PMT (distance from PMT)
+// and lab measurements of the efficiency as a function of distance, taken at Edinburgh University.
+double EmittedPhotonDetectedProbability(TVector3 absorbedPhotonPosition){
+
+  // This function depends on the values measured at Edinburgh. Perhaps linear? exponential? something else?
+
+  return 0.2;
+}// End of EmittedPhotonDetectedProbability function.
+
+
+// This function will determine whether or not a photon will be detected by the PMT. This function
+// uses only the position of the photon's absorption with respect to the PMT (distance from PMT) and
+// lab measurements of the efficiency as a function of distance, taken at Edinburgh University.
+bool EmittedPhotonDetected(TVector3 absorbedPhotonPosition){
+  TRandom *r = new TRandom(time(0)); // This can be changed to whatever random number generator WCSim is using.
+
+  // Check to see whether random number generated is less than or equal to the probability of a photon, emitted
+  // from that position, being detected by the PMT.
+  if (r->Uniform(0.,1.) <= EmittedPhotonDetectedProbability(absorbedPhotonPosition) ){
+    return true;
+  } else {
+    return false;
+  }// End of if statement.
+
+
+}// End of EmittedPhotonDetected function.
+
+
+// This function will convert wavelength(nm) to energy(ev).
+double WavelengthToEnergy(double lambda){
+
+  return (planck*lightspeed/lambda); //energy in ev.
+
+}
+
+// This function will select a wavelength for the emitted photon and return it as a wavelength in nm.
+double EmittedPhotonWavelength(){
+
+
+  return emissionHist->GetRandom();
+
+}// End of EmittedPhotonWavelength function.
+
+
+
+
+// This funtion will generate an emitted photon with a random 3D direction and energy value (from the
+// Eljen EJ-286 emission spectra). It will use only the position of absorption and output a direction
+// (TVector3) and an energy (ev).
+EmittedPhoton EmitPhoton(TVector3 absorbedPhotonPosition){
+
+  EmittedPhoton phot;
+  phot.position = absorbedPhotonPosition;
+//	phot->position->SetX(absorbedPhotonPosition->x());
+//	phot->position->SetY(absorbedPhotonPosition->y());
+//	phot->position->SetZ(absorbedPhotonPosition->z());
+
+  // Here we can use TF1 and the GetRandom() function to selected from the emission spectra.
+
+  // We don't know the spatial distribution of the emitted photon so we will just keep this distribution uniform
+  // over the surface of a sphere.
+
+  std::default_random_engine gen(rand()); // Random number generator.
+  std::uniform_real_distribution<double> dist(0.,1.); // Random number distribution (uniform doubles between 0 and 1)
+//	double r = dist(gen); // The generated random number.
+
+  // Generate random points on a unit sphere. http://mathworld.wolfram.com/SpherePointPicking.html
+  double theta = 2*PI*dist(gen);
+  double phi = acos(2*dist(gen)-1);
+  double x = sin(phi)*cos(theta);
+  double y = sin(phi)*sin(theta);
+  double z = cos(phi);
+
+  TVector3 dir(x, y, z);
+
+  phot.direction = dir;
+
+  phot.wavelength = EmittedPhotonWavelength();
+  phot.energy = WavelengthToEnergy(phot.wavelength);
+
+
+  return phot;
+}// End of EmitPhoton function.
+
+
+void WLSModel(){
+
+  std::cout << "This is just a test." << std::endl;
+
+  CreateEmissionHistogram();
+
+  for (int i = 0; i<10; i++){
+    TVector3 v(i*0.2, i*1, i*30);
+    EmittedPhoton p = EmitPhoton(v);
+    std::cout << "Absorbed: " << v.x() << " " << v.y() << " " << v.z() << std::endl;
+    std::cout << "PhotAbsorb: " << p.position.x() << " " << p.position.y() << " " << p.position.z() << std::endl;
+    std::cout << "PhotDir: " << p.direction.x() << " " << p.direction.y() << " " << p.direction.z() << std::endl;
+    std::cout << "PhotWavelength: " << p.wavelength << std::endl;
+    std::cout << "PhotEnergy: " << p.energy << std::endl;
+    std::cout << "-----------------------------------------------" << std::endl;
+
+  }
+
+
+
+
+
+
+
 
 }
