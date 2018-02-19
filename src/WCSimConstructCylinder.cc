@@ -1037,10 +1037,10 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
         G4String WLSMaterial = "Air";
         WLSMaterial = "WLS_PVT";
 
-        logicWCBarrelCellODWLSPlate =
+        logicWCODWLSPlate =
             new G4LogicalVolume(solidWCBarrelCellODWLSPlate,
                                 G4Material::GetMaterial(WLSMaterial),
-                                "WCBarrelCellODWLSPlate",
+                                "WCODWLSPlate",
                                 0,0,0);
 
         G4VisAttributes* WCBarrelODWLSPlateVisAtt
@@ -1048,9 +1048,9 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
         WCBarrelODWLSPlateVisAtt->SetForceWireframe(true);
         WCBarrelODWLSPlateVisAtt->SetForceSolid(true);
 
-        logicWCBarrelCellODWLSPlate->SetVisAttributes(G4VisAttributes::Invisible);
+        logicWCODWLSPlate->SetVisAttributes(G4VisAttributes::Invisible);
         //// Uncomment following for WLS visualization
-        logicWCBarrelCellODWLSPlate->SetVisAttributes(WCBarrelODWLSPlateVisAtt);
+        logicWCODWLSPlate->SetVisAttributes(WCBarrelODWLSPlateVisAtt);
 
         //-------------------------------------------------------------
         // OD PMTs Barrel Side
@@ -1115,8 +1115,8 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
             G4VPhysicalVolume* physiWCBarrelWLSPlate =
                 new G4PVPlacement(WCWLSPlateRotation,              // its rotation
                                   WLSPlatePosition,
-                                  logicWCBarrelCellODWLSPlate,                // its logical volume
-                                  "WCWLSPlateOD",             // its name
+                                  logicWCODWLSPlate,                // its logical volume
+                                  "WCBarrelCellWLSPlateOD",             // its name
                                   logicWCBarrelCell,         // its mother volume
                                   false,                     // no boolean operations
                                   (int)(i*WCPMTODperCellVertical+j),
@@ -1220,8 +1220,8 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
               G4VPhysicalVolume* physiWCBarrelWLSPlate =
                   new G4PVPlacement(WCWLSPlateRotation,              // its rotation
                                     WLSPlatePosition,
-                                    logicWCBarrelCellODWLSPlate,                // its logical volume
-                                    "WCWLSPlateOD",             // its name
+                                    logicWCODWLSPlate,                // its logical volume
+                                    "WCExtraWLSPlateOD",             // its name
                                     logicWCBarrelCell,         // its mother volume
                                     false,                     // no boolean operations
                                     (int)(i*WCPMTODperCellVertical+j),
@@ -1308,8 +1308,8 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
               G4VPhysicalVolume* physiTopCapWLSPlate =
                   new G4PVPlacement(WCCapWLSPlateRotation,                             // its rotation
                                     topWLSpos,
-                                    logicWCBarrelCellODWLSPlate,   // its logical volume
-                                    "WCWLSPlateOD",                // its name
+                                    logicWCODWLSPlate,   // its logical volume
+                                    "WCTopCapWLSPlateOD",                // its name
                                     logicWCBarrel,                 // its mother volume
                                     false,                         // no boolean operations
                                     icopy);
@@ -1327,8 +1327,8 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
               G4VPhysicalVolume* physiBottomCapWLSPlate =
                   new G4PVPlacement(WCCapWLSPlateRotation,                             // its rotation
                                     bottomWLSpos,
-                                    logicWCBarrelCellODWLSPlate,   // its logical volume
-                                    "WCWLSPlateOD",                // its name
+                                    logicWCODWLSPlate,   // its logical volume
+                                    "WCBottomCapWLSPlateOD",                // its name
                                     logicWCBarrel,                 // its mother volume
                                     false,                         // no boolean operations
                                     icopy);
@@ -1972,8 +1972,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
         G4VPhysicalVolume* physiWCBarrelWLSPlate =
             new G4PVPlacement(0,              // its rotation
                               WLSPlatePosition,
-                              logicWCBarrelCellODWLSPlate,                // its logical volume
-                              "WCWLSPlateOD",             // its name
+                              logicWCODWLSPlate,                // its logical volume
+                              "WCBorderCellWLSPlateOD",             // its name
                               logicWCBarrelBorderCell,         // its mother volume
                               false,                     // no boolean operations
                               (int)(i*WCPMTODperCellVertical+j),

@@ -238,8 +238,7 @@ private:
   G4LogicalVolume* logicWCBarrelCellODTyvek;
   G4LogicalVolume* logicWCTowerODTyvek;
 
-  G4LogicalVolume* logicWCBarrelCellODWLSPlate;
-  G4LogicalVolume* logicWCTowerODWLSPlate;
+  G4LogicalVolume* logicWCODWLSPlate;
 
   G4LogicalVolume* logicWCBarrelCellBlackSheet;
   G4LogicalVolume* logicWCTowerBlackSheet;
