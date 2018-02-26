@@ -1775,7 +1775,8 @@ G4float* PMT5inch::Getqpe() //currently uses the same as 20inch
 
 //Currenly the PMT QE info is the same as 20 inch.
 G4float* PMT5inch::GetQE(){
-  static G4float QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  static G4float QE[20] = { 0.00*correctionFactor, .0139*correctionFactor, .0854*correctionFactor, .169*correctionFactor, .203*correctionFactor, .206*correctionFactor, .211*correctionFactor, .202*correctionFactor,.188*correctionFactor, .167*correctionFactor, .140*correctionFactor, .116*correctionFactor, .0806*correctionFactor, .0432*correctionFactor, .0265*correctionFactor, .0146*correctionFactor, .00756*correctionFactor, .00508*correctionFactor, .00158*correctionFactor, 0.00*correctionFactor};
   return QE;
 }
 G4float* PMT5inch::GetQEWavelength(){static G4float wavelength[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
@@ -1940,7 +1941,8 @@ G4float* PMT3inch::Getqpe() //currently uses the same as 20inch
 
 //PMT QE Info extrapolated from ETEL datasheet
 G4float* PMT3inch::GetQE(){
-  static G4float QE[20] = { 0.00, .005, .09, .21, .28, .30, .29, .28, .26, .24, .22, .18, .13, .075, .04, .02, .008, 0.00, 0.00, 0.00};
+  G4float correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  static G4float QE[20] = { 0.00*correctionFactor, .005*correctionFactor, .09*correctionFactor, .21*correctionFactor, .28*correctionFactor, .30*correctionFactor, .29*correctionFactor, .28*correctionFactor, .26*correctionFactor, .24*correctionFactor, .22*correctionFactor, .18*correctionFactor, .13*correctionFactor, .075*correctionFactor, .04*correctionFactor, .02*correctionFactor, .008*correctionFactor, 0.00*correctionFactor, 0.00*correctionFactor, 0.00*correctionFactor};
   return QE;
 }
 G4float* PMT3inch::GetQEWavelength(){static G4float wavelength[20] = { 260., 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640.};
