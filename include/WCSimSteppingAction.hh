@@ -10,6 +10,8 @@
 class G4HCofThisEvent;
 class G4Event;
 
+inline void CreateEmissionHistogram();
+
 class WCSimSteppingAction : public G4UserSteppingAction
 {
  private:
