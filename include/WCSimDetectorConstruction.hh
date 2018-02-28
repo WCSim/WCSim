@@ -121,7 +121,6 @@ public:
   WCSimWLSProperties *WLSptr;
   void SetWLSPointer(WCSimWLSProperties *WLS){WLSptr=WLS;}
   WCSimWLSProperties* GetWLSPointer(){
-    if (WLSptr == NULL) {G4cout << " NO WLS POINTER. Exiting WCSim." << G4endl; exit(1);}
     return WLSptr;
   }
 

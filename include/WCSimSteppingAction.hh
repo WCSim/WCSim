@@ -14,9 +14,11 @@ class WCSimSteppingAction : public G4UserSteppingAction
 {
  private:
   WCSimRunAction* runAction;
+  WCSimDetectorConstruction* det;
+  WCSimWLSProperties* WLS;
 
 public:
-  WCSimSteppingAction(WCSimRunAction*);
+  WCSimSteppingAction(WCSimRunAction*,WCSimDetectorConstruction*);
 
   ~WCSimSteppingAction()
   {};
@@ -37,6 +39,7 @@ public:
 
   WCSimRunAction* GetRunAction(){return runAction;}
   void DebugWLSPlates(const G4Step*);
+  void WLSPhysicsProcess(const G4Step*);
 
 private:
 

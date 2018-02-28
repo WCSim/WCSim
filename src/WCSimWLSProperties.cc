@@ -83,7 +83,7 @@ G4double* EljenEJ286::GetPhotonEnergy_ABS(){
 }
 
 G4double* EljenEJ286::GetAbs() {
-  G4double attL = 160.*cm; // From Datasheet EJ-286 and inferred with SG-BC404 // Basically BS
+  G4double attL = 1.*mm; // From Datasheet EJ-286 and inferred with SG-BC484 // Basically BS
   static G4double AbsPlate[NUMENTRIES_WLS_ABS] =
       { (1-0.01)*attL, (1-0.05)*attL, (1-0.64)*attL, (1-0.93)*attL, (1-0.999)*attL,
         (1-0.999)*attL, (1-0.999)*attL, (1-0.999)*attL, (1-0.999)*attL, (1-0.999)*attL,

@@ -1034,8 +1034,8 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
         G4SubtractionSolid* solidWCBarrelCellODWLSPlate =
             new G4SubtractionSolid("WCBarrelCellODWLS", rectangleWLS, holeWLS, holeWLSRotation, G4ThreeVector(0,0,0));
 
-        G4String WLSMaterial = "Air";
-        WLSMaterial = "WLS_PVT";
+        G4String WLSMaterial = "Water";
+//        WLSMaterial = "WLS_PVT";
 
         logicWCODWLSPlate =
             new G4LogicalVolume(solidWCBarrelCellODWLSPlate,
@@ -1290,7 +1290,26 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                                     logicWCBarrel,         // its mother volume
                                     false,                 // no boolean os
                                     icopy);               // every PMT need a unique id.
-              icopy++;
+
+				G4VPhysicalVolume* physiTopCapWLSPlate =
+						new G4PVPlacement(WCCapWLSPlateRotation,                             // its rotation
+										  topWLSpos,
+										  logicWCODWLSPlate,   // its logical volume
+										  "WCTopCapWLSPlateOD",                // its name
+										  logicWCBarrel,                 // its mother volume
+										  false,                         // no boolean operations
+										  icopy);
+				G4LogicalBorderSurface * TyvekWLSTopCap =
+						new G4LogicalBorderSurface(  "TyvekWLSSurfaceBot",
+													 physiWCODTopCapsTyvek,
+													 physiTopCapWLSPlate,
+													 OpWLSTySurface);
+				G4LogicalBorderSurface * WLSBarrelCellTopCap =
+						new G4LogicalBorderSurface(  "WaterTyBarrelCellSurface",
+													 physiWCBarrel,
+													 physiTopCapWLSPlate,
+													 OpWaterWLSSurface);
+				icopy++;
 
               G4VPhysicalVolume* physiBottomCapPMT =
                   new G4PVPlacement(WCCapPMTRotation,
@@ -1301,28 +1320,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                                     false,                 // no boolean os
                                     icopy);               // every PMT need a unique id.
 
-              // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more
-              // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
-              // this is still the case.
 
-              G4VPhysicalVolume* physiTopCapWLSPlate =
-                  new G4PVPlacement(WCCapWLSPlateRotation,                             // its rotation
-                                    topWLSpos,
-                                    logicWCODWLSPlate,   // its logical volume
-                                    "WCTopCapWLSPlateOD",                // its name
-                                    logicWCBarrel,                 // its mother volume
-                                    false,                         // no boolean operations
-                                    icopy);
-              G4LogicalBorderSurface * TyvekWLSTopCap =
-                  new G4LogicalBorderSurface(  "TyvekWLSSurfaceBot",
-                                               physiWCODTopCapsTyvek,
-                                               physiTopCapWLSPlate,
-                                               OpWLSTySurface);
-              G4LogicalBorderSurface * WLSBarrelCellTopCap =
-                  new G4LogicalBorderSurface(  "WaterTyBarrelCellSurface",
-                                               physiWCBarrel,
-                                               physiTopCapWLSPlate,
-                                               OpWaterWLSSurface);
 
               G4VPhysicalVolume* physiBottomCapWLSPlate =
                   new G4PVPlacement(WCCapWLSPlateRotation,                             // its rotation
@@ -1345,6 +1343,9 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                                                OpWaterWLSSurface);
 
               icopy++;
+				// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more
+				// daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
+				// this is still the case.
 
             }
           }

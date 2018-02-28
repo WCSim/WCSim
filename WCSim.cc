@@ -95,7 +95,7 @@ int main(int argc,char** argv)
 
   runManager->SetUserAction(new WCSimStackingAction(WCSimdetector));
 
-  runManager->SetUserAction(new WCSimSteppingAction(myRunAction));
+  runManager->SetUserAction(new WCSimSteppingAction(myRunAction,WCSimdetector));
 
 
   // Initialize G4 kernel
