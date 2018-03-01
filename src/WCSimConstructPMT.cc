@@ -47,7 +47,7 @@ else
    { // Gray wireframe visual style
     // used in OGLSX visualizer
   G4VisAttributes* WCPMTVisAtt;
-  if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(red);
+  if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.,0.,0.));
   else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);}
 
@@ -183,7 +183,7 @@ else {
 //  if (Vis_Choice == "OGLSX"){ // Gray wireframe visual style
     // used in OGLSX visualizer
     G4VisAttributes* WCPMTVisAtt;
-    if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(red);
+    if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.,0.,0.));
     else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
     WCPMTVisAtt->SetForceWireframe(true);
     //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
@@ -204,7 +204,7 @@ else {
    { // Gray wireframe visual style
     // used in OGLSX visualizer
   G4VisAttributes* WCPMTVisAtt;
-  if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(red);
+  if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.,0.,0.));
   else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
@@ -269,7 +269,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
                           0,0,0);
 
   G4VisAttributes* visContainer
-      = new G4VisAttributes(green);
+      = new G4VisAttributes(G4Colour((0.0, 1.0, 0.0)));
   visContainer->SetForceWireframe(true);
 
   logicContainer->SetVisAttributes(G4VisAttributes::Invisible);
@@ -299,7 +299,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
                           0,0,0);
 
   G4VisAttributes* visWLS
-      = new G4VisAttributes(cyan);
+      = new G4VisAttributes(G4Colour(0.0, 1.0, 1.0));
   visWLS->SetForceSolid(true);
 
   logicWCODWLSPlate->SetVisAttributes(G4VisAttributes::Invisible);

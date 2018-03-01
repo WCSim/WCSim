@@ -45,6 +45,19 @@
  *
  ***********************************************************/
 
+//-----------------------------------------------------
+// Defining colors used for debugging geom
+//-----------------------------------------------------
+
+G4Colour  white   (1.0, 1.0, 1.0) ;  // white
+G4Colour  black   (0.0, 0.0, 0.0) ;  // black
+G4Colour  red     (1.0, 0.0, 0.0) ;  // red
+G4Colour  green   (0.0, 1.0, 0.0) ;  // green
+G4Colour  blue    (0.0, 0.0, 1.0) ;  // blue
+G4Colour  cyan    (0.0, 1.0, 1.0) ;  // cyan
+G4Colour  magenta (1.0, 0.0, 1.0) ;  // magenta
+G4Colour  yellow  (1.0, 1.0, 0.0) ;  // yellow
+
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 {
