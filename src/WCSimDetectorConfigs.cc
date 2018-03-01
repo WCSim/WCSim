@@ -260,7 +260,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   //////////////////////////////////////
   // Cave Parameters --- Beta version //
   //////////////////////////////////////
-  CaveTyvekSheetThickness  = 1.0*mm; // Quite Standard I guess
+  CaveTyvekSheetThickness  = 1.*mm; // Quite Standard I guess
 
   ////////////////////////////////////
   // OD Parameters --- Beta version //
@@ -271,7 +271,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCODLateralWaterDepth    = 1.*m;
   WCODHeightWaterDepth     = 2.*m;
   WCODDeadSpace            = 600.*mm;
-  WCODTyvekSheetThickness  = 1.0*mm; // Quite standard I guess
+  WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
   WCODWLSPlatesThickness   = 1.*cm; //
   WCODWLSPlatesLength      = 60.*cm; //
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);

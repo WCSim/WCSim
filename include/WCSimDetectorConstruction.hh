@@ -19,7 +19,7 @@
 //#include <hash_map.h>
 // warning : hash_map is not part of the standard
 #include <ext/hash_map>
-
+#include <G4Colour.hh>
 
 using __gnu_cxx::hash;
 using __gnu_cxx::hashtable;
@@ -48,6 +48,22 @@ namespace __gnu_cxx  {
     }
   };
 }
+
+//-----------------------------------------------------
+// Defining colors used for debugging geom
+//-----------------------------------------------------
+
+inline G4Colour  white   (1.0, 1.0, 1.0) ;  // white
+inline G4Colour  black   (0.0, 0.0, 0.0) ;  // black
+inline G4Colour  red     (1.0, 0.0, 0.0) ;  // red
+inline G4Colour  green   (0.0, 1.0, 0.0) ;  // green
+inline G4Colour  blue    (0.0, 0.0, 1.0) ;  // blue
+inline G4Colour  cyan    (0.0, 1.0, 1.0) ;  // cyan
+inline G4Colour  magenta (1.0, 0.0, 1.0) ;  // magenta
+inline G4Colour  yellow  (1.0, 1.0, 0.0) ;  // yellow
+
+//-----------------------------------------------------
+//-----------------------------------------------------
 
 void ComputeWCODPMT(G4int NPMT, G4double *NPMTHorizontal, G4double *NPMTVertical);
 
@@ -229,6 +245,7 @@ private:
   // The Construction routines
   G4LogicalVolume*   ConstructCylinder();
   G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructPMTAndWLSPlate(G4String,G4String,G4String detectorElement="OD");
 
   G4LogicalVolume* ConstructCaps(G4int zflip);
 
@@ -237,6 +254,7 @@ private:
   G4LogicalVolume* logicWCBarrelCellODTyvek;
   G4LogicalVolume* logicWCTowerODTyvek;
 
+  G4LogicalVolume* logicWCODWLSAndPMT;
   G4LogicalVolume* logicWCODWLSPlate;
 
   G4LogicalVolume* logicWCBarrelCellBlackSheet;

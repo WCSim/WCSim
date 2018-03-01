@@ -145,8 +145,6 @@ void WLSModel(){
 
   G4cout << "This is just a test." << G4endl;
 
-  CreateEmissionHistogram();
-
   for (int i = 0; i<10; i++){
     G4ThreeVector v(i*0.2, i*1, i*30);
     EmittedPhoton p = EmitPhoton(v);
@@ -167,7 +165,7 @@ void WLSModel(){
 ///////////////////////////////////////////////
 
 
-WCSimSteppingAction::WCSimSteppingAction(WCSimRunAction *myRun, WCSimDetectorConstruction *myDet) : runAction(myRun), det(myDet), WLS(myDet->GetWLSPointer()) {
+WCSimSteppingAction::WCSimSteppingAction(WCSimRunAction *myRun, WCSimDetectorConstruction *myDet) : runAction(myRun), det(myDet) {
   WLS = new EljenEJ286;
 }
 
@@ -185,11 +183,11 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
   G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
 
   // WLS
-  if(WLS){
-    CreateEmissionHistogram();
-    DebugWLSPlates(aStep);
-    WLSPhysicsProcess(aStep);
-  }
+//  if(WLS){
+//    CreateEmissionHistogram();
+//    DebugWLSPlates(aStep);
+//    WLSPhysicsProcess(aStep);
+//  }
 
 }
 
@@ -387,14 +385,12 @@ void WCSimSteppingAction::WLSPhysicsProcess(const G4Step *aStep){
 
     if(isPhotonInWLSPlate(postMaterialName) && absProb > G4UniformRand()){
 
-//      const G4ThreeVector &pos = aTrack->GetPosition(); // Recover photon position
-//      // WIll use later the direction information of the photon too
-//      const G4ThreeVector &dir = aTrack->GetMomentumDirection(); // Recover photon direction
-//
-//      if(EmittedPhotonDetected(pos)){
-//        EmittedPhoton p = EmitPhoton(pos);
-//      }
+      const G4ThreeVector &pos = aTrack->GetPosition(); // Recover photon position
+      const G4ThreeVector &dir = aTrack->GetMomentumDirection(); // Recover photon direction
 
+      if(EmittedPhotonDetected(pos)){
+        EmittedPhoton p = EmitPhoton(pos);
+      }
 
       // Add this photon to the hit collection
       G4int WLSplateID = aStep->GetPostStepPoint()->GetPhysicalVolume()->GetCopyNo();
@@ -404,7 +400,6 @@ void WCSimSteppingAction::WLSPhysicsProcess(const G4Step *aStep){
       // pmts->at(i) has tubeid i+1
       WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( WLSplateID - 1 );
       G4cout << "WLS ID : " << WLSplateID << " PMT ID : " << pmtinfo->Get_tubeid() << G4endl;
-//      WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->;
       G4ThreeVector newPos(10*pmtinfo->Get_transx(),10*pmtinfo->Get_transy(),10*pmtinfo->Get_transz()); // recorded as cm in odtubemap...
 
       G4ThreeVector WLSpos = aStep->GetPostStepPoint()->GetPhysicalVolume()->GetTranslation();
@@ -418,6 +413,8 @@ void WCSimSteppingAction::WLSPhysicsProcess(const G4Step *aStep){
              << newPos.y() << " "
              << newPos.z() << " " << G4endl;
       G4cout << G4endl;
+
+      // TODO : Find where is the nearest PMT
 
 //      aTrack->SetPosition(newPos);
 //      aStep->GetPostStepPoint()->SetPosition(newPos);
