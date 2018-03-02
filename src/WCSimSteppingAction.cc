@@ -118,16 +118,11 @@ EmittedPhoton EmitPhoton(G4ThreeVector absorbedPhotonPosition){
   // We don't know the spatial distribution of the emitted photon so we will just keep this distribution uniform
   // over the surface of a sphere.
 
-  std::default_random_engine gen(rand()); // Random number generator.
-  std::uniform_real_distribution<double> dist(0.,1.); // Random number distribution (uniform doubles between 0 and 1)
-//	double r = dist(gen); // The generated random number.
+  TRandom *r = new TRandom(time(0)); // This can be changed to whatever random number generator WCSim is using.
 
   // Generate random points on a unit sphere. http://mathworld.wolfram.com/SpherePointPicking.html
-  double theta = 2*PI*dist(gen);
-  double phi = acos(2*dist(gen)-1);
-  double x = sin(phi)*cos(theta);
-  double y = sin(phi)*sin(theta);
-  double z = cos(phi);
+  double x, y, z;
+  r->Sphere(x,y,z,1.);
 
   G4ThreeVector dir(x, y, z);
 
