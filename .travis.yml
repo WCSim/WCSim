@@ -14,7 +14,7 @@ before_install:
 jobs:
   include:
     - stage: Test1
-      script: docker run --rm -v `pwd`:/root/HyperK/WCSim -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken -e ValidationPath="/root/Validation" wcsim/wcsim:build /bin/sh -c " cd /root && git clone https://github.com/WCSim/Validation.git && source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && /root/Validation/Tests.sh 1"
+      script: docker run --rm -v `pwd`:/root/HyperK/WCSim -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken -e ValidationPath="/root/Validation" wcsim/wcsim:build /bin/sh -c " cd /root && git clone https://github.com/WCSim/Validation.git && source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && yum install -y time && /root/Validation/Tests.sh 1"
 
 notifications:
   email:
