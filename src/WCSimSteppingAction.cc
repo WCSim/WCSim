@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <WCSimRootEvent.hh>
 #include <G4SIunits.hh>
-#include <TRandom.h>
-#include <random>
+#include <TRandom3.h>
 #include <G4OpticalPhoton.hh>
 
 #include "WCSimSteppingAction.hh"
@@ -72,7 +71,7 @@ double EmittedPhotonDetectedProbability(G4ThreeVector absorbedPhotonPosition){
 // uses only the position of the photon's absorption with respect to the PMT (distance from PMT) and
 // lab measurements of the efficiency as a function of distance, taken at Edinburgh University.
 bool EmittedPhotonDetected(G4ThreeVector absorbedPhotonPosition){
-  TRandom *r = new TRandom(time(0)); // This can be changed to whatever random number generator WCSim is using.
+  TRandom3 *r = new TRandom3(time(0)); // This can be changed to whatever random number generator WCSim is using.
 
   // Check to see whether random number generated is less than or equal to the probability of a photon, emitted
   // from that position, being detected by the PMT.
@@ -118,7 +117,7 @@ EmittedPhoton EmitPhoton(G4ThreeVector absorbedPhotonPosition){
   // We don't know the spatial distribution of the emitted photon so we will just keep this distribution uniform
   // over the surface of a sphere.
 
-  TRandom *r = new TRandom(time(0)); // This can be changed to whatever random number generator WCSim is using.
+  TRandom3 *r = new TRandom3(time(0)); // This can be changed to whatever random number generator WCSim is using.
 
   // Generate random points on a unit sphere. http://mathworld.wolfram.com/SpherePointPicking.html
   double x, y, z;
