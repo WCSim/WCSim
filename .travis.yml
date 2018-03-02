@@ -17,18 +17,6 @@ jobs:
       script: docker run --rm -v `pwd`:/root/HyperK/WCSim -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken wcsim/wcsim:build /bin/sh -c " cd /root && git clone https://github.com/WCSim/Validation.git && source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && /root/Validation/Tests.sh 1"
     - stage: Test2
       script: docker run --rm -v `pwd`:/root/HyperK/WCSim -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken wcsim/wcsim:build /bin/sh -c " cd /root && git clone https://github.com/WCSim/Validation.git && source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && /root/Validation/build.sh"
-    - 
-      script: docker run --rm -v `pwd`:/root/HyperK/WCSim -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken wcsim/wcsim:build /bin/sh -c " cd /root && git clone https://github.com/WCSim/Validation.git && source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && /root/Validation/build.sh"
-    -
-      script: docker run --rm -v `pwd`:/root/HyperK/WCSim -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken wcsim/wcsim:build /bin/sh -c " cd /root && git clone https://github.com/WCSim/Validation.git && source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && /root/Validation/build.sh"
-    -
-      script: docker run --rm -v `pwd`:/root/HyperK/WCSim -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken wcsim/wcsim:build /bin/sh -c " cd /root && git clone https://github.com/WCSim/Validation.git && source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && /root/Validation/build.sh"
-    -
-      script: docker run --rm -v `pwd`:/root/HyperK/WCSim -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken wcsim/wcsim:build /bin/sh -c " cd /root && git clone https://github.com/WCSim/Validation.git && source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && /root/Validation/build.sh"
-    -
-      script: docker run --rm -v `pwd`:/root/HyperK/WCSim -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken wcsim/wcsim:build /bin/sh -c " cd /root && git clone https://github.com/WCSim/Validation.git && source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && /root/Validation/build.sh && /root/Validation/Tests.sh 7"
-    -
-      script: docker run --rm -v `pwd`:/root/HyperK/WCSim -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken wcsim/wcsim:build /bin/sh -c " cd /root && git clone https://github.com/WCSim/Validation.git && source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && /root/Validation/build.sh"
 
 notifications:
   email:
