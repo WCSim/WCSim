@@ -177,6 +177,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
                             "CaveTyvek",
                             0, 0, 0);
 
+    G4VisAttributes *showTyvekCave = new G4VisAttributes(green);
+    showTyvekCave->SetForceWireframe(true);// This line is used to give definition to the rings in OGLSX Visualizer
+    logicCaveTyvek->SetVisAttributes(showTyvekCave);
+    //logicCaveTyvek->SetVisAttributes(G4VisAttributes::Invisible);
+
+
     G4VPhysicalVolume *physiCaveTyvek =
         new G4PVPlacement(0,
                           G4ThreeVector(0., 0., 0.),
@@ -185,11 +191,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
                           logicWC,
                           false,
                           0);
-
-    G4VisAttributes *showTyvekCave = new G4VisAttributes(green);
-    showTyvekCave->SetForceWireframe(true);// This line is used to give definition to the rings in OGLSX Visualizer
-    logicCaveTyvek->SetVisAttributes(showTyvekCave);
-    //logicCaveTyvek->SetVisAttributes(G4VisAttributes::Invisible); //amb79
 
     //-----------------------------------------------------
     // Cylinder caps' tyvek
@@ -202,30 +203,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
                                             0. * deg,
                                             360. * deg);
 
-    G4LogicalVolume *logicTopCaveTyvek =
-        new G4LogicalVolume(solidCaveCapsTyvek,
-                            G4Material::GetMaterial("Tyvek"),
-                            "TopCaveTyvek",
-                            0, 0, 0);
-    G4LogicalVolume *logicBottomCaveTyvek =
-        new G4LogicalVolume(solidCaveCapsTyvek,
-                            G4Material::GetMaterial("Tyvek"),
-                            "BottomCaveTyvek",
-                            0, 0, 0);
-
-    G4VisAttributes *CapsCaveTyvekVisAtt = new G4VisAttributes(yellow);
-    CapsCaveTyvekVisAtt->SetForceWireframe(true);
-    logicTopCaveTyvek->SetVisAttributes(CapsCaveTyvekVisAtt);
-    logicBottomCaveTyvek->SetVisAttributes(CapsCaveTyvekVisAtt);
-    //logicTopCaveTyvek->SetVisAttributes(G4VisAttributes::Invisible); //amb79
-    //logicBottomCaveTyvek->SetVisAttributes(G4VisAttributes::Invisible); //amb79
-
     G4ThreeVector CaveTyvekPosition(0., 0., WCLength / 2);
 
     G4VPhysicalVolume *physiTopCaveTyvek =
         new G4PVPlacement(0,
                           CaveTyvekPosition,
-                          logicTopCaveTyvek,
+                          logicCaveTyvek,
                           "CaveTopTyvek",
                           logicWC,
                           false,
@@ -242,7 +225,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
     G4VPhysicalVolume *physiBottomCaveTyvek =
         new G4PVPlacement(0,
                           CaveTyvekPosition,
-                          logicBottomCaveTyvek,
+                          logicCaveTyvek,
                           "CaveBottomTyvek",
                           logicWC,
                           false,

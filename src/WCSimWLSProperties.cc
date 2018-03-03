@@ -19,7 +19,7 @@ double hWL(double E){
 // http://www.eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286
 #define NUMENTRIES_WLS 33
 
-EljenEJ286::EljenEJ286() { SetgAbs(); SetgEm();}
+EljenEJ286::EljenEJ286() { SetgAbs(); SetgEm(); SethEm();}
 EljenEJ286::~EljenEJ286(){}
 
 G4String EljenEJ286::GetWLSPlateName() { G4String WLSPlateName = "EljenEJ286"; return WLSPlateName;}
@@ -171,5 +171,29 @@ void EljenEJ286::SetgEm(){
   for(int i=(int)(round(hWL(GetPhotonEnergy_EM()[NUMENTRIES_WLS_EM-1]))*nm)-step;i>200;i=i-step){
     gEm->SetPoint(iPt,i,0.);
     iPt++;
+  }
+}
+
+// ###################### //
+///////// STEPPING /////////
+// ###################### //
+
+void EljenEJ286::SethEm() {
+
+  static const int emitArraySize = 15;
+  float emitWavelength[emitArraySize] = {390,400,410,420,430,440,450,460,470,480,490,500,510,520,530};
+  float emit[emitArraySize] =
+      {0.0, 0.1, 0.71, 0.98,
+       0.91, 0.63, 0.49, 0.35,
+       0.20, 0.13, 0.081, 0.052,
+       0.03, 0.021, 0};
+
+  emissionHist = new TH1F("hist","hist", 15, 390., 530.);
+  emissionHist->Sumw2();
+
+  for (int i = 0 ; i < emitArraySize; i++) {
+
+    emissionHist->Fill(emitWavelength[i], emit[i]);
+    emissionHist->SetBinError(i+1, 0);
   }
 }

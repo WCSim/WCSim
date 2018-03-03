@@ -392,6 +392,7 @@ struct photonEvt{
   Int_t trackID;
   Int_t parentID;
   Double_t pos[3];
+  Double_t distance;
   Double_t wl;
   Int_t proc;
 };

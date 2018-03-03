@@ -1,20 +1,21 @@
 #include <stdio.h>     
 #include <stdlib.h>    
 
-// Structure of a photon Evt from WCSimRootEvent.hh
-struct photonEvt{
-  Int_t trackID;
-  Int_t parentID;
-  Double_t pos[3];
-  Double_t wl;
-  Int_t proc;
-};
-
   /* A simple script to visualize photons
    * 
    * I like to run this macro as 
    * $ root -l -x 'visuPhotons.C("OD.root")'
    */
+
+// Structure of a photon Evt from WCSimRootEvent.hh
+struct photonEvt{
+  Int_t trackID;
+  Int_t parentID;
+  Double_t pos[3];
+  Double_t distance;
+  Double_t wl;
+  Int_t proc;
+};
 
 void visuPhotons(char const *filename=NULL) {
 

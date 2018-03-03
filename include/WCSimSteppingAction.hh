@@ -5,19 +5,28 @@
 #include "G4Event.hh"
 #include "G4UserSteppingAction.hh"
 #include "G4ThreeVector.hh"
+
 #include "WCSimRunAction.hh"
 
 class G4HCofThisEvent;
 class G4Event;
 
-inline void CreateEmissionHistogram();
+// First we have a structure to hold the values of the emitted photon.
+typedef struct {
+
+  G4ThreeVector direction; // The direction of the emitted photon.
+  G4ThreeVector position; // The position where the emitted photon was created (same as where the incident photon was absorbed).
+  double energy; // The energy value of the emitted photon.
+  double wavelength; // The wavelength of the emitted photon.
+
+} EmittedPhoton;
+
 
 class WCSimSteppingAction : public G4UserSteppingAction
 {
  private:
   WCSimRunAction* runAction;
   WCSimDetectorConstruction* det;
-  WCSimWLSProperties* WLS;
 
 public:
   WCSimSteppingAction(WCSimRunAction*,WCSimDetectorConstruction*);
@@ -42,6 +51,8 @@ public:
   WCSimRunAction* GetRunAction(){return runAction;}
   void DebugWLSPlates(const G4Step*);
   void WLSPhysicsProcess(const G4Step*);
+  EmittedPhoton EmitPhoton(G4ThreeVector absorbedPhotonPosition);
+  double EmittedPhotonWavelength();
 
 private:
 

@@ -33,7 +33,8 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
     G4float photonWavelength = (2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/eV);
     // MF : translated from skdetsim : better to increase the number of photons
     // than to throw in a global factor  at Digitization time !
-    G4float ratio = 1./(1.0-0.25);
+    // G4float ratio = 1./(1.0-0.25);
+    G4float ratio = 1;
     // XQ: get the maximum QE and multiply it by the ratio
     // only work for the range between 240 nm and 660 nm for now
     // Even with WLS
