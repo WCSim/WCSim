@@ -14,6 +14,11 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <sstream>
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <TFile.h>
 
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
@@ -76,6 +81,63 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   useGunEvt    = false;
   useLaserEvt  = false;
   useGPSEvt    = false;
+
+  // Create the relevant histograms to generate muons
+  // according to SuperK flux extrapolated at HyperK site
+  std::fstream inputFile;
+  G4String vectorFileName;
+  altCosmics = 2*myDC->GetWCIDHeight();
+  G4cout << "altCosmics : " << altCosmics << G4endl;
+  if (inputFile.is_open())
+    inputFile.close();
+
+  vectorFileName = "MuonFlux-HyperK-ThetaPhi.dat";
+  inputFile.open(vectorFileName, std::fstream::in);
+
+  if (!inputFile.is_open()) {
+    G4cout << "Muon Vector file " << vectorFileName << " not found" << G4endl;
+  } else {
+    G4cout << "Muon Vector file " << vectorFileName << " found" << G4endl;
+    string line;
+    vector<string> token(1);
+
+    double binCos, binPhi;
+    double cosThetaMean, cosThetaMin, cosThetaMax;
+    double phiMean, phiMin, phiMax;
+    double flux;
+    double Emean;
+
+    hFluxCosmics = new TH2D("hFluxCosmics","HK Flux", 180,0,360,100,0,1);
+    hFluxCosmics->GetXaxis()->SetTitle("#phi (deg)");
+    hFluxCosmics->GetYaxis()->SetTitle("cos #theta");
+    hEmeanCosmics = new TH2D("hEmeanCosmics","HK Flux", 180,0,360,100,0,1);
+    hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
+    hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
+
+    while ( getline(inputFile,line) ){
+      token = tokenize(" $", line);
+
+      binCos=(atof(token[0]));
+      binPhi=(atof(token[1]));
+      cosThetaMean=(atof(token[2]));
+      cosThetaMin=(atof(token[3]));
+      cosThetaMax=(atof(token[4]));
+      phiMean=(atof(token[5]));
+      phiMin=(atof(token[6]));
+      phiMax=(atof(token[7]));
+      flux=(atof(token[8]));
+      Emean=(atof(token[9]));
+
+      hFluxCosmics->SetBinContent(binPhi,binCos,flux);
+      hEmeanCosmics->SetBinContent(binPhi,binCos,Emean);
+    }
+
+    TFile *file = new TFile("flux.root","RECREATE");
+    hFluxCosmics->Write();
+    hEmeanCosmics->Write();
+    file->Close();
+
+  }
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -350,6 +412,50 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamDir(dir);
       SetBeamPDG(pdg);
     }
+  else if(useCosmics){
+
+    //////////////////
+    // DEBUG PRINTS
+    G4cout << G4endl;
+    G4cout << "COSMYMYMATICS" << G4endl;
+    G4cout << "#############" << G4endl;
+    //////////////////
+
+    double phiMuon, cosThetaMuon;
+    energy = 0;
+    while((int)(energy) == 0){
+      hFluxCosmics->GetRandom2(phiMuon,cosThetaMuon);
+      energy = hEmeanCosmics->GetBinContent(hFluxCosmics->GetBin(phiMuon,cosThetaMuon))*GeV;
+    }
+
+    G4ThreeVector dir(0,0,0);
+    dir.setRThetaPhi(-1,acos(cosThetaMuon),phiMuon);
+    G4ThreeVector vtx(0,0,0);
+    vtx = -dir;
+    vtx.setR(altCosmics);
+
+    int pdgid = 13; // MUON
+    particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));
+    G4double mass =particleGun->GetParticleDefinition()->GetPDGMass();
+    G4double ekin = energy - mass;
+
+    //////////////////
+    // DEBUG PRINTS
+    G4cout << G4endl;
+    G4cout << "Generated at position : " << vtx.getX()/m << "m "
+           << vtx.getY()/m << "m "
+           << vtx.getZ()/m << "m " << G4endl;
+    G4cout << "phi : " << phiMuon << " cosTheta : " << cosThetaMuon << G4endl;
+    G4cout << "E : " << energy/GeV << " GeV" << G4endl;
+    G4cout << G4endl;
+    //////////////////
+
+    particleGun->SetParticleEnergy(ekin);
+    particleGun->SetParticlePosition(vtx);
+    particleGun->SetParticleMomentumDirection(dir);
+    particleGun->GeneratePrimaryVertex(anEvent);
+
+  }
 }
 
 void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
@@ -371,6 +477,8 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
     return "gps";
   else if(useLaserEvt)
     return "laser";
+  else if(useCosmics)
+    return "cosmics";
   return "";
 }
 

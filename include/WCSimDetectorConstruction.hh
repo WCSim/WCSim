@@ -200,6 +200,8 @@ public:
   ////////// END OD /////////////
   ///////////////////////////////
 
+  G4double GetWCIDHeight(){return WCIDHeight;}
+ 
 private:
 
   // Tuning parameters
