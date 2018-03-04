@@ -195,6 +195,7 @@ public:
   void SetWCPMTODPercentCoverage(G4double val){WCPMTODPercentCoverage = val;}
   void SetWCODPMTShift(G4double val){WCODPMTShift = val;}
   void SetODEdited(G4bool val){odEdited = val;}
+  void SetIsWLSFilled(G4bool val){isWLSFilled = val;}
   G4bool GetODEdited(){return odEdited;}
 
   ////////// END OD /////////////
@@ -401,6 +402,9 @@ private:
 
   // Hit collection name parameters
   G4String WCODCollectionName;
+
+  // WLS material name
+  bool isWLSFilled;
 
   // ############################# //
   // # *** END OD Parameters *** # //

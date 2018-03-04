@@ -243,7 +243,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   G4double radius;
   G4String Water = "Water";
   G4String WLS_Material = "Water";
-  WLS_Material = "WLS_PVT";
+  if(isWLSFilled) WLS_Material = "WLS_PVT";
 
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
   expose = PMT->GetExposeHeight();
