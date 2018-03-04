@@ -22,11 +22,6 @@ WCSimTrackingAction::WCSimTrackingAction()
   ParticleList.insert(-321); // kaon-
   ParticleList.insert(311); // kaon0
   ParticleList.insert(-311); // kaon0 bar
-  
-  ParticleList.insert(11);
-  ParticleList.insert(-11);
-  ParticleList.insert(12);
-  ParticleList.insert(-12);
   // don't put gammas there or there'll be too many
 }
 
