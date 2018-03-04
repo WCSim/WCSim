@@ -18,6 +18,7 @@
 /WCSim/HyperKOD/PMTODperCellVertical 1
 /WCSim/HyperKOD/PMTODPercentCoverage 1
 /WCSim/HyperKOD/ODPMTShift 0 m
+#/WCSim/HyperKOD/DeactivateWLS
 
 # Update geom
 /WCSim/Construct # This must be uncommented in order to construct a new detector configuration.
