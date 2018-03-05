@@ -7,8 +7,13 @@
    * $ root -l -x 'visuPhotons.C("OD.root")'
    */
 
+  /////////////////////////////////////////////////////////////////////
+  // Return the geometrical prob to be det by the PMT w.r.t distance //
+  /////////////////////////////////////////////////////////////////////
+
 double probHitPMT(double distance){
-  const double PMTOffset = 100.; // PMT radius, 100mm for 8inch for example
+  const double PMTOffset = 101.6.; // PMT radius, for 8inch
+  // const double PMTOffset = 39.; // PMT radius, for 3inch
   const double C = 1; // Norm factor from measurements
   if(std::abs(distance)>PMTOffset)
     return C*1/(1+std::pow(std::abs(distance)-PMTOffset,2));
@@ -61,9 +66,15 @@ void visuPhotons(char const *filename=NULL) {
     else std::cout << "File open : " << filename << std::endl;
   }
 
-  /////////////////////////////////////////////////////////
-  // Access photons information inside WCSim output file //
-  /////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////
+  // Access WCSimRootEvent info to recover simulation infos //
+  ////////////////////////////////////////////////////////////
+
+  // The goal here is to loop over the events generated in WCSim
+  //and recover the hits per events. Likewise, we can compute the
+  //average nb of hits per events, and we can compare it to the
+  //nb of WLS photons. I use it to study the influence of a "normfactor"
+  //on this model to adjust it to retrive a 50-60% gain in photon collection.
   
   TTree  *wcsimT = (TTree*)f->Get("wcsimT");
   WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent();
@@ -97,6 +108,10 @@ void visuPhotons(char const *filename=NULL) {
     }
   }
   std::cout << "DONE ! Average raw hits per evts : " << hPEByEvts->GetMean() << std::endl;
+  
+  /////////////////////////////////////////////////////////
+  // Access photons information inside WCSim output file //
+  /////////////////////////////////////////////////////////
 
   TTree  *WCSimPhotons = (TTree*)f->Get("photons");  // Open photon tree inside file
   if(WCSimPhotons){ // Test if tree is really open
