@@ -294,6 +294,12 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
   WCODCapEdgeLimit = WCIDDiameter/2.0 - WCPMTODRadius;
 
+  // TEST combined PMT collection for stacking action
+  std::vector<G4String> WCColName;
+  WCColName.push_back(WCIDCollectionName);
+  WCColName.push_back(WCODCollectionName);
+  CreateCombinedPMTQE(WCColName);
+  isCombinedPMTCollectionDefined=true;
 }
 
 void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()

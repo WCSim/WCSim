@@ -243,6 +243,11 @@ G4float PMT20inch::GetDarkRateConversionFactor(){
   return factor;
 }
 
+G4int PMT20inch::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 8 inch
 
@@ -401,6 +406,11 @@ G4float PMT8inch::GetDarkRate(){
 
 G4float PMT8inch::GetDarkRateConversionFactor(){
   const G4float factor = 1.367;
+  return factor;
+}
+
+G4int PMT8inch::GetNbOfQEDefined(){
+  const G4int factor = 20;
   return factor;
 }
 
@@ -566,6 +576,11 @@ G4float PMT10inch::GetDarkRateConversionFactor(){
   return factor;
 }
 
+G4int PMT10inch::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch HQE
 
@@ -725,6 +740,11 @@ G4float PMT10inchHQE::GetDarkRate(){
 
 G4float PMT10inchHQE::GetDarkRateConversionFactor(){
   const G4float factor = 1.367;
+  return factor;
+}
+
+G4int PMT10inchHQE::GetNbOfQEDefined(){
+  const G4int factor = 20;
   return factor;
 }
 
@@ -893,6 +913,10 @@ G4float PMT12inchHQE::GetDarkRateConversionFactor(){
   return factor;
 }
 
+G4int PMT12inchHQE::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 20 inch HPD
@@ -1080,6 +1104,11 @@ G4float HPD20inchHQE::GetDarkRateConversionFactor(){
   return factor;
 }
 
+G4int HPD20inchHQE::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HPD
 
@@ -1255,6 +1284,11 @@ G4float HPD12inchHQE::GetDarkRate(){
 
 G4float HPD12inchHQE::GetDarkRateConversionFactor(){
   const G4float factor = 1.119;
+  return factor;
+}
+
+G4int HPD12inchHQE::GetNbOfQEDefined(){
+  const G4int factor = 20;
   return factor;
 }
 
@@ -1451,6 +1485,10 @@ G4float BoxandLine20inchHQE::GetDarkRateConversionFactor(){
   return factor;
 }
 
+G4int BoxandLine20inchHQE::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HQE Box and Line PMT
@@ -1633,4 +1671,47 @@ G4float BoxandLine12inchHQE::GetDarkRate(){
 G4float BoxandLine12inchHQE::GetDarkRateConversionFactor(){
   const G4float factor = 1.126;
   return factor;
+}
+
+G4int BoxandLine12inchHQE::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// COMBINED PMTS CLASS
+// Goal is to instantiate purely virtual WCSimPMTObject Classes to contained an extended
+//  QE information of several PMTs collection
+// Useful for applying QE in stacking action when several PMTs collection are defined
+
+
+WCSimBasicPMTObject::WCSimBasicPMTObject(){
+}
+
+WCSimBasicPMTObject::WCSimBasicPMTObject(std::map<G4float,G4float> mQE){
+  mapQE=mQE;
+  std::map<G4float, G4float>::iterator itr;
+  for(itr = mQE.begin(); itr != mQE.end(); itr++) {
+    wavelength.push_back(itr->first);
+    QE.push_back(itr->second);
+  }
+}
+
+WCSimBasicPMTObject::WCSimBasicPMTObject(std::vector<G4float> wl,std::vector<G4float> qe,G4float max){
+  wavelength=wl;
+  QE=qe;
+  maxQE=max;
+}
+
+void WCSimBasicPMTObject::DefineQEHist(std::map<G4float,G4float> mapQE){
+  gQE = new TGraph();
+  G4int iPt=0;
+  std::map<G4float, G4float>::iterator itr;
+  for(itr = mapQE.begin(); itr != mapQE.end(); itr++) {
+    gQE->SetPoint(iPt,itr->first,itr->second);
+    iPt++;
+  }
+}
+
+WCSimBasicPMTObject::~WCSimBasicPMTObject(){
 }
