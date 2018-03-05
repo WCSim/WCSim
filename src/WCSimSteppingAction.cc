@@ -237,33 +237,12 @@ void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
     G4String preVol = preStepPoint->GetPhysicalVolume()->GetName();
     G4String postVol = postStepPoint->GetPhysicalVolume()->GetName();
 
+    G4String preMaterialName = preStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
     G4String postMaterialName = postStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
     G4String creaProc = aTrack->GetCreatorProcess()->GetProcessName();
 
-//    if(postVol == "WCPMTOD" && creaProc == "OpWLS"){
-//      G4TouchableHandle theTouchable = postStepPoint->GetTouchableHandle();
-//      G4ThreeVector worldPosition = postStepPoint->GetPosition();
-//      G4ThreeVector localPosition = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
-//      photonEvt *pEvt = GetRunAction()->GetPhotonEvt();
-//
-//      pEvt->trackID = aTrack->GetTrackID();
-//      pEvt->parentID = aTrack->GetParentID();
-//
-//      pEvt->pos[0] = worldPosition.x();
-//      pEvt->pos[1] = worldPosition.y();
-//      pEvt->pos[2] = worldPosition.z();
-//
-//      pEvt->distance = localPosition.mag();
-//
-//      pEvt->wl = ((2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/CLHEP::eV));
-//
-//      G4String procName = postStepPoint->GetProcessDefinedStep()->GetProcessName();
-//      if(aTrack->GetCreatorProcess()->GetProcessName()=="Cerenkov") pEvt->proc = 0;
-//      else if(aTrack->GetCreatorProcess()->GetProcessName()=="OpWLS") pEvt->proc = 1;
-//      runAction->GetPhotonTree()->Fill();
-//    }
-
-    if(postMaterialName=="WCODWLSPlate"){
+    // if(postVol == "WCPMTOD" && creaProc == "OpWLS"){
+    if(postMaterialName=="WCODWLSPlate" || preMaterialName=="WCODWLSPlate"){
 
       G4TouchableHandle theTouchable = postStepPoint->GetTouchableHandle();
       G4ThreeVector worldPosition = postStepPoint->GetPosition();
