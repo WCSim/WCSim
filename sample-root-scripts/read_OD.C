@@ -5,7 +5,7 @@ void read_OD(char *filename=NULL) {
   /* A simple script to plot aspects of phototube hits 
    * 
    * I like to run this macro as 
-   * $ root -l -x 'read_OD.C("../OD.root")'
+   * $ root -l -x 'read_OD.C("OD.root")'
    */
 
   gROOT->Reset();
@@ -46,40 +46,39 @@ void read_OD(char *filename=NULL) {
   WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent();
   wcsimT->SetBranchAddress("wcsimrootevent_OD",&wcsimrootsuperevent);
 
-  // Force deletion to prevent memory leak when issuing multiple
-  // calls to GetEvent()
-  //wcsimT->GetBranch("wcsimrootevent_OD")->SetAutoDelete(kTRUE);
-
-  // const long unsigned int nbEntries = wcsimT->GetEntries();
-  const long unsigned int nbEntries = 100;
+  const long unsigned int nbEntries = wcsimT->GetEntries();
   cout << "Nb of entries " << wcsimT->GetEntries() << endl;
 
   //////////////////////////////////////////
   // HISTOGRAMS DEFINITION /////////////////
   //////////////////////////////////////////
 
-  const int nbBins = 1000;
-  const int nbPEMax = nbBins;
+  const int nbBins = 100;
+  const int nbPEMax = 1000;
+  const int nbBinsByPMT = 100;
+  const int nbPEMaxByPMT = nbBinsByPMT;
   
-  TH1D *hPEByEvtsByPMT = new TH1D("hPEByEvtsByPMT","RAW PE by Evts by PMT",nbBins,0,nbPEMax);
+  TH1D *hPEByEvtsByPMT = new TH1D("hPEByEvtsByPMT","RAW PE by Evts by PMT",
+				  nbBinsByPMT,0,nbPEMaxByPMT);
   hPEByEvtsByPMT->GetXaxis()->SetTitle("raw PE");
   hPEByEvtsByPMT->SetLineColor(kBlue-4);
   hPEByEvtsByPMT->SetMarkerColor(kBlue-4);  
-  TH1D *hPECollectedByEvtsByPMT = new TH1D("hPECollectedByEvtsByPMT","collected PE by Evts by PMT",nbBins,0,nbPEMax);
+  TH1D *hPECollectedByEvtsByPMT = new TH1D("hPECollectedByEvtsByPMT","collected PE by Evts by PMT",
+					   nbBinsByPMT,0,nbPEMaxByPMT);
   hPECollectedByEvtsByPMT->GetXaxis()->SetTitle("digi PE");
   hPECollectedByEvtsByPMT->SetLineColor(kRed-4);
   hPECollectedByEvtsByPMT->SetMarkerColor(kRed-4);
   
   TH1D *hPEByEvts = new TH1D("hPEByEvts","Total RAW PE by Evts",nbBins,0,nbPEMax);
   hPEByEvts->GetXaxis()->SetTitle("raw PE");
-  hPEByEvts->SetLineColor(kBlue-4);
-  hPEByEvts->SetMarkerColor(kBlue-4);
-  hPEByEvts->SetFillColor(kBlue-4);  
+  hPEByEvts->SetLineColor(kBlue+1);
+  hPEByEvts->SetMarkerColor(kBlue+1);
+  hPEByEvts->SetFillColor(kBlue+1);  
   TH1D *hPECollectedByEvts = new TH1D("hPECollectedByEvts","Total collected PE by Evts",nbBins,0,nbPEMax);
   hPECollectedByEvts->GetXaxis()->SetTitle("digi PE");
-  hPECollectedByEvts->SetLineColor(kRed-4);
-  hPECollectedByEvts->SetMarkerColor(kRed-4);
-  hPECollectedByEvts->SetFillColor(kRed-4);
+  hPECollectedByEvts->SetLineColor(kRed+1);
+  hPECollectedByEvts->SetMarkerColor(kRed+1);
+  hPECollectedByEvts->SetFillColor(kRed+1);
 
   TH1D *hNbTubesHit = new TH1D("hNbTubesHit","Nb of Tubes Hit",1000,0,1000);
   
@@ -141,12 +140,17 @@ void read_OD(char *filename=NULL) {
 
   TCanvas *c1;
 
-  c1 = new TCanvas("cRaw","cRaw",800,600);
+  c1 = new TCanvas("cPE","cPE",800,600);
+  c1->Divide(2,2);
+  c1->cd(1);
+  gPad->SetLogy();
   hPEByEvtsByPMT->Draw("HIST");
-  hPEByEvts->Draw("sameBAR");
-
-  c1 = new TCanvas("cDigi","cDigi",800,600);
+  c1->cd(2);
+  hPEByEvts->Draw("HIST");
+  c1->cd(3);
+  gPad->SetLogy();
   hPECollectedByEvtsByPMT->Draw("HIST");
+  c1->cd(4);  
   hPECollectedByEvts->Draw("sameBAR");
 
   c1 = new TCanvas("cNbTubesHit","cNbTubesHit",800,600);
@@ -154,9 +158,19 @@ void read_OD(char *filename=NULL) {
 
   cout << "Mean nb of tubes hit by events : " << hNbTubesHit->GetMean()
        << " +- " << hNbTubesHit->GetRMS() << endl;
-  cout << "Mean raw PE by events : " << hPEByEvts->GetMean()
-       << " +- " << hPEByEvts->GetRMS() << endl;  
-  cout << "Mean PE collected by events : " << hPECollectedByEvts->GetMean()
-       << " +- " << hPECollectedByEvts->GetRMS() << endl;
+  cout << "Mean raw PE by events by PMT : " << hPEByEvtsByPMT->GetMean()
+       << " +- " << hPEByEvtsByPMT->GetRMS() << endl;  
+  cout << "Mean PE collected by events by PMT : " << hPECollectedByEvtsByPMT->GetMean()
+       << " +- " << hPECollectedByEvtsByPMT->GetRMS() << endl;
+
+    TFile *output=NULL;
+
+  char outputName[1000];
+  sprintf(outputName,"PROCESSED_%s",filename);
+  output = new TFile(outputName,"recreate");
+  hPEByEvtsByPMT->Write();
+  hPEByEvts->Write();
+  hPECollectedByEvtsByPMT->Write();
+  hPECollectedByEvts->Write();
 
 } // END MACRO
