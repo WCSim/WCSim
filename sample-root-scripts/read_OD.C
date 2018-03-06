@@ -51,7 +51,7 @@ void read_OD(char *filename=NULL) {
   //wcsimT->GetBranch("wcsimrootevent_OD")->SetAutoDelete(kTRUE);
 
   // const long unsigned int nbEntries = wcsimT->GetEntries();
-  const long unsigned int nbEntries = 100;
+  const long unsigned int nbEntries = wcsimT->GetEntries();
   cout << "Nb of entries " << wcsimT->GetEntries() << endl;
 
   //////////////////////////////////////////

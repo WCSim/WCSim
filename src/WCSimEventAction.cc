@@ -1033,7 +1033,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     
   for (int i = 0 ; i < wcsimrootsuperevent->GetNumberOfEvents(); i++) {
     wcsimrootevent = wcsimrootsuperevent->GetTrigger(i);
-    if(detectorElement=="tank") runAction->incrementEventsGenerated();
     G4cout << ">>>Root event "
 	   <<std::setw(5)<<wcsimrootevent->GetHeader()->GetEvtNum()<<"\n";
     //   if (WCDC){
@@ -1063,6 +1062,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   //  // last one is useful --> huge waste of disk space.
   //  hfile->Write("",TObject::kOverwrite);
 
+  if(detectorElement=="tank") runAction->incrementEventsGenerated();
 
   // M Fechner : reinitialize the super event after the writing is over
   wcsimrootsuperevent->ReInitialize();

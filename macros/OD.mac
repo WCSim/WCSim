@@ -15,7 +15,7 @@
 /WCSim/HyperKOD/ODTyvekSheetThickness 1 mm
 /WCSim/HyperKOD/ODWLSPlatesThickness 1 cm
 /WCSim/HyperKOD/PMTODperCellHorizontal 1
-/WCSim/HyperKOD/PMTODperCellVertical 1
+/WCSim/HyperKOD/PMTODperCellVertical 2
 /WCSim/HyperKOD/PMTODPercentCoverage 1
 /WCSim/HyperKOD/ODPMTShift 0 m
 #/WCSim/HyperKOD/DeactivateWLS
