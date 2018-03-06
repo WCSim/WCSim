@@ -19,7 +19,7 @@
 //#include <hash_map.h>
 // warning : hash_map is not part of the standard
 #include <ext/hash_map>
-
+#include <G4Colour.hh>
 
 using __gnu_cxx::hash;
 using __gnu_cxx::hashtable;
@@ -48,6 +48,9 @@ namespace __gnu_cxx  {
     }
   };
 }
+
+//-----------------------------------------------------
+//-----------------------------------------------------
 
 void ComputeWCODPMT(G4int NPMT, G4double *NPMTHorizontal, G4double *NPMTVertical);
 
@@ -121,7 +124,6 @@ public:
   WCSimWLSProperties *WLSptr;
   void SetWLSPointer(WCSimWLSProperties *WLS){WLSptr=WLS;}
   WCSimWLSProperties* GetWLSPointer(){
-    if (WLSptr == NULL) {G4cout << " NO WLS POINTER. Exiting WCSim." << G4endl; exit(1);}
     return WLSptr;
   }
 
@@ -193,11 +195,14 @@ public:
   void SetWCPMTODPercentCoverage(G4double val){WCPMTODPercentCoverage = val;}
   void SetWCODPMTShift(G4double val){WCODPMTShift = val;}
   void SetODEdited(G4bool val){odEdited = val;}
+  void SetIsWLSFilled(G4bool val){isWLSFilled = val;}
   G4bool GetODEdited(){return odEdited;}
 
   ////////// END OD /////////////
   ///////////////////////////////
 
+  G4double GetWCIDHeight(){return WCIDHeight;}
+ 
 private:
 
   // Tuning parameters
@@ -230,6 +235,7 @@ private:
   // The Construction routines
   G4LogicalVolume*   ConstructCylinder();
   G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructPMTAndWLSPlate(G4String,G4String,G4String detectorElement="OD");
 
   G4LogicalVolume* ConstructCaps(G4int zflip);
 
@@ -238,8 +244,8 @@ private:
   G4LogicalVolume* logicWCBarrelCellODTyvek;
   G4LogicalVolume* logicWCTowerODTyvek;
 
-  G4LogicalVolume* logicWCBarrelCellODWLSPlate;
-  G4LogicalVolume* logicWCTowerODWLSPlate;
+  G4LogicalVolume* logicWCODWLSAndPMT;
+  G4LogicalVolume* logicWCODWLSPlate;
 
   G4LogicalVolume* logicWCBarrelCellBlackSheet;
   G4LogicalVolume* logicWCTowerBlackSheet;
@@ -396,6 +402,9 @@ private:
 
   // Hit collection name parameters
   G4String WCODCollectionName;
+
+  // WLS material name
+  bool isWLSFilled;
 
   // ############################# //
   // # *** END OD Parameters *** # //

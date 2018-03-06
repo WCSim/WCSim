@@ -250,8 +250,8 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 40.0;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-      /WCPMTperCellVertical));
+  WCBarrelNRings =
+      round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));
   WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
@@ -260,7 +260,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   //////////////////////////////////////
   // Cave Parameters --- Beta version //
   //////////////////////////////////////
-  CaveTyvekSheetThickness  = 1.0*mm; // Quite Standard I guess
+  CaveTyvekSheetThickness  = 1.*mm; // Quite Standard I guess
 
   ////////////////////////////////////
   // OD Parameters --- Beta version //
@@ -271,7 +271,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCODLateralWaterDepth    = 1.*m;
   WCODHeightWaterDepth     = 2.*m;
   WCODDeadSpace            = 600.*mm;
-  WCODTyvekSheetThickness  = 1.0*mm; // Quite standard I guess
+  WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
   WCODWLSPlatesThickness   = 1.*cm; //
   WCODWLSPlatesLength      = 60.*cm; //
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
@@ -310,6 +310,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
 
   // TEST WLS collection for stacking action
   G4String WLSType = "EljenEJ286";
+  isWLSFilled = true;
   CreateWLSObject(WLSType);
 }
 

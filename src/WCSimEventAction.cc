@@ -786,8 +786,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     {
       // initial point of the trajectory
       G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
-      if(detectorElement=="tank") runAction->incrementEventsGenerated();
-	
+
       G4int         ipnu   = trj->GetPDGEncoding();
       G4int         id     = trj->GetTrackID();
       G4int         flag   = 0;    // will be set later
@@ -1034,6 +1033,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     
   for (int i = 0 ; i < wcsimrootsuperevent->GetNumberOfEvents(); i++) {
     wcsimrootevent = wcsimrootsuperevent->GetTrigger(i);
+    if(detectorElement=="tank") runAction->incrementEventsGenerated();
     G4cout << ">>>Root event "
 	   <<std::setw(5)<<wcsimrootevent->GetHeader()->GetEvtNum()<<"\n";
     //   if (WCDC){

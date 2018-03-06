@@ -108,7 +108,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   photonTree = new TTree("photons","Photon Tree");
   wcsimPhoEvt = new photonEvt();
   photonTree->Branch("phoEvt",wcsimPhoEvt,
-                     "trackID/I:parentID/I:pos[3]/D:wl/D:proc/I");
+                     "trackID/I:parentID/I:pos[3]/D:distance/D:wl/D:proc/I");
 }
 
 void WCSimRunAction::EndOfRunAction(const G4Run*)

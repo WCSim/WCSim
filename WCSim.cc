@@ -95,10 +95,7 @@ int main(int argc,char** argv)
 
   runManager->SetUserAction(new WCSimStackingAction(WCSimdetector));
 
-  runManager->SetUserAction(new WCSimSteppingAction(myRunAction));
-
-  // Create the emission spectrum for the WLS plate
-  CreateEmissionHistogram();
+  runManager->SetUserAction(new WCSimSteppingAction(myRunAction,WCSimdetector));
 
   // Initialize G4 kernel
   runManager->Initialize();

@@ -206,6 +206,10 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   ODPMTShift->SetDefaultUnit("m");
   ODPMTShift->SetUnitCandidates("m cm mm");
 
+  // Fill the OD WLS with material
+  isWLSFilled = new G4UIcmdWithoutParameter("/WCSim/HyperKOD/DeactivateWLS", this);
+  isWLSFilled->SetGuidance("Deactivate WLS plates by filling them with water");
+
   /////////// END OD //////////////
   /////////////////////////////////
 
@@ -417,6 +421,11 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       WCSimDetector->SetWCODPMTShift(ODPMTShift->GetNewDoubleValue(newValue));
     }
 
+    if(command == isWLSFilled) {
+      WCSimDetector->SetODEdited(true);
+      G4cout << "Deactivate WLS plates by filling them with water " << G4endl;
+      WCSimDetector->SetIsWLSFilled(false);
+    }
 
 
     /////////// END OD //////////////

@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <WCSimRootEvent.hh>
 #include <G4SIunits.hh>
-#include <TRandom.h>
-#include <random>
+#include <TRandom3.h>
+#include <G4OpticalPhoton.hh>
 
 #include "WCSimSteppingAction.hh"
 
@@ -17,65 +17,29 @@
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
 
-//ROOT Includes
-#include "TVector3.h"
-
-#define PI 3.141592654
-
 const double planck = 4.1357e-15; // ev.s
 const double lightspeed = 299792458e9; // nm/s
-
-TH1F *emissionHist;
-
-inline void CreateEmissionHistogram(){
-
-
-  static const int emitArraySize = 15;
-  float emitWavelength[emitArraySize] = {390,400,410,420,430,440,450,460,470,480,490,500,510,520,530};
-  float emit[emitArraySize] =
-      {0.0, 0.1, 0.71, 0.98,
-       0.91, 0.63, 0.49, 0.35,
-       0.20, 0.13, 0.081, 0.052,
-       0.03, 0.021, 0};
-
-  emissionHist = new TH1F("hist","hist", 15, 390., 530.);
-  emissionHist->Sumw2();
-
-  for (int i = 0 ; i < emitArraySize; i++) {
-
-    emissionHist->Fill(emitWavelength[i], emit[i]);
-    emissionHist->SetBinError(i+1, 0);
-  }
-
-
-}
-
-// First we have a structure to hold the values of the emitted photon.
-typedef struct {
-
-  TVector3 direction; // The direction of the emitted photon.
-  TVector3 position; // The position where the emitted photon was created (same as where the incident photon was absorbed).
-  double energy; // The energy value of the emitted photon.
-  double wavelength; // The wavelength of the emitted photon.
-
-} EmittedPhoton;
 
 // This function will determine the probability of an emitted photon will being detected by the PMT.
 // This function uses only the position of the photon's absorption with respect to the PMT (distance from PMT)
 // and lab measurements of the efficiency as a function of distance, taken at Edinburgh University.
-double EmittedPhotonDetectedProbability(TVector3 absorbedPhotonPosition){
+double EmittedPhotonDetectedProbability(G4ThreeVector absorbedPhotonPosition){
 
   // This function depends on the values measured at Edinburgh. Perhaps linear? exponential? something else?
 
-  return 0.2;
+  // absorbedPhotonPosition has to be given in local coordinate, let's compute the distance from the center,
+  // where the PMT is position
+  // Then will add a probabilty distribution following the solid angle
+  double distance = absorbedPhotonPosition.mag();
+  return 0.2/(1+distance);
 }// End of EmittedPhotonDetectedProbability function.
 
 
 // This function will determine whether or not a photon will be detected by the PMT. This function
 // uses only the position of the photon's absorption with respect to the PMT (distance from PMT) and
 // lab measurements of the efficiency as a function of distance, taken at Edinburgh University.
-bool EmittedPhotonDetected(TVector3 absorbedPhotonPosition){
-  TRandom *r = new TRandom(time(0)); // This can be changed to whatever random number generator WCSim is using.
+bool EmittedPhotonDetected(G4ThreeVector absorbedPhotonPosition){
+  TRandom3 *r = new TRandom3(time(0)); // This can be changed to whatever random number generator WCSim is using.
 
   // Check to see whether random number generated is less than or equal to the probability of a photon, emitted
   // from that position, being detected by the PMT.
@@ -96,80 +60,21 @@ double WavelengthToEnergy(double lambda){
 
 }
 
-// This function will select a wavelength for the emitted photon and return it as a wavelength in nm.
-double EmittedPhotonWavelength(){
-
-
-  return emissionHist->GetRandom();
-
-}// End of EmittedPhotonWavelength function.
-
-
-// This funtion will generate an emitted photon with a random 3D direction and energy value (from the
-// Eljen EJ-286 emission spectra). It will use only the position of absorption and output a direction
-// (TVector3) and an energy (ev).
-EmittedPhoton EmitPhoton(TVector3 absorbedPhotonPosition){
-
-  EmittedPhoton phot;
-  phot.position = absorbedPhotonPosition;
-//	phot->position->SetX(absorbedPhotonPosition->x());
-//	phot->position->SetY(absorbedPhotonPosition->y());
-//	phot->position->SetZ(absorbedPhotonPosition->z());
-
-  // Here we can use TF1 and the GetRandom() function to selected from the emission spectra.
-
-  // We don't know the spatial distribution of the emitted photon so we will just keep this distribution uniform
-  // over the surface of a sphere.
-
-  std::default_random_engine gen(rand()); // Random number generator.
-  std::uniform_real_distribution<double> dist(0.,1.); // Random number distribution (uniform doubles between 0 and 1)
-//	double r = dist(gen); // The generated random number.
-
-  // Generate random points on a unit sphere. http://mathworld.wolfram.com/SpherePointPicking.html
-  double theta = 2*PI*dist(gen);
-  double phi = acos(2*dist(gen)-1);
-  double x = sin(phi)*cos(theta);
-  double y = sin(phi)*sin(theta);
-  double z = cos(phi);
-
-  TVector3 dir(x, y, z);
-
-  phot.direction = dir;
-
-  phot.wavelength = EmittedPhotonWavelength();
-  phot.energy = WavelengthToEnergy(phot.wavelength);
-
-
-  return phot;
-}// End of EmitPhoton function.
-
-
-void WLSModel(){
-
-  std::cout << "This is just a test." << std::endl;
-
-  CreateEmissionHistogram();
-
-  for (int i = 0; i<10; i++){
-    TVector3 v(i*0.2, i*1, i*30);
-    EmittedPhoton p = EmitPhoton(v);
-    std::cout << "Absorbed: " << v.x() << " " << v.y() << " " << v.z() << std::endl;
-    std::cout << "PhotAbsorb: " << p.position.x() << " " << p.position.y() << " " << p.position.z() << std::endl;
-    std::cout << "PhotDir: " << p.direction.x() << " " << p.direction.y() << " " << p.direction.z() << std::endl;
-    std::cout << "PhotWavelength: " << p.wavelength << std::endl;
-    std::cout << "PhotEnergy: " << p.energy << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-  }
-
-
-//////////////////////////////////////////////
-///// BEGINING OF WCSIM STEPPING ACTION //////
-//////////////////////////////////////////////
-
+// Just return the name of the PhysicalVolume containing the WLS plate
+bool isPhotonInWLSPlate(G4String name){
+  if(name == "WCODWLSPlate")
+    return true;
+  else
+    return false;
 }
 
-WCSimSteppingAction::WCSimSteppingAction(WCSimRunAction *myRun) : runAction(myRun) {
+
+///////////////////////////////////////////////
+///// BEGINNING OF WCSIM STEPPING ACTION //////
+///////////////////////////////////////////////
+
+
+WCSimSteppingAction::WCSimSteppingAction(WCSimRunAction *myRun, WCSimDetectorConstruction *myDet) : runAction(myRun), det(myDet) {
 
 }
 
@@ -186,9 +91,14 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
   G4SDManager* SDman   = G4SDManager::GetSDMpointer();
   G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
 
-  //debugging 
-  //DebugWLSPlates(aStep);
-  
+  // WLS
+  bool WLS=false;
+  WLS=true;
+  if(WLS){
+    DebugWLSPlates(aStep);
+    // WLSPhysicsProcess(aStep);
+  }
+
 }
 
 
@@ -313,41 +223,205 @@ double WCSimSteppingAction::FieldLines(G4double /*x*/,G4double /*y*/,G4int /*coo
 }
 void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
 
-  G4Track *track = aStep->GetTrack();
+  G4Track *aTrack = aStep->GetTrack();
+  G4ParticleDefinition* particleType = aTrack->GetDefinition();
 
-  G4String partName = track->GetParticleDefinition()->GetParticleName();
+  bool printouts = false;
+  // printouts = true;
 
-  if(partName=="opticalphoton"){
+  if(particleType == G4OpticalPhoton::OpticalPhotonDefinition()){
 
-    photonEvt *pEvt = GetRunAction()->GetPhotonEvt();
+    G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
+    G4StepPoint* postStepPoint = aStep->GetPostStepPoint();
 
-    pEvt->trackID = track->GetTrackID();
-    pEvt->parentID = track->GetParentID();
+    G4String preVol = preStepPoint->GetPhysicalVolume()->GetName();
+    G4String postVol = postStepPoint->GetPhysicalVolume()->GetName();
 
-    pEvt->pos[0] = track->GetPosition().x();
-    pEvt->pos[1] = track->GetPosition().y();
-    pEvt->pos[2] = track->GetPosition().z();
+    G4String preMaterialName = preStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
+    G4String postMaterialName = postStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
+    G4String creaProc = aTrack->GetCreatorProcess()->GetProcessName();
 
-    track->GetVolume()->GetName().c_str();
+    // if(postVol == "WCPMTOD" && creaProc == "OpWLS"){
+    if(postMaterialName=="WCODWLSPlate" || preMaterialName=="WCODWLSPlate"){
 
-    pEvt->wl = ((2.0*M_PI*197.3)/(track->GetTotalEnergy()/CLHEP::eV));
+      G4TouchableHandle theTouchable = postStepPoint->GetTouchableHandle();
+      G4ThreeVector worldPosition = postStepPoint->GetPosition();
+      G4ThreeVector localPosition = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
 
-    if(track->GetCreatorProcess()->GetProcessName()=="Cerenkov") pEvt->proc = 0;
-    else if(track->GetCreatorProcess()->GetProcessName()=="OpWLS") pEvt->proc = 1;
+      photonEvt *pEvt = GetRunAction()->GetPhotonEvt();
 
-    runAction->GetPhotonTree()->Fill();
+      pEvt->trackID = aTrack->GetTrackID();
+      pEvt->parentID = aTrack->GetParentID();
+
+      pEvt->pos[0] = worldPosition.x();
+      pEvt->pos[1] = worldPosition.y();
+      pEvt->pos[2] = worldPosition.z();
+
+      pEvt->distance = localPosition.mag();
+
+      pEvt->wl = ((2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/CLHEP::eV));
+
+      G4String procName = postStepPoint->GetProcessDefinedStep()->GetProcessName();
+      if(aTrack->GetCreatorProcess()->GetProcessName()=="Cerenkov") pEvt->proc = 0;
+      else if(aTrack->GetCreatorProcess()->GetProcessName()=="OpWLS") pEvt->proc = 1;
+
+      // Fill only if photons enter the WLS material
+      runAction->GetPhotonTree()->Fill();
+
+      // KILL the damn particle
+      // aTrack->SetTrackStatus(fStopAndKill);
+    }
 
     ////// PRINTOUTS //////
-    std::cout << "OpPhoton in " << track->GetVolume()->GetName()
-              << " and going to " << track->GetNextVolume()->GetName()
-              << std::endl;
-    std::cout << "Creator process : " << track->GetCreatorProcess()->GetProcessName() << std::endl;
-    std::cout << "# Track ID : " << track->GetTrackID() << std::endl;
-    std::cout << "# Parent ID : " << track->GetTrackID() << std::endl;
-    std::cout << "# Pos : "
-              << track->GetPosition().x() << " "
-              << track->GetPosition().y() << " "
-              << track->GetPosition().z() << " " << std::endl;
-  }
+    if(printouts){
+      G4cout << "OpPhoton in " << aTrack->GetVolume()->GetName()
+                << " and going to " << aTrack->GetNextVolume()->GetName()
+                << G4endl;
+      G4cout << "Creator process : " << aTrack->GetCreatorProcess()->GetProcessName() << G4endl;
+      G4cout << "# Track ID : " << aTrack->GetTrackID() << G4endl;
+      G4cout << "# Parent ID : " << aTrack->GetParentID() << G4endl;
+      G4cout << "# Pos : "
+                << aTrack->GetPosition().x() << " "
+                << aTrack->GetPosition().y() << " "
+                << aTrack->GetPosition().z() << " " << G4endl;
+      G4cout << "WL : " << ((2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/CLHEP::eV)) << G4endl;
+      G4cout << "###" << G4endl;
+      G4cout << "STEP POINT INFO" << G4endl;
+      G4cout << "postMaterialName : " << postMaterialName << G4endl;
+      G4cout << "procName : " << postStepPoint->GetProcessDefinedStep()->GetProcessName() << G4endl;
+      G4cout << G4endl;
+    } // END if printouts
+
+  } // END if photon
+
+} // END DebugWLSPlates
+
+// This function will select a wavelength for the emitted photon and return it as a wavelength in nm.
+double WCSimSteppingAction::EmittedPhotonWavelength(){
+
+
+  return det->GetWLSPointer()->emissionHist->GetRandom();
+
+}// End of EmittedPhotonWavelength function.
+
+
+// This funtion will generate an emitted photon with a random 3D direction and energy value (from the
+// Eljen EJ-286 emission spectra). It will use only the position of absorption and output a direction
+// (G4ThreeVector) and an energy (ev).
+EmittedPhoton WCSimSteppingAction::EmitPhoton(G4ThreeVector absorbedPhotonPosition){
+
+  EmittedPhoton phot;
+  phot.position = absorbedPhotonPosition;
+//	phot->position->SetX(absorbedPhotonPosition->x());
+//	phot->position->SetY(absorbedPhotonPosition->y());
+//	phot->position->SetZ(absorbedPhotonPosition->z());
+
+  // Here we can use TF1 and the GetRandom() function to selected from the emission spectra.
+
+  // We don't know the spatial distribution of the emitted photon so we will just keep this distribution uniform
+  // over the surface of a sphere.
+
+  TRandom3 *r = new TRandom3(time(0)); // This can be changed to whatever random number generator WCSim is using.
+
+  // Generate random points on a unit sphere. http://mathworld.wolfram.com/SpherePointPicking.html
+  double x, y, z;
+  r->Sphere(x,y,z,1.);
+
+  G4ThreeVector dir(x, y, z);
+
+  phot.direction = dir;
+
+  phot.wavelength = EmittedPhotonWavelength();
+  phot.energy = WavelengthToEnergy(phot.wavelength);
+
+
+  return phot;
+}// End of EmitPhoton function.
+
+
+
+void WCSimSteppingAction::WLSPhysicsProcess(const G4Step *aStep){
+
+  G4Track *aTrack = aStep->GetTrack();
+  G4ParticleDefinition* particleType = aTrack->GetDefinition();
+
+  if(particleType == G4OpticalPhoton::OpticalPhotonDefinition()){
+
+    G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
+    G4StepPoint* postStepPoint = aStep->GetPostStepPoint();
+
+    // Retrive basic step info
+    G4String postMaterialName = postStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
+    G4String procName = postStepPoint->GetProcessDefinedStep()->GetProcessName();
+
+    double wl = ((2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/CLHEP::eV));
+    double absProb = det->GetWLSPointer()->GetgAbs()->Eval(wl,0,"S");
+
+    if(isPhotonInWLSPlate(postMaterialName) && absProb > G4UniformRand()){
+
+      // KILL the damn particle
+      aTrack->SetTrackStatus(fStopAndKill);
+
+      G4TouchableHandle theTouchable = postStepPoint->GetTouchableHandle();
+
+      G4int copyNo = theTouchable->GetCopyNumber();
+      G4int motherCopyNo = theTouchable->GetCopyNumber(1);
+
+      G4cout << "copyno : " << copyNo << " mothercopyno : " << motherCopyNo << G4endl;
+
+      std::vector<WCSimPmtInfo*> *pmts=det->Get_ODPmts();
+      WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at((unsigned long) (motherCopyNo - 1));
+      Double_t hit_pos[3];
+      hit_pos[0] = 10*pmtinfo->Get_transx();
+      hit_pos[1] = 10*pmtinfo->Get_transy();
+      hit_pos[2] = 10*pmtinfo->Get_transz();
+      G4ThreeVector pmt_position(hit_pos[0]*mm, hit_pos[1]*mm, hit_pos[2]*mm);
+
+      G4cout << "PMT center pos : "
+             << pmt_position.x() << " "
+             << pmt_position.y() << " "
+             << pmt_position.z() << " " << G4endl;
+
+
+      G4ThreeVector worldPosition = postStepPoint->GetPosition();
+      // Local position inside WLS plate of the photon !!!
+      G4ThreeVector localPosition =
+          theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
+
+      G4cout << "photon pos : "
+             << worldPosition.x() << " "
+             << worldPosition.y() << " "
+             << worldPosition.z() << " " << G4endl;
+
+
+      const G4ThreeVector &dir = aTrack->GetMomentumDirection(); // Recover photon direction
+
+      if(EmittedPhotonDetected(localPosition)){
+        EmittedPhoton p = EmitPhoton(localPosition);
+      }
+
+
+      G4LogicalVolume *mother = postStepPoint->GetPhysicalVolume()->GetMotherLogical();
+      G4VPhysicalVolume *daughter;
+      for(int i=0;i<mother->GetNoDaughters();i++){ // ID 0 is WLS plate and ID 1 is PMT
+        daughter = mother->GetDaughter(i);
+        G4ThreeVector daughterPosition = daughter->GetTranslation();
+        // Recover daughter volume of PMT
+        if(daughter->GetName() == "WCPMTOD"){
+          for(int j=0;j<daughter->GetLogicalVolume()->GetNoDaughters();j++){ // ID 0 is InteriorPMT and ID 1 is HyperK-glassFaceWCPMT_OD
+            if(daughter->GetLogicalVolume()->GetDaughter(j)->GetName() == "HyperK-glassFaceWCPMT_OD"){
+              G4ThreeVector newPos(daughter->GetLogicalVolume()->GetDaughter(j)->GetTranslation().x(),
+                                   daughter->GetLogicalVolume()->GetDaughter(j)->GetTranslation().y(),
+                                   daughter->GetLogicalVolume()->GetDaughter(j)->GetTranslation().z());
+              aTrack->SetPosition(newPos);
+              aStep->GetPostStepPoint()->SetPosition(newPos);
+              aStep->GetPostStepPoint()->SetGlobalTime(-1);//Help recognize WLS photon in analysis
+            }
+          }
+        }
+      }
+
+    } // END if in WLS
+  } // END if opticalphoton
 
 }

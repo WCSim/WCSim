@@ -59,6 +59,9 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithAnInteger* PMTODperCellVertical;
   G4UIcmdWithADouble* PMTODPercentCoverage;
   G4UIcmdWithADoubleAndUnit* ODPMTShift;
+  // isWLS constructed
+  G4UIcmdWithoutParameter* isWLSFilled;
+
 };
 
 #endif
