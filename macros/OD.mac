@@ -14,6 +14,7 @@
 /WCSim/HyperKOD/ODDeadSpace 600 mm
 /WCSim/HyperKOD/ODTyvekSheetThickness 1 mm
 /WCSim/HyperKOD/ODWLSPlatesThickness 1 cm
+/WCSim/HyperKOD/ODWLSPlatesLength 60 cm
 /WCSim/HyperKOD/PMTODperCellHorizontal 1
 /WCSim/HyperKOD/PMTODperCellVertical 2
 /WCSim/HyperKOD/PMTODPercentCoverage 1
