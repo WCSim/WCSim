@@ -65,7 +65,7 @@ void WCSimRunActionMessenger::SetNewValue(G4UIcommand* command,G4String newValue
     {
       WCSimRun->SetSaveRooTracker(RooTracker->GetNewBoolValue(newValue));
       if(newValue) G4cout << "Saving NEUT RooTracker information to output file"  << G4endl;
-
+    }
   else if(command == UseTimer)
     {
       bool use = UseTimer->GetNewBoolValue(newValue);
