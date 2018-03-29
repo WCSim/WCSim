@@ -26,7 +26,7 @@ int pawc_[500000];                // Declare the PAWC common
 struct ntupleStruct jhfNtuple;    // global, ToDo: why not use and set the class member?
 
 WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test, WCSimRandomParameters* rand)
-  : wcsimrandomparameters(rand)
+  : wcsimrandomparameters(rand), useTimer(false)
 {
   ntuples = 1;
 
@@ -49,6 +49,7 @@ WCSimRunAction::~WCSimRunAction()
 
 void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
 {
+<<<<<<< HEAD
 
   fSettingsOutputTree = NULL;
   fSettingsInputTree = NULL;
@@ -86,6 +87,14 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
  
   }      
 
+=======
+  if(useTimer) {
+    timer.Reset();
+    timer.Start();
+  }
+  
+//   G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
+>>>>>>> 1008503af5731fafcddd61f2c2bbe18dde44e0dc
   numberOfEventsGenerated = 0;
   numberOfTimesWaterTubeHit = 0;
   numberOfTimesCatcherHit = 0;
@@ -537,6 +546,12 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
   }
 
 
+  if(useTimer) {
+    timer.Stop();
+    G4cout << "WCSimRunAction ran from BeginOfRunAction() to EndOfRunAction() in:"
+	   << "\t" << timer.CpuTime()  << " seconds (CPU)"
+	   << "\t" << timer.RealTime() << " seconds (real)" << G4endl;
+  }
 }
 
 void WCSimRunAction::FillGeoTree(){

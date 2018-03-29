@@ -96,7 +96,6 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
 
-
   for (G4int i=0; i < WCHC->entries(); i++)
     {
 
@@ -133,17 +132,14 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
 	    time_true = (*WCHC)[i]->GetTime(ip);
+	    time_PMT  = time_true; //currently no PMT time smearing applied
 	    peSmeared = rn1pe();
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
-
-	    //apply time smearing
-	    float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
-	    time_PMT = time_true + PMT->HitTimeSmearing(Q);
 
 	    if ( DigiHitMapPMT[tube] == 0) {
 	      WCSimWCDigi* Digi = new WCSimWCDigi();
 	      Digi->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
-	      Digi->AddPe(time_PMT);	
+	      Digi->AddPe(time_PMT);
 	      Digi->SetTubeID(tube);
 	      Digi->SetPos(pmt_position);
 	      Digi->SetOrientation(pmt_orientation);

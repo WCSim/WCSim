@@ -7,7 +7,11 @@
 
 #include "TFile.h"
 #include "TTree.h"
+
 #include "TClonesArray.h"
+
+#include "TStopwatch.h"
+
 #include "WCSimRootEvent.hh"
 #include "WCSimRootGeom.hh"
 #include "WCSimRootOptions.hh"
@@ -106,6 +110,8 @@ public:
       fNVtx = 0;
   }
 
+  void SetUseTimer(bool use) { useTimer = use; }
+  
 private:
   // MFechner : set by the messenger
   std::string RootFileName;
@@ -209,6 +215,10 @@ private:
   NRooTrackerVtx *evNRooTracker;
     
   const G4Run* fG4Run;
+
+  bool useTimer; ///< Use the timer? Set by Messenger.
+  TStopwatch timer; ///< A timer for runtime analysis
+
 };
 
 #endif
