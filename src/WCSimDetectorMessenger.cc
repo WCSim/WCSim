@@ -108,21 +108,14 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			     "Stacking_Only\n"
 			     "Stacking_And_SensitiveDetector\n"
 			     "SensitiveDetector_Only\n"
-<<<<<<< HEAD
 			     "DoNotApplyQE");
 
-=======
-			   "DoNotApplyQE");
->>>>>>> 1008503af5731fafcddd61f2c2bbe18dde44e0dc
   PMTQEMethod->SetParameterName("PMTQEMethod", false);
   PMTQEMethod->SetCandidates("Stacking_Only "
 			     "Stacking_And_SensitiveDetector "
 			     "SensitiveDetector_Only "
-<<<<<<< HEAD
 			     "DoNotApplyQE ");
-=======
-			     "DoNotApplyQE");
->>>>>>> 1008503af5731fafcddd61f2c2bbe18dde44e0dc
+
   PMTQEMethod->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   PMTCollEff = new G4UIcmdWithAString("/WCSim/PMTCollEff", this);
