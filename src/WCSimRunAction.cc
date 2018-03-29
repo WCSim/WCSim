@@ -49,7 +49,6 @@ WCSimRunAction::~WCSimRunAction()
 
 void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
 {
-<<<<<<< HEAD
 
   fSettingsOutputTree = NULL;
   fSettingsInputTree = NULL;
@@ -87,14 +86,11 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
  
   }      
 
-=======
   if(useTimer) {
     timer.Reset();
     timer.Start();
   }
   
-//   G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
->>>>>>> 1008503af5731fafcddd61f2c2bbe18dde44e0dc
   numberOfEventsGenerated = 0;
   numberOfTimesWaterTubeHit = 0;
   numberOfTimesCatcherHit = 0;
