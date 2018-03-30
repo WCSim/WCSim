@@ -115,6 +115,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			     "Stacking_And_SensitiveDetector "
 			     "SensitiveDetector_Only "
 			     "DoNotApplyQE ");
+
   PMTQEMethod->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   PMTCollEff = new G4UIcmdWithAString("/WCSim/PMTCollEff", this);
