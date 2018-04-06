@@ -8,6 +8,7 @@
 #include "G4ParticleTable.hh"
 #include "G4IonTable.hh"
 #include "G4ParticleDefinition.hh"
+#include "G4OpticalPhoton.hh"
 #include "G4ThreeVector.hh"
 #include "globals.hh"
 #include "Randomize.hh"
@@ -76,6 +77,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   useGunEvt    = false;
   useLaserEvt  = false;
   useGPSEvt    = false;
+  useMultiVertEvt = false;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -350,6 +352,123 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamDir(dir);
       SetBeamPDG(pdg);
     }
+  else if (useMultiVertEvt)
+    {
+      if ( !inputFile.is_open() )
+	{
+	  G4cout << "Set a nuance-formatted file using the command /mygen/vecfile name"
+		 << G4endl;
+	  exit(-1);
+	}
+
+      //
+      // Documentation describing the nuance text format can be found here: 
+      // http://neutrino.phy.duke.edu/nuance-format/
+      //
+      // The format must be strictly adhered to for it to be processed correctly.
+      // The lines and their meanings from begin through nuance are fixed, and then
+      // a variable number of vertices, tracks, and info may follow.
+      //
+
+      const int lineSize=100;
+      char      inBuf[lineSize];
+      vector<string> token(1);
+	
+      token = readInLine(inputFile, lineSize, inBuf);
+	  
+      if (token.size() == 0) 
+	{
+	  G4cout << "end of nuance vector file!" << G4endl;
+	}
+      else if (token[0] != "begin")
+	{
+	  G4Exception("WCSimPrimaryGeneratorAction::GeneratePrimaries","Event Must Be Aborted",EventMustBeAborted,"Error reading nuance-formatted event input, skipping event.");
+	}
+      else   // normal parsing begins here
+	{
+	  // Read the nuance mode line (ignore value now)
+	  token = readInLine(inputFile, lineSize, inBuf);
+	  if (token[0] != "nuance")
+	    {
+	      G4Exception("WCSimPrimaryGeneratorAction::GeneratePrimaries","Event Must Be Aborted",EventMustBeAborted,"Error reading nuance-formatted event input, skipping event.");
+	    }
+	  mode = atoi(token[1]);
+
+	  // loop over arbitrary number of vertices
+	  while (token = readInLine(inputFile, lineSize, inBuf), token[0] != "end")
+	    {
+	      if ( token[0] == "vertex" )
+		{
+		  // read vertex parameters
+		  vtxs[0] = G4ThreeVector(atof(token[1])*cm,
+					  atof(token[2])*cm,
+					  atof(token[3])*cm);
+		  G4double time = atof(token[4])*ns;
+
+		  // true : Generate vertex in Rock , false : Generate vertex in WC tank
+		  SetGenerateVertexInRock(false);
+
+		  particleGun->SetParticleTime(time);
+		  particleGun->SetParticlePosition(vtxs[0]);
+		}
+	      else if ( token[0] == "info" )
+		{
+		  vecRecNumber = atoi(token[2]);
+		}
+	      else if ( token[0] == "track" )
+		{
+		  if ( atoi(token[6]) == -1 )
+		    {
+		      beampdgs[0] = atoi(token[1]);
+		      beamenergies[0] = atof(token[2])*MeV;
+		      beamdirs[0] = G4ThreeVector(atof(token[3]),
+						  atof(token[4]),
+						  atof(token[5]));
+		    }
+		  else if ( atoi(token[6]) == -2 )
+		    {
+		      targetpdgs[0] = atoi(token[1]);
+		      targetenergies[0] = atof(token[2])*MeV;
+		      targetdirs[0] = G4ThreeVector(atof(token[3]),
+						    atof(token[4]),
+						    atof(token[5]));
+		    }
+		  else if ( atoi(token[6]) == 0 )
+		    {
+		      // daughter particle
+		      G4int pdgid = atoi(token[1]);
+		      G4double energy = atof(token[2])*MeV;
+		      G4ThreeVector dir = G4ThreeVector(atof(token[3]),
+							atof(token[4]),
+							atof(token[5]));
+		      G4ThreeVector vertex = particleGun->GetParticlePosition();
+		      G4double time = particleGun->GetParticleTime();
+
+		      if (pdgid == 22)
+			{
+			  // assume it's an "G4OpticalPhoton", rather than a "G4Gamma"
+			  // which are (apparently) treated differently
+			  particleGun->SetParticleDefinition(G4OpticalPhoton::OpticalPhotonDefinition());
+			}
+		      else
+			{
+			  particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));
+			}
+		      
+		      G4double mass = particleGun->GetParticleDefinition()->GetPDGMass();
+			  
+		      G4double ekin = energy - mass;
+			  
+		      particleGun->SetParticleEnergy(ekin);
+		      particleGun->SetParticleMomentumDirection(dir);
+		      particleGun->GeneratePrimaryVertex(anEvent);
+
+		      //G4cout << "Event " << anEvent->GetEventID() << ": PDG=" << pdgid << "  Ekin=" << ekin << "  dir=(" << dir.x() << "," << dir.y() << "," << dir.z() << ")  time=" << time << "  vtx=(" << vertex.x() << "," << vertex.y() << "," << vertex.z() << ")" << G4endl;
+		    }
+		}
+	    }
+	}
+    }
 }
 
 void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
@@ -371,6 +490,8 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
     return "gps";
   else if(useLaserEvt)
     return "laser";
+  else if(useMultiVertEvt)
+    return "multivert";
   return "";
 }
 

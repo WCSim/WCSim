@@ -74,6 +74,7 @@ private:
   G4bool   useGunEvt;
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
   G4bool   useGPSEvt;
+  G4bool   useMultiVertEvt; // Thiesse: use multi-vertex per event
   std::fstream inputFile;
   G4String vectorFileName;
   G4bool   GenerateVertexInRock;
@@ -110,6 +111,9 @@ public:
 
   inline void SetGPSEvtGenerator(G4bool choice) { useGPSEvt = choice; }
   inline G4bool IsUsingGPSEvtGenerator()  { return useGPSEvt; }
+
+  inline void SetMultiVertEvtGenerator(G4bool choice) { useMultiVertEvt = choice; }
+  inline G4bool IsUsingMultiVertEvtGenerator() { return useMultiVertEvt; }
 
   inline void OpenVectorFile(G4String fileName) 
   {
