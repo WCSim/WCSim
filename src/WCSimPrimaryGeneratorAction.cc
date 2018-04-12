@@ -8,13 +8,13 @@
 #include "G4ParticleTable.hh"
 #include "G4IonTable.hh"
 #include "G4ParticleDefinition.hh"
-#include "G4OpticalPhoton.hh"
 #include "G4ThreeVector.hh"
 #include "globals.hh"
 #include "Randomize.hh"
 #include <fstream>
 #include <vector>
 #include <string>
+#include <ios>
 
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
@@ -365,45 +365,72 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       // Documentation describing the nuance text format can be found here: 
       // http://neutrino.phy.duke.edu/nuance-format/
       //
-      // The format must be strictly adhered to for it to be processed correctly.
-      // The lines and their meanings from begin through nuance are fixed, and then
-      // a variable number of vertices, tracks, and info may follow.
+      // The nuance input file specification above is vague enough that we can extend
+      // the scope of event generation beyond that of the nuance code itself.
+      // In particular, this code allows the definition of multiple vertices in each
+      // simulated event. They can have different locations and/or times of generation.
+      // Each vertex can have an arbitrary number of tracks (no change). 
+      //
+      // In some simulations, the user may not wish to declare an initial state particle (-1)
+      // or final state particle before interactions (-2). If these are omitted, then 
+      // ensure you know how the rest of the code and the output ntuple will be affected.
+      // Then the "info" line is also not required and can be omitted.
+      //
+      // We also include the functionality to include comments (definitely beyond the original
+      // nuance format scope). Any line that begins with "# " is ignored.
+      // 
+      // Blank lines are still a no-no. At least one "vertex" must come before a "track".
+      //
+      // Original functionality is retained in reading standard nuance input files.
+      //
+      // To simulate optical photons (rather than G4Gamma), use code 30. It is an unused 
+      // PDG code from the boson table.
       //
 
       const int lineSize=100;
       char      inBuf[lineSize];
       vector<string> token(1);
-	
-      token = readInLine(inputFile, lineSize, inBuf);
-	  
+
+      // Look for "begin", but skip comments
+      while (token = readInLine(inputFile, lineSize, inBuf), token[0] == "#") {for (int t = 0; t < token.size(); ++t) std::cout << token[t] << " "; std::cout << std::endl; }
+      	  
       if (token.size() == 0) 
 	{
 	  G4cout << "end of nuance vector file!" << G4endl;
 	}
       else if (token[0] != "begin")
 	{
-	  G4Exception("WCSimPrimaryGeneratorAction::GeneratePrimaries","Event Must Be Aborted",EventMustBeAborted,"Error reading nuance-formatted event input, skipping event.");
+	  G4Exception("WCSimPrimaryGeneratorAction::GeneratePrimaries","Event Must Be Aborted",EventMustBeAborted,"Error reading nuance-formatted event input, skipping event. Unexpected token (expected 'begin').");
 	}
       else   // normal parsing begins here
 	{
 	  // Read the nuance mode line (ignore value now)
-	  token = readInLine(inputFile, lineSize, inBuf);
+	  while (token = readInLine(inputFile, lineSize, inBuf), token[0] == "#") { for (int t = 0; t < token.size(); ++t) std::cout << token[t] << " "; std::cout << std::endl;}
 	  if (token[0] != "nuance")
 	    {
-	      G4Exception("WCSimPrimaryGeneratorAction::GeneratePrimaries","Event Must Be Aborted",EventMustBeAborted,"Error reading nuance-formatted event input, skipping event.");
+	      G4Exception("WCSimPrimaryGeneratorAction::GeneratePrimaries","Event Must Be Aborted",EventMustBeAborted,"Error reading nuance-formatted event input, skipping event. Unexpected token (expected 'nuance').");
 	    }
 	  mode = atoi(token[1]);
 
 	  // loop over arbitrary number of vertices
-	  while (token = readInLine(inputFile, lineSize, inBuf), token[0] != "end")
+	  do 
 	    {
-	      if ( token[0] == "vertex" )
+	      token = readInLine(inputFile, lineSize, inBuf);
+	      if ( token.size() == 0 ) 
 		{
-		  // read vertex parameters
-		  vtxs[0] = G4ThreeVector(atof(token[1])*cm,
-					  atof(token[2])*cm,
-					  atof(token[3])*cm);
-		  G4double time = atof(token[4])*ns;
+		  G4Exception("WCSimPrimaryGeneratorAction::GeneratePrimaries","Event Must Be Aborted",EventMustBeAborted,"Error reading nuance-formatted event input, skipping event. Unexpected blank line.");
+		}
+	      if ( token[0] == "#" )
+		{
+		  for (int t = 0; t < token.size(); ++t) std::cout << token[t] << " "; std::cout << std::endl;
+		  continue;
+		}
+	      else if ( token[0] == "vertex" )
+		{
+		  vtxs[0] = G4ThreeVector(atof(token[1]),
+					  atof(token[2]),
+					  atof(token[3]));//cm
+		  G4double time = atof(token[4]);//ns
 
 		  // true : Generate vertex in Rock , false : Generate vertex in WC tank
 		  SetGenerateVertexInRock(false);
@@ -420,7 +447,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		  if ( atoi(token[6]) == -1 )
 		    {
 		      beampdgs[0] = atoi(token[1]);
-		      beamenergies[0] = atof(token[2])*MeV;
+		      beamenergies[0] = atof(token[2]);//MeV;
 		      beamdirs[0] = G4ThreeVector(atof(token[3]),
 						  atof(token[4]),
 						  atof(token[5]));
@@ -428,7 +455,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		  else if ( atoi(token[6]) == -2 )
 		    {
 		      targetpdgs[0] = atoi(token[1]);
-		      targetenergies[0] = atof(token[2])*MeV;
+		      targetenergies[0] = atof(token[2]);//MeV;
 		      targetdirs[0] = G4ThreeVector(atof(token[3]),
 						    atof(token[4]),
 						    atof(token[5]));
@@ -437,18 +464,16 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		    {
 		      // daughter particle
 		      G4int pdgid = atoi(token[1]);
-		      G4double energy = atof(token[2])*MeV;
+		      G4double energy = atof(token[2]);//MeV;
 		      G4ThreeVector dir = G4ThreeVector(atof(token[3]),
 							atof(token[4]),
 							atof(token[5]));
-		      G4ThreeVector vertex = particleGun->GetParticlePosition();
-		      G4double time = particleGun->GetParticleTime();
 
-		      if (pdgid == 22)
+		      if (pdgid == 30)
 			{
-			  // assume it's an "G4OpticalPhoton", rather than a "G4Gamma"
-			  // which are (apparently) treated differently
-			  particleGun->SetParticleDefinition(G4OpticalPhoton::OpticalPhotonDefinition());
+			  // Special case for optical photons which do not have a unique PDG code.
+			  // Use an unused PDG from the boson table.
+			  particleGun->SetParticleDefinition(particleTable->FindParticle("opticalphoton"));
 			}
 		      else
 			{
@@ -456,18 +481,31 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 			}
 		      
 		      G4double mass = particleGun->GetParticleDefinition()->GetPDGMass();
-			  
 		      G4double ekin = energy - mass;
 			  
 		      particleGun->SetParticleEnergy(ekin);
 		      particleGun->SetParticleMomentumDirection(dir);
 		      particleGun->GeneratePrimaryVertex(anEvent);
 
-		      //G4cout << "Event " << anEvent->GetEventID() << ": PDG=" << pdgid << "  Ekin=" << ekin << "  dir=(" << dir.x() << "," << dir.y() << "," << dir.z() << ")  time=" << time << "  vtx=(" << vertex.x() << "," << vertex.y() << "," << vertex.z() << ")" << G4endl;
+		      /*
+		      G4ThreeVector vertex = particleGun->GetParticlePosition();
+		      G4double time = particleGun->GetParticleTime();
+		      G4cout << "Event " << anEvent->GetEventID() << ": PDG=" << pdgid << "  Ekin=" << ekin << "  dir=(" << dir.x() << "," << dir.y() << "," << dir.z() << ")  time=" << time << "  vtx=(" << vertex.x() << "," << vertex.y() << "," << vertex.z() << ")" << G4endl;
+		      */
 		    }
 		}
-	    }
+	      else 
+		{
+		  G4String msg = "Error reading nuance-formatted event input, skipping event. Unexpected line starting with ";
+		  msg += token[0];
+		  msg += ".";
+		  G4Exception("WCSimPrimaryGeneratorAction::GeneratePrimaries","Event Must Be Aborted",EventMustBeAborted,msg.data());
+		}
+	    } while (token[0] != "end");
 	}
+      // temporary kludge to read the same event repeatedly
+      inputFile.clear();
+      inputFile.seekg(0,inputFile.beg);
     }
 }
 
