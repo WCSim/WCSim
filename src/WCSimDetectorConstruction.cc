@@ -276,7 +276,7 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
     return PMT;
   }
   else if (PMTType == "PMT3inch"){
-    WCSimPMTObject* PMT = new PMT5inch;
+    WCSimPMTObject* PMT = new PMT3inch;
     WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }

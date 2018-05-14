@@ -1855,7 +1855,7 @@ PMT3inch::PMT3inch(){}
 PMT3inch::~PMT3inch(){}
 
 G4String PMT3inch::GetPMTName() {G4String PMTName = "3inch"; return PMTName;}
-G4double PMT3inch::GetExposeHeight() {return 10.*mm;} // Reduced height exposure to take into account the WLS plate thickness
+G4double PMT3inch::GetExposeHeight() {return 29.*mm;} 
 G4double PMT3inch::GetRadius() {return 39.*mm;}
 G4double PMT3inch::GetPMTGlassThickness() {return 0.40*cm;}
 G4float PMT3inch::HitTimeSmearing(float Q) {
