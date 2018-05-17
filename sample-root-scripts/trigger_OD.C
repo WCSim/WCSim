@@ -78,6 +78,7 @@ void trigger_OD(char *filename=NULL) {
   }
 
   TGraph *grEffVSThres = new TGraph();
+  grEffVSThres->SetName("grEffVSThres");
   grEffVSThres->SetTitle("Trigger veto efficiency VS Trigger threshold; Threshold (PE) ; Eff (%)");
   grEffVSThres->SetLineColor(kGreen+1);
   grEffVSThres->SetLineWidth(1.);
@@ -86,6 +87,7 @@ void trigger_OD(char *filename=NULL) {
   grEffVSThres->SetMarkerStyle(kOpenThreeTriangles);
   
   TGraph *grMultVSThres = new TGraph();
+  grMultVSThres->SetName("grMultVSThres");
   grMultVSThres->SetTitle("Multiplicity VS Trigger threshold; Threshold (PE) ; Multiplicity");
   grMultVSThres->SetLineColor(kBlue-4);
   grMultVSThres->SetLineWidth(1.);

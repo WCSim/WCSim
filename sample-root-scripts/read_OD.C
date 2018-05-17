@@ -1,6 +1,8 @@
 #include <stdio.h>     
 #include <stdlib.h>    
 
+#include <libgen.h>
+
 void read_OD(char *filename=NULL) {
   /* A simple script to plot aspects of phototube hits 
    * 
@@ -41,6 +43,14 @@ void read_OD(char *filename=NULL) {
     else cout << "File open bro: " << filename << endl;
   }
 
+  char *dirc, *basec, *bname, *dname;
+
+  dirc = strdup(filename);
+  basec = strdup(filename);
+  dname = dirname(dirc);
+  bname = basename(basec);
+  printf("dirname=%s, basename=%s\n", dname, bname);
+
   TTree  *wcsimT = (TTree*)f->Get("wcsimT");
 
   WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent();
@@ -58,10 +68,10 @@ void read_OD(char *filename=NULL) {
   // HISTOGRAMS DEFINITION /////////////////
   //////////////////////////////////////////
 
-  const int nbBins = 100;
+  const int nbBins = 50;
   const int nbPEMax = 1000;
-  const int nbBinsByPMT = 100;
-  const int nbPEMaxByPMT = nbBinsByPMT;
+  const int nbBinsByPMT = 25;
+  const int nbPEMaxByPMT = 200;
   
   TH1D *hPEByEvtsByPMT = new TH1D("hPEByEvtsByPMT","RAW PE by Evts by PMT",
 				  nbBinsByPMT,0,nbPEMaxByPMT);
@@ -85,7 +95,7 @@ void read_OD(char *filename=NULL) {
   hPECollectedByEvts->SetMarkerColor(kRed+1);
   hPECollectedByEvts->SetFillColor(kRed+1);
 
-  TH1D *hNbTubesHit = new TH1D("hNbTubesHit","Nb of Tubes Hit",1000,0,1000);
+  TH1D *hNbTubesHit = new TH1D("hNbTubesHit","Nb of Tubes Hit",50,0,1000);
   
   // END HISTOGRAMS DEFINITION /////////////
   //////////////////////////////////////////
@@ -111,7 +121,7 @@ void read_OD(char *filename=NULL) {
       for (int i = 0; i < rawMax; i++){
 	WCSimRootCherenkovHit *chit = (WCSimRootCherenkovHit*)wcsimrootevent->GetCherenkovHits()->At(i);
 	
-	hPEByEvtsByPMT->Fill(chit->GetTotalPe(1));
+	if(chit->GetTotalPe(1) != 0) hPEByEvtsByPMT->Fill(chit->GetTotalPe(1));
 	totRawPE+=chit->GetTotalPe(1);
       } // END FOR RAW HITS
 
@@ -129,7 +139,7 @@ void read_OD(char *filename=NULL) {
 	  (WCSimRootCherenkovHitTime*)wcsimrootevent->GetCherenkovHitTimes()->At(i);
 	//WCSimRootCherenkovHitTime has methods GetTubeId(), GetTruetime()
 
-	hPECollectedByEvtsByPMT->Fill(cDigiHit->GetQ());
+	if(cDigiHit->GetQ() != 0) hPECollectedByEvtsByPMT->Fill(cDigiHit->GetQ());
 	totDigiPE+=cDigiHit->GetQ();
       } // END FOR DIGI HITS
 
@@ -151,13 +161,15 @@ void read_OD(char *filename=NULL) {
   gPad->SetLogy();
   hPEByEvtsByPMT->Draw("HIST");
   c1->cd(2);
-  hPEByEvts->Draw("HIST");
+  hPEByEvts->Draw(""); hPEByEvts->Fit("gaus");
   c1->cd(3);
   gPad->SetLogy();
   hPECollectedByEvtsByPMT->Draw("HIST");
   c1->cd(4);  
-  hPECollectedByEvts->Draw("sameBAR");
+  hPECollectedByEvts->Draw("HIST");
 
+  TF1 *fit = hPEByEvts->GetFunction("gaus");
+  
   c1 = new TCanvas("cNbTubesHit","cNbTubesHit",800,600);
   hNbTubesHit->Draw("HIST");
 
@@ -167,11 +179,17 @@ void read_OD(char *filename=NULL) {
        << " +- " << hPEByEvtsByPMT->GetRMS() << endl;  
   cout << "Mean PE collected by events by PMT : " << hPECollectedByEvtsByPMT->GetMean()
        << " +- " << hPECollectedByEvtsByPMT->GetRMS() << endl;
+  cout << "Mean raw PE by events : " << hPEByEvts->GetMean()
+       << " +- " << hPEByEvts->GetRMS() << endl;  
+  cout << "Mean PE collected by events : " << hPECollectedByEvts->GetMean()
+       << " +- " << hPECollectedByEvts->GetRMS() << endl;
+  cout << "FIT : " << fit->GetParameter(1)
+       << " +- " << fit->GetParError(1) << endl;  
 
     TFile *output=NULL;
 
   char outputName[1000];
-  sprintf(outputName,"PROCESSED_%s",filename);
+  sprintf(outputName,"PROCESSED/PROCESSED_%s",bname);
   output = new TFile(outputName,"recreate");
   hPEByEvtsByPMT->Write();
   hPEByEvts->Write();
