@@ -277,7 +277,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   logicContainer->SetVisAttributes(visContainer);
 
   ////////////////////////////////////////////////
-  // Create a WLS plate on x,y place and hole will be around z-axis
+  // Create a WLS plate towards x,y plane and drilled hole will be around z-axis
   // WLS
   G4Box *rectangleWLS =
       new G4Box("rectangleWLS",
