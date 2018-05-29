@@ -79,20 +79,20 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 
   // Create the relevant histograms to generate muons
   // according to SuperK flux extrapolated at HyperK site
-  std::fstream inputFile;
-  G4String vectorFileName;
+  std::fstream inputFileCosmics;
+  G4String vectorFileNameCosmics;
   altCosmics = 2*myDC->GetWCIDHeight();
   G4cout << "altCosmics : " << altCosmics << G4endl;
-  if (inputFile.is_open())
-    inputFile.close();
+  if (inputFileCosmics.is_open())
+    inputFileCosmics.close();
 
-  vectorFileName = "MuonFlux-HyperK-ThetaPhi.dat";
-  inputFile.open(vectorFileName, std::fstream::in);
+  vectorFileNameCosmics = "MuonFlux-HyperK-ThetaPhi.dat";
+  inputFileCosmics.open(vectorFileNameCosmics, std::fstream::in);
 
-  if (!inputFile.is_open()) {
-    G4cout << "Muon Vector file " << vectorFileName << " not found" << G4endl;
+  if (!inputFileCosmics.is_open()) {
+    G4cout << "Muon Vector file " << vectorFileNameCosmics << " not found" << G4endl;
   } else {
-    G4cout << "Muon Vector file " << vectorFileName << " found" << G4endl;
+    G4cout << "Muon Vector file " << vectorFileNameCosmics << " found" << G4endl;
     string line;
     vector<string> token(1);
 
@@ -109,7 +109,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
     hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
 
-    while ( getline(inputFile,line) ){
+    while ( getline(inputFileCosmics,line) ){
       token = tokenize(" $", line);
 
       binCos=(atof(token[0]));

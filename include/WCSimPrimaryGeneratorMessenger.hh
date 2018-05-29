@@ -25,6 +25,7 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIdirectory*      mydetDirectory;
   G4UIcmdWithAString* genCmd;
   G4UIcmdWithAString* fileNameCmd;
+  G4UIcmdWithAString* fileNameCmdCosmics;
   
 };
 
