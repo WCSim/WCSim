@@ -25,11 +25,11 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   fileNameCmd->SetParameterName("fileName",true);
   fileNameCmd->SetDefaultValue("inputvectorfile");
 
-  fileNameCmd = new G4UIcmdWithAString("/mygen/cosmicsfile",this);
-  fileNameCmd->SetGuidance("Select the file of cosmics.");
-  fileNameCmd->SetGuidance(" Enter the file name of the cosmics file");
-  fileNameCmd->SetParameterName("fileName",true);
-  fileNameCmd->SetDefaultValue("inputvectorfile");
+  fileNameCmdCosmics = new G4UIcmdWithAString("/mygen/cosmicsfile",this);
+  fileNameCmdCosmics->SetGuidance("Select the file of cosmics.");
+  fileNameCmdCosmics->SetGuidance(" Enter the file name of the cosmics file");
+  fileNameCmdCosmics->SetParameterName("fileName",true);
+  fileNameCmdCosmics->SetDefaultValue("inputvectorfile");
 
 }
 
@@ -85,7 +85,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     }
   }
 
-  if( command == fileNameCmd )
+  if( command == fileNameCmd || command == fileNameCmdCosmics )
   {
     myAction->OpenVectorFile(newValue);
     G4cout << "Input vector file set to " << newValue << G4endl;
