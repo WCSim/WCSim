@@ -155,7 +155,9 @@ void WCSimRunAction::FillGeoTree(){
   G4int geo_type;
   G4double cylinfo[3];
   G4double pmtradius;
+  G4double pmtradiusOD;
   G4int numpmt;
+  G4int numpmtOD;
   G4int orientation;
   Float_t offset[3];
   
@@ -184,10 +186,14 @@ void WCSimRunAction::FillGeoTree(){
 
 
   pmtradius = wcsimdetector->GetPMTSize1();
+  pmtradiusOD = wcsimdetector->GetODPMTSize();
   numpmt = wcsimdetector->GetTotalNumPmts();
+  numpmtOD = wcsimdetector->GetTotalNumODPmts();
+
   orientation = 0;
   
   wcsimrootgeom-> SetWCPMTRadius(pmtradius);
+  wcsimrootgeom-> SetODWCPMTRadius(pmtradiusOD);
   wcsimrootgeom-> SetOrientation(orientation);
   
   G4ThreeVector offset1= wcsimdetector->GetWCOffset();
@@ -197,6 +203,7 @@ void WCSimRunAction::FillGeoTree(){
   wcsimrootgeom-> SetWCOffset(offset[0],offset[1],offset[2]);
   
   std::vector<WCSimPmtInfo*> *fpmts = wcsimdetector->Get_Pmts();
+  std::vector<WCSimPmtInfo*> *fODpmts = wcsimdetector->Get_ODPmts();
   WCSimPmtInfo *pmt;
   for (unsigned int i=0;i!=fpmts->size();i++){
     pmt = ((WCSimPmtInfo*)fpmts->at(i));
@@ -210,12 +217,29 @@ void WCSimRunAction::FillGeoTree(){
     cylLoc = pmt->Get_cylocation();
     wcsimrootgeom-> SetPMT(i,tubeNo,cylLoc,rot,pos);
   }
+  for (unsigned int i=0;i!=fODpmts->size();i++){
+    pmt = ((WCSimPmtInfo*)fODpmts->at(i));
+    pos[0] = pmt->Get_transx();
+    pos[1] = pmt->Get_transy();
+    pos[2] = pmt->Get_transz();
+    rot[0] = pmt->Get_orienx();
+    rot[1] = pmt->Get_orieny();
+    rot[2] = pmt->Get_orienz();
+    tubeNo = pmt->Get_tubeid();
+    cylLoc = pmt->Get_cylocation();
+    wcsimrootgeom-> SetPMT(i+fpmts->size(),tubeNo+fpmts->size(),cylLoc,rot,pos);
+  }
   if (fpmts->size() != (unsigned int)numpmt) {
-    G4cout << "Mismatch between number of pmts and pmt list in geofile.txt!!"<<G4endl;
+    G4cout << "Mismatch between number of id pmts and pmt list in geofile.txt!!"<<G4endl;
     G4cout << fpmts->size() <<" vs. "<< numpmt <<G4endl;
+  }
+  if (fODpmts->size() != (unsigned int)numpmtOD) {
+    G4cout << "Mismatch between number of od pmts and pmt list in geofile.txt!!"<<G4endl;
+    G4cout << fODpmts->size() <<" vs. "<< numpmtOD <<G4endl;
   }
   
   wcsimrootgeom-> SetWCNumPMT(numpmt);
+  wcsimrootgeom-> SetODWCNumPMT(numpmtOD);
   
   geoTree->Fill();
   geoTree->Write();
