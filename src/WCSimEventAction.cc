@@ -81,11 +81,17 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   ////////////////////
   ///// -- OD -- /////
   ////////////////////
-  WCSimWCPMT* WCDMPMT_OD = new WCSimWCPMT( "WCReadoutPMT_OD", myDetector, "OD");
-  DMman->AddNewModule(WCDMPMT_OD);
+  WCSimWCPMT* WCDMPMT_OD;
+  if(detectorConstructor->GetIsODConstructed()) {
+    WCDMPMT_OD = new WCSimWCPMT( "WCReadoutPMT_OD", myDetector, "OD");
+    DMman->AddNewModule(WCDMPMT_OD);
+  }
 
-  WCSimWCAddDarkNoise* WCDNM_OD = new WCSimWCAddDarkNoise("WCDarkNoise_OD", detectorConstructor, "OD");
-  DMman->AddNewModule(WCDNM_OD);
+  WCSimWCAddDarkNoise* WCDNM_OD;
+  if(detectorConstructor->GetIsODConstructed()) {
+    WCDNM_OD = new WCSimWCAddDarkNoise("WCDarkNoise_OD", detectorConstructor, "OD");
+    DMman->AddNewModule(WCDNM_OD);
+  }
 }
 
 WCSimEventAction::~WCSimEventAction()
@@ -136,29 +142,31 @@ void WCSimEventAction::CreateDAQInstances()
   ////////////////////
   ///// -- OD -- /////
   ////////////////////
-  if(DigitizerChoice=="SKI"){
-    WCSimWCDigitizerSKI* WCDM_OD = new WCSimWCDigitizerSKI("WCReadoutDigits_OD", detectorConstructor, DAQMessenger, "OD");
-    DMman->AddNewModule(WCDM_OD);
-  }
+  if(detectorConstructor->GetIsODConstructed()) {
+    if (DigitizerChoice == "SKI") {
+      WCSimWCDigitizerSKI
+          *WCDM_OD = new WCSimWCDigitizerSKI("WCReadoutDigits_OD", detectorConstructor, DAQMessenger, "OD");
+      DMman->AddNewModule(WCDM_OD);
+    }
 
-  //create your choice of trigger module
-  if(TriggerChoice == "NDigits") {
-    WCSimWCTriggerNDigits* WCTM_OD = new WCSimWCTriggerNDigits("WCReadout_OD", detectorConstructor, DAQMessenger, "OD");
-    DMman->AddNewModule(WCTM_OD);
+    //create your choice of trigger module
+    if (TriggerChoice == "NDigits") {
+      WCSimWCTriggerNDigits
+          *WCTM_OD = new WCSimWCTriggerNDigits("WCReadout_OD", detectorConstructor, DAQMessenger, "OD");
+      DMman->AddNewModule(WCTM_OD);
+    } else if (TriggerChoice == "NDigits2") {
+      WCSimWCTriggerNDigits2
+          *WCTM_OD = new WCSimWCTriggerNDigits2("WCReadout_OD", detectorConstructor, DAQMessenger, "OD");
+      DMman->AddNewModule(WCTM_OD);
+    } else if (TriggerChoice == "NoTrigger") {
+      WCSimWCTriggerNoTrigger
+          *WCTM = new WCSimWCTriggerNoTrigger("WCReadout_OD", detectorConstructor, DAQMessenger, "OD");
+      DMman->AddNewModule(WCTM);
+    } else {
+      G4cerr << "Unknown TriggerChoice " << TriggerChoice << G4endl;
+      exit(-1);
+    }
   }
-  else if(TriggerChoice == "NDigits2") {
-    WCSimWCTriggerNDigits2* WCTM_OD = new WCSimWCTriggerNDigits2("WCReadout_OD", detectorConstructor, DAQMessenger, "OD");
-    DMman->AddNewModule(WCTM_OD);
-  }
-  else if(TriggerChoice == "NoTrigger") {
-    WCSimWCTriggerNoTrigger* WCTM = new WCSimWCTriggerNoTrigger("WCReadout_OD", detectorConstructor, DAQMessenger, "OD");
-    DMman->AddNewModule(WCTM);
-  }
-  else {
-    G4cerr << "Unknown TriggerChoice " << TriggerChoice << G4endl;
-    exit(-1);
-  }
-
   ConstructedDAQClasses = true;
 }
 
