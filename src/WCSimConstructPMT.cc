@@ -218,7 +218,7 @@ else {
   // make a new one
   if( ! SDman->FindSensitiveDetector(SDName, false) ) {
     
-    aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
+    aWCPMT = new WCSimWCSD(CollectionName,SDName,this,detectorElement);
     SDman->AddNewDetector( aWCPMT );
   }
 
