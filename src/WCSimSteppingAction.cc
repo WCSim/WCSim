@@ -242,7 +242,7 @@ void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
     G4String creaProc = aTrack->GetCreatorProcess()->GetProcessName();
 
     // if(postVol == "WCPMTOD" && creaProc == "OpWLS"){
-    if(postMaterialName=="WCODWLSPlate" || preMaterialName=="WCODWLSPlate"){
+    if(preMaterialName=="WCODWLSPlate"){
 
       G4TouchableHandle theTouchable = postStepPoint->GetTouchableHandle();
       G4ThreeVector worldPosition = postStepPoint->GetPosition();
@@ -269,7 +269,7 @@ void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
       runAction->GetPhotonTree()->Fill();
 
       // KILL the damn particle
-      // aTrack->SetTrackStatus(fStopAndKill);
+      aTrack->SetTrackStatus(fStopAndKill);
     }
 
     ////// PRINTOUTS //////

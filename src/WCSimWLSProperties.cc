@@ -189,7 +189,7 @@ void EljenEJ286::SethEm() {
        0.03, 0.021, 0};
 
   emissionHist = new TH1F("hist","hist", 15, 390., 530.);
-  emissionHist->Sumw2();
+  emissionHist->Scale(1/emissionHist->Integral());
 
   for (int i = 0 ; i < emitArraySize; i++) {
 
