@@ -228,6 +228,8 @@ void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
 
   bool printouts = false;
   // printouts = true;
+  bool isInitialParticle = false;
+  if (aTrack->GetCreatorProcess() == NULL) isInitialParticle = true;
 
   if(particleType == G4OpticalPhoton::OpticalPhotonDefinition()){
 
@@ -239,7 +241,8 @@ void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
 
     G4String preMaterialName = preStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
     G4String postMaterialName = postStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
-    G4String creaProc = aTrack->GetCreatorProcess()->GetProcessName();
+    G4String creaProc;
+    if (!isInitialParticle){ creaProc = aTrack->GetCreatorProcess()->GetProcessName();}
 
     // if(postVol == "WCPMTOD" && creaProc == "OpWLS"){
     if(postMaterialName=="WCODWLSPlate" || preMaterialName=="WCODWLSPlate"){
@@ -262,7 +265,8 @@ void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
       pEvt->wl = ((2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/CLHEP::eV));
 
       G4String procName = postStepPoint->GetProcessDefinedStep()->GetProcessName();
-      if(aTrack->GetCreatorProcess()->GetProcessName()=="Cerenkov") pEvt->proc = 0;
+      if(isInitialParticle) pEvt->proc = -1;
+      else if(aTrack->GetCreatorProcess()->GetProcessName()=="Cerenkov") pEvt->proc = 0;
       else if(aTrack->GetCreatorProcess()->GetProcessName()=="OpWLS") pEvt->proc = 1;
 
       // Fill only if photons enter the WLS material
@@ -277,7 +281,12 @@ void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
       G4cout << "OpPhoton in " << aTrack->GetVolume()->GetName()
                 << " and going to " << aTrack->GetNextVolume()->GetName()
                 << G4endl;
+	if (isInitialParticle) {
+	G4cout << "Creator process : " << "None" << G4endl;
+	} 
+	else {
       G4cout << "Creator process : " << aTrack->GetCreatorProcess()->GetProcessName() << G4endl;
+		}
       G4cout << "# Track ID : " << aTrack->GetTrackID() << G4endl;
       G4cout << "# Parent ID : " << aTrack->GetParentID() << G4endl;
       G4cout << "# Pos : "
