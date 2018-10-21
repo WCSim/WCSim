@@ -217,12 +217,12 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     //cyl_location cylLocation = tubeCylLocation[tubeID];
 
     // Figure out if pmt is on top/bottom or barrel
-    // print key: 0-top, 1-barrel, 2-bottom
-    if (pmtOrientation*newTransform.getTranslation() > 0)//veto pmt
-    {cylLocation=3;}
-    else if (pmtOrientation.z()==1.0)//bottom
+    // print key: 0-top, 1-barrel, 2-bottom, 
+ //   if (pmtOrientation*newTransform.getTranslation() > 0)//veto pmt
+  //  {cylLocation=3;}
+    if (pmtOrientation.z()==1.0)// bottom 
     {cylLocation=2;}
-    else if (pmtOrientation.z()==-1.0)//top
+    else if (pmtOrientation.z()==-1.0)// top 
     {cylLocation=0;}
     else // barrel
     {cylLocation=1;}
@@ -266,15 +266,15 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     G4Vector3D pmtOrientation = newTransform * nullOrient;
     //cyl_location cylLocation = tubeCylLocation[tubeID];
 
-    // TODO: make these record something sensible for the OD
-    if (pmtOrientation*newTransform.getTranslation() > 0)//veto pmt
+    // TODO: make these record something sensible for the OD, 3-topOD, 4-barrelOD, 5-bottomOD
+//    if (pmtOrientation*newTransform.getTranslation() > 0)//veto pmt
+//    {cylLocation=3;}
+    if (pmtOrientation.z()==1.0)//top OD
+    {cylLocation=5;}
+    else if (pmtOrientation.z()==-1.0)//bottom OD
     {cylLocation=3;}
-    else if (pmtOrientation.z()==1.0)//bottom
-    {cylLocation=2;}
-    else if (pmtOrientation.z()==-1.0)//top
-    {cylLocation=0;}
-    else // barrel
-    {cylLocation=1;}
+    else // barrel OD
+    {cylLocation=4;}
 
     geoFile.precision(9);
     geoFile << setw(4) << tubeID
