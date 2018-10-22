@@ -216,7 +216,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 
       //We must first sort hits by PMT in time.  This is very important as the code
       //assumes that each hit is in time order from lowest to highest.
-      (*WCHCPMT)[i]->SortArrayByHitTime();
+      (*WCHCPMT)[i]->SortDigiMapsByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
 #ifdef WCSIMWCDIGITIZER_VERBOSE
       if(tube < NPMTS_VERBOSE) {

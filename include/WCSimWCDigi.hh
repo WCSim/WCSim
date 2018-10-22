@@ -111,10 +111,10 @@ public:
     catch (...) {
       G4cerr<<"Exception occurred while attempting to use WCSimWCDigi::GetTime to retrieve time for pe "
             << gate << " from map of times. The time map has "<<time.size()<<" entries:" << G4endl;
-      for (auto& x: time){
+      for(std::map<int,float>::iterator time_element=time.begin(); time_element!=time.end(); time_element++){
         try{
-          G4cerr << x.first << ": ";
-          G4cerr << x.second << G4endl;
+          G4cerr << time_element->first << ": ";
+          G4cerr << time_element->second << G4endl;
         }
         catch (...) {
           G4cerr << G4endl << "Exception reading map entry!!"<<G4endl;
@@ -157,33 +157,35 @@ public:
   void SortHitTimes() {   sort(time_float.begin(),time_float.end()); }
 
 
-  void SortArrayByHitTime() {
+  void SortDigiMapsByHitTime() {
     int i, j;
     float index_time,index_timepresmear,index_pe;
     int index_primaryparentid;
-    //std::vector<int> index_digicomp;
-    // SortHitTimes is called by WCSimWCDigitizerSKI::DigitizeHits to sort the WCRawPMTSignalCollection.
+    std::vector<int> index_digicomp;
+    bool sort_digi_compositions = (fDigiComp.size()==time.size());
+    // SortDigiMapsByHitTime is called by WCSimWCDigitizerSKI::DigitizeHits to sort the WCRawPMTSignalCollection.
     // Each entry in WCRawPMTSignalCollection represents the set of photon hits on a PMT.
     // Since a photon hit has no "composition", fDigiComp is empty at this time and needn't be sorted.
+    // for generality, sort if the digi composition map has the same size as other maps
     
     for (i = 1; i < (int) time.size(); ++i)
       {
         index_time  = time.at(i);
         index_timepresmear  = time_presmear.at(i);
         index_pe = pe.at(i);
-        //index_digicomp = fDigiComp.at(i);
+        if(sort_digi_compositions) index_digicomp = fDigiComp.at(i);
         index_primaryparentid = primaryParentID.at(i);
         for (j = i; j > 0 && time.at(j-1) > index_time; j--) {
           time.at(j) = time.at(j-1);
           pe.at(j) = pe.at(j-1);
-          //fDigiComp.at(j) = fDigiComp.at(j-1);
+          if(sort_digi_compositions) fDigiComp.at(j) = fDigiComp.at(j-1);
           primaryParentID.at(j) = primaryParentID.at(j-1);
           //G4cout <<"swapping "<<time[j-1]<<" "<<index_time<<G4endl;
         }
         time.at(j) = index_time;
         time_presmear.at(j) = index_timepresmear;
         pe.at(j) = index_pe;
-        //fDigiComp.at(j) = index_digicomp;
+        if(sort_digi_compositions) fDigiComp.at(j) = index_digicomp;
         primaryParentID.at(j) = index_primaryparentid;
       }
   }
