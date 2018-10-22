@@ -1,27 +1,16 @@
 #include "WCSimWCDigitizer.hh"
-#include "WCSimWCPMT.hh"
-#include "WCSimWCDigi.hh"
-#include "WCSimWCHit.hh"
 #include "G4EventManager.hh"
-#include "G4Event.hh"
-#include "G4SDManager.hh"
 #include "G4DigiManager.hh"
-#include "G4ios.hh"
-#include "G4RotationMatrix.hh"
-#include "G4ThreeVector.hh"
 
-#include "WCSimDetectorConstruction.hh"
-#include "WCSimPmtInfo.hh"
-#include "WCSimDarkRateMessenger.hh"
-
-#include <vector>
 // for memset
-#include <cstring>
 
 #ifndef NPMTS_VERBOSE
 #define NPMTS_VERBOSE 10
 #endif
 
+#ifndef HYPER_VERBOSITY
+// #define HYPER_VERBOSITY
+#endif
 
 // *******************************************
 // BASE CLASS
@@ -32,15 +21,22 @@
 #endif
 
 WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
-					   WCSimDetectorConstruction* inDetector,
-					   WCSimWCDAQMessenger* myMessenger,
-					   DigitizerType_t digitype)
-  :G4VDigitizerModule(name), myDetector(inDetector), DAQMessenger(myMessenger), DigitizerType(digitype),
-   DigitizerClassName("")
+										   WCSimDetectorConstruction* inDetector,
+										   WCSimWCDAQMessenger* myMessenger,
+										   DigitizerType_t digitype,
+										   G4String detectorElement)
+  :G4VDigitizerModule(name), myDetector(inDetector), DAQMessenger(myMessenger), DigitizerType(digitype),DigitizerClassName(""), detectorElement(detectorElement)
 {
-  G4String colName = "WCDigitizedStoreCollection";
+  // G4String colName = "WCDigitizedStoreCollection";
+  G4String colName;
+  if(detectorElement=="tank") colName = "WCDigitizedStoreCollection";
+  else if(detectorElement=="OD") colName = "WCDigitizedStoreCollection_OD";
   collectionName.push_back(colName);
   ReInitialize();
+
+#ifdef HYPER_VERBOSITY
+	if(detectorElement=="OD")G4cout<<"WCSimWCDigitizerBase::WCSimWCDigitizerBase ☆ recording collection name "<<colName<<" for "<<detectorElement<<G4endl;
+#endif
 
   if(DAQMessenger == NULL) {
     G4cerr << "WCSimWCDAQMessenger pointer is NULL when passed to WCSimWCDigitizerBase constructor. Exiting..." 
@@ -91,14 +87,27 @@ void WCSimWCDigitizerBase::Digitize()
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   
   // Get the PMT collection ID
-   G4int WCHCID = DigiMan->GetDigiCollectionID("WCRawPMTSignalCollection");
+  // G4int WCHCID = DigiMan->GetDigiCollectionID("WCRawPMTSignalCollection");
+
+  G4String rawcollectionName;
+  if(detectorElement=="tank") rawcollectionName = "WCRawPMTSignalCollection";
+  else if(detectorElement=="OD") rawcollectionName = "WCRawPMTSignalCollection_OD";
+  G4int WCHCID = DigiMan->GetDigiCollectionID(rawcollectionName);
 
   // Get the PMT Digits collection
   WCSimWCDigitsCollection* WCHCPMT = 
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCHCID));
+
+#ifdef HYPER_VERBOSITY
+	if(detectorElement=="OD"){
+		G4cout << "WCSimWCDigitizerBase::Digitize ☆ making digits collection (WCSimWCDigitsCollection*)"<<collectionName[0]
+					 << " for "<<detectorElement<<" and calling DigitizeHits on "<<rawcollectionName<<" to fill it"<<G4endl;}
+#endif
   
   if (WCHCPMT) {
     DigitizeHits(WCHCPMT);
+  } else {
+	  G4cout << "WCSimWCDigitizerBase::Digitize didn't find hit collection for " << detectorElement << G4endl;
   }
   
   StoreDigiCollection(DigiStore);
@@ -178,9 +187,10 @@ void WCSimWCDigitizerBase::SaveOptionsToOutput(WCSimRootOptions * wcopt)
 // *******************************************
 
 WCSimWCDigitizerSKI::WCSimWCDigitizerSKI(G4String name,
-					 WCSimDetectorConstruction* myDetector,
-					 WCSimWCDAQMessenger* myMessenger)
-  : WCSimWCDigitizerBase(name, myDetector, myMessenger, kDigitizerSKI)
+                                         WCSimDetectorConstruction* myDetector,
+                                         WCSimWCDAQMessenger* myMessenger,
+                                         G4String detectorElement)
+  : WCSimWCDigitizerBase(name, myDetector, myMessenger, kDigitizerSKI, detectorElement)
 {
   DigitizerClassName = "SKI";
   GetVariables();
@@ -190,6 +200,9 @@ WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
 }
 
 void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
+
+  if(detectorElement=="tank") G4cout << "TANK # ";
+  if(detectorElement=="OD")   G4cout << "OD # ";
   G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
 
   //Get the PMT info for hit time smearing

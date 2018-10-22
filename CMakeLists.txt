@@ -101,6 +101,7 @@ set(WCSIM_SCRIPTS
   macros/daq.mac
   macros/visOGLSX.mac
   macros/visRayTracer.mac
+  macros/visOGLQt.mac	
   macros/tuning_parameters.mac
   )
 
