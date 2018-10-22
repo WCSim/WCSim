@@ -21,6 +21,11 @@ https://lists.phy.duke.edu/mailman/listinfo/wcsim-git
 
 You can follow issues/requests etc by watching the GitHub respository.
 
+# Validation Webpage
+
+https://wcsim.github.io/Validation/
+
+
 ## Current notes and how to build
 
 Build Instructions:
@@ -83,6 +88,25 @@ Useful cmake commands:
 * make rebuild_cache : redo the cmake phase.
 
 
+Using WCSim without building using Docker:
+
+Docker allows you to use WCSim without compiling in an OS independant way. The Docker images are hosted on DockerHub and can be used by following the steps below.
+
+1) Install Doocker cross platform instructions can be found at https://www.docker.com/
+2) Pull the WCSim image from docker hub by using "docker pull wcsim/wcsim:tag" where tag is the tagged version or use the tag "latest" to get the current develop branch 
+3) Run the docker image and create a container "docker run --name=WCSim -i -t wcsim/wcsim:tag" this will give you a shell in the container's OS with WCSim already built. 
+To save data from inside your docker image mount a local folder in the docker image at runtime and then anything placed in that directory will be available in that folder after exit. To do that run the following "docker run -v local_folder_path:docker_mount_path -i -t wcsim/wcsim:tag"
+4) Once you have run the docker image navigate to "cd /root/HyperK/WCSim" and source the enviroment variables using "source /root/HyperK/env-WCSim.sh" and then run WCSim as normal form this directory
+5) To exit the docker image "exit"
+
+(Note: You only need to use the "docker run" command once to create the container. Once created you changes are saved in that container instance and you can start and stop the contianer at any time with  "docker start WCSim" and "docker stop WCSim");
+
+Extra docker commands:
+1) See all images "docker images"
+2) Delete an image "docker rmi imageID"
+3) See all containers "docker ps -a"
+4) Delete a container "docker rm ContainerID"
+
 
 ## Color Convention for visualization used in WCSimVismanager.cc
 
@@ -94,6 +118,7 @@ Useful cmake commands:
 * muon+ = silver
 * proton = magenta
 * neutron = cyan
+
 
 ```
 WCSim development is supported by the United States National Science Foundation.
