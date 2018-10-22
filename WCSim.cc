@@ -17,11 +17,6 @@
 #include "WCSimVisManager.hh"
 #include "WCSimRandomParameters.hh"
 
-
-#ifdef G4UI_USE
-#include "G4UIExecutive.hh"
-#endif
-
 void file_exists(const char * filename) {
   bool exists = access(filename, F_OK) != -1;
   if(!exists) {
@@ -106,33 +101,20 @@ int main(int argc,char** argv)
   { 
 
     // Start UI Session
-    // G4UIsession* session =  new G4UIterminal(new G4UItcsh);
+    G4UIsession* session =  new G4UIterminal(new G4UItcsh);
 
-    //using working example N04 for Qt UI Compatible code
-#ifdef G4UI_USE
-    G4UIExecutive * ui = new G4UIExecutive(argc,argv);
-#ifdef G4VIS_USE
     // Visualization Macro
     UI->ApplyCommand("/control/execute WCSim.mac");
-#endif
-    ui->SessionStart();
-    delete ui;
-#endif
 
     // Start Interactive Mode
-    //session->SessionStart();
+    session->SessionStart();
 
-    //delete session;
+    delete session;
   }
   else           // Batch mode
   { 
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
-    file_exists(fileName);
-    if(fileName == "vis.mac"){
-      G4cout << "ERROR: Execute without arg for interactive mode" << G4endl;
-      //return -1;
-    }
 
     UI->ApplyCommand(command+fileName);
   }
