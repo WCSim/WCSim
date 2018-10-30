@@ -30,6 +30,7 @@ void WCSimRootOptions::Print(Option_t *) const
   cout
     << "Detector construction:" << endl
     << "\tDetectorName: " << DetectorName << endl
+    << "\tDetectorHasOD: " << (GeomHasOD ? "yes" : "no") << endl
     << "\tSavePi0: " << SavePi0 << endl
     << "\tPMTQEMethod: " << PMTQEMethod << endl
     << "\tPMTCollEff: " << PMTCollEff << endl
