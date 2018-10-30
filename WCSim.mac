@@ -102,11 +102,11 @@
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
 
-/DarkRate/SetDetectorElement OD
-/DarkRate/SetDarkMode 1
-/DarkRate/SetDarkHigh 100000
-/DarkRate/SetDarkLow 0
-/DarkRate/SetDarkWindow 4000
+#/DarkRate/SetDetectorElement OD
+#/DarkRate/SetDarkMode 1
+#/DarkRate/SetDarkHigh 100000
+#/DarkRate/SetDarkLow 0
+#/DarkRate/SetDarkWindow 4000
 
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute macros/visOGLSX.mac
