@@ -218,9 +218,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
 
     // Figure out if pmt is on top/bottom or barrel
     // print key: 0-top, 1-barrel, 2-bottom
-    if (pmtOrientation*newTransform.getTranslation() > 0)//veto pmt
-    {cylLocation=3;}
-    else if (pmtOrientation.z()==1.0)//bottom
+    if (pmtOrientation.z()==1.0)//bottom
     {cylLocation=2;}
     else if (pmtOrientation.z()==-1.0)//top
     {cylLocation=0;}
@@ -267,14 +265,12 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     //cyl_location cylLocation = tubeCylLocation[tubeID];
 
     // TODO: make these record something sensible for the OD
-    if (pmtOrientation*newTransform.getTranslation() > 0)//veto pmt
+    if (pmtOrientation.z()==1.0) // TOP OD
+    {cylLocation=5;}
+    else if (pmtOrientation.z()==-1.0) // BOTTOM OD
     {cylLocation=3;}
-    else if (pmtOrientation.z()==1.0)//bottom
-    {cylLocation=2;}
-    else if (pmtOrientation.z()==-1.0)//top
-    {cylLocation=0;}
     else // barrel
-    {cylLocation=1;}
+    {cylLocation=4;}
 
     geoFile.precision(9);
     geoFile << setw(4) << tubeID

@@ -149,7 +149,9 @@ void WCSimRunAction::FillGeoTree(){
   G4int geo_type;
   G4double cylinfo[3];
   G4double pmtradius;
+  G4double pmtradiusOD;
   G4int numpmt;
+  G4int numpmtOD;
   G4int orientation;
   Float_t offset[3];
   
@@ -179,9 +181,12 @@ void WCSimRunAction::FillGeoTree(){
 
   pmtradius = wcsimdetector->GetPMTSize1();
   numpmt = wcsimdetector->GetTotalNumPmts();
+  pmtradiusOD = wcsimdetector->GetODPMTSize();
+  numpmtOD = wcsimdetector->GetTotalNumODPmts();
   orientation = 0;
   
   wcsimrootgeom-> SetWCPMTRadius(pmtradius);
+  wcsimrootgeom-> SetODWCPMTRadius(pmtradiusOD);
   wcsimrootgeom-> SetOrientation(orientation);
   
   G4ThreeVector offset1= wcsimdetector->GetWCOffset();
@@ -205,12 +210,31 @@ void WCSimRunAction::FillGeoTree(){
     wcsimrootgeom-> SetPMT(i,tubeNo,cylLoc,rot,pos);
   }
   if (fpmts->size() != (unsigned int)numpmt) {
-    G4cout << "Mismatch between number of pmts and pmt list in geofile.txt!!"<<G4endl;
+    G4cout << "Mismatch between number of ID pmts and pmt list in geofile.txt!!"<<G4endl;
     G4cout << fpmts->size() <<" vs. "<< numpmt <<G4endl;
   }
-  
+
+  std::vector<WCSimPmtInfo*> *fODpmts = wcsimdetector->Get_ODPmts();
+  for (unsigned int i=0;i!=fODpmts->size();i++){
+    pmt = ((WCSimPmtInfo*)fODpmts->at(i));
+    pos[0] = pmt->Get_transx();
+    pos[1] = pmt->Get_transy();
+    pos[2] = pmt->Get_transz();
+    rot[0] = pmt->Get_orienx();
+    rot[1] = pmt->Get_orieny();
+    rot[2] = pmt->Get_orienz();
+    tubeNo = pmt->Get_tubeid();
+    cylLoc = pmt->Get_cylocation();
+    wcsimrootgeom-> SetPMT(i,tubeNo,cylLoc,rot,pos);
+  }
+  if (fpmts->size() != (unsigned int)numpmt) {
+    G4cout << "Mismatch between number of OD pmts and pmt list in geofile.txt!!"<<G4endl;
+    G4cout << fODpmts->size() <<" vs. "<< numpmt <<G4endl;
+  }
+
   wcsimrootgeom-> SetWCNumPMT(numpmt);
-  
+  wcsimrootgeom-> SetODWCNumPMT(numpmtOD);
+
   geoTree->Fill();
   geoTree->Write();
 }
