@@ -6,7 +6,7 @@ Inputs:
 
 Note: there are two arguments in sample_readfile.C, one is the root file and the other it's verbose (true or false). Verbose is false by default.
 
-Files:
+Files: 
 read_number_of_PMTs.C
 read_PMT.C
 sample_readfile.C
