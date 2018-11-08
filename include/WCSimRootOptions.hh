@@ -47,11 +47,13 @@ public:
 
   //WCSimDetector* gets
   void SetDetectorName(string iDetectorName) {DetectorName = iDetectorName;}
+  void SetGeomHasOD(bool iGeomHasOD) {GeomHasOD = iGeomHasOD;}
   void SetSavePi0(bool iSavePi0) {SavePi0 = iSavePi0;}
   void SetPMTQEMethod(bool iPMTQEMethod) {PMTQEMethod = iPMTQEMethod;}
   void SetPMTCollEff(bool iPMTCollEff) {PMTCollEff = iPMTCollEff;}
   //WCSimDetector* sets
   string GetDetectorName() {return DetectorName;}
+  bool   GetGeomHasOD() {return GeomHasOD;}
   bool   GetSavePi0() {return SavePi0;}
   int    GetPMTQEMethod() {return PMTQEMethod;}
   int    GetPMTCollEff() {return PMTCollEff;}
@@ -146,6 +148,7 @@ public:
 private:
   //WCSimDetector*
   string DetectorName;
+  bool   GeomHasOD;
   bool   SavePi0;
   int    PMTQEMethod;
   int    PMTCollEff;
@@ -195,7 +198,7 @@ private:
   int                    RandomSeed;
   WCSimRandomGenerator_t RandomGenerator;
   
-  ClassDef(WCSimRootOptions,3)  //WCSimRootEvent structure
+  ClassDef(WCSimRootOptions,4)
 };
 
 

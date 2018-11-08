@@ -82,16 +82,12 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   ///// -- OD -- /////
   ////////////////////
   WCSimWCPMT* WCDMPMT_OD;
-  if(detectorConstructor->GetIsODConstructed()) {
-    WCDMPMT_OD = new WCSimWCPMT( "WCReadoutPMT_OD", myDetector, "OD");
-    DMman->AddNewModule(WCDMPMT_OD);
-  }
+  WCDMPMT_OD = new WCSimWCPMT( "WCReadoutPMT_OD", myDetector, "OD");
+  DMman->AddNewModule(WCDMPMT_OD);
 
   WCSimWCAddDarkNoise* WCDNM_OD;
-  if(detectorConstructor->GetIsODConstructed()) {
-    WCDNM_OD = new WCSimWCAddDarkNoise("WCDarkNoise_OD", detectorConstructor, "OD");
-    DMman->AddNewModule(WCDNM_OD);
-  }
+  WCDNM_OD = new WCSimWCAddDarkNoise("WCDarkNoise_OD", detectorConstructor, "OD");
+  DMman->AddNewModule(WCDNM_OD);
 }
 
 WCSimEventAction::~WCSimEventAction()
