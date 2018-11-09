@@ -35,7 +35,7 @@ public:
   void SetDarkLow(int idarklow){DarkLow = idarklow;}
   void SetDarkWindow(int idarkwindow){DarkWindow = idarkwindow;}
   int GetDarkWindow(){return (int)(DarkWindow);}
-  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt, string tag);
   
 private:
   void ReInitialize() { ranges.clear(); result.clear();}

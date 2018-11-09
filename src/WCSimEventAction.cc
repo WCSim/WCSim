@@ -674,7 +674,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   if(!SavedOptions) {
     WCSimRootOptions * wcsimopt = runAction->GetRootOptions();
     //Dark noise
-    WCDNM->SaveOptionsToOutput(wcsimopt);
+    WCDNM->SaveOptionsToOutput(wcsimopt, "tank");
     //Digitizer
     WCDM->SaveOptionsToOutput(wcsimopt);
     //Trigger
@@ -682,6 +682,11 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     //Generator
     generatorAction->SaveOptionsToOutput(wcsimopt);
     
+    if(detectorConstructor->GetIsODConstructed()) {
+      //Dark noise
+      WCDNM_OD->SaveOptionsToOutput(wcsimopt, "OD");
+    }
+
     SavedOptions = true;
   }
 }

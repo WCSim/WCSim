@@ -34,13 +34,18 @@ void WCSimRootOptions::Print(Option_t *) const
     << "\tSavePi0: " << SavePi0 << endl
     << "\tPMTQEMethod: " << PMTQEMethod << endl
     << "\tPMTCollEff: " << PMTCollEff << endl
-    << "Dark Noise options:" << endl
-    << "\tPMTDarkRate: " << PMTDarkRate << " kHz" << endl
-    << "\tConvRate: " << ConvRate << " kHz" << endl
-    << "\tDarkHigh: " << DarkHigh << " ns" << endl
-    << "\tDarkLow: " << DarkLow << " ns" << endl
-    << "\tDarkWindow: " << DarkWindow << " ns" << endl
-    << "\tDarkMode: " << DarkMode << endl
+    << "Dark Noise options:" << endl;
+  for(std::map<string, WCSimDarkNoiseOptions>::const_iterator it=DarkOptMap.begin(); it != DarkOptMap.end(); ++it) {
+    cout
+      << "\t" << it->first << endl
+      << "\t\tPMTDarkRate: " << it->second.PMTDarkRate << " kHz" << endl
+      << "\t\tConvRate: " << it->second.ConvRate << " kHz" << endl
+      << "\t\tDarkHigh: " << it->second.DarkHigh << " ns" << endl
+      << "\t\tDarkLow: " << it->second.DarkLow << " ns" << endl
+      << "\t\tDarkWindow: " << it->second.DarkWindow << " ns" << endl
+      << "\t\tDarkMode: " << it->second.DarkMode << endl;
+  }
+  cout
     << "Digitizer options:" << endl
     << "\tDigitizerClassName: " << DigitizerClassName << endl
     << "\tDigitizerDeadTime: " << DigitizerDeadTime << " ns" << endl
@@ -79,3 +84,60 @@ void WCSimRootOptions::Print(Option_t *) const
     << "\tRandomGenerator: " << WCSimEnumerations::EnumAsString(RandomGenerator) << endl
     << endl;
 }
+//______________________________________________________________________________
+bool WCSimRootOptions::IsValidDarkTag(string tag) const
+{
+  if(DarkOptMap.find(tag) != DarkOptMap.end())
+      return true;
+  return false; 
+}
+//______________________________________________________________________________
+double WCSimRootOptions::GetPMTDarkRate(string tag)
+{
+  if(IsValidDarkTag(tag))
+    return DarkOptMap[tag].PMTDarkRate;
+  std::cerr << "WCSimDarkNoiseOptions with tag: " << tag << " does not exist in WCSimRootOptions. Returning -999" << std::endl;
+  return -999;
+}
+//______________________________________________________________________________
+double WCSimRootOptions::GetConvRate(string tag)
+{
+  if(IsValidDarkTag(tag))
+    return DarkOptMap[tag].ConvRate;
+  std::cerr << "WCSimDarkNoiseOptions with tag: " << tag << " does not exist in WCSimRootOptions. Returning -999" << std::endl;
+  return -999;
+}
+//______________________________________________________________________________
+double WCSimRootOptions::GetDarkHigh(string tag)
+{
+  if(IsValidDarkTag(tag))
+    return DarkOptMap[tag].DarkHigh;
+  std::cerr << "WCSimDarkNoiseOptions with tag: " << tag << " does not exist in WCSimRootOptions. Returning -999" << std::endl;
+  return -999;
+}
+//______________________________________________________________________________
+double WCSimRootOptions::GetDarkLow(string tag)
+{
+  if(IsValidDarkTag(tag))
+    return DarkOptMap[tag].DarkLow;
+  std::cerr << "WCSimDarkNoiseOptions with tag: " << tag << " does not exist in WCSimRootOptions. Returning -999" << std::endl;
+  return -999;
+}
+//______________________________________________________________________________
+double WCSimRootOptions::GetDarkWindow(string tag)
+{
+  if(IsValidDarkTag(tag))
+    return DarkOptMap[tag].DarkWindow;
+  std::cerr << "WCSimDarkNoiseOptions with tag: " << tag << " does not exist in WCSimRootOptions. Returning -999" << std::endl;
+  return -999;
+}
+//______________________________________________________________________________
+int    WCSimRootOptions::GetDarkMode(string tag)
+{
+  if(IsValidDarkTag(tag))
+    return DarkOptMap[tag].DarkMode;
+  std::cerr << "WCSimDarkNoiseOptions with tag: " << tag << " does not exist in WCSimRootOptions. Returning -999" << std::endl;
+  return -999;
+}
+//______________________________________________________________________________
+

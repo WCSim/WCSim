@@ -21,4 +21,7 @@
 #pragma link C++ class WCSimEnumerations+;
 #pragma link C++ class WCSimRootOptions+;
 
+#pragma link C++ struct WCSimDarkNoiseOptions+;
+#pragma link C++ class std::map<std::string, WCSimDarkNoiseOptions>+;
+
 #endif

@@ -391,12 +391,12 @@ void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, 
   //dark noise routine
 }
 
-void WCSimWCAddDarkNoise::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+void WCSimWCAddDarkNoise::SaveOptionsToOutput(WCSimRootOptions * wcopt, string tag)
 {
-  wcopt->SetPMTDarkRate(PMTDarkRate);
-  wcopt->SetConvRate(ConvRate);
-  wcopt->SetDarkHigh(DarkHigh);
-  wcopt->SetDarkLow(DarkLow);
-  wcopt->SetDarkWindow(DarkWindow);
-  wcopt->SetDarkMode(DarkMode);
+  wcopt->SetPMTDarkRate(tag, PMTDarkRate);
+  wcopt->SetConvRate(tag, ConvRate);
+  wcopt->SetDarkHigh(tag, DarkHigh);
+  wcopt->SetDarkLow(tag, DarkLow);
+  wcopt->SetDarkWindow(tag, DarkWindow);
+  wcopt->SetDarkMode(tag, DarkMode);
 }
