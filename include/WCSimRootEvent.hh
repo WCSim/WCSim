@@ -244,6 +244,7 @@ public:
   WCSimRootTrigger();
   WCSimRootTrigger(int, int);
   virtual ~WCSimRootTrigger();
+  WCSimRootTrigger & operator=(const WCSimRootTrigger & in);
   
   void Initialize();
 
@@ -328,6 +329,8 @@ public:
 
   TClonesArray            *GetCherenkovDigiHits() const {return fCherenkovDigiHits;}
 
+  void ResetNcherenkovdigihits() { fNcherenkovdigihits = fCherenkovDigiHits->GetEntries(); }
+
   ClassDef(WCSimRootTrigger,2) //WCSimRootEvent structure
 };
 
@@ -336,6 +339,7 @@ class WCSimRootEvent : public TObject {
 public:
   WCSimRootEvent();
   virtual ~WCSimRootEvent();
+  WCSimRootEvent & operator=(const WCSimRootEvent & in);
 
   void          Clear(Option_t *option ="");
   static void   Reset(Option_t *option ="");
