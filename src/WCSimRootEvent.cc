@@ -650,10 +650,13 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
 
 
   failed = (!ComparisonPassed(fMode, c->GetMode(), typeid(*this).name(), __func__, "Mode")) || failed;
-  failed = (!ComparisonPassed(fVtxvol, c->GetVtxvol(), typeid(*this).name(), __func__, "Vtxvol")) || failed;
-  for(int i = 0; i < 3; i++) {
-    failed = (!ComparisonPassed(fVtx[i], c->GetVtx(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "Vtx", i))) || failed;
-  }//i
+  failed = (!ComparisonPassed(fNvtxs, c->GetNvtxs(), typeid(*this).name(), __func__, "Nvtxs")) || failed;
+  for(int ivtx = 0; ivtx < fNvtxs; ivtx++) {
+    failed = (!ComparisonPassed(fVtxsvol[ivtx], c->GetVtxsvol(ivtx), typeid(*this).name(), __func__, TString::Format("Vtxvols[%d]", ivtx))) || failed;
+    for(int i = 0; i < 3; i++) {
+      failed = (!ComparisonPassed(fVtxs[ivtx][i], c->GetVtxs(ivtx, i), typeid(*this).name(), __func__, TString::Format("%s[%d][%d]", "Vtxs", ivtx, i))) || failed;
+    }//i
+  }//ivtx
   failed = (!ComparisonPassed(fVecRecNumber, c->GetVecRecNumber(), typeid(*this).name(), __func__, "VecRecNumber")) || failed;
   failed = (!ComparisonPassed(fJmu, c->GetJmu(), typeid(*this).name(), __func__, "Jmu")) || failed;
   failed = (!ComparisonPassed(fJp, c->GetJp(), typeid(*this).name(), __func__, "Jp")) || failed;

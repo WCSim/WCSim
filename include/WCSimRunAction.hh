@@ -30,11 +30,33 @@ public:
   G4String GetRootFileName() { return RootFileName; }
   void FillGeoTree();
   TTree* GetTree(){return WCSimTree;}
+  TBranch* GetBranch(G4String detectorElement = "tank"){
+    if(detectorElement=="tank") return wcsimrooteventbranch;
+    else if(detectorElement=="OD")  return wcsimrooteventbranch_OD;
+    else G4cout << "Unkown detector element" << G4endl;
+  }
   TTree* GetGeoTree(){return geoTree;}
   TTree* GetOptionsTree(){return optionsTree;}
   WCSimRootGeom* GetRootGeom(){return wcsimrootgeom;}
-  WCSimRootEvent* GetRootEvent(){return wcsimrootsuperevent;}
+  // WCSimRootEvent* GetRootEvent(){return wcsimrootsuperevent;}
+  WCSimRootEvent* GetRootEvent(G4String detectorElement = "tank"){
+    if(detectorElement=="tank") return wcsimrootsuperevent;
+    if(detectorElement=="OD") return wcsimrootsuperevent_OD;
+  }
   WCSimRootOptions* GetRootOptions(){return wcsimrootoptions;}
+
+
+  void SetTree(TTree* tree){WCSimTree=tree;}
+  void SetBranch(TBranch* branchin, G4String detectorElement = "tank"){
+    if(detectorElement=="tank") wcsimrooteventbranch=branchin;
+    if(detectorElement=="OD") wcsimrooteventbranch_OD=branchin;
+  }
+  void SetGeoTree(TTree* tree){geoTree=tree;}
+  void SetRootEvent(WCSimRootEvent* revent, G4String detectorElement = "tank"){
+    if(detectorElement=="tank") wcsimrootsuperevent=revent;
+    if(detectorElement=="OD") wcsimrootsuperevent_OD=revent;
+  }
+  void SetRootGeom(WCSimRootGeom* rgeom){wcsimrootgeom=rgeom;}
 
   int  GetNumberOfEventsGenerated() { return numberOfEventsGenerated;}
   int  GetNtuples(){return ntuples;}
@@ -52,9 +74,12 @@ private:
   std::string RootFileName;
   //
   TTree* WCSimTree;
+  TBranch* wcsimrooteventbranch;
+  TBranch* wcsimrooteventbranch_OD;
   TTree* geoTree;
   TTree* optionsTree;
   WCSimRootEvent* wcsimrootsuperevent;
+  WCSimRootEvent* wcsimrootsuperevent_OD;
   WCSimRootGeom* wcsimrootgeom;
   WCSimRootOptions* wcsimrootoptions;
   WCSimDetectorConstruction* wcsimdetector;

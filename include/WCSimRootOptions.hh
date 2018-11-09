@@ -11,11 +11,29 @@
 #include "TObject.h"
 #include "TClonesArray.h"
 #include <string>
+#include <map>
+#include <iostream>
 
 #include "WCSimEnumerations.hh"
 
 class TDirectory;
 using std::string;
+using std::map;
+
+//////////////////////////////////////////////////////////////////////////
+
+struct WCSimDarkNoiseOptions {
+  double PMTDarkRate; // kHz
+  double ConvRate; // kHz
+  double DarkHigh; // ns
+  double DarkLow; // ns
+  double DarkWindow; // ns
+  int    DarkMode;  
+  WCSimDarkNoiseOptions() :
+    PMTDarkRate(-999), ConvRate(-999), DarkHigh(-999), DarkLow(-999),
+    DarkWindow(-999), DarkMode(-999)
+  {}
+};
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -29,36 +47,43 @@ public:
 
   //WCSimDetector* gets
   void SetDetectorName(string iDetectorName) {DetectorName = iDetectorName;}
+  void SetGeomHasOD(bool iGeomHasOD) {GeomHasOD = iGeomHasOD;}
   void SetSavePi0(bool iSavePi0) {SavePi0 = iSavePi0;}
   void SetPMTQEMethod(bool iPMTQEMethod) {PMTQEMethod = iPMTQEMethod;}
   void SetPMTCollEff(bool iPMTCollEff) {PMTCollEff = iPMTCollEff;}
   //WCSimDetector* sets
   string GetDetectorName() {return DetectorName;}
+  bool   GetGeomHasOD() {return GeomHasOD;}
   bool   GetSavePi0() {return SavePi0;}
   int    GetPMTQEMethod() {return PMTQEMethod;}
   int    GetPMTCollEff() {return PMTCollEff;}
   //WCSimWCAddDarkNoise sets
-  void SetPMTDarkRate(double iPMTDarkRate) {PMTDarkRate = iPMTDarkRate;}
-  void SetConvRate(double iConvRate) {ConvRate = iConvRate;}
-  void SetDarkHigh(double iDarkHigh) {DarkHigh = iDarkHigh;}
-  void SetDarkLow(double iDarkLow) {DarkLow = iDarkLow;}
-  void SetDarkWindow(double iDarkWindow) {DarkWindow = iDarkWindow;}
-  void SetDarkMode(int iDarkMode) {DarkMode = iDarkMode;}
+  void SetPMTDarkRate(string tag, double iPMTDarkRate) {DarkOptMap[tag].PMTDarkRate = iPMTDarkRate;}
+  void SetConvRate(string tag, double iConvRate) {DarkOptMap[tag].ConvRate = iConvRate;}
+  void SetDarkHigh(string tag, double iDarkHigh) {DarkOptMap[tag].DarkHigh = iDarkHigh;}
+  void SetDarkLow(string tag, double iDarkLow) {DarkOptMap[tag].DarkLow = iDarkLow;}
+  void SetDarkWindow(string tag, double iDarkWindow) {DarkOptMap[tag].DarkWindow = iDarkWindow;}
+  void SetDarkMode(string tag, int iDarkMode) {DarkOptMap[tag].DarkMode = iDarkMode;}
   //WCSimWCAddDarkNoise gets
-  double GetPMTDarkRate() {return PMTDarkRate;}
-  double GetConvRate() {return ConvRate;}
-  double GetDarkHigh() {return DarkHigh;}
-  double GetDarkLow() {return DarkLow;}
-  double GetDarkWindow() {return DarkWindow;}
-  int    GetDarkMode() {return DarkMode;}
+  bool IsValidDarkTag(string tag) const;
+  double GetPMTDarkRate(string tag);
+  double GetConvRate(string tag);
+  double GetDarkHigh(string tag);
+  double GetDarkLow(string tag);
+  double GetDarkWindow(string tag);
+  int    GetDarkMode(string tag);
   //WCSimWCDigitizer* sets
   void SetDigitizerClassName(string iDigitizerClassName) {DigitizerClassName = iDigitizerClassName;}
   void SetDigitizerDeadTime(int iDigitizerDeadTime) {DigitizerDeadTime = iDigitizerDeadTime;}
   void SetDigitizerIntegrationWindow(int iDigitizerIntegrationWindow) {DigitizerIntegrationWindow = iDigitizerIntegrationWindow;}
+  void SetDigitizerTimingPrecision(double iDigitizerTimingPrecision) {DigitizerTimingPrecision = iDigitizerTimingPrecision;}
+  void SetDigitizerPEPrecision(double iDigitizerPEPrecision) {DigitizerPEPrecision = iDigitizerPEPrecision;}
   //WCSimWCDigitizer* gets
   string GetDigitizerClassName() {return DigitizerClassName;}
   int    GetDigitizerDeadTime() {return DigitizerDeadTime;}
   int    GetDigitizerIntegrationWindow() {return DigitizerIntegrationWindow;}
+  int    GetDigitizerTimingPrecision() {return DigitizerTimingPrecision;}
+  int    GetDigitizerPEPrecision() {return DigitizerPEPrecision;}
   //WCSimWCTrigger* sets
   void SetTriggerClassName(string itriggerClassName) {TriggerClassName = itriggerClassName;};
   void SetMultiDigitsPerTrigger(bool imultiDigitsPerTrigger) {MultiDigitsPerTrigger = imultiDigitsPerTrigger;};
@@ -123,22 +148,20 @@ public:
 private:
   //WCSimDetector*
   string DetectorName;
+  bool   GeomHasOD;
   bool   SavePi0;
   int    PMTQEMethod;
   int    PMTCollEff;
   
   //WCSimWCAddDarkNoise
-  double PMTDarkRate; // kHz
-  double ConvRate; // kHz
-  double DarkHigh; // ns
-  double DarkLow; // ns
-  double DarkWindow; // ns
-  int    DarkMode;
+  map<string, WCSimDarkNoiseOptions> DarkOptMap;
 
   //WCSimWCDigitizer*
   string DigitizerClassName;
   int    DigitizerDeadTime; // ns
   int    DigitizerIntegrationWindow; // ns
+  int    DigitizerTimingPrecision; // 
+  int    DigitizerPEPrecision; // 
 
   //WCSimWCTrigger*
   string TriggerClassName;
@@ -175,8 +198,10 @@ private:
   int                    RandomSeed;
   WCSimRandomGenerator_t RandomGenerator;
   
-  ClassDef(WCSimRootOptions,1)  //WCSimRootEvent structure
+  ClassDef(WCSimRootOptions,4)
 };
 
 
-#endif
+//////////////////////////////////////////////////////////////////////////
+
+#endif //WCSim_RootOptions

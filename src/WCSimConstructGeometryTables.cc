@@ -111,8 +111,9 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     {
 
     // First increment the number of PMTs in the tank.
-    totalNumPMTs++;  
-    
+    if(aPV->GetName()== WCIDCollectionName) totalNumPMTs++;
+    if(aPV->GetName()== WCODCollectionName) totalNumODPMTs++;
+
     // Put the location of this tube into the location map so we can find
     // its ID later.  It is coded by its tubeTag string.
     // This scheme must match that used in WCSimWCSD::ProcessHits()
@@ -121,21 +122,38 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     for (int i=0; i <= aDepth; i++)
       tubeTag += ":" + replicaNoString[i];
     // G4cout << tubeTag << G4endl;
-    
-    if ( tubeLocationMap.find(tubeTag) != tubeLocationMap.end() ) {
+
+    if(aPV->GetName()== WCIDCollectionName) {
+      if(tubeLocationMap.find(tubeTag) != tubeLocationMap.end()) {
         G4cerr << "Repeated tube tag: " << tubeTag << G4endl;
         G4cerr << "Assigned to both tube #" << tubeLocationMap[tubeTag] << " and #" << totalNumPMTs << G4endl;
-        G4cerr << "Cannot continue -- hits will not be recorded correctly."  << G4endl;
-        G4cerr << "Please make sure that logical volumes with multiple placements are each given a unique copy number" << G4endl;
+        G4cerr << "Cannot continue -- hits will not be recorded correctly." << G4endl;
+        G4cerr << "Please make sure that logical volumes with multiple placements are each given a unique copy number"
+               << G4endl;
         assert(false);
+      }
+      tubeLocationMap[tubeTag] = totalNumPMTs;
+
+      // Put the transform for this tube into the map keyed by its ID
+      tubeIDMap[totalNumPMTs] = aTransform;
     }
-    tubeLocationMap[tubeTag] = totalNumPMTs;
-    
-    // Put the transform for this tube into the map keyed by its ID
-    tubeIDMap[totalNumPMTs] = aTransform;
-   
-    
-    // G4cout <<  "depth " << depth.str() << G4endl;
+
+    if(aPV->GetName()== WCODCollectionName) {
+      if(ODtubeLocationMap.find(tubeTag) != ODtubeLocationMap.end()) {
+        G4cerr << "Repeated tube tag: " << tubeTag << G4endl;
+        G4cerr << "Assigned to both tube #" << ODtubeLocationMap[tubeTag] << " and #" << totalNumODPMTs << G4endl;
+        G4cerr << "Cannot continue -- hits will not be recorded correctly." << G4endl;
+        G4cerr << "Please make sure that logical volumes with multiple placements are each given a unique copy number"
+               << G4endl;
+        assert(false);
+      }
+      ODtubeLocationMap[tubeTag] = totalNumODPMTs;
+
+      // Put the transform for this tube into the map keyed by its ID
+      ODtubeIDMap[totalNumODPMTs] = aTransform;
+    }
+
+      // G4cout <<  "depth " << depth.str() << G4endl;
     // G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
       
     // Print
@@ -232,8 +250,57 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
      fpmts.push_back(new_pmt);
 
   }
-  geoFile.close();
 
+  // Record locations of OD PMTs to file ffODpmts variables
+  for (unsigned int i=0;i<fODpmts.size();i++){
+    delete fODpmts.at(i);
+  }
+  fODpmts.clear();
+
+  // Grab the tube information from the tubeID Map and dump to file.
+  for ( int tubeID = 1; tubeID <= totalNumODPMTs; tubeID++){
+    G4Transform3D newTransform = ODtubeIDMap[tubeID];
+
+    // Get tube orientation vector
+    G4Vector3D nullOrient = G4Vector3D(0,0,1);
+    G4Vector3D pmtOrientation = newTransform * nullOrient;
+    //cyl_location cylLocation = tubeCylLocation[tubeID];
+
+    // TODO: make these record something sensible for the OD
+    if (pmtOrientation*newTransform.getTranslation() > 0)//veto pmt
+    {cylLocation=3;}
+    else if (pmtOrientation.z()==1.0)//bottom
+    {cylLocation=2;}
+    else if (pmtOrientation.z()==-1.0)//top
+    {cylLocation=0;}
+    else // barrel
+    {cylLocation=1;}
+
+    geoFile.precision(9);
+    geoFile << setw(4) << tubeID
+            << " " << setw(8) << newTransform.getTranslation().getX()/CLHEP::cm
+            << " " << setw(8) << newTransform.getTranslation().getY()/CLHEP::cm
+            << " " << setw(8) << newTransform.getTranslation().getZ()/CLHEP::cm
+            << " " << setw(7) << pmtOrientation.x()
+            << " " << setw(7) << pmtOrientation.y()
+            << " " << setw(7) << pmtOrientation.z()
+            << " " << setw(3) << cylLocation
+            << G4endl;
+
+    WCSimPmtInfo *new_pmt = new WCSimPmtInfo(cylLocation,
+                                             newTransform.getTranslation().getX()/CLHEP::cm,
+                                             newTransform.getTranslation().getY()/CLHEP::cm,
+                                             newTransform.getTranslation().getZ()/CLHEP::cm,
+                                             pmtOrientation.x(),
+                                             pmtOrientation.y(),
+                                             pmtOrientation.z(),
+                                             tubeID);
+
+    fODpmts.push_back(new_pmt);
+
+  }
+
+  geoFile.close();
 
 } 
 
