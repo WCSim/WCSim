@@ -5,6 +5,7 @@
  */
 
 #include <iostream>
+#include <string>
 #include <stdio.h>     
 #include <stdlib.h>    
 
@@ -43,7 +44,17 @@ void PrintHeaderInfo(WCSimRootEvent * wcsimrootsuperevent, const char * filename
   cout << "Number of photoelectron hit times " << wcsimrootevent->GetCherenkovHitTimes()->GetEntries() << endl;
 }
 
-TTree * GetTree(const char * filename)
+void PrintGeomSummary(WCSimRootGeom * geo, const char * filename)
+{
+  printf("********************************************************");
+  cout << "Geom summary+ in WCSim file: " << filename << endl;
+  cout << "WC radius " << geo->GetWCCylRadius() << endl;
+  cout << "WC length " << geo->GetWCCylLength() << endl;
+  cout << "Number of PMTs " << geo->GetWCNumPMT() << endl;
+  cout << "PMT radius " << geo->GetWCPMTRadius() << endl;
+}
+
+TTree * GetTree(const char * filename, const char * treename)
 {
   TFile *f = new TFile(filename,"read");
   if (!f->IsOpen()){
@@ -52,9 +63,9 @@ TTree * GetTree(const char * filename)
   }
   
   TTree  * wcsimT = 0;
-  f->GetObject("wcsimT", wcsimT);
+  f->GetObject(treename, wcsimT);
   if(!wcsimT) {
-    cerr << "wcsimT tree could not be opened in input file: " << filename << endl;
+    cerr << treename << " tree could not be opened in input file: " << filename << endl;
     exit(-1);
   }
   return wcsimT;
@@ -62,7 +73,6 @@ TTree * GetTree(const char * filename)
 
 WCSimRootEvent * GetRootEvent(TTree * wcsimT, int & nevent)
 {
-  cout << wcsimT << endl;
   nevent = wcsimT->GetEntries();
   WCSimRootEvent * wcsimrootsuperevent = 0;
   wcsimT->SetBranchAddress("wcsimrootevent",&wcsimrootsuperevent);
@@ -75,8 +85,17 @@ WCSimRootEvent * GetRootEvent(TTree * wcsimT, int & nevent)
   return wcsimrootsuperevent;
 }
 
+WCSimRootGeom * GetRootGeom(TTree * wcsimT, int & nevent)
+{
+  nevent = wcsimT->GetEntries();
+  WCSimRootGeom * wcsimrootgeom = 0;
+  wcsimT->SetBranchAddress("wcsimrootgeom", &wcsimrootgeom);
+  wcsimT->GetEvent(0);
+  return wcsimrootgeom;
+}
+
 // Simple example of reading a generated Root file
-void complete_comparison(char *filename1, char *filename2, bool verbose=false, const Long64_t oneevent = -1)
+void complete_comparison(char *filename1, char *filename2, string treename = "wcsimT", bool verbose=false, const Long64_t oneevent = -1)
 {
 #if !defined(__MAKECINT__)
   // Load the library with class dictionary info
@@ -91,16 +110,29 @@ void complete_comparison(char *filename1, char *filename2, bool verbose=false, c
 #endif
 
   int nevents1;
-  TTree * wcsimT1 = GetTree(filename1);
-  WCSimRootEvent * wcsimrootsuperevent1 = GetRootEvent(wcsimT1, nevents1);
-  WCSimRootTrigger* wcsimrootevent1;
+  TTree * wcsimT1 = GetTree(filename1, treename.c_str());
 
   int nevents2;
-  TTree * wcsimT2 = GetTree(filename2);
-  WCSimRootEvent * wcsimrootsuperevent2 = GetRootEvent(wcsimT2, nevents2);
-  WCSimRootTrigger* wcsimrootevent2;
+  TTree * wcsimT2 = GetTree(filename2, treename.c_str());
 
-  cout << "File 1 (2) has " << nevents1 << " (" << nevents2 << ") events" << endl;
+  WCSimRootEvent * wcsimrootsuperevent1 = 0;
+  WCSimRootGeom * wcsimrootgeom1 = 0;
+  WCSimRootEvent * wcsimrootsuperevent2 = 0;
+  WCSimRootGeom * wcsimrootgeom2 = 0;
+  if(treename == "wcsimT") {
+    wcsimrootsuperevent1 = GetRootEvent(wcsimT1, nevents1);
+    wcsimrootsuperevent2 = GetRootEvent(wcsimT2, nevents2);
+  }
+  else if(treename == "wcsimGeoT") {
+    wcsimrootgeom1 = GetRootGeom(wcsimT1, nevents1);
+    wcsimrootgeom2 = GetRootGeom(wcsimT2, nevents2);
+  }
+  else {
+    cerr << treename << " is not a valid treename for complete_comparison(). Exiting" << endl;
+    return;
+  }
+
+  cout << "Tree " << treename << " in file 1 (2) has " << nevents1 << " (" << nevents2 << ") events" << endl;
 
   // Now loop over events
   int nevents_failed = 0, nevents_analysed = 0;
@@ -123,14 +155,37 @@ void complete_comparison(char *filename1, char *filename2, bool verbose=false, c
 
     //compare
     bool failed = !(wcsimrootsuperevent1->CompareAllVariables(wcsimrootsuperevent2));
+    if(verbose || ev == 0){
+	if(wcsimrootsuperevent1) {
+	  PrintHeaderInfo(wcsimrootsuperevent1, filename1);
+	  PrintHeaderInfo(wcsimrootsuperevent2, filename2);
+	}
+	else if(wcsimrootgeom1) {
+	  PrintGeomSummary(wcsimrootgeom1, filename1);
+	  PrintGeomSummary(wcsimrootgeom2, filename2);
+	}
+    }
+      
+    //compare
+    bool failed = false;
+
+    if(wcsimrootsuperevent1) {
+      failed = !(wcsimrootsuperevent1->CompareAllVariables(wcsimrootsuperevent2));
+    }
+    else if(wcsimrootgeom1) {
+      failed = !(wcsimrootgeom1->CompareAllVariables(wcsimrootgeom2));
+    }
+
     if(verbose || ev == 0)
       cout << "Event " << ev << " comparison " << (failed ? "FAILED" : "PASSED") << endl;
     if(failed)
       nevents_failed++;
 
-    // reinitialize super event between loops.
-    wcsimrootsuperevent1->ReInitialize();
-    wcsimrootsuperevent2->ReInitialize();
+    if(wcsimrootsuperevent1) {
+      // reinitialize super event between loops.
+      wcsimrootsuperevent1->ReInitialize();
+      wcsimrootsuperevent2->ReInitialize();
+    }
   }// End of loop over events
   cout << nevents_failed << " events out of " << nevents_analysed << " have failures " << endl;
 }
