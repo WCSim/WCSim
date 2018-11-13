@@ -8,36 +8,14 @@
 #include "TClonesArray.h"
 
 #include "WCSimRootGeom.hh"
+#include "WCSimRootTools.hh"
 
 #include <iostream>
-
-using std::cout;
-using std::cerr;
-using std::endl;
 
 #ifndef REFLEX_DICTIONARY
 ClassImp(WCSimRootGeom)
 ClassImp(WCSimRootPMT)
 #endif
-
-#ifndef VERBOSE_COMPARISON
-//#define VERBOSE_COMPARISON
-#endif
-const double kASmallNum = 1E-6;
-
-bool ComparisonPassed(double val1, double val2, const char * callerclass, const char * callerfunc, const char * tag)
-{
-  if(TMath::Abs(val1 - val2) > kASmallNum) {
-    cerr << callerclass << "::" << callerfunc << " " << tag << " not equal: " << val1 << ", " << val2 << endl;
-    return false;
-  }
-  else {
-#ifdef VERBOSE_COMPARISON
-    cout << callerclass << "::" << callerfunc << " " << tag << " equal: " << val1 << ", " << val2 << endl;
-#endif
-    return true;
-  }
-}
 
 //______________________________________________________________________________
 WCSimRootGeom::WCSimRootGeom()
