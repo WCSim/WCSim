@@ -668,9 +668,9 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
     }
   }//i (WCSimRootCherenkovHit)
 
-
+  //check digitised hits
   for(int i = 0; i < TMath::Min(this->GetCherenkovDigiHits()->GetEntries(), c->GetCherenkovDigiHits()->GetEntries()); i++) {
-	failed = !((WCSimRootCherenkovHitTime *)this->GetCherenkovHitTimes()->At(i))->CompareAllVariables((WCSimRootCherenkovHitTime *)c->GetCherenkovHitTimes()->At(i)) || failed;
+	failed = !((WCSimRootCherenkovDigiHit *)this->GetCherenkovDigiHits()->At(i))->CompareAllVariables((WCSimRootCherenkovDigiHit *)c->GetCherenkovDigiHits()->At(i)) || failed;
   }//i
 
 
