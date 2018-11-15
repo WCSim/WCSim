@@ -649,15 +649,15 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
     if(! tmp_digit_1) {
 #ifdef VERBOSE_COMPARISON
       cerr << "Digit " << i << " does not exist in this" << endl;
-      continue;
 #endif
+      continue;
     }
     WCSimRootCherenkovDigiHit * tmp_digit_2 = (WCSimRootCherenkovDigiHit *)c->GetCherenkovDigiHits()->At(i);
     if(! tmp_digit_2) {
 #ifdef VERBOSE_COMPARISON
       cerr << "Digit " << i << " does not exist in that" << endl;
-      continue;
 #endif
+      continue;
     }
     failed = !(tmp_digit_1->CompareAllVariables(tmp_digit_2)) || failed;
   }//i
