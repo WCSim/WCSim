@@ -238,6 +238,7 @@ private:
 
   Int_t                fNumDigitizedTubes;  // Number of digitized tubes
   Int_t                fNcherenkovdigihits;  // Number of digihits in the array
+  Int_t                fNcherenkovdigihits_slots;  // Number of slots in the digihits array. This is more than fNcherenkovdigihits if any digihits have been removed
   Float_t              fSumQ;
   TClonesArray         *fCherenkovDigiHits;  //-> Array of WCSimRootCherenkovDigiHit's
 
@@ -299,6 +300,7 @@ public:
   Int_t               GetNcherenkovhits()     const {return fNcherenkovhits; }
   Int_t               GetNcherenkovhittimes() const {return fNcherenkovhittimes;}
   Int_t               GetNcherenkovdigihits() const {return fNcherenkovdigihits;}
+  Int_t               GetNcherenkovdigihits_slots() const {return fNcherenkovdigihits_slots;}
   Float_t             GetSumQ()               const { return fSumQ;}
   TriggerType_t       GetTriggerType()        const { return fTriggerType;}
   std::vector<Float_t> GetTriggerInfo()        const { return fTriggerInfo;}
