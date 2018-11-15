@@ -713,6 +713,7 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
   failed = (!ComparisonPassed(fNcherenkovhits, c->GetNcherenkovhits(), typeid(*this).name(), __func__, "Ncherenkovhits")) || failed;
   failed = (!ComparisonPassed(fNcherenkovhittimes, c->GetNcherenkovhittimes(), typeid(*this).name(), __func__, "Ncherenkovhittimes")) || failed;
   failed = (!ComparisonPassed(fNcherenkovdigihits, c->GetNcherenkovdigihits(), typeid(*this).name(), __func__, "Ncherenkovdigihits")) || failed;
+  failed = (!ComparisonPassed(fNcherenkovdigihits_slots, c->GetNcherenkovdigihits_slots(), typeid(*this).name(), __func__, "Ncherenkovdigihits_slots")) || failed;
   failed = (!ComparisonPassed(fSumQ, c->GetSumQ(), typeid(*this).name(), __func__, "SumQ")) || failed;
   failed = (!ComparisonPassed(fTriggerType, c->GetTriggerType(), typeid(*this).name(), __func__, "TriggerType")) || failed;
   failed = (!ComparisonPassedVec(fTriggerInfo, c->GetTriggerInfo(), typeid(*this).name(), __func__, "TriggerInfo")) || failed;
