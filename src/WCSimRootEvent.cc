@@ -54,6 +54,7 @@ WCSimRootTrigger::WCSimRootTrigger()
   // TClonesArray of WCSimRootCherenkovDigiHits
   fCherenkovDigiHits = 0;
   fNcherenkovdigihits = 0;
+  fNcherenkovdigihits_slots = 0;
   fSumQ = 0;
 
   fTriggerType = kTriggerUndefined;
