@@ -476,7 +476,7 @@ WCSimRootEvent::~WCSimRootEvent()
 
 void WCSimRootEvent::Clear(Option_t* /*o*/)
 {
-  //fEventList->Delete();
+  //nothing for now
 }
 
 void WCSimRootEvent::Reset(Option_t* /*o*/)

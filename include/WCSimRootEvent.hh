@@ -329,8 +329,6 @@ public:
 
   TClonesArray            *GetCherenkovDigiHits() const {return fCherenkovDigiHits;}
 
-  void ResetNcherenkovdigihits() { fNcherenkovdigihits = fCherenkovDigiHits->GetEntries(); }
-
   ClassDef(WCSimRootTrigger,2) //WCSimRootEvent structure
 };
 
