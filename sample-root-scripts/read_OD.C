@@ -114,11 +114,13 @@ void read_OD(char *filename=NULL) {
       hPEByEvts->Fill(totRawPE);
 
       // DIGI HITS
-      int digiMax = wcsimrootevent->GetNcherenkovdigihits();
+      int digiMax = wcsimrootevent->GetNcherenkovdigihits_slots();
       int totDigiPE = 0;
       for (int i = 0; i < digiMax; i++){
 	WCSimRootCherenkovDigiHit *cDigiHit =
 	  (WCSimRootCherenkovDigiHit*)wcsimrootevent->GetCherenkovDigiHits()->At(i);
+	if(!cDigiHit)
+	  continue;
 	//WCSimRootChernkovDigiHit has methods GetTubeId(), GetT(), GetQ()
 	WCSimRootCherenkovHitTime *cHitTime =
 	  (WCSimRootCherenkovHitTime*)wcsimrootevent->GetCherenkovHitTimes()->At(i);
