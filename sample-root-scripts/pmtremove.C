@@ -211,6 +211,7 @@ void pmtremove(TString infile, TString outfile, double removefrac)
     
 	  int ncherenkovhits     = oldtrigger->GetNcherenkovhits();
 	  int ncherenkovdigihits = oldtrigger->GetNcherenkovdigihits(); 
+	  int ncherenkovdigihits_slots = oldtrigger->GetNcherenkovdigihits_slots(); 
     
 	  // Grab the big arrays of times and parent IDs
 	  TClonesArray *timeArray = oldtrigger->GetCherenkovHitTimes();
@@ -250,10 +251,12 @@ void pmtremove(TString infile, TString outfile, double removefrac)
 
 	  float sumq = 0;
 
-	  for (int i=0;i<ncherenkovdigihits;i++)
+	  for (int i=0;i<ncherenkovdigihits_slots;i++)
 	    {
 	      // Loop through elements in the TClonesArray of WCSimRootCherenkovDigiHits
 	      TObject *element = (oldtrigger->GetCherenkovDigiHits())->At(i);
+	      if(!element)
+		continue;
 	      WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = 
 		dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
 	      int tubeNumber = wcsimrootcherenkovdigihit->GetTubeId();
