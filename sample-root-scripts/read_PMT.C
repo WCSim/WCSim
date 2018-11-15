@@ -82,6 +82,8 @@ void read_PMT(char *filename=NULL) {
   int max = wcsimrootevent->GetNcherenkovdigihits();
   for (int i = 0; i<max; i++){
     WCSimRootCherenkovDigiHit *cDigiHit = wcsimrootevent->GetCherenkovDigiHits()->At(i);
+    if(!cDigitHit)
+      continue;
     //WCSimRootChernkovDigiHit has methods GetTubeId(), GetT(), GetQ()
     QvsT->Fill(cDigiHit->GetT(), cDigiHit->GetQ());
     WCSimRootCherenkovHitTime *cHitTime = wcsimrootevent->GetCherenkovHitTimes()->At(i);
