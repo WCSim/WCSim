@@ -148,13 +148,8 @@ void complete_comparison(char *filename1, char *filename2, string treename = "wc
     // Read the event from the tree into the WCSimRootEvent instance
     wcsimT1->GetEntry(ev);
     wcsimT2->GetEntry(ev);
-    if(verbose || ev == 0){
-      PrintHeaderInfo(wcsimrootsuperevent1, filename1);
-      PrintHeaderInfo(wcsimrootsuperevent2, filename2);
-    }
 
-    //compare
-    bool failed = !(wcsimrootsuperevent1->CompareAllVariables(wcsimrootsuperevent2));
+    //print
     if(verbose || ev == 0){
 	if(wcsimrootsuperevent1) {
 	  PrintHeaderInfo(wcsimrootsuperevent1, filename1);
@@ -168,7 +163,6 @@ void complete_comparison(char *filename1, char *filename2, string treename = "wc
       
     //compare
     bool failed = false;
-
     if(wcsimrootsuperevent1) {
       failed = !(wcsimrootsuperevent1->CompareAllVariables(wcsimrootsuperevent2));
     }
