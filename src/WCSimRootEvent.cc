@@ -645,7 +645,21 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
 
   //check digitised hits
   for(int i = 0; i < TMath::Min(this->GetCherenkovDigiHits()->GetEntries(), c->GetCherenkovDigiHits()->GetEntries()); i++) {
-	failed = !((WCSimRootCherenkovDigiHit *)this->GetCherenkovDigiHits()->At(i))->CompareAllVariables((WCSimRootCherenkovDigiHit *)c->GetCherenkovDigiHits()->At(i)) || failed;
+    WCSimRootCherenkovDigiHit * tmp_digit_1 = (WCSimRootCherenkovDigiHit *)this->GetCherenkovDigiHits()->At(i);
+    if(! tmp_digit_1) {
+#ifdef VERBOSE_COMPARISON
+      cerr << "Digit " << i << " does not exist in this" << endl;
+      continue;
+#endif
+    }
+    WCSimRootCherenkovDigiHit * tmp_digit_2 = (WCSimRootCherenkovDigiHit *)c->GetCherenkovDigiHits()->At(i);
+    if(! tmp_digit_2) {
+#ifdef VERBOSE_COMPARISON
+      cerr << "Digit " << i << " does not exist in that" << endl;
+      continue;
+#endif
+    }
+    failed = !(tmp_digit_1->CompareAllVariables(tmp_digit_2)) || failed;
   }//i
 
 
