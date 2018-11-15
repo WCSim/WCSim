@@ -122,8 +122,8 @@ void read_OD(char *filename=NULL) {
 	if(!cDigiHit)
 	  continue;
 	//WCSimRootChernkovDigiHit has methods GetTubeId(), GetT(), GetQ()
-	WCSimRootCherenkovHitTime *cHitTime =
-	  (WCSimRootCherenkovHitTime*)wcsimrootevent->GetCherenkovHitTimes()->At(i);
+	//WCSimRootCherenkovHitTime *cHitTime =
+	//(WCSimRootCherenkovHitTime*)wcsimrootevent->GetCherenkovHitTimes()->At(i); //this should be a loop over number of cherenkov hit times
 	//WCSimRootCherenkovHitTime has methods GetTubeId(), GetTruetime()
 
 	hPECollectedByEvtsByPMT->Fill(cDigiHit->GetQ());
