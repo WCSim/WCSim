@@ -314,7 +314,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   // Do dat placement inda box
   G4VPhysicalVolume* physiWLS =
       new G4PVPlacement(0,
-                        G4ThreeVector(0, 0, -(sphereRadius+WCODWLSPlatesThickness)/2),
+                        G4ThreeVector(0, 0, -(sphereRadius-WCODWLSPlatesThickness)/2),
                         logicWCODWLSPlate,
                         "WCCellWLSPlateOD",
                         logicContainer,
@@ -323,7 +323,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
                         checkOverlaps);
   G4VPhysicalVolume* physiPMT =
       new G4PVPlacement(0,
-                        G4ThreeVector(0, 0, -(sphereRadius+PMTOffset)/2),
+                        G4ThreeVector(0, 0, -(sphereRadius-PMTOffset)/2),
                         logicWCPMT,
                         "WCPMTOD",
                         logicContainer,
