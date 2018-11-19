@@ -89,8 +89,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   
   innerAnnulusRadius = WCIDRadius - WCPMTExposeHeight-1.*mm;
   outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
-  if(isODConstructed)
-    outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness + WCPMTODExposeHeight + 1.*mm;
+  if(isODConstructed){
+    G4double sphereRadius =
+        (WCPMTODExposeHeight*WCPMTODExposeHeight+ WCPMTODRadius*WCPMTODRadius)/(2*WCPMTODExposeHeight);
+    outerAnnulusRadius =
+        WCIDRadius + WCBlackSheetThickness + WCODDeadSpace + // ID Structure
+        WCODTyvekSheetThickness + // Tyvek attached to structure
+        sphereRadius; // PMT height
+  }
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
   WCLength    = WCIDHeight + 2*2.3*m;	//jl145 - reflects top veto blueprint, cf. Farshid Feyzi
@@ -865,7 +871,9 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
   if(isODConstructed){
 
-    WCODRadius = outerAnnulusRadius-(WCPMTODExposeHeight + 1.*mm);
+    G4double sphereRadius =
+        (WCPMTODExposeHeight*WCPMTODExposeHeight+ WCPMTODRadius*WCPMTODRadius)/(2*WCPMTODExposeHeight);
+    WCODRadius = outerAnnulusRadius - sphereRadius;
 
     //-------------------------------------------------------------
     // OD Tyvek Caps
@@ -903,7 +911,8 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                           false,
                           0);
 
-    G4LogicalSkinSurface *WaterTySurfaceTop = new G4LogicalSkinSurface("WaterTySurfaceTop", logicWCODCapTyvek, OpWaterTySurface);
+    G4LogicalSkinSurface *WaterTySurfaceTop =
+        new G4LogicalSkinSurface("WaterTySurfaceTop", logicWCODCapTyvek, OpWaterTySurface);
 
     CapTyvekPosition.setZ(-CapTyvekPosition.getZ());
 
@@ -960,7 +969,8 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                           false,
                           0,true);
 
-    G4LogicalSkinSurface *WaterTySurfaceSide = new G4LogicalSkinSurface("WaterTySurfaceSide", logicWCBarrelCellODTyvek, OpWaterTySurface);
+    G4LogicalSkinSurface *WaterTySurfaceSide =
+        new G4LogicalSkinSurface("WaterTySurfaceSide", logicWCBarrelCellODTyvek, OpWaterTySurface);
 
     //-------------------------------------------------------------
     // WLS and OD PMTs Barrel Side
@@ -968,7 +978,6 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
     logicWCODWLSAndPMT = ConstructPMTAndWLSPlate(WCPMTODName, WCODCollectionName, "OD");
     // sphereRadius is the size along z of the logicWCODCapTyvek box containing WLS+PMT
-    G4double sphereRadius = (WCPMTODExposeHeight*WCPMTODExposeHeight+ WCPMTODRadius*WCPMTODRadius)/(2*WCPMTODExposeHeight);
 
     ///////////////   Barrel PMT placement
     G4RotationMatrix* WCPMTODRotation = new G4RotationMatrix;
@@ -1021,16 +1030,16 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                               true);
 
 
-        G4LogicalBorderSurface * TyvekWLSSurfaceBot =
-            new G4LogicalBorderSurface(  "TyvekWLSSurfaceBot",
-                                         physiWCBarrelCellODTyvek,
-                                         physiWCBarrelWLSPlate,
-                                         OpWLSTySurface);
-        G4LogicalBorderSurface * WLSBarrelCellSurfaceBot =
-            new G4LogicalBorderSurface(  "WaterTyBarrelCellSurface",
-                                         physiWCBarrel,
-                                         physiWCBarrelWLSPlate,
-                                         OpWaterWLSSurface);
+//        G4LogicalBorderSurface * TyvekWLSSurfaceBot =
+//            new G4LogicalBorderSurface(  "TyvekWLSSurfaceBot",
+//                                         physiWCBarrelCellODTyvek,
+//                                         physiWCBarrelWLSPlate,
+//                                         OpWLSTySurface);
+//        G4LogicalBorderSurface * WLSBarrelCellSurfaceBot =
+//            new G4LogicalBorderSurface(  "WaterTyBarrelCellSurface",
+//                                         physiWCBarrel,
+//                                         physiWCBarrelWLSPlate,
+//                                         OpWaterWLSSurface);
       }
     }
 
@@ -1064,6 +1073,10 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                               G4Material::GetMaterial("Tyvek"),
                               "WCExtraTowerODTyvek",
                               0,0,0);
+
+      G4LogicalSkinSurface *WaterExtraTySurfaceSide =
+          new G4LogicalSkinSurface("WaterTySurfaceSide", logicWCTowerODTyvek, OpWaterTySurface);
+
 
       logicWCTowerODTyvek->SetVisAttributes(G4VisAttributes::Invisible);
       //// Uncomment following for TYVEK visualization
@@ -1108,11 +1121,11 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                                 0,
                                 true);
 
-          G4LogicalBorderSurface * TyvekWLSSurfaceBot =
-              new G4LogicalBorderSurface("TyvekWLSSurfaceBot",
-                                         physiWCTowerODTyvek,
-                                         physiWCExtraBarrelWLSPlate,
-                                         OpWLSTySurface);
+//          G4LogicalBorderSurface * TyvekWLSSurfaceBot =
+//              new G4LogicalBorderSurface("TyvekWLSSurfaceBot",
+//                                         physiWCTowerODTyvek,
+//                                         physiWCExtraBarrelWLSPlate,
+//                                         OpWLSTySurface);
 
         }
       }
@@ -1749,6 +1762,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
   if(isODConstructed){
 
+    G4double sphereRadius =
+        (WCPMTODExposeHeight*WCPMTODExposeHeight+ WCPMTODRadius*WCPMTODRadius)/(2*WCPMTODExposeHeight);
+    WCODRadius = outerAnnulusRadius - sphereRadius;
+
     //------------------------------------------------------------
     // add ODTyvek to the border cells.
     // We can use the same logical volume as for the normal
@@ -1759,23 +1776,22 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
         new G4PVPlacement(0,
                           G4ThreeVector(0.,0.,0.),
                           logicWCBarrelCellODTyvek,
-                          "WCBarrelCellODTyvek",
+                          "WCBorderCellODTyvek",
                           logicWCBarrelBorderCell,
                           false,
                           0,true);
 
-    G4LogicalBorderSurface * WaterTyBarrelBorderCellSurfaceBot =
-        new G4LogicalBorderSurface(	"WaterTyBarrelBorderCellSurface",
-                                       physiWCBarrelBorderCell,
-                                       physiWCBarrelBorderCellODTyvek,
-                                       OpWaterTySurface);
+
+//    G4LogicalBorderSurface * WaterTyBarrelBorderCellSurfaceBot =
+//        new G4LogicalBorderSurface(	"WaterTyBarrelBorderCellSurface",
+//                                       physiWCBarrelBorderCell,
+//                                       physiWCBarrelBorderCellODTyvek,
+//                                       OpWaterTySurface);
 
 
     //-------------------------------------------------------------
     // OD BARREL PMTs
     // ------------------------------------------------------------
-
-    G4double sphereRadius = (WCPMTODExposeHeight*WCPMTODExposeHeight+ WCPMTODRadius*WCPMTODRadius)/(2*WCPMTODExposeHeight);
 
     ///////////////   Barrel PMT placement
     G4RotationMatrix* WCPMTODRotation = new G4RotationMatrix;
@@ -1803,16 +1819,16 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                               true);
 
 
-        G4LogicalBorderSurface * TyvekWLSSurfaceBot =
-            new G4LogicalBorderSurface(  "TyvekWLSSurfaceBot",
-                                         physiWCBarrelBorderCellODTyvek,
-                                         physiWCBarrelWLSPlate,
-                                         OpWLSTySurface);
-        G4LogicalBorderSurface * WLSBarrelCellSurfaceBot =
-            new G4LogicalBorderSurface(  "WaterTyBarrelCellSurface",
-                                         physiWCBarrelBorderCell,
-                                         physiWCBarrelWLSPlate,
-                                         OpWaterWLSSurface);
+//        G4LogicalBorderSurface * TyvekWLSSurfaceBot =
+//            new G4LogicalBorderSurface(  "TyvekWLSSurfaceBot",
+//                                         physiWCBarrelBorderCellODTyvek,
+//                                         physiWCBarrelWLSPlate,
+//                                         OpWLSTySurface);
+//        G4LogicalBorderSurface * WLSBarrelCellSurfaceBot =
+//            new G4LogicalBorderSurface(  "WaterTyBarrelCellSurface",
+//                                         physiWCBarrelBorderCell,
+//                                         physiWCBarrelWLSPlate,
+//                                         OpWaterWLSSurface);
 
       }
     }
@@ -1828,11 +1844,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                             false,
                             0,true);
 
-      G4LogicalBorderSurface * WaterTyBarrelBorderCellSurfaceBot =
-          new G4LogicalBorderSurface(	"WaterTyBarrelBorderCellSurface",
-                                         physiWCExtraBorderCell,
-                                         physiWCExtraBorderODTyvek,
-                                         OpWaterTySurface);
+//      G4LogicalBorderSurface * WaterTyBarrelBorderCellSurfaceBot =
+//          new G4LogicalBorderSurface(	"WaterTyBarrelBorderCellSurface",
+//                                         physiWCExtraBorderCell,
+//                                         physiWCExtraBorderODTyvek,
+//                                         OpWaterTySurface);
 
       G4RotationMatrix* WCPMTRotation = new G4RotationMatrix;
       WCPMTRotation->rotateY(270.*deg);
@@ -1859,16 +1875,16 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                                 false,                     // no boolean operations
                                 (int)(i*WCPMTODperCellVertical+j),
                                 true);
-          G4LogicalBorderSurface * TyvekWLSSurfaceBot =
-              new G4LogicalBorderSurface(  "TyvekWLSSurfaceBot",
-                                           physiWCExtraBorderODTyvek,
-                                           physiWCBarrelPMT,
-                                           OpWLSTySurface);
-          G4LogicalBorderSurface * WLSBarrelCellSurfaceBot =
-              new G4LogicalBorderSurface(  "WaterTyBarrelCellSurface",
-                                           physiWCExtraBorderCell,
-                                           physiWCBarrelPMT,
-                                           OpWaterWLSSurface);
+//          G4LogicalBorderSurface * TyvekWLSSurfaceBot =
+//              new G4LogicalBorderSurface(  "TyvekWLSSurfaceBot",
+//                                           physiWCExtraBorderODTyvek,
+//                                           physiWCBarrelPMT,
+//                                           OpWLSTySurface);
+//          G4LogicalBorderSurface * WLSBarrelCellSurfaceBot =
+//              new G4LogicalBorderSurface(  "WaterTyBarrelCellSurface",
+//                                           physiWCExtraBorderCell,
+//                                           physiWCBarrelPMT,
+//                                           OpWaterWLSSurface);
 
         }
       }
