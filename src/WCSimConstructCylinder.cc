@@ -169,7 +169,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
     G4Tubs *solidCaveTyvek = new G4Tubs("WC",
                                         WCRadius,
-                                        WCRadius + CaveTyvekSheetThickness,
+                                        WCRadius + WCODTyvekSheetThickness,
                                         .5 * WCLength,  //jl145 - per blueprint
                                         0. * deg,
                                         360. * deg);
@@ -190,11 +190,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
         new G4PVPlacement(0,
                           G4ThreeVector(0., 0., 0.),
                           logicCaveTyvek,
-                          "WCBarrel",
-                          logicWC,
+                          "CaveBarrelTyvek",
+                          logicWCBarrel,
                           false,
                           0);
 
+    G4LogicalSkinSurface *TyvekCaveBarrelSurface = new G4LogicalSkinSurface("TyvekCaveBarrelSurface", logicCaveTyvek, OpWaterTySurface);
     //-----------------------------------------------------
     // Cylinder caps' tyvek
     //-----------------------------------------------------
@@ -202,43 +203,40 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
     G4Tubs *solidCaveCapsTyvek = new G4Tubs("CaveCapsTyvek",
                                             0,
                                             WCRadius,
-                                            .5 * (CaveTyvekSheetThickness),
+                                            .5 * (WCODTyvekSheetThickness),
                                             0. * deg,
                                             360. * deg);
 
     G4ThreeVector CaveTyvekPosition(0., 0., WCLength / 2);
 
+    G4LogicalVolume *logicCaveCapsTyvek =
+         new G4LogicalVolume(solidCaveCapsTyvek,
+                             G4Material::GetMaterial("Tyvek"),
+                             "CaveCapTyvek",
+                             0, 0, 0);
+
+    G4LogicalSkinSurface *TyvekCaveTopSurface = new G4LogicalSkinSurface("TyvekCaveTopSurface", logicCaveCapsTyvek, OpWaterTySurface);
+
+
     G4VPhysicalVolume *physiTopCaveTyvek =
         new G4PVPlacement(0,
                           CaveTyvekPosition,
-                          logicCaveTyvek,
+                          logicCaveCapsTyvek,
                           "CaveTopTyvek",
-                          logicWC,
+                          logicWCBarrel,
                           false,
                           0);
-
-    G4LogicalBorderSurface *WaterTyTopCaveSurfaceBot =
-        new G4LogicalBorderSurface("WaterTyCaveTopSurface",
-                                   physiWCBarrel,
-                                   physiTopCaveTyvek,
-                                   OpWaterTySurface);
 
     CaveTyvekPosition.setZ(-CaveTyvekPosition.getZ());
 
     G4VPhysicalVolume *physiBottomCaveTyvek =
         new G4PVPlacement(0,
                           CaveTyvekPosition,
-                          logicCaveTyvek,
+                          logicCaveCapsTyvek,
                           "CaveBottomTyvek",
-                          logicWC,
+                          logicWCBarrel,
                           false,
                           0);
-
-    G4LogicalBorderSurface *WaterTyBottomCaveSurfaceBot =
-        new G4LogicalBorderSurface("WaterTyCaveTopSurface",
-                                   physiWCBarrel,
-                                   physiBottomCaveTyvek,
-                                   OpWaterTySurface);
 
   } // END Tyvek cave
   //-----------------------------------------------------
@@ -657,12 +655,7 @@ else {
 		          				logicWCTopVeto,
 				 				false,0,true);
 
-	  G4LogicalBorderSurface * WaterTyTVSurfaceBot =
-			new G4LogicalBorderSurface(	"WaterTyTVSurfaceBot",
-										physiWCTopVeto,
-										physiWCTVTyvekBot,
-										OpWaterTySurface);
-
+          G4LogicalSkinSurface *WaterTyTVSurfaceBot = new G4LogicalSkinSurface("WaterTyTVSurfaceBot", logicWCTVTyvek, OpWaterTySurface);
 	  //Top
 	  G4VPhysicalVolume* physiWCTVTyvekTop =
 			new G4PVPlacement(	0,
@@ -673,11 +666,6 @@ else {
 		          				logicWCTopVeto,
 				 				false,0,true);
 
-	  G4LogicalBorderSurface * WaterTyTVSurfaceTop =
-			new G4LogicalBorderSurface(	"WaterTyTVSurfaceTop",
-										physiWCTopVeto,
-										physiWCTVTyvekTop,
-										OpWaterTySurface);
 
 	  //Side
 	  G4VSolid* solidWCTVTyvekSide;
@@ -704,12 +692,7 @@ else {
 		          				logicWCTopVeto,
 				 				false,0,true);
 
-	  G4LogicalBorderSurface * WaterTyTVSurfaceSide =
-			new G4LogicalBorderSurface(	"WaterTyTVSurfaceSide",
-										physiWCTopVeto,
-										physiWCTVTyvekSide,
-										OpWaterTySurface);
-
+          G4LogicalSkinSurface *WaterTyTVSurfaceSurface = new G4LogicalSkinSurface("WaterTyTVSurfaceSide", logicWCTVTyvekSide, OpWaterTySurface);
   }
 
   //
@@ -920,11 +903,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                           false,
                           0);
 
-    G4LogicalBorderSurface * WaterTyTopCapSurfaceBot =
-        new G4LogicalBorderSurface(	"WaterTyTopCapSurface",
-                                       physiWCBarrel,
-                                       physiWCODTopCapsTyvek,
-                                       OpWaterTySurface);
+    G4LogicalSkinSurface *WaterTySurfaceTop = new G4LogicalSkinSurface("WaterTySurfaceTop", logicWCODCapTyvek, OpWaterTySurface);
 
     CapTyvekPosition.setZ(-CapTyvekPosition.getZ());
 
@@ -936,12 +915,6 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                           logicWCBarrel,
                           false,
                           0);
-
-    G4LogicalBorderSurface * WaterTyBottomCapSurfaceBot =
-        new G4LogicalBorderSurface(	"WaterTyBottomCapSurface",
-                                       physiWCBarrel,
-                                       physiWCODBottomCapsTyvek,
-                                       OpWaterTySurface);
 
 
     //-------------------------------------------------------------
@@ -987,12 +960,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                           false,
                           0,true);
 
-    G4LogicalBorderSurface * WaterTyBarrelCellSurfaceBot =
-        new G4LogicalBorderSurface(	"WaterTyBarrelCellSurface",
-                                       physiWCBarrel,
-                                       physiWCBarrelCellODTyvek,
-                                       OpWaterTySurface);
-
+    G4LogicalSkinSurface *WaterTySurfaceSide = new G4LogicalSkinSurface("WaterTySurfaceSide", logicWCBarrelCellODTyvek, OpWaterTySurface);
 
     //-------------------------------------------------------------
     // WLS and OD PMTs Barrel Side
