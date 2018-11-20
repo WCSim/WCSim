@@ -816,6 +816,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    // // OpWaterTySurface->SetFinish(groundbackpainted); //a guess, but seems to work
    // OpWaterTySurface->SetSigmaAlpha(0.5); //cf. A. Chavarria's ~30deg
    // PROPOSED NEW ONES
+/*
    OpWaterTySurface->SetType(dielectric_LUT); // to use look-up table
    OpWaterTySurface->SetModel(LUT);
    OpWaterTySurface->SetFinish(polishedtyvekair); // polished surface with tyvek
@@ -830,6 +831,11 @@ void WCSimDetectorConstruction::ConstructMaterials()
    G4double TyBACKSCATTERCONSTANT[NUM] =
      { 0.0, 0.0 };
    // Lambertian prob is therefore 0.25
+*/
+   OpWaterTySurface->SetType(dielectric_metal); // Only absorption and reflection
+   OpWaterTySurface->SetModel(unified);
+   OpWaterTySurface->SetFinish(ground); // ground surface with tyvek
+   OpWaterTySurface->SetSigmaAlpha(0.2);
 
    G4double TyREFLECTIVITY[NUM] =
      { 0.94, 0.94 }; //cf. DuPont
@@ -966,12 +972,12 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
    //Tyvek - jl145
    G4MaterialPropertiesTable *myST3 = new G4MaterialPropertiesTable();
-   myST3->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
-   myST3->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
-   myST3->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
-   myST3->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
+//   myST3->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
+//   myST3->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
+//   myST3->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
+//   myST3->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
    myST3->AddProperty("REFLECTIVITY", PP, TyREFLECTIVITY, NUM);
-   myST3->AddProperty("EFFICIENCY", PP, EFFICIENCY_blacksheet, NUM);
+//   myST3->AddProperty("EFFICIENCY", PP, EFFICIENCY_blacksheet, NUM);
    //use same efficiency as blacksheet, which is 0
    OpWaterTySurface->SetMaterialPropertiesTable(myST3);
 
