@@ -207,6 +207,7 @@ else {
   if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.,0.,0.));
   else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
+  WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
 
@@ -250,7 +251,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   radius = PMT->GetRadius();
 
   G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
-  G4double PMTOffset =  sphereRadius - expose;
 
   // EVERYTHING WILL BE ORIENTATED ALONG Z-AXIS
 
@@ -323,7 +323,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
                         checkOverlaps);
   G4VPhysicalVolume* physiPMT =
       new G4PVPlacement(0,
-                        G4ThreeVector(0, 0, -(sphereRadius-PMTOffset)/2),
+                        G4ThreeVector(0, 0, -(sphereRadius)/2),
                         logicWCPMT,
                         "WCPMTOD",
                         logicContainer,
