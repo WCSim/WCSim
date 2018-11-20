@@ -892,7 +892,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
   OpWLSTySurface->SetType(dielectric_dielectric);
   OpWLSTySurface->SetModel(unified);
-  OpWLSTySurface->SetFinish(polished); // surface WLS/Water
+  OpWLSTySurface->SetFinish(polished); // surface WLS/Tyvek
   OpWLSTySurface->SetSigmaAlpha(0.1); // TODO: What's this?
 
   // Define normal reflectivity from Fresnel equations
@@ -906,7 +906,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   myWLSPlate->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
   myWLSPlate->AddProperty("WLSABSLENGTH",WLSProps->GetPhotonEnergy_ABS(),WLSProps->GetAbs(),WLSProps->GetNumEntries_ABS());
   myWLSPlate->AddProperty("WLSCOMPONENT",WLSProps->GetPhotonEnergy_EM(),WLSProps->GetEm(),WLSProps->GetNumEntries_EM());
-  myWLSPlate->AddConstProperty("WLSTIMECONSTANT", 1*ns); // TODO: Need measurement
+  myWLSPlate->AddConstProperty("WLSTIMECONSTANT", 4*ns); // TODO: Need measurement
   WLS_PVT->SetMaterialPropertiesTable(myWLSPlate);
 
   ///////////////////////
