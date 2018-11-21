@@ -381,6 +381,25 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q,
  
   return cherenkovdigihit;
 }
+
+//_____________________________________________________________________________
+
+WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(WCSimRootCherenkovDigiHit * digit)
+{
+  // Add a new digitized hit to the list of digitized hits
+  TClonesArray &cherenkovdigihits = *fCherenkovDigiHits;
+  WCSimRootCherenkovDigiHit *cherenkovdigihit =
+    new(cherenkovdigihits[fNcherenkovdigihits++]) WCSimRootCherenkovDigiHit(
+										  digit->GetQ(),
+										  digit->GetT(),
+										  digit->GetTubeId(),
+										  digit->GetPhotonIds());
+
+  fNcherenkovdigihits++;
+
+  return cherenkovdigihit;
+}
+
 //_____________________________________________________________________________
 
 WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q, 
