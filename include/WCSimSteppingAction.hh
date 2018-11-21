@@ -49,7 +49,7 @@ public:
 		      G4int xy);
 
   WCSimRunAction* GetRunAction(){return runAction;}
-  void DebugWLSPlates(const G4Step*);
+  void CollectPhotonsInfoInWLSPlates(const G4Step*);
   void WLSPhysicsProcess(const G4Step*);
   EmittedPhoton EmitPhoton(G4ThreeVector absorbedPhotonPosition);
   double EmittedPhotonWavelength();

@@ -93,9 +93,9 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 
   // WLS
   bool WLS=false;
-  WLS=true;
+  // WLS=true;
   if(WLS){
-    DebugWLSPlates(aStep);
+    CollectPhotonsInfoInWLSPlates(aStep);
     // WLSPhysicsProcess(aStep);
   }
 
@@ -221,7 +221,42 @@ double WCSimSteppingAction::FieldLines(G4double /*x*/,G4double /*y*/,G4int /*coo
 //     return 0.1*((abs(y)/y)*(1-Radius*Radius/((x*x+y*y)*(x*x+y*y))) + abs(y)*(2*Radius*Radius*y/((x*x+y*y)*(x*x+y*y))));
   return 0;
 }
-void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
+
+void DebugWLSPrintouts(const G4Step *aStep){
+
+  G4Track *aTrack = aStep->GetTrack();
+  G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
+  G4StepPoint* postStepPoint = aStep->GetPostStepPoint();
+  G4String preLogicalVolName = preStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
+  G4String postLogicalVolName = postStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
+  bool isInitialParticle = false;
+  if (aTrack->GetCreatorProcess() == NULL) isInitialParticle = true;
+
+  G4cout << "OpPhoton in " << aTrack->GetVolume()->GetName()
+         << " and going to " << aTrack->GetNextVolume()->GetName()
+         << G4endl;
+  if (isInitialParticle) {
+    G4cout << "Creator process : " << "None" << G4endl;
+  }
+  else {
+    G4cout << "Creator process : " << aTrack->GetCreatorProcess()->GetProcessName() << G4endl;
+  }
+  G4cout << "# Track ID : " << aTrack->GetTrackID() << G4endl;
+  G4cout << "# Parent ID : " << aTrack->GetParentID() << G4endl;
+  G4cout << "# Pos : "
+         << aTrack->GetPosition().x() << " "
+         << aTrack->GetPosition().y() << " "
+         << aTrack->GetPosition().z() << " " << G4endl;
+  G4cout << "WL : " << ((2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/CLHEP::eV)) << G4endl;
+  G4cout << "###" << G4endl;
+  G4cout << "STEP POINT INFO" << G4endl;
+  G4cout << "postLogicalVolName : " << postLogicalVolName << G4endl;
+  G4cout << "procName : " << postStepPoint->GetProcessDefinedStep()->GetProcessName() << G4endl;
+  G4cout << G4endl;
+
+}
+
+void WCSimSteppingAction::CollectPhotonsInfoInWLSPlates(const G4Step *aStep) {
 
   G4Track *aTrack = aStep->GetTrack();
   G4ParticleDefinition* particleType = aTrack->GetDefinition();
@@ -239,13 +274,13 @@ void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
     G4String preVol = preStepPoint->GetPhysicalVolume()->GetName();
     G4String postVol = postStepPoint->GetPhysicalVolume()->GetName();
 
-    G4String preMaterialName = preStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
-    G4String postMaterialName = postStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
+    G4String preLogicalVolName = preStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
+    G4String postLogicalVolName = postStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
     G4String creaProc;
     if (!isInitialParticle){ creaProc = aTrack->GetCreatorProcess()->GetProcessName();}
 
     // if(postVol == "WCPMTOD" && creaProc == "OpWLS"){
-    if(preMaterialName=="WCODWLSPlate"){
+    if(preLogicalVolName=="WCODWLSPlate"){
 
       G4TouchableHandle theTouchable = postStepPoint->GetTouchableHandle();
       G4ThreeVector worldPosition = postStepPoint->GetPosition();
@@ -272,34 +307,12 @@ void WCSimSteppingAction::DebugWLSPlates(const G4Step *aStep) {
       // Fill only if photons enter the WLS material
       runAction->GetPhotonTree()->Fill();
 
-      // KILL the damn particle
-      aTrack->SetTrackStatus(fStopAndKill);
-    }
+      // DEBUG Printouts
+      if(printouts) DebugWLSPrintouts(aStep);
 
-    ////// PRINTOUTS //////
-    if(printouts){
-      G4cout << "OpPhoton in " << aTrack->GetVolume()->GetName()
-                << " and going to " << aTrack->GetNextVolume()->GetName()
-                << G4endl;
-	if (isInitialParticle) {
-	G4cout << "Creator process : " << "None" << G4endl;
-	} 
-	else {
-      G4cout << "Creator process : " << aTrack->GetCreatorProcess()->GetProcessName() << G4endl;
-		}
-      G4cout << "# Track ID : " << aTrack->GetTrackID() << G4endl;
-      G4cout << "# Parent ID : " << aTrack->GetParentID() << G4endl;
-      G4cout << "# Pos : "
-                << aTrack->GetPosition().x() << " "
-                << aTrack->GetPosition().y() << " "
-                << aTrack->GetPosition().z() << " " << G4endl;
-      G4cout << "WL : " << ((2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/CLHEP::eV)) << G4endl;
-      G4cout << "###" << G4endl;
-      G4cout << "STEP POINT INFO" << G4endl;
-      G4cout << "postMaterialName : " << postMaterialName << G4endl;
-      G4cout << "procName : " << postStepPoint->GetProcessDefinedStep()->GetProcessName() << G4endl;
-      G4cout << G4endl;
-    } // END if printouts
+      // KILL the damn particle
+      // aTrack->SetTrackStatus(fStopAndKill);
+    }
 
   } // END if photon
 
@@ -360,13 +373,13 @@ void WCSimSteppingAction::WLSPhysicsProcess(const G4Step *aStep){
     G4StepPoint* postStepPoint = aStep->GetPostStepPoint();
 
     // Retrive basic step info
-    G4String postMaterialName = postStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
+    G4String postLogicalVolName = postStepPoint->GetPhysicalVolume()->GetLogicalVolume()->GetName();
     G4String procName = postStepPoint->GetProcessDefinedStep()->GetProcessName();
 
     double wl = ((2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/CLHEP::eV));
     double absProb = det->GetWLSPointer()->GetgAbs()->Eval(wl,0,"S");
 
-    if(isPhotonInWLSPlate(postMaterialName) && absProb > G4UniformRand()){
+    if(isPhotonInWLSPlate(postLogicalVolName) && absProb > G4UniformRand()){
 
       // KILL the damn particle
       aTrack->SetTrackStatus(fStopAndKill);
