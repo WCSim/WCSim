@@ -442,7 +442,7 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(WCSimRootCheren
   // Add a new digitized hit to the list of digitized hits
   TClonesArray &cherenkovdigihits = *fCherenkovDigiHits;
   WCSimRootCherenkovDigiHit *cherenkovdigihit =
-    new(cherenkovdigihits[fNcherenkovdigihits++]) WCSimRootCherenkovDigiHit(
+    new(cherenkovdigihits[fNcherenkovdigihits_slots++]) WCSimRootCherenkovDigiHit(
 										  digit->GetQ(),
 										  digit->GetT(),
 										  digit->GetTubeId(),
