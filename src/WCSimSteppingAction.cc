@@ -299,7 +299,6 @@ void WCSimSteppingAction::CollectPhotonsInfoInWLSPlates(const G4Step *aStep) {
 
       pEvt->wl = ((2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/CLHEP::eV));
 
-      G4String procName = postStepPoint->GetProcessDefinedStep()->GetProcessName();
       if(isInitialParticle) pEvt->proc = -1;
       else if(aTrack->GetCreatorProcess()->GetProcessName()=="Cerenkov") pEvt->proc = 0;
       else if(aTrack->GetCreatorProcess()->GetProcessName()=="OpWLS") pEvt->proc = 1;
