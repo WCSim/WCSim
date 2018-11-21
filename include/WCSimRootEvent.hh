@@ -336,8 +336,8 @@ public:
 //						  Float_t t, 
 //						  Int_t tubeid,
  //                                                 Float_t sumq);
+  WCSimRootCherenkovDigiHit * AddCherenkovDigiHit(WCSimRootCherenkovDigiHit * digit);
   WCSimRootCherenkovDigiHit * RemoveCherenkovDigiHit(WCSimRootCherenkovDigiHit * digit);
-
   TClonesArray            *GetCherenkovDigiHits() const {return fCherenkovDigiHits;}
 
   void ResetNcherenkovdigihits() { fNcherenkovdigihits = fCherenkovDigiHits->GetEntries(); }
