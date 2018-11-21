@@ -333,7 +333,7 @@ public:
 //						  Float_t t, 
 //						  Int_t tubeid,
  //                                                 Float_t sumq);
-
+  WCSimRootCherenkovDigiHit * AddCherenkovDigiHit(WCSimRootCherenkovDigiHit * digit);
   TClonesArray            *GetCherenkovDigiHits() const {return fCherenkovDigiHits;}
 
   ClassDef(WCSimRootTrigger,2) //WCSimRootEvent structure
