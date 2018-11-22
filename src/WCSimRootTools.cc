@@ -18,7 +18,7 @@ const double kASmallNum = 1E-6;
 template <typename T> bool ComparisonPassed(const T val1, const T val2, const char * callerclass, const char * callerfunc, const char * tag)
 {
   if(TMath::Abs(val1 - val2) > kASmallNum) {
-    cerr << callerclass << "::" << callerfunc << " " << tag << " not equal: " << val1 << ", " << val2 << endl;
+    cerr << callerclass << "::" << callerfunc << " " << tag << " not equal: " << val1 << ", " << val2 << " diff " << val1 - val2 << endl;
     return false;
   }
   else {
@@ -47,7 +47,7 @@ template <typename T> bool ComparisonPassedVec(const vector<T> & val1, const vec
 bool ComparisonPassed(double val1, double val2, const char * callerclass, const char * callerfunc, const char * tag)
 {
   if(TMath::Abs(val1 - val2) > kASmallNum) {
-    cerr << callerclass << "::" << callerfunc << " " << tag << " not equal: " << val1 << ", " << val2 << endl;
+    cerr << callerclass << "::" << callerfunc << " " << tag << " not equal: " << val1 << ", " << val2 << " diff " << val1 - val2 << endl;
     return false;
   }
   else {
