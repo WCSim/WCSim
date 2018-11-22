@@ -32,7 +32,7 @@
 #endif
 
 const double WCSimWCTriggerBase::offset = 950.0; // ns. apply offset to the digit time
-const double WCSimWCTriggerBase::LongTime = 1E6; // ns = 1ms. event time
+const double WCSimWCTriggerBase::LongTime = 10E6; // ns = 10ms. event time
 
 
 WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
@@ -108,7 +108,7 @@ int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
 {
   switch(t) {
   case kTriggerNoTrig:
-    return 0;
+    return -WCSimWCTriggerBase::LongTime;
     break;
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
@@ -452,7 +452,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 
 	  //we've found a digit on this PMT. If we're restricting to just 1 digit per trigger window (e.g. SKI)
 	  // then ignore later digits and break. This takes us to the next PMT
-	  if(!multiDigitsPerTrigger)
+	  if(!multiDigitsPerTrigger && triggertype != kTriggerNoTrig)
 	    break;
 	}//digits within trigger window
       }//loop over Digits
