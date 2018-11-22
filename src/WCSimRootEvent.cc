@@ -695,24 +695,33 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
   }//i (WCSimRootCherenkovHit)
 
   //check digitised hits
-  for(int i = 0; i < TMath::Min(this->GetCherenkovDigiHits()->GetEntries(), c->GetCherenkovDigiHits()->GetEntries()); i++) {
-    WCSimRootCherenkovDigiHit * tmp_digit_1 = (WCSimRootCherenkovDigiHit *)this->GetCherenkovDigiHits()->At(i);
-    if(! tmp_digit_1) {
-#ifdef VERBOSE_COMPARISON
-      cerr << "Digit " << i << " does not exist in this" << endl;
-#endif
-      continue;
+  // this is more complicated because there can be some empty slots for at least one of the TClonesArray
+  int ithis = -1, ithat = -1;
+  WCSimRootCherenkovDigiHit * tmp_digit_1, * tmp_digit_2;
+  int ncomp_digi = 0;
+  while(true) {
+    tmp_digit_1 = 0;
+    while(!tmp_digit_1 && ithis < this->GetNcherenkovdigihits_slots() - 1) {
+      ithis++;
+      tmp_digit_1 = (WCSimRootCherenkovDigiHit *)this->GetCherenkovDigiHits()->At(ithis);
     }
-    WCSimRootCherenkovDigiHit * tmp_digit_2 = (WCSimRootCherenkovDigiHit *)c->GetCherenkovDigiHits()->At(i);
-    if(! tmp_digit_2) {
-#ifdef VERBOSE_COMPARISON
-      cerr << "Digit " << i << " does not exist in that" << endl;
-#endif
-      continue;
+    tmp_digit_2 = 0;
+    while(!tmp_digit_2 && ithat < c->GetNcherenkovdigihits_slots() - 1) {
+      ithat++;
+      tmp_digit_2 = (WCSimRootCherenkovDigiHit *)c->GetCherenkovDigiHits()->At(ithat);
     }
+    if(!tmp_digit_1 || !tmp_digit_2)
+      break;
+#ifdef VERBOSE_COMPARISON
+    cout << "Comparing digit " << ithis " in this with digit"
+	 << ithat " in that" << endl;
+#endif
     failed = !(tmp_digit_1->CompareAllVariables(tmp_digit_2)) || failed;
-  }//i
-
+    ncomp_digi++;
+  }//ithis ithat
+  if(ncomp_digi != fNcherenkovdigihits && ncomp_digi != c->GetNcherenkovdigihits()) {
+    cerr << "Only compared " << ncomp_digi << " digits. There should be " << TMath::Min(fNcherenkovdigihits, c->GetNcherenkovdigihits()) << " comparisons" << endl;
+  }
 
   failed = (!ComparisonPassed(fMode, c->GetMode(), typeid(*this).name(), __func__, "Mode")) || failed;
   failed = (!ComparisonPassed(fNvtxs, c->GetNvtxs(), typeid(*this).name(), __func__, "Nvtxs")) || failed;
@@ -732,7 +741,8 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
   failed = (!ComparisonPassed(fNcherenkovhits, c->GetNcherenkovhits(), typeid(*this).name(), __func__, "Ncherenkovhits")) || failed;
   failed = (!ComparisonPassed(fNcherenkovhittimes, c->GetNcherenkovhittimes(), typeid(*this).name(), __func__, "Ncherenkovhittimes")) || failed;
   failed = (!ComparisonPassed(fNcherenkovdigihits, c->GetNcherenkovdigihits(), typeid(*this).name(), __func__, "Ncherenkovdigihits")) || failed;
-  failed = (!ComparisonPassed(fNcherenkovdigihits_slots, c->GetNcherenkovdigihits_slots(), typeid(*this).name(), __func__, "Ncherenkovdigihits_slots")) || failed;
+  //don't expect this to pass in general, so don't affect failed
+  ComparisonPassed(fNcherenkovdigihits_slots, c->GetNcherenkovdigihits_slots(), typeid(*this).name(), __func__, "Ncherenkovdigihits_slots (shouldn't necessarily be equal)");
   failed = (!ComparisonPassed(fSumQ, c->GetSumQ(), typeid(*this).name(), __func__, "SumQ")) || failed;
   failed = (!ComparisonPassed(fTriggerType, c->GetTriggerType(), typeid(*this).name(), __func__, "TriggerType")) || failed;
   failed = (!ComparisonPassedVec(fTriggerInfo, c->GetTriggerInfo(), typeid(*this).name(), __func__, "TriggerInfo")) || failed;
