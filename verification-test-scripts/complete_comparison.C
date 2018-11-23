@@ -26,20 +26,29 @@ class WCSimRootEvent;
 
 void PrintHeaderInfo(WCSimRootEvent * wcsimrootsuperevent, const char * filename)
 {
-  WCSimRootTrigger * wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   cout << "********************************************************" << endl;
-  cout << "Header+ in WCSim file: " << filename << endl;
-  cout << "Evt, date: " << wcsimrootevent->GetHeader()->GetEvtNum()
-       << ", " << wcsimrootevent->GetHeader()->GetDate() << endl;
-  cout << "Mode: " << wcsimrootevent->GetMode() << endl;
-  cout << "Number of subevents: " << wcsimrootsuperevent->GetNumberOfSubEvents() << endl;
-  cout << "Vtxvol: " << wcsimrootevent->GetVtxvol() << endl;
-  for(int i = 0; i < 3; i++)
-    cout << "Vtx[" << i << "]: " << wcsimrootevent->GetVtx(i) << endl;
-  cout << "Number of tracks " << wcsimrootevent->GetNtrack() << endl;
-  cout << "Number of tube hits " << wcsimrootevent->GetNumTubesHit() << endl;
-  cout << "Number of digitized tube hits " << wcsimrootevent->GetNumDigiTubesHit() << endl;
-  cout << "Number of photoelectron hit times " << wcsimrootevent->GetCherenkovHitTimes()->GetEntries() << endl;
+  WCSimRootTrigger * wcsimrootevent;
+  for(int itrigger = 0; itrigger < wcsimrootsuperevent->GetNumberOfEvents(); itrigger++) {
+    wcsimrootevent = wcsimrootsuperevent->GetTrigger(itrigger);
+    if(itrigger == 0)
+      cout << "Header+ in WCSim file: " << filename << endl;
+    else
+      cout << "-----------" << endl;
+    cout << "Evt, subevent: " << wcsimrootevent->GetHeader()->GetEvtNum() << ", "
+	 << itrigger << endl;
+      cout << "Date: " << wcsimrootevent->GetHeader()->GetDate() << endl;
+    cout << "Mode: " << wcsimrootevent->GetMode() << endl;
+    cout << "Number of subevents: " << wcsimrootsuperevent->GetNumberOfSubEvents() << endl;
+    if(itrigger == 0) {
+      cout << "Vtxvol: " << wcsimrootevent->GetVtxvol() << endl;
+      for(int i = 0; i < 3; i++)
+	cout << "Vtx[" << i << "]: " << wcsimrootevent->GetVtx(i) << endl;
+      cout << "Number of photoelectron hit times " << wcsimrootevent->GetCherenkovHitTimes()->GetEntries() << endl;
+      cout << "Number of tube hits " << wcsimrootevent->GetNumTubesHit() << endl;
+    }
+    cout << "Number of tracks " << wcsimrootevent->GetNtrack() << endl;
+    cout << "Number of digitized tube hits " << wcsimrootevent->GetNumDigiTubesHit() << endl;
+  }//itrigger
 }
 
 void PrintGeomSummary(WCSimRootGeom * geo, const char * filename)
