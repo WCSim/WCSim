@@ -304,7 +304,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 
   TClonesArray &tracks = *fTracks;
   WCSimRootTrack *track = 
-    new(tracks[fNtrack++]) WCSimRootTrack(ipnu,
+    new(tracks[fNtrack_slots++]) WCSimRootTrack(ipnu,
 					   flag,
 					   m,
 					   p,
@@ -317,7 +317,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 					   start,
 					   parenttype,
 					  time,id);
-
+  fNtrack++;
   return track;
 }
 
@@ -340,7 +340,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(WCSimRootTrack * track)
   }//i
   TClonesArray &tracks = *fTracks;
   WCSimRootTrack *track_out =
-    new(tracks[fNtrack++]) WCSimRootTrack(track->GetIpnu(),
+    new(tracks[fNtrack_slots++]) WCSimRootTrack(track->GetIpnu(),
 					  track->GetFlag(),
 					  track->GetM(),
 					  track->GetP(),
@@ -354,7 +354,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(WCSimRootTrack * track)
 					  track->GetParenttype(),
 					  track->GetTime(),
 					  track->GetId());
-
+  fNtrack++;
   return track_out;
 }
 
