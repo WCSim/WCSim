@@ -686,8 +686,32 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
   }
 
   //check tracks
-  for(int i = 0; i < TMath::Min(this->GetTracks()->GetEntries(), c->GetTracks()->GetEntries()); i++) {
-    failed = !((WCSimRootTrack *)this->GetTracks()->At(i))->CompareAllVariables((WCSimRootTrack *)c->GetTracks()->At(i)) || failed;
+  // this is more complicated because there can be some empty slots for at least one of the TClonesArray
+  int ithis = -1, ithat = -1;
+  WCSimRootTrack * tmp_track_1, * tmp_track_2;
+  int ncomp_track = 0;
+  while(true) {
+    tmp_track_1 = 0;
+    while(!tmp_track_1 && ithis < this->GetNtrack_slots() - 1) {
+      ithis++;
+      tmp_track_1 = (WCSimRootTrack *)this->GetTracks()->At(ithis);
+    }
+    tmp_track_2 = 0;
+    while(!tmp_track_2 && ithat < c->GetNtrack_slots() - 1) {
+      ithat++;
+      tmp_track_2 = (WCSimRootTrack *)c->GetTracks()->At(ithat);
+    }
+    if(!tmp_track_1 || !tmp_track_2)
+      break;
+#ifdef VERBOSE_COMPARISON
+    cout << "Comparing track " << ithis " in this with track"
+	 << ithat " in that" << endl;
+#endif
+    failed = !(tmp_track_1->CompareAllVariables(tmp_track_2)) || failed;
+    ncomp_track++;
+  }//ithis ithat
+  if(ncomp_track != fNtrack && ncomp_track != c->GetNtrack()) {
+    cerr << "Only compared " << ncomp_track << " tracks. There should be " << TMath::Min(fNtrack, c->GetNtrack()) << " comparisons" << endl;
   }
 
   //check hits & hit times
@@ -746,6 +770,7 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
   failed = (!ComparisonPassed(fNumTubesHit, c->GetNumTubesHit(), typeid(*this).name(), __func__, "NumTubesHit")) || failed;
   failed = (!ComparisonPassed(fNumDigitizedTubes, c->GetNumDigiTubesHit(), typeid(*this).name(), __func__, "NumDigitizedTubes")) || failed;
   failed = (!ComparisonPassed(fNtrack, c->GetNtrack(), typeid(*this).name(), __func__, "Ntrack")) || failed;
+  ComparisonPassed(fNtrack_slots, c->GetNtrack_slots(), typeid(*this).name(), __func__, "Ntrack_slots (shouldn't necessarily be equal)");
   failed = (!ComparisonPassed(fNcherenkovhits, c->GetNcherenkovhits(), typeid(*this).name(), __func__, "Ncherenkovhits")) || failed;
   failed = (!ComparisonPassed(fNcherenkovhittimes, c->GetNcherenkovhittimes(), typeid(*this).name(), __func__, "Ncherenkovhittimes")) || failed;
   failed = (!ComparisonPassed(fNcherenkovdigihits, c->GetNcherenkovdigihits(), typeid(*this).name(), __func__, "Ncherenkovdigihits")) || failed;
