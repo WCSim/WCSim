@@ -141,14 +141,16 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
     
     // Get the number of tracks
     int ntrack = wcsimrootevent->GetNtrack();
+    int ntrack_slots = wcsimrootevent->GetNtrack_slots();
     if(verbose) printf("ntracks=%d\n",ntrack);
     
     int i;
     // Loop through elements in the TClonesArray of WCSimTracks
-    for (i=0; i<ntrack; i++)
+    for (i=0; i<ntrack_slots; i++)
     {
       TObject *element = (wcsimrootevent->GetTracks())->At(i);
-      
+      if(!element)
+	continue;
       WCSimRootTrack *wcsimroottrack = dynamic_cast<WCSimRootTrack*>(element);
 
       if(verbose){
