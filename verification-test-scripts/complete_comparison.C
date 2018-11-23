@@ -36,7 +36,7 @@ void PrintHeaderInfo(WCSimRootEvent * wcsimrootsuperevent, const char * filename
   cout << "Vtxvol: " << wcsimrootevent->GetVtxvol() << endl;
   for(int i = 0; i < 3; i++)
     cout << "Vtx[" << i << "]: " << wcsimrootevent->GetVtx(i) << endl;
-  cout << "Number of tracks " << wcsimrootevent->GetNtrack << endl;
+  cout << "Number of tracks " << wcsimrootevent->GetNtrack() << endl;
   cout << "Number of tube hits " << wcsimrootevent->GetNumTubesHit() << endl;
   cout << "Number of digitized tube hits " << wcsimrootevent->GetNumDigiTubesHit() << endl;
   cout << "Number of photoelectron hit times " << wcsimrootevent->GetCherenkovHitTimes()->GetEntries() << endl;
