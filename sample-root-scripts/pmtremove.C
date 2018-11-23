@@ -161,12 +161,15 @@ void pmtremove(TString infile, TString outfile, double removefrac)
 
 	  // Get the number of tracks
 	  int ntrack = oldtrigger->GetNtrack();
+	  int ntrack_slots = oldtrigger->GetNtrack_slots();
 	  //printf("ntracks=%d\n",ntrack);
     
 	  // Loop through elements in the TClonesArray of WCSimTracks
 	  for (int i=0; i<ntrack; i++)
 	    {
 	      TObject *element = (oldtrigger->GetTracks())->At(i);
+	      if(!element)
+		continue;
 	      WCSimRootTrack *track = dynamic_cast<WCSimRootTrack*>(element);
 	      float dir[3],pdir[3],stop[3],start[3];
 	      for (int j=0;j<3;j++)
