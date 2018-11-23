@@ -242,8 +242,8 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
   int window_step_size  = 5; //step the search window along this amount if no trigger is found
 
   //loop over all digits once to get the range to loop over
-  float firsthit = +WCSimWCTriggerBase::offset;
-  float lasthit  = -WCSimWCTriggerBase::offset;
+  float firsthit = +WCSimWCTriggerBase::LongTime;
+  float lasthit  = -WCSimWCTriggerBase::LongTime;
   //Loop over PMTs
   for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
     //Loop over each Digit in this PMT
@@ -410,8 +410,9 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  //first apply time offsets
 	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
 	  G4double digihittime = -triggertime
-	    + WCSimWCTriggerBase::offset
 	    + digit_time;
+	  if(triggertype != kTriggerNoTrig)
+	    digihittime += WCSimWCTriggerBase::offset;
 
 	  //get the composition information for the triggered digit
 	  std::vector<int> triggered_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo(ip);
