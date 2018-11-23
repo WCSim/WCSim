@@ -226,6 +226,7 @@ private:
 
   Int_t                fNpar;               // Number of particles
   Int_t                fNtrack;             // Number of tracks in the array
+  Int_t                fNtrack_slots;       // Number of slots in the tracks array. This is potentially more than fNtrack (i.e. if any tracks have been removed that aren't at the very start/end)
   TClonesArray         *fTracks;            //-> Array of WCSimRootTracks 
 
   Int_t                fNumTubesHit;        // Number of tubes hit
@@ -295,6 +296,7 @@ public:
   Int_t               GetNumTubesHit()        const {return fNumTubesHit;}
   Int_t               GetNumDigiTubesHit()    const {return fNumDigitizedTubes;}
   Int_t               GetNtrack()             const {return fNtrack; }
+  Int_t               GetNtrack_slots()       const {return fTracks->GetLast() + 1; } //don't use fNtrack_slots directly as it doesn't take into account automatic TClonesArray shortening when tracks at start/end are removed
   Int_t               GetNcherenkovhits()     const {return fNcherenkovhits; }
   Int_t               GetNcherenkovhittimes() const {return fNcherenkovhittimes;}
   Int_t               GetNcherenkovdigihits() const {return fNcherenkovdigihits;}
@@ -317,6 +319,9 @@ public:
 				   Float_t time,
 				   Int_t id);
 
+  WCSimRootTrack * AddTrack   (WCSimRootTrack * track);
+  WCSimRootTrack * RemoveTrack(WCSimRootTrack * track);
+
   TClonesArray        *GetTracks() const {return fTracks;}
 
   WCSimRootCherenkovHit   *AddCherenkovHit(Int_t                tubeID,
@@ -336,7 +341,7 @@ public:
   WCSimRootCherenkovDigiHit * AddCherenkovDigiHit(WCSimRootCherenkovDigiHit * digit);
   TClonesArray            *GetCherenkovDigiHits() const {return fCherenkovDigiHits;}
 
-  ClassDef(WCSimRootTrigger,2) //WCSimRootEvent structure
+  ClassDef(WCSimRootTrigger,3) //WCSimRootEvent structure
 };
 
 

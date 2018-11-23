@@ -86,6 +86,7 @@ WCSimRootTrigger::WCSimRootTrigger()
   // TClonesArray of WCSimRootTracks
   fTracks = 0;
   fNtrack = 0;
+  fNtrack_slots = 0;
 
   // TClonesArray of WCSimRootCherenkovHits
   fCherenkovHits = 0;
@@ -125,6 +126,7 @@ void WCSimRootTrigger::Initialize() //actually allocate memory for things in her
   // TClonesArray of WCSimRootTracks
   fTracks = new TClonesArray("WCSimRootTrack", 10000);
   fNtrack = 0;
+  fNtrack_slots = 0;
 
   // TClonesArray of WCSimRootCherenkovHits
   fCherenkovHits = new TClonesArray("WCSimRootCherenkovHit", 
@@ -192,6 +194,7 @@ void WCSimRootTrigger::Clear(Option_t */*option*/)
   // Filled in, by MF, 31/08/06  -> Keep all the alloc'ed memory but reset all
   // the indices to 0 in the TCAs.
   fNtrack = 0;
+  fNtrack_slots = 0;
 
   // TClonesArray of WCSimRootCherenkovHits
   fNcherenkovhits = 0;
@@ -318,6 +321,52 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
   return track;
 }
 
+//_____________________________________________________________________________
+
+WCSimRootTrack *WCSimRootTrigger::AddTrack(WCSimRootTrack * track)
+{
+  // Add a new WCSimRootTrack to the list of tracks for this event.
+  // To avoid calling the very time consuming operator new for each track,
+  // the standard but not well know C++ operator "new with placement"
+  // is called. If tracks[i] is 0, a new Track object will be created
+  // otherwise the previous Track[i] will be overwritten.
+
+  Float_t dir[3], pdir[3], stop[3], start[3];
+  for(int i = 0; i < 3; i++) {
+    dir  [i] = track->GetDir(i);
+    pdir [i] = track->GetPdir(i);
+    stop [i] = track->GetStop(i);
+    start[i] = track->GetStart(i);
+  }//i
+  TClonesArray &tracks = *fTracks;
+  WCSimRootTrack *track_out =
+    new(tracks[fNtrack++]) WCSimRootTrack(track->GetIpnu(),
+					  track->GetFlag(),
+					  track->GetM(),
+					  track->GetP(),
+					  track->GetE(),
+					  track->GetStartvol(),
+					  track->GetStopvol(),
+					  dir,
+					  pdir,
+					  stop,
+					  start,
+					  track->GetParenttype(),
+					  track->GetTime(),
+					  track->GetId());
+
+  return track_out;
+}
+
+//_____________________________________________________________________________
+
+WCSimRootTrack * WCSimRootTrigger::RemoveTrack(WCSimRootTrack * track)
+{
+  WCSimRootTrack * tmp = (WCSimRootTrack *)fTracks->Remove(track);
+  if(tmp)
+    fNtrack--;
+  return tmp;
+}
 
 //_____________________________________________________________________________
 
