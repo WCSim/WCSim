@@ -769,7 +769,7 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
 
   //check digitised hits
   // this is more complicated because there can be some empty slots for at least one of the TClonesArray
-  int ithis = -1, ithat = -1;
+  ithis = -1, ithat = -1;
   WCSimRootCherenkovDigiHit * tmp_digit_1, * tmp_digit_2;
   int ncomp_digi = 0;
   while(true) {
