@@ -1114,7 +1114,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     G4cout << "DIGI HITS" << G4endl;
 #endif
 
-    G4float sumq_tmp = 0.;
+    G4double sumq_tmp = 0.;
     
     for ( int index = 0 ; index < ngates ; index++)
       {	

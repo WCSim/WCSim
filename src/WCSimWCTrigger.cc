@@ -32,7 +32,7 @@
 #endif
 
 const double WCSimWCTriggerBase::offset = 950.0; // ns. apply offset to the digit time
-const double WCSimWCTriggerBase::LongTime = 1E6; // ns = 1ms. event time
+const double WCSimWCTriggerBase::LongTime = 10E6; // ns = 10ms. event time
 
 
 WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
@@ -108,7 +108,7 @@ int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
 {
   switch(t) {
   case kTriggerNoTrig:
-    return 0;
+    return -WCSimWCTriggerBase::LongTime;
     break;
   case kTriggerNDigits:
   case kTriggerNDigitsTest:
@@ -239,12 +239,34 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
   //loop over PMTs, and Digits in each PMT.  If ndigits > Threshhold in a time window, then we have a trigger
 
   int ntrig = 0;
-  int window_start_time = 0;
-  int window_end_time   = WCSimWCTriggerBase::LongTime - ndigitsWindow;
   int window_step_size  = 5; //step the search window along this amount if no trigger is found
-  float lasthit;
+
+  //loop over all digits once to get the range to loop over
+  float firsthit = +WCSimWCTriggerBase::LongTime;
+  float lasthit  = -WCSimWCTriggerBase::LongTime;
+  //Loop over PMTs
+  for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
+    //Loop over each Digit in this PMT
+    for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
+      G4float digit_time = (*WCDCPMT)[i]->GetTime(ip);
+      if(digit_time > lasthit)
+	lasthit = digit_time;
+      if(digit_time < firsthit)
+	firsthit = digit_time;
+    }//loop over Digits
+  }//loop over PMTs
+  int window_start_time = firsthit;
+  window_start_time -= window_start_time % 5;
+  int window_end_time   = lasthit - ndigitsWindow + window_step_size;
+  window_end_time -= window_end_time % 5;
+#ifdef WCSIMWCTRIGGER_VERBOSE
+  G4cout << "WCSimWCTriggerBase::AlgNDigits. Found first/last hits. Looping from "
+	 << window_start_time
+	 << " to " << window_end_time
+	 << " in steps of " << window_step_size << G4endl;
+#endif
+
   std::vector<G4float> digit_times;
-  bool first_loop = true;
 
   G4cout << "WCSimWCTriggerBase::AlgNDigits. Number of entries in input digit collection: " << WCDCPMT->entries() << G4endl;
 #ifdef WCSIMWCTRIGGER_VERBOSE
@@ -274,9 +296,6 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
 	  digit_times.push_back(digit_time);
 	}
 	//G4cout << digit_time << G4endl;
-	//get the time of the last hit (to make the loop shorter)
-	if(first_loop && (digit_time > lasthit))
-	  lasthit = digit_time;
       }//loop over Digits
     }//loop over PMTs
 
@@ -306,18 +325,6 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
     }//triggerfound
     else {
       window_start_time += window_step_size;
-    }
-
-    //shorten the loop using the time of the last hit
-    if(first_loop) {
-#ifdef WCSIMWCTRIGGER_VERBOSE
-      G4cout << "Last hit found to be at " << lasthit
-	     << ". Changing window_end_time from " << window_end_time
-	     << " to " << lasthit - (ndigitsWindow - 10)
-	     << G4endl;
-#endif
-      window_end_time = lasthit - (ndigitsWindow - 10);
-      first_loop = false;
     }
   }
   
@@ -403,8 +410,9 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	  //first apply time offsets
 	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
 	  G4double digihittime = -triggertime
-	    + WCSimWCTriggerBase::offset
 	    + digit_time;
+	  if(triggertype != kTriggerNoTrig)
+	    digihittime += WCSimWCTriggerBase::offset;
 
 	  //get the composition information for the triggered digit
 	  std::vector<int> triggered_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo(ip);
@@ -445,7 +453,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 
 	  //we've found a digit on this PMT. If we're restricting to just 1 digit per trigger window (e.g. SKI)
 	  // then ignore later digits and break. This takes us to the next PMT
-	  if(!multiDigitsPerTrigger)
+	  if(!multiDigitsPerTrigger && triggertype != kTriggerNoTrig)
 	    break;
 	}//digits within trigger window
       }//loop over Digits
