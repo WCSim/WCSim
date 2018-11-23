@@ -149,6 +149,8 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
 	// Loop through elements in the TClonesArray of WCSimRootCherenkovHits
 	for (int i=0; i< ncherenkovdigihits_slots; i++){
 	    TObject *Digi = (wcsimrootevent->GetCherenkovDigiHits())->At(i);
+	    if(!Digi)
+	      continue;
 	    WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = 
 	      dynamic_cast<WCSimRootCherenkovDigiHit*>(Digi);
 	    
