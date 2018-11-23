@@ -57,23 +57,23 @@ public:
 		  Float_t start[3], 
 		  Int_t parenttype,
 		 Float_t time,Int_t id);
-  
   virtual ~WCSimRootTrack() { }
+  bool CompareAllVariables(const WCSimRootTrack * c) const;
 
   Int_t     GetIpnu() const { return fIpnu;}
   Int_t     GetFlag() const { return fFlag;}
   Float_t   GetM() const { return fM;}
   Float_t   GetP() const { return fP;}
   Float_t   GetE() const { return fE;}
-  Int_t     GetStartvol() { return fStartvol;}
-  Int_t     GetStopvol() { return fStopvol;}
-  Float_t   GetDir(Int_t i=0) {return (i<3) ? fDir[i] : 0;} 
-  Float_t   GetPdir(Int_t i=0) {return (i<3) ? fPdir[i] : 0;}
-  Float_t   GetStop(Int_t i=0) {return (i<3) ? fStop[i] : 0;}
-  Float_t   GetStart(Int_t i=0) {return (i<3) ? fStart[i] : 0;}
-  Int_t     GetParenttype(/*Int_t i=0*/) {return fParenttype;}
-  Float_t   GetTime() { return fTime;}
-  Int_t     GetId(){return fId;}
+  Int_t     GetStartvol() const { return fStartvol;}
+  Int_t     GetStopvol() const { return fStopvol;}
+  Float_t   GetDir(Int_t i=0) const {return (i<3) ? fDir[i] : 0;} 
+  Float_t   GetPdir(Int_t i=0) const {return (i<3) ? fPdir[i] : 0;}
+  Float_t   GetStop(Int_t i=0) const {return (i<3) ? fStop[i] : 0;}
+  Float_t   GetStart(Int_t i=0) const {return (i<3) ? fStart[i] : 0;}
+  Int_t     GetParenttype(/*Int_t i=0*/) const {return fParenttype;}
+  Float_t   GetTime() const { return fTime;}
+  Int_t     GetId() const {return fId;}
 
   ClassDef(WCSimRootTrack,1)  
 };
@@ -95,6 +95,8 @@ public:
 
   virtual ~WCSimRootCherenkovHit() { }
 
+  bool CompareAllVariables(const WCSimRootCherenkovHit * c) const;
+
   Int_t GetTubeID()       const { return fTubeID;}
   Int_t GetTotalPe(int i) const { return (i<2) ? fTotalPe[i]: 0;}
 
@@ -113,9 +115,10 @@ public:
   WCSimRootCherenkovHitTime(Float_t truetime,
 			    Int_t   primaryParentID);
   virtual ~WCSimRootCherenkovHitTime() { }
+  bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 
-  Float_t   GetTruetime() { return fTruetime;}
-  Int_t     GetParentID() { return fPrimaryParentID;}
+  Float_t   GetTruetime() const { return fTruetime;}
+  Int_t     GetParentID() const { return fPrimaryParentID;}
 
   ClassDef(WCSimRootCherenkovHitTime,1)  
 };
@@ -138,6 +141,7 @@ public:
   WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid, std::vector<int> photon_ids);
 
   virtual ~WCSimRootCherenkovDigiHit() { }
+  bool CompareAllVariables(const WCSimRootCherenkovDigiHit * c) const;
 
   Float_t     GetQ() const { return fQ;}
   Float_t     GetT() const { return fT;}
@@ -160,12 +164,13 @@ private:
 
 public:
   WCSimRootEventHeader() : fEvtNum(0), fRun(0), fDate(0), fSubEvtNumber(1) { }
-   virtual ~WCSimRootEventHeader() { }
+  virtual ~WCSimRootEventHeader() { }
+  bool CompareAllVariables(const WCSimRootEventHeader * c) const;
   void   Set(Int_t i, Int_t r, Int_t d, Int_t s=1) { fEvtNum = i; fRun = r; fDate = d; fSubEvtNumber = s;}
   void SetDate(Int_t d) { fDate=d; }
-   Int_t  GetEvtNum() const { return fEvtNum; }
-   Int_t  GetRun() const { return fRun; }
-   Int_t  GetDate() const { return fDate; }
+  Int_t  GetEvtNum() const { return fEvtNum; }
+  Int_t  GetRun() const { return fRun; }
+  Int_t  GetDate() const { return fDate; }
   Int_t GetSubEvtNumber() const { return fSubEvtNumber;}
   
 
@@ -186,7 +191,8 @@ private:
 public:
   WCSimRootPi0() {}
 
-  virtual ~WCSimRootPi0() {}
+  virtual ~WCSimRootPi0() { }
+  bool CompareAllVariables(const WCSimRootPi0 * c) const;
 
   void Set(Float_t pi0Vtx[3],
 	   Int_t   gammaID[2],
@@ -245,6 +251,7 @@ public:
   WCSimRootTrigger();
   WCSimRootTrigger(int, int);
   virtual ~WCSimRootTrigger();
+  bool CompareAllVariables(const WCSimRootTrigger * c) const;
   
   void Initialize();
 
@@ -272,15 +279,16 @@ public:
 			   Float_t gammaE[2],
 			   Float_t gammaVtx[2][3]);
 
-
   WCSimRootEventHeader *GetHeader()               {return &fEvtHdr; }
+  const WCSimRootEventHeader * GetHeader()     const {return &fEvtHdr; }
   WCSimRootPi0       *GetPi0Info()                 {return &fPi0; }
+  const WCSimRootPi0         * GetPi0Info()    const {return &fPi0; }
   Int_t               GetMode()               const {return fMode;}
   Int_t               GetVtxvol()             const {return fVtxsvol[0];}
   Float_t             GetVtx(Int_t i=0)             {return (i<3) ? fVtxs[0][i]: 0;}
   Int_t               GetNvtxs()             const {return fNvtxs;}
   Int_t               GetVtxsvol(Int_t i)             const {return fVtxsvol[i];}
-  Float_t             GetVtxs(Int_t n, Int_t i=0)             {return (i<3) ? fVtxs[n][i]: 0;}
+  Float_t             GetVtxs(Int_t n, Int_t i=0)     const {return (i<3) ? fVtxs[n][i]: 0;}
   Int_t               GetVecRecNumber()       const {return fVecRecNumber;}
   Int_t               GetJmu()                const {return fJmu;}
   Int_t               GetJp()                 const {return fJp;}
@@ -327,8 +335,8 @@ public:
 //						  Float_t t, 
 //						  Int_t tubeid,
  //                                                 Float_t sumq);
+  WCSimRootCherenkovDigiHit * AddCherenkovDigiHit(WCSimRootCherenkovDigiHit * digit);
   WCSimRootCherenkovDigiHit * RemoveCherenkovDigiHit(WCSimRootCherenkovDigiHit * digit);
-
   TClonesArray            *GetCherenkovDigiHits() const {return fCherenkovDigiHits;}
 
   ClassDef(WCSimRootTrigger,2) //WCSimRootEvent structure
@@ -339,13 +347,15 @@ class WCSimRootEvent : public TObject {
 public:
   WCSimRootEvent();
   virtual ~WCSimRootEvent();
+  bool CompareAllVariables(const WCSimRootEvent * c) const;
 
   void          Clear(Option_t *option ="");
   static void   Reset(Option_t *option ="");
   Int_t GetCurrentIndex() { return Current;}
 
   //  WCSimRootTrigger* GetTrigger(int number) { return fEventList[number];}
-  WCSimRootTrigger* GetTrigger(int number) { return (WCSimRootTrigger*) (*fEventList)[number];}
+        WCSimRootTrigger * GetTrigger(int number)       { return (WCSimRootTrigger*) (*fEventList)[number];}
+  const WCSimRootTrigger * GetTrigger(int number) const { return (WCSimRootTrigger*) (*fEventList)[number];}
 
   Int_t GetNumberOfEvents() const { return fEventList->GetEntriesFast();}
   Int_t GetNumberOfSubEvents() const { return (fEventList->GetEntriesFast()-1);}
