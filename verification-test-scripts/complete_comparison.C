@@ -27,18 +27,16 @@ class WCSimRootEvent;
 void PrintHeaderInfo(WCSimRootEvent * wcsimrootsuperevent, const char * filename)
 {
   WCSimRootTrigger * wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
-  printf("********************************************************");
+  cout << "********************************************************" << endl;
   cout << "Header+ in WCSim file: " << filename << endl;
-  printf("Evt, date %d %d\n", wcsimrootevent->GetHeader()->GetEvtNum(),
-	 wcsimrootevent->GetHeader()->GetDate());
-  printf("Mode %d\n", wcsimrootevent->GetMode());
-  printf("Number of subevents %d\n",
-	 wcsimrootsuperevent->GetNumberOfSubEvents());
-  
-  printf("Vtxvol %d\n", wcsimrootevent->GetVtxvol());
-  printf("Vtx %f %f %f\n", wcsimrootevent->GetVtx(0),
-	 wcsimrootevent->GetVtx(1),wcsimrootevent->GetVtx(2));
-
+  cout << "Evt, date: " << wcsimrootevent->GetHeader()->GetEvtNum()
+       << ", " << wcsimrootevent->GetHeader()->GetDate() << endl;
+  cout << "Mode: " << wcsimrootevent->GetMode() << endl;
+  cout << "Number of subevents: " << wcsimrootsuperevent->GetNumberOfSubEvents() << endl;
+  cout << "Vtxvol: " << wcsimrootevent->GetVtxvol() << endl;
+  for(int i = 0; i < 3; i++)
+    cout << "Vtx[" << i << "]: " << wcsimrootevent->GetVtx(i) << endl;
+  cout << "Number of tracks " << wcsimrootevent->GetNtrack << endl;
   cout << "Number of tube hits " << wcsimrootevent->GetNumTubesHit() << endl;
   cout << "Number of digitized tube hits " << wcsimrootevent->GetNumDigiTubesHit() << endl;
   cout << "Number of photoelectron hit times " << wcsimrootevent->GetCherenkovHitTimes()->GetEntries() << endl;
@@ -46,7 +44,7 @@ void PrintHeaderInfo(WCSimRootEvent * wcsimrootsuperevent, const char * filename
 
 void PrintGeomSummary(WCSimRootGeom * geo, const char * filename)
 {
-  printf("********************************************************");
+  cout << "********************************************************" << endl;
   cout << "Geom summary+ in WCSim file: " << filename << endl;
   cout << "WC radius " << geo->GetWCCylRadius() << endl;
   cout << "WC length " << geo->GetWCCylLength() << endl;
@@ -110,6 +108,7 @@ void complete_comparison(char *filename1, char *filename2, string treename = "wc
 #endif
 
   int nevents1;
+
   TTree * wcsimT1 = GetTree(filename1, treename.c_str());
 
   int nevents2;
@@ -144,7 +143,7 @@ void complete_comparison(char *filename1, char *filename2, string treename = "wc
   }
   for ( ; ev < nevent; ev++)
   {
-    cout << ev << endl;
+    cout << "Comparing event " << ev << endl;
     nevents_analysed++;
     // Read the event from the tree into the WCSimRootEvent instance
     wcsimT1->GetEntry(ev);
@@ -165,7 +164,7 @@ void complete_comparison(char *filename1, char *filename2, string treename = "wc
     bool failed = false;
 
     if(wcsimrootsuperevent1) {
-      //failed = !(wcsimrootsuperevent1->CompareAllVariables(wcsimrootsuperevent2));
+      failed = !(wcsimrootsuperevent1->CompareAllVariables(wcsimrootsuperevent2));
     }
     else if(wcsimrootgeom1) {
       failed = !(wcsimrootgeom1->CompareAllVariables(wcsimrootgeom2));
