@@ -409,10 +409,9 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 
 	  //first apply time offsets
 	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
-	  G4double digihittime = -triggertime
-	    + digit_time;
+	  G4double digihittime = digit_time;
 	  if(triggertype != kTriggerNoTrig)
-	    digihittime += WCSimWCTriggerBase::offset;
+	    digihittime += WCSimWCTriggerBase::offset - triggertime;
 
 	  //get the composition information for the triggered digit
 	  std::vector<int> triggered_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo(ip);
