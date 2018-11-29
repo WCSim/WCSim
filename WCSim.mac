@@ -40,6 +40,10 @@
 #/WCSim/EggShapedHyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
 #/WCSim/EggShapedHyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
 
+# LCConfig is for setting the light collector. To be used with WCSim/Construct.
+#/WCSim/LCConfig No_Mirror
+#/WCSim/LCConfig Old_LC_Branch
+#/WCSim/LCConfig Mirror_2018Oct
 
 #/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
 
