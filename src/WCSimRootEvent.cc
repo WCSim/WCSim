@@ -62,6 +62,7 @@ WCSimRootTrigger::WCSimRootTrigger()
   // TClonesArray of WCSimRootCherenkovDigiHits
   fCherenkovDigiHits = 0;
   fNcherenkovdigihits = 0;
+  fNcherenkovdigihits_slots = 0;
   fSumQ = 0;
 
   fTriggerType = kTriggerUndefined;
@@ -90,6 +91,7 @@ void WCSimRootTrigger::Initialize() //actually allocate memory for things in her
 
   // TClonesArray of WCSimRootTracks
   fTracks = new TClonesArray("WCSimRootTrack", 10000);
+  fTracks->BypassStreamer(kFALSE); // use the member Streamer
   fNtrack = 0;
 
   // TClonesArray of WCSimRootCherenkovHits
@@ -97,13 +99,17 @@ void WCSimRootTrigger::Initialize() //actually allocate memory for things in her
 				    10000);
   fCherenkovHitTimes = new TClonesArray("WCSimRootCherenkovHitTime", 
 					10000);
+  fCherenkovHits->BypassStreamer(kFALSE); // use the member Streamer
+  fCherenkovHitTimes->BypassStreamer(kFALSE); // use the member Streamer
   fNcherenkovhits = 0;
   fNcherenkovhittimes = 0;
 
   // TClonesArray of WCSimRootCherenkovDigiHits
   fCherenkovDigiHits = new TClonesArray("WCSimRootCherenkovDigiHit", 
 				       10000);
+  fCherenkovDigiHits->BypassStreamer(kFALSE); // use the member Streamer
   fNcherenkovdigihits = 0;
+  fNcherenkovdigihits_slots = 0;
   fSumQ = 0;
 
   fTriggerType = kTriggerUndefined;
@@ -165,14 +171,15 @@ void WCSimRootTrigger::Clear(Option_t */*option*/)
 
   // TClonesArray of WCSimRootCherenkovDigiHits
   fNcherenkovdigihits = 0;
+  fNcherenkovdigihits_slots = 0;
   fSumQ = 0;
 
   // remove whatever's in the arrays
   // but don't deallocate the arrays themselves
 
-  fTracks->Delete();            
-  fCherenkovHits->Delete();      
-  fCherenkovHitTimes->Delete();   
+  fTracks->Delete();
+  fCherenkovHits->Delete();
+  fCherenkovHitTimes->Delete();
   fCherenkovDigiHits->Delete();
 
   fTriggerType = kTriggerUndefined;
@@ -381,10 +388,11 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q,
   // Add a new digitized hit to the list of digitized hits
   TClonesArray &cherenkovdigihits = *fCherenkovDigiHits;
   WCSimRootCherenkovDigiHit *cherenkovdigihit = 
-    new(cherenkovdigihits[fNcherenkovdigihits++]) WCSimRootCherenkovDigiHit(q, 
-									    t, 
+    new(cherenkovdigihits[fNcherenkovdigihits_slots++]) WCSimRootCherenkovDigiHit(q,
+									    t,
 									    tubeid,
 									    photon_ids);
+  fNcherenkovdigihits++;
  
   return cherenkovdigihit;
 }
@@ -409,7 +417,7 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(WCSimRootCheren
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q, 
+WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q,
 						     Float_t t, 
 						     Int_t tubeid,
 						     std::vector<int> photon_ids)
@@ -421,6 +429,19 @@ WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q,
   fTubeId = tubeid;
   fPhotonIds = photon_ids;
 }
+
+//_____________________________________________________________________________
+
+WCSimRootCherenkovDigiHit * WCSimRootTrigger::RemoveCherenkovDigiHit(WCSimRootCherenkovDigiHit * digit)
+{
+  WCSimRootCherenkovDigiHit * tmp = (WCSimRootCherenkovDigiHit *)fCherenkovDigiHits->Remove(digit);
+  if(tmp)
+    fNcherenkovdigihits--;
+  return tmp;
+}
+
+
+//_____________________________________________________________________________
 
 // M Fechner, august 2006
 

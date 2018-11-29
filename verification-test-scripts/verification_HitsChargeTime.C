@@ -140,14 +140,17 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
     for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++){ 
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
 	int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
+	int ncherenkovdigihits_slots = wcsimrootevent->GetNcherenkovdigihits_slots();
 	hits->Fill(ncherenkovdigihits);
 	
 	
 	float totalq = 0.;
 	float totalt = 0.;
 	// Loop through elements in the TClonesArray of WCSimRootCherenkovHits
-	for (int i=0; i< ncherenkovdigihits; i++){
+	for (int i=0; i< ncherenkovdigihits_slots; i++){
 	    TObject *Digi = (wcsimrootevent->GetCherenkovDigiHits())->At(i);
+	    if(!Digi)
+	      continue;
 	    WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = 
 	      dynamic_cast<WCSimRootCherenkovDigiHit*>(Digi);
 	    
