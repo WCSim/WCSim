@@ -79,12 +79,14 @@ void read_PMT(char *filename=NULL) {
   QvsT->SetXTitle("time");
   QvsT->SetYTitle("charge");
 
-  int max = wcsimrootevent->GetNcherenkovdigihits();
+  int max = wcsimrootevent->GetNcherenkovdigihits_slots();
   for (int i = 0; i<max; i++){
     WCSimRootCherenkovDigiHit *cDigiHit = wcsimrootevent->GetCherenkovDigiHits()->At(i);
+    if(!cDigitHit)
+      continue;
     //WCSimRootChernkovDigiHit has methods GetTubeId(), GetT(), GetQ()
     QvsT->Fill(cDigiHit->GetT(), cDigiHit->GetQ());
-    WCSimRootCherenkovHitTime *cHitTime = wcsimrootevent->GetCherenkovHitTimes()->At(i);
+    //WCSimRootCherenkovHitTime *cHitTime = wcsimrootevent->GetCherenkovHitTimes()->At(i); // this should loop over wcsimrootevent->GetCherenkovHitTimes()!
     //WCSimRootCherenkovHitTime has methods GetTubeId(), GetTruetime()
   }
 
