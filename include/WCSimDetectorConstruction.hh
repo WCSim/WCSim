@@ -69,7 +69,7 @@ public:
   void Cylinder_60x74_20inchBandL_40perCent();
   void Cylinder_12inchHPD_15perCent();
   void SetHyperKGeometry();
-  void SetHyperK20Geometry();
+  void SetHyperKGeometry_20perCent();
   void UpdateGeometry();
 
   // Imported form LightCone branch, by T. Yano 5th Feb.2018

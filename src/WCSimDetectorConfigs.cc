@@ -234,9 +234,9 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCAddGd               = false;
 }
 
-void WCSimDetectorConstruction::SetHyperK20Geometry()
+void WCSimDetectorConstruction::SetHyperKGeometry_20perCent()
 {
-  WCDetectorName = "HyperK20";
+  WCDetectorName = "HyperK_20perCent";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
   WCPMTName           = PMT->GetPMTName();

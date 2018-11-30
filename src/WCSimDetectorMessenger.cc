@@ -26,7 +26,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "Cylinder_60x74_20inchBandL_40perCent\n"
 			  "Cylinder_12inchHPD_15perCent\n"
 			  "HyperK\n"
-			  "HyperK20\n"
+			  "HyperK_20perCent\n"
 			  "EggShapedHyperK\n"
 			  "EggShapedHyperK_withHPD\n"
 			  );
@@ -40,7 +40,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "Cylinder_60x74_20inchBandL_40perCent "
 			  "Cylinder_12inchHPD_15perCent "
 			  "HyperK "
-			  "HyperK20 "
+			  "HyperK_20perCent "
 			  "EggShapedHyperK "
 			  "EggShapedHyperK_withHPD "
 			  );
@@ -108,12 +108,12 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   LCConfig->SetGuidance("**For 20 inch PMT Only**");
   LCConfig->SetGuidance("Available options are:\n"
 			  "No_Mirror\n"
-			  "Old_LC_Branch\n"
+			  "Mirror_OldLC\n"
 			  "Mirror_2018Oct\n"
 			  );
   LCConfig->SetParameterName("LCConfig", true);
   LCConfig->SetCandidates("No_Mirror "
-			  "Old_LC_Branch "
+			  "Mirror_OldLC "
 			  "Mirror_2018Oct "
 			  );
   LCConfig->SetDefaultValue("No_Mirror");
@@ -161,8 +161,8 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->Cylinder_12inchHPD_15perCent();
 		} else if ( newValue == "HyperK" ){
 		  WCSimDetector->SetHyperKGeometry();
-		} else if ( newValue == "HyperK20" ){
-		  WCSimDetector->SetHyperK20Geometry();
+		} else if ( newValue == "HyperK_20perCent" ){
+		  WCSimDetector->SetHyperKGeometry_20perCent();
 		} else if ( newValue == "EggShapedHyperK") {
 		  WCSimDetector->SetIsEggShapedHyperK(true);
 		  WCSimDetector->SetEggShapedHyperKGeometry();
@@ -251,7 +251,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		// LC Type is defined in WCSimDetectorConstruction.hh
 		if ( newValue == "No_Mirror") {
 		  WCSimDetector->SetLCType(0);
-		} else if ( newValue == "Old_LC_Branch" ){
+		} else if ( newValue == "Mirror_OldLC" ){
 		  WCSimDetector->SetLCType(1);
 		} else if ( newValue == "Mirror_2018Oct" ){
 		  WCSimDetector->SetLCType(2);
