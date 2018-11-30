@@ -2,17 +2,17 @@
 This is a private branch of WCSim, for studing light collector option.
 The code is based on WCSim v1.7.0 and its old branch, "archive/LightCone".
 
-In following, you can refere WCSim.mac for setting.
-Light cone can be specified with:
-> \# LCConfig is for setting the light collector. To be used with WCSim/Construct.
-> \# Default is No_Mirror.
-> \#/WCSim/LCConfig No_Mirror
-> \#/WCSim/LCConfig Mirror_OldLC # Mirror design in a branch of archive/LightCone at 2011.
-> \#/WCSim/LCConfig Mirror_2018Oct # A short mirror design.
+In following, you can refere WCSim.mac for setting.  
+Light cone can be specified with:  
+> \# LCConfig is for setting the light collector. To be used with WCSim/Construct.  
+> \# Default is No_Mirror.  
+> \#/WCSim/LCConfig No_Mirror  
+> \#/WCSim/LCConfig Mirror_OldLC # Mirror design in a branch of archive/LightCone at 2011.  
+> \#/WCSim/LCConfig Mirror_2018Oct # A short mirror design.  
 
-For study, another detector config of HyperK added:
-> \# Another option of HyperK
-> \#/WCSim/WCgeom HyperK_20perCent # Note: the coverage is set to 20.0%.
+For study, another detector config of HyperK added:  
+> \# Another option of HyperK  
+> \#/WCSim/WCgeom HyperK_20perCent # Note: the coverage is set to 20.0%.  
 
 Nov. 30th 2018. T. Yano.
 
