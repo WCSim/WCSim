@@ -1,3 +1,9 @@
+## Notice
+This is a private branch of WCSim, for studing light collector option.
+The code is based on WCSim v1.7.0 and its old branch, "archive/LightCone".
+
+Nov. 30th 2018. T. Yano.
+
 ## Welcome to WCSim
 
 WCSim is a very flexible GEANT4 based program for developing and

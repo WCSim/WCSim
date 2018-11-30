@@ -380,7 +380,7 @@ private:
     G4int wallSlabCopyNo;
 
   //** T.Yano Light Collector Option
-  G4int  LCType = 0;     // 0: No LC, 1: Old Branch(Mirror), 2: 2018Oct(Mirror)
+  G4int  LCType;     // 0: No LC, 1: Old Branch(Mirror), 2: 2018Oct(Mirror)
 
   // *** End egg-shaped HyperK Geometry ***
 
