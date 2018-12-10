@@ -17,7 +17,7 @@ double hWL(double E){
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // ELJEN EJ-286
 // http://www.eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286
-#define NUMENTRIES_WLS 33
+#define NUMENTRIES_WLS 60
 
 EljenEJ286::EljenEJ286() { SetgAbs(); SetgEm(); SethEm();}
 EljenEJ286::~EljenEJ286(){}
@@ -26,26 +26,31 @@ G4String EljenEJ286::GetWLSPlateName() { G4String WLSPlateName = "EljenEJ286"; r
 
 G4int EljenEJ286::GetNumEntries() { return NUMENTRIES_WLS;}
 
-G4float* EljenEJ286::GetPhotonWL() {
-  static G4float PhotonWL[NUMENTRIES_WLS] =
-      { 280, 290,
+G4double* EljenEJ286::GetPhotonWL() {
+  static G4double PhotonWL[NUMENTRIES_WLS] =
+      { 200, 210, 220, 230, 240, 250, 260, 270, 280, 290,
         300, 310, 320, 330, 340, 350, 360, 370, 380, 390,
         400, 410, 420, 430, 440, 450, 460, 470, 480, 490,
         500, 510, 520, 530, 540, 550, 560, 570, 580, 590,
-        600 };
+        600, 610, 620, 630, 640, 650, 660, 670, 680, 690,
+        700, 710, 720, 730, 740, 750, 760, 770, 780, 790};
   return PhotonWL;
 }
 
 G4double* EljenEJ286::GetPhotonEnergy(){
   static G4double PhotonEnergy[NUMENTRIES_WLS] =
-      { 2.06642*eV,
-        2.10144*eV, 2.13768*eV, 2.17518*eV, 2.21402*eV, 2.25428*eV,
-        2.29602*eV, 2.33934*eV, 2.38433*eV, 2.43108*eV, 2.4797*eV,
-        2.53031*eV, 2.58302*eV, 2.63798*eV, 2.69533*eV, 2.75523*eV,
-        2.81784*eV, 2.88338*eV, 2.95203*eV, 3.02403*eV, 3.09963*eV,
-        3.17911*eV, 3.26277*eV, 3.35095*eV, 3.44403*eV, 3.54243*eV,
-        3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
-        4.27535*eV, 4.42804*eV};
+      {1.56943*eV, 1.58955*eV, 1.6102*eV, 1.63138*eV, 1.65314*eV,
+       1.67548*eV, 1.69843*eV, 1.72202*eV, 1.74627*eV, 1.77122*eV,
+       1.79689*eV, 1.82331*eV, 1.85052*eV, 1.87856*eV, 1.90746*eV,
+       1.93727*eV, 1.96802*eV, 1.99976*eV, 2.03254*eV, 2.06642*eV,
+       2.10144*eV, 2.13768*eV, 2.17518*eV, 2.21402*eV, 2.25428*eV,
+       2.29602*eV, 2.33934*eV, 2.38433*eV, 2.43108*eV, 2.4797*eV,
+       2.53031*eV, 2.58302*eV, 2.63798*eV, 2.69533*eV, 2.75523*eV,
+       2.81784*eV, 2.88338*eV, 2.95203*eV, 3.02403*eV, 3.09963*eV,
+       3.17911*eV, 3.26277*eV, 3.35095*eV, 3.44403*eV, 3.54243*eV,
+       3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
+       4.27535*eV, 4.42804*eV, 4.59204*eV, 4.76866*eV, 4.95941*eV,
+       5.16605*eV, 5.39066*eV, 5.63569*eV, 5.90406*eV, 6.19926*eV};
   return PhotonEnergy;
 }
 
@@ -55,14 +60,18 @@ G4double* EljenEJ286::GetPhotonEnergy(){
 
 G4double* EljenEJ286::GetRIndex(){
   static G4double RIndex[NUMENTRIES_WLS] =
-      { 1.58,
-        1.58, 1.58, 1.58, 1.58, 1.58,
-        1.58, 1.58, 1.58, 1.58, 1.58,
-        1.58, 1.58, 1.58, 1.58, 1.58,
-        1.58, 1.58, 1.58, 1.58, 1.58,
-        1.58, 1.58, 1.58, 1.58, 1.58,
-        1.58, 1.58, 1.58, 1.58, 1.58,
-        1.58, 1.58};
+      {1.88417, 1.82311, 1.77462, 1.73568, 1.70409,
+       1.67822, 1.65685, 1.63905, 1.62413, 1.61152,
+       1.60081, 1.59164, 1.58376, 1.57694, 1.57102,
+       1.56585, 1.56132, 1.55733, 1.5538, 1.55067,
+       1.54789, 1.5454, 1.54317, 1.54116, 1.53935,
+       1.53772, 1.53624, 1.53489, 1.53366, 1.53254,
+       1.53152, 1.53058, 1.52971, 1.52892, 1.52818,
+       1.5275, 1.52687, 1.52629, 1.52575, 1.52525,
+       1.52478, 1.52434, 1.52393, 1.52355, 1.52319,
+       1.52285, 1.52254, 1.52224, 1.52196, 1.5217,
+       1.52145, 1.52121, 1.52099, 1.52078, 1.52058,
+       1.52039, 1.52021, 1.52004, 1.51988, 1.51973, };
   return RIndex;
 }
 
@@ -70,24 +79,43 @@ G4double* EljenEJ286::GetRIndex(){
 //////// ABSORPTION ////////
 // ###################### //
 
-#define NUMENTRIES_WLS_ABS 15
+#define NUMENTRIES_WLS_ABS 60
 
 G4int EljenEJ286::GetNumEntries_ABS() { return NUMENTRIES_WLS_ABS;}
 
 G4double* EljenEJ286::GetPhotonEnergy_ABS(){
   static G4double PhotonEnergy_ABS[NUMENTRIES_WLS_ABS] =
-      { 2.95203*eV, 3.02403*eV, 3.09963*eV, 3.17911*eV, 3.26277*eV,
-        3.35095*eV, 3.44403*eV, 3.54243*eV, 3.64662*eV, 3.75713*eV,
-        3.87454*eV, 3.99952*eV, 4.13284*eV, 4.27535*eV, 4.42804*eV};
+      {1.56943*eV, 1.58955*eV, 1.6102*eV, 1.63138*eV, 1.65314*eV,
+       1.67548*eV, 1.69843*eV, 1.72202*eV, 1.74627*eV, 1.77122*eV,
+       1.79689*eV, 1.82331*eV, 1.85052*eV, 1.87856*eV, 1.90746*eV,
+       1.93727*eV, 1.96802*eV, 1.99976*eV, 2.03254*eV, 2.06642*eV,
+       2.10144*eV, 2.13768*eV, 2.17518*eV, 2.21402*eV, 2.25428*eV,
+       2.29602*eV, 2.33934*eV, 2.38433*eV, 2.43108*eV, 2.4797*eV,
+       2.53031*eV, 2.58302*eV, 2.63798*eV, 2.69533*eV, 2.75523*eV,
+       2.81784*eV, 2.88338*eV, 2.95203*eV, 3.02403*eV, 3.09963*eV,
+       3.17911*eV, 3.26277*eV, 3.35095*eV, 3.44403*eV, 3.54243*eV,
+       3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
+       4.27535*eV, 4.42804*eV, 4.59204*eV, 4.76866*eV, 4.95941*eV,
+       5.16605*eV, 5.39066*eV, 5.63569*eV, 5.90406*eV, 6.19926*eV};
+
   return PhotonEnergy_ABS;
 }
 
 G4double* EljenEJ286::GetAbs() {
-  G4double attL = 1.*mm; // From Datasheet EJ-286 and inferred with SG-BC484 // Basically BS
+  G4double attL = 400.*cm; // From Datasheet EJ-286 and inferred with SG-BC484 // Basically BS
   static G4double AbsPlate[NUMENTRIES_WLS_ABS] =
-      { (1-0.01)*attL, (1-0.05)*attL, (1-0.64)*attL, (1-0.93)*attL, (1-0.999)*attL,
-        (1-0.999)*attL, (1-0.999)*attL, (1-0.999)*attL, (1-0.999)*attL, (1-0.999)*attL,
-        (1-0.99)*attL, (1-0.97)*attL, (1-0.89)*attL, (1-0.71)*attL, (1-0.54)*attL};
+      { attL, attL, attL, attL, attL, // 800 --- 750
+        attL, attL, attL, attL, attL, // 750 --- 700
+        attL, attL, attL, attL, attL, // 700 --- 650
+        attL, attL, attL, attL, attL, // 650 --- 600
+        attL, attL, attL, attL, attL, // 600 --- 550
+        attL, attL, attL, attL, attL, // 550 --- 500
+        attL, attL, attL, attL, attL, // 500 --- 450
+        attL, attL, (1-0.01)*attL, (1-0.05)*attL, (1-0.64)*attL, // 450 --- 400
+        (1-0.93)*attL, (1-0.99999)*attL, (1-0.99999)*attL, (1-0.99999)*attL, (1-0.99999)*attL, // 400 --- 350
+        (1-0.99999)*attL, (1-0.99999)*attL, (1-0.999)*attL, (1-0.97)*attL, (1-0.89)*attL, // 350 --- 300
+        (1-0.71)*attL, (1-0.54)*attL,attL, attL, // 300 --- 250
+        attL, attL, attL, attL, attL}; // 250 --- 200
   return AbsPlate;
 }
 
@@ -95,25 +123,41 @@ G4double* EljenEJ286::GetAbs() {
 ///////// EMISSION /////////
 // ###################### //
 
-#define NUMENTRIES_WLS_EM 16
+#define NUMENTRIES_WLS_EM 60
 
 G4int EljenEJ286::GetNumEntries_EM() { return NUMENTRIES_WLS_EM;}
 
 G4double* EljenEJ286::GetPhotonEnergy_EM() {
   static G4double PhotonEnergy_EM[NUMENTRIES_WLS_EM] =
-      { 2.29602*eV, 2.33934*eV, 2.38433*eV, 2.43108*eV, 2.4797*eV,
-        2.53031*eV, 2.58302*eV, 2.63798*eV, 2.69533*eV, 2.75523*eV,
-        2.81784*eV, 2.88338*eV, 2.95203*eV, 3.02403*eV, 3.09963*eV,
-        3.17911*eV };
+      {1.56943*eV, 1.58955*eV, 1.6102*eV, 1.63138*eV, 1.65314*eV,
+       1.67548*eV, 1.69843*eV, 1.72202*eV, 1.74627*eV, 1.77122*eV,
+       1.79689*eV, 1.82331*eV, 1.85052*eV, 1.87856*eV, 1.90746*eV,
+       1.93727*eV, 1.96802*eV, 1.99976*eV, 2.03254*eV, 2.06642*eV,
+       2.10144*eV, 2.13768*eV, 2.17518*eV, 2.21402*eV, 2.25428*eV,
+       2.29602*eV, 2.33934*eV, 2.38433*eV, 2.43108*eV, 2.4797*eV,
+       2.53031*eV, 2.58302*eV, 2.63798*eV, 2.69533*eV, 2.75523*eV,
+       2.81784*eV, 2.88338*eV, 2.95203*eV, 3.02403*eV, 3.09963*eV,
+       3.17911*eV, 3.26277*eV, 3.35095*eV, 3.44403*eV, 3.54243*eV,
+       3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
+       4.27535*eV, 4.42804*eV, 4.59204*eV, 4.76866*eV, 4.95941*eV,
+       5.16605*eV, 5.39066*eV, 5.63569*eV, 5.90406*eV, 6.19926*eV};
   return PhotonEnergy_EM;
 }
 
 G4double *EljenEJ286::GetEm() {
   static G4double EmissionPlate[NUMENTRIES_WLS_EM] =
-      { 0., 0.01, 0.02, 0.05, 0.08,
-        0.1, 0.12, 0.17, 0.38, 0.55,
-        0.70, 1., 0.9, 0.3, 0.05,
-        0. };
+      { 0., 0., 0., 0., 0.,  // 800 --- 750
+        0., 0., 0., 0., 0., // 750 --- 700
+        0., 0., 0., 0., 0.,  // 700 --- 650
+        0., 0., 0., 0., 0., // 650 --- 600
+        0., 0., 0., 0., 0., // 600 --- 550
+        0., 0.01, 0.02, 0.05, 0.08,  // 550 --- 500
+        0.1, 0.12, 0.17, 0.38, 0.55, // 500 --- 450
+        0.70, 1., 0.9, 0.3, 0.05,    // 450 --- 400
+        0., 0., 0., 0., 0., // 400 --- 350
+        0., 0., 0., 0., 0., // 350 --- 300
+        0., 0., 0., 0., 0., // 300 --- 250
+        0., 0., 0., 0., 0.}; // 250 --- 200
   return EmissionPlate;
 }
 
@@ -123,55 +167,43 @@ G4double *EljenEJ286::GetEm() {
 
 void EljenEJ286::SetgAbs(){
   double AbsAmp[NUMENTRIES_WLS_ABS] =
-      { (0.01), (0.05), (0.64), (0.93), (0.999),
-        (0.999), (0.999), (0.999), (0.999), (0.999),
-        (0.99), (0.97), (0.89), (0.71), (0.54)};
+      { 0, 0, 0, 0, 0, // 800 --- 750
+        0, 0, 0, 0, 0, // 750 --- 700
+        0, 0, 0, 0, 0, // 700 --- 650
+        0, 0, 0, 0, 0, // 650 --- 600
+        0, 0, 0, 0, 0, // 600 --- 550
+        0, 0, 0, 0, 0, // 550 --- 500
+        0, 0, 0, 0, 0, // 500 --- 450
+        0, 0, 0.01, 0.05, 0.64, // 450 --- 400
+        0.93, 0.9999, 0.9999, 0.9999, 0.9999, // 400 --- 350
+        0.9999, 0.9999, 0.99, 0.97, 0.89, // 350 --- 300
+        0.71, 0.54, 0, 0, // 300 --- 250
+        0, 0, 0, 0, 0}; // 250 --- 200
   gAbs = new TGraph();
-  int iPt=0;
   const int step = 10;
 
-  // Start by defining to 0 where no data on the WLS is available
-  for(int i=700;i>(int)(round(hWL(GetPhotonEnergy_ABS()[0]))*nm)+step;i=i-step){
-    gAbs->SetPoint(iPt,i,0.);
-    iPt++;
-  }
-
+  // std::cout << "Creating Stacking graph objects for WLS" << std::endl;
+  // std::cout << "WLS ABS" << std::endl;
   // Then fill with point there is data
-  for(int i=0;i<NUMENTRIES_WLS_ABS;i++){
-    gAbs->SetPoint(iPt,round(hWL(GetPhotonEnergy_ABS()[i]))*nm,AbsAmp[i]);
-    iPt++;
+  for(int i=NUMENTRIES_WLS_ABS-1; i>0; i--){
+    gAbs->SetPoint(i,round(hWL(GetPhotonEnergy_ABS()[i]))*nm,AbsAmp[i]);
+    // std::cout << round(hWL(GetPhotonEnergy_ABS()[i]))*nm << "nm -> " << AbsAmp[i] << std::endl;
   }
 
-  // Then again set everywhere else to 0
-  for(int i=(int)(round(hWL(GetPhotonEnergy_ABS()[NUMENTRIES_WLS_ABS-1]))*nm)-step;i>200;i=i-step){
-    gAbs->SetPoint(iPt,i,0.);
-    iPt++;
-  }
 }
 
 void EljenEJ286::SetgEm(){
   gEm = new TGraph();
-  int iPt=0;
   const int step = 10;
 
-  // Start by defining to 0 where no data on the WLS is available
-  for(int i=700;i>(int)(round(hWL(GetPhotonEnergy_EM()[0]))*nm)+step;i=i-step){
-    gEm->SetPoint(iPt,i,0.);
-    iPt++;
-  }
-
+  // std::cout << "Creating Stacking graph objects for WLS" << std::endl;
+  // std::cout << "WLS EM" << std::endl;
   // Then fill with point there is data
-  for(int i=0;i<NUMENTRIES_WLS_EM;i++){
-    gEm->SetPoint(iPt,round(hWL(GetPhotonEnergy_EM()[i]))*nm,GetEm()[i]);
-    G4cout << iPt << " " << round(hWL(GetPhotonEnergy_EM()[i]))*nm << " " << GetEm()[i] << G4endl;
-    iPt++;
+  for(int i=NUMENTRIES_WLS_EM-1; i>0; i--){
+    gEm->SetPoint(i,round(hWL(GetPhotonEnergy_EM()[i]))*nm,GetEm()[i]);
+    // std::cout << round(hWL(GetPhotonEnergy_EM()[i]))*nm << "nm -> " << GetEm()[i] << std::endl;
   }
 
-  // Then again set everywhere else to 0
-  for(int i=(int)(round(hWL(GetPhotonEnergy_EM()[NUMENTRIES_WLS_EM-1]))*nm)-step;i>200;i=i-step){
-    gEm->SetPoint(iPt,i,0.);
-    iPt++;
-  }
 }
 
 // ###################### //
