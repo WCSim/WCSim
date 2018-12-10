@@ -3,12 +3,23 @@
 
 #include <libgen.h>
 
-void read_OD(char *filename=NULL) {
   /* A simple script to plot aspects of phototube hits 
    * 
    * I like to run this macro as 
    * $ root -l -x 'read_OD.C("OD.root")'
    */
+
+Double_t simpleExp(Double_t *x, Double_t *par) {
+  Double_t X = x[0];
+
+  Double_t tau = par[0];
+  Double_t CExp = par[1];
+
+  return CExp*TMath::Exp(-tau*X);;
+
+}
+
+void read_OD(char *filename=NULL) {
 
   gROOT->Reset();
   char* wcsimdirenv;
@@ -70,8 +81,10 @@ void read_OD(char *filename=NULL) {
 
   const int nbBins = 50;
   const int nbPEMax = 1000;
-  const int nbBinsByPMT = 25;
-  const int nbPEMaxByPMT = 200;
+  const int nbBinsByPMT = 50;
+  const int nbPEMaxByPMT = 50;
+
+  const double cutPEByPMT = 1.;
   
   TH1D *hPEByEvtsByPMT = new TH1D("hPEByEvtsByPMT","RAW PE by Evts by PMT",
 				  nbBinsByPMT,0,nbPEMaxByPMT);
@@ -121,7 +134,7 @@ void read_OD(char *filename=NULL) {
       for (int i = 0; i < rawMax; i++){
 	WCSimRootCherenkovHit *chit = (WCSimRootCherenkovHit*)wcsimrootevent->GetCherenkovHits()->At(i);
 	
-	if(chit->GetTotalPe(1) != 0) hPEByEvtsByPMT->Fill(chit->GetTotalPe(1));
+	if(chit->GetTotalPe(1) > cutPEByPMT) hPEByEvtsByPMT->Fill(chit->GetTotalPe(1));
 	totRawPE+=chit->GetTotalPe(1);
       } // END FOR RAW HITS
 
@@ -139,7 +152,7 @@ void read_OD(char *filename=NULL) {
 	  (WCSimRootCherenkovHitTime*)wcsimrootevent->GetCherenkovHitTimes()->At(i);
 	//WCSimRootCherenkovHitTime has methods GetTubeId(), GetTruetime()
 
-	if(cDigiHit->GetQ() != 0) hPECollectedByEvtsByPMT->Fill(cDigiHit->GetQ());
+	if(cDigiHit->GetQ() > cutPEByPMT) hPECollectedByEvtsByPMT->Fill(cDigiHit->GetQ());
 	totDigiPE+=cDigiHit->GetQ();
       } // END FOR DIGI HITS
 
@@ -148,6 +161,17 @@ void read_OD(char *filename=NULL) {
     } // END FOR iTRIG
     
   } // END FOR iENTRY
+
+
+  //////////////////////////////////////////
+  // FIT ///////////////////////////////
+  //////////////////////////////////////////
+  
+  TF1 *fPEByEvt = new TF1("FitPEByEvt",simpleExp,cutPEByPMT,30,2);
+  fPEByEvt->SetParameter(0,hPEByEvtsByPMT->GetMaximum());
+  fPEByEvt->SetParameter(1,1/hPEByEvtsByPMT->GetMean());
+
+  fPEByEvt->SetParNames ("C0","Tau");
 
   //////////////////////////////////////////
   // DRAWING ///////////////////////////////
@@ -160,15 +184,18 @@ void read_OD(char *filename=NULL) {
   c1->cd(1);
   gPad->SetLogy();
   hPEByEvtsByPMT->Draw("HIST");
+  // hPEByEvtsByPMT->Fit("FitPEByEvt","LEMR+");
+  hPEByEvtsByPMT->Fit("expo","+","SAME");
   c1->cd(2);
-  hPEByEvts->Draw(""); hPEByEvts->Fit("gaus");
+  hPEByEvts->Draw(""); // hPEByEvts->Fit("gaus");
   c1->cd(3);
   gPad->SetLogy();
   hPECollectedByEvtsByPMT->Draw("HIST");
+  hPECollectedByEvtsByPMT->Fit("expo","+","SAME");
   c1->cd(4);  
   hPECollectedByEvts->Draw("HIST");
 
-  TF1 *fit = hPEByEvts->GetFunction("gaus");
+  // TF1 *fit = hPEByEvts->GetFunction("gaus");
   
   c1 = new TCanvas("cNbTubesHit","cNbTubesHit",800,600);
   hNbTubesHit->Draw("HIST");
@@ -183,8 +210,8 @@ void read_OD(char *filename=NULL) {
        << " +- " << hPEByEvts->GetRMS() << endl;  
   cout << "Mean PE collected by events : " << hPECollectedByEvts->GetMean()
        << " +- " << hPECollectedByEvts->GetRMS() << endl;
-  cout << "FIT : " << fit->GetParameter(1)
-       << " +- " << fit->GetParError(1) << endl;  
+  // cout << "FIT : " << fit->GetParameter(1)
+  //      << " +- " << fit->GetParError(1) << endl;  
 
     TFile *output=NULL;
 
@@ -195,5 +222,6 @@ void read_OD(char *filename=NULL) {
   hPEByEvts->Write();
   hPECollectedByEvtsByPMT->Write();
   hPECollectedByEvts->Write();
+  hNbTubesHit->Write();
 
 } // END MACRO
