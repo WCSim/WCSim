@@ -93,7 +93,7 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 
   // WLS
   bool WLS=false;
-  // WLS=true;
+  WLS=true;
   if(WLS){
     CollectPhotonsInfoInWLSPlates(aStep);
     // WLSPhysicsProcess(aStep);
