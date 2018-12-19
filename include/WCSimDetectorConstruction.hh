@@ -71,8 +71,6 @@ public:
   void SetHyperKGeometry();
   void SetHyperKGeometry_20perCent();
   void UpdateGeometry();
-
-  // Imported form LightCone branch, by T. Yano 5th Feb.2018
   void SetLCType(G4int LightCollectorType)
   {
 	  LCType=LightCollectorType;
@@ -379,7 +377,6 @@ private:
     G4int PMTCopyNo;
     G4int wallSlabCopyNo;
 
-  //** T.Yano Light Collector Option
   G4int  LCType;     // 0: No LC, 1: Old Branch(Mirror), 2: 2018Oct(Mirror)
 
   // *** End egg-shaped HyperK Geometry ***
