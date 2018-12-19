@@ -48,6 +48,8 @@ namespace __gnu_cxx  {
   };
 }
 
+void ComputeWCODPMT(G4int NPMT, G4double *NPMTHorizontal, G4double *NPMTVertical);
+
 class WCSimDetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
@@ -70,6 +72,7 @@ public:
   void Cylinder_12inchHPD_15perCent();
   void SetHyperKGeometry();
   void SetHyperKGeometry_20perCent();
+  void SetHyperKWithODGeometry();
   void UpdateGeometry();
   void SetLCType(G4int LightCollectorType)
   {
@@ -85,7 +88,8 @@ public:
   G4int    GetMyConfiguration()   {return myConfiguration;}
   G4double GetGeo_Dm(G4int);
   G4int    GetTotalNumPmts() {return totalNumPMTs;}
-  
+  G4int    GetTotalNumODPmts() {return totalNumODPMTs;}
+
   G4int    GetPMT_QE_Method(){return PMT_QE_Method;}
   G4double GetwaterTank_Length() {return waterTank_Length;} 
   G4int    UsePMT_Coll_Eff(){return PMT_Coll_Eff;}
@@ -115,6 +119,9 @@ public:
   // Related to the WC tube ID
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
   static G4Transform3D GetTubeTransform(int tubeNo){return tubeIDMap[tubeNo];}
+  // OD PMTs
+  static G4int GetODTubeID(std::string tubeTag){return ODtubeLocationMap[tubeTag];}
+  static G4Transform3D GetODTubeTransform(int tubeNo){return ODtubeIDMap[tubeNo];}
 
   // Related to Pi0 analysis
   G4bool SavePi0Info()              {return pi0Info_isSaved;}
@@ -143,8 +150,12 @@ public:
   // *** End Egg-Shaped HyperK Geometry ***
 
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
+  std::vector<WCSimPmtInfo*>* Get_ODPmts() {return &fODpmts;}
 
   G4String GetIDCollectionName(){return WCIDCollectionName;}
+  G4String GetODCollectionName(){return WCODCollectionName;}
+
+  bool GetIsODConstructed(){return isODConstructed;}
 
  
 private:
@@ -174,11 +185,14 @@ private:
 
   // The Construction routines
   G4LogicalVolume*   ConstructCylinder();
-  G4LogicalVolume* ConstructPMT(G4String,G4String);
+  G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank");
 
   G4LogicalVolume* ConstructCaps(G4int zflip);
 
   void  ConstructMaterials();
+
+  G4LogicalVolume* logicWCBarrelCellODTyvek;
+  G4LogicalVolume* logicWCTowerODTyvek;
 
   G4LogicalVolume* logicWCBarrelCellBlackSheet;
   G4LogicalVolume* logicWCTowerBlackSheet;
@@ -253,8 +267,6 @@ private:
   // Hit collection name parameters
   G4String WCDetectorName;
   G4String WCIDCollectionName;
-  G4String WCODCollectionName;
-
 
   // WC PMT parameters
   G4String WCPMTName;
@@ -292,7 +304,44 @@ private:
   G4double WCCapEdgeLimit;
   G4double WCBlackSheetThickness;
 
-// raise scope of derived parameters
+  // ############################# //
+  // # Outer Detector parameters # //
+  // ############################# //
+
+  bool isODConstructed;
+
+  // Parameters controlled by user
+  G4double WCODDiameter;
+  G4double WCPMTODperCellHorizontal;
+  G4double WCPMTODperCellVertical;
+  G4double WCPMTODPercentCoverage;
+  G4double WCODLateralWaterDepth;
+  G4double WCODHeightWaterDepth;
+  G4double WCODDeadSpace;
+  G4double WCODTyvekSheetThickness;
+
+  G4double WCODCapPMTSpacing;
+  G4double WCODCapEdgeLimit;
+
+  G4double WCODPMTShift;
+
+  // We just need these variables to be global, ease things
+  G4double WCODRadius;
+  G4double WCBarrelNumPMTODHorizontal;
+
+  // OD PMTs parameters
+  G4String WCPMTODName;
+  G4double WCPMTODRadius;
+  G4double WCPMTODExposeHeight;
+
+  // Hit collection name parameters
+  G4String WCODCollectionName;
+
+  // ############################# //
+  // # *** END OD Parameters *** # //
+  // ############################# //
+
+  // raise scope of derived parameters
   G4double WCIDRadius;
   G4double totalAngle;
   G4double dPhi;
@@ -389,6 +438,7 @@ private:
   std::ofstream geoFile;   // File for text output
 
   G4int totalNumPMTs;      // The number of PMTs for this configuration     
+  G4int totalNumODPMTs;      // The number of PMTs for this configuration
   G4double WCCylInfo[3];    // Info for the geometry tree: radius & length or mail box, length, width and depth
   G4double WCPMTSize;       // Info for the geometry tree: pmt size
   G4ThreeVector WCOffset;   // Info for the geometry tree: WC center offset
@@ -397,15 +447,20 @@ private:
 
   static std::map<int, G4Transform3D> tubeIDMap;
 //  static std::map<int, cyl_location> tubeCylLocation;
-  static hash_map<std::string, int, hash<std::string> >  tubeLocationMap; 
- 
+  static hash_map<std::string, int, hash<std::string> >  tubeLocationMap;
+
+  // OD PMTs
+  static std::map<int, G4Transform3D> ODtubeIDMap;
+  static hash_map<std::string, int, hash<std::string> >  ODtubeLocationMap;
+
   // Variables related to configuration
 
   G4int myConfiguration;   // Detector Config Parameter
   G4double innerradius;
  
   std::vector<WCSimPmtInfo*> fpmts;
-  
+  std::vector<WCSimPmtInfo*> fODpmts;
+
 };
 
 #endif

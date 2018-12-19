@@ -4,6 +4,7 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
+#pragma link C++ enum  WCSimRandomGenerator_t;
 #pragma link C++ enum  TriggerType_t;
 #pragma link C++ enum  DigitizerType_t;
 
@@ -20,5 +21,9 @@
 #pragma link C++ class WCSimPmtInfo+;
 #pragma link C++ class WCSimEnumerations+;
 #pragma link C++ class WCSimRootOptions+;
+
+#pragma link C++ struct WCSimDarkNoiseOptions+;
+#pragma link C++ class std::pair<std::string, WCSimDarkNoiseOptions>+;
+#pragma link C++ class std::map<std::string, WCSimDarkNoiseOptions>+;
 
 #endif

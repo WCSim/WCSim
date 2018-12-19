@@ -22,7 +22,7 @@
 
 WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
-G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName)
+G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName, G4String detectorElement)
 {
   PMTKey_t key(PMTName,CollectionName);
 
@@ -46,7 +46,9 @@ if (Vis_Choice == "RayTracer"){
 else
    { // Gray wireframe visual style
     // used in OGLSX visualizer
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  G4VisAttributes* WCPMTVisAtt;
+  if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
+  else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);}
 
   G4double expose;
@@ -216,7 +218,9 @@ else {
   if (Vis_Choice == "OGLSX")
    { // Gray wireframe visual style
     // used in OGLSX visualizer
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  G4VisAttributes* WCPMTVisAtt;
+  if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
+  else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
@@ -242,7 +246,9 @@ else {
   else
    { // Gray wireframe visual style
     // used in OGLSX visualizer
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  G4VisAttributes* WCPMTVisAtt;
+  if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
+  else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
@@ -257,7 +263,7 @@ else {
   // make a new one
   if( ! SDman->FindSensitiveDetector(SDName, false) ) {
     
-    aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
+    aWCPMT = new WCSimWCSD(CollectionName,SDName,this,detectorElement);
     SDman->AddNewDetector( aWCPMT );
   }
 

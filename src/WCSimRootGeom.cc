@@ -8,6 +8,13 @@
 #include "TClonesArray.h"
 
 #include "WCSimRootGeom.hh"
+#include "WCSimRootTools.hh"
+
+#include <iostream>
+
+using std::cout;
+using std::cerr;
+using std::endl;
 
 #ifndef REFLEX_DICTIONARY
 ClassImp(WCSimRootGeom)
@@ -30,7 +37,25 @@ WCSimRootGeom::~WCSimRootGeom()
   fPMTArray->Delete();
   delete fPMTArray;
 }
+//______________________________________________________________________________
+bool WCSimRootGeom::CompareAllVariables(const WCSimRootGeom * c) const
+{
+  bool failed = false;
+  failed = (!ComparisonPassed(fWCCylRadius, c->GetWCCylRadius(), typeid(*this).name(), __func__, "WCCylRadius")) || failed;
+  failed = (!ComparisonPassed(fWCCylLength, c->GetWCCylLength(), typeid(*this).name(), __func__, "WCCylLength")) || failed;
+  failed = (!ComparisonPassed(fgeo_type, c->GetGeo_Type(), typeid(*this).name(), __func__, "Geo_Type")) || failed;
+  failed = (!ComparisonPassed(fWCPMTRadius, c->GetWCPMTRadius(), typeid(*this).name(), __func__, "WCPMTRadius")) || failed;
+  failed = (!ComparisonPassed(fWCNumPMT, c->GetWCNumPMT(), typeid(*this).name(), __func__, "WCNumPMT")) || failed;
+  for(int i = 0; i < 3; i++) {
+    failed = (!ComparisonPassed(fWCOffset[i], c->GetWCOffset(i), typeid(*this).name(), __func__, TString::Format("WCOffset[%d]", i))) || failed;
+  }//i
+  failed = (!ComparisonPassed(fOrientation, c->GetOrientation(), typeid(*this).name(), __func__, "Orientation")) || failed;
+  for(int i = 0; i < TMath::Min(fWCNumPMT, c->GetWCNumPMT()); i++) {
+    failed = !(this->GetPMTPtr(i)->CompareAllVariables(c->GetPMTPtr(i))) || failed;
+  }
 
+  return !failed;
+}
 //______________________________________________________________________________
 WCSimRootPMT::WCSimRootPMT()
 {
@@ -75,4 +100,17 @@ TClonesArray &pmtArray = *fPMTArray;
 //______________________________________________________________________________
 WCSimRootPMT::~WCSimRootPMT()
 {
+}
+
+//______________________________________________________________________________
+bool WCSimRootPMT::CompareAllVariables(const WCSimRootPMT * c) const
+{
+  bool failed = false;
+  failed = (!ComparisonPassed(fTubeNo, c->GetTubeNo(), typeid(*this).name(), __func__, "TubeNo")) || failed;
+  failed = (!ComparisonPassed(fCylLoc, c->GetCylLoc(), typeid(*this).name(), __func__, "CylLoc")) || failed;
+  for(int i = 0; i < 3; i++) {
+    failed = (!ComparisonPassed(fOrientation[i], c->GetOrientation(i), typeid(*this).name(), __func__, TString::Format("Orientation[%d]", i))) || failed;
+    failed = (!ComparisonPassed(fPosition[i], c->GetPosition(i), typeid(*this).name(), __func__, TString::Format("Position[%d]", i))) || failed;
+  }//i
+  return !failed;
 }

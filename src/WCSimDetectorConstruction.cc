@@ -21,9 +21,10 @@
 #include "G4SystemOfUnits.hh"
 
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap;
+std::map<int, G4Transform3D> WCSimDetectorConstruction::ODtubeIDMap;
 //std::map<int, cyl_location>  WCSimDetectorConstruction::tubeCylLocation;
-hash_map<std::string, int, hash<std::string> > 
-WCSimDetectorConstruction::tubeLocationMap;
+hash_map<std::string, int, hash<std::string> > WCSimDetectorConstruction::tubeLocationMap;
+hash_map<std::string, int, hash<std::string> > WCSimDetectorConstruction::ODtubeLocationMap;
 
 WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuningParameters* WCSimTuningPars):WCSimTuningParams(WCSimTuningPars)
 {
@@ -33,6 +34,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   isEggShapedHyperK  = false;
 
   debugMode = false;
+
+  isODConstructed = false;
 
   myConfiguration = DetConfig;
 
@@ -47,10 +50,13 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //-----------------------------------------------------
 
   WCSimDetectorConstruction::tubeIDMap.clear();
+  WCSimDetectorConstruction::ODtubeIDMap.clear();
   //WCSimDetectorConstruction::tubeCylLocation.clear();// (JF) Removed
   WCSimDetectorConstruction::tubeLocationMap.clear();
+  WCSimDetectorConstruction::ODtubeLocationMap.clear();
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
   totalNumPMTs = 0;
+  totalNumODPMTs = 0;
   WCPMTExposeHeight= 0.;
   //-----------------------------------------------------
   // Set the default WC geometry.  This can be changed later.
@@ -102,6 +108,10 @@ WCSimDetectorConstruction::~WCSimDetectorConstruction(){
     delete fpmts.at(i);
   }
   fpmts.clear();
+  for (unsigned int i=0;i<fODpmts.size();i++){
+    delete fODpmts.at(i);
+  }
+  fODpmts.clear();
 }
 
 G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
@@ -116,7 +126,8 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
 
   totalNumPMTs = 0;
-  
+  totalNumODPMTs = 0;
+
   //-----------------------------------------------------
   // Create Logical Volumes
   //-----------------------------------------------------
@@ -190,6 +201,8 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // Reset the tubeID and tubeLocation maps before refiling them
   tubeIDMap.clear();
   tubeLocationMap.clear();
+  ODtubeIDMap.clear();
+  ODtubeLocationMap.clear();
 
 
   // Traverse and print the geometry Tree
@@ -267,4 +280,5 @@ void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
   wcopt->SetSavePi0(pi0Info_isSaved);
   wcopt->SetPMTQEMethod(PMT_QE_Method);
   wcopt->SetPMTCollEff(PMT_Coll_Eff);
+  wcopt->SetGeomHasOD(isODConstructed);
 }

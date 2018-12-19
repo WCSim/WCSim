@@ -44,6 +44,11 @@
 #include "G4OpenGLStoredXm.hh"
 #endif
 
+#ifdef G4VIS_USE_OPENGLQT
+#include "G4OpenGLImmediateQt.hh"
+#include "G4OpenGLStoredQt.hh"
+#endif
+
 #ifdef G4VIS_USE_OIX
 #include "G4OpenInventorX.hh"
 #endif
@@ -87,6 +92,11 @@ void WCSimVisManager::RegisterGraphicsSystems () {
   RegisterGraphicsSystem (new G4OpenGLStoredX);
 #endif
 
+#ifdef G4VIS_USE_OPENGLQT
+  RegisterGraphicsSystem (new G4OpenGLImmediateQt);
+  RegisterGraphicsSystem (new G4OpenGLStoredQt);
+#endif
+
 #ifdef G4VIS_USE_OPENGLWIN32
   RegisterGraphicsSystem (new G4OpenGLImmediateWin32);
   RegisterGraphicsSystem (new G4OpenGLStoredWin32);
@@ -121,11 +131,11 @@ void WCSimVisManager::RegisterGraphicsSystems () {
   mymodel->Set("anti_nu_e","yellow");
   mymodel->Set("anti_nu_mu","yellow");
   mymodel->Set("e-","blue");
-  mymodel->Set("mu-","black");
+  mymodel->Set("mu-","white");
   mymodel->Set("e+","red");
-  mymodel->Set("mu+","white");
+  mymodel->Set("mu+",G4Colour(0.78, 0.78, 0.78));  //to distinguish mu+ from mu- on black background.
   mymodel->Set("proton","magenta");
-  mymodel->Set("neutron","Grey");
+  mymodel->Set("neutron","cyan");
 
   if (fVerbose > 0) {
     G4cout <<
