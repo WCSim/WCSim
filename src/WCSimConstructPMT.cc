@@ -225,7 +225,7 @@ else {
 	WCLCVisAtt->SetForceAuxEdgeVisible(true);
 	//WCLCVisAtt->SetForceSolid(true);
 	//logicLightCone->SetVisAttributes(G4VisAttributes::Invisible);
-  if (0 < lightcollector && lightcollector < 3)
+  if (logicLightCone!=NULL)
 	logicLightCone->SetVisAttributes(WCLCVisAtt);
   }
 
