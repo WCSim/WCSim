@@ -155,6 +155,44 @@ WCSimRootTrigger::~WCSimRootTrigger()
   //Clear("C");
 }
 
+//_____________________________________________________________________________
+
+WCSimRootTrigger & WCSimRootTrigger::operator=(const WCSimRootTrigger & in)
+{
+  //first clear everything
+  this->Clear();
+
+  //then fill
+  fEvtHdr = in.fEvtHdr;
+  fMode = in.fMode;
+  fNvtxs = in.fNvtxs;
+  for(int i = 0; i < MAX_N_PRIMARIES; i++) {
+    fVtxsvol[i] = in.fVtxsvol[i];
+    for(int j = 0; j < 3; j++) {
+      fVtxs[i][j] = in.fVtxs[i][j];
+    }//j
+  }//i
+  fVecRecNumber = in.fVecRecNumber;
+  fJmu = in.fJmu;
+  fJp = in.fJp;
+  fPi0 = in.fPi0;
+  fNpar = in.fNpar;
+  fNtrack = in.fNtrack;
+  fTracks = (TClonesArray*)in.fTracks->Clone();
+  fNumTubesHit = in.fNumTubesHit;
+  fNcherenkovhits = in.fNcherenkovhits;
+  fCherenkovHits = (TClonesArray*)in.fCherenkovHits->Clone();
+  fCherenkovHitCounter = in.fCherenkovHitCounter;
+  fNcherenkovhittimes = in.fNcherenkovhittimes;
+  fCherenkovHitTimes = (TClonesArray*)in.fCherenkovHitTimes->Clone();
+  fNumDigitizedTubes = in.fNumDigitizedTubes;
+  fNcherenkovdigihits = in.fNcherenkovdigihits;
+  fSumQ = in.fSumQ;
+  fCherenkovDigiHits = (TClonesArray*)in.fCherenkovDigiHits->Clone();
+  fTriggerType = in.fTriggerType;
+  fTriggerInfo = in.fTriggerInfo;
+  IsZombie = in.IsZombie;
+}
 
 //_____________________________________________________________________________
 
@@ -453,6 +491,13 @@ WCSimRootEvent::WCSimRootEvent()
   // it will be lost
   fEventList = 0;
   Current = 0;
+}
+
+WCSimRootEvent & WCSimRootEvent::operator=(const WCSimRootEvent & in)
+{
+  this->Clear();
+  Current = in.Current;
+  fEventList = (TClonesArray*)in.fEventList->Clone();
 }
 
 void WCSimRootEvent::Initialize()

@@ -251,6 +251,7 @@ public:
   WCSimRootTrigger();
   WCSimRootTrigger(int, int);
   virtual ~WCSimRootTrigger();
+  WCSimRootTrigger & operator=(const WCSimRootTrigger & in);
   bool CompareAllVariables(const WCSimRootTrigger * c) const;
   
   void Initialize();
@@ -347,6 +348,7 @@ class WCSimRootEvent : public TObject {
 public:
   WCSimRootEvent();
   virtual ~WCSimRootEvent();
+  WCSimRootEvent & operator=(const WCSimRootEvent & in);
   bool CompareAllVariables(const WCSimRootEvent * c) const;
 
   void          Clear(Option_t *option ="");
