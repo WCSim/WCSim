@@ -25,14 +25,13 @@ You can follow issues/requests etc by watching the GitHub respository.
 
 WCSim uses Travis CI to perform build and physics tests for each pull request and commit.
 The scripts it runs can be found at https://github.com/WCSim/Validation
-The output can be found at
 
-https://wcsim.github.io/Validation/
+The output can be found at: https://wcsim.github.io/Validation/
 
 ## Documentation
 
 More detailed information about the simulation is available in
-doc/DetectorDocumentation.pdf
+`doc/DetectorDocumentation.pdf`
 
 ## Current notes and how to build
 
