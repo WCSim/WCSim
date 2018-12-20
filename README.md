@@ -113,9 +113,11 @@ Extra docker commands:
 
 ## Running WCSim
 
-To test that WCSim is working, try running the test macro `WCSim.mac`, which runs 10 electrons with 500 MeV of energy in the Super-Kamiokande detector:
+To test that WCSim is working, try running the test macro `WCSim.mac`, which runs 10 electrons with 500 MeV of energy in the Super-Kamiokande detector. The command is one of the following, depending on how WCSim was built:
 
 `./bin/Linux-g++/WCSim WCSim.mac`
+
+`./exe/bin/Linux-g++/WCSim WCSim.mac`
 
 `WCSim.mac` is well commented. Take a look inside (and also at other `.mac` files in `/macros/`) for the various options you can use to run WCSim
 
