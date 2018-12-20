@@ -118,6 +118,7 @@ To test that WCSim is working, try running the test macro `WCSim.mac`, which run
 
 `./bin/Linux-g++/WCSim WCSim.mac`
 
+`WCSim.mac` is well commented. Take a look inside (and also at other `.mac` files in `/macros/`) for the various options you can use to run WCSim
 
 ## Color Convention for visualization used in WCSimVismanager.cc
 
