@@ -17,7 +17,8 @@ pid = {"pi0":111, "pi+":211, "k0l":130, "k0s":310, "k+":321,
 #holds detector [radius, height] in cm
 detectors = {"SuperK":[3368.15/2., 3620.],
              "Cylinder_60x74_20inchBandL_14perCent":[7400./2., 6000.],
-             "Cylinder_60x74_20inchBandL_40perCent":[7400./2., 6000.]}
+             "Cylinder_60x74_20inchBandL_40perCent":[7400./2., 6000.],
+             "HyperK":[7080./2., 5480.]}
 
 for pname, no in pid.items():
     if pname.endswith('+'):
@@ -45,11 +46,16 @@ parser.add_option("-t", "--type", dest="type",
                       % (optchoices, optdefault),
                   metavar="TYPE",
                   choices=optchoices, default=optdefault)
-optdefault = 1000.0
+optdefault = '1000.0'
 parser.add_option("-e", "--energy", dest="energy",
-                  help="Particle energy to be generated in MeV. Default: %s" \
+                  help="Particle energy to be generated in MeV. Use a colon separated pair to produce a random uniform distribution. Default: %s" \
                       % (optdefault),
                   metavar="ENERGY",default=optdefault)
+optdefault = '0.0'
+parser.add_option("-x", "--time", dest="time",
+                  help="Time distribution to be generated, in ns. Use a colon separated pair to produce a random uniform distribution. Default: %s" \
+                      % (optdefault),
+                  metavar="TIME", default=optdefault)
 optchoices = ["center", "random", "minusx", "plusx", "minusz", "plusz"]
 optdefault = optchoices[0]
 parser.add_option("-v", "--vertex", dest="vertname",
@@ -68,24 +74,41 @@ parser.add_option("-w", "--detector", dest="detector",
                   help="Detector water volume to use (for vertex positioning). Choices: %s. Default: %s" \
                       % (optchoices, optdefault),
                   choices=optchoices, default=optdefault)
+optdefault = 10101
+parser.add_option("-s", "--seed", dest="seed",
+                  help="Random number seed. Default: %s" \
+                      % (optdefault),
+                  metavar="SEED", default=optdefault)
 
 (options, args) = parser.parse_args()
 
 options.vertname = options.vertname.lower()
 options.dirname = options.dirname.lower()
 
+random.seed(options.seed)
 
+def pair_or_single(arg):
+    pair = list(set(float(x) for x in arg.split(':')))
+    pair.sort()
+    if len(pair) > 2 or len(pair) < 1:
+        print "Argument %s is not a colon-separted pair of floats, or a single float" % arg
+    elif len(pair) == 1:
+        return pair, "%.1f" % (pair[0])
+    elif len(pair) == 2:
+        return pair, "%.1f:%.1f" % (pair[0], pair[1])
 
 nfiles = int(options.nfiles)
 npart = int(options.npart)
-energy = float(options.energy)
+energy, energystr = pair_or_single(options.energy)
+time, timestr = pair_or_single(options.time)
+
 
 
 #Define the particle
 particle = {"vertex":(0, 0, 0),
-            "time":0,
+            "time":time[0],
             "type":pid[options.type],
-            "energy":energy,
+            "energy":energy[0],
             "direction":(1,0,0)}
 
 
@@ -140,7 +163,7 @@ else:
 
 
 
-nu =   {"type":pid["numu"], "energy":energy+1000.0,
+nu =   {"type":pid["numu"], "energy":energy[0]+1000.0,
         "direction":(1, 0, 0)}
 prot = {"type":pid["p+"], "energy":935.9840,
         "direction":(0, 0, 1)}
@@ -150,6 +173,14 @@ prot = {"type":pid["p+"], "energy":935.9840,
 def partPrint(p, f, recno):
     f.write("$ begin\n")
     f.write("$ nuance 0\n")
+    #random energy
+    if len(energy) == 2:
+        thisenergy  = random.uniform(energy[0], energy[1])
+        p ["energy"] = thisenergy
+        nu["energy"] = thisenergy + 1000
+    if len(time) == 2:
+        thistime = random.uniform(time[0], time[1])
+        p["time"] = thistime
     if randvert:
         rad    = detectors[options.detector][0] - 20.
         height = detectors[options.detector][1] - 20.
@@ -186,7 +217,7 @@ def printTrack(p, f, code=0):
 for fileno in range(nfiles):
     typestr = options.type.replace("+","plus").replace("-","minus")
     
-    filename="%s_%.0fMeV_%s_%s_%s_%03i.kin" % (typestr, energy, options.vertname, options.dirname, options.detector, fileno)
+    filename="%s_%sMeV_%s_%s_%s_%03i.kin" % (typestr, energystr, options.vertname, options.dirname, options.detector, fileno)
 
     outfile = open(filename, 'w')
 
