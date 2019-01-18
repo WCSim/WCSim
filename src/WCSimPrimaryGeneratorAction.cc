@@ -152,6 +152,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    vtxs[0] = G4ThreeVector(atof(token[1])*cm,
 				    atof(token[2])*cm,
 				    atof(token[3])*cm);
+	    double time = atof(token[4])*ns;
 	    
             // true : Generate vertex in Rock , false : Generate vertex in WC tank
             SetGenerateVertexInRock(false);
@@ -184,7 +185,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    // Now read the outgoing particles
 	    // These we will simulate.
 
-
+	    int itrack = 0;
 	    while ( token=readInLine(inputFile, lineSize, inBuf),
 		    token[0] == "track" )
 	      {
@@ -236,15 +237,24 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 		    G4double ekin = energy - mass;
 
+		    particleGun->SetParticleTime(time);
 		    particleGun->SetParticleEnergy(ekin);
 		    //G4cout << "Particle: " << pdgid << " KE: " << ekin << G4endl;
 		    particleGun->SetParticlePosition(vtxs[0]);
 		    particleGun->SetParticleMomentumDirection(dir);
 		    particleGun->GeneratePrimaryVertex(anEvent);
-		  }
-	      }
-	  }
-      }
+
+		    //save the parameters used
+		    SetVtxs(itrack, vtxs[0]);
+		    SetBeamEnergy(ekin, itrack);
+		    SetBeamDir(dir, itrack);
+		    SetBeamPDG(pdgid, itrack);
+		    itrack++;
+		  }//line formatted as a track
+	      }//loop over (non beam/target) tracks in event
+	    SetNvtxs(itrack);
+	  }//normal nuance parsing
+      }//nuance format
     else 
       {    // old muline format  
 	inputFile >> nuEnergy >> energy >> xPos >> yPos >> zPos 
@@ -261,8 +271,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	particleGun->SetParticlePosition(vtx);
 	particleGun->SetParticleMomentumDirection(dir);
 	particleGun->GeneratePrimaryVertex(anEvent);
-      }
-  }
+      }//muline format
+  }//muline events
 
   else if (useGunEvt)
   {      // manual gun operation
