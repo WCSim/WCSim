@@ -23,7 +23,7 @@ class WCSimWCDigitizerBase : public G4VDigitizerModule
 {
 public:
   
-  WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, DigitizerType_t);
+  WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, DigitizerType_t, G4String detectorElement);
   virtual ~WCSimWCDigitizerBase();
   
   bool AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector<int> digi_comp);
@@ -71,6 +71,8 @@ protected:
   virtual double GetDefaultPEPrecision() = 0;       ///< Set the default digitizer-specific charge resolution (in p.e.) (overridden by .mac)
 
   void GetVariables(); ///< Get the default deadtime, etc. from the derived class, and override with read from the .mac file
+
+  G4String detectorElement;
 };
 
 
@@ -85,7 +87,7 @@ class WCSimWCDigitizerSKI : public WCSimWCDigitizerBase
 {
 public:
   
-  WCSimWCDigitizerSKI(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+  WCSimWCDigitizerSKI(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
   ~WCSimWCDigitizerSKI();
 
   void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);

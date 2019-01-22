@@ -7,7 +7,7 @@
 ## select the geometry
 # Default config if you do nothing is currently SuperK
 #
-# The tube size is fixed for SK to 20"
+# The tube size is fixed for SK to 20 inch
 # These are fixed geometries for validation
 #/WCSim/WCgeom SuperK
 
@@ -17,7 +17,7 @@
 #/WCSim/WCgeom SuperK_12inchBandL_15perCent # Note: the actual coverage is 14.59%
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 
-# HyperK (one cylindrical tank with a height of 54.8 m, a diameter of 70.8 m and 40% coverage with 20" B&L PMTs)
+# HyperK (one cylindrical tank with a height of 54.8 m, a diameter of 70.8 m and 40% coverage with 20 inch B&L PMTs)
 #/WCSim/WCgeom HyperK
 #/WCSim/WCgeom HyperKWithOD
 
@@ -25,8 +25,10 @@
 #/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 #/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
 
-# Generic cylindrical detector with a height of 100m and a 
+
+# Generic cylindrical detector with a height of 100m and a
 # diameter of 69m with 12" HPD and 14.59% photocoverage
+
 #/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
 
 # Previous, egg-shaped HyperK design:
@@ -42,7 +44,7 @@
 #/WCSim/EggShapedHyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
 
 
-#/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
+#/WCSim/Construct # This must be uncommented in order to construct a new detector configuration.
 
 #Added for the PMT QE option 08/17/10 (XQ)
 # 1. Stacking only mean when the photon is generated
@@ -80,8 +82,8 @@
 # Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
 #/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
 #/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
-#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
-#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
@@ -96,14 +98,24 @@
 #/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
 #width /DarkRate/SetDarkWindow [time in ns] around each hit
 #i.e. hit time ± (/DarkRate/SetDarkWindow) / 2
+/DarkRate/SetDetectorElement tank
 /DarkRate/SetDarkMode 1
 /DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
 
+#/DarkRate/SetDetectorElement OD
+#/DarkRate/SetDarkMode 1
+#/DarkRate/SetDarkHigh 100000
+#/DarkRate/SetDarkLow 0
+#/DarkRate/SetDarkWindow 4000
+
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute macros/visOGLSX.mac
 #/control/execute macros/visRayTracer.mac
+#/control/execute macros/visOGLQt.mac
+
+
 
 ## select the input nuance-formatted vector file
 ## you can of course use your own
