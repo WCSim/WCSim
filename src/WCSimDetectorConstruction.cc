@@ -280,4 +280,5 @@ void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
   wcopt->SetSavePi0(pi0Info_isSaved);
   wcopt->SetPMTQEMethod(PMT_QE_Method);
   wcopt->SetPMTCollEff(PMT_Coll_Eff);
+  wcopt->SetGeomHasOD(isODConstructed);
 }

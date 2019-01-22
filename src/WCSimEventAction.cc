@@ -82,16 +82,12 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   ///// -- OD -- /////
   ////////////////////
   WCSimWCPMT* WCDMPMT_OD;
-  if(detectorConstructor->GetIsODConstructed()) {
-    WCDMPMT_OD = new WCSimWCPMT( "WCReadoutPMT_OD", myDetector, "OD");
-    DMman->AddNewModule(WCDMPMT_OD);
-  }
+  WCDMPMT_OD = new WCSimWCPMT( "WCReadoutPMT_OD", myDetector, "OD");
+  DMman->AddNewModule(WCDMPMT_OD);
 
   WCSimWCAddDarkNoise* WCDNM_OD;
-  if(detectorConstructor->GetIsODConstructed()) {
-    WCDNM_OD = new WCSimWCAddDarkNoise("WCDarkNoise_OD", detectorConstructor, "OD");
-    DMman->AddNewModule(WCDNM_OD);
-  }
+  WCDNM_OD = new WCSimWCAddDarkNoise("WCDarkNoise_OD", detectorConstructor, "OD");
+  DMman->AddNewModule(WCDNM_OD);
 }
 
 WCSimEventAction::~WCSimEventAction()
@@ -678,7 +674,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   if(!SavedOptions) {
     WCSimRootOptions * wcsimopt = runAction->GetRootOptions();
     //Dark noise
-    WCDNM->SaveOptionsToOutput(wcsimopt);
+    WCDNM->SaveOptionsToOutput(wcsimopt, "tank");
     //Digitizer
     WCDM->SaveOptionsToOutput(wcsimopt);
     //Trigger
@@ -686,6 +682,11 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     //Generator
     generatorAction->SaveOptionsToOutput(wcsimopt);
     
+    if(detectorConstructor->GetIsODConstructed()) {
+      //Dark noise
+      WCDNM_OD->SaveOptionsToOutput(wcsimopt, "OD");
+    }
+
     SavedOptions = true;
   }
 }
