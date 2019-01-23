@@ -21,6 +21,9 @@
 #/WCSim/WCgeom HyperK
 #/WCSim/WCgeom HyperKWithOD
 
+# Another option of HyperK
+#/WCSim/WCgeom HyperK_20perCent # Note: the coverage is set to 20.0%.
+
 # Cylindrical detector with a height of 60 m and a diameter of 74 m
 #/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 #/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
@@ -43,6 +46,11 @@
 #/WCSim/EggShapedHyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
 #/WCSim/EggShapedHyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
 
+# LCConfig is for setting the light collector. To be used with WCSim/Construct.
+# Default is No_Mirror.
+#/WCSim/LCConfig No_Mirror
+#/WCSim/LCConfig Mirror_OldLC # Mirror design in a branch of archive/LightCone at 2011.
+#/WCSim/LCConfig Mirror_2018Oct # A short mirror design.
 
 #/WCSim/Construct # This must be uncommented in order to construct a new detector configuration.
 
