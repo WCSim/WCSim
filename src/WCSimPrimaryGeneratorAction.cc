@@ -241,6 +241,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		    particleGun->SetParticlePosition(vtxs[0]);
 		    particleGun->SetParticleMomentumDirection(dir);
 		    particleGun->GeneratePrimaryVertex(anEvent);
+		    SetVtx(vtxs[0]);
+		    SetBeamEnergy(ekin);
+		    SetBeamDir(dir);
 		  }
 	      }
 	  }
