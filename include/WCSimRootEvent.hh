@@ -143,6 +143,7 @@ public:
   virtual ~WCSimRootCherenkovDigiHit() { }
   bool CompareAllVariables(const WCSimRootCherenkovDigiHit * c) const;
 
+  void SetT(float t) { fT = t; }
   Float_t     GetQ() const { return fQ;}
   Float_t     GetT() const { return fT;}
   Int_t       GetTubeId() const { return fTubeId;}
