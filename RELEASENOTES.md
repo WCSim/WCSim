@@ -1,6 +1,18 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
+01/29/2019: Notes for v1.8.0        
+*************************************************************
+
+The new features included in this release include an outer detector volume in the Hyper-Kamiokande detector, an option to include light cones, and updates to accommodate our new trigger simulations. 
+
+New Features
+
+Bug Fixes
+
+Updates
+
+*************************************************************
 04/27/2017: Notes for v1.7.0        
 *************************************************************
 New Features
