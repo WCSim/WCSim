@@ -59,6 +59,8 @@ private:
 
   Float_t                fWCPMTRadius; // Radius of PMT
   Int_t                  fWCNumPMT;   // Number of PMTs
+  Float_t                fODWCPMTRadius; // Radius of OD PMT
+  Int_t                  fODWCNumPMT; // Number of OD PMTs
   Float_t                fWCOffset[3]; // Offset of barrel center in global coords
   Int_t                  fOrientation; //Orientation o detector, 0 is 2km horizontal, 1 is Upright
 
@@ -81,7 +83,9 @@ public:
   void SetGeo_Type(Int_t f){fgeo_type = f;}
 
   void  SetWCNumPMT(Int_t i) {fWCNumPMT= i;}
+  void  SetODWCNumPMT(Int_t i) {fODWCNumPMT= i;}
   void  SetWCPMTRadius(Float_t f) {fWCPMTRadius = f;}
+  void  SetODWCPMTRadius(Float_t f) {fODWCPMTRadius = f;}
   void  SetWCOffset(Float_t x, Float_t y, Float_t z) 
            {fWCOffset[0]=x; fWCOffset[1]=y; fWCOffset[2] = z;}
   void  SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, Float_t rot[3], Float_t pos[3], bool expand=true);
@@ -94,7 +98,9 @@ public:
   
 
   Int_t GetWCNumPMT() const {return fWCNumPMT;}
+  Int_t GetODWCNumPMT() const {return fODWCNumPMT;}
   Float_t GetWCPMTRadius() const {return fWCPMTRadius;}
+  Float_t GetODWCPMTRadius() const {return fODWCPMTRadius;}
   Float_t GetWCOffset(Int_t i) const {return (i<3) ? fWCOffset[i] : 0.;}
   Int_t GetOrientation() const { return fOrientation; }
   //WCSimRootPMT GetPMT(Int_t i){return *(new WCSimRootPMT());}

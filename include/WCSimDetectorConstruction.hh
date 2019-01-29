@@ -71,14 +71,20 @@ public:
   void Cylinder_60x74_20inchBandL_40perCent();
   void Cylinder_12inchHPD_15perCent();
   void SetHyperKGeometry();
+  void SetHyperKGeometry_20perCent();
   void SetHyperKWithODGeometry();
   void UpdateGeometry();
-  
+  void SetLCType(G4int LightCollectorType)
+  {
+	  LCType=LightCollectorType;
+  };
+  G4int GetLCType(){return LCType;};
 
   G4String GetDetectorName()      {return WCDetectorName;}
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
   G4double GetPMTSize()           {return WCPMTRadius;}
+  G4double GetODPMTSize()         {return WCPMTODRadius;}
   G4String GetPMTName()			  {return WCPMTName;}
   G4int    GetMyConfiguration()   {return myConfiguration;}
   G4double GetGeo_Dm(G4int);
@@ -420,6 +426,8 @@ private:
 
     G4int PMTCopyNo;
     G4int wallSlabCopyNo;
+
+  G4int  LCType;     // 0: No LC, 1: Old Branch(Mirror), 2: 2018Oct(Mirror)
 
   // *** End egg-shaped HyperK Geometry ***
 
