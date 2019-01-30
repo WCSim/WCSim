@@ -141,14 +141,16 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
     
     // Get the number of tracks
     int ntrack = wcsimrootevent->GetNtrack();
+    int ntrack_slots = wcsimrootevent->GetNtrack_slots();
     if(verbose) printf("ntracks=%d\n",ntrack);
     
     int i;
     // Loop through elements in the TClonesArray of WCSimTracks
-    for (i=0; i<ntrack; i++)
+    for (i=0; i<ntrack_slots; i++)
     {
       TObject *element = (wcsimrootevent->GetTracks())->At(i);
-      
+      if(!element)
+	continue;
       WCSimRootTrack *wcsimroottrack = dynamic_cast<WCSimRootTrack*>(element);
 
       if(verbose){
@@ -240,16 +242,20 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
       
       int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
       if(verbose) printf("Ncherenkovdigihits %d\n", ncherenkovdigihits);
-     
+      int ncherenkovdigihits_slots = wcsimrootevent->GetNcherenkovdigihits_slots();
+
       if(ncherenkovdigihits>0)
 	num_trig++;
       //for (i=0;i<(ncherenkovdigihits>4 ? 4 : ncherenkovdigihits);i++){
-      for (i=0;i<ncherenkovdigihits;i++)
+      int idigi = 0;
+      for (i=0;i<ncherenkovdigihits_slots;i++)
       {
     	// Loop through elements in the TClonesArray of WCSimRootCherenkovDigHits
 	
     	TObject *element = (wcsimrootevent->GetCherenkovDigiHits())->At(i);
-	
+	if(!element) continue;
+	idigi++;
+
     	WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = 
     	  dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
 	
@@ -259,6 +265,8 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
 		   wcsimrootcherenkovdigihit->GetT(),wcsimrootcherenkovdigihit->GetTubeId());
 	}
       } // End of loop over Cherenkov digihits
+      if(verbose)
+	cout << idigi << " digits found; expected " << ncherenkovdigihits << endl;
     } // End of loop over trigger
     
     // reinitialize super event between loops.

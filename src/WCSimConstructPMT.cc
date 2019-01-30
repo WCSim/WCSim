@@ -15,12 +15,14 @@
 #include "WCSimPMTObject.hh"
 
 #include "G4SystemOfUnits.hh"
+#include "WCSimLC.hh"
+#include "G4NistManager.hh"
 
 //PMT logical volume construction.
 
 WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
-G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName)
+G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName, G4String detectorElement)
 {
   PMTKey_t key(PMTName,CollectionName);
 
@@ -44,7 +46,9 @@ if (Vis_Choice == "RayTracer"){
 else
    { // Gray wireframe visual style
     // used in OGLSX visualizer
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  G4VisAttributes* WCPMTVisAtt;
+  if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
+  else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);}
 
   G4double expose;
@@ -65,6 +69,24 @@ else
   G4double PMTHolderZ[2] = {0, expose};
   G4double PMTHolderR[2] = {radius, radius};
   G4double PMTHolderr[2] = {0,0};
+
+  G4int lightcollector;
+  lightcollector = GetLCType();
+  WCSimLC *logicLightCone = NULL;
+  if (0 < lightcollector && lightcollector < 3){
+	G4cout<<"Building Light Collectors"<<G4endl;
+	G4NistManager* man = G4NistManager::Instance();
+	G4Material* conc_material = man->FindOrBuildMaterial("G4_PLEXIGLASS");
+	logicLightCone = new WCSimLC("LC", conc_material, lightcollector);
+
+	PMTHolderZ[0] = 0;
+	PMTHolderZ[1] = expose+logicLightCone->GetHeight()-logicLightCone->GetOffset();
+	PMTHolderR[0] = std::max(radius,logicLightCone->GetRadius()+.1);
+	PMTHolderR[1] = std::max(radius,logicLightCone->GetRadius()+.1);//+.1mm for extra space
+  }
+  else if (lightcollector!=0){
+	G4cout<<"Wrong Light Collectors ID is specified!"<<G4endl;
+  }
 
   G4Polycone* solidWCPMT = 
    new G4Polycone("WCPMT",                    
@@ -129,7 +151,8 @@ else{
                   "InteriorWCPMT",
                   logicWCPMT,
                   false,
-                  0);
+                  0,
+		checkOverlaps);
 
 if (Vis_Choice == "RayTracer"){
 // Adding color and forcing the inner portion of the PMT's to be viewed
@@ -173,16 +196,42 @@ else {
                         0,
                         checkOverlaps);
 
+  //*Ugly implementation for Light Cone T.Y. 2018.2.13
+  if (0 < lightcollector && lightcollector < 3){
+	G4cout<<"Registering Light Collectors"<<G4endl;
+	G4VPhysicalVolume* physiLightCone =
+	  new G4PVPlacement(0,
+		  G4ThreeVector(0, 0, -1.0*logicLightCone->GetOffset()),
+		  logicLightCone,
+		  "LightConeWCPMT",
+		  logicWCPMT,
+		  false,
+		  0,
+		  checkOverlaps);
+	G4cout<<"Registering Light Collectors Done"<<G4endl;
+  }
+  //*Ugly implementation for Light Cone T.Y. 2018.2.13
+
 // For either visualization type, logicGlassFaceWCPMT will either be visible or invisible depending on which
 // line is commented at the end of the respective if statements
 
   if (Vis_Choice == "OGLSX")
    { // Gray wireframe visual style
     // used in OGLSX visualizer
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  G4VisAttributes* WCPMTVisAtt;
+  if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
+  else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
-  logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
+  logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
+	G4VisAttributes* WCLCVisAtt = new G4VisAttributes(G4Colour(.3,.3,0.));
+	WCLCVisAtt->SetForceWireframe(true);
+	WCLCVisAtt->SetForceAuxEdgeVisible(true);
+	//WCLCVisAtt->SetForceSolid(true);
+	//logicLightCone->SetVisAttributes(G4VisAttributes::Invisible);
+  if (logicLightCone!=NULL)
+	logicLightCone->SetVisAttributes(WCLCVisAtt);
+  }
 
   if (Vis_Choice == "RayTracer"){
     // Blue wireframe visual style
@@ -197,7 +246,9 @@ else {
   else
    { // Gray wireframe visual style
     // used in OGLSX visualizer
-  G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
+  G4VisAttributes* WCPMTVisAtt;
+  if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
+  else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
@@ -212,7 +263,7 @@ else {
   // make a new one
   if( ! SDman->FindSensitiveDetector(SDName, false) ) {
     
-    aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
+    aWCPMT = new WCSimWCSD(CollectionName,SDName,this,detectorElement);
     SDman->AddNewDetector( aWCPMT );
   }
 
