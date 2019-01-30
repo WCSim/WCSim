@@ -168,9 +168,9 @@ void read_OD(std::string inFileName = "wcsim.root", std::string outFileName = ""
   //////////////////////////////////////////
 
   const int nbBins = 10001;
-  const int nbPEMax = 10000.5;
+  const double nbPEMax = 10000.5;
   const int nbBinsByPMT = 501;
-  const int nbPEMaxByPMT = 500.5;
+  const double nbPEMaxByPMT = 500.5;
 
   const double cutPEByPMT = 0.;
   
