@@ -168,7 +168,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
     G4Tubs *solidCaveTyvek = new G4Tubs("WC",
                                         WCRadius,
-                                        WCRadius + CaveTyvekSheetThickness,
+                                        WCRadius + WCODTyvekSheetThickness,
                                         .5 * WCLength,  //jl145 - per blueprint
                                         0. * deg,
                                         360. * deg);
@@ -183,10 +183,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
         new G4PVPlacement(0,
                           G4ThreeVector(0., 0., 0.),
                           logicCaveTyvek,
-                          "WCBarrel",
-                          logicWC,
-                          false,
+						  "CaveBarrelTyvek",
+						  logicWCBarrel,
+						  false,
                           0);
+
+    G4LogicalSkinSurface *TyvekCaveBarrelSurface = new G4LogicalSkinSurface("TyvekCaveBarrelSurface", logicCaveTyvek, OpWaterTySurface);
 
     G4VisAttributes *showTyvekCave = new G4VisAttributes(green);
     showTyvekCave->SetForceWireframe(true);// This line is used to give definition to the rings in OGLSX Visualizer
@@ -200,61 +202,46 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
     G4Tubs *solidCaveCapsTyvek = new G4Tubs("CaveCapsTyvek",
                                             0,
                                             WCRadius,
-                                            .5 * (CaveTyvekSheetThickness),
+                                            .5 * (WCODTyvekSheetThickness),
                                             0. * deg,
                                             360. * deg);
 
-    G4LogicalVolume *logicTopCaveTyvek =
-        new G4LogicalVolume(solidCaveCapsTyvek,
-                            G4Material::GetMaterial("Tyvek"),
-                            "TopCaveTyvek",
-                            0, 0, 0);
-    G4LogicalVolume *logicBottomCaveTyvek =
-        new G4LogicalVolume(solidCaveCapsTyvek,
-                            G4Material::GetMaterial("Tyvek"),
-                            "BottomCaveTyvek",
-                            0, 0, 0);
+    G4LogicalVolume *logicCaveCapsTyvek =
+			new G4LogicalVolume(solidCaveCapsTyvek,
+								G4Material::GetMaterial("Tyvek"),
+								"CaveCapTyvek",
+								0, 0, 0);
+
+    G4LogicalSkinSurface *TyvekCaveTopSurface = new G4LogicalSkinSurface("TyvekCaveTopSurface", logicCaveCapsTyvek, OpWaterTySurface);
 
     G4VisAttributes *CapsCaveTyvekVisAtt = new G4VisAttributes(yellow);
     CapsCaveTyvekVisAtt->SetForceWireframe(true);
-    logicTopCaveTyvek->SetVisAttributes(CapsCaveTyvekVisAtt);
-    logicBottomCaveTyvek->SetVisAttributes(CapsCaveTyvekVisAtt);
-    //logicTopCaveTyvek->SetVisAttributes(G4VisAttributes::Invisible); //amb79
-    //logicBottomCaveTyvek->SetVisAttributes(G4VisAttributes::Invisible); //amb79
+    logicCaveCapsTyvek->SetVisAttributes(CapsCaveTyvekVisAtt);
+    //logicCaveCapsTyvek->SetVisAttributes(G4VisAttributes::Invisible); //amb79
 
     G4ThreeVector CaveTyvekPosition(0., 0., WCLength / 2);
 
     G4VPhysicalVolume *physiTopCaveTyvek =
         new G4PVPlacement(0,
                           CaveTyvekPosition,
-                          logicTopCaveTyvek,
+						  logicCaveCapsTyvek,
                           "CaveTopTyvek",
-                          logicWC,
+						  logicCaveCapsTyvek,
                           false,
                           0);
 
-    G4LogicalBorderSurface *WaterTyTopCaveSurfaceBot =
-        new G4LogicalBorderSurface("WaterTyCaveTopSurface",
-                                   physiWCBarrel,
-                                   physiTopCaveTyvek,
-                                   OpWaterTySurface);
 
     CaveTyvekPosition.setZ(-CaveTyvekPosition.getZ());
 
     G4VPhysicalVolume *physiBottomCaveTyvek =
         new G4PVPlacement(0,
                           CaveTyvekPosition,
-                          logicBottomCaveTyvek,
+						  logicCaveCapsTyvek,
                           "CaveBottomTyvek",
-                          logicWC,
+						  logicWCBarrel,
                           false,
                           0);
 
-    G4LogicalBorderSurface *WaterTyBottomCaveSurfaceBot =
-        new G4LogicalBorderSurface("WaterTyCaveTopSurface",
-                                   physiWCBarrel,
-                                   physiBottomCaveTyvek,
-                                   OpWaterTySurface);
 
   } // END Tyvek cave
   //-----------------------------------------------------
@@ -902,67 +889,50 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 		// ------------------------------------------------------------
 
 		G4Tubs* solidWCODCapsTyvek = new G4Tubs("WCODCapsTyvek",
-																						0,
-																						WCIDRadius,
-																						.5*(WCODTyvekSheetThickness),
-																						0.*deg,
-																						360.*deg);
+												0,
+												WCIDRadius,
+												.5*(WCODTyvekSheetThickness),
+												0.*deg,
+												360.*deg);
 
-		G4LogicalVolume* logicWCODTopCapTyvek =
+		G4LogicalVolume* logicWCODCapTyvek =
 				new G4LogicalVolume(solidWCODCapsTyvek,
-														G4Material::GetMaterial("Tyvek"),
-														"WCODTopCapTyvek",
-														0,0,0);
+									G4Material::GetMaterial("Tyvek"),
+									"WCODTopCapTyvek",
+									0,0,0);
 
-		G4LogicalVolume* logicWCODBottomCapTyvek =
-				new G4LogicalVolume(solidWCODCapsTyvek,
-														G4Material::GetMaterial("Tyvek"),
-														"WCODBottomCapTyvek",
-														0,0,0);
+		G4LogicalSkinSurface *WaterTySurfaceTop = new G4LogicalSkinSurface("WaterTySurfaceTop", logicWCODCapTyvek, OpWaterTySurface);
 
 		G4VisAttributes* WCCapsODTyvekCellVisAtt
 				= new G4VisAttributes(yellow);
 		WCCapsODTyvekCellVisAtt->SetForceWireframe(true);
 
-		logicWCODTopCapTyvek->SetVisAttributes(G4VisAttributes::Invisible);
-		logicWCODBottomCapTyvek->SetVisAttributes(G4VisAttributes::Invisible);
+		logicWCODCapTyvek->SetVisAttributes(G4VisAttributes::Invisible);
 		//// Uncomment following for TYVEK visualization
-		// logicWCODTopCapTyvek->SetVisAttributes(WCCapsODTyvekCellVisAtt);
-		// logicWCODBottomCapTyvek->SetVisAttributes(WCCapsODTyvekCellVisAtt);
+		// logicWCODCapTyvek->SetVisAttributes(WCCapsODTyvekCellVisAtt);
 
 		G4ThreeVector CapTyvekPosition(0.,0.,(WCIDHeight + 2*WCODDeadSpace)/2);
 
 		G4VPhysicalVolume* physiWCODTopCapsTyvek =
 				new G4PVPlacement(0,
-													CapTyvekPosition,
-													logicWCODTopCapTyvek,
-													"WCODTopCapsTyvek",
-													logicWCBarrel,
-													false,
-													0);
+								  CapTyvekPosition,
+								  logicWCODCapTyvek,
+								  "WCODTopCapsTyvek",
+								  logicWCBarrel,
+								  false,
+								  0);
 
-		G4LogicalBorderSurface * WaterTyTopCapSurfaceBot =
-				new G4LogicalBorderSurface(	"WaterTyTopCapSurface",
-																		 physiWCBarrel,
-																		 physiWCODTopCapsTyvek,
-																		 OpWaterTySurface);
 
 		CapTyvekPosition.setZ(-CapTyvekPosition.getZ());
 
 		G4VPhysicalVolume* physiWCODBottomCapsTyvek =
 				new G4PVPlacement(0,
-													CapTyvekPosition,
-													logicWCODBottomCapTyvek,
-													"WCODBottomCapsTyvek",
-													logicWCBarrel,
-													false,
-													0);
-
-		G4LogicalBorderSurface * WaterTyBottomCapSurfaceBot =
-				new G4LogicalBorderSurface(	"WaterTyBottomCapSurface",
-																		 physiWCBarrel,
-																		 physiWCODBottomCapsTyvek,
-																		 OpWaterTySurface);
+								  CapTyvekPosition,
+								  logicWCODCapTyvek,
+								  "WCODBottomCapsTyvek",
+								  logicWCBarrel,
+								  false,
+								  0);
 
 
 		//-------------------------------------------------------------
@@ -970,48 +940,45 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 		// ------------------------------------------------------------
 
 		G4double annulusODTyvekRmax[2] = {(WCODRadius),
-																			WCODRadius};
+										  WCODRadius};
 		G4double annulusODTyvekRmin[2] = {(WCODRadius-WCODTyvekSheetThickness),
-																			WCODRadius-WCODTyvekSheetThickness};
+										  WCODRadius-WCODTyvekSheetThickness};
 
 		G4Polyhedra* solidWCBarrelCellODTyvek = new G4Polyhedra("WCBarrelCellODTyvek",
-																														-dPhi/2., // phi start
-																														dPhi, //total phi
-																														1, //NPhi-gon
-																														2,
-																														RingZ,
-																														annulusODTyvekRmin,
-																														annulusODTyvekRmax);
+																-dPhi/2., // phi start
+																dPhi, //total phi
+																1, //NPhi-gon
+																2,
+																RingZ,
+																annulusODTyvekRmin,
+																annulusODTyvekRmax);
 
 		logicWCBarrelCellODTyvek =
 				new G4LogicalVolume(solidWCBarrelCellODTyvek,
-														G4Material::GetMaterial("Tyvek"),
-														"WCBarrelCellODTyvek",
-														0,0,0);
+									G4Material::GetMaterial("Tyvek"),
+									"WCBarrelCellODTyvek",
+									0,0,0);
+
+		G4LogicalSkinSurface *WaterTySurfaceSide = new G4LogicalSkinSurface("WaterTySurfaceSide", logicWCBarrelCellODTyvek, OpWaterTySurface);
 
 		G4VisAttributes* WCBarrelODTyvekCellVisAtt
 				= new G4VisAttributes(yellow);
 		WCBarrelODTyvekCellVisAtt->SetForceWireframe(true);
 
-    logicWCBarrelCellODTyvek->SetVisAttributes(G4VisAttributes::Invisible);
+		logicWCBarrelCellODTyvek->SetVisAttributes(G4VisAttributes::Invisible);
 		//// Uncomment following for TYVEK visualization
-    logicWCBarrelCellODTyvek->SetVisAttributes(WCBarrelODTyvekCellVisAtt);
+		logicWCBarrelCellODTyvek->SetVisAttributes(WCBarrelODTyvekCellVisAtt);
 
 
 		G4VPhysicalVolume* physiWCBarrelCellODTyvek =
 				new G4PVPlacement(0,
-													G4ThreeVector(0.,0.,0.),
-													logicWCBarrelCellODTyvek,
-													"WCBarrelCellODTyvek",
-													logicWCBarrelCell,
-													false,
-													0,true);
+								  G4ThreeVector(0.,0.,0.),
+								  logicWCBarrelCellODTyvek,
+								  "WCBarrelCellODTyvek",
+								  logicWCBarrelCell,
+								  false,
+								  0,true);
 
-		G4LogicalBorderSurface * WaterTyBarrelCellSurfaceBot =
-				new G4LogicalBorderSurface(	"WaterTyBarrelCellSurface",
-																		 physiWCBarrel,
-																		 physiWCBarrelCellODTyvek,
-																		 OpWaterTySurface);
 
 
     //-------------------------------------------------------------
