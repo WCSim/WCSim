@@ -79,15 +79,13 @@ G4double* EljenEJ286::GetRIndex(){
 //////// ABSORPTION ////////
 // ###################### //
 
-#define NUMENTRIES_WLS_ABS 60
+#define NUMENTRIES_WLS_ABS 50
 
 G4int EljenEJ286::GetNumEntries_ABS() { return NUMENTRIES_WLS_ABS;}
 
 G4double* EljenEJ286::GetPhotonEnergy_ABS(){
   static G4double PhotonEnergy_ABS[NUMENTRIES_WLS_ABS] =
-      {1.56943*eV, 1.58955*eV, 1.6102*eV, 1.63138*eV, 1.65314*eV,
-       1.67548*eV, 1.69843*eV, 1.72202*eV, 1.74627*eV, 1.77122*eV,
-       1.79689*eV, 1.82331*eV, 1.85052*eV, 1.87856*eV, 1.90746*eV,
+      {1.79689*eV, 1.82331*eV, 1.85052*eV, 1.87856*eV, 1.90746*eV,
        1.93727*eV, 1.96802*eV, 1.99976*eV, 2.03254*eV, 2.06642*eV,
        2.10144*eV, 2.13768*eV, 2.17518*eV, 2.21402*eV, 2.25428*eV,
        2.29602*eV, 2.33934*eV, 2.38433*eV, 2.43108*eV, 2.4797*eV,
@@ -102,20 +100,17 @@ G4double* EljenEJ286::GetPhotonEnergy_ABS(){
 }
 
 G4double* EljenEJ286::GetAbs() {
-  G4double attL = 400.*cm; // From Datasheet EJ-286 and inferred with SG-BC484 // Basically BS
   static G4double AbsPlate[NUMENTRIES_WLS_ABS] =
-      { attL, attL, attL, attL, attL, // 800 --- 750
-        attL, attL, attL, attL, attL, // 750 --- 700
-        attL, attL, attL, attL, attL, // 700 --- 650
-        attL, attL, attL, attL, attL, // 650 --- 600
-        attL, attL, attL, attL, attL, // 600 --- 550
-        attL, attL, attL, attL, attL, // 550 --- 500
-        attL, attL, attL, attL, attL, // 500 --- 450
-        attL, attL, (1-0.01)*attL, (1-0.05)*attL, (1-0.64)*attL, // 450 --- 400
-        (1-0.93)*attL, (1-0.99999)*attL, (1-0.99999)*attL, (1-0.99999)*attL, (1-0.99999)*attL, // 400 --- 350
-        (1-0.99999)*attL, (1-0.99999)*attL, (1-0.999)*attL, (1-0.97)*attL, (1-0.89)*attL, // 350 --- 300
-        (1-0.71)*attL, (1-0.54)*attL,attL, attL, // 300 --- 250
-        attL, attL, attL, attL, attL}; // 250 --- 200
+      { 19.6429*cm, 19.5783*cm, 19.4179*cm, 19.2909*cm, 19.4348*cm, // 700 --- 650
+        19.4447*cm, 19.4035*cm, 18.9912*cm, 19.1066*cm, 19.0923*cm, // 650 --- 600
+        19.1714*cm, 18.9591*cm, 18.997*cm, 18.9408*cm, 18.7645*cm, // 600 --- 550
+        18.5919*cm, 18.6909*cm, 18.5189*cm, 18.3881*cm, 18.1821*cm, // 550 --- 500
+        18.0372*cm, 18.0747*cm, 17.8693*cm, 17.6159*cm, 17.5833*cm, // 500 --- 450
+        17.3554*cm, 16.8257*cm, 15.4036*cm, 9.17667*cm, 1.21309*cm, // 450 --- 400
+        0.32882*cm, 0.293643*cm, 0.284121*cm, 0.282219*cm, 0.284037*cm, // 400 --- 350
+        0.278603*cm, 0.278088*cm, 0.279076*cm, 0.279771*cm, 0.280512*cm, // 350 --- 300
+        0.281305*cm, 0.282154*cm, 0.278283*cm, 0.278459*cm, 0.272505*cm, // 300 --- 250
+        100*cm, 100*cm, 100*cm, 100*cm, 100*cm}; // 250 --- 200
   return AbsPlate;
 }
 
@@ -167,9 +162,7 @@ G4double *EljenEJ286::GetEm() {
 
 void EljenEJ286::SetgAbs(){
   double AbsAmp[NUMENTRIES_WLS_ABS] =
-      { 0, 0, 0, 0, 0, // 800 --- 750
-        0, 0, 0, 0, 0, // 750 --- 700
-        0, 0, 0, 0, 0, // 700 --- 650
+      { 0, 0, 0, 0, 0, // 700 --- 650
         0, 0, 0, 0, 0, // 650 --- 600
         0, 0, 0, 0, 0, // 600 --- 550
         0, 0, 0, 0, 0, // 550 --- 500
