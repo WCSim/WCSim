@@ -4,13 +4,44 @@ This file contains the release notes for each version of WCSim. Release notes ca
 01/29/2019: Notes for v1.8.0        
 *************************************************************
 
-The new features included in this release include an outer detector volume in the Hyper-Kamiokande detector, an option to include light cones, and updates to accommodate our new trigger simulations. 
+The main updates included in this release include an outer detector volume in the Hyper-Kamiokande detector, an option to include light cones, and updates to accommodate our new trigger simulations. 
 
 New Features
+* Pull Request #210, #251, #242, #252, #253: Hyper-K configuration with an outer detector is implemented. 
+* Pull Request #206: New macro folder now contains all the macros.
+* Pull Request #229: Digitization of the OD.
+* Pull Request #205: Add option in macro to switch off QE completely.
+* Pull Request #220: Add a no-trigger trigger option
+* Pull Request #223, #227, #238: Changes to allow for Travis validation suite
+* Pull Request #236: Changing travis source docker file
+* Pull Request #228: Allow simulation of multiple primary vertices in an event
+* Pull Request #249: Support OGLSQT visualization 
+* Pull Request #246: Allow multiple instances of dark noise options to be stored
+* Pull Request #231: Add 3" and 5" PMT options
+* Pull Request #263: Light cone option is now included
 
 Bug Fixes
+* Pull Request #145: Fix 0 hits report when running hits/verbose 1
+* Pull Request #193: Digitized hits were being floored to an int (introduced in v1.4.0). This pull request makes digit times a float. 
+* Pull Request #194: Moves hit time smearing back to the PMT hit, rather than to the digitized hits.
+* Pull Request #216: Fix typo in WCSimRootOptions::Print()
+* Pull Request #217: Fix floating point exception error caused by non-optical photons with a total energy of 0 in ProcessHits for which the wavelength calculation didn't make sense. Moved the wavelength calculation down to be only for optical photons.
+* Pull Request #225: A nuance-formatted input file created on Windows will usually have \r\n line endings instead of the Unix default \n. Let’s add \r to the list of ignored characters so those files get parsed correctly.
+* Pull Request #255: Add some statements to the LinkDef
+* Pull Request #265: WCSim files generated using muline option have the vertex incorrectly set to (0,0,0). This fixes it.
 
 Updates
+* Pull Request #166, #254: Updates related to the verification scripts. 
+* Pull Request #199: Can now check changes to output file sizes and running time in verification scripts. 
+* Pull Request #193: Users can now specify the precision with which to store digitized hits. 
+* Pull Request #204: New RootOptions included in the CMake build options. 
+* Pull Request #207: Change the colour of mu- and mu+ in visualization and add background colour
+* Pull Request #258, #256: Allow the addition and deletion of Cherenkov digits in WCSimWCTrigger
+* Pull Request #257: Add assignment operators to WCSimRootEvent & WCSimRootTrigger
+* Pull Request #264: Add how to run WCSim to the README
+* Pull Request #259: WCSimWCDigit::SortArrayByHitTime() to sort times_presmear too
+* Pull Request #260: Allow the addition and deletion of tracks in WCSimWCTrigger
+* Pull Request #262, #267: Changes to the trigger to make it more realistic
 
 *************************************************************
 04/27/2017: Notes for v1.7.0        
