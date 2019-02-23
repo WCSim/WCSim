@@ -12,7 +12,7 @@
 #include <string>
 
 WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
-  WCSimEvent(eventaction)
+  WCSimEvent(eventaction), StoreSaveFailuresPreWindow(-1E6), StoreNDigitsPreWindow(-1E6)
 {
   initialiseString = " (this is a default set; it may be overwritten by user commands)";
   initialised = false;
@@ -333,7 +333,7 @@ void WCSimWCDAQMessenger::SetTriggerOptions()
   G4cout << "\t" << failuremode << G4endl;
   WCSimTrigger->SetSaveFailuresTime(StoreSaveFailuresTime);
   G4cout << "\tTrigger time for events which fail all triggers will be set to " << StoreSaveFailuresTime << " ns" << G4endl;
-  if(StoreSaveFailuresPreWindow >= -1E6) {
+  if(StoreSaveFailuresPreWindow > -1E6) {
     WCSimTrigger->SetSaveFailuresPreTriggerWindow(StoreSaveFailuresPreWindow);
     G4cout << "\tSaveFailures pretrigger window set to " << StoreSaveFailuresPreWindow << " ns" << G4endl;
   }
@@ -353,7 +353,7 @@ void WCSimWCDAQMessenger::SetTriggerOptions()
     WCSimTrigger->SetNDigitsWindow(StoreNDigitsWindow);
     G4cout << "\tNDigits trigger window set to " << StoreNDigitsWindow << " ns" << G4endl;
   }
-  if(StoreNDigitsPreWindow >= 0) {
+  if(StoreNDigitsPreWindow > -1E6) {
     WCSimTrigger->SetNDigitsPreTriggerWindow(StoreNDigitsPreWindow);
     G4cout << "\tNDigits pretrigger window set to " << StoreNDigitsPreWindow << " ns" << G4endl;
   }
