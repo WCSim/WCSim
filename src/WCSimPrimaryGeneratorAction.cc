@@ -335,7 +335,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
             // Skip the initial neutrino, target nucleus and target nucleon
             if( i < 3){
-                int pdg = abs(fTmpRootrackerVtx->StdHepPdg[i]);
+                int pdg = abs(fTmpRootrackerVtx->StdHepPdgTemp[i]);
                 if(pdg > 100000 || pdg == 12 || pdg == 14 || pdg == 2112 || pdg == 2212){
                     continue;
                 }
