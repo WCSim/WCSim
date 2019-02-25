@@ -530,6 +530,7 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 
     // Close the Root file at the end of the run
     TFile* hfile = WCSimTree->GetCurrentFile();
+    hfile->cd();
     optionsTree->Fill();
     optionsTree->Write();
     hfile->Write();
