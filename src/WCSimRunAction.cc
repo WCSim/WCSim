@@ -627,7 +627,7 @@ void WCSimRunAction::FillGeoTree(){
 
       if(fSettingsInputTree){
           fSettingsInputTree->GetEntry(0);
-          double z_offset = fNuPlanePos[2]/100.0 + fNuPrismRadius;
+          double z_offset = fNuPlanePos[2]/100.0;
           WCDetCentre[2] += z_offset;
           std::cout << "WCDetCentre[2] = " << WCDetCentre[2] << std::endl;
       }
