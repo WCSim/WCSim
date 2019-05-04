@@ -13,11 +13,11 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   genCmd = new G4UIcmdWithAString("/mygen/generator",this);
   genCmd->SetGuidance("Select primary generator.");
   //T. Akiri: Addition of laser
-  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps");
+  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, multivert");
   genCmd->SetParameterName("generator",true);
   genCmd->SetDefaultValue("muline");
   //T. Akiri: Addition of laser
-  genCmd->SetCandidates("muline gun laser gps");
+  genCmd->SetCandidates("muline gun laser gps multivert");
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
   fileNameCmd->SetGuidance("Select the file of vectors.");
@@ -42,6 +42,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGunEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetMultiVertEvtGenerator(false);
     }
     else if ( newValue == "gun")
     {
@@ -49,6 +50,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGunEvtGenerator(true);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetMultiVertEvtGenerator(false);
     }
     else if ( newValue == "laser")   //T. Akiri: Addition of laser
     {
@@ -56,6 +58,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGunEvtGenerator(false);
       myAction->SetLaserEvtGenerator(true);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetMultiVertEvtGenerator(false);
     }
     else if ( newValue == "gps")
     {
@@ -63,7 +66,16 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGunEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(true);
+      myAction->SetMultiVertEvtGenerator(false);
     }
+    else if ( newValue == "multivert")
+      {
+	myAction->SetMulineEvtGenerator(false);
+	myAction->SetGunEvtGenerator(false);
+	myAction->SetLaserEvtGenerator(false);
+	myAction->SetGPSEvtGenerator(false);
+	myAction->SetMultiVertEvtGenerator(true);
+      }
   }
 
   if( command == fileNameCmd )
@@ -88,6 +100,8 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
       { cv = "laser"; }   //T. Akiri: Addition of laser
     else if(myAction->IsUsingGPSEvtGenerator())
       { cv = "gps"; }
+    else if(myAction->IsUsingMultiVertEvtGenerator())
+      { cv = "multivert"; }
   }
   
   return cv;
