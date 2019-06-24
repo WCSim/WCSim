@@ -84,8 +84,10 @@ void WCSimPhysicsListFactory::InitializeList(){
       G4cout << "RegisterPhysics: " << elem->GetPhysicsName() << G4endl;
       RegisterPhysics(elem);
     }
-    G4cout << "RegisterPhysics: OpticalPhysics" << G4endl; 
-    RegisterPhysics(new G4OpticalPhysics());
+    G4cout << "RegisterPhysics: OpticalPhysics" << G4endl;
+    G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
+    RegisterPhysics(opticalPhysics);
+    opticalPhysics->SetWLSTimeProfile("exponential");
   } else {
     G4cout << "Physics list " << PhysicsListName << " is not understood" << G4endl;
   }

@@ -229,6 +229,9 @@ private:
   G4OpticalSurface * OpWaterWLSSurface;
   G4OpticalSurface * OpWLSTySurface;
 
+  //Cladding
+  G4OpticalSurface * OpCladdingSurface;
+
   // The messenger we use to change the geometry.
 
   WCSimDetectorMessenger* messenger;

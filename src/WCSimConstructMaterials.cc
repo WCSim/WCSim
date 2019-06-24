@@ -189,6 +189,40 @@ void WCSimDetectorConstruction::ConstructMaterials()
   WLS_PVT->AddElement(elC, 9); // PVT
   WLS_PVT->AddElement(elH, 10);
 
+
+  //Cladding(polyethylene)
+  density=1200*kg/m3;
+  G4int polyeth = 1;
+  G4int nC_eth = 2*polyeth;
+  G4int nH_eth = 4*polyeth;
+  G4double z;  // atomic number
+  G4Element * fH = new G4Element("H", "H", z=1., a=1.01*g/mole);
+  G4Element * fC = new G4Element("C", "C", z=6., a=12.01*g/mole);
+  G4Material* fPethylene = new G4Material("Pethylene", density,2);
+  fPethylene->AddElement(fH,nH_eth);
+  fPethylene->AddElement(fC,nC_eth);
+
+  const G4int wlsnum = 4;
+  G4double wls_Energy[] = {2.00*eV,2.87*eV,2.90*eV,3.47*eV};
+  G4double RefractiveIndexClad[wlsnum]={ 1.49, 1.49, 1.49, 1.49};
+  G4double AbsCladding[wlsnum]={9.00*m,9.00*m,0.1*mm,0.1*mm};
+  G4MaterialPropertiesTable* claddingMPT = new G4MaterialPropertiesTable();
+  claddingMPT->AddProperty("RINDEX",wls_Energy,RefractiveIndexClad,wlsnum);
+  claddingMPT->AddProperty("ABSLENGTH",wls_Energy,AbsCladding,wlsnum);
+  fPethylene->SetMaterialPropertiesTable(claddingMPT);
+
+  //**cladding properties
+  const G4int cladding_num = 2;
+  G4double cladding_ephoton[cladding_num] = { 1.*eV, 10*eV };
+  G4double claddingReflectivity[cladding_num] = {0.95, 0.95};
+  G4double claddingEfficiency[cladding_num] = {0., 0.};
+  G4MaterialPropertiesTable* claddingPT = new G4MaterialPropertiesTable();
+  claddingPT->AddProperty("REFLECTIVITY", cladding_ephoton, claddingReflectivity, cladding_num);
+  claddingPT->AddProperty("EFFICIENCY", cladding_ephoton, claddingEfficiency, cladding_num);
+  OpCladdingSurface =
+      new G4OpticalSurface("CladdingSurface",unified,polished,dielectric_metal);
+  OpCladdingSurface->SetMaterialPropertiesTable(claddingPT);
+
   //---Glass
  
   density = 2.20*g/cm3;
@@ -910,7 +944,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   MPT_WLS->AddProperty("WLSABSLENGTH",WLSProps->GetPhotonEnergy_ABS(),WLSProps->GetAbs(),WLSProps->GetNumEntries_ABS());
   MPT_WLS->AddProperty("WLSCOMPONENT",WLSProps->GetPhotonEnergy_EM(),WLSProps->GetEm(),WLSProps->GetNumEntries_EM());
   MPT_WLS->AddProperty("TRANSMITTANCE", WLSProps->GetPhotonEnergy(), TransWaterWLS, NUMENTRIES_WLS);
-  MPT_WLS->AddConstProperty("WLSTIMECONSTANT", 4*ns); // TODO: Need measurement
+  MPT_WLS->AddConstProperty("WLSTIMECONSTANT", 1.2*ns); // TODO: Need measurement
   WLS_PVT->SetMaterialPropertiesTable(MPT_WLS);
 
   G4MaterialPropertiesTable *MPTWLS_Water = new G4MaterialPropertiesTable();
