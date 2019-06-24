@@ -250,6 +250,7 @@ private:
 
   G4LogicalVolume* logicWCODWLSAndPMT;
   G4LogicalVolume* logicWCODWLSPlate;
+  G4LogicalVolume* logicWCODWLSPlateCladding;
 
   G4LogicalVolume* logicWCBarrelCellBlackSheet;
   G4LogicalVolume* logicWCTowerBlackSheet;
