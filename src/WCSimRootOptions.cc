@@ -49,6 +49,7 @@ void WCSimRootOptions::Print(Option_t *) const
     << "Trigger options:" << endl
     << "\tTriggerClassName: " << TriggerClassName << endl
     << "\tMultiDigitsPerTrigger: " << MultiDigitsPerTrigger << endl
+    << "\tTriggerOffset: " << TriggerOffset << endl
     << "NDigits-style trigger options:" << endl
     << "\tNDigitsThreshold: " << NDigitsThreshold << " digitized hits" << endl
     << "\tNDigitsWindow: " << NDigitsWindow << " ns" << endl

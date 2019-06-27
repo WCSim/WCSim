@@ -74,6 +74,8 @@ private:
   G4int                 StoreNDigitsPreWindow;
   G4UIcmdWithAnInteger* NDigitsPostTriggerWindow;
   G4int                 StoreNDigitsPostWindow;
+  G4UIcmdWithADouble* TriggerOffset;
+  G4double            StoreTriggerOffset;
 
   G4String initialiseString;
   G4bool   initialised;
