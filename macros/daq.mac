@@ -16,6 +16,9 @@
 # allow the number of digits per PMT per trigger to be > 1?
 #/DAQ/MultiDigitsPerTrigger false
 
+#trigger offset time (ns) for all hits
+/DAQ/TriggerOffset 0
+
 #trigger algorithm development options (defaults are set in WCSimWCDAQMessenger. Can be overidden here)
 # do we want to save only triggered events (mode 0), both triggered events & failed events (mode 1), or only failed events (mode 2)?
 #/DAQ/TriggerSaveFailures/Mode 0
