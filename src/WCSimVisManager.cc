@@ -5,6 +5,7 @@
 
 #include "WCSimVisManager.hh"
 #include "G4TrajectoryDrawByParticleID.hh"
+#include "G4TrajectoryModelFactories.hh"
 
 // Supported drivers...
 
@@ -119,6 +120,10 @@ void WCSimVisManager::RegisterGraphicsSystems () {
   RegisterGraphicsSystem (new G4VRML1);
   RegisterGraphicsSystem (new G4VRML2);
 #endif
+}
+
+void WCSimVisManager::RegisterModelFactories () {
+  RegisterModelFactory(new G4TrajectoryDrawByParticleIDFactory());
 
   //create new drawByParticleID model
   G4TrajectoryDrawByParticleID* mymodel = new G4TrajectoryDrawByParticleID;
@@ -137,15 +142,7 @@ void WCSimVisManager::RegisterGraphicsSystems () {
   mymodel->Set("proton","magenta");
   mymodel->Set("neutron","cyan");
 
-  if (fVerbose > 0) {
-    G4cout <<
-      "\nYou have successfully chosen to use the following graphics systems."
-	 << G4endl;
-    PrintAvailableGraphicsSystems ();
-  }
   RegisterModel(mymodel);
-
-
 }
 
 #endif
