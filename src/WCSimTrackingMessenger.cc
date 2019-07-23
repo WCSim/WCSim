@@ -24,7 +24,7 @@ WCSimTrackingMessenger::WCSimTrackingMessenger(WCSimTrackingAction* trackAction)
   particleToTrack->SetGuidance("Command to track all particles of given type");
   particleToTrack->SetParameterName("particleToTrack",false);
 
-  processToTrack = new G4UIcmdWithAString("/Tracking/trackParticle",this);
+  processToTrack = new G4UIcmdWithAString("/Tracking/trackProcess",this);
   processToTrack->SetGuidance("Command to track all particles created by given process");
   processToTrack->SetParameterName("processToTrack",false);
 
