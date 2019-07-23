@@ -20,11 +20,11 @@ WCSimTrackingMessenger::WCSimTrackingMessenger(WCSimTrackingAction* trackAction)
   fractionPhotonsToDraw->SetParameterName("fractionOpticalPhotonsToDraw",true);
   fractionPhotonsToDraw->SetDefaultValue(0.0);
 
-  particleToTrack = new G4UIcmdWithAnInteger("Tracking/trackParticle",this);
+  particleToTrack = new G4UIcmdWithAnInteger("/Tracking/trackParticle",this);
   particleToTrack->SetGuidance("Command to track all particles of given type");
   particleToTrack->SetParameterName("particleToTrack",false);
 
-  processToTrack = new G4UIcmdWithAString("Tracking/trackParticle",this);
+  processToTrack = new G4UIcmdWithAString("/Tracking/trackParticle",this);
   processToTrack->SetGuidance("Command to track all particles created by given process");
   processToTrack->SetParameterName("processToTrack",false);
 
