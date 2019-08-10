@@ -134,8 +134,10 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    time_true = (*WCHC)[i]->GetTime(ip);
 	    time_PMT  = time_true; //currently no PMT time smearing applied
 	    peSmeared = rn1pe();
-	    int parent_id = (*WCHC)[i]->GetParentID(ip);
-
+        int parent_id = (*WCHC)[i]->GetParentID(ip);
+        float photon_starttime = (*WCHC)[i]->GetPhotonStartTime(ip);
+        G4ThreeVector photon_startpos = (*WCHC)[i]->GetPhotonStartPos(ip);
+        
 	    if ( DigiHitMapPMT[tube] == 0) {
 	      WCSimWCDigi* Digi = new WCSimWCDigi();
 	      Digi->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
@@ -148,6 +150,8 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      Digi->SetTrackID(track_id);
 	      Digi->SetPreSmearTime(ip,time_true);
 	      Digi->SetParentID(ip,parent_id);
+	      Digi->SetPhotonStartTime(ip,photon_starttime);
+	      Digi->SetPhotonStartPos(ip,photon_startpos);
 	      DigiHitMapPMT[tube] = DigitsCollection->insert(Digi);
 	    }	
 	    else {
@@ -161,6 +165,8 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTrackID(track_id);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPreSmearTime(ip,time_true);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetParentID(ip,parent_id);
+          (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonStartTime(ip,photon_starttime);
+          (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonStartPos(ip,photon_startpos);
 	    }
       
 	  } // Loop over hits in each PMT

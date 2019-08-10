@@ -410,7 +410,8 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID, Int_t mPMTID, Int_t mPMT_PMTID, std::vector<Float_t> truetime,std::vector<Int_t> primParID)
+WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID, Int_t mPMTID, Int_t mPMT_PMTID, std::vector<Float_t> truetime,
+        std::vector<Int_t> primParID, std::vector<Float_t> photonStartTime, std::vector<TVector3> photonStartPos)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -418,9 +419,10 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID, Int_t mPM
   for (unsigned int i =0;i<truetime.size();i++)
   {
     fCherenkovHitCounter++;
-
+    Float_t position[3];
+    for(int j=0; j<3; j++) position[j] = photonStartPos[i][j];
     WCSimRootCherenkovHitTime *cherenkovhittime = 
-      new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i]);
+      new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i], photonStartTime[i], position);
   }
 
   Int_t WC_Index[2];
@@ -466,11 +468,15 @@ WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
 }
 
 WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,
-						     Int_t primParID)
+						     Int_t primParID, Float_t photonStartTime, Float_t photonStartPos[3])
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
     fTruetime        = truetime; 
     fPrimaryParentID = primParID;
+    fPhotonStartTime = photonStartTime;
+    for (int i=0;i<3;i++) {
+        fPhotonStartPos[i] = photonStartPos[i];
+    }
 }
 
 //_____________________________________________________________________________

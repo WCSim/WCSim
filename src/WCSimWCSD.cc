@@ -84,11 +84,19 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     = (WCSimTrackInformation*)(aStep->GetTrack()->GetUserInformation());
   
   G4int primParentID = -1;
-  if (trackinfo)
+  G4float photonStartTime;
+  G4ThreeVector photonStartPos;
+  if (trackinfo) {
     //Skip secondaries and match to mother process, eg. muon, decay particle, gamma from pi0/nCapture.
-    primParentID = trackinfo->GetPrimaryParentID();  //!= ParentID. 
-  else // if there is no trackinfo, then it is a primary particle!
-    primParentID = aStep->GetTrack()->GetTrackID();    
+    primParentID = trackinfo->GetPrimaryParentID();  //!= ParentID.
+    photonStartTime = trackinfo->GetPhotonStartTime();
+    photonStartPos = trackinfo->GetPhotonStartPos();
+  }
+  else { // if there is no trackinfo, then it is a primary particle!
+    primParentID = aStep->GetTrack()->GetTrackID();
+    photonStartTime = aStep->GetTrack()->GetGlobalTime();
+    photonStartPos = aStep->GetTrack()->GetVertexPosition();
+  }
 
 
   G4int    trackID           = aStep->GetTrack()->GetTrackID();
@@ -220,6 +228,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
 	   
 	   //     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
 	   //       newHit->Print();
@@ -228,6 +238,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
        else {
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
 	 
        }
      }

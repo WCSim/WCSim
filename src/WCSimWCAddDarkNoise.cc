@@ -194,6 +194,8 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	    ahit->SetOrientation(pmt_orientation);
 	    ahit->SetPos(pmt_position);
 	    ahit->SetTime(PMTindex[noise_pmt],current_time);
+	    ahit->SetPhotonStartTime(PMTindex[noise_pmt],current_time);
+	    ahit->SetPhotonStartPos(PMTindex[noise_pmt], pmt_position);
 	    ahit->SetPreSmearTime(PMTindex[noise_pmt],current_time); //presmear==postsmear for dark noise
 	    pe = WCPMT->rn1pe();
 	    ahit->SetPe(PMTindex[noise_pmt],pe);
@@ -215,6 +217,8 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTime(PMTindex[noise_pmt],current_time);
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPreSmearTime(PMTindex[noise_pmt],current_time); //presmear==postsmear for dark noise
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetParentID(PMTindex[noise_pmt],-1);
+      (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartTime(PMTindex[noise_pmt],current_time);
+      (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartPos(PMTindex[noise_pmt],(*WCHCPMT)[ list[noise_pmt]-1 ]->GetPos());
 	  PMTindex[noise_pmt]++;
 #ifdef WCSIMWCADDDARKNOISE_VERBOSE
 	  if(noise_pmt < NPMTS_VERBOSE)
