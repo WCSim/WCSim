@@ -15,13 +15,19 @@
 // electrons from pion decay are very relevant!!
 class WCSimTrackInformation : public G4VUserTrackInformation {
 private:
-  G4bool saveit; 
+  G4bool saveit;
   G4int  primaryParentID;
+  G4float  photonStartTime;
+  G4ThreeVector  photonStartPos;
 
 public:
   WCSimTrackInformation() : saveit(false), primaryParentID(-99) {}  //TF: initialize to value with NO meaning instead of DN
-  WCSimTrackInformation(const WCSimTrackInformation* aninfo) 
-  { saveit = aninfo->saveit; primaryParentID = aninfo->primaryParentID;}
+  WCSimTrackInformation(const WCSimTrackInformation* aninfo) {
+      saveit = aninfo->saveit;
+      primaryParentID = aninfo->primaryParentID;
+      photonStartTime = aninfo->photonStartTime;
+      photonStartPos = aninfo->photonStartPos;
+  }
   virtual ~WCSimTrackInformation() {}
   WCSimTrackInformation(const G4Track* );
   
@@ -29,7 +35,11 @@ public:
   void WillBeSaved(G4bool choice) { saveit = choice;}
 
   void SetPrimaryParentID(G4int i) { primaryParentID = i;}
+  void SetPhotonStartTime(G4float time) { photonStartTime = time;}
+  void SetPhotonStartPos(const G4ThreeVector &pos) { photonStartPos = pos;}
   G4int GetPrimaryParentID() {return primaryParentID;}
+  G4float GetPhotonStartTime() {return photonStartTime;}
+  G4ThreeVector GetPhotonStartPos() {return photonStartPos;}
 
   inline void *operator new(size_t);
   inline void operator delete(void *aTrackInfo);
