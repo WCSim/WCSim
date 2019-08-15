@@ -154,6 +154,8 @@ public:
     float index_time,index_timepresmear,index_pe;
     std::vector<int> index_digicomp;
     int index_primaryparentid;
+    float index_photonstarttime;
+    G4ThreeVector index_photonstartpos;
     for (i = 1; i < (int) time.size(); ++i)
       {
         index_time  = time[i];
@@ -161,11 +163,15 @@ public:
         index_pe = pe[i];
 	index_digicomp = fDigiComp[i];
 	index_primaryparentid = primaryParentID[i];
+	index_photonstarttime = photonStartTime[i];
+	index_photonstartpos = photonStartPos[i];
         for (j = i; j > 0 && time[j-1] > index_time; j--) {
           time[j] = time[j-1];
           pe[j] = pe[j-1];
 	  fDigiComp[j] = fDigiComp[j-1];
 	  primaryParentID[j] = primaryParentID[j-1];
+	  photonStartTime[j] = photonStartTime[j-1];
+	  photonStartPos[j] = photonStartPos[j-1];
           //G4cout <<"swapping "<<time[j-1]<<" "<<index_time<<G4endl;
         }
         
@@ -174,6 +180,8 @@ public:
         pe[j] = index_pe;
 	fDigiComp[j] = index_digicomp;
 	primaryParentID[j] = index_primaryparentid;
+	photonStartTime[j] = index_photonstarttime;
+	photonStartPos[j] = index_photonstartpos;
       }    
   }
   
