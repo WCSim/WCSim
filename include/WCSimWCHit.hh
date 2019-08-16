@@ -65,6 +65,7 @@ class WCSimWCHit : public G4VHit
   void AddParentID     (G4int primParentID) { primaryParentID.push_back(primParentID); }
   void AddPhotonStartTime (G4float photStartTime) { photonStartTime.push_back(photStartTime); }
   void AddPhotonStartPos  (const G4ThreeVector &photStartPos) { photonStartPos.push_back(photStartPos); }
+  void AddPhotonEndPos  (const G4ThreeVector &photEndPos) { photonEndPos.push_back(photEndPos); }
   void SetTubeType     (G4String tube_type)          { tubeType = tube_type; }; //Added by B.Quilain to transmit on which PMT type the hit happened. For detectors with several PMT types in ID.
 
   
@@ -92,6 +93,7 @@ class WCSimWCHit : public G4VHit
   G4String         GetTubeType()     { return tubeType; };
   G4float       GetPhotonStartTime(int i) { return photonStartTime[i];};
   G4ThreeVector GetPhotonStartPos(int i) { return photonStartPos[i];};
+  G4ThreeVector GetPhotonEndPos(int i) { return photonEndPos[i];};
   
   G4LogicalVolume* GetLogicalVolume() {return pLogV;};
 
@@ -177,6 +179,7 @@ class WCSimWCHit : public G4VHit
   std::vector<G4int>    primaryParentID;
   std::vector<G4float>  photonStartTime;
   std::vector<G4ThreeVector> photonStartPos;
+  std::vector<G4ThreeVector> photonEndPos;
   G4int                 totalPeInGate;
 };
 

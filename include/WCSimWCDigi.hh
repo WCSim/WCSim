@@ -71,7 +71,8 @@ private:
   std::map<int, std::vector<int> > fDigiComp;
   std::map<int, G4int>    primaryParentID; ///< Primary parent ID of the Hit (do not use for Digits)
   std::map<int, G4float>    photonStartTime; ///< Primary parent ID of the Hit (do not use for Digits)
-  std::map<int, G4ThreeVector>    photonStartPos; ///< Primary parent ID of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>    photonStartPos; ///< Start point of the photon of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>    photonEndPos; ///< End point of the photon of the Hit (do not use for Digits)
   
 
   //integrated hit/digit parameters
@@ -95,6 +96,7 @@ public:
   inline void SetParentID(G4int gate, G4int parent) { primaryParentID[gate] = parent; };
   inline void SetPhotonStartTime(G4int gate, G4float time) { photonStartTime[gate] = time; };
   inline void SetPhotonStartPos(G4int gate, const G4ThreeVector &position) { photonStartPos[gate] = position; };
+  inline void SetPhotonEndPos(G4int gate, const G4ThreeVector &position) { photonEndPos[gate] = position; };
 
   // Add a digit number and unique photon number to fDigiComp
   inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
@@ -111,6 +113,7 @@ public:
   inline G4int          GetParentID(int gate)    { return primaryParentID[gate];};
   inline G4float        GetPhotonStartTime(int gate)    { return photonStartTime[gate];};
   inline G4ThreeVector  GetPhotonStartPos(int gate)    { return photonStartPos[gate];};
+  inline G4ThreeVector  GetPhotonEndPos(int gate)    { return photonEndPos[gate];};
   inline G4int          GetTrackID()    { return trackID;};
   inline G4double GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
