@@ -384,6 +384,11 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4cout << G4endl;
     //////////////////
 
+    SetVtx(vtx);
+    SetBeamEnergy(energy);
+    SetBeamDir(dir);
+    SetBeamPDG(pdgid);
+
     particleGun->SetParticleEnergy(ekin);
     particleGun->SetParticlePosition(vtx);
     particleGun->SetParticleMomentumDirection(dir);
