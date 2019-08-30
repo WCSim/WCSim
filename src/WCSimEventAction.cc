@@ -325,14 +325,14 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // Repeat the steps for the OD
   // ----------------------------------------------------------------------
 
-  WCSimWCHitsCollection* WCHC_OD;
+  WCSimWCHitsCollection* WCHC_OD=NULL;
   WCSimWCPMT* WCDMPMT_OD=NULL;
   WCSimWCAddDarkNoise* WCDNM_OD=NULL;
   WCSimWCDigitizerBase* WCDM_OD=NULL;
   WCSimWCTriggerBase* WCTM_OD=NULL;
   G4int WCDChitsID_OD;
   WCSimWCDigitsCollection* WCDC_hits_OD=NULL;
-  WCSimWCTriggeredDigitsCollection *WCDC_OD;
+  WCSimWCTriggeredDigitsCollection *WCDC_OD=NULL;
   if(detectorConstructor->GetIsODConstructed()){
     WCHC_OD = 0;
     G4String WCODCollectionName = detectorConstructor->GetODCollectionName();

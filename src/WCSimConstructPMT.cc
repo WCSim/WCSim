@@ -10,6 +10,7 @@
 #include "G4Polycone.hh"
 #include "G4PVPlacement.hh"
 #include "G4LogicalBorderSurface.hh"
+#include "G4LogicalSkinSurface.hh"
 
 #include "G4SDManager.hh"
 #include "WCSimWCSD.hh"
@@ -245,6 +246,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   G4String Water = "Water";
   G4String WLS_Material = "Water";
   if(isWLSFilled) WLS_Material = "WLS_PVT";
+  G4String WLSCladding_Material = "Water";
+  if(isWLSFilled) WLSCladding_Material = "Tyvek";
+
 
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
   expose = PMT->GetExposeHeight();
@@ -252,14 +256,17 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
 
   G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
 
+  // CLADDING
+  G4double CladdingWidth= 1.*mm;
+
   // EVERYTHING WILL BE ORIENTATED ALONG Z-AXIS
 
   ////////////////////////////////////////////////
   // Box structure to hold the WLS and PMT object
   G4Box *container =
       new G4Box("rectangleWLS",
-                WCODWLSPlatesLength/2,
-                WCODWLSPlatesLength/2,
+                WCODWLSPlatesLength+CladdingWidth/2,
+                WCODWLSPlatesLength+CladdingWidth/2,
                 sphereRadius/2);
 
   G4LogicalVolume* logicContainer =
@@ -279,18 +286,30 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   ////////////////////////////////////////////////
   // Create a WLS plate towards x,y plane and drilled hole will be around z-axis
   // WLS
-  G4Box *rectangleWLS =
-      new G4Box("rectangleWLS",
+  G4Box *WLSPlateAndCladding =
+      new G4Box("WLSPlateAndCladding",
+                WCODWLSPlatesLength+CladdingWidth/2,
+                WCODWLSPlatesLength+CladdingWidth/2,
+                WCODWLSPlatesThickness/2);
+
+
+  G4Box *WLSPlate =
+      new G4Box("WLSPlate",
                 WCODWLSPlatesLength/2,
                 WCODWLSPlatesLength/2,
                 WCODWLSPlatesThickness/2);
 
   // Extruded volume for WLS
-  G4Tubs* holeWLS =
-      new G4Tubs("holeWLS",0,WCPMTODRadius,WCODWLSPlatesLength/2,0,twopi);
+  G4Tubs* WLSHole =
+      new G4Tubs("WLSHole",0,WCPMTODRadius,WCODWLSPlatesLength/2,0,twopi);
 
   G4SubtractionSolid* extrudedWLS =
-      new G4SubtractionSolid("extrudedWLS", rectangleWLS, holeWLS, NULL, G4ThreeVector(0,0,0));
+      new G4SubtractionSolid("extrudedWLS", WLSPlate, WLSHole, NULL, G4ThreeVector(0,0,0));
+
+  // Extruded volume for cladding
+  G4SubtractionSolid* WLSCladding =
+      new G4SubtractionSolid("WLSCladding", WLSPlateAndCladding, WLSPlate, NULL, G4ThreeVector(0,0,0));
+
 
   logicWCODWLSPlate =
       new G4LogicalVolume(extrudedWLS,
@@ -306,12 +325,28 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   //// Uncomment following for WLS visualization
   logicWCODWLSPlate->SetVisAttributes(visWLS);
 
+
+  logicWCODWLSPlateCladding =
+      new G4LogicalVolume(WLSCladding,
+                          G4Material::GetMaterial(WLSCladding_Material),
+                          "WCODWLSPlateCladding",
+                          0,0,0);
+
+
+  G4VisAttributes* visWLSCladding
+      = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));
+  visWLSCladding->SetForceSolid(true);
+
+  logicWCODWLSPlateCladding->SetVisAttributes(G4VisAttributes::Invisible);
+  //// Uncomment following for WLS visualization
+  logicWCODWLSPlateCladding->SetVisAttributes(visWLSCladding);
+
   ////////////////////////////////////////////////
   // PMTs
   G4LogicalVolume* logicWCPMT = ConstructPMT(PMTName,CollectionName,detectorElement);
 
   ////////////////////////////////////////////////
-  // Do dat placement inda box
+  // Ali G. : Do dat placement inda box
   G4VPhysicalVolume* physiWLS =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, -(sphereRadius-WCODWLSPlatesThickness)/2),
@@ -321,6 +356,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
                         false,
                         0,
                         checkOverlaps);
+
+  G4VPhysicalVolume* physiWLSCladding =
+      new G4PVPlacement(0,
+                        G4ThreeVector(0, 0, -(sphereRadius-WCODWLSPlatesThickness)/2),
+                        logicWCODWLSPlateCladding,
+                        "WCCellWLSPlateODCladding",
+                        logicContainer,
+                        false,
+                        0,
+                        checkOverlaps);
+
+  new G4LogicalSkinSurface("cladding_surf",   logicWCODWLSPlateCladding,   OpCladdingSurface);
+
   G4VPhysicalVolume* physiPMT =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, -(sphereRadius)/2),
