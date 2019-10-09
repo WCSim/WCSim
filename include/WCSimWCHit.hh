@@ -139,6 +139,12 @@ class WCSimWCHit : public G4VHit
     return number;
   }
 
+  // G. Pronost:	
+  // Sort function by Hit Time (using first time, assuming hit time within a hit object are sorted)
+  struct SortFunctor_Hit {
+    bool operator() (const WCSimWCHit * const &a,
+                     const WCSimWCHit * const &b) const;
+  };
 
  private:
   

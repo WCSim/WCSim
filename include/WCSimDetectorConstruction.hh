@@ -158,6 +158,8 @@ public:
 
   bool GetIsODConstructed(){return isODConstructed;}
 
+  G4double GetIDRadius()     {return WCIDRadius;}
+  G4double GetIDHeight()     {return WCIDHeight;}
  
 private:
 

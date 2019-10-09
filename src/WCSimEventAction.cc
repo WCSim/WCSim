@@ -227,10 +227,10 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     G4String name =   WCIDCollectionName;
     G4int collectionID = SDman->GetCollectionID(name);
     if(collectionID>-1) WCHC = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
-    G4cout << G4endl;
-    G4cout << "WCSimEventAction::EndOfEventAction ☆ (WCSimWCHitsCollection*)" << WCIDCollectionName
-           << " has " << WCHC->entries() << " entries" << G4endl;
-    G4cout << G4endl;
+    //G4cout << G4endl;
+    //G4cout << "WCSimEventAction::EndOfEventAction ☆ (WCSimWCHitsCollection*)" << WCIDCollectionName
+    //       << " has " << WCHC->entries() << " entries" << G4endl;
+    //G4cout << G4endl;
   }
 
   // To use Do like This:
@@ -352,10 +352,10 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       G4String name = WCODCollectionName;
       G4int collectionID = SDman->GetCollectionID(name);
       if(collectionID>-1) WCHC_OD = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
-      G4cout << G4endl;
-      G4cout<< "WCSimEventAction::EndOfEventAction() (WCSimWCHitsCollection*)" << WCODCollectionName
-            << " has " << WCHC_OD->entries() << " entries" << G4endl;
-      G4cout << G4endl;
+      //G4cout << G4endl;
+      //G4cout<< "WCSimEventAction::EndOfEventAction() (WCSimWCHitsCollection*)" << WCODCollectionName
+      //      << " has " << WCHC_OD->entries() << " entries" << G4endl;
+      //G4cout << G4endl;
     }
 
     WCDMPMT_OD = (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT_OD");
@@ -379,6 +379,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCDChitsID_OD = DMman->GetDigiCollectionID("WCRawPMTSignalCollection_OD");
     WCDC_hits_OD = (WCSimWCDigitsCollection*) DMman->GetDigiCollection(WCDChitsID_OD);
     // printouts
+    /*
     G4cout << "WCSimEventAction::EndOfEventAction() retrieving raw hits" << G4endl
            << " (WCSimWCDigitsCollection*)WCRawPMTSignalCollection_OD for FillRootEvent, which has ";
     if(WCDC_hits_OD){
@@ -387,10 +388,11 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       G4cout << "no";
     }
     G4cout << " entries" << G4endl;
-
+    */
     G4int WCDCID_OD = DMman->GetDigiCollectionID("WCDigitizedCollection_OD");
     WCDC_OD = (WCSimWCTriggeredDigitsCollection*) DMman->GetDigiCollection(WCDCID_OD);
     // printouts
+    /*
     G4cout << "WCSimEventAction::EndOfEventAction() retrieving readout hits"
            << " (WCSimWCTriggeredDigitsCollection*)WCDigitizedCollection_OD for FillRootEvent, which has ";
     if(WCDC_hits_OD){
@@ -399,6 +401,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       G4cout << "no";
     }
     G4cout << " entries" << G4endl;
+    */
   }
 
   // ----------------------------------------------------------------------
@@ -626,7 +629,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   }
 
   //fill correct variables for track from decay
-   G4cout << " Filling Root Event " << G4endl;
+   //G4cout << " Filling Root Event " << G4endl;
 
    //   G4cout << "event_id: " << &event_id << G4endl;
    // G4cout << "jhfNtuple: " << &jhfNtuple << G4endl;
@@ -812,7 +815,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     WCTM = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout_OD");
   }
   int ngates = WCTM->NumberOfGatesInThisEvent();
-  G4cout << "ngates "<<detectorElement<<" =  " << ngates << "\n";
+  //G4cout << "ngates "<<detectorElement<<" =  " << ngates << "\n";
   for (int index = 0 ; index < ngates ; index++) 
     {
       if (index >=1 ) {
@@ -1181,8 +1184,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     
   for (int i = 0 ; i < wcsimrootsuperevent->GetNumberOfEvents(); i++) {
     wcsimrootevent = wcsimrootsuperevent->GetTrigger(i);
-    G4cout << ">>>Root event "
-	   <<std::setw(5)<<wcsimrootevent->GetHeader()->GetEvtNum()<<"\n";
+    //G4cout << ">>>Root event "
+//	   <<std::setw(5)<<wcsimrootevent->GetHeader()->GetEvtNum()<<"\n";
     //   if (WCDC){
     // G4cout <<"WC digi:"<<std::setw(4)<<wcsimrootevent->GetNcherenkovdigihits()<<"  ";
     // G4cout <<"WC digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";

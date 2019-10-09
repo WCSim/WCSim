@@ -141,7 +141,8 @@ void WCSimVisManager::RegisterGraphicsSystems () {
     G4cout <<
       "\nYou have successfully chosen to use the following graphics systems."
 	 << G4endl;
-    PrintAvailableGraphicsSystems ();
+//    PrintAvailableGraphicsSystems ();
+    PrintAvailableGraphicsSystems (GetVerbosityValue(fVerbose));
   }
   RegisterModel(mymodel);
 

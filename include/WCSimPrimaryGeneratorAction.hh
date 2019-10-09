@@ -10,6 +10,7 @@
 #include <fstream>
 
 #include "WCSimRootOptions.hh"
+#include "WCSimGenerator_Radioactivity.hh"
 
 class WCSimDetectorConstruction;
 class G4ParticleGun;
@@ -20,6 +21,14 @@ class G4Generator;
 
 class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
+
+  struct radioactive_source {
+    G4String IsotopeName;
+    G4String IsotopeLocation;
+    G4double IsotopeActivity;
+  };
+
+
 public:
   WCSimPrimaryGeneratorAction(WCSimDetectorConstruction*);
   ~WCSimPrimaryGeneratorAction();
@@ -74,10 +83,21 @@ private:
   G4bool   useGunEvt;
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
   G4bool   useGPSEvt;
+  G4bool   useRadioactiveEvt; // F. Nova: Radioactive flag
+  G4bool   useRadonEvt; // G. Pronost: Radon flag
+  
   std::fstream inputFile;
   G4String vectorFileName;
   G4bool   GenerateVertexInRock;
+  
+  // Variables for Radioactive and Radon generators
+  std::vector<struct radioactive_source> radioactive_sources;
+  G4double radioactive_time_window;
 
+  // For Rn event
+  WCSimGenerator_Radioactivity* myRn222Generator;
+  G4int fRnScenario;
+  
   // These go with jhfNtuple
   G4int mode;
   G4int nvtxs;
@@ -110,7 +130,7 @@ public:
 
   inline void SetGPSEvtGenerator(G4bool choice) { useGPSEvt = choice; }
   inline G4bool IsUsingGPSEvtGenerator()  { return useGPSEvt; }
-
+  
   inline void OpenVectorFile(G4String fileName) 
   {
     if ( inputFile.is_open() ) 
@@ -124,9 +144,30 @@ public:
       exit(-1);
     }
   }
+  
   inline G4bool IsGeneratingVertexInRock() { return GenerateVertexInRock; }
   inline void SetGenerateVertexInRock(G4bool choice) { GenerateVertexInRock = choice; }
+  
+  inline void AddRadioactiveSource(G4String IsotopeName, G4String IsotopeLocation, G4double IsotopeActivity){
+    struct radioactive_source r;
+    r.IsotopeName = IsotopeName;
+    r.IsotopeLocation = IsotopeLocation;
+    r.IsotopeActivity = IsotopeActivity;
+    radioactive_sources.push_back(r);
+  }
+  inline std::vector<struct radioactive_source> Radioactive_Sources()  { return radioactive_sources; }
+  
+  inline void SetRadioactiveEvtGenerator(G4bool choice) { useRadioactiveEvt = choice; }
+  inline G4bool IsUsingRadioactiveEvtGenerator() 	{ return useRadioactiveEvt; }
+  
+  inline void SetRadioactiveTimeWindow(G4double choice) { radioactive_time_window = choice; }
+  inline G4double GetRadioactiveTimeWindow()  		{ return radioactive_time_window; }
 
+  inline void SetRadonEvtGenerator(G4bool choice) 	{ useRadonEvt = choice; }
+  inline G4bool IsUsingRadonEvtGenerator()  		{ return useRadonEvt; }
+  
+  inline void SetRadonScenario(G4int choice) 		{ fRnScenario = choice; }
+  inline G4int GetRadonScenario() 			{ return fRnScenario; }
 };
 
 #endif
