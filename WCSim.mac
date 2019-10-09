@@ -10,7 +10,7 @@
 #
 # The tube size is fixed for SK to 20 inch
 # These are fixed geometries for validation
-/WCSim/WCgeom SuperK
+#/WCSim/WCgeom SuperK
 
 # Some other SuperK options:
 #/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
@@ -19,7 +19,7 @@
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 
 # HyperK (one cylindrical tank with a height of 66.8 m, a diameter of 64.8 m and 40% coverage with 20 inch B&L PMTs)
-#/WCSim/WCgeom HyperK
+/WCSim/WCgeom HyperK
 #/WCSim/WCgeom HyperKWithOD
 
 # Another option of HyperK
@@ -53,7 +53,7 @@
 #/WCSim/LCConfig Mirror_OldLC # Mirror design in a branch of archive/LightCone at 2011.
 #/WCSim/LCConfig Mirror_2018Oct # A short mirror design.
 
-#/WCSim/Construct # This must be uncommented in order to construct a new detector configuration.
+/WCSim/Construct # This must be uncommented in order to construct a new detector configuration.
 
 #Added for the PMT QE option 08/17/10 (XQ)
 # 1. Stacking only mean when the photon is generated
