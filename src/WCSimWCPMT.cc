@@ -142,6 +142,9 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
   else if(detectorElement=="OD") WCCollectionName = myDetector->GetODCollectionName();
 
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
+  
+  // Correct timing to be within 1 sec (needed for radioactive decay as forcing the decay lead to some strange results)
+  float first_time = 0;
 
   #ifdef HYPER_VERBOSITY
   if(detectorElement=="OD"){
@@ -173,8 +176,18 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       double time_PMT, time_true;
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
+	  
+	    // Reset the time to have "reasonnable" timing
+	    // This modification is important in case of very late hit physics (such as in radioactive decays)     
+	    // for which time easy goes > 1e9 ns and cause bug in digitizer
+	    // should not use /grdm/decayBiasProfile biasprofile.dat as it messes up all the timing of the decays, and force to use only one nucleus
+	    if ( i == 0 && ip == 0 && (*WCHC)[i]->GetTime(ip) > 1e5 ) { // Set Max at 10 musec
+	      //G4cout << " Apply time correction to event hits of " << (*WCHC)[i]->GetTime(ip) << " ns" << G4endl;
+	      first_time = (*WCHC)[i]->GetTime(ip);
+	    } 
+	    
 	    time_true = (*WCHC)[i]->GetTime(ip);
-	    time_PMT  = time_true; //currently no PMT time smearing applied
+	    time_PMT  = time_true - first_time; //currently no PMT time smearing applied
 	    peSmeared = rn1pe();
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
 

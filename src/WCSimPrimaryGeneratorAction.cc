@@ -637,7 +637,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       
       	//       G4ThreeVector dir  = P.unit();
       	G4double E         = std::sqrt((P.dot(P)));
-
+	
 	//G4cout << " vertex " << u << " of " << number_of_sources << " (" << vtx.x() << ", " << vtx.y() << ", " << vtx.z() << ") with pdg: " << pdg << G4endl;
 
       	SetVtxs(u,vtx);
