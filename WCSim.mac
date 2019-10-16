@@ -196,18 +196,6 @@
 #Clear the source and tell GPS to make multiple vertices
 /gps/source/clear
 
-# The following is needed by the Radon and the Radioactive generator in order to force decay within 1e-4 sec.
-### profile file to enforce radioactive decay time
-###   t(1)  I(1)
-###   t(2)  I(2)
-###   t(3)  I(3)
-### times t(i) are in seconds
-### decay intensity I(i) is distributed flat from t(i) to t(i+1)
-### the window in this file should match the radioactive_time_window
-/grdm/decayBiasProfile biasprofile.dat
-/grdm/analogueMC 0
-/grdm/BRbias 0
-
 ## change the name of the output root file, default = wcsim.root
 
 /WCSimIO/RootFile wcsim.root
