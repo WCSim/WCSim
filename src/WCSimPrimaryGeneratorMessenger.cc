@@ -159,6 +159,8 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
       { cv = "laser"; }   //T. Akiri: Addition of laser
     else if(myAction->IsUsingGPSEvtGenerator())
       { cv = "gps"; }
+    else if(myAction->IsUsingRadonEvtGenerator())
+      { cv = "radon"; }
   }
   
   return cv;
