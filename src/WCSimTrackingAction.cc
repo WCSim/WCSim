@@ -65,7 +65,8 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
   	fTime_birth = aTrack->GetGlobalTime(); 
   	
   	// Ask G4 to kill the track when all secondary are done (will exclude other decays)
-  	tr->SetTrackStatus(fStopButAlive);
+  	if ( fCharge > 2. )
+  		tr->SetTrackStatus(fStopButAlive);
   }
 }
 
