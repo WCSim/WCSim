@@ -1,6 +1,49 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
+01/29/2019: Notes for v1.8.0        
+*************************************************************
+
+The main updates included in this release include an outer detector volume in the Hyper-Kamiokande detector, an option to include light cones, and updates to accommodate our new trigger simulations. 
+
+New Features
+* Pull Request [#210](https://github.com/WCSim/WCSim/pull/210), [#251](https://github.com/WCSim/WCSim/pull/251), [#242](https://github.com/WCSim/WCSim/pull/242), [#252](https://github.com/WCSim/WCSim/pull/252), [#253](https://github.com/WCSim/WCSim/pull/253), [#233](https://github.com/WCSim/WCSim/pull/233): Hyper-K configuration with an outer detector is implemented. 
+* Pull Request [#206](https://github.com/WCSim/WCSim/pull/206): New macro folder now contains all the macros.
+* Pull Request [#229](https://github.com/WCSim/WCSim/pull/229): Digitization of the OD.
+* Pull Request [#205](https://github.com/WCSim/WCSim/pull/205): Add option in macro to switch off QE completely.
+* Pull Request [#220](https://github.com/WCSim/WCSim/pull/220): Add a no-trigger trigger option
+* Pull Request [#223](https://github.com/WCSim/WCSim/pull/223), [#227](https://github.com/WCSim/WCSim/pull/227), [#238](https://github.com/WCSim/WCSim/pull/238): Changes to allow for Travis validation suite
+* Pull Request [#236](https://github.com/WCSim/WCSim/pull/236): Changing travis source docker file
+* Pull Request [#228](https://github.com/WCSim/WCSim/pull/228): Allow simulation of multiple primary vertices in an event
+* Pull Request [#249](https://github.com/WCSim/WCSim/pull/249): Support OGLSQT visualization 
+* Pull Request [#246](https://github.com/WCSim/WCSim/pull/246): Allow multiple instances of dark noise options to be stored
+* Pull Request [#231](https://github.com/WCSim/WCSim/pull/231): Add 3" and 5" PMT options
+* Pull Request [#263](https://github.com/WCSim/WCSim/pull/263): Light cone option is now included
+
+Bug Fixes
+* Pull Request [#145](https://github.com/WCSim/WCSim/pull/145): Fix 0 hits report when running hits/verbose 1
+* Pull Request [#193](https://github.com/WCSim/WCSim/pull/193): Digitized hits were being floored to an int (introduced in v1.4.0). This pull request makes digit times a float. 
+* Pull Request [#194](https://github.com/WCSim/WCSim/pull/194): Moves hit time smearing back to the PMT hit, rather than to the digitized hits.
+* Pull Request [#216](https://github.com/WCSim/WCSim/pull/216): Fix typo in WCSimRootOptions::Print()
+* Pull Request [#217](https://github.com/WCSim/WCSim/pull/217): Fix floating point exception error caused by non-optical photons with a total energy of 0 in ProcessHits for which the wavelength calculation didn't make sense. Moved the wavelength calculation down to be only for optical photons.
+* Pull Request [#225](https://github.com/WCSim/WCSim/pull/225): A nuance-formatted input file created on Windows will usually have \r\n line endings instead of the Unix default \n. Let’s add \r to the list of ignored characters so those files get parsed correctly.
+* Pull Request [#255](https://github.com/WCSim/WCSim/pull/255): Add some statements to the LinkDef
+* Pull Request [#265](https://github.com/WCSim/WCSim/pull/265): WCSim files generated using muline option have the vertex incorrectly set to (0,0,0). This fixes it.
+
+Updates
+* Pull Request [#166](https://github.com/WCSim/WCSim/pull/166), [#254](https://github.com/WCSim/WCSim/pull/254): Updates related to the verification scripts. 
+* Pull Request [#199](https://github.com/WCSim/WCSim/pull/199): Can now check changes to output file sizes and running time in verification scripts. 
+* Pull Request [#193](https://github.com/WCSim/WCSim/pull/193): Users can now specify the precision with which to store digitized hits. 
+* Pull Request [#204](https://github.com/WCSim/WCSim/pull/204): New RootOptions included in the CMake build options. 
+* Pull Request [#207](https://github.com/WCSim/WCSim/pull/207): Change the colour of mu- and mu+ in visualization and add background colour
+* Pull Request [#258](https://github.com/WCSim/WCSim/pull/258), [#256](https://github.com/WCSim/WCSim/pull/256): Allow the addition and deletion of Cherenkov digits in WCSimWCTrigger
+* Pull Request [#257](https://github.com/WCSim/WCSim/pull/257): Add assignment operators to WCSimRootEvent & WCSimRootTrigger
+* Pull Request [#264](https://github.com/WCSim/WCSim/pull/264): Add how to run WCSim to the README
+* Pull Request [#259](https://github.com/WCSim/WCSim/pull/259): WCSimWCDigit::SortArrayByHitTime() to sort times_presmear too
+* Pull Request [#260](https://github.com/WCSim/WCSim/pull/260): Allow the addition and deletion of tracks in WCSimWCTrigger
+* Pull Request [#262](https://github.com/WCSim/WCSim/pull/262), [#267](https://github.com/WCSim/WCSim/pull/267): Changes to the trigger to make it more realistic
+
+*************************************************************
 04/27/2017: Notes for v1.7.0        
 *************************************************************
 New Features

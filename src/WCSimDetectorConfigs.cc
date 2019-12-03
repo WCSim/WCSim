@@ -257,6 +257,11 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
 
+  //////////////////////////////////////
+  // Cave Parameters --- Beta version //
+  //////////////////////////////////////
+  CaveTyvekSheetThickness  = 1.0*mm; // Quite Standard I guess
+
   ////////////////////////////////////
   // OD Parameters --- Beta version //
   ////////////////////////////////////

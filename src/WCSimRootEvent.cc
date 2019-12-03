@@ -850,6 +850,7 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c, bool deep
   failed = (!ComparisonPassed(fNumTubesHit, c->GetNumTubesHit(), typeid(*this).name(), __func__, "NumTubesHit")) || failed;
   failed = (!ComparisonPassed(fNumDigitizedTubes, c->GetNumDigiTubesHit(), typeid(*this).name(), __func__, "NumDigitizedTubes")) || failed;
   failed = (!ComparisonPassed(fNtrack, c->GetNtrack(), typeid(*this).name(), __func__, "Ntrack")) || failed;
+  //don't expect this to pass in general, so don't affect failed
   ComparisonPassed(fNtrack_slots, c->GetNtrack_slots(), typeid(*this).name(), __func__, "Ntrack_slots (shouldn't necessarily be equal)");
   failed = (!ComparisonPassed(fNcherenkovhits, c->GetNcherenkovhits(), typeid(*this).name(), __func__, "Ncherenkovhits")) || failed;
   failed = (!ComparisonPassed(fNcherenkovhittimes, c->GetNcherenkovhittimes(), typeid(*this).name(), __func__, "Ncherenkovhittimes")) || failed;
