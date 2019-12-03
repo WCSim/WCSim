@@ -13,11 +13,17 @@ template <typename T> bool ComparisonPassedVec(const vector<T> & val1, const vec
 					       const char * callerclass, const char * callerfunc, const char * tag);
 */
 
+bool ComparisonPassed(int val1, int val2, 
+		      const char * callerclass, const char * callerfunc, const char * tag);
+bool ComparisonPassed(float val1, float val2, 
+		      const char * callerclass, const char * callerfunc, const char * tag);
 bool ComparisonPassed(double val1, double val2, 
 		      const char * callerclass, const char * callerfunc, const char * tag);
 bool ComparisonPassedVec(const vector<int> & val1, const vector<int> & val2,
 			 const char * callerclass, const char * callerfunc, const char * tag);
 bool ComparisonPassedVec(const vector<float> & val1, const vector<float> & val2,
+			 const char * callerclass, const char * callerfunc, const char * tag);
+bool ComparisonPassedVec(const vector<double> & val1, const vector<double> & val2,
 			 const char * callerclass, const char * callerfunc, const char * tag);
 
 #endif //WCSimRootTools_h
