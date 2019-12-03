@@ -172,7 +172,7 @@ void complete_comparison(char *filename1, char *filename2, string treename = "wc
     //compare
     bool failed = false;
     if(wcsimrootsuperevent1) {
-      failed = !(wcsimrootsuperevent1->CompareAllVariables(wcsimrootsuperevent2));
+      failed = !(wcsimrootsuperevent1->CompareAllVariables(wcsimrootsuperevent2, true));
     }
     else if(wcsimrootgeom1) {
       failed = !(wcsimrootgeom1->CompareAllVariables(wcsimrootgeom2));
