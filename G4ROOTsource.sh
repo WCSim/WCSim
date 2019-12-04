@@ -8,7 +8,7 @@ export G4WORKDIR=/disk02/usr6/pronost/software/geant4-workdir
 # Connect a PATH of Geant4.10 for SKG4
 
 #use correct cmake version
-alias cmake="/usr/local/cmake-3.4.3/bin/cmake"
+alias cmake='/usr/local/cmake-3.4.3/bin/cmake'
 
 ############################
 # ROOT/CERN
@@ -47,6 +47,7 @@ export WCSIMDIR=${WCSIM_BASE_DIR}
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WCSIM_BASE_DIR
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WCSIM_BASE_DIR/src
 export ROOT_INCLUDE_PATH=${WCSIM_BASE_DIR}/include
+export PATH=$PATH:${WCSIM_BASE_DIR}-build
 
 ############################
 # BONSAI

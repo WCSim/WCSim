@@ -8,6 +8,7 @@
 #include "WCSimDetectorConstruction.hh"
 #include "TF2.h"
 #include "TGraph.h"
+#include "TMath.h"
 
 using namespace std;
 

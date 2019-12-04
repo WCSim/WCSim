@@ -600,7 +600,7 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 	tFittingR175->SetPoint(i,dZaxis, R2Fit_ZpM(fR2_175,fRnLambda,1.) / ZFit_R170(dZaxis,fRnLambda,1.) );
 	tFittingR195->SetPoint(i,dZaxis, R2Fit_ZpM(fR2_195,fRnLambda,1.) / ZFit_R190(dZaxis,fRnLambda,1.) );
 	tFittingR215->SetPoint(i,dZaxis, R2Fit_ZpM(fR2_215,fRnLambda,1.) / ZFit_R210(dZaxis,fRnLambda,1.) );
-	
+	/*
 	tFittingR000->SetBit(TGraph::kIsSortedX);
 	tFittingR000->SetBit(TGraph::kIsSortedX);
 	tFittingR025->SetBit(TGraph::kIsSortedX);
@@ -610,7 +610,7 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 	tFittingR175->SetBit(TGraph::kIsSortedX);
 	tFittingR195->SetBit(TGraph::kIsSortedX);
 	tFittingR215->SetBit(TGraph::kIsSortedX);
-	
+	*/
 	// Generate TF2:
 	if ( thRnFunction ) delete thRnFunction;
 	thRnFunction = new TF2("RndPos",RadonFormula,0.,fR2_max,-1.*fZ_max,fZ_max,2);

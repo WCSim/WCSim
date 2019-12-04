@@ -2,6 +2,8 @@
 
 source G4ROOTsource.sh
 
+/usr/local/cmake-3.4.3/bin/cmake --version 
+
 curpath=${PWD}
 
 if [ ! -d ../WCSim_v1.8.0-build ]; then
@@ -9,7 +11,7 @@ if [ ! -d ../WCSim_v1.8.0-build ]; then
 	mkdir -p ../WCSim_v1.8.0-build
 	
 	cd ../WCSim_v1.8.0-build
-	cmake -DCMAKE_PREFIX_PATH=${G4INSTALLDIR} $curpath
+	/usr/local/cmake-3.4.3/bin/cmake -DCMAKE_PREFIX_PATH=${G4INSTALLDIR} $curpath
 	
 	# Add needed directory and files
 	ln -s $curpath/include ../WCSim_v1.8.0-build/include
