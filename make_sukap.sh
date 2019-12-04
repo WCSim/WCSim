@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source G4ROOTsource.sh
+
 curpath=${PWD}
 
 if [ ! -d ../WCSim_v1.8.0-build ]; then
@@ -12,7 +14,6 @@ if [ ! -d ../WCSim_v1.8.0-build ]; then
 	# Add needed directory and files
 	ln -s $curpath/include ../WCSim_v1.8.0-build/include
 	cp $curpath/biasprofile.dat ../WCSim_v1.8.0-build/.
-	ln -s $curpath/data ../WCSim_v1.8.0-build/data
 else 
 	cd ../WCSim_v1.8.0-build
 fi
