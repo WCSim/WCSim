@@ -2,7 +2,7 @@
 	
 # Note: please modified the following path for your work:
 
-export WCSIM_BASE_DIR=~/HK/WCSim_v1.8.0
+export WCSIM_BASE_DIR=/disk02/usr6/pronost/HK/WCSim_v1.8.0
 export G4WORKDIR=/disk02/usr6/pronost/software/geant4-workdir
 
 # Connect a PATH of Geant4.10 for SKG4
@@ -32,8 +32,8 @@ export G4SYSTEM=Linux-g++
 
 GEANT4VERSION=geant4.10.03.p03
 
-export G4INSTALL=${GEANT4_DIR}/${GEANT4VERSION}/${GEANT4VERSION}/
-export G4INSTALLDIR=${GEANT4_DIR}/${GEANT4VERSION}/${GEANT4VERSION}-install/
+export G4INSTALL=${GEANT4_DIR}/${GEANT4VERSION}/
+export G4INSTALLDIR=${GEANT4_DIR}/${GEANT4VERSION}-install/
 cd ${G4INSTALLDIR}/bin
 source geant4.sh
 cd ${cur_dir}
