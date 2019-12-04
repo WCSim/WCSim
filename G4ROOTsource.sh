@@ -2,8 +2,8 @@
 	
 # Note: please modified the following path for your work:
 
-export WCSIM_BASE_DIR=/disk02/usr6/pronost/HK/WCSim_v1.8.0
-export G4WORKDIR=/disk02/usr6/pronost/HK/geant4-workdir
+export WCSIM_BASE_DIR=~/HK/WCSim_v1.8.0
+export G4WORKDIR=/disk02/usr6/pronost/software/geant4-workdir
 
 # Connect a PATH of Geant4.10 for SKG4
 
