@@ -22,6 +22,7 @@ fi
 
 
 if [ -d ../WCSim_v1.8.0-build ]; then
+	rm -f src/*Dict*
 	make clean
 	make -j7
 

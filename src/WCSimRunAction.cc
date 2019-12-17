@@ -127,6 +127,8 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
   // Close the Root file at the end of the run
 
   TFile* hfile = WCSimTree->GetCurrentFile();
+  // Moved from EventAction by G. Pronost on 2019/12/17
+  hfile->Write("",TObject::kOverwrite); // Need to overwrite to avoid multiple instance of wcsimT
   hfile->Close();
 
   // Clean up stuff on the heap; I think deletion of hfile and trees
