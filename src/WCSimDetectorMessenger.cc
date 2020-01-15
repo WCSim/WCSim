@@ -181,14 +181,14 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTODperCellHorizontal->SetGuidance("Set number of OD PMT per cell HORIZONTALLY (unit: cm mm).");
   PMTODperCellHorizontal->SetParameterName("PMTODperCellHorizontal", true);
   PMTODperCellHorizontal->SetDefaultValue(1);
-  PMTODperCellHorizontal->SetRange("PMTODperCellHorizontal>0");
+  PMTODperCellHorizontal->SetRange("PMTODperCellHorizontal>=0");
 
   // Nb of OD PMT per cell HORIZONTALLY
   PMTODperCellVertical = new G4UIcmdWithAnInteger("/WCSim/HyperKOD/PMTODperCellVertical", this);
   PMTODperCellVertical->SetGuidance("Set number of OD PMT per cell VERTICALLY (unit: cm mm).");
   PMTODperCellVertical->SetParameterName("PMTODperCellVertical", true);
   PMTODperCellVertical->SetDefaultValue(1);
-  PMTODperCellVertical->SetRange("PMTODperCellVertical>0");
+  PMTODperCellVertical->SetRange("PMTODperCellVertical>=0");
 
   // Nb of OD PMT per cell HORIZONTALLY
   PMTODPercentCoverage = new G4UIcmdWithADouble("/WCSim/HyperKOD/PMTODPercentCoverage", this);

@@ -1841,8 +1841,22 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   return logicCapAssembly;
 
 }
-
-
+// This function finds the factors of a number and aims to minimise the difference between multiplied factors. This will result in a more square-like distribution of PMTs per cell.
+void FindNiceFactors(G4int NPMT, G4double factors[2]){
+  bool found = false;
+  int difference = 100000;
+  for (int i = 2; i< (int)(NPMT/2); i++){
+    if (NPMT % i == 0){
+      // Factors found
+      found = true;
+      factors[0] = i;
+      factors[1] = NPMT/i;
+      double d = factors[1] - factors[0];
+      if (d < difference){difference = d;} // make the difference between multiplied factors as small as possible, for a square rather than reectangle shape.
+    }
+  }
+  if (!found){FindNiceFactors(NPMT-1, factors);} 
+}
 void ComputeWCODPMT(G4int NPMT, G4double *NPMTHorizontal, G4double *NPMTVertical){
   switch (NPMT) {
     case 0:
@@ -1867,13 +1881,10 @@ void ComputeWCODPMT(G4int NPMT, G4double *NPMTHorizontal, G4double *NPMTVertical
       *NPMTVertical   = 2;
       break;
     default:
-      if(NPMT%2 == 0){
-        *NPMTHorizontal = NPMT/2;
-        *NPMTVertical   = NPMT/2;
-      }else{
-        *NPMTHorizontal = NPMT/2 + 1;
-        *NPMTVertical   = NPMT/2;
-      }
+    G4double factors[2];
+    FindNiceFactors(NPMT, factors);
+    *NPMTHorizontal = factors[1];
+    *NPMTVertical   = factors[0];
 
       break;
   }
