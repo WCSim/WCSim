@@ -1845,14 +1845,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 void FindNiceFactors(G4int NPMT, G4double factors[2]){
   bool found = false;
   int difference = 100000;
-  for (int i = 2; i< (int)(NPMT/2); i++){
+  for (int i = 2; i<= (int)(NPMT/2); i++){
     if (NPMT % i == 0){
       // Factors found
       found = true;
-      factors[0] = i;
-      factors[1] = NPMT/i;
-      double d = factors[1] - factors[0];
-      if (d < difference){difference = d;} // make the difference between multiplied factors as small as possible, for a square rather than reectangle shape.
+      double a = i;
+      double b = NPMT/i;
+      int d = abs(a - b);
+      if (d < difference){difference = d; factors[0] = a; factors[1] = b;} // make the difference between multiplied factors as small as possible, for a square rather than rectangle shape.
     }
   }
   if (!found){FindNiceFactors(NPMT-1, factors);} 
