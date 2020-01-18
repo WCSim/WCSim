@@ -1108,9 +1108,9 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 									  Container,
 									  logicWCODWLSAndPMT,                // its logical volume
 									  "WCExtraBarrelCellODContainer",             // its name
-									  logicWCBarrelCell,         // its mother volume
+									  logicWCExtraTowerCell,         // its mother volume
 									  false,                     // no boolean operations
-									  0,
+									  (int)(i*WCPMTODperCellVertical+j),
 									  true);
 
 
