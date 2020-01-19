@@ -1090,18 +1090,19 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
       WCPMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
 
       G4double towerWidthOD = WCODRadius*tan(2*pi-totalAngle);
+      // We don't want the same number of OD PMTs squished horizontally so we scale down the horizontal PMTs by the width of the extra tower
+      G4double ratioOfWidths = (double)(WCPMTODperCellHorizontal)*(towerWidthOD/barrelODCellWidth);
+      G4int WCPMTODperCellHorizontalExtra = (int)(ratioOfWidths+0.5);
+      G4double horizontalODSpacing   = towerWidthOD/(double)WCPMTODperCellHorizontalExtra;
+      G4double verticalODSpacing   = barrelODCellHeight/WCPMTODperCellVertical;
 
-      G4double horizontalODSpacing   = towerWidthOD/WCPMTODperCellHorizontal;
-      G4double verticalODSpacing     = barrelCellHeight*(WCODRadius/WCIDRadius)/WCPMTODperCellVertical;
-
-      for(G4double i = 0; i < (WCPMTODperCellHorizontal); i++){
+      for(G4double i = 0; i < (WCPMTODperCellHorizontalExtra); i++){
         for(G4double j = 0; j < WCPMTODperCellVertical; j++){
 			G4ThreeVector Container =  G4ThreeVector((WCODRadius+sphereRadius/2)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 													 -towerWidthOD/2.+(i+0.5)*horizontalODSpacing,
 													 -(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing);
 
 			Container.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
-
 
 			G4VPhysicalVolume* physiWCExtraBarrelWLSPlate =
 					new G4PVPlacement(WCPMTRotation,              // its rotation
@@ -1768,8 +1769,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
     WCPMTODRotation->rotateY(270.*deg);
 
     G4double barrelODCellWidth   = 2.*WCODRadius*tan(dPhi/2.);
+    G4double barrelODCellHeight  = barrelCellHeight * (barrelODCellWidth/barrelCellWidth);
     G4double horizontalODSpacing = barrelODCellWidth/WCPMTODperCellHorizontal;
-    G4double verticalODSpacing   = barrelCellHeight * (barrelODCellWidth/barrelCellWidth) / WCPMTODperCellVertical;
+    G4double verticalODSpacing   = barrelODCellHeight / WCPMTODperCellVertical;
 
     for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
       for(G4double j = 0; j < WCPMTODperCellVertical; j++){
@@ -1804,17 +1806,22 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                             false,
                             0,true);
 
-
+      G4double barrelODCellWidth   = 2.*WCODRadius*tan(dPhi/2.);
+      G4double barrelODCellHeight  = barrelCellHeight * (barrelODCellWidth/barrelCellWidth);
+      
       G4RotationMatrix* WCPMTRotation = new G4RotationMatrix;
       WCPMTRotation->rotateY(270.*deg);
       WCPMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
 
       G4double towerWidthOD = WCODRadius*tan(2*pi-totalAngle);
+      // We don't want the same number of OD PMTs squished horizontally so we scale down the horizontal PMTs by the width of the extra tower
+      G4double ratioOfWidths = (double)(WCPMTODperCellHorizontal)*(towerWidthOD/barrelODCellWidth);
+      G4int WCPMTODperCellHorizontalExtra = (int)(ratioOfWidths+0.5);
+      G4double horizontalODSpacing   = towerWidthOD/(double)WCPMTODperCellHorizontalExtra;
+      G4double verticalODSpacing   = barrelODCellHeight/WCPMTODperCellVertical;
+      
 
-      G4double horizontalODSpacing = towerWidthOD/WCPMTODperCellHorizontal;
-      G4double verticalODSpacing   = barrelCellHeight*(WCODRadius/WCIDRadius)/WCPMTODperCellVertical;
-
-      for(G4double i = 0; i < (WCPMTODperCellHorizontal); i++){
+      for(G4double i = 0; i < (WCPMTODperCellHorizontalExtra); i++){
         for(G4double j = 0; j < WCPMTODperCellVertical; j++){
           G4ThreeVector Container =  G4ThreeVector(WCODRadius+sphereRadius/2,
                                                    -towerWidthOD/2.+(i+0.5)*horizontalODSpacing,

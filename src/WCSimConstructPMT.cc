@@ -265,8 +265,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   // Box structure to hold the WLS and PMT object
   G4Box *container =
       new G4Box("rectangleWLS",
-                WCODWLSPlatesLength+CladdingWidth/2,
-                WCODWLSPlatesLength+CladdingWidth/2,
+                (WCODWLSPlatesLength+2*CladdingWidth)/2,
+                (WCODWLSPlatesLength+2*CladdingWidth)/2,
                 sphereRadius/2);
 
   G4LogicalVolume* logicContainer =
@@ -288,8 +288,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   // WLS
   G4Box *WLSPlateAndCladding =
       new G4Box("WLSPlateAndCladding",
-                WCODWLSPlatesLength+CladdingWidth/2,
-                WCODWLSPlatesLength+CladdingWidth/2,
+                (WCODWLSPlatesLength+2*CladdingWidth)/2,
+                (WCODWLSPlatesLength+2*CladdingWidth)/2,
                 WCODWLSPlatesThickness/2);
 
 
