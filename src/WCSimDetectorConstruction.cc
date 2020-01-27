@@ -58,6 +58,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   totalNumPMTs = 0;
   totalNumODPMTs = 0;
   WCPMTExposeHeight= 0.;
+  WCBorderPMTOffset= 0.;
   //-----------------------------------------------------
   // Set the default WC geometry.  This can be changed later.
   //-----------------------------------------------------
