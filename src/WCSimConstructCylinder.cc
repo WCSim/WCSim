@@ -1087,7 +1087,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
       G4RotationMatrix* WCPMTRotation = new G4RotationMatrix;
       WCPMTRotation->rotateY(270.*deg);
-      WCPMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
+      WCPMTRotation->rotateX(2*pi - (2*pi-totalAngle)/2.);//align the PMT with the Cell
 
       G4double towerWidthOD = WCODRadius*tan(2*pi-totalAngle);
       // We don't want the same number of OD PMTs squished horizontally so we scale down the horizontal PMTs by the width of the extra tower
@@ -1811,7 +1811,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
       
       G4RotationMatrix* WCPMTRotation = new G4RotationMatrix;
       WCPMTRotation->rotateY(270.*deg);
-      WCPMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
+      WCPMTRotation->rotateX(2*pi - (2*pi-totalAngle)/2.);//align the PMT with the Cell
 
       G4double towerWidthOD = WCODRadius*tan(2*pi-totalAngle);
       // We don't want the same number of OD PMTs squished horizontally so we scale down the horizontal PMTs by the width of the extra tower
@@ -1823,9 +1823,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
       for(G4double i = 0; i < (WCPMTODperCellHorizontalExtra); i++){
         for(G4double j = 0; j < WCPMTODperCellVertical; j++){
-          G4ThreeVector Container =  G4ThreeVector(WCODRadius+sphereRadius/2,
-                                                   -towerWidthOD/2.+(i+0.5)*horizontalODSpacing,
-                                                   -(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing);
+          G4ThreeVector Container =  G4ThreeVector((WCODRadius+sphereRadius/2)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
+													 -towerWidthOD/2.+(i+0.5)*horizontalODSpacing,
+													 -(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing);
           Container.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
 
           G4VPhysicalVolume* physiWCBarrelPMT =
