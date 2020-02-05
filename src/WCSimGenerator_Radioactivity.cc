@@ -19,6 +19,8 @@
 // Declare static variables:
 G4double WCSimGenerator_Radioactivity::fRnDiffusion_Coef = 0.;
 
+G4double WCSimGenerator_Radioactivity::fRn_PerPMT	 = 0.;
+
 G4double WCSimGenerator_Radioactivity::fRnSK_Center	 = 0.;
 G4double WCSimGenerator_Radioactivity::fRnSK_Bottom	 = 0.;
 G4double WCSimGenerator_Radioactivity::fRn_Border	 = 0.;
@@ -202,7 +204,12 @@ void WCSimGenerator_Radioactivity::Initialize() {
 	fRnSK_Bottom = 2.44; // mBq/m^{3} -> From Nakano-san et al. 
 	//fRnSK_Bottom = 3.84; // mBq/m^{3} -> Estimation from SK-IV
 	
-	fRn_Border = 19.82;  // mBq/m^{3} -> SK case
+	fRn_PerPMT   = 10.; // mBq/PMT (equilibrium), from 97 SK note
+	//fRn_PerPMT   = 4.4; // mBq/PMT (equilibrium), from T. Shiozawa SK-PMT (2020)
+	//fRn_PerPMT   = 4.9; // mBq/PMT (equilibrium), from T. Shiozawa HK-PMT (2020)
+	
+	// Not used
+	//fRn_Border = 19.82;  // mBq/m^{3} -> SK case
 	//fRn_Border = 25.10;  // mBq/m^{3} -> HK-40k case
 	//fRn_Border = 12.55;  // mBq/m^{3} -> HK-20k case
 	
@@ -237,7 +244,7 @@ void WCSimGenerator_Radioactivity::Initialize() {
 	
 	
 	G4int nPMT = myDetector->Get_Pmts()->size();
-	fRn_Border = 10. * nPMT / (2. * TMath::Pi() * fHK_R_max * fHK_R_max + 2. * TMath::Pi() * fHK_R_max * fHK_Z_max * 2. );
+	fRn_Border = fRn_PerPMT * nPMT / (2. * TMath::Pi() * fHK_R_max * fHK_R_max + 2. * TMath::Pi() * fHK_R_max * fHK_Z_max * 2. );
 		
 	// Binning:
 	fMperBin     = 0.36; //m
@@ -271,7 +278,7 @@ void WCSimGenerator_Radioactivity::Configuration(G4int iScenario, G4double dLife
 	G4cout << " PMT number: " << myDetector->Get_Pmts()->size() << G4endl;
 	G4cout << " Surface: " << (2. * TMath::Pi() * fHK_R_max * fHK_R_max + 2. * TMath::Pi() * fHK_R_max * fHK_Z_max * 2. ) << G4endl;
 	//G4cout << fHK_R_max << " " << fHK_Z_max * 2 << G4endl;
-	G4cout << " Mean activity in the full ID:   " << fIntegral << " mBq  " <<  G4endl;
+	G4cout << " Mean activity in the full ID:   " << fIntegral << " mBq  ( Concentration: " << fIntegral / (2. * TMath::Pi() * fHK_R_max * fHK_R_max * fHK_Z_max) << " mBq / m^3 ) " <<  G4endl;
 	G4cout << " ========================================================================== " << G4endl;
 }
 
@@ -624,9 +631,9 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 	fIntegral = thRnFunction->Integral(0,fR_max*fR_max,-1.*fZ_max,fZ_max);
 }
 	
-
-G4ThreeVector WCSimGenerator_Radioactivity::GetRandomVertex() {
+G4ThreeVector WCSimGenerator_Radioactivity::GetRandomVertex(G4int tSymNumber) {
 	
+	G4double Dim  = (G4double) tSymNumber;
 	G4double R2 = 0;
 	G4double Z  = 0;
 	
@@ -634,7 +641,7 @@ G4ThreeVector WCSimGenerator_Radioactivity::GetRandomVertex() {
 	G4double& Z_ref = Z;
 	
 	thRnFunction->GetRandom2(R2_ref,Z_ref);
-	G4double theta = G4UniformRand() * 2. * TMath::Pi();
+	G4double theta = G4UniformRand() * 2. * TMath::Pi() / Dim;
 	
 	G4double X = sqrt(R2) * cos(theta);
 	G4double Y = sqrt(R2) * sin(theta);
@@ -643,7 +650,6 @@ G4ThreeVector WCSimGenerator_Radioactivity::GetRandomVertex() {
 	
 	return vec;
 }
-
 
 G4double WCSimGenerator_Radioactivity::ZFit_R210(G4double x, G4double Lambda, G4double BinConversion) {
 

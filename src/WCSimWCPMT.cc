@@ -132,6 +132,8 @@ void WCSimWCPMT::Digitize()
 
 void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
+  // Sort Hit times
+  std::sort(WCHC->GetVector()->begin(), WCHC->GetVector()->end(), WCSimWCHit::SortFunctor_Hit());
 
   //Get the PMT info for hit time smearing
   // G4String WCIDCollectionName = myDetector->GetIDCollectionName();
@@ -144,7 +146,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
   
   // Correct timing to be within 1 sec (needed for radioactive decay as forcing the decay lead to some strange results)
-  float first_time = 0;
+  G4double first_time = 0;
 
   #ifdef HYPER_VERBOSITY
   if(detectorElement=="OD"){
@@ -173,7 +175,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       // Get the information from the hit
       G4int   tube         = (*WCHC)[i]->GetTubeID();
       G4double peSmeared = 0.0;
-      double time_PMT, time_true;
+      G4double time_PMT, time_true;
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
 	  
@@ -181,7 +183,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    // This modification is important in case of very late hit physics (such as in radioactive decays)     
 	    // for which time easy goes > 1e9 ns and cause bug in digitizer
 	    // should not use /grdm/decayBiasProfile biasprofile.dat as it messes up all the timing of the decays, and force to use only one nucleus
-	    if ( i == 0 && ip == 0 && (*WCHC)[i]->GetTime(ip) > 1e5 ) { // Set Max at 10 musec
+	    if ( i == 0 && ip == 0 /*&& (*WCHC)[i]->GetTime(ip) > 1e5*/ ) { // Set Max at 10 musec
 	      //G4cout << " Apply time correction to event hits of " << (*WCHC)[i]->GetTime(ip) << " ns" << G4endl;
 	      first_time = (*WCHC)[i]->GetTime(ip);
 	    } 

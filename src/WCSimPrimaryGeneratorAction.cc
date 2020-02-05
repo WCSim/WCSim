@@ -83,6 +83,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   radioactive_sources.clear();
   myRn222Generator	= 0;
   fRnScenario		= 0;
+  fRnSymmetry		= 1;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -609,7 +610,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	
 	// Get position (first position take few seconds to be produced, there after there is no trouble)
 	//G4cout << "GetRandomVertex" << G4endl;
-	G4ThreeVector position = myRn222Generator->GetRandomVertex();
+	G4ThreeVector position = myRn222Generator->GetRandomVertex(fRnSymmetry);
 	//G4cout << "Done: " << position << G4endl;
 	// energy 
 	MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");

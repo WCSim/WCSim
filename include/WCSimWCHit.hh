@@ -67,7 +67,7 @@ class WCSimWCHit : public G4VHit
   // This is temporarily used for the drawing scale
   void SetMaxPe(G4int number = 0)  {maxPe   = number;};
 
-  void AddPe(G4float hitTime)  
+  void AddPe(G4double hitTime)  
   {
     // First increment the totalPe number
     totalPe++; 
@@ -82,7 +82,7 @@ class WCSimWCHit : public G4VHit
   G4int         GetTrackID()    { return trackID; };
   G4ThreeVector GetPos()        { return pos; };
   G4int         GetTotalPe()    { return totalPe;};
-  G4float       GetTime(int i)  { return time[i];};
+  G4double       GetTime(int i)  { return time[i];};
   G4int         GetParentID(int i) { return primaryParentID[i];};
   
   G4LogicalVolume* GetLogicalVolume() {return pLogV;};
@@ -91,17 +91,17 @@ class WCSimWCHit : public G4VHit
 
 
   // low is the trigger time, up is trigger+950ns (end of event)
-  G4float GetFirstHitTimeInGate(G4float low,G4float upevent)
+  G4double GetFirstHitTimeInGate(G4double low, G4double upevent)
   {
-    G4float firsttime;
-    std::vector<G4float>::iterator tfirst = time.begin();
-    std::vector<G4float>::iterator tlast = time.end();
+    G4double firsttime;
+    std::vector<G4double>::iterator tfirst = time.begin();
+    std::vector<G4double>::iterator tlast = time.end();
   
-    std::vector<G4float>::iterator found = 
+    std::vector<G4double>::iterator found = 
       std::find_if(tfirst,tlast,
 		   compose2(std::logical_and<bool>(),
-			    std::bind2nd(std::greater_equal<G4float>(),low),
-			    std::bind2nd(std::less_equal<G4float>(),upevent)
+			    std::bind2nd(std::greater_equal<G4double>(),low),
+			    std::bind2nd(std::less_equal<G4double>(),upevent)
 			    )
 		   );
     if ( found != tlast ) {
@@ -120,17 +120,17 @@ class WCSimWCHit : public G4VHit
   G4int GetPeInGate(double low, double pmtgate,double evgate) {
     // M Fechner; april 2005
     // assumes that time has already been sorted
-    std::vector<G4float>::iterator tfirst = time.begin();
-    std::vector<G4float>::iterator tlast = time.end();
+    std::vector<G4double>::iterator tfirst = time.begin();
+    std::vector<G4double>::iterator tlast = time.end();
     // select min time
-    G4float mintime = (pmtgate < evgate) ? pmtgate : evgate;
+    G4double mintime = (pmtgate < evgate) ? pmtgate : evgate;
     
     // return number of hits in the time window...
     
     G4int number = std::count_if(tfirst,tlast,
 				 compose2(std::logical_and<bool>(),
-					  std::bind2nd(std::greater_equal<G4float>(),low),
-					  std::bind2nd(std::less_equal<G4float>(),mintime)
+					  std::bind2nd(std::greater_equal<G4double>(),low),
+					  std::bind2nd(std::less_equal<G4double>(),mintime)
 					  )
 				 );
     
@@ -161,7 +161,7 @@ class WCSimWCHit : public G4VHit
   static G4int     maxPe;
 
   G4int                 totalPe;
-  std::vector<G4float>  time;
+  std::vector<G4double>  time;
   std::vector<G4int>    primaryParentID;
   G4int                 totalPeInGate;
 };

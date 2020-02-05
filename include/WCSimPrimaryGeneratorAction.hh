@@ -97,6 +97,7 @@ private:
   // For Rn event
   WCSimGenerator_Radioactivity* myRn222Generator;
   G4int fRnScenario;
+  G4int fRnSymmetry;
   
   // These go with jhfNtuple
   G4int mode;
@@ -168,6 +169,9 @@ public:
   
   inline void SetRadonScenario(G4int choice) 		{ fRnScenario = choice; }
   inline G4int GetRadonScenario() 			{ return fRnScenario; }
+  
+  inline void SetRadonSymmetry(G4int choice) 		{ fRnSymmetry = choice; }
+  inline G4int GetRadonSymmetry() 			{ return fRnSymmetry; }
 };
 
 #endif

@@ -51,8 +51,17 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   radonScalingCmd->SetGuidance("Select scalling scenario");
   radonScalingCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
   radonScalingCmd->SetGuidance("     SCENARIO : A, B, C");
+  radonScalingCmd->SetCandidates("A B C");
   param = new G4UIparameter("SCENARIO",'s',true);
   param->SetDefaultValue("C");
+  radonScalingCmd->SetParameter(param);
+  
+  radonGeoSymCmd = new G4UIcmdWithAnInteger("/mygen/radon_symmetry",this);
+  radonGeoSymCmd->SetGuidance("Select scalling scenario");
+  radonGeoSymCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
+  radonGeoSymCmd->SetGuidance("     SYMMETRY : 1 ... ");
+  param = new G4UIparameter("SYMMETRY",'d',true);
+  param->SetDefaultValue("1");
   radonScalingCmd->SetParameter(param);
 }
 
@@ -141,6 +150,11 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
   if ( command==radonScalingCmd ) 
   {
     RadonScalingCommand(newValue);
+  }
+  
+  if ( command==radonGeoSymCmd ) 
+  {
+    myAction->SetRadonSymmetry(radonGeoSymCmd->GetNewIntValue(newValue));
   }
 
 }

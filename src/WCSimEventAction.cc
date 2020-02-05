@@ -731,6 +731,8 @@ G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
       vtxvol = 11;
     else if (vtxVolumeName.contains("OD"))
       vtxvol = 12;
+    else if (vtxVolumeName.contains("ExtraTowerBlackSheet"))
+      vtxvol = -3;
     else
     {
       G4cout << vtxVolumeName << " unkown vtxVolumeName " << G4endl;
@@ -763,6 +765,8 @@ G4int WCSimEventAction::WCSimEventFindStoppingVolume(G4String stopVolumeName)
       stopvol = 11;
     else if (stopVolumeName.contains("OD"))
       stopvol = 12;
+    else if (stopVolumeName.contains("ExtraTowerBlackSheet"))
+      stopvol = -3;
     else
     {
       G4cout << stopVolumeName << " unkown stopVolumeName " << G4endl;

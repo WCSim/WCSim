@@ -23,7 +23,7 @@ class WCSimGenerator_Radioactivity
 
 		void Configuration(G4int iScenario, G4double dLifeTime=0);
 		
-		G4ThreeVector GetRandomVertex();
+		G4ThreeVector GetRandomVertex(G4int tSymNumber);
 		G4double GetMeanActivity() { return fIntegral; }
 		G4double GetIDVolume() { return (fR_max*fR_max*TMath::Pi()*fZ_max*2.); }
 		
@@ -61,6 +61,8 @@ class WCSimGenerator_Radioactivity
 		G4int    fScenario;
 		static G4double fRnDiffusion_Coef;
 		G4double fRnLambda;
+		
+		static G4double fRn_PerPMT;
 		
 		static G4double fRnSK_Center;
 		static G4double fRnSK_Bottom;

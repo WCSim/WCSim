@@ -56,17 +56,17 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
   G4double fCharge = particle->GetPDGCharge();
   	
   G4Track* tr = (G4Track*) aTrack;
-  if ( fCharge > 2. && aTrack->GetTrackID() > 1 ) { // Select nucleus after the first
-  	// Note: some particle linked to the first track are not yet processed, killing now prevent the gamma decay to happen
-  }
-  
   if ( aTrack->GetTrackID() == 1 ) {
-  	// First track save time
-  	fTime_birth = aTrack->GetGlobalTime(); 
-  	
+  	// Re-initialize time
+  	fTime_birth = 0;
   	// Ask G4 to kill the track when all secondary are done (will exclude other decays)
   	if ( fCharge > 2. )
   		tr->SetTrackStatus(fStopButAlive);
+  }
+  
+  if ( aTrack->GetTrackID() == 2 ) {
+  	// First track of the decay save time
+  	fTime_birth = aTrack->GetGlobalTime(); 
   }
 }
 
