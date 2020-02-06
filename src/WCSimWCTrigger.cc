@@ -268,7 +268,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
 
   std::vector<G4float> digit_times;
 
-  //G4cout << "WCSimWCTriggerBase::AlgNDigits. Number of entries in input digit collection: " << WCDCPMT->entries() << G4endl;
+  G4cout << "WCSimWCTriggerBase::AlgNDigits. Number of entries in input digit collection: " << WCDCPMT->entries() << G4endl;
 #ifdef WCSIMWCTRIGGER_VERBOSE
   int temp_total_pe = 0;
   for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
@@ -328,7 +328,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
     }
   }
   
-  //G4cout << "Found " << ntrig << " NDigit triggers" << G4endl;
+  G4cout << "Found " << ntrig << " NDigit triggers" << G4endl;
   //call FillDigitsCollection() whether any triggers are found or not
   // (what's saved depends on saveFailuresMode)
   FillDigitsCollection(WCDCPMT, remove_hits, this_triggerType);
@@ -458,7 +458,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       }//loop over Digits
     }//loop over PMTs
   }//loop over Triggers
-  //G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of entries in output digit collection: " << DigitsCollection->entries() << G4endl;
+  G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of entries in output digit collection: " << DigitsCollection->entries() << G4endl;
 
 }
 
