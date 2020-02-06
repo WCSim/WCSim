@@ -201,11 +201,9 @@ WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
 
 void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 
-#ifdef WCSIMWCDIGITIZER_VERBOSE
   if(detectorElement=="tank") G4cout << "TANK # ";
   if(detectorElement=="OD")   G4cout << "OD # ";
   G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
-#endif
 
   //Get the PMT info for hit time smearing
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();
@@ -224,7 +222,6 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       //assumes that each hit is in time order from lowest to highest.
       (*WCHCPMT)[i]->SortArrayByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
-#ifdef WCSIMWCDIGITIZER_VERBOSE
       if(tube < NPMTS_VERBOSE) {
 	G4cout << "tube " << tube
 	       << " totalpe = " << (*WCHCPMT)[i]->GetTotalPe()
@@ -238,7 +235,6 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	*/
 	G4cout <<G4endl;
       }
-#endif
 
       //Sorting done.  Now we integrate the charge on each PMT.
       // Integration occurs for DigitizerIntegrationWindow ns (user set)
