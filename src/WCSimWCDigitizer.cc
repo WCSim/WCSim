@@ -222,6 +222,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       //assumes that each hit is in time order from lowest to highest.
       (*WCHCPMT)[i]->SortArrayByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
+#ifdef WCSIMWCDIGITIZER_VERBOSE
       if(tube < NPMTS_VERBOSE) {
 	G4cout << "tube " << tube
 	       << " totalpe = " << (*WCHCPMT)[i]->GetTotalPe()
@@ -235,6 +236,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	*/
 	G4cout <<G4endl;
       }
+#endif
 
       //Sorting done.  Now we integrate the charge on each PMT.
       // Integration occurs for DigitizerIntegrationWindow ns (user set)
@@ -382,9 +384,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  }
 	}//ip (totalpe)
     }//i (WCHCPMT->entries())
-#ifdef WCSIMWCDIGITIZER_VERBOSE
   G4cout<<"WCSimWCDigitizerSKI::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << "\n";
-#endif
   
 #ifdef WCSIMWCDIGITIZER_VERBOSE
   G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
