@@ -400,9 +400,6 @@ public:
     WCSimRootTrigger* tmp = dynamic_cast<WCSimRootTrigger*>( (*fEventList)[0]);
     tmp->Clear();
   }
-  
-  // Add function usefull for analysis (specially for code used in both with / without OD configuration)
-  bool GetIfInitialized() { return (fEventList!=0); }
 
 private:
   //std::vector<WCSimRootTrigger*> fEventList;
