@@ -138,7 +138,7 @@
 # http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
 /mygen/generator gun
 /gun/particle e-
-##/gun/particle pi0
+#/gun/particle pi0
 /gun/energy 500 MeV
 /gun/direction 1 0 0 
 /gun/position 0 0 0  
