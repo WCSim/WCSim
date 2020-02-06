@@ -219,11 +219,8 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
-  //WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  //WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
-  // Official since 2019/09/06:
-  WCIDDiameter          = 64.8*m; // = 68m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 66.8*m; // = 72m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
@@ -246,11 +243,8 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
-  //WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  //WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
-  // Official since 2019/09/06:
-  WCIDDiameter          = 64.8*m; // = 68m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 66.8*m; // = 72m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
@@ -315,11 +309,8 @@ void WCSimDetectorConstruction::SetHyperKGeometry_20perCent()
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
-  //WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  //WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
-  // Official since 2019/09/06:
-  WCIDDiameter          = 64.8*m; // = 68m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 66.8*m; // = 72m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
