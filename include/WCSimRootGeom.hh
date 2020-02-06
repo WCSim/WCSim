@@ -98,7 +98,6 @@ public:
   
 
   Int_t GetWCNumPMT() const {return fWCNumPMT;}
-	
   Int_t GetODWCNumPMT() const {return fODWCNumPMT;}
   Float_t GetWCPMTRadius() const {return fWCPMTRadius;}
   Float_t GetODWCPMTRadius() const {return fODWCPMTRadius;}
