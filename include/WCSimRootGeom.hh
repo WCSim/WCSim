@@ -40,10 +40,6 @@ public:
   Int_t GetCylLoc() const {return fCylLoc;}
   Float_t GetOrientation(Int_t i=0) const {return (i<3) ? fOrientation[i] : 0;}
   Float_t GetPosition(Int_t i=0) const {return (i<3) ? fPosition[i] : 0;}
-  
-  // mPMT function for compatibility with Benjamin's fitter
-  Int_t GetmPMTNo() const {return 0;}
-  Int_t GetmPMT_PMTNo() const {return 0;}
 
   ClassDef(WCSimRootPMT,1)  //WCSimPMT structure
 };
@@ -101,27 +97,15 @@ public:
   Int_t GetGeo_Type() const {return fgeo_type;}
   
 
-  //Int_t GetWCNumPMT() const {return fWCNumPMT;}
-  Int_t GetWCNumPMT(bool hybridsecondtype=false) const {// Add bool for compatibility with Benjamin's Fitter
-  	if ( hybridsecondtype )
-  		return fWCNumPMT;
-  	else 
-  		return fWCNumPMT;
-  }
-  
+  Int_t GetWCNumPMT() const {return fWCNumPMT;}
+	
   Int_t GetODWCNumPMT() const {return fODWCNumPMT;}
   Float_t GetWCPMTRadius() const {return fWCPMTRadius;}
   Float_t GetODWCPMTRadius() const {return fODWCPMTRadius;}
   Float_t GetWCOffset(Int_t i) const {return (i<3) ? fWCOffset[i] : 0.;}
   Int_t GetOrientation() const { return fOrientation; }
   //WCSimRootPMT GetPMT(Int_t i){return *(new WCSimRootPMT());}
-  //WCSimRootPMT GetPMT(Int_t i){return *(WCSimRootPMT*)(*fPMTArray)[i];}
-  WCSimRootPMT GetPMT(Int_t i,bool hybridsecondtype=false) { // Add bool for compatibility with Benjamin's Fitter
-  	if ( hybridsecondtype )
-  		return *(WCSimRootPMT*)(*fPMTArray)[i];
-  	else 
-  		return *(WCSimRootPMT*)(*fPMTArray)[i];
-  }
+  WCSimRootPMT GetPMT(Int_t i){return *(WCSimRootPMT*)(*fPMTArray)[i];}
   const WCSimRootPMT * GetPMTPtr(Int_t i) const {return (WCSimRootPMT*)(fPMTArray->At(i));}
 
   ClassDef(WCSimRootGeom,1)  //WCSimRootEvent structure
