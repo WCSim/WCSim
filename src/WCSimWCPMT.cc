@@ -26,6 +26,8 @@
 extern "C" void skrn1pe_(float* );
 //extern "C" void rn1pe_(float* ); // 1Kton
 
+G4double WCSimWCPMT::first_time = 0;
+
 WCSimWCPMT::WCSimWCPMT(G4String name,
                        WCSimDetectorConstruction* myDetector,
                        G4String detectorElement)
@@ -146,7 +148,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
   
   // Correct timing to be within 1 sec (needed for radioactive decay as forcing the decay lead to some strange results)
-  G4double first_time = 0;
+  
 
   #ifdef HYPER_VERBOSITY
   if(detectorElement=="OD"){
@@ -183,7 +185,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    // This modification is important in case of very late hit physics (such as in radioactive decays)     
 	    // for which time easy goes > 1e9 ns and cause bug in digitizer
 	    // should not use /grdm/decayBiasProfile biasprofile.dat as it messes up all the timing of the decays, and force to use only one nucleus
-	    if ( i == 0 && ip == 0 /*&& (*WCHC)[i]->GetTime(ip) > 1e5*/ ) { // Set Max at 10 musec
+	    if ( i == 0 && ip == 0 && RelativeHitTime /*&& (*WCHC)[i]->GetTime(ip) > 1e5*/ ) { // Set Max at 10 musec
 	      //G4cout << " Apply time correction to event hits of " << (*WCHC)[i]->GetTime(ip) << " ns" << G4endl;
 	      first_time = (*WCHC)[i]->GetTime(ip);
 	    } 

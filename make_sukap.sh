@@ -7,6 +7,12 @@ source G4ROOTsource.sh
 curpath=${PWD}
 
 if [ ! -d ../WCSim_v1.8.0-build ]; then
+
+	echo "Creating libWCSimRoot.so"
+	rm -f src/*Dict*
+	make shared
+	rm -f src/*Dict*
+	
 	echo "Creating build directory ../WCSim_v1.8.0-build"
 	mkdir -p ../WCSim_v1.8.0-build
 	
