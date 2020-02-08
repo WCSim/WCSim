@@ -254,7 +254,7 @@ public:
   WCSimRootTrigger(int, int);
   virtual ~WCSimRootTrigger();
   WCSimRootTrigger & operator=(const WCSimRootTrigger & in);
-  bool CompareAllVariables(const WCSimRootTrigger * c) const;
+  bool CompareAllVariables(const WCSimRootTrigger * c, bool deep_comparison = false) const;
   
   void Initialize();
 
@@ -355,7 +355,7 @@ public:
   WCSimRootEvent();
   virtual ~WCSimRootEvent();
   WCSimRootEvent & operator=(const WCSimRootEvent & in);
-  bool CompareAllVariables(const WCSimRootEvent * c) const;
+  bool CompareAllVariables(const WCSimRootEvent * c, bool deep_comparison = false) const;
 
   void          Clear(Option_t *option ="");
   static void   Reset(Option_t *option ="");

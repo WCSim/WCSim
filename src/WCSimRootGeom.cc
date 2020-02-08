@@ -12,10 +12,6 @@
 
 #include <iostream>
 
-using std::cout;
-using std::cerr;
-using std::endl;
-
 #ifndef REFLEX_DICTIONARY
 ClassImp(WCSimRootGeom)
 ClassImp(WCSimRootPMT)

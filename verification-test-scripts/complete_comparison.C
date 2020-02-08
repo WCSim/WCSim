@@ -117,7 +117,6 @@ void complete_comparison(char *filename1, char *filename2, string treename = "wc
 #endif
 
   int nevents1;
-
   TTree * wcsimT1 = GetTree(filename1, treename.c_str());
 
   int nevents2;
@@ -158,6 +157,7 @@ void complete_comparison(char *filename1, char *filename2, string treename = "wc
     wcsimT1->GetEntry(ev);
     wcsimT2->GetEntry(ev);
 
+    //print
     if(verbose || ev == 0){
 	if(wcsimrootsuperevent1) {
 	  PrintHeaderInfo(wcsimrootsuperevent1, filename1);
@@ -171,9 +171,8 @@ void complete_comparison(char *filename1, char *filename2, string treename = "wc
       
     //compare
     bool failed = false;
-
     if(wcsimrootsuperevent1) {
-      failed = !(wcsimrootsuperevent1->CompareAllVariables(wcsimrootsuperevent2));
+      failed = !(wcsimrootsuperevent1->CompareAllVariables(wcsimrootsuperevent2, true));
     }
     else if(wcsimrootgeom1) {
       failed = !(wcsimrootgeom1->CompareAllVariables(wcsimrootgeom2));
