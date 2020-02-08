@@ -28,6 +28,11 @@ WCSimTrackingAction::WCSimTrackingAction()
   ParticleList.insert(12);
   ParticleList.insert(-12);
   // don't put gammas there or there'll be too many
+  
+  
+  // Max time for radioactive decay:
+  fMaxTime    = 1. * second; 
+  fTime_birth = 0.;
 }
 
 WCSimTrackingAction::~WCSimTrackingAction(){;}
@@ -45,6 +50,24 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
     }
   else 
     fpTrackingManager->SetStoreTrajectory(false);
+    
+  G4ParticleDefinition* particle = aTrack->GetDefinition();
+  G4String name   = particle->GetParticleName();
+  G4double fCharge = particle->GetPDGCharge();
+  	
+  G4Track* tr = (G4Track*) aTrack;
+  if ( aTrack->GetTrackID() == 1 ) {
+  	// Re-initialize time
+  	fTime_birth = 0;
+  	// Ask G4 to kill the track when all secondary are done (will exclude other decays)
+  	if ( fCharge > 2. )
+  		tr->SetTrackStatus(fStopButAlive);
+  }
+  
+  if ( aTrack->GetTrackID() == 2 ) {
+  	// First track of the decay save time
+  	fTime_birth = aTrack->GetGlobalTime(); 
+  }
 }
 
 void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
@@ -123,6 +146,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       currentTrajectory->SetSaveFlag(true);// mark it for WCSimEventAction ;
     else currentTrajectory->SetSaveFlag(false);// mark it for WCSimEventAction ;
   }
+
 }
 
 

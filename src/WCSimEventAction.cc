@@ -263,6 +263,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 #endif
 
   //Convert the hits to PMT pulse
+  WCDMPMT->SetRelativeDigitizedHitTime(RelativeHitTime);
   WCDMPMT->Digitize();
 
   //
@@ -387,7 +388,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       G4cout << "no";
     }
     G4cout << " entries" << G4endl;
-
+    
     G4int WCDCID_OD = DMman->GetDigiCollectionID("WCDigitizedCollection_OD");
     WCDC_OD = (WCSimWCTriggeredDigitsCollection*) DMman->GetDigiCollection(WCDCID_OD);
     // printouts
@@ -663,12 +664,15 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   //TBranch* tankeventbranch = tree->GetBranch("wcsimrootevent");
   //tree->SetEntries(tankeventbranch->GetEntries());
   tree->SetEntries(GetRunAction()->GetNumberOfEventsGenerated());
+  
+  /*
+  	-> G. Pronost (2019/12/17) Moved to RunAction (EndOfRun) in order to fasten the simulation
   TFile* hfile = tree->GetCurrentFile();
   // MF : overwrite the trees -- otherwise we have as many copies of the tree
   // as we have events. All the intermediate copies are incomplete, only the
   // last one is useful --> huge waste of disk space.
   hfile->Write("",TObject::kOverwrite);
-
+  */
   //save DAQ options here. This ensures that when the user selects a default option
   // (e.g. with -99), the saved option value in the output reflects what was run
   if(!SavedOptions) {
