@@ -456,6 +456,13 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      jhfNtuple.stop[npar][0] = vtxs[u][0]/cm;  // stopping point (not meaningful)
      jhfNtuple.stop[npar][1] = vtxs[u][1]/cm;  // stopping point (not meaningful)
      jhfNtuple.stop[npar][2] = vtxs[u][2]/cm;  // stopping point (not meaningful)
+     /* Alex Finch
+    	Create an imaginary start position for the incoming neutrino, to help event display 
+      */
+     float distance=10000.0;
+     for(int idim=0;idim<3;idim++)
+     	 jhfNtuple.start[npar][idim]=jhfNtuple.stop[npar][idim] - (distance*jhfNtuple.dir[npar][idim]);
+    	
      jhfNtuple.parent[npar] = 0;
 
      npar++;

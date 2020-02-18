@@ -156,8 +156,15 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    mode = atoi(token[1]);
 
 	    // Read the Vertex line
+	    
+	    int iVertex=0;
+	    
 	    token = readInLine(inputFile, lineSize, inBuf);
-	    vtxs[0] = G4ThreeVector(atof(token[1])*cm,
+	    
+	    while(token[0]=="vertex")
+	    {
+                 
+	    vtxs[iVertex] = G4ThreeVector(atof(token[1])*cm,
 				    atof(token[2])*cm,
 				    atof(token[3])*cm);
 	    
@@ -169,18 +176,21 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    // First, the neutrino line
 
 	    token=readInLine(inputFile, lineSize, inBuf);
-	    beampdgs[0] = atoi(token[1]);
-	    beamenergies[0] = atof(token[2])*MeV;
-	    beamdirs[0] = G4ThreeVector(atof(token[3]),
+	    beampdgs[iVertex] = atoi(token[1]);
+	    beamenergies[iVertex] = atof(token[2])*MeV;
+	    beamdirs[iVertex] = G4ThreeVector(atof(token[3]),
 					atof(token[4]),
 					atof(token[5]));
-
+ 
+	    SetBeamEnergy(beamenergies[iVertex]);
+                    
+	    SetBeamDir(beamdirs[iVertex]);
 	    // Now read the target line
 
 	    token=readInLine(inputFile, lineSize, inBuf);
-	    targetpdgs[0] = atoi(token[1]);
-	    targetenergies[0] = atof(token[2])*MeV;
-	    targetdirs[0] = G4ThreeVector(atof(token[3]),
+	    targetpdgs[iVertex] = atoi(token[1]);
+	    targetenergies[iVertex] = atof(token[2])*MeV;
+	    targetdirs[iVertex] = G4ThreeVector(atof(token[3]),
 					  atof(token[4]),
 					  atof(token[5]));
 
@@ -248,12 +258,16 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		    //G4cout << "Particle: " << pdgid << " KE: " << ekin << G4endl;
 		    particleGun->SetParticlePosition(vtxs[0]);
 		    particleGun->SetParticleMomentumDirection(dir);
+		    particleGun->SetParticleTime(VertexTime);
 		    particleGun->GeneratePrimaryVertex(anEvent);
-		    SetVtx(vtxs[0]);
-		    SetBeamEnergy(ekin);
-		    SetBeamDir(dir);
+		    //SetVtx(vtxs[0]);
+		    //SetBeamEnergy(ekin);
+		   // SetBeamDir(dir);
 		  }
 	      }
+	       iVertex++;
+	    }
+	    nvtxs=iVertex;
 	  }
       }
     else 
