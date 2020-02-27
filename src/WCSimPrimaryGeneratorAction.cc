@@ -167,7 +167,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    vtxs[iVertex] = G4ThreeVector(atof(token[1])*cm,
 				    atof(token[2])*cm,
 				    atof(token[3])*cm);
-	    G4double VertexTime=atof(token[4]);
+	    G4double VertexTime=atof(token[4]*second);
 	    
             // true : Generate vertex in Rock , false : Generate vertex in WC tank
             SetGenerateVertexInRock(false);
