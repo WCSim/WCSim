@@ -62,7 +62,13 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreMultiDigitsPerTrigger = defaultMultiDigitsPerTrigger;
   MultiDigitsPerTriggerSet = false; //this variable is bool & defaults are class specfic; use this to know if the default is overidden
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
-
+  
+  
+  bool defaultRelativeHitTime = false;
+  RelativeHitTime = new G4UIcmdWithABool("/DAQ/RelativeHitTime", this);
+  RelativeHitTime->SetGuidance("Set the digitized hit time relative to the first one");
+  RelativeHitTime->SetParameterName("RelativeHitTime",true);
+  RelativeHitTime->SetDefaultValue(defaultRelativeHitTime);
 
   //Generic digitizer specific options
   DigitizerDir = new G4UIdirectory("/DAQ/DigitizerOpt/");
@@ -237,6 +243,10 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       G4cout << "Will allow number of digits per PMT per trigger to go > 1" << initialiseString.c_str() << G4endl;
     if(initialised)
       MultiDigitsPerTriggerSet = true;
+  }
+  else if ( command == RelativeHitTime ) {
+    // Relative HitTime
+    WCSimEvent->SetRelativeDigitizedHitTime(RelativeHitTime->GetNewBoolValue(newValue));
   }
 
   //Generic digitizer options
