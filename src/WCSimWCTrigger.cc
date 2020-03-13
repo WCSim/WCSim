@@ -31,8 +31,8 @@
 //#define HYPER_VERBOSITY
 #endif
 
-const double WCSimWCTriggerBase::offset = 950.0; // ns. apply offset to the digit time
-const double WCSimWCTriggerBase::LongTime = 10E6; // ns = 10ms. event time
+const double WCSimWCTriggerBase::offset = 950.0; // ns. apply offset to the digit time in triggers
+const double WCSimWCTriggerBase::LongTime = 40E9; // ns = 40s. loooong time for SN simulations
 
 
 WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
