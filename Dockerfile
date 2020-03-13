@@ -3,18 +3,17 @@
 ### Download base image from cern repo on docker hub
 FROM wcsim/wcsim:base
 
-### Run the following commands as super user (root):
-USER root
+USER nu
 
-RUN cd /root/HyperK/WCSim \
-    && source $HYPERKDIR/root/bin/thisroot.sh \
-    && source $G4INSTALL/bin/geant4.sh \
-    && source $G4INSTALL/share/Geant4-10.1.3/geant4make/geant4make.sh \
+### Compile an up-to-date copy of the WCSim code
+WORKDIR $WCSIMDIR
+RUN source ../env-WCSim.sh \
     && git pull \
     && make clean \
     && make rootcint \
+    && make \
     && make
 
 ### Open terminal
-CMD ["/bin/bash"]
+ENTRYPOINT source $HYPERKDIR/env-WCSim.sh && /bin/bash
  
