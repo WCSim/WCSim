@@ -34,7 +34,7 @@ inline vector<string> readInLine(fstream& inFile, int lineSize, char* inBuf)
   return tokenize(" $\r", inBuf);
 }
 
-inline float atof( const string& s ) {return std::atof( s.c_str() );}
+inline double atof( const string& s ) {return std::atof( s.c_str() );}
 inline int   atoi( const string& s ) {return std::atoi( s.c_str() );}
 
 WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(

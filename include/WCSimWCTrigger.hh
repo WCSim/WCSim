@@ -46,11 +46,11 @@ public:
   ///Returns the number of trigger gates in the event (i.e. the number of triggers passed)
   int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
   ///Get the time of the ith trigger
-  Float_t              GetTriggerTime(int i) { return TriggerTimes[i];}
+  Double_t             GetTriggerTime(int i) { return TriggerTimes[i];}
   ///Get the trigger type of the ith trigger
   TriggerType_t        GetTriggerType(int i) { return TriggerTypes[i];}
   ///Get the additional trigger information associated with the ith trigger
-  std::vector<Float_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
+  std::vector<Double_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
   ///Get the trigger class name
   G4String GetTriggerClassName(){ return triggerClassName; }
 
@@ -138,9 +138,9 @@ protected:
   WCSimWCTriggeredDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
   std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
 
-  std::vector<Float_t>                TriggerTimes; ///< The times of the triggers
+  std::vector<Double_t>               TriggerTimes; ///< The times of the triggers
   std::vector<TriggerType_t>          TriggerTypes; ///< The type of the triggers
-  std::vector< std::vector<Float_t> > TriggerInfos; ///< Additional information associated with each trigger
+  std::vector< std::vector<Double_t> > TriggerInfos; ///< Additional information associated with each trigger
 
   WCSimWCDAQMessenger*       DAQMessenger; ///< Get the options from the .mac file
   WCSimDetectorConstruction* myDetector;   ///< Know about the detector, so can add appropriate PMT time smearing
@@ -183,8 +183,8 @@ private:
   void SortTriggersByTime() {
     int i, j;
     TriggerType_t index_type;
-    float index_time;
-    std::vector<float> index_info;
+    double index_time;
+    std::vector<double> index_info;
     for (i = 1; i < (int) TriggerTimes.size(); ++i) {
       index_time = TriggerTimes[i];
       index_type = TriggerTypes[i];
@@ -229,8 +229,8 @@ public:
   inline void SetTubeID(G4int tube) { tubeID = tube; }
   inline void AddGate  (G4int gate) { Gates.insert(gate); }
   inline void AddPe    ()           { totalPe++; }
-  inline void SetPe    (G4int gate, G4float Q) {   pe.insert(std::pair<int,float>(gate,Q)); }
-  inline void SetTime  (G4int gate, G4float T) { time.insert(std::pair<int,float>(gate,T)); }
+  inline void SetPe    (G4int gate, G4double Q) {   pe.insert(std::pair<int,double>(gate,Q)); }
+  inline void SetTime  (G4int gate, G4double T) { time.insert(std::pair<int,double>(gate,T)); }
 
   /// Add a whole vector for one digit to fDigiComp. Clear input vector once added.
   void AddDigiCompositionInfo(G4int gate, std::vector<int> &digi_comp){
@@ -239,8 +239,8 @@ public:
   }
 
   inline G4int   GetTubeID() {return tubeID;}
-  inline std::vector<G4float> GetPe      (int gate) { return FindInMultimap(gate, pe); }
-  inline std::vector<G4float> GetTime    (int gate) { return FindInMultimap(gate, time); }
+  inline std::vector<G4double> GetPe      (int gate) { return FindInMultimap(gate, pe); }
+  inline std::vector<G4double> GetTime    (int gate) { return FindInMultimap(gate, time); }
   std::vector<std::vector<int> > GetDigiCompositionInfo(int gate)
   {
     std::vector<std::vector<int> > v;
@@ -262,8 +262,8 @@ private:
   std::set<int> Gates;  ///< 'Gates' specifies subevent
 
   //lists (meaning multimap) of information for each digit created on the PMT
-  std::multimap<int,float> pe;   ///< Digit charge
-  std::multimap<int,float> time; ///< Digit time
+  std::multimap<int,double> pe;   ///< Digit charge
+  std::multimap<int,double> time; ///< Digit time
   std::multimap<int, std::vector<int> > fDigiComp;   ///< Stores the unique IDs of each photon making up a digit
 
   //integrated hit/digit parameters

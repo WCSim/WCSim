@@ -59,7 +59,7 @@ WCSimRootPMT::WCSimRootPMT()
 }
 
 //______________________________________________________________________________
-WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Float_t orientation[3], Float_t position[3])
+WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Double_t orientation[3], Double_t position[3])
 {
 	fTubeNo = tubeNo;
 	fCylLoc = cylLoc;
@@ -75,7 +75,7 @@ WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Float_t orientation[3], F
 
 //______________________________________________________________________________
 void WCSimRootGeom::SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, 
-			    Float_t rot[3], Float_t pos[3], bool expand)
+			    Double_t rot[3], Double_t pos[3], bool expand)
 {
    if(expand) (*(fPMTArray)).ExpandCreate(i+2);
 
