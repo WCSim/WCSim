@@ -39,7 +39,7 @@ public:
 
   double Truncate(double value, double precision) {
     if(precision < 1E-10) return value;
-    return precision * (int)(value / precision);
+    return precision * (long int)(value / precision);
   }
 
   ///Save current values of options
