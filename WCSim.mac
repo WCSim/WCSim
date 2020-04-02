@@ -132,6 +132,8 @@
 #/mygen/vecfile inputvectorfile
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
 #/mygen/vecfile mu+.out
+# define units used for time in kin file
+#/mygen/time_unit "ns"
 
 # Or you can use the G4 Particle Gun
 # for a full list of /gun/ commands see:
