@@ -100,7 +100,7 @@ Docker allows you to use WCSim without compiling in an OS independant way. The D
 2) Pull the WCSim image from docker hub by using `docker pull wcsim/wcsim:tag` where `tag` is the tagged version or use the tag `latest` to get the current develop branch 
 3) Run the docker image and create a container `docker run --name=WCSim -i -t wcsim/wcsim:tag` this will give you a shell in the container's OS with WCSim already built. 
 To save data from inside your docker image mount a local folder in the docker image at runtime and then anything placed in that directory will be available in that folder after exit. To do that run the following `docker run -v local_folder_path:docker_mount_path -i -t wcsim/wcsim:tag`
-4) Once you have run the docker image navigate to `cd /root/HyperK/WCSim` and source the enviroment variables using `source /root/HyperK/env-WCSim.sh` and then run WCSim as normal form this directory
+4) Once you have run the docker image, you will already be in `$WCSIMDIR` and WCSim (and prerequisites) will be setup. Therefore, you can just start running WCSim as normal from this directory
 5) To exit the docker image `exit`
 
 (Note: You only need to use the `docker run` command once to create the container. Once created you changes are saved in that container instance and you can start and stop the contianer at any time with  `docker start WCSim` and `docker stop WCSim`);
