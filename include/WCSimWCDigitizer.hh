@@ -38,7 +38,10 @@ public:
   void SetDigitizerPEPrecision      (double precision) { DigitizerPEPrecision     = precision; }; ///< Override the default digitizer charge resolution (p.e.)
 
   double Truncate(double value, double precision) {
-    if(precision < 1E-10) return value;
+      if(precision < 1E-10) return value;
+      float ratio=value / precision;
+      // Result of cast is undefined if value is outside range of int. Just do nothing in that case.
+      if(ratio>2147483647 || ratio<-2147483648) return value;
     return precision * (int)(value / precision);
   }
 
