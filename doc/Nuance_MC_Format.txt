@@ -33,7 +33,9 @@ Each line begins with a text tag, indicating the information it contains.
 
        The first three numbers are the x, y and z coordinate, in cm. The
     fourth number is the time, in simulation units normally ns.  To specify
-    different units use the command /mygen/time_units in the .mac file.
+    different units use the command /mygen/time_units in the .mac file.Multiple
+    vertices can used in a single event by repeating the vertex, track, and info
+    lines; the nuance line should not be repeated.
 
     track: 
 	

@@ -5,7 +5,7 @@
 // for memset
 
 #ifndef NPMTS_VERBOSE
-// #define NPMTS_VERBOSE 10
+#define NPMTS_VERBOSE 10
 #endif
 
 #ifndef HYPER_VERBOSITY
@@ -119,13 +119,8 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
   //digitised hit information does not have infinite precision
   //so need to round the charge and time information
   double digihittime_d = Truncate(digihittime, DigitizerTimingPrecision);
-
   double peSmeared_d   = Truncate(peSmeared,   DigitizerPEPrecision);
 
-//  double Truncate(double value, double precision) {
-//    if(precision < 1E-10) return value;
-//    return precision * (int)(value / precision);
-//  }
   //gate is not a trigger, but just the position of the digit in the array
   //inside the WCSimWCDigi object
 #ifdef WCSIMWCDIGITIZER_VERBOSE

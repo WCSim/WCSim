@@ -13,6 +13,7 @@
 #include "Randomize.hh"
 #include <map>
 #include <vector>
+#include <limits>
 
 
 // *******************************************
@@ -41,8 +42,8 @@ public:
       if(precision < 1E-10) return value;
       float ratio=value / precision;
       // Result of cast is undefined if value is outside range of int. Just do nothing in that case.
-      if(ratio>2147483647 || ratio<-2147483648) return value;
-    return precision * (int)(value / precision);
+      if(ratio>std::numeric_limits<long long>::max() || ratio<std::numeric_limits<long long>::min() ) return value;
+    return precision * (long long)(value / precision);
   }
 
   ///Save current values of options
