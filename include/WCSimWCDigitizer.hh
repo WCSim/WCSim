@@ -42,8 +42,8 @@ public:
       if(precision < 1E-10) return value;
       float ratio=value / precision;
       // Result of cast is undefined if value is outside range of int. Just do nothing in that case.
-      if(ratio>std::numeric_limits<long long>::max() || ratio<std::numeric_limits<long long>::min() ) return value;
-    return precision * (long long)(value / precision);
+      if(ratio>std::numeric_limits<int64_t>::max() || ratio<std::numeric_limits<int64_t>::min() ) return value;
+    return precision * (int64_t)(value / precision);
   }
 
   ///Save current values of options

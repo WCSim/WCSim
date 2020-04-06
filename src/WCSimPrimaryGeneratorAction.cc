@@ -143,8 +143,11 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
        }
 
     	//
-    	// Documentation describing the nuance text format can be found here: 
+    	// The original documentation describing the nuance text format can be found here: 
     	// http://neutrino.phy.duke.edu/nuance-format/
+      //
+      // Information specific to WCSim can be found in the file Nuance_MC_Format.txt in
+      // the doc directory.
     	//
     	// The format must be strictly adhered to for it to be processed correctly.
     	// The lines and their meanings from begin through info are fixed, and then
