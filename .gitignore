@@ -1,5 +1,6 @@
 #ignore build results
 src/WCSimRootDict.cc
+src/WCSimRootDict.cxx
 src/WCSimRootDict.h
 libWCSim.a
 libWCSimRoot.so
