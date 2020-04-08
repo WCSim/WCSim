@@ -36,10 +36,12 @@ const double WCSimWCTriggerBase::LongTime = 40E9; // ns = 40s. loooong time for 
 
 
 WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
-				       WCSimDetectorConstruction* inDetector,
-				       WCSimWCDAQMessenger* myMessenger,
-				       G4String detectorElement)
-  :G4VDigitizerModule(name), DAQMessenger(myMessenger), myDetector(inDetector), triggerClassName(""), detectorElement(detectorElement)
+              WCSimDetectorConstruction* inDetector,
+              WCSimWCDAQMessenger* myMessenger,
+              G4String detectorElement)
+:G4VDigitizerModule(name), DAQMessenger(myMessenger), 
+myDetector(inDetector), triggerClassName(""), 
+detectorElement(detectorElement)
 {
   G4String colName;
   if(detectorElement=="tank") colName = "WCDigitizedCollection";
@@ -55,7 +57,7 @@ WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
 
   if(DAQMessenger == NULL) {
     G4cerr << "WCSimWCDAQMessenger pointer is NULL when passed to WCSimWCTriggerBase constructor. Exiting..."
-           << G4endl;
+    << G4endl;
     exit(-1);
   }
 
@@ -82,16 +84,16 @@ void WCSimWCTriggerBase::GetVariables()
   }
   else {
     G4cerr << "WCSimWCDAQMessenger pointer is NULL when used in WCSimWCTriggerBase::GetVariables(). Exiting..." 
-	   << G4endl;
+    << G4endl;
     exit(-1);
   }
 
   G4cout << (multiDigitsPerTrigger ? "Using mutiple digits per PMT per trigger" : "Using a maximum of 1 digit per PMT per trigger" ) << G4endl
-	 << "Using NDigits threshold " << ndigitsThreshold
-	 << (ndigitsAdjustForNoise ? " (will be adjusted for noise)" : "") << G4endl
-	 << "Using NDigits trigger window " << ndigitsWindow << " ns" << G4endl
-	 << "Using NDigits event pretrigger window " << ndigitsPreTriggerWindow << " ns" << G4endl
-	 << "Using NDigits event posttrigger window " << ndigitsPostTriggerWindow << " ns" << G4endl;
+  << "Using NDigits threshold " << ndigitsThreshold
+  << (ndigitsAdjustForNoise ? " (will be adjusted for noise)" : "") << G4endl
+  << "Using NDigits trigger window " << ndigitsWindow << " ns" << G4endl
+  << "Using NDigits event pretrigger window " << ndigitsPreTriggerWindow << " ns" << G4endl
+  << "Using NDigits event posttrigger window " << ndigitsPostTriggerWindow << " ns" << G4endl;
   if(saveFailuresMode == 0)
     G4cout << "Saving only triggered digits" << G4endl;
   else if(saveFailuresMode == 1)
@@ -100,26 +102,26 @@ void WCSimWCTriggerBase::GetVariables()
     G4cout << "Saving only not-triggered digits" << G4endl;
   if(saveFailuresMode > 0)
     G4cout << "Using SaveFailures trigger time" << saveFailuresTime << " ns" << G4endl
-	   << "Using SaveFailures event pretrigger window " << saveFailuresPreTriggerWindow << " ns" << G4endl
-	   << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << " ns" << G4endl;
+  << "Using SaveFailures event pretrigger window " << saveFailuresPreTriggerWindow << " ns" << G4endl
+  << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << " ns" << G4endl;
 }
 
 int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
 {
   switch(t) {
-  case kTriggerNoTrig:
+    case kTriggerNoTrig:
     return -WCSimWCTriggerBase::LongTime;
     break;
-  case kTriggerNDigits:
-  case kTriggerNDigitsTest:
+    case kTriggerNDigits:
+    case kTriggerNDigitsTest:
     return ndigitsPreTriggerWindow;
     break;
-  case kTriggerFailure:
+    case kTriggerFailure:
     return saveFailuresPreTriggerWindow;
     break;
-  default:
+    default:
     G4cerr << "WCSimWCTriggerBase::GetPreTriggerWindow() Unknown trigger type " << t
-	   << "\t" << WCSimEnumerations::EnumAsString(t) << G4endl;
+    << "\t" << WCSimEnumerations::EnumAsString(t) << G4endl;
     exit(-1);
     break;
   }
@@ -128,19 +130,19 @@ int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
 int WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
 {
   switch(t) {
-  case kTriggerNoTrig:
+    case kTriggerNoTrig:
     return WCSimWCTriggerBase::LongTime;
     break;
-  case kTriggerNDigits:
-  case kTriggerNDigitsTest:
+    case kTriggerNDigits:
+    case kTriggerNDigitsTest:
     return ndigitsPostTriggerWindow;
     break;
-  case kTriggerFailure:
+    case kTriggerFailure:
     return saveFailuresPostTriggerWindow;
     break;
-  default:
+    default:
     G4cerr << "WCSimWCTriggerBase::GetPostTriggerWindow() Unknown trigger type " << t
-	   << "\t" << WCSimEnumerations::EnumAsString(t) << G4endl;
+    << "\t" << WCSimEnumerations::EnumAsString(t) << G4endl;
     exit(-1);
     break;
   }
@@ -156,12 +158,12 @@ void WCSimWCTriggerBase::AdjustNDigitsThresholdForNoise()
   double average_occupancy = dark_rate_Hz * trigger_window_seconds * npmts;
   
   G4cout << "Average number of PMTs in detector active in a " << ndigitsWindow
-	 << "ns window with a dark noise rate of " << PMTDarkRate
-	 << "kHz is " << average_occupancy
-	 << " (" << npmts << " total PMTs)"
-	 << G4endl
-	 << "Updating the NDigits threshold, from " << ndigitsThreshold
-	 << " to " << ndigitsThreshold + round(average_occupancy) << G4endl;
+  << "ns window with a dark noise rate of " << PMTDarkRate
+  << "kHz is " << average_occupancy
+  << " (" << npmts << " total PMTs)"
+  << G4endl
+  << "Updating the NDigits threshold, from " << ndigitsThreshold
+  << " to " << ndigitsThreshold + round(average_occupancy) << G4endl;
   ndigitsThreshold += round(average_occupancy);
 }
 
@@ -197,12 +199,12 @@ void WCSimWCTriggerBase::Digitize()
   G4int WCDCID = DigiMan->GetDigiCollectionID(untriggeredcollectionname);
   // Get the PMT Digits Collection
   WCSimWCDigitsCollection* WCDCPMT = 
-    (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCDCID));
+  (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCDCID));
 
 #ifdef HYPER_VERBOSITY
   if(detectorElement=="OD"){
     G4cout<<"WCSimWCTriggerBase::Digitize ☆ making triggered digits collection "<<collectionName[0]<<" for "<<detectorElement
-          <<" and calling DoTheWork on "<<untriggeredcollectionname<<" to fill it."<<G4endl;
+    <<" and calling DoTheWork on "<<untriggeredcollectionname<<" to fill it."<<G4endl;
   }
 #endif
 
@@ -216,7 +218,7 @@ void WCSimWCTriggerBase::Digitize()
 #ifdef HYPER_VERBOSITY
   if(detectorElement=="OD"){
     G4cout<<"WCSimWCTriggerBase::Digitize ☆ storing the triggered digits collection "<<collectionName[0]
-          <<" which has "<<DigitsCollection->entries()<<" entries"<<G4endl;
+    <<" which has "<<DigitsCollection->entries()<<" entries"<<G4endl;
   }
 #endif
   
@@ -249,22 +251,23 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
     //Loop over each Digit in this PMT
     for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
       G4double digit_time = (*WCDCPMT)[i]->GetTime(ip);
-      if(digit_time > lasthit)
-	lasthit = digit_time;
+      // Add some sanity. Hit times larger than some limit (WCSimWCTriggerBase::LongTime) are ignored
+      if(digit_time > lasthit && digit_time<WCSimWCTriggerBase::LongTime)
+        lasthit = digit_time;
       if(digit_time < firsthit)
-	firsthit = digit_time;
+        firsthit = digit_time;
     }//loop over Digits
   }//loop over PMTs
   int window_start_time = firsthit;
   window_start_time -= window_start_time % 5;
   int window_end_time   = lasthit - ndigitsWindow + window_step_size;
-  window_end_time -= window_end_time % 5;
 #ifdef WCSIMWCTRIGGER_VERBOSE
   G4cout << "WCSimWCTriggerBase::AlgNDigits. Found first/last hits. Looping from "
-	 << window_start_time
-	 << " to " << window_end_time
-	 << " in steps of " << window_step_size << G4endl;
+   << window_start_time
+   << " to " << window_end_time
+   << " in steps of " << window_step_size << G4endl;
 #endif
+  window_end_time -= window_end_time % 5;
 
   std::vector<G4double> digit_times;
 
@@ -291,10 +294,10 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
       for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
 	G4double digit_time = (*WCDCPMT)[i]->GetTime(ip);
 	//hit in trigger window?
-	if(digit_time >= window_start_time && digit_time <= (window_start_time + ndigitsWindow)) {
-	  n_digits++;
-	  digit_times.push_back(digit_time);
-	}
+       if(digit_time >= window_start_time && digit_time <= (window_start_time + ndigitsWindow)) {
+         n_digits++;
+         digit_times.push_back(digit_time);
+       }
 	//G4cout << digit_time << G4endl;
       }//loop over Digits
     }//loop over PMTs
@@ -321,10 +324,11 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
 
     //move onto the next go through the timing loop
     if(triggerfound) {
-      window_start_time = triggertime + GetPostTriggerWindow(TriggerTypes.back());
+    	window_start_time = triggertime + GetPostTriggerWindow(TriggerTypes.back());
     }//triggerfound
     else {
-      window_start_time += window_step_size;
+    	window_start_time += window_step_size;
+
     }
   }
   
@@ -381,11 +385,11 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	//also need to check whether the previous upperbound is above the lowerbound
 	//(different trigger windows for different trigger types can mean this trigger is completely contained within another)
 	// if it is, we skip it
-	if(upperbound_previous >= upperbound)
-	  continue;
-	lowerbound = upperbound_previous;
-      }
-    }
+       if(upperbound_previous >= upperbound)
+         continue;
+       lowerbound = upperbound_previous;
+     }
+   }
 
 #ifdef WCSIMWCTRIGGER_VERBOSE
     G4cout << "Saving trigger " << itrigger << " of type " << WCSimEnumerations::EnumAsString(triggertype)
@@ -398,8 +402,8 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 #endif
 
     //loop over PMTs
-    for (G4int i = 0; i < WCDCPMT->entries(); i++) {
-      int tube=(*WCDCPMT)[i]->GetTubeID();
+  for (G4int i = 0; i < WCDCPMT->entries(); i++) {
+    int tube=(*WCDCPMT)[i]->GetTubeID();
       //loop over digits in this PMT
       for ( G4int ip = 0; ip < (*WCDCPMT)[i]->GetTotalPe(); ip++){
 	G4double digit_time  = (*WCDCPMT)[i]->GetTime(ip);
@@ -414,46 +418,46 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	    digihittime += WCSimWCTriggerBase::offset - triggertime;
 
 	  //get the composition information for the triggered digit
-	  std::vector<int> triggered_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo(ip);
+       std::vector<int> triggered_composition = (*WCDCPMT)[i]->GetDigiCompositionInfo(ip);
 
 #ifdef WCSIMWCTRIGGER_VERBOSE
-	  G4cout << "Saving digit on PMT " << tube
-		 << " time " << digihittime
-		 << " pe "   << peSmeared
-		 << " digicomp";
-	  for(unsigned int iv = 0; iv < triggered_composition.size(); iv++)
-	    G4cout << " " << triggered_composition[iv];
-	  G4cout << G4endl;
+       G4cout << "Saving digit on PMT " << tube
+       << " time " << digihittime
+       << " pe "   << peSmeared
+       << " digicomp";
+       for(unsigned int iv = 0; iv < triggered_composition.size(); iv++)
+         G4cout << " " << triggered_composition[iv];
+       G4cout << G4endl;
 #endif
-	  assert(triggered_composition.size());
+       assert(triggered_composition.size());
 
 	  //add hit
-	  if ( DigiHitMap[tube] == 0) {
+       if ( DigiHitMap[tube] == 0) {
 	    //this PMT has no digits saved yet; create a new WCSimWCDigiTrigger
-	    WCSimWCDigiTrigger* Digi = new WCSimWCDigiTrigger();
-	    Digi->SetTubeID(tube);
-	    Digi->AddGate  (itrigger);
-	    Digi->SetTime  (itrigger,digihittime);
-	    Digi->SetPe    (itrigger,peSmeared);
-	    Digi->AddPe    ();
-	    Digi->AddDigiCompositionInfo(itrigger,triggered_composition);
-	    DigiHitMap[tube] = DigitsCollection->insert(Digi);
-	  }
-	  else {
+         WCSimWCDigiTrigger* Digi = new WCSimWCDigiTrigger();
+         Digi->SetTubeID(tube);
+         Digi->AddGate  (itrigger);
+         Digi->SetTime  (itrigger,digihittime);
+         Digi->SetPe    (itrigger,peSmeared);
+         Digi->AddPe    ();
+         Digi->AddDigiCompositionInfo(itrigger,triggered_composition);
+         DigiHitMap[tube] = DigitsCollection->insert(Digi);
+       }
+       else {
 	    //this PMT has digits saved already; add information to the WCSimWCDigiTrigger
-	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddGate(itrigger);
-	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(itrigger, digihittime);
-	    (*DigitsCollection)[DigiHitMap[tube]-1]->SetPe  (itrigger, peSmeared);
-	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddPe  ();
-	    (*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(itrigger,triggered_composition);
-	  }
-	  if(remove_hits)
-	    (*WCDCPMT)[i]->RemoveDigitizedGate(ip);
+         (*DigitsCollection)[DigiHitMap[tube]-1]->AddGate(itrigger);
+         (*DigitsCollection)[DigiHitMap[tube]-1]->SetTime(itrigger, digihittime);
+         (*DigitsCollection)[DigiHitMap[tube]-1]->SetPe  (itrigger, peSmeared);
+         (*DigitsCollection)[DigiHitMap[tube]-1]->AddPe  ();
+         (*DigitsCollection)[DigiHitMap[tube]-1]->AddDigiCompositionInfo(itrigger,triggered_composition);
+       }
+       if(remove_hits)
+         (*WCDCPMT)[i]->RemoveDigitizedGate(ip);
 
 	  //we've found a digit on this PMT. If we're restricting to just 1 digit per trigger window (e.g. SKI)
 	  // then ignore later digits and break. This takes us to the next PMT
-	  if(!multiDigitsPerTrigger && triggertype != kTriggerNoTrig)
-	    break;
+       if(!multiDigitsPerTrigger && triggertype != kTriggerNoTrig)
+         break;
 	}//digits within trigger window
       }//loop over Digits
     }//loop over PMTs
@@ -517,7 +521,7 @@ WCSimWCDigiTrigger::WCSimWCDigiTrigger()
 WCSimWCDigiTrigger::~WCSimWCDigiTrigger(){;}
 
 WCSimWCDigiTrigger::WCSimWCDigiTrigger(const WCSimWCDigiTrigger& right)
-  :G4VDigi()
+:G4VDigi()
 {
   // in principle assignment = is defined for containers...
   Gates = right.Gates;
@@ -552,9 +556,9 @@ void WCSimWCDigiTrigger::Print()
       exit(-1);
     }
     G4cout  << "Gate = " << it_pe->first
-            << " PE: "   << it_pe->second
-            << " Time: " << it_time->second
-	    << G4endl;
+    << " PE: "   << it_pe->second
+    << " Time: " << it_time->second
+    << G4endl;
   }
 }
 
@@ -565,10 +569,10 @@ void WCSimWCDigiTrigger::Print()
 // *******************************************
 
 WCSimWCTriggerNDigits::WCSimWCTriggerNDigits(G4String name,
-					     WCSimDetectorConstruction* myDetector,
-					     WCSimWCDAQMessenger* myMessenger,
-					     G4String detectorElement)
-  :WCSimWCTriggerBase(name, myDetector, myMessenger, detectorElement)
+  WCSimDetectorConstruction* myDetector,
+  WCSimWCDAQMessenger* myMessenger,
+  G4String detectorElement)
+:WCSimWCTriggerBase(name, myDetector, myMessenger, detectorElement)
 {
   triggerClassName = "NDigits";
   GetVariables();
@@ -590,10 +594,10 @@ void WCSimWCTriggerNDigits::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
 
 
 WCSimWCTriggerNoTrigger::WCSimWCTriggerNoTrigger(G4String name,
-						 WCSimDetectorConstruction* myDetector,
-						 WCSimWCDAQMessenger* myMessenger,
-						 G4String detectorElement)
-  :WCSimWCTriggerBase(name, myDetector, myMessenger, detectorElement)
+ WCSimDetectorConstruction* myDetector,
+ WCSimWCDAQMessenger* myMessenger,
+ G4String detectorElement)
+:WCSimWCTriggerBase(name, myDetector, myMessenger, detectorElement)
 {
   triggerClassName = "NoTrigger";
 }
@@ -616,10 +620,10 @@ void WCSimWCTriggerNoTrigger::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
 // *******************************************
 
 WCSimWCTriggerNDigits2::WCSimWCTriggerNDigits2(G4String name,
-					       WCSimDetectorConstruction* myDetector,
-					       WCSimWCDAQMessenger* myMessenger,
-					       G4String detectorElement)
-  :WCSimWCTriggerBase(name, myDetector, myMessenger, detectorElement)
+  WCSimDetectorConstruction* myDetector,
+  WCSimWCDAQMessenger* myMessenger,
+  G4String detectorElement)
+:WCSimWCTriggerBase(name, myDetector, myMessenger, detectorElement)
 {
   triggerClassName = "NDigits2";
   GetVariables();
