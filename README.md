@@ -111,6 +111,12 @@ Extra docker commands:
 3) See all containers `docker ps -a`
 4) Delete a container `docker rm ContainerID`
 
+#### Using WCSim without building using Singularity
+
+Singularity is a similar container tool with different philosphies. The most important being that you can't run as root. This means that it may be installed and available to use on your local cluster.
+
+You should be able to run the docker container with singularity without any problems. Just to note that $WCSIMDIR will be read-only, therefore you should run WCSim elsewhere (if you forget you'll see a nasty seg fault - this is just because of the read-only directory).
+
 ## Running WCSim
 
 To test that WCSim is working, try running the test macro `WCSim.mac`, which runs 10 electrons with 500 MeV of energy in the Super-Kamiokande detector. The command is one of the following, depending on how WCSim was built:

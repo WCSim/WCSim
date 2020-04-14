@@ -3,7 +3,8 @@
 ### Download base image from cern repo on docker hub
 FROM wcsim/wcsim:base
 
-USER nu
+### Run the following commands as super user (root):
+USER root
 
 ### Get and build WCSim
 WORKDIR $HYPERKDIR
