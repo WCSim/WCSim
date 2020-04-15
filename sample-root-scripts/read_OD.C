@@ -10,6 +10,8 @@
 #include "TCanvas.h"
 #include "TStyle.h"
 
+#include "WCSimRootEvent.hh"
+
 int read_OD(const char *filename="wcsim.root") {
   /* A simple script to plot aspects of phototube hits 
    * 
