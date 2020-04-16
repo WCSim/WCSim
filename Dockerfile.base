@@ -22,6 +22,7 @@ RUN yum install -y \
     libXpm-devel \
     libXft-devel \
     libXext-devel \
+    libzstd-devel \
     git \
     mesa-libGL-devel \
     mesa-libGLU-devel \
@@ -40,7 +41,7 @@ RUN mkdir $HYPERKDIR
 WORKDIR $HYPERKDIR
 
 ### Downloading ROOT
-RUN wget https://root.cern.ch/download/root_v5.34.36.Linux-centos7-x86_64-gcc4.8.tar.gz -O root.tar.gz \
+RUN wget https://root.cern.ch/download/root_v6.20.04.Linux-centos7-x86_64-gcc4.8.tar.gz -O root.tar.gz \
     && tar -xvzf root.tar.gz \
     && rm -f root.tar.gz
 
