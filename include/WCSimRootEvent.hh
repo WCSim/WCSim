@@ -39,7 +39,7 @@ private:
   Float_t fStop[3];
   Float_t fStart[3];
   Int_t fParenttype;
-  Float_t fTime;
+  Double_t fTime;
   Int_t fId;
 
 public:
@@ -72,7 +72,7 @@ public:
   Float_t   GetStop(Int_t i=0) const {return (i<3) ? fStop[i] : 0;}
   Float_t   GetStart(Int_t i=0) const {return (i<3) ? fStart[i] : 0;}
   Int_t     GetParenttype(/*Int_t i=0*/) const {return fParenttype;}
-  Float_t   GetTime() const { return fTime;}
+  Double_t   GetTime() const { return fTime;}
   Int_t     GetId() const {return fId;}
 
   ClassDef(WCSimRootTrack,1)  
@@ -107,7 +107,7 @@ class WCSimRootCherenkovHitTime : public TObject {
 
 private:
   // See jhfNtuple.h for the meaning of these data members:
-  Float_t fTruetime;
+  Double_t fTruetime;
   Int_t   fPrimaryParentID;
 
 public:
@@ -117,7 +117,7 @@ public:
   virtual ~WCSimRootCherenkovHitTime() { }
   bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 
-  Float_t   GetTruetime() const { return fTruetime;}
+  Double_t   GetTruetime() const { return fTruetime;}
   Int_t     GetParentID() const { return fPrimaryParentID;}
 
   ClassDef(WCSimRootCherenkovHitTime,1)  
@@ -132,7 +132,7 @@ class WCSimRootCherenkovDigiHit : public TObject {
 private:
   // See jhfNtuple.h for the meaning of these data members:
   Float_t fQ;
-  Float_t fT;
+  Double_t fT;
   Int_t fTubeId;
   std::vector<int> fPhotonIds;
 
@@ -145,7 +145,7 @@ public:
 
   void SetT(float t) { fT = t; }
   Float_t     GetQ() const { return fQ;}
-  Float_t     GetT() const { return fT;}
+  Double_t     GetT() const { return fT;}
   Int_t       GetTubeId() const { return fTubeId;}
   std::vector<int> GetPhotonIds() const { return fPhotonIds; }
 
@@ -160,18 +160,18 @@ class WCSimRootEventHeader {
 private:
   Int_t   fEvtNum;
   Int_t   fRun;
-  Int_t   fDate;
+  Double_t fDate;
   Int_t   fSubEvtNumber;
 
 public:
   WCSimRootEventHeader() : fEvtNum(0), fRun(0), fDate(0), fSubEvtNumber(1) { }
   virtual ~WCSimRootEventHeader() { }
   bool CompareAllVariables(const WCSimRootEventHeader * c) const;
-  void   Set(Int_t i, Int_t r, Int_t d, Int_t s=1) { fEvtNum = i; fRun = r; fDate = d; fSubEvtNumber = s;}
+  void   Set(Int_t i, Int_t r, Double_t d, Int_t s=1) { fEvtNum = i; fRun = r; fDate = d; fSubEvtNumber = s;}
   void SetDate(Int_t d) { fDate=d; }
   Int_t  GetEvtNum() const { return fEvtNum; }
   Int_t  GetRun() const { return fRun; }
-  Int_t  GetDate() const { return fDate; }
+  Double_t GetDate() const { return fDate; }
   Int_t GetSubEvtNumber() const { return fSubEvtNumber;}
   
 
