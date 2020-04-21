@@ -14,15 +14,11 @@
 #include <TSystem.h>
 #include <TMath.h>
 
-#if !defined(__CINT__) || defined(__MAKECINT__)
-#include "WCSimRootEvent.hh"
 #include "WCSimRootGeom.hh"
-#include "WCSimEnumerations.hh"
-#endif
+#include "WCSimRootEvent.hh"
+#include "WCSimRootOptions.hh"
 
 using namespace std;
-
-class WCSimRootEvent;
 
 void PrintHeaderInfo(WCSimRootEvent * wcsimrootsuperevent, const char * filename)
 {
@@ -102,20 +98,8 @@ WCSimRootGeom * GetRootGeom(TTree * wcsimT, int & nevent)
 }
 
 // Simple example of reading a generated Root file
-void complete_comparison(char *filename1, char *filename2, string treename = "wcsimT", bool verbose=false, const Long64_t oneevent = -1)
+void complete_comparison(const char *filename1, const char *filename2, string treename = "wcsimT", bool verbose=false, const Long64_t oneevent = -1)
 {
-#if !defined(__MAKECINT__)
-  // Load the library with class dictionary info
-  // (create with "gmake shared")
-  char* wcsimdirenv;
-  wcsimdirenv = getenv ("WCSIMDIR");
-  if(wcsimdirenv !=  NULL){
-    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
-  }else{
-    gSystem->Load("../libWCSimRoot.so");
-  }
-#endif
-
   int nevents1;
   TTree * wcsimT1 = GetTree(filename1, treename.c_str());
 
@@ -142,9 +126,9 @@ void complete_comparison(char *filename1, char *filename2, string treename = "wc
   cout << "Tree " << treename << " in file 1 (2) has " << nevents1 << " (" << nevents2 << ") events" << endl;
 
   // Now loop over events
-  int nevents_failed = 0, nevents_analysed = 0;
-  int nevent = TMath::Min(nevents1, nevents2);
-  int ev = 0;
+  Long64_t nevents_failed = 0, nevents_analysed = 0;
+  Long64_t nevent = TMath::Min(nevents1, nevents2);
+  Long64_t ev = 0;
   if(oneevent >= 0) {
     ev = oneevent;
     nevent = oneevent + 1;
