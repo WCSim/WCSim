@@ -28,6 +28,7 @@ private:
 public:
   WCSimRootPMT();
   WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Float_t orientation[3], Float_t position[3]);
+  WCSimRootPMT(const WCSimRootPMT & in);
   virtual ~WCSimRootPMT();
   bool CompareAllVariables(const WCSimRootPMT * c) const;
 
@@ -51,7 +52,6 @@ class WCSimRootGeom : public TObject {
 
 private:
 
-	static const Int_t     maxNumPMT = 40000;
   Float_t                fWCCylRadius;  // Radius of WC tank
   Float_t                fWCCylLength;  // Length of WC tank
   
@@ -64,14 +64,12 @@ private:
   Float_t                fWCOffset[3]; // Offset of barrel center in global coords
   Int_t                  fOrientation; //Orientation o detector, 0 is 2km horizontal, 1 is Upright
 
-  // Could make a TClonesArray of PMTs but let's keep it simple
-  //   since the arrays just won't be that large
-  //WCSimRootPMT          fPMTArray[maxNumPMT];  // Array of PMTs
   TClonesArray           *fPMTArray;
 
 public:
 
   WCSimRootGeom();
+  WCSimRootGeom(const WCSimRootGeom & in);
   virtual ~WCSimRootGeom();
   bool CompareAllVariables(const WCSimRootGeom * c) const;
 
@@ -103,7 +101,7 @@ public:
   Float_t GetODWCPMTRadius() const {return fODWCPMTRadius;}
   Float_t GetWCOffset(Int_t i) const {return (i<3) ? fWCOffset[i] : 0.;}
   Int_t GetOrientation() const { return fOrientation; }
-  //WCSimRootPMT GetPMT(Int_t i){return *(new WCSimRootPMT());}
+
   WCSimRootPMT GetPMT(Int_t i){return *(WCSimRootPMT*)(*fPMTArray)[i];}
   const WCSimRootPMT * GetPMTPtr(Int_t i) const {return (WCSimRootPMT*)(fPMTArray->At(i));}
 
