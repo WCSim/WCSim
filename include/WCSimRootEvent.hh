@@ -361,52 +361,33 @@ public:
   static void   Reset(Option_t *option ="");
   Int_t GetCurrentIndex() { return Current;}
 
-  //  WCSimRootTrigger* GetTrigger(int number) { return fEventList[number];}
-        WCSimRootTrigger * GetTrigger(int number)       { return (WCSimRootTrigger*) (*fEventList)[number];}
-  const WCSimRootTrigger * GetTrigger(int number) const { return (WCSimRootTrigger*) (*fEventList)[number];}
+        WCSimRootTrigger * GetTrigger(int number)       { return (WCSimRootTrigger*) fEventList->At(number);}
+  const WCSimRootTrigger * GetTrigger(int number) const { return (WCSimRootTrigger*) fEventList->At(number);}
 
-  Int_t GetNumberOfEvents() const { return fEventList->GetEntriesFast();}
-  Int_t GetNumberOfSubEvents() const { return (fEventList->GetEntriesFast()-1);}
-  bool HasSubEvents() { return  (fEventList->GetEntriesFast() > 1); } 
+  Int_t GetNumberOfEvents() const { return fEventList->GetEntries();}
+  Int_t GetNumberOfSubEvents() const { return (fEventList->GetEntries()-1);}
+  bool HasSubEvents() { return  (fEventList->GetEntries() > 1); }
 
-  //Int_t GetNumberOfEvents() const { return fEventList.size();}
-  //Int_t GetNumberOfSubEvents() const { return (fEventList.size()-1);}
-
-  //void AddSubEvent() { fEventList.push_back(new WCSimRootTrigger()); }
   void AddSubEvent() { 
     // be sure not to call the default constructor BUT the actual one
-    WCSimRootTrigger* tmp = dynamic_cast<WCSimRootTrigger*>( (*fEventList)[0] );
-    int num = tmp->GetHeader()->GetEvtNum();
-    ++Current; 
+    ++Current;
     if ( Current > 9 ) fEventList->Expand(150);
-    fEventList->AddAt(new WCSimRootTrigger(num,Current),Current);
+    int num = ((WCSimRootTrigger*)fEventList->At(0))->GetHeader()->GetEvtNum();
+    new((*fEventList)[Current]) WCSimRootTrigger(num,Current);
   }
   
-  /*  void ReInitialize() { // need to remove all subevents at the end, or they just get added anyway...
-    std::vector<WCSimRootTrigger*>::iterator  iter = fEventList.begin();
-    ++iter; // do not delete the first event --> regular beaviour for this program ?
-  */
   void Initialize();
 
-  void ReInitialize() { // need to remove all subevents at the end, or they just get added anyway...
-    for ( int i = fEventList->GetLast() ; i>=1 ; i--) {
-      //      G4cout << "removing element # " << i << "...";
-      WCSimRootTrigger* tmp = 
-	dynamic_cast<WCSimRootTrigger*>(fEventList->RemoveAt(i));
-      delete tmp;
-      //G4cout <<"done !\n";
-    }
+  void ReInitialize() { 
     Current = 0;
-    WCSimRootTrigger* tmp = dynamic_cast<WCSimRootTrigger*>( (*fEventList)[0]);
-    tmp->Clear();
+    fEventList->Clear();
+    new((*fEventList)[Current]) WCSimRootTrigger(-99,Current);
   }
 
 private:
-  //std::vector<WCSimRootTrigger*> fEventList;
-  TObjArray* fEventList;
+  TClonesArray* fEventList;
   Int_t Current;                      //!               means transient, not writable to file
   ClassDef(WCSimRootEvent,1)
-
 };
 
 
