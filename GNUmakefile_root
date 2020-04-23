@@ -34,7 +34,7 @@ ROOTOBJS  := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tm
 
 .PHONY: directories
 
-all: directories libWCSimRoot.so
+all: directories libWCSimRoot.so movedict
 
 directories: $(G4TMPDIR)
 
@@ -52,6 +52,9 @@ libWCSimRoot.so : $(ROOTOBJS)
 
 rootcint: ./src/WCSimRootDict.cc
 
+movedict: rootcint
+	$(shell cp ./src/WCSimRootDict_rdict.pcm .)
+
 $(G4TMPDIR)/%.o: src/%.cc
 	@echo Compiling $*.cc ...
 	@if [ ! -d $(G4TMPDIR) ] ; then mkdir $(G4TMPDIR) ; echo mkdir $(G4TMPDIR) ;fi
@@ -61,4 +64,4 @@ $(G4TMPDIR)/%.o: src/%.cc
 clean :
 	@rm -f $(G4TMPDIR)/*.o
 	@rm -f ./src/WCSimRootDict.cc
-
+	@rm -f ./WCSimRootDict_rdict.pcm

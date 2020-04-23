@@ -600,6 +600,7 @@ WCSimWCTriggerNoTrigger::WCSimWCTriggerNoTrigger(G4String name,
 :WCSimWCTriggerBase(name, myDetector, myMessenger, detectorElement)
 {
   triggerClassName = "NoTrigger";
+  GetVariables();
 }
 
 WCSimWCTriggerNoTrigger::~WCSimWCTriggerNoTrigger()

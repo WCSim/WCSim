@@ -343,6 +343,11 @@ private:
   ///Calls the workhorse of this class: AlgNoTrigger
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
   
+  bool GetDefaultMultiDigitsPerTrigger()    { return true;  } ///< We want to save everything
+  int  GetDefaultNDigitsWindow()            { return 0;     } ///< This is not an NDigits trigger
+  int  GetDefaultNDigitsThreshold()         { return 0;     } ///< This is not an NDigits trigger
+  int  GetDefaultNDigitsPreTriggerWindow()  { return 0;     } ///< This is not an NDigits trigger
+  int  GetDefaultNDigitsPostTriggerWindow() { return 0;     } ///< This is not an NDigits trigger
 };
 
 /**

@@ -26,7 +26,25 @@ WCSimRootGeom::WCSimRootGeom()
   fPMTArray = new TClonesArray("WCSimRootPMT", 500);
 
 }
-
+//______________________________________________________________________________
+WCSimRootGeom::WCSimRootGeom(const WCSimRootGeom & in)
+  : TObject()
+{
+  fWCCylRadius   = in.GetWCCylRadius();
+  fWCCylLength   = in.GetWCCylLength();
+  fgeo_type      = in.GetGeo_Type();
+  fWCPMTRadius   = in.GetWCPMTRadius();
+  fWCNumPMT      = in.GetWCNumPMT();
+  fODWCPMTRadius = in.GetODWCPMTRadius();
+  fODWCNumPMT    = in.GetODWCNumPMT();
+  for(int i = 0; i < 3; i++)
+    fWCOffset[i] = in.GetWCOffset(i);
+  fOrientation   = in.GetOrientation();
+  //fill the TClonesArray
+  fPMTArray = new TClonesArray("WCSimRootPMT", fWCNumPMT);
+  for(int i = 0; i < fWCNumPMT; i++)
+    new((*fPMTArray)[i]) WCSimRootPMT(*(in.GetPMTPtr(i)));
+}
 //______________________________________________________________________________
 WCSimRootGeom::~WCSimRootGeom()
 {
@@ -57,7 +75,16 @@ WCSimRootPMT::WCSimRootPMT()
 {
   // Create a WCSimRootPMT object.
 }
-
+//______________________________________________________________________________
+WCSimRootPMT::WCSimRootPMT(const WCSimRootPMT & in)
+{
+  fTubeNo = in.GetTubeNo();
+  fCylLoc = in.GetCylLoc();
+  for(int i = 0; i < 3; i++) {
+    fOrientation[i] = in.GetOrientation(i);
+    fPosition   [i] = in.GetPosition(i);
+  }//i
+}
 //______________________________________________________________________________
 WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Double_t orientation[3], Double_t position[3])
 {

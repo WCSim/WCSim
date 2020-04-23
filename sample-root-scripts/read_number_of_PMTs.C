@@ -1,26 +1,19 @@
 #include <iostream>
-#include <TH1F.h>
 #include <stdio.h>     
 #include <stdlib.h>    
+
+#include "TFile.h"
+#include "TTree.h"
+#include "TSystem.h"
+
+#include "WCSimRootGeom.hh"
+
 // Simple example of reading a generated Root file
-void read_number_of_PMTs(char *filename=NULL)
+int read_number_of_PMTs(const char *filename="../wcsim.root")
 {
 
-  char* wcsimdirenv;
-  wcsimdirenv = getenv ("WCSIMDIR");
-  if(wcsimdirenv !=  NULL){
-    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
-  }else{
-    gSystem->Load("../libWCSimRoot.so");
-  }
-
-  TFile *f;
-  // Open the file                                                                                                            
-  if (filename==NULL){
-    f = new TFile("../wcsim.root","read");
-  }else{
-    f = new TFile(filename,"read");
-  }
+  // Open the file
+  TFile *f = new TFile(filename,"read");
   if (!f->IsOpen()){
     cout << "Error, could not open input file: " << filename << endl;
     return -1;
@@ -32,4 +25,6 @@ void read_number_of_PMTs(char *filename=NULL)
   gb->SetAddress(&geom);
   tree->GetEntry(0);
   Printf("Number of PMTs: %d", geom->GetWCNumPMT());
+
+  return 0;
 }

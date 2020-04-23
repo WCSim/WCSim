@@ -194,6 +194,8 @@ WCSimRootTrigger & WCSimRootTrigger::operator=(const WCSimRootTrigger & in)
   fTriggerType = in.fTriggerType;
   fTriggerInfo = in.fTriggerInfo;
   IsZombie = in.IsZombie;
+
+  return *this;
 }
 
 //_____________________________________________________________________________
@@ -218,10 +220,10 @@ void WCSimRootTrigger::Clear(Option_t */*option*/)
   // remove whatever's in the arrays
   // but don't deallocate the arrays themselves
 
-  fTracks->Delete();
-  fCherenkovHits->Delete();
-  fCherenkovHitTimes->Delete();
-  fCherenkovDigiHits->Delete();
+  fTracks->Clear();
+  fCherenkovHits->Clear();
+  fCherenkovHitTimes->Clear();
+  fCherenkovDigiHits->Clear();
 
   fTriggerType = kTriggerUndefined;
   fTriggerInfo.clear();
@@ -544,25 +546,24 @@ WCSimRootEvent::WCSimRootEvent()
 
 WCSimRootEvent & WCSimRootEvent::operator=(const WCSimRootEvent & in)
 {
-  this->Clear();
+  //this->Clear();
   Current = in.Current;
   fEventList = (TClonesArray*)in.fEventList->Clone();
+  return *this;
 }
 
 void WCSimRootEvent::Initialize()
 {
-  fEventList = new TObjArray(10,0); // very rarely more than 10 subevents...
-  fEventList->AddAt(new WCSimRootTrigger(0,0),0);
+  fEventList = new TClonesArray("WCSimRootTrigger",10); // very rarely more than 10 subevents...
   Current = 0;
+  new((*fEventList)[Current]) WCSimRootTrigger(0,Current);
 }
 
 
 WCSimRootEvent::~WCSimRootEvent()
 {
   if (fEventList != 0) {
-    for (int i = 0 ; i < fEventList->GetEntriesFast() ; i++) {
-      delete (*fEventList)[i];
-    }
+    fEventList->Delete();
     delete fEventList;
   }
   //  std::vector<WCSimRootTrigger*>::iterator  iter = fEventList.begin();
@@ -572,7 +573,7 @@ WCSimRootEvent::~WCSimRootEvent()
 
 void WCSimRootEvent::Clear(Option_t* /*o*/)
 {
-  //nothing for now
+  fEventList->Clear();
 }
 
 void WCSimRootEvent::Reset(Option_t* /*o*/)
