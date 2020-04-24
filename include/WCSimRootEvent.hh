@@ -359,7 +359,6 @@ public:
 
   void          Clear(Option_t *option ="");
   static void   Reset(Option_t *option ="");
-  Int_t GetCurrentIndex() { return Current;}
 
         WCSimRootTrigger * GetTrigger(int number)       { return (WCSimRootTrigger*) fEventList->At(number);}
   const WCSimRootTrigger * GetTrigger(int number) const { return (WCSimRootTrigger*) fEventList->At(number);}
@@ -369,24 +368,21 @@ public:
   bool HasSubEvents() { return  (fEventList->GetEntries() > 1); }
 
   void AddSubEvent() { 
+    int evt_num  = GetTrigger(0)->GetHeader()->GetEvtNum();
+    int trig_num = GetNumberOfEvents();
     // be sure not to call the default constructor BUT the actual one
-    ++Current;
-    if ( Current > 9 ) fEventList->Expand(150);
-    int num = ((WCSimRootTrigger*)fEventList->At(0))->GetHeader()->GetEvtNum();
-    new((*fEventList)[Current]) WCSimRootTrigger(num,Current);
+    new((*fEventList)[trig_num]) WCSimRootTrigger(evt_num, trig_num);
   }
   
   void Initialize();
 
   void ReInitialize() { 
-    Current = 0;
     fEventList->Clear();
-    new((*fEventList)[Current]) WCSimRootTrigger(-99,Current);
+    new((*fEventList)[0]) WCSimRootTrigger(-99,0);
   }
 
 private:
   TClonesArray* fEventList;
-  Int_t Current;                      //!               means transient, not writable to file
   ClassDef(WCSimRootEvent,2)
 };
 
