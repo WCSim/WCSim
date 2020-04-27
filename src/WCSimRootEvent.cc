@@ -541,13 +541,11 @@ WCSimRootEvent::WCSimRootEvent()
   // this is standard root practise for streaming ROOT objtecs : if memory is alloc'ed here,
   // it will be lost
   fEventList = 0;
-  Current = 0;
 }
 
 WCSimRootEvent & WCSimRootEvent::operator=(const WCSimRootEvent & in)
 {
   //this->Clear();
-  Current = in.Current;
   fEventList = (TClonesArray*)in.fEventList->Clone();
   return *this;
 }
@@ -555,8 +553,7 @@ WCSimRootEvent & WCSimRootEvent::operator=(const WCSimRootEvent & in)
 void WCSimRootEvent::Initialize()
 {
   fEventList = new TClonesArray("WCSimRootTrigger",10); // very rarely more than 10 subevents...
-  Current = 0;
-  new((*fEventList)[Current]) WCSimRootTrigger(0,Current);
+  ReInitialize();
 }
 
 
