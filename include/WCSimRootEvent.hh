@@ -387,7 +387,7 @@ public:
 private:
   TClonesArray* fEventList;
   Int_t Current;                      //!               means transient, not writable to file
-  ClassDef(WCSimRootEvent,2)
+  ClassDef(WCSimRootEvent,1)
 };
 
 
