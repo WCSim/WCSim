@@ -194,8 +194,6 @@ WCSimRootTrigger & WCSimRootTrigger::operator=(const WCSimRootTrigger & in)
   fTriggerType = in.fTriggerType;
   fTriggerInfo = in.fTriggerInfo;
   IsZombie = in.IsZombie;
-
-  return *this;
 }
 
 //_____________________________________________________________________________
@@ -220,10 +218,10 @@ void WCSimRootTrigger::Clear(Option_t */*option*/)
   // remove whatever's in the arrays
   // but don't deallocate the arrays themselves
 
-  fTracks->Clear();
-  fCherenkovHits->Clear();
-  fCherenkovHitTimes->Clear();
-  fCherenkovDigiHits->Clear();
+  fTracks->Delete();
+  fCherenkovHits->Delete();
+  fCherenkovHitTimes->Delete();
+  fCherenkovDigiHits->Delete();
 
   fTriggerType = kTriggerUndefined;
   fTriggerInfo.clear();
@@ -541,26 +539,30 @@ WCSimRootEvent::WCSimRootEvent()
   // this is standard root practise for streaming ROOT objtecs : if memory is alloc'ed here,
   // it will be lost
   fEventList = 0;
+  Current = 0;
 }
 
 WCSimRootEvent & WCSimRootEvent::operator=(const WCSimRootEvent & in)
 {
-  //this->Clear();
+  this->Clear();
+  Current = in.Current;
   fEventList = (TClonesArray*)in.fEventList->Clone();
-  return *this;
 }
 
 void WCSimRootEvent::Initialize()
 {
-  fEventList = new TClonesArray("WCSimRootTrigger",10); // very rarely more than 10 subevents...
-  ReInitialize();
+  fEventList = new TObjArray(10,0); // very rarely more than 10 subevents...
+  fEventList->AddAt(new WCSimRootTrigger(0,0),0);
+  Current = 0;
 }
 
 
 WCSimRootEvent::~WCSimRootEvent()
 {
   if (fEventList != 0) {
-    fEventList->Delete();
+    for (int i = 0 ; i < fEventList->GetEntriesFast() ; i++) {
+      delete (*fEventList)[i];
+    }
     delete fEventList;
   }
   //  std::vector<WCSimRootTrigger*>::iterator  iter = fEventList.begin();
@@ -570,7 +572,7 @@ WCSimRootEvent::~WCSimRootEvent()
 
 void WCSimRootEvent::Clear(Option_t* /*o*/)
 {
-  fEventList->Clear();
+  //nothing for now
 }
 
 void WCSimRootEvent::Reset(Option_t* /*o*/)
