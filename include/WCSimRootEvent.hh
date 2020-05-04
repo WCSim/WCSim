@@ -7,6 +7,7 @@
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
+#include <stdint.h>
 #include "TObject.h"
 #include "TClonesArray.h"
 #include <string>
@@ -160,18 +161,18 @@ class WCSimRootEventHeader {
 private:
   Int_t   fEvtNum;
   Int_t   fRun;
-  Int_t   fDate;
+  int64_t fDate;
   Int_t   fSubEvtNumber;
 
 public:
   WCSimRootEventHeader() : fEvtNum(0), fRun(0), fDate(0), fSubEvtNumber(1) { }
   virtual ~WCSimRootEventHeader() { }
   bool CompareAllVariables(const WCSimRootEventHeader * c) const;
-  void   Set(Int_t i, Int_t r, Int_t d, Int_t s=1) { fEvtNum = i; fRun = r; fDate = d; fSubEvtNumber = s;}
-  void SetDate(Int_t d) { fDate=d; }
+  void   Set(Int_t i, Int_t r, int64_t d, Int_t s=1) { fEvtNum = i; fRun = r; fDate = d; fSubEvtNumber = s;}
+  void SetDate(int64_t d) { fDate=d; }
   Int_t  GetEvtNum() const { return fEvtNum; }
   Int_t  GetRun() const { return fRun; }
-  Int_t  GetDate() const { return fDate; }
+  int64_t GetDate() const { return fDate; }
   Int_t GetSubEvtNumber() const { return fSubEvtNumber;}
   
 
@@ -261,7 +262,7 @@ public:
   void          Clear(Option_t *option ="");
   static void   Reset(Option_t *option ="");
 
-  void          SetHeader(Int_t i, Int_t run, Int_t date,Int_t subevtn=1);
+  void          SetHeader(Int_t i, Int_t run, int64_t date,Int_t subevtn=1);
   void          SetTriggerInfo(TriggerType_t trigger_type, std::vector<Double_t> trigger_info);
   bool          IsASubEvent() {  return (fEvtHdr.GetSubEvtNumber()>=1); }
   void          SetMode(Int_t i) {fMode = i;}

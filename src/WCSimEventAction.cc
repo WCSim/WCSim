@@ -1181,7 +1181,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
 	gatestart = WCTM->GetTriggerTime(index);
 	WCSimRootEventHeader*HH = wcsimrootevent->GetHeader();
-	HH->SetDate(int(gatestart));
+	HH->SetDate(gatestart);
       }//index (loop over ngates)
     
     // end of loop over WC trigger gates --> back to the main sub-event

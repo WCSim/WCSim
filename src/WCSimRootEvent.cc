@@ -241,7 +241,7 @@ void WCSimRootTrigger::Reset(Option_t */*option*/)
 
 void WCSimRootTrigger::SetHeader(Int_t i, 
 				  Int_t run, 
-				  Int_t date,Int_t subevent)
+				  int64_t date,Int_t subevent)
 {
   // Set the header values
   fEvtHdr.Set(i, run, date,subevent);
