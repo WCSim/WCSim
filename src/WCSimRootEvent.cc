@@ -253,7 +253,9 @@ void WCSimRootTrigger::SetTriggerInfo(TriggerType_t trigger_type,
 				      std::vector<Double_t> trigger_info)
 {
   fTriggerType = trigger_type;
-  fTriggerInfo = trigger_info;
+  fTriggerInfo.resize(trigger_info.size());
+  for(size_t i = 0; i < trigger_info.size(); i++)
+    fTriggerInfo[i] = trigger_info[i];
 }
 
 //_____________________________________________________________________________
