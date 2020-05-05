@@ -263,7 +263,7 @@ public:
   static void   Reset(Option_t *option ="");
 
   void          SetHeader(Int_t i, Int_t run, int64_t date,Int_t subevtn=1);
-  void          SetTriggerInfo(TriggerType_t trigger_type, std::vector<Double_t> trigger_info);
+  void          SetTriggerInfo(TriggerType_t trigger_type, std::vector<Float_t> trigger_info);
   bool          IsASubEvent() {  return (fEvtHdr.GetSubEvtNumber()>=1); }
   void          SetMode(Int_t i) {fMode = i;}
   void          SetNvtxs(Int_t i) {fNvtxs = i;}

@@ -311,7 +311,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
       triggertime -= (int)triggertime % 5;
       TriggerTimes.push_back(triggertime);
       TriggerTypes.push_back(this_triggerType);
-      TriggerInfos.push_back(std::vector<Double_t>(1, n_digits));
+      TriggerInfos.push_back(std::vector<Float_t>(1, n_digits));
       triggerfound = true;
     }
 
@@ -359,7 +359,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       return;
     TriggerTypes.push_back(kTriggerFailure);
     TriggerTimes.push_back(saveFailuresTime);
-    TriggerInfos.push_back(std::vector<Double_t>(1, -1));
+    TriggerInfos.push_back(std::vector<Float_t>(1, -1));
     save_triggerType = kTriggerFailure;
   }
 
@@ -373,7 +373,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     if(triggertype != save_triggerType && save_triggerType != kTriggerUndefined)
       continue;
     double         triggertime = TriggerTimes[itrigger];
-    std::vector<Double_t> triggerinfo = TriggerInfos[itrigger];
+    std::vector<Float_t> triggerinfo = TriggerInfos[itrigger];
 
     //these are the boundary of the trigger gate: we want to add all digits within these bounds to the output collection
     double lowerbound = triggertime + GetPreTriggerWindow(triggertype);
@@ -396,7 +396,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	   << " in time range [" << lowerbound << ", " << upperbound << "]"
 	   << " with trigger time " << triggertime
 	   << " and additional trigger info";
-    for(std::vector<Double_t>::iterator it = triggerinfo.begin(); it != triggerinfo.end(); ++it)
+    for(std::vector<Float_t>::iterator it = triggerinfo.begin(); it != triggerinfo.end(); ++it)
       G4cout << " " << *it;
     G4cout << G4endl;
 #endif
@@ -470,7 +470,7 @@ void WCSimWCTriggerBase::AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool rem
 
   //Does not doanything, just writes out all hits
   TriggerType_t this_triggerType = kTriggerNoTrig;
-  std::vector<Double_t> triggerinfo;
+  std::vector<Float_t> triggerinfo;
   Int_t Ndigits=0;
   for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
     Ndigits += (*WCDCPMT)[i]->GetTotalPe();
