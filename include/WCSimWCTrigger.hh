@@ -110,9 +110,9 @@ protected:
   virtual int GetDefaultNDigitsPostTriggerWindow() { return 950; }
 
   ///Get the pretrigger window for a given trigger algorithm
-  int GetPreTriggerWindow(TriggerType_t t);
+  double GetPreTriggerWindow(TriggerType_t t);
   ///Get the posttrigger window for a given trigger algorithm
-  int GetPostTriggerWindow(TriggerType_t t);
+  double GetPostTriggerWindow(TriggerType_t t);
 
   //these are the algorithms that perform triggering
   //they are stored here so that different trigger classes can use the same algorithms without copying code

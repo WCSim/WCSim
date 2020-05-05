@@ -106,7 +106,7 @@ void WCSimWCTriggerBase::GetVariables()
   << "Using SaveFailures event posttrigger window " << saveFailuresPostTriggerWindow << " ns" << G4endl;
 }
 
-int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
+double WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
 {
   switch(t) {
     case kTriggerNoTrig:
@@ -127,7 +127,7 @@ int WCSimWCTriggerBase::GetPreTriggerWindow(TriggerType_t t)
   }
 }
 
-int WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
+double WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
 {
   switch(t) {
     case kTriggerNoTrig:
