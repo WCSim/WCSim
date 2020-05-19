@@ -52,7 +52,7 @@ struct ntupleStruct
 };
 
 extern struct ntupleStruct jhfNtuple;
-
+/*
 static const char* ntDesc =
 "mode:I,"
 "nvtxs[0,MAX_N_PRIMARIES]:I,"
@@ -89,6 +89,7 @@ static const char* ntDesc =
 "fvq(fvnumDigTubes):R,"            
 "fvt(fvnumDigTubes):R,"
 "fvtubeid(fvnumDigTubes):I";
+*/
 #endif
 
 
