@@ -25,6 +25,13 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   fileNameCmd->SetParameterName("fileName",true);
   fileNameCmd->SetDefaultValue("inputvectorfile");
   
+  timeUnitCmd = new G4UIcmdWithAString("/mygen/time_unit",this);
+  timeUnitCmd->SetGuidance("Define the units used for tme in the input file.");
+  timeUnitCmd->SetGuidance("Can be picosecond, ps, ns, nanosecond, ms, millisecond, s, sec or second");
+  timeUnitCmd->SetGuidance("Default if not set is nanosecond");
+  timeUnitCmd->SetParameterName("unit",true);
+  timeUnitCmd->SetDefaultValue("ns");
+  
   radioactive_time_window_Cmd = new G4UIcmdWithADouble("/mygen/radioactive_time_window",this);
   radioactive_time_window_Cmd->SetGuidance("Select time window for radioactivity");
   radioactive_time_window_Cmd->SetParameterName("radioactive_time_window",true);
@@ -155,6 +162,12 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
   if ( command==radonGeoSymCmd ) 
   {
     myAction->SetRadonSymmetry(radonGeoSymCmd->GetNewIntValue(newValue));
+  }
+
+  if ( command==timeUnitCmd)
+  {
+    myAction->SetTimeUnits(newValue);
+    G4cout << "Time units set to " << newValue << G4endl;
   }
 
 }

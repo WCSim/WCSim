@@ -29,6 +29,7 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIdirectory*      mydetDirectory;
   G4UIcmdWithAString* genCmd;
   G4UIcmdWithAString* fileNameCmd;
+  G4UIcmdWithAString* timeUnitCmd;
   G4UIcmdWithAString* isotopeCmd;
   G4UIcmdWithAString* radonScalingCmd;
   G4UIcmdWithADouble* radioactive_time_window_Cmd;

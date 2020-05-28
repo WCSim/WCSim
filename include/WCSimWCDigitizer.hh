@@ -13,6 +13,7 @@
 #include "Randomize.hh"
 #include <map>
 #include <vector>
+#include <limits>
 
 
 // *******************************************
@@ -38,8 +39,11 @@ public:
   void SetDigitizerPEPrecision      (double precision) { DigitizerPEPrecision     = precision; }; ///< Override the default digitizer charge resolution (p.e.)
 
   double Truncate(double value, double precision) {
-    if(precision < 1E-10) return value;
-    return precision * (int)(value / precision);
+      if(precision < 1E-10) return value;
+      float ratio=value / precision;
+      // Result of cast is undefined if value is outside range of int. Just do nothing in that case.
+      if(ratio>std::numeric_limits<int64_t>::max() || ratio<std::numeric_limits<int64_t>::min() ) return value;
+    return precision * (int64_t)(value / precision);
   }
 
   ///Save current values of options

@@ -98,6 +98,9 @@ private:
   WCSimGenerator_Radioactivity* myRn222Generator;
   G4int fRnScenario;
   G4int fRnSymmetry;
+
+  // 
+  G4double fTimeUnit;
   
   // These go with jhfNtuple
   G4int mode;
@@ -172,7 +175,31 @@ public:
   
   inline void SetRadonSymmetry(G4int choice) 		{ fRnSymmetry = choice; }
   inline G4int GetRadonSymmetry() 			{ return fRnSymmetry; }
-};
+ //static const HepDouble nanosecond  = 1.;
+ //static const HepDouble second      = 1.e+9 *nanosecond;
+ //static const HepDouble millisecond = 1.e-3 *second;
+ //static const HepDouble microsecond = 1.e-6 *second;
+ //static const HepDouble  picosecond = 1.e-12*second;
+  inline void SetTimeUnits(G4String choice)
+  {
+
+
+    if(choice == "ns" || choice=="nanosecond")
+      fTimeUnit=CLHEP::nanosecond;//*second;
+    else if(choice == "s" || choice=="second")
+      fTimeUnit=CLHEP::second;
+    else if (choice = "ms" || choice=="millisecond")
+      fTimeUnit=CLHEP::millisecond;
+    else if (choice="microsecond")
+      fTimeUnit=CLHEP::microsecond;
+    else if(choice="ps" || choice=="picosecond")
+      fTimeUnit=CLHEP::picosecond;
+    else
+      fTimeUnit=CLHEP::nanosecond;
+  }
+    inline G4double GetTimeUnits()       { return fTimeUnit; }
+
+  };
 
 #endif
 

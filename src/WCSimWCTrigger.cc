@@ -249,7 +249,8 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
     //Loop over each Digit in this PMT
     for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
       G4float digit_time = (*WCDCPMT)[i]->GetTime(ip);
-      if(digit_time > lasthit)
+      // Add some sanity. Hit times larger than some limit (WCSimWCTriggerBase::LongTime) are ignored
+      if(digit_time > lasthit && digit_time<WCSimWCTriggerBase::LongTime )
 	lasthit = digit_time;
       if(digit_time < firsthit)
 	firsthit = digit_time;

@@ -1,7 +1,7 @@
 #include "WCSimPrimaryGeneratorAction.hh"
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPrimaryGeneratorMessenger.hh"
-
+#include "G4RunManager.hh"
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4GeneralParticleSource.hh"
@@ -30,12 +30,24 @@ vector<string> tokenize( string separators, string input );
 inline vector<string> readInLine(fstream& inFile, int lineSize, char* inBuf)
 {
   // Read in line break it up into tokens
-  inFile.getline(inBuf,lineSize);
-  return tokenize(" $\r", inBuf);
+  // Any line starting with # is ignored
+	while(true)                                               
+	{  
+		if (inFile.getline(inBuf,lineSize))
+		{
+			if(inBuf[0]!='#')                                  
+				return tokenize(" $\r", inBuf);
+		}
+		else
+		{
+			vector<string> nullLine;                               
+			return nullLine; 
+		}
+	}
 }
 
-inline float atof( const string& s ) {return std::atof( s.c_str() );}
-inline int   atoi( const string& s ) {return std::atoi( s.c_str() );}
+inline float atof( const string& S ) {return std::atof( S.c_str() );}
+inline int   atoi( const string& S ) {return std::atoi( S.c_str() );}
 
 WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 					  WCSimDetectorConstruction* myDC)
@@ -63,7 +75,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   particleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.0));
 
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  G4IonTable* ionTable = G4IonTable::GetIonTable();
+//  G4IonTable* ionTable = G4IonTable::GetIonTable();
   G4String particleName;
   particleGun->
     SetParticleDefinition(particleTable->FindParticle(particleName="mu+"));
@@ -84,6 +96,8 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   myRn222Generator	= 0;
   fRnScenario		= 0;
   fRnSymmetry		= 1;
+  // Time units for vertices   
+  fTimeUnit=CLHEP::nanosecond;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -102,177 +116,165 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
 
 void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-
   // We will need a particle table
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4IonTable* ionTable = G4IonTable::GetIonTable();
-
   // Temporary kludge to turn on/off vector text format 
-
   G4bool useNuanceTextFormat = true;
-
-
   // Do for every event
-
   if (useMulineEvt)
   { 
-
     if ( !inputFile.is_open() )
     {
       G4cout << "Set a vector file using the command /mygen/vecfile name"
 	     << G4endl;
       exit(-1);
     }
-
-    //
-    // Documentation describing the nuance text format can be found here: 
+	// The original documentation describing the nuance text format can be found here: 
     // http://neutrino.phy.duke.edu/nuance-format/
     //
+    // Information specific to WCSim can be found in the file Nuance_MC_Format.txt in
+    // the doc directory.
     // The format must be strictly adhered to for it to be processed correctly.
     // The lines and their meanings from begin through info are fixed, and then
     // a variable number of tracks may follow.
     //
     if (useNuanceTextFormat)
-      {
-	const int lineSize=100;
-	char      inBuf[lineSize];
-	vector<string> token(1);
-	
-	token = readInLine(inputFile, lineSize, inBuf);
-	  
-        if (token.size() == 0) 
-	  {
-	    G4cout << "end of nuance vector file!" << G4endl;
-	  }
-	else if (token[0] != "begin")
-	  {
-	    G4cout << "unexpected line begins with " << token[0] << G4endl;
-	  }
-	else   // normal parsing begins here
-	  {
-	    // Read the nuance line (ignore value now)
+    {
+    	const int lineSize=100;
+    	char      inBuf[lineSize];
+    	vector<string> token(1);
 
-	    token = readInLine(inputFile, lineSize, inBuf);
-	    mode = atoi(token[1]);
+    	token = readInLine(inputFile, lineSize, inBuf);
 
-	    // Read the Vertex line
-	    token = readInLine(inputFile, lineSize, inBuf);
-	    vtxs[0] = G4ThreeVector(atof(token[1])*cm,
-				    atof(token[2])*cm,
-				    atof(token[3])*cm);
-	    
-            // true : Generate vertex in Rock , false : Generate vertex in WC tank
-            SetGenerateVertexInRock(false);
+    	if (token.size() == 0 || token[0] == "stop" ) 
+    	{
+    		G4cout << "End of nuance vector file - run terminated..."<< G4endl;
+    		G4RunManager::GetRunManager()-> AbortRun();
+    	}
+    	else if (token[0] != "begin" )
+    	{
+    		G4cout << "unexpected line begins with " << token[0] << " we were expecting \" begin \" "<<G4endl;
+    	}
+		else   // normal parsing begins here
+		{
+		// Read the nuance line 
+        // should be nuance <value>
+        // but could be just  
+        // nuance 
+		// if value is given set mode to equal it.
 
-	    // Next we read the incoming neutrino and target
-	    
-	    // First, the neutrino line
-
-	    token=readInLine(inputFile, lineSize, inBuf);
-	    beampdgs[0] = atoi(token[1]);
-	    beamenergies[0] = atof(token[2])*MeV;
-	    beamdirs[0] = G4ThreeVector(atof(token[3]),
+			token = readInLine(inputFile, lineSize, inBuf);
+			int iVertex=0;
+			while(token[0]=="nuance")
+			{
+				if(token.size()>1)
+					mode = atoi(token[1]);
+	            // Read the Vertex line
+				token = readInLine(inputFile, lineSize, inBuf);
+				vtxs[iVertex] = G4ThreeVector(atof(token[1])*cm,
+					atof(token[2])*cm,
+					atof(token[3])*cm);
+				G4double VertexTime=atof(token[4])*fTimeUnit; 
+                // true : Generate vertex in Rock , false : Generate vertex in WC tank
+				SetGenerateVertexInRock(false);
+	            // Next we read the incoming neutrino and target
+	            // First, the neutrino line
+				token=readInLine(inputFile, lineSize, inBuf);
+				beampdgs[iVertex] = atoi(token[1]);
+				beamenergies[iVertex] = atof(token[2])*MeV;
+				beamdirs[iVertex] = G4ThreeVector(atof(token[3]),
 					atof(token[4]),
 					atof(token[5]));
+				SetBeamEnergy(beamenergies[iVertex]);         
+                SetBeamDir(beamdirs[iVertex]);
+	            // Now read the target line
+				token=readInLine(inputFile, lineSize, inBuf);
+				targetpdgs[iVertex] = atoi(token[1]);
+				targetenergies[iVertex] = atof(token[2])*MeV;
+				targetdirs[iVertex] = G4ThreeVector(atof(token[3]),
+					atof(token[4]),
+					atof(token[5]));
+	            // Read the info line, basically a dummy
+				token=readInLine(inputFile, lineSize, inBuf);
+				vecRecNumber = atoi(token[2]);
+	            // Now read the outgoing particles
+	            // These we will simulate.
+				while ( token=readInLine(inputFile, lineSize, inBuf),
+					token[0] == "track" )
+				{
+		        // We are only interested in the particles
+		        // that leave the nucleus, tagged by "0"
+					if ( token[6] == "0")
+					{
+						G4int pdgid = atoi(token[1]);
+						G4double tempEnergy = atof(token[2])*MeV;
+						G4ThreeVector dir = G4ThreeVector(atof(token[3]),
+							atof(token[4]),
+							atof(token[5]));
+		                //must handle the case of an ion seperatly from other particles
+		                //check PDG code if we have an ion.
+		                //PDG code format for ions ±10LZZZAAAI
+						char strPDG[11];
+						char strA[10]={0};
+						char strZ[10]={0};
+						long int A=0,Z=0;
+						if(abs(pdgid) >= 1000000000)
+						{
+			                //ion
+							sprintf(strPDG,"%i",abs(pdgid));
+							strncpy(strZ, &strPDG[3], 3);
+							strncpy(strA, &strPDG[6], 3);
+							strA[3]='\0';
+							strZ[3]='\0';
+							A=atoi(strA);
+							Z=atoi(strZ);
+							G4ParticleDefinition* ion;
+							ion =  ionTable->GetIon(Z, A, 0.);
+							particleGun->SetParticleDefinition(ion);
+							particleGun->SetParticleCharge(0);
+						}
+						else {
+		                    //not ion
+							particleGun->
+							SetParticleDefinition(particleTable->
+								FindParticle(pdgid));
+						}
+						G4double mass = 
+						particleGun->GetParticleDefinition()->GetPDGMass();
 
-	    // Now read the target line
+						G4double ekin = tempEnergy - mass;
 
-	    token=readInLine(inputFile, lineSize, inBuf);
-	    targetpdgs[0] = atoi(token[1]);
-	    targetenergies[0] = atof(token[2])*MeV;
-	    targetdirs[0] = G4ThreeVector(atof(token[3]),
-					  atof(token[4]),
-					  atof(token[5]));
+						particleGun->SetParticleEnergy(ekin);
+						particleGun->SetParticlePosition(vtxs[iVertex]);
+						particleGun->SetParticleMomentumDirection(dir);
+						particleGun->SetParticleTime(VertexTime);
+						particleGun->GeneratePrimaryVertex(anEvent);
 
-	    // Read the info line, basically a dummy
-	    token=readInLine(inputFile, lineSize, inBuf);
-	    G4cout << "Vector File Record Number " << token[2] << G4endl;
-            vecRecNumber = atoi(token[2]);
-	    
-	    // Now read the outgoing particles
-	    // These we will simulate.
-
-
-	    while ( token=readInLine(inputFile, lineSize, inBuf),
-		    token[0] == "track" )
-	      {
-		// We are only interested in the particles
-		// that leave the nucleus, tagged by "0"
-
-
-		if ( token[6] == "0")
-		  {
-		    G4int pdgid = atoi(token[1]);
-		    G4double energy = atof(token[2])*MeV;
-		    G4ThreeVector dir = G4ThreeVector(atof(token[3]),
-						      atof(token[4]),
-						      atof(token[5]));
-		    std::cout<<"PDGcode "<<pdgid<<"\n";
-		    //must handle the case of an ion speratly from other particles
-		    //check PDG code if we have an ion.
-		    //PDG code format for ions ±10LZZZAAAI
-		    char strPDG[11];
-		    char strA[10]={0};
-		    char strZ[10]={0};
-		    
-
-		    long int A=0,Z=0;
-		    //		    A=strotl(strPDG,&str);
-		    if(abs(pdgid) >= 1000000000)
-		      {
-			//ion
-			sprintf(strPDG,"%i",abs(pdgid));
-			strncpy(strZ, &strPDG[3], 3);
-			strncpy(strA, &strPDG[6], 3);
-			strA[3]='\0';
-			strZ[3]='\0';
-			A=atoi(strA);
-			Z=atoi(strZ);
-			G4ParticleDefinition* ion;
-			ion =  ionTable->GetIon(Z, A, 0.);
-			particleGun->SetParticleDefinition(ion);
-			particleGun->SetParticleCharge(0);
-		      }
-		    else {
-		      //not ion
-		      particleGun->
-			SetParticleDefinition(particleTable->
-		      FindParticle(pdgid));
-		    }
-		    G4double mass = 
-		      particleGun->GetParticleDefinition()->GetPDGMass();
-
-		    G4double ekin = energy - mass;
-
-		    particleGun->SetParticleEnergy(ekin);
-		    //G4cout << "Particle: " << pdgid << " KE: " << ekin << G4endl;
-		    particleGun->SetParticlePosition(vtxs[0]);
-		    particleGun->SetParticleMomentumDirection(dir);
-		    particleGun->GeneratePrimaryVertex(anEvent);
-		    SetVtx(vtxs[0]);
-		    SetBeamEnergy(ekin);
-		    SetBeamDir(dir);
-		  }
-	      }
-	  }
-      }
+					}
+				}
+				iVertex++;
+			}
+			nvtxs=iVertex;
+		}
+	}
     else 
-      {    // old muline format  
-	inputFile >> nuEnergy >> energy >> xPos >> yPos >> zPos 
-		  >> xDir >> yDir >> zDir;
-	
-	G4double random_z = ((myDetector->GetWaterTubePosition())
-			     - .5*(myDetector->GetWaterTubeLength()) 
-			     + 1.*m + 15.0*m*G4UniformRand())/m;
-	zPos = random_z;
-	G4ThreeVector vtx = G4ThreeVector(xPos, yPos, random_z);
-	G4ThreeVector dir = G4ThreeVector(xDir,yDir,zDir);
+    {    // old muline format  
+    	inputFile >> nuEnergy >> energy >> xPos >> yPos >> zPos 
+    	>> xDir >> yDir >> zDir;
 
-	particleGun->SetParticleEnergy(energy*MeV);
-	particleGun->SetParticlePosition(vtx);
-	particleGun->SetParticleMomentumDirection(dir);
-	particleGun->GeneratePrimaryVertex(anEvent);
-      }
+    	G4double random_z = ((myDetector->GetWaterTubePosition())
+    		- .5*(myDetector->GetWaterTubeLength()) 
+    		+ 1.*m + 15.0*m*G4UniformRand())/m;
+    	zPos = random_z;
+    	G4ThreeVector vtx = G4ThreeVector(xPos, yPos, random_z);
+    	G4ThreeVector dir = G4ThreeVector(xDir,yDir,zDir);
+
+    	particleGun->SetParticleEnergy(energy*MeV);
+    	particleGun->SetParticlePosition(vtx);
+    	particleGun->SetParticleMomentumDirection(dir);
+    	particleGun->GeneratePrimaryVertex(anEvent);
+    }
   }
 
   else if (useGunEvt)
@@ -284,7 +286,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     G4ThreeVector P  =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
     G4ThreeVector vtx=anEvent->GetPrimaryVertex()->GetPosition();
-    G4double m       =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
+    G4double mass    =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
     G4int pdg        =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
 
     char strPDG[11];
@@ -313,13 +315,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	std::cout<<"ion2 "<<ion2->GetPDGLifeTime()<<"\n";
       }
     
-    
     G4ThreeVector dir  = P.unit();
-    G4double E         = std::sqrt((P.dot(P))+(m*m));
-
-//     particleGun->SetParticleEnergy(E);
-//     particleGun->SetParticlePosition(vtx);
-//     particleGun->SetParticleMomentumDirection(dir);
+    G4double E         = std::sqrt((P.dot(P))+(mass*mass));
 
     SetVtx(vtx);
     SetBeamEnergy(E);
@@ -350,11 +347,11 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       
       G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
       G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
-      G4double m        =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
+      G4double mass     =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
       G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
       
       G4ThreeVector dir  = P.unit();
-      G4double E         = std::sqrt((P.dot(P))+(m*m));
+      G4double E         = std::sqrt((P.dot(P))+(mass*mass));
       
       SetVtx(vtx);
       SetBeamEnergy(E);
@@ -369,20 +366,20 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       
       MyGPS->SetMultipleVertex(true);
       
-      std::vector<WCSimPmtInfo*> *pmts;
+      std::vector<WCSimPmtInfo*> *pmts=NULL;
       
       std::vector<struct radioactive_source>::iterator it;
       
       for ( it = radioactive_sources.begin(); it != radioactive_sources.end(); it++ ){
-	G4String IsotopeName = it->IsotopeName;
-	G4String IsotopeLocation = it->IsotopeLocation;
-	G4double IsotopeActivity = it->IsotopeActivity;
+      	G4String IsotopeName = it->IsotopeName;
+      	G4String IsotopeLocation = it->IsotopeLocation;
+      	G4double IsotopeActivity = it->IsotopeActivity;
 
-	double average= IsotopeActivity * GetRadioactiveTimeWindow();
-	if (IsotopeLocation.compareTo("PMT") == 0){
-	  pmts = myDetector->Get_Pmts();
-	  average *= pmts->size();
-	}
+      	double average= IsotopeActivity * GetRadioactiveTimeWindow();
+      	if (IsotopeLocation.compareTo("PMT") == 0){
+      		pmts = myDetector->Get_Pmts();
+      		average *= pmts->size();
+      	}
 	  
 	// random poisson number of vertices based on average
 	int n_vertices = CLHEP::RandPoisson::shoot(average);
@@ -583,7 +580,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       
       MyGPS->SetMultipleVertex(true);
       
-      std::vector<WCSimPmtInfo*> *pmts;
       
       std::vector<struct radioactive_source>::iterator it;
       
@@ -594,7 +590,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       //G4cout << " Average " << iEventAvg << G4endl;
       // random poisson number of vertices based on average
       int n_vertices = CLHEP::RandPoisson::shoot(iEventAvg);
-      //G4cout << " Vtx " << n_vertices << G4endl;
 
       if ( n_vertices < 1 ) {
       	 n_vertices = 1;
