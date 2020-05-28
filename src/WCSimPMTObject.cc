@@ -80,11 +80,21 @@ G4double PMT20inch::GetExposeHeight() {return .18*m;}
 G4double PMT20inch::GetRadius() {return .254*m;}
 G4double PMT20inch::GetPMTGlassThickness() {return 0.4*cm;}
 float PMT20inch::HitTimeSmearing(float Q) {
-  float timingConstant = 10.0; 
-  float timingResolution = 0.33 + sqrt(timingConstant/Q); 
-  // looking at SK's jitter function for 20" tubes
-  if (timingResolution < 0.58) timingResolution=0.58;
-  float Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  G4float sig_param[4]={2.395,0.649,0.6002,2.307};
+  G4float lambda_param[2]={0.7782,0.05526};
+  
+  G4float sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
+  
+  G4float highcharge_param[2];
+  highcharge_param[0]=2*sig_param[0]*sig_param[1]*sig_param[3]*sqrt(sig_param[3])*exp(-sig_param[1]*sig_param[3]);
+  highcharge_param[1]=sig_param[0]*((1-2*sig_param[1]*sig_param[3])*exp(-sig_param[1]*sig_param[3])+sig_param[2]);
+  G4float sigma_highcharge = highcharge_param[0]/sqrt(Q)+highcharge_param[1];
+  
+  G4float sigma = sigma_lowcharge*(Q<sig_param[3])+sigma_highcharge*(Q>sig_param[3]);
+  G4float lambda = lambda_param[0]+lambda_param[1]*Q;
+  G4float totalsigma = sqrt(sigma*sigma+1/lambda/lambda);
+
+  float Smearing_factor = G4RandGauss::shoot(0.0,totalsigma);
   return Smearing_factor;
 }
 
