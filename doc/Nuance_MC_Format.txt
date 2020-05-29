@@ -1,7 +1,7 @@
 NUANCE MC FORMAT
 ================
 
-This desribes the format for a file containing "nuance format" kinematic
+This describes the format for a file containing "nuance format" kinematic
 information for passing to WCSim.
 
 An example event is shown below:
@@ -69,8 +69,35 @@ Each line begins with a text tag, indicating the information it contains.
     stop: 
       (Not shown above) marks the end of the file.
 
+WCSim extensions:
+
+ Comments
     # In WCSim a # character at the start of a line indicates a comment and
     will be ignored. This can be useful for documenting the contents of a file.
+ Multiple vertices per event
+
+    It is possible to have multiple vertices in a single event, thus the format becomes:
+
+$ begin
+$ nuance 0
+$ vertex 1002.14846 -2398.48362 2499.42670 0.00000
+$ track 14 1600.00000 1.00000 0.00000 0.00000 -1
+$ track 2212 935.98400 0.00000 0.00000 1.00000 -1
+$ info 0 0 100
+$ track 13 600.00000 0.27937 -0.52291 -0.80531 0
+$ nuance 0
+$ vertex 3245.31346 -400.50803 -2761.79254 0.00000
+$ track 14 1600.00000 1.00000 0.00000 0.00000 -1
+$ track 2212 935.98400 0.00000 0.00000 1.00000 -1
+$ info 0 0 101
+$ track 13 600.00000 -0.57270 0.61429 0.54283 0
+$ nuance 0
+$ vertex -1940.34611 2221.21080 -2951.44834 0.00000
+$ track 14 1600.00000 1.00000 0.00000 0.00000 -1
+$ track 2212 935.98400 0.00000 0.00000 1.00000 -1
+$ info 0 0 102
+$ track 13 600.00000 -0.51716 -0.83284 0.19726 0
+$ end
 
       This document is based on the page: http://neutrino.phy.duke.edu/nuance-format/
       

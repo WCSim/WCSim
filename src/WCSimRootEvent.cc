@@ -161,6 +161,7 @@ WCSimRootTrigger::~WCSimRootTrigger()
 
 WCSimRootTrigger & WCSimRootTrigger::operator=(const WCSimRootTrigger & in)
 {
+  if(this == &in) return *this;
   //first clear everything
   this->Clear();
 
@@ -194,6 +195,7 @@ WCSimRootTrigger & WCSimRootTrigger::operator=(const WCSimRootTrigger & in)
   fTriggerType = in.fTriggerType;
   fTriggerInfo = in.fTriggerInfo;
   IsZombie = in.IsZombie;
+  return *this;
 }
 
 //_____________________________________________________________________________
@@ -431,7 +433,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vecto
   {
     fCherenkovHitCounter++;
 
-    WCSimRootCherenkovHitTime *cherenkovhittime = 
+    //WCSimRootCherenkovHitTime *cherenkovhittime = 
       new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i]);
   }
 
@@ -546,9 +548,11 @@ WCSimRootEvent::WCSimRootEvent()
 
 WCSimRootEvent & WCSimRootEvent::operator=(const WCSimRootEvent & in)
 {
+  if (this == &in) return *this; 
   this->Clear();
   Current = in.Current;
   fEventList = (TClonesArray*)in.fEventList->Clone();
+  return *this;
 }
 
 void WCSimRootEvent::Initialize()

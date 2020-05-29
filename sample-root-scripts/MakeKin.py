@@ -1,5 +1,7 @@
 #!/usr/bin/python
-
+# import the math module  
+import math  
+  
 from optparse import OptionParser
 import random
 from math import pi,sin,cos,sqrt
@@ -38,6 +40,11 @@ parser.add_option("-n", "--npart", dest="npart",
                   help="number of particles to simulate per file. Default: %s" \
                   % (optdefault),
                   metavar="#", default=optdefault)
+verticesPerEventDefault = 1
+parser.add_option("-V","--nVerticesPerEvent",dest="verticesPerEvent",
+                  help=" Average number of vertices to simulate per event. Default: %s" \
+                  % (verticesPerEventDefault),
+                  metavar="#", default=verticesPerEventDefault)
 optchoices = pid.keys()
 optdefault = "mu-"
 parser.add_option("-t", "--type", dest="type",
@@ -78,6 +85,7 @@ options.dirname = options.dirname.lower()
 
 nfiles = int(options.nfiles)
 npart = int(options.npart)
+verticesPerEvent=int(options.verticesPerEvent)
 energy = float(options.energy)
 
 
@@ -145,10 +153,19 @@ nu =   {"type":pid["numu"], "energy":energy+1000.0,
 prot = {"type":pid["p+"], "energy":935.9840,
         "direction":(0, 0, 1)}
 
-
+def eventPrint(nv,p,f,recno) :
+  f.write("$ begin\n")
+  for v in range(nv) :
+    vertPrint(p,f,recno)
+    recno=recno+1
+  f.write("$ end\n")
 
 def partPrint(p, f, recno):
     f.write("$ begin\n")
+    vertPrint(p,f,recno)
+    f.write("$ end\n")
+
+def vertPrint(p,f,recno) :
     f.write("$ nuance 0\n")
     if randvert:
         rad    = detectors[options.detector][0] - 20.
@@ -176,7 +193,6 @@ def partPrint(p, f, recno):
         #p["direction"] = (cos(phi)*cos(th), sin(phi)*cos(th), sin(th))
         
     printTrack(p, f)    # Outgoing Particle Track
-    f.write("$ end\n")
 
 def printTrack(p, f, code=0):
     f.write("$ track %(type)i %(energy).5f " % p)
@@ -190,9 +206,18 @@ for fileno in range(nfiles):
 
     outfile = open(filename, 'w')
 
-    print ("Writing %i particles to " % npart) + filename
+    if(verticesPerEvent == 1 ) :
+      print ("Writing %i particles to " % npart) + filename
 
-    for i in range(npart):
+      for i in range(npart):
         partPrint(particle, outfile, i)
+    else :
+      print ("Writing %i particles to with an average of %i vertices per event to " % (npart,verticesPerEvent) ) + filename
+      numberDone = 0
+      sigma=math.sqrt(verticesPerEvent)
+      while numberDone < npart:
+        numberToProcess = int(round(random.gauss(verticesPerEvent,sigma)))
+        eventPrint(numberToProcess,particle,outfile,numberDone)
+        numberDone = numberDone + numberToProcess
     outfile.write("$ stop")
     outfile.close()
