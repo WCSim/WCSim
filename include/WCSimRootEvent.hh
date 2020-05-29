@@ -47,15 +47,15 @@ public:
   WCSimRootTrack() {}
   WCSimRootTrack(Int_t ipnu, 
 		  Int_t flag, 
-		  Double_t m, 
-		  Double_t p, 
-		  Double_t E, 
+		  Double_t m,
+		  Double_t p,
+		  Double_t E,
 		  Int_t startvol, 
 		  Int_t stopvol, 
-		  Double_t dir[3], 
-		  Double_t pdir[3], 
-		  Double_t stop[3], 
-		  Double_t start[3], 
+		  Double_t dir[3],
+		  Double_t pdir[3],
+		  Double_t stop[3],
+		  Double_t start[3],
 		  Int_t parenttype,
 		 Double_t time,Int_t id);
   virtual ~WCSimRootTrack() { }
@@ -278,7 +278,7 @@ public:
   void          SetNumTubesHit(Int_t i) {fNumTubesHit = i;}
   void          SetSumQ(Double_t x){fSumQ = x;}
   void          SetNumDigitizedTubes(Int_t i) {fNumDigitizedTubes = i;}
-  void          SetPi0Info(Double_t pi0Vtx[3], 
+  void          SetPi0Info(Double_t pi0Vtx[3],
 			   Int_t   gammaID[2], 
 			   Double_t gammaE[2],
 			   Double_t gammaVtx[2][3]);
@@ -311,13 +311,13 @@ public:
 
   WCSimRootTrack         *AddTrack(Int_t ipnu, 
 				   Int_t flag, 
-				   Double_t m, 
-				   Double_t p, 
-				   Double_t E, 
+				   Double_t m,
+				   Double_t p,
+				   Double_t E,
 				   Int_t startvol, 
 				   Int_t stopvol, 
-				   Double_t dir[3], 
-				   Double_t pdir[3], 
+				   Double_t dir[3],
+				   Double_t pdir[3],
 				   Double_t stop[3],
 				   Double_t start[3],
 				   Int_t parenttype,
@@ -335,12 +335,12 @@ public:
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
 
-  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Double_t q, 
-						   Double_t t, 
+  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Double_t q,
+						   Double_t t,
 						   Int_t tubeid,
 						   std::vector<int> photon_ids);
-//  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Double_t q, 
-//						  Double_t t, 
+//  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Double_t q,
+//						  Double_t t,
 //						  Int_t tubeid,
  //                                                 Double_t sumq);
   WCSimRootCherenkovDigiHit * AddCherenkovDigiHit(WCSimRootCherenkovDigiHit * digit);
