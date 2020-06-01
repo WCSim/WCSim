@@ -28,6 +28,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "EggShapedHyperK_withHPD\n"
                           "nuPRISM\n"
                           "nuPRISM_mPMT\n"
+			  "nuPRISMBeamTest_mPMT\n"
     			  "nuPRISMShort_mPMT\n"
 			  "Cylinder_60x74_3inchmPMT_14perCent\n"
 			  "Cylinder_60x74_3inchmPMT_40perCent\n"
@@ -49,6 +50,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			   "EggShapedHyperK_withHPD "
                            "nuPRISM "
                            "nuPRISM_mPMT "
+			   "nuPRISMBeamTest_mPMT "
 			   "nuPRISMShort_mPMT "
 			   "Cylinder_60x74_3inchmPMT_14perCent "
 			   "Cylinder_60x74_3inchmPMT_40perCent "
@@ -430,7 +432,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
                 } else if ( newValue == "nuPRISM_mPMT") {
 		  WCSimDetector->SetIsNuPrism(true);
 		  WCSimDetector->SetNuPrism_mPMTGeometry();
-                } else if ( newValue == "nuPRISMShort_mPMT") {
+                } else if ( newValue == "nuPRISMBeamTest_mPMT") {
+		WCSimDetector->SetIsNuPrism(true);
+		WCSimDetector->SetNuPrismBeamTest_mPMTGeometry();
+		} else if ( newValue == "nuPRISMShort_mPMT") {
 		  WCSimDetector->SetIsNuPrism(true);
 		  WCSimDetector->SetNuPrismShort_mPMTGeometry();
 		} else
