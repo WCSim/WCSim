@@ -145,6 +145,7 @@ public:
   bool CompareAllVariables(const WCSimRootCherenkovDigiHit * c) const;
 
   void SetT(float t) { fT = t; }
+  void SetPhotonIds(std::vector<int> photon_ids) { fPhotonIds = photon_ids; }
   Float_t     GetQ() const { return fQ;}
   Double_t     GetT() const { return fT;}
   Int_t       GetTubeId() const { return fTubeId;}

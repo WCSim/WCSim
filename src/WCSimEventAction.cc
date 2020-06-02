@@ -43,19 +43,20 @@
 
 #ifndef _SAVE_RAW_HITS
 #define _SAVE_RAW_HITS
-#ifndef _SAVE_RAW_HITS_VERBOSE
+//Use this and one/two of below to debug hit information
 //#define _SAVE_RAW_HITS_VERBOSE
 #endif
-#endif
-#ifndef SAVE_DIGITS_VERBOSE
+
+//Use this and one/two of below to debug digit information
 //#define SAVE_DIGITS_VERBOSE
-#endif
+
+//Print out hits with PMT IDs up to N
+#define NPMTS_VERBOSE -1
+//And/Or a specific PMT ID
+#define VERBOSE_PMT -1
+
 #ifndef TIME_DAQ_STEPS
 //#define TIME_DAQ_STEPS
-#endif
-
-#ifndef NPMTS_VERBOSE
-#define NPMTS_VERBOSE 10
 #endif
 
 WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
@@ -1095,14 +1096,14 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 #endif
       }//id
 #ifdef _SAVE_RAW_HITS_VERBOSE
-      if(digi_tubeid < NPMTS_VERBOSE) {
+      if(digi_tubeid < NPMTS_VERBOSE || digi_tubeid == VERBOSE_PMT) {
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
 	       << " with truetime:smeartime:primaryparentID";
 	for(G4int id = 0; id < truetime.size(); id++) {
 	  G4cout << " " << truetime[id]
-		 << ":" << smeartime[id]
-		 << ":" << primaryParentID[id];
+		 << "\t" << smeartime[id]
+		 << "\t" << primaryParentID[id] << G4endl;
 	}//id
 	G4cout << G4endl;
       }
@@ -1144,7 +1145,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	      assert(vec_pe.size() == vec_digicomp.size());
 	      for(unsigned int iv = 0; iv < vec_pe.size(); iv++) {
 #ifdef SAVE_DIGITS_VERBOSE
-		if(tubeID < NPMTS_VERBOSE) {
+		if(tubeID < NPMTS_VERBOSE || digi_tubeid == VERBOSE_PMT) {
 		  G4cout << "Adding digit " << iv 
 			 << " for PMT " << tubeID
 			 << " pe "   << vec_pe[iv]
