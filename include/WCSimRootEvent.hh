@@ -7,6 +7,7 @@
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
+#include <stdint.h>
 #include "TObject.h"
 #include "TClonesArray.h"
 #include <string>
@@ -39,24 +40,24 @@ private:
   Float_t fStop[3];
   Float_t fStart[3];
   Int_t fParenttype;
-  Float_t fTime;
+  Double_t fTime;
   Int_t fId;
 
 public:
   WCSimRootTrack() {}
   WCSimRootTrack(Int_t ipnu, 
 		  Int_t flag, 
-		  Float_t m, 
-		  Float_t p, 
-		  Float_t E, 
+		  Double_t m,
+		  Double_t p,
+		  Double_t E,
 		  Int_t startvol, 
 		  Int_t stopvol, 
-		  Float_t dir[3], 
-		  Float_t pdir[3], 
-		  Float_t stop[3], 
-		  Float_t start[3], 
+		  Double_t dir[3],
+		  Double_t pdir[3],
+		  Double_t stop[3],
+		  Double_t start[3],
 		  Int_t parenttype,
-		 Float_t time,Int_t id);
+		 Double_t time,Int_t id);
   virtual ~WCSimRootTrack() { }
   bool CompareAllVariables(const WCSimRootTrack * c) const;
 
@@ -72,7 +73,7 @@ public:
   Float_t   GetStop(Int_t i=0) const {return (i<3) ? fStop[i] : 0;}
   Float_t   GetStart(Int_t i=0) const {return (i<3) ? fStart[i] : 0;}
   Int_t     GetParenttype(/*Int_t i=0*/) const {return fParenttype;}
-  Float_t   GetTime() const { return fTime;}
+  Double_t   GetTime() const { return fTime;}
   Int_t     GetId() const {return fId;}
 
   ClassDef(WCSimRootTrack,1)  
@@ -107,17 +108,17 @@ class WCSimRootCherenkovHitTime : public TObject {
 
 private:
   // See jhfNtuple.h for the meaning of these data members:
-  Float_t fTruetime;
+  Double_t fTruetime;
   Int_t   fPrimaryParentID;
 
 public:
   WCSimRootCherenkovHitTime() {}
-  WCSimRootCherenkovHitTime(Float_t truetime,
+  WCSimRootCherenkovHitTime(Double_t truetime,
 			    Int_t   primaryParentID);
   virtual ~WCSimRootCherenkovHitTime() { }
   bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 
-  Float_t   GetTruetime() const { return fTruetime;}
+  Double_t   GetTruetime() const { return fTruetime;}
   Int_t     GetParentID() const { return fPrimaryParentID;}
 
   ClassDef(WCSimRootCherenkovHitTime,1)  
@@ -132,20 +133,20 @@ class WCSimRootCherenkovDigiHit : public TObject {
 private:
   // See jhfNtuple.h for the meaning of these data members:
   Float_t fQ;
-  Float_t fT;
+  Double_t fT;
   Int_t fTubeId;
   std::vector<int> fPhotonIds;
 
 public:
   WCSimRootCherenkovDigiHit() {}
-  WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid, std::vector<int> photon_ids);
+  WCSimRootCherenkovDigiHit(Double_t q, Double_t t, Int_t tubeid, std::vector<int> photon_ids);
 
   virtual ~WCSimRootCherenkovDigiHit() { }
   bool CompareAllVariables(const WCSimRootCherenkovDigiHit * c) const;
 
   void SetT(float t) { fT = t; }
   Float_t     GetQ() const { return fQ;}
-  Float_t     GetT() const { return fT;}
+  Double_t     GetT() const { return fT;}
   Int_t       GetTubeId() const { return fTubeId;}
   std::vector<int> GetPhotonIds() const { return fPhotonIds; }
 
@@ -160,18 +161,18 @@ class WCSimRootEventHeader {
 private:
   Int_t   fEvtNum;
   Int_t   fRun;
-  Int_t   fDate;
+  int64_t fDate;
   Int_t   fSubEvtNumber;
 
 public:
   WCSimRootEventHeader() : fEvtNum(0), fRun(0), fDate(0), fSubEvtNumber(1) { }
   virtual ~WCSimRootEventHeader() { }
   bool CompareAllVariables(const WCSimRootEventHeader * c) const;
-  void   Set(Int_t i, Int_t r, Int_t d, Int_t s=1) { fEvtNum = i; fRun = r; fDate = d; fSubEvtNumber = s;}
-  void SetDate(Int_t d) { fDate=d; }
+  void   Set(Int_t i, Int_t r, int64_t d, Int_t s=1) { fEvtNum = i; fRun = r; fDate = d; fSubEvtNumber = s;}
+  void SetDate(int64_t d) { fDate=d; }
   Int_t  GetEvtNum() const { return fEvtNum; }
   Int_t  GetRun() const { return fRun; }
-  Int_t  GetDate() const { return fDate; }
+  int64_t GetDate() const { return fDate; }
   Int_t GetSubEvtNumber() const { return fSubEvtNumber;}
   
 
@@ -195,10 +196,10 @@ public:
   virtual ~WCSimRootPi0() { }
   bool CompareAllVariables(const WCSimRootPi0 * c) const;
 
-  void Set(Float_t pi0Vtx[3],
+  void Set(Double_t pi0Vtx[3],
 	   Int_t   gammaID[2],
-	   Float_t gammaE[2],
-	   Float_t gammaVtx[2][3]);
+	   Double_t gammaE[2],
+	   Double_t gammaVtx[2][3]);
 
   Float_t  GetPi0Vtx(int i)           const { return (i<3) ? fPi0Vtx[i]: 0;}
   Int_t    GetGammaID(int i)          const { return (i<2) ? fGammaID[i]: 0;}
@@ -261,26 +262,26 @@ public:
   void          Clear(Option_t *option ="");
   static void   Reset(Option_t *option ="");
 
-  void          SetHeader(Int_t i, Int_t run, Int_t date,Int_t subevtn=1);
+  void          SetHeader(Int_t i, Int_t run, int64_t date,Int_t subevtn=1);
   void          SetTriggerInfo(TriggerType_t trigger_type, std::vector<Float_t> trigger_info);
   bool          IsASubEvent() {  return (fEvtHdr.GetSubEvtNumber()>=1); }
   void          SetMode(Int_t i) {fMode = i;}
   void          SetNvtxs(Int_t i) {fNvtxs = i;}
   void          SetVtxvol(Int_t i) {fVtxsvol[0] = i;}
   void          SetVtxsvol(Int_t i, Int_t v) {fVtxsvol[i] = v;}
-  void          SetVtx(Int_t i, Float_t f) {fNvtxs=1; fVtxs[0][i] = ( (i<3) ? f : 0);}
-  void          SetVtxs(Int_t n, Int_t i, Float_t f) {fVtxs[n][i]= ( (i<3) ? f : 0);}
+  void          SetVtx(Int_t i, Double_t f) {fNvtxs=1; fVtxs[0][i] = ( (i<3) ? f : 0);}
+  void          SetVtxs(Int_t n, Int_t i, Double_t f) {fVtxs[n][i]= ( (i<3) ? f : 0);}
   void          SetVecRecNumber(Int_t i) {fVecRecNumber = i;}
   void          SetJmu(Int_t i) {fJmu = i;}
   void          SetJp(Int_t i) {fJp = i;}
   void          SetNpar(Int_t i) {fNpar = i;}
   void          SetNumTubesHit(Int_t i) {fNumTubesHit = i;}
-  void          SetSumQ(Float_t x){fSumQ = x;}
+  void          SetSumQ(Double_t x){fSumQ = x;}
   void          SetNumDigitizedTubes(Int_t i) {fNumDigitizedTubes = i;}
-  void          SetPi0Info(Float_t pi0Vtx[3], 
+  void          SetPi0Info(Double_t pi0Vtx[3],
 			   Int_t   gammaID[2], 
-			   Float_t gammaE[2],
-			   Float_t gammaVtx[2][3]);
+			   Double_t gammaE[2],
+			   Double_t gammaVtx[2][3]);
 
   WCSimRootEventHeader *GetHeader()               {return &fEvtHdr; }
   const WCSimRootEventHeader * GetHeader()     const {return &fEvtHdr; }
@@ -310,17 +311,17 @@ public:
 
   WCSimRootTrack         *AddTrack(Int_t ipnu, 
 				   Int_t flag, 
-				   Float_t m, 
-				   Float_t p, 
-				   Float_t E, 
+				   Double_t m,
+				   Double_t p,
+				   Double_t E,
 				   Int_t startvol, 
 				   Int_t stopvol, 
-				   Float_t dir[3], 
-				   Float_t pdir[3], 
-				   Float_t stop[3],
-				   Float_t start[3],
+				   Double_t dir[3],
+				   Double_t pdir[3],
+				   Double_t stop[3],
+				   Double_t start[3],
 				   Int_t parenttype,
-				   Float_t time,
+				   Double_t time,
 				   Int_t id);
 
   WCSimRootTrack * AddTrack   (WCSimRootTrack * track);
@@ -329,19 +330,19 @@ public:
   TClonesArray        *GetTracks() const {return fTracks;}
 
   WCSimRootCherenkovHit   *AddCherenkovHit(Int_t                tubeID,
-					  std::vector<Float_t> truetime,
+					  std::vector<Double_t> truetime,
 					  std::vector<Int_t>   primParID);
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
 
-  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
-						   Float_t t, 
+  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Double_t q,
+						   Double_t t,
 						   Int_t tubeid,
 						   std::vector<int> photon_ids);
-//  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
-//						  Float_t t, 
+//  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Double_t q,
+//						  Double_t t,
 //						  Int_t tubeid,
- //                                                 Float_t sumq);
+ //                                                 Double_t sumq);
   WCSimRootCherenkovDigiHit * AddCherenkovDigiHit(WCSimRootCherenkovDigiHit * digit);
   WCSimRootCherenkovDigiHit * RemoveCherenkovDigiHit(WCSimRootCherenkovDigiHit * digit);
   TClonesArray            *GetCherenkovDigiHits() const {return fCherenkovDigiHits;}

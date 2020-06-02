@@ -70,7 +70,7 @@ void WCSimWCHit::Draw()
 		//G4cout << "Ave PE: " << avePe/numbpmthit << " Max PE: " << maxPe << G4endl;
       if ( totalPe > maxPe*.01 )
       {      
-	G4Colour colour(1.,1.-(float(totalPe-.05*maxPe)/float(.95*maxPe)),0.0);
+	G4Colour colour(1.,1.-(double(totalPe-.05*maxPe)/double(.95*maxPe)),0.0);
 	attribs.SetColour(colour);
 	//    attribs.SetForceWireframe(false);
 	attribs.SetForceSolid(true);

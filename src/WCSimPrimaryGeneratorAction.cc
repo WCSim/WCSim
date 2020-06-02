@@ -46,8 +46,8 @@ inline vector<string> readInLine(fstream& inFile, int lineSize, char* inBuf)
 	}
 }
 
-inline float atof( const string& S ) {return std::atof( S.c_str() );}
-inline int   atoi( const string& S ) {return std::atoi( S.c_str() );}
+inline double atof( const string& S ) {return std::atof( S.c_str() );}
+inline int    atoi( const string& S ) {return std::atoi( S.c_str() );}
 
 WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 					  WCSimDetectorConstruction* myDC)

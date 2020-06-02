@@ -23,8 +23,8 @@
 // #define HYPER_VERBOSITY
 #endif
 
-extern "C" void skrn1pe_(float* );
-//extern "C" void rn1pe_(float* ); // 1Kton
+extern "C" void skrn1pe_(double* );
+//extern "C" void rn1pe_(double* ); // 1Kton
 
 G4double WCSimWCPMT::first_time = 0;
 
@@ -65,7 +65,7 @@ G4double WCSimWCPMT::rn1pe(){
   G4int i;
   G4double random = G4UniformRand();
   G4double random2 = G4UniformRand(); 
-  G4float *qpe0;
+  G4double *qpe0;
   qpe0 = PMT->Getqpe();
   for(i = 0; i < 501; i++){
     

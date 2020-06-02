@@ -83,15 +83,15 @@ void WCSimWCDigi::RemoveDigitizedGate(G4int gate)
 
   //pe map
   pe.erase(gate);
-  //time map and time_float vector
-  float gatetime = time[gate];
+  //time map and time_double vector
+  double gatetime = time[gate];
   time.erase(gate);
   time_presmear.erase(gate);
-  std::vector<G4float>::iterator it = std::find(time_float.begin(), time_float.end(), gatetime);
-  if(it != time_float.end())
-    time_float.erase(it);
+  std::vector<G4double>::iterator it = std::find(time_double.begin(), time_double.end(), gatetime);
+  if(it != time_double.end())
+    time_double.erase(it);
   else
-    G4cerr << "Could not erase time " << gatetime << " from WCSimWCDigi member time_float" << G4endl;
+    G4cerr << "Could not erase time " << gatetime << " from WCSimWCDigi member time_double" << G4endl;
 
   // the following are not necessarily filled, so need to check that they exist before trying to erase them
   //
@@ -114,12 +114,12 @@ bool WCSimWCDigi::SortFunctor_Hit::operator() (
 		const WCSimWCDigi * const &b) const {
 	
 	G4double ta, tb;
-	if ( a->time_float.size() > 0 ) 	
-		ta = a->time_float[0];
+	if ( a->time_double.size() > 0 )
+		ta = a->time_double[0];
 	else return false;
 	
-	if ( b->time_float.size() > 0 )
-		tb = b->time_float[0];
+	if ( b->time_double.size() > 0 )
+		tb = b->time_double[0];
 	else return true;
 	
 	return ta < tb;

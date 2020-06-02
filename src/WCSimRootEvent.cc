@@ -243,7 +243,7 @@ void WCSimRootTrigger::Reset(Option_t */*option*/)
 
 void WCSimRootTrigger::SetHeader(Int_t i, 
 				  Int_t run, 
-				  Int_t date,Int_t subevent)
+				  int64_t date,Int_t subevent)
 {
   // Set the header values
   fEvtHdr.Set(i, run, date,subevent);
@@ -255,15 +255,17 @@ void WCSimRootTrigger::SetTriggerInfo(TriggerType_t trigger_type,
 				      std::vector<Float_t> trigger_info)
 {
   fTriggerType = trigger_type;
-  fTriggerInfo = trigger_info;
+  fTriggerInfo.resize(trigger_info.size());
+  for(size_t i = 0; i < trigger_info.size(); i++)
+    fTriggerInfo[i] = trigger_info[i];
 }
 
 //_____________________________________________________________________________
 
-void WCSimRootTrigger::SetPi0Info(Float_t pi0Vtx[3], 
+void WCSimRootTrigger::SetPi0Info(Double_t pi0Vtx[3],
 				 Int_t   gammaID[2], 
-				 Float_t gammaE[2],
-				 Float_t gammaVtx[2][3])
+				 Double_t gammaE[2],
+				 Double_t gammaVtx[2][3])
 {
   fPi0.Set(pi0Vtx, 
 	   gammaID, 
@@ -273,10 +275,10 @@ void WCSimRootTrigger::SetPi0Info(Float_t pi0Vtx[3],
 
 //_____________________________________________________________________________
 
-void WCSimRootPi0::Set(Float_t pi0Vtx[3], 
+void WCSimRootPi0::Set(Double_t pi0Vtx[3],
 			Int_t   gammaID[2], 
-			Float_t gammaE[2],
-			Float_t gammaVtx[2][3])
+			Double_t gammaE[2],
+			Double_t gammaVtx[2][3])
 {
   for (int i=0;i<2;i++)
   {
@@ -296,17 +298,17 @@ void WCSimRootPi0::Set(Float_t pi0Vtx[3],
 
 WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu, 
 					   Int_t flag, 
-					   Float_t m, 
-					   Float_t p, 
-					   Float_t E, 
+					   Double_t m,
+					   Double_t p,
+					   Double_t E,
 					   Int_t startvol, 
 					   Int_t stopvol, 
-					   Float_t dir[3], 
-					   Float_t pdir[3], 
-					   Float_t stop[3], 
-					   Float_t start[3],
+					   Double_t dir[3],
+					   Double_t pdir[3],
+					   Double_t stop[3],
+					   Double_t start[3],
 					   Int_t parenttype,
-					   Float_t time,
+					   Double_t time,
 					   Int_t id)
 {
   // Add a new WCSimRootTrack to the list of tracks for this event.
@@ -344,7 +346,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(WCSimRootTrack * track)
   // is called. If tracks[i] is 0, a new Track object will be created
   // otherwise the previous Track[i] will be overwritten.
 
-  Float_t dir[3], pdir[3], stop[3], start[3];
+  Double_t dir[3], pdir[3], stop[3], start[3];
   for(int i = 0; i < 3; i++) {
     dir  [i] = track->GetDir(i);
     pdir [i] = track->GetPdir(i);
@@ -385,17 +387,17 @@ WCSimRootTrack * WCSimRootTrigger::RemoveTrack(WCSimRootTrack * track)
 
 WCSimRootTrack::WCSimRootTrack(Int_t ipnu, 
 				 Int_t flag, 
-				 Float_t m, 
-				 Float_t p, 
-				 Float_t E, 
+				 Double_t m,
+				 Double_t p,
+				 Double_t E,
 				 Int_t startvol, 
 				 Int_t stopvol, 
-				 Float_t dir[3], 
-				 Float_t pdir[3], 
-				 Float_t stop[3], 
-				 Float_t start[3],
+				 Double_t dir[3],
+				 Double_t pdir[3],
+				 Double_t stop[3],
+				 Double_t start[3],
 				 Int_t parenttype,
-			       Float_t time,Int_t id)
+			         Double_t time,Int_t id)
 {
 
   // Create a WCSimRootTrack object and fill it with stuff
@@ -422,7 +424,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vector<Float_t> truetime,std::vector<Int_t> primParID)
+WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vector<Double_t> truetime,std::vector<Int_t> primParID)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -459,7 +461,7 @@ WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
   fTotalPe[1] = totalPe[1];
 }
 
-WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,
+WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
 						     Int_t primParID)
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
@@ -469,8 +471,8 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q, 
-								 Float_t t, 
+WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Double_t q,
+								 Double_t t,
 								 Int_t tubeid,
 								 std::vector<int> photon_ids)
 {
@@ -506,8 +508,8 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(WCSimRootCheren
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q,
-						     Float_t t, 
+WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Double_t q,
+						     Double_t t,
 						     Int_t tubeid,
 						     std::vector<int> photon_ids)
 {

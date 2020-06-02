@@ -114,7 +114,7 @@ void WCSimWCDigitizerBase::Digitize()
 
 }
 
-bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector<int> digi_comp)
+bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, double digihittime, double peSmeared, std::vector<int> digi_comp)
 {
   //digitised hit information does not have infinite precision
   //so need to round the charge and time information
@@ -244,8 +244,8 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 
       //look over all hits on the PMT
       //integrate charge and start digitizing
-      float intgr_start=0;
-      float upperlimit=0;
+      double intgr_start=0;
+      double upperlimit=0;
       G4double efficiency = 0.985; // with skrn1pe (AP tuning) & 30% QE increase in stacking action
 
       // Variables to store photon uniqueid that make up a digit
@@ -256,8 +256,8 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       //loop over the hits on this PMT
       for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
 	{
-	  float time = (*WCHCPMT)[i]->GetTime(ip);
-          float pe = (*WCHCPMT)[i]->GetPe(ip);
+	  double time = (*WCHCPMT)[i]->GetTime(ip);
+          double pe = (*WCHCPMT)[i]->GetPe(ip);
 
 	  //start the integration time as the time of the first hit
 	  //Hits must be sorted in time
@@ -310,7 +310,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    if(iflag == 0) {
 	      //apply time smearing
-	      float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+	      double Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	      //digitize hit
 	      peSmeared *= efficiency;
 	      bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
@@ -360,7 +360,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
 	      if(iflag == 0) {
 		//apply time smearing
-		float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+		double Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 		//digitize hit
 		peSmeared *= efficiency;
 		bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,

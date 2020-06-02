@@ -325,8 +325,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      for (G4int i=0; i < WCDC->entries(); i++)
        {
 	 G4int   tubeID         = (*WCDC)[i]->GetTubeID();
-	 G4float photoElectrons = (*WCDC)[i]->GetPe(i);
-	 G4float time           = (*WCDC)[i]->GetTime(i);
+	 G4double photoElectrons = (*WCDC)[i]->GetPe(i);
+	 G4double time           = (*WCDC)[i]->GetTime(i);
 	 //	 G4cout << "time " << i << " " <<time << G4endl;
 	 //	 G4cout << "tubeID " << i << " " <<tubeID << G4endl;
 	 //	 G4cout << "Pe " << i << " " <<photoElectrons << G4endl;
@@ -459,7 +459,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      /* Alex Finch
     	Create an imaginary start position for the incoming neutrino, to help event display 
       */
-     float distance=10000.0;
+     double distance=10000.0;
      for(int idim=0;idim<3;idim++)
      	 jhfNtuple.start[npar][idim]=jhfNtuple.stop[npar][idim] - (distance*jhfNtuple.dir[npar][idim]);
     	
@@ -866,10 +866,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   //Modify to add decay products
   for (k=0;k<jhfNtuple.npar;k++) // should be just 2
   {
-    float dir[3];
-    float pdir[3];
-    float stop[3];
-    float start[3];
+    double dir[3];
+    double pdir[3];
+    double stop[3];
+    double start[3];
     for (int l=0;l<3;l++)
     {
       dir[l]=jhfNtuple.dir[k][l];
@@ -907,10 +907,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   std::set<int> primaryList;
 
   // Pi0 specific variables
-  Float_t pi0Vtx[3];
+  Double_t pi0Vtx[3];
   Int_t   gammaID[2];
-  Float_t gammaE[2];
-  Float_t gammaVtx[2][3];
+  Double_t gammaE[2];
+  Double_t gammaVtx[2][3];
   Int_t   r = 0;
 
   G4int n_trajectories = 0;
@@ -988,10 +988,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       //	     << id << " " << energy << "\n";
 
       // fill ntuple
-      float dir[3];
-      float pdir[3];
-      float stop[3];
-      float start[3];
+      double dir[3];
+      double pdir[3];
+      double stop[3];
+      double start[3];
       for (int l=0;l<3;l++)
       {
 	dir[l]= mom[l]/mommag; // direction 
@@ -1077,7 +1077,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     G4cout<<"RAW HITS"<<G4endl;
 #endif
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
-    std::vector<float> truetime, smeartime;
+    std::vector<double> truetime, smeartime;
     std::vector<int>   primaryParentID;
     double hit_time_smear, hit_time_true;
     int hit_parentid;
@@ -1130,14 +1130,14 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     for ( int index = 0 ; index < ngates ; index++)
       {	
 	sumq_tmp = 0.0;	
-	G4float gatestart;
+	G4double gatestart;
 	int countdigihits = 0;
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
 	for (k=0;k<WCDC->entries();k++)
 	  {
 	    if ( (*WCDC)[k]->HasHitsInGate(index)) {
-	      std::vector<float> vec_pe                  = (*WCDC)[k]->GetPe(index);
-	      std::vector<float> vec_time                = (*WCDC)[k]->GetTime(index);
+	      std::vector<double> vec_pe                  = (*WCDC)[k]->GetPe(index);
+	      std::vector<double> vec_time                = (*WCDC)[k]->GetTime(index);
 	      std::vector<std::vector<int> > vec_digicomp = (*WCDC)[k]->GetDigiCompositionInfo(index);
 	      const int tubeID                           = (*WCDC)[k]->GetTubeID();
 	      assert(vec_pe.size() == vec_time.size());
@@ -1181,7 +1181,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
 	gatestart = WCTM->GetTriggerTime(index);
 	WCSimRootEventHeader*HH = wcsimrootevent->GetHeader();
-	HH->SetDate(int(gatestart));
+	HH->SetDate(gatestart);
       }//index (loop over ngates)
     
     // end of loop over WC trigger gates --> back to the main sub-event

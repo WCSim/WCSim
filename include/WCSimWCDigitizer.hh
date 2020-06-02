@@ -27,7 +27,7 @@ public:
   WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, DigitizerType_t, G4String detectorElement);
   virtual ~WCSimWCDigitizerBase();
   
-  bool AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector<int> digi_comp);
+  bool AddNewDigit(int tube, int gate, double digihittime, double peSmeared, std::vector<int> digi_comp);
   virtual void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) = 0;
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
   void Digitize();
@@ -39,10 +39,10 @@ public:
   void SetDigitizerPEPrecision      (double precision) { DigitizerPEPrecision     = precision; }; ///< Override the default digitizer charge resolution (p.e.)
 
   double Truncate(double value, double precision) {
-      if(precision < 1E-10) return value;
-      float ratio=value / precision;
-      // Result of cast is undefined if value is outside range of int. Just do nothing in that case.
-      if(ratio>std::numeric_limits<int64_t>::max() || ratio<std::numeric_limits<int64_t>::min() ) return value;
+    if(precision < 1E-10) return value;
+    double ratio=value / precision;
+    // Result of cast is undefined if value is outside range of int. Just do nothing in that case.
+    if(ratio>std::numeric_limits<int64_t>::max() || ratio<std::numeric_limits<int64_t>::min() ) return value;
     return precision * (int64_t)(value / precision);
   }
 
