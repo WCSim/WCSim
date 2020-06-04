@@ -433,10 +433,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->SetIsNuPrism(true);
 		  WCSimDetector->SetNuPrism_mPMTGeometry();
                 } else if ( newValue == "nuPRISMBeamTest_mPMT") {
+		WCSimDetector->SetIsNuPrismBeamTest(true); // Jun.04,2020 M.Shinoki
 		WCSimDetector->SetIsNuPrism(true);
 		WCSimDetector->SetNuPrismBeamTest_mPMTGeometry();
 		} else if ( newValue == "nuPRISMShort_mPMT") {
-		WCSimDetector->SetIsNuPrismBeamTest(true); // Jun.04,2020 M.Shinoki
 		  WCSimDetector->SetIsNuPrism(true);
 		  WCSimDetector->SetNuPrismShort_mPMTGeometry();
 		} else
