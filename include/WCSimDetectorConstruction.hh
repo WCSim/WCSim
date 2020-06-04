@@ -262,6 +262,11 @@ public:
   // Set if nuPRISM
   void   SetIsNuPrism(G4bool choice) {isNuPrism = choice;}
   G4bool GetIsNuPrism() {return isNuPrism;}
+  
+  // Set if nuPRISM for WCTE (NuPRISMBeamTest)
+  // M.Shinoki added Jun.04,2020
+  void   SetIsNuPrismBeamTest(G4bool choice) {isNuPrismBeamTest = choice;}
+  G4bool GetIsNuPrismBeamTest() {return isNuPrismBeamTest;}
 
   void   SetPMTType(G4String type) {
     WCPMTType = type;
@@ -519,6 +524,7 @@ private:
 
   // Add bool to indicate whether we load nuPRISM geometry  
   G4bool isNuPrism;
+  G4bool isNuPrismBeamTest;
   G4String WCPMTType;
   // G4double WCPMTCoverage; //TF: already using this variable "WCPMTPercentCoverage
 
