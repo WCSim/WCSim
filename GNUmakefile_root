@@ -53,7 +53,7 @@ libWCSimRoot.so : $(ROOTOBJS)
 rootcint: ./src/WCSimRootDict.cc
 
 movedict: rootcint
-ifneq (,$$(wildcard ./src/WCSimRootDict_rdict.pcm))
+ifneq (,$(wildcard ./src/WCSimRootDict_rdict.pcm))
 	cp -f ./src/WCSimRootDict_rdict.pcm .
 	cp -f ./src/WCSimRootDict_rdict.pcm ${G4TMPDIR}
 endif
