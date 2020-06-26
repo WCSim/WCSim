@@ -166,7 +166,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 			token = readInLine(inputFile, lineSize, inBuf);
 			int iVertex=0;
-			while(token[0]=="nuance" && iVertex < MAX_N_PRIMARIES)
+			while(token[0]=="nuance" && iVertex < MAX_N_VERTICES)
 			{
 				if(token.size()>1)
 					mode[iVertex] = atoi(token[1]);
@@ -255,8 +255,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 					}
 				}
 				iVertex++;
-				if(iVertex > MAX_N_PRIMARIES)
-					G4cout<<" CAN NOT DEAL WITH MORE THAN "<<MAX_N_PRIMARIES<<" VERTICES - TRUNCATING EVENT HERE "<<G4endl;
+				if(iVertex > MAX_N_VERTICES)
+					G4cout<<" CAN NOT DEAL WITH MORE THAN "<<MAX_N_VERTICES<<" VERTICES - TRUNCATING EVENT HERE "<<G4endl;
 			}
 			nvtxs=iVertex;
 			SetNvtxs(nvtxs);
