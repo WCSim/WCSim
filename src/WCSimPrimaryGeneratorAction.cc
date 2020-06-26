@@ -57,9 +57,9 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   MyGPS = new G4GeneralParticleSource();
 
   // Initialize to zero
-  mode = 0;
+  mode[0] = 0;
   nvtxs = 0;
-  for( Int_t u=0; u<50; u++){
+  for( Int_t u=0; u<MAX_N_VERTICES; u++){
     vtxsvol[u] = 0;
     vtxs[u] = G4ThreeVector(0.,0.,0.);
   }
@@ -166,16 +166,17 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 			token = readInLine(inputFile, lineSize, inBuf);
 			int iVertex=0;
-			while(token[0]=="nuance")
+			while(token[0]=="nuance" && iVertex < MAX_N_PRIMARIES)
 			{
 				if(token.size()>1)
-					mode = atoi(token[1]);
+					mode[iVertex] = atoi(token[1]);
 	            // Read the Vertex line
 				token = readInLine(inputFile, lineSize, inBuf);
 				vtxs[iVertex] = G4ThreeVector(atof(token[1])*cm,
 					atof(token[2])*cm,
 					atof(token[3])*cm);
 				G4double VertexTime=atof(token[4])*fTimeUnit; 
+				vertexTimes[iVertex]=VertexTime;
                 // true : Generate vertex in Rock , false : Generate vertex in WC tank
 				SetGenerateVertexInRock(false);
 	            // Next we read the incoming neutrino and target
@@ -254,8 +255,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 					}
 				}
 				iVertex++;
+				if(iVertex > MAX_N_PRIMARIES)
+					G4cout<<" CAN NOT DEAL WITH MORE THAN "<<MAX_N_PRIMARIES<<" VERTICES - TRUNCATING EVENT HERE "<<G4endl;
 			}
 			nvtxs=iVertex;
+			SetNvtxs(nvtxs);
+
 		}
 	}
     else 

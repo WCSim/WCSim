@@ -202,16 +202,19 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // ----------------------------------------------------------------------
 
   G4int         event_id = evt->GetEventID();
-  G4int         mode     = generatorAction->GetMode();
+//  G4int         mode     = generatorAction->GetMode();
 
-  G4int         nvtxs   = generatorAction->GetNvtxs();
-  G4ThreeVector vtxs[MAX_N_PRIMARIES];
-  G4int         vtxsvol[MAX_N_PRIMARIES];
+  unsigned int      nvtxs   = generatorAction->GetNvtxs();
+  G4ThreeVector vtxs[MAX_N_VERTICES];
+  G4int         vtxsvol[MAX_N_VERTICES];
+  G4double      vtxTimes[MAX_N_VERTICES];
   for( Int_t u=0; u<nvtxs; u++ ){
     vtxs[u]      = generatorAction->GetVtx(u);
     vtxsvol[u]   = WCSimEventFindStartingVolume(vtxs[u]);
+    vtxTimes[u]  = generatorAction->GetVertexTime(u);
   }
   G4int         vecRecNumber = generatorAction->GetVecRecNumber();
+  G4double      timeUnit=generatorAction->GetTimeUnit();
 
   // ----------------------------------------------------------------------
   //  Get WC Hit Collection
@@ -406,8 +409,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // ----------------------------------------------------------------------
   //  Fill Ntuple
   // ----------------------------------------------------------------------
-
-   jhfNtuple.mode   = mode;         // interaction mode
+   for(unsigned int ivx = 0;ivx<nvtxs;ivx++)
+     jhfNtuple.mode[ivx]   = generatorAction->GetMode(ivx);         // interaction mode
    jhfNtuple.nvtxs = nvtxs;       // number of vertices
    for( Int_t u=0; u<nvtxs; u++ ){
      jhfNtuple.vtxsvol[u] = vtxsvol[u];       // volume of vertex
@@ -415,6 +418,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      jhfNtuple.vtxs[u][0] = vtxs[u][0]/cm; // interaction vertex
      jhfNtuple.vtxs[u][1] = vtxs[u][1]/cm; // interaction vertex
      jhfNtuple.vtxs[u][2] = vtxs[u][2]/cm; // interaction vertex
+     jhfNtuple.vtxs[u][3] = vtxTimes[u]/timeUnit; // interaction vertex
    }
    jhfNtuple.vecRecNumber = vecRecNumber; //vectorfile record number
 
@@ -445,7 +449,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      jhfNtuple.m[npar]       = 0.0;                   // mass (always a neutrino)
      jhfNtuple.p[npar]       = beamenergy;            // momentum magnitude
      jhfNtuple.E[npar]       = beamenergy;            // energy 
-     jhfNtuple.startvol[npar]= -1;                    // starting volume, vtxvol should be referred
+     jhfNtuple.startvol[npar]= vtxsvol[u];                    // starting volume, vtxvol should be referred
      jhfNtuple.stopvol[npar] = -1;                    // stopping volume 
      jhfNtuple.dir[npar][0]  = beamdir[0];            // direction 
      jhfNtuple.dir[npar][1]  = beamdir[1];            // direction 
@@ -494,7 +498,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      jhfNtuple.m[npar]       = targetmass;    // mass (always a neutrino)
      jhfNtuple.p[npar]       = targetpmag;    // momentum magnitude
      jhfNtuple.E[npar]       = targetenergy;  // energy (total!) 
-     jhfNtuple.startvol[npar] = -1;           // starting volume 
+     jhfNtuple.startvol[npar] = vtxsvol[u];           // starting volume 
      jhfNtuple.stopvol[npar] = -1;            // stopping volume 
      jhfNtuple.dir[npar][0]  = targetdir[0];  // direction 
      jhfNtuple.dir[npar][1]  = targetdir[1];  // direction 
@@ -635,7 +639,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   }
 
   //fill correct variables for track from decay
-   G4cout << " Filling Root Event " << G4endl;
+  // G4cout << " Filling Root Event " << G4endl;
 
    //   G4cout << "event_id: " << &event_id << G4endl;
    // G4cout << "jhfNtuple: " << &jhfNtuple << G4endl;
@@ -824,7 +828,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     WCTM = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout_OD");
   }
   int ngates = WCTM->NumberOfGatesInThisEvent();
-  G4cout << "ngates "<<detectorElement<<" =  " << ngates << "\n";
+  //G4cout << "ngates "<<detectorElement<<" =  " << ngates << "\n";
   for (int index = 0 ; index < ngates ; index++) 
     {
       if (index >=1 ) {
@@ -832,7 +836,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
 	wcsimrootevent->SetHeader(event_id,0,
 				   0,index+1); // date & # of subevent 
-	wcsimrootevent->SetMode(jhfNtuple.mode);
+	wcsimrootevent->SetMode(jhfNtuple.mode[0]);
       }
       wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
 				     WCTM->GetTriggerInfo(index));
@@ -846,14 +850,15 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
   // Fill other info for this event
 
-  wcsimrootevent->SetMode(jhfNtuple.mode);
+  wcsimrootevent->SetMode(jhfNtuple.mode[0]);
   wcsimrootevent->SetNvtxs(jhfNtuple.nvtxs);
   for( Int_t u=0; u<jhfNtuple.nvtxs; u++ ){
     wcsimrootevent->SetVtxsvol(u,jhfNtuple.vtxsvol[u]);
-    for (int j=0;j<3;j++)
+    for (int j=0;j<4;j++)
       {
-	wcsimrootevent->SetVtxs(u,j,jhfNtuple.vtxs[u][j]);
+       wcsimrootevent->SetVtxs(u,j,jhfNtuple.vtxs[u][j]);
       }
+      wcsimrootevent->SetMode(u,jhfNtuple.mode[u]);
   }
   wcsimrootevent->SetJmu(jhfNtuple.jmu);
   wcsimrootevent->SetJp(jhfNtuple.jp);

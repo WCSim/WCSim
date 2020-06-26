@@ -166,8 +166,8 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
 
   if ( command==timeUnitCmd)
   {
-    myAction->SetTimeUnits(newValue);
-    G4cout << "Time units set to " << newValue << G4endl;
+    myAction->SetTimeUnit(newValue);
+    G4cout << "Time unit set to " << newValue << G4endl;
   }
 
 }

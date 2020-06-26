@@ -46,6 +46,7 @@ WCSimRootTrigger::WCSimRootTrigger()
 {
   // Create an WCSimRootTrigger object.
 
+  fNvtxs=0;
 
   // WARNING : default constructor for ROOT : do not allocate memory
   // inside it or upon re-reading the object there will be a memory leak
@@ -167,13 +168,14 @@ WCSimRootTrigger & WCSimRootTrigger::operator=(const WCSimRootTrigger & in)
 
   //then fill
   fEvtHdr = in.fEvtHdr;
-  fMode = in.fMode;
   fNvtxs = in.fNvtxs;
-  for(int i = 0; i < MAX_N_PRIMARIES; i++) {
+  for(int i = 0; i < MAX_N_VERTICES; i++) {
     fVtxsvol[i] = in.fVtxsvol[i];
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < 4; j++) {
       fVtxs[i][j] = in.fVtxs[i][j];
     }//j
+    fMode[i] = in.fMode[i];
+
   }//i
   fVecRecNumber = in.fVecRecNumber;
   fJmu = in.fJmu;
@@ -841,11 +843,11 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c, bool deep
     }//ithis
   }//failed_digits && deep_comparison
 
-  failed = (!ComparisonPassed(fMode, c->GetMode(), typeid(*this).name(), __func__, "Mode")) || failed;
+  failed = (!ComparisonPassed(fMode[0], c->GetMode(), typeid(*this).name(), __func__, "Mode")) || failed;
   failed = (!ComparisonPassed(fNvtxs, c->GetNvtxs(), typeid(*this).name(), __func__, "Nvtxs")) || failed;
   for(int ivtx = 0; ivtx < fNvtxs; ivtx++) {
     failed = (!ComparisonPassed(fVtxsvol[ivtx], c->GetVtxsvol(ivtx), typeid(*this).name(), __func__, TString::Format("Vtxvols[%d]", ivtx))) || failed;
-    for(int i = 0; i < 3; i++) {
+    for(int i = 0; i < 4; i++) {
       failed = (!ComparisonPassed(fVtxs[ivtx][i], c->GetVtxs(ivtx, i), typeid(*this).name(), __func__, TString::Format("%s[%d][%d]", "Vtxs", ivtx, i))) || failed;
     }//i
   }//ivtx
@@ -869,6 +871,7 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c, bool deep
 
   return !failed;
 }
+
 
 //_____________________________________________________________________________
 bool WCSimRootEvent::CompareAllVariables(const WCSimRootEvent * c, bool deep_comparison) const

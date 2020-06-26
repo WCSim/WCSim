@@ -10,6 +10,8 @@
 #include <stdint.h>
 #include "TObject.h"
 #include "TClonesArray.h"
+#include "TVector3.h"
+#include "TLorentzVector.h"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -217,10 +219,10 @@ class WCSimRootTrigger : public TObject {
 private:
   WCSimRootEventHeader    fEvtHdr;  // The header
   // See jhfNtuple.h for the meaning of these data members:
-  Int_t                fMode;
+  Int_t                fMode[MAX_N_VERTICES];
   Int_t                fNvtxs;
-  Int_t                fVtxsvol[MAX_N_PRIMARIES];
-  Float_t              fVtxs[MAX_N_PRIMARIES][3];
+  Int_t                fVtxsvol[MAX_N_VERTICES];
+  Float_t              fVtxs[MAX_N_VERTICES][4];
   Int_t                fVecRecNumber;       // "info event" number in inputvectorfile 
   Int_t                fJmu;
   Int_t                fJp;
@@ -266,12 +268,13 @@ public:
   void          SetHeader(Int_t i, Int_t run, int64_t date,Int_t subevtn=1);
   void          SetTriggerInfo(TriggerType_t trigger_type, std::vector<Float_t> trigger_info);
   bool          IsASubEvent() {  return (fEvtHdr.GetSubEvtNumber()>=1); }
-  void          SetMode(Int_t i) {fMode = i;}
+  void          SetMode(Int_t i) {fMode[0] = i;}
+  void          SetMode(Int_t index, Int_t value){fMode[index]=value;}
   void          SetNvtxs(Int_t i) {fNvtxs = i;}
   void          SetVtxvol(Int_t i) {fVtxsvol[0] = i;}
   void          SetVtxsvol(Int_t i, Int_t v) {fVtxsvol[i] = v;}
-  void          SetVtx(Int_t i, Double_t f) {fNvtxs=1; fVtxs[0][i] = ( (i<3) ? f : 0);}
-  void          SetVtxs(Int_t n, Int_t i, Double_t f) {fVtxs[n][i]= ( (i<3) ? f : 0);}
+  void          SetVtx(Int_t i, Double_t f) {SetVtxs(0,i,f);}
+  void          SetVtxs(Int_t n, Int_t i, Double_t f) {fVtxs[n][i]= ( (i<4) ? f : 0);}
   void          SetVecRecNumber(Int_t i) {fVecRecNumber = i;}
   void          SetJmu(Int_t i) {fJmu = i;}
   void          SetJp(Int_t i) {fJp = i;}
@@ -288,12 +291,15 @@ public:
   const WCSimRootEventHeader * GetHeader()     const {return &fEvtHdr; }
   WCSimRootPi0       *GetPi0Info()                 {return &fPi0; }
   const WCSimRootPi0         * GetPi0Info()    const {return &fPi0; }
-  Int_t               GetMode()               const {return fMode;}
+  Int_t               GetMode()               const {return fMode[0];}
+  Int_t               GetMode(Int_t index)    const {return fMode[index];}
   Int_t               GetVtxvol()             const {return fVtxsvol[0];}
   Float_t             GetVtx(Int_t i=0)             {return (i<3) ? fVtxs[0][i]: 0;}
+  TVector3            GetVertex(Int_t i)       {return TVector3(fVtxs[i][0],fVtxs[i][1],fVtxs[i][2]);}
   Int_t               GetNvtxs()             const {return fNvtxs;}
   Int_t               GetVtxsvol(Int_t i)             const {return fVtxsvol[i];}
   Float_t             GetVtxs(Int_t n, Int_t i=0)     const {return (i<3) ? fVtxs[n][i]: 0;}
+  TLorentzVector      Get4Vertex(Int_t i)   {return TLorentzVector(fVtxs[i][0],fVtxs[i][1],fVtxs[i][2],fVtxs[i][3]);}
   Int_t               GetVecRecNumber()       const {return fVecRecNumber;}
   Int_t               GetJmu()                const {return fJmu;}
   Int_t               GetJp()                 const {return fJp;}
