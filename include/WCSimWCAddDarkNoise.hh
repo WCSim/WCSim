@@ -31,8 +31,8 @@ public:
   double GetDarkRate() { return PMTDarkRate; }
   void SetConversion(double iconvrate){ ConvRate = iconvrate; }
   void SetDarkMode(int imode){DarkMode = imode;}
-  void SetDarkHigh(int idarkhigh){DarkHigh = idarkhigh;}
-  void SetDarkLow(int idarklow){DarkLow = idarklow;}
+  void SetDarkHigh(double idarkhigh){DarkHigh = idarkhigh;}
+  void SetDarkLow(double idarklow){DarkLow = idarklow;}
   void SetDarkWindow(int idarkwindow){DarkWindow = idarkwindow;}
   int GetDarkWindow(){return (int)(DarkWindow);}
   void SaveOptionsToOutput(WCSimRootOptions * wcopt, string tag);

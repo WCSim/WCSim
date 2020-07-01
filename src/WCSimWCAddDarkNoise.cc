@@ -253,7 +253,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     #endif
 
 #ifdef WCSIMWCADDDARKNOISE_VERBOSE
-    G4cout << "WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Going to add " << nnoispmt << " dark noise hits in time window [" << num1 << "," << num2 << "]" << G4endl;
+    G4cout << "WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Going to add " << nnoispmt << " dark noise hits in time window [" << num1 << "," << num2 << "] duration " << num2 - num1 << G4endl;
 #endif
     for( int i = 0; i < nnoispmt; i++ )
       {
