@@ -639,7 +639,6 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   }
 
   //fill correct variables for track from decay
-  // G4cout << " Filling Root Event " << G4endl;
 
    //   G4cout << "event_id: " << &event_id << G4endl;
    // G4cout << "jhfNtuple: " << &jhfNtuple << G4endl;
