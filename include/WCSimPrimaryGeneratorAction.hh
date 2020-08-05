@@ -46,10 +46,12 @@ public:
 
   // These go with jhfNtuple
   G4int GetVecRecNumber(){return vecRecNumber;}
-  G4int GetMode() {return mode;};
+  G4int GetMode() {return mode[0];};
+  G4int GetMode(int vertex){return mode[vertex];};
   G4int GetNvtxs() {return nvtxs;};
   G4int GetVtxVol(G4int n = 0) {return vtxsvol[n];};
   G4ThreeVector GetVtx(G4int n = 0) {return vtxs[n];}
+  G4double GetVertexTime(G4int n = 0){return vertexTimes[n];}
   G4int GetNpar() {return npar;};
   G4int GetBeamPDG(G4int n = 0) {return beampdgs[n];};
   G4double GetBeamEnergy(G4int n = 0) {return beamenergies[n];};
@@ -103,10 +105,11 @@ private:
   G4double fTimeUnit;
   
   // These go with jhfNtuple
-  G4int mode;
+  G4int mode[MAX_N_VERTICES];
   G4int nvtxs;
-  G4int vtxsvol[MAX_N_PRIMARIES];
-  G4ThreeVector vtxs[MAX_N_PRIMARIES];
+  G4int vtxsvol[MAX_N_VERTICES];
+  G4ThreeVector vtxs[MAX_N_VERTICES];
+  G4double vertexTimes[MAX_N_VERTICES];
   G4int npar;
   G4int beampdgs[MAX_N_PRIMARIES], targetpdgs[MAX_N_PRIMARIES];
   G4ThreeVector beamdirs[MAX_N_PRIMARIES], targetdirs[MAX_N_PRIMARIES];
@@ -180,7 +183,7 @@ public:
  //static const HepDouble millisecond = 1.e-3 *second;
  //static const HepDouble microsecond = 1.e-6 *second;
  //static const HepDouble  picosecond = 1.e-12*second;
-  inline void SetTimeUnits(G4String choice)
+  inline void SetTimeUnit(G4String choice)
   {
 
 
@@ -197,7 +200,7 @@ public:
     else
       fTimeUnit=CLHEP::nanosecond;
   }
-    inline G4double GetTimeUnits()       { return fTimeUnit; }
+    inline G4double GetTimeUnit()       { return fTimeUnit; }
 
   };
 

@@ -1,14 +1,15 @@
 #ifndef JHFNTUPLE_H
 #define JHFNTUPLE_H
+static const int MAX_N_VERTICES = 900;
 static const int MAX_N_PRIMARIES = 900;
 static const int MAX_N_ACTIVE_TUBES = 2000;
 static const int MAX_N_HITS_PER_TUBE = 90;
 struct ntupleStruct
 {
-  int mode;             // interaction mode
+  int mode[MAX_N_VERTICES];             // interaction mode
   int nvtxs;           // number of vertices
-  int vtxsvol[MAX_N_PRIMARIES];           // volume of vertices
-  double vtxs[MAX_N_PRIMARIES][3];        // interaction vertices
+  int vtxsvol[MAX_N_VERTICES];           // volume of vertices
+  double vtxs[MAX_N_VERTICES][4];        // interaction vertices
   int vecRecNumber;     // info event number in inputvetcotfile
   int  jmu;             // index to muon
   int  jp;              // index to proton
