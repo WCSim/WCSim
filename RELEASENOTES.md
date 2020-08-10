@@ -1,6 +1,24 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
+09/10/2020: Notes for v1.9.0        
+*************************************************************
+
+This release includes updates to accommodate the external trigger software (https://github.com/HKDAQ/TriggerApplication) and changes that allow for supernova neutrinos to be more easily simulated. The ability for tools to work in ROOT6 has also been included. 
+
+New Features
+* Pull Request [#285](https://github.com/WCSim/WCSim/pull/285): Include compatibilities for ROOT6
+
+Bug Fixes
+* Pull Request [#286](https://github.com/WCSim/WCSim/pull/286), [#287](https://github.com/WCSim/WCSim/pull/287): Fix a memory leak when running on large (>1000) event files. 
+
+Updates
+* Pull Request [#289](https://github.com/WCSim/WCSim/pull/289), [#277](https://github.com/WCSim/WCSim/pull/277): Allow for multiple vertices to have different information. 
+* Pull Request [#288](https://github.com/WCSim/WCSim/pull/288): Allow kinsplitter to create multiple kin files for the same event.  
+
+
+
+*************************************************************
 01/29/2019: Notes for v1.8.0        
 *************************************************************
 
