@@ -46,6 +46,7 @@ WCSimRootTrigger::WCSimRootTrigger()
 {
   // Create an WCSimRootTrigger object.
 
+  fNvtxs=0;
 
   // WARNING : default constructor for ROOT : do not allocate memory
   // inside it or upon re-reading the object there will be a memory leak
@@ -161,18 +162,20 @@ WCSimRootTrigger::~WCSimRootTrigger()
 
 WCSimRootTrigger & WCSimRootTrigger::operator=(const WCSimRootTrigger & in)
 {
+  if(this == &in) return *this;
   //first clear everything
   this->Clear();
 
   //then fill
   fEvtHdr = in.fEvtHdr;
-  fMode = in.fMode;
   fNvtxs = in.fNvtxs;
-  for(int i = 0; i < MAX_N_PRIMARIES; i++) {
+  for(int i = 0; i < MAX_N_VERTICES; i++) {
     fVtxsvol[i] = in.fVtxsvol[i];
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < 4; j++) {
       fVtxs[i][j] = in.fVtxs[i][j];
     }//j
+    fMode[i] = in.fMode[i];
+
   }//i
   fVecRecNumber = in.fVecRecNumber;
   fJmu = in.fJmu;
@@ -194,6 +197,7 @@ WCSimRootTrigger & WCSimRootTrigger::operator=(const WCSimRootTrigger & in)
   fTriggerType = in.fTriggerType;
   fTriggerInfo = in.fTriggerInfo;
   IsZombie = in.IsZombie;
+  return *this;
 }
 
 //_____________________________________________________________________________
@@ -241,7 +245,7 @@ void WCSimRootTrigger::Reset(Option_t */*option*/)
 
 void WCSimRootTrigger::SetHeader(Int_t i, 
 				  Int_t run, 
-				  Int_t date,Int_t subevent)
+				  int64_t date,Int_t subevent)
 {
   // Set the header values
   fEvtHdr.Set(i, run, date,subevent);
@@ -253,15 +257,17 @@ void WCSimRootTrigger::SetTriggerInfo(TriggerType_t trigger_type,
 				      std::vector<Float_t> trigger_info)
 {
   fTriggerType = trigger_type;
-  fTriggerInfo = trigger_info;
+  fTriggerInfo.resize(trigger_info.size());
+  for(size_t i = 0; i < trigger_info.size(); i++)
+    fTriggerInfo[i] = trigger_info[i];
 }
 
 //_____________________________________________________________________________
 
-void WCSimRootTrigger::SetPi0Info(Float_t pi0Vtx[3], 
+void WCSimRootTrigger::SetPi0Info(Double_t pi0Vtx[3],
 				 Int_t   gammaID[2], 
-				 Float_t gammaE[2],
-				 Float_t gammaVtx[2][3])
+				 Double_t gammaE[2],
+				 Double_t gammaVtx[2][3])
 {
   fPi0.Set(pi0Vtx, 
 	   gammaID, 
@@ -271,10 +277,10 @@ void WCSimRootTrigger::SetPi0Info(Float_t pi0Vtx[3],
 
 //_____________________________________________________________________________
 
-void WCSimRootPi0::Set(Float_t pi0Vtx[3], 
+void WCSimRootPi0::Set(Double_t pi0Vtx[3],
 			Int_t   gammaID[2], 
-			Float_t gammaE[2],
-			Float_t gammaVtx[2][3])
+			Double_t gammaE[2],
+			Double_t gammaVtx[2][3])
 {
   for (int i=0;i<2;i++)
   {
@@ -294,17 +300,17 @@ void WCSimRootPi0::Set(Float_t pi0Vtx[3],
 
 WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu, 
 					   Int_t flag, 
-					   Float_t m, 
-					   Float_t p, 
-					   Float_t E, 
+					   Double_t m,
+					   Double_t p,
+					   Double_t E,
 					   Int_t startvol, 
 					   Int_t stopvol, 
-					   Float_t dir[3], 
-					   Float_t pdir[3], 
-					   Float_t stop[3], 
-					   Float_t start[3],
+					   Double_t dir[3],
+					   Double_t pdir[3],
+					   Double_t stop[3],
+					   Double_t start[3],
 					   Int_t parenttype,
-					   Float_t time,
+					   Double_t time,
 					   Int_t id)
 {
   // Add a new WCSimRootTrack to the list of tracks for this event.
@@ -342,7 +348,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(WCSimRootTrack * track)
   // is called. If tracks[i] is 0, a new Track object will be created
   // otherwise the previous Track[i] will be overwritten.
 
-  Float_t dir[3], pdir[3], stop[3], start[3];
+  Double_t dir[3], pdir[3], stop[3], start[3];
   for(int i = 0; i < 3; i++) {
     dir  [i] = track->GetDir(i);
     pdir [i] = track->GetPdir(i);
@@ -383,17 +389,17 @@ WCSimRootTrack * WCSimRootTrigger::RemoveTrack(WCSimRootTrack * track)
 
 WCSimRootTrack::WCSimRootTrack(Int_t ipnu, 
 				 Int_t flag, 
-				 Float_t m, 
-				 Float_t p, 
-				 Float_t E, 
+				 Double_t m,
+				 Double_t p,
+				 Double_t E,
 				 Int_t startvol, 
 				 Int_t stopvol, 
-				 Float_t dir[3], 
-				 Float_t pdir[3], 
-				 Float_t stop[3], 
-				 Float_t start[3],
+				 Double_t dir[3],
+				 Double_t pdir[3],
+				 Double_t stop[3],
+				 Double_t start[3],
 				 Int_t parenttype,
-			       Float_t time,Int_t id)
+			         Double_t time,Int_t id)
 {
 
   // Create a WCSimRootTrack object and fill it with stuff
@@ -420,7 +426,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vector<Float_t> truetime,std::vector<Int_t> primParID)
+WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vector<Double_t> truetime,std::vector<Int_t> primParID)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -429,7 +435,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vecto
   {
     fCherenkovHitCounter++;
 
-    WCSimRootCherenkovHitTime *cherenkovhittime = 
+    //WCSimRootCherenkovHitTime *cherenkovhittime = 
       new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i]);
   }
 
@@ -457,7 +463,7 @@ WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
   fTotalPe[1] = totalPe[1];
 }
 
-WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,
+WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
 						     Int_t primParID)
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
@@ -467,8 +473,8 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q, 
-								 Float_t t, 
+WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Double_t q,
+								 Double_t t,
 								 Int_t tubeid,
 								 std::vector<int> photon_ids)
 {
@@ -504,8 +510,8 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(WCSimRootCheren
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q,
-						     Float_t t, 
+WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Double_t q,
+						     Double_t t,
 						     Int_t tubeid,
 						     std::vector<int> photon_ids)
 {
@@ -544,9 +550,11 @@ WCSimRootEvent::WCSimRootEvent()
 
 WCSimRootEvent & WCSimRootEvent::operator=(const WCSimRootEvent & in)
 {
+  if (this == &in) return *this; 
   this->Clear();
   Current = in.Current;
   fEventList = (TClonesArray*)in.fEventList->Clone();
+  return *this;
 }
 
 void WCSimRootEvent::Initialize()
@@ -690,7 +698,7 @@ bool WCSimRootPi0::CompareAllVariables(const WCSimRootPi0 * c) const
 }
 
 //_____________________________________________________________________________
-bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
+bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c, bool deep_comparison) const
 {
   bool failed = false;
 
@@ -769,9 +777,11 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
 
   //check digitised hits
   // this is more complicated because there can be some empty slots for at least one of the TClonesArray
+  // also, digits can potentially be in different orders
   ithis = -1, ithat = -1;
   WCSimRootCherenkovDigiHit * tmp_digit_1, * tmp_digit_2;
   int ncomp_digi = 0;
+  bool failed_digits = false;
   while(true) {
     tmp_digit_1 = 0;
     while(!tmp_digit_1 && ithis < this->GetNcherenkovdigihits_slots() - 1) {
@@ -789,18 +799,55 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
     cout << "Comparing digit " << ithis " in this with digit"
 	 << ithat " in that" << endl;
 #endif
-    failed = !(tmp_digit_1->CompareAllVariables(tmp_digit_2)) || failed;
+    failed_digits = !(tmp_digit_1->CompareAllVariables(tmp_digit_2)) || failed_digits;
     ncomp_digi++;
-  }//ithis ithat
+  }//while(true)
   if(ncomp_digi != fNcherenkovdigihits && ncomp_digi != c->GetNcherenkovdigihits()) {
     cerr << "Only compared " << ncomp_digi << " digits. There should be " << TMath::Min(fNcherenkovdigihits, c->GetNcherenkovdigihits()) << " comparisons" << endl;
   }
+  if(!deep_comparison)
+    failed = failed || failed_digits;
+  else if(failed_digits) {
+    cout << "Peforming deep comparison" << endl;
+    // We're running a deep comparison and we have some failed digits.
+    // We're therefore going to do the check under the assumption that the order of digits can be different between this and that
+    vector<WCSimRootCherenkovDigiHit *> tmpdigis;
+    for(ithis = 0; ithis < this->GetNcherenkovdigihits_slots() - 1; ithis++) {
+      tmp_digit_1 = (WCSimRootCherenkovDigiHit *)this->GetCherenkovDigiHits()->At(ithis);
+      if(!tmp_digit_1)
+	continue;
+      int this_pmtid = tmp_digit_1->GetTubeId();
+      for(ithat = 0; ithat < c->GetNcherenkovdigihits_slots() - 1; ithat++) {
+	tmp_digit_2 = (WCSimRootCherenkovDigiHit *)c->GetCherenkovDigiHits()->At(ithat);
+	if(!tmp_digit_2)
+	  continue;
+	if(tmp_digit_2->GetTubeId() != this_pmtid) {
+	  continue;
+	}
+	tmpdigis.push_back(tmp_digit_2);
+      }//ithat
+      //we've now got a single digit from this, and all the digits on the same PMT from that
+      if(!tmpdigis.size()) {
+	cerr << "No digits on this PMT with ID " << this_pmtid << " found on that" << endl;
+	failed = true;
+      }
+      bool found = false;
+      for(unsigned int i = 0; i < tmpdigis.size(); i++) {
+	found = tmp_digit_1->CompareAllVariables(tmpdigis.at(i));
+	if(found)
+	  break;
+      }
+      if(!found)
+	failed = true;
+      tmpdigis.clear();
+    }//ithis
+  }//failed_digits && deep_comparison
 
-  failed = (!ComparisonPassed(fMode, c->GetMode(), typeid(*this).name(), __func__, "Mode")) || failed;
+  failed = (!ComparisonPassed(fMode[0], c->GetMode(), typeid(*this).name(), __func__, "Mode")) || failed;
   failed = (!ComparisonPassed(fNvtxs, c->GetNvtxs(), typeid(*this).name(), __func__, "Nvtxs")) || failed;
   for(int ivtx = 0; ivtx < fNvtxs; ivtx++) {
     failed = (!ComparisonPassed(fVtxsvol[ivtx], c->GetVtxsvol(ivtx), typeid(*this).name(), __func__, TString::Format("Vtxvols[%d]", ivtx))) || failed;
-    for(int i = 0; i < 3; i++) {
+    for(int i = 0; i < 4; i++) {
       failed = (!ComparisonPassed(fVtxs[ivtx][i], c->GetVtxs(ivtx, i), typeid(*this).name(), __func__, TString::Format("%s[%d][%d]", "Vtxs", ivtx, i))) || failed;
     }//i
   }//ivtx
@@ -825,8 +872,9 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c) const
   return !failed;
 }
 
+
 //_____________________________________________________________________________
-bool WCSimRootEvent::CompareAllVariables(const WCSimRootEvent * c) const
+bool WCSimRootEvent::CompareAllVariables(const WCSimRootEvent * c, bool deep_comparison) const
 {
   bool failed = false;
 
@@ -836,7 +884,7 @@ bool WCSimRootEvent::CompareAllVariables(const WCSimRootEvent * c) const
   }
 
   for(int i = 0; i < TMath::Min(this->GetNumberOfEvents(), c->GetNumberOfEvents()); i++) {
-    failed = !(this->GetTrigger(i)->CompareAllVariables(c->GetTrigger(i))) || failed;
+    failed = !(this->GetTrigger(i)->CompareAllVariables(c->GetTrigger(i), deep_comparison)) || failed;
   }
 
   return !failed;

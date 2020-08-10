@@ -23,8 +23,10 @@
 // #define HYPER_VERBOSITY
 #endif
 
-extern "C" void skrn1pe_(float* );
-//extern "C" void rn1pe_(float* ); // 1Kton
+extern "C" void skrn1pe_(double* );
+//extern "C" void rn1pe_(double* ); // 1Kton
+
+G4double WCSimWCPMT::first_time = 0;
 
 WCSimWCPMT::WCSimWCPMT(G4String name,
                        WCSimDetectorConstruction* myDetector,
@@ -63,7 +65,7 @@ G4double WCSimWCPMT::rn1pe(){
   G4int i;
   G4double random = G4UniformRand();
   G4double random2 = G4UniformRand(); 
-  G4float *qpe0;
+  G4double *qpe0;
   qpe0 = PMT->Getqpe();
   for(i = 0; i < 501; i++){
     
@@ -132,6 +134,8 @@ void WCSimWCPMT::Digitize()
 
 void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
+  // Sort Hit times
+  std::sort(WCHC->GetVector()->begin(), WCHC->GetVector()->end(), WCSimWCHit::SortFunctor_Hit());
 
   //Get the PMT info for hit time smearing
   // G4String WCIDCollectionName = myDetector->GetIDCollectionName();
@@ -142,6 +146,9 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
   else if(detectorElement=="OD") WCCollectionName = myDetector->GetODCollectionName();
 
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
+  
+  // Correct timing to be within 1 sec (needed for radioactive decay as forcing the decay lead to some strange results)
+  
 
   #ifdef HYPER_VERBOSITY
   if(detectorElement=="OD"){
@@ -170,11 +177,21 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       // Get the information from the hit
       G4int   tube         = (*WCHC)[i]->GetTubeID();
       G4double peSmeared = 0.0;
-      double time_PMT, time_true;
+      G4double time_PMT, time_true;
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
+	  
+	    // Reset the time to have "reasonnable" timing
+	    // This modification is important in case of very late hit physics (such as in radioactive decays)     
+	    // for which time easy goes > 1e9 ns and cause bug in digitizer
+	    // should not use /grdm/decayBiasProfile biasprofile.dat as it messes up all the timing of the decays, and force to use only one nucleus
+	    if ( i == 0 && ip == 0 && RelativeHitTime /*&& (*WCHC)[i]->GetTime(ip) > 1e5*/ ) { // Set Max at 10 musec
+	      //G4cout << " Apply time correction to event hits of " << (*WCHC)[i]->GetTime(ip) << " ns" << G4endl;
+	      first_time = (*WCHC)[i]->GetTime(ip);
+	    } 
+	    
 	    time_true = (*WCHC)[i]->GetTime(ip);
-	    time_PMT  = time_true; //currently no PMT time smearing applied
+	    time_PMT  = time_true - first_time; //currently no PMT time smearing applied
 	    peSmeared = rn1pe();
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
 

@@ -97,8 +97,8 @@ public:
 
   G4double GetPMTSize1() {return WCPMTSize;}
 
-  G4float GetPMTQE(G4String,G4float, G4int, G4float, G4float, G4float);
-  G4float GetPMTCollectionEfficiency(G4float theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
+  G4double GetPMTQE(G4String,G4double, G4int, G4double, G4double, G4double);
+  G4double GetPMTCollectionEfficiency(G4double theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
 
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
@@ -158,6 +158,8 @@ public:
 
   bool GetIsODConstructed(){return isODConstructed;}
 
+  G4double GetIDRadius()     {return WCIDRadius;}
+  G4double GetIDHeight()     {return WCIDHeight;}
  
 private:
 

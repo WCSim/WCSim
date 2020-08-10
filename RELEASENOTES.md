@@ -7,6 +7,27 @@ Bug Fixes:
 * In v1.5.0, the dark rate was not being set correctly in the case where the default detector was not used (unless the dark rate was explicitly specified in the macro). This release now correctly implements the dark rate based on the photodector type used in the detector configuration, even when the non-default detector configuration is called. 
 
 *************************************************************
+09/10/2020: Notes for v1.9.0        
+*************************************************************
+
+This release includes changes that allow for supernova neutrinos to be more easily simulated. The ability for tools to work in ROOT6 has also been included. 
+
+New Features
+* Pull Request [#285](https://github.com/WCSim/WCSim/pull/285): Include compatibilities for ROOT6
+* Pull Request [#284](https://github.com/WCSim/WCSim/pull/285): Include compatibilities for Singularity
+* Pull Request [#275](https://github.com/WCSim/WCSim/pull/275): Add the ability to simulate a radon background
+
+Bug Fixes
+* Pull Request [#286](https://github.com/WCSim/WCSim/pull/286), [#287](https://github.com/WCSim/WCSim/pull/287): Fix a memory leak when running on large (>1000) event files. 
+
+Updates
+* Pull Request [#289](https://github.com/WCSim/WCSim/pull/289), [#277](https://github.com/WCSim/WCSim/pull/277): Allow for multiple vertices to have different information. 
+* Pull Request [#288](https://github.com/WCSim/WCSim/pull/288): Allow kinsplitter to create multiple kin files for the same event. 
+* Pull Request [#279](https://github.com/WCSim/WCSim/pull/279), [#283](https://github.com/WCSim/WCSim/pull/283): Updates for Docker
+* Pull Request [#288](https://github.com/WCSim/WCSim/pull/288): Changes required for supernova simulations (including an increase in the stored time precision - this results in a 20\% increase in file size). 
+* Pull Request [#272](https://github.com/WCSim/WCSim/pull/272): Added a different (more direct) way to compare digits
+
+*************************************************************
 01/29/2019: Notes for v1.8.0        
 *************************************************************
 

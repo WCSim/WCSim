@@ -62,9 +62,9 @@ void WCSimDetectorConstruction::GetWCGeom
 
 
     // Note WC can be off-center... get both extremities
-    static G4float zmin=100000,zmax=-100000.;
-    static G4float xmin=100000,xmax=-100000.;
-    static G4float ymin=100000,ymax=-100000.;
+    static G4double zmin=100000,zmax=-100000.;
+    static G4double xmin=100000,xmax=-100000.;
+    static G4double ymin=100000,ymax=-100000.;
     if (aDepth == 0) { // Reset for this traversal
         xmin=100000,xmax=-100000.; 
         ymin=100000,ymax=-100000.; 
@@ -72,9 +72,9 @@ void WCSimDetectorConstruction::GetWCGeom
     }
 
     if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName().find("glassFaceWCPMT") != std::string::npos)){ 
-      G4float x =  aTransform.getTranslation().getX()/cm;
-      G4float y =  aTransform.getTranslation().getY()/cm;
-      G4float z =  aTransform.getTranslation().getZ()/cm;
+      G4double x =  aTransform.getTranslation().getX()/cm;
+      G4double y =  aTransform.getTranslation().getY()/cm;
+      G4double z =  aTransform.getTranslation().getZ()/cm;
       
       if (x<xmin){xmin=x;}
       if (x>xmax){xmax=x;}

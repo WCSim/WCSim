@@ -1,53 +1,41 @@
 #include <stdio.h>     
 #include <stdlib.h>    
+#include <iostream>
 
-void read_OD(char *filename=NULL) {
+#include "TROOT.h"
+#include "TSystem.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TH1D.h"
+#include "TCanvas.h"
+#include "TStyle.h"
+
+#include "WCSimRootEvent.hh"
+
+int read_OD(const char *filename="wcsim.root") {
   /* A simple script to plot aspects of phototube hits 
    * 
    * I like to run this macro as 
    * $ root -l -x 'read_OD.C("OD.root")'
    */
 
-  gROOT->Reset();
-  char* wcsimdirenv;
-  wcsimdirenv = getenv ("WCSIMDIR");
-  if(wcsimdirenv !=  NULL){
-    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
-    gSystem->Load("${WCSIMDIR}/libWCSimRoot.rootmap");
-    gSystem->Load("${WCSIMDIR}/src/WCSimRootDict_rdict.pcm");
-  }else{
-    std::cout << "Can't load WCSim ROOT dictionaries" << std::endl;
-  }
+  gROOT->Reset();  
   gStyle->SetOptStat(1);
-
-  TFile *f;
-  char fTest[128];
-  if (filename==NULL){
-    std::cout << "Please provide filename in option" << std::endl;
-    std::cout << "Will load auto wcsim.root in WCSIMDIR ..." << std::endl;
-    char* name = "wcsim.root";
-    strncpy(fTest, wcsimdirenv, sizeof(fTest));
-    strncat(fTest, "/", (sizeof(fTest) - strlen(fTest)) );
-    strncat(fTest, name, (sizeof(fTest) - strlen(fTest)) );
-    f = new TFile(fTest);
-  }else{
-    f = new TFile(filename);
-  }
+  
+  TFile *f = new TFile(filename);
   if (!f->IsOpen()){
     cout << "Error, could not open input file: " << filename << endl;
     return -1;
-  }else{
-    if (filename==NULL) cout << "File open bro: " << fTest << endl;
-    else cout << "File open bro: " << filename << endl;
   }
+  cout << "File open: " << filename << endl;
 
   TTree  *wcsimT = (TTree*)f->Get("wcsimT");
 
   WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent();
-  wcsimT->SetBranchAddress("wcsimrootevent_OD",&wcsimrootsuperevent);
+  int error = wcsimT->SetBranchAddress("wcsimrootevent_OD",&wcsimrootsuperevent);  
 
-  const long unsigned int nbEntries = wcsimT->GetEntries();
-  cout << "Nb of entries " << wcsimT->GetEntries() << endl;
+  const long unsigned int nbEntries = wcsimT->GetBranch("wcsimrootevent_OD")->GetEntries();
+  cout << "Nb of entries in OD branch: " << nbEntries << endl;
 
   //////////////////////////////////////////
   // HISTOGRAMS DEFINITION /////////////////
@@ -165,7 +153,7 @@ void read_OD(char *filename=NULL) {
   cout << "Mean PE collected by events by PMT : " << hPECollectedByEvtsByPMT->GetMean()
        << " +- " << hPECollectedByEvtsByPMT->GetRMS() << endl;
 
-    TFile *output=NULL;
+  TFile *output=NULL;
 
   char outputName[1000];
   sprintf(outputName,"PROCESSED_%s",filename);
@@ -175,4 +163,5 @@ void read_OD(char *filename=NULL) {
   hPECollectedByEvtsByPMT->Write();
   hPECollectedByEvts->Write();
 
+  return 0;
 } // END MACRO

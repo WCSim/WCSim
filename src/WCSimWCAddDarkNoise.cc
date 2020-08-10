@@ -145,7 +145,7 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
       }
     }
     else if(DarkMode == 0) {
-      result.push_back(std::pair<float,float>(DarkLow,DarkHigh));
+      result.push_back(std::pair<double,double>(DarkLow,DarkHigh));
     }
     //Call routine to add dark noise here.
     //loop over pairs which represent ranges.
@@ -155,7 +155,7 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
     #endif
     int windowfordarknoise=0;
 
-    for(std::vector<std::pair<float, float> >::iterator it2 = result.begin(); it2 != result.end(); it2++) {
+    for(std::vector<std::pair<double, double> >::iterator it2 = result.begin(); it2 != result.end(); it2++) {
       #ifdef HYPER_VERBOSITY
       if(detectorElement=="OD") G4cout<<"WCSimWCAddDarkNoise::AddDarkNoise ☆ adding dark noise in window "<<windowfordarknoise<<G4endl; windowfordarknoise++;
       #endif
@@ -164,7 +164,7 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
   }
 }
 
-void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPMT, float num1 ,float num2) {
+void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPMT, double num1 ,double num2) {
     // Introduces dark noise into each PMT during an event window
     // This won't introduce noise only events, and isn't written
     // to handle different rates for each PMT (although this shouldn't
@@ -253,7 +253,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     #endif
 
 #ifdef WCSIMWCADDDARKNOISE_VERBOSE
-    G4cout << "WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Going to add " << nnoispmt << " dark noise hits in time window [" << num1 << "," << num2 << "]" << G4endl;
+    G4cout << "WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Going to add " << nnoispmt << " dark noise hits in time window [" << num1 << "," << num2 << "] duration " << num2 - num1 << G4endl;
 #endif
     for( int i = 0; i < nnoispmt; i++ )
       {
@@ -284,8 +284,8 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	    ahit->SetTrackID(-1);
 	    ahit->SetParentID(PMTindex[noise_pmt], -1);
 	    // Set the position and rotation of the pmt
-	    Float_t hit_pos[3];
-	    Float_t hit_rot[3];
+	    Double_t hit_pos[3];
+	    Double_t hit_rot[3];
 	    // TODO: need to change the format of hit_pos to G4ThreeVector
 	    // and change hit_rot to G4RotationMatrix
 	    
@@ -337,17 +337,17 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 
 
 
-void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, float width) {
+void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, double width) {
   //Loop over all Hits and assign a time window around each hit
   //store these in the ranges vector as pairs
   for (int g=0; g<WCHCPMT->entries(); g++){
     for (int gp=0; gp<(*WCHCPMT)[g]->GetTotalPe(); gp++){
-      float time = (*WCHCPMT)[g]->GetTime(gp);
+      double time = (*WCHCPMT)[g]->GetTime(gp);
       //lets assume a 5us window.  So we centre this on the hit time.
       //t1 is the lower limit of the window.
-      float t1=time - width/2.;
-      float t2=time + width/2.;
-      ranges.push_back(std::pair<float, float>(t1, t2));
+      double t1=time - width/2.;
+      double t2=time + width/2.;
+      ranges.push_back(std::pair<double, double>(t1, t2));
     }
   }
 
@@ -374,8 +374,8 @@ void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, 
   //the ranges vector contains overlapping ranges
   //this loop removes overlaps
   //output are pairs stored in the result vector
-  std::vector<std::pair<float, float> >::iterator it = ranges.begin();
-  std::pair<float, float> current = *(it)++;
+  std::vector<std::pair<double, double> >::iterator it = ranges.begin();
+  std::pair<double, double> current = *(it)++;
   for( ; it != ranges.end(); it++) {
     if (current.second >= it->first){
       current.second = std::max(current.second, it->second); 

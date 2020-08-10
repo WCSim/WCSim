@@ -21,6 +21,8 @@ public:
   
    void ReInitialize() { DigiHitMapPMT.clear(); TriggerTimes.clear(); }
     
+   // Set Relative Digitized Hit time mode and reinitialize first_time hit
+   void SetRelativeDigitizedHitTime (bool val) { RelativeHitTime = val; first_time = 0; }
    
 public:
   
@@ -40,6 +42,11 @@ public:
   WCSimWCDigitsCollection*  DigitsCollection;  
   WCSimDetectorConstruction* myDetector;
   G4String detectorElement;
+
+private:
+  bool RelativeHitTime;
+  
+  static G4double first_time;
 
 };
 

@@ -43,19 +43,20 @@
 
 #ifndef _SAVE_RAW_HITS
 #define _SAVE_RAW_HITS
-#ifndef _SAVE_RAW_HITS_VERBOSE
+//Use this and one/two of below to debug hit information
 //#define _SAVE_RAW_HITS_VERBOSE
 #endif
-#endif
-#ifndef SAVE_DIGITS_VERBOSE
+
+//Use this and one/two of below to debug digit information
 //#define SAVE_DIGITS_VERBOSE
-#endif
+
+//Print out hits with PMT IDs up to N
+#define NPMTS_VERBOSE -1
+//And/Or a specific PMT ID
+#define VERBOSE_PMT -1
+
 #ifndef TIME_DAQ_STEPS
 //#define TIME_DAQ_STEPS
-#endif
-
-#ifndef NPMTS_VERBOSE
-#define NPMTS_VERBOSE 10
 #endif
 
 WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
@@ -201,16 +202,19 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // ----------------------------------------------------------------------
 
   G4int         event_id = evt->GetEventID();
-  G4int         mode     = generatorAction->GetMode();
+//  G4int         mode     = generatorAction->GetMode();
 
-  G4int         nvtxs   = generatorAction->GetNvtxs();
-  G4ThreeVector vtxs[MAX_N_PRIMARIES];
-  G4int         vtxsvol[MAX_N_PRIMARIES];
+  unsigned int      nvtxs   = generatorAction->GetNvtxs();
+  G4ThreeVector vtxs[MAX_N_VERTICES];
+  G4int         vtxsvol[MAX_N_VERTICES];
+  G4double      vtxTimes[MAX_N_VERTICES];
   for( Int_t u=0; u<nvtxs; u++ ){
     vtxs[u]      = generatorAction->GetVtx(u);
     vtxsvol[u]   = WCSimEventFindStartingVolume(vtxs[u]);
+    vtxTimes[u]  = generatorAction->GetVertexTime(u);
   }
   G4int         vecRecNumber = generatorAction->GetVecRecNumber();
+  G4double      timeUnit=generatorAction->GetTimeUnit();
 
   // ----------------------------------------------------------------------
   //  Get WC Hit Collection
@@ -263,6 +267,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 #endif
 
   //Convert the hits to PMT pulse
+  WCDMPMT->SetRelativeDigitizedHitTime(RelativeHitTime);
   WCDMPMT->Digitize();
 
   //
@@ -324,8 +329,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      for (G4int i=0; i < WCDC->entries(); i++)
        {
 	 G4int   tubeID         = (*WCDC)[i]->GetTubeID();
-	 G4float photoElectrons = (*WCDC)[i]->GetPe(i);
-	 G4float time           = (*WCDC)[i]->GetTime(i);
+	 G4double photoElectrons = (*WCDC)[i]->GetPe(i);
+	 G4double time           = (*WCDC)[i]->GetTime(i);
 	 //	 G4cout << "time " << i << " " <<time << G4endl;
 	 //	 G4cout << "tubeID " << i << " " <<tubeID << G4endl;
 	 //	 G4cout << "Pe " << i << " " <<photoElectrons << G4endl;
@@ -387,7 +392,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       G4cout << "no";
     }
     G4cout << " entries" << G4endl;
-
+    
     G4int WCDCID_OD = DMman->GetDigiCollectionID("WCDigitizedCollection_OD");
     WCDC_OD = (WCSimWCTriggeredDigitsCollection*) DMman->GetDigiCollection(WCDCID_OD);
     // printouts
@@ -404,8 +409,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // ----------------------------------------------------------------------
   //  Fill Ntuple
   // ----------------------------------------------------------------------
-
-   jhfNtuple.mode   = mode;         // interaction mode
+   for(unsigned int ivx = 0;ivx<nvtxs;ivx++)
+     jhfNtuple.mode[ivx]   = generatorAction->GetMode(ivx);         // interaction mode
    jhfNtuple.nvtxs = nvtxs;       // number of vertices
    for( Int_t u=0; u<nvtxs; u++ ){
      jhfNtuple.vtxsvol[u] = vtxsvol[u];       // volume of vertex
@@ -413,6 +418,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      jhfNtuple.vtxs[u][0] = vtxs[u][0]/cm; // interaction vertex
      jhfNtuple.vtxs[u][1] = vtxs[u][1]/cm; // interaction vertex
      jhfNtuple.vtxs[u][2] = vtxs[u][2]/cm; // interaction vertex
+     jhfNtuple.vtxs[u][3] = vtxTimes[u]/timeUnit; // interaction vertex
    }
    jhfNtuple.vecRecNumber = vecRecNumber; //vectorfile record number
 
@@ -443,7 +449,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      jhfNtuple.m[npar]       = 0.0;                   // mass (always a neutrino)
      jhfNtuple.p[npar]       = beamenergy;            // momentum magnitude
      jhfNtuple.E[npar]       = beamenergy;            // energy 
-     jhfNtuple.startvol[npar]= -1;                    // starting volume, vtxvol should be referred
+     jhfNtuple.startvol[npar]= vtxsvol[u];                    // starting volume, vtxvol should be referred
      jhfNtuple.stopvol[npar] = -1;                    // stopping volume 
      jhfNtuple.dir[npar][0]  = beamdir[0];            // direction 
      jhfNtuple.dir[npar][1]  = beamdir[1];            // direction 
@@ -455,6 +461,13 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      jhfNtuple.stop[npar][0] = vtxs[u][0]/cm;  // stopping point (not meaningful)
      jhfNtuple.stop[npar][1] = vtxs[u][1]/cm;  // stopping point (not meaningful)
      jhfNtuple.stop[npar][2] = vtxs[u][2]/cm;  // stopping point (not meaningful)
+     /* Alex Finch
+    	Create an imaginary start position for the incoming neutrino, to help event display 
+      */
+     double distance=10000.0;
+     for(int idim=0;idim<3;idim++)
+     	 jhfNtuple.start[npar][idim]=jhfNtuple.stop[npar][idim] - (distance*jhfNtuple.dir[npar][idim]);
+    	
      jhfNtuple.parent[npar] = 0;
 
      npar++;
@@ -485,7 +498,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      jhfNtuple.m[npar]       = targetmass;    // mass (always a neutrino)
      jhfNtuple.p[npar]       = targetpmag;    // momentum magnitude
      jhfNtuple.E[npar]       = targetenergy;  // energy (total!) 
-     jhfNtuple.startvol[npar] = -1;           // starting volume 
+     jhfNtuple.startvol[npar] = vtxsvol[u];           // starting volume 
      jhfNtuple.stopvol[npar] = -1;            // stopping volume 
      jhfNtuple.dir[npar][0]  = targetdir[0];  // direction 
      jhfNtuple.dir[npar][1]  = targetdir[1];  // direction 
@@ -626,7 +639,6 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   }
 
   //fill correct variables for track from decay
-   G4cout << " Filling Root Event " << G4endl;
 
    //   G4cout << "event_id: " << &event_id << G4endl;
    // G4cout << "jhfNtuple: " << &jhfNtuple << G4endl;
@@ -663,12 +675,15 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   //TBranch* tankeventbranch = tree->GetBranch("wcsimrootevent");
   //tree->SetEntries(tankeventbranch->GetEntries());
   tree->SetEntries(GetRunAction()->GetNumberOfEventsGenerated());
+  
+  /*
+  	-> G. Pronost (2019/12/17) Moved to RunAction (EndOfRun) in order to fasten the simulation
   TFile* hfile = tree->GetCurrentFile();
   // MF : overwrite the trees -- otherwise we have as many copies of the tree
   // as we have events. All the intermediate copies are incomplete, only the
   // last one is useful --> huge waste of disk space.
   hfile->Write("",TObject::kOverwrite);
-
+  */
   //save DAQ options here. This ensures that when the user selects a default option
   // (e.g. with -99), the saved option value in the output reflects what was run
   if(!SavedOptions) {
@@ -812,7 +827,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     WCTM = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout_OD");
   }
   int ngates = WCTM->NumberOfGatesInThisEvent();
-  G4cout << "ngates "<<detectorElement<<" =  " << ngates << "\n";
   for (int index = 0 ; index < ngates ; index++) 
     {
       if (index >=1 ) {
@@ -820,7 +834,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
 	wcsimrootevent->SetHeader(event_id,0,
 				   0,index+1); // date & # of subevent 
-	wcsimrootevent->SetMode(jhfNtuple.mode);
+	wcsimrootevent->SetMode(jhfNtuple.mode[0]);
       }
       wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
 				     WCTM->GetTriggerInfo(index));
@@ -834,14 +848,15 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
   // Fill other info for this event
 
-  wcsimrootevent->SetMode(jhfNtuple.mode);
+  wcsimrootevent->SetMode(jhfNtuple.mode[0]);
   wcsimrootevent->SetNvtxs(jhfNtuple.nvtxs);
   for( Int_t u=0; u<jhfNtuple.nvtxs; u++ ){
     wcsimrootevent->SetVtxsvol(u,jhfNtuple.vtxsvol[u]);
-    for (int j=0;j<3;j++)
+    for (int j=0;j<4;j++)
       {
-	wcsimrootevent->SetVtxs(u,j,jhfNtuple.vtxs[u][j]);
+       wcsimrootevent->SetVtxs(u,j,jhfNtuple.vtxs[u][j]);
       }
+      wcsimrootevent->SetMode(u,jhfNtuple.mode[u]);
   }
   wcsimrootevent->SetJmu(jhfNtuple.jmu);
   wcsimrootevent->SetJp(jhfNtuple.jp);
@@ -855,10 +870,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   //Modify to add decay products
   for (k=0;k<jhfNtuple.npar;k++) // should be just 2
   {
-    float dir[3];
-    float pdir[3];
-    float stop[3];
-    float start[3];
+    double dir[3];
+    double pdir[3];
+    double stop[3];
+    double start[3];
     for (int l=0;l<3;l++)
     {
       dir[l]=jhfNtuple.dir[k][l];
@@ -896,10 +911,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   std::set<int> primaryList;
 
   // Pi0 specific variables
-  Float_t pi0Vtx[3];
+  Double_t pi0Vtx[3];
   Int_t   gammaID[2];
-  Float_t gammaE[2];
-  Float_t gammaVtx[2][3];
+  Double_t gammaE[2];
+  Double_t gammaVtx[2][3];
   Int_t   r = 0;
 
   G4int n_trajectories = 0;
@@ -977,10 +992,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       //	     << id << " " << energy << "\n";
 
       // fill ntuple
-      float dir[3];
-      float pdir[3];
-      float stop[3];
-      float start[3];
+      double dir[3];
+      double pdir[3];
+      double stop[3];
+      double start[3];
       for (int l=0;l<3;l++)
       {
 	dir[l]= mom[l]/mommag; // direction 
@@ -1066,7 +1081,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     G4cout<<"RAW HITS"<<G4endl;
 #endif
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
-    std::vector<float> truetime, smeartime;
+    std::vector<double> truetime, smeartime;
     std::vector<int>   primaryParentID;
     double hit_time_smear, hit_time_true;
     int hit_parentid;
@@ -1084,14 +1099,14 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 #endif
       }//id
 #ifdef _SAVE_RAW_HITS_VERBOSE
-      if(digi_tubeid < NPMTS_VERBOSE) {
+      if(digi_tubeid < NPMTS_VERBOSE || digi_tubeid == VERBOSE_PMT) {
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
 	       << " with truetime:smeartime:primaryparentID";
 	for(G4int id = 0; id < truetime.size(); id++) {
 	  G4cout << " " << truetime[id]
-		 << ":" << smeartime[id]
-		 << ":" << primaryParentID[id];
+		 << "\t" << smeartime[id]
+		 << "\t" << primaryParentID[id] << G4endl;
 	}//id
 	G4cout << G4endl;
       }
@@ -1119,21 +1134,21 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     for ( int index = 0 ; index < ngates ; index++)
       {	
 	sumq_tmp = 0.0;	
-	G4float gatestart;
+	G4double gatestart;
 	int countdigihits = 0;
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
 	for (k=0;k<WCDC->entries();k++)
 	  {
 	    if ( (*WCDC)[k]->HasHitsInGate(index)) {
-	      std::vector<float> vec_pe                  = (*WCDC)[k]->GetPe(index);
-	      std::vector<float> vec_time                = (*WCDC)[k]->GetTime(index);
+	      std::vector<double> vec_pe                  = (*WCDC)[k]->GetPe(index);
+	      std::vector<double> vec_time                = (*WCDC)[k]->GetTime(index);
 	      std::vector<std::vector<int> > vec_digicomp = (*WCDC)[k]->GetDigiCompositionInfo(index);
 	      const int tubeID                           = (*WCDC)[k]->GetTubeID();
 	      assert(vec_pe.size() == vec_time.size());
 	      assert(vec_pe.size() == vec_digicomp.size());
 	      for(unsigned int iv = 0; iv < vec_pe.size(); iv++) {
 #ifdef SAVE_DIGITS_VERBOSE
-		if(tubeID < NPMTS_VERBOSE) {
+		if(tubeID < NPMTS_VERBOSE || digi_tubeid == VERBOSE_PMT) {
 		  G4cout << "Adding digit " << iv 
 			 << " for PMT " << tubeID
 			 << " pe "   << vec_pe[iv]
@@ -1170,7 +1185,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
 	gatestart = WCTM->GetTriggerTime(index);
 	WCSimRootEventHeader*HH = wcsimrootevent->GetHeader();
-	HH->SetDate(int(gatestart));
+	HH->SetDate(gatestart);
       }//index (loop over ngates)
     
     // end of loop over WC trigger gates --> back to the main sub-event
