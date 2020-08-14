@@ -176,6 +176,12 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   ODWLSPlatesLength->SetDefaultUnit("cm");
   ODWLSPlatesLength->SetUnitCandidates("cm mm");
 
+  // OD cladding reflectivity
+  CladdingReflectivity = new G4UIcmdWithADouble("/WCSim/HyperKOD/CladdingReflectivity", this);
+  CladdingReflectivity->SetGuidance("Set cladding reflectivity");
+  CladdingReflectivity->SetParameterName("CladdingReflectivity", true);
+  CladdingReflectivity->SetDefaultValue(0.9);
+
   // Nb of OD PMT per cell HORIZONTALLY
   PMTODperCellHorizontal = new G4UIcmdWithAnInteger("/WCSim/HyperKOD/PMTODperCellHorizontal", this);
   PMTODperCellHorizontal->SetGuidance("Set number of OD PMT per cell HORIZONTALLY (unit: cm mm).");
@@ -209,6 +215,10 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   // Fill the OD WLS with material
   isWLSFilled = new G4UIcmdWithoutParameter("/WCSim/HyperKOD/DeactivateWLS", this);
   isWLSFilled->SetGuidance("Deactivate WLS plates by filling them with water");
+
+  // Build reflective cladding around WLS plate
+  BuildCladding = new G4UIcmdWithoutParameter("/WCSim/HyperKOD/BuildCladding", this);
+  BuildCladding->SetGuidance("Build reflective cladding around WLS plate");
 
   /////////// END OD //////////////
   /////////////////////////////////
@@ -391,6 +401,12 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       WCSimDetector->SetWCODWLSPlatesThickness(ODWLSPlatesThickness->GetNewDoubleValue(newValue));
     }
 
+    if(command == CladdingReflectivity){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set cladding reflectivity " << newValue << " " << G4endl;
+      WCSimDetector->SetWCCladdingReflectivity(CladdingReflectivity->GetNewDoubleValue(newValue));
+    }
+
     if(command == ODWLSPlatesLength){
 	WCSimDetector->SetODEdited(true);
       G4cout << "Set OD WLS plates length " << newValue << " " << G4endl;
@@ -425,6 +441,12 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       WCSimDetector->SetODEdited(true);
       G4cout << "Deactivate WLS plates by filling them with water " << G4endl;
       WCSimDetector->SetIsWLSFilled(false);
+    }
+
+    if(command == BuildCladding) {
+      WCSimDetector->SetODEdited(true);
+      G4cout << "Add cladding around WLS plate " << G4endl;
+      WCSimDetector->SetBuildCladding(true);
     }
 
 

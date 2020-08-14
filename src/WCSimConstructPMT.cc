@@ -259,6 +259,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   // CLADDING
   G4double CladdingWidth= 1.*mm;
 
+  G4cout << " create WlsPlate with inner radius " << radius/m << " m, half side " << WCODWLSPlatesLength/2/m << " m, half thickness " << WCODWLSPlatesThickness/2/m << " m, cladding thickness " << CladdingWidth/m << " m, PMT expose " << expose/m << " m, sphereRadius " << sphereRadius/m << " m, cladding reflectivity " << WCCladdingReflectivity << G4endl;
+
   // EVERYTHING WILL BE ORIENTATED ALONG Z-AXIS
 
   ////////////////////////////////////////////////
@@ -299,12 +301,35 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
                 WCODWLSPlatesLength/2,
                 WCODWLSPlatesThickness/2);
 
-  // Extruded volume for WLS
-  G4Tubs* WLSHole =
-      new G4Tubs("WLSHole",0,WCPMTODRadius,WCODWLSPlatesLength/2,0,twopi);
+  //Need a volume to cut away excess behind blacksheet
+  G4double PMTOffset =  sphereRadius - expose;
+  G4Box* solidCutOffTubs =
+      new G4Box(    "cutOffTubs",
+            sphereRadius+1.*cm,
+            sphereRadius+1.*cm,
+            PMTOffset);
+  G4Sphere* tmp_glass_outer_surface =
+    new G4Sphere(    "tmp_glass_outer_surface",
+		     0.0*m,sphereRadius,
+		     0.0*deg,360.0*deg,
+		     0.0*deg,90.0*deg);
+  
+  G4SubtractionSolid* glass_outer_surface =
+    new G4SubtractionSolid(    "glass_outer_surface",
+			       tmp_glass_outer_surface,
+			       solidCutOffTubs);
 
-  G4SubtractionSolid* extrudedWLS =
-      new G4SubtractionSolid("extrudedWLS", WLSPlate, WLSHole, NULL, G4ThreeVector(0,0,0));
+  G4RotationMatrix* NullRotation = new G4RotationMatrix();
+  G4Transform3D WLSplateTransform(*NullRotation, G4ThreeVector(0, 0, - WCODWLSPlatesThickness/2. - PMTOffset)); // center of glass outer surface in WLSPlate coordinates
+  G4SubtractionSolid * extrudedWLS = new G4SubtractionSolid("extrudedWLS", WLSPlate, glass_outer_surface, WLSplateTransform);
+
+  // // Extruded volume for WLS
+  // G4Tubs* WLSHole =
+  //   //      new G4Tubs("WLSHole",0,WCPMTODRadius,WCODWLSPlatesLength/2,0,twopi);
+  //     new G4Tubs("WLSHole",0,WCPMTODRadius,WCODWLSPlatesThickness/2,0,twopi);
+
+  // G4SubtractionSolid* extrudedWLS =
+  //     new G4SubtractionSolid("extrudedWLS", WLSPlate, WLSHole, NULL, G4ThreeVector(0,0,0));
 
   // Extruded volume for cladding
   G4SubtractionSolid* WLSCladding =
@@ -357,7 +382,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
                         0,
                         checkOverlaps);
 
-  G4VPhysicalVolume* physiWLSCladding =
+  if(BuildCladding) {
+
+    G4VPhysicalVolume* physiWLSCladding =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, -(sphereRadius-WCODWLSPlatesThickness)/2),
                         logicWCODWLSPlateCladding,
@@ -366,8 +393,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
                         false,
                         0,
                         checkOverlaps);
-
-  new G4LogicalSkinSurface("cladding_surf",   logicWCODWLSPlateCladding,   OpCladdingSurface);
+    
+    new G4LogicalSkinSurface("cladding_surf",   logicWCODWLSPlateCladding,   OpCladdingSurface);
+  }
 
   G4VPhysicalVolume* physiPMT =
       new G4PVPlacement(0,

@@ -183,7 +183,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
   //---PVT - WLS plates eljen EJ-286
   // linear formula [CH2CH(C6H4CH3)]n
-  density = 1.032*g/cm3;  // at 20deg
+  density = 1.023*g/cm3;  // at 20deg
   G4Material* WLS_PVT
       = new G4Material("WLS_PVT",density,2);
   WLS_PVT->AddElement(elC, 9); // PVT
@@ -214,7 +214,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   //**cladding properties
   const G4int cladding_num = 2;
   G4double cladding_ephoton[cladding_num] = { 1.*eV, 10*eV };
-  G4double claddingReflectivity[cladding_num] = {0.95, 0.95};
+  G4double claddingReflectivity[cladding_num] = {WCCladdingReflectivity, WCCladdingReflectivity};
   G4double claddingEfficiency[cladding_num] = {0., 0.};
   G4MaterialPropertiesTable* claddingPT = new G4MaterialPropertiesTable();
   claddingPT->AddProperty("REFLECTIVITY", cladding_ephoton, claddingReflectivity, cladding_num);
@@ -873,6 +873,9 @@ void WCSimDetectorConstruction::ConstructMaterials()
         3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
         4.27535*eV, 4.42804*eV};
 
+  G4double qqq_correction = 0.8/0.97;
+  qqq_correction = 0.;
+
   G4double TyREFLECTIVITY[NUMENTRIES_TY] = // Tyvek refelctivity
       { 0.97,
         0.97, 0.97, 0.97, 0.97, 0.97,
@@ -882,6 +885,9 @@ void WCSimDetectorConstruction::ConstructMaterials()
         0.96, 0.96, 0.95, 0.95, 0.95,
         0.94, 0.93, 0.92, 0.91, 0.90,
         0.89, 0.86};
+
+  for(int i=0; i<NUMENTRIES_TY; i++)
+    TyREFLECTIVITY[i] *= qqq_correction;
 
   G4MaterialPropertiesTable *MPT_Tyvek = new G4MaterialPropertiesTable();
   // MPT_Tyvek->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);

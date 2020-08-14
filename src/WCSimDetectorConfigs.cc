@@ -276,6 +276,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCODWLSPlatesThickness   = 1.*cm; //
   WCODWLSPlatesLength      = 60.*cm; //
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
+  WCCladdingReflectivity   = 0.90; //
 
   // OD PMTs //
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
@@ -312,6 +313,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   // TEST WLS collection for stacking action
   G4String WLSType = "EljenEJ286";
   isWLSFilled = true;
+  BuildCladding = true;
   CreateWLSObject(WLSType);
 }
 
