@@ -214,6 +214,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   //**cladding properties
   const G4int cladding_num = 2;
   G4double cladding_ephoton[cladding_num] = { 1.*eV, 10*eV };
+  double WCCladdingReflectivity = WCSimTuningParams->GetWCCladdingReflectivity();
   G4double claddingReflectivity[cladding_num] = {WCCladdingReflectivity, WCCladdingReflectivity};
   G4double claddingEfficiency[cladding_num] = {0., 0.};
   G4MaterialPropertiesTable* claddingPT = new G4MaterialPropertiesTable();
@@ -873,8 +874,10 @@ void WCSimDetectorConstruction::ConstructMaterials()
         3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
         4.27535*eV, 4.42804*eV};
 
-  G4double qqq_correction = 0.8/0.97;
-  qqq_correction = 0.;
+  double WCODTyvekReflectivity = WCSimTuningParams->GetWCODTyvekReflectivity();
+  G4double OD_tyvek_reflectivity_scaling_factor = WCODTyvekReflectivity/0.97;
+
+  G4cout << " qqq OD_tyvek_reflectivity_scaling_factor  " << OD_tyvek_reflectivity_scaling_factor << " WCODTyvekReflectivity " << WCODTyvekReflectivity << G4endl;
 
   G4double TyREFLECTIVITY[NUMENTRIES_TY] = // Tyvek refelctivity
       { 0.97,
@@ -887,7 +890,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
         0.89, 0.86};
 
   for(int i=0; i<NUMENTRIES_TY; i++)
-    TyREFLECTIVITY[i] *= qqq_correction;
+    TyREFLECTIVITY[i] *= OD_tyvek_reflectivity_scaling_factor;
 
   G4MaterialPropertiesTable *MPT_Tyvek = new G4MaterialPropertiesTable();
   // MPT_Tyvek->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);

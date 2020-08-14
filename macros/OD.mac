@@ -21,7 +21,7 @@
 /WCSim/HyperKOD/ODPMTShift 0 m
 /WCSim/HyperKOD/DeactivateWLS
 #/WCSim/HyperKOD/BuildCladding
-/WCSim/HyperKOD/CladdingReflectivity 0.95
+
 
 # Update geom
 /WCSim/Construct # This must be uncommented in order to construct a new detector configuration.

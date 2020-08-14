@@ -51,7 +51,6 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithADoubleAndUnit* ODDeadSpace;
   G4UIcmdWithADoubleAndUnit* ODTyvekSheetThickness;
   G4UIcmdWithADoubleAndUnit* ODWLSPlatesThickness;
-  G4UIcmdWithADouble* CladdingReflectivity;
   G4UIcmdWithADoubleAndUnit* ODWLSPlatesLength;
   // OD PMTs
   G4UIcmdWithAString* PMTODRadius;

@@ -259,7 +259,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   // CLADDING
   G4double CladdingWidth= 1.*mm;
 
-  G4cout << " create WlsPlate with inner radius " << radius/m << " m, half side " << WCODWLSPlatesLength/2/m << " m, half thickness " << WCODWLSPlatesThickness/2/m << " m, cladding thickness " << CladdingWidth/m << " m, PMT expose " << expose/m << " m, sphereRadius " << sphereRadius/m << " m, cladding reflectivity " << WCCladdingReflectivity << G4endl;
+  G4cout << " create WLSPlate with inner radius " << radius/m << " m, half side " << WCODWLSPlatesLength/2/m << " m, half thickness " << WCODWLSPlatesThickness/2/m << " m, cladding thickness " << CladdingWidth/m << " m, PMT expose " << expose/m << " m, sphereRadius " << sphereRadius/m << " m" <<  G4endl;
 
   // EVERYTHING WILL BE ORIENTATED ALONG Z-AXIS
 

@@ -48,6 +48,16 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   TopVeto->SetParameterName("TopVeto",true);
   TopVeto->SetDefaultValue(0);
 
+  CommandWCCladdingReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCCladdingReflectivity",this);
+  CommandWCCladdingReflectivity->SetGuidance("Set OD WLS plate cladding reflectivity");
+  CommandWCCladdingReflectivity->SetParameterName("WCCladdingReflectivity",true);
+  CommandWCCladdingReflectivity->SetDefaultValue(0.90);
+
+  CommandWCODTyvekReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODTyvekReflectivity",this);
+  CommandWCODTyvekReflectivity->SetGuidance("Set OD tyvek cladding reflectivity");
+  CommandWCODTyvekReflectivity->SetParameterName("WCODTyvekReflectivity",true);
+  CommandWCODTyvekReflectivity->SetDefaultValue(0.90);
+
 }
 
 WCSimTuningMessenger::~WCSimTuningMessenger()
@@ -61,6 +71,9 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
   //jl145 - for Top Veto
   delete TVSpacing;
   delete TopVeto;
+
+  delete CommandWCCladdingReflectivity;
+  delete CommandWCODTyvekReflectivity;
 
   delete WCSimDir;
 }
@@ -133,6 +146,18 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       printf("Setting Top Veto On\n");
     else
       printf("Setting Top Veto Off\n");
+  }
+
+  else if(command == CommandWCCladdingReflectivity) {
+    // Set the Top Veto PMT Spacing
+    WCSimTuningParams->SetWCCladdingReflectivity(CommandWCCladdingReflectivity->GetNewDoubleValue(newValue));
+    printf("Setting OD WLS plate cladding reflectivity %f\n",CommandWCCladdingReflectivity->GetNewDoubleValue(newValue));
+  }
+
+  else if(command == CommandWCODTyvekReflectivity) {
+    // Set the Top Veto PMT Spacing
+    WCSimTuningParams->SetWCODTyvekReflectivity(CommandWCODTyvekReflectivity->GetNewDoubleValue(newValue));
+    printf("Setting OD tyvek reflectivity %f\n",CommandWCODTyvekReflectivity->GetNewDoubleValue(newValue));
   }
 
 

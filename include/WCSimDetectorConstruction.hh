@@ -195,7 +195,6 @@ public:
   void SetWCPMTODperCellVertical(G4double val){WCPMTODperCellVertical = val;}
   void SetWCPMTODPercentCoverage(G4double val){WCPMTODPercentCoverage = val;}
   void SetWCODPMTShift(G4double val){WCODPMTShift = val;}
-  void SetWCCladdingReflectivity(G4double val){WCCladdingReflectivity = val;}
   void SetODEdited(G4bool val){odEdited = val;}
   void SetIsWLSFilled(G4bool val){isWLSFilled = val;}
   void SetBuildCladding(G4bool val){BuildCladding = val;}
@@ -393,7 +392,6 @@ private:
   G4double WCODTyvekSheetThickness;
   G4double WCODWLSPlatesThickness;
   G4double WCODWLSPlatesLength;
-  G4double WCCladdingReflectivity;
 
   G4double WCODCapPMTSpacing;
   G4double WCODCapEdgeLimit;
@@ -544,3 +542,5 @@ private:
 
 #endif
 
+
+//  LocalWords:  val
