@@ -245,9 +245,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   G4double radius;
   G4String Water = "Water";
   G4String WLS_Material = "Water";
-  if(isWLSFilled) WLS_Material = "WLS_PVT";
   G4String WLSCladding_Material = "Water";
-  if(isWLSFilled) WLSCladding_Material = "Tyvek";
+  if(isWLSFilled){
+    WLS_Material = "WLS_PVT";
+    WLSCladding_Material = "Tyvek";
+  }
 
 
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
