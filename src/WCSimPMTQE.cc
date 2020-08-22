@@ -38,7 +38,7 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4String CollectionName, G4float Pho
 
   // return 0 for wavelenght outside the range
   if (flag==1){
-    if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl || PhotonWavelength <=280 || PhotonWavelength >=660){
+    if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl ){
       return 0;
     }
   }else if (flag==0){
@@ -56,22 +56,23 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4String CollectionName, G4float Pho
   G4float maxQE;
   maxQE = PMT->GetmaxQE();
   G4double wavelengthQE = 0;
+  int n = PMT->GetNbOfQEDefined();
 
   if (flag == 1){
     //MF: off by one bug fix.
-    for (int i=0; i<=18; i++){
+    for (int i=0; i<n; i++){
 	  if ( PhotonWavelength <= *(wavelength+(i+1))){
 		wavelengthQE = *(QE+i) + 
 		  (*(QE+(i+1))-*(QE+i))/(*(wavelength+(i+1))-*(wavelength+i))*
 		  (PhotonWavelength - *(wavelength+i));
       	break;
       }
-    }
+	   }
   }else if (flag == 0){
 	wavelengthQE = maxQE; 
   }
   wavelengthQE = wavelengthQE *ratio;
-  
+
   return wavelengthQE;
 }
 
@@ -79,7 +80,7 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4String CollectionName, G4float Pho
 G4float WCSimDetectorConstruction::GetStackingPMTQE(G4float PhotonWavelength, G4int flag, G4float low_wl, G4float high_wl, G4float ratio) {
 
   if (flag==1){
-    if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl || PhotonWavelength <=280 || PhotonWavelength >=660){
+    if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl ){
       return 0;
     }
   }else if (flag==0){
@@ -104,7 +105,9 @@ G4float WCSimDetectorConstruction::GetStackingPMTQE(G4float PhotonWavelength, G4
       return (G4float)(PMT->GetgQE()->Eval(PhotonWavelength,0,"S"))*ratio;
     }
   }
-  else if (flag==0) return PMT->GetmaxQE()*ratio;
+  else if (flag==0){
+	return PMT->GetmaxQE()*ratio;
+  }
   else return 0;
 
 }

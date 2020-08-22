@@ -1015,7 +1015,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
     for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
       for(G4double j = 0; j < WCPMTODperCellVertical; j++){
-        G4ThreeVector Container =  G4ThreeVector(WCODRadius+sphereRadius/2,
+        G4ThreeVector Container =  G4ThreeVector(WCODRadius,
                                                  -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                  -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
 
@@ -1098,7 +1098,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
       for(G4double i = 0; i < (WCPMTODperCellHorizontalExtra); i++){
         for(G4double j = 0; j < WCPMTODperCellVertical; j++){
-			G4ThreeVector Container =  G4ThreeVector((WCODRadius+sphereRadius/2)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
+			G4ThreeVector Container =  G4ThreeVector((WCODRadius)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 													 -towerWidthOD/2.+(i+0.5)*horizontalODSpacing,
 													 -(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing);
 
@@ -1142,7 +1142,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
         G4ThreeVector topWLSpos = G4ThreeVector(xoffset,
                                                 yoffset,
-                                                ((WCIDHeight + 2*WCODDeadSpace)/2)+WCODTyvekSheetThickness+sphereRadius/2);
+                                                ((WCIDHeight + 2*WCODDeadSpace)/2)+WCODTyvekSheetThickness);
 
         G4ThreeVector bottomWLSpos = G4ThreeVector(xoffset,
                                                    yoffset,
@@ -1775,7 +1775,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
     for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
       for(G4double j = 0; j < WCPMTODperCellVertical; j++){
-        G4ThreeVector Container =  G4ThreeVector(WCODRadius+sphereRadius/2,
+        G4ThreeVector Container =  G4ThreeVector(WCODRadius,
                                                  -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                  -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
 
@@ -1823,7 +1823,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
       for(G4double i = 0; i < (WCPMTODperCellHorizontalExtra); i++){
         for(G4double j = 0; j < WCPMTODperCellVertical; j++){
-          G4ThreeVector Container =  G4ThreeVector((WCODRadius+sphereRadius/2)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
+          G4ThreeVector Container =  G4ThreeVector((WCODRadius)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 													 -towerWidthOD/2.+(i+0.5)*horizontalODSpacing,
 													 -(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing);
           Container.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
