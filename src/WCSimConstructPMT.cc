@@ -280,7 +280,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   // CLADDING
   G4double CladdingWidth= 1.*mm;
 
-  G4cout << " create WLSPlate with inner radius " << radius/m << " m, half side " << WCODWLSPlatesLength/2/m << " m, half thickness " << WCODWLSPlatesThickness/2/m << " m, cladding thickness " << CladdingWidth/m << " m, PMT expose " << expose/m << " m, sphereRadius " << sphereRadius/m << " m" <<  G4endl;
+  // offset to have water between WLS plate and tyvek
+  G4double WLS_plate_offset= 1.*mm;
+
+  G4cout << " create WLSPlate with inner radius " << radius/m << " m, half side " << WCODWLSPlatesLength/2/m << " m, half thickness " << WCODWLSPlatesThickness/2/m << " m, cladding thickness " << CladdingWidth/m << " m, PMT expose " << expose/m << " m, sphereRadius " << sphereRadius/m << " m, WLS_plate_offset " << WLS_plate_offset/m << " m" <<  G4endl;
 
   // EVERYTHING WILL BE ORIENTATED ALONG Z-AXIS
 
@@ -350,7 +353,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
 			       solidCutOffTubs);
 
   G4RotationMatrix* NullRotation = new G4RotationMatrix();
-  G4Transform3D WLSplateTransform(*NullRotation, G4ThreeVector(0, 0, - WCODWLSPlatesThickness/2. - PMTOffset)); // center of glass outer surface in WLSPlate coordinates
+  G4Transform3D WLSplateTransform(*NullRotation, G4ThreeVector(0, 0, - WCODWLSPlatesThickness/2. - PMTOffset - WLS_plate_offset)); // center of glass outer surface in WLSPlate coordinates
   G4SubtractionSolid * extrudedWLS = new G4SubtractionSolid("extrudedWLS", WLSPlate, glass_outer_surface, WLSplateTransform);
 
   // // Extruded volume for WLS
@@ -403,10 +406,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
 
   ////////////////////////////////////////////////
   // Ali G. : Do dat placement inda box
-
   G4VPhysicalVolume* physiWLS =
       new G4PVPlacement(0,
-                        G4ThreeVector(0, 0, WCODWLSPlatesThickness/2),
+                        G4ThreeVector(0, 0, WCODWLSPlatesThickness/2 + WLS_plate_offset),
                         logicWCODWLSPlate,
                         "WCCellWLSPlateOD",
                         logicContainer,
@@ -418,7 +420,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
 
     G4VPhysicalVolume* physiWLSCladding =
       new G4PVPlacement(0,
-                        G4ThreeVector(0, 0, WCODWLSPlatesThickness/2),
+                        G4ThreeVector(0, 0, WCODWLSPlatesThickness/2 + WLS_plate_offset),
                         logicWCODWLSPlateCladding,
                         "WCCellWLSPlateODCladding",
                         logicContainer,

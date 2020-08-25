@@ -856,8 +856,6 @@ void WCSimDetectorConstruction::ConstructMaterials()
   double WCODTyvekReflectivity = WCSimTuningParams->GetWCODTyvekReflectivity();
   G4double OD_tyvek_reflectivity_scaling_factor = WCODTyvekReflectivity/0.97;
 
-  G4cout << " qqq OD_tyvek_reflectivity_scaling_factor  " << OD_tyvek_reflectivity_scaling_factor << " WCODTyvekReflectivity " << WCODTyvekReflectivity << G4endl;
-
   G4double TyREFLECTIVITY[NUMENTRIES_TY] = // Tyvek refelctivity
       { 0.97,
         0.97, 0.97, 0.97, 0.97, 0.97,

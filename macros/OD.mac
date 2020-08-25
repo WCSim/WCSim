@@ -19,7 +19,7 @@
 /WCSim/HyperKOD/PMTODperCellVertical 0
 /WCSim/HyperKOD/PMTODPercentCoverage 0.28
 /WCSim/HyperKOD/ODPMTShift 0 m
-/WCSim/HyperKOD/DeactivateWLS
+#/WCSim/HyperKOD/DeactivateWLS
 #/WCSim/HyperKOD/BuildCladding
 
 
