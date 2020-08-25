@@ -24,7 +24,7 @@
 
 WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
-G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName, G4String detectorElement, bool add_plate, G4SubtractionSolid * plate)
+G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName, G4String detectorElement)
 {
   PMTKey_t key(PMTName,CollectionName);
 
@@ -71,13 +71,6 @@ else
   G4double PMTHolderZ[2] = {0, expose};
   G4double PMTHolderR[2] = {radius, radius};
   G4double PMTHolderr[2] = {0,0};
-
-  if( add_plate ){
-    // the volume is now a cylinder of radius = the plate diagonal, i.e. sqrt(2) * (plate half side)
-    double plate_diagonal = sqrt(2.)*WCODWLSPlatesLength/2.;
-    PMTHolderR[0] = plate_diagonal;
-    PMTHolderR[1] = plate_diagonal;
-  }
 
   G4Polycone* solidWCPMT = 
    new G4Polycone("WCPMT",                    
@@ -172,20 +165,10 @@ else {
 
   G4LogicalVolume *logicGlassFaceWCPMT;
 
-  if( add_plate ){
-    G4RotationMatrix* no_rotation = new G4RotationMatrix();
-    G4Transform3D Transform_wlsplate_wrt_pmt(*no_rotation, G4ThreeVector(0,0,PMTOffset + WCODWLSPlatesThickness/2)); // origin of plate in reference frame of PMT
-    G4UnionSolid * solidGlassFaceWCPMT_with_plate = new G4UnionSolid( CollectionName, solidGlassFaceWCPMT, plate, Transform_wlsplate_wrt_pmt);
-    logicGlassFaceWCPMT = new G4LogicalVolume(    solidGlassFaceWCPMT_with_plate,
-						  G4Material::GetMaterial("Glass"),
-						  CollectionName,
-						  0,0,0);
-  }else{
-    logicGlassFaceWCPMT = new G4LogicalVolume(    solidGlassFaceWCPMT,
-						  G4Material::GetMaterial("Glass"),
-						  CollectionName,
-						  0,0,0);
-  }
+  logicGlassFaceWCPMT = new G4LogicalVolume(    solidGlassFaceWCPMT,
+						G4Material::GetMaterial("Glass"),
+						CollectionName,
+						0,0,0);
 
   G4VPhysicalVolume* physiGlassFaceWCPMT =
       new G4PVPlacement(0,
@@ -401,8 +384,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
 
   ////////////////////////////////////////////////
   // PMTs
-  bool add_plate = false;
-  G4LogicalVolume* logicWCPMT = ConstructPMT(PMTName,CollectionName,detectorElement, add_plate, extrudedWLS);
+  G4LogicalVolume* logicWCPMT = ConstructPMT(PMTName,CollectionName,detectorElement);
 
   ////////////////////////////////////////////////
   // Ali G. : Do dat placement inda box
