@@ -12,10 +12,6 @@
 
 #include <iostream>
 
-using std::cout;
-using std::cerr;
-using std::endl;
-
 #ifndef REFLEX_DICTIONARY
 ClassImp(WCSimRootGeom)
 ClassImp(WCSimRootPMT)
@@ -30,7 +26,25 @@ WCSimRootGeom::WCSimRootGeom()
   fPMTArray = new TClonesArray("WCSimRootPMT", 500);
 
 }
-
+//______________________________________________________________________________
+WCSimRootGeom::WCSimRootGeom(const WCSimRootGeom & in)
+  : TObject()
+{
+  fWCCylRadius   = in.GetWCCylRadius();
+  fWCCylLength   = in.GetWCCylLength();
+  fgeo_type      = in.GetGeo_Type();
+  fWCPMTRadius   = in.GetWCPMTRadius();
+  fWCNumPMT      = in.GetWCNumPMT();
+  fODWCPMTRadius = in.GetODWCPMTRadius();
+  fODWCNumPMT    = in.GetODWCNumPMT();
+  for(int i = 0; i < 3; i++)
+    fWCOffset[i] = in.GetWCOffset(i);
+  fOrientation   = in.GetOrientation();
+  //fill the TClonesArray
+  fPMTArray = new TClonesArray("WCSimRootPMT", fWCNumPMT);
+  for(int i = 0; i < fWCNumPMT; i++)
+    new((*fPMTArray)[i]) WCSimRootPMT(*(in.GetPMTPtr(i)));
+}
 //______________________________________________________________________________
 WCSimRootGeom::~WCSimRootGeom()
 {
@@ -61,9 +75,18 @@ WCSimRootPMT::WCSimRootPMT()
 {
   // Create a WCSimRootPMT object.
 }
-
 //______________________________________________________________________________
-WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Float_t orientation[3], Float_t position[3])
+WCSimRootPMT::WCSimRootPMT(const WCSimRootPMT & in)
+{
+  fTubeNo = in.GetTubeNo();
+  fCylLoc = in.GetCylLoc();
+  for(int i = 0; i < 3; i++) {
+    fOrientation[i] = in.GetOrientation(i);
+    fPosition   [i] = in.GetPosition(i);
+  }//i
+}
+//______________________________________________________________________________
+WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Double_t orientation[3], Double_t position[3])
 {
 	fTubeNo = tubeNo;
 	fCylLoc = cylLoc;
@@ -79,7 +102,7 @@ WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Float_t orientation[3], F
 
 //______________________________________________________________________________
 void WCSimRootGeom::SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, 
-			    Float_t rot[3], Float_t pos[3], bool expand)
+			    Double_t rot[3], Double_t pos[3], bool expand)
 {
    if(expand) (*(fPMTArray)).ExpandCreate(i+2);
 

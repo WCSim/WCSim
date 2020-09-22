@@ -70,7 +70,7 @@ void WCSimWCHit::Draw()
 		//G4cout << "Ave PE: " << avePe/numbpmthit << " Max PE: " << maxPe << G4endl;
       if ( totalPe > maxPe*.01 )
       {      
-	G4Colour colour(1.,1.-(float(totalPe-.05*maxPe)/float(.95*maxPe)),0.0);
+	G4Colour colour(1.,1.-(double(totalPe-.05*maxPe)/double(.95*maxPe)),0.0);
 	attribs.SetColour(colour);
 	//    attribs.SetForceWireframe(false);
 	attribs.SetForceSolid(true);
@@ -100,5 +100,23 @@ void WCSimWCHit::Print()
       G4cout << G4endl << "\t";
   }
   G4cout << "size: " << time.size() << G4endl;
+}
+
+// G. Pronost:	
+// Sort function by Hit Time (using first time, assuming hit time within a hit object are sorted)
+bool WCSimWCHit::SortFunctor_Hit::operator() (
+		const WCSimWCHit * const &a,
+		const WCSimWCHit * const &b) const {
+	
+	G4double ta, tb;
+	if ( a->time.size() > 0 ) 	
+		ta = a->time[0];
+	else return false;
+	
+	if ( b->time.size() > 0 )
+		tb = b->time[0];
+	else return true;
+	
+	return ta < tb;
 }
 
