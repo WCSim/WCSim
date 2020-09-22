@@ -170,11 +170,12 @@ void WCSimGenerator_Radioactivity::Configuration(G4int iScenario, G4double dLife
 		G4cout << " Scenario 0: Uniform Rn concentration is assumed " << G4endl;
 	}
 	else {
-		G4cout << " Scenario " << fScenario << ": Uniform Rn concentration is defined with the following parameters " << G4endl;
+		G4cout << " Scenario " << fScenario << ": Rn concentration is defined with the following parameters " << G4endl;
 		G4cout << " PMT number: " << myDetector->Get_Pmts()->size() << G4endl;
-		G4cout << " Surface: " << (2. * TMath::Pi() * fHK_R_max * fHK_R_max + 2. * TMath::Pi() * fHK_R_max * fHK_Z_max * 2. ) << G4endl;
+		G4cout << " Detector radius: " << fHK_R_max << " ; Detector height: " << fHK_Z_max * 2. << G4endl;
+		G4cout << " Surface: " << (2. * TMath::Pi() * fR2_max + 2. * TMath::Pi() * fR_max * (fZ_max - fZ_min) ) << G4endl;
 		//G4cout << fHK_R_max << " " << fHK_Z_max * 2 << G4endl;
-		G4cout << " Mean activity in the full ID:   " << fIntegral << " mBq  ( Concentration: " << fIntegral / (2. * fHK_R_max * fHK_R_max * fHK_Z_max) << " mBq / m^3 ) " <<  G4endl;
+		G4cout << " Mean activity in the full ID:   " << fIntegral << " mBq  ( Concentration: " << fIntegral / (fR2_max * (fZ_max - fZ_min) ) << " mBq / m^3 ) " <<  G4endl;
 	}
 	G4cout << " ========================================================================== " << G4endl;
 }
@@ -209,6 +210,8 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 		if ( thRnFunction ) delete thRnFunction;
 		return;
 	}
+	
+	fRnLambda_Global = fRnLambda;
 
 	//---------------------------------------------//
 	// Set parameters values here:
@@ -390,6 +393,10 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 		
 				dNew_Shift_Post  = fR2_max - (fSK_R2_max - dPre_Shift_Post);
 				dNew_Diffusion_X = fR2_max - (fSK_R2_max - dPre_Diffusion_X);
+				
+				if ( dPre_Diffusion_X == 0 ) {
+					dNew_Diffusion_X = 0;
+				}
 				
 				break;
 			}
