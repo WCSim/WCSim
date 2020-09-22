@@ -55,12 +55,12 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   isotopeCmd->SetParameter(param);
   
   radonScalingCmd = new G4UIcmdWithAString("/mygen/radon_scaling",this);
-  radonScalingCmd->SetGuidance("Select scalling scenario");
+  radonScalingCmd->SetGuidance("Select scalling scenario, if scenario 0 is selected, Bi214 are generated uniformly");
   radonScalingCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
-  radonScalingCmd->SetGuidance("     SCENARIO : A, B, C");
-  radonScalingCmd->SetCandidates("A B C");
+  radonScalingCmd->SetGuidance("     SCENARIO : 0, A, B");
+  radonScalingCmd->SetCandidates("0 A B");
   param = new G4UIparameter("SCENARIO",'s',true);
-  param->SetDefaultValue("C");
+  param->SetDefaultValue("B");
   radonScalingCmd->SetParameter(param);
   
   radonGeoSymCmd = new G4UIcmdWithAnInteger("/mygen/radon_symmetry",this);
@@ -214,7 +214,6 @@ void WCSimPrimaryGeneratorMessenger::RadonScalingCommand(G4String newValue)
    
   if ( scenario == "A" ) iScenario = 1; // Relative scaling with respect to full ID volume (Pessimistic)
   if ( scenario == "B" ) iScenario = 2; // Relative scaling with respect to fiducial volume
-  if ( scenario == "C" ) iScenario = 3; // Absolute scaling with respect to ID border (Optimistic)
    
   myAction->SetRadonScenario(iScenario);
 }

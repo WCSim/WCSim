@@ -197,8 +197,9 @@
 #/DAQ/RelativeHitTime true
 # The following set which scenario is used to scale SK model to HK
 #/mygen/radon_scaling A # 	Relative scaling with respect to full ID volume (Pessimistic)
-#/mygen/radon_scaling B # 	Relative scaling with respect to fiducial volume
-#/mygen/radon_scaling C #	Absolute scaling with respect to ID border (Optimistic)
+#/mygen/radon_scaling B #	Absolute scaling with respect to ID border (Optimistic)
+#/mygen/radon_scaling 0 #	Uniform distribution
+#/mygen/radon_symmetry 1 #	Divide the detector in x slices using the theta symmetry
 #Clear the source and tell GPS to make multiple vertices
 #/gps/source/clear
 
