@@ -44,6 +44,8 @@ $ track -11 0.511 0 0 0 0
 def GetVertex(seq, group_by, exclude=['']):
     data = []
     for line in seq:
+        if isinstance(line, bytes):
+            line = line.decode()
         if line.startswith(group_by):
             if data:
                 yield data
@@ -118,7 +120,7 @@ while event_start < last_event_end:
     event_end = event_start + args.fixed_duration
     next_event_start = event_start + args.fixed_duration - args.event_overlap
     print("Event", ievent, "corresponds to range", PrintNS(event_start), PrintNS(event_end))
-    with open(args.input_filename, 'r') as fin, open(args.input_filename + '.%09d' % ievent, 'w') as fout:
+    with open(args.input_filename, 'rb') as fin, open(args.input_filename + '.%09d' % ievent, 'w') as fout:
         #write the original header
         fout.write(header)
         #write the dark noise range
