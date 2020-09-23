@@ -1,5 +1,7 @@
 #!/bin/env python2
 
+from __future__ import print_function
+
 import argparse
 import sys
 from datetime import datetime
@@ -72,16 +74,16 @@ def IsTimeOrdered(filename):
                 last_time = float(GetTime(vertex))
             this_time = float(GetTime(vertex))
             if this_time < last_time:
-                print PrintNS(this_time), "comes before", PrintNS(last_time)
+                print(PrintNS(this_time), "comes before", PrintNS(last_time))
                 return False
-    print "Is time ordered"
+    print("Is time ordered")
     return True
 
 #Sort the initial file by time
 def SortByTime(filename):
     outfilename = args.input_filename + '.temp'
     with open(filename, 'r') as fin, open(outfilename, 'w') as fout:
-        print 'TODO SortByTime() not yet implemented'
+        print('TODO SortByTime() not yet implemented')
         sys.exit(-1)
 
 #Get the header
@@ -104,7 +106,7 @@ if not IsTimeOrdered(args.input_filename):
     SortByTime(args.input_filename)
 
 header = GetHeader(args.input_filename, args)
-print header
+print(header)
 
 
 #loop over kin file start/stop times
@@ -115,7 +117,7 @@ file_position = 0
 while event_start < last_event_end:
     event_end = event_start + args.fixed_duration
     next_event_start = event_start + args.fixed_duration - args.event_overlap
-    print "Event", ievent, "corresponds to range", PrintNS(event_start), PrintNS(event_end)
+    print("Event", ievent, "corresponds to range", PrintNS(event_start), PrintNS(event_end))
     with open(args.input_filename, 'r') as fin, open(args.input_filename + '.%09d' % ievent, 'w') as fout:
         #write the original header
         fout.write(header)
@@ -128,7 +130,7 @@ while event_start < last_event_end:
         nvertices = 0
         #skip forward in the file a bit
         if args.verbose:
-            print 'Skipping to position in file', file_position
+            print('Skipping to position in file', file_position)
         fin.seek(file_position)
         #loop over the input file
         for i, vertex in enumerate(GetVertex(fin, "$ begin", ["$ begin", "$ end"])):
@@ -138,10 +140,10 @@ while event_start < last_event_end:
             #get the event time
             time = GetTime(vertex)
             if args.verbose > 1:
-                print PrintNS(time)
+                print(PrintNS(time))
                 if args.verbose > 2:
-                    print ("Vertex #{}".format(i))
-                    print ("".join(vertex))
+                    print("Vertex #{}".format(i))
+                    print("".join(vertex))
             if time > event_end:
                 break
             if time >= event_start:
@@ -157,7 +159,7 @@ while event_start < last_event_end:
         #and close the event/file
         fout.write('$ end\n')
         fout.write('$ stop\n')
-        print 'contains', nvertices, 'vertices'
+        print('contains', nvertices, 'vertices')
     #increment for next event
     event_start = next_event_start
     ievent += 1
