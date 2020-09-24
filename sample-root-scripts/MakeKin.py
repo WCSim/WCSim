@@ -45,12 +45,11 @@ parser.add_option("-V","--nVerticesPerEvent",dest="verticesPerEvent",
                   help=" Average number of vertices to simulate per event. Default: %s" \
                   % (verticesPerEventDefault),
                   metavar="#", default=verticesPerEventDefault)
-optchoices = list(pid.keys())
 optdefault = None
 parser.add_option("-s", "--seed", dest="seed",
-                  help="Random number seed to use. Default: None (use system time)",
+                  help="Random number seed to use. Default: None.",
                   metavar="SEED", default=optdefault)
-optchoices = pid.keys()
+optchoices = list(pid.keys())
 optdefault = "mu-"
 parser.add_option("-t", "--type", dest="type",
                   help="Particle type to be generated. Choices: %s. Default: %s" \
@@ -86,7 +85,7 @@ parser.add_option("-w", "--detector", dest="detector",
 options.vertname = options.vertname.lower()
 options.dirname = options.dirname.lower()
 
-
+random.seed(options.seed)
 
 nfiles = int(options.nfiles)
 npart = int(options.npart)
