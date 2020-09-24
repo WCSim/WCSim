@@ -18,7 +18,8 @@ pid = {"pi0":111, "pi+":211, "k0l":130, "k0s":310, "k+":321,
 #holds detector [radius, height] in cm
 detectors = {"SuperK":[3368.15/2., 3620.],
              "Cylinder_60x74_20inchBandL_14perCent":[7400./2., 6000.],
-             "Cylinder_60x74_20inchBandL_40perCent":[7400./2., 6000.]}
+             "Cylinder_60x74_20inchBandL_40perCent":[7400./2., 6000.],
+             "HyperK":[7080./2., 5480.]}
 
 for pname, no in list(pid.items()):
     if pname.endswith('+'):
@@ -45,6 +46,11 @@ parser.add_option("-V","--nVerticesPerEvent",dest="verticesPerEvent",
                   % (verticesPerEventDefault),
                   metavar="#", default=verticesPerEventDefault)
 optchoices = list(pid.keys())
+optdefault = None
+parser.add_option("-s", "--seed", dest="seed",
+                  help="Random number seed to use. Default: None (use system time)",
+                  metavar="SEED", default=optdefault)
+optchoices = pid.keys()
 optdefault = "mu-"
 parser.add_option("-t", "--type", dest="type",
                   help="Particle type to be generated. Choices: %s. Default: %s" \
