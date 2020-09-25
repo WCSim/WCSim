@@ -31,8 +31,9 @@ class WCSimGenerator_Radioactivity
 		void Configuration(G4int iScenario, G4double dLifeTime=0);
 		
 		G4ThreeVector GetRandomVertex(G4int tSymNumber);
-		G4double GetMeanActivity() { return fIntegral; }
-		G4double GetIDVolume() { return (fR_max*fR_max*TMath::Pi()*fZ_max*2.); }
+		G4double GetMeanActivity()		{ return fConcentrationID; }
+		G4double GetMeanActivityReco()	{ return fConcentrationReco; }
+		G4double GetIDVolume()			{ return (fR_max*fR_max*TMath::Pi()*fZ_max*2.); }
 		
 		
 	private:
@@ -48,6 +49,10 @@ class WCSimGenerator_Radioactivity
 		// Function
 		TF2* thRnFunction;
 		G4double fIntegral;
+		G4double fIntegralReco;
+		
+		G4double fConcentrationID;
+		G4double fConcentrationReco;
 		
 		void SetScenario(G4int iScenario);
 		static double RadonFormula(double *val, double *par);
@@ -79,21 +84,17 @@ class WCSimGenerator_Radioactivity
 		static G4double fHK_Z_max;
 		static G4double fHK_R_max;
 		static G4double fHK_R2_max;
-		/*
-		static G4double fHK_Z_reco;
-		static G4double fHK_R_reco;
-		static G4double fHK_R2_reco;
-		*/
 		
 		static G4double fSK_Z_min;
 		static G4double fSK_Z_max;
 		static G4double fSK_R_max;
 		static G4double fSK_R2_max;
-		/*
-		static G4double fSK_Z_reco;
-		static G4double fSK_R_reco;
-		static G4double fSK_R2_reco;
-		*/
+		
+		static G4double fZ_min_reco;
+		static G4double fZ_max_reco;
+		static G4double fR_max_reco;
+		static G4double fR2_max_reco;
+		
 		static G4double fZ_min, fZ_max, fR_max , fR2_max;
 		static G4double fZ_reco, fR_reco, fR2_reco;
 		

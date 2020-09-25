@@ -1,8 +1,7 @@
 /*
-	Rn model parameters version 2020/09/22
+	Rn model parameters version 2020/09/25
 	Author: Guillaume Pronost
 */
-
 	// Fit parameter for R2 layer = 0
 	vParam_Z [0][0] = -12.6566;
 	vParam_Z [0][1] = -10.2926;
@@ -121,101 +120,101 @@
 	vParam_R2[4][6] = 0;
 
 	// Fit parameter for Z layer = 5
-	vParam_R2[5][0] = CONC_BOTTOM + -0.420834;
-	vParam_R2[5][1] = 236.522;
-	vParam_R2[5][2] = 259.552;
+	vParam_R2[5][0] = CONC_BOTTOM + -0.0110869;
+	vParam_R2[5][1] = 291.507;
+	vParam_R2[5][2] = 359.053;
 	vParam_R2[5][3] = CONC_CENTER;
-	vParam_R2[5][4] = 150;
-	vParam_R2[5][5] = 847.75;
+	vParam_R2[5][4] = 169.178;
+	vParam_R2[5][5] = 0.00285011;
 	vParam_R2[5][6] = 0;
 
 	// Fit parameter for Z layer = 6
-	vParam_R2[6][0] = CONC_BOTTOM + -1.02107;
-	vParam_R2[6][1] = 236.697;
-	vParam_R2[6][2] = 148.041;
+	vParam_R2[6][0] = CONC_BOTTOM + -1.07021;
+	vParam_R2[6][1] = 183.46;
+	vParam_R2[6][2] = 0.00196017;
 	vParam_R2[6][3] = CONC_CENTER;
-	vParam_R2[6][4] = 150;
-	vParam_R2[6][5] = 259.552;
-	vParam_R2[6][6] = 0;
+	vParam_R2[6][4] = 170;
+	vParam_R2[6][5] = 103.895;
+	vParam_R2[6][6] = CONC_INTERMEDIATE;
 
 	// Fit parameter for Z layer = 7
-	vParam_R2[7][0] = CONC_BOTTOM + -1.39164;
+	vParam_R2[7][0] = CONC_BOTTOM + -1.39163;
 	vParam_R2[7][1] = 202.99;
-	vParam_R2[7][2] = 5.96333;
+	vParam_R2[7][2] = 5.96393;
 	vParam_R2[7][3] = CONC_CENTER;
 	vParam_R2[7][4] = 170;
-	vParam_R2[7][5] = 183.095;
+	vParam_R2[7][5] = 183.113;
 	vParam_R2[7][6] = CONC_INTERMEDIATE;
 
 	// Fit parameter for Z layer = 8
-	vParam_R2[8][0] = CONC_BOTTOM + -1.41175;
-	vParam_R2[8][1] = 225.461;
-	vParam_R2[8][2] = 44.9247;
+	vParam_R2[8][0] = CONC_BOTTOM + -1.42447;
+	vParam_R2[8][1] = 204.478;
+	vParam_R2[8][2] = 6.54267;
 	vParam_R2[8][3] = CONC_CENTER;
-	vParam_R2[8][4] = 168.137;
-	vParam_R2[8][5] = 6.41058;
-	vParam_R2[8][6] = 0;
+	vParam_R2[8][4] = 169.998;
+	vParam_R2[8][5] = 107.482;
+	vParam_R2[8][6] = CONC_INTERMEDIATE;
 
 	// Fit parameter for Z layer = 9
-	vParam_R2[9][0] = CONC_BOTTOM + -1.25846;
-	vParam_R2[9][1] = 204.319;
-	vParam_R2[9][2] = 6.20246;
+	vParam_R2[9][0] = CONC_BOTTOM + -1.25849;
+	vParam_R2[9][1] = 204.312;
+	vParam_R2[9][2] = 6.19722;
 	vParam_R2[9][3] = CONC_CENTER;
-	vParam_R2[9][4] = 169.999;
-	vParam_R2[9][5] = 83.6428;
+	vParam_R2[9][4] = 170;
+	vParam_R2[9][5] = 83.7055;
 	vParam_R2[9][6] = CONC_INTERMEDIATE;
 
 	// Fit parameter for Z layer = 10
-	vParam_R2[10][0] = CONC_BOTTOM + -1.24329;
-	vParam_R2[10][1] = 226.583;
-	vParam_R2[10][2] = 53.8239;
+	vParam_R2[10][0] = CONC_BOTTOM + -1.2568;
+	vParam_R2[10][1] = 206.289;
+	vParam_R2[10][2] = 8.76213;
 	vParam_R2[10][3] = CONC_CENTER;
-	vParam_R2[10][4] = 0;
-	vParam_R2[10][5] = 0.01;
-	vParam_R2[10][6] = 0;
+	vParam_R2[10][4] = 170;
+	vParam_R2[10][5] = 91.7556;
+	vParam_R2[10][6] = CONC_INTERMEDIATE;
 
 	// Fit parameter for Z layer = 11
-	vParam_R2[11][0] = CONC_BOTTOM + -1.32982;
-	vParam_R2[11][1] = 226.532;
-	vParam_R2[11][2] = 55.8261;
+	vParam_R2[11][0] = CONC_BOTTOM + -1.34235;
+	vParam_R2[11][1] = 204.644;
+	vParam_R2[11][2] = 7.45582;
 	vParam_R2[11][3] = CONC_CENTER;
-	vParam_R2[11][4] = 144.92;
-	vParam_R2[11][5] = 29.9137;
-	vParam_R2[11][6] = 0;
+	vParam_R2[11][4] = 169.999;
+	vParam_R2[11][5] = 83.9211;
+	vParam_R2[11][6] = CONC_INTERMEDIATE;
 
 	// Fit parameter for Z layer = 12
-	vParam_R2[12][0] = CONC_BOTTOM + -1.39199;
-	vParam_R2[12][1] = 201.895;
-	vParam_R2[12][2] = 5.78438;
+	vParam_R2[12][0] = CONC_BOTTOM + -1.392;
+	vParam_R2[12][1] = 201.912;
+	vParam_R2[12][2] = 5.79213;
 	vParam_R2[12][3] = CONC_CENTER;
-	vParam_R2[12][4] = 170;
-	vParam_R2[12][5] = 78.7764;
+	vParam_R2[12][4] = 169.999;
+	vParam_R2[12][5] = 78.8235;
 	vParam_R2[12][6] = CONC_INTERMEDIATE;
 
 	// Fit parameter for Z layer = 13
-	vParam_R2[13][0] = CONC_BOTTOM + -1.4547;
-	vParam_R2[13][1] = 203.497;
-	vParam_R2[13][2] = 8.34826;
+	vParam_R2[13][0] = CONC_BOTTOM + -1.45474;
+	vParam_R2[13][1] = 203.484;
+	vParam_R2[13][2] = 8.33337;
 	vParam_R2[13][3] = CONC_CENTER;
-	vParam_R2[13][4] = 169.987;
-	vParam_R2[13][5] = 90.3977;
+	vParam_R2[13][4] = 169.995;
+	vParam_R2[13][5] = 90.3481;
 	vParam_R2[13][6] = CONC_INTERMEDIATE;
 
 	// Fit parameter for Z layer = 14
-	vParam_R2[14][0] = CONC_BOTTOM + -1.31697;
-	vParam_R2[14][1] = 203.418;
-	vParam_R2[14][2] = 4.717;
+	vParam_R2[14][0] = CONC_BOTTOM + -1.31712;
+	vParam_R2[14][1] = 203.275;
+	vParam_R2[14][2] = 4.61698;
 	vParam_R2[14][3] = CONC_CENTER;
-	vParam_R2[14][4] = 169.999;
-	vParam_R2[14][5] = 52.8343;
+	vParam_R2[14][4] = 169.992;
+	vParam_R2[14][5] = 52.6069;
 	vParam_R2[14][6] = CONC_INTERMEDIATE;
 
 	// Fit parameter for Z layer = 15
-	vParam_R2[15][0] = CONC_BOTTOM + -1.17778;
-	vParam_R2[15][1] = 209.052;
-	vParam_R2[15][2] = 14.5153;
+	vParam_R2[15][0] = CONC_BOTTOM + -1.1777;
+	vParam_R2[15][1] = 209.059;
+	vParam_R2[15][2] = 14.5265;
 	vParam_R2[15][3] = CONC_CENTER;
-	vParam_R2[15][4] = 140;
-	vParam_R2[15][5] = 38.1368;
+	vParam_R2[15][4] = 140.001;
+	vParam_R2[15][5] = 38.2392;
 	vParam_R2[15][6] = CONC_INTERMEDIATE;
 

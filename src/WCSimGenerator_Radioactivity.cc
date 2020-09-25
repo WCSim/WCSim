@@ -45,11 +45,12 @@ G4double WCSimGenerator_Radioactivity::fZ_min		 = 0.;
 G4double WCSimGenerator_Radioactivity::fZ_max		 = 0.;
 G4double WCSimGenerator_Radioactivity::fR_max		 = 0.;
 G4double WCSimGenerator_Radioactivity::fR2_max	 = 0.;
-/*
-G4double WCSimGenerator_Radioactivity::fZ_reco	 = 0.;
-G4double WCSimGenerator_Radioactivity::fR_reco	 = 0.;
-G4double WCSimGenerator_Radioactivity::fR2_reco	 = 0.;
-*/
+
+G4double WCSimGenerator_Radioactivity::fZ_min_reco	 = 0.;
+G4double WCSimGenerator_Radioactivity::fZ_max_reco	 = 0.;
+G4double WCSimGenerator_Radioactivity::fR_max_reco	 = 0.;
+G4double WCSimGenerator_Radioactivity::fR2_max_reco	 = 0.;
+
 
 // Parameter array initialization:
 G4double WCSimGenerator_Radioactivity::vParam_Z [RnModel_Bin_Rmax][7]	= {};	
@@ -135,6 +136,11 @@ void WCSimGenerator_Radioactivity::Initialize() {
 	fZ_min   = fHK_Z_min;
 	fR_max   = fHK_R_max;
 	fR2_max  = fR_max * fR_max;
+	
+	fZ_max_reco   = fZ_max - 2.;
+	fZ_min_reco   = fZ_min - 2.;
+	fR_max_reco   = fR_max - 2.;
+	fR2_max_reco  = fR_max_reco * fR_max_reco;
 /*	
 	// 20200922 Guillaume, not used anymore
 	fZ_reco  = fZ_max - 2.;
@@ -147,6 +153,8 @@ void WCSimGenerator_Radioactivity::Initialize() {
 			
 	fScenario = 0;
 	thRnFunction = 0;
+	fConcentrationID = 0;
+	fConcentrationReco = 0;
 	
 	this->SetScenario(0);
 }
@@ -168,14 +176,22 @@ void WCSimGenerator_Radioactivity::Configuration(G4int iScenario, G4double dLife
 	G4cout << " Activity on ID border:   " << fRn_Border << " mBq/m^3  " <<  G4endl;
 	if ( fScenario == 0 ) {
 		G4cout << " Scenario 0: Uniform Rn concentration is assumed " << G4endl;
+		fConcentrationID = 0;
+		fConcentrationReco = 0;
 	}
 	else {
+		// Compute concentration
+		// Integral is of a 2D projection, it is already divided by PI
+		fConcentrationID = fIntegral / (fR2_max * (fZ_max - fZ_min) );
+		fConcentrationReco = fIntegralReco / (fR2_max_reco * (fZ_max_reco - fZ_min_reco) );
+		
 		G4cout << " Scenario " << fScenario << ": Rn concentration is defined with the following parameters " << G4endl;
 		G4cout << " PMT number: " << myDetector->Get_Pmts()->size() << G4endl;
 		G4cout << " Detector radius: " << fHK_R_max << " ; Detector height: " << fHK_Z_max * 2. << G4endl;
 		G4cout << " Surface: " << (2. * TMath::Pi() * fR2_max + 2. * TMath::Pi() * fR_max * (fZ_max - fZ_min) ) << G4endl;
 		//G4cout << fHK_R_max << " " << fHK_Z_max * 2 << G4endl;
-		G4cout << " Mean activity in the full ID:   " << fIntegral << " mBq  ( Concentration: " << fIntegral / (fR2_max * (fZ_max - fZ_min) ) << " mBq / m^3 ) " <<  G4endl;
+		G4cout << " Mean activity in the full ID:   " << fIntegral << " mBq  ( Concentration: " << fConcentrationID << " mBq / m^3 ) " <<  G4endl;
+		G4cout << " Mean activity in the fiducial volume:   " << fIntegralReco << " mBq  ( Concentration: " << fConcentrationReco << " mBq / m^3 ) " <<  G4endl;
 	}
 	G4cout << " ========================================================================== " << G4endl;
 }
@@ -206,6 +222,7 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 	
 	if ( fScenario == 0 ) {
 		fIntegral = 0;
+		fIntegralReco = 0;
 		
 		if ( thRnFunction ) delete thRnFunction;
 		return;
@@ -215,8 +232,9 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 
 	//---------------------------------------------//
 	// Set parameters values here:
-	#include "RnModel_Fit_Params_20200922.hh"
-		
+	#include "RnModel_Fit_Params.hh" 
+	// 20200922 original parametrized Rn model
+	// 20200925 slightly more consistent model (no impact on results)
 	double val1[2];	
 	val1[0] = -10; // m (Z)
 	val1[1] = 0.; // (R2)	
@@ -244,7 +262,7 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 		
 	//---------------------------------------------//
 	// Reload parameter to take into account the new variables values	
-	#include "RnModel_Fit_Params_20200922.hh"
+	#include "RnModel_Fit_Params.hh"
 		
 	// Z layers
 	for ( int iR = 0; iR < RnModel_Bin_Rmax; iR++ ) {
@@ -446,6 +464,7 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 	
 	// Compute activity Integral
 	fIntegral = thRnFunction->Integral(0,fR2_max,fZ_min,fZ_max);
+	fIntegralReco = thRnFunction->Integral(0,fR2_max_reco,fZ_min_reco,fZ_max_reco);
 }
 	
 G4ThreeVector WCSimGenerator_Radioactivity::GetRandomVertex(G4int tSymNumber) {
