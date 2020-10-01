@@ -24,6 +24,14 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "Cylinder_60x74_20inchBandL_40perCent\n"
 			  "Cylinder_12inchHPD_15perCent\n"
                           "HyperK\n"
+                          "HyperK_3inch\n"
+                          "HyperK_8inch\n"
+                          "HyperK_10inch\n"
+                          "HyperK_SKPMT\n"
+                          "HyperK_mPMT\n"
+                          "HyperK_HybridmPMT\n"
+                          "HyperK_HybridmPMT10PC\n"
+                          "HyperK_HybridFake\n"
 			  "EggShapedHyperK\n"
 			  "EggShapedHyperK_withHPD\n"
                           "nuPRISM\n"
@@ -45,6 +53,14 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
       			   "Cylinder_60x74_20inchBandL_40perCent\n"
 			   "Cylinder_12inchHPD_15perCent "
 			   "HyperK "
+			   "HyperK_3inch "
+			   "HyperK_8inch "
+			   "HyperK_10inch "
+			   "HyperK_SKPMT "
+			   "HyperK_mPMT "
+			   "HyperK_HybridmPMT "
+			   "HyperK_HybridmPMT10PC "
+			   "HyperK_HybridFake "
 			   "EggShapedHyperK "
 			   "EggShapedHyperK_withHPD "
                            "nuPRISM "
@@ -87,8 +103,13 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTSize->SetCandidates("20inch 10inch");
   PMTSize->AvailableForStates(G4State_PreInit, G4State_Idle);
 
-
-
+  PMTSize2 = new G4UIcmdWithAString("/WCSim/WCPMTsize2",this);//B.Q, for the second PMT type
+  PMTSize2->SetGuidance("Set alternate PMT size for the WC (Must be entered after geometry details are set).");
+  PMTSize2->SetGuidance("Available options 20inch 10inch");
+  PMTSize2->SetParameterName("PMTSize2", false);
+  PMTSize2->SetCandidates("20inch 10inch");
+  PMTSize2->AvailableForStates(G4State_PreInit, G4State_Idle);
+  
   SavePi0 = new G4UIcmdWithAString("/WCSim/SavePi0", this);
   SavePi0->SetGuidance("true or false");
   SavePi0->SetParameterName("SavePi0",false);
@@ -199,6 +220,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine20inchHQE "
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
+				    "PMT3inchR14374 "
 				    "PMT4inchR12199_02 "
 				    "PMT5inchR12199_02 "
 				    ); 
@@ -216,6 +238,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine20inchHQE "
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
+				    "PMT3inchR14374 "
 				    "PMT4inchR12199_02 "
 				    "PMT5inchR12199_02 "
 				    ); 
@@ -252,7 +275,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   mPMT_ID_reflector_height->SetUnitCategory("Length");
   mPMT_ID_reflector_height->SetDefaultUnit("mm");
   mPMT_ID_reflector_height->SetUnitCandidates("mm cm m");
-
+  
   mPMT_ID_reflector_z_offset = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/reflectorZoffsetID",this);
   mPMT_ID_reflector_z_offset->SetGuidance("Set z position offset of reflector cone for each ID PMT.");
   mPMT_ID_reflector_z_offset->SetParameterName("reflectorZoffsetID", true);
@@ -303,8 +326,13 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 					   "SilGel "
 					   "Air " );
 
-
-
+  // B.Q: Add the hybrid configuration
+  SetHybridPMT = new G4UIcmdWithABool("/WCSim/mPMT/SetHybridPMT", this);
+  SetHybridPMT->SetGuidance("Set the possibility of having hybrid PMT types");
+  SetHybridPMT->SetGuidance("Should be 1 or 0");
+  SetHybridPMT->SetParameterName("HybridPMT", false);
+  //SetHybridPMT->SetCandidates();
+  SetHybridPMT->SetDefaultValue(false);
 
  // First, the PMT type
   SetPMTType = new G4UIcmdWithAString("/WCSim/nuPRISM/SetPMTType", this);
@@ -313,6 +341,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "PMT3inch\n"
           "PMT3inchGT\n"
           "PMT3inchR12199_02\n"
+          "PMT3inchR14374\n"
           "PMT5inch\n"
           "PMT8inch\n"
           "PMT10inchHQE\n"
@@ -321,7 +350,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "HPD20inchHQE\n"
           "PMT20inch\n");
   SetPMTType->SetParameterName("PMTType", false);
-  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
+  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT3inchR14374 PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
   SetPMTType->SetDefaultValue("PMT10inch");
 
   // Next, the PMT coverage
@@ -374,6 +403,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete SetDetectorVerticalPosition;
   delete SetPMTCoverage;
   delete SetPMTType;
+  delete SetHybridPMT;
 
   delete tubeCmd;
   delete distortionCmd;
@@ -407,6 +437,22 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->Cylinder_12inchHPD_15perCent();
                 } else if ( newValue == "HyperK") {
 			WCSimDetector->SetHyperKGeometry();
+		} else if ( newValue == "HyperK_3inch") {
+			WCSimDetector->SetHyperK_3inchGeometry();
+		} else if ( newValue == "HyperK_8inch") {
+			WCSimDetector->SetHyperK_8inchGeometry();
+		} else if ( newValue == "HyperK_10inch") {
+			WCSimDetector->SetHyperK_10inchGeometry();
+		} else if ( newValue == "HyperK_SKPMT") {
+			WCSimDetector->SetHyperK_SKPMTGeometry();
+		} else if ( newValue == "HyperK_mPMT") {
+			WCSimDetector->SetHyperK_mPMTGeometry();
+		} else if ( newValue == "HyperK_HybridmPMT") {
+			WCSimDetector->SetHyperK_HybridmPMTGeometry();
+		} else if ( newValue == "HyperK_HybridmPMT10PC") {
+			WCSimDetector->SetHyperK_HybridmPMT10PCGeometry();
+		} else if ( newValue == "HyperK_HybridFake") {
+			WCSimDetector->SetHyperK_HybridFakeGeometry();
 		} else if ( newValue == "EggShapedHyperK") {
 		  WCSimDetector->SetIsEggShapedHyperK(true);
 		  WCSimDetector->SetEggShapedHyperKGeometry();
@@ -534,6 +580,16 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 			G4cout << "That PMT size is not defined!" << G4endl;	
 	}
 
+	if(command == PMTSize2) {
+	  G4cout << "SET PMT of TYPE 2 SIZE" << G4endl;
+	  if ( newValue == "20inch"){
+	    //			WCSimDetector->Set20inchPMTs();
+	  }else if (newValue == "10inch"){
+	    //			WCSimDetector->Set10inchPMTs();
+	  }else
+	    G4cout << "That PMT size is not defined!" << G4endl;	
+	}
+
 	if (command == mPMT_CylHeight){
 	  G4cout << "Set Vessel Cylinder Height of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
 	  //std::cout << "Set Cylinder Height of MultiPMT to " << newValue  << " " << std::endl;
@@ -617,7 +673,11 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	if (command == mPMT_material_pmtAssembly){
 	  WCSimDetector->SetmPMT_MaterialPMTassembly(newValue);
 	}
-
+	if (command == SetHybridPMT){
+	  G4cout << "Set hybrid config = " << newValue << G4endl;
+	  WCSimDetector->SetHybridPMT(SetHybridPMT->GetNewBoolValue(newValue));
+	}
+	
 	// Customize nuPRISM tank setup
 	if( WCSimDetector->GetIsNuPrism()){
 	  if (command == SetPMTType) WCSimDetector->SetPMTType(newValue);

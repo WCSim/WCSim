@@ -1,6 +1,7 @@
 #ifndef WCSimWCPMTObject_h
 #define WCSimWCPMTObject_h 1
 
+#include "WCSimTuningParameters.hh"
 #include "WCSimDetectorConstruction.hh"
 #include "globals.hh"
 #include "Randomize.hh"
@@ -20,7 +21,8 @@ public:
   virtual G4float* GetQEWavelength()=0;
   virtual G4float  GetmaxQE()=0;
   virtual G4float  GetCollectionEfficiency(float);
-  virtual float    HitTimeSmearing(float)=0;
+  virtual float    HitTimeSmearing(float, float /*, float*/)=0;
+  virtual float    SaturFactor(float, float)=0; //TD 2019.07.16
   virtual G4double GetPMTGlassThickness()=0;
   virtual G4float  GetDarkRate()=0;
   virtual G4float  GetDarkRateConversionFactor()=0;
@@ -46,7 +48,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -70,7 +73,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -92,7 +96,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -114,7 +119,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -136,7 +142,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -158,7 +165,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -179,7 +187,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -200,7 +209,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -222,7 +232,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -246,7 +257,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -270,7 +282,8 @@ public:
   G4double* GetQE();                 //has to be double due to double math inside array ("narrowing conversion" error in C++11)
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -294,7 +307,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -321,7 +335,35 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
+  G4double GetPMTGlassThickness();
+  G4float  GetDarkRate();
+  G4float  GetDarkRateConversionFactor();
+protected:
+  G4float* GetCollectionEfficiencyArray();
+};
+
+//B.Q, 2019/01/18
+// ToDo: make object of classes instead of infinite cp-pastes
+class PMT3inchR14374 : public WCSimPMTObject
+{
+
+public:
+  
+  PMT3inchR14374();
+  ~PMT3inchR14374();
+ 
+public:
+  G4String GetPMTName() ;
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4float* Getqpe();
+  G4double* GetQE();
+  G4float* GetQEWavelength();
+  G4float  GetmaxQE();
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -346,7 +388,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();
@@ -371,7 +414,8 @@ public:
   G4double* GetQE();
   G4float* GetQEWavelength();
   G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  float    HitTimeSmearing(float, float);
+  float    SaturFactor(float, float); //TD 2019.07.16
   G4double GetPMTGlassThickness();
   G4float  GetDarkRate();
   G4float  GetDarkRateConversionFactor();

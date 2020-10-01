@@ -21,6 +21,9 @@ WCSimRootGeom::WCSimRootGeom()
   fWCNumPMT = 0;
   fPMTArray = 0;
   fPMTArray = new TClonesArray("WCSimRootPMT", 500);
+  fWCNumPMT2 = 0;
+  fPMTArray2 = 0;
+  fPMTArray2 = new TClonesArray("WCSimRootPMT", 500);
 
 }
 
@@ -28,7 +31,9 @@ WCSimRootGeom::WCSimRootGeom()
 WCSimRootGeom::~WCSimRootGeom()
 {
   fPMTArray->Delete();
+  fPMTArray2->Delete();
   delete fPMTArray;
+  delete fPMTArray2;
 }
 
 //______________________________________________________________________________
@@ -73,12 +78,12 @@ WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t mPMTNo, Int_t mPMT_PMTNo, Int_t c
 
 //______________________________________________________________________________
 void WCSimRootGeom::SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, 
-			    Float_t rot[3], Float_t pos[3], bool expand)
+			   Float_t rot[3], Float_t pos[3], bool expand, bool hybridsecondtype)
 {
-  if(expand) (*(fPMTArray)).ExpandCreate(i+2);
+  if(expand) hybridsecondtype?(*(fPMTArray2)).ExpandCreate(i+2):(*(fPMTArray)).ExpandCreate(i+2);
   
   // Set PMT values
-  TClonesArray &pmtArray = *fPMTArray;
+  TClonesArray &pmtArray = hybridsecondtype?*fPMTArray2:*fPMTArray;
   WCSimRootPMT *jPMT = new(pmtArray[i]) WCSimRootPMT(tubeno, cyl_loc, rot, pos);
   //WCSimRootPMT jPMT = *(WCSimRootPMT*)(*fPMTArray)[i];
   // jPMT.SetTubeNo(tubeno);
@@ -93,12 +98,12 @@ void WCSimRootGeom::SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc,
 
 //______________________________________________________________________________
 void WCSimRootGeom::SetPMT(Int_t i, Int_t tubeno, Int_t mPMTNo, Int_t mPMT_PMTNo, Int_t cyl_loc, 
-			    Float_t rot[3], Float_t pos[3], bool expand)
+			   Float_t rot[3], Float_t pos[3], bool expand, bool hybridsecondtype)
 {
-  if(expand) (*(fPMTArray)).ExpandCreate(i+2);
+  if(expand) hybridsecondtype?(*(fPMTArray2)).ExpandCreate(i+2):(*(fPMTArray)).ExpandCreate(i+2);
   
   // Set PMT values
-  TClonesArray &pmtArray = *fPMTArray;
+  TClonesArray &pmtArray = hybridsecondtype?*fPMTArray2:*fPMTArray;
   WCSimRootPMT *jPMT = new(pmtArray[i]) WCSimRootPMT(tubeno, mPMTNo, mPMT_PMTNo, cyl_loc, rot, pos);
   //WCSimRootPMT jPMT = *(WCSimRootPMT*)(*fPMTArray)[i];
   // jPMT.SetTubeNo(tubeno);

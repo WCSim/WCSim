@@ -1,5 +1,6 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimTuningParameters.hh"
+#include "WCSimPMTObject.hh"
 
 #include "G4Material.hh"
 #include "G4Element.hh"
@@ -1039,7 +1040,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
    G4double PP[NUM] = { 1.4E-9*GeV,6.2E-9*GeV};
    G4double RINDEX_blacksheet[NUM] =
-     { 1.6, 1.6 };
+     { 1.76, 1.76 };
+   //     { 1.6, 1.6 };//B.Q
 
    G4double SPECULARLOBECONSTANT[NUM] =
      { 0.3, 0.3 };
@@ -1074,7 +1076,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
    G4double RGCFF = 0.0;
    RGCFF = WCSimTuningParams->GetRgcff();   //defaults in mac: 0.32 and flat
- 
+
+   
    G4double REFLECTIVITY_glasscath[NUM] =
      //{ 0.0+RGCFF, 0.0+RGCFF };
      //{ RGCFF, RGCFF };

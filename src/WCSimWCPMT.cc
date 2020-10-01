@@ -18,20 +18,29 @@
 #include <vector>
 // for memset
 #include <cstring>
-
+//#define HYPER_VERBOSITY
 
 extern "C" void skrn1pe_(float* );
 //extern "C" void rn1pe_(float* ); // 1Kton
 
 WCSimWCPMT::WCSimWCPMT(G4String name,
-				   WCSimDetectorConstruction* myDetector)
-  :G4VDigitizerModule(name)
+                       WCSimDetectorConstruction* myDetector,
+                       G4String detectorElement)
+  :G4VDigitizerModule(name), detectorElement(detectorElement)
 {
-  G4String colName = "WCRawPMTSignalCollection";
+  // G4String colName = "WCRawPMTSignalCollection";
+  // collectionName.push_back(colName);
+
+  if(detectorElement=="tank") collectionName.push_back("WCRawPMTSignalCollection");
+  else if(detectorElement=="tankPMT2") collectionName.push_back("WCRawPMTSignalCollection2");
+  else G4cout << "detectorElement undefined..." << G4endl;
   this->myDetector = myDetector;
-  collectionName.push_back(colName);
   DigiHitMapPMT.clear();
-  
+
+#ifdef HYPER_VERBOSITY
+  if(detectorElement=="tank") G4cout<<"WCSimWCPMT::WCSimWCPMT recording collection name "<<collectionName[0]<<G4endl;
+  if(detectorElement=="tankPMT2") G4cout<<"WCSimWCPMT::WCSimWCPMT recording collection name "<<collectionName[0]<<G4endl;
+#endif
 
 }
 
@@ -40,9 +49,12 @@ WCSimWCPMT::~WCSimWCPMT(){
 }
 
 G4double WCSimWCPMT::rn1pe(){
-  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-  WCSimPMTObject * PMT;
-  PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+
+  G4String WCCollectionName;
+  if(detectorElement=="tank") WCCollectionName = myDetector->GetIDCollectionName();
+  else if(detectorElement=="tankPMT2") WCCollectionName = myDetector->GetIDCollectionName2();
+
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
   G4int i;
   G4double random = G4UniformRand();
   G4double random2 = G4UniformRand(); 
@@ -62,22 +74,43 @@ G4double WCSimWCPMT::rn1pe(){
 
 void WCSimWCPMT::Digitize()
 {
-  DigitsCollection = new WCSimWCDigitsCollection ("WCDigitizedCollectionPMT",collectionName[0]);
-  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  G4String WCCollectionName;
+  G4String DigitsCollectionName;
+  if(detectorElement=="tank"){
+    DigitsCollectionName="WCDigitizedCollection";
+    WCCollectionName = myDetector->GetIDCollectionName();
+  }else if(detectorElement=="tankPMT2"){
+    DigitsCollectionName="WCDigitizedCollection2";
+    WCCollectionName = myDetector->GetIDCollectionName2();
+  }
+  DigitsCollection = new WCSimWCDigitsCollection (DigitsCollectionName,collectionName[0]);
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
  
   // Get the Associated Hit collection IDs
-  G4int WCHCID = DigiMan->GetHitsCollectionID(WCIDCollectionName);
+  G4int WCHCID = DigiMan->GetHitsCollectionID(WCCollectionName);
 
   // The Hits collection
   WCSimWCHitsCollection* WCHC =
     (WCSimWCHitsCollection*)(DigiMan->GetHitsCollection(WCHCID));
+#ifdef HYPER_VERBOSITY
+  //if(detectorElement=="tankPMT2"){
+    G4cout<<"WCSimWCPMT::Digitize Making digits collection (WCSimWCDigitsCollection*)"<<DigitsCollectionName<<" for "<<detectorElement
+	  <<" and calling MakePeCorrection on "<<WCCollectionName<<" to fill it."<<G4endl;
+    //}
+#endif
 
   if (WCHC) {
-
-    MakePeCorrection(WCHC);
     
+    MakePeCorrection(WCHC);
+
   }
+  
+#ifdef HYPER_VERBOSITY
+  //if(detectorElement=="tankPMT2"){
+    G4cout<<"WCSimWCPMT::Digitize Storing "<<DigitsCollectionName<<" for "<<detectorElement
+	  <<", which has "<<DigitsCollection->entries()<<" entries"<<G4endl;
+    //}
+#endif
 
   StoreDigiCollection(DigitsCollection);
 
@@ -88,15 +121,40 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
 
   // Get the info for pmt positions
-  std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
-  // It works out that the pmts here are ordered !
-  // pmts->at(i) has tubeid i+1
+  std::vector<WCSimPmtInfo*> *pmts;
 
   //Get the PMT info for hit time smearing
-  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+  G4String WCCollectionName;
+  if(detectorElement=="tank"){
+    WCCollectionName = myDetector->GetIDCollectionName();
+    pmts  = myDetector->Get_Pmts();
+    // It works out that the pmts here are ordered !
+    // pmts->at(i) has tubeid i+1
+  }
+  else if(detectorElement=="tankPMT2"){
+    WCCollectionName = myDetector->GetIDCollectionName2();
+    pmts  = myDetector->Get_Pmts2();
+  // It works out that the pmts here are ordered !
+  // pmts->at(i) has tubeid i+1
+  }
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
 
+ #ifdef HYPER_VERBOSITY
+  if(detectorElement=="tankPMT2"){
+    G4cout<<"WCSimWCPMT::MakePeCorrection making PE correction for ";
+  }
+  if(WCHC){
+    G4cout<<WCHC->entries();
+  } else {
+    G4cout<<"0";
+  }
+  G4cout << "Type of PMT used for pe correction = " << PMT->GetPMTName() << G4endl;
+  G4cout<<" entries"<<G4endl;
+#endif
 
+  float maxTotalPe = 1;
+  G4int bqDigiHitCounter = 0;
+  
   for (G4int i=0; i < WCHC->entries(); i++)
     {
 
@@ -131,20 +189,30 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       G4ThreeVector pmt_orientation(hit_rot[0], hit_rot[1], hit_rot[2]);
       G4ThreeVector pmt_position(hit_pos[0], hit_pos[1], hit_pos[2]);
 
+      //
+      //float Qout;
+      float ttsfactor = myDetector->GetParameters()->GetTtsff(); //TD 2019.07.02
+      //float linearity = myDetector->GetParameters()->GetNLTinfo();
+      float QinTOT = 0;
+
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
 	    time_true = (*WCHC)[i]->GetTime(ip);
 	    peSmeared = rn1pe();
+	    //std::cout << "tube : " << i << " (ID=" << tube << ")" << " hit in tube : "<< ip << " (time=" << time_true << "ns)"  << " pe value : " << peSmeared << std::endl; //TD debug
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
 
 	    //apply time smearing
 	    float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
-	    time_PMT = time_true + PMT->HitTimeSmearing(Q);
-
+	    //Qout = Q*PMT->QoutFactor(Q, QOIFF, linearity=0); 
+	    time_PMT = time_true + PMT->HitTimeSmearing(Q, ttsfactor/*, linearity=0 */);
+	    QinTOT += Q;
+	    
 	    if ( DigiHitMapPMT[tube] == 0) {
 	      WCSimWCDigi* Digi = new WCSimWCDigi();
 	      Digi->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
 	      Digi->AddPe(time_PMT);	
 	      Digi->SetTubeID(tube);
+	      //Digi->SetTubeType((*WCHC)[0]->GetTubeType());
 	      Digi->SetPos(pmt_position);
 	      Digi->SetOrientation(pmt_orientation);
 	      Digi->SetPe(ip,peSmeared);
@@ -153,6 +221,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      Digi->SetPreSmearTime(ip,time_true);
 	      Digi->SetParentID(ip,parent_id);
 	      DigiHitMapPMT[tube] = DigitsCollection->insert(Digi);
+	      bqDigiHitCounter++;
 	    }	
 	    else {
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->AddPe(time_PMT);
@@ -160,15 +229,24 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPe(ip,peSmeared);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTime(ip,time_PMT);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTubeID(tube); 
+	      //(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTubeType((*WCHC)[0]->GetTubeType()); 
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPos(pmt_position);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetOrientation(pmt_orientation);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTrackID(track_id);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPreSmearTime(ip,time_true);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetParentID(ip,parent_id);
 	    }
-      
-	  } // Loop over hits in each PMT
+	    
+	    maxTotalPe = (maxTotalPe < ip) ? ip : maxTotalPe;
+
+	  } // Loop over hits in each PMT	
+#ifdef DEBUG
+	  std::cout << "tube : " << i << " (ID=" << tube << ")" << " total digitized pe in : " << QinTOT << std::endl; //TD debug
+#endif
     }// Loop over PMTs
+#ifdef DEBUG
+  std::cout << std::endl << std::endl << "The maximum amount of pe stored by a PMT is : " << maxTotalPe << std::endl << std::endl;
+#endif
 }
 
 

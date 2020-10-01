@@ -112,21 +112,22 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     WCSimTree = new TTree("wcsimT","WCSim Tree");
     
     wcsimrootsuperevent = new WCSimRootEvent(); //empty list
+    wcsimrootsuperevent2 = new WCSimRootEvent(); //empty list
     //  wcsimrootsuperevent->AddSubEvent(); // make at least one event
     wcsimrootsuperevent->Initialize(); // make at least one event
+    wcsimrootsuperevent2->Initialize(); // make at least one event
     Int_t branchStyle = 1; //new style by default
     TTree::SetBranchStyle(branchStyle);
     Int_t bufsize = 64000;
     
     //  TBranch *branch = tree->Branch("wcsimrootsuperevent", "Jhf2kmrootsuperevent", &wcsimrootsuperevent, bufsize,0);
-    TBranch *branch = WCSimTree->Branch("wcsimrootevent", "WCSimRootEvent", &wcsimrootsuperevent, bufsize,2);
+    wcsimrooteventbranch = WCSimTree->Branch("wcsimrootevent", "WCSimRootEvent", &wcsimrootsuperevent, bufsize,2);
+    wcsimrooteventbranch2 = WCSimTree->Branch("wcsimrootevent2", "WCSimRootEvent", &wcsimrootsuperevent2, bufsize,2);
     
     // Geometry tree
-    
     geoTree = new TTree("wcsimGeoT","WCSim Geometry Tree");
     wcsimrootgeom = new WCSimRootGeom();
     geoTree->Branch("wcsimrootgeom", "WCSimRootGeom", &wcsimrootgeom, bufsize,0);
-    
     FillGeoTree();
 
     // Options tree
@@ -264,7 +265,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   cherenkovHitsTree->Branch("Event",&event,"Event/Int_t");
   cherenkovHitsTree->Branch("SubEvent",&subevent,"SubEvent/Int_t");
   cherenkovHitsTree->Branch("NHits",&(evNtup->totalNumHits),"NHits/Int_t");   // #PMTs x #(Ch+DN)hits/PMTs
-  cherenkovHitsTree->Branch("NHits_noDN",&(evNtup->totalNumHits_noNoise),"NHits_noDN/Int_t");   // #PMTs x #(Ch+DN)hits/PMTs
+  cherenkovHitsTree->Branch("NHits_noDN",&(evNtup->totalNumHits_noNoise),"NHits_noDN/Int_t");   // #PMTs x #(Ch)hits/PMTs
   cherenkovHitsTree->Branch("NPMTs",&(evNtup->numTubesHit),"NPMTs/Int_t");
   cherenkovHitsTree->Branch("NPMTs_noDN",&(evNtup->numTubesHit_noNoise),"NPMTs_noDN/Int_t");
   cherenkovHitsTree->Branch("Time",(evNtup->truetime),"Time[NHits]/Float_t");
@@ -533,6 +534,7 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
     // Clean up stuff on the heap; I think deletion of hfile and trees
     // is taken care of by the file close
     delete wcsimrootsuperevent; wcsimrootsuperevent=0;
+    delete wcsimrootsuperevent2; wcsimrootsuperevent2=0;
     delete wcsimrootgeom; wcsimrootgeom=0;
   }
 
@@ -547,6 +549,9 @@ void WCSimRunAction::FillGeoTree(){
   G4double pmtradius;
   G4int numpmt;
   G4int orientation;
+  G4double pmtradius2;//Hybrid configuration
+  G4int numpmt2;//Hybrid configuration
+  G4int orientation2;//Hybrid configuration
   Float_t offset[3];
  
   Float_t rotation[3];
@@ -579,9 +584,12 @@ void WCSimRunAction::FillGeoTree(){
 
   pmtradius = wcsimdetector->GetPMTSize1();
   numpmt = wcsimdetector->GetTotalNumPmts();
+  pmtradius2 = 4.0;//B.Q debug, Temp wcsimdetector->GetPMTSize1();
+  numpmt2 = wcsimdetector->GetTotalNumPmts2();//Hybrid configuration
   orientation = 0;
   
   wcsimrootgeom-> SetWCPMTRadius(pmtradius);
+  wcsimrootgeom-> SetWCPMTRadius(pmtradius2,true);
   wcsimrootgeom-> SetOrientation(orientation);
   
   G4ThreeVector offset1= wcsimdetector->GetWCOffset();
@@ -637,15 +645,36 @@ void WCSimRunAction::FillGeoTree(){
     mPMTNo = pmt->Get_mPMTid();
     mPMT_pmtNo = pmt->Get_mPMT_pmtid();
     cylLoc = pmt->Get_cylocation();
-    wcsimrootgeom-> SetPMT(i,tubeNo,mPMTNo, mPMT_pmtNo, cylLoc,rot,pos);
+    wcsimrootgeom-> SetPMT(i,tubeNo,mPMTNo, mPMT_pmtNo, cylLoc,rot,pos,true,false);
   }
   if (fpmts->size() != (unsigned int)numpmt) {
     G4cout << "Mismatch between number of pmts and pmt list in geofile.txt!!"<<G4endl;
     G4cout << fpmts->size() <<" vs. "<< numpmt <<G4endl;
   }
-  
-  wcsimrootgeom-> SetWCNumPMT(numpmt);
-  
+  //Hybrid version
+  std::vector<WCSimPmtInfo*> *fpmts2 = wcsimdetector->Get_Pmts2();
+  for (unsigned int i=0;i!=fpmts2->size();i++){
+    pmt = ((WCSimPmtInfo*)fpmts2->at(i));
+    pos[0] = pmt->Get_transx();
+    pos[1] = pmt->Get_transy();
+    pos[2] = pmt->Get_transz();
+    rot[0] = pmt->Get_orienx();
+    rot[1] = pmt->Get_orieny();
+    rot[2] = pmt->Get_orienz();
+    tubeNo = pmt->Get_tubeid();
+    mPMTNo = pmt->Get_mPMTid();
+    mPMT_pmtNo = pmt->Get_mPMT_pmtid();
+    cylLoc = pmt->Get_cylocation();
+    wcsimrootgeom-> SetPMT(i,tubeNo,mPMTNo, mPMT_pmtNo, cylLoc,rot,pos,true,true);
+  }
+  if (fpmts2->size() != (unsigned int)numpmt2) {
+    G4cout << "Mismatch between number of pmts and pmt list in geofile.txt!!"<<G4endl;
+    G4cout << fpmts2->size() <<" vs. "<< numpmt2 <<G4endl;
+  }
+
+  wcsimrootgeom-> SetWCNumPMT(numpmt,false);
+  wcsimrootgeom-> SetWCNumPMT(numpmt2,true);
+
   geoTree->Fill();
   TFile* hfile = geoTree->GetCurrentFile();
   //hfile->Write(); 

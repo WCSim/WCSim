@@ -16,7 +16,7 @@ class WCSimWCPMT : public G4VDigitizerModule
 {
 public:
   
-  WCSimWCPMT(G4String name, WCSimDetectorConstruction*);
+  WCSimWCPMT(G4String name, WCSimDetectorConstruction*, G4String detectorElement);
   ~WCSimWCPMT();
   
    void ReInitialize() { DigiHitMapPMT.clear(); TriggerTimes.clear(); }
@@ -39,7 +39,8 @@ public:
 
   WCSimWCDigitsCollection*  DigitsCollection;  
   WCSimDetectorConstruction* myDetector;
-
+  G4String detectorElement;
+  
 };
 
 #endif

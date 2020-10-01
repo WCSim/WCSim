@@ -1,6 +1,8 @@
 // Based on Root test Event.cxx
 ////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
+#include <iomanip>
 #include "TObject.h"
 #include "TDirectory.h"
 #include "TProcessID.h"
@@ -20,6 +22,7 @@ ClassImp(WCSimRootEventHeader)
 ClassImp(WCSimRootTrigger)
 ClassImp(WCSimRootEvent)
 #endif
+//#define DEBUG
 
 //TClonesArray* WCSimRootTrigger::fgTracks = 0;
 //
@@ -410,7 +413,11 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID, Int_t mPMTID, Int_t mPMT_PMTID, std::vector<Float_t> truetime,std::vector<Int_t> primParID)
+WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
+							 Int_t mPMTID,
+							 Int_t mPMT_PMTID,
+							 std::vector<Float_t> truetime,
+							 std::vector<Int_t> primParID)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -422,6 +429,10 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID, Int_t mPM
     WCSimRootCherenkovHitTime *cherenkovhittime = 
       new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i]);
   }
+  
+#ifdef DEBUG
+  std::cout << "Debug B.Q: A new Cherenkov hit was added for tube " << tubeID << ", corresponding to PMT = " << mPMTID << ", and to small PMT in mPMT = " << mPMT_PMTID << std::endl;
+#endif
 
   Int_t WC_Index[2];
   WC_Index[0] = fNcherenkovhittimes-truetime.size(); //fCherenkovHitCounter-truetime.size();

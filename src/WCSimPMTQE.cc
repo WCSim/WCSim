@@ -4,6 +4,7 @@
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
+#include "WCSimTuningParameters.hh"
 
 /***********************************************************
  *
@@ -46,7 +47,7 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4String CollectionName, G4float Pho
       return 0;
     }
   }
-  
+
   WCSimPMTObject *PMT;
   PMT = GetPMTPointer(CollectionName);
   G4float *wavelength;
@@ -57,9 +58,19 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4String CollectionName, G4float Pho
   maxQE = PMT->GetmaxQE();
   G4double wavelengthQE = 0;
 
+  //Added by B.Quilain 2018/07/25
+  G4double QEFF = 1.0;
+  QEFF = WCSimTuningParams->GetQeff();   //defaults in mac: 1.
+  //maxQE *= QEFF;
+  //for (int i=0; i<20; i++){
+  //	*(QE+i) *= QEFF;//QE is an array with 20 entries, see src/WCSimPMTObject.cc
+  //}
+  //
+
   if (flag == 1){
     //MF: off by one bug fix.
     for (int i=0; i<=18; i++){
+
 	  if ( PhotonWavelength <= *(wavelength+(i+1))){
 		wavelengthQE = *(QE+i) + 
 		  (*(QE+(i+1))-*(QE+i))/(*(wavelength+(i+1))-*(wavelength+i))*
@@ -70,7 +81,13 @@ G4float WCSimDetectorConstruction::GetPMTQE(G4String CollectionName, G4float Pho
   }else if (flag == 0){
 	wavelengthQE = maxQE; 
   }
-  wavelengthQE = wavelengthQE *ratio;
+  wavelengthQE = wavelengthQE*ratio*QEFF;
+
+  //Added by B.Quilain 2018/07/25
+  //for (int i=0; i<20; i++){
+	//*(QE+i) /= QEFF;
+  //}
+  //
   
   return wavelengthQE;
 }

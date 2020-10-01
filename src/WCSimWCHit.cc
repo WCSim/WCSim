@@ -32,6 +32,7 @@ WCSimWCHit::WCSimWCHit(const WCSimWCHit& right)
   tubeID   = right.tubeID;
   edep      = right.edep;
   pos       = right.pos;
+  tubeType = right.tubeType;
 }
 
 const WCSimWCHit& WCSimWCHit::operator=(const WCSimWCHit& right)
@@ -40,6 +41,8 @@ const WCSimWCHit& WCSimWCHit::operator=(const WCSimWCHit& right)
   tubeID   =  right.tubeID;
   edep      = right.edep;
   pos       = right.pos;
+  tubeType = right.tubeType;
+
   return *this;
 }
 
@@ -61,6 +64,7 @@ void WCSimWCHit::Draw()
     // volumeName should be compared to ID/OD CollectionName of the SensitiveDetector
     // instead of accessing those exactly here, just grab the substring: It should be "a" glassFaceWCPMT. Later optional check for OD?
     if ( volumeName.find("glassFaceWCPMT") != std::string::npos ||
+	 volumeName.find("glassFaceWCPMT2") != std::string::npos || 
 	 volumeName.find("glassFaceWCPMT_refl") != std::string::npos) //isn't this deprecated??
     { 
 
@@ -103,7 +107,8 @@ void WCSimWCHit::Print()
   G4cout.setf(std::ios::fixed);
   G4cout.precision(1);
 
-  G4cout << " Tube:"  << std::setw(4) << tubeID 
+  G4cout << " Tube:"  << std::setw(4) << tubeID
+	 << " Tube type:"  << tubeType 
 	 << " Track:" << std::setw(6) << trackID 
 	 << " Pe:"    << totalPe
 	 << " Pos:"   << pos/cm << G4endl

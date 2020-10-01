@@ -44,8 +44,18 @@ int main(int argc,char** argv)
   WCSimTuningParameters* tuningpars = new WCSimTuningParameters();
 
   // Get the tuning parameters
-  file_exists("macros/tuning_parameters.mac");
-  UI->ApplyCommand("/control/execute macros/tuning_parameters.mac");
+  //hack B.Q
+  G4cout << "B.Q: Read argv[2], which should contains the tuning parameters" << G4endl;
+  G4String fileName2 = argv[2];
+  file_exists(fileName2);
+  if(fileName2 == "vis.mac"){
+    G4cout << "ERROR: Execute without arg for interactive mode" << G4endl;
+    //return -1;
+  }
+  G4String command2 = "/control/execute ";
+  UI->ApplyCommand(command2+fileName2);
+  //file_exists("macros/tuning_parameters.mac");
+  //UI->ApplyCommand("/control/execute macros/tuning_parameters.mac");
 
   // define random number generator parameters
   WCSimRandomParameters *randomparameters = new WCSimRandomParameters();
@@ -65,8 +75,10 @@ int main(int argc,char** argv)
 
   // Currently, default physics list is set to FTFP_BERT
   // The custom WCSim physics list option is removed in versions later than WCSim1.6.0
-  file_exists("macros/jobOptions.mac");
-  UI->ApplyCommand("/control/execute macros/jobOptions.mac");
+  char * WCSIMDIR = getenv("WCSIMDIR");
+  G4cout << "B.Q: Read" << Form("/control/execute %s/macros/jobOptions.mac",WCSIMDIR) << G4endl;
+  file_exists(Form("%s/macros/jobOptions.mac",WCSIMDIR));
+  UI->ApplyCommand(Form("/control/execute %s/macros/jobOptions.mac",WCSIMDIR));
 
   // Initialize the physics factory to register the selected physics.
   physFactory->InitializeList();
@@ -77,6 +89,7 @@ int main(int argc,char** argv)
   visManager->Initialize();
 
   // Set user action classes
+  G4cout << "B.Q: Initialization" << G4endl;
   WCSimPrimaryGeneratorAction* myGeneratorAction = new 
     WCSimPrimaryGeneratorAction(WCSimdetector);
   runManager->SetUserAction(myGeneratorAction);
@@ -127,6 +140,8 @@ int main(int argc,char** argv)
   }
   else           // Batch mode
   { 
+    G4cout << "WE WILL EXECUTE THE MAC FILE READING SO IN BATCH MODE" << G4endl;
+
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
     file_exists(fileName);

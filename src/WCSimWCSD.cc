@@ -19,8 +19,8 @@
 
 #include "WCSimSteppingAction.hh"
 
-WCSimWCSD::WCSimWCSD(G4String CollectionName, G4String name,WCSimDetectorConstruction* myDet)
-:G4VSensitiveDetector(name)
+WCSimWCSD::WCSimWCSD(G4String CollectionName, G4String name,WCSimDetectorConstruction* myDet, G4String detectorElement)
+  :G4VSensitiveDetector(name), detectorElement(detectorElement)
 {
   // Place the name of this collection on the list.  We can have more than one
   // in principle.  CollectionName is a vector.
@@ -108,7 +108,15 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   // they don't in skdetsim. 
   if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition())
     return false;
-  G4String WCIDCollectionName = fdet->GetIDCollectionName();
+  G4String WCCollectionName;
+  if(detectorElement=="tank") WCCollectionName = fdet->GetIDCollectionName();
+  else if (detectorElement=="tankPMT2") WCCollectionName = fdet->GetIDCollectionName2();
+
+  //= fdet->GetIDCollectionName();
+  //WCSimPMTObject *PMT = fdet->GetPMTPointer(WCIDCollectionName);//B.Q
+  //G4cout << "PMT associated to collection = " << PMT->GetPMTName() << G4endl;
+  //if(volumeName == ) WCIDCollectionName = fdet->GetIDCollectionName();
+  //G4String WCIDCollectionName2 = fdet->GetIDCollectionName2();
   // M Fechner : too verbose
   //  if (aStep->GetTrack()->GetTrackStatus() == fAlive)G4cout << "status is fAlive\n";
   if ((aStep->GetTrack()->GetTrackStatus() == fAlive )
@@ -155,14 +163,16 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   //  tubeTag << ":" << theTouchable->GetVolume(i)->GetCopyNo(); 
 
   // Debug:
-  //  G4cout << "================================================" << G4endl;
-  //  G4cout << tubeTag.str() << std::endl;
-  //  G4cout << "================================================" << G4endl;
+  //G4cout << "================================================" << G4endl;
+  //G4cout << tubeTag.str() << std::endl;
+  //G4cout << "================================================" << G4endl;
 
   // Get the tube ID from the tubeTag
-  G4int replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
+  G4int replicaNumber;// = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
+  if(detectorElement=="tank") replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
+  else if(detectorElement=="tankPMT2") replicaNumber = WCSimDetectorConstruction::GetTubeID2(tubeTag.str());
+  else G4cout << "detectorElement not defined..." << G4endl;
 
-    
   G4float theta_angle = 0.;
   G4float effectiveAngularEfficiency = 0.;
 
@@ -175,7 +185,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   if (fdet->GetPMT_QE_Method()==1 || fdet->GetPMT_QE_Method() == 4){
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
-    maxQE = fdet->GetPMTQE(WCIDCollectionName,wavelength,0,240,660,ratio);
+    maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,240,660,ratio);
+    //maxQE = fdet->GetPMTQE(volumeName,wavelength,0,240,660,ratio);//B. Quilain, Hybrid configuration
     photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
     photonQE = photonQE/maxQE;
   }else if (fdet->GetPMT_QE_Method()==3){
@@ -184,7 +195,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   }
   
   
-
+  //photonQE = 1;
   if (G4UniformRand() <= photonQE){
     
      G4double local_x = localPosition.x();
@@ -203,11 +214,12 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
        hitsCollection = (WCSimWCHitsCollection*)(HCofEvent->GetHC(collectionID));
       
        // If this tube hasn't been hit add it to the collection	 
-       if (this->PMTHitMap[replicaNumber] == 0)
+       if (PMTHitMap[replicaNumber] == 0)
        //if (PMTHitMap.find(replicaNumber) == PMTHitMap.end())  TF attempt to fix
 	 {
 	   WCSimWCHit* newHit = new WCSimWCHit();
 	   newHit->SetTubeID(replicaNumber);
+	   //newHit->SetTubeType(volumeName);//B. Quilain
 	   newHit->SetTrackID(trackID);
 	   newHit->SetEdep(energyDeposition); 
 	   newHit->SetLogicalVolume(thePhysical->GetLogicalVolume());
@@ -217,7 +229,6 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   
 	   aTrans.Invert();
 	   newHit->SetPos(aTrans.NetTranslation());
-	   
 	   // Set the hitMap value to the collection hit number
 	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
@@ -242,7 +253,7 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
 {
 
  
-  if (verboseLevel>0) 
+  if (verboseLevel>1) 
   { 
     //Need to specify which collection in case multiple geometries are built:
     G4String WCIDCollectionName = fdet->GetIDCollectionName();
@@ -255,7 +266,19 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
     G4cout << "There are " << numHits << " tubes hit in the WC: " << G4endl;
     for (G4int i=0; i < numHits; i++) 
       (*hitsCollection)[i]->Print();
+
+    //Added by B. Quilain for the hybrid version
+    if (fdet->GetHybridPMT()) { //TD 2019/07/13
+      G4String WCIDCollectionName2 = fdet->GetIDCollectionName2();
+      G4int collectionID2 = SDman->GetCollectionID(WCIDCollectionName2);
+      hitsCollection2 = (WCSimWCHitsCollection*)HCE->GetHC(collectionID2);
     
+      G4int numHits2 = hitsCollection2->entries();
+
+      G4cout << "There are " << numHits2 << " tubes hit in the WC: " << G4endl;
+      for (G4int i=0; i < numHits2; i++) 
+	(*hitsCollection2)[i]->Print();
+    }
       /*
     {
       if(abs((*hitsCollection)[i]->GetTubeID() - 1584)  < 5){

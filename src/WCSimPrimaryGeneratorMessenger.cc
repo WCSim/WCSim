@@ -68,6 +68,14 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
     }
+    else if ( newValue == "rootracker")   //M. Scott: Addition of Rootracker events
+    {
+      myAction->SetMulineEvtGenerator(false);
+      myAction->SetGunEvtGenerator(false);
+      myAction->SetRootrackerEvtGenerator(true);
+      myAction->SetLaserEvtGenerator(false);
+      myAction->SetGPSEvtGenerator(false);
+    }
     else if ( newValue == "laser")   //T. Akiri: Addition of laser
     {
       myAction->SetMulineEvtGenerator(false);
@@ -83,14 +91,6 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(true);
-    }
-    else if ( newValue == "rootracker")   //M. Scott: Addition of Rootracker events
-    {
-      myAction->SetMulineEvtGenerator(false);
-      myAction->SetRootrackerEvtGenerator(true);
-      myAction->SetGunEvtGenerator(false);
-      myAction->SetLaserEvtGenerator(false);
-      myAction->SetGPSEvtGenerator(false);
     }
   }
 

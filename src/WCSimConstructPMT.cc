@@ -23,7 +23,7 @@
 //WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
 //ToDo: use enum instead of string for PMTtype, and PMTs should be objects of one simple class.
-G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName)
+G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName, G4String detectorElement, G4int nIDPMTs)//Modified by B.Q, 2018/12 to incorporate number of ID PMTs in the function input
 {
   PMTKey_t key(PMTName,CollectionName);
 
@@ -49,7 +49,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   G4double expose = 0.;
   G4double radius = 0.;
   G4double glassThickness = 0.;
-    
+
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
   expose = PMT->GetExposeHeight();
   radius = PMT->GetRadius();                            //r at height = expose
@@ -83,8 +83,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   G4bool addPMTBase = false; 
   G4double pmtModuleHeight = 54.*CLHEP::mm; //includes puck and single PMT support, not PMT base.
     
+  G4cout << "Number of PMTs per Vessel, in ConstructPMT = " << nIDPMTs << G4endl;
 
-  if(nID_PMTs == 1){
+  if(nIDPMTs == 1){
 
     //All components of the PMT are now contained in a single logical volume logicWCPMT.
     //Origin is on the blacksheet, faces positive z-direction.
@@ -132,14 +133,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     // ToDo: extend the shell 
     /////////////////////////////
 
+    G4cout << mPMT_vessel_radius_curv << ", " << mPMT_outer_material_d << ", " << expose << ", " << dist_pmt_vessel << G4endl;
 
     // for single PMTs no overlap issues and will rest on flat black sheets
     // Need spherical shell for curved top to better match (and reduce overlaps) with
     // gel layer ("container") and vessel.
     solidWCPMT =
       new G4Sphere("WCPMT",
-		   vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight, //rMin, 54mm is position of support structure
-		   vessel_radius_curv - mPMT_outer_material_d,          //rMax
+		   mPMT_vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight, //rMin, 54mm is position of support structure
+		   mPMT_vessel_radius_curv - mPMT_outer_material_d,          //rMax
 		   0.0*deg,                                             //phiStart
 		   360.0*deg,                                           //Deltaphi
 		   0.0*deg,                                             //thetaStart
@@ -152,8 +154,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     
 
     //z=0 for spherical shell needs to be shifted
-    wcpmt_z_offset = vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight;
-    position_z_offset = vessel_radius_curv - mPMT_outer_material_d - expose - dist_pmt_vessel;
+    wcpmt_z_offset = mPMT_vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight;
+    position_z_offset = mPMT_vessel_radius_curv - mPMT_outer_material_d - expose - dist_pmt_vessel;
+    G4cout << mPMT_vessel_radius_curv << ", " << mPMT_outer_material_d << ", " << expose << ", " << dist_pmt_vessel << G4endl;
   }
   
   /*
@@ -330,7 +333,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   //////////////////////////
   /// Optional Reflector ///
   //////////////////////////
-  
+    
   if(id_reflector_height > 0.1*CLHEP::mm 
      && (reflectorRadius-radius) > -5*CLHEP::mm){
 
@@ -374,8 +377,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   }
   
 
+  G4cout << id_reflector_height << ", " << id_reflector_height - radius << ", " << radius << ", " << reflectorThickness << ", " << reflectorRadius << ", " << id_reflector_z_offset << ", " << position_z_offset << G4endl;
 
-  if(nID_PMTs > 1){
+  if(nIDPMTs > 1){
     ////////////////////
     /// 1-PMT support //
     ////////////////////
@@ -383,9 +387,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     G4Cons * solidWCPMTsupport =
       new G4Cons("WCPMTsupport",
 		 0.,                                                                      //rmin1
-		 tan(mPMT_pmt_openingAngle)*(vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight),      //rmax1
+		 tan(mPMT_pmt_openingAngle)*(mPMT_vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight),      //rmax1
 		 0.,                                                                      //rmin2
-		 tan(mPMT_pmt_openingAngle)*(vessel_radius_curv - mPMT_outer_material_d
+		 tan(mPMT_pmt_openingAngle)*(mPMT_vessel_radius_curv - mPMT_outer_material_d
 			       -expose - dist_pmt_vessel),                                //rmax2
 		 (pmtModuleHeight - expose - dist_pmt_vessel)/2,                                   //h/2
 		 0.0*deg,                                                                 //phiStart
@@ -419,11 +423,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
        && (reflectorRadius-radius) > -5*CLHEP::mm){
       
       G4double ReflectorHolderZ[3] = {0, id_reflector_z_offset, id_reflector_z_offset+id_reflector_height};
-      G4double ReflectorHolderR[3] = {tan(mPMT_pmt_openingAngle)*(vessel_radius_curv - mPMT_outer_material_d
+      G4double ReflectorHolderR[3] = {tan(mPMT_pmt_openingAngle)*(mPMT_vessel_radius_curv - mPMT_outer_material_d
 						    -expose - dist_pmt_vessel),
-				      tan(mPMT_pmt_openingAngle)*(vessel_radius_curv - mPMT_outer_material_d
+				      tan(mPMT_pmt_openingAngle)*(mPMT_vessel_radius_curv - mPMT_outer_material_d
 						    -expose - dist_pmt_vessel+id_reflector_z_offset),
-				      tan(mPMT_pmt_openingAngle)*(vessel_radius_curv - mPMT_outer_material_d
+				      tan(mPMT_pmt_openingAngle)*(mPMT_vessel_radius_curv - mPMT_outer_material_d
 						    -expose - dist_pmt_vessel+id_reflector_z_offset
 						    +id_reflector_height)};
       
@@ -476,7 +480,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   // make a new one
   if( ! SDman->FindSensitiveDetector(SDName, false) ) {
     
-    aWCPMT = new WCSimWCSD(CollectionName,SDName,this );
+    aWCPMT = new WCSimWCSD(CollectionName,SDName,this,detectorElement);
     SDman->AddNewDetector( aWCPMT );
   }
 
