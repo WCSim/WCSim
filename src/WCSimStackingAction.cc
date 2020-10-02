@@ -35,7 +35,6 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
     // than to throw in a global factor  at Digitization time !
     // G4float ratio = 1./(1.0-0.25);
     G4float ratio = 0.5;
-    ratio = 1;
     // XQ: get the maximum QE and multiply it by the ratio
     // only work for the range between 240 nm and 660 nm for now
     // Even with WLS
