@@ -1,7 +1,16 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
-09/10/2020: Notes for v1.9.0        
+10/02/2020: Notes for v1.9.1        
+*************************************************************
+
+This release includes a bug fix in a python helper script and support for Python3. 
+
+Bug Fix
+* Pull Request [#293](https://github.com/WCSim/WCSim/pull/293): Fix missing events when using kin_converter.py and upgrade to support Python 3
+
+*************************************************************
+08/10/2020: Notes for v1.9.0        
 *************************************************************
 
 This release includes changes that allow for supernova neutrinos to be more easily simulated. The ability for tools to work in ROOT6 has also been included. 
