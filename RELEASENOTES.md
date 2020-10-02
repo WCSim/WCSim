@@ -7,7 +7,16 @@ Bug Fixes:
 * In v1.5.0, the dark rate was not being set correctly in the case where the default detector was not used (unless the dark rate was explicitly specified in the macro). This release now correctly implements the dark rate based on the photodector type used in the detector configuration, even when the non-default detector configuration is called. 
 
 *************************************************************
-09/10/2020: Notes for v1.9.0        
+10/02/2020: Notes for v1.9.1        
+*************************************************************
+
+This release includes a bug fix in a python helper script and support for Python3. 
+
+Bug Fix
+* Pull Request [#293](https://github.com/WCSim/WCSim/pull/293): Fix missing events when using kin_converter.py and upgrade to support Python 3
+
+*************************************************************
+08/10/2020: Notes for v1.9.0        
 *************************************************************
 
 This release includes changes that allow for supernova neutrinos to be more easily simulated. The ability for tools to work in ROOT6 has also been included. 
