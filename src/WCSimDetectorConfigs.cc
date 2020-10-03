@@ -538,7 +538,7 @@ void WCSimDetectorConstruction::SetNuPrismShort_mPMTGeometry()
     WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = vessel_tot_height;
-    WCPMTperCellHorizontal = 2.0; // 2 per phi
+    WCPMTperCellHorizontal = 1.0;
     WCPMTperCellVertical   = 1.0;
 
 	// Numbers below are based on R.Henderson's 832 module tank design
