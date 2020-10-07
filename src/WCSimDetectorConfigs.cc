@@ -410,7 +410,7 @@ void WCSimDetectorConstruction::SetNuPrism_mPMTGeometry()
 	vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
 	vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
 	vessel_radius = 254.*CLHEP::mm;
-	dist_pmt_vessel = 2*CLHEP::mm;      
+	dist_pmt_vessel = 8*CLHEP::mm;      
 	orientation = PERPENDICULAR;
 	mPMT_outer_material = "G4_PLEXIGLASS";
 	mPMT_inner_material = "Air";               // TODO: real air, hence update abs_length
@@ -418,10 +418,10 @@ void WCSimDetectorConstruction::SetNuPrism_mPMTGeometry()
 	mPMT_outer_material_d = 10*CLHEP::mm;
 	
 	// Radius of cone at z=reflectorHeight
-	id_reflector_height = 6.53*CLHEP::mm;        // for a radius of 7.25mm, for hex: 5.4mm (radius of 6mm)
-	id_reflector_z_offset = 4.8*CLHEP::mm;       //from KM3Net CAD drawings
-	id_reflector_angle = 48.*CLHEP::deg;         // Need to be remeasured for different PMT curvature 
-	mPMT_pmt_openingAngle = 8.7*CLHEP::deg;     // for hex: 8.5deg
+	id_reflector_height = 9.29*CLHEP::mm;        // From solidworks CAD drawings
+	id_reflector_z_offset = 6.12*CLHEP::mm;
+	id_reflector_angle = 46.5*CLHEP::deg;
+	mPMT_pmt_openingAngle = 8.3*CLHEP::deg;
 	G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
 	
 	// parameters related to filling the ID mPMT
@@ -463,7 +463,7 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_mPMTGeometry()
 	vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
 	vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
 	vessel_radius = 254.*CLHEP::mm;
-	dist_pmt_vessel = 2*CLHEP::mm;      
+	dist_pmt_vessel = 8*CLHEP::mm;      
 	orientation = PERPENDICULAR;
 	mPMT_outer_material = "G4_PLEXIGLASS";
 	mPMT_inner_material = "Air";               // TODO: real air, hence update abs_length
@@ -471,10 +471,10 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_mPMTGeometry()
 	mPMT_outer_material_d = 10*CLHEP::mm;
 	
 	// Radius of cone at z=reflectorHeight
-	id_reflector_height = 6.53*CLHEP::mm;        // for a radius of 7.25mm, for hex: 5.4mm (radius of 6mm)
-	id_reflector_z_offset = 4.8*CLHEP::mm;       //from KM3Net CAD drawings
-	id_reflector_angle = 48.*CLHEP::deg;         // Need to be remeasured for different PMT curvature 
-	mPMT_pmt_openingAngle = 8.7*CLHEP::deg;     // for hex: 8.5deg
+	id_reflector_height = 9.29*CLHEP::mm;        // From solidworks CAD drawings
+	id_reflector_z_offset = 6.12*CLHEP::mm;
+	id_reflector_angle = 46.5*CLHEP::deg; 
+	mPMT_pmt_openingAngle = 8.3*CLHEP::deg;
 	G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
 	
 	// parameters related to filling the ID mPMT
@@ -523,10 +523,10 @@ void WCSimDetectorConstruction::SetNuPrismShort_mPMTGeometry()
 	mPMT_outer_material_d = 10*CLHEP::mm;   //me: dome thickness
 	
 	// Radius of cone at z=reflectorHeight
-	id_reflector_height = 9.29*CLHEP::mm;        // for a radius of 7.25mm, for hex: 5.4mm (radius of 6mm)
-	id_reflector_z_offset = 6.12*CLHEP::mm;       //from KM3Net CAD drawings
-	id_reflector_angle = 46.5*CLHEP::deg;         // Need to be remeasured for different PMT curvature
-	mPMT_pmt_openingAngle = 8.3*CLHEP::deg;     // for hex: 8.5deg
+	id_reflector_height = 9.29*CLHEP::mm;        // From solidworks CAD drawings
+	id_reflector_z_offset = 6.12*CLHEP::mm;
+	id_reflector_angle = 46.5*CLHEP::deg;
+	mPMT_pmt_openingAngle = 8.3*CLHEP::deg;
 	G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
 	
 	// parameters related to filling the ID mPMT

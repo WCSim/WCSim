@@ -388,10 +388,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     if(id_reflector_height > 0.1*CLHEP::mm 
        && (reflectorRadius-radius) > -5*CLHEP::mm){
       
-      G4double ReflectorHolderZ[4] = {0, 22.89, 42.04, 47.18};
-      G4double ReflectorHolderR[4] = {39.735, 43.15, 45.89, 46.615};
-      
-      G4double ReflectorHolderr[4] = {26.75, 40.52, 40.52, 45.935};
+      // Reflector is a G4PolyCone:
+      // Each set of (Z, R, r) defines an edge around the polycone by it's height position (z) inner radius (r) and outer radius (R).
+      G4double ReflectorHolderZ[4] = {0*mm, 22.89*mm, 42.04*mm, 47.18*mm};
+      G4double ReflectorHolderR[4] = {39.735*mm, 43.15*mm, 45.89*mm, 46.615*mm};
+      G4double ReflectorHolderr[4] = {26.75*mm, 40.52*mm, 40.52*mm, 45.935*mm};
       
       G4Polycone * solidWCPMTsupport2 =
 	new G4Polycone("WCPMTsupport2",
@@ -412,8 +413,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     new G4LogicalSkinSurface("FoamLogSkinSurface2",logicWCPMTsupport2,OpGelFoamSurface);
     logicWCPMTsupport2->SetVisAttributes(WCPMTVisAtt_sup);
 
+    double reflectorHolderZ = 272.36*mm; // position of z=0 of the reflector holder with respect to the origin of the mother volume
     new G4PVPlacement(0,
-		      G4ThreeVector(0, 0, 272.36), // value of the z=0 plane with respect to the origin
+		      G4ThreeVector(0, 0, reflectorHolderZ),
 		      logicWCPMTsupport2,
 		      "WCPMTsupport2",
 		      logicWCPMT,
