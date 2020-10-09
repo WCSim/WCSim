@@ -179,6 +179,10 @@ WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
 void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
   
+  //Get the PMT info for hit time smearing
+  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+  
   // G. Pronost 2019/09/09:
   // Hit need to be sorted! (This is done no where!)
   std::sort(WCHCPMT->GetVector()->begin(), WCHCPMT->GetVector()->end(), WCSimWCDigi::SortFunctor_Hit());
