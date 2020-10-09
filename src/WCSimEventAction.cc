@@ -275,6 +275,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 #endif
 
   //Convert the hits to PMT pulse
+  WCDMPMT->SetRelativeDigitizedHitTime(RelativeHitTime);
   WCDMPMT->Digitize();
 
   //

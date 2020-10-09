@@ -179,6 +179,10 @@ WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
 void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
   
+  // G. Pronost 2019/09/09:
+  // Hit need to be sorted! (This is done no where!)
+  std::sort(WCHCPMT->GetVector()->begin(), WCHCPMT->GetVector()->end(), WCSimWCDigi::SortFunctor_Hit());
+  
   //loop over entires in WCHCPMT, each entry corresponds to
   //the photons on one PMT
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)

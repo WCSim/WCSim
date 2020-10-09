@@ -23,6 +23,8 @@
 extern "C" void skrn1pe_(float* );
 //extern "C" void rn1pe_(float* ); // 1Kton
 
+G4double WCSimWCPMT::first_time = 0;
+
 WCSimWCPMT::WCSimWCPMT(G4String name,
 				   WCSimDetectorConstruction* myDetector)
   :G4VDigitizerModule(name)
@@ -87,6 +89,9 @@ void WCSimWCPMT::Digitize()
 void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
 
+  // Sort Hit times
+  std::sort(WCHC->GetVector()->begin(), WCHC->GetVector()->end(), WCSimWCHit::SortFunctor_Hit());
+  
   // Get the info for pmt positions
   std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
   // It works out that the pmts here are ordered !
@@ -112,7 +117,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       // Get the information from the hit
       G4int   tube         = (*WCHC)[i]->GetTubeID();
       G4double peSmeared = 0.0;
-      double time_PMT, time_true;
+      G4double time_PMT, time_true;
       G4int  track_id      = (*WCHC)[i]->GetTrackID();
       
       
@@ -132,13 +137,24 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       G4ThreeVector pmt_position(hit_pos[0], hit_pos[1], hit_pos[2]);
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
+	  
+	    // Reset the time to have "reasonnable" timing
+	    // This modification is important in case of very late hit physics (such as in radioactive decays)     
+	    // for which time easy goes > 1e9 ns and cause bug in digitizer
+	    // should not use /grdm/decayBiasProfile biasprofile.dat as it messes up all the timing of the decays, and force to use only one nucleus
+	    if ( i == 0 && ip == 0 && RelativeHitTime /*&& (*WCHC)[i]->GetTime(ip) > 1e5*/ ) { // Set Max at 10 musec
+	      //G4cout << " Apply time correction to event hits of " << (*WCHC)[i]->GetTime(ip) << " ns" << G4endl;
+	      first_time = (*WCHC)[i]->GetTime(ip);
+	    } 
+
+
 	    time_true = (*WCHC)[i]->GetTime(ip);
 	    peSmeared = rn1pe();
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
 
 	    //apply time smearing
 	    float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
-	    time_PMT = time_true + PMT->HitTimeSmearing(Q);
+	    time_PMT = (time_true - first_time) + PMT->HitTimeSmearing(Q);
 
 	    if ( DigiHitMapPMT[tube] == 0) {
 	      WCSimWCDigi* Digi = new WCSimWCDigi();

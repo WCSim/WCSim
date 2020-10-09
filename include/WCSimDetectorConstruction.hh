@@ -329,6 +329,9 @@ public:
   G4double GetWCIDDiameter(){ return WCIDDiameter; }
 
   G4String GetIDCollectionName(){return WCIDCollectionName;}
+  
+  G4double GetIDRadius()     {return WCIDRadius;}
+  G4double GetIDHeight()     {return WCIDHeight;}
 
 private:
 

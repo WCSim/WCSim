@@ -46,6 +46,7 @@ public:
   WCSimRunAction* GetRunAction(){return runAction;}
   void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
   void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
+  void SetRelativeDigitizedHitTime (bool val) { RelativeHitTime = val;       }
 
   void FillFlatTree(G4int,
 		    const struct ntupleStruct&, 
@@ -65,6 +66,7 @@ private:
 
   G4String DigitizerChoice;
   G4String TriggerChoice;
+  bool     RelativeHitTime;
   bool     ConstructedDAQClasses;
   bool     SavedOptions;
 };
