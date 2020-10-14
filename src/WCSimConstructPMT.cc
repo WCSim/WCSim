@@ -138,12 +138,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     // gel layer ("container") and vessel.
     solidWCPMT =
       new G4Sphere("WCPMT",
-		   vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight, //rMin = 342 - 10 - 54 = 278 mm, 54mm is position of support structure
+		   vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight, //rMin = 342 - 10 - 59.62 = 272.38 mm, 59.62mm is position of support structure
 		   vessel_radius_curv - mPMT_outer_material_d,          //rMax = 332 mm
 		   0.0*deg,                                             //phiStart
 		   360.0*deg,                                           //Deltaphi
 		   0.0*deg,                                             //thetaStart
-		   mPMT_pmt_openingAngle);                                            //Deltatheta 8.7 deg                                            //Deltatheta
+		   mPMT_pmt_openingAngle);                                            //Deltatheta 8.3 deg                                            //Deltatheta
     // Once we have a full PMT support in (not urgent),
     // replacing the current "inner" black sphere support by using
     // G4Tesselated from CADMesh'ing an STL,
