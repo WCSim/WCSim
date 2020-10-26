@@ -154,8 +154,9 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
     for(std::vector<std::pair<float, float> >::iterator it2 = result.begin(); it2 != result.end(); it2++) {
 #ifdef HYPER_VERBOSITY
       //if(detectorElement=="tankPMT2")
-      G4cout<<"WCSimWCAddDarkNoise::AddDarkNoise adding dark noise in window "<<windowfordarknoise<<G4endl; windowfordarknoise++;
+      G4cout<<"WCSimWCAddDarkNoise::AddDarkNoise adding dark noise in window "<<windowfordarknoise<<G4endl; 
 #endif
+      windowfordarknoise++;
       AddDarkNoiseBeforeDigi(WCHCPMT,it2->first,it2->second);
     }
   }

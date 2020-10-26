@@ -82,12 +82,15 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
 
   WCSimWCPMT* WCDMPMT2;
   WCSimWCAddDarkNoise* WCDNM2;
+#ifdef DEBUG
+  std::cout<<"Debug B.Q: hybrid PMT = "<<myDetector->GetHybridPMT()<<", hybrid geom, so construct digitizer for 2 PMT types"<<std::endl;
+#endif
   //if(myDetector->GetHybridPMT()){
-  WCDMPMT2 = new WCSimWCPMT( "WCReadoutPMT2", myDetector,"tankPMT2");
-  DMman->AddNewModule(WCDMPMT2);
-  
-  WCDNM2 = new WCSimWCAddDarkNoise("WCDarkNoise2", detectorConstructor,"tankPMT2");
-  DMman->AddNewModule(WCDNM2);
+    WCDMPMT2 = new WCSimWCPMT( "WCReadoutPMT2", myDetector,"tankPMT2");
+    DMman->AddNewModule(WCDMPMT2);
+    
+    WCDNM2 = new WCSimWCAddDarkNoise("WCDarkNoise2", detectorConstructor,"tankPMT2");
+    DMman->AddNewModule(WCDNM2);
     //}
 }
 
@@ -447,17 +450,24 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
        WCDMPMT2 =
 	 (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT2");
        
+#ifdef DEBUG
+       std::cout<<"Debug B.Q: tmp"<<std::endl;
+#endif
        
        // new MFechner, aug 2006
        // need to clear up the old info inside PMT
-       WCDMPMT2->ReInitialize();
+      WCDMPMT2->ReInitialize();
      
      
 #ifdef TIME_DAQ_STEPS
      TStopwatch* ms = new TStopwatch();
      ms->Start();
 #endif
-     
+
+#ifdef DEBUG
+     G4cout<< "Debug B.Q: Digitization in a PMT: photons are gathered" << G4endl;     
+#endif
+
      //Convert the hits to PMT pulse
      WCDMPMT2->Digitize();
      
@@ -467,6 +477,10 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      
      //
      // First, add Dark noise hits before digitizing
+
+#ifdef DEBUG
+     G4cout<< "Debug B.Q: Add DN " << G4endl;     
+#endif
      
      //Get a pointer to the WC Dark Noise Module
      WCDNM2 =
@@ -482,6 +496,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      WCDM2 =
        (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadoutDigits2");
      
+#ifdef DEBUG
+     G4cout<< "Debug B.Q: Digitization by electronics" << G4endl;     
+#endif
      //Digitize the hits
      WCDM2->Digitize();
      
@@ -494,7 +511,11 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      
      //tell it the dark noise rate (for calculating the average dark occupancy -> can adjust the NDigits threshold)
      WCTM2->SetDarkRate(WCDNM2->GetDarkRate());
-     
+
+#ifdef DEBUG
+     G4cout<< "Debug B.Q: Trigger" << G4endl;     
+#endif
+
      //Apply the trigger
      // This takes the digits, and places them into trigger gates
      // Also throws away digits not contained in an trigger gate
@@ -652,21 +673,16 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     }
 #ifdef DEBUG
     std::cout << "B.Q: open the tree" << std::endl;
+#endif
     TTree* tree = GetRunAction()->GetTree();
     TBranch* branch = GetRunAction()->GetBranch("tank");
     TBranch* branch2;
     if(detectorConstructor->GetHybridPMT()) branch2= GetRunAction()->GetBranch("tankPMT2");    
-    std::cout << "B.Q: filling the tree" << std::endl;
     tree->Fill();
-    std::cout << "B.Q: restarting event" << std::endl;
     runAction->incrementEventsGenerated();
-    std::cout << "B.Q: reinitializing" << std::endl;
     wcsimrootsuperevent->ReInitialize();
-    std::cout << "B.Q: reinitialized 1" << std::endl;
     if(detectorConstructor->GetHybridPMT()) wcsimrootsuperevent2->ReInitialize();
-    std::cout << "B.Q: done" << std::endl;
-#endif
-    }
+  }
   /*
    if(GetRunAction()->GetRootFileOption()){
      FillRootEvent(event_id,

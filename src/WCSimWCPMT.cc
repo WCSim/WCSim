@@ -18,7 +18,8 @@
 #include <vector>
 // for memset
 #include <cstring>
-//#define HYPER_VERBOSITY
+#define HYPER_VERBOSITY
+//#define DEBUG
 
 extern "C" void skrn1pe_(float* );
 //extern "C" void rn1pe_(float* ); // 1Kton
@@ -144,12 +145,11 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
     G4cout<<"WCSimWCPMT::MakePeCorrection making PE correction for ";
   }
   if(WCHC){
-    G4cout<<WCHC->entries();
+    G4cout<<WCHC->entries()<<" hits"<<G4endl;
   } else {
-    G4cout<<"0";
+    G4cout<<"0 hits"<<G4endl;
   }
-  G4cout << "Type of PMT used for pe correction = " << PMT->GetPMTName() << G4endl;
-  G4cout<<" entries"<<G4endl;
+  G4cout << "Type of PMT used for pe correction = " << PMT->GetPMTName() <<G4endl;
 #endif
 
   float maxTotalPe = 1;
@@ -177,6 +177,9 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       // Set the position and rotation of the pmt (from WCSimWCAddDarkNoise.cc)
       Float_t hit_pos[3];
       Float_t hit_rot[3];
+#ifdef DEBUG
+	  std::cout << "tube : " << i << " (ID=" << tube << ")" << std::endl; //TD debug
+#endif
       
       WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( tube -1 );
       hit_pos[0] = 10*pmtinfo->Get_transx()/CLHEP::cm;
@@ -185,7 +188,6 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       hit_rot[0] = pmtinfo->Get_orienx();
       hit_rot[1] = pmtinfo->Get_orieny();
       hit_rot[2] = pmtinfo->Get_orienz();
-
       G4ThreeVector pmt_orientation(hit_rot[0], hit_rot[1], hit_rot[2]);
       G4ThreeVector pmt_position(hit_pos[0], hit_pos[1], hit_pos[2]);
 
@@ -198,13 +200,21 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
 	    time_true = (*WCHC)[i]->GetTime(ip);
 	    peSmeared = rn1pe();
-	    //std::cout << "tube : " << i << " (ID=" << tube << ")" << " hit in tube : "<< ip << " (time=" << time_true << "ns)"  << " pe value : " << peSmeared << std::endl; //TD debug
+#ifdef DEBUG
+	    std::cout << "tube : " << i << " (ID=" << tube << ")" << " hit in tube : "<< ip << " (time=" << time_true << "ns)"  << " pe value : " << peSmeared << std::endl; //TD debug
+#endif
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
 
 	    //apply time smearing
 	    float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+#ifdef DEBUG
+	    G4cout<<"PE smearing applied"<<G4endl;
+#endif
 	    //Qout = Q*PMT->QoutFactor(Q, QOIFF, linearity=0); 
 	    time_PMT = time_true + PMT->HitTimeSmearing(Q, ttsfactor/*, linearity=0 */);
+#ifdef DEBUG
+	    G4cout<<"Time smearing applied, is this a new hit in the digit map = "<<DigiHitMapPMT[tube]<<G4endl;
+#endif
 	    QinTOT += Q;
 	    
 	    if ( DigiHitMapPMT[tube] == 0) {
