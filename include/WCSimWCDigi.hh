@@ -150,6 +150,7 @@ public:
 	index_primaryparentid = primaryParentID[i];
         for (j = i; j > 0 && time[j-1] > index_time; j--) {
           time[j] = time[j-1];
+	  time_presmear[j] = time_presmear[j-1];
           pe[j] = pe[j-1];
 	  fDigiComp[j] = fDigiComp[j-1];
 	  primaryParentID[j] = primaryParentID[j-1];
