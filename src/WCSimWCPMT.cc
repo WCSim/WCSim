@@ -18,7 +18,7 @@
 #include <vector>
 // for memset
 #include <cstring>
-#define HYPER_VERBOSITY
+//#define HYPER_VERBOSITY
 //#define DEBUG
 
 extern "C" void skrn1pe_(float* );
@@ -38,10 +38,10 @@ WCSimWCPMT::WCSimWCPMT(G4String name,
   this->myDetector = myDetector;
   DigiHitMapPMT.clear();
 
-#ifdef HYPER_VERBOSITY
+  //#ifdef HYPER_VERBOSITY
   if(detectorElement=="tank") G4cout<<"WCSimWCPMT::WCSimWCPMT recording collection name "<<collectionName[0]<<G4endl;
   if(detectorElement=="tankPMT2") G4cout<<"WCSimWCPMT::WCSimWCPMT recording collection name "<<collectionName[0]<<G4endl;
-#endif
+  //#endif
 
 }
 
@@ -95,8 +95,8 @@ void WCSimWCPMT::Digitize()
     (WCSimWCHitsCollection*)(DigiMan->GetHitsCollection(WCHCID));
 #ifdef HYPER_VERBOSITY
   //if(detectorElement=="tankPMT2"){
-    G4cout<<"WCSimWCPMT::Digitize Making digits collection (WCSimWCDigitsCollection*)"<<DigitsCollectionName<<" for "<<detectorElement
-	  <<" and calling MakePeCorrection on "<<WCCollectionName<<" to fill it."<<G4endl;
+  G4cout<<"WCSimWCPMT::Digitize Making digits collection (WCSimWCDigitsCollection*)"<<DigitsCollectionName<<" for "<<detectorElement
+  <<" and calling MakePeCorrection on "<<WCCollectionName<<" to fill it."<<G4endl;
     //}
 #endif
 
@@ -108,8 +108,8 @@ void WCSimWCPMT::Digitize()
   
 #ifdef HYPER_VERBOSITY
   //if(detectorElement=="tankPMT2"){
-    G4cout<<"WCSimWCPMT::Digitize Storing "<<DigitsCollectionName<<" for "<<detectorElement
-	  <<", which has "<<DigitsCollection->entries()<<" entries"<<G4endl;
+  G4cout<<"WCSimWCPMT::Digitize Storing "<<DigitsCollectionName<<" for "<<detectorElement
+  <<", which has "<<DigitsCollection->entries()<<" entries"<<G4endl;
     //}
 #endif
 

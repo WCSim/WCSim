@@ -440,11 +440,11 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      if(detectorConstructor->GetHybridPMT()){
 #ifdef DEBUG
        G4cout<< "Debug B.Q: Entering the PMT2 type readout, hybrid = " << detectorConstructor->GetHybridPMT() << G4endl;     
-#endif
        
        G4cout<< "WCSimEventAction::EndOfEventAction() (WCSimWCHitsCollection*)" << WCIDCollectionName2
 	     << " has " << WCHC2->entries() << " entries" << G4endl;
        G4cout << G4endl;
+#endif
        
        // Get a pointer to the WC PMT module
        WCDMPMT2 =
