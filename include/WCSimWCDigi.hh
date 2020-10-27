@@ -69,6 +69,9 @@ private:
    */
   std::map<int, std::vector<int> > fDigiComp;
   std::map<int, G4int>    primaryParentID; ///< Primary parent ID of the Hit (do not use for Digits)
+  std::map<int, G4float>    photonStartTime; ///< Primary parent ID of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>    photonStartPos; ///< Start point of the photon of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>    photonEndPos; ///< End point of the photon of the Hit (do not use for Digits)
   
 
   //integrated hit/digit parameters
@@ -89,6 +92,9 @@ public:
   inline void SetTime(G4int gate, G4float T)    {time[gate]   = T;};
   inline void SetPreSmearTime(G4int gate, G4float T)    {time_presmear[gate]   = T;};
   inline void SetParentID(G4int gate, G4int parent) { primaryParentID[gate] = parent; };
+  inline void SetPhotonStartTime(G4int gate, G4float time) { photonStartTime[gate] = time; };
+  inline void SetPhotonStartPos(G4int gate, const G4ThreeVector &position) { photonStartPos[gate] = position; };
+  inline void SetPhotonEndPos(G4int gate, const G4ThreeVector &position) { photonEndPos[gate] = position; };
 
   // Add a digit number and unique photon number to fDigiComp
   inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
@@ -103,6 +109,9 @@ public:
 
 
   inline G4int          GetParentID(int gate)    { return primaryParentID[gate];};
+  inline G4float        GetPhotonStartTime(int gate)    { return photonStartTime[gate];};
+  inline G4ThreeVector  GetPhotonStartPos(int gate)    { return photonStartPos[gate];};
+  inline G4ThreeVector  GetPhotonEndPos(int gate)    { return photonEndPos[gate];};
   inline G4int          GetTrackID()    { return trackID;};
   inline G4float GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
@@ -148,6 +157,8 @@ public:
     float index_time,index_timepresmear,index_pe;
     std::vector<int> index_digicomp;
     int index_primaryparentid;
+    float index_photonstarttime;
+    G4ThreeVector index_photonstartpos;
     for (i = 1; i < (int) time.size(); ++i)
       {
         index_time  = time[i];
@@ -155,11 +166,15 @@ public:
         index_pe = pe[i];
 	index_digicomp = fDigiComp[i];
 	index_primaryparentid = primaryParentID[i];
+	index_photonstarttime = photonStartTime[i];
+	index_photonstartpos = photonStartPos[i];
         for (j = i; j > 0 && time[j-1] > index_time; j--) {
           time[j] = time[j-1];
           pe[j] = pe[j-1];
 	  fDigiComp[j] = fDigiComp[j-1];
 	  primaryParentID[j] = primaryParentID[j-1];
+	  photonStartTime[j] = photonStartTime[j-1];
+	  photonStartPos[j] = photonStartPos[j-1];
           //G4cout <<"swapping "<<time[j-1]<<" "<<index_time<<G4endl;
         }
         
@@ -168,6 +183,8 @@ public:
         pe[j] = index_pe;
 	fDigiComp[j] = index_digicomp;
 	primaryParentID[j] = index_primaryparentid;
+	photonStartTime[j] = index_photonstarttime;
+	photonStartPos[j] = index_photonstartpos;
       }    
   }
   

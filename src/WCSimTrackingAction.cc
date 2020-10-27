@@ -134,8 +134,8 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     //TF: crucial bugfix: I want this for all tracks that I save to match Ch hits with tracks that can
     // produce Cherenkov light.
     else
-      anInfo->SetPrimaryParentID(aTrack->GetTrackID());   
-  }
+      anInfo->SetPrimaryParentID(aTrack->GetTrackID());
+    }
   else {
     anInfo->WillBeSaved(false);
   }
@@ -154,6 +154,10 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       for(size_t i=0;i<nSeco;i++)
       { 
 	WCSimTrackInformation* infoSec = new WCSimTrackInformation(anInfo);
+	if(anInfo->isSaved()){ // Parent is primary, so we want start pos & time of this secondary
+        infoSec->SetPhotonStartTime((*secondaries)[i]->GetGlobalTime());
+        infoSec->SetPhotonStartPos((*secondaries)[i]->GetPosition());
+	}
 	infoSec->WillBeSaved(false); // ADDED BY MFECHNER, temporary, 30/8/06
 	(*secondaries)[i]->SetUserInformation(infoSec);
       }
