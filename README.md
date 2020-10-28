@@ -98,3 +98,6 @@ Useful cmake commands:
 ```
 WCSim development is supported by the United States National Science Foundation.
 ```
+
+#######################################
+First running of hybrid configuration: please use WCSim_hybrid.sh
