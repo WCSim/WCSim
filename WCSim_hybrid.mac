@@ -76,6 +76,7 @@
 /DAQ/Digitizer SKI
 /DAQ/Trigger NDigits
 /DAQ/TriggerNDigits/Threshold 0
+/DAQ/TriggerNDigits/AdjustForNoise false
 
 #grab the other DAQ options (thresholds, timing windows, etc.)
 /control/execute macros/daq.mac
@@ -212,5 +213,5 @@
 ## a NEUT vector file as input
 /WCSimIO/SaveRooTracker 0
 
-/run/beamOn 100
+/run/beamOn 1000
 #exit
