@@ -98,3 +98,10 @@ Useful cmake commands:
 ```
 WCSim development is supported by the United States National Science Foundation.
 ```
+
+#######################################
+HYBRID configuration (B.Q)
+1. First running of hybrid configuration: please use WCSim_hybrid.sh
+2. Readout the output: a script exists in sample-root-scripts, named AnalyzeWSHierarchy.c
+a. Compile it using Makefile in sample-root-scripts (make)
+b. Execute it using Analyzer.sh in sample-root-scripts (./Analyzer.sh)

@@ -14,6 +14,8 @@
 #include "WCSimPmtInfo.hh"
 #include "WCSimDarkRateMessenger.hh"
 
+#include <fstream>                                                           //test
+
 #include <vector>
 // for memset
 #include <cstring>
@@ -34,11 +36,13 @@
 WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 					   WCSimDetectorConstruction* inDetector,
 					   WCSimWCDAQMessenger* myMessenger,
-					   DigitizerType_t digitype)
-  :G4VDigitizerModule(name), myDetector(inDetector), DAQMessenger(myMessenger), DigitizerType(digitype),
-   DigitizerClassName("")
+					   DigitizerType_t digitype,
+					   G4String detectorElement)
+  :G4VDigitizerModule(name), myDetector(inDetector), DAQMessenger(myMessenger), DigitizerType(digitype), DigitizerClassName(""), detectorElement(detectorElement)
 {
-  G4String colName = "WCDigitizedStoreCollection";
+  G4String colName;
+  if(detectorElement=="tank") colName = "WCDigitizedStoreCollection";
+  else if(detectorElement=="tankPMT2") colName = "WCDigitizedStoreCollection2";
   collectionName.push_back(colName);
   ReInitialize();
 
@@ -86,8 +90,12 @@ void WCSimWCDigitizerBase::Digitize()
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   
+
   // Get the PMT collection ID
-   G4int WCHCID = DigiMan->GetDigiCollectionID("WCRawPMTSignalCollection");
+  G4String rawcollectionName;
+  if(detectorElement=="tank") rawcollectionName = "WCRawPMTSignalCollection";
+  else if(detectorElement=="tankPMT2") rawcollectionName = "WCRawPMTSignalCollection2";
+  G4int WCHCID = DigiMan->GetDigiCollectionID(rawcollectionName);
 
   // Get the PMT Digits collection
   WCSimWCDigitsCollection* WCHCPMT = 
@@ -166,8 +174,9 @@ void WCSimWCDigitizerBase::SaveOptionsToOutput(WCSimRootOptions * wcopt)
 
 WCSimWCDigitizerSKI::WCSimWCDigitizerSKI(G4String name,
 					 WCSimDetectorConstruction* myDetector,
-					 WCSimWCDAQMessenger* myMessenger)
-  : WCSimWCDigitizerBase(name, myDetector, myMessenger, kDigitizerSKI)
+					 WCSimWCDAQMessenger* myMessenger,
+					 G4String detectorElement)
+  : WCSimWCDigitizerBase(name, myDetector, myMessenger, kDigitizerSKI, detectorElement)
 {
   DigitizerClassName = "SKI";
   GetVariables();
@@ -177,7 +186,26 @@ WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
 }
 
 void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
+#ifdef WCSIMWCDIGITIZER_VERBOSE
   G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
+#endif
+  //********************************************************************************************************* TD 2019.07.16 : to take PMT saturation effect into account *********************
+  float saturThreshold = myDetector->GetParameters()->GetPMTSatur();                                                                                             
+  //float qoiff = myDetector->GetParameters()->GetQoiff();                                                                                                      
+  G4String WCCollectionName;
+  if(detectorElement=="tank") WCCollectionName = myDetector->GetIDCollectionName();
+  else if(detectorElement=="tankPMT2") WCCollectionName = myDetector->GetIDCollectionName2();
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
+  
+  
+  // G. Pronost 2019/09/09:
+  // Hit need to be sorted! (This is done no where!)
+  std::sort(WCHCPMT->GetVector()->begin(), WCHCPMT->GetVector()->end(), WCSimWCDigi::SortFunctor_Hit());
+
+  //std::fstream file;
+  //G4String filename = Form("saturation_effect_%.2fpeThreshold.txt",saturThreshold);
+  //file.open(filename.c_str(), std::ios::out | std::ios::app);
+  //******************************************************************************************************************************************************************************************
   
   //Get the PMT info for hit time smearing
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();
@@ -266,7 +294,6 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    if(ip + 1 == (*WCHCPMT)[i]->GetTotalPe()){
 	      MakeDigit = true;
 	    }
-	    
 	  }
 	  //if ensures we don't append the same digit multiple times while in the integration window
 	  else if(digi_comp.size()) {
@@ -281,10 +308,18 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    int iflag;
 	    WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
 
+
 	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    if(iflag == 0) {
 	      //digitize hit
 	      peSmeared *= efficiency;
+
+	      //******************************************************************************************************** TD 2019.07.16 : to take PMT saturation effect into account *********************
+	      //file << peSmeared << " ";
+	      peSmeared *= PMT->SaturFactor(peSmeared, saturThreshold);
+	      //file << peSmeared << "\n";
+	      //*****************************************************************************************************************************************************************************************
+
 	      bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id, intgr_start, peSmeared, digi_comp);
 	      if(accepted) {
 		digi_unique_id++;
@@ -350,8 +385,13 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  }
 	}//ip (totalpe)
     }//i (WCHCPMT->entries())
+#ifdef WCSIMWCDIGITIZER_VERBOSE
   G4cout<<"WCSimWCDigitizerSKI::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << "\n";
-  
+#endif
+  //******************************************************************************************************** TD 2019.07.16 : to take PMT saturation effect into account *********************
+  //file.close();
+  //*****************************************************************************************************************************************************************************************
+
 #ifdef WCSIMWCDIGITIZER_VERBOSE
   G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
   for (G4int idigi = 0 ; idigi < DigiStore->entries() ; idigi++){

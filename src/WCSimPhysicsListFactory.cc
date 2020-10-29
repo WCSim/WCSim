@@ -151,7 +151,6 @@ void WCSimPhysicsListFactory::InitializeList(){
     // Add Radioactive Decay:
     G4cout << "RegisterPhysics: RadioactiveDecayPhysics" << G4endl;
     RegisterPhysics( new G4RadioactiveDecayPhysics ); 
-    
   } else {
     G4cout << "Physics list " << PhysicsListName << " is not understood" << G4endl;
   }

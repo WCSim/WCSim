@@ -48,7 +48,8 @@ private:
   G4ThreeVector    pos;
   G4ThreeVector    orient;
   G4LogicalVolume* pLogV;
-
+  G4String tubeType;//Added by B.Q for hybrid PMT configuration
+  
   //'Gates' is a digit counter or specifies subevent
   //'TriggerTimes' specifies e.g. the subevent trigger time
   std::set<int> Gates; // list of gates that were hit  
@@ -84,6 +85,7 @@ public:
   void RemoveDigitizedGate(G4int gate);
   
   inline void SetTubeID(G4int tube) {tubeID = tube;};
+  inline void SetTubeType(G4String tube_type) {tubeType = tube_type;};
   inline void AddGate(int g,float t) { Gates.insert(g); TriggerTimes.push_back(t);}
   inline void SetPe(G4int gate,  G4float Q)      {pe[gate]     = Q;};
   inline void SetTime(G4int gate, G4float T)    {time[gate]   = T;};
@@ -106,6 +108,7 @@ public:
   inline G4int          GetTrackID()    { return trackID;};
   inline G4float GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
+  inline G4String   GetTubeType() {return tubeType;};
   inline G4ThreeVector GetPos(){ return pos;};
   inline G4ThreeVector GetOrientation(){ return orient;};
   inline G4RotationMatrix GetRot(){ return rot;};
@@ -215,6 +218,12 @@ public:
                      const WCSimWCDigi * const &b) const;
   };
 
+  // G. Pronost:	
+  // Sort function by Hit Time (using first time, assuming hit time in a hit are sorted)
+  struct SortFunctor_Hit {
+    bool operator() (const WCSimWCDigi * const &a,
+                     const WCSimWCDigi * const &b) const;
+  };
  
 };
 

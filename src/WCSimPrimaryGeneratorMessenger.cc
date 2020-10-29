@@ -15,10 +15,10 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   genCmd = new G4UIcmdWithAString("/mygen/generator",this);
   genCmd->SetGuidance("Select primary generator.");
 
-  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, rootracker, radioactive, radon");
+  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, rootracker, radon");
   genCmd->SetParameterName("generator",true);
   genCmd->SetDefaultValue("muline");
-  genCmd->SetCandidates("muline gun laser gps rootracker radioactive radon");
+  genCmd->SetCandidates("muline gun laser gps rootracker radon");
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
   fileNameCmd->SetGuidance("Select the file of vectors.");
@@ -62,12 +62,16 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   param = new G4UIparameter("SYMMETRY",'d',true);
   param->SetDefaultValue("1");
   radonScalingCmd->SetParameter(param);
+
 }
 
 WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
 {
   delete genCmd;
   delete mydetDirectory;
+  delete radonScalingCmd;
+  delete radonGeoSymCmd;
+  delete radioactive_time_window_Cmd;
 }
 
 void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
@@ -93,6 +97,15 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGPSEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
     }
+    else if ( newValue == "rootracker")   //M. Scott: Addition of Rootracker events
+    {
+      myAction->SetMulineEvtGenerator(false);
+      myAction->SetGunEvtGenerator(false);
+      myAction->SetRootrackerEvtGenerator(true);
+      myAction->SetLaserEvtGenerator(false);
+      myAction->SetGPSEvtGenerator(false);
+      myAction->SetRadonEvtGenerator(false);
+    }
     else if ( newValue == "laser")   //T. Akiri: Addition of laser
     {
       myAction->SetMulineEvtGenerator(false);
@@ -109,15 +122,6 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(true);
-      myAction->SetRadonEvtGenerator(false);
-    }
-    else if ( newValue == "rootracker")   //M. Scott: Addition of Rootracker events
-    {
-      myAction->SetMulineEvtGenerator(false);
-      myAction->SetRootrackerEvtGenerator(true);
-      myAction->SetGunEvtGenerator(false);
-      myAction->SetLaserEvtGenerator(false);
-      myAction->SetGPSEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
     }
     else if ( newValue == "radon" ) //G. Pronost: Addition of Radon generator (based on F. Nova's radioactive generator but dedicated to radioactive events in water)
@@ -213,4 +217,5 @@ void WCSimPrimaryGeneratorMessenger::RadonScalingCommand(G4String newValue)
    
   myAction->SetRadonScenario(iScenario);
 }
+
 

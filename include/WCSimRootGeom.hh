@@ -57,14 +57,17 @@ class WCSimRootGeom : public TObject {
 
 private:
 
-	static const Int_t     maxNumPMT = 40000;
+  static const Int_t     maxNumPMT = 1000000;
+  //B.Qstatic const Int_t     maxNumPMT = 40000;
   Float_t                fWCCylRadius;  // Radius of WC tank
   Float_t                fWCCylLength;  // Length of WC tank
   
   Int_t                  fgeo_type;  // mailbox or cylinder?
 
   Float_t                fWCPMTRadius; // Radius of PMT
+  Float_t                fWCPMTRadius2; // Radius of PMT, hybrid case
   Int_t                  fWCNumPMT;   // Number of PMTs
+  Int_t                  fWCNumPMT2;   // Number of PMTs, hybrid case
   Float_t                fWCOffset[3]; // Offset of barrel center in global coords
 
   Int_t                  fOrientation; //Orientation o detector, 0 is 2km horizontal, 1 is Upright
@@ -73,6 +76,7 @@ private:
   //   since the arrays just won't be that large
   //WCSimRootPMT          fPMTArray[maxNumPMT];  // Array of PMTs
   TClonesArray           *fPMTArray;
+  TClonesArray           *fPMTArray2;
 
 public:
 
@@ -86,13 +90,16 @@ public:
 
   void SetGeo_Type(Int_t f){fgeo_type = f;}
 
-  void  SetWCNumPMT(Int_t i) {fWCNumPMT= i;}
-  void  SetWCPMTRadius(Float_t f) {fWCPMTRadius = f;}
+  void  SetWCNumPMT(Int_t i,bool hybridsecondtype=false){
+    if(hybridsecondtype) fWCNumPMT2 = i;
+    else fWCNumPMT= i;
+  }
+  void  SetWCPMTRadius(Float_t f,int hybridsecondtype=false) {(hybridsecondtype?fWCPMTRadius2=f:fWCPMTRadius=f);}
   void  SetWCOffset(Float_t x, Float_t y, Float_t z) 
            {fWCOffset[0]=x; fWCOffset[1]=y; fWCOffset[2] = z;}
 
-  void  SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, Float_t rot[3], Float_t pos[3], bool expand=true);
-  void  SetPMT(Int_t i, Int_t tubeno, Int_t mPMTNo, Int_t mPMT_PMTno, Int_t cyl_loc, Float_t rot[3], Float_t pos[3], bool expand=true);
+  void  SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, Float_t rot[3], Float_t pos[3], bool expand=true, bool hybridsecondtype=false);
+  void  SetPMT(Int_t i, Int_t tubeno, Int_t mPMTNo, Int_t mPMT_PMTno, Int_t cyl_loc, Float_t rot[3], Float_t pos[3], bool expand=true, bool hybridsecondtype=false);
   void  SetOrientation(Int_t o) {fOrientation = o;}
 
   Float_t GetWCCylRadius() const {return fWCCylRadius;}
@@ -101,13 +108,22 @@ public:
   Int_t GetGeo_Type() const {return fgeo_type;}
   
 
-  Int_t GetWCNumPMT() const {return fWCNumPMT;}
-  Float_t GetWCPMTRadius() const {return fWCPMTRadius;}
+  Int_t  GetWCNumPMT(bool hybridsecondtype=false){
+    if(hybridsecondtype) return fWCNumPMT2;
+    else return fWCNumPMT;
+  }
+  Float_t GetWCPMTRadius(bool hybridsecondtype=false) const {
+    if(hybridsecondtype) return fWCPMTRadius2;
+    else return fWCPMTRadius;
+  }
   Float_t GetWCOffset(Int_t i) const {return (i<3) ? fWCOffset[i] : 0.;}
    
   Int_t GetOrientation() { return fOrientation; }
   //WCSimRootPMT GetPMT(Int_t i){return *(new WCSimRootPMT());}
-  WCSimRootPMT GetPMT(Int_t i){return *(WCSimRootPMT*)(*fPMTArray)[i];}
+  WCSimRootPMT GetPMT(Int_t i,bool hybridsecondtype=false){
+    if(hybridsecondtype) return *(WCSimRootPMT*)(*fPMTArray2)[i];
+    else return *(WCSimRootPMT*)(*fPMTArray)[i];
+  }
 
   ClassDef(WCSimRootGeom,1)  //WCSimRootEvent structure
 };

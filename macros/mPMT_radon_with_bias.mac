@@ -23,16 +23,32 @@
 #/WCSim/DopingConcentration 0.1
 #/WCSim/DopedWater false
 #/WCSim/Construct
+#/WCSim/mPMT/PMTtype_inner PMT3inchR14374
+#/WCSim/mPMT/PMTtype_outer PMT3inchR14374
 
 #Use mPMTs settings (uncomment/delete the above)
+/WCSim/WCgeom HyperK_HybridmPMT10PC
+#/WCSim/mPMT/PMTtype_inner PMT3inchR14374
+#/WCSim/mPMT/PMTtype_outer PMT3inchR14374
+#/WCSim/WCgeom HyperK_mPMT
+#/WCSim/WCgeom HyperK
 #/WCSim/WCgeom nuPRISM_mPMT
-/WCSim/WCgeom nuPRISMShort_mPMT
+#/WCSim/WCgeom nuPRISMShort_mPMT
 # Set Gadolinium doping (concentration is in percent)
 #/WCSim/DopingConcentration 0.1
 #/WCSim/DopedWater false
 /WCSim/Construct
 ## OR for single mPMT mode or updating mPMT parameters:
 #/control/execute macros/mPMT_nuPrism1.mac         ## mPMT options: mPMT_nuPrism1.mac and 2.mac
+
+/WCSim/tuning/rayff 0.75
+/WCSim/tuning/bsrff 2.25
+/WCSim/tuning/abwff 1.30
+/WCSim/tuning/rgcff 0.32
+
+#/WCSim/mPMT/reflectorHeightID 7. mm
+#/WCSim/mPMT/reflectorHeightID 7. mm
+#/WCSim/mPMT/reflectorAngleID 48. deg
 
 #Added for the PMT QE option 08/17/10 (XQ)
 # 1. Stacking only mean when the photon is generated
@@ -59,6 +75,8 @@
 #choose the Trigger & Digitizer type (and options)
 /DAQ/Digitizer SKI
 /DAQ/Trigger NDigits
+/DAQ/TriggerNDigits/Threshold 0
+/DAQ/TriggerNDigits/AdjustForNoise false
 
 #grab the other DAQ options (thresholds, timing windows, etc.)
 /control/execute macros/daq.mac
@@ -105,21 +123,68 @@
 # for a full list of /gun/ commands see:
 # http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
 #/mygen/generator gun
+#/gun/particle gamma
 #/gun/particle e-
-##/gun/particle pi0
+#/gun/particle mu-
+#/gun/particle pi0
 #/gun/energy 500 MeV
 #/gun/direction 1 0 0
-#/gun/position 0 0 0  
+#/gun/position 0 0 0 m
+#/gun/number 100
 
 # Or you can use the G4 General Particle Source
 # you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
 # for a full list of /gps/ commands see:
 # https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
-#/mygen/generator gps
-#/gps/particle e-
-#/gps/energy 500 MeV
-#/gps/direction 1 0 0
-#/gps/position 0 0 0
+/mygen/generator gps
+#/gps/particle gamma
+/gps/particle e-
+/gps/energy 10 MeV
+#/gps/energy 1 MeV
+/gps/direction 1 0 0
+#/gps/position 0. 0. 0. m
+#/gps/position 3.5 0. 0. m
+
+# Position: a surface
+#/gps/pos/type 
+#/gps/pos/shape Cylinder
+#/gps/pos/halfz 4.5 m
+#/gps/pos/radius 3.9 m
+
+# Position: a cylinder
+/gps/pos/type Volume
+/gps/pos/shape Cylinder
+/gps/pos/halfz 30.4 m
+/gps/pos/radius 38.4 m
+
+# Position: a sphere
+#/gps/pos/type Volume
+#/gps/pos/shape Sphere
+#/gps/pos/radius 200. cm
+#/gps/pos/centre 0. 0. 0. m
+
+# Direction: unidirection along x
+#/gps/ang/type beam1d
+#/gps/ang/rot1 0 0 1
+#/gps/ang/rot2 0 1 0
+
+# Direction: a sphere
+/gps/ang/type iso
+#/gps/ang/mintheta 0 deg
+#/gps/ang/maxtheta 180 deg
+#/gps/ang/minphi 0 deg
+#/gps/ang/maxphi 360 deg
+
+# spectrum: uniform between 200 and 1000 MeV
+#/gps/ene/type Lin
+#/gps/ene/gradient 0
+#/gps/ene/intercept 1
+#/gps/ene/type Mono
+#/gps/ene/mono 500 MeV
+#/gps/ene/min 200 MeV
+#/gps/ene/max 1000 MeV
+
+#/random/setSeeds 1225 1500
 
 # Or you can use the laser option
 # This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
@@ -128,15 +193,15 @@
 # It is used for laser calibration simulation
 #/mygen/generator laser
 #/gps/particle opticalphoton
-#/gps/energy 2.505 eV
+#/gps/energy 3.5 keV
 #/gps/direction 1 0 0
-#/gps/position 0 0 0
+#/gps/position 3.5 0 0 m
 #/gps/number 1000
 #/gps/ang/type iso
 #/gps/ang/mintheta 0 deg
-#/gps/ang/maxtheta 30 deg
+#/gps/ang/maxtheta 0 deg
 #/gps/ang/minphi 0 deg
-#/gps/ang/maxphi 360 deg
+#/gps/ang/maxphi 90 deg
 
 ##### NEW
 /Tracking/fractionOpticalPhotonsToDraw 0.0
@@ -166,7 +231,7 @@
 
 
 ## change the name of the output root file, default = wcsim.root
-/WCSimIO/RootFile wcsim_output.root
+/WCSimIO/RootFile wcsim_hybrid.root
 
 ## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
 ## a NEUT vector file as input

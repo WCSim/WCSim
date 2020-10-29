@@ -67,6 +67,7 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   RelativeHitTime->SetParameterName("RelativeHitTime",true);
   RelativeHitTime->SetDefaultValue(defaultRelativeHitTime);
 
+
   //Generic digitizer specific options
   DigitizerDir = new G4UIdirectory("/DAQ/DigitizerOpt/");
   DigitizerDir->SetGuidance("Generic commands for digitizers");
@@ -195,6 +196,7 @@ WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
   delete DigitizerChoice;
   delete TriggerChoice;
   delete MultiDigitsPerTrigger;
+  delete RelativeHitTime;
   delete WCSimDAQDir;
 }
 
@@ -227,6 +229,7 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     // Relative HitTime
     WCSimEvent->SetRelativeDigitizedHitTime(RelativeHitTime->GetNewBoolValue(newValue));
   }
+
   //Generic digitizer options
   else if (command == DigitizerDeadTime) {
     G4cout << "Digitizer deadtime set to " << newValue << " ns" << initialiseString.c_str() << G4endl;

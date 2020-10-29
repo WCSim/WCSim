@@ -37,6 +37,7 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithAString* WCVisChoice;
   G4UIcmdWithAString* PMTGeomDetails;
   G4UIcmdWithAString* PMTSize;
+  G4UIcmdWithAString* PMTSize2;
   G4UIcmdWithAString* SavePi0;
   G4UIcmdWithAString* SaveCapture;
   G4UIcmdWithAString* PMTQEMethod;
@@ -74,6 +75,7 @@ class WCSimDetectorMessenger: public G4UImessenger
   //nuPRISM commands
   G4UIcmdWithoutParameter* UpdateNuPrism;
   G4UIcmdWithAString* SetPMTType;
+  G4UIcmdWithABool* SetHybridPMT;
   G4UIcmdWithAString* SetPMTCoverage;
   G4UIcmdWithADoubleAndUnit* SetDetectorHeight;
   G4UIcmdWithADoubleAndUnit* SetDetectorVerticalPosition;

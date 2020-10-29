@@ -96,7 +96,7 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         WCSimGenerator_Radioactivity* myRn222Generator;
         G4int fRnScenario;
         G4int fRnSymmetry;
-  
+
         G4bool   usePoissonPMT;
         G4double poissonPMTMean;
 
@@ -171,6 +171,15 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         
         inline void SetRadioactiveTimeWindow(G4double choice) { radioactive_time_window = choice; }
         inline G4double GetRadioactiveTimeWindow()  		{ return radioactive_time_window; }
+
+        inline void SetRadonEvtGenerator(G4bool choice) 	{ useRadonEvt = choice; }
+        inline G4bool IsUsingRadonEvtGenerator()  		{ return useRadonEvt; }
+  
+        inline void SetRadonScenario(G4int choice) 		{ fRnScenario = choice; }
+        inline G4int GetRadonScenario() 			{ return fRnScenario; }
+  
+        inline void SetRadonSymmetry(G4int choice) 		{ fRnSymmetry = choice; }
+        inline G4int GetRadonSymmetry() 			{ return fRnSymmetry; }
 
         inline void SetRadonEvtGenerator(G4bool choice) 	{ useRadonEvt = choice; }
         inline G4bool IsUsingRadonEvtGenerator()  		{ return useRadonEvt; }

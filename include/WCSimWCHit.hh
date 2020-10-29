@@ -64,7 +64,9 @@ class WCSimWCHit : public G4VHit
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
   void AddParentID     (G4int primParentID)
   { primaryParentID.push_back(primParentID); }
+  void SetTubeType     (G4String tube_type)          { tubeType = tube_type; }; //Added by B.Quilain to transmit on which PMT type the hit happened. For detectors with several PMT types in ID.
 
+  
   // This is temporarily used for the drawing scale
   void SetMaxPe(G4int number = 0)  {maxPe   = number;};
 
@@ -86,6 +88,7 @@ class WCSimWCHit : public G4VHit
   G4int         GetTotalPe()    { return totalPe;};
   G4double      GetTime(int i)  { return time[i];};
   G4int         GetParentID(int i) { return primaryParentID[i];};
+  G4String         GetTubeType()     { return tubeType; };
   
   G4LogicalVolume* GetLogicalVolume() {return pLogV;};
 
@@ -159,6 +162,7 @@ class WCSimWCHit : public G4VHit
   G4ThreeVector    orient;
   G4RotationMatrix rot;
   G4LogicalVolume* pLogV;
+  G4String tubeType;//Added by B.Quilain to transmit on which PMT type the hit happened. For detectors with several PMT types in ID.
 
   // This is temporarily used for the drawing scale
   // Since its static *every* WChit sees the same value for this.

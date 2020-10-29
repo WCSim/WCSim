@@ -17,7 +17,8 @@ class WCSimWCAddDarkNoise : public G4VDigitizerModule
 {
 public:
   
-  WCSimWCAddDarkNoise(G4String name, WCSimDetectorConstruction*);
+  WCSimWCAddDarkNoise(G4String name, WCSimDetectorConstruction*, G4String);
+  //WCSimWCAddDarkNoise(G4String name, WCSimDetectorConstruction*, G4String);
   ~WCSimWCAddDarkNoise();
   
 public:
@@ -30,10 +31,14 @@ public:
   double GetDarkRate() { return PMTDarkRate; }
   void SetConversion(double iconvrate){ ConvRate = iconvrate; }
   void SetDarkMode(int imode){DarkMode = imode;}
+  int GetDarkMode(){return DarkMode;}
   void SetDarkHigh(int idarkhigh){DarkHigh = idarkhigh;}
+  double GetDarkHigh(){return DarkHigh;}
   void SetDarkLow(int idarklow){DarkLow = idarklow;}
+  double GetDarkLow(){return DarkLow;}
   void SetDarkWindow(int idarkwindow){DarkWindow = idarkwindow;}
-  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+  int GetDarkWindow(){return (int)(DarkWindow);}
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt, string tag);
   
 private:
   void ReInitialize() { ranges.clear(); result.clear();}
@@ -49,7 +54,8 @@ private:
   bool fCalledAddDarkNoise;
 
   WCSimDetectorConstruction* myDetector;
-
+  G4String detectorElement;
+  
   std::vector<std::pair<float, float> > ranges;
   std::vector<std::pair<float, float> > result;
   
