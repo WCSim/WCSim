@@ -6,6 +6,7 @@
 #include "G4ParticleGun.hh"
 #include "G4GeneralParticleSource.hh"
 #include "G4ParticleTable.hh"
+#include "G4IonTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4ThreeVector.hh"
 #include "globals.hh"
@@ -70,15 +71,21 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     SetParticlePosition(G4ThreeVector(0.*m,0.*m,0.*m));
     
   messenger = new WCSimPrimaryGeneratorMessenger(this);
-  useMulineEvt = true;
-  useGunEvt    = false;
-  useLaserEvt  = false;
-  useGPSEvt    = false;
-  useRootrackerEvt = false;
+  useMulineEvt 	= true;
+  useGunEvt    	= false;
+  useLaserEvt  	= false;
+  useGPSEvt    	= false;
+  useRootrackerEvt 	= false;
+  useRadonEvt        	= false;
   
   fEvNum = 0;
   fInputRootrackerFile = NULL;
   fNEntries = 1;
+  
+  // Radioactive and Radon generator variables:
+  myRn222Generator	= 0;
+  fRnScenario		= 0;
+  fRnSymmetry		= 1;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -92,7 +99,8 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
   inputFile.close();
 
   if(useRootrackerEvt) delete fRooTrackerTree;
-
+  if (myRn222Generator) delete myRn222Generator;
+  
   delete particleGun;
   delete MyGPS;   //T. Akiri: Delete the GPS variable
   delete messenger;
@@ -103,6 +111,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   // We will need a particle table
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+  G4IonTable* ionTable = G4IonTable::GetIonTable();
 
   // Temporary kludge to turn on/off vector text format 
   G4bool useNuanceTextFormat = true;
@@ -458,6 +467,100 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       particleGun->SetParticleDefinition(particleTable->FindParticle(particleName="e-"));
       //particleGun->SetParticleEnergy();
 #endif
+    }
+  else if (useRadonEvt)
+    { //G. Pronost: Add Radon (adaptation of Radioactive event)
+    
+      // Currently only one generator is possible
+      // In order to have several, we need to find a solution for the fitting graphes (which are static currently)
+      // Idea: array of fitting graphes? (each new generators having a specific ID)
+      if ( !myRn222Generator ) {
+      	myRn222Generator = new WCSimGenerator_Radioactivity(myDetector);
+      	myRn222Generator->Configuration(fRnScenario);
+      }
+      
+      //G4cout << " Generate radon events " << G4endl;
+      // initialize GPS properties
+      MyGPS->ClearAll();
+      
+      MyGPS->SetMultipleVertex(true);
+      
+      
+      std::vector<struct radioactive_source>::iterator it;
+      
+      G4String IsotopeName = "Rn222";
+      
+      /*
+      G4double IsotopeActivity = myRn222Generator->GetMeanActivity() * 1e-3; // mBq to Bq
+      G4double iEventAvg = IsotopeActivity * GetRadioactiveTimeWindow();
+
+      //G4cout << " Average " << iEventAvg << G4endl;
+      // random poisson number of vertices based on average
+      int n_vertices = CLHEP::RandPoisson::shoot(iEventAvg);
+
+      if ( n_vertices < 1 ) {
+      	 n_vertices = 1;
+      }
+      */
+      // 20201009: WCSim hybrid doesn't support multiple Primary vertex
+      int n_vertices = 1;
+      
+      for(int u=0; u<n_vertices; u++){
+	
+	MyGPS->AddaSource(1.);	
+	MyGPS->SetCurrentSourceto(MyGPS->GetNumberofSource() - 1);
+	
+	// Bi214 (source of electron in Rn222 decay chain, assumed to be in equilibrium)
+	MyGPS->SetParticleDefinition(G4IonTable::GetIonTable()->GetIon( 83, 214, 0));
+	
+	// Get position (first position take few seconds to be produced, there after there is no trouble)
+	//G4cout << "GetRandomVertex" << G4endl;
+	G4ThreeVector position = myRn222Generator->GetRandomVertex(fRnSymmetry);
+	//G4cout << "Done: " << position << G4endl;
+	// energy 
+	MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
+	MyGPS->GetCurrentSource()->GetEneDist()->SetMonoEnergy(0.);
+	    
+	// position 
+	MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point");
+	MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(position);
+
+	//G4cout << u << " is " << IsotopeName << " loc " << position  << G4endl;
+
+      }
+      G4int number_of_sources = MyGPS->GetNumberofSource();
+
+      // this will generate several primary vertices
+      MyGPS->GeneratePrimaryVertex(anEvent);
+
+      // 20201009: WCSim hybrid doesn't support multiple Primary vertex
+      number_of_sources = 1;
+      //SetNvtxs(number_of_sources);
+      for( G4int u=0; u<number_of_sources; u++){
+	//targetpdgs[u] = 2212; //ie. proton 
+	targetpdg = 2212; //ie. proton 
+
+      	G4ThreeVector P   =anEvent->GetPrimaryVertex(u)->GetPrimary()->GetMomentum();
+      	G4ThreeVector vtx =anEvent->GetPrimaryVertex(u)->GetPosition();
+      	G4int pdg         =anEvent->GetPrimaryVertex(u)->GetPrimary()->GetPDGcode();
+      
+      	//       G4ThreeVector dir  = P.unit();
+      	G4double E         = std::sqrt((P.dot(P)));
+	
+	//G4cout << " vertex " << u << " of " << number_of_sources << " (" << vtx.x() << ", " << vtx.y() << ", " << vtx.z() << ") with pdg: " << pdg << G4endl;
+
+        // 20201009: WCSim hybrid doesn't support multiple Primary vertex
+      	SetVtx(vtx);
+      	SetBeamEnergy(E);      	
+      	SetBeamPDG(pdg);
+      	/*
+      	SetVtxs(u,vtx);
+      	SetBeamEnergy(E,u);
+      	//       SetBeamDir(dir);
+      	SetBeamPDG(pdg,u);
+      	*/
+      }
+
     }
 }
 
