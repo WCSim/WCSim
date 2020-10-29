@@ -6,6 +6,7 @@
 #include "G4PhysListFactory.hh"
 #include "G4UnitsTable.hh"
 #include "G4OpticalPhysics.hh"
+#include "G4RadioactiveDecayPhysics.hh" 
 
 #include "WCSimPhysicsListFactoryMessenger.hh"
 #include "WCSimRootOptions.hh"

@@ -114,6 +114,7 @@ set(WCSIM_SCRIPTS
   macros/mPMT_radon_with_bias.mac
   macros/mPMT_radon_without_bias.mac
   biasprofile.dat
+  tuningNominal.mac
   )
 
 foreach(_script ${WCSIM_SCRIPTS})

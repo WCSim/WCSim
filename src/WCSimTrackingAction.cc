@@ -59,6 +59,25 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
     }
   else 
     fpTrackingManager->SetStoreTrajectory(false);
+  
+  // Kill nucleus generated after TrackID 1
+  G4ParticleDefinition* particle = aTrack->GetDefinition();
+  G4String name   = particle->GetParticleName();
+  G4double fCharge = particle->GetPDGCharge();
+
+  G4Track* tr = (G4Track*) aTrack;
+  if ( aTrack->GetTrackID() == 1 ) {
+  	// Re-initialize time
+  	fTime_birth = 0;
+  	// Ask G4 to kill the track when all secondary are done (will exclude other decays)
+  	if ( fCharge > 2. )
+  		tr->SetTrackStatus(fStopButAlive);
+  }
+
+  if ( aTrack->GetTrackID() == 2 ) {
+  	// First track of the decay save time
+  	fTime_birth = aTrack->GetGlobalTime(); 
+  }
 }
 
 void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)

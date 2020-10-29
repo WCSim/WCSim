@@ -102,7 +102,7 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
 
   G4String thetriggertype="";
   if(detectorElement=="tankPMT2") {  // check to see if this detector element uses the tank for triggering
-    WCSimWCTriggerBase *WCTM = (WCSimWCTriggerBase *) DigiMan->FindDigitizerModule("WCReadoutPMT2");
+    WCSimWCTriggerBase *WCTM = (WCSimWCTriggerBase *) DigiMan->FindDigitizerModule("WCReadout2");
     thetriggertype = WCTM->GetTriggerClassName();
   }
 
