@@ -386,7 +386,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
     // Get from the tuning parameters
     ABWFF = WCSimTuningParams->GetAbwff();
-
+    std::cout<<"ABWFF : "<<ABWFF<<std::endl;
+    
     //T. Akiri: Values from Skdetsim 
     G4double ABSORPTION_water[NUMENTRIES_water] =
       {
@@ -470,7 +471,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
    // Get from the tuning parameters
    RAYFF = WCSimTuningParams->GetRayff();
-   //    printf("RAYFF: %f\n",RAYFF);
+       printf("RAYFF: %f\n",RAYFF);
 
    //T. Akiri: Values from Skdetsim 
    G4double RAYLEIGH_water[NUMENTRIES_water] = {

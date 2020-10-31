@@ -1242,7 +1242,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     
   }
 
-    
+
   for (int i = 0 ; i < wcsimrootsuperevent->GetNumberOfEvents(); i++) {
     wcsimrootevent = wcsimrootsuperevent->GetTrigger(i);
     int evtID=wcsimrootevent->GetHeader()->GetEvtNum();
