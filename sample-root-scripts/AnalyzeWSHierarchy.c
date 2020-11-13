@@ -817,10 +817,10 @@ int main(int argc, char **argv){
 
 #ifdef NEUTRONCAPTURE
     TimeTOFProfileXTOF[i] = new TH2D(Form("TimeTOFProfileXTOF_pmtType%d",i),"",2e4,-1.5e3,5e5,1e2,0,5e2);TimeTOFProfileXTOF[i]->Sumw2();
-    TimeProfile[i] = new TH1D(Form("TimeProfile_pmtType%d",i),"",1e4,0,5e5);
-    TimeHitProfile[i] = new TH1D(Form("TimeHitProfile_pmtType%d",i),"",1e4,0,5e5);
-    TimeTOFProfile[i] = new TH1D(Form("TimeTOFProfile_pmtType%d",i),"",2e4,-1.5e3,5e5);TimeTOFProfile[i]->Sumw2();
-    HitTimeTOFProfile[i] = new TH1D(Form("HitTimeTOFProfile_pmtType%d",i),"",2e4,-1.5e3,5e5);HitTimeTOFProfile[i]->Sumw2();
+    TimeProfile[i] = new TH1D(Form("TimeProfile_pmtType%d",i),"",2.2e6,-1.1e6,1.1e6);
+    TimeHitProfile[i] = new TH1D(Form("TimeHitProfile_pmtType%d",i),"",2.2e6,-1.1e6,1.1e6);
+    TimeTOFProfile[i] = new TH1D(Form("TimeTOFProfile_pmtType%d",i),"",2.2e6,-1.1e6,1.1e6);TimeTOFProfile[i]->Sumw2();
+    HitTimeTOFProfile[i] = new TH1D(Form("HitTimeTOFProfile_pmtType%d",i),"",2.2e6,-1.1e6,1.1e6);HitTimeTOFProfile[i]->Sumw2();
     HitTimeTOFProfileXTOF[i] = new TH2D(Form("HitTimeTOFProfileXTOF_pmtType%d",i),"",2e4,-1.5e3,5e5,1e3,0,1e3);HitTimeTOFProfileXTOF[i]->Sumw2();
 #else
     TimeTOFProfileXTOF[i] = new TH2D(Form("TimeTOFProfileXTOF_pmtType%d",i),"",2e4,-1.5e3,1.5e3,1e2,0,5e2);TimeTOFProfileXTOF[i]->Sumw2();
