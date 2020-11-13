@@ -792,9 +792,11 @@ int main(int argc, char **argv){
   WCSimRootTrigger* wcsimrootevent2;
 
   TH1F *h1 = new TH1F("PMT Hits", "PMT Hits", 8000, 0, 8000);
-  TH1F *hvtx0 = new TH1F("Event VTX0", "Event VTX0", 200, -1500, 1500);
-  TH1F *hvtx1 = new TH1F("Event VTX1", "Event VTX1", 200, -1500, 1500);
-  TH1F *hvtx2 = new TH1F("Event VTX2", "Event VTX2", 200, -1500, 1500);
+  TH1F *hvtx0 = new TH1F("EventVTX0", "Event VTX0", 200, - TankRadius - 500, TankRadius + 500);
+  TH1F *hvtx1 = new TH1F("EventVTX1", "Event VTX1", 200, - TankRadius - 500, TankRadius + 500);
+  TH1F *hvtx2 = new TH1F("EventVTX2", "Event VTX2", 200, - TankHalfHeight - 500, TankHalfHeight + 500);
+  TH2F *hvtxxy = new TH2F("EventVTXXY", "Event VTXXY;X / cm;Y / cm", 200, - TankRadius - 500, TankRadius + 500, 200, - TankRadius - 500, TankRadius + 500);
+  TH2F *hvtxr2z = new TH2F("EventVTXR2Z", "Event VTXR2Z;R^2 / cm^2;Z / cm", 200, 0, TMath::Power(TankRadius + 500, 2), 200, - TankHalfHeight - 500, TankHalfHeight + 500);
   
   int num_trig=0;
 
@@ -1007,6 +1009,8 @@ int main(int argc, char **argv){
     hvtx0->Fill(wcsimrootevent->GetVtx(0));
     hvtx1->Fill(wcsimrootevent->GetVtx(1));
     hvtx2->Fill(wcsimrootevent->GetVtx(2));
+    hvtxxy->Fill(wcsimrootevent->GetVtx(0), wcsimrootevent->GetVtx(1));
+    hvtxr2z->Fill(TMath::Power(wcsimrootevent->GetVtx(0),2) + TMath::Power(wcsimrootevent->GetVtx(1), 2), wcsimrootevent->GetVtx(2));
 
     if(verbose){
       printf("Jmu %d\n", wcsimrootevent->GetJmu());
@@ -1652,6 +1656,8 @@ int main(int argc, char **argv){
   hvtx0->Write();
   hvtx1->Write();
   hvtx2->Write();
+  hvtxxy->Write();
+  hvtxr2z->Write();
   for(int i=0;i<nPMTtypes;i++){
     
     ChargeProfile2D_onlyFront[i]->Write();
