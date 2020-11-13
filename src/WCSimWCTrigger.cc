@@ -376,9 +376,9 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 
 	  //first apply time offsets
 	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
-	  G4double digihittime = -triggertime
-	    + WCSimWCTriggerBase::offset
-	    + digit_time;
+	  G4double digihittime = digit_time;
+      if( triggertype != kTriggerNoTrig )
+        digihittime += -triggertime + WCSimWCTriggerBase::offset;
 	  // B.Q: to tune BONSAI
 	  //G4double digihittime = WCSimWCTriggerBase::offset
 	  // + digit_time;
