@@ -104,7 +104,6 @@ set(WCSIM_SCRIPTS
   macros/visOGLSX.mac
   macros/visOGLQT.mac
   macros/visRayTracer.mac
-  macros/mPMT.mac
   macros/mPMT_nuPrism1.mac
   macros/mPMT_nuPrism2.mac
   macros/tuning_parameters.mac
