@@ -89,7 +89,6 @@ int main(int argc,char** argv)
   visManager->Initialize();
 
   // Set user action classes
-  G4cout << "B.Q: Initialization" << G4endl;
   WCSimPrimaryGeneratorAction* myGeneratorAction = new 
     WCSimPrimaryGeneratorAction(WCSimdetector);
   runManager->SetUserAction(myGeneratorAction);

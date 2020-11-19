@@ -101,7 +101,10 @@ WCSim development is supported by the United States National Science Foundation.
 
 #######################################
 HYBRID configuration (B.Q)
-1. First running of hybrid configuration: please use WCSim_hybrid.sh
-2. Readout the output: a script exists in sample-root-scripts, named AnalyzeWSHierarchy.c
+0. The environment variable WCSIMDIR should be defined as your WCSIM directory (not the build one).
+export WCSIMDIR=`pwd`
+1. Please install using cmake as detailed in this document. To run the Rn simulation, GEANT4 >= 10.02 is required.
+2. First running of hybrid configuration: please use WCSim_hybrid.sh
+3. Readout the output: a script exists in sample-root-scripts, named AnalyzeWSHierarchy.c
 a. Compile it using Makefile in sample-root-scripts (make)
 b. Execute it using Analyzer.sh in sample-root-scripts (./Analyzer.sh)

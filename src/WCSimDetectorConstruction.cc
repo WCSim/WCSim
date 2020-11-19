@@ -49,7 +49,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //-----------------------------------------------------
   // Create Materials
   //-----------------------------------------------------
-    
+
   ConstructMaterials();
 
   //-----------------------------------------------------
