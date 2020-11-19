@@ -101,9 +101,15 @@ WCSim development is supported by the United States National Science Foundation.
 
 #######################################
 HYBRID configuration (B.Q)
+#######################################
+Requirements for this version:
+-ROOT v5r34p36 or v5r34p38. Others might work but have not been tested (all v5r34 probably works). ROOT v6 does not work so far.
+-GEANT4 v10r02 or later. Test with v10r03p03.
+-cmake should be installed. The installation needs to be done with cmake since the Rn background generator has been added.
+ 
 0. The environment variable WCSIMDIR should be defined as your WCSIM directory (not the build one).
 export WCSIMDIR=`pwd`
-1. Please install using cmake as detailed in this document. To run the Rn simulation, GEANT4 >= 10.02 is required.
+1. Please install using cmake as detailed earlier in this README.md.
 2. First running of hybrid configuration: please use WCSim_hybrid.sh
 3. Readout the output: a script exists in sample-root-scripts, named AnalyzeWSHierarchy.c
 a. Compile it using Makefile in sample-root-scripts (make)
