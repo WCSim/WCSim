@@ -25,6 +25,9 @@ private:
   std::set<G4String> ProcessList;
   std::set<G4int> ParticleList;
   std::set<G4int> pi0List;
+  
+  G4double fTime_birth;
+  G4double fMaxTime;
 
   // TF: define in macro now
   G4float percentageOfCherenkovPhotonsToDraw;

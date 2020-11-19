@@ -346,6 +346,9 @@ public:
   G4String GetIDCollectionName(){return WCIDCollectionName;}
   G4String GetIDCollectionName2(){return WCIDCollectionName2;}//Added by B.Quilain for hybrid PMT configuration
   WCSimTuningParameters* GetParameters(){return WCSimTuningParams;}//Added by TD to set up a parameter on PMT TTS uncertainty and use it in WCSimWCPMT
+  
+  G4double GetIDRadius()     {return WCIDRadius;}
+  G4double GetIDHeight()     {return WCIDHeight;}
 private:
 
 

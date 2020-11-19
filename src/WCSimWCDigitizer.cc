@@ -196,6 +196,11 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   if(detectorElement=="tank") WCCollectionName = myDetector->GetIDCollectionName();
   else if(detectorElement=="tankPMT2") WCCollectionName = myDetector->GetIDCollectionName2();
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
+  
+  
+  // G. Pronost 2019/09/09:
+  // Hit need to be sorted! (This is done no where!)
+  std::sort(WCHCPMT->GetVector()->begin(), WCHCPMT->GetVector()->end(), WCSimWCDigi::SortFunctor_Hit());
 
   //std::fstream file;
   //G4String filename = Form("saturation_effect_%.2fpeThreshold.txt",saturThreshold);

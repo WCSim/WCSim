@@ -15,10 +15,10 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   genCmd = new G4UIcmdWithAString("/mygen/generator",this);
   genCmd->SetGuidance("Select primary generator.");
 
-  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, rootracker");
+  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, rootracker, radon");
   genCmd->SetParameterName("generator",true);
   genCmd->SetDefaultValue("muline");
-  genCmd->SetCandidates("muline gun laser gps rootracker");
+  genCmd->SetCandidates("muline gun laser gps rootracker radon");
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
   fileNameCmd->SetGuidance("Select the file of vectors.");
@@ -39,12 +39,39 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   poisMeanCmd->SetParameterName("poissonMean", true);
   poisMeanCmd->SetDefaultValue(1);
 
+  radioactive_time_window_Cmd = new G4UIcmdWithADouble("/mygen/radioactive_time_window",this);
+  radioactive_time_window_Cmd->SetGuidance("Select time window for radioactivity");
+  radioactive_time_window_Cmd->SetParameterName("radioactive_time_window",true);
+  radioactive_time_window_Cmd->SetDefaultValue(0.);
+    
+  G4UIparameter* param;
+  
+  radonScalingCmd = new G4UIcmdWithAString("/mygen/radon_scaling",this);
+  radonScalingCmd->SetGuidance("Select scalling scenario, if scenario 0 is selected, Bi214 are generated uniformly");
+  radonScalingCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
+  radonScalingCmd->SetGuidance("     SCENARIO : 0, A, B");
+  radonScalingCmd->SetCandidates("0 A B");
+  param = new G4UIparameter("SCENARIO",'s',true);
+  param->SetDefaultValue("B");
+  radonScalingCmd->SetParameter(param);
+  
+  radonGeoSymCmd = new G4UIcmdWithAnInteger("/mygen/radon_symmetry",this);
+  radonGeoSymCmd->SetGuidance("Select scalling scenario");
+  radonGeoSymCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
+  radonGeoSymCmd->SetGuidance("     SYMMETRY : 1 ... ");
+  param = new G4UIparameter("SYMMETRY",'d',true);
+  param->SetDefaultValue("1");
+  radonScalingCmd->SetParameter(param);
+
 }
 
 WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
 {
   delete genCmd;
   delete mydetDirectory;
+  delete radonScalingCmd;
+  delete radonGeoSymCmd;
+  delete radioactive_time_window_Cmd;
 }
 
 void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
@@ -59,6 +86,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetRadonEvtGenerator(false);
     }
     else if ( newValue == "gun")
     {
@@ -67,6 +95,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetRadonEvtGenerator(false);
     }
     else if ( newValue == "rootracker")   //M. Scott: Addition of Rootracker events
     {
@@ -75,6 +104,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(true);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetRadonEvtGenerator(false);
     }
     else if ( newValue == "laser")   //T. Akiri: Addition of laser
     {
@@ -83,6 +113,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(true);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetRadonEvtGenerator(false);
     }
     else if ( newValue == "gps")
     {
@@ -91,6 +122,15 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(true);
+      myAction->SetRadonEvtGenerator(false);
+    }
+    else if ( newValue == "radon" ) //G. Pronost: Addition of Radon generator (based on F. Nova's radioactive generator but dedicated to radioactive events in water)
+    {
+      myAction->SetMulineEvtGenerator(false);
+      myAction->SetGunEvtGenerator(false);
+      myAction->SetLaserEvtGenerator(false);
+      myAction->SetGPSEvtGenerator(false);
+      myAction->SetRadonEvtGenerator(true);
     }
   }
 
@@ -125,6 +165,21 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetPoissonPMTMean(poisMeanCmd->GetNewDoubleValue(newValue));
       G4cout << "PoissonPMT mean set to: " << poisMeanCmd->GetNewDoubleValue(newValue) << G4endl;
     }
+    
+  if( command==radioactive_time_window_Cmd )
+    {
+      myAction->SetRadioactiveTimeWindow(StoD(newValue));
+    }
+  
+  if ( command==radonScalingCmd ) 
+    {
+      RadonScalingCommand(newValue);
+    }
+  
+  if ( command==radonGeoSymCmd ) 
+    {
+      myAction->SetRadonSymmetry(radonGeoSymCmd->GetNewIntValue(newValue));
+    }
 }
 
 G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
@@ -143,8 +198,24 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
       { cv = "gps"; }
     else if(myAction->IsUsingRootrackerEvtGenerator())
       { cv = "rootracker"; }   //M. Scott: Addition of Rootracker events
+    else if(myAction->IsUsingRadonEvtGenerator())
+      { cv = "radon"; } // G. Pronost: Addition of Radon generator
   }
   
   return cv;
 }
+
+void WCSimPrimaryGeneratorMessenger::RadonScalingCommand(G4String newValue)
+{
+  G4Tokenizer next( newValue );
+
+  G4String scenario = next();
+  G4int iScenario = 0;
+   
+  if ( scenario == "A" ) iScenario = 1; // Relative scaling with respect to full ID volume (Pessimistic)
+  if ( scenario == "B" ) iScenario = 2; // Relative scaling with respect to fiducial volume
+   
+  myAction->SetRadonScenario(iScenario);
+}
+
 

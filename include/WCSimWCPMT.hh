@@ -20,7 +20,9 @@ public:
   ~WCSimWCPMT();
   
    void ReInitialize() { DigiHitMapPMT.clear(); TriggerTimes.clear(); }
-    
+   // Set Relative Digitized Hit time mode and reinitialize first_time hit
+   void SetRelativeDigitizedHitTime (bool val) { RelativeHitTime = val; fFirst_Time = -1; }
+   void SetRelativeDigitizedHitTime (bool val, G4double time) { RelativeHitTime = val; fFirst_Time = time; }
    
 public:
   
@@ -28,6 +30,7 @@ public:
   void MakePeCorrection(WCSimWCHitsCollection*);
   void Digitize();
   G4double GetTriggerTime(int i) { return TriggerTimes[i];}
+  G4double GetRelativeTimeShift() { return fFirst_Time; }
   // void SetConversion(double iconvrate){ ConvRate = iconvrate; }
   //  static G4double GetLongTime() { return LongTime;}
   
@@ -41,6 +44,9 @@ public:
   WCSimDetectorConstruction* myDetector;
   G4String detectorElement;
   
+private:
+  bool RelativeHitTime;
+  static G4double fFirst_Time;
 };
 
 #endif

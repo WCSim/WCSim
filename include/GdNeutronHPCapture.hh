@@ -20,6 +20,14 @@
 #include "G4NeutronHPChannel.hh"
 #include "G4HadronicInteraction.hh"
 
+#include "G4SystemOfUnits.hh"
+#include "G4NeutronHPCaptureFS.hh"
+#include "G4NeutronHPDeExGammas.hh"
+#include "G4ParticleTable.hh"
+#include "G4IonTable.hh"
+#include "G4NeutronHPManager.hh"
+#include "GdNeutronHPCaptureFS.hh"
+
 class GdNeutronHPCapture : public G4HadronicInteraction
 {
   public: 

@@ -104,11 +104,19 @@ set(WCSIM_SCRIPTS
   macros/visOGLSX.mac
   macros/visOGLQT.mac
   macros/visRayTracer.mac
-  macros/mPMT.mac
   macros/mPMT_nuPrism1.mac
   macros/mPMT_nuPrism2.mac
   macros/tuning_parameters.mac
   macros/NuPRISM.mac
+  macros/mPMT_interesting1.mac
+  macros/mPMT_interesting2_SKwCover.mac
+  macros/mPMT_37pmtHK.mac
+  macros/mPMT_radon_with_bias.mac
+  macros/mPMT_radon_without_bias.mac
+  biasprofile.dat
+  tuningNominal.mac
+  WCSim_hybrid.mac
+  WCSim_hybrid.sh
   )
 
 foreach(_script ${WCSIM_SCRIPTS})

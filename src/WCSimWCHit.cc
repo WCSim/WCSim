@@ -180,3 +180,21 @@ void WCSimWCHit::HSVtoRGB(float& fR, float& fG, float& fB, float& fH, float& fS,
   fG += fM;
   fB += fM;
 }
+
+// G. Pronost:	
+// Sort function by Hit Time (using first time, assuming hit time within a hit object are sorted)
+bool WCSimWCHit::SortFunctor_Hit::operator() (
+		const WCSimWCHit * const &a,
+		const WCSimWCHit * const &b) const {
+
+	G4double ta, tb;
+	if ( a->time.size() > 0 ) 	
+		ta = a->time[0];
+	else return false;
+
+	if ( b->time.size() > 0 )
+		tb = b->time[0];
+	else return true;
+
+	return ta < tb;
+}
