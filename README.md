@@ -1,4 +1,4 @@
-## Welcome to WCSim
+# Welcome to WCSim
 
 WCSim is a very flexible GEANT4 based program for developing and
 simulating large water Cherenkov detectors.
@@ -21,9 +21,9 @@ https://lists.phy.duke.edu/mailman/listinfo/wcsim-git
 
 You can follow issues/requests etc by watching the GitHub respository.
 
-## Current notes and how to build
+# Current notes and how to build
 
-# Build Instructions:
+## Build Instructions:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This compilation method is not advised, CMake should be prefered
@@ -46,7 +46,7 @@ If you want to use these libraries with an external program then also do:
 More detailed information about the simulation is available in
 doc/DetectorDocumentation.pdf.
 
-# Build Instructions using CMake:
+## Build Instructions using CMake:
 
 CMake is cross-platform software for managing the build process in 
 a compiler-independent way (cmake.org). 
@@ -87,7 +87,7 @@ Useful cmake commands:
 * make edit_cache : customize the build.
 * make rebuild_cache : redo the cmake phase.
 
-# Build with CMake on sukap:
+## Build with CMake on sukap:
 
 A script allowing to build WCSim with CMake on sukap is available:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
