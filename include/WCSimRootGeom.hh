@@ -31,7 +31,9 @@ public:
   WCSimRootPMT();
   WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Float_t orientation[3], Float_t position[3]);
   WCSimRootPMT(Int_t tubeNo, Int_t mPMTNo, Int_t mPMT_PMTno, Int_t cylLoc, Float_t orientation[3], Float_t position[3]);
+  WCSimRootPMT(const WCSimRootPMT & in);
   virtual ~WCSimRootPMT();
+  bool CompareAllVariables(const WCSimRootPMT * c) const;
 
   void  SetTubeNo(Int_t i) {fTubeNo=i;}
   void  SetmPMTNo(Int_t i) {fmPMTNo=i;}
@@ -44,8 +46,8 @@ public:
   Int_t GetmPMTNo() const {return fmPMTNo;}
   Int_t GetmPMT_PMTNo() const {return fmPMT_PMTNo;}
   Int_t GetCylLoc() const {return fCylLoc;}
-  Float_t GetOrientation(Int_t i=0) {return (i<3) ? fOrientation[i] : 0;}
-  Float_t GetPosition(Int_t i=0) {return (i<3) ? fPosition[i] : 0;}
+  Float_t GetOrientation(Int_t i=0) const {return (i<3) ? fOrientation[i] : 0;}
+  Float_t GetPosition(Int_t i=0) const {return (i<3) ? fPosition[i] : 0;}
 
   ClassDef(WCSimRootPMT,2)  //WCSimPMT structure
 };
@@ -68,6 +70,8 @@ private:
   Float_t                fWCPMTRadius2; // Radius of PMT, hybrid case
   Int_t                  fWCNumPMT;   // Number of PMTs
   Int_t                  fWCNumPMT2;   // Number of PMTs, hybrid case
+  Float_t                fODWCPMTRadius; // Radius of OD PMT
+  Int_t                  fODWCNumPMT; // Number of OD PMTs
   Float_t                fWCOffset[3]; // Offset of barrel center in global coords
 
   Int_t                  fOrientation; //Orientation o detector, 0 is 2km horizontal, 1 is Upright
@@ -81,7 +85,9 @@ private:
 public:
 
   WCSimRootGeom();
+  WCSimRootGeom(const WCSimRootGeom & in);
   virtual ~WCSimRootGeom();
+  bool CompareAllVariables(const WCSimRootGeom * c) const;
 
   // Sets and gets
 
@@ -94,7 +100,9 @@ public:
     if(hybridsecondtype) fWCNumPMT2 = i;
     else fWCNumPMT= i;
   }
+  void  SetODWCNumPMT(Int_t i) {fODWCNumPMT= i;}
   void  SetWCPMTRadius(Float_t f,int hybridsecondtype=false) {(hybridsecondtype?fWCPMTRadius2=f:fWCPMTRadius=f);}
+  void  SetODWCPMTRadius(Double_t f) {fODWCPMTRadius = f;}
   void  SetWCOffset(Float_t x, Float_t y, Float_t z) 
            {fWCOffset[0]=x; fWCOffset[1]=y; fWCOffset[2] = z;}
 
@@ -108,21 +116,28 @@ public:
   Int_t GetGeo_Type() const {return fgeo_type;}
   
 
-  Int_t  GetWCNumPMT(bool hybridsecondtype=false){
+  Int_t  GetWCNumPMT(bool hybridsecondtype=false) const {
     if(hybridsecondtype) return fWCNumPMT2;
     else return fWCNumPMT;
   }
+  Int_t GetODWCNumPMT() const {return fODWCNumPMT;}
+  
   Float_t GetWCPMTRadius(bool hybridsecondtype=false) const {
     if(hybridsecondtype) return fWCPMTRadius2;
     else return fWCPMTRadius;
   }
+  Float_t GetODWCPMTRadius() const {return fODWCPMTRadius;}
   Float_t GetWCOffset(Int_t i) const {return (i<3) ? fWCOffset[i] : 0.;}
    
-  Int_t GetOrientation() { return fOrientation; }
+  Int_t GetOrientation() const  { return fOrientation; }
   //WCSimRootPMT GetPMT(Int_t i){return *(new WCSimRootPMT());}
   WCSimRootPMT GetPMT(Int_t i,bool hybridsecondtype=false){
     if(hybridsecondtype) return *(WCSimRootPMT*)(*fPMTArray2)[i];
     else return *(WCSimRootPMT*)(*fPMTArray)[i];
+  }
+  const WCSimRootPMT * GetPMTPtr(Int_t i, bool hybridsecondtype=false) const {
+    if(hybridsecondtype) return (WCSimRootPMT*)(fPMTArray2->At(i));
+    else return (WCSimRootPMT*)(fPMTArray->At(i));
   }
 
   ClassDef(WCSimRootGeom,1)  //WCSimRootEvent structure
