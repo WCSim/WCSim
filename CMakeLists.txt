@@ -106,9 +106,6 @@ set(WCSIM_SCRIPTS
   macros/visRayTracer.mac
   macros/mPMT_nuPrism1.mac
   macros/mPMT_nuPrism2.mac
-  macros/mPMT_interesting1.mac
-  macros/mPMT_interesting2_SKwCover.mac
-  macros/mPMT_37pmtHK.mac
   macros/tuning_parameters.mac
   macros/NuPRISM.mac
   macros/mPMT_interesting1.mac
@@ -120,6 +117,18 @@ set(WCSIM_SCRIPTS
   tuningNominal.mac
   WCSim_hybrid.mac
   WCSim_hybrid.sh
+  mPMT-configfiles/mPMTconfig_19_nuPrism.txt
+  mPMT-configfiles/mPMTconfig_30_13_3.txt
+  mPMT-configfiles/mPMTconfig_33_50.txt
+  mPMT-configfiles/mPMTconfig_34_22.5_1.txt
+  mPMT-configfiles/mPMTconfig_34_22_1.txt
+  mPMT-configfiles/mPMTconfig_37_HK.txt
+  mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt
+  mPMT-configfiles/mPMTconfig_33_13_1.txt
+  mPMT-configfiles/mPMTconfig_33_50_1.txt
+  mPMT-configfiles/mPMTconfig_34_22.5_2.txt
+  mPMT-configfiles/mPMTconfig_34_22_2.txt
+
   )
 
 foreach(_script ${WCSIM_SCRIPTS})
@@ -140,5 +149,4 @@ endforeach()
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
 #install(TARGETS WCSim DESTINATION bin)
-
 
