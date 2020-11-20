@@ -217,7 +217,6 @@ public:
     bool operator() (const WCSimWCDigi * const &a,
                      const WCSimWCDigi * const &b) const;
   };
-
 };
 
 typedef G4TDigiCollection<WCSimWCDigi> WCSimWCDigitsCollection;

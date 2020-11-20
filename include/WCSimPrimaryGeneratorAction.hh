@@ -96,7 +96,7 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         WCSimGenerator_Radioactivity* myRn222Generator;
         G4int fRnScenario;
         G4int fRnSymmetry;
-
+        
         G4bool   usePoissonPMT;
         G4double poissonPMTMean;
 
