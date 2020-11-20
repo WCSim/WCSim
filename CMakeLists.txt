@@ -37,11 +37,11 @@ include_directories(${PROJECT_SOURCE_DIR}/include
 
 ## WCSimRootDict.cc regeneration by rootcint
 ## Use ROOT 5.34.32 as some issues with PARSE_ARGUMENTS were found in older ROOT versions (ROOT 5.34.11)
-ROOT_GENERATE_DICTIONARY(${CMAKE_CURRENT_SOURCE_DIR}/src/WCSimRootDict ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootEvent.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootGeom.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimPmtInfo.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimEnumerations.hh  ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootOptions.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/TJNuBeamFlux.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/TNRooTrackerVtx.hh LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootLinkDef.hh)
+ROOT_GENERATE_DICTIONARY(${CMAKE_CURRENT_SOURCE_DIR}/src/WCSimRootDict ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootEvent.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootGeom.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimPmtInfo.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimEnumerations.hh  ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootOptions.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/TJNuBeamFlux.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/TNRooTrackerVtx.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootTools.hh LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootLinkDef.hh)
 
 
 ## Crucial for reading ROOT classes: make shared object library
-add_library(WCSimRoot SHARED ./src/WCSimRootEvent.cc ./src/WCSimRootGeom.cc ./src/WCSimPmtInfo.cc ./src/WCSimEnumerations.cc ./src/WCSimRootOptions.cc ./src/TJNuBeamFlux.cc ./src/TNRooTrackerVtx.cc ./src/WCSimRootDict.cxx)
+add_library(WCSimRoot SHARED ./src/WCSimRootEvent.cc ./src/WCSimRootGeom.cc ./src/WCSimPmtInfo.cc ./src/WCSimEnumerations.cc ./src/WCSimRootOptions.cc ./src/TJNuBeamFlux.cc ./src/TNRooTrackerVtx.cc ./src/WCSimRootTools.cc ./src/WCSimRootDict.cxx)
 target_link_libraries(WCSimRoot  ${ROOT_LIBRARIES})
 
 
@@ -117,6 +117,18 @@ set(WCSIM_SCRIPTS
   tuningNominal.mac
   WCSim_hybrid.mac
   WCSim_hybrid.sh
+  mPMT-configfiles/mPMTconfig_19_nuPrism.txt
+  mPMT-configfiles/mPMTconfig_30_13_3.txt
+  mPMT-configfiles/mPMTconfig_33_50.txt
+  mPMT-configfiles/mPMTconfig_34_22.5_1.txt
+  mPMT-configfiles/mPMTconfig_34_22_1.txt
+  mPMT-configfiles/mPMTconfig_37_HK.txt
+  mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt
+  mPMT-configfiles/mPMTconfig_33_13_1.txt
+  mPMT-configfiles/mPMTconfig_33_50_1.txt
+  mPMT-configfiles/mPMTconfig_34_22.5_2.txt
+  mPMT-configfiles/mPMTconfig_34_22_2.txt
+
   )
 
 foreach(_script ${WCSIM_SCRIPTS})
