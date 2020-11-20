@@ -210,14 +210,13 @@ public:
     //G4cout << "firsthit time " << firsttime << "\n";
     return firsttime;
   }
-
+  
   // G. Pronost:	
   // Sort function by Hit Time (using first time, assuming hit time in a hit are sorted)
   struct SortFunctor_Hit {
     bool operator() (const WCSimWCDigi * const &a,
                      const WCSimWCDigi * const &b) const;
   };
- 
 };
 
 typedef G4TDigiCollection<WCSimWCDigi> WCSimWCDigitsCollection;

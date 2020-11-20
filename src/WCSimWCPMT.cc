@@ -123,6 +123,9 @@ void WCSimWCPMT::Digitize()
 void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
 
+  // Sort Hit times
+  std::sort(WCHC->GetVector()->begin(), WCHC->GetVector()->end(), WCSimWCHit::SortFunctor_Hit());
+  
   // Get the info for pmt positions
   std::vector<WCSimPmtInfo*> *pmts;
 
@@ -172,7 +175,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       // Get the information from the hit
       G4int   tube         = (*WCHC)[i]->GetTubeID();
       G4double peSmeared = 0.0;
-      double time_PMT, time_true;
+      G4double time_PMT, time_true;
       G4int  track_id      = (*WCHC)[i]->GetTrackID();
       
       

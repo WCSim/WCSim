@@ -8,6 +8,7 @@
 #include "G4ParticleTable.hh"
 #include "G4IonTable.hh"
 #include "G4ParticleDefinition.hh"
+#include "G4IonTable.hh"
 #include "G4ThreeVector.hh"
 #include "globals.hh"
 #include "Randomize.hh"

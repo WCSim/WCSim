@@ -25,6 +25,7 @@ class WCSimPrimaryGeneratorMessenger;
 
 class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
+
     public:
         WCSimPrimaryGeneratorAction(WCSimDetectorConstruction*);
         ~WCSimPrimaryGeneratorAction();

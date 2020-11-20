@@ -529,6 +529,7 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
     hfile->cd();
     optionsTree->Fill();
     optionsTree->Write();
+    
     hfile->Write();
     hfile->Close();
   
