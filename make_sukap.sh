@@ -4,32 +4,36 @@ source env_sukap.sh
 
 /usr/local/cmake-3.4.3/bin/cmake --version 
 
-curpath=${PWD}
+wcsim_name=${PWD##*/}
+branch_name=$(git rev-parse --abbrev-ref HEAD)
 
-name=WCSim_hybridPMT
+wcsim_directory=${PWD}
+build_directory=${wcsim_directory}/../${wcsim_name}-build/${branch_name}
 
-if [ ! -d ../${name}-build ]; then
+if [ ! -d ${build_directory} ]; then
 	
 	# Clean G4
-	make clean_wcsim
-	rm -f src/*Dict*
+	if [ -d ${G4WORKDIR} ]; then
+		rm -r ${G4WORKDIR}
+	fi
+	rm *.o *.a *.so *~ */*~ src/*Dict*
 	
-	echo "Creating build directory ../${name}-build"
-	mkdir -p ../${name}-build
+	echo "Creating build directory ${build_directory}"
+	mkdir -p ${build_directory}
 	
-	cd ../${name}-build
-	/usr/local/cmake-3.4.3/bin/cmake -DCMAKE_PREFIX_PATH=${G4INSTALLDIR} $curpath
+	cd ${build_directory}
+	/usr/local/cmake-3.4.3/bin/cmake -DCMAKE_PREFIX_PATH=${G4INSTALLDIR} ${wcsim_directory}
 	
 	# Add needed directory
-	ln -s $curpath/include ../${name}-build/include
+	ln -s ${wcsim_directory}/include ${build_directory}/include
 else 
-	cd ../${name}-build
+	cd ${build_directory}
 fi
 
 
-if [ -d ../${name}-build ]; then
+if [ -d ${build_directory} ]; then
 	make clean
 	make -j7
 	
-	cd $curpath
+	cd ${wcsim_directory}
 fi	
