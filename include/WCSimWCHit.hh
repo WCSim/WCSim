@@ -86,7 +86,7 @@ class WCSimWCHit : public G4VHit
   G4ThreeVector GetPos()        { return pos; };
   G4ThreeVector GetOrientation()        { return orient; };
   G4int         GetTotalPe()    { return totalPe;};
-  G4double       GetTime(int i)  { return time[i];};
+  G4double      GetTime(int i)  { return time[i];};
   G4int         GetParentID(int i) { return primaryParentID[i];};
   G4String         GetTubeType()     { return tubeType; };
   
@@ -122,7 +122,7 @@ class WCSimWCHit : public G4VHit
 
   // pmtgate  and evgate are durations, ie not absolute times
 
-  G4int GetPeInGate(double low, double pmtgate,double evgate) {
+  G4int GetPeInGate(G4double low, G4double pmtgate,G4double evgate) {
     // M Fechner; april 2005
     // assumes that time has already been sorted
     std::vector<G4double>::iterator tfirst = time.begin();
@@ -134,8 +134,8 @@ class WCSimWCHit : public G4VHit
     
     G4int number = std::count_if(tfirst,tlast,
 				 compose2(std::logical_and<bool>(),
-					  std::bind2nd(std::greater_equal<G4float>(),low),
-					  std::bind2nd(std::less_equal<G4float>(),mintime)
+					  std::bind2nd(std::greater_equal<G4double>(),low),
+					  std::bind2nd(std::less_equal<G4double>(),mintime)
 					  )
 				 );
     
@@ -170,7 +170,7 @@ class WCSimWCHit : public G4VHit
   static G4int     maxPe;
 
   G4int                 totalPe;
-  std::vector<G4double>  time;
+  std::vector<G4double> time;
   std::vector<G4int>    primaryParentID;
   G4int                 totalPeInGate;
 };

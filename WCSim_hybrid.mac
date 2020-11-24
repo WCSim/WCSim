@@ -88,6 +88,7 @@
 #/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
 #/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20in R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20in R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate2 100 Hz #For 3 inch PMT R14374 (official value for MC production in 2020)
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
@@ -95,6 +96,7 @@
 #/DarkRate/SetConvert 1.367  #For Normal PMT
 #/DarkRate/SetConvert 1.119 #For HPDs
 #/DarkRate/SetConvert 1.126 #For Box and Line PMTs
+#/DarkRate/SetConvert2 1.126 #For 3 inch PMT R14374
 
 # Select which time window(s) to add dark noise to
 #/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
