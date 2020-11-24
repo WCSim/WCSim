@@ -129,6 +129,10 @@ void WCSimEventAction::CreateDAQInstances()
     WCSimWCTriggerNDigits2* WCTM = new WCSimWCTriggerNDigits2("WCReadout", detectorConstructor, DAQMessenger,"tank");
     DMman->AddNewModule(WCTM);
   }
+  else if(TriggerChoice == "NoTrigger") {
+    WCSimWCTriggerNoTrigger* WCTM = new WCSimWCTriggerNoTrigger("WCReadout", detectorConstructor, DAQMessenger, "tank");
+    DMman->AddNewModule(WCTM);
+  }
   else {
     G4cerr << "Unknown TriggerChoice " << TriggerChoice << G4endl;
     exit(-1);
@@ -160,6 +164,13 @@ void WCSimEventAction::CreateDAQInstances()
     WCSimWCTriggerNDigits2* WCTM2;
     if(detectorConstructor->GetHybridPMT()){
       WCTM2 = new WCSimWCTriggerNDigits2("WCReadout2", detectorConstructor, DAQMessenger,"tankPMT2");
+      DMman->AddNewModule(WCTM2);
+    }
+  }
+  else if(TriggerChoice == "NoTrigger") {
+    WCSimWCTriggerNoTrigger* WCTM2;
+    if(detectorConstructor->GetHybridPMT()){
+      WCTM2 = new WCSimWCTriggerNoTrigger("WCReadout2", detectorConstructor, DAQMessenger, "tankPMT2");
       DMman->AddNewModule(WCTM2);
     }
   }
@@ -343,6 +354,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 #endif
 
   //Convert the hits to PMT pulse
+  WCDMPMT->SetRelativeDigitizedHitTime(RelativeHitTime);
   WCDMPMT->Digitize();
 
   //
@@ -469,6 +481,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 #endif
 
      //Convert the hits to PMT pulse
+     WCDMPMT2->SetRelativeDigitizedHitTime(RelativeHitTime, WCDMPMT->GetRelativeTimeShift() );
      WCDMPMT2->Digitize();
      
      //

@@ -24,6 +24,8 @@
 extern "C" void skrn1pe_(float* );
 //extern "C" void rn1pe_(float* ); // 1Kton
 
+G4double WCSimWCPMT::fFirst_Time = -1;
+
 WCSimWCPMT::WCSimWCPMT(G4String name,
                        WCSimDetectorConstruction* myDetector,
                        G4String detectorElement)
@@ -121,6 +123,9 @@ void WCSimWCPMT::Digitize()
 void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
 
+  // Sort Hit times
+  std::sort(WCHC->GetVector()->begin(), WCHC->GetVector()->end(), WCSimWCHit::SortFunctor_Hit());
+  
   // Get the info for pmt positions
   std::vector<WCSimPmtInfo*> *pmts;
 
@@ -170,7 +175,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       // Get the information from the hit
       G4int   tube         = (*WCHC)[i]->GetTubeID();
       G4double peSmeared = 0.0;
-      double time_PMT, time_true;
+      G4double time_PMT, time_true;
       G4int  track_id      = (*WCHC)[i]->GetTrackID();
       
       
@@ -198,7 +203,18 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       float QinTOT = 0;
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
+	  
 	    time_true = (*WCHC)[i]->GetTime(ip);
+	    
+	    // Reset the time to have "reasonnable" timing
+	    // This modification is important in case of very late hit physics (such as in radioactive decays)     
+	    // for which time easy goes > 1e9 ns and cause bug in digitizer
+	    // should not use /grdm/decayBiasProfile biasprofile.dat as it messes up all the timing of the decays, and force to use only one nucleus
+	    if ( i == 0 && ip == 0 && RelativeHitTime && fFirst_Time == -1 /*&& (*WCHC)[i]->GetTime(ip) > 1e5*/ ) { // Set Max at 10 musec
+	      //G4cout << " Apply time correction to event hits of " << (*WCHC)[i]->GetTime(ip) << " ns" << G4endl;
+	      fFirst_Time = time_true;
+	    } 
+	    
 	    peSmeared = rn1pe();
 #ifdef DEBUG
 	    std::cout << "tube : " << i << " (ID=" << tube << ")" << " hit in tube : "<< ip << " (time=" << time_true << "ns)"  << " pe value : " << peSmeared << std::endl; //TD debug
@@ -211,7 +227,8 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    G4cout<<"PE smearing applied"<<G4endl;
 #endif
 	    //Qout = Q*PMT->QoutFactor(Q, QOIFF, linearity=0); 
-	    time_PMT = time_true + PMT->HitTimeSmearing(Q, ttsfactor/*, linearity=0 */);
+	    //time_PMT = time_true + PMT->HitTimeSmearing(Q, ttsfactor/*, linearity=0 */);
+	    time_PMT = (time_true - fFirst_Time) + PMT->HitTimeSmearing(Q, ttsfactor/*, linearity=0 */);
 #ifdef DEBUG
 	    G4cout<<"Time smearing applied, is this a new hit in the digit map = "<<DigiHitMapPMT[tube]<<G4endl;
 #endif

@@ -43,6 +43,12 @@ int main(int argc,char** argv)
   //  construction is done
   WCSimTuningParameters* tuningpars = new WCSimTuningParameters();
 
+  if(argc != 3){
+      G4cout << "WCSim requires 2 mac-files:" << G4endl;
+      G4cout << "\tUsage: WCSim {input.mac} {tuning.mac}" << G4endl;
+      delete runManager;
+      return -1;
+  }
   // Get the tuning parameters
   //hack B.Q
   G4cout << "B.Q: Read argv[2], which should contains the tuning parameters" << G4endl;
@@ -89,7 +95,6 @@ int main(int argc,char** argv)
   visManager->Initialize();
 
   // Set user action classes
-  G4cout << "B.Q: Initialization" << G4endl;
   WCSimPrimaryGeneratorAction* myGeneratorAction = new 
     WCSimPrimaryGeneratorAction(WCSimdetector);
   runManager->SetUserAction(myGeneratorAction);

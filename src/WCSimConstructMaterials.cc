@@ -516,7 +516,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    // Get from the tuning parameters
    G4double MIEFF = WCSimTuningParams->GetMieff();
    //G4double MIEFF = 0.0;
-   //    printf("MIEFF: %f\n",MIEFF);
+       printf("MIEFF: %f\n",MIEFF);
 
    //Values extracted from Skdetsim
    G4double MIE_water[NUMENTRIES_water] = {

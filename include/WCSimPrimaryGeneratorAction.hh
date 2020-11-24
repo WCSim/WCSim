@@ -10,6 +10,8 @@
 #include <fstream>
 
 #include "WCSimRootOptions.hh"
+#include "WCSimGenerator_Radioactivity.hh"
+
 #include "TFile.h"
 #include "TTree.h"
 #include "TNRooTrackerVtx.hh"
@@ -23,6 +25,7 @@ class WCSimPrimaryGeneratorMessenger;
 
 class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
+
     public:
         WCSimPrimaryGeneratorAction(WCSimDetectorConstruction*);
         ~WCSimPrimaryGeneratorAction();
@@ -80,9 +83,20 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         G4bool   useGunEvt;
         G4bool   useLaserEvt;  //T. Akiri: Laser flag
         G4bool   useGPSEvt;
+        G4bool   useRadonEvt; // G. Pronost: Radon flag
+        
         std::fstream inputFile;
         G4String vectorFileName;
         G4bool   GenerateVertexInRock;
+        
+        // Variables for Radioactive and Radon generators
+        G4double radioactive_time_window;
+
+        // For Rn event
+        WCSimGenerator_Radioactivity* myRn222Generator;
+        G4int fRnScenario;
+        G4int fRnSymmetry;
+        
         G4bool   usePoissonPMT;
         G4double poissonPMTMean;
 
@@ -154,6 +168,18 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         }
         inline G4bool IsGeneratingVertexInRock() { return GenerateVertexInRock; }
         inline void SetGenerateVertexInRock(G4bool choice) { GenerateVertexInRock = choice; }
+        
+        inline void SetRadioactiveTimeWindow(G4double choice) { radioactive_time_window = choice; }
+        inline G4double GetRadioactiveTimeWindow()  		{ return radioactive_time_window; }
+
+        inline void SetRadonEvtGenerator(G4bool choice) 	{ useRadonEvt = choice; }
+        inline G4bool IsUsingRadonEvtGenerator()  		{ return useRadonEvt; }
+  
+        inline void SetRadonScenario(G4int choice) 		{ fRnScenario = choice; }
+        inline G4int GetRadonScenario() 			{ return fRnScenario; }
+  
+        inline void SetRadonSymmetry(G4int choice) 		{ fRnSymmetry = choice; }
+        inline G4int GetRadonSymmetry() 			{ return fRnSymmetry; }
 
         inline void SetPoissonPMT(G4bool choice) { usePoissonPMT = choice; }
         inline G4bool IsUsingPoissonPMT(){ return usePoissonPMT; }

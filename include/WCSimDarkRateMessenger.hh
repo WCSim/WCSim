@@ -33,7 +33,9 @@ private:
 
   G4UIdirectory* WCSimDir;
   G4UIcmdWithADoubleAndUnit* SetFrequency;
+  G4UIcmdWithADoubleAndUnit* SetFrequency2;
   G4UIcmdWithADouble* SetConversionRate;
+  G4UIcmdWithADouble* SetConversionRate2;
   G4UIcmdWithAnInteger* SetDarkMode;
   G4UIcmdWithADoubleAndUnit* SetDarkLow;
   G4UIcmdWithADoubleAndUnit* SetDarkHigh;

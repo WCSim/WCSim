@@ -88,7 +88,6 @@
 #/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
 #/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20in R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20in R3600 dark rate from EGADS nov 2014
-#/DarkRate/SetDarkRate2 100 Hz #For 3 inch PMT R14374 (official value for MC production in 2020)
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
@@ -96,7 +95,6 @@
 #/DarkRate/SetConvert 1.367  #For Normal PMT
 #/DarkRate/SetConvert 1.119 #For HPDs
 #/DarkRate/SetConvert 1.126 #For Box and Line PMTs
-#/DarkRate/SetConvert2 1.126 #For 3 inch PMT R14374
 
 # Select which time window(s) to add dark noise to
 #/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
@@ -208,6 +206,30 @@
 ##### NEW
 /Tracking/fractionOpticalPhotonsToDraw 0.0
 
+# Radon option
+# IMPORTANT: You need to compile WCSim with cmake in order to use the radioactive decays
+# Generate Bi214 decay in the water following a Model extracted from SK-IV solar data
+/mygen/generator radon
+# This window should match the one in biasprofile.dat if time bias is used (see below)
+/mygen/radioactive_time_window 1.e-4
+# Needed if time bias is not used, in order to keep timing below one sec.
+#/DAQ/RelativeHitTime true
+# The following set which scenario is used to scale SK model to HK
+/mygen/radon_scaling A # 	Relative scaling with respect to full ID volume (Pessimistic)
+#/mygen/radon_scaling B #	Absolute scaling with respect to ID border (Optimistic)
+#/mygen/radon_scaling 0 #	Uniform distribution
+/mygen/radon_symmetry 1 #	Divide the detector in x slices using the theta symmetry
+#Clear the source and tell GPS to make multiple vertices
+/gps/source/clear
+
+# Needed to prevent other decay than Bi-214
+/grdm/nucleusLimits 214 214 83 83 
+# if you need to use time bias
+/grdm/decayBiasProfile biasprofile.dat
+/grdm/analogueMC 0
+/grdm/BRbias 0
+
+
 ## change the name of the output root file, default = wcsim.root
 /WCSimIO/RootFile wcsim_hybrid.root
 
@@ -215,5 +237,5 @@
 ## a NEUT vector file as input
 /WCSimIO/SaveRooTracker 0
 
-/run/beamOn 1000
+/run/beamOn 10
 #exit
