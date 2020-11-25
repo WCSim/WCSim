@@ -1,5 +1,6 @@
 #ignore build results
 src/WCSimRootDict.cc
+src/WCSimRootDict.cxx
 src/WCSimRootDict.h
 libWCSim.a
 libWCSimRoot.so
@@ -23,3 +24,8 @@ geofile.txt
 
 ##ignore compiled python scripts
 *.pyc
+
+##ignore solar 
+data_solar/
+include/WCSimGenerator_Solar.hh
+src/WCSimGenerator_Solar.cc

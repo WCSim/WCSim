@@ -50,28 +50,33 @@ DOXYGEN_EXISTS = 0
 endif
 
 .PHONY: all
-all: rootcint lib bin shared $(WCSIMDIR)/libWCSim.a
+all: rootcint lib bin shared libWCSim.a movedict
 
 # Note dependencies not yet set up right yet
 
-#ROOTSO    := /home/bquilain/nuPRISM/WCSim/libWCSimRoot.so
 ROOTSO    := $(WCSIMDIR)/libWCSimRoot.so
 
-ROOTSRC  := $(WCSIMDIR)/src/WCSimRootEvent.cc $(WCSIMDIR)/include/WCSimRootEvent.hh $(WCSIMDIR)/src/WCSimRootGeom.cc $(WCSIMDIR)/include/WCSimRootGeom.hh $(WCSIMDIR)/include/WCSimPmtInfo.hh $(WCSIMDIR)/src/WCSimEnumerations.cc $(WCSIMDIR)/include/WCSimEnumerations.hh $(WCSIMDIR)/src/WCSimRootOptions.cc $(WCSIMDIR)/include/WCSimRootOptions.hh $(WCSIMDIR)/src/TJNuBeamFlux.cc $(WCSIMDIR)/include/TJNuBeamFlux.hh $(WCSIMDIR)/src/TNRooTrackerVtx.cc $(WCSIMDIR)/include/TNRooTrackerVtx.hh $(WCSIMDIR)/include/WCSimRootLinkDef.hh
+ROOTSRC  := $(WCSIMDIR)/src/WCSimRootEvent.cc $(WCSIMDIR)/include/WCSimRootEvent.hh $(WCSIMDIR)/src/WCSimRootGeom.cc $(WCSIMDIR)/include/WCSimRootGeom.hh $(WCSIMDIR)/include/WCSimPmtInfo.hh $(WCSIMDIR)/src/WCSimEnumerations.cc $(WCSIMDIR)/include/WCSimEnumerations.hh $(WCSIMDIR)/src/WCSimRootOptions.cc $(WCSIMDIR)/include/WCSimRootOptions.hh $(WCSIMDIR)/src/TJNuBeamFlux.cc $(WCSIMDIR)/include/TJNuBeamFlux.hh $(WCSIMDIR)/src/TNRooTrackerVtx.cc $(WCSIMDIR)/include/TNRooTrackerVtx.hh $(WCSIMDIR)/src/WCSimRootTools.cc $(WCSIMDIR)/include/WCSimRootTools.hh  $(WCSIMDIR)/include/WCSimRootLinkDef.hh
 
-ROOTOBJS  := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimEnumerations.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootOptions.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/TNRooTrackerVtx.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/TJNuBeamFlux.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootDict.o 
+ROOTOBJS  := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimEnumerations.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootOptions.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/TNRooTrackerVtx.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/TJNuBeamFlux.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootTools.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootDict.o 
 
 shared: $(ROOTSRC) $(ROOTOBJS) 
 	g++ -shared -O $(ROOTOBJS) -o $(ROOTSO) $(ROOTLIBS)
 
-$(WCSIMDIR)/libWCSim.a : $(ROOTOBJS)
+libWCSim.a : $(ROOTOBJS)
 	$(RM) $@
 	ar clq $@ $(ROOTOBJS) 
 
-$(WCSIMDIR)/src/WCSimRootDict.cc : $(ROOTSRC)
-	rootcint  -f $(WCSIMDIR)/src/WCSimRootDict.cc -c -I$(WCSIMDIR)/include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimEnumerations.hh WCSimRootOptions.hh TJNuBeamFlux.hh TNRooTrackerVtx.hh WCSimRootLinkDef.hh
+./src/WCSimRootDict.cc : $(ROOTSRC)
+	rootcint  -f $(WCSIMDIR)/src/WCSimRootDict.cc -c -I$(WCSIMDIR)/include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimEnumerations.hh WCSimRootOptions.hh TJNuBeamFlux.hh TNRooTrackerVtx.hh WCSimRootTools.hh WCSimRootLinkDef.hh
 
-rootcint: $(WCSIMDIR)/src/WCSimRootDict.cc
+rootcint: $(WCSIMDIR)/src/WCSimRootDict.cxx
+
+movedict: rootcint
+ifneq (,$(wildcard ./src/WCSimRootDict_rdict.pcm))
+	cp -f ./src/WCSimRootDict_rdict.pcm .
+	cp -f ./src/WCSimRootDict_rdict.pcm ${G4WORKDIR}/tmp/${G4SYSTEM}/WCSim/
+endif
 
 doxy:
 	@if [ ${DOXYGEN_EXISTS} = 1 ]; \
@@ -83,7 +88,7 @@ doxy:
 
 clean_wcsim:
 	echo  $(G4WORKDIR); 
-	$(RM) -r $(G4WORKDIR); $(RM) *.o *.a *.so *~ */*~ src/WCSimRootDict.h src/WCSimRootDict.cc; 
+	$(RM) -r $(G4WORKDIR); $(RM) *.o *.a *.so *~ */*~ src/WCSimRootDict.h src/WCSimRootDict.c*; 
 	@if [ -d "doc/doxygen" ]; \
 		then \
 		rm -r doc/doxygen; \

@@ -252,6 +252,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	{
 	  float time = (*WCHCPMT)[i]->GetTime(ip);
           float pe = (*WCHCPMT)[i]->GetPe(ip);
+          const int parent_id = (*WCHCPMT)[i]->GetParentID(ip);
 
 	  //start the integration time as the time of the first hit
 	  //Hits must be sorted in time
@@ -275,7 +276,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  bool MakeDigit = false;
 	  if(time >= intgr_start && time <= upperlimit) {
 	    peSmeared += pe;
-	    photon_unique_id = ip;
+	    photon_unique_id = parent_id==-1? -1 - ip: ip; // if darkhit, parent_id == -1.
 	    digi_comp.push_back(photon_unique_id);
       
 #ifdef WCSIMWCDIGITIZER_VERBOSE
@@ -347,7 +348,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    upperlimit = intgr_start + DigitizerIntegrationWindow;
 
 	    //store the digi composition information
-	    photon_unique_id = ip;
+	    photon_unique_id = parent_id==-1?-1-ip:ip;
             digi_comp.push_back(photon_unique_id);
 
 	    //if this is the last hit we must handle the creation of the digit 
