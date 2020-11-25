@@ -165,12 +165,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
      (vessel_radius > 1.*CLHEP::mm || vessel_cyl_height > 1.*CLHEP::mm)) //or make this a user option? 
     material_around_pmt = ; //"SilGel"
   */
+  G4String pmt_material_pmtAssembly;//B.A: Added, might move this to DetectorConfigs later
+  if(nIDPMTs==1) pmt_material_pmtAssembly = "Water";//For single PMT, not gel, only pure PMT.
+  else pmt_material_pmtAssembly = mPMT_material_pmtAssembly;//Else, use SiGel (defined inf WCSimDetectorConfigs).
 
-  //ToDo: define defaults for single PMTs and rename variable (optional gel for single 20" PMT)
   G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
-                            G4Material::GetMaterial(mPMT_material_pmtAssembly),        // Default: SilGel for n > 1, Water for n = 1 
-                            "WCPMT",
+                            G4Material::GetMaterial(pmt_material_pmtAssembly),        // Default: SilGel for n > 1, Water for n = 1                                                      
+			    "WCPMT",
                             0,0,0);
 
 
