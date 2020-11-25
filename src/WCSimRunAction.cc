@@ -150,159 +150,160 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     }
   }
 
-  //TF: New Flat tree format:
-  rootname.replace(rootname.find(".root"),5,"_flat.root");
-  TFile* flatfile = new TFile(rootname.c_str(),"RECREATE","WCSim FLAT ROOT file");
-  flatfile->SetCompressionLevel(2); //default is 1 (minimal compression)
-  masterTree = new TTree("MasterTree","Main WCSim Tree");
-  if(wcsimdetector->GetIsNuPrism()){
-    //Already have fSettingsInputTree and branched it
-    if(fSettingsInputTree){
-      geomTree = fSettingsInputTree->CloneTree(0);
-      geomTree->SetObject("Geometry","Geometry, Software version and generation settings");
-    } else
-      geomTree = new TTree("Geometry","Geometry Tree");
+	//TF: New Flat tree format:
+	rootname.replace(rootname.find(".root"),5,"_flat.root");
+	TFile* flatfile = new TFile(rootname.c_str(),"RECREATE","WCSim FLAT ROOT file");
+	flatfile->SetCompressionLevel(2); //default is 1 (minimal compression)
+	masterTree = new TTree("MasterTree","Main WCSim Tree");
+	if(wcsimdetector->GetIsNuPrism()){
+		//Already have fSettingsInputTree and branched it
+		if(fSettingsInputTree){
+			geomTree = fSettingsInputTree->CloneTree(0);
+			geomTree->SetObject("Geometry","Geometry, Software version and generation settings");
+		} else
+			geomTree = new TTree("Geometry","Geometry Tree");
     
-    geomTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/F");
-    geomTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/F");
-    geomTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
-    geomTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/F");
-    geomTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/F");
-    geomTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/F");
-  } else
-    geomTree = new TTree("Geometry","Geometry Tree");
-  // flat branches, only arrays for PMTs themselves
-  // define variables in header, so I can fill them in a separate function.
+		geomTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/F");
+		geomTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/F");
+		geomTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
+		geomTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/F");
+		geomTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/F");
+		geomTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/F");
+	} else
+		geomTree = new TTree("Geometry","Geometry Tree");
+	
+	// flat branches, only arrays for PMTs themselves
+	// define variables in header, so I can fill them in a separate function.
 
-  geomTree->Branch("GeometryType",geo_type_string,"GeometryType[20]/Char_t");         //example: for std::string data_ : tree->Branch(branchname.c_str(), (void*)data_->c_str(),leafdescription.c_str());
-  geomTree->Branch("CylinderRadius",&cyl_radius,"CylinderRadius/Double_t");
-  geomTree->Branch("CylinderLength",&cyl_length,"CylinderLength/Double_t");
-  geomTree->Branch("PMTtype_ID",pmt_id_string,"PMTtype_ID[50]/Char_t");
-  geomTree->Branch("PMTradius_ID",&pmt_radius_id,"PMTradius_ID/Double_t");
-  geomTree->Branch("PMTtype_OD",pmt_od_string,"PMTtype_OD[50]/Char_t");
-  geomTree->Branch("PMTradius_OD",&pmt_radius_od,"PMTradius_OD/Double_t");
-  geomTree->Branch("numPMT_ID",&numPMT_id,"numPMT_ID/Int_t");
-  geomTree->Branch("numPMT_OD",&numPMT_od,"numPMT_OD/Int_t");
-  geomTree->Branch("Orientation",&orient,"Orientation/Int_t");
-  geomTree->Branch("Offset_x",&offset_x,"Offset_x/Double_t");
-  geomTree->Branch("Offset_y",&offset_y,"Offset_y/Double_t");
-  geomTree->Branch("Offset_z",&offset_z,"Offset_z/Double_t");
-  //mPMT info:
-  geomTree->Branch("num_mPMT",&num_mPMT,"num_mPMT/Int_t");   //ID PMTs/n ID per mPMT
-  //PMT info:
-  geomTree->Branch("Tube",tube_id,"Tube[numPMT_ID]/Int_t");      //ToDo: Add OD and OD identifier
-  geomTree->Branch("mPMT",mPMT_id,"mPMT[numPMT_ID]/Int_t");      //mPMT: (mPMT - mPMT_PMT) pairs
-  geomTree->Branch("mPMT_pmt",mPMT_pmt_id,"mPMT_pmt[numPMT_ID]/Int_t");
-  geomTree->Branch("x",tube_x,"x[numPMT_ID]/Double_t");
-  geomTree->Branch("y",tube_y,"y[numPMT_ID]/Double_t");
-  geomTree->Branch("z",tube_z,"z[numPMT_ID]/Double_t");
-  geomTree->Branch("cylLocation",cylLocation,"cylLocation[numPMT_ID]/Int_t");  
-  geomTree->Branch("direction_x",dir_x,"direction_x[numPMT_ID]/Double_t");
-  geomTree->Branch("direction_y",dir_y,"direction_y[numPMT_ID]/Double_t");
-  geomTree->Branch("direction_z",dir_z,"direction_z[numPMT_ID]/Double_t");
-  geomTree->Branch("phi",phi,"phi[numPMT_ID]/Double_t");
-  geomTree->Branch("theta",theta,"theta[numPMT_ID]/Double_t");
+	geomTree->Branch("GeometryType",geo_type_string,"GeometryType[20]/C");         //example: for std::string data_ : tree->Branch(branchname.c_str(), (void*)data_->c_str(),leafdescription.c_str());
+	geomTree->Branch("CylinderRadius",&cyl_radius,"CylinderRadius/D");
+	geomTree->Branch("CylinderLength",&cyl_length,"CylinderLength/D");
+	geomTree->Branch("PMTtype_ID",pmt_id_string,"PMTtype_ID[50]/C");
+	geomTree->Branch("PMTradius_ID",&pmt_radius_id,"PMTradius_ID/D");
+	geomTree->Branch("PMTtype_OD",pmt_od_string,"PMTtype_OD[50]/C");
+	geomTree->Branch("PMTradius_OD",&pmt_radius_od,"PMTradius_OD/D");
+	geomTree->Branch("numPMT_ID",&numPMT_id,"numPMT_ID/I");
+	geomTree->Branch("numPMT_OD",&numPMT_od,"numPMT_OD/I");
+	geomTree->Branch("Orientation",&orient,"Orientation/I");
+	geomTree->Branch("Offset_x",&offset_x,"Offset_x/D");
+	geomTree->Branch("Offset_y",&offset_y,"Offset_y/D");
+	geomTree->Branch("Offset_z",&offset_z,"Offset_z/D");
+	//mPMT info:
+	geomTree->Branch("num_mPMT",&num_mPMT,"num_mPMT/I");   //ID PMTs/n ID per mPMT
+	//PMT info:
+	geomTree->Branch("Tube",tube_id,"Tube[numPMT_ID]/I");      //ToDo: Add OD and OD identifier
+	geomTree->Branch("mPMT",mPMT_id,"mPMT[numPMT_ID]/I");      //mPMT: (mPMT - mPMT_PMT) pairs
+	geomTree->Branch("mPMT_pmt",mPMT_pmt_id,"mPMT_pmt[numPMT_ID]/I");
+	geomTree->Branch("x",tube_x,"x[numPMT_ID]/D");
+	geomTree->Branch("y",tube_y,"y[numPMT_ID]/D");
+	geomTree->Branch("z",tube_z,"z[numPMT_ID]/D");
+	geomTree->Branch("cylLocation",cylLocation,"cylLocation[numPMT_ID]/I");  
+	geomTree->Branch("direction_x",dir_x,"direction_x[numPMT_ID]/D");
+	geomTree->Branch("direction_y",dir_y,"direction_y[numPMT_ID]/D");
+	geomTree->Branch("direction_z",dir_z,"direction_z[numPMT_ID]/D");
+	geomTree->Branch("phi",phi,"phi[numPMT_ID]/D");
+	geomTree->Branch("theta",theta,"theta[numPMT_ID]/D");
 
-  //Fill Branches
-  //Write Trees
-  FillFlatGeoTree();
+	//Fill Branches
+	//Write Trees
+	FillFlatGeoTree();
 
-  cherenkovHitsTree = new TTree("CherenkovHits","Cherenkov Hits Tree");
-  cherenkovDigiHitsTree = new TTree("CherenkovDigiHits","Cherenkov DigiHits Tree");
-  tracksTree = new TTree("Tracks","Tracks Tree");
-  triggerTree = new TTree("Trigger","Trigger Tree");
-  eventInfoTree = new TTree("EventInfo","EventInfo Tree");
+	cherenkovHitsTree = new TTree("CherenkovHits","Cherenkov Hits Tree");
+	cherenkovDigiHitsTree = new TTree("CherenkovDigiHits","Cherenkov DigiHits Tree");
+	tracksTree = new TTree("Tracks","Tracks Tree");
+	triggerTree = new TTree("Trigger","Trigger Tree");
+	eventInfoTree = new TTree("EventInfo","EventInfo Tree");
 
-  //Will be filled in EventAction
-  triggerTree->Branch("Run",&run,"Run/Int_t");
-  triggerTree->Branch("Event",&event,"Event/Int_t");
-  triggerTree->Branch("SubEvent",&subevent,"SubEvent/Int_t");
-  triggerTree->Branch("Type",&trig_type,"Type/Int_t");
-  //triggerTree->Branch("Info",trig_info,"TriggerInfo[10]/Double_t");
-  triggerTree->Branch("TriggeredDigits",&trig_info,"TriggerDigits/Int_t");
-  triggerTree->Branch("Length",&trig_length,"TriggerLength/Double_t");
-  triggerTree->Branch("StartTime",&trig_start,"StartTime/Double_t");
+	//Will be filled in EventAction
+	triggerTree->Branch("Run",&run,"Run/I");
+	triggerTree->Branch("Event",&event,"Event/I");
+	triggerTree->Branch("SubEvent",&subevent,"SubEvent/I");
+	triggerTree->Branch("Type",&trig_type,"Type/I");
+	//triggerTree->Branch("Info",trig_info,"TriggerInfo[10]/D");
+	triggerTree->Branch("TriggeredDigits",&trig_info,"TriggerDigits/I");
+	triggerTree->Branch("Length",&trig_length,"TriggerLength/D");
+	triggerTree->Branch("StartTime",&trig_start,"StartTime/D");
 
-  eventInfoTree->Branch("Run",&run,"Run/Int_t");
-  eventInfoTree->Branch("Event",&event,"Event/Int_t");
-  eventInfoTree->Branch("SubEvent",&subevent,"SubEvent/Int_t");
+  eventInfoTree->Branch("Run",&run,"Run/I");
+  eventInfoTree->Branch("Event",&event,"Event/I");
+  eventInfoTree->Branch("SubEvent",&subevent,"SubEvent/I");
 
   evNtup = new eventNtuple; // ToDo: initialize struct with 
-  eventInfoTree->Branch("InteractionMode",&(evNtup->interaction_mode),"InteractionMode/Int_t");
-  eventInfoTree->Branch("VertexVolume",evNtup->vtxVolume,"VertexVolume[100]/Char_t");
-  eventInfoTree->Branch("Vertex_x",&(evNtup->vtx_x),"Vertex_x/Double_t");
-  eventInfoTree->Branch("Vertex_y",&(evNtup->vtx_y),"Vertex_y/Double_t");
-  eventInfoTree->Branch("Vertex_z",&(evNtup->vtx_z),"Vertex_z/Double_t"); 
+  eventInfoTree->Branch("InteractionMode",&(evNtup->interaction_mode),"InteractionMode/I");
+  eventInfoTree->Branch("VertexVolume",evNtup->vtxVolume,"VertexVolume[100]/C");
+  eventInfoTree->Branch("Vertex_x",&(evNtup->vtx_x),"Vertex_x/D");
+  eventInfoTree->Branch("Vertex_y",&(evNtup->vtx_y),"Vertex_y/D");
+  eventInfoTree->Branch("Vertex_z",&(evNtup->vtx_z),"Vertex_z/D"); 
 
-  tracksTree->Branch("Run",&run,"Run/Int_t");
-  tracksTree->Branch("Event",&event,"Event/Int_t");
-  tracksTree->Branch("SubEvent",&subevent,"SubEvent/Int_t");
-  tracksTree->Branch("Ntracks",&(evNtup->nTracks),"Ntracks/Int_t");
-  tracksTree->Branch("Pid",(evNtup->pid),"Pid[Ntracks]/Int_t");
-  tracksTree->Branch("Flag",(evNtup->flag),"Flag[Ntracks]/Int_t");
-  tracksTree->Branch("Mass",(evNtup->mass),"Mass[Ntracks]/Float_t");
-  tracksTree->Branch("P",(evNtup->p),"P[Ntracks]/Float_t");
-  tracksTree->Branch("Energy",(evNtup->energy),"Energy[Ntracks]/Float_t");
-  tracksTree->Branch("ParentID",(evNtup->parent),"ParentID[Ntracks]/Int_t");
-  tracksTree->Branch("TrackID",(evNtup->trackID),"TrackID[Ntracks]/Int_t");
-  tracksTree->Branch("Time",(evNtup->time),"Time[Ntracks]/Float_t");
+  tracksTree->Branch("Run",&run,"Run/I");
+  tracksTree->Branch("Event",&event,"Event/I");
+  tracksTree->Branch("SubEvent",&subevent,"SubEvent/I");
+  tracksTree->Branch("Ntracks",&(evNtup->nTracks),"Ntracks/I");
+  tracksTree->Branch("Pid",(evNtup->pid),"Pid[Ntracks]/I");
+  tracksTree->Branch("Flag",(evNtup->flag),"Flag[Ntracks]/I");
+  tracksTree->Branch("Mass",(evNtup->mass),"Mass[Ntracks]/F");
+  tracksTree->Branch("P",(evNtup->p),"P[Ntracks]/F");
+  tracksTree->Branch("Energy",(evNtup->energy),"Energy[Ntracks]/F");
+  tracksTree->Branch("ParentID",(evNtup->parent),"ParentID[Ntracks]/I");
+  tracksTree->Branch("TrackID",(evNtup->trackID),"TrackID[Ntracks]/I");
+  tracksTree->Branch("Time",(evNtup->time),"Time[Ntracks]/F");
 
-  tracksTree->Branch("Dirx",(evNtup->dir_x),"Dirx[Ntracks]/Float_t");
-  tracksTree->Branch("Diry",(evNtup->dir_y),"Diry[Ntracks]/Float_t");
-  tracksTree->Branch("Dirz",(evNtup->dir_z),"Dirz[Ntracks]/Float_t");
-  tracksTree->Branch("Px",(evNtup->pdir_x),"Px[Ntracks]/Float_t");
-  tracksTree->Branch("Py",(evNtup->pdir_y),"Py[Ntracks]/Float_t");
-  tracksTree->Branch("Pz",(evNtup->pdir_z),"Pz[Ntracks]/Float_t");
-  tracksTree->Branch("Start_x",(evNtup->start_x),"Start_x[Ntracks]/Float_t");
-  tracksTree->Branch("Start_y",(evNtup->start_y),"Start_y[Ntracks]/Float_t");
-  tracksTree->Branch("Start_z",(evNtup->start_z),"Start_z[Ntracks]/Float_t");
-  tracksTree->Branch("Stop_x",(evNtup->stop_x),"Stop_x[Ntracks]/Float_t");
-  tracksTree->Branch("Stop_y",(evNtup->stop_y),"Stop_y[Ntracks]/Float_t");
-  tracksTree->Branch("Stop_z",(evNtup->stop_z),"Stop_z[Ntracks]/Float_t");
-  tracksTree->Branch("Length",(evNtup->length),"Length[Ntracks]/Float_t");
+  tracksTree->Branch("Dirx",(evNtup->dir_x),"Dirx[Ntracks]/F");
+  tracksTree->Branch("Diry",(evNtup->dir_y),"Diry[Ntracks]/F");
+  tracksTree->Branch("Dirz",(evNtup->dir_z),"Dirz[Ntracks]/F");
+  tracksTree->Branch("Px",(evNtup->pdir_x),"Px[Ntracks]/F");
+  tracksTree->Branch("Py",(evNtup->pdir_y),"Py[Ntracks]/F");
+  tracksTree->Branch("Pz",(evNtup->pdir_z),"Pz[Ntracks]/F");
+  tracksTree->Branch("Start_x",(evNtup->start_x),"Start_x[Ntracks]/F");
+  tracksTree->Branch("Start_y",(evNtup->start_y),"Start_y[Ntracks]/F");
+  tracksTree->Branch("Start_z",(evNtup->start_z),"Start_z[Ntracks]/F");
+  tracksTree->Branch("Stop_x",(evNtup->stop_x),"Stop_x[Ntracks]/F");
+  tracksTree->Branch("Stop_y",(evNtup->stop_y),"Stop_y[Ntracks]/F");
+  tracksTree->Branch("Stop_z",(evNtup->stop_z),"Stop_z[Ntracks]/F");
+  tracksTree->Branch("Length",(evNtup->length),"Length[Ntracks]/F");
 
-  cherenkovHitsTree->Branch("Run",&run,"Run/Int_t");
-  cherenkovHitsTree->Branch("Event",&event,"Event/Int_t");
-  cherenkovHitsTree->Branch("SubEvent",&subevent,"SubEvent/Int_t");
-  cherenkovHitsTree->Branch("NHits",&(evNtup->totalNumHits),"NHits/Int_t");   // #PMTs x #(Ch+DN)hits/PMTs
-  cherenkovHitsTree->Branch("NHits_noDN",&(evNtup->totalNumHits_noNoise),"NHits_noDN/Int_t");   // #PMTs x #(Ch)hits/PMTs
-  cherenkovHitsTree->Branch("NPMTs",&(evNtup->numTubesHit),"NPMTs/Int_t");
-  cherenkovHitsTree->Branch("NPMTs_noDN",&(evNtup->numTubesHit_noNoise),"NPMTs_noDN/Int_t");
-  cherenkovHitsTree->Branch("Time",(evNtup->truetime),"Time[NHits]/Float_t");
-  cherenkovHitsTree->Branch("PMT_QTot",(evNtup->totalPe),"PMT_QTot[NHits]/Int_t");
-  cherenkovHitsTree->Branch("PMT_QTot_noDN",(evNtup->totalPe_noNoise),"PMT_Qtot_noDN[NHits]/Int_t");
+  cherenkovHitsTree->Branch("Run",&run,"Run/I");
+  cherenkovHitsTree->Branch("Event",&event,"Event/I");
+  cherenkovHitsTree->Branch("SubEvent",&subevent,"SubEvent/I");
+  cherenkovHitsTree->Branch("NHits",&(evNtup->totalNumHits),"NHits/I");   // #PMTs x #(Ch+DN)hits/PMTs
+  cherenkovHitsTree->Branch("NHits_noDN",&(evNtup->totalNumHits_noNoise),"NHits_noDN/I");   // #PMTs x #(Ch)hits/PMTs
+  cherenkovHitsTree->Branch("NPMTs",&(evNtup->numTubesHit),"NPMTs/I");
+  cherenkovHitsTree->Branch("NPMTs_noDN",&(evNtup->numTubesHit_noNoise),"NPMTs_noDN/I");
+  cherenkovHitsTree->Branch("Time",(evNtup->truetime),"Time[NHits]/F");
+  cherenkovHitsTree->Branch("PMT_QTot",(evNtup->totalPe),"PMT_QTot[NHits]/I");
+  cherenkovHitsTree->Branch("PMT_QTot_noDN",(evNtup->totalPe_noNoise),"PMT_Qtot_noDN[NHits]/I");
 
-  cherenkovHitsTree->Branch("ParentID",(evNtup->parentid),"ParentID[NHits]/Int_t");
-  cherenkovHitsTree->Branch("Vector_index",(evNtup->vector_index),"Vector_index[NHits]/Int_t");
-  cherenkovHitsTree->Branch("Tube",(evNtup->tubeid),"Tube[NHits]/Int_t");
-  cherenkovHitsTree->Branch("mPMT",(evNtup->mPMTid),"mPMT[NHits]/Int_t");
-  cherenkovHitsTree->Branch("mPMT_pmt",(evNtup->mPMT_pmtid),"mPMT_pmt[NHits]/Int_t");
-  cherenkovHitsTree->Branch("TrackID",(evNtup->trackid),"TrackID[NHits]/Int_t");
-  cherenkovHitsTree->Branch("PMT_x",(evNtup->tube_x),"PMT_x[NHits]/Float_t");
-  cherenkovHitsTree->Branch("PMT_y",(evNtup->tube_y),"PMT_y[NHits]/Float_t");
-  cherenkovHitsTree->Branch("PMT_z",(evNtup->tube_z),"PMT_z[NHits]/Float_t");
-  cherenkovHitsTree->Branch("PMT_dirx",(evNtup->tube_dirx),"PMT_dirx[NHits]/Float_t");
-  cherenkovHitsTree->Branch("PMT_diry",(evNtup->tube_diry),"PMT_diry[NHits]/Float_t");
-  cherenkovHitsTree->Branch("PMT_dirz",(evNtup->tube_dirz),"PMT_dirz[NHits]/Float_t");
+  cherenkovHitsTree->Branch("ParentID",(evNtup->parentid),"ParentID[NHits]/I");
+  cherenkovHitsTree->Branch("Vector_index",(evNtup->vector_index),"Vector_index[NHits]/I");
+  cherenkovHitsTree->Branch("Tube",(evNtup->tubeid),"Tube[NHits]/I");
+  cherenkovHitsTree->Branch("mPMT",(evNtup->mPMTid),"mPMT[NHits]/I");
+  cherenkovHitsTree->Branch("mPMT_pmt",(evNtup->mPMT_pmtid),"mPMT_pmt[NHits]/I");
+  cherenkovHitsTree->Branch("TrackID",(evNtup->trackid),"TrackID[NHits]/I");
+  cherenkovHitsTree->Branch("PMT_x",(evNtup->tube_x),"PMT_x[NHits]/F");
+  cherenkovHitsTree->Branch("PMT_y",(evNtup->tube_y),"PMT_y[NHits]/F");
+  cherenkovHitsTree->Branch("PMT_z",(evNtup->tube_z),"PMT_z[NHits]/F");
+  cherenkovHitsTree->Branch("PMT_dirx",(evNtup->tube_dirx),"PMT_dirx[NHits]/F");
+  cherenkovHitsTree->Branch("PMT_diry",(evNtup->tube_diry),"PMT_diry[NHits]/F");
+  cherenkovHitsTree->Branch("PMT_dirz",(evNtup->tube_dirz),"PMT_dirz[NHits]/F");
 
-  cherenkovDigiHitsTree->Branch("Run",&run,"Run/Int_t");
-  cherenkovDigiHitsTree->Branch("Event",&event,"Event/Int_t");
-  cherenkovDigiHitsTree->Branch("SubEvent",&subevent,"SubEvent/Int_t");
-  cherenkovDigiHitsTree->Branch("NDigiHits",&(evNtup->totalNumDigiHits),"NDigiHits/Int_t");
-  cherenkovDigiHitsTree->Branch("NDigiPMTs",&(evNtup->numDigiTubesHit),"NDigiPMTs/Int_t");
-  cherenkovDigiHitsTree->Branch("QTotDigi",&(evNtup->sumq),"QTotDigi/Float_t");
-  cherenkovDigiHitsTree->Branch("Q",(evNtup->q),"Q[NDigiHits]/Float_t");
-  cherenkovDigiHitsTree->Branch("T",(evNtup->t),"T[NDigiHits]/Float_t");
-  cherenkovDigiHitsTree->Branch("Vector_index",(evNtup->digivector_index),"Vector_index[NDigiHits]/Int_t");
-  cherenkovDigiHitsTree->Branch("Tube",(evNtup->digitubeid),"Tube[NDigiHits]/Int_t");
-  cherenkovDigiHitsTree->Branch("mPMT",(evNtup->digimPMTid),"mPMT[NDigiHits]/Int_t");
-  cherenkovDigiHitsTree->Branch("mPMT_pmt",(evNtup->digimPMT_pmtid),"mPMT_pmt[NDigiHits]/Int_t");
-  cherenkovDigiHitsTree->Branch("PMT_x",(evNtup->digitube_x),"PMT_x[NDigiHits]/Float_t");
-  cherenkovDigiHitsTree->Branch("PMT_y",(evNtup->digitube_y),"PMT_y[NDigiHits]/Float_t");
-  cherenkovDigiHitsTree->Branch("PMT_z",(evNtup->digitube_z),"PMT_z[NDigiHits]/Float_t");
-  cherenkovDigiHitsTree->Branch("PMT_dirx",(evNtup->digitube_dirx),"PMT_dirx[NDigiHits]/Float_t");
-  cherenkovDigiHitsTree->Branch("PMT_diry",(evNtup->digitube_diry),"PMT_diry[NDigiHits]/Float_t");
-  cherenkovDigiHitsTree->Branch("PMT_dirz",(evNtup->digitube_dirz),"PMT_dirz[NDigiHits]/Float_t");
+  cherenkovDigiHitsTree->Branch("Run",&run,"Run/I");
+  cherenkovDigiHitsTree->Branch("Event",&event,"Event/I");
+  cherenkovDigiHitsTree->Branch("SubEvent",&subevent,"SubEvent/I");
+  cherenkovDigiHitsTree->Branch("NDigiHits",&(evNtup->totalNumDigiHits),"NDigiHits/I");
+  cherenkovDigiHitsTree->Branch("NDigiPMTs",&(evNtup->numDigiTubesHit),"NDigiPMTs/I");
+  cherenkovDigiHitsTree->Branch("QTotDigi",&(evNtup->sumq),"QTotDigi/F");
+  cherenkovDigiHitsTree->Branch("Q",(evNtup->q),"Q[NDigiHits]/F");
+  cherenkovDigiHitsTree->Branch("T",(evNtup->t),"T[NDigiHits]/F");
+  cherenkovDigiHitsTree->Branch("Vector_index",(evNtup->digivector_index),"Vector_index[NDigiHits]/I");
+  cherenkovDigiHitsTree->Branch("Tube",(evNtup->digitubeid),"Tube[NDigiHits]/I");
+  cherenkovDigiHitsTree->Branch("mPMT",(evNtup->digimPMTid),"mPMT[NDigiHits]/I");
+  cherenkovDigiHitsTree->Branch("mPMT_pmt",(evNtup->digimPMT_pmtid),"mPMT_pmt[NDigiHits]/I");
+  cherenkovDigiHitsTree->Branch("PMT_x",(evNtup->digitube_x),"PMT_x[NDigiHits]/F");
+  cherenkovDigiHitsTree->Branch("PMT_y",(evNtup->digitube_y),"PMT_y[NDigiHits]/F");
+  cherenkovDigiHitsTree->Branch("PMT_z",(evNtup->digitube_z),"PMT_z[NDigiHits]/F");
+  cherenkovDigiHitsTree->Branch("PMT_dirx",(evNtup->digitube_dirx),"PMT_dirx[NDigiHits]/F");
+  cherenkovDigiHitsTree->Branch("PMT_diry",(evNtup->digitube_diry),"PMT_diry[NDigiHits]/F");
+  cherenkovDigiHitsTree->Branch("PMT_dirz",(evNtup->digitube_dirz),"PMT_dirz[NDigiHits]/F");
 
   /* TF TODO: Adapt to Flat Tree output!!
   // Options tree
@@ -322,15 +323,15 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     //fNVtx = 0;
     evNRooTracker = new NRooTrackerVtx();   // should be an array? Not clear where in WCSim NVtx > 1
     flatRooTrackerTree = new TTree("RooTracker","Event Vertex Truth Array");
-    flatRooTrackerTree->Branch("Run",&run,"Run/Int_t");
-    flatRooTrackerTree->Branch("Event",&event,"Event/Int_t");
-    flatRooTrackerTree->Branch("SubEvent",&subevent,"SubEvent/Int_t");
-    flatRooTrackerTree->Branch("NVtx",&fNVtx,"NVtx/Int_t");
+    flatRooTrackerTree->Branch("Run",&run,"Run/I");
+    flatRooTrackerTree->Branch("Event",&event,"Event/I");
+    flatRooTrackerTree->Branch("SubEvent",&subevent,"SubEvent/I");
+    flatRooTrackerTree->Branch("NVtx",&fNVtx,"NVtx/I");
     //flat branching
-    flatRooTrackerTree->Branch("NuFluxEntry",&evNRooTracker->NuFluxEntry,"NuFluxEntry/Long_t");
-    flatRooTrackerTree->Branch("NuFileName",&evNRooTracker->NuFileName,"NuFileName[100]/Char_t"); //CAREFUL
-    flatRooTrackerTree->Branch("NuParentDecMode",&evNRooTracker->NuParentDecMode,"NuParentDecMod/Int_t");
-    flatRooTrackerTree->Branch("NuParentPdg",&evNRooTracker->NuParentPdg,"NuParentPdg/Int_t");
+    flatRooTrackerTree->Branch("NuFluxEntry",&evNRooTracker->NuFluxEntry,"NuFluxEntry/L");
+    flatRooTrackerTree->Branch("NuFileName",&evNRooTracker->NuFileName,"NuFileName[100]/C"); //CAREFUL
+    flatRooTrackerTree->Branch("NuParentDecMode",&evNRooTracker->NuParentDecMode,"NuParentDecMod/I");
+    flatRooTrackerTree->Branch("NuParentPdg",&evNRooTracker->NuParentPdg,"NuParentPdg/I");
     //// WORK IN PROGRESS
     double      NuParentDecP4 [4]; 
     double      NuParentDecX4 [4]; 
