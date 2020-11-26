@@ -165,6 +165,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         // but could be just  
         // nuance 
 		// if value is given set mode to equal it.
+
 			token = readInLine(inputFile, lineSize, inBuf);
 			int iVertex=0;
 			while(token[0]=="nuance" && iVertex < MAX_N_VERTICES)
