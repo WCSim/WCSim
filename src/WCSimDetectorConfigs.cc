@@ -238,31 +238,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
-  WCPMTPercentCoverage  = 40.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
-  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
-  WCBlackSheetThickness = 2.0*cm;
-  WCAddGd               = false;
-}
-//B. Quilain, HK with 20'' PMTs
-void WCSimDetectorConstruction::SetHyperK_SKPMTGeometry()
-{
-  WCDetectorName = "HyperK_SKPMT";
-  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-  WCSimPMTObject * PMT = CreatePMTObject("PMT20inch", WCIDCollectionName);
-
-  WCPMTName           = PMT->GetPMTName();
-  WCPMTExposeHeight   = PMT->GetExposeHeight();
-  WCPMTRadius         = PMT->GetRadius();
-  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
-  WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
-  WCPMTperCellHorizontal= 4;
-  WCPMTperCellVertical  = 3;
-  WCPMTPercentCoverage  = 40.0;
+  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical));
@@ -287,7 +263,7 @@ void WCSimDetectorConstruction::SetHyperK_10inchGeometry()
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
-  WCPMTPercentCoverage  = 40.0;//10.0;
+  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical));
@@ -312,7 +288,7 @@ void WCSimDetectorConstruction::SetHyperK_8inchGeometry()
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
-  WCPMTPercentCoverage  = 6.4;//40.0;
+  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical));
@@ -337,7 +313,7 @@ void WCSimDetectorConstruction::SetHyperK_3inchGeometry()
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
-  WCPMTPercentCoverage  = 1;//40.0;
+  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
   WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical));
@@ -391,7 +367,7 @@ void WCSimDetectorConstruction::SetHyperK_mPMTGeometry()
 	WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
 	WCPMTperCellHorizontal= 1;//4;
 	WCPMTperCellVertical  = 1;//3;
-	WCPMTPercentCoverage  = 30.0;//40.0;
+	if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
 	WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*mPMT_vessel_radius));
 	G4cout << "## Number of Horizontal PMT along diameter = " << WCBarrelNumPMTHorizontal << ", diameter = "<< WCIDDiameter << ", coverage = "<< WCPMTPercentCoverage << ", PMT radius = " << WCPMTRadius << ", test = " << WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius) << G4endl;
 	WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
@@ -453,8 +429,8 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMTGeometry()
   WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height); //offset from vertical
   WCIDVerticalPosition     = 0.;
 
-  WCPMTPercentCoverage  = 20.0;//20.0;//40.0;//40.0;  
-  WCPMTPercentCoverage2  = 5.;//5.0;//20.0;
+  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 20.0;
+  if(WCPMTPercentCoverage2==-1.) WCPMTPercentCoverage2  = 5.0;
   WCPMTperCellHorizontal = round((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
   WCPMTperCellVertical = WCPMTperCellHorizontal;
   //WCPMTperCellHorizontal= ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
@@ -521,8 +497,12 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT10PCGeometry()
   WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height); //offset from vertical
   WCIDVerticalPosition     = 0.;
 
-  WCPMTPercentCoverage  = 20.0;//40.0;//40.0;  
-  WCPMTPercentCoverage2  = 10.0;//20.0;
+
+  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 20.0;
+  if(WCPMTPercentCoverage2==-1.) WCPMTPercentCoverage2  = 10.0;
+
+  //WCPMTPercentCoverage  = 20.0;//40.0;//40.0;  
+  //WCPMTPercentCoverage2  = 10.0;//20.0;
   WCPMTperCellHorizontal = round((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
   WCPMTperCellVertical = WCPMTperCellHorizontal;
   //WCPMTperCellHorizontal= ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
@@ -599,8 +579,10 @@ void WCSimDetectorConstruction::SetHyperK_HybridFakeGeometry()
   WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height); //offset from vertical
   WCIDVerticalPosition     = 0.;
 
-  WCPMTPercentCoverage  = 20.0;//20.0;//40.0;//40.0;  
-  WCPMTPercentCoverage2  = 0;//5.0;//20.0;
+  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 20.0;
+  if(WCPMTPercentCoverage2==-1.) WCPMTPercentCoverage2  = 0.0;
+  //WCPMTPercentCoverage  = 20.0;//20.0;//40.0;//40.0;  
+  //WCPMTPercentCoverage2  = 0;//5.0;//20.0;
   WCPMTperCellHorizontal = round((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
   WCPMTperCellVertical = WCPMTperCellHorizontal;
   //WCPMTperCellHorizontal= ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
@@ -617,6 +599,7 @@ void WCSimDetectorConstruction::SetHyperK_HybridFakeGeometry()
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
 }
+
 void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()
 {
   WCDetectorName = "EggShapedHyperK";
@@ -744,7 +727,8 @@ void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double PM
 	WCBarrelPMTOffset     = WCPMTRadius;
     WCPMTperCellHorizontal = 1.0;
     WCPMTperCellVertical   = 1.0;
-    WCPMTPercentCoverage   = PMTCoverage;
+	if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
+	//WCPMTPercentCoverage   = PMTCoverage;
     WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage/100.0)/WCPMTRadius);
 
     WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));

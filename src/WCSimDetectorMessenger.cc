@@ -27,7 +27,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
                           "HyperK_3inch\n"
                           "HyperK_8inch\n"
                           "HyperK_10inch\n"
-                          "HyperK_SKPMT\n"
                           "HyperK_mPMT\n"
                           "HyperK_HybridmPMT\n"
                           "HyperK_HybridmPMT10PC\n"
@@ -56,7 +55,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			   "HyperK_3inch "
 			   "HyperK_8inch "
 			   "HyperK_10inch "
-			   "HyperK_SKPMT "
 			   "HyperK_mPMT "
 			   "HyperK_HybridmPMT "
 			   "HyperK_HybridmPMT10PC "
@@ -148,6 +146,20 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			    "off ");
   PMTCollEff->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+  // PMT coverage
+  SetPMTCoverage = new G4UIcmdWithADouble("/WCSim/SetPMTPercentCoverage", this);
+  SetPMTCoverage->SetGuidance("Set the PMT percentage coverage to be used. Should be necessarily called before WCGeom, as the detector parameters are defined there based on coverage.");
+  SetPMTCoverage->SetGuidance("Any number is allowed (such as 40)");
+  SetPMTCoverage->SetParameterName("PMTCoverage", true);
+  SetPMTCoverage->SetDefaultValue(-1.);
+
+  // PMT coverage for second PMT type
+  SetPMTCoverage2 = new G4UIcmdWithADouble("/WCSim/SetPMTPercentCoverage2", this);
+  SetPMTCoverage2->SetGuidance("Set the PMT percentage coverage to be used for second PMT type. Should be necessarily called before WCGeom, as the detector parameters are defined there based on coverage.");
+  SetPMTCoverage2->SetGuidance("Any number is allowed (such as 40)");
+  SetPMTCoverage2->SetParameterName("PMTCoverage2", false);
+  SetPMTCoverage2->SetDefaultValue(-1.);
+
   waterTank_Length = new G4UIcmdWithADoubleAndUnit("/WCSim/EggShapedHyperK/waterTank_Length", this);
   waterTank_Length->SetGuidance("Set the Length of the egg-shaped HyperK detector (unit: mm cm m).");
   waterTank_Length->SetParameterName("waterTank_length", true);
@@ -167,10 +179,8 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   //         - material of mPMT wall: water/glass/acrylic/
   //         - acrylic cover ON/OFF
 
-
   mPMTDir = new G4UIdirectory("/WCSim/mPMT/");
   mPMTDir->SetGuidance("Commands to change the properties of the multiPMT.");
-
 
   mPMT_CylHeight = new G4UIcmdWithADoubleAndUnit("/WCSim/mPMT/VesselCylHeight",this);
   mPMT_CylHeight->SetGuidance("Set height of cylinder of pressure vessel of multiPMT object.");
@@ -353,13 +363,6 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT3inchR14374 PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
   SetPMTType->SetDefaultValue("PMT10inch");
 
-  // Next, the PMT coverage
-  SetPMTCoverage = new G4UIcmdWithAString("/WCSim/nuPRISM/SetPMTPercentCoverage", this);
-  SetPMTCoverage->SetGuidance("Set the PMT percentage coverage to be used for nuPRISM");
-  SetPMTCoverage->SetGuidance("Any number is allowed (such as 40)");
-  SetPMTCoverage->SetParameterName("PMTCoverage", false);
-  SetPMTCoverage->SetDefaultValue("40");
-
   // Set the vertical position of the nuPRISM-lite detector
   SetDetectorVerticalPosition = new G4UIcmdWithADoubleAndUnit("/WCSim/nuPRISM/SetDetectorVerticalPosition", this);
   SetDetectorVerticalPosition->SetGuidance("Set the vertical position of the nuPRISM inner detector (unit mm cm m).");
@@ -402,6 +405,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete SetDetectorHeight;
   delete SetDetectorVerticalPosition;
   delete SetPMTCoverage;
+  delete SetPMTCoverage2;
   delete SetPMTType;
   delete SetHybridPMT;
 
@@ -443,8 +447,6 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 			WCSimDetector->SetHyperK_8inchGeometry();
 		} else if ( newValue == "HyperK_10inch") {
 			WCSimDetector->SetHyperK_10inchGeometry();
-		} else if ( newValue == "HyperK_SKPMT") {
-			WCSimDetector->SetHyperK_SKPMTGeometry();
 		} else if ( newValue == "HyperK_mPMT") {
 			WCSimDetector->SetHyperK_mPMTGeometry();
 		} else if ( newValue == "HyperK_HybridmPMT") {
@@ -589,6 +591,12 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  }else
 	    G4cout << "That PMT size is not defined!" << G4endl;	
 	}
+	if(command == SetPMTCoverage){
+	  WCSimDetector->SetPMTCoverage(atof(newValue));
+	}
+	if(command == SetPMTCoverage2){
+	  WCSimDetector->SetPMTCoverage2(atof(newValue));
+	}
 
 	if (command == mPMT_CylHeight){
 	  G4cout << "Set Vessel Cylinder Height of MultiPMT to " << newValue  << " " << G4endl; //doesn't work
@@ -681,7 +689,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	// Customize nuPRISM tank setup
 	if( WCSimDetector->GetIsNuPrism()){
 	  if (command == SetPMTType) WCSimDetector->SetPMTType(newValue);
-	  else if (command == SetPMTCoverage) WCSimDetector->SetPMTCoverage(atof(newValue));
+	  //else if (command == SetPMTCoverage) WCSimDetector->SetPMTCoverage(atof(newValue));
 	  else if (command == SetDetectorHeight) WCSimDetector->SetDetectorHeight(SetDetectorHeight->GetNewDoubleValue(newValue));
 	  else if (command == SetDetectorVerticalPosition) WCSimDetector->SetDetectorVerticalPosition(SetDetectorVerticalPosition->GetNewDoubleValue(newValue));
 	  else if (command == SetDetectorDiameter) WCSimDetector->SetDetectorDiameter(SetDetectorDiameter->GetNewDoubleValue(newValue));

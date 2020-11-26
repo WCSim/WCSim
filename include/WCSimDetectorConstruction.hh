@@ -92,7 +92,6 @@ public:
   void SetHyperK_3inchGeometry();//B.Q, 2018/05/03
   void SetHyperK_8inchGeometry();//B.Q, 2018/05/03
   void SetHyperK_10inchGeometry();//B.Q, 2018/05/09
-  void SetHyperK_SKPMTGeometry();//B.Q, 2018/05/09
   void SetHyperK_mPMTGeometry();//B.Q, 2017/12/08
   void SetHyperK_HybridmPMTGeometry();//B.Q, 2018/12/10
   void SetHyperK_HybridmPMT10PCGeometry();//B.Q, 2019/01/26
@@ -171,6 +170,18 @@ public:
   void   SetVis_Choice(G4String choice){Vis_Choice = choice;}
   G4String GetVis_Choice() {return Vis_Choice;}
 
+  //Set PMT coverage of first PMT type
+ void   SetPMTCoverage(G4double cover) {
+    WCPMTPercentCoverage = cover;
+  }
+  G4double GetPMTCoverage() {return WCPMTPercentCoverage;}
+ 
+  //Set PMT coverage of second PMT type
+ void   SetPMTCoverage2(G4double cover) {
+    WCPMTPercentCoverage2 = cover;
+  }
+  G4double GetPMTCoverage2() {return WCPMTPercentCoverage2;}
+ 
   //Partition Length
   void SetwaterTank_Length(G4double length){waterTank_Length = length;}
   void SetWaterTubeLength(G4double length){WCLength = length;}
@@ -295,6 +306,7 @@ public:
   bool GetHybridPMT() {return hybrid;}
   G4String GetPMTType() {return WCPMTType;}
 
+  /*
   void   SetPMTCoverage(G4double cover) {
     // TF: do the same as for mPMTs to make "Update" deprecated:
     //     change the variables from WCDetectorConstruction that
@@ -308,9 +320,10 @@ public:
     WCCapPMTSpacing       = (CLHEP::pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
   }
   G4double GetPMTCoverage() {return WCPMTPercentCoverage;}
-
-    void SetDopedWater(G4bool dopedWater){WCAddGd = dopedWater; }
-    void AddDopedWater(G4double percentGd = 0.1);
+  */
+  
+  void SetDopedWater(G4bool dopedWater){WCAddGd = dopedWater; }
+  void AddDopedWater(G4double percentGd = 0.1);
 
   std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
   std::vector<WCSimPmtInfo*>* Get_Pmts2() {return &fpmts2;}//For the hybrid config
@@ -509,8 +522,8 @@ private:
   G4double WCPMTperCellHorizontal;
   G4double WCPMTperCellVertical;
 
-  G4double WCPMTPercentCoverage;
-  G4double WCPMTPercentCoverage2;//Added by B.Q for hybrid
+  G4double WCPMTPercentCoverage = -1.;
+  G4double WCPMTPercentCoverage2 = -1.;//Added by B.Q for hybrid
 
   G4double WCBarrelNumPMTHorizontal;
   G4double WCCapPMTSpacing;

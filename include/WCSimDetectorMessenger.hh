@@ -42,6 +42,8 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithAString* SaveCapture;
   G4UIcmdWithAString* PMTQEMethod;
   G4UIcmdWithAString* PMTCollEff;
+  G4UIcmdWithADouble* SetPMTCoverage;
+  G4UIcmdWithADouble* SetPMTCoverage2;
   G4UIcmdWithABool* DopedWater;
   G4UIcmdWithADouble* DopingConcentration;
   G4UIcmdWithADoubleAndUnit* waterTank_Length;
@@ -76,7 +78,6 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithoutParameter* UpdateNuPrism;
   G4UIcmdWithAString* SetPMTType;
   G4UIcmdWithABool* SetHybridPMT;
-  G4UIcmdWithAString* SetPMTCoverage;
   G4UIcmdWithADoubleAndUnit* SetDetectorHeight;
   G4UIcmdWithADoubleAndUnit* SetDetectorVerticalPosition;
   G4UIcmdWithADoubleAndUnit* SetDetectorDiameter;
