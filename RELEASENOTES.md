@@ -7,6 +7,15 @@ Bug Fixes:
 * In v1.5.0, the dark rate was not being set correctly in the case where the default detector was not used (unless the dark rate was explicitly specified in the macro). This release now correctly implements the dark rate based on the photodector type used in the detector configuration, even when the non-default detector configuration is called. 
 
 *************************************************************
+11/26/2020: Notes for v1.9.2        
+*************************************************************
+
+This release includes an update to allow for longer headers in kin files 
+
+Update
+* Pull Request [#299](https://github.com/WCSim/WCSim/pull/299): Increase buffer size for reading in lines of kin file
+
+*************************************************************
 10/02/2020: Notes for v1.9.1        
 *************************************************************
 
