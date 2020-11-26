@@ -286,7 +286,7 @@ void vectorVertexPMT(double * vertex, int tubeNumber, int pmtType, double angles
   WCSimRootPMT pmt;
   if(pmtType == 0) pmt = geo->GetPMT(tubeNumber-1,false);
   else pmt  = geo->GetPMT(tubeNumber-1,true);
-  int mPMT_number = pmt.GetmPMTNo();
+  //int mPMT_number = pmt.GetmPMTNo();
   if(verbose==3) cout<<"Original PMT number = "<<pmt_number_in_mpmt<<endl;
   double PMTpos[3];
   //double PMTradius=pmt.GetWCPMTRadius(pmtType);
@@ -313,7 +313,9 @@ void vectorVertexPMT(double * vertex, int tubeNumber, int pmtType, double angles
     mPMTdir[j]=pmt2.GetOrientation(j);
   }
   if(verbose == 3){
+    cout<<"Top PMT number= "<< mPMT_number2 << " idx in mPMT " <<pmt_number_in_mpmt2<<endl;
     cout<<"Top PMT position = "<<mPMTpos[0]<<", "<<mPMTpos[1]<<", "<<mPMTpos[2]<<endl;
+    cout<<"Top PMT direction = "<<mPMTdir[0]<<", "<<mPMTdir[1]<<", "<<mPMTdir[2]<<endl;
   }
 
   //3. Define the second vector of the referential in the orthogonal plane to ez and colinear to the center PMT -> Active PMT plane
@@ -393,7 +395,7 @@ double findDirectionTheta(double * vertex,int tubeNumber,int pmtType,int pmt_num
     PMTdir[j] = pmt.GetOrientation(j);
   }
 
-  int mPMT_number = pmt.GetmPMTNo();
+  //int mPMT_number = pmt.GetmPMTNo();
   pmt_number_in_mpmt = pmt.GetmPMT_PMTNo();
   double particleRelativePMTpos[3];
   for(int j=0;j<3;j++) particleRelativePMTpos[j] = PMTpos[j] - vertex[j];
@@ -1032,11 +1034,11 @@ int main(int argc, char **argv){
 #endif
 
     if(verbose){
-      for(int v=0;v<triggerInfo.size();v++){
+      for(unsigned int v=0;v<triggerInfo.size();v++){
 	cout << "Trigger entry #" << v << ", info = " << triggerInfo[v] << endl;
       }
       if(hybrid){
-	for(int v=0;v<triggerInfo2.size();v++){
+	for(unsigned int v=0;v<triggerInfo2.size();v++){
 	  cout << "Trigger2 entry #" << v << ", info = " << triggerInfo2[v] << endl;
 	}
       }
@@ -1069,6 +1071,12 @@ int main(int argc, char **argv){
     double particleStart[3];
     double particleStop[3];
     double particleDir[3];
+    
+    // Initialization
+    particleDir[0] = 0.;
+    particleDir[1] = 0.;
+    particleDir[2] = 0.;
+    
 
     int i;
     // Loop through elements in the TClonesArray of WCSimTracks
@@ -1096,9 +1104,10 @@ int main(int argc, char **argv){
 	printf("Track momentum: %f\n", wcsimroottrack->GetP());
 	printf("Track mass: %f\n", wcsimroottrack->GetM());
       
-	for (int j=0; j<3; j++)
+	for (int j=0; j<3; j++) {
 	  printf("Track start: %d %f\n",j, wcsimroottrack->GetStart(j));
 	  printf("Track dir: %d %f\n",j, wcsimroottrack->GetDir(j));
+	}
       }
 
       
@@ -1172,7 +1181,7 @@ int main(int argc, char **argv){
 	    WCSimRootPMT pmt_temp;
 	    if(pmtType == 0) pmt_temp = geo->GetPMT(p,false);
 	    else pmt_temp  = geo->GetPMT(p,true);
-	    int mPMT_number = pmt_temp.GetmPMTNo();
+	    //int mPMT_number = pmt_temp.GetmPMTNo();
 	    int pmt_number_in_mPMT = pmt_temp.GetmPMT_PMTNo();
 	  //TMP
 	    double dist_tmp =0;
@@ -1216,6 +1225,7 @@ int main(int argc, char **argv){
       }
  
       // Grab the big arrays of times and parent IDs
+      
       TClonesArray *timeArray;//An array of pointers on CherenkovHitsTimes.
       if(pmtType==0) timeArray = wcsimrootevent->GetCherenkovHitTimes();
       else timeArray = wcsimrootevent2->GetCherenkovHitTimes();
@@ -1234,8 +1244,8 @@ int main(int argc, char **argv){
 	  //if(verbose) cout << "Hit #" << i << endl;
 
 	  WCSimRootCherenkovHit *wcsimrootcherenkovhit;
-	  if(pmtType==0) wcsimrootcherenkovhit = (wcsimrootevent->GetCherenkovHits())->At(i);
-	  else wcsimrootcherenkovhit = (wcsimrootevent2->GetCherenkovHits())->At(i);
+	  if(pmtType==0) wcsimrootcherenkovhit = (WCSimRootCherenkovHit*) (wcsimrootevent->GetCherenkovHits())->At(i);
+	  else wcsimrootcherenkovhit = (WCSimRootCherenkovHit*) (wcsimrootevent2->GetCherenkovHits())->At(i);
 	  
 	  int tubeNumber     = wcsimrootcherenkovhit->GetTubeID();
 	  int timeArrayIndex = wcsimrootcherenkovhit->GetTotalPe(0);
@@ -1310,7 +1320,7 @@ int main(int argc, char **argv){
 	    vDir2D[j] /= Norm2D;
 	    vOrientation2D[j] /= NormOrientation2D;
 	  }
-	  double HorizontalScalarProduct = TMath::ACos(vDir2D[0]*vOrientation2D[0] + vDir2D[1]*vOrientation2D[1])*180./TMath::Pi();
+	  //double HorizontalScalarProduct = TMath::ACos(vDir2D[0]*vOrientation2D[0] + vDir2D[1]*vOrientation2D[1])*180./TMath::Pi();
 	  double relativeAngle = TMath::ACos(vDir[0]*particleDir[0]+vDir[1]*particleDir[1]+vDir[2]*particleDir[2])*180./TMath::Pi();
 	  //WCSimRootCherenkovHitTime * HitTime = dynamic_cast<WCSimRootCherenkovHitTime>(timeArray->At(timeArrayIndex));//Assumes that the earliest time the PMT is hit is in the first element -> Everything is ordered.
 
@@ -1318,7 +1328,7 @@ int main(int argc, char **argv){
 	  double Phi = 0;
 	  double weight = 1;
 	  double distance_pmt_vertex=0;
-	  int mPMT_number = pmt.GetmPMTNo();
+	  //int mPMT_number = pmt.GetmPMTNo();
 	  int pmt_number_in_mPMT = pmt.GetmPMT_PMTNo();
 
 	  //TMP
@@ -1431,10 +1441,12 @@ int main(int argc, char **argv){
       }
       if(verbose) cout << "PMT Type = " << pmtType << endl;
       // Grab the big arrays of times and parent IDs
+      /*
+      // Not used
       TClonesArray *timeArray;
       if(pmtType==0) timeArray = wcsimrootevent->GetCherenkovHitTimes();
       else timeArray = wcsimrootevent2->GetCherenkovHitTimes();
-      
+      */
       double particleRelativePMTpos[3];
       double totalPe = 0;
       int totalHit = 0;
@@ -1522,7 +1534,7 @@ int main(int argc, char **argv){
 	    vDir2D[j] /= Norm2D;
 	    vOrientation2D[j] /= NormOrientation2D;
 	  }
-	  double HorizontalScalarProduct = TMath::ACos(vDir2D[0]*vOrientation2D[0] + vDir2D[1]*vOrientation2D[1])*180./TMath::Pi();
+	  //double HorizontalScalarProduct = TMath::ACos(vDir2D[0]*vOrientation2D[0] + vDir2D[1]*vOrientation2D[1])*180./TMath::Pi();
 	  double relativeAngle = TMath::ACos(vDir[0]*particleDir[0]+vDir[1]*particleDir[1]+vDir[2]*particleDir[2])*180./TMath::Pi();
 	  //WCSimRootCherenkovHitTime HitTime = dynamic_cast<WCSimRootCherenkovHitTime>(timeArray->At(timeArrayIndex));//Assumes that the earliest time the PMT is hit is in the first element -> Everything is ordered.
 	  //double time = HitTime.GetTruetime();
@@ -1536,7 +1548,7 @@ int main(int argc, char **argv){
 	  double Phi = 0;
 	  double weight = 1;
 	  double distance_pmt_vertex=0;
-	  int mPMT_number = pmt.GetmPMTNo();
+	  //int mPMT_number = pmt.GetmPMTNo();
 	  int pmt_number_in_mPMT = pmt.GetmPMT_PMTNo();
 
 	  //TMP
