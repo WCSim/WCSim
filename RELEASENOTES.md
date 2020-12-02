@@ -1,10 +1,19 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
+12/02/2020: Notes for v1.9.3       
+*************************************************************
+
+This release includes a bug fix in the recently committed update. 
+
+Update
+* Pull Request [#302](https://github.com/WCSim/WCSim/pull/302): Typo in inFile command in src/WCSimPrimaryGeneratorAction.cc 
+
+*************************************************************
 11/26/2020: Notes for v1.9.2        
 *************************************************************
 
-This release includes an update to allow for longer headers in kin files 
+This release includes an update to allow for longer headers in kin files - NOTE: A bug prevents this release from compiling
 
 Update
 * Pull Request [#299](https://github.com/WCSim/WCSim/pull/299): Increase buffer size for reading in lines of kin file
