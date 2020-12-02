@@ -40,7 +40,7 @@ inline vector<string> readInLine(fstream& inFile, int lineSize, char* inBuf)
 		}
 		else
 		{
-		  if(infile.fail())
+		  if(inFile.fail())
 		    G4cerr << "Failed to read line. Is the buffer size large enough?" << G4endl;
 			vector<string> nullLine;                               
 			return nullLine; 
