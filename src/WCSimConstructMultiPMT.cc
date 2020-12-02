@@ -703,7 +703,7 @@ G4int WCSimDetectorConstruction::FillCircles(void){
   //Read in text file (instead of setting 8 numbers) with configuration
   // and pre-calculated values
   //Fill vAlpha, vNiC, vCircle, vAzimOffset
-  std::vector<float> vEta;
+  std::vector<double> vEta;
   vEta.clear();
   
   std::ifstream config(config_file); 

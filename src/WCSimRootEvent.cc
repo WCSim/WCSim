@@ -209,7 +209,7 @@ void WCSimRootTrigger::SetHeader(Int_t i,
 //_____________________________________________________________________________
 
 void WCSimRootTrigger::SetTriggerInfo(TriggerType_t trigger_type,
-				      std::vector<Float_t> trigger_info)
+				      std::vector<Double_t> trigger_info)
 {
   fTriggerType = trigger_type;
   fTriggerInfo = trigger_info;
@@ -217,10 +217,10 @@ void WCSimRootTrigger::SetTriggerInfo(TriggerType_t trigger_type,
 
 //_____________________________________________________________________________
 
-void WCSimRootTrigger::SetPi0Info(Float_t pi0Vtx[3],
+void WCSimRootTrigger::SetPi0Info(Double_t pi0Vtx[3],
                                   Int_t   gammaID[2],
-                                  Float_t gammaE[2],
-                                  Float_t gammaVtx[2][3])
+                                  Double_t gammaE[2],
+                                  Double_t gammaVtx[2][3])
 {
     fPi0.Set(pi0Vtx,
              gammaID,
@@ -232,10 +232,10 @@ void WCSimRootTrigger::SetPi0Info(Float_t pi0Vtx[3],
 
 void WCSimRootTrigger::SetCaptureParticle(Int_t parent,
                                           Int_t ipnu,
-                                          Float_t time,
-                                          Float_t vtx[3],
-                                          Float_t dir[3],
-                                          Float_t energy,
+                                          Double_t time,
+                                          Double_t vtx[3],
+                                          Double_t dir[3],
+                                          Double_t energy,
                                           Int_t id)
 {
     WCSimRootCapture * capture = 0;
@@ -255,10 +255,10 @@ void WCSimRootTrigger::SetCaptureParticle(Int_t parent,
 
 //_____________________________________________________________________________
 
-void WCSimRootPi0::Set(Float_t pi0Vtx[3],
+void WCSimRootPi0::Set(Double_t pi0Vtx[3],
                        Int_t   gammaID[2],
-                       Float_t gammaE[2],
-                       Float_t gammaVtx[2][3])
+                       Double_t gammaE[2],
+                       Double_t gammaVtx[2][3])
 {
     for (int i=0;i<2;i++)
     {
@@ -297,8 +297,8 @@ WCSimRootCapture::~WCSimRootCapture()
 
 //_____________________________________________________________________________
 
-void WCSimRootCapture::SetInfo(Float_t captureVtx[3],
-                               Float_t captureT,
+void WCSimRootCapture::SetInfo(Double_t captureVtx[3],
+                               Double_t captureT,
                                Int_t   captureNucleus)
 {
     for (int i=0;i<3;i++) fCaptureVtx[i] = captureVtx[i];
@@ -309,8 +309,8 @@ void WCSimRootCapture::SetInfo(Float_t captureVtx[3],
 //_____________________________________________________________________________
 
 void WCSimRootCapture::AddGamma(Int_t   gammaID,
-                                Float_t gammaE,
-                                Float_t gammaDir[3])
+                                Double_t gammaE,
+                                Double_t gammaDir[3])
 {
     TClonesArray &gammas = *fGammas;
     new(gammas[fNGamma]) WCSimRootCaptureGamma(gammaID, gammaE, gammaDir);
@@ -321,8 +321,8 @@ void WCSimRootCapture::AddGamma(Int_t   gammaID,
 //_____________________________________________________________________________
 
 WCSimRootCaptureGamma::WCSimRootCaptureGamma(Int_t id,
-                                             Float_t energy,
-                                             Float_t *dir) {
+                                             Double_t energy,
+                                             Double_t *dir) {
     fID = id;
     fEnergy = energy;
     for(int i=0;i<3;i++) fDir[i] = dir[i];
@@ -332,17 +332,17 @@ WCSimRootCaptureGamma::WCSimRootCaptureGamma(Int_t id,
 
 WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 					   Int_t flag, 
-					   Float_t m, 
-					   Float_t p, 
-					   Float_t E, 
+					   Double_t m, 
+					   Double_t p, 
+					   Double_t E, 
 					   Int_t startvol, 
 					   Int_t stopvol, 
-					   Float_t dir[3], 
-					   Float_t pdir[3], 
-					   Float_t stop[3], 
-					   Float_t start[3],
+					   Double_t dir[3], 
+					   Double_t pdir[3], 
+					   Double_t stop[3], 
+					   Double_t start[3],
 					   Int_t parenttype,
-					   Float_t time,
+					   Double_t time,
 					   Int_t id)
 {
   // Add a new WCSimRootTrack to the list of tracks for this event.
@@ -375,17 +375,17 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 
 WCSimRootTrack::WCSimRootTrack(Int_t ipnu, 
 				 Int_t flag, 
-				 Float_t m, 
-				 Float_t p, 
-				 Float_t E, 
+				 Double_t m, 
+				 Double_t p, 
+				 Double_t E, 
 				 Int_t startvol, 
 				 Int_t stopvol, 
-				 Float_t dir[3], 
-				 Float_t pdir[3], 
-				 Float_t stop[3], 
-				 Float_t start[3],
+				 Double_t dir[3], 
+				 Double_t pdir[3], 
+				 Double_t stop[3], 
+				 Double_t start[3],
 				 Int_t parenttype,
-			       Float_t time,Int_t id)
+			       Double_t time,Int_t id)
 {
 
   // Create a WCSimRootTrack object and fill it with stuff
@@ -416,7 +416,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
 							 Int_t mPMTID,
 							 Int_t mPMT_PMTID,
-							 std::vector<Float_t> truetime,
+							 std::vector<Double_t> truetime,
 							 std::vector<Int_t> primParID)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
@@ -476,7 +476,7 @@ WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
   fTotalPe[1] = totalPe[1];
 }
 
-WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,
+WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
 						     Int_t primParID)
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
@@ -486,8 +486,8 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Float_t truetime,
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q, 
-								 Float_t t, 
+WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Double_t q, 
+								 Double_t t, 
 								 Int_t tubeid,
 								 Int_t mpmtid,
 								 Int_t mpmt_pmtid,
@@ -507,8 +507,8 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Float_t q,
 }
 //_____________________________________________________________________________
 
-WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q, 
-						     Float_t t, 
+WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Double_t q, 
+						     Double_t t, 
 						     Int_t tubeid,
 						     std::vector<int> photon_ids)
 {
@@ -520,8 +520,8 @@ WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q,
   fPhotonIds = photon_ids;
 }
 
-WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Float_t q, 
-						     Float_t t, 
+WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Double_t q, 
+						     Double_t t, 
 						     Int_t tubeid,
 						     Int_t mpmtid,
 						     Int_t mpmt_pmtid,

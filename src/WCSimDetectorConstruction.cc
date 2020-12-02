@@ -182,8 +182,8 @@ WCSimDetectorConstruction::~WCSimDetectorConstruction(){
 //        return trans;
 //    }
 //
-//    float NuBeamAng;
-//    float NuIdfdPos[3];
+//    double NuBeamAng;
+//    double NuIdfdPos[3];
 //    for(int i = 0; i < 3; ++i) NuIdfdPos[i] = 0;
 //    fSettingsTree->SetBranchAddress("NuIdfdPos",NuIdfdPos); 
 //    fSettingsTree->SetBranchAddress("NuBeamAng",&NuBeamAng); 

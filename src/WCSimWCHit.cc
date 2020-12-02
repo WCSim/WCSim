@@ -76,18 +76,18 @@ void WCSimWCHit::Draw()
       {      
 
 	//Don't like this colour scheme (not enough visual gradient between yellow and red)
-	//G4Colour colour(1.,1.-(float(totalPe-.05*maxPe)/float(.95*maxPe)),0.0);
+	//G4Colour colour(1.,1.-(double(totalPe-.05*maxPe)/double(.95*maxPe)),0.0);
 
 	// Scale the charge using the HSV or HSL colour scheme
 	// We want to only vary hue, setting saturation to 1 and value to 1 (or lightness to .5)
-	float hue = (1.-(float(totalPe-.05*maxPe)/float(.95*maxPe)))*230;   //go from hue = 230 to 0
-	float saturation = 1.;
-	float value = 1.;
+	double hue = (1.-(double(totalPe-.05*maxPe)/double(.95*maxPe)))*230;   //go from hue = 230 to 0
+	double saturation = 1.;
+	double value = 1.;
 
 	//convert to rgb
-	float red = 0.;
-	float green = 0.;
-	float blue = 0.;
+	double red = 0.;
+	double green = 0.;
+	double blue = 0.;
 	HSVtoRGB(red, green, blue, hue, saturation, value);
 	G4Colour colour(red, green, blue);
 	
@@ -140,11 +140,11 @@ void WCSimWCHit::Print()
   \param fV Value component, used as input, range: [0, 1]
   
 */
-void WCSimWCHit::HSVtoRGB(float& fR, float& fG, float& fB, float& fH, float& fS, float& fV) {
-  float fC = fV * fS; // Chroma
-  float fHPrime = fmod(fH / 60.0, 6);
-  float fX = fC * (1 - fabs(fmod(fHPrime, 2) - 1));
-  float fM = fV - fC;
+void WCSimWCHit::HSVtoRGB(double& fR, double& fG, double& fB, double& fH, double& fS, double& fV) {
+  double fC = fV * fS; // Chroma
+  double fHPrime = fmod(fH / 60.0, 6);
+  double fX = fC * (1 - fabs(fmod(fHPrime, 2) - 1));
+  double fM = fV - fC;
   
   if(0 <= fHPrime && fHPrime < 1) {
     fR = fC;

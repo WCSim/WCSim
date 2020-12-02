@@ -129,9 +129,9 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         TTree* fRooTrackerTree;
         TTree* fSettingsTree;
         NRooTrackerVtx* fTmpRootrackerVtx;
-        float fNuPrismRadius;
-        float fNuBeamAng;
-        float fNuPlanePos[3];
+        double fNuPrismRadius;
+        double fNuBeamAng;
+        double fNuPlanePos[3];
 
     public:
 

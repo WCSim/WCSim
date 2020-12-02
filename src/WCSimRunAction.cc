@@ -77,12 +77,12 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
       fSettingsOutputTree = new TTree("Settings","Settings");
     }
 
-    fSettingsOutputTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/F");
-    fSettingsOutputTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/F");
-    fSettingsOutputTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
-    fSettingsOutputTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/F");
-    fSettingsOutputTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/F");
-    fSettingsOutputTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/F");
+    fSettingsOutputTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/D");
+    fSettingsOutputTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/D");
+    fSettingsOutputTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/D");
+    fSettingsOutputTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/D");
+    fSettingsOutputTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/D");
+    fSettingsOutputTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/D");
  
   }      
 
@@ -163,12 +163,12 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
 		} else
 			geomTree = new TTree("Geometry","Geometry Tree");
     
-		geomTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/F");
-		geomTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/F");
-		geomTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/F");
-		geomTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/F");
-		geomTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/F");
-		geomTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/F");
+		geomTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/D");
+		geomTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/D");
+		geomTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/D");
+		geomTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/D");
+		geomTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/D");
+		geomTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/D");
 	} else
 		geomTree = new TTree("Geometry","Geometry Tree");
 	
@@ -241,26 +241,26 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   tracksTree->Branch("Ntracks",&(evNtup->nTracks),"Ntracks/I");
   tracksTree->Branch("Pid",(evNtup->pid),"Pid[Ntracks]/I");
   tracksTree->Branch("Flag",(evNtup->flag),"Flag[Ntracks]/I");
-  tracksTree->Branch("Mass",(evNtup->mass),"Mass[Ntracks]/F");
-  tracksTree->Branch("P",(evNtup->p),"P[Ntracks]/F");
-  tracksTree->Branch("Energy",(evNtup->energy),"Energy[Ntracks]/F");
+  tracksTree->Branch("Mass",(evNtup->mass),"Mass[Ntracks]/D");
+  tracksTree->Branch("P",(evNtup->p),"P[Ntracks]/D");
+  tracksTree->Branch("Energy",(evNtup->energy),"Energy[Ntracks]/D");
   tracksTree->Branch("ParentID",(evNtup->parent),"ParentID[Ntracks]/I");
   tracksTree->Branch("TrackID",(evNtup->trackID),"TrackID[Ntracks]/I");
-  tracksTree->Branch("Time",(evNtup->time),"Time[Ntracks]/F");
+  tracksTree->Branch("Time",(evNtup->time),"Time[Ntracks]/D");
 
-  tracksTree->Branch("Dirx",(evNtup->dir_x),"Dirx[Ntracks]/F");
-  tracksTree->Branch("Diry",(evNtup->dir_y),"Diry[Ntracks]/F");
-  tracksTree->Branch("Dirz",(evNtup->dir_z),"Dirz[Ntracks]/F");
-  tracksTree->Branch("Px",(evNtup->pdir_x),"Px[Ntracks]/F");
-  tracksTree->Branch("Py",(evNtup->pdir_y),"Py[Ntracks]/F");
-  tracksTree->Branch("Pz",(evNtup->pdir_z),"Pz[Ntracks]/F");
-  tracksTree->Branch("Start_x",(evNtup->start_x),"Start_x[Ntracks]/F");
-  tracksTree->Branch("Start_y",(evNtup->start_y),"Start_y[Ntracks]/F");
-  tracksTree->Branch("Start_z",(evNtup->start_z),"Start_z[Ntracks]/F");
-  tracksTree->Branch("Stop_x",(evNtup->stop_x),"Stop_x[Ntracks]/F");
-  tracksTree->Branch("Stop_y",(evNtup->stop_y),"Stop_y[Ntracks]/F");
-  tracksTree->Branch("Stop_z",(evNtup->stop_z),"Stop_z[Ntracks]/F");
-  tracksTree->Branch("Length",(evNtup->length),"Length[Ntracks]/F");
+  tracksTree->Branch("Dirx",(evNtup->dir_x),"Dirx[Ntracks]/D");
+  tracksTree->Branch("Diry",(evNtup->dir_y),"Diry[Ntracks]/D");
+  tracksTree->Branch("Dirz",(evNtup->dir_z),"Dirz[Ntracks]/D");
+  tracksTree->Branch("Px",(evNtup->pdir_x),"Px[Ntracks]/D");
+  tracksTree->Branch("Py",(evNtup->pdir_y),"Py[Ntracks]/D");
+  tracksTree->Branch("Pz",(evNtup->pdir_z),"Pz[Ntracks]/D");
+  tracksTree->Branch("Start_x",(evNtup->start_x),"Start_x[Ntracks]/D");
+  tracksTree->Branch("Start_y",(evNtup->start_y),"Start_y[Ntracks]/D");
+  tracksTree->Branch("Start_z",(evNtup->start_z),"Start_z[Ntracks]/D");
+  tracksTree->Branch("Stop_x",(evNtup->stop_x),"Stop_x[Ntracks]/D");
+  tracksTree->Branch("Stop_y",(evNtup->stop_y),"Stop_y[Ntracks]/D");
+  tracksTree->Branch("Stop_z",(evNtup->stop_z),"Stop_z[Ntracks]/D");
+  tracksTree->Branch("Length",(evNtup->length),"Length[Ntracks]/D");
 
   cherenkovHitsTree->Branch("Run",&run,"Run/I");
   cherenkovHitsTree->Branch("Event",&event,"Event/I");
@@ -269,7 +269,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   cherenkovHitsTree->Branch("NHits_noDN",&(evNtup->totalNumHits_noNoise),"NHits_noDN/I");   // #PMTs x #(Ch)hits/PMTs
   cherenkovHitsTree->Branch("NPMTs",&(evNtup->numTubesHit),"NPMTs/I");
   cherenkovHitsTree->Branch("NPMTs_noDN",&(evNtup->numTubesHit_noNoise),"NPMTs_noDN/I");
-  cherenkovHitsTree->Branch("Time",(evNtup->truetime),"Time[NHits]/F");
+  cherenkovHitsTree->Branch("Time",(evNtup->truetime),"Time[NHits]/D");
   cherenkovHitsTree->Branch("PMT_QTot",(evNtup->totalPe),"PMT_QTot[NHits]/I");
   cherenkovHitsTree->Branch("PMT_QTot_noDN",(evNtup->totalPe_noNoise),"PMT_Qtot_noDN[NHits]/I");
 
@@ -279,31 +279,31 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   cherenkovHitsTree->Branch("mPMT",(evNtup->mPMTid),"mPMT[NHits]/I");
   cherenkovHitsTree->Branch("mPMT_pmt",(evNtup->mPMT_pmtid),"mPMT_pmt[NHits]/I");
   cherenkovHitsTree->Branch("TrackID",(evNtup->trackid),"TrackID[NHits]/I");
-  cherenkovHitsTree->Branch("PMT_x",(evNtup->tube_x),"PMT_x[NHits]/F");
-  cherenkovHitsTree->Branch("PMT_y",(evNtup->tube_y),"PMT_y[NHits]/F");
-  cherenkovHitsTree->Branch("PMT_z",(evNtup->tube_z),"PMT_z[NHits]/F");
-  cherenkovHitsTree->Branch("PMT_dirx",(evNtup->tube_dirx),"PMT_dirx[NHits]/F");
-  cherenkovHitsTree->Branch("PMT_diry",(evNtup->tube_diry),"PMT_diry[NHits]/F");
-  cherenkovHitsTree->Branch("PMT_dirz",(evNtup->tube_dirz),"PMT_dirz[NHits]/F");
+  cherenkovHitsTree->Branch("PMT_x",(evNtup->tube_x),"PMT_x[NHits]/D");
+  cherenkovHitsTree->Branch("PMT_y",(evNtup->tube_y),"PMT_y[NHits]/D");
+  cherenkovHitsTree->Branch("PMT_z",(evNtup->tube_z),"PMT_z[NHits]/D");
+  cherenkovHitsTree->Branch("PMT_dirx",(evNtup->tube_dirx),"PMT_dirx[NHits]/D");
+  cherenkovHitsTree->Branch("PMT_diry",(evNtup->tube_diry),"PMT_diry[NHits]/D");
+  cherenkovHitsTree->Branch("PMT_dirz",(evNtup->tube_dirz),"PMT_dirz[NHits]/D");
 
   cherenkovDigiHitsTree->Branch("Run",&run,"Run/I");
   cherenkovDigiHitsTree->Branch("Event",&event,"Event/I");
   cherenkovDigiHitsTree->Branch("SubEvent",&subevent,"SubEvent/I");
   cherenkovDigiHitsTree->Branch("NDigiHits",&(evNtup->totalNumDigiHits),"NDigiHits/I");
   cherenkovDigiHitsTree->Branch("NDigiPMTs",&(evNtup->numDigiTubesHit),"NDigiPMTs/I");
-  cherenkovDigiHitsTree->Branch("QTotDigi",&(evNtup->sumq),"QTotDigi/F");
-  cherenkovDigiHitsTree->Branch("Q",(evNtup->q),"Q[NDigiHits]/F");
-  cherenkovDigiHitsTree->Branch("T",(evNtup->t),"T[NDigiHits]/F");
+  cherenkovDigiHitsTree->Branch("QTotDigi",&(evNtup->sumq),"QTotDigi/D");
+  cherenkovDigiHitsTree->Branch("Q",(evNtup->q),"Q[NDigiHits]/D");
+  cherenkovDigiHitsTree->Branch("T",(evNtup->t),"T[NDigiHits]/D");
   cherenkovDigiHitsTree->Branch("Vector_index",(evNtup->digivector_index),"Vector_index[NDigiHits]/I");
   cherenkovDigiHitsTree->Branch("Tube",(evNtup->digitubeid),"Tube[NDigiHits]/I");
   cherenkovDigiHitsTree->Branch("mPMT",(evNtup->digimPMTid),"mPMT[NDigiHits]/I");
   cherenkovDigiHitsTree->Branch("mPMT_pmt",(evNtup->digimPMT_pmtid),"mPMT_pmt[NDigiHits]/I");
-  cherenkovDigiHitsTree->Branch("PMT_x",(evNtup->digitube_x),"PMT_x[NDigiHits]/F");
-  cherenkovDigiHitsTree->Branch("PMT_y",(evNtup->digitube_y),"PMT_y[NDigiHits]/F");
-  cherenkovDigiHitsTree->Branch("PMT_z",(evNtup->digitube_z),"PMT_z[NDigiHits]/F");
-  cherenkovDigiHitsTree->Branch("PMT_dirx",(evNtup->digitube_dirx),"PMT_dirx[NDigiHits]/F");
-  cherenkovDigiHitsTree->Branch("PMT_diry",(evNtup->digitube_diry),"PMT_diry[NDigiHits]/F");
-  cherenkovDigiHitsTree->Branch("PMT_dirz",(evNtup->digitube_dirz),"PMT_dirz[NDigiHits]/F");
+  cherenkovDigiHitsTree->Branch("PMT_x",(evNtup->digitube_x),"PMT_x[NDigiHits]/D");
+  cherenkovDigiHitsTree->Branch("PMT_y",(evNtup->digitube_y),"PMT_y[NDigiHits]/D");
+  cherenkovDigiHitsTree->Branch("PMT_z",(evNtup->digitube_z),"PMT_z[NDigiHits]/D");
+  cherenkovDigiHitsTree->Branch("PMT_dirx",(evNtup->digitube_dirx),"PMT_dirx[NDigiHits]/D");
+  cherenkovDigiHitsTree->Branch("PMT_diry",(evNtup->digitube_diry),"PMT_diry[NDigiHits]/D");
+  cherenkovDigiHitsTree->Branch("PMT_dirz",(evNtup->digitube_dirz),"PMT_dirz[NDigiHits]/D");
 
   /* TF TODO: Adapt to Flat Tree output!!
   // Options tree
@@ -335,42 +335,42 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     //// WORK IN PROGRESS
     double      NuParentDecP4 [4]; 
     double      NuParentDecX4 [4]; 
-    float       NuCospibm;         
-    float       NuNorm;            
+    double       NuCospibm;         
+    double       NuNorm;            
     double      NuParentProP4 [4]; 
     double      NuParentProX4 [4]; 
-    float       NuCospi0bm;        
-    float       NuRnu;             
-    float       NuXnu [2];         
+    double       NuCospi0bm;        
+    double       NuRnu;             
+    double       NuXnu [2];         
     int         NuIdfd;            
     int         NuGipart;          
-    float       NuGpos0[3];        
-    float       NuGvec0[3];        
-    float       NuGamom0;          
+    double       NuGpos0[3];        
+    double       NuGvec0[3];        
+    double       NuGamom0;          
     int         NuNg;             
-    float       NuGp[kNgmax][3];  
-    float       NuGcosbm[kNgmax]; 
-    float       NuGv[kNgmax][3];  
+    double       NuGp[kNgmax][3];  
+    double       NuGcosbm[kNgmax]; 
+    double       NuGv[kNgmax][3];  
     int         NuGpid[kNgmax];   
     int         NuGmec[kNgmax];   
-    float       NuEnusk;          
-    float       NuNormsk;         
-    float       NuAnorm;          
+    double       NuEnusk;          
+    double       NuNormsk;         
+    double       NuAnorm;          
     int         NuGmat[kNgmax];   
-    float       NuGdistc[kNgmax]; 
-    float       NuGdistal[kNgmax];
-    float       NuGdistti[kNgmax];
-    float       NuGdistfe[kNgmax];
-    float       NuVersion;        
+    double       NuGdistc[kNgmax]; 
+    double       NuGdistal[kNgmax];
+    double       NuGdistti[kNgmax];
+    double       NuGdistfe[kNgmax];
+    double       NuVersion;        
     int         NuTuneid;         
     int         NuNtrig;          
     int         NuPint;           
-    float       NuBpos[2];        
-    float       NuBtilt[2];       
-    float       NuBrms[2];        
-    float       NuEmit[2];        
-    float       NuAlpha[2];       
-    float       NuHcur[3];        
+    double       NuBpos[2];        
+    double       NuBtilt[2];       
+    double       NuBrms[2];        
+    double       NuEmit[2];        
+    double       NuAlpha[2];       
+    double       NuHcur[3];        
     int         NuRand;           
     TObjString* EvtCode;       
     int         EvtNum;        
@@ -398,30 +398,30 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     int    NEnvc;                    
     int    NEipvcTemp[kNEmaxvc];     
     int*   NEipvc; //[NEnvc]         
-    float  NEpvc[kNEmaxvc][3];       
+    double  NEpvc[kNEmaxvc][3];       
     int    NEiorgvcTemp[kNEmaxvc];   
     int*   NEiorgvc; //[NEnvc]       
     int    NEiflgvcTemp[kNEmaxvc];   
     int    NEicrnvcTemp[kNEmaxvc];   
     int*    NEiflgvc; 
     int*    NEicrnvc; 
-    float NEcrsx;    
-    float NEcrsy;    
-    float NEcrsz;    
-    float NEcrsphi;    
+    double NEcrsx;    
+    double NEcrsy;    
+    double NEcrsz;    
+    double NEcrsphi;    
     int    NEnvert;                    
-    float  NEposvert[kNEmaxvert][3];   
+    double  NEposvert[kNEmaxvert][3];   
     int    NEiflgvertTemp[kNEmaxvert]; 
     int*   NEiflgvert;
     int    NEnvcvert;                   
-    float  NEdirvert[kNEmaxvertp][3];   
-    float  NEabspvertTemp[kNEmaxvertp]; 
-    float  NEabstpvertTemp[kNEmaxvertp];
+    double  NEdirvert[kNEmaxvertp][3];   
+    double  NEabspvertTemp[kNEmaxvertp]; 
+    double  NEabstpvertTemp[kNEmaxvertp];
     int    NEipvertTemp[kNEmaxvertp];   
     int    NEivertiTemp[kNEmaxvertp];   
     int    NEivertfTemp[kNEmaxvertp];   
-    float*  NEabspvert; 
-    float*  NEabstpvert;
+    double*  NEabspvert; 
+    double*  NEabstpvert;
     int*    NEipvert;   
     int*    NEiverti;   
     int*    NEivertf;   
@@ -487,9 +487,9 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 {
 //G4cout << "Number of Events Generated: "<< numberOfEventsGenerated << G4endl;
 //G4cout<<"Number of times waterTube hit: " << numberOfTimesWaterTubeHit<<G4endl;
-//   G4cout << ((float(numberOfTimesMRDHit)+float(numberOfTimesFGDHit))/float(numberOfEventsGenerated))*100.
+//   G4cout << ((double(numberOfTimesMRDHit)+double(numberOfTimesFGDHit))/double(numberOfEventsGenerated))*100.
 // 	 << "% hit FGD or MRD" << G4endl;
-//  G4cout << (float(numberOfTimesCatcherHit)/float(numberOfEventsGenerated))*100.
+//  G4cout << (double(numberOfTimesCatcherHit)/double(numberOfEventsGenerated))*100.
 //        << "% through-going (hit Catcher)" << G4endl;
 
 
@@ -555,15 +555,15 @@ void WCSimRunAction::FillGeoTree(){
   G4double pmtradius2;//Hybrid configuration
   G4int numpmt2;//Hybrid configuration
   G4int orientation2;//Hybrid configuration
-  Float_t offset[3];
+  Double_t offset[3];
  
-  Float_t rotation[3];
+  Double_t rotation[3];
 
   Int_t tubeNo;
   Int_t mPMTNo = -1;
   Int_t mPMT_pmtNo = -1;
-  Float_t pos[3];
-  Float_t rot[3];
+  Double_t pos[3];
+  Double_t rot[3];
   Int_t cylLoc;
 
   if (wcsimdetector->GetIsEggShapedHyperK()) {

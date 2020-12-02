@@ -418,8 +418,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      for (G4int i=0; i < WCDC->entries(); i++) 
        {
 	 G4int   tubeID         = (*WCDC)[i]->GetTubeID();
-	 G4float photoElectrons = (*WCDC)[i]->GetPe(i);
-	 G4float time           = (*WCDC)[i]->GetTime(i);
+	 G4double photoElectrons = (*WCDC)[i]->GetPe(i);
+	 G4double time           = (*WCDC)[i]->GetTime(i);
 	 //	 G4cout << "time " << i << " " <<time << G4endl; 
 	 //	 G4cout << "tubeID " << i << " " <<tubeID << G4endl; 
 	 //	 G4cout << "Pe " << i << " " <<photoElectrons << G4endl; 
@@ -876,7 +876,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       //wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
       //			     WCTM->GetTriggerInfo(index));
       //Added by B.Q to keep track of he trigger, 2019/01/17
-      std::vector<G4float> triggerInfo = WCTM->GetTriggerInfo(index);
+      std::vector<G4double> triggerInfo = WCTM->GetTriggerInfo(index);
       triggerInfo.push_back(950.);
       triggerInfo.push_back(WCTM->GetTriggerTime(index));	
       wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),triggerInfo);//Added by B.Q to keep track of he trigger, 2019/01/17
@@ -908,10 +908,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   int k;
   for (k=0;k<2;k++) // should be just 2
   {
-    float dir[3];
-    float pdir[3];
-    float stop[3];
-    float start[3];
+    double dir[3];
+    double pdir[3];
+    double stop[3];
+    double start[3];
     for (int l=0;l<3;l++)
     {
       dir[l]=jhfNtuple.dir[k][l];
@@ -949,10 +949,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   std::set<int> antipionList;
 
     // Pi0 specific variables
-    Float_t pi0Vtx[3];
+    Double_t pi0Vtx[3];
     Int_t   gammaID[2];
-    Float_t gammaE[2];
-    Float_t gammaVtx[2][3];
+    Double_t gammaE[2];
+    Double_t gammaVtx[2][3];
     Int_t   r = 0;
 
     G4int n_trajectories = 0;
@@ -1028,10 +1028,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       //      << id << " " << energy << "\n";
 
       // fill ntuple
-      float dir[3];
-      float pdir[3];
-      float stop[3];
-      float start[3];
+      double dir[3];
+      double pdir[3];
+      double stop[3];
+      double start[3];
       for (int l=0;l<3;l++)
       {
 	dir[l]= mom[l]/mommag; // direction 
@@ -1135,7 +1135,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     G4cout<<"RAW HITS"<<G4endl;
 #endif
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
-    std::vector<float> truetime, smeartime;
+    std::vector<double> truetime, smeartime;
     std::vector<int>   primaryParentID;
     double hit_time_smear, hit_time_true;
     int hit_parentid;
@@ -1189,19 +1189,19 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     G4cout << "DIGI HITS" << G4endl;
 #endif
 
-    G4float sumq_tmp = 0.;
+    G4double sumq_tmp = 0.;
     
     for ( int index = 0 ; index < ngates ; index++)
       {	
 	sumq_tmp = 0.0;	
-	G4float gatestart;
+	G4double gatestart;
 	int countdigihits = 0;
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
 	for (k=0;k<WCDC->entries();k++)
 	  {
 	    if ( (*WCDC)[k]->HasHitsInGate(index)) {
-	      std::vector<float> vec_pe                  = (*WCDC)[k]->GetPe(index);
-	      std::vector<float> vec_time                = (*WCDC)[k]->GetTime(index);
+	      std::vector<double> vec_pe                  = (*WCDC)[k]->GetPe(index);
+	      std::vector<double> vec_time                = (*WCDC)[k]->GetTime(index);
 	      std::vector<std::vector<int> > vec_digicomp = (*WCDC)[k]->GetDigiCompositionInfo(index);
 	      const int tubeID                           = (*WCDC)[k]->GetTubeID();
 	      WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(tubeID -1));
@@ -1343,7 +1343,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       //wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
       //			     WCTM->GetTriggerInfo(index));
       //Added by B.Q to keep track of he trigger, 2019/01/17
-      std::vector<G4float> triggerInfo = WCTM->GetTriggerInfo(index);
+      std::vector<G4double> triggerInfo = WCTM->GetTriggerInfo(index);
       triggerInfo.push_back(950.);
       triggerInfo.push_back(WCTM->GetTriggerTime(index));	
       wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),triggerInfo);//Added by B.Q to keep track of he trigger, 2019/01/17
@@ -1375,10 +1375,10 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   int k;
   for (k=0;k<2;k++) // should be just 2
   {
-    float dir[3];
-    float pdir[3];
-    float stop[3];
-    float start[3];
+    double dir[3];
+    double pdir[3];
+    double stop[3];
+    double start[3];
     for (int l=0;l<3;l++)
     {
       dir[l]=jhfNtuple.dir[k][l];
@@ -1416,10 +1416,10 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   std::set<int> antipionList;
 
     // Pi0 specific variables
-    Float_t pi0Vtx[3];
+    Double_t pi0Vtx[3];
     Int_t   gammaID[2];
-    Float_t gammaE[2];
-    Float_t gammaVtx[2][3];
+    Double_t gammaE[2];
+    Double_t gammaVtx[2][3];
     Int_t   r = 0;
 
     G4int n_trajectories = 0;
@@ -1495,10 +1495,10 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       //      << id << " " << energy << "\n";
 
       // fill ntuple
-      float dir[3];
-      float pdir[3];
-      float stop[3];
-      float start[3];
+      double dir[3];
+      double pdir[3];
+      double stop[3];
+      double start[3];
       for (int l=0;l<3;l++)
       {
 	dir[l]= mom[l]/mommag; // direction 
@@ -1602,7 +1602,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     G4cout<<"RAW HITS"<<G4endl;
 #endif
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
-    std::vector<float> truetime, smeartime;
+    std::vector<double> truetime, smeartime;
     std::vector<int>   primaryParentID;
     double hit_time_smear, hit_time_true;
     int hit_parentid;
@@ -1656,19 +1656,19 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     G4cout << "DIGI HITS" << G4endl;
 #endif
 
-    G4float sumq_tmp = 0.;
+    G4double sumq_tmp = 0.;
     
     for ( int index = 0 ; index < ngates ; index++)
       {	
 	sumq_tmp = 0.0;	
-	G4float gatestart;
+	G4double gatestart;
 	int countdigihits = 0;
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
 	for (k=0;k<WCDC->entries();k++)
 	  {
 	    if ( (*WCDC)[k]->HasHitsInGate(index)) {
-	      std::vector<float> vec_pe                  = (*WCDC)[k]->GetPe(index);
-	      std::vector<float> vec_time                = (*WCDC)[k]->GetTime(index);
+	      std::vector<double> vec_pe                  = (*WCDC)[k]->GetPe(index);
+	      std::vector<double> vec_time                = (*WCDC)[k]->GetTime(index);
 	      std::vector<std::vector<int> > vec_digicomp = (*WCDC)[k]->GetDigiCompositionInfo(index);
 	      const int tubeID                           = (*WCDC)[k]->GetTubeID();
 	      WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(tubeID -1));
@@ -1903,7 +1903,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
       WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(digi_tubeid -1));
 
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
-	float digi_time = (*WCDC_hits)[idigi]->GetTime(id);
+	double digi_time = (*WCDC_hits)[idigi]->GetTime(id);
 	int hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 #ifdef _SAVE_RAW_HITS_VERBOSE
 	G4cout << "Hit " << id << " with time " << digi_time << " and parentID " << hit_parentid << G4endl;
@@ -1984,7 +1984,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
       WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(digi_tubeid -1));
 
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
-	float digi_time = (*WCDC_hits)[idigi]->GetTime(id);
+	double digi_time = (*WCDC_hits)[idigi]->GetTime(id);
 	int hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 #ifdef _SAVE_RAW_HITS_VERBOSE
 	G4cout << "Hit " << id << " with time " << digi_time << " and parentID " << hit_parentid << G4endl;
@@ -2051,10 +2051,10 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
     GetRunAction()->SetEventHeaderNew(0,event_id+1,1);   //ToDo: run 
     //std::cout << event_id << std::endl; //TF debug
     //General case for a vector triggerInfo:
-    //GetRunAction()->SetTriggerInfoNew(kTriggerUndefined, std::vector<G4float>(),0.,0.);
+    //GetRunAction()->SetTriggerInfoNew(kTriggerUndefined, std::vector<G4double>(),0.,0.);
 
     // TriggerInfo vector has one element (see WCDigitizer.cc and WCTrigger.cc), so just store ints
-    // => should be better explained why it is std::vector<float> while I would just store an int.
+    // => should be better explained why it is std::vector<double> while I would just store an int.
     GetRunAction()->SetTriggerInfoNew(kTriggerUndefined,0,0.,0.);
     
     // Fill Tree for each subevent
@@ -2087,14 +2087,14 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
     
     // Add the digitized hits
     if (WCDC) {
-      G4float sumq_tmp = 0.;
+      G4double sumq_tmp = 0.;
       int countdigihits = 0;
 
       // An entry per Tube with hits per Trigger
       for (int k = 0; k < WCDC->entries() ; k++) {
 	if ( (*WCDC)[k]->HasHitsInGate(index)) {
-	  std::vector<float> vec_pe                   = (*WCDC)[k]->GetPe(index);
-	  std::vector<float> vec_time                 = (*WCDC)[k]->GetTime(index);
+	  std::vector<double> vec_pe                   = (*WCDC)[k]->GetPe(index);
+	  std::vector<double> vec_time                 = (*WCDC)[k]->GetTime(index);
 	  std::vector<std::vector<int> > vec_digicomp = (*WCDC)[k]->GetDigiCompositionInfo(index);
 	  const int tubeID                            = (*WCDC)[k]->GetTubeID();
 	  WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(tubeID -1));

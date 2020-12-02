@@ -26,7 +26,7 @@ public:
   WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, DigitizerType_t, G4String detectorElement);
   virtual ~WCSimWCDigitizerBase();
   
-  bool AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector<int> digi_comp);
+  bool AddNewDigit(int tube, int gate, double digihittime, double peSmeared, std::vector<int> digi_comp);
   virtual void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) = 0;
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
   void Digitize();

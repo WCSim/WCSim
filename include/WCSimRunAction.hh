@@ -67,7 +67,7 @@ public:
     run = run_id;
     subevent = subevent_id;}
 
-  void SetTriggerInfoNew(TriggerType_t trigger_type,int trigger_info, /* std::vector<G4float> trigger_info, */
+  void SetTriggerInfoNew(TriggerType_t trigger_type,int trigger_info, /* std::vector<G4double> trigger_info, */
 			 G4double trigger_length, G4double trigger_start){
     trig_type = trigger_type;
     /*
@@ -153,14 +153,14 @@ private:
   TTree* fSettingsOutputTree;
   TTree* fSettingsInputTree;
 
-  float WCXRotation[3];
-  float WCYRotation[3];
-  float WCZRotation[3];
-  float WCDetCentre[3];
-  float WCDetRadius;
-  float WCDetHeight;
-  float fNuPlanePos[3];
-  float fNuPrismRadius;
+  double WCXRotation[3];
+  double WCYRotation[3];
+  double WCZRotation[3];
+  double WCDetCentre[3];
+  double WCDetRadius;
+  double WCDetHeight;
+  double fNuPlanePos[3];
+  double fNuPrismRadius;
 
   WCSimRunActionMessenger* messenger;
   int ntuples;  // 1 for ntuples to be written
