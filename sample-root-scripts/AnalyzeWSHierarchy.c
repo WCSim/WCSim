@@ -597,8 +597,8 @@ int main(int argc, char **argv){
   bool verbose=true;//false;
   bool hybrid = true;//false;//true;
   bool Gamma = false;//Is the mother particle a gamma or another particle?
-  float cvacuum = 3e8 / 1e9;//speed of light, in meter per ns.
-  float nindex = 1.373;//refraction index of water
+  double cvacuum = 3e8 / 1e9;//speed of light, in meter per ns.
+  double nindex = 1.373;//refraction index of water
   bool plotDigitized = true;//false;//true;//false;//true;//false;//true;//false;//true;//false;//true;//false;
 
   bool HK=false;
@@ -1021,11 +1021,11 @@ int main(int argc, char **argv){
       
     }
 
-    std::vector<float> triggerInfo;
+    std::vector<double> triggerInfo;
     triggerInfo.clear();
     triggerInfo = wcsimrootevent->GetTriggerInfo();
 
-    std::vector<float> triggerInfo2;
+    std::vector<double> triggerInfo2;
     triggerInfo2.clear();
     if(hybrid) triggerInfo2 = wcsimrootevent2->GetTriggerInfo();
 
@@ -1078,9 +1078,8 @@ int main(int argc, char **argv){
     particleDir[2] = 0.;
     
 
-    int i;
     // Loop through elements in the TClonesArray of WCSimTracks
-    for (i=0; i<ntrack; i++)
+    for (int i=0; i<ntrack; i++)
     {
       TObject *element = (wcsimrootevent->GetTracks())->At(i);
       
@@ -1239,7 +1238,7 @@ int main(int argc, char **argv){
       else nhits = ncherenkovhits2;
       
       // Loop through elements in the TClonesArray of WCSimRootCherenkovHits
-      for (i=0; i< nhits ; i++)
+      for (int i=0; i< nhits ; i++)
 	{
 	  //if(verbose) cout << "Hit #" << i << endl;
 
@@ -1333,7 +1332,7 @@ int main(int argc, char **argv){
 
 	  //TMP
 	    double dist_tmp =0;
-	    for(int i=0;i<3;i++) dist_tmp+=pow(particleStart[i]-pmt.GetPosition(i),2);
+	    for(int z=0;z<3;z++) dist_tmp+=pow(particleStart[z]-pmt.GetPosition(z),2);
 	    dist_tmp=TMath::Sqrt(dist_tmp);
 	    ////if(dist_tmp>1000) continue;
 	    //if(dist_tmp>500) continue;
@@ -1456,7 +1455,7 @@ int main(int argc, char **argv){
       else nhits = ncherenkovdigihits2;
       
       // Loop through elements in the TClonesArray of WCSimRootCherenkovHits
-      for (i=0; i< nhits ; i++)
+      for (int i=0; i< nhits ; i++)
 	{
 	  TObject *Hit;
 	  if(pmtType==0) Hit = (wcsimrootevent->GetCherenkovDigiHits())->At(i);
@@ -1553,7 +1552,7 @@ int main(int argc, char **argv){
 
 	  //TMP
 	    double dist_tmp =0;
-	    for(int i=0;i<3;i++) dist_tmp+=pow(particleStart[i]-pmt.GetPosition(i),2);
+	    for(int z=0;z<3;z++) dist_tmp+=pow(particleStart[z]-pmt.GetPosition(z),2);
 	    dist_tmp=TMath::Sqrt(dist_tmp);
 	    //if(dist_tmp>500) continue;
 	    //if(dist_tmp>1000) continue;
@@ -1593,7 +1592,7 @@ int main(int argc, char **argv){
 	      //In that case, we do not care about the trigger. We just want to check in the whole time window.
 	      time+=triggerTime[pmtType];
 #endif
-	      if(verbose&&i<10){
+	      if(verbose && i < 10){
 		cout<<"PMT type = "<<pmtType<<", pmt number = "<<tubeNumber<<", charge = "<<peForTube<<", time = "<<time<<", after shift by trigger = "<<time+triggerTime[pmtType]<<endl;
 	      }
 		
@@ -1649,7 +1648,7 @@ int main(int argc, char **argv){
     } // End of loop over events
   //  TCanvas c1("c1"); 
   /*
-  float win_scale = 0.75;
+  double win_scale = 0.75;
   int n_wide(2);
   int n_high(2);
   TCanvas* c1 = new TCanvas("c1", "First canvas", 500*n_wide*win_scale, 500*n_high*win_scale);
