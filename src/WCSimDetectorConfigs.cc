@@ -233,8 +233,8 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
-  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
@@ -258,8 +258,8 @@ void WCSimDetectorConstruction::SetHyperK_10inchGeometry()
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
-  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
@@ -283,8 +283,8 @@ void WCSimDetectorConstruction::SetHyperK_8inchGeometry()
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
-  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
@@ -308,8 +308,8 @@ void WCSimDetectorConstruction::SetHyperK_3inchGeometry()
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
-  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
@@ -363,8 +363,8 @@ void WCSimDetectorConstruction::SetHyperK_mPMTGeometry()
 	WCBarrelPMTOffset     = mPMT_vessel_tot_height;
 	WCIDVerticalPosition     = 0.;
 
-	WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-	WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+	WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+	WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
 	WCPMTperCellHorizontal= 1;//4;
 	WCPMTperCellVertical  = 1;//3;
 	if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
@@ -424,8 +424,8 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMTGeometry()
   G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;	
  
 
-  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height); //offset from vertical
   WCIDVerticalPosition     = 0.;
 
@@ -492,8 +492,8 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT10PCGeometry()
   G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;	
  
 
-  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height); //offset from vertical
   WCIDVerticalPosition     = 0.;
 
@@ -574,8 +574,8 @@ void WCSimDetectorConstruction::SetHyperK_HybridFakeGeometry()
   //nID_PMTs = 1;
  
 
-  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height); //offset from vertical
   WCIDVerticalPosition     = 0.;
 

@@ -532,6 +532,13 @@ private:
   G4double WCCapEdgeLimit;
   G4double WCBlackSheetThickness;
 
+  // Parameters controlled by user: added by B.Q on 2020/12/06 based on S.Z implementation
+  G4double WCODDiameter;
+  G4double WCODLateralWaterDepth;
+  G4double WCODHeightWaterDepth;
+  G4double WCODDeadSpace;
+  G4double WCODTyvekSheetThickness;
+
 // raise scope of derived parameters
   G4double WCIDRadius;
   G4double totalAngle;

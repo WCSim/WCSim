@@ -95,8 +95,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
-  WCLength    = WCIDHeight + 2*2.3*m;	//jl145 - reflects top veto blueprint, cf. Farshid Feyzi
-  WCRadius    = (WCIDDiameter/2. + WCBlackSheetThickness + 1.5*m)/cos(dPhi/2.) ; // ToDo: OD 
+  //BQ: Updated with new HK OD size (2020/12/06). Simply assume no tyvek thickness or dead space.
+  WCODTyvekSheetThickness = 0.*m;
+  WCODDeadSpace = 0.*m;
+  WCODHeightWaterDepth = 2*m + 0.6*m;//OD + support structure
+  WCODLateralWaterDepth = 1*m + 0.6*m;//OD + support structure
+  WCLength    = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness);
+  WCRadius    = (outerAnnulusRadius + WCODLateralWaterDepth)/cos(dPhi/2.) ;
+  //WCLength    = WCIDHeight + (WCODHeight+WCOuterStructure)*2;	//jl145 - reflects top veto blueprint, cf. Farshid Feyzi
+  //WCRadius    = (WCIDDiameter/2. + WCBlackSheetThickness + (WCODRadius+WCODHeight)))/cos(dPhi/2.) ; // BQ: Updated with new HK OD size (2020/12/06) 
  
   // now we know the extend of the detector and are able to tune the tolerance
   G4GeometryManager::GetInstance()->SetWorldMaximumExtent(WCLength > WCRadius ? WCLength : WCRadius);

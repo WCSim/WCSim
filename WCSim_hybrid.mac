@@ -158,8 +158,8 @@
 # Position: a cylinder
 /gps/pos/type Volume
 /gps/pos/shape Cylinder
-/gps/pos/halfz 30.4 m
-/gps/pos/radius 38.4 m
+/gps/pos/halfz 32.8755 m
+/gps/pos/radius 32.4 m
 
 # Position: a sphere
 #/gps/pos/type Volume
