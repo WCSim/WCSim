@@ -27,50 +27,50 @@ private:
   // See jhfNtuple.h for the meaning of these data members:
   Int_t   fIpnu;        
   Int_t   fFlag;        
-  Float_t fM;
-  Float_t fP;
-  Float_t fE;
+  Double_t fM;
+  Double_t fP;
+  Double_t fE;
   Int_t   fStartvol;
   Int_t   fStopvol;
-  Float_t fDir[3];
-  Float_t fPdir[3];
-  Float_t fStop[3];
-  Float_t fStart[3];
+  Double_t fDir[3];
+  Double_t fPdir[3];
+  Double_t fStop[3];
+  Double_t fStart[3];
   Int_t fParenttype;
-  Float_t fTime;
+  Double_t fTime;
   Int_t fId;
 
 public:
   WCSimRootTrack() {}
   WCSimRootTrack(Int_t ipnu, 
 		  Int_t flag, 
-		  Float_t m, 
-		  Float_t p, 
-		  Float_t E, 
+		  Double_t m, 
+		  Double_t p, 
+		  Double_t E, 
 		  Int_t startvol, 
 		  Int_t stopvol, 
-		  Float_t dir[3], 
-		  Float_t pdir[3], 
-		  Float_t stop[3], 
-		  Float_t start[3], 
+		  Double_t dir[3], 
+		  Double_t pdir[3], 
+		  Double_t stop[3], 
+		  Double_t start[3], 
 		  Int_t parenttype,
-		 Float_t time,Int_t id);
+		 Double_t time,Int_t id);
   
   virtual ~WCSimRootTrack() { }
 
   Int_t     GetIpnu() const { return fIpnu;}
   Int_t     GetFlag() const { return fFlag;}
-  Float_t   GetM() const { return fM;}
-  Float_t   GetP() const { return fP;}
-  Float_t   GetE() const { return fE;}
+  Double_t   GetM() const { return fM;}
+  Double_t   GetP() const { return fP;}
+  Double_t   GetE() const { return fE;}
   Int_t     GetStartvol() { return fStartvol;}
   Int_t     GetStopvol() { return fStopvol;}
-  Float_t   GetDir(Int_t i=0) {return (i<3) ? fDir[i] : 0;} 
-  Float_t   GetPdir(Int_t i=0) {return (i<3) ? fPdir[i] : 0;}
-  Float_t   GetStop(Int_t i=0) {return (i<3) ? fStop[i] : 0;}
-  Float_t   GetStart(Int_t i=0) {return (i<3) ? fStart[i] : 0;}
+  Double_t   GetDir(Int_t i=0) {return (i<3) ? fDir[i] : 0;} 
+  Double_t   GetPdir(Int_t i=0) {return (i<3) ? fPdir[i] : 0;}
+  Double_t   GetStop(Int_t i=0) {return (i<3) ? fStop[i] : 0;}
+  Double_t   GetStart(Int_t i=0) {return (i<3) ? fStart[i] : 0;}
   Int_t     GetParenttype(/*Int_t i=0*/) {return fParenttype;}
-  Float_t   GetTime() { return fTime;}
+  Double_t   GetTime() { return fTime;}
   Int_t     GetId(){return fId;}
 
   ClassDef(WCSimRootTrack,1)  
@@ -112,16 +112,16 @@ class WCSimRootCherenkovHitTime : public TObject {
 
 private:
   // See jhfNtuple.h for the meaning of these data members:
-  Float_t fTruetime;
+  Double_t fTruetime;
   Int_t   fPrimaryParentID;
 
 public:
   WCSimRootCherenkovHitTime() {}
-  WCSimRootCherenkovHitTime(Float_t truetime,
+  WCSimRootCherenkovHitTime(Double_t truetime,
 			    Int_t   primaryParentID);
   virtual ~WCSimRootCherenkovHitTime() { }
 
-  Float_t   GetTruetime() { return fTruetime;}
+  Double_t   GetTruetime() { return fTruetime;}
   Int_t     GetParentID() { return fPrimaryParentID;}
 
   ClassDef(WCSimRootCherenkovHitTime,1)  
@@ -135,8 +135,8 @@ class WCSimRootCherenkovDigiHit : public TObject {
 
 private:
   // See jhfNtuple.h for the meaning of these data members:
-  Float_t fQ;
-  Float_t fT;
+  Double_t fQ;
+  Double_t fT;
   Int_t fTubeId;
   Int_t fmPMTId;
   Int_t fmPMT_PMTId;
@@ -144,13 +144,13 @@ private:
 
 public:
   WCSimRootCherenkovDigiHit() {}
-  WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid, std::vector<int> photon_ids);
-  WCSimRootCherenkovDigiHit(Float_t q, Float_t t, Int_t tubeid, Int_t mpmtid, Int_t mpmt_pmtid, std::vector<int> photon_ids);
+  WCSimRootCherenkovDigiHit(Double_t q, Double_t t, Int_t tubeid, std::vector<int> photon_ids);
+  WCSimRootCherenkovDigiHit(Double_t q, Double_t t, Int_t tubeid, Int_t mpmtid, Int_t mpmt_pmtid, std::vector<int> photon_ids);
 
   virtual ~WCSimRootCherenkovDigiHit() { }
 
-  Float_t     GetQ() const { return fQ;}
-  Float_t     GetT() const { return fT;}
+  Double_t     GetQ() const { return fQ;}
+  Double_t     GetT() const { return fT;}
   Int_t       GetTubeId() const { return fTubeId;}
   Int_t       GetmPMTId() const { return fmPMTId;}
   Int_t       GetmPMT_PMTId() const { return fmPMT_PMTId;}
@@ -190,25 +190,25 @@ class WCSimRootPi0 : public TObject {
     // this is a class used specifically for Pi0 events
 
 private:
-    Float_t fPi0Vtx[3];
+    Double_t fPi0Vtx[3];
     Int_t   fGammaID[2];
-    Float_t fGammaE[2];
-    Float_t fGammaVtx[2][3];
+    Double_t fGammaE[2];
+    Double_t fGammaVtx[2][3];
 
 public:
     WCSimRootPi0() {}
 
     virtual ~WCSimRootPi0() {}
 
-    void Set(Float_t pi0Vtx[3],
+    void Set(Double_t pi0Vtx[3],
 	     Int_t   gammaID[2],
-	     Float_t gammaE[2],
-	     Float_t gammaVtx[2][3]);
+	     Double_t gammaE[2],
+	     Double_t gammaVtx[2][3]);
 
-    Float_t  GetPi0Vtx(int i)           const { return (i<3) ? fPi0Vtx[i]: 0;}
+    Double_t  GetPi0Vtx(int i)           const { return (i<3) ? fPi0Vtx[i]: 0;}
     Int_t    GetGammaID(int i)          const { return (i<2) ? fGammaID[i]: 0;}
-    Float_t  GetGammaE(int i)           const { return (i<2) ? fGammaE[i]: 0;}
-    Float_t  GetGammaVtx(int i, int j)  const { return fGammaVtx[i][j];}
+    Double_t  GetGammaE(int i)           const { return (i<2) ? fGammaE[i]: 0;}
+    Double_t  GetGammaVtx(int i, int j)  const { return fGammaVtx[i][j];}
 
 ClassDef(WCSimRootPi0,1)
 };
@@ -219,21 +219,21 @@ class WCSimRootCaptureGamma : public TObject {
 
 private:
     Int_t   fID;
-    Float_t fEnergy;
-    Float_t fDir[3];
+    Double_t fEnergy;
+    Double_t fDir[3];
 
 public:
     WCSimRootCaptureGamma() {}
     WCSimRootCaptureGamma(Int_t id,
-                          Float_t energy,
-                          Float_t dir[3]
+                          Double_t energy,
+                          Double_t dir[3]
     );
 
     virtual ~WCSimRootCaptureGamma() {}
 
     Int_t    GetID()           const { return fID;}
-    Float_t  GetE()            const { return fEnergy;}
-    Float_t  GetDir(int i)     const { return (i<3) ? fDir[i]: 0;}
+    Double_t  GetE()            const { return fEnergy;}
+    Double_t  GetDir(int i)     const { return (i<3) ? fDir[i]: 0;}
 
 ClassDef(WCSimRootCaptureGamma,1)
 };
@@ -245,10 +245,10 @@ class WCSimRootCapture : public TObject {
 
 private:
     Int_t   	   fCaptureParent;
-    Float_t 	   fCaptureVtx[3];
+    Double_t 	   fCaptureVtx[3];
     Int_t   	   fNGamma;
-    Float_t 	   fTotalGammaE;
-    Float_t 	   fCaptureT;
+    Double_t 	   fTotalGammaE;
+    Double_t 	   fCaptureT;
     Int_t          fCaptureNucleus;
     TClonesArray * fGammas;
     bool 	   IsZombie;
@@ -262,21 +262,21 @@ public:
 
     virtual ~WCSimRootCapture();
 
-    void SetInfo(Float_t captureVtx[3],
-	         Float_t captureT,
+    void SetInfo(Double_t captureVtx[3],
+	         Double_t captureT,
 		 Int_t   captureNucleus
     );
 
     void AddGamma(Int_t   gammaID,
-		  Float_t gammaE,
-		  Float_t gammaDir[3]
+		  Double_t gammaE,
+		  Double_t gammaDir[3]
     );
 
     Int_t                   GetCaptureParent()   const { return fCaptureParent;}
-    Float_t                 GetCaptureVtx(int i) const { return (i<3) ? fCaptureVtx[i]: 0;}
+    Double_t                 GetCaptureVtx(int i) const { return (i<3) ? fCaptureVtx[i]: 0;}
     Int_t                   GetNGamma()          const { return fNGamma;}
-    Float_t                 GetTotalGammaE()     const { return fTotalGammaE;}
-    Float_t                 GetCaptureT()        const { return fCaptureT;}
+    Double_t                 GetTotalGammaE()     const { return fTotalGammaE;}
+    Double_t                 GetCaptureT()        const { return fCaptureT;}
     Int_t                   GetCaptureNucleus()  const { return fCaptureNucleus;}
     TClonesArray	   *GetGammas()          const { return fGammas;}
 
@@ -292,7 +292,7 @@ private:
   // See jhfNtuple.h for the meaning of these data members:
   Int_t                fMode;
   Int_t                fVtxvol;
-  Float_t              fVtx[3];
+  Double_t              fVtx[3];
   Int_t                fVecRecNumber;       // "info event" number in inputvectorfile 
   Int_t                fJmu;
   Int_t                fJp;
@@ -316,11 +316,11 @@ private:
 
   Int_t                fNumDigitizedTubes;  // Number of digitized tubes
   Int_t                fNcherenkovdigihits;  // Number of digihits in the array
-  Float_t              fSumQ;
+  Double_t              fSumQ;
   TClonesArray         *fCherenkovDigiHits;  //-> Array of WCSimRootCherenkovDigiHit's
 
   TriggerType_t        fTriggerType;         // Trigger algorithm that created this trigger
-  std::vector<Float_t> fTriggerInfo;         // Information about how it passed the trigger (e.g. how many hits in the NDigits window)
+  std::vector<Double_t> fTriggerInfo;         // Information about how it passed the trigger (e.g. how many hits in the NDigits window)
 
   bool IsZombie;
 
@@ -335,28 +335,28 @@ public:
   static void   Reset(Option_t *option ="");
 
   void          SetHeader(Int_t i, Int_t run, Int_t date,Int_t subevtn=1);
-  void          SetTriggerInfo(TriggerType_t trigger_type, std::vector<Float_t> trigger_info);
+  void          SetTriggerInfo(TriggerType_t trigger_type, std::vector<Double_t> trigger_info);
   bool          IsASubEvent() {  return (fEvtHdr.GetSubEvtNumber()>=1); }
   void          SetMode(Int_t i) {fMode = i;}
   void          SetVtxvol(Int_t i) {fVtxvol = i;}
-  void          SetVtx(Int_t i, Float_t f) {fVtx[i]= ( (i<3) ? f : 0);}
+  void          SetVtx(Int_t i, Double_t f) {fVtx[i]= ( (i<3) ? f : 0);}
   void          SetVecRecNumber(Int_t i) {fVecRecNumber = i;}
   void          SetJmu(Int_t i) {fJmu = i;}
   void          SetJp(Int_t i) {fJp = i;}
   void          SetNpar(Int_t i) {fNpar = i;}
   void          SetNumTubesHit(Int_t i) {fNumTubesHit = i;}
-  void          SetSumQ(Float_t x){fSumQ = x;}
+  void          SetSumQ(Double_t x){fSumQ = x;}
   void          SetNumDigitizedTubes(Int_t i) {fNumDigitizedTubes = i;}
-  void          SetPi0Info(Float_t pi0Vtx[3],
+  void          SetPi0Info(Double_t pi0Vtx[3],
 			   Int_t   gammaID[2],
-			   Float_t gammaE[2],
-			   Float_t gammaVtx[2][3]);
+			   Double_t gammaE[2],
+			   Double_t gammaVtx[2][3]);
   void          SetCaptureParticle(Int_t parent,
                                    Int_t ipnu,
-                                   Float_t time,
-                                   Float_t vtx[3],
-                                   Float_t dir[3],
-                                   Float_t energy,
+                                   Double_t time,
+                                   Double_t vtx[3],
+                                   Double_t dir[3],
+                                   Double_t energy,
                                    Int_t id);
 
 
@@ -364,7 +364,7 @@ public:
   WCSimRootPi0       *GetPi0Info()                  {return &fPi0; }
   Int_t               GetMode()               const {return fMode;}
   Int_t               GetVtxvol()             const {return fVtxvol;}
-  Float_t             GetVtx(Int_t i=0)             {return (i<3) ? fVtx[i]: 0;}
+  Double_t             GetVtx(Int_t i=0)             {return (i<3) ? fVtx[i]: 0;}
   Int_t               GetVecRecNumber()       const {return fVecRecNumber;}
   Int_t               GetJmu()                const {return fJmu;}
   Int_t               GetJp()                 const {return fJp;}
@@ -376,23 +376,23 @@ public:
   Int_t               GetNcherenkovhits()     const {return fNcherenkovhits; }
   Int_t               GetNcherenkovhittimes() const {return fNcherenkovhittimes;}
   Int_t               GetNcherenkovdigihits() const {return fNcherenkovdigihits;}
-  Float_t             GetSumQ()               const { return fSumQ;}
+  Double_t             GetSumQ()               const { return fSumQ;}
   TriggerType_t       GetTriggerType()        const { return fTriggerType;}
-  std::vector<Float_t> GetTriggerInfo()       const { return fTriggerInfo;}
+  std::vector<Double_t> GetTriggerInfo()       const { return fTriggerInfo;}
 
   WCSimRootTrack         *AddTrack(Int_t ipnu, 
 				   Int_t flag, 
-				   Float_t m, 
-				   Float_t p, 
-				   Float_t E, 
+				   Double_t m, 
+				   Double_t p, 
+				   Double_t E, 
 				   Int_t startvol, 
 				   Int_t stopvol, 
-				   Float_t dir[3], 
-				   Float_t pdir[3], 
-				   Float_t stop[3],
-				   Float_t start[3],
+				   Double_t dir[3], 
+				   Double_t pdir[3], 
+				   Double_t stop[3],
+				   Double_t start[3],
 				   Int_t parenttype,
-				   Float_t time,
+				   Double_t time,
 				   Int_t id);
 
   TClonesArray        *GetTracks() const {return fTracks;}
@@ -400,21 +400,21 @@ public:
   WCSimRootCherenkovHit   *AddCherenkovHit(Int_t                tubeID,
 					   Int_t                mPMTID,
 					   Int_t                mPMT_PMTID,
-					  std::vector<Float_t> truetime,
+					  std::vector<Double_t> truetime,
 					  std::vector<Int_t>   primParID);
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
 
-  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
-						   Float_t t, 
+  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Double_t q, 
+						   Double_t t, 
 						   Int_t tubeid,
 						   Int_t mpmtid,
 						   Int_t mpmt_pmtid,
 						   std::vector<int> photon_ids);
-//  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Float_t q, 
-//						  Float_t t, 
+//  WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Double_t q, 
+//						  Double_t t, 
 //						  Int_t tubeid,
- //                                                 Float_t sumq);
+ //                                                 Double_t sumq);
 
   TClonesArray            *GetCherenkovDigiHits() const {return fCherenkovDigiHits;}
 

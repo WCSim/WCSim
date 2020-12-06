@@ -105,7 +105,7 @@ WCSimRootPMT::WCSimRootPMT(const WCSimRootPMT & in)
   }//i
 }
 //______________________________________________________________________________
-WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Float_t orientation[3], Float_t position[3])
+WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Double_t orientation[3], Double_t position[3])
 {
 	fTubeNo = tubeNo;
 	fmPMTNo = tubeNo;
@@ -122,7 +122,7 @@ WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t cylLoc, Float_t orientation[3], F
 }
 
 //______________________________________________________________________________
-WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t mPMTNo, Int_t mPMT_PMTNo, Int_t cylLoc, Float_t orientation[3], Float_t position[3])
+WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t mPMTNo, Int_t mPMT_PMTNo, Int_t cylLoc, Double_t orientation[3], Double_t position[3])
 {
 	fTubeNo = tubeNo;
 	fmPMTNo = mPMTNo;
@@ -140,7 +140,7 @@ WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t mPMTNo, Int_t mPMT_PMTNo, Int_t c
 
 //______________________________________________________________________________
 void WCSimRootGeom::SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, 
-			   Float_t rot[3], Float_t pos[3], bool expand, bool hybridsecondtype)
+			   Double_t rot[3], Double_t pos[3], bool expand, bool hybridsecondtype)
 {
   if(expand) hybridsecondtype?(*(fPMTArray2)).ExpandCreate(i+2):(*(fPMTArray)).ExpandCreate(i+2);
   
@@ -160,7 +160,7 @@ void WCSimRootGeom::SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc,
 
 //______________________________________________________________________________
 void WCSimRootGeom::SetPMT(Int_t i, Int_t tubeno, Int_t mPMTNo, Int_t mPMT_PMTNo, Int_t cyl_loc, 
-			   Float_t rot[3], Float_t pos[3], bool expand, bool hybridsecondtype)
+			   Double_t rot[3], Double_t pos[3], bool expand, bool hybridsecondtype)
 {
   if(expand) hybridsecondtype?(*(fPMTArray2)).ExpandCreate(i+2):(*(fPMTArray)).ExpandCreate(i+2);
   

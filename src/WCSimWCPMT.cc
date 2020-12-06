@@ -21,8 +21,8 @@
 //#define HYPER_VERBOSITY
 //#define DEBUG
 
-extern "C" void skrn1pe_(float* );
-//extern "C" void rn1pe_(float* ); // 1Kton
+extern "C" void skrn1pe_(double* );
+//extern "C" void rn1pe_(double* ); // 1Kton
 
 G4double WCSimWCPMT::fFirst_Time = -1;
 
@@ -61,7 +61,7 @@ G4double WCSimWCPMT::rn1pe(){
   G4int i;
   G4double random = G4UniformRand();
   G4double random2 = G4UniformRand(); 
-  G4float *qpe0;
+  G4double *qpe0;
   qpe0 = PMT->Getqpe();
   for(i = 0; i < 501; i++){
     
@@ -157,7 +157,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
   G4cout << "Type of PMT used for pe correction = " << PMT->GetPMTName() <<G4endl;
 #endif
 
-  float maxTotalPe = 1;
+  double maxTotalPe = 1;
   G4int bqDigiHitCounter = 0;
   
   for (G4int i=0; i < WCHC->entries(); i++)
@@ -180,8 +180,8 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       
       
       // Set the position and rotation of the pmt (from WCSimWCAddDarkNoise.cc)
-      Float_t hit_pos[3];
-      Float_t hit_rot[3];
+      Double_t hit_pos[3];
+      Double_t hit_rot[3];
 #ifdef DEBUG
 	  std::cout << "tube : " << i << " (ID=" << tube << ")" << std::endl; //TD debug
 #endif
@@ -197,10 +197,10 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       G4ThreeVector pmt_position(hit_pos[0], hit_pos[1], hit_pos[2]);
 
       //
-      //float Qout;
-      float ttsfactor = myDetector->GetParameters()->GetTtsff(); //TD 2019.07.02
-      //float linearity = myDetector->GetParameters()->GetNLTinfo();
-      float QinTOT = 0;
+      //double Qout;
+      double ttsfactor = myDetector->GetParameters()->GetTtsff(); //TD 2019.07.02
+      //double linearity = myDetector->GetParameters()->GetNLTinfo();
+      double QinTOT = 0;
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
 	  
@@ -222,7 +222,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
 
 	    //apply time smearing
-	    float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+	    double Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 #ifdef DEBUG
 	    G4cout<<"PE smearing applied"<<G4endl;
 #endif

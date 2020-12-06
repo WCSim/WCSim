@@ -153,7 +153,7 @@ class WCSimWCHit : public G4VHit
 
  private:
   
-  void HSVtoRGB(float& fR, float& fG, float& fB, float& fH, float& fS, float& fV);
+  void HSVtoRGB(double& fR, double& fG, double& fB, double& fH, double& fS, double& fV);
 
   G4int            tubeID;
   G4int            trackID;

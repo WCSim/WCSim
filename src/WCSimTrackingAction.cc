@@ -44,7 +44,7 @@ WCSimTrackingAction::~WCSimTrackingAction(){;}
 void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
   //TF: userdefined now
-  //G4float percentageOfCherenkovPhotonsToDraw = 100.0;
+  //G4double percentageOfCherenkovPhotonsToDraw = 100.0;
   // if larger than zero, will keep trajectories of many secondaries as well
   // and store them in output file. Difficult to control them all, so best only
   // use for visualization, not for storing in ROOT.

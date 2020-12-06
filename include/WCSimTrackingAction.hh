@@ -30,7 +30,7 @@ private:
   G4double fMaxTime;
 
   // TF: define in macro now
-  G4float percentageOfCherenkovPhotonsToDraw;
+  G4double percentageOfCherenkovPhotonsToDraw;
 
   WCSimTrackingMessenger* messenger;
   

@@ -109,7 +109,7 @@ void WCSimWCDigitizerBase::Digitize()
 
 }
 
-bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector<int> digi_comp)
+bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, double digihittime, double peSmeared, std::vector<int> digi_comp)
 {
   //gate is not a trigger, but just the position of the digit in the array
   //inside the WCSimWCDigi object
@@ -190,8 +190,8 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
 #endif
   //********************************************************************************************************* TD 2019.07.16 : to take PMT saturation effect into account *********************
-  float saturThreshold = myDetector->GetParameters()->GetPMTSatur();                                                                                             
-  //float qoiff = myDetector->GetParameters()->GetQoiff();                                                                                                      
+  double saturThreshold = myDetector->GetParameters()->GetPMTSatur();                                                                                             
+  //double qoiff = myDetector->GetParameters()->GetQoiff();                                                                                                      
   G4String WCCollectionName;
   if(detectorElement=="tank") WCCollectionName = myDetector->GetIDCollectionName();
   else if(detectorElement=="tankPMT2") WCCollectionName = myDetector->GetIDCollectionName2();
@@ -238,8 +238,8 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 
       //look over all hits on the PMT
       //integrate charge and start digitizing
-      float intgr_start=0;
-      float upperlimit=0;
+      double intgr_start=0;
+      double upperlimit=0;
       G4double efficiency = 0.985; // with skrn1pe (AP tuning) & 30% QE increase in stacking action
 
       // Variables to store photon uniqueid that make up a digit
@@ -250,8 +250,8 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       //loop over the hits on this PMT
       for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
 	{
-	  float time = (*WCHCPMT)[i]->GetTime(ip);
-          float pe = (*WCHCPMT)[i]->GetPe(ip);
+	  double time = (*WCHCPMT)[i]->GetTime(ip);
+          double pe = (*WCHCPMT)[i]->GetPe(ip);
           const int parent_id = (*WCHCPMT)[i]->GetParentID(ip);
 
 	  //start the integration time as the time of the first hit

@@ -214,8 +214,8 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
   int window_start_time = 0;
   int window_end_time   = WCSimWCTriggerBase::LongTime - ndigitsWindow;
   int window_step_size  = 5; //step the search window along this amount if no trigger is found
-  float lasthit;
-  std::vector<G4float> digit_times;
+  double lasthit;
+  std::vector<G4double> digit_times;
   bool first_loop = true;
 
 #ifdef WCSIMWCTRIGGER_VERBOSE
@@ -230,7 +230,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
   // the upper time limit is set to the final possible full trigger window
   while(window_start_time <= window_end_time) {
     int n_digits = 0;
-    float triggertime; //save each digit time, because the trigger time is the time of the first hit above threshold
+    double triggertime; //save each digit time, because the trigger time is the time of the first hit above threshold
     bool triggerfound = false;
     digit_times.clear();
     
@@ -239,7 +239,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
       //int tube=(*WCDCPMT)[i]->GetTubeID();
       //Loop over each Digit in this PMT
       for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
-	G4float digit_time = (*WCDCPMT)[i]->GetTime(ip);
+	G4double digit_time = (*WCDCPMT)[i]->GetTime(ip);
 	//hit in trigger window?
 	if(digit_time >= window_start_time && digit_time <= (window_start_time + ndigitsWindow)) {
 	  n_digits++;
@@ -261,7 +261,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
       triggertime -= (int)triggertime % 5;
       TriggerTimes.push_back(triggertime);
       TriggerTypes.push_back(this_triggerType);
-      TriggerInfos.push_back(std::vector<Float_t>(1, n_digits));
+      TriggerInfos.push_back(std::vector<Double_t>(1, n_digits));
       triggerfound = true;
     }
 
@@ -322,7 +322,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       return;
     TriggerTypes.push_back(kTriggerFailure);
     TriggerTimes.push_back(saveFailuresTime);
-    TriggerInfos.push_back(std::vector<Float_t>(1, -1));
+    TriggerInfos.push_back(std::vector<Double_t>(1, -1));
     save_triggerType = kTriggerFailure;
   }
 
@@ -335,15 +335,15 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     //check if we've already saved this trigger
     if(triggertype != save_triggerType && save_triggerType != kTriggerUndefined)
       continue;
-    float         triggertime = TriggerTimes[itrigger];
-    std::vector<Float_t> triggerinfo = TriggerInfos[itrigger];
+    double         triggertime = TriggerTimes[itrigger];
+    std::vector<Double_t> triggerinfo = TriggerInfos[itrigger];
 
     //these are the boundary of the trigger gate: we want to add all digits within these bounds to the output collection
-    float lowerbound = triggertime + GetPreTriggerWindow(triggertype);
-    float upperbound = triggertime + GetPostTriggerWindow(triggertype);
+    double lowerbound = triggertime + GetPreTriggerWindow(triggertype);
+    double upperbound = triggertime + GetPostTriggerWindow(triggertype);
     //need to check for double-counting - check if the previous upperbound is above the lowerbound
     if(itrigger) {
-      float upperbound_previous = TriggerTimes[itrigger - 1] + GetPostTriggerWindow(TriggerTypes[itrigger - 1]);
+      double upperbound_previous = TriggerTimes[itrigger - 1] + GetPostTriggerWindow(TriggerTypes[itrigger - 1]);
       if(upperbound_previous > lowerbound) {
 	//also need to check whether the previous upperbound is above the lowerbound
 	//(different trigger windows for different trigger types can mean this trigger is completely contained within another)
@@ -359,7 +359,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 	   << " in time range [" << lowerbound << ", " << upperbound << "]"
 	   << " with trigger time " << triggertime
 	   << " and additional trigger info";
-    for(std::vector<Float_t>::iterator it = triggerinfo.begin(); it != triggerinfo.end(); ++it)
+    for(std::vector<Double_t>::iterator it = triggerinfo.begin(); it != triggerinfo.end(); ++it)
       G4cout << " " << *it;
     G4cout << G4endl;
 #endif
@@ -369,13 +369,13 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       int tube=(*WCDCPMT)[i]->GetTubeID();
       //loop over digits in this PMT
       for ( G4int ip = 0; ip < (*WCDCPMT)[i]->GetTotalPe(); ip++){
-	G4float digit_time  = (*WCDCPMT)[i]->GetTime(ip);
+	G4double digit_time  = (*WCDCPMT)[i]->GetTime(ip);
 	if(digit_time >= lowerbound && digit_time <= upperbound) {
 	  //hit in event window
 	  //add it to DigitsCollection
 
 	  //first apply time offsets
-	  float peSmeared = (*WCDCPMT)[i]->GetPe(ip);
+	  double peSmeared = (*WCDCPMT)[i]->GetPe(ip);
 	  G4double digihittime = digit_time;
       if( triggertype != kTriggerNoTrig )
         digihittime += -triggertime + WCSimWCTriggerBase::offset;
@@ -436,7 +436,7 @@ void WCSimWCTriggerBase::AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool rem
 
   //Does not doanything, just writes out all hits
   TriggerType_t this_triggerType = kTriggerNoTrig;
-  std::vector<Float_t> triggerinfo;
+  std::vector<Double_t> triggerinfo;
   Int_t Ndigits=0;
   for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
     Ndigits += (*WCDCPMT)[i]->GetTotalPe();
@@ -514,8 +514,8 @@ void WCSimWCDigiTrigger::Print()
   G4cout << "TubeID: " << tubeID
          << ", Number of Gates: " << NumberOfGates()
 	 << G4endl;
-  std::multimap<int,float>::iterator it_pe   = pe.begin();
-  std::multimap<int,float>::iterator it_time = time.begin();
+  std::multimap<int,double>::iterator it_pe   = pe.begin();
+  std::multimap<int,double>::iterator it_time = time.begin();
   for( ; it_pe != pe.end(), it_time != time.end(); ++it_pe, ++it_time) {
     if(it_pe->first != it_time->first) {
       G4cerr << "WCSimWCDigiTrigger::Print() pe and time gate counters disagree!" << G4endl;

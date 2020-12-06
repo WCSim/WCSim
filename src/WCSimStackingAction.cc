@@ -38,9 +38,9 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
 	  ( aTrack->GetCreatorProcess() != NULL && 
 	    ((G4VProcess*)(aTrack->GetCreatorProcess()))->GetProcessType() != fOptical) ) {
 	
-	G4float photonWavelength = (2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/eV);
-	G4float ratio = 1./(1.0-0.25);
-	G4float wavelengthQE = 0;
+	G4double photonWavelength = (2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/eV);
+	G4double ratio = 1./(1.0-0.25);
+	G4double wavelengthQE = 0;
 	
 	// MF : translated from skdetsim : better to increase the number of photons
 	// than to throw in a global factor  at Digitization time !
