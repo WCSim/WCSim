@@ -188,7 +188,7 @@
 #/gps/ene/min 200 MeV
 #/gps/ene/max 1000 MeV
 
-#/random/setSeeds 1225 1500
+#/WCSim/random/seed 1869336558
 
 # Or you can use the laser option
 # This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
