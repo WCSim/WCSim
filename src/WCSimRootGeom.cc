@@ -97,7 +97,7 @@ WCSimRootPMT::WCSimRootPMT(const WCSimRootPMT & in)
 {
   fTubeNo = in.GetTubeNo();
   fCylLoc = in.GetCylLoc();
-  fmPMT_PMTNo = in.GetmPMTNo();
+  fmPMTNo = in.GetmPMTNo();
   fmPMT_PMTNo = in.GetmPMT_PMTNo();
   for(int i = 0; i < 3; i++) {
     fOrientation[i] = in.GetOrientation(i);
