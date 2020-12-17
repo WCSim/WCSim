@@ -13,8 +13,8 @@
 /WCSim/HyperKOD/ODHeightWaterDepth 2 m
 /WCSim/HyperKOD/ODDeadSpace 600 mm
 /WCSim/HyperKOD/ODTyvekSheetThickness 1 mm
-/WCSim/HyperKOD/ODWLSPlatesThickness 1 cm
-/WCSim/HyperKOD/ODWLSPlatesLength 60 cm
+/WCSim/HyperKOD/ODWLSPlatesThickness 0.6 cm
+/WCSim/HyperKOD/ODWLSPlatesLength 30 cm
 /WCSim/HyperKOD/PMTODperCellHorizontal 0
 /WCSim/HyperKOD/PMTODperCellVertical 0
 /WCSim/HyperKOD/PMTODPercentCoverage 0.28
@@ -112,12 +112,12 @@
 /gps/pos/rot1 0 1 0
 /gps/pos/rot2 0 0 1
 /gps/pos/centre -50 0 0 m
-/gps/pos/halfx 1 m
-/gps/pos/halfy 1 m
+/gps/pos/halfx 10 m
+/gps/pos/halfy 10 m
 /gps/direction 1 0 0
 /gps/ene/type Gauss
-/gps/ene/mono 1 GeV
-/gps/ene/sigma 100 MeV
+/gps/ene/mono 600 MeV
+/gps/ene/sigma 1 MeV
 
 
 
