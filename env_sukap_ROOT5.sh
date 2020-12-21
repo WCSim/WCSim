@@ -9,8 +9,7 @@
 export ROOT_DIR=/home/pronost/software/root-5.34.38-build
 # Note: There is no official ROOT 6 installation 
 #  Temporary use Guillaume Pronost's version. Should change in the future.
-#  WARNING: This version is quite slow currently, investigation on-going
-#export ROOT_DIR=/home/pronost/software/root6-build
+#export ROOT_DIR=/home/pronost/software/root-6.22.00-build
 source ${ROOT_DIR}/bin/thisroot.sh
 
 alias root='root -l'
