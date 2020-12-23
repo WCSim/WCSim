@@ -100,6 +100,13 @@ target_link_libraries(WCSimRoot  ${ROOT_LIBRARIES})
 add_custom_command(TARGET WCSimRoot
 		POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/libWCSimRoot.so 	${CMAKE_CURRENT_BINARY_DIR}/libWCSimRootDict.so)
+		
+if ( ${ROOT_VERSION} LESS 6 )
+	# Create Rootmap (not automatically done for ROOT5)
+	add_custom_command(TARGET WCSimRoot
+		POST_BUILD
+		COMMAND rlibmap -o ${CMAKE_CURRENT_BINARY_DIR}/libWCSimRoot.rootmap -l ${CMAKE_CURRENT_BINARY_DIR}/libWCSimRoot.so -c ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootLinkDef.hh)
+endif()
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
