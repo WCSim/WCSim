@@ -29,8 +29,8 @@ fi
 
 
 if [ -d ${build_directory} ]; then
-	make clean
-	make -j7
-	
-	cd ${wcsim_directory}
+    make clean
+    make -j7
+    
+    cd ${wcsim_directory}
 fi	

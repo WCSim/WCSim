@@ -223,8 +223,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // ----------------------------------------------------------------------
 
   G4int         event_id = evt->GetEventID();
-  //G4int         mode     = generatorAction->GetMode();
-  InteractionType_t mode     = generatorAction->GetMode();
+  G4int         mode     = generatorAction->GetMode();
+  //InteractionType_t mode     = generatorAction->GetMode();
   G4ThreeVector vtx      = generatorAction->GetVtx();
   G4int         vtxvol   = WCSimEventFindStartingVolume(vtx);
   G4int         vecRecNumber = generatorAction->GetVecRecNumber();
