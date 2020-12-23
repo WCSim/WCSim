@@ -870,7 +870,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	wcsimrootsuperevent->AddSubEvent();
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
 	wcsimrootevent->SetHeader(event_id,0,
-				   0,index+1); // date & # of subevent 
+				   0,index+1); // date & # of subevent
 	wcsimrootevent->SetMode(jhfNtuple.mode);
       }
       //wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
