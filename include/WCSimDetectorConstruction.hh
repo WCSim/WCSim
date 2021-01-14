@@ -242,7 +242,7 @@ private:
 
   // The Construction routines
   G4LogicalVolume*   ConstructCylinder();
-  G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank",bool WLS=false);
   G4LogicalVolume* ConstructPMTAndWLSPlate(G4String,G4String,G4String detectorElement="OD");
 
   G4LogicalVolume* ConstructCaps(G4int zflip);

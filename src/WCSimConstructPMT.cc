@@ -24,7 +24,7 @@
 
 WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes;
 
-G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName, G4String detectorElement)
+G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName, G4String detectorElement,bool WLS)
 {
   PMTKey_t key(PMTName,CollectionName);
 
@@ -65,6 +65,26 @@ else
   G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
   G4double PMTOffset =  sphereRadius - expose;
 
+  //Need a volume to cut away excess behind blacksheet
+  G4Box* solidCutOffTubs =
+      new G4Box(    "cutOffTubs",
+            sphereRadius+1.*cm,
+            sphereRadius+1.*cm,
+            PMTOffset);
+
+
+  G4Sphere* tmp_PMT_holder =
+      new G4Sphere(    "tmp_PMT_holder",
+                       0.,
+                       sphereRadius,
+                       0.0*deg,360.0*deg,
+                       0.0*deg,90.0*deg);
+  
+  G4SubtractionSolid* PMT_holder =
+      new G4SubtractionSolid(    "WCPMT",
+                                 tmp_PMT_holder,
+                                 solidCutOffTubs); 
+
   //All components of the PMT are now contained in a single logical volume logicWCPMT.
   //Origin is on the blacksheet, faces positive z-direction.
   
@@ -82,11 +102,23 @@ else
                   PMTHolderR);// R Outer
 
 
-  G4LogicalVolume* logicWCPMT =
-    new G4LogicalVolume(    solidWCPMT,
-                            G4Material::GetMaterial("Water"),
-                            "WCPMT",
-                            0,0,0);
+  G4LogicalVolume* logicWCPMT;
+
+  double PMTTranslation = 0.;
+  if( WLS ){
+    logicWCPMT = new G4LogicalVolume(    PMT_holder,
+					 G4Material::GetMaterial("Water"),
+					 "WCPMT",
+					 0,0,0);
+  }else{
+    logicWCPMT = new G4LogicalVolume(    solidWCPMT,
+					 G4Material::GetMaterial("Water"),
+					 "WCPMT",
+					 0,0,0);
+    PMTTranslation = PMTOffset;
+  }
+
+
 
 if (Vis_Choice == "RayTracer"){
 // Makes the volume containing the PMT visible, solid, and forces the auxiliary edges to be viewed.
@@ -99,13 +131,6 @@ if (Vis_Choice == "RayTracer"){
 else{
 // Makes the volume containg the PMT invisible for normal visualization
     logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);}
-
-  //Need a volume to cut away excess behind blacksheet
-  G4Box* solidCutOffTubs =
-      new G4Box(    "cutOffTubs",
-            sphereRadius+1.*cm,
-            sphereRadius+1.*cm,
-            PMTOffset);
 
 
   //Create PMT Interior
@@ -130,7 +155,7 @@ else{
 
   G4VPhysicalVolume* physiInteriorWCPMT =
       new G4PVPlacement(0,
-                  G4ThreeVector(0, 0, -1.0*PMTOffset),
+                  G4ThreeVector(0, 0, -1.0*PMTTranslation),
                   logicInteriorWCPMT,
                   "InteriorWCPMT",
                   logicWCPMT,
@@ -172,7 +197,7 @@ else {
 
   G4VPhysicalVolume* physiGlassFaceWCPMT =
       new G4PVPlacement(0,
-                        G4ThreeVector(0, 0, -1.0*PMTOffset),
+                        G4ThreeVector(0, 0, -1.0*PMTTranslation),
                         logicGlassFaceWCPMT,
                         CollectionName,
                         logicWCPMT,
@@ -386,7 +411,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
 
   ////////////////////////////////////////////////
   // PMTs
-  G4LogicalVolume* logicWCPMT = ConstructPMT(PMTName,CollectionName,detectorElement);
+  G4LogicalVolume* logicWCPMT = ConstructPMT(PMTName,CollectionName,detectorElement,true);
 
   ////////////////////////////////////////////////
   // Ali G. : Do dat placement inda box
@@ -417,7 +442,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
 
   G4VPhysicalVolume* physiPMT =
       new G4PVPlacement(0,
-                        G4ThreeVector(0, 0, 0),
+                        G4ThreeVector(0, 0, -1.0*PMTOffset),
                         logicWCPMT,
                         "WCPMTOD",
                         logicContainer,
