@@ -268,7 +268,9 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
       (*hitsCollection)[i]->Print();
 
     //Added by B. Quilain for the hybrid version
-    if (fdet->GetHybridPMT()) { //TD 2019/07/13
+    G4cout<<"Tube hit list finalized"<<G4endl;
+    G4cout<<"Geometry is hybrid = "<<fdet->GetHybridPMT()<<G4endl;
+    if (fdet->GetHybridPMT()) { //TD fdet->2019/07/13
       G4String WCIDCollectionName2 = fdet->GetIDCollectionName2();
       G4int collectionID2 = SDman->GetCollectionID(WCIDCollectionName2);
       hitsCollection2 = (WCSimWCHitsCollection*)HCE->GetHC(collectionID2);

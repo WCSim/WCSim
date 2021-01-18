@@ -164,7 +164,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	      vtx = G4ThreeVector(atof(token[1])*cm,
 				  atof(token[2])*cm,
 				  atof(token[3])*cm);
-	    
+
 	      // true : Generate vertex in Rock , false : Generate vertex in WC tank
 	      SetGenerateVertexInRock(false);
 
@@ -181,15 +181,23 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 	      // Now read the target line
 
-	      token=readInLine(inputFile, lineSize, inBuf);
-	      targetpdg = atoi(token[1]);
-	      targetenergy = atof(token[2])*MeV;
-	      targetdir = G4ThreeVector(atof(token[3]),
-					atof(token[4]),
-					atof(token[5]));
+	      G4cout << "Neutrino generated is = "<< beampdg<<", Enu = " << beamenergy << " and interacts through mode = " << mode << G4endl;
+	      
+	      //B.Q: there can be some cases (2p2h i.e. neut mode = 2) where there are 2 targets. The while loop is added for this purpose.
+	      while ( token=readInLine(inputFile, lineSize, inBuf),
+		      token[0] == "track" )
+		{
+		  //token=readInLine(inputFile, lineSize, inBuf);
+		  targetpdg = atoi(token[1]);
+		  targetenergy = atof(token[2])*MeV;
+		  targetdir = G4ThreeVector(atof(token[3]),
+					    atof(token[4]),
+					    atof(token[5]));
+		  G4cout << "Target hit is = "<< targetpdg <<", E = " << targetenergy << G4endl;
+		}		  
 
-	      // Read the info line, basically a dummy
-	      token=readInLine(inputFile, lineSize, inBuf);
+	      // Read the info line, basically a dummy. B.Q : read in the last exiting step of the while loop above.
+	      //token=readInLine(inputFile, lineSize, inBuf);
 	      G4cout << "Vector File Record Number " << token[2] << G4endl;
 	      vecRecNumber = atoi(token[2]);
 	    
@@ -218,7 +226,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 			particleGun->GetParticleDefinition()->GetPDGMass();
 
 		      G4double ekin = energy - mass;
-
+		      G4cout << "Generating particle = "<< pdgid << ", E = " << energy << " MeV, Ec = " << ekin <<  " MeV, and dir = " << dir[0] << ", " << dir[1] << ", " << dir[2] << G4endl;	    
 		      particleGun->SetParticleEnergy(ekin);
 		      //G4cout << "Particle: " << pdgid << " KE: " << ekin << G4endl;
 		      particleGun->SetParticlePosition(vtx);
