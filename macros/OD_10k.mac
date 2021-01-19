@@ -5,7 +5,7 @@
 /hits/verbose 0
 
 # HyperK
-/WCSim/WCgeom HyperKWithOD_10k
+/WCSim/WCgeom HyperKWithOD
 
 # HyperK Outer Detector
 /WCSim/HyperKOD/PMTODRadius 3inch
@@ -15,9 +15,9 @@
 /WCSim/HyperKOD/ODTyvekSheetThickness 1 mm
 /WCSim/HyperKOD/ODWLSPlatesThickness 0.6 cm
 /WCSim/HyperKOD/ODWLSPlatesLength 30 cm
-/WCSim/HyperKOD/PMTODperCellHorizontal 3
-/WCSim/HyperKOD/PMTODperCellVertical 2
-/WCSim/HyperKOD/PMTODPercentCoverage 0.42
+/WCSim/HyperKOD/PMTODperCellHorizontal 0
+/WCSim/HyperKOD/PMTODperCellVertical 0
+/WCSim/HyperKOD/PMTODPercentCoverage 0.22
 /WCSim/HyperKOD/ODPMTShift 0 m
 #/WCSim/HyperKOD/DeactivateWLS
 /WCSim/HyperKOD/BuildCladding
