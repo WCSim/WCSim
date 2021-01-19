@@ -13,6 +13,8 @@
 #include "G4OpticalSurface.hh"
 #include "globals.hh"
 
+#include "G4SubtractionSolid.hh"
+
 #include <fstream>
 #include <map>
 #include <vector>
@@ -76,6 +78,7 @@ public:
   void Cylinder_12inchHPD_15perCent();
   void SetHyperKGeometry();
   void SetHyperKWithODGeometry();
+  void SetHyperKWithOD_10kGeometry();
   void UpdateGeometry();
   void UpdateODGeo();
 
@@ -197,6 +200,7 @@ public:
   void SetWCODPMTShift(G4double val){WCODPMTShift = val;}
   void SetODEdited(G4bool val){odEdited = val;}
   void SetIsWLSFilled(G4bool val){isWLSFilled = val;}
+  void SetBuildCladding(G4bool val){BuildCladding = val;}
   G4bool GetODEdited(){return odEdited;}
 
   ////////// END OD /////////////
@@ -238,7 +242,7 @@ private:
 
   // The Construction routines
   G4LogicalVolume*   ConstructCylinder();
-  G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank",bool WLS=false);
   G4LogicalVolume* ConstructPMTAndWLSPlate(G4String,G4String,G4String detectorElement="OD");
 
   G4LogicalVolume* ConstructCaps(G4int zflip);
@@ -411,6 +415,7 @@ private:
 
   // WLS material name
   bool isWLSFilled;
+  bool BuildCladding;
 
   // ############################# //
   // # *** END OD Parameters *** # //
@@ -540,3 +545,5 @@ private:
 
 #endif
 
+
+//  LocalWords:  val

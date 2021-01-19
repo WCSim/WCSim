@@ -5,7 +5,7 @@
 /hits/verbose 0
 
 # HyperK
-/WCSim/WCgeom HyperKWithOD
+/WCSim/WCgeom HyperKWithOD_10k
 
 # HyperK Outer Detector
 /WCSim/HyperKOD/PMTODRadius 3inch
@@ -13,11 +13,11 @@
 /WCSim/HyperKOD/ODHeightWaterDepth 2 m
 /WCSim/HyperKOD/ODDeadSpace 600 mm
 /WCSim/HyperKOD/ODTyvekSheetThickness 1 mm
-/WCSim/HyperKOD/ODWLSPlatesThickness 0.6 cm
-/WCSim/HyperKOD/ODWLSPlatesLength 30 cm
-/WCSim/HyperKOD/PMTODperCellHorizontal 0
-/WCSim/HyperKOD/PMTODperCellVertical 0
-/WCSim/HyperKOD/PMTODPercentCoverage 0.28
+/WCSim/HyperKOD/ODWLSPlatesThickness 1 cm
+/WCSim/HyperKOD/ODWLSPlatesLength 60 cm
+/WCSim/HyperKOD/PMTODperCellHorizontal 3
+/WCSim/HyperKOD/PMTODperCellVertical 2
+/WCSim/HyperKOD/PMTODPercentCoverage 0.42
 /WCSim/HyperKOD/ODPMTShift 0 m
 #/WCSim/HyperKOD/DeactivateWLS
 /WCSim/HyperKOD/BuildCladding
@@ -112,18 +112,18 @@
 /gps/pos/rot1 0 1 0
 /gps/pos/rot2 0 0 1
 /gps/pos/centre -50 0 0 m
-/gps/pos/halfx 10 m
-/gps/pos/halfy 10 m
+/gps/pos/halfx 1 m
+/gps/pos/halfy 1 m
 /gps/direction 1 0 0
 /gps/ene/type Gauss
-/gps/ene/mono 600 MeV
-/gps/ene/sigma 1 MeV
+/gps/ene/mono 1 GeV
+/gps/ene/sigma 100 MeV
 
 
 
 ## change the name of the output root file, default = wcsim.root
 
-/WCSimIO/RootFile wcsim_13k_OD_PMTs_no_ID_no_dark_noise_horizontal_muon.root
+/WCSimIO/RootFile wcsim_10k_OD_PMTs_no_ID_no_dark_noise_horizontal_muon.root
 
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false

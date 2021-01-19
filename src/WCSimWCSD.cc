@@ -160,17 +160,16 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   if (fdet->GetPMT_QE_Method() == 1 || fdet->GetPMT_QE_Method() == 4){
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
-    // maxQE = fdet->GetPMTQE(WCIDCollectionName,wavelength,0,240,660,ratio);
-    maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,240,660,ratio);
-    photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
+    // maxQE = fdet->GetPMTQE(WCIDCollectionName,wavelength,0,200,700,ratio);
+    maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,200,700,ratio);
+    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,200,700,ratio);
     photonQE = photonQE/maxQE;
   }else if (fdet->GetPMT_QE_Method() == 3){
     ratio = 1./(1.-0.25);
-    photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
+    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,200,700,ratio);
   }
   
   
-
   if (G4UniformRand() <= photonQE){
     
      G4double local_x = localPosition.x();
@@ -178,6 +177,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      G4double local_z = localPosition.z();
      theta_angle = acos(fabs(local_z)/sqrt(pow(local_x,2)+pow(local_y,2)+pow(local_z,2)))/3.1415926*180.;
      effectiveAngularEfficiency = fdet->GetPMTCollectionEfficiency(theta_angle, volumeName);
+
      if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0){
        //Retrieve the pointer to the appropriate hit collection. Since volumeName is the same as the SD name, this works. 
        G4SDManager* SDman = G4SDManager::GetSDMpointer();

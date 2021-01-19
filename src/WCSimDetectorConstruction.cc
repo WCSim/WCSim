@@ -300,7 +300,12 @@ void WCSimDetectorConstruction::UpdateODGeo()
   WCODDiameter = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
 
   WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
-  WCODCapEdgeLimit = WCIDDiameter/2.0 - WCPMTODRadius;
+  WCODCapEdgeLimit = std::min(WCIDDiameter/2.0 - WCPMTODRadius, WCIDDiameter/2.0 - WCODWLSPlatesLength/2);
+
+  std::vector<G4String> WCColName;
+  WCColName.push_back(WCIDCollectionName);
+  WCColName.push_back(WCODCollectionName);
+  CreateCombinedPMTQE(WCColName);
 }
 
 void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> CollectionName){
@@ -320,6 +325,7 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> Collec
 
   // Recover QE for collection name
   std::vector<WCSimPMTObject*> PMT;
+  // F. Nova: here get values from BoxandLine20inchHQE and from PMT8inch
   for(unsigned int iPMT=0;iPMT<CollectionName.size();iPMT++){
     // Access PMT pointer
     PMT.push_back(GetPMTPointer(CollectionName[iPMT]));
@@ -346,6 +352,9 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> Collec
   std::map<G4float,G4float> QE;
 
   // Recursive algorithm to set new QE for combined PMT collection
+  // F. Nova: define QE for a given wavelength as sqrt(QE1^2 + QE2^2 + ...), where each QEi is the value of QE for PMT type i
+  // replace it with maximum
+  G4float max_QE = 0.;
   G4cout << G4endl;
   for(unsigned int iCol=0; iCol<QEMap.size();iCol++){
     for(std::map<G4float, G4float>::iterator it=QEMap[iCol].begin(); it!=QEMap[iCol].end(); ++it){
@@ -357,9 +366,11 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> Collec
           G4cout << " ### " << it->first << "nm : " << it->second << G4endl;
           QE[it->first]=it->second;
         } else {
+	  //	  max_QE = sqrt(it->second*it->second + foundWL->second*foundWL->second);
+	  max_QE = std::max(it->second, foundWL->second);
           G4cout << "New QE defined for " << it->first << "nm is "
-                 << sqrt(it->second*it->second + foundWL->second*foundWL->second) << G4endl;
-          QE[it->first]=sqrt(it->second*it->second + foundWL->second*foundWL->second);
+                 << max_QE << G4endl;
+          QE[it->first]=max_QE;
         }
       } else {
         break;
