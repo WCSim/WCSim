@@ -247,10 +247,10 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCIDHeight            = 67.8*m; // = 73m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCBorderPMTOffset     = 0.25*m; // PMT offset in border cells. Also makes distance between PMTs shorter.
-  WCPMTperCellHorizontal= 4;
-  WCPMTperCellVertical  = 3;
+  WCPMTperCellHorizontal= 8;
+  WCPMTperCellVertical  = 6;
   WCPMTPercentCoverage  = 40.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNumPMTHorizontal = 288;
   WCBarrelNRings =
       round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));
   WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts

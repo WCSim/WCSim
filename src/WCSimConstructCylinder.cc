@@ -993,18 +993,28 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
     // COMPUTE OD COVERAGE //
     // ------------------- //
     G4double AreaRingOD = WCBarrelRingNPhi * barrelODCellWidth * barrelODCellHeight;
+    G4double AreaCellOD = barrelODCellWidth * barrelODCellHeight;
     G4double AreaPMTOD = 3.1415*std::pow(WCPMTODRadius,2);
     G4double NPMTODCovered = (AreaRingOD/AreaPMTOD) * WCPMTODPercentCoverage/100.;
+    G4double NPMTODByCellFull = NPMTODCovered/WCBarrelRingNPhi; // NPMT required par cell to achieve ODPercentOverage
     G4double NPMTODByCell = round(NPMTODCovered/WCBarrelRingNPhi); // NPMT required par cell to achieve ODPercentOverage
-
+    G4double RealODCoverage = NPMTODByCell*AreaPMTOD/AreaCellOD;
     // ------ DEBUG ------ //
     G4cout << G4endl;
     G4cout << "AreaRingOD : " << AreaRingOD/m2 << " (m2)" << G4endl;
+    G4cout << "AreaCellOD : " << AreaCellOD/m2 << " (m2)" << G4endl;
     G4cout << "AreaPMTOD : " << AreaPMTOD/m2 << " (m2)" << G4endl;
     G4cout << "--> NbPMTODCovered : " << NPMTODCovered << G4endl;
+    G4cout << "--> NbPMTODByCellFull : " << NPMTODByCellFull << G4endl;
     G4cout << "--> NbPMTODByCell : " << NPMTODByCell << G4endl;
+    G4cout << "--> SuggestedODCoverage : " <<  WCPMTODPercentCoverage/100. << G4endl;
+    G4cout << "--> RealODCoverage : " << RealODCoverage << G4endl;
     G4cout << G4endl;
     // ------------------- //
+    // The number of PMTs per cell gives a slightly different coverage so the photocoverage
+    // parameter must be changed here so the endcaps will have the same photocoverage as the barrel.
+    WCPMTODPercentCoverage = RealODCoverage*100;
+    WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
 
     if((G4int)WCPMTODperCellHorizontal == 0 && (G4int)WCPMTODperCellVertical == 0){
       ComputeWCODPMT((G4int)NPMTODByCell,&WCPMTODperCellHorizontal,&WCPMTODperCellVertical);
