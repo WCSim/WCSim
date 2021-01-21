@@ -28,7 +28,7 @@
 #ifndef WCSIMWCTRIGGER_VERBOSE
 //#define WCSIMWCTRIGGER_VERBOSE
 #endif
-
+//#define DEBUG
 const double WCSimWCTriggerBase::offset = 950.0; // ns. apply offset to the digit time
 const double WCSimWCTriggerBase::LongTime = 2E6; // ns = 2ms. event time
 
@@ -187,6 +187,9 @@ void WCSimWCTriggerBase::Digitize()
   WCSimWCDigitsCollection* WCDCPMT = 
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCDCID));
 
+#ifdef DEBUG
+  G4cout << "Do the trigger work" << G4endl;
+#endif
   // Do the work  
   if (WCDCPMT) {
     DoTheWork(WCDCPMT);
@@ -211,9 +214,9 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
   //loop over PMTs, and Digits in each PMT.  If ndigits > Threshhold in a time window, then we have a trigger
 
   int ntrig = 0;
-  int window_start_time = 0;
-  int window_end_time   = WCSimWCTriggerBase::LongTime - ndigitsWindow;
-  int window_step_size  = 5; //step the search window along this amount if no trigger is found
+  double window_start_time = 0;
+  double window_end_time   = WCSimWCTriggerBase::LongTime - ndigitsWindow;
+  double window_step_size  = 5.; //step the search window along this amount if no trigger is found
   double lasthit;
   std::vector<G4double> digit_times;
   bool first_loop = true;
@@ -247,8 +250,16 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
 	}
 	//G4cout << digit_time << G4endl;
 	//get the time of the last hit (to make the loop shorter)
-	if(first_loop && (digit_time > lasthit))
-	  lasthit = digit_time;
+	if(first_loop && (digit_time > lasthit)){
+	  //Added by B.Q to avoid hits generated very late (e.g. because G4 photon is blocked somewhere and suddently escape very late):
+	  if(digit_time < WCSimWCTriggerBase::LongTime){ 
+	    lasthit = digit_time;
+	  }
+	  //
+#ifdef DEBUG
+	  G4cout << "Tube = " << (*WCDCPMT)[i]->GetTubeID() << ", Last hit = "<< i << ", number of p.e. = " << ip << ", timing = " << digit_time << G4endl;
+#endif
+	  }
       }//loop over Digits
     }//loop over PMTs
 
@@ -288,9 +299,14 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
 	     << " to " << lasthit - (ndigitsWindow - 10)
 	     << G4endl;
 #endif
+      //double new_end_time = lasthit - (ndigitsWindow - 10);
       window_end_time = lasthit - (ndigitsWindow - 10);
+      //
       first_loop = false;
     }
+#ifdef DEBUG
+    G4cout << "Window start time = " << window_start_time << " end time = "<< window_end_time <<G4endl;
+#endif
   }
   
 #ifdef WCSIMWCTRIGGER_VERBOSE
@@ -549,6 +565,9 @@ WCSimWCTriggerNDigits::~WCSimWCTriggerNDigits()
 }
 
 void WCSimWCTriggerNDigits::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
+#ifdef DEBUG
+  G4cout << "In do the trigger work, will launch Alg NDigitis" << G4endl;
+#endif
   //Apply an NDigits trigger
   bool remove_hits = false;
   AlgNDigits(WCDCPMT, remove_hits);

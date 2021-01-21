@@ -57,7 +57,7 @@
 #define NPMTS_VERBOSE 10
 #endif
 //#define DEBUG
-
+//
 WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun, 
 				   WCSimDetectorConstruction* myDetector, 
 				   WCSimPrimaryGeneratorAction* myGenerator)
@@ -239,16 +239,24 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   G4HCofThisEvent* HCE         = evt->GetHCofThisEvent();
   WCSimWCHitsCollection* WCHC = 0;
   G4String WCIDCollectionName = detectorConstructor->GetIDCollectionName();
+#ifdef DEBUG
+  G4cout << "Load the first PMT type hits" << G4endl;
+#endif
   if (HCE)
   { 
     G4String name =   WCIDCollectionName;
     G4int collectionID = SDman->GetCollectionID(name);
     WCHC = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
   }
+
   //B.Q for the hybrid version
   WCSimWCHitsCollection* WCHC2 = 0;
   G4String WCIDCollectionName2;
   if(detectorConstructor->GetHybridPMT()) WCIDCollectionName2 = detectorConstructor->GetIDCollectionName2();
+#ifdef DEBUG
+  G4cout << "Load the second PMT type hits" << G4endl;
+#endif
+
   if (HCE)
     { 
       G4String name;
@@ -353,6 +361,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   ms->Start();
 #endif
 
+#ifdef DEBUG
+  G4cout << "Convert separated hits in one PMT to a single hit for first PMT type" << std::endl;
+#endif
   //Convert the hits to PMT pulse
   WCDMPMT->SetRelativeDigitizedHitTime(RelativeHitTime);
   WCDMPMT->Digitize();
@@ -370,6 +381,10 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
   //WCDNM->SetDarkMode(1);
 
+#ifdef DEBUG
+  G4cout << "Add Dark Hits first PMT" << std::endl;
+#endif
+
   //Add the dark noise
   WCDNM->AddDarkNoise();
 
@@ -380,23 +395,35 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   WCSimWCDigitizerBase* WCDM =
     (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadoutDigits");
 
+#ifdef DEBUG
+  G4cout << "Digitize hits first PMT" << std::endl;
+#endif
   //Digitize the hits
   WCDM->Digitize();
 
   //
   // Finally, apply the trigger
   
+#ifdef DEBUG
+  G4cout << "Trigger for first PMT type" << std::endl;
+#endif
   //Get a pointer to the WC Trigger Module
   WCSimWCTriggerBase* WCTM =
     (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout");
   
   //tell it the dark noise rate (for calculating the average dark occupancy -> can adjust the NDigits threshold)
   WCTM->SetDarkRate(WCDNM->GetDarkRate());
+#ifdef DEBUG
+  G4cout << "B.Q" << std::endl;
+#endif
   
   //Apply the trigger
   // This takes the digits, and places them into trigger gates
   // Also throws away digits not contained in an trigger gate
   WCTM->Digitize();
+#ifdef DEBUG
+  G4cout << "Trigger for first PMT type is over" << std::endl;
+#endif
 
 #ifdef TIME_DAQ_STEPS
   ms->Stop();

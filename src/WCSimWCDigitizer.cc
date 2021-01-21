@@ -21,9 +21,8 @@
 #include <cstring>
 
 #ifndef NPMTS_VERBOSE
-#define NPMTS_VERBOSE 10
+#define NPMTS_VERBOSE 50000
 #endif
-
 
 // *******************************************
 // BASE CLASS

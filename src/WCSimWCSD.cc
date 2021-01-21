@@ -264,8 +264,10 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
     G4int numHits = hitsCollection->entries();
 
     G4cout << "There are " << numHits << " tubes hit in the WC: " << G4endl;
-    for (G4int i=0; i < numHits; i++) 
+    for (G4int i=0; i < numHits; i++) {
+      G4cout<<"ihit ID = "<<i<<std::endl;
       (*hitsCollection)[i]->Print();
+    }
 
     //Added by B. Quilain for the hybrid version
     G4cout<<"Tube hit list finalized"<<G4endl;
@@ -278,8 +280,10 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
       G4int numHits2 = hitsCollection2->entries();
 
       G4cout << "There are " << numHits2 << " tubes hit in the WC: " << G4endl;
-      for (G4int i=0; i < numHits2; i++) 
+      for (G4int i=0; i < numHits2; i++){
+	G4cout<<"ihit ID = "<<i<<std::endl;
 	(*hitsCollection2)[i]->Print();
+      }
     }
       /*
     {
