@@ -243,8 +243,8 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCPMTName           = PMT->GetPMTName();
   WCPMTExposeHeight   = PMT->GetExposeHeight();
   WCPMTRadius         = PMT->GetRadius();
-  WCIDDiameter          = 65.8*m; // = 69m - 2*(60cm ID wall + 1m OD)
-  WCIDHeight            = 67.8*m; // = 73m - 2*(60cm ID wall + 2m OD)
+  WCIDDiameter          = 64.8*m; // = 68m - 2*(60cm ID wall + 1m OD)(69m with 0.5m concrete each side)
+  WCIDHeight            = 65.8*m; // = 71m - 2*(60cm ID wall + 2m OD)(72m with 0.5m concrete on each side)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCBorderPMTOffset     = 0.25*m; // PMT offset in border cells. Also makes distance between PMTs shorter.
   WCPMTperCellHorizontal= 8;
