@@ -11,6 +11,7 @@
 #include "TClonesArray.h"
 #include <string>
 #include <vector>
+#include "TVector3.h"
 //#include <map>
 //#include "G4Transform3D.hh"
 
@@ -114,15 +115,24 @@ private:
   // See jhfNtuple.h for the meaning of these data members:
   Float_t fTruetime;
   Int_t   fPrimaryParentID;
+  Float_t fPhotonStartTime;
+  Float_t fPhotonStartPos[3];
+  Float_t fPhotonEndPos[3];
 
 public:
   WCSimRootCherenkovHitTime() {}
   WCSimRootCherenkovHitTime(Float_t truetime,
-			    Int_t   primaryParentID);
+			    Int_t   primaryParentID,
+			    Float_t photonStartTime,
+			    Float_t photonStartPos[3],
+			    Float_t photonEndPos[3]);
   virtual ~WCSimRootCherenkovHitTime() { }
 
   Float_t   GetTruetime() { return fTruetime;}
   Int_t     GetParentID() { return fPrimaryParentID;}
+  Float_t   GetPhotonStartTime() { return fPhotonStartTime; }
+  Float_t   GetPhotonStartPos(int i) { return (i<3) ? fPhotonStartPos[i] : 0; }
+  Float_t   GetPhotonEndPos(int i) { return (i<3) ? fPhotonEndPos[i] : 0; }
 
   ClassDef(WCSimRootCherenkovHitTime,1)  
 };
@@ -401,7 +411,10 @@ public:
 					   Int_t                mPMTID,
 					   Int_t                mPMT_PMTID,
 					  std::vector<Float_t> truetime,
-					  std::vector<Int_t>   primParID);
+					  std::vector<Int_t>   primParID,
+					  std::vector<Float_t>   photonStartTime,
+					  std::vector<TVector3>   photonStartPos,
+					  std::vector<TVector3>   photonEndPos);
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
 
