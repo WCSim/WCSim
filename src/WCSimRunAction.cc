@@ -85,7 +85,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     fSettingsOutputTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/D");
 #ifdef GIT_HASH
     const char* gitHash = GIT_HASH;
-    fSettingsOutputTree->Branch("GitHash", (void*)gitHash, "GetHash/C");
+    fSettingsOutputTree->Branch("GitHash", (void*)gitHash, "GitHash/C");
 #endif
   }      
 
