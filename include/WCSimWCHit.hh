@@ -62,8 +62,10 @@ class WCSimWCHit : public G4VHit
   void SetOrientation  (G4ThreeVector xyz)          { orient = xyz; };
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
-  void AddParentID     (G4int primParentID)
-  { primaryParentID.push_back(primParentID); }
+  void AddParentID     (G4int primParentID) { primaryParentID.push_back(primParentID); }
+  void AddPhotonStartTime (G4float photStartTime) { photonStartTime.push_back(photStartTime); }
+  void AddPhotonStartPos  (const G4ThreeVector &photStartPos) { photonStartPos.push_back(photStartPos); }
+  void AddPhotonEndPos  (const G4ThreeVector &photEndPos) { photonEndPos.push_back(photEndPos); }
 
   // This is temporarily used for the drawing scale
   void SetMaxPe(G4int number = 0)  {maxPe   = number;};
@@ -86,6 +88,9 @@ class WCSimWCHit : public G4VHit
   G4int         GetTotalPe()    { return totalPe;};
   G4float       GetTime(int i)  { return time[i];};
   G4int         GetParentID(int i) { return primaryParentID[i];};
+  G4float       GetPhotonStartTime(int i) { return photonStartTime[i];};
+  G4ThreeVector GetPhotonStartPos(int i) { return photonStartPos[i];};
+  G4ThreeVector GetPhotonEndPos(int i) { return photonEndPos[i];};
   
   G4LogicalVolume* GetLogicalVolume() {return pLogV;};
 
@@ -162,6 +167,9 @@ class WCSimWCHit : public G4VHit
   G4int                 totalPe;
   std::vector<G4float>  time;
   std::vector<G4int>    primaryParentID;
+  std::vector<G4float>  photonStartTime;
+  std::vector<G4ThreeVector> photonStartPos;
+  std::vector<G4ThreeVector> photonEndPos;
   G4int                 totalPeInGate;
 };
 

@@ -85,7 +85,8 @@ else()
     set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++0x")
 endif()
 
-
+# Set flag for git version to be used as c++ preprocessor macro
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGIT_HASH=\"\\\"`git describe --always --long --tags --dirty`\\\"\"")
 
 add_executable(WCSim WCSim.cc ${sources} ${headers})
 target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree)  #add profiler to use gperftools
@@ -104,7 +105,6 @@ set(WCSIM_SCRIPTS
   macros/visOGLSX.mac
   macros/visOGLQT.mac
   macros/visRayTracer.mac
-  # macros/mPMT.mac
   macros/mPMT_nuPrism1.mac
   macros/mPMT_nuPrism2.mac
   macros/tuning_parameters.mac
