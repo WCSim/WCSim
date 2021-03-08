@@ -86,7 +86,7 @@ else()
 endif()
 
 # Set flag for git version to be used as c++ preprocessor macro
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGIT_HASH=\"\\\"`git -C ${PROJECT_SOURCE_DIR} describe --always --long --tags --dirty`\\\"\"")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGIT_HASH=\"\\\"`cd ${PROJECT_SOURCE_DIR};git describe --always --long --tags --dirty`\\\"\"")
 
 add_executable(WCSim WCSim.cc ${sources} ${headers})
 target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree)  #add profiler to use gperftools
