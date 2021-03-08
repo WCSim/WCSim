@@ -6,10 +6,15 @@ libWCSimRoot.so
 make.rootcint.result
 make.result
 make.out.txt
-cmake.out.txt
 bin/
 tmp/
 doxygen/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+WCSim
+cmake_install.cmake
+cmake.out.txt
 
 #ignore run results
 *.root
