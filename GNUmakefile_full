@@ -83,7 +83,7 @@ doxy:
 
 clean_wcsim:
 	echo  $(G4WORKDIR); 
-	$(RM) -r $(G4WORKDIR); $(RM) *.o *.a *.so *~ */*~ src/WCSimRootDict.h src/WCSimRootDict.cxx; 
+	$(RM) -r $(G4WORKDIR); $(RM) *.o *.a *.so *~ */*~ src/WCSimRootDict.*
 	@if [ -d "doc/doxygen" ]; \
 		then \
 		rm -r doc/doxygen; \
