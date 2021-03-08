@@ -58,6 +58,12 @@ $(G4TMPDIR)/%.o: src/%.cc
 	@echo $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $(G4TMPDIR)/$(*F).o $<
 	@$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $(G4TMPDIR)/$(*F).o $<
 
+$(G4TMPDIR)/%.o: src/%.cxx
+	@echo Compiling $*.cxx ...
+	@if [ ! -d $(G4TMPDIR) ] ; then mkdir $(G4TMPDIR) ; echo mkdir $(G4TMPDIR) ;fi
+	@echo $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $(G4TMPDIR)/$(*F).o $<
+	@$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $(G4TMPDIR)/$(*F).o $<
+
 clean :
 	@rm -f $(G4TMPDIR)/*.o
 	@rm -f ./src/WCSimRootDict.*

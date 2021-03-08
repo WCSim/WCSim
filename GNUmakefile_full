@@ -51,7 +51,7 @@ endif
 CPPFLAGS += -DGIT_HASH=\"$(shell git describe --always --long --tags --dirty)\"
 
 .PHONY: all
-all: rootcint lib bin shared libWCSim.a
+all: rootcint shared libWCSim.a lib bin
 
 # Note dependencies not yet set up right yet
 
@@ -90,3 +90,10 @@ clean_wcsim:
 	fi	
 
 include $(G4INSTALL)/config/binmake.gmk
+
+$(G4TMPDIR)/%.o: src/%.cxx
+	@echo Compiling $*.cxx ...
+	@if [ ! -d $(G4TMPDIR) ] ; then echo mkdir -p $(G4TMPDIR) ; mkdir -p $(G4TMPDIR) ; fi
+	@echo $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(OUT_OBJ)$(G4TMPDIR)/$(*F).o src/$*.cxx
+	@$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(OUT_OBJ)$(G4TMPDIR)/$(*F).o src/$*.cxx
+
