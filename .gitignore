@@ -1,11 +1,12 @@
 #ignore build results
-src/WCSimRootDict.cxx
-src/WCSimRootDict.cc
-src/WCSimRootDict.h
+WCSimRootDict.cxx
+WCSimRootDict.h
 libWCSim.a
 libWCSimRoot.so
 make.rootcint.result
 make.result
+make.out.txt
+cmake.out.txt
 bin/
 tmp/
 doxygen/
