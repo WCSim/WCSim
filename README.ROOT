@@ -27,7 +27,7 @@ Root related files:
 ./src/WCSimRootGeom.cc, ./include/WCSimRootGeom.hh
   These are the WCSimRootGeom class files 
 
-./src/WCSimRootDict.cc, ./src/WCSimRootDict.hh
+./WCSimRootDict.cxx, ./WCSimRootDict.h
   These are the Root dictionary files created by rootcint
 (they are not in the repository); they are made by 
 gmake rootcint
