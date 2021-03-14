@@ -43,7 +43,7 @@ ADD_CUSTOM_TARGET(LinkDirectories ALL
 		COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/src 		${CMAKE_CURRENT_BINARY_DIR}/src)
 
 
-## WCSimRootDict.cc regeneration by rootcint
+## WCSimRootDict.cxx regeneration by rootcint
 ## Use ROOT 5.34.32 as some issues with PARSE_ARGUMENTS were found in older ROOT versions (ROOT 5.34.11)
 if ( ${ROOT_VERSION} GREATER_EQUAL 6 )
 	# ROOT6 doesn't accept '/' in target and header names, use include_directories instead 
@@ -60,14 +60,9 @@ if ( ${ROOT_VERSION} GREATER_EQUAL 6 )
 			WCSimRootTools.hh 
 			LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootLinkDef.hh)
 	
-	# Move ROOTDict in src directory
-	ADD_CUSTOM_COMMAND(OUTPUT ./src/WCSimRootDict.cxx
-			COMMAND ${CMAKE_COMMAND} -E copy WCSimRootDict.cxx 		${CMAKE_CURRENT_SOURCE_DIR}/src/WCSimRootDict.cxx 
-			COMMAND ${CMAKE_COMMAND} -E remove WCSimRootDict.cxx
-			MAIN_DEPENDENCY WCSimRootDict.cxx )
 else()
 	# ROOT5 need the full path
-	ROOT_GENERATE_DICTIONARY(${CMAKE_CURRENT_SOURCE_DIR}/src/WCSimRootDict 
+	ROOT_GENERATE_DICTIONARY(WCSimRootDict 
 			${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootEvent.hh 
 			${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootGeom.hh 
 			${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimPmtInfo.hh 
@@ -93,7 +88,7 @@ add_library(WCSimRoot SHARED
 		./src/TJNuBeamFlux.cc 
 		./src/TNRooTrackerVtx.cc 
 		./src/WCSimRootTools.cc 
-		./src/WCSimRootDict.cxx)
+		WCSimRootDict.cxx)
 target_link_libraries(WCSimRoot  ${ROOT_LIBRARIES})
 
 # Create libWCSimRootDict.so (needed for ROOT6)
@@ -148,7 +143,7 @@ else()
 endif()
 
 # Set flag for git version to be used as c++ preprocessor macro
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGIT_HASH=\"\\\"`git describe --always --long --tags --dirty`\\\"\"")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGIT_HASH=\"\\\"`cd ${PROJECT_SOURCE_DIR};git describe --always --long --tags --dirty`\\\"\"")
 
 add_executable(WCSim WCSim.cc ${sources} ${headers})
 target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree)  #add profiler to use gperftools
