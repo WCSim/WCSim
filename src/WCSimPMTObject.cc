@@ -3062,7 +3062,7 @@ G4double* PMT3inchR14374::GetCollectionEfficiencyArray(){
 G4double PMT3inchR14374::GetDarkRate(){
   // Realistic/Optimistic value from published (proceedings) measurements.
   // ToDo : update this value
-  const G4double rate = 100.*CLHEP::hertz;//100*CLHEP::hertz;
+  const G4double rate = 1000.*CLHEP::hertz;//100*CLHEP::hertz;
   return rate;
 }
 
