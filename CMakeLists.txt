@@ -26,7 +26,6 @@ include(${ROOT_USE_FILE})
 # Locate sources and headers for this project
 # ## NOT NEEDED FOR DICT
 include_directories(${PROJECT_SOURCE_DIR}/include 
-                    ${PROJECT_SOURCE_DIR}/../shared/include 
                     ${Geant4_INCLUDE_DIR}
                     ${ROOT_INCLUDE_DIR})
 
