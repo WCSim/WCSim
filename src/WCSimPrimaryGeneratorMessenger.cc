@@ -15,10 +15,10 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   genCmd = new G4UIcmdWithAString("/mygen/generator",this);
   genCmd->SetGuidance("Select primary generator.");
 
-  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, rootracker, radon");
+  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, rootracker, radon, injector");
   genCmd->SetParameterName("generator",true);
   genCmd->SetDefaultValue("muline");
-  genCmd->SetCandidates("muline gun laser gps rootracker radon");
+  genCmd->SetCandidates("muline gun laser gps rootracker radon injector");
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
   fileNameCmd->SetGuidance("Select the file of vectors.");
@@ -43,6 +43,32 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   radioactive_time_window_Cmd->SetGuidance("Select time window for radioactivity");
   radioactive_time_window_Cmd->SetParameterName("radioactive_time_window",true);
   radioactive_time_window_Cmd->SetDefaultValue(0.);
+
+  nPhotonsCmd = new G4UIcmdWithAnInteger("/mygen/injector_nPhotons",this);
+  nPhotonsCmd->SetGuidance("Number of photons emitted for each injector event");
+  nPhotonsCmd->SetParameterName("injector_nPhotons",true);
+  nPhotonsCmd->SetDefaultValue(1);
+
+  injectorOnCmd = new G4UIcmdWithAnInteger("/mygen/injector_on_index",this);
+  injectorOnCmd->SetGuidance("Index of the injector to be turned on");
+  injectorOnCmd->SetParameterName("injector_on_index",true);
+  injectorOnCmd->SetDefaultValue(0.);
+
+  // not really implemented yet, just a placeholder
+  injectorTimeCmd = new G4UIcmdWithADouble("/mygen/injector_time_width",this);
+  injectorTimeCmd->SetGuidance("Injector time width");
+  injectorTimeCmd->SetParameterName("injector_time_width",true);
+  injectorTimeCmd->SetDefaultValue(0.);
+
+  openingAngleCmd = new G4UIcmdWithADouble("/mygen/injector_opening_angle",this);
+  openingAngleCmd->SetGuidance("Opening angle of light injector in deg");
+  openingAngleCmd->SetParameterName("injector_opening_angle",true);
+  openingAngleCmd->SetDefaultValue(0.);
+
+  injectorWavelengthCmd = new G4UIcmdWithADouble("/mygen/injector_wavelength",this);
+  injectorWavelengthCmd->SetGuidance("Wavelength of the injector laser in nm");
+  injectorWavelengthCmd->SetParameterName("injector_wavelength",true);
+  injectorWavelengthCmd->SetDefaultValue(435.);
     
   G4UIparameter* param;
   
@@ -72,6 +98,11 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete radonScalingCmd;
   delete radonGeoSymCmd;
   delete radioactive_time_window_Cmd;
+  delete nPhotonsCmd;
+  delete injectorOnCmd;
+  delete injectorTimeCmd;
+  delete openingAngleCmd;
+  delete injectorWavelengthCmd;
 }
 
 void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
@@ -114,6 +145,16 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLaserEvtGenerator(true);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
+    }
+    else if ( newValue == "injector")   // addition of injector events
+    {
+      myAction->SetMulineEvtGenerator(false);
+      myAction->SetGunEvtGenerator(false);
+      myAction->SetRootrackerEvtGenerator(false);
+      myAction->SetLaserEvtGenerator(false);
+      myAction->SetGPSEvtGenerator(false);
+      myAction->SetRadonEvtGenerator(false);
+      myAction->SetInjectorEvtGenerator(true);
     }
     else if ( newValue == "gps")
     {
@@ -180,6 +221,32 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     {
       myAction->SetRadonSymmetry(radonGeoSymCmd->GetNewIntValue(newValue));
     }
+  
+  if ( command==nPhotonsCmd ) 
+    {
+      myAction->SetInjectorBeamPhotons(nPhotonsCmd->GetNewIntValue(newValue));
+    }
+
+  if ( command==injectorOnCmd ) 
+    {
+      myAction->SetInjectorOnIdx(injectorOnCmd->GetNewIntValue(newValue));
+    }
+  
+  if ( command==injectorTimeCmd ) 
+    {
+      myAction->SetInjectorTimeWindow(injectorTimeCmd->GetNewDoubleValue(newValue));
+    }
+
+  if ( command==openingAngleCmd ) 
+    {
+      myAction->SetInjectorOpeningAngle(openingAngleCmd->GetNewDoubleValue(newValue));
+    }
+
+  if ( command== injectorWavelengthCmd )
+    {
+      myAction->SetInjectorWavelength(injectorWavelengthCmd->GetNewDoubleValue(newValue));
+    }
+
 }
 
 G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
@@ -194,6 +261,8 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
       { cv = "gun"; }
     else if(myAction->IsUsingLaserEvtGenerator())
       { cv = "laser"; }   //T. Akiri: Addition of laser
+    else if(myAction->IsUsingInjectorEvtGenerator())
+      { cv = "injector"; }   
     else if(myAction->IsUsingGPSEvtGenerator())
       { cv = "gps"; }
     else if(myAction->IsUsingRootrackerEvtGenerator())
