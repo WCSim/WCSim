@@ -123,6 +123,7 @@
 # index of the injector to be used, rangin from 0 - 35
 # 0 - 27 are the barrel injectors, with 0 - 3 at the bottommost layer, 4 - 7 be one layer higher, etc.
 # 28 - 31 are the top endcap injectors, 32 - 35 are the bottom endcap injectors
+# exact position of each injector is hard-coded
 /mygen/injector_on_index 0
 # opening angle of the injector in deg, set to 40 for diffuser, 4 for collimator
 /mygen/injector_opening_angle 4

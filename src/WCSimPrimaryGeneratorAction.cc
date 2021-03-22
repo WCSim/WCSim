@@ -451,21 +451,21 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamDir(dir);
       SetBeamPDG(pdg);
     }
-  else if (useInjectorEvt)
+  else if (useInjectorEvt) // K.M.Tsui: addition of injector events
     {
 
       MyGPS->ClearAll();
-      MyGPS->SetMultipleVertex(true);
+      MyGPS->SetMultipleVertex(true); // possibility of using multiple source, but not implemented yet
 
-      int nLayerInjectors = 7;
-      int nInjectorsPerLayer = 4;
-      int nCapInjectors = 4; // 4 on each endcap
+      int nLayerInjectors = 7; // 7 layers of injectors evenly spaced in z
+      int nInjectorsPerLayer = 4; // 4 injectors per layer
+      int nCapInjectors = 4; // 4 injectors each the top and bottom endcap
 
-      int nPhotonsPerInjectors = nPhotons;
+      int nPhotonsPerInjectors = nPhotons; // number of photons per event
       double photoEnergy = 1239.84193/wavelength*eV; //wavelength in nm, Planck constant in (eV)(nm)
-      int injectorOn = injectorOnIdx;
+      int injectorOn = injectorOnIdx; // index of the injector to be turned on
       int nInjector = -1;
-      double injectorangle = openangle;
+      double injectorangle = openangle; // injector opening angle
 
       for (int i=0;i<nLayerInjectors;i++) {
         double zpos = myDetector->GetWCIDHeight()/(nLayerInjectors+1.)*(i+1.)-myDetector->GetWCIDHeight()/2.; // evenly spaced in z
@@ -477,7 +477,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
           double ypos = dist_to_center*sin(theta_current);
 
           nInjector++;
-          if (injectorOn!=nInjector) continue;
+          if (injectorOn!=nInjector) continue; // only add the injector as specified
 
           MyGPS->AddaSource(1.);	
           G4ParticleDefinition* pd = particleTable->FindParticle("opticalphoton");
@@ -486,7 +486,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	        MyGPS->GetCurrentSource()->GetEneDist()->SetMonoEnergy(photoEnergy);
 
           G4ThreeVector position(xpos,ypos,zpos);
-          MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point");
+          MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point"); // may need a more realistic shape
 	        MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(position);
 
           // Point the source to tank center
@@ -495,7 +495,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
           G4ThreeVector diry = dirz.cross(dirx);
           MyGPS->GetCurrentSource()->GetAngDist()->DefineAngRefAxes("angref1",dirx);
           MyGPS->GetCurrentSource()->GetAngDist()->DefineAngRefAxes("angref2",diry);
-          MyGPS->GetCurrentSource()->GetAngDist()->SetAngDistType("iso");
+          MyGPS->GetCurrentSource()->GetAngDist()->SetAngDistType("iso"); // isotropic emission for now
           MyGPS->GetCurrentSource()->GetAngDist()->SetMinTheta(0.);
           MyGPS->GetCurrentSource()->GetAngDist()->SetMaxTheta(injectorangle*deg);
           MyGPS->GetCurrentSource()->GetAngDist()->SetMinPhi(0.);

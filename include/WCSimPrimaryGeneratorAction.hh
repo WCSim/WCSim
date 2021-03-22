@@ -84,7 +84,7 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         G4bool   useLaserEvt;  //T. Akiri: Laser flag
         G4bool   useGPSEvt;
         G4bool   useRadonEvt; // G. Pronost: Radon flag
-        G4bool   useInjectorEvt;
+        G4bool   useInjectorEvt; // K.M.Tsui: injector flag
         
         std::fstream inputFile;
         G4String vectorFileName;
@@ -161,6 +161,7 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         inline void SetGPSEvtGenerator(G4bool choice) { useGPSEvt = choice; }
         inline G4bool IsUsingGPSEvtGenerator()  { return useGPSEvt; }
 
+        // K.M.Tsui: addition of injector events
         inline void SetInjectorEvtGenerator(G4bool choice) { useInjectorEvt = choice; }
         inline G4bool IsUsingInjectorEvtGenerator()  { return useInjectorEvt; }
         inline void SetInjectorBeamPhotons(G4int np) { nPhotons = np;}

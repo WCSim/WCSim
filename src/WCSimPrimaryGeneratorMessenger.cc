@@ -44,6 +44,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   radioactive_time_window_Cmd->SetParameterName("radioactive_time_window",true);
   radioactive_time_window_Cmd->SetDefaultValue(0.);
 
+  // K.M.Tsui: options for injector events
   nPhotonsCmd = new G4UIcmdWithAnInteger("/mygen/injector_nPhotons",this);
   nPhotonsCmd->SetGuidance("Number of photons emitted for each injector event");
   nPhotonsCmd->SetParameterName("injector_nPhotons",true);
