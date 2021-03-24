@@ -17,10 +17,12 @@ WCSim
 cmake_install.cmake
 cmake.out.txt
 # VS Code in-place build results to ignore
+*.code-workspace
 .vscode/
 build/
 
 # run results to ignore
+*.out.txt
 *.root
 geofile.txt
 
