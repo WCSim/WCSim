@@ -75,6 +75,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   useMulineEvt 	= true;
   useGunEvt    	= false;
   useLaserEvt  	= false;
+  useInjectorEvt  	= false;
   useGPSEvt    	= false;
   useRootrackerEvt 	= false;
   useRadonEvt        	= false;
@@ -87,6 +88,12 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   myRn222Generator	= 0;
   fRnScenario		= 0;
   fRnSymmetry		= 1;
+
+  nPhotons = 1;
+  injectorOnIdx = 0;
+  twindow = 0.;
+  openangle = 0.;
+  wavelength = 435.;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
@@ -444,6 +451,118 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamDir(dir);
       SetBeamPDG(pdg);
     }
+  else if (useInjectorEvt) // K.M.Tsui: addition of injector events
+    {
+
+      MyGPS->ClearAll();
+      MyGPS->SetMultipleVertex(true); // possibility of using multiple source, but not implemented yet
+
+      int nLayerInjectors = 7; // 7 layers of injectors evenly spaced in z
+      int nInjectorsPerLayer = 4; // 4 injectors per layer
+      int nCapInjectors = 4; // 4 injectors each the top and bottom endcap
+
+      int nPhotonsPerInjectors = nPhotons; // number of photons per event
+      double photoEnergy = 1239.84193/wavelength*eV; //wavelength in nm, Planck constant in (eV)(nm)
+      int injectorOn = injectorOnIdx; // index of the injector to be turned on
+      int nInjector = -1;
+      double injectorangle = openangle; // injector opening angle
+
+      for (int i=0;i<nLayerInjectors;i++) {
+        double zpos = myDetector->GetWCIDHeight()/(nLayerInjectors+1.)*(i+1.)-myDetector->GetWCIDHeight()/2.; // evenly spaced in z
+        for (int j=0;j<nInjectorsPerLayer;j++) {
+          double dist_to_center = myDetector->GetWCIDDiameter()/2. - 20*cm; // not sure the exact value so just a guess
+          double theta_start = 0; // may want some offset to avoid overlap with other components
+          double theta_current = theta_start+j*CLHEP::pi/2.;
+          double xpos = dist_to_center*cos(theta_current);
+          double ypos = dist_to_center*sin(theta_current);
+
+          nInjector++;
+          if (injectorOn!=nInjector) continue; // only add the injector as specified
+
+          MyGPS->AddaSource(1.);	
+          G4ParticleDefinition* pd = particleTable->FindParticle("opticalphoton");
+          MyGPS->SetParticleDefinition(pd);
+          MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
+	        MyGPS->GetCurrentSource()->GetEneDist()->SetMonoEnergy(photoEnergy);
+
+          G4ThreeVector position(xpos,ypos,zpos);
+          MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point"); // may need a more realistic shape
+	        MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(position);
+
+          // Point the source to tank center
+          G4ThreeVector dirz(xpos,ypos,0); // local z axis in source frame 
+          G4ThreeVector dirx(0,0,1);
+          G4ThreeVector diry = dirz.cross(dirx);
+          MyGPS->GetCurrentSource()->GetAngDist()->DefineAngRefAxes("angref1",dirx);
+          MyGPS->GetCurrentSource()->GetAngDist()->DefineAngRefAxes("angref2",diry);
+          MyGPS->GetCurrentSource()->GetAngDist()->SetAngDistType("iso"); // isotropic emission for now
+          MyGPS->GetCurrentSource()->GetAngDist()->SetMinTheta(0.);
+          MyGPS->GetCurrentSource()->GetAngDist()->SetMaxTheta(injectorangle*deg);
+          MyGPS->GetCurrentSource()->GetAngDist()->SetMinPhi(0.);
+          MyGPS->GetCurrentSource()->GetAngDist()->SetMaxPhi(360*deg);
+          MyGPS->GetCurrentSource()->SetNumberOfParticles(nPhotonsPerInjectors);
+
+        }
+      }
+
+      for (int i=0;i<2;i++) { // top and bottom endcap
+        double zpos = myDetector->GetWCIDHeight()/2.-20*cm; // again the exact value is unknown
+        if (i==1) zpos *= -1;
+        for (int j=0;j<nCapInjectors;j++) {
+          double dist_to_center = 0.12*myDetector->GetWCIDDiameter()/2.; // again the exact value is unknown
+          double theta_start = 0; // may want some offset to avoid overlap with other components
+          double theta_current = theta_start+j*CLHEP::pi/2.;
+          double xpos = dist_to_center*cos(theta_current);
+          double ypos = dist_to_center*sin(theta_current);
+
+          nInjector++;
+          if (injectorOn!=nInjector) continue;
+
+          MyGPS->AddaSource(1.);	
+          G4ParticleDefinition* pd = particleTable->FindParticle("opticalphoton");
+          MyGPS->SetParticleDefinition(pd);
+          MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
+	        MyGPS->GetCurrentSource()->GetEneDist()->SetMonoEnergy(photoEnergy);
+
+          G4ThreeVector position(xpos,ypos,zpos);
+          MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point");
+	        MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(position);
+
+          // Point the source to tank center
+          G4ThreeVector dirx(1,0,0);
+          G4ThreeVector diry(0,1,0);
+          if (i==1) diry*=-1; // reverse direction for bottom injector
+          MyGPS->GetCurrentSource()->GetAngDist()->DefineAngRefAxes("angref1",dirx);
+          MyGPS->GetCurrentSource()->GetAngDist()->DefineAngRefAxes("angref2",diry);
+          MyGPS->GetCurrentSource()->GetAngDist()->SetAngDistType("iso");
+          MyGPS->GetCurrentSource()->GetAngDist()->SetMinTheta(0.);
+          MyGPS->GetCurrentSource()->GetAngDist()->SetMaxTheta(injectorangle*deg);
+          MyGPS->GetCurrentSource()->GetAngDist()->SetMinPhi(0.);
+          MyGPS->GetCurrentSource()->GetAngDist()->SetMaxPhi(360*deg);
+          MyGPS->GetCurrentSource()->SetNumberOfParticles(nPhotonsPerInjectors);
+        }
+      }
+
+      MyGPS->GeneratePrimaryVertex(anEvent);
+      
+      G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
+      G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
+      G4double m       =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass(); // will be 0 for photon anyway, but for other gps particles not
+      G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
+      
+      G4ThreeVector dir  = P.unit();
+      //G4double E         = std::sqrt((P.dot(P)));
+      G4double E         = std::sqrt((P.dot(P))+(m*m));
+      //std::cout << "Energy " << E << " eV " << std::endl;
+
+
+      //mode            = LASER; //actually could also be particle gun here. Gps and laser will be separate soon!!
+
+      SetVtx(vtx);
+      SetBeamEnergy(E);
+      SetBeamDir(dir);
+      SetBeamPDG(pdg);
+    }
   else if (useGPSEvt)
     {
       MyGPS->GeneratePrimaryVertex(anEvent);
@@ -591,6 +710,8 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
     return "gps";
   else if(useLaserEvt)
     return "laser";
+  else if(useInjectorEvt)
+    return "injector";
   else if(useRootrackerEvt)
     return "rooTrackerEvt";
   return "";

@@ -84,6 +84,7 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         G4bool   useLaserEvt;  //T. Akiri: Laser flag
         G4bool   useGPSEvt;
         G4bool   useRadonEvt; // G. Pronost: Radon flag
+        G4bool   useInjectorEvt; // K.M.Tsui: injector flag
         
         std::fstream inputFile;
         G4String vectorFileName;
@@ -99,6 +100,13 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         
         G4bool   usePoissonPMT;
         G4double poissonPMTMean;
+
+        // For injector events
+        G4int nPhotons;
+        G4int injectorOnIdx;
+        G4double twindow;
+        G4double openangle;
+        G4double wavelength;
 
         // These go with jhfNtuple
         G4int mode;
@@ -152,6 +160,15 @@ class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   
         inline void SetGPSEvtGenerator(G4bool choice) { useGPSEvt = choice; }
         inline G4bool IsUsingGPSEvtGenerator()  { return useGPSEvt; }
+
+        // K.M.Tsui: addition of injector events
+        inline void SetInjectorEvtGenerator(G4bool choice) { useInjectorEvt = choice; }
+        inline G4bool IsUsingInjectorEvtGenerator()  { return useInjectorEvt; }
+        inline void SetInjectorBeamPhotons(G4int np) { nPhotons = np;}
+        inline void SetInjectorOnIdx(G4int idx) { injectorOnIdx = idx;}
+        inline void SetInjectorTimeWindow(G4double tw) { twindow = tw;}
+        inline void SetInjectorOpeningAngle(G4double angle) { openangle = angle;}
+        inline void SetInjectorWavelength(G4double wl) { wavelength = wl;}
 
         inline void OpenVectorFile(G4String fileName) 
         {
