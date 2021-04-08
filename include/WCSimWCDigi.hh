@@ -159,6 +159,7 @@ public:
     int index_primaryparentid;
     float index_photonstarttime;
     G4ThreeVector index_photonstartpos;
+    G4ThreeVector index_photonendpos;
     for (i = 1; i < (int) time.size(); ++i)
       {
         index_time  = time[i];
@@ -168,6 +169,7 @@ public:
 	index_primaryparentid = primaryParentID[i];
 	index_photonstarttime = photonStartTime[i];
 	index_photonstartpos = photonStartPos[i];
+	index_photonendpos = photonEndPos[i];
         for (j = i; j > 0 && time[j-1] > index_time; j--) {
           time[j] = time[j-1];
           pe[j] = pe[j-1];
@@ -175,6 +177,7 @@ public:
 	  primaryParentID[j] = primaryParentID[j-1];
 	  photonStartTime[j] = photonStartTime[j-1];
 	  photonStartPos[j] = photonStartPos[j-1];
+	  photonEndPos[j] = photonEndPos[j-1];
           //G4cout <<"swapping "<<time[j-1]<<" "<<index_time<<G4endl;
         }
         
@@ -185,6 +188,7 @@ public:
 	primaryParentID[j] = index_primaryparentid;
 	photonStartTime[j] = index_photonstarttime;
 	photonStartPos[j] = index_photonstartpos;
+	photonEndPos[j] = index_photonendpos;
       }    
   }
   
