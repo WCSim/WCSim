@@ -179,6 +179,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 	if(anInfo->isSaved()){ // Parent is primary, so we want start pos & time of this secondary
 		infoSec->SetPhotonStartTime((*secondaries)[i]->GetGlobalTime());
 		infoSec->SetPhotonStartPos((*secondaries)[i]->GetPosition());
+		infoSec->SetPhotonStartDir((*secondaries)[i]->GetMomentumDirection());
 	}
 	infoSec->WillBeSaved(false); // ADDED BY MFECHNER, temporary, 30/8/06
 	(*secondaries)[i]->SetUserInformation(infoSec);

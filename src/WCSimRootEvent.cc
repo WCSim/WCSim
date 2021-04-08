@@ -420,7 +420,9 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
 							 std::vector<Int_t> primParID,
 							 std::vector<Float_t> photonStartTime,
 							 std::vector<TVector3> photonStartPos,
-							 std::vector<TVector3> photonEndPos)
+							 std::vector<TVector3> photonEndPos,
+							 std::vector<TVector3> photonStartDir,
+							 std::vector<TVector3> photonEndDir)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -430,12 +432,18 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
     fCherenkovHitCounter++;
     Float_t startPos[3];
     Float_t endPos[3];
+    Float_t startDir[3];
+    Float_t endDir[3];
     for(int j=0; j<3; j++){
       startPos[j] = photonStartPos[i][j];
       endPos[j] = photonEndPos[i][j];
+      startDir[j] = photonStartDir[i][j];
+      endDir[j] = photonEndDir[i][j];
     }
     WCSimRootCherenkovHitTime *cherenkovhittime = 
-      new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i], photonStartTime[i], startPos, endPos);
+      new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i],
+                                                                              photonStartTime[i], startPos, endPos,
+                                                                              startDir, endDir);
   }
   
 #ifdef DEBUG
@@ -488,7 +496,9 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
 						     Int_t primParID,
 						     Float_t photonStartTime,
 						     Float_t photonStartPos[3],
-						     Float_t photonEndPos[3])
+						     Float_t photonEndPos[3],
+						     Float_t photonStartDir[3],
+						     Float_t photonEndDir[3])
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
     fTruetime        = truetime; 
@@ -497,6 +507,8 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
     for (int i=0;i<3;i++) {
         fPhotonStartPos[i] = photonStartPos[i];
         fPhotonEndPos[i] = photonEndPos[i];
+        fPhotonStartDir[i] = photonStartDir[i];
+        fPhotonEndDir[i] = photonEndDir[i];
     }
 }
 
