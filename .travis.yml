@@ -34,5 +34,7 @@ notifications:
   email:
     recipients:
       - josh.e.renner@gmail.com
+      - erin.osullivan@fysik.su.se
+      - t.dealtry@lancaster.ac.uk
     on_success: never # default: change
     on_failure: always # default: always
