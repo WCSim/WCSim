@@ -1,6 +1,16 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
+04/12/2021: Notes for v1.9.4
+*************************************************************
+
+This release includes an update to allow `WCSimRootTrigger`s with more than 150 entries, as well as updates to the Travis automatic validation system execution tests
+
+Update
+* Pull Request [#308](https://github.com/WCSim/WCSim/pull/308): Update validation tests
+* Pull Request [#309](https://github.com/WCSim/WCSim/pull/309): Dynamically expand the `WCSimRootTrigger` `TObjArray`
+
+*************************************************************
 12/02/2020: Notes for v1.9.3       
 *************************************************************
 
