@@ -8,7 +8,7 @@ This release includes an update to allow `WCSimRootTrigger`s with more than 150 
 
 Update
 * Pull Request [#308](https://github.com/WCSim/WCSim/pull/308): Update validation tests
-* Pull Request [#309](https://github.com/WCSim/WCSim/pull/309): Dynamically expand the `WCSimRootTrigger` `TObjArray`
+* Pull Request [#309](https://github.com/WCSim/WCSim/pull/309): Dynamically expand `WCSimRootTrigger`s `TObjArray`
 
 *************************************************************
 12/02/2020: Notes for v1.9.3       
