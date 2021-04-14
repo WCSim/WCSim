@@ -40,6 +40,7 @@ private:
   G4UIcmdWithAString* TriggerChoice;
   G4String            StoreTriggerChoice;
   G4UIcmdWithABool*   MultiDigitsPerTrigger;
+  G4UIcmdWithABool*   RelativeHitTime;
   G4bool              StoreMultiDigitsPerTrigger;
   G4bool              MultiDigitsPerTriggerSet;
 

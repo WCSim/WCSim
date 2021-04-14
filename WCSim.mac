@@ -3,6 +3,7 @@
 /run/verbose 0
 /tracking/verbose 0
 /hits/verbose 0
+/grdm/verbose 0
 
 ## select the geometry
 # Default config if you do nothing is currently SuperK
@@ -20,6 +21,9 @@
 # HyperK (one cylindrical tank with a height of 54.8 m, a diameter of 70.8 m and 40% coverage with 20 inch B&L PMTs)
 #/WCSim/WCgeom HyperK
 #/WCSim/WCgeom HyperKWithOD
+
+# Another option of HyperK
+#/WCSim/WCgeom HyperK_20perCent # Note: the coverage is set to 20.0%.
 
 # Cylindrical detector with a height of 60 m and a diameter of 74 m
 #/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
@@ -43,6 +47,11 @@
 #/WCSim/EggShapedHyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
 #/WCSim/EggShapedHyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
 
+# LCConfig is for setting the light collector. To be used with WCSim/Construct.
+# Default is No_Mirror.
+#/WCSim/LCConfig No_Mirror
+#/WCSim/LCConfig Mirror_OldLC # Mirror design in a branch of archive/LightCone at 2011.
+#/WCSim/LCConfig Mirror_2018Oct # A short mirror design.
 
 #/WCSim/Construct # This must be uncommented in order to construct a new detector configuration.
 
@@ -123,6 +132,8 @@
 #/mygen/vecfile inputvectorfile
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
 #/mygen/vecfile mu+.out
+# define units used for time in kin file
+#/mygen/time_unit ns
 
 # Or you can use the G4 Particle Gun
 # for a full list of /gun/ commands see:
@@ -161,7 +172,44 @@
 #/gps/ang/minphi 0 deg
 #/gps/ang/maxphi 360 deg
 
+# Radioactive option
+# IMPORTANT: You need to compile WCSim with cmake in order to use the radioactive decays
+# Generate radioactive decay in the water or on the PMTs
+#/mygen/generator radioactive
+# This window should match the one in biasprofile.dat (see below)
+#/mygen/radioactive_time_window 1.e-4
+# The following list the different isotope to take into account, where they decay, 
+# and what are their activities in the full ID detector (for Water) or in the PMT (for PMT)
+#/mygen/isotope Tl208 PMT 2.8
+#/mygen/isotope Bi214 PMT 27.
+#/mygen/isotope K40 PMT 94.
+#/mygen/isotope Bi214 water 264. ### HK
+#Clear the source and tell GPS to make multiple vertices
+#/gps/source/clear
+
+# Radon option
+# IMPORTANT: You need to compile WCSim with cmake in order to use the radioactive decays
+# Generate Bi214 decay in the water following a Model extracted from SK-IV solar data
+#/mygen/generator radon
+# This window should match the one in biasprofile.dat if time bias is used (see below)
+#/mygen/radioactive_time_window 1.e-4
+# Needed if time bias is not used, in order to keep timing below one sec.
+#/DAQ/RelativeHitTime true
+# The following set which scenario is used to scale SK model to HK
+#/mygen/radon_scaling A # 	Relative scaling with respect to full ID volume (Pessimistic)
+#/mygen/radon_scaling B # 	Relative scaling with respect to fiducial volume
+#/mygen/radon_scaling C #	Absolute scaling with respect to ID border (Optimistic)
+#Clear the source and tell GPS to make multiple vertices
+#/gps/source/clear
+
 ## change the name of the output root file, default = wcsim.root
+
+# Needed to prevent other decay than Bi-214
+/grdm/nucleusLimits 214 214 83 83 
+# if you need to use time bias
+#/grdm/decayBiasProfile biasprofile.dat
+#/grdm/analogueMC 0
+#/grdm/BRbias 0
 
 /WCSimIO/RootFile wcsim.root
 

@@ -257,6 +257,11 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
 
+  //////////////////////////////////////
+  // Cave Parameters --- Beta version //
+  //////////////////////////////////////
+  CaveTyvekSheetThickness  = 1.0*mm; // Quite Standard I guess
+
   ////////////////////////////////////
   // OD Parameters --- Beta version //
   ////////////////////////////////////
@@ -294,6 +299,29 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
   WCODCapEdgeLimit = WCIDDiameter/2.0 - WCPMTODRadius;
 
+}
+
+void WCSimDetectorConstruction::SetHyperKGeometry_20perCent()
+{
+  WCDetectorName = "HyperK_20perCent";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = PMT->GetRadius();
+  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
+  WCPMTperCellHorizontal= 4;
+  WCPMTperCellVertical  = 3;
+  WCPMTPercentCoverage  = 20.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
 }
 
 void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()

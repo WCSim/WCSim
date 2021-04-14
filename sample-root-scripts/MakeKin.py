@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import print_function
 
 from optparse import OptionParser
 import random
@@ -20,7 +21,7 @@ detectors = {"SuperK":[3368.15/2., 3620.],
              "Cylinder_60x74_20inchBandL_40perCent":[7400./2., 6000.],
              "HyperK":[7080./2., 5480.]}
 
-for pname, no in pid.items():
+for pname, no in list(pid.items()):
     if pname.endswith('+'):
         pid[pname.replace('+','-')] = -1*pid[pname]
 
@@ -39,7 +40,12 @@ parser.add_option("-n", "--npart", dest="npart",
                   help="number of particles to simulate per file. Default: %s" \
                   % (optdefault),
                   metavar="#", default=optdefault)
-optchoices = pid.keys()
+verticesPerEventDefault = 1
+parser.add_option("-V","--nVerticesPerEvent",dest="verticesPerEvent",
+                  help=" Average number of vertices to simulate per event. Default: %s" \
+                  % (verticesPerEventDefault),
+                  metavar="#", default=verticesPerEventDefault)
+optchoices = list(pid.keys())
 optdefault = "mu-"
 parser.add_option("-t", "--type", dest="type",
                   help="Particle type to be generated. Choices: %s. Default: %s" \
@@ -68,7 +74,7 @@ parser.add_option("-d", "--direction", dest="dirname",
                   help="Type of direction. Choices: %s. Default: %s" \
                       % (optchoices, optdefault),
                   choices=optchoices, default=optdefault)
-optchoices = detectors.keys()
+optchoices = list(detectors.keys())
 optdefault = "SuperK"
 parser.add_option("-w", "--detector", dest="detector",
                   help="Detector water volume to use (for vertex positioning). Choices: %s. Default: %s" \
@@ -91,7 +97,8 @@ def pair_or_single(arg):
     pair = list(set(float(x) for x in arg.split(':')))
     pair.sort()
     if len(pair) > 2 or len(pair) < 1:
-        print "Argument %s is not a colon-separted pair of floats, or a single float" % arg
+        print ("Argument %s is not a colon-separted pair of floats, or a single float" % (arg))
+        sys.exit(-1)
     elif len(pair) == 1:
         return pair, "%.1f" % (pair[0])
     elif len(pair) == 2:
@@ -101,8 +108,7 @@ nfiles = int(options.nfiles)
 npart = int(options.npart)
 energy, energystr = pair_or_single(options.energy)
 time, timestr = pair_or_single(options.time)
-
-
+verticesPerEvent=int(options.verticesPerEvent)
 
 #Define the particle
 particle = {"vertex":(0, 0, 0),
@@ -118,7 +124,7 @@ if options.vertname == "center":
 elif options.vertname == "random":
     randvert = True
 elif options.vertname == "wall":
-    print >>sys.stderr, "Wall not implemented yet"
+    print("Wall not implemented yet", file=sys.stderr)
     sys.exit(3)
 elif options.vertname == "minusx":
     if options.detector == "SuperK":
@@ -141,7 +147,7 @@ elif options.vertname == "plusz":
     else:
         particle["vertex"] = (0, 0, +1000. * detectors[options.detector][1] / detectors["SuperK"][1])
 else:
-    print >>sys.stderr, "Don't understand vertex",opttions.vertname
+    print("Don't understand vertex", options.vertname, file=sys.stderr)
     sys.exit(2)
 
 if options.dirname == "towall":
@@ -153,10 +159,10 @@ elif options.dirname == "tocap":
 elif options.dirname == "4pi":
     randdir = True
 elif options.dirname == "wall":
-    print >>sys.stderr, "Wall not implemented yet"
+    print("Wall not implemented yet", file=sys.stderr)
     sys.exit(3)
 else:
-    print >>sys.stderr, "Don't understand direction",options.dirname
+    print("Don't understand direction", options.dirname, file=sys.stderr)
     sys.exit(2)
 
 
@@ -168,10 +174,19 @@ nu =   {"type":pid["numu"], "energy":energy[0]+1000.0,
 prot = {"type":pid["p+"], "energy":935.9840,
         "direction":(0, 0, 1)}
 
-
+def eventPrint(nv,p,f,recno) :
+  f.write("$ begin\n")
+  for v in range(nv) :
+    vertPrint(p,f,recno)
+    recno=recno+1
+  f.write("$ end\n")
 
 def partPrint(p, f, recno):
     f.write("$ begin\n")
+    vertPrint(p,f,recno)
+    f.write("$ end\n")
+
+def vertPrint(p,f,recno) :
     f.write("$ nuance 0\n")
     #random energy
     if len(energy) == 2:
@@ -207,7 +222,6 @@ def partPrint(p, f, recno):
         #p["direction"] = (cos(phi)*cos(th), sin(phi)*cos(th), sin(th))
         
     printTrack(p, f)    # Outgoing Particle Track
-    f.write("$ end\n")
 
 def printTrack(p, f, code=0):
     f.write("$ track %(type)i %(energy).5f " % p)
@@ -221,9 +235,18 @@ for fileno in range(nfiles):
 
     outfile = open(filename, 'w')
 
-    print ("Writing %i particles to " % npart) + filename
+    if(verticesPerEvent == 1 ) :
+      print("Writing", npart, "particles to", filename)
 
-    for i in range(npart):
+      for i in range(npart):
         partPrint(particle, outfile, i)
+    else :
+      print("Writing", npart, "particles with an average of", verticesPerEvent, "vertices per event to", filename)
+      numberDone = 0
+      sigma = sqrt(verticesPerEvent)
+      while numberDone < npart:
+        numberToProcess = int(round(random.gauss(verticesPerEvent,sigma)))
+        eventPrint(numberToProcess,particle,outfile,numberDone)
+        numberDone = numberDone + numberToProcess
     outfile.write("$ stop")
     outfile.close()
