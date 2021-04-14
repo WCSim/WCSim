@@ -40,7 +40,7 @@ int main(int argc,char** argv)
 
   // Set up the tuning parameters that need to be read before the detector
   //  construction is done
-  WCSimTuningParameters* tuningpars = new WCSimTuningParameters();
+  WCSimTuningParameters* tuningpars = new
 
   // Get the tuning parameters
   file_exists("macros/tuning_parameters.mac");
