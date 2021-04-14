@@ -47,8 +47,7 @@ parser.add_option("-V","--nVerticesPerEvent",dest="verticesPerEvent",
                   metavar="#", default=verticesPerEventDefault)
 optdefault = None
 parser.add_option("-s", "--seed", dest="seed",
-                  help="Random number seed. Default: %s" \
-                      % (optdefault),
+                  help="Random number seed. Default: None (use system time aka not reproducible!)",
                   metavar="SEED", default=optdefault)
 optchoices = list(pid.keys())
 optdefault = "mu-"
