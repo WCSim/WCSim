@@ -409,7 +409,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       // The format of the loop iteration this time is a little unconventional, because erasing elements
       // (via RemoveDigitizedGate) during iteration would normally invalidate the iterators.
       // This format is safe.
-      for (std::map<int,float>::const_iterator digit_time_it = (*WCDCPMT)[i]->GetTimeMapBegin(), 
+      for (std::map<int,double>::const_iterator digit_time_it = (*WCDCPMT)[i]->GetTimeMapBegin(), 
            next_digit_it=digit_time_it;
            digit_time_it!=(*WCDCPMT)[i]->GetTimeMapEnd();
            digit_time_it = next_digit_it){
