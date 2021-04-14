@@ -1,59 +1,28 @@
 #include <iostream>
 #include <TH1F.h>
 #include <stdio.h>     
-#include <stdlib.h>    
+#include <stdlib.h>
+
+#include "TTree.h"
+#include "TH1F.h"
+#include "TStyle.h"
+#include "TROOT.h"
+#include "TSystem.h"
+#include "TCanvas.h"
+#include "TFile.h"
+
+#include "WCSimRootOptions.hh"
+#include "WCSimRootGeom.hh"
+#include "WCSimRootEvent.hh"
+
 // Simple example of reading a generated Root file
-void sample_readfile(char *filename=NULL, bool verbose=false)
+int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
 {
   // Clear global scope
   //gROOT->Reset();
-  /*
-  gStyle->SetOptStat(0);
-  gStyle->SetCanvasColor(0);
-  gStyle->SetTitleColor(1);
-  gStyle->SetStatColor(0);
-  gStyle->SetFrameFillColor(0);
-  gStyle->SetPadColor(0);
-  gStyle->SetPadTickX(1);
-  gStyle->SetPadTickY(1);
-  gStyle->SetTitleSize(0.04);
-  gStyle->SetCanvasBorderMode(0);
-  gStyle->SetFrameBorderMode(0);
-  gStyle->SetFrameLineWidth(2);
-  gStyle->SetPadBorderMode(0);
-  gStyle->SetPalette(1);
-  gStyle->SetTitleAlign(23);
-  gStyle->SetTitleX(.5);
-  gStyle->SetTitleY(0.99);
-  gStyle->SetTitleBorderSize(0);
-  gStyle->SetTitleFillColor(0);
-  gStyle->SetHatchesLineWidth(2);
-  gStyle->SetLineWidth(1.5);
-  gStyle->SetTitleFontSize(0.07);
-  gStyle->SetLabelSize(0.05,"X");
-  gStyle->SetLabelSize(0.05,"Y");
-  gStyle->SetTitleSize(0.04,"X");
-  gStyle->SetTitleSize(0.04,"Y");
-  gStyle->SetTitleBorderSize(0);
-  gStyle->SetCanvasBorderMode(0);
-  */
-  // Load the library with class dictionary info
-  // (create with "gmake shared")
-  char* wcsimdirenv;
-  wcsimdirenv = getenv ("WCSIMDIR");
-  if(wcsimdirenv !=  NULL){
-    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
-  }else{
-    gSystem->Load("../libWCSimRoot.so");
-  }
 
-  TFile *file;
   // Open the file
-  if (filename==NULL){
-    file = new TFile("../wcsim.root","read");
-  }else{
-    file = new TFile(filename,"read");
-  }
+  TFile * file = new TFile(filename,"read");
   if (!file->IsOpen()){
     cout << "Error, could not open input file: " << filename << endl;
     return -1;
@@ -141,14 +110,16 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
     
     // Get the number of tracks
     int ntrack = wcsimrootevent->GetNtrack();
+    int ntrack_slots = wcsimrootevent->GetNtrack_slots();
     if(verbose) printf("ntracks=%d\n",ntrack);
     
     int i;
     // Loop through elements in the TClonesArray of WCSimTracks
-    for (i=0; i<ntrack; i++)
+    for (i=0; i<ntrack_slots; i++)
     {
       TObject *element = (wcsimrootevent->GetTracks())->At(i);
-      
+      if(!element)
+	continue;
       WCSimRootTrack *wcsimroottrack = dynamic_cast<WCSimRootTrack*>(element);
 
       if(verbose){
@@ -216,10 +187,10 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
 	if(verbose) printf("Total pe: %d times( ",peForTube);
 	for (int j = timeArrayIndex; j < timeArrayIndex + peForTube; j++)
 	{
-	  WCSimRootCherenkovHitTime HitTime = 
-	    dynamic_cast<WCSimRootCherenkovHitTime>(timeArray->At(j));
+	  WCSimRootCherenkovHitTime * HitTime = 
+	    dynamic_cast<WCSimRootCherenkovHitTime *>(timeArray->At(j));
 	  
-	  if(verbose) printf("%6.2f ", HitTime.GetTruetime() );	     
+	  if(verbose) printf("%6.2f ", HitTime->GetTruetime() );	     
 	}
 	if(verbose) cout << ")" << endl;
       }
@@ -240,16 +211,20 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
       
       int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
       if(verbose) printf("Ncherenkovdigihits %d\n", ncherenkovdigihits);
-     
+      int ncherenkovdigihits_slots = wcsimrootevent->GetNcherenkovdigihits_slots();
+
       if(ncherenkovdigihits>0)
 	num_trig++;
       //for (i=0;i<(ncherenkovdigihits>4 ? 4 : ncherenkovdigihits);i++){
-      for (i=0;i<ncherenkovdigihits;i++)
+      int idigi = 0;
+      for (i=0;i<ncherenkovdigihits_slots;i++)
       {
     	// Loop through elements in the TClonesArray of WCSimRootCherenkovDigHits
 	
     	TObject *element = (wcsimrootevent->GetCherenkovDigiHits())->At(i);
-	
+	if(!element) continue;
+	idigi++;
+
     	WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = 
     	  dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
 	
@@ -259,6 +234,8 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
 		   wcsimrootcherenkovdigihit->GetT(),wcsimrootcherenkovdigihit->GetTubeId());
 	}
       } // End of loop over Cherenkov digihits
+      if(verbose)
+	cout << idigi << " digits found; expected " << ncherenkovdigihits << endl;
     } // End of loop over trigger
     
     // reinitialize super event between loops.
@@ -278,4 +255,6 @@ void sample_readfile(char *filename=NULL, bool verbose=false)
   c1->cd(4); h1->Draw();
   
   std::cout<<"num_trig "<<num_trig<<"\n";
+
+  return 0;
 }

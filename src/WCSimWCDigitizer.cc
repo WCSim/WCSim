@@ -4,9 +4,12 @@
 
 // for memset
 
-#ifndef NPMTS_VERBOSE
-#define NPMTS_VERBOSE 10
-#endif
+//Use this and one/two of below to debug hit information
+//#define WCSIMWCDIGITIZER_VERBOSE
+//Print out hits with PMT IDs up to N
+#define NPMTS_VERBOSE -1
+//And/Or a specific PMT ID
+#define VERBOSE_PMT -1
 
 #ifndef HYPER_VERBOSITY
 // #define HYPER_VERBOSITY
@@ -15,10 +18,6 @@
 // *******************************************
 // BASE CLASS
 // *******************************************
-
-#ifndef WCSIMWCDIGITIZER_VERBOSE
-//#define WCSIMWCDIGITIZER_VERBOSE
-#endif
 
 WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 										   WCSimDetectorConstruction* inDetector,
@@ -114,7 +113,7 @@ void WCSimWCDigitizerBase::Digitize()
 
 }
 
-bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector<int> digi_comp)
+bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, double digihittime, double peSmeared, std::vector<int> digi_comp)
 {
   //digitised hit information does not have infinite precision
   //so need to round the charge and time information
@@ -124,7 +123,7 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
   //gate is not a trigger, but just the position of the digit in the array
   //inside the WCSimWCDigi object
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-  if(tube < NPMTS_VERBOSE) {
+  if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT) {
     G4cout<<"Adding hit "<<gate<<" in tube "<<tube
 	  << " with time " << digihittime_d << " charge " << peSmeared_d
 	  << " (truncated from t: " << digihittime << " q: " << peSmeared << ")"
@@ -146,7 +145,7 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	Digi->AddDigiCompositionInfo(digi_comp);
 	DigiStoreHitMap[tube] = DigiStore->insert(Digi);
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-	if(tube < NPMTS_VERBOSE)
+	if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT)
 	  G4cout << " NEW HIT" << G4endl;
 #endif
       }
@@ -156,7 +155,7 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddPe(digihittime_d);
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddDigiCompositionInfo(digi_comp);
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-	if(tube < NPMTS_VERBOSE)
+	if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT)
 	  G4cout << " DEJA VU" << G4endl;
 #endif
       }
@@ -164,7 +163,7 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, float digihittime, fl
   }//peSmeared > 0
   else {
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-    if(tube < NPMTS_VERBOSE)
+    if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT)
       G4cout << "DIGIT REJECTED with charge " << peSmeared_d
 	     << " time " << digihittime_d << G4endl;
 #endif
@@ -209,6 +208,10 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
 
+  // G. Pronost 2019/09/09:
+  // Hit need to be sorted! (This is done no where!)
+  std::sort(WCHCPMT->GetVector()->begin(), WCHCPMT->GetVector()->end(), WCSimWCDigi::SortFunctor_Hit());
+  
   //loop over entires in WCHCPMT, each entry corresponds to
   //the photons on one PMT
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
@@ -219,7 +222,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       (*WCHCPMT)[i]->SortDigiMapsByHitTime();
       int tube = (*WCHCPMT)[i]->GetTubeID();
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-      if(tube < NPMTS_VERBOSE) {
+      if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT) {
 	G4cout << "tube " << tube
 	       << " totalpe = " << (*WCHCPMT)[i]->GetTotalPe()
 	       << " times";
@@ -240,8 +243,8 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 
       //look over all hits on the PMT
       //integrate charge and start digitizing
-      float intgr_start=0;
-      float upperlimit=0;
+      double intgr_start=0;
+      double upperlimit=0;
       G4double efficiency = 0.985; // with skrn1pe (AP tuning) & 30% QE increase in stacking action
 
       // Variables to store photon uniqueid that make up a digit
@@ -252,8 +255,8 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
       //loop over the hits on this PMT
       for( G4int ip = 0 ; ip < (*WCHCPMT)[i]->GetTotalPe() ; ip++)
 	{
-	  float time = (*WCHCPMT)[i]->GetTime(ip);
-          float pe = (*WCHCPMT)[i]->GetPe(ip);
+	  double time = (*WCHCPMT)[i]->GetTime(ip);
+          double pe = (*WCHCPMT)[i]->GetPe(ip);
 
 	  //start the integration time as the time of the first hit
 	  //Hits must be sorted in time
@@ -265,7 +268,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  }
 	  
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-	  if(tube < NPMTS_VERBOSE)
+	  if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT)
 	    G4cout << "ip "    << ip
 		   << " pe "   << pe
 		   << " time " << time
@@ -281,7 +284,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    digi_comp.push_back(photon_unique_id);
       
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-	    if(tube < NPMTS_VERBOSE)
+	    if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT)
 	      G4cout<<"INFO: time "<<time<<" digi_id "<<digi_unique_id<<" p_id "<<photon_unique_id<<G4endl;
 #endif
 	    //if this is the last digit, make sure to make the digit
@@ -306,7 +309,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    if(iflag == 0) {
 	      //apply time smearing
-	      float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+	      double Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	      //digitize hit
 	      peSmeared *= efficiency;
 	      bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
@@ -321,7 +324,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    else {
 	      //reject hit
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-	      if(tube < NPMTS_VERBOSE)
+	      if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT)
 		G4cout << "DIGIT REJECTED with time " << intgr_start << G4endl;
 #endif
 	      digi_comp.clear();
@@ -336,7 +339,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  }
 	  else if(time > upperlimit + DigitizerDeadTime){
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-	    if(tube < NPMTS_VERBOSE)
+	    if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT)
 	      G4cout<<"*** PREPARING FOR >1 DIGI ***"<<G4endl;
 #endif
 	    //we now need to start integrating from the hit
@@ -356,7 +359,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
 	      if(iflag == 0) {
 		//apply time smearing
-		float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+		double Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 		//digitize hit
 		peSmeared *= efficiency;
 		bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
@@ -371,7 +374,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      else {
 		//reject hit
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-		if(tube < NPMTS_VERBOSE)
+		if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT)
 		  G4cout << "DIGIT REJECTED with time " << intgr_start << G4endl;
 #endif
 		digi_comp.clear();

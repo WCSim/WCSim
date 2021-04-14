@@ -10,6 +10,7 @@
 #include <fstream>
 
 #include "WCSimRootOptions.hh"
+#include "WCSimGenerator_Radioactivity.hh"
 
 class WCSimDetectorConstruction;
 class G4ParticleGun;
@@ -20,6 +21,14 @@ class G4Generator;
 
 class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
+
+  struct radioactive_source {
+    G4String IsotopeName;
+    G4String IsotopeLocation;
+    G4double IsotopeActivity;
+  };
+
+
 public:
   WCSimPrimaryGeneratorAction(WCSimDetectorConstruction*);
   ~WCSimPrimaryGeneratorAction();
@@ -37,10 +46,12 @@ public:
 
   // These go with jhfNtuple
   G4int GetVecRecNumber(){return vecRecNumber;}
-  G4int GetMode() {return mode;};
+  G4int GetMode() {return mode[0];};
+  G4int GetMode(int vertex){return mode[vertex];};
   G4int GetNvtxs() {return nvtxs;};
   G4int GetVtxVol(G4int n = 0) {return vtxsvol[n];};
   G4ThreeVector GetVtx(G4int n = 0) {return vtxs[n];}
+  G4double GetVertexTime(G4int n = 0){return vertexTimes[n];}
   G4int GetNpar() {return npar;};
   G4int GetBeamPDG(G4int n = 0) {return beampdgs[n];};
   G4double GetBeamEnergy(G4int n = 0) {return beamenergies[n];};
@@ -74,15 +85,31 @@ private:
   G4bool   useGunEvt;
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
   G4bool   useGPSEvt;
+  G4bool   useRadioactiveEvt; // F. Nova: Radioactive flag
+  G4bool   useRadonEvt; // G. Pronost: Radon flag
+  
   std::fstream inputFile;
   G4String vectorFileName;
   G4bool   GenerateVertexInRock;
+  
+  // Variables for Radioactive and Radon generators
+  std::vector<struct radioactive_source> radioactive_sources;
+  G4double radioactive_time_window;
 
+  // For Rn event
+  WCSimGenerator_Radioactivity* myRn222Generator;
+  G4int fRnScenario;
+  G4int fRnSymmetry;
+
+  // 
+  G4double fTimeUnit;
+  
   // These go with jhfNtuple
-  G4int mode;
+  G4int mode[MAX_N_VERTICES];
   G4int nvtxs;
-  G4int vtxsvol[MAX_N_PRIMARIES];
-  G4ThreeVector vtxs[MAX_N_PRIMARIES];
+  G4int vtxsvol[MAX_N_VERTICES];
+  G4ThreeVector vtxs[MAX_N_VERTICES];
+  G4double vertexTimes[MAX_N_VERTICES];
   G4int npar;
   G4int beampdgs[MAX_N_PRIMARIES], targetpdgs[MAX_N_PRIMARIES];
   G4ThreeVector beamdirs[MAX_N_PRIMARIES], targetdirs[MAX_N_PRIMARIES];
@@ -110,7 +137,7 @@ public:
 
   inline void SetGPSEvtGenerator(G4bool choice) { useGPSEvt = choice; }
   inline G4bool IsUsingGPSEvtGenerator()  { return useGPSEvt; }
-
+  
   inline void OpenVectorFile(G4String fileName) 
   {
     if ( inputFile.is_open() ) 
@@ -124,10 +151,58 @@ public:
       exit(-1);
     }
   }
+  
   inline G4bool IsGeneratingVertexInRock() { return GenerateVertexInRock; }
   inline void SetGenerateVertexInRock(G4bool choice) { GenerateVertexInRock = choice; }
+  
+  inline void AddRadioactiveSource(G4String IsotopeName, G4String IsotopeLocation, G4double IsotopeActivity){
+    struct radioactive_source r;
+    r.IsotopeName = IsotopeName;
+    r.IsotopeLocation = IsotopeLocation;
+    r.IsotopeActivity = IsotopeActivity;
+    radioactive_sources.push_back(r);
+  }
+  inline std::vector<struct radioactive_source> Radioactive_Sources()  { return radioactive_sources; }
+  
+  inline void SetRadioactiveEvtGenerator(G4bool choice) { useRadioactiveEvt = choice; }
+  inline G4bool IsUsingRadioactiveEvtGenerator() 	{ return useRadioactiveEvt; }
+  
+  inline void SetRadioactiveTimeWindow(G4double choice) { radioactive_time_window = choice; }
+  inline G4double GetRadioactiveTimeWindow()  		{ return radioactive_time_window; }
 
-};
+  inline void SetRadonEvtGenerator(G4bool choice) 	{ useRadonEvt = choice; }
+  inline G4bool IsUsingRadonEvtGenerator()  		{ return useRadonEvt; }
+  
+  inline void SetRadonScenario(G4int choice) 		{ fRnScenario = choice; }
+  inline G4int GetRadonScenario() 			{ return fRnScenario; }
+  
+  inline void SetRadonSymmetry(G4int choice) 		{ fRnSymmetry = choice; }
+  inline G4int GetRadonSymmetry() 			{ return fRnSymmetry; }
+ //static const HepDouble nanosecond  = 1.;
+ //static const HepDouble second      = 1.e+9 *nanosecond;
+ //static const HepDouble millisecond = 1.e-3 *second;
+ //static const HepDouble microsecond = 1.e-6 *second;
+ //static const HepDouble  picosecond = 1.e-12*second;
+  inline void SetTimeUnit(G4String choice)
+  {
+
+
+    if(choice == "ns" || choice=="nanosecond")
+      fTimeUnit=CLHEP::nanosecond;//*second;
+    else if(choice == "s" || choice=="second")
+      fTimeUnit=CLHEP::second;
+    else if (choice = "ms" || choice=="millisecond")
+      fTimeUnit=CLHEP::millisecond;
+    else if (choice="microsecond")
+      fTimeUnit=CLHEP::microsecond;
+    else if(choice="ps" || choice=="picosecond")
+      fTimeUnit=CLHEP::picosecond;
+    else
+      fTimeUnit=CLHEP::nanosecond;
+  }
+    inline G4double GetTimeUnit()       { return fTimeUnit; }
+
+  };
 
 #endif
 

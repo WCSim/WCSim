@@ -19,8 +19,24 @@ To use the verification_HitsChargeTime test in the default method, do the follow
 * Still in the `verification-test-scripts` of your local WCSim directory, type: `root verification_HitsChargeTime.C`
 
 You can also use this test to compare any two files from any two directories. To use the script this way type:
-* `root` 
-* `.x verification_HitsChargeTime.C("/path/to/first_file", "/path/to/second_file")`
+* root 
+* .x verification_HitsChargeTime.C("/path/to/first_file", "/path/to/second_file")
+
+## verification-test-scripts/complete_comparison.C
+
+This script will test a .root output file from your version of WCSim against the committed version of the code.
+All variables within WCSimRootEvent are tested
+
+### Usage
+To use the complete_comparison test in the default method, do the following steps:
+* clone a copy of the current code from GitHub into a directory called WCSim_clean. Compile the code. 
+* Go to WCSim_clean/verification-test-scripts and run electrontest.mac by typing: ../bin/Linux-g++/WCSim electrontest.mac . This should produce an output file called wcsimtest.root in the verification-test-scripts directory of WCSim_clean. 
+* Go to the verification-test-scripts directory of your local WCSim (with your changes you wish to commit) and run the macro electrontest.mac in WCSim by typing ../bin/Linux-g++/WCSim electrontest.mac. This should produce a file called wcsimtest.root in your verification-test-scripts directory. 
+* Still in the verification-test-scripts of your local WCSim directory, type: root complete_comparison.C
+
+You can also use this test to compare any two files from any two directories. To use the script this way type:
+* root 
+* .x complete_comparison.C("/path/to/first_file", "/path/to/second_file")
 
 ## printSizes.C:
 
@@ -38,3 +54,4 @@ To use the printSizes test in the default method, do the following steps (note t
 You can also use this test to compare any two files from any two directories. To use the script this way type:
 * `root` 
 * `.x printSizes.C("/path/to/first_file", "/path/to/second_file",verbose)`
+

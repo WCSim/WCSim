@@ -48,15 +48,15 @@ DOXYGEN_EXISTS = 0
 endif
 
 .PHONY: all
-all: rootcint lib bin shared libWCSim.a
+all: rootcint lib bin shared libWCSim.a movedict
 
 # Note dependencies not yet set up right yet
 
 ROOTSO    := libWCSimRoot.so
 
-ROOTSRC  := ./src/WCSimRootEvent.cc ./include/WCSimRootEvent.hh ./src/WCSimRootGeom.cc ./include/WCSimRootGeom.hh ./include/WCSimPmtInfo.hh ./src/WCSimEnumerations.cc ./include/WCSimEnumerations.hh ./src/WCSimRootOptions.cc ./include/WCSimRootOptions.hh ./include/WCSimRootLinkDef.hh
+ROOTSRC  := ./src/WCSimRootEvent.cc ./include/WCSimRootEvent.hh ./src/WCSimRootGeom.cc ./include/WCSimRootGeom.hh ./include/WCSimPmtInfo.hh ./src/WCSimEnumerations.cc ./include/WCSimEnumerations.hh ./src/WCSimRootOptions.cc ./include/WCSimRootOptions.hh ./src/WCSimRootTools.cc ./include/WCSimRootTools.hh ./include/WCSimRootLinkDef.hh
 
-ROOTOBJS  := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimEnumerations.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootOptions.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootDict.o 
+ROOTOBJS  := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimEnumerations.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootOptions.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootTools.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootDict.o 
 
 shared: $(ROOTSRC) $(ROOTOBJS) 
 	g++ -shared -O $(ROOTOBJS) -o $(ROOTSO) $(ROOTLIBS)
@@ -66,9 +66,16 @@ libWCSim.a : $(ROOTOBJS)
 	ar clq $@ $(ROOTOBJS) 
 
 ./src/WCSimRootDict.cc : $(ROOTSRC)
-	rootcint  -f ./src/WCSimRootDict.cc -c -I./include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimEnumerations.hh WCSimRootOptions.hh WCSimRootLinkDef.hh
+	rootcint  -f ./src/WCSimRootDict.cc -c -I./include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimEnumerations.hh WCSimRootOptions.hh WCSimRootTools.hh WCSimRootLinkDef.hh
 
 rootcint: ./src/WCSimRootDict.cc
+
+movedict: rootcint
+ifneq (,$(wildcard ./src/WCSimRootDict_rdict.pcm))
+	cp -f ./src/WCSimRootDict_rdict.pcm .
+	cp -f ./src/WCSimRootDict_rdict.pcm ${G4WORKDIR}/tmp/${G4SYSTEM}/WCSim/
+endif
+
 
 doxy:
 	@if [ ${DOXYGEN_EXISTS} = 1 ]; \
@@ -80,7 +87,7 @@ doxy:
 
 clean_wcsim:
 	echo  $(G4WORKDIR); 
-	$(RM) -r $(G4WORKDIR); $(RM) *.o *.a *.so *~ */*~ src/WCSimRootDict.h src/WCSimRootDict.cc; 
+	$(RM) -r $(G4WORKDIR); $(RM) *.o *.a *.so *~ */*~ src/WCSimRootDict.h src/WCSimRootDict.cc src/WCSimRootDict_rdict.pcm WCSimRootDict_rdict.pcm;
 	@if [ -d "doc/doxygen" ]; \
 		then \
 		rm -r doc/doxygen; \
