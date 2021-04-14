@@ -45,6 +45,11 @@ parser.add_option("-V","--nVerticesPerEvent",dest="verticesPerEvent",
                   help=" Average number of vertices to simulate per event. Default: %s" \
                   % (verticesPerEventDefault),
                   metavar="#", default=verticesPerEventDefault)
+optdefault = None
+parser.add_option("-s", "--seed", dest="seed",
+                  help="Random number seed. Default: %s" \
+                      % (optdefault),
+                  metavar="SEED", default=optdefault)
 optchoices = list(pid.keys())
 optdefault = "mu-"
 parser.add_option("-t", "--type", dest="type",
@@ -80,11 +85,6 @@ parser.add_option("-w", "--detector", dest="detector",
                   help="Detector water volume to use (for vertex positioning). Choices: %s. Default: %s" \
                       % (optchoices, optdefault),
                   choices=optchoices, default=optdefault)
-optdefault = 10101
-parser.add_option("-s", "--seed", dest="seed",
-                  help="Random number seed. Default: %s" \
-                      % (optdefault),
-                  metavar="SEED", default=optdefault)
 
 (options, args) = parser.parse_args()
 
