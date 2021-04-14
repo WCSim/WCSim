@@ -51,13 +51,13 @@ private:
   //'Gates' is a digit counter or specifies subevent
   //'TriggerTimes' specifies e.g. the subevent trigger time
   std::set<int> Gates; // list of gates that were hit  
-  std::vector<float> TriggerTimes;
+  std::vector<double> TriggerTimes;
 
   //lists (meaning vector/map) of information for each hit/digit created on the PMT
-  std::map<int,float> pe;   ///< Charge of each Digi
-  std::map<int,float> time_presmear; ///< Time of each Digi, before smearing
-  std::map<int,float> time; ///< Time of each Digi
-  std::vector<G4float>  time_float; ///< Same information as "time" but stored in a vector for quick time sorting
+  std::map<int,double> pe;   ///< Charge of each Digi
+  std::map<int,double> time_presmear; ///< Time of each Digi, before smearing
+  std::map<int,double> time; ///< Time of each Digi
+  std::vector<G4double>  time_double; ///< Same information as "time" but stored in a vector for quick time sorting
   /** \brief IDs of the hits that make up this Digit (do not use for Hits)
    *
    * Stores the unique IDs of each photon making up a digit
@@ -83,10 +83,10 @@ public:
   void RemoveDigitizedGate(G4int gate);
   
   inline void SetTubeID(G4int tube) {tubeID = tube;};
-  inline void AddGate(int g,float t) { Gates.insert(g); TriggerTimes.push_back(t);}
-  inline void SetPe(G4int gate,  G4float Q)      {pe[gate]     = Q;};
-  inline void SetTime(G4int gate, G4float T)    {time[gate]   = T;};
-  inline void SetPreSmearTime(G4int gate, G4float T)    {time_presmear[gate]   = T;};
+  inline void AddGate(int g,double t) { Gates.insert(g); TriggerTimes.push_back(t);}
+  inline void SetPe(G4int gate,  G4double Q)      {pe[gate]     = Q;};
+  inline void SetTime(G4int gate, G4double T)    {time[gate]   = T;};
+  inline void SetPreSmearTime(G4int gate, G4double T)    {time_presmear[gate]   = T;};
   inline void SetParentID(G4int gate, G4int parent) { primaryParentID[gate] = parent; };
 
   // Add a digit number and unique photon number to fDigiComp
@@ -101,11 +101,11 @@ public:
   }
 
   inline G4int   GetParentID(int gate) { return primaryParentID[gate];};
-  inline G4float GetGateTime(int gate) { return TriggerTimes[gate];}
+  inline G4double GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
-  inline G4float GetPe(int gate)     {return pe[gate];};
-  inline G4float GetTime(int gate)   {return time[gate];};
-  inline G4float GetPreSmearTime(int gate)   {return time_presmear[gate];};
+  inline G4double GetPe(int gate)     {return pe[gate];};
+  inline G4double GetTime(int gate)   {return time[gate];};
+  inline G4double GetPreSmearTime(int gate)   {return time_presmear[gate];};
   std::vector<int> GetDigiCompositionInfo(int gate);
   inline std::map< int, std::vector<int> > GetDigiCompositionInfo(){return fDigiComp;}
 
@@ -125,20 +125,20 @@ public:
   
   void SetMaxPe(G4int number = 0)  {maxPe   = number;};
 
-  void AddPe(G4float hitTime)  
+  void AddPe(G4double hitTime)
   {
     // Increment the totalPe number
     totalPe++; 
         
-    time_float.push_back(hitTime);
+    time_double.push_back(hitTime);
   }
 
-  void SortHitTimes() {   sort(time_float.begin(),time_float.end()); }
+  void SortHitTimes() {   sort(time_double.begin(),time_double.end()); }
 
 
   void SortArrayByHitTime() {
     int i, j;
-    float index_time,index_timepresmear,index_pe;
+    double index_time,index_timepresmear,index_pe;
     std::vector<int> index_digicomp;
     int index_primaryparentid;
     for (i = 1; i < (int) time.size(); ++i)
@@ -150,6 +150,7 @@ public:
 	index_primaryparentid = primaryParentID[i];
         for (j = i; j > 0 && time[j-1] > index_time; j--) {
           time[j] = time[j-1];
+	  time_presmear[j] = time_presmear[j-1];
           pe[j] = pe[j-1];
 	  fDigiComp[j] = fDigiComp[j-1];
 	  primaryParentID[j] = primaryParentID[j-1];
@@ -178,17 +179,17 @@ public:
   }
 
 
-  G4float GetFirstHitTimeInGate(G4float low,G4float upevent)
+  G4double GetFirstHitTimeInGate(G4double low,G4double upevent)
   {
-    G4float firsttime;
-    std::vector<G4float>::iterator tfirst = time_float.begin();
-    std::vector<G4float>::iterator tlast = time_float.end();
+    G4double firsttime;
+    std::vector<G4double>::iterator tfirst = time_double.begin();
+    std::vector<G4double>::iterator tlast = time_double.end();
     
-    std::vector<G4float>::iterator found = 
+    std::vector<G4double>::iterator found =
       std::find_if(tfirst,tlast,
 		   compose2(std::logical_and<bool>(),
-			    std::bind2nd(std::greater_equal<G4float>(),low),
-			    std::bind2nd(std::less_equal<G4float>(),upevent)
+			    std::bind2nd(std::greater_equal<G4double>(),low),
+			    std::bind2nd(std::less_equal<G4double>(),upevent)
 			    )
 		   );
     if ( found != tlast ) {
@@ -201,6 +202,12 @@ public:
     return firsttime;
   }
 
+  // G. Pronost:	
+  // Sort function by Hit Time (using first time, assuming hit time in a hit are sorted)
+  struct SortFunctor_Hit {
+    bool operator() (const WCSimWCDigi * const &a,
+                     const WCSimWCDigi * const &b) const;
+  };
  
 };
 
