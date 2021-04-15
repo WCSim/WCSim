@@ -60,7 +60,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   radonScalingCmd->SetGuidance("     SCENARIO : 0, A, B");
   radonScalingCmd->SetCandidates("0 A B");
   param = new G4UIparameter("SCENARIO",'s',true);
-  param->SetDefaultValue("B");
+  param->SetDefaultValue("A");
   radonScalingCmd->SetParameter(param);
   
   radonGeoSymCmd = new G4UIcmdWithAnInteger("/mygen/radon_symmetry",this);
