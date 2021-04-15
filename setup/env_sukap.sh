@@ -1,12 +1,37 @@
 #!/bin/bash
 
+# ROOT version as argument, default value is 6 for ROOT6
+#ROOT_ARG=5
+ROOT_ARG=6
+
+if [ ! -z "$1" ] ; then
+	echo "ROOT version requested to be: ${1}"
+	ROOT_ARG=$1
+fi
+
+############################
+# CMAKE
+############################
+
+export PATH=/usr/local/cmake-3.18.1/bin/:$PATH
+
 ############################
 # ROOT/CERN
 ############################
-# Note: official ROOT 5.34 installation on sukap is not compatible with cmake
-#  Temporary use Guillaume Pronost's version. Should change in the future.
-#
-export ROOT_DIR=/home/pronost/software/root-5.34.38-build
+
+if [[ "$ROOT_ARG" == 5 ]] ; then 
+	echo "Use ROOT5"
+	# Note: official ROOT 5.34 installation on sukap is not compatible with cmake
+	#  Temporary use Guillaume Pronost's version. Should change in the future.
+	#
+	export ROOT_DIR=/home/pronost/software/root-5.34.38-build
+else
+	echo "Use ROOT6"
+	# Note: There is no official ROOT 6 installation 
+	#  Temporary use Guillaume Pronost's version. Should change in the future.
+	export ROOT_DIR=/home/pronost/software/root-6.22.00-build
+fi
+	
 # Note: There is no official ROOT 6 installation 
 #  Temporary use Guillaume Pronost's version. Should change in the future.
 #export ROOT_DIR=/home/pronost/software/root-6.22.00-build

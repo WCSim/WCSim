@@ -67,7 +67,7 @@ if ( ${ROOT_VERSION} GREATER_EQUAL 6 )
 else()
 	# ROOT5 need the full path
 	## Use ROOT 5.34.32 as some issues with PARSE_ARGUMENTS were found in older ROOT versions (ROOT 5.34.11)
-	ROOT_GENERATE_DICTIONARY(	${CMAKE_CURRENT_SOURCE_DIR}/src/WCSimRootDict 
+	ROOT_GENERATE_DICTIONARY(	WCSimRootDict 
 					${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootEvent.hh 
 					${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootGeom.hh 
 					${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimPmtInfo.hh 
@@ -85,7 +85,7 @@ add_library(WCSimRoot SHARED
 		./src/WCSimEnumerations.cc 
 		./src/WCSimRootOptions.cc 
 		./src/WCSimRootTools.cc 
-		./src/WCSimRootDict.cxx)
+		WCSimRootDict.cxx)
 target_link_libraries(WCSimRoot  ${ROOT_LIBRARIES})
 
 # Create libWCSimRootDict.so (needed for ROOT6)
@@ -130,6 +130,18 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
+# To use <unordered_map>, ie. use C++11 now from GCC 4.4 onwards support for unordered_maps.
+# Had to change G4float to G4double for QE because of double arithmatic inside the array.
+if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.7)
+    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++11")
+else()
+    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++0x")
+endif()
+
+
+# Set flag for git version to be used as c++ preprocessor macro
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGIT_HASH=\"\\\"`cd ${PROJECT_SOURCE_DIR};git describe --always --long --tags --dirty`\\\"\"")
+
 add_executable(WCSim WCSim.cc ${sources} ${headers})
 target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree)
 

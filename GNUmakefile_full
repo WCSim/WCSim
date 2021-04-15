@@ -47,6 +47,9 @@ else
 DOXYGEN_EXISTS = 0
 endif
 
+# Set flag for git version to be used as c++ preprocessor macro
+CPPFLAGS += -DGIT_HASH=\"$(shell git describe --always --long --tags --dirty)\"
+
 .PHONY: all
 all: rootcint lib bin shared libWCSim.a movedict
 

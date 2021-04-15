@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cmake --version 
+
 wcsim_name=${PWD##*/}
 branch_name=$(git rev-parse --abbrev-ref HEAD)
 
