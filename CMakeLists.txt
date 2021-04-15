@@ -58,12 +58,6 @@ if ( ${ROOT_VERSION} GREATER_EQUAL 6 )
 					WCSimRootOptions.hh 
 					WCSimRootTools.hh 
 					LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootLinkDef.hh)
-	
-	# Move ROOTDict in src directory
-	ADD_CUSTOM_COMMAND(OUTPUT ./src/WCSimRootDict.cxx
-			COMMAND ${CMAKE_COMMAND} -E copy WCSimRootDict.cxx 		${CMAKE_CURRENT_SOURCE_DIR}/src/WCSimRootDict.cxx 
-			COMMAND ${CMAKE_COMMAND} -E remove WCSimRootDict.cxx
-			MAIN_DEPENDENCY WCSimRootDict.cxx )
 else()
 	# ROOT5 need the full path
 	## Use ROOT 5.34.32 as some issues with PARSE_ARGUMENTS were found in older ROOT versions (ROOT 5.34.11)
