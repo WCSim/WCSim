@@ -96,9 +96,6 @@ void WCSimGenerator_Radioactivity::Initialize() {
 //	fRn_PerPMT   = 24.; // mBq/PMT (equilibrium), assuming 20 mBq/Band +  4 mBq/PMT 
 		
 	// Detector size:
-	// HK (Should be extract from detector construction?)
-	//fHK_Z_max   = 66.8/2.;
-	//fHK_R_max   = 64.8/2.;
 	fCurrentDetector_Z_max   = myDetector->GetIDHeight() / CLHEP::m / 2.;
 	fCurrentDetector_Z_min   = -1. * fCurrentDetector_Z_max;
 	fCurrentDetector_R_max   = myDetector->GetIDRadius() / CLHEP::m;
