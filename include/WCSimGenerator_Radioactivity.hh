@@ -117,11 +117,11 @@ class WCSimGenerator_Radioactivity
 		static G4double vParam_Z [RNMODEL_BIN_R_MAX][7];	
 		static G4double vParam_R2[RNMODEL_BIN_Z_MAX][7];
 	
-		// Min and Max R2 values for each Z layer
+		// Min and Max R2 values for each R2 layer
 		static G4double vLayer_MinR2_Z[RNMODEL_BIN_R_MAX];
 		static G4double vLayer_MaxR2_Z[RNMODEL_BIN_R_MAX];
 
-		// Min and Max Z values for each R2 layer
+		// Min and Max Z values for each Z layer
 		static G4double vLayer_MinZ_R2[RNMODEL_BIN_Z_MAX];
 		static G4double vLayer_MaxZ_R2[RNMODEL_BIN_Z_MAX];
 		
