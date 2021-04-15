@@ -141,7 +141,7 @@ void WCSimGenerator_Radioactivity::Configuration(G4int iScenario, G4double dLife
 	this->SetScenario(iScenario);
 	G4cout << " ========================================================================== " << G4endl;
 	
-	G4cout << " Livetime: " << log(2) / fRnLambda << " sec " <<  G4endl;
+	G4cout << " Mean lifetime: " << log(2) / fRnLambda << " sec " <<  G4endl;
 	G4cout << " Lambda:   " << fRnLambda << "     " <<  G4endl;
 	G4cout << " Activity on ID border:   " << fRn_Border << " mBq/m^3  " <<  G4endl;
 	if ( fScenario == 0 ) {
