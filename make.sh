@@ -1,37 +1,35 @@
 #!/bin/bash
 
-cmake --version 
+curpath=${PWD}
 
-wcsim_name=${PWD##*/}
-branch_name=$(git rev-parse --abbrev-ref HEAD)
+if [ ! -d ../WCSim_v1.8.0-build ]; then
 
-wcsim_directory=${PWD}
-build_directory=${wcsim_directory}/../${wcsim_name}-build/${ROOT_STR}/${branch_name}
-# If ROOT_STR is not set, this will have no effect, if ROOT_STR is set, we can manage two or more different ROOT versions
-
-if [ ! -d ${build_directory} ]; then
+	echo "Creating libWCSimRoot.so"
+	rm -f src/*Dict*
+	make shared
+	rm -f src/*Dict*
 	
-	# Clean G4
-	if [ -d ${G4WORKDIR} ]; then
-		rm -r ${G4WORKDIR}
-	fi
-	rm *.o *.a *.so *~ */*~ src/*Dict*
+	echo "Creating build directory ../WCSim_v1.8.0-build"
+	mkdir -p ../WCSim_v1.8.0-build
 	
-	echo "Creating build directory ${build_directory}"
-	mkdir -p ${build_directory}
+	cd ../WCSim_v1.8.0-build
+	cmake -DCMAKE_PREFIX_PATH=${G4INSTALLDIR} $curpath
 	
-	cd ${build_directory}
-	cmake -DCMAKE_PREFIX_PATH=${G4INSTALLDIR} ${wcsim_directory}
-	
-	cp -r ${wcsim_directory}/sample-root-scripts ${build_directory}/.
+	# Add needed directory and files
+	ln -s $curpath/include ../WCSim_v1.8.0-build/include
+	cp $curpath/biasprofile.dat ../WCSim_v1.8.0-build/.
+	ln -s $curpath/data ../WCSim_v1.8.0-build/data
 else 
-	cd ${build_directory}
+	cd ../WCSim_v1.8.0-build
 fi
 
 
-if [ -d ${build_directory} ]; then
+if [ -d ../WCSim_v1.8.0-build ]; then
+
+	rm -f src/*Dict*
+	
 	make clean
 	make -j7
-	
-	cd ${wcsim_directory}
+
+	cd $curpath
 fi	
