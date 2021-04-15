@@ -12,11 +12,12 @@
 
 using namespace std;
 
-#define	RnModel_Bin_Rmax	10
-#define	RnModel_Bin_Zmin	 2
-#define	RnModel_Bin_Zmax	16
-#define	RnModel_Bin_Rmax_Step	16
-#define	RnModel_Bin_Zmax_Step	18
+#define	RNMODEL_BIN_R_MAX	10 // Highest R2 layer
+#define	RNMODEL_BIN_Z_MIN	 2 // Lowest Z layer
+#define	RNMODEL_BIN_Z_MAX	16 // Highest Z layer
+#define	RNMODEL_NBIN_R		16 // Number of R2 layers
+#define	RNMODEL_NBIN_Z		18 // Number of Z layers
+// GetSign function is defined as pre-compiler function to fasten the computation
 #define 	GetSign(a) 		a<0?-1.:1.
 
 class WCSimDetectorConstruction;
@@ -32,7 +33,7 @@ class WCSimGenerator_Radioactivity
 		
 		G4ThreeVector GetRandomVertex(G4int tSymNumber);
 		G4double GetMeanActivity()		{ return fConcentrationID; }
-		G4double GetMeanActivityReco()	{ return fConcentrationReco; }
+		G4double GetMeanActivityFV()		{ return fConcentrationFV; }
 		G4double GetIDVolume()			{ return (fR_max*fR_max*TMath::Pi()*fZ_max*2.); }
 		
 		
@@ -49,10 +50,10 @@ class WCSimGenerator_Radioactivity
 		// Function
 		TF2* thRnFunction;
 		G4double fIntegral;
-		G4double fIntegralReco;
+		G4double fIntegralFV;
 		
 		G4double fConcentrationID;
-		G4double fConcentrationReco;
+		G4double fConcentrationFV;
 		
 		void SetScenario(G4int iScenario);
 		static double RadonFormula(double *val, double *par);
@@ -67,16 +68,12 @@ class WCSimGenerator_Radioactivity
 		
 		static G4double fRn_PerPMT;
 		
-		// Parameter
-		G4double CONC_BOTTOM;
-		G4double CONC_CENTER;
-		G4double CONC_INTERMEDIATE;
-	
-		G4double CONC_MIDDLE;
-		G4double CONC_INT_R2_6;
-		G4double CONC_INT_R2_7;
-		G4double CONC_INT_R2_8;
-		G4double CONC_INT_R2_9;
+		// Parameter:	
+		G4double fConc_Middle;
+		G4double fConc_Int_R2_6;
+		G4double fConc_Int_R2_7;
+		G4double fConc_Int_R2_8;
+		G4double fConc_Int_R2_9;
 		
 		static G4double fRn_Border;
 		
@@ -90,23 +87,22 @@ class WCSimGenerator_Radioactivity
 		static G4double fSK_R_max;
 		static G4double fSK_R2_max;
 		
-		static G4double fZ_min_reco;
-		static G4double fZ_max_reco;
-		static G4double fR_max_reco;
-		static G4double fR2_max_reco;
+		static G4double fZ_min_FV;
+		static G4double fZ_max_FV;
+		static G4double fR_max_FV;
+		static G4double fR2_max_FV;
 		
 		static G4double fZ_min, fZ_max, fR_max , fR2_max;
-		static G4double fZ_reco, fR_reco, fR2_reco;
 		
 		// Parameter array declaration:
-		static G4double vParam_Z [RnModel_Bin_Rmax][7];	
-		static G4double vParam_R2[RnModel_Bin_Zmax][7];
+		static G4double vParam_Z [RNMODEL_NBIN_R][7];	
+		static G4double vParam_R2[RNMODEL_NBIN_Z][7];
 	
-		static G4double vLayer_MinR2_Z[RnModel_Bin_Rmax];
-		static G4double vLayer_MaxR2_Z[RnModel_Bin_Rmax];
+		static G4double vLayer_MinR2_Z[RNMODEL_NBIN_R];
+		static G4double vLayer_MaxR2_Z[RNMODEL_NBIN_R];
 
-		static G4double vLayer_MinZ_R2[RnModel_Bin_Zmax];
-		static G4double vLayer_MaxZ_R2[RnModel_Bin_Zmax];
+		static G4double vLayer_MinZ_R2[RNMODEL_NBIN_Z];
+		static G4double vLayer_MaxZ_R2[RNMODEL_NBIN_Z];
 
 };
 #endif

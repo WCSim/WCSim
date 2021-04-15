@@ -27,40 +27,32 @@ G4double WCSimGenerator_Radioactivity::fHK_Z_min	 = 0.;
 G4double WCSimGenerator_Radioactivity::fHK_Z_max	 = 0.;
 G4double WCSimGenerator_Radioactivity::fHK_R_max	 = 0.;
 G4double WCSimGenerator_Radioactivity::fHK_R2_max	 = 0.;
-/*
-G4double WCSimGenerator_Radioactivity::fHK_Z_reco	 = 0.;
-G4double WCSimGenerator_Radioactivity::fHK_R_reco	 = 0.;
-G4double WCSimGenerator_Radioactivity::fHK_R2_reco	 = 0.;
-*/
+
 G4double WCSimGenerator_Radioactivity::fSK_Z_min	 = 0.;
 G4double WCSimGenerator_Radioactivity::fSK_Z_max	 = 0.;
 G4double WCSimGenerator_Radioactivity::fSK_R_max	 = 0.;
 G4double WCSimGenerator_Radioactivity::fSK_R2_max	 = 0.;
-/*
-G4double WCSimGenerator_Radioactivity::fSK_Z_reco	 = 0.;
-G4double WCSimGenerator_Radioactivity::fSK_R_reco	 = 0.;
-G4double WCSimGenerator_Radioactivity::fSK_R2_reco	 = 0.;
-*/
+
 G4double WCSimGenerator_Radioactivity::fZ_min		 = 0.;
 G4double WCSimGenerator_Radioactivity::fZ_max		 = 0.;
 G4double WCSimGenerator_Radioactivity::fR_max		 = 0.;
 G4double WCSimGenerator_Radioactivity::fR2_max	 = 0.;
 
-G4double WCSimGenerator_Radioactivity::fZ_min_reco	 = 0.;
-G4double WCSimGenerator_Radioactivity::fZ_max_reco	 = 0.;
-G4double WCSimGenerator_Radioactivity::fR_max_reco	 = 0.;
-G4double WCSimGenerator_Radioactivity::fR2_max_reco	 = 0.;
+G4double WCSimGenerator_Radioactivity::fZ_min_FV	 = 0.;
+G4double WCSimGenerator_Radioactivity::fZ_max_FV	 = 0.;
+G4double WCSimGenerator_Radioactivity::fR_max_FV	 = 0.;
+G4double WCSimGenerator_Radioactivity::fR2_max_FV	 = 0.;
 
 
 // Parameter array initialization:
-G4double WCSimGenerator_Radioactivity::vParam_Z [RnModel_Bin_Rmax][7]	= {};	
-G4double WCSimGenerator_Radioactivity::vParam_R2[RnModel_Bin_Zmax][7]	= {};
+G4double WCSimGenerator_Radioactivity::vParam_Z [RNMODEL_BIN_R_MAX][7]	= {};	
+G4double WCSimGenerator_Radioactivity::vParam_R2[RNMODEL_BIN_Z_MAX][7]	= {};
 	
-G4double WCSimGenerator_Radioactivity::vLayer_MinR2_Z[RnModel_Bin_Rmax]	= {};
-G4double WCSimGenerator_Radioactivity::vLayer_MaxR2_Z[RnModel_Bin_Rmax]	= {};
+G4double WCSimGenerator_Radioactivity::vLayer_MinR2_Z[RNMODEL_BIN_R_MAX]	= {};
+G4double WCSimGenerator_Radioactivity::vLayer_MaxR2_Z[RNMODEL_BIN_R_MAX]	= {};
 
-G4double WCSimGenerator_Radioactivity::vLayer_MinZ_R2[RnModel_Bin_Zmax]	= {};
-G4double WCSimGenerator_Radioactivity::vLayer_MaxZ_R2[RnModel_Bin_Zmax]	= {};
+G4double WCSimGenerator_Radioactivity::vLayer_MinZ_R2[RNMODEL_BIN_Z_MAX]	= {};
+G4double WCSimGenerator_Radioactivity::vLayer_MaxZ_R2[RNMODEL_BIN_Z_MAX]	= {};
 
 WCSimGenerator_Radioactivity::WCSimGenerator_Radioactivity(WCSimDetectorConstruction* myDC) {
 	myDetector = myDC;
@@ -91,70 +83,50 @@ void WCSimGenerator_Radioactivity::Initialize() {
 	// Radon radioactivity constant
 	fRnLambda =  log(2) / (3.824*24.*3600.);
 	fRnLambda_Global = 0;
-		
-	// Parameter
-	CONC_BOTTOM 		= 2.63; // mBq/m^{3} -> From Nakano-san et al.
-	CONC_CENTER 		= 0.1;  // mBq/m^{3} -> From Nakano-san et al.
-	CONC_INTERMEDIATE 	= 0.3;  // Arbitrary
 	
 	// Auto filled parameters
-	CONC_MIDDLE = 0;
-	CONC_INT_R2_6 = 0;
-	CONC_INT_R2_7 = 0;
-	CONC_INT_R2_8 = 0;
-	CONC_INT_R2_9 = 0;
+	fConc_Middle 	= 0;
+	fConc_Int_R2_6	= 0;
+	fConc_Int_R2_7	= 0;
+	fConc_Int_R2_8	= 0;
+	fConc_Int_R2_9	= 0;
 	
-	fRn_PerPMT   = 30.; // mBq/PMT (equilibrium), assuming 20 mBq/Band + 10 mBq/PMT 
+	RN_PMT   = 30.; // mBq/PMT (equilibrium), assuming 20 mBq/Band + 10 mBq/PMT 
 //	fRn_PerPMT   = 24.; // mBq/PMT (equilibrium), assuming 20 mBq/Band +  4 mBq/PMT 
 		
 	// Detector size:
 	// HK (Should be extract from detector construction?)
 	//fHK_Z_max   = 66.8/2.;
 	//fHK_R_max   = 64.8/2.;
-	fHK_Z_max   = myDetector->GetIDHeight() / CLHEP::m / 2.;
-	fHK_Z_min   = -1. * fHK_Z_max;
-	fHK_R_max   = myDetector->GetIDRadius() / CLHEP::m;
-	fHK_R2_max  = fHK_R_max * fHK_R_max;
-/*	
-	fHK_Z_reco  = fHK_Z_max - 2.;
-	fHK_R_reco  = fHK_R_max - 2.;
-	fHK_R2_reco = fHK_R_reco * fHK_R_reco;
-*/	
+	fCurrentDetector_Z_max   = myDetector->GetIDHeight() / CLHEP::m / 2.;
+	fCurrentDetector_Z_min   = -1. * fCurrentDetector_Z_max;
+	fCurrentDetector_R_max   = myDetector->GetIDRadius() / CLHEP::m;
+	fCurrentDetector_R2_max  = fCurrentDetector_R_max * fCurrentDetector_R_max;
+	
 	// Constant
 	fSK_Z_max   = 36.200  / 2.;
 	fSK_Z_min   = -1. * fSK_Z_max;
 	fSK_R_max   = 33.6815 / 2.;
 	fSK_R2_max  = fSK_R_max * fSK_R_max;
 	
-/*		
-	// 20200922 Guillaume, not used anymore
-	fSK_Z_reco  = fSK_Z_max - 2.;
-	fSK_R_reco  = fSK_R_max - 2.;
-	fSK_R2_reco = fSK_R_reco * fSK_R_reco;
-*/	
-	fZ_max   = fHK_Z_max;
-	fZ_min   = fHK_Z_min;
-	fR_max   = fHK_R_max;
+	fZ_max   = fCurrentDetector_Z_max;
+	fZ_min   = fCurrentDetector_Z_min;
+	fR_max   = fCurrentDetector_R_max;
 	fR2_max  = fR_max * fR_max;
 	
-	fZ_max_reco   = fZ_max - 2.;
-	fZ_min_reco   = fZ_min - 2.;
-	fR_max_reco   = fR_max - 2.;
-	fR2_max_reco  = fR_max_reco * fR_max_reco;
-/*	
-	// 20200922 Guillaume, not used anymore
-	fZ_reco  = fZ_max - 2.;
-	fR_reco  = fR_max - 2.;
-	fR2_reco = fR_reco * fR_reco;
-*/	
+	// Detector FV (assume 2 m from wall), only used for debug
+	fZ_max_FV   = fZ_max - 2.;
+	fZ_min_FV   = fZ_min - 2.;
+	fR_max_FV   = fR_max - 2.;
+	fR2_max_FV  = fR_max_FV * fR_max_FV;
 	
 	G4int nPMT = myDetector->Get_Pmts()->size();
-	fRn_Border = fRn_PerPMT * nPMT / (2. * TMath::Pi() * fHK_R_max * fHK_R_max + 2. * TMath::Pi() * fHK_R_max * fHK_Z_max * 2. );
+	fRn_Border = fRn_PerPMT * nPMT / (2. * TMath::Pi() * fCurrentDetector_R_max * fCurrentDetector_R_max + 2. * TMath::Pi() * fCurrentDetector_R_max * fCurrentDetector_Z_max * 2. );
 			
 	fScenario = 0;
 	thRnFunction = 0;
 	fConcentrationID = 0;
-	fConcentrationReco = 0;
+	fConcentrationFV = 0;
 	
 	this->SetScenario(0);
 }
@@ -177,13 +149,13 @@ void WCSimGenerator_Radioactivity::Configuration(G4int iScenario, G4double dLife
 	if ( fScenario == 0 ) {
 		G4cout << " Scenario 0: Uniform Rn concentration is assumed " << G4endl;
 		fConcentrationID = 0;
-		fConcentrationReco = 0;
+		fConcentrationFV = 0;
 	}
 	else {
 		// Compute concentration
 		// Integral is of a 2D projection, it is already divided by PI
 		fConcentrationID = fIntegral / (fR2_max * (fZ_max - fZ_min) );
-		fConcentrationReco = fIntegralReco / (fR2_max_reco * (fZ_max_reco - fZ_min_reco) );
+		fConcentrationFV = fIntegralFV / (fR2_max_FV * (fZ_max_FV - fZ_min_FV) );
 		
 		G4cout << " Scenario " << fScenario << ": Rn concentration is defined with the following parameters " << G4endl;
 		G4cout << " PMT number: " << myDetector->Get_Pmts()->size() << G4endl;
@@ -191,7 +163,7 @@ void WCSimGenerator_Radioactivity::Configuration(G4int iScenario, G4double dLife
 		G4cout << " Surface: " << (2. * TMath::Pi() * fR2_max + 2. * TMath::Pi() * fR_max * (fZ_max - fZ_min) ) << G4endl;
 		//G4cout << fHK_R_max << " " << fHK_Z_max * 2 << G4endl;
 		G4cout << " Mean activity in the full ID:   " << fIntegral << " mBq  ( Concentration: " << fConcentrationID << " mBq / m^3 ) " <<  G4endl;
-		G4cout << " Mean activity in the fiducial volume:   " << fIntegralReco << " mBq  ( Concentration: " << fConcentrationReco << " mBq / m^3 ) " <<  G4endl;
+		G4cout << " Mean activity in the fiducial volume:   " << fIntegralFV << " mBq  ( Concentration: " << fConcentrationFV << " mBq / m^3 ) " <<  G4endl;
 	}
 	G4cout << " ========================================================================== " << G4endl;
 }
@@ -202,7 +174,7 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 	
 
 	// Initialize arrays
-	for ( int iZ=0; iZ < RnModel_Bin_Zmax; iZ++ ) {
+	for ( int iZ=0; iZ < RNMODEL_BIN_Z_MAX; iZ++ ) {
 		for ( int i=0; i < 7; i++ ) {
 			vParam_R2[iZ][i] = 0;
 		}
@@ -211,7 +183,7 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 		vLayer_MaxZ_R2[iZ] = 0;
 	}
 	
-	for ( int iR=0; iR < RnModel_Bin_Rmax; iR++ ) {
+	for ( int iR=0; iR < RNMODEL_BIN_R_MAX; iR++ ) {
 		for ( int i=0; i < 7; i++ ) {
 			vParam_Z [iR][i] = 0;
 		}
@@ -222,7 +194,7 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 	
 	if ( fScenario == 0 ) {
 		fIntegral = 0;
-		fIntegralReco = 0;
+		fIntegralFV = 0;
 		
 		if ( thRnFunction ) delete thRnFunction;
 		return;
@@ -241,35 +213,35 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 	double val2[2];	
 	val2[0] = -8; // m (Z)
 	val2[1] = 0.; // (R2)
-	CONC_MIDDLE 	= ( RadonFormulaZ( val1, vParam_Z[0] ) - RadonFormulaZ( val2, vParam_Z[0] ) ) / 2.;
+	fConc_Middle 	= ( RadonFormulaZ( val1, vParam_Z[0] ) - RadonFormulaZ( val2, vParam_Z[0] ) ) / 2.;
 	
 	double valR2[2];	
 	valR2[0] = 115.; // m2 (R2)
 	valR2[1] = 0.; // m (Z)
-	CONC_INT_R2_6	= ( RadonFormulaR(valR2, vParam_R2[8] ) + RadonFormulaR(valR2, vParam_R2[9] ) ) / 2.;
+	fConc_Int_R2_6	= ( RadonFormulaR(valR2, vParam_R2[8] ) + RadonFormulaR(valR2, vParam_R2[9] ) ) / 2.;
 	
 	valR2[0] = 133.; // m2 (R2)
 	valR2[1] = 0.; // m (Z)
-	CONC_INT_R2_7	= ( RadonFormulaR(valR2, vParam_R2[8] ) + RadonFormulaR(valR2, vParam_R2[9] ) ) / 2.;
+	fConc_Int_R2_7	= ( RadonFormulaR(valR2, vParam_R2[8] ) + RadonFormulaR(valR2, vParam_R2[9] ) ) / 2.;
 	
 	valR2[0] = 151.; // m2 (R2)
 	valR2[1] = 0.; // m (Z)
-	CONC_INT_R2_8	= ( RadonFormulaR(valR2, vParam_R2[8] ) + RadonFormulaR(valR2, vParam_R2[9] ) ) / 2.;
+	fConc_Int_R2_8	= ( RadonFormulaR(valR2, vParam_R2[8] ) + RadonFormulaR(valR2, vParam_R2[9] ) ) / 2.;
 	
 	valR2[0] = 169.; // m2 (R2)
 	valR2[1] = 0.; // m (Z)
-	CONC_INT_R2_9	= ( RadonFormulaR(valR2, vParam_R2[8] ) + RadonFormulaR(valR2, vParam_R2[9] ) ) / 2.;
+	fConc_Int_R2_9	= ( RadonFormulaR(valR2, vParam_R2[8] ) + RadonFormulaR(valR2, vParam_R2[9] ) ) / 2.;
 		
 	//---------------------------------------------//
 	// Reload parameter to take into account the new variables values	
 	#include "RnModel_Fit_Params.hh"
 		
 	// Z layers
-	for ( int iR = 0; iR < RnModel_Bin_Rmax; iR++ ) {
+	for ( int iR = 0; iR < RNMODEL_BIN_R_MAX; iR++ ) {
 		
 		// Set Layer position:
-		double dR2_step_SK 	= fSK_R2_max 	/ (double) RnModel_Bin_Rmax_Step;
-		double dR2_step 	= fR2_max 	/ (double) RnModel_Bin_Rmax_Step;
+		double dR2_step_SK 	= fSK_R2_max 	/ (double) RNMODEL_NBIN_R;
+		double dR2_step 	= fR2_max 	/ (double) RNMODEL_NBIN_R;
 		
 		double dMinR2 = iR 	* dR2_step_SK;
 		double dMaxR2 = (iR+1) * dR2_step_SK;
@@ -306,7 +278,7 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 				// Absolute scaling
 			
 				// For layer limits we need to start from the end:
-				int iRend = RnModel_Bin_Rmax - iR - 1;
+				int iRend = RNMODEL_BIN_R_MAX - iR - 1;
 				
 				dMinR2 			= iRend 	* dR2_step_SK;
 				dMaxR2 			= (iRend+1) 	* dR2_step_SK;
@@ -344,12 +316,12 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 	}
 	
 	// R2 layers
-	for ( int iZ = RnModel_Bin_Zmin; iZ < RnModel_Bin_Zmax; iZ++ ) {
+	for ( int iZ = RNMODEL_BIN_Z_MIN; iZ < RNMODEL_BIN_Z_MAX; iZ++ ) {
 	
 		// Set Layer position:
 		
-		double dZ_step_SK 	= (fSK_Z_max 	- fSK_Z_min)	/ (double) RnModel_Bin_Zmax_Step;
-		double dZ_step 	= (fZ_max 	- fZ_min)	/ (double) RnModel_Bin_Zmax_Step;
+		double dZ_step_SK 	= (fSK_Z_max 	- fSK_Z_min)	/ (double) RNMODEL_NBIN_Z;
+		double dZ_step 	= (fZ_max 	- fZ_min)	/ (double) RNMODEL_NBIN_Z;
 		
 		double dMinZ = iZ 	* dZ_step_SK + fSK_Z_min;
 		double dMaxZ = (iZ+1) 	* dZ_step_SK + fSK_Z_min;
@@ -388,9 +360,9 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 				double dSignMin = GetSign(dMinZ);
 				double dSignMax = GetSign(dMaxZ);
 				
-				if ( iZ == RnModel_Bin_Zmin ) {
+				if ( iZ == RNMODEL_BIN_Z_MIN ) {
 					// Set Previous Max Z:
-					vLayer_MaxZ_R2[RnModel_Bin_Zmin-1] 
+					vLayer_MaxZ_R2[RNMODEL_BIN_Z_MIN-1] 
 							= (fZ_max - (fSK_Z_max - TMath::Abs(dMinZ)) ) * dSignMin;
 							
 				}
@@ -436,22 +408,22 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 		
 		
 	}
-	std::cout << "[NOTICE] RnModel: CONC_MIDDLE is set to " << CONC_MIDDLE << std::endl;
-	for ( int iZ = RnModel_Bin_Zmin; iZ < RnModel_Bin_Zmax; iZ++ ) {
+	std::cout << "[NOTICE] RnModel: fConc_Middle is set to " << fConc_Middle << std::endl;
+	for ( int iZ = RNMODEL_BIN_Z_MIN; iZ < RNMODEL_BIN_Z_MAX; iZ++ ) {
 		std::cout << "[NOTICE] RnModel: Layer R2 " << iZ << " is between: " << vLayer_MinZ_R2[iZ] << " " << vLayer_MaxZ_R2[iZ] << std::endl;
 	}
-	for ( int iR = 0; iR < RnModel_Bin_Rmax; iR++ ) {
+	for ( int iR = 0; iR < RNMODEL_BIN_R_MAX; iR++ ) {
 		std::cout << "[NOTICE] RnModel: Layer Z " << iR << " is between: " << vLayer_MinR2_Z[iR] << " " << vLayer_MaxR2_Z[iR] << std::endl;
 	}
 	
 	
-	for ( int iZ = RnModel_Bin_Zmin; iZ < RnModel_Bin_Zmax; iZ++ ) {
+	for ( int iZ = RNMODEL_BIN_Z_MIN; iZ < RNMODEL_BIN_Z_MAX; iZ++ ) {
 		std::cout << "[NOTICE] RnModel: Parameter_R2[" << iZ << "][1] = " << vParam_R2[iZ][1] << std::endl;
 		std::cout << "[NOTICE] RnModel: Parameter_R2[" << iZ << "][4] = " << vParam_R2[iZ][4] << std::endl;
 	}
 	
 	std::cout << " ------------------------------------------- " << std::endl;
-	for ( int iR = 0; iR < RnModel_Bin_Rmax; iR++ ) {
+	for ( int iR = 0; iR < RNMODEL_BIN_R_MAX; iR++ ) {
 		std::cout << "[NOTICE] RnModel: Parameter_Z[" << iR << "][0] = " << vParam_Z[iR][0] << std::endl;
 		std::cout << "[NOTICE] RnModel: Parameter_Z[" << iR << "][1] = " << vParam_Z[iR][1] << std::endl;
 	}
@@ -464,7 +436,7 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 	
 	// Compute activity Integral
 	fIntegral = thRnFunction->Integral(0,fR2_max,fZ_min,fZ_max);
-	fIntegralReco = thRnFunction->Integral(0,fR2_max_reco,fZ_min_reco,fZ_max_reco);
+	fIntegralFV = thRnFunction->Integral(0,fR2_max_FV,fZ_min_FV,fZ_max_FV);
 }
 	
 G4ThreeVector WCSimGenerator_Radioactivity::GetRandomVertex(G4int tSymNumber) {
@@ -628,7 +600,7 @@ double WCSimGenerator_Radioactivity::RadonFormula(double *val, double *par) {
 	// Z 1D-layers are from 0 to 10 (Center to Border direction)
 	int iR=0;
 		
-	for ( iR = 0; iR < RnModel_Bin_Rmax; iR++ ) {
+	for ( iR = 0; iR < RNMODEL_BIN_R_MAX; iR++ ) {
 
 		double dMinR2 = vLayer_MinR2_Z[iR];
 		double dMaxR2 = vLayer_MaxR2_Z[iR];
@@ -648,7 +620,7 @@ double WCSimGenerator_Radioactivity::RadonFormula(double *val, double *par) {
 	// R2 1D-layers are from 2 to 16 (Bottom to Top direction)
 	int iZ = 0;
 	
-	for ( iZ = RnModel_Bin_Zmin; iZ < RnModel_Bin_Zmax; iZ++ ) {
+	for ( iZ = RNMODEL_BIN_Z_MIN; iZ < RNMODEL_BIN_Z_MAX; iZ++ ) {
 
 		double dMinZ = vLayer_MinZ_R2[iZ];
 		double dMaxZ = vLayer_MaxZ_R2[iZ];
