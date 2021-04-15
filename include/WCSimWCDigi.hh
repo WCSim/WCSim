@@ -91,21 +91,42 @@ public:
 
   // Add a digit number and unique photon number to fDigiComp
   inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
-    fDigiComp[digi_number].push_back(photon_number);
+    fDigiComp.at(digi_number).push_back(photon_number);
   }
   // Add a whole vector for one digit to fDigiComp. Clear input vector once added.
   void AddDigiCompositionInfo(std::vector<int> & digi_comp){
     const size_t size = fDigiComp.size();
-    fDigiComp[size] = digi_comp;
+    fDigiComp.emplace(size,digi_comp);
     digi_comp.clear();
   }
 
-  inline G4int   GetParentID(int gate) { return primaryParentID[gate];};
-  inline G4double GetGateTime(int gate) { return TriggerTimes[gate];}
-  inline G4int   GetTubeID() {return tubeID;};
-  inline G4double GetPe(int gate)     {return pe[gate];};
-  inline G4double GetTime(int gate)   {return time[gate];};
-  inline G4double GetPreSmearTime(int gate)   {return time_presmear[gate];};
+  inline G4int    GetParentID(int gate) { return primaryParentID.at(gate);};
+  inline G4double GetGateTime(int gate) { return TriggerTimes.at(gate);}
+  inline G4int    GetTubeID() {return tubeID;};
+  inline G4double GetPe(int gate)     {return pe.at(gate);};
+  inline G4double GetTime(int gate)   {
+    try {
+      return time.at(gate);
+    }
+    catch (...) {
+      G4cerr<<"Exception occurred while attempting to use WCSimWCDigi::GetTime to retrieve time for pe "
+            << gate << " from map of times. The time map has "<<time.size()<<" entries:" << G4endl;
+      for(std::map<int,double>::iterator time_element=time.begin(); time_element!=time.end(); time_element++){
+        try{
+          G4cerr << time_element->first << ": ";
+          G4cerr << time_element->second << G4endl;
+        }
+        catch (...) {
+          G4cerr << G4endl << "Exception reading map entry!!"<<G4endl;
+          break;
+        }
+      }
+      throw;
+    }
+  };
+  inline std::map<int,double>::const_iterator GetTimeMapBegin() {return time.cbegin();}
+  inline std::map<int,double>::const_iterator GetTimeMapEnd() {return time.cend();}
+  inline G4double GetPreSmearTime(int gate)   {return time_presmear.at(gate);};
   std::vector<int> GetDigiCompositionInfo(int gate);
   inline std::map< int, std::vector<int> > GetDigiCompositionInfo(){return fDigiComp;}
 
@@ -136,33 +157,39 @@ public:
   void SortHitTimes() {   sort(time_double.begin(),time_double.end()); }
 
 
-  void SortArrayByHitTime() {
+  void SortDigiMapsByHitTime() {
     int i, j;
+
     double index_time,index_timepresmear,index_pe;
-    std::vector<int> index_digicomp;
     int index_primaryparentid;
+    std::vector<int> index_digicomp;
+    bool sort_digi_compositions = (fDigiComp.size()==time.size());
+    // SortDigiMapsByHitTime is called by WCSimWCDigitizerSKI::DigitizeHits to sort the WCRawPMTSignalCollection.
+    // Each entry in WCRawPMTSignalCollection represents the set of photon hits on a PMT.
+    // Since a photon hit has no "composition", fDigiComp is empty at this time and needn't be sorted.
+    // for generality, sort if the digi composition map has the same size as other maps
+    
     for (i = 1; i < (int) time.size(); ++i)
       {
-        index_time  = time[i];
-        index_timepresmear  = time_presmear[i];
-        index_pe = pe[i];
-	index_digicomp = fDigiComp[i];
-	index_primaryparentid = primaryParentID[i];
-        for (j = i; j > 0 && time[j-1] > index_time; j--) {
-          time[j] = time[j-1];
-	  time_presmear[j] = time_presmear[j-1];
-          pe[j] = pe[j-1];
-	  fDigiComp[j] = fDigiComp[j-1];
-	  primaryParentID[j] = primaryParentID[j-1];
+        index_time  = time.at(i);
+        index_timepresmear  = time_presmear.at(i);
+        index_pe = pe.at(i);
+        if(sort_digi_compositions) index_digicomp = fDigiComp.at(i);
+        index_primaryparentid = primaryParentID.at(i);
+        for (j = i; j > 0 && time.at(j-1) > index_time; j--) {
+          time.at(j) = time.at(j-1);
+          time_presmear.at(j) = time_presmear.at(j-1);
+          pe.at(j) = pe.at(j-1);
+          if(sort_digi_compositions) fDigiComp.at(j) = fDigiComp.at(j-1);
+          primaryParentID.at(j) = primaryParentID.at(j-1);
           //G4cout <<"swapping "<<time[j-1]<<" "<<index_time<<G4endl;
         }
-        
-        time[j] = index_time;
-        time_presmear[j] = index_timepresmear;
-        pe[j] = index_pe;
-	fDigiComp[j] = index_digicomp;
-	primaryParentID[j] = index_primaryparentid;
-      }    
+        time.at(j) = index_time;
+        time_presmear.at(j) = index_timepresmear;
+        pe.at(j) = index_pe;
+        if(sort_digi_compositions) fDigiComp.at(j) = index_digicomp;
+        primaryParentID.at(j) = index_primaryparentid;
+      }
   }
   
   void insertionSort(int a[], int array_size)

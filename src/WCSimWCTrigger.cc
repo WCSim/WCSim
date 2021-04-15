@@ -289,7 +289,11 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
     for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
       //int tube=(*WCDCPMT)[i]->GetTubeID();
       //Loop over each Digit in this PMT
-      for ( G4int ip = 0 ; ip < (*WCDCPMT)[i]->GetTotalPe() ; ip++) {
+      // When stacking triggers, some digits are removed from the map, so the keys are no longer monotonic.
+      // Use an iterator to loop over the digits present
+      for (std::map<int,double>::const_iterator digit_time_it = (*WCDCPMT)[i]->GetTimeMapBegin();
+               digit_time_it!=(*WCDCPMT)[i]->GetTimeMapEnd(); digit_time_it++) {
+        int ip = digit_time_it->first;
 	G4double digit_time = (*WCDCPMT)[i]->GetTime(ip);
 	//hit in trigger window?
 	if(digit_time >= window_start_time && digit_time <= (window_start_time + ndigitsWindow)) {
@@ -402,7 +406,15 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     for (G4int i = 0; i < WCDCPMT->entries(); i++) {
       int tube=(*WCDCPMT)[i]->GetTubeID();
       //loop over digits in this PMT
-      for ( G4int ip = 0; ip < (*WCDCPMT)[i]->GetTotalPe(); ip++){
+      // The format of the loop iteration this time is a little unconventional, because erasing elements
+      // (via RemoveDigitizedGate) during iteration would normally invalidate the iterators.
+      // This format is safe.
+      for (std::map<int,double>::const_iterator digit_time_it = (*WCDCPMT)[i]->GetTimeMapBegin(), 
+           next_digit_it=digit_time_it;
+           digit_time_it!=(*WCDCPMT)[i]->GetTimeMapEnd();
+           digit_time_it = next_digit_it){
+        ++next_digit_it;
+        int ip = digit_time_it->first;
 	G4double digit_time  = (*WCDCPMT)[i]->GetTime(ip);
 	if(digit_time >= lowerbound && digit_time <= upperbound) {
 	  //hit in event window

@@ -31,11 +31,20 @@ ifdef GEANT4_7_0
 CPPFLAGS += -DGEANT4_7_0
 endif
 
+GCC_GT_470 := $(shell expr `g++ -dumpversion | sed -e 's/\.\([0-9][0-9]\)/\1/g' -e 's/\.\([0-9]\)/0\1/g' -e 's/^[0-9]\{3,4\}$$/\
+&00/'` \>= 40799)
+
 ifdef GCCVERS296
 CPPFLAGS += -DUSE_STRSTREAM
 endif
 
-CPPFLAGS  += -I$(ROOTSYS)/include $(ROOTCFLAGS) 
+CPPFLAGS  += -I$(ROOTSYS)/include $(ROOTCFLAGS)
+ifeq "$(GCC_GT_470)" "0"
+CPPFLAGS  += -std=c++0x
+else
+CPPFLAGS  += -std=c++11
+endif
+
 EXTRALIBS += $(ROOTLIBS)
 
 EXTRA_LINK_DEPENDENCIES := 

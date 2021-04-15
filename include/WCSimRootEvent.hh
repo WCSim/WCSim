@@ -386,8 +386,14 @@ public:
     WCSimRootTrigger* tmp = dynamic_cast<WCSimRootTrigger*>( (*fEventList)[0] );
     int num = tmp->GetHeader()->GetEvtNum();
     ++Current; 
-    if ( Current > 9 ) fEventList->Expand(150);
-    fEventList->AddAt(new WCSimRootTrigger(num,Current),Current);
+
+    //Initialize() creates array with 10 entries.
+    // Using AddAtAndExpand() doubles the array size whenever
+    // we hit the current array size.
+    // This ensures we can keep adding entries,
+    // even in the case of huge events
+    // e.g. if we have a close SN
+    fEventList->AddAtAndExpand(new WCSimRootTrigger(num,Current),Current);
   }
   
   /*  void ReInitialize() { // need to remove all subevents at the end, or they just get added anyway...
