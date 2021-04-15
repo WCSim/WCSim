@@ -55,7 +55,6 @@ class WCSimGenerator_Radioactivity
 		// val[0] is R^{2}
 		// val[1] is Z
 		// par[0] is the lambda of the radioisotope
-		// par[1] is the M / bin
 		// This function calculate the R2 and Z layers for a given (R2,Z) position and interpolates the results from RadonFormulaR and RadonFormulaZ
 		static double RadonFormula(double *val, double *par);
 		

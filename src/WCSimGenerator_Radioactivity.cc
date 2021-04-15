@@ -302,7 +302,7 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 			}
 				
 			default: {
-				std::cout << "[ERROR] RnModel: Error this scenario doesn't exist! " << std::endl;
+				G4cout << "[ERROR] RnModel: Error this scenario doesn't exist! " << G4endl;
 				exit(0);
 				return;
 			}
@@ -390,7 +390,7 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 			}
 				
 			default: {
-				std::cout << "[ERROR] RnModel: Error this scenario doesn't exist! " << std::endl;
+				G4cout << "[ERROR] RnModel: Error this scenario doesn't exist! " << G4endl;
 				exit(0);
 				return;
 			}
@@ -401,29 +401,29 @@ void WCSimGenerator_Radioactivity::SetScenario(G4int iScenario) {
 		
 				
 		if ( dMaxZ < dMinZ ) {
-			std::cout << "[ERROR] RnModel: For " << iZ << " dMaxZ < dMinZ this should not happen ( " << dMaxZ << " , " << dMinZ << " ) " << std::endl;
+			G4cout << "[ERROR] RnModel: For " << iZ << " dMaxZ < dMinZ this should not happen ( " << dMaxZ << " , " << dMinZ << " ) " << G4endl;
 		}
 		
 		
 	}
-	std::cout << "[NOTICE] RnModel: fConc_Middle is set to " << fConc_Middle << std::endl;
+	G4cout << "[NOTICE] RnModel: fConc_Middle is set to " << fConc_Middle << G4endl;
 	for ( int iZ = RNMODEL_BIN_Z_MIN; iZ < RNMODEL_BIN_Z_MAX; iZ++ ) {
-		std::cout << "[NOTICE] RnModel: Layer R2 " << iZ << " is between: " << vLayer_MinZ_R2[iZ] << " " << vLayer_MaxZ_R2[iZ] << std::endl;
+		G4cout << "[NOTICE] RnModel: Layer R2 " << iZ << " is between: " << vLayer_MinZ_R2[iZ] << " " << vLayer_MaxZ_R2[iZ] << G4endl;
 	}
 	for ( int iR = 0; iR < RNMODEL_BIN_R_MAX; iR++ ) {
-		std::cout << "[NOTICE] RnModel: Layer Z " << iR << " is between: " << vLayer_MinR2_Z[iR] << " " << vLayer_MaxR2_Z[iR] << std::endl;
+		G4cout << "[NOTICE] RnModel: Layer Z " << iR << " is between: " << vLayer_MinR2_Z[iR] << " " << vLayer_MaxR2_Z[iR] << G4endl;
 	}
 	
 	
 	for ( int iZ = RNMODEL_BIN_Z_MIN; iZ < RNMODEL_BIN_Z_MAX; iZ++ ) {
-		std::cout << "[NOTICE] RnModel: Parameter_R2[" << iZ << "][1] = " << vParam_R2[iZ][1] << std::endl;
-		std::cout << "[NOTICE] RnModel: Parameter_R2[" << iZ << "][4] = " << vParam_R2[iZ][4] << std::endl;
+		G4cout << "[NOTICE] RnModel: Parameter_R2[" << iZ << "][1] = " << vParam_R2[iZ][1] << G4endl;
+		G4cout << "[NOTICE] RnModel: Parameter_R2[" << iZ << "][4] = " << vParam_R2[iZ][4] << G4endl;
 	}
 	
-	std::cout << " ------------------------------------------- " << std::endl;
+	G4cout << " ------------------------------------------- " << G4endl;
 	for ( int iR = 0; iR < RNMODEL_BIN_R_MAX; iR++ ) {
-		std::cout << "[NOTICE] RnModel: Parameter_Z[" << iR << "][0] = " << vParam_Z[iR][0] << std::endl;
-		std::cout << "[NOTICE] RnModel: Parameter_Z[" << iR << "][1] = " << vParam_Z[iR][1] << std::endl;
+		G4cout << "[NOTICE] RnModel: Parameter_Z[" << iR << "][0] = " << vParam_Z[iR][0] << G4endl;
+		G4cout << "[NOTICE] RnModel: Parameter_Z[" << iR << "][1] = " << vParam_Z[iR][1] << G4endl;
 	}
 	
 	// Generate TF2:
@@ -561,7 +561,7 @@ double WCSimGenerator_Radioactivity::RadonFormulaZ(double *val, double *par) {
 	double dConcentration_Peak  = dConc10b + dConcentration_PMT;
 	double dConcentration_Above = dConc0 + (dConc10b - dConc0) * DiffusionZ(lZ,dLimit_PeakRight,dFactorR) + dConcentration_PMT;
 	
-	//std::cout << "[DEBUG] RadonFormulaZ z= " << lZ << " " << dConcentration_Peak << " " << dConcentration_Below << " " << dConcentration_Above << std::endl;
+	//G4cout << "[DEBUG] RadonFormulaZ z= " << lZ << " " << dConcentration_Peak << " " << dConcentration_Below << " " << dConcentration_Above << G4endl;
 	
 	if ( lZ < dLimit_PeakLeft ) {
 		return dConcentration_Below;  
@@ -610,7 +610,7 @@ double WCSimGenerator_Radioactivity::RadonFormula(double *val, double *par) {
 		} 
 	}
 	
-	//std::cout << "[DEBUG] iR= " << iR << " " << dConcentration_Z << std::endl;
+	//G4cout << "[DEBUG] iR= " << iR << " " << dConcentration_Z << G4endl;
 	
 	//----------------------------------//
 	// Get Radon concentration from R2 1D-layers:
@@ -630,7 +630,7 @@ double WCSimGenerator_Radioactivity::RadonFormula(double *val, double *par) {
 		} 
 	}
 	
-	//std::cout << "[DEBUG] iZ= " << iZ << " " << dConcentration_R2 << std::endl;
+	//G4cout << "[DEBUG] iZ= " << iZ << " " << dConcentration_R2 << G4endl;
 	
 	//----------------------------------//
 	// Extremum cases:	
