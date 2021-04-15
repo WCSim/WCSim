@@ -1,7 +1,6 @@
 #!/usr/bin/python
-# import the math module  
-import math  
-  
+from __future__ import print_function
+
 from optparse import OptionParser
 import random
 from math import pi,sin,cos,sqrt
@@ -19,9 +18,10 @@ pid = {"pi0":111, "pi+":211, "k0l":130, "k0s":310, "k+":321,
 #holds detector [radius, height] in cm
 detectors = {"SuperK":[3368.15/2., 3620.],
              "Cylinder_60x74_20inchBandL_14perCent":[7400./2., 6000.],
-             "Cylinder_60x74_20inchBandL_40perCent":[7400./2., 6000.]}
+             "Cylinder_60x74_20inchBandL_40perCent":[7400./2., 6000.],
+             "HyperK":[7080./2., 5480.]}
 
-for pname, no in pid.items():
+for pname, no in list(pid.items()):
     if pname.endswith('+'):
         pid[pname.replace('+','-')] = -1*pid[pname]
 
@@ -45,18 +45,27 @@ parser.add_option("-V","--nVerticesPerEvent",dest="verticesPerEvent",
                   help=" Average number of vertices to simulate per event. Default: %s" \
                   % (verticesPerEventDefault),
                   metavar="#", default=verticesPerEventDefault)
-optchoices = pid.keys()
+optdefault = None
+parser.add_option("-s", "--seed", dest="seed",
+                  help="Random number seed. Default: None (use system time aka not reproducible!)",
+                  metavar="SEED", default=optdefault)
+optchoices = list(pid.keys())
 optdefault = "mu-"
 parser.add_option("-t", "--type", dest="type",
                   help="Particle type to be generated. Choices: %s. Default: %s" \
                       % (optchoices, optdefault),
                   metavar="TYPE",
                   choices=optchoices, default=optdefault)
-optdefault = 1000.0
+optdefault = '1000.0'
 parser.add_option("-e", "--energy", dest="energy",
-                  help="Particle energy to be generated in MeV. Default: %s" \
+                  help="Particle energy to be generated in MeV. Use a colon separated pair to produce a random uniform distribution. Default: %s" \
                       % (optdefault),
                   metavar="ENERGY",default=optdefault)
+optdefault = '0.0'
+parser.add_option("-x", "--time", dest="time",
+                  help="Time distribution to be generated, in ns. Use a colon separated pair to produce a random uniform distribution. Default: %s" \
+                      % (optdefault),
+                  metavar="TIME", default=optdefault)
 optchoices = ["center", "random", "minusx", "plusx", "minusz", "plusz"]
 optdefault = optchoices[0]
 parser.add_option("-v", "--vertex", dest="vertname",
@@ -69,7 +78,7 @@ parser.add_option("-d", "--direction", dest="dirname",
                   help="Type of direction. Choices: %s. Default: %s" \
                       % (optchoices, optdefault),
                   choices=optchoices, default=optdefault)
-optchoices = detectors.keys()
+optchoices = list(detectors.keys())
 optdefault = "SuperK"
 parser.add_option("-w", "--detector", dest="detector",
                   help="Detector water volume to use (for vertex positioning). Choices: %s. Default: %s" \
@@ -81,19 +90,30 @@ parser.add_option("-w", "--detector", dest="detector",
 options.vertname = options.vertname.lower()
 options.dirname = options.dirname.lower()
 
+random.seed(options.seed)
 
+def pair_or_single(arg):
+    pair = list(set(float(x) for x in arg.split(':')))
+    pair.sort()
+    if len(pair) > 2 or len(pair) < 1:
+        print ("Argument %s is not a colon-separted pair of floats, or a single float" % (arg))
+        sys.exit(-1)
+    elif len(pair) == 1:
+        return pair, "%.1f" % (pair[0])
+    elif len(pair) == 2:
+        return pair, "%.1f:%.1f" % (pair[0], pair[1])
 
 nfiles = int(options.nfiles)
 npart = int(options.npart)
+energy, energystr = pair_or_single(options.energy)
+time, timestr = pair_or_single(options.time)
 verticesPerEvent=int(options.verticesPerEvent)
-energy = float(options.energy)
-
 
 #Define the particle
 particle = {"vertex":(0, 0, 0),
-            "time":0,
+            "time":time[0],
             "type":pid[options.type],
-            "energy":energy,
+            "energy":energy[0],
             "direction":(1,0,0)}
 
 
@@ -103,7 +123,7 @@ if options.vertname == "center":
 elif options.vertname == "random":
     randvert = True
 elif options.vertname == "wall":
-    print >>sys.stderr, "Wall not implemented yet"
+    print("Wall not implemented yet", file=sys.stderr)
     sys.exit(3)
 elif options.vertname == "minusx":
     if options.detector == "SuperK":
@@ -126,7 +146,7 @@ elif options.vertname == "plusz":
     else:
         particle["vertex"] = (0, 0, +1000. * detectors[options.detector][1] / detectors["SuperK"][1])
 else:
-    print >>sys.stderr, "Don't understand vertex",opttions.vertname
+    print("Don't understand vertex", options.vertname, file=sys.stderr)
     sys.exit(2)
 
 if options.dirname == "towall":
@@ -138,17 +158,17 @@ elif options.dirname == "tocap":
 elif options.dirname == "4pi":
     randdir = True
 elif options.dirname == "wall":
-    print >>sys.stderr, "Wall not implemented yet"
+    print("Wall not implemented yet", file=sys.stderr)
     sys.exit(3)
 else:
-    print >>sys.stderr, "Don't understand direction",options.dirname
+    print("Don't understand direction", options.dirname, file=sys.stderr)
     sys.exit(2)
 
 
 
 
 
-nu =   {"type":pid["numu"], "energy":energy+1000.0,
+nu =   {"type":pid["numu"], "energy":energy[0]+1000.0,
         "direction":(1, 0, 0)}
 prot = {"type":pid["p+"], "energy":935.9840,
         "direction":(0, 0, 1)}
@@ -167,6 +187,14 @@ def partPrint(p, f, recno):
 
 def vertPrint(p,f,recno) :
     f.write("$ nuance 0\n")
+    #random energy
+    if len(energy) == 2:
+        thisenergy  = random.uniform(energy[0], energy[1])
+        p ["energy"] = thisenergy
+        nu["energy"] = thisenergy + 1000
+    if len(time) == 2:
+        thistime = random.uniform(time[0], time[1])
+        p["time"] = thistime
     if randvert:
         rad    = detectors[options.detector][0] - 20.
         height = detectors[options.detector][1] - 20.
@@ -202,19 +230,19 @@ def printTrack(p, f, code=0):
 for fileno in range(nfiles):
     typestr = options.type.replace("+","plus").replace("-","minus")
     
-    filename="%s_%.0fMeV_%s_%s_%s_%03i.kin" % (typestr, energy, options.vertname, options.dirname, options.detector, fileno)
+    filename="%s_%sMeV_%s_%s_%s_%03i.kin" % (typestr, energystr, options.vertname, options.dirname, options.detector, fileno)
 
     outfile = open(filename, 'w')
 
     if(verticesPerEvent == 1 ) :
-      print ("Writing %i particles to " % npart) + filename
+      print("Writing", npart, "particles to", filename)
 
       for i in range(npart):
         partPrint(particle, outfile, i)
     else :
-      print ("Writing %i particles to with an average of %i vertices per event to " % (npart,verticesPerEvent) ) + filename
+      print("Writing", npart, "particles with an average of", verticesPerEvent, "vertices per event to", filename)
       numberDone = 0
-      sigma=math.sqrt(verticesPerEvent)
+      sigma = sqrt(verticesPerEvent)
       while numberDone < npart:
         numberToProcess = int(round(random.gauss(verticesPerEvent,sigma)))
         eventPrint(numberToProcess,particle,outfile,numberDone)

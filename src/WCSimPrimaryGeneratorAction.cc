@@ -40,6 +40,8 @@ inline vector<string> readInLine(fstream& inFile, int lineSize, char* inBuf)
 		}
 		else
 		{
+		  if(inFile.fail())
+		    G4cerr << "Failed to read line. Is the buffer size large enough?" << G4endl;
 			vector<string> nullLine;                               
 			return nullLine; 
 		}
@@ -141,7 +143,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     //
     if (useNuanceTextFormat)
     {
-    	const int lineSize=100;
+    	const int lineSize=1000;
     	char      inBuf[lineSize];
     	vector<string> token(1);
 
