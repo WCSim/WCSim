@@ -25,11 +25,13 @@ if [[ "$ROOT_ARG" == 5 ]] ; then
 	#  Temporary use Guillaume Pronost's version. Should change in the future.
 	#
 	export ROOT_DIR=/home/pronost/software/root-5.34.38-build
+	export ROOT_STR=ROOT5
 else
 	echo "Use ROOT6"
 	# Note: There is no official ROOT 6 installation 
 	#  Temporary use Guillaume Pronost's version. Should change in the future.
 	export ROOT_DIR=/home/pronost/software/root-6.22.00-build
+	export ROOT_STR=ROOT6
 fi
 	
 # Note: There is no official ROOT 6 installation 

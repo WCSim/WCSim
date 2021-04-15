@@ -6,7 +6,8 @@ wcsim_name=${PWD##*/}
 branch_name=$(git rev-parse --abbrev-ref HEAD)
 
 wcsim_directory=${PWD}
-build_directory=${wcsim_directory}/../${wcsim_name}-build/${branch_name}
+build_directory=${wcsim_directory}/../${wcsim_name}-build/${ROOT_STR}/${branch_name}
+# If ROOT_STR is not set, this will have no effect, if ROOT_STR is set, we can manage two or more different ROOT versions
 
 if [ ! -d ${build_directory} ]; then
 	
