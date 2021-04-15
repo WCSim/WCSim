@@ -12,6 +12,14 @@
 
 using namespace std;
 
+#define	RNMODEL_BIN_R_MAX	10 // Highest R2 layer
+#define	RNMODEL_BIN_Z_MIN	 2 // Lowest Z layer
+#define	RNMODEL_BIN_Z_MAX	16 // Highest Z layer
+#define	RNMODEL_NBIN_R		16 // Number of R2 layers
+#define	RNMODEL_NBIN_Z		18 // Number of Z layers
+// GetSign function is defined as pre-compiler function to fasten the computation
+#define 	GetSign(a) 		a<0?-1.:1.
+
 class WCSimDetectorConstruction;
 
 class WCSimGenerator_Radioactivity
@@ -19,138 +27,126 @@ class WCSimGenerator_Radioactivity
 	public:
 		WCSimGenerator_Radioactivity(WCSimDetectorConstruction* myDC);
 		~WCSimGenerator_Radioactivity();
+		
+		// Initialize the Model
 		void Initialize();
 
+		// Set the Scenario, allow to modify the Rn lifetime (in sec)
+		// DON'T MODIFY THE LIFETIME IF YOU DON'T KNOW WHAT YOU ARE DOING!
 		void Configuration(G4int iScenario, G4double dLifeTime=0);
 		
-		G4ThreeVector GetRandomVertex(G4int tSymNumber);
-		G4double GetMeanActivity() { return fIntegral; }
-		G4double GetIDVolume() { return (fR_max*fR_max*TMath::Pi()*fZ_max*2.); }
+		// Get a Random vertex for a Rn decay in the detector 
+		// if tSymNumber is not 1, the detector is divided in tSymNumber radial sector.
+		G4ThreeVector GetRandomVertex(G4int tSymNumber=1);
+		
+		// Get the Mean Rn Activity in ID
+		G4double GetMeanActivity()		{ return fConcentrationID; }
+		
+		// Get the Mean Rn Activity in FV
+		G4double GetMeanActivityFV()		{ return fConcentrationFV; }
+		
+		// Get the ID Volume used by the model
+		G4double GetIDVolume()			{ return (fR_max*fR_max*TMath::Pi()*fZ_max*2.); }
 		
 		
 	private:
-	
-		static G4double ZFit_R210(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double ZFit_R190(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double ZFit_R170(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double ZFit_R140(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double ZFit_R070(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double ZFit_R040(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double ZFit_R020(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double ZFit_R000(G4double x, G4double Lambda, G4double BinConversion);
-
-		static G4double R2Fit_ZpM(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double R2Fit_ZmM(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double R2Fit_Z16(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double R2Fit_Z13(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double R2Fit_Z10(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double R2Fit_Z00(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double R2Fit_Z14p(G4double x, G4double Lambda, G4double BinConversion);
-		static G4double R2Fit_Z16p(G4double x, G4double Lambda, G4double BinConversion);
+		
+		// ROOT like 2D function used to setup tfRnFunction
+		// val[0] is R^{2}
+		// val[1] is Z
+		// par[0] is the lambda of the radioisotope
+		// This function calculate the R2 and Z layers for a given (R2,Z) position and interpolates the results from RadonFormulaR and RadonFormulaZ
+		static double RadonFormula(double *val, double *par);
+		
+		// R2 Concentration function
+		// val[0] is R^{2}
+		// val[1] is Z
+		// par is vParam_R2[x] 
+		static double RadonFormulaR(double* val, double* par);
+		
+		// R2 Concentration function
+		// val[0] is Z
+		// val[1] is R^{2}
+		// par is vParam_Z[x] 
+		static double RadonFormulaZ(double* val, double* par);
+		
+		// Diffusion functions
+		static double DiffusionZ(double x, double origin, double factor);
+		static double DiffusionR(double x, double origin, double factor);
 		
 		// Function
-		TF2* thRnFunction;
-		G4double fIntegral;
+		TF2* tfRnFunction;
 		
+		// Model integral (only used for debug)
+		G4double fIntegral;   // in ID
+		G4double fIntegralFV; // in FV
+		
+		// Average concentrations (only used for debug)
+		G4double fConcentrationID; // in ID
+		G4double fConcentrationFV; // in FV 
+		
+		// Configuration function to set the Scenario:
+		//	iScenario = 0 -> Uniform concentration in ID
+		//	iScenario = 1 -> Scenario A (Relative scaling, Pessimistic, should be default)
+		//	iScenario = 2 -> Scenario B (Absolute scaling, Optimistic)
+		// This function compute all the intermediary Concentration values and set up the Rn model
 		void SetScenario(G4int iScenario);
-		static G4double RadonFormula(G4double *val, G4double *par);
+		
 
+		// Holder for Detector construction
 		WCSimDetectorConstruction*      myDetector;
 		
 		// Constant	
-		G4int    fScenario;
-		static G4double fRnDiffusion_Coef;
+		G4int    fScenario; 			// Scenario holder
+		static G4double fRnDiffusion_Coef;	// Constant Rn diffusion coefficient value
+		static G4double fRnLambda_Global;	// Constant Rn Lambda
 		G4double fRnLambda;
 		
-		static G4double fRn_PerPMT;
+		static G4double fRn_PerPMT;		// Average Rn emanation per PMT
+		static G4double fRn_Border;		// Average Rn concentration at the PMT wall
 		
-		static G4double fRnSK_Center;
-		static G4double fRnSK_Bottom;
+		// Parameter for fit, computed from the fit parameters:	
+		G4double fConc_Middle;
+		G4double fConc_Int_R2_6;
+		G4double fConc_Int_R2_7;
+		G4double fConc_Int_R2_8;
+		G4double fConc_Int_R2_9;
 		
-		static G4double fRn_Border;
+		// Parameter array declaration:
+		static G4double vParam_Z [RNMODEL_BIN_R_MAX][7];	
+		static G4double vParam_R2[RNMODEL_BIN_Z_MAX][7];
+	
+		// Min and Max R2 values for each R2 layer
+		static G4double vLayer_MinR2_Z[RNMODEL_BIN_R_MAX];
+		static G4double vLayer_MaxR2_Z[RNMODEL_BIN_R_MAX];
+
+		// Min and Max Z values for each Z layer
+		static G4double vLayer_MinZ_R2[RNMODEL_BIN_Z_MAX];
+		static G4double vLayer_MaxZ_R2[RNMODEL_BIN_Z_MAX];
 		
-		static G4double fHK_Z_max;
-		static G4double fHK_R_max;
-		static G4double fHK_R2_max;
-		static G4double fHK_Z_reco;
-		static G4double fHK_R_reco;
-		static G4double fHK_R2_reco;
+		// WCSim detector limits:		
+		static G4double fCurrentDetector_Z_min;
+		static G4double fCurrentDetector_Z_max;
+		static G4double fCurrentDetector_R_max;
+		static G4double fCurrentDetector_R2_max;
 		
+		// SK detector limits:	
+		static G4double fSK_Z_min;
 		static G4double fSK_Z_max;
 		static G4double fSK_R_max;
 		static G4double fSK_R2_max;
-		static G4double fSK_Z_reco;
-		static G4double fSK_R_reco;
-		static G4double fSK_R2_reco;
 		
-		static G4double fZ_max , fR_max , fR2_max;
-		static G4double fZ_reco, fR_reco, fR2_reco;
-	
-		G4double fMperBin;
-		G4double fBin_Z_reco;
-		G4double fBin_Z_max;
-		G4double fBin_D_reco;
-		G4double fBin_D_max;
-		G4double fBin_R2_reco;
-		G4double fBin_R2_max;
+		// Detector limits used by the model (normally = WCSim detector limits)
+		static G4double fZ_min;
+		static G4double fZ_max;
+		static G4double fR_max;
+		static G4double fR2_max;
 		
-		G4double fScaleTypeInsideZ;
-		G4double fScaleTypeInsideR;
-		G4double fScaleTypeInsideR2;
+		// FV volume limits (used for debug only)
+		static G4double fZ_min_FV;
+		static G4double fZ_max_FV;
+		static G4double fR_max_FV;
+		static G4double fR2_max_FV;
 		
-		G4double fScaleTypeInStrucZ1;
-		G4double fScaleTypeInStrucZ2;
-		G4double fScaleTypeInStrucZ3;
-		
-		G4double fScaleTypeOutsideZ1;
-		G4double fScaleTypeOutsideZ2;
-		G4double fScaleTypeOutsideZ3;
-		
-		G4double fScaleTypeOutsideR1;
-		G4double fScaleTypeOutsideR2;
-		G4double fScaleTypeOutsideR3;
-		
-		static G4double fChangeZPMax;
-		static G4double fChangeZNMax;
-		static G4double fChangeRMax;
-		
-		static G4double fR2_000, fR2_025, fR2_045, fR2_075,
-				fR2_145, fR2_175, fR2_195, fR2_215;
-		static G4double fR_000 , fR_025 , fR_045 , fR_075 ,
-			 	fR_145 , fR_175 , fR_195 , fR_215 ;
-			 
-		static G4double fZ_p16, fZ_p14, fZ_000, fZ_m10, fZ_m13, fZ_m16;
-
-		static G4double fChangeR210N13, fChangeR210N10, fChangeR210N5, fChangeR210P1, fChangeR210P8, fChangeR210P13;
-		static G4double fChangeR190N10, fChangeR190N8;
-		static G4double fChangeR170N10, fChangeR170N8;
-		static G4double fChangeR140N10, fChangeR140N8;
-		static G4double fChangeR070N10, fChangeR070N8;
-		static G4double fChangeR040N10;
-		static G4double fChangeR020N10;
-		static G4double fChangeR000N10;
-		
-		static G4double fChangeZmMxR025, fChangeZmMxR175;
-		static G4double fChangeZm16R025, fChangeZm16R125;
-		static G4double fChangeZm13R023, fChangeZm13R080;
-		static G4double fChangeZm10R023;
-		static G4double fChangeZp16R025, fChangeZp16R115;
-
-		static G4double fChangeZm16Flow, fChangeZm13Flow, fChangeZm10Flow, fChangeZ000Flow, fChangeZp14Flow, fChangeZp16Flow;
-		
-		static G4double fGaussM0, fGaussM1, fGaussM2, fGaussM3, fGaussR190M3, fGaussM4, fGaussM5, fGaussM6, fGaussM7, fGaussM8;
-		static G4double fGaussR190S0, fGaussR190S1, fGaussR190S2, fGaussR190S3, fGaussR190S4, fGaussR190S5, fGaussR190S6, fGaussR190S7, fGaussR190S8;
-		static G4double fGaussR170S0, fGaussR170S1, fGaussR170S2, fGaussR170S3, fGaussR170S4, fGaussR170S5, fGaussR170S6, fGaussR170S7, fGaussR170S8;
-		static G4double fGaussR140S0, fGaussR140S1, fGaussR140S2, fGaussR140S3, fGaussR140S4, fGaussR140S5, fGaussR140S6, fGaussR140S7, fGaussR140S8;
-		
-		static TGraph* tFittingR000;
-		static TGraph* tFittingR025;
-		static TGraph* tFittingR045;
-		static TGraph* tFittingR075;
-		static TGraph* tFittingR145;
-		static TGraph* tFittingR175;
-		static TGraph* tFittingR195;
-		static TGraph* tFittingR215;
-
 };
 #endif
