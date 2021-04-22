@@ -28,6 +28,10 @@ WCSimTrackingAction::WCSimTrackingAction()
   ParticleList.insert(311); // kaon0
   ParticleList.insert(-311); // kaon0 bar
   //ParticleList.insert(22); // I add photons (B.Q)
+  ParticleList.insert(11); // e-
+  ParticleList.insert(-11); // e+
+  ParticleList.insert(13); // mu-
+  ParticleList.insert(-13); // mu+
   // don't put gammas there or there'll be too many
 
   //TF: add protons and neutrons
@@ -172,6 +176,11 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       for(size_t i=0;i<nSeco;i++)
       { 
 	WCSimTrackInformation* infoSec = new WCSimTrackInformation(anInfo);
+	if(anInfo->isSaved()){ // Parent is primary, so we want start pos & time of this secondary
+		infoSec->SetPhotonStartTime((*secondaries)[i]->GetGlobalTime());
+		infoSec->SetPhotonStartPos((*secondaries)[i]->GetPosition());
+		infoSec->SetPhotonStartDir((*secondaries)[i]->GetMomentumDirection());
+	}
 	infoSec->WillBeSaved(false); // ADDED BY MFECHNER, temporary, 30/8/06
 	(*secondaries)[i]->SetUserInformation(infoSec);
       }

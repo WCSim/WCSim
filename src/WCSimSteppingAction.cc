@@ -61,7 +61,7 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
   }
 
   G4ParticleDefinition *particleType = track->GetDefinition();
-  if(particleType == G4OpticalPhoton::OpticalPhotonDefinition()){
+  if(particleType == G4OpticalPhoton::OpticalPhotonDefinition() && thePrePV && thePostPV){
     if( (thePrePV->GetName().find("MultiPMT") != std::string::npos) &&
 	(thePostPV->GetName().find("vessel") != std::string::npos) )
       n_photons_through_mPMTLV++;

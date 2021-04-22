@@ -310,16 +310,24 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 	
       }
      
+      const G4ThreeVector &pos = detectorConstructor->GetTubeTransform((*pmtIt)->Get_tubeid()).getTranslation();
       (*WCHC)[hitIndex]->SetTubeID((*pmtIt)->Get_tubeid());
       (*WCHC)[hitIndex]->SetTrackID(0);
       (*WCHC)[hitIndex]->SetEdep(0.);
-      (*WCHC)[hitIndex]->SetPos(detectorConstructor->GetTubeTransform((*pmtIt)->Get_tubeid()).getTranslation());
+      (*WCHC)[hitIndex]->SetPos(pos);
       (*WCHC)[hitIndex]->SetRot(detectorConstructor->GetTubeTransform((*pmtIt)->Get_tubeid()).getRotation());
       
       // Ignore logical volume for now...
       for (int pe = 0; pe < nPoisson; pe++) {
-	(*WCHC)[hitIndex]->AddPe(G4RandGauss::shoot(0.0,10.));
+	G4float time = G4RandGauss::shoot(0.0,10.);
+	G4ThreeVector dir(0, 0, 0);
+	(*WCHC)[hitIndex]->AddPe(time);
 	(*WCHC)[hitIndex]->AddParentID(0); // Make parent a geantino (whatever that is)
+	(*WCHC)[hitIndex]->AddPhotonStartPos(pos);
+	(*WCHC)[hitIndex]->AddPhotonEndPos(pos);
+	(*WCHC)[hitIndex]->AddPhotonStartDir(dir);
+	(*WCHC)[hitIndex]->AddPhotonEndDir(dir);
+	(*WCHC)[hitIndex]->AddPhotonStartTime(time);
       }
 
       G4cout << "The option using pmtPoisson is not implemented for the hybrid version yet." << G4endl;
@@ -1164,8 +1172,18 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
     std::vector<double> truetime, smeartime;
     std::vector<int>   primaryParentID;
+    std::vector<float> photonStartTime;
+    std::vector<TVector3> photonStartPos;
+    std::vector<TVector3> photonEndPos;
+    std::vector<TVector3> photonStartDir;
+    std::vector<TVector3> photonEndDir;
     double hit_time_smear, hit_time_true;
     int hit_parentid;
+    float hit_photon_starttime;
+    TVector3 hit_photon_startpos;
+    TVector3 hit_photon_endpos;
+    TVector3 hit_photon_startdir;
+    TVector3 hit_photon_enddir;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
@@ -1174,8 +1192,30 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
+	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
+	hit_photon_startpos = TVector3(
+	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[0], 
+	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[1], 
+	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[2]);
+	hit_photon_endpos = TVector3(
+	        (*WCDC_hits)[idigi]->GetPhotonEndPos(id)[0],
+	        (*WCDC_hits)[idigi]->GetPhotonEndPos(id)[1],
+	        (*WCDC_hits)[idigi]->GetPhotonEndPos(id)[2]);
+	hit_photon_startdir = TVector3(
+	        (*WCDC_hits)[idigi]->GetPhotonStartDir(id)[0], 
+	        (*WCDC_hits)[idigi]->GetPhotonStartDir(id)[1], 
+	        (*WCDC_hits)[idigi]->GetPhotonStartDir(id)[2]);
+	hit_photon_enddir = TVector3(
+	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[0],
+	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[1],
+	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[2]);
 	truetime.push_back(hit_time_true);
 	primaryParentID.push_back(hit_parentid);
+	photonStartTime.push_back(hit_photon_starttime);
+	photonStartPos.push_back(hit_photon_startpos);
+	photonEndPos.push_back(hit_photon_endpos);
+	photonStartDir.push_back(hit_photon_startdir);
+	photonEndDir.push_back(hit_photon_enddir);
 #ifdef _SAVE_RAW_HITS_VERBOSE
 	hit_time_smear = (*WCDC_hits)[idigi]->GetTime(id);
 	smeartime.push_back(hit_time_smear);
@@ -1198,11 +1238,21 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				      pmt->Get_mPMTid(),
 				      pmt->Get_mPMT_pmtid(),
 				      truetime,
-				      primaryParentID);
+				      primaryParentID,
+				      photonStartTime,
+				      photonStartPos,
+				      photonEndPos,
+				      photonStartDir,
+				      photonEndDir);
       smeartime.clear();
       truetime.clear();
       primaryParentID.clear();
-    }//idigi 
+      photonStartTime.clear();
+      photonStartPos.clear();
+      photonEndPos.clear();
+      photonStartDir.clear();
+      photonEndDir.clear();
+    }//idigi
   }//if(WCDC_hits)
 
 
@@ -1631,8 +1681,18 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
     std::vector<double> truetime, smeartime;
     std::vector<int>   primaryParentID;
+    std::vector<float> photonStartTime;
+    std::vector<TVector3> photonStartPos;
+    std::vector<TVector3> photonEndPos;
+    std::vector<TVector3> photonStartDir;
+    std::vector<TVector3> photonEndDir;
     double hit_time_smear, hit_time_true;
     int hit_parentid;
+    float hit_photon_starttime;
+    TVector3 hit_photon_startpos;
+    TVector3 hit_photon_endpos;
+    TVector3 hit_photon_startdir;
+    TVector3 hit_photon_enddir;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
@@ -1641,8 +1701,30 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
+	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
+	hit_photon_startpos = TVector3(
+	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[0],
+	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[1],
+	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[2]);
+	hit_photon_endpos = TVector3(
+	        (*WCDC_hits)[idigi]->GetPhotonEndPos(id)[0],
+	        (*WCDC_hits)[idigi]->GetPhotonEndPos(id)[1],
+	        (*WCDC_hits)[idigi]->GetPhotonEndPos(id)[2]);
+	hit_photon_startdir = TVector3(
+	        (*WCDC_hits)[idigi]->GetPhotonStartDir(id)[0],
+	        (*WCDC_hits)[idigi]->GetPhotonStartDir(id)[1],
+	        (*WCDC_hits)[idigi]->GetPhotonStartDir(id)[2]);
+	hit_photon_enddir = TVector3(
+	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[0],
+	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[1],
+	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[2]);
 	truetime.push_back(hit_time_true);
 	primaryParentID.push_back(hit_parentid);
+	photonStartTime.push_back(hit_photon_starttime);
+	photonStartPos.push_back(hit_photon_startpos);
+	photonEndPos.push_back(hit_photon_endpos);
+	photonStartDir.push_back(hit_photon_startdir);
+	photonEndDir.push_back(hit_photon_enddir);
 #ifdef _SAVE_RAW_HITS_VERBOSE
 	hit_time_smear = (*WCDC_hits)[idigi]->GetTime(id);
 	smeartime.push_back(hit_time_smear);
@@ -1665,10 +1747,20 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				      pmt->Get_mPMTid(),
 				      pmt->Get_mPMT_pmtid(),
 				      truetime,
-				      primaryParentID);
+				      primaryParentID,
+				      photonStartTime,
+				      photonStartPos,
+				      photonEndPos,
+				      photonStartDir,
+				      photonEndDir);
       smeartime.clear();
       truetime.clear();
       primaryParentID.clear();
+      photonStartTime.clear();
+      photonStartPos.clear();
+      photonEndPos.clear();
+      photonStartDir.clear();
+      photonEndDir.clear();
     }//idigi 
   }//if(WCDC_hits)
 
