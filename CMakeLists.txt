@@ -26,7 +26,6 @@ include(${ROOT_USE_FILE})
 # Locate sources and headers for this project
 # ## NOT NEEDED FOR DICT
 include_directories(${PROJECT_SOURCE_DIR}/include 
-                    ${PROJECT_SOURCE_DIR}/../shared/include 
                     ${Geant4_INCLUDE_DIR}
                     ${ROOT_INCLUDE_DIR})
 
@@ -92,32 +91,33 @@ add_executable(WCSim WCSim.cc ${sources} ${headers})
 target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree)  #add profiler to use gperftools
 
 
-
 #----------------------------------------------------------------------------
-# Copy all scripts to the build directory, i.e. the directory in which we
+# Copy required files to the build directory, i.e. the directory in which we
 # build WCSim. This is so that we can run the executable directly because it
-# relies on these scripts being in the current working directory.
+# relies on these files being in the current working directory and then so
+# that we can directly analyze the produced ROOT files, too.
 #
-set(WCSIM_SCRIPTS
-  macros/jobOptions.mac
-  WCSim.mac
-  macros/daq.mac
-  macros/visOGLSX.mac
-  macros/visOGLQT.mac
-  macros/visRayTracer.mac
-  macros/mPMT_nuPrism1.mac
-  macros/mPMT_nuPrism2.mac
-  macros/tuning_parameters.mac
-  macros/NuPRISM.mac
-  )
-
-foreach(_script ${WCSIM_SCRIPTS})
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/${_script}
-    ${PROJECT_BINARY_DIR}/${_script}
-    COPYONLY
+if (NOT (PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR))
+  file(COPY ${PROJECT_SOURCE_DIR}/mPMT-configfiles DESTINATION ${PROJECT_BINARY_DIR} USE_SOURCE_PERMISSIONS)
+  file(COPY ${PROJECT_SOURCE_DIR}/macros DESTINATION ${PROJECT_BINARY_DIR} USE_SOURCE_PERMISSIONS)
+  # file(COPY ${PROJECT_SOURCE_DIR}/include DESTINATION ${PROJECT_BINARY_DIR} USE_SOURCE_PERMISSIONS)
+  set(WCSIM_FILES
+    WCSim.mac
+    include/WCSimEnumerations.hh
+    include/WCSimRootEvent.hh
+    include/WCSimRootGeom.hh
+    include/WCSimRootOptions.hh
     )
-endforeach()
+  foreach(_file ${WCSIM_FILES})
+    configure_file(
+      ${PROJECT_SOURCE_DIR}/${_file}
+      ${PROJECT_BINARY_DIR}/${_file}
+      COPYONLY
+      )
+  endforeach()
+else()
+  message(STATUS "Note: building in-place, no need to copy anything.")
+endif()
 
 #----------------------------------------------------------------------------
 # For internal Geant4 use - but has no effect if you build this
@@ -129,5 +129,4 @@ endforeach()
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
 #install(TARGETS WCSim DESTINATION bin)
-
 
