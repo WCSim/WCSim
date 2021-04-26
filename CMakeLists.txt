@@ -26,7 +26,6 @@ include(${ROOT_USE_FILE})
 # Locate sources and headers for this project
 # ## NOT NEEDED FOR DICT
 include_directories(${PROJECT_SOURCE_DIR}/include 
-                    ${PROJECT_SOURCE_DIR}/../shared/include 
                     ${Geant4_INCLUDE_DIR}
                     ${ROOT_INCLUDE_DIR})
 
@@ -35,13 +34,13 @@ include_directories(${PROJECT_SOURCE_DIR}/include
 # in standard makefile, need to make rootcint anyway before standard make
 #
 
-## WCSimRootDict.cc regeneration by rootcint
+## WCSimRootDict.cxx regeneration by rootcint
 ## Use ROOT 5.34.32 as some issues with PARSE_ARGUMENTS were found in older ROOT versions (ROOT 5.34.11)
-ROOT_GENERATE_DICTIONARY(${CMAKE_CURRENT_SOURCE_DIR}/src/WCSimRootDict ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootEvent.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootGeom.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimPmtInfo.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimEnumerations.hh  ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootOptions.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/TJNuBeamFlux.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/TNRooTrackerVtx.hh LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootLinkDef.hh)
+ROOT_GENERATE_DICTIONARY(WCSimRootDict ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootEvent.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootGeom.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimPmtInfo.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimEnumerations.hh  ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootOptions.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/TJNuBeamFlux.hh ${CMAKE_CURRENT_SOURCE_DIR}/include/TNRooTrackerVtx.hh LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/include/WCSimRootLinkDef.hh)
 
 
 ## Crucial for reading ROOT classes: make shared object library
-add_library(WCSimRoot SHARED ./src/WCSimRootEvent.cc ./src/WCSimRootGeom.cc ./src/WCSimPmtInfo.cc ./src/WCSimEnumerations.cc ./src/WCSimRootOptions.cc ./src/TJNuBeamFlux.cc ./src/TNRooTrackerVtx.cc ./src/WCSimRootDict.cxx)
+add_library(WCSimRoot SHARED ./src/WCSimRootEvent.cc ./src/WCSimRootGeom.cc ./src/WCSimPmtInfo.cc ./src/WCSimEnumerations.cc ./src/WCSimRootOptions.cc ./src/TJNuBeamFlux.cc ./src/TNRooTrackerVtx.cc WCSimRootDict.cxx)
 target_link_libraries(WCSimRoot  ${ROOT_LIBRARIES})
 
 
@@ -85,39 +84,40 @@ else()
     set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++0x")
 endif()
 
-
+# Set flag for git version to be used as c++ preprocessor macro
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGIT_HASH=\"\\\"`cd ${PROJECT_SOURCE_DIR};git describe --always --long --tags --dirty`\\\"\"")
 
 add_executable(WCSim WCSim.cc ${sources} ${headers})
 target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree)  #add profiler to use gperftools
 
 
-
 #----------------------------------------------------------------------------
-# Copy all scripts to the build directory, i.e. the directory in which we
+# Copy required files to the build directory, i.e. the directory in which we
 # build WCSim. This is so that we can run the executable directly because it
-# relies on these scripts being in the current working directory.
+# relies on these files being in the current working directory and then so
+# that we can directly analyze the produced ROOT files, too.
 #
-set(WCSIM_SCRIPTS
-  macros/jobOptions.mac
-  WCSim.mac
-  macros/daq.mac
-  macros/visOGLSX.mac
-  macros/visOGLQT.mac
-  macros/visRayTracer.mac
-  macros/mPMT.mac
-  macros/mPMT_nuPrism1.mac
-  macros/mPMT_nuPrism2.mac
-  macros/tuning_parameters.mac
-  macros/NuPRISM.mac
-  )
-
-foreach(_script ${WCSIM_SCRIPTS})
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/${_script}
-    ${PROJECT_BINARY_DIR}/${_script}
-    COPYONLY
+if (NOT (PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR))
+  file(COPY ${PROJECT_SOURCE_DIR}/mPMT-configfiles DESTINATION ${PROJECT_BINARY_DIR} USE_SOURCE_PERMISSIONS)
+  file(COPY ${PROJECT_SOURCE_DIR}/macros DESTINATION ${PROJECT_BINARY_DIR} USE_SOURCE_PERMISSIONS)
+  # file(COPY ${PROJECT_SOURCE_DIR}/include DESTINATION ${PROJECT_BINARY_DIR} USE_SOURCE_PERMISSIONS)
+  set(WCSIM_FILES
+    WCSim.mac
+    include/WCSimEnumerations.hh
+    include/WCSimRootEvent.hh
+    include/WCSimRootGeom.hh
+    include/WCSimRootOptions.hh
     )
-endforeach()
+  foreach(_file ${WCSIM_FILES})
+    configure_file(
+      ${PROJECT_SOURCE_DIR}/${_file}
+      ${PROJECT_BINARY_DIR}/${_file}
+      COPYONLY
+      )
+  endforeach()
+else()
+  message(STATUS "Note: building in-place, no need to copy anything.")
+endif()
 
 #----------------------------------------------------------------------------
 # For internal Geant4 use - but has no effect if you build this
@@ -129,5 +129,4 @@ endforeach()
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
 #install(TARGETS WCSim DESTINATION bin)
-
 

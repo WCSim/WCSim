@@ -2321,7 +2321,7 @@ G4float* PMT3inchR12199_02::GetCollectionEfficiencyArray(){
 G4float PMT3inchR12199_02::GetDarkRate(){
   // Realistic/Optimistic value from published (proceedings) measurements.
   // ToDo : update this value
-  const G4float rate = 200*CLHEP::hertz;
+  const G4float rate = 1.0*CLHEP::kilohertz;
   return rate;
 }
 

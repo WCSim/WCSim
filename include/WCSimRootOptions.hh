@@ -55,10 +55,14 @@ public:
   void SetDigitizerClassName(string iDigitizerClassName) {DigitizerClassName = iDigitizerClassName;}
   void SetDigitizerDeadTime(int iDigitizerDeadTime) {DigitizerDeadTime = iDigitizerDeadTime;}
   void SetDigitizerIntegrationWindow(int iDigitizerIntegrationWindow) {DigitizerIntegrationWindow = iDigitizerIntegrationWindow;}
+  void SetDigitizerTimingPrecision(double iDigitizerTimingPrecision) {DigitizerTimingPrecision = iDigitizerTimingPrecision;}
+  void SetDigitizerPEPrecision(double iDigitizerPEPrecision) {DigitizerPEPrecision = iDigitizerPEPrecision;}
   //WCSimWCDigitizer* gets
   string GetDigitizerClassName() {return DigitizerClassName;}
   int    GetDigitizerDeadTime() {return DigitizerDeadTime;}
   int    GetDigitizerIntegrationWindow() {return DigitizerIntegrationWindow;}
+  int    GetDigitizerTimingPrecision() {return DigitizerTimingPrecision;}
+  int    GetDigitizerPEPrecision() {return DigitizerPEPrecision;}
   //WCSimWCTrigger* sets
   void SetTriggerClassName(string itriggerClassName) {TriggerClassName = itriggerClassName;};
   void SetMultiDigitsPerTrigger(bool imultiDigitsPerTrigger) {MultiDigitsPerTrigger = imultiDigitsPerTrigger;};
@@ -68,6 +72,7 @@ public:
   void SetNDigitsAdjustForNoise(bool indigitsAdjustForNoise) {NDigitsAdjustForNoise = indigitsAdjustForNoise;};
   void SetNDigitsPreTriggerWindow(int indigitsPreTriggerWindow) {NDigitsPreTriggerWindow = indigitsPreTriggerWindow;};
   void SetNDigitsPostTriggerWindow(int indigitsPostTriggerWindow) {NDigitsPostTriggerWindow = indigitsPostTriggerWindow;};
+  void SetTriggerOffset(double value) {TriggerOffset = value;};
   //savefailures
   void SetSaveFailuresMode(int isaveFailuresMode) {SaveFailuresMode = isaveFailuresMode;};
   void SetSaveFailuresTime(double isaveFailuresTime) {SaveFailuresTime = isaveFailuresTime;};
@@ -82,6 +87,7 @@ public:
   bool   GetNDigitsAdjustForNoise() {return NDigitsAdjustForNoise;}
   int    GetNDigitsPreTriggerWindow() {return NDigitsPreTriggerWindow;}
   int    GetNDigitsPostTriggerWindow() {return NDigitsPostTriggerWindow;}
+  double GetTriggerOffset() {return TriggerOffset;}
   //savefailures
   int    GetSaveFailuresMode() {return SaveFailuresMode;}
   double GetSaveFailuresTime() {return SaveFailuresTime;}
@@ -139,6 +145,8 @@ private:
   string DigitizerClassName;
   int    DigitizerDeadTime; // ns
   int    DigitizerIntegrationWindow; // ns
+  int    DigitizerTimingPrecision; // 
+  int    DigitizerPEPrecision; // 
 
   //WCSimWCTrigger*
   string TriggerClassName;
@@ -149,6 +157,7 @@ private:
   bool   NDigitsAdjustForNoise;
   int    NDigitsPreTriggerWindow; // ns
   int    NDigitsPostTriggerWindow; // ns
+  double TriggerOffset; //ns
   //savefailures
   int    SaveFailuresMode;
   double SaveFailuresTime; // ns
@@ -175,7 +184,7 @@ private:
   int                    RandomSeed;
   WCSimRandomGenerator_t RandomGenerator;
   
-  ClassDef(WCSimRootOptions,1)  //WCSimRootEvent structure
+  ClassDef(WCSimRootOptions,2)  //WCSimRootEvent structure
 };
 
 

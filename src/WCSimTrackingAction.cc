@@ -15,6 +15,8 @@ WCSimTrackingAction::WCSimTrackingAction()
 {
 
   ProcessList.insert("Decay") ;                         // Michel e- from pi+ and mu+
+  ProcessList.insert("conv") ;                         // Products of gamma conversion
+
   //ProcessList.insert("muMinusCaptureAtRest") ;          // Includes Muon decay from K-shell: for Michel e- from mu0. This dominates/replaces the mu- decay (noticed when switching off this process in PhysicsList)                                                   // TF: IMPORTANT: ONLY USE FROM G4.9.6 onwards because buggy/double counting before.
   ////////// ToDo: switch ON the above when NuPRISM uses G4 >= 4.9.6
   ProcessList.insert("nCapture");
@@ -132,8 +134,8 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     //TF: crucial bugfix: I want this for all tracks that I save to match Ch hits with tracks that can
     // produce Cherenkov light.
     else
-      anInfo->SetPrimaryParentID(aTrack->GetTrackID());   
-  }
+      anInfo->SetPrimaryParentID(aTrack->GetTrackID());
+    }
   else {
     anInfo->WillBeSaved(false);
   }
@@ -152,6 +154,11 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       for(size_t i=0;i<nSeco;i++)
       { 
 	WCSimTrackInformation* infoSec = new WCSimTrackInformation(anInfo);
+	if(anInfo->isSaved()){ // Parent is primary, so we want start pos & time of this secondary
+		infoSec->SetPhotonStartTime((*secondaries)[i]->GetGlobalTime());
+		infoSec->SetPhotonStartPos((*secondaries)[i]->GetPosition());
+		infoSec->SetPhotonStartDir((*secondaries)[i]->GetMomentumDirection());
+	}
 	infoSec->WillBeSaved(false); // ADDED BY MFECHNER, temporary, 30/8/06
 	(*secondaries)[i]->SetUserInformation(infoSec);
       }

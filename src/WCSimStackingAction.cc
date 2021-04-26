@@ -67,4 +67,3 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
 
 void WCSimStackingAction::NewStage() {;}
 void WCSimStackingAction::PrepareNewEvent() {;}
-

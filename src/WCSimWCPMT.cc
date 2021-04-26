@@ -96,7 +96,6 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
   G4String WCIDCollectionName = myDetector->GetIDCollectionName();
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
 
-
   for (G4int i=0; i < WCHC->entries(); i++)
     {
 
@@ -133,17 +132,19 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 
 	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
 	    time_true = (*WCHC)[i]->GetTime(ip);
+	    time_PMT  = time_true; //currently no PMT time smearing applied
 	    peSmeared = rn1pe();
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
-
-	    //apply time smearing
-	    float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
-	    time_PMT = time_true + PMT->HitTimeSmearing(Q);
-
+	    float photon_starttime = (*WCHC)[i]->GetPhotonStartTime(ip);
+	    G4ThreeVector photon_startpos = (*WCHC)[i]->GetPhotonStartPos(ip);
+	    G4ThreeVector photon_endpos = (*WCHC)[i]->GetPhotonEndPos(ip);
+	    G4ThreeVector photon_startdir = (*WCHC)[i]->GetPhotonStartDir(ip);
+	    G4ThreeVector photon_enddir = (*WCHC)[i]->GetPhotonEndDir(ip);
+	    
 	    if ( DigiHitMapPMT[tube] == 0) {
 	      WCSimWCDigi* Digi = new WCSimWCDigi();
 	      Digi->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
-	      Digi->AddPe(time_PMT);	
+	      Digi->AddPe(time_PMT);
 	      Digi->SetTubeID(tube);
 	      Digi->SetPos(pmt_position);
 	      Digi->SetOrientation(pmt_orientation);
@@ -152,6 +153,11 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      Digi->SetTrackID(track_id);
 	      Digi->SetPreSmearTime(ip,time_true);
 	      Digi->SetParentID(ip,parent_id);
+	      Digi->SetPhotonStartTime(ip,photon_starttime);
+	      Digi->SetPhotonStartPos(ip,photon_startpos);
+	      Digi->SetPhotonEndPos(ip,photon_endpos);
+	      Digi->SetPhotonStartDir(ip,photon_startdir);
+	      Digi->SetPhotonEndDir(ip,photon_enddir);
 	      DigiHitMapPMT[tube] = DigitsCollection->insert(Digi);
 	    }	
 	    else {
@@ -165,6 +171,11 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTrackID(track_id);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPreSmearTime(ip,time_true);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetParentID(ip,parent_id);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonStartTime(ip,photon_starttime);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonStartPos(ip,photon_startpos);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonEndPos(ip,photon_endpos);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonStartDir(ip,photon_startdir);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonEndDir(ip,photon_enddir);
 	    }
       
 	  } // Loop over hits in each PMT

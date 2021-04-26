@@ -26,7 +26,7 @@ int pawc_[500000];                // Declare the PAWC common
 struct ntupleStruct jhfNtuple;    // global, ToDo: why not use and set the class member?
 
 WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test, WCSimRandomParameters* rand)
-  : wcsimrandomparameters(rand)
+  : wcsimrandomparameters(rand), useTimer(false)
 {
   ntuples = 1;
 
@@ -83,9 +83,17 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     fSettingsOutputTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/F");
     fSettingsOutputTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/F");
     fSettingsOutputTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/F");
- 
+#ifdef GIT_HASH
+    const char* gitHash = GIT_HASH;
+    fSettingsOutputTree->Branch("GitHash", (void*)gitHash, "GitHash/C");
+#endif
   }      
 
+  if(useTimer) {
+    timer.Reset();
+    timer.Start();
+  }
+  
   numberOfEventsGenerated = 0;
   numberOfTimesWaterTubeHit = 0;
   numberOfTimesCatcherHit = 0;
@@ -525,6 +533,7 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 
     // Close the Root file at the end of the run
     TFile* hfile = WCSimTree->GetCurrentFile();
+    hfile->cd();
     optionsTree->Fill();
     optionsTree->Write();
     hfile->Write();
@@ -537,6 +546,12 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
   }
 
 
+  if(useTimer) {
+    timer.Stop();
+    G4cout << "WCSimRunAction ran from BeginOfRunAction() to EndOfRunAction() in:"
+	   << "\t" << timer.CpuTime()  << " seconds (CPU)"
+	   << "\t" << timer.RealTime() << " seconds (real)" << G4endl;
+  }
 }
 
 void WCSimRunAction::FillGeoTree(){
@@ -615,7 +630,7 @@ void WCSimRunAction::FillGeoTree(){
 
       if(fSettingsInputTree){
           fSettingsInputTree->GetEntry(0);
-          double z_offset = fNuPlanePos[2]/100.0 + fNuPrismRadius;
+          double z_offset = fNuPlanePos[2]/100.0;
           WCDetCentre[2] += z_offset;
           std::cout << "WCDetCentre[2] = " << WCDetCentre[2] << std::endl;
       }
@@ -733,7 +748,7 @@ void WCSimRunAction::FillFlatGeoTree(){
  
     if(fSettingsInputTree){
       fSettingsInputTree->GetEntry(0);
-      double z_offset = fNuPlanePos[2]/100.0 + fNuPrismRadius;
+      double z_offset = fNuPlanePos[2]/100.0;
       WCDetCentre[2] += z_offset;
       std::cout << "WCDetCentre[2] = " << WCDetCentre[2] << std::endl;
     }

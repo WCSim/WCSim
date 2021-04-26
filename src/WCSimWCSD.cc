@@ -84,16 +84,26 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     = (WCSimTrackInformation*)(aStep->GetTrack()->GetUserInformation());
   
   G4int primParentID = -1;
-  if (trackinfo)
+  G4float photonStartTime;
+  G4ThreeVector photonStartPos;
+  G4ThreeVector photonStartDir;
+  if (trackinfo) {
     //Skip secondaries and match to mother process, eg. muon, decay particle, gamma from pi0/nCapture.
-    primParentID = trackinfo->GetPrimaryParentID();  //!= ParentID. 
-  else // if there is no trackinfo, then it is a primary particle!
-    primParentID = aStep->GetTrack()->GetTrackID();    
+    primParentID = trackinfo->GetPrimaryParentID();  //!= ParentID.
+    photonStartTime = trackinfo->GetPhotonStartTime();
+    photonStartPos = trackinfo->GetPhotonStartPos();
+    photonStartDir = trackinfo->GetPhotonStartDir();
+  }
+  else { // if there is no trackinfo, then it is a primary particle!
+    primParentID = aStep->GetTrack()->GetTrackID();
+    photonStartTime = aStep->GetTrack()->GetGlobalTime();
+    photonStartPos = aStep->GetTrack()->GetVertexPosition();
+    photonStartDir = aStep->GetTrack()->GetVertexMomentumDirection();
+  }
 
 
   G4int    trackID           = aStep->GetTrack()->GetTrackID();
   G4String volumeName        = aStep->GetTrack()->GetVolume()->GetName();
-  
   
   G4double energyDeposition  = aStep->GetTotalEnergyDeposit();
   G4double hitTime           = aStep->GetPreStepPoint()->GetGlobalTime();
@@ -168,17 +178,16 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   //XQ Add the wavelength there
   G4float  wavelength = (2.0*M_PI*197.3)/( aStep->GetTrack()->GetTotalEnergy()/eV);
-  
   G4float ratio = 1.;
   G4float maxQE = 0.;
   G4float photonQE = 0.;
-  if (fdet->GetPMT_QE_Method()==1 || fdet->GetPMT_QE_Method() == 4){
+  if (fdet->GetPMT_QE_Method() == 1 || fdet->GetPMT_QE_Method() == 4){
     photonQE = 1.1;
-  }else if (fdet->GetPMT_QE_Method()==2){
+  }else if (fdet->GetPMT_QE_Method() == 2){
     maxQE = fdet->GetPMTQE(WCIDCollectionName,wavelength,0,240,660,ratio);
     photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
     photonQE = photonQE/maxQE;
-  }else if (fdet->GetPMT_QE_Method()==3){
+  }else if (fdet->GetPMT_QE_Method() == 3){
     ratio = 1./(1.-0.25);
     photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
   }
@@ -222,6 +231,11 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
 	   
 	   //     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
 	   //       newHit->Print();
@@ -230,6 +244,11 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
        else {
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
 	 
        }
      }
@@ -244,12 +263,13 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
  
   if (verboseLevel>0) 
   { 
-    //Need to specify which collection in case multiple geometries are built:
+    //Need to specify which collection in case multiple geometries are built
+
     G4String WCIDCollectionName = fdet->GetIDCollectionName();
     G4SDManager* SDman = G4SDManager::GetSDMpointer();
     G4int collectionID = SDman->GetCollectionID(WCIDCollectionName);
     hitsCollection = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
-    
+
     G4int numHits = hitsCollection->entries();
 
     G4cout << "There are " << numHits << " tubes hit in the WC: " << G4endl;
