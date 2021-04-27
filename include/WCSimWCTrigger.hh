@@ -73,6 +73,9 @@ public:
   ///Set the posttrigger window for the NDigits trigger (value will be forced positive)
   void SetNDigitsPostTriggerWindow(G4int window) { ndigitsPostTriggerWindow = + abs(window); }
 
+  ///Set the timing offset
+  void SetTriggerOffset(G4double value) { offset = value; }
+
   // Save trigger failures options
   ///Set the mode for saving failed triggers (0:save only triggered events, 1:save both triggered events & failed events, 2:save only failed events)
   void SetSaveFailuresMode       (G4int mode )        { saveFailuresMode = mode; }
@@ -108,6 +111,8 @@ protected:
   virtual int GetDefaultNDigitsPreTriggerWindow()  { return -400; }
   ///Set the default trigger class specific NDigits posttrigger window (in ns) (overridden by .mac)
   virtual int GetDefaultNDigitsPostTriggerWindow() { return 950; }
+  ///Set the default trigger class specific NDigits posttrigger window (in ns) (overridden by .mac)
+  virtual int GetDefaultTriggerOffset() { return 950; }
 
   ///Get the pretrigger window for a given trigger algorithm
   int GetPreTriggerWindow(TriggerType_t t);
@@ -169,6 +174,8 @@ protected:
   G4double saveFailuresTime;              ///< The dummy trigger time for failed events
   G4int    saveFailuresPreTriggerWindow;  ///< The pretrigger window to save before an SaveFailures trigger
   G4int    saveFailuresPostTriggerWindow; ///< The posttrigger window to save after an SaveFailures trigger
+  
+  G4double offset;
 
   G4String triggerClassName; ///< Save the name of the trigger class
 
@@ -200,7 +207,7 @@ private:
     }//i
   }
   
-  static const double offset;        ///< Hit time offset (ns)
+  //static const double offset;        ///< Hit time offset (ns)
   static const double LongTime;      ///< An arbitrary long time to use in loops (ns)
 
   bool   digitizeCalled; ///< Has Digitize() been called yet?
@@ -329,6 +336,7 @@ private:
   int  GetDefaultNDigitsThreshold()         { return 20;    } ///< SK NDigits threshold ~25 B.Q
   int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
   int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
+  int  GetDefaultTriggerOffset() { return 950;   } 
 };
 
 class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
@@ -375,6 +383,7 @@ private:
   int  GetDefaultNDigitsThreshold()         { return 40;    } ///< 2 * SK NDigits threshold ~25 B.Q
   int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
   int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
+  int  GetDefaultTriggerOffset() { return 950;   }
 };
 
 

@@ -93,6 +93,7 @@ public:
   void SetNDigitsAdjustForNoise(bool indigitsAdjustForNoise) {NDigitsAdjustForNoise = indigitsAdjustForNoise;};
   void SetNDigitsPreTriggerWindow(int indigitsPreTriggerWindow) {NDigitsPreTriggerWindow = indigitsPreTriggerWindow;};
   void SetNDigitsPostTriggerWindow(int indigitsPostTriggerWindow) {NDigitsPostTriggerWindow = indigitsPostTriggerWindow;};
+  void SetTriggerOffset(double value) {TriggerOffset = value;};
   //savefailures
   void SetSaveFailuresMode(int isaveFailuresMode) {SaveFailuresMode = isaveFailuresMode;};
   void SetSaveFailuresTime(double isaveFailuresTime) {SaveFailuresTime = isaveFailuresTime;};
@@ -107,6 +108,7 @@ public:
   bool   GetNDigitsAdjustForNoise() {return NDigitsAdjustForNoise;}
   int    GetNDigitsPreTriggerWindow() {return NDigitsPreTriggerWindow;}
   int    GetNDigitsPostTriggerWindow() {return NDigitsPostTriggerWindow;}
+  double GetTriggerOffset() {return TriggerOffset;}
   //savefailures
   int    GetSaveFailuresMode() {return SaveFailuresMode;}
   double GetSaveFailuresTime() {return SaveFailuresTime;}
@@ -180,6 +182,7 @@ private:
   bool   NDigitsAdjustForNoise;
   int    NDigitsPreTriggerWindow; // ns
   int    NDigitsPostTriggerWindow; // ns
+  double TriggerOffset; //ns
   //savefailures
   int    SaveFailuresMode;
   double SaveFailuresTime; // ns

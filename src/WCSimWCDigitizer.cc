@@ -60,6 +60,8 @@ void WCSimWCDigitizerBase::GetVariables()
   //set the options to digitizer-specific defaults
   DigitizerDeadTime          = GetDefaultDeadTime();
   DigitizerIntegrationWindow = GetDefaultIntegrationWindow();
+  DigitizerTimingPrecision   = GetDefaultTimingPrecision();
+  DigitizerPEPrecision       = GetDefaultPEPrecision();
 
   //read the .mac file to override them
   if(DAQMessenger != NULL) {
@@ -72,8 +74,10 @@ void WCSimWCDigitizerBase::GetVariables()
     exit(-1);
   }
 
-  G4cout << "Using digitizer deadtime " << DigitizerDeadTime << " ns" << G4endl;
+  G4cout << "Using digitizer deadtime "           << DigitizerDeadTime          << " ns" << G4endl;
   G4cout << "Using digitizer integration window " << DigitizerIntegrationWindow << " ns" << G4endl;
+  G4cout << "Using digitizer time resolution "    << DigitizerTimingPrecision   << " ns" << G4endl;
+  G4cout << "Using digitizer charge resolution "  << DigitizerPEPrecision       << " p.e." << G4endl;
 }
 
 void WCSimWCDigitizerBase::Digitize()
@@ -110,12 +114,18 @@ void WCSimWCDigitizerBase::Digitize()
 
 bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, double digihittime, double peSmeared, std::vector<int> digi_comp)
 {
+  //digitised hit information does not have infinite precision
+  //so need to round the charge and time information
+  double digihittime_d = Truncate(digihittime, DigitizerTimingPrecision);
+  double peSmeared_d   = Truncate(peSmeared,   DigitizerPEPrecision);
+
   //gate is not a trigger, but just the position of the digit in the array
   //inside the WCSimWCDigi object
 #ifdef WCSIMWCDIGITIZER_VERBOSE
   if(tube < NPMTS_VERBOSE) {
     G4cout<<"Adding hit "<<gate<<" in tube "<<tube
-	  << " with time " << digihittime << " charge " << peSmeared
+	  << " with time " << digihittime_d << " charge " << peSmeared_d
+	  << " (truncated from t: " << digihittime << " q: " << peSmeared << ")"
 	  << " (made of " << digi_comp.size() << " raw hits with IDs ";
     for(unsigned int iv = 0; iv < digi_comp.size(); iv++)
       G4cout << " " << digi_comp[iv] << ",";
@@ -123,13 +133,14 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, double digihittime, d
   }
 #endif
 
+  //use un-truncated peSmeared here, so that truncation does not affect the test
   if (peSmeared > 0.0) {
       if ( DigiStoreHitMap[tube] == 0) {
 	WCSimWCDigi* Digi = new WCSimWCDigi();
 	Digi->SetTubeID(tube);
-	Digi->SetPe(gate,peSmeared);
-	Digi->AddPe(digihittime);
-	Digi->SetTime(gate,digihittime);
+	Digi->SetPe(gate,peSmeared_d);
+	Digi->AddPe(digihittime_d);
+	Digi->SetTime(gate,digihittime_d);
 	Digi->AddDigiCompositionInfo(digi_comp);
 	DigiStoreHitMap[tube] = DigiStore->insert(Digi);
 #ifdef WCSIMWCDIGITIZER_VERBOSE
@@ -138,9 +149,9 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, double digihittime, d
 #endif
       }
       else {
-	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetPe(gate,peSmeared);
-	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetTime(gate,digihittime);
-	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddPe(digihittime);
+	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetPe(gate,peSmeared_d);
+	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetTime(gate,digihittime_d);
+	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddPe(digihittime_d);
 	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddDigiCompositionInfo(digi_comp);
 #ifdef WCSIMWCDIGITIZER_VERBOSE
 	if(tube < NPMTS_VERBOSE)
@@ -152,8 +163,8 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, double digihittime, d
   else {
 #ifdef WCSIMWCDIGITIZER_VERBOSE
     if(tube < NPMTS_VERBOSE)
-      G4cout << "DIGIT REJECTED with charge " << peSmeared
-	     << " time " << digihittime << G4endl;
+      G4cout << "DIGIT REJECTED with charge " << peSmeared_d
+	     << " time " << digihittime_d << G4endl;
 #endif
     return false;
   }
@@ -164,6 +175,8 @@ void WCSimWCDigitizerBase::SaveOptionsToOutput(WCSimRootOptions * wcopt)
   wcopt->SetDigitizerClassName(DigitizerClassName);
   wcopt->SetDigitizerDeadTime(DigitizerDeadTime);
   wcopt->SetDigitizerIntegrationWindow(DigitizerIntegrationWindow);
+  wcopt->SetDigitizerTimingPrecision(DigitizerTimingPrecision);
+  wcopt->SetDigitizerPEPrecision(DigitizerPEPrecision);
 }
 
 
@@ -303,6 +316,8 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 
 	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    if(iflag == 0) {
+	      //apply time smearing
+	      float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	      //digitize hit
 	      peSmeared *= efficiency;
 
@@ -312,7 +327,9 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      //file << peSmeared << "\n";
 	      //*****************************************************************************************************************************************************************************************
 
-	      bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id, intgr_start, peSmeared, digi_comp);
+	      bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
+								intgr_start + PMT->HitTimeSmearing(Q),
+								peSmeared, digi_comp);
 	      if(accepted) {
 		digi_unique_id++;
 	      }
@@ -356,9 +373,13 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      int iflag;
 	      WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
 	      if(iflag == 0) {
+		//apply time smearing
+		float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 		//digitize hit
 		peSmeared *= efficiency;
-		bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id, intgr_start, peSmeared, digi_comp);
+		bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
+								  intgr_start + PMT->HitTimeSmearing(Q),
+								  peSmeared, digi_comp);
 		if(accepted) {
 		  digi_unique_id++;
 		}

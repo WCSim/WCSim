@@ -21,6 +21,9 @@ class WCSimTrackingAction : public G4UserTrackingAction
 
   void SetFractionChPhotons(G4double fraction){percentageOfCherenkovPhotonsToDraw = fraction;}
   
+  void AddProcess(const G4String &process){ProcessList.insert(process);}
+  void AddParticle(G4int pid){ParticleList.insert(pid);}
+  
 private:
   std::set<G4String> ProcessList;
   std::set<G4int> ParticleList;

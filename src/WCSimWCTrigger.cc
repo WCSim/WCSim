@@ -28,9 +28,10 @@
 #ifndef WCSIMWCTRIGGER_VERBOSE
 //#define WCSIMWCTRIGGER_VERBOSE
 #endif
-//#define DEBUG
-const double WCSimWCTriggerBase::offset = 950.0; // ns. apply offset to the digit time
-const double WCSimWCTriggerBase::LongTime = 2E6; // ns = 2ms. event time
+
+//Offset is now added as an external parameter.
+//const double WCSimWCTriggerBase::offset = 950.0; // ns. apply offset to the digit time
+const double WCSimWCTriggerBase::LongTime = 1E6; // ns = 1ms. event time
 
 
 WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
@@ -67,6 +68,8 @@ void WCSimWCTriggerBase::GetVariables()
   ndigitsWindow            = GetDefaultNDigitsWindow();
   ndigitsPreTriggerWindow  = GetDefaultNDigitsPreTriggerWindow();
   ndigitsPostTriggerWindow = GetDefaultNDigitsPostTriggerWindow();
+  
+  offset = GetDefaultTriggerOffset();
 
   //read the .mac file to override them
   if(DAQMessenger != NULL) {
@@ -84,7 +87,8 @@ void WCSimWCTriggerBase::GetVariables()
 	 << (ndigitsAdjustForNoise ? " (will be adjusted for noise)" : "") << G4endl
 	 << "Using NDigits trigger window " << ndigitsWindow << " ns" << G4endl
 	 << "Using NDigits event pretrigger window " << ndigitsPreTriggerWindow << " ns" << G4endl
-	 << "Using NDigits event posttrigger window " << ndigitsPostTriggerWindow << " ns" << G4endl;
+	 << "Using NDigits event posttrigger window " << ndigitsPostTriggerWindow << " ns" << G4endl
+	 << "Using trigger offset " << offset << "ns" << G4endl;
   if(saveFailuresMode == 0)
     G4cout << "Saving only triggered digits" << G4endl;
   else if(saveFailuresMode == 1)
@@ -476,6 +480,7 @@ void WCSimWCTriggerBase::SaveOptionsToOutput(WCSimRootOptions * wcopt)
   wcopt->SetNDigitsAdjustForNoise(ndigitsAdjustForNoise);;
   wcopt->SetNDigitsPreTriggerWindow(ndigitsPreTriggerWindow);;
   wcopt->SetNDigitsPostTriggerWindow(ndigitsPostTriggerWindow);;
+  wcopt->SetTriggerOffset(offset);
   //savefailures
   wcopt->SetSaveFailuresMode(saveFailuresMode);;
   wcopt->SetSaveFailuresTime(saveFailuresTime);;

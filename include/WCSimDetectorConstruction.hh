@@ -98,6 +98,7 @@ public:
   void SetHyperK_HybridFakeGeometry();//B.Q, 2019/01/26
   void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition);
   void SetNuPrism_mPMTGeometry();
+  void SetNuPrismBeamTest_mPMTGeometry();
   void SetNuPrismShort_mPMTGeometry();
   void SetDefaultNuPrismGeometry();
   void UpdateGeometry();
@@ -287,8 +288,15 @@ public:
   // Set if nuPRISM
   void   SetIsNuPrism(G4bool choice) {isNuPrism = choice;}
   G4bool GetIsNuPrism() {return isNuPrism;}
+
+  //Set if hybrid detector
   void   SetHybridPMT(G4bool choice) {hybrid = choice;}
   
+  // Set if nuPRISM for WCTE (NuPRISMBeamTest)
+  // M.Shinoki added Jun.04,2020
+  void   SetIsNuPrismBeamTest(G4bool choice) {isNuPrismBeamTest = choice;}
+  G4bool GetIsNuPrismBeamTest() {return isNuPrismBeamTest;}
+
   void   SetPMTType(G4String type) {
     WCPMTType = type;
     //And update everything that is affected by a new PMT
@@ -565,6 +573,7 @@ private:
 
   // Add bool to indicate whether we load nuPRISM geometry  
   G4bool isNuPrism;
+  G4bool isNuPrismBeamTest;
   G4String WCPMTType;
  // G4double WCPMTCoverage; //TF: already using this variable "WCPMTPercentCoverage
 

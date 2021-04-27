@@ -1391,11 +1391,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   for ( int i = -CapNCell ; i <  CapNCell; i++) {
     for (int j = -CapNCell ; j <  CapNCell; j++)   {
 
-       
+      // Jun. 04, 2020 by M.Shinoki
+      // For IWCD (NuPRISM_mPMT Geometry)
       xoffset = i*WCCapPMTSpacing + WCCapPMTSpacing*0.5;
       yoffset = j*WCCapPMTSpacing + WCCapPMTSpacing*0.5;
-
-      
+      // For WCTE (NuPRISMBeamTest_mPMT Geometry)
+      if (isNuPrismBeamTest){
+      	xoffset = i*WCCapPMTSpacing;
+      	yoffset = j*WCCapPMTSpacing;
+      }
       G4ThreeVector cellpos = G4ThreeVector(xoffset, yoffset, 0);     
       //      G4double WCBarrelEffRadius = WCIDDiameter/2. - WCCapPMTSpacing;
       //      double comp = xoffset*xoffset + yoffset*yoffset 

@@ -91,10 +91,17 @@ doxy:
 
 clean_wcsim:
 	echo  $(G4WORKDIR); 
-	$(RM) -r $(G4WORKDIR); $(RM) *.o *.a *.so *~ */*~ src/WCSimRootDict.h src/WCSimRootDict.c*; 
+	$(RM) -r $(G4WORKDIR); $(RM) *.o *.a *.so *~ */*~ ./WCSimRootDict.*
 	@if [ -d "doc/doxygen" ]; \
 		then \
 		rm -r doc/doxygen; \
 	fi	
 
 include $(G4INSTALL)/config/binmake.gmk
+
+$(G4TMPDIR)/%.o: %.cxx
+	@echo Compiling $*.cxx ...
+	@if [ ! -d $(G4TMPDIR) ] ; then echo mkdir -p $(G4TMPDIR) ; mkdir -p $(G4TMPDIR) ; fi
+	@echo $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $(G4TMPDIR)/$(*F).o $*.cxx
+	@$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $(G4TMPDIR)/$(*F).o $*.cxx
+

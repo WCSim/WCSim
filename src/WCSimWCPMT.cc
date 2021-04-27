@@ -24,7 +24,7 @@
 extern "C" void skrn1pe_(double* );
 //extern "C" void rn1pe_(double* ); // 1Kton
 
-G4double WCSimWCPMT::fFirst_Time = -1;
+G4double WCSimWCPMT::first_time = 0;
 
 WCSimWCPMT::WCSimWCPMT(G4String name,
                        WCSimDetectorConstruction* myDetector,
@@ -210,30 +210,18 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    // This modification is important in case of very late hit physics (such as in radioactive decays)     
 	    // for which time easy goes > 1e9 ns and cause bug in digitizer
 	    // should not use /grdm/decayBiasProfile biasprofile.dat as it messes up all the timing of the decays, and force to use only one nucleus
-	    if ( i == 0 && ip == 0 && RelativeHitTime && fFirst_Time == -1 /*&& (*WCHC)[i]->GetTime(ip) > 1e5*/ ) { // Set Max at 10 musec
+	    if ( i == 0 && ip == 0 && RelativeHitTime /*&& (*WCHC)[i]->GetTime(ip) > 1e5*/ ) { // Set Max at 10 musec
 	      //G4cout << " Apply time correction to event hits of " << (*WCHC)[i]->GetTime(ip) << " ns" << G4endl;
-	      fFirst_Time = time_true;
+	      first_time = time_true;
 	    } 
 	    
+	    time_PMT  = time_true - first_time; //currently no PMT time smearing applied
 	    peSmeared = rn1pe();
 #ifdef DEBUG
 	    std::cout << "tube : " << i << " (ID=" << tube << ")" << " hit in tube : "<< ip << " (time=" << time_true << "ns)"  << " pe value : " << peSmeared << std::endl; //TD debug
 #endif
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
 
-	    //apply time smearing
-	    double Q = (peSmeared > 0.5) ? peSmeared : 0.5;
-#ifdef DEBUG
-	    G4cout<<"PE smearing applied"<<G4endl;
-#endif
-	    //Qout = Q*PMT->QoutFactor(Q, QOIFF, linearity=0); 
-	    //time_PMT = time_true + PMT->HitTimeSmearing(Q, ttsfactor/*, linearity=0 */);
-	    time_PMT = (time_true - fFirst_Time) + PMT->HitTimeSmearing(Q, ttsfactor/*, linearity=0 */);
-#ifdef DEBUG
-	    G4cout<<"Time smearing applied, is this a new hit in the digit map = "<<DigiHitMapPMT[tube]<<G4endl;
-#endif
-	    QinTOT += Q;
-	    
 	    float photon_starttime = (*WCHC)[i]->GetPhotonStartTime(ip);
 	    G4ThreeVector photon_startpos = (*WCHC)[i]->GetPhotonStartPos(ip);
 	    G4ThreeVector photon_endpos = (*WCHC)[i]->GetPhotonEndPos(ip);
@@ -243,7 +231,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    if ( DigiHitMapPMT[tube] == 0) {
 	      WCSimWCDigi* Digi = new WCSimWCDigi();
 	      Digi->SetLogicalVolume((*WCHC)[0]->GetLogicalVolume());
-	      Digi->AddPe(time_PMT);	
+	      Digi->AddPe(time_PMT);
 	      Digi->SetTubeID(tube);
 	      //Digi->SetTubeType((*WCHC)[0]->GetTubeType());
 	      Digi->SetPos(pmt_position);

@@ -423,6 +423,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
 							 std::vector<TVector3> photonEndPos,
 							 std::vector<TVector3> photonStartDir,
 							 std::vector<TVector3> photonEndDir)
+
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;

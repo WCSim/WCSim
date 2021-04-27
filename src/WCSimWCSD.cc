@@ -105,7 +105,6 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4int    trackID           = aStep->GetTrack()->GetTrackID();
   G4String volumeName        = aStep->GetTrack()->GetVolume()->GetName();
   
-  
   G4double energyDeposition  = aStep->GetTotalEnergyDeposit();
   G4double hitTime           = aStep->GetPreStepPoint()->GetGlobalTime();
 
@@ -197,10 +196,9 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
     maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,240,660,ratio);
-    //maxQE = fdet->GetPMTQE(volumeName,wavelength,0,240,660,ratio);//B. Quilain, Hybrid configuration
     photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
     photonQE = photonQE/maxQE;
-  }else if (fdet->GetPMT_QE_Method()==3){
+  }else if (fdet->GetPMT_QE_Method() == 3){
     ratio = 1./(1.-0.25);
     photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
   }
@@ -276,12 +274,13 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
  
   if (verboseLevel>1) 
   { 
-    //Need to specify which collection in case multiple geometries are built:
+    //Need to specify which collection in case multiple geometries are built
+
     G4String WCIDCollectionName = fdet->GetIDCollectionName();
     G4SDManager* SDman = G4SDManager::GetSDMpointer();
     G4int collectionID = SDman->GetCollectionID(WCIDCollectionName);
     hitsCollection = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
-    
+
     G4int numHits = hitsCollection->entries();
 
     G4cout << "There are " << numHits << " tubes hit in the WC: " << G4endl;

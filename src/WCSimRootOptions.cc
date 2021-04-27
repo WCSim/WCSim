@@ -33,6 +33,7 @@ void WCSimRootOptions::Print(Option_t *) const
     << "\tSavePi0: " << SavePi0 << endl
     << "\tPMTQEMethod: " << PMTQEMethod << endl
     << "\tPMTCollEff: " << PMTCollEff << endl
+<<<<<<< HEAD
     << "Dark Noise options:" << endl;
     for(std::map<string, WCSimDarkNoiseOptions>::const_iterator it=DarkOptMap.begin(); it != DarkOptMap.end(); ++it) {
           cout
@@ -44,25 +45,30 @@ void WCSimRootOptions::Print(Option_t *) const
 	    << "\t\tDarkWindow: " << it->second.DarkWindow << " ns" << endl
 	    << "\t\tDarkMode: " << it->second.DarkMode << endl;
     }
-    cout << "Digitizer options:" << endl
-	 << "\tDigitizerClassName: " << DigitizerClassName << endl
-	 << "\tDigitizerDeadTime: " << DigitizerDeadTime << " ns" << endl
-	 << "\tDigitizerIntegrationWindow: " << DigitizerIntegrationWindow << " ns" << endl
-	 << "Trigger options:" << endl
-	 << "\tTriggerClassName: " << TriggerClassName << endl
-	 << "\tMultiDigitsPerTrigger: " << MultiDigitsPerTrigger << endl
-	 << "NDigits-style trigger options:" << endl
-	 << "\tNDigitsThreshold: " << NDigitsThreshold << " digitized hits" << endl
-	 << "\tNDigitsWindow: " << NDigitsWindow << " ns" << endl
-	 << "\tNDigitsAdjustForNoise: " << NDigitsAdjustForNoise << endl
-	 << "\tNDigitsPreTriggerWindow: " << NDigitsPreTriggerWindow << " ns" << endl
-	 << "\tNDigitsPostTriggerWindow: " << NDigitsPostTriggerWindow << " ns" << endl
-	 << "Save failures trigger options:" << endl
-	 << "\tSaveFailuresMode: " << SaveFailuresMode << endl
-	 << "\tSaveFailuresTime: " << SaveFailuresTime << " ns" << endl
-	 << "\tSaveFailuresPreTriggerWindow: " << SaveFailuresPreTriggerWindow << " ns" << endl
-	 << "\tSaveFailuresPostTriggerWindow: " << SaveFailuresPostTriggerWindow << " ns" << endl
-	 << "Tuning parameters:" << endl
+    << "Digitizer options:" << endl
+    << "\tDigitizerClassName: " << DigitizerClassName << endl
+    << "\tDigitizerDeadTime: " << DigitizerDeadTime << " ns" << endl
+    << "\tDigitizerIntegrationWindow: " << DigitizerIntegrationWindow << " ns" << endl
+    << "\tDigitizerTimingPrecision: " << DigitizerTimingPrecision << " ns" << endl
+    << "\tDigitizerPEPrecision: " << DigitizerPEPrecision << " ns" << endl
+
+    << "Trigger options:" << endl
+    << "\tTriggerClassName: " << TriggerClassName << endl
+    << "\tTriggerOffset: " << TriggerOffset << endl
+    << "\tMultiDigitsPerTrigger: " << MultiDigitsPerTrigger << endl
+    << "NDigits-style trigger options:" << endl
+    << "\tNDigitsThreshold: " << NDigitsThreshold << " digitized hits" << endl
+    << "\tNDigitsWindow: " << NDigitsWindow << " ns" << endl
+    << "\tNDigitsAdjustForNoise: " << NDigitsAdjustForNoise << endl
+    << "\tNDigitsPreTriggerWindow: " << NDigitsPreTriggerWindow << " ns" << endl
+    << "\tNDigitsPostTriggerWindow: " << NDigitsPostTriggerWindow << " ns" << endl
+    << "Save failures trigger options:" << endl
+    << "\tSaveFailuresMode: " << SaveFailuresMode << endl
+    << "\tSaveFailuresTime: " << SaveFailuresTime << " ns" << endl
+    << "\tSaveFailuresPreTriggerWindow: " << SaveFailuresPreTriggerWindow << " ns" << endl
+    << "\tSaveFailuresPostTriggerWindow: " << SaveFailuresPostTriggerWindow << " ns" << endl
+	 
+    << "Tuning parameters:" << endl
 	 << "\tRayff: " << Rayff << endl
 	 << "\tBsrff: " << Bsrff << endl
 	 << "\tAbwff: " << Abwff << endl
@@ -74,16 +80,18 @@ void WCSimRootOptions::Print(Option_t *) const
 	 << "\tPMTSatur:" << PmtSatur << endl //TD 2019.7.16
 	 << "\tTvspacing: " << Tvspacing << endl
 	 << "\tTopveto: " << Topveto << endl
-	 << "Physics List Factory:" << endl
+
+    << "Physics List Factory:" << endl
 	 << "\tPhysicsListName: " << PhysicsListName << endl
 	 << "WCSimPrimaryGeneratorAction" << endl
 	 << "\tVectorFileName: " << VectorFileName << endl
 	 << "\tGeneratorType: " << GeneratorType << endl
-	 << "WCSimPrimaryGeneratorAction" << endl
-	 << "\tRandomSeed: " << RandomSeed << endl
+   << "WCSimRandomParameters" << endl
+ 	 << "\tRandomSeed: " << RandomSeed << endl
 	 << "\tRandomGenerator: " << WCSimEnumerations::EnumAsString(RandomGenerator) << endl
 	 << endl;
-}
+
+ 
 //______________________________________________________________________________
 bool WCSimRootOptions::IsValidDarkTag(string tag) const
 {

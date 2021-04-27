@@ -26,7 +26,7 @@
 
 #Use mPMTs settings (uncomment/delete the above)
 #/WCSim/WCgeom nuPRISM_mPMT
-#/WCSim/WCgeom nuPRISMShort_mPMT
+/WCSim/WCgeom nuPRISMShort_mPMT
 # Set Gadolinium doping (concentration is in percent)
 #/WCSim/DopingConcentration 0.1
 #/WCSim/DopedWater false
@@ -42,9 +42,10 @@
 # the total number of photons
 # On the detector side, the rest of QE are applied according to QE/QE_max
 # distribution. This option is in particular important for the WLS
-# 3. The last option means all the QE are applied at the detector
+# 3. The third option means all the QE are applied at the detector
 # Good for the low energy running.
 # 4. Switch off the QE, ie. set it at 100%
+
 /WCSim/PMTQEMethod     Stacking_Only
 #/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
@@ -171,6 +172,9 @@
 ## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
 ## a NEUT vector file as input
 /WCSimIO/SaveRooTracker 0
+
+## set a timer running on WCSimRunAction
+#/WCSimIO/Timer false
 
 /run/beamOn 10
 #exit
