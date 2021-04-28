@@ -21,6 +21,8 @@
 
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap;
 std::map<int, std::pair<int, int> > WCSimDetectorConstruction::mPMTIDMap;
+std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap2;
+std::map<int, std::pair<int, int> > WCSimDetectorConstruction::mPMTIDMap2;
 //std::map<int, cyl_location>  WCSimDetectorConstruction::tubeCylLocation;
 //hash_map<std::string, int, hash<std::string> > 
 //WCSimDetectorConstruction::tubeLocationMap_old;    //deprecated !!
@@ -29,6 +31,8 @@ std::map<int, std::pair<int, int> > WCSimDetectorConstruction::mPMTIDMap;
 // with operator() already properly defined.
 std::unordered_map<std::string, int, std::hash<std::string> >         
 WCSimDetectorConstruction::tubeLocationMap;
+std::unordered_map<std::string, int, std::hash<std::string> >         
+WCSimDetectorConstruction::tubeLocationMap2;
 
 WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuningParameters* WCSimTuningPars):WCSimTuningParams(WCSimTuningPars)
 {
@@ -45,7 +49,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   //-----------------------------------------------------
   // Create Materials
   //-----------------------------------------------------
-    
+
   ConstructMaterials();
 
   //-----------------------------------------------------
@@ -54,11 +58,18 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
 
   WCSimDetectorConstruction::tubeIDMap.clear();
   WCSimDetectorConstruction::mPMTIDMap.clear();
-  //WCSimDetectorConstruction::tubeCylLocation.clear();// (JF) Removed
   WCSimDetectorConstruction::tubeLocationMap.clear();
+
+  WCSimDetectorConstruction::tubeIDMap2.clear();
+  WCSimDetectorConstruction::mPMTIDMap2.clear();
+  WCSimDetectorConstruction::tubeLocationMap2.clear();
+
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
+
   totalNumPMTs = 0;
+  totalNumPMTs2 = 0;
   WCPMTExposeHeight= 0.;
+  WCPMTExposeHeight2= 0.;
 
   //---------------------------------------------------
   // Need to define defaults for all mPMT parameters 
@@ -67,6 +78,10 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   vessel_cyl_height = 0.1*mm;   // LATER: when tested, default WITH PMT cover!
   vessel_radius_curv = 0.1*mm;
   vessel_radius = 0.1*mm;
+
+  mPMT_vessel_cyl_height = 0.1*mm;   // LATER: when tested, default WITH PMT cover!
+  mPMT_vessel_radius_curv = 0.1*mm;
+  mPMT_vessel_radius = 0.1*mm;
   dist_pmt_vessel = 0.*mm;
   orientation = PERPENDICULAR;
   mPMT_ID_PMT = "PMT3inchR12199_02";
@@ -80,6 +95,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   id_reflector_angle = 0.*CLHEP::deg; 
   // parameters related to filling the ID mPMT
   nID_PMTs = 1;   //per mPMT
+  nID_PMTs2 = 1;   //per mPMT
   config_file = "";
   fix_nModules = false;
   mPMT_material_pmtAssembly = "Water";
@@ -150,6 +166,10 @@ WCSimDetectorConstruction::~WCSimDetectorConstruction(){
     delete fpmts.at(i);
   }
   fpmts.clear();
+  for (unsigned int i=0;i<fpmts2.size();i++){
+    delete fpmts2.at(i);
+  }
+  fpmts2.clear();
 }
 
 //G4ThreeVector WCSimDetectorConstruction::GetTranslationFromSettings()
@@ -166,8 +186,8 @@ WCSimDetectorConstruction::~WCSimDetectorConstruction(){
 //        return trans;
 //    }
 //
-//    float NuBeamAng;
-//    float NuIdfdPos[3];
+//    double NuBeamAng;
+//    double NuIdfdPos[3];
 //    for(int i = 0; i < 3; ++i) NuIdfdPos[i] = 0;
 //    fSettingsTree->SetBranchAddress("NuIdfdPos",NuIdfdPos); 
 //    fSettingsTree->SetBranchAddress("NuBeamAng",&NuBeamAng); 
@@ -201,6 +221,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   vAzimOffset.clear();
 
   totalNumPMTs = 0;
+  totalNumPMTs2 = 0;
   
   //-----------------------------------------------------
   // Create Logical Volumes
@@ -297,6 +318,10 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   mPMTIDMap.clear();
   tubeLocationMap.clear();
 
+  tubeIDMap2.clear();
+  mPMTIDMap2.clear();
+  tubeLocationMap2.clear();
+
 
   // Traverse and print the geometry Tree
   
@@ -351,6 +376,11 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
     WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
+  else if (PMTType == "PMT3inchR14374"){
+    WCSimPMTObject* PMT = new PMT3inchR14374;
+    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
+    return PMT;
+  }
   else if (PMTType == "PMT10inch"){
     WCSimPMTObject* PMT = new PMT10inch;
     WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
@@ -402,6 +432,7 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
 
 void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
 {
+  wcopt->SetGeomHasOD(false);
   wcopt->SetDetectorName(WCDetectorName);
   wcopt->SetSavePi0(pi0Info_isSaved);
   wcopt->SetPMTQEMethod(PMT_QE_Method);

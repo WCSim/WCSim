@@ -32,11 +32,39 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   Rgcff->SetParameterName("Rgcff",true);
   Rgcff->SetDefaultValue(0.32);
 
+  //Added by B. Quilain 2018/07/25
+  Qeff = new G4UIcmdWithADouble("/WCSim/tuning/qeff",this);
+  Qeff->SetGuidance("Set the correction of cathode QE parameter (nominal = 1). Used when changing the cathode reflectivity to keep the total charge constant.");
+  Qeff->SetParameterName("Qeff",true);
+  Qeff->SetDefaultValue(1.);
+
   Mieff = new G4UIcmdWithADouble("/WCSim/tuning/mieff",this);
   Mieff->SetGuidance("Set the Mie scattering parameter");
   Mieff->SetParameterName("Mieff",true);
   Mieff->SetDefaultValue(0.0);
 
+  //TD 2019.06.22
+  Ttsff = new G4UIcmdWithADouble("/WCSim/tuning/ttsff",this);
+  Ttsff->SetGuidance("Set the transit time smearing parameter for the PMTs");
+  Ttsff->SetParameterName("Ttsff",true);
+  Ttsff->SetDefaultValue(1.0);
+
+ //TD 2019.6.26
+  PMTSatur = new G4UIcmdWithADouble("/WCSim/tuning/pmtsatur",this);
+  PMTSatur->SetGuidance("Set the pe threshold where saturation starts to occur");
+  PMTSatur->SetParameterName("PMTSatur",true);
+  PMTSatur->SetDefaultValue(-1);
+  
+  // Qoiff = new G4UIcmdWithADouble("/WCSim/tuning/qoiff",this);
+  // Qoiff->SetGuidance("Set the uncertainty on amount of charge created in a PMT");
+  // Qoiff->SetParameterName("Qoiff",true);
+  // Qoiff->SetDefaultValue(0.0);
+  
+  // NLTinfo = new G4UIcmdWithADouble("/WCSim/tuning/nltinfo",this);
+  // NLTinfo->SetGuidance("Set the non-linearity info for time resolutions in PMTs");
+  // NLTinfo->SetParameterName("NLTinfo",true);
+  // NLTinfo->SetDefaultValue(0.0);
+  
   //jl145 - for Top Veto
   TVSpacing = new G4UIcmdWithADouble("/WCSim/tuning/tvspacing",this);
   TVSpacing->SetGuidance("Set the Top Veto PMT Spacing, in cm.");
@@ -56,8 +84,13 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
   delete Bsrff;
   delete Abwff;
   delete Rgcff;
+  delete Qeff;//B.Q
   delete Mieff;
-
+  delete Ttsff;
+  delete PMTSatur;//TD 2019.7.16
+  //delete Qoiff; //TD 2019.6.26
+  //delete NLTinfo;
+  
   //jl145 - for Top Veto
   delete TVSpacing;
   delete TopVeto;
@@ -108,6 +141,16 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
   }
 
+ if(command == Qeff) {//B. Quilain
+	  // Set the cathode QE correction parameter
+	  //	  printf("Input parameter %f\n",Qeff->GetNewDoubleValue(newValue));
+
+  WCSimTuningParams->SetQeff(Qeff->GetNewDoubleValue(newValue));
+
+  printf("Seting the correction of cathode QE parameter (nominal = 1) %f\n",Qeff->GetNewDoubleValue(newValue));
+
+  }
+
  if(command == Mieff) {
 	  // Set the Mie scattering parameter
 	  //	  printf("Input parameter %f\n",Mieff->GetNewDoubleValue(newValue));
@@ -117,6 +160,46 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   printf("Setting Mie scattering parameter %f\n",Mieff->GetNewDoubleValue(newValue));
 
   }
+
+ if(command == Ttsff) {
+	  // Set the transit time smearing parameter
+	  //	  printf("Input parameter %f\n",Ttsff->GetNewDoubleValue(newValue));
+
+  WCSimTuningParams->SetTtsff(Ttsff->GetNewDoubleValue(newValue));
+
+  printf("Setting transit time smearing parameter %f\n",Ttsff->GetNewDoubleValue(newValue));
+
+  }
+
+ //TD 2019.7.16
+ if(command == PMTSatur) {
+
+   WCSimTuningParams->SetPMTSatur(PMTSatur->GetNewDoubleValue(newValue));
+
+   printf("Setting saturation threshold for PMTs %f (-1 means no saturation)\n",PMTSatur->GetNewDoubleValue(newValue));
+ }
+
+//TD 2019.6.26
+//if(command == Qoiff) {
+////Set the uncertainty on amount of charge created in the PMT
+////  printf("Input parameter %f\n",Qoiff->GetNewDoubleValue(newValue));
+
+//  WCSimTuningParams->SetQoiff(Qoiff->GetNewDoubleValue(newValue));
+
+//  printf(" Setting the uncertainty on amount of charge created in the PMT %f\n",Qoiff->GetNewDoubleValue(newValue));
+
+// }
+
+
+//if(command == NLTinfo) {
+////Set the non-linearity info for time resolutions in PMTs
+////  printf("Input parameter %f\n",NLTinfo->GetNewDoubleValue(newValue));
+
+//  WCSimTuningParams->SetNLTinfo(NLTinfo->GetNewDoubleValue(newValue));
+
+//  printf(" Setting the non-linearity info for time resolutions in PMTs to %f\n",NLTinfo->GetNewDoubleValue(newValue));
+
+// }
 
   //jl145 - For Top Veto
 

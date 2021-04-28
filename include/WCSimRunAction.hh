@@ -43,11 +43,19 @@ public:
   bool GetSaveRooTracker() { return SaveRooTracker; }
   void FillGeoTree();
   TTree* GetTree(){return WCSimTree;}
+  TBranch* GetBranch(G4String detectorElement = "tank"){
+    if(detectorElement=="tank") return wcsimrooteventbranch;
+    else if(detectorElement=="tankPMT2")  return wcsimrooteventbranch2;
+    else G4cout << "Unkown detector element" << G4endl;
+  }
   TTree* GetFlatMasterTree(){return masterTree;}
   TTree* GetGeoTree(){return geoTree;}
   TTree* GetOptionsTree(){return optionsTree;}
   WCSimRootGeom* GetRootGeom(){return wcsimrootgeom;}
-  WCSimRootEvent* GetRootEvent(){return wcsimrootsuperevent;}
+  WCSimRootEvent* GetRootEvent(G4String detectorElement = "tank"){
+    if(detectorElement=="tank") return wcsimrootsuperevent;
+    if(detectorElement=="tankPMT2") return wcsimrootsuperevent2;
+  }
   WCSimRootOptions* GetRootOptions(){return wcsimrootoptions;}
 
   //Need to share with EventAction:
@@ -63,7 +71,7 @@ public:
     run = run_id;
     subevent = subevent_id;}
 
-  void SetTriggerInfoNew(TriggerType_t trigger_type,int trigger_info, /* std::vector<G4float> trigger_info, */
+  void SetTriggerInfoNew(TriggerType_t trigger_type,int trigger_info, /* std::vector<G4double> trigger_info, */
 			 G4double trigger_length, G4double trigger_start){
     trig_type = trigger_type;
     /*
@@ -85,8 +93,15 @@ public:
   NRooTrackerVtx * GetMyRooTracker(){return evNRooTracker;}
 
   void SetTree(TTree* tree){WCSimTree=tree;}
+  void SetBranch(TBranch* branchin, G4String detectorElement = "tank"){
+    if(detectorElement=="tank") wcsimrooteventbranch=branchin;
+    if(detectorElement=="tankPMT2") wcsimrooteventbranch2=branchin;
+  }
   void SetGeoTree(TTree* tree){geoTree=tree;}
-  void SetRootEvent(WCSimRootEvent* revent){wcsimrootsuperevent=revent;}
+  void SetRootEvent(WCSimRootEvent* revent, G4String detectorElement = "tank"){
+    if(detectorElement=="tank") wcsimrootsuperevent=revent;
+    if(detectorElement=="tankPMT2") wcsimrootsuperevent2=revent;
+  }
   void SetRootGeom(WCSimRootGeom* rgeom){wcsimrootgeom=rgeom;}
 
   int  GetNumberOfEventsGenerated() { return numberOfEventsGenerated;}
@@ -121,9 +136,12 @@ private:
 
   //
   TTree* WCSimTree;
+  TBranch* wcsimrooteventbranch;
+  TBranch* wcsimrooteventbranch2;
   TTree* geoTree;
   TTree* optionsTree;
   WCSimRootEvent* wcsimrootsuperevent;
+  WCSimRootEvent* wcsimrootsuperevent2;
   WCSimRootGeom* wcsimrootgeom;
   WCSimRootOptions* wcsimrootoptions;
   WCSimDetectorConstruction* wcsimdetector;
@@ -141,14 +159,14 @@ private:
   TTree* fSettingsOutputTree;
   TTree* fSettingsInputTree;
 
-  float WCXRotation[3];
-  float WCYRotation[3];
-  float WCZRotation[3];
-  float WCDetCentre[3];
-  float WCDetRadius;
-  float WCDetHeight;
-  float fNuPlanePos[3];
-  float fNuPrismRadius;
+  double WCXRotation[3];
+  double WCYRotation[3];
+  double WCZRotation[3];
+  double WCDetCentre[3];
+  double WCDetRadius;
+  double WCDetHeight;
+  double fNuPlanePos[3];
+  double fNuPrismRadius;
 
   WCSimRunActionMessenger* messenger;
   int ntuples;  // 1 for ntuples to be written

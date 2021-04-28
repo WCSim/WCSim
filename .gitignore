@@ -1,6 +1,7 @@
-# GNU make and CMake in-place build results to ignore
-WCSimRootDict.cxx
-WCSimRootDict.h
+#ignore build results
+src/WCSimRootDict.cc
+src/WCSimRootDict.cxx
+src/WCSimRootDict.h
 libWCSim.a
 libWCSimRoot.so
 make.rootcint.result
@@ -36,3 +37,8 @@ geofile.txt
 
 ## compiled python scripts to ignore
 *.pyc
+
+##ignore solar 
+data_solar/
+include/WCSimGenerator_Solar.hh
+src/WCSimGenerator_Solar.cc

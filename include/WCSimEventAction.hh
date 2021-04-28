@@ -13,6 +13,8 @@
 #include "WCSimWCDigi.hh"
 #include "WCSimWCTrigger.hh"
 #include "WCSimWCDAQMessenger.hh"
+#include "WCSimRootEvent.hh"
+#include "WCSimRootGeom.hh"
 
 #include "TRandom3.h"
 
@@ -42,16 +44,27 @@ public:
 		     const struct ntupleStruct&, 
 		     G4TrajectoryContainer*,
 		     WCSimWCDigitsCollection*,
-		     WCSimWCTriggeredDigitsCollection*);
+		     WCSimWCTriggeredDigitsCollection*,
+		     G4String detectorElement="tank");
+  void FillRootEventHybrid(G4int, 
+			   const struct ntupleStruct&, 
+			   G4TrajectoryContainer*,
+			   WCSimWCDigitsCollection*,
+			   WCSimWCTriggeredDigitsCollection*,
+			   G4String,
+			   WCSimRootEvent*,
+			   WCSimRootTrigger*);
   WCSimRunAction* GetRunAction(){return runAction;}
   void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
   void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
+  void SetRelativeDigitizedHitTime (bool val) { RelativeHitTime = val;       }
 
   void FillFlatTree(G4int,
 		    const struct ntupleStruct&, 
 		    G4TrajectoryContainer*,
 		    WCSimWCDigitsCollection*,
-		    WCSimWCTriggeredDigitsCollection*);
+		    WCSimWCTriggeredDigitsCollection*,
+		    G4String detectorElement);
   
 
 private:
@@ -65,6 +78,7 @@ private:
 
   G4String DigitizerChoice;
   G4String TriggerChoice;
+  bool     RelativeHitTime;
   bool     ConstructedDAQClasses;
   bool     SavedOptions;
 };

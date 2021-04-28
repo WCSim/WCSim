@@ -61,11 +61,12 @@ void WCSimDetectorConstruction::GetWCGeom
     // Stash info in data member
     // AH Need to store this in CM for it to be understood by SK code
     WCPMTSize = WCPMTRadius/cm;// I think this is just a variable no if needed
+    WCPMTSize2 = WCPMTRadius2/cm;// I think this is just a variable no if needed
 
     // Note WC can be off-center... get both extremities
-    static G4float zmin=100000,zmax=-100000.;
-    static G4float xmin=100000,xmax=-100000.;
-    static G4float ymin=100000,ymax=-100000.;
+    static G4double zmin=100000,zmax=-100000.;
+    static G4double xmin=100000,xmax=-100000.;
+    static G4double ymin=100000,ymax=-100000.;
     if (aDepth == 0) { // Reset for this traversal
         xmin=100000,xmax=-100000.; 
         ymin=100000,ymax=-100000.; 
@@ -73,9 +74,9 @@ void WCSimDetectorConstruction::GetWCGeom
     }
 
     if ((aPV->GetName() == "WCCapBlackSheet") || (aPV->GetName().find("glassFaceWCPMT") != std::string::npos)){ 
-      G4float x =  aTransform.getTranslation().getX()/cm;
-      G4float y =  aTransform.getTranslation().getY()/cm;
-      G4float z =  aTransform.getTranslation().getZ()/cm;
+      G4double x =  aTransform.getTranslation().getX()/cm;
+      G4double y =  aTransform.getTranslation().getY()/cm;
+      G4double z =  aTransform.getTranslation().getZ()/cm;
       
       if (x<xmin){xmin=x;}
       if (x>xmax){xmax=x;}
@@ -109,12 +110,14 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
  
   //TF: To Consider: add a separate table for mPMT positions? Need to use its orientation anyway
   // Could be useful for the near future. Need to add an == WCMultiPMT here then.
-  if (aPV->GetName()== WCIDCollectionName ||aPV->GetName()== WCODCollectionName ) 
+  if (aPV->GetName()== WCIDCollectionName || aPV->GetName()== WCIDCollectionName2 ||aPV->GetName()== WCODCollectionName ) 
     {
 
     // First increment the number of PMTs in the tank.
-    totalNumPMTs++;  
-    
+    //totalNumPMTs++;
+      if(aPV->GetName()== WCIDCollectionName) totalNumPMTs++;
+      else if(aPV->GetName()== WCIDCollectionName2) totalNumPMTs2++;
+   
     // Put the location of this tube into the location map so we can find
     // its ID later.  It is coded by its tubeTag string.
     // This scheme must match that used in WCSimWCSD::ProcessHits()
@@ -131,30 +134,31 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
 	foundString = true;
 	mPMT_pmtno = atoi(replicaNoString[i].substr(position+4).c_str())+1;
 	if(mPMT_pmtno == 1)
-	  totalNum_mPMTs++;
+	  if(aPV->GetName()== WCIDCollectionName) totalNum_mPMTs++;
+	  else if(aPV->GetName()== WCIDCollectionName2) totalNum_mPMTs2++;
       }
     }
     if(!foundString){
       // to distinguish mPMT PMTs from single PMTs:
       mPMT_pmtno = 0;
-      totalNum_mPMTs++;
+      if(aPV->GetName()== WCIDCollectionName) totalNum_mPMTs++;
+      else if(aPV->GetName()== WCIDCollectionName2) totalNum_mPMTs2++;
     }
     
     // G4cout << tubeTag << G4endl;
-    
-    if ( tubeLocationMap.find(tubeTag) != tubeLocationMap.end() ) {
+    if(aPV->GetName()== WCIDCollectionName){    
+      if ( tubeLocationMap.find(tubeTag) != tubeLocationMap.end() ) {
         G4cerr << "Repeated tube tag: " << tubeTag << G4endl;
         G4cerr << "Assigned to both tube #" << tubeLocationMap[tubeTag] << " and #" << totalNumPMTs << G4endl;
         G4cerr << "Cannot continue -- hits will not be recorded correctly."  << G4endl;
         G4cerr << "Please make sure that logical volumes with multiple placements are each given a unique copy number" << G4endl;
         assert(false);
-    }
-    tubeLocationMap[tubeTag] = totalNumPMTs;
-    
+      }
+      tubeLocationMap[tubeTag] = totalNumPMTs;
     // Put the transform for this tube into the map keyed by its ID
     tubeIDMap[totalNumPMTs] = aTransform;
    
-
+    
     mPMTIDMap[totalNumPMTs] = std::make_pair(totalNum_mPMTs,mPMT_pmtno);    
     //G4cout <<  "depth " << depth.str() << G4endl;
     //G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
@@ -166,6 +170,32 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     //	   << "," << aTransform.getRotation().getPhi()/deg 
     //	   << "," << aTransform.getRotation().getPsi()/deg
     //	   << G4endl; 
+    }
+    else if(aPV->GetName()== WCIDCollectionName2){    
+      if ( tubeLocationMap2.find(tubeTag) != tubeLocationMap2.end() ) {
+        G4cerr << "Repeated tube tag: " << tubeTag << G4endl;
+        G4cerr << "Assigned to both tube #" << tubeLocationMap2[tubeTag] << " and #" << totalNumPMTs2 << G4endl;
+        G4cerr << "Cannot continue -- hits will not be recorded correctly."  << G4endl;
+        G4cerr << "Please make sure that logical volumes with multiple placements are each given a unique copy number" << G4endl;
+        assert(false);
+      }
+      tubeLocationMap2[tubeTag] = totalNumPMTs2;
+    // Put the transform for this tube into the map keyed by its ID
+    tubeIDMap2[totalNumPMTs2] = aTransform;
+   
+
+    mPMTIDMap2[totalNumPMTs2] = std::make_pair(totalNum_mPMTs2,mPMT_pmtno);    
+    //G4cout <<  "depth " << depth.str() << G4endl;
+    //G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
+    
+    // Print
+    //     G4cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
+    //	   << " Pos:" << aTransform.getTranslation()/cm 
+    //	   << " Rot:" << aTransform.getRotation().getTheta()/deg 
+    //	   << "," << aTransform.getRotation().getPhi()/deg 
+    //	   << "," << aTransform.getRotation().getPsi()/deg
+    //	   << G4endl; 
+    }
     }
 }
 
@@ -231,7 +261,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     {cylLocation=0;}
     else // barrel
     {cylLocation=1;}
-    
+
     geoFile.precision(9);
      geoFile << setw(4) << tubeID
 	     << " " << setw(4) << mPMTIDMap[tubeID].first
@@ -259,6 +289,62 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
      fpmts.push_back(new_pmt);
 
   }
+
+  //Record location of the second PMT type for the hybrid configuration
+  for (unsigned int i=0;i<fpmts2.size();i++){
+    delete fpmts2.at(i);
+  }
+  fpmts2.clear();
+
+  // Grab the tube information from the tubeID Map and dump to file.
+  for ( int tubeID = 1; tubeID <= totalNumPMTs2; tubeID++){
+    G4Transform3D newTransform = tubeIDMap2[tubeID];
+
+    // Get tube orientation vector
+    G4Vector3D nullOrient = G4Vector3D(0,0,1);
+    G4Vector3D pmtOrientation = newTransform * nullOrient;
+    //cyl_location cylLocation = tubeCylLocation[tubeID];
+
+    // Figure out if pmt is on top/bottom or barrel
+    // print key: 0-top, 1-barrel, 2-bottom
+    if (pmtOrientation*newTransform.getTranslation() > 0)//veto pmt
+    {cylLocation=3;}
+    else if (pmtOrientation.z()==1.0)//bottom
+    {cylLocation=2;}
+    else if (pmtOrientation.z()==-1.0)//top
+    {cylLocation=0;}
+    else // barrel
+    {cylLocation=1;}
+    
+
+    geoFile.precision(9);
+     geoFile << setw(4) << tubeID
+	     << " " << setw(4) << mPMTIDMap2[tubeID].first
+	     << " " << setw(4) << mPMTIDMap2[tubeID].second 
+ 	    << " " << setw(8) << newTransform.getTranslation().getX()/cm
+ 	    << " " << setw(8) << newTransform.getTranslation().getY()/cm
+ 	    << " " << setw(8) << newTransform.getTranslation().getZ()/cm
+	    << " " << setw(7) << pmtOrientation.x()
+	    << " " << setw(7) << pmtOrientation.y()
+	    << " " << setw(7) << pmtOrientation.z()
+ 	    << " " << setw(3) << cylLocation
+ 	    << G4endl;
+     
+     WCSimPmtInfo *new_pmt = new WCSimPmtInfo(cylLocation,
+					      newTransform.getTranslation().getX()/cm,
+					      newTransform.getTranslation().getY()/cm,
+					      newTransform.getTranslation().getZ()/cm,
+					      pmtOrientation.x(),
+					      pmtOrientation.y(),
+					      pmtOrientation.z(),
+					      tubeID,
+					      mPMTIDMap2[tubeID].first,
+					      mPMTIDMap2[tubeID].second);
+     
+     fpmts2.push_back(new_pmt);
+
+  }
+
   geoFile.close();
 
   std::cout << "Geofile written" << std::endl;
