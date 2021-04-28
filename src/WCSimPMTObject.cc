@@ -82,7 +82,7 @@ G4String PMT20inch::GetPMTName() {G4String PMTName = "20inch"; return PMTName;}
 G4double PMT20inch::GetExposeHeight() {return .18*m;}
 G4double PMT20inch::GetRadius() {return .254*m;}
 G4double PMT20inch::GetPMTGlassThickness() {return 0.4*cm;}
-double PMT20inch::HitTimeSmearing(double Q, double TTSFF=1.0/*, double linearity = 0. /*meaning linearity default = false*/) {
+double PMT20inch::HitTimeSmearing(double Q, double TTSFF=1.0) {
   double timingConstant = 10.0;
   double timingResolution;
   double Smearing_factor;

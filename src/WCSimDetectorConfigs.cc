@@ -759,9 +759,9 @@ void WCSimDetectorConstruction::SetNuPrism_mPMTGeometry()
     WCPMTRadius = PMT->GetRadius();
 
 	//mPMT params go first because detector depends on it:
-	vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
-	vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
-	vessel_radius = 254.*CLHEP::mm;
+	mPMT_vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
+	mPMT_vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
+	mPMT_vessel_radius = 254.*CLHEP::mm;
 	dist_pmt_vessel = 8*CLHEP::mm;      
 	orientation = PERPENDICULAR;
 	mPMT_outer_material = "G4_PLEXIGLASS";
@@ -774,7 +774,7 @@ void WCSimDetectorConstruction::SetNuPrism_mPMTGeometry()
 	id_reflector_z_offset = 6.12*CLHEP::mm;
 	id_reflector_angle = 46.5*CLHEP::deg;
 	mPMT_pmt_openingAngle = 8.3*CLHEP::deg;
-	G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+	G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;
 	
 	// parameters related to filling the ID mPMT
 	nID_PMTs = 19;
@@ -812,9 +812,9 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_mPMTGeometry()
     WCPMTRadius = PMT->GetRadius();
 
 	//mPMT params go first because detector depends on it:
-	vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
-	vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
-	vessel_radius = 254.*CLHEP::mm;
+	mPMT_vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
+	mPMT_vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
+	mPMT_vessel_radius = 254.*CLHEP::mm;
 	dist_pmt_vessel = 8*CLHEP::mm;      
 	orientation = PERPENDICULAR;
 	mPMT_outer_material = "G4_PLEXIGLASS";
@@ -827,7 +827,7 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_mPMTGeometry()
 	id_reflector_z_offset = 6.12*CLHEP::mm;
 	id_reflector_angle = 46.5*CLHEP::deg; 
 	mPMT_pmt_openingAngle = 8.3*CLHEP::deg;
-	G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+	G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;
 	
 	// parameters related to filling the ID mPMT
 	nID_PMTs = 19;
@@ -864,9 +864,9 @@ void WCSimDetectorConstruction::SetNuPrismShort_mPMTGeometry()
     WCPMTRadius = PMT->GetRadius();
 
 	//mPMT params go first because detector depends on it:
-	vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
-	vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
-	vessel_radius = 254.*CLHEP::mm;
+	mPMT_vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
+	mPMT_vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
+	mPMT_vessel_radius = 254.*CLHEP::mm;
 	dist_pmt_vessel = 8*CLHEP::mm;
 	orientation = PERPENDICULAR;
 	mPMT_outer_material = "G4_PLEXIGLASS";
@@ -879,7 +879,7 @@ void WCSimDetectorConstruction::SetNuPrismShort_mPMTGeometry()
 	id_reflector_z_offset = 6.12*CLHEP::mm;
 	id_reflector_angle = 46.5*CLHEP::deg;
 	mPMT_pmt_openingAngle = 8.3*CLHEP::deg;
-	G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+	G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;
 	
 	// parameters related to filling the ID mPMT
 	nID_PMTs = 19;
@@ -889,7 +889,7 @@ void WCSimDetectorConstruction::SetNuPrismShort_mPMTGeometry()
 	WCIDDiameter             = 8.0*CLHEP::m;
     WCIDVerticalPosition     = 0.;
 	
-	WCBarrelPMTOffset     = vessel_tot_height;
+	WCBarrelPMTOffset     = mPMT_vessel_tot_height;
     WCPMTperCellHorizontal = 1.0;
     WCPMTperCellVertical   = 1.0;
 
@@ -918,9 +918,9 @@ void WCSimDetectorConstruction::SetTestSinglemPMTGeometry()
   WCPMTRadius = PMT->GetRadius();
   
   //mPMT params
-  vessel_cyl_height = 38.*CLHEP::mm;
-  vessel_radius_curv = 300.*CLHEP::mm;
-  vessel_radius = 254.*CLHEP::mm;
+  mPMT_vessel_cyl_height = 38.*CLHEP::mm;
+  mPMT_vessel_radius_curv = 300.*CLHEP::mm;
+  mPMT_vessel_radius = 254.*CLHEP::mm;
   dist_pmt_vessel = 8*CLHEP::mm;
   orientation = PERPENDICULAR;
   mPMT_outer_material = "G4_PLEXIGLASS";
@@ -934,20 +934,20 @@ void WCSimDetectorConstruction::SetTestSinglemPMTGeometry()
   mPMT_pmt_openingAngle = 8.3*CLHEP::deg;     
   
   // BarrelPMTOffset/WCCapEdgeLimit needs PMT/mPMT height
-  G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+  G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;
   // parameters related to filling the ID mPMT
   nID_PMTs = 33;
   config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_33_13_1.txt";
 
   WCIDDiameter             = 10.0*m;
   WCIDHeight               = 30.0*m;
-  WCBarrelPMTOffset        = vessel_tot_height;
+  WCBarrelPMTOffset        = mPMT_vessel_tot_height;
   WCBarrelNumPMTHorizontal = 3;
   WCBarrelNRings           = 3;
   WCPMTperCellHorizontal   = 1;
   WCPMTperCellVertical     = 1;
   WCPMTPercentCoverage     = 10.;
-  WCCapEdgeLimit           = WCIDDiameter/2.0 - vessel_tot_height;
+  WCCapEdgeLimit           = WCIDDiameter/2.0 - mPMT_vessel_tot_height;
   WCCapPMTSpacing          = WCIDDiameter*2.0;
   WCBlackSheetThickness    = 2.0*cm;
   WCAddGd                  = false;
@@ -968,19 +968,19 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
 
 
   //mPMT params go first because detector depends on it:
-  vessel_cyl_height = 0.*CLHEP::mm; // the 50mm should exist only for OD and extends behind the iD wall
-  vessel_radius_curv = 270.*CLHEP::mm;
-  vessel_radius = 270.*CLHEP::mm;
+  mPMT_vessel_cyl_height = 0.*CLHEP::mm; // the 50mm should exist only for OD and extends behind the iD wall
+  mPMT_vessel_radius_curv = 270.*CLHEP::mm;
+  mPMT_vessel_radius = 270.*CLHEP::mm;
   dist_pmt_vessel = 5*CLHEP::mm;
   orientation = PERPENDICULAR;
   mPMT_outer_material = "G4_PLEXIGLASS";
   mPMT_inner_material = "SilGel";
-  mPMT_outer_material_d = 0.03*2* vessel_radius *CLHEP::mm; //using NEMO article safety margin of 0.03 for t/D
+  mPMT_outer_material_d = 0.03*2* mPMT_vessel_radius *CLHEP::mm; //using NEMO article safety margin of 0.03 for t/D
   // Radius of cone at z=reflectorHeight
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
   id_reflector_z_offset = 1.1*CLHEP::mm;         //from KM3Net CAD drawings
   id_reflector_angle = CLHEP::pi/4*CLHEP::rad; // Based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
-  G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+  G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;
 
   // parameters related to filling the ID mPMT
   nID_PMTs = 33;
@@ -993,7 +993,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
   // WCBarrelPMTOffset does not change total No. of modules, so use actual outer_module_radius.
   WCIDDiameter          = 74.0*m;
   WCIDHeight            = 60.0*m;
-  WCBarrelPMTOffset     = vessel_tot_height; //mPMT cylinder Radius //WCPMTRadius; //offset from vertical
+  WCBarrelPMTOffset     = mPMT_vessel_tot_height; //mPMT cylinder Radius //WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 13.51;
@@ -1021,19 +1021,19 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
   WCPMTRadius         = 0.254*m;
 
   //mPMT params:
-  vessel_cyl_height = 0.*CLHEP::mm; // the 50mm should exist only for OD and extends behind the iD wall
-  vessel_radius_curv = 280.*CLHEP::mm;   
-  vessel_radius = 280.*CLHEP::mm;   
+  mPMT_vessel_cyl_height = 0.*CLHEP::mm; // the 50mm should exist only for OD and extends behind the iD wall
+  mPMT_vessel_radius_curv = 280.*CLHEP::mm;   
+  mPMT_vessel_radius = 280.*CLHEP::mm;   
   dist_pmt_vessel = 5*CLHEP::mm;
   orientation = PERPENDICULAR;
   mPMT_outer_material = "G4_PLEXIGLASS";
   mPMT_inner_material = "SilGel";
-  mPMT_outer_material_d = 0.03*2*vessel_radius*CLHEP::mm; //using NEMO article safety margin of 0.03 for t/D
+  mPMT_outer_material_d = 0.03*2*mPMT_vessel_radius*CLHEP::mm; //using NEMO article safety margin of 0.03 for t/D
   // Radius of cone at z=reflectorHeight
   id_reflector_height = 7.5*CLHEP::mm;         //7.5mm from KM3Net JINST
   id_reflector_z_offset = 1.1*CLHEP::mm;         //from KM3Net CAD drawings
   id_reflector_angle = CLHEP::pi/4*CLHEP::rad; // Based on KM3Net JINST: 45 deg wrt normal, so 7.5mm xtra
-  G4double vessel_tot_height = vessel_radius + vessel_cyl_height;
+  G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;
 
   // parameters related to filling the ID mPMT
   nID_PMTs = 34;
@@ -1042,7 +1042,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
 
   WCIDDiameter          = 74.0*m;
   WCIDHeight            = 60.0*m;
-  WCBarrelPMTOffset     = vessel_tot_height; //mPMT cylinder Radius //WCPMTRadius; //offset from vertical
+  WCBarrelPMTOffset     = mPMT_vessel_tot_height; //mPMT cylinder Radius //WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 40.0;
@@ -1112,9 +1112,9 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inch_40perCent()
 
 void WCSimDetectorConstruction::InitSinglePMT(){
   
-  vessel_cyl_height = 0.*mm;
-  vessel_radius_curv = 0.1*mm;
-  vessel_radius = 0.1*mm;
+  mPMT_vessel_cyl_height = 0.*mm;
+  mPMT_vessel_radius_curv = 0.1*mm;
+  mPMT_vessel_radius = 0.1*mm;
   dist_pmt_vessel = 0.*mm;
   orientation = PERPENDICULAR;
   mPMT_ID_PMT = "";

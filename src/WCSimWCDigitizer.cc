@@ -317,7 +317,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    if(iflag == 0) {
 	      //apply time smearing
-	      float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+	      double Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	      //digitize hit
 	      peSmeared *= efficiency;
 
@@ -328,7 +328,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      //*****************************************************************************************************************************************************************************************
 
 	      bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
-								intgr_start + PMT->HitTimeSmearing(Q),
+								intgr_start + PMT->HitTimeSmearing(Q, 1.),
 								peSmeared, digi_comp);
 	      if(accepted) {
 		digi_unique_id++;
@@ -374,11 +374,11 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	      WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
 	      if(iflag == 0) {
 		//apply time smearing
-		float Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+		double Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 		//digitize hit
 		peSmeared *= efficiency;
 		bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
-								  intgr_start + PMT->HitTimeSmearing(Q),
+								  intgr_start + PMT->HitTimeSmearing(Q, 1.0),
 								  peSmeared, digi_comp);
 		if(accepted) {
 		  digi_unique_id++;

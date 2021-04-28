@@ -29,6 +29,7 @@ include(${ROOT_USE_FILE})
 # Locate sources and headers for this project
 # ## NOT NEEDED FOR DICT
 include_directories(${PROJECT_SOURCE_DIR}/include 
+                    ${PROJECT_SOURCE_DIR}/../shared/include
                     ${Geant4_INCLUDE_DIR}
                     ${ROOT_INCLUDE_DIRS})
 
@@ -88,7 +89,6 @@ add_library(WCSimRoot SHARED
 		./src/TNRooTrackerVtx.cc 
 		./src/WCSimRootTools.cc 
 		WCSimRootDict.cxx)
-
 target_link_libraries(WCSimRoot  ${ROOT_LIBRARIES})
 
 # Create libWCSimRootDict.so (needed for ROOT6)
@@ -187,16 +187,14 @@ set(WCSIM_SCRIPTS
   mPMT-configfiles/mPMTconfig_34_22.5_2.txt
   mPMT-configfiles/mPMTconfig_34_22_2.txt
   )
-  foreach(_file ${WCSIM_FILES})
+  
+  foreach(_file ${WCSIM_SCRIPTS})
     configure_file(
       ${PROJECT_SOURCE_DIR}/${_file}
       ${PROJECT_BINARY_DIR}/${_file}
       COPYONLY
       )
   endforeach()
-else()
-  message(STATUS "Note: building in-place, no need to copy anything.")
-endif()
 
 #----------------------------------------------------------------------------
 # For internal Geant4 use - but has no effect if you build this
