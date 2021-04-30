@@ -34,14 +34,16 @@ public:
 public:
   void BeginOfEventAction(const G4Event*);
   void EndOfEventAction(const G4Event*);
-  void FillRootEvent(G4int, 
-		     const struct ntupleStruct&, 
-		     G4TrajectoryContainer*,
-		     WCSimWCDigitsCollection*,
-		     WCSimWCTriggeredDigitsCollection*);
+  void FillRootEvent(G4int,
+					 const struct ntupleStruct&,
+					 G4TrajectoryContainer*,
+					 WCSimWCDigitsCollection*,
+					 WCSimWCTriggeredDigitsCollection*,
+					 G4String detectorElement="tank");
   WCSimRunAction* GetRunAction(){return runAction;}
   void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
   void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
+  void SetRelativeDigitizedHitTime (bool val) { RelativeHitTime = val;       }
 
 private:
   G4int WCSimEventFindStartingVolume( G4ThreeVector vtx);
@@ -52,6 +54,7 @@ private:
 
   G4String DigitizerChoice;
   G4String TriggerChoice;
+  bool     RelativeHitTime;
   bool     ConstructedDAQClasses;
   bool     SavedOptions;
 };

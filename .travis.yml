@@ -9,20 +9,32 @@ services:
   - docker
 
 before_install:
-  - docker pull brichards64/wcsim
+  - docker pull wcsim/wcsim:latest
 
-install:
-  - docker run -v `pwd`:/root/HyperK/WCSim brichards64/wcsim:simplebuild /bin/sh -c " source /root/HyperK/env-WCSim.sh; cd /root/HyperK/WCSim; make clean; make rootcint; make;  ls"
-
-script:
-  - docker run -v `pwd`:/root/HyperK/WCSim brichards64/wcsim:simplebuild /bin/sh -c "source /root/HyperK/env-WCSim.sh; cd /root/HyperK/WCSim; ./exe/bin/Linux-g++/WCSim WCSim.mac"
-  - if [ -e ./exe/bin/Linux-g++/WCSim ]; then true; else false; fi
-  - if [ -e wcsim.root ]; then true; else false; fi
+jobs:
+  include:
+    - stage: Compilation Build Test
+      script: docker run --rm -v `pwd`:/opt/HyperK/WCSim -e ValidationPath="/opt/Validation" -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken -e TRAVIS_PULL_REQUEST_SHA=" $TRAVIS_PULL_REQUEST_SHA " -e TRAVIS_PULL_REQUEST_SLUG=" $TRAVIS_PULL_REQUEST_SLUG " -e TRAVIS_PULL_REQUEST=" $TRAVIS_PULL_REQUEST " --entrypoint='' wcsim/wcsim:latest /bin/sh -c " yum install -y time && cd /opt && git clone https://github.com/WCSim/Validation.git && source /opt/HyperK/env-WCSim.sh && cd /opt/HyperK/WCSim && /opt/Validation/Tests.sh 1"
+    - stage: Execution Tests 	      
+      script: docker run --rm -v `pwd`:/opt/HyperK/WCSim -e ValidationPath="/opt/Validation" -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken --entrypoint='' wcsim/wcsim:latest /bin/sh -c " yum install -y time && cd /opt && git clone https://github.com/WCSim/Validation.git && source /opt/HyperK/env-WCSim.sh && cd /opt/HyperK/WCSim && /opt/Validation/build.sh && /opt/Validation/Tests.sh 2" 
+    - 
+      script: docker run --rm -v `pwd`:/opt/HyperK/WCSim -e ValidationPath="/opt/Validation" -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken --entrypoint='' wcsim/wcsim:latest /bin/sh -c " yum install -y time && cd /opt && git clone https://github.com/WCSim/Validation.git && source /opt/HyperK/env-WCSim.sh && cd /opt/HyperK/WCSim && /opt/Validation/build.sh && /opt/Validation/Tests.sh 3" 
+    - 
+      script: docker run --rm -v `pwd`:/opt/HyperK/WCSim -e ValidationPath="/opt/Validation" -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken --entrypoint='' wcsim/wcsim:latest /bin/sh -c " yum install -y time && cd /opt && git clone https://github.com/WCSim/Validation.git && source /opt/HyperK/env-WCSim.sh && cd /opt/HyperK/WCSim && /opt/Validation/build.sh && /opt/Validation/Tests.sh 4" 
+    - 
+      script: docker run --rm -v `pwd`:/opt/HyperK/WCSim -e ValidationPath="/opt/Validation" -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken --entrypoint='' wcsim/wcsim:latest /bin/sh -c " yum install -y time && cd /opt && git clone https://github.com/WCSim/Validation.git && source /opt/HyperK/env-WCSim.sh && cd /opt/HyperK/WCSim && /opt/Validation/build.sh && /opt/Validation/Tests.sh 5" 
+    - 
+      script: docker run --rm -v `pwd`:/opt/HyperK/WCSim -e ValidationPath="/opt/Validation" -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken --entrypoint='' wcsim/wcsim:latest /bin/sh -c " yum install -y time && cd /opt && git clone https://github.com/WCSim/Validation.git && source /opt/HyperK/env-WCSim.sh && cd /opt/HyperK/WCSim && /opt/Validation/build.sh && /opt/Validation/Tests.sh 6" 
+    - 
+      script: docker run --rm -v `pwd`:/opt/HyperK/WCSim -e ValidationPath="/opt/Validation" -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken --entrypoint='' wcsim/wcsim:latest /bin/sh -c " yum install -y time && cd /opt && git clone https://github.com/WCSim/Validation.git && source /opt/HyperK/env-WCSim.sh && cd /opt/HyperK/WCSim && /opt/Validation/build.sh && /opt/Validation/Tests.sh 7" 
+    - 
+      script: docker run --rm -v `pwd`:/opt/HyperK/WCSim -e ValidationPath="/opt/Validation" -e TRAVIS_COMMIT=$TRAVIS_COMMIT -e TRAVIS_COMMIT_MESSAGE=" $TRAVIS_COMMIT_MESSAGE " -e GitHubToken=$GitHubToken --entrypoint='' wcsim/wcsim:latest /bin/sh -c " yum install -y time && cd /opt && git clone https://github.com/WCSim/Validation.git && source /opt/HyperK/env-WCSim.sh && cd /opt/HyperK/WCSim && /opt/Validation/build.sh && /opt/Validation/Tests.sh 8" 
 
 notifications:
   email:
     recipients:
-      - b.richards@qmul.ac.uk
+      - josh.e.renner@gmail.com
       - erin.osullivan@fysik.su.se
+      - t.dealtry@lancaster.ac.uk
     on_success: never # default: change
     on_failure: always # default: always
