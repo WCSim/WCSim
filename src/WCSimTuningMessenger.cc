@@ -5,7 +5,7 @@
 #include "G4UIcommand.hh"
 #include "G4UIparameter.hh"
 #include "G4UIcmdWithADouble.hh"
-#include "G4UIcmdWithABool.hh" //jl145
+#include "G4UIcmdWithABool.hh"
 
 
 WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):WCSimTuningParams(WCTuningPars) { 
@@ -37,7 +37,6 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   Mieff->SetParameterName("Mieff",true);
   Mieff->SetDefaultValue(0.0);
 
-  //jl145 - for Top Veto
   TVSpacing = new G4UIcmdWithADouble("/WCSim/tuning/tvspacing",this);
   TVSpacing->SetGuidance("Set the Top Veto PMT Spacing, in cm.");
   TVSpacing->SetParameterName("TVSpacing",true);
@@ -58,7 +57,6 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
   delete Rgcff;
   delete Mieff;
 
-  //jl145 - for Top Veto
   delete TVSpacing;
   delete TopVeto;
 
@@ -97,8 +95,6 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   WCSimTuningParams->SetMieff(Mieff->GetNewDoubleValue(newValue));
   G4cout << "Setting Mie scattering parameter " << Mieff->GetNewDoubleValue(newValue) << G4endl;
   }
-
-  //jl145 - For Top Veto
 
   else if(command == TVSpacing) {
     // Set the Top Veto PMT Spacing
