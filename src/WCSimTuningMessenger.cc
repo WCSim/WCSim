@@ -74,25 +74,25 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   G4cout << "Setting Rayleigh scattering parameter " << Rayff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Bsrff) {
+  else if(command == Bsrff) {
 	  // Set the blacksheet reflection parameter
   WCSimTuningParams->SetBsrff(Bsrff->GetNewDoubleValue(newValue));
   G4cout << "Setting blacksheet reflection parameter " << Bsrff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Abwff) {
+  else if(command == Abwff) {
 	  // Set the water attenuation  parameter
   WCSimTuningParams->SetAbwff(Abwff->GetNewDoubleValue(newValue));
   G4cout << "Setting water attenuation parameter " << Abwff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Rgcff) {
+  else if(command == Rgcff) {
 	  // Set the cathode reflectivity parameter
   WCSimTuningParams->SetRgcff(Rgcff->GetNewDoubleValue(newValue));
   G4cout << "Setting cathode reflectivity parameter " << Rgcff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Mieff) {
+  else if(command == Mieff) {
 	  // Set the Mie scattering parameter
   WCSimTuningParams->SetMieff(Mieff->GetNewDoubleValue(newValue));
   G4cout << "Setting Mie scattering parameter " << Mieff->GetNewDoubleValue(newValue) << G4endl;
