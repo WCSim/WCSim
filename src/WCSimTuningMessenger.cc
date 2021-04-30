@@ -5,7 +5,7 @@
 #include "G4UIcommand.hh"
 #include "G4UIparameter.hh"
 #include "G4UIcmdWithADouble.hh"
-#include "G4UIcmdWithABool.hh" //jl145
+#include "G4UIcmdWithABool.hh"
 
 
 WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):WCSimTuningParams(WCTuningPars) { 
@@ -37,7 +37,6 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   Mieff->SetParameterName("Mieff",true);
   Mieff->SetDefaultValue(0.0);
 
-  //jl145 - for Top Veto
   TVSpacing = new G4UIcmdWithADouble("/WCSim/tuning/tvspacing",this);
   TVSpacing->SetGuidance("Set the Top Veto PMT Spacing, in cm.");
   TVSpacing->SetParameterName("TVSpacing",true);
@@ -58,7 +57,6 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
   delete Rgcff;
   delete Mieff;
 
-  //jl145 - for Top Veto
   delete TVSpacing;
   delete TopVeto;
 
@@ -69,71 +67,48 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {    
 
   if(command == Rayff) {
-	  // Set the Rayleigh scattering parameter
-	  //	  printf("Input parameter %f\n",Rayff->GetNewDoubleValue(newValue));
-
-  WCSimTuningParams->SetRayff(Rayff->GetNewDoubleValue(newValue));
-
-  printf("Setting Rayleigh scattering parameter %f\n",Rayff->GetNewDoubleValue(newValue));
-
+    // Set the Rayleigh scattering parameter
+    WCSimTuningParams->SetRayff(Rayff->GetNewDoubleValue(newValue));
+    G4cout << "Setting Rayleigh scattering parameter " << Rayff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Bsrff) {
-	  // Set the blacksheet reflection parameter
-	  //	  printf("Input parameter %f\n",Bsrff->GetNewDoubleValue(newValue));
-
-  WCSimTuningParams->SetBsrff(Bsrff->GetNewDoubleValue(newValue));
-
-  printf("Setting blacksheet reflection parameter %f\n",Bsrff->GetNewDoubleValue(newValue));
-
+  else if(command == Bsrff) {
+    // Set the blacksheet reflection parameter
+    WCSimTuningParams->SetBsrff(Bsrff->GetNewDoubleValue(newValue));
+    G4cout << "Setting blacksheet reflection parameter " << Bsrff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Abwff) {
-	  // Set the water attenuation  parameter
-	  //	  printf("Input parameter %f\n",Abwff->GetNewDoubleValue(newValue));
-
-  WCSimTuningParams->SetAbwff(Abwff->GetNewDoubleValue(newValue));
-
-  printf("Setting water attenuation parameter %f\n",Abwff->GetNewDoubleValue(newValue));
-
+  else if(command == Abwff) {
+    // Set the water attenuation  parameter
+    WCSimTuningParams->SetAbwff(Abwff->GetNewDoubleValue(newValue));
+    G4cout << "Setting water attenuation parameter " << Abwff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Rgcff) {
-	  // Set the cathode reflectivity parameter
-	  //	  printf("Input parameter %f\n",Rgcff->GetNewDoubleValue(newValue));
-
-  WCSimTuningParams->SetRgcff(Rgcff->GetNewDoubleValue(newValue));
-
-  printf("Setting cathode reflectivity parameter %f\n",Rgcff->GetNewDoubleValue(newValue));
-
+  else if(command == Rgcff) {
+    // Set the cathode reflectivity parameter
+    WCSimTuningParams->SetRgcff(Rgcff->GetNewDoubleValue(newValue));
+    G4cout << "Setting cathode reflectivity parameter " << Rgcff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Mieff) {
-	  // Set the Mie scattering parameter
-	  //	  printf("Input parameter %f\n",Mieff->GetNewDoubleValue(newValue));
-
-  WCSimTuningParams->SetMieff(Mieff->GetNewDoubleValue(newValue));
-
-  printf("Setting Mie scattering parameter %f\n",Mieff->GetNewDoubleValue(newValue));
-
+  else if(command == Mieff) {
+    // Set the Mie scattering parameter
+    WCSimTuningParams->SetMieff(Mieff->GetNewDoubleValue(newValue));
+    G4cout << "Setting Mie scattering parameter " << Mieff->GetNewDoubleValue(newValue) << G4endl;
   }
-
-  //jl145 - For Top Veto
 
   else if(command == TVSpacing) {
     // Set the Top Veto PMT Spacing
     WCSimTuningParams->SetTVSpacing(TVSpacing->GetNewDoubleValue(newValue));
-    printf("Setting Top Veto PMT Spacing %f\n",TVSpacing->GetNewDoubleValue(newValue));
+    G4cout << "Setting Top Veto PMT Spacing " << TVSpacing->GetNewDoubleValue(newValue) << G4endl;
   }
 
   else if(command == TopVeto) {
     // Set the Top Veto on/off
     WCSimTuningParams->SetTopVeto(TopVeto->GetNewBoolValue(newValue));
     if(TopVeto->GetNewBoolValue(newValue))
-      printf("Setting Top Veto On\n");
+      G4cout << "Setting Top Veto On" << G4endl;
     else
-      printf("Setting Top Veto Off\n");
+      G4cout << "Setting Top Veto Off" << G4endl;
   }
-
 
 }
