@@ -6,6 +6,7 @@
 #include "CLHEP/Random/RanluxEngine.h"
 #include "CLHEP/Random/JamesRandom.h"
 #include "CLHEP/Random/RanecuEngine.h"
+#include "TRandom3.h"
 
 class WCSimRandomParameters
 {
@@ -57,6 +58,7 @@ public:
   void SetSeed(int iseed) 
     { 
       CLHEP::HepRandom::setTheSeed(iseed);
+      gRandom->SetSeed(iseed);
       printf("Setting the Random Seed to: %d\n",iseed); 
       seed = iseed;
     }
