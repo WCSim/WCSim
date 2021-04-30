@@ -70,52 +70,32 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
   if(command == Rayff) {
 	  // Set the Rayleigh scattering parameter
-	  //	  G4cout << "Input parameter " << Rayff->GetNewDoubleValue(newValue) << G4endl;
-
   WCSimTuningParams->SetRayff(Rayff->GetNewDoubleValue(newValue));
-
   G4cout << "Setting Rayleigh scattering parameter " << Rayff->GetNewDoubleValue(newValue) << G4endl;
-
   }
 
  if(command == Bsrff) {
 	  // Set the blacksheet reflection parameter
-	  //	  G4cout << "Input parameter " << Bsrff->GetNewDoubleValue(newValue) << G4endl;
-
   WCSimTuningParams->SetBsrff(Bsrff->GetNewDoubleValue(newValue));
-
   G4cout << "Setting blacksheet reflection parameter " << Bsrff->GetNewDoubleValue(newValue) << G4endl;
-
   }
 
  if(command == Abwff) {
 	  // Set the water attenuation  parameter
-	  //	  G4cout << "Input parameter " << Abwff->GetNewDoubleValue(newValue) << G4endl;
-
   WCSimTuningParams->SetAbwff(Abwff->GetNewDoubleValue(newValue));
-
   G4cout << "Setting water attenuation parameter " << Abwff->GetNewDoubleValue(newValue) << G4endl;
-
   }
 
  if(command == Rgcff) {
 	  // Set the cathode reflectivity parameter
-	  //	  G4cout << "Input parameter " << Rgcff->GetNewDoubleValue(newValue) << G4endl;
-
   WCSimTuningParams->SetRgcff(Rgcff->GetNewDoubleValue(newValue));
-
   G4cout << "Setting cathode reflectivity parameter " << Rgcff->GetNewDoubleValue(newValue) << G4endl;
-
   }
 
  if(command == Mieff) {
 	  // Set the Mie scattering parameter
-	  //	  G4cout << "Input parameter " << Mieff->GetNewDoubleValue(newValue) << G4endl;
-
   WCSimTuningParams->SetMieff(Mieff->GetNewDoubleValue(newValue));
-
   G4cout << "Setting Mie scattering parameter " << Mieff->GetNewDoubleValue(newValue) << G4endl;
-
   }
 
   //jl145 - For Top Veto
@@ -134,6 +114,5 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     else
       G4cout << "Setting Top Veto Off" << G4endl;
   }
-
 
 }
