@@ -441,24 +441,20 @@ G4Cons* reflectorCone =
        && (reflectorRadius-radius) > -5*CLHEP::mm){
 
       //Holder of the PMT
-      G4double ReflectorHolderZ[3] = {0, id_reflector_z_offset, id_reflector_z_offset+id_reflector_height};
-      G4double ReflectorHolderR[3] = {tan(mPMT_pmt_openingAngle)*(mPMT_vessel_radius_curv - mPMT_outer_material_d
-						    -expose - dist_pmt_vessel),
-				      tan(mPMT_pmt_openingAngle)*(mPMT_vessel_radius_curv - mPMT_outer_material_d
-						    -expose - dist_pmt_vessel+id_reflector_z_offset),
-				      tan(mPMT_pmt_openingAngle)*(mPMT_vessel_radius_curv - mPMT_outer_material_d
-						    -expose - dist_pmt_vessel+id_reflector_z_offset
-						    +id_reflector_height)};
+      //G4double ReflectorHolderZ[3] = {0, id_reflector_z_offset, id_reflector_z_offset+id_reflector_height};
+      //G4double ReflectorHolderR[3] = {tan(mPMT_pmt_openingAngle)*(mPMT_vessel_radius_curv - mPMT_outer_material_d -expose - dist_pmt_vessel),
+      //				      tan(mPMT_pmt_openingAngle)*(mPMT_vessel_radius_curv - mPMT_outer_material_d-expose - dist_pmt_vessel+id_reflector_z_offset),
+      //				      tan(mPMT_pmt_openingAngle)*(mPMT_vessel_radius_curv - mPMT_outer_material_d-expose - dist_pmt_vessel+id_reflector_z_offset + id_reflector_height)};
       
-      G4double ReflectorHolderr[3] = {radius + 1.1*CLHEP::mm + reflectorThickness,
-				      radius + 1.1*CLHEP::mm + reflectorThickness,
-				      reflectorRadius + 1.1*CLHEP::mm + reflectorThickness};
+      //G4double ReflectorHolderr[3] = {radius + 1.1*CLHEP::mm + reflectorThickness,
+      //				      radius + 1.1*CLHEP::mm + reflectorThickness,
+      //				      reflectorRadius + 1.1*CLHEP::mm + reflectorThickness};
       // Fixed holder otherwise
       //Reflector is a G4PolyCone:
       // Each set of (Z, R, r) defines an edge around the polycone by it's height position (z) inner radius (r) and outer radius (R).
-      //G4double ReflectorHolderZ[4] = {0*mm, 22.89*mm, 42.04*mm, 47.18*mm};
-      //G4double ReflectorHolderR[4] = {39.735*mm, 43.15*mm, 45.89*mm, 46.615*mm};
-      //G4double ReflectorHolderr[4] = {26.75*mm, 40.52*mm, 40.52*mm, 45.935*mm};
+      G4double ReflectorHolderZ[4] = {0*mm, 22.89*mm, 42.04*mm, 47.18*mm};
+      G4double ReflectorHolderR[4] = {39.735*mm, 43.15*mm, 45.89*mm, 46.615*mm};
+      G4double ReflectorHolderr[4] = {26.75*mm, 40.52*mm, 40.52*mm, 45.935*mm};
       
       G4Polycone * solidWCPMTsupport2 =
 	new G4Polycone("WCPMTsupport2",
