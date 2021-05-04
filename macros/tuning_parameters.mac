@@ -1,7 +1,7 @@
 # Set tuning parameters
 /WCSim/tuning/abwff 1.30
 /WCSim/tuning/rgcff 0.32
-/WCSim/tuning/rayff 0.85
+/WCSim/tuning/rayff 0.75
 /WCSim/tuning/bsrff 2.50
 /WCSim/tuning/mieff 0.0
 
