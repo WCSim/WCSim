@@ -11,7 +11,7 @@ WCSimTuningParameters::WCSimTuningParameters()
  // Default values
  rayff=0.75;
  bsrff=2.50;
- abwff=1.30424242;
+ abwff=1.30;
  rgcff=0.32;
  qeff=1.0;
  mieff=0.0;
