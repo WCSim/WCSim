@@ -1041,8 +1041,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
    G4double PP[NUM] = { 1.4E-9*GeV,6.2E-9*GeV};
    G4double RINDEX_blacksheet[NUM] =
-     { 1.76, 1.76 };
-   //     { 1.6, 1.6 };//B.Q
+     { 1.6, 1.6 };
 
    G4double SPECULARLOBECONSTANT[NUM] =
      { 0.3, 0.3 };

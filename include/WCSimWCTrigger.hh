@@ -106,7 +106,6 @@ protected:
   virtual int GetDefaultNDigitsWindow()            { return 200; }
   ///Set the default trigger class specific NDigits threshold (in ns) (overridden by .mac)
   virtual int GetDefaultNDigitsThreshold()         { return 25; } //Default
-  //virtual int GetDefaultNDigitsThreshold()         { return 20; } //B.Q
   ///Set the default trigger class specific NDigits pretrigger window (in ns) (overridden by .mac)
   virtual int GetDefaultNDigitsPreTriggerWindow()  { return -400; }
   ///Set the default trigger class specific NDigits posttrigger window (in ns) (overridden by .mac)
