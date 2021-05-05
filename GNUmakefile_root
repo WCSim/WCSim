@@ -67,4 +67,5 @@ $(G4TMPDIR)/%.o: %.cxx
 clean :
 	@rm -f $(G4TMPDIR)/*.o
 	@rm -f ./WCSimRootDict.*
+	@rm -f ./src/WCSimRootDict.h ./src/WCSimRootDict.cc ./src/WCSimRootDict_rdict.pcm WCSimRootDict_rdict.pcm
 
