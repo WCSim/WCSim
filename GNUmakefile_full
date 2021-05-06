@@ -102,8 +102,7 @@ clean::
 	
 include $(G4INSTALL)/config/binmake.gmk
 
-$(G4TMPDIR)/obj.last: $(objects) $(G4TMPDIR)/WCSimRootDict.o # needed for the "lib" target
-	@$(TOUCH) $@ # touch the versioning file
+$(G4TMPDIR)/obj.last: $(G4TMPDIR)/WCSimRootDict.o # needed for the "lib" target
 
 $(G4TMPDIR)/%.o: %.cxx
 	@echo Compiling $*.cxx ...
