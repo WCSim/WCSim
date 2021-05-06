@@ -53,7 +53,7 @@ endif
 CPPFLAGS += -DGIT_HASH=\"$(shell git describe --always --long --tags --dirty)\"
 
 .PHONY: all
-all: rootcint lib bin shared libWCSim.a movedict
+all: rootcint shared libWCSim.a movedict lib bin 
 
 # Note dependencies not yet set up right yet
 
