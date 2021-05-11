@@ -1,5 +1,6 @@
 # GNU make and CMake in-place build results to ignore
 *WCSimRootDict*
+!src/*WCSimRootDict*
 libWCSim.a
 libWCSimRoot.*
 make.rootcint.result
