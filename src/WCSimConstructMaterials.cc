@@ -468,7 +468,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
    // Get from the tuning parameters
    RAYFF = WCSimTuningParams->GetRayff();
-   //    printf("RAYFF: %f\n",RAYFF);
+   //    G4cout << "RAYFF: " << RAYFF << G4endl;
 
    //T. Akiri: Values from Skdetsim 
    G4double RAYLEIGH_water[NUMENTRIES_water] = {
@@ -513,7 +513,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    // Get from the tuning parameters
    G4double MIEFF = WCSimTuningParams->GetMieff();
    //G4double MIEFF = 0.0;
-   //    printf("MIEFF: %f\n",MIEFF);
+   //    G4cout << "MIEFF: " << MIEFF << G4endl;
 
    //Values extracted from Skdetsim
    G4double MIE_water[NUMENTRIES_water] = {

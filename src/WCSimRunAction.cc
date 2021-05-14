@@ -118,11 +118,11 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
 //G4cout << "Number of times FGD hit: "    << numberOfTimesFGDHit << G4endl;
 //G4cout << "Number of times lArD hit: "  << numberOfTimeslArDHit << G4endl;
 //G4cout<<"Number of times waterTube hit: " << numberOfTimesWaterTubeHit<<G4endl;
-//   G4cout << ((float(numberOfTimesMRDHit)+float(numberOfTimesFGDHit))/float(numberOfEventsGenerated))*100.
+//   G4cout << ((double(numberOfTimesMRDHit)+double(numberOfTimesFGDHit))/double(numberOfEventsGenerated))*100.
 // 	 << "% hit FGD or MRD" << G4endl;
 //   G4cout << "Number of times Catcher hit: " << numberOfTimesCatcherHit<<G4endl;
 //   G4cout << "Number of times Rock hit: " << numberOfTimesRockHit<<G4endl;
-//  G4cout << (float(numberOfTimesCatcherHit)/float(numberOfEventsGenerated))*100.
+//  G4cout << (double(numberOfTimesCatcherHit)/double(numberOfEventsGenerated))*100.
 //        << "% through-going (hit Catcher)" << G4endl;
 
   //Write the options tree
@@ -133,6 +133,8 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
   // Close the Root file at the end of the run
 
   TFile* hfile = WCSimTree->GetCurrentFile();
+  // Moved from EventAction by G. Pronost on 2019/12/17
+  hfile->Write("",TObject::kOverwrite); // Need to overwrite to avoid multiple instance of wcsimT
   hfile->Close();
 
   // Clean up stuff on the heap; I think deletion of hfile and trees
@@ -159,11 +161,11 @@ void WCSimRunAction::FillGeoTree(){
   G4int numpmt;
   G4int numpmtOD;
   G4int orientation;
-  Float_t offset[3];
+  Double_t offset[3];
   
   Int_t tubeNo;
-  Float_t pos[3];
-  Float_t rot[3];
+  Double_t pos[3];
+  Double_t rot[3];
   Int_t cylLoc;
 
   if (wcsimdetector->GetIsEggShapedHyperK()) {
@@ -189,7 +191,6 @@ void WCSimRunAction::FillGeoTree(){
   pmtradiusOD = wcsimdetector->GetODPMTSize();
   numpmt = wcsimdetector->GetTotalNumPmts();
   numpmtOD = wcsimdetector->GetTotalNumODPmts();
-
   orientation = 0;
   
   wcsimrootgeom-> SetWCPMTRadius(pmtradius);
@@ -230,17 +231,17 @@ void WCSimRunAction::FillGeoTree(){
     wcsimrootgeom-> SetPMT(i+fpmts->size(),tubeNo+fpmts->size(),cylLoc,rot,pos);
   }
   if (fpmts->size() != (unsigned int)numpmt) {
-    G4cout << "Mismatch between number of id pmts and pmt list in geofile.txt!!"<<G4endl;
+    G4cout << "Mismatch between number of ID pmts and pmt list in geofile.txt!!"<<G4endl;
     G4cout << fpmts->size() <<" vs. "<< numpmt <<G4endl;
   }
   if (fODpmts->size() != (unsigned int)numpmtOD) {
-    G4cout << "Mismatch between number of od pmts and pmt list in geofile.txt!!"<<G4endl;
+    G4cout << "Mismatch between number of OD pmts and pmt list in geofile.txt!!"<<G4endl;
     G4cout << fODpmts->size() <<" vs. "<< numpmtOD <<G4endl;
   }
   
   wcsimrootgeom-> SetWCNumPMT(numpmt);
   wcsimrootgeom-> SetODWCNumPMT(numpmtOD);
-  
+
   geoTree->Fill();
   geoTree->Write();
 }

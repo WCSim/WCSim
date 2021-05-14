@@ -26,6 +26,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "Cylinder_60x74_20inchBandL_40perCent\n"
 			  "Cylinder_12inchHPD_15perCent\n"
 			  "HyperK\n"
+			  "HyperK_20perCent\n"
 			  "HyperKWithOD\n"
 			  "EggShapedHyperK\n"
 			  "EggShapedHyperK_withHPD\n"
@@ -40,6 +41,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "Cylinder_60x74_20inchBandL_40perCent "
 			  "Cylinder_12inchHPD_15perCent "
 			  "HyperK "
+			  "HyperK_20perCent "
 			  "HyperKWithOD "
 			  "EggShapedHyperK "
 			  "EggShapedHyperK_withHPD "
@@ -217,6 +219,23 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   /////////// END OD //////////////
   /////////////////////////////////
 
+
+  LCConfig = new G4UIcmdWithAString("/WCSim/LCConfig",this);
+  LCConfig->SetGuidance("Set the geometry configuration for the light collecting mirror.");
+  LCConfig->SetGuidance("**For 20 inch PMT Only**");
+  LCConfig->SetGuidance("Available options are:\n"
+			  "No_Mirror\n"
+			  "Mirror_OldLC\n"
+			  "Mirror_2018Oct\n"
+			  );
+  LCConfig->SetParameterName("LCConfig", true);
+  LCConfig->SetCandidates("No_Mirror "
+			  "Mirror_OldLC "
+			  "Mirror_2018Oct "
+			  );
+  LCConfig->SetDefaultValue("No_Mirror");
+  LCConfig->AvailableForStates(G4State_PreInit, G4State_Idle);
+
   WCConstruct = new G4UIcmdWithoutParameter("/WCSim/Construct", this);
   WCConstruct->SetGuidance("Update detector construction with new settings.");
 }
@@ -224,6 +243,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 WCSimDetectorMessenger::~WCSimDetectorMessenger()
 {
   delete PMTConfig;
+  delete LCConfig;
   delete SavePi0;
   delete PMTQEMethod;
   delete PMTCollEff;
@@ -258,6 +278,8 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->Cylinder_12inchHPD_15perCent();
 		} else if ( newValue == "HyperK" ){
 		  WCSimDetector->SetHyperKGeometry();
+		} else if ( newValue == "HyperK_20perCent" ){
+		  WCSimDetector->SetHyperKGeometry_20perCent();
 		} else if ( newValue == "HyperKWithOD" ){
 		  WCSimDetector->SetHyperKWithODGeometry();
 		  WCSimDetector->SetODEdited(false);
@@ -348,12 +370,13 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 			G4cout << "That PMT size is not defined!" << G4endl;	
 	}
 
-	/////////////////////////////////
-	////////////// OD ///////////////
-	/////////////////////////////////
 
-	if(command == PMTODRadius){
-	WCSimDetector->SetODEdited(true);
+    /////////////////////////////////
+    ////////////// OD ///////////////
+    /////////////////////////////////
+
+    if(command == PMTODRadius){
+      WCSimDetector->SetODEdited(true);
       G4cout << "Set OD PMT size " << newValue << " ";
       if (newValue == "3inch"){
         WCSimDetector->SetWCPMTODSize("PMT3inch");
@@ -363,7 +386,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
         WCSimDetector->SetWCPMTODSize("PMT8inch");
       }
       G4cout << G4endl;
-	}
+    }
 
     if(command == ODLateralWaterDepth){
 	WCSimDetector->SetODEdited(true);
@@ -441,10 +464,21 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     /////////// END OD //////////////
     /////////////////////////////////
 
-  if(command == WCConstruct) {
-//If the OD geometry has been changed, then reconstruct the whole tank with the proper recalculated dimensions
-	if (WCSimDetector->GetODEdited() == true) {WCSimDetector->UpdateODGeo();}
-	WCSimDetector->UpdateGeometry();
-	}
+    if( command == LCConfig ) { 
+      // LC Type is defined in WCSimDetectorConstruction.hh
+      if ( newValue == "No_Mirror") {
+	WCSimDetector->SetLCType(0);
+      } else if ( newValue == "Mirror_OldLC" ){
+	WCSimDetector->SetLCType(1);
+      } else if ( newValue == "Mirror_2018Oct" ){
+	WCSimDetector->SetLCType(2);
+      }
+    }
+
+    if(command == WCConstruct) {
+      //If the OD geometry has been changed, then reconstruct the whole tank with the proper recalculated dimensions
+      if (WCSimDetector->GetODEdited() == true) {WCSimDetector->UpdateODGeo();}
+      WCSimDetector->UpdateGeometry();
+    }
 
 }

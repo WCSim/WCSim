@@ -16,20 +16,20 @@ public:
   virtual G4String GetPMTName()=0;
   virtual G4double GetExposeHeight()=0;
   virtual G4double GetRadius()=0;
-  virtual G4float* Getqpe()=0;
-  virtual G4float* GetQE()=0;
-  virtual G4float* GetQEWavelength()=0;
-  virtual G4float  GetmaxQE()=0;
-  virtual G4float  GetCollectionEfficiency(float);
-  virtual float    HitTimeSmearing(float)=0;
+  virtual G4double* Getqpe()=0;
+  virtual G4double* GetQE()=0;
+  virtual G4double* GetQEWavelength()=0;
+  virtual G4double  GetmaxQE()=0;
+  virtual G4double  GetCollectionEfficiency(double);
+  virtual double    HitTimeSmearing(double)=0;
   virtual G4double GetPMTGlassThickness()=0;
-  virtual G4float  GetDarkRate()=0;
-  virtual G4float  GetDarkRateConversionFactor()=0;
+  virtual G4double GetDarkRate()=0;
+  virtual G4double GetDarkRateConversionFactor()=0;
   virtual G4int    GetNbOfQEDefined()=0;
 protected:
-  virtual G4float* GetCollectionEfficiencyArray();
-  virtual G4float* GetCollectionEfficiencyAngle();
-  G4float Interpolate_func(G4float, G4int, G4float*, G4float*);
+  virtual G4double* GetCollectionEfficiencyArray();
+  virtual G4double* GetCollectionEfficiencyAngle();
+  G4double Interpolate_func(G4double, G4int, G4double*, G4double*);
 };
 
 class PMT20inch : public WCSimPMTObject
@@ -44,16 +44,15 @@ public:
   G4String GetPMTName() ;
   G4double GetExposeHeight();
   G4double GetRadius();
-  G4float* Getqpe();
-  G4float* GetQE();
-  G4float* GetQEWavelength();
-  G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double);
   G4double GetPMTGlassThickness();
-  G4float  GetDarkRate();
-  G4float  GetDarkRateConversionFactor();
+  G4double GetDarkRate();
+  G4double GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
-
 };
 
 class PMT8inch : public WCSimPMTObject
@@ -68,14 +67,14 @@ public:
   G4String GetPMTName(); 
   G4double GetExposeHeight(); 
   G4double GetRadius();
-  G4float* Getqpe();
-  G4float* GetQE();
-  G4float* GetQEWavelength();
-  G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double);
   G4double GetPMTGlassThickness();
-  G4float  GetDarkRate();
-  G4float  GetDarkRateConversionFactor();
+  G4double GetDarkRate();
+  G4double GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
 };
 
@@ -90,14 +89,14 @@ public:
   G4String GetPMTName(); 
   G4double GetExposeHeight(); 
   G4double GetRadius(); 
-  G4float* Getqpe();
-  G4float* GetQE();
-  G4float* GetQEWavelength();
-  G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double);
   G4double GetPMTGlassThickness();
-  G4float  GetDarkRate();
-  G4float  GetDarkRateConversionFactor();
+  G4double GetDarkRate();
+  G4double GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
  };
 
@@ -112,14 +111,14 @@ public:
   G4String GetPMTName(); 
   G4double GetExposeHeight(); 
   G4double GetRadius(); 
-  G4float* Getqpe();
-  G4float* GetQE();
-  G4float* GetQEWavelength();
-  G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double);
   G4double GetPMTGlassThickness();
-  G4float  GetDarkRate();
-  G4float  GetDarkRateConversionFactor();
+  G4double GetDarkRate();
+  G4double GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
  };
 
@@ -134,14 +133,14 @@ public:
   G4String GetPMTName(); 
   G4double GetExposeHeight(); 
   G4double GetRadius(); 
-  G4float* Getqpe();
-  G4float* GetQE();
-  G4float* GetQEWavelength();
-  G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double);
   G4double GetPMTGlassThickness();
-  G4float  GetDarkRate();
-  G4float  GetDarkRateConversionFactor();
+  G4double GetDarkRate();
+  G4double GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
  };
 
@@ -157,17 +156,17 @@ public:
   G4String GetPMTName() ;
   G4double GetExposeHeight();
   G4double GetRadius();
-  G4float* Getqpe();
-  G4float* GetQE();
-  G4float* GetQEWavelength();
-  G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double);
   G4double GetPMTGlassThickness();
-  G4float  GetDarkRate();
-  G4float  GetDarkRateConversionFactor();
+  G4double GetDarkRate();
+  G4double GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
 protected:
-  G4float* GetCollectionEfficiencyArray();
+  G4double* GetCollectionEfficiencyArray();
 };
 
 class HPD12inchHQE : public WCSimPMTObject
@@ -182,17 +181,17 @@ public:
   G4String GetPMTName() ;
   G4double GetExposeHeight();
   G4double GetRadius();
-  G4float* Getqpe();
-  G4float* GetQE();
-  G4float* GetQEWavelength();
-  G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double);
   G4double GetPMTGlassThickness();
-  G4float  GetDarkRate();
-  G4float  GetDarkRateConversionFactor();
+  G4double GetDarkRate();
+  G4double GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
 protected:
-  G4float* GetCollectionEfficiencyArray();
+  G4double* GetCollectionEfficiencyArray();
 };
 
 class BoxandLine20inchHQE : public WCSimPMTObject
@@ -207,17 +206,17 @@ public:
   G4String GetPMTName() ;
   G4double GetExposeHeight();
   G4double GetRadius();
-  G4float* Getqpe();
-  G4float* GetQE();
-  G4float* GetQEWavelength();
-  G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double);
   G4double GetPMTGlassThickness();
-  G4float  GetDarkRate();
-  G4float  GetDarkRateConversionFactor();
+  G4double GetDarkRate();
+  G4double GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
- protected:
-  G4float* GetCollectionEfficiencyArray();
+protected:
+  G4double* GetCollectionEfficiencyArray();
 };
 
 class BoxandLine12inchHQE : public WCSimPMTObject
@@ -232,17 +231,17 @@ public:
   G4String GetPMTName() ;
   G4double GetExposeHeight();
   G4double GetRadius();
-  G4float* Getqpe();
-  G4float* GetQE();
-  G4float* GetQEWavelength();
-  G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double);
   G4double GetPMTGlassThickness();
-  G4float  GetDarkRate();
-  G4float  GetDarkRateConversionFactor();
+  G4double GetDarkRate();
+  G4double GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
- protected:
-  G4float* GetCollectionEfficiencyArray();
+protected:
+  G4double* GetCollectionEfficiencyArray();
 };
 
 class PMT5inch : public WCSimPMTObject
@@ -257,14 +256,14 @@ class PMT5inch : public WCSimPMTObject
   G4String GetPMTName();
   G4double GetExposeHeight();
   G4double GetRadius();
-  G4float* Getqpe();
-  G4float* GetQE();
-  G4float* GetQEWavelength();
-  G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double);
   G4double GetPMTGlassThickness();
-  G4float  GetDarkRate();
-  G4float  GetDarkRateConversionFactor();
+  G4double GetDarkRate();
+  G4double GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
 };
 
@@ -280,14 +279,14 @@ class PMT3inch : public WCSimPMTObject
   G4String GetPMTName();
   G4double GetExposeHeight();
   G4double GetRadius();
-  G4float* Getqpe();
-  G4float* GetQE();
-  G4float* GetQEWavelength();
-  G4float  GetmaxQE();
-  float    HitTimeSmearing(float);
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double);
   G4double GetPMTGlassThickness();
-  G4float  GetDarkRate();
-  G4float  GetDarkRateConversionFactor();
+  G4double GetDarkRate();
+  G4double GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
 };
 
@@ -296,34 +295,34 @@ class WCSimBasicPMTObject
 
  public:
   WCSimBasicPMTObject();
-  WCSimBasicPMTObject(std::map<G4float,G4float>);
-  WCSimBasicPMTObject(std::vector<G4float>,std::vector<G4float>,G4float);
+  WCSimBasicPMTObject(std::map<G4double,G4double>);
+  WCSimBasicPMTObject(std::vector<G4double>,std::vector<G4double>,G4double);
   ~WCSimBasicPMTObject();
 
  private:
-  std::vector<G4float> QE;
-  std::vector<G4float> wavelength;
-  std::map<G4float,G4float> mapQE;
-  G4float  maxQE;
+  std::vector<G4double> QE;
+  std::vector<G4double> wavelength;
+  std::map<G4double,G4double> mapQE;
+  G4double  maxQE;
   TGraph   *gQE;
 
  public:
-  std::vector<G4float> GetQE(){ return QE;};
-  void SetQE(std::vector<G4float> qe){ QE=qe;};
+  std::vector<G4double> GetQE(){ return QE;};
+  void SetQE(std::vector<G4double> qe){ QE=qe;};
 
-  std::vector<G4float> GetWavelength(){ return wavelength;};
-  void SetWavelength(std::vector<G4float> qe){ wavelength=qe;};
+  std::vector<G4double> GetWavelength(){ return wavelength;};
+  void SetWavelength(std::vector<G4double> qe){ wavelength=qe;};
 
-  std::map<G4float,G4float> GetMapQE(){ return mapQE;};
-  void SetMapQE(std::map<G4float,G4float> qe){ mapQE=qe;};
+  std::map<G4double,G4double> GetMapQE(){ return mapQE;};
+  void SetMapQE(std::map<G4double,G4double> qe){ mapQE=qe;};
 
-  G4float GetmaxQE(){ return maxQE;};
-  void SetmaxQE(G4float qe){ maxQE=qe;};
+  G4double GetmaxQE(){ return maxQE;};
+  void SetmaxQE(G4double qe){ maxQE=qe;};
 
   TGraph* GetgQE(){ return gQE;};
   void SetgQE(TGraph *g){ gQE=g;};
 
-  void DefineQEHist(std::map<G4float,G4float>);
+  void DefineQEHist(std::map<G4double,G4double>);
 };
 
 #endif
