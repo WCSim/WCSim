@@ -24,7 +24,7 @@
 extern "C" void skrn1pe_(double* );
 //extern "C" void rn1pe_(double* ); // 1Kton
 
-G4double WCSimWCPMT::fFirst_Time = -1. ;
+G4double WCSimWCPMT::fFirst_Time = 0 ;
 
 WCSimWCPMT::WCSimWCPMT(G4String name,
                        WCSimDetectorConstruction* myDetector,
@@ -210,12 +210,13 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    // This modification is important in case of very late hit physics (such as in radioactive decays)     
 	    // for which time easy goes > 1e9 ns and cause bug in digitizer
 	    // should not use /grdm/decayBiasProfile biasprofile.dat as it messes up all the timing of the decays, and force to use only one nucleus
-	    if ( i == 0 && ip == 0 && RelativeHitTime && fFirst_Time == -1 /*&& (*WCHC)[i]->GetTime(ip) > 1e5*/ ) { // Set Max at 10 musec
+	    if ( i == 0 && ip == 0 && RelativeHitTime && fFirst_Time == 0 /*&& (*WCHC)[i]->GetTime(ip) > 1e5*/ ) { // Set Max at 10 musec
 	      //G4cout << " Apply time correction to event hits of " << (*WCHC)[i]->GetTime(ip) << " ns" << G4endl;
 	      fFirst_Time = time_true;
 	    } 
-	    
+
 	    time_PMT  = time_true - fFirst_Time; //currently no PMT time smearing applied
+	    //std::cout<<"First time = "<<fFirst_Time<<", time true = "<<time_true<<", PMT time = "<<time_PMT<<std::endl;	    
 	    peSmeared = rn1pe();
 #ifdef DEBUG
 	    std::cout << "tube : " << i << " (ID=" << tube << ")" << " hit in tube : "<< ip << " (time=" << time_true << "ns)"  << " pe value : " << peSmeared << std::endl; //TD debug
