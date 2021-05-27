@@ -235,7 +235,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
                           CaveTyvekPosition,
 						  logicCaveCapsTyvek,
                           "CaveTopTyvek",
-						  logicCaveCapsTyvek,
+						  logicWCBarrel,
                           false,
                           0);
 
