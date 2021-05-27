@@ -18,15 +18,7 @@
 #include <fstream>
 #include <map>
 #include <vector>
-//#include <hash_map.h>
-// warning : hash_map is not part of the standard
-#include <ext/hash_map>
-#include <G4Colour.hh>
-
-using __gnu_cxx::hash;
-using __gnu_cxx::hashtable;
-using __gnu_cxx::hash_map;
-using __gnu_cxx::hash_multimap;
+#include <unordered_map>     //--> need to fix the "using" and namespace statements
 
 // (JF) We don't need this distinction for DUSEL
 //enum cyl_location {endcap1,wall,endcap2};
@@ -41,15 +33,6 @@ class WCSimTuningParameters;
 class WCSimDetectorMessenger;
 class WCSimWCSD;
 
-namespace __gnu_cxx  {
-  template<> struct hash< std::string >
-  {
-    size_t operator()( const std::string& x ) const
-    {
-      return hash< const char* >()( x.c_str() );
-    }
-  };
-}
 
 //-----------------------------------------------------
 //-----------------------------------------------------
@@ -77,16 +60,21 @@ public:
   void Cylinder_60x74_20inchBandL_40perCent();
   void Cylinder_12inchHPD_15perCent();
   void SetHyperKGeometry();
+  void SetHyperKGeometry_20perCent();
   void SetHyperKWithODGeometry();
   void UpdateGeometry();
   void UpdateODGeo();
-
+  void SetLCType(G4int LightCollectorType)
+  {
+	  LCType=LightCollectorType;
+  };
+  G4int GetLCType(){return LCType;};
 
   G4String GetDetectorName()      {return WCDetectorName;}
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
   G4double GetPMTSize()           {return WCPMTRadius;}
-  G4double GetODPMTSize()           {return WCPMTODRadius;}
+  G4double GetODPMTSize()         {return WCPMTODRadius;}
   G4String GetPMTName()			  {return WCPMTName;}
   G4int    GetMyConfiguration()   {return myConfiguration;}
   G4double GetGeo_Dm(G4int);
@@ -99,9 +87,9 @@ public:
 
   G4double GetPMTSize1() {return WCPMTSize;}
 
-  G4float GetPMTQE(G4String,G4float, G4int, G4float, G4float, G4float);
-  G4float GetPMTCollectionEfficiency(G4float theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
-  G4float GetStackingPMTQE(G4float PhotonWavelength, G4int flag, G4float low_wl, G4float high_wl, G4float ratio);
+  G4double GetPMTQE(G4String,G4double, G4int, G4double, G4double, G4double);
+  G4double GetPMTCollectionEfficiency(G4double theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
+  G4double GetStackingPMTQE(G4double PhotonWavelength, G4int flag, G4double low_wl, G4double high_wl, G4double ratio);
 
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
@@ -206,6 +194,8 @@ public:
   ///////////////////////////////
 
   G4double GetWCIDHeight(){return WCIDHeight;}
+  G4double GetIDRadius()     {return WCIDRadius;}
+  G4double GetIDHeight()     {return WCIDHeight;}
  
 private:
 
@@ -507,6 +497,8 @@ private:
     G4int PMTCopyNo;
     G4int wallSlabCopyNo;
 
+  G4int  LCType;     // 0: No LC, 1: Old Branch(Mirror), 2: 2018Oct(Mirror)
+
   // *** End egg-shaped HyperK Geometry ***
 
   // amb79: debug to display all parts
@@ -526,11 +518,11 @@ private:
 
   static std::map<int, G4Transform3D> tubeIDMap;
 //  static std::map<int, cyl_location> tubeCylLocation;
-  static hash_map<std::string, int, hash<std::string> >  tubeLocationMap;
+  static std::unordered_map<std::string, int, std::hash<std::string> >  tubeLocationMap; 
 
   // OD PMTs
   static std::map<int, G4Transform3D> ODtubeIDMap;
-  static hash_map<std::string, int, hash<std::string> >  ODtubeLocationMap;
+  static std::unordered_map<std::string, int, std::hash<std::string> >  ODtubeLocationMap;
 
   // Variables related to configuration
 

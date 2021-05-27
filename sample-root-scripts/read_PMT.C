@@ -1,7 +1,19 @@
 #include <stdio.h>     
 #include <stdlib.h>    
 
-void read_PMT(char *filename=NULL) {
+#include "TSystem.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TROOT.h"
+#include "TStyle.h"
+#include "TH1D.h"
+#include "TH2D.h"
+#include "TProfile.h"
+#include "TCanvas.h"
+
+#include "WCSimRootEvent.hh"
+
+int read_PMT(const char *filename="../wcsim.root") {
   /* A simple script to plot aspects of phototube hits 
    * This code is rather cavalier; I should be checking return values, etc.
    * First revision 6-24-10 David Webber
@@ -11,27 +23,16 @@ void read_PMT(char *filename=NULL) {
    */
 
   gROOT->Reset();
-  char* wcsimdirenv;
-  wcsimdirenv = getenv ("WCSIMDIR");
-  if(wcsimdirenv !=  NULL){
-    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
-  }else{
-    gSystem->Load("../libWCSimRoot.so");
-  }
   gStyle->SetOptStat(1);
 
-  TFile *f;
-  if (filename==NULL){
-    f = new TFile("../wcsim.root");
-  }else{
-    f = new TFile(filename);
-  }
+  TFile *f = new TFile(filename);
   if (!f->IsOpen()){
     cout << "Error, could not open input file: " << filename << endl;
     return -1;
   }
 
-  TTree  *wcsimT = f->Get("wcsimT");
+  TTree  *wcsimT = 0;
+  f->GetObject("wcsimT", wcsimT);
 
   WCSimRootEvent *wcsimrootsuperevent = new WCSimRootEvent();
   wcsimT->SetBranchAddress("wcsimrootevent",&wcsimrootsuperevent);
@@ -42,7 +43,7 @@ void read_PMT(char *filename=NULL) {
 
   wcsimT->GetEvent(0); 
 
-  // Currently only looks at one event.  I suspect you could loop over more events, if they existed.
+  // Currently only looks at one subevent.  I suspect you could loop over more subevents, if they existed.
   WCSimRootTrigger *wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
 
   //--------------------------
@@ -66,7 +67,10 @@ void read_PMT(char *filename=NULL) {
 
   int max=wcsimrootevent->GetNcherenkovhits();
   for (int i = 0; i<max; i++){
-    WCSimRootCherenkovHit *chit = wcsimrootevent->GetCherenkovHits()->At(i);
+    TObject * element = wcsimrootevent->GetCherenkovHits()->At(i);
+    if(!element)
+      continue;
+    WCSimRootCherenkovHit *chit = dynamic_cast<WCSimRootCherenkovHit*>(element);
     PMT_hits->Fill(chit->GetTubeID());
     //WCSimRootCherenkovHit has methods GetTubeId(), GetTotalPe(int)
     PE->Fill(chit->GetTotalPe(1));
@@ -79,16 +83,22 @@ void read_PMT(char *filename=NULL) {
   QvsT->SetXTitle("time");
   QvsT->SetYTitle("charge");
 
-  int max = wcsimrootevent->GetNcherenkovdigihits();
+  max = wcsimrootevent->GetNcherenkovdigihits_slots();
   for (int i = 0; i<max; i++){
-    WCSimRootCherenkovDigiHit *cDigiHit = wcsimrootevent->GetCherenkovDigiHits()->At(i);
+    TObject* element = wcsimrootevent->GetCherenkovDigiHits()->At(i);
+    if(!element)
+      continue;
+    WCSimRootCherenkovDigiHit *cDigiHit = dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
+    if(!cDigiHit)
+      continue;
     //WCSimRootChernkovDigiHit has methods GetTubeId(), GetT(), GetQ()
     QvsT->Fill(cDigiHit->GetT(), cDigiHit->GetQ());
-    WCSimRootCherenkovHitTime *cHitTime = wcsimrootevent->GetCherenkovHitTimes()->At(i);
+    //WCSimRootCherenkovHitTime *cHitTime = wcsimrootevent->GetCherenkovHitTimes()->At(i); // this should loop over wcsimrootevent->GetCherenkovHitTimes()!
     //WCSimRootCherenkovHitTime has methods GetTubeId(), GetTruetime()
   }
 
   TH1 *temp;
+  TProfile * temp_profile;
   float win_scale=0.75;
   int n_wide=2;
   int n_high=3;
@@ -110,13 +120,14 @@ void read_PMT(char *filename=NULL) {
   c1->GetPad(3)->SetLogy();
 
   c1->cd(4);
-  temp=QvsT->ProfileX();
-  temp->SetTitle("average charge vs time");
-  temp->Draw();
+  temp_profile=QvsT->ProfileX();
+  temp_profile->SetTitle("average charge vs time");
+  temp_profile->Draw();
 
   c1->cd(5);
   temp=PE;
   temp->Draw();
   c1->GetPad(5)->SetLogy();
 
+  return 0;
 }
