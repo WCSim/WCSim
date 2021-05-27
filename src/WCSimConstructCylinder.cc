@@ -58,9 +58,9 @@ G4Colour  cyan    (0.0, 1.0, 1.0) ;  // cyan
 G4Colour  magenta (1.0, 0.0, 1.0) ;  // magenta
 G4Colour  yellow  (1.0, 1.0, 0.0) ;  // yellow
 
-//#ifndef ACTIVATE_IDPMTS
-// #define ACTIVATE_IDPMTS
-//#endif
+#ifndef ACTIVATE_IDPMTS
+ #define ACTIVATE_IDPMTS
+#endif
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 {
