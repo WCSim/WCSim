@@ -29,7 +29,6 @@ include(${ROOT_USE_FILE})
 # Locate sources and headers for this project
 # ## NOT NEEDED FOR DICT
 include_directories(${PROJECT_SOURCE_DIR}/include 
-                    ${PROJECT_SOURCE_DIR}/../shared/include
                     ${Geant4_INCLUDE_DIR}
                     ${ROOT_INCLUDE_DIRS})
 
@@ -37,11 +36,6 @@ include_directories(${PROJECT_SOURCE_DIR}/include
 # Add libraries: need to compile the Dict before linking WCSim !!
 # in standard makefile, need to make rootcint anyway before standard make
 #
-
-ADD_CUSTOM_TARGET(LinkDirectories ALL
-		COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/include 	${CMAKE_CURRENT_BINARY_DIR}/include
-		COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/src 		${CMAKE_CURRENT_BINARY_DIR}/src)
-
 
 ## WCSimRootDict.cxx regeneration by rootcint
 ## Use ROOT 5.34.32 as some issues with PARSE_ARGUMENTS were found in older ROOT versions (ROOT 5.34.11)
@@ -94,7 +88,7 @@ target_link_libraries(WCSimRoot  ${ROOT_LIBRARIES})
 # Create libWCSimRootDict.so (needed for ROOT6)
 add_custom_command(TARGET WCSimRoot
 		POST_BUILD
-		COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/libWCSimRoot.so 	${CMAKE_CURRENT_BINARY_DIR}/libWCSimRootDict.so)
+		COMMAND ${CMAKE_COMMAND} -E create_symlink libWCSimRoot.so libWCSimRootDict.so)
 		
 if ( ${ROOT_VERSION} LESS 6 )
 	# Create Rootmap (not automatically done for ROOT5)
@@ -155,46 +149,35 @@ target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree
 # relies on these files being in the current working directory and then so
 # that we can directly analyze the produced ROOT files, too.
 #
-set(WCSIM_SCRIPTS
-  macros/jobOptions.mac
-  WCSim.mac
-  macros/daq.mac
-  macros/visOGLSX.mac
-  macros/visOGLQT.mac
-  macros/visRayTracer.mac
-  macros/mPMT_nuPrism1.mac
-  macros/mPMT_nuPrism2.mac
-  macros/tuning_parameters.mac
-  macros/NuPRISM.mac
-  macros/mPMT_interesting1.mac
-  macros/mPMT_interesting2_SKwCover.mac
-  macros/mPMT_37pmtHK.mac
-  macros/mPMT_radon_with_bias.mac
-  macros/mPMT_radon_without_bias.mac
-  biasprofile.dat
-  tuningNominal.mac
-  WCSim_hybrid.mac
-  WCSim_hybrid.sh
-  mPMT-configfiles/mPMTconfig_19_nuPrism.txt
-  mPMT-configfiles/mPMTconfig_30_13_3.txt
-  mPMT-configfiles/mPMTconfig_33_50.txt
-  mPMT-configfiles/mPMTconfig_34_22.5_1.txt
-  mPMT-configfiles/mPMTconfig_34_22_1.txt
-  mPMT-configfiles/mPMTconfig_37_HK.txt
-  mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt
-  mPMT-configfiles/mPMTconfig_33_13_1.txt
-  mPMT-configfiles/mPMTconfig_33_50_1.txt
-  mPMT-configfiles/mPMTconfig_34_22.5_2.txt
-  mPMT-configfiles/mPMTconfig_34_22_2.txt
-  )
-  
-  foreach(_file ${WCSIM_SCRIPTS})
+if (NOT (PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR))
+  file(COPY ${PROJECT_SOURCE_DIR}/mPMT-configfiles DESTINATION ${PROJECT_BINARY_DIR} USE_SOURCE_PERMISSIONS)
+  file(COPY ${PROJECT_SOURCE_DIR}/macros DESTINATION ${PROJECT_BINARY_DIR} USE_SOURCE_PERMISSIONS)
+  # file(COPY ${PROJECT_SOURCE_DIR}/include DESTINATION ${PROJECT_BINARY_DIR} USE_SOURCE_PERMISSIONS)
+  set(WCSIM_FILES
+    WCSim.mac
+    biasprofile.dat
+    tuningNominal.mac
+    WCSim_hybrid.mac
+    WCSim_hybrid.sh
+    include/TJNuBeamFlux.hh
+    include/TNRooTrackerVtx.hh
+    include/WCSimEnumerations.hh
+    include/WCSimPmtInfo.hh
+    include/WCSimRootEvent.hh
+    include/WCSimRootGeom.hh
+    include/WCSimRootOptions.hh
+    include/WCSimRootTools.hh
+    )
+  foreach(_file ${WCSIM_FILES})
     configure_file(
       ${PROJECT_SOURCE_DIR}/${_file}
       ${PROJECT_BINARY_DIR}/${_file}
       COPYONLY
       )
   endforeach()
+else()
+  message(STATUS "Note: building in-place, no need to copy anything.")
+endif()
 
 #----------------------------------------------------------------------------
 # For internal Geant4 use - but has no effect if you build this

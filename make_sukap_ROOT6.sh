@@ -16,7 +16,7 @@ if [ ! -d ${build_directory} ]; then
 	if [ -d ${G4WORKDIR} ]; then
 		rm -r ${G4WORKDIR}
 	fi
-	rm *.o *.a *.so *~ */*~ src/*Dict*
+	rm *.o *.a *.so *~ */*~ *Dict*
 	
 	echo "Creating build directory ${build_directory}"
 	mkdir -p ${build_directory}
