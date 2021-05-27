@@ -21,8 +21,8 @@ public:
   
    void ReInitialize() { DigiHitMapPMT.clear(); TriggerTimes.clear(); }
    // Set Relative Digitized Hit time mode and reinitialize first_time hit
-   void SetRelativeDigitizedHitTime (bool val) { RelativeHitTime = val; fFirst_Time = 0; }
-   void SetRelativeDigitizedHitTime (bool val, G4double time) { RelativeHitTime = val; fFirst_Time = time; }
+   void SetRelativeDigitizedHitTime (bool val) { RelativeHitTime = val; fFirst_Time = 0; fFirst_Time_Flag = false; }
+   void SetRelativeDigitizedHitTime (bool val, G4double time) { RelativeHitTime = val; fFirst_Time = time; fFirst_Time_Flag = true; }
    
 public:
   
@@ -47,6 +47,7 @@ public:
 private:
   bool RelativeHitTime;
   static G4double fFirst_Time;
+  static G4bool fFirst_Time_Flag;
 };
 
 #endif
