@@ -24,10 +24,9 @@ G4TMPDIR := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim
 
 ROOTSO    := libWCSimRoot.so
 
-ROOTSRC  := ./src/WCSimRootEvent.cc ./include/WCSimRootEvent.hh ./src/WCSimRootGeom.cc ./include/WCSimRootGeom.hh ./include/WCSimPmtInfo.hh ./src/WCSimEnumerations.cc ./include/WCSimEnumerations.hh ./src/WCSimRootOptions.cc ./include/WCSimRootOptions.hh ./include/WCSimRootLinkDef.hh
+ROOTSRC  := ./src/WCSimRootEvent.cc ./include/WCSimRootEvent.hh ./src/WCSimRootGeom.cc ./include/WCSimRootGeom.hh ./include/WCSimPmtInfo.hh ./src/WCSimEnumerations.cc ./include/WCSimEnumerations.hh ./src/WCSimRootOptions.cc ./include/WCSimRootOptions.hh ./src/TJNuBeamFlux.cc ./include/TJNuBeamFlux.hh ./src/TNRooTrackerVtx.cc ./include/TNRooTrackerVtx.hh ./src/WCSimRootTools.cc ./include/WCSimRootTools.hh  ./include/WCSimRootLinkDef.hh
 
-ROOTOBJS  := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimEnumerations.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootOptions.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSim
-
+ROOTOBJS  := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimEnumerations.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootOptions.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/TNRooTrackerVtx.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/TJNuBeamFlux.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootTools.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootDict.o
 
 
 
@@ -48,7 +47,7 @@ libWCSimRoot.so : $(ROOTOBJS)
 
 ./WCSimRootDict.cxx : $(ROOTSRC)
 	@echo Compiling rootcint ...
-	rootcint  -f ./WCSimRootDict.cxx -c -I./include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimEnumerations.hh WCSimRootOptions.hh WCSimRootLinkDef.hh
+	rootcint  -f ./WCSimRootDict.cxx -c -I./include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimEnumerations.hh WCSimRootOptions.hh TJNuBeamFlux.hh TNRooTrackerVtx.hh WCSimRootTools.hh WCSimRootLinkDef.hh
 
 rootcint: ./WCSimRootDict.cxx
 
@@ -66,5 +65,5 @@ $(G4TMPDIR)/%.o: %.cxx
 
 clean :
 	@rm -f $(G4TMPDIR)/*.o
-	@rm -f ./WCSimRootDict.*
+	@rm -f ./WCSimRootDict*
 

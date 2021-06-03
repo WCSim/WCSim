@@ -1,8 +1,8 @@
 #include "WCSimEnumerations.hh"
 struct ntupleStruct
 {
-  //int mode;             // interaction mode
-  InteractionType_t mode;             // interaction mode
+  int mode;             // interaction mode
+  //InteractionType_t mode;             // interaction mode
   int vtxvol;           // volume of vertex
   float vtx[3];         // interaction vertex
   int vecRecNumber;     // info event number in inputvetcotfile

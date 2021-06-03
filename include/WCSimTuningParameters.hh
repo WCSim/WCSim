@@ -24,8 +24,27 @@ public:
   G4double GetRgcff() {return rgcff;}
   void SetRgcff(G4double rparam) {rgcff=rparam;}
 
+  //Added by B.Q 2018/07/25
+  G4double GetQeff() {return qeff;}
+  void SetQeff(G4double rparam) {qeff=rparam;}
+
   G4double GetMieff() {return mieff;}
   void SetMieff(G4double rparam) {mieff=rparam;}
+
+  //Added by TD 2019/06/22
+  G4double GetTtsff() {return ttsff;}
+  void SetTtsff(G4double rparam) {ttsff=rparam;}
+
+  //TD 2019.7.16
+  G4double GetPMTSatur() {return pmtsatur;}
+  void SetPMTSatur(G4double rparam) {pmtsatur=rparam;}
+  
+// TD 2019.6.26
+  // G4double GetQoiff() {return qoiff;}
+  // void SetQoiff(G4double rparam) {qoiff=rparam;}
+  
+  // G4double GetNLTinfo() {return nltinfo;}
+  // void SetNLTinfo(G4double rparam) {nltinfo=rparam;}
 
   //For Top Veto - jl145
   G4double GetTVSpacing() {return tvspacing;}
@@ -49,7 +68,11 @@ private:
   G4double bsrff;
   G4double abwff;
   G4double rgcff;
+  G4double qeff;
   G4double mieff;
+  G4double ttsff;
+  // G4double qoiff; // TD 2019.6.26
+  G4double pmtsatur;
 
   //For Top Veto - jl145
   G4double tvspacing;

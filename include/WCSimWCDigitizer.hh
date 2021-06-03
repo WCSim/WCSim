@@ -23,10 +23,10 @@ class WCSimWCDigitizerBase : public G4VDigitizerModule
 {
 public:
   
-  WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, DigitizerType_t);
+  WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, DigitizerType_t, G4String detectorElement);
   virtual ~WCSimWCDigitizerBase();
   
-  bool AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector<int> digi_comp);
+  bool AddNewDigit(int tube, int gate, double digihittime, double peSmeared, std::vector<int> digi_comp);
   virtual void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) = 0;
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
   void Digitize();
@@ -52,6 +52,7 @@ protected:
 
   WCSimDetectorConstruction* myDetector; ///< Get the geometry information
   WCSimWCDAQMessenger* DAQMessenger;     ///< Get the /DAQ/ .mac options
+  G4String detectorElement; //to identify which hit collection the trigger is associated: OD, ID, ID PMT type 2(for hybrid)
 
   WCSimWCDigitsCollection*  DigiStore;
   std::map<int,int> DigiStoreHitMap;   ///< Used to check if a digit has already been created on a PMT
@@ -85,7 +86,7 @@ class WCSimWCDigitizerSKI : public WCSimWCDigitizerBase
 {
 public:
   
-  WCSimWCDigitizerSKI(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+  WCSimWCDigitizerSKI(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String);
   ~WCSimWCDigitizerSKI();
 
   void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);

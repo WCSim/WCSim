@@ -68,11 +68,13 @@ class WCSimWCHit : public G4VHit
   void AddPhotonEndPos  (const G4ThreeVector &photEndPos) { photonEndPos.push_back(photEndPos); }
   void AddPhotonStartDir  (const G4ThreeVector &photStartDir) { photonStartDir.push_back(photStartDir); }
   void AddPhotonEndDir  (const G4ThreeVector &photEndDir) { photonEndDir.push_back(photEndDir); }
+  void SetTubeType     (G4String tube_type)          { tubeType = tube_type; }; //Added by B.Quilain to transmit on which PMT type the hit happened. For detectors with several PMT types in ID.
 
+  
   // This is temporarily used for the drawing scale
   void SetMaxPe(G4int number = 0)  {maxPe   = number;};
 
-  void AddPe(G4float hitTime)  
+  void AddPe(G4double hitTime)  
   {
     // First increment the totalPe number
     totalPe++; 
@@ -88,8 +90,9 @@ class WCSimWCHit : public G4VHit
   G4ThreeVector GetPos()        { return pos; };
   G4ThreeVector GetOrientation()        { return orient; };
   G4int         GetTotalPe()    { return totalPe;};
-  G4float       GetTime(int i)  { return time[i];};
+  G4double      GetTime(int i)  { return time[i];};
   G4int         GetParentID(int i) { return primaryParentID[i];};
+  G4String         GetTubeType()     { return tubeType; };
   G4float       GetPhotonStartTime(int i) { return photonStartTime[i];};
   G4ThreeVector GetPhotonStartPos(int i) { return photonStartPos[i];};
   G4ThreeVector GetPhotonEndPos(int i) { return photonEndPos[i];};
@@ -102,17 +105,17 @@ class WCSimWCHit : public G4VHit
 
 
   // low is the trigger time, up is trigger+950ns (end of event)
-  G4float GetFirstHitTimeInGate(G4float low,G4float upevent)
+  G4double GetFirstHitTimeInGate(G4double low,G4double upevent)
   {
-    G4float firsttime;
-    std::vector<G4float>::iterator tfirst = time.begin();
-    std::vector<G4float>::iterator tlast = time.end();
+    G4double firsttime;
+    std::vector<G4double>::iterator tfirst = time.begin();
+    std::vector<G4double>::iterator tlast = time.end();
   
-    std::vector<G4float>::iterator found = 
+    std::vector<G4double>::iterator found = 
       std::find_if(tfirst,tlast,
 		   compose2(std::logical_and<bool>(),
-			    std::bind2nd(std::greater_equal<G4float>(),low),
-			    std::bind2nd(std::less_equal<G4float>(),upevent)
+			    std::bind2nd(std::greater_equal<G4double>(),low),
+			    std::bind2nd(std::less_equal<G4double>(),upevent)
 			    )
 		   );
     if ( found != tlast ) {
@@ -128,20 +131,20 @@ class WCSimWCHit : public G4VHit
 
   // pmtgate  and evgate are durations, ie not absolute times
 
-  G4int GetPeInGate(double low, double pmtgate,double evgate) {
+  G4int GetPeInGate(G4double low, G4double pmtgate,G4double evgate) {
     // M Fechner; april 2005
     // assumes that time has already been sorted
-    std::vector<G4float>::iterator tfirst = time.begin();
-    std::vector<G4float>::iterator tlast = time.end();
+    std::vector<G4double>::iterator tfirst = time.begin();
+    std::vector<G4double>::iterator tlast = time.end();
     // select min time
-    G4float mintime = (pmtgate < evgate) ? pmtgate : evgate;
+    G4double mintime = (pmtgate < evgate) ? pmtgate : evgate;
     
     // return number of hits in the time window...
     
     G4int number = std::count_if(tfirst,tlast,
 				 compose2(std::logical_and<bool>(),
-					  std::bind2nd(std::greater_equal<G4float>(),low),
-					  std::bind2nd(std::less_equal<G4float>(),mintime)
+					  std::bind2nd(std::greater_equal<G4double>(),low),
+					  std::bind2nd(std::less_equal<G4double>(),mintime)
 					  )
 				 );
     
@@ -150,10 +153,16 @@ class WCSimWCHit : public G4VHit
     return number;
   }
 
+  // G. Pronost:	
+  // Sort function by Hit Time (using first time, assuming hit time within a hit object are sorted)
+  struct SortFunctor_Hit {
+    bool operator() (const WCSimWCHit * const &a,
+                     const WCSimWCHit * const &b) const;
+  };
 
  private:
   
-  void HSVtoRGB(float& fR, float& fG, float& fB, float& fH, float& fS, float& fV);
+  void HSVtoRGB(double& fR, double& fG, double& fB, double& fH, double& fS, double& fV);
 
   G4int            tubeID;
   G4int            trackID;
@@ -162,6 +171,7 @@ class WCSimWCHit : public G4VHit
   G4ThreeVector    orient;
   G4RotationMatrix rot;
   G4LogicalVolume* pLogV;
+  G4String tubeType;//Added by B.Quilain to transmit on which PMT type the hit happened. For detectors with several PMT types in ID.
 
   // This is temporarily used for the drawing scale
   // Since its static *every* WChit sees the same value for this.
@@ -169,7 +179,7 @@ class WCSimWCHit : public G4VHit
   static G4int     maxPe;
 
   G4int                 totalPe;
-  std::vector<G4float>  time;
+  std::vector<G4double> time;
   std::vector<G4int>    primaryParentID;
   std::vector<G4float>  photonStartTime;
   std::vector<G4ThreeVector> photonStartPos;

@@ -1,5 +1,6 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimTuningParameters.hh"
+#include "WCSimPMTObject.hh"
 
 #include "G4Material.hh"
 #include "G4Element.hh"
@@ -385,7 +386,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
     // Get from the tuning parameters
     ABWFF = WCSimTuningParams->GetAbwff();
-
+    std::cout<<"ABWFF : "<<ABWFF<<std::endl;
+    
     //T. Akiri: Values from Skdetsim 
     G4double ABSORPTION_water[NUMENTRIES_water] =
       {
@@ -469,7 +471,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
    // Get from the tuning parameters
    RAYFF = WCSimTuningParams->GetRayff();
-   //    printf("RAYFF: %f\n",RAYFF);
+       printf("RAYFF: %f\n",RAYFF);
 
    //T. Akiri: Values from Skdetsim 
    G4double RAYLEIGH_water[NUMENTRIES_water] = {
@@ -514,7 +516,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    // Get from the tuning parameters
    G4double MIEFF = WCSimTuningParams->GetMieff();
    //G4double MIEFF = 0.0;
-   //    printf("MIEFF: %f\n",MIEFF);
+       printf("MIEFF: %f\n",MIEFF);
 
    //Values extracted from Skdetsim
    G4double MIE_water[NUMENTRIES_water] = {
@@ -1074,7 +1076,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
    G4double RGCFF = 0.0;
    RGCFF = WCSimTuningParams->GetRgcff();   //defaults in mac: 0.32 and flat
- 
+
+   
    G4double REFLECTIVITY_glasscath[NUM] =
      //{ 0.0+RGCFF, 0.0+RGCFF };
      //{ RGCFF, RGCFF };

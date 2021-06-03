@@ -32,6 +32,7 @@ WCSimWCHit::WCSimWCHit(const WCSimWCHit& right)
   tubeID   = right.tubeID;
   edep      = right.edep;
   pos       = right.pos;
+  tubeType = right.tubeType;
 }
 
 const WCSimWCHit& WCSimWCHit::operator=(const WCSimWCHit& right)
@@ -40,6 +41,8 @@ const WCSimWCHit& WCSimWCHit::operator=(const WCSimWCHit& right)
   tubeID   =  right.tubeID;
   edep      = right.edep;
   pos       = right.pos;
+  tubeType = right.tubeType;
+
   return *this;
 }
 
@@ -61,6 +64,7 @@ void WCSimWCHit::Draw()
     // volumeName should be compared to ID/OD CollectionName of the SensitiveDetector
     // instead of accessing those exactly here, just grab the substring: It should be "a" glassFaceWCPMT. Later optional check for OD?
     if ( volumeName.find("glassFaceWCPMT") != std::string::npos ||
+	 volumeName.find("glassFaceWCPMT2") != std::string::npos || 
 	 volumeName.find("glassFaceWCPMT_refl") != std::string::npos) //isn't this deprecated??
     { 
 
@@ -72,18 +76,18 @@ void WCSimWCHit::Draw()
       {      
 
 	//Don't like this colour scheme (not enough visual gradient between yellow and red)
-	//G4Colour colour(1.,1.-(float(totalPe-.05*maxPe)/float(.95*maxPe)),0.0);
+	//G4Colour colour(1.,1.-(double(totalPe-.05*maxPe)/double(.95*maxPe)),0.0);
 
 	// Scale the charge using the HSV or HSL colour scheme
 	// We want to only vary hue, setting saturation to 1 and value to 1 (or lightness to .5)
-	float hue = (1.-(float(totalPe-.05*maxPe)/float(.95*maxPe)))*230;   //go from hue = 230 to 0
-	float saturation = 1.;
-	float value = 1.;
+	double hue = (1.-(double(totalPe-.05*maxPe)/double(.95*maxPe)))*230;   //go from hue = 230 to 0
+	double saturation = 1.;
+	double value = 1.;
 
 	//convert to rgb
-	float red = 0.;
-	float green = 0.;
-	float blue = 0.;
+	double red = 0.;
+	double green = 0.;
+	double blue = 0.;
 	HSVtoRGB(red, green, blue, hue, saturation, value);
 	G4Colour colour(red, green, blue);
 	
@@ -103,7 +107,8 @@ void WCSimWCHit::Print()
   G4cout.setf(std::ios::fixed);
   G4cout.precision(1);
 
-  G4cout << " Tube:"  << std::setw(4) << tubeID 
+  G4cout << " Tube:"  << std::setw(4) << tubeID
+	 << " Tube type:"  << tubeType 
 	 << " Track:" << std::setw(6) << trackID 
 	 << " Pe:"    << totalPe
 	 << " Pos:"   << pos/cm << G4endl
@@ -135,11 +140,11 @@ void WCSimWCHit::Print()
   \param fV Value component, used as input, range: [0, 1]
   
 */
-void WCSimWCHit::HSVtoRGB(float& fR, float& fG, float& fB, float& fH, float& fS, float& fV) {
-  float fC = fV * fS; // Chroma
-  float fHPrime = fmod(fH / 60.0, 6);
-  float fX = fC * (1 - fabs(fmod(fHPrime, 2) - 1));
-  float fM = fV - fC;
+void WCSimWCHit::HSVtoRGB(double& fR, double& fG, double& fB, double& fH, double& fS, double& fV) {
+  double fC = fV * fS; // Chroma
+  double fHPrime = fmod(fH / 60.0, 6);
+  double fX = fC * (1 - fabs(fmod(fHPrime, 2) - 1));
+  double fM = fV - fC;
   
   if(0 <= fHPrime && fHPrime < 1) {
     fR = fC;
@@ -174,4 +179,22 @@ void WCSimWCHit::HSVtoRGB(float& fR, float& fG, float& fB, float& fH, float& fS,
   fR += fM;
   fG += fM;
   fB += fM;
+}
+
+// G. Pronost:	
+// Sort function by Hit Time (using first time, assuming hit time within a hit object are sorted)
+bool WCSimWCHit::SortFunctor_Hit::operator() (
+		const WCSimWCHit * const &a,
+		const WCSimWCHit * const &b) const {
+
+	G4double ta, tb;
+	if ( a->time.size() > 0 ) 	
+		ta = a->time[0];
+	else return false;
+
+	if ( b->time.size() > 0 )
+		tb = b->time[0];
+	else return true;
+
+	return ta < tb;
 }

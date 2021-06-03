@@ -29,6 +29,11 @@ WCSimTrackingAction::WCSimTrackingAction()
   ParticleList.insert(-321); // kaon-
   ParticleList.insert(311); // kaon0
   ParticleList.insert(-311); // kaon0 bar
+  //ParticleList.insert(22); // I add photons (B.Q)
+  ParticleList.insert(11); // e-
+  ParticleList.insert(-11); // e+
+  ParticleList.insert(13); // mu-
+  ParticleList.insert(-13); // mu+
   // don't put gammas there or there'll be too many
 
   //TF: add protons and neutrons
@@ -45,7 +50,7 @@ WCSimTrackingAction::~WCSimTrackingAction(){;}
 void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
   //TF: userdefined now
-  //G4float percentageOfCherenkovPhotonsToDraw = 100.0;
+  //G4double percentageOfCherenkovPhotonsToDraw = 100.0;
   // if larger than zero, will keep trajectories of many secondaries as well
   // and store them in output file. Difficult to control them all, so best only
   // use for visualization, not for storing in ROOT.
@@ -60,6 +65,25 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
     }
   else 
     fpTrackingManager->SetStoreTrajectory(false);
+  
+  // Kill nucleus generated after TrackID 1
+  G4ParticleDefinition* particle = aTrack->GetDefinition();
+  G4String name   = particle->GetParticleName();
+  G4double fCharge = particle->GetPDGCharge();
+
+  G4Track* tr = (G4Track*) aTrack;
+  if ( aTrack->GetTrackID() == 1 ) {
+  	// Re-initialize time
+  	fTime_birth = 0;
+  	// Ask G4 to kill the track when all secondary are done (will exclude other decays)
+  	if ( fCharge > 2. )
+  		tr->SetTrackStatus(fStopButAlive);
+  }
+
+  if ( aTrack->GetTrackID() == 2 ) {
+  	// First track of the decay save time
+  	fTime_birth = aTrack->GetGlobalTime(); 
+  }
 }
 
 void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)

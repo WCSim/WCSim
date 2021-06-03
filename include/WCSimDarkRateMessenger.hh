@@ -3,6 +3,8 @@
 
 
 #include "G4UImessenger.hh"
+#include <map>
+#include "G4UIcmdWithAString.hh"
 
 class G4UIcommand;
 class G4UIdirectory;
@@ -14,26 +16,35 @@ class WCSimWCAddDarkNoise;
 class WCSimDarkRateMessenger: public G4UImessenger
 {
 public:
-  WCSimDarkRateMessenger(WCSimWCAddDarkNoise*);
+  static WCSimDarkRateMessenger* iInstance;
+  void Initialize();
 
+  static WCSimDarkRateMessenger* GetInstance();
+  void AddDarkRateInstance(WCSimWCAddDarkNoise* darkratepoint, G4String detectorElement);
+  void RemoveDarkRateInstance(G4String detectorElement);
   ~WCSimDarkRateMessenger();
 
   void SetNewValue(G4UIcommand* command, G4String newValue);
 
 private:
-  void Initialize();
-
+  WCSimDarkRateMessenger(WCSimWCAddDarkNoise*);
   WCSimWCAddDarkNoise* WCSimAddDarkNoise;
+  std::map<std::string, WCSimWCAddDarkNoise*> darknoiseptrs;
 
   G4UIdirectory* WCSimDir;
   G4UIcmdWithADoubleAndUnit* SetFrequency;
+  G4UIcmdWithADoubleAndUnit* SetFrequency2;
   G4UIcmdWithADouble* SetConversionRate;
+  G4UIcmdWithADouble* SetConversionRate2;
   G4UIcmdWithAnInteger* SetDarkMode;
   G4UIcmdWithADoubleAndUnit* SetDarkLow;
   G4UIcmdWithADoubleAndUnit* SetDarkHigh;
   G4UIcmdWithADoubleAndUnit* SetDarkWindow;
+  G4UIcmdWithAString* SetDetectorElement;
   
   G4String initaliseString;
+  G4String detectorElement;
+
 };
 
 #endif

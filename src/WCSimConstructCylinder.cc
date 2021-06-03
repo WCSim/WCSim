@@ -33,7 +33,7 @@
 
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
-
+//#define DEBUG
 
 /***********************************************************
  *
@@ -72,18 +72,38 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   mainAnnulusHeight = WCIDHeight -2.*WCBarrelPMTOffset -2.*barrelCellHeight;
   
   //TF: has to change for mPMT vessel:
-  if(vessel_cyl_height + vessel_radius < 1.*mm)
-	innerAnnulusRadius = WCIDRadius - WCPMTExposeHeight-1.*mm;
-  else
-	innerAnnulusRadius = WCIDRadius - vessel_cyl_height - vessel_radius -1.*mm;
+
+  G4cout << WCIDRadius << ", " << WCPMTExposeHeight << ", " << mPMT_vessel_cyl_height << ", " << mPMT_vessel_radius << G4endl;
+#ifdef DEBUG
+	G4cout << "HYBRID = " << hybrid << G4endl;
+#endif
   
+  if(hybrid){
+	if(mPMT_vessel_cyl_height + mPMT_vessel_radius < 1.*mm)
+	  innerAnnulusRadius = WCIDRadius - std::max(WCPMTExposeHeight,WCPMTExposeHeight2)-1.*mm;
+	else
+	  innerAnnulusRadius = WCIDRadius - std::max(WCPMTExposeHeight,(mPMT_vessel_cyl_height + mPMT_vessel_radius)) -1.*mm;
+  }
+  else{
+	if(mPMT_vessel_cyl_height + mPMT_vessel_radius < 1.*mm)
+	  innerAnnulusRadius = WCIDRadius - WCPMTExposeHeight -1.*mm;
+	else
+	  innerAnnulusRadius = WCIDRadius - (mPMT_vessel_cyl_height + mPMT_vessel_radius) -1.*mm;
+  }
   //TF: need to add a Polyhedra on the other side of the outerAnnulusRadius for the OD
   outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
 
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
-  WCLength    = WCIDHeight + 2*2.3*m;	//jl145 - reflects top veto blueprint, cf. Farshid Feyzi
-  WCRadius    = (WCIDDiameter/2. + WCBlackSheetThickness + 1.5*m)/cos(dPhi/2.) ; // ToDo: OD 
+  //BQ: Updated with new HK OD size (2020/12/06). Simply assume no tyvek thickness or dead space.
+  WCODTyvekSheetThickness = 0.*m;
+  WCODDeadSpace = 0.*m;
+  WCODHeightWaterDepth = 2*m + 0.6*m;//OD + support structure
+  WCODLateralWaterDepth = 1*m + 0.6*m;//OD + support structure
+  WCLength    = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness);
+  WCRadius    = (outerAnnulusRadius + WCODLateralWaterDepth)/cos(dPhi/2.) ;
+  //WCLength    = WCIDHeight + (WCODHeight+WCOuterStructure)*2;	//jl145 - reflects top veto blueprint, cf. Farshid Feyzi
+  //WCRadius    = (WCIDDiameter/2. + WCBlackSheetThickness + (WCODRadius+WCODHeight)))/cos(dPhi/2.) ; // BQ: Updated with new HK OD size (2020/12/06) 
  
   // now we know the extend of the detector and are able to tune the tolerance
   G4GeometryManager::GetInstance()->SetWorldMaximumExtent(WCLength > WCRadius ? WCLength : WCRadius);
@@ -302,7 +322,12 @@ else {
                                         WCIDRadius+WCBlackSheetThickness};
   G4double annulusBlackSheetRmin[2] = {(WCIDRadius),
                                         WCIDRadius};
-
+  G4cout << WCIDRadius << ", " << WCBlackSheetThickness << ", " << barrelCellHeight/2. << G4endl;
+  G4cout << WCIDHeight << ", " << WCBarrelPMTOffset << ", " << WCBarrelNRings << G4endl;
+  G4cout << dPhi << ", " << RingZ << G4endl;
+  G4cout << mainAnnulusRmin[0] << ", " << mainAnnulusRmax[0] << ", " << mainAnnulusZ[0] << G4endl;
+  G4cout << mainAnnulusRmin[1] << ", " << mainAnnulusRmax[1] << ", " << mainAnnulusZ[1] << G4endl;
+  
   G4Polyhedra* solidWCBarrelCellBlackSheet = new G4Polyhedra("WCBarrelCellBlackSheet",
                                                    -dPhi/2., // phi start
                                                    dPhi, //total phi
@@ -670,11 +695,26 @@ else {
 
   // TF: Args are set to properties of the class which is somehow global (see the ConstructDetector.hh)
   //     They are set in the WCSimDetectorConfigs and are property of the PMT.
-  G4LogicalVolume* logicWCPMT = ConstructMultiPMT(WCPMTName, WCIDCollectionName);
+  G4LogicalVolume* logicWCPMT;
+  if(nID_PMTs<=1) logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName,"tank",nID_PMTs);
+  else logicWCPMT = ConstructMultiPMT(WCPMTName, WCIDCollectionName,"tank",nID_PMTs);
   if(!logicWCPMT){
     G4cerr << "Overlapping PMTs in multiPMT" << G4endl;
     return NULL; 
   }
+	G4LogicalVolume* logicWCPMT2;
+#ifdef DEBUG
+	G4cout << "HYBRID2 = " << hybrid << G4endl;
+#endif
+	if(hybrid){
+	  G4cout<<"First type of PMT LV is created. Now creating the LV for the second type of PMT"<<G4endl;
+	  if(nID_PMTs2<=1) logicWCPMT2 = ConstructPMT(WCPMTName2, WCIDCollectionName2,"tankPMT2",nID_PMTs2);
+	  else logicWCPMT2 = ConstructMultiPMT(WCPMTName2, WCIDCollectionName2,"tankPMT2",nID_PMTs2);
+	  if(!logicWCPMT2){
+		G4cerr << "Overlapping PMTs in multiPMT" << G4endl;
+		return NULL; 
+	  }
+	}
 
   //G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName);
   G4String pmtname = "WCMultiPMT";
@@ -704,6 +744,9 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
 	  int icopy = 0;
 
+#ifdef DEBUG
+	  G4cout<<"Debug B.Q: Constructing the cells for veto"<<G4endl;
+#endif
 	  for ( int i = -TVNCell ; i <  TVNCell; i++) {
 		for (int j = -TVNCell ; j <  TVNCell; j++)   {
 
@@ -713,12 +756,15 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 		  G4ThreeVector cellpos =
 		  		G4ThreeVector(	xoffset, yoffset, -0.5*m);
 
-		  if ((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) < WCTVEdgeLimit) {
+		  if ((sqrt(xoffset*xoffset + yoffset*yoffset) + hybrid?std::max(WCPMTRadius,WCPMTRadius2):WCPMTRadius) < WCTVEdgeLimit) {//B.Q: for hybrid configuration
 
-		    G4VPhysicalVolume* physiCapPMT =
+			G4int horizontalModulo = (i+TVNCell) - WCPMTperCellHorizontal*std::floor((i+TVNCell)/WCPMTperCellHorizontal);
+		  G4int verticalModulo = (j+TVNCell) - WCPMTperCellVertical*std::floor((j+TVNCell)/WCPMTperCellVertical);
+
+		  G4VPhysicalVolume* physiCapPMT =
 		    		new G4PVPlacement(	0,						// no rotation
 		    							cellpos,				// its position
-		    							logicWCPMT,				// its logical volume
+		    							(horizontalModulo == verticalModulo && hybrid && WCPMTPercentCoverage2 !=0)?logicWCPMT2:logicWCPMT,				// its logical volume
 		    							pmtname,//"WCPMT",				// its name 
 		    							logicWCTopVeto,			// its mother volume
 		    							false,					// no boolean os
@@ -730,7 +776,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 		}
 	  }
 
-	  G4double WCTVEfficiency = icopy*WCPMTRadius*WCPMTRadius/((WCIDRadius)*(WCIDRadius));
+	  G4double WCTVEfficiency = icopy*WCPMTRadius*(hybrid?std::max(WCPMTRadius,WCPMTRadius2):WCPMTRadius)/((WCIDRadius)*(WCIDRadius));
 	  G4cout << "Total on top veto: " << icopy << "\n";
 	  G4cout << "Coverage was calculated to be: " << WCTVEfficiency << "\n";
 
@@ -766,6 +812,11 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
   if(placeBarrelPMTs){
 
+#ifdef DEBUG
+  	G4cout << "Debug B.Q : Number of PMT horizontal = " << WCPMTperCellHorizontal << ", number of PMT vertical = " << WCPMTperCellVertical << G4endl;
+	G4cout << "Debug B.Q : Horizontal spacing = "<< horizontalSpacing << " vertical spacing = " << verticalSpacing << G4endl;
+#endif
+	
   for(G4double i = 0; i < WCPMTperCellHorizontal; i++){
     for(G4double j = 0; j < WCPMTperCellVertical; j++){
       G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius,
@@ -774,19 +825,20 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
       G4VPhysicalVolume* physiWCBarrelPMT =
 	new G4PVPlacement(WCPMTRotation,              // its rotation
-			  PMTPosition, 
-			  logicWCPMT,                // its logical volume
-			  pmtname,//"WCPMT",             // its name
-			  logicWCBarrelCell,         // its mother volume
-			  false,                     // no boolean operations
-			  (int)(i*WCPMTperCellVertical+j),
-			  checkOverlapsPMT);                       
+					  PMTPosition, 
+					  (i==j && hybrid && WCPMTPercentCoverage2!=0)?logicWCPMT2:logicWCPMT,                // its logical volume
+					  pmtname,//"WCPMT",             // its name
+					  logicWCBarrelCell,         // its mother volume
+					  false,                     // no boolean operations
+					  (int)(i*WCPMTperCellVertical+j),
+					  checkOverlapsPMT);                       
       
    // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
      // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 		// this is still the case.
     }
   }
+
   //-------------------------------------------------------------
   // Add PMTs in extra Tower if necessary
   //------------------------------------------------------------
@@ -794,10 +846,15 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
   if(!(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal)){
 
+#ifdef DEBUG
+	G4cout << "Debug B.Q: Wish to place extra PMTs" << G4endl;
+  	G4cout << "Debug B.Q : WCBarrelRingNPhi = " << WCBarrelRingNPhi << ", WCBarrelNumPMTHorizontal = " << WCBarrelNumPMTHorizontal << G4endl;
+#endif
+	
     G4RotationMatrix* WCPMTRotation = new G4RotationMatrix;
     WCPMTRotation->rotateY(90.*deg);
     WCPMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
-                                                 
+	//Stopped here: B.Q                                  
     G4double towerWidth = WCIDRadius*tan(2*pi-totalAngle);
 
     G4double horizontalSpacing   = towerWidth/(WCBarrelNumPMTHorizontal-WCBarrelRingNPhi*WCPMTperCellHorizontal);
@@ -813,13 +870,13 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
 	G4VPhysicalVolume* physiWCBarrelPMT =
 	  new G4PVPlacement(WCPMTRotation,             // its rotation
-			    PMTPosition, 
-			    logicWCPMT,                // its logical volume
-			    "WCPMT",             // its name
-			    logicWCExtraTowerCell,         // its mother volume
-			    false,                     // no boolean operations
-			    (int)(i*WCPMTperCellVertical+j),
-			    checkOverlapsPMT);                       
+						PMTPosition, 
+						(i==j && hybrid && WCPMTPercentCoverage2!=0)?logicWCPMT2:logicWCPMT,                // its logical volume
+						pmtname,             // its name
+						logicWCExtraTowerCell,         // its mother volume
+						false,                     // no boolean operations
+						(int)(i*WCPMTperCellVertical+j),
+						checkOverlapsPMT);                       
 	
 		// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
 		// daughter volumes to the PMTs (e.g. a acryl cover) you have to check, if
@@ -868,7 +925,6 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 {
-
   capAssemblyHeight = (WCIDHeight-mainAnnulusHeight)/2+1*mm+WCBlackSheetThickness;
 
   G4Tubs* solidCapAssembly = new G4Tubs("CapAssembly",
@@ -1089,6 +1145,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   G4double capRmin[4] = {  0. , 0., 0., 0.} ;
   G4double capRmax[4] = {outerAnnulusRadius, outerAnnulusRadius,  WCIDRadius, innerAnnulusRadius};
   G4VSolid* solidWCCap;
+
+#ifdef DEBUG
+  G4cout << "B.Q Cap: " << totalAngle << ", " << WCBarrelRingNPhi << ", " << outerAnnulusRadius << ", " << innerAnnulusRadius << ", " << WCBlackSheetThickness << ", " << zflip << ", " << WCBarrelPMTOffset << G4endl;
+#endif
+  
   if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
     solidWCCap
       = new G4Polyhedra("WCCap",
@@ -1291,8 +1352,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   //---------------------------------------------------------
   // Add top and bottom PMTs
   // -----------------------------------------------------
-  
- G4LogicalVolume* logicWCPMT = ConstructMultiPMT(WCPMTName, WCIDCollectionName);
+
+ G4LogicalVolume* logicWCPMT;
+ if(nID_PMTs<=1) logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName,"tank",nID_PMTs);
+ else logicWCPMT = ConstructMultiPMT(WCPMTName, WCIDCollectionName,"tank",nID_PMTs);
+ G4LogicalVolume* logicWCPMT2;
+ if(hybrid){
+   if(nID_PMTs2<=1) logicWCPMT2 = ConstructPMT(WCPMTName2, WCIDCollectionName2,"tankPMT2",nID_PMTs2);
+   else logicWCPMT2 = ConstructMultiPMT(WCPMTName2, WCIDCollectionName2,"tankPMT2",nID_PMTs2);
+ }
  //G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName);
  G4String pmtname = "WCMultiPMT";
  
@@ -1316,6 +1384,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   // loop over the cap
   if(placeCapPMTs){
   G4int CapNCell = WCCapEdgeLimit/WCCapPMTSpacing + 2;
+#ifdef DEBUG
+  G4cout << "Debug B.Q, wccap edge = " << WCCapEdgeLimit << ", spacing = " << WCCapPMTSpacing << ", CapNCell = " << CapNCell << ", PMT radius = " << WCPMTRadius << G4endl;
+		  //		  G4cout << "Debug B.Q, test = " << ((horizontalModulo == verticalModulo) && hybrid && WCPMTPercentCoverage2!=0) << G4endl;
+#endif
   for ( int i = -CapNCell ; i <  CapNCell; i++) {
     for (int j = -CapNCell ; j <  CapNCell; j++)   {
 
@@ -1334,27 +1406,48 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
       //	- 2.0 * WCBarrelEffRadius * sqrt(xoffset*xoffset+yoffset*yoffset)
       //	+ WCBarrelEffRadius*WCBarrelEffRadius;
       //      if ( (comp > WCPMTRadius*WCPMTRadius) && ((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) < WCCapEdgeLimit) ) {
-	  if ((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) < WCCapEdgeLimit) 
+	  double dcenter = hybrid?std::max(WCPMTRadius,WCPMTRadius2):WCPMTRadius;
+	  dcenter+=sqrt(xoffset*xoffset + yoffset*yoffset);
+	  if (dcenter < WCCapEdgeLimit) 
 
 		// for debugging boundary cases: 
 		// &&  ((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) > (WCCapEdgeLimit-100)) ) 
 		{
 		
+		  //B.Q for Hybrid
+		  G4int horizontalModulo = (i+CapNCell) - WCPMTperCellHorizontal*std::floor((i+CapNCell)/WCPMTperCellHorizontal);
+		  G4int verticalModulo = (j+CapNCell) - WCPMTperCellVertical*std::floor((j+CapNCell)/WCPMTperCellVertical);
 
-	G4VPhysicalVolume* physiCapPMT =
-	  new G4PVPlacement(WCCapPMTRotation,
-			    cellpos,                   // its position
-			    logicWCPMT,                // its logical volume
-			    pmtname, // its name 
-			    logicWCCap,         // its mother volume
-			    false,                 // no boolean os
-				icopy,               // every PMT need a unique id.
-				checkOverlapsPMT);
-	
-
+#ifdef DEBUG
+		  //G4cout << "Debug B.Q, xoffset = " << xoffset << ", yoffset = " << yoffset << ", distance = " << dcenter  << G4endl;
+		  //G4cout << "Debug B.Q, xoffset = " << xoffset << ", yoffset = " << yoffset << ", CapNCell = " << CapNCell << ", spacing = " << WCCapPMTSpacing << G4endl;
+		  //		  G4cout << "Debug B.Q, test = " << ((horizontalModulo == verticalModulo) && hybrid && WCPMTPercentCoverage2!=0) << G4endl;
+#endif
+		  G4VPhysicalVolume* physiCapPMT =
+			new G4PVPlacement(WCCapPMTRotation,
+						cellpos,// its position
+						((horizontalModulo == verticalModulo) && hybrid && WCPMTPercentCoverage2!=0)?logicWCPMT2:logicWCPMT,            // its logical volume
+						pmtname, // its name 
+						logicWCCap,         // its mother volume
+						false,                 // no boolean os
+						icopy,               // every PMT need a unique id.
+						checkOverlapsPMT);
+						/*
+		  G4VPhysicalVolume* physiCapPMT =
+			new G4PVPlacement(WCCapPMTRotation,
+						cellpos,// its position
+						logicWCPMT,            // its logical volume
+						pmtname, // its name 
+						logicWCCap,         // its mother volume
+						false,                 // no boolean os
+						icopy,               // every PMT need a unique id.
+						checkOverlapsPMT);
+		  */
  // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
     // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 	// this is still the case.
+
+	//						((i%WCPMTperCellHorizontal == j%WCPMTperCellVertical) && hybrid)?logicWCPMT2:logicWCPMT,            // its logical volume
 
 	icopy++;
       }
@@ -1381,7 +1474,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   G4double verticalSpacing     = barrelCellHeight/WCPMTperCellVertical;
 
   if(placeBorderPMTs){
-
+#ifdef DEBUG
+  	G4cout << "Debug B.Q : place border pmt, spacing horiz = "  << horizontalSpacing << ", vertical = " << verticalSpacing*zflip << G4endl;
+#endif
+	
   for(G4double i = 0; i < WCPMTperCellHorizontal; i++){
     for(G4double j = 0; j < WCPMTperCellVertical; j++){
       G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius,
@@ -1390,14 +1486,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
      G4VPhysicalVolume* physiWCBarrelBorderPMT =
 	new G4PVPlacement(WCPMTRotation,                      // its rotation
-			  PMTPosition,
-			  logicWCPMT,                // its logical volume
-			  pmtname,             // its name
-			  logicWCBarrelBorderCell,         // its mother volume
-			  false,                     // no boolean operations
-			  (int)(i*WCPMTperCellVertical+j),
-			  checkOverlapsPMT); 
-
+					  PMTPosition,
+					  (i==j && hybrid && WCPMTPercentCoverage2!=0)?logicWCPMT2:logicWCPMT,                // its logical volume
+					  pmtname,             // its name
+					  logicWCBarrelBorderCell,         // its mother volume
+					  false,                     // no boolean operations
+					  (int)(i*WCPMTperCellVertical+j),
+					  checkOverlapsPMT); 
+	 
    // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
      // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 		// this is still the case.
@@ -1410,6 +1506,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
   if(!(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal)){
 
+#ifdef DEBUG
+  	G4cout << "Debug B.Q : Add extra tower cap "  << G4endl;
+#endif
+	
     G4RotationMatrix* WCPMTRotation = new G4RotationMatrix;
     WCPMTRotation->rotateY(90.*deg);
     WCPMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
@@ -1429,14 +1529,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 	
 	G4VPhysicalVolume* physiWCBarrelBorderPMT =
 	  new G4PVPlacement(WCPMTRotation,                          // its rotation
-			    PMTPosition,
-			    logicWCPMT,                // its logical volume
-			    "WCPMT",             // its name
-			    logicWCExtraBorderCell,         // its mother volume
-			    false,                     // no boolean operations
-				(int)(i*WCPMTperCellVertical+j),
-			    checkOverlapsPMT);
-
+						PMTPosition,
+						(i==j && hybrid && WCPMTPercentCoverage2!=0)?logicWCPMT2:logicWCPMT,                 // its logical volume
+						"WCPMT",             // its name
+						logicWCExtraBorderCell,         // its mother volume
+						false,                     // no boolean operations
+						(int)(i*WCPMTperCellVertical+j),
+						checkOverlapsPMT);
+	
 		// logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
 		// daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 		// this is still the case.

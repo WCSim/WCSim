@@ -7,7 +7,8 @@
 struct eventNtuple{
 
   //event info:
-  InteractionType_t interaction_mode;          // interaction mode
+  int interaction_mode;          // interaction mode
+  //InteractionType_t interaction_mode;          // interaction mode
   Char_t vtxVolume[100];         // volume of vertex
   //already flatten array because have to initialize index by index anyway
   double vtx_x;                  // interaction vertex
