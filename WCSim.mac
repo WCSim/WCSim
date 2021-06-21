@@ -20,7 +20,8 @@
 
 # HyperK (one cylindrical tank with a height of 54.8 m, a diameter of 70.8 m and 40% coverage with 20 inch B&L PMTs)
 #/WCSim/WCgeom HyperK
-#/WCSim/WCgeom HyperKWithOD
+#/WCSim/WCgeom HyperKWithOD # To use the OD, please see $WCSIMDIR/macros/OD.mac for the latest design, and the complete set of OD geometry options
+
 
 # Another option of HyperK
 #/WCSim/WCgeom HyperK_20perCent # Note: the coverage is set to 20.0%.
