@@ -151,7 +151,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
       hEmeanCosmics->SetBinContent(binPhi,binCos,Emean);
     }
 
-    TFile *file = new TFile("flux.root","RECREATE");
+    TFile *file = new TFile("cosmicflux.root","RECREATE");
     hFluxCosmics->Write();
     hEmeanCosmics->Write();
     file->Close();
