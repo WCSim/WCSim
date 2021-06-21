@@ -36,8 +36,8 @@ public:
 
   void SaveOptionsToOutput(WCSimRootOptions * wcopt);
 
-  G4double GetWCCladdingReflectivity() {return WCCladdingReflectivity;}
-  void SetWCCladdingReflectivity(G4double tparam) {WCCladdingReflectivity=tparam;}
+  G4double GetWCODWLSCladdingReflectivity() {return WCODWLSCladdingReflectivity;}
+  void SetWCODWLSCladdingReflectivity(G4double tparam) {WCODWLSCladdingReflectivity=tparam;}
 
   G4double GetWCODTyvekReflectivity() {return WCODTyvekReflectivity;}
   void SetWCODTyvekReflectivity(G4double tparam) {WCODTyvekReflectivity=tparam;}
@@ -61,7 +61,7 @@ private:
   G4double tvspacing;
   G4bool topveto;
 
-  G4double WCCladdingReflectivity;
+  G4double WCODWLSCladdingReflectivity;
   G4double WCODTyvekReflectivity;
 
 };

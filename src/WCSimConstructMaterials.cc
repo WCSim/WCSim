@@ -193,8 +193,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
   //**cladding properties
   const G4int cladding_num = 2;
   G4double cladding_ephoton[cladding_num] = { 1.*eV, 10*eV };
-  double WCCladdingReflectivity = WCSimTuningParams->GetWCCladdingReflectivity();
-  G4double claddingReflectivity[cladding_num] = {WCCladdingReflectivity, WCCladdingReflectivity};
+  double WCODWLSCladdingReflectivity = WCSimTuningParams->GetWCODWLSCladdingReflectivity();
+  G4double claddingReflectivity[cladding_num] = {WCODWLSCladdingReflectivity, WCODWLSCladdingReflectivity};
   G4double claddingEfficiency[cladding_num] = {0., 0.};
   G4MaterialPropertiesTable* claddingPT = new G4MaterialPropertiesTable();
   claddingPT->AddProperty("REFLECTIVITY", cladding_ephoton, claddingReflectivity, cladding_num);

@@ -47,10 +47,10 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   TopVeto->SetParameterName("TopVeto",true);
   TopVeto->SetDefaultValue(0);
 
-  CommandWCCladdingReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCCladdingReflectivity",this);
-  CommandWCCladdingReflectivity->SetGuidance("Set OD WLS plate cladding reflectivity");
-  CommandWCCladdingReflectivity->SetParameterName("WCCladdingReflectivity",true);
-  CommandWCCladdingReflectivity->SetDefaultValue(0.90);
+  CommandWCODWLSCladdingReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODWLSCladdingReflectivity",this);
+  CommandWCODWLSCladdingReflectivity->SetGuidance("Set OD WLS plate cladding reflectivity");
+  CommandWCODWLSCladdingReflectivity->SetParameterName("WCODWLSCladdingReflectivity",true);
+  CommandWCODWLSCladdingReflectivity->SetDefaultValue(0.90);
 
   CommandWCODTyvekReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODTyvekReflectivity",this);
   CommandWCODTyvekReflectivity->SetGuidance("Set OD tyvek cladding reflectivity");
@@ -70,7 +70,7 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
   delete TVSpacing;
   delete TopVeto;
 
-  delete CommandWCCladdingReflectivity;
+  delete CommandWCODWLSCladdingReflectivity;
   delete CommandWCODTyvekReflectivity;
 
   delete WCSimDir;
@@ -124,10 +124,10 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       G4cout << "Setting Top Veto Off" << G4endl;
   }
 
-  else if(command == CommandWCCladdingReflectivity) {
+  else if(command == CommandWCODWLSCladdingReflectivity) {
     // Set the Top Veto PMT Spacing
-    WCSimTuningParams->SetWCCladdingReflectivity(CommandWCCladdingReflectivity->GetNewDoubleValue(newValue));
-    printf("Setting OD WLS plate cladding reflectivity %f\n",CommandWCCladdingReflectivity->GetNewDoubleValue(newValue));
+    WCSimTuningParams->SetWCODWLSCladdingReflectivity(CommandWCODWLSCladdingReflectivity->GetNewDoubleValue(newValue));
+    printf("Setting OD WLS plate cladding reflectivity %f\n",CommandWCODWLSCladdingReflectivity->GetNewDoubleValue(newValue));
   }
 
   else if(command == CommandWCODTyvekReflectivity) {

@@ -19,7 +19,7 @@ WCSimTuningParameters::WCSimTuningParameters()
  tvspacing = 100.0;
  topveto = false;
 
- WCCladdingReflectivity   = 0.90; //
+ WCODWLSCladdingReflectivity   = 0.90; //
  WCODTyvekReflectivity   = 0.90; //
 
 }
