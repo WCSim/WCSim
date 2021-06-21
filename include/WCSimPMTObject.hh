@@ -6,7 +6,6 @@
 #include "Randomize.hh"
 #include <map>
 #include <vector>
-//#include <TH1F.h>
 #include <TGraph.h>
 
 class WCSimPMTObject

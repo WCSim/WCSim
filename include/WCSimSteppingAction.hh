@@ -1,7 +1,7 @@
 #ifndef WCSimSteppingAction_h
 #define WCSimSteppingAction_h 1
 
-//#include <TTree.h>
+
 #include "G4Event.hh"
 #include "G4UserSteppingAction.hh"
 #include "G4ThreeVector.hh"
