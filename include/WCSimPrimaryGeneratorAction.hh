@@ -90,7 +90,9 @@ private:
   G4bool   useRadonEvt; // G. Pronost: Radon flag
   
   std::fstream inputFile;
+  std::fstream inputCosmicsFile;
   G4String vectorFileName;
+  G4String cosmicsFileName = "data/MuonFlux-HyperK-ThetaPhi.dat";
   G4bool   GenerateVertexInRock;
   
   // Variables for Radioactive and Radon generators
@@ -160,6 +162,20 @@ private:
 
     if ( !inputFile.is_open() ) {
       G4cout << "Vector file " << vectorFileName << " not found" << G4endl;
+      exit(-1);
+    }
+  }
+
+  inline void OpenCosmicsFile(G4String fileName) 
+  {
+    if ( inputCosmicsFile.is_open() ) 
+      inputCosmicsFile.close();
+
+    cosmicsFileName = fileName;
+    inputCosmicsFile.open(cosmicsFileName, std::fstream::in);
+
+    if ( !inputCosmicsFile.is_open() ) {
+      G4cout << "Cosmics data file " << cosmicsFileName << " not found" << G4endl;
       exit(-1);
     }
   }

@@ -102,20 +102,21 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 
   // Create the relevant histograms to generate muons
   // according to SuperK flux extrapolated at HyperK site
-  std::fstream inputFileCosmics;
-  G4String vectorFileNameCosmics;
+  //std::fstream inputCosmicsFile;
+  //G4String vectorFileNameCosmics = vectorFileName;
   altCosmics = 2*myDC->GetWCIDHeight();
   G4cout << "altCosmics : " << altCosmics << G4endl;
-  if (inputFileCosmics.is_open())
-    inputFileCosmics.close();
+  if (inputCosmicsFile.is_open())
+    inputCosmicsFile.close();
 
-  vectorFileNameCosmics = "MuonFlux-HyperK-ThetaPhi.dat";
-  inputFileCosmics.open(vectorFileNameCosmics, std::fstream::in);
+  //vectorFileNameCosmics = "MuonFlux-HyperK-ThetaPhi.dat";
+  inputCosmicsFile.open(cosmicsFileName, std::fstream::in);
 
-  if (!inputFileCosmics.is_open()) {
-    G4cout << "Muon Vector file " << vectorFileNameCosmics << " not found" << G4endl;
+  if (!inputCosmicsFile.is_open()) {
+    G4cout << "Cosmics data file " << cosmicsFileName << " not found" << G4endl;
+	exit(-1);
   } else {
-    G4cout << "Muon Vector file " << vectorFileNameCosmics << " found" << G4endl;
+    G4cout << "Cosmics data file " << cosmicsFileName << " found" << G4endl;
     string line;
     vector<string> token(1);
 
@@ -132,7 +133,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
     hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
 
-    while ( getline(inputFileCosmics,line) ){
+    while ( getline(inputCosmicsFile,line) ){
       token = tokenize(" $", line);
 
       binCos=(atof(token[0]));
@@ -175,6 +176,7 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
              << " = " << _counterRock/(G4double)_counterCublic << G4endl;
   }
   inputFile.close();
+  inputCosmicsFile.close();
   delete particleGun;
   delete MyGPS;   //T. Akiri: Delete the GPS variable
   delete messenger;

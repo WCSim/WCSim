@@ -29,7 +29,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   fileNameCmdCosmics->SetGuidance("Select the file of cosmics.");
   fileNameCmdCosmics->SetGuidance(" Enter the file name of the cosmics file");
   fileNameCmdCosmics->SetParameterName("fileName",true);
-  fileNameCmdCosmics->SetDefaultValue("inputcosmicfile");
+  fileNameCmdCosmics->SetDefaultValue("data/MuonFlux-HyperK-ThetaPhi.dat");
   
   timeUnitCmd = new G4UIcmdWithAString("/mygen/time_unit",this);
   timeUnitCmd->SetGuidance("Define the units used for time in the input file.");
@@ -160,12 +160,16 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     }
   }
 
-  if( command == fileNameCmd || command == fileNameCmdCosmics )
+  if( command == fileNameCmd)
   {
     myAction->OpenVectorFile(newValue);
     G4cout << "Input vector file set to " << newValue << G4endl;
   }
-  
+  if(command == fileNameCmdCosmics )
+  {
+    myAction->OpenCosmicsFile(newValue);
+    G4cout << "Input cosmics data file set to " << newValue << G4endl;
+  }
   if( command==isotopeCmd )
   {
     IsotopeCommand(newValue);
