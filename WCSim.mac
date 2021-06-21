@@ -177,6 +177,7 @@
 # Muons are generated according to this flux and their position is extrapolated outside the tank
 # Useful to study muons tracks in both OD and ID
 #/mygen/generator cosmics
+#/mygen/cosmicsfile data/MuonFlux-HyperK-ThetaPhi.dat
 
 # Radioactive option
 # IMPORTANT: You need to compile WCSim with cmake in order to use the radioactive decays
