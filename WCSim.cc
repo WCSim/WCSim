@@ -33,7 +33,7 @@ void file_exists(const char * filename) {
 int main(int argc,char** argv)
 {
 
-  gRandom->SetSeed(0);
+  
   // Construct the default run manager
   G4RunManager* runManager = new G4RunManager;
 
