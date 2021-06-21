@@ -372,8 +372,8 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> Collec
           G4cout << " ### " << it->first << "nm : " << it->second << G4endl;
           QE[it->first]=it->second;
         } else {
-	  //	  max_QE = sqrt(it->second*it->second + foundWL->second*foundWL->second);
-	  max_QE = std::max(it->second, foundWL->second);
+
+	        max_QE = std::max(it->second, foundWL->second);
           G4cout << "New QE defined for " << it->first << "nm is "
                  << max_QE << G4endl;
           QE[it->first]=max_QE;
