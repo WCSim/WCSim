@@ -20,7 +20,7 @@ WCSimTuningParameters::WCSimTuningParameters()
  topveto = false;
 
  WCCladdingReflectivity   = 0.90; //
- WCODTyvekReflectivity   = 0.97; //
+ WCODTyvekReflectivity   = 0.90; //
 
 }
 
