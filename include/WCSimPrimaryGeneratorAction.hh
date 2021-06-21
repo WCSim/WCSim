@@ -10,7 +10,6 @@
 #include "WCSimRootOptions.hh"
 #include "WCSimGenerator_Radioactivity.hh"
 
-#include "TH1D.h"
 #include "TH2D.h"
 
 class WCSimDetectorConstruction;

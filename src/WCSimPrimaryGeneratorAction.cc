@@ -102,14 +102,12 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 
   // Create the relevant histograms to generate muons
   // according to SuperK flux extrapolated at HyperK site
-  //std::fstream inputCosmicsFile;
-  //G4String vectorFileNameCosmics = vectorFileName;
   altCosmics = 2*myDC->GetWCIDHeight();
   G4cout << "altCosmics : " << altCosmics << G4endl;
   if (inputCosmicsFile.is_open())
     inputCosmicsFile.close();
 
-  //vectorFileNameCosmics = "MuonFlux-HyperK-ThetaPhi.dat";
+
   inputCosmicsFile.open(cosmicsFileName, std::fstream::in);
 
   if (!inputCosmicsFile.is_open()) {
