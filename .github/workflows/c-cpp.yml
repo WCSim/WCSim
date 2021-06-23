@@ -20,6 +20,7 @@ jobs:
       env:
         TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_COMMIT_MESG: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.GITHUB_TOKEN }}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -41,7 +42,6 @@ jobs:
           echo ${GITHUB_WORKSPACE}
           ls -a ${GITHUB_WORKSPACE}
           cat /opt/HyperK/env-WCSim.sh
-          TRAVIS_COMMIT_MESG=`git log --pretty=format:%s -1`
           source /opt/HyperK/env-WCSim.sh
           
       - name: Print environment
