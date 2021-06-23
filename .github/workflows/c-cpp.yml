@@ -37,8 +37,8 @@ jobs:
         TRAVIS_COMMIT_MESSAGE: ${COMMIT_MESG}
         TRAVIS_PULL_REQUEST: ${PR_NUMBER}
         GitHubToken: ${GitHubToken}
-      volumes:
-        .:/root/HyperK/WCSim
+      #volumes:
+        #.:/root/HyperK/WCSim
     steps:
       - name: build
         run: |
