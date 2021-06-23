@@ -36,6 +36,11 @@ jobs:
           cd /root
           git clone https://github.com/WCSim/Validation.git
           
+      #Temporarily get /usr/bin/time every job from yum
+      # Need to add this to wcsim/wcsim:base ASAP
+      - name: Get time
+        run: yum install -y
+          
       - name: Print environment
         run: |
           source /opt/HyperK/env-WCSim.sh
