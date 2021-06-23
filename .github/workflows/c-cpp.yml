@@ -38,7 +38,7 @@ jobs:
         TRAVIS_PULL_REQUEST: ${PR_NUMBER}
         GitHubToken: ${GitHubToken}
       volumes:
-        - /home/runner/work/WCSim/WCSim:/root/HyperK/WCSim
+        - /home/runner/work/WCSim/WCSim:/opt/HyperK/WCSim
     steps:
       - name: build
         run: |
