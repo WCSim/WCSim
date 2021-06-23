@@ -21,7 +21,7 @@ jobs:
         TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
         TRAVIS_COMMIT_MESG: ${{ github.event.head_commit.message }}
-        GitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        GitHubToken: ${{ secrets.API_TOKEN_GITHUB }}
         ValidationPath: /root/Validation/
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
