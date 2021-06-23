@@ -8,18 +8,6 @@ on:
   release:
 
 jobs:
-  
-  get-code:
-    runs-on: ubuntu-latest
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: print env
-        run: |
-          env
-          ls
-          pwd
 
   get-container:
     needs: get-code
@@ -34,14 +22,25 @@ jobs:
       volumes:
         - /home/runner/work/WCSim/WCSim:/opt/HyperK/WCSim
     steps:
-      - name: build
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: checkout-wcsim
+        uses: actions/checkout@v2
+        
+      - name: checkout-valid
         run: |
           cd /root
           git clone https://github.com/WCSim/Validation.git
-          source /opt/HyperK/env-WCSim.sh
-          cd /opt/HyperK/WCSim
+
+      - name: setup-wcsim
+          run: |
+            TRAVIS_COMMIT_MESG=`git log --pretty=format:%s -1`
+            source /opt/HyperK/env-WCSim.sh
+          
+      - name: print env
+        run: |
           env
+          pwd
           ls -a
-          TRAVIS_COMMIT_MESG=`git log --pretty=format:%s -1`
-          /root/Validation/Tests.sh 1
-          git log -1
+
+      - name: test_build
+        run: /root/Validation/Tests.sh 1
