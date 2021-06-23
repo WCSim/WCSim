@@ -16,11 +16,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: checkout
         uses: actions/checkout@v2
-      #get info about the reason the build was triggered
-      - env:
-        PR_NUMBER: ${{ github.event.number }}
-        COMMIT_HASH: git rev-parse HEAD
-        COMMIT_MESG: git log --pretty=format:%s -1
+    #get info about the reason the build was triggered
+    env:
+      PR_NUMBER: ${{ github.event.number }}
+      COMMIT_HASH: git rev-parse HEAD
+      COMMIT_MESG: git log --pretty=format:%s -1
 
   get-container:
     needs: get-code
@@ -42,8 +42,8 @@ jobs:
       with:
         entrypoint: /bin/sh
         args: -c
-      volumes:
-        `pwd`:/root/HyperK/WCSim
+      #volumes:
+        #`pwd`:/root/HyperK/WCSim
     steps:
     - name: build
       run: docker run --rm -v `pwd`:/root/HyperK/WCSim -e  /bin/sh -c " r"
