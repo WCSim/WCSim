@@ -49,3 +49,9 @@ jobs:
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
           /root/Validation/Tests.sh 1
+          
+      - name: Test physics
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          /root/Validation/Tests.sh 2
