@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: /opt/HyperK/WCSim
+        working-directory: /opt/HyperK/
     #run inside a container that has the prerequisites already installed
     container: 
       image: wcsim/wcsim:base
@@ -21,8 +21,6 @@ jobs:
         TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
         GitHubToken: ${{ secrets.GITHUB_TOKEN }}
-      #volumes:
-        #- /home/runner/work/WCSim/WCSim:/opt/HyperK/WCSim
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout WCSim
@@ -38,14 +36,18 @@ jobs:
 
       - name: Setup WCSim
         run: |
+          cd WCSim
           TRAVIS_COMMIT_MESG=`git log --pretty=format:%s -1`
           source /opt/HyperK/env-WCSim.sh
           
       - name: Print environment
         run: |
+          cd WCSim
           env
           pwd
           ls -a
 
       - name: Test build
-        run: /root/Validation/Tests.sh 1
+        run: -
+          cd WCSim
+          /root/Validation/Tests.sh 1
