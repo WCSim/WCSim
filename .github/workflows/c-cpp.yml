@@ -40,8 +40,8 @@ jobs:
           git clone https://github.com/WCSim/Validation.git
           source /opt/HyperK/env-WCSim.sh
           cd /opt/HyperK/WCSim
-          TRAVIS_COMMIT_MESG=`git log --pretty=format:%s -1`
           env
-          ls
+          ls -a
+          TRAVIS_COMMIT_MESG=`git log --pretty=format:%s -1`
           /root/Validation/Tests.sh 1
           git log -1
