@@ -22,12 +22,13 @@ jobs:
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
         TRAVIS_COMMIT_MESG: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        ValidationPath: /root/Validation/
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout WCSim
         uses: actions/checkout@v2
         
-      - name: Link dir
+      - name: Link WCSim directory
         run: ln -s ${GITHUB_WORKSPACE}/ /opt/HyperK/WCSim
 
       - name: Checkout WCSim/Validation
@@ -38,10 +39,6 @@ jobs:
       - name: Setup WCSim
         run: |
           cd WCSim
-          ls -a
-          echo ${GITHUB_WORKSPACE}
-          ls -a ${GITHUB_WORKSPACE}
-          cat /opt/HyperK/env-WCSim.sh
           source /opt/HyperK/env-WCSim.sh
           
       - name: Print environment
