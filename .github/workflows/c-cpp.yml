@@ -1,7 +1,5 @@
 name: C/C++ CI
 
-runs-on: ubuntu-latest
-
 on:
   push:
     branches: [ develop ]
@@ -12,6 +10,7 @@ on:
 jobs:
   
   get-code:
+    runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: checkout
@@ -24,6 +23,7 @@ jobs:
 
   get-container:
     needs: get-code
+    runs-on: ubuntu-latest
     #run inside a container that has the prerequisites already installed
     container: 
       image: docker:://wcsim/wcsim:base
