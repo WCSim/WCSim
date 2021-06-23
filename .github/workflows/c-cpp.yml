@@ -46,5 +46,6 @@ jobs:
           git clone https://github.com/WCSim/Validation.git
           source /opt/HyperK/env-WCSim.sh
           cd /opt/HyperK/WCSim
+          ls
           git log -1
-          root/Validation/Tests.sh 1
+          /root/Validation/Tests.sh 1
