@@ -41,8 +41,5 @@ jobs:
             cd /root/HyperK/WCSim
             git log -1
             root/Validation/Tests.sh 1
-          with:
-            entrypoint: /bin/sh
-            args: -c
       #volumes:
         #`pwd`:/root/HyperK/WCSim
