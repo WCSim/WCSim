@@ -19,7 +19,6 @@ jobs:
       image: wcsim/wcsim:base
       env:
         TRAVIS_COMMIT: ${{ github.sha }}
-        TRAVIS_PULL_REQUEST: false
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
         TRAVIS_COMMIT_MESG: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.API_TOKEN_GITHUB }}
