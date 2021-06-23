@@ -35,14 +35,10 @@ jobs:
         run: |
           cd /root
           git clone https://github.com/WCSim/Validation.git
-
-      - name: Setup WCSim
-        run: |
-          cd WCSim
-          source /opt/HyperK/env-WCSim.sh
           
       - name: Print environment
         run: |
+          source /opt/HyperK/env-WCSim.sh
           cd WCSim
           env
           pwd
@@ -50,5 +46,6 @@ jobs:
 
       - name: Test build
         run: |
+          source /opt/HyperK/env-WCSim.sh
           cd WCSim
           /root/Validation/Tests.sh 1
