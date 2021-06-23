@@ -22,7 +22,7 @@ jobs:
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
         TRAVIS_COMMIT_MESG: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.API_TOKEN_GITHUB }}
-        ValidationPath: /root/Validation/
+        ValidationPath: /opt/Validation/
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout WCSim
@@ -33,7 +33,7 @@ jobs:
 
       - name: Checkout WCSim/Validation
         run: |
-          cd /root
+          cd /opt
           git clone https://github.com/WCSim/Validation.git
           
       #Temporarily get /usr/bin/time every job from yum
@@ -53,10 +53,10 @@ jobs:
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
-          /root/Validation/Tests.sh 1
+          /opt/Validation/Tests.sh 1
           
       - name: Test physics
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
-          /root/Validation/Tests.sh 2
+          /opt/Validation/Tests.sh 2
