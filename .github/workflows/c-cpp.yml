@@ -18,8 +18,8 @@ jobs:
         TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
         GitHubToken: ${{ secrets.GITHUB_TOKEN }}
-      volumes:
-        - /home/runner/work/WCSim/WCSim:/opt/HyperK/WCSim
+      #volumes:
+        #- /home/runner/work/WCSim/WCSim:/opt/HyperK/WCSim
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: checkout-wcsim
@@ -32,6 +32,8 @@ jobs:
 
       - name: setup-wcsim
         run: |
+          ln -s ${GITHUB_WORKSPACE}/ /opt/HyperK/WCSim
+          ls ${GITHUB_WORKSPACE}
           TRAVIS_COMMIT_MESG=`git log --pretty=format:%s -1`
           source /opt/HyperK/env-WCSim.sh
           
