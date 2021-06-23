@@ -32,9 +32,9 @@ jobs:
           git clone https://github.com/WCSim/Validation.git
 
       - name: setup-wcsim
-          run: |
-            TRAVIS_COMMIT_MESG=`git log --pretty=format:%s -1`
-            source /opt/HyperK/env-WCSim.sh
+        run: |
+          TRAVIS_COMMIT_MESG=`git log --pretty=format:%s -1`
+          source /opt/HyperK/env-WCSim.sh
           
       - name: print env
         run: |
