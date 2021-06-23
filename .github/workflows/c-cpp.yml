@@ -43,6 +43,6 @@ jobs:
             root/Validation/Tests.sh 1
           with:
             entrypoint: /bin/sh
-          args: -c
+            args: -c
       #volumes:
         #`pwd`:/root/HyperK/WCSim
