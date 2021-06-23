@@ -25,7 +25,8 @@ jobs:
   get-container:
     needs: get-code
     #run inside a container that has the prerequisites already installed
-    container: docker:://wcsim/wcsim:base
+    container: 
+      image: docker:://wcsim/wcsim:base
       env:
         TRAVIS_COMMIT: ${COMMIT_HASH}
         TRAVIS_COMMIT_MESSAGE: ${COMMIT_MESG}
