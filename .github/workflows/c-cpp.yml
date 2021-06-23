@@ -55,8 +55,48 @@ jobs:
           cd WCSim
           /opt/Validation/Tests.sh 1
           
-      - name: Test physics
+      #this should be a new set of jobs (in matrix form), using the build job as a prerequisite,
+      # but also getting the built result image from it
+      #however this is not trivial
+      #so just brute force for now
+      - name: Test physics 500 MeV e
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
           /opt/Validation/Tests.sh 2
+          
+      - name: Test physics 10 MeV e
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          /opt/Validation/Tests.sh 3
+          
+      - name: Test physics 100 MeV e
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          /opt/Validation/Tests.sh 4
+
+      - name: Test physics 500 MeV e
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          /opt/Validation/Tests.sh 5
+
+      - name: Test physics 200 MeV mu
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          /opt/Validation/Tests.sh 6
+
+      - name: Test physics 800 MeV mu
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          /opt/Validation/Tests.sh 7
+
+      - name: Test physics 100 MeV pi0
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          /opt/Validation/Tests.sh 8
