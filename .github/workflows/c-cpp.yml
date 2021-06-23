@@ -48,6 +48,6 @@ jobs:
           ls -a
 
       - name: Test build
-        run: -
+        run: |
           cd WCSim
           /root/Validation/Tests.sh 1
