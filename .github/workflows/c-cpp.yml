@@ -24,28 +24,28 @@ jobs:
       #volumes:
         #- /home/runner/work/WCSim/WCSim:/opt/HyperK/WCSim
     steps:
-      - name: link dir
-        run: ln -s ${GITHUB_WORKSPACE}/ /opt/HyperK/WCSim
-
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: checkout-wcsim
+      - name: Checkout WCSim
         uses: actions/checkout@v2
         
-      - name: checkout-valid
+      - name: Link dir
+        run: ln -s ${GITHUB_WORKSPACE}/ /opt/HyperK/WCSim
+
+      - name: Checkout WCSim/Validation
         run: |
           cd /root
           git clone https://github.com/WCSim/Validation.git
 
-      - name: setup-wcsim
+      - name: Setup WCSim
         run: |
           TRAVIS_COMMIT_MESG=`git log --pretty=format:%s -1`
           source /opt/HyperK/env-WCSim.sh
           
-      - name: print env
+      - name: Print environment
         run: |
           env
           pwd
           ls -a
 
-      - name: test_build
+      - name: Test build
         run: /root/Validation/Tests.sh 1
