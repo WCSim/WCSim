@@ -32,18 +32,17 @@ jobs:
         TRAVIS_COMMIT_MESSAGE: ${COMMIT_MESG}
         TRAVIS_PULL_REQUEST: ${PR_NUMBER}
         GitHubToken: ${GitHubToken}
-      run: |
-        cd /root
-        git clone https://github.com/WCSim/Validation.git
-        source /root/HyperK/env-WCSim.sh
-        cd /root/HyperK/WCSim
-        git log -1
-        root/Validation/Tests.sh 1
-      with:
-        entrypoint: /bin/sh
-        args: -c
+      steps:
+        - name: build
+          run: |
+            cd /root
+            git clone https://github.com/WCSim/Validation.git
+            source /root/HyperK/env-WCSim.sh
+            cd /root/HyperK/WCSim
+            git log -1
+            root/Validation/Tests.sh 1
+          with:
+            entrypoint: /bin/sh
+          args: -c
       #volumes:
         #`pwd`:/root/HyperK/WCSim
-    steps:
-    - name: build
-      run: docker run --rm -v `pwd`:/root/HyperK/WCSim -e  /bin/sh -c " r"
