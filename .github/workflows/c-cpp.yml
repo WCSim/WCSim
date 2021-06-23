@@ -14,19 +14,35 @@ jobs:
   get-code:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      # Get the docker image that has the prerequisites prebuilt
-      - uses: docker:://wcsim/wcsim:build
+      - name: checkout
+        uses: actions/checkout@v2
       #get info about the reason the build was triggered
       - env:
         PR_NUMBER: ${{ github.event.number }}
         COMMIT_HASH: git rev-parse HEAD
         COMMIT_MESG: git log --pretty=format:%s -1
 
-
-  build:
+  get-container:
     needs: get-code
-
+    #run inside a container that has the prerequisites already installed
+    container: docker:://wcsim/wcsim:base
+      env:
+        TRAVIS_COMMIT: ${COMMIT_HASH}
+        TRAVIS_COMMIT_MESSAGE: ${COMMIT_MESG}
+        TRAVIS_PULL_REQUEST: ${PR_NUMBER}
+        GitHubToken: ${GitHubToken}
+      run: |
+        cd /root
+        git clone https://github.com/WCSim/Validation.git
+        source /root/HyperK/env-WCSim.sh
+        cd /root/HyperK/WCSim
+        git log -1
+        root/Validation/Tests.sh 1
+      with:
+        entrypoint: /bin/sh
+        args: -c
+      volumes:
+        `pwd`:/root/HyperK/WCSim
     steps:
     - name: build
-      run: docker run --rm -v `pwd`:/root/HyperK/WCSim -e TRAVIS_COMMIT=$COMMIT_HASH -e TRAVIS_COMMIT_MESSAGE=" $COMMIT_MESG " -e GitHubToken=$GitHubToken -e TRAVIS_PULL_REQUEST=" $PR_NUMBER " wcsim/wcsim:build /bin/sh -c " cd /root && git clone https://github.com/WCSim/Validation.git && source /root/HyperK/env-WCSim.sh && cd /root/HyperK/WCSim && /root/Validation/Tests.sh 1"
+      run: docker run --rm -v `pwd`:/root/HyperK/WCSim -e  /bin/sh -c " r"
