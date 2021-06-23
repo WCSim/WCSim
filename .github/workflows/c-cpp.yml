@@ -37,7 +37,7 @@ jobs:
       - name: Setup WCSim
         run: |
           cd WCSim
-          ls -a WCSim
+          ls -a
           echo ${GITHUB_WORKSPACE}
           ls -a ${GITHUB_WORKSPACE}
           cat /opt/HyperK/env-WCSim.sh
