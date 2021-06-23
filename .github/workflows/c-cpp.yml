@@ -15,6 +15,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: checkout
         uses: actions/checkout@v2
+      - name: print env
+        run: |
+          env
+          ls
+          pwd
     #get info about the reason the build was triggered
     env:
       PR_NUMBER: ${{ github.event.number }}
@@ -32,14 +37,14 @@ jobs:
         TRAVIS_COMMIT_MESSAGE: ${COMMIT_MESG}
         TRAVIS_PULL_REQUEST: ${PR_NUMBER}
         GitHubToken: ${GitHubToken}
+      volumes:
+        .:/root/HyperK/WCSim
     steps:
       - name: build
         run: |
           cd /root
           git clone https://github.com/WCSim/Validation.git
-          source /root/HyperK/env-WCSim.sh
-          cd /root/HyperK/WCSim
+          source /opt/HyperK/env-WCSim.sh
+          cd /opt/HyperK/WCSim
           git log -1
           root/Validation/Tests.sh 1
-      #volumes:
-        #`pwd`:/root/HyperK/WCSim
