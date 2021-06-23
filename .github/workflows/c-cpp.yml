@@ -9,8 +9,7 @@ on:
 
 jobs:
 
-  get-container:
-    needs: get-code
+  build:
     runs-on: ubuntu-latest
     #run inside a container that has the prerequisites already installed
     container: 
