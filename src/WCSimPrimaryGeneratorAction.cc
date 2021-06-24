@@ -352,6 +352,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   {      // manual gun operation
     particleGun->GeneratePrimaryVertex(anEvent);
 
+	    //To prevent occasional seg fault from an un assigned targetpdg 
+    targetpdgs[0] = 2212; //ie. proton
+
     G4ThreeVector P  =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
     G4ThreeVector vtx=anEvent->GetPrimaryVertex()->GetPosition();
     G4double mass    =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
@@ -395,6 +398,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     {
       //T. Akiri: Create the GPS LASER event
       MyGPS->GeneratePrimaryVertex(anEvent);
+
+	  //To prevent occasional seg fault from an un assigned targetpdg 
+      targetpdgs[0] = 2212; //ie. proton
       
       G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
       G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
