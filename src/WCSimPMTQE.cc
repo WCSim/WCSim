@@ -37,8 +37,9 @@ G4double WCSimDetectorConstruction::GetPMTQE(G4String CollectionName, G4double P
   // ratio, fudge factor to increase QE for certain purpose
 
   // return 0 for wavelenght outside the range
-  if (flag==1){
-    if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl ){
+  if (flag==1){ 
+    /*ODCOMMENT -- We use photons < 280nm so we need ->*/ //if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl ){
+    if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl || PhotonWavelength <=280 || PhotonWavelength >=660){
       return 0;
     }
   }else if (flag==0){
