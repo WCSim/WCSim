@@ -3,7 +3,7 @@ name: C/C++ CI
 on:
   push:
     branches: [ develop ]
-  pull_request:
+  pull_request_target: #runs on the PR branch, rather than the merge branch. But is required for access to secrets
     branches: [ develop ]
   release:
 
