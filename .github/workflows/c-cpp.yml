@@ -6,6 +6,12 @@ on:
   pull_request_target: #runs on the PR branch, rather than the merge branch. But is required for access to secrets
     branches: [ develop ]
   release:
+  
+concurrency:
+  #When a PR is pushed too multiple times in a short period, this would usually trigger multiple CI runs
+  #This setting cancels any in-progress CI when a new push is performed
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
 
 jobs:
 
