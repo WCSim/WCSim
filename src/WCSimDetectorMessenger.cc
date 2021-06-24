@@ -213,8 +213,8 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   isWLSFilled->SetGuidance("Deactivate WLS plates by filling them with water");
 
   // Build reflective cladding around WLS plate
-  BuildCladding = new G4UIcmdWithoutParameter("/WCSim/HyperKOD/BuildCladding", this);
-  BuildCladding->SetGuidance("Build reflective cladding around WLS plate");
+  BuildODWLSCladding = new G4UIcmdWithoutParameter("/WCSim/HyperKOD/BuildODWLSCladding", this);
+  BuildODWLSCladding->SetGuidance("Build reflective cladding around WLS plate");
 
   /////////// END OD //////////////
   /////////////////////////////////
@@ -454,10 +454,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       WCSimDetector->SetIsWLSFilled(false);
     }
 
-    if(command == BuildCladding) {
+    if(command == BuildODWLSCladding) {
       WCSimDetector->SetODEdited(true);
       G4cout << "Add cladding around WLS plate " << G4endl;
-      WCSimDetector->SetBuildCladding(true);
+      WCSimDetector->SetBuildODWLSCladding(true);
     }
 
 

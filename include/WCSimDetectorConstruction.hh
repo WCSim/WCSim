@@ -187,7 +187,7 @@ public:
   void SetWCODPMTShift(G4double val){WCODPMTShift = val;}
   void SetODEdited(G4bool val){odEdited = val;}
   void SetIsWLSFilled(G4bool val){isWLSFilled = val;}
-  void SetBuildCladding(G4bool val){BuildCladding = val;}
+  void SetBuildODWLSCladding(G4bool val){BuildODWLSCladding = val;}
   G4bool GetODEdited(){return odEdited;}
 
   ////////// END OD /////////////
@@ -404,7 +404,7 @@ private:
 
   // WLS material name
   bool isWLSFilled;
-  bool BuildCladding;
+  bool BuildODWLSCladding;
 
   // ############################# //
   // # *** END OD Parameters *** # //

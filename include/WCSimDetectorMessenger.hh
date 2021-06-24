@@ -63,7 +63,7 @@ class WCSimDetectorMessenger: public G4UImessenger
   // isWLS constructed
   G4UIcmdWithoutParameter* isWLSFilled;
   // build cladding around WLS
-  G4UIcmdWithoutParameter* BuildCladding;
+  G4UIcmdWithoutParameter* BuildODWLSCladding;
 
 };
 

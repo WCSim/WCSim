@@ -470,7 +470,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
                         0,
                         checkOverlaps);
 
-  if(BuildCladding) {
+  if(BuildODWLSCladding) {
 
     G4VPhysicalVolume* physiWLSCladding =
       new G4PVPlacement(0,

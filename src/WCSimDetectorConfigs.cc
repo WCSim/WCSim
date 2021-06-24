@@ -312,7 +312,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   // TEST WLS collection for stacking action
   G4String WLSType = "EljenEJ286";
   isWLSFilled = true;
-  BuildCladding = true;
+  BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
 }
 

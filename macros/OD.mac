@@ -24,7 +24,7 @@
 /WCSim/HyperKOD/PMTODPercentCoverage 0.28 # OD PMT coverage as a percentage: 1 equals 1% 
 /WCSim/HyperKOD/ODPMTShift 0 m # Offset every other row of OD PMTs by x meters
 #/WCSim/HyperKOD/DeactivateWLS # Uncomment to build the OD without WLS plates
-/WCSim/HyperKOD/BuildCladding # This places a reflective cladding around each WLS plate
+/WCSim/HyperKOD/BuildODWLSCladding # This places a reflective cladding around each WLS plate
 
 
 # Update geom
