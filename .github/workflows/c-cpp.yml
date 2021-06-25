@@ -91,49 +91,49 @@ jobs:
       # but also getting the built result image from it
       #however this is not trivial
       #so just brute force for now
-      - name: Test physics 500 MeV e
+      - name: Test physics 100 MeV e in SuperK
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 2
           
-      - name: Test physics 10 MeV e
+      - name: Test physics 10 MeV e in HyperK_20perCent
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 3
           
-      - name: Test physics 100 MeV e
+      - name: Test physics 100 MeV e in HyperK_20perCent
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 4
 
-      - name: Test physics 500 MeV e
+      - name: Test physics 500 MeV e in HyperK_20perCent
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 5
 
-      - name: Test physics 200 MeV mu
+      - name: Test physics 200 MeV mu in HyperK_20perCent
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 6
 
-      - name: Test physics 800 MeV mu
+      - name: Test physics 800 MeV mu in HyperK_20perCent
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 7
 
-      - name: Test physics 100 MeV pi0
+      - name: Test physics 100 MeV pi0 in HyperK_20perCent
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
