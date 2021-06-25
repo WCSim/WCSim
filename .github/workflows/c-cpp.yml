@@ -59,6 +59,12 @@ jobs:
           env
           pwd
           ls -a
+          
+      - name: Git info
+        run: |
+          echo "WCSim SHA"
+          git rev-list HEAD -1
+          git log -1
 
       - name: Test build
         run: |
