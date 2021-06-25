@@ -39,7 +39,7 @@ jobs:
         id: checkout_repo
         uses: haya14busa/action-cond@v1
         with:
-          cond: ${{ github.event_name == 'pull_request' }}
+          cond: ${{ github.event_name == 'pull_request_target' }}
           if_true: ${{ github.event.pull_request.head.repo.full_name }}
           if_false: ${{ github.repository }}
           
@@ -47,7 +47,7 @@ jobs:
         id: checkout_sha
         uses: haya14busa/action-cond@v1
         with:
-          cond: ${{ github.event_name == 'pull_request' }}
+          cond: ${{ github.event_name == 'pull_request_target' }}
           if_true: ${{ github.event.pull_request.head.sha }}
           if_false: ${{ github.sha }}
 
