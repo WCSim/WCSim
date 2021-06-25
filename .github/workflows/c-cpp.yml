@@ -79,12 +79,6 @@ jobs:
           env
           pwd
           ls -a
-          
-      - name: Check correct checkout
-        run: |
-          cd WCSim
-          ls -a .github
-          grep OD CMakeLists.txt
 
       - name: Test build
         run: |
