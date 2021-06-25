@@ -24,7 +24,7 @@ jobs:
     container: 
       image: wcsim/wcsim:base
       env:
-        TRAVIS_COMMIT: ${{ github.sha }}
+        #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.API_TOKEN_GITHUB }}
@@ -75,14 +75,22 @@ jobs:
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           env
           pwd
           ls -a
+          
+      - name: Check correct checkout
+        run: |
+          cd WCSim
+          ls -a .github
+          grep OD CMakeLists.txt
 
       - name: Test build
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 1
           
       #this should be a new set of jobs (in matrix form), using the build job as a prerequisite,
@@ -93,40 +101,47 @@ jobs:
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 2
           
       - name: Test physics 10 MeV e
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 3
           
       - name: Test physics 100 MeV e
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 4
 
       - name: Test physics 500 MeV e
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 5
 
       - name: Test physics 200 MeV mu
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 6
 
       - name: Test physics 800 MeV mu
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 7
 
       - name: Test physics 100 MeV pi0
         run: |
           source /opt/HyperK/env-WCSim.sh
           cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 8
