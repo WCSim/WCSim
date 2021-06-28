@@ -36,6 +36,12 @@ public:
 
   void SaveOptionsToOutput(WCSimRootOptions * wcopt);
 
+  G4double GetWCODWLSCladdingReflectivity() {return WCODWLSCladdingReflectivity;}
+  void SetWCODWLSCladdingReflectivity(G4double tparam) {WCODWLSCladdingReflectivity=tparam;}
+
+  G4double GetWCODTyvekReflectivity() {return WCODTyvekReflectivity;}
+  void SetWCODTyvekReflectivity(G4double tparam) {WCODTyvekReflectivity=tparam;}
+
 private:
 
   // The messenger
@@ -54,6 +60,9 @@ private:
   //For Top Veto - jl145
   G4double tvspacing;
   G4bool topveto;
+
+  G4double WCODWLSCladdingReflectivity;
+  G4double WCODTyvekReflectivity;
 
 };
 

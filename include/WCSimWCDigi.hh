@@ -182,7 +182,7 @@ public:
           pe.at(j) = pe.at(j-1);
           if(sort_digi_compositions) fDigiComp.at(j) = fDigiComp.at(j-1);
           primaryParentID.at(j) = primaryParentID.at(j-1);
-          //G4cout <<"swapping "<<time[j-1]<<" "<<index_time<<G4endl;
+          //G4cout <<"swapping "<<time.at(j-1)<<" "<<index_time<<G4endl;
         }
         time.at(j) = index_time;
         time_presmear.at(j) = index_timepresmear;

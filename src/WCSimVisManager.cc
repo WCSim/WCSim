@@ -107,6 +107,11 @@ void WCSimVisManager::RegisterGraphicsSystems () {
   RegisterGraphicsSystem (new G4OpenGLStoredXm);
 #endif
 
+#ifdef G4VIS_USE_OPENGLQT
+  RegisterGraphicsSystem (new G4OpenGLImmediateQt);
+  RegisterGraphicsSystem (new G4OpenGLStoredQt);
+#endif
+
 #ifdef G4VIS_USE_OIX
   RegisterGraphicsSystem (new G4OpenInventorX);
 #endif

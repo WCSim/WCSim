@@ -1,3 +1,4 @@
+#include <TRandom3.h>
 #include "G4ios.hh"
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
@@ -17,7 +18,6 @@
 #include "WCSimVisManager.hh"
 #include "WCSimRandomParameters.hh"
 
-
 #ifdef G4UI_USE
 #include "G4UIExecutive.hh"
 #endif
@@ -32,6 +32,8 @@ void file_exists(const char * filename) {
 
 int main(int argc,char** argv)
 {
+
+  
   // Construct the default run manager
   G4RunManager* runManager = new G4RunManager;
 
@@ -96,8 +98,7 @@ int main(int argc,char** argv)
 
   runManager->SetUserAction(new WCSimStackingAction(WCSimdetector));
 
-  runManager->SetUserAction(new WCSimSteppingAction);
-
+  runManager->SetUserAction(new WCSimSteppingAction(myRunAction,WCSimdetector));
 
   // Initialize G4 kernel
   runManager->Initialize();
@@ -120,9 +121,9 @@ int main(int argc,char** argv)
 #endif
 
     // Start Interactive Mode
-    //session->SessionStart();
+    // session->SessionStart();
 
-    //delete session;
+    // delete session;
   }
   else           // Batch mode
   { 

@@ -154,6 +154,9 @@ set(WCSIM_SCRIPTS
   macros/visRayTracer.mac
   macros/visOGLQt.mac	
   macros/tuning_parameters.mac
+  macros/OD.mac
+  macros/OD_10k.mac
+  data/MuonFlux-HyperK-ThetaPhi.dat
   )
 
 foreach(_script ${WCSIM_SCRIPTS})

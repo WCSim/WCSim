@@ -5,19 +5,18 @@
 #include "G4ThreeVector.hh"
 #include "globals.hh"
 #include "jhfNtuple.h"
-#include <vector>
-
 #include <fstream>
 
 #include "WCSimRootOptions.hh"
 #include "WCSimGenerator_Radioactivity.hh"
+
+#include "TH2D.h"
 
 class WCSimDetectorConstruction;
 class G4ParticleGun;
 class G4GeneralParticleSource;
 class G4Event;
 class WCSimPrimaryGeneratorMessenger;
-class G4Generator;
 
 class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
@@ -85,11 +84,14 @@ private:
   G4bool   useGunEvt;
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
   G4bool   useGPSEvt;
+  G4bool   useCosmics;
   G4bool   useRadioactiveEvt; // F. Nova: Radioactive flag
   G4bool   useRadonEvt; // G. Pronost: Radon flag
   
   std::fstream inputFile;
+  std::fstream inputCosmicsFile;
   G4String vectorFileName;
+  G4String cosmicsFileName = "data/MuonFlux-HyperK-ThetaPhi.dat";
   G4bool   GenerateVertexInRock;
   
   // Variables for Radioactive and Radon generators
@@ -123,7 +125,15 @@ private:
 
   G4int    _counterRock; 
   G4int    _counterCublic; 
-public:
+
+  // Use Histograms to generate cosmics
+  TH2D *hFluxCosmics;
+  TH2D *hEmeanCosmics;
+
+  // Set cosmics altitude
+  G4double altCosmics;
+
+ public:
 
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
   inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
@@ -137,7 +147,10 @@ public:
 
   inline void SetGPSEvtGenerator(G4bool choice) { useGPSEvt = choice; }
   inline G4bool IsUsingGPSEvtGenerator()  { return useGPSEvt; }
-  
+
+  inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
+  inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }
+
   inline void OpenVectorFile(G4String fileName) 
   {
     if ( inputFile.is_open() ) 
@@ -148,6 +161,20 @@ public:
 
     if ( !inputFile.is_open() ) {
       G4cout << "Vector file " << vectorFileName << " not found" << G4endl;
+      exit(-1);
+    }
+  }
+
+  inline void OpenCosmicsFile(G4String fileName) 
+  {
+    if ( inputCosmicsFile.is_open() ) 
+      inputCosmicsFile.close();
+
+    cosmicsFileName = fileName;
+    inputCosmicsFile.open(cosmicsFileName, std::fstream::in);
+
+    if ( !inputCosmicsFile.is_open() ) {
+      G4cout << "Cosmics data file " << cosmicsFileName << " not found" << G4endl;
       exit(-1);
     }
   }
