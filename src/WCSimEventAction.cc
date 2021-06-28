@@ -865,7 +865,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // First two tracks come from jhfNtuple, as they are special
 
   int k;
-  for (k=0;k<2;k++) // should be just 2
+  for (k=0;k<jhfNtuple.npar;k++) // should be just 2
   {
     double dir[3];
     double pdir[3];
@@ -905,6 +905,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // same, april 7th 2005
   std::set<int> pionList;
   std::set<int> antipionList;
+  std::set<int> primaryList;
 
   // Pi0 specific variables
   Double_t pi0Vtx[3];
@@ -934,6 +935,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     if ( trj->GetPDGEncoding() == -13 ) antimuonList.insert(trj->GetTrackID());
     if ( trj->GetPDGEncoding() == 211 ) pionList.insert(trj->GetTrackID());
     if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
+    if ( trj->GetParentID() == 0 ) primaryList.insert(trj->GetTrackID());
        
 
     // Process primary tracks or the secondaries from pizero or muons...
@@ -977,6 +979,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	parentType = -211;
       } else if (pionList.count(trj->GetParentID()) ) {
 	parentType = 211;
+      } else if (primaryList.count(trj->GetParentID()) ) {
+	parentType = 1;
       } else {  // no identified parent, but not a primary
 	parentType = 999;
       }
