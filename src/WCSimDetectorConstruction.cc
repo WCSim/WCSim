@@ -359,8 +359,8 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> Collec
   std::map<G4double,G4double> QE;
 
   // Recursive algorithm to set new QE for combined PMT collection
-  // F. Nova: define QE for a given wavelength as sqrt(QE1^2 + QE2^2 + ...), where each QEi is the value of QE for PMT type i
-  // replace it with maximum
+  // F. Nova: define QE for a given wavelength as the highest QE in the collection for that wavelength
+  // max(QE1, QE, ...), where each QEi is the value of QE for PMT type i
   G4double max_QE = 0.;
   G4cout << G4endl;
   for(unsigned int iCol=0; iCol<QEMap.size();iCol++){
