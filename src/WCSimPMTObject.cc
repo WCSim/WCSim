@@ -2043,7 +2043,12 @@ WCSimBasicPMTObject::WCSimBasicPMTObject(std::vector<G4double> wl,std::vector<G4
 }
 
 void WCSimBasicPMTObject::DefineQEHist(std::map<G4double,G4double> mapQE){
-  gQE = new TGraph();
+
+  if (gQE != NULL) {
+	  delete gQE;
+	  gQE = nullptr;
+  }
+  gQE = new TGraph(mapQE.size());
   G4int iPt=0;
   std::map<G4double, G4double>::iterator itr;
   for(itr = mapQE.begin(); itr != mapQE.end(); itr++) {
@@ -2053,4 +2058,5 @@ void WCSimBasicPMTObject::DefineQEHist(std::map<G4double,G4double> mapQE){
 }
 
 WCSimBasicPMTObject::~WCSimBasicPMTObject(){
+  delete gQE;
 }

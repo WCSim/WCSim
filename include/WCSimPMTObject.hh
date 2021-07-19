@@ -303,7 +303,7 @@ class WCSimBasicPMTObject
   std::vector<G4double> wavelength;
   std::map<G4double,G4double> mapQE;
   G4double  maxQE;
-  TGraph   *gQE;
+  TGraph   *gQE = nullptr;
 
  public:
   std::vector<G4double> GetQE(){ return QE;};
