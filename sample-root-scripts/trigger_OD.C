@@ -6,19 +6,11 @@ void trigger_OD(char *filename=NULL) {
   /* A simple script to plot aspects of phototube hits 
    * 
    * I like to run this macro as 
-   * $ root -l -x 'trigger_OD.C("OD.root")'
+   * $ $WCSIMDIR/rootwc/rootwc -l -x 'trigger_OD.C("OD.root")'
    */
 
   gROOT->Reset();
-  char* wcsimdirenv;
-  wcsimdirenv = getenv ("WCSIMDIR");
-  if(wcsimdirenv !=  NULL){
-    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
-    gSystem->Load("${WCSIMDIR}/libWCSimRoot.rootmap");
-    gSystem->Load("${WCSIMDIR}/src/WCSimRootDict_rdict.pcm");
-  }else{
-    std::cout << "Can't load WCSim ROOT dictionaries" << std::endl;
-  }
+  
   gStyle->SetOptStat(1);
 
   TFile *f;

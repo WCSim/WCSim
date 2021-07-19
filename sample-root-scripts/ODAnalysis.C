@@ -16,7 +16,7 @@
 
 
 /*
-* To run this script just type:  root -l -x llib.C 'ODAnalysis.C("wcsim.root", "ODHits.root", false)' 
+* To run this script just type:  $WCSIMDIR/rootwc/rootwc -l -x 'ODAnalysis.C("wcsim.root", "ODHits.root", false)' 
 * or replace wcsim.root and ODHits.root for your input and output filenames respectively
 * The final true can be changed to true to turn on verbosity.
 * The default: root -l -x llib.C ODAnalysis.C will run with the variables mentioned above
@@ -32,26 +32,10 @@ float RadToDeg(float x){
 float DegToRad(float x){
         return x*PI/180;
 }
-// A function to load the libraries required, from WCSim.
-void loadlibs(){
 
-	char *wcsimdirenv; 
-	wcsimdirenv = getenv("WCSIMDIR"); 
-	
-	if (wcsimdirenv != NULL) {
-		gSystem->Load("$WCSIMDIR/libWCSimRoot.so");
-		gSystem->Load("$WCSIMDIR/libWCSimRoot.rootmap");
-                gSystem->Load("$WCSIMDIR/libWCSimRootDict_rdict.pcm");
-	} else {
-		std::cout << "Error: WCSIMDIR environment variable not set." << std::endl;
-	}
-
-
-}// End of loadlibs function
 
 void ODAnalysis( const char *inFileName = "wcsim.root", const char *outFileName = "ODHits.root", bool verbosity = 0){ 
 	
-//	loadlibs(); // Load the required libraries
 
 	bool createCanvases = true;  // If true then all 2D histograms will be drawn onto canvases with the cols options and saved to the output root file.
 
