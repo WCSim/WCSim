@@ -23,9 +23,15 @@ class WCSimWLSProperties {
  public:
   TGraph* GetgAbs(){ return gAbs;};
   TGraph* GetgEm() { return gEm;};
-  TGraph *gAbs;
-  TGraph *gEm;
-  TH1F *emissionHist;
+  TGraph *gAbs = nullptr;
+  TGraph *gEm = nullptr;
+  TH1F *emissionHist = nullptr;
+
+  ~WCSimWLSProperties(){
+    delete gAbs;
+  	delete gEm;
+	  delete emissionHist;
+  }
 };
 
 class EljenEJ286 : public WCSimWLSProperties{

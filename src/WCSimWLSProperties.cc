@@ -326,7 +326,12 @@ void EljenEJ286::SetgAbs(){
   //       0.9999, 0.9999, 0.99, 0.97, 0.89, // 350 --- 300
   //       0.71, 0.54, 0, 0, // 300 --- 250
   //       0, 0, 0, 0, 0}; // 250 --- 200
-  gAbs = new TGraph();
+
+  if (gAbs != NULL) {
+	  delete gAbs;
+	  gAbs = nullptr;
+  }
+  gAbs = new TGraph(nEntries_abslength_eljen);
   const int step = 10;
 
   // std::cout << "Creating Stacking graph objects for WLS" << std::endl;
@@ -341,7 +346,12 @@ void EljenEJ286::SetgAbs(){
 }
 
 void EljenEJ286::SetgEm(){
-  gEm = new TGraph();
+
+  if (gEm != NULL) {
+	  delete gEm;
+	  gEm = nullptr;
+  }
+  gEm = new TGraph(nEntries_eljen_component);
   const int step = 10;
 
   // std::cout << "Creating Stacking graph objects for WLS" << std::endl;
@@ -368,6 +378,10 @@ void EljenEJ286::SethEm() {
        0.20, 0.13, 0.081, 0.052,
        0.03, 0.021, 0};
 
+  if (emissionHist != NULL) {
+	  delete emissionHist;
+	  emissionHist = nullptr;
+  }
   emissionHist = new TH1F("hist","hist", 15, 390., 530.);
   emissionHist->Scale(1/emissionHist->Integral());
 
