@@ -167,6 +167,11 @@ foreach(_script ${WCSIM_SCRIPTS})
     )
 endforeach()
 
+file(
+	COPY ${PROJECT_SOURCE_DIR}/rootwc
+	DESTINATION ${PROJECT_BINARY_DIR}
+)
+
 #----------------------------------------------------------------------------
 # For internal Geant4 use - but has no effect if you build this
 # example standalone
