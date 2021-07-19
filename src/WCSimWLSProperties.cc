@@ -353,7 +353,6 @@ void EljenEJ286::SetgAbs(){
 	  gAbs = nullptr;
   }
   gAbs = new TGraph(nEntries_abslength_eljen);
-  const int step = 10;
 
   // std::cout << "Creating Stacking graph objects for WLS" << std::endl;
   // std::cout << "WLS ABS" << std::endl;
@@ -373,7 +372,6 @@ void EljenEJ286::SetgEm(){
 	  gEm = nullptr;
   }
   gEm = new TGraph(nEntries_eljen_component);
-  const int step = 10;
 
   // std::cout << "Creating Stacking graph objects for WLS" << std::endl;
   // std::cout << "WLS EM" << std::endl;
