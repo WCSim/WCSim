@@ -63,7 +63,7 @@ void ODAnalysis( const char *inFileName = "wcsim.root", const char *outFileName 
 	TTree *wcsimTree = (TTree*) inFile->Get("wcsimT");
 	
 	// Get the number of events in the tree
-	long int nEvent = wcsimTree->GetEntries();
+	const long int nEvent = wcsimTree->GetEntries();
 	if (verbosity) { std::cout << "Number of events: "<< nEvent << std::endl;}
 
 	// Create a WCSimRootEvent to put stuff from the tree in
@@ -146,7 +146,7 @@ void ODAnalysis( const char *inFileName = "wcsim.root", const char *outFileName 
 
 
 
-	for (int ev = 0; ev < nEvent; ev++){ // Loop over events
+	for (long int ev = 0; ev < nEvent; ev++){ // Loop over events
 
 		wcsimTree->GetEntry(ev);
 		wcsimTrigger = wcsimRoot->GetTrigger(0);
