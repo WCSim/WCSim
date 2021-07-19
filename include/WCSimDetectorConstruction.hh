@@ -223,7 +223,7 @@ private:
   G4OpticalSurface * OpWLSTySurface;
 
   //Cladding
-  G4OpticalSurface * OpCladdingSurface;
+  G4OpticalSurface * WlsOdOpCladdingSurface;
 
   // The messenger we use to change the geometry.
 

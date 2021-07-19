@@ -482,7 +482,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
                         0,
                         checkOverlaps);
     
-    new G4LogicalSkinSurface("cladding_surf",   logicWCODWLSPlateCladding,   OpCladdingSurface);
+    new G4LogicalSkinSurface("cladding_surf",   logicWCODWLSPlateCladding,   WlsOdOpCladdingSurface);
   }
 
   G4VPhysicalVolume* physiPMT =

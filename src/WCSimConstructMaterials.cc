@@ -190,18 +190,18 @@ void WCSimDetectorConstruction::ConstructMaterials()
   WLS_PVT->AddElement(elH, 10);
 
 
-  //**cladding properties
-  const G4int cladding_num = 2;
-  G4double cladding_ephoton[cladding_num] = { 1.*eV, 10*eV };
+  //** OD WLS cladding properties
+  const G4int wls_od_cladding_num = 2;
+  G4double wls_od_cladding_ephoton[wls_od_cladding_num] = { 1.*eV, 10*eV };
   double WCODWLSCladdingReflectivity = WCSimTuningParams->GetWCODWLSCladdingReflectivity();
-  G4double claddingReflectivity[cladding_num] = {WCODWLSCladdingReflectivity, WCODWLSCladdingReflectivity};
-  G4double claddingEfficiency[cladding_num] = {0., 0.};
+  G4double claddingReflectivity[wls_od_cladding_num] = {WCODWLSCladdingReflectivity, WCODWLSCladdingReflectivity};
+  G4double claddingEfficiency[wls_od_cladding_num] = {0., 0.};
   G4MaterialPropertiesTable* claddingPT = new G4MaterialPropertiesTable();
-  claddingPT->AddProperty("REFLECTIVITY", cladding_ephoton, claddingReflectivity, cladding_num);
-  claddingPT->AddProperty("EFFICIENCY", cladding_ephoton, claddingEfficiency, cladding_num);
-  OpCladdingSurface =
-      new G4OpticalSurface("CladdingSurface",unified,polished,dielectric_metal);
-  OpCladdingSurface->SetMaterialPropertiesTable(claddingPT);
+  claddingPT->AddProperty("REFLECTIVITY", wls_od_cladding_ephoton, claddingReflectivity, wls_od_cladding_num);
+  claddingPT->AddProperty("EFFICIENCY", wls_od_cladding_ephoton, claddingEfficiency, wls_od_cladding_num);
+  WlsOdOpCladdingSurface =
+      new G4OpticalSurface("WLSCladdingSurface",unified,polished,dielectric_metal);
+  WlsOdOpCladdingSurface->SetMaterialPropertiesTable(claddingPT);
 
   //---Glass
  
