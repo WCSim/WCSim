@@ -18,6 +18,7 @@ double hWL(double E){
 // ELJEN EJ-286
 // http://www.eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286
 #define nEntries_WLS_rindex 60
+#define nEntries_WLS_transmittance 33
 
 EljenEJ286::EljenEJ286() { SetgAbs(); SetgEm(); SethEm();}
 EljenEJ286::~EljenEJ286(){}
@@ -25,6 +26,7 @@ EljenEJ286::~EljenEJ286(){}
 G4String EljenEJ286::GetWLSPlateName() { G4String WLSPlateName = "EljenEJ286"; return WLSPlateName;}
 
 G4int EljenEJ286::GetNumEntries() { return nEntries_WLS_rindex;}
+G4int EljenEJ286::GetNumEntriesTransmittance() { return nEntries_WLS_transmittance;}
 
 G4double* EljenEJ286::GetPhotonWL() {
   static G4double PhotonWL[nEntries_WLS_rindex] =
@@ -52,6 +54,25 @@ G4double* EljenEJ286::GetPhotonEnergy(){
        4.27535*eV, 4.42804*eV, 4.59204*eV, 4.76866*eV, 4.95941*eV,
        5.16605*eV, 5.39066*eV, 5.63569*eV, 5.90406*eV, 6.19926*eV};
   return WLS_energy_for_rindex;
+}
+
+// ###################### //
+////// TRANSMITTANCE ///////
+// ###################### //
+
+G4double* EljenEJ286::GetTransmittance(){
+	
+  static G4double WLS_transmittance_vs_energy[nEntries_WLS_transmittance] =
+      { 1-0.020836, 1-0.0207796, 1-0.0207198, 1-0.0206584, 1-0.0205953,
+        1-0.0205288, 1-0.0204589, 1-0.0203874, 1-0.0203125, 1-0.0202344,
+        1-0.0201512, 1-0.0200647, 1-0.019975, 1-0.0198787, 1-0.0197774,
+        1-0.0196696, 1-0.0195553, 1-0.0194329, 1-0.0193041, 1-0.0191639,
+        1-0.019016, 1-0.0188553, 1-0.0186803, 1-0.0184931, 1-0.0182871,
+        1-0.0180644, 1-0.0178189, 1-0.0175494, 1-0.0172519, 1-0.0169209,
+        1-0.0165512, 1-0.0161367, 1-0.0156689};
+
+
+  return WLS_transmittance_vs_energy;
 }
 
 // ###################### //

@@ -14,6 +14,7 @@ class WCSimWLSProperties {
  public:
   virtual G4String  GetWLSPlateName()=0;
   virtual G4int     GetNumEntries()=0;
+  virtual G4int     GetNumEntriesTransmittance()=0;
   virtual G4double* GetPhotonWL()=0;
   virtual G4double* GetPhotonEnergy()=0;
   virtual G4double* GetRIndex()=0;
@@ -43,8 +44,10 @@ class EljenEJ286 : public WCSimWLSProperties{
  public:
   G4String  GetWLSPlateName();
   G4int     GetNumEntries();
+  G4int     GetNumEntriesTransmittance();
   G4double* GetPhotonWL();
   G4double* GetPhotonEnergy();
+  G4double* GetTransmittance();
   G4double* GetRIndex();
 
   G4int     GetNumEntries_ABS();
