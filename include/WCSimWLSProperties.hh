@@ -55,6 +55,7 @@ class EljenEJ286 : public WCSimWLSProperties{
   G4double* GetPhotonEnergy_EM();
   G4double* GetEm();
 
+  private:
   void SetgAbs();
   void SetgEm();
 
