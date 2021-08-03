@@ -60,19 +60,14 @@
 #grab the other DAQ options (thresholds, timing windows, etc.)
 /control/execute macros/daq.mac
 
-# default dark noise frequency (and conversion factor) is PMT property (NEW), set in the code.
-# Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
-#/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
-#/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
-#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
-#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
 
-# command to multiply the dark rate.
+# Dark noise parameters are set separately for the ID and OD. Please add the following options underneath each detector element.
+# /DarkRate/SetDarkRate command allows user to set the dark rate.
+# Suitable values are 0 kHz to turn off dark noise, 4.2 kHz for SK-I SKDETSIM value, 8.4(3.0) kHz for 20Inch(12Inch) HPDs and B&Ls
+
+# /DarkRate/SetConvert command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
-# Again, this is now a PMT property and can be overridden here
-#/DarkRate/SetConvert 1.367  #For Normal PMT
-#/DarkRate/SetConvert 1.119 #For HPDs
-#/DarkRate/SetConvert 1.126 #For Box and Line PMTs
+# Suitable values are: 1.367 for normal PMTs, 1.119 for HPDs and 1.126 for B&L.
 
 # Select which time window(s) to add dark noise to
 #/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
@@ -85,14 +80,16 @@
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkHigh 1000
 /DarkRate/SetDarkWindow 4000
-#/DarkRate/SetDarkRate 0 kHz
+#/DarkRate/SetDarkRate 0 kHz 
+#/DarkRate/SetConvert 1.367 
 
 /DarkRate/SetDetectorElement OD
 /DarkRate/SetDarkMode 0
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkHigh 1000
 /DarkRate/SetDarkWindow 4000
-/DarkRate/SetDarkRate 0. kHz
+/DarkRate/SetDarkRate 0 kHz 
+#/DarkRate/SetConvert 1.367 
 
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute macros/visOGLSX.mac
