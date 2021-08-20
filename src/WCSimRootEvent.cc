@@ -343,7 +343,8 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 					   Double_t start[3],
 					   Int_t parenttype,
 					   Double_t time,
-					   Int_t id)
+					   Int_t id,
+                       Int_t idParent)
 {
   // Add a new WCSimRootTrack to the list of tracks for this event.
   // To avoid calling the very time consuming operator new for each track,
@@ -365,7 +366,9 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 					   stop,
 					   start,
 					   parenttype,
-					  time,id);
+					   time,
+                       id,
+                       idParent);
 
   return track;
 }
@@ -385,7 +388,9 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 				 Double_t stop[3], 
 				 Double_t start[3],
 				 Int_t parenttype,
-			       Double_t time,Int_t id)
+			     Double_t time,
+                 Int_t id,
+                 Int_t idParent)
 {
 
   // Create a WCSimRootTrack object and fill it with stuff
@@ -408,6 +413,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
   fParenttype = parenttype;
   fTime = time;
   fId = id;
+  fParentId = idParent;
 }
 
 

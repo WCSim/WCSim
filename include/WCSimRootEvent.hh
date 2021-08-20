@@ -40,6 +40,7 @@ private:
   Int_t fParenttype;
   Double_t fTime;
   Int_t fId;
+  Int_t fParentId;
 
 public:
   WCSimRootTrack() {}
@@ -55,7 +56,9 @@ public:
 		  Double_t stop[3], 
 		  Double_t start[3], 
 		  Int_t parenttype,
-		 Double_t time,Int_t id);
+		  Double_t time,
+          Int_t id,
+          Int_t idPrnt);
   
   virtual ~WCSimRootTrack() { }
 
@@ -73,6 +76,7 @@ public:
   Int_t     GetParenttype(/*Int_t i=0*/) {return fParenttype;}
   Double_t   GetTime() { return fTime;}
   Int_t     GetId(){return fId;}
+  Int_t     GetParentId(){return fParentId;}
 
   ClassDef(WCSimRootTrack,1)  
 };
@@ -409,7 +413,8 @@ public:
 				   Double_t start[3],
 				   Int_t parenttype,
 				   Double_t time,
-				   Int_t id);
+				   Int_t id,
+                   Int_t idParent);
 
   TClonesArray        *GetTracks() const {return fTracks;}
 

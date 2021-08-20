@@ -970,7 +970,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 			      stop,
 			      start,
 			      jhfNtuple.parent[k],
-			     jhfNtuple.time[k],0); 
+			      jhfNtuple.time[k],
+                  0,
+                  0); 
   }
 
   // the rest of the tracks come from WCSimTrajectory
@@ -1023,6 +1025,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	
       G4int         ipnu   = trj->GetPDGEncoding();
       G4int         id     = trj->GetTrackID();
+      G4int         idPrnt = trj->GetParentID();
       G4int         flag   = 0;    // will be set later
       G4double      mass   = trj->GetParticleDefinition()->GetPDGMass();
       G4ThreeVector mom    = trj->GetInitialMomentum();
@@ -1104,7 +1107,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
                                    stop,
                                    start,
                                    parentType,
-                                   ttime, id);
+                                   ttime,
+                                   id,
+                                   idPrnt);
       }
       
 
@@ -1479,7 +1484,9 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 			      stop,
 			      start,
 			      jhfNtuple.parent[k],
-			     jhfNtuple.time[k],0); 
+			     jhfNtuple.time[k],
+                 0,
+                 0); 
   }
 
   // the rest of the tracks come from WCSimTrajectory
@@ -1532,6 +1539,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	
       G4int         ipnu   = trj->GetPDGEncoding();
       G4int         id     = trj->GetTrackID();
+      G4int         idPrnt = trj->GetParentID();
       G4int         flag   = 0;    // will be set later
       G4double      mass   = trj->GetParticleDefinition()->GetPDGMass();
       G4ThreeVector mom    = trj->GetInitialMomentum();
@@ -1613,7 +1621,9 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
                                    stop,
                                    start,
                                    parentType,
-                                   ttime, id);
+                                   ttime,
+                                   id,
+                                   idPrnt);
       }
       
 
