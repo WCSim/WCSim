@@ -69,12 +69,6 @@ public:
 
   void SetUseTimer(bool use) { useTimer = use; }
 
-  void SetPhotonTree(TTree* tree){photonTree=tree;}
-  TTree *GetPhotonTree(){ return photonTree;}
-
-  void SetPhotonEvt(photonEvt *phoEvt){ wcsimPhoEvt=phoEvt;}
-  photonEvt *GetPhotonEvt(){ return wcsimPhoEvt;}
-
  private:
   // MFechner : set by the messenger
   std::string RootFileName;
@@ -102,8 +96,6 @@ public:
   bool useTimer; ///< Use the timer? Set by Messenger.
   TStopwatch timer; ///< A timer for runtime analysis
 
-  TTree *photonTree;
-  photonEvt *wcsimPhoEvt;
 };
 
 #endif
