@@ -17,9 +17,6 @@
 //for less_equal, bind2nd,...
 #include <functional>
 
-// #include "compose2.hh"
-
-
 class WCSimWCDigi : public G4VDigi
 {
 
