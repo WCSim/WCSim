@@ -44,62 +44,6 @@ template <typename T> bool ComparisonPassedVec(const vector<T> & val1, const vec
 }
 */
 
-bool ComparisonPassed(int val1, int val2, const char * callerclass, const char * callerfunc, const char * tag)
-{
-  if(val1 - val2) {
-    cerr << "INT" << callerclass << "::" << callerfunc << " " << tag << " not equal: " << val1 << ", " << val2 << " diff " << val1 - val2 << endl;
-    return false;
-  }
-  else {
-#ifdef VERBOSE_COMPARISON
-    cout << callerclass << "::" << callerfunc << " " << tag << " equal: " << val1 << ", " << val2 << endl;
-#endif
-    return true;
-  }
-}
-
-bool ComparisonPassed(long val1, long val2, const char * callerclass, const char * callerfunc, const char * tag)
-{
-  if(val1 - val2) {
-    cerr << "INT" << callerclass << "::" << callerfunc << " " << tag << " not equal: " << val1 << ", " << val2 << " diff " << val1 - val2 << endl;
-    return false;
-  }
-  else {
-#ifdef VERBOSE_COMPARISON
-    cout << callerclass << "::" << callerfunc << " " << tag << " equal: " << val1 << ", " << val2 << endl;
-#endif
-    return true;
-  }
-}
-
-bool ComparisonPassed(float val1, float val2, const char * callerclass, const char * callerfunc, const char * tag)
-{
-  if(TMath::Abs(val1 - val2) > kASmallNum) {
-    cerr << "FLOAT" << callerclass << "::" << callerfunc << " " << tag << " not equal: " << val1 << ", " << val2 << " diff " << val1 - val2 << endl;
-    return false;
-  }
-  else {
-#ifdef VERBOSE_COMPARISON
-    cout << callerclass << "::" << callerfunc << " " << tag << " equal: " << val1 << ", " << val2 << endl;
-#endif
-    return true;
-  }
-}
-
-bool ComparisonPassed(double val1, double val2, const char * callerclass, const char * callerfunc, const char * tag)
-{
-  if(TMath::Abs(val1 - val2) > kASmallNum) {
-    cerr << "DOUBLE" << callerclass << "::" << callerfunc << " " << tag << " not equal: " << val1 << ", " << val2 << " diff " << val1 - val2 << endl;
-    return false;
-  }
-  else {
-#ifdef VERBOSE_COMPARISON
-    cout << callerclass << "::" << callerfunc << " " << tag << " equal: " << val1 << ", " << val2 << endl;
-#endif
-    return true;
-  }
-}
-
 bool ComparisonPassedVec(const vector<int> & val1, const vector<int> & val2, const char * callerclass, const char * callerfunc, const char * tag)
 {
   bool failed = false;

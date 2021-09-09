@@ -1,3 +1,4 @@
+#include <sys/stat.h>
 #include "G4ios.hh"
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
@@ -23,7 +24,8 @@
 #endif
 
 void file_exists(const char * filename) {
-  bool exists = access(filename, F_OK) != -1;
+  struct stat buffer{};
+  bool exists = (stat (filename, &buffer) == 0);
   if(!exists) {
     G4cerr << filename << " not found or inaccessible. Exiting" << G4endl;
     exit(-1);
