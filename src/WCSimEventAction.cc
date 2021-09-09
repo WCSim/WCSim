@@ -999,7 +999,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	pdir[l]=mom[l];        // momentum-vector 
 	stop[l]=Stop[l]/cm; // stopping point 
 	start[l]=Start[l]/cm; // starting point 
-	G4cout<<"part 2 start["<<l<<"]: "<< start[l] <<G4endl;
+	//G4cout<<"part 2 start["<<l<<"]: "<< start[l] <<G4endl;
       }
 
 
