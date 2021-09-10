@@ -4,6 +4,7 @@
 #include "WCSimPmtInfo.hh"
 #include "WCSimPMTObject.hh"
 #include "WCSimRootOptions.hh"
+#include "WCSimWLSProperties.hh"
 
 #include "G4Transform3D.hh"
 #include "G4VUserDetectorConstruction.hh"
@@ -12,11 +13,12 @@
 #include "G4OpticalSurface.hh"
 #include "globals.hh"
 
+#include "G4SubtractionSolid.hh"
+
 #include <fstream>
 #include <map>
 #include <vector>
 #include <unordered_map>     //--> need to fix the "using" and namespace statements
-
 
 // (JF) We don't need this distinction for DUSEL
 //enum cyl_location {endcap1,wall,endcap2};
@@ -31,6 +33,9 @@ class WCSimTuningParameters;
 class WCSimDetectorMessenger;
 class WCSimWCSD;
 
+
+//-----------------------------------------------------
+//-----------------------------------------------------
 
 void ComputeWCODPMT(G4int NPMT, G4double *NPMTHorizontal, G4double *NPMTVertical);
 
@@ -58,6 +63,7 @@ public:
   void SetHyperKGeometry_20perCent();
   void SetHyperKWithODGeometry();
   void UpdateGeometry();
+  void UpdateODGeo();
   void SetLCType(G4int LightCollectorType)
   {
 	  LCType=LightCollectorType;
@@ -83,8 +89,14 @@ public:
 
   G4double GetPMTQE(G4String,G4double, G4int, G4double, G4double, G4double);
   G4double GetPMTCollectionEfficiency(G4double theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
+  G4double GetStackingPMTQE(G4double PhotonWavelength, G4int flag, G4double low_wl, G4double high_wl, G4double ratio);
 
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
+
+  void CreateCombinedPMTQE(std::vector<G4String>);
+  WCSimBasicPMTObject *BasicPMT;
+  void SetBasicPMTObject(WCSimBasicPMTObject *PMT){BasicPMT=PMT;}
+  WCSimBasicPMTObject* GetBasicPMTObject(){ return BasicPMT;}
 
   std::map<G4String, WCSimPMTObject*>  CollectionNameMap; 
   WCSimPMTObject * PMTptr;
@@ -98,7 +110,14 @@ public:
     if (PMTptr == NULL) {G4cout << CollectionName << " is not a recognized hit collection. Exiting WCSim." << G4endl; exit(1);}
     return PMTptr;
   }
- 
+
+  WCSimWLSProperties *CreateWLSObject(G4String);
+  WCSimWLSProperties *WLSptr;
+  void SetWLSPointer(WCSimWLSProperties *WLS){WLSptr=WLS;}
+  WCSimWLSProperties* GetWLSPointer(){
+    return WLSptr;
+  }
+
   G4ThreeVector GetWCOffset(){return WCOffset;}
   
   // Related to the WC tube ID
@@ -141,7 +160,40 @@ public:
   G4String GetODCollectionName(){return WCODCollectionName;}
 
   bool GetIsODConstructed(){return isODConstructed;}
+  bool GetIsCombinedPMTCollectionDefined(){return isCombinedPMTCollectionDefined;}
 
+  ///////////////////////////////
+  // MESSENGER methods for OD ///
+  ///////////////////////////////
+
+  void SetWCPMTODSize(G4String WCPMTODSize){
+    if(WCPMTODSize == "PMT8inch" || WCPMTODSize == "PMT5inch" || WCPMTODSize == "PMT3inch"){
+      WCSimPMTObject *PMTOD = CreatePMTObject(WCPMTODSize, WCODCollectionName);
+      WCPMTODName           = PMTOD->GetPMTName();
+      WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
+      WCPMTODRadius         = PMTOD->GetRadius();
+    }
+  }
+
+  void SetWCODLateralWaterDepth(G4double val){WCODLateralWaterDepth = val;}
+  void SetWCODHeightWaterDepth(G4double val){WCODHeightWaterDepth = val;}
+  void SetWCODDeadSpace(G4double val){WCODDeadSpace = val;}
+  void SetWCODTyvekSheetThickness(G4double val){WCODTyvekSheetThickness = val;}
+  void SetWCODWLSPlatesThickness(G4double val){WCODWLSPlatesThickness = val;}
+  void SetWCODWLSPlatesLength(G4double val){WCODWLSPlatesLength = val;}
+  void SetWCPMTODperCellHorizontal(G4double val){WCPMTODperCellHorizontal = val;}
+  void SetWCPMTODperCellVertical(G4double val){WCPMTODperCellVertical = val;}
+  void SetWCPMTODPercentCoverage(G4double val){WCPMTODPercentCoverage = val;}
+  void SetWCODPMTShift(G4double val){WCODPMTShift = val;}
+  void SetODEdited(G4bool val){odEdited = val;}
+  void SetIsWLSFilled(G4bool val){isWLSFilled = val;}
+  void SetBuildODWLSCladding(G4bool val){BuildODWLSCladding = val;}
+  G4bool GetODEdited(){return odEdited;}
+
+  ////////// END OD /////////////
+  ///////////////////////////////
+
+  G4double GetWCIDHeight(){return WCIDHeight;}
   G4double GetIDRadius()     {return WCIDRadius;}
   G4double GetIDHeight()     {return WCIDHeight;}
  
@@ -166,13 +218,21 @@ private:
   //Tyvek surface - jl145
   G4OpticalSurface * OpWaterTySurface;
 
+  //WLS surface - jl145
+  G4OpticalSurface * OpWaterWLSSurface;
+  G4OpticalSurface * OpWLSTySurface;
+
+  //Cladding
+  G4OpticalSurface * WlsOdOpCladdingSurface;
+
   // The messenger we use to change the geometry.
 
   WCSimDetectorMessenger* messenger;
 
   // The Construction routines
   G4LogicalVolume*   ConstructCylinder();
-  G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank",bool WLS=false);
+  G4LogicalVolume* ConstructPMTAndWLSPlate(G4String,G4String,G4String detectorElement="OD");
 
   G4LogicalVolume* ConstructCaps(G4int zflip);
 
@@ -181,8 +241,9 @@ private:
   G4LogicalVolume* logicWCBarrelCellODTyvek;
   G4LogicalVolume* logicWCTowerODTyvek;
 
-  G4LogicalVolume* logicWCBarrelCellODWLSPlate;
-  G4LogicalVolume* logicWCTowerODWLSPlate;
+  G4LogicalVolume* logicWCODWLSAndPMT;
+  G4LogicalVolume* logicWCODWLSPlate;
+  G4LogicalVolume* logicWCODWLSPlateCladding;
 
   G4LogicalVolume* logicWCBarrelCellBlackSheet;
   G4LogicalVolume* logicWCTowerBlackSheet;
@@ -270,6 +331,7 @@ private:
   G4double WCPMTRadius;
   G4double WCPMTExposeHeight;
   G4double WCBarrelPMTOffset;
+  G4double WCBorderPMTOffset;
 
   G4double WCIDDiameter;
 
@@ -309,6 +371,7 @@ private:
   // ############################# //
 
   bool isODConstructed;
+  bool isCombinedPMTCollectionDefined;
 
   // Parameters controlled by user
   G4double WCODDiameter;
@@ -319,6 +382,8 @@ private:
   G4double WCODHeightWaterDepth;
   G4double WCODDeadSpace;
   G4double WCODTyvekSheetThickness;
+  G4double WCODWLSPlatesThickness;
+  G4double WCODWLSPlatesLength;
 
   G4double WCODCapPMTSpacing;
   G4double WCODCapEdgeLimit;
@@ -336,6 +401,10 @@ private:
 
   // Hit collection name parameters
   G4String WCODCollectionName;
+
+  // WLS material name
+  bool isWLSFilled;
+  bool BuildODWLSCladding;
 
   // ############################# //
   // # *** END OD Parameters *** # //
@@ -414,8 +483,10 @@ private:
     G4double outerPMT_TopRpitch;
     G4double outerPMT_BotRpitch;
     G4double outerPMT_Apitch;
+    G4bool odEdited;
 
-    G4double blackSheetThickness;
+
+  G4double blackSheetThickness;
 
     G4int innerPMT_TopN;
     G4int innerPMT_BotN;
@@ -465,3 +536,5 @@ private:
 
 #endif
 
+
+//  LocalWords:  val

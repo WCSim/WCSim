@@ -1,19 +1,35 @@
 #ifndef WCSimSteppingAction_h
 #define WCSimSteppingAction_h 1
 
+
 #include "G4Event.hh"
 #include "G4UserSteppingAction.hh"
 #include "G4ThreeVector.hh"
 
+#include "WCSimRunAction.hh"
+
 class G4HCofThisEvent;
 class G4Event;
 
+// First we have a structure to hold the values of the emitted photon.
+typedef struct {
+
+  G4ThreeVector direction; // The direction of the emitted photon.
+  G4ThreeVector position; // The position where the emitted photon was created (same as where the incident photon was absorbed).
+  double energy; // The energy value of the emitted photon.
+  double wavelength; // The wavelength of the emitted photon.
+
+} EmittedPhoton;
+
+
 class WCSimSteppingAction : public G4UserSteppingAction
 {
+ private:
+  WCSimRunAction* runAction;
+  WCSimDetectorConstruction* det;
 
 public:
-  WCSimSteppingAction()
-  {};
+  WCSimSteppingAction(WCSimRunAction*,WCSimDetectorConstruction*);
 
   ~WCSimSteppingAction()
   {};
@@ -31,6 +47,8 @@ public:
   G4double FieldLines(G4double x,
 		      G4double y,
 		      G4int xy);
+
+  WCSimRunAction* GetRunAction(){return runAction;}
 
 private:
 

@@ -33,7 +33,6 @@
 #include <iomanip>
 #include <string>
 #include <vector>
-#include <climits>
 
 #include "jhfNtuple.h"
 #include "TTree.h"
@@ -100,7 +99,6 @@ void WCSimEventAction::CreateDAQInstances()
 {
   if(ConstructedDAQClasses) {
     G4cerr << "WCSimEventAction::CreateDAQInstances() has already been called. Exiting..." << G4endl;
-    return;
     exit(-1);
   }
 
@@ -342,14 +340,14 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // Repeat the steps for the OD
   // ----------------------------------------------------------------------
 
-  WCSimWCHitsCollection* WCHC_OD;
+  WCSimWCHitsCollection* WCHC_OD=NULL;
   WCSimWCPMT* WCDMPMT_OD=NULL;
   WCSimWCAddDarkNoise* WCDNM_OD=NULL;
   WCSimWCDigitizerBase* WCDM_OD=NULL;
   WCSimWCTriggerBase* WCTM_OD=NULL;
   G4int WCDChitsID_OD;
   WCSimWCDigitsCollection* WCDC_hits_OD=NULL;
-  WCSimWCTriggeredDigitsCollection *WCDC_OD;
+  WCSimWCTriggeredDigitsCollection *WCDC_OD=NULL;
   if(detectorConstructor->GetIsODConstructed()){
     WCHC_OD = 0;
     G4String WCODCollectionName = detectorConstructor->GetODCollectionName();
@@ -430,7 +428,6 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
    G4int npar = 0;
 
    // First two tracks are special: beam and target
-
    for( Int_t u=0; u<nvtxs; u++ ){
      /////////////////////////////////
      // npar = 0        NEUTRINO /////
@@ -517,7 +514,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      jhfNtuple.parent[npar] = 0;
 
      npar++;
-   }
+  }
 
   ////////////////////////
   // npar > nvertices  ///
@@ -532,9 +529,10 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       {
 	WCSimTrajectory* trj = 
 	  (WCSimTrajectory*)((*(evt->GetTrajectoryContainer()))[i]);
-	
+	 
 	if (trj->GetCharge() != 0.)
 	  trj->DrawTrajectory(50);
+
 	if(abs(trj->GetPDGEncoding()) == PDG_e && trj->GetParentID() == u+1 && trj->GetTrackID() < trkid_e) {
 	  trkid_e = trj->GetTrackID();
 	  idx_e = i;
@@ -867,7 +865,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // First two tracks come from jhfNtuple, as they are special
 
   int k;
-  //Modify to add decay products
   for (k=0;k<jhfNtuple.npar;k++) // should be just 2
   {
     double dir[3];
@@ -880,7 +877,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       pdir[l]=jhfNtuple.pdir[k][l];
       stop[l]=jhfNtuple.stop[k][l];
       start[l]=jhfNtuple.start[k][l];
-      //G4cout<< "start[" << k << "][" << l <<"]: "<< jhfNtuple.start[k][l] <<G4endl;
+	//G4cout<< "start[" << k << "][" << l <<"]: "<< jhfNtuple.start[k][l] <<G4endl;
     }
 
     // Add the track to the TClonesArray
@@ -938,8 +935,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     if ( trj->GetPDGEncoding() == -13 ) antimuonList.insert(trj->GetTrackID());
     if ( trj->GetPDGEncoding() == 211 ) pionList.insert(trj->GetTrackID());
     if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
+    if ( trj->GetParentID() == 0 ) primaryList.insert(trj->GetTrackID());
        
-    if( trj->GetParentID() == 0 ) primaryList.insert(trj->GetTrackID());
 
     // Process primary tracks or the secondaries from pizero or muons...
 

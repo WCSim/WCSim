@@ -68,8 +68,8 @@ public:
   void SetNtuples(int ntup) {ntuples=ntup;}
 
   void SetUseTimer(bool use) { useTimer = use; }
-  
-private:
+
+ private:
   // MFechner : set by the messenger
   std::string RootFileName;
   //
@@ -95,6 +95,7 @@ private:
 
   bool useTimer; ///< Use the timer? Set by Messenger.
   TStopwatch timer; ///< A timer for runtime analysis
+
 };
 
 #endif

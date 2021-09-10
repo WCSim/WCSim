@@ -14,7 +14,6 @@
 #include "TLorentzVector.h"
 #include <string>
 #include <vector>
-#include <iostream>
 #include "jhfNtuple.h"
 //#include <map>
 //#include "G4Transform3D.hh"
@@ -422,6 +421,5 @@ private:
   ClassDef(WCSimRootEvent,1)
 
 };
-
 
 #endif

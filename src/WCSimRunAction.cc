@@ -103,6 +103,14 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   //set detector & random options
   wcsimdetector->SaveOptionsToOutput(wcsimrootoptions);
   wcsimrandomparameters->SaveOptionsToOutput(wcsimrootoptions);
+
+  //set Tree for gathering photon info inside stepping action
+  /* Remove this feature. No longer needed.
+  photonTree = new TTree("photons","Photons in WLS Tree");
+  wcsimPhoEvt = new photonEvt();
+  photonTree->Branch("phoEvt",wcsimPhoEvt,
+                     "trackID/I:parentID/I:pos[3]/D:distance/D:wl/D:proc/I");
+  */
 }
 
 void WCSimRunAction::EndOfRunAction(const G4Run*)
@@ -182,8 +190,8 @@ void WCSimRunAction::FillGeoTree(){
 
 
   pmtradius = wcsimdetector->GetPMTSize1();
-  numpmt = wcsimdetector->GetTotalNumPmts();
   pmtradiusOD = wcsimdetector->GetODPMTSize();
+  numpmt = wcsimdetector->GetTotalNumPmts();
   numpmtOD = wcsimdetector->GetTotalNumODPmts();
   orientation = 0;
   
@@ -198,6 +206,7 @@ void WCSimRunAction::FillGeoTree(){
   wcsimrootgeom-> SetWCOffset(offset[0],offset[1],offset[2]);
   
   std::vector<WCSimPmtInfo*> *fpmts = wcsimdetector->Get_Pmts();
+  std::vector<WCSimPmtInfo*> *fODpmts = wcsimdetector->Get_ODPmts();
   WCSimPmtInfo *pmt;
   for (unsigned int i=0;i!=fpmts->size();i++){
     pmt = ((WCSimPmtInfo*)fpmts->at(i));
@@ -211,12 +220,6 @@ void WCSimRunAction::FillGeoTree(){
     cylLoc = pmt->Get_cylocation();
     wcsimrootgeom-> SetPMT(i,tubeNo,cylLoc,rot,pos);
   }
-  if (fpmts->size() != (unsigned int)numpmt) {
-    G4cout << "Mismatch between number of ID pmts and pmt list in geofile.txt!!"<<G4endl;
-    G4cout << fpmts->size() <<" vs. "<< numpmt <<G4endl;
-  }
-
-  std::vector<WCSimPmtInfo*> *fODpmts = wcsimdetector->Get_ODPmts();
   for (unsigned int i=0;i!=fODpmts->size();i++){
     pmt = ((WCSimPmtInfo*)fODpmts->at(i));
     pos[0] = pmt->Get_transx();
@@ -227,13 +230,17 @@ void WCSimRunAction::FillGeoTree(){
     rot[2] = pmt->Get_orienz();
     tubeNo = pmt->Get_tubeid();
     cylLoc = pmt->Get_cylocation();
-    wcsimrootgeom-> SetPMT(i,tubeNo,cylLoc,rot,pos);
+    wcsimrootgeom-> SetPMT(i+fpmts->size(),tubeNo+fpmts->size(),cylLoc,rot,pos);
   }
   if (fpmts->size() != (unsigned int)numpmt) {
-    G4cout << "Mismatch between number of OD pmts and pmt list in geofile.txt!!"<<G4endl;
-    G4cout << fODpmts->size() <<" vs. "<< numpmt <<G4endl;
+    G4cout << "Mismatch between number of ID pmts and pmt list in geofile.txt!!"<<G4endl;
+    G4cout << fpmts->size() <<" vs. "<< numpmt <<G4endl;
   }
-
+  if (fODpmts->size() != (unsigned int)numpmtOD) {
+    G4cout << "Mismatch between number of OD pmts and pmt list in geofile.txt!!"<<G4endl;
+    G4cout << fODpmts->size() <<" vs. "<< numpmtOD <<G4endl;
+  }
+  
   wcsimrootgeom-> SetWCNumPMT(numpmt);
   wcsimrootgeom-> SetODWCNumPMT(numpmtOD);
 

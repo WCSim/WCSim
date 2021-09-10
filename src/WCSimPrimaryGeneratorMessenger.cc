@@ -13,20 +13,26 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   genCmd = new G4UIcmdWithAString("/mygen/generator",this);
   genCmd->SetGuidance("Select primary generator.");
   //T. Akiri: Addition of laser
-  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, radioactive, radon");
+  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, cosmics, radioactive, radon");
   genCmd->SetParameterName("generator",true);
   genCmd->SetDefaultValue("muline");
   //T. Akiri: Addition of laser
-  genCmd->SetCandidates("muline gun laser gps radioactive radon");
+  genCmd->SetCandidates("muline gun laser gps cosmics radioactive radon");
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
   fileNameCmd->SetGuidance("Select the file of vectors.");
   fileNameCmd->SetGuidance(" Enter the file name of the vector file");
   fileNameCmd->SetParameterName("fileName",true);
   fileNameCmd->SetDefaultValue("inputvectorfile");
+
+  fileNameCmdCosmics = new G4UIcmdWithAString("/mygen/cosmicsfile",this);
+  fileNameCmdCosmics->SetGuidance("Select the file of cosmics.");
+  fileNameCmdCosmics->SetGuidance(" Enter the file name of the cosmics file");
+  fileNameCmdCosmics->SetParameterName("fileName",true);
+  fileNameCmdCosmics->SetDefaultValue("data/MuonFlux-HyperK-ThetaPhi.dat");
   
   timeUnitCmd = new G4UIcmdWithAString("/mygen/time_unit",this);
-  timeUnitCmd->SetGuidance("Define the units used for tme in the input file.");
+  timeUnitCmd->SetGuidance("Define the units used for time in the input file.");
   timeUnitCmd->SetGuidance("Can be picosecond, ps, ns, nanosecond, ms, millisecond, s, sec or second");
   timeUnitCmd->SetGuidance("Default if not set is nanosecond");
   timeUnitCmd->SetParameterName("unit",true);
@@ -88,6 +94,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGunEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
     }
@@ -97,6 +104,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGunEvtGenerator(true);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
     }
@@ -106,6 +114,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGunEvtGenerator(false);
       myAction->SetLaserEvtGenerator(true);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
     }
@@ -115,6 +124,17 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGunEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(true);
+      myAction->SetCosmicsGenerator(false);
+      myAction->SetRadioactiveEvtGenerator(false);
+      myAction->SetRadonEvtGenerator(false);
+    }
+    else if ( newValue == "cosmics")
+    {
+      myAction->SetMulineEvtGenerator(false);
+      myAction->SetGunEvtGenerator(false);
+      myAction->SetLaserEvtGenerator(false);
+      myAction->SetGPSEvtGenerator(false);
+      myAction->SetCosmicsGenerator(true);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
     }
@@ -124,6 +144,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGunEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(true);
       myAction->SetRadonEvtGenerator(false);
     }
@@ -133,17 +154,22 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGunEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(true);
     }
   }
 
-  if( command == fileNameCmd )
+  if( command == fileNameCmd)
   {
     myAction->OpenVectorFile(newValue);
     G4cout << "Input vector file set to " << newValue << G4endl;
   }
-  
+  if(command == fileNameCmdCosmics )
+  {
+    myAction->OpenCosmicsFile(newValue);
+    G4cout << "Input cosmics data file set to " << newValue << G4endl;
+  }
   if( command==isotopeCmd )
   {
     IsotopeCommand(newValue);
@@ -186,6 +212,10 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
       { cv = "laser"; }   //T. Akiri: Addition of laser
     else if(myAction->IsUsingGPSEvtGenerator())
       { cv = "gps"; }
+    else if(myAction->IsUsingCosmicsGenerator())
+      { cv = "cosmics"; }
+    else if(myAction->IsUsingRadioactiveEvtGenerator())
+      { cv = "radioactive"; }
     else if(myAction->IsUsingRadonEvtGenerator())
       { cv = "radon"; }
   }

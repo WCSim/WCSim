@@ -243,6 +243,11 @@ G4double PMT20inch::GetDarkRateConversionFactor(){
   return factor;
 }
 
+G4int PMT20inch::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 8 inch
 
@@ -401,6 +406,11 @@ G4double PMT8inch::GetDarkRate(){
 
 G4double PMT8inch::GetDarkRateConversionFactor(){
   const G4double factor = 1.367;
+  return factor;
+}
+
+G4int PMT8inch::GetNbOfQEDefined(){
+  const G4int factor = 20;
   return factor;
 }
 
@@ -566,6 +576,11 @@ G4double PMT10inch::GetDarkRateConversionFactor(){
   return factor;
 }
 
+G4int PMT10inch::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 10 inch HQE
 
@@ -725,6 +740,11 @@ G4double PMT10inchHQE::GetDarkRate(){
 
 G4double PMT10inchHQE::GetDarkRateConversionFactor(){
   const G4double factor = 1.367;
+  return factor;
+}
+
+G4int PMT10inchHQE::GetNbOfQEDefined(){
+  const G4int factor = 20;
   return factor;
 }
 
@@ -893,6 +913,10 @@ G4double PMT12inchHQE::GetDarkRateConversionFactor(){
   return factor;
 }
 
+G4int PMT12inchHQE::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 20 inch HPD
@@ -1080,6 +1104,11 @@ G4double HPD20inchHQE::GetDarkRateConversionFactor(){
   return factor;
 }
 
+G4int HPD20inchHQE::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HPD
 
@@ -1255,6 +1284,11 @@ G4double HPD12inchHQE::GetDarkRate(){
 
 G4double HPD12inchHQE::GetDarkRateConversionFactor(){
   const G4double factor = 1.119;
+  return factor;
+}
+
+G4int HPD12inchHQE::GetNbOfQEDefined(){
+  const G4int factor = 20;
   return factor;
 }
 
@@ -1451,6 +1485,10 @@ G4double BoxandLine20inchHQE::GetDarkRateConversionFactor(){
   return factor;
 }
 
+G4int BoxandLine20inchHQE::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 12 inch HQE Box and Line PMT
@@ -1635,6 +1673,11 @@ G4double BoxandLine12inchHQE::GetDarkRateConversionFactor(){
   return factor;
 }
 
+G4int BoxandLine12inchHQE::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 5 inch
 
@@ -1775,8 +1818,7 @@ G4double* PMT5inch::Getqpe() //currently uses the same as 20inch
 
 //Currenly the PMT QE info is the same as 20 inch.
 G4double* PMT5inch::GetQE(){
-  G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
-  static G4double QE[20] = { 0.00*correctionFactor, .0139*correctionFactor, .0854*correctionFactor, .169*correctionFactor, .203*correctionFactor, .206*correctionFactor, .211*correctionFactor, .202*correctionFactor,.188*correctionFactor, .167*correctionFactor, .140*correctionFactor, .116*correctionFactor, .0806*correctionFactor, .0432*correctionFactor, .0265*correctionFactor, .0146*correctionFactor, .00756*correctionFactor, .00508*correctionFactor, .00158*correctionFactor, 0.00*correctionFactor};
+  static G4double QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
   return QE;
 }
 G4double* PMT5inch::GetQEWavelength(){static G4double wavelength[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
@@ -1800,6 +1842,11 @@ G4double PMT5inch::GetDarkRateConversionFactor(){
   return factor;
 }
 
+G4int PMT5inch::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 3 inch (transit time spread of 4ns FWHM @1p.e.)
 // Adapted from ET Enterprise http://pprc.qmul.ac.uk/~zsoldos/9302B.pdf
@@ -1808,7 +1855,7 @@ PMT3inch::PMT3inch(){}
 PMT3inch::~PMT3inch(){}
 
 G4String PMT3inch::GetPMTName() {G4String PMTName = "3inch"; return PMTName;}
-G4double PMT3inch::GetExposeHeight() {return 10.*mm;} // Reduced height exposure to take into account the WLS plate thickness
+G4double PMT3inch::GetExposeHeight() {return 29.*mm;}
 G4double PMT3inch::GetRadius() {return 39.*mm;}
 G4double PMT3inch::GetPMTGlassThickness() {return 0.40*cm;}
 G4double PMT3inch::HitTimeSmearing(double Q) {
@@ -1941,8 +1988,7 @@ G4double* PMT3inch::Getqpe() //currently uses the same as 20inch
 
 //PMT QE Info extrapolated from ETEL datasheet
 G4double* PMT3inch::GetQE(){
-  G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
-  static G4double QE[20] = { 0.00*correctionFactor, .005*correctionFactor, .09*correctionFactor, .21*correctionFactor, .28*correctionFactor, .30*correctionFactor, .29*correctionFactor, .28*correctionFactor, .26*correctionFactor, .24*correctionFactor, .22*correctionFactor, .18*correctionFactor, .13*correctionFactor, .075*correctionFactor, .04*correctionFactor, .02*correctionFactor, .008*correctionFactor, 0.00*correctionFactor, 0.00*correctionFactor, 0.00*correctionFactor};
+  static G4double QE[20] = { 0.00, .005, .09, .21, .28, .30, .29, .28, .26, .24, .22, .18, .13, .075, .04, .02, .008, 0.00, 0.00, 0.00};
   return QE;
 }
 G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[20] = { 260., 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640.};
@@ -1964,4 +2010,53 @@ G4double PMT3inch::GetDarkRate(){
 G4double PMT3inch::GetDarkRateConversionFactor(){
   const G4double factor = 1.367;
   return factor;
+}
+
+G4int PMT3inch::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// COMBINED PMTS CLASS
+// Goal is to instantiate purely virtual WCSimPMTObject Classes to contained an extended
+//  QE information of several PMTs collection
+// Useful for applying QE in stacking action when several PMTs collection are defined
+
+
+WCSimBasicPMTObject::WCSimBasicPMTObject(){
+}
+
+WCSimBasicPMTObject::WCSimBasicPMTObject(std::map<G4double,G4double> mQE){
+  mapQE=mQE;
+  std::map<G4double, G4double>::iterator itr;
+  for(itr = mQE.begin(); itr != mQE.end(); itr++) {
+    wavelength.push_back(itr->first);
+    QE.push_back(itr->second);
+  }
+}
+
+WCSimBasicPMTObject::WCSimBasicPMTObject(std::vector<G4double> wl,std::vector<G4double> qe,G4double max){
+  wavelength=wl;
+  QE=qe;
+  maxQE=max;
+}
+
+void WCSimBasicPMTObject::DefineQEHist(std::map<G4double,G4double> mapQE){
+
+  if (gQE != NULL) {
+	  delete gQE;
+	  gQE = nullptr;
+  }
+  gQE = new TGraph(mapQE.size());
+  G4int iPt=0;
+  std::map<G4double, G4double>::iterator itr;
+  for(itr = mapQE.begin(); itr != mapQE.end(); itr++) {
+    gQE->SetPoint(iPt,itr->first,itr->second);
+    iPt++;
+  }
+}
+
+WCSimBasicPMTObject::~WCSimBasicPMTObject(){
+  delete gQE;
 }

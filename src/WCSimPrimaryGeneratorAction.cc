@@ -14,6 +14,11 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <sstream>
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <TFile.h>
 
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
@@ -65,6 +70,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     vtxsvol[u] = 0;
     vtxs[u] = G4ThreeVector(0.,0.,0.);
   }
+
   nuEnergy = 0.;
   _counterRock=0; // counter for generated in Rock
   _counterCublic=0; // counter generated
@@ -90,8 +96,65 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   useGunEvt    		= false;
   useLaserEvt  		= false;
   useGPSEvt    		= false;
+  useCosmics            = false;
   useRadioactiveEvt  	= false;
   useRadonEvt        	= false;
+
+  // Create the relevant histograms to generate muons
+  // according to SuperK flux extrapolated at HyperK site
+  altCosmics = 2*myDC->GetWCIDHeight();
+  G4cout << "altCosmics : " << altCosmics << G4endl;
+  if (inputCosmicsFile.is_open())
+    inputCosmicsFile.close();
+
+
+  inputCosmicsFile.open(cosmicsFileName, std::fstream::in);
+
+  if (!inputCosmicsFile.is_open()) {
+    G4cout << "Cosmics data file " << cosmicsFileName << " not found" << G4endl;
+	exit(-1);
+  } else {
+    G4cout << "Cosmics data file " << cosmicsFileName << " found" << G4endl;
+    string line;
+    vector<string> token(1);
+
+    double binCos, binPhi;
+    double cosThetaMean, cosThetaMin, cosThetaMax;
+    double phiMean, phiMin, phiMax;
+    double flux;
+    double Emean;
+
+    hFluxCosmics = new TH2D("hFluxCosmics","HK Flux", 180,0,360,100,0,1);
+    hFluxCosmics->GetXaxis()->SetTitle("#phi (deg)");
+    hFluxCosmics->GetYaxis()->SetTitle("cos #theta");
+    hEmeanCosmics = new TH2D("hEmeanCosmics","HK Flux", 180,0,360,100,0,1);
+    hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
+    hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
+
+    while ( getline(inputCosmicsFile,line) ){
+      token = tokenize(" $", line);
+
+      binCos=(atof(token[0]));
+      binPhi=(atof(token[1]));
+      cosThetaMean=(atof(token[2]));
+      cosThetaMin=(atof(token[3]));
+      cosThetaMax=(atof(token[4]));
+      phiMean=(atof(token[5]));
+      phiMin=(atof(token[6]));
+      phiMax=(atof(token[7]));
+      flux=(atof(token[8]));
+      Emean=(atof(token[9]));
+
+      hFluxCosmics->SetBinContent(binPhi,binCos,flux);
+      hEmeanCosmics->SetBinContent(binPhi,binCos,Emean);
+    }
+
+    TFile *file = new TFile("cosmicflux.root","RECREATE");
+    hFluxCosmics->Write();
+    hEmeanCosmics->Write();
+    file->Close();
+
+  }
   
   // Radioactive and Radon generator variables:
   radioactive_sources.clear();
@@ -111,9 +174,12 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
              << " = " << _counterRock/(G4double)_counterCublic << G4endl;
   }
   inputFile.close();
+  inputCosmicsFile.close();
   delete particleGun;
   delete MyGPS;   //T. Akiri: Delete the GPS variable
   delete messenger;
+  delete hFluxCosmics;
+  delete hEmeanCosmics;
 }
 
 void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -158,8 +224,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     	{
     		G4cout << "unexpected line begins with " << token[0] << " we were expecting \" begin \" "<<G4endl;
     	}
-		else   // normal parsing begins here
-		{
+	else   // normal parsing begins here
+	{
 		// Read the nuance line 
         // should be nuance <value>
         // but could be just  
@@ -288,7 +354,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   {      // manual gun operation
     particleGun->GeneratePrimaryVertex(anEvent);
 
-    //To prevent occasional seg fault from an un assigned targetpdg 
+	    //To prevent occasional seg fault from an un assigned targetpdg 
     targetpdgs[0] = 2212; //ie. proton
 
     G4ThreeVector P  =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
@@ -332,20 +398,22 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
   else if (useLaserEvt)
     {
-      targetpdgs[0] = 2212; //ie. proton 
       //T. Akiri: Create the GPS LASER event
       MyGPS->GeneratePrimaryVertex(anEvent);
+
+	  //To prevent occasional seg fault from an un assigned targetpdg 
+      targetpdgs[0] = 2212; //ie. proton
       
       G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
       G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
       G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
       
-      //     G4ThreeVector dir  = P.unit();
+      G4ThreeVector dir  = P.unit();
       G4double E         = std::sqrt((P.dot(P)));
       
-      //SetVtx(vtx);
+      SetVtx(vtx);
       SetBeamEnergy(E);
-      //SetBeamDir(dir);
+      SetBeamDir(dir);
       SetBeamPDG(pdg);
     }
   else if (useGPSEvt)
@@ -359,12 +427,63 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       
       G4ThreeVector dir  = P.unit();
       G4double E         = std::sqrt((P.dot(P))+(mass*mass));
+      G4cout << " GPS primary vertex (" << vtx.x() << ", " << vtx.y() << ", " << vtx.z() << "), dir ("
+	     << dir.x() << ", " << dir.y() << ", " << dir.z() << ") m " << m << " E "<< E << " pdg " << pdg << G4endl;
       
       SetVtx(vtx);
       SetBeamEnergy(E);
       SetBeamDir(dir);
       SetBeamPDG(pdg);
     }
+  else if(useCosmics){
+
+    //////////////////
+    // DEBUG PRINTS
+    G4cout << G4endl;
+    G4cout << "COSMYMYMATICS" << G4endl;
+    G4cout << "#############" << G4endl;
+    //////////////////
+
+    double phiMuon, cosThetaMuon;
+    energy = 0;
+    while((int)(energy) == 0){
+      hFluxCosmics->GetRandom2(phiMuon,cosThetaMuon);
+      energy = hEmeanCosmics->GetBinContent(hFluxCosmics->GetBin(phiMuon,cosThetaMuon))*GeV;
+    }
+
+    G4ThreeVector dir(0,0,0);
+    dir.setRThetaPhi(-1,acos(cosThetaMuon),phiMuon);
+    G4ThreeVector vtx(0,0,0);
+    vtx = -dir;
+    vtx.setR(altCosmics);
+
+    int pdgid = 13; // MUON
+    particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));
+    G4double mass =particleGun->GetParticleDefinition()->GetPDGMass();
+    G4double ekin = energy - mass;
+
+    //////////////////
+    // DEBUG PRINTS
+    G4cout << G4endl;
+    G4cout << "Generated at position : " << vtx.getX()/m << "m "
+           << vtx.getY()/m << "m "
+           << vtx.getZ()/m << "m " << G4endl;
+    G4cout << "phi : " << phiMuon << " cosTheta : " << cosThetaMuon << G4endl;
+    G4cout << "E : " << energy/GeV << " GeV" << G4endl;
+    G4cout << G4endl;
+    //////////////////
+
+    SetVtx(vtx);
+    SetBeamEnergy(energy);
+    SetBeamDir(dir);
+    SetBeamPDG(pdgid);
+
+    particleGun->SetParticleEnergy(ekin);
+    particleGun->SetParticlePosition(vtx);
+    particleGun->SetParticleMomentumDirection(dir);
+    particleGun->GeneratePrimaryVertex(anEvent);
+
+  }
   else if (useRadioactiveEvt)
     {
       
@@ -671,6 +790,8 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
     return "gps";
   else if(useLaserEvt)
     return "laser";
+  else if(useCosmics)
+    return "cosmics";
   return "";
 }
 

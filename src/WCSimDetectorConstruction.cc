@@ -41,6 +41,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   debugMode = false;
 
   isODConstructed = false;
+  isCombinedPMTCollectionDefined = false;
 
   myConfiguration = DetConfig;
 
@@ -63,6 +64,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   totalNumPMTs = 0;
   totalNumODPMTs = 0;
   WCPMTExposeHeight= 0.;
+  WCBorderPMTOffset= 0.;
   //-----------------------------------------------------
   // Set the default WC geometry.  This can be changed later.
   //-----------------------------------------------------
@@ -296,4 +298,132 @@ void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
   wcopt->SetPMTQEMethod(PMT_QE_Method);
   wcopt->SetPMTCollEff(PMT_Coll_Eff);
   wcopt->SetGeomHasOD(isODConstructed);
+}
+
+//A function to recalculate the dimensions of the HKOD tank if the parameters are changed
+void WCSimDetectorConstruction::UpdateODGeo()
+{
+  WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
+  WCODDiameter = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
+
+  WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
+  WCODCapEdgeLimit = std::min(WCIDDiameter/2.0 - WCPMTODRadius, WCIDDiameter/2.0 - WCODWLSPlatesLength/2);
+
+  std::vector<G4String> WCColName;
+  WCColName.push_back(WCIDCollectionName);
+  WCColName.push_back(WCODCollectionName);
+  CreateCombinedPMTQE(WCColName);
+}
+
+void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> CollectionName){
+
+  // Show printouts for debugging purposes
+  G4cout << G4endl;
+  G4cout << " ************************* " << G4endl;
+  G4cout << " ** CreateCombinedPMTQE ** " << G4endl;
+  G4cout << " ************************* " << G4endl;
+
+  // Define relevant variable
+  // Create array of maps for CollectionName
+  std::vector< std::map<G4double,G4double> > QEMap;
+  std::vector<G4double> maxQEVec;
+  // Need size of QE array
+  std::vector<G4int> NbOfWLBins;
+
+  // Recover QE for collection name
+  std::vector<WCSimPMTObject*> PMT;
+  // F. Nova: here get values from BoxandLine20inchHQE and from PMT8inch
+  for(unsigned int iPMT=0;iPMT<CollectionName.size();iPMT++){
+    // Access PMT pointer
+    PMT.push_back(GetPMTPointer(CollectionName[iPMT]));
+
+    // Recover WL and QE infos
+    G4double *wavelength = (PMT[iPMT]->GetQEWavelength());
+    G4double *QE = (PMT[iPMT]->GetQE());
+
+    std::map<G4double,G4double> hist;
+    G4cout << G4endl;
+    G4cout << "### Recover PMT collection name "
+           << CollectionName[iPMT] << G4endl;
+    for(int iWL=0;iWL<PMT[iPMT]->GetNbOfQEDefined();iWL++){
+      hist[wavelength[iWL]]=QE[iWL];
+      G4cout << "wavelength[" << wavelength[iWL] <<"nm] : " << QE[iWL] << G4endl;
+    }
+
+    QEMap.push_back(hist);
+    maxQEVec.push_back(PMT[iPMT]->GetmaxQE());
+    NbOfWLBins.push_back(PMT[iPMT]->GetNbOfQEDefined());
+  }
+
+  // Concatenate WL vec and remove duplicate
+  std::map<G4double,G4double> QE;
+
+  // Recursive algorithm to set new QE for combined PMT collection
+  // F. Nova: define QE for a given wavelength as the highest QE in the collection for that wavelength
+  // max(QE1, QE, ...), where each QEi is the value of QE for PMT type i
+  G4double max_QE = 0.;
+  G4cout << G4endl;
+  for(unsigned int iCol=0; iCol<QEMap.size();iCol++){
+    for(std::map<G4double, G4double>::iterator it=QEMap[iCol].begin(); it!=QEMap[iCol].end(); ++it){
+      if(iCol+1<QEMap.size()){
+        std::map<G4double, G4double>::iterator foundWL = QEMap[iCol+1].find(it->first);
+        if(foundWL == QEMap[iCol+1].end()){
+          G4cout << "Undefined QE in next collection" << G4endl;
+          G4cout << "Will add it" << G4endl;
+          G4cout << " ### " << it->first << "nm : " << it->second << G4endl;
+          QE[it->first]=it->second;
+        } else {
+
+	        max_QE = std::max(it->second, foundWL->second);
+          G4cout << "New QE defined for " << it->first << "nm is "
+                 << max_QE << G4endl;
+          QE[it->first]=max_QE;
+        }
+      } else {
+        break;
+      }
+    }
+  }
+
+  G4cout << G4endl;
+
+  // Need to make a special case for the last collection
+  int iCol = QEMap.size()-1;
+  if(iCol>0) {
+    for (std::map<G4double, G4double>::iterator it = QEMap[iCol].begin(); it != QEMap[iCol].end(); ++it) {
+      std::map<G4double, G4double>::iterator foundWL = QEMap[iCol - 1].find(it->first);
+      if (foundWL == QEMap[iCol - 1].end()) {
+        G4cout << G4endl;
+        G4cout << "Special case for last collection" << G4endl;
+        G4cout << " ### " << it->first << "nm : " << it->second << G4endl;
+        QE[it->first] = it->second;
+      }
+    }
+  }
+  G4cout << G4endl;
+
+  // Let's debug this one last time :
+  std::map<G4double, G4double>::iterator itr;
+  for(itr = QE.begin(); itr != QE.end(); itr++){
+    G4cout << " ### " << itr->first << "nm : " << itr->second << G4endl;
+  }
+  G4cout << G4endl;
+
+  // Create a new PMT with an extended QE array containing all PMT collection
+  WCSimBasicPMTObject *newPMT = new WCSimBasicPMTObject(QE);
+  newPMT->SetmaxQE(*std::max_element(maxQEVec.begin(),maxQEVec.end()));
+  newPMT->DefineQEHist(QE);
+  SetBasicPMTObject(newPMT);
+}
+
+WCSimWLSProperties *WCSimDetectorConstruction::CreateWLSObject(G4String WLSType){
+
+  if (WLSType == "EljenEJ286"){
+    WCSimWLSProperties* WLS = new EljenEJ286;
+    WCSimDetectorConstruction::SetWLSPointer(WLS);
+    return WLS;
+  }
+
+  else { G4cout << WLSType << " is not a recognized WLS Type. Exiting WCSim." << G4endl; exit(1);}
+
 }

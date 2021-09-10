@@ -107,6 +107,119 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   waterTank_Length->SetDefaultUnit("mm");
   waterTank_Length->SetUnitCandidates("mm cm m");
 
+  /////////////////////////////////
+  ////////////// OD ///////////////
+  /////////////////////////////////
+
+  // PMT size
+  PMTODRadius = new G4UIcmdWithAString("/WCSim/HyperKOD/PMTODRadius", this);
+  PMTODRadius->SetGuidance("Set the size of OD PMTs (only for Hyper-K Geom atm)");
+  PMTODRadius->SetGuidance("Available options are:\n"
+						  "3inch\n"
+						  "5inch\n"
+						  "8inch\n");
+  PMTODRadius->SetParameterName("PMTODRadius", false);
+  PMTODRadius->SetCandidates("3inch "
+							 "5inch "
+                             "8inch ");
+  PMTODRadius->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  // OD Lateral water depth
+  ODLateralWaterDepth = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperKOD/ODLateralWaterDepth", this);
+  ODLateralWaterDepth->SetGuidance("Set water depth of LATERAL segment of the OD (unit: m cm mm).");
+  ODLateralWaterDepth->SetParameterName("ODLateralWaterDepth", true);
+  ODLateralWaterDepth->SetDefaultValue(1.);
+  ODLateralWaterDepth->SetUnitCategory("Length");
+  ODLateralWaterDepth->SetDefaultUnit("m");
+  ODLateralWaterDepth->SetUnitCandidates("m cm mm");
+
+  // OD Height water depth
+  ODHeightWaterDepth = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperKOD/ODHeightWaterDepth", this);
+  ODHeightWaterDepth->SetGuidance("Set water depth of HEIGHT segment of the OD (unit: m cm mm).");
+  ODHeightWaterDepth->SetParameterName("ODHeightWaterDepth", true);
+  ODHeightWaterDepth->SetDefaultValue(2.);
+  ODHeightWaterDepth->SetUnitCategory("Length");
+  ODHeightWaterDepth->SetDefaultUnit("m");
+  ODHeightWaterDepth->SetUnitCandidates("m cm mm");
+
+  // OD Dead space size
+  ODDeadSpace = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperKOD/ODDeadSpace", this);
+  ODDeadSpace->SetGuidance("Set dead space width between ID and OD (unit: m cm mm).");
+  ODDeadSpace->SetParameterName("ODDeadSpace", true);
+  ODDeadSpace->SetDefaultValue(0.6);
+  ODDeadSpace->SetUnitCategory("Length");
+  ODDeadSpace->SetDefaultUnit("m");
+  ODDeadSpace->SetUnitCandidates("m cm");
+
+  // OD Tyvek sheet thickness
+  ODTyvekSheetThickness = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperKOD/ODTyvekSheetThickness", this);
+  ODTyvekSheetThickness->SetGuidance("Set OD Tyvek sheet thickness (unit: mm).");
+  ODTyvekSheetThickness->SetParameterName("ODTyvekSheetThickness", true);
+  ODTyvekSheetThickness->SetDefaultValue(2.);
+  ODTyvekSheetThickness->SetUnitCategory("Length");
+  ODTyvekSheetThickness->SetDefaultUnit("mm");
+  ODTyvekSheetThickness->SetUnitCandidates("mm");
+
+  // OD WLS Plates thickness
+  ODWLSPlatesThickness = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperKOD/ODWLSPlatesThickness", this);
+  ODWLSPlatesThickness->SetGuidance("Set OD WLS plates thickness (unit: cm mm).");
+  ODWLSPlatesThickness->SetParameterName("ODWLSPlatesThickness", true);
+  ODWLSPlatesThickness->SetDefaultValue(1.);
+  ODWLSPlatesThickness->SetUnitCategory("Length");
+  ODWLSPlatesThickness->SetDefaultUnit("cm");
+  ODWLSPlatesThickness->SetUnitCandidates("cm mm");
+
+  // OD WLS Plates length
+  ODWLSPlatesLength = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperKOD/ODWLSPlatesLength", this);
+  ODWLSPlatesLength->SetGuidance("Set OD WLS plates length (unit: cm mm).");
+  ODWLSPlatesLength->SetParameterName("ODWLSPlatesLength", true);
+  ODWLSPlatesLength->SetDefaultValue(60.);
+  ODWLSPlatesLength->SetUnitCategory("Length");
+  ODWLSPlatesLength->SetDefaultUnit("cm");
+  ODWLSPlatesLength->SetUnitCandidates("cm mm");
+
+  // Nb of OD PMT per cell HORIZONTALLY
+  PMTODperCellHorizontal = new G4UIcmdWithAnInteger("/WCSim/HyperKOD/PMTODperCellHorizontal", this);
+  PMTODperCellHorizontal->SetGuidance("Set number of OD PMT per cell HORIZONTALLY.");
+  PMTODperCellHorizontal->SetParameterName("PMTODperCellHorizontal", true);
+  PMTODperCellHorizontal->SetDefaultValue(1);
+  PMTODperCellHorizontal->SetRange("PMTODperCellHorizontal>=0");
+
+  // Nb of OD PMT per cell HORIZONTALLY
+  PMTODperCellVertical = new G4UIcmdWithAnInteger("/WCSim/HyperKOD/PMTODperCellVertical", this);
+  PMTODperCellVertical->SetGuidance("Set number of OD PMT per cell VERTICALLY.");
+  PMTODperCellVertical->SetParameterName("PMTODperCellVertical", true);
+  PMTODperCellVertical->SetDefaultValue(1);
+  PMTODperCellVertical->SetRange("PMTODperCellVertical>=0");
+
+  // Nb of OD PMT per cell HORIZONTALLY
+  PMTODPercentCoverage = new G4UIcmdWithADouble("/WCSim/HyperKOD/PMTODPercentCoverage", this);
+  PMTODPercentCoverage->SetGuidance("Set global OD photocoverage percentage.");
+  PMTODPercentCoverage->SetParameterName("PMTODPercentCoverage", true);
+  PMTODPercentCoverage->SetDefaultValue(1.);
+  PMTODPercentCoverage->SetRange("PMTODPercentCoverage>0");
+
+  // OD Tyvek sheet thickness
+  ODPMTShift = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperKOD/ODPMTShift", this);
+  ODPMTShift->SetGuidance("Set a horizontal shift between rows of PMTs OD (unit: m cm mm).");
+  ODPMTShift->SetParameterName("ODPMTShift", true);
+  ODPMTShift->SetDefaultValue(0.);
+  ODPMTShift->SetUnitCategory("Length");
+  ODPMTShift->SetDefaultUnit("m");
+  ODPMTShift->SetUnitCandidates("m cm mm");
+
+  // Fill the OD WLS with material
+  isWLSFilled = new G4UIcmdWithoutParameter("/WCSim/HyperKOD/DeactivateWLS", this);
+  isWLSFilled->SetGuidance("Deactivate WLS plates by filling them with water");
+
+  // Build reflective cladding around WLS plate
+  BuildODWLSCladding = new G4UIcmdWithoutParameter("/WCSim/HyperKOD/BuildODWLSCladding", this);
+  BuildODWLSCladding->SetGuidance("Build reflective cladding around WLS plate");
+
+  /////////// END OD //////////////
+  /////////////////////////////////
+
+
   LCConfig = new G4UIcmdWithAString("/WCSim/LCConfig",this);
   LCConfig->SetGuidance("Set the geometry configuration for the light collecting mirror.");
   LCConfig->SetGuidance("**For 20 inch PMT Only**");
@@ -169,6 +282,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->SetHyperKGeometry_20perCent();
 		} else if ( newValue == "HyperKWithOD" ){
 		  WCSimDetector->SetHyperKWithODGeometry();
+		  WCSimDetector->SetODEdited(false);
 		} else if ( newValue == "EggShapedHyperK") {
 		  WCSimDetector->SetIsEggShapedHyperK(true);
 		  WCSimDetector->SetEggShapedHyperKGeometry();
@@ -256,19 +370,115 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 			G4cout << "That PMT size is not defined!" << G4endl;	
 	}
 
-	if( command == LCConfig ) { 
-		// LC Type is defined in WCSimDetectorConstruction.hh
-		if ( newValue == "No_Mirror") {
-		  WCSimDetector->SetLCType(0);
-		} else if ( newValue == "Mirror_OldLC" ){
-		  WCSimDetector->SetLCType(1);
-		} else if ( newValue == "Mirror_2018Oct" ){
-		  WCSimDetector->SetLCType(2);
-		}
-	}
 
-	if(command == WCConstruct) {
-		WCSimDetector->UpdateGeometry();
-	}
+    /////////////////////////////////
+    ////////////// OD ///////////////
+    /////////////////////////////////
+
+    if(command == PMTODRadius){
+      WCSimDetector->SetODEdited(true);
+      G4cout << "Set OD PMT size " << newValue << " ";
+      if (newValue == "3inch"){
+        WCSimDetector->SetWCPMTODSize("PMT3inch");
+      }else if (newValue == "5inch"){
+        WCSimDetector->SetWCPMTODSize("PMT5inch");
+      }else if (newValue == "8inch"){
+        WCSimDetector->SetWCPMTODSize("PMT8inch");
+      }
+      G4cout << G4endl;
+    }
+
+    if(command == ODLateralWaterDepth){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set water depth on OD lateral side " << newValue << " " << G4endl;
+      WCSimDetector->SetWCODLateralWaterDepth(ODLateralWaterDepth->GetNewDoubleValue(newValue));
+    }
+
+    if(command == ODHeightWaterDepth){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set water depth on OD vertical side " << newValue << " " << G4endl;
+      WCSimDetector->SetWCODHeightWaterDepth(ODHeightWaterDepth->GetNewDoubleValue(newValue));
+    }
+
+    if(command == ODDeadSpace){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set dead space width between ID and OD " << newValue << " " << G4endl;
+      WCSimDetector->SetWCODDeadSpace(ODDeadSpace->GetNewDoubleValue(newValue));
+    }
+
+    if(command == ODTyvekSheetThickness){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set OD Tyvek thickness " << newValue << " " << G4endl;
+      WCSimDetector->SetWCODTyvekSheetThickness(ODTyvekSheetThickness->GetNewDoubleValue(newValue));
+    }
+
+    if(command == ODWLSPlatesThickness){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set OD WLS plates thickness " << newValue << " " << G4endl;
+      WCSimDetector->SetWCODWLSPlatesThickness(ODWLSPlatesThickness->GetNewDoubleValue(newValue));
+    }
+
+    if(command == ODWLSPlatesLength){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set OD WLS plates length " << newValue << " " << G4endl;
+      WCSimDetector->SetWCODWLSPlatesLength(ODWLSPlatesLength->GetNewDoubleValue(newValue));
+    }
+
+    if(command == PMTODperCellHorizontal){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set nb of OD PMTs per cell Horizontally " << newValue << " " << G4endl;
+      WCSimDetector->SetWCPMTODperCellHorizontal((G4double)PMTODperCellHorizontal->GetNewIntValue(newValue));
+    }
+
+    if(command == PMTODperCellVertical){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set nb of OD PMTs per cell Vertically " << newValue << " " << G4endl;
+      WCSimDetector->SetWCPMTODperCellVertical((G4double)PMTODperCellVertical->GetNewIntValue(newValue));
+    }
+
+    if(command == PMTODPercentCoverage){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set global photocoverage of the OD " << newValue << " " << G4endl;
+      WCSimDetector->SetWCPMTODPercentCoverage(PMTODPercentCoverage->GetNewDoubleValue(newValue));
+    }
+
+    if(command == ODPMTShift){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set shift between OD PMTs rows " << newValue << " " << G4endl;
+      WCSimDetector->SetWCODPMTShift(ODPMTShift->GetNewDoubleValue(newValue));
+    }
+
+    if(command == isWLSFilled) {
+      WCSimDetector->SetODEdited(true);
+      G4cout << "Deactivate WLS plates by filling them with water " << G4endl;
+      WCSimDetector->SetIsWLSFilled(false);
+    }
+
+    if(command == BuildODWLSCladding) {
+      WCSimDetector->SetODEdited(true);
+      G4cout << "Add cladding around WLS plate " << G4endl;
+      WCSimDetector->SetBuildODWLSCladding(true);
+    }
+
+
+    /////////// END OD //////////////
+    /////////////////////////////////
+
+    if( command == LCConfig ) { 
+      // LC Type is defined in WCSimDetectorConstruction.hh
+      if ( newValue == "No_Mirror") {
+	WCSimDetector->SetLCType(0);
+      } else if ( newValue == "Mirror_OldLC" ){
+	WCSimDetector->SetLCType(1);
+      } else if ( newValue == "Mirror_2018Oct" ){
+	WCSimDetector->SetLCType(2);
+      }
+    }
+
+    if(command == WCConstruct) {
+      //If the OD geometry has been changed, then reconstruct the whole tank with the proper recalculated dimensions
+      if (WCSimDetector->GetODEdited() == true) {WCSimDetector->UpdateODGeo();}
+      WCSimDetector->UpdateGeometry();
+    }
 
 }

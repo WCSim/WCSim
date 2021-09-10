@@ -154,6 +154,9 @@ set(WCSIM_SCRIPTS
   macros/visRayTracer.mac
   macros/visOGLQt.mac	
   macros/tuning_parameters.mac
+  macros/OD.mac
+  macros/OD_10k.mac
+  data/MuonFlux-HyperK-ThetaPhi.dat
   )
 
 foreach(_script ${WCSIM_SCRIPTS})
@@ -163,6 +166,11 @@ foreach(_script ${WCSIM_SCRIPTS})
     COPYONLY
     )
 endforeach()
+
+file(
+	COPY ${PROJECT_SOURCE_DIR}/rootwc
+	DESTINATION ${PROJECT_BINARY_DIR}
+)
 
 #----------------------------------------------------------------------------
 # For internal Geant4 use - but has no effect if you build this

@@ -22,7 +22,7 @@ WCSimTrackingAction::WCSimTrackingAction()
   ParticleList.insert(-321); // kaon-
   ParticleList.insert(311); // kaon0
   ParticleList.insert(-311); // kaon0 bar
-  
+
   ParticleList.insert(11);
   ParticleList.insert(-11);
   ParticleList.insert(12);
@@ -82,6 +82,10 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   if (aTrack->GetUserInformation())
     anInfo = (WCSimTrackInformation*)(aTrack->GetUserInformation());
   else anInfo = new WCSimTrackInformation();
+
+  // F. Nova One can check here if the photon comes from WLS
+  // if(creatorProcess && creatorProcess->GetProcessName()== "OpWLS")
+  //   G4cout << " OpWLS" << G4endl;
 
   // is it a primary ?
   // is the process in the set ? 
@@ -148,7 +152,6 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   }
 
 }
-
 
 
 
