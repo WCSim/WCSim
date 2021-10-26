@@ -1,6 +1,32 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
+10/26/2021: Notes for v1.10.0
+*************************************************************
+
+The main feature of this release is the OD geometry including WLS plates
+Note that with this release, WCSim now requires a C++11 (or C++0x) compatible compiler 
+
+Update
+* Pull Request [#218](https://github.com/WCSim/WCSim/pull/218): Solve deprecated `ext/hash_map` header warning (now using C++11’s `unordered_map`)
+* Pull Request [#266](https://github.com/WCSim/WCSim/pull/266): Expand `MakeKin.py` to allow random uniform distributions of particle energies & times
+* Pull Request [#292](https://github.com/WCSim/WCSim/pull/292): Updated radon model
+* Pull Request [#307](https://github.com/WCSim/WCSim/pull/307): Make cmake compilation work with ROOT6 (+ scripts to compile on sukap)
+* Pull Request [#212](https://github.com/WCSim/WCSim/pull/212): Modify indices saved to `WCSimRootCherenkovDigiHit::GetPhotonIds()`
+* Pull Request [#313](https://github.com/WCSim/WCSim/pull/313): Use `G4cout` instead of `printf`
+
+New feature
+* Pull Request [#304](https://github.com/WCSim/WCSim/pull/304): `hadd` scripts for combining WCSim files
+* Pull Request [#297](https://github.com/WCSim/WCSim/pull/297): Event generator based on cosmic muon flux
+* Pull Request [#297](https://github.com/WCSim/WCSim/pull/297): OD geometry including wavelength shifting plates
+* github actions version of CI build and run validation
+
+Bug Fix
+* Pull Request [#247](https://github.com/WCSim/WCSim/pull/247): Use `map` features, instead of array-style access/iteration, in `WCSimWCDigi`
+* Pull Request [#298](https://github.com/WCSim/WCSim/pull/298): Make NoTrigger trigger work for OD
+* Pull Request [#312](https://github.com/WCSim/WCSim/pull/312): ROOT `TRandom3` randomizer initialisation
+
+*************************************************************
 04/12/2021: Notes for v1.9.4
 *************************************************************
 
