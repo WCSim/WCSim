@@ -33,7 +33,8 @@ jobs:
       # Print all the info about the action
       - name: Logging
         run: |
-          echo "${{toJSON(github)}}"
+          echo "Test print"
+        #echo "${{toJSON(github)}}"
     
       - name: Get repo to checkout
         id: checkout_repo
