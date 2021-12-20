@@ -92,6 +92,7 @@ WCSimRootPMT::WCSimRootPMT()
 }
 //______________________________________________________________________________
 WCSimRootPMT::WCSimRootPMT(const WCSimRootPMT & in)
+  : TObject()
 {
   fTubeNo = in.GetTubeNo();
   fCylLoc = in.GetCylLoc();
@@ -138,7 +139,7 @@ void WCSimRootGeom::SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc,
   TClonesArray &pmtArray = hybridsecondtype?*fPMTArray2:*fPMTArray;
   if(expand)
     pmtArray.ExpandCreate(i+2);
-  WCSimRootPMT *jPMT = new(pmtArray[i]) WCSimRootPMT(tubeno, cyl_loc, rot, pos);
+  new(pmtArray[i]) WCSimRootPMT(tubeno, cyl_loc, rot, pos);
 }
 
 //______________________________________________________________________________
@@ -149,7 +150,7 @@ void WCSimRootGeom::SetPMT(Int_t i, Int_t tubeno, Int_t mPMTNo, Int_t mPMT_PMTNo
   TClonesArray &pmtArray = hybridsecondtype?*fPMTArray2:*fPMTArray;
   if(expand)
     pmtArray.ExpandCreate(i+2);
-  WCSimRootPMT *jPMT = new(pmtArray[i]) WCSimRootPMT(tubeno, mPMTNo, mPMT_PMTNo, cyl_loc, rot, pos);
+  new(pmtArray[i]) WCSimRootPMT(tubeno, mPMTNo, mPMT_PMTNo, cyl_loc, rot, pos);
 }
 
 //______________________________________________________________________________
