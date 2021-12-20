@@ -149,8 +149,6 @@ protected:
   WCSimWCDAQMessenger*       DAQMessenger; ///< Get the options from the .mac file
   WCSimDetectorConstruction* myDetector;   ///< Know about the detector, so can add appropriate PMT time smearing
   G4String detectorElement;
-
-  G4String detectorElement;
   
   /// Clear the Trigger* vectors and DigiHitMap
   void ReInitialize() {
