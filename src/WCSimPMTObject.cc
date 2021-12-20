@@ -109,8 +109,8 @@ double PMT20inch::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double PMT20inch::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 G4double* PMT20inch::Getqpe()
@@ -297,8 +297,8 @@ G4double PMT8inch::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double PMT8inch::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 G4double* PMT8inch::Getqpe() //currently uses the same as 20inch
@@ -472,8 +472,8 @@ G4double PMT5inch::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double PMT5inch::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor;
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 G4double* PMT5inch::Getqpe() //currently uses the same as 20inch
@@ -814,8 +814,8 @@ G4double PMT3inch::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double PMT3inch::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 G4double* PMT3inch::Getqpe() //currently uses the same as 20inch
@@ -988,8 +988,8 @@ G4double PMT3inchGT::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double PMT3inchGT::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 
@@ -1164,8 +1164,8 @@ double PMT10inch::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double PMT10inch::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 
@@ -1341,8 +1341,8 @@ G4double PMT10inchHQE::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double PMT10inchHQE::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 G4double* PMT10inchHQE::Getqpe() //currently uses the same as 20inch
@@ -1517,8 +1517,8 @@ G4double PMT12inchHQE::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double PMT12inchHQE::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 
@@ -1712,8 +1712,8 @@ double HPD20inchHQE::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double HPD20inchHQE::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 
@@ -1904,8 +1904,8 @@ double HPD12inchHQE::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double HPD12inchHQE::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 
@@ -2295,8 +2295,8 @@ double BoxandLine20inchHQE::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double BoxandLine20inchHQE::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 
@@ -2494,8 +2494,8 @@ double BoxandLine12inchHQE::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double BoxandLine12inchHQE::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 G4double* BoxandLine12inchHQE::Getqpe()
@@ -2680,7 +2680,7 @@ G4double PMT3inchR12199_02::GetPMTGlassThickness() {return 0.1*cm;}     // TF: f
 
 // Currently based on 8" (instead of 20")
 // But shifted to requirements (2ns TTS FWHM) for 1 pe
-double PMT3inchR12199_02::HitTimeSmearing(double Q, double TTSFF=1.0/*, double linearity = 0. /*meaning linearity default = false*/) {
+double PMT3inchR12199_02::HitTimeSmearing(double Q, double TTSFF=1.0/*, double linearity = 0. meaning linearity default = false*/) {
   double timingConstant = 1.890;
   double timingResolution;
   double Smearing_factor;
@@ -2706,8 +2706,8 @@ double PMT3inchR12199_02::HitTimeSmearing(double Q, double TTSFF=1.0/*, double l
 // TD 2019.07.16
 double PMT3inchR12199_02::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 
@@ -2925,8 +2925,8 @@ double PMT4inchR12199_02::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double PMT4inchR12199_02::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 G4double* PMT4inchR12199_02::Getqpe()
@@ -3119,8 +3119,8 @@ double PMT5inchR12199_02::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double PMT5inchR12199_02::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 G4double* PMT5inchR12199_02::Getqpe()
@@ -3311,8 +3311,8 @@ double PMT3inchR14374::HitTimeSmearing(double Q, double TTSFF=1.0) {
 // TD 2019.07.16
 double PMT3inchR14374::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
-  double SaturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
-  return SaturFactor; 
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
 }
 
 // To Add!!
