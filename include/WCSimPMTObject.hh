@@ -436,28 +436,6 @@ protected:
   G4double* GetCollectionEfficiencyArray();
 };
 
-class PMT3inch : public WCSimPMTObject
-{
-
- public:
-
-  PMT3inch();
-  ~PMT3inch();
-
- public:
-  G4String GetPMTName();
-  G4double GetExposeHeight();
-  G4double GetRadius();
-  G4double* Getqpe();
-  G4double* GetQE();
-  G4double* GetQEWavelength();
-  G4double  GetmaxQE();
-  double    HitTimeSmearing(double);
-  G4double GetPMTGlassThickness();
-  G4double GetDarkRate();
-  G4double GetDarkRateConversionFactor();
-  G4int    GetNbOfQEDefined();
-};
 
 class WCSimBasicPMTObject
 {
