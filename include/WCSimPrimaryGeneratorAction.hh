@@ -24,6 +24,12 @@ class G4ParticleGun;
 class G4GeneralParticleSource;
 class G4Event;
 
+struct radioactive_source {
+  G4String IsotopeName;
+  G4String IsotopeLocation;
+  G4double IsotopeActivity;
+};
+
 class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
 public:
@@ -278,12 +284,6 @@ private:
   }
   inline G4double GetTimeUnit()       { return fTimeUnit; }
 
-};
-
-struct radioactive_source {
-  G4String IsotopeName;
-  G4String IsotopeLocation;
-  G4double IsotopeActivity;
 };
 
 #endif
