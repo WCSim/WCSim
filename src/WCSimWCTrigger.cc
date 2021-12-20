@@ -40,8 +40,8 @@ const double WCSimWCTriggerBase::LongTime = 40E9; // ns = 40s. loooong time for 
 WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
 				       WCSimDetectorConstruction* inDetector,
 				       WCSimWCDAQMessenger* myMessenger,
-				       G4String detectorElement)
-  :G4VDigitizerModule(name), DAQMessenger(myMessenger), myDetector(inDetector), triggerClassName(""), detectorElement(detectorElement)
+				       G4String inDetectorElement)
+  :G4VDigitizerModule(name), DAQMessenger(myMessenger), myDetector(inDetector), detectorElement(inDetectorElement), triggerClassName("")
 {
   G4String colName;
   if(detectorElement=="tank") colName = "WCDigitizedCollection";
@@ -593,10 +593,10 @@ void WCSimWCDigiTrigger::Print()
 // *******************************************
 
 WCSimWCTriggerNDigits::WCSimWCTriggerNDigits(G4String name,
-					     WCSimDetectorConstruction* myDetector,
+					     WCSimDetectorConstruction* inDetector,
 					     WCSimWCDAQMessenger* myMessenger,
-					     G4String detectorElement)
-  :WCSimWCTriggerBase(name, myDetector, myMessenger, detectorElement)
+					     G4String inDetectorElement)
+  :WCSimWCTriggerBase(name, inDetector, myMessenger, inDetectorElement)
 {
   triggerClassName = "NDigits";
   GetVariables();
@@ -621,10 +621,10 @@ void WCSimWCTriggerNDigits::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
 
 
 WCSimWCTriggerNoTrigger::WCSimWCTriggerNoTrigger(G4String name,
-						 WCSimDetectorConstruction* myDetector,
+						 WCSimDetectorConstruction* inDetector,
 						 WCSimWCDAQMessenger* myMessenger,
-						 G4String detectorElement)
-  :WCSimWCTriggerBase(name, myDetector, myMessenger, detectorElement)
+						 G4String inDetectorElement)
+  :WCSimWCTriggerBase(name, inDetector, myMessenger, inDetectorElement)
 {
   triggerClassName = "NoTrigger";
   GetVariables();
@@ -648,10 +648,10 @@ void WCSimWCTriggerNoTrigger::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
 // *******************************************
 
 WCSimWCTriggerNDigits2::WCSimWCTriggerNDigits2(G4String name,
-					       WCSimDetectorConstruction* myDetector,
+					       WCSimDetectorConstruction* inDetector,
 					       WCSimWCDAQMessenger* myMessenger,
-					       G4String detectorElement)
-  :WCSimWCTriggerBase(name, myDetector, myMessenger, detectorElement)
+					       G4String inDetectorElement)
+  :WCSimWCTriggerBase(name, inDetector, myMessenger, inDetectorElement)
 {
   triggerClassName = "NDigits2";
   GetVariables();
