@@ -50,7 +50,7 @@ public:
   ///Get the trigger type of the ith trigger
   TriggerType_t        GetTriggerType(int i) { return TriggerTypes[i];}
   ///Get the additional trigger information associated with the ith trigger
-  std::vector<Float_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
+  std::vector<Double_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
   ///Get the trigger class name
   G4String GetTriggerClassName(){ return triggerClassName; }
 
@@ -144,7 +144,7 @@ protected:
 
   std::vector<Double_t>               TriggerTimes; ///< The times of the triggers
   std::vector<TriggerType_t>          TriggerTypes; ///< The type of the triggers
-  std::vector< std::vector<Float_t> > TriggerInfos; ///< Additional information associated with each trigger
+  std::vector< std::vector<Double_t> > TriggerInfos; ///< Additional information associated with each trigger
 
   WCSimWCDAQMessenger*       DAQMessenger; ///< Get the options from the .mac file
   WCSimDetectorConstruction* myDetector;   ///< Know about the detector, so can add appropriate PMT time smearing
@@ -190,7 +190,7 @@ private:
     int i, j;
     TriggerType_t index_type;
     double index_time;
-    std::vector<float> index_info;
+    std::vector<Double_t> index_info;
     for (i = 1; i < (int) TriggerTimes.size(); ++i) {
       index_time = TriggerTimes[i];
       index_type = TriggerTypes[i];

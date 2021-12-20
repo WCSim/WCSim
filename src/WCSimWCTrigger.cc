@@ -390,7 +390,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
     if(triggertype != save_triggerType && save_triggerType != kTriggerUndefined)
       continue;
     double         triggertime = TriggerTimes[itrigger];
-    std::vector<Float_t> triggerinfo = TriggerInfos[itrigger];
+    std::vector<Double_t> triggerinfo = TriggerInfos[itrigger];
 
     //these are the boundary of the trigger gate: we want to add all digits within these bounds to the output collection
     double lowerbound = triggertime + GetPreTriggerWindow(triggertype);
@@ -494,7 +494,7 @@ void WCSimWCTriggerBase::AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool rem
 {
   //Does not doanything, just writes out all hits
   TriggerType_t this_triggerType = kTriggerNoTrig;
-  std::vector<Float_t> triggerinfo;
+  std::vector<Double_t> triggerinfo;
   Int_t Ndigits=0;
   for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
     Ndigits += (*WCDCPMT)[i]->GetTotalPe();

@@ -357,7 +357,7 @@ private:
   TClonesArray         *fCherenkovDigiHits;  //-> Array of WCSimRootCherenkovDigiHit's
 
   TriggerType_t        fTriggerType;         // Trigger algorithm that created this trigger
-  std::vector<Float_t> fTriggerInfo;         // Information about how it passed the trigger (e.g. how many hits in the NDigits window)
+  std::vector<Double_t> fTriggerInfo;         // Information about how it passed the trigger (e.g. how many hits in the NDigits window)
 
   bool IsZombie;
 
@@ -374,7 +374,7 @@ public:
   static void   Reset(Option_t *option ="");
 
   void          SetHeader(Int_t i, Int_t run, int64_t date,Int_t subevtn=1);
-  void          SetTriggerInfo(TriggerType_t trigger_type, std::vector<Float_t> trigger_info);
+  void          SetTriggerInfo(TriggerType_t trigger_type, std::vector<Double_t> trigger_info);
   bool          IsASubEvent() {  return (fEvtHdr.GetSubEvtNumber()>=1); }
   void          SetMode(Int_t i) {fMode[0] = i;}
   void          SetMode(Int_t index, Int_t value){fMode[index]=value;}
