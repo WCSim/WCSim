@@ -269,7 +269,7 @@ void WCSimRootTrigger::SetHeader(Int_t i,
 //_____________________________________________________________________________
 
 void WCSimRootTrigger::SetTriggerInfo(TriggerType_t trigger_type,
-				      std::vector<Double_t> trigger_info)
+				      std::vector<Float_t> trigger_info)
 {
   fTriggerType = trigger_type;
   fTriggerInfo.resize(trigger_info.size());
