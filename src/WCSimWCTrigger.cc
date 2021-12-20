@@ -327,7 +327,7 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
       triggertime -= (int)triggertime % 5;
       TriggerTimes.push_back(triggertime);
       TriggerTypes.push_back(this_triggerType);
-      TriggerInfos.push_back(std::vector<Double_t>(1, n_digits));
+      TriggerInfos.push_back(std::vector<Float_t>(1, n_digits));
       triggerfound = true;
     }
 
@@ -376,7 +376,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       return;
     TriggerTypes.push_back(kTriggerFailure);
     TriggerTimes.push_back(saveFailuresTime);
-    TriggerInfos.push_back(std::vector<Double_t>(1, -1));
+    TriggerInfos.push_back(std::vector<Float_t>(1, -1));
     save_triggerType = kTriggerFailure;
   }
 
