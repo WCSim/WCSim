@@ -800,6 +800,7 @@ bool WCSimRootTrack::CompareAllVariables(const WCSimRootTrack * c) const
   failed = (!ComparisonPassed(fParenttype, c->GetParenttype(), typeid(*this).name(), __func__, "Parenttype")) || failed;
   failed = (!ComparisonPassed(fTime, c->GetTime(), typeid(*this).name(), __func__, "Time")) || failed;
   failed = (!ComparisonPassed(fId, c->GetId(), typeid(*this).name(), __func__, "Id")) || failed;
+  failed = (!ComparisonPassed(fParentId, c->GetParentId(), typeid(*this).name(), __func__, "ParentId")) || failed;
 
   return !failed;
 }
@@ -845,8 +846,8 @@ bool WCSimRootCherenkovDigiHit::CompareAllVariables(const WCSimRootCherenkovDigi
   failed = (!ComparisonPassed(fQ, c->GetQ(), typeid(*this).name(), __func__, "Q")) || failed;
   failed = (!ComparisonPassed(fT, c->GetT(), typeid(*this).name(), __func__, "T")) || failed;
   failed = (!ComparisonPassed(fTubeId, c->GetTubeId(), typeid(*this).name(), __func__, "TubeId")) || failed;
-  failed = (!ComparisonPassed(fmPMTID, c->GetmPMTID(), typeid(*this).name(), __func__, "mPMTID")) || failed;
-  failed = (!ComparisonPassed(fmPMT_PMTID, c->GetmPMT_PMTID(), typeid(*this).name(), __func__, "mPMT_PMTID")) || failed;
+  failed = (!ComparisonPassed(fmPMTId, c->GetmPMTId(), typeid(*this).name(), __func__, "mPMTID")) || failed;
+  failed = (!ComparisonPassed(fmPMT_PMTId, c->GetmPMT_PMTId(), typeid(*this).name(), __func__, "mPMT_PMTID")) || failed;
   failed = (!ComparisonPassedVec(fPhotonIds, c->GetPhotonIds(), typeid(*this).name(), __func__, "PhotonIds")) || failed;
 
   return !failed;
@@ -878,8 +879,6 @@ bool WCSimRootCapture::CompareAllVariables(const WCSimRootCapture * c) const
   failed = (!ComparisonPassed(fTotalGammaE, c->GetTotalGammaE(), typeid(*this).name(), __func__, "TotalGammaE")) || failed;
   failed = (!ComparisonPassed(fCaptureT, c->GetCaptureT(), typeid(*this).name(), __func__, "CaptureT")) || failed;
   failed = (!ComparisonPassed(fCaptureNucleus, c->GetCaptureNucleus(), typeid(*this).name(), __func__, "CaptureNucleus")) || failed;
-  failed = (!ComparisonPassed(fVAR, c->GetVAR(), typeid(*this).name(), __func__, "VAR")) || failed;
-
 
   //Check the totals of the gamma arrays
   if(this->GetGammas()->GetEntries() != c->GetGammas()->GetEntries()) {
@@ -1094,7 +1093,7 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c, bool deep
 
   failed = (!ComparisonPassed(fNvtxs, c->GetNvtxs(), typeid(*this).name(), __func__, "Nvtxs")) || failed;
   for(int ivtx = 0; ivtx < fNvtxs; ivtx++) {
-    failed = (!ComparisonPassed(fMode[ivtx], c->GetMode(), typeid(*this).name(), __func__, TString::Format("Mode[%d]", ivtx)) || failed;
+    failed = (!ComparisonPassed(fMode[ivtx], c->GetMode(), typeid(*this).name(), __func__, TString::Format("Mode[%d]", ivtx))) || failed;
     failed = (!ComparisonPassed(fVtxsvol[ivtx], c->GetVtxsvol(ivtx), typeid(*this).name(), __func__, TString::Format("Vtxvols[%d]", ivtx))) || failed;
     for(int i = 0; i < 4; i++) {
       failed = (!ComparisonPassed(fVtxs[ivtx][i], c->GetVtxs(ivtx, i), typeid(*this).name(), __func__, TString::Format("%s[%d][%d]", "Vtxs", ivtx, i))) || failed;

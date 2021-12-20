@@ -28,17 +28,17 @@ class WCSimRootTrack : public TObject {
 private:
 
   // See jhfNtuple.h for the meaning of these data members:
-  Int_t   fIpnu;        
-  Int_t   fFlag;        
-  Double_t fM;
-  Double_t fP;
-  Double_t fE;
+  Int_t   fIpnu;
+  Int_t   fFlag;
+  Float_t fM;
+  Float_t fP;
+  Float_t fE;
   Int_t   fStartvol;
   Int_t   fStopvol;
-  Double_t fDir[3];
-  Double_t fPdir[3];
-  Double_t fStop[3];
-  Double_t fStart[3];
+  Float_t fDir[3];
+  Float_t fPdir[3];
+  Float_t fStop[3];
+  Float_t fStart[3];
   Int_t fParenttype;
   Double_t fTime;
   Int_t fId;
@@ -78,7 +78,7 @@ public:
   Int_t     GetParenttype(/*Int_t i=0*/) const {return fParenttype;}
   Double_t   GetTime() const { return fTime;}
   Int_t     GetId() const {return fId;}
-  Int_t     GetParentId(){return fParentId;}
+  Int_t     GetParentId() const {return fParentId;}
 
   ClassDef(WCSimRootTrack,1)  
 };
@@ -141,13 +141,13 @@ public:
   virtual ~WCSimRootCherenkovHitTime() { }
   bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 
-  Double_t  GetTruetime() { return fTruetime;}
-  Int_t     GetParentID() { return fPrimaryParentID;}
-  Float_t   GetPhotonStartTime() { return fPhotonStartTime; }
-  Float_t   GetPhotonStartPos(int i) { return (i<3) ? fPhotonStartPos[i] : 0; }
-  Float_t   GetPhotonEndPos(int i) { return (i<3) ? fPhotonEndPos[i] : 0; }
-  Float_t   GetPhotonStartDir(int i) { return (i<3) ? fPhotonStartDir[i] : 0; }
-  Float_t   GetPhotonEndDir(int i) { return (i<3) ? fPhotonEndDir[i] : 0; }
+  Double_t  GetTruetime() const { return fTruetime;}
+  Int_t     GetParentID() const { return fPrimaryParentID;}
+  Float_t   GetPhotonStartTime() const { return fPhotonStartTime; }
+  Float_t   GetPhotonStartPos(int i) const { return (i<3) ? fPhotonStartPos[i] : 0; }
+  Float_t   GetPhotonEndPos(int i) const { return (i<3) ? fPhotonEndPos[i] : 0; }
+  Float_t   GetPhotonStartDir(int i) const { return (i<3) ? fPhotonStartDir[i] : 0; }
+  Float_t   GetPhotonEndDir(int i) const { return (i<3) ? fPhotonEndDir[i] : 0; }
 
   ClassDef(WCSimRootCherenkovHitTime,1)  
 };
@@ -229,6 +229,8 @@ public:
   WCSimRootPi0() {}
 
   virtual ~WCSimRootPi0() {}
+
+  bool CompareAllVariables(const WCSimRootPi0 * c) const;
 
   void Set(Double_t pi0Vtx[3],
 	   Int_t   gammaID[2],
