@@ -137,7 +137,7 @@ protected:
    * for testing purposes. Triggers issued in this mode have type kTriggerNDigitsTest
    */
   void AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
-  void AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
+  void AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits);
 
   WCSimWCTriggeredDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
   std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
