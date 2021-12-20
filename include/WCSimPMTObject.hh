@@ -126,6 +126,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
 };
 
 class PMT3inchGT : public WCSimPMTObject
