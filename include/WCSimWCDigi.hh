@@ -97,7 +97,7 @@ public:
   inline void SetTime(G4int gate, G4double T)    {time[gate]   = T;};
   inline void SetPreSmearTime(G4int gate, G4double T)    {time_presmear[gate]   = T;};
   inline void SetParentID(G4int gate, G4int parent) { primaryParentID[gate] = parent; };
-  inline void SetPhotonStartTime(G4int gate, G4float time) { photonStartTime[gate] = time; };
+  inline void SetPhotonStartTime(G4int gate, G4float starttime) { photonStartTime[gate] = starttime; };
   inline void SetPhotonStartPos(G4int gate, const G4ThreeVector &position) { photonStartPos[gate] = position; };
   inline void SetPhotonEndPos(G4int gate, const G4ThreeVector &position) { photonEndPos[gate] = position; };
   inline void SetPhotonStartDir(G4int gate, const G4ThreeVector &direction) { photonStartDir[gate] = direction; };
