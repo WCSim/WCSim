@@ -33,9 +33,9 @@ void WCSimDetectorConstruction::ConstructMaterials()
   G4double pressure    = 1.e-19*pascal;
   G4double temperature = 0.1*kelvin;
   a = 1.01*g/mole;
-  G4Material* Vacuum = 
+  //G4Material* Vacuum =
     new G4Material("Vacuum", 1., a, density,
-                   kStateGas,temperature,pressure);
+		   kStateGas,temperature,pressure);
 
   //---Water
   
@@ -320,9 +320,9 @@ void WCSimDetectorConstruction::ConstructMaterials()
 // Generate & Add Material Properties Table
 // -------------------------------------------------------------
 
-
+  /*
   const G4int NUMENTRIES = 32;
- 
+
   G4double PPCKOV[NUMENTRIES] =
     { 2.034E-9*GeV, 2.068E-9*GeV, 2.103E-9*GeV, 2.139E-9*GeV,
       2.177E-9*GeV, 2.216E-9*GeV, 2.256E-9*GeV, 2.298E-9*GeV,
@@ -332,7 +332,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
       3.026E-9*GeV, 3.102E-9*GeV, 3.181E-9*GeV, 3.265E-9*GeV,
       3.353E-9*GeV, 3.446E-9*GeV, 3.545E-9*GeV, 3.649E-9*GeV,
       3.760E-9*GeV, 3.877E-9*GeV, 4.002E-9*GeV, 4.136E-9*GeV };
-
+  */
 
   // default values
   /*
@@ -542,6 +542,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    G4cout << "MIEFF: " << MIEFF << G4endl;
 
    //Values extracted from Skdetsim
+   /*
    G4double MIE_water[NUMENTRIES_water] = {
      7790020*cm*MIEFF, 7403010*cm*MIEFF, 7030610*cm*MIEFF, 6672440*cm*MIEFF, 6328120*cm*MIEFF, 
      5997320*cm*MIEFF, 5679650*cm*MIEFF, 5374770*cm*MIEFF, 5082340*cm*MIEFF, 4802000*cm*MIEFF, 
@@ -556,6 +557,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
       141456*cm*MIEFF,  122931*cm*MIEFF,  106288*cm*MIEFF, 91395.2*cm*MIEFF,   78125*cm*MIEFF, 
      66355.2*cm*MIEFF, 55968.2*cm*MIEFF, 46851.2*cm*MIEFF, 38896.2*cm*MIEFF,   32000*cm*MIEFF
    };
+   */
 
    //Mie scattering length values when assuming 10 times larger than Rayleigh scattering. 
    /*G4double MIE_water[NUMENTRIES_water] = {
@@ -574,7 +576,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    };
    */
 
-   G4double MIE_water_const[3]={0.4,0.,1};// gforward, gbackward, forward backward ratio
+   //G4double MIE_water_const[3]={0.4,0.,1};// gforward, gbackward, forward backward ratio
 
 
    //From SKDETSIM
@@ -758,7 +760,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
        0.001*m,0.001*m,0.001*m,0.001*m,0.001*m,0.001*m,
        0.001*m,0.001*m,0.001*m,0.001*m,0.001*m,0.001*m};
       
-       //utter fiction at this stage, does not matter
+   //utter fiction at this stage, does not matter
+   /*
    G4double MIE_air[NUMENTRIES_water] =
      { 0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
        0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,
@@ -772,7 +775,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
        0.1*m,0.1*m,0.1*m,0.1*m,0.1*m,0.1*m};
 
    G4double MIE_air_const[3]={0.99,0.99,0.8};// gforward, gbackward, forward backward ratio
-
+   */
      
    //Not used yet, fictional values
    //G4double SPECULARLOBECONSTANT1[NUMENTRIES] =
@@ -1183,8 +1186,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
   G4MaterialPropertiesTable *WlsPlasticMPT = new G4MaterialPropertiesTable();
 
-  double no_absorption = 1000.*m;
-  double immediate_absorption = 0.*m;
+  //double no_absorption = 1000.*m;
+  //double immediate_absorption = 0.*m;
   double some_absorption = 1.*m;
 
   // active glass will be a thin layer absorbing everything in the right energy range
@@ -1376,8 +1379,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
 
    //ToDo:
-   G4MaterialPropertiesTable *AgPropTable = new G4MaterialPropertiesTable();
-   G4MaterialPropertiesTable *AlAg1PropTable = new G4MaterialPropertiesTable();
+   //G4MaterialPropertiesTable *AgPropTable = new G4MaterialPropertiesTable();
+   //G4MaterialPropertiesTable *AlAg1PropTable = new G4MaterialPropertiesTable();
 }
 
 void WCSimDetectorConstruction::AddDopedWater(G4double percentGd){
