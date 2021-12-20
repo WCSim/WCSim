@@ -321,6 +321,111 @@ void WCSimDetectorConstruction::SetHyperK_3inchGeometry()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+
+}
+
+void WCSimDetectorConstruction::SetHyperKWithODGeometry()
+{
+  WCDetectorName = "HyperKWithOD";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = PMT->GetRadius();
+  WCIDDiameter          = 64.8*m; // = 68m - 2*(60cm ID wall + 1m OD)(69m with 0.5m concrete each side)
+  WCIDHeight            = 65.8*m; // = 71m - 2*(60cm ID wall + 2m OD)(72m with 0.5m concrete on each side)
+  WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
+  WCBorderPMTOffset     = 0.25*m; // PMT offset in border cells. Also makes distance between PMTs shorter.
+  WCPMTperCellHorizontal= 8;
+  WCPMTperCellVertical  = 6;
+  WCPMTPercentCoverage  = 40.0;
+  WCBarrelNumPMTHorizontal = 288;
+  WCBarrelNRings =
+      round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+
+  //////////////////////////////////////
+  // Cave Parameters --- Beta version //
+  //////////////////////////////////////
+  CaveTyvekSheetThickness  = 1.*mm; // Quite Standard I guess
+
+  ////////////////////////////////////
+  // OD Parameters --- Beta version //
+  ////////////////////////////////////
+  isODConstructed = true;
+
+  // OD Dimensions //
+  WCODLateralWaterDepth    = 1.*m;
+  WCODHeightWaterDepth     = 2.*m;
+  WCODDeadSpace            = 600.*mm;
+  WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
+  WCODWLSPlatesThickness   = 1.*cm; //
+  WCODWLSPlatesLength      = 60.*cm; //
+  WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
+
+  // OD PMTs //
+  WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT8inch", WCODCollectionName);
+  WCPMTODName           = PMTOD->GetPMTName();
+  WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
+  WCPMTODRadius         = PMTOD->GetRadius();
+
+  // OD Coverage on barrel side //
+  WCPMTODperCellHorizontal = 1;
+  WCPMTODperCellVertical   = 1;
+
+  // OD Coverage on caps //
+  WCPMTODPercentCoverage   = 1.0; //default 1%
+  // NOTE : If you set WCPMTODperCellHorizontal=0 and WCPMTODperCellVertical=0,
+  // then method ComputeWCODPMT() inside ConstructCylinder will automatically compute
+  // the nb of PMTs to put on barrel side according to WCPMTODPercentCoverage
+
+  // Shift between PMTs inside a cell //
+  WCODPMTShift = 0.*cm;
+
+  // OD caps //
+  // WCODCapPMTSpacing = 100*cm;
+  WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
+  WCODCapEdgeLimit = WCIDDiameter/2.0 - WCODWLSPlatesLength/2;
+
+  // TEST combined PMT collection for stacking action
+  std::vector<G4String> WCColName;
+  WCColName.push_back(WCIDCollectionName);
+  WCColName.push_back(WCODCollectionName);
+  CreateCombinedPMTQE(WCColName);
+  isCombinedPMTCollectionDefined=true;
+
+  // TEST WLS collection for stacking action
+  G4String WLSType = "EljenEJ286";
+  isWLSFilled = true;
+  BuildODWLSCladding = true;
+  CreateWLSObject(WLSType);
+}
+
+void WCSimDetectorConstruction::SetHyperKGeometry_20perCent()
+{
+  WCDetectorName = "HyperK_20perCent";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = PMT->GetRadius();
+  WCIDDiameter          = 70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
+  WCPMTperCellHorizontal= 4;
+  WCPMTperCellVertical  = 3;
+  WCPMTPercentCoverage  = 20.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
 }
 // B.Quilain, HK with mPMTs
 // These are defaults that can be altered through the macros

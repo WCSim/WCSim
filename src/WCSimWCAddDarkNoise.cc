@@ -31,8 +31,13 @@
 #endif
 //#define HYPER_VERBOSITY
 
+#ifndef HYPER_VERBOSITY
+// #define HYPER_VERBOSITY
+#endif
+
 WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,
-					 WCSimDetectorConstruction* inDetector, G4String detectorElement)
+                                         WCSimDetectorConstruction* inDetector,
+                                         G4String detectorElement)
   :G4VDigitizerModule(name), fCalledAddDarkNoise(false), myDetector(inDetector), detectorElement(detectorElement)
 {
   //Set defaults to be unphysical, so that we know if they have been overwritten by the user
@@ -40,7 +45,6 @@ WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,
   ConvRate    = -99;
 
   //Get the user options
-  //DarkRateMessenger = new WCSimDarkRateMessenger(this);
   DarkRateMessenger = WCSimDarkRateMessenger::GetInstance();
   DarkRateMessenger->AddDarkRateInstance(this, detectorElement);
   DarkRateMessenger->Initialize();
@@ -59,8 +63,10 @@ void WCSimWCAddDarkNoise::SetPMTDarkDefaults()
   G4String WCCollectionName;
   if(detectorElement == "tank") WCCollectionName = myDetector->GetIDCollectionName();
   else if(detectorElement == "tankPMT2") WCCollectionName = myDetector->GetIDCollectionName2();
+  else if(detectorElement == "OD") WCCollectionName = myDetector->GetODCollectionName();
   else G4cout << "### detectorElement undefined ..." << G4endl;
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
+
   double const conversion_to_kHz = 1000000; //ToDo: remove this and treat DarkRate in CLHEP units throughout the class.
 
   double defaultPMTDarkRate = PMT->GetDarkRate() * conversion_to_kHz;
@@ -89,15 +95,18 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
   G4String thecollectionName;
   if(detectorElement=="tank") thecollectionName="WCRawPMTSignalCollection";
   else if(detectorElement=="tankPMT2") thecollectionName="WCRawPMTSignalCollection2";
+  else if(detectorElement=="OD") thecollectionName="WCRawPMTSignalCollection_OD";
   else G4cout << "### detectorElement undefined ..." << G4endl;
   
   G4int WCHCID = DigiMan->GetDigiCollectionID(thecollectionName);
-  // Get the PMT Digits collection                                                                                                                                        
+
+  // Get the PMT Digits collection
   WCSimWCDigitsCollection* WCHCPMT =
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCHCID));
   
 #ifdef HYPER_VERBOSITY
   if(detectorElement=="tankPMT2"){G4cout<<"WCSimWCAddDarkNoise::AddDarkNoise retrieved hit collection (WCSimWCDigitsCollection*)"<<thecollectionName<<" which has "<<WCHCPMT->entries()<<" entries"<<G4endl;}
+  else if(detectorElement=="OD"){G4cout<<"WCSimWCAddDarkNoise::AddDarkNoise ☆ retrieved hit collection (WCSimWCDigitsCollection*)"<<thecollectionName<<" which has "<<WCHCPMT->entries()<<" entries"<<G4endl;}
 #endif
 
   G4String thetriggertype="";
@@ -105,9 +114,15 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
     WCSimWCTriggerBase *WCTM = (WCSimWCTriggerBase *) DigiMan->FindDigitizerModule("WCReadout2");
     thetriggertype = WCTM->GetTriggerClassName();
   }
+  else if(detectorElement=="OD") {  // check to see if this detector element uses the tank for triggering
+    WCSimWCTriggerBase *WCTM = (WCSimWCTriggerBase *) DigiMan->FindDigitizerModule("WCReadout_OD");
+    thetriggertype = WCTM->GetTriggerClassName();
+  }
 
   WCSimWCDigitsCollection* WCHCPMT_tank=NULL;
+  bool add_noise_based_on_tank = false;
   if(thetriggertype=="TankDigits"){
+    add_noise_based_on_tank = true;
     //if triggertype is TankDigits, then we should add noise in the windows around the *tank* digits, not this
     //collection's digits, because those are the windows that will be relevant when reading out triggers.
     int WCHCID_tank = DigiMan->GetDigiCollectionID("WCRawPMTSignalCollection");
@@ -115,22 +130,20 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCHCID));
 #ifdef HYPER_VERBOSITY
     if(detectorElement=="tankPMT2"){ G4cout<<"WCSimWCAddDarkNoise::AddDarkNoise retrieved hit collection (WCSimWCDigitsCollection*)WCRawPMTSignalCollection for finding dark noise windows, which has "<<WCHCPMT_tank->entries()<<" entries"<<G4endl;}
+    else if(detectorElement=="OD"){ G4cout<<"WCSimWCAddDarkNoise::AddDarkNoise ☆ retrieved hit collection (WCSimWCDigitsCollection*)WCRawPMTSignalCollection for finding dark noise windows, which has "<<WCHCPMT_tank->entries()<<" entries"<<G4endl;}
 #endif
   }
 
-  //DarkMode=1;
+  int sh;
   
-  // if ((WCHCPMT != NULL) && (this->PMTDarkRate > 1E-307)) {
-  if (((WCHCPMT != NULL)||(thetriggertype=="TankDigits"&&WCHCPMT_tank!=NULL)) && (this->PMTDarkRate > 1E-307)) {
+  if(((WCHCPMT != NULL) || (add_noise_based_on_tank && WCHCPMT_tank != NULL))
+     && (this->PMTDarkRate > 1E-307)) {
     //Determine ranges for adding noise
-    // if(DarkMode == 1)
-    // FindDarkNoiseRanges(WCHCPMT,this->DarkWindow);
     if(DarkMode == 1){
-      if(thetriggertype=="TankDigits"){
+      if(add_noise_based_on_tank) {
 	WCSimWCAddDarkNoise* WCDNM_tank = (WCSimWCAddDarkNoise*)DigiMan->FindDigitizerModule("WCDarkNoise");
-	int DarkWindow_tank = WCDNM_tank->GetDarkWindow();
+	double DarkWindow_tank = WCDNM_tank->GetDarkWindow();
 #ifdef HYPER_VERBOSITY
-	//if(detectorElement=="tankPMT2")
 	G4cout<<"WCSimWCAddDarkNoise::AddDarkNoise calling FindDarkNoiseRanges() with tank raw collection and darkwindow size"<<G4endl;
 #endif
 	FindDarkNoiseRanges(WCHCPMT_tank,DarkWindow_tank);
@@ -145,21 +158,18 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
     //loop over pairs which represent ranges.
     //Add noise to those ranges
 #ifdef HYPER_VERBOSITY
-    //if(detectorElement=="tankPMT2")
-    G4cout << "DarkWindow = " << this->DarkWindow << ", dark mode = " << DarkMode << G4endl;
     G4cout<<"WCSimWCAddDarkNoise::AddDarkNoise adding dark noise hits in "<<result.size()<<" window(s) around found digits."<<G4endl;
 #endif
     int windowfordarknoise=0;
 
     for(std::vector<std::pair<double, double> >::iterator it2 = result.begin(); it2 != result.end(); it2++) {
 #ifdef HYPER_VERBOSITY
-      //if(detectorElement=="tankPMT2")
-      G4cout<<"WCSimWCAddDarkNoise::AddDarkNoise adding dark noise in window "<<windowfordarknoise<<G4endl; 
+      G4cout<<"WCSimWCAddDarkNoise::AddDarkNoise adding dark noise in window number "<<windowfordarknoise<<G4endl;
 #endif
       windowfordarknoise++;
       AddDarkNoiseBeforeDigi(WCHCPMT,it2->first,it2->second);
-    }
-  }
+    }//iterator over result (dark noise windows)
+  }//if dark noise is on, and if input hit collections are valid
 }
 
 void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPMT, double num1 ,double num2) {
@@ -174,6 +184,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     G4int thenum_pmts;
     if(detectorElement=="tank") thenum_pmts = myDetector->GetTotalNumPmts();
     else if(detectorElement=="tankPMT2") thenum_pmts = myDetector->GetTotalNumPmts2();
+    else if(detectorElement=="OD") thenum_pmts = myDetector->GetTotalNumODPmts();
     else G4cout << "### detectorElement undefined ..." << G4endl;
     const G4int number_pmts = thenum_pmts;
     int *PMTindex = new int [number_pmts+1];
@@ -199,7 +210,9 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     std::vector<WCSimPmtInfo*> *pmts;
     if(detectorElement=="tank") pmts = myDetector->Get_Pmts();
     else if(detectorElement=="tankPMT2")pmts = myDetector->Get_Pmts2();
+    else if(detectorElement=="OD")pmts = myDetector->Get_ODPmts();
     else G4cout << "### detectorElement undefined ..." << G4endl;
+
     // It works out that the pmts here are ordered !
     // pmts->at(i) has tubeid i+1
     
@@ -221,17 +234,19 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     G4String thewcpmtname;
     if(detectorElement=="tank") thewcpmtname="WCReadoutPMT";
     else if(detectorElement=="tankPMT2") thewcpmtname="WCReadoutPMT2";
+    else if(detectorElement=="OD") thewcpmtname="WCReadoutPMT_OD";
     else G4cout << "### detectorElement undefined ..." << G4endl;
     
     WCSimWCPMT* WCPMT = (WCSimWCPMT*)DMman->FindDigitizerModule(thewcpmtname);
    
     //average number of PMTs with noise
-    double ave=number_pmts * this->PMTDarkRate * this->ConvRate * windowsize * 1E-6; 
+    double ave = number_pmts * this->PMTDarkRate * this->ConvRate * windowsize * 1E-6;
 
     //poisson distributed noise, number of noise hits to add
     int nnoispmt = CLHEP::RandPoisson::shoot(ave);
+
 #ifdef WCSIMWCADDDARKNOISE_VERBOSE
-    G4cout << "Dark Rate = " << this->PMTDarkRate << ", WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Going to add " << nnoispmt << " dark noise hits in time window [" << num1 << "," << num2 << "]" << G4endl;
+    G4cout << "Dark Rate = " << this->PMTDarkRate << ", WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi Going to add " << nnoispmt << " dark noise hits in time window [" << num1 << "," << num2 << "] duration " << num2 - num1 << G4endl;
 #endif
     for( int i = 0; i < nnoispmt; i++ )
       {
@@ -252,12 +267,14 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	    // This Logical volume is GlassFaceWCPMT
 	    if(detectorElement=="tank") ahit->SetLogicalVolume(G4LogicalVolumeStore::GetInstance()->GetVolume(myDetector->GetDetectorName()+"-glassFaceWCPMT"));
 	    else if(detectorElement=="tankPMT2") ahit->SetLogicalVolume(G4LogicalVolumeStore::GetInstance()->GetVolume(myDetector->GetDetectorName()+"-glassFaceWCPMT2"));
+	    else if(detectorElement=="OD")ahit->SetLogicalVolume(G4LogicalVolumeStore::GetInstance()->GetVolume(myDetector->GetDetectorName()+"-glassFaceWCPMT_OD"));
 	    else G4cout << "### detectorElement undefined ..." << G4endl;
 	    
-	      //G4cout<<"1 "<<(G4LogicalVolumeStore::GetInstance()->GetVolume("glassFaceWCPMT"))->GetName()<<"\n";
+	    //G4cout<<"1 "<<(G4LogicalVolumeStore::GetInstance()->GetVolume("glassFaceWCPMT"))->GetName()<<"\n";
 	    //G4cout<<"2 "<<(*WCHCPMT)[0]->GetLogicalVolume()->GetName()<<"\n";
 	    ahit->SetTrackID(-1);
 	    ahit->SetParentID(PMTindex[noise_pmt], -1);
+
 	    // Set the position and rotation of the pmt
 	    Double_t hit_pos[3];
 	    Double_t hit_rot[3];
@@ -335,7 +352,10 @@ void WCSimWCAddDarkNoise::FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, 
       ranges.push_back(std::pair<double, double>(t1, t2));
     }
   }
-  
+
+#ifdef HYPER_VERBOSITY
+  if(detectorElement=="mrd") G4cout<<"WCSimWCAddDarkNoise::FindDarkNoiseRanges ☆ "<<ranges.size()<<" windows around digits found before pruning."<<G4endl;
+#endif
   //we need to ensure that the ranges found above are sorted first
   //for the algorithm below to work
   sort(ranges.begin(),ranges.end());

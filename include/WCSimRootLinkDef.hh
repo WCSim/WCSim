@@ -4,6 +4,7 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
+#pragma link C++ enum  WCSimRandomGenerator_t;
 #pragma link C++ enum  TriggerType_t;
 #pragma link C++ enum  DigitizerType_t;
 

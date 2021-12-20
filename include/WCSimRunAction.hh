@@ -46,6 +46,7 @@ public:
   TBranch* GetBranch(G4String detectorElement = "tank"){
     if(detectorElement=="tank") return wcsimrooteventbranch;
     else if(detectorElement=="tankPMT2")  return wcsimrooteventbranch2;
+    else if(detectorElement=="OD")  return wcsimrooteventbranch_OD;
     else G4cout << "Unkown detector element" << G4endl;
   }
   TTree* GetFlatMasterTree(){return masterTree;}
@@ -54,7 +55,8 @@ public:
   WCSimRootGeom* GetRootGeom(){return wcsimrootgeom;}
   WCSimRootEvent* GetRootEvent(G4String detectorElement = "tank"){
     if(detectorElement=="tank") return wcsimrootsuperevent;
-    if(detectorElement=="tankPMT2") return wcsimrootsuperevent2;
+    else if(detectorElement=="tankPMT2") return wcsimrootsuperevent2;
+    else if(detectorElement=="OD") return wcsimrootsuperevent_OD;
   }
   WCSimRootOptions* GetRootOptions(){return wcsimrootoptions;}
 
@@ -91,16 +93,17 @@ public:
 
   eventNtuple * GetMyStruct(){return evNtup;}
   NRooTrackerVtx * GetMyRooTracker(){return evNRooTracker;}
-
   void SetTree(TTree* tree){WCSimTree=tree;}
   void SetBranch(TBranch* branchin, G4String detectorElement = "tank"){
     if(detectorElement=="tank") wcsimrooteventbranch=branchin;
-    if(detectorElement=="tankPMT2") wcsimrooteventbranch2=branchin;
+    else if(detectorElement=="tankPMT2") wcsimrooteventbranch2=branchin;
+    else if(detectorElement=="OD") wcsimrooteventbranch_OD=branchin;
   }
   void SetGeoTree(TTree* tree){geoTree=tree;}
   void SetRootEvent(WCSimRootEvent* revent, G4String detectorElement = "tank"){
     if(detectorElement=="tank") wcsimrootsuperevent=revent;
-    if(detectorElement=="tankPMT2") wcsimrootsuperevent2=revent;
+    else if(detectorElement=="tankPMT2") wcsimrootsuperevent2=revent;
+    else if(detectorElement=="OD") wcsimrootsuperevent_OD=revent;
   }
   void SetRootGeom(WCSimRootGeom* rgeom){wcsimrootgeom=rgeom;}
 
@@ -126,8 +129,8 @@ public:
   }
 
   void SetUseTimer(bool use) { useTimer = use; }
-  
-private:
+
+ private:
   // MFechner : set by the messenger
   std::string RootFileName;
   // Only required for verification scripts and current fiTQun tuning
@@ -138,10 +141,12 @@ private:
   TTree* WCSimTree;
   TBranch* wcsimrooteventbranch;
   TBranch* wcsimrooteventbranch2;
+  TBranch* wcsimrooteventbranch_OD;
   TTree* geoTree;
   TTree* optionsTree;
   WCSimRootEvent* wcsimrootsuperevent;
   WCSimRootEvent* wcsimrootsuperevent2;
+  WCSimRootEvent* wcsimrootsuperevent_OD;
   WCSimRootGeom* wcsimrootgeom;
   WCSimRootOptions* wcsimrootoptions;
   WCSimDetectorConstruction* wcsimdetector;

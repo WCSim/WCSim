@@ -1,3 +1,4 @@
+#include <WCSimWLSProperties.hh>
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimTuningParameters.hh"
 #include "WCSimPMTObject.hh"
@@ -204,6 +205,28 @@ void WCSimDetectorConstruction::ConstructMaterials()
     = new G4Material("Tyvek",density,2);
   Tyvek->AddElement(elC, 1);  //polyethylene
   Tyvek->AddElement(elH, 2);
+
+  //---PVT - WLS plates eljen EJ-286
+  // linear formula [CH2CH(C6H4CH3)]n
+  density = 1.023*g/cm3;  // at 20deg
+  G4Material* WLS_PVT
+      = new G4Material("WLS_PVT",density,2);
+  WLS_PVT->AddElement(elC, 9); // PVT
+  WLS_PVT->AddElement(elH, 10);
+
+
+  //** OD WLS cladding properties
+  const G4int wls_od_cladding_num = 2;
+  G4double wls_od_cladding_ephoton[wls_od_cladding_num] = { 1.*eV, 10*eV };
+  double WCODWLSCladdingReflectivity = WCSimTuningParams->GetWCODWLSCladdingReflectivity();
+  G4double claddingReflectivity[wls_od_cladding_num] = {WCODWLSCladdingReflectivity, WCODWLSCladdingReflectivity};
+  G4double claddingEfficiency[wls_od_cladding_num] = {0., 0.};
+  G4MaterialPropertiesTable* claddingPT = new G4MaterialPropertiesTable();
+  claddingPT->AddProperty("REFLECTIVITY", wls_od_cladding_ephoton, claddingReflectivity, wls_od_cladding_num);
+  claddingPT->AddProperty("EFFICIENCY", wls_od_cladding_ephoton, claddingEfficiency, wls_od_cladding_num);
+  WlsOdOpCladdingSurface =
+      new G4OpticalSurface("WLSCladdingSurface",unified,polished,dielectric_metal);
+  WlsOdOpCladdingSurface->SetMaterialPropertiesTable(claddingPT);
 
   //---Glass
  
@@ -471,7 +494,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
    // Get from the tuning parameters
    RAYFF = WCSimTuningParams->GetRayff();
-       printf("RAYFF: %f\n",RAYFF);
+   G4cout << "RAYFF: " << RAYFF << G4endl;
 
    //T. Akiri: Values from Skdetsim 
    G4double RAYLEIGH_water[NUMENTRIES_water] = {
@@ -516,7 +539,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    // Get from the tuning parameters
    G4double MIEFF = WCSimTuningParams->GetMieff();
    //G4double MIEFF = 0.0;
-       printf("MIEFF: %f\n",MIEFF);
+   G4cout << "MIEFF: " << MIEFF << G4endl;
 
    //Values extracted from Skdetsim
    G4double MIE_water[NUMENTRIES_water] = {
@@ -1089,33 +1112,143 @@ void WCSimDetectorConstruction::ConstructMaterials()
      { 0.0, 0.0 };
 
 
-   // jl145 ----
-   //
-   OpWaterTySurface =
-     new G4OpticalSurface("WaterTyCellSurface");
+  ///////////////////////
+  // ##### TYVEK ##### //
+  ///////////////////////
 
-   OpWaterTySurface->SetType(dielectric_dielectric);
-   OpWaterTySurface->SetModel(unified); 
-   OpWaterTySurface->SetFinish(groundbackpainted); //a guess, but seems to work
-   OpWaterTySurface->SetSigmaAlpha(0.5); //cf. A. Chavarria's ~30deg
+  OpWaterTySurface =
+      new G4OpticalSurface("WaterTyCellSurface");
 
-   G4double RINDEX_tyvek[NUM] =
-     { 1.5, 1.5 }; // polyethylene permittivity is ~2.25
-   G4double TySPECULARLOBECONSTANT[NUM] =
-     { 0.75, 0.75 }; // crudely estimated from A. Chavarria's thesis
-   G4double TySPECULARSPIKECONSTANT[NUM] =
-     { 0.0, 0.0 };
-   G4double TyBACKSCATTERCONSTANT[NUM] =
-     { 0.0, 0.0 };
-   // Lambertian prob is therefore 0.25
+  OpWaterTySurface->SetType(dielectric_metal); // Only absorption and reflection
+  OpWaterTySurface->SetModel(unified);
+  OpWaterTySurface->SetFinish(ground); // ground surface with tyvek
+  OpWaterTySurface->SetSigmaAlpha(0.2);
 
-   G4double TyREFLECTIVITY[NUM] =
-     { 0.94, 0.94 }; //cf. DuPont
-   //
-   // ----
+  G4double RINDEX_tyvek[NUM] =
+      { 1.5, 1.5 }; // polyethylene permittivity is ~2.25
+  G4double TySPECULARLOBECONSTANT[NUM] =
+      { 0.75, 0.75 }; // crudely estimated from A. Chavarria's thesis
+  G4double TySPECULARSPIKECONSTANT[NUM] =
+      { 0.0, 0.0 };
+  G4double TyBACKSCATTERCONSTANT[NUM] =
+      { 0.0, 0.0 };
+  // Lambertian prob is therefore 0.25
+
+#define NUMENTRIES_TY 33 // Number of bins of wavelength to be used for the Tyvek reflectivity
+
+  G4double PP_TyREFLECTIVITY[NUMENTRIES_TY] = //Tyvek reflectivity wavelength bins
+      { 2.06642*eV,
+        2.10144*eV, 2.13768*eV, 2.17518*eV, 2.21402*eV, 2.25428*eV,
+        2.29602*eV, 2.33934*eV, 2.38433*eV, 2.43108*eV, 2.4797*eV,
+        2.53031*eV, 2.58302*eV, 2.63798*eV, 2.69533*eV, 2.75523*eV,
+        2.81784*eV, 2.88338*eV, 2.95203*eV, 3.02403*eV, 3.09963*eV,
+        3.17911*eV, 3.26277*eV, 3.35095*eV, 3.44403*eV, 3.54243*eV,
+        3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
+        4.27535*eV, 4.42804*eV};
+
+  double WCODTyvekReflectivity = WCSimTuningParams->GetWCODTyvekReflectivity();
+  G4double OD_tyvek_reflectivity_scaling_factor = WCODTyvekReflectivity/0.97;
+
+  G4double TyREFLECTIVITY[NUMENTRIES_TY] = // Tyvek refelctivity
+      { 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.96, 0.96, 0.95, 0.95, 0.95,
+        0.94, 0.93, 0.92, 0.91, 0.90,
+        0.89, 0.86};
+
+  for(int i=0; i<NUMENTRIES_TY; i++)
+    TyREFLECTIVITY[i] *= OD_tyvek_reflectivity_scaling_factor;
+
+  G4MaterialPropertiesTable *MPT_Tyvek = new G4MaterialPropertiesTable();
+  // MPT_Tyvek->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
+  // MPT_Tyvek->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
+  Tyvek->SetMaterialPropertiesTable(MPT_Tyvek);
+
+  G4MaterialPropertiesTable *MPTWater_Ty = new G4MaterialPropertiesTable();
+  MPTWater_Ty->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
+  MPTWater_Ty->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
+  MPTWater_Ty->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
+  MPTWater_Ty->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
+  MPTWater_Ty->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY, TyREFLECTIVITY, NUMENTRIES_TY);
+  OpWaterTySurface->SetMaterialPropertiesTable(MPTWater_Ty);
+  //
+  // ----
+
+  ///////////////////////
+  // ###### WLS ###### //
+  ///////////////////////
+
+  G4MaterialPropertiesTable *WlsPlasticMPT = new G4MaterialPropertiesTable();
+
+  double no_absorption = 1000.*m;
+  double immediate_absorption = 0.*m;
+  double some_absorption = 1.*m;
+
+  // active glass will be a thin layer absorbing everything in the right energy range
+  // passive glass will be a thick layer responsible of absorption outside of the range
+
+  const G4int nEntries_fake_abslength = 2;
+  G4double fake_energy_for_abslength[nEntries_fake_abslength] =
+    { 1.*eV, 7*eV };
+  G4double fake_passive_abslength_vs_energy[nEntries_fake_abslength] =
+    {some_absorption,some_absorption};
+
+  WlsPlasticMPT->AddProperty("ABSLENGTH",fake_energy_for_abslength,fake_passive_abslength_vs_energy,nEntries_fake_abslength);
+
+  // Water -> WLS surface properties
+  // OpWaterWLSSurface =
+  //     new G4OpticalSurface("WaterWLSSurface");
+
+  // OpWaterWLSSurface->SetType(dielectric_dielectric);
+  // OpWaterWLSSurface->SetModel(unified);
+  // OpWaterWLSSurface->SetFinish(ground); // surface WLS/Water
+  // OpWaterWLSSurface->SetSigmaAlpha(0.1); // TODO: What's this?
+
+  // MATERIAL properties
+  EljenEJ286 *WLSProps = new EljenEJ286();
+  // Define normal reflectivity from Fresnel equations
+
+  WlsPlasticMPT->AddProperty("TRANSMITTANCE", WLSProps->GetPhotonEnergy(), WLSProps->GetTransmittance(), WLSProps->GetNumEntriesTransmittance());
 
 
-   G4MaterialPropertiesTable *myMPT1 = new G4MaterialPropertiesTable();
+  // Water -> WLS surface properties
+  // OpWLSTySurface =
+  //     new G4OpticalSurface("WLSTySurface");
+
+  // OpWLSTySurface->SetType(dielectric_metal); // Only absorption and reflection
+  // OpWLSTySurface->SetModel(unified);
+  // OpWLSTySurface->SetFinish(ground); // ground surface with tyvek
+  // OpWLSTySurface->SetSigmaAlpha(0.2);
+
+  // Define normal reflectivity from Fresnel equations
+  // G4double TransWLSTy[NUM] =
+  //     {1.-0.00207792,1.-0.00207792};
+
+
+  WlsPlasticMPT->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
+  WlsPlasticMPT->AddProperty("WLSABSLENGTH",WLSProps->GetPhotonEnergy_ABS(),WLSProps->GetAbs(),WLSProps->GetNumEntries_ABS());
+  WlsPlasticMPT->AddProperty("WLSCOMPONENT",WLSProps->GetPhotonEnergy_EM(),WLSProps->GetEm(),WLSProps->GetNumEntries_EM());
+  WlsPlasticMPT->AddConstProperty("WLSTIMECONSTANT", 1.2*ns); // TODO: Need measurement
+  WLS_PVT->SetMaterialPropertiesTable(WlsPlasticMPT);
+
+  // G4MaterialPropertiesTable *MPTWLS_Water = new G4MaterialPropertiesTable();
+  // MPTWLS_Water->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
+  // MPTWLS_Water->AddProperty("TRANSMITTANCE", WLSProps->GetPhotonEnergy(), WLS_transmittance_vs_energy, nEntries_transmittance);
+  // OpWaterWLSSurface->SetMaterialPropertiesTable(MPTWLS_Water);
+
+  // G4MaterialPropertiesTable *MPTWLS_Tyvek = new G4MaterialPropertiesTable();
+  // MPTWLS_Tyvek->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
+  // MPTWLS_Tyvek->AddProperty("TRANSMITTANCE", PP, TransWLSTy, NUM);
+  // OpWLSTySurface->SetMaterialPropertiesTable(MPTWLS_Tyvek);
+
+  ///////////////////////
+  // ###### END ###### //
+  ///////////////////////
+
+  G4MaterialPropertiesTable *myMPT1 = new G4MaterialPropertiesTable();
    // M Fechner : new   ; wider range for lambda
    myMPT1->AddProperty("RINDEX", ENERGY_water, RINDEX1, NUMENTRIES_water);
    myMPT1->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water, NUMENTRIES_water);
@@ -1180,8 +1313,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
    Acrylic->SetMaterialPropertiesTable(AcrPropTable);
 
 
-
    //	------------- Surfaces --------------
+
 
    // Blacksheet
    G4MaterialPropertiesTable *myST1 = new G4MaterialPropertiesTable();

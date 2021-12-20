@@ -7,7 +7,7 @@
 #include "Randomize.hh"
 #include <map>
 #include <vector>
-
+#include <TGraph.h>
 
 class WCSimPMTObject
 {
@@ -26,6 +26,7 @@ public:
   virtual G4double GetPMTGlassThickness()=0;
   virtual G4double  GetDarkRate()=0;
   virtual G4double  GetDarkRateConversionFactor()=0;
+  virtual G4int    GetNbOfQEDefined()=0;
 protected:
   virtual G4double* GetCollectionEfficiencyArray();
   virtual G4double* GetCollectionEfficiencyAngle();
@@ -53,8 +54,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
-
-
+  G4int    GetNbOfQEDefined();
 };
 
 class PMT8inch : public WCSimPMTObject
@@ -78,6 +78,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
 };
 
 class PMT5inch : public WCSimPMTObject
@@ -101,6 +102,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
 };
 
 class PMT3inch : public WCSimPMTObject
@@ -147,6 +149,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
 };
 
 
@@ -170,6 +173,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
  };
 
  class PMT10inchHQE : public WCSimPMTObject
@@ -192,6 +196,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
  };
 
  class PMT12inchHQE : public WCSimPMTObject
@@ -214,6 +219,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
  };
 
 class HPD20inchHQE : public WCSimPMTObject
@@ -237,6 +243,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
 protected:
   G4double* GetCollectionEfficiencyArray();
 };
@@ -262,6 +269,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
 protected:
   G4double* GetCollectionEfficiencyArray();
 };
@@ -287,6 +295,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
 protected:
   G4double* GetCollectionEfficiencyArray();
 };
@@ -312,7 +321,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
-
+  G4int    GetNbOfQEDefined();
 protected:
   G4double* GetCollectionEfficiencyArray();
 };
@@ -340,6 +349,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
 protected:
   G4double* GetCollectionEfficiencyArray();
 };
@@ -367,6 +377,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
 protected:
   G4double* GetCollectionEfficiencyArray();
 };
@@ -393,6 +404,7 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
 protected:
   G4double* GetCollectionEfficiencyArray();
 };
@@ -419,9 +431,67 @@ public:
   G4double GetPMTGlassThickness();
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
 protected:
   G4double* GetCollectionEfficiencyArray();
 };
 
+class PMT3inch : public WCSimPMTObject
+{
+
+ public:
+
+  PMT3inch();
+  ~PMT3inch();
+
+ public:
+  G4String GetPMTName();
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double);
+  G4double GetPMTGlassThickness();
+  G4double GetDarkRate();
+  G4double GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
+};
+
+class WCSimBasicPMTObject
+{
+
+ public:
+  WCSimBasicPMTObject();
+  WCSimBasicPMTObject(std::map<G4double,G4double>);
+  WCSimBasicPMTObject(std::vector<G4double>,std::vector<G4double>,G4double);
+  ~WCSimBasicPMTObject();
+
+ private:
+  std::vector<G4double> QE;
+  std::vector<G4double> wavelength;
+  std::map<G4double,G4double> mapQE;
+  G4double  maxQE;
+  TGraph   *gQE = nullptr;
+
+ public:
+  std::vector<G4double> GetQE(){ return QE;};
+  void SetQE(std::vector<G4double> qe){ QE=qe;};
+
+  std::vector<G4double> GetWavelength(){ return wavelength;};
+  void SetWavelength(std::vector<G4double> qe){ wavelength=qe;};
+
+  std::map<G4double,G4double> GetMapQE(){ return mapQE;};
+  void SetMapQE(std::map<G4double,G4double> qe){ mapQE=qe;};
+
+  G4double GetmaxQE(){ return maxQE;};
+  void SetmaxQE(G4double qe){ maxQE=qe;};
+
+  TGraph* GetgQE(){ return gQE;};
+  void SetgQE(TGraph *g){ gQE=g;};
+
+  void DefineQEHist(std::map<G4double,G4double>);
+};
 
 #endif

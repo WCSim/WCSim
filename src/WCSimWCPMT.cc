@@ -14,12 +14,15 @@
 #include "WCSimPmtInfo.hh"
 #include "WCSimPMTObject.hh"
 
-
 #include <vector>
 // for memset
 #include <cstring>
-//#define HYPER_VERBOSITY
+
 //#define DEBUG
+#ifndef HYPER_VERBOSITY
+// #define HYPER_VERBOSITY
+#endif
+
 
 extern "C" void skrn1pe_(double* );
 //extern "C" void rn1pe_(double* ); // 1Kton
@@ -37,15 +40,12 @@ WCSimWCPMT::WCSimWCPMT(G4String name,
 
   if(detectorElement=="tank") collectionName.push_back("WCRawPMTSignalCollection");
   else if(detectorElement=="tankPMT2") collectionName.push_back("WCRawPMTSignalCollection2");
+  else if(detectorElement=="OD") collectionName.push_back("WCRawPMTSignalCollection_OD");
   else G4cout << "detectorElement undefined..." << G4endl;
   this->myDetector = myDetector;
   DigiHitMapPMT.clear();
 
-  //#ifdef HYPER_VERBOSITY
-  if(detectorElement=="tank") G4cout<<"WCSimWCPMT::WCSimWCPMT recording collection name "<<collectionName[0]<<G4endl;
-  if(detectorElement=="tankPMT2") G4cout<<"WCSimWCPMT::WCSimWCPMT recording collection name "<<collectionName[0]<<G4endl;
-  //#endif
-
+  G4cout<<"WCSimWCPMT::WCSimWCPMT recording collection name "<<collectionName[0]<<G4endl;
 }
 
 WCSimWCPMT::~WCSimWCPMT(){
@@ -57,8 +57,10 @@ G4double WCSimWCPMT::rn1pe(){
   G4String WCCollectionName;
   if(detectorElement=="tank") WCCollectionName = myDetector->GetIDCollectionName();
   else if(detectorElement=="tankPMT2") WCCollectionName = myDetector->GetIDCollectionName2();
+  else if(detectorElement=="OD") WCCollectionName = myDetector->GetODCollectionName();
 
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
+
   G4int i;
   G4double random = G4UniformRand();
   G4double random2 = G4UniformRand(); 
@@ -78,6 +80,7 @@ G4double WCSimWCPMT::rn1pe(){
 
 void WCSimWCPMT::Digitize()
 {
+  // Create a DigitCollection and retrieve the appropriate hitCollection ID based on detectorElement
   G4String WCCollectionName;
   G4String DigitsCollectionName;
   if(detectorElement=="tank"){
@@ -86,6 +89,9 @@ void WCSimWCPMT::Digitize()
   }else if(detectorElement=="tankPMT2"){
     DigitsCollectionName="WCDigitizedCollection2";
     WCCollectionName = myDetector->GetIDCollectionName2();
+  }else if(detectorElement=="OD"){
+    DigitsCollectionName="WCDigitizedCollection_OD";
+    WCCollectionName = myDetector->GetODCollectionName();
   }
   DigitsCollection = new WCSimWCDigitsCollection (DigitsCollectionName,collectionName[0]);
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
@@ -97,10 +103,10 @@ void WCSimWCPMT::Digitize()
   WCSimWCHitsCollection* WCHC =
     (WCSimWCHitsCollection*)(DigiMan->GetHitsCollection(WCHCID));
 #ifdef HYPER_VERBOSITY
-  //if(detectorElement=="tankPMT2"){
-  G4cout<<"WCSimWCPMT::Digitize Making digits collection (WCSimWCDigitsCollection*)"<<DigitsCollectionName<<" for "<<detectorElement
-  <<" and calling MakePeCorrection on "<<WCCollectionName<<" to fill it."<<G4endl;
-    //}
+  G4cout<<"WCSimWCPMT::Digitize Making digits collection (WCSimWCDigitsCollection*)"
+	<<DigitsCollectionName<<" for "<<detectorElement
+	<<" and calling MakePeCorrection on "<<WCCollectionName
+	<<" to fill it."<<G4endl;
 #endif
 
   if (WCHC) {
@@ -110,10 +116,8 @@ void WCSimWCPMT::Digitize()
   }
   
 #ifdef HYPER_VERBOSITY
-  //if(detectorElement=="tankPMT2"){
   G4cout<<"WCSimWCPMT::Digitize Storing "<<DigitsCollectionName<<" for "<<detectorElement
   <<", which has "<<DigitsCollection->entries()<<" entries"<<G4endl;
-    //}
 #endif
 
   StoreDigiCollection(DigitsCollection);
@@ -123,7 +127,6 @@ void WCSimWCPMT::Digitize()
 
 void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 { 
-
   // Sort Hit times
   std::sort(WCHC->GetVector()->begin(), WCHC->GetVector()->end(), WCSimWCHit::SortFunctor_Hit());
   
@@ -144,12 +147,15 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
   // It works out that the pmts here are ordered !
   // pmts->at(i) has tubeid i+1
   }
+  else if(detectorElement=="OD"){
+    WCCollectionName = myDetector->GetODCollectionName();
+    pmts = myDetector->Get_ODPmts();
+  }
+
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
 
- #ifdef HYPER_VERBOSITY
-  if(detectorElement=="tankPMT2"){
-    G4cout<<"WCSimWCPMT::MakePeCorrection making PE correction for ";
-  }
+#ifdef HYPER_VERBOSITY
+  G4cout<<"WCSimWCPMT::MakePeCorrection making PE correction for ";
   if(WCHC){
     G4cout<<WCHC->entries()<<" hits"<<G4endl;
   } else {
@@ -161,6 +167,8 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
   double maxTotalPe = 1;
   G4int bqDigiHitCounter = 0;
   
+  // Correct timing to be within 1 sec (needed for radioactive decay as forcing the decay lead to some strange results)
+
   for (G4int i=0; i < WCHC->entries(); i++)
     {
 
@@ -178,8 +186,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       G4double peSmeared = 0.0;
       G4double time_PMT, time_true;
       G4int  track_id      = (*WCHC)[i]->GetTrackID();
-      
-      
+
       // Set the position and rotation of the pmt (from WCSimWCAddDarkNoise.cc)
       Double_t hit_pos[3];
       Double_t hit_rot[3];
@@ -203,22 +210,21 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       //double linearity = myDetector->GetParameters()->GetNLTinfo();
       double QinTOT = 0;
 
-	  for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
-	  
-	    time_true = (*WCHC)[i]->GetTime(ip);
+      for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
+	time_true = (*WCHC)[i]->GetTime(ip);
 	    
-	    // Reset the time to have "reasonnable" timing
-	    // This modification is important in case of very late hit physics (such as in radioactive decays)     
-	    // for which time easy goes > 1e9 ns and cause bug in digitizer
-	    // should not use /grdm/decayBiasProfile biasprofile.dat as it messes up all the timing of the decays, and force to use only one nucleus
-	    if ( i == 0 && ip == 0 && RelativeHitTime && !fFirst_Time_Flag /*&& (*WCHC)[i]->GetTime(ip) > 1e5*/ ) { // Set Max at 10 musec
-	      //G4cout << " Apply time correction to event hits of " << (*WCHC)[i]->GetTime(ip) << " ns" << G4endl;
-	      fFirst_Time_Flag = true;
-	      fFirst_Time = time_true;
-	    } 
+	// Reset the time to have "reasonnable" timing
+	// This modification is important in case of very late hit physics (such as in radioactive decays)
+	// for which time easy goes > 1e9 ns and cause bug in digitizer
+	// should not use /grdm/decayBiasProfile biasprofile.dat as it messes up all the timing of the decays, and force to use only one nucleus
+	if ( i == 0 && ip == 0 && RelativeHitTime && !fFirst_Time_Flag /*&& (*WCHC)[i]->GetTime(ip) > 1e5*/ ) { // Set Max at 10 musec
+	  //G4cout << " Apply time correction to event hits of " << (*WCHC)[i]->GetTime(ip) << " ns" << G4endl;
+	  fFirst_Time_Flag = true;
+	  fFirst_Time = time_true;
+	}
+	time_PMT  = time_true - fFirst_Time; //currently no PMT time smearing applied
+	//std::cout<<"First time = "<<fFirst_Time<<", time true = "<<time_true<<", PMT time = "<<time_PMT<<std::endl;
 
-	    time_PMT  = time_true - fFirst_Time; //currently no PMT time smearing applied
-	    //std::cout<<"First time = "<<fFirst_Time<<", time true = "<<time_true<<", PMT time = "<<time_PMT<<std::endl;	    
 	    peSmeared = rn1pe();
 #ifdef DEBUG
 	    std::cout << "tube : " << i << " (ID=" << tube << ")" << " hit in tube : "<< ip << " (time=" << time_true << "ns)"  << " pe value : " << peSmeared << std::endl; //TD debug

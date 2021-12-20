@@ -105,7 +105,7 @@ class WCSimWCHit : public G4VHit
 
 
   // low is the trigger time, up is trigger+950ns (end of event)
-  G4double GetFirstHitTimeInGate(G4double low,G4double upevent)
+  G4double GetFirstHitTimeInGate(G4double low, G4double upevent)
   {
     G4double firsttime;
     std::vector<G4double>::iterator tfirst = time.begin();

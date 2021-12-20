@@ -65,7 +65,6 @@ public:
 		    WCSimWCDigitsCollection*,
 		    WCSimWCTriggeredDigitsCollection*,
 		    G4String detectorElement);
-  
 
 private:
   G4int WCSimEventFindStartingVolume( G4ThreeVector vtx);

@@ -22,6 +22,10 @@ WCSimTrackingAction::WCSimTrackingAction()
   ProcessList.insert("nCapture");
 
 //   ProcessList.insert("conv");
+
+  // F. Nova One can check here if the photon comes from WLS
+  ProcessList.insert("OpWLS");
+
   ParticleList.insert(111); // pi0
   ParticleList.insert(211); // pion+
   ParticleList.insert(-211);
@@ -43,6 +47,10 @@ WCSimTrackingAction::WCSimTrackingAction()
   percentageOfCherenkovPhotonsToDraw = 0.0;
 
   messenger = new WCSimTrackingMessenger(this);
+
+  // Max time for radioactive decay:
+  fMaxTime    = 1. * CLHEP::second;
+  fTime_birth = 0.;
 }
 
 WCSimTrackingAction::~WCSimTrackingAction(){;}
@@ -55,7 +63,6 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
   // and store them in output file. Difficult to control them all, so best only
   // use for visualization, not for storing in ROOT.
 
-
   if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()
        || G4UniformRand() < percentageOfCherenkovPhotonsToDraw/100. )
     {
@@ -65,7 +72,7 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
     }
   else 
     fpTrackingManager->SetStoreTrajectory(false);
-  
+
   // Kill nucleus generated after TrackID 1
   G4ParticleDefinition* particle = aTrack->GetDefinition();
   G4String name   = particle->GetParticleName();
@@ -120,13 +127,14 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     // is it a primary ?
     // is the process in the set ? 
     // is the particle in the set ?
-    // is it a gamma 
+    // is it a gamma above 1 MeV ?
+    // is it a mu- capture at rest above 1 MeV ?
     // due to lazy evaluation of the 'or' in C++ the order is important
     if( aTrack->GetParentID()==0 
 	|| ((creatorProcess!=0) && ProcessList.count(creatorProcess->GetProcessName()))
 	|| (ParticleList.count(aTrack->GetDefinition()->GetPDGEncoding()))
 	|| (aTrack->GetDefinition()->GetPDGEncoding()==22 && aTrack->GetTotalEnergy() > 1.0*MeV)
-      || (creatorProcess->GetProcessName() == "muMinusCaptureAtRest" && aTrack->GetTotalEnergy() > 1.0*MeV)
+	|| (creatorProcess->GetProcessName() == "muMinusCaptureAtRest" && aTrack->GetTotalEnergy() > 1.0*MeV)
       )
     {
     // if so the track is worth saving
@@ -205,8 +213,8 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       currentTrajectory->SetSaveFlag(true);// mark it for WCSimEventAction ;
     else currentTrajectory->SetSaveFlag(false);// mark it for WCSimEventAction ;
   }
-}
 
+}
 
 
 

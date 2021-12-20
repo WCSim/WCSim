@@ -41,6 +41,8 @@ private:
   //For Top Veto - jl145
   G4UIcmdWithADouble* TVSpacing;
   G4UIcmdWithABool* TopVeto;
+  G4UIcmdWithADouble* CommandWCODWLSCladdingReflectivity;
+  G4UIcmdWithADouble* CommandWCODTyvekReflectivity;
 
 };
 

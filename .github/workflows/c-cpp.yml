@@ -1,0 +1,142 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request_target: #runs on the PR branch, rather than the merge branch. But is required for access to secrets
+    branches: [ develop ]
+  release:
+  
+concurrency:
+  #When a PR is pushed too multiple times in a short period, this would usually trigger multiple CI runs
+  #This setting cancels any in-progress CI when a new push is performed
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /opt/HyperK/
+    #run inside a container that has the prerequisites already installed
+    container: 
+      image: wcsim/wcsim:base
+      env:
+        #TRAVIS_COMMIT: ${{ github.sha }}
+        TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        GitHubToken: ${{ secrets.API_TOKEN_GITHUB }}
+        ValidationPath: /opt/Validation/
+    steps:
+      # Print all the info about the action
+      - name: Logging
+        run: |
+          echo "Test print"
+        #echo "${{toJSON(github)}}"
+    
+      - name: Get repo to checkout
+        id: checkout_repo
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ github.event_name == 'pull_request_target' }}
+          if_true: ${{ github.event.pull_request.head.repo.full_name }}
+          if_false: ${{ github.repository }}
+          
+      - name: Get SHA to checkout
+        id: checkout_sha
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ github.event_name == 'pull_request_target' }}
+          if_true: ${{ github.event.pull_request.head.sha }}
+          if_false: ${{ github.sha }}
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout WCSim
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.checkout_sha.outputs.value }}
+          repository: ${{ steps.checkout_repo.outputs.value }}
+          
+      - name: Link WCSim directory
+        run: ln -s ${GITHUB_WORKSPACE}/ /opt/HyperK/WCSim
+
+      - name: Checkout WCSim/Validation
+        run: |
+          cd /opt
+          git clone https://github.com/WCSim/Validation.git
+          
+      #Temporarily get /usr/bin/time every job from yum
+      # Need to add this to wcsim/wcsim:base ASAP
+      - name: Get time
+        run: yum install -y time
+          
+      - name: Print environment
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          env
+          pwd
+          ls -a
+
+      - name: Test build
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          /opt/Validation/Tests.sh 1
+          
+      #this should be a new set of jobs (in matrix form), using the build job as a prerequisite,
+      # but also getting the built result image from it
+      #however this is not trivial
+      #so just brute force for now
+      - name: Test physics 100 MeV e in SuperK
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          /opt/Validation/Tests.sh 2
+          
+      - name: Test physics 10 MeV e in HyperK_20perCent
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          /opt/Validation/Tests.sh 3
+          
+      - name: Test physics 100 MeV e in HyperK_20perCent
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          /opt/Validation/Tests.sh 4
+
+      - name: Test physics 500 MeV e in HyperK_20perCent
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          /opt/Validation/Tests.sh 5
+
+      - name: Test physics 200 MeV mu in HyperK_20perCent
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          /opt/Validation/Tests.sh 6
+
+      - name: Test physics 800 MeV mu in HyperK_20perCent
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          /opt/Validation/Tests.sh 7
+
+      - name: Test physics 100 MeV pi0 in HyperK_20perCent
+        run: |
+          source /opt/HyperK/env-WCSim.sh
+          cd WCSim
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          /opt/Validation/Tests.sh 8

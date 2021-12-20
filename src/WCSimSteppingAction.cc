@@ -1,5 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <WCSimRootEvent.hh>
+#include <G4SIunits.hh>
+#include <G4OpticalPhoton.hh>
 
 #include "WCSimSteppingAction.hh"
 
@@ -20,6 +23,14 @@ G4int WCSimSteppingAction::n_photons_through_gel = 0;
 G4int WCSimSteppingAction::n_photons_on_blacksheet = 0;
 G4int WCSimSteppingAction::n_photons_on_smallPMT = 0;
 
+///////////////////////////////////////////////
+///// BEGINNING OF WCSIM STEPPING ACTION //////
+///////////////////////////////////////////////
+
+
+WCSimSteppingAction::WCSimSteppingAction(WCSimRunAction *myRun, WCSimDetectorConstruction *myDet) : runAction(myRun), det(myDet) {
+
+}
 
 void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 {
@@ -118,17 +129,6 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 
 
 
-  //debugging 
-//  G4Track* theTrack = aStep->GetTrack();
-//  const G4DynamicParticle* aParticle = theTrack->GetDynamicParticle();
-//  G4ThreeVector aMomentum = aParticle->GetMomentumDirection();
-//  G4double vx = aMomentum.x();
-//  G4int ix = std::isnan(vx);
-//  if(ix != 0){
-//    G4cout << " PROBLEM! " << theTrack->GetCreatorProcess()->GetProcessName() <<
-//  std::flush << G4endl;
-//  }
-  
 }
 
 

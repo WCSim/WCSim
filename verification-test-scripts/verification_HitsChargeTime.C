@@ -1,52 +1,23 @@
 #include <iostream>
-#include <TH1F.h>
 #include <stdio.h>     
 #include <stdlib.h>    
+
+#include "TH1F.h"
+#include "TROOT.h"
+#include "TStyle.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TCanvas.h"
+#include "TLegend.h"
+#include "TSystem.h"
+
+#include "WCSimRootEvent.hh"
+
 // Simple example of reading a generated Root file
-void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename2="../../WCSim_clean/verification-test-scripts/wcsimtest.root", bool verbose=false)
+int verification_HitsChargeTime(const char *filename="wcsimtest.root", const char *filename2="../../WCSim_clean/verification-test-scripts/wcsimtest.root", bool verbose=false)
 {
   // Clear global scope
   //gROOT->Reset();
-  
-  gStyle->SetOptStat(0);
-  gStyle->SetCanvasColor(0);
-  gStyle->SetTitleColor(1);
-  gStyle->SetStatColor(0);
-  gStyle->SetFrameFillColor(0);
-  gStyle->SetPadColor(0);
-  gStyle->SetPadTickX(1);
-  gStyle->SetPadTickY(1);
-  gStyle->SetTitleSize(0.04);
-  gStyle->SetCanvasBorderMode(0);
-  gStyle->SetFrameBorderMode(0);
-  gStyle->SetFrameLineWidth(2);
-  gStyle->SetPadBorderMode(0);
-  gStyle->SetPalette(1);
-  gStyle->SetTitleAlign(23);
-  gStyle->SetTitleX(.5);
-  gStyle->SetTitleY(0.99);
-  gStyle->SetTitleBorderSize(0);
-  gStyle->SetTitleFillColor(0);
-  gStyle->SetHatchesLineWidth(2);
-  gStyle->SetLineWidth(1.5);
-  gStyle->SetTitleFontSize(0.07);
-  gStyle->SetLabelSize(0.05,"X");
-  gStyle->SetLabelSize(0.05,"Y");
-  gStyle->SetTitleSize(0.04,"X");
-  gStyle->SetTitleSize(0.04,"Y");
-  gStyle->SetTitleBorderSize(0);
-  gStyle->SetCanvasBorderMode(0);
-  
-  
-  // Load the library with class dictionary info
-  // (create with "gmake shared")
-  char* wcsimdirenv;
-  wcsimdirenv = getenv ("WCSIMDIR");
-  if(wcsimdirenv !=  NULL){
-    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
-  }else{
-    gSystem->Load("../libWCSimRoot.so");
-  }
 
   TFile *f = new TFile(filename,"read");
   if (!f->IsOpen()){
@@ -61,9 +32,9 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
   }
   
  
-  TTree  *wcsimT = f->Get("wcsimT");
+  TTree  *wcsimT = (TTree*)f->Get("wcsimT");
   int nevent = wcsimT->GetEntries();
-  TTree  *wcsimT2 = f2->Get("wcsimT");
+  TTree  *wcsimT2 = (TTree*)f2->Get("wcsimT");
   int nevent2 = wcsimT2->GetEntries();
 
   // Create a WCSimRootEvent to put stuff from the tree in and set the branch address for reading from the tree
@@ -150,6 +121,7 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
     for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++){ 
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
 	int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
+	int ncherenkovdigihits_slots = wcsimrootevent->GetNcherenkovdigihits_slots();
 	hits->Fill(ncherenkovdigihits);
 	
 	
@@ -160,8 +132,10 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
 	std::cout << wcsimrootevent->GetNumTubesHit() << std::endl;
 	//TH1F *occup_per_event = new TH1F("occup_per_event","",20000,0,20000);
 	// Loop through elements in the TClonesArray of WCSimRootCherenkovHits
-	for (int i=0; i< ncherenkovdigihits; i++){
+	for (int i=0; i< ncherenkovdigihits_slots; i++){
 	    TObject *Digi = (wcsimrootevent->GetCherenkovDigiHits())->At(i);
+	    if(!Digi)
+	      continue;
 	    WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = 
 	      dynamic_cast<WCSimRootCherenkovDigiHit*>(Digi);
 	    
@@ -256,7 +230,6 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
  time2->SetLineColor(kRed);
  c1->cd(3); time2->Draw("SAME");
   
-
  c1->cd(4);
  hit_pmts->Draw();
  hit_pmts2->SetLineColor(kRed);
@@ -298,4 +271,6 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
 
  TCanvas *c5 = new TCanvas();
  t_q->Draw("colz");
+
+ return 0;
 }

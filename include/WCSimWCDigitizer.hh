@@ -13,6 +13,7 @@
 #include "Randomize.hh"
 #include <map>
 #include <vector>
+#include <limits>
 
 
 // *******************************************
@@ -39,7 +40,10 @@ public:
 
   double Truncate(double value, double precision) {
     if(precision < 1E-10) return value;
-    return precision * (int)(value / precision);
+    double ratio=value / precision;
+    // Result of cast is undefined if value is outside range of int. Just do nothing in that case.
+    if(ratio>std::numeric_limits<int64_t>::max() || ratio<std::numeric_limits<int64_t>::min() ) return value;
+    return precision * (int64_t)(value / precision);
   }
 
   ///Save current values of options
@@ -72,6 +76,8 @@ protected:
   virtual double GetDefaultPEPrecision() = 0;       ///< Set the default digitizer-specific charge resolution (in p.e.) (overridden by .mac)
 
   void GetVariables(); ///< Get the default deadtime, etc. from the derived class, and override with read from the .mac file
+
+  G4String detectorElement;
 };
 
 
@@ -86,7 +92,7 @@ class WCSimWCDigitizerSKI : public WCSimWCDigitizerBase
 {
 public:
   
-  WCSimWCDigitizerSKI(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String);
+  WCSimWCDigitizerSKI(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
   ~WCSimWCDigitizerSKI();
 
   void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);

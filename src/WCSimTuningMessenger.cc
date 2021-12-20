@@ -5,7 +5,7 @@
 #include "G4UIcommand.hh"
 #include "G4UIparameter.hh"
 #include "G4UIcmdWithADouble.hh"
-#include "G4UIcmdWithABool.hh" //jl145
+#include "G4UIcmdWithABool.hh"
 
 
 WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):WCSimTuningParams(WCTuningPars) { 
@@ -49,7 +49,7 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   Ttsff->SetParameterName("Ttsff",true);
   Ttsff->SetDefaultValue(1.0);
 
- //TD 2019.6.26
+  //TD 2019.6.26
   PMTSatur = new G4UIcmdWithADouble("/WCSim/tuning/pmtsatur",this);
   PMTSatur->SetGuidance("Set the pe threshold where saturation starts to occur");
   PMTSatur->SetParameterName("PMTSatur",true);
@@ -76,6 +76,16 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   TopVeto->SetParameterName("TopVeto",true);
   TopVeto->SetDefaultValue(0);
 
+  CommandWCODWLSCladdingReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODWLSCladdingReflectivity",this);
+  CommandWCODWLSCladdingReflectivity->SetGuidance("Set OD WLS plate cladding reflectivity");
+  CommandWCODWLSCladdingReflectivity->SetParameterName("WCODWLSCladdingReflectivity",true);
+  CommandWCODWLSCladdingReflectivity->SetDefaultValue(0.90);
+
+  CommandWCODTyvekReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODTyvekReflectivity",this);
+  CommandWCODTyvekReflectivity->SetGuidance("Set OD tyvek cladding reflectivity");
+  CommandWCODTyvekReflectivity->SetParameterName("WCODTyvekReflectivity",true);
+  CommandWCODTyvekReflectivity->SetDefaultValue(0.90);
+
 }
 
 WCSimTuningMessenger::~WCSimTuningMessenger()
@@ -95,6 +105,9 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
   delete TVSpacing;
   delete TopVeto;
 
+  delete CommandWCODWLSCladdingReflectivity;
+  delete CommandWCODTyvekReflectivity;
+
   delete WCSimDir;
 }
 
@@ -102,121 +115,94 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {    
 
   if(command == Rayff) {
-	  // Set the Rayleigh scattering parameter
-	  //	  printf("Input parameter %f\n",Rayff->GetNewDoubleValue(newValue));
-
-  WCSimTuningParams->SetRayff(Rayff->GetNewDoubleValue(newValue));
-
-  printf("Setting Rayleigh scattering parameter %f\n",Rayff->GetNewDoubleValue(newValue));
-
+    // Set the Rayleigh scattering parameter
+    WCSimTuningParams->SetRayff(Rayff->GetNewDoubleValue(newValue));
+    G4cout << "Setting Rayleigh scattering parameter " << Rayff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Bsrff) {
-	  // Set the blacksheet reflection parameter
-	  //	  printf("Input parameter %f\n",Bsrff->GetNewDoubleValue(newValue));
-
-  WCSimTuningParams->SetBsrff(Bsrff->GetNewDoubleValue(newValue));
-
-  printf("Setting blacksheet reflection parameter %f\n",Bsrff->GetNewDoubleValue(newValue));
-
+  else if(command == Bsrff) {
+    // Set the blacksheet reflection parameter
+    WCSimTuningParams->SetBsrff(Bsrff->GetNewDoubleValue(newValue));
+    G4cout << "Setting blacksheet reflection parameter " << Bsrff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Abwff) {
-	  // Set the water attenuation  parameter
-	  //	  printf("Input parameter %f\n",Abwff->GetNewDoubleValue(newValue));
-
-  WCSimTuningParams->SetAbwff(Abwff->GetNewDoubleValue(newValue));
-
-  printf("Setting water attenuation parameter %f\n",Abwff->GetNewDoubleValue(newValue));
-
+  else if(command == Abwff) {
+    // Set the water attenuation  parameter
+    WCSimTuningParams->SetAbwff(Abwff->GetNewDoubleValue(newValue));
+    G4cout << "Setting water attenuation parameter " << Abwff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Rgcff) {
-	  // Set the cathode reflectivity parameter
-	  //	  printf("Input parameter %f\n",Rgcff->GetNewDoubleValue(newValue));
-
-  WCSimTuningParams->SetRgcff(Rgcff->GetNewDoubleValue(newValue));
-
-  printf("Setting cathode reflectivity parameter %f\n",Rgcff->GetNewDoubleValue(newValue));
-
+  else if(command == Rgcff) {
+    // Set the cathode reflectivity parameter
+    WCSimTuningParams->SetRgcff(Rgcff->GetNewDoubleValue(newValue));
+    G4cout << "Setting cathode reflectivity parameter " << Rgcff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Qeff) {//B. Quilain
-	  // Set the cathode QE correction parameter
-	  //	  printf("Input parameter %f\n",Qeff->GetNewDoubleValue(newValue));
-
-  WCSimTuningParams->SetQeff(Qeff->GetNewDoubleValue(newValue));
-
-  printf("Seting the correction of cathode QE parameter (nominal = 1) %f\n",Qeff->GetNewDoubleValue(newValue));
-
+  else if(command == Qeff) {//B. Quilain
+    // Set the cathode QE correction parameter
+    WCSimTuningParams->SetQeff(Qeff->GetNewDoubleValue(newValue));
+    G4cout << "Seting the correction of cathode QE parameter (nominal = 1) " << Qeff->GetNewDoubleValue(newValue) << G4endl;
   }
 
- if(command == Mieff) {
-	  // Set the Mie scattering parameter
-	  //	  printf("Input parameter %f\n",Mieff->GetNewDoubleValue(newValue));
-
-  WCSimTuningParams->SetMieff(Mieff->GetNewDoubleValue(newValue));
-
-  printf("Setting Mie scattering parameter %f\n",Mieff->GetNewDoubleValue(newValue));
-
-  }
-
- if(command == Ttsff) {
-	  // Set the transit time smearing parameter
-	  //	  printf("Input parameter %f\n",Ttsff->GetNewDoubleValue(newValue));
-
+ else if(command == Ttsff) {
+   // Set the transit time smearing parameter
   WCSimTuningParams->SetTtsff(Ttsff->GetNewDoubleValue(newValue));
-
-  printf("Setting transit time smearing parameter %f\n",Ttsff->GetNewDoubleValue(newValue));
+  G4cout << "Setting transit time smearing parameter " << Ttsff->GetNewDoubleValue(newValue) << G4endl;
 
   }
 
  //TD 2019.7.16
- if(command == PMTSatur) {
-
+ else if(command == PMTSatur) {
    WCSimTuningParams->SetPMTSatur(PMTSatur->GetNewDoubleValue(newValue));
-
-   printf("Setting saturation threshold for PMTs %f (-1 means no saturation)\n",PMTSatur->GetNewDoubleValue(newValue));
+   G4cout << "Setting saturation threshold for PMTs %f (-1 means no saturation) " << PMTSatur->GetNewDoubleValue(newValue) << G4endl;
  }
 
 //TD 2019.6.26
-//if(command == Qoiff) {
+//else if(command == Qoiff) {
 ////Set the uncertainty on amount of charge created in the PMT
-////  printf("Input parameter %f\n",Qoiff->GetNewDoubleValue(newValue));
-
 //  WCSimTuningParams->SetQoiff(Qoiff->GetNewDoubleValue(newValue));
-
-//  printf(" Setting the uncertainty on amount of charge created in the PMT %f\n",Qoiff->GetNewDoubleValue(newValue));
+//  G4cout << " Setting the uncertainty on amount of charge created in the PMT " << Qoiff->GetNewDoubleValue(newValue) << G4endl;
 
 // }
 
 
-//if(command == NLTinfo) {
+//else if(command == NLTinfo) {
 ////Set the non-linearity info for time resolutions in PMTs
-////  printf("Input parameter %f\n",NLTinfo->GetNewDoubleValue(newValue));
-
 //  WCSimTuningParams->SetNLTinfo(NLTinfo->GetNewDoubleValue(newValue));
-
-//  printf(" Setting the non-linearity info for time resolutions in PMTs to %f\n",NLTinfo->GetNewDoubleValue(newValue));
+//  G4cout << " Setting the non-linearity info for time resolutions in PMTs to " << NLTinfo->GetNewDoubleValue(newValue) << G4endl;
 
 // }
 
-  //jl145 - For Top Veto
+  else if(command == Mieff) {
+    // Set the Mie scattering parameter
+    WCSimTuningParams->SetMieff(Mieff->GetNewDoubleValue(newValue));
+    G4cout << "Setting Mie scattering parameter " << Mieff->GetNewDoubleValue(newValue) << G4endl;
+  }
 
   else if(command == TVSpacing) {
     // Set the Top Veto PMT Spacing
     WCSimTuningParams->SetTVSpacing(TVSpacing->GetNewDoubleValue(newValue));
-    printf("Setting Top Veto PMT Spacing %f\n",TVSpacing->GetNewDoubleValue(newValue));
+    G4cout << "Setting Top Veto PMT Spacing " << TVSpacing->GetNewDoubleValue(newValue) << G4endl;
   }
 
   else if(command == TopVeto) {
     // Set the Top Veto on/off
     WCSimTuningParams->SetTopVeto(TopVeto->GetNewBoolValue(newValue));
     if(TopVeto->GetNewBoolValue(newValue))
-      printf("Setting Top Veto On\n");
+      G4cout << "Setting Top Veto On" << G4endl;
     else
-      printf("Setting Top Veto Off\n");
+      G4cout << "Setting Top Veto Off" << G4endl;
   }
 
+  else if(command == CommandWCODWLSCladdingReflectivity) {
+    // Set the Top Veto PMT Spacing
+    WCSimTuningParams->SetWCODWLSCladdingReflectivity(CommandWCODWLSCladdingReflectivity->GetNewDoubleValue(newValue));
+    G4cout << "Setting OD WLS plate cladding reflectivity " << CommandWCODWLSCladdingReflectivity->GetNewDoubleValue(newValue)) << G4endl;
+  }
 
+  else if(command == CommandWCODTyvekReflectivity) {
+    // Set the Top Veto PMT Spacing
+    WCSimTuningParams->SetWCODTyvekReflectivity(CommandWCODTyvekReflectivity->GetNewDoubleValue(newValue));
+    G4cout << "Setting OD tyvek reflectivity " << CommandWCODTyvekReflectivity->GetNewDoubleValue(newValue) << G4endl;
+  }
 }

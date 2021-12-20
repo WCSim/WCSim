@@ -36,10 +36,13 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithAString* fileNameCmd;
   G4UIcmdWithABool*   poisCmd;
   G4UIcmdWithADouble* poisMeanCmd;
+  G4UIcmdWithAString* fileNameCmdCosmics;
+  G4UIcmdWithAString* timeUnitCmd;
   G4UIcmdWithAString* isotopeCmd;
   G4UIcmdWithAString* radonScalingCmd;
   G4UIcmdWithADouble* radioactive_time_window_Cmd;
   G4UIcmdWithAnInteger* radonGeoSymCmd;
+
   // K.M.Tsui: addition of injector events
   G4UIcmdWithAnInteger* nPhotonsCmd;
   G4UIcmdWithAnInteger* injectorOnCmd;
@@ -49,7 +52,6 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   
   void IsotopeCommand(G4String newValue);
   void RadonScalingCommand(G4String newValue);
-
 };
 
 #endif

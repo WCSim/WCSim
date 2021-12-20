@@ -74,7 +74,6 @@ void WCSimWCHit::Draw()
 		//G4cout << "Ave PE: " << avePe/numbpmthit << " Max PE: " << maxPe << G4endl;
       if ( totalPe > maxPe*.01 )
       {      
-
 	//Don't like this colour scheme (not enough visual gradient between yellow and red)
 	//G4Colour colour(1.,1.-(double(totalPe-.05*maxPe)/double(.95*maxPe)),0.0);
 
@@ -122,8 +121,6 @@ void WCSimWCHit::Print()
   }
   G4cout << "size: " << time.size() << G4endl;
 }
-
-
 
 /*! \brief Convert HSV to RGB color space (from https://gist.github.com/fairlight1337/4935ae72bcbcc1ba5c72)
   

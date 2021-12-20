@@ -23,9 +23,8 @@ std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap;
 std::map<int, std::pair<int, int> > WCSimDetectorConstruction::mPMTIDMap;
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap2;
 std::map<int, std::pair<int, int> > WCSimDetectorConstruction::mPMTIDMap2;
+std::map<int, G4Transform3D> WCSimDetectorConstruction::ODtubeIDMap;
 //std::map<int, cyl_location>  WCSimDetectorConstruction::tubeCylLocation;
-//hash_map<std::string, int, hash<std::string> > 
-//WCSimDetectorConstruction::tubeLocationMap_old;    //deprecated !!
 
 // std::hash is default hash function actually (http://en.cppreference.com/w/cpp/utility/hash)
 // with operator() already properly defined.
@@ -33,6 +32,8 @@ std::unordered_map<std::string, int, std::hash<std::string> >
 WCSimDetectorConstruction::tubeLocationMap;
 std::unordered_map<std::string, int, std::hash<std::string> >         
 WCSimDetectorConstruction::tubeLocationMap2;
+std::unordered_map<std::string, int, std::hash<std::string> >
+  WCSimDetectorConstruction::ODtubeLocationMap;
 
 WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuningParameters* WCSimTuningPars):WCSimTuningParams(WCSimTuningPars)
 {
@@ -43,6 +44,9 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   isNuPrism  = false;
 
   debugMode = false;
+
+  isODConstructed = false;
+  isCombinedPMTCollectionDefined = false;
 
   myConfiguration = DetConfig;
 
@@ -64,12 +68,19 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   WCSimDetectorConstruction::mPMTIDMap2.clear();
   WCSimDetectorConstruction::tubeLocationMap2.clear();
 
+  WCSimDetectorConstruction::ODtubeIDMap.clear();
+  WCSimDetectorConstruction::tubeLocationMap.clear();
+  WCSimDetectorConstruction::ODtubeLocationMap.clear();
+
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
 
   totalNumPMTs = 0;
+  totalNumODPMTs = 0;
   totalNumPMTs2 = 0;
   WCPMTExposeHeight= 0.;
   WCPMTExposeHeight2= 0.;
+  WCPMTODExposeHeight= 0.;
+  WCBorderPMTOffset= 0.;
 
   //---------------------------------------------------
   // Need to define defaults for all mPMT parameters 
@@ -101,7 +112,9 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   mPMT_material_pmtAssembly = "Water";
   mPMT_pmt_openingAngle = 0.*CLHEP::deg;
   
-
+  //-----------------------------------------------------
+  // Set the default WC geometry.  This can be changed later.
+  //-----------------------------------------------------
 
   //SetTestSinglemPMTGeometry();
   SetSuperKGeometry();
@@ -170,6 +183,10 @@ WCSimDetectorConstruction::~WCSimDetectorConstruction(){
     delete fpmts2.at(i);
   }
   fpmts2.clear();
+  for (unsigned int i=0;i<fODpmts.size();i++){
+    delete fODpmts.at(i);
+  }
+  fODpmts.clear();
 }
 
 //G4ThreeVector WCSimDetectorConstruction::GetTranslationFromSettings()
@@ -222,7 +239,8 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 
   totalNumPMTs = 0;
   totalNumPMTs2 = 0;
-  
+  totalNumODPMTs = 0;
+
   //-----------------------------------------------------
   // Create Logical Volumes
   //-----------------------------------------------------
@@ -317,6 +335,8 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   tubeIDMap.clear();
   mPMTIDMap.clear();
   tubeLocationMap.clear();
+  ODtubeIDMap.clear();
+  ODtubeLocationMap.clear();
 
   tubeIDMap2.clear();
   mPMTIDMap2.clear();
@@ -346,88 +366,70 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 
 WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4String CollectionName)
 {
+  WCSimPMTObject* PMT = nullptr;
   if (PMTType == "PMT20inch"){
      WCSimPMTObject* PMT = new PMT20inch;
-     WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-     return PMT;
   }
   else if (PMTType == "PMT8inch"){
     WCSimPMTObject* PMT = new PMT8inch;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "PMT5inch"){
     WCSimPMTObject* PMT = new PMT5inch;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "PMT3inch"){
     WCSimPMTObject* PMT = new PMT3inch;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "PMT3inchGT"){
     WCSimPMTObject* PMT = new PMT3inchGT;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "PMT3inchR12199_02"){
     WCSimPMTObject* PMT = new PMT3inchR12199_02;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "PMT3inchR14374"){
     WCSimPMTObject* PMT = new PMT3inchR14374;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "PMT10inch"){
     WCSimPMTObject* PMT = new PMT10inch;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "PMT10inchHQE"){
     WCSimPMTObject* PMT = new PMT10inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "PMT12inchHQE"){
     WCSimPMTObject* PMT = new PMT12inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "HPD20inchHQE"){
     WCSimPMTObject* PMT = new HPD20inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "HPD12inchHQE"){
     WCSimPMTObject* PMT = new HPD12inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "BoxandLine20inchHQE"){
     WCSimPMTObject* PMT = new BoxandLine20inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "BoxandLine12inchHQE"){
     WCSimPMTObject* PMT = new BoxandLine12inchHQE;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "PMT4inchR12199_02"){
     WCSimPMTObject* PMT = new PMT4inchR12199_02;
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
   }
   else if (PMTType == "PMT5inchR12199_02"){
     WCSimPMTObject* PMT = new PMT5inchR12199_02;
+  }
+  else if (PMTType == "PMT5inch"){
+    WCSimPMTObject* PMT = new PMT5inch;
+  }
+  else if (PMTType == "PMT3inch"){
+    WCSimPMTObject* PMT = new PMT3inch;
+  }
+
+  if(PMT != nullptr) {
     WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
     return PMT;
   }
-
-  else { G4cout << PMTType << " is not a recognized PMT Type. Exiting WCSim." << G4endl; exit(1);}
+  else {
+    G4cout << PMTType << " is not a recognized PMT Type. Exiting WCSim." << G4endl;
+    exit(1);
+  }
 }
 
 void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
@@ -437,4 +439,133 @@ void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
   wcopt->SetSavePi0(pi0Info_isSaved);
   wcopt->SetPMTQEMethod(PMT_QE_Method);
   wcopt->SetPMTCollEff(PMT_Coll_Eff);
+  wcopt->SetGeomHasOD(isODConstructed);
+}
+
+//A function to recalculate the dimensions of the HKOD tank if the parameters are changed
+void WCSimDetectorConstruction::UpdateODGeo()
+{
+  WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
+  WCODDiameter = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
+
+  WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
+  WCODCapEdgeLimit = std::min(WCIDDiameter/2.0 - WCPMTODRadius, WCIDDiameter/2.0 - WCODWLSPlatesLength/2);
+
+  std::vector<G4String> WCColName;
+  WCColName.push_back(WCIDCollectionName);
+  WCColName.push_back(WCODCollectionName);
+  CreateCombinedPMTQE(WCColName);
+}
+
+void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> CollectionName){
+
+  // Show printouts for debugging purposes
+  G4cout << G4endl;
+  G4cout << " ************************* " << G4endl;
+  G4cout << " ** CreateCombinedPMTQE ** " << G4endl;
+  G4cout << " ************************* " << G4endl;
+
+  // Define relevant variable
+  // Create array of maps for CollectionName
+  std::vector< std::map<G4double,G4double> > QEMap;
+  std::vector<G4double> maxQEVec;
+  // Need size of QE array
+  std::vector<G4int> NbOfWLBins;
+
+  // Recover QE for collection name
+  std::vector<WCSimPMTObject*> PMT;
+  // F. Nova: here get values from BoxandLine20inchHQE and from PMT8inch
+  for(unsigned int iPMT=0;iPMT<CollectionName.size();iPMT++){
+    // Access PMT pointer
+    PMT.push_back(GetPMTPointer(CollectionName[iPMT]));
+
+    // Recover WL and QE infos
+    G4double *wavelength = (PMT[iPMT]->GetQEWavelength());
+    G4double *QE = (PMT[iPMT]->GetQE());
+
+    std::map<G4double,G4double> hist;
+    G4cout << G4endl;
+    G4cout << "### Recover PMT collection name "
+           << CollectionName[iPMT] << G4endl;
+    for(int iWL=0;iWL<PMT[iPMT]->GetNbOfQEDefined();iWL++){
+      hist[wavelength[iWL]]=QE[iWL];
+      G4cout << "wavelength[" << wavelength[iWL] <<"nm] : " << QE[iWL] << G4endl;
+    }
+
+    QEMap.push_back(hist);
+    maxQEVec.push_back(PMT[iPMT]->GetmaxQE());
+    NbOfWLBins.push_back(PMT[iPMT]->GetNbOfQEDefined());
+  }
+
+  // Concatenate WL vec and remove duplicate
+  std::map<G4double,G4double> QE;
+
+  // Recursive algorithm to set new QE for combined PMT collection
+  // F. Nova: define QE for a given wavelength as the highest QE in the collection for that wavelength
+  // max(QE1, QE, ...), where each QEi is the value of QE for PMT type i
+  G4double max_QE = 0.;
+  G4cout << G4endl;
+  for(unsigned int iCol=0; iCol<QEMap.size();iCol++){
+    for(std::map<G4double, G4double>::iterator it=QEMap[iCol].begin(); it!=QEMap[iCol].end(); ++it){
+      if(iCol+1<QEMap.size()){
+        std::map<G4double, G4double>::iterator foundWL = QEMap[iCol+1].find(it->first);
+        if(foundWL == QEMap[iCol+1].end()){
+          G4cout << "Undefined QE in next collection" << G4endl;
+          G4cout << "Will add it" << G4endl;
+          G4cout << " ### " << it->first << "nm : " << it->second << G4endl;
+          QE[it->first]=it->second;
+        } else {
+
+	        max_QE = std::max(it->second, foundWL->second);
+          G4cout << "New QE defined for " << it->first << "nm is "
+                 << max_QE << G4endl;
+          QE[it->first]=max_QE;
+        }
+      } else {
+        break;
+      }
+    }
+  }
+
+  G4cout << G4endl;
+
+  // Need to make a special case for the last collection
+  int iCol = QEMap.size()-1;
+  if(iCol>0) {
+    for (std::map<G4double, G4double>::iterator it = QEMap[iCol].begin(); it != QEMap[iCol].end(); ++it) {
+      std::map<G4double, G4double>::iterator foundWL = QEMap[iCol - 1].find(it->first);
+      if (foundWL == QEMap[iCol - 1].end()) {
+        G4cout << G4endl;
+        G4cout << "Special case for last collection" << G4endl;
+        G4cout << " ### " << it->first << "nm : " << it->second << G4endl;
+        QE[it->first] = it->second;
+      }
+    }
+  }
+  G4cout << G4endl;
+
+  // Let's debug this one last time :
+  std::map<G4double, G4double>::iterator itr;
+  for(itr = QE.begin(); itr != QE.end(); itr++){
+    G4cout << " ### " << itr->first << "nm : " << itr->second << G4endl;
+  }
+  G4cout << G4endl;
+
+  // Create a new PMT with an extended QE array containing all PMT collection
+  WCSimBasicPMTObject *newPMT = new WCSimBasicPMTObject(QE);
+  newPMT->SetmaxQE(*std::max_element(maxQEVec.begin(),maxQEVec.end()));
+  newPMT->DefineQEHist(QE);
+  SetBasicPMTObject(newPMT);
+}
+
+WCSimWLSProperties *WCSimDetectorConstruction::CreateWLSObject(G4String WLSType){
+
+  if (WLSType == "EljenEJ286"){
+    WCSimWLSProperties* WLS = new EljenEJ286;
+    WCSimDetectorConstruction::SetWLSPointer(WLS);
+    return WLS;
+  }
+
+  else { G4cout << WLSType << " is not a recognized WLS Type. Exiting WCSim." << G4endl; exit(1);}
+
 }

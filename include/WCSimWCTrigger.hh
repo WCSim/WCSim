@@ -37,7 +37,7 @@ public:
 
   ///Create WCSimWCTriggerBase instance with knowledge of the detector and DAQ options
   WCSimWCTriggerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String);
-  
+
   virtual ~WCSimWCTriggerBase();
 
   ///The main user-callable routine of the class. Gets the input & creates the output WCSimWCTriggeredDigitsCollection's, then calls DoTheWork()
@@ -46,20 +46,21 @@ public:
   ///Returns the number of trigger gates in the event (i.e. the number of triggers passed)
   int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
   ///Get the time of the ith trigger
-  Double_t              GetTriggerTime(int i) { return TriggerTimes[i];}
+  Double_t             GetTriggerTime(int i) { return TriggerTimes[i];}
   ///Get the trigger type of the ith trigger
   TriggerType_t        GetTriggerType(int i) { return TriggerTypes[i];}
   ///Get the additional trigger information associated with the ith trigger
-  std::vector<Double_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
+  std::vector<Float_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
   ///Get the trigger class name
   G4String GetTriggerClassName(){ return triggerClassName; }
-  
+
   //
   // Trigger algorithm option set methods
   //
 
   ///Set whether to allow the number of digits per PMT per trigger to go > 1
   void SetMultiDigitsPerTrigger(G4bool allow_multi) { multiDigitsPerTrigger = allow_multi; }
+  G4bool GetMultiDigitsPerTrigger() { return multiDigitsPerTrigger; }
 
   // NDigits options
   ///Set the threshold for the NDigits trigger
@@ -114,9 +115,9 @@ protected:
   virtual int GetDefaultTriggerOffset() { return 950; }
 
   ///Get the pretrigger window for a given trigger algorithm
-  int GetPreTriggerWindow(TriggerType_t t);
+  double GetPreTriggerWindow(TriggerType_t t);
   ///Get the posttrigger window for a given trigger algorithm
-  int GetPostTriggerWindow(TriggerType_t t);
+  double GetPostTriggerWindow(TriggerType_t t);
 
   //these are the algorithms that perform triggering
   //they are stored here so that different trigger classes can use the same algorithms without copying code
@@ -141,12 +142,13 @@ protected:
   WCSimWCTriggeredDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
   std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
 
-  std::vector<Double_t>                TriggerTimes; ///< The times of the triggers
+  std::vector<Double_t>               TriggerTimes; ///< The times of the triggers
   std::vector<TriggerType_t>          TriggerTypes; ///< The type of the triggers
-  std::vector< std::vector<Double_t> > TriggerInfos; ///< Additional information associated with each trigger
+  std::vector< std::vector<Float_t> > TriggerInfos; ///< Additional information associated with each trigger
 
   WCSimWCDAQMessenger*       DAQMessenger; ///< Get the options from the .mac file
   WCSimDetectorConstruction* myDetector;   ///< Know about the detector, so can add appropriate PMT time smearing
+  G4String detectorElement;
 
   G4String detectorElement;
   
@@ -190,7 +192,7 @@ private:
     int i, j;
     TriggerType_t index_type;
     double index_time;
-    std::vector<double> index_info;
+    std::vector<float> index_info;
     for (i = 1; i < (int) TriggerTimes.size(); ++i) {
       index_time = TriggerTimes[i];
       index_type = TriggerTypes[i];
@@ -370,7 +372,7 @@ class WCSimWCTriggerNDigits2 : public WCSimWCTriggerBase
 public:
 
   //not recommended to override these methods
-  WCSimWCTriggerNDigits2(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElements);
+  WCSimWCTriggerNDigits2(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
   ~WCSimWCTriggerNDigits2();
   
 private:
@@ -384,7 +386,6 @@ private:
   int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
   int  GetDefaultTriggerOffset() { return 950;   }
 };
-
 
 
 #endif //WCSimWCTrigger_h

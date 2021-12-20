@@ -69,7 +69,6 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   RelativeHitTime->SetParameterName("RelativeHitTime",true);
   RelativeHitTime->SetDefaultValue(defaultRelativeHitTime);
 
-
   //Generic digitizer specific options
   DigitizerDir = new G4UIdirectory("/DAQ/DigitizerOpt/");
   DigitizerDir->SetGuidance("Generic commands for digitizers");

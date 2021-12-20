@@ -114,10 +114,10 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     {
 
     // First increment the number of PMTs in the tank.
-    //totalNumPMTs++;
       if(aPV->GetName()== WCIDCollectionName) totalNumPMTs++;
       else if(aPV->GetName()== WCIDCollectionName2) totalNumPMTs2++;
-   
+      else if(aPV->GetName()== WCODCollectionName) totalNumODPMTs++;
+
     // Put the location of this tube into the location map so we can find
     // its ID later.  It is coded by its tubeTag string.
     // This scheme must match that used in WCSimWCSD::ProcessHits()
@@ -150,27 +150,18 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
       if ( tubeLocationMap.find(tubeTag) != tubeLocationMap.end() ) {
         G4cerr << "Repeated tube tag: " << tubeTag << G4endl;
         G4cerr << "Assigned to both tube #" << tubeLocationMap[tubeTag] << " and #" << totalNumPMTs << G4endl;
-        G4cerr << "Cannot continue -- hits will not be recorded correctly."  << G4endl;
-        G4cerr << "Please make sure that logical volumes with multiple placements are each given a unique copy number" << G4endl;
+        G4cerr << "Cannot continue -- hits will not be recorded correctly." << G4endl;
+        G4cerr << "Please make sure that logical volumes with multiple placements are each given a unique copy number"
+               << G4endl;
         assert(false);
       }
       tubeLocationMap[tubeTag] = totalNumPMTs;
-    // Put the transform for this tube into the map keyed by its ID
-    tubeIDMap[totalNumPMTs] = aTransform;
-   
-    
-    mPMTIDMap[totalNumPMTs] = std::make_pair(totalNum_mPMTs,mPMT_pmtno);    
-    //G4cout <<  "depth " << depth.str() << G4endl;
-    //G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
-    
-    // Print
-    //     G4cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
-    //	   << " Pos:" << aTransform.getTranslation()/cm 
-    //	   << " Rot:" << aTransform.getRotation().getTheta()/deg 
-    //	   << "," << aTransform.getRotation().getPhi()/deg 
-    //	   << "," << aTransform.getRotation().getPsi()/deg
-    //	   << G4endl; 
-    }
+      // Put the transform for this tube into the map keyed by its ID
+      tubeIDMap[totalNumPMTs] = aTransform;
+
+      mPMTIDMap[totalNumPMTs] = std::make_pair(totalNum_mPMTs,mPMT_pmtno);
+    }//ID PMT 1
+
     else if(aPV->GetName()== WCIDCollectionName2){    
       if ( tubeLocationMap2.find(tubeTag) != tubeLocationMap2.end() ) {
         G4cerr << "Repeated tube tag: " << tubeTag << G4endl;
@@ -180,14 +171,30 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
         assert(false);
       }
       tubeLocationMap2[tubeTag] = totalNumPMTs2;
-    // Put the transform for this tube into the map keyed by its ID
-    tubeIDMap2[totalNumPMTs2] = aTransform;
-   
+      // Put the transform for this tube into the map keyed by its ID
+      tubeIDMap2[totalNumPMTs2] = aTransform;
 
-    mPMTIDMap2[totalNumPMTs2] = std::make_pair(totalNum_mPMTs2,mPMT_pmtno);    
-    //G4cout <<  "depth " << depth.str() << G4endl;
-    //G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
-    
+      mPMTIDMap2[totalNumPMTs2] = std::make_pair(totalNum_mPMTs2,mPMT_pmtno);
+    }//ID PMT 2
+
+    else if(aPV->GetName()== WCODCollectionName) {
+      if(ODtubeLocationMap.find(tubeTag) != ODtubeLocationMap.end()) {
+        G4cerr << "Repeated tube tag: " << tubeTag << G4endl;
+        G4cerr << "Assigned to both tube #" << ODtubeLocationMap[tubeTag] << " and #" << totalNumODPMTs << G4endl;
+        G4cerr << "Cannot continue -- hits will not be recorded correctly." << G4endl;
+        G4cerr << "Please make sure that logical volumes with multiple placements are each given a unique copy number"
+               << G4endl;
+        assert(false);
+      }
+      ODtubeLocationMap[tubeTag] = totalNumODPMTs;
+
+      // Put the transform for this tube into the map keyed by its ID
+      ODtubeIDMap[totalNumODPMTs] = aTransform;
+    }//OD PMT
+
+    // G4cout <<  "depth " << depth.str() << G4endl;
+    // G4cout << "tubeLocationmap[" << tubeTag  << "]= " << tubeLocationMap[tubeTag] << "\n";
+
     // Print
     //     G4cout << "Tube: "<<std::setw(4) << totalNumPMTs << " " << tubeTag
     //	   << " Pos:" << aTransform.getTranslation()/cm 
@@ -195,8 +202,7 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     //	   << "," << aTransform.getRotation().getPhi()/deg 
     //	   << "," << aTransform.getRotation().getPsi()/deg
     //	   << G4endl; 
-    }
-    }
+    }//if ID PMT 1/2 or OD PMT
 }
 
 // Utilities to do stuff with the info we have found.
@@ -253,9 +259,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
 
     // Figure out if pmt is on top/bottom or barrel
     // print key: 0-top, 1-barrel, 2-bottom
-    if (pmtOrientation*newTransform.getTranslation() > 0)//veto pmt
-    {cylLocation=3;}
-    else if (pmtOrientation.z()==1.0)//bottom
+    if (pmtOrientation.z()==1.0)//bottom
     {cylLocation=2;}
     else if (pmtOrientation.z()==-1.0)//top
     {cylLocation=0;}
@@ -296,7 +300,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   }
   fpmts2.clear();
 
-  // Grab the tube information from the tubeID Map and dump to file.
+  // Grab the tube information from the ID PMT 2 tubeID Map and dump to file.
   for ( int tubeID = 1; tubeID <= totalNumPMTs2; tubeID++){
     G4Transform3D newTransform = tubeIDMap2[tubeID];
 
@@ -342,8 +346,55 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
 					      mPMTIDMap2[tubeID].second);
      
      fpmts2.push_back(new_pmt);
+  }//loop over PMT type 2
 
+  // Record locations of OD PMTs to file ffODpmts variables
+  for (unsigned int i=0;i<fODpmts.size();i++){
+    delete fODpmts.at(i);
   }
+  fODpmts.clear();
+
+  // Grab the tube information from the OD tubeID Map and dump to file.
+  for ( int tubeID = 1; tubeID <= totalNumODPMTs; tubeID++){
+    G4Transform3D newTransform = ODtubeIDMap[tubeID];
+
+    // Get tube orientation vector
+    G4Vector3D nullOrient = G4Vector3D(0,0,1);
+    G4Vector3D pmtOrientation = newTransform * nullOrient;
+    //cyl_location cylLocation = tubeCylLocation[tubeID];
+
+    // TODO: make these record something sensible for the OD
+    // 3-topOD, 4-barrelOD, 5-bottomOD
+    if (pmtOrientation.z()==1.0) //top OD
+    {cylLocation=5;}
+    else if (pmtOrientation.z()==-1.0) //bottom OD
+    {cylLocation=3;}
+    else // barrel OD
+    {cylLocation=4;}
+
+    geoFile.precision(9);
+    geoFile << setw(4) << tubeID
+            << " " << setw(8) << newTransform.getTranslation().getX()/CLHEP::cm
+            << " " << setw(8) << newTransform.getTranslation().getY()/CLHEP::cm
+            << " " << setw(8) << newTransform.getTranslation().getZ()/CLHEP::cm
+            << " " << setw(7) << pmtOrientation.x()
+            << " " << setw(7) << pmtOrientation.y()
+            << " " << setw(7) << pmtOrientation.z()
+            << " " << setw(3) << cylLocation
+            << G4endl;
+
+    WCSimPmtInfo *new_pmt = new WCSimPmtInfo(cylLocation,
+                                             newTransform.getTranslation().getX()/CLHEP::cm,
+                                             newTransform.getTranslation().getY()/CLHEP::cm,
+                                             newTransform.getTranslation().getZ()/CLHEP::cm,
+                                             pmtOrientation.x(),
+                                             pmtOrientation.y(),
+                                             pmtOrientation.z(),
+                                             tubeID);
+
+    fODpmts.push_back(new_pmt);
+
+  }//loop over OD PMTs
 
   geoFile.close();
 

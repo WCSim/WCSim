@@ -17,7 +17,6 @@
 #include "WCSimVisManager.hh"
 #include "WCSimRandomParameters.hh"
 
-
 #ifdef G4UI_USE
 #include "G4UIExecutive.hh"
 #endif
@@ -33,6 +32,8 @@ void file_exists(const char * filename) {
 
 int main(int argc,char** argv)
 {
+
+
   // Construct the default run manager
   G4RunManager* runManager = new G4RunManager;
 
@@ -46,6 +47,7 @@ int main(int argc,char** argv)
   if(argc != 3){
       G4cout << "WCSim requires 2 mac-files:" << G4endl;
       G4cout << "\tUsage: WCSim {input.mac} {tuning.mac}" << G4endl;
+      G4cout << "TODO: restore the no-arguments mode of running, where you can type your .mac arguments directly into the G4 command prompt" << G4endl;
       delete runManager;
       return -1;
   }
@@ -119,8 +121,7 @@ int main(int argc,char** argv)
 
   runManager->SetUserAction(new WCSimStackingAction(WCSimdetector));
 
-  runManager->SetUserAction(new WCSimSteppingAction);
-
+  runManager->SetUserAction(new WCSimSteppingAction(myRunAction,WCSimdetector));
 
   // Initialize G4 kernel
   runManager->Initialize();
@@ -129,7 +130,7 @@ int main(int argc,char** argv)
   { 
 
     // Start UI Session
-    //    G4UIsession* session =  new G4UIterminal(new G4UItcsh);
+    // G4UIsession* session =  new G4UIterminal(new G4UItcsh);
 
     //using working example N04 for Qt UI Compatible code
 #ifdef G4UI_USE
@@ -143,9 +144,9 @@ int main(int argc,char** argv)
 #endif
 
     // Start Interactive Mode
-    //session->SessionStart();
+    // session->SessionStart();
 
-    //delete session;
+    // delete session;
   }
   else           // Batch mode
   { 

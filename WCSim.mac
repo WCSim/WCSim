@@ -3,10 +3,13 @@
 /run/verbose 1
 /tracking/verbose 0
 /hits/verbose 0
+/grdm/verbose 0
 
 ## select the geometry
 # Default config if you do nothing is currently SuperK
-#
+# If you do use a geometry other than SuperK, then you *must*
+#  uncomment the line /WCSim/Construct after the chosen geometry
+#  or you'll get a seg fault
 
 #/WCSim/WCgeom nuPRISM
 
@@ -34,6 +37,53 @@
 ## OR for single mPMT mode or updating mPMT parameters:
 #/control/execute macros/mPMT_nuPrism1.mac         ## mPMT options: mPMT_nuPrism1.mac and 2.mac
 
+# The tube size is fixed for SK to 20 inch
+# These are fixed geometries for validation
+#/WCSim/WCgeom SuperK
+
+# Some other SuperK options:
+#/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_20inchBandL_20perCent # Note: the actual coverage is 20.27%
+#/WCSim/WCgeom SuperK_12inchBandL_15perCent # Note: the actual coverage is 14.59%
+#/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
+
+# HyperK (one cylindrical tank with a height of 54.8 m, a diameter of 70.8 m and 40% coverage with 20 inch B&L PMTs)
+#/WCSim/WCgeom HyperK
+#/WCSim/WCgeom HyperKWithOD # To use the OD, please see $WCSIMDIR/macros/OD.mac for the latest design, and the complete set of OD geometry options
+
+# Another option of HyperK
+#/WCSim/WCgeom HyperK_20perCent # Note: the coverage is set to 20.0%.
+
+# Cylindrical detector with a height of 60 m and a diameter of 74 m
+#/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
+#/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
+
+# Generic cylindrical detector with a height of 100m and a
+# diameter of 69m with 12" HPD and 14.59% photocoverage
+
+#/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
+
+# Previous, egg-shaped HyperK design:
+#/WCSim/WCgeom EggShapedHyperK #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
+#/WCSim/WCgeom EggShapedHyperK_withHPD #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
+
+#Changes the length of the simulated volume. Is currently only set up for the egg-shaped HyperK design.
+#/WCSim/EggShapedHyperK/waterTank_Length 24750. mm # Equivalent length for 10 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions (default)
+#/WCSim/EggShapedHyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 82500. mm # Equivalent length for 3 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
+#/WCSim/EggShapedHyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
+
+# LCConfig is for setting the light collector. To be used with WCSim/Construct.
+# Default is No_Mirror.
+#/WCSim/LCConfig No_Mirror
+#/WCSim/LCConfig Mirror_OldLC # Mirror design in a branch of archive/LightCone at 2011.
+#/WCSim/LCConfig Mirror_2018Oct # A short mirror design.
+
+#/WCSim/Construct # This must be uncommented in order to construct a new detector configuration.
+
+
 #Added for the PMT QE option 08/17/10 (XQ)
 # 1. Stacking only mean when the photon is generated
 # the QE is applied to reduce the total number of photons
@@ -60,6 +110,7 @@
 #choose the Trigger & Digitizer type (and options)
 /DAQ/Digitizer SKI
 /DAQ/Trigger NDigits
+#/DAQ/Trigger NoTrigger
 
 #grab the other DAQ options (thresholds, timing windows, etc.)
 /control/execute macros/daq.mac
@@ -67,10 +118,11 @@
 
 # default dark noise frequency (and conversion factor) is PMT property (NEW), set in the code.
 # Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
+/DarkRate/SetDetectorElement tank
 #/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
 #/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
-#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20in R3600 dark rate from EGADS nov 2014
-#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20in R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
 
 # command to multiply the dark rate.
 # Convert dark noise frequency before digitization to after digitization by setting suitable factor
@@ -85,15 +137,24 @@
 #/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
 #width /DarkRate/SetDarkWindow [time in ns] around each hit
 #i.e. hit time ± (/DarkRate/SetDarkWindow) / 2
+/DarkRate/SetDetectorElement tank
 /DarkRate/SetDarkMode 1
 /DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
 
+#/DarkRate/SetDetectorElement OD
+#/DarkRate/SetDarkMode 1
+#/DarkRate/SetDarkHigh 100000
+#/DarkRate/SetDarkLow 0
+#/DarkRate/SetDarkWindow 4000
+
+
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute macros/visOGLSX.mac
 #/control/execute macros/visRayTracer.mac
-#/control/execute macros/visOGLQT.mac             ## NEW
+#/control/execute macros/visOGLQt.mac
+
 
 ## select the input nuance-formatted vector file
 ## you can of course use your own
@@ -101,6 +162,8 @@
 #/mygen/vecfile inputvectorfile
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
 #/mygen/vecfile mu+.out
+# define units used for time in kin file
+#/mygen/time_unit ns
 
 # Or you can use the G4 Particle Gun
 # for a full list of /gun/ commands see:
@@ -139,8 +202,27 @@
 #/gps/ang/minphi 0 deg
 #/gps/ang/maxphi 360 deg
 
-##### NEW
-/Tracking/fractionOpticalPhotonsToDraw 0.0
+# Or you can use a cosmics generator
+# Based on the SuperK flux extrapolated at HyperK site in Mozumi
+# Muons are generated according to this flux and their position is extrapolated outside the tank
+# Useful to study muons tracks in both OD and ID
+#/mygen/generator cosmics
+#/mygen/cosmicsfile data/MuonFlux-HyperK-ThetaPhi.dat
+
+# Radioactive option
+# IMPORTANT: You need to compile WCSim with cmake in order to use the radioactive decays
+# Generate radioactive decay in the water or on the PMTs
+#/mygen/generator radioactive
+# This window should match the one in biasprofile.dat (see below)
+#/mygen/radioactive_time_window 1.e-4
+# The following list the different isotope to take into account, where they decay,
+# and what are their activities in the full ID detector (for Water) or in the PMT (for PMT)
+#/mygen/isotope Tl208 PMT 2.8
+#/mygen/isotope Bi214 PMT 27.
+#/mygen/isotope K40 PMT 94.
+#/mygen/isotope Bi214 water 264. ### HK
+#Clear the source and tell GPS to make multiple vertices
+#/gps/source/clear
 
 # Radon option
 # IMPORTANT: You need to compile WCSim with cmake in order to use the radioactive decays
@@ -151,7 +233,7 @@
 # Needed if time bias is not used, in order to keep timing below one sec.
 #/DAQ/RelativeHitTime true
 # The following set which scenario is used to scale SK model to HK
-#/mygen/radon_scaling A # 	Relative scaling with respect to full ID volume (Pessimistic)
+#/mygen/radon_scaling A # 	Relative scaling with respect to full ID volume (Pessimistic, should be default for now)
 #/mygen/radon_scaling B #	Absolute scaling with respect to ID border (Optimistic)
 #/mygen/radon_scaling 0 #	Uniform distribution
 #/mygen/radon_symmetry 1 #	Divide the detector in x slices using the theta symmetry
@@ -166,12 +248,15 @@
 #/grdm/BRbias 0
 
 
-## change the name of the output root file, default = wcsim.root
-/WCSimIO/RootFile wcsim_output.root
+/Tracking/fractionOpticalPhotonsToDraw 0.0
+
 
 ## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
 ## a NEUT vector file as input
 /WCSimIO/SaveRooTracker 0
+
+## change the name of the output root file, default = wcsim.root
+/WCSimIO/RootFile wcsim_output.root
 
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false
