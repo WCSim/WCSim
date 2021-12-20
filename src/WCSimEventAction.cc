@@ -1727,11 +1727,14 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 
   // Fill other info for this event
 
-  wcsimrootevent->SetMode(jhfNtuple.mode);
-  wcsimrootevent->SetVtxvol(jhfNtuple.vtxvol);
-  for (int j=0;j<3;j++)
-  {
-    wcsimrootevent->SetVtx(j,jhfNtuple.vtx[j]);
+  wcsimrootevent->SetNvtxs(injhfNtuple.nvtxs);
+  for( Int_t u=0; u<injhfNtuple.nvtxs; u++ ){
+    wcsimrootevent->SetVtxsvol(u,injhfNtuple.vtxsvol[u]);
+    for (int j=0;j<4;j++)
+      {
+	wcsimrootevent->SetVtxs(u,j,injhfNtuple.vtxs[u][j]);
+      }
+    wcsimrootevent->SetMode(u,injhfNtuple.mode[u]);
   }
   wcsimrootevent->SetJmu(injhfNtuple.jmu);           //TF: undefined and only for Nuance
   wcsimrootevent->SetJp(injhfNtuple.jp);             //TF: undefined and only for Nuance
@@ -2201,11 +2204,13 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
 
   //point branched struct to the one filled here.
   eventNtuple *thisNtuple = GetRunAction()->GetMyStruct();
-  thisNtuple->interaction_mode = jhfNtuple.mode;
+  //fill from the 0th vertex in the event (and don't add information about the others)
+  // TODO fix this
+  thisNtuple->interaction_mode = injhfNtuple.mode[0];
   strcpy(thisNtuple->vtxVolume,vtxVolumeName.c_str());
-  thisNtuple->vtx_x = jhfNtuple.vtx[0];
-  thisNtuple->vtx_y = jhfNtuple.vtx[1];
-  thisNtuple->vtx_z = jhfNtuple.vtx[2];  //now copying from jhfNuple, in the future replacing jhfNtuple
+  thisNtuple->vtx_x = injhfNtuple.vtxs[0][0];
+  thisNtuple->vtx_y = injhfNtuple.vtxs[0][1];
+  thisNtuple->vtx_z = injhfNtuple.vtxs[0][2];  //now copying from jhfNtuple, in the future replacing jhfNtuple
 
   // Add the tracks with the particle information : beam and target are special or also parents from
   // trajectorylist.
