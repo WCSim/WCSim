@@ -70,25 +70,6 @@ bool WCSimRootGeom::CompareAllVariables(const WCSimRootGeom * c) const
   failed = (!ComparisonPassed(fWCCylLength, c->GetWCCylLength(), typeid(*this).name(), __func__, "WCCylLength")) || failed;
   failed = (!ComparisonPassed(fgeo_type, c->GetGeo_Type(), typeid(*this).name(), __func__, "Geo_Type")) || failed;
   failed = (!ComparisonPassed(fWCPMTRadius, c->GetWCPMTRadius(), typeid(*this).name(), __func__, "WCPMTRadius")) || failed;
-  failed = (!ComparisonPassed(fWCNumPMT, c->GetWCNumPMT(), typeid(*this).name(), __func__, "WCNumPMT")) || failed;
-  for(int i = 0; i < 3; i++) {
-    failed = (!ComparisonPassed(fWCOffset[i], c->GetWCOffset(i), typeid(*this).name(), __func__, TString::Format("WCOffset[%d]", i))) || failed;
-  }//i
-  failed = (!ComparisonPassed(fOrientation, c->GetOrientation(), typeid(*this).name(), __func__, "Orientation")) || failed;
-  for(int i = 0; i < TMath::Min(fWCNumPMT, c->GetWCNumPMT()); i++) {
-    failed = !(this->GetPMTPtr(i)->CompareAllVariables(c->GetPMTPtr(i))) || failed;
-  }
-
-  return !failed;
-}
-//______________________________________________________________________________
-bool WCSimRootGeom::CompareAllVariables(const WCSimRootGeom * c) const
-{
-  bool failed = false;
-  failed = (!ComparisonPassed(fWCCylRadius, c->GetWCCylRadius(), typeid(*this).name(), __func__, "WCCylRadius")) || failed;
-  failed = (!ComparisonPassed(fWCCylLength, c->GetWCCylLength(), typeid(*this).name(), __func__, "WCCylLength")) || failed;
-  failed = (!ComparisonPassed(fgeo_type, c->GetGeo_Type(), typeid(*this).name(), __func__, "Geo_Type")) || failed;
-  failed = (!ComparisonPassed(fWCPMTRadius, c->GetWCPMTRadius(), typeid(*this).name(), __func__, "WCPMTRadius")) || failed;
   failed = (!ComparisonPassed(fWCNumPMT, c->GetWCNumPMT(false), typeid(*this).name(), __func__, "WCNumPMT")) || failed;
   failed = (!ComparisonPassed(fWCNumPMT2, c->GetWCNumPMT(true), typeid(*this).name(), __func__, "WCNumPMT2")) || failed;
   for(int i = 0; i < 3; i++) {
