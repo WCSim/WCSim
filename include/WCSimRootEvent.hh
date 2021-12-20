@@ -431,7 +431,7 @@ public:
   Int_t               GetNcherenkovdigihits_slots() const {return fCherenkovDigiHits->GetLast() + 1; } //don't use fNcherenkovdigihits_slots directly as it doesn't take into account automatic TClonesArray shortening when digits at start/end are removed
   Float_t             GetSumQ()               const { return fSumQ;}
   TriggerType_t       GetTriggerType()        const { return fTriggerType;}
-  std::vector<Float_t> GetTriggerInfo()       const { return fTriggerInfo;}
+  std::vector<Double_t> GetTriggerInfo()       const { return fTriggerInfo;}
 
   WCSimRootTrack         *AddTrack(Int_t ipnu, 
 				   Int_t flag, 
