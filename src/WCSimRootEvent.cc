@@ -466,7 +466,8 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(WCSimRootTrack * track)
 					  start,
 					  track->GetParenttype(),
 					  track->GetTime(),
-					  track->GetId());
+					  track->GetId(),
+					  track->GetParentId());
   fNtrack++;
   return track_out;
 }
@@ -495,6 +496,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 			       Double_t stop[3],
 			       Double_t start[3],
 			       Int_t parenttype,
+			       Double_t time,
 			       Int_t id,
 			       Int_t idParent)
 {
