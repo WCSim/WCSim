@@ -52,8 +52,6 @@ public:
 protected:
   void ReInitialize() { DigiStoreHitMap.clear(); }
 
-  G4double peSmeared;
-
   WCSimDetectorConstruction* myDetector; ///< Get the geometry information
   WCSimWCDAQMessenger* DAQMessenger;     ///< Get the /DAQ/ .mac options
   G4String detectorElement; //to identify which hit collection the trigger is associated: OD, ID, ID PMT type 2(for hybrid)

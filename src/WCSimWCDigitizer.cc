@@ -238,6 +238,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   //loop over entires in WCHCPMT, each entry corresponds to
   //the photons on one PMT
   int absoluteindex=0;
+  double peSmeared = 0.;
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
     {
       //We must first sort hits by PMT in time.  This is very important as the code
