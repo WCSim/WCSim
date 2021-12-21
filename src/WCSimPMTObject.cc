@@ -643,6 +643,12 @@ double PMT10inch::HitTimeSmearing(double Q, double TTSFF=1.0) {
   return Smearing_factor;
 }
 
+double PMT10inch::SaturFactor(double Q, double threshold=-1) {
+  if (threshold == -1) return 1; //no saturation case
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
+}
+
 G4double* PMT10inch::Getqpe() //currently uses the same as 20inch
 {
   static G4double qpe0[501]= {
