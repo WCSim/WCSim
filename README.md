@@ -40,16 +40,11 @@ As of the Hyper-Kamiokande hybrid configuration, the following prerequsite softw
 * ROOT v5r34p36 or v5r34p38 (all v5r34 probably works). ROOT v6 does not work so far.
 * GEANT 4.10.03p3 (or later)
   * All of the G4 data files are also required to be installed, include hadron xsec, etc.
-* cmake (and ROOT & GEANT4 compiled with cmake)
+* cmake3 (and ROOT & GEANT4 compiled with cmake)
 * The environment variable `$WCSIMDIR` should be defined as your WCSim directory (not the build one).
 ```bash
 export WCSIMDIR=`pwd`
 ```
-
-(Known to work with GEANT 4.10.03p3 and ROOT v5.28.00)  You also need all of the G4
-data files including hadron xsecs etc.  Those are the only
-requirements.  The code should work with gcc 4.4.7. For v1.6.0 and earlier, use GEANT 4.10.02+.
-
 ### Build Instructions using make:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
