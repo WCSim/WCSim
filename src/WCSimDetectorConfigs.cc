@@ -816,7 +816,7 @@ void WCSimDetectorConstruction::MatchWCSimAndEggShapedHyperK()
 }
 
 
-void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition)
+void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double /*PMTCoverage*/, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition)
 {
     WCDetectorName = "NuPRISM";
     WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
@@ -932,7 +932,7 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_mPMTGeometry()
 	id_reflector_z_offset = 6.12*CLHEP::mm;
 	id_reflector_angle = 46.5*CLHEP::deg; 
 	mPMT_pmt_openingAngle = 8.3*CLHEP::deg;
-	G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;
+	//G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;
 	
 	// parameters related to filling the ID mPMT
 	nID_PMTs = 19;
