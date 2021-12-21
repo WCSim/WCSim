@@ -89,8 +89,10 @@
     
 // add them to the final state
 
+    /*
     G4int nParticles = nPhotons;
     if(1==nPhotons) nParticles = 2;
+    */
 
     // back to lab system
     for(i=0; i<nPhotons; i++)
@@ -153,12 +155,12 @@ void GdNeutronHPCaptureFS::UpdateNucleus( const G4Fragment* gamma , G4double eGa
   
   G4LorentzVector p4Nucleus(nucleus->GetMomentum() );
   
-  G4double m1 = G4IonTable::GetIonTable()->GetIonMass(static_cast<G4int>(nucleus->GetZ()),
+  G4double mass1 = G4IonTable::GetIonTable()->GetIonMass(static_cast<G4int>(nucleus->GetZ()),
 									       static_cast<G4int>(nucleus->GetA()));
-  G4double m2 = nucleus->GetZ() *  G4Proton::Proton()->GetPDGMass() + 
+  G4double mass2 = nucleus->GetZ() *  G4Proton::Proton()->GetPDGMass() +
     (nucleus->GetA()- nucleus->GetZ())*G4Neutron::Neutron()->GetPDGMass();
   
-  G4double Mass = std::min(m1,m2);
+  G4double Mass = std::min(mass1,mass2);
   
   G4double newExcitation = p4Nucleus.mag() - Mass - eGamma;
   

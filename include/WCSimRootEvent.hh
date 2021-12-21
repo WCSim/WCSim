@@ -203,7 +203,7 @@ public:
   WCSimRootEventHeader() : fEvtNum(0), fRun(0), fDate(0), fSubEvtNumber(1) { }
   virtual ~WCSimRootEventHeader() { }
   bool CompareAllVariables(const WCSimRootEventHeader * c) const;
-  void   Set(Int_t i, Int_t r, int64_t d, Int_t s=1) { fEvtNum = i; fRun = r; fDate = d; fSubEvtNumber = s;}
+  void   Set(Int_t i, Int_t r, int64_t d, Int_t sub=1) { fEvtNum = i; fRun = r; fDate = d; fSubEvtNumber = sub;}
   void SetDate(int64_t d) { fDate=d; }
   Int_t  GetEvtNum() const { return fEvtNum; }
   Int_t  GetRun() const { return fRun; }

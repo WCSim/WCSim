@@ -133,9 +133,10 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
       if( position == 0) {
 	foundString = true;
 	mPMT_pmtno = atoi(replicaNoString[i].substr(position+4).c_str())+1;
-	if(mPMT_pmtno == 1)
+	if(mPMT_pmtno == 1) {
 	  if(aPV->GetName()== WCIDCollectionName) totalNum_mPMTs++;
 	  else if(aPV->GetName()== WCIDCollectionName2) totalNum_mPMTs2++;
+	}
       }
     }
     if(!foundString){

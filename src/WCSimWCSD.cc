@@ -21,8 +21,8 @@
 WCSimWCSD::WCSimWCSD(G4String CollectionName,
                      G4String name,
                      WCSimDetectorConstruction* myDet,
-                     G4String detectorElement)
-     :G4VSensitiveDetector(name), detectorElement(detectorElement)
+                     G4String inDetectorElement)
+     :G4VSensitiveDetector(name), detectorElement(inDetectorElement)
 {
   // Place the name of this collection on the list.  We can have more than one
   // in principle.  CollectionName is a vector.

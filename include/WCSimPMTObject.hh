@@ -468,7 +468,7 @@ class WCSimBasicPMTObject
   void SetmaxQE(G4double qe){ maxQE=qe;};
 
   TGraph* GetgQE(){ return gQE;};
-  void SetgQE(TGraph *g){ gQE=g;};
+  void SetgQE(TGraph *graph){ gQE=graph;};
 
   void DefineQEHist(std::map<G4double,G4double>);
 };

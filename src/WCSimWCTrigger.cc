@@ -154,7 +154,7 @@ double WCSimWCTriggerBase::GetPostTriggerWindow(TriggerType_t t)
 
 void WCSimWCTriggerBase::AdjustNDigitsThresholdForNoise()
 {
-  int npmts;
+  int npmts = 0;
   if(detectorElement=="tank") npmts = this->myDetector->GetTotalNumPmts();
   else if(detectorElement=="tankPMT2") npmts = this->myDetector->GetTotalNumPmts2();
   else if(detectorElement=="OD") npmts = this->myDetector->GetTotalNumODPmts();
