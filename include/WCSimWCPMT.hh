@@ -36,7 +36,6 @@ public:
   //  static G4double GetLongTime() { return LongTime;}
   
   G4double rn1pe();
-  G4double peSmeared;
   // double ConvRate; // kHz
   std::vector<G4double> TriggerTimes;
   std::map<int,int> DigiHitMapPMT; // need to check if a hit already exists..
