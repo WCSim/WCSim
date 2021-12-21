@@ -86,7 +86,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
   G4VSolid *solidWCPMT;
   G4double position_z_offset = 0.;  // for positioning PMTs
-  G4double wcpmt_z_offset = 0.;     // for positioning single PMT support (mPMT)
+  //G4double wcpmt_z_offset = 0.;     // for positioning single PMT support (mPMT)
   G4bool addPMTBase = false;
   G4double pmtModuleHeight = 59.62*CLHEP::mm; //includes puck and single PMT support, not PMT base. The height of pmt module for solid works design
   G4cout << "Number of PMTs per Vessel, in ConstructPMT = " << nIDPMTs << G4endl;
@@ -124,6 +124,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     //////////////////////////////
 
     // ToDo: Base is PMT property! Should not hard coded here.
+    /*
     G4double baseHeight = 0.;
     G4double baseRadius = 0.;
     if(addPMTBase){
@@ -135,6 +136,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
       baseHeight = expose;
       baseRadius = std::max(radius,reflectorRadius) + reflectorThickness; //radius + reflectorThickness; too tight
     }
+    */
 
     // ToDo: extend the shell
     /////////////////////////////
@@ -160,7 +162,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
 
     //z=0 for spherical shell needs to be shifted
-    wcpmt_z_offset = mPMT_vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight;
+    //wcpmt_z_offset = mPMT_vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight;
     position_z_offset = mPMT_vessel_radius_curv - mPMT_outer_material_d - expose - dist_pmt_vessel;
     G4cout << mPMT_vessel_radius_curv << ", " << mPMT_outer_material_d << ", " << expose << ", " << dist_pmt_vessel << G4endl;
   }
@@ -678,7 +680,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   //*Ugly implementation for Light Cone T.Y. 2018.2.13
   if (0 < lightcollector && lightcollector < 3){
     G4cout<<"Registering Light Collectors"<<G4endl;
-    G4VPhysicalVolume* physiLightCone =
+    //G4VPhysicalVolume* physiLightCone =
       new G4PVPlacement(0,
 			G4ThreeVector(0, 0, -1.0*logicLightCone->GetOffset()),
 			logicLightCone,
@@ -817,7 +819,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
                           0,0,0);
 
   G4VisAttributes* visContainer
-      = new G4VisAttributes(G4Colour((0.0, 1.0, 0.0)));
+      = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0));
   visContainer->SetForceWireframe(true);
 
   logicContainer->SetVisAttributes(G4VisAttributes::Invisible);
@@ -911,7 +913,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
 
   ////////////////////////////////////////////////
   // Ali G. : Do dat placement inda box
-  G4VPhysicalVolume* physiWLS =
+  //G4VPhysicalVolume* physiWLS =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, WCODWLSPlatesThickness/2 + WLS_plate_offset),
                         logicWCODWLSPlate,
@@ -923,7 +925,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
 
   if(BuildODWLSCladding) {
 
-    G4VPhysicalVolume* physiWLSCladding =
+    //G4VPhysicalVolume* physiWLSCladding =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, WCODWLSPlatesThickness/2 + WLS_plate_offset),
                         logicWCODWLSPlateCladding,
@@ -936,7 +938,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
     new G4LogicalSkinSurface("cladding_surf",   logicWCODWLSPlateCladding,   WlsOdOpCladdingSurface);
   }
 
-  G4VPhysicalVolume* physiPMT =
+  //G4VPhysicalVolume* physiPMT =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, -1.0*PMTOffset),
                         logicWCPMT,
