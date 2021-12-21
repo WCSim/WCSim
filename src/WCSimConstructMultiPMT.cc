@@ -69,7 +69,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   //Origin is on the blacksheet, faces positive z-direction.
 
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
-  G4double expose =  PMT->GetExposeHeight(); // THIS is the PMT expose, which I'm currently using for pressure mPMT_vessel construction
+  //G4double expose =  PMT->GetExposeHeight(); // THIS is the PMT expose, which I'm currently using for pressure mPMT_vessel construction
 
   //  expose = 0.0153*m;          //TF: to compare same size mPMT_vessels for different size PMTs
   // this is NOT the "expose" of the mPMT
