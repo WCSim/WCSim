@@ -368,68 +368,66 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
 {
   WCSimPMTObject* PMT = nullptr;
   if (PMTType == "PMT20inch"){
-     WCSimPMTObject* PMT = new PMT20inch;
+    PMT = new PMT20inch;
   }
   else if (PMTType == "PMT8inch"){
-    WCSimPMTObject* PMT = new PMT8inch;
+    PMT = new PMT8inch;
   }
   else if (PMTType == "PMT5inch"){
-    WCSimPMTObject* PMT = new PMT5inch;
+    PMT = new PMT5inch;
   }
   else if (PMTType == "PMT3inch"){
-    WCSimPMTObject* PMT = new PMT3inch;
+    PMT = new PMT3inch;
   }
   else if (PMTType == "PMT3inchGT"){
-    WCSimPMTObject* PMT = new PMT3inchGT;
+    PMT = new PMT3inchGT;
   }
   else if (PMTType == "PMT3inchR12199_02"){
-    WCSimPMTObject* PMT = new PMT3inchR12199_02;
+    PMT = new PMT3inchR12199_02;
   }
   else if (PMTType == "PMT3inchR14374"){
-    WCSimPMTObject* PMT = new PMT3inchR14374;
+    PMT = new PMT3inchR14374;
   }
   else if (PMTType == "PMT10inch"){
-    WCSimPMTObject* PMT = new PMT10inch;
+    PMT = new PMT10inch;
   }
   else if (PMTType == "PMT10inchHQE"){
-    WCSimPMTObject* PMT = new PMT10inchHQE;
+    PMT = new PMT10inchHQE;
   }
   else if (PMTType == "PMT12inchHQE"){
-    WCSimPMTObject* PMT = new PMT12inchHQE;
+    PMT = new PMT12inchHQE;
   }
   else if (PMTType == "HPD20inchHQE"){
-    WCSimPMTObject* PMT = new HPD20inchHQE;
+    PMT = new HPD20inchHQE;
   }
   else if (PMTType == "HPD12inchHQE"){
-    WCSimPMTObject* PMT = new HPD12inchHQE;
+    PMT = new HPD12inchHQE;
   }
   else if (PMTType == "BoxandLine20inchHQE"){
-    WCSimPMTObject* PMT = new BoxandLine20inchHQE;
+    PMT = new BoxandLine20inchHQE;
   }
   else if (PMTType == "BoxandLine12inchHQE"){
-    WCSimPMTObject* PMT = new BoxandLine12inchHQE;
+    PMT = new BoxandLine12inchHQE;
   }
   else if (PMTType == "PMT4inchR12199_02"){
-    WCSimPMTObject* PMT = new PMT4inchR12199_02;
+    PMT = new PMT4inchR12199_02;
   }
   else if (PMTType == "PMT5inchR12199_02"){
-    WCSimPMTObject* PMT = new PMT5inchR12199_02;
+    PMT = new PMT5inchR12199_02;
   }
   else if (PMTType == "PMT5inch"){
-    WCSimPMTObject* PMT = new PMT5inch;
+    PMT = new PMT5inch;
   }
   else if (PMTType == "PMT3inch"){
-    WCSimPMTObject* PMT = new PMT3inch;
+    PMT = new PMT3inch;
   }
 
-  if(PMT != nullptr) {
-    WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
-    return PMT;
-  }
-  else {
+  if(PMT == nullptr) {
     G4cout << PMTType << " is not a recognized PMT Type. Exiting WCSim." << G4endl;
     exit(1);
   }
+  WCSimDetectorConstruction::SetPMTPointer(PMT, CollectionName);
+  return PMT;
 }
 
 void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
