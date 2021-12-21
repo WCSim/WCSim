@@ -57,8 +57,8 @@ inline vector<string> readInLine(fstream& inFile, int lineSize, char* inBuf)
 	}
 }
 
-inline double atof( const string& s ) {return std::atof( s.c_str() );}
-inline int    atoi( const string& s ) {return std::atoi( s.c_str() );}
+inline double atof( const string& str ) {return std::atof( str.c_str() );}
+inline int    atoi( const string& str ) {return std::atoi( str.c_str() );}
 
 WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 							 WCSimDetectorConstruction* myDC)
@@ -131,8 +131,8 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     vector<string> token(1);
 
     double binCos, binPhi;
-    double cosThetaMean, cosThetaMin, cosThetaMax;
-    double phiMean, phiMin, phiMax;
+    //double cosThetaMean, cosThetaMin, cosThetaMax;
+    //double phiMean, phiMin, phiMax;
     double flux;
     double Emean;
 
@@ -148,12 +148,14 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 
       binCos=(atof(token[0]));
       binPhi=(atof(token[1]));
+      /*
       cosThetaMean=(atof(token[2]));
       cosThetaMin=(atof(token[3]));
       cosThetaMax=(atof(token[4]));
       phiMean=(atof(token[5]));
       phiMin=(atof(token[6]));
       phiMax=(atof(token[7]));
+      */
       flux=(atof(token[8]));
       Emean=(atof(token[9]));
 
@@ -312,7 +314,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    // that leave the nucleus, tagged by "0"
 	    if ( token[6] == "0") {
 	      G4int pdgid = atoi(token[1]);
-	      G4double energy = atof(token[2])*MeV;
+	      G4double energy_total = atof(token[2])*MeV;
 	      G4ThreeVector dir = G4ThreeVector(atof(token[3]),
 						atof(token[4]),
 						atof(token[5]));
@@ -348,8 +350,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	      G4double mass =
 		particleGun->GetParticleDefinition()->GetPDGMass();
 
-	      G4double ekin = energy - mass;
-	      G4cout << "Generating particle = "<< pdgid << ", E = " << energy << " MeV, Ec = " << ekin <<  " MeV, and dir = " << dir[0] << ", " << dir[1] << ", " << dir[2] << G4endl;
+	      G4double ekin = energy_total - mass;
+	      G4cout << "Generating particle = "<< pdgid << ", E = " << energy_total << " MeV, Ec = " << ekin <<  " MeV, and dir = " << dir[0] << ", " << dir[1] << ", " << dir[2] << G4endl;
 	      particleGun->SetParticleEnergy(ekin);
 	      particleGun->SetParticlePosition(vtxs[iVertex]);
 	      particleGun->SetParticleMomentumDirection(dir);
@@ -506,7 +508,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
             particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[i]));
 
-            double kin_energy = fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
+            kin_energy = fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
 
             particleGun->SetParticleEnergy(kin_energy);
             particleGun->SetParticlePosition(vtx);
@@ -528,11 +530,11 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       G4ThreeVector P  =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
       G4ThreeVector vtx=anEvent->GetPrimaryVertex()->GetPosition();
-      G4double m       =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
+      G4double mass    =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass();
       G4int pdg        =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
 
       G4ThreeVector dir  = P.unit();
-      G4double E         = std::sqrt((P.dot(P))+(m*m));
+      G4double E         = std::sqrt((P.dot(P))+(mass*mass));
 
       //mode            = PARTICLEGUN;
 
@@ -594,12 +596,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
       G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
-      G4double m       =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass(); // will be 0 for photon anyway, but for other gps particles not
+      G4double mass     =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass(); // will be 0 for photon anyway, but for other gps particles not
       G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
 
       G4ThreeVector dir  = P.unit();
       //G4double E         = std::sqrt((P.dot(P)));
-      G4double E         = std::sqrt((P.dot(P))+(m*m));
+      G4double E         = std::sqrt((P.dot(P))+(mass*mass));
       //std::cout << "Energy " << E << " eV " << std::endl;
 
 
@@ -706,12 +708,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
       G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
-      G4double m       =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass(); // will be 0 for photon anyway, but for other gps particles not
+      G4double mass     =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass(); // will be 0 for photon anyway, but for other gps particles not
       G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
 
       G4ThreeVector dir  = P.unit();
       //G4double E         = std::sqrt((P.dot(P)));
-      G4double E         = std::sqrt((P.dot(P))+(m*m));
+      G4double E         = std::sqrt((P.dot(P))+(mass*mass));
       //std::cout << "Energy " << E << " eV " << std::endl;
 
 
