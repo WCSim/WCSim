@@ -36,11 +36,6 @@ include_directories(${PROJECT_SOURCE_DIR}/include
 #----------------------------------------------------------------------------
 # Add libraries: need to compile the Dict before linking WCSim !!
 # in standard makefile, need to make rootcint anyway before standard make
-#
-
-ADD_CUSTOM_TARGET(LinkDirectories ALL
-                  COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/include	${CMAKE_CURRENT_BINARY_DIR}/include
-                  COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/src   ${CMAKE_CURRENT_BINARY_DIR}/src)
 
 ## WCSimRootDict.cxx regeneration by rootcint
 ## Use ROOT 5.34.32 as some issues with PARSE_ARGUMENTS were found in older ROOT versions (ROOT 5.34.11)
@@ -164,9 +159,6 @@ if (NOT (PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR))
     tuningNominal.mac
     WCSim_hybrid.mac
     WCSim_hybrid.sh
-    macros/jobOptions.mac
-    macros/daq.mac
-    macros/tuning_parameters.mac
     data/MuonFlux-HyperK-ThetaPhi.dat
     include/TJNuBeamFlux.hh
     include/TNRooTrackerVtx.hh
