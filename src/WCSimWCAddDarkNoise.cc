@@ -37,8 +37,8 @@
 
 WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,
                                          WCSimDetectorConstruction* inDetector,
-                                         G4String detectorElement)
-  :G4VDigitizerModule(name), fCalledAddDarkNoise(false), myDetector(inDetector), detectorElement(detectorElement)
+                                         G4String inDetectorElement)
+  :G4VDigitizerModule(name), fCalledAddDarkNoise(false), myDetector(inDetector), detectorElement(inDetectorElement)
 {
   //Set defaults to be unphysical, so that we know if they have been overwritten by the user
   PMTDarkRate = -99;
@@ -134,8 +134,6 @@ void WCSimWCAddDarkNoise::AddDarkNoise(){
 #endif
   }
 
-  int sh;
-  
   if(((WCHCPMT != NULL) || (add_noise_based_on_tank && WCHCPMT_tank != NULL))
      && (this->PMTDarkRate > 1E-307)) {
     //Determine ranges for adding noise
