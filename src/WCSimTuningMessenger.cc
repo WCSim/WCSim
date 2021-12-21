@@ -197,7 +197,7 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   else if(command == CommandWCODWLSCladdingReflectivity) {
     // Set the Top Veto PMT Spacing
     WCSimTuningParams->SetWCODWLSCladdingReflectivity(CommandWCODWLSCladdingReflectivity->GetNewDoubleValue(newValue));
-    G4cout << "Setting OD WLS plate cladding reflectivity " << CommandWCODWLSCladdingReflectivity->GetNewDoubleValue(newValue)) << G4endl;
+    G4cout << "Setting OD WLS plate cladding reflectivity " << CommandWCODWLSCladdingReflectivity->GetNewDoubleValue(newValue) << G4endl;
   }
 
   else if(command == CommandWCODTyvekReflectivity) {
