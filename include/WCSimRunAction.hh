@@ -47,7 +47,8 @@ public:
     if(detectorElement=="tank") return wcsimrooteventbranch;
     else if(detectorElement=="tankPMT2")  return wcsimrooteventbranch2;
     else if(detectorElement=="OD")  return wcsimrooteventbranch_OD;
-    else G4cout << "Unkown detector element" << G4endl;
+    else G4cout << "Unkown detector element: " << detectorElement << G4endl;
+    return nullptr;
   }
   TTree* GetFlatMasterTree(){return masterTree;}
   TTree* GetGeoTree(){return geoTree;}
@@ -57,6 +58,8 @@ public:
     if(detectorElement=="tank") return wcsimrootsuperevent;
     else if(detectorElement=="tankPMT2") return wcsimrootsuperevent2;
     else if(detectorElement=="OD") return wcsimrootsuperevent_OD;
+    else G4cout << "Unkown detector element: " << detectorElement << G4endl;
+    return nullptr;
   }
   WCSimRootOptions* GetRootOptions(){return wcsimrootoptions;}
 
