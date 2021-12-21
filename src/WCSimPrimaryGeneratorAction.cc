@@ -283,7 +283,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 					    atof(token[5]));
 	  SetBeamEnergy(beamenergies[iVertex]);
 	  SetBeamDir(beamdirs[iVertex]);
-	  G4cout << "Neutrino generated is = "<< beampdg<<", Enu = " << beamenergy << " and interacts through mode = " << mode << G4endl;
+	  G4cout << "Neutrino generated is = "<< beampdgs[iVertex]<<", Enu = " << beamenergies[iVertex] << " and interacts through mode = " << mode[iVertex] << G4endl;
 
 	  // Now read the target line
 
@@ -296,7 +296,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    targetdirs[iVertex] = G4ThreeVector(atof(token[3]),
 						atof(token[4]),
 						atof(token[5]));
-	    G4cout << "Target hit is = "<< targetpdg <<", E = " << targetenergy << G4endl;
+	    G4cout << "Target hit is = "<< targetpdgs[iVertex] <<", E = " << targetenergies[iVertex] << G4endl;
 	  }//loop over target lines
 
 	  // The info line is read in the exiting step of the while loop aboe
@@ -351,7 +351,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	      G4double ekin = energy - mass;
 	      G4cout << "Generating particle = "<< pdgid << ", E = " << energy << " MeV, Ec = " << ekin <<  " MeV, and dir = " << dir[0] << ", " << dir[1] << ", " << dir[2] << G4endl;
 	      particleGun->SetParticleEnergy(ekin);
-	      particleGun->SetParticlePosition(vtx);
+	      particleGun->SetParticlePosition(vtxs[iVertex]);
 	      particleGun->SetParticleMomentumDirection(dir);
 	      particleGun->SetParticleTime(VertexTime);
 	      particleGun->GeneratePrimaryVertex(anEvent);
@@ -825,8 +825,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       number_of_sources = 1;
       //SetNvtxs(number_of_sources);
       for( G4int u=0; u<number_of_sources; u++){
-	//targetpdgs[u] = 2212; //ie. proton
-	targetpdg = 2212; //ie. proton
+	targetpdgs[u] = 2212; //ie. proton
 
       	G4ThreeVector P   =anEvent->GetPrimaryVertex(u)->GetPrimary()->GetMomentum();
       	G4ThreeVector vtx =anEvent->GetPrimaryVertex(u)->GetPosition();
