@@ -224,7 +224,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   if(detectorElement=="tank") WCCollectionName = myDetector->GetIDCollectionName();
   else if(detectorElement=="tankPMT2") WCCollectionName = myDetector->GetIDCollectionName2();
   else if(detectorElement=="OD") WCCollectionName = myDetector->GetODCollectionName();
-  myDetector->GetPMTPointer(WCCollectionName);
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
   
   // G. Pronost 2019/09/09:
   // Hit need to be sorted! (This is done no where!)
