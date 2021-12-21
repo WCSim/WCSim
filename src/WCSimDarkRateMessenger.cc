@@ -110,9 +110,7 @@ WCSimDarkRateMessenger::~WCSimDarkRateMessenger()
 {
 
   delete SetFrequency;
-  delete SetFrequency2;
   delete SetConversionRate;
-  delete SetConversionRate2;
   delete SetDarkMode;
   delete SetDarkLow;
   delete SetDarkHigh;
