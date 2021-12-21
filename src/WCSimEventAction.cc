@@ -1170,6 +1170,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     WCTM = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout2");
   } else if(detectorElement=="OD"){
     WCTM = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout_OD");
+  } else {
+    G4cout << "Unknown detector element: " << detectorElement << G4endl;
+    exit(1);
   }
 
   int ngates = WCTM->NumberOfGatesInThisEvent();
@@ -1442,7 +1445,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   std::vector<WCSimPmtInfo*> *fpmts;
   if(detectorElement=="tank") fpmts = detectorConstructor->Get_Pmts();
   else if(detectorElement=="tankPMT2") fpmts = detectorConstructor->Get_Pmts2();
-
+  else if(detectorElement=="OD") fpmts = detectorConstructor->Get_ODPmts();
 
 #ifdef _SAVE_RAW_HITS
 
@@ -1693,6 +1696,11 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     WCTM = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout");
   } else if(detectorElement=="tankPMT2"){
     WCTM = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout2");
+  } else if(detectorElement=="OD"){
+    WCTM = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout_OD");
+  } else {
+    G4cout << "Unknown detector element: " << detectorElement << G4endl;
+    exit(1);
   }
 
   int ngates = WCTM->NumberOfGatesInThisEvent();
@@ -1962,6 +1970,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   std::vector<WCSimPmtInfo*> *fpmts;
   if(detectorElement=="tank") fpmts = detectorConstructor->Get_Pmts();
   else if(detectorElement=="tankPMT2") fpmts = detectorConstructor->Get_Pmts2();
+  else if(detectorElement=="OD") fpmts = detectorConstructor->Get_ODPmts();
 
 
 #ifdef _SAVE_RAW_HITS
@@ -2285,6 +2294,11 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
 
   if(detectorElement=="tank") nMpmtID_pmts = detectorConstructor->GetmPMT_nID();
   else if(detectorElement=="tankPMT2")  nMpmtID_pmts = detectorConstructor->GetmPMT_nID2();
+  else if(detectorElement=="OD") nMpmtID_pmts = 0;
+  else {
+    G4cout << "Unknown detector element: " << detectorElement << G4endl;
+    exit(1);
+  }
 
 #ifdef _SAVE_RAW_HITS
 
@@ -2300,6 +2314,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
   std::vector<WCSimPmtInfo*> *fpmts;
   if(detectorElement=="tank") fpmts = detectorConstructor->Get_Pmts();
   else if(detectorElement=="tankPMT2") fpmts = detectorConstructor->Get_Pmts2();
+  else if(detectorElement=="OD") fpmts = detectorConstructor->Get_ODPmts();
 
   if (WCDC_hits)
   {
@@ -2461,6 +2476,11 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
     WCTM = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout");
   } else if(detectorElement=="tankPMT2"){
     WCTM = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout2");
+  } else if(detectorElement=="OD"){
+    WCTM = (WCSimWCTriggerBase*)DMman->FindDigitizerModule("WCReadout_OD");
+  } else {
+    G4cout << "Unknown detector element: " << detectorElement << G4endl;
+    exit(1);
   }
   int ngates = WCTM->NumberOfGatesInThisEvent();
   G4cout << "ngates =  " << ngates << "\n";
