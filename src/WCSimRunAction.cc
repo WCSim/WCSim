@@ -345,6 +345,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     flatRooTrackerTree->Branch("NuParentDecMode",&evNRooTracker->NuParentDecMode,"NuParentDecMod/I");
     flatRooTrackerTree->Branch("NuParentPdg",&evNRooTracker->NuParentPdg,"NuParentPdg/I");
     //// WORK IN PROGRESS
+    /*
     double      NuParentDecP4 [4]; 
     double      NuParentDecX4 [4]; 
     double       NuCospibm;         
@@ -446,6 +447,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     double OrigTreePOT;
     double TimeInSpill;
     int TruthVertexID;
+    */
   }//SaveRooTracker
   
   //set Tree for gathering photon info inside stepping action
@@ -543,10 +545,10 @@ void WCSimRunAction::FillGeoTree(){
   G4int orientation;
   G4double pmtradius2;//Hybrid configuration
   G4int numpmt2;//Hybrid configuration
-  G4int orientation2;//Hybrid configuration
+  //G4int orientation2;//Hybrid configuration
   Double_t offset[3];
  
-  Double_t rotation[3];
+  //Double_t rotation[3];
 
   Int_t tubeNo;
   Int_t mPMTNo = -1;
@@ -690,7 +692,7 @@ void WCSimRunAction::FillGeoTree(){
   wcsimrootgeom-> SetODWCNumPMT(numpmtOD);
 
   geoTree->Fill();
-  TFile* hfile = geoTree->GetCurrentFile();
+  //TFile* hfile = geoTree->GetCurrentFile();
   //hfile->Write(); 
   if(wcsimdetector->GetIsNuPrism()) fSettingsOutputTree->Write();
 //  if(fSettingsInputTree) fSettingsInputTree->Close();
