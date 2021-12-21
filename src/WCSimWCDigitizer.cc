@@ -34,8 +34,8 @@ WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 					   WCSimDetectorConstruction* inDetector,
 					   WCSimWCDAQMessenger* myMessenger,
 					   DigitizerType_t digitype,
-					   G4String detectorElement)
-  :G4VDigitizerModule(name), myDetector(inDetector), DAQMessenger(myMessenger), DigitizerType(digitype), DigitizerClassName(""), detectorElement(detectorElement)
+					   G4String inDetectorElement)
+  :G4VDigitizerModule(name), myDetector(inDetector), DAQMessenger(myMessenger), detectorElement(inDetectorElement), DigitizerClassName(""), DigitizerType(digitype)
 {
   G4String colName;
   if(detectorElement=="tank") colName = "WCDigitizedStoreCollection";
@@ -197,10 +197,10 @@ void WCSimWCDigitizerBase::SaveOptionsToOutput(WCSimRootOptions * wcopt)
 // *******************************************
 
 WCSimWCDigitizerSKI::WCSimWCDigitizerSKI(G4String name,
-					 WCSimDetectorConstruction* myDetector,
+					 WCSimDetectorConstruction* inDetector,
 					 WCSimWCDAQMessenger* myMessenger,
-					 G4String detectorElement)
-  : WCSimWCDigitizerBase(name, myDetector, myMessenger, kDigitizerSKI, detectorElement)
+					 G4String inDetectorElement)
+  : WCSimWCDigitizerBase(name, inDetector, myMessenger, kDigitizerSKI, inDetectorElement)
 {
   DigitizerClassName = "SKI";
   GetVariables();
@@ -281,7 +281,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	{
 	  double time = (*WCHCPMT)[i]->GetTime(ip);
           double pe = (*WCHCPMT)[i]->GetPe(ip);
-          const int parent_id = (*WCHCPMT)[i]->GetParentID(ip);
+          //const int parent_id = (*WCHCPMT)[i]->GetParentID(ip);
 
 	  //start the integration time as the time of the first hit
 	  //Hits must be sorted in time
