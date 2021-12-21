@@ -84,14 +84,7 @@ libWCSim.a : $(ROOTOBJS)
 rootcint: ./WCSimRootDict.cxx
 
 movedict: rootcint
-	  if [ -f "./WCSimRootDict_rdict.pcm" ]; then cp -f ./WCSimRootDict_rdict.pcm ${G4WORKDIR}/tmp/${G4SYSTEM}/WCSim/; fi
-
-movedict: rootcint
-ifneq (,$(wildcard ./src/WCSimRootDict_rdict.pcm))
-	cp -f ./src/WCSimRootDict_rdict.pcm .
-	cp -f ./src/WCSimRootDict_rdict.pcm ${G4WORKDIR}/tmp/${G4SYSTEM}/WCSim/
-endif
-
+	if [ -f "./WCSimRootDict_rdict.pcm" ]; then cp -f ./WCSimRootDict_rdict.pcm ${G4WORKDIR}/tmp/${G4SYSTEM}/WCSim/; fi
 
 doxy:
 	@if [ ${DOXYGEN_EXISTS} = 1 ]; \

@@ -52,10 +52,7 @@ libWCSimRoot.so : $(ROOTOBJS)
 rootcint: ./WCSimRootDict.cxx
 
 movedict: rootcint
-ifneq (,$(wildcard ./src/WCSimRootDict_rdict.pcm))
-	cp -f ./src/WCSimRootDict_rdict.pcm .
-	cp -f ./src/WCSimRootDict_rdict.pcm ${G4TMPDIR}
-endif
+	if [ -f "./WCSimRootDict_rdict.pcm" ]; then cp -f ./WCSimRootDict_rdict.pcm ${G4WORKDIR}/tmp/${G4SYSTEM}/WCSim/; fi
 
 $(G4TMPDIR)/%.o: src/%.cc
 	@echo Compiling $*.cc ...
