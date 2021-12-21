@@ -31,9 +31,9 @@ G4double WCSimWCPMT::fFirst_Time = 0 ;
 G4bool WCSimWCPMT::fFirst_Time_Flag = false;
 
 WCSimWCPMT::WCSimWCPMT(G4String name,
-                       WCSimDetectorConstruction* myDetector,
-                       G4String detectorElement)
-  :G4VDigitizerModule(name), detectorElement(detectorElement)
+                       WCSimDetectorConstruction* inDetector,
+                       G4String inDetectorElement)
+  :G4VDigitizerModule(name), detectorElement(inDetectorElement)
 {
   // G4String colName = "WCRawPMTSignalCollection";
   // collectionName.push_back(colName);
@@ -42,7 +42,7 @@ WCSimWCPMT::WCSimWCPMT(G4String name,
   else if(detectorElement=="tankPMT2") collectionName.push_back("WCRawPMTSignalCollection2");
   else if(detectorElement=="OD") collectionName.push_back("WCRawPMTSignalCollection_OD");
   else G4cout << "detectorElement undefined..." << G4endl;
-  this->myDetector = myDetector;
+  this->myDetector = inDetector;
   DigiHitMapPMT.clear();
 
   G4cout<<"WCSimWCPMT::WCSimWCPMT recording collection name "<<collectionName[0]<<G4endl;
@@ -152,9 +152,9 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
     pmts = myDetector->Get_ODPmts();
   }
 
+#ifdef HYPER_VERBOSITY
   WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
 
-#ifdef HYPER_VERBOSITY
   G4cout<<"WCSimWCPMT::MakePeCorrection making PE correction for ";
   if(WCHC){
     G4cout<<WCHC->entries()<<" hits"<<G4endl;
@@ -206,9 +206,11 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 
       //
       //double Qout;
-      double ttsfactor = myDetector->GetParameters()->GetTtsff(); //TD 2019.07.02
+      //double ttsfactor = myDetector->GetParameters()->GetTtsff(); //TD 2019.07.02
       //double linearity = myDetector->GetParameters()->GetNLTinfo();
+#ifdef DEBUG
       double QinTOT = 0;
+#endif
 
       for (G4int ip =0; ip < (*WCHC)[i]->GetTotalPe(); ip++){
 	time_true = (*WCHC)[i]->GetTime(ip);
