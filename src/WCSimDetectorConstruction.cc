@@ -522,7 +522,9 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> Collec
           G4cout << "Undefined QE in next collection" << G4endl;
           G4cout << "Will add it" << G4endl;
           G4cout << " ### " << it->first << "nm : " << it->second << G4endl;
-          QE[it->first]=it->second;
+          // Note that 280. and 660. are hard-coded internal limits for GetPMTQE
+          QE[it->first]=std::max(it->second,
+               GetPMTQE(CollectionName[iCol+1], it->first, 1, 280., 660., 1.0));
         } else {
 
 	        max_QE = std::max(it->second, foundWL->second);
@@ -547,7 +549,9 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> Collec
         G4cout << G4endl;
         G4cout << "Special case for last collection" << G4endl;
         G4cout << " ### " << it->first << "nm : " << it->second << G4endl;
-        QE[it->first] = it->second;
+        // Note that 280. and 660. are hard-coded internal limits for GetPMTQE
+        QE[it->first]=std::max(it->second,
+               GetPMTQE(CollectionName[iCol-1], it->first, 1, 280., 660., 1.0));
       }
     }
   }
