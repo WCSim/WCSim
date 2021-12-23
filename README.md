@@ -33,11 +33,14 @@ The output can be found at: https://wcsim.github.io/Validation/
 More detailed information about the simulation is available in
 `doc/DetectorDocumentation.pdf`
 
+doxygen documentation can be built by running
+`cd $WCSIMDIR/doc && make`
+
 ## Build Instructions
 
 As of the Hyper-Kamiokande hybrid configuration, the following prerequsite software is required
 * A `-std=c++0x` or `-std=c++11` compatible compiler. e.g. gcc 4.8.5
-* ROOT v5r34p36 or v5r34p38 (all v5r34 probably works). ROOT v6 does not work so far.
+* ROOT v5r34p36 or v5r34p38 (all v5r34 probably works). ROOT v6 also works (6.20/04 has been tested)
 * GEANT 4.10.03p3 (or later)
   * All of the G4 data files are also required to be installed, include hadron xsec, etc.
 * cmake3 (and ROOT & GEANT4 compiled with cmake)
@@ -45,22 +48,6 @@ As of the Hyper-Kamiokande hybrid configuration, the following prerequsite softw
 ```bash
 export WCSIMDIR=`pwd`
 ```
-### Build Instructions using make:
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This compilation method is not advised, CMake should be prefered. If using this method, the Rn background generator will *not* work
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To compile: 
-```bash
-make clean
-make rootcint
-make
-```
-
-If you want to use these libraries with an external program then also do:
-* `make shared`      [ For root programs]
-* `make libWCSim.a`  [ Also necessary for the event display?]
 
 ### Build Instructions using CMake:
 
@@ -174,7 +161,7 @@ There are a few example scripts inside `sample-root-scripts/`
   * Compile it using the `Makefile` in `sample-root-scripts/` (i.e. run `make` from that folder)
   * Execute it using `Analyzer.sh` in `sample-root-scripts/` (i.e. run `./Analyzer.sh` from that folder)
 
-## Color Convention for visualization used in WCSimVismanager.cc
+## Color Convention for visualization used in `WCSimVismanager.cc`
 
 * gamma = green
 * neutrino = yellow
@@ -188,4 +175,3 @@ There are a few example scripts inside `sample-root-scripts/`
 ```
 WCSim development is supported by the United States National Science Foundation.
 ```
-
