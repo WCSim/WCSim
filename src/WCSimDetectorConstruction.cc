@@ -24,10 +24,15 @@
 
 
 namespace {
+  //-----------------------------------------------------
+  // Local helper functions in anonymous namespace
+  //-----------------------------------------------------
+
   // Iterator based interpolation function.
-  // WCSimDetectorConstruction::GetPMTQE() is not quite satisfactory for
-  // interpolating combined QE functions due to its hard-coded limits and
-  // behavior at its end points.
+  //   Used in WCSimDetectorConstruction::CreateCombinedPMTQE()
+  //   WCSimDetectorConstruction::GetPMTQE() is not quite satisfactory for
+  //   interpolating combined QE functions due to its hard-coded limits and
+  //   behavior at its end points.
   template <typename X, typename Y>
   Y linterpolate(const X& x,
                  const X* x_begin, const X* x_end, const Y* y_begin){
@@ -494,7 +499,7 @@ void WCSimDetectorConstruction::UpdateODGeo()
   CreateCombinedPMTQE(WCColName);
 }
 
-void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> CollectionName){
+void WCSimDetectorConstruction::CreateCombinedPMTQE(const std::vector<G4String> & CollectionName){
 
   // Show printouts for debugging purposes
   G4cout << G4endl;
