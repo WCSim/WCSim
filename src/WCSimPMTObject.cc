@@ -3158,16 +3158,16 @@ WCSimBasicPMTObject::WCSimBasicPMTObject(std::vector<G4double> wl,std::vector<G4
   maxQE=max;
 }
 
-void WCSimBasicPMTObject::DefineQEHist(std::map<G4double,G4double> mapQE){
+void WCSimBasicPMTObject::DefineQEHist(std::map<G4double,G4double> mQE){
 
   if (gQE != NULL) {
 	  delete gQE;
 	  gQE = nullptr;
   }
-  gQE = new TGraph(mapQE.size());
+  gQE = new TGraph(mQE.size());
   G4int iPt=0;
   std::map<G4double, G4double>::iterator itr;
-  for(itr = mapQE.begin(); itr != mapQE.end(); itr++) {
+  for(itr = mQE.begin(); itr != mQE.end(); itr++) {
     gQE->SetPoint(iPt,itr->first,itr->second);
     iPt++;
   }
