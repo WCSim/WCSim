@@ -31,6 +31,7 @@ build/
 # run results to ignore
 *.out.txt
 *.root
+*.kin
 geofile.txt
 
 # compiled ROOT scripts to ignore
