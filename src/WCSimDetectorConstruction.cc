@@ -521,7 +521,6 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(const std::vector<G4String> 
 
   // Limit values determined across all PMTs in the collection.
   G4double maxQE = 0.;
-  std::pair<G4double, G4double> wl_minmax {-1., -1.};
 
   for(unsigned iPMT = 0; iPMT < nPMTs; iPMT++){
     auto aPMT = GetPMTPointer(CollectionName[iPMT]);
@@ -534,21 +533,12 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(const std::vector<G4String> 
     const G4double* aqe_b = aPMT->GetQE();
     qe_be[iPMT] = std::make_pair(aqe_b, aqe_b + nwl);
 
-    // Iterators to the min and max wavelengths.  Expected to be the first
-    // and last elements of the array.
-    auto awl_minmax = std::minmax_element(wl_be[iPMT].first,
-                                          wl_be[iPMT].second);
-
     // Update limits
     if( iPMT == 0 ){
       maxQE = aPMT->GetmaxQE();
-      wl_minmax.first = *(awl_minmax.first);
-      wl_minmax.second = *(awl_minmax.second);
     }
     else {
       maxQE = std::max(maxQE, aPMT->GetmaxQE());
-      wl_minmax = std::minmax({wl_minmax.first, wl_minmax.second,
-                               *(awl_minmax.first),  *(awl_minmax.second)});
     }
 
     // Dump QE function for this PMT type
