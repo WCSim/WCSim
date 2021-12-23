@@ -46,17 +46,18 @@ RUN wget https://root.cern.ch/download/root_v6.20.04.Linux-centos7-x86_64-gcc4.8
     && rm -f root.tar.gz
 
 ### Downloading Geant4
+ENV G4VERSION 4.10.03.p03
 ### There is no precompiled CentOS7 version of G4.10.1, so we need to compile it from source instead
 #RUN wget http://cern.ch/geant4-data/releases/lib4.10.1.p03/Linux-g++4.4.7-SLC6.tar.gz -O geant.tar.gz \
 #    && tar -xvzf geant.tar.gz \
 #    && rm -f geant.tar.gz
-RUN wget http://cern.ch/geant4-data/releases/geant4.10.01.p03.tar.gz -O geant.tar.gz \
+RUN wget http://cern.ch/geant4-data/releases/geant${G4VERSION}.tar.gz -O geant.tar.gz \
     && tar -xvzf geant.tar.gz \
     && rm -f geant.tar.gz
-RUN mkdir $HYPERKDIR/geant4.10.01.p03-build
-RUN mkdir $HYPERKDIR/geant4.10.01.p03-install
-WORKDIR $HYPERKDIR/geant4.10.01.p03-build
-RUN cmake -DCMAKE_INSTALL_PREFIX=$HYPERKDIR/geant4.10.01.p03-install -DGEANT4_INSTALL_DATA=ON $HYPERKDIR/geant4.10.01.p03
+RUN mkdir $HYPERKDIR/geant${G4VERSION}-build
+RUN mkdir $HYPERKDIR/geant${G4VERSION}-install
+WORKDIR $HYPERKDIR/geant${G4VERSION}-build
+RUN cmake -DCMAKE_INSTALL_PREFIX=$HYPERKDIR/geant${G4VERSION}-install -DGEANT4_INSTALL_DATA=ON $HYPERKDIR/geant${G4VERSION}
 RUN make -j`nproc`
 RUN make install
 
@@ -73,7 +74,7 @@ RUN make install
 ### ENV Geant4
 ENV WCSIMDIR $HYPERKDIR/WCSim
 ENV G4WORKDIR $WCSIMDIR/exe
-ENV G4INSTALLDIR $HYPERKDIR/geant4.10.01.p03-install
+ENV G4INSTALLDIR $HYPERKDIR/geant${G4VERSION}-install
 ENV G4LIB $G4INSTALL/lib
 
 ### Make a setup script
