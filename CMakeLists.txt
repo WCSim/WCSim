@@ -158,7 +158,6 @@ if (NOT (PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR))
     biasprofile.dat
     tuningNominal.mac
     WCSim_hybrid.mac
-    WCSim_hybrid.sh
     data/MuonFlux-HyperK-ThetaPhi.dat
     include/TJNuBeamFlux.hh
     include/TNRooTrackerVtx.hh
