@@ -72,6 +72,8 @@ bool WCSimRootGeom::CompareAllVariables(const WCSimRootGeom * c) const
   failed = (!ComparisonPassed(fWCPMTRadius, c->GetWCPMTRadius(), typeid(*this).name(), __func__, "WCPMTRadius")) || failed;
   failed = (!ComparisonPassed(fWCNumPMT, c->GetWCNumPMT(false), typeid(*this).name(), __func__, "WCNumPMT")) || failed;
   failed = (!ComparisonPassed(fWCNumPMT2, c->GetWCNumPMT(true), typeid(*this).name(), __func__, "WCNumPMT2")) || failed;
+  failed = (!ComparisonPassed(fODWCPMTRadius, c->GetODWCPMTRadius(), typeid(*this).name(), __func__, "ODWCPMTRadius")) || failed;
+  failed = (!ComparisonPassed(fODWCNumPMT, c->GetODWCNumPMT(), typeid(*this).name(), __func__, "ODWCNumPMT")) || failed;
   for(int i = 0; i < 3; i++) {
     failed = (!ComparisonPassed(fWCOffset[i], c->GetWCOffset(i), typeid(*this).name(), __func__, TString::Format("WCOffset[%d]", i))) || failed;
   }//i
