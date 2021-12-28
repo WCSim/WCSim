@@ -229,7 +229,7 @@ else {
   //*Ugly implementation for Light Cone T.Y. 2018.2.13
   if (0 < lightcollector && lightcollector < 3){
 	G4cout<<"Registering Light Collectors"<<G4endl;
-	G4VPhysicalVolume* physiLightCone =
+	//G4VPhysicalVolume* physiLightCone =
 	  new G4PVPlacement(0,
 		  G4ThreeVector(0, 0, -1.0*logicLightCone->GetOffset()),
 		  logicLightCone,
@@ -366,7 +366,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
                           0,0,0);
 
   G4VisAttributes* visContainer
-      = new G4VisAttributes(G4Colour((0.0, 1.0, 0.0)));
+      = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0));
   visContainer->SetForceWireframe(true);
 
   logicContainer->SetVisAttributes(G4VisAttributes::Invisible);
@@ -460,7 +460,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
 
   ////////////////////////////////////////////////
   // Ali G. : Do dat placement inda box
-  G4VPhysicalVolume* physiWLS =
+  //G4VPhysicalVolume* physiWLS =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, WCODWLSPlatesThickness/2 + WLS_plate_offset),
                         logicWCODWLSPlate,
@@ -472,7 +472,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
 
   if(BuildODWLSCladding) {
 
-    G4VPhysicalVolume* physiWLSCladding =
+    //G4VPhysicalVolume* physiWLSCladding =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, WCODWLSPlatesThickness/2 + WLS_plate_offset),
                         logicWCODWLSPlateCladding,
@@ -485,7 +485,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
     new G4LogicalSkinSurface("cladding_surf",   logicWCODWLSPlateCladding,   WlsOdOpCladdingSurface);
   }
 
-  G4VPhysicalVolume* physiPMT =
+  //G4VPhysicalVolume* physiPMT =
       new G4PVPlacement(0,
                         G4ThreeVector(0, 0, -1.0*PMTOffset),
                         logicWCPMT,
