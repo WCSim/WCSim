@@ -1,9 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <WCSimRootEvent.hh>
-#include <G4SIunits.hh>
-#include <G4OpticalPhoton.hh>
-
 #include "WCSimSteppingAction.hh"
 
 #include "G4Track.hh"
@@ -16,9 +10,18 @@
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
 
+#include <WCSimRootEvent.hh>
+#include <G4SIunits.hh>
+#include <G4OpticalPhoton.hh>
+
+#include <stdlib.h>
+#include <stdio.h>
+
 ///////////////////////////////////////////////
 ///// BEGINNING OF WCSIM STEPPING ACTION //////
 ///////////////////////////////////////////////
+
+constexpr bool verbose = false;  ///< Local compile-time verbosity switch
 
 
 WCSimSteppingAction::WCSimSteppingAction(WCSimRunAction *myRun, WCSimDetectorConstruction *myDet) : runAction(myRun), det(myDet) {
@@ -28,15 +31,19 @@ WCSimSteppingAction::WCSimSteppingAction(WCSimRunAction *myRun, WCSimDetectorCon
 void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 {
   //DISTORTION must be used ONLY if INNERTUBE or INNERTUBEBIG has been defined in BidoneDetectorConstruction.cc
-  
-  const G4Event* evt = G4RunManager::GetRunManager()->GetCurrentEvent();
+ 
+  //const G4Event* evt = G4RunManager::GetRunManager()->GetCurrentEvent();
 
-  const G4Track* track       = aStep->GetTrack();
-  G4VPhysicalVolume* volume  = track->GetVolume();
+  //const G4Track* track       = aStep->GetTrack();
+  //G4VPhysicalVolume* volume  = track->GetVolume();
 
 
-  G4SDManager* SDman   = G4SDManager::GetSDMpointer();
-  G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
+  //G4SDManager* SDman   = G4SDManager::GetSDMpointer();
+  //G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
+
+  if(verbose && aStep != nullptr) {
+    G4cout << "WCSimSteppingAction::UserSteppingAction() does nothing" << G4endl;
+  }
 
 }
 
