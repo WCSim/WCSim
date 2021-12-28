@@ -33,7 +33,10 @@ public:
   TBranch* GetBranch(G4String detectorElement = "tank"){
     if(detectorElement=="tank") return wcsimrooteventbranch;
     else if(detectorElement=="OD")  return wcsimrooteventbranch_OD;
-    else G4cout << "Unkown detector element" << G4endl;
+    else {
+      G4cout << "Unkown detector element" << G4endl;
+      return nullptr;
+    }
   }
   TTree* GetGeoTree(){return geoTree;}
   TTree* GetOptionsTree(){return optionsTree;}
@@ -41,7 +44,11 @@ public:
   // WCSimRootEvent* GetRootEvent(){return wcsimrootsuperevent;}
   WCSimRootEvent* GetRootEvent(G4String detectorElement = "tank"){
     if(detectorElement=="tank") return wcsimrootsuperevent;
-    if(detectorElement=="OD") return wcsimrootsuperevent_OD;
+    else if(detectorElement=="OD") return wcsimrootsuperevent_OD;
+    else {
+      G4cout << "Unkown detector element" << G4endl;
+      return nullptr;
+    }
   }
   WCSimRootOptions* GetRootOptions(){return wcsimrootoptions;}
 

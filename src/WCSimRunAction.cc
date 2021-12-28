@@ -92,7 +92,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
 
   geoTree = new TTree("wcsimGeoT","WCSim Geometry Tree");
   wcsimrootgeom = new WCSimRootGeom();
-  TBranch *geoBranch = geoTree->Branch("wcsimrootgeom", "WCSimRootGeom", &wcsimrootgeom, bufsize,0);
+  geoTree->Branch("wcsimrootgeom", "WCSimRootGeom", &wcsimrootgeom, bufsize,0);
 
   FillGeoTree();
 
