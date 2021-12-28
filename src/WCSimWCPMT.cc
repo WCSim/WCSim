@@ -29,9 +29,9 @@ extern "C" void skrn1pe_(double* );
 G4double WCSimWCPMT::first_time = 0;
 
 WCSimWCPMT::WCSimWCPMT(G4String name,
-                       WCSimDetectorConstruction* myDetector,
-                       G4String detectorElement)
-  :G4VDigitizerModule(name), detectorElement(detectorElement)
+                       WCSimDetectorConstruction* myDet,
+                       G4String detElem)
+  :G4VDigitizerModule(name), myDetector {myDet}, detectorElement {detElem}
 {
   // G4String colName = "WCRawPMTSignalCollection";
   // collectionName.push_back(colName);
@@ -39,7 +39,6 @@ WCSimWCPMT::WCSimWCPMT(G4String name,
   if(detectorElement=="tank") collectionName.push_back("WCRawPMTSignalCollection");
   else if(detectorElement=="OD") collectionName.push_back("WCRawPMTSignalCollection_OD");
   else G4cout << "detectorElement undefined..." << G4endl;
-  this->myDetector = myDetector;
   DigiHitMapPMT.clear();
 
   #ifdef HYPER_VERBOSITY
@@ -138,15 +137,10 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
   std::sort(WCHC->GetVector()->begin(), WCHC->GetVector()->end(), WCSimWCHit::SortFunctor_Hit());
 
   //Get the PMT info for hit time smearing
-  // G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-  // WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
-
   G4String WCCollectionName;
   if(detectorElement=="tank") WCCollectionName = myDetector->GetIDCollectionName();
   else if(detectorElement=="OD") WCCollectionName = myDetector->GetODCollectionName();
 
-  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
-  
   // Correct timing to be within 1 sec (needed for radioactive decay as forcing the decay lead to some strange results)
   
 
