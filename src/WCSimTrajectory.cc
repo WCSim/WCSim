@@ -136,35 +136,34 @@ const std::map<G4String,G4AttDef>* WCSimTrajectory::GetAttDefs() const
 std::vector<G4AttValue>* WCSimTrajectory::CreateAttValues() const
 {
   char c[100];
-  //std::ostrstream s(c,100);
-  std::ostringstream s(c);
+  std::ostringstream st(c);
   
   std::vector<G4AttValue>* values = new std::vector<G4AttValue>;
   
-  s.seekp(std::ios::beg);
-  s << fTrackID << std::ends;
+  st.seekp(std::ios::beg);
+  st << fTrackID << std::ends;
   values->push_back(G4AttValue("ID",c,""));
   
-  s.seekp(std::ios::beg);
-  s << fParentID << std::ends;
+  st.seekp(std::ios::beg);
+  st << fParentID << std::ends;
   values->push_back(G4AttValue("PID",c,""));
   
   values->push_back(G4AttValue("PN",ParticleName,""));
   
-  s.seekp(std::ios::beg);
-  s << PDGCharge << std::ends;
+  st.seekp(std::ios::beg);
+  st << PDGCharge << std::ends;
   values->push_back(G4AttValue("Ch",c,""));
 
-  s.seekp(std::ios::beg);
-  s << PDGEncoding << std::ends;
+  st.seekp(std::ios::beg);
+  st << PDGEncoding << std::ends;
   values->push_back(G4AttValue("PDG",c,""));
 
-  s.seekp(std::ios::beg);
-  s << G4BestUnit(initialMomentum,"Energy") << std::ends;
+  st.seekp(std::ios::beg);
+  st << G4BestUnit(initialMomentum,"Energy") << std::ends;
   values->push_back(G4AttValue("IMom",c,""));
 
-  s.seekp(std::ios::beg);
-  s << GetPointEntries() << std::ends;
+  st.seekp(std::ios::beg);
+  st << GetPointEntries() << std::ends;
   values->push_back(G4AttValue("NTP",c,""));
 
   return values;
