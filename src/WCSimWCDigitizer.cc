@@ -24,20 +24,22 @@ WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
 										   WCSimWCDAQMessenger* myMessenger,
 										   DigitizerType_t digitype,
 										   G4String detectorElement)
-  :G4VDigitizerModule(name), myDetector(inDetector), DAQMessenger(myMessenger), DigitizerType(digitype),DigitizerClassName(""), detectorElement(detectorElement)
+  :G4VDigitizerModule(name), fMyDetector(inDetector),
+        fDAQMessenger(myMessenger), fDigitizerClassName(""),
+        fDigitizerType(digitype), fDetectorElement(detectorElement)
 {
   // G4String colName = "WCDigitizedStoreCollection";
   G4String colName;
-  if(detectorElement=="tank") colName = "WCDigitizedStoreCollection";
-  else if(detectorElement=="OD") colName = "WCDigitizedStoreCollection_OD";
+  if(fDetectorElement=="tank") colName = "WCDigitizedStoreCollection";
+  else if(fDetectorElement=="OD") colName = "WCDigitizedStoreCollection_OD";
   collectionName.push_back(colName);
   ReInitialize();
 
 #ifdef HYPER_VERBOSITY
-	if(detectorElement=="OD")G4cout<<"WCSimWCDigitizerBase::WCSimWCDigitizerBase ☆ recording collection name "<<colName<<" for "<<detectorElement<<G4endl;
+	if(fDetectorElement=="OD")G4cout<<"WCSimWCDigitizerBase::WCSimWCDigitizerBase ☆ recording collection name "<<colName<<" for "<<fDetectorElement<<G4endl;
 #endif
 
-  if(DAQMessenger == NULL) {
+  if(fDAQMessenger == NULL) {
     G4cerr << "WCSimWCDAQMessenger pointer is NULL when passed to WCSimWCDigitizerBase constructor. Exiting..." 
 	   << G4endl;
     exit(-1);
@@ -50,15 +52,15 @@ WCSimWCDigitizerBase::~WCSimWCDigitizerBase(){
 void WCSimWCDigitizerBase::GetVariables()
 {
   //set the options to digitizer-specific defaults
-  DigitizerDeadTime          = GetDefaultDeadTime();
-  DigitizerIntegrationWindow = GetDefaultIntegrationWindow();
-  DigitizerTimingPrecision   = GetDefaultTimingPrecision();
-  DigitizerPEPrecision       = GetDefaultPEPrecision();
+  fDigitizerDeadTime          = GetDefaultDeadTime();
+  fDigitizerIntegrationWindow = GetDefaultIntegrationWindow();
+  fDigitizerTimingPrecision   = GetDefaultTimingPrecision();
+  fDigitizerPEPrecision       = GetDefaultPEPrecision();
 
   //read the .mac file to override them
-  if(DAQMessenger != NULL) {
-    DAQMessenger->TellMeAboutTheDigitizer(this);
-    DAQMessenger->SetDigitizerOptions();
+  if(fDAQMessenger != NULL) {
+    fDAQMessenger->TellMeAboutTheDigitizer(this);
+    fDAQMessenger->SetDigitizerOptions();
   }
   else {
     G4cerr << "WCSimWCDAQMessenger pointer is NULL when used in WCSimWCDigitizerBase::GetVariables(). Exiting..." 
@@ -66,10 +68,10 @@ void WCSimWCDigitizerBase::GetVariables()
     exit(-1);
   }
 
-  G4cout << "Using digitizer deadtime "           << DigitizerDeadTime          << " ns" << G4endl;
-  G4cout << "Using digitizer integration window " << DigitizerIntegrationWindow << " ns" << G4endl;
-  G4cout << "Using digitizer time resolution "    << DigitizerTimingPrecision   << " ns" << G4endl;
-  G4cout << "Using digitizer charge resolution "  << DigitizerPEPrecision       << " p.e." << G4endl;
+  G4cout << "Using digitizer deadtime "           << fDigitizerDeadTime          << " ns" << G4endl;
+  G4cout << "Using digitizer integration window " << fDigitizerIntegrationWindow << " ns" << G4endl;
+  G4cout << "Using digitizer time resolution "    << fDigitizerTimingPrecision   << " ns" << G4endl;
+  G4cout << "Using digitizer charge resolution "  << fDigitizerPEPrecision       << " p.e." << G4endl;
 }
 
 void WCSimWCDigitizerBase::Digitize()
@@ -77,11 +79,11 @@ void WCSimWCDigitizerBase::Digitize()
   //Input is WCSimWCDigitsCollection with raw PMT hits (photon + dark noise)
   //Output is WCSimWCDigitsCollection with digitied PMT hits
 
-  //Clear the DigiStoreHitMap
+  //Clear the fDigiStoreHitMap
   ReInitialize();
 
   //Temporary Storage of Digitized hits which is passed to the trigger
-  DigiStore = new WCSimWCDigitsCollection(collectionName[0],collectionName[0]);
+  fDigiStore = new WCSimWCDigitsCollection(collectionName[0],collectionName[0]);
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   
@@ -89,8 +91,8 @@ void WCSimWCDigitizerBase::Digitize()
   // G4int WCHCID = DigiMan->GetDigiCollectionID("WCRawPMTSignalCollection");
 
   G4String rawcollectionName;
-  if(detectorElement=="tank") rawcollectionName = "WCRawPMTSignalCollection";
-  else if(detectorElement=="OD") rawcollectionName = "WCRawPMTSignalCollection_OD";
+  if(fDetectorElement=="tank") rawcollectionName = "WCRawPMTSignalCollection";
+  else if(fDetectorElement=="OD") rawcollectionName = "WCRawPMTSignalCollection_OD";
   G4int WCHCID = DigiMan->GetDigiCollectionID(rawcollectionName);
 
   // Get the PMT Digits collection
@@ -98,18 +100,18 @@ void WCSimWCDigitizerBase::Digitize()
     (WCSimWCDigitsCollection*)(DigiMan->GetDigiCollection(WCHCID));
 
 #ifdef HYPER_VERBOSITY
-	if(detectorElement=="OD"){
+	if(fDetectorElement=="OD"){
 		G4cout << "WCSimWCDigitizerBase::Digitize ☆ making digits collection (WCSimWCDigitsCollection*)"<<collectionName[0]
-					 << " for "<<detectorElement<<" and calling DigitizeHits on "<<rawcollectionName<<" to fill it"<<G4endl;}
+					 << " for "<<fDetectorElement<<" and calling DigitizeHits on "<<rawcollectionName<<" to fill it"<<G4endl;}
 #endif
   
   if (WCHCPMT) {
     DigitizeHits(WCHCPMT);
   } else {
-	  G4cout << "WCSimWCDigitizerBase::Digitize didn't find hit collection for " << detectorElement << G4endl;
+	  G4cout << "WCSimWCDigitizerBase::Digitize didn't find hit collection for " << fDetectorElement << G4endl;
   }
   
-  StoreDigiCollection(DigiStore);
+  StoreDigiCollection(fDigiStore);
 
 }
 
@@ -117,8 +119,8 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, double digihittime, d
 {
   //digitised hit information does not have infinite precision
   //so need to round the charge and time information
-  double digihittime_d = Truncate(digihittime, DigitizerTimingPrecision);
-  double peSmeared_d   = Truncate(peSmeared,   DigitizerPEPrecision);
+  double digihittime_d = Truncate(digihittime, fDigitizerTimingPrecision);
+  double peSmeared_d   = Truncate(peSmeared,   fDigitizerPEPrecision);
 
   //gate is not a trigger, but just the position of the digit in the array
   //inside the WCSimWCDigi object
@@ -136,24 +138,24 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, double digihittime, d
 
   //use un-truncated peSmeared here, so that truncation does not affect the test
   if (peSmeared > 0.0) {
-      if ( DigiStoreHitMap[tube] == 0) {
+      if ( fDigiStoreHitMap[tube] == 0) {
 	WCSimWCDigi* Digi = new WCSimWCDigi();
 	Digi->SetTubeID(tube);
 	Digi->SetPe(gate,peSmeared_d);
 	Digi->AddPe(digihittime_d);
 	Digi->SetTime(gate,digihittime_d);
 	Digi->AddDigiCompositionInfo(digi_comp);
-	DigiStoreHitMap[tube] = DigiStore->insert(Digi);
+	fDigiStoreHitMap[tube] = fDigiStore->insert(Digi);
 #ifdef WCSIMWCDIGITIZER_VERBOSE
 	if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT)
 	  G4cout << " NEW HIT" << G4endl;
 #endif
       }
       else {
-	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetPe(gate,peSmeared_d);
-	(*DigiStore)[DigiStoreHitMap[tube]-1]->SetTime(gate,digihittime_d);
-	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddPe(digihittime_d);
-	(*DigiStore)[DigiStoreHitMap[tube]-1]->AddDigiCompositionInfo(digi_comp);
+	(*fDigiStore)[fDigiStoreHitMap[tube]-1]->SetPe(gate,peSmeared_d);
+	(*fDigiStore)[fDigiStoreHitMap[tube]-1]->SetTime(gate,digihittime_d);
+	(*fDigiStore)[fDigiStoreHitMap[tube]-1]->AddPe(digihittime_d);
+	(*fDigiStore)[fDigiStoreHitMap[tube]-1]->AddDigiCompositionInfo(digi_comp);
 #ifdef WCSIMWCDIGITIZER_VERBOSE
 	if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT)
 	  G4cout << " DEJA VU" << G4endl;
@@ -173,11 +175,11 @@ bool WCSimWCDigitizerBase::AddNewDigit(int tube, int gate, double digihittime, d
 
 void WCSimWCDigitizerBase::SaveOptionsToOutput(WCSimRootOptions * wcopt)
 {
-  wcopt->SetDigitizerClassName(DigitizerClassName);
-  wcopt->SetDigitizerDeadTime(DigitizerDeadTime);
-  wcopt->SetDigitizerIntegrationWindow(DigitizerIntegrationWindow);
-  wcopt->SetDigitizerTimingPrecision(DigitizerTimingPrecision);
-  wcopt->SetDigitizerPEPrecision(DigitizerPEPrecision);
+  wcopt->SetDigitizerClassName(fDigitizerClassName);
+  wcopt->SetDigitizerDeadTime(fDigitizerDeadTime);
+  wcopt->SetDigitizerIntegrationWindow(fDigitizerIntegrationWindow);
+  wcopt->SetDigitizerTimingPrecision(fDigitizerTimingPrecision);
+  wcopt->SetDigitizerPEPrecision(fDigitizerPEPrecision);
 }
 
 
@@ -191,7 +193,7 @@ WCSimWCDigitizerSKI::WCSimWCDigitizerSKI(G4String name,
                                          G4String detectorElement)
   : WCSimWCDigitizerBase(name, myDetector, myMessenger, kDigitizerSKI, detectorElement)
 {
-  DigitizerClassName = "SKI";
+  fDigitizerClassName = "SKI";
   GetVariables();
 }
 
@@ -200,13 +202,13 @@ WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
 
 void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 
-  if(detectorElement=="tank") G4cout << "TANK # ";
-  if(detectorElement=="OD")   G4cout << "OD # ";
+  if(fDetectorElement=="tank") G4cout << "TANK # ";
+  if(fDetectorElement=="OD")   G4cout << "OD # ";
   G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
 
   //Get the PMT info for hit time smearing
-  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+  G4String WCIDCollectionName = fMyDetector->GetIDCollectionName();
+  WCSimPMTObject * PMT = fMyDetector->GetPMTPointer(WCIDCollectionName);
 
   // G. Pronost 2019/09/09:
   // Hit need to be sorted! (This is done no where!)
@@ -239,8 +241,8 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 #endif
 
       //Sorting done.  Now we integrate the charge on each PMT.
-      // Integration occurs for DigitizerIntegrationWindow ns (user set)
-      // Digitizer is then dead for DigitizerDeadTime ns (user set)
+      // Integration occurs for fDigitizerIntegrationWindow ns (user set)
+      // Digitizer is then dead for fDigitizerDeadTime ns (user set)
 
       //look over all hits on the PMT
       //integrate charge and start digitizing
@@ -263,9 +265,9 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  //Hits must be sorted in time
 	  if(ip==0) {
 	    intgr_start=time;
-	    peSmeared = 0;
+	    fPESmeared = 0;
 	    //Set the limits of the integration window [intgr_start,upperlimit]                                                                                            
-	    upperlimit = intgr_start + DigitizerIntegrationWindow;
+	    upperlimit = intgr_start + fDigitizerIntegrationWindow;
 	  }
 	  
 #ifdef WCSIMWCDIGITIZER_VERBOSE
@@ -280,7 +282,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 
 	  bool MakeDigit = false;
 	  if(time >= intgr_start && time <= upperlimit) {
-	    peSmeared += pe;
+	    fPESmeared += pe;
 	    photon_unique_id = ip+absoluteindex;
 	    digi_comp.push_back(photon_unique_id);
       
@@ -297,7 +299,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  //if ensures we don't append the same digit multiple times while in the integration window
 	  else if(digi_comp.size()) {
 	    //this hit is outside the integration time window.
-	    //Charge integration is over.  The is now a DigitizerDeadTime ns dead
+	    //Charge integration is over.  The is now a fDigitizerDeadTime ns dead
 	    //time period where no hits can be recorded
 	    MakeDigit = true;
 	  }
@@ -305,17 +307,17 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  //Make digit here
 	  if(MakeDigit) {
 	    int iflag;
-	    WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
+	    WCSimWCDigitizerSKI::Threshold(fPESmeared,iflag);
 
 	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    if(iflag == 0) {
 	      //apply time smearing
-	      double Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+	      double Q = (fPESmeared > 0.5) ? fPESmeared : 0.5;
 	      //digitize hit
-	      peSmeared *= efficiency;
+	      fPESmeared *= efficiency;
 	      bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
 								intgr_start + PMT->HitTimeSmearing(Q),
-								peSmeared, digi_comp);
+								fPESmeared, digi_comp);
 	      if(accepted) {
 		digi_unique_id++;
 	      }
@@ -333,21 +335,21 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  }
 	  
 	  //Now try and deal with the next hit
-	  if(time > upperlimit && time <= upperlimit + DigitizerDeadTime) {
+	  if(time > upperlimit && time <= upperlimit + fDigitizerDeadTime) {
 	    //Now we need to reject hits that are after the integration
 	    //period to the end of the veto signal
 	    continue;
 	  }
-	  else if(time > upperlimit + DigitizerDeadTime){
+	  else if(time > upperlimit + fDigitizerDeadTime){
 #ifdef WCSIMWCDIGITIZER_VERBOSE
 	    if(tube < NPMTS_VERBOSE || tube == VERBOSE_PMT)
 	      G4cout<<"*** PREPARING FOR >1 DIGI ***"<<G4endl;
 #endif
 	    //we now need to start integrating from the hit
 	    intgr_start=time;
-	    peSmeared = pe;
+	    fPESmeared = pe;
 	    //Set the limits of the integration window [intgr_start,upperlimit]
-	    upperlimit = intgr_start + DigitizerIntegrationWindow;
+	    upperlimit = intgr_start + fDigitizerIntegrationWindow;
 
 	    //store the digi composition information
 	    photon_unique_id = ip+absoluteindex;
@@ -357,15 +359,15 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    //as the loop will not evaluate again
 	    if(ip+1 == (*WCHCPMT)[i]->GetTotalPe()) {
 	      int iflag;
-	      WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
+	      WCSimWCDigitizerSKI::Threshold(fPESmeared,iflag);
 	      if(iflag == 0) {
 		//apply time smearing
-		double Q = (peSmeared > 0.5) ? peSmeared : 0.5;
+		double Q = (fPESmeared > 0.5) ? fPESmeared : 0.5;
 		//digitize hit
-		peSmeared *= efficiency;
+		fPESmeared *= efficiency;
 		bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
 								  intgr_start + PMT->HitTimeSmearing(Q),
-								  peSmeared, digi_comp);
+								  fPESmeared, digi_comp);
 		if(accepted) {
 		  digi_unique_id++;
 		}
@@ -385,14 +387,14 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	}//ip (totalpe)
 	absoluteindex+=(*WCHCPMT)[i]->GetTotalPe();
     }//i (WCHCPMT->entries())
-  G4cout<<"WCSimWCDigitizerSKI::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << "\n";
+  G4cout<<"WCSimWCDigitizerSKI::DigitizeHits END fDigiStore->entries() " << fDigiStore->entries() << "\n";
   
 #ifdef WCSIMWCDIGITIZER_VERBOSE
   G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
-  for (G4int idigi = 0 ; idigi < DigiStore->entries() ; idigi++){
-    int tubeid = (*DigiStore)[idigi]->GetTubeID();
+  for (G4int idigi = 0 ; idigi < fDigiStore->entries() ; idigi++){
+    int tubeid = (*fDigiStore)[idigi]->GetTubeID();
     if(tubeid < NPMTS_VERBOSE) {
-      std::map< int, std::vector<int> > comp = (*DigiStore)[idigi]->GetDigiCompositionInfo();
+      std::map< int, std::vector<int> > comp = (*fDigiStore)[idigi]->GetDigiCompositionInfo();
       for(size_t i = 0; i < comp.size(); i++){
 	G4cout << "tube "  << tubeid
 	       << " gate " << i << " p_id";

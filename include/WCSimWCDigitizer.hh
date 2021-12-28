@@ -33,10 +33,10 @@ public:
   void Digitize();
 
   //.mac file option setting methods
-  void SetDigitizerDeadTime         (int deadtime) { DigitizerDeadTime = deadtime;         }; ///< Override the default digitizer deadtime (ns)
-  void SetDigitizerIntegrationWindow(int inttime ) { DigitizerIntegrationWindow = inttime; }; ///< Override the default digitizer integration window (ns)
-  void SetDigitizerTimingPrecision  (double precision) { DigitizerTimingPrecision = precision; }; ///< Override the default digitizer timing resolution (ns)
-  void SetDigitizerPEPrecision      (double precision) { DigitizerPEPrecision     = precision; }; ///< Override the default digitizer charge resolution (p.e.)
+  void SetDigitizerDeadTime         (int deadtime) { fDigitizerDeadTime = deadtime;         }; ///< Override the default digitizer deadtime (ns)
+  void SetDigitizerIntegrationWindow(int inttime ) { fDigitizerIntegrationWindow = inttime; }; ///< Override the default digitizer integration window (ns)
+  void SetDigitizerTimingPrecision  (double precision) { fDigitizerTimingPrecision = precision; }; ///< Override the default digitizer timing resolution (ns)
+  void SetDigitizerPEPrecision      (double precision) { fDigitizerPEPrecision     = precision; }; ///< Override the default digitizer charge resolution (p.e.)
 
   double Truncate(double value, double precision) {
     if(precision < 1E-10) return value;
@@ -50,24 +50,24 @@ public:
   void SaveOptionsToOutput(WCSimRootOptions * wcopt);
   
 protected:
-  void ReInitialize() { DigiStoreHitMap.clear(); }
+  void ReInitialize() { fDigiStoreHitMap.clear(); }
 
-  G4double peSmeared;
+  G4double fPESmeared;
 
-  WCSimDetectorConstruction* myDetector; ///< Get the geometry information
-  WCSimWCDAQMessenger* DAQMessenger;     ///< Get the /DAQ/ .mac options
+  WCSimDetectorConstruction* fMyDetector; ///< Get the geometry information
+  WCSimWCDAQMessenger* fDAQMessenger;     ///< Get the /DAQ/ .mac options
 
-  WCSimWCDigitsCollection*  DigiStore;
-  std::map<int,int> DigiStoreHitMap;   ///< Used to check if a digit has already been created on a PMT
+  WCSimWCDigitsCollection*  fDigiStore;
+  std::map<int,int> fDigiStoreHitMap;   ///< Used to check if a digit has already been created on a PMT
 
   //generic digitizer properties. Defaults set with the GetDefault*() methods. Overidden by .mac options
-  G4String DigitizerClassName;    ///< Name of the digitizer class being run
-  int DigitizerDeadTime;          ///< Digitizer deadtime (ns)
-  int DigitizerIntegrationWindow; ///< Digitizer integration window (ns)
-  double DigitizerTimingPrecision; ///< Digitizer time precision (ns)
-  double DigitizerPEPrecision;     ///< Digitizer charge precision (p.e.)
+  G4String fDigitizerClassName;    ///< Name of the digitizer class being run
+  int fDigitizerDeadTime;          ///< Digitizer deadtime (ns)
+  int fDigitizerIntegrationWindow; ///< Digitizer integration window (ns)
+  double fDigitizerTimingPrecision; ///< Digitizer time precision (ns)
+  double fDigitizerPEPrecision;     ///< Digitizer charge precision (p.e.)
 
-  DigitizerType_t DigitizerType; ///< Enumeration to say which digitizer we've constructed
+  DigitizerType_t fDigitizerType; ///< Enumeration to say which digitizer we've constructed
 
   virtual int GetDefaultDeadTime() = 0;          ///< Set the default digitizer-specific deadtime (in ns) (overridden by .mac)
   virtual int GetDefaultIntegrationWindow() = 0; ///< Set the default digitizer-specific integration window (in ns) (overridden by .mac)
@@ -76,7 +76,7 @@ protected:
 
   void GetVariables(); ///< Get the default deadtime, etc. from the derived class, and override with read from the .mac file
 
-  G4String detectorElement;
+  G4String fDetectorElement;
 };
 
 
