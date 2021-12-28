@@ -27,34 +27,34 @@ public:
   void FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, double width);
   //As it inherits from G4VDigitizerModule it needs a digitize class.  Not used
   void Digitize() { }
-  void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
-  double GetDarkRate() { return PMTDarkRate; }
-  void SetConversion(double iconvrate){ ConvRate = iconvrate; }
-  void SetDarkMode(int imode){DarkMode = imode;}
-  void SetDarkHigh(double idarkhigh){DarkHigh = idarkhigh;}
-  void SetDarkLow(double idarklow){DarkLow = idarklow;}
-  void SetDarkWindow(int idarkwindow){DarkWindow = idarkwindow;}
-  int GetDarkWindow(){return (int)(DarkWindow);}
+  void SetDarkRate(double idarkrate){ fPMTDarkRate = idarkrate; }
+  double GetDarkRate() { return fPMTDarkRate; }
+  void SetConversion(double iconvrate){ fConvRate = iconvrate; }
+  void SetDarkMode(int imode){fDarkMode = imode;}
+  void SetDarkHigh(double idarkhigh){fDarkHigh = idarkhigh;}
+  void SetDarkLow(double idarklow){fDarkLow = idarklow;}
+  void SetDarkWindow(int idarkwindow){fDarkWindow = idarkwindow;}
+  int GetDarkWindow(){return (int)(fDarkWindow);}
   void SaveOptionsToOutput(WCSimRootOptions * wcopt, string tag);
   
 private:
-  void ReInitialize() { ranges.clear(); result.clear();}
+  void ReInitialize() { franges.clear(); fresult.clear();}
   void SetPMTDarkDefaults();
 
-  WCSimDarkRateMessenger *DarkRateMessenger;
-  double PMTDarkRate; // kHz
-  double ConvRate; // kHz
-  double DarkHigh; //ns
-  double DarkLow; //ns
-  double DarkWindow; //ns
-  int DarkMode;
+  WCSimDarkRateMessenger *fDarkRateMessenger;
+  double fPMTDarkRate; // kHz
+  double fConvRate; // kHz
+  double fDarkHigh; //ns
+  double fDarkLow; //ns
+  double fDarkWindow; //ns
+  int fDarkMode;
   bool fCalledAddDarkNoise;
 
-  WCSimDetectorConstruction* myDetector;
-  G4String detectorElement;
+  WCSimDetectorConstruction* fDetector;
+  G4String fDetectorElement;
 
-  std::vector<std::pair<double, double> > ranges;
-  std::vector<std::pair<double, double> > result;
+  std::vector<std::pair<double, double> > franges;
+  std::vector<std::pair<double, double> > fresult;
   
 };
 
