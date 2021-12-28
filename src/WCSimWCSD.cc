@@ -21,7 +21,7 @@ WCSimWCSD::WCSimWCSD(G4String CollectionName,
                      G4String name,
                      WCSimDetectorConstruction* myDet,
                      G4String detectorElement)
-:G4VSensitiveDetector(name), detectorElement(detectorElement)
+:G4VSensitiveDetector(name), fDetectorElement(detectorElement)
 {
   // Place the name of this collection on the list.  We can have more than one
   // in principle.  CollectionName is a vector.
@@ -34,7 +34,7 @@ WCSimWCSD::WCSimWCSD(G4String CollectionName,
   
   fdet = myDet;
   
-  HCID = -1;
+  fHCID = -1;
 }
 
 WCSimWCSD::~WCSimWCSD() {}
@@ -42,23 +42,23 @@ WCSimWCSD::~WCSimWCSD() {}
 void WCSimWCSD::Initialize(G4HCofThisEvent* HCE)
 {
   // Make a new hits collection. With the name we set in the constructor
-  hitsCollection = new WCSimWCHitsCollection
+  fHitsCollection = new WCSimWCHitsCollection
     (SensitiveDetectorName,collectionName[0]);
 
   // This is a trick.  We only want to do this once.  When the program
-  // starts HCID will equal -1.  Then it will be set to the pointer to
+  // starts fHCID will equal -1.  Then it will be set to the pointer to
   // this collection.
 
   
   // Get the Id of the "0th" collection
-  if (HCID<0){
-    HCID =  GetCollectionID(0); 
+  if (fHCID<0){
+    fHCID =  GetCollectionID(0); 
   }  
   // Add it to the Hit collection of this event.
-  HCE->AddHitsCollection( HCID, hitsCollection );  
+  HCE->AddHitsCollection( fHCID, fHitsCollection );  
 
   // Initialize the Hit map to all tubes not hit.
-  PMTHitMap.clear();
+  fPMTHitMap.clear();
   // Trick to access the static maxPE variable.  This will go away with the 
   // variable.
 
@@ -109,8 +109,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   // G4String WCIDCollectionName = fdet->GetIDCollectionName();
   G4String WCCollectionName;
-  if(detectorElement=="tank") WCCollectionName = fdet->GetIDCollectionName();
-  else if (detectorElement=="OD") WCCollectionName = fdet->GetODCollectionName();
+  if(fDetectorElement=="tank") WCCollectionName = fdet->GetIDCollectionName();
+  else if (fDetectorElement=="OD") WCCollectionName = fdet->GetODCollectionName();
 
   // M Fechner : too verbose
   //  if (aStep->GetTrack()->GetTrackStatus() == fAlive)G4cout << "status is fAlive\n";
@@ -144,9 +144,9 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   // Get the tube ID from the tubeTag
   // G4int replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
   G4int replicaNumber;
-  if(detectorElement=="tank") replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
-  else if(detectorElement=="OD") replicaNumber = WCSimDetectorConstruction::GetODTubeID(tubeTag.str());
-  else G4cout << "detectorElement not defined..." << G4endl;
+  if(fDetectorElement=="tank") replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
+  else if(fDetectorElement=="OD") replicaNumber = WCSimDetectorConstruction::GetODTubeID(tubeTag.str());
+  else G4cout << "fDetectorElement not defined..." << G4endl;
 
   G4double theta_angle = 0.;
   G4double effectiveAngularEfficiency = 0.;
@@ -185,10 +185,10 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
        G4int collectionID = SDman->GetCollectionID(volumeName);
        const G4Event* currentEvent = Runman->GetCurrentEvent();
        G4HCofThisEvent* HCofEvent = currentEvent->GetHCofThisEvent();
-       hitsCollection = (WCSimWCHitsCollection*)(HCofEvent->GetHC(collectionID));
+       fHitsCollection = (WCSimWCHitsCollection*)(HCofEvent->GetHC(collectionID));
       
        // If this tube hasn't been hit add it to the collection
-       if (PMTHitMap[replicaNumber] == 0)
+       if (fPMTHitMap[replicaNumber] == 0)
 	 {
 	   WCSimWCHit* newHit = new WCSimWCHit();
 	   newHit->SetTubeID(replicaNumber);
@@ -203,16 +203,16 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   newHit->SetPos(aTrans.NetTranslation());
 	   
 	   // Set the hitMap value to the collection hit number
-	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
-	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
-	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
+	   fPMTHitMap[replicaNumber] = fHitsCollection->insert( newHit );
+	   (*fHitsCollection)[fPMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+	   (*fHitsCollection)[fPMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
 	   
 	   //     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
 	   //       newHit->Print();
 	 }
        else {
-	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
-	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
+	 (*fHitsCollection)[fPMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+	 (*fHitsCollection)[fPMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
 	 
        }
      }
@@ -230,13 +230,13 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
     G4String WCIDCollectionName = fdet->GetIDCollectionName();
     G4SDManager* SDman = G4SDManager::GetSDMpointer();
     G4int collectionID = SDman->GetCollectionID(WCIDCollectionName);
-    hitsCollection = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
-    G4int numHits = hitsCollection->entries();
+    fHitsCollection = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
+    G4int numHits = fHitsCollection->entries();
 
     // G4cout << "There are " << numHits << " hits in the WC: " << G4endl;
-    G4cout << "There are " << numHits << " hits in the "<<detectorElement<<" : "<< G4endl;
+    G4cout << "There are " << numHits << " hits in the "<<fDetectorElement<<" : "<< G4endl;
     for (G4int i=0; i < numHits; i++) 
-      (*hitsCollection)[i]->Print();
+      (*fHitsCollection)[i]->Print();
   } 
 }
 

@@ -21,13 +21,13 @@ class WCSimWCSD : public G4VSensitiveDetector
   
  private:
 
-  G4int HCID;
+  G4int fHCID;
   WCSimDetectorConstruction* fdet;
-  WCSimWCHitsCollection* hitsCollection;
-  std::map<int,int> PMTHitMap;   // Whether a PMT was hit already
+  WCSimWCHitsCollection* fHitsCollection;
+  std::map<int,int> fPMTHitMap;   // Whether a PMT was hit already
 
 
-  G4String detectorElement;
+  G4String fDetectorElement;
 };
 
 #endif
