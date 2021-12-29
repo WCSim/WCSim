@@ -44,48 +44,48 @@ public:
   void Digitize();
 
   ///Returns the number of trigger gates in the event (i.e. the number of triggers passed)
-  int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
+  int NumberOfGatesInThisEvent() { return fTriggerTimes.size(); }
   ///Get the time of the ith trigger
-  Double_t             GetTriggerTime(int i) { return TriggerTimes[i];}
+  Double_t             GetTriggerTime(int i) { return fTriggerTimes[i];}
   ///Get the trigger type of the ith trigger
-  TriggerType_t        GetTriggerType(int i) { return TriggerTypes[i];}
+  TriggerType_t        GetTriggerType(int i) { return fTriggerTypes[i];}
   ///Get the additional trigger information associated with the ith trigger
-  std::vector<Float_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
+  std::vector<Float_t> GetTriggerInfo(int i) { return fTriggerInfos[i];}
   ///Get the trigger class name
-  G4String GetTriggerClassName(){ return triggerClassName; }
+  G4String GetTriggerClassName(){ return fTriggerClassName; }
 
   //
   // Trigger algorithm option set methods
   //
 
   ///Set whether to allow the number of digits per PMT per trigger to go > 1
-  void SetMultiDigitsPerTrigger(G4bool allow_multi) { multiDigitsPerTrigger = allow_multi; }
-  G4bool GetMultiDigitsPerTrigger() { return multiDigitsPerTrigger; }
+  void SetMultiDigitsPerTrigger(G4bool allow_multi) { fMultiDigitsPerTrigger = allow_multi; }
+  G4bool GetMultiDigitsPerTrigger() { return fMultiDigitsPerTrigger; }
 
   // NDigits options
   ///Set the threshold for the NDigits trigger
-  void SetNDigitsThreshold(G4int threshold) { ndigitsThreshold = threshold; }
+  void SetNDigitsThreshold(G4int threshold) { fNDigitsThreshold = threshold; }
   ///Set the time window for the NDigits trigger
-  void SetNDigitsWindow(G4int window) { ndigitsWindow = window; }
+  void SetNDigitsWindow(G4int window) { fNDigitsWindow = window; }
   ///Automatically adjust the NDigits threshold based on the average noise occupancy?
-  void SetNDigitsAdjustForNoise    (G4bool adjust)      { ndigitsAdjustForNoise = adjust; }
+  void SetNDigitsAdjustForNoise    (G4bool adjust)      { fNDigitsAdjustForNoise = adjust; }
   ///Set the pretrigger window for the NDigits trigger (value will be forced negative)
-  void SetNDigitsPreTriggerWindow(G4int window)  { ndigitsPreTriggerWindow  = - abs(window); }
+  void SetNDigitsPreTriggerWindow(G4int window)  { fNDigitsPreTriggerWindow  = - abs(window); }
   ///Set the posttrigger window for the NDigits trigger (value will be forced positive)
-  void SetNDigitsPostTriggerWindow(G4int window) { ndigitsPostTriggerWindow = + abs(window); }
+  void SetNDigitsPostTriggerWindow(G4int window) { fNDigitsPostTriggerWindow = + abs(window); }
 
   // Save trigger failures options
   ///Set the mode for saving failed triggers (0:save only triggered events, 1:save both triggered events & failed events, 2:save only failed events)
-  void SetSaveFailuresMode       (G4int mode )        { saveFailuresMode = mode; }
+  void SetSaveFailuresMode       (G4int mode )        { fSaveFailuresMode = mode; }
   ///Set the dummy trigger time for the failed triggers
-  void SetSaveFailuresTime       (G4double time )     { saveFailuresTime = time; }
+  void SetSaveFailuresTime       (G4double time )     { fSaveFailuresTime = time; }
   ///Set the pretrigger window for the SaveFailures trigger (value will be forced negative)
-  void SetSaveFailuresPreTriggerWindow(G4int window)  { saveFailuresPreTriggerWindow  = - abs(window); }
+  void SetSaveFailuresPreTriggerWindow(G4int window)  { fSaveFailuresPreTriggerWindow  = - abs(window); }
   ///Set the posttrigger window for the SaveFailures trigger (value will be forced positive)
-  void SetSaveFailuresPostTriggerWindow(G4int window) { saveFailuresPostTriggerWindow = + abs(window); }
+  void SetSaveFailuresPostTriggerWindow(G4int window) { fSaveFailuresPostTriggerWindow = + abs(window); }
   
   ///Knowledge of the dark rate (use for automatically adjusting for noise)
-  void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
+  void SetDarkRate(double idarkrate){ fPMTDarkRate = idarkrate; }
 
   ///Save current values of options
   void SaveOptionsToOutput(WCSimRootOptions * wcopt);
@@ -135,42 +135,42 @@ protected:
   void AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
 
 
-  WCSimWCTriggeredDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
-  std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
+  WCSimWCTriggeredDigitsCollection*   fDigitsCollection; ///< The main output of the class - collection of digits in the trigger window
+  std::map<int,int>          fDigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
 
-  std::vector<Double_t>               TriggerTimes; ///< The times of the triggers
-  std::vector<TriggerType_t>          TriggerTypes; ///< The type of the triggers
-  std::vector< std::vector<Float_t> > TriggerInfos; ///< Additional information associated with each trigger
+  std::vector<Double_t>               fTriggerTimes; ///< The times of the triggers
+  std::vector<TriggerType_t>          fTriggerTypes; ///< The type of the triggers
+  std::vector< std::vector<Float_t> > fTriggerInfos; ///< Additional information associated with each trigger
 
-  WCSimWCDAQMessenger*       DAQMessenger; ///< Get the options from the .mac file
-  WCSimDetectorConstruction* myDetector;   ///< Know about the detector, so can add appropriate PMT time smearing
-  G4String detectorElement;
+  WCSimWCDAQMessenger*       fDAQMessenger; ///< Get the options from the .mac file
+  WCSimDetectorConstruction* fDetector;   ///< Know about the detector, so can add appropriate PMT time smearing
+  G4String fDetectorElement;
 
-  /// Clear the Trigger* vectors and DigiHitMap
+  /// Clear the Trigger* vectors and fDigiHitMap
   void ReInitialize() {
-    TriggerTimes.clear(); 
-    TriggerTypes.clear(); 
-    TriggerInfos.clear(); 
-    DigiHitMap.clear();
+    fTriggerTimes.clear(); 
+    fTriggerTypes.clear(); 
+    fTriggerInfos.clear(); 
+    fDigiHitMap.clear();
   }
 
-  double PMTDarkRate;    ///< Dark noise rate of the PMTs
+  double fPMTDarkRate;    ///< Dark noise rate of the PMTs
 
   // Trigger algorithm options
-  G4bool multiDigitsPerTrigger;    ///< Allow the number of digits per PMT saved in each trigger window to go > 1?
+  G4bool fMultiDigitsPerTrigger;    ///< Allow the number of digits per PMT saved in each trigger window to go > 1?
   //NDigits
-  G4int  ndigitsThreshold;         ///< The threshold for the NDigits trigger
-  G4int  ndigitsWindow;            ///< The time window for the NDigits trigger
-  G4bool ndigitsAdjustForNoise;    ///< Automatically adjust the NDigits trigger threshold based on the average dark noise rate?
-  G4int  ndigitsPreTriggerWindow;  ///< The pretrigger window to save before an NDigits trigger
-  G4int  ndigitsPostTriggerWindow; ///< The posttrigger window to save after an NDigits trigger
+  G4int  fNDigitsThreshold;         ///< The threshold for the NDigits trigger
+  G4int  fNDigitsWindow;            ///< The time window for the NDigits trigger
+  G4bool fNDigitsAdjustForNoise;    ///< Automatically adjust the NDigits trigger threshold based on the average dark noise rate?
+  G4int  fNDigitsPreTriggerWindow;  ///< The pretrigger window to save before an NDigits trigger
+  G4int  fNDigitsPostTriggerWindow; ///< The posttrigger window to save after an NDigits trigger
   //Save failures
-  G4int    saveFailuresMode;              ///< The mode for saving events which don't pass triggers
-  G4double saveFailuresTime;              ///< The dummy trigger time for failed events
-  G4int    saveFailuresPreTriggerWindow;  ///< The pretrigger window to save before an SaveFailures trigger
-  G4int    saveFailuresPostTriggerWindow; ///< The posttrigger window to save after an SaveFailures trigger
+  G4int    fSaveFailuresMode;              ///< The mode for saving events which don't pass triggers
+  G4double fSaveFailuresTime;              ///< The dummy trigger time for failed events
+  G4int    fSaveFailuresPreTriggerWindow;  ///< The pretrigger window to save before an SaveFailures trigger
+  G4int    fSaveFailuresPostTriggerWindow; ///< The posttrigger window to save after an SaveFailures trigger
 
-  G4String triggerClassName; ///< Save the name of the trigger class
+  G4String fTriggerClassName; ///< Save the name of the trigger class
 
 private:
   ///modify the NDigits threshold based on the average dark noise rate
@@ -185,25 +185,25 @@ private:
     TriggerType_t index_type;
     double index_time;
     std::vector<float> index_info;
-    for (i = 1; i < (int) TriggerTimes.size(); ++i) {
-      index_time = TriggerTimes[i];
-      index_type = TriggerTypes[i];
-      index_info = TriggerInfos[i];
-      for (j = i; j > 0 && TriggerTimes[j-1] > index_time; j--) {
-	TriggerTimes[j] = TriggerTimes[j-1];
-	TriggerTypes[j] = TriggerTypes[j-1];
-	TriggerInfos[j] = TriggerInfos[j-1];
+    for (i = 1; i < (int) fTriggerTimes.size(); ++i) {
+      index_time = fTriggerTimes[i];
+      index_type = fTriggerTypes[i];
+      index_info = fTriggerInfos[i];
+      for (j = i; j > 0 && fTriggerTimes[j-1] > index_time; j--) {
+	fTriggerTimes[j] = fTriggerTimes[j-1];
+	fTriggerTypes[j] = fTriggerTypes[j-1];
+	fTriggerInfos[j] = fTriggerInfos[j-1];
       }//j
-      TriggerTimes[j] = index_time;
-      TriggerTypes[j] = index_type;
-      TriggerInfos[j] = index_info;
+      fTriggerTimes[j] = index_time;
+      fTriggerTypes[j] = index_type;
+      fTriggerInfos[j] = index_info;
     }//i
   }
   
-  static const double offset;        ///< Hit time offset (ns)
-  static const double LongTime;      ///< An arbitrary long time to use in loops (ns)
+  static const double fOffset;        ///< Hit time offset (ns)
+  static const double fLongTime;      ///< An arbitrary long time to use in loops (ns)
 
-  bool   digitizeCalled; ///< Has Digitize() been called yet?
+  bool   fDigitizeCalled; ///< Has Digitize() been called yet?
 };
 
 // *******************************************
@@ -226,11 +226,11 @@ public:
   void Draw() {}
   void Print();
 
-  inline void SetTubeID(G4int tube) { tubeID = tube; }
-  inline void AddGate  (G4int gate) { Gates.insert(gate); }
-  inline void AddPe    ()           { totalPe++; }
-  inline void SetPe    (G4int gate, G4double Q) {   pe.insert(std::pair<int,double>(gate,Q)); }
-  inline void SetTime  (G4int gate, G4double T) { time.insert(std::pair<int,double>(gate,T)); }
+  inline void SetTubeID(G4int tube) { fTubeID = tube; }
+  inline void AddGate  (G4int gate) { fGates.insert(gate); }
+  inline void AddPe    ()           { fTotalPe++; }
+  inline void SetPe    (G4int gate, G4double Q) {   fPe.insert(std::pair<int,double>(gate,Q)); }
+  inline void SetTime  (G4int gate, G4double T) { fTime.insert(std::pair<int,double>(gate,T)); }
 
   /// Add a whole vector for one digit to fDigiComp. Clear input vector once added.
   void AddDigiCompositionInfo(G4int gate, std::vector<int> &digi_comp){
@@ -238,9 +238,9 @@ public:
     digi_comp.clear();
   }
 
-  inline G4int   GetTubeID() {return tubeID;}
-  inline std::vector<G4double> GetPe      (int gate) { return FindInMultimap(gate, pe); }
-  inline std::vector<G4double> GetTime    (int gate) { return FindInMultimap(gate, time); }
+  inline G4int   GetTubeID() {return fTubeID;}
+  inline std::vector<G4double> GetPe      (int gate) { return FindInMultimap(gate, fPe); }
+  inline std::vector<G4double> GetTime    (int gate) { return FindInMultimap(gate, fTime); }
   std::vector<std::vector<int> > GetDigiCompositionInfo(int gate)
   {
     std::vector<std::vector<int> > v;
@@ -252,22 +252,22 @@ public:
     return v;
   }
 
-  inline int NumberOfGates()     { return Gates.size();      }
-  inline int NumberOfSubEvents() { return Gates.size() - 1;  }
-  inline bool HasHitsInGate(int gate) { return Gates.count(gate) > 0; }
+  inline int NumberOfGates()     { return fGates.size();      }
+  inline int NumberOfSubEvents() { return fGates.size() - 1;  }
+  inline bool HasHitsInGate(int gate) { return fGates.count(gate) > 0; }
 
 private:
-  G4int tubeID; ///< PMT id of the digit
+  G4int fTubeID; ///< PMT id of the digit
 
-  std::set<int> Gates;  ///< 'Gates' specifies subevent
+  std::set<int> fGates;  ///< 'Gates' specifies subevent
 
   //lists (meaning multimap) of information for each digit created on the PMT
-  std::multimap<int,double> pe;   ///< Digit charge
-  std::multimap<int,double> time; ///< Digit time
+  std::multimap<int,double> fPe;   ///< Digit charge
+  std::multimap<int,double> fTime; ///< Digit time
   std::multimap<int, std::vector<int> > fDigiComp;   ///< Stores the unique IDs of each photon making up a digit
 
   //integrated hit/digit parameters
-  G4int                 totalPe; ///< Total charge on digit
+  G4int                 fTotalPe; ///< Total charge on digit
 
   template <typename T> std::vector<T> FindInMultimap(const int compare, typename std::multimap<int,T> &map)
   {
@@ -315,7 +315,7 @@ class WCSimWCTriggerNDigits : public WCSimWCTriggerBase
 public:
 
   ///Create WCSimWCTriggerNDigits instance with knowledge of the detector and DAQ options
-  WCSimWCTriggerNDigits(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
+  WCSimWCTriggerNDigits(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String fDetectorElement);
 
   ~WCSimWCTriggerNDigits();
   
@@ -335,7 +335,7 @@ class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
 public:
   
   ///Create WCSimWCTriggerNoTrigger instance with knowledge of the detector and DAQ options
-  WCSimWCTriggerNoTrigger(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*,  G4String detectorElement);
+  WCSimWCTriggerNoTrigger(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*,  G4String fDetectorElement);
   
   ~WCSimWCTriggerNoTrigger();
   
@@ -362,7 +362,7 @@ class WCSimWCTriggerNDigits2 : public WCSimWCTriggerBase
 public:
 
   //not recommended to override these methods
-  WCSimWCTriggerNDigits2(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
+  WCSimWCTriggerNDigits2(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String fDetectorElement);
   ~WCSimWCTriggerNDigits2();
   
 private:
