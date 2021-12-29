@@ -2028,35 +2028,35 @@ WCSimBasicPMTObject::WCSimBasicPMTObject(){
 }
 
 WCSimBasicPMTObject::WCSimBasicPMTObject(std::map<G4double,G4double> mQE){
-  mapQE=mQE;
+  fMapQE=mQE;
   std::map<G4double, G4double>::iterator itr;
   for(itr = mQE.begin(); itr != mQE.end(); itr++) {
-    wavelength.push_back(itr->first);
-    QE.push_back(itr->second);
+    fWavelength.push_back(itr->first);
+    fQE.push_back(itr->second);
   }
 }
 
 WCSimBasicPMTObject::WCSimBasicPMTObject(std::vector<G4double> wl,std::vector<G4double> qe,G4double max){
-  wavelength=wl;
-  QE=qe;
-  maxQE=max;
+  fWavelength=wl;
+  fQE=qe;
+  fMaxQE=max;
 }
 
 void WCSimBasicPMTObject::DefineQEHist(std::map<G4double,G4double> mapQE){
 
-  if (gQE != NULL) {
-	  delete gQE;
-	  gQE = nullptr;
+  if (fGQE != NULL) {
+	  delete fGQE;
+	  fGQE = nullptr;
   }
-  gQE = new TGraph(mapQE.size());
+  fGQE = new TGraph(mapQE.size());
   G4int iPt=0;
   std::map<G4double, G4double>::iterator itr;
   for(itr = mapQE.begin(); itr != mapQE.end(); itr++) {
-    gQE->SetPoint(iPt,itr->first,itr->second);
+    fGQE->SetPoint(iPt,itr->first,itr->second);
     iPt++;
   }
 }
 
 WCSimBasicPMTObject::~WCSimBasicPMTObject(){
-  delete gQE;
+  delete fGQE;
 }

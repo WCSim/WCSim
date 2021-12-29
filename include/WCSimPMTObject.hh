@@ -299,27 +299,27 @@ class WCSimBasicPMTObject
   ~WCSimBasicPMTObject();
 
  private:
-  std::vector<G4double> QE;
-  std::vector<G4double> wavelength;
-  std::map<G4double,G4double> mapQE;
-  G4double  maxQE;
-  TGraph   *gQE = nullptr;
+  std::vector<G4double> fQE;
+  std::vector<G4double> fWavelength;
+  std::map<G4double,G4double> fMapQE;
+  G4double  fMaxQE;
+  TGraph   *fGQE = nullptr;
 
  public:
-  std::vector<G4double> GetQE(){ return QE;};
-  void SetQE(std::vector<G4double> qe){ QE=qe;};
+  std::vector<G4double> GetQE(){ return fQE;};
+  void SetQE(std::vector<G4double> qe){ fQE=qe;};
 
-  std::vector<G4double> GetWavelength(){ return wavelength;};
-  void SetWavelength(std::vector<G4double> qe){ wavelength=qe;};
+  std::vector<G4double> GetWavelength(){ return fWavelength;};
+  void SetWavelength(std::vector<G4double> qe){ fWavelength=qe;};
 
-  std::map<G4double,G4double> GetMapQE(){ return mapQE;};
-  void SetMapQE(std::map<G4double,G4double> qe){ mapQE=qe;};
+  std::map<G4double,G4double> GetMapQE(){ return fMapQE;};
+  void SetMapQE(std::map<G4double,G4double> qe){ fMapQE=qe;};
 
-  G4double GetmaxQE(){ return maxQE;};
-  void SetmaxQE(G4double qe){ maxQE=qe;};
+  G4double GetmaxQE(){ return fMaxQE;};
+  void SetmaxQE(G4double qe){ fMaxQE=qe;};
 
-  TGraph* GetgQE(){ return gQE;};
-  void SetgQE(TGraph *g){ gQE=g;};
+  TGraph* GetgQE(){ return fGQE;};
+  void SetgQE(TGraph *g){ fGQE=g;};
 
   void DefineQEHist(std::map<G4double,G4double>);
 };
