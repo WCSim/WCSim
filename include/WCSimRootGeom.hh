@@ -143,7 +143,7 @@ public:
       return (WCSimRootPMT*)(fPMTArray->At(i));
   }
 
-  ClassDef(WCSimRootGeom,1)  //WCSimRootEvent structure
+  ClassDef(WCSimRootGeom,2)  //WCSimRootEvent structure
 };
 
 

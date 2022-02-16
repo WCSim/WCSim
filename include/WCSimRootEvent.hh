@@ -80,7 +80,7 @@ public:
   Int_t     GetId() const {return fId;}
   Int_t     GetParentId() const {return fParentId;}
 
-  ClassDef(WCSimRootTrack,1)  
+  ClassDef(WCSimRootTrack,3)
 };
 
 
@@ -149,7 +149,7 @@ public:
   Float_t   GetPhotonStartDir(int i) const { return (i<3) ? fPhotonStartDir[i] : 0; }
   Float_t   GetPhotonEndDir(int i) const { return (i<3) ? fPhotonEndDir[i] : 0; }
 
-  ClassDef(WCSimRootCherenkovHitTime,1)  
+  ClassDef(WCSimRootCherenkovHitTime,2)
 };
 
 
@@ -185,7 +185,7 @@ public:
   Int_t       GetmPMT_PMTId() const { return fmPMT_PMTId;}
   std::vector<int> GetPhotonIds() const { return fPhotonIds; }
 
-  ClassDef(WCSimRootCherenkovDigiHit,3)  
+  ClassDef(WCSimRootCherenkovDigiHit,4)
 };
 
 
@@ -211,7 +211,7 @@ public:
   Int_t GetSubEvtNumber() const { return fSubEvtNumber;}
   
 
-  ClassDef(WCSimRootEventHeader,2)  //WCSimRootEvent Header
+  ClassDef(WCSimRootEventHeader,3)  //WCSimRootEvent Header
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -242,7 +242,7 @@ public:
   Float_t  GetGammaE(int i)           const { return (i<2) ? fGammaE[i]: 0;}
   Float_t  GetGammaVtx(int i, int j)  const { return fGammaVtx[i][j];}
 
-  ClassDef(WCSimRootPi0,1)
+  ClassDef(WCSimRootPi0,2)
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -268,7 +268,7 @@ public:
   Float_t  GetE()            const { return fEnergy;}
   Float_t  GetDir(int i)     const { return (i<3) ? fDir[i]: 0;}
 
-  ClassDef(WCSimRootCaptureGamma,1)
+  ClassDef(WCSimRootCaptureGamma,2)
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -314,7 +314,7 @@ public:
   Int_t         GetCaptureNucleus()  const { return fCaptureNucleus;}
   TClonesArray* GetGammas()          const { return fGammas;}
 
-  ClassDef(WCSimRootCapture,1)
+  ClassDef(WCSimRootCapture,2)
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -480,7 +480,7 @@ public:
 
   TClonesArray	      *GetCaptures() const {return fCaptures;}
 
-  ClassDef(WCSimRootTrigger,3) //WCSimRootEvent structure
+  ClassDef(WCSimRootTrigger,4) //WCSimRootEvent structure
 };
 
 
@@ -545,7 +545,7 @@ private:
   //std::vector<WCSimRootTrigger*> fEventList;
   TObjArray* fEventList;
   Int_t Current;                      //!               means transient, not writable to file
-  ClassDef(WCSimRootEvent,2)
+  ClassDef(WCSimRootEvent,3)
 
 };
 
