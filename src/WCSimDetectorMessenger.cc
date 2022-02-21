@@ -216,6 +216,12 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   BuildODWLSCladding = new G4UIcmdWithoutParameter("/WCSim/HyperKOD/BuildODWLSCladding", this);
   BuildODWLSCladding->SetGuidance("Build reflective cladding around WLS plate");
 
+  //
+  ODFPConfigFile = new G4UIcmdWithAString("/WCSim/HyperKOD/ODFPConfigFile", this);
+  ODFPConfigFile->SetGuidance("OD config file for free PMT+WLS unit placement");
+  ODFPConfigFile->SetParameterName("ODFPConfigFile", true);
+  ODFPConfigFile->SetDefaultValue("");
+
   /////////// END OD //////////////
   /////////////////////////////////
 
@@ -460,6 +466,12 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       WCSimDetector->SetBuildODWLSCladding(true);
     }
 
+  if(command == ODFPConfigFile){
+	G4cout << "Set path to OD config file for free PMT+WLS unit placement " << newValue << " ";
+	WCSimDetector->SetODEdited(true);
+	WCSimDetector->SetODFPConfigFile(newValue);
+
+  }
 
     /////////// END OD //////////////
     /////////////////////////////////

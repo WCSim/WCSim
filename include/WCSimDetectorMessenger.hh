@@ -64,6 +64,8 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithoutParameter* isWLSFilled;
   // build cladding around WLS
   G4UIcmdWithoutParameter* BuildODWLSCladding;
+  // OD Free placement config file
+  G4UIcmdWithAString* ODFPConfigFile;
 
 };
 

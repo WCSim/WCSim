@@ -20,6 +20,8 @@
 #include <vector>
 #include <unordered_map>     //--> need to fix the "using" and namespace statements
 
+#include <nlohmann/json.hpp>
+
 // (JF) We don't need this distinction for DUSEL
 //enum cyl_location {endcap1,wall,endcap2};
 
@@ -188,6 +190,17 @@ public:
   void SetODEdited(G4bool val){odEdited = val;}
   void SetIsWLSFilled(G4bool val){isWLSFilled = val;}
   void SetBuildODWLSCladding(G4bool val){BuildODWLSCladding = val;}
+  void SetODFPConfigFile(G4String val){
+	std::ifstream ifs(val.c_str());
+	try{
+	  nlohmann::json jf = nlohmann::json::parse(ifs);
+	  for(const auto& p: jf["Pos"]){
+		vODFPUnitPos.emplace_back(p[0], p[1], p[2]);
+	  }
+	} catch (nlohmann::json::parse_error& ex) {
+	  std::cerr << "parse error at byte " << ex.byte << std::endl;
+	}
+  }
   G4bool GetODEdited(){return odEdited;}
 
   ////////// END OD /////////////
@@ -405,6 +418,9 @@ private:
   // WLS material name
   bool isWLSFilled;
   bool BuildODWLSCladding;
+
+  // OD Unit free placement
+  std::vector<G4ThreeVector> vODFPUnitPos;
 
   // ############################# //
   // # *** END OD Parameters *** # //

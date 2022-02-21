@@ -994,64 +994,92 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
     G4double barrelODCellWidth   = 2.*WCODRadius*tan(dPhi/2.);
     G4double barrelODCellHeight  = barrelCellHeight * (barrelODCellWidth/barrelCellWidth);
 
-    // ------------------- //
-    // COMPUTE OD COVERAGE //
-    // ------------------- //
-    G4double AreaRingOD = WCBarrelRingNPhi * barrelODCellWidth * barrelODCellHeight;
-    G4double AreaCellOD = barrelODCellWidth * barrelODCellHeight;
-    G4double AreaPMTOD = 3.1415*std::pow(WCPMTODRadius,2);
-    G4double NPMTODCovered = (AreaRingOD/AreaPMTOD) * WCPMTODPercentCoverage/100.;
-    G4double NPMTODByCellFull = NPMTODCovered/WCBarrelRingNPhi; // NPMT required par cell to achieve ODPercentOverage
-    G4double NPMTODByCell = round(NPMTODCovered/WCBarrelRingNPhi); // NPMT required par cell to achieve ODPercentOverage
-    G4double RealODCoverage = NPMTODByCell*AreaPMTOD/AreaCellOD;
-    // ------ DEBUG ------ //
-    G4cout << G4endl;
-    G4cout << "AreaRingOD : " << AreaRingOD/m2 << " (m2)" << G4endl;
-    G4cout << "AreaCellOD : " << AreaCellOD/m2 << " (m2)" << G4endl;
-    G4cout << "AreaPMTOD : " << AreaPMTOD/m2 << " (m2)" << G4endl;
-    G4cout << "--> NbPMTODCovered : " << NPMTODCovered << G4endl;
-    G4cout << "--> NbPMTODByCellFull : " << NPMTODByCellFull << G4endl;
-    G4cout << "--> NbPMTODByCell : " << NPMTODByCell << G4endl;
-    G4cout << "--> SuggestedODCoverage : " <<  WCPMTODPercentCoverage/100. << G4endl;
-    G4cout << "--> RealODCoverage : " << RealODCoverage << G4endl;
-    G4cout << G4endl;
-    // ------------------- //
-    // The number of PMTs per cell gives a slightly different coverage so the photocoverage
-    // parameter must be changed here so the endcaps will have the same photocoverage as the barrel.
-    WCPMTODPercentCoverage = RealODCoverage*100;
-    WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
+	if(vODFPUnitPos.empty()){
 
-    if((G4int)WCPMTODperCellHorizontal == 0 && (G4int)WCPMTODperCellVertical == 0){
-      ComputeWCODPMT((G4int)NPMTODByCell,&WCPMTODperCellHorizontal,&WCPMTODperCellVertical);
-    }
+	  // ------------------- //
+	  // COMPUTE OD COVERAGE //
+	  // ------------------- //
+	  G4double AreaRingOD = WCBarrelRingNPhi * barrelODCellWidth * barrelODCellHeight;
+	  G4double AreaCellOD = barrelODCellWidth * barrelODCellHeight;
+	  G4double AreaPMTOD = 3.1415*std::pow(WCPMTODRadius,2);
+	  G4double NPMTODCovered = (AreaRingOD/AreaPMTOD) * WCPMTODPercentCoverage/100.;
+	  G4double NPMTODByCellFull = NPMTODCovered/WCBarrelRingNPhi; // NPMT required par cell to achieve ODPercentOverage
+	  G4double NPMTODByCell = round(NPMTODCovered/WCBarrelRingNPhi); // NPMT required par cell to achieve ODPercentOverage
+	  G4double RealODCoverage = NPMTODByCell*AreaPMTOD/AreaCellOD;
+	  // ------ DEBUG ------ //
+	  G4cout << G4endl;
+	  G4cout << "AreaRingOD : " << AreaRingOD/m2 << " (m2)" << G4endl;
+	  G4cout << "AreaCellOD : " << AreaCellOD/m2 << " (m2)" << G4endl;
+	  G4cout << "AreaPMTOD : " << AreaPMTOD/m2 << " (m2)" << G4endl;
+	  G4cout << "--> NbPMTODCovered : " << NPMTODCovered << G4endl;
+	  G4cout << "--> NbPMTODByCellFull : " << NPMTODByCellFull << G4endl;
+	  G4cout << "--> NbPMTODByCell : " << NPMTODByCell << G4endl;
+	  G4cout << "--> SuggestedODCoverage : " <<  WCPMTODPercentCoverage/100. << G4endl;
+	  G4cout << "--> RealODCoverage : " << RealODCoverage << G4endl;
+	  G4cout << G4endl;
+	  // ------------------- //
+	  // The number of PMTs per cell gives a slightly different coverage so the photocoverage
+	  // parameter must be changed here so the endcaps will have the same photocoverage as the barrel.
+	  WCPMTODPercentCoverage = RealODCoverage*100;
+	  WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
 
-    G4double horizontalODSpacing = barrelODCellWidth/WCPMTODperCellHorizontal;
-    G4double verticalODSpacing   = barrelODCellHeight/WCPMTODperCellVertical;
+	  if((G4int)WCPMTODperCellHorizontal == 0 && (G4int)WCPMTODperCellVertical == 0){
+		ComputeWCODPMT((G4int)NPMTODByCell,&WCPMTODperCellHorizontal,&WCPMTODperCellVertical);
+	  }
 
-    if(WCODPMTShift > barrelODCellWidth/2. - WCPMTODRadius) WCODPMTShift = 0.*cm;
+	  G4double horizontalODSpacing = barrelODCellWidth/WCPMTODperCellHorizontal;
+	  G4double verticalODSpacing   = barrelODCellHeight/WCPMTODperCellVertical;
 
-    for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
-      for(G4double j = 0; j < WCPMTODperCellVertical; j++){
-        G4ThreeVector Container =  G4ThreeVector(WCODRadius,
-                                                 -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
-                                                 -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
+	  if(WCODPMTShift > barrelODCellWidth/2. - WCPMTODRadius) WCODPMTShift = 0.*cm;
+
+	  for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
+		for(G4double j = 0; j < WCPMTODperCellVertical; j++){
+		  G4ThreeVector Container =  G4ThreeVector(WCODRadius,
+												   -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
+												   -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
+
+		  //		std::cout << " qqqqqqqqqqqqqqqqqqqqqqqq barrel i " << i << " of " << WCPMTODperCellHorizontal << " j " << j << " of " << WCPMTODperCellVertical << " Container (" << Container.x() << ", " << Container.y()
+		  //				  << ", " << Container.z() << ") " << std::endl;
+
+		  G4VPhysicalVolume* physiWCBarrelWLSPlate =
+			  new G4PVPlacement(WCPMTODRotation,           // its rotation
+								Container,
+								logicWCODWLSAndPMT,         // its logical volume
+								"WCBarrelCellODContainer",  // its name
+								logicWCBarrelCell,         // its mother volume
+								false,                     // no boolean operations
+								(int)(i*WCPMTODperCellVertical+j),
+								true);
+
+
+		}
+	  }
+
+	} else {
+	  int iPMT=0;
+	  for(const auto &v: vODFPUnitPos){
+
+		G4ThreeVector Container =  G4ThreeVector(WCODRadius,
+												 v.getY()*mm,
+												 v.getZ()*mm);
 
 		//		std::cout << " qqqqqqqqqqqqqqqqqqqqqqqq barrel i " << i << " of " << WCPMTODperCellHorizontal << " j " << j << " of " << WCPMTODperCellVertical << " Container (" << Container.x() << ", " << Container.y()
 		//				  << ", " << Container.z() << ") " << std::endl;
 
-        G4VPhysicalVolume* physiWCBarrelWLSPlate =
-            new G4PVPlacement(WCPMTODRotation,           // its rotation
-                              Container,
-                              logicWCODWLSAndPMT,         // its logical volume
-                              "WCBarrelCellODContainer",  // its name
-                              logicWCBarrelCell,         // its mother volume
-                              false,                     // no boolean operations
-                              (int)(i*WCPMTODperCellVertical+j),
-                              true);
+		G4VPhysicalVolume* physiWCBarrelWLSPlate =
+			new G4PVPlacement(WCPMTODRotation,           // its rotation
+							  Container,
+							  logicWCODWLSAndPMT,         // its logical volume
+							  "WCBarrelCellODContainer",  // its name
+							  logicWCBarrelCell,         // its mother volume
+							  false,                     // no boolean operations
+							  iPMT++,
+							  true);
 
 
-      }
-    }
+	  }
+
+	}
 
 
     //-------------------------------------------------------------
