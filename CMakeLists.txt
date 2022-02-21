@@ -136,8 +136,12 @@ endif()
 # Set flag for git version to be used as c++ preprocessor macro
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGIT_HASH=\"\\\"`cd ${PROJECT_SOURCE_DIR};git describe --always --long --tags --dirty`\\\"\"")
 
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+add_subdirectory(libs/json)
+include_directories(libs/json/include)
+
 add_executable(WCSim WCSim.cc ${sources} ${headers})
-target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree)
+target_link_libraries(WCSim PRIVATE nlohmann_json::nlohmann_json ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree)
 
 
 

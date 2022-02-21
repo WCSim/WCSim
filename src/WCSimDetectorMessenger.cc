@@ -216,6 +216,26 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   BuildODWLSCladding = new G4UIcmdWithoutParameter("/WCSim/HyperKOD/BuildODWLSCladding", this);
   BuildODWLSCladding->SetGuidance("Build reflective cladding around WLS plate");
 
+  //
+  ODFPConfigFile = new G4UIcmdWithAString("/WCSim/HyperKOD/ODFPConfigFile", this);
+  ODFPConfigFile->SetGuidance("OD config file for free PMT+WLS unit placement");
+  ODFPConfigFile->SetParameterName("ODFPConfigFile", true);
+  ODFPConfigFile->SetDefaultValue("");
+
+  // Top Cap OD PMTs cvg
+  ODTopCapCvg = new G4UIcmdWithADouble("/WCSim/HyperKOD/ODTopCapCvg", this);
+  ODTopCapCvg->SetGuidance("Set TOP Cap OD photocoverage percentage.");
+  ODTopCapCvg->SetParameterName("ODTopCapCvg", true);
+  ODTopCapCvg->SetDefaultValue(0.);
+  ODTopCapCvg->SetRange("ODTopCapCvg>0");
+
+  // Bottom Cap OD PMTs cvg
+  ODBottomCapCvg = new G4UIcmdWithADouble("/WCSim/HyperKOD/ODBottomCapCvg", this);
+  ODBottomCapCvg->SetGuidance("Set BOTTOM Cap OD photocoverage percentage.");
+  ODBottomCapCvg->SetParameterName("ODBottomCapCvg", true);
+  ODBottomCapCvg->SetDefaultValue(0.);
+  ODBottomCapCvg->SetRange("ODBottomCapCvg>0");
+
   /////////// END OD //////////////
   /////////////////////////////////
 
@@ -460,8 +480,26 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       WCSimDetector->SetBuildODWLSCladding(true);
     }
 
+  if(command == ODFPConfigFile){
+	G4cout << "Set path to OD config file for free PMT+WLS unit placement " << newValue << " ";
+	WCSimDetector->SetODEdited(true);
+	WCSimDetector->SetODFPConfigFile(newValue);
+  }
 
-    /////////// END OD //////////////
+  if(command == ODTopCapCvg){
+	WCSimDetector->SetODEdited(true);
+	G4cout << "Set global photocoverage of the OD " << newValue << " " << G4endl;
+	WCSimDetector->SetWCPMTODTopCapCvg(ODTopCapCvg->GetNewDoubleValue(newValue));
+  }
+
+  if(command == ODBottomCapCvg){
+	WCSimDetector->SetODEdited(true);
+	G4cout << "Set global photocoverage of the OD " << newValue << " " << G4endl;
+	WCSimDetector->SetWCPMTODBottomCapCvg(ODBottomCapCvg->GetNewDoubleValue(newValue));
+  }
+
+
+  /////////// END OD //////////////
     /////////////////////////////////
 
     if( command == LCConfig ) { 

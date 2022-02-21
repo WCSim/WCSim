@@ -20,6 +20,8 @@
 #include <vector>
 #include <unordered_map>     //--> need to fix the "using" and namespace statements
 
+#include <nlohmann/json.hpp>
+
 // (JF) We don't need this distinction for DUSEL
 //enum cyl_location {endcap1,wall,endcap2};
 
@@ -184,10 +186,23 @@ public:
   void SetWCPMTODperCellHorizontal(G4double val){WCPMTODperCellHorizontal = val;}
   void SetWCPMTODperCellVertical(G4double val){WCPMTODperCellVertical = val;}
   void SetWCPMTODPercentCoverage(G4double val){WCPMTODPercentCoverage = val;}
+  void SetWCPMTODTopCapCvg(G4double val){WCPMTODTopCapCvg = val;}
+  void SetWCPMTODBottomCapCvg(G4double val){WCPMTODBottomCapCvg = val;}
   void SetWCODPMTShift(G4double val){WCODPMTShift = val;}
   void SetODEdited(G4bool val){odEdited = val;}
   void SetIsWLSFilled(G4bool val){isWLSFilled = val;}
   void SetBuildODWLSCladding(G4bool val){BuildODWLSCladding = val;}
+  void SetODFPConfigFile(G4String val){
+	std::ifstream ifs(val.c_str());
+	try{
+	  nlohmann::json jf = nlohmann::json::parse(ifs);
+	  for(const auto& p: jf["Barrel"]){
+		vODFPUnitPos.emplace_back(p[0], p[1], p[2]);
+	  }
+	} catch (nlohmann::json::parse_error& ex) {
+	  std::cerr << "parse error at byte " << ex.byte << std::endl;
+	}
+  }
   G4bool GetODEdited(){return odEdited;}
 
   ////////// END OD /////////////
@@ -378,6 +393,8 @@ private:
   G4double WCPMTODperCellHorizontal;
   G4double WCPMTODperCellVertical;
   G4double WCPMTODPercentCoverage;
+  G4double WCPMTODTopCapCvg;
+  G4double WCPMTODBottomCapCvg;
   G4double WCODLateralWaterDepth;
   G4double WCODHeightWaterDepth;
   G4double WCODDeadSpace;
@@ -405,6 +422,9 @@ private:
   // WLS material name
   bool isWLSFilled;
   bool BuildODWLSCladding;
+
+  // OD Unit free placement
+  std::vector<G4ThreeVector> vODFPUnitPos;
 
   // ############################# //
   // # *** END OD Parameters *** # //
