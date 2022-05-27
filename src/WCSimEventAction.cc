@@ -519,21 +519,21 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      // Get a pointer to the WC PMT module
      WCSimWCPMT* WCDMPMT2;
      //Get a pointer to the WC Dark Noise Module
-     WCSimWCAddDarkNoise* WCDNM2;
+     WCSimWCAddDarkNoise* WCDNM2 = nullptr;
      //Get a pointer to the WC Digitizer Module
      WCSimWCDigitizerBase* WCDM2;
      //Get a pointer to the WC Trigger Module
      WCSimWCTriggerBase* WCTM2;
      // Get the post-noise hit collection for the WC
      G4int WCDChitsID2;
-     WCSimWCDigitsCollection * WCDC_hits2;
+     WCSimWCDigitsCollection * WCDC_hits2 = nullptr;
      // Get the digitized collection for the WC
      G4int WCDCID2;
 
 #ifdef DEBUG
      G4cout<< "Debug B.Q: Entering the PMT2 type readout, hybrid = " << detectorConstructor->GetHybridPMT() << ", PMT list = " << detectorConstructor->GetIDCollectionName() << G4endl;
 #endif
-     WCSimWCTriggeredDigitsCollection * WCDC2;
+     WCSimWCTriggeredDigitsCollection * WCDC2 = nullptr;
 
      if(detectorConstructor->GetHybridPMT()){
        G4cout<< "Debug B.Q: Entering the PMT2 type readout, hybrid = " << detectorConstructor->GetHybridPMT() << G4endl;
@@ -976,54 +976,14 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 		    WCDC_OD,
 		    "OD");
     }
+    runAction->incrementEventsGenerated(); // Increment after filling branches
 
 #ifdef DEBUG
     std::cout << "B.Q: open the tree" << std::endl;
 #endif
     TTree* tree = GetRunAction()->GetTree();
-    /*
-    TBranch* branch = GetRunAction()->GetBranch("tank");
-    TBranch* branch2;
-    if(detectorConstructor->GetHybridPMT()) branch2= GetRunAction()->GetBranch("tankPMT2");
-    */
-    if(!detectorConstructor->GetIsODConstructed()) {
-      //These are called in FillRootEvent() for the OD
-      tree->Fill();
-      runAction->incrementEventsGenerated();
-    }
-    wcsimrootsuperevent->ReInitialize();
-    if(detectorConstructor->GetHybridPMT()) wcsimrootsuperevent2->ReInitialize();
-    //ReInitialise() for OD handled in FillRootEvent()
-
     tree->SetEntries(GetRunAction()->GetNumberOfEventsGenerated());
   }
-  /*
-   if(GetRunAction()->GetRootFileOption()){
-     FillRootEvent(event_id,
-		   jhfNtuple,
-		   trajectoryContainer,
-		   WCDC_hits,
-		   WCDC,
-		   "tank");
-   }
-   && GetRunAction()->GetRootFileOption()){
-     FillRootEvent(event_id,
-		   jhfNtuple,
-		   trajectoryContainer,
-		   WCDC_hits2,
-		   WCDC2,
-		   "tankPMT2");
-   }
-  */
-  /*
-  G4cout << "Filling Root Flat tree for the second ID PMT type" << G4endl;
-  FillFlatTree(event_id,
-	       jhfNtuple,
-	       trajectoryContainer,
-	       WCDC_hits2,
-	       WCDC2,
-	       "tankPMT2");
-  */
 
   //save DAQ options here. This ensures that when the user selects a default option
   // (e.g. with -99), the saved option value in the output reflects what was run
@@ -1670,8 +1630,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   tree->Write("",TObject::kOverwrite);
   */
 
-  if(detectorElement=="tank") runAction->incrementEventsGenerated();
-
   // M Fechner : reinitialize the super event after the writing is over
   wcsimrootsuperevent->ReInitialize();
 }
@@ -1829,7 +1787,6 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     {
       // initial point of the trajectory
       G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
-      runAction->incrementEventsGenerated();
 
       G4int         ipnu   = trj->GetPDGEncoding();
       G4int         id     = trj->GetTrackID();
@@ -2173,6 +2130,11 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   //G4cout <<"WCFV digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";
   //  }
 
+  //TTree* tree = GetRunAction()->GetTree();
+  TBranch* branch = GetRunAction()->GetBranch(detectorElement);
+  //tree->Fill();
+  branch->Fill();
+
   /*
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
@@ -2190,9 +2152,9 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   // last one is useful --> huge waste of disk space.
   tree->Write("",TObject::kOverwrite);
 
+  */
   // M Fechner : reinitialize the super event after the writing is over
   wcsimrootsuperevent->ReInitialize();
-  */
 }
 
 
@@ -2240,7 +2202,6 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
       if(trj->GetSaveFlag() ){
 	// initial point of the trajectory
 	G4TrajectoryPoint* init_pt =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
-	runAction->incrementEventsGenerated();       // Why??
 
 	thisNtuple->pid[thisNtuple->nTracks]     = trj->GetPDGEncoding();
 	//trj->GetTrackID();
