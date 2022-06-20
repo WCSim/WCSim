@@ -108,6 +108,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	  innerAnnulusRadius = WCIDRadius - (mPMT_vessel_cyl_height + mPMT_vessel_radius) -1.*mm;
   }
 
+  //TF: need to add a Polyhedra on the other side of the outerAnnulusRadius for the OD
+  outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
   if(isODConstructed){
     G4double sphereRadius =
 	  (WCPMTODExposeHeight*WCPMTODExposeHeight+ WCPMTODRadius*WCPMTODRadius)/(2*WCPMTODExposeHeight);
@@ -116,9 +118,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	  WCODTyvekSheetThickness + // Tyvek attached to structure
 	  sphereRadius; // PMT height
   }
-
-  //TF: need to add a Polyhedra on the other side of the outerAnnulusRadius for the OD
-  outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
 
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
