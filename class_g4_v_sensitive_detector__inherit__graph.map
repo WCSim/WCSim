@@ -1,0 +1,3 @@
+<map id="G4VSensitiveDetector" name="G4VSensitiveDetector">
+<area shape="rect" id="node2" href="$class_w_c_sim_w_c_s_d.html" title="{WCSimWCSD\n|&#45; HCID\l&#45; fdet\l&#45; hitsCollection\l&#45; PMTHitMap\l&#45; detectorElement\l|+ WCSimWCSD()\l+ ~WCSimWCSD()\l+ Initialize()\l+ ProcessHits()\l+ EndOfEvent()\l}" alt="" coords="15,131,160,325"/>
+</map>

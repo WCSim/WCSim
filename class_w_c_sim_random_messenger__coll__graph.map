@@ -1,0 +1,4 @@
+<map id="WCSimRandomMessenger" name="WCSimRandomMessenger">
+<area shape="rect" id="node5" href="$class_w_c_sim_random_parameters.html" title="{WCSimRandomParameters\n||+ WCSimRandomParameters()\l+ ~WCSimRandomParameters()\l+ GetGenerator()\l+ SetGenerator()\l+ GetSeed()\l+ SetSeed()\l+ SaveOptionsToOutput()\l}" alt="" coords="113,317,345,483"/>
+<area shape="rect" id="node2" href="$class_g4_u_imessenger.html" title="{G4UImessenger\n||}" alt="" coords="90,5,216,83"/>
+</map>

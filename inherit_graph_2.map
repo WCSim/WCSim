@@ -1,0 +1,11 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$class_g4_u_imessenger.html" title="G4UImessenger" alt="" coords="6,183,133,209"/>
+<area shape="rect" id="node2" href="$class_w_c_sim_dark_rate_messenger.html" title="WCSimDarkRateMessenger" alt="" coords="211,5,411,32"/>
+<area shape="rect" id="node3" href="$class_w_c_sim_detector_messenger.html" title="WCSimDetectorMessenger" alt="" coords="213,56,408,83"/>
+<area shape="rect" id="node4" href="$class_w_c_sim_physics_list_factory_messenger.html" title="WCSimPhysicsListFactoryMessenger" alt="" coords="181,107,440,133"/>
+<area shape="rect" id="node5" href="$class_w_c_sim_primary_generator_messenger.html" title="WCSimPrimaryGeneratorMessenger" alt="" coords="183,157,438,184"/>
+<area shape="rect" id="node6" href="$class_w_c_sim_random_messenger.html" title="WCSimRandomMessenger" alt="" coords="214,208,407,235"/>
+<area shape="rect" id="node7" href="$class_w_c_sim_run_action_messenger.html" title="WCSimRunActionMessenger" alt="" coords="209,259,413,285"/>
+<area shape="rect" id="node8" href="$class_w_c_sim_tuning_messenger.html" title="WCSimTuningMessenger" alt="" coords="220,309,401,336"/>
+<area shape="rect" id="node9" href="$class_w_c_sim_w_c_d_a_q_messenger.html" title="WCSimWCDAQMessenger" alt="" coords="215,360,406,387"/>
+</map>

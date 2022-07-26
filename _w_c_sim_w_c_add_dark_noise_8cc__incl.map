@@ -1,0 +1,15 @@
+<map id="src/WCSimWCAddDarkNoise.cc" name="src/WCSimWCAddDarkNoise.cc">
+<area shape="rect" id="node2" href="$_w_c_sim_w_c_add_dark_noise_8hh.html" title="WCSimWCAddDarkNoise.hh" alt="" coords="4517,80,4721,107"/>
+<area shape="rect" id="node45" href="$_w_c_sim_w_c_p_m_t_8hh.html" title="WCSimWCPMT.hh" alt="" coords="1778,80,1914,107"/>
+<area shape="rect" id="node31" href="$_w_c_sim_w_c_digi_8hh.html" title="WCSimWCDigi.hh" alt="" coords="939,155,1075,181"/>
+<area shape="rect" id="node41" href="$_w_c_sim_w_c_hit_8hh.html" title="WCSimWCHit.hh" alt="" coords="1297,155,1427,181"/>
+<area shape="rect" id="node46" href="$_w_c_sim_w_c_trigger_8hh.html" title="WCSimWCTrigger.hh" alt="" coords="2930,80,3085,107"/>
+<area shape="rect" id="node7" href="$_w_c_sim_detector_construction_8hh.html" title="WCSimDetectorConstruction.hh" alt="" coords="4193,155,4419,181"/>
+<area shape="rect" id="node8" href="$_w_c_sim_pmt_info_8hh.html" title="WCSimPmtInfo.hh" alt="" coords="5784,229,5923,256"/>
+<area shape="rect" id="node3" href="$_w_c_sim_dark_rate_messenger_8hh.html" title="WCSimDarkRateMessenger.hh" alt="" coords="2021,155,2239,181"/>
+<area shape="rect" id="node15" href="$_w_c_sim_root_options_8hh.html" title="WCSimRootOptions.hh" alt="" coords="5591,229,5759,256"/>
+<area shape="rect" id="node10" href="$_w_c_sim_p_m_t_object_8hh.html" title="WCSimPMTObject.hh" alt="" coords="3604,229,3762,256"/>
+<area shape="rect" id="node20" href="$_w_c_sim_w_l_s_properties_8hh.html" title="WCSimWLSProperties.hh" alt="" coords="4369,229,4551,256"/>
+<area shape="rect" id="node19" href="$_w_c_sim_enumerations_8hh.html" title="WCSimEnumerations.hh" alt="" coords="4466,304,4645,331"/>
+<area shape="rect" id="node47" href="$_w_c_sim_w_c_d_a_q_messenger_8hh.html" title="WCSimWCDAQMessenger.hh" alt="" coords="2699,155,2907,181"/>
+</map>

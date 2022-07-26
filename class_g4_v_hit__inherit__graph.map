@@ -1,0 +1,3 @@
+<map id="G4VHit" name="G4VHit">
+<area shape="rect" id="node2" href="$class_w_c_sim_w_c_hit.html" title="{WCSimWCHit\n|&#45; tubeID\l&#45; trackID\l&#45; edep\l&#45; pos\l&#45; rot\l&#45; pLogV\l&#45; totalPe\l&#45; time\l&#45; primaryParentID\l&#45; totalPeInGate\l&#45; maxPe\l|+ WCSimWCHit()\l+ ~WCSimWCHit()\l+ WCSimWCHit()\l+ operator=()\l+ operator==()\l+ operator new()\l+ operator delete()\l+ Draw()\l+ Print()\l+ SetTubeID()\l+ SetTrackID()\l+ SetEdep()\l+ SetPos()\l+ SetRot()\l+ SetLogicalVolume()\l+ AddParentID()\l+ SetMaxPe()\l+ AddPe()\l+ GetTubeID()\l+ GetTrackID()\l+ GetPos()\l+ GetTotalPe()\l+ GetTime()\l+ GetParentID()\l+ GetLogicalVolume()\l+ SortHitTimes()\l+ GetFirstHitTimeInGate()\l+ GetPeInGate()\l}" alt="" coords="5,131,197,751"/>
+</map>

@@ -22,6 +22,7 @@ echo "Copying new version of docs into gh-pages branch"
 cp -r WCSim-latest/doc/doxygen/html/* .
 
 echo "Committing new version of docs"
+git add .
 git commit -a -m "docs for WCSim hash `cat WCSim-latest/hash`"
 git push origin gh-pages
 

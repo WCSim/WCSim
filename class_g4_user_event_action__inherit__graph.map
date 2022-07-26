@@ -1,0 +1,3 @@
+<map id="G4UserEventAction" name="G4UserEventAction">
+<area shape="rect" id="node2" href="$class_w_c_sim_event_action.html" title="{WCSimEventAction\n|&#45; runAction\l&#45; generatorAction\l&#45; detectorConstructor\l&#45; DAQMessenger\l&#45; DigitizerChoice\l&#45; TriggerChoice\l&#45; RelativeHitTime\l&#45; ConstructedDAQClasses\l&#45; SavedOptions\l|+ WCSimEventAction()\l+ ~WCSimEventAction()\l+ BeginOfEventAction()\l+ EndOfEventAction()\l+ FillRootEvent()\l+ GetRunAction()\l+ SetDigitizerChoice()\l+ SetTriggerChoice()\l+ SetRelativeDigitizedHitTime()\l&#45; WCSimEventFindStartingVolume()\l&#45; WCSimEventFindStoppingVolume()\l&#45; CreateDAQInstances()\l}" alt="" coords="5,131,261,487"/>
+</map>
