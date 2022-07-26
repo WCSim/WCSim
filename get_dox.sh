@@ -16,13 +16,14 @@ git rev-parse HEAD > hash
 
 echo "Removing old version of docs in gh-pages branch"
 cd ..
-rm -rf *.html *.map *.png *.md5 search
+rm -rf *.html *.map *.png *.md5 *.js *.css search
 
 echo "Copying new version of docs into gh-pages branch"
 cp -r WCSim-latest/doc/doxygen/html/* .
 
 echo "Committing new version of docs"
 git add .
+git status
 git commit -a -m "docs for WCSim hash `cat WCSim-latest/hash`"
 git push origin gh-pages
 
