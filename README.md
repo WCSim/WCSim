@@ -33,6 +33,8 @@ The output can be found at: https://wcsim.github.io/Validation/
 More detailed information about the simulation is available in
 `doc/DetectorDocumentation.pdf`
 
+Additionally, doxygen documentation is available at https://wcsim.github.io/WCSim/inherits.html
+
 ## Current notes and how to build
 
 You should have a recent and working version of ROOT and GEANT4.
