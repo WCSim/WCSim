@@ -93,8 +93,28 @@ add_subdirectory (src)
 configure_file(${PROJECT_SOURCE_DIR}/WCSimConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/WCSimConfig.cmake @ONLY)
 pbuilder_do_package_config()
 
-#configure_file(this_daq.sh.in this_daq.sh)
-#pbuilder_install_files(${BIN_INSTALL_DIR} ${CMAKE_CURRENT_BINARY_DIR}/this_daq.sh)
+# data and macros copy
+
+pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
+        ${PROJECT_SOURCE_DIR}/data/MuonFlux-HyperK-ThetaPhi.dat)
+
+pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
+        ${PROJECT_SOURCE_DIR}/macros/jobOptions.mac
+        ${PROJECT_SOURCE_DIR}/macros/daq.mac
+        ${PROJECT_SOURCE_DIR}/macros/visOGLSX.mac
+        ${PROJECT_SOURCE_DIR}/macros/visRayTracer.mac
+        ${PROJECT_SOURCE_DIR}/macros/visOGLQt.mac
+        ${PROJECT_SOURCE_DIR}/macros/tuning_parameters.mac
+        ${PROJECT_SOURCE_DIR}/macros/OD.mac
+        ${PROJECT_SOURCE_DIR}/macros/OD_10k.mac
+        )
+
+pbuilder_install_files(${CMAKE_INSTALL_PREFIX}
+        ${PROJECT_SOURCE_DIR}/WCSim.mac
+        )
+
+configure_file(this_wcsim.sh.in this_wcsim.sh)
+pbuilder_install_files(${BIN_INSTALL_DIR} ${CMAKE_CURRENT_BINARY_DIR}/this_wcsim.sh)
 
 add_custom_target(install_${PROJECT_NAME}
         "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target install

@@ -53,13 +53,10 @@ message( STATUS "Build type: ${CMAKE_BUILD_TYPE}" )
 # This gets set to the binary directory upon first configuring.
 # If the user changes the prefix, but leaves the flag OFF, then it will remain as the user specified.
 # If the user wants to reset the prefix to the default (i.e. the binary directory), then the flag should be set ON.
-if( NOT DEFINED SET_INSTALL_PREFIX_TO_DEFAULT )
-    set( SET_INSTALL_PREFIX_TO_DEFAULT ON )
-endif( NOT DEFINED SET_INSTALL_PREFIX_TO_DEFAULT )
-if( SET_INSTALL_PREFIX_TO_DEFAULT )
+if( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
     set( CMAKE_INSTALL_PREFIX ${PROJECT_BINARY_DIR} CACHE PATH "Install prefix" FORCE )
-    set( SET_INSTALL_PREFIX_TO_DEFAULT OFF CACHE BOOL "Reset default install path when when configuring" FORCE )
-endif( SET_INSTALL_PREFIX_TO_DEFAULT )
+endif( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
+MESSAGE(STATUS "CMAKE_INSTALL_PREFIX being set to ${CMAKE_INSTALL_PREFIX}")
 
 # install subdirectories
 set( INCLUDE_INSTALL_SUBDIR "include/${PROJECT_NAME}" CACHE PATH "Install subdirectory for headers" )

@@ -1,0 +1,6 @@
+# Sets necessary environment variables to use this installation of PTheta in ROOT
+# Also set PATH and LD_LIBRARY_PATH for convenience
+
+export ROOT_INCLUDE_PATH=@INCLUDE_INSTALL_DIR@@WCSim_PARENT_INC_DIR_PATH@:$ROOT_INCLUDE_PATH
+export PATH=@BIN_INSTALL_DIR@:$PATH
+export LD_LIBRARY_PATH=@LIB_INSTALL_DIR@:$LD_LIBRARY_PATH
