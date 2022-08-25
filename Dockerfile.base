@@ -14,7 +14,7 @@ USER root
 RUN yum install -y \
     wget \
     tar \
-    cmake \
+    cmake3 \
     gcc-c++ \
     gcc \
     binutils \
