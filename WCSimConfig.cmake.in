@@ -1,4 +1,4 @@
-# DAQConfig.cmake
+# WCSimConfig.cmake
 
 get_filename_component( WCSim_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH )
 
