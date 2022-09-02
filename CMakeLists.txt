@@ -125,7 +125,7 @@ add_subdirectory (src)
 
 
 
-configure_file(${PROJECT_SOURCE_DIR}/WCSimConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/WCSimConfig.cmake @ONLY)
+configure_file(cmake/WCSimConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/WCSimConfig.cmake @ONLY)
 pbuilder_do_package_config()
 
 # data and macros copy
