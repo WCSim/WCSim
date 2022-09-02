@@ -147,16 +147,17 @@ target_link_libraries(WCSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} WCSimRoot Tree
 # relies on these scripts being in the current working directory.
 #
 set(WCSIM_SCRIPTS
-  macros/jobOptions.mac
-  WCSim.mac
-  macros/daq.mac
-  macros/visOGLSX.mac
-  macros/visRayTracer.mac
-  macros/visOGLQt.mac	
-  macros/tuning_parameters.mac
-  macros/OD.mac
-  macros/OD_10k.mac
-  data/MuonFlux-HyperK-ThetaPhi.dat
+		macros/jobOptions.mac
+		WCSim.mac
+		macros/daq.mac
+		macros/visOGLSX.mac
+		macros/visRayTracer.mac
+		macros/visOGLQT.mac
+		macros/visOGLQT_2.mac
+		macros/tuning_parameters.mac
+		macros/OD.mac
+		macros/OD_10k.mac
+		data/MuonFlux-HyperK-ThetaPhi.dat
   )
 
 foreach(_script ${WCSIM_SCRIPTS})
