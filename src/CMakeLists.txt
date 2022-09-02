@@ -5,21 +5,7 @@
 # Core library
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
-
-
-# If there were other libraries in this package on which this library depends, then they would be put in this variable
-#set(PACKAGE_LIBS )
-#
-#set( linkdef_header WCSimRootLinkDef.hh )
-#set( sources ${sources} )
-#set( pcm_file ${CMAKE_CURRENT_BINARY_DIR}/CCoreDict_rdict.pcm )
-#
-###################################################
-#set( EVENT_SOURCEFILES ${EVENT_SOURCEFILES} ${CMAKE_CURRENT_BINARY_DIR}/CCoreDict.cxx )
-#ROOT_GENERATE_DICTIONARY( CCoreDict ${headers} LINKDEF ${linkdef_header}  OPTIONS -inlineInputHeader )
-#
-#pbuilder_install_files(${LIB_INSTALL_DIR} ${pcm_file})
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/include/*.h)
 
 # ###########
 # # Library #
