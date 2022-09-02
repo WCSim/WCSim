@@ -56,7 +56,8 @@ If you want to use these libraries with an external program then also do:
 ### Build Instructions using CMake:
 
 CMake is cross-platform software for managing the build process in 
-a compiler-independent way (cmake.org). 
+a compiler-independent way (cmake.org).
+**Cmake 3.1+ is required.**
 It is recommended to build ROOT and GEANT4 also through CMake. The 
 latter is very CMake friendly since GEANT 4.9.6, while it started introducing
 builds through CMake from 4.9.4 onwards (http://geant4.web.cern.ch/geant4/support/ReleaseNotes4.9.4.html#10.).
@@ -64,27 +65,33 @@ Using cmake, builds and source code need to well separated and make
 it easier to build many versions of the same software.
 
 A recommended way to set up the directory structure in your own
-preferred WCSIM_HOME:
+preferred `WCSIM_HOME`:
 - `${WCSIM_HOME}/WCSim` : contains the src dir, typically the cloned or 
   unzipped code from GitHub
 - `${WCSIM_HOME}/WCSim_build` : contains directories for each build, eg.
+   for each branch you want to test or for different releases, comparing
+  debugged versions, etc.
+  Each subdirectory like `WCSim_dev` or `WCSim_v1.2` would contain the intermediate files produced
+  during compilation and not the finale ones
+- `${WCSIM_HOME}/WCSim_install` : contains directories for each build, eg.
   for each branch you want to test or for different releases, comparing
   debugged versions, etc.
-  This directory will contain the executable, the example macros and
-  library for ROOT.
+  Each subdirectory like `WCSim_dev` or `WCSim_v1.2` will contain the final executable and libraries, 
+  the example macros and library for ROOT.
 
 To compile you need to have `CMakeLists.txt` in the WCSim source dir.
-* `mkdir ${WCSIM_HOME}/WCSim_build/mydir ; cd ${WCSIM_HOME}/WCSim_build/mydir`
+* `mkdir -p ${WCSIM_HOME}/WCSim_build/WCSim_dev ; cd ${WCSIM_HOME}/WCSim_build/WCSim_dev`
 * Set up the Geant4_Dir: `export Geant4_DIR=${HOME}/Geant4/install/geant4.9.6.p04`
-  (from the make install phase of Geant4)
-* `cmake ../../WCSim` : this executes the commands in `CMakeLists.txt` and generates
-  the Makefiles for both the ROOT library as the main executable.
+  (from the make install phase of Geant4). Alternatively, source the `geant4.sh` setup script 
+located under e.g. `${HOME}/Geant4/install/geant4.9.6.p04/bin`.
+* `cmake3 ../../WCSim` : this executes the commands in `CMakeLists.txt` and generates
+  the Makefiles for both the ROOT library as the main executable (for some OS, `cmake3` is just `cmake`).
 * `make clean` : if necessary
-* `make` : will first compile the libWCSimRoot.so which you need for using
-  the ROOT Dict from WCSim and then compile WCSim.
+* `make -j3 install` : will first compile the libWCSimRoot.so and libWCSimCore.so which you need for using
+ the ROOT Dict from WCSim and then compile WCSim.
 
 To recompile:
-* Typically just `make` will be enough and also redo the cmake phase if
+* Typically just `make install` will be enough and also redo the cmake phase if
   something changed.
 * Sometimes you need to `make clean` first.
 * When there are problems, try removing `CMakeCache.txt`, and redo the cmake.
