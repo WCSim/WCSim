@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.1)
 # ##############################################################################
 
 set(PROJECT_NAME WCSim)
-set(PROJECT_VERSION 1.0)
+set(PROJECT_VERSION 1.10)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 
@@ -69,7 +69,7 @@ LIST(APPEND PUBLIC_EXT_LIBS ${Geant4_LIBRARIES})
 include(${Geant4_USE_FILE})  ## NOT needed for Dict
 
 #########
-# sources
+# C++ Standard and flags
 #########
 
 if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.7)
@@ -81,7 +81,9 @@ endif()
 # Set flag for git version to be used as c++ preprocessor macro
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGIT_HASH=\"\\\"`cd ${PROJECT_SOURCE_DIR};git describe --always --long --tags --dirty`\\\"\"")
 
+#########
 # data and macros copy
+#########
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/MuonFlux-HyperK-ThetaPhi.dat)
@@ -92,6 +94,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
         ${PROJECT_SOURCE_DIR}/macros/visOGLSX.mac
         ${PROJECT_SOURCE_DIR}/macros/visRayTracer.mac
         ${PROJECT_SOURCE_DIR}/macros/visOGLQt.mac
+        ${PROJECT_SOURCE_DIR}/macros/visOGLQT_2.mac
         ${PROJECT_SOURCE_DIR}/macros/tuning_parameters.mac
         ${PROJECT_SOURCE_DIR}/macros/OD.mac
         ${PROJECT_SOURCE_DIR}/macros/OD_10k.mac
@@ -107,13 +110,6 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/bin/rootwc
         ${PROJECT_SOURCE_DIR}/rootwc/rootwc
         ${PROJECT_SOURCE_DIR}/rootwc/rootwc.C
         )
-
-configure_file(cmake/this_wcsim.sh.in this_wcsim.sh)
-pbuilder_install_files(${BIN_INSTALL_DIR} ${CMAKE_CURRENT_BINARY_DIR}/this_wcsim.sh)
-
-add_custom_target(install_${PROJECT_NAME}
-        /include
-)
 
 # Library
 include_directories (
@@ -124,40 +120,16 @@ include_directories (
 add_subdirectory (src)
 
 
+#########
+# Configure package and final installation files
+#########
 
 configure_file(${PROJECT_SOURCE_DIR}/cmake/WCSimConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/WCSimConfig.cmake @ONLY)
 pbuilder_do_package_config()
 
-# data and macros copy
-
-pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
-        ${PROJECT_SOURCE_DIR}/data/MuonFlux-HyperK-ThetaPhi.dat)
-
-pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
-        ${PROJECT_SOURCE_DIR}/macros/jobOptions.mac
-        ${PROJECT_SOURCE_DIR}/macros/daq.mac
-        ${PROJECT_SOURCE_DIR}/macros/visOGLSX.mac
-        ${PROJECT_SOURCE_DIR}/macros/visRayTracer.mac
-        ${PROJECT_SOURCE_DIR}/macros/visOGLQt.mac
-        ${PROJECT_SOURCE_DIR}/macros/tuning_parameters.mac
-        ${PROJECT_SOURCE_DIR}/macros/OD.mac
-        ${PROJECT_SOURCE_DIR}/macros/OD_10k.mac
-        )
-
-pbuilder_install_files(${CMAKE_INSTALL_PREFIX}
-        ${PROJECT_SOURCE_DIR}/WCSim.mac
-        )
-
-pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/bin/rootwc
-        ${PROJECT_SOURCE_DIR}/rootwc/loadincs.C
-        ${PROJECT_SOURCE_DIR}/rootwc/loadlibs.C
-        ${PROJECT_SOURCE_DIR}/rootwc/rootwc
-        ${PROJECT_SOURCE_DIR}/rootwc/rootwc.C
-        )
-
 configure_file(cmake/this_wcsim.sh.in this_wcsim.sh)
 pbuilder_install_files(${BIN_INSTALL_DIR} ${CMAKE_CURRENT_BINARY_DIR}/this_wcsim.sh)
 
-#add_custom_target(install_${PROJECT_NAME}
-#        "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target install
-#        COMMENT "Installing ${PROJECT_NAME}")
+add_custom_target(install_${PROJECT_NAME}
+        "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target install
+        COMMENT "Installing ${PROJECT_NAME}")
