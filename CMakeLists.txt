@@ -93,7 +93,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
         ${PROJECT_SOURCE_DIR}/macros/daq.mac
         ${PROJECT_SOURCE_DIR}/macros/visOGLSX.mac
         ${PROJECT_SOURCE_DIR}/macros/visRayTracer.mac
-        ${PROJECT_SOURCE_DIR}/macros/visOGLQt.mac
+        ${PROJECT_SOURCE_DIR}/macros/visOGLQT.mac
         ${PROJECT_SOURCE_DIR}/macros/visOGLQT_2.mac
         ${PROJECT_SOURCE_DIR}/macros/tuning_parameters.mac
         ${PROJECT_SOURCE_DIR}/macros/OD.mac
