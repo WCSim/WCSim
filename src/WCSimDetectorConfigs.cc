@@ -15,7 +15,8 @@
  *
  ***********************************************************/
 
-
+//Turn on the output of DumpDetectorConfigInfo()
+//#define VERBOSE_GEOMETRY_CONFIG
 
 void WCSimDetectorConstruction::SetSuperKGeometry()
 {
@@ -1243,4 +1244,49 @@ void WCSimDetectorConstruction::InitSinglePMT(){
   nID_PMTs = 1;   
   config_file = "";
 
+}
+
+void WCSimDetectorConstruction::DumpDetectorConfigInfo()
+{
+#ifdef VERBOSE_GEOMETRY_CONFIG
+  G4cout
+	<< "GEOMCHECK WCDetectorName \t" << WCDetectorName << G4endl
+	<< "GEOMCHECK WCIDCollectionName \t" << WCIDCollectionName << G4endl
+	<< "GEOMCHECK WCPMTName \t" << WCPMTName << G4endl
+	<< "GEOMCHECK WCPMTExposeHeight \t" << WCPMTExposeHeight << G4endl
+	<< "GEOMCHECK WCPMTRadius \t" << WCPMTRadius << G4endl
+	<< "GEOMCHECK WCIDDiameter \t" << WCIDDiameter << G4endl
+	<< "GEOMCHECK WCIDHeight \t" << WCIDHeight << G4endl
+	<< "GEOMCHECK WCBarrelPMTOffset \t" << WCBarrelPMTOffset << G4endl
+	<< "GEOMCHECK WCBorderPMTOffset \t" << WCBorderPMTOffset << G4endl
+	<< "GEOMCHECK WCPMTperCellHorizontal \t" << WCPMTperCellHorizontal << G4endl
+	<< "GEOMCHECK WCPMTperCellVertical \t" << WCPMTperCellVertical << G4endl
+	<< "GEOMCHECK WCPMTPercentCoverage \t" << WCPMTPercentCoverage << G4endl
+	<< "GEOMCHECK WCBarrelNumPMTHorizontal \t" << WCBarrelNumPMTHorizontal << G4endl
+	<< "GEOMCHECK WCBarrelNRings \t" << WCBarrelNRings << G4endl
+	<< "GEOMCHECK WCCapPMTSpacing \t" << WCCapPMTSpacing << G4endl
+	<< "GEOMCHECK WCCapEdgeLimit \t" << WCCapEdgeLimit << G4endl
+	<< "GEOMCHECK WCBlackSheetThickness \t" << WCBlackSheetThickness << G4endl
+	<< "GEOMCHECK WCAddGd \t" << WCAddGd << G4endl
+	<< "GEOMCHECK CaveTyvekSheetThickness \t" << CaveTyvekSheetThickness << G4endl
+	<< "GEOMCHECK isODConstructed \t" << isODConstructed << G4endl
+	<< "GEOMCHECK WCODLateralWaterDepth \t" << WCODLateralWaterDepth << G4endl
+	<< "GEOMCHECK WCODHeightWaterDepth \t" << WCODHeightWaterDepth << G4endl
+	<< "GEOMCHECK WCODDeadSpace \t" << WCODDeadSpace << G4endl
+	<< "GEOMCHECK WCODTyvekSheetThickness \t" << WCODTyvekSheetThickness << G4endl
+	<< "GEOMCHECK WCODWLSPlatesThickness \t" << WCODWLSPlatesThickness << G4endl
+	<< "GEOMCHECK WCODWLSPlatesLength \t" << WCODWLSPlatesLength << G4endl
+	<< "GEOMCHECK WCODDiameter \t" << WCODDiameter << G4endl
+	<< "GEOMCHECK WCODCollectionName \t" << WCODCollectionName << G4endl
+	<< "GEOMCHECK WCPMTODName \t" << WCPMTODName << G4endl
+	<< "GEOMCHECK WCPMTODExposeHeight \t" << WCPMTODExposeHeight << G4endl
+	<< "GEOMCHECK WCPMTODRadius \t" << WCPMTODRadius << G4endl
+	<< "GEOMCHECK WCPMTODperCellHorizontal \t" << WCPMTODperCellHorizontal << G4endl
+	<< "GEOMCHECK WCPMTODperCellVertical \t" << WCPMTODperCellVertical << G4endl
+	<< "GEOMCHECK WCPMTODPercentCoverage \t" << WCPMTODPercentCoverage << G4endl
+	<< "GEOMCHECK WCODPMTShift \t" << WCODPMTShift << G4endl
+	<< "GEOMCHECK WCODCapPMTSpacing \t" << WCODCapPMTSpacing << G4endl
+	<< "GEOMCHECK WCODCapEdgeLimit \t" << WCODCapEdgeLimit << G4endl
+	;
+#endif
 }

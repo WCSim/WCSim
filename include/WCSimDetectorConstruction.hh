@@ -88,6 +88,14 @@ public:
   void SetNuPrismBeamTest_mPMTGeometry();
   void SetNuPrismShort_mPMTGeometry();
   void SetDefaultNuPrismGeometry();
+  /**
+     Dump the values of many variables used to define geometries including
+     - radii, heights, name, etc. of the detector
+     - PMT arrangement (number of rings, photocoverage, etc.)
+     - radii, name, etc. of the PMTs used in the geometry
+     All output is prefixed by "GEOMCHECK", in order for fast searching/grepping
+   */
+  void DumpDetectorConfigInfo();
 
   void UpdateGeometry();
   void UpdateODGeo();
