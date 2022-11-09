@@ -379,6 +379,9 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
   else if (PMTType == "PMT3inch"){
     PMT = new PMT3inch;
   }
+  else if (PMTType == "PMT3inch_ETEL9302B"){
+    PMT = new PMT3inch_ETEL9302B;
+  }
   else if (PMTType == "PMT3inchGT"){
     PMT = new PMT3inchGT;
   }
@@ -417,9 +420,6 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
   }
   else if (PMTType == "PMT5inch"){
     PMT = new PMT5inch;
-  }
-  else if (PMTType == "PMT3inch"){
-    PMT = new PMT3inch;
   }
 
   if(PMT == nullptr) {

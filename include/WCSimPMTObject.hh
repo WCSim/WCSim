@@ -129,6 +129,30 @@ public:
   G4int    GetNbOfQEDefined();
 };
 
+class PMT3inch_ETEL9302B : public WCSimPMTObject
+{
+
+public:
+
+  PMT3inch_ETEL9302B();
+  ~PMT3inch_ETEL9302B();
+
+public:
+  G4String GetPMTName();
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double, double);
+  double    SaturFactor(double, double); //TD 2019.07.16
+  G4double GetPMTGlassThickness();
+  G4double  GetDarkRate();
+  G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
+};
+
 class PMT3inchGT : public WCSimPMTObject
 {
 
