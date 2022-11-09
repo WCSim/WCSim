@@ -75,6 +75,7 @@ public:
   void SetHyperKGeometry();
   void SetHyperKGeometry_20perCent();
   void SetHyperKWithODGeometry();
+  void SetHyperK20pcWithODGeometry();
   void SetHyperK_3inchGeometry();//B.Q, 2018/05/03
   void SetHyperK_8inchGeometry();//B.Q, 2018/05/03
   void SetHyperK_10inchGeometry();//B.Q, 2018/05/09

@@ -324,6 +324,16 @@ void WCSimDetectorConstruction::SetHyperK_3inchGeometry()
 
 }
 
+void WCSimDetectorConstruction::SetHyperK20pcWithODGeometry()
+{
+  SetHyperKWithODGeometry();
+  WCPMTPercentCoverage = 20.0;
+  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+									/WCPMTperCellVertical));
+  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+}
+
 void WCSimDetectorConstruction::SetHyperKWithODGeometry()
 {
   WCDetectorName = "HyperKWithOD";
