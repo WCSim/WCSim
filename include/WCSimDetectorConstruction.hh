@@ -810,6 +810,7 @@ private:
   // OD PMTs
   static std::map<int, G4Transform3D> ODtubeIDMap;
   static std::unordered_map<std::string, int, std::hash<std::string> >  ODtubeLocationMap;
+  static std::map<int, std::pair< int, int > > mPMTODMap;
 
   // Variables related to configuration
 
