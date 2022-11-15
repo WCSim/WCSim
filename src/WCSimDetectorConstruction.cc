@@ -24,6 +24,7 @@ std::map<int, std::pair<int, int> > WCSimDetectorConstruction::mPMTIDMap;
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap2;
 std::map<int, std::pair<int, int> > WCSimDetectorConstruction::mPMTIDMap2;
 std::map<int, G4Transform3D> WCSimDetectorConstruction::ODtubeIDMap;
+std::map<int, std::pair<int, int> > WCSimDetectorConstruction::mPMTODMap;
 //std::map<int, cyl_location>  WCSimDetectorConstruction::tubeCylLocation;
 
 // std::hash is default hash function actually (http://en.cppreference.com/w/cpp/utility/hash)
@@ -35,7 +36,11 @@ WCSimDetectorConstruction::tubeLocationMap2;
 std::unordered_map<std::string, int, std::hash<std::string> >
   WCSimDetectorConstruction::ODtubeLocationMap;
 
-WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuningParameters* WCSimTuningPars):WCSimTuningParams(WCSimTuningPars)
+WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
+						     WCSimTuningParameters* WCSimTuningPars):
+  WCSimTuningParams(WCSimTuningPars),
+  totalNum_mPMTs(0),
+  totalNum_mPMTs2(0)
 {
 	
   // Decide if (only for the case of !1kT detector) should be upright or horizontal
@@ -69,7 +74,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,WCSimTuning
   WCSimDetectorConstruction::tubeLocationMap2.clear();
 
   WCSimDetectorConstruction::ODtubeIDMap.clear();
-  WCSimDetectorConstruction::tubeLocationMap.clear();
+  WCSimDetectorConstruction::mPMTODMap.clear();
   WCSimDetectorConstruction::ODtubeLocationMap.clear();
 
   WCSimDetectorConstruction::PMTLogicalVolumes.clear();
@@ -241,6 +246,9 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   totalNumPMTs2 = 0;
   totalNumODPMTs = 0;
 
+  totalNum_mPMTs = 0;
+  totalNum_mPMTs2 = 0;
+
   //-----------------------------------------------------
   // Create Logical Volumes
   //-----------------------------------------------------
@@ -335,7 +343,9 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   tubeIDMap.clear();
   mPMTIDMap.clear();
   tubeLocationMap.clear();
+  
   ODtubeIDMap.clear();
+  mPMTODMap.clear();
   ODtubeLocationMap.clear();
 
   tubeIDMap2.clear();
