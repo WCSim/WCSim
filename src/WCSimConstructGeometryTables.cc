@@ -317,6 +317,8 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
      fpmts.push_back(new_pmt);
 
   }
+  //reverse the vector of PMTs so that entry 0 = PMT ID 1
+  std::reverse(fpmts.begin(), fpmts.end());
 
   //Record location of the second PMT type for the hybrid configuration
   for (unsigned int i=0;i<fpmts2.size();i++){
@@ -374,6 +376,8 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
      
      fpmts2.push_back(new_pmt);
   }//loop over PMT type 2
+  //reverse the vector of PMTs so that entry 0 = PMT ID 1
+  std::reverse(fpmts2.begin(), fpmts2.end());
 
   // Record locations of OD PMTs to file ffODpmts variables
   for (unsigned int i=0;i<fODpmts.size();i++){
@@ -429,6 +433,8 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     fODpmts.push_back(new_pmt);
 
   }//loop over OD PMTs
+  //reverse the vector of PMTs so that entry 0 = PMT ID 1
+  std::reverse(fODpmts.begin(), fODpmts.end());
 
   geoFile.close();
 
