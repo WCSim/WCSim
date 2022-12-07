@@ -280,8 +280,9 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
 
     // Figure out if pmt is on top/bottom or barrel
     // print key: 0-top, 1-barrel, 2-bottom
-    if(mPMTIDMap[tubeID].second == 0 || mPMTIDMap[tubeID].second == 19) {
-      //this only works for non-mPMT (0) or centre tube of mPMT (19)
+    if(mPMTIDMap[tubeID].second == 0 || mPMTIDMap[tubeID].second == nID_PMTs) {
+      //this only works for non-mPMT (0)
+      // or if the highest numbered tube of mPMT is at centre of mPMT module (e.g. on cap points in ±z direction)
       if (pmtOrientation.z()==1.0)//bottom
 	{cylLocation=2;}
       else if (pmtOrientation.z()==-1.0)//top
@@ -337,8 +338,9 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
 
     // Figure out if pmt is on top/bottom or barrel
     // print key: 0-top, 1-barrel, 2-bottom
-    if(mPMTIDMap2[tubeID].second == 0 || mPMTIDMap2[tubeID].second == 19) {
-      //this only works for non-mPMT (0) or centre tube of mPMT (19)
+    if(mPMTIDMap2[tubeID].second == 0 || mPMTIDMap2[tubeID].second == nID_PMTs2) {
+      //this only works for non-mPMT (0)
+      // or if the highest numbered tube of mPMT is at centre of mPMT module (e.g. on cap points in ±z direction)
       if (pmtOrientation*newTransform.getTranslation() > 0)//veto pmt
 	{cylLocation=10;}
       else if (pmtOrientation.z()==1.0)//bottom
