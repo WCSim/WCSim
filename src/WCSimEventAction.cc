@@ -1480,7 +1480,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
 	       << " with truetime:smeartime:primaryparentID";
-	for(G4int id = 0; id < truetime.size(); id++) {
+	for(size_t id = 0; id < truetime.size(); id++) {
 	  G4cout << " " << truetime[id]
 		 << "\t" << smeartime[id]
 		 << "\t" << primaryParentID[id] << G4endl;
@@ -1540,7 +1540,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	      assert(vec_pe.size() == vec_digicomp.size());
 	      for(unsigned int iv = 0; iv < vec_pe.size(); iv++) {
 #ifdef SAVE_DIGITS_VERBOSE
-		if(tubeID < NPMTS_VERBOSE || digi_tubeid == VERBOSE_PMT) {
+		if(tubeID < NPMTS_VERBOSE || tubeID == VERBOSE_PMT) {
 		  G4cout << "Adding digit " << iv
 			 << " for PMT " << tubeID
 			 << " pe "   << vec_pe[iv]
@@ -1574,6 +1574,12 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	G4cout << "tracks collection size =  " <<
 	  wcsimrootevent->GetTracks()->GetEntries()
 	       <<" get ntracks = " <<  wcsimrootevent->GetNtrack() << "\n";
+	for(size_t itrack = 0; itrack < wcsimrootevent->GetNtrack(); itrack++)
+	  G4cout << ((WCSimRootTrack*)(wcsimrootevent->GetTracks()->At(itrack)))->GetId() << "\t"
+		 << ((WCSimRootTrack*)(wcsimrootevent->GetTracks()->At(itrack)))->GetIpnu() << "\t"
+		 << ((WCSimRootTrack*)(wcsimrootevent->GetTracks()->At(itrack)))->GetStartvol() << "\t"
+		 << ((WCSimRootTrack*)(wcsimrootevent->GetTracks()->At(itrack)))->GetStopvol() << "\t"
+		 << G4endl;
 #endif
 
 	gatestart = WCTM->GetTriggerTime(index);
@@ -2003,7 +2009,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
 	       << " with truetime:smeartime:primaryparentID";
-	for(G4int id = 0; id < truetime.size(); id++) {
+	for(size_t id = 0; id < truetime.size(); id++) {
 	  G4cout << " " << truetime[id]
 		 << ":" << smeartime[id]
 		 << ":" << primaryParentID[id];
