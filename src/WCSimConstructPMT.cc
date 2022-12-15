@@ -31,6 +31,8 @@
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName, G4String detectorElement, G4int nIDPMTs)//Modified by B.Q, 2018/12 to incorporate number of ID PMTs in the function input
 {
+  checkOverlaps = true;
+  
   PMTKey_t key(PMTName,CollectionName);
 
   // Return pre-created PMT Logical Volume if it already exists.
@@ -766,6 +768,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMTName, G4String CollectionName, G4String detectorElement){
 
+  checkOverlaps = true;
+  
   G4double expose;
   G4double radius;
   G4String Water = "Water";
