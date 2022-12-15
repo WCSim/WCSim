@@ -227,7 +227,8 @@ WCSimDetectorConstruction::~WCSimDetectorConstruction(){
 //}
 
 G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
-{  
+{
+  G4cout << "STARTING WCSimDetectorConstruction::CONSTRUCT" << G4endl;
   G4GeometryManager::GetInstance()->OpenGeometry();
 
   G4PhysicalVolumeStore::GetInstance()->Clean();
