@@ -80,6 +80,8 @@ private:
   bool     RelativeHitTime;
   bool     ConstructedDAQClasses;
   bool     SavedOptions;
+
+  G4int fEvNum;
 };
 
 

@@ -66,7 +66,8 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   :runAction(myRun), generatorAction(myGenerator),
    detectorConstructor(myDetector),
    ConstructedDAQClasses(false),
-   SavedOptions(false)
+   SavedOptions(false),
+   fEvNum(0)
 {
   DAQMessenger = new WCSimWCDAQMessenger(this);
 
@@ -234,6 +235,8 @@ void WCSimEventAction::BeginOfEventAction(const G4Event*)
     //G4DigiManager* DMman = G4DigiManager::GetDMpointer();
 
   }
+  G4cout << "Starting event " << fEvNum << G4endl;
+  fEvNum++;
 }
 
 void WCSimEventAction::EndOfEventAction(const G4Event* evt)
