@@ -410,7 +410,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	fEvNum++;
       }
       else{
-	G4cout << "End of File" << G4endl;
+	G4cout << "End of rootracker file - run terminated..."<< G4endl;
+	G4RunManager::GetRunManager()-> AbortRun();
 	return;
       }
 
@@ -441,7 +442,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                 fEvNum++;
             }
             else{
-                G4cout << "End of File" << G4endl;
+		G4cout << "End of rootracker file - run terminated..."<< G4endl;
+		G4RunManager::GetRunManager()-> AbortRun();
                 return;
             }
             //Convert coordinates
