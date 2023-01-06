@@ -1,10 +1,10 @@
+#include "WCSimSteppingAction.hh"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <WCSimRootEvent.hh>
 #include <G4SIunits.hh>
 #include <G4OpticalPhoton.hh>
-
-#include "WCSimSteppingAction.hh"
 
 #include "G4Track.hh"
 #include "G4VProcess.hh"
