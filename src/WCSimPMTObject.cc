@@ -1699,7 +1699,7 @@ G4String HPD20inchHQE::GetPMTName() {G4String PMTName = "HPD20inchHQE"; return P
 G4double HPD20inchHQE::GetExposeHeight() {return .192*m;}
 G4double HPD20inchHQE::GetRadius() {return .254*m;}
 G4double HPD20inchHQE::GetPMTGlassThickness() {return 0.3*cm;}
-double HPD20inchHQE::HitTimeSmearing(double Q, double TTSFF=1.0) {
+double HPD20inchHQE::HitTimeSmearing(double Q, double=1.0) { // TTSFF not used in this implementation
   G4double sig_param[4]={0.6718,0.1264,0.4450,11.87};
   G4double lambda_param[2]={0.3255,0.1142};
 
@@ -1891,7 +1891,7 @@ G4String HPD12inchHQE::GetPMTName() {G4String PMTName = "HPD12inchHQE"; return P
 G4double HPD12inchHQE::GetExposeHeight() {return 118.*mm;} //Assumed to be the same as the PMT12inchHQE.
 G4double HPD12inchHQE::GetRadius() {return 152.4*mm;} //12 inches
 G4double HPD12inchHQE::GetPMTGlassThickness() {return 0.3*cm;} 
-double HPD12inchHQE::HitTimeSmearing(double Q, double TTSFF=1.0) {
+double HPD12inchHQE::HitTimeSmearing(double Q, double=1.0) {  // TTSFF not used in this implementation
   G4double sig_param[4]={0.6718,0.1264,0.4450,11.87};
   G4double lambda_param[2]={0.3255,0.1142};
 
@@ -2092,7 +2092,7 @@ G4double BoxandLine20inchHQE::GetExposeHeight() {return .18*m;}
 G4double BoxandLine20inchHQE::GetRadius() {return .254*m;}
 G4double BoxandLine20inchHQE::GetPMTGlassThickness() {return 0.4*cm;}
 
-double BoxandLine20inchHQE::HitTimeSmearing(double Q, double TTSFF=1.0) {
+double BoxandLine20inchHQE::HitTimeSmearing(double Q, double=1.0) {  // TTSFF not used in this implementation
   G4double sig_param[4]={0.6314,0.06260,0.5711,23.96};
   G4double lambda_param[2]={0.4113,0.07827};
   G4double sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
@@ -2290,7 +2290,7 @@ G4double BoxandLine12inchHQE::GetExposeHeight() {return 118.*mm;}
 G4double BoxandLine12inchHQE::GetRadius() {return 152.4*mm;}
 G4double BoxandLine12inchHQE::GetPMTGlassThickness() {return 0.4*cm;}
 
-double BoxandLine12inchHQE::HitTimeSmearing(double Q, double TTSFF=1.0) {
+double BoxandLine12inchHQE::HitTimeSmearing(double Q, double=1.0) {  // TTSFF not used in this implementation
   G4double sig_param[4]={0.6314,0.06260,0.5711,23.96};
   G4double lambda_param[2]={0.4113,0.07827};
 
@@ -2722,7 +2722,7 @@ G4double PMT4inchR12199_02::GetExposeHeight() {return .0276*m;}  //or 0.021 for 
 G4double PMT4inchR12199_02::GetRadius() {return .054*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
 G4double PMT4inchR12199_02::GetPMTGlassThickness() {return 0.1*cm;}
 
-double PMT4inchR12199_02::HitTimeSmearing(double Q, double TTSFF=1.0) {
+double PMT4inchR12199_02::HitTimeSmearing(double Q, double=1.0) {  // TTSFF not used in this implementation
   G4double sig_param[4]={0.6314,0.06260,0.5711,23.96};
   G4double lambda_param[2]={0.4113,0.07827};
   G4double sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
@@ -2916,7 +2916,7 @@ G4double PMT5inchR12199_02::GetExposeHeight() {return .0338*m;}  //or 0.0259 for
 G4double PMT5inchR12199_02::GetRadius() {return .0675*m;}        //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
 G4double PMT5inchR12199_02::GetPMTGlassThickness() {return 0.1*cm;}
 
-double PMT5inchR12199_02::HitTimeSmearing(double Q, double TTSFF=1.0) {
+double PMT5inchR12199_02::HitTimeSmearing(double Q, double=1.0) {  // TTSFF not used in this implementation
   G4double sig_param[4]={0.6314,0.06260,0.5711,23.96};
   G4double lambda_param[2]={0.4113,0.07827};
   G4double sigma_lowcharge = sig_param[0]*(exp(-sig_param[1]*Q)+sig_param[2]);
@@ -3113,7 +3113,8 @@ G4double PMT3inchR14374::GetPMTGlassThickness() {return 0.1*cm;}     // TF: from
 
 // Currently based on 8" (instead of 20")
 // But shifted to requirements (2ns TTS FWHM) for 1 pe
-double PMT3inchR14374::HitTimeSmearing(double Q, double TTSFF=1.0) {
+// Implementation is not charge-dependent---no need for argument name Q.
+double PMT3inchR14374::HitTimeSmearing(double, double TTSFF=1.0) {
   //double timingConstant = 0.75;//B. Quilain, to match the TTS = 1.4ns (sigma at 0.6) measured at 1 p.e. 
   double timingResolution = 0.6;//B. Quilain, to match the TTS = 1.4ns (sigma at 0.6) measured at 1 p.e. 
   timingResolution *= TTSFF;
