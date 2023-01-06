@@ -1,4 +1,9 @@
 #include "WCSimWCSD.hh"
+
+#include "WCSimSteppingAction.hh"
+#include "WCSimDetectorConstruction.hh"
+#include "WCSimTrackInformation.hh"
+
 #include "G4ParticleTypes.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4TouchableHistory.hh"
@@ -14,9 +19,6 @@
 
 #include <sstream>
 
-#include "WCSimDetectorConstruction.hh"
-#include "WCSimTrackInformation.hh"
-#include "WCSimSteppingAction.hh"
 
 WCSimWCSD::WCSimWCSD(G4String CollectionName,
                      G4String name,
