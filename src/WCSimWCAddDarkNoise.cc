@@ -179,7 +179,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     // Added by: Morgan Askins (maskins@ucdavis.edu)
 
     G4int number_entries = WCHCPMT->entries();
-    G4int thenum_pmts;
+    G4int thenum_pmts = 0;
     if(detectorElement=="tank") thenum_pmts = myDetector->GetTotalNumPmts();
     else if(detectorElement=="tankPMT2") thenum_pmts = myDetector->GetTotalNumPmts2();
     else if(detectorElement=="OD") thenum_pmts = myDetector->GetTotalNumODPmts();

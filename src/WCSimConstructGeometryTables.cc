@@ -257,7 +257,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   
   //G4double maxZ=0.0;// used to tell if pmt is on the top/bottom cap
   //G4double minZ=0.0;// or the barrel
-  G4int cylLocation;
+  G4int cylLocation = -1;    // Initialize to -1 for error-detection.
 
 
   // clear before add new stuff in
@@ -328,6 +328,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   fpmts2.clear();
 
   // Grab the tube information from the ID PMT 2 tubeID Map and dump to file.
+  cylLocation = -1;  // Reinitialize to -1 for error-detection.
   for ( int tubeID = totalNumPMTs2; tubeID >= 1; tubeID--){
     G4Transform3D newTransform = tubeIDMap2[tubeID];
 
@@ -388,6 +389,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   fODpmts.clear();
 
   // Grab the tube information from the OD tubeID Map and dump to file.
+  cylLocation = -1;  // Reinitialize to -1 for error-detection.
   for ( int tubeID = totalNumODPMTs; tubeID >= 1; tubeID--){
     G4Transform3D newTransform = ODtubeIDMap[tubeID];
 
