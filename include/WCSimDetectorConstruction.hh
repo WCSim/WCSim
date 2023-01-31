@@ -429,6 +429,10 @@ public:
 
 private:
 
+  // Overlap checking turned on and off with cmake option
+  static constexpr G4bool checkOverlaps = WCSIM_CHECK_GEOMETRY_OVERLAPS;
+  static constexpr G4bool checkOverlapsPMT = WCSIM_CHECK_GEOMETRY_OVERLAPS;
+
 
   // Tuning parameters
 
@@ -751,9 +755,6 @@ private:
 
     G4int innerPMT_TopN;
     G4int innerPMT_BotN;
-
-    G4bool checkOverlaps;
-    G4bool checkOverlapsPMT;
 
     G4bool placeBarrelPMTs;
     G4bool placeCapPMTs;

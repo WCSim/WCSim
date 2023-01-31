@@ -50,8 +50,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructEggShapedHyperK()
 
   // ------------- Volumes --------------
 
-  checkOverlaps = true;
-
   // HyperK Volume
 
   G4LogicalVolume* eggShapedHyperKLV

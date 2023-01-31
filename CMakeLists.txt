@@ -2,7 +2,7 @@
 ## Modified for ROOT6 support on 2020/11/26 by Guillaume Pronost
 #----------------------------------------------------------------------------
 # Setup the project
-cmake_minimum_required(VERSION 2.8.10 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 project(WCSim)
 
 if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.4)
@@ -178,6 +178,12 @@ if (NOT (PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR))
 else()
   message(STATUS "Note: building in-place, no need to copy anything.")
 endif()
+
+
+option(WCSim_Geometry_Overlaps_CHECK "Toggle GEANT4 overlap checking when placing geometry elements" OFF)
+
+target_compile_definitions(WCSim PRIVATE
+        WCSIM_CHECK_GEOMETRY_OVERLAPS=$<IF:$<BOOL:${WCSim_Geometry_Overlaps_CHECK}>,true,false>)
 
 #----------------------------------------------------------------------------
 # For internal Geant4 use - but has no effect if you build this

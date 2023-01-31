@@ -177,12 +177,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	  if(!G4Material::GetMaterial("Doped Water", false)) AddDopedWater();
 	}
 
-  // Optionally switch on the checkOverlaps. Once the geometry is debugged, switch off for 
-  // faster running. Checking ALL overlaps is crucial. No overlaps are allowed, otherwise
-  // G4Navigator will be confused and result in wrong photon tracking and resulting yields.
-  // ToDo: get these options from .mac
-  checkOverlaps = true; 
-  checkOverlapsPMT = true;
   // Optionally place parts of the detector. Very useful for visualization and debugging 
   // geometry overlaps in detail.
   placeBarrelPMTs = true;
@@ -267,7 +261,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					  "CaveBarrelTyvek",
 					  logicWCBarrel,
 					  false,
-					  0);
+					  checkOverlaps);
 
 	//G4LogicalSkinSurface *TyvekCaveBarrelSurface =
 	new G4LogicalSkinSurface("TyvekCaveBarrelSurface", logicCaveTyvek, OpWaterTySurface);
@@ -311,7 +305,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					  "CaveTopTyvek",
 					  logicWCBarrel,
 					  false,
-					  0);
+					  checkOverlaps);
 
 
     CaveTyvekPosition.setZ(-CaveTyvekPosition.getZ());
@@ -323,7 +317,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					  "CaveBottomTyvek",
 					  logicWCBarrel,
 					  false,
-					  0);
+					  checkOverlaps);
 
 
   } // END Tyvek cave
