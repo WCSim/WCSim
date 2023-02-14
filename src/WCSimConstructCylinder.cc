@@ -1001,9 +1001,10 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
     G4double AreaCellOD = barrelODCellWidth * barrelODCellHeight;
     G4double AreaPMTOD = 3.1415*std::pow(WCPMTODRadius,2);
     G4double NPMTODCovered = (AreaRingOD/AreaPMTOD) * WCPMTODPercentCoverage/100.;
+	if( WCPMTODPercentCoverageBarrel )
+	  NPMTODCovered = (AreaRingOD/AreaPMTOD) * WCPMTODPercentCoverageBarrel/100.;
     G4double NPMTODByCellFull = NPMTODCovered/WCBarrelRingNPhi; // NPMT required par cell to achieve ODPercentOverage
     G4double NPMTODByCell = round(NPMTODCovered/WCBarrelRingNPhi); // NPMT required par cell to achieve ODPercentOverage
-	// qqq
     G4double RealODCoverage = NPMTODByCell*AreaPMTOD/AreaCellOD;
     // ------ DEBUG ------ //
     G4cout << G4endl;
@@ -1017,6 +1018,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
     G4cout << "--> RealODCoverage : " << RealODCoverage << G4endl;
     G4cout << "--> WCPMTODPercentCoverageTop : " <<  WCPMTODPercentCoverageTop << G4endl;
     G4cout << "--> WCPMTODPercentCoverageBottom : " <<  WCPMTODPercentCoverageBottom << G4endl;
+    G4cout << "--> WCPMTODPercentCoverageBarrel : " <<  WCPMTODPercentCoverageBarrel << G4endl;
     G4cout << G4endl;
     // ------------------- //
     // The number of PMTs per cell gives a slightly different coverage so the photocoverage

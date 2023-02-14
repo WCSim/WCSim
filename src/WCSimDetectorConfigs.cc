@@ -295,6 +295,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   // the nb of PMTs to put on barrel side according to WCPMTODPercentCoverage
   WCPMTODPercentCoverageTop   = 0; //default 0
   WCPMTODPercentCoverageBottom   = 0; //default 0
+  WCPMTODPercentCoverageBarrel   = 0; //default 0
 
   // Shift between PMTs inside a cell //
   WCODPMTShift = 0.*cm;

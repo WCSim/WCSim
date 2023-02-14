@@ -186,6 +186,7 @@ public:
   void SetWCPMTODPercentCoverage(G4double val){WCPMTODPercentCoverage = val;}
   void SetWCPMTODPercentCoverageTop(G4double val){WCPMTODPercentCoverageTop = val;}
   void SetWCPMTODPercentCoverageBottom(G4double val){WCPMTODPercentCoverageBottom = val;}
+  void SetWCPMTODPercentCoverageBarrel(G4double val){WCPMTODPercentCoverageBarrel = val;}
   void SetWCODPMTShift(G4double val){WCODPMTShift = val;}
   void SetODEdited(G4bool val){odEdited = val;}
   void SetIsWLSFilled(G4bool val){isWLSFilled = val;}
@@ -382,6 +383,7 @@ private:
   G4double WCPMTODPercentCoverage;
   G4double WCPMTODPercentCoverageTop;
   G4double WCPMTODPercentCoverageBottom;
+  G4double WCPMTODPercentCoverageBarrel;
   G4double WCODLateralWaterDepth;
   G4double WCODHeightWaterDepth;
   G4double WCODDeadSpace;
