@@ -1034,6 +1034,12 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
       ComputeWCODPMT((G4int)NPMTODByCell,&WCPMTODperCellHorizontal,&WCPMTODperCellVertical);
     }
 
+	if( (G4int)NPMTODByCell <= 4 ){
+	  WCPMTODperCellHorizontal=0; WCPMTODperCellVertical=0;
+	}
+
+	std::cout << " NPMTODByCell " << NPMTODByCell << " WCPMTODperCellHorizontal " << WCPMTODperCellHorizontal << " WCPMTODperCellVertical " << WCPMTODperCellVertical << std::endl;
+
     G4double horizontalODSpacing = barrelODCellWidth/WCPMTODperCellHorizontal;
     G4double verticalODSpacing   = barrelODCellHeight/WCPMTODperCellVertical;
 
@@ -1948,18 +1954,22 @@ void ComputeWCODPMT(G4int NPMT, G4double *NPMTHorizontal, G4double *NPMTVertical
       *NPMTVertical   = 1;
       break;
     case 1:
+      G4cout << "increase OD coverage" << G4endl;
       *NPMTHorizontal = 1;
       *NPMTVertical   = 1;
       break;
     case 2:
+      G4cout << "increase OD coverage" << G4endl;
       *NPMTHorizontal = 1;
       *NPMTVertical   = 2;
       break;
     case 3:
+      G4cout << "increase OD coverage" << G4endl;
       *NPMTHorizontal = 2;
       *NPMTVertical   = 2;
       break;
     case 4:
+      G4cout << "increase OD coverage" << G4endl;
       *NPMTHorizontal = 2;
       *NPMTVertical   = 2;
       break;

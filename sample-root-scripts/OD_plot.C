@@ -67,6 +67,9 @@ int OD_plot(const char *filename="../wcsim.root")
   maxH=4000.;
   std::cout << " detR " << detR << " detZ " << detZ << std::endl;
   std::cout << " n_pmts_ID " << n_pmts_ID << " n_pmts_OD " << n_pmts_OD << " nevents " << nevent << std::endl;
+  int count_OD_barrel=0;
+  int count_OD_top=0;
+  int count_OD_bottom=0;
 
   TH1F *h_nhits_OD = new TH1F("h_nhits_OD", "nhits; number of hits", n_pmts_OD, 0,n_pmts_OD);
   TH1F *h_hits_time_OD = new TH1F("h_hits_time_OD", "hits_time; hits time [ns]", 100, 1, -1);
@@ -84,7 +87,16 @@ int OD_plot(const char *filename="../wcsim.root")
     double pmt_y = pmt.GetPosition(1);
     double pmt_z = pmt.GetPosition(2);
     OD_PMTS->Fill(pmt_x, pmt_y, pmt_z);
+    h2_z_orientation->Fill(pmt.GetOrientation(2), pmt_z);
+    if( fabs(pmt.GetOrientation(2)) < 0.01 )
+      count_OD_barrel++;
+    else if( pmt.GetOrientation(2) > 0.01 )
+      count_OD_top++;
+    else
+      count_OD_bottom++;
   }
+
+  std::cout << " count_OD_barrel " << count_OD_barrel << " count_OD_top " << count_OD_top << "  count_OD_bottom " << count_OD_bottom << std::endl;
 
   for (long ievent=0; ievent<nevent; ievent++){
     tree->GetEntry(ievent);      
@@ -123,7 +135,6 @@ int OD_plot(const char *filename="../wcsim.root")
       else
 	h_hits_map_bottom_OD->Fill(pmt_x, pmt_y);
       //      std::cout << " hit " << idigi << " t " << wcsimrootcherenkovdigihit->GetT() << " tube " << tube_id << " x " << pmt_x << std::endl;
-      h2_z_orientation->Fill(pmt.GetOrientation(2), pmt_z);
     }
 
     if( has_OD )
