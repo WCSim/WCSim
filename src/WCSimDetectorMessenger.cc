@@ -199,6 +199,18 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTODPercentCoverage->SetDefaultValue(1.);
   PMTODPercentCoverage->SetRange("PMTODPercentCoverage>0");
 
+  PMTODPercentCoverageTop = new G4UIcmdWithADouble("/WCSim/HyperKOD/PMTODPercentCoverageTop", this);
+  PMTODPercentCoverageTop->SetGuidance("Set Top OD photocoverage percentage.");
+  PMTODPercentCoverageTop->SetParameterName("PMTODPercentCoverageTop", true);
+  PMTODPercentCoverageTop->SetDefaultValue(1.);
+  PMTODPercentCoverageTop->SetRange("PMTODPercentCoverageTop>0");
+
+  PMTODPercentCoverageBottom = new G4UIcmdWithADouble("/WCSim/HyperKOD/PMTODPercentCoverageBottom", this);
+  PMTODPercentCoverageBottom->SetGuidance("Set Bottom OD photocoverage percentage.");
+  PMTODPercentCoverageBottom->SetParameterName("PMTODPercentCoverageBottom", true);
+  PMTODPercentCoverageBottom->SetDefaultValue(1.);
+  PMTODPercentCoverageBottom->SetRange("PMTODPercentCoverageBottom>0");
+
   // OD Tyvek sheet thickness
   ODPMTShift = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperKOD/ODPMTShift", this);
   ODPMTShift->SetGuidance("Set a horizontal shift between rows of PMTs OD (unit: m cm mm).");
@@ -440,6 +452,18 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	WCSimDetector->SetODEdited(true);
       G4cout << "Set global photocoverage of the OD " << newValue << " " << G4endl;
       WCSimDetector->SetWCPMTODPercentCoverage(PMTODPercentCoverage->GetNewDoubleValue(newValue));
+    }
+
+    if(command == PMTODPercentCoverageTop){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set Top photocoverage of the OD " << newValue << " " << G4endl;
+      WCSimDetector->SetWCPMTODPercentCoverageTop(PMTODPercentCoverageTop->GetNewDoubleValue(newValue));
+    }
+
+    if(command == PMTODPercentCoverageBottom){
+	WCSimDetector->SetODEdited(true);
+      G4cout << "Set Bottom photocoverage of the OD " << newValue << " " << G4endl;
+      WCSimDetector->SetWCPMTODPercentCoverageBottom(PMTODPercentCoverageBottom->GetNewDoubleValue(newValue));
     }
 
     if(command == ODPMTShift){

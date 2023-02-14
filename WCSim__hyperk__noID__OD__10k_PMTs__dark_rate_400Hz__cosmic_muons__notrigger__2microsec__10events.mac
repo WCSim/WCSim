@@ -40,6 +40,8 @@
 /WCSim/HyperKOD/ODPMTShift 0 m # Offset every other row of OD PMTs by x meters
 #/WCSim/HyperKOD/DeactivateWLS # Uncomment to build the OD without WLS plates
 /WCSim/HyperKOD/BuildODWLSCladding # This places a reflective cladding around each WLS plate
+/WCSim/HyperKOD/PMTODPercentCoverageTop 0 # 
+/WCSim/HyperKOD/PMTODPercentCoverageBottom 0 # 
 
 
 # Another option of HyperK

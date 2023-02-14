@@ -293,6 +293,8 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   // NOTE : If you set WCPMTODperCellHorizontal=0 and WCPMTODperCellVertical=0,
   // then method ComputeWCODPMT() inside ConstructCylinder will automatically compute
   // the nb of PMTs to put on barrel side according to WCPMTODPercentCoverage
+  WCPMTODPercentCoverageTop   = 0; //default 0
+  WCPMTODPercentCoverageBottom   = 0; //default 0
 
   // Shift between PMTs inside a cell //
   WCODPMTShift = 0.*cm;
@@ -301,6 +303,8 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   // WCODCapPMTSpacing = 100*cm;
   WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
   WCODCapEdgeLimit = WCIDDiameter/2.0 - WCODWLSPlatesLength/2;
+  WCODCapPMTSpacingTop  = 0;
+  WCODCapPMTSpacingBottom  = 0;
 
   // TEST combined PMT collection for stacking action
   std::vector<G4String> WCColName;

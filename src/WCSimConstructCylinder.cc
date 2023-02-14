@@ -153,7 +153,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 				     0.*deg,
 				     360.*deg);
 
-  //  std::clog << " qqqqqqqqqqqqqqqqqqqq " << " WCRadius " << WCRadius << " WCBarrel radius " << WCRadius+1.*m << " half height "  << .5*WCLength << std::endl;
+  //  std::clog << " qqqq " << " WCRadius " << WCRadius << " WCBarrel radius " << WCRadius+1.*m << " half height "  << .5*WCLength << std::endl;
   
   G4LogicalVolume* logicWCBarrel = 
     new G4LogicalVolume(solidWCBarrel,
@@ -813,7 +813,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 			  (int)(i*WCPMTperCellVertical+j),
 			  true);                       
 #endif
-
+	
    // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
      // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
 		// this is still the case.
@@ -1003,6 +1003,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
     G4double NPMTODCovered = (AreaRingOD/AreaPMTOD) * WCPMTODPercentCoverage/100.;
     G4double NPMTODByCellFull = NPMTODCovered/WCBarrelRingNPhi; // NPMT required par cell to achieve ODPercentOverage
     G4double NPMTODByCell = round(NPMTODCovered/WCBarrelRingNPhi); // NPMT required par cell to achieve ODPercentOverage
+	// qqq
     G4double RealODCoverage = NPMTODByCell*AreaPMTOD/AreaCellOD;
     // ------ DEBUG ------ //
     G4cout << G4endl;
@@ -1014,12 +1015,18 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
     G4cout << "--> NbPMTODByCell : " << NPMTODByCell << G4endl;
     G4cout << "--> SuggestedODCoverage : " <<  WCPMTODPercentCoverage/100. << G4endl;
     G4cout << "--> RealODCoverage : " << RealODCoverage << G4endl;
+    G4cout << "--> WCPMTODPercentCoverageTop : " <<  WCPMTODPercentCoverageTop << G4endl;
+    G4cout << "--> WCPMTODPercentCoverageBottom : " <<  WCPMTODPercentCoverageBottom << G4endl;
     G4cout << G4endl;
     // ------------------- //
     // The number of PMTs per cell gives a slightly different coverage so the photocoverage
     // parameter must be changed here so the endcaps will have the same photocoverage as the barrel.
     WCPMTODPercentCoverage = RealODCoverage*100;
     WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
+	if( WCPMTODPercentCoverageTop )
+	  WCODCapPMTSpacingTop  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverageTop)/(10.0*WCPMTODRadius))));
+	if( WCPMTODPercentCoverageBottom )
+	  WCODCapPMTSpacingBottom  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverageBottom)/(10.0*WCPMTODRadius))));
 
     if((G4int)WCPMTODperCellHorizontal == 0 && (G4int)WCPMTODperCellVertical == 0){
       ComputeWCODPMT((G4int)NPMTODByCell,&WCPMTODperCellHorizontal,&WCPMTODperCellVertical);
@@ -1030,14 +1037,16 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
     if(WCODPMTShift > barrelODCellWidth/2. - WCPMTODRadius) WCODPMTShift = 0.*cm;
 
+	int count_OD_barrel_cell=0;
+
     for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
       for(G4double j = 0; j < WCPMTODperCellVertical; j++){
         G4ThreeVector Container =  G4ThreeVector(WCODRadius,
                                                  -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                  -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
 
-		//		std::cout << " qqqqqqqqqqqqqqqqqqqqqqqq barrel i " << i << " of " << WCPMTODperCellHorizontal << " j " << j << " of " << WCPMTODperCellVertical << " Container (" << Container.x() << ", " << Container.y()
-		//				  << ", " << Container.z() << ") " << std::endl;
+		//		std::cout << " qqqq barrel i " << i << " of " << WCPMTODperCellHorizontal << " j " << j << " of " << WCPMTODperCellVertical << " Container (" << Container.x() << ", " << Container.y()
+		//				  << ", " << Container.z() << ") r " << sqrt(pow(Container.x(),2) + pow(Container.y(),2)) << std::endl;
 
         G4VPhysicalVolume* physiWCBarrelWLSPlate =
             new G4PVPlacement(WCPMTODRotation,           // its rotation
@@ -1049,10 +1058,13 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                               (int)(i*WCPMTODperCellVertical+j),
                               true);
 
-
+		count_OD_barrel_cell++;
       }
     }
 
+	int count_OD_barrel = count_OD_barrel_cell*WCBarrelRingNPhi*WCBarrelNRings;
+
+	//	std::cout << " count_OD_barrel_cell " << count_OD_barrel_cell << " WCBarrelRingNPhi "<< WCBarrelRingNPhi << " in ring " << WCBarrelRingNPhi*count_OD_barrel_cell << " WCBarrelNRings " << WCBarrelNRings << " in barrel " << count_OD_barrel << std::endl;
 
     //-------------------------------------------------------------
     // Add PMTs in extra Tower if necessary
@@ -1150,14 +1162,59 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
     G4RotationMatrix* WCCapPMTRotation = new G4RotationMatrix;
     WCCapPMTRotation->rotateY(180.*deg);
 
+	int count_OD_top = 0;
+	int count_OD_bottom = 0;
 
     // loop over the cap
-    G4int CapNCell = (G4int)(WCODCapEdgeLimit/WCODCapPMTSpacing) + 2;
-    for ( int i = -CapNCell ; i <  CapNCell; i++) {
-      for (int j = -CapNCell ; j <  CapNCell; j++) {
+    G4int CapNCellTop = (G4int)(WCODCapEdgeLimit/WCODCapPMTSpacing) + 2;
+	if( WCPMTODPercentCoverageTop )
+	  CapNCellTop = (G4int)(WCODCapEdgeLimit/WCODCapPMTSpacingTop) + 2;
+    for ( int i = -CapNCellTop ; i <  CapNCellTop; i++) {
+      for (int j = -CapNCellTop ; j <  CapNCellTop; j++) {
 
         xoffset = i*WCODCapPMTSpacing + WCODCapPMTSpacing*0.5;
         yoffset = j*WCODCapPMTSpacing + WCODCapPMTSpacing*0.5;
+
+		if( WCPMTODPercentCoverageTop ){
+		  xoffset = i*WCODCapPMTSpacingTop + WCODCapPMTSpacingTop*0.5;
+		  yoffset = j*WCODCapPMTSpacingTop + WCODCapPMTSpacingTop*0.5;
+		}
+
+        G4ThreeVector topWLSpos = G4ThreeVector(xoffset,
+                                                yoffset,
+                                                ((WCIDHeight + 2*WCODDeadSpace)/2)+WCODTyvekSheetThickness);
+
+        if (((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTODRadius) < WCODCapEdgeLimit) ) {
+
+
+		  //		  std::cout << " qqqq cap i " << i << " of " << CapNCellTop << " j " << j << " of " << CapNCellTop << " Container (" << topWLSpos.x() << ", " << topWLSpos.y()
+		  //					<< ", " << topWLSpos.z() << ") r " << sqrt(pow(topWLSpos.x(),2) + pow(topWLSpos.y(),2)) << " WCODCapPMTSpacing " << WCODCapPMTSpacing << std::endl;
+
+			G4VPhysicalVolume* physiTopCapWLSPlate =
+					new G4PVPlacement(0,                   // its rotation
+									  topWLSpos,
+									  logicWCODWLSAndPMT,   // its logical volume
+									  "WCTopCapContainerOD",// its name
+									  logicWCBarrel,       // its mother volume
+									  false,               // no boolean operations
+									  icopy);
+
+
+			icopy++;
+			count_OD_top ++;
+        }
+      }
+    }
+
+	icopy = 0;
+    G4int CapNCellBottom = (G4int)(WCODCapEdgeLimit/WCODCapPMTSpacing) + 2;
+	if( WCPMTODPercentCoverageBottom )
+	  CapNCellBottom = (G4int)(WCODCapEdgeLimit/WCODCapPMTSpacingBottom) + 2;
+    for ( int i = -CapNCellBottom ; i <  CapNCellBottom; i++) {
+      for (int j = -CapNCellBottom ; j <  CapNCellBottom; j++) {
+
+        xoffset = i*WCODCapPMTSpacingBottom + WCODCapPMTSpacingBottom*0.5;
+        yoffset = j*WCODCapPMTSpacingBottom + WCODCapPMTSpacingBottom*0.5;
 
         G4ThreeVector topWLSpos = G4ThreeVector(xoffset,
                                                 yoffset,
@@ -1170,18 +1227,8 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
         if (((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTODRadius) < WCODCapEdgeLimit) ) {
 
 
-		  //		  std::cout << " qqqqqqqqqqqqqqqqqqqqqqqq cap i " << i << " of " << CapNCell << " j " << j << " of " << CapNCell << " Container (" << topWLSpos.x() << ", " << topWLSpos.y()
-		  //				  << ", " << topWLSpos.z() << ") " << std::endl;
-
-			G4VPhysicalVolume* physiTopCapWLSPlate =
-					new G4PVPlacement(0,                   // its rotation
-									  topWLSpos,
-									  logicWCODWLSAndPMT,   // its logical volume
-									  "WCTopCapContainerOD",// its name
-									  logicWCBarrel,       // its mother volume
-									  false,               // no boolean operations
-									  icopy);
-
+		  //		  std::cout << " qqqq cap i " << i << " of " << CapNCellBottom << " j " << j << " of " << CapNCellBottom << " Container (" << topWLSpos.x() << ", " << topWLSpos.y()
+		  //					<< ", " << topWLSpos.z() << ") r " << sqrt(pow(topWLSpos.x(),2) + pow(topWLSpos.y(),2)) << " WCODCapPMTSpacing " << WCODCapPMTSpacing << std::endl;
 
 			G4VPhysicalVolume* physiBottomCapWLSPlate =
 					new G4PVPlacement(WCCapPMTRotation,                             // its rotation
@@ -1193,10 +1240,12 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 									  icopy);
 
 			icopy++;
-
+			count_OD_bottom ++;
         }
       }
     }
+
+	std::cout << " count_OD_barrel " << count_OD_barrel << " count_OD_top " << count_OD_top << " count_OD_bottom " << count_OD_bottom << " total " << count_OD_barrel + count_OD_top + count_OD_bottom << std::endl;
 
     G4cout << "#### OD ####" << "\n";
     G4cout << " total on cap: " << icopy << "\n";
@@ -1795,6 +1844,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
     G4double horizontalODSpacing = barrelODCellWidth/WCPMTODperCellHorizontal;
     G4double verticalODSpacing   = barrelODCellHeight / WCPMTODperCellVertical;
 
+	int countagain_OD_barrel=0;
+
     for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
       for(G4double j = 0; j < WCPMTODperCellVertical; j++){
         G4ThreeVector Container =  G4ThreeVector(WCODRadius,
@@ -1813,6 +1864,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                               true);
 
 
+		countagain_OD_barrel++;
 
       }
     }

@@ -184,6 +184,8 @@ public:
   void SetWCPMTODperCellHorizontal(G4double val){WCPMTODperCellHorizontal = val;}
   void SetWCPMTODperCellVertical(G4double val){WCPMTODperCellVertical = val;}
   void SetWCPMTODPercentCoverage(G4double val){WCPMTODPercentCoverage = val;}
+  void SetWCPMTODPercentCoverageTop(G4double val){WCPMTODPercentCoverageTop = val;}
+  void SetWCPMTODPercentCoverageBottom(G4double val){WCPMTODPercentCoverageBottom = val;}
   void SetWCODPMTShift(G4double val){WCODPMTShift = val;}
   void SetODEdited(G4bool val){odEdited = val;}
   void SetIsWLSFilled(G4bool val){isWLSFilled = val;}
@@ -378,6 +380,8 @@ private:
   G4double WCPMTODperCellHorizontal;
   G4double WCPMTODperCellVertical;
   G4double WCPMTODPercentCoverage;
+  G4double WCPMTODPercentCoverageTop;
+  G4double WCPMTODPercentCoverageBottom;
   G4double WCODLateralWaterDepth;
   G4double WCODHeightWaterDepth;
   G4double WCODDeadSpace;
@@ -386,6 +390,8 @@ private:
   G4double WCODWLSPlatesLength;
 
   G4double WCODCapPMTSpacing;
+  G4double WCODCapPMTSpacingTop;
+  G4double WCODCapPMTSpacingBottom;
   G4double WCODCapEdgeLimit;
 
   G4double WCODPMTShift;
