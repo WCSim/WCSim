@@ -1221,8 +1221,13 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
     for ( int i = -CapNCellBottom ; i <  CapNCellBottom; i++) {
       for (int j = -CapNCellBottom ; j <  CapNCellBottom; j++) {
 
-        xoffset = i*WCODCapPMTSpacingBottom + WCODCapPMTSpacingBottom*0.5;
-        yoffset = j*WCODCapPMTSpacingBottom + WCODCapPMTSpacingBottom*0.5;
+        xoffset = i*WCODCapPMTSpacing + WCODCapPMTSpacing*0.5;
+        yoffset = j*WCODCapPMTSpacing + WCODCapPMTSpacing*0.5;
+
+		if( WCPMTODPercentCoverageBottom ){
+		  xoffset = i*WCODCapPMTSpacingBottom + WCODCapPMTSpacingBottom*0.5;
+		  yoffset = j*WCODCapPMTSpacingBottom + WCODCapPMTSpacingBottom*0.5;
+		}
 
         G4ThreeVector topWLSpos = G4ThreeVector(xoffset,
                                                 yoffset,
