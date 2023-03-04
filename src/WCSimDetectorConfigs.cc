@@ -37,7 +37,7 @@ void WCSimDetectorConstruction::SetSuperKGeometry()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
+  hybrid = false;
   InitSinglePMT();
 }
 
@@ -64,7 +64,7 @@ void WCSimDetectorConstruction::SuperK_20inchPMT_20perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
+  hybrid = false;
   InitSinglePMT();
 }
 
@@ -91,7 +91,7 @@ void WCSimDetectorConstruction::SuperK_20inchBandL_20perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
+  hybrid = false;
   InitSinglePMT();
 }
 
@@ -118,7 +118,7 @@ void WCSimDetectorConstruction::SuperK_12inchBandL_15perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
+  hybrid = false;
   InitSinglePMT();
 }
 
@@ -145,7 +145,7 @@ void WCSimDetectorConstruction::SuperK_20inchBandL_14perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
+  hybrid = false;
   InitSinglePMT();
 }
 
@@ -170,7 +170,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_14perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
+  hybrid = false;
   InitSinglePMT();
 }
 
@@ -195,7 +195,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_40perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
+  hybrid = false;
   InitSinglePMT();
 }
 
@@ -222,7 +222,7 @@ void WCSimDetectorConstruction::Cylinder_12inchHPD_15perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
+  hybrid = false;
   InitSinglePMT();
 }
 
@@ -247,6 +247,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  hybrid = false;
 }
 
 //B. Quilain, HK with 10'' PMTs
@@ -272,6 +273,7 @@ void WCSimDetectorConstruction::SetHyperK_10inchGeometry()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  hybrid = false;
 }
 
 //B. Quilain, HK with 8'' PMTs
@@ -297,6 +299,7 @@ void WCSimDetectorConstruction::SetHyperK_8inchGeometry()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  hybrid = false;
 }
 
 //B. Quilain, HK with 3'' PMTs
@@ -322,7 +325,7 @@ void WCSimDetectorConstruction::SetHyperK_3inchGeometry()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
+  hybrid = false;
 }
 
 void WCSimDetectorConstruction::SetHyperK20pcWithODGeometry()
@@ -357,7 +360,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
+  hybrid = false;
   //////////////////////////////////////
   // Cave Parameters --- Beta version //
   //////////////////////////////////////
@@ -437,6 +440,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry_20perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  hybrid = false;
 }
 // B.Quilain, HK with mPMTs
 // These are defaults that can be altered through the macros
@@ -759,6 +763,7 @@ void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()
   innerPMT_BotN = 0;
 
   isEggShapedHyperK = true; // Tell DetectorConstruction to build egg-shaped HK geometry
+  hybrid = false;
 
   MatchWCSimAndEggShapedHyperK();
   InitSinglePMT();
@@ -808,6 +813,7 @@ void WCSimDetectorConstruction::SetEggShapedHyperKGeometry_withHPD()
   innerPMT_BotN = 0;
 
   isEggShapedHyperK = true; // Tell DetectorConstruction to build egg-shaped HK geometry
+  hybrid = false;
 
   MatchWCSimAndEggShapedHyperK();
   InitSinglePMT();
@@ -852,6 +858,7 @@ void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double /*
     WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
     WCBlackSheetThickness = 2.0*cm;
     WCAddGd               = false;
+	hybrid = false;
 
 	InitSinglePMT();
 }
@@ -913,6 +920,7 @@ void WCSimDetectorConstruction::SetNuPrism_mPMTGeometry()
     WCCapEdgeLimit        = 3.3*m; 
     WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
     WCAddGd               = false;
+	hybrid = false;
 }
 
 // WCTE with mPMTs (M.Shinoki)
@@ -964,6 +972,7 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_mPMTGeometry()
     WCCapEdgeLimit        = 1.551*m; 
     WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
     WCAddGd               = false;
+	hybrid = false;
 }
 
 // Short version of NuPRISM with mPMTs: 6 m tall ID
@@ -1018,6 +1027,7 @@ void WCSimDetectorConstruction::SetNuPrismShort_mPMTGeometry()
     WCCapEdgeLimit        = 3.3*m; 
     WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
     WCAddGd               = false;
+	hybrid = false;
 }
 
 void WCSimDetectorConstruction::SetTestSinglemPMTGeometry()
@@ -1067,6 +1077,7 @@ void WCSimDetectorConstruction::SetTestSinglemPMTGeometry()
   WCCapPMTSpacing          = WCIDDiameter*2.0;
   WCBlackSheetThickness    = 2.0*cm;
   WCAddGd                  = false;
+  hybrid = false;
 }
 
 // Note: using vessel_radius (mPMT radius) instead of PMT radius for detector construction. Important!
@@ -1120,8 +1131,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - 0.254*m;//outer_module_radius;//WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
-
+  hybrid = false;
 }
 
 // Note: using vessel_radius (mPMT radius) instead of PMT radius for detector construction. Important!
@@ -1169,8 +1179,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - 0.254*m;//WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
-
+  hybrid = false;
 }
 
 // Uniform distribution of 3" PMTs
@@ -1195,6 +1204,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inch_14perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  hybrid = false;
 
   InitSinglePMT();
 }
@@ -1220,6 +1230,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inch_40perCent()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
+  hybrid = false;
 
   InitSinglePMT();
 }
