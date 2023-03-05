@@ -34,6 +34,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "HyperK_20perCent\n"
 			  "HyperKWithOD\n"
 			  "HyperK20pcWithOD\n"
+ 			  "HyperK_HybridmPMT_WithOD\n"
 			  "EggShapedHyperK\n"
 			  "EggShapedHyperK_withHPD\n"
                           "nuPRISM\n"
@@ -66,6 +67,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			   "HyperK_20perCent "
 			   "HyperKWithOD "
 			   "HyperK20pcWithOD "
+			   "HyperK_HybridmPMT_WithOD "
 			   "EggShapedHyperK "
 			   "EggShapedHyperK_withHPD "
                            "nuPRISM "
@@ -592,7 +594,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		} else if ( newValue == "HyperK_mPMT") {
 			WCSimDetector->SetHyperK_mPMTGeometry();
 		} else if ( newValue == "HyperK_HybridmPMT") {
-			WCSimDetector->SetHyperK_HybridmPMTGeometry();
+		  WCSimDetector->SetHyperK_HybridmPMTGeometry();
 		} else if ( newValue == "HyperK_HybridmPMT10PC") {
 			WCSimDetector->SetHyperK_HybridmPMT10PCGeometry();
 		} else if ( newValue == "HyperK_HybridFake") {
@@ -604,6 +606,9 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		  WCSimDetector->SetODEdited(false);
 		} else if ( newValue == "HyperK20pcWithOD" ){
 		  WCSimDetector->SetHyperK20pcWithODGeometry();
+		  WCSimDetector->SetODEdited(false);
+		} else if ( newValue == "HyperK_HybridmPMT_WithOD") {
+		  WCSimDetector->SetHyperK_HybridmPMT_WithOD_Geometry();
 		  WCSimDetector->SetODEdited(false);
 		} else if ( newValue == "EggShapedHyperK") {
 		  WCSimDetector->SetIsEggShapedHyperK(true);
@@ -634,8 +639,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		} else if ( newValue == "nuPRISMShort_mPMT") {
 		  WCSimDetector->SetIsNuPrism(true);
 		  WCSimDetector->SetNuPrismShort_mPMTGeometry();
-		} else
-		  G4cout << "That geometry choice is not defined!" << G4endl;
+		} else {
+		  G4cerr << "That geometry choice is not defined!" << G4endl;
+		  exit(-1);
+		}
 		WCSimDetector->DumpDetectorConfigInfo();
 	}
 
