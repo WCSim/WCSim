@@ -8,7 +8,6 @@
 #include "TProcessID.h"
 #include <string>
 #include <vector>
-#include <iostream>
 #include <typeinfo>
 
 #include <TStopwatch.h>

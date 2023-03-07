@@ -17,7 +17,6 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
-#include <iostream>
 #include <iterator>
 #include <TFile.h>
 
@@ -608,7 +607,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4ThreeVector dir  = P.unit();
       //G4double E         = std::sqrt((P.dot(P)));
       G4double E         = std::sqrt((P.dot(P))+(mass*mass));
-      //std::cout << "Energy " << E << " eV " << std::endl;
+      //G4cout << "Energy " << E << " eV " << G4endl;
 
 
       //mode            = LASER; //actually could also be particle gun here. Gps and laser will be separate soon!!
@@ -720,7 +719,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4ThreeVector dir  = P.unit();
       //G4double E         = std::sqrt((P.dot(P)));
       G4double E         = std::sqrt((P.dot(P))+(mass*mass));
-      //std::cout << "Energy " << E << " eV " << std::endl;
+      //G4cout << "Energy " << E << " eV " << G4endl;
 
 
       //mode            = LASER; //actually could also be particle gun here. Gps and laser will be separate soon!!

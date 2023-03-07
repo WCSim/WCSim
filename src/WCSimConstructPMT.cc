@@ -805,7 +805,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   G4double PMTHolderR[2] = {plate_diagonal, plate_diagonal};
   G4double PMTHolderr[2] = {0,0};
 
-  std::cout << " qqqqqqqqqqqqqqqqqqqqqqqqqq plate_diagonal " << plate_diagonal << " expose " << expose << std::endl;
+  G4cout << " qqqqqqqqqqqqqqqqqqqqqqqqqq plate_diagonal " << plate_diagonal << " expose " << expose << G4endl;
 
   G4Polycone* container =
    new G4Polycone("rectangleWLS",

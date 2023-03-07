@@ -3,7 +3,6 @@
 #ifndef NRooTrackerVtx_hh_seen
 #define NRooTrackerVtx_hh_seen
 
-#include <iostream>
 #include <vector>
 
 #include "TObject.h"

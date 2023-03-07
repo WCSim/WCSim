@@ -280,7 +280,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 
   if(isNuPrism) position.setY(WCIDVerticalPosition);
 
-  std::cout << "position Y = " << position.y() << std::endl;
+  G4cout << "position Y = " << position.y() << G4endl;
 
 
   G4double expHallLength = 3.*WCLength; //jl145 - extra space to simulate cosmic muons more easily

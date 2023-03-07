@@ -86,7 +86,7 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   WCSimWCPMT* WCDMPMT2;
   WCSimWCAddDarkNoise* WCDNM2;
 #ifdef DEBUG
-  std::cout<<"Debug B.Q: hybrid PMT = "<<myDetector->GetHybridPMT()<<", hybrid geom, so construct digitizer for 2 PMT types"<<std::endl;
+  G4cout<<"Debug B.Q: hybrid PMT = "<<myDetector->GetHybridPMT()<<", hybrid geom, so construct digitizer for 2 PMT types"<<G4endl;
 #endif
   //if(myDetector->GetHybridPMT()){
     WCDMPMT2 = new WCSimWCPMT( "WCReadoutPMT2", myDetector,"tankPMT2");
@@ -420,7 +420,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 #endif
 
 #ifdef DEBUG
-  G4cout << "Convert separated hits in one PMT to a single hit for first PMT type" << std::endl;
+  G4cout << "Convert separated hits in one PMT to a single hit for first PMT type" << G4endl;
 #endif
   //Convert the hits to PMT pulse
   WCDMPMT->SetRelativeDigitizedHitTime(RelativeHitTime);
@@ -438,7 +438,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     (WCSimWCAddDarkNoise*)DMman->FindDigitizerModule("WCDarkNoise");
 
 #ifdef DEBUG
-  G4cout << "Add Dark Hits first PMT" << std::endl;
+  G4cout << "Add Dark Hits first PMT" << G4endl;
 #endif
 
   //Add the dark noise
@@ -452,7 +452,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     (WCSimWCDigitizerBase*)DMman->FindDigitizerModule("WCReadoutDigits");
 
 #ifdef DEBUG
-  G4cout << "Digitize hits first PMT" << std::endl;
+  G4cout << "Digitize hits first PMT" << G4endl;
 #endif
   //Digitize the hits
   WCDM->Digitize();
@@ -460,7 +460,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   //
   // Finally, apply the trigger
 #ifdef DEBUG
-  G4cout << "Trigger for first PMT type" << std::endl;
+  G4cout << "Trigger for first PMT type" << G4endl;
 #endif
 
   //Get a pointer to the WC Trigger Module
@@ -470,7 +470,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   //tell it the dark noise rate (for calculating the average dark occupancy -> can adjust the NDigits threshold)
   WCTM->SetDarkRate(WCDNM->GetDarkRate());
 #ifdef DEBUG
-  G4cout << "B.Q" << std::endl;
+  G4cout << "B.Q" << G4endl;
 #endif
 
   //Apply the trigger
@@ -478,7 +478,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   // Also throws away digits not contained in an trigger gate
   WCTM->Digitize();
 #ifdef DEBUG
-  G4cout << "Trigger for first PMT type is over" << std::endl;
+  G4cout << "Trigger for first PMT type is over" << G4endl;
 #endif
 
 #ifdef TIME_DAQ_STEPS
@@ -544,7 +544,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 	 (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT2");
 
 #ifdef DEBUG
-       std::cout<<"Debug B.Q: tmp"<<std::endl;
+       G4cout<<"Debug B.Q: tmp"<<G4endl;
 #endif
 
        // new MFechner, aug 2006
@@ -976,7 +976,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     runAction->incrementEventsGenerated(); // Increment after filling branches
 
 #ifdef DEBUG
-    std::cout << "B.Q: open the tree" << std::endl;
+    G4cout << "B.Q: open the tree" << G4endl;
 #endif
     TTree* tree = GetRunAction()->GetTree();
     tree->SetEntries(GetRunAction()->GetNumberOfEventsGenerated());
@@ -2063,7 +2063,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	      assert(vec_pe.size() == vec_digicomp.size());
 	      for(unsigned int iv = 0; iv < vec_pe.size(); iv++) {
 #ifdef SAVE_DIGITS_VERBOSE
-		std::cout << iv << std::endl;
+		G4cout << iv << G4endl;
 		if(tubeID < NPMTS_VERBOSE) {
 		  G4cout << "Adding digit " << iv
 			 << " for PMT " << tubeID
@@ -2114,8 +2114,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   for (int i = 0 ; i < wcsimrootsuperevent->GetNumberOfEvents(); i++) {
     wcsimrootevent = wcsimrootsuperevent->GetTrigger(i);
     int evtID=wcsimrootevent->GetHeader()->GetEvtNum();
-    if(evtID%100==0) std::cout << ">>>Root event "
-			    <<std::setw(5)<<evtID<<std::endl;
+    if(evtID%100==0) G4cout << ">>>Root event "
+			    <<std::setw(5)<<evtID<<G4endl;
     //   if (WCDC){
     // G4cout <<"WC digi:"<<std::setw(4)<<wcsimrootevent->GetNcherenkovdigihits()<<"  ";
     // G4cout <<"WC digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";
@@ -2453,7 +2453,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
   // nGates == 0: I still want to keep untriggered event
   if(ngates == 0){
     GetRunAction()->SetEventHeaderNew(0,event_id+1,1);   //ToDo: run
-    //std::cout << event_id << std::endl; //TF debug
+    //G4cout << event_id << G4endl; //TF debug
     //General case for a vector triggerInfo:
     //GetRunAction()->SetTriggerInfoNew(kTriggerUndefined, std::vector<G4double>(),0.,0.);
 
@@ -2479,7 +2479,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
     //WCSim (FillRootEvent) counts its sub-events from 1 to nGate, while counting events from 0 to n-1
     //Be consistent and start both from 1 here:
     GetRunAction()->SetEventHeaderNew(0,event_id+1,index+1);   //ToDo: run
-    std::cout << event_id << std::endl;
+    G4cout << event_id << G4endl;
 
     //First Trigger details of THIS subevent (index+1)
     // Fixed 950ns ? Not a setting in WCTrigger?
@@ -2553,7 +2553,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
       NRooTrackerVtx *thisRooTracker = GetRunAction()->GetMyRooTracker();
       generatorAction->CopyRootrackerVertex(thisRooTracker);
 
-      std::cout << "Test: " << thisRooTracker->NuParentDecMode << std::endl;
+      G4cout << "Test: " << thisRooTracker->NuParentDecMode << G4endl;
       GetRunAction()->GetFlatRooTrackerTree()->Fill(); //ok
     }
 

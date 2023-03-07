@@ -442,7 +442,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
 
   geoFile.close();
 
-  std::cout << "Geofile written" << std::endl;
+  G4cout << "Geofile written" << G4endl;
 } 
 
 // Code for traversing the geometry tree.  This code is very general you pass

@@ -95,10 +95,10 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 
     /*
     if( (thePrePV->GetName().find("pmt") != std::string::npos)){
-      std::cout << "Photon between " << thePrePV->GetName() <<
+      G4cout << "Photon between " << thePrePV->GetName() <<
 	" and " << thePostPV->GetName() << " because " << 
 	thePostPoint->GetProcessDefinedStep()->GetProcessName() << 
-	" and boundary status: " <<  boundary->GetStatus() << " with track status " << track->GetTrackStatus() << std::endl;
+	" and boundary status: " <<  boundary->GetStatus() << " with track status " << track->GetTrackStatus() << G4endl;
       
 	}*/
 
@@ -106,9 +106,9 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 
     if(track->GetTrackStatus() == fStopAndKill){
       if(boundary->GetStatus() == NoRINDEX){
-	std::cout << "Optical photon is killed because of missing refractive index in either " << thePrePoint->GetMaterial()->GetName() << " or " << thePostPoint->GetMaterial()->GetName() <<
+	G4cout << "Optical photon is killed because of missing refractive index in either " << thePrePoint->GetMaterial()->GetName() << " or " << thePostPoint->GetMaterial()->GetName() <<
 	  " (transition from " << thePrePV->GetName() << " to " << thePostPV->GetName() << ")" <<
-	  " : could also be caused by Overlaps with volumes with logicalBoundaries." << std::endl;
+	  " : could also be caused by Overlaps with volumes with logicalBoundaries." << G4endl;
 	
       }
       /* Debug :  
@@ -117,11 +117,11 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 	
 	if(boundary->GetStatus() != StepTooSmall){
 	  //	if(thePostPoint->GetProcessDefinedStep()->GetProcessName() != "Transportation")
-	  std::cout << "Killed photon between " << thePrePV->GetName() <<
+	  G4cout << "Killed photon between " << thePrePV->GetName() <<
 	    " and " << thePostPV->GetName() << " because " << 
 	    thePostPoint->GetProcessDefinedStep()->GetProcessName() << 
 	    " and boundary status: " <<  boundary->GetStatus() <<
-	    std::endl;
+	    G4endl;
 	}
 	}	*/
       

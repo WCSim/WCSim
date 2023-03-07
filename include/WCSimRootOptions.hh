@@ -12,7 +12,6 @@
 #include "TClonesArray.h"
 #include <string>
 #include <map>
-#include <iostream>
 
 #include "WCSimEnumerations.hh"
 

@@ -224,7 +224,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 									 0.*deg,
 									 360.*deg);
 
-  //  std::clog << " qqqqqqqqqqqqqqqqqqqq " << " WCRadius " << WCRadius << " WCBarrel radius " << WCRadius+1.*m << " half height "  << .5*WCLength << std::endl;
+  //  G4cout << " qqqqqqqqqqqqqqqqqqqq " << " WCRadius " << WCRadius << " WCBarrel radius " << WCRadius+1.*m << " half height "  << .5*WCLength << G4endl;
   
   G4LogicalVolume* logicWCBarrel = 
     new G4LogicalVolume(solidWCBarrel,
@@ -1210,8 +1210,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
                                                  -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                  -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
 
-		//		std::cout << " qqqqqqqqqqqqqqqqqqqqqqqq barrel i " << i << " of " << WCPMTODperCellHorizontal << " j " << j << " of " << WCPMTODperCellVertical << " Container (" << Container.x() << ", " << Container.y()
-		//				  << ", " << Container.z() << ") " << std::endl;
+		//		G4cout << " qqqqqqqqqqqqqqqqqqqqqqqq barrel i " << i << " of " << WCPMTODperCellHorizontal << " j " << j << " of " << WCPMTODperCellVertical << " Container (" << Container.x() << ", " << Container.y()
+		//				  << ", " << Container.z() << ") " << G4endl;
 
         //G4VPhysicalVolume* physiWCBarrelWLSPlate =
 		new G4PVPlacement(WCPMTODRotation,           // its rotation
@@ -1348,8 +1348,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
         if (((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTODRadius) < WCODCapEdgeLimit) ) {
 
 
-		  //		  std::cout << " qqqqqqqqqqqqqqqqqqqqqqqq cap i " << i << " of " << CapNCell << " j " << j << " of " << CapNCell << " Container (" << topWLSpos.x() << ", " << topWLSpos.y()
-		  //				  << ", " << topWLSpos.z() << ") " << std::endl;
+		  //		  G4cout << " qqqqqqqqqqqqqqqqqqqqqqqq cap i " << i << " of " << CapNCell << " j " << j << " of " << CapNCell << " Container (" << topWLSpos.x() << ", " << topWLSpos.y()
+		  //				  << ", " << topWLSpos.z() << ") " << G4endl;
 
 		  //G4VPhysicalVolume* physiTopCapWLSPlate =
 			new G4PVPlacement(0,                   // its rotation

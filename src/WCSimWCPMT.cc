@@ -191,7 +191,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       Double_t hit_pos[3];
       Double_t hit_rot[3];
 #ifdef DEBUG
-	  std::cout << "tube : " << i << " (ID=" << tube << ")" << std::endl; //TD debug
+	  G4cout << "tube : " << i << " (ID=" << tube << ")" << G4endl; //TD debug
 #endif
       
       WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( tube -1 );
@@ -225,11 +225,11 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	  fFirst_Time = time_true;
 	}
 	time_PMT  = time_true - fFirst_Time; //currently no PMT time smearing applied
-	//std::cout<<"First time = "<<fFirst_Time<<", time true = "<<time_true<<", PMT time = "<<time_PMT<<std::endl;
+	//G4cout<<"First time = "<<fFirst_Time<<", time true = "<<time_true<<", PMT time = "<<time_PMT<<G4endl;
 
 	    peSmeared = rn1pe();
 #ifdef DEBUG
-	    std::cout << "tube : " << i << " (ID=" << tube << ")" << " hit in tube : "<< ip << " (time=" << time_true << "ns)"  << " pe value : " << peSmeared << std::endl; //TD debug
+	    G4cout << "tube : " << i << " (ID=" << tube << ")" << " hit in tube : "<< ip << " (time=" << time_true << "ns)"  << " pe value : " << peSmeared << G4endl; //TD debug
 #endif
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
 
@@ -283,11 +283,11 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 
 	  } // Loop over hits in each PMT	
 #ifdef DEBUG
-	  std::cout << "tube : " << i << " (ID=" << tube << ")" << " total digitized pe in : " << QinTOT << std::endl; //TD debug
+	  G4cout << "tube : " << i << " (ID=" << tube << ")" << " total digitized pe in : " << QinTOT << G4endl; //TD debug
 #endif
     }// Loop over PMTs
 #ifdef DEBUG
-  std::cout << std::endl << std::endl << "The maximum amount of pe stored by a PMT is : " << maxTotalPe << std::endl << std::endl;
+  G4cout << G4endl << G4endl << "The maximum amount of pe stored by a PMT is : " << maxTotalPe << G4endl << G4endl;
 #endif
 }
 

@@ -40,7 +40,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
   G4bool showme = true;
 
-  std::cout<<"TEMP: Collection Name = "<<CollectionName<<std::endl;
+  G4cout<<"TEMP: Collection Name = "<<CollectionName<<G4endl;
   //WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
   //G4double 
   // For default SK-style without cover.
@@ -142,7 +142,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 				 solidCutOffTubs);
    
 
-    //std::cout << "DEBUG MODE " << vessel_radius_curv - vessel_cap_height << " " <<vessel_cap_height << std::endl;
+    //G4cout << "DEBUG MODE " << vessel_radius_curv - vessel_cap_height << " " <<vessel_cap_height << G4endl;
  
     //cap_position_offset = -1.0* (vessel_radius_curv - vessel_cap_height); //lower position of cap by the piece that we cut off.
 
@@ -305,8 +305,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   G4double outerR_container = sqrt( outerR_curv_container*outerR_curv_container -
 				    (mPMT_vessel_radius_curv - mPMT_vessel_cap_height)*(mPMT_vessel_radius_curv - mPMT_vessel_cap_height) );
   
-  //std::cout << "Inner container radii: Rcurv " << innerR_curv_container << ", R: " << innerR_container << std::endl;
-  //std::cout << "Outer container radii: Rcurv " << outerR_curv_container << ", R: " << outerR_container << std::endl;
+  //G4cout << "Inner container radii: Rcurv " << innerR_curv_container << ", R: " << innerR_container << G4endl;
+  //G4cout << "Outer container radii: Rcurv " << outerR_curv_container << ", R: " << outerR_container << G4endl;
 
   if(addPMTBase || nIDPMTs == 1)
     innerR_container = 0;
@@ -733,7 +733,7 @@ G4int WCSimDetectorConstruction::FillCircles(void){
   }
     
   //for(int i = 0; i < vNiC.size(); i++) {
-  // std::cout << "test " << vNiC[i] << " " << vAlpha[i]/CLHEP::deg << " " << vEta[i]/CLHEP::deg << std::endl;
+  // G4cout << "test " << vNiC[i] << " " << vAlpha[i]/CLHEP::deg << " " << vEta[i]/CLHEP::deg << G4endl;
   //}
 
   /// NEW: optionally add an azimuth offset line for the first PMT of each circle (by default 0)
@@ -761,7 +761,7 @@ G4int WCSimDetectorConstruction::FillCircles(void){
     }
   }
 
-  //std::cout << "Test: vNic: " << vNiC.size() << " vAlpha: " << vAlpha.size() << " vCircle: " << vCircle.size() << std::endl;
+  //G4cout << "Test: vNic: " << vNiC.size() << " vAlpha: " << vAlpha.size() << " vCircle: " << vCircle.size() << G4endl;
 
   return TotPmt; 
 }
@@ -814,7 +814,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
 	vAlpha.push_back(alphaNext);
 	vNiC.push_back(NiCNext);
 	G4cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << G4endl;
-	std::cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << std::endl;
+	G4cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << G4endl;
 	NoCircle++;
       }
       alphaPrev = alphaNext;
@@ -827,7 +827,7 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
     vAlpha.push_back(alphaNext);
     vNiC.push_back(NiCNext);
     G4cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << G4endl;
-    std::cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << std::endl;
+    G4cout << "Circle n. " << NoCircle << " - Number of PMTs: " << vNiC[NoCircle-1] << " - alpha: " << vAlpha[NoCircle-1]*180/3.141592 << " - eta " << fEta*180/3.141592 << G4endl;
     NoCircle++;  
   }
   
@@ -842,10 +842,10 @@ G4int WCSimDetectorConstruction::CountPMT(G4int NoPmt)
     }
   }
  
-  std::cout << "Total number of pmt: " << TotPmt << std::endl;
-  std::cout << "Percentage of covered hemispherical surface = " << TotPmt*(1-std::cos(fEta))*100 << "%" << std::endl;
-  std::cout << "Percentage of covered hemispherical surface above theta_min = " << TotPmt*(1-std::cos(fEta))*100/(1-std::cos(CLHEP::pi/2-theta_min)) << "%" << std::endl;
-  std::cout << "Test: vNic: " << vNiC.size() << " vAlpha: " << vAlpha.size() << " vCircle: " << vCircle.size() << std::endl;
+  G4cout << "Total number of pmt: " << TotPmt << G4endl;
+  G4cout << "Percentage of covered hemispherical surface = " << TotPmt*(1-std::cos(fEta))*100 << "%" << G4endl;
+  G4cout << "Percentage of covered hemispherical surface above theta_min = " << TotPmt*(1-std::cos(fEta))*100/(1-std::cos(CLHEP::pi/2-theta_min)) << "%" << G4endl;
+  G4cout << "Test: vNic: " << vNiC.size() << " vAlpha: " << vAlpha.size() << " vCircle: " << vCircle.size() << G4endl;
 
   return TotPmt;
 }

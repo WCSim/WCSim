@@ -409,7 +409,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
     // Get from the tuning parameters
     ABWFF = WCSimTuningParams->GetAbwff();
-    std::cout<<"ABWFF : "<<ABWFF<<std::endl;
+    G4cout<<"ABWFF : "<<ABWFF<<G4endl;
     
     //T. Akiri: Values from Skdetsim 
     G4double ABSORPTION_water[NUMENTRIES_water] =

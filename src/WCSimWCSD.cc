@@ -181,7 +181,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   // Debug:
   //G4cout << "================================================" << G4endl;
-  //G4cout << tubeTag.str() << std::endl;
+  //G4cout << tubeTag.str() << G4endl;
   //G4cout << "================================================" << G4endl;
 
   // Get the tube ID from the tubeTag
@@ -292,7 +292,7 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
 
     G4cout << "There are " << numHits << " hits in the "<<detectorElement<<" : "<< G4endl;
     for (G4int i=0; i < numHits; i++) {
-      G4cout<<"ihit ID = "<<i<<std::endl;
+      G4cout<<"ihit ID = "<<i<<G4endl;
       (*hitsCollection)[i]->Print();
     }
 
@@ -308,14 +308,14 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent* HCE)
 
       G4cout << "There are " << numHits2 << " tubes hit in the WC: " << G4endl;
       for (G4int i=0; i < numHits2; i++){
-	G4cout<<"ihit ID = "<<i<<std::endl;
+	G4cout<<"ihit ID = "<<i<<G4endl;
 	(*hitsCollection2)[i]->Print();
       }
     }
       /*
     {
       if(abs((*hitsCollection)[i]->GetTubeID() - 1584)  < 5){
-	  std::cout << (*hitsCollection)[i]->GetTubeID() << std::endl;
+	  G4cout << (*hitsCollection)[i]->GetTubeID() << G4endl;
 	  (*hitsCollection)[i]->Print();
       }
       }*/
