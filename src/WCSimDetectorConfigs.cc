@@ -149,9 +149,26 @@ void WCSimDetectorConstruction::SuperK_20inchBandL_14perCent()
   InitSinglePMT();
 }
 
+void HKGeometryNoLongerUsed(G4String & DetectorName)
+{
+  G4cerr << "**********************************" << G4endl
+		 << DetectorName << " is an obsolete HK geometry" << G4endl
+		 << "You should use one of:" << G4endl
+		 << " HyperK_HybridmPMT_WithOD" << G4endl
+		 << " HyperK_HybridmPMT" << G4endl
+		 << "If you really want to use " << DetectorName
+		 << " then you can comment out the call to HKGeometryNoLongerUsed() in the method "
+		 << "WCSimDetectorConstruction::" << DetectorName << "()"
+		 << " in the file $WCSIMDIR/src/WCSimDetectorConfigs.cc and recompile, "
+		 << "but be careful if comparing to official HK geometries that the number of PMTs are consistent" << G4endl
+		 << "Exiting..." << G4endl;
+  exit(-1);
+}
+
 void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_14perCent()
 { 
   WCDetectorName = "Cylinder_60x74_20inchBandL_14perCent()";
+  HKGeometryNoLongerUsed(WCDetectorName);
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
   WCPMTName           = PMT->GetPMTName();
@@ -177,6 +194,7 @@ void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_14perCent()
 void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_40perCent()
 { 
   WCDetectorName = "Cylinder_60x74_20inchBandL_40perCent";
+  HKGeometryNoLongerUsed(WCDetectorName);
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
   WCPMTName           = PMT->GetPMTName();
@@ -229,6 +247,7 @@ void WCSimDetectorConstruction::Cylinder_12inchHPD_15perCent()
 void WCSimDetectorConstruction::SetHyperKGeometry()
 {
   WCDetectorName = "HyperK";
+  HKGeometryNoLongerUsed(WCDetectorName);
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
   WCPMTName           = PMT->GetPMTName();
@@ -254,6 +273,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
 void WCSimDetectorConstruction::SetHyperK_10inchGeometry()
 {
   WCDetectorName = "HyperK_10inch";
+  HKGeometryNoLongerUsed(WCDetectorName);
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCSimPMTObject * PMT = CreatePMTObject("PMT10inch", WCIDCollectionName);
 
@@ -280,6 +300,7 @@ void WCSimDetectorConstruction::SetHyperK_10inchGeometry()
 void WCSimDetectorConstruction::SetHyperK_8inchGeometry()
 {
   WCDetectorName = "HyperK_8inch";
+  HKGeometryNoLongerUsed(WCDetectorName);
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCSimPMTObject * PMT = CreatePMTObject("PMT8inch", WCIDCollectionName);
 
@@ -306,6 +327,7 @@ void WCSimDetectorConstruction::SetHyperK_8inchGeometry()
 void WCSimDetectorConstruction::SetHyperK_3inchGeometry()
 {
   WCDetectorName = "HyperK_3inch";
+  HKGeometryNoLongerUsed(WCDetectorName);
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCSimPMTObject * PMT = CreatePMTObject("PMT3inchR12199_02", WCIDCollectionName);
 
@@ -341,6 +363,7 @@ void WCSimDetectorConstruction::SetHyperK20pcWithODGeometry()
 void WCSimDetectorConstruction::SetHyperKWithODGeometry()
 {
   WCDetectorName = "HyperKWithOD";
+  HKGeometryNoLongerUsed(WCDetectorName);
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
   WCPMTName           = PMT->GetPMTName();
@@ -422,6 +445,7 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
 void WCSimDetectorConstruction::SetHyperKGeometry_20perCent()
 {
   WCDetectorName = "HyperK_20perCent";
+  HKGeometryNoLongerUsed(WCDetectorName);
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
   WCPMTName           = PMT->GetPMTName();
@@ -447,6 +471,7 @@ void WCSimDetectorConstruction::SetHyperKGeometry_20perCent()
 void WCSimDetectorConstruction::SetHyperK_mPMTGeometry()
 {
     WCDetectorName = "HyperK_mPMT";
+	HKGeometryNoLongerUsed(WCDetectorName);
 	hybrid=false;
     WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
 	mPMT_ID_PMT = "PMT3inchR14374";    //can be changed in macro through mPMT settings.
@@ -572,6 +597,7 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT10PCGeometry()
 {
   //Box&Line
   WCDetectorName = "HyperK_HybridmPMT10PC";
+  HKGeometryNoLongerUsed(WCDetectorName);
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
   WCPMTName           = PMT->GetPMTName();
@@ -645,6 +671,7 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT10PCGeometry()
 void WCSimDetectorConstruction::SetHyperK_HybridFakeGeometry()
 {
   WCDetectorName = "HyperK_HybridFake";
+  HKGeometryNoLongerUsed(WCDetectorName);
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   mPMT_ID_PMT = "PMT3inchR12199_02";    //can be changed in macro through mPMT settings.
   mPMT_OD_PMT = "PMT3inchR12199_02";
@@ -850,6 +877,7 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Geometry()
 void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()
 {
   WCDetectorName = "EggShapedHyperK";
+  HKGeometryNoLongerUsed(WCDetectorName);
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD"; 
   WCSimPMTObject * PMT = CreatePMTObject("PMT20inch", WCIDCollectionName);
@@ -899,6 +927,7 @@ void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()
 void WCSimDetectorConstruction::SetEggShapedHyperKGeometry_withHPD()
 {
   WCDetectorName = "EggShapedHyperK_withHPD";
+  HKGeometryNoLongerUsed(WCDetectorName);
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
   WCSimPMTObject * PMT = CreatePMTObject("HPD20inchHQE", WCIDCollectionName);
