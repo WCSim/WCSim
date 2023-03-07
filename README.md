@@ -40,7 +40,7 @@ doxygen documentation can be built by running
 
 As of the Hyper-Kamiokande hybrid configuration, the following prerequsite software is required
 * A `-std=c++0x` or `-std=c++11` compatible compiler. e.g. gcc 4.8.5
-* ROOT v5r34p36 or v5r34p38 (all v5r34 probably works). ROOT v6 also works (6.20/04 has been tested)
+* ROOT v5r34p36 or v5r34p38 (all v5r34 probably works). ROOT v6 also works (6.20/04 has been tested) and will be the only supported version going forwards
 * GEANT 4.10.03p3 (or later)
   * All of the G4 data files are also required to be installed, include hadron xsec, etc.
 * cmake3 (and ROOT & GEANT4 compiled with cmake)
@@ -53,9 +53,7 @@ export WCSIMDIR=`pwd`
 
 CMake is cross-platform software for managing the build process in 
 a compiler-independent way (cmake.org). 
-It is recommended to build ROOT and GEANT4 also through CMake. The 
-latter is very CMake friendly since GEANT 4.9.6, while it started introducing
-builds through CMake from 4.9.4 onwards (http://geant4.web.cern.ch/geant4/support/ReleaseNotes4.9.4.html#10.).
+It is required to build ROOT and GEANT4 also through CMake.
 Using cmake, builds and source code need to well separated and make
 it easier to build many versions of the same software.
 
@@ -71,8 +69,16 @@ preferred WCSIM_HOME:
 
 To compile you need to have `CMakeLists.txt` in the WCSim source dir.
 * `mkdir ${WCSIM_HOME}/WCSim_build/mydir ; cd ${WCSIM_HOME}/WCSim_build/mydir`
-* Set up the Geant4_Dir: `export Geant4_DIR=${HOME}/Geant4/install/geant4.9.6.p04`
-  (from the make install phase of Geant4)
+* Set up the environment variables
+  ```bash
+  #WCSim things
+  export WCSIMDIR=/${WCSIM_HOME}/WCSim
+  export G4WORKDIR=$WCSIMDIR/exe
+  #Geant4 things
+  export G4INSTALLDIR=/path/to/geant4/install/dir/
+  source $G4INSTALLDIR/bin/geant4.sh
+  source $G4INSTALLDIR/share/Geant4-10.3.3/geant4make/geant4make.sh
+  ```
 * `cmake ../../WCSim` : this executes the commands in `CMakeLists.txt` and generates
   the Makefiles for both the ROOT library as the main executable.
 * `make clean` : if necessary
@@ -94,8 +100,11 @@ Useful cmake commands:
 
 A script allowing to build WCSim with CMake on sukap is available:
 ```bash
-./make_sukap.sh
+cd $WCSIMDIR
+./setup/env_sukap.sh
+./make.sh
 ```
+Note that `make.sh` should also work on other systems.
 
 This script will read the current WCSim directory name and create a directory to hold the different cmake builds. 
 For example, in case your current WCSim directory name is 'WCSim', it will create a '../WCSim-build' directory. 
@@ -104,12 +113,10 @@ It will then create a directory for your current branch which will have the name
 For example, in case your current branch name is `hybridPMT`, you will have:
 
 ```bash
-WCSim
-WCSim-dir
-WCSim-dir/hybridPMT
+WCSim/
+WCSim-build/
+WCSim-build/hybridPMT
 ```
-
-Note: the script env_sukap.sh provide PATH toward Geant4 and ROOT directories on sukap. However, the current ROOT directory is pointing to Guillaume Pronost space. The reason is the default ROOT 5.34 available on sukap is not compatible with CMake compilation. This should be modified in the future.
 
 ### Using WCSim without building using Docker:
 
@@ -142,15 +149,15 @@ Note that this method currently uses make (not cmake) to build
 
 ## Running WCSim
 
-To test that WCSim is working, try running the test macro `WCSim.mac`, which runs 10 electrons with 500 MeV of energy in the Super-Kamiokande detector. The command is one of the following, depending on how WCSim was built:
+To test that WCSim is working, try running the test macro `WCSim.mac`, which runs 10 electrons with 5 MeV of energy in the Super-Kamiokande detector (it should take less than a minute to run).
 
-`./bin/Linux-g++/WCSim WCSim.mac`
-
-`./exe/bin/Linux-g++/WCSim WCSim.mac`
+```bash
+cd /path/to/wcsim/build/dir/
+./WCSim WCSim.mac macros/tuning_parameters.mac
+```
 
 `WCSim.mac` is well commented. Take a look inside (and also at other `.mac` files in `/macros/`) for the various options you can use to run WCSim
 
-For the Hyper-K hybrid geometry, see `WCSim_hybrid.mac`
 
 ## Analysing the output of WCSim
 
