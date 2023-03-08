@@ -35,7 +35,7 @@ fi
 
 if [ -d ${build_directory} ]; then
 	make clean
-	make -j7 install
+	make -j`nproc` install
 	
 	cd ${wcsim_directory}
 fi	
