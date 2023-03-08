@@ -112,19 +112,23 @@ cd $WCSIMDIR
 ./setup/env_sukap.sh
 ./make.sh
 ```
-Note that `make.sh` should also work on other systems.
+Note that `./make.sh` should also work on other systems.
 
 This script will read the current WCSim directory name and create a directory to hold the different cmake builds. 
-For example, in case your current WCSim directory name is 'WCSim', it will create a '../WCSim-build' directory. 
+For example, in case your current WCSim directory name is 'WCSim', it will create a '../WCSim-build' directory. It will also create a `../WCSim-install` directory.
 
 It will then create a directory for your current branch which will have the name of the current branch.
 For example, in case your current branch name is `hybridPMT`, you will have:
-
 ```bash
 WCSim/
 WCSim-build/
-WCSim-build/hybridPMT
+WCSim-build/hybridPMT/
+WCSim-install/
+WCSim-install/hybridPMT/
 ```
+
+Note that by defaul, just `make install` is run.
+You can run `make clean` before `make install` by running `./make.sh clean`
 
 ### Using WCSim without building using Docker:
 
