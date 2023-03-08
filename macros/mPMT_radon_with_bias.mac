@@ -225,7 +225,7 @@
 # Needed to prevent other decay than Bi-214
 /grdm/nucleusLimits 214 214 83 83 
 # if you need to use time bias
-/grdm/decayBiasProfile biasprofile.dat
+/grdm/decayBiasProfile data/biasprofile.dat
 /grdm/analogueMC 0
 /grdm/BRbias 0
 
