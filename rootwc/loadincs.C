@@ -1,5 +1,5 @@
 {
-  TString wcsim_topdir = gSystem->Getenv("WCSIMDIR");
+  TString wcsim_topdir = gSystem->Getenv("WCSIM_BUILD_DIR");
 
   TString mp = gROOT->GetMacroPath();
   TString ip;
