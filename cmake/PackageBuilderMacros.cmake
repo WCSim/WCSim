@@ -443,6 +443,13 @@ macro( pbuilder_install_files DEST_DIR )
     )
 endmacro()
 
+macro( pbuilder_install_files_executable DEST_DIR )
+    install( FILES ${ARGN} 
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+        DESTINATION ${DEST_DIR} 
+    )
+endmacro()
+
 function( pbuilder_do_package_config )
     # This macro sets up and installs the configuration files used tospecify the install information for the project.
     # It installs an already-created "config" file.

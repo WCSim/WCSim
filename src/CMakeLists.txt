@@ -27,7 +27,9 @@ set (dict_headers
         ${PROJECT_SOURCE_DIR}/include/WCSimPmtInfo.hh
         ${PROJECT_SOURCE_DIR}/include/WCSimEnumerations.hh
         ${PROJECT_SOURCE_DIR}/include/WCSimRootOptions.hh
-        ${PROJECT_SOURCE_DIR}/include/WCSimRootTools.hh )
+        ${PROJECT_SOURCE_DIR}/include/WCSimRootTools.hh
+        ${PROJECT_SOURCE_DIR}/include/TJNuBeamFlux.hh
+        ${PROJECT_SOURCE_DIR}/include/TNRooTrackerVtx.hh )
 
 set( linkdef_header
         ${PROJECT_SOURCE_DIR}/include/WCSimRootLinkDef.hh )
@@ -37,7 +39,9 @@ set(sources_root
         WCSimPmtInfo.cc
         WCSimEnumerations.cc
         WCSimRootOptions.cc
-        WCSimRootTools.cc)
+        WCSimRootTools.cc
+	TJNuBeamFlux.cc
+	TNRooTrackerVtx.cc)
 set( linkdef_header ${PROJECT_SOURCE_DIR}/include/WCSimRootLinkDef.hh )
 set(pcm_file ${CMAKE_CURRENT_BINARY_DIR}/libWCSimRoot_rdict.pcm)
 set(rootmap_file ${CMAKE_CURRENT_BINARY_DIR}/libWCSimRoot.rootmap)
