@@ -104,6 +104,8 @@ Useful cmake commands:
 * `make edit_cache` : customize the build.
 * `make rebuild_cache` : redo the cmake phase.
 
+#### WCSim cmake build options
+* `-DWCSim_Geometry_Overlaps_CHECK=<ON|OFF>` If ON, turns on geometry overlap checking (slow, but important when setting new detector geometry options). Default: OFF
 
 #### Build with CMake on sukap:
 
