@@ -116,7 +116,8 @@
 # OD is for the OD
 #In typical use, it is important that all PMT types are setup with the same dark noise time windows
 
-# default dark noise frequency (and conversion factor) is PMT property (NEW), set in the code.
+# default dark noise frequency (and conversion factor) is a PMT property, set in the code.
+#  The default is ON
 # Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
 /DarkRate/SetDetectorElement tank
 #/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
@@ -124,32 +125,41 @@
 #/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
 
-#there is a separate 
-# command to multiply the dark rate.
-# Convert dark noise frequency before digitization to after digitization by setting suitable factor
-# Again, this is now a PMT property and can be overridden here
+#It is more user friendly if the dark rate above is the requested digitised hit dark rate
+#Since dark hits are created in "true" space, more true hits are required to be simulated,
+# as hits are reduced by PMT/digitiser thresholds & integration
+#The dark rate conversion factor is the multiplicative factor in order to do this
+# This is now a PMT property and can be overridden here
+#WARNING the default values need checking for all but the following types:
+#  BoxandLine20inchHQE, PMT3inchR14374, PMT8inch
 #/DarkRate/SetConvert 1.367  #For Normal PMT
 #/DarkRate/SetConvert 1.119 #For HPDs
-#/DarkRate/SetConvert 1.126 #For Box and Line PMTs
+#/DarkRate/SetConvert 1.110 #For Box and Line PMTs
 
 # Select which time window(s) to add dark noise to
 #/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
 #/DarkRate/SetDarkLow to /DarkRate/SetDarkHigh [time in ns]
 #/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
 #width /DarkRate/SetDarkWindow [time in ns] around each hit
-#i.e. hit time ± (/DarkRate/SetDarkWindow) / 2
+#i.e. hit time +- (/DarkRate/SetDarkWindow) / 2
 /DarkRate/SetDetectorElement tank
 /DarkRate/SetDarkMode 1
-/DarkRate/SetDarkHigh 100000
-/DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
 
 #/DarkRate/SetDetectorElement OD
+#/DarkRate/SetDarkRate 0 kHz
+#/DarkRate/SetDarkRate 1 kHz
+#/DarkRate/SetConvert 1.367 #for 8" PMTs in HK OD
 #/DarkRate/SetDarkMode 1
-#/DarkRate/SetDarkHigh 100000
-#/DarkRate/SetDarkLow 0
 #/DarkRate/SetDarkWindow 4000
 
+#/DarkRate/SetDetectorElement tank2
+#/DarkRate/SetDarkRate 0 kHz
+#/DarkRate/SetDarkRate 1 kHz
+#/DarkRate/SetConvert 1.110 #for PMT3inchR14374 PMTs in HK mPMT
+#/DarkRate/SetConvert 1.126 #for PMT3inchR12199_02 PMTs in HK mPMT. WARNING value needs checking!
+#/DarkRate/SetDarkMode 1
+#/DarkRate/SetDarkWindow 4000
 
 ##################
 # VISUALISATION
