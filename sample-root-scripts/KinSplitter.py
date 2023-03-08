@@ -9,7 +9,7 @@ ns_conversion = {'ns':1,
                  'ms':1E6,
                  's':1E9}
 
-parser = argparse.ArgumentParser(description='KinConverter: convert kin files that have multiple vertices into a single event (or multiple overlapping events)')
+parser = argparse.ArgumentParser(description='KinSplitter: convert kin files that have multiple vertices into a single event (or multiple overlapping events)')
 parser.add_argument('--input-filename','-i',required=True,type=str,help='Input .kin filename. Output filename(s) will be the same as the input filename & path, with [0-9].merge suffix(es) added')
 parser.add_argument('--input-time-unit',required=True,choices=ns_conversion.keys(),help='The time unit of the input file')
 parser.add_argument('--dark-noise-start', type=int,required=True,help='When to start the simulation (in ns)')
@@ -95,7 +95,7 @@ def GetHeader(filename, args):
                 return ''
             #return the header as a single string
             header = ''.join(vertex) + ''\
-                     '# Split by kin_converter ' + str(datetime.now()) + '\n'\
+                     '# Split by KinSplitter ' + str(datetime.now()) + '\n'\
                      '# --fixed-duration ' + str(args.fixed_duration) + '\n'\
                      '# --event-overlap ' + str(args.event_overlap) + '\n'
             return header

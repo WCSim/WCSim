@@ -132,6 +132,8 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}
 
 pbuilder_install_files_executable(${CMAKE_INSTALL_PREFIX}/bin
         ${PROJECT_SOURCE_DIR}/rootwc/rootwc
+	${PROJECT_SOURCE_DIR}/sample-root-scripts/MakeKin.py
+	${PROJECT_SOURCE_DIR}/sample-root-scripts/KinSplitter.py
         )
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/bin/rootwc-files
