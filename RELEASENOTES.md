@@ -15,6 +15,7 @@ The main feature of this release is the addition of mPMTs (multiple 3" PMTs in a
 Note that with this release, the recommended version of Geant4 is now 10.3.3
 
 New features
+* Commit [7663873 @spradlin](https://github.com/spradlin/WCSim/commit/7663873c5d11d4cc1a50e535a185e6ed0124c6a4): Add `-DWCSim_Geometry_Overlaps_CHECK` cmake options
 * Pull Request [nuPRISM/#63 @akutsuR](https://github.com/nuPRISM/WCSim/pull/63): Adding parent G4 track id
 * Pull Request [nuPRISM/#61 @bquilain](https://github.com/nuPRISM/WCSim/pull/61): Merge of HK FD hybrid ID branch with nuPRISM code. Provides new HK ID-only hybrid FD geometry
 * Pull Request [nuPRISM/#57 @nickwp](https://github.com/nuPRISM/WCSim/pull/57): Add tracking of photon start and end directions for true hits
