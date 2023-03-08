@@ -36,38 +36,19 @@
 #/control/execute macros/mPMT_nuPrism2.mac
 
 
-#Use the HK FD geometry
-#ID only
-/WCSim/SetPMTPercentCoverage 20.
-/WCSim/SetPMTPercentCoverage2 10.
-/WCSim/WCgeom HyperK_HybridmPMT
+#Use the HK FD ID-only geometry
+#/WCSim/SetPMTPercentCoverage 20.
+#/WCSim/SetPMTPercentCoverage2 10.
+#/WCSim/WCgeom HyperK_HybridmPMT
 
-#ID + OD
-/WCSim/SetPMTPercentCoverage 20.
-/WCSim/SetPMTPercentCoverage2 10.
-/WCSim/WCgeom HyperK_HybridmPMT_WithOD
-/control/execute macros/geom_hk_mpmt_options.mac
-/control/execute macros/geom_hk_od_options.mac
 
-# HyperK Outer Detector
-/WCSim/HyperKOD/PMTODRadius 3inch # The PMTs to be used in the OD. Options 3inch (PMT3inch_ETEL9302B), 5inch (PMT5inch) or 8inch (PMT8inch)
-/WCSim/HyperKOD/ODLateralWaterDepth 1 m # The thickness of the OD in the barrel region
-/WCSim/HyperKOD/ODHeightWaterDepth 2 m # The thickness of the OD in the top and bottom endcap regions
-/WCSim/HyperKOD/ODDeadSpace 600 mm # The deadspace between the ID PMTs and OD PMTs (essentially the thickness of the PMT support structure)
-/WCSim/HyperKOD/ODTyvekSheetThickness 1 mm # The thickness of the Tyvek sheets in the OD
-/WCSim/HyperKOD/ODWLSPlatesThickness 0.6 cm # The thickness of each OD WLS plate.
-/WCSim/HyperKOD/ODWLSPlatesLength 30 cm # The length of each OD WLS plate. 30cm is optimal
-
-# Specify the number of OD PMTs per cell.
-# When the horizontal and vertical values are set to 0 the program will optimise 
-# the arrangment based on the input OD PMT coverage
-/WCSim/HyperKOD/PMTODperCellHorizontal 0
-/WCSim/HyperKOD/PMTODperCellVertical 0
-/WCSim/HyperKOD/PMTODPercentCoverage 0.22 # OD PMT coverage as a percentage: 1 equals 1% 
-/WCSim/HyperKOD/ODPMTShift 0 m # Offset every other row of OD PMTs by x meters
-#/WCSim/HyperKOD/DeactivateWLS # Uncomment to build the OD without WLS plates
-/WCSim/HyperKOD/BuildODWLSCladding # This places a reflective cladding around each WLS plate
-
+#Use the HK FD ID + OD geometry
+#/WCSim/SetPMTPercentCoverage 20.
+#/WCSim/SetPMTPercentCoverage2 10.
+#/WCSim/WCgeom HyperK_HybridmPMT_WithOD
+#/control/execute macros/geom_hk_mpmt_options.mac
+#/control/execute macros/geom_hk_od_options.mac
+#/WCSim/Construct
 
 # Some other SuperK options (different to the default 20" 40% case)
 #/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
