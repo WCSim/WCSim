@@ -434,7 +434,7 @@ G4double  PMT8inch::GetmaxQE(){
 }
 
 G4double PMT8inch::GetDarkRate(){
-  const G4double rate = 4.2*CLHEP::kilohertz;
+  const G4double rate = 1*CLHEP::kilohertz;
   return rate;
 }
 
@@ -2285,7 +2285,7 @@ G4double BoxandLine20inchHQE::GetDarkRate(){
 }
 
 G4double BoxandLine20inchHQE::GetDarkRateConversionFactor(){
-  const G4double factor = 1.126;
+  const G4double factor = 1.110;
   return factor;
 }
 
@@ -3339,7 +3339,7 @@ G4double PMT3inchR14374::GetDarkRate(){
 
 // Arbitrary at the moment
 G4double  PMT3inchR14374::GetDarkRateConversionFactor(){
-  const G4double factor = 1.126;
+  const G4double factor = 1.110;
   return factor;
 }
 
