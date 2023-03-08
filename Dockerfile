@@ -16,5 +16,5 @@ RUN source $HYPERKDIR/env-WCSim.sh &&\
     make -j`nproc` install
 
 ### Open terminal
-ENTRYPOINT source $HYPERKDIR/env-WCSim.sh && $HYPERKDIR/WCSim-build/bin/this_wcsim.sh && /bin/bash
+ENTRYPOINT source $HYPERKDIR/env-WCSim.sh && source $HYPERKDIR/WCSim-build/bin/this_wcsim.sh && /bin/bash
  
