@@ -15,6 +15,7 @@ RUN yum install -y \
     wget \
     tar \
     cmake \
+    cmake3 \
     gcc-c++ \
     gcc \
     binutils \
@@ -47,8 +48,9 @@ RUN wget https://root.cern.ch/download/root_v6.20.04.Linux-centos7-x86_64-gcc4.8
 
 ### Downloading Geant4
 ENV G4VERSION 4.10.03.p03
+ENV G4VERSION_ALT 4-10.3.3
 ### There is no precompiled CentOS7 version of G4.10.1, so we need to compile it from source instead
-#RUN wget http://cern.ch/geant4-data/releases/lib4.10.1.p03/Linux-g++4.4.7-SLC6.tar.gz -O geant.tar.gz \
+#RUN wget http://cern.ch/geant4-data/releases/lib${G4VERSION}/Linux-g++4.4.7-SLC6.tar.gz -O geant.tar.gz \
 #    && tar -xvzf geant.tar.gz \
 #    && rm -f geant.tar.gz
 RUN wget http://cern.ch/geant4-data/releases/geant${G4VERSION}.tar.gz -O geant.tar.gz \
@@ -62,8 +64,10 @@ RUN make -j`nproc`
 RUN make install
 
 ### Data files for Geant4 #done above now; keep here for reference to do in future if we use precompiled again
-#ENV G4DATA $HYPERKDIR/Geant4-10.1.3-Linux/share/Geant4-10.1.3/data
+#ENV G4DATA $HYPERKDIR/Geant${G4VERSION_ALT}-Linux/share/Geant${G4VERSION_ALT}/data
 #WORKDIR $G4DATA
+### WARNING the versions of this loop should be updated when using a new Geant4 version
+### currently setup for G4.10.1
 #RUN for f in G4ABLA.3.0.tar.gz G4NDL.4.5.tar.gz G4EMLOW.6.41.tar.gz G4PhotonEvaporation.3.1.tar.gz G4RadioactiveDecay.4.2.tar.gz #G4SAIDDATA.1.1.tar.gz G4NEUTRONXS.1.4.tar.gz G4PII.1.3.tar.gz RealSurface.1.0.tar.gz G4ENSDFSTATE.1.0.tar.gz; do \
 #    	echo $f; \
 #    	wget http://cern.ch/geant4-data/datasets/$f; \
@@ -82,7 +86,7 @@ WORKDIR $HYPERKDIR
 RUN echo '#!/bin/bash -x' > env-WCSim.sh \
     && echo 'source $HYPERKDIR/root/bin/thisroot.sh' >> env-WCSim.sh \
     && echo 'source $G4INSTALLDIR/bin/geant4.sh' >> env-WCSim.sh \
-    && echo 'source $G4INSTALLDIR/share/Geant4-10.1.3/geant4make/geant4make.sh' >> env-WCSim.sh
+    && echo 'source $G4INSTALLDIR/share/Geant${G4VERSION_ALT}/geant4make/geant4make.sh' >> env-WCSim.sh
 
 ### Open terminal
 CMD ["/bin/bash"]
