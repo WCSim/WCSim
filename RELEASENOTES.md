@@ -1,6 +1,44 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
+??/03/2023: Notes for v1.11.0
+*************************************************************
+
+This is the first full merge between WCSim/WCSim:develop and nuPRISM/WCSim:nuPRISM/develop for ~7 years.
+There are therefore many changes, and it is inevitable that some will not be fully recognised in this list.
+I have not looked at all at PRs before 2019.
+For that I am sorry
+
+The main feature of this release is the addition of mPMTs (multiple 3" PMTs in a 20"-PMT-like vessel),
+ and the creation of associated geometries for IWCD and the HK FD.
+
+Note that with this release, the recommended version of Geant4 is now 10.3.3
+
+New features
+* Pull Request [nuPRISM/#63 @akutsuR](https://github.com/nuPRISM/WCSim/pull/63): Adding parent G4 track id
+* Pull Request [nuPRISM/#61 @bquilain](https://github.com/nuPRISM/WCSim/pull/61): Merge of HK FD hybrid ID branch with nuPRISM code. Provides new HK ID-only hybrid FD geometry
+* Pull Request [nuPRISM/#57 @nickwp](https://github.com/nuPRISM/WCSim/pull/57): Add tracking of photon start and end directions for true hits
+* Pull Request [nuPRISM/#54 @nickwp](https://github.com/nuPRISM/WCSim/pull/54): Add git hash to output settings tree. See also nuPRISM/#55
+* Pull Request [nuPRISM/#52 @nickwp](https://github.com/nuPRISM/WCSim/pull/52): Add particle tracking options
+* Pull Request [nuPRISM/#48 @mshinoki](https://github.com/nuPRISM/WCSim/pull/48): Add WCTE Geometry
+
+Updates
+* Pull Request [tdealtry/#1 @spradlin](https://github.com/tdealtry/WCSim/pull/1): Correct/suppress most compiler warnings
+* Pull Request [#338 @guiguem](https://github.com/WCSim/WCSim/pull/338): Upgrades to cmake installation. See all #341 #342 #344
+* Pull Request [bquilain/#17 @JacekHoleczek](https://github.com/bquilain/WCSim/pull/17): Various small building improvements
+* Pull Request [bquilain/#14 @gpronost](https://github.com/bquilain/WCSim/pull/14): Change holder of the PMT to E61 design
+* Pull Request [bquilain/#12 @pdeperio](https://github.com/bquilain/WCSim/pull/12): Merging of nuPRISM code with HK hybrid code. See also bquilain/#11
+* Pull Request [nuPRISM/#49 @nickwp](https://github.com/nuPRISM/WCSim/pull/49): Update IWCD geometry to match solidworks mechanical design
+
+Bug fixes
+* Pull Request [nuPRISM/#47 @jmgwalker](https://github.com/nuPRISM/WCSim/pull/47): Fix detector centre value stored in Settings tree in output file
+* Pull Request [nuPRISM/#46 @jmgwalker](https://github.com/nuPRISM/WCSim/pull/46): Fix detector offset bug
+* Pull Request [nuPRISM/#45 @jmgwalker](https://github.com/nuPRISM/WCSim/pull/45): Fix bug that was causing seg fault when accessing Pdg code from NRooTracker
+* Pull Request [nuPRISM/#44 @mscott201](https://github.com/nuPRISM/WCSim/pull/44): Update the event generation to generate events right out to the edge of the E61 ID
+* Pull Request [bquilain/#19 @gpronost](https://github.com/bquilain/WCSim/pull/19): Use Flag instead of FirstTime value to determine if new FirstTime needs to be set. See all bquilain/#18
+* Pull Request [bquilain/#13 @bquilain](https://github.com/bquilain/WCSim/pull/13): Initialise ROOT randomiser seed
+
+*************************************************************
 10/26/2021: Notes for v1.10.0
 *************************************************************
 
