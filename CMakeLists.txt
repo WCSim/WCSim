@@ -86,19 +86,45 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGIT_HASH=\"\\\"`cd ${PROJECT_SOURCE_DI
 #########
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
-        ${PROJECT_SOURCE_DIR}/data/MuonFlux-HyperK-ThetaPhi.dat)
+        ${PROJECT_SOURCE_DIR}/data/MuonFlux-HyperK-ThetaPhi.dat
+	${PROJECT_SOURCE_DIR}/data/biasprofile.dat
+	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
+	#required macros
         ${PROJECT_SOURCE_DIR}/macros/jobOptions.mac
+        ${PROJECT_SOURCE_DIR}/macros/tuning_parameters.mac
+	#options used as includes in WCSim.mac and dependents
         ${PROJECT_SOURCE_DIR}/macros/daq.mac
+	${PROJECT_SOURCE_DIR}/macros/geom_hk_mpmt_options.mac
+	${PROJECT_SOURCE_DIR}/macros/geom_hk_od_options.mac
+	${PROJECT_SOURCE_DIR}/macros/mPMT_37pmtHK.mac
+	${PROJECT_SOURCE_DIR}/macros/mPMT_interesting1.mac
+	${PROJECT_SOURCE_DIR}/macros/mPMT_interesting2_SKwCover.mac
+	${PROJECT_SOURCE_DIR}/macros/mPMT_nuPrism1.mac
+	${PROJECT_SOURCE_DIR}/macros/mPMT_nuPrism2.mac
+	#visualisation macros
         ${PROJECT_SOURCE_DIR}/macros/visOGLSX.mac
         ${PROJECT_SOURCE_DIR}/macros/visRayTracer.mac
         ${PROJECT_SOURCE_DIR}/macros/visOGLQT.mac
         ${PROJECT_SOURCE_DIR}/macros/visOGLQT_2.mac
-        ${PROJECT_SOURCE_DIR}/macros/tuning_parameters.mac
-        ${PROJECT_SOURCE_DIR}/macros/OD.mac
-        ${PROJECT_SOURCE_DIR}/macros/OD_10k.mac
-        )
+	${PROJECT_SOURCE_DIR}/macros/visOGLQT-OD.mac
+	${PROJECT_SOURCE_DIR}/macros/vis_original.mac
+	#misc macros with different geometries
+	#nuprism
+	${PROJECT_SOURCE_DIR}/macros/NuPRISM.mac
+	#HK FD ID-only
+	${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid.mac
+	${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_injector.mac
+	${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_vectorfile.mac
+	${PROJECT_SOURCE_DIR}/macros/mPMT_radon_with_bias.mac
+	${PROJECT_SOURCE_DIR}/macros/mPMT_radon_without_bias.mac
+	#Old HK FD geometries
+	${PROJECT_SOURCE_DIR}/macros/OD.mac
+	${PROJECT_SOURCE_DIR}/macros/OD_10k.mac
+	${PROJECT_SOURCE_DIR}/macros/wcsim_temp.mac
+	${PROJECT_SOURCE_DIR}/macros/WCSim_1part_HK.mac
+	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}
         ${PROJECT_SOURCE_DIR}/WCSim.mac
