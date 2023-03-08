@@ -338,7 +338,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 		      "WCBox",
 		      logicExpHall,
 		      false,
-		      0);
+		      checkOverlaps);
 
   // Reset the tubeID and tubeLocation maps before refilling them
   tubeIDMap.clear();

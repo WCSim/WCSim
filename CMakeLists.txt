@@ -33,6 +33,7 @@ pbuilder_prepare_project()
 set(CMAKE_CXX_STANDARD 14) # Enable c++14 standard
 
 
+
 ######
 # ROOT
 ######
@@ -80,6 +81,7 @@ endif()
 
 # Set flag for git version to be used as c++ preprocessor macro
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGIT_HASH=\"\\\"`cd ${PROJECT_SOURCE_DIR};git describe --always --long --tags --dirty`\\\"\"")
+
 
 #########
 # data and macros copy

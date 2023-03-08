@@ -19,6 +19,7 @@ pbuilder_library(
         PRIVATE_EXTERNAL_LIBRARIES ${PRIVATE_EXT_LIBS}
 )
 
+
 # WCSimRoot library
 
 set (dict_headers
@@ -97,3 +98,17 @@ pbuilder_component_install_and_export(
         EXETARGETS ${programs}
 )
 
+##############
+# WCSim compilation options
+##############
+option(WCSim_Geometry_Overlaps_CHECK
+  "Toggle GEANT4 overlap checking when placing geometry elements"
+  OFF
+)
+
+target_compile_definitions(WCSimCore PRIVATE
+        WCSIM_CHECK_GEOMETRY_OVERLAPS=$<IF:$<BOOL:${WCSim_Geometry_Overlaps_CHECK}>,true,false>
+)
+target_compile_definitions(WCSim PRIVATE
+        WCSIM_CHECK_GEOMETRY_OVERLAPS=$<IF:$<BOOL:${WCSim_Geometry_Overlaps_CHECK}>,true,false>
+)
