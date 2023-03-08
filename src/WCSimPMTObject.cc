@@ -284,7 +284,7 @@ G4double PMT8inch::GetExposeHeight() {return 91.6*mm;}
 G4double PMT8inch::GetRadius() {return 101.6*mm;}
 G4double PMT8inch::GetPMTGlassThickness() {return 0.55*cm;} //currently the same as 10inch
 G4double PMT8inch::HitTimeSmearing(double Q, double TTSFF=1.0) {
-  printf("+++++++++++PMT8inch++++++++++++++++++++++++++++++++++++++++++++ TTSFF = %f \n", TTSFF); 
+  G4cout << "+++++++++++PMT8inch++++++++++++++++++++++++++++++++++++++++++++ TTSFF = " << TTSFF << G4endl;
   double timingConstant = 1.890; 
   double timingResolution = 0.33 + sqrt(timingConstant/Q); 
   timingResolution *= TTSFF;
@@ -459,7 +459,7 @@ G4double PMT5inch::GetExposeHeight() {return 57.*mm;} //rough estimation
 G4double PMT5inch::GetRadius() {return 63.5*mm;}
 G4double PMT5inch::GetPMTGlassThickness() {return 0.55*cm;} //currently the same as 10inch
 G4double PMT5inch::HitTimeSmearing(double Q, double TTSFF=1.0) { 
-  printf("+++++++++++++PMT5inch++++++++++++++++++++++++++++++++++++++++++ TTSFF = %f \n", TTSFF);
+  G4cout << "+++++++++++++PMT5inch++++++++++++++++++++++++++++++++++++++++++ TTSFF = " << TTSFF << G4endl;
   double timingConstant = 1.890;  //currently the same as 8inch
   double timingResolution = 0.33 + sqrt(timingConstant/Q); 
   timingResolution *= TTSFF;
@@ -807,7 +807,7 @@ G4double PMT3inch::GetExposeHeight() {return 20.*mm;}
 G4double PMT3inch::GetRadius() {return 40.*mm;}
 G4double PMT3inch::GetPMTGlassThickness() {return 0.10*cm;}
 G4double PMT3inch::HitTimeSmearing(double Q, double TTSFF=1.0) { 
-  printf("+++++++++++++PMT3inch++++++++++++++++++++++++++++++++++++++++++ TTSFF = %f \n", TTSFF);
+  G4cout << "+++++++++++++PMT3inch++++++++++++++++++++++++++++++++++++++++++ TTSFF = " << TTSFF << G4endl;
   double timingConstant = 1.890; // 4ns FWHM when Q=1.0 
   double timingResolution = 0.33 + sqrt(timingConstant/Q); 
     timingResolution *= TTSFF;
@@ -1335,7 +1335,7 @@ G4double PMT10inchHQE::GetExposeHeight() {return 117.*mm;}
 G4double PMT10inchHQE::GetRadius() {return 127.*mm;}
 G4double PMT10inchHQE::GetPMTGlassThickness() {return 0.55*cm;}
 G4double PMT10inchHQE::HitTimeSmearing(double Q, double TTSFF=1.0) {
-  printf("++++++++++++++PMT10inchHQE+++++++++++++++++++++++++++++++++++++++++ TTSFF = %f \n", TTSFF);
+  G4cout << "++++++++++++++PMT10inchHQE+++++++++++++++++++++++++++++++++++++++++ TTSFF = " << TTSFF << G4endl;
   double timingConstant = 2.0; 
   double timingResolution = 0.33 + sqrt(timingConstant/Q); 
   timingResolution *= TTSFF;
@@ -1511,7 +1511,7 @@ G4double PMT12inchHQE::GetExposeHeight() {return 118.*mm;}
 G4double PMT12inchHQE::GetRadius() {return 152.4*mm;}
 G4double PMT12inchHQE::GetPMTGlassThickness() {return 0.55*cm;}
 G4double PMT12inchHQE::HitTimeSmearing(double Q, double TTSFF=1.0) {
-  printf("++++++++++++++++++PMT12inchHQE+++++++++++++++++++++++++++++++++++++ TTSFF = %f \n", TTSFF);
+  G4cout << "++++++++++++++++++PMT12inchHQE+++++++++++++++++++++++++++++++++++++ TTSFF = " << TTSFF << G4endl;
   double timingConstant = 2.0; 
   double timingResolution = 0.33 + sqrt(timingConstant/Q); 
   timingResolution *= TTSFF;
