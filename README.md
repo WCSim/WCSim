@@ -92,6 +92,7 @@ To compile you need to have `CMakeLists.txt` in the WCSim source dir.
 * `make clean` : if necessary
 * `make -j3 install` : will first compile the libWCSimRoot.so and libWCSimCore.so which you need for using
  the ROOT Dict from WCSim (e.g. to read the output files) and then compile WCSim.
+* `source bin/this_wcsim.sh` : will setup the environment variables such that you can run WCSim
 
 To recompile:
 * Typically just `make install` will be enough and also redo the cmake phase if

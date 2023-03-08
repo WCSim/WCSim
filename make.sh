@@ -41,3 +41,7 @@ if [ -d ${build_directory} ]; then
 	
 	cd ${wcsim_directory}
 fi	
+
+echo
+echo Now run the following in order to run this version of WCSim
+echo source ${install_directory}/bin/this_wcsim.sh
