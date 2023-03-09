@@ -27,7 +27,9 @@ WCSimRootGeom::WCSimRootGeom()
   fWCNumPMT2 = 0;
   fPMTArray2 = 0;
   fPMTArray2 = new TClonesArray("WCSimRootPMT", 500);
-
+  fODWCNumPMT = 0;
+  fODPMTArray = 0;
+  fODPMTArray = new TClonesArray("WCSimRootPMT", 500);
 }
 //______________________________________________________________________________
 WCSimRootGeom::WCSimRootGeom(const WCSimRootGeom & in)
@@ -53,14 +55,20 @@ WCSimRootGeom::WCSimRootGeom(const WCSimRootGeom & in)
   fPMTArray2 = new TClonesArray("WCSimRootPMT", fWCNumPMT2);
   for(int i = 0; i < fWCNumPMT2; i++)
     new((*fPMTArray2)[i]) WCSimRootPMT(*(in.GetPMTPtr(i,true)));
+
+  fODPMTArray = new TClonesArray("WCSimRootPMT", fODWCNumPMT);
+  for(int i = 0; i < fODWCNumPMT; i++)
+    new((*fODPMTArray)[i]) WCSimRootPMT(*(in.GetODPMTPtr(i)));  
 }
 //______________________________________________________________________________
 WCSimRootGeom::~WCSimRootGeom()
 {
   fPMTArray->Delete();
   fPMTArray2->Delete();
+  fODPMTArray->Delete();
   delete fPMTArray;
   delete fPMTArray2;
+  delete fODPMTArray;
 }
 //______________________________________________________________________________
 bool WCSimRootGeom::CompareAllVariables(const WCSimRootGeom * c) const
@@ -134,11 +142,11 @@ WCSimRootPMT::WCSimRootPMT(Int_t tubeNo, Int_t mPMTNo, Int_t mPMT_PMTNo, Int_t c
 }
 
 //______________________________________________________________________________
-void WCSimRootGeom::SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, 
-			   Double_t rot[3], Double_t pos[3], bool expand, bool hybridsecondtype)
+void WCSimRootGeom::SetODPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, 
+			   Double_t rot[3], Double_t pos[3], bool expand)
 {
   // Set PMT values
-  TClonesArray &pmtArray = hybridsecondtype?*fPMTArray2:*fPMTArray;
+  TClonesArray &pmtArray = *fODPMTArray;
   if(expand)
     pmtArray.ExpandCreate(i+2);
   new(pmtArray[i]) WCSimRootPMT(tubeno, cyl_loc, rot, pos);

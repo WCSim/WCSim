@@ -680,7 +680,7 @@ void WCSimRunAction::FillGeoTree(){
     rot[2] = pmt->Get_orienz();
     tubeNo = pmt->Get_tubeid();
     cylLoc = pmt->Get_cylocation();
-    wcsimrootgeom-> SetPMT(i+fpmts->size(),tubeNo+fpmts->size(),cylLoc,rot,pos);
+    wcsimrootgeom-> SetODPMT(i,tubeNo,cylLoc,rot,pos,true);
   }
   if (fODpmts->size() != (unsigned int)numpmtOD) {
     G4cout << "Mismatch between number of OD pmts and pmt list in geofile.txt!!"<<G4endl;

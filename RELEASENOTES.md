@@ -14,7 +14,19 @@ The main feature of this release is the addition of mPMTs (multiple 3" PMTs in a
 
 Note that with this release, the recommended version of Geant4 is now 10.3.3
 
+Output file changes
+* `fTriggerInfo` in `WCSimRootTrigger` is now a `std::vector<Double_t>` (previously was a `std::vector<Float_t>`)
+* Addition of `fParentId` to `WCSimRootTrack`
+* Addition of `fmPMTID` and `fmPMT_PMTID` to all of `WCSimRootCherenkovHit`, `WCSimRootCherenkovDigiHit`, and `WCSimRootPMT`
+* Addition of `fPhotonStartTime`, `fPhotonStartPos[3]`, `fPhotonEndPos[3]`, `fPhotonStartDir[3]`, and fPhotonEndDir[3]` to `WCSimRootCherenkovHitTime`
+* Addition of `TClonesArray` of `WCSimRootCapture` (a new class) to `WCSimRootEvent`
+  * `WCSimRootCaptureGamma` is another new class stored within `WCSimRootCapture`
+* Addition of two new `TClonesArray` of `WCSimRootPMT` in `WCSimRootGeom`
+  1. `fPMTArray2` stores the second ID PMT type information (i.e. mPMT information in HK hybrid FD geometries)
+  2. `fODPMTArray` stores the OD PMT information (this used to be stored at the end of `fPMTArray`)
+
 New features
+
 * Commit [7663873 @spradlin](https://github.com/spradlin/WCSim/commit/7663873c5d11d4cc1a50e535a185e6ed0124c6a4): Add `-DWCSim_Geometry_Overlaps_CHECK` cmake options
 * Pull Request [nuPRISM/#63 @akutsuR](https://github.com/nuPRISM/WCSim/pull/63): Adding parent G4 track id
 * Pull Request [nuPRISM/#61 @bquilain](https://github.com/nuPRISM/WCSim/pull/61): Merge of HK FD hybrid ID branch with nuPRISM code. Provides new HK ID-only hybrid FD geometry

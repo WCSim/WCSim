@@ -76,6 +76,7 @@ private:
 
   TClonesArray           *fPMTArray;
   TClonesArray           *fPMTArray2;
+  TClonesArray           *fODPMTArray;
 
 public:
 
@@ -103,7 +104,7 @@ public:
   void  SetWCOffset(Double_t x, Double_t y, Double_t z) 
            {fWCOffset[0]=x; fWCOffset[1]=y; fWCOffset[2] = z;}
 
-  void  SetPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, Double_t rot[3], Double_t pos[3], bool expand=true, bool hybridsecondtype=false);
+  void  SetODPMT(Int_t i, Int_t tubeno, Int_t cyl_loc, Double_t rot[3], Double_t pos[3], bool expand=true);
   void  SetPMT(Int_t i, Int_t tubeno, Int_t mPMTNo, Int_t mPMT_PMTno, Int_t cyl_loc, Double_t rot[3], Double_t pos[3], bool expand=true, bool hybridsecondtype=false);
   void  SetOrientation(Int_t o) {fOrientation = o;}
 
@@ -142,6 +143,15 @@ public:
     else
       return (WCSimRootPMT*)(fPMTArray->At(i));
   }
+  TClonesArray * GetPMTs(bool hybridsecondtype=false) {
+    if(hybridsecondtype)
+      return fPMTArray2;
+    return fPMTArray;
+  }
+  //OD
+  WCSimRootPMT GetODPMT(Int_t i) {return *(WCSimRootPMT*)(*fODPMTArray)[i];}
+  const WCSimRootPMT * GetODPMTPtr(Int_t i) const {return (WCSimRootPMT*)(fODPMTArray->At(i));}
+  TClonesArray * GetODPMTs() {return fODPMTArray;}
 
   ClassDef(WCSimRootGeom,2)  //WCSimRootEvent structure
 };
