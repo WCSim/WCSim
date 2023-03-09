@@ -270,9 +270,9 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
 	firsthit = digit_time;
     }//loop over Digits
   }//loop over PMTs
-  unsigned long window_start_time = firsthit;
+  long long window_start_time = firsthit;
   window_start_time -= window_start_time % 5;
-  unsigned long window_end_time   = lasthit - ndigitsWindow + window_step_size;
+  long long window_end_time   = lasthit - ndigitsWindow + window_step_size;
   window_end_time += window_end_time % 5;
 #ifdef WCSIMWCTRIGGER_VERBOSE
   G4cout << "WCSimWCTriggerBase::AlgNDigits. Found first/last hits. Looping from "
