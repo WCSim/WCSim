@@ -20,6 +20,7 @@ parser.add_argument('--verbose','--v',type=int,default=0,help='Verbosity level')
 parser.add_argument('--fixed-duration',type=int,default=None,help='A fixed duration (in ns) for each event')
 #or these - dark rate, ntubes, NHits per MeV, max allowed hits
 #TODO add option for windows that can change size depending on how many physics hits are expected
+parser.add_argument('--save-nvertex-info-to-file',action='store_true',help='Save nvertex info to nvertex.info')
 args = parser.parse_args()
 
 ToNS = ns_conversion[args.input_time_unit]
@@ -108,11 +109,14 @@ if not IsTimeOrdered(args.input_filename):
 header = GetHeader(args.input_filename, args)
 print(header)
 
+if args.save_nvertex_info_to_file:
+    fnvertex = open('nvertex.info', 'w')
 
 #loop over kin file start/stop times
 event_start = args.dark_noise_start
 last_event_end = args.dark_noise_end
 ievent = 0
+n_empty_events = 0
 file_position = 0
 while event_start < last_event_end:
     event_end = event_start + args.fixed_duration
@@ -156,10 +160,17 @@ while event_start < last_event_end:
         #need to add a dummy vertex, else WCSim/Geant4 will complain
         if not nvertices:
             fout.write(DummyVertex)
+            n_empty_events += 1
         #and close the event/file
         fout.write('$ end\n')
         fout.write('$ stop\n')
         print('contains', nvertices, 'vertices')
+        if args.save_nvertex_info_to_file:
+            fnvertex.write('%05d' % ievent + ' %06d\n' % nvertices)
+        if args.verbose:
+            print('%05d' % ievent + ' %06d\n' % nvertices)
     #increment for next event
     event_start = next_event_start
     ievent += 1
+
+print(n_empty_events, 'events are empty, out of ', ievent, n_empty_events * 100. / ievent, '%')
