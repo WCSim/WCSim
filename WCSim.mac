@@ -40,6 +40,7 @@
 #/WCSim/SetPMTPercentCoverage 20.
 #/WCSim/SetPMTPercentCoverage2 10.
 #/WCSim/WCgeom HyperK_HybridmPMT
+#/WCSim/Construct
 
 
 #Use the HK FD ID + OD geometry
