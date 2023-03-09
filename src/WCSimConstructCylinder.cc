@@ -34,6 +34,7 @@
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
 
+//#define WCSIMCONSTRUCTCYLINDER_VERBOSE
 #define DEBUG
 #define MIRROR_WCSIM_DEVELOP_POLY
 //#define MIRROR_WCSIM_DEVELOP_SKIN
@@ -119,6 +120,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	  WCODTyvekSheetThickness;  // Tyvek attached to structure
     outerAnnulusRadius = WCODRadius + sphereRadius;
   }
+#ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
   G4cout
 	<< "GEOMCHECK3 WCIDRadius \t" << WCIDRadius << G4endl
 	<< "GEOMCHECK3 WCBlackSheetThickness \t" << WCBlackSheetThickness << G4endl
@@ -131,6 +133,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	<< "GEOMCHECK3 WCPMTODRadius \t" << WCPMTODRadius << G4endl
 	<< "GEOMCHECK3 WCPMTODExposeHeight \t" << WCPMTODExposeHeight << G4endl
 	;
+#endif
 
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
@@ -147,6 +150,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
     WCLength    = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness);
     WCRadius    = (outerAnnulusRadius + WCODLateralWaterDepth)/cos(dPhi/2.) ;
   }
+#ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
   G4cout
 	<< "GEOMCHECK2 WCLength \t" << WCLength << G4endl
 	<< "GEOMCHECK2 WCIDHeight \t" << WCIDHeight << G4endl
@@ -158,6 +162,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	<< "GEOMCHECK2 outerAnnulusRadius \t" << outerAnnulusRadius << G4endl
 	<< "GEOMCHECK2 WCODLateralWaterDepth \t" << WCODLateralWaterDepth << G4endl
 	;
+#endif
   //WCLength    = WCIDHeight + (WCODHeight+WCOuterStructure)*2;	//jl145 - reflects top veto blueprint, cf. Farshid Feyzi
   //WCRadius    = (WCIDDiameter/2. + WCBlackSheetThickness + (WCODRadius+WCODHeight)))/cos(dPhi/2.) ; // BQ: Updated with new HK OD size (2020/12/06) 
   //WCLength    = WCIDHeight + 2*2.3*m;	//jl145 - reflects top veto blueprint, cf. Farshid Feyzi
@@ -956,8 +961,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	
 	for(G4double i = 0; i < WCPMTperCellHorizontal; i++){
 	  for(G4double j = 0; j < WCPMTperCellVertical; j++){
+#ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
 		G4cout << "Adding barrel PMT in cell " << i << ", " << j << G4endl;
-	  
+#endif	  
 		G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius,
 												   -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 												   -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
@@ -2002,7 +2008,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 												   -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 												   (-(barrelCellHeight-WCBorderPMTOffset)/2.+(j+0.5)*verticalSpacing)*zflip);
 #ifdef ACTIVATE_IDPMTS
+#ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
 		G4cout << "Add PMT on barrel cell " << i << ", " << j << G4endl;
+#endif
 		//G4VPhysicalVolume* physiWCBarrelBorderPMT =
 		new G4PVPlacement(WCPMTRotation,                      // its rotation
 						  PMTPosition,
@@ -2047,7 +2055,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 		  PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry 
 		  //axes of the cell 
 #ifdef ACTIVATE_IDPMTS
+#ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
 		  G4cout << "Add PMTs in extra tower, cell " << i << ", " << j << G4endl;
+#endif
 		  //G4VPhysicalVolume* physiWCBarrelBorderPMT =
 		  new G4PVPlacement(WCExtraPMTRotation,                          // its rotation
 							PMTPosition,

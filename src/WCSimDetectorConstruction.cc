@@ -228,7 +228,7 @@ WCSimDetectorConstruction::~WCSimDetectorConstruction(){
 
 G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 {
-  G4cout << "STARTING WCSimDetectorConstruction::CONSTRUCT" << G4endl;
+  G4cout << G4endl << "STARTING WCSimDetectorConstruction::CONSTRUCT" << G4endl;
   G4GeometryManager::GetInstance()->OpenGeometry();
 
   G4PhysicalVolumeStore::GetInstance()->Clean();
@@ -369,7 +369,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   DumpGeometryTableToFile();
 
   
-
+  G4cout << "FINISHED WCSimDetectorConstruction::CONSTRUCT" << G4endl;
   
   // Return the pointer to the physical experimental hall
   return physiExpHall;
