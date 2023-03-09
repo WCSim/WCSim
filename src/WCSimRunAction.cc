@@ -70,25 +70,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
       fSettingsInputTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
       fSettingsInputTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
     }
-    if(fSettingsInputTree){
-      fSettingsOutputTree = fSettingsInputTree->CloneTree(0);
-    }
-    else{
-      fSettingsOutputTree = new TTree("Settings","Settings");
-    }
-
-    fSettingsOutputTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/D");
-    fSettingsOutputTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/D");
-    fSettingsOutputTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/D");
-    fSettingsOutputTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/D");
-    fSettingsOutputTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/D");
-    fSettingsOutputTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/D");
-
-#ifdef GIT_HASH
-    const char* gitHash = GIT_HASH;
-    fSettingsOutputTree->Branch("GitHash", (void*)gitHash, "GitHash/C");
-#endif
-  }      
+  }
 
   if(useTimer) {
     timer.Reset();
@@ -117,6 +99,27 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
     TFile* hfile = new TFile(rootname.c_str(),"RECREATE","WCSim ROOT file");
     hfile->SetCompressionLevel(2);
     
+    if(wcsimdetector->GetIsNuPrism()){
+      if(fSettingsInputTree){
+	fSettingsOutputTree = fSettingsInputTree->CloneTree(0);
+      }
+      else{
+	fSettingsOutputTree = new TTree("Settings","Settings");
+      }
+
+      fSettingsOutputTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/D");
+      fSettingsOutputTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/D");
+      fSettingsOutputTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/D");
+      fSettingsOutputTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/D");
+      fSettingsOutputTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/D");
+      fSettingsOutputTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/D");
+
+#ifdef GIT_HASH
+      const char* gitHash = GIT_HASH;
+      fSettingsOutputTree->Branch("GitHash", (void*)gitHash, "GitHash/C");
+#endif
+    }//nuPRISM settings tree
+
     // Event tree
     WCSimTree = new TTree("wcsimT","WCSim Tree");
     
