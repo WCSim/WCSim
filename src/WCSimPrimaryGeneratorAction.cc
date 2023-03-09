@@ -402,10 +402,10 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	fSettingsTree->SetBranchAddress("NuBeamAng",&fNuBeamAng);
 	fSettingsTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
 	fSettingsTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
+	fSettingsTree->GetEntry(0);
       }
       if (fEvNum<fNEntries){
 	fRooTrackerTree->GetEntry(fEvNum);
-	fSettingsTree->GetEntry(fEvNum);
 	fEvNum++;
       }
       else{
@@ -433,7 +433,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
             //Load another event
             if (fEvNum<fNEntries){
                 fRooTrackerTree->GetEntry(fEvNum);
-		fSettingsTree->GetEntry(fEvNum);
                 G4cout << "Skipped event# " << fEvNum - 1 << " (event vertex outside detector)" << G4endl;
                 fEvNum++;
             }
