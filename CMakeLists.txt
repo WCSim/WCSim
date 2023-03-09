@@ -82,6 +82,14 @@ endif()
 # Set flag for git version to be used as c++ preprocessor macro
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGIT_HASH=\"\\\"`cd ${PROJECT_SOURCE_DIR};git describe --always --long --tags --dirty`\\\"\"")
 
+option (WCSim_DEBUG_COMPILE_FLAG
+  "Toggle the gcc debug flag"
+  OFF
+)
+if(WCSim_DEBUG_COMPILE_FLAG STREQUAL ON)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+endif()
+
 
 #########
 # data and macros copy
