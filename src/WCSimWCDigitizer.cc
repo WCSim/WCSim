@@ -214,7 +214,9 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
   if(detectorElement=="tank") G4cout << "TANK 20in # ";
   if(detectorElement=="tankPMT2") G4cout << "TANK mPMT # ";
   if(detectorElement=="OD")   G4cout << "OD # ";
-  G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
+#ifdef WCSIMWCDIGITIZER_VERBOSE
+  G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << " hits" << G4endl;
+#endif
 
   //********************************************************************************************************* TD 2019.07.16 : to take PMT saturation effect into account *********************
   double saturThreshold = myDetector->GetParameters()->GetPMTSatur();                                                                                             
@@ -424,17 +426,18 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	absoluteindex+=(*WCHCPMT)[i]->GetTotalPe();
     }//i (WCHCPMT->entries())
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-  G4cout<<"WCSimWCDigitizerSKI::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << "\n";
+  G4cout<<"WCSimWCDigitizerSKI::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << " digits" << G4endl;
 #endif
   //******************************************************************************************************** TD 2019.07.16 : to take PMT saturation effect into account *********************
   //file.close();
   //*****************************************************************************************************************************************************************************************
 
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-  G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
+  if(NPMTS_VERBOSE > 0 || VERBOSE_PMT > 0)
+    G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
   for (G4int idigi = 0 ; idigi < DigiStore->entries() ; idigi++){
     int tubeid = (*DigiStore)[idigi]->GetTubeID();
-    if(tubeid < NPMTS_VERBOSE) {
+    if(tubeid < NPMTS_VERBOSE || tubeid == VERBOSE_PMT) {
       std::map< int, std::vector<int> > comp = (*DigiStore)[idigi]->GetDigiCompositionInfo();
       for(size_t i = 0; i < comp.size(); i++){
 	G4cout << "tube "  << tubeid

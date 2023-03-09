@@ -295,17 +295,17 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     G4String name =   WCIDCollectionName;
     G4int collectionID = SDman->GetCollectionID(name);
     if(collectionID>-1) WCHC = (WCSimWCHitsCollection*)HCE->GetHC(collectionID);
-    G4cout << G4endl;
     G4cout << "WCSimEventAction::EndOfEventAction ☆ (WCSimWCHitsCollection*)" << WCIDCollectionName
-           << " has " << WCHC->entries() << " entries" << G4endl;
-    G4cout << G4endl;
+           << " has " << WCHC->entries() << " entries (hit PMTs)" << G4endl;
   }
 
   //B.Q for the hybrid version
   WCSimWCHitsCollection* WCHC2 = 0;
   G4String WCIDCollectionName2;
-  if(detectorConstructor->GetHybridPMT()) WCIDCollectionName2 = detectorConstructor->GetIDCollectionName2();
-  G4cout << "Load the second PMT type hits" << G4endl;
+  if(detectorConstructor->GetHybridPMT()) {
+    WCIDCollectionName2 = detectorConstructor->GetIDCollectionName2();
+    G4cout << "Load the second PMT type hits" << G4endl;
+  }
 
   if (HCE)
     {
@@ -1004,6 +1004,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
     SavedOptions = true;
   }
+  G4cout << "End of event " << fEvNum << G4endl << G4endl;
 }
 
 G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
