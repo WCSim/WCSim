@@ -415,9 +415,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
 
       // Calculate offset from neutrino generation plane to centre of nuPRISM detector (in metres)
-      double z_offset = fNuPlanePos[2]/100.0;
-      double y_offset = 0;//(fNuPrismRadius/zDir)*yDir;
-      double x_offset = fNuPlanePos[0]/100.0;
+      float z_offset = fNuPlanePos[2]/100.0;
+      float y_offset = 0;//(fNuPrismRadius/zDir)*yDir;
+      float x_offset = fNuPlanePos[0]/100.0;
 
       //Subtract offset to get interaction position in WCSim coordinates
         xPos = fTmpRootrackerVtx->EvtVtx[0] - x_offset;

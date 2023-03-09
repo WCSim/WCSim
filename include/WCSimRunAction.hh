@@ -173,8 +173,8 @@ public:
   double WCDetCentre[3];
   double WCDetRadius;
   double WCDetHeight;
-  double fNuPlanePos[3];
-  double fNuPrismRadius;
+  float  fNuPlanePos[3];
+  float  fNuPrismRadius;
 
   WCSimRunActionMessenger* messenger;
   int ntuples;  // 1 for ntuples to be written

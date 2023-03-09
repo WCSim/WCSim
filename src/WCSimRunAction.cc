@@ -620,7 +620,7 @@ void WCSimRunAction::FillGeoTree(){
 
       if(fSettingsInputTree){
           fSettingsInputTree->GetEntry(0);
-          double z_offset = fNuPlanePos[2]/100.0;
+          float z_offset = fNuPlanePos[2]/100.0;
           WCDetCentre[2] += z_offset;
           G4cout << "WCDetCentre[2] = " << WCDetCentre[2] << G4endl;
       }
@@ -778,7 +778,7 @@ void WCSimRunAction::FillFlatGeoTree(){
  
     if(fSettingsInputTree){
       fSettingsInputTree->GetEntry(0);
-      double z_offset = fNuPlanePos[2]/100.0;
+      float z_offset = fNuPlanePos[2]/100.0;
       WCDetCentre[2] += z_offset;
       G4cout << "WCDetCentre[2] = " << WCDetCentre[2] << G4endl;
     }

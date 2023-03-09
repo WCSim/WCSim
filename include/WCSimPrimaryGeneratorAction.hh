@@ -158,9 +158,9 @@ private:
   TTree* fRooTrackerTree;
   TTree* fSettingsTree;
   NRooTrackerVtx* fTmpRootrackerVtx;
-  double fNuPrismRadius;
-  double fNuBeamAng;
-  double fNuPlanePos[3];
+  float  fNuPrismRadius;
+  float  fNuBeamAng;
+  float  fNuPlanePos[3];
 
 
   // Use Histograms to generate cosmics
