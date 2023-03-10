@@ -1455,6 +1455,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 	barrelCellHeight/2.*zflip};
   G4double borderAnnulusRmin[3] = { WCIDRadius, innerAnnulusRadius, innerAnnulusRadius};
   G4double borderAnnulusRmax[3] = {outerAnnulusRadius, outerAnnulusRadius,outerAnnulusRadius};
+
+  // Update WCBorderPMTOffset to avoid overlaps of PMT volume with beveled edge
+  WCBorderPMTOffset = std::max(WCBorderPMTOffset,
+                        std::abs(borderAnnulusZ[0] - borderAnnulusZ[1]));
+
+
   G4Polyhedra* solidWCBarrelBorderRing = new G4Polyhedra("WCBarrelBorderRing",
 														 0.*deg, // phi start
 														 totalAngle,
@@ -2006,7 +2012,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 	  for(G4long j = 0; j < WCPMTperCellVertical; j++){
 		G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius,
 												   -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
-												   (-(barrelCellHeight-WCBorderPMTOffset)/2.+(j+0.5)*verticalSpacing)*zflip);
+												   (-(barrelCellHeight/2.-WCBorderPMTOffset)+(j+0.5)*verticalSpacing)*zflip);
+
 #ifdef ACTIVATE_IDPMTS
 #ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
 		G4cout << "Add PMT on barrel cell " << i << ", " << j << G4endl;
@@ -2051,7 +2058,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 		for(G4long j = 0; j < WCPMTperCellVertical; j++){
 		  G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 													 towerWidth/2.-(i+0.5)*horizontalSpacingExtra,
-													 (-(barrelCellHeight-WCBorderPMTOffset)/2.+(j+0.5)*verticalSpacing)*zflip);
+													 (-(barrelCellHeight/2.-WCBorderPMTOffset)+(j+0.5)*verticalSpacing)*zflip);
 		  PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry 
 		  //axes of the cell 
 #ifdef ACTIVATE_IDPMTS
