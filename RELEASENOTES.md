@@ -14,7 +14,7 @@ The main feature of this release is the addition of mPMTs (multiple 3" PMTs in a
 
 Note that with this release, the recommended version of Geant4 is now 10.3.3
 
-Output file changes
+Default output `.root` file changes
 * `fTriggerInfo` in `WCSimRootTrigger` is now a `std::vector<Double_t>` (previously was a `std::vector<Float_t>`)
 * Addition of `fParentId` to `WCSimRootTrack`
 * Addition of `fmPMTID` and `fmPMT_PMTID` to all of `WCSimRootCherenkovHit`, `WCSimRootCherenkovDigiHit`, and `WCSimRootPMT`
@@ -34,8 +34,12 @@ New features
 * Pull Request [nuPRISM/#54 @nickwp](https://github.com/nuPRISM/WCSim/pull/54): Add git hash to output settings tree. See also nuPRISM/#55
 * Pull Request [nuPRISM/#52 @nickwp](https://github.com/nuPRISM/WCSim/pull/52): Add particle tracking options
 * Pull Request [nuPRISM/#48 @mshinoki](https://github.com/nuPRISM/WCSim/pull/48): Add WCTE Geometry
+* Addition of light injector simulation for primary particle generation
+* Addition of nRooTracker input file reading for generating physics events
+* Addition of extra `_flat.root` output file format. Note that this has not been validated during the merge, and could contain incorrect or incomplete information - this file is currently an unofficial solution in WCSim/WCSim
 
 Updates
+* Deactivation of some old HK geometries. These can be reactivated if they are really required for studies, but they are no longer supported
 * Pull Request [tdealtry/#1 @spradlin](https://github.com/tdealtry/WCSim/pull/1): Correct/suppress most compiler warnings
 * Pull Request [#338 @guiguem](https://github.com/WCSim/WCSim/pull/338): Upgrades to cmake installation. See all #341 #342 #344
 * Pull Request [bquilain/#17 @JacekHoleczek](https://github.com/bquilain/WCSim/pull/17): Various small building improvements
