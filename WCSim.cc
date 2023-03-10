@@ -21,18 +21,43 @@
 #include "G4UIExecutive.hh"
 #endif
 
-void file_exists(const char * filename) {
-  bool exists = access(filename, F_OK) != -1;
-  if(!exists) {
-    G4cerr << filename << " not found or inaccessible. Exiting" << G4endl;
-    exit(-1);
+#include <string>
+#include <sstream>
+
+
+namespace {     // Anonymous namespace for local helper functions and classes
+  enum class WCSimExeMode {Batch, Interactive, Unknown};
+
+  bool file_exists(const char * filename) {
+    bool exists = access(filename, F_OK) != -1;
+    if(!exists) {
+      G4cerr << filename << " not found or inaccessible." << G4endl;
+    }
+    return exists;
+  }
+
+  std::string usage_statement(const std::string exename) {
+    std::stringstream msg;
+#ifdef G4UI_USE
+    msg << "interactive usage: " << exename << "\n"
+        << "    No command-line arguments.  An interactive UI will be launched after setup.\n\n";
+#else
+    msg << "Not built for interactive use.\n\n";
+#endif
+
+    msg << "batch usage: " << exename << " steering_macro tuning_par_macro\n"
+        << "    steering_macro:  name of main WCSim execution macro file\n"
+        << "    tuning_par_macro:  name of a macro file containing only tuning parameter\n"
+        << "        commands recognized by WCSimTuningMessenger\n";
+
+    return msg.str();
   }
 }
 
 
 int main(int argc,char** argv)
 {
-
+  WCSimExeMode exemode = WCSimExeMode::Unknown;
 
   // Construct the default run manager
   G4RunManager* runManager = new G4RunManager;
@@ -44,26 +69,40 @@ int main(int argc,char** argv)
   //  construction is done
   WCSimTuningParameters* tuningpars = new WCSimTuningParameters();
 
-  if(argc != 3){
-      G4cout << "WCSim requires 2 mac-files:" << G4endl;
-      G4cout << "\tUsage: WCSim {input.mac} {tuning.mac}" << G4endl;
-      G4cout << "TODO: restore the no-arguments mode of running, where you can type your .mac arguments directly into the G4 command prompt" << G4endl;
+  // Execute command for processing input macros
+  const G4String execommand = "/control/execute ";
+
+  // Check arguments, set execution mode and perform some prep.
+  switch(argc) {
+#ifdef G4UI_USE
+    case 1 :    // Interactive mode with no command-line arguments
+      exemode = WCSimExeMode::Interactive;
+      G4cout << "Entering interactive mode after setup." << G4endl;
+      G4cout << "Using default tuning parameters." << G4endl;
+      break;
+#endif
+
+    case 3 :    // Batch mode with two command-line arguments
+      // Check presence of input files
+      if( file_exists(argv[1]) && file_exists(argv[2]) ) {
+        exemode = WCSimExeMode::Batch;
+        // Process tuning parameters
+        G4cout << "Processing tuning parameter file " << argv[2] << G4endl;
+        UI->ApplyCommand(execommand + G4String(argv[2]));
+        break;
+      }
+
+    // Otherwise proceed to default exit condition
+    default:    // Unrecognized number of valid command line arguments
+      // Print usage statement
+      G4cout << usage_statement(argv[0]) << G4endl;
+
+      // Clean up
       delete runManager;
+
+      // Exit.
       return -1;
   }
-  // Get the tuning parameters
-  //hack B.Q
-  G4cout << "B.Q: Read argv[2], which should contains the tuning parameters" << G4endl;
-  G4String fileName2 = argv[2];
-  file_exists(fileName2);
-  if(fileName2 == "vis.mac"){
-    G4cout << "ERROR: Execute without arg for interactive mode" << G4endl;
-    //return -1;
-  }
-  G4String command2 = "/control/execute ";
-  UI->ApplyCommand(command2+fileName2);
-  //file_exists("macros/tuning_parameters.mac");
-  //UI->ApplyCommand("/control/execute macros/tuning_parameters.mac");
 
   // define random number generator parameters
   WCSimRandomParameters *randomparameters = new WCSimRandomParameters();
@@ -126,41 +165,30 @@ int main(int argc,char** argv)
   // Initialize G4 kernel
   runManager->Initialize();
 
-  if (argc==1)   // Define UI terminal for interactive mode  
-  { 
-
-    // Start UI Session
-    // G4UIsession* session =  new G4UIterminal(new G4UItcsh);
-
-    //using working example N04 for Qt UI Compatible code
-#ifdef G4UI_USE
-    G4UIExecutive * ui = new G4UIExecutive(argc,argv);
-#ifdef G4VIS_USE
-    // Visualization Macro
-    UI->ApplyCommand("/control/execute WCSim.mac");
-#endif
-    ui->SessionStart();
-    delete ui;
-#endif
-
-    // Start Interactive Mode
-    // session->SessionStart();
-
-    // delete session;
-  }
-  else           // Batch mode
-  { 
-    G4cout << "WE WILL EXECUTE THE MAC FILE READING SO IN BATCH MODE" << G4endl;
-
-    G4String command = "/control/execute ";
-    G4String fileName = argv[1];
-    file_exists(fileName);
-    if(fileName == "vis.mac"){
-      G4cout << "ERROR: Execute without arg for interactive mode" << G4endl;
-      //return -1;
+  switch(exemode) {
+    case WCSimExeMode::Batch : {
+      G4cout << "WE WILL EXECUTE " << argv[1] << " IN BATCH MODE" << G4endl;
+      UI->ApplyCommand(execommand + G4String(argv[1]));
+      break;
     }
-    UI->ApplyCommand(command+fileName);
 
+    case WCSimExeMode::Interactive : {
+#ifdef G4UI_USE
+      // Launch the interactive UI
+      G4UIExecutive * ui = new G4UIExecutive(argc,argv);
+      ui->SessionStart();
+
+      // Clean it up on exit
+      delete ui;
+#else
+      G4cerr << "SOMETHING IS WRONG.  Attempt to execute in interactive mode without being built for interactive mode." << G4endl;
+#endif
+      break;
+    }
+
+    case WCSimExeMode::Unknown : {
+      G4cerr << "SOMETHING IS WRONG.  Attempt to execute in undefined mode." << G4endl;
+    }
   }
 
   delete visManager;
