@@ -137,19 +137,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
-  /*
   //BQ: Updated with new HK OD size (2020/12/06). Simply assume no tyvek thickness or dead space.
-  WCODTyvekSheetThickness = 0.*m;
-  WCODDeadSpace = 0.*m;
-  WCODHeightWaterDepth = 2*m + 0.6*m;//OD + support structure
-  WCODLateralWaterDepth = 1*m + 0.6*m;//OD + support structure
-  */
-  WCLength    = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness);
+  WCLength    = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness + 1*mm);
   WCRadius    = (outerAnnulusRadius + WCODLateralWaterDepth)/cos(dPhi/2.) ;
-  if(isODConstructed){
-    WCLength    = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness);
-    WCRadius    = (outerAnnulusRadius + WCODLateralWaterDepth)/cos(dPhi/2.) ;
-  }
 #ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
   G4cout
 	<< "GEOMCHECK2 WCLength \t" << WCLength << G4endl
