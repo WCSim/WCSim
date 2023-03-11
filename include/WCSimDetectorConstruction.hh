@@ -821,6 +821,11 @@ private:
   G4double innerradius;
 
   // Variables related to MultiPMTs
+  /* TODO:  pmtModuleHeight should be part of the WCSimPMTObject.
+   *   Magic number; includes puck and single PMT support, not PMT base.
+   *   The height of pmt module for solid works design
+  */
+  static constexpr G4double pmtModuleHeight = 59.62*CLHEP::mm;
   G4double vessel_cyl_height;
   G4double vessel_radius_curv;                        // radius of the sphere to determine curvature of cap of pressure vessel
   G4double vessel_radius;                             // radius of the pressure vessel (spherical cap)

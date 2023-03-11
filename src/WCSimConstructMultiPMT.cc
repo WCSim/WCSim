@@ -296,7 +296,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
   // origin is center of upward cylinder
   G4LogicalVolume *logic_mPMT_container;
   //necessary to make concentric shells because can Mother can only contain parametrized daughters.
-  G4double innerR_curv_container = mPMT_vessel_radius_curv - mPMT_outer_material_d - 54.*mm;  //-expose - dist_pmt_vessel
+  G4double innerR_curv_container = mPMT_vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight;  //-expose - dist_pmt_vessel
   G4double outerR_curv_container = mPMT_vessel_radius_curv - mPMT_outer_material_d;
 
   //vessel_curv - vessel_height is conserved for all concentric caps !
@@ -411,7 +411,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 
   // individual PMTs z=0 is offset by position_z_offset (see ConstructPMT) for n>1
   G4double pmtDistance = innerR_curv_container; // Inner radius od the DOM 
-  pmtDistance -= (mPMT_vessel_radius_curv - mPMT_outer_material_d - 54.*mm); 
+  pmtDistance -= (mPMT_vessel_radius_curv - mPMT_outer_material_d - pmtModuleHeight); 
   G4cout << "Distance from the Z axis and corrected for z0 of individual PMTs = " <<  pmtDistance << " mm" << G4endl;
   
   G4LogicalVolume* logicWCPMT = ConstructPMT(PMTName, CollectionName,detectorElement,nIDPMTs);
@@ -519,7 +519,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructMultiPMT(G4String PMTName, 
 			  kZAxis,                           // Are placed along this axis
 			  NbOfTotPmt,                       // Number of PMTs (replica's)
 			  pmtParam_id,                      // The parametrisation
-			  true);                            // checking overlaps
+			  checkOverlaps);                   // checking overlaps
   
   
   // Need a 4mm tolerance : still not perfect though because overlaps with mother volume happen still..
