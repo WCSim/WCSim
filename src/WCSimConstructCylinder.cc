@@ -80,9 +80,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
   WCIDRadius = WCIDDiameter/2.;
   // the number of regular cell in phi direction:
-  WCBarrelRingNPhi     = (G4int)(WCBarrelNumPMTHorizontal/WCPMTperCellHorizontal); 
+  WCBarrelRingNPhi     = WCBarrelNumPMTHorizontal/WCPMTperCellHorizontal; 
   // the part of one ring, that is covered by the regular cells: 
-  totalAngle  = 2.0*pi*rad*(WCBarrelRingNPhi*WCPMTperCellHorizontal/WCBarrelNumPMTHorizontal) ;
+  totalAngle  = 2.0*pi*rad*WCBarrelRingNPhi*WCPMTperCellHorizontal/WCBarrelNumPMTHorizontal;
   // angle per regular cell:
   dPhi        =  totalAngle/ WCBarrelRingNPhi;
   // it's height:
@@ -350,7 +350,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   G4Polyhedra* solidWCBarrelAnnulus = new G4Polyhedra("WCBarrelAnnulus",
 													  0.*deg, // phi start
 													  totalAngle, 
-													  (G4int)WCBarrelRingNPhi, //NPhi-gon
+													  WCBarrelRingNPhi, //NPhi-gon
 													  2,
 													  mainAnnulusZ,
 													  mainAnnulusRmin,
@@ -383,7 +383,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   G4Polyhedra* solidWCBarrelRing = new G4Polyhedra("WCBarrelRing",
                                                    0.*deg,//+dPhi/2., // phi start
                                                    totalAngle, //phi end
-                                                   (G4int)WCBarrelRingNPhi, //NPhi-gon
+                                                   WCBarrelRingNPhi, //NPhi-gon
                                                    2,
                                                    RingZ,
                                                    mainAnnulusRmin,
@@ -400,7 +400,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					logicWCBarrelRing,
 					logicWCBarrelAnnulus,
 					kZAxis,
-					(G4int)WCBarrelNRings-2,
+					WCBarrelNRings-2,
 					barrelCellHeight);
 
   if(!debugMode)
@@ -441,7 +441,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					logicWCBarrelCell,
 					logicWCBarrelRing,
 					kPhi,
-					(G4int)WCBarrelRingNPhi,
+					WCBarrelRingNPhi,
 					dPhi,
                     0.); 
 
@@ -613,7 +613,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					  logicWCExtraTowerCell,
 					  logicWCExtraTower,
 					  kZAxis,
-					  (G4int)WCBarrelNRings-2,
+					  WCBarrelNRings-2,
 					  barrelCellHeight);
     
     G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
@@ -900,8 +900,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
 		if ((sqrt(xoffset*xoffset + yoffset*yoffset) + hybrid?std::max(WCPMTRadius,WCPMTRadius2):WCPMTRadius) < WCTVEdgeLimit) {//B.Q: for hybrid configuration
 
-		  G4int horizontalModulo = (i+TVNCell) - WCPMTperCellHorizontal*std::floor((i+TVNCell)/WCPMTperCellHorizontal);
-		  G4int verticalModulo = (j+TVNCell) - WCPMTperCellVertical*std::floor((j+TVNCell)/WCPMTperCellVertical);
+		  G4int horizontalModulo = (i+TVNCell) % WCPMTperCellHorizontal;
+		  G4int verticalModulo = (j+TVNCell) % WCPMTperCellVertical;
 
 		  //G4VPhysicalVolume* physiCapPMT =
 		  new G4PVPlacement(	0,						// no rotation
@@ -959,8 +959,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	G4cout << "Debug B.Q : Horizontal spacing = "<< horizontalSpacing << " vertical spacing = " << verticalSpacing << G4endl;
 #endif
 	
-	for(G4double i = 0; i < WCPMTperCellHorizontal; i++){
-	  for(G4double j = 0; j < WCPMTperCellVertical; j++){
+	for(G4long i = 0; i < WCPMTperCellHorizontal; i++){
+	  for(G4long j = 0; j < WCPMTperCellVertical; j++){
 #ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
 		G4cout << "Adding barrel PMT in cell " << i << ", " << j << G4endl;
 #endif	  
@@ -976,7 +976,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 						  pmtname,//"WCPMT",             // its name
 						  logicWCBarrelCell,         // its mother volume
 						  false,                     // no boolean operations
-						  (int)(i*WCPMTperCellVertical+j),
+						  i*WCPMTperCellVertical+j,
 						  checkOverlapsPMT);                       
 #endif
 
@@ -1008,8 +1008,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	  G4double horizontalSpacingExtra   = towerWidth/(WCBarrelNumPMTHorizontal-WCBarrelRingNPhi*WCPMTperCellHorizontal);
 	  // verticalSpacing is identical to that for normal cell.
 
-	  for(G4double i = 0; i < (WCBarrelNumPMTHorizontal-WCBarrelRingNPhi*WCPMTperCellHorizontal); i++){
-		for(G4double j = 0; j < WCPMTperCellVertical; j++){
+	  for(G4long i = 0; i < (WCBarrelNumPMTHorizontal-WCBarrelRingNPhi*WCPMTperCellHorizontal); i++){
+		for(G4long j = 0; j < WCPMTperCellVertical; j++){
 		  G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 													 towerWidth/2.-(i+0.5)*horizontalSpacingExtra,
 													 -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
@@ -1025,7 +1025,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 							pmtname,             // its name
 							logicWCExtraTowerCell,         // its mother volume
 							false,                     // no boolean operations
-							(int)(i*WCPMTperCellVertical+j),
+							i*WCPMTperCellVertical+j,
 							checkOverlapsPMT);                       
 #endif
 		  // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
@@ -1194,8 +1194,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
     WCPMTODPercentCoverage = RealODCoverage*100;
     WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
 
-    if((G4int)WCPMTODperCellHorizontal == 0 && (G4int)WCPMTODperCellVertical == 0){
-      ComputeWCODPMT((G4int)NPMTODByCell,&WCPMTODperCellHorizontal,&WCPMTODperCellVertical);
+    if(WCPMTODperCellHorizontal == 0 && WCPMTODperCellVertical == 0){
+      ComputeWCODPMT((G4int)NPMTODByCell,WCPMTODperCellHorizontal,WCPMTODperCellVertical);
     }
 
     G4double horizontalODSpacing = barrelODCellWidth/WCPMTODperCellHorizontal;
@@ -1203,8 +1203,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
     if(WCODPMTShift > barrelODCellWidth/2. - WCPMTODRadius) WCODPMTShift = 0.*cm;
 
-    for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
-      for(G4double j = 0; j < WCPMTODperCellVertical; j++){
+    for(G4long i = 0; i < WCPMTODperCellHorizontal; i++){
+      for(G4long j = 0; j < WCPMTODperCellVertical; j++){
 		G4cout << "Adding OD PMT in cell " << i << ", " << j << G4endl;
         G4ThreeVector Container =  G4ThreeVector(WCODRadius,
                                                  -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
@@ -1220,7 +1220,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 						  "WCBarrelCellODContainer",  // its name
 						  logicWCBarrelCell,         // its mother volume
 						  false,                     // no boolean operations
-						  (int)(i*WCPMTODperCellVertical+j),
+						  i*WCPMTODperCellVertical+j,
 						  checkOverlapsPMT);
 
 
@@ -1286,12 +1286,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
       G4double towerWidthOD = WCODRadius*tan(2*pi-totalAngle);
       // We don't want the same number of OD PMTs squished horizontally so we scale down the horizontal PMTs by the width of the extra tower
       G4double ratioOfWidths = (double)(WCPMTODperCellHorizontal)*(towerWidthOD/barrelODCellWidth);
-      G4int WCPMTODperCellHorizontalExtra = (int)(ratioOfWidths+0.5);
+      G4long WCPMTODperCellHorizontalExtra = std::lround(ratioOfWidths);
       G4double horizontalODSpacingExtra   = towerWidthOD/(double)WCPMTODperCellHorizontalExtra;
       // verticalODSpacing is identical to that for normal cell.
 
-      for(G4double i = 0; i < (WCPMTODperCellHorizontalExtra); i++){
-        for(G4double j = 0; j < WCPMTODperCellVertical; j++){
+      for(G4long i = 0; i < (WCPMTODperCellHorizontalExtra); i++){
+        for(G4long j = 0; j < WCPMTODperCellVertical; j++){
 		  G4cout << "Adding OD PMT in cell " << i << ", " << j << G4endl;
 		  G4ThreeVector Container =  G4ThreeVector((WCODRadius)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 												   -towerWidthOD/2.+(i+0.5)*horizontalODSpacingExtra,
@@ -1306,7 +1306,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 							"WCExtraBarrelCellODContainer",             // its name
 							logicWCExtraTowerCell,         // its mother volume
 							false,                     // no boolean operations
-							(int)(i*WCPMTODperCellVertical+j),
+							i*WCPMTODperCellVertical+j,
 							checkOverlapsPMT);
 
 
@@ -1458,7 +1458,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   G4Polyhedra* solidWCBarrelBorderRing = new G4Polyhedra("WCBarrelBorderRing",
 														 0.*deg, // phi start
 														 totalAngle,
-														 (G4int)WCBarrelRingNPhi, //NPhi-gon
+														 WCBarrelRingNPhi, //NPhi-gon
 														 3,
 														 borderAnnulusZ,
 														 borderAnnulusRmin,
@@ -1513,7 +1513,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                     logicWCBarrelBorderCell,
                     logicWCBarrelBorderRing,
                     kPhi,
-                    (G4int)WCBarrelRingNPhi,
+                    WCBarrelRingNPhi,
                     dPhi,
                     0.);
 
@@ -1670,7 +1670,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
       = new G4Polyhedra("WCCap",
 						0.*deg, // phi start
 						totalAngle, //phi end
-						(int)WCBarrelRingNPhi, //NPhi-gon
+						WCBarrelRingNPhi, //NPhi-gon
 						4, // 2 z-planes
 						capZ, //position of the Z planes
 						capRmin, // min radius at the z planes
@@ -1684,7 +1684,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
       = new G4Polyhedra("WCCapMainPart",
 						0.*deg, // phi start
 						totalAngle, //phi end
-						(int)WCBarrelRingNPhi, //NPhi-gon
+						WCBarrelRingNPhi, //NPhi-gon
 						4, // 2 z-planes
 						capZ, //position of the Z planes
 						capRmin, // min radius at the z planes
@@ -1935,8 +1935,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 		  {
 		
 			//B.Q for Hybrid
-			G4int horizontalModulo = (i+CapNCell) - WCPMTperCellHorizontal*std::floor((i+CapNCell)/WCPMTperCellHorizontal);
-			G4int verticalModulo = (j+CapNCell) - WCPMTperCellVertical*std::floor((j+CapNCell)/WCPMTperCellVertical);
+			G4int horizontalModulo = (i+CapNCell) % WCPMTperCellHorizontal;
+			G4int verticalModulo = (j+CapNCell) % WCPMTperCellVertical;
 
 #ifdef DEBUG
 			//G4cout << "Debug B.Q, xoffset = " << xoffset << ", yoffset = " << yoffset << ", distance = " << dcenter  << G4endl;
@@ -2002,8 +2002,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   	G4cout << "Debug B.Q : place border pmt, spacing horiz = "  << horizontalSpacing << ", vertical = " << verticalSpacing*zflip << G4endl;
 #endif
 	
-	for(G4double i = 0; i < WCPMTperCellHorizontal; i++){
-	  for(G4double j = 0; j < WCPMTperCellVertical; j++){
+	for(G4long i = 0; i < WCPMTperCellHorizontal; i++){
+	  for(G4long j = 0; j < WCPMTperCellVertical; j++){
 		G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius,
 												   -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
 												   (-(barrelCellHeight-WCBorderPMTOffset)/2.+(j+0.5)*verticalSpacing)*zflip);
@@ -2018,7 +2018,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 						  pmtname,             // its name
 						  logicWCBarrelBorderCell,         // its mother volume
 						  false,                     // no boolean operations
-						  (int)(i*WCPMTperCellVertical+j),
+						  i*WCPMTperCellVertical+j,
 						  checkOverlapsPMT); 
 #endif
 
@@ -2047,8 +2047,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 	  G4double horizontalSpacingExtra   = towerWidth/(WCBarrelNumPMTHorizontal-WCBarrelRingNPhi*WCPMTperCellHorizontal);
 	  // verticalSpacing is identical to that for normal cell.
 
-	  for(G4double i = 0; i < (WCBarrelNumPMTHorizontal-WCBarrelRingNPhi*WCPMTperCellHorizontal); i++){
-		for(G4double j = 0; j < WCPMTperCellVertical; j++){
+	  for(G4long i = 0; i < (WCBarrelNumPMTHorizontal-WCBarrelRingNPhi*WCPMTperCellHorizontal); i++){
+		for(G4long j = 0; j < WCPMTperCellVertical; j++){
 		  G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 													 towerWidth/2.-(i+0.5)*horizontalSpacingExtra,
 													 (-(barrelCellHeight-WCBorderPMTOffset)/2.+(j+0.5)*verticalSpacing)*zflip);
@@ -2065,7 +2065,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 							"WCPMT",             // its name
 							logicWCExtraBorderCell,         // its mother volume
 							false,                     // no boolean operations
-							(int)(i*WCPMTperCellVertical+j),
+							i*WCPMTperCellVertical+j,
 							checkOverlapsPMT);
 #endif
 
@@ -2121,8 +2121,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
     G4double horizontalODSpacing = barrelODCellWidth/WCPMTODperCellHorizontal;
     const G4double verticalODSpacing   = barrelODCellHeight / WCPMTODperCellVertical;
 
-    for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
-      for(G4double j = 0; j < WCPMTODperCellVertical; j++){
+    for(G4long i = 0; i < WCPMTODperCellHorizontal; i++){
+      for(G4long j = 0; j < WCPMTODperCellVertical; j++){
         G4ThreeVector Container =  G4ThreeVector(WCODRadius,
                                                  -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                  -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
@@ -2135,7 +2135,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 						  "WCBorderCellODContainer",  // its name
 						  logicWCBarrelBorderCell,         // its mother volume
 						  false,                     // no boolean operations
-						  (int)(i*WCPMTODperCellVertical+j),
+						  i*WCPMTODperCellVertical+j,
 						  checkOverlapsPMT);
 
 
@@ -2164,13 +2164,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
       G4double towerWidthOD = WCODRadius*tan(2*pi-totalAngle);
       // We don't want the same number of OD PMTs squished horizontally so we scale down the horizontal PMTs by the width of the extra tower
       G4double ratioOfWidths = (double)(WCPMTODperCellHorizontal)*(towerWidthOD/barrelODCellWidth);
-      G4int WCPMTODperCellHorizontalExtra = (int)(ratioOfWidths+0.5);
+      G4long WCPMTODperCellHorizontalExtra = std::lround(ratioOfWidths);
       G4double horizontalODSpacingExtra   = towerWidthOD/(double)WCPMTODperCellHorizontalExtra;
       // verticalODSpacing is identical to that of a normal cell
 
 
-      for(G4double i = 0; i < (WCPMTODperCellHorizontalExtra); i++){
-        for(G4double j = 0; j < WCPMTODperCellVertical; j++){
+      for(G4long i = 0; i < (WCPMTODperCellHorizontalExtra); i++){
+        for(G4long j = 0; j < WCPMTODperCellVertical; j++){
           G4ThreeVector Container =  G4ThreeVector((WCODRadius)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 												   -towerWidthOD/2.+(i+0.5)*horizontalODSpacingExtra,
 												   -(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing);
@@ -2184,7 +2184,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 							"WCExtraBorderCellODContainer",             // its name
 							logicWCExtraBorderCell,         // its mother volume
 							false,                     // no boolean operations
-							(int)(i*WCPMTODperCellVertical+j),
+							i*WCPMTODperCellVertical+j,
 							checkOverlapsPMT);
 
         }
@@ -2198,6 +2198,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 
 }
 // This function finds the factors of a number and aims to minimise the difference between multiplied factors. This will result in a more square-like distribution of PMTs per cell.
+// ToDo:  Change the implementation to remove the recursion.  It looks like it can run away.
 void FindNiceFactors(G4int NPMT, G4double factors[2]){
   bool found = false;
   int difference = 100000;
@@ -2213,34 +2214,34 @@ void FindNiceFactors(G4int NPMT, G4double factors[2]){
   }
   if (!found){FindNiceFactors(NPMT-1, factors);}
 }
-void ComputeWCODPMT(G4int NPMT, G4double *NPMTHorizontal, G4double *NPMTVertical){
+void ComputeWCODPMT(const G4int NPMT, G4long& NPMTHorizontal, G4long& NPMTVertical){
   switch (NPMT) {
   case 0:
 	G4cout << "N PMTs for OD is equal 0, increase coverage" << G4endl;
-	*NPMTHorizontal = 1;
-	*NPMTVertical   = 1;
+	NPMTHorizontal = 1;
+	NPMTVertical   = 1;
 	break;
   case 1:
-	*NPMTHorizontal = 1;
-	*NPMTVertical   = 1;
+	NPMTHorizontal = 1;
+	NPMTVertical   = 1;
 	break;
   case 2:
-	*NPMTHorizontal = 1;
-	*NPMTVertical   = 2;
+	NPMTHorizontal = 1;
+	NPMTVertical   = 2;
 	break;
   case 3:
-	*NPMTHorizontal = 2;
-	*NPMTVertical   = 2;
+	NPMTHorizontal = 2;
+	NPMTVertical   = 2;
 	break;
   case 4:
-	*NPMTHorizontal = 2;
-	*NPMTVertical   = 2;
+	NPMTHorizontal = 2;
+	NPMTVertical   = 2;
 	break;
   default:
 	G4double factors[2] = {1, 1};
 	FindNiceFactors(NPMT, factors);
-	*NPMTHorizontal = factors[1];
-	*NPMTVertical   = factors[0];
+	NPMTHorizontal = factors[1];
+	NPMTVertical   = factors[0];
 
 	break;
   }

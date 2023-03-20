@@ -816,13 +816,13 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     if(command == PMTODperCellHorizontal){
 	WCSimDetector->SetODEdited(true);
       G4cout << "Set nb of OD PMTs per cell Horizontally " << newValue << " " << G4endl;
-      WCSimDetector->SetWCPMTODperCellHorizontal((G4double)PMTODperCellHorizontal->GetNewIntValue(newValue));
+      WCSimDetector->SetWCPMTODperCellHorizontal(PMTODperCellHorizontal->GetNewIntValue(newValue));
     }
 
     if(command == PMTODperCellVertical){
 	WCSimDetector->SetODEdited(true);
       G4cout << "Set nb of OD PMTs per cell Vertically " << newValue << " " << G4endl;
-      WCSimDetector->SetWCPMTODperCellVertical((G4double)PMTODperCellVertical->GetNewIntValue(newValue));
+      WCSimDetector->SetWCPMTODperCellVertical(PMTODperCellVertical->GetNewIntValue(newValue));
     }
 
     if(command == PMTODPercentCoverage){
