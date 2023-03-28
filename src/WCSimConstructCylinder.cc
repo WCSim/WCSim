@@ -36,7 +36,6 @@
 
 //#define WCSIMCONSTRUCTCYLINDER_VERBOSE
 #define DEBUG
-#define MIRROR_WCSIM_DEVELOP_POLY
 //#define MIRROR_WCSIM_DEVELOP_SKIN
 /***********************************************************
  *
@@ -1435,21 +1434,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   // extra rings for the top and bottom of the annulus
   //---------------------------------------------------
   G4double borderAnnulusZ[3] = {
-#ifdef MIRROR_WCSIM_DEVELOP_POLY
-	-barrelCellHeight/2.*zflip,
-	(-barrelCellHeight/2.+(WCIDRadius-innerAnnulusRadius))*zflip,
-#else
 	(-barrelCellHeight/2.-(WCIDRadius-innerAnnulusRadius))*zflip, 
 	-barrelCellHeight/2.*zflip,
-#endif
 	barrelCellHeight/2.*zflip};
   G4double borderAnnulusRmin[3] = { WCIDRadius, innerAnnulusRadius, innerAnnulusRadius};
   G4double borderAnnulusRmax[3] = {outerAnnulusRadius, outerAnnulusRadius,outerAnnulusRadius};
-
-  // Update WCBorderPMTOffset to avoid overlaps of PMT volume with beveled edge
-  WCBorderPMTOffset = std::max(WCBorderPMTOffset,
-                        std::abs(borderAnnulusZ[0] - borderAnnulusZ[1]));
-
 
   G4Polyhedra* solidWCBarrelBorderRing = new G4Polyhedra("WCBarrelBorderRing",
 														 0.*deg, // phi start
@@ -1641,18 +1630,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   // -----------------------------------------------------------
   //crucial to match with borderAnnulusZ
   G4double capZ[4] =
-#ifdef MIRROR_WCSIM_DEVELOP_POLY
-	{ (-WCBlackSheetThickness-1.*mm)*zflip,
-	  WCBarrelPMTOffset*zflip,
-	  WCBarrelPMTOffset*zflip,
-	  (WCBarrelPMTOffset+(WCIDRadius-innerAnnulusRadius))*zflip} ;
-#else
 	{ (-WCBlackSheetThickness-1.*mm)*zflip,
 	  (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))*zflip,
 	  (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))*zflip,
 	  WCBarrelPMTOffset*zflip} ;
-#endif
-
   G4double capRmin[4] = {  0. , 0., 0., 0.} ;
   G4double capRmax[4] = {outerAnnulusRadius, outerAnnulusRadius,  WCIDRadius, innerAnnulusRadius};
   G4VSolid* solidWCCap;
@@ -1761,11 +1742,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
   // -------------------------------------------------------------------
   
   G4double capBlackSheetZ[4] = {-WCBlackSheetThickness*zflip, 0., 0.,
-#ifdef MIRROR_WCSIM_DEVELOP_POLY
-								WCBarrelPMTOffset*zflip};
-#else
 								(WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius)) *zflip};
-#endif
   G4double capBlackSheetRmin[4] = {0., 0., WCIDRadius, WCIDRadius};
   G4double capBlackSheetRmax[4] = {WCIDRadius+WCBlackSheetThickness, 
                                    WCIDRadius+WCBlackSheetThickness,
@@ -1989,9 +1966,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 	WCPMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
   
 
-  G4double barrelCellWidth = 2.*WCIDRadius*tan(dPhi/2.);
-  G4double horizontalSpacing   = barrelCellWidth/WCPMTperCellHorizontal;
-  G4double verticalSpacing     = (barrelCellHeight-WCBorderPMTOffset)/WCPMTperCellVertical;
+  const G4double barrelCellWidth = 2.*WCIDRadius*tan(dPhi/2.);
+  const G4double horizontalSpacing   = barrelCellWidth/WCPMTperCellHorizontal;
+  const G4double verticalSpacing     = barrelCellHeight/WCPMTperCellVertical;
+  //const G4double borderPMTOffset = borderAnnulusZ[0] - borderAnnulusZ[1];
+  const G4double borderPMTOffset = 0.0;
+
 
   if(placeBorderPMTs){
 #ifdef DEBUG
@@ -2002,7 +1982,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 	  for(G4long j = 0; j < WCPMTperCellVertical; j++){
 		G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius,
 												   -barrelCellWidth/2.+(i+0.5)*horizontalSpacing,
-												   (-(barrelCellHeight/2.-WCBorderPMTOffset)+(j+0.5)*verticalSpacing)*zflip);
+												   (-barrelCellHeight/2.+borderPMTOffset+(j+0.5)*verticalSpacing)*zflip);
 
 #ifdef ACTIVATE_IDPMTS
 #ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
@@ -2048,7 +2028,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
 		for(G4long j = 0; j < WCPMTperCellVertical; j++){
 		  G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 													 towerWidth/2.-(i+0.5)*horizontalSpacingExtra,
-													 (-(barrelCellHeight/2.-WCBorderPMTOffset)+(j+0.5)*verticalSpacing)*zflip);
+													 (-(barrelCellHeight/2.-borderPMTOffset)+(j+0.5)*verticalSpacing)*zflip);
 		  PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry 
 		  //axes of the cell 
 #ifdef ACTIVATE_IDPMTS

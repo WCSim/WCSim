@@ -586,7 +586,6 @@ private:
   G4double WCPMTRadius;
   G4double WCPMTExposeHeight;
   G4double WCBarrelPMTOffset;
-  G4double WCBorderPMTOffset;
 
   G4double WCPMTRadius2;//B. Quilain: for Hybrid configuration
   G4double WCPMTExposeHeight2;//B. Quilain: for Hybrid configuration

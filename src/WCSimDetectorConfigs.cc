@@ -375,7 +375,6 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCIDDiameter          = 64.8*m; // = 68m - 2*(60cm ID wall + 1m OD)(69m with 0.5m concrete each side)
   WCIDHeight            = 65.8*m; // = 71m - 2*(60cm ID wall + 2m OD)(72m with 0.5m concrete on each side)
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
-  WCBorderPMTOffset     = 0.25*m; // PMT offset in border cells. Also makes distance between PMTs shorter.
   WCPMTperCellHorizontal= 8;
   WCPMTperCellVertical  = 6;
   WCPMTPercentCoverage  = 40.0;
@@ -799,7 +798,6 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Geometry()
   WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
   WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height); //offset from vertical
-  WCBorderPMTOffset     = 0.25*m; // PMT offset in border cells. Also makes distance between PMTs shorter.
   WCIDVerticalPosition     = 0.;
 
   if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 20.0;
@@ -1428,7 +1426,6 @@ void WCSimDetectorConstruction::DumpDetectorConfigInfo()
 	<< "GEOMCHECK WCIDDiameter \t" << WCIDDiameter << G4endl
 	<< "GEOMCHECK WCIDHeight \t" << WCIDHeight << G4endl
 	<< "GEOMCHECK WCBarrelPMTOffset \t" << WCBarrelPMTOffset << G4endl
-	<< "GEOMCHECK WCBorderPMTOffset \t" << WCBorderPMTOffset << G4endl
 	<< "GEOMCHECK WCPMTperCellHorizontal \t" << WCPMTperCellHorizontal << G4endl
 	<< "GEOMCHECK WCPMTperCellVertical \t" << WCPMTperCellVertical << G4endl
 	<< "GEOMCHECK WCPMTPercentCoverage \t" << WCPMTPercentCoverage << G4endl
