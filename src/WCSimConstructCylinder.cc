@@ -58,9 +58,9 @@ G4Colour  cyan    (0.0, 1.0, 1.0) ;  // cyan
 G4Colour  magenta (1.0, 0.0, 1.0) ;  // magenta
 G4Colour  yellow  (1.0, 1.0, 0.0) ;  // yellow
 
-//#ifndef ACTIVATE_IDPMTS
-// #define ACTIVATE_IDPMTS
-//#endif
+#ifndef ACTIVATE_IDPMTS
+ #define ACTIVATE_IDPMTS
+#endif
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 {
@@ -81,6 +81,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   totalAngle  = 2.0*pi*rad*(WCBarrelRingNPhi*WCPMTperCellHorizontal/WCBarrelNumPMTHorizontal) ;
   // angle per regular cell:
   dPhi        =  totalAngle/ WCBarrelRingNPhi;
+
   // it's hight:
   barrelCellHeight  = (WCIDHeight-2.*WCBarrelPMTOffset)/WCBarrelNRings;
   // the hight of all regular cells together:
@@ -320,13 +321,25 @@ if(!debugMode)
 			"WCBarrelRing",
 			0,0,0);
 
+  G4double total_height_for_building = barrelCellHeight*((G4int)WCBarrelNRings - 2);
+  G4int WCBarrelNRings_for_building=WCBarrelNRings;
+  //  G4int WCBarrelNRings_for_building=38; // -> ? on barrel
+  //  G4int WCBarrelNRings_for_building=19; // -> ? on barrel
+  //  G4int WCBarrelNRings_for_building=13; // -> 1872 on barrel
+  //G4int WCBarrelNRings_for_building=10; // -> 1440 on barrel
+  //  G4int WCBarrelNRings_for_building=9; // -> 1296 on barrel
+  //G4int WCBarrelNRings_for_building=6; // -> 1008 on barrel
+  //  G4int WCBarrelNRings_for_building=4; // -> 576 on barrel
+  //  G4int WCBarrelNRings_for_building=3; // -> 432 on barrel (1 ring)
+  G4double barrelCellHeight_for_building  = total_height_for_building/((G4int)WCBarrelNRings_for_building-2);
+  std::cout << " qqq WCBarrelNRings_for_building " << (G4int)WCBarrelNRings_for_building - 2 << " barrelCellHeight_for_building " << barrelCellHeight_for_building << " total " << total_height_for_building << std::endl;
   G4VPhysicalVolume* physiWCBarrelRing = 
     new G4PVReplica("WCBarrelRing",
 		    logicWCBarrelRing,
 		    logicWCBarrelAnnulus,
 		    kZAxis,
-		    (G4int)WCBarrelNRings-2,
-		    barrelCellHeight);
+		    (G4int)WCBarrelNRings_for_building-2,
+		    barrelCellHeight_for_building);
 
 if(!debugMode)
   {G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(0,0.5,1.));
@@ -997,9 +1010,11 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
     // ------------------- //
     // COMPUTE OD COVERAGE //
     // ------------------- //
+	//	double WCPMTODRadius_for_building = 39.;
+	double WCPMTODRadius_for_building = WCPMTODRadius;
     G4double AreaRingOD = WCBarrelRingNPhi * barrelODCellWidth * barrelODCellHeight;
     G4double AreaCellOD = barrelODCellWidth * barrelODCellHeight;
-    G4double AreaPMTOD = 3.1415*std::pow(WCPMTODRadius,2);
+    G4double AreaPMTOD = 3.1415*std::pow(WCPMTODRadius_for_building,2);
     G4double NPMTODCovered = (AreaRingOD/AreaPMTOD) * WCPMTODPercentCoverage/100.;
 	if( WCPMTODPercentCoverageBarrel )
 	  NPMTODCovered = (AreaRingOD/AreaPMTOD) * WCPMTODPercentCoverageBarrel/100.;
@@ -1024,11 +1039,11 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
     // The number of PMTs per cell gives a slightly different coverage so the photocoverage
     // parameter must be changed here so the endcaps will have the same photocoverage as the barrel.
     WCPMTODPercentCoverage = RealODCoverage*100;
-    WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
+    WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius_for_building))));
 	if( WCPMTODPercentCoverageTop )
-	  WCODCapPMTSpacingTop  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverageTop)/(10.0*WCPMTODRadius))));
+	  WCODCapPMTSpacingTop  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverageTop)/(10.0*WCPMTODRadius_for_building))));
 	if( WCPMTODPercentCoverageBottom )
-	  WCODCapPMTSpacingBottom  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverageBottom)/(10.0*WCPMTODRadius))));
+	  WCODCapPMTSpacingBottom  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverageBottom)/(10.0*WCPMTODRadius_for_building))));
 
     if((G4int)WCPMTODperCellHorizontal == 0 && (G4int)WCPMTODperCellVertical == 0){
       ComputeWCODPMT((G4int)NPMTODByCell,&WCPMTODperCellHorizontal,&WCPMTODperCellVertical);
@@ -1043,12 +1058,17 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
     G4double horizontalODSpacing = barrelODCellWidth/WCPMTODperCellHorizontal;
     G4double verticalODSpacing   = barrelODCellHeight/WCPMTODperCellVertical;
 
-    if(WCODPMTShift > barrelODCellWidth/2. - WCPMTODRadius) WCODPMTShift = 0.*cm;
+    if(WCODPMTShift > barrelODCellWidth/2. - WCPMTODRadius_for_building) WCODPMTShift = 0.*cm;
+
+	G4int WCPMTODperCellHorizontal_for_building = WCPMTODperCellHorizontal;
+	G4int WCPMTODperCellVertical_for_building = WCPMTODperCellVertical;
+	//	G4int WCPMTODperCellHorizontal_for_building = 1;
+	//	G4int WCPMTODperCellVertical_for_building = 1;
 
 	int count_OD_barrel_cell=0;
 
-    for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
-      for(G4double j = 0; j < WCPMTODperCellVertical; j++){
+    for(G4double i = 0; i < WCPMTODperCellHorizontal_for_building; i++){
+      for(G4double j = 0; j < WCPMTODperCellVertical_for_building; j++){
         G4ThreeVector Container =  G4ThreeVector(WCODRadius,
                                                  -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                  -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
@@ -1063,7 +1083,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
                               "WCBarrelCellODContainer",  // its name
                               logicWCBarrelCell,         // its mother volume
                               false,                     // no boolean operations
-                              (int)(i*WCPMTODperCellVertical+j),
+                              (int)(i*WCPMTODperCellVertical_for_building+j),
                               true);
 
 		count_OD_barrel_cell++;
@@ -1072,7 +1092,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
 	int count_OD_barrel = count_OD_barrel_cell*WCBarrelRingNPhi*WCBarrelNRings;
 
-	//	std::cout << " count_OD_barrel_cell " << count_OD_barrel_cell << " WCBarrelRingNPhi "<< WCBarrelRingNPhi << " in ring " << WCBarrelRingNPhi*count_OD_barrel_cell << " WCBarrelNRings " << WCBarrelNRings << " in barrel " << count_OD_barrel << std::endl;
+	std::cout << " count_OD_barrel_cell " << count_OD_barrel_cell << " WCBarrelRingNPhi "<< WCBarrelRingNPhi << " in ring " << WCBarrelRingNPhi*count_OD_barrel_cell << " WCBarrelNRings " << WCBarrelNRings << " in barrel " << count_OD_barrel << std::endl;
 
     //-------------------------------------------------------------
     // Add PMTs in extra Tower if necessary
@@ -1262,7 +1282,7 @@ If used here, uncomment the SetVisAttributes(WClogic) line, and comment out the 
 
     G4cout << "#### OD ####" << "\n";
     G4cout << " total on cap: " << icopy << "\n";
-    G4cout << " Coverage was calculated to be: " << (icopy*WCPMTODRadius*WCPMTODRadius/(WCIDRadius*WCIDRadius)) << "\n";
+    G4cout << " Coverage was calculated to be: " << (icopy*WCPMTODRadius_for_building*WCPMTODRadius_for_building/(WCIDRadius*WCIDRadius)) << "\n";
     G4cout << "############" << "\n";
 
   } // END if isODConstructed
@@ -1856,11 +1876,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
     G4double barrelODCellHeight  = barrelCellHeight * (barrelODCellWidth/barrelCellWidth);
     G4double horizontalODSpacing = barrelODCellWidth/WCPMTODperCellHorizontal;
     G4double verticalODSpacing   = barrelODCellHeight / WCPMTODperCellVertical;
+	G4int WCPMTODperCellHorizontal_for_building = WCPMTODperCellHorizontal;
+	G4int WCPMTODperCellVertical_for_building = WCPMTODperCellVertical;
+	//	G4int WCPMTODperCellHorizontal_for_building = 1;
+	//	G4int WCPMTODperCellVertical_for_building = 1;
 
 	int countagain_OD_barrel=0;
 
-    for(G4double i = 0; i < WCPMTODperCellHorizontal; i++){
-      for(G4double j = 0; j < WCPMTODperCellVertical; j++){
+    for(G4double i = 0; i < WCPMTODperCellHorizontal_for_building; i++){
+      for(G4double j = 0; j < WCPMTODperCellVertical_for_building; j++){
         G4ThreeVector Container =  G4ThreeVector(WCODRadius,
                                                  -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
                                                  -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
@@ -1873,7 +1897,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4int zflip)
                               "WCBorderCellODContainer",  // its name
                               logicWCBarrelBorderCell,         // its mother volume
                               false,                     // no boolean operations
-                              (int)(i*WCPMTODperCellVertical+j),
+                              (int)(i*WCPMTODperCellVertical_for_building+j),
                               true);
 
 

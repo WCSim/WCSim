@@ -117,11 +117,13 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTODRadius->SetGuidance("Available options are:\n"
 						  "3inch\n"
 						  "5inch\n"
-						  "8inch\n");
+						  "8inch\n"
+			                          "BoxandLine20inchHQE\n");
   PMTODRadius->SetParameterName("PMTODRadius", false);
   PMTODRadius->SetCandidates("3inch "
-							 "5inch "
-                             "8inch ");
+			     "5inch "
+                             "8inch "
+			     "BoxandLine20inchHQE ");
   PMTODRadius->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   // OD Lateral water depth
@@ -402,6 +404,8 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
         WCSimDetector->SetWCPMTODSize("PMT5inch");
       }else if (newValue == "8inch"){
         WCSimDetector->SetWCPMTODSize("PMT8inch");
+      }else if (newValue == "BoxandLine20inchHQE"){
+        WCSimDetector->SetWCPMTODSize("BoxandLine20inchHQE");
       }
       G4cout << G4endl;
     }

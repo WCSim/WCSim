@@ -167,7 +167,7 @@ public:
   ///////////////////////////////
 
   void SetWCPMTODSize(G4String WCPMTODSize){
-    if(WCPMTODSize == "PMT8inch" || WCPMTODSize == "PMT5inch" || WCPMTODSize == "PMT3inch"){
+    if(WCPMTODSize == "PMT8inch" || WCPMTODSize == "PMT5inch" || WCPMTODSize == "PMT3inch" || WCPMTODSize == "BoxandLine20inchHQE" ){
       WCSimPMTObject *PMTOD = CreatePMTObject(WCPMTODSize, WCODCollectionName);
       WCPMTODName           = PMTOD->GetPMTName();
       WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
