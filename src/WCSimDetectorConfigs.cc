@@ -4,6 +4,9 @@
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
+
+#include <cmath>
+
 /***********************************************************
  *
  * This file contains the setup functions for various 
@@ -57,10 +60,10 @@ void WCSimDetectorConstruction::SuperK_20inchPMT_20perCent()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3; 
   WCPMTPercentCoverage  = 20.27;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -84,10 +87,10 @@ void WCSimDetectorConstruction::SuperK_20inchBandL_20perCent()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3; 
   WCPMTPercentCoverage  = 20.27;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -111,10 +114,10 @@ void WCSimDetectorConstruction::SuperK_12inchBandL_15perCent()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 14.59;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -138,10 +141,10 @@ void WCSimDetectorConstruction::SuperK_20inchBandL_14perCent()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 13.51;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -180,10 +183,10 @@ void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_14perCent()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 13.51;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -206,10 +209,10 @@ void WCSimDetectorConstruction::Cylinder_60x74_20inchBandL_40perCent()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 40.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -233,10 +236,10 @@ void WCSimDetectorConstruction::Cylinder_12inchHPD_15perCent()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 14.59;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -259,10 +262,10 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -286,10 +289,10 @@ void WCSimDetectorConstruction::SetHyperK_10inchGeometry()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -313,10 +316,10 @@ void WCSimDetectorConstruction::SetHyperK_8inchGeometry()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -340,10 +343,10 @@ void WCSimDetectorConstruction::SetHyperK_3inchGeometry()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -354,10 +357,10 @@ void WCSimDetectorConstruction::SetHyperK20pcWithODGeometry()
 {
   SetHyperKWithODGeometry();
   WCPMTPercentCoverage = 20.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-									/WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+									/WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
 }
 
 void WCSimDetectorConstruction::SetHyperKWithODGeometry()
@@ -378,8 +381,8 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCPMTPercentCoverage  = 40.0;
   WCBarrelNumPMTHorizontal = 288;
   WCBarrelNRings =
-      round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+      std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -457,10 +460,10 @@ void WCSimDetectorConstruction::SetHyperKGeometry_20perCent()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 20.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -513,11 +516,11 @@ void WCSimDetectorConstruction::SetHyperK_mPMTGeometry()
 	WCPMTperCellHorizontal= 1;//4;
 	WCPMTperCellVertical  = 1;//3;
 	if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
-	WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*mPMT_vessel_radius));
+	WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*mPMT_vessel_radius));
 	G4cout << "## Number of Horizontal PMT along diameter = " << WCBarrelNumPMTHorizontal << ", diameter = "<< WCIDDiameter << ", coverage = "<< WCPMTPercentCoverage << ", PMT radius = " << WCPMTRadius << ", test = " << WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius) << G4endl;
-	WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-	WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+	WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+	WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
 	WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
 	WCBlackSheetThickness = 2.0*cm;
 	WCAddGd               = false;
@@ -576,15 +579,15 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMTGeometry()
 
   if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 20.0;
   if(WCPMTPercentCoverage2==-1.) WCPMTPercentCoverage2  = 5.0;
-  WCPMTperCellHorizontal = round((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
+  WCPMTperCellHorizontal = std::lround((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
   WCPMTperCellVertical = WCPMTperCellHorizontal;
   //WCPMTperCellHorizontal= ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
   //WCPMTperCellVertical  = ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
 
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_radius)));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_radius)));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   //WCCapEdgeLimit        = WCIDDiameter/2.0 - 5*std::max(WCPMTExposeHeight,mPMT_vessel_tot_height);//3.0*cm;//WCIDDiameter/2.0 - std::max(WCPMTRadius,mPMT_vessel_tot_height);//WCPMTRadius;
   WCCapEdgeLimit        = WCIDDiameter/2.0 - std::max(WCPMTRadius,mPMT_vessel_radius);
   WCBlackSheetThickness = 2.0*cm;
@@ -649,17 +652,17 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT10PCGeometry()
 
   //WCPMTPercentCoverage  = 20.0;//40.0;//40.0;  
   //WCPMTPercentCoverage2  = 10.0;//20.0;
-  WCPMTperCellHorizontal = round((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
+  WCPMTperCellHorizontal = std::lround((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
   WCPMTperCellVertical = WCPMTperCellHorizontal;
   //WCPMTperCellHorizontal= ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
   //WCPMTperCellVertical  = ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
 
-  //WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_tot_height)));
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_radius)));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
+  //WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_tot_height)));
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_radius)));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
   //G4cout << "## Number of Horizontal PMT along diameter = " << WCBarrelNumPMTHorizontal << ", diameter = "<< WCIDDiameter << ", coverage = "<< WCPMTPercentCoverage << ", PMT radius = " << WCPMTRadius << ", test = " << WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius) << G4endl;
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   //WCCapEdgeLimit        = WCIDDiameter/2.0 - 5*std::max(WCPMTExposeHeight,mPMT_vessel_tot_height);//3.0*cm;//WCIDDiameter/2.0 - std::max(WCPMTRadius,mPMT_vessel_tot_height);//WCPMTRadius;
   WCCapEdgeLimit        = WCIDDiameter/2.0 - std::max(WCPMTRadius,mPMT_vessel_radius);
   WCBlackSheetThickness = 2.0*cm;
@@ -730,17 +733,17 @@ void WCSimDetectorConstruction::SetHyperK_HybridFakeGeometry()
   if(WCPMTPercentCoverage2==-1.) WCPMTPercentCoverage2  = 0.0;
   //WCPMTPercentCoverage  = 20.0;//20.0;//40.0;//40.0;  
   //WCPMTPercentCoverage2  = 0;//5.0;//20.0;
-  WCPMTperCellHorizontal = round((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
+  WCPMTperCellHorizontal = std::lround((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
   WCPMTperCellVertical = WCPMTperCellHorizontal;
   //WCPMTperCellHorizontal= ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
   //WCPMTperCellVertical  = ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
 
-  //WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_tot_height)));
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_radius)));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
+  //WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_tot_height)));
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_radius)));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
   //G4cout << "## Number of Horizontal PMT along diameter = " << WCBarrelNumPMTHorizontal << ", diameter = "<< WCIDDiameter << ", coverage = "<< WCPMTPercentCoverage << ", PMT radius = " << WCPMTRadius << ", test = " << WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius) << G4endl;
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   //WCCapEdgeLimit        = WCIDDiameter/2.0 - 5*std::max(WCPMTExposeHeight,mPMT_vessel_tot_height);//3.0*cm;//WCIDDiameter/2.0 - std::max(WCPMTRadius,mPMT_vessel_tot_height);//WCPMTRadius;
   WCCapEdgeLimit        = WCIDDiameter/2.0 - std::max(WCPMTRadius,mPMT_vessel_radius);
   WCBlackSheetThickness = 2.0*cm;
@@ -801,15 +804,15 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Geometry()
 
   if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 20.0;
   if(WCPMTPercentCoverage2==-1.) WCPMTPercentCoverage2  = 5.0;
-  WCPMTperCellHorizontal = round((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
+  WCPMTperCellHorizontal = std::lround((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
   WCPMTperCellVertical = WCPMTperCellHorizontal;
   //WCPMTperCellHorizontal= ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
   //WCPMTperCellVertical  = ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
 
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_radius)));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-									/WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_radius)));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+									/WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   //WCCapEdgeLimit        = WCIDDiameter/2.0 - 5*std::max(WCPMTExposeHeight,mPMT_vessel_tot_height);//3.0*cm;//WCIDDiameter/2.0 - std::max(WCPMTRadius,mPMT_vessel_tot_height);//WCPMTRadius;
   WCCapEdgeLimit        = WCIDDiameter/2.0 - std::max(WCPMTRadius,mPMT_vessel_radius);
   WCBlackSheetThickness = 2.0*cm;
@@ -1003,14 +1006,14 @@ void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double /*
     WCIDVerticalPosition     = verticalPosition;
 
 	WCBarrelPMTOffset     = WCPMTRadius;
-    WCPMTperCellHorizontal = 1.0;
-    WCPMTperCellVertical   = 1.0;
+    WCPMTperCellHorizontal = 1;
+    WCPMTperCellVertical   = 1;
 	if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
 	//WCPMTPercentCoverage   = PMTCoverage;
-    WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage/100.0)/WCPMTRadius);
+    WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage/100.0)/WCPMTRadius);
 
-    WCBarrelNRings        = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical));
-     WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+    WCBarrelNRings        = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))/WCPMTperCellVertical);
+     WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal;
     WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
     WCBlackSheetThickness = 2.0*cm;
     WCAddGd               = false;
@@ -1064,13 +1067,13 @@ void WCSimDetectorConstruction::SetNuPrism_mPMTGeometry()
     WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = mPMT_vessel_tot_height;
-    WCPMTperCellHorizontal = 2.0; // 2 per phi
-    WCPMTperCellVertical   = 1.0;
+    WCPMTperCellHorizontal = 2; // 2 per phi
+    WCPMTperCellVertical   = 1;
 
 	// Numbers below are based on R.Henderson's 832 module tank design
     WCBarrelNumPMTHorizontal = 40;
     WCBarrelNRings        = 16;
-    WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+    WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal;
 	// This is tuned to give a 6-5-5-4-3-1 config in one quarter of the cap
 	// And results in 832 mPMT modules as currently in Robert's Design
     WCCapEdgeLimit        = 3.3*m; 
@@ -1118,8 +1121,8 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_mPMTGeometry()
     	WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = 300.*CLHEP::mm;
-    WCPMTperCellHorizontal = 1.0; // 1 per phi
-    WCPMTperCellVertical   = 1.0;
+    WCPMTperCellHorizontal = 1; // 1 per phi
+    WCPMTperCellVertical   = 1;
 
     WCBarrelNumPMTHorizontal = 18;
     WCBarrelNRings        = 5;
@@ -1171,13 +1174,13 @@ void WCSimDetectorConstruction::SetNuPrismShort_mPMTGeometry()
     WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = mPMT_vessel_tot_height;
-    WCPMTperCellHorizontal = 1.0;
-    WCPMTperCellVertical   = 1.0;
+    WCPMTperCellHorizontal = 1;
+    WCPMTperCellVertical   = 1;
 
 	// Numbers below are based on R.Henderson's 832 module tank design
     WCBarrelNumPMTHorizontal = 40;
     WCBarrelNRings        = 9; // Scaled from 10.42 m tall detector.
-    WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+    WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal;
 	// This is tuned to give a 6-5-5-4-3-1 config in one quarter of the cap
 	// And results in 832 mPMT modules as currently in Robert's Design
     WCCapEdgeLimit        = 3.3*m; 
@@ -1280,10 +1283,10 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_14perCent()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 13.51;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*0.254*m));   //Used same radius as 20in to have same granularity in mPMTs (28% difference otherwise
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*0.254*m));   //Used same radius as 20in to have same granularity in mPMTs (28% difference otherwise
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - 0.254*m;//outer_module_radius;//WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -1328,10 +1331,10 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inchmPMT_40perCent()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 40.0;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*0.254*m));//WCPMTRadius));
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*0.254*m));//WCPMTRadius));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - 0.254*m;//WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -1353,10 +1356,10 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inch_14perCent()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 13.51;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));  
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));  
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
@@ -1379,10 +1382,10 @@ void WCSimDetectorConstruction::Cylinder_60x74_3inch_40perCent()
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
   WCPMTPercentCoverage  = 40.;
-  WCBarrelNumPMTHorizontal = round(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));  
-  WCBarrelNRings           = round(((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
-                                      /WCPMTperCellVertical));
-  WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal); // distance between centers of top and bottom pmts
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));  
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+                                      /WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
   WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
