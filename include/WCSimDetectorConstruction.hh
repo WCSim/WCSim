@@ -489,15 +489,10 @@ private:
 
   void  ConstructMaterials();
 
-  G4LogicalVolume* logicWCBarrelCellODTyvek;
-  G4LogicalVolume* logicWCTowerODTyvek;
-
   G4LogicalVolume* logicWCODWLSAndPMT;
   G4LogicalVolume* logicWCODWLSPlate;
   G4LogicalVolume* logicWCODWLSPlateCladding;
 
-  G4LogicalVolume* logicWCBarrelCellBlackSheet;
-  G4LogicalVolume* logicWCTowerBlackSheet;
   G4double capAssemblyHeight;
 
   G4bool WCAddGd;
