@@ -1454,6 +1454,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
   G4double borderAnnulusRmin[3] = { WCIDRadius, innerAnnulusRadius, innerAnnulusRadius};
   G4double borderAnnulusRmax[3] = {outerAnnulusRadius, outerAnnulusRadius,outerAnnulusRadius};
 
+  if(std::abs(borderAnnulusZ[2] - borderAnnulusZ[0]) > capAssemblyHeight - WCBlackSheetThickness) {
+    G4cerr << "IMPOSSIBLE GEOMETRY:  capAssemblyHeight (" 
+          << capAssemblyHeight << ") too small to contain border ring ("
+          << std::abs(borderAnnulusZ[2] - borderAnnulusZ[0])
+          << ") and endcap blacksheet (" << WCBlackSheetThickness << ")"
+          << G4endl;
+    /// Should throw an exception.
+  }
+
   const std::string bbrname = std::string("WC") +
                 bbstr + std::string("Ring");  // "WCBarrel[Top|Bot]BorderRing"
   G4Polyhedra* solidWCBarrelBorderRing = new G4Polyhedra(bbrname.c_str(),
@@ -1479,7 +1488,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 					logicCapAssembly,
 					false, 0,
 					checkOverlaps);
-
 
                   
   if(!debugMode){ 
@@ -1779,12 +1787,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
     new G4PVPlacement(0,                           // no rotation
 					  G4ThreeVector(0.,0.,(-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness)*zflip),     // its position
 					  logicWCCap,          // its logical volume
-					  capname,             // its name
+					  capname.c_str(),             // its name
 					  logicCapAssembly,                  // its mother volume
 					  false,                       // no boolean operations
 					  0,                          // Copy #
 					  checkOverlaps);
-
 
   // used for RayTracer
   if (Vis_Choice == "RayTracer"){
@@ -1827,6 +1834,18 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 								   WCIDRadius+WCBlackSheetThickness,
 								   WCIDRadius+WCBlackSheetThickness};
   const std::string capbsname = capname + std::string("BlackSheet");
+
+  if(capBlackSheetZ[0] * capBlackSheetZ[3] > 0.) {
+    G4cerr << "IMPOSSIBLE GEOMETRY:  z profile array of " << capbsname
+           << " should  be monotonic.  Computed values:"
+           << "\n    capBlackSheetZ[0] = " << capBlackSheetZ[0]
+           << "\n                 Z[1] = " << capBlackSheetZ[1]
+           << "\n                 Z[2] = " << capBlackSheetZ[2]
+           << "\n                 Z[3] = " << capBlackSheetZ[3]
+          << G4endl;
+    /// Should throw an exception.
+  }
+
   G4VSolid* solidWCCapBlackSheet = nullptr;
   if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
     solidWCCapBlackSheet
@@ -1870,7 +1889,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 						);
     
 	solidWCCapBlackSheet =
-	  new G4UnionSolid("WCCapBlackSheet", mainPart, extraSlice);
+	  new G4UnionSolid(capbsname.c_str(), mainPart, extraSlice);
   }
   G4LogicalVolume* logicWCCapBlackSheet =
     new G4LogicalVolume(solidWCCapBlackSheet,

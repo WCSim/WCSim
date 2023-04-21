@@ -573,7 +573,7 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMTGeometry()
 
   WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
   WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
-  WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height); //offset from vertical
+  WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height) + 1.*CLHEP::mm; //offset from vertical
   WCIDVerticalPosition     = 0.;
 
   if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 20.0;
@@ -797,7 +797,7 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Geometry()
 
   WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
   WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
-  WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height); //offset from vertical
+  WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height) + 1.*CLHEP::mm; //offset from vertical
   WCIDVerticalPosition     = 0.;
 
   if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 20.0;
