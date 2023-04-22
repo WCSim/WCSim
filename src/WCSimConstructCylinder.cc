@@ -2216,7 +2216,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
       for(G4long j = 0; j < WCPMTODperCellVertical; j++){
         G4ThreeVector Container =  G4ThreeVector(WCODRadius,
                                                  -barrelODCellWidth/2.+(i+0.5)*horizontalODSpacing+((G4int)(std::pow(-1,j))*(G4int)(WCODPMTShift)/2),
-                                                 -(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing);
+                                                 (-(barrelCellHeight * (barrelODCellWidth/barrelCellWidth))/2.+(j+0.5)*verticalODSpacing)*zflip);
 
 		G4cout << "Adding OD PMT in barrel in cell" << i << ", " << j << G4endl;
         //G4VPhysicalVolume* physiWCBarrelWLSPlate =
@@ -2297,7 +2297,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
         for(G4long j = 0; j < WCPMTODperCellVertical; j++){
           G4ThreeVector Container =  G4ThreeVector((WCODRadius)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 												   -towerWidthOD/2.+(i+0.5)*horizontalODSpacingExtra,
-												   -(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing);
+												   (-(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing)*zflip);
           Container.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
 
 		  G4cout << "Adding OD PMT in extra tower in cell" << i << ", " << j << G4endl;
