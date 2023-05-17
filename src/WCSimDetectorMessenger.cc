@@ -205,19 +205,19 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTODPercentCoverageTop->SetGuidance("Set Top OD photocoverage percentage.");
   PMTODPercentCoverageTop->SetParameterName("PMTODPercentCoverageTop", true);
   PMTODPercentCoverageTop->SetDefaultValue(1.);
-  PMTODPercentCoverageTop->SetRange("PMTODPercentCoverageTop>0");
+  //  PMTODPercentCoverageTop->SetRange("PMTODPercentCoverageTop>0");
 
   PMTODPercentCoverageBottom = new G4UIcmdWithADouble("/WCSim/HyperKOD/PMTODPercentCoverageBottom", this);
   PMTODPercentCoverageBottom->SetGuidance("Set Bottom OD photocoverage percentage.");
   PMTODPercentCoverageBottom->SetParameterName("PMTODPercentCoverageBottom", true);
   PMTODPercentCoverageBottom->SetDefaultValue(1.);
-  PMTODPercentCoverageBottom->SetRange("PMTODPercentCoverageBottom>0");
+  //  PMTODPercentCoverageBottom->SetRange("PMTODPercentCoverageBottom>0");
 
   PMTODPercentCoverageBarrel = new G4UIcmdWithADouble("/WCSim/HyperKOD/PMTODPercentCoverageBarrel", this);
   PMTODPercentCoverageBarrel->SetGuidance("Set Barrel OD photocoverage percentage.");
   PMTODPercentCoverageBarrel->SetParameterName("PMTODPercentCoverageBarrel", true);
   PMTODPercentCoverageBarrel->SetDefaultValue(1.);
-  PMTODPercentCoverageBarrel->SetRange("PMTODPercentCoverageBarrel>0");
+  //  PMTODPercentCoverageBarrel->SetRange("PMTODPercentCoverageBarrel>0");
 
   // OD Tyvek sheet thickness
   ODPMTShift = new G4UIcmdWithADoubleAndUnit("/WCSim/HyperKOD/ODPMTShift", this);
