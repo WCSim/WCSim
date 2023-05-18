@@ -37,15 +37,15 @@
 
 
 #Use the HK FD ID-only geometry
-#/WCSim/SetPMTPercentCoverage 20.
-#/WCSim/SetPMTPercentCoverage2 10.
+#/WCSim/SetPMTPercentCoverage  20.0630831944572
+#/WCSim/SetPMTPercentCoverage2 1.50473123958429
 #/WCSim/WCgeom HyperK_HybridmPMT
 #/WCSim/Construct
 
 
 #Use the HK FD ID + OD geometry
-#/WCSim/SetPMTPercentCoverage 20.
-#/WCSim/SetPMTPercentCoverage2 10.
+#/WCSim/SetPMTPercentCoverage  20.0630831944572
+#/WCSim/SetPMTPercentCoverage2 1.50473123958429
 #/WCSim/WCgeom HyperK_HybridmPMT_WithOD
 #/control/execute macros/geom_hk_mpmt_options.mac
 #/control/execute macros/geom_hk_od_options.mac
