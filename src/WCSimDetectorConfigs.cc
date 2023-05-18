@@ -261,7 +261,8 @@ void WCSimDetectorConstruction::SetHyperKGeometry()
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
-  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
+  if(WCPMTPercentCoverage < -0.1) WCPMTPercentCoverage  = 40.0;
+  else if(WCPMTPercentCoverage < 0) WCPMTPercentCoverage = 0.0; //protection against negative coverage
   WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical);
@@ -288,7 +289,8 @@ void WCSimDetectorConstruction::SetHyperK_10inchGeometry()
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
-  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
+  if(WCPMTPercentCoverage < -0.1) WCPMTPercentCoverage  = 40.0;
+  else if(WCPMTPercentCoverage < 0) WCPMTPercentCoverage = 0.0; //protection against negative coverage
   WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical);
@@ -315,7 +317,8 @@ void WCSimDetectorConstruction::SetHyperK_8inchGeometry()
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
-  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
+  if(WCPMTPercentCoverage < -0.1) WCPMTPercentCoverage  = 40.0;
+  else if(WCPMTPercentCoverage < 0) WCPMTPercentCoverage = 0.0; //protection against negative coverage
   WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical);
@@ -342,7 +345,8 @@ void WCSimDetectorConstruction::SetHyperK_3inchGeometry()
   WCBarrelPMTOffset     = WCPMTRadius; //offset from vertical
   WCPMTperCellHorizontal= 4;
   WCPMTperCellVertical  = 3;
-  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
+  if(WCPMTPercentCoverage < -0.1) WCPMTPercentCoverage  = 40.0;
+  else if(WCPMTPercentCoverage < 0) WCPMTPercentCoverage = 0.0; //protection against negative coverage
   WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius));
   WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
                                       /WCPMTperCellVertical);
@@ -514,7 +518,8 @@ void WCSimDetectorConstruction::SetHyperK_mPMTGeometry()
 	WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
 	WCPMTperCellHorizontal= 1;//4;
 	WCPMTperCellVertical  = 1;//3;
-	if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
+	if(WCPMTPercentCoverage < -0.1) WCPMTPercentCoverage  = 40.0;
+	else if(WCPMTPercentCoverage < 0) WCPMTPercentCoverage = 0.0; //protection against negative coverage
 	WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*mPMT_vessel_radius));
 	G4cout << "## Number of Horizontal PMT along diameter = " << WCBarrelNumPMTHorizontal << ", diameter = "<< WCIDDiameter << ", coverage = "<< WCPMTPercentCoverage << ", PMT radius = " << WCPMTRadius << ", test = " << WCIDDiameter*sqrt(pi*WCPMTPercentCoverage)/(10.0*WCPMTRadius) << G4endl;
 	WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
@@ -576,8 +581,10 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMTGeometry()
   WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height) + 1.*CLHEP::mm; //offset from vertical
   WCIDVerticalPosition     = 0.;
 
-  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 20.0;
-  if(WCPMTPercentCoverage2==-1.) WCPMTPercentCoverage2  = 5.0;
+  if(WCPMTPercentCoverage < -0.1) WCPMTPercentCoverage  = 20.0;
+  else if(WCPMTPercentCoverage < 0) WCPMTPercentCoverage = 0.0; //protection against negative coverage
+  if(WCPMTPercentCoverage2 < -0.1) WCPMTPercentCoverage2  = 5.0;
+  else if(WCPMTPercentCoverage2 < 0) WCPMTPercentCoverage2 = 0.0; //protection against negative coverage
   WCPMTperCellHorizontal = std::lround((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
   WCPMTperCellVertical = WCPMTperCellHorizontal;
   //WCPMTperCellHorizontal= ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
@@ -646,9 +653,11 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT10PCGeometry()
   WCIDVerticalPosition     = 0.;
 
 
-  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 20.0;
-  if(WCPMTPercentCoverage2==-1.) WCPMTPercentCoverage2  = 10.0;
-
+  if(WCPMTPercentCoverage < -0.1) WCPMTPercentCoverage  = 20.0;
+  else if(WCPMTPercentCoverage < 0) WCPMTPercentCoverage = 0.0; //protection against negative coverage
+  if(WCPMTPercentCoverage2 < -0.1) WCPMTPercentCoverage2  = 10.0;
+  else if(WCPMTPercentCoverage2 < 0) WCPMTPercentCoverage2 = 0.0; //protection against negative coverage
+  
   //WCPMTPercentCoverage  = 20.0;//40.0;//40.0;  
   //WCPMTPercentCoverage2  = 10.0;//20.0;
   WCPMTperCellHorizontal = std::lround((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
@@ -728,8 +737,10 @@ void WCSimDetectorConstruction::SetHyperK_HybridFakeGeometry()
   WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height); //offset from vertical
   WCIDVerticalPosition     = 0.;
 
-  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 20.0;
-  if(WCPMTPercentCoverage2==-1.) WCPMTPercentCoverage2  = 0.0;
+  if(WCPMTPercentCoverage < -0.1) WCPMTPercentCoverage  = 20.0;
+  else if(WCPMTPercentCoverage < 0) WCPMTPercentCoverage = 0.0; //protection against negative coverage
+  if(WCPMTPercentCoverage2 < -0.1) WCPMTPercentCoverage2  = 0.0;
+  else if(WCPMTPercentCoverage2 < 0) WCPMTPercentCoverage2 = 0.0; //protection against negative coverage
   //WCPMTPercentCoverage  = 20.0;//20.0;//40.0;//40.0;  
   //WCPMTPercentCoverage2  = 0;//5.0;//20.0;
   WCPMTperCellHorizontal = std::lround((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
@@ -800,8 +811,10 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Geometry()
   WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height) + 1.*CLHEP::mm; //offset from vertical
   WCIDVerticalPosition     = 0.;
 
-  if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 20.0;
-  if(WCPMTPercentCoverage2==-1.) WCPMTPercentCoverage2  = 5.0;
+  if(WCPMTPercentCoverage < -0.1) WCPMTPercentCoverage  = 20.0;
+  else if(WCPMTPercentCoverage < 0) WCPMTPercentCoverage = 0.0; //protection against negative coverage
+  if(WCPMTPercentCoverage2 < -0.1) WCPMTPercentCoverage2  = 5.0;
+  else if(WCPMTPercentCoverage2 < 0) WCPMTPercentCoverage2 = 0.0; //protection against negative coverage
   WCPMTperCellHorizontal = std::lround((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
   WCPMTperCellVertical = WCPMTperCellHorizontal;
   //WCPMTperCellHorizontal= ((int) WCPMTPercentCoverage2/(WCPMTPercentCoverage+WCPMTPercentCoverage2));//Should be in agreement with coverage of PMT 1 & 2: here, 4/5 PMTs are B&L + 1/5 mPMT
@@ -1006,7 +1019,8 @@ void WCSimDetectorConstruction::SetNuPrismGeometry(G4String PMTType, G4double /*
 	WCBarrelPMTOffset     = WCPMTRadius;
     WCPMTperCellHorizontal = 1;
     WCPMTperCellVertical   = 1;
-	if(WCPMTPercentCoverage==-1.) WCPMTPercentCoverage  = 40.0;
+	if(WCPMTPercentCoverage < -0.1) WCPMTPercentCoverage  = 40.0;
+	else if(WCPMTPercentCoverage < 0) WCPMTPercentCoverage = 0.0; //protection against negative coverage
 	//WCPMTPercentCoverage   = PMTCoverage;
     WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*WCPMTPercentCoverage/100.0)/WCPMTRadius);
 
