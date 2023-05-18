@@ -533,8 +533,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   // outside of the if block to access it later on 
   G4LogicalVolume* logicWCExtraTowerCell = nullptr;
   if(!(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal)){
-
 	G4cout << "%%%%% ADDING EXTRA TOWER" << G4endl;
+
+	G4cerr << "The extra tower is not correctly implemented. It causes geometry overlaps," << G4endl
+		   << " which lead to killed tracks and the incorrect number of hits" << G4endl
+		   << "You are strongly recommended to use $WCSIMDIR/sample-root-scripts/calcPhotoCoverage.C" << G4endl
+		   << " in order to produce a photocoverage that will give you a valid geometry" << G4endl
+		   << "Alternatively you can comment out the exit statement following this print message" << G4endl
+		   << " but do this at your own risk" << G4endl;
+	exit(-1);
 
     // as the angles between the corners of the main annulus 
     // and the corners extra tower are different, we need to adjust the 
