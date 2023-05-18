@@ -485,19 +485,14 @@ private:
   G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank",bool WLS=false);
   G4LogicalVolume* ConstructPMTAndWLSPlate(G4String,G4String,G4String detectorElement="OD");
 
-  G4LogicalVolume* ConstructCaps(G4int zflip);
+  G4LogicalVolume* ConstructCaps(G4bool);
 
   void  ConstructMaterials();
-
-  G4LogicalVolume* logicWCBarrelCellODTyvek;
-  G4LogicalVolume* logicWCTowerODTyvek;
 
   G4LogicalVolume* logicWCODWLSAndPMT;
   G4LogicalVolume* logicWCODWLSPlate;
   G4LogicalVolume* logicWCODWLSPlateCladding;
 
-  G4LogicalVolume* logicWCBarrelCellBlackSheet;
-  G4LogicalVolume* logicWCTowerBlackSheet;
   G4double capAssemblyHeight;
 
   G4bool WCAddGd;
@@ -586,7 +581,6 @@ private:
   G4double WCPMTRadius;
   G4double WCPMTExposeHeight;
   G4double WCBarrelPMTOffset;
-  G4double WCBorderPMTOffset;
 
   G4double WCPMTRadius2;//B. Quilain: for Hybrid configuration
   G4double WCPMTExposeHeight2;//B. Quilain: for Hybrid configuration
@@ -821,6 +815,11 @@ private:
   G4double innerradius;
 
   // Variables related to MultiPMTs
+  /* TODO:  pmtModuleHeight should be part of the WCSimPMTObject.
+   *   Magic number; includes puck and single PMT support, not PMT base.
+   *   The height of pmt module for solid works design
+  */
+  static constexpr G4double pmtModuleHeight = 59.62*CLHEP::mm;
   G4double vessel_cyl_height;
   G4double vessel_radius_curv;                        // radius of the sphere to determine curvature of cap of pressure vessel
   G4double vessel_radius;                             // radius of the pressure vessel (spherical cap)

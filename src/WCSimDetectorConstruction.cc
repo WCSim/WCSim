@@ -85,7 +85,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   WCPMTExposeHeight= 0.;
   WCPMTExposeHeight2= 0.;
   WCPMTODExposeHeight= 0.;
-  WCBorderPMTOffset= 0.;
 
   //---------------------------------------------------
   // Need to define defaults for all mPMT parameters 

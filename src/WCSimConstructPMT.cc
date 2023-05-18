@@ -88,7 +88,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
   G4double position_z_offset = 0.;  // for positioning PMTs
   //G4double wcpmt_z_offset = 0.;     // for positioning single PMT support (mPMT)
   G4bool addPMTBase = false;
-  G4double pmtModuleHeight = 59.62*CLHEP::mm; //includes puck and single PMT support, not PMT base. The height of pmt module for solid works design
   G4cout << "Number of PMTs per Vessel, in ConstructPMT = " << nIDPMTs << G4endl;
 
   if(nIDPMTs == 1){
