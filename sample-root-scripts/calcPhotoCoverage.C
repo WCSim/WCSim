@@ -13,9 +13,9 @@ void calcPhotoCoverage(double WCPMTPercentCoverage,
 
   int WCPMTperCellHorizontal = std::lround((WCPMTPercentCoverage+WCPMTPercentCoverage2) / WCPMTPercentCoverage2);
   int WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter * sqrt(TMath::Pi() * (WCPMTPercentCoverage+WCPMTPercentCoverage2)) /
-					     10.*TMath::Max(WCPMTRadius,mPMT_vessel_radius));
+					     (10.*TMath::Max(WCPMTRadius,mPMT_vessel_radius)));
   double WCBarrelNumPMTHorizontal_db = WCIDDiameter * sqrt(TMath::Pi() * (WCPMTPercentCoverage+WCPMTPercentCoverage2)) /
-    10.*TMath::Max(WCPMTRadius,mPMT_vessel_radius);
+    (10.*TMath::Max(WCPMTRadius,mPMT_vessel_radius));
 
   cout << "WCPMTperCellHorizontal:      " << WCPMTperCellHorizontal << endl
        << "WCBarrelNumPMTHorizontal:    " << WCBarrelNumPMTHorizontal << endl
