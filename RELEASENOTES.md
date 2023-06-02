@@ -1,6 +1,67 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
+02/06/2023: Notes for v1.11.0
+*************************************************************
+
+This is the first full merge between WCSim/WCSim:develop and nuPRISM/WCSim:nuPRISM/develop for ~7 years.  
+There are therefore many changes, and it is inevitable that some will not be fully recognised in this list.  
+I have not looked at all at PRs before 2019.  
+For that I am sorry
+
+The main feature of this release is the addition of mPMTs (multiple 3" PMTs in a 20"-PMT-like vessel),
+ and the creation of associated geometries for IWCD and the HK FD.
+ 
+Note that with this release, the recommended version of Geant4 is now 10.3.3
+
+Default output `.root` file changes
+* `fTriggerInfo` in `WCSimRootTrigger` is now a `std::vector<Double_t>` (previously was a `std::vector<Float_t>`)
+* Addition of `fParentId` to `WCSimRootTrack`
+* Addition of `fmPMTID` and `fmPMT_PMTID` to all of `WCSimRootCherenkovHit`, `WCSimRootCherenkovDigiHit`, and `WCSimRootPMT`
+* Addition of `fPhotonStartTime`, `fPhotonStartPos[3]`, `fPhotonEndPos[3]`, `fPhotonStartDir[3]`, and fPhotonEndDir[3]` to `WCSimRootCherenkovHitTime`
+* Addition of `TClonesArray` of `WCSimRootCapture` (a new class) to `WCSimRootEvent`
+  * `WCSimRootCaptureGamma` is another new class stored within `WCSimRootCapture`
+* Addition of two new `TClonesArray` of `WCSimRootPMT` in `WCSimRootGeom`
+  1. `fPMTArray2` stores the second ID PMT type information (i.e. mPMT information in HK hybrid FD geometries)
+  2. `fODPMTArray` stores the OD PMT information (this used to be stored at the end of `fPMTArray`)
+
+New features
+* New script `plot_pmts.C` to plot the PMT distribution
+* Pull Request [WCTE/WCSim#10 @kmtsui](https://github.com/WCTE/WCSim/pull/10): Automatically switch Geant4 function arguments between G4.10.1 & 4.10.3
+* Pull Request [tdealtry/#2 @spradlin](https://github.com/tdealtry/WCSim/pull/2): Restore interactive running mode of WCSim
+* Commit [7663873 @spradlin](https://github.com/spradlin/WCSim/commit/7663873c5d11d4cc1a50e535a185e6ed0124c6a4): Add `-DWCSim_Geometry_Overlaps_CHECK` cmake options
+* Pull Request [nuPRISM/#63 @akutsuR](https://github.com/nuPRISM/WCSim/pull/63): Adding parent G4 track id
+* Pull Request [nuPRISM/#61 @bquilain](https://github.com/nuPRISM/WCSim/pull/61): Merge of HK FD hybrid ID branch with nuPRISM code. Provides new HK ID-only hybrid FD geometry
+* Pull Request [nuPRISM/#57 @nickwp](https://github.com/nuPRISM/WCSim/pull/57): Add tracking of photon start and end directions for true hits
+* Pull Request [nuPRISM/#54 @nickwp](https://github.com/nuPRISM/WCSim/pull/54): Add git hash to output settings tree. See also nuPRISM/#55
+* Pull Request [nuPRISM/#52 @nickwp](https://github.com/nuPRISM/WCSim/pull/52): Add particle tracking options
+* Pull Request [nuPRISM/#48 @mshinoki](https://github.com/nuPRISM/WCSim/pull/48): Add WCTE Geometry
+* Addition of light injector simulation for primary particle generation
+* Addition of nRooTracker input file reading for generating physics events
+* Addition of extra `_flat.root` output file format. Note that this has not been validated during the merge, and could contain incorrect or incomplete information - this file is currently an unofficial solution in WCSim/WCSim
+
+Updates
+* The default QE application method is now `SensitiveDetector_Only` (i.e. apply at PMT). It was previously `Stacking_Only` (i.e. apply at optical photon creation). Thank you to @spradlin for finding inconsistencies between the methods
+* The default values of PMTs in the HK geometries have been modified such that the *extra tower* is not built. This seems to greatly suppress the number of killed tracks
+* Deactivation of some old HK geometries. These can be reactivated if they are really required for studies, but they are no longer supported
+* Pull Request [tdealtry/#1 @spradlin](https://github.com/tdealtry/WCSim/pull/1): Correct/suppress most compiler warnings
+* Pull Request [#338 @guiguem](https://github.com/WCSim/WCSim/pull/338): Upgrades to cmake installation. See all #341 #342 #344
+* Pull Request [bquilain/#17 @JacekHoleczek](https://github.com/bquilain/WCSim/pull/17): Various small building improvements
+* Pull Request [bquilain/#14 @gpronost](https://github.com/bquilain/WCSim/pull/14): Change holder of the PMT to E61 design
+* Pull Request [bquilain/#12 @pdeperio](https://github.com/bquilain/WCSim/pull/12): Merging of nuPRISM code with HK hybrid code. See also bquilain/#11
+* Pull Request [nuPRISM/#49 @nickwp](https://github.com/nuPRISM/WCSim/pull/49): Update IWCD geometry to match solidworks mechanical design
+
+Bug fixes
+* Pull Request [tdealtry/#3 @spradlin](https://github.com/tdealtry/WCSim/pull/3): Fix a variety of overlap warnings
+* Pull Request [tdealtry/#4 @spradlin](https://github.com/tdealtry/WCSim/pull/4): Fix to loop over integral (rather than floating point) types
+* Pull Request [nuPRISM/#47 @jmgwalker](https://github.com/nuPRISM/WCSim/pull/47): Fix detector centre value stored in Settings tree in output file
+* Pull Request [nuPRISM/#46 @jmgwalker](https://github.com/nuPRISM/WCSim/pull/46): Fix detector offset bug
+* Pull Request [nuPRISM/#45 @jmgwalker](https://github.com/nuPRISM/WCSim/pull/45): Fix bug that was causing seg fault when accessing PDG code from NRooTracker
+* Pull Request [nuPRISM/#44 @mscott201](https://github.com/nuPRISM/WCSim/pull/44): Update the event generation to generate events right out to the edge of the E61 ID
+* Pull Request [bquilain/#19 @gpronost](https://github.com/bquilain/WCSim/pull/19): Use Flag instead of FirstTime value to determine if new FirstTime needs to be set. See all bquilain/#18
+* Pull Request [bquilain/#13 @bquilain](https://github.com/bquilain/WCSim/pull/13): Initialise ROOT randomiser seed
+
+*************************************************************
 10/26/2021: Notes for v1.10.0
 *************************************************************
 
@@ -166,7 +227,7 @@ Updates
 *************************************************************
 Bug Fixes:
 
-* In v1.5.0, the dark rate was not being set correctly in the case where the default detector was not used (unless the dark rate was explicitly specified in the macro). This release now correctly implements the dark rate based on the photodector type used in the detector configuration, even when the non-default detector configuration is called. 
+* In v1.5.0, the dark rate was not being set correctly in the case where the default detector was not used (unless the dark rate was explicitly specified in the macro). This release now correctly implements the dark rate based on the photodetector type used in the detector configuration, even when the non-default detector configuration is called. 
 
 *************************************************************
 02/01/2016: Notes for v1.5.0        
@@ -175,7 +236,7 @@ New Features
 * Dark rate can now be added either in a defined time window around each hit, or in a set window of a constant time. 
 * Digits with negative times are now saved (this doesn't affect the current default digitizer, but could have implications for future digitizers that get added in).
 * MakeKin.py can now make vector files with random vertices for the SuperK and HyperK cylinders. 
-* New DAQ-related features can now be controled via macro files. The digitizer and trigger you want to use can be specified (in WCSim.mac), as well as properties of the digitzer and trigger (in daq.mac). 
+* New DAQ-related features can now be controlled via macro files. The digitizer and trigger you want to use can be specified (in WCSim.mac), as well as properties of the digitzer and trigger (in daq.mac). 
 
 Bug Fixes
 * Hit PMTs were not being visualized after a change made in the last release. This was fixed. 
@@ -198,9 +259,9 @@ Updates
 New Features
 * Multiple sensitive detectors can now be instantiated 
 * Different sensitive detectors can have unique hit collections
-* WCSim exectuable will exit if jobOptions.mac, jobOptions2.mac, or tuning_parameters.mac are not found
+* WCSim executable will exit if jobOptions.mac, jobOptions2.mac, or tuning_parameters.mac are not found
 * Two cylindrical detectors with a height of 60 m and a diameter of 74 m are now available: one with 14% photocoverage and one with 40% photocoverage. 
-* Raytracer visulaizer is now available. A new macro, visRayTracer.mac, is now available to visualize configurations with Raytracer. 
+* Raytracer visualiser is now available. A new macro, visRayTracer.mac, is now available to visualize configurations with Raytracer. 
 
 Deleted Features
 * Old DUSEL configurations removed
@@ -239,7 +300,7 @@ Structural Changes
 * WCSimPMTQE.cc was created and all quantum efficiency info was put there.
 * WCSimWCDigitizer was split into a PMT collection (in the newly created WCSimWCPMT file) and a digitizer collection.
 * The PMT information was put into a single file called WCSimPMTObject.cc. PMTs now inherit from the newly created WCSimPMTObject class. 
-* WCSimWCConstructWC is now named WCSimConstructCylinder to explicitly show that this function builds cylinderical geometries and should not be used to construct the HK geometry. 
+* WCSimWCConstructWC is now named WCSimConstructCylinder to explicitly show that this function builds cylindrical geometries and should not be used to construct the HK geometry. 
 
 New Features
 * Python script was added to generate kinematics files for simple particles. 
@@ -247,5 +308,5 @@ New Features
 * HPDs were added to the list of possible tubes allowed in WCSim.
 * Hyper-K with HPDs was added as a new detector configuration. 
 * Updated the dark rate parameters for normal PMTs.
-* Added the dark rate comands to novis.mac. Uncommented out the dark rate commands in novis.mac and vis.mac.
+* Added the dark rate commands to novis.mac. Uncommented out the dark rate commands in novis.mac and vis.mac.
 * Included the dark rate parameters for the HPDs in vis.mac and novis.mac.

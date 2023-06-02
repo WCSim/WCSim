@@ -8,7 +8,7 @@
 /WCSim/WCgeom HyperKWithOD
 
 # HyperK Outer Detector
-/WCSim/HyperKOD/PMTODRadius 3inch # The PMTs to be used in the OD. Options 3inch, 5inch or 8inch
+/WCSim/HyperKOD/PMTODRadius 3inch # The PMTs to be used in the OD. Options 3inch (PMT3inch_ETEL9302B), 5inch (PMT5inch) or 8inch (PMT8inch)
 /WCSim/HyperKOD/ODLateralWaterDepth 1 m # The thickness of the OD in the barrel region
 /WCSim/HyperKOD/ODHeightWaterDepth 2 m # The thickness of the OD in the top and bottom endcap regions
 /WCSim/HyperKOD/ODDeadSpace 600 mm # The deadspace between the ID PMTs and OD PMTs (essentially the thickness of the PMT support structure)

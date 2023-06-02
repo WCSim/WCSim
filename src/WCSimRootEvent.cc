@@ -1,12 +1,13 @@
 // Based on Root test Event.cxx
 ////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
+#include <iomanip>
 #include "TObject.h"
 #include "TDirectory.h"
 #include "TProcessID.h"
 #include <string>
 #include <vector>
-#include <iostream>
 #include <typeinfo>
 
 #include <TStopwatch.h>
@@ -28,6 +29,7 @@ ClassImp(WCSimRootEventHeader)
 ClassImp(WCSimRootTrigger)
 ClassImp(WCSimRootEvent)
 #endif
+//#define DEBUG
 
 //TClonesArray* WCSimRootTrigger::fgTracks = 0;
 //
@@ -66,6 +68,8 @@ WCSimRootTrigger::WCSimRootTrigger()
   fNcherenkovdigihits = 0;
   fNcherenkovdigihits_slots = 0;
   fSumQ = 0;
+
+  fCaptures = 0;
 
   fTriggerType = kTriggerUndefined;
   fTriggerInfo.clear();
@@ -115,6 +119,10 @@ void WCSimRootTrigger::Initialize() //actually allocate memory for things in her
   fNcherenkovdigihits_slots = 0;
   fSumQ = 0;
 
+  // TClonesArray of WCSimRootCaptures
+  fCaptures = new TClonesArray("WCSimRootCapture", 100);
+  fNcaptures = 0;
+
   fTriggerType = kTriggerUndefined;
   fTriggerInfo.clear();
   
@@ -142,12 +150,14 @@ WCSimRootTrigger::~WCSimRootTrigger()
     fTracks->Delete();            
     fCherenkovHits->Delete();      
     fCherenkovHitTimes->Delete();   
-    fCherenkovDigiHits->Delete();  
+    fCherenkovDigiHits->Delete();
+    fCaptures->Delete();
     
     delete   fTracks;            
     delete   fCherenkovHits;      
     delete   fCherenkovHitTimes;   
-    delete   fCherenkovDigiHits; 
+    delete   fCherenkovDigiHits;
+    delete   fCaptures;
   }
   mystopw->Stop();
 
@@ -219,6 +229,9 @@ void WCSimRootTrigger::Clear(Option_t */*option*/)
   fNcherenkovdigihits_slots = 0;
   fSumQ = 0;
 
+  // TClonesArray of WCSimRootCaptures
+  fNcaptures = 0;
+
   // remove whatever's in the arrays
   // but don't deallocate the arrays themselves
 
@@ -226,6 +239,7 @@ void WCSimRootTrigger::Clear(Option_t */*option*/)
   fCherenkovHits->Delete();
   fCherenkovHitTimes->Delete();
   fCherenkovDigiHits->Delete();
+  fCaptures->Delete();
 
   fTriggerType = kTriggerUndefined;
   fTriggerInfo.clear();
@@ -254,7 +268,7 @@ void WCSimRootTrigger::SetHeader(Int_t i,
 //_____________________________________________________________________________
 
 void WCSimRootTrigger::SetTriggerInfo(TriggerType_t trigger_type,
-				      std::vector<Float_t> trigger_info)
+				      std::vector<Double_t> trigger_info)
 {
   fTriggerType = trigger_type;
   fTriggerInfo.resize(trigger_info.size());
@@ -265,53 +279,132 @@ void WCSimRootTrigger::SetTriggerInfo(TriggerType_t trigger_type,
 //_____________________________________________________________________________
 
 void WCSimRootTrigger::SetPi0Info(Double_t pi0Vtx[3],
-				 Int_t   gammaID[2], 
-				 Double_t gammaE[2],
-				 Double_t gammaVtx[2][3])
+                                  Int_t   gammaID[2],
+                                  Double_t gammaE[2],
+                                  Double_t gammaVtx[2][3])
 {
-  fPi0.Set(pi0Vtx, 
-	   gammaID, 
-	   gammaE,
-	   gammaVtx);
+    fPi0.Set(pi0Vtx,
+             gammaID,
+             gammaE,
+             gammaVtx);
+}
+
+//_____________________________________________________________________________
+void WCSimRootTrigger::SetCaptureParticle(Int_t parent,
+                                          Int_t ipnu,
+                                          Double_t time,
+                                          Double_t vtx[3],
+                                          Double_t dir[3],
+                                          Double_t energy,
+                                          Int_t id)
+{
+    WCSimRootCapture * capture = 0;
+    for(int i = 0; i<fCaptures->GetEntriesFast(); i++){
+        if(((WCSimRootCapture*)fCaptures->At(i))->GetCaptureParent() == parent) {
+            capture = (WCSimRootCapture *) fCaptures->At(i);
+            break;
+        }
+    }
+    if(capture == 0) {
+        TClonesArray &captures = *fCaptures;
+        capture = new(captures[fNcaptures++]) WCSimRootCapture(parent);
+    }
+    if(ipnu==22) capture->AddGamma(id, energy, dir);
+    else capture->SetInfo(vtx, time, ipnu);
 }
 
 //_____________________________________________________________________________
 
 void WCSimRootPi0::Set(Double_t pi0Vtx[3],
-			Int_t   gammaID[2], 
-			Double_t gammaE[2],
-			Double_t gammaVtx[2][3])
+                       Int_t   gammaID[2],
+                       Double_t gammaE[2],
+                       Double_t gammaVtx[2][3])
 {
-  for (int i=0;i<2;i++)
-  {
-    fGammaID[i] = gammaID[i];
-    fGammaE[i]  = gammaE[i];
-  }
+    for (int i=0;i<2;i++)
+    {
+        fGammaID[i] = gammaID[i];
+        fGammaE[i]  = gammaE[i];
+    }
 
-  for (int j=0;j<3;j++)
-  {
-    fPi0Vtx[j]      = pi0Vtx[j];
-    fGammaVtx[0][j] = gammaVtx[0][j];
-    fGammaVtx[1][j] = gammaVtx[1][j];
-  }
+    for (int j=0;j<3;j++)
+    {
+        fPi0Vtx[j]      = pi0Vtx[j];
+        fGammaVtx[0][j] = gammaVtx[0][j];
+        fGammaVtx[1][j] = gammaVtx[1][j];
+    }
 }
 
 //_____________________________________________________________________________
 
-WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu, 
-					   Int_t flag, 
+WCSimRootCapture::WCSimRootCapture(Int_t captureParent)
+{
+    fCaptureParent = captureParent;
+    fNGamma = 0;
+    fTotalGammaE = 0;
+    fGammas = new TClonesArray("WCSimRootCaptureGamma", 10);
+    IsZombie=false;
+}
+
+//_____________________________________________________________________________
+
+WCSimRootCapture::~WCSimRootCapture()
+{
+    if(!IsZombie) {
+        fGammas->Delete();
+        delete fGammas;
+    }
+}
+
+//_____________________________________________________________________________
+
+void WCSimRootCapture::SetInfo(Double_t captureVtx[3],
+                               Double_t captureT,
+                               Int_t   captureNucleus)
+{
+    for (int i=0;i<3;i++) fCaptureVtx[i] = captureVtx[i];
+    fCaptureT = captureT;
+    fCaptureNucleus = captureNucleus;
+}
+
+//_____________________________________________________________________________
+
+void WCSimRootCapture::AddGamma(Int_t   gammaID,
+                                Double_t gammaE,
+                                Double_t gammaDir[3])
+{
+    TClonesArray &gammas = *fGammas;
+    new(gammas[fNGamma]) WCSimRootCaptureGamma(gammaID, gammaE, gammaDir);
+    fTotalGammaE += gammaE;
+    fNGamma++;
+}
+
+//_____________________________________________________________________________
+
+WCSimRootCaptureGamma::WCSimRootCaptureGamma(Int_t id,
+                                             Double_t energy,
+                                             Double_t *dir) {
+    fID = id;
+    fEnergy = energy;
+    for(int i=0;i<3;i++) fDir[i] = dir[i];
+}
+
+//_____________________________________________________________________________
+
+WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
+					   Int_t flag,
 					   Double_t m,
 					   Double_t p,
 					   Double_t E,
-					   Int_t startvol, 
-					   Int_t stopvol, 
+					   Int_t startvol,
+					   Int_t stopvol,
 					   Double_t dir[3],
 					   Double_t pdir[3],
 					   Double_t stop[3],
 					   Double_t start[3],
 					   Int_t parenttype,
 					   Double_t time,
-					   Int_t id)
+					   Int_t id,
+					   Int_t idParent)
 {
   // Add a new WCSimRootTrack to the list of tracks for this event.
   // To avoid calling the very time consuming operator new for each track,
@@ -322,18 +415,20 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
   TClonesArray &tracks = *fTracks;
   WCSimRootTrack *track = 
     new(tracks[fNtrack_slots++]) WCSimRootTrack(ipnu,
-					   flag,
-					   m,
-					   p,
-					   E,
-					   startvol,
-					   stopvol,
-					   dir,
-					   pdir,
-					   stop,
-					   start,
-					   parenttype,
-					  time,id);
+						flag,
+						m,
+						p,
+						E,
+						startvol,
+						stopvol,
+						dir,
+						pdir,
+						stop,
+						start,
+						parenttype,
+						time,
+						id,
+						idParent);
   fNtrack++;
   return track;
 }
@@ -370,7 +465,8 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(WCSimRootTrack * track)
 					  start,
 					  track->GetParenttype(),
 					  track->GetTime(),
-					  track->GetId());
+					  track->GetId(),
+					  track->GetParentId());
   fNtrack++;
   return track_out;
 }
@@ -388,18 +484,20 @@ WCSimRootTrack * WCSimRootTrigger::RemoveTrack(WCSimRootTrack * track)
 //_____________________________________________________________________________
 
 WCSimRootTrack::WCSimRootTrack(Int_t ipnu, 
-				 Int_t flag, 
-				 Double_t m,
-				 Double_t p,
-				 Double_t E,
-				 Int_t startvol, 
-				 Int_t stopvol, 
-				 Double_t dir[3],
-				 Double_t pdir[3],
-				 Double_t stop[3],
-				 Double_t start[3],
-				 Int_t parenttype,
-			         Double_t time,Int_t id)
+			       Int_t flag,
+			       Double_t m,
+			       Double_t p,
+			       Double_t E,
+			       Int_t startvol,
+			       Int_t stopvol,
+			       Double_t dir[3],
+			       Double_t pdir[3],
+			       Double_t stop[3],
+			       Double_t start[3],
+			       Int_t parenttype,
+			       Double_t time,
+			       Int_t id,
+			       Int_t idParent)
 {
 
   // Create a WCSimRootTrack object and fill it with stuff
@@ -422,11 +520,21 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
   fParenttype = parenttype;
   fTime = time;
   fId = id;
+  fParentId = idParent;
 }
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vector<Double_t> truetime,std::vector<Int_t> primParID)
+WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
+							 Int_t mPMTID,
+							 Int_t mPMT_PMTID,
+							 std::vector<Double_t> truetime,
+							 std::vector<Int_t> primParID,
+							 std::vector<Float_t> photonStartTime,
+							 std::vector<TVector3> photonStartPos,
+							 std::vector<TVector3> photonEndPos,
+							 std::vector<TVector3> photonStartDir,
+							 std::vector<TVector3> photonEndDir)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -434,10 +542,25 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vecto
   for (unsigned int i =0;i<truetime.size();i++)
   {
     fCherenkovHitCounter++;
-
-    //WCSimRootCherenkovHitTime *cherenkovhittime = 
-      new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i]);
+    Float_t startPos[3];
+    Float_t endPos[3];
+    Float_t startDir[3];
+    Float_t endDir[3];
+    for(int j=0; j<3; j++){
+      startPos[j] = photonStartPos[i][j];
+      endPos[j] = photonEndPos[i][j];
+      startDir[j] = photonStartDir[i][j];
+      endDir[j] = photonEndDir[i][j];
+    }
+    //WCSimRootCherenkovHitTime *cherenkovhittime =
+    new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i],
+									    photonStartTime[i], startPos, endPos,
+									    startDir, endDir);
   }
+  
+#ifdef DEBUG
+  std::cout << "Debug B.Q: A new Cherenkov hit was added for tube " << tubeID << ", corresponding to PMT = " << mPMTID << ", and to small PMT in mPMT = " << mPMT_PMTID << std::endl;
+#endif
 
   Int_t WC_Index[2];
   WC_Index[0] = fNcherenkovhittimes-truetime.size(); //fCherenkovHitCounter-truetime.size();
@@ -447,6 +570,8 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vecto
  
   WCSimRootCherenkovHit *cherenkovhit
     = new(cherenkovhits[fNcherenkovhits++]) WCSimRootCherenkovHit(tubeID,
+								  mPMTID,
+								  mPMT_PMTID,
 								  WC_Index);
 
   return cherenkovhit;
@@ -463,12 +588,40 @@ WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
   fTotalPe[1] = totalPe[1];
 }
 
+//_____________________________________________________________________________
+
+WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
+					     Int_t mPMTID,
+					     Int_t mPMT_PMTID,
+					     Int_t totalPe[2])
+{
+  // Create a WCSimRootCherenkovHitIndex object and fill it with stuff
+
+  fTubeID     = tubeID;
+  fmPMTID     = mPMTID;
+  fmPMT_PMTID = mPMT_PMTID;
+  fTotalPe[0] = totalPe[0];
+  fTotalPe[1] = totalPe[1];
+}
+
 WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
-						     Int_t primParID)
+						     Int_t primParID,
+						     Float_t photonStartTime,
+						     Float_t photonStartPos[3],
+						     Float_t photonEndPos[3],
+						     Float_t photonStartDir[3],
+						     Float_t photonEndDir[3])
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
-    fTruetime        = truetime; 
-    fPrimaryParentID = primParID;
+  fTruetime        = truetime;
+  fPrimaryParentID = primParID;
+  fPhotonStartTime = photonStartTime;
+  for (int i=0;i<3;i++) {
+    fPhotonStartPos[i] = photonStartPos[i];
+    fPhotonEndPos[i] = photonEndPos[i];
+    fPhotonStartDir[i] = photonStartDir[i];
+    fPhotonEndDir[i] = photonEndDir[i];
+  }
 }
 
 //_____________________________________________________________________________
@@ -476,6 +629,8 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
 WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Double_t q,
 								 Double_t t,
 								 Int_t tubeid,
+								 Int_t mpmtid,
+								 Int_t mpmt_pmtid,
 								 std::vector<int> photon_ids)
 {
   // Add a new digitized hit to the list of digitized hits
@@ -484,6 +639,8 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(Double_t q,
     new(cherenkovdigihits[fNcherenkovdigihits_slots++]) WCSimRootCherenkovDigiHit(q,
 									    t,
 									    tubeid,
+									    mpmtid,
+									    mpmt_pmtid,
 									    photon_ids);
   fNcherenkovdigihits++;
  
@@ -501,6 +658,8 @@ WCSimRootCherenkovDigiHit *WCSimRootTrigger::AddCherenkovDigiHit(WCSimRootCheren
 										  digit->GetQ(),
 										  digit->GetT(),
 										  digit->GetTubeId(),
+										  digit->GetmPMTId(),
+										  digit->GetmPMT_PMTId(),
 										  digit->GetPhotonIds());
 
   fNcherenkovdigihits++;
@@ -520,6 +679,24 @@ WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Double_t q,
   fQ = q;
   fT = t;
   fTubeId = tubeid;
+  fPhotonIds = photon_ids;
+}
+
+//_____________________________________________________________________________
+WCSimRootCherenkovDigiHit::WCSimRootCherenkovDigiHit(Double_t q,
+						     Double_t t,
+						     Int_t tubeid,
+						     Int_t mpmtid,
+						     Int_t mpmt_pmtid,
+						     std::vector<int> photon_ids)
+{
+  // Create a WCSimRootCherenkovDigiHit object and fill it with stuff
+
+  fQ = q;
+  fT = t;
+  fTubeId = tubeid;
+  fmPMTId = mpmtid;
+  fmPMT_PMTId = mpmt_pmtid;
   fPhotonIds = photon_ids;
 }
 
@@ -548,15 +725,17 @@ WCSimRootEvent::WCSimRootEvent()
   Current = 0;
 }
 
+//_____________________________________________________________________________
 WCSimRootEvent & WCSimRootEvent::operator=(const WCSimRootEvent & in)
 {
-  if (this == &in) return *this; 
+  if (this == &in) return *this;
   this->Clear();
   Current = in.Current;
   fEventList = (TClonesArray*)in.fEventList->Clone();
   return *this;
 }
 
+//_____________________________________________________________________________
 void WCSimRootEvent::Initialize()
 {
   fEventList = new TObjArray(10,0); // very rarely more than 10 subevents...
@@ -565,6 +744,7 @@ void WCSimRootEvent::Initialize()
 }
 
 
+//_____________________________________________________________________________
 WCSimRootEvent::~WCSimRootEvent()
 {
   if (fEventList != 0) {
@@ -578,18 +758,17 @@ WCSimRootEvent::~WCSimRootEvent()
   //Clear("");
 }
 
+//_____________________________________________________________________________
 void WCSimRootEvent::Clear(Option_t* /*o*/)
 {
   //nothing for now
 }
 
+//_____________________________________________________________________________
 void WCSimRootEvent::Reset(Option_t* /*o*/)
 {
   //nothing for now
 }
-
-
-
 
 //
 //COMPARISON OPERATORS
@@ -620,6 +799,7 @@ bool WCSimRootTrack::CompareAllVariables(const WCSimRootTrack * c) const
   failed = (!ComparisonPassed(fParenttype, c->GetParenttype(), typeid(*this).name(), __func__, "Parenttype")) || failed;
   failed = (!ComparisonPassed(fTime, c->GetTime(), typeid(*this).name(), __func__, "Time")) || failed;
   failed = (!ComparisonPassed(fId, c->GetId(), typeid(*this).name(), __func__, "Id")) || failed;
+  failed = (!ComparisonPassed(fParentId, c->GetParentId(), typeid(*this).name(), __func__, "ParentId")) || failed;
 
   return !failed;
 }
@@ -630,6 +810,8 @@ bool WCSimRootCherenkovHit::CompareAllVariables(const WCSimRootCherenkovHit * c)
   bool failed = false;
 
   failed = (!ComparisonPassed(fTubeID, c->GetTubeID(), typeid(*this).name(), __func__, "TubeID")) || failed;
+  failed = (!ComparisonPassed(fmPMTID, c->GetmPMTID(), typeid(*this).name(), __func__, "mPMTID")) || failed;
+  failed = (!ComparisonPassed(fmPMT_PMTID, c->GetmPMT_PMTID(), typeid(*this).name(), __func__, "mPMT_PMTID")) || failed;
   for(int i = 0; i < 2; i++) {
     failed = (!ComparisonPassed(fTotalPe[i], c->GetTotalPe(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "TotalPe", i))) || failed;
   }//i
@@ -644,6 +826,13 @@ bool WCSimRootCherenkovHitTime::CompareAllVariables(const WCSimRootCherenkovHitT
 
   failed = (!ComparisonPassed(fTruetime, c->GetTruetime(), typeid(*this).name(), __func__, "Truetime")) || failed;
   failed = (!ComparisonPassed(fPrimaryParentID, c->GetParentID(), typeid(*this).name(), __func__, "PrimaryParentID")) || failed;
+  failed = (!ComparisonPassed(fPhotonStartTime, c->GetPhotonStartTime(), typeid(*this).name(), __func__, "PhotonStartTime")) || failed;
+  for(int i = 0; i < 3; i++) {
+    failed = (!ComparisonPassed(fPhotonStartPos[i], c->GetPhotonStartPos(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonStartPos", i))) || failed;
+    failed = (!ComparisonPassed(fPhotonEndPos[i], c->GetPhotonEndPos(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonEndPos", i))) || failed;
+    failed = (!ComparisonPassed(fPhotonStartDir[i], c->GetPhotonStartDir(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonStartDir", i))) || failed;
+    failed = (!ComparisonPassed(fPhotonEndDir[i], c->GetPhotonEndDir(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonEndDir", i))) || failed;
+  }//i
 
   return !failed;
 }
@@ -656,11 +845,56 @@ bool WCSimRootCherenkovDigiHit::CompareAllVariables(const WCSimRootCherenkovDigi
   failed = (!ComparisonPassed(fQ, c->GetQ(), typeid(*this).name(), __func__, "Q")) || failed;
   failed = (!ComparisonPassed(fT, c->GetT(), typeid(*this).name(), __func__, "T")) || failed;
   failed = (!ComparisonPassed(fTubeId, c->GetTubeId(), typeid(*this).name(), __func__, "TubeId")) || failed;
+  failed = (!ComparisonPassed(fmPMTId, c->GetmPMTId(), typeid(*this).name(), __func__, "mPMTID")) || failed;
+  failed = (!ComparisonPassed(fmPMT_PMTId, c->GetmPMT_PMTId(), typeid(*this).name(), __func__, "mPMT_PMTID")) || failed;
   failed = (!ComparisonPassedVec(fPhotonIds, c->GetPhotonIds(), typeid(*this).name(), __func__, "PhotonIds")) || failed;
 
   return !failed;
 }
 
+//_____________________________________________________________________________
+bool WCSimRootCaptureGamma::CompareAllVariables(const WCSimRootCaptureGamma * c) const
+{
+  bool failed = false;
+
+  failed = (!ComparisonPassed(fID, c->GetID(), typeid(*this).name(), __func__, "ID")) || failed;
+  failed = (!ComparisonPassed(fEnergy, c->GetE(), typeid(*this).name(), __func__, "Energy")) || failed;
+  for(int i = 0; i < 3; i++) {
+    failed = (!ComparisonPassed(fDir[i], c->GetDir(i), typeid(*this).name(), __func__, TString::Format("Dir[%d]", i))) || failed;
+  }//i
+
+  return !failed;
+}
+//_____________________________________________________________________________
+bool WCSimRootCapture::CompareAllVariables(const WCSimRootCapture * c) const
+{
+  bool failed = false;
+
+  failed = (!ComparisonPassed(fCaptureParent, c->GetCaptureParent(), typeid(*this).name(), __func__, "CaptureParent")) || failed;
+  for(int i = 0; i < 3; i++) {
+    failed = (!ComparisonPassed(fCaptureVtx[i], c->GetCaptureVtx(i), typeid(*this).name(), __func__, TString::Format("CaptureVtx[%d]", i))) || failed;
+  }//i
+  failed = (!ComparisonPassed(fNGamma, c->GetNGamma(), typeid(*this).name(), __func__, "NGamma")) || failed;
+  failed = (!ComparisonPassed(fTotalGammaE, c->GetTotalGammaE(), typeid(*this).name(), __func__, "TotalGammaE")) || failed;
+  failed = (!ComparisonPassed(fCaptureT, c->GetCaptureT(), typeid(*this).name(), __func__, "CaptureT")) || failed;
+  failed = (!ComparisonPassed(fCaptureNucleus, c->GetCaptureNucleus(), typeid(*this).name(), __func__, "CaptureNucleus")) || failed;
+
+  //Check the totals of the gamma arrays
+  if(this->GetGammas()->GetEntries() != c->GetGammas()->GetEntries()) {
+    cerr << "WCSimRootTrigger::CompareAllVariables() Different number of gammas: " << this->GetGammas()->GetEntries() << ", " << c->GetGammas()->GetEntries() << endl;
+    failed = true;
+  }
+  //and check the individual gammas
+  for(int i = 0; i < TMath::Min(this->GetGammas()->GetEntries(), c->GetGammas()->GetEntries()); i++) {
+#ifdef VERBOSE_COMPARISON
+    cout << "Capture gamma " << i << endl;
+#endif
+    bool thisfailed = !((WCSimRootCaptureGamma *)this->GetGammas()->At(i))->CompareAllVariables((WCSimRootCaptureGamma *)c->GetGammas()->At(i));
+    failed = thisfailed || failed;
+  }//i (WCSimRootCaptureGammas)
+
+  return !failed;
+}
 //_____________________________________________________________________________
 bool WCSimRootEventHeader::CompareAllVariables(const WCSimRootEventHeader * c) const
 {
@@ -706,7 +940,7 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c, bool deep
   failed = !(fPi0   .CompareAllVariables(c->GetPi0Info())) || failed;
 
   //
-  //Check the totals of the arrays of tracks/hits/hittimes/digits
+  //Check the totals of the arrays of tracks/hits/hittimes/digits/etc.
   //
   if(this->GetTracks()->GetEntries() != c->GetTracks()->GetEntries()) {
     cerr << "WCSimRootTrigger::CompareAllVariables() Different number of tracks: " << this->GetTracks()->GetEntries() << ", " << c->GetTracks()->GetEntries() << endl;
@@ -722,6 +956,10 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c, bool deep
   }
   if(this->GetCherenkovDigiHits()->GetEntries() != c->GetCherenkovDigiHits()->GetEntries()) {
     cerr << "WCSimRootTrigger::CompareAllVariables() Different number of Cherenkov digi hits: " << this->GetCherenkovDigiHits()->GetEntries() << ", " << c->GetCherenkovDigiHits()->GetEntries() << endl;
+    failed = true;
+  }
+  if(this->GetCaptures()->GetEntries() != c->GetCaptures()->GetEntries()) {
+    cerr << "WCSimRootTrigger::CompareAllVariables() Different number of captures: " << this->GetCaptures()->GetEntries() << ", " << c->GetCaptures()->GetEntries() << endl;
     failed = true;
   }
 
@@ -843,9 +1081,18 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c, bool deep
     }//ithis
   }//failed_digits && deep_comparison
 
-  failed = (!ComparisonPassed(fMode[0], c->GetMode(), typeid(*this).name(), __func__, "Mode")) || failed;
+  //check captures
+  for(int i = 0; i < TMath::Min(this->GetCaptures()->GetEntries(), c->GetCaptures()->GetEntries()); i++) {
+#ifdef VERBOSE_COMPARISON
+    cout << "Capture " << i << endl;
+#endif
+    bool thisfailed = !((WCSimRootCapture *)this->GetCaptures()->At(i))->CompareAllVariables((WCSimRootCapture *)c->GetCaptures()->At(i));
+    failed = thisfailed || failed;
+  }//i (WCSimRootCapture)
+
   failed = (!ComparisonPassed(fNvtxs, c->GetNvtxs(), typeid(*this).name(), __func__, "Nvtxs")) || failed;
   for(int ivtx = 0; ivtx < fNvtxs; ivtx++) {
+    failed = (!ComparisonPassed(fMode[ivtx], c->GetMode(), typeid(*this).name(), __func__, TString::Format("Mode[%d]", ivtx))) || failed;
     failed = (!ComparisonPassed(fVtxsvol[ivtx], c->GetVtxsvol(ivtx), typeid(*this).name(), __func__, TString::Format("Vtxvols[%d]", ivtx))) || failed;
     for(int i = 0; i < 4; i++) {
       failed = (!ComparisonPassed(fVtxs[ivtx][i], c->GetVtxs(ivtx, i), typeid(*this).name(), __func__, TString::Format("%s[%d][%d]", "Vtxs", ivtx, i))) || failed;

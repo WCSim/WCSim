@@ -2,14 +2,25 @@
 #include "G4EventManager.hh"
 #include "G4DigiManager.hh"
 
-// for memset
+#include "WCSimDetectorConstruction.hh"
+#include "WCSimPmtInfo.hh"
+#include "WCSimDarkRateMessenger.hh"
+
+#include <fstream>
+#include <vector>
 
 //Use this and one/two of below to debug hit information
-//#define WCSIMWCDIGITIZER_VERBOSE
+#ifndef WCSIMWCDIGITIZER_VERBOSE
+#define WCSIMWCDIGITIZER_VERBOSE
+#endif
 //Print out hits with PMT IDs up to N
-#define NPMTS_VERBOSE -1
+#ifndef NPMTS_VERBOSE
+#define NPMTS_VERBOSE 0
+#endif //NPMTS_VERBOSE
 //And/Or a specific PMT ID
+#ifndef VERBOSE_PMT
 #define VERBOSE_PMT -1
+#endif //VERBOSE_PMT
 
 #ifndef HYPER_VERBOSITY
 // #define HYPER_VERBOSITY
@@ -20,15 +31,15 @@
 // *******************************************
 
 WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
-										   WCSimDetectorConstruction* inDetector,
-										   WCSimWCDAQMessenger* myMessenger,
-										   DigitizerType_t digitype,
-										   G4String detectorElement)
-  :G4VDigitizerModule(name), myDetector(inDetector), DAQMessenger(myMessenger), DigitizerType(digitype),DigitizerClassName(""), detectorElement(detectorElement)
+					   WCSimDetectorConstruction* inDetector,
+					   WCSimWCDAQMessenger* myMessenger,
+					   DigitizerType_t digitype,
+					   G4String inDetectorElement)
+  :G4VDigitizerModule(name), myDetector(inDetector), DAQMessenger(myMessenger), detectorElement(inDetectorElement), DigitizerClassName(""), DigitizerType(digitype)
 {
-  // G4String colName = "WCDigitizedStoreCollection";
   G4String colName;
   if(detectorElement=="tank") colName = "WCDigitizedStoreCollection";
+  else if(detectorElement=="tankPMT2") colName = "WCDigitizedStoreCollection2";
   else if(detectorElement=="OD") colName = "WCDigitizedStoreCollection_OD";
   collectionName.push_back(colName);
   ReInitialize();
@@ -85,11 +96,11 @@ void WCSimWCDigitizerBase::Digitize()
 
   G4DigiManager* DigiMan = G4DigiManager::GetDMpointer();
   
-  // Get the PMT collection ID
-  // G4int WCHCID = DigiMan->GetDigiCollectionID("WCRawPMTSignalCollection");
 
+  // Get the PMT collection ID
   G4String rawcollectionName;
   if(detectorElement=="tank") rawcollectionName = "WCRawPMTSignalCollection";
+  else if(detectorElement=="tankPMT2") rawcollectionName = "WCRawPMTSignalCollection2";
   else if(detectorElement=="OD") rawcollectionName = "WCRawPMTSignalCollection_OD";
   G4int WCHCID = DigiMan->GetDigiCollectionID(rawcollectionName);
 
@@ -186,10 +197,10 @@ void WCSimWCDigitizerBase::SaveOptionsToOutput(WCSimRootOptions * wcopt)
 // *******************************************
 
 WCSimWCDigitizerSKI::WCSimWCDigitizerSKI(G4String name,
-                                         WCSimDetectorConstruction* myDetector,
-                                         WCSimWCDAQMessenger* myMessenger,
-                                         G4String detectorElement)
-  : WCSimWCDigitizerBase(name, myDetector, myMessenger, kDigitizerSKI, detectorElement)
+					 WCSimDetectorConstruction* inDetector,
+					 WCSimWCDAQMessenger* myMessenger,
+					 G4String inDetectorElement)
+  : WCSimWCDigitizerBase(name, inDetector, myMessenger, kDigitizerSKI, inDetectorElement)
 {
   DigitizerClassName = "SKI";
   GetVariables();
@@ -200,24 +211,38 @@ WCSimWCDigitizerSKI::~WCSimWCDigitizerSKI(){
 
 void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 
-  if(detectorElement=="tank") G4cout << "TANK # ";
+  if(detectorElement=="tank") G4cout << "TANK 20in # ";
+  if(detectorElement=="tankPMT2") G4cout << "TANK mPMT # ";
   if(detectorElement=="OD")   G4cout << "OD # ";
-  G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << G4endl;
+#ifdef WCSIMWCDIGITIZER_VERBOSE
+  G4cout << "WCSimWCDigitizerSKI::DigitizeHits START WCHCPMT->entries() = " << WCHCPMT->entries() << " hits" << G4endl;
+#endif
 
-  //Get the PMT info for hit time smearing
-  G4String WCIDCollectionName = myDetector->GetIDCollectionName();
-  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCIDCollectionName);
+  //********************************************************************************************************* TD 2019.07.16 : to take PMT saturation effect into account *********************
+  double saturThreshold = myDetector->GetParameters()->GetPMTSatur();                                                                                             
+  //double qoiff = myDetector->GetParameters()->GetQoiff();
 
+  G4String WCCollectionName;
+  if(detectorElement=="tank") WCCollectionName = myDetector->GetIDCollectionName();
+  else if(detectorElement=="tankPMT2") WCCollectionName = myDetector->GetIDCollectionName2();
+  else if(detectorElement=="OD") WCCollectionName = myDetector->GetODCollectionName();
+  WCSimPMTObject * PMT = myDetector->GetPMTPointer(WCCollectionName);
+  
   // G. Pronost 2019/09/09:
   // Hit need to be sorted! (This is done no where!)
   std::sort(WCHCPMT->GetVector()->begin(), WCHCPMT->GetVector()->end(), WCSimWCDigi::SortFunctor_Hit());
+
+  //std::fstream file;
+  //G4String filename = Form("saturation_effect_%.2fpeThreshold.txt",saturThreshold);
+  //file.open(filename.c_str(), std::ios::out | std::ios::app);
+  //******************************************************************************************************************************************************************************************
   
   //loop over entires in WCHCPMT, each entry corresponds to
   //the photons on one PMT
   int absoluteindex=0;
+  double peSmeared = 0.;
   for (G4int i = 0 ; i < WCHCPMT->entries() ; i++)
     {
-
       //We must first sort hits by PMT in time.  This is very important as the code
       //assumes that each hit is in time order from lowest to highest.
       (*WCHCPMT)[i]->SortDigiMapsByHitTime();
@@ -258,6 +283,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	{
 	  double time = (*WCHCPMT)[i]->GetTime(ip);
           double pe = (*WCHCPMT)[i]->GetPe(ip);
+          //const int parent_id = (*WCHCPMT)[i]->GetParentID(ip);
 
 	  //start the integration time as the time of the first hit
 	  //Hits must be sorted in time
@@ -281,7 +307,14 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	  bool MakeDigit = false;
 	  if(time >= intgr_start && time <= upperlimit) {
 	    peSmeared += pe;
-	    photon_unique_id = ip+absoluteindex;
+
+	    // set to (effectively) the position in the WCSimRootCherenkovHitTimes array
+	    // (i.e. the total photon number)
+	    // previously
+	    //  - the position would be the position of the hit on this particular PMT
+	    //    (i.e. the photon number on this PMT)
+	    //  - except -1 would indicate dark noise
+	    photon_unique_id = ip + absoluteindex;
 	    digi_comp.push_back(photon_unique_id);
       
 #ifdef WCSIMWCDIGITIZER_VERBOSE
@@ -292,7 +325,6 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    if(ip + 1 == (*WCHCPMT)[i]->GetTotalPe()){
 	      MakeDigit = true;
 	    }
-	    
 	  }
 	  //if ensures we don't append the same digit multiple times while in the integration window
 	  else if(digi_comp.size()) {
@@ -307,14 +339,22 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	    int iflag;
 	    WCSimWCDigitizerSKI::Threshold(peSmeared,iflag);
 
+
 	    //Check if previous hit passed the threshold.  If so we will digitize the hit
 	    if(iflag == 0) {
 	      //apply time smearing
 	      double Q = (peSmeared > 0.5) ? peSmeared : 0.5;
 	      //digitize hit
 	      peSmeared *= efficiency;
+
+	      //******************************************************************************************************** TD 2019.07.16 : to take PMT saturation effect into account *********************
+	      //file << peSmeared << " ";
+	      peSmeared *= PMT->SaturFactor(peSmeared, saturThreshold);
+	      //file << peSmeared << "\n";
+	      //*****************************************************************************************************************************************************************************************
+
 	      bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
-								intgr_start + PMT->HitTimeSmearing(Q),
+								intgr_start + PMT->HitTimeSmearing(Q, 1.),
 								peSmeared, digi_comp);
 	      if(accepted) {
 		digi_unique_id++;
@@ -364,7 +404,7 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 		//digitize hit
 		peSmeared *= efficiency;
 		bool accepted = WCSimWCDigitizerBase::AddNewDigit(tube, digi_unique_id,
-								  intgr_start + PMT->HitTimeSmearing(Q),
+								  intgr_start + PMT->HitTimeSmearing(Q, 1.0),
 								  peSmeared, digi_comp);
 		if(accepted) {
 		  digi_unique_id++;
@@ -385,13 +425,19 @@ void WCSimWCDigitizerSKI::DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) {
 	}//ip (totalpe)
 	absoluteindex+=(*WCHCPMT)[i]->GetTotalPe();
     }//i (WCHCPMT->entries())
-  G4cout<<"WCSimWCDigitizerSKI::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << "\n";
-  
 #ifdef WCSIMWCDIGITIZER_VERBOSE
-  G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
+  G4cout<<"WCSimWCDigitizerSKI::DigitizeHits END DigiStore->entries() " << DigiStore->entries() << " digits" << G4endl;
+#endif
+  //******************************************************************************************************** TD 2019.07.16 : to take PMT saturation effect into account *********************
+  //file.close();
+  //*****************************************************************************************************************************************************************************************
+
+#ifdef WCSIMWCDIGITIZER_VERBOSE
+  if(NPMTS_VERBOSE > 0 || VERBOSE_PMT > 0)
+    G4cout<<"\n\n\nCHECK DIGI COMP:"<<G4endl;
   for (G4int idigi = 0 ; idigi < DigiStore->entries() ; idigi++){
     int tubeid = (*DigiStore)[idigi]->GetTubeID();
-    if(tubeid < NPMTS_VERBOSE) {
+    if(tubeid < NPMTS_VERBOSE || tubeid == VERBOSE_PMT) {
       std::map< int, std::vector<int> > comp = (*DigiStore)[idigi]->GetDigiCompositionInfo();
       for(size_t i = 0; i < comp.size(); i++){
 	G4cout << "tube "  << tubeid

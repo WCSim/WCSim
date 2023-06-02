@@ -1,6 +1,6 @@
 {
   TString libs0 = gSystem->GetDynamicPath();
-  TString libswc = gSystem->Getenv("WCSIMDIR");
+  TString libswc = gSystem->Getenv("WCSIM_BUILD_DIR/lib");
   TString libsg4 = gSystem->Getenv("GEANT4_BASE_DIR/install/lib");
   TString libs  = libs0 + ":" + libswc + ":" + libsg4 + ":/usr/lib:/usr/local/lib:/opt/lib:/opt/local/lib";
   gSystem->SetDynamicPath(libs.Data());

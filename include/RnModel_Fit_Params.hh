@@ -1,7 +1,7 @@
 /*
 	Rn model parameters version 2020/09/25
 	Author: Guillaume Pronost
-	
+
 	Detector slicing:
 	- The detector is divided in X layers over R2 from center to side, and Y layer over Z, from bottom to top.
 	ex: R2 layer 0 is at the center of the detector, Z layer 0 is the bottom of the detector
@@ -12,7 +12,7 @@
 	- Due to the noise, fit is impossible in the layers too close to the walls
 		-> R2 layers after RNMODEL_BIN_R_MAX are not fitted
 		-> Z layers below RNMODEL_BIN_Z_MIN and above RNMODEL_BIN_Z_MAX are not fitted
-	
+
 	Fit parameter explanations:
 	- vParam_Z[x][..] are the model fit parameters of the Z distribution from R2 layer x
 		[0]: bottom Z-limit of the convection front (unit: m)
@@ -25,20 +25,20 @@
 	- vParam_R2[y][..] are the model fit parameters of the R2 distribution from Z layer y
 		[0]: Constant Radon concentration on the detector side (unit: mBq/m3)
 		[1]: R2 value where fast diffusion toward the center starts (unit: m2)
-		[2]: Correction to the diffusion factor for the fast diffusion (unit: abr.) 
+		[2]: Correction to the diffusion factor for the fast diffusion (unit: abr.)
 		Note: fast diffusion -> short range
 		[3]: Radon concentration in the center of the detector (unit: mBq/m3)
 		[4]: (Optional) R2 value where slow diffusion toward the detector center starts (unit: m2)
 		[5]: (Optional) Correction to the diffusion factor for the slow diffusion (unit: abr.)
 		[6]: (Optional) Radon contration at [4]
 		Note: slow diffusion -> long range
-	
 */
 
-	// Global parameters:
+// Global parameters:
 #define 	RNMODEL_CONC_BOTTOM 		2.63 	// mBq/m^{3} -> From Nakano-san et al.
 #define 	RNMODEL_CONC_CENTER 		0.1 	// mBq/m^{3} -> From Nakano-san et al.
 #define 	RNMODEL_CONC_INTERMEDIATE 	0.3 	// mBq/m^{3} -> Arbitrary
+
 
 	// Fit parameter for R2 layer = 0
 	vParam_Z [0][0] = -12.6566;

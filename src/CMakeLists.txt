@@ -19,6 +19,7 @@ pbuilder_library(
         PRIVATE_EXTERNAL_LIBRARIES ${PRIVATE_EXT_LIBS}
 )
 
+
 # WCSimRoot library
 
 set (dict_headers
@@ -27,7 +28,9 @@ set (dict_headers
         ${PROJECT_SOURCE_DIR}/include/WCSimPmtInfo.hh
         ${PROJECT_SOURCE_DIR}/include/WCSimEnumerations.hh
         ${PROJECT_SOURCE_DIR}/include/WCSimRootOptions.hh
-        ${PROJECT_SOURCE_DIR}/include/WCSimRootTools.hh )
+        ${PROJECT_SOURCE_DIR}/include/WCSimRootTools.hh
+        ${PROJECT_SOURCE_DIR}/include/TJNuBeamFlux.hh
+        ${PROJECT_SOURCE_DIR}/include/TNRooTrackerVtx.hh )
 
 set( linkdef_header
         ${PROJECT_SOURCE_DIR}/include/WCSimRootLinkDef.hh )
@@ -37,7 +40,9 @@ set(sources_root
         WCSimPmtInfo.cc
         WCSimEnumerations.cc
         WCSimRootOptions.cc
-        WCSimRootTools.cc)
+        WCSimRootTools.cc
+	TJNuBeamFlux.cc
+	TNRooTrackerVtx.cc)
 set( linkdef_header ${PROJECT_SOURCE_DIR}/include/WCSimRootLinkDef.hh )
 set(pcm_file ${CMAKE_CURRENT_BINARY_DIR}/libWCSimRoot_rdict.pcm)
 set(rootmap_file ${CMAKE_CURRENT_BINARY_DIR}/libWCSimRoot.rootmap)
@@ -93,3 +98,17 @@ pbuilder_component_install_and_export(
         EXETARGETS ${programs}
 )
 
+##############
+# WCSim compilation options
+##############
+option(WCSim_Geometry_Overlaps_CHECK
+  "Toggle GEANT4 overlap checking when placing geometry elements"
+  OFF
+)
+
+target_compile_definitions(WCSimCore PRIVATE
+        WCSIM_CHECK_GEOMETRY_OVERLAPS=$<IF:$<BOOL:${WCSim_Geometry_Overlaps_CHECK}>,true,false>
+)
+target_compile_definitions(WCSim PRIVATE
+        WCSIM_CHECK_GEOMETRY_OVERLAPS=$<IF:$<BOOL:${WCSim_Geometry_Overlaps_CHECK}>,true,false>
+)

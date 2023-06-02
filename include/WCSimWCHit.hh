@@ -59,11 +59,18 @@ class WCSimWCHit : public G4VHit
   void SetTrackID      (G4int track)                { trackID = track; };
   void SetEdep         (G4double de)                { edep = de; };
   void SetPos          (G4ThreeVector xyz)          { pos = xyz; };
+  void SetOrientation  (G4ThreeVector xyz)          { orient = xyz; };
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
-  void AddParentID     (G4int primParentID)
-  { primaryParentID.push_back(primParentID); }
+  void AddParentID     (G4int primParentID) { primaryParentID.push_back(primParentID); }
+  void AddPhotonStartTime (G4float photStartTime) { photonStartTime.push_back(photStartTime); }
+  void AddPhotonStartPos  (const G4ThreeVector &photStartPos) { photonStartPos.push_back(photStartPos); }
+  void AddPhotonEndPos  (const G4ThreeVector &photEndPos) { photonEndPos.push_back(photEndPos); }
+  void AddPhotonStartDir  (const G4ThreeVector &photStartDir) { photonStartDir.push_back(photStartDir); }
+  void AddPhotonEndDir  (const G4ThreeVector &photEndDir) { photonEndDir.push_back(photEndDir); }
+  void SetTubeType     (G4String tube_type)          { tubeType = tube_type; }; //Added by B.Quilain to transmit on which PMT type the hit happened. For detectors with several PMT types in ID.
 
+  
   // This is temporarily used for the drawing scale
   void SetMaxPe(G4int number = 0)  {maxPe   = number;};
 
@@ -81,9 +88,16 @@ class WCSimWCHit : public G4VHit
   G4int         GetTubeID()     { return tubeID; };
   G4int         GetTrackID()    { return trackID; };
   G4ThreeVector GetPos()        { return pos; };
+  G4ThreeVector GetOrientation()        { return orient; };
   G4int         GetTotalPe()    { return totalPe;};
-  G4double       GetTime(int i)  { return time[i];};
+  G4double      GetTime(int i)  { return time[i];};
   G4int         GetParentID(int i) { return primaryParentID[i];};
+  G4String         GetTubeType()     { return tubeType; };
+  G4float       GetPhotonStartTime(int i) { return photonStartTime[i];};
+  G4ThreeVector GetPhotonStartPos(int i) { return photonStartPos[i];};
+  G4ThreeVector GetPhotonEndPos(int i) { return photonEndPos[i];};
+  G4ThreeVector GetPhotonStartDir(int i) { return photonStartDir[i];};
+  G4ThreeVector GetPhotonEndDir(int i) { return photonEndDir[i];};
   
   G4LogicalVolume* GetLogicalVolume() {return pLogV;};
 
@@ -117,7 +131,7 @@ class WCSimWCHit : public G4VHit
 
   // pmtgate  and evgate are durations, ie not absolute times
 
-  G4int GetPeInGate(double low, double pmtgate,double evgate) {
+  G4int GetPeInGate(G4double low, G4double pmtgate,G4double evgate) {
     // M Fechner; april 2005
     // assumes that time has already been sorted
     std::vector<G4double>::iterator tfirst = time.begin();
@@ -148,12 +162,16 @@ class WCSimWCHit : public G4VHit
 
  private:
   
+  void HSVtoRGB(double& fR, double& fG, double& fB, double& fH, double& fS, double& fV);
+
   G4int            tubeID;
   G4int            trackID;
   G4double         edep;
   G4ThreeVector    pos;
+  G4ThreeVector    orient;
   G4RotationMatrix rot;
   G4LogicalVolume* pLogV;
+  G4String tubeType;//Added by B.Quilain to transmit on which PMT type the hit happened. For detectors with several PMT types in ID.
 
   // This is temporarily used for the drawing scale
   // Since its static *every* WChit sees the same value for this.
@@ -161,8 +179,13 @@ class WCSimWCHit : public G4VHit
   static G4int     maxPe;
 
   G4int                 totalPe;
-  std::vector<G4double>  time;
+  std::vector<G4double> time;
   std::vector<G4int>    primaryParentID;
+  std::vector<G4float>  photonStartTime;
+  std::vector<G4ThreeVector> photonStartPos;
+  std::vector<G4ThreeVector> photonEndPos;
+  std::vector<G4ThreeVector> photonStartDir;
+  std::vector<G4ThreeVector> photonEndDir;
   G4int                 totalPeInGate;
 };
 

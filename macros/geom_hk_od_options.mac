@@ -1,0 +1,21 @@
+# HyperK Outer Detector geometry options
+
+/WCSim/HyperKOD/PMTODRadius 3inch # The PMTs to be used in the OD. Options 3inch (PMT3inch_ETEL9302B), 5inch (PMT5inch) or 8inch (PMT8inch)
+/WCSim/HyperKOD/ODLateralWaterDepth 1 m # The thickness of the OD in the barrel region
+/WCSim/HyperKOD/ODHeightWaterDepth 2 m # The thickness of the OD in the top and bottom endcap regions
+/WCSim/HyperKOD/ODDeadSpace 600 mm # The deadspace between the ID PMTs and OD PMTs (essentially the thickness of the PMT support structure)
+/WCSim/HyperKOD/ODTyvekSheetThickness 1 mm # The thickness of the Tyvek sheets in the OD
+/WCSim/HyperKOD/ODWLSPlatesThickness 0.6 cm # The thickness of each OD WLS plate.
+/WCSim/HyperKOD/ODWLSPlatesLength 30 cm # The length of each OD WLS plate. 30cm is optimal
+
+# Specify the number of OD PMTs per cell.
+# When the horizontal and vertical values are set to 0 the program will optimise 
+# the arrangment based on the input OD PMT coverage
+/WCSim/HyperKOD/PMTODperCellHorizontal 0
+/WCSim/HyperKOD/PMTODperCellVertical 0
+# OD PMT coverage as a percentage: 1 equals 1%
+# 0.22 = ~10k 3" PMTs
+/WCSim/HyperKOD/PMTODPercentCoverage 0.22
+/WCSim/HyperKOD/ODPMTShift 0 m # Offset every other row of OD PMTs by x meters
+#/WCSim/HyperKOD/DeactivateWLS # Uncomment to build the OD without WLS plates
+/WCSim/HyperKOD/BuildODWLSCladding # This places a reflective cladding around each WLS plate

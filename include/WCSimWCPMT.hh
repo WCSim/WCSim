@@ -20,9 +20,10 @@ public:
   ~WCSimWCPMT();
   
    void ReInitialize() { DigiHitMapPMT.clear(); TriggerTimes.clear(); }
-    
+
    // Set Relative Digitized Hit time mode and reinitialize first_time hit
-   void SetRelativeDigitizedHitTime (bool val) { RelativeHitTime = val; first_time = 0; }
+   void SetRelativeDigitizedHitTime (bool val) { RelativeHitTime = val; fFirst_Time = 0; fFirst_Time_Flag = false; }
+   void SetRelativeDigitizedHitTime (bool val, G4double time) { RelativeHitTime = val; fFirst_Time = time; fFirst_Time_Flag = true; }
    
 public:
   
@@ -30,11 +31,11 @@ public:
   void MakePeCorrection(WCSimWCHitsCollection*);
   void Digitize();
   G4double GetTriggerTime(int i) { return TriggerTimes[i];}
+  G4double GetRelativeTimeShift() { return fFirst_Time; }
   // void SetConversion(double iconvrate){ ConvRate = iconvrate; }
   //  static G4double GetLongTime() { return LongTime;}
   
   G4double rn1pe();
-  G4double peSmeared;
   // double ConvRate; // kHz
   std::vector<G4double> TriggerTimes;
   std::map<int,int> DigiHitMapPMT; // need to check if a hit already exists..
@@ -42,12 +43,11 @@ public:
   WCSimWCDigitsCollection*  DigitsCollection;  
   WCSimDetectorConstruction* myDetector;
   G4String detectorElement;
-
+  
 private:
   bool RelativeHitTime;
-  
-  static G4double first_time;
-
+  static G4double fFirst_Time;
+  static G4bool fFirst_Time_Flag;
 };
 
 #endif

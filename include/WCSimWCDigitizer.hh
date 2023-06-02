@@ -52,10 +52,9 @@ public:
 protected:
   void ReInitialize() { DigiStoreHitMap.clear(); }
 
-  G4double peSmeared;
-
   WCSimDetectorConstruction* myDetector; ///< Get the geometry information
   WCSimWCDAQMessenger* DAQMessenger;     ///< Get the /DAQ/ .mac options
+  G4String detectorElement; //to identify which hit collection the trigger is associated: OD, ID, ID PMT type 2(for hybrid)
 
   WCSimWCDigitsCollection*  DigiStore;
   std::map<int,int> DigiStoreHitMap;   ///< Used to check if a digit has already been created on a PMT
@@ -75,8 +74,6 @@ protected:
   virtual double GetDefaultPEPrecision() = 0;       ///< Set the default digitizer-specific charge resolution (in p.e.) (overridden by .mac)
 
   void GetVariables(); ///< Get the default deadtime, etc. from the derived class, and override with read from the .mac file
-
-  G4String detectorElement;
 };
 
 

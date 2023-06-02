@@ -5,6 +5,7 @@
 
 #include "WCSimVisManager.hh"
 #include "G4TrajectoryDrawByParticleID.hh"
+#include "G4Version.hh"
 
 // Supported drivers...
 
@@ -146,8 +147,11 @@ void WCSimVisManager::RegisterGraphicsSystems () {
     G4cout <<
       "\nYou have successfully chosen to use the following graphics systems."
 	 << G4endl;
+#if G4VERSION_NUMBER < 1020
     PrintAvailableGraphicsSystems (); //use this version for Geant4.10.1
-    //PrintAvailableGraphicsSystems (GetVerbosityValue(fVerbose)); //use this version for Geant4.10.2+
+#else
+    PrintAvailableGraphicsSystems (GetVerbosityValue(fVerbose)); //use this version for Geant4.10.2+
+#endif
   }
   RegisterModel(mymodel);
 
