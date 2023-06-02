@@ -536,12 +536,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	G4cout << "%%%%% ADDING EXTRA TOWER" << G4endl;
 
 	G4cerr << "The extra tower is not correctly implemented. It causes geometry overlaps," << G4endl
-		   << " which lead to killed tracks and the incorrect number of hits" << G4endl
+		   << " which lead to killed tracks and the incorrect number of hits." << G4endl
 		   << "You are strongly recommended to use $WCSIMDIR/sample-root-scripts/calcPhotoCoverage.C" << G4endl
-		   << " in order to produce a photocoverage that will give you a valid geometry" << G4endl
-		   << "Alternatively you can comment out the exit statement following this print message" << G4endl
-		   << " but do this at your own risk" << G4endl;
-	exit(-1);
+		   << " in order to produce a photocoverage that will give you a valid geometry." << G4endl
+		   << "Also be warned that, due to how PMTs are laid out in WCSim, you should be careful" << G4endl
+		   << " when using a new geometry, especially if it is a HK hybrid geometry with" << G4endl
+		   << " a low number of of mPMTs." << G4endl
+		   << "You should check that all ID PMTs are laid out in a sensible pattern for your needs," << G4endl
+		   << " and that the number of hits produced is sensible." << G4endl;
 
     // as the angles between the corners of the main annulus 
     // and the corners extra tower are different, we need to adjust the 
