@@ -1097,7 +1097,12 @@ void WCSimDetectorConstruction::SetNuPrism_mPMTGeometry()
 // WCTE with mPMTs (M.Shinoki)
 void WCSimDetectorConstruction::SetNuPrismBeamTest_mPMTGeometry()
 {
-    WCDetectorName = "NuPRISMBeamTest_mPMT";
+  WCDetectorName = "NuPRISMBeamTest_mPMT";
+  G4cerr << "**********************************" << G4endl
+		 << WCDetectorName << " is not supported in this version of WCSim" << G4endl
+		 << "Please use code from the WCTE/WCSim repository to simulate WCTE" << G4endl
+		 << "Exiting..." << G4endl;
+  exit(-1);
     WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
 	mPMT_ID_PMT = "PMT3inchR12199_02";    //can be changed in macro through mPMT settings.
 	mPMT_OD_PMT = "PMT3inchR12199_02";
