@@ -26,6 +26,7 @@ Default output `.root` file changes
   2. `fODPMTArray` stores the OD PMT information (this used to be stored at the end of `fPMTArray`)
 
 New features
+* New script `plot_pmts.C` to plot the PMT distribution
 * Pull Request [WCTE/WCSim#10 @kmtsui](https://github.com/WCTE/WCSim/pull/10): Automatically switch Geant4 function arguments between G4.10.1 & 4.10.3
 * Pull Request [tdealtry/#2 @spradlin](https://github.com/tdealtry/WCSim/pull/2): Restore interactive running mode of WCSim
 * Commit [7663873 @spradlin](https://github.com/spradlin/WCSim/commit/7663873c5d11d4cc1a50e535a185e6ed0124c6a4): Add `-DWCSim_Geometry_Overlaps_CHECK` cmake options

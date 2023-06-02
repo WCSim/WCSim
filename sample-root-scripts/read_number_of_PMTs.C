@@ -24,7 +24,9 @@ int read_number_of_PMTs(const char *filename="../wcsim.root")
   TBranch *gb = tree->GetBranch("wcsimrootgeom");
   gb->SetAddress(&geom);
   tree->GetEntry(0);
-  Printf("Number of PMTs: %d", geom->GetWCNumPMT());
+  Printf("Number of 20\" PMTs: %d", geom->GetWCNumPMT());
+  Printf("Number of OD PMTs: %d", geom->GetODWCNumPMT());
+  Printf("Number of mPMTs: %d", geom->GetWCNumPMT(true));
 
   return 0;
 }
