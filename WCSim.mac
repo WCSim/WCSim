@@ -36,6 +36,24 @@
 #/control/execute macros/mPMT_nuPrism2.mac
 
 
+#Note that whilst you can change the number of PMTs
+# in the HK FD ID using these photocoverage parameters,
+# it is up to you to verify that you have produced
+# a valid geometry.
+#Suggestions of things to check
+# - Has an extra tower of PMTs been built?
+#   (Check this via the std error stream)
+#   This can cause tracks to get stuck & be killed
+# - Is the layout of the ID PMTs (20" + OD) sensible?
+#   (Plot the position of each PMT)
+#   When there is e.g. a low number of mPMTs
+#   unrealistic stripes of mPMTs are produced
+#   that may cause odd output
+# - Is the number of hits consistent with expectation?
+#   For example, compare the number of hits per PMT
+#   using the default geometry with your geometry
+#   using e.g. a particle gun with sufficient statistics
+
 #Use the HK FD ID-only geometry
 #/WCSim/SetPMTPercentCoverage  20.2150576375662
 #/WCSim/SetPMTPercentCoverage2 10.1075288187831
