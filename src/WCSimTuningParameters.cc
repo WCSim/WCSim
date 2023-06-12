@@ -20,6 +20,9 @@ WCSimTuningParameters::WCSimTuningParameters()
  //qoiff=0.0; //TD 2019.6.26
  pmtsatur=-1;
 
+ pmtsurftype=0;
+ cathodepara=0;
+
  //jl145 - For Top Veto
  tvspacing = 100.0;
  topveto = false;

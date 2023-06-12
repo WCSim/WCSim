@@ -34,6 +34,9 @@ WCSimSteppingAction::WCSimSteppingAction(WCSimRunAction *myRun, WCSimDetectorCon
 
 void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 {
+    const G4Event *event = G4EventManager::GetEventManager()->GetConstCurrentEvent();
+    if(event->IsAborted() || event->GetEventID() < 0)
+      return;
   //DISTORTION must be used ONLY if INNERTUBE or INNERTUBEBIG has been defined in BidoneDetectorConstruction.cc
   
   const G4Track* track       = aStep->GetTrack();

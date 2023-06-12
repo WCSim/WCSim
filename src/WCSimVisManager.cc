@@ -63,6 +63,8 @@
 #include "G4VRML2.hh"
 #endif
 
+#include "G4Version.hh"
+
 WCSimVisManager::WCSimVisManager () {}
 
 void WCSimVisManager::RegisterGraphicsSystems () {

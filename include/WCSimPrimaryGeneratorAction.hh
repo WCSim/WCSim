@@ -3,6 +3,7 @@
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ThreeVector.hh"
+#include "G4ParticleDefinition.hh"
 #include "globals.hh"
 
 #include "WCSimRootOptions.hh"
@@ -158,24 +159,22 @@ private:
   TTree* fRooTrackerTree;
   TTree* fSettingsTree;
   NRooTrackerVtx* fTmpRootrackerVtx;
-  float  fNuPrismRadius;
-  float  fNuBeamAng;
-  float  fNuPlanePos[3];
+  float fNuPrismRadius;
+  float fNuBeamAng;
+  float fNuPlanePos[3];
 
+  bool needConversion;
+  bool foundConversion;
+  const G4ParticleDefinition * conversionProductParticle[2];
+  G4ThreeVector conversionProductMomentum[2];
+	
+public:
 
-  // Use Histograms to generate cosmics
-  TH2D *hFluxCosmics;
-  TH2D *hEmeanCosmics;
-
-  // Set cosmics altitude
-  G4double altCosmics;
-
- public:
+  inline TFile* GetInputRootrackerFile(){ return fInputRootrackerFile;}
 
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
   inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
 
-  inline TFile* GetInputRootrackerFile(){ return fInputRootrackerFile;}
   inline void SetRootrackerEvtGenerator(G4bool choice) { useRootrackerEvt = choice; }
   inline G4bool IsUsingRootrackerEvtGenerator() { return useRootrackerEvt; }
 
@@ -201,18 +200,18 @@ private:
   inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
   inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }
 
-  inline void OpenVectorFile(G4String fileName)
+  inline void OpenVectorFile(G4String fileName) 
   {
-    if ( inputFile.is_open() )
-      inputFile.close();
+      if ( inputFile.is_open() ) 
+          inputFile.close();
 
-    vectorFileName = fileName;
-    inputFile.open(vectorFileName, std::fstream::in);
+      vectorFileName = fileName;
+      inputFile.open(vectorFileName, std::fstream::in);
+      if ( !inputFile.is_open() ) {
+        G4cout << "Vector file " << vectorFileName << " not found" << G4endl;
+        exit(-1);
+      }
 
-    if ( !inputFile.is_open() ) {
-      G4cout << "Vector file " << vectorFileName << " not found" << G4endl;
-      exit(-1);
-    }
   }
 
   inline void OpenCosmicsFile(G4String fileName)
@@ -261,6 +260,20 @@ private:
 
   inline void SetPoissonPMTMean(G4double val){ poissonPMTMean = val; }
   inline G4double GetPoissonPMTMean(){ return poissonPMTMean; }
+
+  inline bool IsConversionFound(){ return foundConversion; }
+  inline void FoundConversion(){ foundConversion = true; }
+  inline void SetConversionProductParticle(int i, const G4ParticleDefinition *p) { conversionProductParticle[i] = p; }
+  inline void SetConversionProductMomentum(int i, const G4ThreeVector& p) { conversionProductMomentum[i] = p; }
+  inline void SetNeedConversion(bool choice) { needConversion = choice; foundConversion = !choice; }
+  inline bool NeedsConversion() { return needConversion; }
+
+  // Use Histograms to generate cosmics
+  TH2D *hFluxCosmics;
+  TH2D *hEmeanCosmics;
+
+  // Set cosmics altitude
+  G4double altCosmics;
 
   //static const HepDouble nanosecond  = 1.;
   //static const HepDouble second      = 1.e+9 *nanosecond;

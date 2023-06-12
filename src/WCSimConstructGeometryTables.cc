@@ -583,3 +583,49 @@ G4double WCSimDetectorConstruction::GetGeo_Dm(G4int i){
     return 0;
   }
 }
+
+// Read PMT positions from file
+void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
+  pmtPos.clear();
+  pmtDir.clear();
+  pmtUse.clear();
+  if (!readFromTable) return;
+  std::ifstream Data(pmtPositionFile.c_str(),std::ios_base::in);
+  if (!Data)
+  {
+    G4cout<<"PMT data file "<<pmtPositionFile<<" could not be opened. Use default positioning"<<G4endl;
+    readFromTable = false;
+    return;
+  }
+  else
+    G4cout<<"PMT data file "<<pmtPositionFile<<" is opened to read positions"<<G4endl;
+
+  std::string str, tmp;
+	G4int Column=0;
+	while (std::getline(Data, str)) {
+		if (str=="#DATASTART") break;
+	}
+	std::ifstream::pos_type SavePoint = Data.tellg();
+	std::getline(Data, str);
+	std::istringstream stream(str);
+	while (std::getline(stream,tmp,' ')) Column++;
+	if (Column!=7)
+  {
+    G4cout<<"Number of column = "<<Column<<" which is not equal to 7. "<<G4endl;
+    G4cout<<"Inappropriate input --> Revert to default positioning"<<G4endl;
+    readFromTable = false;
+    return;
+  }
+  Data.seekg(SavePoint);
+
+  G4ThreeVector pos, dir;
+  int UsePMT;
+  while (!Data.eof())
+  {
+    Data>>pos[0]>>pos[1]>>pos[2]>>dir[0]>>dir[1]>>dir[2]>>UsePMT;
+    pmtPos.push_back(pos);
+    pmtDir.push_back(dir);
+    pmtUse.push_back(UsePMT);
+  }
+  Data.close();
+}
