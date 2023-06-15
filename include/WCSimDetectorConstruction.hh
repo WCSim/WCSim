@@ -512,7 +512,7 @@ private:
   G4LogicalVolume* ConstructCaps(G4bool);
 
   G4LogicalVolume* ConstructCylinderNoReplica();
-  G4LogicalVolume* ConstructCapsNoReplica(G4int zflip);
+  G4LogicalVolume* ConstructCapsNoReplica(G4bool flipz);
 
   void  ConstructMaterials();
 
