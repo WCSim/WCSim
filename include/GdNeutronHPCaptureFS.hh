@@ -46,7 +46,10 @@ class GdNeutronHPCaptureFS : public G4NeutronHPFinalState
   
   void   UpdateNucleus( const G4Fragment* , G4double );
   void Init (G4double A, G4double Z, G4int M, G4String & dirName, G4String & aFSType);
-  void Init (G4double A, G4double Z, G4int M, G4String & dirName, G4String & aFSType, G4ParticleDefinition*);
+  void Init (G4double A, G4double Z, G4int M, G4String & dirName, G4String & aFSType, G4ParticleDefinition*)
+  {
+    Init( A, Z, M, dirName, aFSType );
+  }
   G4HadFinalState * ApplyYourself(const G4HadProjectile & theTrack);
   G4NeutronHPFinalState * New() 
   {

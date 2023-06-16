@@ -117,6 +117,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
   //TF: need to add a Polyhedra on the other side of the outerAnnulusRadius for the OD
   outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
+  WCODRadius = WCIDRadius + WCBlackSheetThickness;
   if(isODConstructed){
     const G4double sphereRadius =
 	  (WCPMTODExposeHeight*WCPMTODExposeHeight+ WCPMTODRadius*WCPMTODRadius)/(2*WCPMTODExposeHeight);

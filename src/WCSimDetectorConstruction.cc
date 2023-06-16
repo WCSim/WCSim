@@ -93,6 +93,13 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   WCPMTExposeHeight2= 0.;
   WCPMTODExposeHeight= 0.;
 
+  WCPMTODRadius = 0.;
+  WCODLateralWaterDepth = 0.;
+  WCODHeightWaterDepth = 0.;
+  WCBlackSheetThickness = 0.;
+  WCODDeadSpace = 0.; 
+  WCODTyvekSheetThickness = 0.;
+
   //---------------------------------------------------
   // Need to define defaults for all mPMT parameters 
   // defaults are chosen that they are valid for a SK detector
