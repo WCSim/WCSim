@@ -3,7 +3,7 @@
 ## Readme for WCTE version of WCSim with multiple geometries ##
 ###############################################################
 
-You can control the version of geometry in nuPRISMBeamTest.mac. 
+You can control the version of geometry in WCTE.mac. 
 
 nuPRISMBeamTest_16cShort_mPMT is the most up to date version of the detector
 16cShort = 16 columns 4 rows with dimensions from CAD

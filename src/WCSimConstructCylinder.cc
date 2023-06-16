@@ -1741,7 +1741,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 			   extraBSRmin,
 			   extraBSRmax);
 
-    logicWCExtraBorderBlackSheet =
+    G4LogicalVolume* logicWCExtraBorderBlackSheet =
       new G4LogicalVolume(solidWCExtraBorderBlackSheet, 
 			  G4Material::GetMaterial("Blacksheet"),
 			  etbcbsname, 
@@ -2811,7 +2811,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
                                                    annulusBlackSheetRmin,
                                                    annulusBlackSheetRmax);
 
-  logicWCBarrelAnnulusBlackSheet =
+  G4LogicalVolume* logicWCBarrelAnnulusBlackSheet =
     new G4LogicalVolume(solidWCBarrelBlackSheet,
                         G4Material::GetMaterial("Blacksheet"),
                         "WCBarrelAnnulusBlackSheet",
@@ -3935,7 +3935,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
                                                    annulusBlackSheetRmin,
                                                    annulusBlackSheetRmax);
 
-  logicWCBarrelBorderBlackSheet =
+  G4LogicalVolume* logicWCBarrelBorderBlackSheet =
     new G4LogicalVolume(solidWCBarrelBlackSheet,
                         G4Material::GetMaterial("Blacksheet"),
                         bbbsname,
@@ -4064,7 +4064,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 			   borderAnnulusZ,
 			   towerBSRmin,
 			   towerBSRmax);
-    logicWCExtraBorderBlackSheet =
+    G4LogicalVolume* logicWCExtraBorderBlackSheet =
       new G4LogicalVolume(solidWCExtraBorderBlackSheet,
 			  G4Material::GetMaterial("Blacksheet"),
 			  etbcbsname,

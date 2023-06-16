@@ -522,10 +522,6 @@ private:
 
   G4double capAssemblyHeight;
 
-  G4LogicalVolume* logicWCBarrelAnnulusBlackSheet;
-  G4LogicalVolume* logicWCBarrelBorderBlackSheet;
-  G4LogicalVolume* logicWCExtraBorderBlackSheet;
-
   G4bool WCAddGd;
 
   // Code for traversing the geometry and assigning tubeIDs.
@@ -870,7 +866,6 @@ private:
   G4double mPMT_vessel_radius_curv;                        // radius of the sphere to determine curvature of cap of pressure vessel
   G4double mPMT_vessel_radius;                             // radius of the pressure vessel (spherical cap)
   G4double dist_pmt_vessel;                           // distance between glass of pmt and inner radius of pressure vessel (region where water/gel lives)
-  //G4double pmtModuleHeight;                           // includes puck and single PMT support, not PMT base. The height of pmt module for solid works design
   mPMT_orientation orientation;
   G4String mPMT_outer_material;
   G4String mPMT_inner_material;

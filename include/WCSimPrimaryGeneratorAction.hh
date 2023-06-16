@@ -163,6 +163,14 @@ private:
   float fNuBeamAng;
   float fNuPlanePos[3];
 
+
+  // Use Histograms to generate cosmics
+  TH2D *hFluxCosmics;
+  TH2D *hEmeanCosmics;
+
+  // Set cosmics altitude
+  G4double altCosmics;
+
   bool needConversion;
   bool foundConversion;
   const G4ParticleDefinition * conversionProductParticle[2];
@@ -170,11 +178,10 @@ private:
 	
 public:
 
-  inline TFile* GetInputRootrackerFile(){ return fInputRootrackerFile;}
-
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
   inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
 
+  inline TFile* GetInputRootrackerFile(){ return fInputRootrackerFile;}
   inline void SetRootrackerEvtGenerator(G4bool choice) { useRootrackerEvt = choice; }
   inline G4bool IsUsingRootrackerEvtGenerator() { return useRootrackerEvt; }
 
@@ -207,6 +214,7 @@ public:
 
       vectorFileName = fileName;
       inputFile.open(vectorFileName, std::fstream::in);
+      
       if ( !inputFile.is_open() ) {
         G4cout << "Vector file " << vectorFileName << " not found" << G4endl;
         exit(-1);
@@ -267,13 +275,6 @@ public:
   inline void SetConversionProductMomentum(int i, const G4ThreeVector& p) { conversionProductMomentum[i] = p; }
   inline void SetNeedConversion(bool choice) { needConversion = choice; foundConversion = !choice; }
   inline bool NeedsConversion() { return needConversion; }
-
-  // Use Histograms to generate cosmics
-  TH2D *hFluxCosmics;
-  TH2D *hEmeanCosmics;
-
-  // Set cosmics altitude
-  G4double altCosmics;
 
   //static const HepDouble nanosecond  = 1.;
   //static const HepDouble second      = 1.e+9 *nanosecond;
