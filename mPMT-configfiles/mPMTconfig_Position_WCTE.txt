@@ -1,4 +1,4 @@
-PMT position table for custom PMT placement. The direction is just for referenec by not used.
+PMT position table for custom PMT placement. The direction is just for reference and is not used.
 We will need a PMT_id later to identity which PMT is which.
 X(cm)           Y(cm)          Z(cm)        DirX        DirY            DirZ      Use
 

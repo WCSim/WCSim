@@ -338,7 +338,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   //                 L.Anthony 23/06/2022 
   //---------------------------------------------------------
   /*
-  auto shape_bunny = CADMesh::TessellatedMesh::FromSTL("/path/to/WCSim//bunny.stl");
+  auto shape_bunny = CADMesh::TessellatedMesh::FromSTL("/path/to/WCSim/data/bunny.stl");
   
   // set scale
   shape_bunny->SetScale(1);
@@ -2700,7 +2700,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   //                 L.Anthony 23/06/2022 
   //---------------------------------------------------------
   /*
-  auto shape_bunny = CADMesh::TessellatedMesh::FromSTL("/path/to/WCSim//bunny.stl");
+  auto shape_bunny = CADMesh::TessellatedMesh::FromSTL("/path/to/WCSim/data/bunny.stl");
   
   // set scale
   shape_bunny->SetScale(1);

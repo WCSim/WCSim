@@ -76,14 +76,20 @@
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 #/WCSim/Construct
 
-#Use mPMTs settings (uncomment/delete the above)
+#Use IWCD or WCTE geometry (uncomment/delete the above)
+# Use the IWCD geometry
 #/WCSim/WCgeom nuPRISM_mPMT
-#/WCSim/WCgeom nuPRISMBeamTest_mPMT
+# Use the short version of NuPRISM with 6 m tall ID
 #/WCSim/WCgeom nuPRISMShort_mPMT
-# True --> default replica method to place PMTs. False --> new placement method 
+# Use the WCTE geometry (16c4r from CAD)
+#/WCSim/WCgeom nuPRISMBeamTest_16cShort_mPMT
+#/WCSim/Construct
+
+# True --> default (old) replica method to place PMTs. 
+# False --> new placement method, does not use replica in construction, place PMT one by one
 #/WCSim/PMT/ReplicaPlacement true
 ############################################################################################
-##These comments are only useful when /WCSim/PMT/ReplicaPlacement=false
+##These comments are only useful when using /WCSim/PMT/ReplicaPlacement false
 # Apply random fluctuation to PMT placement. Argument specifies the Gaussian 1 sigma value
 #/WCSim/PMT/PositionVariation 0 mm
 # Change the ID radius at top, middle and bottom for PMT placement
@@ -93,6 +99,7 @@
 #/WCSim/PMT/PositionFile mPMT-configfiles/mPMTconfig_Position_WCTE.txt
 ############################################################################################
 #/WCSim/Construct
+
 # Set Gadolinium doping (concentration is in percent)
 # Default is no Gd doping
 #WARNING This is in the wrong place. If you want to turn it on in your detector

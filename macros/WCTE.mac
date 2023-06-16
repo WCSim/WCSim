@@ -18,7 +18,7 @@
 # True --> default replica method to place PMTs. False --> new placement method 
 /WCSim/PMT/ReplicaPlacement true
 ############################################################################################
-##These comments are only useful when /WCSim/PMT/ReplicaPlacement=false
+##These comments are only useful when using /WCSim/PMT/ReplicaPlacement false
 # Apply random fluctuation to PMT placement. Argument specifies the Gaussian 1 sigma value
 /WCSim/PMT/PositionVariation 0 mm
 # Change the ID radius at top, middle and bottom for PMT placement
