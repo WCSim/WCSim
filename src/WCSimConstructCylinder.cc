@@ -1498,9 +1498,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
   //----------------------------------------------------
   // extra rings for the top and bottom of the annulus
   //---------------------------------------------------
-  G4double borderAnnulusZ[3] = {(-barrelCellHeight/2.-(WCIDRadius-innerAnnulusRadius))*zflip, 
-								-barrelCellHeight/2.*zflip,
-								barrelCellHeight/2.*zflip};
+  G4double borderAnnulusZ[3] = {
+        (-barrelCellHeight/2.-(WCIDRadius-innerAnnulusRadius))*zflip, 
+				-barrelCellHeight/2.*zflip,
+				barrelCellHeight/2.*zflip};
   // to check edge case
   if (WCBarrelPMTOffset < (WCIDRadius-innerAnnulusRadius)) borderAnnulusZ[0] = (-barrelCellHeight/2.-WCBarrelPMTOffset)*zflip;
   G4double borderAnnulusRmin[3] = { WCIDRadius, innerAnnulusRadius, innerAnnulusRadius};
@@ -1583,13 +1584,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
   //-------------------------------------------------------------
   // add barrel blacksheet to the border barrel cells 
   // ------------------------------------------------------------
-  // G4double RingZ[2] = {borderAnnulusZ[0], borderAnnulusZ[2]};
-  // G4double annulusBlackSheetRmax[2] = {WCIDRadius+WCBlackSheetThickness,
-	// 			       WCIDRadius+WCBlackSheetThickness};
-  // G4double annulusBlackSheetRmin[2] = {WCIDRadius,
-	// 			       WCIDRadius};
-  G4double annulusBlackSheetRmin[3] = { WCIDRadius, WCIDRadius, WCIDRadius};
-  G4double annulusBlackSheetRmax[3] = {WCIDRadius+WCBlackSheetThickness, WCIDRadius+WCBlackSheetThickness,WCIDRadius+WCBlackSheetThickness};
+  G4double RingZ[2] = {borderAnnulusZ[0], borderAnnulusZ[2]};
+  G4double annulusBlackSheetRmax[2] = {WCIDRadius+WCBlackSheetThickness,
+				       WCIDRadius+WCBlackSheetThickness};
+  G4double annulusBlackSheetRmin[2] = {WCIDRadius,
+				       WCIDRadius};
 
   const G4String bbcbsname = bbcname + G4String("BlackSheet");    // "WCBarrel[Top|Bot]BorderCellBlackSheet"
   G4Polyhedra* solidWCBarrelBorderCellBlackSheet = 
@@ -1597,8 +1596,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 			-dPhi/2., // phi start
 			dPhi, //total phi
 			1, //NPhi-gon
-			3,
-			borderAnnulusZ,
+			2,
+			RingZ,
 			annulusBlackSheetRmin,
 			annulusBlackSheetRmax);
 
@@ -1668,8 +1667,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 							 physiWCBarrelBorderCell,
 							 physiWCBarrelBorderCellBlackSheet,
 							 OpWaterBSSurface);
-  new G4LogicalSkinSurface("BSBarrelBorderCellSkinSurface",logicWCBarrelBorderCellBlackSheet,
-							BSSkinSurface);
+  // new G4LogicalSkinSurface("BSBarrelBorderCellSkinSurface",logicWCBarrelBorderCellBlackSheet,
+	// 						BSSkinSurface);
   // we have to declare the logical Volumes 
   // outside of the if block to access it later on 
   G4LogicalVolume* logicWCExtraBorderCell = nullptr;
@@ -1724,11 +1723,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
     //---------------------------------------------
     // add blacksheet to this cells
     //--------------------------------------------
-    G4double extraBorderBlackSheetRmin[3];
-    G4double extraBorderBlackSheetRmax[3];
-    for(int i = 0; i < 3; i++){
-      extraBorderBlackSheetRmin[i] = annulusBlackSheetRmin[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
-      extraBorderBlackSheetRmax[i] = annulusBlackSheetRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
+    G4double extraBSRmin[2];
+    G4double extraBSRmax[2];
+    for(int i = 0; i < 2; i++){
+      extraBSRmin[i] = annulusBlackSheetRmin[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
+      extraBSRmax[i] = annulusBlackSheetRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
     } 
     const G4String etbcbsname = etbcname +
         G4String("BlackSheet");      // "WCExtraTower[Top|Bot]]BorderCellBlackSheet"
@@ -1737,10 +1736,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 			   totalAngle-2.*pi,//+dPhi/2., // phi start
 			   2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
 			   1, //NPhi-gon
-			   3,
-			   borderAnnulusZ,
-			   extraBorderBlackSheetRmin,
-			   extraBorderBlackSheetRmax);
+			   2,
+			   RingZ,
+			   extraBSRmin,
+			   extraBSRmax);
 
     logicWCExtraBorderBlackSheet =
       new G4LogicalVolume(solidWCExtraBorderBlackSheet, 
@@ -1765,18 +1764,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 								   physiWCExtraBorderBlackSheet, 
 								   OpWaterBSSurface);
 
-    new G4LogicalSkinSurface("BSExtraBorderExtraSkinSurface",logicWCExtraBorderBlackSheet,
-							  BSSkinSurface);
+    // new G4LogicalSkinSurface("BSExtraBorderExtraSkinSurface",logicWCExtraBorderBlackSheet,
+		// 					  BSSkinSurface);
 
   }
   //------------------------------------------------------------
   // add caps
   // -----------------------------------------------------------
   //crucial to match with borderAnnulusZ
-  G4double capZ[4] = { (-WCBlackSheetThickness-1.*mm)*zflip,
-					   (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))*zflip,
-					   (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))*zflip,
-					   WCBarrelPMTOffset*zflip} ;
+  G4double capZ[4] = 
+        { (-WCBlackSheetThickness-1.*mm)*zflip,
+					(WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))*zflip,
+					(WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))*zflip,
+					WCBarrelPMTOffset*zflip} ;
   // to check edge case
   if (WCBarrelPMTOffset < (WCIDRadius-innerAnnulusRadius)) { capZ[1] = 0; capZ[2] = 0; }
   G4double capRmin[4] = {  0. , 0., 0., 0.} ;
@@ -1886,7 +1886,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
   // add cap blacksheet
   // -------------------------------------------------------------------
   
- G4double capBlackSheetZ[4] = {-WCBlackSheetThickness*zflip, 0., 0., (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius)) *zflip};
+ G4double capBlackSheetZ[4] = {-WCBlackSheetThickness*zflip, 0., 0., 
+                               (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius)) *zflip};
  // to ensure squential z
  if (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius)<0) capBlackSheetZ[3] = 0;
   G4double capBlackSheetRmin[4] = {0., 0., WCIDRadius, WCIDRadius};
@@ -2217,7 +2218,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
                                       WCODRadius};
     G4double annulusODTyvekRmin[2] = {WCODRadius-WCODTyvekSheetThickness,
                                       WCODRadius-WCODTyvekSheetThickness};
-    G4double RingZ[2] = {borderAnnulusZ[0], borderAnnulusZ[2]};
 
     const G4String bbcodtname = bbcname +
         G4String("ODTyvek"); // "WCBarrel[Top|Bot]BorderCellODTyvek"
