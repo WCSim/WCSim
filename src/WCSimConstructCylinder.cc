@@ -1668,8 +1668,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 							 physiWCBarrelBorderCell,
 							 physiWCBarrelBorderCellBlackSheet,
 							 OpWaterBSSurface);
-  // new G4LogicalSkinSurface("BSBarrelBorderCellSkinSurface",logicWCBarrelBorderCellBlackSheet,
-	// 						BSSkinSurface);
+  new G4LogicalSkinSurface("BSBarrelBorderCellSkinSurface",logicWCBarrelBorderCellBlackSheet,
+							BSSkinSurface);
   // we have to declare the logical Volumes 
   // outside of the if block to access it later on 
   G4LogicalVolume* logicWCExtraBorderCell = nullptr;
@@ -1765,8 +1765,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 								   physiWCExtraBorderBlackSheet, 
 								   OpWaterBSSurface);
 
-    // new G4LogicalSkinSurface("BSExtraBorderExtraSkinSurface",logicWCExtraBorderBlackSheet,
-		// 					  BSSkinSurface);
+    new G4LogicalSkinSurface("BSExtraBorderExtraSkinSurface",logicWCExtraBorderBlackSheet,
+							  BSSkinSurface);
 
   }
   //------------------------------------------------------------
