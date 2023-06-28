@@ -64,8 +64,8 @@ jobs:
           
       - name: Link WCSim directory
         run: |
-	  rm -rf /usr/local/hk/WCSim
-	  ln -s ${GITHUB_WORKSPACE}/ /usr/local/hk/WCSim
+          rm -rf /usr/local/hk/WCSim
+          ln -s ${GITHUB_WORKSPACE}/ /usr/local/hk/WCSim
 
       - name: Checkout WCSim/Validation
         run: |
@@ -73,10 +73,10 @@ jobs:
           git clone https://github.com/WCSim/Validation.git
 
       - name: Setup default HK container environment
-      	run: |
-	  source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh
-	  source /usr/local/hk/hk-pilot/setup.sh
-	  source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh
+        run: |
+          source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh
+          source /usr/local/hk/hk-pilot/setup.sh
+          source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh
           
       - name: Print environment
         run: |
