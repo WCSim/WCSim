@@ -19,10 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: /opt/HyperK/
+        working-directory: /opt/
     #run inside a container that has the prerequisites already installed
     container: 
-      image: docker://gcr.io/ghcr.io/hyperk/hk-software:0.0.2
+      image: docker://ghcr.io/hyperk/hk-software:0.0.2
       credentials:
            username: ${{ github.actor }}
            password: ${{ secrets.CONTAINER_REPO }}
@@ -64,23 +64,23 @@ jobs:
           
       - name: Link WCSim directory
         run: |
-          rm -rf /usr/local/hk/WCSim
-          ln -s ${GITHUB_WORKSPACE}/ /usr/local/hk/WCSim
+          ln -s ${GITHUB_WORKSPACE}/ /opt/WCSim
 
       - name: Checkout WCSim/Validation
         run: |
-          cd /opt
+          cd /opt/
           git clone https://github.com/WCSim/Validation.git
 
-      - name: Setup default HK container environment
+      - name: Setup setup script
         run: |
-          source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh
-          source /usr/local/hk/hk-pilot/setup.sh
-          source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh
+          cd /opt/
+          echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > setup.sh
+          echo source /usr/local/hk/hk-pilot/setup.sh >> setup.sh
+          echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> setup.sh
           
       - name: Print environment
         run: |
-          source /opt/HyperK/env-WCSim.sh
+          source setup.sh
           cd WCSim
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           env
@@ -89,7 +89,7 @@ jobs:
 
       - name: Test build
         run: |
-          source /opt/HyperK/env-WCSim.sh
+          source setup.sh
           cd WCSim
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 1
