@@ -25,7 +25,7 @@ jobs:
       image: docker://gcr.io/ghcr.io/hyperk/hk-software:0.0.2
       credentials:
            username: ${{ github.actor }}
-	   password: ${{ secrets.CONTAINER_REPO }}
+           password: ${{ secrets.CONTAINER_REPO }}
       env:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
