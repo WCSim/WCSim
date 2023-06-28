@@ -22,7 +22,10 @@ jobs:
         working-directory: /opt/HyperK/
     #run inside a container that has the prerequisites already installed
     container: 
-      image: wcsim/wcsim:base
+      image: docker://gcr.io/ghcr.io/hyperk/hk-software:0.0.2
+      credentials:
+           username: ${{ github.actor }}
+	   password: ${{ secrets.CONTAINER_REPO }}
       env:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
@@ -60,17 +63,20 @@ jobs:
           repository: ${{ steps.checkout_repo.outputs.value }}
           
       - name: Link WCSim directory
-        run: ln -s ${GITHUB_WORKSPACE}/ /opt/HyperK/WCSim
+        run: |
+	  rm -rf /usr/local/hk/WCSim
+	  ln -s ${GITHUB_WORKSPACE}/ /usr/local/hk/WCSim
 
       - name: Checkout WCSim/Validation
         run: |
           cd /opt
           git clone https://github.com/WCSim/Validation.git
-          
-      #Temporarily get /usr/bin/time every job from yum
-      # Need to add this to wcsim/wcsim:base ASAP
-      - name: Get time
-        run: yum install -y time
+
+      - name: Setup default HK container environment
+      	run: |
+	  source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh
+	  source /usr/local/hk/hk-pilot/setup.sh
+	  source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh
           
       - name: Print environment
         run: |
