@@ -79,7 +79,8 @@ jobs:
           echo source /usr/local/hk/hk-pilot/setup.sh >> setup.sh
           echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> setup.sh
           echo source /opt/WCSim/install/bin/this_wcsim.sh >> setup.sh
-          
+          ls /opt/
+	  
       - name: Print environment
         run: |
           source /opt/setup.sh
