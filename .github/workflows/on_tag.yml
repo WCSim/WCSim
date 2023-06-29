@@ -167,6 +167,8 @@ jobs:
       - name: Run physics
         run: |
           source /opt/setup.sh
+          cd /opt/Validation
+          make
           cd /opt/WCSim/install
           echo ${{ matrix.physics_job }}
           python /opt/Validation/MakeReference.py --job-number ${{ matrix.physics_job }}
