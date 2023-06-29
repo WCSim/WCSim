@@ -169,4 +169,6 @@ jobs:
           source /opt/setup.sh
           cd /opt/WCSim/install
           echo ${{ matrix.physics_job }}
+          env
+          echo $WCSIM_BUILD_DIR
           python /opt/Validation/MakeReference.py --job-number ${{ matrix.physics_job }}
