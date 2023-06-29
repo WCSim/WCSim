@@ -21,7 +21,7 @@ jobs:
       run:
         working-directory: /opt/
     #run inside a container that has the prerequisites already installed
-    container: 
+    container:
       image: docker://ghcr.io/hyperk/hk-software:0.0.2
       credentials:
            username: ${{ github.actor }}
@@ -95,3 +95,81 @@ jobs:
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 1
           echo source /opt/WCSim/install/bin/this_wcsim.sh >> setup.sh
+
+  physics:
+    needs: build
+    continue-on-error: true
+    strategy:
+      matrix:
+        physics_job: [16, 15]
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /opt/
+    #run inside a container that has the prerequisites already installed
+    container:
+      image: docker://ghcr.io/hyperk/hk-software:0.0.2
+      credentials:
+           username: ${{ github.actor }}
+           password: ${{ secrets.CONTAINER_REPO }}
+      env:
+        #TRAVIS_COMMIT: ${{ github.sha }}
+        TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        GitHubToken: ${{ secrets.API_TOKEN_GITHUB }}
+        ValidationPath: /opt/Validation/
+    steps:
+      - name: Get repo to checkout
+        id: checkout_repo
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ github.event_name == 'pull_request_target' }}
+          if_true: ${{ github.event.pull_request.head.repo.full_name }}
+          if_false: ${{ github.repository }}
+
+      - name: Get SHA to checkout
+        id: checkout_sha
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ github.event_name == 'pull_request_target' }}
+          if_true: ${{ github.event.pull_request.head.sha }}
+          if_false: ${{ github.sha }}
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout WCSim
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.checkout_sha.outputs.value }}
+          repository: ${{ steps.checkout_repo.outputs.value }}
+
+      - name: Link WCSim directory
+        run: |
+          mkdir /opt/WCSim/
+          ln -s ${GITHUB_WORKSPACE}/ /opt/WCSim/src
+
+      - name: Checkout WCSim/Validation
+        run: |
+          cd /opt/
+          git clone https://github.com/WCSim/Validation.git
+
+      - name: Setup prerequisites setup script
+        run: |
+          cd /opt/
+          echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > setup.sh
+          echo source /usr/local/hk/hk-pilot/setup.sh >> setup.sh
+          echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> setup.sh
+
+      - name: Build
+        run: |
+          source /opt/setup.sh
+          cd /opt/WCSim
+          /opt/Validation/build.sh
+          echo source /opt/WCSim/install/bin/this_wcsim.sh >> setup.sh
+
+      - name: Run physics
+        run: |
+          source /opt/setup.sh
+          cd /opt/WCSim/install
+          echo ${{ matrix.physics_job }}
+          /opt/Validation/Tests.sh ${{ matrix.physics_job }}
