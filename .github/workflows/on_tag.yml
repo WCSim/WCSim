@@ -162,14 +162,11 @@ jobs:
           source /opt/setup.sh
           cd /opt/WCSim
           /opt/Validation/build.sh
-          echo source /opt/WCSim/install/bin/this_wcsim.sh >> setup.sh
+          echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
       - name: Run physics
         run: |
           source /opt/setup.sh
           cd /opt/WCSim/install
           echo ${{ matrix.physics_job }}
-          env
-          echo $WCSIM_BUILD_DIR
-          cat /opt/setup.sh
-          #python /opt/Validation/MakeReference.py --job-number ${{ matrix.physics_job }}
+          python /opt/Validation/MakeReference.py --job-number ${{ matrix.physics_job }}
