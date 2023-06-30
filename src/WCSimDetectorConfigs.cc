@@ -1249,9 +1249,9 @@ void WCSimDetectorConstruction::SetIWCDGeometry()
   WCPMTperCellVertical   = 1;
 
 	// Numbers below are based on R.Henderson's 832 module tank design
-  WCBarrelNumPMTHorizontal = 33;
-  WCBarrelNRings        = 9;
-  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal*1.2; // ad-hoc number to get 52 mPMTs on cap
+  WCBarrelNumPMTHorizontal = 30;
+  WCBarrelNRings        = 10;
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal*1.2/1.1; // ad-hoc number to get 52 mPMTs on cap
   WCCapEdgeLimit        = 3.3*m; 
   WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
   WCAddGd               = false;
