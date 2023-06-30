@@ -28,7 +28,7 @@ jobs:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-        GitHubToken: ${{ secrets.API_TOKEN_GITHUB }}
+        GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
     steps:
       # Print all the info about the action
@@ -68,7 +68,7 @@ jobs:
       - name: Checkout WCSim/Validation
         run: |
           cd /opt/
-          git clone https://github.com/tdealtry/Validation.git
+          git clone https://github.com/WCSim/Validation.git
 
       - name: Setup prerequisites setup script
         run: |
@@ -114,7 +114,7 @@ jobs:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-        GitHubToken: ${{ secrets.API_TOKEN_GITHUB }}
+        GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
     steps:
       - name: Get repo to checkout
@@ -148,7 +148,7 @@ jobs:
       - name: Checkout WCSim/Validation
         run: |
           cd /opt/
-          git clone https://github.com/tdealtry/Validation.git
+          git clone https://github.com/WCSim/Validation.git
 
       - name: Setup prerequisites setup script
         run: |
@@ -187,9 +187,9 @@ jobs:
       - name: Checkout Validation package
         run: |
           cd /opt/
-          git clone https://github.com/tdealtry/Validation.git -b new_ref --single-branch
+          git clone https://github.com/WCSim/Validation.git -b new_ref --single-branch
 
       - name: Create PR
-        run: gh pr create -B master -H new_ref --title 'New reference files from WCSim tag ${{  github.ref_name }}' --body 'Created by Github action' -a tdealtry -r tdealtry --repo WCSim/Validation
+        run: gh pr create -B master -H new_ref --title 'New reference files from WCSim tag ${{  github.ref_name }}' --body 'Created by Github action' -a tdealtry -r tdealtry --label 'auto created'
         env:
           GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
