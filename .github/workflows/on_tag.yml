@@ -172,3 +172,24 @@ jobs:
           cd /opt/WCSim/install
           echo ${{ matrix.physics_job }}
           python /opt/Validation/MakeReference.py --job-number ${{ matrix.physics_job }}
+
+      - name: WCSim output
+        run: cat /opt/WCSim/install/${{ matrix.physics_job }}.out
+
+  create_pr:
+    name: Create PR
+    needs: physics
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /opt/
+    steps:
+      - name: Checkout Validation package
+        run: |
+	  cd /opt/
+	  git clone https://github.com/tdealtry/Validation.git -b new_ref --single-branch
+
+      - name: Create PR
+        run: gh pr create -B master -H new_ref --title 'New reference files from WCSim tag ${{  github.ref_name }}' --body 'Created by Github action' -a tdealtry -r tdealtry --repo WCSim/Validation
+	env:
+	  GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
