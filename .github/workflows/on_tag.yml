@@ -190,6 +190,8 @@ jobs:
           git clone https://github.com/WCSim/Validation.git -b new_ref --single-branch
 
       - name: Create PR
-        run: gh pr create -B master -H new_ref --title 'New reference files from WCSim tag ${{  github.ref_name }}' --body 'Created by Github action' -a tdealtry -r tdealtry --label 'auto created'
+        run: |
+	  cd /opt/Validation/
+	  gh pr create -B master -H new_ref --title 'New reference files from WCSim tag ${{  github.ref_name }}' --body 'Created by Github action' -a tdealtry -r tdealtry --label 'auto created'
         env:
           GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
