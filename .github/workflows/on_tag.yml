@@ -98,7 +98,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        physics_job: [16]#, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+        physics_job: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 
     runs-on: ubuntu-latest
     defaults:
@@ -192,6 +192,6 @@ jobs:
       - name: Create PR
         run: |
           cd /opt/Validation/
-          gh pr create -B master -H new_ref --title 'New reference files from WCSim tag ${{  github.ref_name }}' --body 'Created by Github action' -a tdealtry -r tdealtry --label 'auto created'
+          gh pr create -B master -H new_ref --title 'New reference files from WCSim tag: ${{  github.ref_name }}' --body 'Created by Github action' -a tdealtry -r tdealtry --label 'auto created'
         env:
           GITHUB_TOKEN: ${{ secrets.VALIDATION_PR }}
