@@ -39,6 +39,10 @@
 #/WCSim/WCgeom IWCD_mPMT
 #/WCSim/Construct
 
+# This is the updated IWCD geometry as of 20230630, plus OD
+#/WCSim/WCgeom IWCD_mPMT_WithOD
+#/WCSim/Construct
+
 #Note that whilst you can change the number of PMTs
 # in the HK FD ID using these photocoverage parameters,
 # it is up to you to verify that you have produced
