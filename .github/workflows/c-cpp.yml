@@ -30,7 +30,7 @@ jobs:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-        GitHubToken: ${{ secrets.API_TOKEN_GITHUB }}
+        GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
     steps:
       # Print all the info about the action
@@ -117,7 +117,7 @@ jobs:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-        GitHubToken: ${{ secrets.API_TOKEN_GITHUB }}
+        GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
     steps:
       - name: Get repo to checkout
