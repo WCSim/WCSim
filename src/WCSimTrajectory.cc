@@ -21,7 +21,11 @@ WCSimTrajectory::WCSimTrajectory()
      PDGEncoding( 0 ), PDGCharge(0.0), ParticleName(""),
      initialMomentum( G4ThreeVector() ),SaveIt(false),creatorProcess(""),
      globalTime(0.0)
-{;}
+{
+  boundaryPoints.clear();
+  boundaryKEs.clear();
+  boundaryTypes.clear();
+}
 
 WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
 {
@@ -49,6 +53,10 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
     }
   else 
     creatorProcess = "";
+
+  boundaryPoints.clear();
+  boundaryKEs.clear();
+  boundaryTypes.clear();
 }
 
 WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
@@ -72,6 +80,10 @@ WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
     positionRecord->push_back(new G4TrajectoryPoint(*rightPoint));
   }
   globalTime = right.globalTime;
+
+  boundaryPoints = right.boundaryPoints;
+  boundaryKEs = right.boundaryKEs;
+  boundaryTypes = right.boundaryTypes;
 }
 
 WCSimTrajectory::~WCSimTrajectory()
@@ -84,6 +96,10 @@ WCSimTrajectory::~WCSimTrajectory()
   positionRecord->clear();
   
   delete positionRecord;
+
+  boundaryPoints.clear();
+  boundaryKEs.clear();
+  boundaryTypes.clear();
 }
 
 void WCSimTrajectory::ShowTrajectory(std::ostream& os) const
@@ -174,6 +190,32 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
 {
   positionRecord->push_back( new G4TrajectoryPoint(aStep->GetPostStepPoint()->
 						   GetPosition() ));
+
+  // Save boundary points
+  G4StepPoint* thePrePoint = aStep->GetPreStepPoint();
+  G4VPhysicalVolume* thePrePV = thePrePoint->GetPhysicalVolume();
+
+  G4StepPoint* thePostPoint = aStep->GetPostStepPoint();
+  G4VPhysicalVolume* thePostPV = thePostPoint->GetPhysicalVolume();
+
+  if (thePrePV && thePostPV && thePrePV->GetName()!=thePostPV->GetName())
+  {
+    G4String thePrePVName = thePrePV->GetName();
+    G4String thePostPVName = thePostPV->GetName();
+    G4int ty = 0;
+    if (thePrePVName.contains("BlackSheet") || thePostPVName.contains("BlackSheet")) ty = 1;
+    else if (thePrePVName.contains("Cave") || thePostPVName.contains("Cave")) ty = 3;
+    else if (thePrePVName.contains("Tyvek") || thePostPVName.contains("Tyvek")) ty = 2;
+    if (ty>0)
+    {
+      const G4Track* track       = aStep->GetTrack();
+      std::vector<G4double> bPs(3);
+      bPs[0] = track->GetPosition().x(); bPs[1] = track->GetPosition().y(); bPs[2] = track->GetPosition().z();
+      AddBoundaryPoint(bPs, track->GetKineticEnergy(), ty);
+      // G4cout<<"Step point "<<track->GetCurrentStepNumber () <<" "<<track->GetPosition().x()<<" "<<track->GetPosition().y()<<" "<<track->GetPosition().z()<<
+      //    " "<<track->GetKineticEnergy()<<" "<<thePrePV->GetName()<<" "<<thePostPV->GetName()<<G4endl;
+    }
+  }
 }
 
 G4ParticleDefinition* WCSimTrajectory::GetParticleDefinition()
@@ -198,6 +240,12 @@ void WCSimTrajectory::MergeTrajectory(G4VTrajectory* secondTrajectory)
   }
   delete (*seco->positionRecord)[0];
   seco->positionRecord->clear();
+
+  ent = (seco->GetBoundaryPoints()).size();
+  for (G4int i=0;i<ent;i++)
+  {
+    AddBoundaryPoint((seco->GetBoundaryPoints()).at(i),(seco->GetBoundaryKEs()).at(i),(seco->GetBoundaryTypes()).at(i));
+  }
 }
 
 

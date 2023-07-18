@@ -72,6 +72,26 @@ public: // with description
    inline void SetStoppingVolume(G4VPhysicalVolume* currentVolume)
    { stoppingVolume = currentVolume;}
 
+// Functions to Set/Get boundary points
+  inline void SetBoundaryPoints(std::vector<std::vector<G4double>> bPs,
+                                std::vector<G4double> bKEs,
+                                std::vector<G4int> bTypes)
+  {
+    boundaryPoints = bPs;
+    boundaryKEs = bKEs;
+    boundaryTypes = bTypes;
+  }
+  inline void AddBoundaryPoint(std::vector<G4double> bPs,
+                               G4double bKEs,
+                               G4int bTypes)
+  {
+    boundaryPoints.push_back(bPs);
+    boundaryKEs.push_back(bKEs);
+    boundaryTypes.push_back(bTypes);
+  }
+  inline std::vector<std::vector<G4double>> GetBoundaryPoints() {return boundaryPoints;}
+  inline std::vector<G4double> GetBoundaryKEs() {return boundaryKEs;}
+  inline std::vector<G4int> GetBoundaryTypes() {return boundaryTypes;}
 
 // Other member functions
    virtual void ShowTrajectory(std::ostream& os=G4cout) const;
@@ -107,6 +127,11 @@ public: // with description
   G4bool SaveIt;
   G4String creatorProcess;
   G4double                  globalTime;
+
+  // Boundary points;
+  std::vector<std::vector<G4double>> boundaryPoints;
+  std::vector<G4double> boundaryKEs;
+  std::vector<G4int> boundaryTypes; // 1 = blacksheet, 2 = tyvek, 3 = cave
 };
 
 /***            TEMP  : M FECHNER ***********
