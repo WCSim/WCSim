@@ -73,9 +73,9 @@ jobs:
       - name: Setup prerequisites setup script
         run: |
           cd /opt/
-          echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > setup.sh
-          echo source /usr/local/hk/hk-pilot/setup.sh >> setup.sh
-          echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> setup.sh
+          echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > /opt/setup.sh
+          echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
+          echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> /opt/setup.sh
   
       - name: Print environment
         run: |
@@ -91,7 +91,7 @@ jobs:
           source /opt/setup.sh
           cd /opt/WCSim
           /opt/Validation/build.sh
-          echo source /opt/WCSim/install/bin/this_wcsim.sh >> setup.sh
+          echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
   physics:
     needs: build
@@ -153,9 +153,9 @@ jobs:
       - name: Setup prerequisites setup script
         run: |
           cd /opt/
-          echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > setup.sh
-          echo source /usr/local/hk/hk-pilot/setup.sh >> setup.sh
-          echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> setup.sh
+          echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > /opt/setup.sh
+          echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
+          echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> /opt/setup.sh
 
       - name: Build
         run: |
@@ -166,6 +166,7 @@ jobs:
 
       - name: Run physics
         run: |
+	
           source /opt/setup.sh
           cd /opt/Validation
           make
