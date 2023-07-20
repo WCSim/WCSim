@@ -68,7 +68,7 @@ jobs:
       - name: Checkout WCSim/Validation
         run: |
           cd /opt/
-          git clone https://github.com/WCSim/Validation.git
+          git clone --depth 1 https://github.com/WCSim/Validation.git -b master --single-branch
 
       - name: Setup prerequisites setup script
         run: |
@@ -148,7 +148,7 @@ jobs:
       - name: Checkout WCSim/Validation
         run: |
           cd /opt/
-          git clone https://github.com/WCSim/Validation.git
+          git clone --depth 1 https://github.com/WCSim/Validation.git -b master --single-branch
 
       - name: Setup prerequisites setup script
         run: |
@@ -187,7 +187,7 @@ jobs:
       - name: Checkout Validation package
         run: |
           cd /opt/
-          git clone https://github.com/WCSim/Validation.git -b new_ref --single-branch
+          git clone --depth 1 https://github.com/WCSim/Validation.git -b new_ref --single-branch
 
       - name: Create PR
         run: |
