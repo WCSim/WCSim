@@ -178,4 +178,5 @@ jobs:
           source /opt/setup.sh
           cd /opt/WCSim/install
           echo ${{ matrix.physics_job }}
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh ${{ matrix.physics_job }}
