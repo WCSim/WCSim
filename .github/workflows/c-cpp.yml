@@ -75,9 +75,9 @@ jobs:
       - name: Setup prerequisites setup script
         run: |
           cd /opt/
-          echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > setup.sh
-          echo source /usr/local/hk/hk-pilot/setup.sh >> setup.sh
-          echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> setup.sh
+          echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > /opt/setup.sh
+          echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
+          echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> /opt/setup.sh
   
       - name: Print environment
         run: |
@@ -92,9 +92,15 @@ jobs:
         run: |
           source /opt/setup.sh
           cd /opt/WCSim
+          /opt/Validation/build.sh
+          echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
+
+      - name: Quick physics check to setup validation webpage
+        run: |
+          source /opt/setup.sh
+          cd /opt/WCSim/install
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/Tests.sh 1
-          echo source /opt/WCSim/install/bin/this_wcsim.sh >> setup.sh
 
   physics:
     needs: build
@@ -156,16 +162,16 @@ jobs:
       - name: Setup prerequisites setup script
         run: |
           cd /opt/
-          echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > setup.sh
-          echo source /usr/local/hk/hk-pilot/setup.sh >> setup.sh
-          echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> setup.sh
+          echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > /opt/setup.sh
+          echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
+          echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> /opt/setup.sh
 
       - name: Build
         run: |
           source /opt/setup.sh
           cd /opt/WCSim
           /opt/Validation/build.sh
-          echo source /opt/WCSim/install/bin/this_wcsim.sh >> setup.sh
+          echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
       - name: Run physics
         run: |
