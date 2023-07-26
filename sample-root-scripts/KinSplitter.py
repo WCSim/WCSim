@@ -9,7 +9,7 @@ ns_conversion = {'ns':1,
                  'ms':1E6,
                  's':1E9}
 
-parser = argparse.ArgumentParser(description='KinConverter: convert kin files that have multiple vertices into a single event (or multiple overlapping events)')
+parser = argparse.ArgumentParser(description='KinSplitter: convert kin files that have multiple vertices into a single event (or multiple overlapping events)')
 parser.add_argument('--input-filename','-i',required=True,type=str,help='Input .kin filename. Output filename(s) will be the same as the input filename & path, with [0-9].merge suffix(es) added')
 parser.add_argument('--input-time-unit',required=True,choices=ns_conversion.keys(),help='The time unit of the input file')
 parser.add_argument('--dark-noise-start', type=int,required=True,help='When to start the simulation (in ns)')
@@ -20,6 +20,7 @@ parser.add_argument('--verbose','--v',type=int,default=0,help='Verbosity level')
 parser.add_argument('--fixed-duration',type=int,default=None,help='A fixed duration (in ns) for each event')
 #or these - dark rate, ntubes, NHits per MeV, max allowed hits
 #TODO add option for windows that can change size depending on how many physics hits are expected
+parser.add_argument('--save-nvertex-info-to-file',action='store_true',help='Save nvertex info to nvertex.info')
 args = parser.parse_args()
 
 ToNS = ns_conversion[args.input_time_unit]
@@ -95,7 +96,7 @@ def GetHeader(filename, args):
                 return ''
             #return the header as a single string
             header = ''.join(vertex) + ''\
-                     '# Split by kin_converter ' + str(datetime.now()) + '\n'\
+                     '# Split by KinSplitter ' + str(datetime.now()) + '\n'\
                      '# --fixed-duration ' + str(args.fixed_duration) + '\n'\
                      '# --event-overlap ' + str(args.event_overlap) + '\n'
             return header
@@ -108,11 +109,14 @@ if not IsTimeOrdered(args.input_filename):
 header = GetHeader(args.input_filename, args)
 print(header)
 
+if args.save_nvertex_info_to_file:
+    fnvertex = open('nvertex.info', 'w')
 
 #loop over kin file start/stop times
 event_start = args.dark_noise_start
 last_event_end = args.dark_noise_end
 ievent = 0
+n_empty_events = 0
 file_position = 0
 while event_start < last_event_end:
     event_end = event_start + args.fixed_duration
@@ -156,10 +160,17 @@ while event_start < last_event_end:
         #need to add a dummy vertex, else WCSim/Geant4 will complain
         if not nvertices:
             fout.write(DummyVertex)
+            n_empty_events += 1
         #and close the event/file
         fout.write('$ end\n')
         fout.write('$ stop\n')
         print('contains', nvertices, 'vertices')
+        if args.save_nvertex_info_to_file:
+            fnvertex.write('%05d' % ievent + ' %06d\n' % nvertices)
+        if args.verbose:
+            print('%05d' % ievent + ' %06d\n' % nvertices)
     #increment for next event
     event_start = next_event_start
     ievent += 1
+
+print(n_empty_events, 'events are empty, out of ', ievent, n_empty_events * 100. / ievent, '%')

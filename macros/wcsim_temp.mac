@@ -1,0 +1,79 @@
+# Sample setup macro with no visualization
+
+/run/verbose 0
+/tracking/verbose 0
+/hits/verbose 0
+/grdm/verbose 0
+
+## GEOMETRY
+
+## select the geometry
+/WCSim/WCgeom HyperK_20perCent ## Uses 20" B&L PMTs
+
+/WCSim/Construct # This must be uncommented in order to construct a new detector configuration. 
+
+#Added for the PMT QE option 08/17/10 (XQ)
+# 1. Stacking only mean when the photon is generated
+# the QE is applied to reduce the total number of photons
+# 2. Stacking and sensitivity detector
+# In the stacking part, the maximum QE is applied to reduce
+# the total number of photons
+# On the detector side, the rest of QE are applied according to QE/QE_max
+# distribution. This option is in particular important for the WLS
+# 3. The last option means all the QE are applied at the detector
+# Good for the low energy running.
+/WCSim/PMTQEMethod     Stacking_Only
+#/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
+#/WCSim/PMTQEMethod     SensitiveDetector_Only
+
+
+## ELECTRONICS
+
+#choose the Trigger & Digitizer type (and options)
+/DAQ/Digitizer  SKI
+/DAQ/DigitizerOpt/DeadTime 0 ns
+/DAQ/DigitizerOpt/IntegrationWindow 200 ns
+/DAQ/DigitizerOpt/TimingPrecision 0.4 ns
+/DAQ/DigitizerOpt/PEPrecision 0
+/DAQ/MultiDigitsPerTrigger True
+#/DAQ/Trigger NoTrigger
+
+
+## DARK NOISE 
+
+/DarkRate/SetDetectorElement	tank
+
+# default dark noise frequency (and conversion factor) is PMT property (NEW), set in the code.
+# Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
+#/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
+#/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
+#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014  # pg 13/14 of https://indico.ipmu.jp/event/326/contributions/5005/attachments/3186/4082/20200519_BLPMT_Nishimura.pdf
+/DarkRate/SetDarkRate 5 kHz
+
+# Select which time window(s) to add dark noise to
+#/DarkRate/SetDarkLow to /DarkRate/SetDarkHigh [time in ns]
+#/DarkRate/SetDarkMode #  adds dark noise hits to a window of
+/DarkRate/SetDarkMode 0 # to add dark noise to a time window starting at
+
+#width /DarkRate/SetDarkWindow [time in ns] around each hit
+#i.e. hit time ± (/DarkRate/SetDarkWindow) / 2
+/DarkRate/SetDarkLow  0
+/DarkRate/SetDarkHigh 1000
+
+
+## select the input nuance-formatted vector file
+## you can of course use your own
+/mygen/generator muline
+/mygen/vecfile test.kin
+# define units used for time in kin file
+/mygen/time_unit ms
+
+/WCSim/random/seed 472
+
+## change the name of the output root file, default = wcsim.root
+/WCSimIO/RootFile wcsim_temp.root
+
+## Number of events
+/run/beamOn 1 #Each kin file is 1 event. Can't be merged due to different dark noise windows
+#exit

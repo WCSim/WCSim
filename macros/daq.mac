@@ -8,7 +8,7 @@
 # how long does the digitizer integrate for (ns)?
 #/DAQ/DigitizerOpt/IntegrationWindow 200
 #The timing resolution for the digitizer (in ns)
-#/DAQ/DigitizerOpt/TimingPrecision 0.4
+/DAQ/DigitizerOpt/TimingPrecision 0.1
 #The charge resolution for the digitizer (in p.e.)
 #/DAQ/DigitizerOpt/PEPrecision 0
 

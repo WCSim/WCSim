@@ -50,8 +50,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructEggShapedHyperK()
 
   // ------------- Volumes --------------
 
-  checkOverlaps = true;
-
   // HyperK Volume
 
   G4LogicalVolume* eggShapedHyperKLV
@@ -121,8 +119,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructEggShapedHyperK()
 
   //Construct the PMTs
 
-  G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName);
-  G4LogicalVolume* logicWCPMT_OD = ConstructPMT(outerPMT_Name, WCODCollectionName);
+  G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName, "tank", (G4int)1);
+  G4LogicalVolume* logicWCPMT_OD = ConstructPMT(outerPMT_Name, WCODCollectionName, "tank", true);
 
   // Radial PMTs
 

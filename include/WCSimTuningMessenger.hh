@@ -31,11 +31,18 @@ private:
   G4UIcmdWithADouble* Bsrff;
   G4UIcmdWithADouble* Abwff;
   G4UIcmdWithADouble* Rgcff;
+  G4UIcmdWithADouble* Qeff;
   G4UIcmdWithADouble* Mieff;
+  G4UIcmdWithADouble* Ttsff;
+  G4UIcmdWithADouble* PMTSatur; //TD 2019.7.16
+  //G4UIcmdWithADouble* Qoiff; //TD 2019.6.26
+  //G4UIcmdWithADouble* NLTinfo; //TD 2019.6.26
 
   //For Top Veto - jl145
   G4UIcmdWithADouble* TVSpacing;
   G4UIcmdWithABool* TopVeto;
+  G4UIcmdWithADouble* CommandWCODWLSCladdingReflectivity;
+  G4UIcmdWithADouble* CommandWCODTyvekReflectivity;
 
 };
 

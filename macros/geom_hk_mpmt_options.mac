@@ -1,0 +1,6 @@
+#HK FD mPMT options
+
+#Set the PMT type used in the mPMTs,
+# for the inner and outer rings independently
+#/WCSim/mPMT/PMTtype_inner PMT3inchR14374
+#/WCSim/mPMT/PMTtype_outer PMT3inchR14374

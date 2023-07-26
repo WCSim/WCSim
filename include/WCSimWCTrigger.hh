@@ -50,7 +50,7 @@ public:
   ///Get the trigger type of the ith trigger
   TriggerType_t        GetTriggerType(int i) { return TriggerTypes[i];}
   ///Get the additional trigger information associated with the ith trigger
-  std::vector<Float_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
+  std::vector<Double_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
   ///Get the trigger class name
   G4String GetTriggerClassName(){ return triggerClassName; }
 
@@ -73,6 +73,9 @@ public:
   void SetNDigitsPreTriggerWindow(G4int window)  { ndigitsPreTriggerWindow  = - abs(window); }
   ///Set the posttrigger window for the NDigits trigger (value will be forced positive)
   void SetNDigitsPostTriggerWindow(G4int window) { ndigitsPostTriggerWindow = + abs(window); }
+
+  ///Set the timing offset
+  void SetTriggerOffset(G4double value) { offset = value; }
 
   // Save trigger failures options
   ///Set the mode for saving failed triggers (0:save only triggered events, 1:save both triggered events & failed events, 2:save only failed events)
@@ -103,11 +106,13 @@ protected:
   ///Set the default trigger class specific NDigits window (in ns) (overridden by .mac)
   virtual int GetDefaultNDigitsWindow()            { return 200; }
   ///Set the default trigger class specific NDigits threshold (in ns) (overridden by .mac)
-  virtual int GetDefaultNDigitsThreshold()         { return 25; }
+  virtual int GetDefaultNDigitsThreshold()         { return 25; } //Default
   ///Set the default trigger class specific NDigits pretrigger window (in ns) (overridden by .mac)
   virtual int GetDefaultNDigitsPreTriggerWindow()  { return -400; }
   ///Set the default trigger class specific NDigits posttrigger window (in ns) (overridden by .mac)
   virtual int GetDefaultNDigitsPostTriggerWindow() { return 950; }
+  ///Set the default trigger class specific NDigits posttrigger window (in ns) (overridden by .mac)
+  virtual int GetDefaultTriggerOffset() { return 950; }
 
   ///Get the pretrigger window for a given trigger algorithm
   double GetPreTriggerWindow(TriggerType_t t);
@@ -132,20 +137,19 @@ protected:
    * for testing purposes. Triggers issued in this mode have type kTriggerNDigitsTest
    */
   void AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
-  void AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
-
+  void AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits);
 
   WCSimWCTriggeredDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
   std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
 
   std::vector<Double_t>               TriggerTimes; ///< The times of the triggers
   std::vector<TriggerType_t>          TriggerTypes; ///< The type of the triggers
-  std::vector< std::vector<Float_t> > TriggerInfos; ///< Additional information associated with each trigger
+  std::vector< std::vector<Double_t> > TriggerInfos; ///< Additional information associated with each trigger
 
   WCSimWCDAQMessenger*       DAQMessenger; ///< Get the options from the .mac file
   WCSimDetectorConstruction* myDetector;   ///< Know about the detector, so can add appropriate PMT time smearing
   G4String detectorElement;
-
+  
   /// Clear the Trigger* vectors and DigiHitMap
   void ReInitialize() {
     TriggerTimes.clear(); 
@@ -169,6 +173,8 @@ protected:
   G4double saveFailuresTime;              ///< The dummy trigger time for failed events
   G4int    saveFailuresPreTriggerWindow;  ///< The pretrigger window to save before an SaveFailures trigger
   G4int    saveFailuresPostTriggerWindow; ///< The posttrigger window to save after an SaveFailures trigger
+  
+  G4double offset;
 
   G4String triggerClassName; ///< Save the name of the trigger class
 
@@ -184,7 +190,7 @@ private:
     int i, j;
     TriggerType_t index_type;
     double index_time;
-    std::vector<float> index_info;
+    std::vector<Double_t> index_info;
     for (i = 1; i < (int) TriggerTimes.size(); ++i) {
       index_time = TriggerTimes[i];
       index_type = TriggerTypes[i];
@@ -200,7 +206,7 @@ private:
     }//i
   }
   
-  static const double offset;        ///< Hit time offset (ns)
+  //static const double offset;        ///< Hit time offset (ns)
   static const double LongTime;      ///< An arbitrary long time to use in loops (ns)
 
   bool   digitizeCalled; ///< Has Digitize() been called yet?
@@ -325,9 +331,11 @@ private:
 
   bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
   int  GetDefaultNDigitsWindow()            { return 200;   } ///< SK max light travel time ~200 ns
-  int  GetDefaultNDigitsThreshold()         { return 25;    } ///< SK NDigits threshold ~25
+  //  int  GetDefaultNDigitsThreshold()         { return 25;    } ///< SK NDigits threshold ~25 
+  int  GetDefaultNDigitsThreshold()         { return 20;    } ///< SK NDigits threshold ~25 B.Q
   int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
   int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
+  int  GetDefaultTriggerOffset() { return 950;   } 
 };
 
 class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
@@ -370,9 +378,11 @@ private:
 
   bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
   int  GetDefaultNDigitsWindow()            { return 200;   } ///< SK max light travel time ~200 ns
-  int  GetDefaultNDigitsThreshold()         { return 50;    } ///< 2 * SK NDigits threshold ~25
+  //  int  GetDefaultNDigitsThreshold()         { return 50;    } ///< 2 * SK NDigits threshold ~25
+  int  GetDefaultNDigitsThreshold()         { return 40;    } ///< 2 * SK NDigits threshold ~25 B.Q
   int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
   int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
+  int  GetDefaultTriggerOffset() { return 950;   }
 };
 
 

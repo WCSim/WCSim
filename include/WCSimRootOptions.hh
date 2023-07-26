@@ -12,7 +12,6 @@
 #include "TClonesArray.h"
 #include <string>
 #include <map>
-#include <iostream>
 
 #include "WCSimEnumerations.hh"
 
@@ -93,6 +92,7 @@ public:
   void SetNDigitsAdjustForNoise(bool indigitsAdjustForNoise) {NDigitsAdjustForNoise = indigitsAdjustForNoise;};
   void SetNDigitsPreTriggerWindow(int indigitsPreTriggerWindow) {NDigitsPreTriggerWindow = indigitsPreTriggerWindow;};
   void SetNDigitsPostTriggerWindow(int indigitsPostTriggerWindow) {NDigitsPostTriggerWindow = indigitsPostTriggerWindow;};
+  void SetTriggerOffset(double value) {TriggerOffset = value;};
   //savefailures
   void SetSaveFailuresMode(int isaveFailuresMode) {SaveFailuresMode = isaveFailuresMode;};
   void SetSaveFailuresTime(double isaveFailuresTime) {SaveFailuresTime = isaveFailuresTime;};
@@ -107,6 +107,7 @@ public:
   bool   GetNDigitsAdjustForNoise() {return NDigitsAdjustForNoise;}
   int    GetNDigitsPreTriggerWindow() {return NDigitsPreTriggerWindow;}
   int    GetNDigitsPostTriggerWindow() {return NDigitsPostTriggerWindow;}
+  double GetTriggerOffset() {return TriggerOffset;}
   //savefailures
   int    GetSaveFailuresMode() {return SaveFailuresMode;}
   double GetSaveFailuresTime() {return SaveFailuresTime;}
@@ -118,6 +119,10 @@ public:
   void SetAbwff(double iAbwff) {Abwff = iAbwff;}
   void SetRgcff(double iRgcff) {Rgcff = iRgcff;}
   void SetMieff(double iMieff) {Mieff = iMieff;}
+  void SetQeff(double iQeff) {Qeff = iQeff;}//B.Q 2018/07/25
+  void SetTtsff(double iTtsff) {Ttsff = iTtsff;}//TD 2019.06.22
+  void SetPMTSatur(double iPmtSatur) {PmtSatur = iPmtSatur;}//TD 2019.07.16
+  // void SetQoiff(double iQoiff) {Qoiff = iQoiff;}//TD 2019.06.26
   void SetTvspacing(double iTvspacing) {Tvspacing = iTvspacing;}
   void SetTopveto(bool iTopveto) {Topveto = iTopveto;}
   //WCSimTuningParameters gets
@@ -126,6 +131,10 @@ public:
   double GetAbwff() {return Abwff;}
   double GetRgcff() {return Rgcff;}
   double GetMieff() {return Mieff;}
+  double GetQeff() {return Qeff;}
+  double GetTtsff() {return Ttsff;}
+  double GetPMTSatur() {return PmtSatur;}//TD 2019.07.16
+  // double GetQoiff() {return Qoiff;}//TD 2019.06.26
   double GetTvspacing() {return Tvspacing;}
   bool   GetTopveto() {return Topveto;}
   //WCSimPhysicsListFactory sets
@@ -172,6 +181,7 @@ private:
   bool   NDigitsAdjustForNoise;
   int    NDigitsPreTriggerWindow; // ns
   int    NDigitsPostTriggerWindow; // ns
+  double TriggerOffset; //ns
   //savefailures
   int    SaveFailuresMode;
   double SaveFailuresTime; // ns
@@ -183,7 +193,11 @@ private:
   double Bsrff;
   double Abwff;
   double Rgcff;
+  double Qeff;
   double Mieff;
+  double Ttsff;
+  // double Qoiff; //TD 2019.6.26
+  double PmtSatur; //TD 2019.07.16
   double Tvspacing;
   bool   Topveto;
 
@@ -198,7 +212,7 @@ private:
   int                    RandomSeed;
   WCSimRandomGenerator_t RandomGenerator;
   
-  ClassDef(WCSimRootOptions,4)
+  ClassDef(WCSimRootOptions,5)
 };
 
 

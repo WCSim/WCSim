@@ -13,5 +13,7 @@
 #/WCSim/physics/list QGSP_BIC_HP #preferred for energies below 5 GeV
 #/WCSim/physics/list LBE # preferred for low-background experiments.  
 /WCSim/physics/list FTFP_BERT # recommended for high energy physics and hadron production up to beam momentum of several tens of GeV/c.
+#/WCSim/physics/list FTFP_BERT_HP
+/WCSim/physics/nCapture Default
 
 
