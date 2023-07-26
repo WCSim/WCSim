@@ -166,7 +166,6 @@ jobs:
 
       - name: Run physics
         run: |
-	
           source /opt/setup.sh
           cd /opt/Validation
           make
