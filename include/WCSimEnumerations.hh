@@ -7,6 +7,7 @@ typedef enum ETriggerType {
   kTriggerUndefined = -1,
   kTriggerNDigits,
   kTriggerNDigitsTest,
+  kTriggerTestVertices,
   kTriggerNoTrig,
   kTriggerFailure // this should always be the last entry (for looping)
 } TriggerType_t;
@@ -15,6 +16,14 @@ typedef enum EDigitizerType {
   kDigitizerUndefined = -1,
   kDigitizerSKI
 } DigitizerType_t;
+
+typedef enum EInteractionMode {
+  UNKNOWN = -1,
+  BEAM = 0,
+  COSMICS = 10,
+  PARTICLEGUN = 20,
+  LASER = 30
+} InteractionType_t;
 
 typedef enum ERandomGeneratorType {
   RANDOM_E_RANLUX=1,

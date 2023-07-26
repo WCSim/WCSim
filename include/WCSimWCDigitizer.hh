@@ -13,6 +13,7 @@
 #include "Randomize.hh"
 #include <map>
 #include <vector>
+#include <limits>
 
 
 // *******************************************
@@ -26,7 +27,7 @@ public:
   WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, DigitizerType_t, G4String detectorElement);
   virtual ~WCSimWCDigitizerBase();
   
-  bool AddNewDigit(int tube, int gate, float digihittime, float peSmeared, std::vector<int> digi_comp);
+  bool AddNewDigit(int tube, int gate, double digihittime, double peSmeared, std::vector<int> digi_comp);
   virtual void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT) = 0;
   void DigitizeGate(WCSimWCDigitsCollection* WCHC,G4int G);
   void Digitize();
@@ -39,7 +40,10 @@ public:
 
   double Truncate(double value, double precision) {
     if(precision < 1E-10) return value;
-    return precision * (int)(value / precision);
+    double ratio=value / precision;
+    // Result of cast is undefined if value is outside range of int. Just do nothing in that case.
+    if(ratio>std::numeric_limits<int64_t>::max() || ratio<std::numeric_limits<int64_t>::min() ) return value;
+    return precision * (int64_t)(value / precision);
   }
 
   ///Save current values of options
@@ -48,10 +52,9 @@ public:
 protected:
   void ReInitialize() { DigiStoreHitMap.clear(); }
 
-  G4double peSmeared;
-
   WCSimDetectorConstruction* myDetector; ///< Get the geometry information
   WCSimWCDAQMessenger* DAQMessenger;     ///< Get the /DAQ/ .mac options
+  G4String detectorElement; //to identify which hit collection the trigger is associated: OD, ID, ID PMT type 2(for hybrid)
 
   WCSimWCDigitsCollection*  DigiStore;
   std::map<int,int> DigiStoreHitMap;   ///< Used to check if a digit has already been created on a PMT
@@ -71,8 +74,6 @@ protected:
   virtual double GetDefaultPEPrecision() = 0;       ///< Set the default digitizer-specific charge resolution (in p.e.) (overridden by .mac)
 
   void GetVariables(); ///< Get the default deadtime, etc. from the derived class, and override with read from the .mac file
-
-  G4String detectorElement;
 };
 
 

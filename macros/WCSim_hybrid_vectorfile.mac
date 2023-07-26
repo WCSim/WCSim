@@ -1,0 +1,238 @@
+# Sample setup macro with no visualization
+
+/run/verbose 1
+/tracking/verbose 0
+/hits/verbose 0
+
+## select the geometry
+# Default config if you do nothing is currently SuperK
+#
+
+#/WCSim/WCgeom nuPRISM
+
+#Select which PMT to use
+#/WCSim/nuPRISM/SetPMTType PMT8inch
+#/WCSim/nuPRISM/SetPMTPercentCoverage 40
+#Set height of nuPRISM inner detector
+#/WCSim/nuPRISM/SetDetectorHeight 6. m
+#Set vertical position of inner detector, in beam coordinates
+#/WCSim/nuPRISM/SetDetectorVerticalPosition 0. m
+#Set diameter of inner detector
+#/WCSim/nuPRISM/SetDetectorDiameter 8. m
+# Set Gadolinium doping (concentration is in percent)
+#/WCSim/DopingConcentration 0.1
+#/WCSim/DopedWater false
+#/WCSim/Construct
+#/WCSim/mPMT/PMTtype_inner PMT3inchR14374
+#/WCSim/mPMT/PMTtype_outer PMT3inchR14374
+
+#Use mPMTs settings (uncomment/delete the above)
+/WCSim/SetPMTPercentCoverage 20.
+/WCSim/SetPMTPercentCoverage2 10.
+/WCSim/WCgeom HyperK_HybridmPMT10PC
+#/WCSim/mPMT/PMTtype_inner PMT3inchR14374
+#/WCSim/mPMT/PMTtype_outer PMT3inchR14374
+#/WCSim/WCgeom HyperK_mPMT
+#/WCSim/WCgeom HyperK
+#/WCSim/WCgeom nuPRISM_mPMT
+#/WCSim/WCgeom nuPRISMShort_mPMT
+# Set Gadolinium doping (concentration is in percent)
+#/WCSim/DopingConcentration 0.1
+#/WCSim/DopedWater false
+/WCSim/Construct
+## OR for single mPMT mode or updating mPMT parameters:
+#/control/execute macros/mPMT_nuPrism1.mac         ## mPMT options: mPMT_nuPrism1.mac and 2.mac
+
+/WCSim/tuning/rayff 0.75
+/WCSim/tuning/bsrff 2.25
+/WCSim/tuning/abwff 1.30
+/WCSim/tuning/rgcff 0.32
+
+#/WCSim/mPMT/reflectorHeightID 7. mm
+#/WCSim/mPMT/reflectorHeightID 7. mm
+#/WCSim/mPMT/reflectorAngleID 48. deg
+
+#Added for the PMT QE option 08/17/10 (XQ)
+# 1. Stacking only mean when the photon is generated
+# the QE is applied to reduce the total number of photons
+# 2. Stacking and sensitivity detector
+# In the stacking part, the maximum QE is applied to reduce
+# the total number of photons
+# On the detector side, the rest of QE are applied according to QE/QE_max
+# distribution. This option is in particular important for the WLS
+# 3. The last option means all the QE are applied at the detector
+# Good for the low energy running.
+# 4. Switch off the QE, ie. set it at 100%
+/WCSim/PMTQEMethod     Stacking_Only
+#/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
+#/WCSim/PMTQEMethod     SensitiveDetector_Only
+#/WCSim/PMTQEMethod     DoNotApplyQE
+
+#turn on or off the collection efficiency
+/WCSim/PMTCollEff on
+
+# command to choose save or not save the pi0 info 07/03/10 (XQ)
+/WCSim/SavePi0 false
+
+#choose the Trigger & Digitizer type (and options)
+/DAQ/Digitizer SKI
+/DAQ/Trigger NDigits
+/DAQ/TriggerNDigits/Threshold 0
+/DAQ/TriggerNDigits/AdjustForNoise false
+
+#grab the other DAQ options (thresholds, timing windows, etc.)
+/control/execute macros/daq.mac
+
+
+# default dark noise frequency (and conversion factor) is PMT property (NEW), set in the code.
+# Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
+/DarkRate/SetDetectorElement tank
+#/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
+#/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20in R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20in R3600 dark rate from EGADS nov 2014
+
+/DarkRate/SetDetectorElement tankPMT2
+#/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
+#/DarkRate/SetDarkRate 100 Hz #For 3 inch PMT R14374 (official value for MC production in 2020)
+
+# command to multiply the dark rate.
+# Convert dark noise frequency before digitization to after digitization by setting suitable factor
+# Again, this is now a PMT property and can be overridden here
+/DarkRate/SetDetectorElement tank
+#/DarkRate/SetConvert 1.367  #For Normal PMT
+#/DarkRate/SetConvert 1.119 #For HPDs
+#/DarkRate/SetConvert 1.126 #For Box and Line PMTs
+
+/DarkRate/SetDetectorElement tankPMT2
+#/DarkRate/SetConvert 1.126 #For 3 inch PMT R14374
+
+# Select which time window(s) to add dark noise to
+#/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
+#/DarkRate/SetDarkLow to /DarkRate/SetDarkHigh [time in ns]
+#/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
+#width /DarkRate/SetDarkWindow [time in ns] around each hit
+#i.e. hit time ± (/DarkRate/SetDarkWindow) / 2
+/DarkRate/SetDetectorElement tank
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkHigh 100000
+/DarkRate/SetDarkLow 0
+/DarkRate/SetDarkWindow 4000
+
+/DarkRate/SetDetectorElement tankPMT2
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkHigh 100000
+/DarkRate/SetDarkLow 0
+/DarkRate/SetDarkWindow 4000
+
+#Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
+#/control/execute macros/visOGLSX.mac
+#/control/execute macros/visRayTracer.mac
+#/control/execute macros/visOGLQT.mac             ## NEW
+
+## select the input nuance-formatted vector file
+## you can of course use your own
+#/mygen/generator muline
+/mygen/generator muline
+/mygen/vecfile /disk01/usr5/bquilain/vector_pos_HK_Tochibora_0000.dat
+#/mygen/vecfile /disk02/usr6/yonenaga/production/vector/lbl_pos/vector_pos_HK_Tochibora_0000.dat
+#/mygen/vecfile inputvectorfile
+#/mygen/vecfile h2o.2km.001-009x3_G4.kin
+#/mygen/vecfile mu+.out
+
+# Or you can use the G4 Particle Gun
+# for a full list of /gun/ commands see:
+# http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
+#/mygen/generator gun
+#/gun/particle gamma
+#/gun/particle e-
+#/gun/particle mu-
+#/gun/particle pi0
+#/gun/energy 500 MeV
+#/gun/direction 1 0 0
+#/gun/position 0 0 0 m
+#/gun/number 100
+
+# Or you can use the G4 General Particle Source
+# you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
+# for a full list of /gps/ commands see:
+# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+#/mygen/generator gps
+#/gps/particle gamma
+#/gps/particle e-
+#/gps/energy 10 MeV
+#/gps/energy 1 MeV
+#/gps/direction 1 0 0
+#/gps/position 0. 0. 0. m
+#/gps/position 3.5 0. 0. m
+
+# Position: a surface
+#/gps/pos/type 
+#/gps/pos/shape Cylinder
+#/gps/pos/halfz 4.5 m
+#/gps/pos/radius 3.9 m
+
+# Position: a cylinder
+#/gps/pos/type Volume
+#/gps/pos/shape Cylinder
+#/gps/pos/halfz 32.8755 m
+#/gps/pos/radius 32.4 m
+
+# Position: a sphere
+#/gps/pos/type Volume
+#/gps/pos/shape Sphere
+#/gps/pos/radius 200. cm
+#/gps/pos/centre 0. 0. 0. m
+
+# Direction: unidirection along x
+#/gps/ang/type beam1d
+#/gps/ang/rot1 0 0 1
+#/gps/ang/rot2 0 1 0
+
+# Direction: a sphere
+#/gps/ang/type iso
+#/gps/ang/mintheta 0 deg
+#/gps/ang/maxtheta 180 deg
+#/gps/ang/minphi 0 deg
+#/gps/ang/maxphi 360 deg
+
+# spectrum: uniform between 200 and 1000 MeV
+#/gps/ene/type Lin
+#/gps/ene/gradient 0
+#/gps/ene/intercept 1
+#/gps/ene/type Mono
+#/gps/ene/mono 500 MeV
+#/gps/ene/min 200 MeV
+#/gps/ene/max 1000 MeV
+
+#/random/setSeeds 1225 1500
+
+# Or you can use the laser option
+# This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
+# for a full list of /gps/ commands see:
+# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+# It is used for laser calibration simulation
+#/mygen/generator laser
+#/gps/particle opticalphoton
+#/gps/energy 3.5 keV
+#/gps/direction 1 0 0
+#/gps/position 3.5 0 0 m
+#/gps/number 1000
+#/gps/ang/type iso
+#/gps/ang/mintheta 0 deg
+#/gps/ang/maxtheta 0 deg
+#/gps/ang/minphi 0 deg
+#/gps/ang/maxphi 90 deg
+
+##### NEW
+/Tracking/fractionOpticalPhotonsToDraw 0.0
+
+## change the name of the output root file, default = wcsim.root
+/WCSimIO/RootFile wcsim_hybrid_vectorfile.root
+
+## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
+## a NEUT vector file as input
+/WCSimIO/SaveRooTracker 0
+
+/run/beamOn 1000
+#exit

@@ -17,25 +17,27 @@ class WCSimWCAddDarkNoise : public G4VDigitizerModule
 {
 public:
   
-  // WCSimWCAddDarkNoise(G4String name, WCSimDetectorConstruction*);
   WCSimWCAddDarkNoise(G4String name, WCSimDetectorConstruction*, G4String);
   ~WCSimWCAddDarkNoise();
   
 public:
   void AddDarkNoise();
-  void AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPMT, float num1 ,float num2);
-  void FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, float width);
+  void AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPMT, double num1 ,double num2);
+  void FindDarkNoiseRanges(WCSimWCDigitsCollection* WCHCPMT, double width);
   //As it inherits from G4VDigitizerModule it needs a digitize class.  Not used
   void Digitize() { }
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
   double GetDarkRate() { return PMTDarkRate; }
   void SetConversion(double iconvrate){ ConvRate = iconvrate; }
   void SetDarkMode(int imode){DarkMode = imode;}
-  void SetDarkHigh(int idarkhigh){DarkHigh = idarkhigh;}
-  void SetDarkLow(int idarklow){DarkLow = idarklow;}
+  int GetDarkMode(){return DarkMode;}
+  void SetDarkHigh(double idarkhigh){DarkHigh = idarkhigh;}
+  double GetDarkHigh(){return DarkHigh;}
+  void SetDarkLow(double idarklow){DarkLow = idarklow;}
+  double GetDarkLow(){return DarkLow;}
   void SetDarkWindow(int idarkwindow){DarkWindow = idarkwindow;}
   int GetDarkWindow(){return (int)(DarkWindow);}
-  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt, string tag);
   
 private:
   void ReInitialize() { ranges.clear(); result.clear();}
@@ -53,8 +55,8 @@ private:
   WCSimDetectorConstruction* myDetector;
   G4String detectorElement;
 
-  std::vector<std::pair<float, float> > ranges;
-  std::vector<std::pair<float, float> > result;
+  std::vector<std::pair<double, double> > ranges;
+  std::vector<std::pair<double, double> > result;
   
 };
 

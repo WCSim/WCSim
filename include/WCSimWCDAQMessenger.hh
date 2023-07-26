@@ -40,6 +40,7 @@ private:
   G4UIcmdWithAString* TriggerChoice;
   G4String            StoreTriggerChoice;
   G4UIcmdWithABool*   MultiDigitsPerTrigger;
+  G4UIcmdWithABool*   RelativeHitTime;
   G4bool              StoreMultiDigitsPerTrigger;
   G4bool              MultiDigitsPerTriggerSet;
 
@@ -75,6 +76,8 @@ private:
   G4bool                NDigitsPreWindowSetByUser; //because this is typically negative, a foolproof(?) workaround
   G4UIcmdWithAnInteger* NDigitsPostTriggerWindow;
   G4int                 StoreNDigitsPostWindow;
+  G4UIcmdWithADouble* TriggerOffset;
+  G4double            StoreTriggerOffset;
 
   G4String initialiseString;
   G4bool   initialised;

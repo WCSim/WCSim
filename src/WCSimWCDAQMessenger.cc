@@ -62,7 +62,12 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreMultiDigitsPerTrigger = defaultMultiDigitsPerTrigger;
   MultiDigitsPerTriggerSet = false; //this variable is bool & defaults are class specfic; use this to know if the default is overidden
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
-
+  
+  bool defaultRelativeHitTime = false;
+  RelativeHitTime = new G4UIcmdWithABool("/DAQ/RelativeHitTime", this);
+  RelativeHitTime->SetGuidance("Set the digitized hit time relative to the first one");
+  RelativeHitTime->SetParameterName("RelativeHitTime",true);
+  RelativeHitTime->SetDefaultValue(defaultRelativeHitTime);
 
   //Generic digitizer specific options
   DigitizerDir = new G4UIdirectory("/DAQ/DigitizerOpt/");
@@ -150,6 +155,14 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreNDigitsThreshold = defaultNDigitsTriggerThreshold;
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
 
+  double defaultTriggerOffset = 950.;
+  TriggerOffset = new G4UIcmdWithADouble("/DAQ/TriggerOffset", this);
+  TriggerOffset->SetGuidance("Set the trigger timing offset");
+  TriggerOffset->SetParameterName("TriggerOffset",false);
+  TriggerOffset->SetDefaultValue(defaultTriggerOffset);
+  StoreTriggerOffset = defaultTriggerOffset;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
   int defaultNDigitsTriggerWindow = -99;
   NDigitsTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNDigits/Window", this);
   NDigitsTriggerWindow->SetGuidance("Set the NDigits trigger window (in ns)");
@@ -200,6 +213,8 @@ WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
   delete NDigitsTriggerAdjustForNoise;
   delete NDigitsPreTriggerWindow;
   delete NDigitsPostTriggerWindow;
+  
+  delete TriggerOffset;
 
   delete DigitizerDir;
   delete DigitizerDeadTime;
@@ -210,6 +225,7 @@ WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
   delete DigitizerChoice;
   delete TriggerChoice;
   delete MultiDigitsPerTrigger;
+  delete RelativeHitTime;
   delete WCSimDAQDir;
 }
 
@@ -237,6 +253,10 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       G4cout << "Will allow number of digits per PMT per trigger to go > 1" << initialiseString.c_str() << G4endl;
     if(initialised)
       MultiDigitsPerTriggerSet = true;
+  }
+  else if ( command == RelativeHitTime ) {
+    // Relative HitTime
+    WCSimEvent->SetRelativeDigitizedHitTime(RelativeHitTime->GetNewBoolValue(newValue));
   }
 
   //Generic digitizer options
@@ -309,6 +329,11 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     G4cout << "NDigits posttrigger window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
     StoreNDigitsPostWindow = NDigitsPostTriggerWindow->GetNewIntValue(newValue);
   }
+
+  else if (command == TriggerOffset) {
+    G4cout << "trigger offset set to " << newValue << initialiseString.c_str() << G4endl;
+    StoreTriggerOffset = TriggerOffset->GetNewDoubleValue(newValue);
+  }
 }
 
 void WCSimWCDAQMessenger::SetTriggerOptions()
@@ -358,6 +383,8 @@ void WCSimWCDAQMessenger::SetTriggerOptions()
     WCSimTrigger->SetNDigitsPostTriggerWindow(StoreNDigitsPostWindow);
     G4cout << "\tNDigits posttrigger window set to " << StoreNDigitsPostWindow << " ns" << G4endl;
   }
+  WCSimTrigger->SetTriggerOffset(StoreTriggerOffset);
+  G4cout << "\tTrigger offset set to " << StoreTriggerOffset << " ns" << G4endl;
 }
 
 void WCSimWCDAQMessenger::SetDigitizerOptions()

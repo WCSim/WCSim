@@ -1,0 +1,3 @@
+#!/bin/sh
+
+root -l ${WCSIM_BUILD_DIR}/bin/rootwc-files/rootwc.C $*

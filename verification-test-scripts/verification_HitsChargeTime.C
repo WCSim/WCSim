@@ -1,52 +1,23 @@
 #include <iostream>
-#include <TH1F.h>
 #include <stdio.h>     
 #include <stdlib.h>    
+
+#include "TH1F.h"
+#include "TROOT.h"
+#include "TStyle.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TCanvas.h"
+#include "TLegend.h"
+#include "TSystem.h"
+
+#include "WCSimRootEvent.hh"
+
 // Simple example of reading a generated Root file
-void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename2="../../WCSim_clean/verification-test-scripts/wcsimtest.root", bool verbose=false)
+int verification_HitsChargeTime(const char *filename="wcsimtest.root", const char *filename2="../../WCSim_clean/verification-test-scripts/wcsimtest.root", bool verbose=false)
 {
   // Clear global scope
   //gROOT->Reset();
-  
-  gStyle->SetOptStat(0);
-  gStyle->SetCanvasColor(0);
-  gStyle->SetTitleColor(1);
-  gStyle->SetStatColor(0);
-  gStyle->SetFrameFillColor(0);
-  gStyle->SetPadColor(0);
-  gStyle->SetPadTickX(1);
-  gStyle->SetPadTickY(1);
-  gStyle->SetTitleSize(0.04);
-  gStyle->SetCanvasBorderMode(0);
-  gStyle->SetFrameBorderMode(0);
-  gStyle->SetFrameLineWidth(2);
-  gStyle->SetPadBorderMode(0);
-  gStyle->SetPalette(1);
-  gStyle->SetTitleAlign(23);
-  gStyle->SetTitleX(.5);
-  gStyle->SetTitleY(0.99);
-  gStyle->SetTitleBorderSize(0);
-  gStyle->SetTitleFillColor(0);
-  gStyle->SetHatchesLineWidth(2);
-  gStyle->SetLineWidth(1.5);
-  gStyle->SetTitleFontSize(0.07);
-  gStyle->SetLabelSize(0.05,"X");
-  gStyle->SetLabelSize(0.05,"Y");
-  gStyle->SetTitleSize(0.04,"X");
-  gStyle->SetTitleSize(0.04,"Y");
-  gStyle->SetTitleBorderSize(0);
-  gStyle->SetCanvasBorderMode(0);
-  
-  
-  // Load the library with class dictionary info
-  // (create with "gmake shared")
-  char* wcsimdirenv;
-  wcsimdirenv = getenv ("WCSIMDIR");
-  if(wcsimdirenv !=  NULL){
-    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
-  }else{
-    gSystem->Load("../libWCSimRoot.so");
-  }
 
   TFile *f = new TFile(filename,"read");
   if (!f->IsOpen()){
@@ -61,9 +32,9 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
   }
   
  
-  TTree  *wcsimT = f->Get("wcsimT");
+  TTree  *wcsimT = (TTree*)f->Get("wcsimT");
   int nevent = wcsimT->GetEntries();
-  TTree  *wcsimT2 = f2->Get("wcsimT");
+  TTree  *wcsimT2 = (TTree*)f2->Get("wcsimT");
   int nevent2 = wcsimT2->GetEntries();
 
   // Create a WCSimRootEvent to put stuff from the tree in and set the branch address for reading from the tree
@@ -136,23 +107,47 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
       printf("Vtx %f %f %f\n", wcsimrootevent->GetVtx(0),
 	     wcsimrootevent->GetVtx(1),wcsimrootevent->GetVtx(2));
     }
+
+
+    //Calculate distance vertex to center, in z plane
+    // dWall
+    // muon range
+    // end point to center
+    double vtx_x = wcsimrootevent->GetVtx(0);
+    double vtx_y = wcsimrootevent->GetVtx(1);
+    double vtx_z = wcsimrootevent->GetVtx(2);
+    double dist = sqrt(vtx_x*vtx_x + vtx_y * vtx_y);
     
     for (int index = 0 ; index < wcsimrootsuperevent->GetNumberOfEvents(); index++){ 
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
 	int ncherenkovdigihits = wcsimrootevent->GetNcherenkovdigihits();
+	int ncherenkovdigihits_slots = wcsimrootevent->GetNcherenkovdigihits_slots();
 	hits->Fill(ncherenkovdigihits);
 	
 	
 	float totalq = 0.;
 	float totalt = 0.;
+	
+	std::cout << ncherenkovdigihits << std::endl;
+	std::cout << wcsimrootevent->GetNumTubesHit() << std::endl;
+	//TH1F *occup_per_event = new TH1F("occup_per_event","",20000,0,20000);
 	// Loop through elements in the TClonesArray of WCSimRootCherenkovHits
-	for (int i=0; i< ncherenkovdigihits; i++){
+	for (int i=0; i< ncherenkovdigihits_slots; i++){
 	    TObject *Digi = (wcsimrootevent->GetCherenkovDigiHits())->At(i);
+	    if(!Digi)
+	      continue;
 	    WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = 
 	      dynamic_cast<WCSimRootCherenkovDigiHit*>(Digi);
 	    
 	    float q = wcsimrootcherenkovdigihit->GetQ();
 	    float t = wcsimrootcherenkovdigihit->GetT();
+	    charge->Fill(q);
+	    ttime->Fill(t);
+	    t_q->Fill(t,q);
+	    occupancy->Fill(tubeNumber);
+	    //occup_per_event->Fill(tubeNumber);
+	    occupancy_mPMT->Fill(tubeNumber%33 == 0 ? 33 : tubeNumber%33);
+	    occupancy_mPMT2->Fill(tubeNumber/33);
 	    totalq+=q;
 	    totalt+=t;
 	}
@@ -167,27 +162,6 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
   }// End of loop over events
 
 
- 
-  
-  // Now loop over events
-  for (int ev=0; ev<nevent2; ev++){
-    // Read the event from the tree into the WCSimRootEvent instance
-    wcsimT2->GetEvent(ev);
-    wcsimrootevent2 = wcsimrootsuperevent2->GetTrigger(0);
-  
-    if(verbose){
-      printf("********************************************************");
-      printf("Evt, date %d %d\n", wcsimrootevent2->GetHeader()->GetEvtNum(),
-	     wcsimrootevent2->GetHeader()->GetDate());
-      printf("Mode %d\n", wcsimrootevent2->GetMode());
-      printf("Number of subevents %d\n",
-	     wcsimrootsuperevent2->GetNumberOfSubEvents());
-      
-      printf("Vtxvol %d\n", wcsimrootevent2->GetVtxvol());
-      printf("Vtx %f %f %f\n", wcsimrootevent2->GetVtx(0),
-	     wcsimrootevent2->GetVtx(1),wcsimrootevent2->GetVtx(2));
-    }
-    
     for (int index = 0 ; index < wcsimrootsuperevent2->GetNumberOfEvents(); index++){ 
 	wcsimrootevent2 = wcsimrootsuperevent2->GetTrigger(index);
 	int ncherenkovdigihits = wcsimrootevent2->GetNcherenkovdigihits();
@@ -203,6 +177,8 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
 	    
 	    float q = wcsimrootcherenkovdigihit->GetQ();
 	    float t = wcsimrootcherenkovdigihit->GetT();
+	    charge2->Fill(q);
+	    ttime2->Fill(t);
 	    totalq+=q;
 	    totalt+=t;
 	}
@@ -254,5 +230,47 @@ void verification_HitsChargeTime(char *filename="wcsimtest.root", char *filename
  time2->SetLineColor(kRed);
  c1->cd(3); time2->Draw("SAME");
   
+ c1->cd(4);
+ hit_pmts->Draw();
+ hit_pmts2->SetLineColor(kRed);
+ hit_pmts2->Draw("same");
 
+ TCanvas* c2 = new TCanvas("c2", "Test Plots", 500*n_wide*win_scale, 500*n_high*win_scale);
+ gStyle->SetOptStat(1);
+ gStyle->SetOptFit(111);
+ /* TF1 *func = new TF1("func","gaus(0)",0,20000);
+ func->SetParameters(10,5000,10);
+ TF1 *func2 = new TF1("func2","gaus(0)",0,20000);
+ func2->SetParameters(10,5000,10); */
+ tot_charge->Draw();
+ //tot_charge->Fit("gaus","","",tot_charge->GetMean()-1.5*tot_charge->GetRMS(),tot_charge->GetMean()+1.5*tot_charge->GetRMS());
+ tot_charge2->SetLineColor(kRed);
+ tot_charge2->Draw("same");
+ //tot_charge2->Fit("gaus","","",tot_charge->GetMean()-1.5*tot_charge->GetRMS(),tot_charge->GetMean()+1.5*tot_charge->GetRMS());
+ //std::cout << "Tot charge ratio : " << func->GetParameter(0)/func2->GetParameter(0) << std::endl;
+
+ TCanvas *c3 = new TCanvas();
+ c3->Divide(2,2);
+ c3->cd(1);
+ occupancy_mPMT2->Draw();
+ c3->cd(2);
+ occupancy_mPMT->Draw();
+ c3->cd(3);
+ ttime->Draw();
+ ttime2->SetLineColor(kRed);
+ ttime2->Draw("same");
+ c3->cd(4);
+ charge->Draw();
+ charge2->SetLineColor(kRed);
+ charge2->Draw("same");
+
+
+ TCanvas *c4 = new TCanvas();
+
+ nhit_pmt->Draw();
+
+ TCanvas *c5 = new TCanvas();
+ t_q->Draw("colz");
+
+ return 0;
 }

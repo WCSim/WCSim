@@ -46,18 +46,20 @@ private:
   G4int   tubeID;
   G4RotationMatrix rot;
   G4ThreeVector    pos;
+  G4ThreeVector    orient;
   G4LogicalVolume* pLogV;
-
+  G4String tubeType;//Added by B.Q for hybrid PMT configuration
+  
   //'Gates' is a digit counter or specifies subevent
   //'TriggerTimes' specifies e.g. the subevent trigger time
   std::set<int> Gates; // list of gates that were hit  
-  std::vector<float> TriggerTimes;
+  std::vector<double> TriggerTimes;
 
   //lists (meaning vector/map) of information for each hit/digit created on the PMT
-  std::map<int,float> pe;   ///< Charge of each Digi
-  std::map<int,float> time_presmear; ///< Time of each Digi, before smearing
-  std::map<int,float> time; ///< Time of each Digi
-  std::vector<G4float>  time_float; ///< Same information as "time" but stored in a vector for quick time sorting
+  std::map<int,double> pe;   ///< Charge of each Digi
+  std::map<int,double> time_presmear; ///< Time of each Digi, before smearing
+  std::map<int,double> time; ///< Time of each Digi
+  std::vector<G4double>  time_double; ///< Same information as "time" but stored in a vector for quick time sorting
   /** \brief IDs of the hits that make up this Digit (do not use for Hits)
    *
    * Stores the unique IDs of each photon making up a digit
@@ -68,6 +70,11 @@ private:
    */
   std::map<int, std::vector<int> > fDigiComp;
   std::map<int, G4int>    primaryParentID; ///< Primary parent ID of the Hit (do not use for Digits)
+  std::map<int, G4float>    photonStartTime; ///< Primary parent ID of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>    photonStartPos; ///< Start point of the photon of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>    photonEndPos; ///< End point of the photon of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>    photonStartDir; ///< Start dir of the photon of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>    photonEndDir; ///< End dir of the photon of the Hit (do not use for Digits)
   
 
   //integrated hit/digit parameters
@@ -83,29 +90,67 @@ public:
   void RemoveDigitizedGate(G4int gate);
   
   inline void SetTubeID(G4int tube) {tubeID = tube;};
-  inline void AddGate(int g,float t) { Gates.insert(g); TriggerTimes.push_back(t);}
-  inline void SetPe(G4int gate,  G4float Q)      {pe[gate]     = Q;};
-  inline void SetTime(G4int gate, G4float T)    {time[gate]   = T;};
-  inline void SetPreSmearTime(G4int gate, G4float T)    {time_presmear[gate]   = T;};
+  inline void SetTubeType(G4String tube_type) {tubeType = tube_type;};
+
+  inline void AddGate(int g,double t) { Gates.insert(g); TriggerTimes.push_back(t);}
+  inline void SetPe(G4int gate,  G4double Q)      {pe[gate]     = Q;};
+  inline void SetTime(G4int gate, G4double T)    {time[gate]   = T;};
+  inline void SetPreSmearTime(G4int gate, G4double T)    {time_presmear[gate]   = T;};
   inline void SetParentID(G4int gate, G4int parent) { primaryParentID[gate] = parent; };
+  inline void SetPhotonStartTime(G4int gate, G4float starttime) { photonStartTime[gate] = starttime; };
+  inline void SetPhotonStartPos(G4int gate, const G4ThreeVector &position) { photonStartPos[gate] = position; };
+  inline void SetPhotonEndPos(G4int gate, const G4ThreeVector &position) { photonEndPos[gate] = position; };
+  inline void SetPhotonStartDir(G4int gate, const G4ThreeVector &direction) { photonStartDir[gate] = direction; };
+  inline void SetPhotonEndDir(G4int gate, const G4ThreeVector &direction) { photonEndDir[gate] = direction; };
 
   // Add a digit number and unique photon number to fDigiComp
   inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
-    fDigiComp[digi_number].push_back(photon_number);
+    fDigiComp.at(digi_number).push_back(photon_number);
   }
   // Add a whole vector for one digit to fDigiComp. Clear input vector once added.
   void AddDigiCompositionInfo(std::vector<int> & digi_comp){
     const size_t size = fDigiComp.size();
-    fDigiComp[size] = digi_comp;
+    fDigiComp.emplace(size,digi_comp);
     digi_comp.clear();
   }
 
-  inline G4int   GetParentID(int gate) { return primaryParentID[gate];};
-  inline G4float GetGateTime(int gate) { return TriggerTimes[gate];}
+  inline G4int          GetParentID(int gate)    { return primaryParentID[gate];};
+  inline G4float        GetPhotonStartTime(int gate)    { return photonStartTime[gate];};
+  inline G4ThreeVector  GetPhotonStartPos(int gate)    { return photonStartPos[gate];};
+  inline G4ThreeVector  GetPhotonEndPos(int gate)    { return photonEndPos[gate];};
+  inline G4ThreeVector  GetPhotonStartDir(int gate)    { return photonStartDir[gate];};
+  inline G4ThreeVector  GetPhotonEndDir(int gate)    { return photonEndDir[gate];};
+  inline G4int          GetTrackID()    { return trackID;};
+  inline G4double GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
-  inline G4float GetPe(int gate)     {return pe[gate];};
-  inline G4float GetTime(int gate)   {return time[gate];};
-  inline G4float GetPreSmearTime(int gate)   {return time_presmear[gate];};
+  inline G4String   GetTubeType() {return tubeType;};
+  inline G4ThreeVector GetPos(){ return pos;};
+  inline G4ThreeVector GetOrientation(){ return orient;};
+  inline G4RotationMatrix GetRot(){ return rot;};
+  inline G4double GetPe(int gate)     {return pe[gate];};
+  inline G4double GetTime(int gate)   {
+    try {
+      return time.at(gate);
+    }
+    catch (...) {
+      G4cerr<<"Exception occurred while attempting to use WCSimWCDigi::GetTime to retrieve time for pe "
+            << gate << " from map of times. The time map has "<<time.size()<<" entries:" << G4endl;
+      for(std::map<int,double>::iterator time_element=time.begin(); time_element!=time.end(); time_element++){
+        try{
+          G4cerr << time_element->first << ": ";
+          G4cerr << time_element->second << G4endl;
+        }
+        catch (...) {
+          G4cerr << G4endl << "Exception reading map entry!!"<<G4endl;
+          break;
+        }
+      }
+      throw;
+    }
+  };
+  inline std::map<int,double>::const_iterator GetTimeMapBegin() {return time.cbegin();}
+  inline std::map<int,double>::const_iterator GetTimeMapEnd() {return time.cend();}
+  inline G4double GetPreSmearTime(int gate)   {return time_presmear.at(gate);};
   std::vector<int> GetDigiCompositionInfo(int gate);
   inline std::map< int, std::vector<int> > GetDigiCompositionInfo(){return fDigiComp;}
 
@@ -118,6 +163,7 @@ public:
 
   void SetEdep         (G4double de)                { edep = de; };
   void SetPos          (G4ThreeVector xyz)          { pos = xyz; };
+  void SetOrientation  (G4ThreeVector xyz)          { orient = xyz; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
   void SetTrackID      (G4int track)                { trackID = track; };
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
@@ -125,43 +171,70 @@ public:
   
   void SetMaxPe(G4int number = 0)  {maxPe   = number;};
 
-  void AddPe(G4float hitTime)  
+  void AddPe(G4double hitTime)
   {
     // Increment the totalPe number
     totalPe++; 
         
-    time_float.push_back(hitTime);
+    time_double.push_back(hitTime);
   }
 
-  void SortHitTimes() {   sort(time_float.begin(),time_float.end()); }
+  void SortHitTimes() {   sort(time_double.begin(),time_double.end()); }
 
 
-  void SortArrayByHitTime() {
+  void SortDigiMapsByHitTime() {
     int i, j;
-    float index_time,index_timepresmear,index_pe;
-    std::vector<int> index_digicomp;
+
+    double index_time,index_timepresmear,index_pe;
     int index_primaryparentid;
+    std::vector<int> index_digicomp;
+    float index_photonstarttime;
+    G4ThreeVector index_photonstartpos;
+    G4ThreeVector index_photonendpos;
+    G4ThreeVector index_photonstartdir;
+    G4ThreeVector index_photonenddir;
+    bool sort_digi_compositions = (fDigiComp.size()==time.size());
+    // SortDigiMapsByHitTime is called by WCSimWCDigitizerSKI::DigitizeHits to sort the WCRawPMTSignalCollection.
+    // Each entry in WCRawPMTSignalCollection represents the set of photon hits on a PMT.
+    // Since a photon hit has no "composition", fDigiComp is empty at this time and needn't be sorted.
+    // for generality, sort if the digi composition map has the same size as other maps
+
     for (i = 1; i < (int) time.size(); ++i)
       {
-        index_time  = time[i];
-        index_timepresmear  = time_presmear[i];
-        index_pe = pe[i];
-	index_digicomp = fDigiComp[i];
-	index_primaryparentid = primaryParentID[i];
-        for (j = i; j > 0 && time[j-1] > index_time; j--) {
-          time[j] = time[j-1];
-          pe[j] = pe[j-1];
-	  fDigiComp[j] = fDigiComp[j-1];
-	  primaryParentID[j] = primaryParentID[j-1];
-          //G4cout <<"swapping "<<time[j-1]<<" "<<index_time<<G4endl;
+        index_time  = time.at(i);
+        index_timepresmear  = time_presmear.at(i);
+        index_pe = pe.at(i);
+        if(sort_digi_compositions) index_digicomp = fDigiComp.at(i);
+        index_primaryparentid = primaryParentID.at(i);
+	index_photonstarttime = photonStartTime[i];
+	index_photonstartpos = photonStartPos[i];
+	index_photonendpos = photonEndPos[i];
+	index_photonstartdir = photonStartDir[i];
+	index_photonenddir = photonEndDir[i];
+        for (j = i; j > 0 && time.at(j-1) > index_time; j--) {
+          time.at(j) = time.at(j-1);
+          time_presmear.at(j) = time_presmear.at(j-1);
+          pe.at(j) = pe.at(j-1);
+          if(sort_digi_compositions) fDigiComp.at(j) = fDigiComp.at(j-1);
+          primaryParentID.at(j) = primaryParentID.at(j-1);
+	  photonStartTime.at(j) = photonStartTime.at(j-1);
+	  photonStartPos.at(j) = photonStartPos.at(j-1);
+	  photonEndPos.at(j) = photonEndPos.at(j-1);
+	  photonStartDir.at(j) = photonStartDir.at(j-1);
+	  photonEndDir.at(j) = photonEndDir.at(j-1);
+          //G4cout <<"swapping "<<time.at(j-1)<<" "<<index_time<<G4endl;
         }
-        
-        time[j] = index_time;
-        time_presmear[j] = index_timepresmear;
-        pe[j] = index_pe;
-	fDigiComp[j] = index_digicomp;
-	primaryParentID[j] = index_primaryparentid;
-      }    
+        time.at(j) = index_time;
+        time_presmear.at(j) = index_timepresmear;
+        pe.at(j) = index_pe;
+        if(sort_digi_compositions) fDigiComp.at(j) = index_digicomp;
+        primaryParentID.at(j) = index_primaryparentid;
+	photonStartTime.at(j) = index_photonstarttime;
+	photonStartPos.at(j) = index_photonstartpos;
+	photonEndPos.at(j) = index_photonendpos;
+	photonStartDir.at(j) = index_photonstartdir;
+	photonEndDir.at(j) = index_photonenddir;
+      }
   }
   
   void insertionSort(int a[], int array_size)
@@ -178,17 +251,17 @@ public:
   }
 
 
-  G4float GetFirstHitTimeInGate(G4float low,G4float upevent)
+  G4double GetFirstHitTimeInGate(G4double low,G4double upevent)
   {
-    G4float firsttime;
-    std::vector<G4float>::iterator tfirst = time_float.begin();
-    std::vector<G4float>::iterator tlast = time_float.end();
+    G4double firsttime;
+    std::vector<G4double>::iterator tfirst = time_double.begin();
+    std::vector<G4double>::iterator tlast = time_double.end();
     
-    std::vector<G4float>::iterator found = 
+    std::vector<G4double>::iterator found =
       std::find_if(tfirst,tlast,
 		   compose2(std::logical_and<bool>(),
-			    std::bind2nd(std::greater_equal<G4float>(),low),
-			    std::bind2nd(std::less_equal<G4float>(),upevent)
+			    std::bind2nd(std::greater_equal<G4double>(),low),
+			    std::bind2nd(std::less_equal<G4double>(),upevent)
 			    )
 		   );
     if ( found != tlast ) {
@@ -201,7 +274,12 @@ public:
     return firsttime;
   }
 
- 
+  // G. Pronost:	
+  // Sort function by Hit Time (using first time, assuming hit time in a hit are sorted)
+  struct SortFunctor_Hit {
+    bool operator() (const WCSimWCDigi * const &a,
+                     const WCSimWCDigi * const &b) const;
+  };
 };
 
 typedef G4TDigiCollection<WCSimWCDigi> WCSimWCDigitsCollection;
@@ -220,12 +298,3 @@ inline void WCSimWCDigi::operator delete(void* aDigi)
 }
 
 #endif
-
-
-
-
-
-
-
-
-
