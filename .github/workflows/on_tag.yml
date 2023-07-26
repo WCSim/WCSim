@@ -8,7 +8,7 @@ on:
 concurrency:
   #When a PR is pushed too multiple times in a short period, this would usually trigger multiple CI runs
   #This setting cancels any in-progress CI when a new push is performed
-  group: ${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
