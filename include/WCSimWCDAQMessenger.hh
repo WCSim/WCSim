@@ -40,6 +40,7 @@ private:
   G4UIcmdWithAString* TriggerChoice;
   G4String            StoreTriggerChoice;
   G4UIcmdWithABool*   MultiDigitsPerTrigger;
+  G4UIcmdWithABool*   RelativeHitTime;
   G4bool              StoreMultiDigitsPerTrigger;
   G4bool              MultiDigitsPerTriggerSet;
 
@@ -48,6 +49,10 @@ private:
   G4int                 StoreDigitizerDeadTime;
   G4UIcmdWithAnInteger* DigitizerIntegrationWindow;
   G4int                 StoreDigitizerIntegrationWindow;
+  G4UIcmdWithADouble*   DigitizerTimingPrecision;
+  G4double              StoreDigitizerTimingPrecision;
+  G4UIcmdWithADouble*   DigitizerPEPrecision;
+  G4double              StoreDigitizerPEPrecision;
 
   G4UIdirectory*        SaveFailuresTriggerDir;
   G4UIcmdWithAnInteger* SaveFailuresTriggerMode;
@@ -70,6 +75,8 @@ private:
   G4int                 StoreNDigitsPreWindow;
   G4UIcmdWithAnInteger* NDigitsPostTriggerWindow;
   G4int                 StoreNDigitsPostWindow;
+  G4UIcmdWithADouble* TriggerOffset;
+  G4double            StoreTriggerOffset;
 
   G4String initialiseString;
   G4bool   initialised;

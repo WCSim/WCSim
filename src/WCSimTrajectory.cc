@@ -8,6 +8,9 @@
 #include "G4UnitsTable.hh"
 #include "G4VProcess.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 #include <sstream>
 
 //G4Allocator<WCSimTrajectory> aTrajectoryAllocator;
@@ -90,10 +93,10 @@ void WCSimTrajectory::ShowTrajectory(std::ostream& os) const
   // ... or override with your own code here.
 }
 
-void WCSimTrajectory::DrawTrajectory(G4int i_mode) const
+void WCSimTrajectory::DrawTrajectory(/*G4int i_mode*/) const
 {
   // Invoke the default implementation in G4VTrajectory...
-  G4VTrajectory::DrawTrajectory(i_mode);
+  G4VTrajectory::DrawTrajectory();
   // ... or override with your own code here.
 }
 
@@ -133,35 +136,35 @@ const std::map<G4String,G4AttDef>* WCSimTrajectory::GetAttDefs() const
 std::vector<G4AttValue>* WCSimTrajectory::CreateAttValues() const
 {
   char c[100];
-  //std::ostrstream s(c,100);
-  std::ostringstream s(c);
+  //std::ostrstream ss(c,100);
+  std::ostringstream ss(c);
   
   std::vector<G4AttValue>* values = new std::vector<G4AttValue>;
   
-  s.seekp(std::ios::beg);
-  s << fTrackID << std::ends;
+  ss.seekp(std::ios::beg);
+  ss << fTrackID << std::ends;
   values->push_back(G4AttValue("ID",c,""));
   
-  s.seekp(std::ios::beg);
-  s << fParentID << std::ends;
+  ss.seekp(std::ios::beg);
+  ss << fParentID << std::ends;
   values->push_back(G4AttValue("PID",c,""));
   
   values->push_back(G4AttValue("PN",ParticleName,""));
   
-  s.seekp(std::ios::beg);
-  s << PDGCharge << std::ends;
+  ss.seekp(std::ios::beg);
+  ss << PDGCharge << std::ends;
   values->push_back(G4AttValue("Ch",c,""));
 
-  s.seekp(std::ios::beg);
-  s << PDGEncoding << std::ends;
+  ss.seekp(std::ios::beg);
+  ss << PDGEncoding << std::ends;
   values->push_back(G4AttValue("PDG",c,""));
 
-  s.seekp(std::ios::beg);
-  s << G4BestUnit(initialMomentum,"Energy") << std::ends;
+  ss.seekp(std::ios::beg);
+  ss << G4BestUnit(initialMomentum,"Energy") << std::ends;
   values->push_back(G4AttValue("IMom",c,""));
 
-  s.seekp(std::ios::beg);
-  s << GetPointEntries() << std::ends;
+  ss.seekp(std::ios::beg);
+  ss << GetPointEntries() << std::ends;
   values->push_back(G4AttValue("NTP",c,""));
 
   return values;

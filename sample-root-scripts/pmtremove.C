@@ -161,12 +161,15 @@ void pmtremove(TString infile, TString outfile, double removefrac)
 
 	  // Get the number of tracks
 	  int ntrack = oldtrigger->GetNtrack();
+	  int ntrack_slots = oldtrigger->GetNtrack_slots();
 	  //printf("ntracks=%d\n",ntrack);
     
 	  // Loop through elements in the TClonesArray of WCSimTracks
 	  for (int i=0; i<ntrack; i++)
 	    {
 	      TObject *element = (oldtrigger->GetTracks())->At(i);
+	      if(!element)
+		continue;
 	      WCSimRootTrack *track = dynamic_cast<WCSimRootTrack*>(element);
 	      float dir[3],pdir[3],stop[3],start[3];
 	      for (int j=0;j<3;j++)
@@ -202,7 +205,7 @@ void pmtremove(TString infile, TString outfile, double removefrac)
 	  // It is the number of tubes hit with Cherenkov photons.
 	  // The number of digitized tubes will be smaller because of the threshold.
 	  // Each hit "raw" tube has several photon hits.  The times are recorded.
-	  // See http://nwg.phy.bnl.gov/DDRD/cgi-bin/private/ShowDocument?docid=245
+	  // See chapter 5 of ../doc/DetectorDocumentation.pdf
 	  // for more information on the structure of the root file.
 	  //  
 	  // For digitized info (one time/charge tube after a trigger) use
@@ -211,6 +214,7 @@ void pmtremove(TString infile, TString outfile, double removefrac)
     
 	  int ncherenkovhits     = oldtrigger->GetNcherenkovhits();
 	  int ncherenkovdigihits = oldtrigger->GetNcherenkovdigihits(); 
+	  int ncherenkovdigihits_slots = oldtrigger->GetNcherenkovdigihits_slots(); 
     
 	  // Grab the big arrays of times and parent IDs
 	  TClonesArray *timeArray = oldtrigger->GetCherenkovHitTimes();
@@ -250,10 +254,12 @@ void pmtremove(TString infile, TString outfile, double removefrac)
 
 	  float sumq = 0;
 
-	  for (int i=0;i<ncherenkovdigihits;i++)
+	  for (int i=0;i<ncherenkovdigihits_slots;i++)
 	    {
 	      // Loop through elements in the TClonesArray of WCSimRootCherenkovDigiHits
 	      TObject *element = (oldtrigger->GetCherenkovDigiHits())->At(i);
+	      if(!element)
+		continue;
 	      WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = 
 		dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
 	      int tubeNumber = wcsimrootcherenkovdigihit->GetTubeId();

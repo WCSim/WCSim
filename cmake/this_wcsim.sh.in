@@ -1,0 +1,8 @@
+# Sets necessary environment variables to use this installation of WCSim in ROOT
+# Also set PATH and LD_LIBRARY_PATH for convenience
+
+export WCSIM_BUILD_DIR=@CMAKE_INSTALL_PREFIX@/
+export ROOT_INCLUDE_PATH=@INCLUDE_INSTALL_DIR@@WCSim_PARENT_INC_DIR_PATH@:$ROOT_INCLUDE_PATH
+export PATH=@BIN_INSTALL_DIR@:$PATH
+export LD_LIBRARY_PATH=@LIB_INSTALL_DIR@:$LD_LIBRARY_PATH
+export WCSIMDIR=@CMAKE_SOURCE_DIR@/

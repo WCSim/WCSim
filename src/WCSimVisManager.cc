@@ -6,6 +6,7 @@
 #include "WCSimVisManager.hh"
 #include "G4TrajectoryDrawByParticleID.hh"
 #include "G4TrajectoryModelFactories.hh"
+#include "G4Version.hh"
 
 // Supported drivers...
 
@@ -43,6 +44,11 @@
 #ifdef G4VIS_USE_OPENGLXM
 #include "G4OpenGLImmediateXm.hh"
 #include "G4OpenGLStoredXm.hh"
+#endif
+
+#ifdef G4VIS_USE_OPENGLQT
+#include "G4OpenGLImmediateQt.hh"
+#include "G4OpenGLStoredQt.hh"
 #endif
 
 #ifdef G4VIS_USE_OIX
@@ -88,6 +94,11 @@ void WCSimVisManager::RegisterGraphicsSystems () {
   RegisterGraphicsSystem (new G4OpenGLStoredX);
 #endif
 
+#ifdef G4VIS_USE_OPENGLQT
+  RegisterGraphicsSystem (new G4OpenGLImmediateQt);
+  RegisterGraphicsSystem (new G4OpenGLStoredQt);
+#endif
+
 #ifdef G4VIS_USE_OPENGLWIN32
   RegisterGraphicsSystem (new G4OpenGLImmediateWin32);
   RegisterGraphicsSystem (new G4OpenGLStoredWin32);
@@ -96,6 +107,11 @@ void WCSimVisManager::RegisterGraphicsSystems () {
 #ifdef G4VIS_USE_OPENGLXM
   RegisterGraphicsSystem (new G4OpenGLImmediateXm);
   RegisterGraphicsSystem (new G4OpenGLStoredXm);
+#endif
+
+#ifdef G4VIS_USE_OPENGLQT
+  RegisterGraphicsSystem (new G4OpenGLImmediateQt);
+  RegisterGraphicsSystem (new G4OpenGLStoredQt);
 #endif
 
 #ifdef G4VIS_USE_OIX
@@ -110,6 +126,17 @@ void WCSimVisManager::RegisterGraphicsSystems () {
   RegisterGraphicsSystem (new G4VRML1);
   RegisterGraphicsSystem (new G4VRML2);
 #endif
+
+  if (fVerbose > 0) {
+    G4cout <<
+      "\nYou have successfully chosen to use the following graphics systems."
+	   << G4endl;
+#if G4VERSION_NUMBER < 1020
+    PrintAvailableGraphicsSystems (); //use this version for Geant4.10.1
+#else
+    PrintAvailableGraphicsSystems (GetVerbosityValue(fVerbose)); //use this version for Geant4.10.2+
+#endif
+  }
 }
 
 void WCSimVisManager::RegisterModelFactories () {
@@ -126,11 +153,11 @@ void WCSimVisManager::RegisterModelFactories () {
   mymodel->Set("anti_nu_e","yellow");
   mymodel->Set("anti_nu_mu","yellow");
   mymodel->Set("e-","blue");
-  mymodel->Set("mu-","black");
+  mymodel->Set("mu-","white");
   mymodel->Set("e+","red");
-  mymodel->Set("mu+","white");
+  mymodel->Set("mu+",G4Colour(0.78, 0.78, 0.78));  //to distinguish mu+ from mu- on black background.
   mymodel->Set("proton","magenta");
-  mymodel->Set("neutron","Grey");
+  mymodel->Set("neutron","cyan");
 
   RegisterModel(mymodel);
 }

@@ -6,9 +6,10 @@
 #include "G4PhysListFactory.hh"
 #include "G4UnitsTable.hh"
 #include "G4OpticalPhysics.hh"
+#include "G4RadioactiveDecayPhysics.hh" 
 
 #include "WCSimPhysicsListFactoryMessenger.hh"
-#include "WCSimPhysicsList.hh"
+#include "WCSimRootOptions.hh"
 
 //class WCSimPhysicsList;
 
@@ -19,6 +20,7 @@ class WCSimPhysicsListFactory : public G4VModularPhysicsList
     ~WCSimPhysicsListFactory();
 
     void SetList(G4String newvalue);  // called by messenger
+    void SetnCaptModel(G4String newvalue);  // called by messenger
     void InitializeList();
 
     //G4String GetPhysicsListName() {return PhysicsListName;}
@@ -26,13 +28,19 @@ class WCSimPhysicsListFactory : public G4VModularPhysicsList
     void ConstructParticle();
     void ConstructProcess();
     void SetCuts();
+
+    void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+
   private:
 
     G4String PhysicsListName;
     G4String ValidListsString;
+    
+    G4String nCaptModelChoice;
 
     WCSimPhysicsListFactoryMessenger* PhysicsMessenger;
     G4PhysListFactory* factory;
+
 };
 
 #endif

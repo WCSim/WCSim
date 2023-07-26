@@ -10,26 +10,32 @@ WCSimPhysicsListFactoryMessenger::WCSimPhysicsListFactoryMessenger(WCSimPhysicsL
   :thisWCSimPhysicsListFactory(WCSimPhysFactory), ValidListsString(inValidListsString)
 {
  
-//  G4String defaultList="QGSP_BIC_HP";
-  G4String defaultList="WCSim";
+  G4String defaultList="FTFP_BERT";
   
   physListCmd = new G4UIcmdWithAString("/WCSim/physics/list",this);
   G4String cmd_hint = "Available options: " + ValidListsString;
   physListCmd->SetGuidance(cmd_hint);
   physListCmd->SetGuidance("See http://geant4.cern.ch/support/proc_mod_catalog/physics_lists/useCases.shtml");
   physListCmd->SetGuidance("    http://geant4.cern.ch/support/proc_mod_catalog/physics_lists/referencePL.shtml");
-  physListCmd->SetGuidance("Note: The WCSim option selects a deprecated physics list, but is useful for comparisons");
-  physListCmd->SetGuidance("Note: I think physics list is locked-in after initialization");
+  physListCmd->SetGuidance("Note: Physics list is locked-in after initialization");
   
   physListCmd->SetDefaultValue(defaultList);
-  physListCmd->SetCandidates(ValidListsString);  // TODO get list of physics lists from G4PhysicsListFactory
+  physListCmd->SetCandidates(ValidListsString);  // ToDo get list of physics lists from G4PhysicsListFactory
 
   SetNewValue(physListCmd, defaultList);
+
+  G4String captureModelsString = "Default HP Rad GLG4Sim";
+  G4String captureModelGuidance = "Available options: " + captureModelsString;
+  nCaptureModelCmd = new G4UIcmdWithAString("/WCSim/physics/nCapture",this);
+  nCaptureModelCmd->SetGuidance(captureModelGuidance);
+  nCaptureModelCmd->SetDefaultValue("Default");
+  nCaptureModelCmd->SetCandidates(captureModelsString);
 }
 
 WCSimPhysicsListFactoryMessenger::~WCSimPhysicsListFactoryMessenger()
 {
   delete physListCmd;
+  delete nCaptureModelCmd;
   //delete WCSimDir;
 }
 
@@ -37,5 +43,7 @@ void WCSimPhysicsListFactoryMessenger::SetNewValue(G4UIcommand* command, G4Strin
 {
   if (command == physListCmd)
     thisWCSimPhysicsListFactory->SetList(newValue);
-
+  else if (command == nCaptureModelCmd){
+    thisWCSimPhysicsListFactory->SetnCaptModel(newValue);
+  }
 }

@@ -41,11 +41,13 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   TriggerChoice->SetGuidance("Available choices are:\n"
 			     "NDigits\n"
 			     "NDigits2\n"
+			     "NoTrigger\n"
 			     );
   TriggerChoice->SetParameterName("Trigger", false);
   TriggerChoice->SetCandidates(
 			       "NDigits "
 			       "NDigits2 "
+			       "NoTrigger "
 			       );
   TriggerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
   TriggerChoice->SetDefaultValue(defaultTrigger);
@@ -60,7 +62,12 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreMultiDigitsPerTrigger = defaultMultiDigitsPerTrigger;
   MultiDigitsPerTriggerSet = false; //this variable is bool & defaults are class specfic; use this to know if the default is overidden
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
-
+  
+  bool defaultRelativeHitTime = false;
+  RelativeHitTime = new G4UIcmdWithABool("/DAQ/RelativeHitTime", this);
+  RelativeHitTime->SetGuidance("Set the digitized hit time relative to the first one");
+  RelativeHitTime->SetParameterName("RelativeHitTime",true);
+  RelativeHitTime->SetDefaultValue(defaultRelativeHitTime);
 
   //Generic digitizer specific options
   DigitizerDir = new G4UIdirectory("/DAQ/DigitizerOpt/");
@@ -80,6 +87,22 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   DigitizerIntegrationWindow->SetParameterName("DigitizerIntegrationWindow",true);
   DigitizerIntegrationWindow->SetDefaultValue(defaultDigitizerIntegrationWindow);
   StoreDigitizerIntegrationWindow = defaultDigitizerIntegrationWindow;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
+  double defaultDigitizerTimingPrecision = -99;
+  DigitizerTimingPrecision = new G4UIcmdWithADouble("/DAQ/DigitizerOpt/TimingPrecision", this);
+  DigitizerTimingPrecision->SetGuidance("The timing resolution for the digitizer (in ns)");
+  DigitizerTimingPrecision->SetParameterName("DigitizerTimingPrecision",true);
+  DigitizerTimingPrecision->SetDefaultValue(defaultDigitizerTimingPrecision);
+  StoreDigitizerTimingPrecision = defaultDigitizerTimingPrecision;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
+  double defaultDigitizerPEPrecision = -99;
+  DigitizerPEPrecision = new G4UIcmdWithADouble("/DAQ/DigitizerOpt/PEPrecision", this);
+  DigitizerPEPrecision->SetGuidance("The charge resolution for the digitizer (in p.e.)");
+  DigitizerPEPrecision->SetParameterName("DigitizerPEPrecision",true);
+  DigitizerPEPrecision->SetDefaultValue(defaultDigitizerPEPrecision);
+  StoreDigitizerPEPrecision = defaultDigitizerPEPrecision;
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
 
 
@@ -132,6 +155,14 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   StoreNDigitsThreshold = defaultNDigitsTriggerThreshold;
   //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
 
+  double defaultTriggerOffset = 950.;
+  TriggerOffset = new G4UIcmdWithADouble("/DAQ/TriggerOffset", this);
+  TriggerOffset->SetGuidance("Set the trigger timing offset");
+  TriggerOffset->SetParameterName("TriggerOffset",false);
+  TriggerOffset->SetDefaultValue(defaultTriggerOffset);
+  StoreTriggerOffset = defaultTriggerOffset;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
   int defaultNDigitsTriggerWindow = -99;
   NDigitsTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNDigits/Window", this);
   NDigitsTriggerWindow->SetGuidance("Set the NDigits trigger window (in ns)");
@@ -182,14 +213,19 @@ WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
   delete NDigitsTriggerAdjustForNoise;
   delete NDigitsPreTriggerWindow;
   delete NDigitsPostTriggerWindow;
+  
+  delete TriggerOffset;
 
   delete DigitizerDir;
   delete DigitizerDeadTime;
   delete DigitizerIntegrationWindow;
+  delete DigitizerTimingPrecision;
+  delete DigitizerPEPrecision;
 
   delete DigitizerChoice;
   delete TriggerChoice;
   delete MultiDigitsPerTrigger;
+  delete RelativeHitTime;
   delete WCSimDAQDir;
 }
 
@@ -218,6 +254,10 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     if(initialised)
       MultiDigitsPerTriggerSet = true;
   }
+  else if ( command == RelativeHitTime ) {
+    // Relative HitTime
+    WCSimEvent->SetRelativeDigitizedHitTime(RelativeHitTime->GetNewBoolValue(newValue));
+  }
 
   //Generic digitizer options
   else if (command == DigitizerDeadTime) {
@@ -227,6 +267,14 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   else if (command == DigitizerIntegrationWindow) {
     G4cout << "Digitizer integration window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
     StoreDigitizerIntegrationWindow = DigitizerIntegrationWindow->GetNewIntValue(newValue);
+  }
+  else if (command == DigitizerTimingPrecision) {
+    G4cout << "Digitizer timing resolution set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
+    StoreDigitizerTimingPrecision = DigitizerTimingPrecision->GetNewDoubleValue(newValue);
+  }
+  else if (command == DigitizerPEPrecision) {
+    G4cout << "Digitizer charge resolution set to " << newValue << " p.e." << initialiseString.c_str() << G4endl;
+    StoreDigitizerPEPrecision = DigitizerPEPrecision->GetNewDoubleValue(newValue);
   }
 
   //Save failures "trigger"
@@ -279,6 +327,11 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   else if (command == NDigitsPostTriggerWindow) {
     G4cout << "NDigits posttrigger window set to " << newValue << " ns" << initialiseString.c_str() << G4endl;
     StoreNDigitsPostWindow = NDigitsPostTriggerWindow->GetNewIntValue(newValue);
+  }
+
+  else if (command == TriggerOffset) {
+    G4cout << "trigger offset set to " << newValue << initialiseString.c_str() << G4endl;
+    StoreTriggerOffset = TriggerOffset->GetNewDoubleValue(newValue);
   }
 }
 
@@ -333,6 +386,8 @@ void WCSimWCDAQMessenger::SetTriggerOptions()
     WCSimTrigger->SetNDigitsPostTriggerWindow(StoreNDigitsPostWindow);
     G4cout << "\tNDigits posttrigger window set to " << StoreNDigitsPostWindow << " ns" << G4endl;
   }
+  WCSimTrigger->SetTriggerOffset(StoreTriggerOffset);
+  G4cout << "\tTrigger offset set to " << StoreTriggerOffset << " ns" << G4endl;
 }
 
 void WCSimWCDAQMessenger::SetDigitizerOptions()
@@ -345,5 +400,13 @@ void WCSimWCDAQMessenger::SetDigitizerOptions()
   if(StoreDigitizerIntegrationWindow >= 0) {
     WCSimDigitize->SetDigitizerIntegrationWindow(StoreDigitizerIntegrationWindow);
     G4cout << "\tDigitizer integration window set to " << StoreDigitizerIntegrationWindow << " ns" << G4endl;
+  }
+  if(StoreDigitizerTimingPrecision >= 0) {
+    WCSimDigitize->SetDigitizerTimingPrecision(StoreDigitizerTimingPrecision);
+    G4cout << "\tDigitizer timing resolution set to " << StoreDigitizerTimingPrecision << " ns"  << G4endl;
+  }
+  if(StoreDigitizerPEPrecision >= 0) {
+    WCSimDigitize->SetDigitizerPEPrecision(StoreDigitizerPEPrecision);
+    G4cout << "\tDigitizer charge resolution set to " << StoreDigitizerPEPrecision << " p.e."  << G4endl;
   }
 }

@@ -1,6 +1,7 @@
 #ifndef WCSimWCTrigger_h
 #define WCSimWCTrigger_h 1
 
+#include "WCSimRootOptions.hh"
 #include "WCSimEnumerations.hh"
 #include "WCSimWCDAQMessenger.hh"
 #include "WCSimDetectorConstruction.hh"
@@ -35,8 +36,8 @@ class WCSimWCTriggerBase : public G4VDigitizerModule
 public:
 
   ///Create WCSimWCTriggerBase instance with knowledge of the detector and DAQ options
-  WCSimWCTriggerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
-  
+  WCSimWCTriggerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String);
+
   virtual ~WCSimWCTriggerBase();
 
   ///The main user-callable routine of the class. Gets the input & creates the output WCSimWCTriggeredDigitsCollection's, then calls DoTheWork()
@@ -45,11 +46,13 @@ public:
   ///Returns the number of trigger gates in the event (i.e. the number of triggers passed)
   int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
   ///Get the time of the ith trigger
-  Float_t              GetTriggerTime(int i) { return TriggerTimes[i];}
+  Double_t             GetTriggerTime(int i) { return TriggerTimes[i];}
   ///Get the trigger type of the ith trigger
   TriggerType_t        GetTriggerType(int i) { return TriggerTypes[i];}
   ///Get the additional trigger information associated with the ith trigger
-  std::vector<Float_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
+  std::vector<Double_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
+  ///Get the trigger class name
+  G4String GetTriggerClassName(){ return triggerClassName; }
 
   //
   // Trigger algorithm option set methods
@@ -57,6 +60,7 @@ public:
 
   ///Set whether to allow the number of digits per PMT per trigger to go > 1
   void SetMultiDigitsPerTrigger(G4bool allow_multi) { multiDigitsPerTrigger = allow_multi; }
+  G4bool GetMultiDigitsPerTrigger() { return multiDigitsPerTrigger; }
 
   // NDigits options
   ///Set the threshold for the NDigits trigger
@@ -69,6 +73,9 @@ public:
   void SetNDigitsPreTriggerWindow(G4int window)  { ndigitsPreTriggerWindow  = - abs(window); }
   ///Set the posttrigger window for the NDigits trigger (value will be forced positive)
   void SetNDigitsPostTriggerWindow(G4int window) { ndigitsPostTriggerWindow = + abs(window); }
+
+  ///Set the timing offset
+  void SetTriggerOffset(G4double value) { offset = value; }
 
   // Save trigger failures options
   ///Set the mode for saving failed triggers (0:save only triggered events, 1:save both triggered events & failed events, 2:save only failed events)
@@ -83,7 +90,9 @@ public:
   ///Knowledge of the dark rate (use for automatically adjusting for noise)
   void SetDarkRate(double idarkrate){ PMTDarkRate = idarkrate; }
 
-
+  ///Save current values of options
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+  
 protected:
 
   ///This should call the trigger algorithms, and handle any temporary DigitsCollection's
@@ -97,16 +106,18 @@ protected:
   ///Set the default trigger class specific NDigits window (in ns) (overridden by .mac)
   virtual int GetDefaultNDigitsWindow()            { return 200; }
   ///Set the default trigger class specific NDigits threshold (in ns) (overridden by .mac)
-  virtual int GetDefaultNDigitsThreshold()         { return 25; }
+  virtual int GetDefaultNDigitsThreshold()         { return 25; } //Default
   ///Set the default trigger class specific NDigits pretrigger window (in ns) (overridden by .mac)
   virtual int GetDefaultNDigitsPreTriggerWindow()  { return -400; }
   ///Set the default trigger class specific NDigits posttrigger window (in ns) (overridden by .mac)
   virtual int GetDefaultNDigitsPostTriggerWindow() { return 950; }
+  ///Set the default trigger class specific NDigits posttrigger window (in ns) (overridden by .mac)
+  virtual int GetDefaultTriggerOffset() { return 950; }
 
   ///Get the pretrigger window for a given trigger algorithm
-  int GetPreTriggerWindow(TriggerType_t t);
+  double GetPreTriggerWindow(TriggerType_t t);
   ///Get the posttrigger window for a given trigger algorithm
-  int GetPostTriggerWindow(TriggerType_t t);
+  double GetPostTriggerWindow(TriggerType_t t);
 
   //these are the algorithms that perform triggering
   //they are stored here so that different trigger classes can use the same algorithms without copying code
@@ -126,17 +137,19 @@ protected:
    * for testing purposes. Triggers issued in this mode have type kTriggerNDigitsTest
    */
   void AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, bool test=false);
+  void AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits);
 
   WCSimWCTriggeredDigitsCollection*   DigitsCollection; ///< The main output of the class - collection of digits in the trigger window
   std::map<int,int>          DigiHitMap; ///< Keeps track of the PMTs that have been added to the output WCSimWCTriggeredDigitsCollection
 
-  std::vector<Float_t>                TriggerTimes; ///< The times of the triggers
+  std::vector<Double_t>               TriggerTimes; ///< The times of the triggers
   std::vector<TriggerType_t>          TriggerTypes; ///< The type of the triggers
-  std::vector< std::vector<Float_t> > TriggerInfos; ///< Additional information associated with each trigger
+  std::vector< std::vector<Double_t> > TriggerInfos; ///< Additional information associated with each trigger
 
   WCSimWCDAQMessenger*       DAQMessenger; ///< Get the options from the .mac file
   WCSimDetectorConstruction* myDetector;   ///< Know about the detector, so can add appropriate PMT time smearing
-
+  G4String detectorElement;
+  
   /// Clear the Trigger* vectors and DigiHitMap
   void ReInitialize() {
     TriggerTimes.clear(); 
@@ -160,6 +173,8 @@ protected:
   G4double saveFailuresTime;              ///< The dummy trigger time for failed events
   G4int    saveFailuresPreTriggerWindow;  ///< The pretrigger window to save before an SaveFailures trigger
   G4int    saveFailuresPostTriggerWindow; ///< The posttrigger window to save after an SaveFailures trigger
+  
+  G4double offset;
 
   G4String triggerClassName; ///< Save the name of the trigger class
 
@@ -169,8 +184,29 @@ private:
 
   ///takes all trigger times, then loops over all Digits & fills the output DigitsCollection
   void FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits, TriggerType_t save_triggerType);
+
+  ///sort the Trigger vectors (Time, Type, Info) by Trigger Time
+  void SortTriggersByTime() {
+    int i, j;
+    TriggerType_t index_type;
+    double index_time;
+    std::vector<Double_t> index_info;
+    for (i = 1; i < (int) TriggerTimes.size(); ++i) {
+      index_time = TriggerTimes[i];
+      index_type = TriggerTypes[i];
+      index_info = TriggerInfos[i];
+      for (j = i; j > 0 && TriggerTimes[j-1] > index_time; j--) {
+	TriggerTimes[j] = TriggerTimes[j-1];
+	TriggerTypes[j] = TriggerTypes[j-1];
+	TriggerInfos[j] = TriggerInfos[j-1];
+      }//j
+      TriggerTimes[j] = index_time;
+      TriggerTypes[j] = index_type;
+      TriggerInfos[j] = index_info;
+    }//i
+  }
   
-  static const double offset;        ///< Hit time offset (ns)
+  //static const double offset;        ///< Hit time offset (ns)
   static const double LongTime;      ///< An arbitrary long time to use in loops (ns)
 
   bool   digitizeCalled; ///< Has Digitize() been called yet?
@@ -199,8 +235,8 @@ public:
   inline void SetTubeID(G4int tube) { tubeID = tube; }
   inline void AddGate  (G4int gate) { Gates.insert(gate); }
   inline void AddPe    ()           { totalPe++; }
-  inline void SetPe    (G4int gate, G4float Q) {   pe.insert(std::pair<int,float>(gate,Q)); }
-  inline void SetTime  (G4int gate, G4float T) { time.insert(std::pair<int,float>(gate,T)); }
+  inline void SetPe    (G4int gate, G4double Q) {   pe.insert(std::pair<int,double>(gate,Q)); }
+  inline void SetTime  (G4int gate, G4double T) { time.insert(std::pair<int,double>(gate,T)); }
 
   /// Add a whole vector for one digit to fDigiComp. Clear input vector once added.
   void AddDigiCompositionInfo(G4int gate, std::vector<int> &digi_comp){
@@ -209,8 +245,8 @@ public:
   }
 
   inline G4int   GetTubeID() {return tubeID;}
-  inline std::vector<G4float> GetPe      (int gate) { return FindInMultimap(gate, pe); }
-  inline std::vector<G4float> GetTime    (int gate) { return FindInMultimap(gate, time); }
+  inline std::vector<G4double> GetPe      (int gate) { return FindInMultimap(gate, pe); }
+  inline std::vector<G4double> GetTime    (int gate) { return FindInMultimap(gate, time); }
   std::vector<std::vector<int> > GetDigiCompositionInfo(int gate)
   {
     std::vector<std::vector<int> > v;
@@ -232,8 +268,8 @@ private:
   std::set<int> Gates;  ///< 'Gates' specifies subevent
 
   //lists (meaning multimap) of information for each digit created on the PMT
-  std::multimap<int,float> pe;   ///< Digit charge
-  std::multimap<int,float> time; ///< Digit time
+  std::multimap<int,double> pe;   ///< Digit charge
+  std::multimap<int,double> time; ///< Digit time
   std::multimap<int, std::vector<int> > fDigiComp;   ///< Stores the unique IDs of each photon making up a digit
 
   //integrated hit/digit parameters
@@ -285,7 +321,7 @@ class WCSimWCTriggerNDigits : public WCSimWCTriggerBase
 public:
 
   ///Create WCSimWCTriggerNDigits instance with knowledge of the detector and DAQ options
-  WCSimWCTriggerNDigits(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+  WCSimWCTriggerNDigits(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
 
   ~WCSimWCTriggerNDigits();
   
@@ -295,11 +331,32 @@ private:
 
   bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
   int  GetDefaultNDigitsWindow()            { return 200;   } ///< SK max light travel time ~200 ns
-  int  GetDefaultNDigitsThreshold()         { return 25;    } ///< SK NDigits threshold ~25
+  //  int  GetDefaultNDigitsThreshold()         { return 25;    } ///< SK NDigits threshold ~25 
+  int  GetDefaultNDigitsThreshold()         { return 20;    } ///< SK NDigits threshold ~25 B.Q
   int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
   int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
+  int  GetDefaultTriggerOffset() { return 950;   } 
 };
 
+class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
+{
+public:
+  
+  ///Create WCSimWCTriggerNoTrigger instance with knowledge of the detector and DAQ options
+  WCSimWCTriggerNoTrigger(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*,  G4String detectorElement);
+  
+  ~WCSimWCTriggerNoTrigger();
+  
+private:
+  ///Calls the workhorse of this class: AlgNoTrigger
+  void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
+  
+  bool GetDefaultMultiDigitsPerTrigger()    { return true;  } ///< We want to save everything
+  int  GetDefaultNDigitsWindow()            { return 0;     } ///< This is not an NDigits trigger
+  int  GetDefaultNDigitsThreshold()         { return 0;     } ///< This is not an NDigits trigger
+  int  GetDefaultNDigitsPreTriggerWindow()  { return 0;     } ///< This is not an NDigits trigger
+  int  GetDefaultNDigitsPostTriggerWindow() { return 0;     } ///< This is not an NDigits trigger
+};
 
 /**
  * \class WCSimWCTriggerNDigits2
@@ -313,7 +370,7 @@ class WCSimWCTriggerNDigits2 : public WCSimWCTriggerBase
 public:
 
   //not recommended to override these methods
-  WCSimWCTriggerNDigits2(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*);
+  WCSimWCTriggerNDigits2(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
   ~WCSimWCTriggerNDigits2();
   
 private:
@@ -321,11 +378,12 @@ private:
 
   bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
   int  GetDefaultNDigitsWindow()            { return 200;   } ///< SK max light travel time ~200 ns
-  int  GetDefaultNDigitsThreshold()         { return 50;    } ///< 2 * SK NDigits threshold ~25
+  //  int  GetDefaultNDigitsThreshold()         { return 50;    } ///< 2 * SK NDigits threshold ~25
+  int  GetDefaultNDigitsThreshold()         { return 40;    } ///< 2 * SK NDigits threshold ~25 B.Q
   int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
   int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
+  int  GetDefaultTriggerOffset() { return 950;   }
 };
-
 
 
 #endif //WCSimWCTrigger_h

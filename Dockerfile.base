@@ -1,0 +1,94 @@
+### Created by Dr. Benjamin Richards (b.richards@qmul.ac.uk) based on docker file from Stephane Zsoldos (s.zsoldos@qmul.ac.uk)
+
+### Download base image from cern repo on docker hub
+FROM cern/cc7-base:latest
+
+### Run the following commands as super user (root):
+USER root
+
+#######################
+### GCC ENVIRONMENT ###
+#######################
+
+### Required package for ROOT
+RUN yum install -y \
+    wget \
+    tar \
+    cmake \
+    cmake3 \
+    gcc-c++ \
+    gcc \
+    binutils \
+    libX11-devel \
+    libXpm-devel \
+    libXft-devel \
+    libXext-devel \
+    libzstd-devel \
+    git \
+    mesa-libGL-devel \
+    mesa-libGLU-devel \
+    libXmu-devel \
+    libXi-devel \
+    expat-devel \
+    make \
+    which \
+    emacs \
+    && yum clean all \
+    && rm -rf /var/cache/yum
+
+### Setup environment
+ENV HYPERKDIR /opt/HyperK
+RUN mkdir $HYPERKDIR
+WORKDIR $HYPERKDIR
+
+### Downloading ROOT
+RUN wget https://root.cern.ch/download/root_v6.20.04.Linux-centos7-x86_64-gcc4.8.tar.gz -O root.tar.gz \
+    && tar -xvzf root.tar.gz \
+    && rm -f root.tar.gz
+
+### Downloading Geant4
+ENV G4VERSION 4.10.03.p03
+ENV G4VERSION_ALT 4-10.3.3
+### There is no precompiled CentOS7 version of G4.10.1, so we need to compile it from source instead
+#RUN wget http://cern.ch/geant4-data/releases/lib${G4VERSION}/Linux-g++4.4.7-SLC6.tar.gz -O geant.tar.gz \
+#    && tar -xvzf geant.tar.gz \
+#    && rm -f geant.tar.gz
+RUN wget http://cern.ch/geant4-data/releases/geant${G4VERSION}.tar.gz -O geant.tar.gz \
+    && tar -xvzf geant.tar.gz \
+    && rm -f geant.tar.gz
+RUN mkdir $HYPERKDIR/geant${G4VERSION}-build
+RUN mkdir $HYPERKDIR/geant${G4VERSION}-install
+WORKDIR $HYPERKDIR/geant${G4VERSION}-build
+#typically want to set GEANT4_INSTALL_DATA to ON, but this is broken for 4.10.3 (data download location moved)
+RUN cmake3 -DCMAKE_INSTALL_PREFIX=$HYPERKDIR/geant${G4VERSION}-install -DGEANT4_INSTALL_DATA=OFF $HYPERKDIR/geant${G4VERSION}
+RUN make -j`nproc`
+RUN make install
+
+### Data files for Geant4
+ENV G4DATA $HYPERKDIR/geant${G4VERSION}-install/share/Geant${G4VERSION_ALT}/data
+WORKDIR $G4DATA
+### WARNING the versions of this loop should be updated when using a new Geant4 version
+###  currently setup for G4.10.3
+RUN for f in G4ABLA.3.0.tar.gz G4NDL.4.5.tar.gz G4EMLOW.6.50.tar.gz G4PhotonEvaporation.4.3.2.tar.gz G4RadioactiveDecay.5.1.1.tar.gz G4SAIDDATA.1.1.tar.gz G4NEUTRONXS.1.4.tar.gz G4PII.1.3.tar.gz RealSurface.1.0.tar.gz G4ENSDFSTATE.2.1.tar.gz; do \
+    	echo $f; \
+    	wget http://cern.ch/geant4-data/datasets/$f; \
+	tar -xzvf $f; \
+	rm -f $f; \
+    done
+
+### ENV Geant4
+ENV WCSIMDIR $HYPERKDIR/WCSim
+ENV G4WORKDIR $WCSIMDIR/exe
+ENV G4INSTALLDIR $HYPERKDIR/geant${G4VERSION}-install
+ENV G4LIB $G4INSTALL/lib
+
+### Make a setup script
+WORKDIR $HYPERKDIR
+RUN echo '#!/bin/bash -x' > env-WCSim.sh \
+    && echo 'source $HYPERKDIR/root/bin/thisroot.sh' >> env-WCSim.sh \
+    && echo 'source $G4INSTALLDIR/bin/geant4.sh' >> env-WCSim.sh \
+    && echo 'source $G4INSTALLDIR/share/Geant${G4VERSION_ALT}/geant4make/geant4make.sh' >> env-WCSim.sh
+
+### Open terminal
+CMD ["/bin/bash"]
+ 
