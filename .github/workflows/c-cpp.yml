@@ -166,11 +166,11 @@ jobs:
           echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
           echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> /opt/setup.sh
 
-      - name: Build
+      - name: Build, with added geometry checks
         run: |
           source /opt/setup.sh
           cd /opt/WCSim
-          /opt/Validation/build.sh
+          /opt/Validation/build.sh 1
           echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
       - name: Run physics
