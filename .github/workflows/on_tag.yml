@@ -1,16 +1,14 @@
-name: Build & Physics CI
+name: Update validation reference plots on a tag
 
 on:
   push:
-    branches: [ develop ]
-  pull_request_target: #runs on the PR branch, rather than the merge branch. But is required for access to secrets
-    branches: [ develop ]
-  release:
+    tags:
+      - '*'
   
 concurrency:
   #When a PR is pushed too multiple times in a short period, this would usually trigger multiple CI runs
   #This setting cancels any in-progress CI when a new push is performed
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -95,19 +93,12 @@ jobs:
           /opt/Validation/build.sh
           echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
-      - name: Quick physics check to setup validation webpage
-        run: |
-          source /opt/setup.sh
-          cd /opt/WCSim/install
-          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
-          /opt/Validation/Tests.sh 1
-
   physics:
     needs: build
-    continue-on-error: true
     strategy:
+      fail-fast: true
       matrix:
-        physics_job: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+        physics_job: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 
     runs-on: ubuntu-latest
     defaults:
@@ -176,7 +167,31 @@ jobs:
       - name: Run physics
         run: |
           source /opt/setup.sh
+          cd /opt/Validation
+          make
           cd /opt/WCSim/install
           echo ${{ matrix.physics_job }}
-          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
-          /opt/Validation/Tests.sh ${{ matrix.physics_job }}
+          python /opt/Validation/MakeReference.py --job-number ${{ matrix.physics_job }}
+
+      - name: WCSim output
+        run: cat /opt/WCSim/install/${{ matrix.physics_job }}.out
+
+  create_pr:
+    name: Create PR
+    needs: physics
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /opt/
+    steps:
+      - name: Checkout Validation package
+        run: |
+          cd /opt/
+          git clone --depth 1 https://github.com/WCSim/Validation.git -b new_ref --single-branch
+
+      - name: Create PR
+        run: |
+          cd /opt/Validation/
+          gh pr create -B master -H new_ref --title 'New reference files from WCSim tag: ${{  github.ref_name }}' --body 'Created by Github action' -a tdealtry -r tdealtry --label 'auto created'
+        env:
+          GITHUB_TOKEN: ${{ secrets.VALIDATION_PR }}
