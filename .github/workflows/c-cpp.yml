@@ -95,19 +95,19 @@ jobs:
           /opt/Validation/build.sh
           echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
-      - name: Quick physics check to setup validation webpage
+      - name: Setup validation webpage
         run: |
           source /opt/setup.sh
           cd /opt/WCSim/install
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
-          /opt/Validation/Tests.sh 1
+          /opt/Validation/Tests.sh 0
 
   physics:
     needs: build
     continue-on-error: true
     strategy:
       matrix:
-        physics_job: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+        physics_job: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
 
     runs-on: ubuntu-latest
     defaults:
