@@ -1244,7 +1244,7 @@ void WCSimDetectorConstruction::SetIWCDGeometry()
   WCIDDiameter             = 7.0*CLHEP::m;
   WCIDVerticalPosition     = 0.;
 	
-	WCBarrelPMTOffset     = mPMT_vessel_tot_height;
+	WCBarrelPMTOffset     = mPMT_vessel_tot_height + 1.*CLHEP::mm;
   WCPMTperCellHorizontal = 3; // 2 per phi
   WCPMTperCellVertical   = 1;
 
@@ -1296,7 +1296,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   WCIDDiameter             = 7.0*CLHEP::m;
   WCIDVerticalPosition     = 0.;
 	
-	WCBarrelPMTOffset     = mPMT_vessel_tot_height;
+	WCBarrelPMTOffset     = mPMT_vessel_tot_height + 1.*CLHEP::mm;
   WCPMTperCellHorizontal = 3; // 2 per phi
   WCPMTperCellVertical   = 1;
 
