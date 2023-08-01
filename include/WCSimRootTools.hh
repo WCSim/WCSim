@@ -2,6 +2,7 @@
 #define WCSimRootTools_h 1
 
 #include <vector>
+#include <iostream>
 
 using std::vector;
 
