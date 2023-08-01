@@ -298,7 +298,6 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
     double triggertime; //save each digit time, because the trigger time is the time of the first hit above threshold
     bool triggerfound = false;
     digit_times.clear();
-    double next_hit_time = window_end_time;
     
     //Loop over each PMT
     for (G4int i = 0 ; i < WCDCPMT->entries() ; i++) {
@@ -310,7 +309,6 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
                digit_time_it!=(*WCDCPMT)[i]->GetTimeMapEnd(); digit_time_it++) {
         int ip = digit_time_it->first;
 	G4double digit_time = (*WCDCPMT)[i]->GetTime(ip);
-  if (digit_time>window_start_time && digit_time<next_hit_time) next_hit_time = digit_time;
 	//hit in trigger window?
 	if(digit_time >= window_start_time && digit_time <= (window_start_time + ndigitsWindow)) {
 	  n_digits++;
@@ -346,11 +344,6 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
     }//triggerfound
     else {
       window_start_time += window_step_size;
-      if (window_start_time<next_hit_time)
-      {
-        window_start_time = next_hit_time;
-        window_start_time -= window_start_time % 5;
-      }
     }
   }
   
