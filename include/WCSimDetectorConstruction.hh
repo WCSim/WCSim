@@ -90,6 +90,8 @@ public:
   void SetNuPrismBeamTest_mPMTGeometry();
   void SetNuPrismShort_mPMTGeometry();
   void SetDefaultNuPrismGeometry();
+  void SetIWCDGeometry(); // IWCD with mPMTs, updated geometry as of 20230630
+  void SetIWCD_WithOD_Geometry(); // Same as above with OD
   /**
      Dump the values of many variables used to define geometries including
      - radii, heights, name, etc. of the detector

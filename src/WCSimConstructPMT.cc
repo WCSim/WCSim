@@ -413,7 +413,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
       //Reflector is a G4PolyCone:
       // Each set of (Z, R, r) defines an edge around the polycone by it's height position (z) inner radius (r) and outer radius (R).
       G4double ReflectorHolderZ[4] = {0*mm, 22.89*mm, 42.04*mm, 47.18*mm};
-      G4double ReflectorHolderR[4] = {39.735*mm, 43.15*mm, 45.89*mm, 46.615*mm};
+      //G4double ReflectorHolderR[4] = {39.735*mm, 43.15*mm, 45.89*mm, 46.615*mm};
+      G4double ReflectorHolderR[4] = {39.733*mm, 43.07*mm, 45.86*mm, 46.615*mm}; // To avoid overflowing the mother cone
       G4double ReflectorHolderr[4] = {26.75*mm, 40.52*mm, 40.52*mm, 45.935*mm};
 
       G4Polycone * solidWCPMTsupport2 =
