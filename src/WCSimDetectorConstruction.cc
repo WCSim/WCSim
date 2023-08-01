@@ -19,6 +19,39 @@
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
+#include <tuple>
+#include <algorithm>
+
+
+namespace {
+  //-----------------------------------------------------
+  // Local helper functions in anonymous namespace
+  //-----------------------------------------------------
+
+  // Iterator based interpolation function.
+  //   Used in WCSimDetectorConstruction::CreateCombinedPMTQE()
+  //   WCSimDetectorConstruction::GetPMTQE() is not quite satisfactory for
+  //   interpolating combined QE functions due to its hard-coded limits and
+  //   behavior at its end points.
+  template <typename X, typename Y>
+  Y linterpolate(const X& x,
+                 const X* x_begin, const X* x_end, const Y* y_begin){
+    auto x_j = std::upper_bound(x_begin, x_end, x);
+    if( x_j == x_begin ) {
+      return *y_begin;
+    } else if( x_j == x_end ) {
+      return *(y_begin + (x_end - x_begin) - 1);
+    }
+    else {
+      auto x_i = x_j - 1;
+      auto y_j = y_begin + (x_j - x_begin);
+      auto y_i = y_j - 1;
+      return *y_i + (*y_j - *y_i) * (x - *x_i) / (*x_j - *x_i);
+    }
+  }
+}
+
+
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap;
 std::map<int, std::pair<int, int> > WCSimDetectorConstruction::mPMTIDMap;
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap2;
@@ -466,7 +499,7 @@ void WCSimDetectorConstruction::UpdateODGeo()
   CreateCombinedPMTQE(WCColName);
 }
 
-void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> CollectionName){
+void WCSimDetectorConstruction::CreateCombinedPMTQE(const std::vector<G4String> & CollectionName){
 
   // Show printouts for debugging purposes
   G4cout << G4endl;
@@ -474,95 +507,80 @@ void WCSimDetectorConstruction::CreateCombinedPMTQE(std::vector<G4String> Collec
   G4cout << " ** CreateCombinedPMTQE ** " << G4endl;
   G4cout << " ************************* " << G4endl;
 
-  // Define relevant variable
-  // Create array of maps for CollectionName
-  std::vector< std::map<G4double,G4double> > QEMap;
-  std::vector<G4double> maxQEVec;
-  // Need size of QE array
-  std::vector<G4int> NbOfWLBins;
 
-  // Recover QE for collection name
-  std::vector<WCSimPMTObject*> PMT;
-  // F. Nova: here get values from BoxandLine20inchHQE and from PMT8inch
-  for(unsigned int iPMT=0;iPMT<CollectionName.size();iPMT++){
-    // Access PMT pointer
-    PMT.push_back(GetPMTPointer(CollectionName[iPMT]));
+  // Parallel vectors for information retrieved from master objects of PMT types
+  const unsigned nPMTs = CollectionName.size();
+  std::vector<WCSimPMTObject *> PMT;
+  PMT.reserve(nPMTs);
+  // begin and end pointers of wavelength arrays
+  std::vector<std::pair<const G4double *, const G4double *>> wl_be;
+  wl_be.reserve(nPMTs);
+  // begin and end pointers of QE arrays
+  std::vector<std::pair<const G4double *, const G4double *>> qe_be;
+  qe_be.reserve(nPMTs);
 
-    // Recover WL and QE infos
-    G4double *wavelength = (PMT[iPMT]->GetQEWavelength());
-    G4double *QE = (PMT[iPMT]->GetQE());
+  // Limit values determined across all PMTs in the collection.
+  G4double maxQE = 0.;
 
-    std::map<G4double,G4double> hist;
+  for(unsigned iPMT = 0; iPMT < nPMTs; iPMT++){
+    auto aPMT = GetPMTPointer(CollectionName[iPMT]);
+    PMT[iPMT] = aPMT;
+
+    const int nwl = aPMT->GetNbOfQEDefined();
+    const G4double* awl_b = aPMT->GetQEWavelength();
+    wl_be[iPMT] = std::make_pair(awl_b, awl_b + nwl);
+
+    const G4double* aqe_b = aPMT->GetQE();
+    qe_be[iPMT] = std::make_pair(aqe_b, aqe_b + nwl);
+
+    // Update limits
+    if( iPMT == 0 ){
+      maxQE = aPMT->GetmaxQE();
+    }
+    else {
+      maxQE = std::max(maxQE, aPMT->GetmaxQE());
+    }
+
+    // Dump QE function for this PMT type
+    // Debugging output
     G4cout << G4endl;
     G4cout << "### Recover PMT collection name "
            << CollectionName[iPMT] << G4endl;
-    for(int iWL=0;iWL<PMT[iPMT]->GetNbOfQEDefined();iWL++){
-      hist[wavelength[iWL]]=QE[iWL];
-      G4cout << "wavelength[" << wavelength[iWL] <<"nm] : " << QE[iWL] << G4endl;
+    for(int iwl = 0; iwl < nwl; iwl++){
+      G4cout << "wavelength[" << *(awl_b + iwl) <<"nm] : " << *(aqe_b + iwl)
+             << G4endl;
     }
-
-    QEMap.push_back(hist);
-    maxQEVec.push_back(PMT[iPMT]->GetmaxQE());
-    NbOfWLBins.push_back(PMT[iPMT]->GetNbOfQEDefined());
   }
 
-  // Concatenate WL vec and remove duplicate
+  // Concatenate WL vec and remove duplicates
   std::map<G4double,G4double> QE;
+  std::vector<G4double> qe_interps;
+  qe_interps.reserve(nPMTs);
 
-  // Recursive algorithm to set new QE for combined PMT collection
-  // F. Nova: define QE for a given wavelength as the highest QE in the collection for that wavelength
-  // max(QE1, QE, ...), where each QEi is the value of QE for PMT type i
-  G4double max_QE = 0.;
-  G4cout << G4endl;
-  for(unsigned int iCol=0; iCol<QEMap.size();iCol++){
-    for(std::map<G4double, G4double>::iterator it=QEMap[iCol].begin(); it!=QEMap[iCol].end(); ++it){
-      if(iCol+1<QEMap.size()){
-        std::map<G4double, G4double>::iterator foundWL = QEMap[iCol+1].find(it->first);
-        if(foundWL == QEMap[iCol+1].end()){
-          G4cout << "Undefined QE in next collection" << G4endl;
-          G4cout << "Will add it" << G4endl;
-          G4cout << " ### " << it->first << "nm : " << it->second << G4endl;
-          QE[it->first]=it->second;
-        } else {
-
-	        max_QE = std::max(it->second, foundWL->second);
-          G4cout << "New QE defined for " << it->first << "nm is "
-                 << max_QE << G4endl;
-          QE[it->first]=max_QE;
-        }
-      } else {
-        break;
+  for(unsigned iPMT = 0; iPMT < nPMTs; iPMT++){
+    for(auto pwl = wl_be[iPMT].first; pwl != wl_be[iPMT].second; pwl++){
+      // Interpolate QE curves
+      qe_interps.clear();
+      for(unsigned jPMT = 0; jPMT < nPMTs; jPMT++){
+        qe_interps.push_back(linterpolate(*pwl,
+                wl_be[jPMT].first, wl_be[jPMT].second, qe_be[jPMT].first));
       }
+      QE[*pwl] = *std::max_element(qe_interps.begin(), qe_interps.end());
     }
   }
 
+  // Dump composite QE
+  // Debugging output
   G4cout << G4endl;
-
-  // Need to make a special case for the last collection
-  int iCol = QEMap.size()-1;
-  if(iCol>0) {
-    for (std::map<G4double, G4double>::iterator it = QEMap[iCol].begin(); it != QEMap[iCol].end(); ++it) {
-      std::map<G4double, G4double>::iterator foundWL = QEMap[iCol - 1].find(it->first);
-      if (foundWL == QEMap[iCol - 1].end()) {
-        G4cout << G4endl;
-        G4cout << "Special case for last collection" << G4endl;
-        G4cout << " ### " << it->first << "nm : " << it->second << G4endl;
-        QE[it->first] = it->second;
-      }
-    }
-  }
-  G4cout << G4endl;
-
-  // Let's debug this one last time :
-  std::map<G4double, G4double>::iterator itr;
-  for(itr = QE.begin(); itr != QE.end(); itr++){
+  G4cout << "### Combined PMT QE function" << G4endl;
+  for(auto itr = QE.begin(); itr != QE.end(); itr++){
     G4cout << " ### " << itr->first << "nm : " << itr->second << G4endl;
   }
   G4cout << G4endl;
 
   // Create a new PMT with an extended QE array containing all PMT collection
   WCSimBasicPMTObject *newPMT = new WCSimBasicPMTObject(QE);
-  newPMT->SetmaxQE(*std::max_element(maxQEVec.begin(),maxQEVec.end()));
+  newPMT->SetmaxQE(maxQE);
   newPMT->DefineQEHist(QE);
   SetBasicPMTObject(newPMT);
 }
