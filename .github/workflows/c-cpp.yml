@@ -228,6 +228,6 @@ jobs:
 
       - name: Setup validation webpage
         run: |
-	  cd /opt/
+          cd /opt/
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
           /opt/Validation/FinaliseWebpages.sh
