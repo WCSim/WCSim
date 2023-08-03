@@ -38,6 +38,7 @@ jobs:
       env:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
@@ -131,6 +132,7 @@ jobs:
       env:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
@@ -208,6 +210,7 @@ jobs:
       env:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
