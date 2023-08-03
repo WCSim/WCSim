@@ -41,6 +41,8 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
                           "nuPRISM_mPMT\n"
 			  "nuPRISMBeamTest_mPMT\n"
     			  "nuPRISMShort_mPMT\n"
+        "IWCD_mPMT\n"
+        "IWCD_mPMT_WithOD\n"
 			  "Cylinder_60x74_3inchmPMT_14perCent\n"
 			  "Cylinder_60x74_3inchmPMT_40perCent\n"
 			  "Cylinder_60x74_3inch_14perCent\n"
@@ -74,6 +76,8 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
                            "nuPRISM_mPMT "
 			   "nuPRISMBeamTest_mPMT "
 			   "nuPRISMShort_mPMT "
+         "IWCD_mPMT "
+         "IWCD_mPMT_WithOD "
 			   "Cylinder_60x74_3inchmPMT_14perCent "
 			   "Cylinder_60x74_3inchmPMT_40perCent "
 			   "Cylinder_60x74_3inch_14perCent "
@@ -639,6 +643,13 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		} else if ( newValue == "nuPRISMShort_mPMT") {
 		  WCSimDetector->SetIsNuPrism(true);
 		  WCSimDetector->SetNuPrismShort_mPMTGeometry();
+		} else if ( newValue == "IWCD_mPMT") {
+		  WCSimDetector->SetIsNuPrism(true);
+		  WCSimDetector->SetIWCDGeometry();
+		} else if ( newValue == "IWCD_mPMT_WithOD") {
+		  WCSimDetector->SetIsNuPrism(true);
+		  WCSimDetector->SetIWCD_WithOD_Geometry();
+      WCSimDetector->SetODEdited(false);
 		} else {
 		  G4cerr << "That geometry choice is not defined!" << G4endl;
 		  exit(-1);
