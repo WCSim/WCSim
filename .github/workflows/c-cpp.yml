@@ -10,6 +10,11 @@ on:
 concurrency:
   #When a PR is pushed too multiple times in a short period, this would usually trigger multiple CI runs
   #This setting cancels any in-progress CI when a new push is performed
+  #But we can have multiple jobs testing different things
+  # It should be that
+  # * Each push to a PR cancels any in progress PR CI
+  # * Each push to develop cancels any in progress develop push-triggered CI
+  # * It seems that PR merges to develop don't get cancelled. This is actually a good thing
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
@@ -17,6 +22,10 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    #This should mean that only one "build" job runs at a time
+    # Meaning there should be no webpage clashes if multiple CI runs are triggered
+    # in a short period
+    concurrency: wcsim_build_and_setup_webpage
     defaults:
       run:
         working-directory: /opt/
@@ -100,7 +109,7 @@ jobs:
           source /opt/setup.sh
           cd /opt/WCSim/install
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
-          /opt/Validation/Tests.sh 0
+          /opt/Validation/SetupWebpages.sh
 
   physics:
     needs: build
@@ -179,4 +188,46 @@ jobs:
           cd /opt/WCSim/install
           echo ${{ matrix.physics_job }}
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
-          /opt/Validation/Tests.sh ${{ matrix.physics_job }}
+          /opt/Validation/RunTests.sh ${{ matrix.physics_job }}
+
+
+  finalise:
+    needs: physics
+    continue-on-error: true
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /opt/
+    #run inside a container that has the prerequisites already installed
+    container:
+      image: docker://ghcr.io/hyperk/hk-software:0.0.2
+      credentials:
+           username: ${{ github.actor }}
+           password: ${{ secrets.CONTAINER_REPO }}
+      env:
+        #TRAVIS_COMMIT: ${{ github.sha }}
+        TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        GitHubToken: ${{ secrets.VALIDATION_PR }}
+        ValidationPath: /opt/Validation/
+    steps:
+
+      - name: Get SHA to checkout
+        id: checkout_sha
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ github.event_name == 'pull_request_target' }}
+          if_true: ${{ github.event.pull_request.head.sha }}
+          if_false: ${{ github.sha }}
+
+      - name: Checkout WCSim/Validation
+        run: |
+          cd /opt/
+          git clone --depth 1 https://github.com/WCSim/Validation.git -b master --single-branch
+
+      - name: Setup validation webpage
+        run: |
+          cd /opt/
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          /opt/Validation/FinaliseWebpages.sh
