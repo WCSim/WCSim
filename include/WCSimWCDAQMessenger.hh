@@ -73,6 +73,7 @@ private:
   G4bool                StoreNDigitsAdjustForNoise;
   G4UIcmdWithAnInteger* NDigitsPreTriggerWindow;
   G4int                 StoreNDigitsPreWindow;
+  G4bool                NDigitsPreWindowSetByUser; //because this is typically negative, a foolproof(?) workaround
   G4UIcmdWithAnInteger* NDigitsPostTriggerWindow;
   G4int                 StoreNDigitsPostWindow;
   G4UIcmdWithADouble* TriggerOffset;
