@@ -25,7 +25,9 @@ jobs:
     #This should mean that only one "build" job runs at a time
     # Meaning there should be no webpage clashes if multiple CI runs are triggered
     # in a short period
-    concurrency: wcsim_build_and_setup_webpage
+    concurrency:
+      group: wcsim_build_and_setup_webpage
+      cancel-in-progress: false
     defaults:
       run:
         working-directory: /opt/
