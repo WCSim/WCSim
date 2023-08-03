@@ -10,13 +10,24 @@ on:
 concurrency:
   #When a PR is pushed too multiple times in a short period, this would usually trigger multiple CI runs
   #This setting cancels any in-progress CI when a new push is performed
-  group: ${{ github.ref }}
+  #But we can have multiple jobs testing different things
+  # It should be that
+  # * Each push to a PR cancels any in progress PR CI
+  # * Each push to develop cancels any in progress develop push-triggered CI
+  # * It seems that PR merges to develop don't get cancelled. This is actually a good thing
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
 
   build:
     runs-on: ubuntu-latest
+    #This should mean that only one "build" job runs at a time
+    # Meaning there should be no webpage clashes if multiple CI runs are triggered
+    # in a short period
+    concurrency:
+      group: wcsim_build_and_setup_webpage
+      cancel-in-progress: false
     defaults:
       run:
         working-directory: /opt/
@@ -29,6 +40,7 @@ jobs:
       env:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
@@ -95,19 +107,19 @@ jobs:
           /opt/Validation/build.sh
           echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
-      - name: Quick physics check to setup validation webpage
+      - name: Setup validation webpage
         run: |
           source /opt/setup.sh
           cd /opt/WCSim/install
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
-          /opt/Validation/Tests.sh 1
+          /opt/Validation/SetupWebpages.sh
 
   physics:
     needs: build
     continue-on-error: true
     strategy:
       matrix:
-        physics_job: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+        physics_job: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
 
     runs-on: ubuntu-latest
     defaults:
@@ -122,6 +134,7 @@ jobs:
       env:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
@@ -166,11 +179,11 @@ jobs:
           echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
           echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> /opt/setup.sh
 
-      - name: Build
+      - name: Build, with added geometry checks
         run: |
           source /opt/setup.sh
           cd /opt/WCSim
-          /opt/Validation/build.sh
+          /opt/Validation/build.sh 1
           echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
       - name: Run physics
@@ -179,4 +192,47 @@ jobs:
           cd /opt/WCSim/install
           echo ${{ matrix.physics_job }}
           export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
-          /opt/Validation/Tests.sh ${{ matrix.physics_job }}
+          /opt/Validation/RunTests.sh ${{ matrix.physics_job }}
+
+
+  finalise:
+    needs: physics
+    continue-on-error: true
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /opt/
+    #run inside a container that has the prerequisites already installed
+    container:
+      image: docker://ghcr.io/hyperk/hk-software:0.0.2
+      credentials:
+           username: ${{ github.actor }}
+           password: ${{ secrets.CONTAINER_REPO }}
+      env:
+        #TRAVIS_COMMIT: ${{ github.sha }}
+        TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
+        TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        GitHubToken: ${{ secrets.VALIDATION_PR }}
+        ValidationPath: /opt/Validation/
+    steps:
+
+      - name: Get SHA to checkout
+        id: checkout_sha
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ github.event_name == 'pull_request_target' }}
+          if_true: ${{ github.event.pull_request.head.sha }}
+          if_false: ${{ github.sha }}
+
+      - name: Checkout WCSim/Validation
+        run: |
+          cd /opt/
+          git clone --depth 1 https://github.com/WCSim/Validation.git -b master --single-branch
+
+      - name: Setup validation webpage
+        run: |
+          cd /opt/
+          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          /opt/Validation/FinaliseWebpages.sh

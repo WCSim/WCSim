@@ -90,6 +90,8 @@ public:
   void SetNuPrismBeamTest_mPMTGeometry();
   void SetNuPrismShort_mPMTGeometry();
   void SetDefaultNuPrismGeometry();
+  void SetIWCDGeometry(); // IWCD with mPMTs, updated geometry as of 20230630
+  void SetIWCD_WithOD_Geometry(); // Same as above with OD
   /**
      Dump the values of many variables used to define geometries including
      - radii, heights, name, etc. of the detector
@@ -133,7 +135,7 @@ public:
 
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
-  void CreateCombinedPMTQE(std::vector<G4String>);
+  void CreateCombinedPMTQE(const std::vector<G4String> &);
   WCSimBasicPMTObject *BasicPMT;
   void SetBasicPMTObject(WCSimBasicPMTObject *PMT){BasicPMT=PMT;}
   WCSimBasicPMTObject* GetBasicPMTObject(){ return BasicPMT;}

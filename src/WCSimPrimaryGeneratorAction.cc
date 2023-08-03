@@ -328,7 +328,13 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		char strZ[10]={0};
 		long int A=0,Z=0;
 		sprintf(strPDG,"%i",abs(pdgid));
+		//stop GCC complaining about string truncation
+		// - we're copying from the middle of a long string
+		// - we do terminate the string correctly below
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
 		strncpy(strZ, &strPDG[3], 3);
+#pragma GCC diagnostic pop
 		strncpy(strA, &strPDG[6], 3);
 		strA[3]='\0';
 		strZ[3]='\0';
@@ -550,7 +556,13 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       char strA[10]={0};
       char strZ[10]={0};
       sprintf(strPDG,"%i",abs(pdg));
+      //stop GCC complaining about string truncation
+      // - we're copying from the middle of a long string
+      // - we do terminate the string correctly below
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
       strncpy(strZ, &strPDG[3], 3);
+#pragma GCC diagnostic pop
       strncpy(strA, &strPDG[6], 3);
       strA[3]='\0';
       strZ[3]='\0';
