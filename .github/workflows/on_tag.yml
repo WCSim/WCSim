@@ -93,6 +93,12 @@ jobs:
           /opt/Validation/build.sh
           echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
+      - name: Setup branch
+        run: |
+          cd /opt/Validation
+          git switch -c new_ref
+          git push https://tdealtry:${GitHubToken}@github.com/WCSim/Validation.git new_ref
+
   physics:
     needs: build
     strategy:
