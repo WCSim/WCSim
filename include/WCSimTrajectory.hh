@@ -14,6 +14,8 @@ class WCSimTrajectory;
 #include "G4Track.hh"
 #include "G4Step.hh"
 
+#include "WCSimEnumerations.hh"
+
 class G4Polyline;                   // Forward declaration.
 
 typedef std::vector<G4VTrajectoryPoint*>  TrajectoryPointContainer;
@@ -76,7 +78,7 @@ public: // with description
   inline void SetBoundaryPoints(std::vector<std::vector<G4float>> bPs,
                                 std::vector<G4float> bKEs,
                                 std::vector<G4double> bTimes,
-                                std::vector<G4int> bTypes)
+                                std::vector<BoundaryType_t> bTypes)
   {
     boundaryPoints = bPs;
     boundaryKEs = bKEs;
@@ -86,7 +88,7 @@ public: // with description
   inline void AddBoundaryPoint(std::vector<G4float> bPs,
                                G4float bKEs,
                                G4double bTimes,
-                               G4int bTypes)
+                               BoundaryType_t bTypes)
   {
     boundaryPoints.push_back(bPs);
     boundaryKEs.push_back(bKEs);
@@ -96,7 +98,14 @@ public: // with description
   inline std::vector<std::vector<G4float>> GetBoundaryPoints() {return boundaryPoints;}
   inline std::vector<G4float> GetBoundaryKEs() {return boundaryKEs;}
   inline std::vector<G4double> GetBoundaryTimes() {return boundaryTimes;}
-  inline std::vector<G4int> GetBoundaryTypes() {return boundaryTypes;}
+  inline std::vector<BoundaryType_t> GetBoundaryTypes() {return boundaryTypes;}
+  inline std::vector<int> GetBoundaryTypesAsInt() 
+  {
+    std::vector<int> bTypes;
+    for (auto t : boundaryTypes)
+      bTypes.push_back((int)t);
+    return bTypes;
+  }
 
 // Other member functions
    virtual void ShowTrajectory(std::ostream& os=G4cout) const;
@@ -137,7 +146,7 @@ public: // with description
   std::vector<std::vector<G4float>> boundaryPoints;
   std::vector<G4float> boundaryKEs;
   std::vector<G4double> boundaryTimes;
-  std::vector<G4int> boundaryTypes; // 1 = blacksheet, 2 = tyvek, 3 = cave
+  std::vector<BoundaryType_t> boundaryTypes; // kBlackSheet=1, kTyvek, kCave
 };
 
 /***            TEMP  : M FECHNER ***********

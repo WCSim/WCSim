@@ -1358,7 +1358,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
                                    trj->GetBoundaryPoints(),
                                    trj->GetBoundaryKEs(),
                                    trj->GetBoundaryTimes(),
-                                   trj->GetBoundaryTypes());
+                                   trj->GetBoundaryTypesAsInt());
       }
 
 
@@ -1894,7 +1894,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
                                    trj->GetBoundaryPoints(),
                                    trj->GetBoundaryKEs(),
                                    trj->GetBoundaryTimes(),
-                                   trj->GetBoundaryTypes());
+                                   trj->GetBoundaryTypesAsInt());
       }
 
 

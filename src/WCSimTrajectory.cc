@@ -206,11 +206,11 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
   {
     G4String thePrePVName = thePrePV->GetName();
     G4String thePostPVName = thePostPV->GetName();
-    G4int ty = 0;
-    if (thePrePVName.contains("BlackSheet") || thePostPVName.contains("BlackSheet")) ty = 1;
-    else if (thePrePVName.contains("Cave") || thePostPVName.contains("Cave")) ty = 3;
-    else if (thePrePVName.contains("Tyvek") || thePostPVName.contains("Tyvek")) ty = 2;
-    if (ty>0)
+    BoundaryType_t ty = kNull;
+    if (thePrePVName.contains("BlackSheet") || thePostPVName.contains("BlackSheet")) ty = kBlackSheet;
+    else if (thePrePVName.contains("Cave") || thePostPVName.contains("Cave")) ty = kCave;
+    else if (thePrePVName.contains("Tyvek") || thePostPVName.contains("Tyvek")) ty = kTyvek;
+    if (ty!=kNull)
     {
       const G4Track* track       = aStep->GetTrack();
       std::vector<G4float> bPs(3);
