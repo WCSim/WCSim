@@ -24,6 +24,7 @@ WCSimTrajectory::WCSimTrajectory()
 {
   boundaryPoints.clear();
   boundaryKEs.clear();
+  boundaryTimes.clear();
   boundaryTypes.clear();
 }
 
@@ -56,6 +57,7 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
 
   boundaryPoints.clear();
   boundaryKEs.clear();
+  boundaryTimes.clear();
   boundaryTypes.clear();
 }
 
@@ -83,6 +85,7 @@ WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
 
   boundaryPoints = right.boundaryPoints;
   boundaryKEs = right.boundaryKEs;
+  boundaryTimes = right.boundaryTimes;
   boundaryTypes = right.boundaryTypes;
 }
 
@@ -99,6 +102,7 @@ WCSimTrajectory::~WCSimTrajectory()
 
   boundaryPoints.clear();
   boundaryKEs.clear();
+  boundaryTimes.clear();
   boundaryTypes.clear();
 }
 
@@ -211,7 +215,7 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
       const G4Track* track       = aStep->GetTrack();
       std::vector<G4float> bPs(3);
       bPs[0] = track->GetPosition().x(); bPs[1] = track->GetPosition().y(); bPs[2] = track->GetPosition().z();
-      AddBoundaryPoint(bPs, track->GetKineticEnergy(), ty);
+      AddBoundaryPoint(bPs, track->GetKineticEnergy(), track->GetGlobalTime(), ty);
       // G4cout<<"Step point "<<track->GetCurrentStepNumber () <<" "<<track->GetPosition().x()<<" "<<track->GetPosition().y()<<" "<<track->GetPosition().z()<<
       //    " "<<track->GetKineticEnergy()<<" "<<thePrePV->GetName()<<" "<<thePostPV->GetName()<<G4endl;
     }
@@ -244,7 +248,10 @@ void WCSimTrajectory::MergeTrajectory(G4VTrajectory* secondTrajectory)
   ent = (seco->GetBoundaryPoints()).size();
   for (G4int i=0;i<ent;i++)
   {
-    AddBoundaryPoint((seco->GetBoundaryPoints()).at(i),(seco->GetBoundaryKEs()).at(i),(seco->GetBoundaryTypes()).at(i));
+    AddBoundaryPoint((seco->GetBoundaryPoints()).at(i),
+                     (seco->GetBoundaryKEs()).at(i),
+                     (seco->GetBoundaryTimes()).at(i),
+                     (seco->GetBoundaryTypes()).at(i));
   }
 }
 

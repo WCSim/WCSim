@@ -75,22 +75,27 @@ public: // with description
 // Functions to Set/Get boundary points
   inline void SetBoundaryPoints(std::vector<std::vector<G4float>> bPs,
                                 std::vector<G4float> bKEs,
+                                std::vector<G4double> bTimes,
                                 std::vector<G4int> bTypes)
   {
     boundaryPoints = bPs;
     boundaryKEs = bKEs;
+    boundaryTimes = bTimes;
     boundaryTypes = bTypes;
   }
   inline void AddBoundaryPoint(std::vector<G4float> bPs,
                                G4float bKEs,
+                               G4double bTimes,
                                G4int bTypes)
   {
     boundaryPoints.push_back(bPs);
     boundaryKEs.push_back(bKEs);
+    boundaryTimes.push_back(bTimes);
     boundaryTypes.push_back(bTypes);
   }
   inline std::vector<std::vector<G4float>> GetBoundaryPoints() {return boundaryPoints;}
   inline std::vector<G4float> GetBoundaryKEs() {return boundaryKEs;}
+  inline std::vector<G4double> GetBoundaryTimes() {return boundaryTimes;}
   inline std::vector<G4int> GetBoundaryTypes() {return boundaryTypes;}
 
 // Other member functions
@@ -131,6 +136,7 @@ public: // with description
   // Boundary points;
   std::vector<std::vector<G4float>> boundaryPoints;
   std::vector<G4float> boundaryKEs;
+  std::vector<G4double> boundaryTimes;
   std::vector<G4int> boundaryTypes; // 1 = blacksheet, 2 = tyvek, 3 = cave
 };
 

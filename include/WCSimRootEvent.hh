@@ -45,6 +45,7 @@ private:
   Int_t fParentId;
   std::vector<std::vector<float>> boundaryPoints;
   std::vector<float> boundaryKEs;
+  std::vector<double> boundaryTimes;
   std::vector<int> boundaryTypes; // 1 = blacksheet, 2 = tyvek, 3 = cave
 
 public:
@@ -66,6 +67,7 @@ public:
 		 Int_t idParent,
      std::vector<std::vector<float>> bPs,
      std::vector<float> bKEs,
+     std::vector<double> bTimes,
      std::vector<int> bTypes);
   virtual ~WCSimRootTrack() { }
   bool CompareAllVariables(const WCSimRootTrack * c) const;
@@ -87,6 +89,7 @@ public:
   Int_t     GetParentId() const {return fParentId;}
   std::vector<std::vector<float>> GetBoundaryPoints() {return boundaryPoints;}
   std::vector<float> GetBoundaryKEs() {return boundaryKEs;}
+  std::vector<double> GetBoundaryTimes() {return boundaryTimes;}
   std::vector<int> GetBoundaryTypes() {return boundaryTypes;}
 
   ClassDef(WCSimRootTrack,4)
@@ -459,6 +462,7 @@ public:
 				   Int_t idParent,
            std::vector<std::vector<float>> bPs,
            std::vector<float> bKEs,
+           std::vector<double> bTimes,
            std::vector<int> bTypes);
 
   WCSimRootTrack * AddTrack   (WCSimRootTrack * track);

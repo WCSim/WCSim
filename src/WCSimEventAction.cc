@@ -1213,6 +1213,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
                   0,
                   std::vector<std::vector<float>>(),
                   std::vector<float>(),
+                  std::vector<double>(),
                   std::vector<int>());
   }
 
@@ -1356,6 +1357,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
                                    idPrnt,
                                    trj->GetBoundaryPoints(),
                                    trj->GetBoundaryKEs(),
+                                   trj->GetBoundaryTimes(),
                                    trj->GetBoundaryTypes());
       }
 
@@ -1751,6 +1753,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
                  0,
                  std::vector<std::vector<float>>(),
                  std::vector<float>(),
+                 std::vector<double>(),
                  std::vector<int>());
   }
 
@@ -1890,6 +1893,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
                                    idPrnt,
                                    trj->GetBoundaryPoints(),
                                    trj->GetBoundaryKEs(),
+                                   trj->GetBoundaryTimes(),
                                    trj->GetBoundaryTypes());
       }
 

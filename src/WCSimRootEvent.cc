@@ -407,6 +407,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 					   Int_t idParent,
              std::vector<std::vector<float>> bPs,
              std::vector<float> bKEs,
+             std::vector<double> bTimes,
              std::vector<int> bTypes)
 {
   // Add a new WCSimRootTrack to the list of tracks for this event.
@@ -434,6 +435,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 						idParent,
             bPs,
             bKEs,
+            bTimes,
             bTypes);
   fNtrack++;
   return track;
@@ -475,6 +477,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(WCSimRootTrack * track)
 					  track->GetParentId(),
             track->GetBoundaryPoints(),
             track->GetBoundaryKEs(),
+            track->GetBoundaryTimes(),
             track->GetBoundaryTypes());
   fNtrack++;
   return track_out;
@@ -509,6 +512,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 			       Int_t idParent,
              std::vector<std::vector<float>> bPs,
              std::vector<float> bKEs,
+             std::vector<double> bTimes,
              std::vector<int> bTypes)
 {
 
@@ -535,6 +539,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
   fParentId = idParent;
   boundaryPoints = bPs;
   boundaryKEs = bKEs;
+  boundaryTimes = bTimes;
   boundaryTypes = bTypes;
 }
 
