@@ -1211,8 +1211,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 			      injhfNtuple.time[k],
                   0,
                   0,
-                  std::vector<std::vector<double>>(),
-                  std::vector<double>(),
+                  std::vector<std::vector<float>>(),
+                  std::vector<float>(),
                   std::vector<int>());
   }
 
@@ -1749,8 +1749,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 			     injhfNtuple.time[k],
                  0,
                  0,
-                 std::vector<std::vector<double>>(),
-                 std::vector<double>(),
+                 std::vector<std::vector<float>>(),
+                 std::vector<float>(),
                  std::vector<int>());
   }
 

@@ -405,8 +405,8 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 					   Double_t time,
 					   Int_t id,
 					   Int_t idParent,
-             std::vector<std::vector<double>> bPs,
-             std::vector<double> bKEs,
+             std::vector<std::vector<float>> bPs,
+             std::vector<float> bKEs,
              std::vector<int> bTypes)
 {
   // Add a new WCSimRootTrack to the list of tracks for this event.
@@ -507,8 +507,8 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 			       Double_t time,
 			       Int_t id,
 			       Int_t idParent,
-             std::vector<std::vector<double>> bPs,
-             std::vector<double> bKEs,
+             std::vector<std::vector<float>> bPs,
+             std::vector<float> bKEs,
              std::vector<int> bTypes)
 {
 

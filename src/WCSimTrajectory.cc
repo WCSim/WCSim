@@ -209,7 +209,7 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
     if (ty>0)
     {
       const G4Track* track       = aStep->GetTrack();
-      std::vector<G4double> bPs(3);
+      std::vector<G4float> bPs(3);
       bPs[0] = track->GetPosition().x(); bPs[1] = track->GetPosition().y(); bPs[2] = track->GetPosition().z();
       AddBoundaryPoint(bPs, track->GetKineticEnergy(), ty);
       // G4cout<<"Step point "<<track->GetCurrentStepNumber () <<" "<<track->GetPosition().x()<<" "<<track->GetPosition().y()<<" "<<track->GetPosition().z()<<
