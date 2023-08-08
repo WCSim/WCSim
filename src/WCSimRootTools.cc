@@ -156,3 +156,17 @@ bool ComparisonPassedVec(const vector<double> & val1, const vector<double> & val
   }
   return !failed;
 }
+
+bool ComparisonPassedVecVec(const vector<vector<float>> & val1, const vector<vector<float>> & val2, const char * callerclass, const char * callerfunc, const char * tag)
+{
+  bool failed = false;
+  if(val1.size() != val2.size()) {
+    cerr << callerclass << "::" << callerfunc << " " << tag << " have unequal sizes: " << val1.size() << ", " << val2.size() << endl;
+    failed = true;
+  }
+  const int n = TMath::Min(val1.size(), val2.size());
+  for(int i = 0; i < n; i++) {
+    failed = (!ComparisonPassedVec(val1[i], val2[i], callerclass, callerfunc, TString::Format("%s[%d]", tag, i)));
+  }
+  return !failed;
+}

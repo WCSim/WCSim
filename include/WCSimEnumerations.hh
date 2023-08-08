@@ -31,6 +31,13 @@ typedef enum ERandomGeneratorType {
   RANDOM_E_HEPJAMES=3
 } WCSimRandomGenerator_t;
 
+typedef enum EBoundaryType {
+  kNull=0,
+  kBlackSheet,
+  kTyvek,
+  kCave
+} BoundaryType_t;
+
 class WCSimEnumerations
 {
 public:
@@ -38,6 +45,7 @@ public:
   static std::string EnumAsString(DigitizerType_t d);
   static std::string EnumAsString(TriggerType_t t);
   static std::string EnumAsString(WCSimRandomGenerator_t r);
+  static std::string EnumAsString(BoundaryType_t b);
   static TriggerType_t TriggerTypeFromString(std::string s);
 
 };

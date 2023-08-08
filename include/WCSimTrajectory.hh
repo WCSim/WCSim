@@ -14,6 +14,8 @@ class WCSimTrajectory;
 #include "G4Track.hh"
 #include "G4Step.hh"
 
+#include "WCSimEnumerations.hh"
+
 class G4Polyline;                   // Forward declaration.
 
 typedef std::vector<G4VTrajectoryPoint*>  TrajectoryPointContainer;
@@ -72,6 +74,38 @@ public: // with description
    inline void SetStoppingVolume(G4VPhysicalVolume* currentVolume)
    { stoppingVolume = currentVolume;}
 
+// Functions to Set/Get boundary points
+  inline void SetBoundaryPoints(std::vector<std::vector<G4float>> bPs,
+                                std::vector<G4float> bKEs,
+                                std::vector<G4double> bTimes,
+                                std::vector<BoundaryType_t> bTypes)
+  {
+    boundaryPoints = bPs;
+    boundaryKEs = bKEs;
+    boundaryTimes = bTimes;
+    boundaryTypes = bTypes;
+  }
+  inline void AddBoundaryPoint(std::vector<G4float> bPs,
+                               G4float bKEs,
+                               G4double bTimes,
+                               BoundaryType_t bTypes)
+  {
+    boundaryPoints.push_back(bPs);
+    boundaryKEs.push_back(bKEs);
+    boundaryTimes.push_back(bTimes);
+    boundaryTypes.push_back(bTypes);
+  }
+  inline std::vector<std::vector<G4float>> GetBoundaryPoints() {return boundaryPoints;}
+  inline std::vector<G4float> GetBoundaryKEs() {return boundaryKEs;}
+  inline std::vector<G4double> GetBoundaryTimes() {return boundaryTimes;}
+  inline std::vector<BoundaryType_t> GetBoundaryTypes() {return boundaryTypes;}
+  inline std::vector<int> GetBoundaryTypesAsInt() 
+  {
+    std::vector<int> bTypes;
+    for (auto t : boundaryTypes)
+      bTypes.push_back((int)t);
+    return bTypes;
+  }
 
 // Other member functions
    virtual void ShowTrajectory(std::ostream& os=G4cout) const;
@@ -107,6 +141,12 @@ public: // with description
   G4bool SaveIt;
   G4String creatorProcess;
   G4double                  globalTime;
+
+  // Boundary points;
+  std::vector<std::vector<G4float>> boundaryPoints;
+  std::vector<G4float> boundaryKEs;
+  std::vector<G4double> boundaryTimes;
+  std::vector<BoundaryType_t> boundaryTypes; // kBlackSheet=1, kTyvek, kCave
 };
 
 /***            TEMP  : M FECHNER ***********

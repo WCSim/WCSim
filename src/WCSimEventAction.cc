@@ -1210,7 +1210,11 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 			      injhfNtuple.parent[k],
 			      injhfNtuple.time[k],
                   0,
-                  0);
+                  0,
+                  std::vector<std::vector<float>>(),
+                  std::vector<float>(),
+                  std::vector<double>(),
+                  std::vector<int>());
   }
 
   // the rest of the tracks come from WCSimTrajectory
@@ -1350,7 +1354,11 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
                                    parentType,
                                    ttime,
                                    id,
-                                   idPrnt);
+                                   idPrnt,
+                                   trj->GetBoundaryPoints(),
+                                   trj->GetBoundaryKEs(),
+                                   trj->GetBoundaryTimes(),
+                                   trj->GetBoundaryTypesAsInt());
       }
 
 
@@ -1742,7 +1750,11 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 			      injhfNtuple.parent[k],
 			     injhfNtuple.time[k],
                  0,
-                 0);
+                 0,
+                 std::vector<std::vector<float>>(),
+                 std::vector<float>(),
+                 std::vector<double>(),
+                 std::vector<int>());
   }
 
   // the rest of the tracks come from WCSimTrajectory
@@ -1878,7 +1890,11 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
                                    parentType,
                                    ttime,
                                    id,
-                                   idPrnt);
+                                   idPrnt,
+                                   trj->GetBoundaryPoints(),
+                                   trj->GetBoundaryKEs(),
+                                   trj->GetBoundaryTimes(),
+                                   trj->GetBoundaryTypesAsInt());
       }
 
 
