@@ -820,6 +820,10 @@ bool WCSimRootTrack::CompareAllVariables(const WCSimRootTrack * c) const
   failed = (!ComparisonPassed(fTime, c->GetTime(), typeid(*this).name(), __func__, "Time")) || failed;
   failed = (!ComparisonPassed(fId, c->GetId(), typeid(*this).name(), __func__, "Id")) || failed;
   failed = (!ComparisonPassed(fParentId, c->GetParentId(), typeid(*this).name(), __func__, "ParentId")) || failed;
+  failed = (!ComparisonPassedVecVec(boundaryPoints, c->GetBoundaryPoints(), typeid(*this).name(), __func__, "boundaryPoints")) || failed;
+  failed = (!ComparisonPassedVec(boundaryKEs, c->GetBoundaryKEs(), typeid(*this).name(), __func__, "boundaryKEs")) || failed;
+  failed = (!ComparisonPassedVec(boundaryTimes, c->GetBoundaryTimes(), typeid(*this).name(), __func__, "boundaryTimes")) || failed;
+  failed = (!ComparisonPassedVec(boundaryTypes, c->GetBoundaryTypes(), typeid(*this).name(), __func__, "boundaryTypes")) || failed;
 
   return !failed;
 }

@@ -87,10 +87,10 @@ public:
   Double_t   GetTime() const { return fTime;}
   Int_t     GetId() const {return fId;}
   Int_t     GetParentId() const {return fParentId;}
-  std::vector<std::vector<float>> GetBoundaryPoints() {return boundaryPoints;}
-  std::vector<float> GetBoundaryKEs() {return boundaryKEs;}
-  std::vector<double> GetBoundaryTimes() {return boundaryTimes;}
-  std::vector<int> GetBoundaryTypes() {return boundaryTypes;}
+  std::vector<std::vector<float>> GetBoundaryPoints() const {return boundaryPoints;}
+  std::vector<float> GetBoundaryKEs() const {return boundaryKEs;}
+  std::vector<double> GetBoundaryTimes() const {return boundaryTimes;}
+  std::vector<int> GetBoundaryTypes() const {return boundaryTypes;}
 
   ClassDef(WCSimRootTrack,4)
 };

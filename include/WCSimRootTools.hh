@@ -28,5 +28,7 @@ bool ComparisonPassedVec(const vector<float> & val1, const vector<float> & val2,
 			 const char * callerclass, const char * callerfunc, const char * tag);
 bool ComparisonPassedVec(const vector<double> & val1, const vector<double> & val2,
 			 const char * callerclass, const char * callerfunc, const char * tag);
+bool ComparisonPassedVecVec(const vector<vector<float>> & val1, const vector<vector<float>> & val2,
+			 const char * callerclass, const char * callerfunc, const char * tag);
 
 #endif //WCSimRootTools_h
