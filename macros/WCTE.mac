@@ -14,6 +14,8 @@
 #Use mPMTs settings and beam test geometry 
 #/WCSim/WCgeom nuPRISMBeamTest_mPMT ## this is 18c5r from the original design
 /WCSim/WCgeom nuPRISMBeamTest_16cShort_mPMT ## this is 16c4r from CAD
+# Rotate barrel by half a tower (needed for correct WCTE geometry)
+/WCSim/Geometry/RotateBarrelHalfTower true
 
 # True --> default replica method to place PMTs. False --> new placement method 
 /WCSim/PMT/ReplicaPlacement true
@@ -24,7 +26,7 @@
 # Change the ID radius at top, middle and bottom for PMT placement
 /WCSim/PMT/TankRadiusChange 0 0 0 mm
 # Read PMT positions from input file. This overrides the auto positioning
-/WCSim/PMT/PositionFile mPMT-configfiles/mPMTconfig_Position_WCTE.txt
+/WCSim/PMT/PositionFile mPMT-configfiles/mPMTconfig_Position_WCTE_RotateBarrelHalfTower.txt
 ############################################################################################
 
 # Set Gadolinium doping (concentration is in percent)

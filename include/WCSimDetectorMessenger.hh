@@ -82,6 +82,7 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithADoubleAndUnit* SetDetectorHeight;
   G4UIcmdWithADoubleAndUnit* SetDetectorVerticalPosition;
   G4UIcmdWithADoubleAndUnit* SetDetectorDiameter;
+  G4UIcmdWithABool* RotateBarrelHalfTower;
 
   //PMT placement commands
   G4UIcmdWithABool* UseReplica;

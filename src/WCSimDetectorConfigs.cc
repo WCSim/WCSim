@@ -1200,6 +1200,9 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
     WCCapEdgeLimit        = 1.551*m; 
     WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
     WCAddGd               = false;
+
+    // default for this geometry is to rotate the barrel by half a tower
+    rotateBarrelHalfTower = true;
 }
 
 

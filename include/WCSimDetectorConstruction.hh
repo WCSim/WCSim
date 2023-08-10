@@ -326,6 +326,10 @@ public:
   void   SetIsNuPrismBeamTest_16cShort(G4bool choice) {isNuPrismBeamTest_16cShort = choice;}
   G4bool GetIsNuPrismBeamTest_16cShort() {return isNuPrismBeamTest_16cShort;}
   
+  // Set if rotate barrel by half a tower
+  void   SetRotateBarrelHalfTower(G4bool choice) {rotateBarrelHalfTower = choice;}
+  G4bool GetRotateBarrelHalfTower() {return rotateBarrelHalfTower;}
+
   // Set if useReplica in PMT placement
   void   SetUseReplica(G4bool choice) {useReplica = choice;}
   G4bool GetUseReplica() {return useReplica;}
@@ -697,6 +701,7 @@ private:
   G4double WCIDRadius;
   G4double totalAngle;
   G4double dPhi;
+  G4double barrelPhiOffset;
   G4double barrelCellHeight;
   G4double mainAnnulusHeight;
   G4double innerAnnulusRadius;
@@ -723,6 +728,8 @@ private:
   G4bool isNuPrismBeamTest_16cShort; // Jul 02 2021 L.Anthony
   G4String WCPMTType;
  // G4double WCPMTCoverage; //TF: already using this variable "WCPMTPercentCoverage
+
+  G4bool rotateBarrelHalfTower;
 
   // New variables for PMT placement
   G4bool useReplica, readFromTable;

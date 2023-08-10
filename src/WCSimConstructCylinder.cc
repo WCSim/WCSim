@@ -90,6 +90,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   totalAngle  = 2.0*pi*rad*WCBarrelRingNPhi*WCPMTperCellHorizontal/WCBarrelNumPMTHorizontal;
   // angle per regular cell:
   dPhi        =  totalAngle/ WCBarrelRingNPhi;
+
+  if(rotateBarrelHalfTower)
+    barrelPhiOffset = -dPhi/2; // For WCTE, the barrel is rotated by half a tower for correct alignment with endcaps
+  else
+    barrelPhiOffset = 0.;
+
   // it's height:
   barrelCellHeight  = (WCIDHeight-2.*WCBarrelPMTOffset)/WCBarrelNRings;
   // the height of all regular cells together:
@@ -380,7 +386,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
   G4double mainAnnulusRmax[2] = {outerAnnulusRadius, outerAnnulusRadius};
 
   G4Polyhedra* solidWCBarrelAnnulus = new G4Polyhedra("WCBarrelAnnulus",
-													  0.*deg, // phi start
+													  barrelPhiOffset, // phi start
 													  totalAngle, 
 													  WCBarrelRingNPhi, //NPhi-gon
 													  2,
@@ -413,7 +419,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					   barrelCellHeight/2.};
 
   G4Polyhedra* solidWCBarrelRing = new G4Polyhedra("WCBarrelRing",
-                                                   0.*deg,//+dPhi/2., // phi start
+                                                   barrelPhiOffset,//+dPhi/2., // phi start
                                                    totalAngle, //phi end
                                                    WCBarrelRingNPhi, //NPhi-gon
                                                    2,
@@ -475,7 +481,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					kPhi,
 					WCBarrelRingNPhi,
 					dPhi,
-                    0.); 
+          barrelPhiOffset); 
 
   if(!debugMode)
   	{G4VisAttributes* tmpVisAtt = new G4VisAttributes(G4Colour(1.,0.5,0.5));
@@ -600,7 +606,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
       extraTowerRmax[i] = mainAnnulusRmax[i] != 0 ? mainAnnulusRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.) : 0.;
     }
     G4Polyhedra* solidWCExtraTower = new G4Polyhedra("WCextraTower",
-													 totalAngle-2.*pi,//+dPhi/2., // phi start
+													 totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
 													 2.*pi -  totalAngle // total angle.
 													 -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m),
 													 // we need this little Gap between the extra tower and the main annulus
@@ -636,7 +642,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	//------------------------------------------
 
     G4Polyhedra* solidWCExtraTowerCell = new G4Polyhedra("WCExtraTowerCell",
-														 totalAngle-2.*pi,//+dPhi/2., // phi start
+														 totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
 														 2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
 														 1, //NPhi-gon
 														 2,
@@ -674,7 +680,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
       towerBSRmax[i] = annulusBlackSheetRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
     }
     G4Polyhedra* solidWCTowerBlackSheet = new G4Polyhedra("WCExtraTowerBlackSheet",
-														  totalAngle-2.*pi,//+dPhi/2., // phi start
+														  totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
 														  2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
 														  1, //NPhi-gon
 														  2,
@@ -1042,7 +1048,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	
 	  G4RotationMatrix* WCExtraPMTRotation = new G4RotationMatrix;
 	  WCExtraPMTRotation->rotateY(90.*deg);
-	  WCExtraPMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
+	  WCExtraPMTRotation->rotateX((2*pi-totalAngle)/2.-barrelPhiOffset);//align the PMT with the Cell
 	  //Stopped here: B.Q                                  
 	  G4double towerWidth = WCIDRadius*tan(2*pi-totalAngle);
 
@@ -1054,7 +1060,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 		  G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 													 towerWidth/2.-(i+0.5)*horizontalSpacingExtra,
 													 -barrelCellHeight/2.+(j+0.5)*verticalSpacing);
-		  PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry 
+		  PMTPosition.rotateZ(-(2*pi-totalAngle)/2.+barrelPhiOffset); // align with the symmetry 
 		  //axes of the cell 
 
 		  //G4cout << "Adding PMT in extra tower " << i << ", " << j << " position: " << PMTPosition << G4endl;
@@ -1120,7 +1126,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 	if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
 		solidWCODTopCapTyvek
 		= new G4Polyhedra("WCODTopCapTyvek",
-							0.*deg, // phi start
+							barrelPhiOffset, // phi start
 							totalAngle, //phi end
 							WCBarrelRingNPhi, //NPhi-gon
 							4, // 4 z-planes
@@ -1130,7 +1136,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 							);
 		solidWCODBotCapTyvek
 		= new G4Polyhedra("WCODBotCapTyvek",
-							0.*deg, // phi start
+							barrelPhiOffset, // phi start
 							totalAngle, //phi end
 							WCBarrelRingNPhi, //NPhi-gon
 							4, // 4 z-planes
@@ -1144,7 +1150,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 		// PMTs that are on the border between both parts.
 		G4Polyhedra* mainPartTop 
 		= new G4Polyhedra("WCODTopCapTyvekMainPart",
-							0.*deg, // phi start
+							barrelPhiOffset, // phi start
 							totalAngle, //phi end
 							WCBarrelRingNPhi, //NPhi-gon
 							4, // 4 z-planes
@@ -1154,7 +1160,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 							);
 		G4Polyhedra* mainPartBot 
 		= new G4Polyhedra("WCODBotCapTyvekMainPart",
-							0.*deg, // phi start
+							barrelPhiOffset, // phi start
 							totalAngle, //phi end
 							WCBarrelRingNPhi, //NPhi-gon
 							4, // 4 z-planes
@@ -1170,7 +1176,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 		}
 		G4Polyhedra* extraSliceTop
 		= new G4Polyhedra("WCODTopCapTyvekExtraSlice",
-							totalAngle-2.*pi, // phi start
+							totalAngle-2.*pi+barrelPhiOffset, // phi start
 							2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //total phi 
 							// fortunately there are no PMTs an the gap!
 							1, //NPhi-gon
@@ -1181,7 +1187,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 							);
 		G4Polyhedra* extraSliceBot
 		= new G4Polyhedra("WCODBotCapTyvekExtraSlice",
-							totalAngle-2.*pi, // phi start
+							totalAngle-2.*pi+barrelPhiOffset, // phi start
 							2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //total phi 
 							// fortunately there are no PMTs an the gap!
 							1, //NPhi-gon
@@ -1394,7 +1400,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
         towerODTyvekRmax[i] = annulusODTyvekRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
       }
       G4Polyhedra* solidWCTowerODTyvek = new G4Polyhedra("WCExtraTowerODTyvek",
-                                                         totalAngle-2.*pi,//+dPhi/2., // phi start
+                                                         totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
                                                          2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
                                                          1, //NPhi-gon
                                                          2,
@@ -1431,7 +1437,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
       G4RotationMatrix* WCExtraODPMTRotation = new G4RotationMatrix;
       WCExtraODPMTRotation->rotateY(270.*deg);
-      WCExtraODPMTRotation->rotateX(2*pi - (2*pi-totalAngle)/2.);//align the PMT with the Cell
+      WCExtraODPMTRotation->rotateX(2*pi - (2*pi-totalAngle)/2.+barrelPhiOffset);//align the PMT with the Cell
 
       G4double towerWidthOD = WCODRadius*tan(2*pi-totalAngle);
       // We don't want the same number of OD PMTs squished horizontally so we scale down the horizontal PMTs by the width of the extra tower
@@ -1447,7 +1453,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 												   -towerWidthOD/2.+(i+0.5)*horizontalODSpacingExtra,
 												   -(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing);
 
-		  Container.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
+		  Container.rotateZ(-(2*pi-totalAngle)/2.+barrelPhiOffset); // align with the symmetry
 
 		  //G4VPhysicalVolume* physiWCExtraBarrelWLSPlate =
 		  new G4PVPlacement(WCExtraODPMTRotation,              // its rotation
@@ -1627,7 +1633,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
   const G4String bbrname = G4String("WC") +
                 bbstr + G4String("Ring");  // "WCBarrel[Top|Bot]BorderRing"
   G4Polyhedra* solidWCBarrelBorderRing = new G4Polyhedra(bbrname,
-														 0.*deg, // phi start
+														 barrelPhiOffset, // phi start
 														 totalAngle,
 														 WCBarrelRingNPhi, //NPhi-gon
 														 3,
@@ -1687,7 +1693,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
                     kPhi,
                     WCBarrelRingNPhi,
                     dPhi,
-                    0.);
+                    barrelPhiOffset);
 
   //-------------------------------------------------------------
   // add barrel blacksheet to the border barrel cells 
@@ -1799,7 +1805,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
       extraBorderRmax[i] = borderAnnulusRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
     } 
     G4Polyhedra* solidWCExtraBorderCell = new G4Polyhedra(etbcname,
-														  totalAngle-2.*pi,//+dPhi/2., // phi start
+														  totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
 														  2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //total phi
 														  1, //NPhi-gon
 														  3,
@@ -1843,7 +1849,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
         G4String("BlackSheet");      // "WCExtraTower[Top|Bot]]BorderCellBlackSheet"
     G4Polyhedra* solidWCExtraBorderBlackSheet = 
       new G4Polyhedra(etbcbsname,
-			   totalAngle-2.*pi,//+dPhi/2., // phi start
+			   totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
 			   2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
 			   1, //NPhi-gon
 			   2,
@@ -1897,7 +1903,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
   if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
     solidWCCap
       = new G4Polyhedra(capname,
-						0.*deg, // phi start
+						barrelPhiOffset, // phi start
 						totalAngle, //phi end
 						WCBarrelRingNPhi, //NPhi-gon
 						4, // 2 z-planes
@@ -1911,7 +1917,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 	// PMTs that are on the border between both parts.
 	G4Polyhedra* mainPart 
       = new G4Polyhedra(capname + G4String("MainPart"),
-						0.*deg, // phi start
+						barrelPhiOffset, // phi start
 						totalAngle, //phi end
 						WCBarrelRingNPhi, //NPhi-gon
 						4, // 2 z-planes
@@ -1927,7 +1933,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
     }
     G4Polyhedra* extraSlice 
       = new G4Polyhedra(capname + G4String("ExtraSlice"),
-						totalAngle-2.*pi, // phi start
+						totalAngle-2.*pi+barrelPhiOffset, // phi start
 						2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //total phi 
 						// fortunately there are no PMTs an the gap!
 						1, //NPhi-gon
@@ -2016,7 +2022,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
   if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
     solidWCCapBlackSheet
       = new G4Polyhedra(capbsname,
-						0.*deg, // phi start
+						barrelPhiOffset, // phi start
 						totalAngle, //total phi
 						WCBarrelRingNPhi, //NPhi-gon
 						4, //  z-planes
@@ -2029,7 +2035,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
     // same as for the cap volume
 	G4Polyhedra* mainPart
       = new G4Polyhedra(capbsname + G4String("MainPart"),
-						0.*deg, // phi start
+						barrelPhiOffset, // phi start
 						totalAngle, //phi end
 						WCBarrelRingNPhi, //NPhi-gon
 						4, //  z-planes
@@ -2045,7 +2051,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 	}
 	G4Polyhedra* extraSlice
       = new G4Polyhedra(capbsname + G4String("ExtraSlice"),
-						totalAngle-2.*pi, // phi start
+						totalAngle-2.*pi+barrelPhiOffset, // phi start
 						2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //
 						WCBarrelRingNPhi, //NPhi-gon
 						4, //  z-planes
@@ -2264,7 +2270,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 	
 	  G4RotationMatrix* WCExtraPMTRotation = new G4RotationMatrix;
 	  WCExtraPMTRotation->rotateY(90.*deg);
-	  WCExtraPMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
+	  WCExtraPMTRotation->rotateX((2*pi-totalAngle)/2.-barrelPhiOffset);//align the PMT with the Cell
                                                  
 	  G4double towerWidth = WCIDRadius*tan(2*pi-totalAngle);
 
@@ -2276,7 +2282,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 		  G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 													 towerWidth/2.-(i+0.5)*horizontalSpacingExtra,
 													 (-(barrelCellHeight/2.)+(j+0.5)*verticalSpacing)*zflip);
-		  PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry 
+		  PMTPosition.rotateZ(-(2*pi-totalAngle)/2.+barrelPhiOffset); // align with the symmetry 
 		  //axes of the cell 
 #ifdef ACTIVATE_IDPMTS
 #ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
@@ -2373,7 +2379,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 	if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
 		solidWCODCapTyvek
 		= new G4Polyhedra(capname + G4String("Tyvek"),
-							0.*deg, // phi start
+							barrelPhiOffset, // phi start
 							totalAngle, //phi end
 							WCBarrelRingNPhi, //NPhi-gon
 							2, // 2 z-planes
@@ -2387,7 +2393,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 		// PMTs that are on the border between both parts.
 		G4Polyhedra* mainPart 
 		= new G4Polyhedra(capname + G4String("TyvekMainPart"),
-							0.*deg, // phi start
+							barrelPhiOffset, // phi start
 							totalAngle, //phi end
 							WCBarrelRingNPhi, //NPhi-gon
 							2, // 2 z-planes
@@ -2403,7 +2409,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 		}
 		G4Polyhedra* extraSlice 
 		= new G4Polyhedra(capname + G4String("TyvekExtraSlice"),
-							totalAngle-2.*pi, // phi start
+							totalAngle-2.*pi+barrelPhiOffset, // phi start
 							2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //total phi 
 							// fortunately there are no PMTs an the gap!
 							1, //NPhi-gon
@@ -2487,7 +2493,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
         G4String("ODTyvek"); // "WCExtraTower[Top|Bot]]BorderCellODTyvek"
       G4Polyhedra* solidWCExtraBorderCellODTyvek =
         new G4Polyhedra(etbcodtname,
-                        totalAngle-2.*pi,//+dPhi/2., // phi start
+                        totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
                         2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
                         1, //NPhi-gon
                         2,
@@ -2523,7 +2529,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
 
       G4RotationMatrix* WCExtraODPMTRotation = new G4RotationMatrix;
       WCExtraODPMTRotation->rotateY(270.*deg);
-      WCExtraODPMTRotation->rotateX(2*pi - (2*pi-totalAngle)/2.);//align the PMT with the Cell
+      WCExtraODPMTRotation->rotateX(2*pi - (2*pi-totalAngle)/2.+barrelPhiOffset);//align the PMT with the Cell
 
       G4double towerWidthOD = WCODRadius*tan(2*pi-totalAngle);
       // We don't want the same number of OD PMTs squished horizontally so we scale down the horizontal PMTs by the width of the extra tower
@@ -2538,7 +2544,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
           G4ThreeVector Container =  G4ThreeVector((WCODRadius)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 												   -towerWidthOD/2.+(i+0.5)*horizontalODSpacingExtra,
 												   (-(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing)*zflip);
-          Container.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
+          Container.rotateZ(-(2*pi-totalAngle)/2.+barrelPhiOffset); // align with the symmetry
 
 		  G4cout << "Adding OD PMT in extra tower in cell" << i << ", " << j << G4endl;
           //G4VPhysicalVolume* physiWCBarrelPMT =
@@ -2632,6 +2638,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   totalAngle  = 2.0*pi*rad*WCBarrelRingNPhi*WCPMTperCellHorizontal/WCBarrelNumPMTHorizontal;
   // angle per regular cell:
   dPhi        =  totalAngle/ WCBarrelRingNPhi;
+
+  if(rotateBarrelHalfTower)
+    barrelPhiOffset = -dPhi/2; // For WCTE, the barrel is rotated by half a tower for correct alignment with endcaps
+  else
+    barrelPhiOffset = 0.;
+
   // it's height:
   barrelCellHeight  = (WCIDHeight-2.*WCBarrelPMTOffset)/WCBarrelNRings;
   // the height of all regular cells together:
@@ -2927,7 +2939,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   }
 
   G4Polyhedra* solidWCBarrelAnnulus = new G4Polyhedra("WCBarrelAnnulus",
-                                                   0.*deg, // phi start
+                                                   barrelPhiOffset, // phi start
                                                    totalAngle, 
                                                    WCBarrelRingNPhi, //NPhi-gon
                                                    WCBarrelNRings-1,
@@ -2989,7 +3001,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   }
 
   G4Polyhedra* solidWCBarrelBlackSheet = new G4Polyhedra("WCBarrelAnnulusBlackSheet",
-                                                   0, // phi start
+                                                   barrelPhiOffset, // phi start
                                                    totalAngle, //total phi
                                                    WCBarrelRingNPhi, //NPhi-gon
                                                    WCBarrelNRings-1,
@@ -3087,7 +3099,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
       extraTowerRmax[i] = mainAnnulusRmax[i] != 0 ? mainAnnulusRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.) : 0.;
     }
     G4Polyhedra* solidWCExtraTower = new G4Polyhedra("WCextraTower",
-  			totalAngle-2.*pi,//+dPhi/2., // phi start
+  			totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
 			  2.*pi -  totalAngle // total angle.
 			  -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m),
         // we need this little Gap between the extra tower and the main annulus
@@ -3126,7 +3138,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
       towerBSRmax[i] = annulusBlackSheetRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
     }
     G4Polyhedra* solidWCTowerBlackSheet = new G4Polyhedra("WCExtraTowerBlackSheet",
-			   totalAngle-2.*pi,//+dPhi/2., // phi start
+			   totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
 			   2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
 		     1, //NPhi-gon
 			   WCBarrelNRings-1,
@@ -3449,7 +3461,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
       
       for (int iphi=0;iphi<(G4int)WCBarrelRingNPhi;iphi++)
       {
-        G4double phi_offset = (iphi+0.5)*dPhi;
+        G4double phi_offset = (iphi+0.5)*dPhi+barrelPhiOffset;
 
         G4RotationMatrix* PMTRotation = new G4RotationMatrix;
         if(orientation == PERPENDICULAR)
@@ -3545,7 +3557,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
           WCExtraPMTRotation->rotateY(0.*deg); //if mPMT: vertical/aligned to wall
         else if(orientation == HORIZONTAL)
           WCExtraPMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
-        WCExtraPMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
+        WCExtraPMTRotation->rotateX((2*pi-totalAngle)/2.-barrelPhiOffset);//align the PMT with the Cell
         G4double dth = atan((towerBSRmin[iz+1]-towerBSRmin[iz])/(mainAnnulusZ[iz+1]-mainAnnulusZ[iz]));
         if(orientation == PERPENDICULAR)
           WCExtraPMTRotation->rotateY(-dth); 
@@ -3570,14 +3582,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
             if (readFromTable)
             {
-              G4double newPhi = atan2(pmtPos[PMTID].y(),pmtPos[PMTID].x())+(2*pi-totalAngle)/2.;
+              G4double newPhi = atan2(pmtPos[PMTID].y(),pmtPos[PMTID].x())+(2*pi-totalAngle)/2.-barrelPhiOffset;
               PMTPosition.setY(newR*tan(newPhi) + G4RandGauss::shoot(0,pmtPosVar));
               G4cout<<"Annulus tower PMTID = "<<PMTID<<", Position = "<<pmtPos[PMTID].x()<<" "<<pmtPos[PMTID].y()<<" "<<pmtPos[PMTID].z()<<G4endl;
             }
             PMTID++;
 
-            PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry 
-                                                        //axes of the cell 
+            PMTPosition.rotateZ(-(2*pi-totalAngle)/2.+barrelPhiOffset); // align with the symmetry axes of the cell 
 #ifdef ACTIVATE_IDPMTS
             //G4VPhysicalVolume* physiWCBarrelPMT =
               new G4PVPlacement(WCExtraPMTRotation,             // its rotation
@@ -3641,7 +3652,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
     if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
       solidWCODTopCapTyvek
       = new G4Polyhedra("WCODTopCapTyvek",
-                0.*deg, // phi start
+                barrelPhiOffset, // phi start
                 totalAngle, //phi end
                 WCBarrelRingNPhi, //NPhi-gon
                 4, // 4 z-planes
@@ -3651,7 +3662,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
                 );
       solidWCODBotCapTyvek
       = new G4Polyhedra("WCODBotCapTyvek",
-                0.*deg, // phi start
+                barrelPhiOffset, // phi start
                 totalAngle, //phi end
                 WCBarrelRingNPhi, //NPhi-gon
                 4, // 4 z-planes
@@ -3665,7 +3676,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
       // PMTs that are on the border between both parts.
       G4Polyhedra* mainPartTop 
       = new G4Polyhedra("WCODTopCapTyvekMainPart",
-                0.*deg, // phi start
+                barrelPhiOffset, // phi start
                 totalAngle, //phi end
                 WCBarrelRingNPhi, //NPhi-gon
                 4, // 4 z-planes
@@ -3675,7 +3686,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
                 );
       G4Polyhedra* mainPartBot 
       = new G4Polyhedra("WCODBotCapTyvekMainPart",
-                0.*deg, // phi start
+                barrelPhiOffset, // phi start
                 totalAngle, //phi end
                 WCBarrelRingNPhi, //NPhi-gon
                 4, // 4 z-planes
@@ -3691,7 +3702,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
       }
       G4Polyhedra* extraSliceTop
       = new G4Polyhedra("WCODTopCapTyvekExtraSlice",
-                totalAngle-2.*pi, // phi start
+                totalAngle-2.*pi+barrelPhiOffset, // phi start
                 2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //total phi 
                 // fortunately there are no PMTs an the gap!
                 1, //NPhi-gon
@@ -3702,7 +3713,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
                 );
       G4Polyhedra* extraSliceBot
       = new G4Polyhedra("WCODBotCapTyvekExtraSlice",
-                totalAngle-2.*pi, // phi start
+                totalAngle-2.*pi+barrelPhiOffset, // phi start
                 2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //total phi 
                 // fortunately there are no PMTs an the gap!
                 1, //NPhi-gon
@@ -3781,7 +3792,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
     G4Polyhedra* solidWCBarrelODTyvek =
 	  new G4Polyhedra("WCBarrelODTyvek",
-					  0.*deg, // phi start
+					  barrelPhiOffset, // phi start
 					  totalAngle, //total phi
 					  WCBarrelRingNPhi, //NPhi-gon
 					  2,
@@ -3875,7 +3886,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
       for (int iphi=0;iphi<WCBarrelRingNPhi;iphi++)
       {
-        G4double phi_offset = (iphi+0.5)*dPhi;
+        G4double phi_offset = (iphi+0.5)*dPhi+barrelPhiOffset;
 
         G4RotationMatrix* WCPMTODRotation = new G4RotationMatrix;
         WCPMTODRotation->rotateY(270.*deg);
@@ -3927,7 +3938,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
         towerODTyvekRmax[i] = annulusODTyvekRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
       }
       G4Polyhedra* solidWCTowerODTyvek = new G4Polyhedra("WCExtraTowerODTyvek",
-                                                         totalAngle-2.*pi,//+dPhi/2., // phi start
+                                                         totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
                                                          2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
                                                          1, //NPhi-gon
                                                          2,
@@ -3964,7 +3975,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
       G4RotationMatrix* WCExtraODPMTRotation = new G4RotationMatrix;
       WCExtraODPMTRotation->rotateY(270.*deg);
-      WCExtraODPMTRotation->rotateX(2*pi - (2*pi-totalAngle)/2.);//align the PMT with the Cell
+      WCExtraODPMTRotation->rotateX(2*pi - (2*pi-totalAngle)/2.+barrelPhiOffset);//align the PMT with the Cell
 
       G4double towerWidthOD = WCODRadius*tan(2*pi-totalAngle);
       // We don't want the same number of OD PMTs squished horizontally so we scale down the horizontal PMTs by the width of the extra tower
@@ -3984,7 +3995,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
                                 -towerWidthOD/2.+(i+0.5)*horizontalODSpacingExtra,
                                 -(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing+z_offset);
 
-            Container.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
+            Container.rotateZ(-(2*pi-totalAngle)/2.+barrelPhiOffset); // align with the symmetry
 
             //G4VPhysicalVolume* physiWCExtraBarrelWLSPlate =
             new G4PVPlacement(WCExtraODPMTRotation,              // its rotation
@@ -4169,7 +4180,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   const G4String bbrname = G4String("WC") +
                 bbstr + G4String("Ring");  // "WCBarrel[Top|Bot]BorderRing"
   G4Polyhedra* solidWCBarrelBorderRing = new G4Polyhedra(bbrname,
-                                                   0.*deg, // phi start
+                                                   barrelPhiOffset, // phi start
                                                    totalAngle,
                                                    WCBarrelRingNPhi, //NPhi-gon
                                                    3,
@@ -4213,7 +4224,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
                                         WCIDRadius + GetRadiusChange(-zflip*(mainAnnulusHeight/2))};
   const G4String bbbsname = bbrname + G4String("BlackSheet");    // "WCBarrel[Top|Bot]BorderBlackSheet"                                      
   G4Polyhedra* solidWCBarrelBlackSheet = new G4Polyhedra(bbbsname,
-                                                   0, // phi start
+                                                   barrelPhiOffset, // phi start
                                                    totalAngle, //total phi
                                                    WCBarrelRingNPhi, //NPhi-gon
                                                    3,
@@ -4302,7 +4313,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
       extraBorderRmax[i] = borderAnnulusRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
     } 
     G4Polyhedra* solidWCExtraBorderCell = new G4Polyhedra(etbcname,
-			   totalAngle-2.*pi,//+dPhi/2., // phi start
+			   totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
 			   2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //total phi
 			   1, //NPhi-gon
 			   3,
@@ -4343,7 +4354,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
         G4String("BlackSheet");      // "WCExtraTower[Top|Bot]]BorderCellBlackSheet"
     G4Polyhedra* solidWCExtraBorderBlackSheet = 
       new G4Polyhedra(etbcbsname,
-			   totalAngle-2.*pi,//+dPhi/2., // phi start
+			   totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
 			   2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
 		     1, //NPhi-gon
 			   3,
@@ -4430,7 +4441,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
     solidWCCap
       = new G4Polyhedra(capname,
-			0.*deg, // phi start
+			barrelPhiOffset, // phi start
 			totalAngle, //phi end
 			WCBarrelRingNPhi, //NPhi-gon
 			5, // 5 z-planes
@@ -4444,7 +4455,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     // PMTs that are on the border between both parts.
     G4Polyhedra* mainPart 
       = new G4Polyhedra(capname + G4String("MainPart"),
-      0.*deg, // phi start
+      barrelPhiOffset, // phi start
       totalAngle, //phi end
       WCBarrelRingNPhi, //NPhi-gon
       5, // 5 z-planes
@@ -4460,7 +4471,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     }
     G4Polyhedra* extraSlice 
       = new G4Polyhedra(capname + G4String("ExtraSlice"),
-			totalAngle-2.*pi, // phi start
+			totalAngle-2.*pi+barrelPhiOffset, // phi start
 			2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //total phi 
 			// fortunately there are no PMTs an the gap!
 			1, //NPhi-gon
@@ -4556,7 +4567,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
     solidWCCapBlackSheet
       = new G4Polyhedra(capbsname,
-			0.*deg, // phi start
+			barrelPhiOffset, // phi start
 			totalAngle, //total phi
 			WCBarrelRingNPhi, //NPhi-gon
 			4, //  z-planes
@@ -4569,7 +4580,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     // same as for the cap volume
     G4Polyhedra* mainPart
       = new G4Polyhedra(capbsname + G4String("MainPart"),
-			0.*deg, // phi start
+			barrelPhiOffset, // phi start
 			totalAngle, //phi end
 			WCBarrelRingNPhi, //NPhi-gon
 			4, //  z-planes
@@ -4585,7 +4596,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     }
     G4Polyhedra* extraSlice
     = new G4Polyhedra(capbsname + G4String("ExtraSlice"),
-      totalAngle-2.*pi, // phi start
+      totalAngle-2.*pi+barrelPhiOffset, // phi start
       2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //
       WCBarrelRingNPhi, //NPhi-gon
       4, //  z-planes
@@ -4762,7 +4773,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     G4int copyNo = 0;
     for (int iphi=0;iphi<(G4int)WCBarrelRingNPhi;iphi++)
     {
-      G4double phi_offset = (iphi+0.5)*dPhi;
+      G4double phi_offset = (iphi+0.5)*dPhi+barrelPhiOffset;
       G4double dth = atan((borderAnnulusRmin[2]-borderAnnulusRmin[1])/(borderAnnulusZ[2]-borderAnnulusZ[1]));
       G4RotationMatrix* PMTRotation = new G4RotationMatrix;
       if(orientation == PERPENDICULAR)
@@ -4839,7 +4850,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
         PMTRotation->rotateY(0.*deg); //if mPMT: vertical/aligned to wall
       else if(orientation == HORIZONTAL)
         PMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
-      PMTRotation->rotateX((2*pi-totalAngle)/2.);//align the PMT with the Cell
+      PMTRotation->rotateX((2*pi-totalAngle)/2.-barrelPhiOffset);//align the PMT with the Cell
       if(orientation == PERPENDICULAR)
         PMTRotation->rotateY(-dth); 
       else if(orientation == VERTICAL)
@@ -4867,13 +4878,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 
           if (readFromTable)
           {
-            G4double newPhi = atan2(pmtPos[PMTID].y(),pmtPos[PMTID].x())+(2*pi-totalAngle)/2.;
+            G4double newPhi = atan2(pmtPos[PMTID].y(),pmtPos[PMTID].x())+(2*pi-totalAngle)/2.-barrelPhiOffset;
             PMTPosition.setY(newR*tan(newPhi) + G4RandGauss::shoot(0,pmtPosVar));
             G4cout<<"Barrel ring extra PMTID = "<<PMTID<<", Position = "<<pmtPos[PMTID].x()<<" "<<pmtPos[PMTID].y()<<" "<<pmtPos[PMTID].z()<<G4endl;
           }
           PMTID++;
 
-          PMTPosition.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry axes of the cell 
+          PMTPosition.rotateZ(-(2*pi-totalAngle)/2.+barrelPhiOffset); // align with the symmetry axes of the cell 
 #ifdef ACTIVATE_IDPMTS
 #ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
 		      G4cout << "Add PMTs in extra tower, cell " << i << ", " << j << G4endl;
@@ -4922,7 +4933,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
         G4String("ODTyvek"); // "WCBarrel[Top|Bot]BorderRingODTyvek"
     G4Polyhedra* solidWCBarrelBorderODTyvek =
         new G4Polyhedra(bbodtname,
-		        0, // phi start
+		        barrelPhiOffset, // phi start
 			      totalAngle, //total phi
 			      WCBarrelRingNPhi, //NPhi-gon
             2,
@@ -4967,7 +4978,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
       solidWCODCapTyvek
       = new G4Polyhedra(capname + G4String("Tyvek"),
-                0.*deg, // phi start
+                barrelPhiOffset, // phi start
                 totalAngle, //phi end
                 WCBarrelRingNPhi, //NPhi-gon
                 2, // 2 z-planes
@@ -4981,7 +4992,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
       // PMTs that are on the border between both parts.
       G4Polyhedra* mainPart 
       = new G4Polyhedra(capname + G4String("TyvekMainPart"),
-                0.*deg, // phi start
+                barrelPhiOffset, // phi start
                 totalAngle, //phi end
                 WCBarrelRingNPhi, //NPhi-gon
                 2, // 2 z-planes
@@ -4997,7 +5008,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
       }
       G4Polyhedra* extraSlice 
       = new G4Polyhedra(capname + G4String("TyvekExtraSlice"),
-                totalAngle-2.*pi, // phi start
+                totalAngle-2.*pi+barrelPhiOffset, // phi start
                 2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //total phi 
                 // fortunately there are no PMTs an the gap!
                 1, //NPhi-gon
@@ -5047,7 +5058,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     G4int odcopyNo = 0;
     for (int iphi=0;iphi<WCBarrelRingNPhi;iphi++)
     {
-      G4double phi_offset = (iphi+0.5)*dPhi;
+      G4double phi_offset = (iphi+0.5)*dPhi+barrelPhiOffset;
 
       G4RotationMatrix* WCPMTODRotation = new G4RotationMatrix;
       WCPMTODRotation->rotateY(270.*deg);
@@ -5091,7 +5102,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
         G4String("ODTyvek"); // "WCExtraTower[Top|Bot]]BorderCellODTyvek"
       G4Polyhedra* solidWCExtraBorderCellODTyvek =
         new G4Polyhedra(etbcodtname,
-                        totalAngle-2.*pi,//+dPhi/2., // phi start
+                        totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
                         2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
                         1, //NPhi-gon
                         2,
@@ -5127,7 +5138,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 
       G4RotationMatrix* WCExtraODPMTRotation = new G4RotationMatrix;
       WCExtraODPMTRotation->rotateY(270.*deg);
-      WCExtraODPMTRotation->rotateX(2*pi - (2*pi-totalAngle)/2.);//align the PMT with the Cell
+      WCExtraODPMTRotation->rotateX(2*pi - (2*pi-totalAngle)/2.+barrelPhiOffset);//align the PMT with the Cell
 
       G4double towerWidthOD = WCODRadius*tan(2*pi-totalAngle);
       // We don't want the same number of OD PMTs squished horizontally so we scale down the horizontal PMTs by the width of the extra tower
@@ -5142,7 +5153,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
           G4ThreeVector Container =  G4ThreeVector((WCODRadius)/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
 												   -towerWidthOD/2.+(i+0.5)*horizontalODSpacingExtra,
 												   (-(barrelCellHeight * (WCODRadius/WCIDRadius))/2.+(j+0.5)*verticalODSpacing)*zflip);
-          Container.rotateZ(-(2*pi-totalAngle)/2.); // align with the symmetry
+          Container.rotateZ(-(2*pi-totalAngle)/2.+barrelPhiOffset); // align with the symmetry
 
 		  G4cout << "Adding OD PMT in extra tower in cell" << i << ", " << j << G4endl;
           //G4VPhysicalVolume* physiWCBarrelPMT =
