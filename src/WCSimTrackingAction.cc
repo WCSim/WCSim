@@ -75,18 +75,18 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
   else 
     fpTrackingManager->SetStoreTrajectory(false);
 	
-    WCSimPrimaryGeneratorAction *primaryGenerator = (WCSimPrimaryGeneratorAction *) (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
-    if(!primaryGenerator->IsConversionFound()) {
-      if(aTrack->GetParentID()==0){
-          primaryID = aTrack->GetTrackID();
+  WCSimPrimaryGeneratorAction *primaryGenerator = (WCSimPrimaryGeneratorAction *) (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
+  if(!primaryGenerator->IsConversionFound()) {
+    if(aTrack->GetParentID()==0){
+      primaryID = aTrack->GetTrackID();
+    }
+    else if(aTrack->GetParentID() == primaryID) {
+      if (aTrack->GetCreatorProcess()->GetProcessName() == "conv") {
+          primaryGenerator->FoundConversion();
       }
-      else if(aTrack->GetParentID() == primaryID) {
-          if (aTrack->GetCreatorProcess()->GetProcessName() == "conv") {
-              primaryGenerator->FoundConversion();
-          }
-          G4EventManager::GetEventManager()->AbortCurrentEvent();
-          G4EventManager::GetEventManager()->GetNonconstCurrentEvent()->SetEventAborted();
-      }
+      G4EventManager::GetEventManager()->AbortCurrentEvent();
+      G4EventManager::GetEventManager()->GetNonconstCurrentEvent()->SetEventAborted();
+    }
   }
 
   // Kill nucleus generated after TrackID 1
