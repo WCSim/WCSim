@@ -60,6 +60,25 @@ std::string WCSimEnumerations::EnumAsString(WCSimRandomGenerator_t r)
   return "";
 }
 
+std::string WCSimEnumerations::EnumAsString(BoundaryType_t b)
+{
+  switch(b) {
+  case (kBlackSheet) :
+    return "Blacksheet";
+    break;
+  case (kTyvek) :
+    return "Tyvek";
+    break;
+  case (kCave) :
+    return "Cave";
+    break;
+  default:
+    return "";
+    break;
+  }
+  return "";
+}
+
 TriggerType_t WCSimEnumerations::TriggerTypeFromString(std::string s)
 {
   for(int i = int(kTriggerUndefined)+1; i <= kTriggerFailure; i++) {

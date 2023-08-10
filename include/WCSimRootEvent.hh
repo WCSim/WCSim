@@ -43,6 +43,10 @@ private:
   Double_t fTime;
   Int_t fId;
   Int_t fParentId;
+  std::vector<std::vector<float>> boundaryPoints;
+  std::vector<float> boundaryKEs;
+  std::vector<double> boundaryTimes;
+  std::vector<int> boundaryTypes; // 1 = blacksheet, 2 = tyvek, 3 = cave
 
 public:
   WCSimRootTrack() {}
@@ -60,7 +64,11 @@ public:
 		 Int_t parenttype,
 		 Double_t time,
 		 Int_t id,
-		 Int_t idParent);
+		 Int_t idParent,
+     std::vector<std::vector<float>> bPs,
+     std::vector<float> bKEs,
+     std::vector<double> bTimes,
+     std::vector<int> bTypes);
   virtual ~WCSimRootTrack() { }
   bool CompareAllVariables(const WCSimRootTrack * c) const;
 
@@ -79,8 +87,12 @@ public:
   Double_t   GetTime() const { return fTime;}
   Int_t     GetId() const {return fId;}
   Int_t     GetParentId() const {return fParentId;}
+  std::vector<std::vector<float>> GetBoundaryPoints() const {return boundaryPoints;}
+  std::vector<float> GetBoundaryKEs() const {return boundaryKEs;}
+  std::vector<double> GetBoundaryTimes() const {return boundaryTimes;}
+  std::vector<int> GetBoundaryTypes() const {return boundaryTypes;}
 
-  ClassDef(WCSimRootTrack,3)
+  ClassDef(WCSimRootTrack,4)
 };
 
 
@@ -447,7 +459,11 @@ public:
 				   Int_t parenttype,
 				   Double_t time,
 				   Int_t id,
-				   Int_t idParent);
+				   Int_t idParent,
+           std::vector<std::vector<float>> bPs,
+           std::vector<float> bKEs,
+           std::vector<double> bTimes,
+           std::vector<int> bTypes);
 
   WCSimRootTrack * AddTrack   (WCSimRootTrack * track);
   WCSimRootTrack * RemoveTrack(WCSimRootTrack * track);
@@ -480,7 +496,7 @@ public:
 
   TClonesArray	      *GetCaptures() const {return fCaptures;}
 
-  ClassDef(WCSimRootTrigger,4) //WCSimRootEvent structure
+  ClassDef(WCSimRootTrigger,5) //WCSimRootEvent structure
 };
 
 

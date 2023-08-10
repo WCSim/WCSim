@@ -1,6 +1,29 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
 
 *************************************************************
+03/08/2023: Notes for v1.11.1
+*************************************************************
+
+Main change is to add the updated IWCD geometry, including an IWCD w/ OD for the first time
+
+Note that the WCTE has been disabled in this code, for now. Please use WCTE/WCSim for the most up-to-date WCTE work
+
+New features
+* Pull Request [WCSim/WCSim#355 @kmtsui](https://github.com/WCSim/WCSim/pull/355): New IWCD detector geometries (`IWCD_mPMT`, `IWCD_mPMT_WithOD`)
+
+Updates
+* Pull Request [WCSim/WCSim#361 @tdealtry](https://github.com/WCSim/WCSim/pull/361): Suppress the compiler warnings we have. Two are benign, warning of the expected behaviour. One is useless and pervasive, hiding real warnings
+* Pull Request [WCSim/WCSim#355 @kmtsui](https://github.com/WCSim/WCSim/pull/355): Improvements in NDigits trigger running time
+* Pull Request [WCSim/WCSim#352 @tdealtry](https://github.com/WCSim/WCSim/pull/352): Disable the WCTE geometry in this version of the code
+* Pull Request [WCSim/WCSim#332 @federiconova](https://github.com/WCSim/WCSim/pull/332): Add some info about the PMTQEMethod recommended for the OD to the `.mac` file
+* Pull Request [WCSim/WCSim#221 @tdealtry](https://github.com/WCSim/WCSim/pull/221): Add some info about the NDigits trigger window to the `.mac` file
+
+Bug fixes
+* Pull Request [WCSim/WCSim#355 @kmtsui](https://github.com/WCSim/WCSim/pull/355): Add `G4LogicalSkinSurface` for blacksheet, to prevent photon tracks getting stuck
+* Pull Request [WCSim/WCSim#271 @marc1uk](https://github.com/WCSim/WCSim/pull/271): Ensure `SaveFailuresPreWindow` and `NDigitsPreWindow` options are read in correctly
+* Pull Request [WCSim/WCSim#157 @JostMigenda](https://github.com/WCSim/WCSim/pull/157): Register model factories correctly
+
+*************************************************************
 02/06/2023: Notes for v1.11.0
 *************************************************************
 

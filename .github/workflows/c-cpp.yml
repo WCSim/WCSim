@@ -25,7 +25,9 @@ jobs:
     #This should mean that only one "build" job runs at a time
     # Meaning there should be no webpage clashes if multiple CI runs are triggered
     # in a short period
-    concurrency: wcsim_build_and_setup_webpage
+    concurrency:
+      group: wcsim_build_and_setup_webpage
+      cancel-in-progress: false
     defaults:
       run:
         working-directory: /opt/
@@ -38,6 +40,7 @@ jobs:
       env:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
@@ -116,7 +119,7 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        physics_job: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+        physics_job: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 
     runs-on: ubuntu-latest
     defaults:
@@ -131,6 +134,7 @@ jobs:
       env:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
@@ -208,6 +212,7 @@ jobs:
       env:
         #TRAVIS_COMMIT: ${{ github.sha }}
         TRAVIS_PULL_REQUEST: ${{ github.event.number }}
+        TRAVIS_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
         TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/

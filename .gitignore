@@ -37,7 +37,7 @@ build/
 *.out.txt
 *.root
 *.kin
-geofile.txt
+geofile*.txt
 
 # compiled ROOT scripts to ignore
 *_C.d

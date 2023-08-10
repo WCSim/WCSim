@@ -139,6 +139,16 @@ int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
         printf("  Track initial momentum magnitude [MeV/c]: %f\n", wcsimroottrack->GetP());
         printf("  Track mass [MeV/c2]: %f\n", wcsimroottrack->GetM());
         printf("  Track ID: %d\n", wcsimroottrack->GetId());
+        printf("  Number of ID/OD crossings: %zu\n", wcsimroottrack->GetBoundaryPoints().size());
+        if (wcsimroottrack->GetBoundaryPoints().size()>0)
+          printf("  First crossing position [mm]: (%f %f %f), KE [MeV]: %f, time [ns]: %f, type: %d\n", 
+                  wcsimroottrack->GetBoundaryPoints().at(0).at(0),
+                  wcsimroottrack->GetBoundaryPoints().at(0).at(1),
+                  wcsimroottrack->GetBoundaryPoints().at(0).at(2),
+                  wcsimroottrack->GetBoundaryKEs().at(0),
+                  wcsimroottrack->GetBoundaryTimes().at(0),
+                  wcsimroottrack->GetBoundaryTypes().at(0)
+                );
       }//verbose
     }  // itrack // End of loop over tracks
     

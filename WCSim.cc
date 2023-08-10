@@ -1,3 +1,4 @@
+#include <sys/stat.h>
 #include "G4ios.hh"
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
@@ -23,7 +24,6 @@
 
 #include <string>
 #include <sstream>
-
 
 namespace {     // Anonymous namespace for local helper functions and classes
   enum class WCSimExeMode {Batch, Interactive, Unknown};
@@ -72,6 +72,10 @@ int main(int argc,char** argv)
   // Execute command for processing input macros
   const G4String execommand = "/control/execute ";
 
+  //stop GCC complaining about the fallthrough from 3->default
+  // This is something we want
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough="
   // Check arguments, set execution mode and perform some prep.
   switch(argc) {
 #ifdef G4UI_USE
@@ -103,6 +107,7 @@ int main(int argc,char** argv)
       // Exit.
       return -1;
   }
+#pragma GCC diagnostic pop
 
   // define random number generator parameters
   WCSimRandomParameters *randomparameters = new WCSimRandomParameters();
@@ -128,7 +133,8 @@ int main(int argc,char** argv)
     G4cout << "Note: WCSIMDIR not set, assuming: " << WCSIMDIR << G4endl;
   }
   G4cout << "B.Q: Read" << Form("/control/execute %s/macros/jobOptions.mac",WCSIMDIR) << G4endl;
-  file_exists(Form("%s/macros/jobOptions.mac",WCSIMDIR));
+  if(!file_exists(Form("%s/macros/jobOptions.mac",WCSIMDIR)))
+    return -1;
   UI->ApplyCommand(Form("/control/execute %s/macros/jobOptions.mac",WCSIMDIR));
 
   // Initialize the physics factory to register the selected physics.
