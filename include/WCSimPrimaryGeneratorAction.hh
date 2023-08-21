@@ -98,6 +98,7 @@ private:
   G4bool   useCosmics;
   G4bool   useRadioactiveEvt; // F. Nova: Radioactive flag
   G4bool   useRadonEvt; // G. Pronost: Radon flag
+  G4bool   useMPMTledEvt;
 
   std::fstream inputFile;
   std::fstream inputCosmicsFile;
@@ -170,6 +171,9 @@ private:
   // Set cosmics altitude
   G4double altCosmics;
 
+  // mPMT LED generator
+  G4int mPMTLEDId;
+
  public:
 
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
@@ -197,6 +201,11 @@ private:
   inline void SetInjectorTimeWindow(G4double tw) { twindow = tw;}
   inline void SetInjectorOpeningAngle(G4double angle) { openangle = angle;}
   inline void SetInjectorWavelength(G4double wl) { wavelength = wl;}
+
+  inline void SetmPMTledEvtGenerator(G4bool choice) { useMPMTledEvt = choice; }
+  inline G4bool IsUsingmPMTledEvtGenerator()  { return useMPMTledEvt; }
+  inline void SetmPMTLEDId(G4int val){ mPMTLEDId = val; }
+  inline G4int GetmPMTLEDId(){ return mPMTLEDId; }
 
   inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
   inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }
