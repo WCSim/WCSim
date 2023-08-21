@@ -1256,7 +1256,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4Vector3D pmtOrientationFirst = tubeTransformFirst * nullOrient;
       G4Vector3D z_axis = pmtOrientationCenter.unit();;
       G4Vector3D y_axis = z_axis.cross(pmtOrientationFirst).unit();
-      G4Vector3D x_axis = y_axis.cross(x_axis).unit();
+      G4Vector3D x_axis = y_axis.cross(z_axis).unit();
       G4Vector3D posCenter(tubeTransformCenter.getTranslation().getX(),
                            tubeTransformCenter.getTranslation().getY(),
                            tubeTransformCenter.getTranslation().getZ());
@@ -1284,13 +1284,14 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         LEDphi = 2*CLHEP::pi/6*(LEDId-0.5);
       }
 
-      G4double distToPMT = 16.8*cm;
-      G4Vector3D LEDdir = cos(LEDth)*(cos(LEDphi)*x_axis+sin(LEDphi)*y_axis)+sin(LEDth)*z_axis;
+      G4double distToPMT = 5.8*cm;
+      G4Vector3D LEDdir = sin(LEDth)*(cos(LEDphi)*x_axis+sin(LEDphi)*y_axis)+cos(LEDth)*z_axis;
       G4double xpos = pmtOrigin.x() + LEDdir.x()*(distFromOriginToPMT+distToPMT);
       G4double ypos = pmtOrigin.y() + LEDdir.y()*(distFromOriginToPMT+distToPMT);
       G4double zpos = pmtOrigin.z() + LEDdir.z()*(distFromOriginToPMT+distToPMT);
 
-      G4cout<<"Set vertex to "<<xpos<<" "<<ypos<<" "<<zpos<<G4endl;
+      //G4cout<<"Set vertex to "<<xpos<<" "<<ypos<<" "<<zpos<<G4endl;
+      //G4cout<<"Dir = "<<LEDdir.x()<<" "<<LEDdir.y()<<" "<<LEDdir.z()<<G4endl;
 
       // G4Transform3D tubeTransform = myDetector->GetTubeTransform(mPMTLEDId);
       // // Get tube orientation vector
