@@ -7,7 +7,9 @@
 #include <G4NeutronCaptureXS.hh>
 #include <G4CrossSectionDataSetRegistry.hh>
 #include <G4HadronicInteractionRegistry.hh>
+#include <G4RadioactiveDecayPhysics.hh>
 #include "WCSimPhysicsListFactory.hh"
+#include "WCSimOpticalPhysics.hh"
 
 #include "GdNeutronHPCapture.hh"
 
@@ -146,7 +148,7 @@ void WCSimPhysicsListFactory::InitializeList(){
       RegisterPhysics(elem);
     }
     G4cout << "RegisterPhysics: OpticalPhysics" << G4endl;
-    G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
+    WCSimOpticalPhysics* opticalPhysics = new WCSimOpticalPhysics();
     RegisterPhysics(opticalPhysics);
     opticalPhysics->SetWLSTimeProfile("exponential");
     

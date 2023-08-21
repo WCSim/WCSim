@@ -5,8 +5,10 @@
 #include "G4Track.hh"
 #include "G4ios.hh"
 #include "G4VProcess.hh"
+#include "G4RunManager.hh"
 #include "WCSimTrackInformation.hh"
 #include "WCSimTrackingMessenger.hh"
+#include "WCSimPrimaryGeneratorAction.hh"
 
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
@@ -72,6 +74,20 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
     }
   else 
     fpTrackingManager->SetStoreTrajectory(false);
+	
+  WCSimPrimaryGeneratorAction *primaryGenerator = (WCSimPrimaryGeneratorAction *) (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
+  if(!primaryGenerator->IsConversionFound()) {
+    if(aTrack->GetParentID()==0){
+      primaryID = aTrack->GetTrackID();
+    }
+    else if(aTrack->GetParentID() == primaryID) {
+      if (aTrack->GetCreatorProcess()->GetProcessName() == "conv") {
+          primaryGenerator->FoundConversion();
+      }
+      G4EventManager::GetEventManager()->AbortCurrentEvent();
+      G4EventManager::GetEventManager()->GetNonconstCurrentEvent()->SetEventAborted();
+    }
+  }
 
   // Kill nucleus generated after TrackID 1
   G4ParticleDefinition* particle = aTrack->GetDefinition();
@@ -213,7 +229,17 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       currentTrajectory->SetSaveFlag(true);// mark it for WCSimEventAction ;
     else currentTrajectory->SetSaveFlag(false);// mark it for WCSimEventAction ;
   }
-
+	
+  WCSimPrimaryGeneratorAction *primaryGenerator = (WCSimPrimaryGeneratorAction *) (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
+  if(!primaryGenerator->IsConversionFound() && 
+     aTrack->GetTrackID() == primaryID &&
+     aTrack->GetStep()->GetPostStepPoint()->GetProcessDefinedStep() &&
+     aTrack->GetStep()->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName() == "conv"){
+      for(int i=0; i<2; i++){
+          primaryGenerator->SetConversionProductParticle(i, secondaries->at(i)->GetParticleDefinition());
+          primaryGenerator->SetConversionProductMomentum(i, secondaries->at(i)->GetMomentum());
+      }
+  }
 }
 
 

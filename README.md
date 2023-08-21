@@ -134,6 +134,14 @@ WCSim-install/hybridPMT/
 Note that by defaul, just `make install` is run.
 You can run `make clean` before `make install` by running `./make.sh clean`
 
+### Build Instructions using GNUmakefile:
+`GNUmakefile`` is specifically only for use with ROOT5 and is not supported otherwise. All output that needs to be trusted must use cmake. To compile:
+```
+make clean
+make rootcint
+make
+```
+
 ### Using WCSim without building using Docker:
 
 Docker allows you to use WCSim without compiling in an OS independant way. The Docker images are hosted on DockerHub and can be used by following the steps below.

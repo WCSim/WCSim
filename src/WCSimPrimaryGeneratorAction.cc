@@ -10,6 +10,7 @@
 #include "G4ParticleDefinition.hh"
 #include "G4IonTable.hh"
 #include "G4ThreeVector.hh"
+#include "G4EventManager.hh"
 #include "globals.hh"
 #include "Randomize.hh"
 #include <fstream>
@@ -110,6 +111,9 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   fEvNum = 0;
   fInputRootrackerFile = NULL;
   fNEntries = 1;
+	  
+  needConversion = false;
+  foundConversion = true;	  
 
   // Create the relevant histograms to generate muons
   // according to SuperK flux extrapolated at HyperK site
@@ -773,6 +777,41 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       particleGun->SetParticleDefinition(particleTable->FindParticle(particleName="e-"));
       //particleGun->SetParticleEnergy();
 #endif
+      
+      if(needConversion) {
+          G4PrimaryParticle *primaryParticle = anEvent->GetPrimaryVertex(0)->GetPrimary(0);
+          G4ThreeVector tmpDir(1, 0, 0);
+          G4ThreeVector tmpPos(0, 0, 0);
+          particleGun->SetParticleDefinition(primaryParticle->GetG4code());
+          particleGun->SetParticleEnergy(primaryParticle->GetKineticEnergy());
+          particleGun->SetParticlePosition(tmpPos);
+          particleGun->SetParticleMomentumDirection(tmpDir);
+          foundConversion = false;
+          while (!foundConversion) {
+              G4Event *tmpEvent = new G4Event(-1);
+              particleGun->GeneratePrimaryVertex(tmpEvent);
+              G4EventManager::GetEventManager()->ProcessOneEvent(tmpEvent);
+              delete tmpEvent;
+          }
+          G4ThreeVector newDir = primaryParticle->GetMomentumDirection();
+          if (!newDir.isParallel(tmpDir, 1e-5)) {
+              G4ThreeVector rotationAxis = tmpDir.cross(newDir);
+              rotationAxis = rotationAxis / rotationAxis.mag();
+              double rotationAngle = acos(newDir.dot(tmpDir));
+              for (int i = 0; i < 2; i++) {
+                  conversionProductMomentum[i].rotate(rotationAngle, rotationAxis);
+              }
+          }
+          primaryParticle->SetParticleDefinition(conversionProductParticle[0]);
+          primaryParticle->SetMomentum(conversionProductMomentum[0].getX(),
+                                       conversionProductMomentum[0].getY(),
+                                       conversionProductMomentum[0].getZ());
+          G4PrimaryParticle *secondProduct = new G4PrimaryParticle(conversionProductParticle[1],
+                                                                   conversionProductMomentum[1].getX(),
+                                                                   conversionProductMomentum[1].getY(),
+                                                                   conversionProductMomentum[1].getZ());
+          anEvent->GetPrimaryVertex(0)->SetPrimary(secondProduct);
+      }	  
     }
   else if (useRadonEvt)
     { //G. Pronost: Add Radon (adaptation of Radioactive event)
@@ -1121,86 +1160,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
 
     }
-  else if (useRadonEvt)
-    { //G. Pronost: Add Radon (adaptation of Radioactive event)
-
-      // Currently only one generator is possible
-      // In order to have several, we need to find a solution for the fitting graphes (which are static currently)
-      // Idea: array of fitting graphes? (each new generators having a specific ID)
-      if ( !myRn222Generator ) {
-      	myRn222Generator = new WCSimGenerator_Radioactivity(myDetector);
-      	myRn222Generator->Configuration(fRnScenario);
-      }
-
-      //G4cout << " Generate radon events " << G4endl;
-      // initialize GPS properties
-      MyGPS->ClearAll();
-
-      MyGPS->SetMultipleVertex(true);
-
-
-      std::vector<struct radioactive_source>::iterator it;
-
-      G4String IsotopeName = "Rn222";
-      G4double IsotopeActivity = myRn222Generator->GetMeanActivity() * 1e-3; // mBq to Bq
-      G4double iEventAvg = IsotopeActivity * GetRadioactiveTimeWindow();
-
-      //G4cout << " Average " << iEventAvg << G4endl;
-      // random poisson number of vertices based on average
-      int n_vertices = CLHEP::RandPoisson::shoot(iEventAvg);
-
-      if ( n_vertices < 1 ) {
-      	 n_vertices = 1;
-      }
-
-      for(int u=0; u<n_vertices; u++){
-
-	MyGPS->AddaSource(1.);
-	MyGPS->SetCurrentSourceto(MyGPS->GetNumberofSource() - 1);
-
-	// Bi214 (source of electron in Rn222 decay chain, assumed to be in equilibrium)
-	MyGPS->SetParticleDefinition(G4IonTable::GetIonTable()->GetIon( 83, 214, 0));
-
-	// Get position (first position take few seconds to be produced, there after there is no trouble)
-	//G4cout << "GetRandomVertex" << G4endl;
-	G4ThreeVector position = myRn222Generator->GetRandomVertex(fRnSymmetry);
-	//G4cout << "Done: " << position << G4endl;
-	// energy
-	MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
-	MyGPS->GetCurrentSource()->GetEneDist()->SetMonoEnergy(0.);
-
-	// position
-	MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point");
-	MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(position);
-
-	//G4cout << u << " is " << IsotopeName << " loc " << position  << G4endl;
-
-      }
-      G4int number_of_sources = MyGPS->GetNumberofSource();
-
-      // this will generate several primary vertices
-      MyGPS->GeneratePrimaryVertex(anEvent);
-
-      SetNvtxs(number_of_sources);
-      for( G4int u=0; u<number_of_sources; u++){
-	targetpdgs[u] = 2212; //ie. proton
-
-      	G4ThreeVector P   =anEvent->GetPrimaryVertex(u)->GetPrimary()->GetMomentum();
-      	G4ThreeVector vtx =anEvent->GetPrimaryVertex(u)->GetPosition();
-      	G4int pdg         =anEvent->GetPrimaryVertex(u)->GetPrimary()->GetPDGcode();
-
-      	//       G4ThreeVector dir  = P.unit();
-      	G4double E         = std::sqrt((P.dot(P)));
-
-	//G4cout << " vertex " << u << " of " << number_of_sources << " (" << vtx.x() << ", " << vtx.y() << ", " << vtx.z() << ") with pdg: " << pdg << G4endl;
-
-      	SetVtxs(u,vtx);
-      	SetBeamEnergy(E,u);
-      	//       SetBeamDir(dir);
-      	SetBeamPDG(pdg,u);
-      }
-
-    }
+  
 }
 
 void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt)

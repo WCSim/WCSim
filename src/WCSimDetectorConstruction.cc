@@ -80,6 +80,15 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   isUpright = false;
   isEggShapedHyperK  = false;
   isNuPrism  = false;
+  isNuPrismBeamTest = false;
+  isNuPrismBeamTest_16cShort = false;
+
+  rotateBarrelHalfTower = false;
+
+  useReplica = true;
+  pmtPosVar = 0;
+  topRadiusChange = 0; midRadiusChange = 0; botRadiusChange = 0;
+  readFromTable = false;
 
   debugMode = false;
 
@@ -118,6 +127,13 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   WCPMTExposeHeight= 0.;
   WCPMTExposeHeight2= 0.;
   WCPMTODExposeHeight= 0.;
+
+  WCPMTODRadius = 0.;
+  WCODLateralWaterDepth = 0.;
+  WCODHeightWaterDepth = 0.;
+  WCBlackSheetThickness = 0.;
+  WCODDeadSpace = 0.; 
+  WCODTyvekSheetThickness = 0.;
 
   //---------------------------------------------------
   // Need to define defaults for all mPMT parameters 
@@ -296,6 +312,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 
   // Select between HyperK and cylinder
   if (isEggShapedHyperK) logicWCBox = ConstructEggShapedHyperK();
+  else if (!useReplica) logicWCBox = ConstructCylinderNoReplica(); 
   else logicWCBox = ConstructCylinder(); 
   
   if(!logicWCBox){
