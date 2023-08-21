@@ -40,6 +40,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
                           "nuPRISM\n"
                           "nuPRISM_mPMT\n"
 			  "nuPRISMBeamTest_mPMT\n"
+			  "nuPRISMBeamTest_16cShort_mPMT\n"
     			  "nuPRISMShort_mPMT\n"
         "IWCD_mPMT\n"
         "IWCD_mPMT_WithOD\n"
@@ -75,6 +76,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
                            "nuPRISM "
                            "nuPRISM_mPMT "
 			   "nuPRISMBeamTest_mPMT "
+			   "nuPRISMBeamTest_16cShort_mPMT\n"
 			   "nuPRISMShort_mPMT "
          "IWCD_mPMT "
          "IWCD_mPMT_WithOD "
@@ -536,6 +538,39 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetDetectorDiameter->SetDefaultValue(6.);
   SetDetectorDiameter->SetUnitCategory("Length");
   SetDetectorDiameter->SetDefaultUnit("m");
+
+  // Rotate barrel by half a tower for alternative alignment of barrel (m)PMTs
+  RotateBarrelHalfTower = new G4UIcmdWithABool("/WCSim/Geometry/RotateBarrelHalfTower",this);
+  RotateBarrelHalfTower->SetGuidance("Rotate barrel by half a tower for alternative alignment of barrel (m)PMTs");
+  RotateBarrelHalfTower->SetParameterName("RotateBarrelHalfTower",false);
+  RotateBarrelHalfTower->SetDefaultValue(false);
+
+  // Use the default replica method to place PMTs or not
+  UseReplica = new G4UIcmdWithABool("/WCSim/PMT/ReplicaPlacement",this);
+  UseReplica->SetGuidance("Use replica method to place PMTs (default = true)");
+  UseReplica->SetParameterName("UseReplica",true);
+  UseReplica->SetDefaultValue(true);
+
+  // Apply random fluctuation to PMT placement
+  PMTPosVar = new G4UIcmdWithADoubleAndUnit("/WCSim/PMT/PositionVariation", this);
+  PMTPosVar->SetGuidance("Set the position variation in PMT placement (unit: mm cm m). Default will be 0 mm");
+  PMTPosVar->SetParameterName("PMTPositionVariation", false);
+  PMTPosVar->SetDefaultValue(0.0);
+  PMTPosVar->SetUnitCategory("Length");
+  PMTPosVar->SetDefaultUnit("mm");
+
+  // Change ID radius for PMT placement
+  TankRadiusChange = new G4UIcmdWith3VectorAndUnit("/WCSim/PMT/TankRadiusChange", this);
+  TankRadiusChange->SetGuidance("Set the tank radius change at top, middle and bottom for PMT placement (unit: mm cm m). Default will be 0 0 0 mm");
+  TankRadiusChange->SetParameterName("TopRadiusChange","MidRadiusChange","BotRadiusChange", false);
+  TankRadiusChange->SetDefaultValue(G4ThreeVector(0,0,0));
+  TankRadiusChange->SetUnitCategory("Length");
+  TankRadiusChange->SetDefaultUnit("mm");
+
+  // Set the input file to read PMT positions
+  SetPMTPositionInput = new G4UIcmdWithAString("/WCSim/PMT/PositionFile",this);
+  SetPMTPositionInput->SetGuidance("Set filename for PMT position file");
+  SetPMTPositionInput->SetParameterName("PMTPositionInput", true);
 }
 
 WCSimDetectorMessenger::~WCSimDetectorMessenger()
@@ -564,6 +599,12 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete mPMT_CylRadius;
   delete WCSimDir;
   delete mPMTDir;
+  delete RotateBarrelHalfTower;
+
+  delete UseReplica;
+  delete PMTPosVar;
+  delete TankRadiusChange;
+  delete SetPMTPositionInput;
 }
 
 void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
@@ -640,6 +681,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		WCSimDetector->SetIsNuPrismBeamTest(true); // Jun.04,2020 M.Shinoki
 		WCSimDetector->SetIsNuPrism(true);
 		WCSimDetector->SetNuPrismBeamTest_mPMTGeometry();
+		} else if ( newValue == "nuPRISMBeamTest_16cShort_mPMT") {
+		WCSimDetector->SetIsNuPrismBeamTest_16cShort(true); // Jul.01,2021 L.Anthony
+                WCSimDetector->SetIsNuPrism(true);
+                WCSimDetector->SetNuPrismBeamTest_16cShort_mPMTGeometry();
 		} else if ( newValue == "nuPRISMShort_mPMT") {
 		  WCSimDetector->SetIsNuPrism(true);
 		  WCSimDetector->SetNuPrismShort_mPMTGeometry();
@@ -985,6 +1030,31 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 					      WCSimDetector->GetWCIDDiameter(),
 					      WCSimDetector->GetWCIDVerticalPosition());
 					      } */
+	}
+
+  if (command == RotateBarrelHalfTower){
+        G4cout << "Rotate barrel by half of one tower?  " << newValue << G4endl;
+        WCSimDetector->SetRotateBarrelHalfTower(RotateBarrelHalfTower->GetNewBoolValue(newValue));
+  }
+  
+	if (command == UseReplica){
+	  G4cout << "Use replica method to place PMTs ?  " << newValue << G4endl;
+	  WCSimDetector->SetUseReplica(UseReplica->GetNewBoolValue(newValue));
+	}
+
+	if (command == PMTPosVar) {
+	  G4cout << "Apply fluctuations to PMT placement: sigma = " << newValue << G4endl;
+	  WCSimDetector->SetPMTPosVar(PMTPosVar->GetNewDoubleValue(newValue));
+	}
+
+	if (command == TankRadiusChange) {
+	  G4ThreeVector vec = TankRadiusChange->GetNew3VectorValue(newValue);
+	  G4cout << "Set top, mid, bot radius change = " << vec.x() << ", " << vec.y() << ", " << vec.z() << G4endl;
+	  WCSimDetector->SetRadiusChange(vec.x(),vec.y(),vec.z());
+	}
+
+	if(command == SetPMTPositionInput){
+	  WCSimDetector->SetPMTPositionInput(newValue);
 	}
 
 }

@@ -184,7 +184,7 @@ void GdNeutronHPCaptureFS::UpdateNucleus( const G4Fragment* gamma , G4double eGa
   return;
 }
 
- void GdNeutronHPCaptureFS::Init(G4double A, G4double Z, G4int M, G4String & dirName, G4String & , G4ParticleDefinition*)
+ void GdNeutronHPCaptureFS::Init(G4double A, G4double Z, G4int M, G4String & dirName, G4String &)
   {
     G4String tString = "/FS";
     G4bool dbool;
@@ -211,5 +211,3 @@ void GdNeutronHPCaptureFS::UpdateNucleus( const G4Fragment* gamma , G4double eGa
     }
     theData.close();
   }
-
-

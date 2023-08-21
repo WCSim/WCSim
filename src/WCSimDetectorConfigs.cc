@@ -1151,6 +1151,61 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_mPMTGeometry()
 	hybrid = false;
 }
 
+// WCTE with mPMTs (M.Shinoki)
+void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
+{
+    WCDetectorName = "NuPRISMBeamTest_16cShort_mPMT";
+    WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+	mPMT_ID_PMT = "PMT3inchR12199_02";    //can be changed in macro through mPMT settings.
+	mPMT_OD_PMT = "PMT3inchR12199_02";
+    WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
+    WCPMTName = PMT->GetPMTName();
+    WCPMTExposeHeight = PMT->GetExposeHeight();
+    WCPMTRadius = PMT->GetRadius();
+
+	//mPMT params go first because detector depends on it:
+	mPMT_vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
+	mPMT_vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
+	mPMT_vessel_radius = 254.*CLHEP::mm;
+	dist_pmt_vessel = 8*CLHEP::mm;      
+	orientation = PERPENDICULAR;
+	mPMT_outer_material = "G4_PLEXIGLASS";
+	mPMT_inner_material = "Air";               // TODO: real air, hence update abs_length
+	mPMT_material_pmtAssembly = "SilGel";
+	mPMT_outer_material_d = 10*CLHEP::mm;
+	
+	// Radius of cone at z=reflectorHeight
+	id_reflector_height = 9.29*CLHEP::mm;        // From solidworks CAD drawings
+	id_reflector_z_offset = 6.12*CLHEP::mm;
+	id_reflector_angle = 46.5*CLHEP::deg; 
+	mPMT_pmt_openingAngle = 8.3*CLHEP::deg;
+	// G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;
+	
+	// parameters related to filling the ID mPMT
+	nID_PMTs = 19;
+	config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
+
+	WCIDHeight               = 2.739*CLHEP::m;
+	WCIDDiameter             = 3.441*CLHEP::m;
+	WCIDVerticalPosition     = 0.;
+	
+	WCBarrelPMTOffset     = 300.*CLHEP::mm;
+    WCPMTperCellHorizontal = 1.0; // 1 per phi
+    WCPMTperCellVertical   = 1.0;
+
+    WCBarrelNumPMTHorizontal = 16;
+    WCBarrelNRings        = 4;
+    //WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+    WCCapPMTSpacing       = 0.58*CLHEP::m;
+    WCCapEdgeLimit        = 1.551*m; 
+    WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
+    WCAddGd               = false;
+
+    // default for this geometry is to rotate the barrel by half a tower
+    rotateBarrelHalfTower = true;
+}
+
+
 // Short version of NuPRISM with mPMTs: 6 m tall ID
 // These are defaults that can be altered through the macros
 void WCSimDetectorConstruction::SetNuPrismShort_mPMTGeometry()

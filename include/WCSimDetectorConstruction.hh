@@ -88,6 +88,7 @@ public:
   void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition);
   void SetNuPrism_mPMTGeometry();
   void SetNuPrismBeamTest_mPMTGeometry();
+  void SetNuPrismBeamTest_16cShort_mPMTGeometry(); // Jul 02 2021 L.Anthony
   void SetNuPrismShort_mPMTGeometry();
   void SetDefaultNuPrismGeometry();
   void SetIWCDGeometry(); // IWCD with mPMTs, updated geometry as of 20230630
@@ -194,7 +195,6 @@ public:
   void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
   void   SetVis_Choice(G4String choice){Vis_Choice = choice;}
   G4String GetVis_Choice() {return Vis_Choice;}
-
   //Set PMT coverage of first PMT type
  void   SetPMTCoverage(G4double cover) {
     WCPMTPercentCoverage = cover;
@@ -320,6 +320,34 @@ public:
   // M.Shinoki added Jun.04,2020
   void   SetIsNuPrismBeamTest(G4bool choice) {isNuPrismBeamTest = choice;}
   G4bool GetIsNuPrismBeamTest() {return isNuPrismBeamTest;}
+
+  //Set if nuPRISM for WCTE (NuPRISMBeamTest 16cShort)
+  // L.Anthony added Jul 02 2021
+  void   SetIsNuPrismBeamTest_16cShort(G4bool choice) {isNuPrismBeamTest_16cShort = choice;}
+  G4bool GetIsNuPrismBeamTest_16cShort() {return isNuPrismBeamTest_16cShort;}
+  
+  // Set if rotate barrel by half a tower
+  void   SetRotateBarrelHalfTower(G4bool choice) {rotateBarrelHalfTower = choice;}
+  G4bool GetRotateBarrelHalfTower() {return rotateBarrelHalfTower;}
+
+  // Set if useReplica in PMT placement
+  void   SetUseReplica(G4bool choice) {useReplica = choice;}
+  G4bool GetUseReplica() {return useReplica;}
+
+  // Random fluctuation in PMT placement
+  void SetPMTPosVar(G4double choice) {pmtPosVar = choice;}
+  G4double GetPMTPosVar() {return pmtPosVar;}
+
+  // ID radius change in PMT placement
+  void SetRadiusChange(G4double top, G4double mid, G4double bot) {topRadiusChange = top; midRadiusChange = mid; botRadiusChange = bot;}
+  G4double GetRadiusChange(G4double zpos)
+  {
+    return zpos < 0 ? midRadiusChange + (botRadiusChange-midRadiusChange)*std::min(-zpos/(WCIDHeight/2.),1.) : 
+                      midRadiusChange + (topRadiusChange-midRadiusChange)*std::min( zpos/(WCIDHeight/2.),1.);
+  }
+
+  void SetPMTPositionInput(G4String choice) {pmtPositionFile = choice; readFromTable = true;}
+  G4String GetPMTPositionInput() {return pmtPositionFile;}
 
   void   SetPMTType(G4String type) {
     WCPMTType = type;
@@ -488,6 +516,9 @@ private:
   G4LogicalVolume* ConstructPMTAndWLSPlate(G4String,G4String,G4String detectorElement="OD");
 
   G4LogicalVolume* ConstructCaps(G4bool);
+
+  G4LogicalVolume* ConstructCylinderNoReplica();
+  G4LogicalVolume* ConstructCapsNoReplica(G4bool flipz);
 
   void  ConstructMaterials();
 
@@ -670,6 +701,7 @@ private:
   G4double WCIDRadius;
   G4double totalAngle;
   G4double dPhi;
+  G4double barrelPhiOffset;
   G4double barrelCellHeight;
   G4double mainAnnulusHeight;
   G4double innerAnnulusRadius;
@@ -693,8 +725,21 @@ private:
   // Add bool to indicate whether we load nuPRISM geometry  
   G4bool isNuPrism;
   G4bool isNuPrismBeamTest;
+  G4bool isNuPrismBeamTest_16cShort; // Jul 02 2021 L.Anthony
   G4String WCPMTType;
  // G4double WCPMTCoverage; //TF: already using this variable "WCPMTPercentCoverage
+
+  G4bool rotateBarrelHalfTower;
+
+  // New variables for PMT placement
+  G4bool useReplica, readFromTable;
+  G4double pmtPosVar;
+  G4double topRadiusChange, midRadiusChange, botRadiusChange;
+  std::vector<G4ThreeVector> pmtPos, pmtDir;
+  std::vector<G4bool> pmtUse;
+  std::string pmtPositionFile;
+  void ReadGeometryTableFromFile();
+  G4int PMTID;
 
   // *** Begin egg-shaped HyperK Geometry ***
 
