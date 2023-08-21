@@ -117,10 +117,15 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   param->SetDefaultValue("1");
   radonGeoSymCmd->SetParameter(param);
 
-  mPMTLEDIdCmd = new G4UIcmdWithAnInteger("/mPMTLED/PMTid",this);
-  mPMTLEDIdCmd->SetGuidance("Set PMT id for mPMT LED source position. Defaults to 1.");
-  mPMTLEDIdCmd->SetParameterName("mPMTLEDId", true);
-  mPMTLEDIdCmd->SetDefaultValue(1);
+  mPMTLEDIdCmd1 = new G4UIcmdWithAnInteger("/mPMTLED/PMTid",this);
+  mPMTLEDIdCmd1->SetGuidance("Set PMT id for mPMT LED source position. Defaults to 1.");
+  mPMTLEDIdCmd1->SetParameterName("mPMTLEDId1", true);
+  mPMTLEDIdCmd1->SetDefaultValue(1);
+
+  mPMTLEDIdCmd2 = new G4UIcmdWithAnInteger("/mPMTLED/LEDid",this);
+  mPMTLEDIdCmd2->SetGuidance("Set LED id for mPMT LED source position. Defaults to 1.");
+  mPMTLEDIdCmd2->SetParameterName("mPMTLEDId2", true);
+  mPMTLEDIdCmd2->SetDefaultValue(1);
 }
 
 WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
@@ -135,7 +140,8 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete injectorTimeCmd;
   delete openingAngleCmd;
   delete injectorWavelengthCmd;
-  delete mPMTLEDIdCmd;
+  delete mPMTLEDIdCmd1;
+  delete mPMTLEDIdCmd2;
 }
 
 void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
@@ -388,10 +394,16 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetInjectorWavelength(injectorWavelengthCmd->GetNewDoubleValue(newValue));
     }
 
-  if( command == mPMTLEDIdCmd )
+  if( command == mPMTLEDIdCmd1 )
     {
-      myAction->SetmPMTLEDId(mPMTLEDIdCmd->GetNewIntValue(newValue));
-      G4cout << "mPMT LED id set to: " << mPMTLEDIdCmd->GetNewIntValue(newValue) << G4endl;
+      myAction->SetmPMTLEDId1(mPMTLEDIdCmd1->GetNewIntValue(newValue));
+      G4cout << "mPMT-LED: PMT id set to " << mPMTLEDIdCmd1->GetNewIntValue(newValue) << G4endl;
+    }
+
+  if( command == mPMTLEDIdCmd2 )
+    {
+      myAction->SetmPMTLEDId2(mPMTLEDIdCmd2->GetNewIntValue(newValue));
+      G4cout << "mPMT-LED: LED id set to " << mPMTLEDIdCmd2->GetNewIntValue(newValue) << G4endl;
     }
 
 }

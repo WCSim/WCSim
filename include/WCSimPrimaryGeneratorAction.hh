@@ -178,7 +178,8 @@ private:
   G4ThreeVector conversionProductMomentum[2];
 
   // mPMT LED generator
-  G4int mPMTLEDId;
+  G4int mPMTLEDId1;
+  G4int mPMTLEDId2;
 
  public:
 
@@ -210,8 +211,10 @@ private:
 
   inline void SetmPMTledEvtGenerator(G4bool choice) { useMPMTledEvt = choice; }
   inline G4bool IsUsingmPMTledEvtGenerator()  { return useMPMTledEvt; }
-  inline void SetmPMTLEDId(G4int val){ mPMTLEDId = val; }
-  inline G4int GetmPMTLEDId(){ return mPMTLEDId; }
+  inline void SetmPMTLEDId1(G4int val){ mPMTLEDId1 = val; }
+  inline G4int GetmPMTLEDId1(){ return mPMTLEDId1; }
+  inline void SetmPMTLEDId2(G4int val){ mPMTLEDId2 = val; }
+  inline G4int GetmPMTLEDId2(){ return mPMTLEDId2; }
 
   inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
   inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }

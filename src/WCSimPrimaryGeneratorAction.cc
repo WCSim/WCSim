@@ -188,7 +188,8 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   openangle = 0.;
   wavelength = 435.;
 
-  mPMTLEDId = 1;
+  mPMTLEDId1 = 1;
+  mPMTLEDId2 = 1;
 
   // Time units for vertices
   fTimeUnit=CLHEP::nanosecond;
@@ -1153,6 +1154,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     }
   else if (useMPMTledEvt)
     {
+      // Check configuration for mPMT
       bool usePMT1 = true;
       G4int nID_PMTs = 1;
       if (!myDetector->GetHybridPMT())
@@ -1166,6 +1168,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         {
           G4cout<<" Use mPMT-LED generator for PMT type 1"<<G4endl;
           nID_PMTs = myDetector->GetmPMT_nID();
+
+          if (mPMTLEDId1 > myDetector->GetTotalNum_mPmts())
+          {
+            G4cout<<" mPMT id > TotalNum_mPmts >>  Exit !! "<<G4endl;
+            exit(-1);
+          }
         }
       }
       else
@@ -1174,12 +1182,24 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         {
           G4cout<<" Use mPMT-LED generator for PMT type 1"<<G4endl;
           nID_PMTs = myDetector->GetmPMT_nID();
+
+          if (mPMTLEDId1 > myDetector->GetTotalNum_mPmts())
+          {
+            G4cout<<" mPMT id > TotalNum_mPmts >>  Exit !! "<<G4endl;
+            exit(-1);
+          }
         }
         else if (myDetector->GetmPMT_nID2()>1)
         {
           G4cout<<" Use mPMT-LED generator for PMT type 2"<<G4endl;
           usePMT1 = false;
           nID_PMTs = myDetector->GetmPMT_nID2();
+
+          if (mPMTLEDId1 > myDetector->GetTotalNum_mPmts2())
+          {
+            G4cout<<" mPMT id > TotalNum_mPmts >>  Exit !! "<<G4endl;
+            exit(-1);
+          }
         }
         else
         {
@@ -1188,9 +1208,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         }
       }
 
-      G4int LEDId = 1;
-
-      G4int centerPMTId = mPMTLEDId % nID_PMTs == 0 ? mPMTLEDId : ((int)(mPMTLEDId/nID_PMTs)+1)*nID_PMTs;
+      // Get the center PMT and 1st PMT to define local axes
+      G4int centerPMTId = mPMTLEDId1*nID_PMTs;
       G4int firstPMTId  = centerPMTId - nID_PMTs + 1;
       G4Transform3D tubeTransformCenter = usePMT1 ? myDetector->GetTubeTransform(centerPMTId) :
                                                     myDetector->GetTubeTransform2(centerPMTId);
@@ -1212,21 +1231,22 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4Vector3D pmtOrigin = posCenter - distFromOriginToPMT*pmtOrientationCenter;
       G4double outerRingAngle = pmtOrientationCenter.angle(pmtOrientationFirst);
 
+      // Predefined LED positions on the mPMT matrix
       G4double LEDth, LEDphi;
-      if (LEDId<=12)
+      if (mPMTLEDId2<=12)
       {
         LEDth = outerRingAngle/2*2.5;
-        LEDphi = 2*CLHEP::pi/12*(LEDId-0.5);
+        LEDphi = 2*CLHEP::pi/12*(mPMTLEDId2-0.5);
       }
-      else if (LEDId<=18)
+      else if (mPMTLEDId2<=18)
       {
         LEDth = outerRingAngle/2*1.5;
-        LEDphi = 2*CLHEP::pi/6*(LEDId-0.5);
+        LEDphi = 2*CLHEP::pi/6*(mPMTLEDId2-0.5);
       }
       else
       {
         LEDth = outerRingAngle/2*0.5;
-        LEDphi = 2*CLHEP::pi/6*(LEDId-0.5);
+        LEDphi = 2*CLHEP::pi/6*(mPMTLEDId2-0.5);
       }
 
       G4double distToPMT = 5.8*cm;

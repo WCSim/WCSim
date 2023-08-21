@@ -50,7 +50,8 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithADouble* openingAngleCmd;
   G4UIcmdWithADouble* injectorWavelengthCmd;
 
-  G4UIcmdWithAnInteger* mPMTLEDIdCmd;
+  G4UIcmdWithAnInteger* mPMTLEDIdCmd1;
+  G4UIcmdWithAnInteger* mPMTLEDIdCmd2;
   
   void IsotopeCommand(G4String newValue);
   void RadonScalingCommand(G4String newValue);

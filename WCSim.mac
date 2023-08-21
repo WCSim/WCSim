@@ -337,14 +337,16 @@
 
 # Or inject photon from mPMT LED
 #/mygen/generator mPMT-LED
-# Use PMT ID (from 1 to nPMTs) to specify source position, which is 5cm above of the PMT position
-#/mPMTLED/PMTid 19
+# Use PMTid (from 1 to totalNum_mPMTs) to specify source mPMT
+# Use LEDid (from 1 to 24) to specify LED position
+#/mPMTLED/PMTid 1
+#/mPMTLED/LEDid 1
 # Use GPS commands to define photon energy, number and angular distribution
 #/gps/energy 2.505 eV
 #/gps/number 100
 #/gps/ang/type iso
 #/gps/ang/mintheta 0 deg
-#/gps/ang/maxtheta 5 deg
+#/gps/ang/maxtheta 10 deg
 #/gps/ang/minphi 0 deg
 #/gps/ang/maxphi 360 deg
 
