@@ -14,7 +14,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/inclu
 pbuilder_library(
         TARGET WCSimCore
         SOURCES ${sources}
-        PROJECT_LIBRARIES ${PACKAGE_LIBS}
+        PROJECT_LIBRARIES WCSimRoot
         PUBLIC_EXTERNAL_LIBRARIES ${PUBLIC_EXT_LIBS}
         PRIVATE_EXTERNAL_LIBRARIES ${PRIVATE_EXT_LIBS}
 )
