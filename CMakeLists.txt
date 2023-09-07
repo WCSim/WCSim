@@ -90,6 +90,16 @@ if(WCSim_DEBUG_COMPILE_FLAG STREQUAL ON)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 endif()
 
+##############
+# WCSim compilation options
+##############
+option(WCSim_Geometry_Overlaps_CHECK
+  "Toggle GEANT4 overlap checking when placing geometry elements"
+  OFF
+)
+
+set( WCSIM_CHECK_GEOMETRY_OVERLAPS $<IF:$<BOOL:${WCSim_Geometry_Overlaps_CHECK}>,true,false>)
+
 
 #########
 # data and macros copy
