@@ -7,3 +7,5 @@ find_dependency( Geant4 REQUIRED )
 find_dependency( ROOT REQUIRED )
 
 include("${WCSim_CMAKE_DIR}/WCSim_Library_Targets.cmake")
+
+set (WCSIM_CHECK_GEOMETRY_OVERLAPS @WCSIM_CHECK_GEOMETRY_OVERLAPS@)
