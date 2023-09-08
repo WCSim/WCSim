@@ -9,3 +9,5 @@ find_dependency( ROOT REQUIRED )
 include("${WCSim_CMAKE_DIR}/WCSim_Library_Targets.cmake")
 
 set (WCSIM_CHECK_GEOMETRY_OVERLAPS @WCSIM_CHECK_GEOMETRY_OVERLAPS@)
+
+find_library(WCSim_LIBRARIES WCSimRoot HINTS @CMAKE_INSTALL_PREFIX@/lib)
