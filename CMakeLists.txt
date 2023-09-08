@@ -101,7 +101,7 @@ option(WCSim_Geometry_Overlaps_CHECK
 set( WCSIM_CHECK_GEOMETRY_OVERLAPS $<IF:$<BOOL:${WCSim_Geometry_Overlaps_CHECK}>,true,false>)
 
 #########
-# data and macros copy
+# copy extra data files
 #########
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
@@ -162,6 +162,23 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/bin/rootwc-files
         ${PROJECT_SOURCE_DIR}/rootwc/loadlibs.C
         ${PROJECT_SOURCE_DIR}/rootwc/rootwc.C
         )
+
+pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/mPMT-configfiles
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_19_nuPrism.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_30_13_3.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_33_13_1.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_33_50.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_33_50_1.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_34_22.5_1.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_34_22.5_2.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_34_22_1.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_34_22_2.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_37_HK.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_Position_WCTE.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_Position_WCTE_RotateBarrelHalfTower.txt
+        )
+
 
 # Library
 include_directories (
