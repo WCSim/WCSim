@@ -123,53 +123,55 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     inputCosmicsFile.close();
 
 
-  inputCosmicsFile.open(cosmicsFileName, std::fstream::in);
+  if (useCosmics) {
+    inputCosmicsFile.open(cosmicsFileName, std::fstream::in);
 
-  if (!inputCosmicsFile.is_open()) {
-    G4cout << "Cosmics data file " << cosmicsFileName << " not found" << G4endl;
-	exit(-1);
-  } else {
-    G4cout << "Cosmics data file " << cosmicsFileName << " found" << G4endl;
-    string line;
-    vector<string> token(1);
+    if (!inputCosmicsFile.is_open()) {
+      G4cout << "Cosmics data file " << cosmicsFileName << " not found" << G4endl;
+      exit(-1);
+    } else {
+      G4cout << "Cosmics data file " << cosmicsFileName << " found" << G4endl;
+      string line;
+      vector<string> token(1);
 
-    double binCos, binPhi;
-    //double cosThetaMean, cosThetaMin, cosThetaMax;
-    //double phiMean, phiMin, phiMax;
-    double flux;
-    double Emean;
+      double binCos, binPhi;
+      //double cosThetaMean, cosThetaMin, cosThetaMax;
+      //double phiMean, phiMin, phiMax;
+      double flux;
+      double Emean;
 
-    hFluxCosmics = new TH2D("hFluxCosmics","HK Flux", 180,0,360,100,0,1);
-    hFluxCosmics->GetXaxis()->SetTitle("#phi (deg)");
-    hFluxCosmics->GetYaxis()->SetTitle("cos #theta");
-    hEmeanCosmics = new TH2D("hEmeanCosmics","HK Flux", 180,0,360,100,0,1);
-    hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
-    hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
+      hFluxCosmics = new TH2D("hFluxCosmics","HK Flux", 180,0,360,100,0,1);
+      hFluxCosmics->GetXaxis()->SetTitle("#phi (deg)");
+      hFluxCosmics->GetYaxis()->SetTitle("cos #theta");
+      hEmeanCosmics = new TH2D("hEmeanCosmics","HK Flux", 180,0,360,100,0,1);
+      hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
+      hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
 
-    while ( getline(inputCosmicsFile,line) ){
-      token = tokenize(" $", line);
+      while ( getline(inputCosmicsFile,line) ){
+        token = tokenize(" $", line);
 
-      binCos=(atof(token[0]));
-      binPhi=(atof(token[1]));
-      /*
-      cosThetaMean=(atof(token[2]));
-      cosThetaMin=(atof(token[3]));
-      cosThetaMax=(atof(token[4]));
-      phiMean=(atof(token[5]));
-      phiMin=(atof(token[6]));
-      phiMax=(atof(token[7]));
-      */
-      flux=(atof(token[8]));
-      Emean=(atof(token[9]));
+        binCos=(atof(token[0]));
+        binPhi=(atof(token[1]));
+        /*
+        cosThetaMean=(atof(token[2]));
+        cosThetaMin=(atof(token[3]));
+        cosThetaMax=(atof(token[4]));
+        phiMean=(atof(token[5]));
+        phiMin=(atof(token[6]));
+        phiMax=(atof(token[7]));
+        */
+        flux=(atof(token[8]));
+        Emean=(atof(token[9]));
 
-      hFluxCosmics->SetBinContent(binPhi,binCos,flux);
-      hEmeanCosmics->SetBinContent(binPhi,binCos,Emean);
-    }
+        hFluxCosmics->SetBinContent(binPhi,binCos,flux);
+        hEmeanCosmics->SetBinContent(binPhi,binCos,Emean);
+      }
 
-    TFile *file = new TFile("cosmicflux.root","RECREATE");
-    hFluxCosmics->Write();
-    hEmeanCosmics->Write();
-    file->Close();
+      TFile *file = new TFile("cosmicflux.root","RECREATE");
+      hFluxCosmics->Write();
+      hEmeanCosmics->Write();
+      file->Close();
+  }
 
   }
 
@@ -207,8 +209,10 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
   delete particleGun;
   delete MyGPS;   //T. Akiri: Delete the GPS variable
   delete messenger;
-  delete hFluxCosmics;
-  delete hEmeanCosmics;
+  if (useCosmics){
+    delete hFluxCosmics;
+    delete hEmeanCosmics;
+  }
 }
 
 void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
