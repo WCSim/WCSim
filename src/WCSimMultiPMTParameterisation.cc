@@ -68,6 +68,9 @@ void WCSimMultiPMTParameterisation::PreCalculateTransform(){
     //G4double angle = ((vNiCLocal[vCircleLocal[copy]]-2)*CLHEP::pi/vNiCLocal[vCircleLocal[copy]]); // Internal angle of each polygon
     G4double azimuth = 2.*CLHEP::pi / (vNiCLocal[vCircleLocal[copy]]); 
     G4double phi = copy*azimuth + vAzimOffsetLocal[vCircleLocal[copy]]; 
+    // Only count PMTs in the same ring
+    for (int i=0;i<vCircleLocal[copy];i++)
+      phi += -vNiCLocal[i]*azimuth;
     G4double theta = CLHEP::halfpi-vAlphaLocal[vCircleLocal[copy]];
         
     G4ThreeVector origin(0,0,0); 
