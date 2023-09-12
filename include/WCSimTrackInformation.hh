@@ -6,6 +6,7 @@
 #include "G4Track.hh"
 #include "G4Allocator.hh"
 #include "G4VUserTrackInformation.hh"
+#include "WCSimTrajectory.hh"
 
 // Maximilien Fechner, december 2004
 // Information class for flagging the secondaries
@@ -16,25 +17,32 @@
 class WCSimTrackInformation : public G4VUserTrackInformation {
 private:
   G4bool saveit;
+  G4bool producesHit;
   G4int  primaryParentID;
   G4float  photonStartTime;
   G4ThreeVector  photonStartPos;
   G4ThreeVector  photonStartDir;
+  G4Trajectory* parentTrajectory;
 
 public:
-  WCSimTrackInformation() : saveit(false), primaryParentID(-99) {}  //TF: initialize to value with NO meaning instead of DN
+  WCSimTrackInformation() : saveit(false), producesHit(false), primaryParentID(-99), parentTrajectory(0) {}  //TF: initialize to value with NO meaning instead of DN
   WCSimTrackInformation(const WCSimTrackInformation* aninfo) {
       saveit = aninfo->saveit;
+      producesHit = aninfo->producesHit;
       primaryParentID = aninfo->primaryParentID;
       photonStartTime = aninfo->photonStartTime;
       photonStartPos = aninfo->photonStartPos;
       photonStartDir = aninfo->photonStartDir;
+      parentTrajectory = aninfo->parentTrajectory;
   }
   virtual ~WCSimTrackInformation() {}
   WCSimTrackInformation(const G4Track* );
   
   G4bool isSaved() { return saveit;}
   void WillBeSaved(G4bool choice) { saveit = choice;}
+
+  G4bool GetProducesHit() { return producesHit;}
+  void SetProducesHit(G4bool choice) { producesHit = choice;}
 
   void SetPrimaryParentID(G4int i) { primaryParentID = i;}
   void SetPhotonStartTime(G4float time) { photonStartTime = time;}
@@ -44,6 +52,9 @@ public:
   G4float GetPhotonStartTime() {return photonStartTime;}
   G4ThreeVector GetPhotonStartPos() {return photonStartPos;}
   G4ThreeVector GetPhotonStartDir() {return photonStartDir;}
+
+  void SetParentTrajectory(WCSimTrajectory* trajectory) {parentTrajectory = trajectory}
+  WCSimTrajectory* GetParentTrajectory() {return parentTrajectory;}
 
   inline void *operator new(size_t);
   inline void operator delete(void *aTrackInfo);

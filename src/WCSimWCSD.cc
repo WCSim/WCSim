@@ -228,8 +228,13 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
        const G4Event* currentEvent = Runman->GetCurrentEvent();
        G4HCofThisEvent* HCofEvent = currentEvent->GetHCofThisEvent();
        hitsCollection = (WCSimWCHitsCollection*)(HCofEvent->GetHC(collectionID));
-      
-       // If this tube hasn't been hit add it to the collection	 
+
+       // mark the track as having produced a hit
+       if(!trackinfo)
+           trackinfo = new WCSimTrackInformation();
+       trackinfo->SetProducesHit(true);
+
+       // If this tube hasn't been hit add it to the collection
        if (PMTHitMap[replicaNumber] == 0)
        //if (PMTHitMap.find(replicaNumber) == PMTHitMap.end())  TF attempt to fix
 	 {
