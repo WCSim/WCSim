@@ -22,7 +22,7 @@ private:
   G4float  photonStartTime;
   G4ThreeVector  photonStartPos;
   G4ThreeVector  photonStartDir;
-  G4Trajectory* parentTrajectory;
+  WCSimTrajectory* parentTrajectory;
 
 public:
   WCSimTrackInformation() : saveit(false), producesHit(false), primaryParentID(-99), parentTrajectory(0) {}  //TF: initialize to value with NO meaning instead of DN
@@ -53,7 +53,7 @@ public:
   G4ThreeVector GetPhotonStartPos() {return photonStartPos;}
   G4ThreeVector GetPhotonStartDir() {return photonStartDir;}
 
-  void SetParentTrajectory(WCSimTrajectory* trajectory) {parentTrajectory = trajectory}
+  void SetParentTrajectory(WCSimTrajectory* trajectory) {parentTrajectory = trajectory;}
   WCSimTrajectory* GetParentTrajectory() {return parentTrajectory;}
 
   inline void *operator new(size_t);

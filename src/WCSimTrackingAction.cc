@@ -191,8 +191,8 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   }
 
   // If this track produces a hit, traverse back through parent trajectories to flag that the parents produce a hit
-  if (aTrack->GetProducesHit()){
-      WCSimTrajectory* parentTrajectory = aTrack->GetParentTrajectory();
+  if (anInfo->GetProducesHit()){
+      WCSimTrajectory* parentTrajectory = anInfo->GetParentTrajectory();
       while(parentTrajectory != 0 && !parentTrajectory->GetProducesHit()){
           parentTrajectory->SetProducesHit(true);
           parentTrajectory = parentTrajectory->GetParentTrajectory();
@@ -211,7 +211,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 
     currentTrajectory->SetSaveFlag(anInfo->isSaved());// mark it for WCSimEventAction ;
     currentTrajectory->SetProducesHit(anInfo->GetProducesHit());
-    currentTrajectory->SetParentTrajectory(aTrack->GetParentTrajectory());
+    currentTrajectory->SetParentTrajectory(anInfo->GetParentTrajectory());
   }
 	
   WCSimPrimaryGeneratorAction *primaryGenerator = (WCSimPrimaryGeneratorAction *) (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
