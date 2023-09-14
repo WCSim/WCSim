@@ -83,7 +83,7 @@ WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
   creatorProcess = right.creatorProcess;
 
   producesHit = right.producesHit;
-  parentTrajectory = right.parentTrajetory;
+  parentTrajectory = right.parentTrajectory;
 
   for(size_t i=0;i<right.positionRecord->size();i++)
   {
