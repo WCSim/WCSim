@@ -1,4 +1,5 @@
 #include "WCSimTrajectory.hh"
+#include "WCSimTrackInformation.hh"
 
 #include "G4TrajectoryPoint.hh"
 #include "G4ParticleTable.hh"
