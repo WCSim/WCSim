@@ -23,9 +23,10 @@ private:
   G4ThreeVector  photonStartPos;
   G4ThreeVector  photonStartDir;
   WCSimTrajectory* parentTrajectory;
+  WCSimTrajectory* myTrajectory;
 
 public:
-  WCSimTrackInformation() : saveit(false), producesHit(false), primaryParentID(-99), parentTrajectory(0) {}  //TF: initialize to value with NO meaning instead of DN
+  WCSimTrackInformation() : saveit(false), producesHit(false), primaryParentID(-99) {}  //TF: initialize to value with NO meaning instead of DN
   WCSimTrackInformation(const WCSimTrackInformation* aninfo) {
       saveit = aninfo->saveit;
       producesHit = aninfo->producesHit;
@@ -34,6 +35,7 @@ public:
       photonStartPos = aninfo->photonStartPos;
       photonStartDir = aninfo->photonStartDir;
       parentTrajectory = aninfo->parentTrajectory;
+      myTrajectory = aninfo->myTrajectory;
   }
   virtual ~WCSimTrackInformation() {}
   WCSimTrackInformation(const G4Track* );
@@ -55,6 +57,9 @@ public:
 
   void SetParentTrajectory(WCSimTrajectory* trajectory) {parentTrajectory = trajectory;}
   WCSimTrajectory* GetParentTrajectory() {return parentTrajectory;}
+
+  void SetMyTrajectory(WCSimTrajectory* trajectory) {myTrajectory = trajectory;}
+  WCSimTrajectory* GetMyTrajectory() {return myTrajectory;}
 
   inline void *operator new(size_t);
   inline void operator delete(void *aTrackInfo);

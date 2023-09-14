@@ -170,6 +170,8 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   // pass primary parent ID to children
   G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
   WCSimTrajectory *currentTrajectory = (WCSimTrajectory*)fpTrackingManager->GimmeTrajectory();
+  if(!anInfo->GetMyTrajectory())
+    anInfo->SetMyTrajectory(currentTrajectory);
   if(secondaries)
   {
     size_t nSeco = secondaries->size();
@@ -182,7 +184,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 		infoSec->SetPhotonStartTime((*secondaries)[i]->GetGlobalTime());
 		infoSec->SetPhotonStartPos((*secondaries)[i]->GetPosition());
 		infoSec->SetPhotonStartDir((*secondaries)[i]->GetMomentumDirection());
-        infoSec->SetParentTrajectory(currentTrajectory);
+        infoSec->SetParentTrajectory(anInfo->GetMyTrajectory());
 	}
 	infoSec->WillBeSaved(false); // ADDED BY MFECHNER, temporary, 30/8/06
 	(*secondaries)[i]->SetUserInformation(infoSec);
