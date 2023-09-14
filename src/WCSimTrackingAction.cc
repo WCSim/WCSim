@@ -211,7 +211,6 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 
     currentTrajectory->SetSaveFlag(anInfo->isSaved());// mark it for WCSimEventAction ;
     currentTrajectory->SetProducesHit(anInfo->GetProducesHit());
-    currentTrajectory->SetParentTrajectory(anInfo->GetParentTrajectory());
   }
 	
   WCSimPrimaryGeneratorAction *primaryGenerator = (WCSimPrimaryGeneratorAction *) (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
