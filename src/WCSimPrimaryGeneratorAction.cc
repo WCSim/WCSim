@@ -13,6 +13,7 @@
 #include "WCSimPrimaryGeneratorMessenger.hh"
 #include "globals.hh"
 #include <G4Types.hh>
+#include <G4ios.hh>
 #include <TFile.h>
 #include <algorithm>
 #include <fstream>
@@ -953,12 +954,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
     G4int index;
     G4int pdgid;
     G4double ene;
-    G4double x;
-    G4double y;
-    G4double z;
-    G4double px;
-    G4double py;
-    G4double pz;
+    G4ThreeVector pos;
+    G4ThreeVector dir;
     G4double t;
 
     // Check if the input file is open
@@ -982,7 +979,29 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
       std::istringstream buffer(line);
 
       // Load information into local variables
-      buffer >> index >> pdgid >> ene >> x >> y >> z >> px >> py >> pz >> t;
+      buffer >> index >> pdgid >> ene >> pos[0] >> pos[1] >> pos[2] >> dir[0] >>
+          dir[1] >> dir[2] >> t;
+
+      // Use the kinetic energy, not total
+      G4cout << "Generating particle = " << pdgid
+             << " with kinetic energy = " << ene
+             << " MeV, position = " << pos[0] << ", " << pos[1] << ", "
+             << pos[2] << ", and direction = " << dir[0] << ", " << dir[1]
+             << ", " << dir[2] << G4endl;
+
+      // Set the particle gun
+      // Particle type
+      particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));
+      // Position
+      particleGun->SetParticlePosition(pos);
+      // Direction
+      particleGun->SetParticleMomentumDirection(dir);
+      // Energy
+      particleGun->SetParticleEnergy(ene);
+      // Time
+      particleGun->SetParticleTime(t);
+      // Set the event
+      particleGun->GeneratePrimaryVertex(anEvent);
     }
 
   } else if (useCosmics) {
