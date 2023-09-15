@@ -99,6 +99,7 @@ private:
   G4bool useLaserEvt;    // T. Akiri: Laser flag
   G4bool useInjectorEvt; // K.M.Tsui: injector flag
   G4bool useGPSEvt;
+  G4bool useDataTableEvt; // J. Fannon: data table flag
   G4bool useCosmics;
   G4bool useRadioactiveEvt; // F. Nova: Radioactive flag
   G4bool useRadonEvt;       // G. Pronost: Radon flag

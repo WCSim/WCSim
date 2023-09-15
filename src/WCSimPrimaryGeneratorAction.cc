@@ -12,6 +12,7 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPrimaryGeneratorMessenger.hh"
 #include "globals.hh"
+#include <G4Types.hh>
 #include <TFile.h>
 #include <algorithm>
 #include <fstream>
@@ -945,6 +946,43 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
       //       SetBeamDir(dir);
       SetBeamPDG(pdg,u);
       */
+    }
+
+  } else if (useDataTableEvt) {
+    // Setup local variables to store the data table values
+    G4int index;
+    G4int pdgid;
+    G4double ene;
+    G4double x;
+    G4double y;
+    G4double z;
+    G4double px;
+    G4double py;
+    G4double pz;
+    G4double t;
+
+    // Check if the input file is open
+    if (!inputFile.is_open()) {
+      G4cout << "Error: Input file is not open" << G4endl;
+      G4cout << "Set a vector file using the command /mygen/vecfile <FILENAME>"
+             << G4endl;
+      exit(-1);
+    }
+
+    // Read the data table
+    std::string line;
+
+    // Skip any lines that start with a #
+    while (std::getline(inputFile, line)) {
+      if (line.empty() || line[0] == '#') {
+        continue;
+      }
+
+      // Buffer to convert between string and other variables
+      std::istringstream buffer(line);
+
+      // Load information into local variables
+      buffer >> index >> pdgid >> ene >> x >> y >> z >> px >> py >> pz >> t;
     }
 
   } else if (useCosmics) {
