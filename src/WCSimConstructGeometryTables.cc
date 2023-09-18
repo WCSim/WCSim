@@ -614,7 +614,7 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
     G4cerr<<"Number of column = "<<Column<<" which is not equal to 7. "<<G4endl;
     G4cerr<<"Inappropriate input --> Exiting..."<<G4endl;
     readFromTable = false;
-    return;
+    exit(-1);
   }
   Data.seekg(SavePoint);
 
