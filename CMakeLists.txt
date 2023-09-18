@@ -123,6 +123,8 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
 	#misc macros with different geometries
 	#nuprism
 	${PROJECT_SOURCE_DIR}/macros/NuPRISM.mac
+        #WCTE
+        ${PROJECT_SOURCE_DIR}/macros/WCTE.mac
 	#HK FD ID-only
 	${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid.mac
 	${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_injector.mac
