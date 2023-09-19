@@ -122,6 +122,8 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
 	${PROJECT_SOURCE_DIR}/macros/mPMT_interesting2_SKwCover.mac
 	${PROJECT_SOURCE_DIR}/macros/mPMT_nuPrism1.mac
 	${PROJECT_SOURCE_DIR}/macros/mPMT_nuPrism2.mac
+        ${PROJECT_SOURCE_DIR}/macros/mPMT_radon_with_bias.mac
+        ${PROJECT_SOURCE_DIR}/macros/mPMT_radon_without_bias.mac
 	#visualisation macros
         ${PROJECT_SOURCE_DIR}/macros/visOGLSX.mac
         ${PROJECT_SOURCE_DIR}/macros/visRayTracer.mac
@@ -130,6 +132,8 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
 	${PROJECT_SOURCE_DIR}/macros/visOGLQT-OD.mac
 	${PROJECT_SOURCE_DIR}/macros/vis_original.mac
 	#misc macros with different geometries
+        # WCTE
+        ${PROJECT_SOURCE_DIR}/macros/WCTE.mac
 	#nuprism
 	${PROJECT_SOURCE_DIR}/macros/NuPRISM.mac
         #WCTE
@@ -145,6 +149,9 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
 	${PROJECT_SOURCE_DIR}/macros/OD_10k.mac
 	${PROJECT_SOURCE_DIR}/macros/wcsim_temp.mac
 	${PROJECT_SOURCE_DIR}/macros/WCSim_1part_HK.mac
+        ${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid.mac
+        ${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_vectorfile.mac
+        ${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_injector.mac
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}
