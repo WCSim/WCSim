@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.1)
 # ##############################################################################
 
 set(PROJECT_NAME WCSim)
-set(PROJECT_VERSION 1.12)
+set(PROJECT_VERSION 1.12.1)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 
@@ -123,6 +123,8 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
 	#misc macros with different geometries
 	#nuprism
 	${PROJECT_SOURCE_DIR}/macros/NuPRISM.mac
+        #WCTE
+        ${PROJECT_SOURCE_DIR}/macros/WCTE.mac
 	#HK FD ID-only
 	${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid.mac
 	${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_injector.mac

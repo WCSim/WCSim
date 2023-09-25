@@ -1,4 +1,17 @@
-This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags. 
+This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags.
+
+*************************************************************
+19/09/2023: Notes for v1.12.1
+*************************************************************
+
+Minor release to update the reference validation plots after #375
+
+Updates
+* Pull request [WCSim/WCSim#375 @kmtsui](https://github.com/WCSim/WCSim/pull/375): Improved WCTE mPMT geometry. Causes some minor changes to physics output for other mPMT geometries, due to a 0.0 to -0.0 precision issue
+* Pull request [WCSim/WCSim#376 @tdealtry](https://github.com/WCSim/WCSim/pull/376): Don't fall back to automated geometry building when using invalid PMT position file
+
+Bug fixes
+* Pull request [WCSim/WCSim#371 @guiguem](https://github.com/WCSim/WCSim/pull/371): Resolve cmake linkage issue
 
 *************************************************************
 21/08/2023: Notes for v1.12.0
