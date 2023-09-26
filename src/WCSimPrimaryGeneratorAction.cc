@@ -1224,7 +1224,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                           tubeTransformFirst.getTranslation().getZ());
       G4double distFromOriginToPMT = (posCenter-posFirst).mag()/(pmtOrientationCenter-pmtOrientationFirst).mag();
       G4Vector3D pmtOrigin = posCenter - distFromOriginToPMT*pmtOrientationCenter;
-      G4double outerRingAngle = pmtOrientationCenter.angle(pmtOrientationFirst);
+      // G4double outerRingAngle = pmtOrientationCenter.angle(pmtOrientationFirst);
 
       // Predefined LED positions on the mPMT matrix
       G4double LEDth, LEDphi;
@@ -1288,7 +1288,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       MyGPS->GeneratePrimaryVertex(anEvent);
 
-      G4ThreeVector P   =anEvent->GetPrimaryVertex()->GetPrimary()->GetMomentum();
+      G4ThreeVector P   =-dirz*anEvent->GetPrimaryVertex()->GetPrimary()->GetTotalEnergy();
       G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
       G4double mass     =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass(); // will be 0 for photon anyway, but for other gps particles not
       G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
