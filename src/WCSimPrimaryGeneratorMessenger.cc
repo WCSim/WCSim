@@ -122,10 +122,10 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   mPMTLEDIdCmd1->SetParameterName("mPMTLEDId1", true);
   mPMTLEDIdCmd1->SetDefaultValue(1);
 
-  mPMTLEDIdCmd2 = new G4UIcmdWithAnInteger("/mPMTLED/LEDid",this);
-  mPMTLEDIdCmd2->SetGuidance("Set LED id for mPMT LED source position. Defaults to 1.");
-  mPMTLEDIdCmd2->SetParameterName("mPMTLEDId2", true);
-  mPMTLEDIdCmd2->SetDefaultValue(1);
+  mPMTLEDIdCmd2 = new G4UIcmdWith3Vector("/mPMTLED/LEDid",this);
+  mPMTLEDIdCmd2->SetGuidance("Set LED id for mPMT LED source position, dTheta and dPhi for LED direction. Defaults to 0, 0.0, 0.0 ");
+  mPMTLEDIdCmd2->SetParameterName("mPMTLEDId2","mPMTLEDId2_dTheta","mPMTLEDId2_dPhi", true);
+  mPMTLEDIdCmd2->SetDefaultValue(G4ThreeVector(0,0.0,0.0));
 }
 
 WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
@@ -402,8 +402,10 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
 
   if( command == mPMTLEDIdCmd2 )
     {
-      myAction->SetmPMTLEDId2(mPMTLEDIdCmd2->GetNewIntValue(newValue));
-      G4cout << "mPMT-LED: LED id set to " << mPMTLEDIdCmd2->GetNewIntValue(newValue) << G4endl;
+      myAction->SetmPMTLEDId2(mPMTLEDIdCmd2->GetNew3VectorValue(newValue));
+      G4cout << "mPMT-LED: LED id set to " << (G4int)mPMTLEDIdCmd2->GetNew3VectorValue(newValue).x() 
+             << ", dTheta = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).y() << " deg" 
+             << ", dPhi = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).z() << " deg" << G4endl;
     }
 
 }

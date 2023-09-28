@@ -189,7 +189,9 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   wavelength = 435.;
 
   mPMTLEDId1 = 1;
-  mPMTLEDId2 = 1;
+  mPMTLEDId2 = 0;
+  mPMTLED_dTheta = 0.;
+  mPMTLED_dPhi = 0.;
 
   // Time units for vertices
   fTimeUnit=CLHEP::nanosecond;
@@ -1249,6 +1251,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4double xpos = pmtOrigin.x() + LEDdir.x()*(distFromOriginToPMT+distToPMT);
       G4double ypos = pmtOrigin.y() + LEDdir.y()*(distFromOriginToPMT+distToPMT);
       G4double zpos = pmtOrigin.z() + LEDdir.z()*(distFromOriginToPMT+distToPMT);
+      // Change LEDdir with specified angle
+      LEDdir = sin(LEDth+mPMTLED_dTheta)*(cos(LEDphi+mPMTLED_dPhi)*x_axis+sin(LEDphi+mPMTLED_dPhi)*y_axis)+cos(LEDth+mPMTLED_dTheta)*z_axis;
 
       //G4cout<<"Set vertex to "<<xpos<<" "<<ypos<<" "<<zpos<<G4endl;
       //G4cout<<"Dir = "<<LEDdir.x()<<" "<<LEDdir.y()<<" "<<LEDdir.z()<<G4endl;

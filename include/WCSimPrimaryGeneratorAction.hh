@@ -180,6 +180,8 @@ private:
   // mPMT LED generator
   G4int mPMTLEDId1;
   G4int mPMTLEDId2;
+  G4double mPMTLED_dTheta;
+  G4double mPMTLED_dPhi;
 
  public:
 
@@ -213,7 +215,12 @@ private:
   inline G4bool IsUsingmPMTledEvtGenerator()  { return useMPMTledEvt; }
   inline void SetmPMTLEDId1(G4int val){ mPMTLEDId1 = val; }
   inline G4int GetmPMTLEDId1(){ return mPMTLEDId1; }
-  inline void SetmPMTLEDId2(G4int val){ mPMTLEDId2 = val; }
+  inline void SetmPMTLEDId2(G4ThreeVector val)
+  { 
+    mPMTLEDId2 = (G4int)val.x(); 
+    mPMTLED_dTheta = val.y()*CLHEP::deg;
+    mPMTLED_dPhi = val.z()*CLHEP::deg;
+  }
   inline G4int GetmPMTLEDId2(){ return mPMTLEDId2; }
 
   inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }

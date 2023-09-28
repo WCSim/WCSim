@@ -11,6 +11,7 @@ class G4UIcmdWithADouble;
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
+#include "G4UIcmdWith3Vector.hh"
 #include "globals.hh"
 #include "G4Tokenizer.hh"
 
@@ -51,7 +52,7 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithADouble* injectorWavelengthCmd;
 
   G4UIcmdWithAnInteger* mPMTLEDIdCmd1;
-  G4UIcmdWithAnInteger* mPMTLEDIdCmd2;
+  G4UIcmdWith3Vector* mPMTLEDIdCmd2;
   
   void IsotopeCommand(G4String newValue);
   void RadonScalingCommand(G4String newValue);
