@@ -739,6 +739,9 @@ private:
   std::vector<G4bool> pmtUse;
   std::string pmtPositionFile;
   void ReadGeometryTableFromFile();
+  void ReadExternalmPMTMap(G4String);
+  G4bool useExternlmPMTMapping;
+  std::map<int, int> mPMTIDMapExternal; // maps from internal mPMT ID to external ID scheme
   G4int PMTID;
 
   // *** Begin egg-shaped HyperK Geometry ***

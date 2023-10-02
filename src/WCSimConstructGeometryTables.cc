@@ -160,7 +160,8 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
       // Put the transform for this tube into the map keyed by its ID
       tubeIDMap[totalNumPMTs] = aTransform;
 
-      mPMTIDMap[totalNumPMTs] = std::make_pair(totalNum_mPMTs,mPMT_pmtno);
+      if (useExternlmPMTMapping) mPMTIDMap[totalNumPMTs] = std::make_pair(mPMTIDMapExternal[totalNum_mPMTs],mPMT_pmtno);
+      else mPMTIDMap[totalNumPMTs] = std::make_pair(totalNum_mPMTs,mPMT_pmtno);
     }//ID PMT 1
 
     else if(aPV->GetName()== WCIDCollectionName2){    
@@ -629,3 +630,25 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
   }
   Data.close();
 }
+
+// Read external mPMT mapping
+void WCSimDetectorConstruction::ReadExternalmPMTMap(G4String fname)
+{
+  std::ifstream Data(fname.data(),std::ios_base::in);
+  if (!Data)
+  {
+    G4cerr<<"Cannot open mPMT mapping file "<< fname << " --> Exiting..."<<G4endl;
+    exit(-1);
+  }
+
+  int internalID, externalId;
+  while (!Data.eof())
+  {
+    Data>>internalID>>externalId;
+    mPMTIDMapExternal[internalID] = externalId;
+  }
+  Data.close();
+
+  useExternlmPMTMapping = true;
+}
+
