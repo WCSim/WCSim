@@ -1,8 +1,10 @@
 #include "WCSimPhysicsListFactory.hh"
 #include "WCSimOpticalPhysics.hh"
 #include <G4CrossSectionDataSetRegistry.hh>
+#include <G4EmStandardPhysics.hh>
 #include <G4HadronCaptureProcess.hh>
 #include <G4HadronicInteractionRegistry.hh>
+#include <G4MesonConstructor.hh>
 #include <G4Neutron.hh>
 #include <G4NeutronCaptureXS.hh>
 #include <G4NeutronHPCapture.hh>
@@ -10,6 +12,8 @@
 #include <G4NeutronRadCapture.hh>
 #include <G4ProcessTable.hh>
 #include <G4RadioactiveDecayPhysics.hh>
+#include <G4VPhysicsConstructor.hh>
+#include <G4ios.hh>
 
 #include "GdNeutronHPCapture.hh"
 
@@ -50,6 +54,9 @@ WCSimPhysicsListFactory::~WCSimPhysicsListFactory() {
 
 void WCSimPhysicsListFactory::ConstructParticle() {
   G4VModularPhysicsList::ConstructParticle();
+
+  G4MesonConstructor *mConstructor = new G4MesonConstructor();
+  mConstructor->ConstructParticle();
 }
 
 void WCSimPhysicsListFactory::ConstructProcess() {
@@ -139,6 +146,24 @@ void WCSimPhysicsListFactory::InitializeList() {
   G4cout << "Initializing physics list " << PhysicsListName << G4endl;
 
   G4VModularPhysicsList *phys = 0;
+
+  G4cout << "NEW COMMAND NAME IS HERE " << PhysicsListName << G4endl;
+  // Check if the physListCmd has been set to EMOnly
+  // if (PhysicsListName == "EMOnly") {
+  //   G4cout << "RegisterPhysics: EMPhysics" << G4endl;
+
+  //   G4VPhysicsConstructor *G4EmPhysics = new G4EmStandardPhysics();
+  //   // RegisterPhysics(G4EmPhysics);
+  //   G4EmPhysics->ConstructProcess();
+  if (PhysicsListName == "EMOnly") {
+    G4cout << "RegisterPhysics: EMPhysics" << G4endl;
+
+    G4VPhysicsConstructor *G4EmPhysics = new G4EmStandardPhysics();
+    RegisterPhysics(G4EmPhysics);
+
+    G4VPhysicsConstructor *G4OpticalPhysics = new WCSimOpticalPhysics();
+    RegisterPhysics(G4OpticalPhysics);
+  }
 
   if (factory->IsReferencePhysList(PhysicsListName)) {
     phys = factory->GetReferencePhysList(PhysicsListName);

@@ -949,7 +949,11 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
       */
     }
 
-  } else if (useDataTableEvt) {
+  } else if (IBDGenerator) {
+
+  }
+
+  else if (useDataTableEvt) {
     // Setup local variables to store the data table values
     G4int index;
     G4int pdgid;
@@ -996,6 +1000,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
         inputFile.seekg(lastLinePos);
         break;
       }
+      // Buffer the position of the current line. This is used if the next
+      // particle is from the next event then we need to read back a line so no
+      // particles get skipped. I.e. we only realise we're in the next event
+      // once std::getline has been called. Calling it again at the next event
+      // would read the next particle (the second particle in the event) and
+      // skip the first one completely
       lastLinePos = inputFile.tellg();
 
       nParticles++;
