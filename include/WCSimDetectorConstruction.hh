@@ -737,6 +737,8 @@ private:
   G4double topRadiusChange, midRadiusChange, botRadiusChange;
   std::vector<G4ThreeVector> pmtPos, pmtDir;
   std::vector<G4bool> pmtUse;
+  std::vector<G4int> pmtType;
+  std::vector<G4double> pmtRotaton;
   std::string pmtPositionFile;
   void ReadGeometryTableFromFile();
   void ReadExternalmPMTMap(G4String);

@@ -590,13 +590,14 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
   pmtPos.clear();
   pmtDir.clear();
   pmtUse.clear();
+  pmtType.clear();
+  pmtRotaton.clear();
   if (!readFromTable) return;
   std::ifstream Data(pmtPositionFile.c_str(),std::ios_base::in);
   if (!Data)
   {
-    G4cout<<"PMT data file "<<pmtPositionFile<<" could not be opened. Use default positioning"<<G4endl;
-    readFromTable = false;
-    return;
+    G4cout<<"PMT data file "<<pmtPositionFile<<" could not be opened --> Exiting..."<<G4endl;
+    exit(-1);
   }
   else
     G4cout<<"PMT data file "<<pmtPositionFile<<" is opened to read positions"<<G4endl;
@@ -610,23 +611,25 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
 	std::getline(Data, str);
 	std::istringstream stream(str);
 	while (std::getline(stream,tmp,' ')) Column++;
-	if (Column!=7)
+	if (Column!=9)
   {
-    G4cerr<<"Number of column = "<<Column<<" which is not equal to 7. "<<G4endl;
+    G4cerr<<"Number of column = "<<Column<<" which is not equal to 9. "<<G4endl;
     G4cerr<<"Inappropriate input --> Exiting..."<<G4endl;
-    readFromTable = false;
     exit(-1);
   }
   Data.seekg(SavePoint);
 
   G4ThreeVector pos, dir;
-  int UsePMT;
+  double angle;
+  int ptype, UsePMT;
   while (!Data.eof())
   {
-    Data>>pos[0]>>pos[1]>>pos[2]>>dir[0]>>dir[1]>>dir[2]>>UsePMT;
+    Data>>ptype>>pos[0]>>pos[1]>>pos[2]>>dir[0]>>dir[1]>>dir[2]>>angle>>UsePMT;
     pmtPos.push_back(pos);
     pmtDir.push_back(dir);
     pmtUse.push_back(UsePMT);
+    pmtType.push_back(ptype);
+    pmtRotaton.push_back(angle*deg);
   }
   Data.close();
 }

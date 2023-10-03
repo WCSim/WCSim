@@ -98,6 +98,7 @@ endif()
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/MuonFlux-HyperK-ThetaPhi.dat
 	${PROJECT_SOURCE_DIR}/data/biasprofile.dat
+        ${PROJECT_SOURCE_DIR}/data/mPMT_Position_WCTE.txt
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros

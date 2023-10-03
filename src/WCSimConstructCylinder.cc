@@ -3463,23 +3463,24 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
       {
         G4double phi_offset = (iphi+0.5)*dPhi+barrelPhiOffset;
 
-        G4RotationMatrix* PMTRotation = new G4RotationMatrix;
-        if(orientation == PERPENDICULAR)
-          PMTRotation->rotateY(90.*deg); //if mPMT: perp to wall
-        else if(orientation == VERTICAL)
-          PMTRotation->rotateY(0.*deg); //if mPMT: vertical/aligned to wall
-        else if(orientation == HORIZONTAL)
-          PMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
-        PMTRotation->rotateX(-phi_offset);//align the PMT with the Cell
-        // inclined barrel wall
-        G4double dth = atan((annulusBlackSheetRmin[iz+1]-annulusBlackSheetRmin[iz])/(mainAnnulusZ[iz+1]-mainAnnulusZ[iz]));
-        if(orientation == PERPENDICULAR)
-          PMTRotation->rotateY(-dth); 
-        else if(orientation == VERTICAL)
-          PMTRotation->rotateY(-dth); 
-
         for(G4double i = 0; i < WCPMTperCellHorizontal; i++){
           for(G4double j = 0; j < WCPMTperCellVertical; j++){
+
+            G4RotationMatrix* PMTRotation = new G4RotationMatrix;
+            if(orientation == PERPENDICULAR)
+              PMTRotation->rotateY(90.*deg); //if mPMT: perp to wall
+            else if(orientation == VERTICAL)
+              PMTRotation->rotateY(0.*deg); //if mPMT: vertical/aligned to wall
+            else if(orientation == HORIZONTAL)
+              PMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
+            PMTRotation->rotateX(-phi_offset);//align the PMT with the Cell
+            // inclined barrel wall
+            G4double dth = atan((annulusBlackSheetRmin[iz+1]-annulusBlackSheetRmin[iz])/(mainAnnulusZ[iz+1]-mainAnnulusZ[iz]));
+            if(orientation == PERPENDICULAR)
+              PMTRotation->rotateY(-dth); 
+            else if(orientation == VERTICAL)
+              PMTRotation->rotateY(-dth); 
+
 #ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
 		        G4cout << "Adding barrel PMT in iz = "<< iz << " iphi = " << iphi << " cell " << i << ", " << j << G4endl;
 #endif	
@@ -3502,7 +3503,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
             {
               G4double newPhi = atan2(pmtPos[PMTID].y(),pmtPos[PMTID].x())-phi_offset;
               PMTPosition.setY(newR*tan(newPhi) + G4RandGauss::shoot(0,pmtPosVar));
-              G4cout<<"Annulus PMTID = "<<PMTID<<", Position = "<<pmtPos[PMTID].x()<<" "<<pmtPos[PMTID].y()<<" "<<pmtPos[PMTID].z()<<G4endl;
+              G4cout<<"Annulus PMTID = "<<PMTID<<", Position = "<<pmtPos[PMTID].x()<<" "<<pmtPos[PMTID].y()<<" "<<pmtPos[PMTID].z()<<", Rotation = "<<pmtRotaton[PMTID]<<G4endl;
+              PMTRotation->rotateZ(pmtRotaton[PMTID]); 
             }
             PMTID++;
 
@@ -3550,22 +3552,24 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
         G4double horizontalSpacingExtra   = towerWidth/(WCBarrelNumPMTHorizontal-WCBarrelRingNPhi*WCPMTperCellHorizontal);
         G4double verticalSpacing     = barrelCellHeight/WCPMTperCellVertical;
 
-        G4RotationMatrix* WCExtraPMTRotation = new G4RotationMatrix;
-        if(orientation == PERPENDICULAR)
-          WCExtraPMTRotation->rotateY(90.*deg); //if mPMT: perp to wall
-        else if(orientation == VERTICAL)
-          WCExtraPMTRotation->rotateY(0.*deg); //if mPMT: vertical/aligned to wall
-        else if(orientation == HORIZONTAL)
-          WCExtraPMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
-        WCExtraPMTRotation->rotateX((2*pi-totalAngle)/2.-barrelPhiOffset);//align the PMT with the Cell
-        G4double dth = atan((towerBSRmin[iz+1]-towerBSRmin[iz])/(mainAnnulusZ[iz+1]-mainAnnulusZ[iz]));
-        if(orientation == PERPENDICULAR)
-          WCExtraPMTRotation->rotateY(-dth); 
-        else if(orientation == VERTICAL)
-          WCExtraPMTRotation->rotateY(-dth); 
 
         for(G4double i = 0; i < (WCBarrelNumPMTHorizontal-WCBarrelRingNPhi*WCPMTperCellHorizontal); i++){
           for(G4double j = 0; j < WCPMTperCellVertical; j++){
+
+            G4RotationMatrix* WCExtraPMTRotation = new G4RotationMatrix;
+            if(orientation == PERPENDICULAR)
+              WCExtraPMTRotation->rotateY(90.*deg); //if mPMT: perp to wall
+            else if(orientation == VERTICAL)
+              WCExtraPMTRotation->rotateY(0.*deg); //if mPMT: vertical/aligned to wall
+            else if(orientation == HORIZONTAL)
+              WCExtraPMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
+            WCExtraPMTRotation->rotateX((2*pi-totalAngle)/2.-barrelPhiOffset);//align the PMT with the Cell
+            G4double dth = atan((towerBSRmin[iz+1]-towerBSRmin[iz])/(mainAnnulusZ[iz+1]-mainAnnulusZ[iz]));
+            if(orientation == PERPENDICULAR)
+              WCExtraPMTRotation->rotateY(-dth); 
+            else if(orientation == VERTICAL)
+              WCExtraPMTRotation->rotateY(-dth); 
+
             if (readFromTable && !pmtUse[PMTID]) // skip the placement if not in use
             {
               PMTID++;
@@ -3584,7 +3588,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
             {
               G4double newPhi = atan2(pmtPos[PMTID].y(),pmtPos[PMTID].x())+(2*pi-totalAngle)/2.-barrelPhiOffset;
               PMTPosition.setY(newR*tan(newPhi) + G4RandGauss::shoot(0,pmtPosVar));
-              G4cout<<"Annulus tower PMTID = "<<PMTID<<", Position = "<<pmtPos[PMTID].x()<<" "<<pmtPos[PMTID].y()<<" "<<pmtPos[PMTID].z()<<G4endl;
+              G4cout<<"Annulus tower PMTID = "<<PMTID<<", Position = "<<pmtPos[PMTID].x()<<" "<<pmtPos[PMTID].y()<<" "<<pmtPos[PMTID].z()<<", Rotation = "<<pmtRotaton[PMTID]<<G4endl;
+              WCExtraPMTRotation->rotateZ(pmtRotaton[PMTID]); 
             }
             PMTID++;
 
@@ -4674,18 +4679,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   G4double yoffset;
   G4int    icopy = 0;
 
-  G4RotationMatrix* WCCapPMTRotation = new G4RotationMatrix;
-  //if mPMT: perp to wall
-  if(orientation == PERPENDICULAR){
-    if(zflip==-1){
-      WCCapPMTRotation->rotateY(180.*deg); 
-    }
-  }
-  else if (orientation == VERTICAL)
-	WCCapPMTRotation->rotateY(90.*deg);
-  else if (orientation == HORIZONTAL)
-	WCCapPMTRotation->rotateX(90.*deg);
-
   // loop over the cap
   if(placeCapPMTs){
     G4int CapNCell = WCCapEdgeLimit/WCCapPMTSpacing + 2;
@@ -4695,6 +4688,18 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 #endif
     for ( int i = -CapNCell ; i <  CapNCell; i++) {
       for (int j = -CapNCell ; j <  CapNCell; j++)   {
+
+        G4RotationMatrix* WCCapPMTRotation = new G4RotationMatrix;
+        //if mPMT: perp to wall
+        if(orientation == PERPENDICULAR){
+          if(zflip==-1){
+            WCCapPMTRotation->rotateY(180.*deg); 
+          }
+        }
+        else if (orientation == VERTICAL)
+        WCCapPMTRotation->rotateY(90.*deg);
+        else if (orientation == HORIZONTAL)
+        WCCapPMTRotation->rotateX(90.*deg);
 
         // Jun. 04, 2020 by M.Shinoki
         // For IWCD (NuPRISM_mPMT Geometry)
@@ -4723,7 +4728,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
           {
             xoffset = pmtPos[PMTID].x() + G4RandGauss::shoot(0,pmtPosVar);
             yoffset = pmtPos[PMTID].y() + G4RandGauss::shoot(0,pmtPosVar);
-            G4cout<<"Cap PMTID = "<<PMTID<<", Position = "<<pmtPos[PMTID].x()<<" "<<pmtPos[PMTID].y()<<" "<<pmtPos[PMTID].z()<<G4endl;
+            G4cout<<"Cap PMTID = "<<PMTID<<", Position = "<<pmtPos[PMTID].x()<<" "<<pmtPos[PMTID].y()<<" "<<pmtPos[PMTID].z()<<", Rotation = "<<pmtRotaton[PMTID]<<G4endl;
+            WCCapPMTRotation->rotateZ(pmtRotaton[PMTID]); 
           }
           PMTID++;
           cellpos.setX(xoffset);
@@ -4775,21 +4781,23 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     {
       G4double phi_offset = (iphi+0.5)*dPhi+barrelPhiOffset;
       G4double dth = atan((borderAnnulusRmin[2]-borderAnnulusRmin[1])/(borderAnnulusZ[2]-borderAnnulusZ[1]));
-      G4RotationMatrix* PMTRotation = new G4RotationMatrix;
-      if(orientation == PERPENDICULAR)
-        PMTRotation->rotateY(90.*deg); //if mPMT: perp to wall
-      else if(orientation == VERTICAL)
-        PMTRotation->rotateY(0.*deg); //if mPMT: vertical/aligned to wall
-      else if(orientation == HORIZONTAL)
-        PMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
-      PMTRotation->rotateX(-phi_offset);//align the PMT with the Cell
-      if(orientation == PERPENDICULAR)
-        PMTRotation->rotateY(-dth); 
-      else if(orientation == VERTICAL)
-        PMTRotation->rotateY(-dth); 
 
       for(G4double i = 0; i < WCPMTperCellHorizontal; i++){
         for(G4double j = 0; j < WCPMTperCellVertical; j++){
+
+          G4RotationMatrix* PMTRotation = new G4RotationMatrix;
+          if(orientation == PERPENDICULAR)
+            PMTRotation->rotateY(90.*deg); //if mPMT: perp to wall
+          else if(orientation == VERTICAL)
+            PMTRotation->rotateY(0.*deg); //if mPMT: vertical/aligned to wall
+          else if(orientation == HORIZONTAL)
+            PMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
+          PMTRotation->rotateX(-phi_offset);//align the PMT with the Cell
+          if(orientation == PERPENDICULAR)
+            PMTRotation->rotateY(-dth); 
+          else if(orientation == VERTICAL)
+            PMTRotation->rotateY(-dth); 
+
           G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius,
                 -barrelCellWidth/2.+(i+0.5)*horizontalSpacing + G4RandGauss::shoot(0,pmtPosVar),
                 (-barrelCellHeight/2.+(j+0.5)*verticalSpacing)*zflip + G4RandGauss::shoot(0,pmtPosVar));
@@ -4807,7 +4815,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
           {
             G4double newPhi = atan2(pmtPos[PMTID].y(),pmtPos[PMTID].x())-phi_offset;
             PMTPosition.setY(newR*tan(newPhi) + G4RandGauss::shoot(0,pmtPosVar));
-            G4cout<<"Barrel ring PMTID = "<<PMTID<<", Position = "<<pmtPos[PMTID].x()<<" "<<pmtPos[PMTID].y()<<" "<<pmtPos[PMTID].z()<<G4endl;
+            G4cout<<"Barrel ring PMTID = "<<PMTID<<", Position = "<<pmtPos[PMTID].x()<<" "<<pmtPos[PMTID].y()<<" "<<pmtPos[PMTID].z()<<", Rotation = "<<pmtRotaton[PMTID]<<G4endl;
+            PMTRotation->rotateZ(pmtRotaton[PMTID]); 
           }
           PMTID++;
 
@@ -4843,18 +4852,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 #endif
 
       G4double dth = atan((towerBSRmin[2]-towerBSRmin[1])/(borderAnnulusZ[2]-borderAnnulusZ[1]));
-      G4RotationMatrix* PMTRotation = new G4RotationMatrix;
-      if(orientation == PERPENDICULAR)
-        PMTRotation->rotateY(90.*deg); //if mPMT: perp to wall
-      else if(orientation == VERTICAL)
-        PMTRotation->rotateY(0.*deg); //if mPMT: vertical/aligned to wall
-      else if(orientation == HORIZONTAL)
-        PMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
-      PMTRotation->rotateX((2*pi-totalAngle)/2.-barrelPhiOffset);//align the PMT with the Cell
-      if(orientation == PERPENDICULAR)
-        PMTRotation->rotateY(-dth); 
-      else if(orientation == VERTICAL)
-        PMTRotation->rotateY(-dth); 
                                                   
       G4double towerWidth = (annulusBlackSheetRmin[1]+annulusBlackSheetRmin[2])/2.*tan(2*pi-totalAngle);
 
@@ -4863,6 +4860,20 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 
       for(G4double i = 0; i < (WCBarrelNumPMTHorizontal-WCBarrelRingNPhi*WCPMTperCellHorizontal); i++){
         for(G4double j = 0; j < WCPMTperCellVertical; j++){
+
+          G4RotationMatrix* PMTRotation = new G4RotationMatrix;
+          if(orientation == PERPENDICULAR)
+            PMTRotation->rotateY(90.*deg); //if mPMT: perp to wall
+          else if(orientation == VERTICAL)
+            PMTRotation->rotateY(0.*deg); //if mPMT: vertical/aligned to wall
+          else if(orientation == HORIZONTAL)
+            PMTRotation->rotateX(90.*deg); //if mPMT: horizontal to wall
+          PMTRotation->rotateX((2*pi-totalAngle)/2.-barrelPhiOffset);//align the PMT with the Cell
+          if(orientation == PERPENDICULAR)
+            PMTRotation->rotateY(-dth); 
+          else if(orientation == VERTICAL)
+            PMTRotation->rotateY(-dth); 
+
           G4ThreeVector PMTPosition =  G4ThreeVector(WCIDRadius/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.),
                 towerWidth/2.-(i+0.5)*horizontalSpacingExtra + G4RandGauss::shoot(0,pmtPosVar),
                     (-barrelCellHeight/2.+(j+0.5)*verticalSpacing)*zflip + G4RandGauss::shoot(0,pmtPosVar));
@@ -4880,7 +4891,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
           {
             G4double newPhi = atan2(pmtPos[PMTID].y(),pmtPos[PMTID].x())+(2*pi-totalAngle)/2.-barrelPhiOffset;
             PMTPosition.setY(newR*tan(newPhi) + G4RandGauss::shoot(0,pmtPosVar));
-            G4cout<<"Barrel ring extra PMTID = "<<PMTID<<", Position = "<<pmtPos[PMTID].x()<<" "<<pmtPos[PMTID].y()<<" "<<pmtPos[PMTID].z()<<G4endl;
+            G4cout<<"Barrel ring extra PMTID = "<<PMTID<<", Position = "<<pmtPos[PMTID].x()<<" "<<pmtPos[PMTID].y()<<" "<<pmtPos[PMTID].z()<<", Rotation = "<<pmtRotaton[PMTID]<<G4endl;
+            PMTRotation->rotateZ(pmtRotaton[PMTID]); 
           }
           PMTID++;
 

@@ -18,7 +18,7 @@
 /WCSim/Geometry/RotateBarrelHalfTower true
 
 # True --> default replica method to place PMTs. False --> new placement method 
-/WCSim/PMT/ReplicaPlacement true
+/WCSim/PMT/ReplicaPlacement false
 ############################################################################################
 ##These comments are only useful when using /WCSim/PMT/ReplicaPlacement false
 # Apply random fluctuation to PMT placement. Argument specifies the Gaussian 1 sigma value
@@ -26,7 +26,7 @@
 # Change the ID radius at top, middle and bottom for PMT placement
 /WCSim/PMT/TankRadiusChange 0 0 0 mm
 # Read PMT positions from input file. This overrides the auto positioning
-/WCSim/PMT/PositionFile mPMT-configfiles/mPMTconfig_Position_WCTE_RotateBarrelHalfTower.txt
+/WCSim/PMT/PositionFile data/mPMT_Position_WCTE.txt
 ############################################################################################
 
 # Set Gadolinium doping (concentration is in percent)
