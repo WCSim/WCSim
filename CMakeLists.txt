@@ -93,7 +93,7 @@ endif()
 ##############
 # WCSim compilation options
 ##############
-# Cution: setting a new default value to this variable requires the recompilation of the full package
+# Caution: setting a new default value to this variable requires the recompilation of the full package
 option(WCSim_Geometry_Overlaps_CHECK
   "Toggle GEANT4 overlap checking when placing geometry elements"
   OFF
