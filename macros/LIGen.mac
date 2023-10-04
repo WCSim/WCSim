@@ -103,6 +103,7 @@
 /mygen/injectorType collimator
 /mygen/injectorIdx 1
 #/mygen/injectorFile somefile.json
+#/mygen/photonMode 1
 
 ## change the name of the output root file, default = wcsim.root
 
