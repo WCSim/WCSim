@@ -193,7 +193,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   }
 
   // If this track produces a hit, traverse back through parent trajectories to flag that the parents produce a hit
-  if (anInfo->GetProducesHit()){
+  if (anInfo->GetProducesHit() && saveHitProducingTracks){
       WCSimTrajectory* parentTrajectory = anInfo->GetParentTrajectory();
       while(parentTrajectory != 0 && !parentTrajectory->GetProducesHit()){
           parentTrajectory->SetProducesHit(true);

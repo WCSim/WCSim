@@ -1264,7 +1264,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
     // Process primary tracks or the secondaries from pizero or muons...
 
-    if ( trj->GetSaveFlag() )
+    if ( trj->GetSaveFlag() || trj->GetProducesHit() )
     {
       // initial point of the trajectory
       G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
@@ -1802,7 +1802,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 
     // Process primary tracks or the secondaries from pizero or muons...
 
-    if ( trj->GetSaveFlag() )
+    if ( trj->GetSaveFlag() || trj->GetProducesHit() )
     {
       // initial point of the trajectory
       G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
@@ -2222,7 +2222,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
       // Particles: pi0, pi+-, kaons, NEW (protons and neutrons)
       // Gamma > 50 MeV, new mu+- > CherenkovThreshold
       // Add later?: https://twiki.cern.ch/twiki/bin/view/Geant4/LoweAtomicDeexcitation (neutron capture and O16)
-      if(trj->GetSaveFlag() ){
+      if( trj->GetSaveFlag() || trj->GetProducesHit() ){
 	// initial point of the trajectory
 	G4TrajectoryPoint* init_pt =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
 
