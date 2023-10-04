@@ -1,0 +1,115 @@
+#Sample setup macro with no visualization
+
+/run/verbose 0
+/tracking/verbose 0
+/hits/verbose 0
+
+/WCSim/random/seed 3254
+
+# HyperK
+/WCSim/WCgeom HyperK_HybridmPMT_WithOD
+
+# HyperK Outer Detector
+/WCSim/HyperKOD/PMTODRadius 3inch
+/WCSim/HyperKOD/ODLateralWaterDepth 1 m
+/WCSim/HyperKOD/ODHeightWaterDepth 2 m
+/WCSim/HyperKOD/ODDeadSpace 600 mm
+/WCSim/HyperKOD/ODTyvekSheetThickness 1 mm
+/WCSim/HyperKOD/ODWLSPlatesThickness 6 mm
+/WCSim/HyperKOD/ODWLSPlatesLength 30 cm
+#/WCSim/HyperKOD/PMTODperCellHorizontal 3
+/WCSim/HyperKOD/PMTODperCellHorizontal 0
+/WCSim/HyperKOD/PMTODperCellVertical 0
+/WCSim/HyperKOD/PMTODPercentCoverage 0.22
+#/WCSim/HyperKOD/PMTODPercentCoverage 50
+/WCSim/HyperKOD/ODPMTShift 0 m
+#/WCSim/HyperKOD/DeactivateWLS
+
+# Update geom
+/WCSim/Construct # This must be uncommented in order to construct a new detector configuration.
+
+#Added for the PMT QE option 08/17/10 (XQ)
+# 1. Stacking only mean when the photon is generated
+# the QE is applied to reduce the total number of photons
+# 2. Stacking and sensitivity detector
+# In the stacking part, the maximum QE is applied to reduce
+# the total number of photons
+# On the detector side, the rest of QE are applied according to QE/QE_max
+# distribution. This option is in particular important for the WLS
+# 3. The third option means all the QE are applied at the detector
+# Good for the low energy running.
+# 4. Switch off the QE complety, ie. set it at 100%
+#/WCSim/PMTQEMethod     Stacking_Only
+#/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
+/WCSim/PMTQEMethod     SensitiveDetector_Only
+#/WCSim/PMTQEMethod     DoNotApplyQE
+
+#turn on or off the collection efficiency
+/WCSim/PMTCollEff on
+
+# command to choose save or not save the pi0 info 07/03/10 (XQ)
+/WCSim/SavePi0 false
+
+#choose the Trigger & Digitizer type (and options)
+/DAQ/Digitizer SKI
+#/DAQ/Trigger NDigits
+/DAQ/Trigger NoTrigger
+#/DAQ/RelativeHitTime true
+
+#grab the other DAQ options (thresholds, timing windows, etc.)
+/control/execute /data2/kneale/hk-software/wcsim_od_calib/macros/daq.mac
+
+# default dark noise frequency (and conversion factor) is PMT property (NEW), set in the code.
+# Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
+#/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
+#/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
+#/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+#/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20" R3600 dark rate from EGADS nov 2014
+
+# command to multiply the dark rate.
+# Convert dark noise frequency before digitization to after digitization by setting suitable factor
+# Again, this is now a PMT property and can be overridden here
+#/DarkRate/SetConvert 1.367  #For Normal PMT
+#/DarkRate/SetConvert 1.119 #For HPDs
+#/DarkRate/SetConvert 1.126 #For Box and Line PMTs
+
+# Select which time window(s) to add dark noise to
+#/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
+#/DarkRate/SetDarkLow to /DarkRate/SetDarkHigh [time in ns]
+#/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
+#width /DarkRate/SetDarkWindow [time in ns] around each hit
+#i.e. hit time ± (/DarkRate/SetDarkWindow) / 2
+/DarkRate/SetDetectorElement tank
+/DarkRate/SetDarkMode 1
+#/DarkRate/SetDarkLow 0
+#/DarkRate/SetDarkHigh 100000
+/DarkRate/SetDarkWindow 4000
+/DarkRate/SetDarkRate 0 kHz
+
+/DarkRate/SetDetectorElement OD
+/DarkRate/SetDarkMode 1
+#/DarkRate/SetDarkLow 0
+#/DarkRate/SetDarkHigh 100000
+/DarkRate/SetDarkWindow 4000
+/DarkRate/SetDarkRate 0 kHz
+
+#Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
+#/control/execute /home/kneale/hk-software/wcsim_od_calib/macros/visOGLQT-OD.mac
+#/control/execute /home/kneale/hk-software/wcsim_od_calib/macros/visRayTracer.mac
+
+
+/mygen/generator lightinjector
+/mygen/nphotons 10000
+/mygen/injectorType collimator
+/mygen/injectorIdx 1
+#/mygen/injectorFile somefile.json
+
+## change the name of the output root file, default = wcsim.root
+
+/WCSimIO/RootFile /home/kneale/hk-software/wcsim_devel/wcsim_LIGen.root
+
+## set a timer running on WCSimRunAction
+#/WCSimIO/Timer false
+
+/run/beamOn 10000
+#exit

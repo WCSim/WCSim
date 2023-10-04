@@ -106,6 +106,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   useCosmics            = false;
   useRadioactiveEvt  	= false;
   useRadonEvt        	= false;
+  useLightInjectorEvt   = false;
 
   //rootracker related variables
   fEvNum = 0;
@@ -185,6 +186,12 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   twindow = 0.;
   openangle = 0.;
   wavelength = 435.;
+
+  //Light injector generator variables (LIGen)
+  LIGen = 0;
+  injectorType = "";
+  injectorIdx = "";
+  injectorFilename = "";
 
   // Time units for vertices
   fTimeUnit=CLHEP::nanosecond;
@@ -744,6 +751,60 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamDir(dir);
       SetBeamPDG(pdg);
     }
+
+  else if (useLightInjectorEvt)
+    {
+
+        // Initialise the light injector once per sim. 
+        // This will get LI settings (position, direction, etc) from the db
+        // and produce a 3D histogram of the LI profile.
+        if ( !LIGen ) {
+            LIGen = new WCSimLIGen();
+            LIGen->SetPhotonMode(photonMode);
+            LIGen->ReadFromDatabase(injectorType,injectorIdx,injectorFilename);
+        }
+
+        // Generate the required number of photons with
+        // directions distributed as per the LI profile        
+        // and populate the G4Event
+
+        G4ThreeVector vtx = LIGen->GetInjectorPosition();
+        G4ThreeVector dir = LIGen->GetInjectorDirection();
+        G4int pdg = 0;
+        G4double E = LIGen->GetPhotonEnergy();
+        LIGen->GeneratePhotons(anEvent,nphotons);
+
+        // Save the mc properties for validation
+        // Limit of <900 photons due to size of array in jhfntuple
+        /*
+        if (nphotons<900){
+            for (int iphoton = 0; iphoton<nphotons; iphoton++){
+                //G4cout << " vertex " << iphoton << " of " << nphotons << " (" << vtx << ", " << E << ", " << dir << ", " << pdg << ")" << G4endl;
+                SetNvtxs(nphotons);
+                G4ThreeVector P = anEvent->GetPrimaryVertex(iphoton)->GetPrimary()->GetMomentum();
+                vtx             = anEvent->GetPrimaryVertex(iphoton)->GetPosition();
+                pdg             = anEvent->GetPrimaryVertex(iphoton)->GetPrimary()->GetPDGcode();
+                dir             = P.unit();
+                E               = std::sqrt((P.dot(P)));
+                SetVtxs(iphoton,vtx);
+                SetBeamEnergy(E,iphoton);
+                SetBeamDir(dir,iphoton);
+                SetBeamPDG(pdg,iphoton);
+            }
+
+        }
+        */
+
+        // save injector properties
+        G4cout << " Saving injector properties: " << vtx << ", " << E << ", " << dir << ", " << pdg << G4endl;
+        SetVtx(vtx);
+        SetBeamDir(dir);
+        SetBeamEnergy(energy);
+        SetBeamPDG(pdg);
+
+    }
+
+
   else if (useGPSEvt)
     {
       MyGPS->GeneratePrimaryVertex(anEvent);

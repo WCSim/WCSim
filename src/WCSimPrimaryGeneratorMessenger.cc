@@ -14,10 +14,10 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
 
   genCmd = new G4UIcmdWithAString("/mygen/generator",this);
   genCmd->SetGuidance("Select primary generator.");
-  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, cosmics, radioactive, rootracker, radon, injector, gamma-conversion");
+  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, cosmics, radioactive, rootracker, radon, injector, lightinjector, gamma-conversion");
   genCmd->SetParameterName("generator",true);
   genCmd->SetDefaultValue("muline");
-  genCmd->SetCandidates("muline gun laser gps cosmics radioactive rootracker radon injector, gamma-conversion");
+  genCmd->SetCandidates("muline gun laser gps cosmics radioactive rootracker radon, injector, lightinjector gamma-conversion");
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
   fileNameCmd->SetGuidance("Select the file of vectors.");
@@ -82,7 +82,52 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   injectorWavelengthCmd->SetGuidance("Wavelength of the injector laser in nm");
   injectorWavelengthCmd->SetParameterName("injector_wavelength",true);
   injectorWavelengthCmd->SetDefaultValue(435.);
-    
+   
+
+  // Options for alternative light injector (collimator,diffuser, laser ball)
+  // Set the light injector type, index (placeholders)
+  // retrieves position, direction and profile from DB
+
+  lightInjectorCmd = new G4UIcmdWithAString("/mygen/injectorType",this);
+  lightInjectorCmd->SetGuidance("Select light injector");
+  lightInjectorCmd->SetGuidance("[usage] /mygen/injectorType injector_type");
+  lightInjectorCmd->SetGuidance(" injectorType : collimator, diffuser or laserball");
+  lightInjectorCmd->SetParameterName("injectorType",true);
+  lightInjectorCmd->SetCandidates("collimator diffuser laserball");
+  lightInjectorCmd->SetDefaultValue("collimator");
+
+  lightInjectorIdxCmd = new G4UIcmdWithAString("/mygen/injectorIdx",this);
+  lightInjectorIdxCmd->SetGuidance("Set the ID number of the light injector you want to use");
+  lightInjectorIdxCmd->SetGuidance("[usage] /mygen/injectorIdx index");
+  lightInjectorIdxCmd->SetGuidance("see data/lightInjectors.json for indices for now");
+  lightInjectorIdxCmd->SetGuidance(" injectorIdx : 0,1,2, ... ");
+  lightInjectorIdxCmd->SetParameterName("injectorIdx",true);
+  lightInjectorIdxCmd->SetDefaultValue("0");
+
+  lightInjectorNPhotonsCmd = new G4UIcmdWithAnInteger("/mygen/nphotons", this);
+  lightInjectorNPhotonsCmd->SetGuidance("Set the number of photons per pulse of the light injector");
+  lightInjectorNPhotonsCmd->SetGuidance("[usage] /mygen/nphotons nphotons");
+  lightInjectorNPhotonsCmd->SetGuidance(" nphotons : 1000");
+  lightInjectorNPhotonsCmd->SetRange("nphotons>0");
+  lightInjectorNPhotonsCmd->SetParameterName("nphotons",true);
+  lightInjectorNPhotonsCmd->SetDefaultValue(1000);
+
+  lightInjectorFilenameCmd = new G4UIcmdWithAString("/mygen/injectorFilename", this);
+  lightInjectorFilenameCmd->SetGuidance("Set the file to read the injector profile from");
+  lightInjectorFilenameCmd->SetGuidance("[usage] /mygen/injectorFile datafile");
+  lightInjectorFilenameCmd->SetGuidance(" datafile: lightInjectors.json");
+  lightInjectorFilenameCmd->SetParameterName("injectorFilename",true);
+  lightInjectorFilenameCmd->SetDefaultValue("");
+
+  lightInjectorModeCmd = new G4UIcmdWithAnInteger("/mygen/photonMode", this);
+  lightInjectorModeCmd->SetGuidance("Set whether or not to simulate photons from a list");
+  lightInjectorModeCmd->SetGuidance("Will generate a profile from the database if not set");
+  lightInjectorModeCmd->SetGuidance("[usage] /mygen/photonMode bool");
+  lightInjectorModeCmd->SetGuidance(" bool: 0 or 1");
+  lightInjectorModeCmd->SetParameterName("photonMode",true);
+  lightInjectorModeCmd->SetDefaultValue(0);
+
+ 
   isotopeCmd = new G4UIcmdWithAString("/mygen/isotope",this);
   isotopeCmd->SetGuidance("Select properties of radioactive isotope");
   isotopeCmd->SetGuidance("[usage] /mygen/isotope ISOTOPE LOCATION ACTIVITY");
@@ -130,6 +175,10 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete injectorTimeCmd;
   delete openingAngleCmd;
   delete injectorWavelengthCmd;
+  delete lightInjectorCmd;
+  delete lightInjectorIdxCmd;
+  delete lightInjectorNPhotonsCmd;
+  delete lightInjectorFilenameCmd;
 }
 
 void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
@@ -144,6 +193,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -156,6 +206,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -168,6 +219,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(true);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -180,6 +232,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(true);
       myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -192,6 +245,20 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetInjectorEvtGenerator(true);
+      myAction->SetLightInjectorEvtGenerator(false);
+      myAction->SetGPSEvtGenerator(false);
+      myAction->SetCosmicsGenerator(false);
+      myAction->SetRadioactiveEvtGenerator(false);
+      myAction->SetRadonEvtGenerator(false);
+    }
+    else if ( newValue == "lightinjector")   // L.Kneale: injector profile from db
+    {
+      myAction->SetMulineEvtGenerator(false);
+      myAction->SetGunEvtGenerator(false);
+      myAction->SetRootrackerEvtGenerator(false);
+      myAction->SetLaserEvtGenerator(false);
+      myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(true);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -204,6 +271,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(true);
       myAction->SetNeedConversion(false);	    
       myAction->SetCosmicsGenerator(false);
@@ -217,6 +285,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetCosmicsGenerator(true);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -229,6 +298,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(true);
@@ -241,6 +311,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -252,6 +323,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetGunEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(true);
       myAction->SetNeedConversion(true);
     }	  
@@ -358,6 +430,32 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     {
       myAction->SetInjectorWavelength(injectorWavelengthCmd->GetNewDoubleValue(newValue));
     }
+  
+  // light injector commands (injector profile from db)
+  if ( command==lightInjectorCmd )
+  {
+    myAction->SetLightInjectorType(newValue);
+  }
+
+  if ( command==lightInjectorIdxCmd )
+  {
+    myAction->SetLightInjectorIdx(newValue);
+  }
+
+  if ( command==lightInjectorNPhotonsCmd )
+  {
+    myAction->SetLightInjectorNPhotons(lightInjectorNPhotonsCmd->GetNewIntValue(newValue));
+  }
+
+  if ( command==lightInjectorFilenameCmd )
+  {
+    myAction->SetLightInjectorFilename(newValue);
+  }
+
+  if (command==lightInjectorModeCmd )
+  {
+    myAction->SetLightInjectorMode(lightInjectorModeCmd->GetNewIntValue(newValue));
+  }
 
 }
 
@@ -375,6 +473,8 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
       { cv = "laser"; }   //T. Akiri: Addition of laser
     else if(myAction->IsUsingInjectorEvtGenerator())
       { cv = "injector"; }   
+    else if(myAction->IsUsingLightInjectorEvtGenerator())
+      { cv = "lightinjector"; }
     else if(myAction->IsUsingGPSEvtGenerator())
        { cv = myAction->NeedsConversion() ? "gamma-conversion" : "gps"; }
     else if(myAction->IsUsingRootrackerEvtGenerator())
