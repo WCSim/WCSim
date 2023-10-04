@@ -97,15 +97,15 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 
   messenger = new WCSimPrimaryGeneratorMessenger(this);
 
-  useMulineEvt 		= true;
+  useMulineEvt 		  = true;
   useRootrackerEvt 	= false;
-  useGunEvt    		= false;
-  useLaserEvt  		= false;
+  useGunEvt    		  = false;
+  useLaserEvt  		  = false;
   useInjectorEvt  	= false;
-  useGPSEvt    		= false;
-  useCosmics            = false;
-  useRadioactiveEvt  	= false;
-  useRadonEvt        	= false;
+  useGPSEvt    		  = false;
+  useCosmics        = false;
+  useRadioactiveEvt = false;
+  useRadonEvt       = false;
 
   //rootracker related variables
   fEvNum = 0;
@@ -114,66 +114,6 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 	  
   needConversion = false;
   foundConversion = true;	  
-
-  // Create the relevant histograms to generate muons
-  // according to SuperK flux extrapolated at HyperK site
-  altCosmics = 2*myDC->GetWCIDHeight();
-  G4cout << "altCosmics : " << altCosmics << G4endl;
-  if (inputCosmicsFile.is_open())
-    inputCosmicsFile.close();
-
-
-  if (useCosmics) {
-    inputCosmicsFile.open(cosmicsFileName, std::fstream::in);
-
-    if (!inputCosmicsFile.is_open()) {
-      G4cout << "Cosmics data file " << cosmicsFileName << " not found" << G4endl;
-      exit(-1);
-    } else {
-      G4cout << "Cosmics data file " << cosmicsFileName << " found" << G4endl;
-      string line;
-      vector<string> token(1);
-
-      double binCos, binPhi;
-      //double cosThetaMean, cosThetaMin, cosThetaMax;
-      //double phiMean, phiMin, phiMax;
-      double flux;
-      double Emean;
-
-      hFluxCosmics = new TH2D("hFluxCosmics","HK Flux", 180,0,360,100,0,1);
-      hFluxCosmics->GetXaxis()->SetTitle("#phi (deg)");
-      hFluxCosmics->GetYaxis()->SetTitle("cos #theta");
-      hEmeanCosmics = new TH2D("hEmeanCosmics","HK Flux", 180,0,360,100,0,1);
-      hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
-      hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
-
-      while ( getline(inputCosmicsFile,line) ){
-        token = tokenize(" $", line);
-
-        binCos=(atof(token[0]));
-        binPhi=(atof(token[1]));
-        /*
-        cosThetaMean=(atof(token[2]));
-        cosThetaMin=(atof(token[3]));
-        cosThetaMax=(atof(token[4]));
-        phiMean=(atof(token[5]));
-        phiMin=(atof(token[6]));
-        phiMax=(atof(token[7]));
-        */
-        flux=(atof(token[8]));
-        Emean=(atof(token[9]));
-
-        hFluxCosmics->SetBinContent(binPhi,binCos,flux);
-        hEmeanCosmics->SetBinContent(binPhi,binCos,Emean);
-      }
-
-      TFile *file = new TFile("cosmicflux.root","RECREATE");
-      hFluxCosmics->Write();
-      hEmeanCosmics->Write();
-      file->Close();
-  }
-
-  }
 
   // Radioactive and Radon generator variables:
   radioactive_sources.clear();
@@ -191,6 +131,67 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   // Time units for vertices
   fTimeUnit=CLHEP::nanosecond;
 }
+
+
+void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
+  // Create the relevant histograms to generate muons
+  // according to SuperK flux extrapolated at HyperK site
+
+  altCosmics = 2*myDetector->GetWCIDHeight();
+  G4cout << "altCosmics : " << altCosmics << G4endl;
+  if (inputCosmicsFile.is_open()) inputCosmicsFile.close();
+
+  inputCosmicsFile.open(cosmicsFileName, std::fstream::in);
+
+  if (!inputCosmicsFile.is_open()) {
+    G4cout << "Cosmics data file " << cosmicsFileName << " not found" << G4endl;
+    exit(-1);
+  } 
+  else {
+    G4cout << "Cosmics data file " << cosmicsFileName << " found" << G4endl;
+    string line;
+    vector<string> token(1);
+
+    double binCos, binPhi;
+    //double cosThetaMean, cosThetaMin, cosThetaMax;
+    //double phiMean, phiMin, phiMax;
+    double flux;
+    double Emean;
+
+    hFluxCosmics = new TH2D("hFluxCosmics","HK Flux", 180,0,360,100,0,1);
+    hFluxCosmics->GetXaxis()->SetTitle("#phi (deg)");
+    hFluxCosmics->GetYaxis()->SetTitle("cos #theta");
+    hEmeanCosmics = new TH2D("hEmeanCosmics","HK Flux", 180,0,360,100,0,1);
+    hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
+    hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
+
+    while ( getline(inputCosmicsFile,line) ){
+      token = tokenize(" $", line);
+
+      binCos=(atof(token[0]));
+      binPhi=(atof(token[1]));
+      /*
+      cosThetaMean=(atof(token[2]));
+      cosThetaMin=(atof(token[3]));
+      cosThetaMax=(atof(token[4]));
+      phiMean=(atof(token[5]));
+      phiMin=(atof(token[6]));
+      phiMax=(atof(token[7]));
+      */
+      flux=(atof(token[8]));
+      Emean=(atof(token[9]));
+
+      hFluxCosmics->SetBinContent(binPhi,binCos,flux);
+      hEmeanCosmics->SetBinContent(binPhi,binCos,Emean);
+    }
+
+    TFile *file = new TFile("cosmicflux.root","RECREATE");
+    hFluxCosmics->Write();
+    hEmeanCosmics->Write();
+    file->Close();
+  }
+}
+
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
 {
@@ -911,6 +912,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     }
   else if(useCosmics){
+
+    if (hFluxCosmics == nullptr) 
+      Create_cosmics_histogram();
 
     //////////////////
     // DEBUG PRINTS
