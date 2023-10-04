@@ -214,7 +214,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
         for (int iphoton = 0; iphoton<nphotons; iphoton++){
  
             // Generate random time for this photon in 20 ns pulse window
-            G4double time = G4RandFlat::shoot(20.0,40.0);
+            G4double time = G4RandFlat::shoot(20.0,40.0)*ns;
          
             // Get a random theta and phi from the LI profile
             double theta;
