@@ -1329,40 +1329,36 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       }
 
       // Add the track to the TClonesArray, watching out for times
-      if ( trj->GetCreatorProcessName()=="nCapture" ?
-           detectorConstructor->SaveCaptureInfo() :
-           ! ( (ipnu==22)&&(parentType==999)) ) {
-          int choose_event = 0;
+      int choose_event = 0;
 
-          if (ngates) {
+      if (ngates) {
 
-              if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
-              if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
-              if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
+          if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
+          if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
+          if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
 
-          }
-
-          wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
-          wcsimrootevent->AddTrack(ipnu,
-                                   flag,
-                                   mass,
-                                   mommag,
-                                   energy,
-                                   startvol,
-                                   stopvol,
-                                   dir,
-                                   pdir,
-                                   stop,
-                                   start,
-                                   parentType,
-                                   ttime,
-                                   id,
-                                   idPrnt,
-                                   trj->GetBoundaryPoints(),
-                                   trj->GetBoundaryKEs(),
-                                   trj->GetBoundaryTimes(),
-                                   trj->GetBoundaryTypesAsInt());
       }
+
+      wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
+      wcsimrootevent->AddTrack(ipnu,
+                               flag,
+                               mass,
+                               mommag,
+                               energy,
+                               startvol,
+                               stopvol,
+                               dir,
+                               pdir,
+                               stop,
+                               start,
+                               parentType,
+                               ttime,
+                               id,
+                               idPrnt,
+                               trj->GetBoundaryPoints(),
+                               trj->GetBoundaryKEs(),
+                               trj->GetBoundaryTimes(),
+                               trj->GetBoundaryTypesAsInt());
 
 
       if (detectorConstructor->SavePi0Info())
@@ -1865,41 +1861,36 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       }
 
       // Add the track to the TClonesArray, watching out for times
-      if ( trj->GetCreatorProcessName()=="nCapture" ?
-           detectorConstructor->SaveCaptureInfo() :
-           ! ( (ipnu==22)&&(parentType==999)) ) {
-          int choose_event = 0;
+      int choose_event = 0;
 
-          if (ngates) {
+      if (ngates) {
 
-              if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
-              if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
-              if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
+          if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
+          if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
+          if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
 
-          }
-
-          wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
-          wcsimrootevent->AddTrack(ipnu,
-                                   flag,
-                                   mass,
-                                   mommag,
-                                   energy,
-                                   startvol,
-                                   stopvol,
-                                   dir,
-                                   pdir,
-                                   stop,
-                                   start,
-                                   parentType,
-                                   ttime,
-                                   id,
-                                   idPrnt,
-                                   trj->GetBoundaryPoints(),
-                                   trj->GetBoundaryKEs(),
-                                   trj->GetBoundaryTimes(),
-                                   trj->GetBoundaryTypesAsInt());
       }
 
+      wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
+      wcsimrootevent->AddTrack(ipnu,
+                               flag,
+                               mass,
+                               mommag,
+                               energy,
+                               startvol,
+                               stopvol,
+                               dir,
+                               pdir,
+                               stop,
+                               start,
+                               parentType,
+                               ttime,
+                               id,
+                               idPrnt,
+                               trj->GetBoundaryPoints(),
+                               trj->GetBoundaryKEs(),
+                               trj->GetBoundaryTimes(),
+                               trj->GetBoundaryTypesAsInt());
 
       if (detectorConstructor->SavePi0Info())
       {
