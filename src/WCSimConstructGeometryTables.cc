@@ -592,6 +592,8 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
   pmtUse.clear();
   pmtType.clear();
   pmtRotaton.clear();
+  pmtSection.clear();
+  nPMTsRead = 0;
   if (!readFromTable) return;
   std::ifstream Data(pmtPositionFile.c_str(),std::ios_base::in);
   if (!Data)
@@ -611,9 +613,9 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
 	std::getline(Data, str);
 	std::istringstream stream(str);
 	while (std::getline(stream,tmp,' ')) Column++;
-	if (Column!=9)
+	if (Column!=10)
   {
-    G4cerr<<"Number of column = "<<Column<<" which is not equal to 9. "<<G4endl;
+    G4cerr<<"Number of column = "<<Column<<" which is not equal to 10. "<<G4endl;
     G4cerr<<"Inappropriate input --> Exiting..."<<G4endl;
     exit(-1);
   }
@@ -621,15 +623,17 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
 
   G4ThreeVector pos, dir;
   double angle;
-  int ptype, UsePMT;
+  int ptype, UsePMT, sect;
   while (!Data.eof())
   {
-    Data>>ptype>>pos[0]>>pos[1]>>pos[2]>>dir[0]>>dir[1]>>dir[2]>>angle>>UsePMT;
+    Data>>ptype>>sect>>pos[0]>>pos[1]>>pos[2]>>dir[0]>>dir[1]>>dir[2]>>angle>>UsePMT;
     pmtPos.push_back(pos);
     pmtDir.push_back(dir);
     pmtUse.push_back(UsePMT);
     pmtType.push_back(ptype);
+    pmtSection.push_back(sect);
     pmtRotaton.push_back(angle*deg);
+    nPMTsRead++;
   }
   Data.close();
 }
