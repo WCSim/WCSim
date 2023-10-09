@@ -9,6 +9,7 @@ class G4UIdirectory;
 class G4UIcmdWithADouble;
 class G4UIcmdWithAnInteger;
 class G4UIcmdWithAString;
+class G4UIcmdWithABool;
 class WCSimTrackingAction;
 
 class WCSimTrackingMessenger: public G4UImessenger
@@ -27,6 +28,7 @@ private:
   G4UIcmdWithADouble* fractionPhotonsToDraw;
   G4UIcmdWithAnInteger* particleToTrack;
   G4UIcmdWithAString* processToTrack;
+  G4UIcmdWithABool* saveHitProducingTracks;
 };
 
 #endif
