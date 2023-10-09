@@ -64,7 +64,7 @@ void WCSimTrackingMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   else if(command == saveHitProducingTracks){
     if(saveHitProducingTracks->GetNewBoolValue(newValue)){
         G4cout << "Tracking all particles if they or any particle in their chain of secondaries produces a Cherenkov hit" << G4endl;
-        myTracking->SetSaveHitProducingTracks(save);
+        myTracking->SetSaveHitProducingTracks(true);
     }
     else{
         G4cout << "Disabling feature to track all particles if they or any particle in their chain of secondaries produces a Cherenkov hit" << G4endl;
