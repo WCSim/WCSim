@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cmake --version
+cmake3 --version
 
 wcsim_name=${PWD##*/}
 branch_name=$(git rev-parse --abbrev-ref HEAD)
@@ -25,7 +25,7 @@ if [ ! -d ${build_directory} ]; then
 	mkdir -p ${install_directory}
 	
 	cd ${build_directory}
-	cmake -DCMAKE_PREFIX_PATH=${G4INSTALLDIR} -DCMAKE_INSTALL_PREFIX=${install_directory} ${wcsim_directory}
+	cmake3 -DCMAKE_PREFIX_PATH=${G4INSTALLDIR} -DCMAKE_INSTALL_PREFIX=${install_directory} ${wcsim_directory}
 	
 #	cp -r ${wcsim_directory}/sample-root-scripts ${build_directory}/.
 else 
