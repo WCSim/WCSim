@@ -205,11 +205,6 @@ public:
   inline void SetInjectorOpeningAngle(G4double angle) { openangle = angle;}
   inline void SetInjectorWavelength(G4double wl) { wavelength = wl;}
 
-  inline void SetDataTableEvtGenerator(G4bool choice) {
-    useDataTableEvt = choice;
-  }
-  inline G4bool IsUsingDataTableEvtGenerator() { return useDataTableEvt; }
-
   inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
   inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }
 

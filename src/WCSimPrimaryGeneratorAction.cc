@@ -924,15 +924,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       exit(-1);
     }
 
-    // Flag for first event
-    G4bool firstParticle = true;
-
-    // Line position before the next particle
-    std::streampos lastLinePos;
-
-    // Counter for number of particles per event
-    G4int nParticles = 0;
-
     // Read the data table
     std::string line;
 
@@ -949,38 +940,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       buffer >> index >> pdgid >> ene >> pos[0] >> pos[1] >> pos[2] >> dir[0] >>
           dir[1] >> dir[2] >> t;
 
-      if (index == 0 && firstParticle == false) {
-        // Go back a line
-        inputFile.seekg(lastLinePos);
-        break;
-      }
-      lastLinePos = inputFile.tellg();
-
-      nParticles++;
-
-      // Print out the first three particles in the event to be generated
-      if (index < 3) {
-        // Use the kinetic energy, not total
-        G4cout << G4endl
-               << "=====================================================\n"
-               << "Generating particle " << index << " with id = " << pdgid
-               << "\n    with kinetic energy = " << ene
-               << "\n    MeV, position = " << pos[0] << ", " << pos[1] << ", "
-               << pos[2] << ",\n    and direction = " << dir[0] << ", "
-               << dir[1] << ", " << dir[2]
-               << "\n====================================================="
-               << G4endl;
-      }
-
-      // No longer on first particle
-      firstParticle = false;
-
       // Use the kinetic energy, not total
-      // G4cout << "Generating particle = " << pdgid
-      //        << " with kinetic energy = " << ene
-      //        << " MeV, position = " << pos[0] << ", " << pos[1] << ", "
-      //        << pos[2] << ", and direction = " << dir[0] << ", " << dir[1]
-      //        << ", " << dir[2] << G4endl;
+      G4cout << "Generating particle = " << pdgid
+             << " with kinetic energy = " << ene
+             << " MeV, position = " << pos[0] << ", " << pos[1] << ", "
+             << pos[2] << ", and direction = " << dir[0] << ", " << dir[1]
+             << ", " << dir[2] << G4endl;
 
       // Set the particle gun
       // Particle type
@@ -996,9 +961,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       // Set the event
       particleGun->GeneratePrimaryVertex(anEvent);
     }
-
-    G4cout << "Number of particles generated for this event = " << nParticles
-           << G4endl;
 
   } else if (useCosmics) {
 
