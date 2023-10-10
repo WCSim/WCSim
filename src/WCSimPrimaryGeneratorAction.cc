@@ -97,10 +97,10 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 
   messenger = new WCSimPrimaryGeneratorMessenger(this);
 
-  useMulineEvt 		= true;
+  useMulineEvt 		  = true;
   useRootrackerEvt 	= false;
-  useGunEvt    		= false;
-  useLaserEvt  		= false;
+  useGunEvt    		  = false;
+  useLaserEvt  		  = false;
   useInjectorEvt  	= false;
   useGPSEvt    		= false;
   useCosmics            = false;
@@ -116,20 +116,45 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   needConversion = false;
   foundConversion = true;	  
 
+  // Radioactive and Radon generator variables:
+  radioactive_sources.clear();
+  myRn222Generator	= 0;
+  fRnScenario		= 0;
+  fRnSymmetry		= 1;
+
+  //injector related variables
+  nPhotons = 1;
+  injectorOnIdx = 0;
+  twindow = 0.;
+  openangle = 0.;
+  wavelength = 435.;
+
+  //Light injector generator variables (LIGen)
+  LIGen = 0;
+  injectorType = "";
+  injectorIdx = "";
+  injectorFilename = "";
+
+  // Time units for vertices
+  fTimeUnit=CLHEP::nanosecond;
+}
+
+
+void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
   // Create the relevant histograms to generate muons
   // according to SuperK flux extrapolated at HyperK site
-  altCosmics = 2*myDC->GetWCIDHeight();
-  G4cout << "altCosmics : " << altCosmics << G4endl;
-  if (inputCosmicsFile.is_open())
-    inputCosmicsFile.close();
 
+  altCosmics = 2*myDetector->GetWCIDHeight();
+  G4cout << "altCosmics : " << altCosmics << G4endl;
+  if (inputCosmicsFile.is_open()) inputCosmicsFile.close();
 
   inputCosmicsFile.open(cosmicsFileName, std::fstream::in);
 
   if (!inputCosmicsFile.is_open()) {
     G4cout << "Cosmics data file " << cosmicsFileName << " not found" << G4endl;
-	exit(-1);
-  } else {
+    exit(-1);
+  } 
+  else {
     G4cout << "Cosmics data file " << cosmicsFileName << " found" << G4endl;
     string line;
     vector<string> token(1);
@@ -171,31 +196,9 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     hFluxCosmics->Write();
     hEmeanCosmics->Write();
     file->Close();
-
   }
-
-  // Radioactive and Radon generator variables:
-  radioactive_sources.clear();
-  myRn222Generator	= 0;
-  fRnScenario		= 0;
-  fRnSymmetry		= 1;
-
-  //injector related variables
-  nPhotons = 1;
-  injectorOnIdx = 0;
-  twindow = 0.;
-  openangle = 0.;
-  wavelength = 435.;
-
-  //Light injector generator variables (LIGen)
-  LIGen = 0;
-  injectorType = "";
-  injectorIdx = "";
-  injectorFilename = "";
-
-  // Time units for vertices
-  fTimeUnit=CLHEP::nanosecond;
 }
+
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
 {
@@ -214,8 +217,10 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
   delete particleGun;
   delete MyGPS;   //T. Akiri: Delete the GPS variable
   delete messenger;
-  delete hFluxCosmics;
-  delete hEmeanCosmics;
+  if (useCosmics){
+    delete hFluxCosmics;
+    delete hEmeanCosmics;
+  }
 }
 
 void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -968,6 +973,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     }
   else if(useCosmics){
+
+    if (hFluxCosmics == nullptr) 
+      Create_cosmics_histogram();
 
     //////////////////
     // DEBUG PRINTS

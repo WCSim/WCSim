@@ -175,8 +175,9 @@ private:
 
 
   // Use Histograms to generate cosmics
-  TH2D *hFluxCosmics;
-  TH2D *hEmeanCosmics;
+  void Create_cosmics_histogram();
+  TH2D *hFluxCosmics  = nullptr;
+  TH2D *hEmeanCosmics = nullptr;
 
   // Set cosmics altitude
   G4double altCosmics;
