@@ -740,12 +740,10 @@ private:
   std::vector<G4bool> pmtUse;
   std::vector<G4int> pmtType;
   std::vector<G4int> pmtSection; // 0 = barrel, 1 = top cap, 2 = top border ring, 3 = bottom cap, 4 = bottom border ring
+  std::vector<G4int> pmtmPMTId;
   std::vector<G4double> pmtRotaton;
   std::string pmtPositionFile;
   void ReadGeometryTableFromFile();
-  void ReadExternalmPMTMap(G4String);
-  G4bool useExternlmPMTMapping;
-  std::map<int, int> mPMTIDMapExternal; // maps from internal mPMT ID to external ID scheme
 
   // *** Begin egg-shaped HyperK Geometry ***
 

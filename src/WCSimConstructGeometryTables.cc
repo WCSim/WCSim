@@ -125,19 +125,22 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
     std::string tubeTag;
     int mPMT_pmtno = -1;
     bool foundString = false;
+    int mPMTid = -1;
     //
     
     for (int i=0; i <= aDepth; i++){
       tubeTag += ":" + replicaNoString[i];
       std::string::size_type position = replicaNoString[i].find("pmt-");
       if( position == 0) {
-	foundString = true;
-	mPMT_pmtno = atoi(replicaNoString[i].substr(position+4).c_str())+1;
-	if(mPMT_pmtno == 1) {
-	  if(aPV->GetName()== WCIDCollectionName) totalNum_mPMTs++;
-	  else if(aPV->GetName()== WCIDCollectionName2) totalNum_mPMTs2++;
-	}
+        foundString = true;
+        mPMT_pmtno = atoi(replicaNoString[i].substr(position+4).c_str())+1;
+        if(mPMT_pmtno == 1) {
+          if(aPV->GetName()== WCIDCollectionName) totalNum_mPMTs++;
+          else if(aPV->GetName()== WCIDCollectionName2) totalNum_mPMTs2++;
+        }
       }
+      position = replicaNoString[i].find("WCMultiPMT-");
+      if(position == 0) mPMTid = atoi(replicaNoString[i].substr(position+11).c_str());
     }
     if(!foundString){
       // to distinguish mPMT PMTs from single PMTs:
@@ -160,7 +163,7 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
       // Put the transform for this tube into the map keyed by its ID
       tubeIDMap[totalNumPMTs] = aTransform;
 
-      if (useExternlmPMTMapping) mPMTIDMap[totalNumPMTs] = std::make_pair(mPMTIDMapExternal[totalNum_mPMTs],mPMT_pmtno);
+      if (readFromTable) mPMTIDMap[totalNumPMTs] = std::make_pair(mPMTid,mPMT_pmtno);
       else mPMTIDMap[totalNumPMTs] = std::make_pair(totalNum_mPMTs,mPMT_pmtno);
     }//ID PMT 1
 
@@ -176,6 +179,7 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
       // Put the transform for this tube into the map keyed by its ID
       tubeIDMap2[totalNumPMTs2] = aTransform;
 
+      if (readFromTable) mPMTIDMap2[totalNumPMTs2] = std::make_pair(mPMTid,mPMT_pmtno);
       mPMTIDMap2[totalNumPMTs2] = std::make_pair(totalNum_mPMTs2,mPMT_pmtno);
     }//ID PMT 2
 
@@ -593,6 +597,7 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
   pmtType.clear();
   pmtRotaton.clear();
   pmtSection.clear();
+  pmtmPMTId.clear();
   nPMTsRead = 0;
   if (!readFromTable) return;
   std::ifstream Data(pmtPositionFile.c_str(),std::ios_base::in);
@@ -613,9 +618,9 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
 	std::getline(Data, str);
 	std::istringstream stream(str);
 	while (std::getline(stream,tmp,' ')) Column++;
-	if (Column!=10)
+	if (Column!=11)
   {
-    G4cerr<<"Number of column = "<<Column<<" which is not equal to 10. "<<G4endl;
+    G4cerr<<"Number of column = "<<Column<<" which is not equal to 11. "<<G4endl;
     G4cerr<<"Inappropriate input --> Exiting..."<<G4endl;
     exit(-1);
   }
@@ -623,39 +628,18 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
 
   G4ThreeVector pos, dir;
   double angle;
-  int ptype, UsePMT, sect;
+  int ptype, UsePMT, sect, mpmtid;
   while (!Data.eof())
   {
-    Data>>ptype>>sect>>pos[0]>>pos[1]>>pos[2]>>dir[0]>>dir[1]>>dir[2]>>angle>>UsePMT;
+    Data>>ptype>>mpmtid>>sect>>pos[0]>>pos[1]>>pos[2]>>dir[0]>>dir[1]>>dir[2]>>angle>>UsePMT;
     pmtPos.push_back(pos);
     pmtDir.push_back(dir);
     pmtUse.push_back(UsePMT);
     pmtType.push_back(ptype);
     pmtSection.push_back(sect);
+    pmtmPMTId.push_back(mpmtid);
     pmtRotaton.push_back(angle*deg);
     nPMTsRead++;
   }
   Data.close();
 }
-
-// Read external mPMT mapping
-void WCSimDetectorConstruction::ReadExternalmPMTMap(G4String fname)
-{
-  std::ifstream Data(fname.data(),std::ios_base::in);
-  if (!Data)
-  {
-    G4cerr<<"Cannot open mPMT mapping file "<< fname << " --> Exiting..."<<G4endl;
-    exit(-1);
-  }
-
-  int internalID, externalId;
-  while (!Data.eof())
-  {
-    Data>>internalID>>externalId;
-    mPMTIDMapExternal[internalID] = externalId;
-  }
-  Data.close();
-
-  useExternlmPMTMapping = true;
-}
-

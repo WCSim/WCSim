@@ -3498,13 +3498,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
               pmtname,//"WCPMT",             // its name
               !inExtraTower ? logicWCBarrelAnnulus : logicWCExtraTower,         // its mother volume
               false,                     // no boolean operations
-              copyNo++,
+              pmtmPMTId[i],
               checkOverlapsPMT);             
 #endif                            
         // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
         // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
         // this is still the case.
-
+        copyNo++;
       }
     }
     else // Use auto-positioning algorithm
@@ -4747,13 +4747,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
                 pmtname, // its name 
                 logicWCCap,         // its mother volume
                 false,                 // no boolean os
-                icopy++,               // every PMT need a unique id.
+                pmtmPMTId[i],               // every PMT need a unique id.
                 checkOverlapsPMT);
 #endif          
         // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
         // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
         // this is still the case.
-
+        icopy++;
       }
     }
     else
@@ -4881,12 +4881,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
                 pmtname,             // its name
                 !inExtraTower ? logicWCBarrelBorderRing : logicWCExtraBorderCell,         // its mother volume
                 false,                     // no boolean operations
-                copyNo++,
+                pmtmPMTId[i],
                 checkOverlapsPMT); 
 #endif
         // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
         // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
         // this is still the case.
+        copyNo++;
       }
     }
     else

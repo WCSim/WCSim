@@ -89,7 +89,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   pmtPosVar = 0;
   topRadiusChange = 0; midRadiusChange = 0; botRadiusChange = 0;
   readFromTable = false;
-  useExternlmPMTMapping = false;
 
   debugMode = false;
 
