@@ -1158,7 +1158,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     {
       // Check configuration for mPMT
       bool usePMT1 = true;
-      G4int nID_PMTs = 1;
+      G4int nID_mPMTs = 0;
       const int LEDID_max = 12;
       if (!myDetector->GetHybridPMT())
       {
@@ -1170,7 +1170,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         else
         {
           G4cout<<" Use mPMT-LED generator for PMT type 1"<<G4endl;
-          nID_PMTs = myDetector->GetmPMT_nID();
+          nID_mPMTs = myDetector->GetTotalNumPmts();
         }
       }
       else
@@ -1178,13 +1178,13 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         if (myDetector->GetmPMT_nID()>1)
         {
           G4cout<<" Use mPMT-LED generator for PMT type 1"<<G4endl;
-          nID_PMTs = myDetector->GetmPMT_nID();
+          nID_mPMTs = myDetector->GetTotalNumPmts();
         }
         else if (myDetector->GetmPMT_nID2()>1)
         {
           G4cout<<" Use mPMT-LED generator for PMT type 2"<<G4endl;
           usePMT1 = false;
-          nID_PMTs = myDetector->GetmPMT_nID2();
+          nID_mPMTs = myDetector->GetTotalNumPmts2();
         }
         else
         {
@@ -1206,8 +1206,23 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
 
       // Get the center PMT and 1st PMT to define local axes
-      G4int centerPMTId = (mPMTLEDId1-1)*nID_PMTs + 1;
-      G4int firstPMTId  = centerPMTId + 1;
+      G4int centerPMTId = 0;
+      G4int firstPMTId  = 0;
+      static std::map<int, std::pair< int, int > > mpmt_id_map = usePMT1 ? myDetector->GetTube_mPMTIDMap() :
+                                                                           myDetector->GetTube_mPMTIDMap2();
+      for (G4int i=1;i<=nID_mPMTs;i++)
+      {
+        if (mpmt_id_map[i].first==mPMTLEDId1)
+        {
+          if (mpmt_id_map[i].second==1) centerPMTId = i;
+          else if (mpmt_id_map[i].second==2) firstPMTId = i;
+        }
+      }
+      if (centerPMTId==0 || firstPMTId==0)
+      {
+        G4cout<<" Cannot locate mPMT id = "<< mPMTLEDId1 << " --> Exit !! "<<G4endl;
+        exit(-1);
+      }
       G4Transform3D tubeTransformCenter = usePMT1 ? myDetector->GetTubeTransform(centerPMTId) :
                                                     myDetector->GetTubeTransform2(centerPMTId);
       G4Transform3D tubeTransformFirst  = usePMT1 ? myDetector->GetTubeTransform(firstPMTId) :
