@@ -266,6 +266,13 @@
 #/gps/direction 1 0 0
 #/gps/position 0 0 0
 
+## Or you can use the datatable option
+## This is similar to the nuance format option, though this uses datatable formatted files.
+## Datatables are formatted as follows:
+## | Index of particle in event | PDG code | Energy | X | Y | Z | Px | Py | Pz | Time |
+#/mygen/generator datatable
+#/mygen/vecfile inputDataTableFile
+
 ## Or you can use the laser option
 ## This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
 ## for a full list of /gps/ commands see:
