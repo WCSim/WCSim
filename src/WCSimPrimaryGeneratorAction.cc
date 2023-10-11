@@ -931,6 +931,15 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         // Generate random isotopic position inside detector
         G4ThreeVector vtx = IBDGen->GenRandomPosition();
 
+        // Populate the event variables to be written out
+        SetVtx(vtx);
+        SetBeamDir(positron.getV(), 0);
+        SetBeamDir(neutron.getV(), 1);
+        SetBeamEnergy(positron.getT(), 0);
+        SetBeamEnergy(neutron.getT(), 1);
+        SetBeamPDG(particleTable->FindParticle("e+")->GetPDGEncoding(), 0);
+        SetBeamPDG(particleTable->FindParticle("neutron")->GetPDGEncoding(), 1);
+
         // Generate neutron
         particleGun->SetParticlePosition(vtx);
         particleGun->SetParticleDefinition(particleTable->FindParticle("neutron"));
