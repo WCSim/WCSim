@@ -215,6 +215,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLaserEvtGenerator(false);
       myAction->SetInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(true);
+      myAction->SetIBDEvtGenerator(false);
       myAction->SetNeedConversion(false);	    
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
