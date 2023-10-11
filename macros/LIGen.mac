@@ -91,26 +91,39 @@
 #/DarkRate/SetDarkLow 0
 #/DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkWindow 4000
-/DarkRate/SetDarkRate 0 kHz
+/DarkRate/SetDarkRate 0.4 kHz
 
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute /home/kneale/hk-software/wcsim_od_calib/macros/visOGLQT-OD.mac
 #/control/execute /home/kneale/hk-software/wcsim_od_calib/macros/visRayTracer.mac
 
-
+# Use to run a single LI device and select the LI parameters you want to use.
+# Each LI is defined in the injector file (e.g. $WCSIMDIR/data/LightInjectors.json)
+# by a combination of the injector type and injector idx. These correspond to
+# positions and profiles specific to each combination. Details of the LI device for 
+# each combination is provided in the comments.
 /mygen/generator lightinjector
+# Set the number of photons per pulse for this LI to generate nphotons per pulse
+# with random times between 20 and 40 ns.
 /mygen/nphotons 10000
+# Specify the injector type: collimator, diffuser or laser ball
 /mygen/injectorType collimator
+# Specify the injector index for this type of LI that corresponds to the 
+# device position and profile you wish to use
 /mygen/injectorIdx 1
 #/mygen/injectorFile somefile.json
+# Default /mygen/photonMode 0 generates photon directions using the LI profile
+# Set /mygen/photonMode 1 to read pre-generated photon positions and directions 
+# from data/PhotonPositions.csv.
 #/mygen/photonMode 1
 
 ## change the name of the output root file, default = wcsim.root
 
-/WCSimIO/RootFile /home/kneale/hk-software/wcsim_devel/wcsim_LIGen.root
+/WCSimIO/RootFile $WCSIMDIR/wcsim_LIGen.root
 
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false
 
+# set the number of pulses (events) to simulate for this LI
 /run/beamOn 10000
 #exit
