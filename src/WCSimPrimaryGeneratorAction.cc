@@ -99,15 +99,16 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 
   messenger = new WCSimPrimaryGeneratorMessenger(this);
 
-  useMulineEvt 		= true;
-  useRootrackerEvt 	= false;
-  useGunEvt    		= false;
-  useLaserEvt  		= false;
-  useInjectorEvt  	= false;
-  useGPSEvt    		= false;
-  useCosmics            = false;
-  useRadioactiveEvt  	= false;
-  useRadonEvt        	= false;
+  useMulineEvt      = true;
+  useRootrackerEvt  = false;
+  useGunEvt         = false;
+  useLaserEvt       = false;
+  useInjectorEvt    = false;
+  useGPSEvt         = false;
+  useDataTableEvt   = false;
+  useCosmics        = false;
+  useRadioactiveEvt = false;
+  useRadonEvt       = false;
 
   //rootracker related variables
   fEvNum = 0;
