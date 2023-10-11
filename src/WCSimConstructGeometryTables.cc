@@ -611,10 +611,10 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
 	while (std::getline(stream,tmp,' ')) Column++;
 	if (Column!=7)
   {
-    G4cout<<"Number of column = "<<Column<<" which is not equal to 7. "<<G4endl;
-    G4cout<<"Inappropriate input --> Revert to default positioning"<<G4endl;
+    G4cerr<<"Number of column = "<<Column<<" which is not equal to 7. "<<G4endl;
+    G4cerr<<"Inappropriate input --> Exiting..."<<G4endl;
     readFromTable = false;
-    return;
+    exit(-1);
   }
   Data.seekg(SavePoint);
 
