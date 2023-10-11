@@ -10,6 +10,7 @@
 #include "G4RandomDirection.hh"
 #include "G4SystemOfUnits.hh"
 
+using namespace std;
 using json = nlohmann::json;
 
 WCSimLIGen::WCSimLIGen(){
@@ -23,8 +24,8 @@ WCSimLIGen::WCSimLIGen(){
 
 WCSimLIGen::~WCSimLIGen(){
 
-    // things to delete
-    delete myLIGun;
+    // things to delete?
+    //this->Finalise();
 }
 
 
@@ -33,9 +34,6 @@ void WCSimLIGen::Initialise(){
     // myMessenger, myDetector
     photonMode = 0;
     wcsimdir = string(getenv("WCSIMDIR"))+"/data/";
-    
-    // Use particle gun to generate a point source
-    G4ParticleGun *myLIGun = new G4ParticleGun();
 } 
 
 void WCSimLIGen::SetPhotonMode(G4bool photonmode){
@@ -62,8 +60,7 @@ void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G
     ifstream fJson(db.c_str());
     
     if (!fJson) {
-        G4err << "LIGen: [ERROR] light injector db " << db << " not found" << G4endl;
-        exit(-1); 
+        G4cout << "LIGen: [ERROR] light injector db " << db << " not found, reverting to generic db" << G4endl;
     } else {
         G4cout << " LIGen: Light Injector db " << db << " opened" << G4endl;
     }
@@ -102,14 +99,13 @@ void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G
 void WCSimLIGen::LoadPhotonList(){
 
     string photonsFile = wcsimdir + photonsFilename;
-    G4cout << photonsFile << G4endl; 
+    cout << photonsFile << endl; 
     ifstream photondata(photonsFile.c_str());
     if ( ! photondata) {
-        G4err << "WCSimLIGen [ERROR]: Failed to open " << photonsFilename << G4endl;
-        exit(-1);
+        cout << "WCSimLIGen [ERROR]: Failed to open " << photonsFilename << endl;
     }
     else {
-        G4cout << "WCSimLIGen photon list file: " << photonsFilename << " opened" << G4endl;
+        cout << "WCSimLIGen photon list file: " << photonsFilename << " opened" << endl;
     }
 
     // Load in a csv list of x,y,z,px,py,pz in mm
@@ -144,7 +140,7 @@ void WCSimLIGen::LoadPhotonList(){
 
 void WCSimLIGen::LoadProfilePDF(){
 
-    G4cout << "Reading the injector profile from file" << G4endl;
+    cout << "Reading the injector profile from file" << endl;
 
     // Creates histogram of light injector profile
     float thetaMin = thetaVals[0];
@@ -159,18 +155,26 @@ void WCSimLIGen::LoadProfilePDF(){
         int bin = hProfile->FindBin(thetaVals[i],phiVals[i]);
         hProfile->SetBinContent(bin, intensity[i]);
     }
-    G4cout << "Profile filled." << G4endl;
+    cout << "Profile filled." << endl;
 }
 
 
 
 void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
 
+    // Use particle gun to generate a point source
+    G4ParticleGun *myLIGun = new G4ParticleGun();
     // Calculate photon energy now we have the wavelength
     energy = PhotonEnergyFromWavelength(injectorWavelength);
 
     if (photonMode){
         // Get the position and direction from the photon list
+        // TODO subdivide into an equal number of photons per pulse 
+        // to limit the number of particles in G4Event
+        // for (int iphoton=0;iphoton<nphotons;iphoton++){
+        // have an index which is set in the constructor
+        // that way we can pick up the list where we left off last event
+    //    for (int iphoton=0;iphoton<myPhotons.size();iphoton++){
         for (int iphoton=0;iphoton<nphotons;iphoton++){
             // Generate random time for this photon in 20 ns pulse window
             G4double time = G4RandFlat::shoot(20.0,40.0)*ns;
