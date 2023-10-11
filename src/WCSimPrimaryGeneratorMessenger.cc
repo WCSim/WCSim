@@ -14,7 +14,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
 
   genCmd = new G4UIcmdWithAString("/mygen/generator",this);
   genCmd->SetGuidance("Select primary generator.");
-  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, cosmics, radioactive, rootracker, radon, injector, gamma-conversion");
+  genCmd->SetGuidance(" Available generators : muline, gun, laser, gps, ibd, cosmics, radioactive, rootracker, radon, injector, gamma-conversion");
   genCmd->SetParameterName("generator",true);
   genCmd->SetDefaultValue("muline");
   genCmd->SetCandidates("muline gun laser gps ibd cosmics radioactive rootracker radon injector, gamma-conversion");
