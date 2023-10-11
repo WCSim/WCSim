@@ -943,6 +943,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         continue;
       }
 
+      // If we've reached the end of the file before beamOn events have been reached then we need to stop
+      if (inputFile.eof()) {
+        G4cout << "End of datatable file - run terminated..." << G4endl;
+        G4RunManager::GetRunManager()->AbortRun();
+      }
+
       // Buffer to convert between string and other variables
       std::istringstream buffer(line);
 
