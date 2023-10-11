@@ -290,6 +290,11 @@
 #/mygen/generator cosmics
 #/mygen/cosmicsfile data/MuonFlux-HyperK-ThetaPhi.dat
 
+## Or you can use an IBD generator
+## This requires a spectrum file to generate events weighted by fluxes across an energy spectrum
+#/mygen/generator ibd
+#/mygen/ibd_spectrum <FILENAME>
+
 ## Radioactive option
 ## Generate radioactive decay in the water or on the PMTs
 #/mygen/generator radioactive
