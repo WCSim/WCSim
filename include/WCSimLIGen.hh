@@ -36,7 +36,7 @@ class WCSimLIGen
 
     private:
 
-        //G4ParticleGun*                  myLIGun;
+        G4ParticleGun*                  myLIGun;
 
         // Variables for initialising light injector parameters
         vector<double> injectorPosition;

@@ -104,7 +104,7 @@
 # each combination is provided in the comments.
 /mygen/generator lightinjector
 # Set the number of photons per pulse for this LI to generate nphotons per pulse
-# with random times between 20 and 40 ns.
+# with random times between 20 and 21 ns.
 /mygen/nphotons 10000
 # Specify the injector type: collimator, diffuser or laser ball
 /mygen/injectorType collimator
