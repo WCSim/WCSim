@@ -949,6 +949,11 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         G4RunManager::GetRunManager()->AbortRun();
       }
 
+      if(nParticles > MAX_N_VERTICES){
+        G4cout << "CANNOT DEAL WITH MORE THAN " << MAX_N_VERTICES << " VERTICES" << G4endl;
+        exit(-1);
+      }
+
       // Buffer to convert between string and other variables
       std::istringstream buffer(line);
 
