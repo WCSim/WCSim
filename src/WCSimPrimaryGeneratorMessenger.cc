@@ -179,6 +179,7 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete lightInjectorIdxCmd;
   delete lightInjectorNPhotonsCmd;
   delete lightInjectorFilenameCmd;
+  delete lightInjectorModeCmd;
 }
 
 void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
