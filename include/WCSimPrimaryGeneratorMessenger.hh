@@ -50,7 +50,7 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithADouble* openingAngleCmd;
   G4UIcmdWithADouble* injectorWavelengthCmd;
 
-    // J. Fannon IBD event generator spectrum file
+  // J. Fannon IBD event generator spectrum file
   G4UIcmdWithAString* ibdspectrumCmd;
 
   void IsotopeCommand(G4String newValue);
