@@ -1,5 +1,6 @@
 #include "WCSimPrimaryGeneratorAction.hh"
 #include "WCSimDetectorConstruction.hh"
+#include "WCSimIBDGen.hh"
 #include "WCSimPrimaryGeneratorMessenger.hh"
 #include "G4RunManager.hh"
 #include "G4Event.hh"
