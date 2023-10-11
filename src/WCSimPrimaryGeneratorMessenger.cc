@@ -232,7 +232,6 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetNeedConversion(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
-      myAction->SetRadonEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);}
     else if ( newValue == "cosmics")
     {
