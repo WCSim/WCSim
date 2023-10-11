@@ -114,7 +114,7 @@
 #/mygen/injectorFile somefile.json
 # Default /mygen/photonMode 0 generates photon directions using the LI profile
 # Set /mygen/photonMode 1 to read pre-generated photon positions and directions 
-# from data/PhotonPositions.csv.
+# from the 'photonsfile' specified in the injector file.
 #/mygen/photonMode 1
 
 ## change the name of the output root file, default = wcsim.root

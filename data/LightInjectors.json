@@ -1,7 +1,7 @@
 {
 	"injectors": [
 		{
-                "comment": "Bottom collimator, facing in. Units: cm, nm, deg.",
+                "comment": "Bottom OD collimator, facing in. Units: cm, nm, deg.",
 		"type": "collimator",
 		"idx": "0",
 		"direction": [-3302.01,0,0],
@@ -15,7 +15,7 @@
 		},
 
 		{
-                "comment": "Barrel collimator, facing up. Units: cm, nm, deg.",
+                "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
 		"type": "collimator",
 		"idx": "1",
 		"direction": [0,0,1],
@@ -30,7 +30,7 @@
 
 
 		{
-                "comment": "Barrel collimator, facing up. Units: cm, nm, deg.",
+                "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
                 "comment1": "between PMTs and tank wall: x = 3314.91+50",
 		"type": "collimator",
 		"idx": "2",
@@ -45,7 +45,7 @@
 		},
 
 		{
-                "comment": "Barrel collimator, facing up. Units: cm, nm, deg.",
+                "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
                 "comment1": "near the tank wall: x = 3314.91+100-10",
 		"type": "collimator",
 		"idx": "3",
@@ -60,7 +60,7 @@
 		},
 
 		{
-                "comment": "Barrel collimator, facing up. Units: cm, nm, deg.",
+                "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
                 "comment1": "in the centre of the barrel OD",
 		"type": "collimator",
 		"idx": "4",
@@ -75,7 +75,7 @@
 		},
 
                 {
-                "comment": "Top collimator, facing down. Units: cm, nm, deg.",
+                "comment": "Top OD collimator, facing down. Units: cm, nm, deg.",
                 "type": "collimator",
                 "idx": "5",
                 "direction": [0,0,-1],
@@ -89,7 +89,7 @@
                 },
 
 		{
-                "comment": "Bottom saturation diffuser, facing down. Units cm, nm, deg.",
+                "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
 		"type": "diffuser",
 		"idx": "0",
                 "direction": [0,0,-1],
@@ -103,7 +103,7 @@
                 },
 
 		{
-                "comment": "Barrel saturation diffuser, facing out. Units: cm, nm, deg",
+                "comment": "Barrel saturation OD diffuser, facing out. Units: cm, nm, deg",
 		"type": "diffuser",
 		"idx": "1",
                 "direction": [3225.361,774.341,0],
@@ -117,7 +117,7 @@
 		}, 
 
                 {
-                "comment": "Top saturation diffuser, facing up. Units: cm, nm, deg",
+                "comment": "Top saturation OD diffuser, facing up. Units: cm, nm, deg",
                 "type": "diffuser",
                 "idx": "2",
                 "direction": [0,0,1],
@@ -131,7 +131,7 @@
                 },
 
 		{
-                "comment": "Bottom diffuser, facing in. Units: cm, nm, deg",
+                "comment": "Bottom OD diffuser, facing in. Units: cm, nm, deg",
 		"type": "diffuser",
 		"idx": "3",
 		"direction": [-3302.01,0,0],
@@ -154,7 +154,7 @@
                 "theta": [-45,0,45],
                 "phi": [-180,0,180],
                 "intensity": [1,1,1,1,1,1,1,1,1],
-                "photonsfile": "Photon_Positions.csv",
+                "photonsfile": "LI_OD_laser_ball_photon_positions.csv",
                 "offset": 5
                 }
 
