@@ -107,6 +107,10 @@ private:
   G4String cosmicsFileName = "data/MuonFlux-HyperK-ThetaPhi.dat";
   G4bool   GenerateVertexInRock;
 
+  // Variables for IBD generator
+  //  Filename for IBD spectrum to generate from
+  G4String ibd_spectrum;
+
   // Variables for Radioactive and Radon generators
   std::vector<struct radioactive_source> radioactive_sources;
   G4double radioactive_time_window;
