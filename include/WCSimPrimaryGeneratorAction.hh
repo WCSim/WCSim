@@ -211,8 +211,10 @@ public:
   inline void SetInjectorWavelength(G4double wl) { wavelength = wl;}
 
     // J. Fannon: addition of IBD event generator
-    inline void SetIBDEvtGenerator(G4bool choice) { useIBDEvt = choice; }
-    inline G4bool IsUsingIBDEvtGenerator()  { return useIBDEvt; }
+  inline void SetIBDEvtGenerator(G4bool choice) { useIBDEvt = choice; }
+  inline G4bool IsUsingIBDEvtGenerator()  { return useIBDEvt; }
+  inline void SetIBDSpectrum(G4String choice) { ibd_spectrum = choice; }
+  inline G4String GetIBDSpectrum()  { return ibd_spectrum; }
 
   inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
   inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }

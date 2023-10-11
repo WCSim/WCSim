@@ -386,6 +386,12 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetInjectorWavelength(injectorWavelengthCmd->GetNewDoubleValue(newValue));
     }
 
+  if (command == ibdspectrumCmd)
+    {
+      myAction->SetIBDSpectrumFile(newValue);
+      G4cout << "IBD spectrum file set to " << newValue << G4endl;
+    }
+
 }
 
 G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
