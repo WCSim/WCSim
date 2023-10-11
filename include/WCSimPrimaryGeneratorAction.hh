@@ -96,6 +96,7 @@ private:
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
   G4bool   useInjectorEvt; // K.M.Tsui: injector flag
   G4bool   useGPSEvt;
+  G4bool   useIBDEvt; // J. Fannon: IBD generator flag
   G4bool   useCosmics;
   G4bool   useRadioactiveEvt; // F. Nova: Radioactive flag
   G4bool   useRadonEvt; // G. Pronost: Radon flag
@@ -204,6 +205,10 @@ public:
   inline void SetInjectorTimeWindow(G4double tw) { twindow = tw;}
   inline void SetInjectorOpeningAngle(G4double angle) { openangle = angle;}
   inline void SetInjectorWavelength(G4double wl) { wavelength = wl;}
+
+    // J. Fannon: addition of IBD event generator
+    inline void SetIBDEvtGenerator(G4bool choice) { useIBDEvt = choice; }
+    inline G4bool IsUsingIBDEvtGenerator()  { return useIBDEvt; }
 
   inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
   inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }
