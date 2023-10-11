@@ -100,7 +100,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   lightInjectorIdxCmd->SetGuidance("Set the ID number of the light injector you want to use");
   lightInjectorIdxCmd->SetGuidance("[usage] /mygen/injectorIdx index");
   lightInjectorIdxCmd->SetGuidance("see data/lightInjectors.json for indices for now");
-  lightInjectorIdxCmd->SetGuidance(" injectorIdx : 0,1,2, ... ");
+  lightInjectorIdxCmd->SetGuidance(" injectorIdx : idx (where idx is given in json) ");
   lightInjectorIdxCmd->SetParameterName("injectorIdx",true);
   lightInjectorIdxCmd->SetDefaultValue("0");
 

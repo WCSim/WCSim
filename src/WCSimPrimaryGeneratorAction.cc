@@ -134,6 +134,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   injectorType = "";
   injectorIdx = "";
   injectorFilename = "";
+  photonMode = 0;
 
   // Time units for vertices
   fTimeUnit=CLHEP::nanosecond;
@@ -221,6 +222,7 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
     delete hFluxCosmics;
     delete hEmeanCosmics;
   }
+  if(LIGen) delete LIGen;
 }
 
 void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -778,27 +780,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         G4int pdg = 0;
         G4double E = LIGen->GetPhotonEnergy();
         LIGen->GeneratePhotons(anEvent,nphotons);
-
-        // Save the mc properties for validation
-        // Limit of <900 photons due to size of array in jhfntuple
-        /*
-        if (nphotons<900){
-            for (int iphoton = 0; iphoton<nphotons; iphoton++){
-                //G4cout << " vertex " << iphoton << " of " << nphotons << " (" << vtx << ", " << E << ", " << dir << ", " << pdg << ")" << G4endl;
-                SetNvtxs(nphotons);
-                G4ThreeVector P = anEvent->GetPrimaryVertex(iphoton)->GetPrimary()->GetMomentum();
-                vtx             = anEvent->GetPrimaryVertex(iphoton)->GetPosition();
-                pdg             = anEvent->GetPrimaryVertex(iphoton)->GetPrimary()->GetPDGcode();
-                dir             = P.unit();
-                E               = std::sqrt((P.dot(P)));
-                SetVtxs(iphoton,vtx);
-                SetBeamEnergy(E,iphoton);
-                SetBeamDir(dir,iphoton);
-                SetBeamPDG(pdg,iphoton);
-            }
-
-        }
-        */
 
         // save injector properties
         G4cout << " Saving injector properties: " << vtx << ", " << E << ", " << dir << ", " << pdg << G4endl;
