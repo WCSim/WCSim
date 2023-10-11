@@ -103,6 +103,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   useLaserEvt  		  = false;
   useInjectorEvt  	= false;
   useGPSEvt    		  = false;
+  useIBDEvt = false;
   useCosmics        = false;
   useRadioactiveEvt = false;
   useRadonEvt       = false;
