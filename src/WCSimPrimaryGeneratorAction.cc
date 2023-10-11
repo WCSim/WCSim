@@ -949,11 +949,16 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       buffer >> index >> pdgid >> ene >> pos[0] >> pos[1] >> pos[2] >> dir[0] >>
           dir[1] >> dir[2] >> t;
 
+      // We've reached the end of the event N that we're generating and have also read the first line of event
+      // N + 1. We need to rewind to the start of event N + 1 so that the first particle of N + 1 is not missed when
+      // this function is called again for the next event.
       if (index == 0 && firstParticle == false) {
         // Go back a line
         inputFile.seekg(lastLinePos);
         break;
       }
+
+      // Buffer the position of the current line in the file
       lastLinePos = inputFile.tellg();
 
       nParticles++;
