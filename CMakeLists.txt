@@ -108,7 +108,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/MuonFlux-HyperK-ThetaPhi.dat
 	${PROJECT_SOURCE_DIR}/data/biasprofile.dat
 	${PROJECT_SOURCE_DIR}/data/LightInjectors.json
-	${PROJECT_SOURCE_DIR}/data/Photon_Positions.csv
+	${PROJECT_SOURCE_DIR}/data/LI_OD_laser_ball_photon_positions.csv
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
