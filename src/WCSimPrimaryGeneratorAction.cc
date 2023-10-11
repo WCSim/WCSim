@@ -962,11 +962,19 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       if (index == 0 && firstParticle == false) {
         // Go back a line
         inputFile.seekg(lastLinePos);
+        // Set the number of particles in this event
+        SetNvtxs(nParticles);
         break;
       }
 
       // Buffer the position of the current line in the file
       lastLinePos = inputFile.tellg();
+
+      // Set values to save to output
+      SetBeamEnergy(ene, nParticles);
+      SetBeamDir(dir, nParticles);
+      SetBeamPDG(pdgid, nParticles);
+      SetVtxs(nParticles, pos);
 
       nParticles++;
 
