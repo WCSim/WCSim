@@ -82,6 +82,11 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   injectorWavelengthCmd->SetGuidance("Wavelength of the injector laser in nm");
   injectorWavelengthCmd->SetParameterName("injector_wavelength",true);
   injectorWavelengthCmd->SetDefaultValue(435.);
+
+  ibdspectrumCmd = new G4UIcmdWithAString("/mygen/ibd_spectrum",this);
+  ibdspectrumCmd->SetGuidance("Select the IBD spectrum file.");
+  ibdspectrumCmd->SetParameterName("ibd_spectrum", true);
+  ibdspectrumCmd->SetDefaultValue("data/nakazato_nh_min.txt");
     
   isotopeCmd = new G4UIcmdWithAString("/mygen/isotope",this);
   isotopeCmd->SetGuidance("Select properties of radioactive isotope");
