@@ -41,6 +41,8 @@ void WCSimLIGen::SetPhotonMode(G4bool photonmode){
     if (photonmode){
         photonMode=1;
     }
+    else
+      photonMode = 0;
 }
     
 
