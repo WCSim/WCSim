@@ -96,6 +96,7 @@ private:
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
   G4bool   useInjectorEvt; // K.M.Tsui: injector flag
   G4bool   useGPSEvt;
+  G4bool   useDataTableEvt; // J. Fannon: data table flag
   G4bool   useCosmics;
   G4bool   useRadioactiveEvt; // F. Nova: Radioactive flag
   G4bool   useRadonEvt; // G. Pronost: Radon flag
@@ -205,6 +206,11 @@ public:
   inline void SetInjectorOpeningAngle(G4double angle) { openangle = angle;}
   inline void SetInjectorWavelength(G4double wl) { wavelength = wl;}
 
+  inline void SetDataTableEvtGenerator(G4bool choice) {
+    useDataTableEvt = choice;
+  }
+  inline G4bool IsUsingDataTableEvtGenerator() { return useDataTableEvt; }
+
   inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
   inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }
 
@@ -288,11 +294,11 @@ public:
       fTimeUnit=CLHEP::nanosecond;//*second;
     else if(choice == "s" || choice=="second")
       fTimeUnit=CLHEP::second;
-    else if (choice = "ms" || choice=="millisecond")
+    else if (choice == "ms" || choice=="millisecond")
       fTimeUnit=CLHEP::millisecond;
-    else if (choice="microsecond")
+    else if (choice=="microsecond")
       fTimeUnit=CLHEP::microsecond;
-    else if(choice="ps" || choice=="picosecond")
+    else if(choice=="ps" || choice=="picosecond")
       fTimeUnit=CLHEP::picosecond;
     else
       fTimeUnit=CLHEP::nanosecond;
