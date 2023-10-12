@@ -972,8 +972,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       if (index == 0 && firstParticle == false) {
         // Go back a line
         inputFile.seekg(lastLinePos);
-        // Set the number of particles in this event
-        SetNvtxs(nParticles);
         break;
       }
 
