@@ -1022,6 +1022,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     G4cout << "Number of particles generated for this event: " << nParticles << G4endl;
 
+    // Set the number of particles in this event
+    SetNvtxs(nParticles);
+
   } else if (useCosmics) {
 
     if (hFluxCosmics == nullptr) 
