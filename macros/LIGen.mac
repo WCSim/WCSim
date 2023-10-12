@@ -57,7 +57,7 @@
 #/DAQ/RelativeHitTime true
 
 #grab the other DAQ options (thresholds, timing windows, etc.)
-/control/execute $WCSIMDIR/macros/daq.mac
+/control/execute macros/daq.mac
 
 # default dark noise frequency (and conversion factor) is PMT property (NEW), set in the code.
 # Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
@@ -94,11 +94,11 @@
 /DarkRate/SetDarkRate 0.4 kHz
 
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
-#/control/execute $WCSIMDIR/macros/visOGLQT-OD.mac
-#/control/execute $WCSIMDIR/macros/visRayTracer.mac
+#/control/execute macros/visOGLQT-OD.mac
+#/control/execute macros/visRayTracer.mac
 
 # Use to run a single LI device and select the LI parameters you want to use.
-# Each LI is defined in the injector file (e.g. $WCSIMDIR/data/LightInjectors.json)
+# Each LI is defined in the injector file (e.g. data/LightInjectors.json)
 # by a combination of the injector type and injector idx. These correspond to
 # positions and profiles specific to each combination. Details of the LI device for 
 # each combination is provided in the comments.
@@ -119,7 +119,7 @@
 
 ## change the name of the output root file, default = wcsim.root
 
-/WCSimIO/RootFile $WCSIMDIR/wcsim_LIGen.root
+/WCSimIO/RootFile wcsim_LIGen.root
 
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false
