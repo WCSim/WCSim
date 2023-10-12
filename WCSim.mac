@@ -338,17 +338,18 @@
 # Or inject photon from mPMT LED
 #/mygen/generator mPMT-LED
 # Use PMTid (from 1 to totalNum_mPMTs) to specify source mPMT
-# Use LEDid (from 1 to 24) to specify LED position
+# Use LEDid (from 0 to 11) to specify LED position, theta and phi directional change from nominal direction
 #/mPMTLED/PMTid 1
-#/mPMTLED/LEDid 1
+#/mPMTLED/LEDid 0 0 0
 # Use GPS commands to define photon energy, number and angular distribution
 #/gps/energy 2.505 eV
-#/gps/number 100
-#/gps/ang/type iso
-#/gps/ang/mintheta 0 deg
-#/gps/ang/maxtheta 10 deg
-#/gps/ang/minphi 0 deg
-#/gps/ang/maxphi 360 deg
+#/gps/number 100000
+# Specify a cos(theta) Gaussian profile with 15 deg FWHM
+#/gps/ang/type user
+#/gps/ang/user_coor true
+#/gps/ang/surfnorm false
+#/gps/hist/type theta
+#/control/execute data/theta_cos15deg_FWHM.txt
 
 ##################
 # OUTPUT
