@@ -25,6 +25,7 @@ WCSimLIGen::~WCSimLIGen(){
 
     // things to delete
     delete myLIGun;
+    if(hProfile) delete hProfile;
 }
 
 
