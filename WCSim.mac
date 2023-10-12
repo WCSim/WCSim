@@ -270,6 +270,8 @@
 ## This is similar to the nuance format option, though this uses datatable formatted files.
 ## Datatables are formatted as follows:
 ## | Index of particle in event | PDG code | Energy | X | Y | Z | Px | Py | Pz | Time |
+## Note that the column separators "|" are for clarity in describing the format, and should not be included in the file
+## Note also that comments are allowed in the data table file by starting lines with a "#"
 #/mygen/generator datatable
 #/mygen/vecfile inputDataTableFile
 
