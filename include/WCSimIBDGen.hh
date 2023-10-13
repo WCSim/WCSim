@@ -12,6 +12,9 @@ class WCSimIBDGen {
     WCSimIBDGen(WCSimDetectorConstruction *myDC);
     ~WCSimIBDGen();
 
+    // Read the spectrum from database
+    void ReadSpectrumFromDB(G4String spectrum_name, G4String model_name);
+
     // Read the IBD spectrum from a file
     void ReadSpectrum(G4String spectrum_name);
 
