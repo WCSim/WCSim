@@ -55,32 +55,6 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_name, G4String model_name
     return;
 }
 
-void WCSimIBDGen::ReadSpectrum(G4String spectrum_name) {
-
-    // Populate vectors of energies and fluxes from the file spectrum_name
-    // The file should have two columns: energy (MeV) and flux (cm^2 s^-1 MeV^-1)
-
-    // Open the file
-    std::ifstream spectrum_file(spectrum_name);
-
-    // Check that the file is open
-    if (!spectrum_file.is_open()) {
-        G4cout << "Error opening file " << spectrum_name << G4endl;
-        exit(1);
-    }
-
-    // Read the file
-    float e, f;
-    while (spectrum_file >> e >> f) {
-        energy.push_back(e);
-        flux.push_back(f);
-    }
-
-    // Set the minimum and maximum energies
-    e_min = energy.front();
-    e_max = energy.back();
-}
-
 double WCSimIBDGen::InterpolateSpectrum(std::vector<float> ener_vec, std::vector<float> flux_vec, float ene) {
 
     // Interpolate the spectrum at the energies in ener_vec

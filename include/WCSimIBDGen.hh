@@ -15,9 +15,6 @@ class WCSimIBDGen {
     // Read the spectrum from database
     void ReadSpectrumFromDB(G4String spectrum_name, G4String model_name);
 
-    // Read the IBD spectrum from a file
-    void ReadSpectrum(G4String spectrum_name);
-
     // Fit the spectrum
     double InterpolateSpectrum(std::vector<float> energy, std::vector<float> flux, float ene);
 
