@@ -301,24 +301,28 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);}
     else if (newValue == "ibd") // J. Fannon: IBD (inverse beta decay) generator
+    {
       myAction->SetMulineEvtGenerator(false);
       myAction->SetGunEvtGenerator(false);
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(true);
       myAction->SetNeedConversion(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
-      myAction->SetRadonEvtGenerator(false);}
+      myAction->SetRadonEvtGenerator(false);
     }
     else if (newValue == "datatable")
+    {
       myAction->SetMulineEvtGenerator(false);
       myAction->SetGunEvtGenerator(false);
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
       myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
       myAction->SetDataTableEvtGenerator(true);
