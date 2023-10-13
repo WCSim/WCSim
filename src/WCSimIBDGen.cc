@@ -42,26 +42,32 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_name, std::string model_n
     for (const auto &model : data["models"]) {
         if (model["name"].get<string>() == model_name) {
             G4cout << "IBDGen: [INFO] using model " << model_name << G4endl;
+
             energy = model["energy"].get<std::vector<float>>();
             flux = model["flux"].get<std::vector<float>>();
+
             G4cout << "IBDGen: [INFO] spectrum read from database" << G4endl;
+
             // Check if the flux vector and energy vector have the same size
             if (energy.size() != flux.size()) {
-                G4cerr << "IBDGen: [ERROR] energy and flux vectors have different sizes. Energy: " << energy.size()
-                       << ", flux: " << flux.size() << ". Check " << spectrum_name << G4endl;
+                G4cerr << "IBDGen: \033[31m[ERROR]\033[0m energy and flux vectors have different sizes. Energy: "
+                       << energy.size() << ", flux: " << flux.size() << ". Check " << spectrum_name << G4endl;
                 exit(-1);
             }
             // Set the minimum and maximum energy
             e_min = energy.front();
             e_max = energy.back();
+
             // Set the maximum flux
             flux_max = *std::max_element(flux.begin(), flux.end());
+
             return;
         }
     }
 
     // If we get here, the model was not found
-    G4cerr << "IBDGen: [ERROR] model " << model_name << " not found in database " << spectrum_name << G4endl;
+    G4cerr << "IBDGen: \033[31m[ERROR]\033[0m model \033[31m" << model_name << "\033[0m not found in database "
+           << spectrum_name << G4endl;
     exit(-1);
     return;
 }
