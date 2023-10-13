@@ -91,19 +91,10 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4float photonStartTime;
   G4ThreeVector photonStartPos;
   G4ThreeVector photonStartDir;
-  if (trackinfo) {
-    //Skip secondaries and match to mother process, eg. muon, decay particle, gamma from pi0/nCapture.
-    primParentID = trackinfo->GetPrimaryParentID();  //!= ParentID.
-    photonStartTime = trackinfo->GetPhotonStartTime();
-    photonStartPos = trackinfo->GetPhotonStartPos();
-    photonStartDir = trackinfo->GetPhotonStartDir();
-  }
-  else { // if there is no trackinfo, then it is a primary particle!
-    primParentID = aStep->GetTrack()->GetTrackID();
-    photonStartTime = aStep->GetTrack()->GetGlobalTime();
-    photonStartPos = aStep->GetTrack()->GetVertexPosition();
-    photonStartDir = aStep->GetTrack()->GetVertexMomentumDirection();
-  }
+  primParentID = aStep->GetTrack()->GetTrackID();
+  photonStartTime = aStep->GetTrack()->GetGlobalTime() - aStep->GetTrack()->GetLocalTime(); // current time minus elapsed time of track
+  photonStartPos = aStep->GetTrack()->GetVertexPosition();
+  photonStartDir = aStep->GetTrack()->GetVertexMomentumDirection();
 
 
   G4int    trackID           = aStep->GetTrack()->GetTrackID();

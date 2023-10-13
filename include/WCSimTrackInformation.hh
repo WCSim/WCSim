@@ -18,10 +18,6 @@ class WCSimTrackInformation : public G4VUserTrackInformation {
 private:
   G4bool saveit;
   G4bool producesHit;
-  G4int  primaryParentID;
-  G4float  photonStartTime;
-  G4ThreeVector  photonStartPos;
-  G4ThreeVector  photonStartDir;
   WCSimTrajectory* parentTrajectory;
   WCSimTrajectory* myTrajectory;
 
@@ -30,10 +26,6 @@ public:
   WCSimTrackInformation(const WCSimTrackInformation* aninfo) {
       saveit = aninfo->saveit;
       producesHit = aninfo->producesHit;
-      primaryParentID = aninfo->primaryParentID;
-      photonStartTime = aninfo->photonStartTime;
-      photonStartPos = aninfo->photonStartPos;
-      photonStartDir = aninfo->photonStartDir;
       parentTrajectory = aninfo->parentTrajectory;
       myTrajectory = aninfo->myTrajectory;
   }
@@ -45,15 +37,6 @@ public:
 
   G4bool GetProducesHit() { return producesHit;}
   void SetProducesHit(G4bool choice) { producesHit = choice;}
-
-  void SetPrimaryParentID(G4int i) { primaryParentID = i;}
-  void SetPhotonStartTime(G4float time) { photonStartTime = time;}
-  void SetPhotonStartPos(const G4ThreeVector &pos) { photonStartPos = pos;}
-  void SetPhotonStartDir(const G4ThreeVector &dir) { photonStartDir = dir;}
-  G4int GetPrimaryParentID() {return primaryParentID;}
-  G4float GetPhotonStartTime() {return photonStartTime;}
-  G4ThreeVector GetPhotonStartPos() {return photonStartPos;}
-  G4ThreeVector GetPhotonStartDir() {return photonStartDir;}
 
   void SetParentTrajectory(WCSimTrajectory* trajectory) {parentTrajectory = trajectory;}
   WCSimTrajectory* GetParentTrajectory() {return parentTrajectory;}

@@ -29,7 +29,6 @@ class WCSimTrackingAction : public G4UserTrackingAction
 private:
   std::set<G4String> ProcessList;
   std::set<G4int> ParticleList;
-  std::set<G4int> pi0List;
   G4bool saveHitProducingTracks = true;
   
   G4double fTime_birth;

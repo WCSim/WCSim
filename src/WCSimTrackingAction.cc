@@ -134,31 +134,6 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     {
     // if so the track is worth saving
     anInfo->WillBeSaved(true);
-
-    //For Ch hits: use Parent ID of actual mother process:
-    // Decay: keep both decaying particle and Michel e-, Hit Parent ID should be Track ID from Michel e-
-    // Pi0 : keep both pi0 and gamma's, Hit Parent ID should be Track ID from gamma
-    // nCapture: keep both n and gamma, Hit Parent ID should be Track ID from gamma.
-    // Hits from LE electrons from muIonization, etc. : Hit Parent ID should be from Mother particle, not secondary track ID.
-    
-    if (aTrack->GetDefinition()->GetPDGEncoding()==111)
-      pi0List.insert(aTrack->GetTrackID()); // list of all pi0-s 
-    
-    // Be careful with gamma's. I want the ones closest to the actual mother process, not all secondaries.
-    if (aTrack->GetDefinition()->GetPDGEncoding() == 22){
-      // also use lazy evaluation of "or" here:
-      if( aTrack->GetParentID() == 0  || // then this gamma has no creator process (eg. nRooTracker particles)
-	  pi0List.count(aTrack->GetParentID()) ||
-	  (creatorProcess->GetProcessName() == "nCapture") ||
-	  (creatorProcess->GetProcessName() == "NeutronInelastic")	  
-	  )
-	anInfo->SetPrimaryParentID(aTrack->GetTrackID());  
-    }
-    //TF: crucial bugfix: I want this for all tracks that I save to match Ch hits with tracks that can
-    // produce Cherenkov light.
-    else
-      anInfo->SetPrimaryParentID(aTrack->GetTrackID());
-    }
   else {
     anInfo->WillBeSaved(false);
   }
@@ -180,10 +155,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       for(size_t i=0;i<nSeco;i++)
       { 
 	WCSimTrackInformation* infoSec = new WCSimTrackInformation(anInfo);
-	if(anInfo->isSaved()){ // Parent is primary, so we want start pos & time of this secondary
-		infoSec->SetPhotonStartTime((*secondaries)[i]->GetGlobalTime());
-		infoSec->SetPhotonStartPos((*secondaries)[i]->GetPosition());
-		infoSec->SetPhotonStartDir((*secondaries)[i]->GetMomentumDirection());
+	if(anInfo->isSaved()){ // Parent is saved, so store pointer to its trajectory in the secondary's user info
         infoSec->SetParentTrajectory(anInfo->GetMyTrajectory());
 	}
 	infoSec->WillBeSaved(false); // ADDED BY MFECHNER, temporary, 30/8/06
