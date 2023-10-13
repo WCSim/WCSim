@@ -958,7 +958,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
 
     } else if (useIBDEvt) {
-        // J. Fannon: Generate IBD events from an input spectrum
+        // Generate IBD events from an input spectrum
         WCSimIBDGen *IBDGen = new WCSimIBDGen(myDetector);
 
         // Event variables

@@ -300,7 +300,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);}
-    else if (newValue == "ibd") // J. Fannon: IBD (inverse beta decay) generator
+    else if (newValue == "ibd") // IBD (inverse beta decay) generator
     {
       myAction->SetMulineEvtGenerator(false);
       myAction->SetGunEvtGenerator(false);
