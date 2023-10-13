@@ -21,6 +21,40 @@ WCSimIBDGen::~WCSimIBDGen() {
     // Delete things here
 }
 
+void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_name, G4String model_name) {
+    // Open the database
+    std::ifstream spectrum_json(spectrum_name);
+
+    // Check that the database has been found
+    if (!spectrum_json.is_open()) {
+        G4cerr << "IBDGen: [ERROR] spectrum database " << spectrum_name << " not found." << G4endl;
+        exit(-1);
+    } else {
+        G4cout << "IBDGen: [INFO] spectrum database " << spectrum_name << " found." << G4endl;
+    }
+
+    std::stringstream buffer;
+    buffer << spectrum_json.rdbuf();
+
+    json data = json::parse(buffer.str());
+
+    // Loop over the json
+    for (const auto &model : data["models"]) {
+        if (model["name"].get<string>() == model_name) {
+            G4cout << "IBDGen: [INFO] using model " << model_name << G4endl;
+            G4cout << "IBDGen: [INFO] model information: " << model["comment"].get<string>() << G4endl;
+            energy = model["energy"].get<std::vector<float>>();
+            flux = model["flux"].get<std::vector<float>>();
+            return;
+        }
+    }
+
+    // If we get here, the model was not found
+    G4cerr << "IBDGen: [ERROR] model " << model_name << " not found in database " << spectrum_name << G4endl;
+    exit(-1);
+    return;
+}
+
 void WCSimIBDGen::ReadSpectrum(G4String spectrum_name) {
 
     // Populate vectors of energies and fluxes from the file spectrum_name
