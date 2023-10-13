@@ -397,9 +397,8 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       G4cout << "IBD spectrum file set to " << newValue << G4endl;
     }
   if (command == ibdmodelCmd) {
-    myAction->SetIBDModel(newValue);
-
-      }
+      myAction->SetIBDModel(newValue);
+    }
 
 }
 
