@@ -5,7 +5,6 @@
 /hits/verbose 0
 /grdm/verbose 0
 
-
 ###############
 # GEOMETRY
 ###############
@@ -25,7 +24,6 @@
 
 #Use the standard SK geometry
 # no extra commands required
-
 
 #Use the nuPRISM geometry w/ mPMTs
 #/WCSim/WCgeom nuPRISMShort_mPMT
@@ -59,7 +57,6 @@
 #/WCSim/WCgeom HyperK_HybridmPMT
 #/WCSim/Construct
 
-
 #Use the HK FD ID + OD geometry
 #/WCSim/SetPMTPercentCoverage  20.2150576375662
 #/WCSim/SetPMTPercentCoverage2 10.1075288187831
@@ -89,18 +86,18 @@
 #/WCSim/Geometry/RotateBarrelHalfTower true
 #/WCSim/Construct
 
-# true --> default (old) replica method to place PMTs. 
+# true --> default (old) replica method to place PMTs.
 # false --> new placement method, does not use replica in construction, place PMT one by one
 #/WCSim/PMT/ReplicaPlacement true
 ############################################################################################
-##These comments are only useful when using 
+##These comments are only useful when using
 #/WCSim/PMT/ReplicaPlacement false
 # Apply random fluctuation to PMT placement. Argument specifies the Gaussian 1 sigma value in 1D
 # The fluctuation is applied at the last step of position calculation
 #/WCSim/PMT/PositionVariation 0 mm
 # Change the ID radius at top, middle and bottom for PMT placement
 # The PMT positions and directions are calculated such that the PMTs are always touching
-# and perpendicular to the ID wall in the same (z,theta) coordinates 
+# and perpendicular to the ID wall in the same (z,theta) coordinates
 #/WCSim/PMT/TankRadiusChange 0 0 0 mm
 # Read PMT positions from input file. This overrides the auto positioning algorithm
 # The (z,theta) coordinates are calculated from the input, and r is auto-tuned as above
@@ -136,7 +133,7 @@
 
 #/WCSim/PMTQEMethod     Stacking_Only
 #/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
-/WCSim/PMTQEMethod     SensitiveDetector_Only
+/WCSim/PMTQEMethod SensitiveDetector_Only
 #/WCSim/PMTQEMethod     DoNotApplyQE
 
 #turn on or off the collection efficiency
@@ -222,13 +219,11 @@
 
 /Tracking/fractionOpticalPhotonsToDraw 0.0
 
-
 ##################
 # OPTICAL PHYSICS
 ##################
 ## The WCSimOpticalPhysics class uses the same Messenger commands as G4OpticalPhysics
 ## New photocathode models can be used for PMT photon detection. See macros/tuning_parameters.mac
-
 
 ##################
 # PHYSICS
@@ -254,7 +249,7 @@
 #/gun/particle pi0
 /gun/energy 5 MeV
 /gun/direction 1 0 0
-/gun/position 0 0 0  
+/gun/position 0 0 0
 
 ## Or you can use the G4 General Particle Source
 ## you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
@@ -292,8 +287,11 @@
 
 ## Or you can use an IBD generator
 ## This requires a spectrum file to generate events weighted by fluxes across an energy spectrum
+## Defaults: /mygen/ibd_spectrum data/DSNBFluxes.json
+##          /mygen/ibd_model Flat
 #/mygen/generator ibd
-#/mygen/ibd_spectrum <FILENAME>
+#/mygen/ibd_spectrum DatabasePath
+#/mygen/ibd_model ModelName
 
 ## Radioactive option
 ## Generate radioactive decay in the water or on the PMTs
@@ -325,7 +323,7 @@
 #/gps/source/clear
 
 ## Needed to prevent other decay than Bi-214
-/grdm/nucleusLimits 214 214 83 83 
+/grdm/nucleusLimits 214 214 83 83
 ## if you need to use time bias
 #/grdm/decayBiasProfile data/biasprofile.dat
 #/grdm/analogueMC 0
