@@ -22,7 +22,7 @@ private:
   WCSimTrajectory* myTrajectory;
 
 public:
-  WCSimTrackInformation() : saveit(false), producesHit(false), primaryParentID(-99) {}  //TF: initialize to value with NO meaning instead of DN
+  WCSimTrackInformation() : saveit(false), producesHit(false) {}  //TF: initialize to value with NO meaning instead of DN
   WCSimTrackInformation(const WCSimTrackInformation* aninfo) {
       saveit = aninfo->saveit;
       producesHit = aninfo->producesHit;
