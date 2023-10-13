@@ -53,7 +53,14 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   // J. Fannon IBD event generator spectrum file
   G4UIcmdWithAString* ibdspectrumCmd;
   G4UIcmdWithAString* ibdmodelCmd;
-
+  
+  // commands for the light injectors (profile from db)
+  G4UIcmdWithAString* lightInjectorCmd;
+  G4UIcmdWithAString* lightInjectorIdxCmd;
+  G4UIcmdWithAnInteger* lightInjectorNPhotonsCmd;
+  G4UIcmdWithAString* lightInjectorFilenameCmd;
+  G4UIcmdWithAnInteger* lightInjectorModeCmd;
+  
   void IsotopeCommand(G4String newValue);
   void RadonScalingCommand(G4String newValue);
 };
