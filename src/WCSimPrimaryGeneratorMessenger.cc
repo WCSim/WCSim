@@ -86,7 +86,12 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   ibdspectrumCmd = new G4UIcmdWithAString("/mygen/ibd_spectrum",this);
   ibdspectrumCmd->SetGuidance("Select the IBD spectrum file.");
   ibdspectrumCmd->SetParameterName("ibd_spectrum", true);
-  ibdspectrumCmd->SetDefaultValue("data/nakazato_nh_min.txt");
+  ibdspectrumCmd->SetDefaultValue("data/DSNBFluxes.json");
+
+  ibdmodelCmd = new G4UIcmdWithAString("/mygen/ibd_model",this);
+  ibdmodelCmd->SetGuidance("Select the IBD model.");
+  ibdmodelCmd->SetParameterName("ibd_model", true);
+  ibdmodelCmd->SetDefaultValue("Flat");
     
   isotopeCmd = new G4UIcmdWithAString("/mygen/isotope",this);
   isotopeCmd->SetGuidance("Select properties of radioactive isotope");
@@ -391,6 +396,10 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetIBDSpectrum(newValue);
       G4cout << "IBD spectrum file set to " << newValue << G4endl;
     }
+  if (command == ibdmodelCmd) {
+    myAction->SetIBDModel(newValue);
+
+      }
 
 }
 

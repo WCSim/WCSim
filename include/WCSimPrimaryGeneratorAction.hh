@@ -11,6 +11,7 @@
 #include "WCSimEnumerations.hh"
 #include "jhfNtuple.h"
 
+#include <G4String.hh>
 #include <fstream>
 
 #include "TFile.h"
@@ -110,6 +111,7 @@ private:
   // Variables for IBD generator
   //  Filename for IBD spectrum to generate from
   G4String ibd_spectrum;
+  G4String ibd_model;
 
   // Variables for Radioactive and Radon generators
   std::vector<struct radioactive_source> radioactive_sources;
@@ -215,6 +217,8 @@ public:
   inline G4bool IsUsingIBDEvtGenerator()  { return useIBDEvt; }
   inline void SetIBDSpectrum(G4String choice) { ibd_spectrum = choice; }
   inline G4String GetIBDSpectrum()  { return ibd_spectrum; }
+  inline void SetIBDModel(G4String choice) { ibd_model = choice; }
+  inline G4String GetIBDModel()  { return ibd_model; }
 
   inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
   inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }
