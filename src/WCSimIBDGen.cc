@@ -21,7 +21,7 @@ WCSimIBDGen::~WCSimIBDGen() {
     // Delete things here
 }
 
-void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_name, G4String model_name) {
+void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_name, std::string model_name) {
     // Open the database
     std::ifstream spectrum_json(spectrum_name);
 
@@ -42,9 +42,20 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_name, G4String model_name
     for (const auto &model : data["models"]) {
         if (model["name"].get<string>() == model_name) {
             G4cout << "IBDGen: [INFO] using model " << model_name << G4endl;
-            G4cout << "IBDGen: [INFO] model information: " << model["comment"].get<string>() << G4endl;
             energy = model["energy"].get<std::vector<float>>();
             flux = model["flux"].get<std::vector<float>>();
+            G4cout << "IBDGen: [INFO] spectrum read from database" << G4endl;
+            // Check if the flux vector and energy vector have the same size
+            if (energy.size() != flux.size()) {
+                G4cerr << "IBDGen: [ERROR] energy and flux vectors have different sizes. Energy: " << energy.size()
+                       << ", flux: " << flux.size() << ". Check " << spectrum_name << G4endl;
+                exit(-1);
+            }
+            // Set the minimum and maximum energy
+            e_min = energy.front();
+            e_max = energy.back();
+            // Set the maximum flux
+            flux_max = *std::max_element(flux.begin(), flux.end());
             return;
         }
     }
