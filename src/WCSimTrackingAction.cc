@@ -132,8 +132,9 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 	|| (ParticleList.count(aTrack->GetDefinition()->GetPDGEncoding()))
       )
     {
-    // if so the track is worth saving
-    anInfo->WillBeSaved(true);
+      // if so the track is worth saving
+      anInfo->WillBeSaved(true);
+    }
   else {
     anInfo->WillBeSaved(false);
   }
