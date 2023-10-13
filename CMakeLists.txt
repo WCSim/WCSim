@@ -107,6 +107,7 @@ set( WCSIM_CHECK_GEOMETRY_OVERLAPS $<IF:$<BOOL:${WCSim_Geometry_Overlaps_CHECK}>
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/MuonFlux-HyperK-ThetaPhi.dat
 	${PROJECT_SOURCE_DIR}/data/biasprofile.dat
+    ${PROJECT_SOURCE_DIR}/data/DSNBFluxes.json
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
