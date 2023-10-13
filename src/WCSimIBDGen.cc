@@ -2,10 +2,18 @@
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPrimaryGeneratorAction.hh"
 #include "WCSimPrimaryGeneratorMessenger.hh"
+
+#include "json.hpp"
+
 #include <CLHEP/Units/PhysicalConstants.h>
 #include <CLHEP/Units/SystemOfUnits.h>
 #include <G4ThreeVector.hh>
 #include <G4Types.hh>
+#include <G4ios.hh>
+#include <fstream>
+
+// Set json to nlohmann::json
+using json = nlohmann::json;
 
 WCSimIBDGen::WCSimIBDGen(WCSimDetectorConstruction *myDC) : myDetector(myDC) {}
 
