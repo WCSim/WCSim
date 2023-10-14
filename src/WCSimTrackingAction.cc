@@ -143,10 +143,10 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   G4Track* theTrack = (G4Track*)aTrack;
   theTrack->SetUserInformation(anInfo);
 
-  // pass primary parent ID to children
+  // pass parent trajectory to children
   G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
   WCSimTrajectory *currentTrajectory = (WCSimTrajectory*)fpTrackingManager->GimmeTrajectory();
-  if(!anInfo->GetMyTrajectory())
+  if(currentTrajectory && !anInfo->GetMyTrajectory())
     anInfo->SetMyTrajectory(currentTrajectory);
   if(secondaries)
   {
@@ -155,12 +155,9 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     {
       for(size_t i=0;i<nSeco;i++)
       { 
-	WCSimTrackInformation* infoSec = new WCSimTrackInformation(anInfo);
-	if(anInfo->isSaved()){ // Parent is saved, so store pointer to its trajectory in the secondary's user info
+        WCSimTrackInformation* infoSec = new WCSimTrackInformation();
         infoSec->SetParentTrajectory(anInfo->GetMyTrajectory());
-	}
-	infoSec->WillBeSaved(false); // ADDED BY MFECHNER, temporary, 30/8/06
-	(*secondaries)[i]->SetUserInformation(infoSec);
+        (*secondaries)[i]->SetUserInformation(infoSec);
       }
     } 
   }

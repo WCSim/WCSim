@@ -22,13 +22,7 @@ private:
   WCSimTrajectory* myTrajectory;
 
 public:
-  WCSimTrackInformation() : saveit(false), producesHit(false) {}  //TF: initialize to value with NO meaning instead of DN
-  WCSimTrackInformation(const WCSimTrackInformation* aninfo) {
-      saveit = aninfo->saveit;
-      producesHit = aninfo->producesHit;
-      parentTrajectory = aninfo->parentTrajectory;
-      myTrajectory = aninfo->myTrajectory;
-  }
+  WCSimTrackInformation() : saveit(false), producesHit(false), parentTrajectory(0), myTrajectory(0) {}  //TF: initialize to value with NO meaning instead of DN
   virtual ~WCSimTrackInformation() {}
   WCSimTrackInformation(const G4Track* );
   
