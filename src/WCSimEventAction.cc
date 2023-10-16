@@ -660,6 +660,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCDMPMT_OD = (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT_OD");
     if(WCDMPMT_OD == 0) G4cout << "WCReadoutPMT_OD digitzer module not found!" << G4endl;
     WCDMPMT_OD->ReInitialize();
+    WCDMPMT_OD->SetRelativeDigitizedHitTime(RelativeHitTime);
     WCDMPMT_OD->Digitize();
 
     WCDNM_OD = (WCSimWCAddDarkNoise*)DMman->FindDigitizerModule("WCDarkNoise_OD");

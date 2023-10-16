@@ -8,6 +8,7 @@
 
 #include "WCSimRootOptions.hh"
 #include "WCSimGenerator_Radioactivity.hh"
+#include "WCSimLIGen.hh"
 #include "WCSimEnumerations.hh"
 #include "jhfNtuple.h"
 
@@ -96,9 +97,11 @@ private:
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
   G4bool   useInjectorEvt; // K.M.Tsui: injector flag
   G4bool   useGPSEvt;
+  G4bool   useDataTableEvt; // J. Fannon: data table flag
   G4bool   useCosmics;
   G4bool   useRadioactiveEvt; // F. Nova: Radioactive flag
   G4bool   useRadonEvt; // G. Pronost: Radon flag
+  G4bool   useLightInjectorEvt; // L. Kneale injector with profile from db
 
   std::fstream inputFile;
   std::fstream inputCosmicsFile;
@@ -124,6 +127,14 @@ private:
   G4double twindow;
   G4double openangle;
   G4double wavelength;
+
+  // For light injector with profile from db
+  WCSimLIGen* LIGen;
+  G4int nphotons;
+  G4String injectorType;
+  G4String injectorIdx;
+  G4String injectorFilename;
+  G4bool photonMode;
 
   //
   G4double fTimeUnit;
@@ -165,8 +176,9 @@ private:
 
 
   // Use Histograms to generate cosmics
-  TH2D *hFluxCosmics;
-  TH2D *hEmeanCosmics;
+  void Create_cosmics_histogram();
+  TH2D *hFluxCosmics  = nullptr;
+  TH2D *hEmeanCosmics = nullptr;
 
   // Set cosmics altitude
   G4double altCosmics;
@@ -203,6 +215,20 @@ public:
   inline void SetInjectorTimeWindow(G4double tw) { twindow = tw;}
   inline void SetInjectorOpeningAngle(G4double angle) { openangle = angle;}
   inline void SetInjectorWavelength(G4double wl) { wavelength = wl;}
+
+  // L. Kneale: light injector with profile from db
+  inline void SetLightInjectorEvtGenerator(G4bool choice) {useLightInjectorEvt = choice; }
+  inline G4bool IsUsingLightInjectorEvtGenerator()        {return useLightInjectorEvt; }
+  inline void SetLightInjectorType(G4String choice)       { injectorType = choice; }
+  inline void SetLightInjectorIdx(G4String choice)        { injectorIdx = choice; }
+  inline void SetLightInjectorNPhotons(G4int choice)      { nphotons=choice; }
+  inline void SetLightInjectorFilename(G4String choice)   { injectorFilename = choice; }
+  inline void SetLightInjectorMode(G4bool choice)         { photonMode = choice; }
+
+  inline void SetDataTableEvtGenerator(G4bool choice) {
+    useDataTableEvt = choice;
+  }
+  inline G4bool IsUsingDataTableEvtGenerator() { return useDataTableEvt; }
 
   inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
   inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }
@@ -287,11 +313,11 @@ public:
       fTimeUnit=CLHEP::nanosecond;//*second;
     else if(choice == "s" || choice=="second")
       fTimeUnit=CLHEP::second;
-    else if (choice = "ms" || choice=="millisecond")
+    else if (choice == "ms" || choice=="millisecond")
       fTimeUnit=CLHEP::millisecond;
-    else if (choice="microsecond")
+    else if (choice=="microsecond")
       fTimeUnit=CLHEP::microsecond;
-    else if(choice="ps" || choice=="picosecond")
+    else if(choice=="ps" || choice=="picosecond")
       fTimeUnit=CLHEP::picosecond;
     else
       fTimeUnit=CLHEP::nanosecond;
