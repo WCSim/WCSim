@@ -11,6 +11,9 @@
 #include "WCSimPhysicsListFactory.hh"
 #include "WCSimOpticalPhysics.hh"
 
+#include "G4Scintillation.hh"
+#include "G4OpticalPhysics.hh"
+
 #include "GdNeutronHPCapture.hh"
 
 #include "G4PhysicalConstants.hh"
@@ -53,6 +56,7 @@ WCSimPhysicsListFactory::~WCSimPhysicsListFactory()
 void WCSimPhysicsListFactory::ConstructParticle()
 {
   G4VModularPhysicsList::ConstructParticle();
+  G4OpticalPhoton::OpticalPhotonDefinition();
 }
 
 void WCSimPhysicsListFactory::ConstructProcess() {
@@ -103,6 +107,22 @@ void WCSimPhysicsListFactory::ConstructProcess() {
         G4cout << "Enabling RadCapture nCapture process" << G4endl;
         theCaptureProcess->RegisterMe(theNeutronRadCapture);
     }
+    // Add the scintillation process
+    G4Scintillation* theScintillationProcess = new G4Scintillation("Scintillation");
+    theScintillationProcess->SetTrackSecondariesFirst(kCerenkov);
+    theScintillationProcess->SetTrackSecondariesFirst(kScintillation);
+    auto theParticleIterator = GetParticleIterator();
+    theParticleIterator->reset();
+    while ((*theParticleIterator)()) {
+        G4ParticleDefinition* particle = theParticleIterator->value();
+        G4ProcessManager* pmanager = particle->GetProcessManager();
+        G4String particleName = particle->GetParticleName();
+        if (theScintillationProcess->IsApplicable(*particle)) {
+            pmanager->AddProcess(theScintillationProcess);
+            pmanager->SetProcessOrderingToLast(theScintillationProcess, idxAtRest);
+            pmanager->SetProcessOrderingToLast(theScintillationProcess, idxPostStep);
+        }
+    }
 }
 
 void WCSimPhysicsListFactory::SetCuts()
@@ -150,11 +170,10 @@ void WCSimPhysicsListFactory::InitializeList(){
     G4cout << "RegisterPhysics: OpticalPhysics" << G4endl;
     WCSimOpticalPhysics* opticalPhysics = new WCSimOpticalPhysics();
     RegisterPhysics(opticalPhysics);
-    opticalPhysics->SetWLSTimeProfile("exponential");
-    
+    opticalPhysics->SetWLSTimeProfile("exponential"); 
     // Add Radioactive Decay:
     G4cout << "RegisterPhysics: RadioactiveDecayPhysics" << G4endl;
-    RegisterPhysics( new G4RadioactiveDecayPhysics ); 
+    RegisterPhysics( new G4RadioactiveDecayPhysics );  
   } else {
     G4cout << "Physics list " << PhysicsListName << " is not understood" << G4endl;
   }

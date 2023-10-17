@@ -660,7 +660,6 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCDMPMT_OD = (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT_OD");
     if(WCDMPMT_OD == 0) G4cout << "WCReadoutPMT_OD digitzer module not found!" << G4endl;
     WCDMPMT_OD->ReInitialize();
-    WCDMPMT_OD->SetRelativeDigitizedHitTime(RelativeHitTime);
     WCDMPMT_OD->Digitize();
 
     WCDNM_OD = (WCSimWCAddDarkNoise*)DMman->FindDigitizerModule("WCDarkNoise_OD");
@@ -1308,7 +1307,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       } else if (primaryList.count(trj->GetParentID()) ) {
 	parentType = 1;
       } else {  // no identified parent, but not a primary
-	parentType = 999;
+	parentType = trj->GetParentID();
       }
 
       // G4cout << parentType << " " << ipnu << " "
@@ -1844,7 +1843,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       } else if (pionList.count(trj->GetParentID()) ) {
 	parentType = 211;
       } else {  // no identified parent, but not a primary
-	parentType = 999;
+	parentType = trj->GetParentID();
       }
 
       // G4cout << parentType << " " << ipnu << " "
