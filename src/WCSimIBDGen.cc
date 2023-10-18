@@ -54,7 +54,7 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string mod
                 exit(-1);
             }
 
-            G4cout << "IBDGen: [INFO] spectrum read from database" << G4endl;
+            G4cout << "IBDGen: [INFO] spectrum read from database: " << spectrum_database << G4endl;
 
             // Check if the flux vector and energy vector have the same size
             if (energy.size() != flux.size()) {
