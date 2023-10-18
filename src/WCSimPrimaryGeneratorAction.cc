@@ -991,9 +991,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         particleGun->SetParticleEnergy(neutron.getT());
         particleGun->SetParticleMomentumDirection(neutron.getV());
         particleGun->SetParticleTime(0.);
-
-        // Generate positron
         particleGun->GeneratePrimaryVertex(anEvent);
+        
+        // Generate positron
         particleGun->SetParticlePosition(vtx);
         particleGun->SetParticleDefinition(particleTable->FindParticle("e+"));
         particleGun->SetParticleEnergy(positron.getT());
