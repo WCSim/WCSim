@@ -29,9 +29,9 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string mod
     if (!spectrum_json.is_open()) {
         G4cerr << "IBDGen: [ERROR] spectrum database " << spectrum_database << " not found." << G4endl;
         exit(-1);
-    } else {
-        G4cout << "IBDGen: [INFO] spectrum database " << spectrum_database << " found." << G4endl;
     }
+
+    G4cout << "IBDGen: [INFO] spectrum database " << spectrum_database << " found." << G4endl;
 
     std::stringstream buffer;
     buffer << spectrum_json.rdbuf();
