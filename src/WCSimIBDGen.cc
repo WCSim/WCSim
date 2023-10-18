@@ -10,6 +10,7 @@
 #include <G4ThreeVector.hh>
 #include <G4Types.hh>
 #include <G4ios.hh>
+#include <algorithm>
 #include <fstream>
 
 // Set json to nlohmann::json
@@ -45,6 +46,13 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string mod
 
             energy = model["energy"].get<std::vector<float>>();
             flux = model["flux"].get<std::vector<float>>();
+
+            // If the energy vector is not monotonically increasing wrt elements then exit
+            if (!std::is_sorted(energy.begin(), energy.end())) {
+                G4cerr << "IBDGen: \033[31m[ERROR]\033[0m energy vector is not monotonically increasing. Check "
+                       << spectrum_database << G4endl;
+                exit(-1);
+            }
 
             G4cout << "IBDGen: [INFO] spectrum read from database" << G4endl;
 
