@@ -11,6 +11,7 @@
 #include <G4Types.hh>
 #include <G4ios.hh>
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 
 // Set json to nlohmann::json
