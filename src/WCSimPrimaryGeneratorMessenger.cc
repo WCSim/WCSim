@@ -87,6 +87,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   ibdDatabaseCmd->SetGuidance("Select the IBD database file.");
   ibdDatabaseCmd->SetParameterName("ibd_database", true);
   ibdDatabaseCmd->SetDefaultValue("data/DSNBFluxes.json");
+  SetNewValue(ibdDatabaseCmd, "data/DSNBFluxes.json");
 
   ibdmodelCmd = new G4UIcmdWithAString("/mygen/ibd_model",this);
   ibdmodelCmd->SetGuidance("Select the IBD model.");
