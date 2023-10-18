@@ -968,7 +968,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         G4LorentzVector neutron;
 
         // Read spectrum
-        IBDGen->ReadSpectrumFromDB(ibd_spectrum, ibd_model);
+        IBDGen->ReadSpectrumFromDB(ibd_database, ibd_model);
 
         // Generate event. GenEvent fills the Lorentz vectors with the direction and energy of the particles
         IBDGen->GenEvent(nu_dir, neutrino, positron, neutron);

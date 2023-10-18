@@ -111,9 +111,9 @@ private:
   G4String cosmicsFileName = "data/MuonFlux-HyperK-ThetaPhi.dat";
   G4bool   GenerateVertexInRock;
 
-  // Variables for IBD generator
-  //  Filename for IBD spectrum to generate from
-  G4String ibd_spectrum;
+  // IBD generator
+  // Database for spectra
+  G4String ibd_database;
   G4String ibd_model;
 
   // Variables for Radioactive and Radon generators
@@ -226,8 +226,8 @@ public:
   // Addition of IBD event generator
   inline void SetIBDEvtGenerator(G4bool choice) { useIBDEvt = choice; }
   inline G4bool IsUsingIBDEvtGenerator()  { return useIBDEvt; }
-  inline void SetIBDSpectrum(G4String choice) { ibd_spectrum = choice; }
-  inline G4String GetIBDSpectrum()  { return ibd_spectrum; }
+  inline void SetIBDDatabase(G4String choice) { ibd_database = choice; }
+  inline G4String GetIBDDatabase()  { return ibd_database; }
   inline void SetIBDModel(G4String choice) { ibd_model = choice; }
   inline G4String GetIBDModel()  { return ibd_model; }
 

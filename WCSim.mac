@@ -302,7 +302,7 @@
 ## Or you can use an IBD generator
 ## This requires a spectrum file to generate events weighted by fluxes across an energy spectrum
 #/mygen/generator ibd
-#/mygen/ibd_spectrum DatabasePath
+#/mygen/ibd_database DatabasePath
 #/mygen/ibd_model ModelName (see ./data/DSNBFluxes.json for models)
 
 ## Radioactive option

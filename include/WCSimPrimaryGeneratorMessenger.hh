@@ -51,7 +51,7 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithADouble* injectorWavelengthCmd;
 
   // IBD event generator spectrum file
-  G4UIcmdWithAString* ibdspectrumCmd;
+  G4UIcmdWithAString* ibdDatabaseCmd;
   G4UIcmdWithAString* ibdmodelCmd;
   
   // commands for the light injectors (profile from db)

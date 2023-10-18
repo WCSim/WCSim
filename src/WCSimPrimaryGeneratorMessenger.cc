@@ -83,10 +83,10 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   injectorWavelengthCmd->SetParameterName("injector_wavelength",true);
   injectorWavelengthCmd->SetDefaultValue(435.);
 
-  ibdspectrumCmd = new G4UIcmdWithAString("/mygen/ibd_spectrum",this);
-  ibdspectrumCmd->SetGuidance("Select the IBD spectrum file.");
-  ibdspectrumCmd->SetParameterName("ibd_spectrum", true);
-  ibdspectrumCmd->SetDefaultValue("data/DSNBFluxes.json");
+  ibdDatabaseCmd = new G4UIcmdWithAString("/mygen/ibd_database",this);
+  ibdDatabaseCmd->SetGuidance("Select the IBD database file.");
+  ibdDatabaseCmd->SetParameterName("ibd_database", true);
+  ibdDatabaseCmd->SetDefaultValue("data/DSNBFluxes.json");
 
   ibdmodelCmd = new G4UIcmdWithAString("/mygen/ibd_model",this);
   ibdmodelCmd->SetGuidance("Select the IBD model.");
@@ -518,10 +518,10 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     myAction->SetLightInjectorMode(lightInjectorModeCmd->GetNewIntValue(newValue));
   }
 
-  if (command == ibdspectrumCmd)
+  if (command == ibdDatabaseCmd)
     {
-      myAction->SetIBDSpectrum(newValue);
-      G4cout << "IBD spectrum file set to " << newValue << G4endl;
+      myAction->SetIBDDatabase(newValue);
+      G4cout << "IBD database file set to " << newValue << G4endl;
     }
   if (command == ibdmodelCmd) {
       myAction->SetIBDModel(newValue);
