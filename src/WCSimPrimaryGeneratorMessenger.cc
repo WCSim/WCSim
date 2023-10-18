@@ -92,6 +92,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   ibdmodelCmd->SetGuidance("Select the IBD model.");
   ibdmodelCmd->SetParameterName("ibd_model", true);
   ibdmodelCmd->SetDefaultValue("Flat");
+  SetNewValue(ibdmodelCmd, "Flat");
 
   // Options for alternative light injector (collimator,diffuser, laser ball)
   // Set the light injector type, index (placeholders)
