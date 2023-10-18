@@ -999,7 +999,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         particleGun->SetParticleEnergy(positron.getT());
         particleGun->SetParticleMomentumDirection(positron.getV());
         particleGun->SetParticleTime(0.);
-
         particleGun->GeneratePrimaryVertex(anEvent);
 
     } else if (useDataTableEvt) {
