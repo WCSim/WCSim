@@ -105,10 +105,21 @@ double WCSimIBDGen::InterpolateSpectrum(std::vector<float> ener_vec, std::vector
 
 G4ThreeVector WCSimIBDGen::GenRandomPosition() {
     // Generate random neutrino position
-    // Pick random position in detector
-    // Generate a random number between -1 and 1
-    double x_nu = myDetector->GetGeo_Dm(0) * (-1.0 + 2.0 * G4UniformRand());
-    double y_nu = myDetector->GetGeo_Dm(1) * (-1.0 + 2.0 * G4UniformRand());
+    // Pick random position in the inner detector
+
+    // Initialise x and y values to be outside of the detector (10 * the radius of the detector for both should do)
+    double x_nu = 10.0 * myDetector->GetGeo_Dm(3);
+    double y_nu = 10.0 * myDetector->GetGeo_Dm(3);
+
+    // While the x and y positions correspond to a point outside of the inner detector (i.e. have a radial position
+    // further from the z-axis than the inner detector's radius)
+    while (sqrt(x_nu * x_nu + y_nu * y_nu) > myDetector->GetGeo_Dm(3)) {
+        // Generate a random x and y value
+        x_nu = myDetector->GetGeo_Dm(0) * (-1.0 + 2.0 * G4UniformRand());
+        y_nu = myDetector->GetGeo_Dm(1) * (-1.0 + 2.0 * G4UniformRand());
+    }
+
+    // Generate random z position between -1/2 ID height and +1/2 ID height
     double z_nu = myDetector->GetGeo_Dm(2) * (-1.0 + 2.0 * G4UniformRand());
 
     G4ThreeVector nu_pos;
