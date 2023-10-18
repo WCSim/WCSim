@@ -4,6 +4,7 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ThreeVector.hh"
 #include "G4ParticleDefinition.hh"
+#include "WCSimIBDGen.hh"
 #include "globals.hh"
 
 #include "WCSimRootOptions.hh"
