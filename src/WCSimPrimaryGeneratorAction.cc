@@ -228,6 +228,7 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
     delete hEmeanCosmics;
   }
   if(LIGen) delete LIGen;
+  if(IBDGen) delete IBDGen;
 }
 
 void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -959,16 +960,20 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     } else if (useIBDEvt) {
         // Generate IBD events from an input spectrum
-        WCSimIBDGen *IBDGen = new WCSimIBDGen(myDetector);
+
+        // Initialise IBD generator once per sim
+        // This reads the spectrum once and populates vector attributes of the
+        //   WCSimIBDGen object with the energy and flux
+        if(!IBDGen){
+            IBDGen = new WCSimIBDGen(myDetector);
+            IBDGen->ReadSpectrumFromDB(ibd_database, ibd_model);
+        }
 
         // Event variables
         G4ThreeVector nu_dir;
         G4LorentzVector neutrino;
         G4LorentzVector positron;
         G4LorentzVector neutron;
-
-        // Read spectrum
-        IBDGen->ReadSpectrumFromDB(ibd_database, ibd_model);
 
         // Generate event. GenEvent fills the Lorentz vectors with the direction and energy of the particles
         IBDGen->GenEvent(nu_dir, neutrino, positron, neutron);

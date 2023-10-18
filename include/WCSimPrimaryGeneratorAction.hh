@@ -112,9 +112,12 @@ private:
   G4bool   GenerateVertexInRock;
 
   // IBD generator
-  // Database for spectra
+    // Database for spectra
   G4String ibd_database;
+    // Specific model to use
   G4String ibd_model;
+    // IBD generator object
+  WCSimIBDGen* IBDGen;
 
   // Variables for Radioactive and Radon generators
   std::vector<struct radioactive_source> radioactive_sources;
