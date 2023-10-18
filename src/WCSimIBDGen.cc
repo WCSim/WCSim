@@ -198,6 +198,8 @@ void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
 }
 
 double WCSimIBDGen::CrossSection(double e_nu, double cos_theta) {
+    // Calculates the IBD cross section for a given neutrino energy and scattering angle
+    // Taken astro-ph/0302055 / Phys.Lett.B564:42-54,2003
 
     const double cos_theta_c = (0.9741 + 0.9756) / 2.0;
 
