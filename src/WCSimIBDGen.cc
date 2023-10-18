@@ -21,16 +21,16 @@ WCSimIBDGen::~WCSimIBDGen() {
     // Delete things here
 }
 
-void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_name, std::string model_name) {
+void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string model_name) {
     // Open the database
-    std::ifstream spectrum_json(spectrum_name);
+    std::ifstream spectrum_json(spectrum_database);
 
     // Check that the database has been found
     if (!spectrum_json.is_open()) {
-        G4cerr << "IBDGen: [ERROR] spectrum database " << spectrum_name << " not found." << G4endl;
+        G4cerr << "IBDGen: [ERROR] spectrum database " << spectrum_database << " not found." << G4endl;
         exit(-1);
     } else {
-        G4cout << "IBDGen: [INFO] spectrum database " << spectrum_name << " found." << G4endl;
+        G4cout << "IBDGen: [INFO] spectrum database " << spectrum_database << " found." << G4endl;
     }
 
     std::stringstream buffer;
@@ -51,7 +51,7 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_name, std::string model_n
             // Check if the flux vector and energy vector have the same size
             if (energy.size() != flux.size()) {
                 G4cerr << "IBDGen: \033[31m[ERROR]\033[0m energy and flux vectors have different sizes. Energy: "
-                       << energy.size() << ", flux: " << flux.size() << ". Check " << spectrum_name << G4endl;
+                       << energy.size() << ", flux: " << flux.size() << ". Check " << spectrum_database << G4endl;
                 exit(-1);
             }
             // Set the minimum and maximum energy
@@ -67,7 +67,7 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_name, std::string model_n
 
     // If we get here, the model was not found
     G4cerr << "IBDGen: \033[31m[ERROR]\033[0m model \033[31m" << model_name << "\033[0m not found in database "
-           << spectrum_name << G4endl;
+           << spectrum_database << G4endl;
     exit(-1);
     return;
 }
