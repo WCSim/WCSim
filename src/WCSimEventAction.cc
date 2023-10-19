@@ -1425,7 +1425,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 #endif
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
     std::vector<double> truetime, smeartime;
-    std::vector<int>   primaryParentID;
+    std::vector<int>   parentSavedTrackID;
     std::vector<float> photonStartTime;
     std::vector<TVector3> photonStartPos;
     std::vector<TVector3> photonEndPos;
@@ -1467,7 +1467,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[1],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[2]);
 	truetime.push_back(hit_time_true);
-	primaryParentID.push_back(hit_parentid);
+	parentSavedTrackID.push_back(hit_parentid);
 	photonStartTime.push_back(hit_photon_starttime);
 	photonStartPos.push_back(hit_photon_startpos);
 	photonEndPos.push_back(hit_photon_endpos);
@@ -1482,11 +1482,11 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       if(digi_tubeid < NPMTS_VERBOSE || digi_tubeid == VERBOSE_PMT) {
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
-	       << " with truetime:smeartime:primaryparentID";
+	       << " with truetime:smeartime:parentSavedTrackID";
 	for(size_t id = 0; id < truetime.size(); id++) {
 	  G4cout << " " << truetime[id]
 		 << "\t" << smeartime[id]
-		 << "\t" << primaryParentID[id] << G4endl;
+		 << "\t" << parentSavedTrackID[id] << G4endl;
 	}//id
 	G4cout << G4endl;
       }
@@ -1495,7 +1495,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				      pmt->Get_mPMTid(),
 				      pmt->Get_mPMT_pmtid(),
 				      truetime,
-				      primaryParentID,
+				      parentSavedTrackID,
 				      photonStartTime,
 				      photonStartPos,
 				      photonEndPos,
@@ -1503,7 +1503,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				      photonEndDir);
       smeartime.clear();
       truetime.clear();
-      primaryParentID.clear();
+      parentSavedTrackID.clear();
       photonStartTime.clear();
       photonStartPos.clear();
       photonEndPos.clear();
@@ -1957,7 +1957,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 #endif
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
     std::vector<double> truetime, smeartime;
-    std::vector<int>   primaryParentID;
+    std::vector<int>   parentSavedTrackID;
     std::vector<float> photonStartTime;
     std::vector<TVector3> photonStartPos;
     std::vector<TVector3> photonEndPos;
@@ -1999,7 +1999,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[1],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[2]);
 	truetime.push_back(hit_time_true);
-	primaryParentID.push_back(hit_parentid);
+	parentSavedTrackID.push_back(hit_parentid);
 	photonStartTime.push_back(hit_photon_starttime);
 	photonStartPos.push_back(hit_photon_startpos);
 	photonEndPos.push_back(hit_photon_endpos);
@@ -2014,11 +2014,11 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       if(digi_tubeid < NPMTS_VERBOSE) {
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
-	       << " with truetime:smeartime:primaryparentID";
+	       << " with truetime:smeartime:parentSavedTrackID";
 	for(size_t id = 0; id < truetime.size(); id++) {
 	  G4cout << " " << truetime[id]
 		 << ":" << smeartime[id]
-		 << ":" << primaryParentID[id];
+		 << ":" << parentSavedTrackID[id];
 	}//id
 	G4cout << G4endl;
       }
@@ -2027,7 +2027,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				      pmt->Get_mPMTid(),
 				      pmt->Get_mPMT_pmtid(),
 				      truetime,
-				      primaryParentID,
+				      parentSavedTrackID,
 				      photonStartTime,
 				      photonStartPos,
 				      photonEndPos,
@@ -2035,7 +2035,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				      photonEndDir);
       smeartime.clear();
       truetime.clear();
-      primaryParentID.clear();
+      parentSavedTrackID.clear();
       photonStartTime.clear();
       photonStartPos.clear();
       photonEndPos.clear();

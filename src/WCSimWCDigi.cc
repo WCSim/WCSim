@@ -103,8 +103,8 @@ void WCSimWCDigi::RemoveDigitizedGate(G4int gate)
   if(fDigiComp.find(gate) != fDigiComp.end())
     fDigiComp.erase(gate);
   //parent id
-  if(primaryParentID.find(gate) != primaryParentID.end())
-    primaryParentID.erase(gate);
+  if(parentSavedTrackID.find(gate) != parentSavedTrackID.end())
+    parentSavedTrackID.erase(gate);
 
   //number of entries counter
   totalPe--;
