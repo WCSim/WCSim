@@ -37,7 +37,7 @@ class WCSimWCHit : public G4VHit
   void SetOrientation  (G4ThreeVector xyz)          { orient = xyz; };
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
-  void AddParentID     (G4int parentSavedTrackID) { parentSavedTrackID.push_back(parentSavedTrackID); }
+  void AddParentID     (G4int myParentSavedTrackID) { parentSavedTrackID.push_back(myParentSavedTrackID); }
   void AddPhotonStartTime (G4float photStartTime) { photonStartTime.push_back(photStartTime); }
   void AddPhotonStartPos  (const G4ThreeVector &photStartPos) { photonStartPos.push_back(photStartPos); }
   void AddPhotonEndPos  (const G4ThreeVector &photEndPos) { photonEndPos.push_back(photEndPos); }
