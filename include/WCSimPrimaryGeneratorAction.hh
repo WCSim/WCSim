@@ -4,6 +4,7 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ThreeVector.hh"
 #include "G4ParticleDefinition.hh"
+#include "WCSimIBDGen.hh"
 #include "globals.hh"
 
 #include "WCSimRootOptions.hh"
@@ -12,6 +13,7 @@
 #include "WCSimEnumerations.hh"
 #include "jhfNtuple.h"
 
+#include <G4String.hh>
 #include <fstream>
 
 #include "TFile.h"
@@ -97,7 +99,8 @@ private:
   G4bool   useLaserEvt;  //T. Akiri: Laser flag
   G4bool   useInjectorEvt; // K.M.Tsui: injector flag
   G4bool   useGPSEvt;
-  G4bool   useDataTableEvt; // J. Fannon: data table flag
+  G4bool   useIBDEvt; // IBD generator flag
+  G4bool   useDataTableEvt; // DataTable flag
   G4bool   useCosmics;
   G4bool   useRadioactiveEvt; // F. Nova: Radioactive flag
   G4bool   useRadonEvt; // G. Pronost: Radon flag
@@ -108,6 +111,14 @@ private:
   G4String vectorFileName;
   G4String cosmicsFileName = "data/MuonFlux-HyperK-ThetaPhi.dat";
   G4bool   GenerateVertexInRock;
+
+  // IBD generator
+    // Database for spectra
+  G4String ibd_database;
+    // Specific model to use
+  G4String ibd_model;
+    // IBD generator object
+  WCSimIBDGen* IBDGen;
 
   // Variables for Radioactive and Radon generators
   std::vector<struct radioactive_source> radioactive_sources;
@@ -216,6 +227,14 @@ public:
   inline void SetInjectorOpeningAngle(G4double angle) { openangle = angle;}
   inline void SetInjectorWavelength(G4double wl) { wavelength = wl;}
 
+  // Addition of IBD event generator
+  inline void SetIBDEvtGenerator(G4bool choice) { useIBDEvt = choice; }
+  inline G4bool IsUsingIBDEvtGenerator()  { return useIBDEvt; }
+  inline void SetIBDDatabase(G4String choice) { ibd_database = choice; }
+  inline G4String GetIBDDatabase()  { return ibd_database; }
+  inline void SetIBDModel(G4String choice) { ibd_model = choice; }
+  inline G4String GetIBDModel()  { return ibd_model; }
+
   // L. Kneale: light injector with profile from db
   inline void SetLightInjectorEvtGenerator(G4bool choice) {useLightInjectorEvt = choice; }
   inline G4bool IsUsingLightInjectorEvtGenerator()        {return useLightInjectorEvt; }
@@ -229,6 +248,7 @@ public:
     useDataTableEvt = choice;
   }
   inline G4bool IsUsingDataTableEvtGenerator() { return useDataTableEvt; }
+
 
   inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
   inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }

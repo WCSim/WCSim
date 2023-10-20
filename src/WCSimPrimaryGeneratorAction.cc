@@ -99,17 +99,18 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 
   messenger = new WCSimPrimaryGeneratorMessenger(this);
 
-  useMulineEvt         = true;
-  useRootrackerEvt     = false;
-  useGunEvt            = false;
-  useLaserEvt          = false;
-  useInjectorEvt       = false;
-  useGPSEvt            = false;
-  useDataTableEvt      = false;
-  useCosmics           = false;
-  useRadioactiveEvt    = false;
-  useRadonEvt          = false;
-  useLightInjectorEvt  = false;
+  useMulineEvt 		    = true;
+  useRootrackerEvt   	= false;
+  useGunEvt    		    = false;
+  useLaserEvt  		    = false;
+  useInjectorEvt    	= false;
+  useGPSEvt      		  = false;
+  useDataTableEvt     = false;
+  useIBDEvt           = false;
+  useCosmics          = false;
+  useRadioactiveEvt   = false;
+  useRadonEvt         = false;
+  useLightInjectorEvt = false;
 
   //rootracker related variables
   fEvNum = 0;
@@ -226,6 +227,7 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
     delete hEmeanCosmics;
   }
   if(LIGen) delete LIGen;
+  if(IBDGen) delete IBDGen;
 }
 
 void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -954,6 +956,54 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       	SetBeamPDG(pdg,u);
       	*/
       }
+
+    } else if (useIBDEvt) {
+        // Generate IBD events from an input spectrum
+
+        // Initialise IBD generator once per sim
+        // This reads the spectrum once and populates vector attributes of the
+        //   WCSimIBDGen object with the energy and flux
+        if(!IBDGen){
+            IBDGen = new WCSimIBDGen(myDetector);
+            IBDGen->ReadSpectrumFromDB(ibd_database, ibd_model);
+        }
+
+        // Event variables
+        G4ThreeVector nu_dir;
+        G4LorentzVector neutrino;
+        G4LorentzVector positron;
+        G4LorentzVector neutron;
+
+        // Generate event. GenEvent fills the Lorentz vectors with the direction and energy of the particles
+        IBDGen->GenEvent(nu_dir, neutrino, positron, neutron);
+
+        // Generate random isotopic position inside detector
+        G4ThreeVector vtx = IBDGen->GenRandomPosition();
+
+        // Populate the event variables to be written out
+        SetVtx(vtx);
+        SetBeamDir(positron.getV(), 0);
+        SetBeamDir(neutron.getV(), 1);
+        SetBeamEnergy(positron.getT(), 0);
+        SetBeamEnergy(neutron.getT(), 1);
+        SetBeamPDG(particleTable->FindParticle("e+")->GetPDGEncoding(), 0);
+        SetBeamPDG(particleTable->FindParticle("neutron")->GetPDGEncoding(), 1);
+
+        // Generate neutron
+        particleGun->SetParticlePosition(vtx);
+        particleGun->SetParticleDefinition(particleTable->FindParticle("neutron"));
+        particleGun->SetParticleEnergy(neutron.getT());
+        particleGun->SetParticleMomentumDirection(neutron.getV());
+        particleGun->SetParticleTime(0.);
+        particleGun->GeneratePrimaryVertex(anEvent);
+        
+        // Generate positron
+        particleGun->SetParticlePosition(vtx);
+        particleGun->SetParticleDefinition(particleTable->FindParticle("e+"));
+        particleGun->SetParticleEnergy(positron.getT());
+        particleGun->SetParticleMomentumDirection(positron.getV());
+        particleGun->SetParticleTime(0.);
+        particleGun->GeneratePrimaryVertex(anEvent);
 
     } else if (useDataTableEvt) {
     // Setup local variables to store the data table values
