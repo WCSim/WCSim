@@ -90,7 +90,7 @@ public:
   Double_t   GetTime() const { return fTime;}
   Int_t     GetId() const {return fId;}
   Int_t     GetParentId() const {return fParentId;}
-  std::string GetCreatorProcessName() const {return fCreatorProcess;}
+  G4String GetCreatorProcessName() const {return fCreatorProcess;}
   std::vector<std::vector<float>> GetBoundaryPoints() const {return boundaryPoints;}
   std::vector<float> GetBoundaryKEs() const {return boundaryKEs;}
   std::vector<double> GetBoundaryTimes() const {return boundaryTimes;}

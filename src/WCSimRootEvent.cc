@@ -539,6 +539,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
     fStart[i] = start[i];
   }
   fParenttype = parenttype;
+  fCreatorProcess = creatorProcess;
   fTime = time;
   fId = id;
   fParentId = idParent;
