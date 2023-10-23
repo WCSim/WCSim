@@ -13,6 +13,7 @@
 #include <TStopwatch.h>
 #include "WCSimRootEvent.hh"
 #include "WCSimRootTools.hh"
+#include "G4VProcess.hh"
 
 using std::cout;
 using std::cerr;
@@ -402,6 +403,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 					   Double_t stop[3],
 					   Double_t start[3],
 					   Int_t parenttype,
+             std::string creatorProcess,
 					   Double_t time,
 					   Int_t id,
 					   Int_t idParent,
@@ -430,6 +432,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 						stop,
 						start,
 						parenttype,
+            creatorProcess,
 						time,
 						id,
 						idParent,
@@ -472,6 +475,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(WCSimRootTrack * track)
 					  stop,
 					  start,
 					  track->GetParenttype(),
+            track->GetCreatorProcessName(),
 					  track->GetTime(),
 					  track->GetId(),
 					  track->GetParentId(),
@@ -507,6 +511,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 			       Double_t stop[3],
 			       Double_t start[3],
 			       Int_t parenttype,
+             const std::string& creatorProcess,
 			       Double_t time,
 			       Int_t id,
 			       Int_t idParent,

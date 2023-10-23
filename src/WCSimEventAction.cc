@@ -274,6 +274,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   G4double      vtxTimes[MAX_N_VERTICES];
   for( unsigned int u=0; u<nvtxs; u++ ){
     vtxs[u]      = generatorAction->GetVtx(u);
+    G4cout << "vtxs is: " << vtxs << G4endl;
     vtxsvol[u]   = WCSimEventFindStartingVolume(vtxs[u]);
     vtxTimes[u]  = generatorAction->GetVertexTime(u);
   }
@@ -755,8 +756,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
      jhfNtuple.stop[npar][1] = vtxs[u][1]/cm;  // stopping point (not meaningful)
      jhfNtuple.stop[npar][2] = vtxs[u][2]/cm;  // stopping point (not meaningful)
      /* Alex Finch
-	Create an imaginary start position for the incoming neutrino, to help event display
-      */
+	   Create an imaginary start position for the incoming neutrino, to help event display
+     */
      double distance=10000.0;
      for(int idim=0;idim<3;idim++)
        jhfNtuple.start[npar][idim]=jhfNtuple.stop[npar][idim] - (distance*jhfNtuple.dir[npar][idim]);
@@ -775,18 +776,18 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
      if (targetpdg!=0) {            // protects against seg-fault
        if (targetpdg > 999)         // 16O nucleus not in pdg table
-	 targetmass = targetenergy; // 16O is at rest, so E = m
+          targetmass = targetenergy; // 16O is at rest, so E = m
        else
-	 targetmass = particleTable->FindParticle(targetpdg)->GetPDGMass();
+	        targetmass = particleTable->FindParticle(targetpdg)->GetPDGMass();
        if (targetenergy > targetmass)
-	 //      targetpmag = sqrt(targetenergy*targetenergy - targetmass*targetenergy);
-	 // MF : bug fix
-	 targetpmag = sqrt(targetenergy*targetenergy - targetmass*targetmass);
+	        //targetpmag = sqrt(targetenergy*targetenergy - targetmass*targetenergy);
+	        // MF : bug fix
+	        targetpmag = sqrt(targetenergy*targetenergy - targetmass*targetmass);
        else // protect against NaN
-	 targetpmag = 0.0;
+	        targetpmag = 0.0;
      }
 
-     jhfNtuple.ipnu[npar]     = targetpdg;    // id
+     jhfNtuple.ipnu[npar]    = targetpdg;    // id
      jhfNtuple.flag[npar]    = -2;            // target
      jhfNtuple.m[npar]       = targetmass;    // mass (always a neutrino)
      jhfNtuple.p[npar]       = targetpmag;    // momentum magnitude
@@ -811,6 +812,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
      npar++;
   }
+
+  G4cout << "Number of vertices in event: " << nvtxs << G4endl;
+
 
   ////////////////////////
   // npar > nvertices  ///
@@ -1055,7 +1059,6 @@ G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
   else if ( vtxVolumeName == "catcher" )
     vtxvol = 40;
 
-
   return vtxvol;
 }
 
@@ -1188,6 +1191,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     double pdir[3];
     double stop[3];
     double start[3];
+    string creatorP;
     for (int l=0;l<3;l++)
     {
       dir[l]=injhfNtuple.dir[k][l];
@@ -1211,6 +1215,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 			      stop,
 			      start,
 			      injhfNtuple.parent[k],
+            creatorP,
 			      injhfNtuple.time[k],
                   0,
                   0,
@@ -1287,6 +1292,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       G4double ttime = trj->GetGlobalTime();
 
       G4int parentType;
+      G4String creatorProcess = trj->GetCreatorProcessName();
 
 
       // Right now only secondaries whose parents are pi0's are stored
@@ -1355,6 +1361,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
                                    stop,
                                    start,
                                    parentType,
+                                   creatorProcess,
                                    ttime,
                                    id,
                                    idPrnt,
@@ -1728,6 +1735,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     double pdir[3];
     double stop[3];
     double start[3];
+    string creatorP;
     for (int l=0;l<3;l++)
     {
       dir[l]=injhfNtuple.dir[k][l];
@@ -1751,6 +1759,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 			      stop,
 			      start,
 			      injhfNtuple.parent[k],
+            creatorP,
 			     injhfNtuple.time[k],
                  0,
                  0,
@@ -1825,6 +1834,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       G4double ttime = trj->GetGlobalTime();
 
       G4int parentType;
+      G4String creatorProcess = trj->GetCreatorProcessName();
 
 
       // Right now only secondaries whose parents are pi0's are stored
@@ -1891,6 +1901,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
                                    stop,
                                    start,
                                    parentType,
+                                   creatorProcess,
                                    ttime,
                                    id,
                                    idPrnt,
