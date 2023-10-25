@@ -34,6 +34,21 @@ class WCSimIBDGen {
     // Positron energy correction
     double PositronEnergy(double e_nu, double cos_theta);
 
+    // Current current structure calculation
+    double CurrentCurrentStructure(float e_nu, float e_e);
+
+    // dSigma by dt calculation
+    double dSigmaBydt(float e_nu);
+
+    // dSigma by dE_e calculations
+    double dSigmaBydEe(float e_nu, float e_e);
+
+    // dSigma by dCosTheta calculation
+    double dSigmaBydCosTheta(float e_nu, float cos_theta);
+
+    // Calculate positron energy
+    double GetEe(float e_nu, float cos_theta);
+
   private:
     // Energy and flux vectors
     std::vector<float> energy;

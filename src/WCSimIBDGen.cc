@@ -279,3 +279,17 @@ double WCSimIBDGen::PositronEnergy(double e_nu, double cos_theta) {
     }
     return e1;
 }
+
+double WCSimIBDGen::CurrentCurrentStructure(float e_nu, float e_e) {
+    double M;
+
+    M = A - (s - u) * B + pow((s - u), 2) * C;
+}
+
+double WCSimIBDGen::dSigmaBydt(float e_nu) {}
+
+double WCSimIBDGen::dSigmaBydEe(float e_nu, float e_e) {}
+
+double WCSimIBDGen::dSigmaBydCosTheta(float e_nu, float cos_theta) {}
+
+double WCSimIBDGen::GetEe(float e_nu, float cos_theta) {}
