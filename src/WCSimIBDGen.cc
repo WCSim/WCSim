@@ -178,12 +178,15 @@ void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
     G4bool passed = false;
 
     G4double xs_max = dSigmaBydCosTheta(e_max, -1.0);
-    G4double xs_test = xs_max * flux_max * G4UniformRand();
 
     while (!passed) {
         // Pick energy and directory uniformly
         rand_ene = e_min + (e_max - e_min) * G4UniformRand();
         rand_cos_theta = -1.0 + 2.0 * G4UniformRand();
+
+        // Passing threshold. Must be generated once per try or there is the possibility that the event will never
+        // pass
+        G4double xs_test = xs_max * flux_max * G4UniformRand();
 
         // Cross section
         G4double xs_weight = dSigmaBydCosTheta(rand_ene, rand_cos_theta);
@@ -195,7 +198,12 @@ void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
     }
 }
 
-double WCSimIBDGen::CurrentCurrentStructure(double e_nu, double e_e) {
+// Cross section calculations below here were taken from astro-ph/0302055 available at
+// https://arxiv.org/abs/astro-ph/0302055
+
+double WCSimIBDGen::MatrixElement(double e_nu, double e_e) {
+    // Calculate and return the value of the absolute matrix element squared
+
     // Calculate the Mandelstam variables. See above equation 11
     double s_minus_u = 2 * CLHEP::proton_mass_c2 * (e_nu + e_e) - pow(CLHEP::electron_mass_c2, 2.);
     double t =
@@ -234,6 +242,7 @@ double WCSimIBDGen::CurrentCurrentStructure(double e_nu, double e_e) {
 
     double C = 1. / 16. * (4 * (pow(f1, 2) + pow(g1, 2)) - t * pow(f2, 2) / pow(M_av, 2));
 
+    // Calculate the absolute value of the matrix element squared. See equation 5.
     double abs_M_squared = A - (s_minus_u)*B + pow((s_minus_u), 2) * C;
 
     return abs_M_squared;
@@ -243,14 +252,16 @@ double WCSimIBDGen::dSigmaBydt(double e_nu, double e_e) {
     double s = 2 * CLHEP::proton_mass_c2 * e_nu + pow(CLHEP::proton_mass_c2, 2);
 
     double dsigma_dt = pow(G_f, 2) * pow(cos_cabibbo, 2) /
-                       (2 * CLHEP::pi * pow((s - pow(CLHEP::proton_mass_c2, 2)), 2)) *
-                       CurrentCurrentStructure(e_nu, e_e);
+                       (2 * CLHEP::pi * pow((s - pow(CLHEP::proton_mass_c2, 2)), 2)) * MatrixElement(e_nu, e_e);
 
     return dsigma_dt;
 }
 
 double WCSimIBDGen::dSigmaBydEe(double e_nu, double e_e) {
+    // Calculate dSigma/dEe. See equation 11
     double dSigma_by_dEe = 2 * CLHEP::proton_mass_c2 * dSigmaBydt(e_nu, e_e);
+
+    // Apply the one-loop radiative correction. See equation 14.
     double dSigma_by_dEe_corrected = RadiativeCorrection(dSigma_by_dEe, e_e);
 
     return dSigma_by_dEe_corrected;
@@ -266,9 +277,16 @@ double WCSimIBDGen::RadiativeCorrection(double dSigma_by_dEe, double e_e) {
 }
 
 double WCSimIBDGen::dSigmaBydCosTheta(double e_nu, double cos_theta) {
+    // Simplifies the cross section exapression when expanding in powers of epsilon. See equation 8.
     double epsilon = e_nu / CLHEP::proton_mass_c2;
+
+    // Get the positron energy corresponding to the neutrino energy and scattering angle.
     double e_e = GetEe(e_nu, cos_theta);
+
+    // Energy momentum relation. See equation 21
     double p_e = sqrt(pow(e_e, 2) - pow(CLHEP::electron_mass_c2, 2));
+
+    // Calculate dSigma/dcos(theta). See equation 20
     double dSigma_by_dCosTheta =
         p_e * epsilon / (1 + epsilon * (1 - e_e / p_e * cos_theta)) * dSigmaBydEe(e_nu, e_e);
 
@@ -276,7 +294,7 @@ double WCSimIBDGen::dSigmaBydCosTheta(double e_nu, double cos_theta) {
 }
 
 double WCSimIBDGen::GetEe(double e_nu, double cos_theta) {
-    // Simplifies the cross section exapression when expanding in powers of epsilon. See equation 8.
+    // See above comment and equation 8.
     double epsilon = e_nu / CLHEP::proton_mass_c2;
 
     // See below equation 21 for kappa definition

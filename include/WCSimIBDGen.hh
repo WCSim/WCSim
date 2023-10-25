@@ -30,7 +30,7 @@ class WCSimIBDGen {
     void GenInteraction(float &E, float &CosTheta);
 
     // Current current structure calculation
-    double CurrentCurrentStructure(double e_nu, double e_e);
+    double MatrixElement(double e_nu, double e_e);
 
     // dSigma by dt calculation
     double dSigmaBydt(double e_nu, double e_e);
