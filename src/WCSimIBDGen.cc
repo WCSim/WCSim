@@ -249,8 +249,10 @@ double WCSimIBDGen::MatrixElement(double e_nu, double e_e) {
 }
 
 double WCSimIBDGen::dSigmaBydt(double e_nu, double e_e) {
+    // Mandelstam variable s. See equation 7.
     double s = 2 * CLHEP::proton_mass_c2 * e_nu + pow(CLHEP::proton_mass_c2, 2);
 
+    // Calculate dSigma/dt. See equation 3.
     double dsigma_dt = pow(G_f, 2) * pow(cos_cabibbo, 2) /
                        (2 * CLHEP::pi * pow((s - pow(CLHEP::proton_mass_c2, 2)), 2)) * MatrixElement(e_nu, e_e);
 
@@ -258,6 +260,8 @@ double WCSimIBDGen::dSigmaBydt(double e_nu, double e_e) {
 }
 
 double WCSimIBDGen::dSigmaBydEe(double e_nu, double e_e) {
+    // Calculates dSigma/dE_e and applies the one-loop radiative correction
+
     // Calculate dSigma/dEe. See equation 11
     double dSigma_by_dEe = 2 * CLHEP::proton_mass_c2 * dSigmaBydt(e_nu, e_e);
 
@@ -269,6 +273,7 @@ double WCSimIBDGen::dSigmaBydEe(double e_nu, double e_e) {
 
 double WCSimIBDGen::RadiativeCorrection(double dSigma_by_dEe, double e_e) {
     // Calculate and apply the radiative correction. See equation 14
+    // This correction is valued for E_nu << m_p
     double rad_corrected = dSigma_by_dEe * (1 + alpha / CLHEP::pi *
                                                     (6.00 + 3. / 2. * log10(CLHEP::proton_mass_c2 / (2 * e_e)) +
                                                      1.2 * pow(CLHEP::electron_mass_c2 / e_e, 1.5)));
