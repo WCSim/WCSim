@@ -116,12 +116,12 @@ G4ThreeVector WCSimIBDGen::GenRandomPosition() {
     // further from the z-axis than the inner detector's radius)
     while (sqrt(x_nu * x_nu + y_nu * y_nu) > myDetector->GetGeo_Dm(3)) {
         // Generate a random x and y value
-        x_nu = myDetector->GetGeo_Dm(0) * (-1.0 + 2.0 * G4UniformRand());
-        y_nu = myDetector->GetGeo_Dm(1) * (-1.0 + 2.0 * G4UniformRand());
+        x_nu = myDetector->GetGeo_Dm(0) * (-0.5 + G4UniformRand());
+        y_nu = myDetector->GetGeo_Dm(1) * (-0.5 + G4UniformRand());
     }
 
     // Generate random z position between -1/2 ID height and +1/2 ID height
-    double z_nu = myDetector->GetGeo_Dm(2) * (-1.0 + 2.0 * G4UniformRand());
+    double z_nu = myDetector->GetGeo_Dm(2) * (-0.5 + G4UniformRand());
 
     G4ThreeVector nu_pos;
 
