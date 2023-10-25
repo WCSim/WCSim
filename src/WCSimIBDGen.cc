@@ -148,7 +148,7 @@ void WCSimIBDGen::GenEvent(G4ThreeVector &nu_dir, G4LorentzVector &neutrino, G4L
 
     // First order correction to positron quantities
     // for finite nucleon mass
-    double e1 = PositronEnergy(e_nu, cos_theta);
+    double e1 = GetEe(e_nu, cos_theta);
 
     double p1 = sqrt(e1 * e1 - CLHEP::electron_mass_c2 * CLHEP::electron_mass_c2);
 
