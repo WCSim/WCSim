@@ -177,18 +177,16 @@ void WCSimIBDGen::GenEvent(G4ThreeVector &nu_dir, G4LorentzVector &neutrino, G4L
 void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
     G4bool passed = false;
 
-    G4double xs_max = CrossSection(e_max, -1.0);
+    G4double xs_max = dSigmaBydCosTheta(e_max, -1.0);
+    G4double xs_test = xs_max * flux_max * G4UniformRand();
 
     while (!passed) {
         // Pick energy and directory uniformly
         rand_ene = e_min + (e_max - e_min) * G4UniformRand();
         rand_cos_theta = -1.0 + 2.0 * G4UniformRand();
 
-        // Weight events by spectrum
-        G4double xs_test = xs_max * flux_max * G4UniformRand();
-
         // Cross section
-        G4double xs_weight = CrossSection(rand_ene, rand_cos_theta);
+        G4double xs_weight = dSigmaBydCosTheta(rand_ene, rand_cos_theta);
 
         // Flux at rand_ene
         G4double flux_weight = InterpolateSpectrum(energy, flux, rand_ene);
