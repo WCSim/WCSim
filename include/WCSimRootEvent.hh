@@ -154,7 +154,8 @@ public:
   bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 
   Double_t  GetTruetime() const { return fTruetime;}
-  Int_t     GetParentID() const { return fParentSavedTrackID;}
+  Int_t     GetParentID() const { return fParentSavedTrackID;} // deprecated
+  Int_t     GetParentSavedTrackID() const { return fParentSavedTrackID;}
   Float_t   GetPhotonStartTime() const { return fPhotonStartTime; }
   Float_t   GetPhotonStartPos(int i) const { return (i<3) ? fPhotonStartPos[i] : 0; }
   Float_t   GetPhotonEndPos(int i) const { return (i<3) ? fPhotonEndPos[i] : 0; }
