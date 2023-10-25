@@ -281,70 +281,96 @@ double WCSimIBDGen::PositronEnergy(double e_nu, double cos_theta) {
 }
 
 double WCSimIBDGen::CurrentCurrentStructure(double e_nu, double e_e) {
-    double abs_M_squared;
-    double A, B, C;
-    double s_minus_u, t;
-    double x, y, z;
-    double f1, f2, g1, g2;
-
     // Calculate the Mandelstam variables. See above equation 11
-    s_minus_u = 2 * CLHEP::proton_mass_c2 * (e_nu + e_e) - pow(CLHEP::electron_mass_c2, 2.);
-    t = pow(CLHEP::neutron_mass_c2, 2) - pow(CLHEP::proton_mass_c2, 2) - 2 * CLHEP::proton_mass_c2 * (e_nu - e_e);
+    double s_minus_u = 2 * CLHEP::proton_mass_c2 * (e_nu + e_e) - pow(CLHEP::electron_mass_c2, 2.);
+    double t =
+        pow(CLHEP::neutron_mass_c2, 2) - pow(CLHEP::proton_mass_c2, 2) - 2 * CLHEP::proton_mass_c2 * (e_nu - e_e);
 
     // Calculate f1, f2, g1 and g2. See equation 7
-    x = 0 + t / (4 * pow(M_av, 2));
-    y = 1 - t / pow(M_V_squared, 2);
-    z = 1 - t / pow(M_A_squared, 2);
-    f1 = (1 - (1 + xi) * x) / ((1 - x) * pow(y, 2));
-    f2 = xi / ((1 - x) * pow(y, 2));
-    g1 = g_1_0 / pow(z, 2);
-    g2 = 2 * pow(M_av, 2) * g1 / (pow(CLHEP::pi, 2) - t);
+    double x = 0 + t / (4 * pow(M_av, 2));
+    double y = 1 - t / pow(M_V_squared, 2);
+    double z = 1 - t / pow(M_A_squared, 2);
+    double f1 = (1 - (1 + xi) * x) / ((1 - x) * pow(y, 2));
+    double f2 = xi / ((1 - x) * pow(y, 2));
+    double g1 = g_1_0 / pow(z, 2);
+    double g2 = 2 * pow(M_av, 2) * g1 / (pow(CLHEP::pi, 2) - t);
 
     // Calculate A, B and C. See equation 10
-    A = 1. / 16. *
-        ((t - pow(CLHEP::electron_mass_c2, 2)) *
-             (4 * pow(f1, 2) * (4 * pow(M_av, 2) + t + pow(CLHEP::electron_mass_c2, 2)) +
-              4 * pow(g1, 2) * (-4 * pow(M_av, 2) + t + pow(CLHEP::electron_mass_c2, 2)) +
-              pow(f2, 2) * (pow(t, 2) / pow(M_av, 2) + 4 * t + 4 * pow(CLHEP::electron_mass_c2, 2)) +
-              4 * pow(CLHEP::electron_mass_c2, 2) * t * pow(g2, 2) / pow(M_av, 2) +
-              8 * f1 * f2 * (2 * t + pow(CLHEP::electron_mass_c2, 2)) +
-              16 * pow(CLHEP::electron_mass_c2, 2) * g1 * g2) -
-         pow(delta, 2) * ((4 * pow(f1, 2) + t * pow(f2, 2) / pow(M_av, 2)) *
-                              (4 * pow(M_av, 2) + t - pow(CLHEP::electron_mass_c2, 2)) +
-                          4 * pow(g1, 2) * (4 * pow(M_av, 2) - t + pow(CLHEP::electron_mass_c2, 2)) +
-                          4 * pow(CLHEP::electron_mass_c2, 2) * pow(g2, 2) *
-                              (t - pow(CLHEP::electron_mass_c2, 2)) / pow(M_av, 2) +
-                          8 * f1 * f2 * (2 * t - pow(CLHEP::electron_mass_c2, 2)) +
-                          16 * pow(CLHEP::electron_mass_c2, 2) * g1 * g2) -
-         32 * pow(CLHEP::electron_mass_c2, 2) * M_av * delta * g1 * (f1 + f2));
+    double A = 1. / 16. *
+               ((t - pow(CLHEP::electron_mass_c2, 2)) *
+                    (4 * pow(f1, 2) * (4 * pow(M_av, 2) + t + pow(CLHEP::electron_mass_c2, 2)) +
+                     4 * pow(g1, 2) * (-4 * pow(M_av, 2) + t + pow(CLHEP::electron_mass_c2, 2)) +
+                     pow(f2, 2) * (pow(t, 2) / pow(M_av, 2) + 4 * t + 4 * pow(CLHEP::electron_mass_c2, 2)) +
+                     4 * pow(CLHEP::electron_mass_c2, 2) * t * pow(g2, 2) / pow(M_av, 2) +
+                     8 * f1 * f2 * (2 * t + pow(CLHEP::electron_mass_c2, 2)) +
+                     16 * pow(CLHEP::electron_mass_c2, 2) * g1 * g2) -
+                pow(delta, 2) * ((4 * pow(f1, 2) + t * pow(f2, 2) / pow(M_av, 2)) *
+                                     (4 * pow(M_av, 2) + t - pow(CLHEP::electron_mass_c2, 2)) +
+                                 4 * pow(g1, 2) * (4 * pow(M_av, 2) - t + pow(CLHEP::electron_mass_c2, 2)) +
+                                 4 * pow(CLHEP::electron_mass_c2, 2) * pow(g2, 2) *
+                                     (t - pow(CLHEP::electron_mass_c2, 2)) / pow(M_av, 2) +
+                                 8 * f1 * f2 * (2 * t - pow(CLHEP::electron_mass_c2, 2)) +
+                                 16 * pow(CLHEP::electron_mass_c2, 2) * g1 * g2) -
+                32 * pow(CLHEP::electron_mass_c2, 2) * M_av * delta * g1 * (f1 + f2));
 
-    B = 1. / 16. *
-        (16 * t * g1 * (f1 + f2) +
-         4 * pow(CLHEP::electron_mass_c2, 2) * delta * (pow(f2, 2) + f1 * f2 + 2 * g1 * g2) / M_av);
+    double B = 1. / 16. *
+               (16 * t * g1 * (f1 + f2) +
+                4 * pow(CLHEP::electron_mass_c2, 2) * delta * (pow(f2, 2) + f1 * f2 + 2 * g1 * g2) / M_av);
 
-    C = 1. / 16. * (4 * (pow(f1, 2) + pow(g1, 2)) - t * pow(f2, 2) / pow(M_av, 2));
+    double C = 1. / 16. * (4 * (pow(f1, 2) + pow(g1, 2)) - t * pow(f2, 2) / pow(M_av, 2));
 
-    abs_M_squared = A - (s_minus_u)*B + pow((s_minus_u), 2) * C;
+    double abs_M_squared = A - (s_minus_u)*B + pow((s_minus_u), 2) * C;
 
     return abs_M_squared;
 }
 
-double WCSimIBDGen::dSigmaBydt(double abs_M_squared, double e_nu) {
-    double dsigma_dt;
-    double s;
+double WCSimIBDGen::dSigmaBydt(double e_nu, double e_e) {
+    double s = 2 * CLHEP::proton_mass_c2 * e_nu + pow(CLHEP::proton_mass_c2, 2);
 
-    s = 2 * CLHEP::proton_mass_c2 * e_nu + pow(CLHEP::proton_mass_c2, 2);
+    double dsigma_dt = pow(G_f, 2) * pow(cos_cabibbo, 2) /
+                       (2 * CLHEP::pi * pow((s - pow(CLHEP::proton_mass_c2, 2)), 2)) *
+                       CurrentCurrentStructure(e_nu, e_e);
 
-    dsigma_dt = pow(G_f, 2) * pow(cos_cabibbo, 2) / (2 * CLHEP::pi * pow((s - pow(CLHEP::proton_mass_c2, 2)), 2)) *
-                abs_M_squared;
-
-    M = A - (s - u) * B + pow((s - u), 2) * C;
+    return dsigma_dt;
 }
 
-double WCSimIBDGen::dSigmaBydt(float e_nu) {}
+double WCSimIBDGen::dSigmaBydEe(double e_nu, double e_e) {
+    double dSigma_by_dEe = 2 * CLHEP::proton_mass_c2 * dSigmaBydt(e_nu, e_e);
+    double dSigma_by_dEe_corrected = RadiativeCorrection(dSigma_by_dEe, e_e);
 
-double WCSimIBDGen::dSigmaBydEe(float e_nu, float e_e) {}
+    return dSigma_by_dEe_corrected;
+}
 
-double WCSimIBDGen::dSigmaBydCosTheta(float e_nu, float cos_theta) {}
+double WCSimIBDGen::RadiativeCorrection(double dSigma_by_dEe, double e_e) {
+    // Calculate and apply the radiative correction. See equation 14
+    double rad_corrected = dSigma_by_dEe * (1 + alpha / CLHEP::pi *
+                                                    (6.00 + 3. / 2. * log10(CLHEP::proton_mass_c2 / (2 * e_e)) +
+                                                     1.2 * pow(CLHEP::electron_mass_c2 / e_e, 1.5)));
 
-double WCSimIBDGen::GetEe(float e_nu, float cos_theta) {}
+    return rad_corrected;
+}
+
+double WCSimIBDGen::dSigmaBydCosTheta(double e_nu, double cos_theta) {
+    double epsilon = e_nu / CLHEP::proton_mass_c2;
+    double e_e = GetEe(e_nu, cos_theta);
+    double p_e = sqrt(pow(e_e, 2) - pow(CLHEP::electron_mass_c2, 2));
+    double dSigma_by_dCosTheta =
+        p_e * epsilon / (1 + epsilon * (1 - e_e / p_e * cos_theta)) * dSigmaBydEe(e_nu, e_e);
+
+    return dSigma_by_dCosTheta * CLHEP::hbarc * CLHEP::hbarc;
+}
+
+double WCSimIBDGen::GetEe(double e_nu, double cos_theta) {
+    // Simplifies the cross section exapression when expanding in powers of epsilon. See equation 8.
+    double epsilon = e_nu / CLHEP::proton_mass_c2;
+
+    // See below equation 21 for kappa definition
+    double kappa = pow(1 + epsilon, 2) - pow(epsilon * cos_theta, 2);
+
+    // Positron energy calculation. See equation 21
+    double e_e = ((e_nu - delta_cm) * (1 + epsilon) +
+                  epsilon * cos_theta * sqrt(pow(e_nu - delta_cm, 2) - pow(CLHEP::electron_mass_c2, 2) * kappa)) /
+                 kappa;
+
+    return e_e;
+}
