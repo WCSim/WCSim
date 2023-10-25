@@ -35,10 +35,13 @@ class WCSimIBDGen {
     double PositronEnergy(double e_nu, double cos_theta);
 
     // Current current structure calculation
-    double CurrentCurrentStructure(float e_nu, float e_e);
+    double CurrentCurrentStructure(double e_nu, double e_e);
 
     // dSigma by dt calculation
-    double dSigmaBydt(float e_nu);
+    double dSigmaBydt(double abs_M_squared, double e_nu);
+
+    // Radiative correction
+    double RadiativeCorrection(double dSigma_by_dEe, double e_e);
 
     // dSigma by dE_e calculations
     double dSigmaBydEe(float e_nu, float e_e);
