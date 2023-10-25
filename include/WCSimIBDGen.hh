@@ -29,12 +29,6 @@ class WCSimIBDGen {
     // Interaction generator
     void GenInteraction(float &E, float &CosTheta);
 
-    // Cross section
-    double CrossSection(double e_nu, double cos_theta);
-
-    // Positron energy correction
-    double PositronEnergy(double e_nu, double cos_theta);
-
     // Current current structure calculation
     double CurrentCurrentStructure(double e_nu, double e_e);
 
