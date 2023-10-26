@@ -14,10 +14,10 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
 
   genCmd = new G4UIcmdWithAString("/mygen/generator",this);
   genCmd->SetGuidance("Select primary generator.");
-  genCmd->SetGuidance(" Available generators : muline, customevt, gun, laser, gps, cosmics, radioactive, rootracker, radon, injector, gamma-conversion");
+  genCmd->SetGuidance(" Available generators : muline, ambeevt, gun, laser, gps, cosmics, radioactive, rootracker, radon, injector, gamma-conversion");
   genCmd->SetParameterName("generator",true);
-  genCmd->SetDefaultValue("customevt");
-  genCmd->SetCandidates("muline customevt gun laser gps cosmics radioactive rootracker radon injector, gamma-conversion");
+  genCmd->SetDefaultValue("ambeevt");
+  genCmd->SetCandidates("muline ambeevt gun laser gps cosmics radioactive rootracker radon injector, gamma-conversion");
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
   fileNameCmd->SetGuidance("Select the file of vectors.");
@@ -149,10 +149,10 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
     }
-    else if(newValue == "customevt")
+    else if(newValue == "ambeevt")
     {
       myAction->SetMulineEvtGenerator(false);
-      myAction->SetCustomEvtGenerator(true);
+      myAction->SetAmBeEvtGenerator(true);
       myAction->SetGunEvtGenerator(false);
       myAction->SetRootrackerEvtGenerator(false);
       myAction->SetLaserEvtGenerator(false);
@@ -382,8 +382,8 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
   {
     if(myAction->IsUsingMulineEvtGenerator())
       { cv = "muline"; }
-    else if(myAction->IsUsingCustomEvtGenerator())
-      { cv = "customevt"; }
+    else if(myAction->IsUsingAmBeEvtGenerator())
+      { cv = "ambeevt"; }
     else if(myAction->IsUsingGunEvtGenerator())
       { cv = "gun"; }
     else if(myAction->IsUsingLaserEvtGenerator())

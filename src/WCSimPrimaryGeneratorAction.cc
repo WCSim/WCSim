@@ -101,7 +101,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 
   messenger = new WCSimPrimaryGeneratorMessenger(this);
 
-  useCustomEvt      = true;
+  useAmBeEvt      = false;
   useMulineEvt 		  = false;
   useRootrackerEvt 	= false;
   useGunEvt    		  = false;
@@ -404,7 +404,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     }//old muline format
   }//useMuLineEvt
   
-  else if(useCustomEvt){
+  else if(useAmBeEvt){ // Diego Costas (diego.costas.rodriguez@usc.es) 2023
     // Create the energy distribution object
     G4SPSEneDistribution* nEnergyDist = new G4SPSEneDistribution();
     G4SPSRandomGenerator* rGen = new G4SPSRandomGenerator(); 
@@ -1248,8 +1248,8 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
 {
   if(useMulineEvt)
     return "muline";
-  else if(useCustomEvt)
-    return "customevt";
+  else if(useAmBeEvt)
+    return "ambeevt";
   else if(useGunEvt)
     return "gun";
   else if(useGPSEvt)

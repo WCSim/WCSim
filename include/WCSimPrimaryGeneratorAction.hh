@@ -90,7 +90,7 @@ private:
   WCSimPrimaryGeneratorMessenger* messenger;
 
   // Variables set by the messenger
-  G4bool   useCustomEvt;
+  G4bool   useAmBeEvt;
   G4bool   useMulineEvt;
   G4bool   useRootrackerEvt;
   G4bool   useGunEvt;
@@ -179,8 +179,8 @@ private:
 	
 public:
 
-  inline void SetCustomEvtGenerator(G4bool choice) { useCustomEvt = choice; }
-  inline G4bool IsUsingCustomEvtGenerator()  { return useCustomEvt; }
+  inline void SetAmBeEvtGenerator(G4bool choice) { useAmBeEvt = choice; }
+  inline G4bool IsUsingAmBeEvtGenerator()  { return useAmBeEvt; }
 
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
   inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
