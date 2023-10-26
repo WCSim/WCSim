@@ -51,6 +51,7 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
     {
       const G4VProcess* tempproc = aTrack->GetCreatorProcess();
       creatorProcess = tempproc->GetProcessName();
+      //G4cout << "Creator Process: " << creatorProcess << G4endl;
     }
   else 
     creatorProcess = "";

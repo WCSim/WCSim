@@ -41,7 +41,7 @@ private:
   Float_t fStop[3];
   Float_t fStart[3];
   Int_t fParenttype;
-  G4String fCreatorProcess;
+  std::string fCreatorProcess;
   Double_t fTime;
   Int_t fId;
   Int_t fParentId;
@@ -64,7 +64,7 @@ public:
 		 Double_t stop[3],
 		 Double_t start[3],
 		 Int_t parenttype,
-     const std::string& creatorProcess,
+     std::string creatorProcess,
 		 Double_t time,
 		 Int_t id,
 		 Int_t idParent,
@@ -90,7 +90,7 @@ public:
   Double_t   GetTime() const { return fTime;}
   Int_t     GetId() const {return fId;}
   Int_t     GetParentId() const {return fParentId;}
-  G4String GetCreatorProcessName() const {return fCreatorProcess;}
+  std::string GetCreatorProcessName() const {return fCreatorProcess;}
   std::vector<std::vector<float>> GetBoundaryPoints() const {return boundaryPoints;}
   std::vector<float> GetBoundaryKEs() const {return boundaryKEs;}
   std::vector<double> GetBoundaryTimes() const {return boundaryTimes;}

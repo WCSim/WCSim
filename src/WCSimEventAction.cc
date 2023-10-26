@@ -1292,7 +1292,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       G4double ttime = trj->GetGlobalTime();
 
       G4int parentType;
-      G4String creatorProcess = trj->GetCreatorProcessName();
+      G4String creatorProcess = "test_process";
 
 
       // Right now only secondaries whose parents are pi0's are stored
