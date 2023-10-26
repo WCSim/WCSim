@@ -63,15 +63,22 @@ class WCSimIBDGen {
     WCSimDetectorConstruction *myDetector;
 
     // Cross section constants
+    // See equation 2. Note, the paper refers to M_av as "M". Labelled here as M_av (average mass of proton and
+    // neutron) to avoid confusion with other Ms. delta here refers to uppercase delta in the paper.
+    double M_av = 0.5 * (CLHEP::proton_mass_c2 + CLHEP::neutron_mass_c2);
+    double delta = CLHEP::neutron_mass_c2 - CLHEP::proton_mass_c2;
+    // See below equation 3. Slight mismatch in value of G_f here to match the one used by SNTools.
+    double G_f = 1.16639e-11;
+    double cos_cabibbo = 0.9746;
+    // See below equation 7
     double g_1_0 = -1.270;
     double M_V_squared = 710.0;
     double M_A_squared = 1030.0;
     double xi = 3.706;
-    double M_av = 0.5 * (CLHEP::proton_mass_c2 + CLHEP::neutron_mass_c2);
-    double G_f = 1.16639e-11;
-    double cos_cabibbo = 0.9746;
+    // Fine structure constant
     double alpha = 1 / 137.035989;
-    double delta = CLHEP::neutron_mass_c2 - CLHEP::proton_mass_c2;
+    // Named delta_cm to avoid confusion with delta above. This is referred to as lowercase delta in the paper. See
+    // equation 12.
     double delta_cm =
         (pow(CLHEP::neutron_mass_c2, 2) - pow(CLHEP::proton_mass_c2, 2) - pow(CLHEP::electron_mass_c2, 2)) /
         (2 * CLHEP::proton_mass_c2);
