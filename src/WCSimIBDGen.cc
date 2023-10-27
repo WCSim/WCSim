@@ -17,7 +17,9 @@
 // Set json to nlohmann::json
 using json = nlohmann::json;
 
-WCSimIBDGen::WCSimIBDGen(WCSimDetectorConstruction *myDC) : myDetector(myDC) {}
+WCSimIBDGen::WCSimIBDGen(WCSimDetectorConstruction *myDC) : myDetector(myDC) {
+    G4cout << "IBDGen: [INFO] Initialised IBDGen" << G4endl;
+}
 
 WCSimIBDGen::~WCSimIBDGen() {
     // Delete things here
