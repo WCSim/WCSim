@@ -1,0 +1,49 @@
+# Sample setup macro with no visualization
+
+/run/verbose 0
+/tracking/verbose 0
+/hits/verbose 0
+/grdm/verbose 0
+
+# Another option of HyperK
+/WCSim/WCgeom HyperK_HybridmPMT_WithOD # Note: the coverage is set to 20.0%.
+
+/WCSim/Construct # This must be uncommented in order to construct a new detector configuration.
+
+/WCSim/PMTQEMethod Stacking_Only
+
+#turn on or off the collection efficiency
+/WCSim/PMTCollEff on
+
+# command to choose save or not save the pi0 info 07/03/10 (XQ)
+/WCSim/SavePi0 false
+
+#choose the Trigger & Digitizer type (and options)
+/DAQ/Digitizer SKI
+/DAQ/Trigger NDigits
+#/DAQ/Trigger NoTrigger
+
+#grab the other DAQ options (thresholds, timing windows, etc.)
+/control/execute macros/daq.mac
+
+/DarkRate/SetDetectorElement tank
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkHigh 100000
+/DarkRate/SetDarkLow 0
+/DarkRate/SetDarkWindow 4000
+
+# Or you can use the G4 Particle Gun
+# for a full list of /gun/ commands see:
+# http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
+/mygen/generator ibd
+/mygen/ibd_database data/DSNBFluxes.json
+/mygen/ibd_model Nakazato NH Minimum
+
+# Needed to prevent other decay than Bi-214
+/grdm/nucleusLimits 214 214 83 83
+
+## change the name of the output root file, default = wcsim.root
+/WCSimIO/RootFile OUTPUT_FILENAME.root
+
+/run/beamOn 100000
+#exit
