@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.1)
 # ##############################################################################
 
 set(PROJECT_NAME WCSim)
-set(PROJECT_VERSION 1.12.1)
+set(PROJECT_VERSION 1.12.2)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 
@@ -90,15 +90,27 @@ if(WCSim_DEBUG_COMPILE_FLAG STREQUAL ON)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 endif()
 
+##############
+# WCSim compilation options
+##############
+# Caution: setting a new default value to this variable requires the recompilation of the full package
+option(WCSim_Geometry_Overlaps_CHECK
+  "Toggle GEANT4 overlap checking when placing geometry elements"
+  OFF
+)
+set( WCSIM_CHECK_GEOMETRY_OVERLAPS $<IF:$<BOOL:${WCSim_Geometry_Overlaps_CHECK}>,true,false>)
 
 #########
-# data and macros copy
+# copy extra data files
 #########
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/MuonFlux-HyperK-ThetaPhi.dat
 	${PROJECT_SOURCE_DIR}/data/biasprofile.dat
         ${PROJECT_SOURCE_DIR}/data/theta_cos15deg_FWHM.txt
+        ${PROJECT_SOURCE_DIR}/data/DSNBFluxes.json
+      	${PROJECT_SOURCE_DIR}/data/LightInjectors.json
+      	${PROJECT_SOURCE_DIR}/data/LI_OD_laser_ball_photon_positions.csv
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
@@ -114,6 +126,8 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
 	${PROJECT_SOURCE_DIR}/macros/mPMT_interesting2_SKwCover.mac
 	${PROJECT_SOURCE_DIR}/macros/mPMT_nuPrism1.mac
 	${PROJECT_SOURCE_DIR}/macros/mPMT_nuPrism2.mac
+        ${PROJECT_SOURCE_DIR}/macros/mPMT_radon_with_bias.mac
+        ${PROJECT_SOURCE_DIR}/macros/mPMT_radon_without_bias.mac
 	#visualisation macros
         ${PROJECT_SOURCE_DIR}/macros/visOGLSX.mac
         ${PROJECT_SOURCE_DIR}/macros/visRayTracer.mac
@@ -122,6 +136,8 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
 	${PROJECT_SOURCE_DIR}/macros/visOGLQT-OD.mac
 	${PROJECT_SOURCE_DIR}/macros/vis_original.mac
 	#misc macros with different geometries
+        # WCTE
+        ${PROJECT_SOURCE_DIR}/macros/WCTE.mac
 	#nuprism
 	${PROJECT_SOURCE_DIR}/macros/NuPRISM.mac
         #WCTE
@@ -137,6 +153,10 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
 	${PROJECT_SOURCE_DIR}/macros/OD_10k.mac
 	${PROJECT_SOURCE_DIR}/macros/wcsim_temp.mac
 	${PROJECT_SOURCE_DIR}/macros/WCSim_1part_HK.mac
+        ${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid.mac
+        ${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_vectorfile.mac
+        ${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_injector.mac
+        ${PROJECT_SOURCE_DIR}/macros/LIGen.mac
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}
@@ -154,6 +174,23 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/bin/rootwc-files
         ${PROJECT_SOURCE_DIR}/rootwc/loadlibs.C
         ${PROJECT_SOURCE_DIR}/rootwc/rootwc.C
         )
+
+pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/mPMT-configfiles
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_19_nuPrism.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_30_13_3.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_33_13_1.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_33_50.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_33_50_1.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_34_22.5_1.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_34_22.5_2.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_34_22_1.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_34_22_2.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_37_HK.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_Position_WCTE.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_Position_WCTE_RotateBarrelHalfTower.txt
+        )
+
 
 # Library
 include_directories (
