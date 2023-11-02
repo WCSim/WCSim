@@ -12,6 +12,8 @@
 #include "G4ThreeVector.hh"
 #include "G4EventManager.hh"
 #include "globals.hh"
+#include <G4Types.hh>
+#include <G4ios.hh>
 #include "Randomize.hh"
 #include <fstream>
 #include <vector>
@@ -97,15 +99,18 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 
   messenger = new WCSimPrimaryGeneratorMessenger(this);
 
-  useMulineEvt 		= true;
-  useRootrackerEvt 	= false;
-  useGunEvt    		= false;
-  useLaserEvt  		= false;
-  useInjectorEvt  	= false;
-  useGPSEvt    		= false;
-  useCosmics            = false;
-  useRadioactiveEvt  	= false;
-  useRadonEvt        	= false;
+  useMulineEvt 		    = true;
+  useRootrackerEvt   	= false;
+  useGunEvt    		    = false;
+  useLaserEvt  		    = false;
+  useInjectorEvt    	= false;
+  useGPSEvt      		  = false;
+  useDataTableEvt     = false;
+  useIBDEvt           = false;
+  useCosmics          = false;
+  useRadioactiveEvt   = false;
+  useRadonEvt         = false;
+  useLightInjectorEvt = false;
 
   //rootracker related variables
   fEvNum = 0;
@@ -115,20 +120,46 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   needConversion = false;
   foundConversion = true;	  
 
+  // Radioactive and Radon generator variables:
+  radioactive_sources.clear();
+  myRn222Generator	= 0;
+  fRnScenario		= 0;
+  fRnSymmetry		= 1;
+
+  //injector related variables
+  nPhotons = 1;
+  injectorOnIdx = 0;
+  twindow = 0.;
+  openangle = 0.;
+  wavelength = 435.;
+
+  //Light injector generator variables (LIGen)
+  LIGen = 0;
+  injectorType = "";
+  injectorIdx = "";
+  injectorFilename = "";
+  photonMode = 0;
+
+  // Time units for vertices
+  fTimeUnit=CLHEP::nanosecond;
+}
+
+
+void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
   // Create the relevant histograms to generate muons
   // according to SuperK flux extrapolated at HyperK site
-  altCosmics = 2*myDC->GetWCIDHeight();
-  G4cout << "altCosmics : " << altCosmics << G4endl;
-  if (inputCosmicsFile.is_open())
-    inputCosmicsFile.close();
 
+  altCosmics = 2*myDetector->GetWCIDHeight();
+  G4cout << "altCosmics : " << altCosmics << G4endl;
+  if (inputCosmicsFile.is_open()) inputCosmicsFile.close();
 
   inputCosmicsFile.open(cosmicsFileName, std::fstream::in);
 
   if (!inputCosmicsFile.is_open()) {
     G4cout << "Cosmics data file " << cosmicsFileName << " not found" << G4endl;
-	exit(-1);
-  } else {
+    exit(-1);
+  } 
+  else {
     G4cout << "Cosmics data file " << cosmicsFileName << " found" << G4endl;
     string line;
     vector<string> token(1);
@@ -170,25 +201,9 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
     hFluxCosmics->Write();
     hEmeanCosmics->Write();
     file->Close();
-
   }
-
-  // Radioactive and Radon generator variables:
-  radioactive_sources.clear();
-  myRn222Generator	= 0;
-  fRnScenario		= 0;
-  fRnSymmetry		= 1;
-
-  //injector related variables
-  nPhotons = 1;
-  injectorOnIdx = 0;
-  twindow = 0.;
-  openangle = 0.;
-  wavelength = 435.;
-
-  // Time units for vertices
-  fTimeUnit=CLHEP::nanosecond;
 }
+
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
 {
@@ -207,8 +222,12 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
   delete particleGun;
   delete MyGPS;   //T. Akiri: Delete the GPS variable
   delete messenger;
-  delete hFluxCosmics;
-  delete hEmeanCosmics;
+  if (useCosmics){
+    delete hFluxCosmics;
+    delete hEmeanCosmics;
+  }
+  if(LIGen) delete LIGen;
+  if(IBDGen) delete IBDGen;
 }
 
 void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -744,6 +763,39 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamDir(dir);
       SetBeamPDG(pdg);
     }
+
+  else if (useLightInjectorEvt)
+    {
+
+        // Initialise the light injector once per sim. 
+        // This will get LI settings (position, direction, etc) from the db
+        // and produce a 3D histogram of the LI profile.
+        if ( !LIGen ) {
+            LIGen = new WCSimLIGen();
+            LIGen->SetPhotonMode(photonMode);
+            LIGen->ReadFromDatabase(injectorType,injectorIdx,injectorFilename);
+        }
+
+        // Generate the required number of photons with
+        // directions distributed as per the LI profile        
+        // and populate the G4Event
+
+        G4ThreeVector vtx = LIGen->GetInjectorPosition();
+        G4ThreeVector dir = LIGen->GetInjectorDirection();
+        G4int pdg = 0;
+        G4double E = LIGen->GetPhotonEnergy();
+        LIGen->GeneratePhotons(anEvent,nphotons);
+
+        // save injector properties
+        G4cout << " Saving injector properties: " << vtx << ", " << E << ", " << dir << ", " << pdg << G4endl;
+        SetVtx(vtx);
+        SetBeamDir(dir);
+        SetBeamEnergy(energy);
+        SetBeamPDG(pdg);
+
+    }
+
+
   else if (useGPSEvt)
     {
       MyGPS->GeneratePrimaryVertex(anEvent);
@@ -905,8 +957,168 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       	*/
       }
 
+    } else if (useIBDEvt) {
+        // Generate IBD events from an input spectrum
+
+        // Initialise IBD generator once per sim
+        // This reads the spectrum once and populates vector attributes of the
+        //   WCSimIBDGen object with the energy and flux
+        if(!IBDGen){
+            IBDGen = new WCSimIBDGen(myDetector);
+            IBDGen->ReadSpectrumFromDB(ibd_database, ibd_model);
+        }
+
+        // Event variables
+        G4ThreeVector nu_dir;
+        G4LorentzVector neutrino;
+        G4LorentzVector positron;
+        G4LorentzVector neutron;
+
+        // Generate event. GenEvent fills the Lorentz vectors with the direction and energy of the particles
+        IBDGen->GenEvent(nu_dir, neutrino, positron, neutron);
+
+        // Generate random isotopic position inside detector
+        G4ThreeVector vtx = IBDGen->GenRandomPosition();
+
+        // Populate the event variables to be written out
+        SetVtx(vtx);
+        SetBeamDir(positron.getV(), 0);
+        SetBeamDir(neutron.getV(), 1);
+        SetBeamEnergy(positron.getT(), 0);
+        SetBeamEnergy(neutron.getT(), 1);
+        SetBeamPDG(particleTable->FindParticle("e+")->GetPDGEncoding(), 0);
+        SetBeamPDG(particleTable->FindParticle("neutron")->GetPDGEncoding(), 1);
+
+        // Generate neutron
+        particleGun->SetParticlePosition(vtx);
+        particleGun->SetParticleDefinition(particleTable->FindParticle("neutron"));
+        particleGun->SetParticleEnergy(neutron.getT());
+        particleGun->SetParticleMomentumDirection(neutron.getV());
+        particleGun->SetParticleTime(0.);
+        particleGun->GeneratePrimaryVertex(anEvent);
+        
+        // Generate positron
+        particleGun->SetParticlePosition(vtx);
+        particleGun->SetParticleDefinition(particleTable->FindParticle("e+"));
+        particleGun->SetParticleEnergy(positron.getT());
+        particleGun->SetParticleMomentumDirection(positron.getV());
+        particleGun->SetParticleTime(0.);
+        particleGun->GeneratePrimaryVertex(anEvent);
+
+    } else if (useDataTableEvt) {
+    // Setup local variables to store the data table values
+    G4int index;
+    G4int pdgid;
+    G4double ene;
+    G4ThreeVector pos;
+    G4ThreeVector dir;
+    G4double t;
+
+    // Check if the input file is open
+    if (!inputFile.is_open()) {
+      G4cout << "Error: Input file is not open" << G4endl;
+      G4cout << "Set a vector file using the command /mygen/vecfile <FILENAME>"
+             << G4endl;
+      exit(-1);
     }
-  else if(useCosmics){
+
+    // Flag for first event
+    G4bool firstParticle = true;
+
+    // Line position before the next particle
+    std::streampos lastLinePos;
+
+    // Counter for the number of particles per event
+    G4int nParticles = 0;
+
+    // Read the data table
+    std::string line;
+
+    // Skip any lines that start with a #
+    while (std::getline(inputFile, line)) {
+      if (line.empty() || line[0] == '#') {
+        continue;
+      }
+
+      // If we've reached the end of the file before beamOn events have been reached then we need to stop
+      if (inputFile.eof()) {
+        G4cout << "End of datatable file - run terminated..." << G4endl;
+        G4RunManager::GetRunManager()->AbortRun();
+      }
+
+      if(nParticles > MAX_N_VERTICES){
+        G4cout << "CANNOT DEAL WITH MORE THAN " << MAX_N_VERTICES << " VERTICES" << G4endl;
+        exit(-1);
+      }
+
+      // Buffer to convert between string and other variables
+      std::istringstream buffer(line);
+
+      // Load information into local variables
+      buffer >> index >> pdgid >> ene >> pos[0] >> pos[1] >> pos[2] >> dir[0] >>
+          dir[1] >> dir[2] >> t;
+
+      // We've reached the end of the event N that we're generating and have also read the first line of event
+      // N + 1. We need to rewind to the start of event N + 1 so that the first particle of N + 1 is not missed when
+      // this function is called again for the next event.
+      if (index == 0 && firstParticle == false) {
+        // Go back a line
+        inputFile.seekg(lastLinePos);
+        break;
+      }
+
+      // Buffer the position of the current line in the file
+      lastLinePos = inputFile.tellg();
+
+      // Set values to save to output
+      SetBeamEnergy(ene, nParticles);
+      SetBeamDir(dir, nParticles);
+      SetBeamPDG(pdgid, nParticles);
+      SetVtxs(nParticles, pos);
+
+      nParticles++;
+
+      // Print out the first three particles in the event to be generated
+      if (index < 3) {
+        // Use the kinetic energy, not total
+        G4cout << G4endl
+               << "=====================================================\n"
+               << "Generating particle " << index << " with id = " << pdgid
+               << "\n    with kinetic energy = " << ene
+               << "\n    MeV, position = " << pos[0] << ", " << pos[1] << ", "
+               << pos[2] << ",\n    and direction = " << dir[0] << ", "
+               << dir[1] << ", " << dir[2]
+               << "\n====================================================="
+               << G4endl;
+      }
+
+      // No longer on the first particle
+      firstParticle = false;
+
+      // Set the particle gun
+      // Particle type
+      particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));
+      // Position
+      particleGun->SetParticlePosition(pos);
+      // Direction
+      particleGun->SetParticleMomentumDirection(dir);
+      // Energy
+      particleGun->SetParticleEnergy(ene);
+      // Time
+      particleGun->SetParticleTime(t);
+      // Set the event
+      particleGun->GeneratePrimaryVertex(anEvent);
+    }
+
+    G4cout << "Number of particles generated for this event: " << nParticles << G4endl;
+
+    // Set the number of particles in this event
+    SetNvtxs(nParticles);
+
+  } else if (useCosmics) {
+
+    if (hFluxCosmics == nullptr) 
+      Create_cosmics_histogram();
 
     //////////////////
     // DEBUG PRINTS

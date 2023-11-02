@@ -1,6 +1,25 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags.
 
 *************************************************************
+13/10/2023: Notes for v1.12.2
+*************************************************************
+
+Minor release to update the reference validation plots after #380 & #382
+
+New features
+* Pull request [WCSim/WCSim#380 @ekneale](https://github.com/WCSim/WCSim/pull/380): Addition of light injector source primary generator - OD devices are currently implmented
+* Pull request [WCSim/WCSim#379 @JackFannon](https://github.com/WCSim/WCSim/pull/379): Addition of datatable primary generator - a more compact text-based format
+
+Update
+* Pull request [WCSim/WCSim#374 @gondiaz](https://github.com/WCSim/WCSim/pull/374): Restructure the CMake files such that the `WCSIM_CHECK_GEOMETRY_OVERLAPS` option is available for WCSim-dependent tools
+* Pull request [WCSim/WCSim#374 @gondiaz](https://github.com/WCSim/WCSim/pull/374): Only read in the cosmics data file if using the cosmics primary generator
+
+Bug fixes
+* Pull request [WCSim/WCSim#382 @tdealtry](https://github.com/WCSim/WCSim/pull/382): Correctly set the default RelativeHitTime to `false` (when `true`, offsets the time of each hit by the time of the first hit in the list (may not be time of the earliest hit). Useful for radioactivity studies, where there are long times before a decay occurs)
+* Pull request [WCSim/WCSim#380 @ekneale](https://github.com/WCSim/WCSim/pull/380): Set RelativeHitTime for OD PMTs using the .mac file option (in the same way as for ID 20" & mPMTs)
+* Pull request [WCSim/WCSim#379 @JackFannon](https://github.com/WCSim/WCSim/pull/379): Fix `WCSimPrimaryGeneratorAction::SetTimeUnit()` bug
+
+*************************************************************
 19/09/2023: Notes for v1.12.1
 *************************************************************
 
