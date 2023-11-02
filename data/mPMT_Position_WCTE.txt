@@ -1,6 +1,6 @@
 PMT position table for custom PMT placement. The direction is just for referenec but not used.
-We will need a PMT_id later to identity which PMT is which.
 Type is used to specified which PMT to be placed in hybrid configuration
+mPMTId will override the default numbering scheme
 Section is: 0 = barrel, 1 = top cap, 2 = top border ring, 3 = bottom cap, 4 = bottom border ring
 
 Type mPMTId Section  X(cm)  Y(cm)   Z(cm)          DirX         DirY        DirZ   Rotation(deg)  Use
