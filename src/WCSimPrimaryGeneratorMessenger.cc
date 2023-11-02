@@ -584,20 +584,6 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
              << ", dPhi = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).z() << " deg" << G4endl;
     }
 
-  if( command == mPMTLEDIdCmd1 )
-    {
-      myAction->SetmPMTLEDId1(mPMTLEDIdCmd1->GetNewIntValue(newValue));
-      G4cout << "mPMT-LED: PMT id set to " << mPMTLEDIdCmd1->GetNewIntValue(newValue) << G4endl;
-    }
-
-  if( command == mPMTLEDIdCmd2 )
-    {
-      myAction->SetmPMTLEDId2(mPMTLEDIdCmd2->GetNew3VectorValue(newValue));
-      G4cout << "mPMT-LED: LED id set to " << (G4int)mPMTLEDIdCmd2->GetNew3VectorValue(newValue).x() 
-             << ", dTheta = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).y() << " deg" 
-             << ", dPhi = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).z() << " deg" << G4endl;
-    }
-
 }
 
 G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
