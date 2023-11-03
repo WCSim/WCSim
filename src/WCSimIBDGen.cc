@@ -227,7 +227,7 @@ double WCSimIBDGen::MatrixElement(double e_nu, double e_e) {
     double f1 = (1 - (1 + xi) * x) / ((1 - x) * pow(y, 2));
     double f2 = xi / ((1 - x) * pow(y, 2));
     double g1 = g_1_0 / pow(z, 2);
-    double g2 = 2 * pow(M_av, 2) * g1 / (pow(CLHEP::pi, 2) - t);
+    double g2 = 2 * pow(M_av, 2) * g1 / (pow(139.56995, 2) - t);
 
     // Calculate A, B and C. See equation 10
     double A = 1. / 16. *
