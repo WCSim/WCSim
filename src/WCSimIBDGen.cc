@@ -182,7 +182,7 @@ void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
     G4double xs_max = dSigmaBydCosTheta(e_max, -1.0);
 
     while (!passed) {
-        // Pick energy and directory uniformly
+        // Pick energy and direction uniformly
         rand_ene = e_min + (e_max - e_min) * G4UniformRand();
         rand_cos_theta = -1.0 + 2.0 * G4UniformRand();
 
