@@ -290,6 +290,13 @@
 #/mygen/generator cosmics
 #/mygen/cosmicsfile data/MuonFlux-HyperK-ThetaPhi.dat
 
+# Or you can use the AmBe Calibration Source Generator.
+# This launches two primary partircles: one neutron and one gamma.
+# Neutrons can be up to 10 MeV and gammas can have discrete energies of 4.4 MeV, 7.7 MeV, or no
+# gamma being produced depending on the energy of the neutron.
+#/mygen/generator ambeevt
+
+
 ## Radioactive option
 ## Generate radioactive decay in the water or on the PMTs
 #/mygen/generator radioactive

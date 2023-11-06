@@ -411,7 +411,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     // Set the neutron energy distribution from a file
     nEnergyDist->SetEnergyDisType("Arb");
-    nEnergyDist->ArbEnergyHistoFile("/Users/diiego/software/wcsim_HK/build/resampled_nSpectrum.txt");
+    nEnergyDist->ArbEnergyHistoFile("../data/resampled_nSpectrum.txt");
     nEnergyDist->SetBiasRndm(rGen);
     nEnergyDist->ArbInterpolate("Lin");
 
