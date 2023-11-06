@@ -382,7 +382,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 
   BGO->SetMaterialPropertiesTable(BGO_mpt);  
   // Create BGO Volume
-  G4Tubs* solidBGO = new G4Tubs("solidBGO", 0., 2.0*cm, 2.0*cm, 0., 360.*deg);
+  G4Tubs* solidBGO = new G4Tubs("solidBGO", 0., 2.5*cm, 2.5*cm, 0., 360.*deg);
   G4LogicalVolume* logicBGO = new G4LogicalVolume(solidBGO, BGO, "logicBGO");
   new G4PVPlacement(0, G4ThreeVector(), logicBGO, "BGO", logicWCBox, false, 0, false);
   //-----------------------------------------------------
