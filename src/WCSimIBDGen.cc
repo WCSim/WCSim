@@ -22,6 +22,7 @@ WCSimIBDGen::WCSimIBDGen(G4String spectrum_database, G4String ibd_model, WCSimDe
     G4cout << "IBDGen: [INFO] spectrum database " << spectrum_database << " found." << G4endl;
     G4cout << "IBDGen: [INFO] using model " << ibd_model << G4endl;
     ReadSpectrumFromDB(spectrum_database, ibd_model);
+    MaxXSecFlux();
     G4cout << "IBDGen: [INFO] Initialised IBDGen" << G4endl;
 }
 
@@ -47,8 +48,6 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string mod
     // Loop over the json
     for (const auto &model : data["models"]) {
         if (model["name"].get<string>() == model_name) {
-            G4cout << "IBDGen: [INFO] using model " << model_name << G4endl;
-
             energy = model["energy"].get<std::vector<float>>();
             flux = model["flux"].get<std::vector<float>>();
 
@@ -58,8 +57,6 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string mod
                        << spectrum_database << G4endl;
                 exit(-1);
             }
-
-            G4cout << "IBDGen: [INFO] spectrum read from database: " << spectrum_database << G4endl;
 
             // Check if the flux vector and energy vector have the same size
             if (energy.size() != flux.size()) {
