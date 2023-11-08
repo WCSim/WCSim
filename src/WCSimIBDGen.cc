@@ -17,7 +17,11 @@
 // Set json to nlohmann::json
 using json = nlohmann::json;
 
-WCSimIBDGen::WCSimIBDGen(WCSimDetectorConstruction *myDC) : myDetector(myDC) {
+WCSimIBDGen::WCSimIBDGen(G4String spectrum_database, G4String ibd_model, WCSimDetectorConstruction *myDC)
+    : myDetector(myDC) {
+    G4cout << "IBDGen: [INFO] spectrum database " << spectrum_database << " found." << G4endl;
+    G4cout << "IBDGen: [INFO] using model " << ibd_model << G4endl;
+    ReadSpectrumFromDB(spectrum_database, ibd_model);
     G4cout << "IBDGen: [INFO] Initialised IBDGen" << G4endl;
 }
 
@@ -34,8 +38,6 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string mod
         G4cerr << "IBDGen: [ERROR] spectrum database " << spectrum_database << " not found." << G4endl;
         exit(-1);
     }
-
-    G4cout << "IBDGen: [INFO] spectrum database " << spectrum_database << " found." << G4endl;
 
     std::stringstream buffer;
     buffer << spectrum_json.rdbuf();
