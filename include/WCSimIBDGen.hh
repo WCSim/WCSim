@@ -59,6 +59,12 @@ class WCSimIBDGen {
     float e_min;
     float e_max;
 
+    // Max of cross section * flux
+    double xsec_flux_max;
+
+    // TODO: REMOVE THIS BEFORE PUSHING
+    int n_tries = 0;
+
     // Flux maximum
     float flux_max;
 

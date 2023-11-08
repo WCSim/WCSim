@@ -26,7 +26,7 @@ WCSimIBDGen::WCSimIBDGen(G4String spectrum_database, G4String ibd_model, WCSimDe
     ReadSpectrumFromDB(spectrum_database, ibd_model);
 
     // Calculate the max value of x_sec * flux for the rejection sampling algorithm
-    MaxXSecFlux();
+    xsec_flux_max = MaxXSecFlux();
 
     // Initialised
     G4cout << "IBDGen: [INFO] Initialised IBDGen" << G4endl;
@@ -213,25 +213,30 @@ void WCSimIBDGen::GenEvent(G4ThreeVector &nu_dir, G4LorentzVector &neutrino, G4L
 void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
     G4bool passed = false;
 
-    G4double xs_max = dSigmaBydCosTheta(e_max, -1.0);
-
     // Rejection sampling
     while (!passed) {
         // Pick energy and direction uniformly
         rand_ene = e_min + (e_max - e_min) * G4UniformRand();
         rand_cos_theta = -1.0 + 2.0 * G4UniformRand();
 
-        // Passing threshold. Must be generated once per try or there is the possibility that the event will never
-        // pass
-        G4double xs_test = xs_max * flux_max * G4UniformRand();
+        // Sample point from a uniform distribution defined by the maximum value of cross section * flux, with the
+        // width of the energy range defined in the spectrum model
+        double g_of_x = (1 / (e_max - e_min));
+        double scale = (g_of_x / (1.005 * xsec_flux_max));
+        double xs_flux_test = (1 / scale) * g_of_x * G4UniformRand();
 
         // Cross section
         G4double xs_weight = dSigmaBydCosTheta(rand_ene, rand_cos_theta);
 
+        // Skip if xs_weight is nan
+        if (std::isnan(xs_weight)) {
+            continue;
+        }
+
         // Flux at rand_ene
         G4double flux_weight = InterpolateSpectrum(energy, flux, rand_ene);
 
-        passed = (xs_test < xs_weight * flux_weight);
+        passed = (xs_flux_test < xs_weight * flux_weight);
 
         n_tries++;
     }
