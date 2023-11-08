@@ -181,6 +181,7 @@ void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
 
     G4double xs_max = dSigmaBydCosTheta(e_max, -1.0);
 
+    // Rejection sampling
     while (!passed) {
         // Pick energy and direction uniformly
         rand_ene = e_min + (e_max - e_min) * G4UniformRand();
