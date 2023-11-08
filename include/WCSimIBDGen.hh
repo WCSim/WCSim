@@ -10,7 +10,7 @@
 class WCSimIBDGen {
 
   public:
-    WCSimIBDGen(WCSimDetectorConstruction *myDC);
+    WCSimIBDGen(G4String spectrum_database, G4String ibd_model, WCSimDetectorConstruction *myDC);
     ~WCSimIBDGen();
 
     // Read the spectrum from database
