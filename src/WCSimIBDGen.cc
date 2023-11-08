@@ -200,14 +200,6 @@ void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
         passed = (xs_test < xs_weight * flux_weight);
 
         n_tries++;
-        // Print everything
-        // G4cout << "IBDGen: [INFO] rand_ene: " << rand_ene << G4endl;
-        // G4cout << "IBDGen: [INFO] rand_cos_theta: " << rand_cos_theta << G4endl;
-        // G4cout << "IBDGen: [INFO] xs_max: " << xs_max << G4endl;
-        // G4cout << "IBDGen: [INFO] xs_test: " << xs_test << G4endl;
-        // G4cout << "IBDGen: [INFO] xs_weight: " << xs_weight << G4endl;
-        // G4cout << "IBDGen: [INFO] flux_weight: " << flux_weight << G4endl;
-        // G4cout << "IBDGen: [INFO] passed: " << passed << G4endl;
     }
 
     G4cout << "IBDGen: [INFO] number of iterations before energy and direction accepted: " << n_tries << G4endl;
@@ -217,7 +209,7 @@ void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
 // https://arxiv.org/abs/astro-ph/0302055
 
 double WCSimIBDGen::MatrixElement(double e_nu, double e_e) {
-    // Calculate and return the value of the absolute matrix element squared
+    // Calculates and return the value of the absolute matrix element squared
 
     // Calculate the Mandelstam variables. See above equation 11
     double s_minus_u = 2 * CLHEP::proton_mass_c2 * (e_nu + e_e) - pow(CLHEP::electron_mass_c2, 2.);
