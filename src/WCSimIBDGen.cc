@@ -19,6 +19,8 @@ using json = nlohmann::json;
 
 WCSimIBDGen::WCSimIBDGen(G4String spectrum_database, G4String ibd_model, WCSimDetectorConstruction *myDC)
     : myDetector(myDC) {
+
+    // Read model from database
     G4cout << "IBDGen: [INFO] spectrum database " << spectrum_database << " found." << G4endl;
     G4cout << "IBDGen: [INFO] using model " << ibd_model << G4endl;
     ReadSpectrumFromDB(spectrum_database, ibd_model);
