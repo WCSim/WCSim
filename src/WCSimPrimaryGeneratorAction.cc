@@ -964,8 +964,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         // This reads the spectrum once and populates vector attributes of the
         //   WCSimIBDGen object with the energy and flux
         if(!IBDGen){
-            IBDGen = new WCSimIBDGen(myDetector);
-            IBDGen->ReadSpectrumFromDB(ibd_database, ibd_model);
+            IBDGen = new WCSimIBDGen(ibd_database, ibd_model, myDetector);
         }
 
         // Event variables
