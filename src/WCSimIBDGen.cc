@@ -106,6 +106,29 @@ double WCSimIBDGen::InterpolateSpectrum(std::vector<float> ener_vec, std::vector
     return flux_vec.back();
 }
 
+double WCSimIBDGen::MaxXSecFlux() {
+    // Loops over the energies in the flux model and calculates the maximum value of dSigma/dCosTheta * flux.
+
+    double xs_flux_max = 0.0;
+
+    for (float ene : energy) {
+        double x_sec_forward = dSigmaBydCosTheta(ene, 1.0);
+        double x_sec_backward = dSigmaBydCosTheta(ene, -1.0);
+        double flux_at_ene = InterpolateSpectrum(energy, flux, ene);
+        if (std::max(x_sec_forward, x_sec_backward) * flux_at_ene > xs_flux_max) {
+            xs_flux_max = std::max(x_sec_forward, x_sec_backward) * flux_at_ene;
+        }
+    }
+
+    // Check if xs_flux_max is still 0.0. If it is then something has gone wrong.
+    if (xs_flux_max == 0.0) {
+        G4cerr << "IBDGen: \033[31m[ERROR]\033[0m xs_flux_max is 0.0. Check the flux database." << G4endl;
+        exit(-1);
+    }
+
+    return xs_flux_max;
+}
+
 G4ThreeVector WCSimIBDGen::GenRandomPosition() {
     // Generate random neutrino position
     // Pick random position in the inner detector

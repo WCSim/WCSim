@@ -19,6 +19,9 @@ class WCSimIBDGen {
     // Fit the spectrum
     double InterpolateSpectrum(std::vector<float> energy, std::vector<float> flux, float ene);
 
+    // Get the maximum value of the cross section multiplied by the flux for the given model
+    double MaxXSecFlux();
+
     // Generate a random position inside the detector geometry
     G4ThreeVector GenRandomPosition();
 
