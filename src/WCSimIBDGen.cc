@@ -108,13 +108,19 @@ double WCSimIBDGen::InterpolateSpectrum(std::vector<float> ener_vec, std::vector
 
 double WCSimIBDGen::MaxXSecFlux() {
     // Loops over the energies in the flux model and calculates the maximum value of dSigma/dCosTheta * flux.
-
     double xs_flux_max = 0.0;
 
     for (float ene : energy) {
+        // Calculate the cross section for forward scattered positrons and backward scattered positrons. One of
+        // these values will always represent the maximum cross section across the energy range (forward at high
+        // energies and backward at low energies)
         double x_sec_forward = dSigmaBydCosTheta(ene, 1.0);
         double x_sec_backward = dSigmaBydCosTheta(ene, -1.0);
+
+        // Get the flux at ene
         double flux_at_ene = InterpolateSpectrum(energy, flux, ene);
+
+        // Calculate the max cross section * flux
         if (std::max(x_sec_forward, x_sec_backward) * flux_at_ene > xs_flux_max) {
             xs_flux_max = std::max(x_sec_forward, x_sec_backward) * flux_at_ene;
         }
