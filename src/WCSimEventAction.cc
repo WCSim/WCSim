@@ -274,6 +274,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   G4double      vtxTimes[MAX_N_VERTICES];
   for( unsigned int u=0; u<nvtxs; u++ ){
     vtxs[u]      = generatorAction->GetVtx(u);
+    G4cout << "vtxs is: " << vtxs << G4endl;
     vtxsvol[u]   = WCSimEventFindStartingVolume(vtxs[u]);
     vtxTimes[u]  = generatorAction->GetVertexTime(u);
   }
@@ -660,7 +661,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCDMPMT_OD = (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT_OD");
     if(WCDMPMT_OD == 0) G4cout << "WCReadoutPMT_OD digitzer module not found!" << G4endl;
     WCDMPMT_OD->ReInitialize();
-    WCDMPMT_OD->SetRelativeDigitizedHitTime(RelativeHitTime);
+    //WCDMPMT_OD->SetRelativeDigitizedHitTime(RelativeHitTime);
     WCDMPMT_OD->Digitize();
 
     WCDNM_OD = (WCSimWCAddDarkNoise*)DMman->FindDigitizerModule("WCDarkNoise_OD");
@@ -1189,6 +1190,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     double pdir[3];
     double stop[3];
     double start[3];
+    string creatorP;
     for (int l=0;l<3;l++)
     {
       dir[l]=injhfNtuple.dir[k][l];
@@ -1212,6 +1214,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 			      stop,
 			      start,
 			      injhfNtuple.parent[k],
+            creatorP,
 			      injhfNtuple.time[k],
                   0,
                   0,
@@ -1288,6 +1291,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       G4double ttime = trj->GetGlobalTime();
 
       G4int parentType;
+      G4String creatorProcess = trj->GetCreatorProcessName();
 
 
       // Right now only secondaries whose parents are pi0's are stored
@@ -1308,7 +1312,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       } else if (primaryList.count(trj->GetParentID()) ) {
 	parentType = 1;
       } else {  // no identified parent, but not a primary
-	parentType = 999;
+	parentType = trj->GetParentID();
       }
 
       // G4cout << parentType << " " << ipnu << " "
@@ -1356,6 +1360,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
                                    stop,
                                    start,
                                    parentType,
+                                   creatorProcess,
                                    ttime,
                                    id,
                                    idPrnt,
@@ -1729,6 +1734,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     double pdir[3];
     double stop[3];
     double start[3];
+    string creatorP;
     for (int l=0;l<3;l++)
     {
       dir[l]=injhfNtuple.dir[k][l];
@@ -1752,6 +1758,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 			      stop,
 			      start,
 			      injhfNtuple.parent[k],
+            creatorP,
 			     injhfNtuple.time[k],
                  0,
                  0,
@@ -1826,6 +1833,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       G4double ttime = trj->GetGlobalTime();
 
       G4int parentType;
+      G4String creatorProcess = trj->GetCreatorProcessName();
 
 
       // Right now only secondaries whose parents are pi0's are stored
@@ -1844,7 +1852,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       } else if (pionList.count(trj->GetParentID()) ) {
 	parentType = 211;
       } else {  // no identified parent, but not a primary
-	parentType = 999;
+	parentType = trj->GetParentID();
       }
 
       // G4cout << parentType << " " << ipnu << " "
@@ -1892,6 +1900,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
                                    stop,
                                    start,
                                    parentType,
+                                   creatorProcess,
                                    ttime,
                                    id,
                                    idPrnt,

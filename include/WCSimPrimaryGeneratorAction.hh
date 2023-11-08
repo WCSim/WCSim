@@ -93,6 +93,7 @@ private:
   WCSimPrimaryGeneratorMessenger* messenger;
 
   // Variables set by the messenger
+  G4bool   useAmBeEvt;
   G4bool   useMulineEvt;
   G4bool   useRootrackerEvt;
   G4bool   useGunEvt;
@@ -203,6 +204,9 @@ public:
 
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
   inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
+
+  inline void SetAmBeEvtGenerator(G4bool choice) { useAmBeEvt = choice; }
+  inline G4bool IsUsingAmBeEvtGenerator()  { return useAmBeEvt; }
 
   inline TFile* GetInputRootrackerFile(){ return fInputRootrackerFile;}
   inline void SetRootrackerEvtGenerator(G4bool choice) { useRootrackerEvt = choice; }
