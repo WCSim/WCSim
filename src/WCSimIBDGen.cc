@@ -228,7 +228,7 @@ void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
         // Cross section
         G4double xs_weight = dSigmaBydCosTheta(rand_ene, rand_cos_theta);
 
-        // Skip if xs_weight is nan
+        // Skip if xs_weight is nan. This happens below the IBD energy threshold of ~1.8 MeV
         if (std::isnan(xs_weight)) {
             continue;
         }
