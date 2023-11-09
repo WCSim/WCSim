@@ -193,8 +193,8 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
       flux=(atof(token[8]));
       Emean=(atof(token[9]));
 
-      hFluxCosmics->SetBinContent(binPhi,binCos,flux);
-      hEmeanCosmics->SetBinContent(binPhi,binCos,Emean);
+      hFluxCosmics->SetBinContent(binPhi+1,binCos+1,flux);
+      hEmeanCosmics->SetBinContent(binPhi+1,binCos+1,Emean);
     }
 
     TFile *file = new TFile("cosmicflux.root","RECREATE");
@@ -1131,7 +1131,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     energy = 0;
     while((int)(energy) == 0){
       hFluxCosmics->GetRandom2(phiMuon,cosThetaMuon);
-      energy = hEmeanCosmics->GetBinContent(hFluxCosmics->GetBin(phiMuon,cosThetaMuon))*GeV;
+      int phiMuonBin = hFluxCosmics->GetXaxis()->FindFixBin(phiMuon);
+      int cosThetaMuonBin = hFluxCosmics->GetYaxis()->FindFixBin(cosThetaMuon);
+      energy = hEmeanCosmics->GetBinContent(phiMuonBin,cosThetaMuonBin)*GeV;
     }
 
     G4ThreeVector dir(0,0,0);
