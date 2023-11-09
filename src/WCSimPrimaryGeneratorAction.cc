@@ -421,32 +421,41 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }//useMuLineEvt
   
   else if(useAmBeEvt){ // Diego Costas (diego.costas.rodriguez@usc.es) 2023
-    // Create the energy distribution object
-    G4SPSEneDistribution* nEnergyDist = new G4SPSEneDistribution();
-    G4SPSRandomGenerator* rGen = new G4SPSRandomGenerator();
+    // Initialise the ambe generator once per sim
+    // This will get AmBe settings (position, direction, etc)
+    if ( !AmBeGen ){
+      AmBeGen = new WCSimAmBeGen();
+    }
+
+    AmBeGen->GenerateNG(anEvent);
+  } 
+    /*
+    G4SPSEneDistribution *nEnergyDist = new G4SPSEneDistribution();
+    G4SPSRandomGenerator *rGen = new G4SPSRandomGenerator();
 
     // Set the neutron energy distribution from a file
     nEnergyDist->SetEnergyDisType("Arb");
-    nEnergyDist->ArbEnergyHistoFile("../data/resampled_nSpectrum.txt");
+    nEnergyDist->ArbEnergyHistoFile("data/resampled_nSpectrum.txt");
     nEnergyDist->SetBiasRndm(rGen);
     nEnergyDist->ArbInterpolate("Lin");
 
     // Obtain the definition of the neutron and sample an energy from the distribution
-    G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+    //G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
     G4ParticleDefinition* neutronDefinition = particleTable->FindParticle("neutron");
+    G4ParticleDefinition* gammaDefinition   = particleTable->FindParticle("gamma");
     //G4ParticleDefinition* neutronDefinition = G4Neutron::Definition();
     G4double nEnergy = nEnergyDist->GenerateOne(neutronDefinition);
 
     // Define PDG IDs, energies and desired particle names
     G4int pdgids[] = {2112, 22};
-    G4double energys[] = {nEnergy, 0.0};
+    //G4double energys[] = {nEnergy, 0.0};
     G4String particleNames[] = {"neutron", "gamma"};
 
-    // Definir las probabilidades correspondientes a cada energía de partícula gamma
+    // Define the correspondent probabilities for every possible gamma scenario
     std::vector<double> probabilities = {0.26, 0.65, 0.08};
     std::vector<double> energies = {0.0, 4.4, 7.7};
 
-    // Generar un número aleatorio ponderado para seleccionar la energía de la partícula gamma
+    // Generate a weighted random number so we can select the gamma energy
     std::random_device rd;
     std::mt19937 gen(rd());
     std::discrete_distribution<int> dist(probabilities.begin(), probabilities.end());
@@ -462,15 +471,15 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       // Configure particle's properties in particleGun
       if (pdgid == 22) {
-        particleGun->SetParticleDefinition(particleTable->FindParticle("gamma"));
+        particleGun->SetParticleDefinition(gammaDefinition);
       }
       else {
-        particleGun->SetParticleDefinition(particleTable->FindParticle("neutron"));
+        particleGun->SetParticleDefinition(neutronDefinition);
       }
 
-      G4double mass = particleGun->GetParticleDefinition()->GetPDGMass();
-      G4double energy = ekin + mass;
-      G4double momentum = std::sqrt(energy * energy - mass*mass);
+      //G4double mass = particleGun->GetParticleDefinition()->GetPDGMass();
+      //G4double totalEnergy = ekin + mass;
+      //G4double momentum = std::sqrt(totalEnergy * totalEnergy - mass*mass);
       G4ThreeVector dir = G4RandomDirection();
 
       // Configure the final properties of the particle
@@ -482,7 +491,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       // Generate the primary vertex for the particle
       particleGun->GeneratePrimaryVertex(anEvent);
     }
-  }
+  
+   }*/
 
   else if (useRootrackerEvt)
     {

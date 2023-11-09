@@ -274,7 +274,6 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
   G4double      vtxTimes[MAX_N_VERTICES];
   for( unsigned int u=0; u<nvtxs; u++ ){
     vtxs[u]      = generatorAction->GetVtx(u);
-    G4cout << "vtxs is: " << vtxs << G4endl;
     vtxsvol[u]   = WCSimEventFindStartingVolume(vtxs[u]);
     vtxTimes[u]  = generatorAction->GetVertexTime(u);
   }
@@ -661,7 +660,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCDMPMT_OD = (WCSimWCPMT*)DMman->FindDigitizerModule("WCReadoutPMT_OD");
     if(WCDMPMT_OD == 0) G4cout << "WCReadoutPMT_OD digitzer module not found!" << G4endl;
     WCDMPMT_OD->ReInitialize();
-    //WCDMPMT_OD->SetRelativeDigitizedHitTime(RelativeHitTime);
+    WCDMPMT_OD->SetRelativeDigitizedHitTime(RelativeHitTime);
     WCDMPMT_OD->Digitize();
 
     WCDNM_OD = (WCSimWCAddDarkNoise*)DMman->FindDigitizerModule("WCDarkNoise_OD");

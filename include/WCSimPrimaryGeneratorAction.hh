@@ -10,6 +10,7 @@
 #include "WCSimRootOptions.hh"
 #include "WCSimGenerator_Radioactivity.hh"
 #include "WCSimLIGen.hh"
+#include "WCSimAmBeGen.hh"
 #include "WCSimEnumerations.hh"
 #include "jhfNtuple.h"
 
@@ -109,9 +110,14 @@ private:
 
   std::fstream inputFile;
   std::fstream inputCosmicsFile;
+  std::fstream inputAmBeFile;
   G4String vectorFileName;
   G4String cosmicsFileName = "data/MuonFlux-HyperK-ThetaPhi.dat";
+  G4String ambeFileName = "data/resampled_nSpectrum.txt";
   G4bool   GenerateVertexInRock;
+
+  // AmBe Generator 
+  WCSimAmBeGen* AmBeGen;
 
   // IBD generator
     // Database for spectra
@@ -282,6 +288,20 @@ public:
 
     if ( !inputCosmicsFile.is_open() ) {
       G4cout << "Cosmics data file " << cosmicsFileName << " not found" << G4endl;
+      exit(-1);
+    }
+  }
+
+  inline void OpenAmBeFile(G4String fileName)
+  {
+    if ( inputAmBeFile.is_open() )
+      inputAmBeFile.close();
+
+    ambeFileName = fileName;
+    inputAmBeFile.open(ambeFileName, std::fstream::in);
+
+    if ( !inputAmBeFile.is_open() ) {
+      G4cout << "AmBe data file " << ambeFileName << " not found" << G4endl;
       exit(-1);
     }
   }

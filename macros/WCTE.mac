@@ -1,6 +1,6 @@
 # nuPRISMBeamTest WCTE macro with no visualization
 
-/run/verbose 1
+/run/verbose 2
 /tracking/verbose 0
 /hits/verbose 0
 #/control/execute vis.mac
@@ -88,6 +88,12 @@
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
 
+# Neutron Capture Commands
+/WCSim/SaveCapture true
+/WCSim/physics/list QGSP_BERT_HP
+/WCSim/physics/nCapture HP
+/physics_engine/neutron/timeLimit 1000000 ns
+
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute macros/visOGLSX.mac
 #/control/execute macros/visRayTracer.mac
@@ -114,11 +120,11 @@
 # you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
 # for a full list of /gps/ commands see:
 # https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
-/mygen/generator gps
-/gps/particle e-
-/gps/energy 500 MeV
-/gps/direction -1 0 0
-/gps/position 165 0 0
+#/mygen/generator gps
+#/gps/particle e-
+#/gps/energy 500 MeV
+#/gps/direction -1 0 0
+#/gps/position 165 0 0
 
 # Or you can use the laser option
 # This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
@@ -137,11 +143,18 @@
 #/gps/ang/minphi 0 deg
 #/gps/ang/maxphi 360 deg
 
+# Or you can use the AmBe Calibration Source Generator.
+# This launches two primary partircles: one neutron and one gamma.
+# Neutrons can be up to 10 MeV and gammas can have discrete energies of 4.4 MeV, 7.7 MeV, or no 
+# gamma being produced depending on the energy of the neutron.
+/mygen/generator ambeevt
+/mygen/ambefile data/resampled_nSpectrum.txt
+
 ##### NEW
-/Tracking/fractionOpticalPhotonsToDraw 0.0
+/Tracking/fractionOpticalPhotonsToDraw 100.0
 
 ## change the name of the output root file, default = wcsim.root
-/WCSimIO/RootFile wcsim.root
+/WCSimIO/RootFile ambeEvt_StackingOnly_1000evts.root
 
 ## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
 ## a NEUT vector file as input
@@ -150,5 +163,6 @@
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false
 
-/run/beamOn 1
+/run/beamOn 10
 #exit
+

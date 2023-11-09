@@ -20,13 +20,26 @@
 
 #include "jhfNtuple.h"
 #include "WCSimEnumerations.hh"
-#include "WCSimTrajectory.hh"
 
 class TDirectory;
 
 class WCSimRootTrack : public TObject {
 
 private:
+
+  enum CreatorProcessType {
+    hadElastic,
+    nCapture,
+    compt,
+    phot,
+    Cerenkov,
+    Scintillation,
+    eBrem,
+    annihil,
+    conv,
+    eIoni,
+    neutronInelastic
+  };
 
   // See jhfNtuple.h for the meaning of these data members:
   Int_t   fIpnu;
