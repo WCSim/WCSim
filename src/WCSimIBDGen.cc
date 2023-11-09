@@ -237,11 +237,7 @@ void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
         G4double flux_weight = InterpolateSpectrum(energy, flux, rand_ene);
 
         passed = (xs_flux_test < xs_weight * flux_weight);
-
-        n_tries++;
     }
-
-    G4cout << "IBDGen: [INFO] number of iterations before energy and direction accepted: " << n_tries << G4endl;
 }
 
 // Cross section calculations below here were taken from astro-ph/0302055 available at
