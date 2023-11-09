@@ -133,7 +133,9 @@ double WCSimIBDGen::MaxXSecFlux() {
 
     // Check if xs_flux_max is still 0.0. If it is then something has gone wrong.
     if (xs_flux_max == 0.0) {
-        G4cerr << "IBDGen: \033[31m[ERROR]\033[0m xs_flux_max is 0.0. Check the flux database." << G4endl;
+        G4cerr << "IBDGen: \033[31m[ERROR]\033[0m maximum value of (cross section * flux) is 0.0. Check the flux "
+                  "database."
+               << G4endl;
         exit(-1);
     }
 
