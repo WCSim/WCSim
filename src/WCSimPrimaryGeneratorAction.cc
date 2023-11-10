@@ -1127,6 +1127,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4cout << "#############" << G4endl;
     //////////////////
 
+    // get muon direction
     double phiMuon, cosThetaMuon;
     energy = 0;
     while((int)(energy) == 0){
@@ -1138,9 +1139,32 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     G4ThreeVector dir(0,0,0);
     dir.setRThetaPhi(-1,acos(cosThetaMuon),phiMuon);
+
+    // generate point uniformly distributed inside the ID cylinder
+    double detHalfHeight = 0.5*myDetector->GetWCIDHeight();
+    double detRadius     = 0.5*myDetector->GetWCIDDiameter();
+    double posInCylR     = sqrt(gRandom->Uniform())*detRadius;
+    double posInCylPhi   = gRandom->Uniform(TMath::TwoPi());
+    double posInCylZ     = gRandom->Uniform(-1.*detHalfHeight,detHalfHeight);
+
+    G4ThreeVector posInCyl(0,0,0);
+    posInCyl.setX(posInCylR*cos(posInCylPhi));
+    posInCyl.setY(posInCylR*sin(posInCylPhi));
+    posInCyl.setZ(posInCylZ);
+
+    // generate muon at the intersection
+    // between an sphere with radius = altComics
+    // and a line made with the muon direction
+    // and the generated point inside the ID cylinder
+    double a = dir.mag2();
+    double b = -2.*posInCyl.dot(dir);
+    double c = posInCyl.mag2()-altCosmics*altCosmics;
+    double t = (sqrt(b*b-4.*c*a)-b)/(2.*a);
+
     G4ThreeVector vtx(0,0,0);
-    vtx = -dir;
-    vtx.setR(altCosmics);
+    vtx.setX(posInCyl.x()-t*dir.x());
+    vtx.setY(posInCyl.y()-t*dir.y());
+    vtx.setZ(posInCyl.z()-t*dir.z());
 
     int pdgid = 13; // MUON
     particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));
