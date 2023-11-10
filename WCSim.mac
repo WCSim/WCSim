@@ -351,6 +351,8 @@
 #/gps/position 0 0 0
 
 # Or inject photon from mPMT LED
+# (Note that these are LEDs positioned in the standard mPMT modules.
+#  They are not LEDs in the LED-mPMT modules)
 #/mygen/generator mPMT-LED
 # Use PMTid (from 1 to totalNum_mPMTs) to specify source mPMT
 # Use LEDid (from 0 to 11) to specify LED position, theta and phi directional change from nominal direction
