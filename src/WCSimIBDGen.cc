@@ -108,7 +108,7 @@ double WCSimIBDGen::InterpolateSpectrum(float ene) {
     }
 
     // If energy is larger than the maximum energy in the spectrum, return the final flux value
-    return flux_vec.back();
+    return flux.back();
 }
 
 double WCSimIBDGen::MaxXSecFlux() {
