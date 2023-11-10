@@ -201,6 +201,7 @@ private:
   G4ThreeVector conversionProductMomentum[2];
 
   // mPMT LED generator
+  G4ParticleDefinition* opticalphoton_pd;
   G4int mPMTLEDId1;
   G4int mPMTLEDId2;
   G4double mPMTLED_dTheta;

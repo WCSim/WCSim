@@ -146,6 +146,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   mPMTLEDId2 = 0;
   mPMTLED_dTheta = 0.;
   mPMTLED_dPhi = 0.;
+  opticalphoton_pd = particleTable->FindParticle("opticalphoton");
 
   // Time units for vertices
   fTimeUnit=CLHEP::nanosecond;
@@ -1453,7 +1454,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                           tubeTransformFirst.getTranslation().getZ());
       G4double distFromOriginToPMT = (posCenter-posFirst).mag()/(pmtOrientationCenter-pmtOrientationFirst).mag();
       G4Vector3D pmtOrigin = posCenter - distFromOriginToPMT*pmtOrientationCenter;
-      // G4double outerRingAngle = pmtOrientationCenter.angle(pmtOrientationFirst);
 
       // Predefined LED positions on the mPMT matrix
       G4double LEDth, LEDphi;
@@ -1481,24 +1481,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       // Change LEDdir with specified angle
       LEDdir = sin(LEDth+mPMTLED_dTheta)*(cos(LEDphi+mPMTLED_dPhi)*x_axis+sin(LEDphi+mPMTLED_dPhi)*y_axis)+cos(LEDth+mPMTLED_dTheta)*z_axis;
 
-      //G4cout<<"Set vertex to "<<xpos<<" "<<ypos<<" "<<zpos<<G4endl;
-      //G4cout<<"Dir = "<<LEDdir.x()<<" "<<LEDdir.y()<<" "<<LEDdir.z()<<G4endl;
-
-      // G4Transform3D tubeTransform = myDetector->GetTubeTransform(mPMTLEDId);
-      // // Get tube orientation vector
-      // //G4Vector3D nullOrient = G4Vector3D(0,0,1);
-      // G4Vector3D pmtOrientation = tubeTransform * nullOrient;
-      // G4double distToPMT = 5*cm;
-      // G4double xpos = tubeTransform.getTranslation().getX() + pmtOrientation.x()*distToPMT;
-      // G4double ypos = tubeTransform.getTranslation().getY() + pmtOrientation.y()*distToPMT;
-      // G4double zpos = tubeTransform.getTranslation().getZ() + pmtOrientation.z()*distToPMT;
-
-      //MyGPS->ClearAll();
-      //MyGPS->AddaSource(1.);
-      G4ParticleDefinition* pd = particleTable->FindParticle("opticalphoton");
-      MyGPS->SetParticleDefinition(pd);
+      MyGPS->SetParticleDefinition(opticalphoton_pd);
       MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
-      //MyGPS->GetCurrentSource()->GetEneDist()->SetMonoEnergy(2.5*eV);
 
       G4ThreeVector position(xpos,ypos,zpos);
       MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point"); // may need a more realistic shape
@@ -1510,15 +1494,10 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4ThreeVector diry = dirz.cross(dirx);
       MyGPS->GetCurrentSource()->GetAngDist()->DefineAngRefAxes("angref1",dirx);
       MyGPS->GetCurrentSource()->GetAngDist()->DefineAngRefAxes("angref2",diry);
-      // MyGPS->GetCurrentSource()->GetAngDist()->SetAngDistType("iso"); // isotropic emission for now
-      // MyGPS->GetCurrentSource()->GetAngDist()->SetMinTheta(0.);
-      // MyGPS->GetCurrentSource()->GetAngDist()->SetMaxTheta(15*deg);
-      // MyGPS->GetCurrentSource()->GetAngDist()->SetMinPhi(0.);
-      // MyGPS->GetCurrentSource()->GetAngDist()->SetMaxPhi(360*deg);
-      // MyGPS->GetCurrentSource()->SetNumberOfParticles(1000);
 
       MyGPS->GeneratePrimaryVertex(anEvent);
 
+      // Save LED direction to vtx
       G4ThreeVector P   =-dirz*anEvent->GetPrimaryVertex()->GetPrimary()->GetTotalEnergy();
       G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
       G4double mass     =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass(); // will be 0 for photon anyway, but for other gps particles not
