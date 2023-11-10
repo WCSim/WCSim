@@ -236,7 +236,7 @@ void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
         }
 
         // Flux at rand_ene
-        G4double flux_weight = InterpolateSpectrum(energy, flux, rand_ene);
+        G4double flux_weight = InterpolateSpectrum(rand_ene);
 
         passed = (xs_flux_test < xs_weight * flux_weight);
     }
