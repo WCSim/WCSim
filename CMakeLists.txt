@@ -110,6 +110,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/DSNBFluxes.json
       	${PROJECT_SOURCE_DIR}/data/LightInjectors.json
       	${PROJECT_SOURCE_DIR}/data/LI_OD_laser_ball_photon_positions.csv
+        ${PROJECT_SOURCE_DIR}/data/mPMT_Position_WCTE.txt
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
@@ -186,8 +187,6 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/mPMT-configfiles
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_34_22_1.txt
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_34_22_2.txt
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_37_HK.txt
-        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_Position_WCTE.txt
-        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_Position_WCTE_RotateBarrelHalfTower.txt
         )
 
 

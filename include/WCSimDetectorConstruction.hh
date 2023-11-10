@@ -735,11 +735,15 @@ private:
   G4bool useReplica, readFromTable;
   G4double pmtPosVar;
   G4double topRadiusChange, midRadiusChange, botRadiusChange;
+  G4int nPMTsRead;
   std::vector<G4ThreeVector> pmtPos, pmtDir;
   std::vector<G4bool> pmtUse;
+  std::vector<G4int> pmtType;
+  std::vector<G4int> pmtSection; // 0 = barrel, 1 = top cap, 2 = top border ring, 3 = bottom cap, 4 = bottom border ring
+  std::vector<G4int> pmtmPMTId;
+  std::vector<G4double> pmtRotaton;
   std::string pmtPositionFile;
   void ReadGeometryTableFromFile();
-  G4int PMTID;
 
   // *** Begin egg-shaped HyperK Geometry ***
 
