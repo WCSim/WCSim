@@ -63,6 +63,11 @@ public: // with description
   { return globalTime; }
   inline G4bool GetSaveFlag() const { return SaveIt; }
   inline void SetSaveFlag(G4bool value) { SaveIt = value; }
+  inline G4bool GetProducesHit() const { return producesHit; }
+  inline void SetProducesHit(G4bool value) { producesHit = value; }
+
+  inline WCSimTrajectory* GetParentTrajectory() const { return parentTrajectory; }
+  inline void SetParentTrajectory(WCSimTrajectory* trajectory) { parentTrajectory = trajectory; }
 
 // New function we have added
    inline G4ThreeVector GetStoppingPoint() const
@@ -139,8 +144,11 @@ public: // with description
 
   // M Fechner : new saving mechanism
   G4bool SaveIt;
+  G4bool producesHit;
   G4String creatorProcess;
   G4double                  globalTime;
+
+  WCSimTrajectory* parentTrajectory;
 
   // Boundary points;
   std::vector<std::vector<G4float>> boundaryPoints;

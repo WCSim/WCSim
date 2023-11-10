@@ -1,4 +1,5 @@
 #include "WCSimTrajectory.hh"
+#include "WCSimTrackInformation.hh"
 
 #include "G4TrajectoryPoint.hh"
 #include "G4ParticleTable.hh"
@@ -19,8 +20,8 @@ G4Allocator<WCSimTrajectory> myTrajectoryAllocator;
 WCSimTrajectory::WCSimTrajectory()
   :  positionRecord(0), fTrackID(0), fParentID(0),
      PDGEncoding( 0 ), PDGCharge(0.0), ParticleName(""),
-     initialMomentum( G4ThreeVector() ),SaveIt(false),creatorProcess(""),
-     globalTime(0.0)
+     initialMomentum( G4ThreeVector() ),SaveIt(false), producesHit(false),
+     creatorProcess(""), globalTime(0.0), parentTrajectory(0)
 {
   boundaryPoints.clear();
   boundaryKEs.clear();
@@ -43,8 +44,13 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
 
   stoppingPoint  = aTrack->GetPosition();
   stoppingVolume = aTrack->GetVolume();
-  if ( aTrack->GetUserInformation() != 0 ) 
-    SaveIt = true;
+  producesHit = false;
+  if ( aTrack->GetUserInformation() != 0 ) {
+      WCSimTrackInformation *anInfo = (WCSimTrackInformation *) aTrack->GetUserInformation();
+      producesHit = anInfo->GetProducesHit();
+      parentTrajectory = anInfo->GetParentTrajectory();
+      SaveIt = true;
+  }
   else SaveIt = false;
   globalTime = aTrack->GetGlobalTime();
   if (aTrack->GetCreatorProcess() != 0 )
@@ -75,6 +81,9 @@ WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
   stoppingVolume = right.stoppingVolume;
   SaveIt = right.SaveIt;
   creatorProcess = right.creatorProcess;
+
+  producesHit = right.producesHit;
+  parentTrajectory = right.parentTrajectory;
 
   for(size_t i=0;i<right.positionRecord->size();i++)
   {
@@ -235,6 +244,8 @@ void WCSimTrajectory::MergeTrajectory(G4VTrajectory* secondTrajectory)
 
   stoppingPoint  = seco->stoppingPoint;
   stoppingVolume = seco->stoppingVolume;
+
+  producesHit |= seco->producesHit;
   
   G4int ent = seco->GetPointEntries();
   for(G4int i=1;i<ent;i++) // initial point of the second trajectory should not be merged

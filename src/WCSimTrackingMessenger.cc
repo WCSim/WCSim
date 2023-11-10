@@ -7,6 +7,7 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithAnInteger.hh"
 #include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithABool.hh"
 
 WCSimTrackingMessenger::WCSimTrackingMessenger(WCSimTrackingAction* trackAction)
   : myTracking(trackAction)
@@ -27,6 +28,10 @@ WCSimTrackingMessenger::WCSimTrackingMessenger(WCSimTrackingAction* trackAction)
   processToTrack = new G4UIcmdWithAString("/Tracking/trackProcess",this);
   processToTrack->SetGuidance("Command to track all particles created by given process");
   processToTrack->SetParameterName("processToTrack",false);
+
+  saveHitProducingTracks = new G4UIcmdWithABool("/Tracking/saveHitProducingTracks", this);
+  saveHitProducingTracks->SetGuidance("Command to save all tracks if they or any particle in their chain of secondaries produces a Cherenkov hit");
+  saveHitProducingTracks->SetParameterName("saveHitProducingTracks",false);
 
 }
 
@@ -56,6 +61,15 @@ void WCSimTrackingMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     myTracking->AddProcess(newValue);
     G4cout << "Tracking all particles created by the " << newValue << " process" << G4endl;
   }
-  
+  else if(command == saveHitProducingTracks){
+    if(saveHitProducingTracks->GetNewBoolValue(newValue)){
+        G4cout << "Tracking all particles if they or any particle in their chain of secondaries produces a Cherenkov hit" << G4endl;
+        myTracking->SetSaveHitProducingTracks(true);
+    }
+    else{
+        G4cout << "Disabling feature to track all particles if they or any particle in their chain of secondaries produces a Cherenkov hit" << G4endl;
+        myTracking->SetSaveHitProducingTracks(false);
+    }
+  }
 
 }
