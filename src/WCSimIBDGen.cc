@@ -88,19 +88,19 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string mod
     return;
 }
 
-double WCSimIBDGen::InterpolateSpectrum(std::vector<float> ener_vec, std::vector<float> flux_vec, float ene) {
+double WCSimIBDGen::InterpolateSpectrum(float ene) {
 
     // Interpolate the spectrum at the energies in ener_vec
     // The spectrum is given by the vectors ener_vec and flux_vec
 
     // Loop over the energies in energy
-    for (size_t i = 1; i < ener_vec.size(); i++) {
-        if (ene <= ener_vec[i]) {
+    for (size_t i = 1; i < energy.size(); i++) {
+        if (ene <= energy[i]) {
             // Perform linear interpolation
-            double e1 = ener_vec[i - 1];
-            double e2 = ener_vec[i];
-            double f1 = flux_vec[i - 1];
-            double f2 = flux_vec[i];
+            double e1 = energy[i - 1];
+            double e2 = energy[i];
+            double f1 = flux[i - 1];
+            double f2 = flux[i];
 
             double interpolated_value = f1 + (f2 - f1) * (ene - e1) / (e2 - e1);
             return interpolated_value;

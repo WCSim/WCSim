@@ -17,7 +17,7 @@ class WCSimIBDGen {
     void ReadSpectrumFromDB(G4String spectrum_name, std::string model_name);
 
     // Fit the spectrum
-    double InterpolateSpectrum(std::vector<float> energy, std::vector<float> flux, float ene);
+    double InterpolateSpectrum(float ene);
 
     // Get the maximum value of the cross section multiplied by the flux for the given model
     double MaxXSecFlux();
