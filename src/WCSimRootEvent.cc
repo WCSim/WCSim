@@ -560,7 +560,8 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
 							 std::vector<TVector3> photonStartPos,
 							 std::vector<TVector3> photonEndPos,
 							 std::vector<TVector3> photonStartDir,
-							 std::vector<TVector3> photonEndDir)
+							 std::vector<TVector3> photonEndDir,
+               std::string           photonCreatorProcess)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -581,7 +582,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
     //WCSimRootCherenkovHitTime *cherenkovhittime =
     new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i],
 									    photonStartTime[i], startPos, endPos,
-									    startDir, endDir);
+									    startDir, endDir, photonCreatorProcess);
   }
   
 #ifdef DEBUG
@@ -636,12 +637,14 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
 						     Float_t photonStartPos[3],
 						     Float_t photonEndPos[3],
 						     Float_t photonStartDir[3],
-						     Float_t photonEndDir[3])
+						     Float_t photonEndDir[3],
+                 std::string photonCreatorProcess)
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
   fTruetime        = truetime;
   fPrimaryParentID = primParID;
   fPhotonStartTime = photonStartTime;
+  fPhotonCreatorProcess = photonCreatorProcess;
   for (int i=0;i<3;i++) {
     fPhotonStartPos[i] = photonStartPos[i];
     fPhotonEndPos[i] = photonEndPos[i];

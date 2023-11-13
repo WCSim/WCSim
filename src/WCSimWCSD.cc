@@ -75,6 +75,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4StepPoint*       preStepPoint = aStep->GetPreStepPoint();
   G4TouchableHandle  theTouchable = preStepPoint->GetTouchableHandle();
   G4VPhysicalVolume* thePhysical  = theTouchable->GetVolume();
+  G4Track*           track        = aStep->GetTrack();j
 
 
   //XQ 3/30/11 try to get the local position try to add the position and direction
@@ -82,6 +83,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4ThreeVector localPosition = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
   G4ThreeVector worldDirection = preStepPoint->GetMomentumDirection();
   G4ThreeVector localDirection = theTouchable->GetHistory()->GetTopTransform().TransformAxis(worldDirection);
+  G4String      processName     = track->GetCreatorProcess()->GetProcessName();
 
 
   WCSimTrackInformation* trackinfo 
@@ -91,18 +93,21 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4float photonStartTime;
   G4ThreeVector photonStartPos;
   G4ThreeVector photonStartDir;
+  G4String      photonCreatorProcess;
   if (trackinfo) {
     //Skip secondaries and match to mother process, eg. muon, decay particle, gamma from pi0/nCapture.
     primParentID = trackinfo->GetPrimaryParentID();  //!= ParentID.
     photonStartTime = trackinfo->GetPhotonStartTime();
     photonStartPos = trackinfo->GetPhotonStartPos();
     photonStartDir = trackinfo->GetPhotonStartDir();
+    photonCreatorProcess = trackinfo->GetPhotonCreatorProcess();
   }
   else { // if there is no trackinfo, then it is a primary particle!
     primParentID = aStep->GetTrack()->GetTrackID();
     photonStartTime = aStep->GetTrack()->GetGlobalTime();
     photonStartPos = aStep->GetTrack()->GetVertexPosition();
     photonStartDir = aStep->GetTrack()->GetVertexMomentumDirection();
+    photonCreatorProcess = aStep->GetTrack()->GetCreatorProces()->GetProcessName();
   }
 
 
@@ -254,6 +259,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
+     (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(processName);
 	   
 	   //     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
 	   //       newHit->Print();
@@ -267,6 +273,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
+   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(processName);
 	 
        }
      }

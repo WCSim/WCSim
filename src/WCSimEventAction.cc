@@ -374,12 +374,14 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       for (int pe = 0; pe < nPoisson; pe++) {
 	G4float time = G4RandGauss::shoot(0.0,10.);
 	G4ThreeVector dir(0, 0, 0);
+  G4String photonCreatorProcess("dummy");
 	(*WCHC)[hitIndex]->AddPe(time);
 	(*WCHC)[hitIndex]->AddParentID(0); // Make parent a geantino (whatever that is)
 	(*WCHC)[hitIndex]->AddPhotonStartPos(pos);
 	(*WCHC)[hitIndex]->AddPhotonEndPos(pos);
 	(*WCHC)[hitIndex]->AddPhotonStartDir(dir);
 	(*WCHC)[hitIndex]->AddPhotonEndDir(dir);
+  (*WCHC)[hitIndex]->AddPhotonCreatorProcess(photonCreatorProcess);
 	(*WCHC)[hitIndex]->AddPhotonStartTime(time);
       }
 
@@ -1439,6 +1441,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     std::vector<TVector3> photonEndPos;
     std::vector<TVector3> photonStartDir;
     std::vector<TVector3> photonEndDir;
+    std::string           photonCreatorProcess;
 #ifdef _SAVE_RAW_HITS_VERBOSE
     double hit_time_smear;
 #endif
@@ -1449,6 +1452,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     TVector3 hit_photon_endpos;
     TVector3 hit_photon_startdir;
     TVector3 hit_photon_enddir;
+    std::string hit_photon_creatorprocess;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
@@ -1474,6 +1478,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[0],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[1],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[2]);
+  hit_photon_creatorprocess = (*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id);
 	truetime.push_back(hit_time_true);
 	primaryParentID.push_back(hit_parentid);
 	photonStartTime.push_back(hit_photon_starttime);
@@ -1481,6 +1486,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	photonEndPos.push_back(hit_photon_endpos);
 	photonStartDir.push_back(hit_photon_startdir);
 	photonEndDir.push_back(hit_photon_enddir);
+  photonCreatorProcess.push_back(hit_photon_creatorprocess);
 #ifdef _SAVE_RAW_HITS_VERBOSE
 	hit_time_smear = (*WCDC_hits)[idigi]->GetTime(id);
 	smeartime.push_back(hit_time_smear);
@@ -1508,7 +1514,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				      photonStartPos,
 				      photonEndPos,
 				      photonStartDir,
-				      photonEndDir);
+				      photonEndDir,
+              photonCreatorProcess);
       smeartime.clear();
       truetime.clear();
       primaryParentID.clear();
@@ -1517,6 +1524,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       photonEndPos.clear();
       photonStartDir.clear();
       photonEndDir.clear();
+      photonCreatorProcess.clear();
     }//idigi
   }//if(WCDC_hits)
 

@@ -69,6 +69,7 @@ private:
   std::map<int, G4ThreeVector>    photonEndPos; ///< End point of the photon of the Hit (do not use for Digits)
   std::map<int, G4ThreeVector>    photonStartDir; ///< Start dir of the photon of the Hit (do not use for Digits)
   std::map<int, G4ThreeVector>    photonEndDir; ///< End dir of the photon of the Hit (do not use for Digits)
+  std::map<string, string> photonCreatorProcess; 
   
 
   //integrated hit/digit parameters
@@ -96,6 +97,7 @@ public:
   inline void SetPhotonEndPos(G4int gate, const G4ThreeVector &position) { photonEndPos[gate] = position; };
   inline void SetPhotonStartDir(G4int gate, const G4ThreeVector &direction) { photonStartDir[gate] = direction; };
   inline void SetPhotonEndDir(G4int gate, const G4ThreeVector &direction) { photonEndDir[gate] = direction; };
+  inline void SetPhotonCreatorProcess(G4int gate, const G4String &creatorProcess) { photonCreatorProcess[gate] = creatorProcess; };
 
   // Add a digit number and unique photon number to fDigiComp
   inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
@@ -114,6 +116,7 @@ public:
   inline G4ThreeVector  GetPhotonEndPos(int gate)    { return photonEndPos[gate];};
   inline G4ThreeVector  GetPhotonStartDir(int gate)    { return photonStartDir[gate];};
   inline G4ThreeVector  GetPhotonEndDir(int gate)    { return photonEndDir[gate];};
+  inline G4String       GetPhotonCreatorProcess(int gate) { return photonCreatorProcess[gate];};
   inline G4int          GetTrackID()    { return trackID;};
   inline G4double GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
@@ -187,6 +190,7 @@ public:
     G4ThreeVector index_photonendpos;
     G4ThreeVector index_photonstartdir;
     G4ThreeVector index_photonenddir;
+    G4String      index_photoncreatorprocess;
     bool sort_digi_compositions = (fDigiComp.size()==time.size());
     // SortDigiMapsByHitTime is called by WCSimWCDigitizerSKI::DigitizeHits to sort the WCRawPMTSignalCollection.
     // Each entry in WCRawPMTSignalCollection represents the set of photon hits on a PMT.
@@ -200,22 +204,24 @@ public:
         index_pe = pe.at(i);
         if(sort_digi_compositions) index_digicomp = fDigiComp.at(i);
         index_primaryparentid = primaryParentID.at(i);
-	index_photonstarttime = photonStartTime[i];
-	index_photonstartpos = photonStartPos[i];
-	index_photonendpos = photonEndPos[i];
-	index_photonstartdir = photonStartDir[i];
-	index_photonenddir = photonEndDir[i];
+	      index_photonstarttime = photonStartTime[i];
+	      index_photonstartpos = photonStartPos[i];
+	      index_photonendpos = photonEndPos[i];
+	      index_photonstartdir = photonStartDir[i];
+	      index_photonenddir = photonEndDir[i];
+        index_photoncreatorprocess = photonCreatorProcess[i];
         for (j = i; j > 0 && time.at(j-1) > index_time; j--) {
           time.at(j) = time.at(j-1);
           time_presmear.at(j) = time_presmear.at(j-1);
           pe.at(j) = pe.at(j-1);
           if(sort_digi_compositions) fDigiComp.at(j) = fDigiComp.at(j-1);
           primaryParentID.at(j) = primaryParentID.at(j-1);
-	  photonStartTime.at(j) = photonStartTime.at(j-1);
-	  photonStartPos.at(j) = photonStartPos.at(j-1);
-	  photonEndPos.at(j) = photonEndPos.at(j-1);
-	  photonStartDir.at(j) = photonStartDir.at(j-1);
-	  photonEndDir.at(j) = photonEndDir.at(j-1);
+	        photonStartTime.at(j) = photonStartTime.at(j-1);
+	        photonStartPos.at(j) = photonStartPos.at(j-1);
+	        photonEndPos.at(j) = photonEndPos.at(j-1);
+	        photonStartDir.at(j) = photonStartDir.at(j-1);
+	        photonEndDir.at(j) = photonEndDir.at(j-1);
+          photonCreatorProcess.at(j) = photonCreatorProcess.at(j-1);
           //G4cout <<"swapping "<<time.at(j-1)<<" "<<index_time<<G4endl;
         }
         time.at(j) = index_time;
@@ -223,11 +229,12 @@ public:
         pe.at(j) = index_pe;
         if(sort_digi_compositions) fDigiComp.at(j) = index_digicomp;
         primaryParentID.at(j) = index_primaryparentid;
-	photonStartTime.at(j) = index_photonstarttime;
-	photonStartPos.at(j) = index_photonstartpos;
-	photonEndPos.at(j) = index_photonendpos;
-	photonStartDir.at(j) = index_photonstartdir;
-	photonEndDir.at(j) = index_photonenddir;
+	      photonStartTime.at(j) = index_photonstarttime;
+	      photonStartPos.at(j) = index_photonstartpos;
+	      photonEndPos.at(j) = index_photonendpos;
+	      photonStartDir.at(j) = index_photonstartdir;
+	      photonEndDir.at(j) = index_photonenddir;
+        photonCreatorProcess.at(j) = index_photoncreatorprocess;
       }
   }
   

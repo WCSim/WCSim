@@ -209,6 +209,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 		infoSec->SetPhotonStartTime((*secondaries)[i]->GetGlobalTime());
 		infoSec->SetPhotonStartPos((*secondaries)[i]->GetPosition());
 		infoSec->SetPhotonStartDir((*secondaries)[i]->GetMomentumDirection());
+    infoSec->SetPhotonCreatorProcess((*secondaries)[i]->GetCreatorProcess()->GetProcessName());
 	}
 	infoSec->WillBeSaved(false); // ADDED BY MFECHNER, temporary, 30/8/06
 	(*secondaries)[i]->SetUserInformation(infoSec);

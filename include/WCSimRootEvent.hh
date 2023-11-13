@@ -157,6 +157,7 @@ private:
   Float_t fPhotonEndPos[3];
   Float_t fPhotonStartDir[3];
   Float_t fPhotonEndDir[3];
+  std::string fPhotonCreatorProcess;
 
 public:
   WCSimRootCherenkovHitTime() {}
@@ -166,7 +167,8 @@ public:
 			    Float_t photonStartPos[3],
 			    Float_t photonEndPos[3],
 			    Float_t photonStartDir[3],
-			    Float_t photonEndDir[3]);
+			    Float_t photonEndDir[3],
+          std::string photonCreatorProcess);
   virtual ~WCSimRootCherenkovHitTime() { }
   bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 
@@ -177,6 +179,7 @@ public:
   Float_t   GetPhotonEndPos(int i) const { return (i<3) ? fPhotonEndPos[i] : 0; }
   Float_t   GetPhotonStartDir(int i) const { return (i<3) ? fPhotonStartDir[i] : 0; }
   Float_t   GetPhotonEndDir(int i) const { return (i<3) ? fPhotonEndDir[i] : 0; }
+  std::string GetPhotonCreatorProcess() const {return fPhotonCreatorProcess;}
 
   ClassDef(WCSimRootCherenkovHitTime,2)
 };
@@ -497,7 +500,8 @@ public:
 					   std::vector<TVector3>  photonStartPos,
 					   std::vector<TVector3>  photonEndPos,
 					   std::vector<TVector3>  photonStartDir,
-					   std::vector<TVector3>  photonEndDir);
+					   std::vector<TVector3>  photonEndDir,
+             std::string            creatorProcess);
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
 
