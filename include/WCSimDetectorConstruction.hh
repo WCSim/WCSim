@@ -176,9 +176,11 @@ public:
   // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
   static G4Transform3D GetTubeTransform(int tubeNo){return tubeIDMap[tubeNo];}
+  static std::map<int, std::pair< int, int > > GetTube_mPMTIDMap(){return mPMTIDMap;}
   //For the hybrid configuration
   static G4int GetTubeID2(std::string tubeTag){return tubeLocationMap2[tubeTag];}
   static G4Transform3D GetTubeTransform2(int tubeNo){return tubeIDMap2[tubeNo];}
+  static std::map<int, std::pair< int, int > > GetTube_mPMTIDMap2(){return mPMTIDMap2;}
   // OD PMTs
   static G4int GetODTubeID(std::string tubeTag){return ODtubeLocationMap[tubeTag];}
   static G4Transform3D GetODTubeTransform(int tubeNo){return ODtubeIDMap[tubeNo];}
