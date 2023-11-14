@@ -111,16 +111,19 @@ private:
   // See jhfNtuple.h for the meaning of these data members:
   Double_t fTruetime;
   Int_t   fPrimaryParentID;
+  Double_t fWavelength;
 
 public:
   WCSimRootCherenkovHitTime() {}
   WCSimRootCherenkovHitTime(Double_t truetime,
-			    Int_t   primaryParentID);
+			    Int_t   primaryParentID,
+			    Double_t wavelength);
   virtual ~WCSimRootCherenkovHitTime() { }
   bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 
   Double_t   GetTruetime() const { return fTruetime;}
   Int_t     GetParentID() const { return fPrimaryParentID;}
+  Double_t GetWavelength() const  { return fWavelength; };
 
   ClassDef(WCSimRootCherenkovHitTime,1)  
 };
@@ -337,7 +340,8 @@ public:
 
   WCSimRootCherenkovHit   *AddCherenkovHit(Int_t                tubeID,
 					  std::vector<Double_t> truetime,
-					  std::vector<Int_t>   primParID);
+					   std::vector<Int_t>   primParID,
+					   std::vector<Double_t> wavelength);
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
 

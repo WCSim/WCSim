@@ -426,7 +426,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 
 //_____________________________________________________________________________
 
-WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vector<Double_t> truetime,std::vector<Int_t> primParID)
+WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vector<Double_t> truetime,std::vector<Int_t> primParID,std::vector<double> wavelength)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -436,7 +436,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,std::vecto
     fCherenkovHitCounter++;
 
     //WCSimRootCherenkovHitTime *cherenkovhittime = 
-      new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i]);
+    new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i],wavelength[i]);
   }
 
   Int_t WC_Index[2];
@@ -464,11 +464,13 @@ WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
 }
 
 WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
-						     Int_t primParID)
+						     Int_t primParID,
+						     Double_t wavelength)
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
     fTruetime        = truetime; 
     fPrimaryParentID = primParID;
+    fWavelength = wavelength;
 }
 
 //_____________________________________________________________________________
@@ -644,6 +646,7 @@ bool WCSimRootCherenkovHitTime::CompareAllVariables(const WCSimRootCherenkovHitT
 
   failed = (!ComparisonPassed(fTruetime, c->GetTruetime(), typeid(*this).name(), __func__, "Truetime")) || failed;
   failed = (!ComparisonPassed(fPrimaryParentID, c->GetParentID(), typeid(*this).name(), __func__, "PrimaryParentID")) || failed;
+  failed = (!ComparisonPassed(fWavelength, c->GetWavelength(), typeid(*this).name(), __func__, "Wavelength")) || failed;
 
   return !failed;
 }

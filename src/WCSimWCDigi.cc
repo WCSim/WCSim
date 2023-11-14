@@ -16,6 +16,7 @@ WCSimWCDigi::WCSimWCDigi()
   pe.clear();
   time.clear();
   time_presmear.clear();
+  wavelength.clear();
   totalPe = 0;
 }
 
@@ -101,6 +102,8 @@ void WCSimWCDigi::RemoveDigitizedGate(G4int gate)
   //parent id
   if(primaryParentID.find(gate) != primaryParentID.end())
     primaryParentID.erase(gate);
+  if(wavelength.find(gate) != wavelength.end())
+    wavelength.erase(gate);
 
   //number of entries counter
   totalPe--;

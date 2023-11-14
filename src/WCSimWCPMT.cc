@@ -194,6 +194,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    time_PMT  = time_true - first_time; //currently no PMT time smearing applied
 	    peSmeared = rn1pe();
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
+	    G4double wavelength = (*WCHC)[i]->GetWavelength(ip);
 
 	    if ( DigiHitMapPMT[tube] == 0) {
 	      WCSimWCDigi* Digi = new WCSimWCDigi();
@@ -204,6 +205,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      Digi->SetTime(ip,time_PMT);
 	      Digi->SetPreSmearTime(ip,time_true);
 	      Digi->SetParentID(ip,parent_id);
+	      Digi->SetWavelength(ip,wavelength);
 	      DigiHitMapPMT[tube] = DigitsCollection->insert(Digi);
 	    }	
 	    else {
@@ -214,6 +216,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTime(ip,time_PMT);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPreSmearTime(ip,time_true);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetParentID(ip,parent_id);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetWavelength(ip,wavelength);
 	    }
       
 	  } // Loop over hits in each PMT

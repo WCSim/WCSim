@@ -62,7 +62,10 @@ class WCSimWCHit : public G4VHit
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
   void AddParentID     (G4int primParentID)
-  { primaryParentID.push_back(primParentID); }
+  { primaryParentID.push_back(primParentID);   }
+  void AddWavelength     (G4double w)
+  { wavelength.push_back(w); 
+  }
 
   // This is temporarily used for the drawing scale
   void SetMaxPe(G4int number = 0)  {maxPe   = number;};
@@ -84,6 +87,7 @@ class WCSimWCHit : public G4VHit
   G4int         GetTotalPe()    { return totalPe;};
   G4double       GetTime(int i)  { return time[i];};
   G4int         GetParentID(int i) { return primaryParentID[i];};
+  G4double      GetWavelength(int i)  { return wavelength[i]; };
   
   G4LogicalVolume* GetLogicalVolume() {return pLogV;};
 
@@ -163,6 +167,7 @@ class WCSimWCHit : public G4VHit
   G4int                 totalPe;
   std::vector<G4double>  time;
   std::vector<G4int>    primaryParentID;
+  std::vector<G4double> wavelength;
   G4int                 totalPeInGate;
 };
 

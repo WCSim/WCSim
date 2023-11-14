@@ -68,6 +68,7 @@ private:
    */
   std::map<int, std::vector<int> > fDigiComp;
   std::map<int, G4int>    primaryParentID; ///< Primary parent ID of the Hit (do not use for Digits)
+  std::map<int, G4double>    wavelength; 
   
 
   //integrated hit/digit parameters
@@ -88,6 +89,7 @@ public:
   inline void SetTime(G4int gate, G4double T)    {time[gate]   = T;};
   inline void SetPreSmearTime(G4int gate, G4double T)    {time_presmear[gate]   = T;};
   inline void SetParentID(G4int gate, G4int parent) { primaryParentID[gate] = parent; };
+  inline void SetWavelength(G4int gate, G4double w) { wavelength[gate] = w; };
 
   // Add a digit number and unique photon number to fDigiComp
   inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
@@ -101,6 +103,7 @@ public:
   }
 
   inline G4int    GetParentID(int gate) { return primaryParentID.at(gate);};
+  inline G4double   GetWavelength(int gate) { return wavelength.at(gate);};
   inline G4double GetGateTime(int gate) { return TriggerTimes.at(gate);}
   inline G4int    GetTubeID() {return tubeID;};
   inline G4double GetPe(int gate)     {return pe.at(gate);};
@@ -162,6 +165,7 @@ public:
 
     double index_time,index_timepresmear,index_pe;
     int index_primaryparentid;
+    G4double index_wavelength;
     std::vector<int> index_digicomp;
     bool sort_digi_compositions = (fDigiComp.size()==time.size());
     // SortDigiMapsByHitTime is called by WCSimWCDigitizerSKI::DigitizeHits to sort the WCRawPMTSignalCollection.
@@ -176,12 +180,14 @@ public:
         index_pe = pe.at(i);
         if(sort_digi_compositions) index_digicomp = fDigiComp.at(i);
         index_primaryparentid = primaryParentID.at(i);
+	//        index_wavelength = wavelength.at(i);
         for (j = i; j > 0 && time.at(j-1) > index_time; j--) {
           time.at(j) = time.at(j-1);
           time_presmear.at(j) = time_presmear.at(j-1);
           pe.at(j) = pe.at(j-1);
           if(sort_digi_compositions) fDigiComp.at(j) = fDigiComp.at(j-1);
           primaryParentID.at(j) = primaryParentID.at(j-1);
+	  //          wavelength.at(j) = wavelength.at(j-1);
           //G4cout <<"swapping "<<time.at(j-1)<<" "<<index_time<<G4endl;
         }
         time.at(j) = index_time;
@@ -189,6 +195,7 @@ public:
         pe.at(j) = index_pe;
         if(sort_digi_compositions) fDigiComp.at(j) = index_digicomp;
         primaryParentID.at(j) = index_primaryparentid;
+	//        wavelength.at(j) = index_wavelength;
       }
   }
   

@@ -307,12 +307,13 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   WCODCapPMTSpacingTop  = 0;
   WCODCapPMTSpacingBottom  = 0;
 
+  // F. Nova 2022/05/13 remove combine pmt qe
   // TEST combined PMT collection for stacking action
-  std::vector<G4String> WCColName;
-  WCColName.push_back(WCIDCollectionName);
-  WCColName.push_back(WCODCollectionName);
-  CreateCombinedPMTQE(WCColName);
-  isCombinedPMTCollectionDefined=true;
+  // std::vector<G4String> WCColName;
+  // WCColName.push_back(WCIDCollectionName);
+  // WCColName.push_back(WCODCollectionName);
+  // CreateCombinedPMTQE(WCColName);
+  // isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
   G4String WLSType = "EljenEJ286";
