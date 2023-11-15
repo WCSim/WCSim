@@ -45,6 +45,7 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
   stoppingPoint  = aTrack->GetPosition();
   stoppingVolume = aTrack->GetVolume();
   producesHit = false;
+  parentTrajectory = 0;
   if ( aTrack->GetUserInformation() != 0 ) {
       WCSimTrackInformation *anInfo = (WCSimTrackInformation *) aTrack->GetUserInformation();
       producesHit = anInfo->GetProducesHit();
