@@ -549,7 +549,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
 							 Int_t mPMTID,
 							 Int_t mPMT_PMTID,
 							 std::vector<Double_t> truetime,
-							 std::vector<Int_t> primParID,
+							 std::vector<Int_t> parentSavedTrackID,
 							 std::vector<Float_t> photonStartTime,
 							 std::vector<TVector3> photonStartPos,
 							 std::vector<TVector3> photonEndPos,
@@ -573,7 +573,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
       endDir[j] = photonEndDir[i][j];
     }
     //WCSimRootCherenkovHitTime *cherenkovhittime =
-    new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i],
+    new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],parentSavedTrackID[i],
 									    photonStartTime[i], startPos, endPos,
 									    startDir, endDir);
   }
@@ -625,7 +625,7 @@ WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
 }
 
 WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
-						     Int_t primParID,
+						     Int_t parentSavedTrackID,
 						     Float_t photonStartTime,
 						     Float_t photonStartPos[3],
 						     Float_t photonEndPos[3],
@@ -634,7 +634,7 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
   fTruetime        = truetime;
-  fPrimaryParentID = primParID;
+  fParentSavedTrackID = parentSavedTrackID;
   fPhotonStartTime = photonStartTime;
   for (int i=0;i<3;i++) {
     fPhotonStartPos[i] = photonStartPos[i];
@@ -849,7 +849,7 @@ bool WCSimRootCherenkovHitTime::CompareAllVariables(const WCSimRootCherenkovHitT
   bool failed = false;
 
   failed = (!ComparisonPassed(fTruetime, c->GetTruetime(), typeid(*this).name(), __func__, "Truetime")) || failed;
-  failed = (!ComparisonPassed(fPrimaryParentID, c->GetParentID(), typeid(*this).name(), __func__, "PrimaryParentID")) || failed;
+  failed = (!ComparisonPassed(fParentSavedTrackID, c->GetParentID(), typeid(*this).name(), __func__, "ParentSavedTrackID")) || failed;
   failed = (!ComparisonPassed(fPhotonStartTime, c->GetPhotonStartTime(), typeid(*this).name(), __func__, "PhotonStartTime")) || failed;
   for(int i = 0; i < 3; i++) {
     failed = (!ComparisonPassed(fPhotonStartPos[i], c->GetPhotonStartPos(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonStartPos", i))) || failed;

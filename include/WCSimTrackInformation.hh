@@ -6,6 +6,7 @@
 #include "G4Track.hh"
 #include "G4Allocator.hh"
 #include "G4VUserTrackInformation.hh"
+#include "WCSimTrajectory.hh"
 
 // Maximilien Fechner, december 2004
 // Information class for flagging the secondaries
@@ -16,34 +17,26 @@
 class WCSimTrackInformation : public G4VUserTrackInformation {
 private:
   G4bool saveit;
-  G4int  primaryParentID;
-  G4float  photonStartTime;
-  G4ThreeVector  photonStartPos;
-  G4ThreeVector  photonStartDir;
+  G4bool producesHit;
+  WCSimTrajectory* parentTrajectory;
+  WCSimTrajectory* myTrajectory;
 
 public:
-  WCSimTrackInformation() : saveit(false), primaryParentID(-99) {}  //TF: initialize to value with NO meaning instead of DN
-  WCSimTrackInformation(const WCSimTrackInformation* aninfo) {
-      saveit = aninfo->saveit;
-      primaryParentID = aninfo->primaryParentID;
-      photonStartTime = aninfo->photonStartTime;
-      photonStartPos = aninfo->photonStartPos;
-      photonStartDir = aninfo->photonStartDir;
-  }
+  WCSimTrackInformation() : saveit(false), producesHit(false), parentTrajectory(0), myTrajectory(0) {}  //TF: initialize to value with NO meaning instead of DN
   virtual ~WCSimTrackInformation() {}
   WCSimTrackInformation(const G4Track* );
   
   G4bool isSaved() { return saveit;}
   void WillBeSaved(G4bool choice) { saveit = choice;}
 
-  void SetPrimaryParentID(G4int i) { primaryParentID = i;}
-  void SetPhotonStartTime(G4float time) { photonStartTime = time;}
-  void SetPhotonStartPos(const G4ThreeVector &pos) { photonStartPos = pos;}
-  void SetPhotonStartDir(const G4ThreeVector &dir) { photonStartDir = dir;}
-  G4int GetPrimaryParentID() {return primaryParentID;}
-  G4float GetPhotonStartTime() {return photonStartTime;}
-  G4ThreeVector GetPhotonStartPos() {return photonStartPos;}
-  G4ThreeVector GetPhotonStartDir() {return photonStartDir;}
+  G4bool GetProducesHit() { return producesHit;}
+  void SetProducesHit(G4bool choice) { producesHit = choice;}
+
+  void SetParentTrajectory(WCSimTrajectory* trajectory) {parentTrajectory = trajectory;}
+  WCSimTrajectory* GetParentTrajectory() {return parentTrajectory;}
+
+  void SetMyTrajectory(WCSimTrajectory* trajectory) {myTrajectory = trajectory;}
+  WCSimTrajectory* GetMyTrajectory() {return myTrajectory;}
 
   inline void *operator new(size_t);
   inline void operator delete(void *aTrackInfo);
