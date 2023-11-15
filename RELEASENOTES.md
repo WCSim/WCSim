@@ -1,6 +1,25 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags.
 
 *************************************************************
+13/10/2023: Notes for v1.12.3
+*************************************************************
+
+Minor release to update the reference validation plots after #390
+
+New features
+* Pull request [WCSim/WCSim#384 @kmtsui](https://github.com/WCSim/WCSim/pull/384): Addition of mPMT LED primary generator. Note these are for LEDs in standard mPMT modules (not mPMT-LEDs)
+* Pull request [WCSim/WCSim#383 @JackFannon](https://github.com/WCSim/WCSim/pull/383): Addition of IBD (inverse beta decay) primary generator for DSNB (diffuse supernova neutrino background) studies
+
+Update
+* Pull request [WCSim/WCSim#385 @kmtsui](https://github.com/WCSim/WCSim/pull/385): Updates to PMT placement file. e.g. can now say if it is for 20"/mPMT in hybrid configuration, apply offsets from nominal, etc.
+* Pull request [WCSim/WCSim#389 @JackFannon](https://github.com/WCSim/WCSim/pull/389): IBD primary generator action: cross section & selection algorithm updated for accuracy and efficiency
+* Pull request [WCSim/WCSim#390 @nickwp](https://github.com/WCSim/WCSim/pull/390): Determination of which true tracks to be saved has been overhauled & simplified. Highlights include option to guarentee that the track (and ancestors of the track) that created a hit are saved
+
+Bug fix
+* Pull request [WCSim/WCSim#389 @JackFannon](https://github.com/WCSim/WCSim/pull/389): Vertices now generated across entire z span of detector (rather than half height)
+
+
+*************************************************************
 13/10/2023: Notes for v1.12.2
 *************************************************************
 
