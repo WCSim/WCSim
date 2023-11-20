@@ -18,9 +18,6 @@ WCSimTrackingAction::WCSimTrackingAction()
 
   ProcessList.insert("Decay") ;                         // Michel e- from pi+ and mu+
   ProcessList.insert("conv") ;                         // Products of gamma conversion
-  //ProcessList.insert("phot");
-  //ProcessList.insert("comp");
-  //ProcessList.insert("NeutronInelastic");
 
   //ProcessList.insert("muMinusCaptureAtRest") ;          // Includes Muon decay from K-shell: for Michel e- from mu0. This dominates/replaces the mu- decay (noticed when switching off this process in PhysicsList)                                                   // TF: IMPORTANT: ONLY USE FROM G4.9.6 onwards because buggy/double counting before.
   ////////// ToDo: switch ON the above when NuPRISM uses G4 >= 4.9.6

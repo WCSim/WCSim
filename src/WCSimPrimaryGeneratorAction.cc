@@ -5,8 +5,6 @@
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4GeneralParticleSource.hh"
-#include "G4SPSEneDistribution.hh"
-#include "G4SPSRandomGenerator.hh"
 #include "G4RandomDirection.hh"
 #include "G4ParticleTable.hh"
 #include "G4IonTable.hh"
