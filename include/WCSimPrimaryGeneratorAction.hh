@@ -113,7 +113,7 @@ private:
   std::fstream inputAmBeFile;
   G4String vectorFileName;
   G4String cosmicsFileName = "data/MuonFlux-HyperK-ThetaPhi.dat";
-  G4String ambeFileName = "data/resampled_nSpectrum.txt";
+  //G4String ambeFileName = "data/resampled_nSpectrum.txt";
   G4bool   GenerateVertexInRock;
 
   // AmBe Generator 
@@ -292,6 +292,7 @@ public:
     }
   }
 
+  /*
   inline void OpenAmBeFile(G4String fileName)
   {
     if ( inputAmBeFile.is_open() )
@@ -305,6 +306,7 @@ public:
       exit(-1);
     }
   }
+  */
 
   inline G4bool IsGeneratingVertexInRock() { return GenerateVertexInRock; }
   inline void SetGenerateVertexInRock(G4bool choice) { GenerateVertexInRock = choice; }

@@ -355,7 +355,7 @@
 # Neutrons can be up to 10 MeV and gammas can have discrete energies of 4.4 MeV, 7.7 MeV, or no
 # gamma being produced depending on the energy of the neutron.
 /mygen/generator ambeevt
-/mygen/ambefile data/resampled_nSpectrum.txt
+#/mygen/ambefile data/resampled_nSpectrum.txt
 
 
 ##################

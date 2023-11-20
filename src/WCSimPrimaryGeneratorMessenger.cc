@@ -57,11 +57,11 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   radioactive_time_window_Cmd->SetDefaultValue(0.);
 
   // Diego Costas: options for AmBe generator
-  fileNameCmdAmBe = new G4UIcmdWithAString("/mygen/ambefile",this);
-  fileNameCmdAmBe->SetGuidance("Select the file for AmBe neutron spectrum");
-  fileNameCmdAmBe->SetGuidance("Enter the file name of the nSpectrum file");
-  fileNameCmdAmBe->SetParameterName("fileName",true);
-  fileNameCmdAmBe->SetDefaultValue("data/resampled_nSpectrum.txt");
+  //fileNameCmdAmBe = new G4UIcmdWithAString("/mygen/ambefile",this);
+  //fileNameCmdAmBe->SetGuidance("Select the file for AmBe neutron spectrum");
+  //fileNameCmdAmBe->SetGuidance("Enter the file name of the nSpectrum file");
+  //fileNameCmdAmBe->SetParameterName("fileName",true);
+  //fileNameCmdAmBe->SetDefaultValue("data/resampled_nSpectrum.txt");
 
   // K.M.Tsui: options for injector events
   nPhotonsCmd = new G4UIcmdWithAnInteger("/mygen/injector_nPhotons",this);
@@ -448,11 +448,11 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     myAction->OpenCosmicsFile(newValue);
     G4cout << "Input cosmics data file set to " << newValue << G4endl;
   }
-  if(command == fileNameCmdAmBe )
-  {
-    myAction->OpenAmBeFile(newValue);
-    G4cout << "Input neutron spectrum data file set to " << newValue << G4endl;
-  }
+  //if(command == fileNameCmdAmBe )
+  //{
+    //myAction->OpenAmBeFile(newValue);
+    //G4cout << "Input neutron spectrum data file set to " << newValue << G4endl;
+  //}
   if( command==isotopeCmd )
   {
     IsotopeCommand(newValue);

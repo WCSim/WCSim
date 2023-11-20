@@ -25,7 +25,7 @@ class WCSimAmBeGen
     //void ReadFromFile();
     
     // Set Particle Gun Properties of the neutron and gamma
-    G4double NeutronEnergy();
+    G4double NeutronEnergy(G4double gEnergy);
     G4double GammaEnergy();
     void GenerateNG(G4Event* anEvent);
 
@@ -43,6 +43,9 @@ class WCSimAmBeGen
 
     vector<double> probabilities;
     vector<double> energies;
+    
+    //vector<double> energies_1;
+    //vector<double> energies_2;
 
     // Variables for reading in the file
     string wcsimdir;
