@@ -27,7 +27,7 @@ class WCSimRootTrack : public TObject {
 
 private:
 
-  enum CreatorProcessType {
+  enum G4ProcessType {
     hadElastic,
     nCapture,
     compt,
