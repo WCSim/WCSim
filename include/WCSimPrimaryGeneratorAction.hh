@@ -110,14 +110,17 @@ private:
 
   std::fstream inputFile;
   std::fstream inputCosmicsFile;
-  std::fstream inputAmBeFile;
+  //std::fstream inputAmBeFile;
   G4String vectorFileName;
   G4String cosmicsFileName = "data/MuonFlux-HyperK-ThetaPhi.dat";
-  //G4String ambeFileName = "data/resampled_nSpectrum.txt";
+  G4String ambeFileName = "data/resampled_nSpectrum.txt";
   G4bool   GenerateVertexInRock;
 
   // AmBe Generator 
   WCSimAmBeGen* AmBeGen;
+  //std::fstream  inputAmBeFile;
+  //G4String      ambeFileName = "data/resampled_nSpectrum.txt";
+  G4int fSeed;
 
   // IBD generator
     // Database for spectra
@@ -292,6 +295,7 @@ public:
     }
   }
 
+  // Diego Costas for AmBeGen
   /*
   inline void OpenAmBeFile(G4String fileName)
   {
@@ -307,6 +311,8 @@ public:
     }
   }
   */
+  inline void  SetSeed(G4int choice)    { fSeed = choice; }
+  inline G4int GetSeed() const          { return fSeed; }
 
   inline G4bool IsGeneratingVertexInRock() { return GenerateVertexInRock; }
   inline void SetGenerateVertexInRock(G4bool choice) { GenerateVertexInRock = choice; }

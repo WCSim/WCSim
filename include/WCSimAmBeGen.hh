@@ -26,7 +26,7 @@ class WCSimAmBeGen
     
     // Set Particle Gun Properties of the neutron and gamma
     G4double NeutronEnergy(G4double gEnergy);
-    G4double GammaEnergy();
+    G4double GammaEnergy(G4int ambeseed);
     void GenerateNG(G4Event* anEvent);
 
   private:
@@ -40,6 +40,7 @@ class WCSimAmBeGen
     G4ThreeVector vtx;
     G4double time;
     G4ThreeVector dir;
+    G4int ambeseed;
 
     vector<double> probabilities;
     vector<double> energies;

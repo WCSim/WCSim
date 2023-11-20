@@ -62,6 +62,10 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   //fileNameCmdAmBe->SetGuidance("Enter the file name of the nSpectrum file");
   //fileNameCmdAmBe->SetParameterName("fileName",true);
   //fileNameCmdAmBe->SetDefaultValue("data/resampled_nSpectrum.txt");
+  seedNumberCmdAmBe = new G4UIcmdWithAnInteger("/mygen/ambeseed",this);
+  seedNumberCmdAmBe->SetGuidance("Set seed for AmBe source generator");
+  seedNumberCmdAmBe->SetParameterName("seed",true);
+  seedNumberCmdAmBe->SetDefaultValue(12345); 
 
   // K.M.Tsui: options for injector events
   nPhotonsCmd = new G4UIcmdWithAnInteger("/mygen/injector_nPhotons",this);
@@ -197,6 +201,7 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete lightInjectorNPhotonsCmd;
   delete lightInjectorFilenameCmd;
   delete lightInjectorModeCmd;
+  delete seedNumberCmdAmBe;
 }
 
 void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
@@ -453,6 +458,11 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     //myAction->OpenAmBeFile(newValue);
     //G4cout << "Input neutron spectrum data file set to " << newValue << G4endl;
   //}
+  if(command == seedNumberCmdAmBe)
+  {
+    G4int seed = seedNumberCmdAmBe->GetNewIntValue(newValue);
+    myAction->SetSeed(seed);
+  }
   if( command==isotopeCmd )
   {
     IsotopeCommand(newValue);
