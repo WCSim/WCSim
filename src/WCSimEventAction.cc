@@ -1313,7 +1313,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       } else if (primaryList.count(trj->GetParentID()) ) {
 	parentType = 1;
       } else {  // no identified parent, but not a primary
-	parentType = trj->GetParentID();
+	parentType = 999;
       }
 
       // G4cout << parentType << " " << ipnu << " "
@@ -1859,7 +1859,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       } else if (pionList.count(trj->GetParentID()) ) {
 	parentType = 211;
       } else {  // no identified parent, but not a primary
-	parentType = trj->GetParentID();
+	parentType = 999;
       }
 
       // G4cout << parentType << " " << ipnu << " "

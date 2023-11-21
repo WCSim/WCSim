@@ -36,32 +36,45 @@ void WCSimAmBeGen::Initialise(){
     myAmBeGun   = new G4ParticleGun();
 }
 
-G4double WCSimAmBeGen::NeutronEnergy(){
-    // Set the neutron energy distribution from a file
-    nEnergyDist->SetEnergyDisType("Arb");
-    nEnergyDist->ArbEnergyHistoFile("data/resampled_nSpectrum.txt");
-    nEnergyDist->SetBiasRndm(rGen);
-    nEnergyDist->ArbInterpolate("Lin");
-
-    // Obtain the definition of the neutron and sample an energy from the distribution
-    nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
-
-    return nEnergy;
-}
-
-G4double WCSimAmBeGen::GammaEnergy(){
+G4double WCSimAmBeGen::GammaEnergy(G4int ambeseed){
+    
     // Define the correspondent probabilities for every possible gamma scenario
     probabilities = {0.26, 0.65, 0.08};
     energies      = {0.0, 4.4, 7.7};
 
     // Generate a weighted random number so we can select the gamma energy
-    random_device rd;
-    mt19937 gen(rd());
+    mt19937 gen(ambeseed);
     discrete_distribution<int> dist(probabilities.begin(), probabilities.end());
     int index = dist(gen);
     gEnergy = energies[index];
     
-    return gEnergy;
+    return gEnergy; 
+}
+
+G4double WCSimAmBeGen::NeutronEnergy(G4double gEnergy){
+    // Depending on the gEnergy, we load the correspondent neutron energy spectrum
+    nEnergyDist->SetEnergyDisType("Arb");
+    
+    if (gEnergy == 0.0) {
+      nEnergyDist->ArbEnergyHistoFile("data/ground_state_spectrum.txt");
+      nEnergyDist->SetBiasRndm(rGen);
+      nEnergyDist->ArbInterpolate("Lin");
+      nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
+    }
+    else if (gEnergy == 4.4) {
+      nEnergyDist->ArbEnergyHistoFile("data/first_excited_spectrum.txt");
+      nEnergyDist->SetBiasRndm(rGen);
+      nEnergyDist->ArbInterpolate("Lin");
+      nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
+    }
+    else {
+      nEnergyDist->ArbEnergyHistoFile("data/second_excited_spectrum.txt");
+      nEnergyDist->SetBiasRndm(rGen);
+      nEnergyDist->ArbInterpolate("Lin");
+      nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
+    }
+
+    return nEnergy;
 }
 
 void WCSimAmBeGen::GenerateNG(G4Event* anEvent){
@@ -77,11 +90,11 @@ void WCSimAmBeGen::GenerateNG(G4Event* anEvent){
       // Configure particle's properties in particleGun
       if (pdgid == 22) {
         myAmBeGun->SetParticleDefinition(G4Gamma::Definition());
-        myAmBeGun->SetParticleEnergy(GammaEnergy());
+        myAmBeGun->SetParticleEnergy(GammaEnergy(ambeseed));
       }
       else {
         myAmBeGun->SetParticleDefinition(G4Neutron::Definition());
-        myAmBeGun->SetParticleEnergy(NeutronEnergy());
+        myAmBeGun->SetParticleEnergy(NeutronEnergy(GammaEnergy(ambeseed)));
       }
 
       dir = G4RandomDirection();

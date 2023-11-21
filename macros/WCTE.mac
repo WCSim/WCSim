@@ -1,6 +1,6 @@
 # nuPRISMBeamTest WCTE macro with no visualization
 
-/run/verbose 2
+/run/verbose 1
 /tracking/verbose 0
 /hits/verbose 0
 #/control/execute vis.mac
@@ -145,10 +145,13 @@
 
 # Or you can use the AmBe Calibration Source Generator.
 # This launches two primary partircles: one neutron and one gamma.
-# Neutrons can be up to 10 MeV and gammas can have discrete energies of 4.4 MeV, 7.7 MeV, or no 
-# gamma being produced depending on the energy of the neutron.
-/mygen/generator ambeevt
-/mygen/ambefile data/resampled_nSpectrum.txt
+# The energy of the gamma can be:
+# - 4.4 MeV 65% of the time.
+# - 7.7 MeV 8%  of the time.
+# - 0.0 MeV 26% of the time.
+# Neutron Enegy is taken from a simulated realistic AmBe Spectrum depending on the Gamma Energy.
+ /mygen/generator ambeevt
+ /mygen/ambeseed 12345
 
 ##### NEW
 /Tracking/fractionOpticalPhotonsToDraw 100.0

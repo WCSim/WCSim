@@ -5,8 +5,6 @@
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4GeneralParticleSource.hh"
-#include "G4SPSEneDistribution.hh"
-#include "G4SPSRandomGenerator.hh"
 #include "G4RandomDirection.hh"
 #include "G4ParticleTable.hh"
 #include "G4IonTable.hh"
@@ -429,71 +427,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     AmBeGen->GenerateNG(anEvent);
   } 
-    /*
-    G4SPSEneDistribution *nEnergyDist = new G4SPSEneDistribution();
-    G4SPSRandomGenerator *rGen = new G4SPSRandomGenerator();
-
-    // Set the neutron energy distribution from a file
-    nEnergyDist->SetEnergyDisType("Arb");
-    nEnergyDist->ArbEnergyHistoFile("data/resampled_nSpectrum.txt");
-    nEnergyDist->SetBiasRndm(rGen);
-    nEnergyDist->ArbInterpolate("Lin");
-
-    // Obtain the definition of the neutron and sample an energy from the distribution
-    //G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-    G4ParticleDefinition* neutronDefinition = particleTable->FindParticle("neutron");
-    G4ParticleDefinition* gammaDefinition   = particleTable->FindParticle("gamma");
-    //G4ParticleDefinition* neutronDefinition = G4Neutron::Definition();
-    G4double nEnergy = nEnergyDist->GenerateOne(neutronDefinition);
-
-    // Define PDG IDs, energies and desired particle names
-    G4int pdgids[] = {2112, 22};
-    //G4double energys[] = {nEnergy, 0.0};
-    G4String particleNames[] = {"neutron", "gamma"};
-
-    // Define the correspondent probabilities for every possible gamma scenario
-    std::vector<double> probabilities = {0.26, 0.65, 0.08};
-    std::vector<double> energies = {0.0, 4.4, 7.7};
-
-    // Generate a weighted random number so we can select the gamma energy
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::discrete_distribution<int> dist(probabilities.begin(), probabilities.end());
-    int index = dist(gen);
-    G4double gammaEnergy = energies[index];
-
-    for (G4int i=0; i<2; i++){
-      // Create a vertex for the particle following the index of the loop
-      G4int pdgid = pdgids[i];
-      G4ThreeVector vtx = G4ThreeVector(0., 0., 0.);
-      G4double time = 0.;
-      G4double ekin = (i == 0) ? nEnergy : gammaEnergy;
-
-      // Configure particle's properties in particleGun
-      if (pdgid == 22) {
-        particleGun->SetParticleDefinition(gammaDefinition);
-      }
-      else {
-        particleGun->SetParticleDefinition(neutronDefinition);
-      }
-
-      //G4double mass = particleGun->GetParticleDefinition()->GetPDGMass();
-      //G4double totalEnergy = ekin + mass;
-      //G4double momentum = std::sqrt(totalEnergy * totalEnergy - mass*mass);
-      G4ThreeVector dir = G4RandomDirection();
-
-      // Configure the final properties of the particle
-      particleGun->SetParticleEnergy(ekin);
-      particleGun->SetParticlePosition(vtx);
-      particleGun->SetParticleTime(time);
-      particleGun->SetParticleMomentumDirection(dir);
-
-      // Generate the primary vertex for the particle
-      particleGun->GeneratePrimaryVertex(anEvent);
-    }
   
-   }*/
-
   else if (useRootrackerEvt)
     {
       if ( !fInputRootrackerFile->IsOpen() )
