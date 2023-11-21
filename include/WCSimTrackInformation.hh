@@ -20,7 +20,7 @@ private:
   G4float  photonStartTime;
   G4ThreeVector  photonStartPos;
   G4ThreeVector  photonStartDir;
-  G4String       photonCreatorProcess;
+  G4String photonCreatorProcess;
 
 public:
   WCSimTrackInformation() : saveit(false), primaryParentID(-99) {}  //TF: initialize to value with NO meaning instead of DN
@@ -40,14 +40,14 @@ public:
 
   void SetPrimaryParentID(G4int i) { primaryParentID = i;}
   void SetPhotonStartTime(G4float time) { photonStartTime = time;}
+  void SetPhotonCreatorProcess(G4String creatorProc) { photonCreatorProcess = creatorProc; }
   void SetPhotonStartPos(const G4ThreeVector &pos) { photonStartPos = pos;}
   void SetPhotonStartDir(const G4ThreeVector &dir) { photonStartDir = dir;}
-  void SetPhotonCreatorProcess(const G4String &creatorProcess) { photonCreatorProcess = creatorProcess;}
   G4int GetPrimaryParentID() {return primaryParentID;}
   G4float GetPhotonStartTime() {return photonStartTime;}
+  G4String GetPhotonCreatorProcess() {return photonCreatorProcess;}
   G4ThreeVector GetPhotonStartPos() {return photonStartPos;}
   G4ThreeVector GetPhotonStartDir() {return photonStartDir;}
-  G4String GetPhotonCreatorProcess() const {return fPhotonCreatorProcess;}
 
   inline void *operator new(size_t);
   inline void operator delete(void *aTrackInfo);

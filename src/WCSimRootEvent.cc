@@ -561,7 +561,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
 							 std::vector<TVector3> photonEndPos,
 							 std::vector<TVector3> photonStartDir,
 							 std::vector<TVector3> photonEndDir,
-               std::string           photonCreatorProcess)
+               std::vector<std::string> photonCreatorProcess)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -579,10 +579,13 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
       startDir[j] = photonStartDir[i][j];
       endDir[j] = photonEndDir[i][j];
     }
+    
+    std::string creatorProcess = photonCreatorProcess[i]; // Get the creator process for this p.e.
+
     //WCSimRootCherenkovHitTime *cherenkovhittime =
     new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],primParID[i],
 									    photonStartTime[i], startPos, endPos,
-									    startDir, endDir, photonCreatorProcess);
+									    startDir, endDir, creatorProcess);
   }
   
 #ifdef DEBUG
@@ -860,6 +863,7 @@ bool WCSimRootCherenkovHitTime::CompareAllVariables(const WCSimRootCherenkovHitT
   failed = (!ComparisonPassed(fTruetime, c->GetTruetime(), typeid(*this).name(), __func__, "Truetime")) || failed;
   failed = (!ComparisonPassed(fPrimaryParentID, c->GetParentID(), typeid(*this).name(), __func__, "PrimaryParentID")) || failed;
   failed = (!ComparisonPassed(fPhotonStartTime, c->GetPhotonStartTime(), typeid(*this).name(), __func__, "PhotonStartTime")) || failed;
+  //failed = (!ComparisonPassed(fPhotonCreatorProcess, c->GetPhotonCreatorProcess(), typeid(*this).name(), __func__, "PhotonCreatorProcess")) || failed;
   for(int i = 0; i < 3; i++) {
     failed = (!ComparisonPassed(fPhotonStartPos[i], c->GetPhotonStartPos(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonStartPos", i))) || failed;
     failed = (!ComparisonPassed(fPhotonEndPos[i], c->GetPhotonEndPos(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonEndPos", i))) || failed;

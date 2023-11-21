@@ -258,7 +258,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      Digi->SetPhotonEndPos(ip,photon_endpos);
 	      Digi->SetPhotonStartDir(ip,photon_startdir);
 	      Digi->SetPhotonEndDir(ip,photon_enddir);
-        Digi->SetPhotonCreatorProcess(ip,photon_creatorprocess)
+        Digi->SetPhotonCreatorProcess(ip,photon_creatorprocess);
 	      DigiHitMapPMT[tube] = DigitsCollection->insert(Digi);
 	      bqDigiHitCounter++;
 	    }	

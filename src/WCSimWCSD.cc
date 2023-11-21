@@ -75,7 +75,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4StepPoint*       preStepPoint = aStep->GetPreStepPoint();
   G4TouchableHandle  theTouchable = preStepPoint->GetTouchableHandle();
   G4VPhysicalVolume* thePhysical  = theTouchable->GetVolume();
-  G4Track*           track        = aStep->GetTrack();j
+  G4Track*           track        = aStep->GetTrack();
 
 
   //XQ 3/30/11 try to get the local position try to add the position and direction
@@ -107,7 +107,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     photonStartTime = aStep->GetTrack()->GetGlobalTime();
     photonStartPos = aStep->GetTrack()->GetVertexPosition();
     photonStartDir = aStep->GetTrack()->GetVertexMomentumDirection();
-    photonCreatorProcess = aStep->GetTrack()->GetCreatorProces()->GetProcessName();
+    photonCreatorProcess = aStep->GetTrack()->GetCreatorProcess()->GetProcessName();
   }
 
 
@@ -259,7 +259,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
-     (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(processName);
+     (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(photonCreatorProcess);
 	   
 	   //     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
 	   //       newHit->Print();
@@ -273,7 +273,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
-   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(processName);
+   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(photonCreatorProcess);
 	 
        }
      }

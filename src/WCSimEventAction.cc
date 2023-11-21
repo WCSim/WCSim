@@ -374,14 +374,14 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       for (int pe = 0; pe < nPoisson; pe++) {
 	G4float time = G4RandGauss::shoot(0.0,10.);
 	G4ThreeVector dir(0, 0, 0);
-  G4String photonCreatorProcess("dummy");
+  G4String photcreatorproc = "dummy";
 	(*WCHC)[hitIndex]->AddPe(time);
 	(*WCHC)[hitIndex]->AddParentID(0); // Make parent a geantino (whatever that is)
 	(*WCHC)[hitIndex]->AddPhotonStartPos(pos);
 	(*WCHC)[hitIndex]->AddPhotonEndPos(pos);
 	(*WCHC)[hitIndex]->AddPhotonStartDir(dir);
 	(*WCHC)[hitIndex]->AddPhotonEndDir(dir);
-  (*WCHC)[hitIndex]->AddPhotonCreatorProcess(photonCreatorProcess);
+  (*WCHC)[hitIndex]->AddPhotonCreatorProcess(photcreatorproc);
 	(*WCHC)[hitIndex]->AddPhotonStartTime(time);
       }
 
@@ -1441,7 +1441,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     std::vector<TVector3> photonEndPos;
     std::vector<TVector3> photonStartDir;
     std::vector<TVector3> photonEndDir;
-    std::string           photonCreatorProcess;
+    std::vector<std::string> photonCreatorProcess;
 #ifdef _SAVE_RAW_HITS_VERBOSE
     double hit_time_smear;
 #endif
@@ -1988,6 +1988,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     std::vector<TVector3> photonEndPos;
     std::vector<TVector3> photonStartDir;
     std::vector<TVector3> photonEndDir;
+    std::vector<std::string> photonCreatorProcess;               // ADD A TEMPORARY VECTOR OF CREATOR PROCESSES
 #ifdef _SAVE_RAW_HITS_VERBOSE
     double hit_time_smear;
 #endif
@@ -1998,6 +1999,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     TVector3 hit_photon_endpos;
     TVector3 hit_photon_startdir;
     TVector3 hit_photon_enddir;
+    std::string hit_photon_creatorprocess;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
@@ -2007,6 +2009,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
+  hit_photon_creatorprocess = (*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id);
 	hit_photon_startpos = TVector3(
 	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[0],
 	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[1],
@@ -2030,12 +2033,14 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	photonEndPos.push_back(hit_photon_endpos);
 	photonStartDir.push_back(hit_photon_startdir);
 	photonEndDir.push_back(hit_photon_enddir);
+  photonCreatorProcess.push_back(hit_photon_creatorprocess);                         // ADD A GENERIC PROCESS NAME
 #ifdef _SAVE_RAW_HITS_VERBOSE
 	hit_time_smear = (*WCDC_hits)[idigi]->GetTime(id);
 	smeartime.push_back(hit_time_smear);
 #endif
       }//id
 #ifdef _SAVE_RAW_HITS_VERBOSE
+  G4cout << "Hits CreatorProcess: " << photonCreatorProcess << G4endl;
       if(digi_tubeid < NPMTS_VERBOSE) {
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
@@ -2057,7 +2062,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				      photonStartPos,
 				      photonEndPos,
 				      photonStartDir,
-				      photonEndDir);
+				      photonEndDir,
+              photonCreatorProcess);         // INCLUDE THE VECTOR OF CREATOR PROCESSES
       smeartime.clear();
       truetime.clear();
       primaryParentID.clear();
@@ -2066,6 +2072,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       photonEndPos.clear();
       photonStartDir.clear();
       photonEndDir.clear();
+      photonCreatorProcess.clear();                  // CLEAR THE TEMPORARY VECTOR
     }//idigi
   }//if(WCDC_hits)
 
