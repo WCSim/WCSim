@@ -223,7 +223,7 @@
 ##################
 # OPTICAL PHYSICS
 ##################
-## The WCSimOpticalPhysics class uses the same Messenger commands as G4OpticalPhysics
+## The WCSimOpticalPhysics class uses the same Messenger commands as G4OpticalPhysics (need to set macros/jobOptions.mac)
 ## New photocathode models can be used for PMT photon detection. See macros/tuning_parameters.mac
 
 
