@@ -9,7 +9,6 @@
 #include <G4HadronicInteractionRegistry.hh>
 #include <G4RadioactiveDecayPhysics.hh>
 #include "WCSimPhysicsListFactory.hh"
-#include "WCSimOpticalPhysics.hh"
 
 #include "GdNeutronHPCapture.hh"
 
@@ -20,7 +19,8 @@
 
 
 
-WCSimPhysicsListFactory::WCSimPhysicsListFactory() :  G4VModularPhysicsList()
+WCSimPhysicsListFactory::WCSimPhysicsListFactory() :  G4VModularPhysicsList(),
+  fOpticalPhysics(0)
 {
  defaultCutValue = 1.0*mm;
  SetVerboseLevel(1);
@@ -40,6 +40,8 @@ WCSimPhysicsListFactory::WCSimPhysicsListFactory() :  G4VModularPhysicsList()
  //G4cout << "ValidListsString=" << ValidListsString << G4endl;
 
  PhysicsMessenger = new WCSimPhysicsListFactoryMessenger(this, ValidListsString);
+
+ fOpticalPhysics = new WCSimOpticalPhysics();
 
 }
 
@@ -148,10 +150,8 @@ void WCSimPhysicsListFactory::InitializeList(){
       RegisterPhysics(elem);
     }
     G4cout << "RegisterPhysics: OpticalPhysics" << G4endl;
-    WCSimOpticalPhysics* opticalPhysics = new WCSimOpticalPhysics();
-    RegisterPhysics(opticalPhysics);
-    opticalPhysics->SetWLSTimeProfile("exponential");
-    
+    RegisterPhysics(fOpticalPhysics);
+    fOpticalPhysics->SetWLSTimeProfile("exponential");
     // Add Radioactive Decay:
     G4cout << "RegisterPhysics: RadioactiveDecayPhysics" << G4endl;
     RegisterPhysics( new G4RadioactiveDecayPhysics ); 
