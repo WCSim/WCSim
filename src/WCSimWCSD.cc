@@ -75,39 +75,41 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4StepPoint*       preStepPoint = aStep->GetPreStepPoint();
   G4TouchableHandle  theTouchable = preStepPoint->GetTouchableHandle();
   G4VPhysicalVolume* thePhysical  = theTouchable->GetVolume();
-  G4Track*           track        = aStep->GetTrack();
-
 
   //XQ 3/30/11 try to get the local position try to add the position and direction
-  G4ThreeVector worldPosition = preStepPoint->GetPosition();
-  G4ThreeVector localPosition = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
+  G4ThreeVector worldPosition  = preStepPoint->GetPosition();
+  G4ThreeVector localPosition  = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
   G4ThreeVector worldDirection = preStepPoint->GetMomentumDirection();
   G4ThreeVector localDirection = theTouchable->GetHistory()->GetTopTransform().TransformAxis(worldDirection);
-  G4String      processName     = track->GetCreatorProcess()->GetProcessName();
+  const G4VProcess* process = aStep->GetTrack()->GetCreatorProcess();
+  G4String processName("NONE");
+  if (process) {
+    processName = process->GetProcessName();
+  }
 
 
   WCSimTrackInformation* trackinfo 
     = (WCSimTrackInformation*)(aStep->GetTrack()->GetUserInformation());
   
   G4int primParentID = -1;
-  G4float photonStartTime;
+  G4float       photonStartTime;
   G4ThreeVector photonStartPos;
   G4ThreeVector photonStartDir;
   G4String      photonCreatorProcess;
   if (trackinfo) {
     //Skip secondaries and match to mother process, eg. muon, decay particle, gamma from pi0/nCapture.
-    primParentID = trackinfo->GetPrimaryParentID();  //!= ParentID.
-    photonStartTime = trackinfo->GetPhotonStartTime();
-    photonStartPos = trackinfo->GetPhotonStartPos();
-    photonStartDir = trackinfo->GetPhotonStartDir();
+    primParentID         = trackinfo->GetPrimaryParentID();  //!= ParentID.
+    photonStartTime      = trackinfo->GetPhotonStartTime();
+    photonStartPos       = trackinfo->GetPhotonStartPos();
+    photonStartDir       = trackinfo->GetPhotonStartDir();
     photonCreatorProcess = trackinfo->GetPhotonCreatorProcess();
   }
   else { // if there is no trackinfo, then it is a primary particle!
-    primParentID = aStep->GetTrack()->GetTrackID();
-    photonStartTime = aStep->GetTrack()->GetGlobalTime();
-    photonStartPos = aStep->GetTrack()->GetVertexPosition();
-    photonStartDir = aStep->GetTrack()->GetVertexMomentumDirection();
-    photonCreatorProcess = aStep->GetTrack()->GetCreatorProcess()->GetProcessName();
+    primParentID         = aStep->GetTrack()->GetTrackID();
+    photonStartTime      = aStep->GetTrack()->GetGlobalTime();
+    photonStartPos       = aStep->GetTrack()->GetVertexPosition();
+    photonStartDir       = aStep->GetTrack()->GetVertexMomentumDirection();
+    //photonCreatorProcess = aStep->GetTrack()->GetCreatorProcess()->GetProcessName();
   }
 
 
