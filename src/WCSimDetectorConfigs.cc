@@ -1348,7 +1348,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
 	config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
 
 	WCIDHeight               = 8.0*CLHEP::m;
-  WCIDDiameter             = 7.0*CLHEP::m;
+  WCIDDiameter             = 6.6*CLHEP::m;
   WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = mPMT_vessel_tot_height + 1.*CLHEP::mm;
