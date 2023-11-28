@@ -816,7 +816,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4ThreeVector dir  = P.unit();
       G4double E         = std::sqrt((P.dot(P))+(mass*mass));
       G4cout << " GPS primary vertex (" << vtx.x() << ", " << vtx.y() << ", " << vtx.z() << "), dir ("
-	     << dir.x() << ", " << dir.y() << ", " << dir.z() << ") m " << m << " E "<< E << " pdg " << pdg << G4endl;
+	     << dir.x() << ", " << dir.y() << ", " << dir.z() << ") m " << mass << " E "<< E << " pdg " << pdg << G4endl;
 
       SetVtx(vtx);
       SetBeamEnergy(E);
