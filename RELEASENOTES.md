@@ -1,6 +1,20 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags.
 
 *************************************************************
+13/10/2023: Notes for v1.12.4
+*************************************************************
+
+Minor release to update the reference validation plots after #394
+
+Update
+* Pull request [WCSim/WCSim #394 @kmtsui] Update default IWCD ID diameter from 7.0 to 6.6 m
+* Pull request [WCSim/WCSim #393 @kmtsui] Allow `WCSimOpticalPhysics` options to be controlled in `jobOptions.mac`
+
+Bug fix
+* Pull request [WCSim/WCSim #395 @gondiaz] Install `*.hpp` files
+* Pull request [WCSim/WCSim #392 @nickwp] Parent of the saved track now correctly saved in the true Cherenkov hit (previously erroneously ID of the photon track)
+
+*************************************************************
 13/10/2023: Notes for v1.12.3
 *************************************************************
 

@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.1)
 # ##############################################################################
 
 set(PROJECT_NAME WCSim)
-set(PROJECT_VERSION 1.12.3)
+set(PROJECT_VERSION 1.12.4)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 
