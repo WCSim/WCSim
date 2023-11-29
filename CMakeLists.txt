@@ -58,6 +58,7 @@ CPMFindPackage(
 find_package(HepMC3 REQUIRED)
 add_library(HepMC3_includes INTERFACE)
 target_include_directories(HepMC3_includes SYSTEM INTERFACE ${HepMC3_SOURCE_DIR}/include)
+include_directories(${HepMC3_SOURCE_DIR}/include)
 
 
 
