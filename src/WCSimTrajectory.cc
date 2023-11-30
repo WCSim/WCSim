@@ -8,6 +8,8 @@
 #include "G4AttValue.hh"
 #include "G4UnitsTable.hh"
 #include "G4VProcess.hh"
+#include "G4OpProcessSubType.hh"
+#include "G4ProcessManager.hh"
 
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
@@ -27,6 +29,11 @@ WCSimTrajectory::WCSimTrajectory()
   boundaryKEs.clear();
   boundaryTimes.clear();
   boundaryTypes.clear();
+
+  pScatter = 0;
+  pReflec.clear();
+
+  fBoundary = NULL;
 }
 
 WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
@@ -66,6 +73,23 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
   boundaryKEs.clear();
   boundaryTimes.clear();
   boundaryTypes.clear();
+
+  pScatter = 0;
+  pReflec.clear();
+  fBoundary = NULL;
+  // Only do search for optical photon
+  if (PDGEncoding==0)
+  {
+    G4ProcessManager* pm = aTrack->GetDefinition()->GetProcessManager();
+    G4int nprocesses = pm->GetProcessListLength();
+    G4ProcessVector* pv = pm->GetProcessList();
+    for(G4int i=0;i<nprocesses;i++){
+      if((*pv)[i]->GetProcessName()=="OpBoundary"){
+        fBoundary = (WCSimOpBoundaryProcess*)(*pv)[i];
+        break;
+      }
+    }
+  }
 }
 
 WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
@@ -97,6 +121,10 @@ WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
   boundaryKEs = right.boundaryKEs;
   boundaryTimes = right.boundaryTimes;
   boundaryTypes = right.boundaryTypes;
+
+  pScatter = right.pScatter;
+  pReflec = right.pReflec;
+  fBoundary = right.fBoundary;
 }
 
 WCSimTrajectory::~WCSimTrajectory()
@@ -114,6 +142,9 @@ WCSimTrajectory::~WCSimTrajectory()
   boundaryKEs.clear();
   boundaryTimes.clear();
   boundaryTypes.clear();
+
+  pReflec.clear();
+  fBoundary = NULL;
 }
 
 void WCSimTrajectory::ShowTrajectory(std::ostream& os) const
@@ -230,6 +261,38 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
       //    " "<<track->GetKineticEnergy()<<" "<<thePrePV->GetName()<<" "<<thePostPV->GetName()<<G4endl;
     }
   }
+
+  // Add photon history
+  if (PDGEncoding==0)
+  {
+    const G4VProcess* pds = thePostPoint->GetProcessDefinedStep();
+    //G4cout<<"Having optical photon in AppendStep "<<pds->GetProcessName()<<G4endl;
+    if ( pds->GetProcessType() == fOptical )
+    {
+      if ( pds->GetProcessSubType() == fOpRayleigh || pds->GetProcessSubType() == fOpMieHG )
+      {
+        AddPhotonScatter(1);
+      }
+  
+    }
+    else
+    {
+      //G4cout<<"Having optical boundary process "<<fBoundary->GetStatus()<<" "<<thePrePV->GetName()<<" "<<thePostPV->GetName()<<G4endl;
+      if((fBoundary->GetStatus() >= FresnelReflection && fBoundary->GetStatus() <=BackScattering) || 
+          (fBoundary->GetStatus() >= PolishedLumirrorAirReflection && fBoundary->GetStatus() <=GroundVM2000GlueReflection) ||
+          fBoundary->GetStatus() == CoatedDielectricReflection
+        )
+      {
+        G4String thePostPVName = thePostPV->GetName();
+        G4int rType = 0;
+        if (thePostPVName.contains("BlackSheet")) rType = 1;
+        else if (thePostPVName.contains("reflector")) rType = 2;
+        else if (thePostPVName.contains("InteriorWCPMT")) rType = 3;
+        //G4cout<<"Having optical reflection "<<thePrePV->GetName()<<" "<<thePostPV->GetName()<<" "<<rType<<G4endl;
+        AddPhotonReflection(rType);
+      }
+    }
+  }
 }
 
 G4ParticleDefinition* WCSimTrajectory::GetParticleDefinition()
@@ -265,6 +328,9 @@ void WCSimTrajectory::MergeTrajectory(G4VTrajectory* secondTrajectory)
                      (seco->GetBoundaryTimes()).at(i),
                      (seco->GetBoundaryTypes()).at(i));
   }
+
+  AddPhotonScatter(seco->GetPhotonScatter());
+  for (auto i: seco->GetPhotonReflection()) AddPhotonReflection(i);
 }
 
 

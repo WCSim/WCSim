@@ -15,6 +15,7 @@ class WCSimTrajectory;
 #include "G4Step.hh"
 
 #include "WCSimEnumerations.hh"
+#include "WCSimOpBoundaryProcess.hh"
 
 class G4Polyline;                   // Forward declaration.
 
@@ -112,6 +113,12 @@ public: // with description
     return bTypes;
   }
 
+// Functions to set/get photon history
+  inline void AddPhotonScatter(G4int val) { pScatter += val; }
+  inline void AddPhotonReflection(G4int val) { pReflec.push_back(val); }
+  inline G4int GetPhotonScatter() const { return pScatter; }
+  inline std::vector<int> GetPhotonReflection() const { return pReflec; } 
+
 // Other member functions
    virtual void ShowTrajectory(std::ostream& os=G4cout) const;
    virtual void DrawTrajectory(/*G4int i_mode=0*/) const;
@@ -155,6 +162,11 @@ public: // with description
   std::vector<G4float> boundaryKEs;
   std::vector<G4double> boundaryTimes;
   std::vector<BoundaryType_t> boundaryTypes; // kBlackSheet=1, kTyvek, kCave
+
+  // Photon reflection/scattering history
+  G4int pScatter;
+  std::vector<G4int> pReflec;
+  WCSimOpBoundaryProcess* fBoundary;
 };
 
 /***            TEMP  : M FECHNER ***********
