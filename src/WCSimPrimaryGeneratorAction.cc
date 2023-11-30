@@ -1510,6 +1510,11 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamDir(dir);
       SetBeamPDG(pdg);
 
+    } else if (useHepMC3Evt) {
+        // Check if the WCSimNuHepMC3Reader object has been initiaited yet
+        if (!hepmc3_reader){
+            hepmc3_reader = new WCSimNuHepMC3Reader(hepmc3_filename);
+        }
     }
 }
 
