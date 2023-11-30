@@ -12,6 +12,7 @@
 #include "WCSimLIGen.hh"
 #include "WCSimEnumerations.hh"
 #include "jhfNtuple.h"
+#include "WCSimNuHepMC3Reader.hh"
 
 #include <G4String.hh>
 #include <fstream>
@@ -106,6 +107,7 @@ private:
   G4bool   useRadonEvt; // G. Pronost: Radon flag
   G4bool   useLightInjectorEvt; // L. Kneale injector with profile from db
   G4bool   useMPMTledEvt;
+  G4bool   useHepMC3Evt;
 
   std::fstream inputFile;
   std::fstream inputCosmicsFile;
@@ -120,6 +122,11 @@ private:
   G4String ibd_model;
     // IBD generator object
   WCSimIBDGen* IBDGen;
+
+  // HepMC3 reader
+  G4String hepmc3_filename;
+    // HepMC3 reader object
+  WCSimNuHepMC3Reader* hepmc3_reader;
 
   // Variables for Radioactive and Radon generators
   std::vector<struct radioactive_source> radioactive_sources;
