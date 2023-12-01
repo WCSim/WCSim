@@ -108,7 +108,14 @@ void WCSimWCHit::Print()
 
   G4cout << " Tube:"  << std::setw(4) << tubeID
 	 << " Tube type:"  << tubeType 
-	 << " Track:" << std::setw(6) << trackID 
+	 << " Track:" << std::setw(6); 
+  for (int i = 0; i < totalPe; i++) 
+  {
+    G4cout << trackID[i] << " ";
+    if ( i%10 == 0 && i != 0) 
+      G4cout << G4endl << "\t";
+  }
+  G4cout
 	 << " Pe:"    << totalPe
 	 << " Pos:"   << pos/cm << G4endl
 	 << "\tTime: "; 
