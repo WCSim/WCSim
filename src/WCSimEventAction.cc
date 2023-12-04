@@ -1248,6 +1248,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   //n_trajectories=50;    // existed in previous versions of the code.  It also
                           // makes the ROOT file smaller.
 
+  std::map<int,int> trajMap; // mapping of trackID and index
   for (int i=0; i <n_trajectories; i++)
   {
     WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[i];
@@ -1262,6 +1263,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
     if ( trj->GetParentID() == 0 ) primaryList.insert(trj->GetTrackID());
 
+    trajMap[trj->GetTrackID()] = i;
 
     // Process primary tracks or the secondaries from pizero or muons...
 
@@ -1441,12 +1443,25 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     TVector3 hit_photon_endpos;
     TVector3 hit_photon_startdir;
     TVector3 hit_photon_enddir;
+    int hit_photon_scatter;
+    std::vector<int> hit_photon_reflection;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
       WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(digi_tubeid -1));
 
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
+        int trackID = (*WCDC_hits)[idigi]->GetTrackID(id);
+        hit_photon_scatter = 0;
+        hit_photon_reflection = std::vector<int>();
+        if (trackID>0) // skip noise hit
+        {
+          WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[trajMap[trackID]];
+          hit_photon_scatter = trj->GetPhotonScatter();
+          hit_photon_reflection = trj->GetPhotonReflection();
+          //G4cout<<"Digi trackID = "<<trackID<<" "<<trajMap[trackID]<<" "<<trj->GetPhotonScatter()<<" "<<trj->GetPhotonReflection().size()<<G4endl;
+        }
+        wcsimrootevent->AddCherenkovHitHistory(hit_photon_scatter,hit_photon_reflection);
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
@@ -1783,6 +1798,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   //n_trajectories=50;    // existed in previous versions of the code.  It also
                           // makes the ROOT file smaller.
 
+  std::map<int,int> trajMap; // mapping of trackID and index
   for (int i=0; i <n_trajectories; i++)
   {
     WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[i];
@@ -1796,6 +1812,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     if ( trj->GetPDGEncoding() == 211 ) pionList.insert(trj->GetTrackID());
     if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
 
+    trajMap[trj->GetTrackID()] = i;
 
     // Process primary tracks or the secondaries from pizero or muons...
 
@@ -1973,12 +1990,25 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     TVector3 hit_photon_endpos;
     TVector3 hit_photon_startdir;
     TVector3 hit_photon_enddir;
+    int hit_photon_scatter;
+    std::vector<int> hit_photon_reflection;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
       WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(digi_tubeid -1));
 
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
+        int trackID = (*WCDC_hits)[idigi]->GetTrackID(id);
+        hit_photon_scatter = 0;
+        hit_photon_reflection = std::vector<int>();
+        if (trackID>0) // skip noise hit
+        {
+          WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[trajMap[trackID]];
+          hit_photon_scatter = trj->GetPhotonScatter();
+          hit_photon_reflection = trj->GetPhotonReflection();
+          //G4cout<<"Digi trackID = "<<trackID<<" "<<trajMap[trackID]<<" "<<trj->GetPhotonScatter()<<" "<<trj->GetPhotonReflection().size()<<G4endl;
+        }
+        wcsimrootevent->AddCherenkovHitHistory(hit_photon_scatter,hit_photon_reflection);
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
@@ -2331,7 +2361,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
 	thisNtuple->mPMTid[totNumHits] = digi_tubeid/nMpmtID_pmts;
  	thisNtuple->mPMT_pmtid[totNumHits] = (digi_tubeid%nMpmtID_pmts == 0 ? nMpmtID_pmts : digi_tubeid%nMpmtID_pmts ); // No. 1 to nID
 
-	thisNtuple->trackid[totNumHits] = (*WCDC_hits)[idigi]->GetTrackID();
+	thisNtuple->trackid[totNumHits] = (*WCDC_hits)[idigi]->GetTrackID(id);
 	G4ThreeVector pos = (*WCDC_hits)[idigi]->GetPos();       // Can also grab it from theDetector also.
 	thisNtuple->tube_x[totNumHits] = pos[0];                 //already in CLHEP::cm
 	thisNtuple->tube_y[totNumHits] = pos[1];
