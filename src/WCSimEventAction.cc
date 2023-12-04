@@ -106,6 +106,12 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   WCSimWCAddDarkNoise* WCDNM_OD;
   WCDNM_OD = new WCSimWCAddDarkNoise("WCDarkNoise_OD", detectorConstructor, "OD");
   DMman->AddNewModule(WCDNM_OD);
+
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
+  G4cout<<"Save photon hisotry in ROOT file"<<G4endl;
+#else
+  G4cout<<"DO NOT Save photon hisotry in ROOT file"<<G4endl;
+#endif
 }
 
 WCSimEventAction::~WCSimEventAction()
@@ -1443,17 +1449,16 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     TVector3 hit_photon_endpos;
     TVector3 hit_photon_startdir;
     TVector3 hit_photon_enddir;
-    int hit_photon_scatter;
-    std::vector<int> hit_photon_reflection;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
       WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(digi_tubeid -1));
 
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
         int trackID = (*WCDC_hits)[idigi]->GetTrackID(id);
-        hit_photon_scatter = 0;
-        hit_photon_reflection = std::vector<int>();
+        int hit_photon_scatter = 0;
+        std::vector<int> hit_photon_reflection = std::vector<int>();
         if (trackID>0) // skip noise hit
         {
           WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[trajMap[trackID]];
@@ -1462,6 +1467,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
           //G4cout<<"Digi trackID = "<<trackID<<" "<<trajMap[trackID]<<" "<<trj->GetPhotonScatter()<<" "<<trj->GetPhotonReflection().size()<<G4endl;
         }
         wcsimrootevent->AddCherenkovHitHistory(hit_photon_scatter,hit_photon_reflection);
+#endif
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
@@ -1990,17 +1996,16 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     TVector3 hit_photon_endpos;
     TVector3 hit_photon_startdir;
     TVector3 hit_photon_enddir;
-    int hit_photon_scatter;
-    std::vector<int> hit_photon_reflection;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
       WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(digi_tubeid -1));
 
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
         int trackID = (*WCDC_hits)[idigi]->GetTrackID(id);
-        hit_photon_scatter = 0;
-        hit_photon_reflection = std::vector<int>();
+        int hit_photon_scatter = 0;
+        std::vector<int> hit_photon_reflection = std::vector<int>();
         if (trackID>0) // skip noise hit
         {
           WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[trajMap[trackID]];
@@ -2009,6 +2014,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
           //G4cout<<"Digi trackID = "<<trackID<<" "<<trajMap[trackID]<<" "<<trj->GetPhotonScatter()<<" "<<trj->GetPhotonReflection().size()<<G4endl;
         }
         wcsimrootevent->AddCherenkovHitHistory(hit_photon_scatter,hit_photon_reflection);
+#endif
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);

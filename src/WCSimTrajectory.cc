@@ -77,6 +77,7 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
   pScatter = 0;
   pReflec.clear();
   fBoundary = NULL;
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
   // Only do search for optical photon
   if (PDGEncoding==0)
   {
@@ -90,6 +91,7 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
       }
     }
   }
+#endif
 }
 
 WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
@@ -122,9 +124,11 @@ WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
   boundaryTimes = right.boundaryTimes;
   boundaryTypes = right.boundaryTypes;
 
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
   pScatter = right.pScatter;
   pReflec = right.pReflec;
   fBoundary = right.fBoundary;
+#endif
 }
 
 WCSimTrajectory::~WCSimTrajectory()
@@ -262,6 +266,7 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
     }
   }
 
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
   // Add photon history
   if (PDGEncoding==0)
   {
@@ -293,6 +298,7 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
       }
     }
   }
+#endif
 }
 
 G4ParticleDefinition* WCSimTrajectory::GetParticleDefinition()
@@ -329,8 +335,10 @@ void WCSimTrajectory::MergeTrajectory(G4VTrajectory* secondTrajectory)
                      (seco->GetBoundaryTypes()).at(i));
   }
 
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
   AddPhotonScatter(seco->GetPhotonScatter());
   for (auto i: seco->GetPhotonReflection()) AddPhotonReflection(i);
+#endif
 }
 
 
