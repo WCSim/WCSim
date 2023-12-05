@@ -286,11 +286,11 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
         )
       {
         G4String thePostPVName = thePostPV->GetName();
-        G4int rType = 0;
-        if (thePostPVName.contains("BlackSheet")) rType = 1;
-        else if (thePostPVName.contains("reflector")) rType = 2;
-        else if (thePostPVName.contains("InteriorWCPMT")) rType = 3;
-        AddPhotonReflection(rType);
+        ReflectionSurface_t rType = kOtherS;
+        if (thePostPVName.contains("BlackSheet")) rType = kBlackSheetS;
+        else if (thePostPVName.contains("reflector")) rType = kReflectorS;
+        else if (thePostPVName.contains("InteriorWCPMT")) rType = kPhotocathodeS;
+        AddPhotonReflection((int)rType);
       }
     }
   }

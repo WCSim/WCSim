@@ -38,6 +38,13 @@ typedef enum EBoundaryType {
   kCave
 } BoundaryType_t;
 
+typedef enum EReflectionSurface {
+  kOtherS=0,
+  kBlackSheetS,
+  kReflectorS,
+  kPhotocathodeS
+} ReflectionSurface_t;
+
 class WCSimEnumerations
 {
 public:
@@ -46,6 +53,7 @@ public:
   static std::string EnumAsString(TriggerType_t t);
   static std::string EnumAsString(WCSimRandomGenerator_t r);
   static std::string EnumAsString(BoundaryType_t b);
+  static std::string EnumAsString(ReflectionSurface_t r);
   static TriggerType_t TriggerTypeFromString(std::string s);
 
 };
