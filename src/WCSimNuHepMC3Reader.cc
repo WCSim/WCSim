@@ -41,6 +41,10 @@ bool WCSimNuHepMC3Reader::ReadEvent() {
         HepMC3::Print::content(event);
     }
 
+    if (!GetParticles()) {
+        return false;
+    };
+
     events_parsed++;
     return true;
 }
