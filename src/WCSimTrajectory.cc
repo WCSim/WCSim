@@ -261,8 +261,6 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
       std::vector<G4float> bPs(3);
       bPs[0] = track->GetPosition().x(); bPs[1] = track->GetPosition().y(); bPs[2] = track->GetPosition().z();
       AddBoundaryPoint(bPs, track->GetKineticEnergy(), track->GetGlobalTime(), ty);
-      // G4cout<<"Step point "<<track->GetCurrentStepNumber () <<" "<<track->GetPosition().x()<<" "<<track->GetPosition().y()<<" "<<track->GetPosition().z()<<
-      //    " "<<track->GetKineticEnergy()<<" "<<thePrePV->GetName()<<" "<<thePostPV->GetName()<<G4endl;
     }
   }
 
@@ -282,7 +280,6 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
     }
     else
     {
-      //G4cout<<"Having optical boundary process "<<fBoundary->GetStatus()<<" "<<thePrePV->GetName()<<" "<<thePostPV->GetName()<<G4endl;
       if((fBoundary->GetStatus() >= FresnelReflection && fBoundary->GetStatus() <=BackScattering) || 
           (fBoundary->GetStatus() >= PolishedLumirrorAirReflection && fBoundary->GetStatus() <=GroundVM2000GlueReflection) ||
           fBoundary->GetStatus() == CoatedDielectricReflection
@@ -293,7 +290,6 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
         if (thePostPVName.contains("BlackSheet")) rType = 1;
         else if (thePostPVName.contains("reflector")) rType = 2;
         else if (thePostPVName.contains("InteriorWCPMT")) rType = 3;
-        //G4cout<<"Having optical reflection "<<thePrePV->GetName()<<" "<<thePostPV->GetName()<<" "<<rType<<G4endl;
         AddPhotonReflection(rType);
       }
     }

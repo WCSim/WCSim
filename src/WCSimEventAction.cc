@@ -107,11 +107,6 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   WCDNM_OD = new WCSimWCAddDarkNoise("WCDarkNoise_OD", detectorConstructor, "OD");
   DMman->AddNewModule(WCDNM_OD);
 
-#ifdef WCSIM_SAVE_PHOTON_HISTORY
-  G4cout<<"Save photon hisotry in ROOT file"<<G4endl;
-#else
-  G4cout<<"DO NOT Save photon hisotry in ROOT file"<<G4endl;
-#endif
 }
 
 WCSimEventAction::~WCSimEventAction()
@@ -1464,7 +1459,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
           WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[trajMap[trackID]];
           hit_photon_scatter = trj->GetPhotonScatter();
           hit_photon_reflection = trj->GetPhotonReflection();
-          //G4cout<<"Digi trackID = "<<trackID<<" "<<trajMap[trackID]<<" "<<trj->GetPhotonScatter()<<" "<<trj->GetPhotonReflection().size()<<G4endl;
         }
         wcsimrootevent->AddCherenkovHitHistory(hit_photon_scatter,hit_photon_reflection);
 #endif
@@ -2011,7 +2005,6 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
           WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[trajMap[trackID]];
           hit_photon_scatter = trj->GetPhotonScatter();
           hit_photon_reflection = trj->GetPhotonReflection();
-          //G4cout<<"Digi trackID = "<<trackID<<" "<<trajMap[trackID]<<" "<<trj->GetPhotonScatter()<<" "<<trj->GetPhotonReflection().size()<<G4endl;
         }
         wcsimrootevent->AddCherenkovHitHistory(hit_photon_scatter,hit_photon_reflection);
 #endif
