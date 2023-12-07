@@ -1307,7 +1307,7 @@ void WCSimDetectorConstruction::SetIWCDGeometry()
   WCBarrelNumPMTHorizontal = 30;
   WCBarrelNRings        = 10;
   WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal*1.2/1.1; // ad-hoc number to get 52 mPMTs on cap
-  WCCapEdgeLimit        = 3.3*m; 
+  WCCapEdgeLimit        = 3.1*m; 
   WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
   WCAddGd               = false;
 	hybrid = false;
@@ -1359,7 +1359,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   WCBarrelNumPMTHorizontal = 30;
   WCBarrelNRings        = 10;
   WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal*1.2/1.1; // ad-hoc number to get 52 mPMTs on cap
-  WCCapEdgeLimit        = 3.3*m; 
+  WCCapEdgeLimit        = 3.1*m; 
   WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
   WCAddGd               = false;
 	hybrid = false;
@@ -1390,7 +1390,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   WCPMTODperCellVertical   = 1;
 
   // OD Coverage on caps //
-  WCPMTODPercentCoverage   = 0.68; // in percent
+  WCPMTODPercentCoverage   = 0.76; // in percent
   // NOTE : If you set WCPMTODperCellHorizontal=0 and WCPMTODperCellVertical=0,
   // then method ComputeWCODPMT() inside ConstructCylinder will automatically compute
   // the nb of PMTs to put on barrel side according to WCPMTODPercentCoverage
