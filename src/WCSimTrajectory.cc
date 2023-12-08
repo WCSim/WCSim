@@ -30,7 +30,8 @@ WCSimTrajectory::WCSimTrajectory()
   boundaryTimes.clear();
   boundaryTypes.clear();
 
-  pScatter = 0;
+  pRayScatter = 0;
+  pMieScatter = 0;
   pReflec.clear();
 
   fBoundary = NULL;
@@ -74,7 +75,8 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
   boundaryTimes.clear();
   boundaryTypes.clear();
 
-  pScatter = 0;
+  pRayScatter = 0;
+  pMieScatter = 0;
   pReflec.clear();
   fBoundary = NULL;
 #ifdef WCSIM_SAVE_PHOTON_HISTORY
@@ -125,7 +127,8 @@ WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
   boundaryTypes = right.boundaryTypes;
 
 #ifdef WCSIM_SAVE_PHOTON_HISTORY
-  pScatter = right.pScatter;
+  pRayScatter = right.pRayScatter;
+  pMieScatter = right.pMieScatter;
   pReflec = right.pReflec;
   fBoundary = right.fBoundary;
 #endif
@@ -272,11 +275,14 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
     //G4cout<<"Having optical photon in AppendStep "<<pds->GetProcessName()<<G4endl;
     if ( pds->GetProcessType() == fOptical )
     {
-      if ( pds->GetProcessSubType() == fOpRayleigh || pds->GetProcessSubType() == fOpMieHG )
+      if ( pds->GetProcessSubType() == fOpRayleigh )
       {
-        AddPhotonScatter(1);
+        AddPhotonRayScatter(1);
       }
-  
+      else if ( pds->GetProcessSubType() == fOpMieHG )
+      {
+        AddPhotonMieScatter(1);
+      }
     }
     else
     {
@@ -290,7 +296,7 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
         if (thePostPVName.contains("BlackSheet")) rType = kBlackSheetS;
         else if (thePostPVName.contains("reflector")) rType = kReflectorS;
         else if (thePostPVName.contains("InteriorWCPMT")) rType = kPhotocathodeS;
-        AddPhotonReflection((int)rType);
+        AddPhotonReflection(rType);
       }
     }
   }
@@ -332,7 +338,8 @@ void WCSimTrajectory::MergeTrajectory(G4VTrajectory* secondTrajectory)
   }
 
 #ifdef WCSIM_SAVE_PHOTON_HISTORY
-  AddPhotonScatter(seco->GetPhotonScatter());
+  AddPhotonRayScatter(seco->GetPhotonRayScatter());
+  AddPhotonMieScatter(seco->GetPhotonMieScatter());
   for (auto i: seco->GetPhotonReflection()) AddPhotonReflection(i);
 #endif
 }

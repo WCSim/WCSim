@@ -170,17 +170,19 @@ class WCSimRootCherenkovHitHistory : public TObject {
 
 private:
   
-  Int_t   fScat;
-  std::vector<Int_t> fReflec;
+  Int_t   fNRayScat;
+  Int_t   fNMieScat;
+  std::vector<ReflectionSurface_t> fReflec;
 
 public:
   WCSimRootCherenkovHitHistory() {}
-  WCSimRootCherenkovHitHistory(Int_t scat, std::vector<Int_t> refle);
+  WCSimRootCherenkovHitHistory(Int_t nRayScat, Int_t nMieScat, std::vector<ReflectionSurface_t> refle);
   virtual ~WCSimRootCherenkovHitHistory() { }
   bool CompareAllVariables(const WCSimRootCherenkovHitHistory * c) const;
 
-  Int_t     GetScatter() const { return fScat; }
-  std::vector<Int_t> GetReflection() const { return fReflec; }
+  Int_t     GetNRayScatters() const { return fNRayScat; } // Get the number of Rayleigh scattering a photon experienced
+  Int_t     GetNMieScatters() const { return fNMieScat; } // Get the number of Mie scattering a photon experienced
+  std::vector<ReflectionSurface_t> GetReflectionSurfaces() const { return fReflec; } //  Get the vector of reflection surfaces a photon experienced
 
   ClassDef(WCSimRootCherenkovHitHistory,1)
 };
@@ -504,8 +506,9 @@ public:
 					   std::vector<TVector3>  photonEndPos,
 					   std::vector<TVector3>  photonStartDir,
 					   std::vector<TVector3>  photonEndDir);
-  WCSimRootCherenkovHitHistory   *AddCherenkovHitHistory(Int_t scat,
-					   std::vector<Int_t> reflec);
+  WCSimRootCherenkovHitHistory   *AddCherenkovHitHistory(Int_t nRayScat,
+             Int_t nMieScat,
+					   std::vector<ReflectionSurface_t> reflec);
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
   TClonesArray        *GetCherenkovHitHistories() const {return fCherenkovHitHistories;}
