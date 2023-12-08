@@ -265,8 +265,8 @@ int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
 	      if(thehithistoryobject)
         {
           // Number of scattering, and types of reflection surface (WCSimEnumerations)
-          cout<<" Scattering: "<<thehithistoryobject->GetScatter()<<", Reflection: ";
-          for (auto r: thehithistoryobject->GetReflection()) cout<<r<<" ";
+          cout<<" Rayleigh Scattering: "<<thehithistoryobject->GetNRayScatters()<<", Mie Scattering: "<<thehithistoryobject->GetNMieScatters()<<", Reflection: ";
+          for (auto r: thehithistoryobject->GetReflectionSurfaces()) cout<<WCSimEnumerations::EnumAsString(r)<<" ";
           cout<<";";
 	      }
 #endif
