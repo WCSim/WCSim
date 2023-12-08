@@ -65,18 +65,23 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
   // and store them in output file. Difficult to control them all, so best only
   // use for visualization, not for storing in ROOT.
 #ifndef WCSIM_SAVE_PHOTON_HISTORY
-  if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()
-       || G4UniformRand() < percentageOfCherenkovPhotonsToDraw/100. )
-    {
+  bool SAVE_PHOTON_HISTORY = false;
+#else
+  bool SAVE_PHOTON_HISTORY = true;
 #endif
+//#ifndef WCSIM_SAVE_PHOTON_HISTORY
+  if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()
+       || G4UniformRand() < percentageOfCherenkovPhotonsToDraw/100. || SAVE_PHOTON_HISTORY )
+    {
+//#endif
       WCSimTrajectory* thisTrajectory = new WCSimTrajectory(aTrack);
       fpTrackingManager->SetTrajectory(thisTrajectory);
       fpTrackingManager->SetStoreTrajectory(true);
-#ifndef WCSIM_SAVE_PHOTON_HISTORY
+//#ifndef WCSIM_SAVE_PHOTON_HISTORY
     }
   else 
     fpTrackingManager->SetStoreTrajectory(false);
-#endif
+//#endif
 	
   WCSimPrimaryGeneratorAction *primaryGenerator = (WCSimPrimaryGeneratorAction *) (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
   if(!primaryGenerator->IsConversionFound()) {
