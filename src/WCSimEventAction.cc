@@ -366,7 +366,6 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
       const G4ThreeVector &pos = detectorConstructor->GetTubeTransform((*pmtIt)->Get_tubeid()).getTranslation();
       (*WCHC)[hitIndex]->SetTubeID((*pmtIt)->Get_tubeid());
-      (*WCHC)[hitIndex]->SetTrackID(0);
       (*WCHC)[hitIndex]->SetEdep(0.);
       (*WCHC)[hitIndex]->SetPos(pos);
       (*WCHC)[hitIndex]->SetRot(detectorConstructor->GetTubeTransform((*pmtIt)->Get_tubeid()).getRotation());
@@ -376,6 +375,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 	G4float time = G4RandGauss::shoot(0.0,10.);
 	G4ThreeVector dir(0, 0, 0);
 	(*WCHC)[hitIndex]->AddPe(time);
+  (*WCHC)[hitIndex]->AddTrackID(0);
 	(*WCHC)[hitIndex]->AddParentID(0); // Make parent a geantino (whatever that is)
 	(*WCHC)[hitIndex]->AddPhotonStartPos(pos);
 	(*WCHC)[hitIndex]->AddPhotonEndPos(pos);

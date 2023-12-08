@@ -31,12 +31,12 @@ class WCSimWCHit : public G4VHit
  public:
   
   void SetTubeID       (G4int tube)                 { tubeID = tube; };
-  void SetTrackID      (G4int track)                { trackID.push_back(track); };
   void SetEdep         (G4double de)                { edep = de; };
   void SetPos          (G4ThreeVector xyz)          { pos = xyz; };
   void SetOrientation  (G4ThreeVector xyz)          { orient = xyz; };
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
+  void AddTrackID      (G4int track)                { trackID.push_back(track); };
   void AddParentID     (G4int myParentSavedTrackID) { parentSavedTrackID.push_back(myParentSavedTrackID); }
   void AddPhotonStartTime (G4float photStartTime) { photonStartTime.push_back(photStartTime); }
   void AddPhotonStartPos  (const G4ThreeVector &photStartPos) { photonStartPos.push_back(photStartPos); }
