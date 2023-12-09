@@ -47,6 +47,11 @@ WCSimTrackingAction::WCSimTrackingAction()
   ParticleList.insert(2112);
 
   percentageOfCherenkovPhotonsToDraw = 0.0;
+#ifndef WCSIM_SAVE_PHOTON_HISTORY
+  SAVE_PHOTON_HISTORY = false;
+#else
+  SAVE_PHOTON_HISTORY = true;
+#endif
 
   messenger = new WCSimTrackingMessenger(this);
 
@@ -64,24 +69,15 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
   // if larger than zero, will keep trajectories of many secondaries as well
   // and store them in output file. Difficult to control them all, so best only
   // use for visualization, not for storing in ROOT.
-#ifndef WCSIM_SAVE_PHOTON_HISTORY
-  bool SAVE_PHOTON_HISTORY = false;
-#else
-  bool SAVE_PHOTON_HISTORY = true;
-#endif
-//#ifndef WCSIM_SAVE_PHOTON_HISTORY
   if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()
        || G4UniformRand() < percentageOfCherenkovPhotonsToDraw/100. || SAVE_PHOTON_HISTORY )
     {
-//#endif
       WCSimTrajectory* thisTrajectory = new WCSimTrajectory(aTrack);
       fpTrackingManager->SetTrajectory(thisTrajectory);
       fpTrackingManager->SetStoreTrajectory(true);
-//#ifndef WCSIM_SAVE_PHOTON_HISTORY
     }
   else 
     fpTrackingManager->SetStoreTrajectory(false);
-//#endif
 	
   WCSimPrimaryGeneratorAction *primaryGenerator = (WCSimPrimaryGeneratorAction *) (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
   if(!primaryGenerator->IsConversionFound()) {
