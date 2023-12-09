@@ -1,6 +1,15 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags.
 
 *************************************************************
+07/12/2023: Notes for v1.12.5
+*************************************************************
+
+Minor release to update the reference validation plots after #396
+
+Bug fix
+* Pull request [WCSim/WCSim #396 @kmtsui] Fix PMT overlap in IWCD geom
+
+*************************************************************
 29/11/2023: Notes for v1.12.4
 *************************************************************
 
