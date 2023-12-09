@@ -10,6 +10,7 @@
 #include "G4ParticleDefinition.hh"
 #include "G4IonTable.hh"
 #include "G4ThreeVector.hh"
+#include "G4Vector3D.hh"
 #include "G4EventManager.hh"
 #include "globals.hh"
 #include <G4Types.hh>
@@ -111,6 +112,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   useRadioactiveEvt   = false;
   useRadonEvt         = false;
   useLightInjectorEvt = false;
+  useMPMTledEvt       = false;
 
   //rootracker related variables
   fEvNum = 0;
@@ -139,6 +141,12 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   injectorIdx = "";
   injectorFilename = "";
   photonMode = 0;
+
+  mPMTLEDId1 = 1;
+  mPMTLEDId2 = 0;
+  mPMTLED_dTheta = 0.;
+  mPMTLED_dPhi = 0.;
+  opticalphoton_pd = particleTable->FindParticle("opticalphoton");
 
   // Time units for vertices
   fTimeUnit=CLHEP::nanosecond;
@@ -808,7 +816,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4ThreeVector dir  = P.unit();
       G4double E         = std::sqrt((P.dot(P))+(mass*mass));
       G4cout << " GPS primary vertex (" << vtx.x() << ", " << vtx.y() << ", " << vtx.z() << "), dir ("
-	     << dir.x() << ", " << dir.y() << ", " << dir.z() << ") m " << m << " E "<< E << " pdg " << pdg << G4endl;
+	     << dir.x() << ", " << dir.y() << ", " << dir.z() << ") m " << mass << " E "<< E << " pdg " << pdg << G4endl;
 
       SetVtx(vtx);
       SetBeamEnergy(E);
@@ -864,7 +872,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                                                                    conversionProductMomentum[1].getZ());
           anEvent->GetPrimaryVertex(0)->SetPrimary(secondProduct);
       }	  
-    }
+    }  
   else if (useRadonEvt)
     { //G. Pronost: Add Radon (adaptation of Radioactive event)
 
@@ -886,8 +894,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       std::vector<struct radioactive_source>::iterator it;
 
       G4String IsotopeName = "Rn222";
-
-      /*
       G4double IsotopeActivity = myRn222Generator->GetMeanActivity() * 1e-3; // mBq to Bq
       G4double iEventAvg = IsotopeActivity * GetRadioactiveTimeWindow();
 
@@ -898,9 +904,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       if ( n_vertices < 1 ) {
       	 n_vertices = 1;
       }
-      */
-      // 20201009: WCSim hybrid doesn't support multiple Primary vertex
-      int n_vertices = 1;
 
       for(int u=0; u<n_vertices; u++){
 
@@ -930,9 +933,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       // this will generate several primary vertices
       MyGPS->GeneratePrimaryVertex(anEvent);
 
-      // 20201009: WCSim hybrid doesn't support multiple Primary vertex
-      number_of_sources = 1;
-      //SetNvtxs(number_of_sources);
+      SetNvtxs(number_of_sources);
       for( G4int u=0; u<number_of_sources; u++){
 	targetpdgs[u] = 2212; //ie. proton
 
@@ -945,16 +946,10 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 	//G4cout << " vertex " << u << " of " << number_of_sources << " (" << vtx.x() << ", " << vtx.y() << ", " << vtx.z() << ") with pdg: " << pdg << G4endl;
 
-        // 20201009: WCSim hybrid doesn't support multiple Primary vertex
-      	SetVtx(vtx);
-      	SetBeamEnergy(E);
-      	SetBeamPDG(pdg);
-      	/*
       	SetVtxs(u,vtx);
       	SetBeamEnergy(E,u);
       	//       SetBeamDir(dir);
       	SetBeamPDG(pdg,u);
-      	*/
       }
 
     } else if (useIBDEvt) {
@@ -964,8 +959,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         // This reads the spectrum once and populates vector attributes of the
         //   WCSimIBDGen object with the energy and flux
         if(!IBDGen){
-            IBDGen = new WCSimIBDGen(myDetector);
-            IBDGen->ReadSpectrumFromDB(ibd_database, ibd_model);
+            IBDGen = new WCSimIBDGen(ibd_database, ibd_model, myDetector);
         }
 
         // Event variables
@@ -1398,7 +1392,151 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
 
     }
-  
+  else if (useMPMTledEvt)
+    {
+      // Check configuration for mPMT
+      bool usePMT1 = true;
+      G4int nID_mPMTs = 0;
+      const int LEDID_max = 12;
+      if (!myDetector->GetHybridPMT())
+      {
+        if (myDetector->GetmPMT_nID()==1)
+        {
+          G4cout<<" Use mPMT-LED generator for non-mPMT >> Exit !!"<<G4endl;
+          exit(-1);
+        }
+        else
+        {
+          G4cout<<" Use mPMT-LED generator for PMT type 1"<<G4endl;
+          nID_mPMTs = myDetector->GetTotalNumPmts();
+        }
+      }
+      else
+      {
+        if (myDetector->GetmPMT_nID()>1)
+        {
+          G4cout<<" Use mPMT-LED generator for PMT type 1"<<G4endl;
+          nID_mPMTs = myDetector->GetTotalNumPmts();
+        }
+        else if (myDetector->GetmPMT_nID2()>1)
+        {
+          G4cout<<" Use mPMT-LED generator for PMT type 2"<<G4endl;
+          usePMT1 = false;
+          nID_mPMTs = myDetector->GetTotalNumPmts2();
+        }
+        else
+        {
+          G4cout<<" Use mPMT-LED generator for non-mPMT >> Exit !!"<<G4endl;
+          exit(-1);
+        }
+      }
+
+      if (mPMTLEDId1 > myDetector->GetTotalNum_mPmts())
+      {
+        G4cout<<" mPMT id > TotalNum_mPmts >>  Exit !! "<<G4endl;
+        exit(-1);
+      }
+
+      if (mPMTLEDId2 >= LEDID_max)
+      {
+        G4cout<<" LED id >= LEDID_max >>  Exit !! "<<G4endl;
+        exit(-1);
+      }
+
+      // Get the center PMT and 1st PMT to define local axes
+      G4int centerPMTId = 0;
+      G4int firstPMTId  = 0;
+      static std::map<int, std::pair< int, int > > mpmt_id_map = usePMT1 ? myDetector->GetTube_mPMTIDMap() :
+                                                                           myDetector->GetTube_mPMTIDMap2();
+      for (G4int i=1;i<=nID_mPMTs;i++)
+      {
+        if (mpmt_id_map[i].first==mPMTLEDId1)
+        {
+          if (mpmt_id_map[i].second==1) centerPMTId = i;
+          else if (mpmt_id_map[i].second==2) firstPMTId = i;
+        }
+      }
+      if (centerPMTId==0 || firstPMTId==0)
+      {
+        G4cout<<" Cannot locate mPMT id = "<< mPMTLEDId1 << " --> Exit !! "<<G4endl;
+        exit(-1);
+      }
+      G4Transform3D tubeTransformCenter = usePMT1 ? myDetector->GetTubeTransform(centerPMTId) :
+                                                    myDetector->GetTubeTransform2(centerPMTId);
+      G4Transform3D tubeTransformFirst  = usePMT1 ? myDetector->GetTubeTransform(firstPMTId) :
+                                                    myDetector->GetTubeTransform2(firstPMTId);
+      G4Vector3D nullOrient = G4Vector3D(0,0,1);
+      G4Vector3D pmtOrientationCenter = tubeTransformCenter * nullOrient;
+      G4Vector3D pmtOrientationFirst = tubeTransformFirst * nullOrient;
+      G4Vector3D z_axis = pmtOrientationCenter.unit();;
+      G4Vector3D y_axis = z_axis.cross(pmtOrientationFirst).unit();
+      G4Vector3D x_axis = y_axis.cross(z_axis).unit();
+      G4Vector3D posCenter(tubeTransformCenter.getTranslation().getX(),
+                           tubeTransformCenter.getTranslation().getY(),
+                           tubeTransformCenter.getTranslation().getZ());
+      G4Vector3D posFirst(tubeTransformFirst.getTranslation().getX(),
+                          tubeTransformFirst.getTranslation().getY(),
+                          tubeTransformFirst.getTranslation().getZ());
+      G4double distFromOriginToPMT = (posCenter-posFirst).mag()/(pmtOrientationCenter-pmtOrientationFirst).mag();
+      G4Vector3D pmtOrigin = posCenter - distFromOriginToPMT*pmtOrientationCenter;
+
+      // Predefined LED positions on the mPMT matrix
+      G4double LEDth, LEDphi;
+      if (mPMTLEDId2<3)
+      {
+        LEDth = 0.17; 
+        LEDphi = CLHEP::pi/6 + CLHEP::pi*2/3*mPMTLEDId2; 
+      }
+      else if (mPMTLEDId2<6)
+      {
+        LEDth = 0.388;
+        LEDphi = CLHEP::pi/2 + (mPMTLEDId2-3)*CLHEP::pi*2/3;
+      }
+      else
+      {
+        LEDth = 0.707;
+        LEDphi = CLHEP::pi/12 + (mPMTLEDId2-6)*CLHEP::pi/3;
+      }
+
+      G4double distToPMT = 5.8*cm; // ad-hoc value to start photons in acrylic
+      G4Vector3D LEDdir = sin(LEDth)*(cos(LEDphi)*x_axis+sin(LEDphi)*y_axis)+cos(LEDth)*z_axis;
+      G4double xpos = pmtOrigin.x() + LEDdir.x()*(distFromOriginToPMT+distToPMT);
+      G4double ypos = pmtOrigin.y() + LEDdir.y()*(distFromOriginToPMT+distToPMT);
+      G4double zpos = pmtOrigin.z() + LEDdir.z()*(distFromOriginToPMT+distToPMT);
+      // Change LEDdir with specified angle
+      LEDdir = sin(LEDth+mPMTLED_dTheta)*(cos(LEDphi+mPMTLED_dPhi)*x_axis+sin(LEDphi+mPMTLED_dPhi)*y_axis)+cos(LEDth+mPMTLED_dTheta)*z_axis;
+
+      MyGPS->SetParticleDefinition(opticalphoton_pd);
+      MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
+
+      G4ThreeVector position(xpos,ypos,zpos);
+      MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point"); // may need a more realistic shape
+      MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(position);
+
+      // Point the source in the PMT direction
+      G4ThreeVector dirz(-LEDdir.x(),-LEDdir.y(),-LEDdir.z()); // local z axis in source frame
+      G4ThreeVector dirx = dirz.orthogonal();
+      G4ThreeVector diry = dirz.cross(dirx);
+      MyGPS->GetCurrentSource()->GetAngDist()->DefineAngRefAxes("angref1",dirx);
+      MyGPS->GetCurrentSource()->GetAngDist()->DefineAngRefAxes("angref2",diry);
+
+      MyGPS->GeneratePrimaryVertex(anEvent);
+
+      // Save LED direction to vtx
+      G4ThreeVector P   =-dirz*anEvent->GetPrimaryVertex()->GetPrimary()->GetTotalEnergy();
+      G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
+      G4double mass     =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass(); // will be 0 for photon anyway, but for other gps particles not
+      G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
+
+      G4ThreeVector dir  = P.unit();
+      G4double E         = std::sqrt((P.dot(P))+(mass*mass));
+
+      SetVtx(vtx);
+      SetBeamEnergy(E);
+      SetBeamDir(dir);
+      SetBeamPDG(pdg);
+
+    }
 }
 
 void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
@@ -1426,6 +1564,8 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
     return "rooTrackerEvt";
   else if(useCosmics)
     return "cosmics";
+  else if (useMPMTledEvt)
+    return "mPMT-LED";
   return "";
 }
 

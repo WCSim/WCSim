@@ -176,9 +176,11 @@ public:
   // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
   static G4Transform3D GetTubeTransform(int tubeNo){return tubeIDMap[tubeNo];}
+  static std::map<int, std::pair< int, int > > GetTube_mPMTIDMap(){return mPMTIDMap;}
   //For the hybrid configuration
   static G4int GetTubeID2(std::string tubeTag){return tubeLocationMap2[tubeTag];}
   static G4Transform3D GetTubeTransform2(int tubeNo){return tubeIDMap2[tubeNo];}
+  static std::map<int, std::pair< int, int > > GetTube_mPMTIDMap2(){return mPMTIDMap2;}
   // OD PMTs
   static G4int GetODTubeID(std::string tubeTag){return ODtubeLocationMap[tubeTag];}
   static G4Transform3D GetODTubeTransform(int tubeNo){return ODtubeIDMap[tubeNo];}
@@ -735,11 +737,15 @@ private:
   G4bool useReplica, readFromTable;
   G4double pmtPosVar;
   G4double topRadiusChange, midRadiusChange, botRadiusChange;
+  G4int nPMTsRead;
   std::vector<G4ThreeVector> pmtPos, pmtDir;
   std::vector<G4bool> pmtUse;
+  std::vector<G4int> pmtType;
+  std::vector<G4int> pmtSection; // 0 = barrel, 1 = top cap, 2 = top border ring, 3 = bottom cap, 4 = bottom border ring
+  std::vector<G4int> pmtmPMTId;
+  std::vector<G4double> pmtRotaton;
   std::string pmtPositionFile;
   void ReadGeometryTableFromFile();
-  G4int PMTID;
 
   // *** Begin egg-shaped HyperK Geometry ***
 

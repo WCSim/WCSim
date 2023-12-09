@@ -134,7 +134,7 @@ class WCSimRootCherenkovHitTime : public TObject {
 private:
   // See jhfNtuple.h for the meaning of these data members:
   Double_t fTruetime;
-  Int_t   fPrimaryParentID;
+  Int_t   fParentSavedTrackID;
   Float_t fPhotonStartTime;
   Float_t fPhotonStartPos[3];
   Float_t fPhotonEndPos[3];
@@ -144,7 +144,7 @@ private:
 public:
   WCSimRootCherenkovHitTime() {}
   WCSimRootCherenkovHitTime(Double_t truetime,
-			    Int_t   primaryParentID,
+			    Int_t   parentSavedTrackID,
 			    Float_t photonStartTime,
 			    Float_t photonStartPos[3],
 			    Float_t photonEndPos[3],
@@ -154,7 +154,8 @@ public:
   bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 
   Double_t  GetTruetime() const { return fTruetime;}
-  Int_t     GetParentID() const { return fPrimaryParentID;}
+  Int_t     GetParentID() const { return fParentSavedTrackID;} // deprecated
+  Int_t     GetParentSavedTrackID() const { return fParentSavedTrackID;}
   Float_t   GetPhotonStartTime() const { return fPhotonStartTime; }
   Float_t   GetPhotonStartPos(int i) const { return (i<3) ? fPhotonStartPos[i] : 0; }
   Float_t   GetPhotonEndPos(int i) const { return (i<3) ? fPhotonEndPos[i] : 0; }

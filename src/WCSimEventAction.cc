@@ -1265,7 +1265,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
     // Process primary tracks or the secondaries from pizero or muons...
 
-    if ( trj->GetSaveFlag() )
+    if ( trj->GetSaveFlag() || trj->GetProducesHit() )
     {
       // initial point of the trajectory
       G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
@@ -1330,40 +1330,36 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       }
 
       // Add the track to the TClonesArray, watching out for times
-      if ( trj->GetCreatorProcessName()=="nCapture" ?
-           detectorConstructor->SaveCaptureInfo() :
-           ! ( (ipnu==22)&&(parentType==999)) ) {
-          int choose_event = 0;
+      int choose_event = 0;
 
-          if (ngates) {
+      if (ngates) {
 
-              if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
-              if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
-              if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
+          if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
+          if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
+          if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
 
-          }
-
-          wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
-          wcsimrootevent->AddTrack(ipnu,
-                                   flag,
-                                   mass,
-                                   mommag,
-                                   energy,
-                                   startvol,
-                                   stopvol,
-                                   dir,
-                                   pdir,
-                                   stop,
-                                   start,
-                                   parentType,
-                                   ttime,
-                                   id,
-                                   idPrnt,
-                                   trj->GetBoundaryPoints(),
-                                   trj->GetBoundaryKEs(),
-                                   trj->GetBoundaryTimes(),
-                                   trj->GetBoundaryTypesAsInt());
       }
+
+      wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
+      wcsimrootevent->AddTrack(ipnu,
+                               flag,
+                               mass,
+                               mommag,
+                               energy,
+                               startvol,
+                               stopvol,
+                               dir,
+                               pdir,
+                               stop,
+                               start,
+                               parentType,
+                               ttime,
+                               id,
+                               idPrnt,
+                               trj->GetBoundaryPoints(),
+                               trj->GetBoundaryKEs(),
+                               trj->GetBoundaryTimes(),
+                               trj->GetBoundaryTypesAsInt());
 
 
       if (detectorConstructor->SavePi0Info())
@@ -1429,7 +1425,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 #endif
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
     std::vector<double> truetime, smeartime;
-    std::vector<int>   primaryParentID;
+    std::vector<int>   parentSavedTrackID;
     std::vector<float> photonStartTime;
     std::vector<TVector3> photonStartPos;
     std::vector<TVector3> photonEndPos;
@@ -1471,7 +1467,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[1],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[2]);
 	truetime.push_back(hit_time_true);
-	primaryParentID.push_back(hit_parentid);
+	parentSavedTrackID.push_back(hit_parentid);
 	photonStartTime.push_back(hit_photon_starttime);
 	photonStartPos.push_back(hit_photon_startpos);
 	photonEndPos.push_back(hit_photon_endpos);
@@ -1486,11 +1482,11 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       if(digi_tubeid < NPMTS_VERBOSE || digi_tubeid == VERBOSE_PMT) {
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
-	       << " with truetime:smeartime:primaryparentID";
+	       << " with truetime:smeartime:parentSavedTrackID";
 	for(size_t id = 0; id < truetime.size(); id++) {
 	  G4cout << " " << truetime[id]
 		 << "\t" << smeartime[id]
-		 << "\t" << primaryParentID[id] << G4endl;
+		 << "\t" << parentSavedTrackID[id] << G4endl;
 	}//id
 	G4cout << G4endl;
       }
@@ -1499,7 +1495,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				      pmt->Get_mPMTid(),
 				      pmt->Get_mPMT_pmtid(),
 				      truetime,
-				      primaryParentID,
+				      parentSavedTrackID,
 				      photonStartTime,
 				      photonStartPos,
 				      photonEndPos,
@@ -1507,7 +1503,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				      photonEndDir);
       smeartime.clear();
       truetime.clear();
-      primaryParentID.clear();
+      parentSavedTrackID.clear();
       photonStartTime.clear();
       photonStartPos.clear();
       photonEndPos.clear();
@@ -1803,7 +1799,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 
     // Process primary tracks or the secondaries from pizero or muons...
 
-    if ( trj->GetSaveFlag() )
+    if ( trj->GetSaveFlag() || trj->GetProducesHit() )
     {
       // initial point of the trajectory
       G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
@@ -1866,41 +1862,36 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       }
 
       // Add the track to the TClonesArray, watching out for times
-      if ( trj->GetCreatorProcessName()=="nCapture" ?
-           detectorConstructor->SaveCaptureInfo() :
-           ! ( (ipnu==22)&&(parentType==999)) ) {
-          int choose_event = 0;
+      int choose_event = 0;
 
-          if (ngates) {
+      if (ngates) {
 
-              if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
-              if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
-              if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
+          if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
+          if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
+          if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
 
-          }
-
-          wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
-          wcsimrootevent->AddTrack(ipnu,
-                                   flag,
-                                   mass,
-                                   mommag,
-                                   energy,
-                                   startvol,
-                                   stopvol,
-                                   dir,
-                                   pdir,
-                                   stop,
-                                   start,
-                                   parentType,
-                                   ttime,
-                                   id,
-                                   idPrnt,
-                                   trj->GetBoundaryPoints(),
-                                   trj->GetBoundaryKEs(),
-                                   trj->GetBoundaryTimes(),
-                                   trj->GetBoundaryTypesAsInt());
       }
 
+      wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
+      wcsimrootevent->AddTrack(ipnu,
+                               flag,
+                               mass,
+                               mommag,
+                               energy,
+                               startvol,
+                               stopvol,
+                               dir,
+                               pdir,
+                               stop,
+                               start,
+                               parentType,
+                               ttime,
+                               id,
+                               idPrnt,
+                               trj->GetBoundaryPoints(),
+                               trj->GetBoundaryKEs(),
+                               trj->GetBoundaryTimes(),
+                               trj->GetBoundaryTypesAsInt());
 
       if (detectorConstructor->SavePi0Info())
       {
@@ -1966,7 +1957,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 #endif
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
     std::vector<double> truetime, smeartime;
-    std::vector<int>   primaryParentID;
+    std::vector<int>   parentSavedTrackID;
     std::vector<float> photonStartTime;
     std::vector<TVector3> photonStartPos;
     std::vector<TVector3> photonEndPos;
@@ -2008,7 +1999,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[1],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[2]);
 	truetime.push_back(hit_time_true);
-	primaryParentID.push_back(hit_parentid);
+	parentSavedTrackID.push_back(hit_parentid);
 	photonStartTime.push_back(hit_photon_starttime);
 	photonStartPos.push_back(hit_photon_startpos);
 	photonEndPos.push_back(hit_photon_endpos);
@@ -2023,11 +2014,11 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       if(digi_tubeid < NPMTS_VERBOSE) {
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
-	       << " with truetime:smeartime:primaryparentID";
+	       << " with truetime:smeartime:parentSavedTrackID";
 	for(size_t id = 0; id < truetime.size(); id++) {
 	  G4cout << " " << truetime[id]
 		 << ":" << smeartime[id]
-		 << ":" << primaryParentID[id];
+		 << ":" << parentSavedTrackID[id];
 	}//id
 	G4cout << G4endl;
       }
@@ -2036,7 +2027,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				      pmt->Get_mPMTid(),
 				      pmt->Get_mPMT_pmtid(),
 				      truetime,
-				      primaryParentID,
+				      parentSavedTrackID,
 				      photonStartTime,
 				      photonStartPos,
 				      photonEndPos,
@@ -2044,7 +2035,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				      photonEndDir);
       smeartime.clear();
       truetime.clear();
-      primaryParentID.clear();
+      parentSavedTrackID.clear();
       photonStartTime.clear();
       photonStartPos.clear();
       photonEndPos.clear();
@@ -2223,7 +2214,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
       // Particles: pi0, pi+-, kaons, NEW (protons and neutrons)
       // Gamma > 50 MeV, new mu+- > CherenkovThreshold
       // Add later?: https://twiki.cern.ch/twiki/bin/view/Geant4/LoweAtomicDeexcitation (neutron capture and O16)
-      if(trj->GetSaveFlag() ){
+      if( trj->GetSaveFlag() || trj->GetProducesHit() ){
 	// initial point of the trajectory
 	G4TrajectoryPoint* init_pt =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
 
