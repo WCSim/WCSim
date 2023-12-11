@@ -151,7 +151,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 
   // pass parent trajectory to children
   G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
-  WCSimTrajectory *currentTrajectory = (WCSimTrajectory*)fpTrackin0gManager->GimmeTrajectory();
+  WCSimTrajectory *currentTrajectory = (WCSimTrajectory*)fpTrackingManager->GimmeTrajectory();
   if(currentTrajectory && !anInfo->GetMyTrajectory())
     anInfo->SetMyTrajectory(currentTrajectory);
   if(secondaries)
