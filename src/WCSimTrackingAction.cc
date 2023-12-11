@@ -185,7 +185,11 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     currentTrajectory->SetStoppingPoint(currentPosition);
     currentTrajectory->SetStoppingVolume(currentVolume);
 
-    currentTrajectory->SetSaveFlag(anInfo->isSaved());// mark it for WCSimEventAction ;
+    // Do not save photon tracks in root output when SAVE_PHOTON_HISTORY is on
+    if (!SAVE_PHOTON_HISTORY || aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()) 
+      currentTrajectory->SetSaveFlag(anInfo->isSaved());// mark it for WCSimEventAction ;
+    else 
+      currentTrajectory->SetSaveFlag(false);
     if (aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition())
       // don't save the optical photon tracks themselves simply when they produce a hit, since that info is already saved in WCSimRootCherenkovHitTime
       // optical photon tracks can still be saved if wanted by explicitly adding appropriate entries to the ParticleList or ProcessList via mac file commands
