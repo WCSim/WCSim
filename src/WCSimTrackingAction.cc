@@ -149,7 +149,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 
   // pass parent trajectory to children
   G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
-  WCSimTrajectory *currentTrajectory = NULL;
+  WCSimTrajectory *currentTrajectory = 0;
   // Do not pass photon trajectory to children at all when SAVE_PHOTON_HISTORY is on
   // Otherwise photon tracks with e.g. WLS in OD PMT will be saved in root output
   if (!SAVE_PHOTON_HISTORY || aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition())
