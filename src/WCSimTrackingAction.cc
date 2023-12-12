@@ -172,7 +172,8 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   if (anInfo->GetProducesHit() && saveHitProducingTracks){
       WCSimTrajectory* parentTrajectory = anInfo->GetParentTrajectory();
       while(parentTrajectory != 0 && !parentTrajectory->GetProducesHit()){
-          if (!SAVE_PHOTON_HISTORY || parentTrajectory->GetPDGEncoding()!=0 )  parentTrajectory->SetProducesHit(true);
+          if (SAVE_PHOTON_HISTORY && parentTrajectory->GetPDGEncoding()==0 ) break;
+          parentTrajectory->SetProducesHit(true);
           parentTrajectory = parentTrajectory->GetParentTrajectory();
       }
   }
