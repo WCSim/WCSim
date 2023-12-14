@@ -70,9 +70,18 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
   // and store them in output file. Difficult to control them all, so best only
   // use for visualization, not for storing in ROOT.
   if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()
-       || G4UniformRand() < percentageOfCherenkovPhotonsToDraw/100. || SAVE_PHOTON_HISTORY )
+       || G4UniformRand() < percentageOfCherenkovPhotonsToDraw/100. )
     {
       WCSimTrajectory* thisTrajectory = new WCSimTrajectory(aTrack);
+      thisTrajectory->SetSavePhotonTrack(true); // mark to save photon track in ROOT
+      fpTrackingManager->SetTrajectory(thisTrajectory);
+      fpTrackingManager->SetStoreTrajectory(true);
+    }
+  else if (SAVE_PHOTON_HISTORY)
+    {
+      // Keep the trajectory but not saving in ROOT
+      WCSimTrajectory* thisTrajectory = new WCSimTrajectory(aTrack);
+      thisTrajectory->SetSavePhotonTrack(false);
       fpTrackingManager->SetTrajectory(thisTrajectory);
       fpTrackingManager->SetStoreTrajectory(true);
     }
@@ -137,9 +146,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       )
     {
       // if so the track is worth saving
-      if (!SAVE_PHOTON_HISTORY || aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition())
-        anInfo->WillBeSaved(true);
-      else anInfo->WillBeSaved(false);
+      anInfo->WillBeSaved(true);
     }
   else {
     anInfo->WillBeSaved(false);
@@ -172,7 +179,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   if (anInfo->GetProducesHit() && saveHitProducingTracks){
       WCSimTrajectory* parentTrajectory = anInfo->GetParentTrajectory();
       while(parentTrajectory != 0 && !parentTrajectory->GetProducesHit()){
-          if (SAVE_PHOTON_HISTORY && parentTrajectory->GetPDGEncoding()==0 ) break;
+          if (parentTrajectory->GetPDGEncoding()==0 && !parentTrajectory->GetSavePhotonTrack()) break; // do not save unwanted photon tracks
           parentTrajectory->SetProducesHit(true);
           parentTrajectory = parentTrajectory->GetParentTrajectory();
       }
@@ -188,11 +195,17 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     currentTrajectory->SetStoppingPoint(currentPosition);
     currentTrajectory->SetStoppingVolume(currentVolume);
 
-    currentTrajectory->SetSaveFlag(anInfo->isSaved());// mark it for WCSimEventAction ;
     if (aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition())
+    {
+      currentTrajectory->SetSaveFlag(anInfo->isSaved());// mark it for WCSimEventAction ;
       // don't save the optical photon tracks themselves simply when they produce a hit, since that info is already saved in WCSimRootCherenkovHitTime
       // optical photon tracks can still be saved if wanted by explicitly adding appropriate entries to the ParticleList or ProcessList via mac file commands
       currentTrajectory->SetProducesHit(anInfo->GetProducesHit());
+    }
+    else if (currentTrajectory->GetSavePhotonTrack())
+      currentTrajectory->SetSaveFlag(anInfo->isSaved()); // only save the wanted photon tracks
+    else 
+      currentTrajectory->SetSaveFlag(false);
   }
 	
   WCSimPrimaryGeneratorAction *primaryGenerator = (WCSimPrimaryGeneratorAction *) (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());

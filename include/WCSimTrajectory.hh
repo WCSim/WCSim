@@ -66,6 +66,8 @@ public: // with description
   inline void SetSaveFlag(G4bool value) { SaveIt = value; }
   inline G4bool GetProducesHit() const { return producesHit; }
   inline void SetProducesHit(G4bool value) { producesHit = value; }
+  inline G4bool GetSavePhotonTrack() const { return savePhotonTrack; }
+  inline void SetSavePhotonTrack(G4bool value) { savePhotonTrack = value; }
 
   inline WCSimTrajectory* GetParentTrajectory() const { return parentTrajectory; }
   inline void SetParentTrajectory(WCSimTrajectory* trajectory) { parentTrajectory = trajectory; }
@@ -156,6 +158,7 @@ public: // with description
   G4bool producesHit;
   G4String creatorProcess;
   G4double                  globalTime;
+  G4bool savePhotonTrack;
 
   WCSimTrajectory* parentTrajectory;
 
