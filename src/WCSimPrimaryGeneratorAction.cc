@@ -181,9 +181,11 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
     hFluxCosmics = new TH2D("hFluxCosmics","HK Flux", 180,0,360,100,0,1);
     hFluxCosmics->GetXaxis()->SetTitle("#phi (deg)");
     hFluxCosmics->GetYaxis()->SetTitle("cos #theta");
+    hFluxCosmics->SetDirectory(0);
     hEmeanCosmics = new TH2D("hEmeanCosmics","HK Flux", 180,0,360,100,0,1);
     hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
     hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
+    hEmeanCosmics->SetDirectory(0);
 
     while ( getline(inputCosmicsFile,line) ){
       token = tokenize(" $", line);
