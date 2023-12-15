@@ -185,7 +185,6 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       G4int   tube         = (*WCHC)[i]->GetTubeID();
       G4double peSmeared = 0.0;
       G4double time_PMT, time_true;
-      //G4int  track_id      = (*WCHC)[i]->GetTrackID();
 
       // Set the position and rotation of the pmt (from WCSimWCAddDarkNoise.cc)
       Double_t hit_pos[3];

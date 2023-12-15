@@ -106,7 +106,6 @@ WCSimEventAction::WCSimEventAction(WCSimRunAction* myRun,
   WCSimWCAddDarkNoise* WCDNM_OD;
   WCDNM_OD = new WCSimWCAddDarkNoise("WCDarkNoise_OD", detectorConstructor, "OD");
   DMman->AddNewModule(WCDNM_OD);
-
 }
 
 WCSimEventAction::~WCSimEventAction()

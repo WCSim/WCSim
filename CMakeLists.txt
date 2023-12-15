@@ -102,7 +102,7 @@ set( WCSIM_CHECK_GEOMETRY_OVERLAPS $<IF:$<BOOL:${WCSim_Geometry_Overlaps_CHECK}>
 
 option(WCSIM_SAVE_PHOTON_HISTORY_FLAG
   "Toggle WCSim to save photon scattering and reflection history"
-  ON
+  OFF
 )
 if(WCSIM_SAVE_PHOTON_HISTORY_FLAG STREQUAL ON)
   add_definitions(-DWCSIM_SAVE_PHOTON_HISTORY)

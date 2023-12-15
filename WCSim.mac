@@ -380,7 +380,6 @@
 #/Tracking/trackProcess Cerenkov
 ## Due to the typically very large number of optical photons, a fraction can be tracked by setting the percentage to randomly draw
 ## Note that the value is a percentage from 0.0 to 100.0, not fraction 0.0 to 1.0
-## This command is ignored when -DWCSIM_SAVE_PHOTON_HISTORY_FLAG=ON is set, and 100% of photons are stored
 /Tracking/fractionOpticalPhotonsToDraw 0.0
 
 

@@ -69,6 +69,7 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
   // if larger than zero, will keep trajectories of many secondaries as well
   // and store them in output file. Difficult to control them all, so best only
   // use for visualization, not for storing in ROOT.
+
   if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()
        || G4UniformRand() < percentageOfCherenkovPhotonsToDraw/100. )
     {
@@ -202,8 +203,8 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       // optical photon tracks can still be saved if wanted by explicitly adding appropriate entries to the ParticleList or ProcessList via mac file commands
       currentTrajectory->SetProducesHit(anInfo->GetProducesHit());
     }
-    else if (currentTrajectory->GetSavePhotonTrack())
-      currentTrajectory->SetSaveFlag(anInfo->isSaved()); // only save the wanted photon tracks
+    else if (currentTrajectory->GetSavePhotonTrack()) // only save the wanted photon tracks
+      currentTrajectory->SetSaveFlag(anInfo->isSaved()); 
     else 
       currentTrajectory->SetSaveFlag(false);
   }
