@@ -79,6 +79,28 @@ std::string WCSimEnumerations::EnumAsString(BoundaryType_t b)
   return "";
 }
 
+std::string WCSimEnumerations::EnumAsString(ReflectionSurface_t r)
+{
+  switch(r) {
+  case (kOtherS) :
+    return "Others";
+    break;
+  case (kBlackSheetS) :
+    return "Blacksheet";
+    break;
+  case (kReflectorS) :
+    return "Reflector";
+    break;
+  case (kPhotocathodeS) :
+    return "Photocathode";
+    break;
+  default:
+    return "";
+    break;
+  }
+  return "";
+}
+
 TriggerType_t WCSimEnumerations::TriggerTypeFromString(std::string s)
 {
   for(int i = int(kTriggerUndefined)+1; i <= kTriggerFailure; i++) {

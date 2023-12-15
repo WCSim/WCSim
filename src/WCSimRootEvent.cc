@@ -23,6 +23,7 @@ using std::vector;
 ClassImp(WCSimRootCherenkovDigiHit)
 ClassImp(WCSimRootCherenkovHit)
 ClassImp(WCSimRootCherenkovHitTime)
+ClassImp(WCSimRootCherenkovHitHistory)
 ClassImp(WCSimRootTrack)
 ClassImp(WCSimRootPi0)
 ClassImp(WCSimRootEventHeader)
@@ -60,8 +61,10 @@ WCSimRootTrigger::WCSimRootTrigger()
   // TClonesArray of WCSimRootCherenkovHits
   fCherenkovHits = 0;
   fCherenkovHitTimes = 0;
+  fCherenkovHitHistories = 0;
   fNcherenkovhits = 0;
   fNcherenkovhittimes = 0;
+  fNcherenkovhithistories = 0;
 
   // TClonesArray of WCSimRootCherenkovDigiHits
   fCherenkovDigiHits = 0;
@@ -106,10 +109,14 @@ void WCSimRootTrigger::Initialize() //actually allocate memory for things in her
 				    10000);
   fCherenkovHitTimes = new TClonesArray("WCSimRootCherenkovHitTime", 
 					10000);
+  fCherenkovHitHistories = new TClonesArray("WCSimRootCherenkovHitHistory", 
+					10000);
   fCherenkovHits->BypassStreamer(kFALSE); // use the member Streamer
   fCherenkovHitTimes->BypassStreamer(kFALSE); // use the member Streamer
+  fCherenkovHitHistories->BypassStreamer(kFALSE); // use the member Streamer
   fNcherenkovhits = 0;
   fNcherenkovhittimes = 0;
+  fNcherenkovhithistories = 0;
 
   // TClonesArray of WCSimRootCherenkovDigiHits
   fCherenkovDigiHits = new TClonesArray("WCSimRootCherenkovDigiHit", 
@@ -150,12 +157,14 @@ WCSimRootTrigger::~WCSimRootTrigger()
     fTracks->Delete();            
     fCherenkovHits->Delete();      
     fCherenkovHitTimes->Delete();   
+    fCherenkovHitHistories->Delete();   
     fCherenkovDigiHits->Delete();
     fCaptures->Delete();
     
     delete   fTracks;            
     delete   fCherenkovHits;      
     delete   fCherenkovHitTimes;   
+    delete   fCherenkovHitHistories;   
     delete   fCherenkovDigiHits;
     delete   fCaptures;
   }
@@ -200,6 +209,8 @@ WCSimRootTrigger & WCSimRootTrigger::operator=(const WCSimRootTrigger & in)
   fCherenkovHitCounter = in.fCherenkovHitCounter;
   fNcherenkovhittimes = in.fNcherenkovhittimes;
   fCherenkovHitTimes = (TClonesArray*)in.fCherenkovHitTimes->Clone();
+  fNcherenkovhithistories = in.fNcherenkovhithistories;
+  fCherenkovHitHistories = (TClonesArray*)in.fCherenkovHitHistories->Clone();
   fNumDigitizedTubes = in.fNumDigitizedTubes;
   fNcherenkovdigihits = in.fNcherenkovdigihits;
   fSumQ = in.fSumQ;
@@ -223,6 +234,7 @@ void WCSimRootTrigger::Clear(Option_t */*option*/)
   // TClonesArray of WCSimRootCherenkovHits
   fNcherenkovhits = 0;
   fNcherenkovhittimes = 0;
+  fNcherenkovhithistories = 0;
 
   // TClonesArray of WCSimRootCherenkovDigiHits
   fNcherenkovdigihits = 0;
@@ -238,6 +250,7 @@ void WCSimRootTrigger::Clear(Option_t */*option*/)
   fTracks->Delete();
   fCherenkovHits->Delete();
   fCherenkovHitTimes->Delete();
+  fCherenkovHitHistories->Delete();
   fCherenkovDigiHits->Delete();
   fCaptures->Delete();
 
@@ -596,6 +609,19 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
 
   return cherenkovhit;
 }
+
+//_____________________________________________________________________________
+
+WCSimRootCherenkovHitHistory *WCSimRootTrigger::AddCherenkovHitHistory(Int_t nRayScat,
+             Int_t nMieScat,
+					   std::vector<ReflectionSurface_t> reflec)
+{
+  // Add a new Cherenkov hit history to the list of Cherenkov hit histories
+  TClonesArray &cherenkovhithistories = *fCherenkovHitHistories;
+  WCSimRootCherenkovHitHistory* cherenkovhithistory = new(cherenkovhithistories[fNcherenkovhithistories++]) WCSimRootCherenkovHitHistory(nRayScat,nMieScat,reflec);
+  return cherenkovhithistory;
+}
+
 //_____________________________________________________________________________
 
 WCSimRootCherenkovHit::WCSimRootCherenkovHit(Int_t tubeID,
@@ -642,6 +668,14 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
     fPhotonStartDir[i] = photonStartDir[i];
     fPhotonEndDir[i] = photonEndDir[i];
   }
+}
+
+WCSimRootCherenkovHitHistory::WCSimRootCherenkovHitHistory(Int_t nRayScat, Int_t nMieScat, std::vector<ReflectionSurface_t> refle)
+{
+  // Create a WCSimRootCherenkovHitHistory object and fill it with stuff
+  fNRayScat = nRayScat;
+  fNMieScat = nMieScat;
+  fReflec = refle;
 }
 
 //_____________________________________________________________________________
@@ -862,6 +896,18 @@ bool WCSimRootCherenkovHitTime::CompareAllVariables(const WCSimRootCherenkovHitT
 }
 
 //_____________________________________________________________________________
+bool WCSimRootCherenkovHitHistory::CompareAllVariables(const WCSimRootCherenkovHitHistory * c) const
+{
+  bool failed = false;
+
+  failed = (!ComparisonPassed(fNRayScat, c->GetNRayScatters(), typeid(*this).name(), __func__, "RayleighScattering")) || failed;
+  failed = (!ComparisonPassed(fNMieScat, c->GetNMieScatters(), typeid(*this).name(), __func__, "MieScattering")) || failed;
+  failed = (!ComparisonPassedVec(std::vector<int>(fReflec.begin(),fReflec.end()), std::vector<int>(c->GetReflectionSurfaces().begin(),c->GetReflectionSurfaces().end()), typeid(*this).name(), __func__, "Reflection")) || failed;
+
+  return !failed;
+}
+
+//_____________________________________________________________________________
 bool WCSimRootCherenkovDigiHit::CompareAllVariables(const WCSimRootCherenkovDigiHit * c) const
 {
   bool failed = false;
@@ -1033,6 +1079,7 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c, bool deep
 	cout << "Hit Time " << j << endl;
 #endif
 	failed = !((WCSimRootCherenkovHitTime *)this->GetCherenkovHitTimes()->At(i))->CompareAllVariables((WCSimRootCherenkovHitTime *)c->GetCherenkovHitTimes()->At(i)) || failed;
+  failed = !((WCSimRootCherenkovHitHistory *)this->GetCherenkovHitHistories()->At(i))->CompareAllVariables((WCSimRootCherenkovHitHistory *)c->GetCherenkovHitHistories()->At(i)) || failed;
       }//j (WCSimRootCherenkovHitTime)
     }
   }//i (WCSimRootCherenkovHit)
@@ -1133,6 +1180,7 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c, bool deep
   ComparisonPassed(fNtrack_slots, c->GetNtrack_slots(), typeid(*this).name(), __func__, "Ntrack_slots (shouldn't necessarily be equal)");
   failed = (!ComparisonPassed(fNcherenkovhits, c->GetNcherenkovhits(), typeid(*this).name(), __func__, "Ncherenkovhits")) || failed;
   failed = (!ComparisonPassed(fNcherenkovhittimes, c->GetNcherenkovhittimes(), typeid(*this).name(), __func__, "Ncherenkovhittimes")) || failed;
+  failed = (!ComparisonPassed(fNcherenkovhithistories, c->GetNcherenkovhittimes(), typeid(*this).name(), __func__, "Ncherenkovhithistories")) || failed;
   failed = (!ComparisonPassed(fNcherenkovdigihits, c->GetNcherenkovdigihits(), typeid(*this).name(), __func__, "Ncherenkovdigihits")) || failed;
   //don't expect this to pass in general, so don't affect failed
   ComparisonPassed(fNcherenkovdigihits_slots, c->GetNcherenkovdigihits_slots(), typeid(*this).name(), __func__, "Ncherenkovdigihits_slots (shouldn't necessarily be equal)");

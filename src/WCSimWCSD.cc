@@ -232,7 +232,6 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   WCSimWCHit* newHit = new WCSimWCHit();
 	   newHit->SetTubeID(replicaNumber);
 	   //newHit->SetTubeType(volumeName);//B. Quilain
-	   newHit->SetTrackID(trackID);
 	   newHit->SetEdep(energyDeposition); 
 	   newHit->SetLogicalVolume(thePhysical->GetLogicalVolume());
 	   
@@ -244,6 +243,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   // Set the hitMap value to the collection hit number
 	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+     (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
@@ -257,6 +257,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	 }
        else {
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);

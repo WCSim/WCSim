@@ -63,13 +63,13 @@ private:
    *  The second digit is made up of photons: 10,11,13,14
    */
   std::map<int, std::vector<int> > fDigiComp;
+  std::map<int, G4int>            trackID; // TrackID of the photon of the Hit (do not use for Digits)
   std::map<int, G4int>    parentSavedTrackID; ///< Primary parent ID of the Hit (do not use for Digits)
   std::map<int, G4float>    photonStartTime; ///< Primary parent ID of the Hit (do not use for Digits)
   std::map<int, G4ThreeVector>    photonStartPos; ///< Start point of the photon of the Hit (do not use for Digits)
   std::map<int, G4ThreeVector>    photonEndPos; ///< End point of the photon of the Hit (do not use for Digits)
   std::map<int, G4ThreeVector>    photonStartDir; ///< Start dir of the photon of the Hit (do not use for Digits)
   std::map<int, G4ThreeVector>    photonEndDir; ///< End dir of the photon of the Hit (do not use for Digits)
-  
 
   //integrated hit/digit parameters
   G4int                 totalPe;
@@ -78,7 +78,6 @@ private:
   G4int                 totalPeInGate;
   G4double         edep;
   static G4int     maxPe;
-  G4int            trackID;
 
 public:
   void RemoveDigitizedGate(G4int gate);
@@ -90,6 +89,7 @@ public:
   inline void SetPe(G4int gate,  G4double Q)      {pe[gate]     = Q;};
   inline void SetTime(G4int gate, G4double T)    {time[gate]   = T;};
   inline void SetPreSmearTime(G4int gate, G4double T)    {time_presmear[gate]   = T;};
+  inline void SetTrackID(G4int gate, G4int track) { trackID[gate] = track; };
   inline void SetParentID(G4int gate, G4int parent) { parentSavedTrackID[gate] = parent; };
   inline void SetPhotonStartTime(G4int gate, G4float starttime) { photonStartTime[gate] = starttime; };
   inline void SetPhotonStartPos(G4int gate, const G4ThreeVector &position) { photonStartPos[gate] = position; };
@@ -108,13 +108,13 @@ public:
     digi_comp.clear();
   }
 
+  inline G4int          GetTrackID(int gate)    { return trackID[gate];};
   inline G4int          GetParentID(int gate)    { return parentSavedTrackID[gate];};
   inline G4float        GetPhotonStartTime(int gate)    { return photonStartTime[gate];};
   inline G4ThreeVector  GetPhotonStartPos(int gate)    { return photonStartPos[gate];};
   inline G4ThreeVector  GetPhotonEndPos(int gate)    { return photonEndPos[gate];};
   inline G4ThreeVector  GetPhotonStartDir(int gate)    { return photonStartDir[gate];};
   inline G4ThreeVector  GetPhotonEndDir(int gate)    { return photonEndDir[gate];};
-  inline G4int          GetTrackID()    { return trackID;};
   inline G4double GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
   inline G4String   GetTubeType() {return tubeType;};
@@ -159,7 +159,6 @@ public:
   void SetPos          (G4ThreeVector xyz)          { pos = xyz; };
   void SetOrientation  (G4ThreeVector xyz)          { orient = xyz; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
-  void SetTrackID      (G4int track)                { trackID = track; };
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
   G4int         GetTotalPe()    { return totalPe;};
   
@@ -180,6 +179,7 @@ public:
     int i, j;
 
     double index_time,index_timepresmear,index_pe;
+    int index_trackID;
     int index_parentSavedTrackID;
     std::vector<int> index_digicomp;
     float index_photonstarttime;
@@ -199,6 +199,7 @@ public:
         index_timepresmear  = time_presmear.at(i);
         index_pe = pe.at(i);
         if(sort_digi_compositions) index_digicomp = fDigiComp.at(i);
+        index_trackID = trackID.at(i);
         index_parentSavedTrackID = parentSavedTrackID.at(i);
 	index_photonstarttime = photonStartTime[i];
 	index_photonstartpos = photonStartPos[i];
@@ -210,6 +211,7 @@ public:
           time_presmear.at(j) = time_presmear.at(j-1);
           pe.at(j) = pe.at(j-1);
           if(sort_digi_compositions) fDigiComp.at(j) = fDigiComp.at(j-1);
+          trackID.at(j) = trackID.at(j-1);
           parentSavedTrackID.at(j) = parentSavedTrackID.at(j-1);
 	  photonStartTime.at(j) = photonStartTime.at(j-1);
 	  photonStartPos.at(j) = photonStartPos.at(j-1);
@@ -222,6 +224,7 @@ public:
         time_presmear.at(j) = index_timepresmear;
         pe.at(j) = index_pe;
         if(sort_digi_compositions) fDigiComp.at(j) = index_digicomp;
+        trackID.at(j) = index_trackID;
         parentSavedTrackID.at(j) = index_parentSavedTrackID;
 	photonStartTime.at(j) = index_photonstarttime;
 	photonStartPos.at(j) = index_photonstartpos;

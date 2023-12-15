@@ -36,6 +36,8 @@ private:
   // TF: define in macro now
   G4double percentageOfCherenkovPhotonsToDraw;
 
+  bool SAVE_PHOTON_HISTORY;
+
   WCSimTrackingMessenger* messenger;
   
   G4int primaryID;
