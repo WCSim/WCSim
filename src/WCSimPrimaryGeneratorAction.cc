@@ -157,7 +157,7 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
   // Create the relevant histograms to generate muons
   // according to SuperK flux extrapolated at HyperK site
 
-  altCosmics = 2*myDetector->GetWCIDHeight();
+  altCosmics = myDetector->GetWCIDHeight();
   G4cout << "altCosmics : " << altCosmics << G4endl;
   if (inputCosmicsFile.is_open()) inputCosmicsFile.close();
 
