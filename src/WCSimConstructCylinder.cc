@@ -5280,9 +5280,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   } // END isODConstructed
 
   // Add CDS CAD model in WCTE
-  if (!flipz && isNuPrismBeamTest_16cShort) // bottom cap instead of top cap, because we have rotation later
+  if (isNuPrismBeamTest_16cShort && addCDS && !flipz) // bottom cap instead of top cap, because we have rotation later
   {
-    auto shape_CDS = CADMesh::TessellatedMesh::FromSTL("/disk01/usr5/kmtsui/hyperk_repo/WCSim/data/Arm_for_Simulation_ASCII.stl");
+    auto shape_CDS = CADMesh::TessellatedMesh::FromSTL(CDSFile);
 
     // set scale
     shape_CDS->SetScale(1);

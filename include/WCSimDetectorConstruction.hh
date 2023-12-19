@@ -351,6 +351,8 @@ public:
   void SetPMTPositionInput(G4String choice) {pmtPositionFile = choice; readFromTable = true;}
   G4String GetPMTPositionInput() {return pmtPositionFile;}
 
+  void SetCDSFile(G4String choice) { CDSFile = choice; addCDS = true; }
+
   void   SetPMTType(G4String type) {
     WCPMTType = type;
     //And update everything that is affected by a new PMT
@@ -728,6 +730,8 @@ private:
   G4bool isNuPrism;
   G4bool isNuPrismBeamTest;
   G4bool isNuPrismBeamTest_16cShort; // Jul 02 2021 L.Anthony
+  G4bool addCDS;
+  G4String CDSFile;
   G4String WCPMTType;
  // G4double WCPMTCoverage; //TF: already using this variable "WCPMTPercentCoverage
 

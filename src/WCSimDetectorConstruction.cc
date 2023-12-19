@@ -82,6 +82,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   isNuPrism  = false;
   isNuPrismBeamTest = false;
   isNuPrismBeamTest_16cShort = false;
+  addCDS = false;
 
   rotateBarrelHalfTower = false;
 
