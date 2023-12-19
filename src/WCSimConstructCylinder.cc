@@ -5279,6 +5279,38 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 
   } // END isODConstructed
 
+  // Add CDS CAD model in WCTE
+  if (!flipz && isNuPrismBeamTest_16cShort) // bottom cap instead of top cap, because we have rotation later
+  {
+    auto shape_CDS = CADMesh::TessellatedMesh::FromSTL("/disk01/usr5/kmtsui/hyperk_repo/WCSim/data/Arm_for_Simulation_ASCII.stl");
+
+    // set scale
+    shape_CDS->SetScale(1);
+    G4ThreeVector posCDS = G4ThreeVector(0*m, 0*m,mainAnnulusHeight/2.+capAssemblyHeight/2.-(-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness));
+    
+    // make new shape a solid
+    G4VSolid* solid_CDS = shape_CDS->GetSolid();
+    
+    G4LogicalVolume* CDS_logical =                                   //logic name
+    new G4LogicalVolume(solid_CDS,                                 //solid name
+              G4Material::GetMaterial("StainlessSteel"),          //material
+              "CDS");                                     //objects name
+    // rotate if necessary
+    G4RotationMatrix* CDS_rot = new G4RotationMatrix; // Rotates X and Z axes only
+    CDS_rot->rotateX(90*deg);                 
+    CDS_rot->rotateY(45*deg);
+    
+    new G4PVPlacement(CDS_rot,                       //rotation
+              posCDS,                    //at position
+              CDS_logical,           //its logical volume
+              "CDS",                //its name
+              logicWCCap,                //its mother  volume
+              false,                   //no boolean operation
+              0,                       //copy number
+              checkOverlaps);          //overlaps checking
+    new G4LogicalSkinSurface("CDSSurface",CDS_logical,BSSkinSurface);
+  }
+
   return logicCapAssembly;
 
 }
