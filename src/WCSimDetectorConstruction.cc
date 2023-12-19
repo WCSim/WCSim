@@ -95,6 +95,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   isODConstructed = false;
   isCombinedPMTCollectionDefined = false;
 
+  isRealisticPlacement = false;
+
   myConfiguration = DetConfig;
 
   //-----------------------------------------------------
@@ -311,10 +313,11 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   G4LogicalVolume* logicWCBox;
 
   // Select between HyperK and cylinder
-  if (isEggShapedHyperK) logicWCBox = ConstructEggShapedHyperK();
+  if (isRealisticPlacement) logicWCBox = ConstructRealisticPlacement();
+  else if (isEggShapedHyperK) logicWCBox = ConstructEggShapedHyperK();
   else if (!useReplica) logicWCBox = ConstructCylinderNoReplica(); 
   else logicWCBox = ConstructCylinder(); 
-  
+    
   if(!logicWCBox){
     G4cerr << "Something went wrong in ConstructCylinder" << G4endl;
     return NULL;
