@@ -106,6 +106,8 @@
 # The (z,theta) coordinates are calculated from the input, and r is auto-tuned as above
 # This table corresponds to the nuPRISMBeamTest_16cShort geometry
 #/WCSim/PMT/PositionFile data/mPMT_Position_WCTE.txt
+# Downland the CDS CAD model (ASCII format) from WCTE webpage and place in detector
+#/WCSim/Geometry/SetCDSFile path_to_CDS_file
 ############################################################################################
 #/WCSim/Construct
 
