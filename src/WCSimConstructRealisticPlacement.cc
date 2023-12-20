@@ -50,6 +50,7 @@ struct RealisticPlacementConfiguration {
     G4Material* InnerDetectorMaterial;
     G4Material* OuterDetectorMaterial;
 
+    // Black tyvek is place on the wall of the ID
     G4VisAttributes* BlackTyvekVis;
     G4Material* BlackTyvekMaterial;
     G4double BlackTyvekInnerRadius;
@@ -115,12 +116,12 @@ struct RealisticPlacementConfiguration {
       std::cout << "DeadSpaceInnerRadius = " << DeadSpaceInnerRadius << std::endl;
       std::cout << "DeadSpaceOuterRadius = " << DeadSpaceOuterRadius << std::endl;
       std::cout << "WhiteTyvekInnerRadius = " << WhiteTyvekInnerRadius << std::endl;
-      std::cout << "WallTyvekOuterRadius = " << WallTyvekOuterRadius << std::endl;
+      std::cout << "WhiteTyvekOuterRadius = " << WhiteTyvekOuterRadius << std::endl;
       std::cout << "WallTyvekInnerRadius = " << WallTyvekInnerRadius << std::endl;
       std::cout << "WallTyvekOuterRadius = " << WallTyvekOuterRadius << std::endl;
       std::cout << "MainWaterTankRadius = " << MainWaterTankRadius << std::endl;
       std::cout << "MainWaterTankLength = " << MainWaterTankLength << std::endl;
-      std::cout << "RockShellRadius = " << RockShellLength << std::endl;
+      std::cout << "RockShellRadius = " << RockShellRadius << std::endl;
       std::cout << "RockShellLength = " << RockShellLength << std::endl;
     }
 
