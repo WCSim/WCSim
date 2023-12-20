@@ -141,11 +141,18 @@ G4LogicalVolume* BuildAndPlace_SinglePolyhedraTank(
   G4PVPlacement*& physical
 )
 {
-  // Helper Function to 
-  std::cout << "Placing Name " << name << " " << mother << std::endl;
+  // Helper Function to support placement of cylindrical objects
+  // with the number of segments matching the number of PMT cells.
+  // This means each segment panel is flush with the PMT base.
+
+  std::cout << "Placing Polyhedra Tank Name " << name << " " << mother << std::endl;
+
+  // Basic polyhedra with top and bottom plane and only an outer shell
   G4double zplane[2] = {-0.5*full_length,0.5*full_length};
   G4double rstart[2] = {start_radius,start_radius};
   G4double rend[2] = {end_radius,end_radius};
+
+  // Polyhedra solid object
   G4Polyhedra* solid = new G4Polyhedra(name,
                                         0, // phi start
                                         360*deg,
@@ -155,14 +162,15 @@ G4LogicalVolume* BuildAndPlace_SinglePolyhedraTank(
                                         rstart,
                                         rend);
 
-  // G4Tubs* solid = new G4Tubs(name, start_radius, end_radius, 0.5*full_length, 0, 360*deg);
-
+  // Logical to be placed
   logic = 
       new G4LogicalVolume(solid,
                           material,
                           name,
                           0,0,0);
 
+  // If a mother has been given it means we need to place the logical
+  // inside the mother volume.
   if (mother){
     std::cout << "Placing Physical " << logic << " " << mother << std::endl;
     physical = new G4PVPlacement(0,
@@ -175,6 +183,7 @@ G4LogicalVolume* BuildAndPlace_SinglePolyhedraTank(
                           true); 
   }
 
+  // Configure some drawing options to speed up QT.
   vis->SetForceLineSegmentsPerCircle(32);
   vis->SetForceWireframe(1);
   logic->SetVisAttributes(vis); 
@@ -184,6 +193,8 @@ G4LogicalVolume* BuildAndPlace_SinglePolyhedraTank(
 }
 
 int CountLogicalChildren(G4LogicalVolume* mother, G4LogicalVolume* children){
+  // Helper function to count how many children of a given type
+  // have already been placed inside a mother volume.
   int n = 0;
   for (int i = 0; i < mother->GetNoDaughters(); i++){
       G4VPhysicalVolume* vol = mother->GetDaughter(i);
