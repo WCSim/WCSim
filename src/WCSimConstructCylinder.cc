@@ -4455,18 +4455,20 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
  // -----------------------------------------------------------
   //crucial to match with borderAnnulusZ
   //need to get correct radius within barrel
-  G4double capZ[5] = { (-WCBlackSheetThickness-1.*mm)*zflip,
+  G4double capZ[6] = { (-WCBlackSheetThickness-1.*mm)*zflip,
                         0,
                         (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))*zflip,
                         (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))*zflip,
-                        WCBarrelPMTOffset*zflip} ;
+                        WCBarrelPMTOffset*zflip,
+                        (WCBarrelPMTOffset+barrelCellHeight)*zflip} ;
 
-  G4double capRmin[5] = {  0. , 0., 0., 0., 0.} ;
-  G4double capRmax[5] = { outerAnnulusRadius + GetRadiusChange(-zflip*WCIDHeight/2), 
+  G4double capRmin[6] = {  0. , 0., 0., 0., 0., 0.} ;
+  G4double capRmax[6] = { outerAnnulusRadius + GetRadiusChange(-zflip*WCIDHeight/2), 
                           outerAnnulusRadius + GetRadiusChange(-zflip*WCIDHeight/2),  
                           outerAnnulusRadius + GetRadiusChange(-zflip*(WCIDHeight/2-(WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius)))),  
                           WCIDRadius + GetRadiusChange(-zflip*(WCIDHeight/2-(WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius)))), 
-                          innerAnnulusRadius+ GetRadiusChange(-zflip*(WCIDHeight/2-WCBarrelPMTOffset))};
+                          innerAnnulusRadius+ GetRadiusChange(-zflip*(WCIDHeight/2-WCBarrelPMTOffset)),
+                          innerAnnulusRadius+ GetRadiusChange(-zflip*(WCIDHeight/2-WCBarrelPMTOffset-barrelCellHeight))};
   const G4String capname = G4String("WC") + capstr;    // "WC[Top|Bot]Cap"
   G4VSolid* solidWCCap = nullptr;
 
@@ -4480,7 +4482,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 			barrelPhiOffset, // phi start
 			totalAngle, //phi end
 			WCBarrelRingNPhi, //NPhi-gon
-			5, // 5 z-planes
+			6, // z-planes
 			capZ, //position of the Z planes
 			capRmin, // min radius at the z planes
 			capRmax// max radius at the Z planes
@@ -4494,14 +4496,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
       barrelPhiOffset, // phi start
       totalAngle, //phi end
       WCBarrelRingNPhi, //NPhi-gon
-      5, // 5 z-planes
+      6, // z-planes
       capZ, //position of the Z planes
       capRmin, // min radius at the z planes
       capRmax// max radius at the Z planes
       );
-    G4double extraCapRmin[5]; 
-    G4double extraCapRmax[5]; 
-    for(int i = 0; i < 5 ; i++){
+    G4double extraCapRmin[6]; 
+    G4double extraCapRmax[6]; 
+    for(int i = 0; i < 6 ; i++){
       extraCapRmin[i] = capRmin[i] != 0. ?  capRmin[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.) : 0.;
       extraCapRmax[i] = capRmax[i] != 0. ? capRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.) : 0.;
     }
@@ -4511,7 +4513,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 			2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //total phi 
 			// fortunately there are no PMTs an the gap!
 			1, //NPhi-gon
-			5, //  z-planes
+			6, //  z-planes
 			capZ, //position of the Z planes
 			extraCapRmin, // min radius at the z planes
 			extraCapRmax// max radius at the Z planes
@@ -5286,7 +5288,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 
     // set scale
     shape_CDS->SetScale(1);
-    G4ThreeVector posCDS = G4ThreeVector(0*m, 0*m,mainAnnulusHeight/2.+capAssemblyHeight/2.-(-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness));
+    double cds_z_offset = -mainAnnulusHeight/2.-capAssemblyHeight/2.; // logicBottomCapAssembly placement
+    cds_z_offset += -capAssemblyHeight/2.+1*mm+WCBlackSheetThickness; // logicWCCap placement
+    cds_z_offset += 132.25*mm + 145*mm;
+    G4ThreeVector posCDS = G4ThreeVector(0*m, 0*m,cds_z_offset);
     
     // make new shape a solid
     G4VSolid* solid_CDS = shape_CDS->GetSolid();
@@ -5297,8 +5302,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
               "CDS");                                     //objects name
     // rotate if necessary
     G4RotationMatrix* CDS_rot = new G4RotationMatrix; // Rotates X and Z axes only
-    CDS_rot->rotateX(90*deg);                 
-    CDS_rot->rotateY(45*deg);
+    CDS_rot->rotateX(270*deg);                 
+    CDS_rot->rotateY(315*deg);
     
     new G4PVPlacement(CDS_rot,                       //rotation
               posCDS,                    //at position
