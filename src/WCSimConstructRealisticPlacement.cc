@@ -50,6 +50,7 @@ struct RealisticPlacementConfiguration {
     G4Material* InnerDetectorMaterial;
     G4Material* OuterDetectorMaterial;
 
+    // Black tyvek is place on the wall of the ID
     G4VisAttributes* BlackTyvekVis;
     G4Material* BlackTyvekMaterial;
     G4double BlackTyvekInnerRadius;
