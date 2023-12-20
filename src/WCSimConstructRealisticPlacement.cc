@@ -115,7 +115,7 @@ struct RealisticPlacementConfiguration {
       std::cout << "DeadSpaceInnerRadius = " << DeadSpaceInnerRadius << std::endl;
       std::cout << "DeadSpaceOuterRadius = " << DeadSpaceOuterRadius << std::endl;
       std::cout << "WhiteTyvekInnerRadius = " << WhiteTyvekInnerRadius << std::endl;
-      std::cout << "WallTyvekOuterRadius = " << WallTyvekOuterRadius << std::endl;
+      std::cout << "WhiteTyvekOuterRadius = " << WhiteTyvekOuterRadius << std::endl;
       std::cout << "WallTyvekInnerRadius = " << WallTyvekInnerRadius << std::endl;
       std::cout << "WallTyvekOuterRadius = " << WallTyvekOuterRadius << std::endl;
       std::cout << "MainWaterTankRadius = " << MainWaterTankRadius << std::endl;
