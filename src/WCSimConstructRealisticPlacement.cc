@@ -120,7 +120,7 @@ struct RealisticPlacementConfiguration {
       std::cout << "WallTyvekOuterRadius = " << WallTyvekOuterRadius << std::endl;
       std::cout << "MainWaterTankRadius = " << MainWaterTankRadius << std::endl;
       std::cout << "MainWaterTankLength = " << MainWaterTankLength << std::endl;
-      std::cout << "RockShellRadius = " << RockShellLength << std::endl;
+      std::cout << "RockShellRadius = " << RockShellRadius << std::endl;
       std::cout << "RockShellLength = " << RockShellLength << std::endl;
     }
 
