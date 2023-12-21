@@ -68,6 +68,16 @@
 #/control/execute macros/geom_hk_od_options.mac
 #/WCSim/Construct
 
+
+#Use the HK FD Realistic ID + OD geometry
+#/WCSim/WCgeom HyperK_HybridmPMT_WithOD_Realistic
+#/WCSim/Construct
+
+#Use the HK FD Realistic IDonly geometry
+#/WCSim/WCgeom HyperK_HybridmPMT_IDonly_Realistic
+#/WCSim/Construct
+
+
 # Some other SuperK options (different to the default 20" 40% case)
 #/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
 #/WCSim/WCgeom SuperK_20inchBandL_20perCent # Note: the actual coverage is 20.27%
