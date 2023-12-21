@@ -80,6 +80,7 @@ struct RealisticPlacementConfiguration {
     G4double WhiteTyvekOuterRadius;
     G4double WhiteTyvekBarrelLength;
 
+    // Wall tyvek is placed on the inner wall of the water tank
     G4VisAttributes* WallTyvekVis;
     G4Material* WallTyvekMaterial;
     G4double WallTyvekInnerRadius;
