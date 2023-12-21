@@ -733,7 +733,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     for (int i = 0; i < NSpacesInBlock/2; i++){
       cell_block_rotation->rotateZ(phi_offset*2);
       
-      // Simple row only ID pmtt
+      // Simple row only ID pmt
       block_row_nomultipmts->AddPlacedAssembly(frame_block_assembly, cell_pos, cell_block_rotation);
 
       // Hybrid mPMT rows for ID index 1
