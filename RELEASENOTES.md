@@ -1,5 +1,17 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags.
 
+
+*************************************************************
+Recent updates
+*************************************************************
+
+New features
+* Pull request [#399 @patrickstowell] Addition of realistic HK FD geometry (both w/ & w/o OD PMTs)
+* Pull request [#397 @kmtsui] `-DWCSIM_SAVE_PHOTON_HISTORY_FLAG=ON` runs in mode with new output information about photon history (scatters, reflections)
+
+Bug fix
+* Pull request [#398 @arturof] Fixes to make cosmic muon generator work correctly (off by 1 histogram binning errors, crashes due to simulating outside of world volume, incomplete detector coverage of muon trajectories)
+
 *************************************************************
 07/12/2023: Notes for v1.12.5
 *************************************************************
