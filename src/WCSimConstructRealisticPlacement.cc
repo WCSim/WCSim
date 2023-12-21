@@ -45,8 +45,27 @@
 
 struct RealisticPlacementConfiguration {
 
-    G4Material* InnerDetectorMaterial;
-    G4Material* OuterDetectorMaterial;
+  // Placeholders for ID/OD Water Materials
+  G4Material* InnerDetectorMaterial;
+  G4Material* OuterDetectorMaterial;
+
+  // The geometry is a set of nested cylinders instead of sheets of material
+  // placed inside a monotholic water volume (think russian nesting dolls).
+  // This means each geometry is light tight. Somewhat confusingly it means to make the
+  // ID tyvek we place a solid cylinder/block of Black Sheet, and then place another 
+  // cylinder/block of Water inside of it.
+
+  // Our Hierarchy is as follows
+  // RockShell (WC)
+  // - OD WCBarrel 
+  // - - Wall Tyvek 
+  // - - - OD Water Space
+  // - - - - OD PMTs
+  // - - - - White Tyvek 
+  // - - - - - Dead Space
+  // - - - - - - Black Sheet
+  // - - - - - - - Water Inner
+  // - - - - - - - - ID PMTs
 
     // Black tyvek is place on the wall of the ID
     G4VisAttributes* BlackTyvekVis;
@@ -62,48 +81,79 @@ struct RealisticPlacementConfiguration {
     G4double DeadSpaceOuterRadius;
     G4double DeadSpaceBarrelLength;
 
+    // The OuterDetector is the water volume of the OD
     G4VisAttributes* OuterDetectorVis;
     G4double OuterDetectorInnerRadius;
     G4double OuterDetectorOuterRadius;
     G4double OuterDetectorBarrelLength;
 
+    // The InnerDetector is the water volume of the ID.
+    // An inner radius is specified but set to 0 in case
+    // someone wants to make a nested water phantom in future
     G4VisAttributes* InnerDetectorVis;
-    G4double InnerDetectorInnerRadius;
+    G4double InnerDetectorInnerRadius; 
     G4double InnerDetectorOuterRadius;
     G4double InnerDetectorBarrelLength;
 
+    // WhiteTyvek is the tyvek that seperates the OD
+    // with the frame of the ID.
     G4VisAttributes* WhiteTyvekVis;
     G4Material* WhiteTyvekMaterial;
     G4double WhiteTyvekInnerRadius;
     G4double WhiteTyvekOuterRadius;
     G4double WhiteTyvekBarrelLength;
 
-    // Wall tyvek is placed on the inner wall of the water tank
+    // Wall tyvek is placed on the outer wall of the water tank
+    // It is the reflective surface between the OD and the wall.
     G4VisAttributes* WallTyvekVis;
     G4Material* WallTyvekMaterial;
     G4double WallTyvekInnerRadius;
     G4double WallTyvekOuterRadius;
     G4double WallTyvekBarrelLength;
 
+    // MainWaterTank is a water shell that sits around the OD 
+    // Wall Tyvek and the wall. This is because we expect a small
+    // layer of water seeping behind the Tyvek, and WCSim expects
+    // a geometry in the usual ConstructCylinder which goes Rock -> Water -> Tyvek
+    // so we are keeping this consistent.
     G4VisAttributes* MainWaterTankVis;
     G4Material* MainWaterTankMaterial;
     G4double MainWaterTankRadius;
     G4double MainWaterTankLength;
 
+    // The final shell in the russian nesting doll approach
+    // a rock shell is placede around the entire water tank geometry.
     G4VisAttributes* RockShellVis;
     G4Material* RockShellMaterial;
     G4double RockShellRadius;
     G4double RockShellLength;
 
+    // For the Detector placement we split the arrays of PMTS
+    // into blocks, made up of rows, made up of cells.
+    // Dimension of a cell is 2x2.
+    G4double RowSeperation; 
+    G4double CellArcLength;
+
+    // Each cell contains 4 possible PMT placements.
+    // Each row constaints upto 24 cells in a line. Dimension
+    // of a row is 48x2.
     G4double NFrameCellsPerRow;
+
+    // Main blocks for the barrel contain upto 8 rows. 
+    // The dimension of a main block is 48x16.
+    int NSpacesInBlock;
+
+    // The barrel also needs one bottom block which is shorter.
+    // Bottom blocks for the barrel contain upto 6 rows. 
+    // The dimension of a main block is 48x12.
     G4double NRowsPerMainBlock;
     G4double NRowsPerBottomBlock;
-    G4double NBlocksPerRing;
 
-    G4double RowSeperation;
-    int NSpacesInBlock;
+    // The barrel is made up of 5 main blocks placed in a vertical line,
+    // as well as one bottom block. This column of 5+1 is then rotated around
+    // the barrel to completely cover it.
     int NBlocksAround;
-    G4double CellArcLength;
+    G4double NBlocksPerRing;
 
 
     void Print(){
@@ -658,37 +708,21 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     G4RotationMatrix* rotation_low = new G4RotationMatrix;
     G4RotationMatrix* rotation_high = new G4RotationMatrix;
 
-    rotation_high->rotateZ(phi_offset/2); //-phi_offset/2);
-    rotation_low->rotateZ(3*phi_offset/2);//align the PMT with the Cell
+    rotation_high->rotateZ(phi_offset/2); 
+    rotation_low->rotateZ(3*phi_offset/2); //align the PMT with the Cell
 
     G4ThreeVector position_low = G4ThreeVector(0,0.0,-RowSeperation/4);
     G4ThreeVector position_high = G4ThreeVector(0,0.0,RowSeperation/4);
 
     auto frame_block_assembly = new G4AssemblyVolume();
     frame_block_assembly->AddPlacedAssembly(pmt20_offset_placement, position_high, rotation_high );
-    // frame_block_assembly->AddPlacedAssembly(pmtmulti_offset_placement, position_high, rotation_low );
     frame_block_assembly->AddPlacedAssembly(pmt20_offset_placement, position_low, rotation_low  );
-    // frame_block_assembly->AddPlacedAssembly(pmtmulti_offset_placement, position_low, rotation_high );
 
     // Then we repeatt but also add mPMT for PMT_hybrid_three_cell
     auto frame_block_assembly_withpmt = new G4AssemblyVolume();  
     frame_block_assembly_withpmt->AddPlacedAssembly(pmt20_offset_placement, position_high, rotation_high  );
-    // frame_block_assembly_withpmt->AddPlacedAssembly(pmtmulti_offset_placement, position_high, rotation_low  );
     frame_block_assembly_withpmt->AddPlacedAssembly(pmt20_offset_placement, position_low, rotation_low  );
     frame_block_assembly_withpmt->AddPlacedAssembly(pmtmulti_offset_placement, position_low, rotation_high  );
-
-
-    // If MPMT in each block
-//     Processing read_PMT.C...
-// 19826 9927
-// 13122 13128
-// MEAN : 45967 41412 0.900907
-// 19826 9927
-// 13122 13128
-// MEAN2: 46358 42099 0.908128
-// (int) 0
-// root [1] .q
-
 
     // Finally we build an OD assembly
     auto frame_block_assembly_odpmt = new G4AssemblyVolume();
@@ -733,7 +767,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // O#OMO#O#O#O#O#OMO#O#O#O#O#OMO#O#O#O#O#OMO#O#O#O#
 
     // OD Barrel Block
-    // Todo: Add Diagram for OD Barrel Block
+    // Barrel blocks are a bit more complex as they sit 
+    // in the corner of the struts.
+    // The approximate layout is
+    // 0#0#0#0#
+    // #0####0#
+    // 0#0#0#0#
+    // #0####0#
+    // 0#0#0#0#
+    // #0####0#
 
     // The blocks above can be split into 3 different types of rows
     // for both the OD and the ID based on the index that
@@ -849,19 +891,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     for (int i = 0; i < 5; i++){
       G4RotationMatrix* imprint_rot = new G4RotationMatrix();
       G4ThreeVector imprint_pos = G4ThreeVector(0.0,0.0,-i*imprint_spacing + WCIDHeight/2-70*cm);
-      for (int j = 0; j < 6; j++){
+      for (int j = 0; j < config.NBlocksPerRing; j++){
         block_assembly->MakeImprint(InnerDetectorLogic, imprint_pos, imprint_rot);
         odblock_assembly->MakeImprint(OuterDetectorLogic, imprint_pos, imprint_rot);
-        imprint_rot->rotateZ( twopi / 6 );
+        imprint_rot->rotateZ( twopi / config.NBlocksPerRing );
       }
     }
 
     G4RotationMatrix* imprint_rot_bottom = new G4RotationMatrix();
     G4ThreeVector imprint_pos_bottom = G4ThreeVector(0.0,0.0,-5*imprint_spacing + WCIDHeight/2-70*cm);
-    for (int j = 0; j < 6; j++){
+    for (int j = 0; j < config.NBlocksPerRing; j++){
       block_bottom->MakeImprint(InnerDetectorLogic, imprint_pos_bottom, imprint_rot_bottom);
       odblock_bottom->MakeImprint(OuterDetectorLogic, imprint_pos_bottom, imprint_rot_bottom);
-      imprint_rot_bottom->rotateZ( twopi / 6 );
+      imprint_rot_bottom->rotateZ( twopi / config.NBlocksPerRing );
     }
 
     int pmt20_count_barrel    = CountLogicalChildren(InnerDetectorLogic, pmt20_dummy_logic);
