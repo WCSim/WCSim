@@ -137,7 +137,7 @@ struct RealisticPlacementConfiguration {
     // Each cell contains 4 possible PMT placements.
     // Each row constaints upto 24 cells in a line. Dimension
     // of a row is 48x2.
-    G4double NFrameCellsPerRow;
+    int NFrameCellsPerRow;
 
     // Main blocks for the barrel contain upto 8 rows. 
     // The dimension of a main block is 48x16.
@@ -146,14 +146,14 @@ struct RealisticPlacementConfiguration {
     // The barrel also needs one bottom block which is shorter.
     // Bottom blocks for the barrel contain upto 6 rows. 
     // The dimension of a main block is 48x12.
-    G4double NRowsPerMainBlock;
-    G4double NRowsPerBottomBlock;
+    int NRowsPerMainBlock;
+    int NRowsPerBottomBlock;
 
     // The barrel is made up of 5 main blocks placed in a vertical line,
     // as well as one bottom block. This column of 5+1 is then rotated around
     // the barrel to completely cover it.
     int NBlocksAround;
-    G4double NBlocksPerRing;
+    int NBlocksPerRing;
 
 
     void Print(){
@@ -327,13 +327,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 
     // Legacy WCSim Values
     WCLength  = 70*m;        // Length of the ID
-    WCIDRadius = 64.8*m/2;   // Radius of the inner detector from black sheet to black sheet
+    WCIDDiameter = 64.8*m;
+    WCIDRadius = WCIDDiameter/2;   // Radius of the inner detector from black sheet to black sheet
     WCIDHeight = 65.751*m;   // Height of the inner detector from black sheet to black sheet
     WCODLateralWaterDepth    = 1.*m;  // Distance between the OD inner and outer barrel tyvek (i.e. width of the OD on the sides)
     WCODHeightWaterDepth     = 2.*m; // Distance between the OD inner cap and outer cap tyvek (i.e. height between bottom of the OD and inner frame)
     WCODDeadSpace            = 600.*mm; // Dead space between the OD inner tyvek, and the ID black sheet.
     WCODTyvekSheetThickness  = 1.*mm; // Thickness of the OD Tyvek
-    WCBlackSheetThickness = 2*cm; // Thickness of the ID black sheet. Here this was changed from 2cm, likely a typo in legacy.
+    WCBlackSheetThickness   = 2*cm; // Thickness of the ID black sheet. 
 
     // *************************
     // Configuration Filling
@@ -345,14 +346,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     config.NBlocksAround = 6; // Number of G4Assembly blocks that are stamped around the detector (rotating around phi)
 
     // Now we fill the configuration variables for all volumes
-    config.InnerDetectorVis = new G4VisAttributes(true, G4Colour(0.0,0.0,1.0,1.0));
+    config.InnerDetectorVis = new G4VisAttributes(true, G4Colour(0.0,0.0,1.0,1.0)); //BLUE
     config.InnerDetectorVis->SetForceSolid(1);
     config.InnerDetectorMaterial = G4Material::GetMaterial("Water");
     config.InnerDetectorInnerRadius = 0;
     config.InnerDetectorOuterRadius = WCIDRadius;
     config.InnerDetectorBarrelLength = WCIDHeight;
 
-    config.BlackTyvekVis = new G4VisAttributes(true, G4Colour(0.0,1.0,0.0,1.0));
+    config.BlackTyvekVis = new G4VisAttributes(true, G4Colour(0.0,1.0,0.0,1.0)); //GREEN
     config.BlackTyvekVis->SetLineWidth(2);
     config.BlackTyvekVis->SetForceAuxEdgeVisible(0);
     config.BlackTyvekMaterial = G4Material::GetMaterial("Tyvek");
@@ -360,14 +361,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     config.BlackTyvekOuterRadius = WCIDRadius + WCBlackSheetThickness;
     config.BlackTyvekBarrelLength = WCIDHeight + 2*WCBlackSheetThickness;
 
-    config.DeadSpaceVis = new G4VisAttributes(true, G4Colour(0.0,0.0,0.0,1.0));
+    config.DeadSpaceVis = new G4VisAttributes(true, G4Colour(0.0,0.0,0.0,1.0)); //BLACK
     config.DeadSpaceVis->SetForceSolid(1);
     config.DeadSpaceMaterial = G4Material::GetMaterial("Water");
     config.DeadSpaceInnerRadius = config.BlackTyvekOuterRadius;
     config.DeadSpaceOuterRadius = config.BlackTyvekOuterRadius + WCODDeadSpace;
     config.DeadSpaceBarrelLength = config.BlackTyvekBarrelLength + 2*WCODDeadSpace;
 
-    config.WhiteTyvekVis = new G4VisAttributes(true, G4Colour(1.0,1.0,1.0,1.0));
+    config.WhiteTyvekVis = new G4VisAttributes(true, G4Colour(1.0,1.0,1.0,1.0)); //WHITE
     config.WhiteTyvekVis->SetForceSolid(1);
     config.WhiteTyvekVis->SetLineWidth(2);
     config.WhiteTyvekVis->SetForceAuxEdgeVisible(0);
@@ -376,13 +377,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     config.WhiteTyvekOuterRadius = config.DeadSpaceOuterRadius + WCODTyvekSheetThickness;
     config.WhiteTyvekBarrelLength = config.DeadSpaceBarrelLength + 2*WCODTyvekSheetThickness;
 
-    config.OuterDetectorVis = new G4VisAttributes(false, G4Colour(0.5,0.5,1.0,0.05));
+    config.OuterDetectorVis = new G4VisAttributes(false, G4Colour(0.5,0.5,1.0,0.05)); //LIGHTGREEN
     config.OuterDetectorMaterial = G4Material::GetMaterial("Water");
     config.OuterDetectorInnerRadius = config.WhiteTyvekOuterRadius;
     config.OuterDetectorOuterRadius = config.WhiteTyvekOuterRadius + WCODLateralWaterDepth;
     config.OuterDetectorBarrelLength = config.WhiteTyvekBarrelLength + 2*WCODHeightWaterDepth;
 
-    config.WallTyvekVis = new G4VisAttributes(false, G4Colour(1.0,0.0,0.0,1.0));
+    config.WallTyvekVis = new G4VisAttributes(false, G4Colour(1.0,0.0,0.0,1.0)); // RED
     config.WallTyvekVis->SetForceWireframe(1);
     config.WallTyvekVis->SetLineWidth(0);
     config.WallTyvekVis->SetForceAuxEdgeVisible(0);
@@ -391,12 +392,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     config.WallTyvekOuterRadius = config.OuterDetectorOuterRadius + WCODTyvekSheetThickness;
     config.WallTyvekBarrelLength = config.OuterDetectorBarrelLength + 2*WCODTyvekSheetThickness;
 
-    config.MainWaterTankVis = new G4VisAttributes(false, G4Colour(0.0,0.1,0.2,0.5));
+    config.MainWaterTankVis = new G4VisAttributes(false, G4Colour(0.0,0.1,0.2,0.5)); //DARKBLUEGREEN
     config.MainWaterTankRadius = config.WallTyvekOuterRadius+5*mm;
     config.MainWaterTankLength = config.WallTyvekBarrelLength+5*mm;
     config.MainWaterTankMaterial = G4Material::GetMaterial("Water");
 
-    config.RockShellVis = new G4VisAttributes(false, G4Colour(0.5,0.5,1.0,0.1));
+    config.RockShellVis = new G4VisAttributes(false, G4Colour(0.5,0.5,1.0,0.1)); //DARKBLUE TRANSPARENT
     config.RockShellMaterial = G4Material::GetMaterial("Rock");
     config.RockShellRadius = config.MainWaterTankRadius + 30*cm;
     config.RockShellLength = config.MainWaterTankLength + 30*cm;
@@ -552,6 +553,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     );
 
     // Optional inner phantom for creating a new logical away from the PMT tracking one
+    // Currently the entire ID is treated as one volume. This slows tracking down
+    // as every PMT needs to be intersection checked even when rays are far from the tank
+    // walls. Adding a phantom can improve on this, but it is left as a placeholder for now
+    // as needs to be explored furrther and future detector designs probably need to look at 
+    // more efficient subdivision of the ID tank space.
+    // 
     // G4LogicalVolume* InnerDetectorPhantomLogic;
     // G4PVPlacement* InnerDetectorPhantomPhysical;
     // BuildAndPlace_SinglePolyhedraTank(
@@ -579,7 +586,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 
     // Temporary PMT Logics to place
     G4Material* pmt_mat = nist->FindOrBuildMaterial("G4_AIR");
-    auto pmt20_dummy_solid = new G4Sphere("pmt20",0, 508*mm/2, 0, pi,0,pi);
+    auto pmt20_dummy_solid = new G4Sphere("pmt20",0, 508*mm/2, 0, twopi,0,twopi);
     auto pmt20_dummy_logic = new G4LogicalVolume(pmt20_dummy_solid, pmt_mat, "pmt20");
     G4VisAttributes* pmt20_dummy_colour = new G4VisAttributes(G4Colour(0.0,1.0,0.0));
     pmt20_dummy_colour->SetForceLineSegmentsPerCircle(12);
@@ -588,7 +595,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     pmt20_dummy_colour->SetLineWidth(3);
     pmt20_dummy_logic->SetVisAttributes(pmt20_dummy_colour);
 
-    auto pmtmulti_dummy_solid = new G4Sphere("pmtMulti",0, 508*mm/2, 0, pi,0,pi);
+    auto pmtmulti_dummy_solid = new G4Sphere("pmtMulti",0, 508*mm/2, 0, twopi,0,twopi);
     auto pmtmulti_dummy_logic = new G4LogicalVolume(pmtmulti_dummy_solid, pmt_mat, "pmtMulti");
     G4VisAttributes* pmtmulti_dummy_colour = new G4VisAttributes(G4Colour(1.0,0.0,0.0));
     pmtmulti_dummy_colour->SetForceLineSegmentsPerCircle(12);
@@ -693,7 +700,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // |     |
     // | # # |
     // |     |
-    // | #M# |
+    // | #F# |
     // _______
 
     G4double RowSeperation = config.RowSeperation;
@@ -715,14 +722,17 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     G4ThreeVector position_high = G4ThreeVector(0,0.0,RowSeperation/4);
 
     auto frame_block_assembly = new G4AssemblyVolume();
-    frame_block_assembly->AddPlacedAssembly(pmt20_offset_placement, position_high, rotation_high );
-    frame_block_assembly->AddPlacedAssembly(pmt20_offset_placement, position_low, rotation_low  );
+    frame_block_assembly->AddPlacedAssembly(pmt20_offset_placement, position_high, rotation_high ); //TOPRIGHT
+    // SKIP TOP LEFT CELL BECAUSE ITS EMPTY // frame_block_assembly->AddPlacedAssembly(NULL, position_high, rotation_low  ); //TOPLEFT
+    frame_block_assembly->AddPlacedAssembly(pmt20_offset_placement, position_low, rotation_low  ); //BOTTOMLEFT
+    // SKIP BOTTOM RIGHT CELL BECAUSE ITS EMPTY // frame_block_assembly->AddPlacedAssembly(NULL, position_low, rotation_high  ); //BOTTOMRIGHT
 
-    // Then we repeatt but also add mPMT for PMT_hybrid_three_cell
+    // Then we repeat but also add mPMT for PMT_hybrid_three_cell
     auto frame_block_assembly_withpmt = new G4AssemblyVolume();  
-    frame_block_assembly_withpmt->AddPlacedAssembly(pmt20_offset_placement, position_high, rotation_high  );
-    frame_block_assembly_withpmt->AddPlacedAssembly(pmt20_offset_placement, position_low, rotation_low  );
-    frame_block_assembly_withpmt->AddPlacedAssembly(pmtmulti_offset_placement, position_low, rotation_high  );
+    frame_block_assembly_withpmt->AddPlacedAssembly(pmt20_offset_placement, position_high, rotation_high  ); //TOPRIGHT
+    // SKIP TOP LEFT CELL BECAUSE ITS EMPTY // frame_block_assembly_withpmt->AddPlacedAssembly(NULL, position_high, rotation_low  ); //TOPLEFT
+    frame_block_assembly_withpmt->AddPlacedAssembly(pmt20_offset_placement, position_low, rotation_low  ); //BOTTOMLEFT
+    frame_block_assembly_withpmt->AddPlacedAssembly(pmtmulti_offset_placement, position_low, rotation_high  ); //BOTTOMRIGHT
 
     // Finally we build an OD assembly
     auto frame_block_assembly_odpmt = new G4AssemblyVolume();
