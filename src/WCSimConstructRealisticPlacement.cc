@@ -206,8 +206,45 @@ int CountLogicalChildren(G4LogicalVolume* mother, G4LogicalVolume* children){
 
 
 void SetNestedVisAttributes(G4LogicalVolume* logic, G4VisAttributes* vis){
+  // Helper function to iterate through all nested volumes and fix the
+  // vis attributes to a chosen value. This is needede because sometimes
+  // the PMTs have high segment objects left in their drawing setup and
+  // itt can crash Qt viewers when several thousand are drawn.
+
+  // The geometry is a set of nested cylinders instead of sheets of material
+  // placed inside a monotholic water volume (think russian nesting dolls).
+  // This means each geometry is light tight. Somewhat confusingly it means to make the
+  // ID tyvek we place a solid cylinder/block of Black Sheet, and then place another 
+  // cylinder/block of Water inside of it.
+
+  // Our Hierarchy is as follows
+  // RockShell (WC)
+  // - OD WCBarrel 
+  // - - Wall Tyvek 
+  // - - - OD Water Space
+  // - - - - OD PMTs
+  // - - - - White Tyvek 
+  // - - - - - Dead Space
+  // - - - - - - Black Sheet
+  // - - - - - - - Water Inner
+  // - - - - - - - - ID PMTs
+
+  // In reverse order starting from the bottom these are
+  // ID PMTS -> Inner Detector PMTS (logicWCPMT and logicWCPMT2)
+  // Water Inner -> Water mass of the inner detector
+  // Black Sheet -> ID Black Sheeting
+  // Deadspace -> Elecetronics region between ID and OD
+  // White Tyvek -> Tyvek in the OD that lines the deadspace
+  // OD 
+
+
+
   int ndaughters = logic->GetNoDaughters();
+  
+  // Set vis of the mother
   logic->SetVisAttributes(vis);
+  
+  // Iterate through all children
   for (int i = 0; i < ndaughters; i++){
     G4VPhysicalVolume* vol = logic->GetDaughter(i);
     vol->GetLogicalVolume()->SetVisAttributes(vis);
@@ -218,10 +255,18 @@ void SetNestedVisAttributes(G4LogicalVolume* logic, G4VisAttributes* vis){
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 {
-  // SetHyperK_HybridmPMT_WithOD_Realistic_Geometry();
+  // Main Realistic HKFD Geometry Construction Function.
+  // This uses a port of the existing ConstructCylinder parameters
+  // to build a new nested geometry where the ID is placeed as a child
+  // inside volumes higher in the geometry hieerarchy to make fully enclosed
+  // and light tight volumes. PMTs are then placed in the corresponding
+  // volumes using G4Assembly classes.
 
-  G4cout << "**** Building Realistic HK Placement Detector ****" << G4endl;
-  G4NistManager* nist = G4NistManager::Instance();
+    G4cout << "**** Building Realistic HK Placement Detector ****" << G4endl;
+
+    // Instantiate NIST manager so we can use all the materials from
+    // WCSimConstructMaterials
+    G4NistManager* nist = G4NistManager::Instance();
 
     // *************************
     // Legacy WCSim Code Translation
@@ -232,24 +277,23 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // Future versions should just use hard copies of the config structure.
 
     // Legacy WCSim Values
-    WCLength  = 70*m;
-    WCIDRadius = 64.8*m/2;
-    WCIDHeight = 65.751*m;
-    WCODLateralWaterDepth    = 1.*m;
-    WCODHeightWaterDepth     = 2.*m;
-    WCODDeadSpace            = 600.*mm;
-    WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
-    WCBlackSheetThickness = 2*cm; // Here this was changed from 2cm, likely a typo in legacy.
-
+    WCLength  = 70*m;        // Length of the ID
+    WCIDRadius = 64.8*m/2;   // Radius of the inner detector from black sheet to black sheet
+    WCIDHeight = 65.751*m;   // Height of the inner detector from black sheet to black sheet
+    WCODLateralWaterDepth    = 1.*m;  // Distance between the OD inner and outer barrel tyvek (i.e. width of the OD on the sides)
+    WCODHeightWaterDepth     = 2.*m; // Distance between the OD inner cap and outer cap tyvek (i.e. height between bottom of the OD and inner frame)
+    WCODDeadSpace            = 600.*mm; // Dead space between the OD inner tyvek, and the ID black sheet.
+    WCODTyvekSheetThickness  = 1.*mm; // Thickness of the OD Tyvek
+    WCBlackSheetThickness = 2*cm; // Thickness of the ID black sheet. Here this was changed from 2cm, likely a typo in legacy.
 
     // *************************
     // Configuration Filling
     // *************************
-
-    config.NSpacesInBlock = 48;
-    config.CellArcLength = 706.84*mm;
-    config.RowSeperation = config.CellArcLength*2;
-    config.NBlocksAround = 6;
+    
+    config.NSpacesInBlock = 48;  // Number of possible PMT spaces in a single row in an integration block
+    config.CellArcLength = 706.84*mm; // Length of a PMT cell from strut to strut
+    config.RowSeperation = config.CellArcLength*2; // Each PMT 'row' is double height, so row seperation is 2xcell size
+    config.NBlocksAround = 6; // Number of G4Assembly blocks that are stamped around the detector (rotating around phi)
 
     // Now we fill the configuration variables for all volumes
     config.InnerDetectorVis = new G4VisAttributes(true, G4Colour(0.0,0.0,1.0,1.0));
@@ -319,21 +363,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // Shell Hierarchy Construction
     // *************************
     G4ThreeVector CENTRAL_POS = G4ThreeVector();
-    G4double twopi = 3.14159*2;
-    G4double pi = 3.14159*2;
+    // G4double twopi = 3.14159*2;
+    // G4double pi = 3.14159*2;
 
-    // Our Hierarchy is as follows
-    // 1. Rock (WC)
-    // - OD WCBarrel 
-    // - - White Tyvek Wall
-    // - - - OD Water Space
-    // - - - - OD PMTs
-    // - - - - White Tyvek Frame
-    // - - - - Black Tyvek Wall
-    // - - - - - Dead Space
-    // - - - - - - White Tyvek
-    // - - - - - - - Water Inner
-    // - - - - - - - - ID PMTs
 
     // All placements are treated as nested logical volumes to ensure there are no
     // gaps in the geometry.
@@ -1123,15 +1155,17 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 
       if (G4UniformRand()*100 < odpmt_x_in_every_100){
         if ( vol->GetLogicalVolume() == pmtod_dummy_logic ) {
-          new G4PVPlacement(
-              aTransform,
-              logicWCODWLSAndPMT,              // pmt20
-              "WCBorderCellODContainer",       // its name
-              OuterDetectorLogic,       // its mother volume
-              false,                    // no boolean operations
-              copyno++,
-              false
-          );   
+          if (isODConstructed){
+            new G4PVPlacement(
+                aTransform,
+                logicWCODWLSAndPMT,              // pmt20
+                "WCBorderCellODContainer",       // its name
+                OuterDetectorLogic,       // its mother volume
+                false,                    // no boolean operations
+                copyno++,
+                false
+            );   
+          }
         }
       }
       delete vol;
