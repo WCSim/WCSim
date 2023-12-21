@@ -45,8 +45,6 @@
 
 struct RealisticPlacementConfiguration {
 
-    G4ThreeVector EntireDetectOffset; //< Relative offset for
-
     G4Material* InnerDetectorMaterial;
     G4Material* OuterDetectorMaterial;
 
