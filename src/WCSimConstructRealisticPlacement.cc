@@ -727,10 +727,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     G4ThreeVector cell_pos = G4ThreeVector(0.0,0.0,0.0);
     auto cell_block_rotation = new G4RotationMatrix();
 
-    // int NSpacesInBlock = config.NSpacesInBlock;
-    // int NSegments = config.NBlocksAround * NSpacesInBlock;
-    // int NBlocksUp = config.NBlocksUp;
-    // G4double phi_offset = twopi / float(NSegments);
 
     // Sweep through angular positions in the row
     for (int i = 0; i < NSpacesInBlock/2; i++){
