@@ -109,7 +109,7 @@ struct RealisticPlacementConfiguration {
 
     void Print(){
       std::cout << "-----------------------------------" << std::endl;
-      std::cout << "HK FD Detector Configuration Table " << std::endl;
+      std::cout << "HK FD Detector Configuration Table (units: mm)" << std::endl;
       std::cout << "-----------------------------------" << std::endl;
       std::cout << "BlackTyvekInnerRadius = " << BlackTyvekInnerRadius << std::endl;
       std::cout << "BlackTyvekOuterRadius = " << BlackTyvekOuterRadius << std::endl;
