@@ -104,27 +104,26 @@ struct RealisticPlacementConfiguration {
 
     G4double RowSeperation;
     int NSpacesInBlock;
-    int NBlocksUp;
     int NBlocksAround;
     G4double CellArcLength;
 
 
     void Print(){
-      std::cout << "-----------------------------------" << std::endl;
-      std::cout << "HK FD Detector Configuration Table (units: mm)" << std::endl;
-      std::cout << "-----------------------------------" << std::endl;
-      std::cout << "BlackTyvekInnerRadius = " << BlackTyvekInnerRadius << std::endl;
-      std::cout << "BlackTyvekOuterRadius = " << BlackTyvekOuterRadius << std::endl;
-      std::cout << "DeadSpaceInnerRadius = " << DeadSpaceInnerRadius << std::endl;
-      std::cout << "DeadSpaceOuterRadius = " << DeadSpaceOuterRadius << std::endl;
-      std::cout << "WhiteTyvekInnerRadius = " << WhiteTyvekInnerRadius << std::endl;
-      std::cout << "WhiteTyvekOuterRadius = " << WhiteTyvekOuterRadius << std::endl;
-      std::cout << "WallTyvekInnerRadius = " << WallTyvekInnerRadius << std::endl;
-      std::cout << "WallTyvekOuterRadius = " << WallTyvekOuterRadius << std::endl;
-      std::cout << "MainWaterTankRadius = " << MainWaterTankRadius << std::endl;
-      std::cout << "MainWaterTankLength = " << MainWaterTankLength << std::endl;
-      std::cout << "RockShellRadius = " << RockShellRadius << std::endl;
-      std::cout << "RockShellLength = " << RockShellLength << std::endl;
+      G4cout << "-----------------------------------" << G4endl;
+      G4cout << "HK FD Detector Configuration Table (units: mm)" << G4endl;
+      G4cout << "-----------------------------------" << G4endl;
+      G4cout << "BlackTyvekInnerRadius = " << BlackTyvekInnerRadius << G4endl;
+      G4cout << "BlackTyvekOuterRadius = " << BlackTyvekOuterRadius << G4endl;
+      G4cout << "DeadSpaceInnerRadius = " << DeadSpaceInnerRadius << G4endl;
+      G4cout << "DeadSpaceOuterRadius = " << DeadSpaceOuterRadius << G4endl;
+      G4cout << "WhiteTyvekInnerRadius = " << WhiteTyvekInnerRadius << G4endl;
+      G4cout << "WhiteTyvekOuterRadius = " << WhiteTyvekOuterRadius << G4endl;
+      G4cout << "WallTyvekInnerRadius = " << WallTyvekInnerRadius << G4endl;
+      G4cout << "WallTyvekOuterRadius = " << WallTyvekOuterRadius << G4endl;
+      G4cout << "MainWaterTankRadius = " << MainWaterTankRadius << G4endl;
+      G4cout << "MainWaterTankLength = " << MainWaterTankLength << G4endl;
+      G4cout << "RockShellRadius = " << RockShellRadius << G4endl;
+      G4cout << "RockShellLength = " << RockShellLength << G4endl;
     }
 
 };
@@ -148,7 +147,7 @@ G4LogicalVolume* BuildAndPlace_SinglePolyhedraTank(
   // with the number of segments matching the number of PMT cells.
   // This means each segment panel is flush with the PMT base.
 
-  std::cout << "Placing Polyhedra Tank Name " << name << " " << mother << std::endl;
+  G4cout << "Placing Polyhedra Tank Name " << name << " " << mother << G4endl;
 
   // Basic polyhedra with top and bottom plane and only an outer shell
   G4double zplane[2] = {-0.5*full_length,0.5*full_length};
@@ -175,9 +174,9 @@ G4LogicalVolume* BuildAndPlace_SinglePolyhedraTank(
   // If a mother has been given it means we need to place the logical
   // inside the mother volume.
   if (mother){
-    std::cout << "Placing Physical " << logic << " " << mother << std::endl;
+    G4cout << "Placing Physical " << logic << " " << mother << G4endl;
     physical = new G4PVPlacement(0,
-                          G4ThreeVector(0.,0.,0.),
+                          position,
                           logic,
                           name,
                           mother,
@@ -191,7 +190,7 @@ G4LogicalVolume* BuildAndPlace_SinglePolyhedraTank(
   vis->SetForceWireframe(1);
   logic->SetVisAttributes(vis); 
 
-  std::cout << "LOGICAL DONE --------------- " << logic << std::endl;
+  G4cout << "LOGICAL DONE --------------- " << logic << G4endl;
   return logic; 
 }
 
@@ -365,9 +364,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // Shell Hierarchy Construction
     // *************************
     G4ThreeVector CENTRAL_POS = G4ThreeVector();
-    // G4double twopi = 3.14159*2;
-    // G4double pi = 3.14159*2;
-
 
     // All placements are treated as nested logical volumes to ensure there are no
     // gaps in the geometry.
@@ -389,7 +385,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
       rockShellPhysical
     );
 
-    std::cout << "ROCK SHELL : " << rockShellLogic << " " << rockShellLogic2 << " " << rockShellPhysical << std::endl;
+    G4cout << "ROCK SHELL : " << rockShellLogic << " " << rockShellLogic2 << " " << rockShellPhysical << G4endl;
 
     // 2. OD (WCBarrel)
     G4LogicalVolume* MainWaterTankLogic;
@@ -407,7 +403,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
       MainWaterTankPhysical
     );
 
-    std::cout << "Water Tank : " << MainWaterTankLogic << " " << MainWaterTankPhysical << std::endl;
+    G4cout << "Water Tank : " << MainWaterTankLogic << " " << MainWaterTankPhysical << G4endl;
 
 
     // 3. White Tyvek Shell
@@ -596,7 +592,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // First make a single cell assembly, this will put the PMT flush against the wall
     // Since assembly volumes just expand relative to their center point the means
     // all nested volumes will also have the PMT againt the tyvek.
-    G4double InnerTyvekRadius = config.InnerDetectorOuterRadius;
 
     G4ThreeVector pmt_central_position = G4ThreeVector(config.InnerDetectorOuterRadius-59.62*mm,0.0,0.0);
     G4ThreeVector mpmt_central_position = G4ThreeVector(config.InnerDetectorOuterRadius-59.62*mm,0.0,0.0);
@@ -657,10 +652,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 
     int NSpacesInBlock = config.NSpacesInBlock;
     int NSegments = config.NBlocksAround * NSpacesInBlock;
-    int NBlocksUp = config.NBlocksUp;
     G4double phi_offset = twopi / float(NSegments);
 
-    std::cout << "PHI OFFSET : " << phi_offset/2 << std::endl;
+    G4cout << "PHI OFFSET : " << phi_offset/2 << G4endl;
 
     // First we build PMT_only_two_cell
     G4RotationMatrix* rotation_low = new G4RotationMatrix;
@@ -805,7 +799,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 
     G4RotationMatrix* block_rot = new G4RotationMatrix();
 
-    // Hard coded row choices for 
+    // Hard coded row choices for each of the PMT placements.
+    // This is because the integration diagrams alternate between
+    // a row with no multipmts and ones with them spaced at different offsets.
     for (int i = 0; i < 8; i++){
       G4ThreeVector block_pos = G4ThreeVector(0.0,0.0,(-i-0.5)*RowSeperation);
 
@@ -962,7 +958,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     int pmtmulti_count_top = pmtmulti_count_barrel_and_top - pmtmulti_count_barrel;
     int pmtod_count_top = pmtod_count_barrel_and_top - pmtod_count_barrel;
 
-    // Now cap the oother side
+    // Now cap the other side
     // -----------------
     G4ThreeVector botcappos = G4ThreeVector(0.0,0.0,-config.InnerDetectorBarrelLength/2);
     G4RotationMatrix* botcaprot = new G4RotationMatrix();
@@ -984,12 +980,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     int pmtod_count_bottom = pmtod_count_total - pmtod_count_barrel_and_top;
 
     // We are finished with the assembly, check the totals! 
-    std::cout << "" << std::endl;
-    std::cout << "        Barrel  Top  Bottom  Total" << std::endl;
-    std::cout << "IDPMT " << pmt20_count_barrel << " " << pmt20_count_top << " " << pmt20_count_bottom << " " << pmt20_count_total << std::endl;
-    std::cout << "ODPMT " << pmtod_count_barrel << " " << pmtod_count_top << " " << pmtod_count_bottom << " " << pmtod_count_total << std::endl;
-    std::cout << "mPMT  " << pmtmulti_count_barrel << " " << pmtmulti_count_top << " " << pmtmulti_count_bottom << " " << pmtmulti_count_total << std::endl;
-    std::cout << "" << std::endl;
+    G4cout << "" << G4endl;
+    G4cout << "        Barrel  Top  Bottom  Total" << G4endl;
+    G4cout << "IDPMT " << pmt20_count_barrel << " " << pmt20_count_top << " " << pmt20_count_bottom << " " << pmt20_count_total << G4endl;
+    G4cout << "ODPMT " << pmtod_count_barrel << " " << pmtod_count_top << " " << pmtod_count_bottom << " " << pmtod_count_total << G4endl;
+    G4cout << "mPMT  " << pmtmulti_count_barrel << " " << pmtmulti_count_top << " " << pmtmulti_count_bottom << " " << pmtmulti_count_total << G4endl;
+    G4cout << "" << G4endl;
 
     // -------------------------------------
     // ID PMT Creation (copied from WCSIM)
@@ -1170,8 +1166,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
       removed++;
     }
     
-    std::cout << "Final Outer N Daugters : " << OuterDetectorLogic->GetNoDaughters() << std::endl;
-    std::cout << "Final Inner N Daugters : " << InnerDetectorLogic->GetNoDaughters() << std::endl;
+    G4cout << "Final Outer N Daugters : " << OuterDetectorLogic->GetNoDaughters() << G4endl;
+    G4cout << "Final Inner N Daugters : " << InnerDetectorLogic->GetNoDaughters() << G4endl;
 
     // -------------------------------------
     // Optical Surfaces
@@ -1204,9 +1200,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     int pmtmulti_count_final = CountLogicalChildren(InnerDetectorLogic, pmtmulti_dummy_logic);
     int pmtod_count_final    = CountLogicalChildren(OuterDetectorLogic, pmtod_dummy_logic);
 
-    std::cout << "Final Values : " << pmt20_count_final << " " << pmtmulti_count_final << " " << pmtod_count_final << std::endl;
+    G4cout << "Final Values : " << pmt20_count_final << " " << pmtmulti_count_final << " " << pmtod_count_final << G4endl;
 
-    std::cout << "FINISHED Realistic Placement" << std::endl;
+    G4cout << "FINISHED Realistic Placement" << G4endl;
 
     return rockShellLogic;
 }
