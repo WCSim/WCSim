@@ -57,6 +57,7 @@ struct RealisticPlacementConfiguration {
     G4double BlackTyvekOuterRadius;
     G4double BlackTyvekBarrelLength;
 
+    // Dead space is the space between ID & OD
     G4VisAttributes* DeadSpaceVis;
     G4Material* DeadSpaceMaterial;
     G4double DeadSpaceInnerRadius;
