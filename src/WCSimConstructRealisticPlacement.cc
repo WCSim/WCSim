@@ -57,6 +57,7 @@ struct RealisticPlacementConfiguration {
     G4double BlackTyvekOuterRadius;
     G4double BlackTyvekBarrelLength;
 
+    // Dead space is the space between ID & OD
     G4VisAttributes* DeadSpaceVis;
     G4Material* DeadSpaceMaterial;
     G4double DeadSpaceInnerRadius;
@@ -79,6 +80,7 @@ struct RealisticPlacementConfiguration {
     G4double WhiteTyvekOuterRadius;
     G4double WhiteTyvekBarrelLength;
 
+    // Wall tyvek is placed on the inner wall of the water tank
     G4VisAttributes* WallTyvekVis;
     G4Material* WallTyvekMaterial;
     G4double WallTyvekInnerRadius;
@@ -109,7 +111,7 @@ struct RealisticPlacementConfiguration {
 
     void Print(){
       std::cout << "-----------------------------------" << std::endl;
-      std::cout << "HK FD Detector Configuration Table " << std::endl;
+      std::cout << "HK FD Detector Configuration Table (units: mm)" << std::endl;
       std::cout << "-----------------------------------" << std::endl;
       std::cout << "BlackTyvekInnerRadius = " << BlackTyvekInnerRadius << std::endl;
       std::cout << "BlackTyvekOuterRadius = " << BlackTyvekOuterRadius << std::endl;
@@ -759,16 +761,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     G4ThreeVector cell_pos = G4ThreeVector(0.0,0.0,0.0);
     auto cell_block_rotation = new G4RotationMatrix();
 
-    // int NSpacesInBlock = config.NSpacesInBlock;
-    // int NSegments = config.NBlocksAround * NSpacesInBlock;
-    // int NBlocksUp = config.NBlocksUp;
-    // G4double phi_offset = twopi / float(NSegments);
 
     // Sweep through angular positions in the row
     for (int i = 0; i < NSpacesInBlock/2; i++){
       cell_block_rotation->rotateZ(phi_offset*2);
       
-      // Simple row only ID pmtt
+      // Simple row only ID pmt
       block_row_nomultipmts->AddPlacedAssembly(frame_block_assembly, cell_pos, cell_block_rotation);
 
       // Hybrid mPMT rows for ID index 1
