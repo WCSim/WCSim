@@ -936,17 +936,16 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
   G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;	
  
 
+  // The variables below are not actually used for relaaistic placement
+  // but for nw they are left in whilst we check their effect.
   // WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
   // WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
   WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height) + 1.*CLHEP::mm; //offset from vertical
   WCIDVerticalPosition     = 0.;
-
   WCPMTPercentCoverage  = 20.2150576375662;
   WCPMTPercentCoverage2  = 5; // Approximate value for now based on PMT rescaling. Needs to be recalculated.
-
   WCPMTperCellHorizontal = std::lround((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
   WCPMTperCellVertical = WCPMTperCellHorizontal;
-
   WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_radius)));
   WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
 									/WCPMTperCellVertical);
@@ -954,9 +953,7 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
   WCCapEdgeLimit        = WCIDDiameter/2.0 - std::max(WCPMTRadius,mPMT_vessel_radius);
   WCBlackSheetThickness = 2.0*cm;
   WCAddGd               = false;
-
   CaveTyvekSheetThickness  = 1.*mm; // Quite Standard I guess
-
   isODConstructed = true;
 
   // OD Dimensions //
@@ -985,7 +982,6 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
   WCODPMTShift = 0.*cm;
 
   // OD caps //
-  // WCODCapPMTSpacing = 100*cm;
   WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
   WCODCapEdgeLimit = WCIDDiameter/2.0 - WCODWLSPlatesLength/2;
 
