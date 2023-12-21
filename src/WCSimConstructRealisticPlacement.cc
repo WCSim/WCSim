@@ -1134,7 +1134,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
               InnerDetectorLogic,       // its mother volume
               false,                    // no boolean operations
               copyno++,
-              false
+              checkOverlapsPMT
           );   
 
         }
@@ -1167,7 +1167,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
                 InnerDetectorLogic,       // its mother volume
                 false,                    // no boolean operations
                 copyno++,
-                false
+                checkOverlapsPMT
             );   
         } 
       }
@@ -1207,7 +1207,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
                 OuterDetectorLogic,       // its mother volume
                 false,                    // no boolean operations
                 copyno++,
-                false
+                checkOverlapsPMT
             );   
           }
         }
