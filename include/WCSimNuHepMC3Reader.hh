@@ -1,8 +1,16 @@
+#ifndef WCSimNuHepMC3Reader_h
+#define WCSimNuHepMC3Reader_h
+
 #include <G4LorentzVector.hh>
 #include <G4String.hh>
 
-#include "HepMC3/GenParticle_fwd.h"
-#include "HepMC3/ReaderFactory.h"
+// #include "HepMC3/GenParticle.h"
+#include "HepMC3/GenEvent.h"
+
+namespace HepMC3 {
+class Reader;
+typedef std::shared_ptr<Reader> ReaderPtr;
+} // namespace HepMC3
 
 class WCSimNuHepMC3Reader {
   public:
@@ -26,7 +34,9 @@ class WCSimNuHepMC3Reader {
 
   private:
     // Event reader
-    std::shared_ptr<HepMC3::Reader> hepmc_reader;
+    std::shared_ptr<HepMC3::Reader> my_hepmc_reader;
     HepMC3::GenEvent event;
     int events_parsed;
 };
+
+#endif
