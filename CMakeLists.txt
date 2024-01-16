@@ -32,40 +32,22 @@ pbuilder_prepare_project()
 
 set(CMAKE_CXX_STANDARD 14) # Enable c++14 standard
 
-#####
-# CPM
-#####
-include(CPM)
-CPMFindPackage(
-    NAME HepMC3
-    VERSION 3.2.6
-    GIT_REPOSITORY "https://gitlab.cern.ch/hepmc/HepMC3.git"
-    GIT_TAG 3.2.6
-    OPTIONS
-        "HEPMC3_CXX_STANDARD ${CMAKE_CXX_STANDARD}"
-        "HEPMC3_ENABLE_SEARCH OFF"
-        "HEPMC3_ENABLE_ROOTIO OFF"
-        "HEPMC3_ENABLE_PROTOBUFIO OFF"
-        "HEPMC3_ENABLE_PYTHON ON"
-        "HEPMC3_Python_SITEARCH${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} ${CMAKE_INSTALL_PREFIX}/${ProSelecta_PYTHONPATH}"
-        "HEPMC3_BUILD_DOCS OFF"
-        "HEPMC3_BUILD_EXAMPLES OFF"
-        "HEPMC3_INSTALL_EXAMPLES OFF"
-        "HEPMC3_ENABLE_TEST OFF"
-        "HEPMC3_INSTALL_INTERFACES ON"
-        "HEPMC3_BUILD_STATIC_LIBS ON"
-)
-find_package(HepMC3 REQUIRED)
-add_library(HepMC3_includes INTERFACE)
-target_include_directories(HepMC3_includes SYSTEM INTERFACE ${HepMC3_SOURCE_DIR}/include)
-include_directories(${HepMC3_SOURCE_DIR}/include)
 
-
+########
+# HepMC3
+########
+find_package(HepMC3)
+if (NOT HepMC3_FOUND)
+    message(FATAL "Unable to find HepMC3")
+endif (NOT HepMC3_FOUND)
+# Make a variable for the HepMC3 include directory
+set(HEPMC3_LIBS ${HEPMC3_INCLUDE_DIR}/HepMC3)
+include_directories (${HEPMC3_LIBS})
+LIST(APPEND PUBLIC_EXT_LIBS ${HEPMC3_LIBRARIES})
 
 ######
 # ROOT
 ######
-
 find_package(ROOT COMPONENTS CONFIG REQUIRED)
 if (ROOT_FOUND)
 
