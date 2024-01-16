@@ -1515,6 +1515,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         if (!hepmc3_reader){
             hepmc3_reader = new WCSimNuHepMC3Reader(hepmc3_filename);
         }
+
+        // Get the next event from the reader
+        // hepmc3_reader->ReadEvent();
+
+        // Get the vector of particle momenta and PDGs
+        // std::vector<std::pair<G4LorentzVector, int>> hepmc_particles = hepmc3_reader->GetMomentaAndPDGs();
     }
 }
 
