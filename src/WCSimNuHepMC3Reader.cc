@@ -1,33 +1,26 @@
 #include "WCSimNuHepMC3Reader.hh"
-#include "HepMC3/GenEvent.h"
-#include "HepMC3/GenParticle_fwd.h"
 #include "HepMC3/Print.h"
-#include <G4LorentzVector.hh>
-#include <G4ios.hh>
-#include <cstdlib>
+#include "HepMC3/ReaderFactory.h"
 
 WCSimNuHepMC3Reader::WCSimNuHepMC3Reader(G4String filename) {
     G4cout << "NuHepMC3Reader: [INFO] input file called " << filename << G4endl;
 
     // Get reader object for the input file
-    hepmc_reader = HepMC3::deduce_reader(filename);
+    my_hepmc_reader = HepMC3::deduce_reader(filename);
 
     // Set events parsed to 0
     events_parsed = 0;
 }
 
-WCSimNuHepMC3Reader::~WCSimNuHepMC3Reader() {
-    // Close the input file
-    hepmc_reader->close();
-}
+WCSimNuHepMC3Reader::~WCSimNuHepMC3Reader() {}
 
 // Read the next event from the input file
 bool WCSimNuHepMC3Reader::ReadEvent() {
     // Read event
-    hepmc_reader->read_event(event);
+    my_hepmc_reader->read_event(event);
 
     // Check if the reading failed
-    if (hepmc_reader->failed()) {
+    if (my_hepmc_reader->failed()) {
         G4cout << "NuHepMC3Reader: \033[31m[ERROR]\033[0m Failed to read event " << events_parsed << G4endl;
         return false;
     }
@@ -56,8 +49,11 @@ bool WCSimNuHepMC3Reader::GetParticles() {
 
     particles = event.particles();
 
+    particles[0]->id();
+
     if (particles.size() == 0) {
         G4cout << "NuHepMC3Reader: \033[31m[ERROR]\033[0m No particles in event " << events_parsed << G4endl;
+
         return false;
     }
 
