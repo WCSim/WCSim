@@ -983,7 +983,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     G4cout << "B.Q: open the tree" << G4endl;
 #endif
     TTree* tree = GetRunAction()->GetTree();
-    tree->SetEntries(GetRunAction()->GetNumberOfEventsGenerated());
+    tree->SetEntries(tree->GetEntries() + GetRunAction()->GetNumberOfEventsGenerated());
   }
 
   //save DAQ options here. This ensures that when the user selects a default option
