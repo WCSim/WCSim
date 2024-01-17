@@ -983,7 +983,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     G4cout << "B.Q: open the tree" << G4endl;
 #endif
     TTree* tree = GetRunAction()->GetTree();
-    tree->SetEntries(tree->GetEntries() + 1);
+    tree->Fill();
   }
 
   //save DAQ options here. This ensures that when the user selects a default option
@@ -1117,6 +1117,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // Fill up a Root event with stuff from the ntuple
 
   WCSimRootEvent* wcsimrootsuperevent = GetRunAction()->GetRootEvent(detectorElement);
+  wcsimrootsuperevent->ReInitialize();
 
   // start with the first "sub-event"
   // if the WC digitization requires it, we will add another subevent
@@ -1634,11 +1635,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   //G4cout <<"WCFV digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";
   //  }
 
-  //TTree* tree = GetRunAction()->GetTree();
-  TBranch* branch = GetRunAction()->GetBranch(detectorElement);
-  //tree->Fill();
-  branch->Fill();
-
   /*
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
@@ -1649,17 +1645,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   }
   */
 
-  /*
-  TFile* hfile = tree->GetCurrentFile();
-  hfile->cd();                    // make sure tree is ONLY written to CurrentFile and not to all files!
-  // MF : overwrite the trees -- otherwise we have as many copies of the tree
-  // as we have events. All the intermediate copies are incomplete, only the
-  // last one is useful --> huge waste of disk space.
-  tree->Write("",TObject::kOverwrite);
-  */
-
-  // M Fechner : reinitialize the super event after the writing is over
-  wcsimrootsuperevent->ReInitialize();
 }
 
 void WCSimEventAction::FillRootEventHybrid(G4int event_id,
@@ -1671,6 +1656,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				       WCSimRootEvent * wcsimrootsuperevent,
 				       WCSimRootTrigger * wcsimrootevent)
  {
+  wcsimrootsuperevent->ReInitialize();
   // start with the first "sub-event"
   // if the WC digitization requires it, we will add another subevent
   // for the WC.
@@ -2177,11 +2163,6 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   //G4cout <<"WCFV digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";
   //  }
 
-  //TTree* tree = GetRunAction()->GetTree();
-  TBranch* branch = GetRunAction()->GetBranch(detectorElement);
-  //tree->Fill();
-  branch->Fill();
-
   /*
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
@@ -2190,18 +2171,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       generatorAction->CopyRootrackerVertex(GetRunAction()->GetRootrackerVertex()); //will increment NVtx
       GetRunAction()->FillRootrackerVertexTree();
   }
-
-
-  TFile* hfile = tree->GetCurrentFile();
-  hfile->cd();                    // make sure tree is ONLY written to CurrentFile and not to all files!
-  // MF : overwrite the trees -- otherwise we have as many copies of the tree
-  // as we have events. All the intermediate copies are incomplete, only the
-  // last one is useful --> huge waste of disk space.
-  tree->Write("",TObject::kOverwrite);
-
   */
-  // M Fechner : reinitialize the super event after the writing is over
-  wcsimrootsuperevent->ReInitialize();
 }
 
 
