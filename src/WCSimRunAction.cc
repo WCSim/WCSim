@@ -168,7 +168,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
       }
       else{
           TFile *hfile = new TFile(rootname.c_str(), "UPDATE");
-          WCSimTree = (*TTree) hfile->Get("wcsimT");
+          WCSimTree = (TTree*) hfile->Get("wcsimT");
           wcsimrooteventbranch = WCSimTree->GetBranch("wcsimrootevent");
           wcsimrooteventbranch2 = WCSimTree->GetBranch("wcsimrootevent2");
           wcsimrooteventbranch_OD = WCSimTree->GetBranch("wcsimrootevent_OD");
