@@ -426,6 +426,10 @@ WCSimWLSProperties *WCSimDetectorConstruction::CreateWLSObject(G4String WLSType)
     WCSimWLSProperties* WLS = new EljenEJ286;
     WCSimDetectorConstruction::SetWLSPointer(WLS);
     return WLS;
+  }else if (WLSType == "Kuraray"){
+    WCSimWLSProperties* WLS = new Kuraray;
+    WCSimDetectorConstruction::SetWLSPointer(WLS);
+    return WLS;
   }
 
   else { G4cout << WLSType << " is not a recognized WLS Type. Exiting WCSim." << G4endl; exit(1);}

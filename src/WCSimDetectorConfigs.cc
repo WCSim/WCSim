@@ -316,7 +316,11 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   // isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
+#if 1
   G4String WLSType = "EljenEJ286";
+#else
+  G4String WLSType = "Kuraray";
+#endif
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
