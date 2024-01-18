@@ -902,7 +902,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
     { 1.*eV, 7*eV };
   G4double fake_passive_abslength_vs_energy[nEntries_fake_abslength] =
     {some_absorption,some_absorption};
-  
+  //  acrylic data from https://arxiv.org/pdf/1310.6454.pdf
   WlsPlasticMPT->AddProperty("ABSLENGTH",fake_energy_for_abslength,fake_passive_abslength_vs_energy,nEntries_fake_abslength);
 
   // Water -> WLS surface properties
@@ -918,8 +918,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
 #if 1
   EljenEJ286 *WLSProps = new EljenEJ286();
 #else
-  Kuraray *WLSProps = new Kuraray();
-  //  Inr *WLSProps = new Inr();
+  //  Kuraray *WLSProps = new Kuraray();
+  Inr *WLSProps = new Inr();
 #endif
   // Define normal reflectivity from Fresnel equations
 

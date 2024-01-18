@@ -319,8 +319,8 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
 #if 1
   G4String WLSType = "EljenEJ286";
 #else
-  G4String WLSType = "Kuraray";
-  //  G4String WLSType = "Inr";
+  //  G4String WLSType = "Kuraray";
+  G4String WLSType = "Inr";
 #endif
   isWLSFilled = true;
   BuildODWLSCladding = true;
