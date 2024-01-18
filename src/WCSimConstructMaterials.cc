@@ -919,6 +919,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   EljenEJ286 *WLSProps = new EljenEJ286();
 #else
   Kuraray *WLSProps = new Kuraray();
+  //  Inr *WLSProps = new Inr();
 #endif
   // Define normal reflectivity from Fresnel equations
 
