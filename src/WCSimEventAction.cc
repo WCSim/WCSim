@@ -1144,8 +1144,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       if (index >=1 ) {
 	wcsimrootsuperevent->AddSubEvent();
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
-	wcsimrootevent->SetHeader(event_id,0,
-				  0,index+1); // date & # of subevent
+	wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0, index+1); // date & # of subevent
 	wcsimrootevent->SetMode(injhfNtuple.mode[0]);
       }
       //wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
@@ -1160,9 +1159,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
 
   // Fill the header
-  // Need to add run and date
+  // Need to add date
   wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
-  wcsimrootevent->SetHeader(event_id,0,0); // will be set later.
+  wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0); // will be set later.
 
   // Fill other info for this event
 
@@ -1681,8 +1680,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       if (index >=1 ) {
 	wcsimrootsuperevent->AddSubEvent();
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
-	wcsimrootevent->SetHeader(event_id,0,
-				   0,index+1); // date & # of subevent
+	wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0, index+1); // date & # of subevent
 	wcsimrootevent->SetMode(injhfNtuple.mode[0]);
       }
       //wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
@@ -1697,9 +1695,9 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 
 
   // Fill the header
-  // Need to add run and date
+  // Need to add date
   wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
-  wcsimrootevent->SetHeader(event_id,0,0); // will be set later.
+  wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0); // will be set later.
 
   // Fill other info for this event
 
@@ -2466,7 +2464,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
 
   // nGates == 0: I still want to keep untriggered event
   if(ngates == 0){
-    GetRunAction()->SetEventHeaderNew(0,event_id+1,1);   //ToDo: run
+    GetRunAction()->SetEventHeaderNew(GetRunAction()->GetRunID(), event_id+1, 1);   //ToDo: run
     //G4cout << event_id << G4endl; //TF debug
     //General case for a vector triggerInfo:
     //GetRunAction()->SetTriggerInfoNew(kTriggerUndefined, std::vector<G4double>(),0.,0.);
@@ -2492,7 +2490,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
   for (int index = 0 ; index < ngates ; index++) {
     //WCSim (FillRootEvent) counts its sub-events from 1 to nGate, while counting events from 0 to n-1
     //Be consistent and start both from 1 here:
-    GetRunAction()->SetEventHeaderNew(0,event_id+1,index+1);   //ToDo: run
+    GetRunAction()->SetEventHeaderNew(GetRunAction()->GetRunID(), event_id+1, index+1);   //ToDo: run
     G4cout << event_id << G4endl;
 
     //First Trigger details of THIS subevent (index+1)

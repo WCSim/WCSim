@@ -49,6 +49,7 @@ WCSimRunAction::~WCSimRunAction()
 
 void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
 {
+  run = aRun->GetRunID()
 
   fSettingsOutputTree = NULL;
   fSettingsInputTree = NULL;
@@ -105,7 +106,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
       wcsimrootsuperevent2->Initialize(); // make at least one event
       wcsimrootsuperevent_OD->Initialize(); // make at least one event
 
-      if (aRun->GetRunID() == 0) {
+      if (run == 0) {
           TFile *hfile = new TFile(rootname.c_str(), "RECREATE", "WCSim ROOT file");
           hfile->SetCompressionLevel(2);
 
@@ -175,6 +176,8 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
           wcsimrooteventbranch->SetAddress(&wcsimrootsuperevent);
           wcsimrooteventbranch2->SetAddress(&wcsimrootsuperevent2);
           wcsimrooteventbranch_OD->SetAddress(&wcsimrootsuperevent_OD);
+          optionsTree = (TTree*) hfile->Get("wcsimRootOptionsT");
+          optionsTree->SetBranchAddress("wcsimrootoptions", &wcsimrootoptions);
       }
   }
 
@@ -475,7 +478,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
   */
 }
 
-void WCSimRunAction::EndOfRunAction(const G4Run* aRun)
+void WCSimRunAction::EndOfRunAction(const G4Run*)
 {
 //G4cout << "Number of Events Generated: "<< numberOfEventsGenerated << G4endl;
 //G4cout<<"Number of times waterTube hit: " << numberOfTimesWaterTubeHit<<G4endl;
@@ -527,10 +530,8 @@ void WCSimRunAction::EndOfRunAction(const G4Run* aRun)
     // Close the Root file at the end of the run
     TFile* hfile = WCSimTree->GetCurrentFile();
     hfile->cd();
-    if(aRun->GetRunID() == 0) {
-        optionsTree->Fill();
-        optionsTree->Write();
-    }
+    optionsTree->Fill();
+    optionsTree->Write();
     hfile->Write();
     hfile->Close();
   
