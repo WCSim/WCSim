@@ -5,6 +5,12 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+New feature
+* Pull request #401 @nickwp: Allow multiple runs of WCSim to be performed in a single WCSim job
+
+Bug fix
+* Pull request #402 @kmtsui: Make /WCSim/PMT/ReplicaPlacement=true work correctly when also using /WCSim/PMT/PositionFile
+
 *************************************************************
 11/01/2024: Notes for v1.12.6
 *************************************************************
