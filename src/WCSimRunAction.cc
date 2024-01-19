@@ -47,8 +47,9 @@ WCSimRunAction::~WCSimRunAction()
 
 }
 
-void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
+void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
 {
+  run = aRun->GetRunID();
 
   fSettingsOutputTree = NULL;
   fSettingsInputTree = NULL;
@@ -96,73 +97,88 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* /*aRun*/)
   G4String rootname = GetRootFileName();
   
   if(useDefaultROOTout){
-    TFile* hfile = new TFile(rootname.c_str(),"RECREATE","WCSim ROOT file");
-    hfile->SetCompressionLevel(2);
-    
-    if(wcsimdetector->GetIsNuPrism()){
-      if(fSettingsInputTree){
-	fSettingsOutputTree = fSettingsInputTree->CloneTree(0);
-      }
-      else{
-	fSettingsOutputTree = new TTree("Settings","Settings");
-      }
 
-      fSettingsOutputTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/D");
-      fSettingsOutputTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/D");
-      fSettingsOutputTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/D");
-      fSettingsOutputTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/D");
-      fSettingsOutputTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/D");
-      fSettingsOutputTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/D");
+      wcsimrootsuperevent = new WCSimRootEvent(); //empty list
+      wcsimrootsuperevent2 = new WCSimRootEvent(); //empty list
+      wcsimrootsuperevent_OD = new WCSimRootEvent(); //empty list
+      //  wcsimrootsuperevent->AddSubEvent(); // make at least one event
+      wcsimrootsuperevent->Initialize(); // make at least one event
+      wcsimrootsuperevent2->Initialize(); // make at least one event
+      wcsimrootsuperevent_OD->Initialize(); // make at least one event
+
+      if (run == 0) {
+          TFile *hfile = new TFile(rootname.c_str(), "RECREATE", "WCSim ROOT file");
+          hfile->SetCompressionLevel(2);
+
+          if (wcsimdetector->GetIsNuPrism()) {
+              if (fSettingsInputTree) {
+                  fSettingsOutputTree = fSettingsInputTree->CloneTree(0);
+              } else {
+                  fSettingsOutputTree = new TTree("Settings", "Settings");
+              }
+
+              fSettingsOutputTree->Branch("WCXRotation", WCXRotation, "WCXRotation[3]/D");
+              fSettingsOutputTree->Branch("WCYRotation", WCYRotation, "WCYRotation[3]/D");
+              fSettingsOutputTree->Branch("WCZRotation", WCZRotation, "WCZRotation[3]/D");
+              fSettingsOutputTree->Branch("WCDetCentre", WCDetCentre, "WCDetCentre[3]/D");
+              fSettingsOutputTree->Branch("WCDetRadius", &WCDetRadius, "WCDetRadius/D");
+              fSettingsOutputTree->Branch("WCDetHeight", &WCDetHeight, "WCDetHeight/D");
 
 #ifdef GIT_HASH
-      const char* gitHash = GIT_HASH;
-      fSettingsOutputTree->Branch("GitHash", (void*)gitHash, "GitHash/C");
+              const char* gitHash = GIT_HASH;
+              fSettingsOutputTree->Branch("GitHash", (void*)gitHash, "GitHash/C");
 #endif
-    }//nuPRISM settings tree
+          }//nuPRISM settings tree
 
-    // Event tree
-    WCSimTree = new TTree("wcsimT","WCSim Tree");
-    
-    wcsimrootsuperevent = new WCSimRootEvent(); //empty list
-    wcsimrootsuperevent2 = new WCSimRootEvent(); //empty list
-    wcsimrootsuperevent_OD = new WCSimRootEvent(); //empty list
-    //  wcsimrootsuperevent->AddSubEvent(); // make at least one event
-    wcsimrootsuperevent->Initialize(); // make at least one event
-    wcsimrootsuperevent2->Initialize(); // make at least one event
-    wcsimrootsuperevent_OD->Initialize(); // make at least one event
-    Int_t branchStyle = 1; //new style by default
-    TTree::SetBranchStyle(branchStyle);
-    Int_t bufsize = 64000;
-    
-    //  TBranch *branch = tree->Branch("wcsimrootsuperevent", "Jhf2kmrootsuperevent", &wcsimrootsuperevent, bufsize,0);
-    wcsimrooteventbranch = WCSimTree->Branch("wcsimrootevent", "WCSimRootEvent", &wcsimrootsuperevent, bufsize,2);
-    wcsimrooteventbranch2 = WCSimTree->Branch("wcsimrootevent2", "WCSimRootEvent", &wcsimrootsuperevent2, bufsize,2);
-    wcsimrooteventbranch_OD = WCSimTree->Branch("wcsimrootevent_OD", "WCSimRootEvent", &wcsimrootsuperevent_OD, bufsize,2);
-    
-    // Geometry tree
-    geoTree = new TTree("wcsimGeoT","WCSim Geometry Tree");
-    wcsimrootgeom = new WCSimRootGeom();
-    geoTree->Branch("wcsimrootgeom", "WCSimRootGeom", &wcsimrootgeom, bufsize,0);
-    FillGeoTree();
+          // Event tree
+          WCSimTree = new TTree("wcsimT", "WCSim Tree");
 
-    // Options tree
-    optionsTree = new TTree("wcsimRootOptionsT","WCSim Options Tree");
-    optionsTree->Branch("wcsimrootoptions", "WCSimRootOptions", &wcsimrootoptions, bufsize, 0);
-    
-    //set detector & random options
-    wcsimdetector->SaveOptionsToOutput(wcsimrootoptions);
-    wcsimrandomparameters->SaveOptionsToOutput(wcsimrootoptions);
-     
-    //Setup rooTracker tree
-    if(SaveRooTracker){
-      //Setup TClonesArray to store Rootracker truth info
-      fVertices = new TClonesArray("NRooTrackerVtx", 10);
-      fVertices->Clear();
-      fNVtx = 0;
-      fRooTrackerOutputTree = new TTree("fRooTrackerOutputTree","Event Vertex Truth Array");
-      fRooTrackerOutputTree->Branch("NVtx",&fNVtx,"NVtx/I");
-      fRooTrackerOutputTree->Branch("NRooTrackerVtx","TClonesArray", &fVertices);
-    }
+          Int_t branchStyle = 1; //new style by default
+          TTree::SetBranchStyle(branchStyle);
+          Int_t bufsize = 64000;
+
+          //  TBranch *branch = tree->Branch("wcsimrootsuperevent", "Jhf2kmrootsuperevent", &wcsimrootsuperevent, bufsize,0);
+          wcsimrooteventbranch = WCSimTree->Branch("wcsimrootevent", "WCSimRootEvent", &wcsimrootsuperevent, bufsize, 2);
+          wcsimrooteventbranch2 = WCSimTree->Branch("wcsimrootevent2", "WCSimRootEvent", &wcsimrootsuperevent2, bufsize, 2);
+          wcsimrooteventbranch_OD = WCSimTree->Branch("wcsimrootevent_OD", "WCSimRootEvent", &wcsimrootsuperevent_OD, bufsize, 2);
+
+          // Geometry tree
+          geoTree = new TTree("wcsimGeoT", "WCSim Geometry Tree");
+          wcsimrootgeom = new WCSimRootGeom();
+          geoTree->Branch("wcsimrootgeom", "WCSimRootGeom", &wcsimrootgeom, bufsize, 0);
+          FillGeoTree();
+
+          // Options tree
+          optionsTree = new TTree("wcsimRootOptionsT", "WCSim Options Tree");
+          optionsTree->Branch("wcsimrootoptions", "WCSimRootOptions", &wcsimrootoptions, bufsize, 0);
+
+          //set detector & random options
+          wcsimdetector->SaveOptionsToOutput(wcsimrootoptions);
+          wcsimrandomparameters->SaveOptionsToOutput(wcsimrootoptions);
+
+          //Setup rooTracker tree
+          if (SaveRooTracker) {
+              //Setup TClonesArray to store Rootracker truth info
+              fVertices = new TClonesArray("NRooTrackerVtx", 10);
+              fVertices->Clear();
+              fNVtx = 0;
+              fRooTrackerOutputTree = new TTree("fRooTrackerOutputTree", "Event Vertex Truth Array");
+              fRooTrackerOutputTree->Branch("NVtx", &fNVtx, "NVtx/I");
+              fRooTrackerOutputTree->Branch("NRooTrackerVtx", "TClonesArray", &fVertices);
+          }
+      }
+      else{
+          TFile *hfile = new TFile(rootname.c_str(), "UPDATE");
+          WCSimTree = (TTree*) hfile->Get("wcsimT");
+          wcsimrooteventbranch = WCSimTree->GetBranch("wcsimrootevent");
+          wcsimrooteventbranch2 = WCSimTree->GetBranch("wcsimrootevent2");
+          wcsimrooteventbranch_OD = WCSimTree->GetBranch("wcsimrootevent_OD");
+          wcsimrooteventbranch->SetAddress(&wcsimrootsuperevent);
+          wcsimrooteventbranch2->SetAddress(&wcsimrootsuperevent2);
+          wcsimrooteventbranch_OD->SetAddress(&wcsimrootsuperevent_OD);
+          optionsTree = (TTree*) hfile->Get("wcsimRootOptionsT");
+          optionsTree->SetBranchAddress("wcsimrootoptions", &wcsimrootoptions);
+      }
   }
 
 	//TF: New Flat tree format:
@@ -516,7 +532,6 @@ void WCSimRunAction::EndOfRunAction(const G4Run*)
     hfile->cd();
     optionsTree->Fill();
     optionsTree->Write();
-    
     hfile->Write();
     hfile->Close();
   
