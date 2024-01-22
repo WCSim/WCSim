@@ -39,7 +39,7 @@ G4double WCSimDetectorConstruction::GetPMTQE(G4String CollectionName, G4double P
   // return 0 for wavelenght outside the range
   if (flag==1){ 
     /*ODCOMMENT -- We use photons < 280nm so we need ->*/ //if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl ){
-    if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl || PhotonWavelength <=280 || PhotonWavelength >=660){
+    if (PhotonWavelength <= low_wl || PhotonWavelength >= high_wl || PhotonWavelength <=200 || PhotonWavelength >=800){
       return 0;
     }
   }else if (flag==0){

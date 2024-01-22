@@ -42,9 +42,9 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
       G4double wavelengthQE = 0;
       if(aTrack->GetCreatorProcess()==NULL) {
 	if(!DetConstruct->GetIsCombinedPMTCollectionDefined())
-	  wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,240,660,ratio);
+	  wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,200,800,ratio);
 	else
-	  wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,1,240,660,ratio);
+	  wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,1,200,800,ratio);
 	if( G4UniformRand() > wavelengthQE )
 	  classification = fKill;
       }
@@ -52,14 +52,14 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
 	{
 	  if (DetConstruct->GetPMT_QE_Method() == 1){
 	    if(!DetConstruct->GetIsCombinedPMTCollectionDefined())
-	      wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,240,660,ratio);
+	      wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,200,800,ratio);
 	    else
-	      wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,1,240,660,ratio);
+	      wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,1,200,800,ratio);
 	  }else if (DetConstruct->GetPMT_QE_Method() == 2){
 	    if(!DetConstruct->GetIsCombinedPMTCollectionDefined())
-	      wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,0,240,660,ratio);
+	      wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,0,200,800,ratio);
 	    else
-	      wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,0,240,660,ratio);
+	      wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,0,200,800,ratio);
 	  }else if (DetConstruct->GetPMT_QE_Method() == 3 || DetConstruct->GetPMT_QE_Method() == 4){
 	    wavelengthQE = 1.1;
 	  }

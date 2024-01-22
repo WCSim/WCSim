@@ -161,12 +161,12 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
     // maxQE = fdet->GetPMTQE(WCIDCollectionName,wavelength,0,200,700,ratio);
-    maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,240,660,ratio);
-    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,240,660,ratio);
+    maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,200,800,ratio);
+    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,200,800,ratio);
     photonQE = photonQE/maxQE;
   }else if (fdet->GetPMT_QE_Method() == 3){
     ratio = 1./(1.-0.25);
-    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,240,660,ratio);
+    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,200,800,ratio);
   }
   
   
