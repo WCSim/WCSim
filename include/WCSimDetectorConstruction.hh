@@ -802,7 +802,7 @@ private:
     G4double outerPMT_TopRpitch;
     G4double outerPMT_BotRpitch;
     G4double outerPMT_Apitch;
-    G4bool odEdited;
+    G4bool odEdited = false;
 
 
   G4double blackSheetThickness;
