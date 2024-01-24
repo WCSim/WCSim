@@ -10,6 +10,7 @@ New feature
 
 Bug fix
 * Pull request #402 @kmtsui: Make /WCSim/PMT/ReplicaPlacement=true work correctly when also using /WCSim/PMT/PositionFile
+* Pull request #403 @kmtsui @gondiaz: Initalise `odEdited` to `false` to prevent undefined behaviour
 
 *************************************************************
 11/01/2024: Notes for v1.12.6
