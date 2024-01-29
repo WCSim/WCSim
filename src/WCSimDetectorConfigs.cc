@@ -1416,8 +1416,8 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
 	nID_PMTs = 19;
 	config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring_WCTE.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
 
-	WCIDHeight               = 2.739*CLHEP::m;
-	WCIDDiameter             = 3.441*CLHEP::m;
+	WCIDHeight               = 2.830845*CLHEP::m;
+	WCIDDiameter             = 3.192536*CLHEP::m;
 	WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = 300.*CLHEP::mm;
