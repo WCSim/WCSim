@@ -5,8 +5,15 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+*************************************************************
+31/01/2024: Notes for v1.12.7
+*************************************************************
+
 New feature
 * Pull request #401 @nickwp: Allow multiple runs of WCSim to be performed in a single WCSim job
+
+Update
+* Pull request #405 @nickwp: Update WCTE geometry (tank height, diameter, PMT positions)
 
 Bug fix
 * Pull request #402 @kmtsui: Make /WCSim/PMT/ReplicaPlacement=true work correctly when also using /WCSim/PMT/PositionFile
