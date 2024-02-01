@@ -1,5 +1,37 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags.
 
+
+*************************************************************
+Recent updates
+*************************************************************
+
+*************************************************************
+31/01/2024: Notes for v1.12.7
+*************************************************************
+
+New feature
+* Pull request #401 @nickwp: Allow multiple runs of WCSim to be performed in a single WCSim job
+
+Update
+* Pull request #405 @nickwp: Update WCTE geometry (tank height, diameter, PMT positions)
+
+Bug fix
+* Pull request #402 @kmtsui: Make /WCSim/PMT/ReplicaPlacement=true work correctly when also using /WCSim/PMT/PositionFile
+* Pull request #403 @kmtsui @gondiaz: Initalise `odEdited` to `false` to prevent undefined behaviour
+
+*************************************************************
+11/01/2024: Notes for v1.12.6
+*************************************************************
+
+Minor release to provide tag for tuning new HK FD geometries
+
+New features
+* Pull request #399 @patrickstowell: Addition of realistic HK FD geometry (both w/ & w/o OD PMTs)
+* Pull request #397 @kmtsui: `-DWCSIM_SAVE_PHOTON_HISTORY_FLAG=ON` runs in mode with new output information about photon history (scatters, reflections)
+
+Bug fix
+* Pull request #398 @arturof: Fixes to make cosmic muon generator work correctly (off by 1 histogram binning errors, crashes due to simulating outside of world volume, incomplete detector coverage of muon trajectories)
+
 *************************************************************
 07/12/2023: Notes for v1.12.5
 *************************************************************
@@ -7,7 +39,7 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Minor release to update the reference validation plots after #396
 
 Bug fix
-* Pull request [WCSim/WCSim #396 @kmtsui] Fix PMT overlap in IWCD geom
+* Pull request #396 @kmtsui: Fix PMT overlap in IWCD geom
 
 *************************************************************
 29/11/2023: Notes for v1.12.4
@@ -16,12 +48,12 @@ Bug fix
 Minor release to update the reference validation plots after #394
 
 Update
-* Pull request [WCSim/WCSim #394 @kmtsui] Update default IWCD ID diameter from 7.0 to 6.6 m
-* Pull request [WCSim/WCSim #393 @kmtsui] Allow `WCSimOpticalPhysics` options to be controlled in `jobOptions.mac`
+* Pull request #394 @kmtsui: Update default IWCD ID diameter from 7.0 to 6.6 m
+* Pull request #393 @kmtsui: Allow `WCSimOpticalPhysics` options to be controlled in `jobOptions.mac`
 
 Bug fix
-* Pull request [WCSim/WCSim #395 @gondiaz] Install `*.hpp` files
-* Pull request [WCSim/WCSim #392 @nickwp] Parent of the saved track now correctly saved in the true Cherenkov hit (previously erroneously ID of the photon track)
+* Pull request #395 @gondiaz: Install `*.hpp` files
+* Pull request #392 @nickwp: Parent of the saved track now correctly saved in the true Cherenkov hit (previously erroneously ID of the photon track)
 
 *************************************************************
 15/11/2023: Notes for v1.12.3

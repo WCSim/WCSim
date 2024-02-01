@@ -157,7 +157,7 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
   // Create the relevant histograms to generate muons
   // according to SuperK flux extrapolated at HyperK site
 
-  altCosmics = 2*myDetector->GetWCIDHeight();
+  altCosmics = myDetector->GetWCIDHeight();
   G4cout << "altCosmics : " << altCosmics << G4endl;
   if (inputCosmicsFile.is_open()) inputCosmicsFile.close();
 
@@ -181,9 +181,11 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
     hFluxCosmics = new TH2D("hFluxCosmics","HK Flux", 180,0,360,100,0,1);
     hFluxCosmics->GetXaxis()->SetTitle("#phi (deg)");
     hFluxCosmics->GetYaxis()->SetTitle("cos #theta");
+    hFluxCosmics->SetDirectory(0);
     hEmeanCosmics = new TH2D("hEmeanCosmics","HK Flux", 180,0,360,100,0,1);
     hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
     hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
+    hEmeanCosmics->SetDirectory(0);
 
     while ( getline(inputCosmicsFile,line) ){
       token = tokenize(" $", line);
@@ -201,8 +203,8 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
       flux=(atof(token[8]));
       Emean=(atof(token[9]));
 
-      hFluxCosmics->SetBinContent(binPhi,binCos,flux);
-      hEmeanCosmics->SetBinContent(binPhi,binCos,Emean);
+      hFluxCosmics->SetBinContent(binPhi+1,binCos+1,flux);
+      hEmeanCosmics->SetBinContent(binPhi+1,binCos+1,Emean);
     }
 
     TFile *file = new TFile("cosmicflux.root","RECREATE");
@@ -1121,18 +1123,44 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4cout << "#############" << G4endl;
     //////////////////
 
+    // get muon direction
     double phiMuon, cosThetaMuon;
     energy = 0;
     while((int)(energy) == 0){
       hFluxCosmics->GetRandom2(phiMuon,cosThetaMuon);
-      energy = hEmeanCosmics->GetBinContent(hFluxCosmics->GetBin(phiMuon,cosThetaMuon))*GeV;
+      int phiMuonBin = hFluxCosmics->GetXaxis()->FindFixBin(phiMuon);
+      int cosThetaMuonBin = hFluxCosmics->GetYaxis()->FindFixBin(cosThetaMuon);
+      energy = hEmeanCosmics->GetBinContent(phiMuonBin,cosThetaMuonBin)*GeV;
     }
 
     G4ThreeVector dir(0,0,0);
     dir.setRThetaPhi(-1,acos(cosThetaMuon),phiMuon);
+
+    // generate point uniformly distributed inside the ID cylinder
+    double detHalfHeight = 0.5*myDetector->GetWCIDHeight();
+    double detRadius     = 0.5*myDetector->GetWCIDDiameter();
+    double posInCylR     = sqrt(gRandom->Uniform())*detRadius;
+    double posInCylPhi   = gRandom->Uniform(TMath::TwoPi());
+    double posInCylZ     = gRandom->Uniform(-1.*detHalfHeight,detHalfHeight);
+
+    G4ThreeVector posInCyl(0,0,0);
+    posInCyl.setX(posInCylR*cos(posInCylPhi));
+    posInCyl.setY(posInCylR*sin(posInCylPhi));
+    posInCyl.setZ(posInCylZ);
+
+    // generate muon at the intersection
+    // between an sphere with radius = altComics
+    // and a line made with the muon direction
+    // and the generated point inside the ID cylinder
+    double a = dir.mag2();
+    double b = -2.*posInCyl.dot(dir);
+    double c = posInCyl.mag2()-altCosmics*altCosmics;
+    double t = (sqrt(b*b-4.*c*a)-b)/(2.*a);
+
     G4ThreeVector vtx(0,0,0);
-    vtx = -dir;
-    vtx.setR(altCosmics);
+    vtx.setX(posInCyl.x()-t*dir.x());
+    vtx.setY(posInCyl.y()-t*dir.y());
+    vtx.setZ(posInCyl.z()-t*dir.z());
 
     int pdgid = 13; // MUON
     particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));

@@ -133,6 +133,9 @@ public:
 
   void SetUseTimer(bool use) { useTimer = use; }
 
+  int GetRunID() { return run; }
+  void SetRunID(int runID) { run = runID; }
+
  private:
   // MFechner : set by the messenger
   std::string RootFileName;

@@ -54,6 +54,8 @@ public:
   WCSimDetectorConstruction(G4int DetConfig,WCSimTuningParameters* WCSimTuningPars);
   ~WCSimDetectorConstruction();
 
+  G4LogicalVolume* ConstructRealisticPlacement();
+
   void SaveOptionsToOutput(WCSimRootOptions * wcopt);
 
   G4VPhysicalVolume* Construct();
@@ -85,6 +87,8 @@ public:
   void SetHyperK_HybridmPMT10PCGeometry();//B.Q, 2019/01/26
   void SetHyperK_HybridFakeGeometry();//B.Q, 2019/01/26
   void SetHyperK_HybridmPMT_WithOD_Geometry();
+  void SetHyperK_HybridmPMT_WithOD_Realistic_Geometry(); //P.S. 2023/12/19
+  void SetHyperK_HybridmPMT_IDonly_Realistic_Geometry(); //P.S. 2023/12/19
   void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition);
   void SetNuPrism_mPMTGeometry();
   void SetNuPrismBeamTest_mPMTGeometry();
@@ -471,6 +475,7 @@ private:
 
 
   // Tuning parameters
+  bool isRealisticPlacement;
 
   WCSimTuningParameters* WCSimTuningParams;
 

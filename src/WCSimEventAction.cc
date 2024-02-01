@@ -983,7 +983,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     G4cout << "B.Q: open the tree" << G4endl;
 #endif
     TTree* tree = GetRunAction()->GetTree();
-    tree->SetEntries(GetRunAction()->GetNumberOfEventsGenerated());
+    tree->Fill();
   }
 
   //save DAQ options here. This ensures that when the user selects a default option
@@ -1117,6 +1117,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // Fill up a Root event with stuff from the ntuple
 
   WCSimRootEvent* wcsimrootsuperevent = GetRunAction()->GetRootEvent(detectorElement);
+  wcsimrootsuperevent->ReInitialize();
 
   // start with the first "sub-event"
   // if the WC digitization requires it, we will add another subevent
@@ -1143,8 +1144,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       if (index >=1 ) {
 	wcsimrootsuperevent->AddSubEvent();
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
-	wcsimrootevent->SetHeader(event_id,0,
-				  0,index+1); // date & # of subevent
+	wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0, index+1); // date & # of subevent
 	wcsimrootevent->SetMode(injhfNtuple.mode[0]);
       }
       //wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
@@ -1159,9 +1159,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
 
   // Fill the header
-  // Need to add run and date
+  // Need to add date
   wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
-  wcsimrootevent->SetHeader(event_id,0,0); // will be set later.
+  wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0); // will be set later.
 
   // Fill other info for this event
 
@@ -1634,11 +1634,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   //G4cout <<"WCFV digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";
   //  }
 
-  //TTree* tree = GetRunAction()->GetTree();
-  TBranch* branch = GetRunAction()->GetBranch(detectorElement);
-  //tree->Fill();
-  branch->Fill();
-
   /*
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
@@ -1649,17 +1644,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   }
   */
 
-  /*
-  TFile* hfile = tree->GetCurrentFile();
-  hfile->cd();                    // make sure tree is ONLY written to CurrentFile and not to all files!
-  // MF : overwrite the trees -- otherwise we have as many copies of the tree
-  // as we have events. All the intermediate copies are incomplete, only the
-  // last one is useful --> huge waste of disk space.
-  tree->Write("",TObject::kOverwrite);
-  */
-
-  // M Fechner : reinitialize the super event after the writing is over
-  wcsimrootsuperevent->ReInitialize();
 }
 
 void WCSimEventAction::FillRootEventHybrid(G4int event_id,
@@ -1671,6 +1655,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				       WCSimRootEvent * wcsimrootsuperevent,
 				       WCSimRootTrigger * wcsimrootevent)
  {
+  wcsimrootsuperevent->ReInitialize();
   // start with the first "sub-event"
   // if the WC digitization requires it, we will add another subevent
   // for the WC.
@@ -1695,8 +1680,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       if (index >=1 ) {
 	wcsimrootsuperevent->AddSubEvent();
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
-	wcsimrootevent->SetHeader(event_id,0,
-				   0,index+1); // date & # of subevent
+	wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0, index+1); // date & # of subevent
 	wcsimrootevent->SetMode(injhfNtuple.mode[0]);
       }
       //wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
@@ -1711,9 +1695,9 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 
 
   // Fill the header
-  // Need to add run and date
+  // Need to add date
   wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
-  wcsimrootevent->SetHeader(event_id,0,0); // will be set later.
+  wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0); // will be set later.
 
   // Fill other info for this event
 
@@ -2177,11 +2161,6 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   //G4cout <<"WCFV digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";
   //  }
 
-  //TTree* tree = GetRunAction()->GetTree();
-  TBranch* branch = GetRunAction()->GetBranch(detectorElement);
-  //tree->Fill();
-  branch->Fill();
-
   /*
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
@@ -2190,18 +2169,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       generatorAction->CopyRootrackerVertex(GetRunAction()->GetRootrackerVertex()); //will increment NVtx
       GetRunAction()->FillRootrackerVertexTree();
   }
-
-
-  TFile* hfile = tree->GetCurrentFile();
-  hfile->cd();                    // make sure tree is ONLY written to CurrentFile and not to all files!
-  // MF : overwrite the trees -- otherwise we have as many copies of the tree
-  // as we have events. All the intermediate copies are incomplete, only the
-  // last one is useful --> huge waste of disk space.
-  tree->Write("",TObject::kOverwrite);
-
   */
-  // M Fechner : reinitialize the super event after the writing is over
-  wcsimrootsuperevent->ReInitialize();
 }
 
 
@@ -2496,7 +2464,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
 
   // nGates == 0: I still want to keep untriggered event
   if(ngates == 0){
-    GetRunAction()->SetEventHeaderNew(0,event_id+1,1);   //ToDo: run
+    GetRunAction()->SetEventHeaderNew(GetRunAction()->GetRunID(), event_id+1, 1);   //ToDo: run
     //G4cout << event_id << G4endl; //TF debug
     //General case for a vector triggerInfo:
     //GetRunAction()->SetTriggerInfoNew(kTriggerUndefined, std::vector<G4double>(),0.,0.);
@@ -2522,7 +2490,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
   for (int index = 0 ; index < ngates ; index++) {
     //WCSim (FillRootEvent) counts its sub-events from 1 to nGate, while counting events from 0 to n-1
     //Be consistent and start both from 1 here:
-    GetRunAction()->SetEventHeaderNew(0,event_id+1,index+1);   //ToDo: run
+    GetRunAction()->SetEventHeaderNew(GetRunAction()->GetRunID(), event_id+1, index+1);   //ToDo: run
     G4cout << event_id << G4endl;
 
     //First Trigger details of THIS subevent (index+1)

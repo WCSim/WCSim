@@ -68,6 +68,16 @@
 #/control/execute macros/geom_hk_od_options.mac
 #/WCSim/Construct
 
+
+#Use the HK FD Realistic ID + OD geometry
+#/WCSim/WCgeom HyperK_HybridmPMT_WithOD_Realistic
+#/WCSim/Construct
+
+#Use the HK FD Realistic IDonly geometry
+#/WCSim/WCgeom HyperK_HybridmPMT_IDonly_Realistic
+#/WCSim/Construct
+
+
 # Some other SuperK options (different to the default 20" 40% case)
 #/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
 #/WCSim/WCgeom SuperK_20inchBandL_20perCent # Note: the actual coverage is 20.27%
@@ -401,5 +411,20 @@
 ##################
 # NUMBER OF EVENTS TO RUN
 ##################
+# It is possible to perform multiple runs of WCSim in a single process
+# The benefit of this is to reduce the time spent on WCSim initialisation
+# in a use case e.g. simulating events at multiple source positions
+# In order to do this, you can repeat the /run/beamOn command e.g.
+# /gun/direction -1 0 0
+# /run/beamOn 2
+# /gun/direction 1 0 0
+# /run/beamOn 3
+# However, be warned that you cannot change all options between runs
+# - All parameters in tuning_parameters.mac and jobOptions.mac changed will have no effect
+# - Some parameters in WCSim.mac may not have an effect (e.g. geometry)
+# - It is up to you to perform the bookkeeping of which events were run with which options, but to help with this:
+# -- The options tree will be filled with one entry for each run
+# -- The EventHeader has a run number that specifies the run (and corresponding options tree entry) for a given event
+# It is therefore your responsibility to confirm that the options you are changing work as expected in multi-run mode
 /run/beamOn 10
 #exit
