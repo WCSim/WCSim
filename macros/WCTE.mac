@@ -27,8 +27,11 @@
 /WCSim/PMT/TankRadiusChange 0 0 0 mm
 # Read PMT positions, ID, orientation from input file. This overrides the auto positioning
 /WCSim/PMT/PositionFile data/mPMT_Position_WCTE.txt
-# Downland the CDS CAD model (ASCII format) from WCTE webpage and place in detector
+# To import CDS into simulation
+# 1. Downland the CDS CAD model from WCTE webpage (https://wcte.hyperk.ca/wg/calibration/cds-system/cds-arm-cad-for-physics-simulation/arm-for-simulation-ascii-v2.zip/view), unzip it and set the path
+# 2. Use the PMT position file where mPMT id 90 and 96 are disabled 
 #/WCSim/Geometry/SetCDSFile path_to_CDS_file
+#/WCSim/PMT/PositionFile data/mPMT_Position_WCTE_CDS.txt
 ############################################################################################
 
 # Set Gadolinium doping (concentration is in percent)
