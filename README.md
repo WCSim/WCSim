@@ -153,7 +153,7 @@ You can run `make clean` before `make install` by running `./make.sh clean`
 ### Build Instructions using GNUmakefile:
 `GNUmakefile`` is specifically only for use with ROOT5 and is not supported otherwise. All output that needs to be trusted must use cmake. To compile:
 ```
-make clean
+make clean_wcsim
 make rootcint
 make
 ```
