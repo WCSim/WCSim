@@ -5,9 +5,25 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+
+*************************************************************
+31/01/2024: Notes for v1.12.8
+*************************************************************
+
+Minor release after updates to WCTE geometry
+
+New feature
+* Pull request #408 @kmtsui: Add option to include calibration deployment system (CDS) in WCTE geometry
+
+Bug fix
+* Pull request #409 @kmtsui: Add missing class to the old makefile build
+* Pull request #408 @kmtsui: Fix overlaps in WCTE geometry
+
 *************************************************************
 31/01/2024: Notes for v1.12.7
 *************************************************************
+
+Minor release after updates to WCTE geometry
 
 New feature
 * Pull request #401 @nickwp: Allow multiple runs of WCSim to be performed in a single WCSim job
