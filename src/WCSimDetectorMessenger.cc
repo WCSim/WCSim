@@ -575,6 +575,11 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetPMTPositionInput = new G4UIcmdWithAString("/WCSim/PMT/PositionFile",this);
   SetPMTPositionInput->SetGuidance("Set filename for PMT position file");
   SetPMTPositionInput->SetParameterName("PMTPositionInput", true);
+
+  // Set CDS file input
+  SetCDSFile = new G4UIcmdWithAString("/WCSim/Geometry/SetCDSFile",this);
+  SetCDSFile->SetGuidance("Set filename for CDS model file");
+  SetCDSFile->SetParameterName("CDSFileInput", true);
 }
 
 WCSimDetectorMessenger::~WCSimDetectorMessenger()
@@ -609,6 +614,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete PMTPosVar;
   delete TankRadiusChange;
   delete SetPMTPositionInput;
+  delete SetCDSFile;
 }
 
 void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
@@ -1065,6 +1071,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
 	if(command == SetPMTPositionInput){
 	  WCSimDetector->SetPMTPositionInput(newValue);
+	}
+
+  if(command == SetCDSFile){
+	  WCSimDetector->SetCDSFile(newValue);
 	}
 
 }
