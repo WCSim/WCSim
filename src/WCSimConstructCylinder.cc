@@ -4460,127 +4460,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   }
 
   G4String pmtname = "WCMultiPMT";
- 
-  // If using RayTracer and want to view the detector without caps, comment out the top and bottom PMT's
-  G4double xoffset;
-  G4double yoffset;
-  G4int    icopy = 0;
-
-  // loop over the cap
-  if(placeCapPMTs){
-
-    if (readFromTable)
-    {
-      G4int capSection = (zflip==-1) ? 1 : 3;
-      for (G4int i=0; i<nPMTsRead; i++ )
-      {
-        if (!pmtUse[i]) continue; // skip PMT
-        if (pmtSection[i]!=capSection) continue; // only place cap PMT
-
-        G4RotationMatrix* WCCapPMTRotation = new G4RotationMatrix;
-        //if mPMT: perp to wall
-        if(orientation == PERPENDICULAR){
-          if(zflip==-1){ // rotation for top cap
-            WCCapPMTRotation->rotateY(180.*deg); 
-          }
-        }
-        else if (orientation == VERTICAL)
-        WCCapPMTRotation->rotateY(90.*deg);
-        else if (orientation == HORIZONTAL)
-        WCCapPMTRotation->rotateX(90.*deg);
-
-        xoffset = pmtPos[i].x() + G4RandGauss::shoot(0,pmtPosVar);
-        yoffset = pmtPos[i].y() + G4RandGauss::shoot(0,pmtPosVar);
-        G4cout<<"Cap PMT ID = "<<i<<", Position = "<<pmtPos[i].x()<<" "<<pmtPos[i].y()<<" "<<pmtPos[i].z()<<", Rotation = "<<pmtRotaton[i]<<G4endl;
-        WCCapPMTRotation->rotateZ(pmtRotaton[i]); 
-        G4ThreeVector cellpos = G4ThreeVector(xoffset, yoffset, (-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness)*zflip);
-
-#ifdef ACTIVATE_IDPMTS
-        //G4VPhysicalVolume* physiCapPMT =
-        new G4PVPlacement(WCCapPMTRotation,
-                cellpos,                   // its position
-                (hybrid && pmtType[i]==2)?logicWCPMT2:logicWCPMT,                // its logical volume
-                pmtname, // its name 
-                logicCapAssembly,         // its mother volume
-                false,                 // no boolean os
-                pmtmPMTId[i],               // every PMT need a unique id.
-                checkOverlapsPMT);
-#endif          
-        // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
-        // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
-        // this is still the case.
-        icopy++;
-      }
-    }
-    else
-    {
-
-      G4int CapNCell = WCCapEdgeLimit/WCCapPMTSpacing + 2;
-#ifdef DEBUG
-      G4cout << "Debug B.Q, wccap edge = " << WCCapEdgeLimit << ", spacing = " << WCCapPMTSpacing << ", CapNCell = " << CapNCell << ", PMT radius = " << WCPMTRadius << G4endl;
-#endif
-      for ( int i = -CapNCell ; i <  CapNCell; i++) {
-        for (int j = -CapNCell ; j <  CapNCell; j++)   {
-
-          G4RotationMatrix* WCCapPMTRotation = new G4RotationMatrix;
-          //if mPMT: perp to wall
-          if(orientation == PERPENDICULAR){
-            if(zflip==-1){
-              WCCapPMTRotation->rotateY(180.*deg); 
-            }
-          }
-          else if (orientation == VERTICAL)
-          WCCapPMTRotation->rotateY(90.*deg);
-          else if (orientation == HORIZONTAL)
-          WCCapPMTRotation->rotateX(90.*deg);
-
-          // Jun. 04, 2020 by M.Shinoki
-          // For IWCD (NuPRISM_mPMT Geometry)
-          xoffset = i*WCCapPMTSpacing + WCCapPMTSpacing*0.5 + G4RandGauss::shoot(0,pmtPosVar);
-          yoffset = j*WCCapPMTSpacing + WCCapPMTSpacing*0.5 + G4RandGauss::shoot(0,pmtPosVar);
-          // For WCTE (NuPRISMBeamTest_mPMT Geometry)
-          if (isNuPrismBeamTest || isNuPrismBeamTest_16cShort){
-            xoffset = i*WCCapPMTSpacing + G4RandGauss::shoot(0,pmtPosVar);
-            yoffset = j*WCCapPMTSpacing + G4RandGauss::shoot(0,pmtPosVar);
-          }
-          G4ThreeVector cellpos = G4ThreeVector(xoffset, yoffset, (-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness)*zflip);     
-          
-          double dcenter = hybrid?std::max(WCPMTRadius,WCPMTRadius2):WCPMTRadius;
-          dcenter+=sqrt(xoffset*xoffset + yoffset*yoffset);
-          if (dcenter < WCCapEdgeLimit) 
-
-          // for debugging boundary cases: 
-          // &&  ((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) > (WCCapEdgeLimit-100)) ) 
-          {
-            //B.Q for Hybrid
-            G4int horizontalModulo = (i+CapNCell) % WCPMTperCellHorizontal;
-            G4int verticalModulo = (j+CapNCell) % WCPMTperCellVertical;
-#ifdef ACTIVATE_IDPMTS
-            //G4VPhysicalVolume* physiCapPMT =
-              new G4PVPlacement(WCCapPMTRotation,
-                    cellpos,                   // its position
-                    ((horizontalModulo == verticalModulo) && hybrid && WCPMTPercentCoverage2!=0)?logicWCPMT2:logicWCPMT,                // its logical volume
-                    pmtname, // its name 
-                    logicCapAssembly,         // its mother volume
-                    false,                 // no boolean os
-                    icopy,               // every PMT need a unique id.
-                    checkOverlapsPMT);
-#endif          
-
-          // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
-              // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
-            // this is still the case.
-
-            icopy++;
-          }
-        }
-      }
-    }
-
-
-    G4cout << "total on cap: " << icopy << "\n";
-    G4cout << "Coverage was calculated to be: " << (icopy*WCPMTRadius*WCPMTRadius/(WCIDRadius*WCIDRadius)) << "\n";
-  }//end if placeCapPMTs
 
   ///////////////   Barrel PMT placement
 
@@ -4771,6 +4650,126 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
       }
     }
   }//end if placeBorderPMTs
+
+  // If using RayTracer and want to view the detector without caps, comment out the top and bottom PMT's
+  G4double xoffset;
+  G4double yoffset;
+  G4int    icopy = 0;
+  // loop over the cap
+  if(placeCapPMTs){
+
+    if (readFromTable)
+    {
+      G4int capSection = (zflip==-1) ? 1 : 3;
+      for (G4int i=0; i<nPMTsRead; i++ )
+      {
+        if (!pmtUse[i]) continue; // skip PMT
+        if (pmtSection[i]!=capSection) continue; // only place cap PMT
+
+        G4RotationMatrix* WCCapPMTRotation = new G4RotationMatrix;
+        //if mPMT: perp to wall
+        if(orientation == PERPENDICULAR){
+          if(zflip==-1){ // rotation for top cap
+            WCCapPMTRotation->rotateY(180.*deg); 
+          }
+        }
+        else if (orientation == VERTICAL)
+        WCCapPMTRotation->rotateY(90.*deg);
+        else if (orientation == HORIZONTAL)
+        WCCapPMTRotation->rotateX(90.*deg);
+
+        xoffset = pmtPos[i].x() + G4RandGauss::shoot(0,pmtPosVar);
+        yoffset = pmtPos[i].y() + G4RandGauss::shoot(0,pmtPosVar);
+        G4cout<<"Cap PMT ID = "<<i<<", Position = "<<pmtPos[i].x()<<" "<<pmtPos[i].y()<<" "<<pmtPos[i].z()<<", Rotation = "<<pmtRotaton[i]<<G4endl;
+        WCCapPMTRotation->rotateZ(pmtRotaton[i]); 
+        G4ThreeVector cellpos = G4ThreeVector(xoffset, yoffset, (-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness)*zflip);
+
+#ifdef ACTIVATE_IDPMTS
+        //G4VPhysicalVolume* physiCapPMT =
+        new G4PVPlacement(WCCapPMTRotation,
+                cellpos,                   // its position
+                (hybrid && pmtType[i]==2)?logicWCPMT2:logicWCPMT,                // its logical volume
+                pmtname, // its name 
+                logicCapAssembly,         // its mother volume
+                false,                 // no boolean os
+                pmtmPMTId[i],               // every PMT need a unique id.
+                checkOverlapsPMT);
+#endif          
+        // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
+        // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
+        // this is still the case.
+        icopy++;
+      }
+    }
+    else
+    {
+
+      G4int CapNCell = WCCapEdgeLimit/WCCapPMTSpacing + 2;
+#ifdef DEBUG
+      G4cout << "Debug B.Q, wccap edge = " << WCCapEdgeLimit << ", spacing = " << WCCapPMTSpacing << ", CapNCell = " << CapNCell << ", PMT radius = " << WCPMTRadius << G4endl;
+#endif
+      for ( int i = -CapNCell ; i <  CapNCell; i++) {
+        for (int j = -CapNCell ; j <  CapNCell; j++)   {
+
+          G4RotationMatrix* WCCapPMTRotation = new G4RotationMatrix;
+          //if mPMT: perp to wall
+          if(orientation == PERPENDICULAR){
+            if(zflip==-1){
+              WCCapPMTRotation->rotateY(180.*deg); 
+            }
+          }
+          else if (orientation == VERTICAL)
+          WCCapPMTRotation->rotateY(90.*deg);
+          else if (orientation == HORIZONTAL)
+          WCCapPMTRotation->rotateX(90.*deg);
+
+          // Jun. 04, 2020 by M.Shinoki
+          // For IWCD (NuPRISM_mPMT Geometry)
+          xoffset = i*WCCapPMTSpacing + WCCapPMTSpacing*0.5 + G4RandGauss::shoot(0,pmtPosVar);
+          yoffset = j*WCCapPMTSpacing + WCCapPMTSpacing*0.5 + G4RandGauss::shoot(0,pmtPosVar);
+          // For WCTE (NuPRISMBeamTest_mPMT Geometry)
+          if (isNuPrismBeamTest || isNuPrismBeamTest_16cShort){
+            xoffset = i*WCCapPMTSpacing + G4RandGauss::shoot(0,pmtPosVar);
+            yoffset = j*WCCapPMTSpacing + G4RandGauss::shoot(0,pmtPosVar);
+          }
+          G4ThreeVector cellpos = G4ThreeVector(xoffset, yoffset, (-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness)*zflip);     
+          
+          double dcenter = hybrid?std::max(WCPMTRadius,WCPMTRadius2):WCPMTRadius;
+          dcenter+=sqrt(xoffset*xoffset + yoffset*yoffset);
+          if (dcenter < WCCapEdgeLimit) 
+
+          // for debugging boundary cases: 
+          // &&  ((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTRadius) > (WCCapEdgeLimit-100)) ) 
+          {
+            //B.Q for Hybrid
+            G4int horizontalModulo = (i+CapNCell) % WCPMTperCellHorizontal;
+            G4int verticalModulo = (j+CapNCell) % WCPMTperCellVertical;
+#ifdef ACTIVATE_IDPMTS
+            //G4VPhysicalVolume* physiCapPMT =
+              new G4PVPlacement(WCCapPMTRotation,
+                    cellpos,                   // its position
+                    ((horizontalModulo == verticalModulo) && hybrid && WCPMTPercentCoverage2!=0)?logicWCPMT2:logicWCPMT,                // its logical volume
+                    pmtname, // its name 
+                    logicCapAssembly,         // its mother volume
+                    false,                 // no boolean os
+                    icopy,               // every PMT need a unique id.
+                    checkOverlapsPMT);
+#endif          
+
+          // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
+              // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
+            // this is still the case.
+
+            icopy++;
+          }
+        }
+      }
+    }
+
+
+    G4cout << "total on cap: " << icopy << "\n";
+    G4cout << "Coverage was calculated to be: " << (icopy*WCPMTRadius*WCPMTRadius/(WCIDRadius*WCIDRadius)) << "\n";
+  }//end if placeCapPMTs
 
   // # -------------------------------------- #
   // ##########################################
