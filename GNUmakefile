@@ -60,9 +60,9 @@ all: rootcint shared libWCSim.a lib bin
 
 ROOTSO    := libWCSimRoot.so
 
-ROOTSRC  := ./src/WCSimRootEvent.cc ./include/WCSimRootEvent.hh ./src/WCSimRootGeom.cc ./include/WCSimRootGeom.hh ./include/WCSimPmtInfo.hh ./src/WCSimEnumerations.cc ./include/WCSimEnumerations.hh ./src/WCSimRootOptions.cc ./include/WCSimRootOptions.hh ./src/TJNuBeamFlux.cc ./include/TJNuBeamFlux.hh ./src/TNRooTrackerVtx.cc ./include/TNRooTrackerVtx.hh ./include/WCSimRootLinkDef.hh
+ROOTSRC  := ./src/WCSimRootEvent.cc ./include/WCSimRootEvent.hh ./src/WCSimRootGeom.cc ./include/WCSimRootGeom.hh ./include/WCSimPmtInfo.hh ./src/WCSimEnumerations.cc ./include/WCSimEnumerations.hh ./src/WCSimRootOptions.cc ./include/WCSimRootOptions.hh ./src/WCSimRootTools.cc ./include/WCSimRootTools.hh ./src/TJNuBeamFlux.cc ./include/TJNuBeamFlux.hh ./src/TNRooTrackerVtx.cc ./include/TNRooTrackerVtx.hh ./include/WCSimRootLinkDef.hh
 
-ROOTOBJS  := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimEnumerations.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootOptions.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/TNRooTrackerVtx.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/TJNuBeamFlux.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootDict.o 
+ROOTOBJS  := $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootEvent.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootGeom.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimPmtInfo.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimEnumerations.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootOptions.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootTools.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/TNRooTrackerVtx.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/TJNuBeamFlux.o $(G4WORKDIR)/tmp/$(G4SYSTEM)/WCSim/WCSimRootDict.o 
 
 shared: $(ROOTSRC) $(ROOTOBJS) 
 	g++ -shared -O $(ROOTOBJS) -o $(ROOTSO) $(ROOTLIBS)
@@ -72,7 +72,7 @@ libWCSim.a : $(ROOTOBJS)
 	ar clq $@ $(ROOTOBJS) 
 
 ./WCSimRootDict.cxx : $(ROOTSRC)
-	rootcint  -f ./WCSimRootDict.cxx -c -I./include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimEnumerations.hh WCSimRootOptions.hh TJNuBeamFlux.hh TNRooTrackerVtx.hh WCSimRootLinkDef.hh
+	rootcint  -f ./WCSimRootDict.cxx -c -I./include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimEnumerations.hh WCSimRootOptions.hh WCSimRootTools.hh TJNuBeamFlux.hh TNRooTrackerVtx.hh WCSimRootLinkDef.hh
 # In case the dictionary does not compile, try the -p flag
 #	rootcint  -f ./WCSimRootDict.cxx -c -p -I./include -I$(shell root-config --incdir) WCSimRootEvent.hh WCSimRootGeom.hh  WCSimPmtInfo.hh WCSimEnumerations.hh WCSimRootOptions.hh TJNuBeamFlux.hh TNRooTrackerVtx.hh WCSimRootLinkDef.hh
 
