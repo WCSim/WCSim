@@ -27,7 +27,7 @@
 # no extra commands required
 
 
-#Use the nuPRISM geometry w/ mPMTs
+#Use the nuPRISM geometry w/ mPMTs DEPRECATED (use IWCD_mPMT_WithOD below)
 #/WCSim/WCgeom nuPRISMShort_mPMT
 #then set options
 #/WCSim/Construct
@@ -53,14 +53,14 @@
 #   using the default geometry with your geometry
 #   using e.g. a particle gun with sufficient statistics
 
-#Use the HK FD ID-only geometry
+#Use the HK FD ID-only geometry DEPRECATED (use HyperK_HybridmPMT_NoOD_Realistic)
 #/WCSim/SetPMTPercentCoverage  20.2150576375662
 #/WCSim/SetPMTPercentCoverage2 10.1075288187831
 #/WCSim/WCgeom HyperK_HybridmPMT
 #/WCSim/Construct
 
 
-#Use the HK FD ID + OD geometry
+#Use the HK FD ID + OD geometry DEPRECATED (use HyperK_HybridmPMT_WithOD_Realistic below)
 #/WCSim/SetPMTPercentCoverage  20.2150576375662
 #/WCSim/SetPMTPercentCoverage2 10.1075288187831
 #/WCSim/WCgeom HyperK_HybridmPMT_WithOD
@@ -73,7 +73,13 @@
 #/WCSim/WCgeom HyperK_HybridmPMT_WithOD_Realistic
 #/WCSim/Construct
 
+
 #Use the HK FD Realistic IDonly geometry
+# Note that the difference between this & the realisitc ID + OD geometry above is
+# that the OD PMTs are not placed in the geometry.
+# All other aspects of the OD geometry are there (ID/OD deadspace, tyvek, etc.)
+# This means that you get a speed win in terms of hit stuff (e.g. PMT & electronics simulation, triggering)
+# which is thought to be a small fraction of running time compared with the Geant4 particle propagation
 #/WCSim/WCgeom HyperK_HybridmPMT_IDonly_Realistic
 #/WCSim/Construct
 
