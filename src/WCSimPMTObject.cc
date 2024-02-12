@@ -1999,6 +1999,16 @@ G4double  PMT3inch::GetmaxQE(){
   return maxQE;
 }
 
+G4double* PMT3inch::GetCollectionEfficiencyArray(){
+#if 1
+  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
+#else
+/// for NNVT, reduced collection efficiency at large angles
+  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 70., 70., 70., 70.};
+#endif
+  return CE;
+}
+
 // Should be actual PMT Dark Rate, not effective dark rate in detector including other LE noise
 G4double PMT3inch::GetDarkRate(){
   const G4double rate = 400*CLHEP::hertz;   //SKI value set in SKDETSim.
