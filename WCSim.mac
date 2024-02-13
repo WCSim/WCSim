@@ -179,7 +179,7 @@
 
 #There is an independent messenger class instance for each PMT type
 # tank is the default one & is present in all geometries
-# tank2 is for the second ID PMT type (i.e. mPMTs in HK FD)
+# tankPMT2 is for the second ID PMT type (i.e. mPMTs in HK FD)
 # OD is for the OD
 #In typical use, it is important that all PMT types are setup with the same dark noise time windows
 
@@ -220,7 +220,7 @@
 #/DarkRate/SetDarkMode 1
 #/DarkRate/SetDarkWindow 4000
 
-#/DarkRate/SetDetectorElement tank2
+#/DarkRate/SetDetectorElement tankPMT2
 #/DarkRate/SetDarkRate 0 kHz
 #/DarkRate/SetDarkRate 1 kHz
 #/DarkRate/SetConvert 1.110 #for PMT3inchR14374 PMTs in HK mPMT
