@@ -453,22 +453,22 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	return;
       }
 
-      // Calculate offset from neutrino generation plane to centre of nuPRISM detector (in metres)
-      float z_offset = fNuPlanePos[2]/100.0;
+      // Calculate offset from neutrino generation plane to centre of nuPRISM detector
+      float z_offset = fNuPlanePos[2]*cm;
       float y_offset = 0;//(fNuPrismRadius/zDir)*yDir;
-      float x_offset = fNuPlanePos[0]/100.0;
+      float x_offset = fNuPlanePos[0]*cm;
 
       //Subtract offset to get interaction position in WCSim coordinates
-        xPos = fTmpRootrackerVtx->EvtVtx[0] - x_offset;
-        yPos = fTmpRootrackerVtx->EvtVtx[1] - y_offset;
-        zPos = fTmpRootrackerVtx->EvtVtx[2] - z_offset;
+        xPos = fTmpRootrackerVtx->EvtVtx[0]*cm - x_offset;
+        yPos = fTmpRootrackerVtx->EvtVtx[1]*cm - y_offset;
+        zPos = fTmpRootrackerVtx->EvtVtx[2]*cm - z_offset;
 
         //Check if event is outside detector; skip to next event if so; keep
         //loading events until one is found within the detector or there are
         //no more interaction to simulate for this event.
         //The current neut vector files do not correspond directly to the detector dimensions, so only keep those events within the detector
-        while (sqrt(pow(xPos,2)+pow(zPos,2))*m > (myDetector->GetWCIDDiameter()/2.) ||
-	       (abs(yPos*m - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2.))){
+        while (sqrt(pow(xPos,2)+pow(zPos,2)) > (myDetector->GetWCIDDiameter()/2.) ||
+	       (abs(yPos - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2.))){
             //Load another event
             if (fEvNum<fNEntries){
                 fRooTrackerTree->GetEntry(fEvNum);
@@ -480,16 +480,16 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		G4RunManager::GetRunManager()-> AbortRun();
                 return;
             }
-	    // Calculate offset from neutrino generation plane to centre of nuPRISM detector (in metres)
-	    z_offset = fNuPlanePos[2]/100.0;
+	    // Calculate offset from neutrino generation plane to centre of nuPRISM detector
+	    z_offset = fNuPlanePos[2]*cm;
 	    y_offset = 0;//(fNuPrismRadius/zDir)*yDir;
-	    x_offset = fNuPlanePos[0]/100.0;
+	    x_offset = fNuPlanePos[0]*cm;
 
             //Convert coordinates
 	    //Subtract offset to get interaction position in WCSim coordinates
-            xPos = fTmpRootrackerVtx->EvtVtx[0] - x_offset;
-            yPos = fTmpRootrackerVtx->EvtVtx[1] - y_offset;
-            zPos = fTmpRootrackerVtx->EvtVtx[2] - z_offset;
+            xPos = fTmpRootrackerVtx->EvtVtx[0]*cm - x_offset;
+            yPos = fTmpRootrackerVtx->EvtVtx[1]*cm - y_offset;
+            zPos = fTmpRootrackerVtx->EvtVtx[2]*cm - z_offset;
         }
 
 	//Generate particles
@@ -500,20 +500,19 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 	// First simulate the incoming neutrino
 	// Get the neutrino direction
-      xDir=fTmpRootrackerVtx->StdHepP4[0][0];
-      yDir=fTmpRootrackerVtx->StdHepP4[0][1];
-      zDir=fTmpRootrackerVtx->StdHepP4[0][2];
+      xDir=fTmpRootrackerVtx->StdHepP4[0][0]*GeV;
+      yDir=fTmpRootrackerVtx->StdHepP4[0][1]*GeV;
+      zDir=fTmpRootrackerVtx->StdHepP4[0][2]*GeV;
 
-      double momentumGeV=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir))*GeV;
       double momentum=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir));
 
-      G4ThreeVector vtx = G4ThreeVector(xPos*m, yPos*m, zPos*m);
+      G4ThreeVector vtx = G4ThreeVector(xPos, yPos, zPos);
       G4ThreeVector dir = G4ThreeVector(-xDir, -yDir, -zDir);
 
-      dir = dir*(momentumGeV/momentum);
+      dir = dir*(1./momentum);
 
       particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[0]));
-      double kin_energy = momentumGeV;//fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
+      double kin_energy = momentum;//fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
       particleGun->SetParticleEnergy(kin_energy);
       particleGun->SetParticlePosition(vtx);
       particleGun->SetParticleMomentumDirection(dir);
@@ -532,22 +531,21 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                 }
             }
 
-            xDir=fTmpRootrackerVtx->StdHepP4[i][0];
-            yDir=fTmpRootrackerVtx->StdHepP4[i][1];
-            zDir=fTmpRootrackerVtx->StdHepP4[i][2];
+            xDir=fTmpRootrackerVtx->StdHepP4[i][0]*GeV;
+            yDir=fTmpRootrackerVtx->StdHepP4[i][1]*GeV;
+            zDir=fTmpRootrackerVtx->StdHepP4[i][2]*GeV;
 
-            momentumGeV=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir))*GeV;
             momentum=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir));
 
-            vtx.setX(xPos*m);
-            vtx.setY(yPos*m);
-            vtx.setZ(zPos*m);
+            vtx.setX(xPos);
+            vtx.setY(yPos);
+            vtx.setZ(zPos);
 
             dir.setX(xDir);
             dir.setY(yDir);
             dir.setZ(zDir);
 
-            dir = dir*(momentumGeV/momentum);
+            dir = dir*(1./momentum);
 
             particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[i]));
 
