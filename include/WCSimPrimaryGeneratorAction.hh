@@ -250,6 +250,12 @@ private:
   inline void SetIBDModel(G4String choice) { ibd_model = choice; }
   inline G4String GetIBDModel()  { return ibd_model; }
 
+  // HEPMC3 reader
+  inline void SetHepMC3EvtGenerator(G4bool choice) { useHepMC3Evt = choice; }
+  inline G4bool IsUsingHepMC3EvtGenerator()  { return useHepMC3Evt; }
+  inline void SetHepMC3Filename(G4String choice) { hepmc3_filename = choice; }
+  inline G4String GetHepMC3Filename()  { return hepmc3_filename; }
+
   // L. Kneale: light injector with profile from db
   inline void SetLightInjectorEvtGenerator(G4bool choice) {useLightInjectorEvt = choice; }
   inline G4bool IsUsingLightInjectorEvtGenerator()        {return useLightInjectorEvt; }

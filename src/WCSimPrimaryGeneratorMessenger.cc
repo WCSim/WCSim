@@ -219,6 +219,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -235,6 +236,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -251,6 +253,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -267,6 +270,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -283,6 +287,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -299,6 +304,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(true);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -315,6 +321,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(true);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetNeedConversion(false);	    
       myAction->SetCosmicsGenerator(false);
@@ -331,8 +338,26 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetInjectorEvtGenerator(false);
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetIBDEvtGenerator(true);
       myAction->SetNeedConversion(false);
+      myAction->SetCosmicsGenerator(false);
+      myAction->SetRadioactiveEvtGenerator(false);
+      myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
+    }
+    else if (newValue == "hepmc3")
+    {
+      myAction->SetMulineEvtGenerator(false);
+      myAction->SetGunEvtGenerator(false);
+      myAction->SetRootrackerEvtGenerator(false);
+      myAction->SetLaserEvtGenerator(false);
+      myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
+      myAction->SetGPSEvtGenerator(false);
+      myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(true);
+      myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
@@ -348,6 +373,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(true);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -364,6 +390,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(true);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -380,6 +407,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(true);
@@ -396,6 +424,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -412,6 +441,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGPSEvtGenerator(true);
       myAction->SetIBDEvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetNeedConversion(true);
       myAction->SetmPMTledEvtGenerator(false);
     }	  
@@ -428,6 +458,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
       myAction->SetmPMTledEvtGenerator(true);
     }
