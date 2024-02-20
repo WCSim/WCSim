@@ -41,7 +41,7 @@ if (NOT HepMC3_FOUND)
     message(FATAL "Unable to find HepMC3")
 endif (NOT HepMC3_FOUND)
 # Make a variable for the HepMC3 include directory
-set(HEPMC3_LIBS ${HEPMC3_INCLUDE_DIR}/HepMC3)
+set(HEPMC3_LIBS ${HEPMC3_INCLUDE_DIR})
 include_directories (${HEPMC3_LIBS})
 LIST(APPEND PUBLIC_EXT_LIBS ${HEPMC3_LIBRARIES})
 
