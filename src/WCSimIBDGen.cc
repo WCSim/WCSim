@@ -17,7 +17,20 @@
 // Set json to nlohmann::json
 using json = nlohmann::json;
 
-WCSimIBDGen::WCSimIBDGen(WCSimDetectorConstruction *myDC) : myDetector(myDC) {}
+WCSimIBDGen::WCSimIBDGen(G4String spectrum_database, G4String ibd_model, WCSimDetectorConstruction *myDC)
+    : myDetector(myDC) {
+
+    // Read model from database
+    G4cout << "IBDGen: [INFO] spectrum database " << spectrum_database << " found." << G4endl;
+    G4cout << "IBDGen: [INFO] using model " << ibd_model << G4endl;
+    ReadSpectrumFromDB(spectrum_database, ibd_model);
+
+    // Calculate the max value of x_sec * flux for the rejection sampling algorithm
+    xsec_flux_max = MaxXSecFlux();
+
+    // Initialised
+    G4cout << "IBDGen: [INFO] Initialised IBDGen" << G4endl;
+}
 
 WCSimIBDGen::~WCSimIBDGen() {
     // Delete things here
@@ -33,8 +46,6 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string mod
         exit(-1);
     }
 
-    G4cout << "IBDGen: [INFO] spectrum database " << spectrum_database << " found." << G4endl;
-
     std::stringstream buffer;
     buffer << spectrum_json.rdbuf();
 
@@ -43,8 +54,6 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string mod
     // Loop over the json
     for (const auto &model : data["models"]) {
         if (model["name"].get<string>() == model_name) {
-            G4cout << "IBDGen: [INFO] using model " << model_name << G4endl;
-
             energy = model["energy"].get<std::vector<float>>();
             flux = model["flux"].get<std::vector<float>>();
 
@@ -54,8 +63,6 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string mod
                        << spectrum_database << G4endl;
                 exit(-1);
             }
-
-            G4cout << "IBDGen: [INFO] spectrum read from database: " << spectrum_database << G4endl;
 
             // Check if the flux vector and energy vector have the same size
             if (energy.size() != flux.size()) {
@@ -81,19 +88,19 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string mod
     return;
 }
 
-double WCSimIBDGen::InterpolateSpectrum(std::vector<float> ener_vec, std::vector<float> flux_vec, float ene) {
+double WCSimIBDGen::InterpolateSpectrum(float ene) {
 
     // Interpolate the spectrum at the energies in ener_vec
     // The spectrum is given by the vectors ener_vec and flux_vec
 
     // Loop over the energies in energy
-    for (size_t i = 1; i < ener_vec.size(); i++) {
-        if (ene <= ener_vec[i]) {
+    for (size_t i = 1; i < energy.size(); i++) {
+        if (ene <= energy[i]) {
             // Perform linear interpolation
-            double e1 = ener_vec[i - 1];
-            double e2 = ener_vec[i];
-            double f1 = flux_vec[i - 1];
-            double f2 = flux_vec[i];
+            double e1 = energy[i - 1];
+            double e2 = energy[i];
+            double f1 = flux[i - 1];
+            double f2 = flux[i];
 
             double interpolated_value = f1 + (f2 - f1) * (ene - e1) / (e2 - e1);
             return interpolated_value;
@@ -101,7 +108,38 @@ double WCSimIBDGen::InterpolateSpectrum(std::vector<float> ener_vec, std::vector
     }
 
     // If energy is larger than the maximum energy in the spectrum, return the final flux value
-    return flux_vec.back();
+    return flux.back();
+}
+
+double WCSimIBDGen::MaxXSecFlux() {
+    // Loops over the energies in the flux model and calculates the maximum value of dSigma/dCosTheta * flux.
+    double xs_flux_max = 0.0;
+
+    for (size_t i = 0; i < energy.size(); i++) {
+        // Calculate the cross section for forward scattered positrons and backward scattered positrons. One of
+        // these values will always represent the maximum cross section across the energy range (forward at high
+        // energies and backward at low energies)
+        double x_sec_forward = dSigmaBydCosTheta(energy[i], 1.0);
+        double x_sec_backward = dSigmaBydCosTheta(energy[i], -1.0);
+
+        // Get the flux from the flux vector
+        double flux_at_ene = flux[i];
+
+        // Calculate the max cross section * flux
+        if (std::max(x_sec_forward, x_sec_backward) * flux_at_ene > xs_flux_max) {
+            xs_flux_max = std::max(x_sec_forward, x_sec_backward) * flux_at_ene;
+        }
+    }
+
+    // Check if xs_flux_max is still 0.0. If it is then something has gone wrong.
+    if (xs_flux_max == 0.0) {
+        G4cerr << "IBDGen: \033[31m[ERROR]\033[0m maximum value of (cross section * flux) is 0.0. Check the flux "
+                  "database."
+               << G4endl;
+        exit(-1);
+    }
+
+    return xs_flux_max;
 }
 
 G4ThreeVector WCSimIBDGen::GenRandomPosition() {
@@ -116,12 +154,12 @@ G4ThreeVector WCSimIBDGen::GenRandomPosition() {
     // further from the z-axis than the inner detector's radius)
     while (sqrt(x_nu * x_nu + y_nu * y_nu) > myDetector->GetGeo_Dm(3)) {
         // Generate a random x and y value
-        x_nu = myDetector->GetGeo_Dm(0) * (-1.0 + 2.0 * G4UniformRand());
-        y_nu = myDetector->GetGeo_Dm(1) * (-1.0 + 2.0 * G4UniformRand());
+        x_nu = myDetector->GetGeo_Dm(0) * (-0.5 + G4UniformRand());
+        y_nu = myDetector->GetGeo_Dm(1) * (-0.5 + G4UniformRand());
     }
 
     // Generate random z position between -1/2 ID height and +1/2 ID height
-    double z_nu = myDetector->GetGeo_Dm(2) * (-1.0 + 2.0 * G4UniformRand());
+    double z_nu = myDetector->GetGeo_Dm(2) * (-0.5 + G4UniformRand());
 
     G4ThreeVector nu_pos;
 
@@ -148,7 +186,7 @@ void WCSimIBDGen::GenEvent(G4ThreeVector &nu_dir, G4LorentzVector &neutrino, G4L
 
     // First order correction to positron quantities
     // for finite nucleon mass
-    double e1 = PositronEnergy(e_nu, cos_theta);
+    double e1 = GetEe(e_nu, cos_theta);
 
     double p1 = sqrt(e1 * e1 - CLHEP::electron_mass_c2 * CLHEP::electron_mass_c2);
 
@@ -177,105 +215,144 @@ void WCSimIBDGen::GenEvent(G4ThreeVector &nu_dir, G4LorentzVector &neutrino, G4L
 void WCSimIBDGen::GenInteraction(float &rand_ene, float &rand_cos_theta) {
     G4bool passed = false;
 
-    G4double xs_max = CrossSection(e_max, -1.0);
-
+    // Rejection sampling
     while (!passed) {
-        // Pick energy and directory uniformly
+        // Pick energy and direction uniformly
         rand_ene = e_min + (e_max - e_min) * G4UniformRand();
         rand_cos_theta = -1.0 + 2.0 * G4UniformRand();
 
-        // Weight events by spectrum
-        G4double xs_test = xs_max * flux_max * G4UniformRand();
+        // Sample point from a uniform distribution defined by the maximum value of cross section * flux, with the
+        // width of the energy range defined in the spectrum model
+        double g_of_x = (1 / (e_max - e_min));
+        double scale = (g_of_x / (1.005 * xsec_flux_max));
+        double xs_flux_test = (1 / scale) * g_of_x * G4UniformRand();
 
         // Cross section
-        G4double xs_weight = CrossSection(rand_ene, rand_cos_theta);
+        G4double xs_weight = dSigmaBydCosTheta(rand_ene, rand_cos_theta);
+
+        // Skip if xs_weight is nan. This happens below the IBD energy threshold of ~1.8 MeV
+        if (std::isnan(xs_weight)) {
+            continue;
+        }
 
         // Flux at rand_ene
-        G4double flux_weight = InterpolateSpectrum(energy, flux, rand_ene);
+        G4double flux_weight = InterpolateSpectrum(rand_ene);
 
-        passed = (xs_test < xs_weight * flux_weight);
+        passed = (xs_flux_test < xs_weight * flux_weight);
     }
 }
 
-double WCSimIBDGen::CrossSection(double e_nu, double cos_theta) {
-    // Calculates the IBD cross section for a given neutrino energy and scattering angle
-    // Taken astro-ph/0302055 / Phys.Lett.B564:42-54,2003
+// Cross section calculations below here were taken from astro-ph/0302055 available at
+// https://arxiv.org/abs/astro-ph/0302055
 
-    const double cos_theta_c = (0.9741 + 0.9756) / 2.0;
+double WCSimIBDGen::MatrixElement(double e_nu, double e_e) {
+    // Calculates and return the value of the absolute matrix element squared
 
-    // Radiative correction constant
-    const double rad_cor = 0.024;
+    // Calculate the Mandelstam variables. See above equation 11
+    double s_minus_u = 2 * CLHEP::proton_mass_c2 * (e_nu + e_e) - pow(CLHEP::electron_mass_c2, 2.);
+    double t =
+        pow(CLHEP::neutron_mass_c2, 2) - pow(CLHEP::proton_mass_c2, 2) - 2 * CLHEP::proton_mass_c2 * (e_nu - e_e);
 
-    const double DELTA = CLHEP::neutron_mass_c2 - CLHEP::proton_mass_c2;
+    // Calculate f1, f2, g1 and g2. See equation 7
+    double x = 0 + t / (4 * pow(M_av, 2));
+    double y = 1 - t / pow(M_V_squared, 2);
+    double z = 1 - t / pow(M_A_squared, 2);
+    double f1 = (1 - (1 + xi) * x) / ((1 - x) * pow(y, 2));
+    double f2 = xi / ((1 - x) * pow(y, 2));
+    double g1 = g_1_0 / pow(z, 2);
+    double g2 = 2 * pow(M_av, 2) * g1 / (pow(139.56995, 2) - t);
 
-    // Neutrino energy threshold for inverse beta decay
-    const double e_nu_min = ((CLHEP::proton_mass_c2 + DELTA + CLHEP::electron_mass_c2) *
-                                 (CLHEP::proton_mass_c2 + CLHEP::electron_mass_c2 + DELTA) -
-                             CLHEP::proton_mass_c2 * CLHEP::proton_mass_c2) /
-                            2 / CLHEP::proton_mass_c2;
+    // Calculate A, B and C. See equation 10
+    double A = 1. / 16. *
+               ((t - pow(CLHEP::electron_mass_c2, 2)) *
+                    (4 * pow(f1, 2) * (4 * pow(M_av, 2) + t + pow(CLHEP::electron_mass_c2, 2)) +
+                     4 * pow(g1, 2) * (-4 * pow(M_av, 2) + t + pow(CLHEP::electron_mass_c2, 2)) +
+                     pow(f2, 2) * (pow(t, 2) / pow(M_av, 2) + 4 * t + 4 * pow(CLHEP::electron_mass_c2, 2)) +
+                     4 * pow(CLHEP::electron_mass_c2, 2) * t * pow(g2, 2) / pow(M_av, 2) +
+                     8 * f1 * f2 * (2 * t + pow(CLHEP::electron_mass_c2, 2)) +
+                     16 * pow(CLHEP::electron_mass_c2, 2) * g1 * g2) -
+                pow(delta, 2) * ((4 * pow(f1, 2) + t * pow(f2, 2) / pow(M_av, 2)) *
+                                     (4 * pow(M_av, 2) + t - pow(CLHEP::electron_mass_c2, 2)) +
+                                 4 * pow(g1, 2) * (4 * pow(M_av, 2) - t + pow(CLHEP::electron_mass_c2, 2)) +
+                                 4 * pow(CLHEP::electron_mass_c2, 2) * pow(g2, 2) *
+                                     (t - pow(CLHEP::electron_mass_c2, 2)) / pow(M_av, 2) +
+                                 8 * f1 * f2 * (2 * t - pow(CLHEP::electron_mass_c2, 2)) +
+                                 16 * pow(CLHEP::electron_mass_c2, 2) * g1 * g2) -
+                32 * pow(CLHEP::electron_mass_c2, 2) * M_av * delta * g1 * (f1 + f2));
 
-    if (e_nu < e_nu_min) {
-        return 0.0;
-    }
+    double B = 1. / 16. *
+               (16 * t * g1 * (f1 + f2) +
+                4 * pow(CLHEP::electron_mass_c2, 2) * delta * (pow(f2, 2) + f1 * f2 + 2 * g1 * g2) / M_av);
 
-    const double GFERMI = 1.16639e-11;
+    double C = 1. / 16. * (4 * (pow(f1, 2) + pow(g1, 2)) - t * pow(f2, 2) / pow(M_av, 2));
 
-    const double sigma_0 = GFERMI * GFERMI * cos_theta_c * cos_theta_c / CLHEP::pi * (1 + rad_cor);
+    // Calculate the absolute value of the matrix element squared. See equation 5.
+    double abs_M_squared = A - (s_minus_u)*B + pow((s_minus_u), 2) * C;
 
-    // Couplings
-    const double f = 1.00;
-    const double f2 = 3.706;
-    const double g = 1.26;
-
-    // Order 0 terms
-    double e0 = e_nu - DELTA;
-    if (e0 < CLHEP::electron_mass_c2) {
-        e0 = CLHEP::electron_mass_c2;
-    }
-    double p0 = sqrt(e0 * e0 - CLHEP::electron_mass_c2 * CLHEP::electron_mass_c2);
-    double v0 = p0 / e0;
-
-    // Order 1 terms
-    const double y_squared = (DELTA * DELTA - CLHEP::electron_mass_c2 * CLHEP::electron_mass_c2) / 2;
-    double e1 = e0 * (1 - e_nu / CLHEP::proton_mass_c2 * (1 - v0 * cos_theta)) - y_squared / CLHEP::proton_mass_c2;
-    if (e1 < CLHEP::electron_mass_c2) {
-        e1 = CLHEP::electron_mass_c2;
-    }
-    double p1 = sqrt(e1 * e1 - CLHEP::electron_mass_c2 * CLHEP::electron_mass_c2);
-    double v1 = p1 / e1;
-
-    double gamma =
-        2 * (f + f2) * g *
-            ((2 * e0 + DELTA) * (1 - v0 * cos_theta) - CLHEP::electron_mass_c2 * CLHEP::electron_mass_c2 / e0) +
-        (f * f + g * g) * (DELTA * (1 + v0 * cos_theta) + CLHEP::electron_mass_c2 * CLHEP::electron_mass_c2 / e0) +
-        (f * f + 3 * g * g) * ((e0 + DELTA) * (1 - cos_theta / v0) - DELTA) +
-        (f * f - g * g) * ((e0 + DELTA) * (1 - cos_theta / v0) - DELTA) * v0 * cos_theta;
-
-    double cross_section = ((f * f + 3 * g * g) + (f * f - g * g) * v1 * cos_theta) * e1 * p1 -
-                           gamma / CLHEP::proton_mass_c2 * e0 * p0;
-
-    cross_section *= sigma_0 / 2;
-
-    // Convert from MeV^{-2} to mm^2 (native units for GEANT4)
-    cross_section *= CLHEP::hbarc * CLHEP::hbarc;
-
-    return cross_section;
+    return abs_M_squared;
 }
 
-double WCSimIBDGen::PositronEnergy(double e_nu, double cos_theta) {
-    // Returns positron energy with first order corrections.
-    // Taken from page 3 of astro-ph/0302055 / Phys.Lett.B564:42-54,2003
-    // Zero'th order approximation of positron quantities - infinite nucleon mass
-    double e0 = e_nu - (CLHEP::neutron_mass_c2 - CLHEP::proton_mass_c2);
-    double p0 = sqrt(e0 * e0 - CLHEP::electron_mass_c2 * CLHEP::electron_mass_c2);
-    double v0 = p0 / e0;
+double WCSimIBDGen::dSigmaBydt(double e_nu, double e_e) {
+    // Mandelstam variable s. See equation 7.
+    double s = 2 * CLHEP::proton_mass_c2 * e_nu + pow(CLHEP::proton_mass_c2, 2);
 
-    // First order correction to positron quantities -- see page 3 astro-ph/0302055
-    const double y_squared =
-        (CLHEP::neutron_mass_c2 - CLHEP::proton_mass_c2) * (CLHEP::neutron_mass_c2 - CLHEP::proton_mass_c2) / 2;
-    double e1 = e0 * (1 - e_nu / CLHEP::proton_mass_c2 * (1 - v0 * cos_theta)) - y_squared / CLHEP::proton_mass_c2;
-    if (e1 < CLHEP::electron_mass_c2) {
-        e1 = CLHEP::electron_mass_c2;
-    }
-    return e1;
+    // Calculate dSigma/dt. See equation 3.
+    double dsigma_dt = pow(G_f, 2) * pow(cos_cabibbo, 2) /
+                       (2 * CLHEP::pi * pow((s - pow(CLHEP::proton_mass_c2, 2)), 2)) * MatrixElement(e_nu, e_e);
+
+    return dsigma_dt;
+}
+
+double WCSimIBDGen::dSigmaBydEe(double e_nu, double e_e) {
+    // Calculates dSigma/dE_e and applies the one-loop radiative correction
+
+    // Calculate dSigma/dEe. See equation 11
+    double dSigma_by_dEe = 2 * CLHEP::proton_mass_c2 * dSigmaBydt(e_nu, e_e);
+
+    // Apply the one-loop radiative correction. See equation 14.
+    double dSigma_by_dEe_corrected = RadiativeCorrection(dSigma_by_dEe, e_e);
+
+    return dSigma_by_dEe_corrected;
+}
+
+double WCSimIBDGen::RadiativeCorrection(double dSigma_by_dEe, double e_e) {
+    // Calculate and apply the radiative correction. See equation 14
+    // This correction is valued for E_nu << m_p
+    double rad_corrected = dSigma_by_dEe * (1 + alpha / CLHEP::pi *
+                                                    (6.00 + 3. / 2. * log10(CLHEP::proton_mass_c2 / (2 * e_e)) +
+                                                     1.2 * pow(CLHEP::electron_mass_c2 / e_e, 1.5)));
+
+    return rad_corrected;
+}
+
+double WCSimIBDGen::dSigmaBydCosTheta(double e_nu, double cos_theta) {
+    // Simplifies the cross section exapression when expanding in powers of epsilon. See equation 8.
+    double epsilon = e_nu / CLHEP::proton_mass_c2;
+
+    // Get the positron energy corresponding to the neutrino energy and scattering angle.
+    double e_e = GetEe(e_nu, cos_theta);
+
+    // Energy momentum relation. See equation 21
+    double p_e = sqrt(pow(e_e, 2) - pow(CLHEP::electron_mass_c2, 2));
+
+    // Calculate dSigma/dcos(theta). See equation 20
+    double dSigma_by_dCosTheta =
+        p_e * epsilon / (1 + epsilon * (1 - e_e / p_e * cos_theta)) * dSigmaBydEe(e_nu, e_e);
+
+    return dSigma_by_dCosTheta * CLHEP::hbarc * CLHEP::hbarc;
+}
+
+double WCSimIBDGen::GetEe(double e_nu, double cos_theta) {
+    // See above comment and equation 8.
+    double epsilon = e_nu / CLHEP::proton_mass_c2;
+
+    // See below equation 21 for kappa definition
+    double kappa = pow(1 + epsilon, 2) - pow(epsilon * cos_theta, 2);
+
+    // Positron energy calculation. See equation 21
+    double e_e = ((e_nu - delta_cm) * (1 + epsilon) +
+                  epsilon * cos_theta * sqrt(pow(e_nu - delta_cm, 2) - pow(CLHEP::electron_mass_c2, 2) * kappa)) /
+                 kappa;
+
+    return e_e;
 }

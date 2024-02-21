@@ -31,13 +31,13 @@ class WCSimWCHit : public G4VHit
  public:
   
   void SetTubeID       (G4int tube)                 { tubeID = tube; };
-  void SetTrackID      (G4int track)                { trackID = track; };
   void SetEdep         (G4double de)                { edep = de; };
   void SetPos          (G4ThreeVector xyz)          { pos = xyz; };
   void SetOrientation  (G4ThreeVector xyz)          { orient = xyz; };
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
-  void AddParentID     (G4int primParentID) { primaryParentID.push_back(primParentID); }
+  void AddTrackID      (G4int track)                { trackID.push_back(track); };
+  void AddParentID     (G4int myParentSavedTrackID) { parentSavedTrackID.push_back(myParentSavedTrackID); }
   void AddPhotonStartTime (G4float photStartTime) { photonStartTime.push_back(photStartTime); }
   void AddPhotonStartPos  (const G4ThreeVector &photStartPos) { photonStartPos.push_back(photStartPos); }
   void AddPhotonEndPos  (const G4ThreeVector &photEndPos) { photonEndPos.push_back(photEndPos); }
@@ -63,12 +63,12 @@ class WCSimWCHit : public G4VHit
   }
  
   G4int         GetTubeID()     { return tubeID; };
-  G4int         GetTrackID()    { return trackID; };
+  G4int         GetTrackID(int i)    { return trackID[i]; };
   G4ThreeVector GetPos()        { return pos; };
   G4ThreeVector GetOrientation()        { return orient; };
   G4int         GetTotalPe()    { return totalPe;};
   G4double      GetTime(int i)  { return time[i];};
-  G4int         GetParentID(int i) { return primaryParentID[i];};
+  G4int         GetParentID(int i) { return parentSavedTrackID[i];};
   G4String         GetTubeType()     { return tubeType; };
   G4float       GetPhotonStartTime(int i) { return photonStartTime[i];};
   G4ThreeVector GetPhotonStartPos(int i) { return photonStartPos[i];};
@@ -139,7 +139,6 @@ class WCSimWCHit : public G4VHit
   void HSVtoRGB(double& fR, double& fG, double& fB, double& fH, double& fS, double& fV);
 
   G4int            tubeID;
-  G4int            trackID;
   G4double         edep;
   G4ThreeVector    pos;
   G4ThreeVector    orient;
@@ -154,7 +153,8 @@ class WCSimWCHit : public G4VHit
 
   G4int                 totalPe;
   std::vector<G4double> time;
-  std::vector<G4int>    primaryParentID;
+  std::vector<G4int>    trackID;
+  std::vector<G4int>    parentSavedTrackID;
   std::vector<G4float>  photonStartTime;
   std::vector<G4ThreeVector> photonStartPos;
   std::vector<G4ThreeVector> photonEndPos;

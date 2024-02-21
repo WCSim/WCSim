@@ -90,27 +90,16 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   WCSimTrackInformation* trackinfo 
     = (WCSimTrackInformation*)(aStep->GetTrack()->GetUserInformation());
-  
-  G4int primParentID = -1;
-  G4float       photonStartTime;
+
+  G4int parentSavedTrackID = -1;
+  G4float photonStartTime;
   G4ThreeVector photonStartPos;
   G4ThreeVector photonStartDir;
   G4String      photonCreatorProcess;
-  if (trackinfo) {
-    //Skip secondaries and match to mother process, eg. muon, decay particle, gamma from pi0/nCapture.
-    primParentID         = trackinfo->GetPrimaryParentID();  //!= ParentID.
-    photonStartTime      = trackinfo->GetPhotonStartTime();
-    photonStartPos       = trackinfo->GetPhotonStartPos();
-    photonStartDir       = trackinfo->GetPhotonStartDir();
-    photonCreatorProcess = trackinfo->GetPhotonCreatorProcess();
-  }
-  else { // if there is no trackinfo, then it is a primary particle!
-    primParentID         = aStep->GetTrack()->GetTrackID();
-    photonStartTime      = aStep->GetTrack()->GetGlobalTime();
-    photonStartPos       = aStep->GetTrack()->GetVertexPosition();
-    photonStartDir       = aStep->GetTrack()->GetVertexMomentumDirection();
-    //photonCreatorProcess = aStep->GetTrack()->GetCreatorProcess()->GetProcessName();
-  }
+  parentSavedTrackID = aStep->GetTrack()->GetParentID();
+  photonStartTime = aStep->GetTrack()->GetGlobalTime() - aStep->GetTrack()->GetLocalTime(); // current time minus elapsed time of track
+  photonStartPos = aStep->GetTrack()->GetVertexPosition();
+  photonStartDir = aStep->GetTrack()->GetVertexMomentumDirection();
 
 
   G4int    trackID           = aStep->GetTrack()->GetTrackID();
@@ -235,15 +224,19 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
        const G4Event* currentEvent = Runman->GetCurrentEvent();
        G4HCofThisEvent* HCofEvent = currentEvent->GetHCofThisEvent();
        hitsCollection = (WCSimWCHitsCollection*)(HCofEvent->GetHC(collectionID));
-      
-       // If this tube hasn't been hit add it to the collection	 
+
+       // mark the track as having produced a hit
+       if(!trackinfo)
+           trackinfo = new WCSimTrackInformation();
+       trackinfo->SetProducesHit(true);
+
+       // If this tube hasn't been hit add it to the collection
        if (PMTHitMap[replicaNumber] == 0)
        //if (PMTHitMap.find(replicaNumber) == PMTHitMap.end())  TF attempt to fix
 	 {
 	   WCSimWCHit* newHit = new WCSimWCHit();
 	   newHit->SetTubeID(replicaNumber);
 	   //newHit->SetTubeType(volumeName);//B. Quilain
-	   newHit->SetTrackID(trackID);
 	   newHit->SetEdep(energyDeposition); 
 	   newHit->SetLogicalVolume(thePhysical->GetLogicalVolume());
 	   
@@ -255,7 +248,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   // Set the hitMap value to the collection hit number
 	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
-	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
+     (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
@@ -269,7 +263,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	 }
        else {
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
-	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(primParentID);
+   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);

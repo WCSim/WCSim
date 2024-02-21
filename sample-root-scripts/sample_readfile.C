@@ -14,6 +14,9 @@
 #include "WCSimRootGeom.hh"
 #include "WCSimRootEvent.hh"
 
+// Only access the photon history class when -DWCSim_DEBUG_COMPILE_FLAG=ON is defined in compilation
+//#define WCSIM_SAVE_PHOTON_HISTORY
+
 // Simple example of reading a generated Root file
 int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
 {
@@ -180,7 +183,10 @@ int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
 
     // Grab the big arrays of times and parent IDs
     TClonesArray *timeArray = wcsimrootevent->GetCherenkovHitTimes();
-    
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
+    TClonesArray *historyArray = wcsimrootevent->GetCherenkovHitHistories(); // scattering and reflection history
+#endif
+
     int totalPe = 0;
     // Loop through elements in the TClonesArray of WCSimRootCherenkovHits
     for (int itruepmt=0; itruepmt < ncherenkovhits; itruepmt++)
@@ -253,6 +259,17 @@ int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
 		cout<<" HitTime index "<<thephotonsid<<", pre-smear time "<<thehittimeobject->GetTruetime()
 		    <<", parent TrackID: "<<thehittimeobject->GetParentID()<<";";
 	      }
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
+        // use the same index as WCSimRootCherenkovHitTime
+        WCSimRootCherenkovHitHistory *thehithistoryobject =  dynamic_cast<WCSimRootCherenkovHitHistory*>(historyArray->At(thephotonsid));
+	      if(thehithistoryobject)
+        {
+          // Number of scattering, and types of reflection surface (WCSimEnumerations)
+          cout<<" Rayleigh Scattering: "<<thehithistoryobject->GetNRayScatters()<<", Mie Scattering: "<<thehithistoryobject->GetNMieScatters()<<", Reflection: ";
+          for (auto r: thehithistoryobject->GetReflectionSurfaces()) cout<<WCSimEnumerations::EnumAsString(r)<<" ";
+          cout<<";";
+	      }
+#endif
 	      cout<<endl;
 	      photonid++;
 	    } // end loop over photons in digit

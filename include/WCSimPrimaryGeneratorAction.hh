@@ -107,6 +107,7 @@ private:
   G4bool   useRadioactiveEvt; // F. Nova: Radioactive flag
   G4bool   useRadonEvt; // G. Pronost: Radon flag
   G4bool   useLightInjectorEvt; // L. Kneale injector with profile from db
+  G4bool   useMPMTledEvt;
 
   std::fstream inputFile;
   std::fstream inputCosmicsFile;
@@ -208,8 +209,15 @@ private:
   bool foundConversion;
   const G4ParticleDefinition * conversionProductParticle[2];
   G4ThreeVector conversionProductMomentum[2];
-	
-public:
+
+  // mPMT LED generator
+  G4ParticleDefinition* opticalphoton_pd;
+  G4int mPMTLEDId1;
+  G4int mPMTLEDId2;
+  G4double mPMTLED_dTheta;
+  G4double mPMTLED_dPhi;
+
+ public:
 
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
   inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
@@ -262,6 +270,18 @@ public:
   }
   inline G4bool IsUsingDataTableEvtGenerator() { return useDataTableEvt; }
 
+
+  inline void SetmPMTledEvtGenerator(G4bool choice) { useMPMTledEvt = choice; }
+  inline G4bool IsUsingmPMTledEvtGenerator()  { return useMPMTledEvt; }
+  inline void SetmPMTLEDId1(G4int val){ mPMTLEDId1 = val; }
+  inline G4int GetmPMTLEDId1(){ return mPMTLEDId1; }
+  inline void SetmPMTLEDId2(G4ThreeVector val)
+  { 
+    mPMTLEDId2 = (G4int)val.x(); 
+    mPMTLED_dTheta = val.y()*CLHEP::deg;
+    mPMTLED_dPhi = val.z()*CLHEP::deg;
+  }
+  inline G4int GetmPMTLEDId2(){ return mPMTLEDId2; }
 
   inline void SetCosmicsGenerator(G4bool choice) { useCosmics = choice; }
   inline G4bool IsUsingCosmicsGenerator()  { return useCosmics; }

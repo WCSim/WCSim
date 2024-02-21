@@ -54,6 +54,8 @@ public:
   WCSimDetectorConstruction(G4int DetConfig,WCSimTuningParameters* WCSimTuningPars);
   ~WCSimDetectorConstruction();
 
+  G4LogicalVolume* ConstructRealisticPlacement();
+
   void SaveOptionsToOutput(WCSimRootOptions * wcopt);
 
   G4VPhysicalVolume* Construct();
@@ -85,6 +87,8 @@ public:
   void SetHyperK_HybridmPMT10PCGeometry();//B.Q, 2019/01/26
   void SetHyperK_HybridFakeGeometry();//B.Q, 2019/01/26
   void SetHyperK_HybridmPMT_WithOD_Geometry();
+  void SetHyperK_HybridmPMT_WithOD_Realistic_Geometry(); //P.S. 2023/12/19
+  void SetHyperK_HybridmPMT_IDonly_Realistic_Geometry(); //P.S. 2023/12/19
   void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition);
   void SetNuPrism_mPMTGeometry();
   void SetNuPrismBeamTest_mPMTGeometry();
@@ -176,9 +180,11 @@ public:
   // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
   static G4Transform3D GetTubeTransform(int tubeNo){return tubeIDMap[tubeNo];}
+  static std::map<int, std::pair< int, int > > GetTube_mPMTIDMap(){return mPMTIDMap;}
   //For the hybrid configuration
   static G4int GetTubeID2(std::string tubeTag){return tubeLocationMap2[tubeTag];}
   static G4Transform3D GetTubeTransform2(int tubeNo){return tubeIDMap2[tubeNo];}
+  static std::map<int, std::pair< int, int > > GetTube_mPMTIDMap2(){return mPMTIDMap2;}
   // OD PMTs
   static G4int GetODTubeID(std::string tubeTag){return ODtubeLocationMap[tubeTag];}
   static G4Transform3D GetODTubeTransform(int tubeNo){return ODtubeIDMap[tubeNo];}
@@ -349,6 +355,8 @@ public:
   void SetPMTPositionInput(G4String choice) {pmtPositionFile = choice; readFromTable = true;}
   G4String GetPMTPositionInput() {return pmtPositionFile;}
 
+  void SetCDSFile(G4String choice) { CDSFile = choice; addCDS = true; }
+
   void   SetPMTType(G4String type) {
     WCPMTType = type;
     //And update everything that is affected by a new PMT
@@ -467,6 +475,7 @@ private:
 
 
   // Tuning parameters
+  bool isRealisticPlacement;
 
   WCSimTuningParameters* WCSimTuningParams;
 
@@ -726,6 +735,8 @@ private:
   G4bool isNuPrism;
   G4bool isNuPrismBeamTest;
   G4bool isNuPrismBeamTest_16cShort; // Jul 02 2021 L.Anthony
+  G4bool addCDS;
+  G4String CDSFile;
   G4String WCPMTType;
  // G4double WCPMTCoverage; //TF: already using this variable "WCPMTPercentCoverage
 
@@ -735,11 +746,15 @@ private:
   G4bool useReplica, readFromTable;
   G4double pmtPosVar;
   G4double topRadiusChange, midRadiusChange, botRadiusChange;
+  G4int nPMTsRead;
   std::vector<G4ThreeVector> pmtPos, pmtDir;
   std::vector<G4bool> pmtUse;
+  std::vector<G4int> pmtType;
+  std::vector<G4int> pmtSection; // 0 = barrel, 1 = top cap, 2 = top border ring, 3 = bottom cap, 4 = bottom border ring
+  std::vector<G4int> pmtmPMTId;
+  std::vector<G4double> pmtRotaton;
   std::string pmtPositionFile;
   void ReadGeometryTableFromFile();
-  G4int PMTID;
 
   // *** Begin egg-shaped HyperK Geometry ***
 

@@ -11,6 +11,7 @@
 #include "G4ParticleDefinition.hh"
 #include "G4IonTable.hh"
 #include "G4ThreeVector.hh"
+#include "G4Vector3D.hh"
 #include "G4EventManager.hh"
 #include "globals.hh"
 #include <G4Types.hh>
@@ -114,6 +115,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   useRadioactiveEvt   = false;
   useRadonEvt         = false;
   useLightInjectorEvt = false;
+  useMPMTledEvt       = false;
 
   //rootracker related variables
   fEvNum = 0;
@@ -143,6 +145,12 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   injectorFilename = "";
   photonMode = 0;
 
+  mPMTLEDId1 = 1;
+  mPMTLEDId2 = 0;
+  mPMTLED_dTheta = 0.;
+  mPMTLED_dPhi = 0.;
+  opticalphoton_pd = particleTable->FindParticle("opticalphoton");
+
   // Time units for vertices
   fTimeUnit=CLHEP::nanosecond;
 }
@@ -152,7 +160,7 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
   // Create the relevant histograms to generate muons
   // according to SuperK flux extrapolated at HyperK site
 
-  altCosmics = 2*myDetector->GetWCIDHeight();
+  altCosmics = myDetector->GetWCIDHeight();
   G4cout << "altCosmics : " << altCosmics << G4endl;
   if (inputCosmicsFile.is_open()) inputCosmicsFile.close();
 
@@ -176,9 +184,11 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
     hFluxCosmics = new TH2D("hFluxCosmics","HK Flux", 180,0,360,100,0,1);
     hFluxCosmics->GetXaxis()->SetTitle("#phi (deg)");
     hFluxCosmics->GetYaxis()->SetTitle("cos #theta");
+    hFluxCosmics->SetDirectory(0);
     hEmeanCosmics = new TH2D("hEmeanCosmics","HK Flux", 180,0,360,100,0,1);
     hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
     hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
+    hEmeanCosmics->SetDirectory(0);
 
     while ( getline(inputCosmicsFile,line) ){
       token = tokenize(" $", line);
@@ -196,8 +206,8 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
       flux=(atof(token[8]));
       Emean=(atof(token[9]));
 
-      hFluxCosmics->SetBinContent(binPhi,binCos,flux);
-      hEmeanCosmics->SetBinContent(binPhi,binCos,Emean);
+      hFluxCosmics->SetBinContent(binPhi+1,binCos+1,flux);
+      hEmeanCosmics->SetBinContent(binPhi+1,binCos+1,Emean);
     }
 
     TFile *file = new TFile("cosmicflux.root","RECREATE");
@@ -456,22 +466,22 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	return;
       }
 
-      // Calculate offset from neutrino generation plane to centre of nuPRISM detector (in metres)
-      float z_offset = fNuPlanePos[2]/100.0;
+      // Calculate offset from neutrino generation plane to centre of nuPRISM detector
+      float z_offset = fNuPlanePos[2]*cm;
       float y_offset = 0;//(fNuPrismRadius/zDir)*yDir;
-      float x_offset = fNuPlanePos[0]/100.0;
+      float x_offset = fNuPlanePos[0]*cm;
 
       //Subtract offset to get interaction position in WCSim coordinates
-        xPos = fTmpRootrackerVtx->EvtVtx[0] - x_offset;
-        yPos = fTmpRootrackerVtx->EvtVtx[1] - y_offset;
-        zPos = fTmpRootrackerVtx->EvtVtx[2] - z_offset;
+        xPos = fTmpRootrackerVtx->EvtVtx[0]*cm - x_offset;
+        yPos = fTmpRootrackerVtx->EvtVtx[1]*cm - y_offset;
+        zPos = fTmpRootrackerVtx->EvtVtx[2]*cm - z_offset;
 
         //Check if event is outside detector; skip to next event if so; keep
         //loading events until one is found within the detector or there are
         //no more interaction to simulate for this event.
         //The current neut vector files do not correspond directly to the detector dimensions, so only keep those events within the detector
-        while (sqrt(pow(xPos,2)+pow(zPos,2))*m > (myDetector->GetWCIDDiameter()/2.) ||
-	       (abs(yPos*m - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2.))){
+        while (sqrt(pow(xPos,2)+pow(zPos,2)) > (myDetector->GetWCIDDiameter()/2.) ||
+	       (abs(yPos - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2.))){
             //Load another event
             if (fEvNum<fNEntries){
                 fRooTrackerTree->GetEntry(fEvNum);
@@ -483,16 +493,16 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		G4RunManager::GetRunManager()-> AbortRun();
                 return;
             }
-	    // Calculate offset from neutrino generation plane to centre of nuPRISM detector (in metres)
-	    z_offset = fNuPlanePos[2]/100.0;
+	    // Calculate offset from neutrino generation plane to centre of nuPRISM detector
+	    z_offset = fNuPlanePos[2]*cm;
 	    y_offset = 0;//(fNuPrismRadius/zDir)*yDir;
-	    x_offset = fNuPlanePos[0]/100.0;
+	    x_offset = fNuPlanePos[0]*cm;
 
             //Convert coordinates
 	    //Subtract offset to get interaction position in WCSim coordinates
-            xPos = fTmpRootrackerVtx->EvtVtx[0] - x_offset;
-            yPos = fTmpRootrackerVtx->EvtVtx[1] - y_offset;
-            zPos = fTmpRootrackerVtx->EvtVtx[2] - z_offset;
+            xPos = fTmpRootrackerVtx->EvtVtx[0]*cm - x_offset;
+            yPos = fTmpRootrackerVtx->EvtVtx[1]*cm - y_offset;
+            zPos = fTmpRootrackerVtx->EvtVtx[2]*cm - z_offset;
         }
 
 	//Generate particles
@@ -503,20 +513,19 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 	// First simulate the incoming neutrino
 	// Get the neutrino direction
-      xDir=fTmpRootrackerVtx->StdHepP4[0][0];
-      yDir=fTmpRootrackerVtx->StdHepP4[0][1];
-      zDir=fTmpRootrackerVtx->StdHepP4[0][2];
+      xDir=fTmpRootrackerVtx->StdHepP4[0][0]*GeV;
+      yDir=fTmpRootrackerVtx->StdHepP4[0][1]*GeV;
+      zDir=fTmpRootrackerVtx->StdHepP4[0][2]*GeV;
 
-      double momentumGeV=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir))*GeV;
       double momentum=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir));
 
-      G4ThreeVector vtx = G4ThreeVector(xPos*m, yPos*m, zPos*m);
+      G4ThreeVector vtx = G4ThreeVector(xPos, yPos, zPos);
       G4ThreeVector dir = G4ThreeVector(-xDir, -yDir, -zDir);
 
-      dir = dir*(momentumGeV/momentum);
+      dir = dir*(1./momentum);
 
       particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[0]));
-      double kin_energy = momentumGeV;//fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
+      double kin_energy = momentum;//fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
       particleGun->SetParticleEnergy(kin_energy);
       particleGun->SetParticlePosition(vtx);
       particleGun->SetParticleMomentumDirection(dir);
@@ -535,22 +544,21 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                 }
             }
 
-            xDir=fTmpRootrackerVtx->StdHepP4[i][0];
-            yDir=fTmpRootrackerVtx->StdHepP4[i][1];
-            zDir=fTmpRootrackerVtx->StdHepP4[i][2];
+            xDir=fTmpRootrackerVtx->StdHepP4[i][0]*GeV;
+            yDir=fTmpRootrackerVtx->StdHepP4[i][1]*GeV;
+            zDir=fTmpRootrackerVtx->StdHepP4[i][2]*GeV;
 
-            momentumGeV=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir))*GeV;
             momentum=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir));
 
-            vtx.setX(xPos*m);
-            vtx.setY(yPos*m);
-            vtx.setZ(zPos*m);
+            vtx.setX(xPos);
+            vtx.setY(yPos);
+            vtx.setZ(zPos);
 
             dir.setX(xDir);
             dir.setY(yDir);
             dir.setZ(zDir);
 
-            dir = dir*(momentumGeV/momentum);
+            dir = dir*(1./momentum);
 
             particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[i]));
 
@@ -821,7 +829,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4ThreeVector dir  = P.unit();
       G4double E         = std::sqrt((P.dot(P))+(mass*mass));
       G4cout << " GPS primary vertex (" << vtx.x() << ", " << vtx.y() << ", " << vtx.z() << "), dir ("
-	     << dir.x() << ", " << dir.y() << ", " << dir.z() << ") m " << m << " E "<< E << " pdg " << pdg << G4endl;
+	     << dir.x() << ", " << dir.y() << ", " << dir.z() << ") m " << mass << " E "<< E << " pdg " << pdg << G4endl;
 
       SetVtx(vtx);
       SetBeamEnergy(E);
@@ -877,7 +885,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                                                                    conversionProductMomentum[1].getZ());
           anEvent->GetPrimaryVertex(0)->SetPrimary(secondProduct);
       }	  
-    }
+    }  
   else if (useRadonEvt)
     { //G. Pronost: Add Radon (adaptation of Radioactive event)
 
@@ -899,8 +907,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       std::vector<struct radioactive_source>::iterator it;
 
       G4String IsotopeName = "Rn222";
-
-      /*
       G4double IsotopeActivity = myRn222Generator->GetMeanActivity() * 1e-3; // mBq to Bq
       G4double iEventAvg = IsotopeActivity * GetRadioactiveTimeWindow();
 
@@ -911,9 +917,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       if ( n_vertices < 1 ) {
       	 n_vertices = 1;
       }
-      */
-      // 20201009: WCSim hybrid doesn't support multiple Primary vertex
-      int n_vertices = 1;
 
       for(int u=0; u<n_vertices; u++){
 
@@ -943,9 +946,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       // this will generate several primary vertices
       MyGPS->GeneratePrimaryVertex(anEvent);
 
-      // 20201009: WCSim hybrid doesn't support multiple Primary vertex
-      number_of_sources = 1;
-      //SetNvtxs(number_of_sources);
+      SetNvtxs(number_of_sources);
       for( G4int u=0; u<number_of_sources; u++){
 	targetpdgs[u] = 2212; //ie. proton
 
@@ -958,16 +959,10 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 	//G4cout << " vertex " << u << " of " << number_of_sources << " (" << vtx.x() << ", " << vtx.y() << ", " << vtx.z() << ") with pdg: " << pdg << G4endl;
 
-        // 20201009: WCSim hybrid doesn't support multiple Primary vertex
-      	SetVtx(vtx);
-      	SetBeamEnergy(E);
-      	SetBeamPDG(pdg);
-      	/*
       	SetVtxs(u,vtx);
       	SetBeamEnergy(E,u);
       	//       SetBeamDir(dir);
       	SetBeamPDG(pdg,u);
-      	*/
       }
 
     } else if (useIBDEvt) {
@@ -977,8 +972,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         // This reads the spectrum once and populates vector attributes of the
         //   WCSimIBDGen object with the energy and flux
         if(!IBDGen){
-            IBDGen = new WCSimIBDGen(myDetector);
-            IBDGen->ReadSpectrumFromDB(ibd_database, ibd_model);
+            IBDGen = new WCSimIBDGen(ibd_database, ibd_model, myDetector);
         }
 
         // Event variables
@@ -1140,18 +1134,44 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4cout << "#############" << G4endl;
     //////////////////
 
+    // get muon direction
     double phiMuon, cosThetaMuon;
     energy = 0;
     while((int)(energy) == 0){
       hFluxCosmics->GetRandom2(phiMuon,cosThetaMuon);
-      energy = hEmeanCosmics->GetBinContent(hFluxCosmics->GetBin(phiMuon,cosThetaMuon))*GeV;
+      int phiMuonBin = hFluxCosmics->GetXaxis()->FindFixBin(phiMuon);
+      int cosThetaMuonBin = hFluxCosmics->GetYaxis()->FindFixBin(cosThetaMuon);
+      energy = hEmeanCosmics->GetBinContent(phiMuonBin,cosThetaMuonBin)*GeV;
     }
 
     G4ThreeVector dir(0,0,0);
     dir.setRThetaPhi(-1,acos(cosThetaMuon),phiMuon);
+
+    // generate point uniformly distributed inside the ID cylinder
+    double detHalfHeight = 0.5*myDetector->GetWCIDHeight();
+    double detRadius     = 0.5*myDetector->GetWCIDDiameter();
+    double posInCylR     = sqrt(gRandom->Uniform())*detRadius;
+    double posInCylPhi   = gRandom->Uniform(TMath::TwoPi());
+    double posInCylZ     = gRandom->Uniform(-1.*detHalfHeight,detHalfHeight);
+
+    G4ThreeVector posInCyl(0,0,0);
+    posInCyl.setX(posInCylR*cos(posInCylPhi));
+    posInCyl.setY(posInCylR*sin(posInCylPhi));
+    posInCyl.setZ(posInCylZ);
+
+    // generate muon at the intersection
+    // between an sphere with radius = altComics
+    // and a line made with the muon direction
+    // and the generated point inside the ID cylinder
+    double a = dir.mag2();
+    double b = -2.*posInCyl.dot(dir);
+    double c = posInCyl.mag2()-altCosmics*altCosmics;
+    double t = (sqrt(b*b-4.*c*a)-b)/(2.*a);
+
     G4ThreeVector vtx(0,0,0);
-    vtx = -dir;
-    vtx.setR(altCosmics);
+    vtx.setX(posInCyl.x()-t*dir.x());
+    vtx.setY(posInCyl.y()-t*dir.y());
+    vtx.setZ(posInCyl.z()-t*dir.z());
 
     int pdgid = 13; // MUON
     particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));
@@ -1385,7 +1405,151 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
 
     }
-  
+  else if (useMPMTledEvt)
+    {
+      // Check configuration for mPMT
+      bool usePMT1 = true;
+      G4int nID_mPMTs = 0;
+      const int LEDID_max = 12;
+      if (!myDetector->GetHybridPMT())
+      {
+        if (myDetector->GetmPMT_nID()==1)
+        {
+          G4cout<<" Use mPMT-LED generator for non-mPMT >> Exit !!"<<G4endl;
+          exit(-1);
+        }
+        else
+        {
+          G4cout<<" Use mPMT-LED generator for PMT type 1"<<G4endl;
+          nID_mPMTs = myDetector->GetTotalNumPmts();
+        }
+      }
+      else
+      {
+        if (myDetector->GetmPMT_nID()>1)
+        {
+          G4cout<<" Use mPMT-LED generator for PMT type 1"<<G4endl;
+          nID_mPMTs = myDetector->GetTotalNumPmts();
+        }
+        else if (myDetector->GetmPMT_nID2()>1)
+        {
+          G4cout<<" Use mPMT-LED generator for PMT type 2"<<G4endl;
+          usePMT1 = false;
+          nID_mPMTs = myDetector->GetTotalNumPmts2();
+        }
+        else
+        {
+          G4cout<<" Use mPMT-LED generator for non-mPMT >> Exit !!"<<G4endl;
+          exit(-1);
+        }
+      }
+
+      if (mPMTLEDId1 > myDetector->GetTotalNum_mPmts())
+      {
+        G4cout<<" mPMT id > TotalNum_mPmts >>  Exit !! "<<G4endl;
+        exit(-1);
+      }
+
+      if (mPMTLEDId2 >= LEDID_max)
+      {
+        G4cout<<" LED id >= LEDID_max >>  Exit !! "<<G4endl;
+        exit(-1);
+      }
+
+      // Get the center PMT and 1st PMT to define local axes
+      G4int centerPMTId = 0;
+      G4int firstPMTId  = 0;
+      static std::map<int, std::pair< int, int > > mpmt_id_map = usePMT1 ? myDetector->GetTube_mPMTIDMap() :
+                                                                           myDetector->GetTube_mPMTIDMap2();
+      for (G4int i=1;i<=nID_mPMTs;i++)
+      {
+        if (mpmt_id_map[i].first==mPMTLEDId1)
+        {
+          if (mpmt_id_map[i].second==1) centerPMTId = i;
+          else if (mpmt_id_map[i].second==2) firstPMTId = i;
+        }
+      }
+      if (centerPMTId==0 || firstPMTId==0)
+      {
+        G4cout<<" Cannot locate mPMT id = "<< mPMTLEDId1 << " --> Exit !! "<<G4endl;
+        exit(-1);
+      }
+      G4Transform3D tubeTransformCenter = usePMT1 ? myDetector->GetTubeTransform(centerPMTId) :
+                                                    myDetector->GetTubeTransform2(centerPMTId);
+      G4Transform3D tubeTransformFirst  = usePMT1 ? myDetector->GetTubeTransform(firstPMTId) :
+                                                    myDetector->GetTubeTransform2(firstPMTId);
+      G4Vector3D nullOrient = G4Vector3D(0,0,1);
+      G4Vector3D pmtOrientationCenter = tubeTransformCenter * nullOrient;
+      G4Vector3D pmtOrientationFirst = tubeTransformFirst * nullOrient;
+      G4Vector3D z_axis = pmtOrientationCenter.unit();;
+      G4Vector3D y_axis = z_axis.cross(pmtOrientationFirst).unit();
+      G4Vector3D x_axis = y_axis.cross(z_axis).unit();
+      G4Vector3D posCenter(tubeTransformCenter.getTranslation().getX(),
+                           tubeTransformCenter.getTranslation().getY(),
+                           tubeTransformCenter.getTranslation().getZ());
+      G4Vector3D posFirst(tubeTransformFirst.getTranslation().getX(),
+                          tubeTransformFirst.getTranslation().getY(),
+                          tubeTransformFirst.getTranslation().getZ());
+      G4double distFromOriginToPMT = (posCenter-posFirst).mag()/(pmtOrientationCenter-pmtOrientationFirst).mag();
+      G4Vector3D pmtOrigin = posCenter - distFromOriginToPMT*pmtOrientationCenter;
+
+      // Predefined LED positions on the mPMT matrix
+      G4double LEDth, LEDphi;
+      if (mPMTLEDId2<3)
+      {
+        LEDth = 0.17; 
+        LEDphi = CLHEP::pi/6 + CLHEP::pi*2/3*mPMTLEDId2; 
+      }
+      else if (mPMTLEDId2<6)
+      {
+        LEDth = 0.388;
+        LEDphi = CLHEP::pi/2 + (mPMTLEDId2-3)*CLHEP::pi*2/3;
+      }
+      else
+      {
+        LEDth = 0.707;
+        LEDphi = CLHEP::pi/12 + (mPMTLEDId2-6)*CLHEP::pi/3;
+      }
+
+      G4double distToPMT = 5.8*cm; // ad-hoc value to start photons in acrylic
+      G4Vector3D LEDdir = sin(LEDth)*(cos(LEDphi)*x_axis+sin(LEDphi)*y_axis)+cos(LEDth)*z_axis;
+      G4double xpos = pmtOrigin.x() + LEDdir.x()*(distFromOriginToPMT+distToPMT);
+      G4double ypos = pmtOrigin.y() + LEDdir.y()*(distFromOriginToPMT+distToPMT);
+      G4double zpos = pmtOrigin.z() + LEDdir.z()*(distFromOriginToPMT+distToPMT);
+      // Change LEDdir with specified angle
+      LEDdir = sin(LEDth+mPMTLED_dTheta)*(cos(LEDphi+mPMTLED_dPhi)*x_axis+sin(LEDphi+mPMTLED_dPhi)*y_axis)+cos(LEDth+mPMTLED_dTheta)*z_axis;
+
+      MyGPS->SetParticleDefinition(opticalphoton_pd);
+      MyGPS->GetCurrentSource()->GetEneDist()->SetEnergyDisType("Mono");
+
+      G4ThreeVector position(xpos,ypos,zpos);
+      MyGPS->GetCurrentSource()->GetPosDist()->SetPosDisType("Point"); // may need a more realistic shape
+      MyGPS->GetCurrentSource()->GetPosDist()->SetCentreCoords(position);
+
+      // Point the source in the PMT direction
+      G4ThreeVector dirz(-LEDdir.x(),-LEDdir.y(),-LEDdir.z()); // local z axis in source frame
+      G4ThreeVector dirx = dirz.orthogonal();
+      G4ThreeVector diry = dirz.cross(dirx);
+      MyGPS->GetCurrentSource()->GetAngDist()->DefineAngRefAxes("angref1",dirx);
+      MyGPS->GetCurrentSource()->GetAngDist()->DefineAngRefAxes("angref2",diry);
+
+      MyGPS->GeneratePrimaryVertex(anEvent);
+
+      // Save LED direction to vtx
+      G4ThreeVector P   =-dirz*anEvent->GetPrimaryVertex()->GetPrimary()->GetTotalEnergy();
+      G4ThreeVector vtx =anEvent->GetPrimaryVertex()->GetPosition();
+      G4double mass     =anEvent->GetPrimaryVertex()->GetPrimary()->GetMass(); // will be 0 for photon anyway, but for other gps particles not
+      G4int pdg         =anEvent->GetPrimaryVertex()->GetPrimary()->GetPDGcode();
+
+      G4ThreeVector dir  = P.unit();
+      G4double E         = std::sqrt((P.dot(P))+(mass*mass));
+
+      SetVtx(vtx);
+      SetBeamEnergy(E);
+      SetBeamDir(dir);
+      SetBeamPDG(pdg);
+
+    }
 }
 
 void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
@@ -1415,6 +1579,8 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
     return "rooTrackerEvt";
   else if(useCosmics)
     return "cosmics";
+  else if (useMPMTledEvt)
+    return "mPMT-LED";
   return "";
 }
 

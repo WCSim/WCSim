@@ -185,7 +185,6 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
       G4int   tube         = (*WCHC)[i]->GetTubeID();
       G4double peSmeared = 0.0;
       G4double time_PMT, time_true;
-      G4int  track_id      = (*WCHC)[i]->GetTrackID();
 
       // Set the position and rotation of the pmt (from WCSimWCAddDarkNoise.cc)
       Double_t hit_pos[3];
@@ -231,6 +230,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 #ifdef DEBUG
 	    G4cout << "tube : " << i << " (ID=" << tube << ")" << " hit in tube : "<< ip << " (time=" << time_true << "ns)"  << " pe value : " << peSmeared << G4endl; //TD debug
 #endif
+      int track_id = (*WCHC)[i]->GetTrackID(ip);
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
 
 	    float photon_starttime = (*WCHC)[i]->GetPhotonStartTime(ip);
@@ -250,7 +250,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      Digi->SetOrientation(pmt_orientation);
 	      Digi->SetPe(ip,peSmeared);
 	      Digi->SetTime(ip,time_PMT);
-	      Digi->SetTrackID(track_id);
+	      Digi->SetTrackID(ip,track_id);
 	      Digi->SetPreSmearTime(ip,time_true);
 	      Digi->SetParentID(ip,parent_id);
 	      Digi->SetPhotonStartTime(ip,photon_starttime);
@@ -271,7 +271,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      //(*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTubeType((*WCHC)[0]->GetTubeType()); 
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPos(pmt_position);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetOrientation(pmt_orientation);
-	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTrackID(track_id);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetTrackID(ip,track_id);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPreSmearTime(ip,time_true);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetParentID(ip,parent_id);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonStartTime(ip,photon_starttime);

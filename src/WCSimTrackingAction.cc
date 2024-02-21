@@ -47,6 +47,11 @@ WCSimTrackingAction::WCSimTrackingAction()
   ParticleList.insert(2112);
 
   percentageOfCherenkovPhotonsToDraw = 0.0;
+#ifndef WCSIM_SAVE_PHOTON_HISTORY
+  SAVE_PHOTON_HISTORY = false;
+#else
+  SAVE_PHOTON_HISTORY = true;
+#endif
 
   messenger = new WCSimTrackingMessenger(this);
 
@@ -69,6 +74,15 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
        || G4UniformRand() < percentageOfCherenkovPhotonsToDraw/100. )
     {
       WCSimTrajectory* thisTrajectory = new WCSimTrajectory(aTrack);
+      thisTrajectory->SetSavePhotonTrack(true); // mark to save photon track in ROOT
+      fpTrackingManager->SetTrajectory(thisTrajectory);
+      fpTrackingManager->SetStoreTrajectory(true);
+    }
+  else if (SAVE_PHOTON_HISTORY)
+    {
+      // Keep the trajectory but not saving in ROOT
+      WCSimTrajectory* thisTrajectory = new WCSimTrajectory(aTrack);
+      thisTrajectory->SetSavePhotonTrack(false);
       fpTrackingManager->SetTrajectory(thisTrajectory);
       fpTrackingManager->SetStoreTrajectory(true);
     }
@@ -121,68 +135,19 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     anInfo = (WCSimTrackInformation*)(aTrack->GetUserInformation());   //eg. propagated to all secondaries blelow.
   else anInfo = new WCSimTrackInformation();
 
-  /** TF's particle list (ToDo: discuss/converge)
-  
-   // is it a primary ?
-  // is the process in the set ? eg. Michel e-, but only keep e-
-  // is the particle in the set ? eg. pi0, pi+-, K, p, n
-  // is it a gamma above 50 MeV ? OR gamma from nCapture? ToDo: Oxygen de-excitation
-  // is it a muon that can still produce Cherenkov light?
-  // due to lazy evaluation of the 'or' in C++ the order is important  
-  if( aTrack->GetParentID()==0 ||                                                                            // Primary
-      ((creatorProcess!=0) && ProcessList.count(creatorProcess->GetProcessName())                            
-       && aTrack->GetMomentum().mag() > .5*MeV && abs(aTrack->GetDefinition()->GetPDGEncoding()) == 11) ||   
-      (ParticleList.count(aTrack->GetDefinition()->GetPDGEncoding()) )                                       
-      || (aTrack->GetDefinition()->GetPDGEncoding()==22 && aTrack->GetVertexKineticEnergy() > 4.*MeV)       // Bugfixed: need vertex kinetic energy for gamma, rest is zero. ToDo: check whether pi0 gamma's are saved!
-      || (aTrack->GetDefinition()->GetPDGEncoding()==22 && creatorProcess->GetProcessName() == "nCapture")   
-      || (abs(aTrack->GetDefinition()->GetPDGEncoding()== 13) && aTrack->GetMomentum().mag() > 110.0*MeV) //mu+- above Cherenkov Threshold in water (119 MeV/c)
-
-  **/
-    // TF: Currently use the nuPRISM one
+    // Simplified tracking: track all primaries, particles from the chosen list of particle types or creation processes,
+    // Optionally, all particles producing cherekov hits and their parents, grandparents, etc. will be added later.
 
     // is it a primary ?
     // is the process in the set ? 
     // is the particle in the set ?
-    // is it a gamma above 1 MeV ?
-    // is it a mu- capture at rest above 1 MeV ?
-    // due to lazy evaluation of the 'or' in C++ the order is important
-    if( aTrack->GetParentID()==0 
+    if( aTrack->GetParentID()==0
 	|| ((creatorProcess!=0) && ProcessList.count(creatorProcess->GetProcessName()))
 	|| (ParticleList.count(aTrack->GetDefinition()->GetPDGEncoding()))
-	|| (aTrack->GetDefinition()->GetPDGEncoding()==22 && aTrack->GetTotalEnergy() > 1.0*MeV)
-	|| (creatorProcess->GetProcessName() == "muMinusCaptureAtRest" && aTrack->GetTotalEnergy() > 1.0*MeV)
       )
     {
-    // if so the track is worth saving
-    anInfo->WillBeSaved(true);
-    
-    //      G4cout << "track # " << aTrack->GetTrackID() << " is worth saving\n";
-    //      G4cout << "It is a " <<aTrack->GetDefinition()->GetParticleName() << G4endl;
-
-
-    //For Ch hits: use Parent ID of actual mother process:
-    // Decay: keep both decaying particle and Michel e-, Hit Parent ID should be Track ID from Michel e-
-    // Pi0 : keep both pi0 and gamma's, Hit Parent ID should be Track ID from gamma
-    // nCapture: keep both n and gamma, Hit Parent ID should be Track ID from gamma.
-    // Hits from LE electrons from muIonization, etc. : Hit Parent ID should be from Mother particle, not secondary track ID.
-    
-    if (aTrack->GetDefinition()->GetPDGEncoding()==111)
-      pi0List.insert(aTrack->GetTrackID()); // list of all pi0-s 
-    
-    // Be careful with gamma's. I want the ones closest to the actual mother process, not all secondaries.
-    if (aTrack->GetDefinition()->GetPDGEncoding() == 22){
-      // also use lazy evaluation of "or" here:
-      if( aTrack->GetParentID() == 0  || // then this gamma has no creator process (eg. nRooTracker particles)
-	  pi0List.count(aTrack->GetParentID()) ||
-	  (creatorProcess->GetProcessName() == "nCapture") ||
-	  (creatorProcess->GetProcessName() == "NeutronInelastic")	  
-	  )
-	anInfo->SetPrimaryParentID(aTrack->GetTrackID());  
-    }
-    //TF: crucial bugfix: I want this for all tracks that I save to match Ch hits with tracks that can
-    // produce Cherenkov light.
-    else
-      anInfo->SetPrimaryParentID(aTrack->GetTrackID());
+      // if so the track is worth saving
+      anInfo->WillBeSaved(true);
     }
   else {
     anInfo->WillBeSaved(false);
@@ -192,33 +157,38 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
   G4Track* theTrack = (G4Track*)aTrack;
   theTrack->SetUserInformation(anInfo);
 
-  // pass primary parent ID to children
+  // pass parent trajectory to children
   G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
+  WCSimTrajectory *currentTrajectory = (WCSimTrajectory*)fpTrackingManager->GimmeTrajectory();
+  if(currentTrajectory && !anInfo->GetMyTrajectory())
+    anInfo->SetMyTrajectory(currentTrajectory);
   if(secondaries)
   {
     size_t nSeco = secondaries->size();
     if(nSeco>0)
     {
       for(size_t i=0;i<nSeco;i++)
-      { 
-	WCSimTrackInformation* infoSec = new WCSimTrackInformation(anInfo);
-	if(anInfo->isSaved()){ // Parent is primary, so we want start pos & time of this secondary
-		infoSec->SetPhotonStartTime((*secondaries)[i]->GetGlobalTime());
-		infoSec->SetPhotonStartPos((*secondaries)[i]->GetPosition());
-		infoSec->SetPhotonStartDir((*secondaries)[i]->GetMomentumDirection());
-    infoSec->SetPhotonCreatorProcess((*secondaries)[i]->GetCreatorProcess()->GetProcessName());
-	}
-	infoSec->WillBeSaved(false); // ADDED BY MFECHNER, temporary, 30/8/06
-	(*secondaries)[i]->SetUserInformation(infoSec);
+      {
+        WCSimTrackInformation* infoSec = new WCSimTrackInformation();
+        infoSec->SetParentTrajectory(anInfo->GetMyTrajectory());
+        (*secondaries)[i]->SetUserInformation(infoSec);
       }
     } 
   }
 
-  if ( aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition() )
+  // If this track produces a hit, traverse back through parent trajectories to flag that the parents produce a hit
+  if (anInfo->GetProducesHit() && saveHitProducingTracks){
+      WCSimTrajectory* parentTrajectory = anInfo->GetParentTrajectory();
+      while(parentTrajectory != 0 && !parentTrajectory->GetProducesHit()){
+          if (parentTrajectory->GetPDGEncoding()==0 && !parentTrajectory->GetSavePhotonTrack()) break; // do not save unwanted photon tracks
+          parentTrajectory->SetProducesHit(true);
+          parentTrajectory = parentTrajectory->GetParentTrajectory();
+      }
+  }
+
+  if (currentTrajectory)
     //   if (aTrack->GetDefinition()->GetPDGCharge() == 0) 
   {
-    WCSimTrajectory *currentTrajectory = 
-      (WCSimTrajectory*)fpTrackingManager->GimmeTrajectory();
 
     G4ThreeVector currentPosition      = aTrack->GetPosition();
     G4VPhysicalVolume* currentVolume   = aTrack->GetVolume();
@@ -226,9 +196,17 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     currentTrajectory->SetStoppingPoint(currentPosition);
     currentTrajectory->SetStoppingVolume(currentVolume);
 
-    if (anInfo->isSaved())
-      currentTrajectory->SetSaveFlag(true);// mark it for WCSimEventAction ;
-    else currentTrajectory->SetSaveFlag(false);// mark it for WCSimEventAction ;
+    if (aTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition())
+    {
+      currentTrajectory->SetSaveFlag(anInfo->isSaved());// mark it for WCSimEventAction ;
+      // don't save the optical photon tracks themselves simply when they produce a hit, since that info is already saved in WCSimRootCherenkovHitTime
+      // optical photon tracks can still be saved if wanted by explicitly adding appropriate entries to the ParticleList or ProcessList via mac file commands
+      currentTrajectory->SetProducesHit(anInfo->GetProducesHit());
+    }
+    else if (currentTrajectory->GetSavePhotonTrack()) // only save the wanted photon tracks
+      currentTrajectory->SetSaveFlag(anInfo->isSaved()); 
+    else 
+      currentTrajectory->SetSaveFlag(false);
   }
 	
   WCSimPrimaryGeneratorAction *primaryGenerator = (WCSimPrimaryGeneratorAction *) (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());

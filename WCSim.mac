@@ -27,7 +27,7 @@
 # no extra commands required
 
 
-#Use the nuPRISM geometry w/ mPMTs
+#Use the nuPRISM geometry w/ mPMTs DEPRECATED (use IWCD_mPMT_WithOD below)
 #/WCSim/WCgeom nuPRISMShort_mPMT
 #then set options
 #/WCSim/Construct
@@ -53,20 +53,36 @@
 #   using the default geometry with your geometry
 #   using e.g. a particle gun with sufficient statistics
 
-#Use the HK FD ID-only geometry
+#Use the HK FD ID-only geometry DEPRECATED (use HyperK_HybridmPMT_NoOD_Realistic)
 #/WCSim/SetPMTPercentCoverage  20.2150576375662
 #/WCSim/SetPMTPercentCoverage2 10.1075288187831
 #/WCSim/WCgeom HyperK_HybridmPMT
 #/WCSim/Construct
 
 
-#Use the HK FD ID + OD geometry
+#Use the HK FD ID + OD geometry DEPRECATED (use HyperK_HybridmPMT_WithOD_Realistic below)
 #/WCSim/SetPMTPercentCoverage  20.2150576375662
 #/WCSim/SetPMTPercentCoverage2 10.1075288187831
 #/WCSim/WCgeom HyperK_HybridmPMT_WithOD
 #/control/execute macros/geom_hk_mpmt_options.mac
 #/control/execute macros/geom_hk_od_options.mac
 #/WCSim/Construct
+
+
+#Use the HK FD Realistic ID + OD geometry
+#/WCSim/WCgeom HyperK_HybridmPMT_WithOD_Realistic
+#/WCSim/Construct
+
+
+#Use the HK FD Realistic IDonly geometry
+# Note that the difference between this & the realisitc ID + OD geometry above is
+# that the OD PMTs are not placed in the geometry.
+# All other aspects of the OD geometry are there (ID/OD deadspace, tyvek, etc.)
+# This means that you get a speed win in terms of hit stuff (e.g. PMT & electronics simulation, triggering)
+# which is thought to be a small fraction of running time compared with the Geant4 particle propagation
+#/WCSim/WCgeom HyperK_HybridmPMT_IDonly_Realistic
+#/WCSim/Construct
+
 
 # Some other SuperK options (different to the default 20" 40% case)
 #/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
@@ -105,7 +121,7 @@
 # Read PMT positions from input file. This overrides the auto positioning algorithm
 # The (z,theta) coordinates are calculated from the input, and r is auto-tuned as above
 # This table corresponds to the nuPRISMBeamTest_16cShort geometry
-#/WCSim/PMT/PositionFile mPMT-configfiles/mPMTconfig_Position_WCTE_RotateBarrelHalfTower.txt
+#/WCSim/PMT/PositionFile data/mPMT_Position_WCTE.txt
 ############################################################################################
 #/WCSim/Construct
 
@@ -163,7 +179,7 @@
 
 #There is an independent messenger class instance for each PMT type
 # tank is the default one & is present in all geometries
-# tank2 is for the second ID PMT type (i.e. mPMTs in HK FD)
+# tankPMT2 is for the second ID PMT type (i.e. mPMTs in HK FD)
 # OD is for the OD
 #In typical use, it is important that all PMT types are setup with the same dark noise time windows
 
@@ -204,7 +220,7 @@
 #/DarkRate/SetDarkMode 1
 #/DarkRate/SetDarkWindow 4000
 
-#/DarkRate/SetDetectorElement tank2
+#/DarkRate/SetDetectorElement tankPMT2
 #/DarkRate/SetDarkRate 0 kHz
 #/DarkRate/SetDarkRate 1 kHz
 #/DarkRate/SetConvert 1.110 #for PMT3inchR14374 PMTs in HK mPMT
@@ -220,13 +236,10 @@
 #/control/execute macros/visRayTracer.mac
 #/control/execute macros/visOGLQt.mac
 
-/Tracking/fractionOpticalPhotonsToDraw 0.0
-
-
 ##################
 # OPTICAL PHYSICS
 ##################
-## The WCSimOpticalPhysics class uses the same Messenger commands as G4OpticalPhysics
+## The WCSimOpticalPhysics class uses the same Messenger commands as G4OpticalPhysics (need to set macros/jobOptions.mac)
 ## New photocathode models can be used for PMT photon detection. See macros/tuning_parameters.mac
 
 
@@ -355,7 +368,42 @@
 # Neutrons can be up to 10 MeV and gammas can have discrete energies of 4.4 MeV, 7.7 MeV, or no
 # gamma being produced depending on the energy of the neutron.
 /mygen/generator ambeevt
-#/mygen/ambefile data/resampled_nSpectrum.txt
+/mygen/ambeseed 12345
+
+# Or inject photon from mPMT LED
+# (Note that these are LEDs positioned in the standard mPMT modules.
+#  They are not LEDs in the LED-mPMT modules)
+#/mygen/generator mPMT-LED
+# Use PMTid (from 1 to totalNum_mPMTs) to specify source mPMT
+# Use LEDid (from 0 to 11) to specify LED position, theta and phi directional change from nominal direction
+#/mPMTLED/PMTid 1
+#/mPMTLED/LEDid 0 0 0
+# Use GPS commands to define photon energy, number and angular distribution
+#/gps/energy 2.505 eV
+#/gps/number 100000
+# Specify a cos(theta) Gaussian profile with 15 deg FWHM
+#/gps/ang/type user
+#/gps/ang/user_coor true
+#/gps/ang/surfnorm false
+#/gps/hist/type theta
+#/control/execute data/theta_cos15deg_FWHM.txt
+
+##################
+# TRACKING
+##################
+## Commands to control which true particle tracks are tracked and saved to the output file:
+## By default, save all tracks in the chain from primaries to those that produce Cherenkov photons that produce hits
+## To disable this behaviour and only save tracks of particular creation processes and particle types, set to false
+#/Tracking/saveHitProducingTracks false
+## By default, all electrons, muons, pions, kaons, protons and neutrons are saved, and particles created by Decay, conv,
+## nCapture or OpWLS processes
+## Add additional PDG codes of particle types or additional Geant4 process names of creation processes of tracks to save
+## Note that optical photons have PDG code 0 in Geant4
+#/Tracking/trackParticle 0
+#/Tracking/trackProcess Cerenkov
+## Due to the typically very large number of optical photons, a fraction can be tracked by setting the percentage to randomly draw
+## Note that the value is a percentage from 0.0 to 100.0, not fraction 0.0 to 1.0
+/Tracking/fractionOpticalPhotonsToDraw 0.0
 
 
 ##################
@@ -374,5 +422,20 @@
 ##################
 # NUMBER OF EVENTS TO RUN
 ##################
+# It is possible to perform multiple runs of WCSim in a single process
+# The benefit of this is to reduce the time spent on WCSim initialisation
+# in a use case e.g. simulating events at multiple source positions
+# In order to do this, you can repeat the /run/beamOn command e.g.
+# /gun/direction -1 0 0
+# /run/beamOn 2
+# /gun/direction 1 0 0
+# /run/beamOn 3
+# However, be warned that you cannot change all options between runs
+# - All parameters in tuning_parameters.mac and jobOptions.mac changed will have no effect
+# - Some parameters in WCSim.mac may not have an effect (e.g. geometry)
+# - It is up to you to perform the bookkeeping of which events were run with which options, but to help with this:
+# -- The options tree will be filled with one entry for each run
+# -- The EventHeader has a run number that specifies the run (and corresponding options tree entry) for a given event
+# It is therefore your responsibility to confirm that the options you are changing work as expected in multi-run mode
 /run/beamOn 10
 #exit

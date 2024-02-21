@@ -365,7 +365,6 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 
       const G4ThreeVector &pos = detectorConstructor->GetTubeTransform((*pmtIt)->Get_tubeid()).getTranslation();
       (*WCHC)[hitIndex]->SetTubeID((*pmtIt)->Get_tubeid());
-      (*WCHC)[hitIndex]->SetTrackID(0);
       (*WCHC)[hitIndex]->SetEdep(0.);
       (*WCHC)[hitIndex]->SetPos(pos);
       (*WCHC)[hitIndex]->SetRot(detectorConstructor->GetTubeTransform((*pmtIt)->Get_tubeid()).getRotation());
@@ -376,6 +375,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 	G4ThreeVector dir(0, 0, 0);
   G4String photcreatorproc = "dummy";
 	(*WCHC)[hitIndex]->AddPe(time);
+  (*WCHC)[hitIndex]->AddTrackID(0);
 	(*WCHC)[hitIndex]->AddParentID(0); // Make parent a geantino (whatever that is)
 	(*WCHC)[hitIndex]->AddPhotonStartPos(pos);
 	(*WCHC)[hitIndex]->AddPhotonEndPos(pos);
@@ -985,7 +985,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     G4cout << "B.Q: open the tree" << G4endl;
 #endif
     TTree* tree = GetRunAction()->GetTree();
-    tree->SetEntries(GetRunAction()->GetNumberOfEventsGenerated());
+    tree->Fill();
   }
 
   //save DAQ options here. This ensures that when the user selects a default option
@@ -1119,6 +1119,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // Fill up a Root event with stuff from the ntuple
 
   WCSimRootEvent* wcsimrootsuperevent = GetRunAction()->GetRootEvent(detectorElement);
+  wcsimrootsuperevent->ReInitialize();
 
   // start with the first "sub-event"
   // if the WC digitization requires it, we will add another subevent
@@ -1145,8 +1146,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       if (index >=1 ) {
 	wcsimrootsuperevent->AddSubEvent();
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
-	wcsimrootevent->SetHeader(event_id,0,
-				  0,index+1); // date & # of subevent
+	wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0, index+1); // date & # of subevent
 	wcsimrootevent->SetMode(injhfNtuple.mode[0]);
       }
       //wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
@@ -1161,9 +1161,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
 
   // Fill the header
-  // Need to add run and date
+  // Need to add date
   wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
-  wcsimrootevent->SetHeader(event_id,0,0); // will be set later.
+  wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0); // will be set later.
 
   // Fill other info for this event
 
@@ -1252,6 +1252,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   //n_trajectories=50;    // existed in previous versions of the code.  It also
                           // makes the ROOT file smaller.
 
+  std::map<int,int> trajMap; // mapping of trackID and index
   for (int i=0; i <n_trajectories; i++)
   {
     WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[i];
@@ -1266,10 +1267,11 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
     if ( trj->GetParentID() == 0 ) primaryList.insert(trj->GetTrackID());
 
+    trajMap[trj->GetTrackID()] = i;
 
     // Process primary tracks or the secondaries from pizero or muons...
 
-    if ( trj->GetSaveFlag() )
+    if ( trj->GetSaveFlag() || trj->GetProducesHit() )
     {
       // initial point of the trajectory
       G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
@@ -1335,16 +1337,13 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       }
 
       // Add the track to the TClonesArray, watching out for times
-      if ( trj->GetCreatorProcessName()=="nCapture" ?
-           detectorConstructor->SaveCaptureInfo() :
-           ! ( (ipnu==22)&&(parentType==999)) ) {
-          int choose_event = 0;
+      int choose_event = 0;
 
-          if (ngates) {
+      if (ngates) {
 
-              if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
-              if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
-              if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
+          if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
+          if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
+          if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
 
           }
 
@@ -1369,8 +1368,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
                                    trj->GetBoundaryKEs(),
                                    trj->GetBoundaryTimes(),
                                    trj->GetBoundaryTypesAsInt());
-      }
-
 
       if (detectorConstructor->SavePi0Info())
       {
@@ -1435,7 +1432,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 #endif
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
     std::vector<double> truetime, smeartime;
-    std::vector<int>   primaryParentID;
+    std::vector<int>   parentSavedTrackID;
     std::vector<float> photonStartTime;
     std::vector<TVector3> photonStartPos;
     std::vector<TVector3> photonEndPos;
@@ -1459,6 +1456,20 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(digi_tubeid -1));
 
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
+        int trackID = (*WCDC_hits)[idigi]->GetTrackID(id);
+        int hit_photon_RayScatter = 0;
+        int hit_photon_MieScatter = 0;
+        std::vector<ReflectionSurface_t> hit_photon_reflection = std::vector<ReflectionSurface_t>();
+        if (trackID>0) // skip noise hit
+        {
+          WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[trajMap[trackID]];
+          hit_photon_RayScatter = trj->GetPhotonRayScatter();
+          hit_photon_MieScatter = trj->GetPhotonMieScatter();
+          hit_photon_reflection = trj->GetPhotonReflection();
+        }
+        wcsimrootevent->AddCherenkovHitHistory(hit_photon_RayScatter,hit_photon_MieScatter,hit_photon_reflection);
+#endif
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
@@ -1480,7 +1491,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[2]);
   hit_photon_creatorprocess = (*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id);
 	truetime.push_back(hit_time_true);
-	primaryParentID.push_back(hit_parentid);
+	parentSavedTrackID.push_back(hit_parentid);
 	photonStartTime.push_back(hit_photon_starttime);
 	photonStartPos.push_back(hit_photon_startpos);
 	photonEndPos.push_back(hit_photon_endpos);
@@ -1496,11 +1507,11 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       if(digi_tubeid < NPMTS_VERBOSE || digi_tubeid == VERBOSE_PMT) {
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
-	       << " with truetime:smeartime:primaryparentID";
+	       << " with truetime:smeartime:parentSavedTrackID";
 	for(size_t id = 0; id < truetime.size(); id++) {
 	  G4cout << " " << truetime[id]
 		 << "\t" << smeartime[id]
-		 << "\t" << primaryParentID[id] << G4endl;
+		 << "\t" << parentSavedTrackID[id] << G4endl;
 	}//id
 	G4cout << G4endl;
       }
@@ -1509,7 +1520,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				      pmt->Get_mPMTid(),
 				      pmt->Get_mPMT_pmtid(),
 				      truetime,
-				      primaryParentID,
+				      parentSavedTrackID,
 				      photonStartTime,
 				      photonStartPos,
 				      photonEndPos,
@@ -1518,7 +1529,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
               photonCreatorProcess);
       smeartime.clear();
       truetime.clear();
-      primaryParentID.clear();
+      parentSavedTrackID.clear();
       photonStartTime.clear();
       photonStartPos.clear();
       photonEndPos.clear();
@@ -1634,11 +1645,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   //G4cout <<"WCFV digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";
   //  }
 
-  //TTree* tree = GetRunAction()->GetTree();
-  TBranch* branch = GetRunAction()->GetBranch(detectorElement);
-  //tree->Fill();
-  branch->Fill();
-
   /*
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
@@ -1649,17 +1655,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   }
   */
 
-  /*
-  TFile* hfile = tree->GetCurrentFile();
-  hfile->cd();                    // make sure tree is ONLY written to CurrentFile and not to all files!
-  // MF : overwrite the trees -- otherwise we have as many copies of the tree
-  // as we have events. All the intermediate copies are incomplete, only the
-  // last one is useful --> huge waste of disk space.
-  tree->Write("",TObject::kOverwrite);
-  */
-
-  // M Fechner : reinitialize the super event after the writing is over
-  wcsimrootsuperevent->ReInitialize();
 }
 
 void WCSimEventAction::FillRootEventHybrid(G4int event_id,
@@ -1671,6 +1666,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				       WCSimRootEvent * wcsimrootsuperevent,
 				       WCSimRootTrigger * wcsimrootevent)
  {
+  wcsimrootsuperevent->ReInitialize();
   // start with the first "sub-event"
   // if the WC digitization requires it, we will add another subevent
   // for the WC.
@@ -1695,8 +1691,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       if (index >=1 ) {
 	wcsimrootsuperevent->AddSubEvent();
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
-	wcsimrootevent->SetHeader(event_id,0,
-				   0,index+1); // date & # of subevent
+	wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0, index+1); // date & # of subevent
 	wcsimrootevent->SetMode(injhfNtuple.mode[0]);
       }
       //wcsimrootevent->SetTriggerInfo(WCTM->GetTriggerType(index),
@@ -1711,9 +1706,9 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 
 
   // Fill the header
-  // Need to add run and date
+  // Need to add date
   wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
-  wcsimrootevent->SetHeader(event_id,0,0); // will be set later.
+  wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0); // will be set later.
 
   // Fill other info for this event
 
@@ -1801,6 +1796,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   //n_trajectories=50;    // existed in previous versions of the code.  It also
                           // makes the ROOT file smaller.
 
+  std::map<int,int> trajMap; // mapping of trackID and index
   for (int i=0; i <n_trajectories; i++)
   {
     WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[i];
@@ -1814,10 +1810,11 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     if ( trj->GetPDGEncoding() == 211 ) pionList.insert(trj->GetTrackID());
     if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
 
+    trajMap[trj->GetTrackID()] = i;
 
     // Process primary tracks or the secondaries from pizero or muons...
 
-    if ( trj->GetSaveFlag() )
+    if ( trj->GetSaveFlag() || trj->GetProducesHit() )
     {
       // initial point of the trajectory
       G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
@@ -1881,17 +1878,15 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       }
 
       // Add the track to the TClonesArray, watching out for times
-      if ( trj->GetCreatorProcessName()=="nCapture" ?
-           detectorConstructor->SaveCaptureInfo() :
-           ! ( (ipnu==22)&&(parentType==999)) ) {
-          int choose_event = 0;
+      int choose_event = 0;
 
-          if (ngates) {
+      if (ngates) {
 
-              if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
-              if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
-              if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
+          if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
+          if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
+          if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
 
+<<<<<<< HEAD
           }
 
           wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
@@ -1915,8 +1910,6 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
                                    trj->GetBoundaryKEs(),
                                    trj->GetBoundaryTimes(),
                                    trj->GetBoundaryTypesAsInt());
-      }
-
 
       if (detectorConstructor->SavePi0Info())
       {
@@ -1982,7 +1975,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 #endif
     wcsimrootevent->SetNumTubesHit(WCDC_hits->entries());
     std::vector<double> truetime, smeartime;
-    std::vector<int>   primaryParentID;
+    std::vector<int>   parentSavedTrackID;
     std::vector<float> photonStartTime;
     std::vector<TVector3> photonStartPos;
     std::vector<TVector3> photonEndPos;
@@ -2006,6 +1999,20 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       WCSimPmtInfo *pmt = ((WCSimPmtInfo*)fpmts->at(digi_tubeid -1));
 
       for(G4int id = 0; id < (*WCDC_hits)[idigi]->GetTotalPe(); id++){
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
+        int trackID = (*WCDC_hits)[idigi]->GetTrackID(id);
+        int hit_photon_RayScatter = 0;
+        int hit_photon_MieScatter = 0;
+        std::vector<ReflectionSurface_t> hit_photon_reflection = std::vector<ReflectionSurface_t>();
+        if (trackID>0) // skip noise hit
+        {
+          WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[trajMap[trackID]];
+          hit_photon_RayScatter = trj->GetPhotonRayScatter();
+          hit_photon_MieScatter = trj->GetPhotonMieScatter();
+          hit_photon_reflection = trj->GetPhotonReflection();
+        }
+        wcsimrootevent->AddCherenkovHitHistory(hit_photon_RayScatter,hit_photon_MieScatter,hit_photon_reflection);
+#endif
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
@@ -2027,7 +2034,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[1],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[2]);
 	truetime.push_back(hit_time_true);
-	primaryParentID.push_back(hit_parentid);
+	parentSavedTrackID.push_back(hit_parentid);
 	photonStartTime.push_back(hit_photon_starttime);
 	photonStartPos.push_back(hit_photon_startpos);
 	photonEndPos.push_back(hit_photon_endpos);
@@ -2044,11 +2051,11 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       if(digi_tubeid < NPMTS_VERBOSE) {
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
-	       << " with truetime:smeartime:primaryparentID";
+	       << " with truetime:smeartime:parentSavedTrackID";
 	for(size_t id = 0; id < truetime.size(); id++) {
 	  G4cout << " " << truetime[id]
 		 << ":" << smeartime[id]
-		 << ":" << primaryParentID[id];
+		 << ":" << parentSavedTrackID[id];
 	}//id
 	G4cout << G4endl;
       }
@@ -2057,7 +2064,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				      pmt->Get_mPMTid(),
 				      pmt->Get_mPMT_pmtid(),
 				      truetime,
-				      primaryParentID,
+				      parentSavedTrackID,
 				      photonStartTime,
 				      photonStartPos,
 				      photonEndPos,
@@ -2066,7 +2073,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
               photonCreatorProcess);         // INCLUDE THE VECTOR OF CREATOR PROCESSES
       smeartime.clear();
       truetime.clear();
-      primaryParentID.clear();
+      parentSavedTrackID.clear();
       photonStartTime.clear();
       photonStartPos.clear();
       photonEndPos.clear();
@@ -2177,11 +2184,6 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   //G4cout <<"WCFV digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";
   //  }
 
-  //TTree* tree = GetRunAction()->GetTree();
-  TBranch* branch = GetRunAction()->GetBranch(detectorElement);
-  //tree->Fill();
-  branch->Fill();
-
   /*
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
@@ -2190,18 +2192,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       generatorAction->CopyRootrackerVertex(GetRunAction()->GetRootrackerVertex()); //will increment NVtx
       GetRunAction()->FillRootrackerVertexTree();
   }
-
-
-  TFile* hfile = tree->GetCurrentFile();
-  hfile->cd();                    // make sure tree is ONLY written to CurrentFile and not to all files!
-  // MF : overwrite the trees -- otherwise we have as many copies of the tree
-  // as we have events. All the intermediate copies are incomplete, only the
-  // last one is useful --> huge waste of disk space.
-  tree->Write("",TObject::kOverwrite);
-
   */
-  // M Fechner : reinitialize the super event after the writing is over
-  wcsimrootsuperevent->ReInitialize();
 }
 
 
@@ -2246,7 +2237,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
       // Particles: pi0, pi+-, kaons, NEW (protons and neutrons)
       // Gamma > 50 MeV, new mu+- > CherenkovThreshold
       // Add later?: https://twiki.cern.ch/twiki/bin/view/Geant4/LoweAtomicDeexcitation (neutron capture and O16)
-      if(trj->GetSaveFlag() ){
+      if( trj->GetSaveFlag() || trj->GetProducesHit() ){
 	// initial point of the trajectory
 	G4TrajectoryPoint* init_pt =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
 
@@ -2363,7 +2354,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
 	thisNtuple->mPMTid[totNumHits] = digi_tubeid/nMpmtID_pmts;
  	thisNtuple->mPMT_pmtid[totNumHits] = (digi_tubeid%nMpmtID_pmts == 0 ? nMpmtID_pmts : digi_tubeid%nMpmtID_pmts ); // No. 1 to nID
 
-	thisNtuple->trackid[totNumHits] = (*WCDC_hits)[idigi]->GetTrackID();
+	thisNtuple->trackid[totNumHits] = (*WCDC_hits)[idigi]->GetTrackID(id);
 	G4ThreeVector pos = (*WCDC_hits)[idigi]->GetPos();       // Can also grab it from theDetector also.
 	thisNtuple->tube_x[totNumHits] = pos[0];                 //already in CLHEP::cm
 	thisNtuple->tube_y[totNumHits] = pos[1];
@@ -2496,7 +2487,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
 
   // nGates == 0: I still want to keep untriggered event
   if(ngates == 0){
-    GetRunAction()->SetEventHeaderNew(0,event_id+1,1);   //ToDo: run
+    GetRunAction()->SetEventHeaderNew(GetRunAction()->GetRunID(), event_id+1, 1);   //ToDo: run
     //G4cout << event_id << G4endl; //TF debug
     //General case for a vector triggerInfo:
     //GetRunAction()->SetTriggerInfoNew(kTriggerUndefined, std::vector<G4double>(),0.,0.);
@@ -2522,7 +2513,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
   for (int index = 0 ; index < ngates ; index++) {
     //WCSim (FillRootEvent) counts its sub-events from 1 to nGate, while counting events from 0 to n-1
     //Be consistent and start both from 1 here:
-    GetRunAction()->SetEventHeaderNew(0,event_id+1,index+1);   //ToDo: run
+    GetRunAction()->SetEventHeaderNew(GetRunAction()->GetRunID(), event_id+1, index+1);   //ToDo: run
     G4cout << event_id << G4endl;
 
     //First Trigger details of THIS subevent (index+1)

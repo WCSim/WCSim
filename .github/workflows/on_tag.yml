@@ -55,7 +55,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout WCSim
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: ${{ steps.checkout_sha.outputs.value }}
           repository: ${{ steps.checkout_repo.outputs.value }}
@@ -70,13 +70,18 @@ jobs:
           cd /opt/
           git clone --depth 1 https://github.com/WCSim/Validation.git -b master --single-branch
 
+      - name: Hack hk-software setup (waiting for new release)
+        run: |
+          cd /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/
+          sed -i -e 's/LD_LIBRARY_PATH=LD_LIBRARY_PATH/LD_LIBRARY_PATH=$LD_LIBRARY_PATH/' setup.sh
+
       - name: Setup prerequisites setup script
         run: |
           cd /opt/
           echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > /opt/setup.sh
           echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
           echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> /opt/setup.sh
-  
+
       - name: Print environment
         run: |
           source /opt/setup.sh
@@ -141,7 +146,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout WCSim
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: ${{ steps.checkout_sha.outputs.value }}
           repository: ${{ steps.checkout_repo.outputs.value }}
@@ -155,6 +160,11 @@ jobs:
         run: |
           cd /opt/
           git clone --depth 1 https://github.com/WCSim/Validation.git -b master --single-branch
+
+      - name: Hack hk-software setup (waiting for new release)
+        run: |
+          cd /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/
+          sed -i -e 's/LD_LIBRARY_PATH=LD_LIBRARY_PATH/LD_LIBRARY_PATH=$LD_LIBRARY_PATH/' setup.sh
 
       - name: Setup prerequisites setup script
         run: |

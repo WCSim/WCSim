@@ -24,9 +24,14 @@
 # Apply random fluctuation to PMT placement. Argument specifies the Gaussian 1 sigma value
 #/WCSim/PMT/PositionVariation 0 mm
 # Change the ID radius at top, middle and bottom for PMT placement
-#/WCSim/PMT/TankRadiusChange 0 0 0 mm
-# Read PMT positions from input file. This overrides the auto positioning
-#/WCSim/PMT/PositionFile mPMT-configfiles/mPMTconfig_Position_WCTE_RotateBarrelHalfTower.txt
+/WCSim/PMT/TankRadiusChange 0 0 0 mm
+# Read PMT positions, ID, orientation from input file. This overrides the auto positioning
+/WCSim/PMT/PositionFile data/mPMT_Position_WCTE.txt
+# To import CDS into simulation
+# 1. Downland the CDS CAD model from WCTE webpage (https://wcte.hyperk.ca/wg/calibration/cds-system/cds-arm-cad-for-physics-simulation/arm-for-simulation-ascii-v2.zip/view), unzip it and set the path
+# 2. Use the following PMT position file where mPMT id 90 and 96 are disabled 
+#/WCSim/Geometry/SetCDSFile path_to_CDS_file
+#/WCSim/PMT/PositionFile data/mPMT_Position_WCTE_CDS.txt
 ############################################################################################
 
 # Set Gadolinium doping (concentration is in percent)
@@ -150,8 +155,8 @@
 # - 7.7 MeV 8%  of the time.
 # - 0.0 MeV 26% of the time.
 # Neutron Enegy is taken from a simulated realistic AmBe Spectrum depending on the Gamma Energy.
- /mygen/generator ambeevt
- /mygen/ambeseed 12345
+/mygen/generator ambeevt
+/mygen/ambeseed 12345
 
 ##### NEW
 /Tracking/fractionOpticalPhotonsToDraw 100.0

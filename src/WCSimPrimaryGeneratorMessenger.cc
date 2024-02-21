@@ -182,6 +182,16 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   param = new G4UIparameter("SYMMETRY",'d',true);
   param->SetDefaultValue("1");
   radonGeoSymCmd->SetParameter(param);
+
+  mPMTLEDIdCmd1 = new G4UIcmdWithAnInteger("/mPMTLED/PMTid",this);
+  mPMTLEDIdCmd1->SetGuidance("Set PMT id for mPMT LED source position. Defaults to 1.");
+  mPMTLEDIdCmd1->SetParameterName("mPMTLEDId1", true);
+  mPMTLEDIdCmd1->SetDefaultValue(1);
+
+  mPMTLEDIdCmd2 = new G4UIcmdWith3Vector("/mPMTLED/LEDid",this);
+  mPMTLEDIdCmd2->SetGuidance("Set LED id for mPMT LED source position, dTheta and dPhi for LED direction. Defaults to 0, 0.0, 0.0 ");
+  mPMTLEDIdCmd2->SetParameterName("mPMTLEDId2","mPMTLEDId2_dTheta","mPMTLEDId2_dPhi", true);
+  mPMTLEDIdCmd2->SetDefaultValue(G4ThreeVector(0,0.0,0.0));
 }
 
 WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
@@ -202,6 +212,8 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete lightInjectorFilenameCmd;
   delete lightInjectorModeCmd;
   delete seedNumberCmdAmBe;
+  delete mPMTLEDIdCmd1;
+  delete mPMTLEDIdCmd2;
 }
 
 void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
@@ -240,6 +252,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
     }
     else if ( newValue == "gun")
     {
@@ -256,6 +269,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
     }
     else if ( newValue == "rootracker")
     {
@@ -272,6 +286,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
     }
     else if ( newValue == "laser")   //T. Akiri: Addition of laser
     {
@@ -288,6 +303,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
     }
     else if ( newValue == "injector")   // addition of injector events
     {
@@ -304,6 +320,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
     }
     else if ( newValue == "lightinjector")   // L.Kneale: injector profile from db
     {
@@ -320,6 +337,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
     }
     else if ( newValue == "gps")
     {
@@ -336,7 +354,9 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetNeedConversion(false);	    
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
-      myAction->SetRadonEvtGenerator(false);}
+      myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
+    }
     else if (newValue == "ibd") // IBD (inverse beta decay) generator
     {
       myAction->SetMulineEvtGenerator(false);
@@ -352,6 +372,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
     }
     else if (newValue == "datatable")
     {
@@ -368,6 +389,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
     }
     else if ( newValue == "cosmics")
     {
@@ -384,6 +406,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetCosmicsGenerator(true);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
     }
     else if ( newValue == "radioactive") //G. Pronost: Addition of Radioactivity (from F. Nova code)
     {
@@ -400,6 +423,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(true);
       myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
     }
     else if ( newValue == "radon" ) //G. Pronost: Addition of Radon generator (based on F. Nova's radioactive generator but dedicated to radioactive events in water)
     {
@@ -416,6 +440,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(true);
+      myAction->SetmPMTledEvtGenerator(false);
     }
     else if ( newValue == "gamma-conversion")
     {
@@ -429,6 +454,23 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetIBDEvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetNeedConversion(true);
+      myAction->SetmPMTledEvtGenerator(false);
+    }	  
+    else if (newValue == "mPMT-LED")
+    {
+      myAction->SetMulineEvtGenerator(false);
+      myAction->SetGunEvtGenerator(false);
+      myAction->SetRootrackerEvtGenerator(false);
+      myAction->SetLaserEvtGenerator(false);
+      myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
+      myAction->SetGPSEvtGenerator(false);
+      myAction->SetIBDEvtGenerator(false);
+      myAction->SetDataTableEvtGenerator(false);
+      myAction->SetCosmicsGenerator(false);
+      myAction->SetRadioactiveEvtGenerator(false);
+      myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(true);
     }
   }
 
@@ -579,6 +621,20 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetIBDModel(newValue);
     }
 
+  if( command == mPMTLEDIdCmd1 )
+    {
+      myAction->SetmPMTLEDId1(mPMTLEDIdCmd1->GetNewIntValue(newValue));
+      G4cout << "mPMT-LED: PMT id set to " << mPMTLEDIdCmd1->GetNewIntValue(newValue) << G4endl;
+    }
+
+  if( command == mPMTLEDIdCmd2 )
+    {
+      myAction->SetmPMTLEDId2(mPMTLEDIdCmd2->GetNew3VectorValue(newValue));
+      G4cout << "mPMT-LED: LED id set to " << (G4int)mPMTLEDIdCmd2->GetNew3VectorValue(newValue).x() 
+             << ", dTheta = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).y() << " deg" 
+             << ", dPhi = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).z() << " deg" << G4endl;
+    }
+
 }
 
 G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
@@ -613,6 +669,8 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
       { cv = "datatable"; }
     else if(myAction->IsUsingIBDEvtGenerator())
       { cv = "ibd"; }
+    else if(myAction->IsUsingmPMTledEvtGenerator())
+      { cv = "mPMT-LED"; }
   }
   
   return cv;

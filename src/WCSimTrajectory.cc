@@ -1,4 +1,5 @@
 #include "WCSimTrajectory.hh"
+#include "WCSimTrackInformation.hh"
 
 #include "G4TrajectoryPoint.hh"
 #include "G4ParticleTable.hh"
@@ -7,6 +8,8 @@
 #include "G4AttValue.hh"
 #include "G4UnitsTable.hh"
 #include "G4VProcess.hh"
+#include "G4OpProcessSubType.hh"
+#include "G4ProcessManager.hh"
 
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
@@ -19,13 +22,19 @@ G4Allocator<WCSimTrajectory> myTrajectoryAllocator;
 WCSimTrajectory::WCSimTrajectory()
   :  positionRecord(0), fTrackID(0), fParentID(0),
      PDGEncoding( 0 ), PDGCharge(0.0), ParticleName(""),
-     initialMomentum( G4ThreeVector() ),SaveIt(false),creatorProcess(""),
-     globalTime(0.0)
+     initialMomentum( G4ThreeVector() ),SaveIt(false), producesHit(false),
+     creatorProcess(""), globalTime(0.0), savePhotonTrack(false), parentTrajectory(0)
 {
   boundaryPoints.clear();
   boundaryKEs.clear();
   boundaryTimes.clear();
   boundaryTypes.clear();
+
+  pRayScatter = 0;
+  pMieScatter = 0;
+  pReflec.clear();
+
+  fBoundary = NULL;
 }
 
 WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
@@ -43,8 +52,14 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
 
   stoppingPoint  = aTrack->GetPosition();
   stoppingVolume = aTrack->GetVolume();
-  if ( aTrack->GetUserInformation() != 0 ) 
-    SaveIt = true;
+  producesHit = false;
+  parentTrajectory = 0;
+  if ( aTrack->GetUserInformation() != 0 ) {
+      WCSimTrackInformation *anInfo = (WCSimTrackInformation *) aTrack->GetUserInformation();
+      producesHit = anInfo->GetProducesHit();
+      parentTrajectory = anInfo->GetParentTrajectory();
+      SaveIt = true;
+  }
   else SaveIt = false;
   globalTime = aTrack->GetGlobalTime();
   if (aTrack->GetCreatorProcess() != 0 )
@@ -54,11 +69,32 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
     }
   else 
     creatorProcess = "";
+  savePhotonTrack = false;
 
   boundaryPoints.clear();
   boundaryKEs.clear();
   boundaryTimes.clear();
   boundaryTypes.clear();
+
+  pRayScatter = 0;
+  pMieScatter = 0;
+  pReflec.clear();
+  fBoundary = NULL;
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
+  // Only do search for optical photon
+  if (PDGEncoding==0)
+  {
+    G4ProcessManager* pm = aTrack->GetDefinition()->GetProcessManager();
+    G4int nprocesses = pm->GetProcessListLength();
+    G4ProcessVector* pv = pm->GetProcessList();
+    for(G4int i=0;i<nprocesses;i++){
+      if((*pv)[i]->GetProcessName()=="OpBoundary"){
+        fBoundary = (WCSimOpBoundaryProcess*)(*pv)[i];
+        break;
+      }
+    }
+  }
+#endif
 }
 
 WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
@@ -75,6 +111,10 @@ WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
   stoppingVolume = right.stoppingVolume;
   SaveIt = right.SaveIt;
   creatorProcess = right.creatorProcess;
+  savePhotonTrack = right.savePhotonTrack;
+
+  producesHit = right.producesHit;
+  parentTrajectory = right.parentTrajectory;
 
   for(size_t i=0;i<right.positionRecord->size();i++)
   {
@@ -87,6 +127,13 @@ WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
   boundaryKEs = right.boundaryKEs;
   boundaryTimes = right.boundaryTimes;
   boundaryTypes = right.boundaryTypes;
+
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
+  pRayScatter = right.pRayScatter;
+  pMieScatter = right.pMieScatter;
+  pReflec = right.pReflec;
+  fBoundary = right.fBoundary;
+#endif
 }
 
 WCSimTrajectory::~WCSimTrajectory()
@@ -104,6 +151,9 @@ WCSimTrajectory::~WCSimTrajectory()
   boundaryKEs.clear();
   boundaryTimes.clear();
   boundaryTypes.clear();
+
+  pReflec.clear();
+  fBoundary = NULL;
 }
 
 void WCSimTrajectory::ShowTrajectory(std::ostream& os) const
@@ -216,10 +266,43 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
       std::vector<G4float> bPs(3);
       bPs[0] = track->GetPosition().x(); bPs[1] = track->GetPosition().y(); bPs[2] = track->GetPosition().z();
       AddBoundaryPoint(bPs, track->GetKineticEnergy(), track->GetGlobalTime(), ty);
-      // G4cout<<"Step point "<<track->GetCurrentStepNumber () <<" "<<track->GetPosition().x()<<" "<<track->GetPosition().y()<<" "<<track->GetPosition().z()<<
-      //    " "<<track->GetKineticEnergy()<<" "<<thePrePV->GetName()<<" "<<thePostPV->GetName()<<G4endl;
     }
   }
+
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
+  // Add photon history
+  if (PDGEncoding==0)
+  {
+    const G4VProcess* pds = thePostPoint->GetProcessDefinedStep();
+    //G4cout<<"Having optical photon in AppendStep "<<pds->GetProcessName()<<G4endl;
+    if ( pds->GetProcessType() == fOptical )
+    {
+      if ( pds->GetProcessSubType() == fOpRayleigh )
+      {
+        AddPhotonRayScatter(1);
+      }
+      else if ( pds->GetProcessSubType() == fOpMieHG )
+      {
+        AddPhotonMieScatter(1);
+      }
+    }
+    else
+    {
+      if((fBoundary->GetStatus() >= FresnelReflection && fBoundary->GetStatus() <=BackScattering) || 
+          (fBoundary->GetStatus() >= PolishedLumirrorAirReflection && fBoundary->GetStatus() <=GroundVM2000GlueReflection) ||
+          fBoundary->GetStatus() == CoatedDielectricReflection
+        )
+      {
+        G4String thePostPVName = thePostPV->GetName();
+        ReflectionSurface_t rType = kOtherS;
+        if (thePostPVName.contains("BlackSheet")) rType = kBlackSheetS;
+        else if (thePostPVName.contains("reflector")) rType = kReflectorS;
+        else if (thePostPVName.contains("InteriorWCPMT")) rType = kPhotocathodeS;
+        AddPhotonReflection(rType);
+      }
+    }
+  }
+#endif
 }
 
 G4ParticleDefinition* WCSimTrajectory::GetParticleDefinition()
@@ -235,6 +318,8 @@ void WCSimTrajectory::MergeTrajectory(G4VTrajectory* secondTrajectory)
 
   stoppingPoint  = seco->stoppingPoint;
   stoppingVolume = seco->stoppingVolume;
+
+  producesHit |= seco->producesHit;
   
   G4int ent = seco->GetPointEntries();
   for(G4int i=1;i<ent;i++) // initial point of the second trajectory should not be merged
@@ -253,6 +338,12 @@ void WCSimTrajectory::MergeTrajectory(G4VTrajectory* secondTrajectory)
                      (seco->GetBoundaryTimes()).at(i),
                      (seco->GetBoundaryTypes()).at(i));
   }
+
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
+  AddPhotonRayScatter(seco->GetPhotonRayScatter());
+  AddPhotonMieScatter(seco->GetPhotonMieScatter());
+  for (auto i: seco->GetPhotonReflection()) AddPhotonReflection(i);
+#endif
 }
 
 

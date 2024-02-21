@@ -151,7 +151,7 @@ class WCSimRootCherenkovHitTime : public TObject {
 private:
   // See jhfNtuple.h for the meaning of these data members:
   Double_t fTruetime;
-  Int_t   fPrimaryParentID;
+  Int_t   fParentSavedTrackID;
   Float_t fPhotonStartTime;
   Float_t fPhotonStartPos[3];
   Float_t fPhotonEndPos[3];
@@ -162,7 +162,7 @@ private:
 public:
   WCSimRootCherenkovHitTime() {}
   WCSimRootCherenkovHitTime(Double_t truetime,
-			    Int_t   primaryParentID,
+			    Int_t   parentSavedTrackID,
 			    Float_t photonStartTime,
 			    Float_t photonStartPos[3],
 			    Float_t photonEndPos[3],
@@ -173,7 +173,8 @@ public:
   bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 
   Double_t  GetTruetime() const { return fTruetime;}
-  Int_t     GetParentID() const { return fPrimaryParentID;}
+  Int_t     GetParentID() const { return fParentSavedTrackID;} // deprecated
+  Int_t     GetParentSavedTrackID() const { return fParentSavedTrackID;}
   Float_t   GetPhotonStartTime() const { return fPhotonStartTime; }
   Float_t   GetPhotonStartPos(int i) const { return (i<3) ? fPhotonStartPos[i] : 0; }
   Float_t   GetPhotonEndPos(int i) const { return (i<3) ? fPhotonEndPos[i] : 0; }
@@ -182,6 +183,28 @@ public:
   std::string GetPhotonCreatorProcess() const {return  fPhotonCreatorProcess;}
 
   ClassDef(WCSimRootCherenkovHitTime,2)
+};
+
+// Scattering and reflection history for each Cherenkov hit (photon)
+class WCSimRootCherenkovHitHistory : public TObject {
+
+private:
+  
+  Int_t   fNRayScat;
+  Int_t   fNMieScat;
+  std::vector<ReflectionSurface_t> fReflec;
+
+public:
+  WCSimRootCherenkovHitHistory() {}
+  WCSimRootCherenkovHitHistory(Int_t nRayScat, Int_t nMieScat, std::vector<ReflectionSurface_t> refle);
+  virtual ~WCSimRootCherenkovHitHistory() { }
+  bool CompareAllVariables(const WCSimRootCherenkovHitHistory * c) const;
+
+  Int_t     GetNRayScatters() const { return fNRayScat; } // Get the number of Rayleigh scattering a photon experienced
+  Int_t     GetNMieScatters() const { return fNMieScat; } // Get the number of Mie scattering a photon experienced
+  std::vector<ReflectionSurface_t> GetReflectionSurfaces() const { return fReflec; } //  Get the vector of reflection surfaces a photon experienced
+
+  ClassDef(WCSimRootCherenkovHitHistory,1)
 };
 
 
@@ -381,6 +404,8 @@ private:
   Int_t                fCherenkovHitCounter;
   Int_t                fNcherenkovhittimes;      // Number of hits in the array
   TClonesArray         *fCherenkovHitTimes;      //-> Array of WCSimRootCherenkovHits
+  Int_t                fNcherenkovhithistories;      // Number of hits in the array
+  TClonesArray         *fCherenkovHitHistories;  //-> Array of WCSimRootCherenkovHitHistories
 
   Int_t                fNumDigitizedTubes;  // Number of digitized tubes
   Int_t                fNcherenkovdigihits;  // Number of digihits in the array
@@ -459,6 +484,7 @@ public:
   Int_t               GetNtrack_slots()       const {return fTracks->GetLast() + 1; } //don't use fNtrack_slots directly as it doesn't take into account automatic TClonesArray shortening when tracks at start/end are removed
   Int_t               GetNcherenkovhits()     const {return fNcherenkovhits; }
   Int_t               GetNcherenkovhittimes() const {return fNcherenkovhittimes;}
+  Int_t               GetNcherenkovhithistories() const {return fNcherenkovhithistories;}
   Int_t               GetNcherenkovdigihits() const {return fNcherenkovdigihits;}
   Int_t               GetNcherenkovdigihits_slots() const {return fCherenkovDigiHits->GetLast() + 1; } //don't use fNcherenkovdigihits_slots directly as it doesn't take into account automatic TClonesArray shortening when digits at start/end are removed
   Float_t             GetSumQ()               const { return fSumQ;}
@@ -502,8 +528,13 @@ public:
 					   std::vector<TVector3>  photonStartDir,
 					   std::vector<TVector3>  photonEndDir,
              std::vector<std::string> photonCreatorProcess);
+
+  WCSimRootCherenkovHitHistory   *AddCherenkovHitHistory(Int_t nRayScat,
+             Int_t nMieScat,
+					   std::vector<ReflectionSurface_t> reflec);
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
+  TClonesArray        *GetCherenkovHitHistories() const {return fCherenkovHitHistories;}
 
   WCSimRootCherenkovDigiHit   *AddCherenkovDigiHit(Double_t q,
 						   Double_t t,
@@ -518,7 +549,7 @@ public:
 
   TClonesArray	      *GetCaptures() const {return fCaptures;}
 
-  ClassDef(WCSimRootTrigger,5) //WCSimRootEvent structure
+  ClassDef(WCSimRootTrigger,6) //WCSimRootEvent structure
 };
 
 

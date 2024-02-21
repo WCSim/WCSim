@@ -888,6 +888,237 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Geometry()
   CreateWLSObject(WLSType);
 }
 
+
+
+// HK complete FD: mPMTs & B&L ID + OD w/ WLS plates
+// These are defaults that can be altered through the macros
+void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
+{
+  //Box&Line
+  WCDetectorName = "HyperK_HybridmPMT_WithOD_Realistic";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = PMT->GetRadius();
+  nID_PMTs = 1;
+  
+  //mPMT
+  hybrid = true;
+  WCIDCollectionName2 = WCDetectorName +"-glassFaceWCPMT2";
+  mPMT_ID_PMT = "PMT3inchR14374";    //can be changed in macro through mPMT settings.
+  mPMT_OD_PMT = "PMT3inchR14374";
+  WCSimPMTObject * PMT2 = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName2);
+  WCPMTName2 = PMT2->GetPMTName();
+  WCPMTExposeHeight2 = PMT2->GetExposeHeight();
+  WCPMTRadius2 = PMT2->GetRadius();//Radius of a small PMT, not of a module
+  nID_PMTs2 = 19;
+
+  //mPMT params go first because detector depends on it:
+  mPMT_vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
+  mPMT_vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
+  mPMT_vessel_radius = 254.*CLHEP::mm;
+  dist_pmt_vessel = 8*CLHEP::mm;
+  
+  orientation = PERPENDICULAR;
+  mPMT_outer_material = "G4_PLEXIGLASS";
+  mPMT_inner_material = "Air";               // TODO: real air, hence update abs_length
+  mPMT_material_pmtAssembly = "SilGel";
+  mPMT_outer_material_d = 10*CLHEP::mm;
+  // Radius of cone at z=reflectorHeight
+  id_reflector_height = 0;//9.29*CLHEP::mm;        // for a radius of 7.25mm, for hex: 5.4mm (radius of 6mm)
+  id_reflector_z_offset = 0;//6.12*CLHEP::mm;       //from KM3Net CAD drawings
+  id_reflector_angle = 0;//46.5*CLHEP::deg;         // Need to be remeasured for different PMT curvature 
+  mPMT_pmt_openingAngle = 8.3*CLHEP::deg;     // for hex: 8.5deg
+  // parameters related to filling the ID mPMT
+  config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
+
+  G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;	
+ 
+
+  // The variables below are not actually used for relaaistic placement
+  // but for nw they are left in whilst we check their effect.
+  // WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  // WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height) + 1.*CLHEP::mm; //offset from vertical
+  WCIDVerticalPosition     = 0.;
+  WCPMTPercentCoverage  = 20.2150576375662;
+  WCPMTPercentCoverage2  = 5; // Approximate value for now based on PMT rescaling. Needs to be recalculated.
+  WCPMTperCellHorizontal = std::lround((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
+  WCPMTperCellVertical = WCPMTperCellHorizontal;
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_radius)));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+									/WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - std::max(WCPMTRadius,mPMT_vessel_radius);
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+  CaveTyvekSheetThickness  = 1.*mm; // Quite Standard I guess
+  isODConstructed = true;
+
+  // OD Dimensions //
+  WCODLateralWaterDepth    = 1.*m;
+  WCODHeightWaterDepth     = 2.*m;
+  WCODDeadSpace            = 600.*mm;
+  WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
+  WCODWLSPlatesThickness   = 1.*cm; //
+  WCODWLSPlatesLength      = 60.*cm; //
+  WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
+
+  // OD PMTs //
+  WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT8inch", WCODCollectionName);
+  WCPMTODName           = PMTOD->GetPMTName();
+  WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
+  WCPMTODRadius         = PMTOD->GetRadius();
+
+  // OD Coverage on barrel side //
+  WCPMTODperCellHorizontal = 1;
+  WCPMTODperCellVertical   = 1;
+
+  // OD Coverage on caps //
+  WCPMTODPercentCoverage   = 1.0; //default 1%
+  // Shift between PMTs inside a cell //
+  WCODPMTShift = 0.*cm;
+
+  // OD caps //
+  WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
+  WCODCapEdgeLimit = WCIDDiameter/2.0 - WCODWLSPlatesLength/2;
+
+  // TEST combined PMT collection for stacking action
+  std::vector<G4String> WCColName;
+  WCColName.push_back(WCIDCollectionName);
+  WCColName.push_back(WCODCollectionName);
+  WCColName.push_back(WCIDCollectionName2);
+  CreateCombinedPMTQE(WCColName);
+  isCombinedPMTCollectionDefined=true;
+
+  // TEST WLS collection for stacking action
+  G4String WLSType = "EljenEJ286";
+  isWLSFilled = true;
+  BuildODWLSCladding = true;
+  CreateWLSObject(WLSType);
+  isRealisticPlacement=true;
+}
+
+void WCSimDetectorConstruction::SetHyperK_HybridmPMT_IDonly_Realistic_Geometry()
+{
+  //Box&Line
+  WCDetectorName = "HyperK_HybridmPMT_IDonly_Realistic";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  WCSimPMTObject * PMT = CreatePMTObject("BoxandLine20inchHQE", WCIDCollectionName);
+  WCPMTName           = PMT->GetPMTName();
+  WCPMTExposeHeight   = PMT->GetExposeHeight();
+  WCPMTRadius         = PMT->GetRadius();
+  nID_PMTs = 1;
+  
+  //mPMT
+  hybrid = true;
+  WCIDCollectionName2 = WCDetectorName +"-glassFaceWCPMT2";
+  mPMT_ID_PMT = "PMT3inchR14374";    //can be changed in macro through mPMT settings.
+  mPMT_OD_PMT = "PMT3inchR14374";
+  WCSimPMTObject * PMT2 = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName2);
+  WCPMTName2 = PMT2->GetPMTName();
+  WCPMTExposeHeight2 = PMT2->GetExposeHeight();
+  WCPMTRadius2 = PMT2->GetRadius();//Radius of a small PMT, not of a module
+  nID_PMTs2 = 19;
+
+  //mPMT params go first because detector depends on it:
+  mPMT_vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
+  mPMT_vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
+  mPMT_vessel_radius = 254.*CLHEP::mm;
+  dist_pmt_vessel = 8*CLHEP::mm;
+  
+  orientation = PERPENDICULAR;
+  mPMT_outer_material = "G4_PLEXIGLASS";
+  mPMT_inner_material = "Air";               // TODO: real air, hence update abs_length
+  mPMT_material_pmtAssembly = "SilGel";
+  mPMT_outer_material_d = 10*CLHEP::mm;
+  // Radius of cone at z=reflectorHeight
+  id_reflector_height = 0;//9.29*CLHEP::mm;        // for a radius of 7.25mm, for hex: 5.4mm (radius of 6mm)
+  id_reflector_z_offset = 0;//6.12*CLHEP::mm;       //from KM3Net CAD drawings
+  id_reflector_angle = 0;//46.5*CLHEP::deg;         // Need to be remeasured for different PMT curvature 
+  mPMT_pmt_openingAngle = 8.3*CLHEP::deg;     // for hex: 8.5deg
+  // parameters related to filling the ID mPMT
+  config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
+
+  G4double mPMT_vessel_tot_height = mPMT_vessel_radius + mPMT_vessel_cyl_height;	
+ 
+
+  WCIDDiameter          = 64.8*m;//70.8*m; // = 74m - 2*(60cm ID wall + 1m OD)
+  WCIDHeight            = 65.751*m;//54.8*m; // = 60m - 2*(60cm ID wall + 2m OD)
+  WCBarrelPMTOffset     = std::max(WCPMTRadius,mPMT_vessel_tot_height) + 1.*CLHEP::mm; //offset from vertical
+  WCIDVerticalPosition     = 0.;
+
+  WCPMTPercentCoverage  = 20.2150576375662;
+  WCPMTPercentCoverage2  = 5;
+
+  WCPMTperCellHorizontal = std::lround((WCPMTPercentCoverage+WCPMTPercentCoverage2) / (WCPMTPercentCoverage2==0?(WCPMTPercentCoverage+WCPMTPercentCoverage2):WCPMTPercentCoverage2)); 
+  WCPMTperCellVertical = WCPMTperCellHorizontal;
+
+  WCBarrelNumPMTHorizontal = std::lround(WCIDDiameter*sqrt(pi*(WCPMTPercentCoverage+WCPMTPercentCoverage2))/(10.0*std::max(WCPMTRadius,mPMT_vessel_radius)));
+  WCBarrelNRings           = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(pi*WCIDDiameter)))
+									/WCPMTperCellVertical);
+  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal; // distance between centers of top and bottom pmts
+  WCCapEdgeLimit        = WCIDDiameter/2.0 - std::max(WCPMTRadius,mPMT_vessel_radius);
+  WCBlackSheetThickness = 2.0*cm;
+  WCAddGd               = false;
+
+  CaveTyvekSheetThickness  = 1.*mm; // Quite Standard I guess
+
+  isODConstructed = false;
+
+  // OD Dimensions //
+  WCODLateralWaterDepth    = 1.*m;
+  WCODHeightWaterDepth     = 2.*m;
+  WCODDeadSpace            = 600.*mm;
+  WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
+  WCODWLSPlatesThickness   = 1.*cm; //
+  WCODWLSPlatesLength      = 60.*cm; //
+  WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
+
+  // OD PMTs //
+  WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT8inch", WCODCollectionName);
+  WCPMTODName           = PMTOD->GetPMTName();
+  WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
+  WCPMTODRadius         = PMTOD->GetRadius();
+
+  // OD Coverage on barrel side //
+  WCPMTODperCellHorizontal = 1;
+  WCPMTODperCellVertical   = 1;
+
+  // OD Coverage on caps //
+  WCPMTODPercentCoverage   = 1.0; //default 1%
+  // Shift between PMTs inside a cell //
+  WCODPMTShift = 0.*cm;
+
+  // OD caps //
+  // WCODCapPMTSpacing = 100*cm;
+  WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
+  WCODCapEdgeLimit = WCIDDiameter/2.0 - WCODWLSPlatesLength/2;
+
+  // TEST combined PMT collection for stacking action
+  std::vector<G4String> WCColName;
+  WCColName.push_back(WCIDCollectionName);
+  WCColName.push_back(WCODCollectionName);
+  WCColName.push_back(WCIDCollectionName2);
+  CreateCombinedPMTQE(WCColName);
+  isCombinedPMTCollectionDefined=true;
+
+  // TEST WLS collection for stacking action
+  G4String WLSType = "EljenEJ286";
+  isWLSFilled = true;
+  BuildODWLSCladding = true;
+  CreateWLSObject(WLSType);
+  isRealisticPlacement=true;
+}
+
+
+
+
+
+
 void WCSimDetectorConstruction::SetEggShapedHyperKGeometry()
 {
   WCDetectorName = "EggShapedHyperK";
@@ -1185,8 +1416,8 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
 	nID_PMTs = 19;
 	config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring_WCTE.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
 
-	WCIDHeight               = 2.739*CLHEP::m;
-	WCIDDiameter             = 3.441*CLHEP::m;
+	WCIDHeight               = 2.830845*CLHEP::m;
+	WCIDDiameter             = 3.192536*CLHEP::m;
 	WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = 300.*CLHEP::mm;
@@ -1296,7 +1527,7 @@ void WCSimDetectorConstruction::SetIWCDGeometry()
 	config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
 
 	WCIDHeight               = 8.0*CLHEP::m;
-  WCIDDiameter             = 7.0*CLHEP::m;
+  WCIDDiameter             = 6.6*CLHEP::m;
   WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = mPMT_vessel_tot_height + 1.*CLHEP::mm;
@@ -1307,7 +1538,7 @@ void WCSimDetectorConstruction::SetIWCDGeometry()
   WCBarrelNumPMTHorizontal = 30;
   WCBarrelNRings        = 10;
   WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal*1.2/1.1; // ad-hoc number to get 52 mPMTs on cap
-  WCCapEdgeLimit        = 3.3*m; 
+  WCCapEdgeLimit        = 3.1*m; 
   WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
   WCAddGd               = false;
 	hybrid = false;
@@ -1348,7 +1579,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
 	config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
 
 	WCIDHeight               = 8.0*CLHEP::m;
-  WCIDDiameter             = 7.0*CLHEP::m;
+  WCIDDiameter             = 6.6*CLHEP::m;
   WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = mPMT_vessel_tot_height + 1.*CLHEP::mm;
@@ -1359,7 +1590,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   WCBarrelNumPMTHorizontal = 30;
   WCBarrelNRings        = 10;
   WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal*1.2/1.1; // ad-hoc number to get 52 mPMTs on cap
-  WCCapEdgeLimit        = 3.3*m; 
+  WCCapEdgeLimit        = 3.1*m; 
   WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
   WCAddGd               = false;
 	hybrid = false;
@@ -1390,7 +1621,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   WCPMTODperCellVertical   = 1;
 
   // OD Coverage on caps //
-  WCPMTODPercentCoverage   = 0.68; // in percent
+  WCPMTODPercentCoverage   = 0.76; // in percent
   // NOTE : If you set WCPMTODperCellHorizontal=0 and WCPMTODperCellVertical=0,
   // then method ComputeWCODPMT() inside ConstructCylinder will automatically compute
   // the nb of PMTs to put on barrel side according to WCPMTODPercentCoverage
