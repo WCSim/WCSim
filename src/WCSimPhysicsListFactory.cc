@@ -108,23 +108,7 @@ void WCSimPhysicsListFactory::ConstructProcess() {
         }
         G4cout << "Enabling RadCapture nCapture process" << G4endl;
         theCaptureProcess->RegisterMe(theNeutronRadCapture);
-    }
-    // Add the scintillation process
-    G4Scintillation* theScintillationProcess = new G4Scintillation("Scintillation");
-    theScintillationProcess->SetTrackSecondariesFirst(kCerenkov);
-    theScintillationProcess->SetTrackSecondariesFirst(kScintillation);
-    auto theParticleIterator = GetParticleIterator();
-    theParticleIterator->reset();
-    while ((*theParticleIterator)()) {
-        G4ParticleDefinition* particle = theParticleIterator->value();
-        G4ProcessManager* pmanager = particle->GetProcessManager();
-        G4String particleName = particle->GetParticleName();
-        if (theScintillationProcess->IsApplicable(*particle)) {
-            pmanager->AddProcess(theScintillationProcess);
-            pmanager->SetProcessOrderingToLast(theScintillationProcess, idxAtRest);
-            pmanager->SetProcessOrderingToLast(theScintillationProcess, idxPostStep);
-        }
-    }
+    } 
 }
 
 void WCSimPhysicsListFactory::SetCuts()
