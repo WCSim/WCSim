@@ -63,14 +63,14 @@ private:
    *  The second digit is made up of photons: 10,11,13,14
    */
   std::map<int, std::vector<int> > fDigiComp;
-  std::map<int, G4int>            trackID; // TrackID of the photon of the Hit (do not use for Digits)
-  std::map<int, G4int>    parentSavedTrackID; ///< Primary parent ID of the Hit (do not use for Digits)
-  std::map<int, G4float>    photonStartTime; ///< Primary parent ID of the Hit (do not use for Digits)
-  std::map<int, G4ThreeVector>    photonStartPos; ///< Start point of the photon of the Hit (do not use for Digits)
-  std::map<int, G4ThreeVector>    photonEndPos; ///< End point of the photon of the Hit (do not use for Digits)
-  std::map<int, G4ThreeVector>    photonStartDir; ///< Start dir of the photon of the Hit (do not use for Digits)
-  std::map<int, G4ThreeVector>    photonEndDir; ///< End dir of the photon of the Hit (do not use for Digits)
-  std::map<int, std::string> photonCreatorProcess; 
+  std::map<int, G4int>             trackID;              ///< TrackID of the photon of the Hit (do not use for Digits)
+  std::map<int, G4int>             parentSavedTrackID;   ///< Primary parent ID of the Hit (do not use for Digits)
+  std::map<int, G4float>           photonStartTime;      ///< Primary parent ID of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>     photonStartPos;       ///< Start point of the photon of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>     photonEndPos;         ///< End point of the photon of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>     photonStartDir;       ///< Start dir of the photon of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>     photonEndDir;         ///< End dir of the photon of the Hit (do not use for Digits)
+  std::map<int, std::string>       photonCreatorProcess; ///< Process which created the photon of the Hit (Diego Costas)
 
   //integrated hit/digit parameters
   G4int                 totalPe;
@@ -118,7 +118,6 @@ public:
   inline G4ThreeVector  GetPhotonStartDir(int gate)    { return photonStartDir[gate];};
   inline G4ThreeVector  GetPhotonEndDir(int gate)    { return photonEndDir[gate];};
   inline G4String       GetPhotonCreatorProcess(int gate) { return photonCreatorProcess[gate];};
-  inline G4int          GetTrackID()    { return trackID;};
   inline G4double GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
   inline G4String   GetTubeType() {return tubeType;};
@@ -206,7 +205,7 @@ public:
         if(sort_digi_compositions) 
           index_digicomp             = fDigiComp.at(i);
           index_trackID              = trackID.at(i);
-          index_parentSavedTrackID   = parentSacedTrackID.at(i);
+          index_parentSavedTrackID   = parentSavedTrackID.at(i);
           index_photonstarttime      = photonStartTime[i];
           index_photonstartpos       = photonStartPos[i];
           index_photonendpos         = photonEndPos[i];
@@ -233,7 +232,7 @@ public:
         time_presmear.at(j) = index_timepresmear;
         pe.at(j) = index_pe;
         if(sort_digi_compositions) fDigiComp.at(j) = index_digicomp;
-          trackID.at(j) = idex_trackID;
+          trackID.at(j) = index_trackID;
           parentSavedTrackID.at(j) = index_parentSavedTrackID;
           photonStartTime.at(j) = index_photonstarttime;
           photonStartPos.at(j) = index_photonstartpos;

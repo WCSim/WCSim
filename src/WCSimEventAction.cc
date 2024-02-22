@@ -1886,7 +1886,6 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
           if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
           if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
 
-<<<<<<< HEAD
           }
 
           wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);

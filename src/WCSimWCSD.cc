@@ -92,7 +92,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     = (WCSimTrackInformation*)(aStep->GetTrack()->GetUserInformation());
 
   G4int parentSavedTrackID = -1;
-  G4float photonStartTime;
+  G4float       photonStartTime;
   G4ThreeVector photonStartPos;
   G4ThreeVector photonStartDir;
   G4String      photonCreatorProcess;
@@ -100,7 +100,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   photonStartTime = aStep->GetTrack()->GetGlobalTime() - aStep->GetTrack()->GetLocalTime(); // current time minus elapsed time of track
   photonStartPos = aStep->GetTrack()->GetVertexPosition();
   photonStartDir = aStep->GetTrack()->GetVertexMomentumDirection();
-
+  photonCreatorProcess = aStep->GetTrack()->GetCreatorProcess()->GetProcessName();
 
   G4int    trackID           = aStep->GetTrack()->GetTrackID();
   G4String volumeName        = aStep->GetTrack()->GetVolume()->GetName();

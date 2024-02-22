@@ -17,49 +17,18 @@
 class WCSimTrackInformation : public G4VUserTrackInformation {
 private:
   G4bool saveit;
-<<<<<<< HEAD
-  G4int  primaryParentID;
-  G4float  photonStartTime;
-  G4ThreeVector  photonStartPos;
-  G4ThreeVector  photonStartDir;
-  G4String photonCreatorProcess;
-
-public:
-  WCSimTrackInformation() : saveit(false), primaryParentID(-99) {}  //TF: initialize to value with NO meaning instead of DN
-  WCSimTrackInformation(const WCSimTrackInformation* aninfo) {
-      saveit = aninfo->saveit;
-      primaryParentID = aninfo->primaryParentID;
-      photonStartTime = aninfo->photonStartTime;
-      photonStartPos = aninfo->photonStartPos;
-      photonStartDir = aninfo->photonStartDir;
-      photonCreatorProcess = aninfo->photonCreatorProcess;
-  }
-=======
   G4bool producesHit;
   WCSimTrajectory* parentTrajectory;
   WCSimTrajectory* myTrajectory;
 
 public:
   WCSimTrackInformation() : saveit(false), producesHit(false), parentTrajectory(0), myTrajectory(0) {}  //TF: initialize to value with NO meaning instead of DN
->>>>>>> abebcedc6216a942325484de65b1633d05b5b6fb
   virtual ~WCSimTrackInformation() {}
   WCSimTrackInformation(const G4Track* );
   
   G4bool isSaved() { return saveit;}
   void WillBeSaved(G4bool choice) { saveit = choice;}
 
-<<<<<<< HEAD
-  void SetPrimaryParentID(G4int i) { primaryParentID = i;}
-  void SetPhotonStartTime(G4float time) { photonStartTime = time;}
-  void SetPhotonCreatorProcess(G4String creatorProc) { photonCreatorProcess = creatorProc; }
-  void SetPhotonStartPos(const G4ThreeVector &pos) { photonStartPos = pos;}
-  void SetPhotonStartDir(const G4ThreeVector &dir) { photonStartDir = dir;}
-  G4int GetPrimaryParentID() {return primaryParentID;}
-  G4float GetPhotonStartTime() {return photonStartTime;}
-  G4String GetPhotonCreatorProcess() {return photonCreatorProcess;}
-  G4ThreeVector GetPhotonStartPos() {return photonStartPos;}
-  G4ThreeVector GetPhotonStartDir() {return photonStartDir;}
-=======
   G4bool GetProducesHit() { return producesHit;}
   void SetProducesHit(G4bool choice) { producesHit = choice;}
 
@@ -68,7 +37,6 @@ public:
 
   void SetMyTrajectory(WCSimTrajectory* trajectory) {myTrajectory = trajectory;}
   WCSimTrajectory* GetMyTrajectory() {return myTrajectory;}
->>>>>>> abebcedc6216a942325484de65b1633d05b5b6fb
 
   inline void *operator new(size_t);
   inline void operator delete(void *aTrackInfo);
