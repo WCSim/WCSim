@@ -81,12 +81,6 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4ThreeVector localPosition  = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
   G4ThreeVector worldDirection = preStepPoint->GetMomentumDirection();
   G4ThreeVector localDirection = theTouchable->GetHistory()->GetTopTransform().TransformAxis(worldDirection);
-  const G4VProcess* process = aStep->GetTrack()->GetCreatorProcess();
-  G4String processName("NONE");
-  if (process) {
-    processName = process->GetProcessName();
-  }
-
 
   WCSimTrackInformation* trackinfo 
     = (WCSimTrackInformation*)(aStep->GetTrack()->GetUserInformation());
@@ -95,12 +89,18 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4float       photonStartTime;
   G4ThreeVector photonStartPos;
   G4ThreeVector photonStartDir;
-  G4String      photonCreatorProcess;
-  parentSavedTrackID = aStep->GetTrack()->GetParentID();
-  photonStartTime = aStep->GetTrack()->GetGlobalTime() - aStep->GetTrack()->GetLocalTime(); // current time minus elapsed time of track
-  photonStartPos = aStep->GetTrack()->GetVertexPosition();
-  photonStartDir = aStep->GetTrack()->GetVertexMomentumDirection();
-  photonCreatorProcess = aStep->GetTrack()->GetCreatorProcess()->GetProcessName();
+  
+  parentSavedTrackID   = aStep->GetTrack()->GetParentID();
+  photonStartTime      = aStep->GetTrack()->GetGlobalTime() - aStep->GetTrack()->GetLocalTime(); // current time minus elapsed time of track
+  photonStartPos       = aStep->GetTrack()->GetVertexPosition();
+  photonStartDir       = aStep->GetTrack()->GetVertexMomentumDirection();
+ 
+  // Need to create a NONE string in case the Hit has no creatorProcess, such a Dark Noise Hit.
+  const G4VProcess* process = aStep->GetTrack()->GetCreatorProcess();
+  G4String photonCreatorProcess("NONE");
+  if (process) {
+    photonCreatorProcess = process->GetProcessName();
+  }
 
   G4int    trackID           = aStep->GetTrack()->GetTrackID();
   G4String volumeName        = aStep->GetTrack()->GetVolume()->GetName();
