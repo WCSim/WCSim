@@ -156,7 +156,6 @@
 # - 0.0 MeV 26% of the time.
 # Neutron Enegy is taken from a simulated realistic AmBe Spectrum depending on the Gamma Energy.
 /mygen/generator ambeevt
-/mygen/ambeseed 12345
 
 ##### NEW
 /Tracking/fractionOpticalPhotonsToDraw 100.0

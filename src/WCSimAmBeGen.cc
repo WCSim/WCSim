@@ -36,14 +36,14 @@ void WCSimAmBeGen::Initialise(){
     myAmBeGun   = new G4ParticleGun();
 }
 
-G4double WCSimAmBeGen::GammaEnergy(G4int ambeseed){
+G4double WCSimAmBeGen::GammaEnergy(){
     
     // Define the correspondent probabilities for every possible gamma scenario
     probabilities = {0.26, 0.65, 0.08};
     energies      = {0.0, 4.4, 7.7};
 
     // Generate a weighted random number so we can select the gamma energy
-    mt19937 gen(ambeseed);
+    mt19937 gen(std::random_device{}());
     discrete_distribution<int> dist(probabilities.begin(), probabilities.end());
     int index = dist(gen);
     gEnergy = energies[index];
@@ -90,11 +90,11 @@ void WCSimAmBeGen::GenerateNG(G4Event* anEvent){
       // Configure particle's properties in particleGun
       if (pdgid == 22) {
         myAmBeGun->SetParticleDefinition(G4Gamma::Definition());
-        myAmBeGun->SetParticleEnergy(GammaEnergy(ambeseed));
+        myAmBeGun->SetParticleEnergy(GammaEnergy());
       }
       else {
         myAmBeGun->SetParticleDefinition(G4Neutron::Definition());
-        myAmBeGun->SetParticleEnergy(NeutronEnergy(GammaEnergy(ambeseed)));
+        myAmBeGun->SetParticleEnergy(NeutronEnergy(GammaEnergy()));
       }
 
       dir = G4RandomDirection();

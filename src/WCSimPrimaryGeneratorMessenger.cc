@@ -62,10 +62,10 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   //fileNameCmdAmBe->SetGuidance("Enter the file name of the nSpectrum file");
   //fileNameCmdAmBe->SetParameterName("fileName",true);
   //fileNameCmdAmBe->SetDefaultValue("data/resampled_nSpectrum.txt");
-  seedNumberCmdAmBe = new G4UIcmdWithAnInteger("/mygen/ambeseed",this);
-  seedNumberCmdAmBe->SetGuidance("Set seed for AmBe source generator");
-  seedNumberCmdAmBe->SetParameterName("seed",true);
-  seedNumberCmdAmBe->SetDefaultValue(12345); 
+  //seedNumberCmdAmBe = new G4UIcmdWithAnInteger("/mygen/ambeseed",this);
+  //seedNumberCmdAmBe->SetGuidance("Set seed for AmBe source generator");
+  //seedNumberCmdAmBe->SetParameterName("seed",true);
+  //seedNumberCmdAmBe->SetDefaultValue(12345); 
 
   // K.M.Tsui: options for injector events
   nPhotonsCmd = new G4UIcmdWithAnInteger("/mygen/injector_nPhotons",this);
