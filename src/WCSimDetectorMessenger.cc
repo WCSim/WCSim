@@ -938,7 +938,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
     if(command == WCConstruct) {
       //If the OD geometry has been changed, then reconstruct the whole tank with the proper recalculated dimensions
-      //if (WCSimDetector->GetODEdited() == true) {WCSimDetector->UpdateODGeo();}
+      if (WCSimDetector->GetODEdited() == true) {WCSimDetector->UpdateODGeo();}
       WCSimDetector->UpdateGeometry();
     }
 
