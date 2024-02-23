@@ -49,6 +49,9 @@ class WCSimAmBeGen
 
     // Variables for reading in the file
     string wcsimdir;
+    string gs_path;
+    string fe_path;
+    string se_path;
 };
 
 #endif
