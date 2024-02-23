@@ -157,11 +157,25 @@
 # Neutron Enegy is taken from a simulated realistic AmBe Spectrum depending on the Gamma Energy.
 /mygen/generator ambeevt
 
-##### NEW
+##################
+# TRACKING
+##################
+## Commands to control which true particle tracks are tracked and saved to the output file:
+## By default, save all tracks in the chain from primaries to those that produce Cherenkov photons that produce hits
+## To disable this behaviour and only save tracks of particular creation processes and particle types, set to false
+/Tracking/saveHitProducingTracks true
+## By default, all electrons, muons, pions, kaons, protons and neutrons are saved, and particles created by Decay, conv,
+## nCapture or OpWLS processes
+## Add additional PDG codes of particle types or additional Geant4 process names of creation processes of tracks to save
+## Note that optical photons have PDG code 0 in Geant4
+/Tracking/trackParticle 0
+#/Tracking/trackProcess Cerenkov
+## Due to the typically very large number of optical photons, a fraction can be tracked by setting the percentage to randomly draw
+## Note that the value is a percentage from 0.0 to 100.0, not fraction 0.0 to 1.0
 /Tracking/fractionOpticalPhotonsToDraw 100.0
 
 ## change the name of the output root file, default = wcsim.root
-/WCSimIO/RootFile ambeEvt_StackingOnly_1000evts.root
+/WCSimIO/RootFile test.root
 
 ## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
 ## a NEUT vector file as input

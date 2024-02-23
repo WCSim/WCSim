@@ -58,7 +58,6 @@ WCSimPhysicsListFactory::~WCSimPhysicsListFactory()
 void WCSimPhysicsListFactory::ConstructParticle()
 {
   G4VModularPhysicsList::ConstructParticle();
-  G4OpticalPhoton::OpticalPhotonDefinition();
 }
 
 void WCSimPhysicsListFactory::ConstructProcess() {

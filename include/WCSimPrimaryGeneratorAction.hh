@@ -114,14 +114,11 @@ private:
   //std::fstream inputAmBeFile;
   G4String vectorFileName;
   G4String cosmicsFileName = "data/MuonFlux-HyperK-ThetaPhi.dat";
-  G4String ambeFileName = "data/resampled_nSpectrum.txt";
+  G4String ambeFileName    = "data/resampled_nSpectrum.txt";
   G4bool   GenerateVertexInRock;
 
   // AmBe Generator 
   WCSimAmBeGen* AmBeGen;
-  //std::fstream  inputAmBeFile;
-  //G4String      ambeFileName = "data/resampled_nSpectrum.txt";
-  G4int fSeed;
 
   // IBD generator
     // Database for spectra
@@ -315,25 +312,6 @@ private:
     }
   }
 
-  // Diego Costas for AmBeGen
-  /*
-  inline void OpenAmBeFile(G4String fileName)
-  {
-    if ( inputAmBeFile.is_open() )
-      inputAmBeFile.close();
-
-    ambeFileName = fileName;
-    inputAmBeFile.open(ambeFileName, std::fstream::in);
-
-    if ( !inputAmBeFile.is_open() ) {
-      G4cout << "AmBe data file " << ambeFileName << " not found" << G4endl;
-      exit(-1);
-    }
-  }
-  */
-  inline void  SetSeed(G4int choice)    { fSeed = choice; }
-  inline G4int GetSeed() const          { return fSeed; }
-
   inline G4bool IsGeneratingVertexInRock() { return GenerateVertexInRock; }
   inline void SetGenerateVertexInRock(G4bool choice) { GenerateVertexInRock = choice; }
 
@@ -344,6 +322,7 @@ private:
     r.IsotopeActivity = IsotopeActivity;
     radioactive_sources.push_back(r);
   }
+
   inline std::vector<struct radioactive_source> Radioactive_Sources()  { return radioactive_sources; }
 
   inline void SetRadioactiveEvtGenerator(G4bool choice) { useRadioactiveEvt = choice; }

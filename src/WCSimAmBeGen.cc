@@ -38,16 +38,30 @@ void WCSimAmBeGen::Initialise(){
 
 G4double WCSimAmBeGen::GammaEnergy(){
     
-    // Define the correspondent probabilities for every possible gamma scenario
-    probabilities = {0.26, 0.65, 0.08};
-    energies      = {0.0, 4.4, 7.7};
+    // Initialise Geant4 random number generator
+    G4Random::setTheEngine(new CLHEP::RanecuEngine);
 
-    // Generate a weighted random number so we can select the gamma energy
-    mt19937 gen(std::random_device{}());
-    discrete_distribution<int> dist(probabilities.begin(), probabilities.end());
-    int index = dist(gen);
-    gEnergy = energies[index];
-    
+    // Define arrays
+    G4double probabilities[] = {0.26, 0.65, 0.08};
+    G4double energies[] = {0.0, 4.4 * MeV, 7.7 * MeV};
+
+    // Generation of the random number
+    G4double random_number = G4UniformRand();
+
+    // Select the energy taking into account the probabilities
+    G4double cumulative_probability = 0.0;
+    G4int selected_energy_index = -1;
+
+    for (G4int j = 0; j < sizeof(probabilities) / sizeof(probabilities[0]); ++j) {
+        cumulative_probability += probabilities[j];
+        if (random_number <= cumulative_probability) {
+            selected_energy_index = j;
+            break;
+        }
+    }
+
+    gEnergy = energies[selected_energy_index];
+
     return gEnergy; 
 }
 

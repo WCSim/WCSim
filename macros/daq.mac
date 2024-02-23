@@ -18,7 +18,7 @@
 
 #trigger algorithm development options (defaults are set in WCSimWCDAQMessenger. Can be overidden here)
 # do we want to save only triggered events (mode 0), both triggered events & failed events (mode 1), or only failed events (mode 2)?
-#/DAQ/TriggerSaveFailures/Mode 0
+/DAQ/TriggerSaveFailures/Mode 0
 # what trigger time to use for the failed events (ns)?
 #/DAQ/TriggerSaveFailures/TriggerTime 100
 # the digits in which range around the trigger time (ns) should be saved with the event
@@ -28,13 +28,13 @@
 #options for NDigits-like triggers (defaults are class-specific. Can be overridden here)
 # control the NDigits trigger threshold
 # (note in SKI_SKDETSIM, this is actually the value used for the NHits trigger (NHits != NDigits))
-#/DAQ/TriggerNDigits/Threshold 25
+/DAQ/TriggerNDigits/Threshold 2
 # the trigger counts digits (looking for threshold) in this window (ns)
 # SK use a value linked to the maximum light travel time in the ID (~220 ns, neglects scatters/reflections) rounded to 200 ns
 # If you're using a different geometry, you may wish to change this value (e.g. HK ID max travel distance is ~400 ns)
-#/DAQ/TriggerNDigits/Window 200
+/DAQ/TriggerNDigits/Window 200
 # automatically adjust the NDigits threshold depending on the average noise occupancy during the trigger window
 #/DAQ/TriggerNDigits/AdjustForNoise true
 # the digits in which range around the trigger time (ns) should be saved with the event
-#/DAQ/TriggerNDigits/PreTriggerWindow  -400
-#/DAQ/TriggerNDigits/PostTriggerWindow +950
+/DAQ/TriggerNDigits/PreTriggerWindow  -400
+/DAQ/TriggerNDigits/PostTriggerWindow +950

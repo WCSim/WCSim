@@ -16,7 +16,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   genCmd->SetGuidance("Select primary generator.");
   genCmd->SetGuidance(" Available generators : muline, ambeevt, gun, laser, gps, ibd, datatable, cosmics, radioactive, rootracker, radon, injector, lightinjector, gamma-conversion");
   genCmd->SetParameterName("generator",true);
-  genCmd->SetDefaultValue("ambeevt");
+  genCmd->SetDefaultValue("muline");
   genCmd->SetCandidates("muline ambeevt gun laser gps ibd datatable cosmics radioactive rootracker radon injector lightinjector gamma-conversion");
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
@@ -494,17 +494,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
   {
     myAction->OpenCosmicsFile(newValue);
     G4cout << "Input cosmics data file set to " << newValue << G4endl;
-  }
-  //if(command == fileNameCmdAmBe )
-  //{
-    //myAction->OpenAmBeFile(newValue);
-    //G4cout << "Input neutron spectrum data file set to " << newValue << G4endl;
-  //}
-  if(command == seedNumberCmdAmBe)
-  {
-    G4int seed = seedNumberCmdAmBe->GetNewIntValue(newValue);
-    myAction->SetSeed(seed);
-  }
+  } 
   if( command==isotopeCmd )
   {
     IsotopeCommand(newValue);
