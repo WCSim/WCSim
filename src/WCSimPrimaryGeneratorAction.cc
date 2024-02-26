@@ -450,6 +450,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
           G4Exception("WCSimPrimaryGeneratorActino::GeneratePrimaries", "WCSimError", FatalException, 
               "BGO geometry not set in the detector construction. Please configure it in your .mac file");
       }
+      else{
+        AmBeGen->GenerateNG(anEvent);
+      }
     }
 
     else {

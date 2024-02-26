@@ -162,7 +162,8 @@
 /mygen/generator ambeevt
 
 # If you want to use the AmBe generator with the BGO placed in the geometry, you need to activate
-# the BGOEvent option (i.e. set it to true)
+# the BGOEvent option (i.e. set it to true).
+# Please note that you cannot have BGOEvent set to true and no BGO Placed, this will raise an error.
 /mygen/BGOEvent true
 
 ##################
@@ -183,7 +184,7 @@
 /Tracking/fractionOpticalPhotonsToDraw 100.0
 
 ## change the name of the output root file, default = wcsim.root
-/WCSimIO/RootFile test.root
+/WCSimIO/RootFile wcsim.root
 
 ## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
 ## a NEUT vector file as input
@@ -192,6 +193,6 @@
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false
 
-/run/beamOn 10
+/run/beamOn 1
 #exit
 
