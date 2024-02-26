@@ -386,10 +386,22 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   BGO_mpt->AddConstProperty("YIELDRATIO", 1.0);
 
   BGO->SetMaterialPropertiesTable(BGO_mpt);
-  // Create BGO Volume
-  G4Tubs* solidBGO = new G4Tubs("solidBGO", 0., 2.5*cm, 2.5*cm, 0., 360.*deg);
-  G4LogicalVolume* logicBGO = new G4LogicalVolume(solidBGO, BGO, "logicBGO");
-  new G4PVPlacement(0, G4ThreeVector(), logicBGO, "BGO", logicWCBox, false, 0, false);
+  
+  G4cout << "placeBGOGeometry: " << placeBGOGeometry << G4endl;
+
+  // BGO Placement Functions
+  SetPlaceBGOGeometry(false);
+
+  placeBGOGeometry = IsBGOGeometrySet();
+
+  G4cout << "After setting, placeBGOGeometry: " << placeBGOGeometry << G4endl;
+
+  if (placeBGOGeometry) {
+      G4Tubs* solidBGO = new G4Tubs("solidBGO", 0., 2.5*cm, 2.5*cm, 0., 360.*deg);
+      G4LogicalVolume* logicBGO = new G4LogicalVolume(solidBGO, BGO, "logicBGO");
+      new G4PVPlacement(0, G4ThreeVector(), logicBGO, "BGO", logicWCBox, false, 0, false); 
+  }
+  
   //-----------------------------------------------------
 
   //-----------------------------------------------------
@@ -461,6 +473,14 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   
   // Return the pointer to the physical experimental hall
   return physiExpHall;
+}
+
+void WCSimDetectorConstruction::SetPlaceBGOGeometry(G4bool placeBGO) {
+  placeBGOGeometry = placeBGO;
+}
+
+G4bool WCSimDetectorConstruction::IsBGOGeometrySet() const {
+  return placeBGOGeometry;
 }
 
 WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4String CollectionName)

@@ -108,6 +108,7 @@ private:
   G4bool   useRadonEvt; // G. Pronost: Radon flag
   G4bool   useLightInjectorEvt; // L. Kneale injector with profile from db
   G4bool   useMPMTledEvt;
+  G4bool   generateBGOEvent; // D. Costas BGO placement for AmBeGen
 
   std::fstream inputFile;
   std::fstream inputCosmicsFile;
