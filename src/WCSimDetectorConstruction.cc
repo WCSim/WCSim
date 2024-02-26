@@ -77,7 +77,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
 						     WCSimTuningParameters* WCSimTuningPars):
   WCSimTuningParams(WCSimTuningPars),
   totalNum_mPMTs(0),
-  totalNum_mPMTs2(0)
+  totalNum_mPMTs2(0),
+  placeBGOGeometry(false)
 {
 	
   // Decide if (only for the case of !1kT detector) should be upright or horizontal
@@ -204,6 +205,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   // set default visualizer to OGLSX
   SetVis_Choice("OGLSX");
 
+  SetPlaceBGOGeometry(false); 
 
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry
@@ -390,8 +392,6 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   G4cout << "placeBGOGeometry: " << placeBGOGeometry << G4endl;
 
   // BGO Placement Functions
-  SetPlaceBGOGeometry(false);
-
   placeBGOGeometry = IsBGOGeometrySet();
 
   G4cout << "After setting, placeBGOGeometry: " << placeBGOGeometry << G4endl;
@@ -482,6 +482,7 @@ void WCSimDetectorConstruction::SetPlaceBGOGeometry(G4bool placeBGO) {
 G4bool WCSimDetectorConstruction::IsBGOGeometrySet() const {
   return placeBGOGeometry;
 }
+
 
 WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4String CollectionName)
 {

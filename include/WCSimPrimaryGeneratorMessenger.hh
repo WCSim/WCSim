@@ -40,6 +40,7 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithAString* fileNameCmdCosmics;
   //G4UIcmdWithAString* fileNameCmdAmBe;
   G4UIcmdWithAnInteger* seedNumberCmdAmBe;
+  G4UIcmdWithABool*   BGOEvent;
   G4UIcmdWithAString* timeUnitCmd;
   G4UIcmdWithAString* isotopeCmd;
   G4UIcmdWithAString* radonScalingCmd;

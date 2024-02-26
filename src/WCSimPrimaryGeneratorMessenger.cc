@@ -66,6 +66,9 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   //seedNumberCmdAmBe->SetGuidance("Set seed for AmBe source generator");
   //seedNumberCmdAmBe->SetParameterName("seed",true);
   //seedNumberCmdAmBe->SetDefaultValue(12345); 
+  BGOEvent = new G4UIcmdWithABool("/mygen/BGOEvent",this);
+  BGOEvent->SetGuidance("Select whether the event is a BGO event or not");
+  BGOEvent->SetParameterName("BGOEvent", false);
 
   // K.M.Tsui: options for injector events
   nPhotonsCmd = new G4UIcmdWithAnInteger("/mygen/injector_nPhotons",this);
@@ -214,6 +217,7 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete seedNumberCmdAmBe;
   delete mPMTLEDIdCmd1;
   delete mPMTLEDIdCmd2;
+  delete BGOEvent;
 }
 
 void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
@@ -471,6 +475,16 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
       myAction->SetmPMTledEvtGenerator(true);
+    }
+  }
+
+  if( command == BGOEvent)
+  {
+    if (newValue == "true") {
+      myAction->SetBGOEvent(true);
+    }
+    else {
+      myAction->SetBGOEvent(false);
     }
   }
 

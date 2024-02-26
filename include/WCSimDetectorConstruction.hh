@@ -60,9 +60,6 @@ public:
 
   G4VPhysicalVolume* Construct();
 
-  // Temporary, where should I place this line?
-  G4bool placeBGOGeometry;
-
   // Related to the WC geometry
   void SetSuperKGeometry();
   void InitSinglePMT();
@@ -100,8 +97,20 @@ public:
   void SetDefaultNuPrismGeometry();
   void SetIWCDGeometry(); // IWCD with mPMTs, updated geometry as of 20230630
   void SetIWCD_WithOD_Geometry(); // Same as above with OD
+  //void SetPlaceBGOGeometry(G4bool placeBGO) { placeBGOGeometry; } // Diego Costas, 26/02/2024
+  //G4bool IsBGOGeometrySet() const { return placeBGOGeometry; } // Diego Costas, 26/02/2024
   void SetPlaceBGOGeometry(G4bool placeBGO); // Diego Costas, 26/02/2024
   G4bool IsBGOGeometrySet() const; // Diego Costas, 26/02/2024
+
+  
+  //void WCSimDetectorConstruction::SetPlaceBGOGeometry(G4bool placeBGO) {
+    //placeBGOGeometry = placeBGO;
+  //}
+
+  //G4bool WCSimDetectorConstruction::IsBGOGeometrySet() const {
+    //return placeBGOGeometry;
+  //}
+
   /**
      Dump the values of many variables used to define geometries including
      - radii, heights, name, etc. of the detector
@@ -735,6 +744,8 @@ private:
   // amb79: to universally make changes in structure and geometry
   bool isUpright;
 
+  // BGO Placement
+  G4bool placeBGOGeometry;
 
   // Add bool to indicate whether we load nuPRISM geometry  
   G4bool isNuPrism;

@@ -19,6 +19,10 @@
 
 # True --> default replica method to place PMTs. False --> new placement method 
 /WCSim/PMT/ReplicaPlacement false
+
+# BGO Scintillation Crystal for PMT and Neutron Tagging Callibration
+# If set to true, you'll place the BGO inside the detector geometry at (0,0,0) position
+/WCSim/BGOPlacement true
 ############################################################################################
 ##These comments are only useful when using /WCSim/PMT/ReplicaPlacement false
 # Apply random fluctuation to PMT placement. Argument specifies the Gaussian 1 sigma value
@@ -156,6 +160,10 @@
 # - 0.0 MeV 26% of the time.
 # Neutron Enegy is taken from a simulated realistic AmBe Spectrum depending on the Gamma Energy.
 /mygen/generator ambeevt
+
+# If you want to use the AmBe generator with the BGO placed in the geometry, you need to activate
+# the BGOEvent option (i.e. set it to true)
+/mygen/BGOEvent true
 
 ##################
 # TRACKING

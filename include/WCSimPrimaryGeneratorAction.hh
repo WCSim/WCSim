@@ -56,6 +56,7 @@ public:
   void SetBeamPDG(G4int i, G4int n = 0)         { beampdgs[n] = i;};
   void SetNvtxs(G4int i)     { nvtxs = i; };
   void SetVtxs(G4int i, G4ThreeVector v)     { vtxs[i] = v; };
+  void SetBGOEvent(G4bool eventBGO);
 
   // These go with jhfNtuple
   G4int GetVecRecNumber(){return vecRecNumber;}
@@ -72,6 +73,7 @@ public:
   G4int GetTargetPDG(G4int n = 0) {return targetpdgs[n];};
   G4double GetTargetEnergy(G4int n = 0) {return targetenergies[n];};
   G4ThreeVector GetTargetDir(G4int n = 0) {return targetdirs[n];};
+  G4bool IsBGOEventSet() const;
 
   // older ...
   G4double GetNuEnergy() {return nuEnergy;};
@@ -108,8 +110,7 @@ private:
   G4bool   useRadonEvt; // G. Pronost: Radon flag
   G4bool   useLightInjectorEvt; // L. Kneale injector with profile from db
   G4bool   useMPMTledEvt;
-  G4bool   generateBGOEvent; // D. Costas BGO placement for AmBeGen
-
+  
   std::fstream inputFile;
   std::fstream inputCosmicsFile;
   //std::fstream inputAmBeFile;
@@ -120,6 +121,7 @@ private:
 
   // AmBe Generator 
   WCSimAmBeGen* AmBeGen;
+  G4bool   generateBGOEvent; // D. Costas BGO placement for AmBeGen
 
   // IBD generator
     // Database for spectra
