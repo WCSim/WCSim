@@ -205,8 +205,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   // set default visualizer to OGLSX
   SetVis_Choice("OGLSX");
 
-  SetPlaceBGOGeometry(false); 
-
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry
   //-----------------------------------------------------
@@ -474,15 +472,6 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // Return the pointer to the physical experimental hall
   return physiExpHall;
 }
-
-void WCSimDetectorConstruction::SetPlaceBGOGeometry(G4bool placeBGO) {
-  placeBGOGeometry = placeBGO;
-}
-
-G4bool WCSimDetectorConstruction::IsBGOGeometrySet() const {
-  return placeBGOGeometry;
-}
-
 
 WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4String CollectionName)
 {

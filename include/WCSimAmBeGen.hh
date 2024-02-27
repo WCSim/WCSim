@@ -41,12 +41,6 @@ class WCSimAmBeGen
     G4double time;
     G4ThreeVector dir;
 
-    vector<double> probabilities;
-    vector<double> energies;
-    
-    //vector<double> energies_1;
-    //vector<double> energies_2;
-
     // Variables for reading in the file
     string wcsimdir;
     string gs_path;

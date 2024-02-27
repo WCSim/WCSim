@@ -12,9 +12,6 @@
 
 #include "GdNeutronHPCapture.hh"
 
-#include "G4Scintillation.hh"
-#include "G4OpticalPhysics.hh"
-
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 

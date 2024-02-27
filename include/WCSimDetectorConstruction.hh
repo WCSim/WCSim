@@ -97,19 +97,10 @@ public:
   void SetDefaultNuPrismGeometry();
   void SetIWCDGeometry(); // IWCD with mPMTs, updated geometry as of 20230630
   void SetIWCD_WithOD_Geometry(); // Same as above with OD
-  //void SetPlaceBGOGeometry(G4bool placeBGO) { placeBGOGeometry; } // Diego Costas, 26/02/2024
-  //G4bool IsBGOGeometrySet() const { return placeBGOGeometry; } // Diego Costas, 26/02/2024
-  void SetPlaceBGOGeometry(G4bool placeBGO); // Diego Costas, 26/02/2024
-  G4bool IsBGOGeometrySet() const; // Diego Costas, 26/02/2024
-
-  
-  //void WCSimDetectorConstruction::SetPlaceBGOGeometry(G4bool placeBGO) {
-    //placeBGOGeometry = placeBGO;
-  //}
-
-  //G4bool WCSimDetectorConstruction::IsBGOGeometrySet() const {
-    //return placeBGOGeometry;
-  //}
+  void SetPlaceBGOGeometry(G4bool placeBGO) { placeBGOGeometry=placeBGO; } // Diego Costas, 26/02/2024
+  G4bool IsBGOGeometrySet() const { return placeBGOGeometry; } // Diego Costas, 26/02/2024
+  //void SetPlaceBGOGeometry(G4bool placeBGO); // Diego Costas, 26/02/2024
+  //G4bool IsBGOGeometrySet() const; // Diego Costas, 26/02/2024
 
   /**
      Dump the values of many variables used to define geometries including
@@ -922,6 +913,7 @@ private:
   G4bool fix_nModules;
   G4double mPMT_pmt_openingAngle;
   G4String mPMT_material_pmtAssembly;
+  G4String BGO;
 
   //Filling mPMT
   std::vector<G4int>		vNiC;	        // Nb of Chambers in each circle

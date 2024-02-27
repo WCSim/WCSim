@@ -20,6 +20,10 @@ WCSimAmBeGen::WCSimAmBeGen(){
   // Initialise
   this->Initialise();
   wcsimdir = string(getenv("WCSIMDIR"))+"/data/";
+
+  gs_path = wcsimdir + "ground_state_spectrum.txt";
+  fe_path = wcsimdir + "first_excited_spectrum.txt";
+  se_path = wcsimdir + "second_excited_spectrum.txt";
 }
 
 WCSimAmBeGen::~WCSimAmBeGen(){
@@ -70,21 +74,18 @@ G4double WCSimAmBeGen::NeutronEnergy(G4double gEnergy){
     nEnergyDist->SetEnergyDisType("Arb");
     
     if (gEnergy == 0.0) {
-      gs_path = wcsimdir + "ground_state_spectrum.txt";
       nEnergyDist->ArbEnergyHistoFile(gs_path);
       nEnergyDist->SetBiasRndm(rGen);
       nEnergyDist->ArbInterpolate("Lin");
       nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
     }
     else if (gEnergy == 4.4) {
-      fe_path = wcsimdir + "first_excited_spectrum.txt";
       nEnergyDist->ArbEnergyHistoFile(fe_path);
       nEnergyDist->SetBiasRndm(rGen);
       nEnergyDist->ArbInterpolate("Lin");
       nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
     }
     else {
-      se_path = wcsimdir + "second_excited_spectrum.txt";
       nEnergyDist->ArbEnergyHistoFile(se_path);
       nEnergyDist->SetBiasRndm(rGen);
       nEnergyDist->ArbInterpolate("Lin");

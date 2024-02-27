@@ -56,16 +56,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   radioactive_time_window_Cmd->SetParameterName("radioactive_time_window",true);
   radioactive_time_window_Cmd->SetDefaultValue(0.);
 
-  // Diego Costas: options for AmBe generator
-  //fileNameCmdAmBe = new G4UIcmdWithAString("/mygen/ambefile",this);
-  //fileNameCmdAmBe->SetGuidance("Select the file for AmBe neutron spectrum");
-  //fileNameCmdAmBe->SetGuidance("Enter the file name of the nSpectrum file");
-  //fileNameCmdAmBe->SetParameterName("fileName",true);
-  //fileNameCmdAmBe->SetDefaultValue("data/resampled_nSpectrum.txt");
-  //seedNumberCmdAmBe = new G4UIcmdWithAnInteger("/mygen/ambeseed",this);
-  //seedNumberCmdAmBe->SetGuidance("Set seed for AmBe source generator");
-  //seedNumberCmdAmBe->SetParameterName("seed",true);
-  //seedNumberCmdAmBe->SetDefaultValue(12345); 
+  // Diego Costas: options for AmBe generator 
   BGOEvent = new G4UIcmdWithABool("/mygen/BGOEvent",this);
   BGOEvent->SetGuidance("Select whether the event is a BGO event or not");
   BGOEvent->SetParameterName("BGOEvent", false);
@@ -214,7 +205,6 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete lightInjectorNPhotonsCmd;
   delete lightInjectorFilenameCmd;
   delete lightInjectorModeCmd;
-  delete seedNumberCmdAmBe;
   delete mPMTLEDIdCmd1;
   delete mPMTLEDIdCmd2;
   delete BGOEvent;

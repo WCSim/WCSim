@@ -203,43 +203,42 @@ public:
         index_timepresmear = time_presmear.at(i);
         index_pe           = pe.at(i);
         if(sort_digi_compositions) 
-          index_digicomp             = fDigiComp.at(i);
-          index_trackID              = trackID.at(i);
-          index_parentSavedTrackID   = parentSavedTrackID.at(i);
-          index_photonstarttime      = photonStartTime[i];
-          index_photonstartpos       = photonStartPos[i];
-          index_photonendpos         = photonEndPos[i];
-          index_photonstartdir       = photonStartDir[i];
-          index_photonenddir         = photonEndDir[i];
-          index_photoncreatorprocess = photonCreatorProcess[i];
-
-          for (j = i; j > 0 && time.at(j-1) > index_time; j--) {
-            time.at(j) = time.at(j-1);
-            time_presmear.at(j) = time_presmear.at(j-1);
-            pe.at(j) = pe.at(j-1);
-            if(sort_digi_compositions) fDigiComp.at(j) = fDigiComp.at(j-1);
-              trackID.at(j) = trackID.at(j-1);
-              parentSavedTrackID.at(j) = parentSavedTrackID.at(j);
-              photonStartTime.at(j) = photonStartTime.at(j-1);
-              photonStartPos.at(j) = photonStartPos.at(j-1);
-              photonEndPos.at(j) = photonEndPos.at(j-1);
-              photonStartDir.at(j) = photonStartDir.at(j-1);
-              photonEndDir.at(j) = photonEndDir.at(j-1);
-              photonCreatorProcess.at(j) = photonCreatorProcess.at(j-1);
-              //G4cout <<"swapping "<<time.at(j-1)<<" "<<index_time<<G4endl;
+        index_digicomp             = fDigiComp.at(i);
+        index_trackID              = trackID.at(i);
+        index_parentSavedTrackID   = parentSavedTrackID.at(i);
+        index_photonstarttime      = photonStartTime[i];
+        index_photonstartpos       = photonStartPos[i];
+        index_photonendpos         = photonEndPos[i];
+        index_photonstartdir       = photonStartDir[i];
+        index_photonenddir         = photonEndDir[i];
+        index_photoncreatorprocess = photonCreatorProcess[i];
+        for (j = i; j > 0 && time.at(j-1) > index_time; j--) {
+          time.at(j) = time.at(j-1);
+          time_presmear.at(j) = time_presmear.at(j-1);
+          pe.at(j) = pe.at(j-1);
+          if(sort_digi_compositions) fDigiComp.at(j) = fDigiComp.at(j-1);
+          trackID.at(j) = trackID.at(j-1);
+          parentSavedTrackID.at(j) = parentSavedTrackID.at(j);
+          photonStartTime.at(j) = photonStartTime.at(j-1);
+          photonStartPos.at(j) = photonStartPos.at(j-1);
+          photonEndPos.at(j) = photonEndPos.at(j-1);
+          photonStartDir.at(j) = photonStartDir.at(j-1);
+          photonEndDir.at(j) = photonEndDir.at(j-1);
+          photonCreatorProcess.at(j) = photonCreatorProcess.at(j-1);
+          //G4cout <<"swapping "<<time.at(j-1)<<" "<<index_time<<G4endl;
         }
         time.at(j) = index_time;
         time_presmear.at(j) = index_timepresmear;
         pe.at(j) = index_pe;
         if(sort_digi_compositions) fDigiComp.at(j) = index_digicomp;
-          trackID.at(j) = index_trackID;
-          parentSavedTrackID.at(j) = index_parentSavedTrackID;
-          photonStartTime.at(j) = index_photonstarttime;
-          photonStartPos.at(j) = index_photonstartpos;
-          photonEndPos.at(j) = index_photonendpos;
-          photonStartDir.at(j) = index_photonstartdir;
-          photonEndDir.at(j) = index_photonenddir;
-          photonCreatorProcess.at(j) = index_photoncreatorprocess;
+        trackID.at(j) = index_trackID;
+        parentSavedTrackID.at(j) = index_parentSavedTrackID;
+        photonStartTime.at(j) = index_photonstarttime;
+        photonStartPos.at(j) = index_photonstartpos;
+        photonEndPos.at(j) = index_photonendpos;
+        photonStartDir.at(j) = index_photonstartdir;
+        photonEndDir.at(j) = index_photonenddir;
+        photonCreatorProcess.at(j) = index_photoncreatorprocess;
     }
   }
   
