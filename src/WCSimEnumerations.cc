@@ -100,6 +100,78 @@ std::string WCSimEnumerations::EnumAsString(ReflectionSurface_t r)
   }
   return "";
 }
+ 
+std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
+{
+  switch(p) {
+  case (kHadElastic) :
+    return "hadElastic";
+    break;
+  case (kNCapture) :
+    return "nCapture";
+    break;
+  case (kCompt) :
+    return "compt";
+    break;
+  case (kPhot) :
+    return "phot";
+    break;
+  case (kCerenkov) :
+    return "Cerenkov";
+    break;
+  case (kScintillation) :
+    return "Scintillation";
+    break;
+  case (kEBrem) :
+    return "eBrem";
+    break;
+  case (kAnnihil) :
+    return "annihil";
+    break;
+  case (kConv) :
+    return "conv";
+    break;
+  case (kEIoni) :
+    return "eIoni";
+    break;
+  case (kNeutronInelastic) :
+    return "neutronInelastic";
+    break;
+  default: 
+    return "";
+    break;
+  }
+  return "";
+}
+
+ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str) {
+  if (str == "hadElastic") {
+    return kHadElastic;
+  } else if (str == "nCapture") {
+    return kNCapture;
+  } else if (str == "compt") {
+    return kCompt;
+  } else if (str == "phot") {
+    return kPhot;
+  } else if (str == "Cerenkov") {
+    return kCerenkov;
+  } else if (str == "Scintillation") {
+    return kScintillation;
+  } else if (str == "eBrem") {
+    return kEBrem;
+  } else if (str == "annihil") {
+    return kAnnihil;
+  } else if (str == "conv") {
+    return kConv;
+  } else if (str == "eIoni") {
+    return kEIoni;
+  } else if (str == "neutronInelastic") {
+    return kNeutronInelastic;
+  } else {
+    // Default value in case of unknown string
+    return kHadElastic;
+  }
+}
 
 TriggerType_t WCSimEnumerations::TriggerTypeFromString(std::string s)
 {

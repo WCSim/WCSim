@@ -31,15 +31,21 @@ class WCSimAmBeGen
 
   private:
     G4ParticleGun*        myAmBeGun;
-    G4SPSEneDistribution* nEnergyDist;
     G4SPSRandomGenerator* rGen;
+    G4SPSEneDistribution* nEnergyDistGS;  // For ground state spectrum
+    G4SPSEneDistribution* nEnergyDistFE;  // For first excited state spectrum
+    G4SPSEneDistribution* nEnergyDistSE;  // For second excited state spectrum
     
     // Variables for the initialisation of AmBe generator parameters
     G4double nEnergy;
     G4double gEnergy;
     G4ThreeVector vtx;
+    static G4double gammaProbabilities[3];
+    static G4double gammaEnergies[3];
+    static G4int pdgids[2];
     G4double time;
     G4ThreeVector dir;
+    G4double epsilon;
 
     // Variables for reading in the file
     string wcsimdir;

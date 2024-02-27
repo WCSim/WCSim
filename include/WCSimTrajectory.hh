@@ -56,7 +56,7 @@ public: // with description
    { return PDGEncoding; }
    inline G4ThreeVector GetInitialMomentum() const
    { return initialMomentum; }
-  inline G4String GetCreatorProcessName() const {
+  inline ProcessType_t GetCreatorProcessName() const {
     return creatorProcess;
   }
   

@@ -373,7 +373,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       for (int pe = 0; pe < nPoisson; pe++) {
 	G4float time = G4RandGauss::shoot(0.0,10.);
 	G4ThreeVector dir(0, 0, 0);
-  G4String photcreatorproc = "dummy";
+  ProcessType_t photcreatorproc = WCSimEnumerations::ProcessTypeStringToEnum("dummy");
 	(*WCHC)[hitIndex]->AddPe(time);
   (*WCHC)[hitIndex]->AddTrackID(0);
 	(*WCHC)[hitIndex]->AddParentID(0); // Make parent a geantino (whatever that is)
@@ -1191,7 +1191,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     double pdir[3];
     double stop[3];
     double start[3];
-    string creatorP;
+    ProcessType_t creatorP;
     for (int l=0;l<3;l++)
     {
       dir[l]=injhfNtuple.dir[k][l];
@@ -1294,7 +1294,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       G4double ttime = trj->GetGlobalTime();
 
       G4int parentType;
-      G4String creatorProcess = trj->GetCreatorProcessName();
+      ProcessType_t creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(trj->GetCreatorProcessName());
 
 
       // Right now only secondaries whose parents are pi0's are stored
@@ -1438,7 +1438,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     std::vector<TVector3> photonEndPos;
     std::vector<TVector3> photonStartDir;
     std::vector<TVector3> photonEndDir;
-    std::vector<std::string> photonCreatorProcess;
+    std::vector<ProcessType_t> photonCreatorProcess;
 #ifdef _SAVE_RAW_HITS_VERBOSE
     double hit_time_smear;
 #endif
@@ -1449,7 +1449,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     TVector3 hit_photon_endpos;
     TVector3 hit_photon_startdir;
     TVector3 hit_photon_enddir;
-    std::string hit_photon_creatorprocess;
+    ProcessType_t hit_photon_creatorprocess;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
@@ -1736,7 +1736,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     double pdir[3];
     double stop[3];
     double start[3];
-    string creatorP;
+    ProcessType_t creatorP;
     for (int l=0;l<3;l++)
     {
       dir[l]=injhfNtuple.dir[k][l];
@@ -1837,7 +1837,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       G4double ttime = trj->GetGlobalTime();
 
       G4int parentType;
-      G4String creatorProcess = trj->GetCreatorProcessName();
+      ProcessType_t creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(trj->GetCreatorProcessName());
 
 
       // Right now only secondaries whose parents are pi0's are stored
@@ -1980,7 +1980,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     std::vector<TVector3> photonEndPos;
     std::vector<TVector3> photonStartDir;
     std::vector<TVector3> photonEndDir;
-    std::vector<std::string> photonCreatorProcess;               // ADD A TEMPORARY VECTOR OF CREATOR PROCESSES
+    std::vector<ProcessType_t> photonCreatorProcess;               // ADD A TEMPORARY VECTOR OF CREATOR PROCESSES
 #ifdef _SAVE_RAW_HITS_VERBOSE
     double hit_time_smear;
 #endif
@@ -1991,7 +1991,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     TVector3 hit_photon_endpos;
     TVector3 hit_photon_startdir;
     TVector3 hit_photon_enddir;
-    std::string hit_photon_creatorprocess;
+    ProcessType_t hit_photon_creatorprocess;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();

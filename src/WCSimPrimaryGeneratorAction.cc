@@ -66,7 +66,7 @@ inline int    atoi( const string& str ) {return std::atoi( str.c_str() );}
 
 WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 							 WCSimDetectorConstruction* myDC)
-  :myDetector(myDC), vectorFileName(""), generateBGOEvent(false)
+  :myDetector(myDC), vectorFileName("")
 {
   //T. Akiri: Initialize GPS to allow for the laser use
   MyGPS = new G4GeneralParticleSource();
@@ -433,20 +433,11 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       AmBeGen = new WCSimAmBeGen();
     }
 
-    generateBGOEvent = IsBGOEventSet(); 
-
-    if (generateBGOEvent) {
-      if (!myDetector || !myDetector->IsBGOGeometrySet()) {
-          G4Exception("WCSimPrimaryGeneratorActino::GeneratePrimaries", "WCSimError", FatalException, 
-              "BGO geometry not set in the detector construction. Please configure it in your .mac file");
-      }
-      else{
-        AmBeGen->GenerateNG(anEvent);
-      }
+    if (!myDetector || !myDetector->IsBGOGeometrySet()) {
+        G4Exception("WCSimPrimaryGeneratorActino::GeneratePrimaries", "WCSimError", FatalException, 
+            "You are trying to run AmBeGen without having set the BGO geometry. Please configure it in your .mac file using /WCSim/BGOPlacement true");
     }
-
-    else {
-      G4cout << "You are using AmBe Generator without BGO being placed in the geometry" << G4endl;
+    else{
       AmBeGen->GenerateNG(anEvent);
     }
   } 

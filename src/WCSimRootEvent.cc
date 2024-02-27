@@ -416,7 +416,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 					   Double_t stop[3],
 					   Double_t start[3],
 					   Int_t parenttype,
-             std::string creatorProcess,
+             ProcessType_t creatorProcess,
 					   Double_t time,
 					   Int_t id,
 					   Int_t idParent,
@@ -524,7 +524,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 			       Double_t stop[3],
 			       Double_t start[3],
 			       Int_t parenttype,
-             std::string creatorProcess,
+             ProcessType_t creatorProcess,
 			       Double_t time,
 			       Int_t id,
 			       Int_t idParent,
@@ -574,7 +574,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
 							 std::vector<TVector3> photonEndPos,
 							 std::vector<TVector3> photonStartDir,
 							 std::vector<TVector3> photonEndDir,
-               std::vector<std::string> photonCreatorProcess)
+               std::vector<ProcessType_t> photonCreatorProcess)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -593,7 +593,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
       endDir[j] = photonEndDir[i][j];
     }
     
-    std::string creatorProcess = photonCreatorProcess[i]; // Get the creator process for this p.e.
+    ProcessType_t creatorProcess = photonCreatorProcess[i]; // Get the creator process for this p.e.
 
     //WCSimRootCherenkovHitTime *cherenkovhittime =
     new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],parentSavedTrackID[i],
@@ -667,7 +667,7 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
 						     Float_t photonEndPos[3],
 						     Float_t photonStartDir[3],
 						     Float_t photonEndDir[3],
-                 std::string photonCreatorProcess)
+                 ProcessType_t photonCreatorProcess)
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
   fTruetime        = truetime;

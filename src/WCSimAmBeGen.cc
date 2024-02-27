@@ -16,6 +16,10 @@
 
 using namespace std;
 
+G4double WCSimAmBeGen::gammaProbabilities[3] = {0.26, 0.65, 0.08};
+G4double WCSimAmBeGen::gammaEnergies[3] = {0.0, 4.4, 7.7};
+G4int    WCSimAmBeGen::pdgids[2] = {2112, 22};
+
 WCSimAmBeGen::WCSimAmBeGen(){
   // Initialise
   this->Initialise();
@@ -30,24 +34,42 @@ WCSimAmBeGen::~WCSimAmBeGen(){
   
   // This needed to be deleted
   delete myAmBeGun;
-  delete nEnergyDist;
   delete rGen;
+  delete nEnergyDistGS;
+  delete nEnergyDistFE;
+  delete nEnergyDistSE;
 }
 
 void WCSimAmBeGen::Initialise(){
-    nEnergyDist = new G4SPSEneDistribution();
-    rGen        = new G4SPSRandomGenerator();
-    myAmBeGun   = new G4ParticleGun();
+    nEnergyDistGS = new G4SPSEneDistribution();
+    nEnergyDistFE = new G4SPSEneDistribution();
+    nEnergyDistSE = new G4SPSEneDistribution();
+
+    // Configure the energy distributions for each state
+    nEnergyDistGS->SetEnergyDisType("Arb");
+    nEnergyDistGS->ArbEnergyHistoFile(gs_path);
+    nEnergyDistGS->SetBiasRndm(rGen);
+    nEnergyDistGS->ArbInterpolate("Lin");
+
+    nEnergyDistFE->SetEnergyDisType("Arb");
+    nEnergyDistFE->ArbEnergyHistoFile(fe_path);
+    nEnergyDistFE->SetBiasRndm(rGen);
+    nEnergyDistFE->ArbInterpolate("Lin");
+
+    nEnergyDistSE->SetEnergyDisType("Arb");
+    nEnergyDistSE->ArbEnergyHistoFile(se_path);
+    nEnergyDistSE->SetBiasRndm(rGen);
+    nEnergyDistSE->ArbInterpolate("Lin"); 
+
+    vtx = G4ThreeVector(0., 0., 0.);
+    time = 0.;
+    epsilon = 1e-6;
 }
 
 G4double WCSimAmBeGen::GammaEnergy(){
     
     // Initialise Geant4 random number generator
     G4Random::setTheEngine(new CLHEP::RanecuEngine);
-
-    // Define arrays
-    G4double probabilities[] = {0.26, 0.65, 0.08};
-    G4double energies[] = {0.0, 4.4 * MeV, 7.7 * MeV};
 
     // Generation of the random number
     G4double random_number = G4UniformRand();
@@ -56,55 +78,40 @@ G4double WCSimAmBeGen::GammaEnergy(){
     G4double cumulative_probability = 0.0;
     G4int selected_energy_index = -1;
 
-    for (G4int j = 0; j < sizeof(probabilities) / sizeof(probabilities[0]); ++j) {
-        cumulative_probability += probabilities[j];
+    for (G4int j = 0; j < sizeof(gammaProbabilities) / sizeof(gammaProbabilities[0]); ++j) {
+        cumulative_probability += gammaProbabilities[j];
         if (random_number <= cumulative_probability) {
             selected_energy_index = j;
             break;
         }
     }
 
-    gEnergy = energies[selected_energy_index];
+    gEnergy = gammaEnergies[selected_energy_index];
 
     return gEnergy; 
 }
 
 G4double WCSimAmBeGen::NeutronEnergy(G4double gEnergy){
-    // Depending on the gEnergy, we load the correspondent neutron energy spectrum
-    nEnergyDist->SetEnergyDisType("Arb");
     
-    if (gEnergy == 0.0) {
-      nEnergyDist->ArbEnergyHistoFile(gs_path);
-      nEnergyDist->SetBiasRndm(rGen);
-      nEnergyDist->ArbInterpolate("Lin");
-      nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
+    // Depending on the gEnergy, we load the correspondent neutron energy spectrum 
+    if (std::abs(gEnergy - 0.0) < epsilon) { 
+      nEnergy = nEnergyDistGS->GenerateOne(G4Neutron::Definition());
     }
-    else if (gEnergy == 4.4) {
-      nEnergyDist->ArbEnergyHistoFile(fe_path);
-      nEnergyDist->SetBiasRndm(rGen);
-      nEnergyDist->ArbInterpolate("Lin");
-      nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
+    else if (std::abs(gEnergy - 4.4) < epsilon) {
+      nEnergy = nEnergyDistFE->GenerateOne(G4Neutron::Definition());
     }
     else {
-      nEnergyDist->ArbEnergyHistoFile(se_path);
-      nEnergyDist->SetBiasRndm(rGen);
-      nEnergyDist->ArbInterpolate("Lin");
-      nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
+      nEnergy = nEnergyDistSE->GenerateOne(G4Neutron::Definition());
     }
 
     return nEnergy;
 }
 
 void WCSimAmBeGen::GenerateNG(G4Event* anEvent){
-    // Define PDG IDs, energies and desired particle names
-    G4int pdgids[] = {2112, 22};
-      
     for (G4int i=0; i<2; i++){
       // Create a vertex for the particle following the index of the loop
       G4int pdgid = pdgids[i];
-      vtx = G4ThreeVector(0., 0., 0.);
-      time = 0.;
-
+      
       // Configure particle's properties in particleGun
       if (pdgid == 22) {
         myAmBeGun->SetParticleDefinition(G4Gamma::Definition());

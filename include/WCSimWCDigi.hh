@@ -97,7 +97,7 @@ public:
   inline void SetPhotonEndPos(G4int gate, const G4ThreeVector &position) { photonEndPos[gate] = position; };
   inline void SetPhotonStartDir(G4int gate, const G4ThreeVector &direction) { photonStartDir[gate] = direction; };
   inline void SetPhotonEndDir(G4int gate, const G4ThreeVector &direction) { photonEndDir[gate] = direction; };
-  inline void SetPhotonCreatorProcess(G4int gate, G4String creatorProcess) { photonCreatorProcess[gate] = creatorProcess; };
+  inline void SetPhotonCreatorProcess(G4int gate, G4String creatorProcess) { photonCreatorProcess[gate] = WCSimEnumerations::ProcessTypeStringToEnum(creatorProcess); };
 
   // Add a digit number and unique photon number to fDigiComp
   inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
