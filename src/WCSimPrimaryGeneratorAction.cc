@@ -152,8 +152,6 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
 
   // Time units for vertices
   fTimeUnit=CLHEP::nanosecond;
-
-  SetBGOEvent(false);
 }
 
 
@@ -216,14 +214,6 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
     hEmeanCosmics->Write();
     file->Close();
   }
-}
-
-void WCSimPrimaryGeneratorAction::SetBGOEvent(G4bool eventBGO) {
-  generateBGOEvent = eventBGO;
-}
-
-G4bool WCSimPrimaryGeneratorAction::IsBGOEventSet() const {
-  return generateBGOEvent;
 }
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
