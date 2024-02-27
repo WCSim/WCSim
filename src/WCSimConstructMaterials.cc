@@ -1018,7 +1018,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
     // If necessary:
     //Reference: A. D. Rakić, A. B. Djurišic, J. M. Elazar, and M. L. Majewski. Optical properties of metallic films for vertical-cavity optoelectronic devices, Appl. Opt. 37, 5271-5283 (1998)
     // from http://refractiveindex.info/?shelf=3d&book=metals&page=aluminium
-    /*
+    
     G4double ENERGY_Al[64] =
       {1.644*eV, 1.678*eV, 1.713*eV, 1.748*eV, 1.785*eV, 1.822*eV, 
        1.860*eV, 1.898*eV, 1.938*eV, 1.978*eV, 2.019*eV, 2.061*eV, 
@@ -1042,7 +1042,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
        0.279, 0.268, 0.257, 0.246, 0.236, 0.227, 0.218, 
        0.210, 0.202, 0.194, 0.187, 0.180, 0.173, 0.166, 
        0.160, 0.154, 0.149, 0.143, 0.138, 0.133, 0.128, 0.123};
-    */
+    
    //	------------- Surfaces --------------
 
    OpWaterBSSurface =
