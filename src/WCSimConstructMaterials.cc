@@ -1484,7 +1484,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    ReflectorSkinSurface->SetFinish(polished);
 
    G4MaterialPropertiesTable *AlPropTable = new G4MaterialPropertiesTable();
-   //AlPropTable->AddProperty("RINDEX", ENERGY_Al, RINDEX_Al, 64);  //not necessary for boundaries if kept within their MotherVolumes.
+   AlPropTable->AddProperty("RINDEX", ENERGY_Al, RINDEX_Al, 64);  //not necessary for boundaries if kept within their MotherVolumes.
    AlPropTable->AddProperty("REFLECTIVITY", ENERGY_water, REFLECTIVITY_aluminium, NUMENTRIES_water);
    ReflectorSkinSurface->SetMaterialPropertiesTable(AlPropTable);
 
