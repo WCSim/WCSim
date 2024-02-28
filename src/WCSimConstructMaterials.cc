@@ -1487,6 +1487,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    AlPropTable->AddProperty("RINDEX", ENERGY_Al, RINDEX_Al, 64);  //not necessary for boundaries if kept within their MotherVolumes.
    AlPropTable->AddProperty("REFLECTIVITY", ENERGY_water, REFLECTIVITY_aluminium, NUMENTRIES_water);
    ReflectorSkinSurface->SetMaterialPropertiesTable(AlPropTable);
+   Aluminum->SetMaterialPropertiesTable(AlPropTable);
 
    OpGelFoamSurface =
      new G4OpticalSurface("GelFoamSurface");
