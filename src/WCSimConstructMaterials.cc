@@ -29,7 +29,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   G4NistManager *nist_man = G4NistManager::Instance();
   
   //---BGO
-  G4Material* BGO = nist_man->FindOrBuildMaterial("G4_BGO");
+  BGO = nist_man->FindOrBuildMaterial("G4_BGO");
 
   //---Vacuum
 
@@ -1324,7 +1324,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   // ###### END ###### //
   ///////////////////////
   
-  G4MaterialPropertiesTable *BGO_mpt = new G4MaterialPropertiesTable();
+   G4MaterialPropertiesTable *BGO_mpt = new G4MaterialPropertiesTable();
    G4double BGO_energy[3] = {1.9*eV, 2.6*eV, 3.3*eV};
    G4double BGO_SCINT[3] = {0.1, 1., 0.1};
    G4double BGO_RINDEX[3] = {2.15, 2.15, 2.15};

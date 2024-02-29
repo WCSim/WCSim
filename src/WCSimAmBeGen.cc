@@ -23,13 +23,13 @@ G4int    WCSimAmBeGen::pdgids[2] = {2112, 22};
 
 WCSimAmBeGen::WCSimAmBeGen(){
   // Initialise
+  this->Initialise();
+
   wcsimdir = string(getenv("WCSIMDIR"))+"data/";
 
   gs_path = wcsimdir + "ground_state_spectrum.txt";
   fe_path = wcsimdir + "first_excited_spectrum.txt";
   se_path = wcsimdir + "second_excited_spectrum.txt";
-
-  this->Initialise();
 }
 
 WCSimAmBeGen::~WCSimAmBeGen(){
@@ -42,7 +42,9 @@ WCSimAmBeGen::~WCSimAmBeGen(){
 
 void WCSimAmBeGen::Initialise(){
     nEnergyDist = new G4SPSEneDistribution();
-
+    rGen        = new G4SPSRandomGenerator();
+    myAmBeGun   = new G4ParticleGun();
+    
     vtx = G4ThreeVector(0., 0., 0.);
     time = 0.;
     epsilon = 1e-6;
@@ -73,9 +75,10 @@ G4double WCSimAmBeGen::GammaEnergy(){
     return gEnergy; 
 }
 
-G4double WCSimAmBeGen::NeutronEnergy(G4double gamEnergy){
-    nEnergyDist->SetEnergyDisType("Arb"); 
- 
+G4double WCSimAmBeGen::NeutronEnergy(){
+    G4double nEnergy;
+    nEnergyDist->SetEnergyDisType("Arb");
+
     // Depending on the gEnergy, we load the correspondent neutron energy spectrum 
     if (std::abs(gEnergy - 0.0) < epsilon) { 
       nEnergyDist->ArbEnergyHistoFile(gs_path);
@@ -84,16 +87,17 @@ G4double WCSimAmBeGen::NeutronEnergy(G4double gamEnergy){
       nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
     }
     else if (std::abs(gEnergy - 4.4) < epsilon) {
-      nEnergyDist->ArbEnergyHistoFile(fe_path);
+      nEnergyDist->ArbEnergyHistoFile(gs_path);
       nEnergyDist->SetBiasRndm(rGen);
       nEnergyDist->ArbInterpolate("Lin");
       nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
     }
     else {
-      nEnergyDist->ArbEnergyHistoFile(se_path);
+      nEnergyDist->ArbEnergyHistoFile(gs_path);
       nEnergyDist->SetBiasRndm(rGen);
       nEnergyDist->ArbInterpolate("Lin");
       nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
+
     }
 
     return nEnergy;
@@ -105,13 +109,16 @@ void WCSimAmBeGen::GenerateNG(G4Event* anEvent){
       G4int pdgid = pdgids[i];
       
       // Configure particle's properties in particleGun
+      if (i == 0) {
+        GammaEnergy();
+      }
       if (pdgid == 22) {
         myAmBeGun->SetParticleDefinition(G4Gamma::Definition());
-        myAmBeGun->SetParticleEnergy(GammaEnergy());
+        myAmBeGun->SetParticleEnergy(gEnergy);
       }
       else {
         myAmBeGun->SetParticleDefinition(G4Neutron::Definition());
-        myAmBeGun->SetParticleEnergy(NeutronEnergy(GammaEnergy()));
+        myAmBeGun->SetParticleEnergy(NeutronEnergy());
       }
 
       dir = G4RandomDirection();
