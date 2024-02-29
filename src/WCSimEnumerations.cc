@@ -116,10 +116,10 @@ std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
   case (kPhot) :
     return "phot";
     break;
-  case (kCerenkov) :
+  case (kCCerenkov) :
     return "Cerenkov";
     break;
-  case (kScintillation) :
+  case (kSScintillation) :
     return "Scintillation";
     break;
   case (kEBrem) :
@@ -154,9 +154,9 @@ ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str)
   } else if (str == "phot") {
     return kPhot;
   } else if (str == "Cerenkov") {
-    return kCerenkov;
+    return kCCerenkov;
   } else if (str == "Scintillation") {
-    return kScintillation;
+    return kSScintillation;
   } else if (str == "eBrem") {
     return kEBrem;
   } else if (str == "annihil") {
@@ -169,7 +169,7 @@ ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str)
     return kNeutronInelastic;
   } else {
     // Default value in case of unknown string
-    return kHadElastic;
+    return kUnknownProcess;
   }
 }
 

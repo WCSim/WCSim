@@ -97,9 +97,9 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
  
   // Need to create a NONE string in case the Hit has no creatorProcess, such a Dark Noise Hit.
   const G4VProcess* process = aStep->GetTrack()->GetCreatorProcess();
-  ProcessType_t photonCreatorProcess("NONE");
+  ProcessType_t photonCreatorProcess(kUnknownProcess);
   if (process) {
-    photonCreatorProcess = process->GetProcessName();
+    photonCreatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(process->GetProcessName());
   }
 
   G4int    trackID           = aStep->GetTrack()->GetTrackID();

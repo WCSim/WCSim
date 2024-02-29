@@ -1,6 +1,8 @@
 #ifndef WCSimWCDigi_h
 #define WCSimWCDigi_h 1
 
+#include "WCSimEnumerations.hh"
+
 #include "G4VDigi.hh"
 #include "G4TDigiCollection.hh"
 #include "G4Allocator.hh"

@@ -181,6 +181,9 @@ public:
       WCDetCentre[1] = y;
       WCDetCentre[2] = z;
   }
+  
+  // BGO
+  static G4Material* BGO;
 
   // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
@@ -913,7 +916,6 @@ private:
   G4bool fix_nModules;
   G4double mPMT_pmt_openingAngle;
   G4String mPMT_material_pmtAssembly;
-  G4String BGO;
 
   //Filling mPMT
   std::vector<G4int>		vNiC;	        // Nb of Chambers in each circle

@@ -468,16 +468,6 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     }
   }
 
-  if( command == BGOEvent)
-  {
-    if (newValue == "true") {
-      myAction->SetBGOEvent(true);
-    }
-    else {
-      myAction->SetBGOEvent(false);
-    }
-  }
-
   if( command == fileNameCmd)
   {
     if(genSet){

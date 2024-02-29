@@ -76,9 +76,9 @@ std::unordered_map<std::string, int, std::hash<std::string> >
 WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
 						     WCSimTuningParameters* WCSimTuningPars):
   WCSimTuningParams(WCSimTuningPars),
+  placeBGOGeometry(false),
   totalNum_mPMTs(0),
-  totalNum_mPMTs2(0),
-  placeBGOGeometry(false)
+  totalNum_mPMTs2(0)
 {
 	
   // Decide if (only for the case of !1kT detector) should be upright or horizontal
@@ -363,40 +363,17 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   //   logicWCBox->SetVisAttributes(G4VisAttributes::Invisible);
   logicExpHall->SetVisAttributes(G4VisAttributes::Invisible);
 
-  //-----------------------------------------------------
-  //Create BGO Material----------------------------------
-  auto nistManager = G4NistManager::Instance();
-  G4Material* BGO = nistManager->FindOrBuildMaterial("G4_BGO");
-
-  G4MaterialPropertiesTable *BGO_mpt = new G4MaterialPropertiesTable();
-  G4double BGO_energy[3] = {1.9*eV, 2.6*eV, 3.3*eV};
-  G4double BGO_SCINT[3] = {0.1, 1., 0.1};
-  G4double BGO_RINDEX[3] = {2.15, 2.15, 2.15};
-  G4double BGO_ABSL[3] = {1.118*cm, 1.118*cm, 1.118*cm};
-
-  BGO_mpt->AddProperty("FASTCOMPONENT", BGO_energy, BGO_SCINT, 3);
-  BGO_mpt->AddProperty("SLOWCOMPONENT", BGO_energy, BGO_SCINT, 3);
-  BGO_mpt->AddProperty("RINDEX", BGO_energy, BGO_RINDEX, 3);
-  BGO_mpt->AddProperty("ABSLENGTH", BGO_energy, BGO_ABSL, 3);
-
-  BGO_mpt->AddConstProperty("SCINTILLATIONYIELD", 8000./MeV);
-  BGO_mpt->AddConstProperty("RESOLUTIONSCALE", 1.0);
-  BGO_mpt->AddConstProperty("FASTTIMECONSTANT", 300.*ns);
-  BGO_mpt->AddConstProperty("SLOWTIMECONSTANT", 300.*ns);
-  BGO_mpt->AddConstProperty("YIELDRATIO", 1.0);
-
-  BGO->SetMaterialPropertiesTable(BGO_mpt);
-  
-  G4cout << "placeBGOGeometry: " << placeBGOGeometry << G4endl;
+  //----------------------------------------------------------
+  //BGO Calling and Placement - Diego Costas 29/02/2024
+  G4Material* materialBGO = WCSimDetectorConstruction::BGO;
 
   // BGO Placement Functions
   placeBGOGeometry = IsBGOGeometrySet();
 
-  G4cout << "After setting, placeBGOGeometry: " << placeBGOGeometry << G4endl;
-
+  // Place BGO only if command is set to true
   if (placeBGOGeometry) {
       G4Tubs* solidBGO = new G4Tubs("solidBGO", 0., 2.5*cm, 2.5*cm, 0., 360.*deg);
-      G4LogicalVolume* logicBGO = new G4LogicalVolume(solidBGO, BGO, "logicBGO");
+      G4LogicalVolume* logicBGO = new G4LogicalVolume(solidBGO, materialBGO, "logicBGO");
       new G4PVPlacement(0, G4ThreeVector(), logicBGO, "BGO", logicWCBox, false, 0, false); 
   }
   

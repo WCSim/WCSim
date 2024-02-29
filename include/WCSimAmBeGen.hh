@@ -25,21 +25,20 @@ class WCSimAmBeGen
     //void ReadFromFile();
     
     // Set Particle Gun Properties of the neutron and gamma
-    G4double NeutronEnergy(G4double gEnergy);
+    G4double NeutronEnergy(G4double gamEnergy);
     G4double GammaEnergy();
     void GenerateNG(G4Event* anEvent);
 
   private:
     G4ParticleGun*        myAmBeGun;
     G4SPSRandomGenerator* rGen;
-    G4SPSEneDistribution* nEnergyDistGS;  // For ground state spectrum
-    G4SPSEneDistribution* nEnergyDistFE;  // For first excited state spectrum
-    G4SPSEneDistribution* nEnergyDistSE;  // For second excited state spectrum
+    G4SPSEneDistribution* nEnergyDist;
     
     // Variables for the initialisation of AmBe generator parameters
     G4double nEnergy;
     G4double gEnergy;
     G4ThreeVector vtx;
+    static G4int nGammaOutcomes;
     static G4double gammaProbabilities[3];
     static G4double gammaEnergies[3];
     static G4int pdgids[2];

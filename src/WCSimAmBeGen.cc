@@ -16,18 +16,20 @@
 
 using namespace std;
 
+G4int    WCSimAmBeGen::nGammaOutcomes = 3;
 G4double WCSimAmBeGen::gammaProbabilities[3] = {0.26, 0.65, 0.08};
 G4double WCSimAmBeGen::gammaEnergies[3] = {0.0, 4.4, 7.7};
 G4int    WCSimAmBeGen::pdgids[2] = {2112, 22};
 
 WCSimAmBeGen::WCSimAmBeGen(){
   // Initialise
-  this->Initialise();
-  wcsimdir = string(getenv("WCSIMDIR"))+"/data/";
+  wcsimdir = string(getenv("WCSIMDIR"))+"data/";
 
   gs_path = wcsimdir + "ground_state_spectrum.txt";
   fe_path = wcsimdir + "first_excited_spectrum.txt";
   se_path = wcsimdir + "second_excited_spectrum.txt";
+
+  this->Initialise();
 }
 
 WCSimAmBeGen::~WCSimAmBeGen(){
@@ -35,31 +37,11 @@ WCSimAmBeGen::~WCSimAmBeGen(){
   // This needed to be deleted
   delete myAmBeGun;
   delete rGen;
-  delete nEnergyDistGS;
-  delete nEnergyDistFE;
-  delete nEnergyDistSE;
+  delete nEnergyDist;
 }
 
 void WCSimAmBeGen::Initialise(){
-    nEnergyDistGS = new G4SPSEneDistribution();
-    nEnergyDistFE = new G4SPSEneDistribution();
-    nEnergyDistSE = new G4SPSEneDistribution();
-
-    // Configure the energy distributions for each state
-    nEnergyDistGS->SetEnergyDisType("Arb");
-    nEnergyDistGS->ArbEnergyHistoFile(gs_path);
-    nEnergyDistGS->SetBiasRndm(rGen);
-    nEnergyDistGS->ArbInterpolate("Lin");
-
-    nEnergyDistFE->SetEnergyDisType("Arb");
-    nEnergyDistFE->ArbEnergyHistoFile(fe_path);
-    nEnergyDistFE->SetBiasRndm(rGen);
-    nEnergyDistFE->ArbInterpolate("Lin");
-
-    nEnergyDistSE->SetEnergyDisType("Arb");
-    nEnergyDistSE->ArbEnergyHistoFile(se_path);
-    nEnergyDistSE->SetBiasRndm(rGen);
-    nEnergyDistSE->ArbInterpolate("Lin"); 
+    nEnergyDist = new G4SPSEneDistribution();
 
     vtx = G4ThreeVector(0., 0., 0.);
     time = 0.;
@@ -78,7 +60,7 @@ G4double WCSimAmBeGen::GammaEnergy(){
     G4double cumulative_probability = 0.0;
     G4int selected_energy_index = -1;
 
-    for (G4int j = 0; j < sizeof(gammaProbabilities) / sizeof(gammaProbabilities[0]); ++j) {
+    for (G4int j = 0; j < nGammaOutcomes; ++j) {
         cumulative_probability += gammaProbabilities[j];
         if (random_number <= cumulative_probability) {
             selected_energy_index = j;
@@ -91,17 +73,27 @@ G4double WCSimAmBeGen::GammaEnergy(){
     return gEnergy; 
 }
 
-G4double WCSimAmBeGen::NeutronEnergy(G4double gEnergy){
-    
+G4double WCSimAmBeGen::NeutronEnergy(G4double gamEnergy){
+    nEnergyDist->SetEnergyDisType("Arb"); 
+ 
     // Depending on the gEnergy, we load the correspondent neutron energy spectrum 
     if (std::abs(gEnergy - 0.0) < epsilon) { 
-      nEnergy = nEnergyDistGS->GenerateOne(G4Neutron::Definition());
+      nEnergyDist->ArbEnergyHistoFile(gs_path);
+      nEnergyDist->SetBiasRndm(rGen);
+      nEnergyDist->ArbInterpolate("Lin");
+      nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
     }
     else if (std::abs(gEnergy - 4.4) < epsilon) {
-      nEnergy = nEnergyDistFE->GenerateOne(G4Neutron::Definition());
+      nEnergyDist->ArbEnergyHistoFile(fe_path);
+      nEnergyDist->SetBiasRndm(rGen);
+      nEnergyDist->ArbInterpolate("Lin");
+      nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
     }
     else {
-      nEnergy = nEnergyDistSE->GenerateOne(G4Neutron::Definition());
+      nEnergyDist->ArbEnergyHistoFile(se_path);
+      nEnergyDist->SetBiasRndm(rGen);
+      nEnergyDist->ArbInterpolate("Lin");
+      nEnergy = nEnergyDist->GenerateOne(G4Neutron::Definition());
     }
 
     return nEnergy;

@@ -1,6 +1,8 @@
 #ifndef WCSimWCHit_h
 #define WCSimWCHit_h 1
 
+#include "WCSimEnumerations.hh"
+
 #include "G4VHit.hh"
 #include "G4THitsCollection.hh"
 #include "G4Allocator.hh"
@@ -160,7 +162,7 @@ class WCSimWCHit : public G4VHit
   std::vector<G4ThreeVector> photonEndPos;
   std::vector<G4ThreeVector> photonStartDir;
   std::vector<G4ThreeVector> photonEndDir;
-  std::vector<std::string>   photonCreatorProcess;
+  std::vector<ProcessType_t>   photonCreatorProcess;
   G4int                 totalPeInGate;
 };
 

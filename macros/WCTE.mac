@@ -159,11 +159,6 @@
 # Neutron Enegy is taken from a simulated realistic AmBe Spectrum depending on the Gamma Energy.
 #/mygen/generator ambeevt
 
-# If you want to use the AmBe generator with the BGO placed in the geometry, you need to activate
-# the BGOEvent option (i.e. set it to true).
-# Please note that you cannot have BGOEvent set to true and no BGO Placed, this will raise an error.
-#/mygen/BGOEvent true
-
 ##################
 # TRACKING
 ##################

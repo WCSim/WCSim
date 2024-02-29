@@ -46,12 +46,13 @@ typedef enum EReflectionSurface {
 } ReflectionSurface_t;
 
 typedef enum EProcessType { // Diego Costas 27/02/2024
-  kHadElastic=0,
+  kUnknownProcess=0,
+  kHadElastic,
   kNCapture,
   kCompt,
   kPhot,
-  kCerenkov,
-  kScintillation,
+  kCCerenkov,
+  kSScintillation,
   kEBrem,
   kAnnihil,
   kConv,
