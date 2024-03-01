@@ -367,8 +367,7 @@
 # This launches two primary partircles: one neutron and one gamma.
 # Neutrons can be up to 10 MeV and gammas can have discrete energies of 4.4 MeV, 7.7 MeV, or no
 # gamma being produced depending on the energy of the neutron.
-/mygen/generator ambeevt
-/mygen/ambeseed 12345
+#/mygen/generator ambeevt
 
 # Or inject photon from mPMT LED
 # (Note that these are LEDs positioned in the standard mPMT modules.

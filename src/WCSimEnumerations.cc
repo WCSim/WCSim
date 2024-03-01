@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include "G4ios.hh"
 
 #include "WCSimEnumerations.hh"
 

@@ -32,7 +32,9 @@ class WCSimAmBeGen
   private:
     G4ParticleGun*        myAmBeGun;
     G4SPSRandomGenerator* rGen;
-    G4SPSEneDistribution* nEnergyDist;
+    G4SPSEneDistribution* nEnergyDistGS;
+    G4SPSEneDistribution* nEnergyDistFE;
+    G4SPSEneDistribution* nEnergyDistSE;
     
     // Variables for the initialisation of AmBe generator parameters
     G4double nEnergy;

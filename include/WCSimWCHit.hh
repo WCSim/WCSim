@@ -45,7 +45,7 @@ class WCSimWCHit : public G4VHit
   void AddPhotonEndPos  (const G4ThreeVector &photEndPos) { photonEndPos.push_back(photEndPos); }
   void AddPhotonStartDir  (const G4ThreeVector &photStartDir) { photonStartDir.push_back(photStartDir); }
   void AddPhotonEndDir  (const G4ThreeVector &photEndDir) { photonEndDir.push_back(photEndDir); }
-  void AddPhotonCreatorProcess (const ProcessType_t &creatorProcess) { ProcessType_t convertedProcess = ProcessType_t(creatorProcess); 
+  void AddPhotonCreatorProcess (const G4String &creatorProcess) { ProcessType_t convertedProcess = WCSimEnumerations::ProcessTypeStringToEnum(creatorProcess); 
                                                                   photonCreatorProcess.push_back(convertedProcess);  }
   void SetTubeType     (G4String tube_type)          { tubeType = tube_type; }; //Added by B.Quilain to transmit on which PMT type the hit happened. For detectors with several PMT types in ID.
 

@@ -99,9 +99,7 @@ public:
   void SetIWCD_WithOD_Geometry(); // Same as above with OD
   void SetPlaceBGOGeometry(G4bool placeBGO) { placeBGOGeometry=placeBGO; } // Diego Costas, 26/02/2024
   G4bool IsBGOGeometrySet() const { return placeBGOGeometry; } // Diego Costas, 26/02/2024
-  //void SetPlaceBGOGeometry(G4bool placeBGO); // Diego Costas, 26/02/2024
-  //G4bool IsBGOGeometrySet() const; // Diego Costas, 26/02/2024
-
+  
   /**
      Dump the values of many variables used to define geometries including
      - radii, heights, name, etc. of the detector

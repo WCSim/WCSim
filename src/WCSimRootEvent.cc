@@ -13,7 +13,6 @@
 #include <TStopwatch.h>
 #include "WCSimRootEvent.hh"
 #include "WCSimRootTools.hh"
-#include "G4VProcess.hh"
 
 using std::cout;
 using std::cerr;
@@ -430,6 +429,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
   // the standard but not well know C++ operator "new with placement"
   // is called. If tracks[i] is 0, a new Track object will be created
   // otherwise the previous Track[i] will be overwritten.
+  cout << "Adding track with creator process " << creatorProcess << endl;
 
   TClonesArray &tracks = *fTracks;
   WCSimRootTrack *track = 

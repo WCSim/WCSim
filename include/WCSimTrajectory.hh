@@ -155,7 +155,7 @@ public: // with description
   // M Fechner : new saving mechanism
   G4bool SaveIt;
   G4bool producesHit;
-  ProcessType_t creatorProcess;
+  G4String creatorProcess;
   G4double                  globalTime;
   G4bool savePhotonTrack;
 

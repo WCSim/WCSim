@@ -72,7 +72,7 @@ private:
   std::map<int, G4ThreeVector>     photonEndPos;         ///< End point of the photon of the Hit (do not use for Digits)
   std::map<int, G4ThreeVector>     photonStartDir;       ///< Start dir of the photon of the Hit (do not use for Digits)
   std::map<int, G4ThreeVector>     photonEndDir;         ///< End dir of the photon of the Hit (do not use for Digits)
-  std::map<int, std::string>       photonCreatorProcess; ///< Process which created the photon of the Hit (Diego Costas)
+  std::map<int, ProcessType_t>     photonCreatorProcess; ///< Process which created the photon of the Hit (Diego Costas)
 
   //integrated hit/digit parameters
   G4int                 totalPe;
@@ -192,7 +192,7 @@ public:
     G4ThreeVector index_photonendpos;
     G4ThreeVector index_photonstartdir;
     G4ThreeVector index_photonenddir;
-    G4String      index_photoncreatorprocess;
+    ProcessType_t      index_photoncreatorprocess;
     bool sort_digi_compositions = (fDigiComp.size()==time.size());
     // SortDigiMapsByHitTime is called by WCSimWCDigitizerSKI::DigitizeHits to sort the WCRawPMTSignalCollection.
     // Each entry in WCRawPMTSignalCollection represents the set of photon hits on a PMT.
@@ -204,8 +204,7 @@ public:
         index_time         = time.at(i);
         index_timepresmear = time_presmear.at(i);
         index_pe           = pe.at(i);
-        if(sort_digi_compositions) 
-        index_digicomp             = fDigiComp.at(i);
+        if(sort_digi_compositions) index_digicomp = fDigiComp.at(i);
         index_trackID              = trackID.at(i);
         index_parentSavedTrackID   = parentSavedTrackID.at(i);
         index_photonstarttime      = photonStartTime[i];

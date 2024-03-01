@@ -373,7 +373,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       for (int pe = 0; pe < nPoisson; pe++) {
 	G4float time = G4RandGauss::shoot(0.0,10.);
 	G4ThreeVector dir(0, 0, 0);
-  ProcessType_t photcreatorproc = WCSimEnumerations::ProcessTypeStringToEnum("dummy");
+  ProcessType_t photcreatorproc = kUnknownProcess;
 	(*WCHC)[hitIndex]->AddPe(time);
   (*WCHC)[hitIndex]->AddTrackID(0);
 	(*WCHC)[hitIndex]->AddParentID(0); // Make parent a geantino (whatever that is)
@@ -1295,6 +1295,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
       G4int parentType;
       ProcessType_t creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(trj->GetCreatorProcessName());
+      G4cout << "Got creator process " << creatorProcess << " for string " << trj->GetCreatorProcessName() << G4endl;
 
       // Right now only secondaries whose parents are pi0's are stored
       // This may change later
@@ -1837,6 +1838,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 
       G4int parentType;
       ProcessType_t creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(trj->GetCreatorProcessName());
+      G4cout << "Got creator process " << creatorProcess << " for string " << trj->GetCreatorProcessName() << G4endl;
 
 
       // Right now only secondaries whose parents are pi0's are stored
