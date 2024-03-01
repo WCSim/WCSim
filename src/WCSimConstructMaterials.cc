@@ -1384,7 +1384,10 @@ void WCSimDetectorConstruction::ConstructMaterials()
    AcrPropTable->AddProperty("ABSLENGTH", ENERGY_skAcrylic, ABSORPTION_skAcrylic, 306);
    Acrylic->SetMaterialPropertiesTable(AcrPropTable);
 
-  //Aluminum
+   //Aluminum
+   //The ABSLENGTH property is added because there are rare occasions that photon is generated inside Al (reflector) material
+   //Using the RINDEX_Al defined above would cause high energy photon to move faster than c and abort the event
+   //This is a horrible hack to use the ABSLENGTH to kill the photons inside Al, and it should be fixed by adding a realistic refractive index
    G4MaterialPropertiesTable *AlPropTable1 = new G4MaterialPropertiesTable();
    AlPropTable1->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
    Aluminum->SetMaterialPropertiesTable(AlPropTable1);
