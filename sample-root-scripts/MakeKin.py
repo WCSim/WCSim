@@ -20,7 +20,7 @@ detectors = {"SuperK":[3368.15/2., 3620.],
              "Cylinder_60x74_20inchBandL_14perCent":[7400./2., 6000.],
              "Cylinder_60x74_20inchBandL_40perCent":[7400./2., 6000.],
              "HyperKOld":[7080./2., 5480.],
-             "HyperKRealistic":[3242.96 - 2, 6701.41 - 4], #number taken from geofile_HyperK_HybridmPMT_WithOD_Realistic.txt & subtracting 2m FV
+             "HyperKRealistic":[3242.96 - 200, 6701.41 - 400], #number taken from geofile_HyperK_HybridmPMT_WithOD_Realistic.txt & subtracting 2m FV
              }
 
 for pname, no in list(pid.items()):
