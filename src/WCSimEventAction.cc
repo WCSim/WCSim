@@ -1295,8 +1295,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
       G4int parentType;
       ProcessType_t creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(trj->GetCreatorProcessName());
-      G4cout << "Got creator process " << creatorProcess << " for string " << trj->GetCreatorProcessName() << G4endl;
-
+      
       // Right now only secondaries whose parents are pi0's are stored
       // This may change later
       // M Fechner : dec 16, 2004 --> added decay e- from muons
@@ -1489,7 +1488,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[0],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[1],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[2]);
-  hit_photon_creatorprocess = WCSimEnumerations::ProcessTypeStringToEnum((*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id));
+  hit_photon_creatorprocess = (*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id);
+
 	truetime.push_back(hit_time_true);
 	parentSavedTrackID.push_back(hit_parentid);
 	photonStartTime.push_back(hit_photon_starttime);
@@ -1838,8 +1838,6 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 
       G4int parentType;
       ProcessType_t creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(trj->GetCreatorProcessName());
-      G4cout << "Got creator process " << creatorProcess << " for string " << trj->GetCreatorProcessName() << G4endl;
-
 
       // Right now only secondaries whose parents are pi0's are stored
       // This may change later
@@ -2016,7 +2014,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
-  hit_photon_creatorprocess = WCSimEnumerations::ProcessTypeStringToEnum((*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id));
+  hit_photon_creatorprocess = (*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id);
 	hit_photon_startpos = TVector3(
 	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[0],
 	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[1],

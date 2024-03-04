@@ -23,7 +23,7 @@ WCSimTrajectory::WCSimTrajectory()
   :  positionRecord(0), fTrackID(0), fParentID(0),
      PDGEncoding( 0 ), PDGCharge(0.0), ParticleName(""),
      initialMomentum( G4ThreeVector() ),SaveIt(false), producesHit(false),
-     creatorProcess(kUnknownProcess), globalTime(0.0), savePhotonTrack(false), parentTrajectory(0)
+     creatorProcess(""), globalTime(0.0), savePhotonTrack(false), parentTrajectory(0)
 {
   boundaryPoints.clear();
   boundaryKEs.clear();
@@ -65,10 +65,10 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
   if (aTrack->GetCreatorProcess() != 0 )
     {
       const G4VProcess* tempproc = aTrack->GetCreatorProcess();
-      creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(tempproc->GetProcessName());
+      creatorProcess = tempproc->GetProcessName();
     }
   else 
-    creatorProcess = kUnknownProcess;
+    creatorProcess = "NONE";
   savePhotonTrack = false;
 
   boundaryPoints.clear();

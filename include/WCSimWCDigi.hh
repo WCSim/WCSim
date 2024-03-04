@@ -99,7 +99,7 @@ public:
   inline void SetPhotonEndPos(G4int gate, const G4ThreeVector &position) { photonEndPos[gate] = position; };
   inline void SetPhotonStartDir(G4int gate, const G4ThreeVector &direction) { photonStartDir[gate] = direction; };
   inline void SetPhotonEndDir(G4int gate, const G4ThreeVector &direction) { photonEndDir[gate] = direction; };
-  inline void SetPhotonCreatorProcess(G4int gate, G4String creatorProcess) { photonCreatorProcess[gate] = WCSimEnumerations::ProcessTypeStringToEnum(creatorProcess); };
+  inline void SetPhotonCreatorProcess(G4int gate, ProcessType_t creatorProcess) { photonCreatorProcess[gate] = creatorProcess; };
 
   // Add a digit number and unique photon number to fDigiComp
   inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
@@ -119,7 +119,7 @@ public:
   inline G4ThreeVector  GetPhotonEndPos(int gate)    { return photonEndPos[gate];};
   inline G4ThreeVector  GetPhotonStartDir(int gate)    { return photonStartDir[gate];};
   inline G4ThreeVector  GetPhotonEndDir(int gate)    { return photonEndDir[gate];};
-  inline G4String       GetPhotonCreatorProcess(int gate) { return photonCreatorProcess[gate];};
+  inline ProcessType_t  GetPhotonCreatorProcess(int gate) { return photonCreatorProcess[gate];};
   inline G4double GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
   inline G4String   GetTubeType() {return tubeType;};

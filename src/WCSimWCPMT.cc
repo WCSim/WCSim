@@ -238,7 +238,7 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    G4ThreeVector photon_endpos = (*WCHC)[i]->GetPhotonEndPos(ip);
 	    G4ThreeVector photon_startdir = (*WCHC)[i]->GetPhotonStartDir(ip);
 	    G4ThreeVector photon_enddir = (*WCHC)[i]->GetPhotonEndDir(ip);
-      G4String      photon_creatorprocess = (*WCHC)[i]->GetPhotonCreatorProcess(ip);
+      ProcessType_t      photon_creatorprocess = (*WCHC)[i]->GetPhotonCreatorProcess(ip);
 	    
 	    if ( DigiHitMapPMT[tube] == 0) {
 	      WCSimWCDigi* Digi = new WCSimWCDigi();

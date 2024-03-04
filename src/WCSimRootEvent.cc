@@ -429,7 +429,6 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
   // the standard but not well know C++ operator "new with placement"
   // is called. If tracks[i] is 0, a new Track object will be created
   // otherwise the previous Track[i] will be overwritten.
-  cout << "Adding track with creator process " << creatorProcess << endl;
 
   TClonesArray &tracks = *fTracks;
   WCSimRootTrack *track = 
@@ -593,7 +592,7 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
       endDir[j] = photonEndDir[i][j];
     }
     
-    ProcessType_t creatorProcess = photonCreatorProcess[i]; // Get the creator process for this p.e.
+    ProcessType_t creatorProcess = photonCreatorProcess[i]; // Get the creator process for this p.e. 
 
     //WCSimRootCherenkovHitTime *cherenkovhittime =
     new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],parentSavedTrackID[i],
@@ -897,7 +896,7 @@ bool WCSimRootCherenkovHitTime::CompareAllVariables(const WCSimRootCherenkovHitT
   failed = (!ComparisonPassed(fTruetime, c->GetTruetime(), typeid(*this).name(), __func__, "Truetime")) || failed;
   failed = (!ComparisonPassed(fParentSavedTrackID, c->GetParentID(), typeid(*this).name(), __func__, "ParentSavedTrackID")) || failed;
   failed = (!ComparisonPassed(fPhotonStartTime, c->GetPhotonStartTime(), typeid(*this).name(), __func__, "PhotonStartTime")) || failed;
-  //failed = (!ComparisonPassed(fPhotonCreatorProcess, c->GetPhotonCreatorProcess(), typeid(*this).name(), __func__, "PhotonCreatorProcess")) || failed;
+  failed = (!ComparisonPassed(fPhotonCreatorProcess, c->GetPhotonCreatorProcess(), typeid(*this).name(), __func__, "PhotonCreatorProcess")) || failed;
   for(int i = 0; i < 3; i++) {
     failed = (!ComparisonPassed(fPhotonStartPos[i], c->GetPhotonStartPos(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonStartPos", i))) || failed;
     failed = (!ComparisonPassed(fPhotonEndPos[i], c->GetPhotonEndPos(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonEndPos", i))) || failed;

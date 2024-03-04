@@ -22,14 +22,14 @@ G4double WCSimAmBeGen::gammaEnergies[3] = {0.0, 4.4, 7.7};
 G4int    WCSimAmBeGen::pdgids[2] = {2112, 22};
 
 WCSimAmBeGen::WCSimAmBeGen(){
-  // Initialise
-  this->Initialise();
-
   wcsimdir = string(getenv("WCSIMDIR"))+"data/";
 
   gs_path = wcsimdir + "ground_state_spectrum.txt";
   fe_path = wcsimdir + "first_excited_spectrum.txt";
   se_path = wcsimdir + "second_excited_spectrum.txt";
+
+  // Initialise
+  this->Initialise();
 }
 
 WCSimAmBeGen::~WCSimAmBeGen(){
@@ -43,6 +43,9 @@ WCSimAmBeGen::~WCSimAmBeGen(){
 }
 
 void WCSimAmBeGen::Initialise(){
+    rGen          = new G4SPSRandomGenerator();
+    myAmBeGun     = new G4ParticleGun();
+
     nEnergyDistGS = new G4SPSEneDistribution();
     nEnergyDistGS->SetEnergyDisType("Arb");
     nEnergyDistGS->ArbEnergyHistoFile(gs_path);
@@ -60,20 +63,13 @@ void WCSimAmBeGen::Initialise(){
     nEnergyDistSE->ArbEnergyHistoFile(se_path);
     nEnergyDistSE->ArbInterpolate("Lin");
     nEnergyDistSE->SetBiasRndm(rGen);
-
-    rGen          = new G4SPSRandomGenerator();
-    myAmBeGun     = new G4ParticleGun();
-    
+   
     vtx = G4ThreeVector(0., 0., 0.);
     time = 0.;
     epsilon = 1e-6;
 }
 
 G4double WCSimAmBeGen::GammaEnergy(){
-    
-    // Initialise Geant4 random number generator
-    G4Random::setTheEngine(new CLHEP::RanecuEngine);
-
     // Generation of the random number
     G4double random_number = G4UniformRand();
 
@@ -99,22 +95,13 @@ G4double WCSimAmBeGen::NeutronEnergy(){
     //nEnergyDist->SetEnergyDisType("Arb");
 
     // Depending on the gEnergy, we load the correspondent neutron energy spectrum 
-    if (std::abs(gEnergy - 0.0) < epsilon) { 
-      //nEnergyDist->ArbEnergyHistoFile(gs_path);
-      //nEnergyDist->SetBiasRndm(rGen);
-      //nEnergyDist->ArbInterpolate("Lin");
+    if (std::abs(gEnergy - 0.0) < epsilon) {
       nEnergy = nEnergyDistGS->GenerateOne(G4Neutron::Definition());
     }
     else if (std::abs(gEnergy - 4.4) < epsilon) {
-      //nEnergyDist->ArbEnergyHistoFile(gs_path);
-      //nEnergyDist->SetBiasRndm(rGen);
-      //nEnergyDist->ArbInterpolate("Lin");
       nEnergy = nEnergyDistFE->GenerateOne(G4Neutron::Definition());
     }
     else {
-      //nEnergyDist->ArbEnergyHistoFile(gs_path);
-      //nEnergyDist->SetBiasRndm(rGen);
-      //nEnergyDist->ArbInterpolate("Lin");
       nEnergy = nEnergyDistSE->GenerateOne(G4Neutron::Definition());
 
     }
