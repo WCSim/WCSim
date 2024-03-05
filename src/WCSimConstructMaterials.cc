@@ -16,7 +16,6 @@
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
-G4Material* WCSimDetectorConstruction::BGO = nullptr;
 
 void WCSimDetectorConstruction::ConstructMaterials()
 {
