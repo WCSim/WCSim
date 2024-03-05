@@ -812,7 +812,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	}
   
   if(command == BGOPlacement) {
-    if (BGOPlacement->GetNewBoolValue(newValue)) {
+    if (BGOPlacement->GetNewBoolValue(newValue) {
       G4cout << "Placing BGO Scintillation Crystal" << G4endl;
       WCSimDetector->SetPlaceBGOGeometry(true);
     }

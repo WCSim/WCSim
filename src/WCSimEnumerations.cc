@@ -150,9 +150,9 @@ ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str)
     return kHadElastic;
   } else if (str == "neutronCapture") {
     return kNCapture;
-  } else if (str == "compton") {
+  } else if (str == "Compton") {
     return kCompt;
-  } else if (str == "phot") {
+  } else if (str == "Photoelectric") {
     return kPhot;
   } else if (str == "Cherenkov") {
     return kCCerenkov;
@@ -160,9 +160,9 @@ ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str)
     return kSScintillation;
   } else if (str == "eBremsstrahlung") {
     return kEBrem;
-  } else if (str == "annihilation") {
+  } else if (str == "Annihilation") {
     return kAnnihil;
-  } else if (str == "conversion") {
+  } else if (str == "Conversion") {
     return kConv;
   } else if (str == "eIonisation") {
     return kEIoni;

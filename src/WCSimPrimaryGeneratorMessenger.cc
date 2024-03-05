@@ -56,11 +56,6 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   radioactive_time_window_Cmd->SetParameterName("radioactive_time_window",true);
   radioactive_time_window_Cmd->SetDefaultValue(0.);
 
-  // Diego Costas: options for AmBe generator 
-  BGOEvent = new G4UIcmdWithABool("/mygen/BGOEvent",this);
-  BGOEvent->SetGuidance("Select whether the event is a BGO event or not");
-  BGOEvent->SetParameterName("BGOEvent", false);
-
   // K.M.Tsui: options for injector events
   nPhotonsCmd = new G4UIcmdWithAnInteger("/mygen/injector_nPhotons",this);
   nPhotonsCmd->SetGuidance("Number of photons emitted for each injector event");

@@ -16,7 +16,6 @@
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
-
 void WCSimDetectorConstruction::ConstructMaterials()
 {
   //****Materials Definitions****
