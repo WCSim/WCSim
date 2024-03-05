@@ -162,7 +162,7 @@ ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str)
     return kEBrem;
   } else if (str == "annihilation") {
     return kAnnihil;
-  } else if (str == "conv") {
+  } else if (str == "conversion") {
     return kConv;
   } else if (str == "eIoni") {
     return kEIoni;
