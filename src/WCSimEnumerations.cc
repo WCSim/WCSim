@@ -154,7 +154,7 @@ ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str)
     return kCompt;
   } else if (str == "phot") {
     return kPhot;
-  } else if (str == "Cerenkov") {
+  } else if (str == "Cherenkov") {
     return kCCerenkov;
   } else if (str == "Scintillation") {
     return kSScintillation;
