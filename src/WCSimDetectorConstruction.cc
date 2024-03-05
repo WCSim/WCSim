@@ -366,8 +366,6 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 
   //----------------------------------------------------------
   //BGO Calling and Placement - Diego Costas 29/02/2024 
-  BGO = WCSimDetectorConstruction::BGO;
-
   // BGO Placement Functions
   placeBGOGeometry = IsBGOGeometrySet();
 
