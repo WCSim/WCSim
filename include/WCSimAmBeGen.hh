@@ -37,7 +37,6 @@ class WCSimAmBeGen
     G4SPSEneDistribution* nEnergyDistSE;
     
     // Variables for the initialisation of AmBe generator parameters
-    G4double nEnergy;
     G4double gEnergy;
     G4ThreeVector vtx;
     static G4int nGammaOutcomes;

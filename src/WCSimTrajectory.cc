@@ -68,7 +68,7 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
       creatorProcess = tempproc->GetProcessName();
     }
   else 
-    creatorProcess = "NONE";
+    creatorProcess = "";
   savePhotonTrack = false;
 
   boundaryPoints.clear();
