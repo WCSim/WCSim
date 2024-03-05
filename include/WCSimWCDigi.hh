@@ -219,7 +219,7 @@ public:
           pe.at(j) = pe.at(j-1);
           if(sort_digi_compositions) fDigiComp.at(j) = fDigiComp.at(j-1);
           trackID.at(j) = trackID.at(j-1);
-          parentSavedTrackID.at(j) = parentSavedTrackID.at(j);
+          parentSavedTrackID.at(j) = parentSavedTrackID.at(j-1);
           photonStartTime.at(j) = photonStartTime.at(j-1);
           photonStartPos.at(j) = photonStartPos.at(j-1);
           photonEndPos.at(j) = photonEndPos.at(j-1);
