@@ -148,7 +148,7 @@ std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
 ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str) {
   if (str == "hadElastic") {
     return kHadElastic;
-  } else if (str == "nCapture") {
+  } else if (str == "neutronCapture") {
     return kNCapture;
   } else if (str == "compton") {
     return kCompt;
