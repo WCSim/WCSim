@@ -181,7 +181,7 @@ public:
   }
   
   // BGO
-  static G4Material* BGO;
+  G4Material* BGO;
 
   // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
