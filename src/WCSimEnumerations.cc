@@ -164,7 +164,7 @@ ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str)
     return kAnnihil;
   } else if (str == "conversion") {
     return kConv;
-  } else if (str == "eIoni") {
+  } else if (str == "eIonisation") {
     return kEIoni;
   } else if (str == "neutronInelastic") {
     return kNeutronInelastic;
