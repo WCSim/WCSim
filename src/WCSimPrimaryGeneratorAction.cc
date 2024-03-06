@@ -1511,16 +1511,28 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamPDG(pdg);
 
     } else if (useHepMC3Evt) {
+
+        G4cout << "Using HepMC3 event" << G4endl;
         // Check if the WCSimNuHepMC3Reader object has been initiaited yet
         if (!hepmc3_reader){
-            hepmc3_reader = new WCSimNuHepMC3Reader(hepmc3_filename);
+            // hepmc3_reader = new WCSimNuHepMC3Reader(hepmc3_filename);
+            hepmc3_reader = new WCSimNuHepMC3Reader("/Users/jack/Software/WCSim/testfile.hepmc");
         }
 
         // Get the next event from the reader
-        // hepmc3_reader->ReadEvent();
+        hepmc3_reader->ReadEvent();
 
         // Get the vector of particle momenta and PDGs
-        // std::vector<std::pair<G4LorentzVector, int>> hepmc_particles = hepmc3_reader->GetMomentaAndPDGs();
+        std::vector<std::pair<G4LorentzVector, int>> hepmc_particles = hepmc3_reader->GetMomentaAndPDGs();
+
+        // Print the size of the vector
+        G4cout << "Number of particles in the event: " << hepmc_particles.size() << G4endl;
+
+        // Print the momenta and pdgs
+        for (auto particle : hepmc_particles){
+            G4cout << "Particle PDG: " << particle.second << " Momentum: " << particle.first << G4endl;
+        }
+
     }
 }
 
