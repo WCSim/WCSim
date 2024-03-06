@@ -123,7 +123,6 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/ground_state_spectrum.txt
         ${PROJECT_SOURCE_DIR}/data/first_excited_spectrum.txt
         ${PROJECT_SOURCE_DIR}/data/second_excited_spectrum.txt
-        ${PROJECT_SOURCE_DIR}/data/resampled_nSpectrum.txt
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
