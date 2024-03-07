@@ -26,7 +26,7 @@
 # - BGO Placement: Default in source code is false. If set to true, you'll place the BGO inside
 # the detector geometry at (0,0,0) position. This is only supported if you use ambeevt generator
 # so you can see the tag scintillation light for the AmBe source.
-#/WCSim/BGOPlacement
+#/WCSim/BGOPlacement true
 # Note that /WCSim/BGOPlacement *must* be set before /WCSim/Construct
 
 
