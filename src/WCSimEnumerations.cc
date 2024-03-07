@@ -105,35 +105,38 @@ std::string WCSimEnumerations::EnumAsString(ReflectionSurface_t r)
 std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
 {
   switch(p) {
+  case (kDarkNoise) :
+    return "darkNoise";
+    break;
   case (kHadElastic) :
-    return "hadElastic";
+    return "hadronElastic";
     break;
   case (kNCapture) :
-    return "nCapture";
+    return "neutronCapture";
     break;
   case (kCompt) :
-    return "compt";
+    return "Compton";
     break;
   case (kPhot) :
-    return "phot";
+    return "Photoelectric";
     break;
   case (kCCerenkov) :
-    return "Cerenkov";
+    return "Cherenkov";
     break;
   case (kSScintillation) :
     return "Scintillation";
     break;
   case (kEBrem) :
-    return "eBrem";
+    return "eBremsstrahlung";
     break;
   case (kAnnihil) :
-    return "annihil";
+    return "Annihilation";
     break;
   case (kConv) :
-    return "conv";
+    return "Conversion";
     break;
   case (kEIoni) :
-    return "eIoni";
+    return "eIonisation";
     break;
   case (kNeutronInelastic) :
     return "neutronInelastic";
@@ -146,25 +149,27 @@ std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
 }
 
 ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str) {
-  if (str == "hadronElastic") {
+  if (str == "darkNoise") {
+    return kDarkNoise;
+  } else if (str == "hadElastic") {
     return kHadElastic;
-  } else if (str == "neutronCapture") {
+  } else if (str == "nCapture") {
     return kNCapture;
-  } else if (str == "Compton") {
+  } else if (str == "compt") {
     return kCompt;
-  } else if (str == "Photoelectric") {
+  } else if (str == "phot") {
     return kPhot;
-  } else if (str == "Cherenkov") {
+  } else if (str == "Cerenkov") {
     return kCCerenkov;
   } else if (str == "Scintillation") {
     return kSScintillation;
-  } else if (str == "eBremsstrahlung") {
+  } else if (str == "eBrem") {
     return kEBrem;
-  } else if (str == "Annihilation") {
+  } else if (str == "annihil") {
     return kAnnihil;
-  } else if (str == "Conversion") {
+  } else if (str == "conv") {
     return kConv;
-  } else if (str == "eIonisation") {
+  } else if (str == "eIoni") {
     return kEIoni;
   } else if (str == "neutronInelastic") {
     return kNeutronInelastic;

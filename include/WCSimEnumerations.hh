@@ -47,6 +47,7 @@ typedef enum EReflectionSurface {
 
 typedef enum EProcessType { // Diego Costas 27/02/2024
   kUnknownProcess,
+  kDarkNoise,
   kHadElastic,
   kNCapture,
   kCompt,
