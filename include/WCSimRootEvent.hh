@@ -89,7 +89,8 @@ public:
   Double_t   GetTime() const { return fTime;}
   Int_t     GetId() const {return fId;}
   Int_t     GetParentId() const {return fParentId;}
-  ProcessType_t GetCreatorProcessName() const {return fCreatorProcess;}
+  ProcessType_t GetCreatorProcess() const {return fCreatorProcess;}
+  std::string   GetCreatorProcessName() const {return WCSimEnumerations::EnumAsString(fCreatorProcess);}
   std::vector<std::vector<float>> GetBoundaryPoints() const {return boundaryPoints;}
   std::vector<float> GetBoundaryKEs() const {return boundaryKEs;}
   std::vector<double> GetBoundaryTimes() const {return boundaryTimes;}
@@ -167,6 +168,7 @@ public:
   Float_t   GetPhotonStartDir(int i) const { return (i<3) ? fPhotonStartDir[i] : 0; }
   Float_t   GetPhotonEndDir(int i) const { return (i<3) ? fPhotonEndDir[i] : 0; }
   ProcessType_t GetPhotonCreatorProcess() const {return  fPhotonCreatorProcess;}
+  std::string   GetPhotonCreatorProcessName() const {return  WCSimEnumerations::EnumAsString(fPhotonCreatorProcess);}
 
   ClassDef(WCSimRootCherenkovHitTime,2)
 };
