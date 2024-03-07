@@ -109,34 +109,34 @@ std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
     return "darkNoise";
     break;
   case (kHadElastic) :
-    return "hadronElastic";
+    return "hadElastic";
     break;
   case (kNCapture) :
-    return "neutronCapture";
+    return "nCapture";
     break;
   case (kCompt) :
-    return "Compton";
+    return "compt";
     break;
   case (kPhot) :
-    return "Photoelectric";
+    return "phot";
     break;
   case (kCCerenkov) :
-    return "Cherenkov";
+    return "Cerenkov";
     break;
   case (kSScintillation) :
     return "Scintillation";
     break;
   case (kEBrem) :
-    return "eBremsstrahlung";
+    return "eBrem";
     break;
   case (kAnnihil) :
-    return "Annihilation";
+    return "annihil";
     break;
   case (kConv) :
-    return "Conversion";
+    return "conv";
     break;
   case (kEIoni) :
-    return "eIonisation";
+    return "eIoni";
     break;
   case (kNeutronInelastic) :
     return "neutronInelastic";
