@@ -4461,11 +4461,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 
   G4String pmtname = "WCMultiPMT";
 
+  // unique copy number for auto placement
+  G4int copyNo = 0;
   ///////////////   Barrel PMT placement
 
   if(placeBorderPMTs){
-
-    G4int copyNo = 0;
 
     if (readFromTable)
     {
@@ -4638,7 +4638,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
                     pmtname,             // its name
                     logicCapAssembly,         // its mother volume
                     false,                     // no boolean operations
-                    i*WCPMTperCellVertical+j,
+                    copyNo++,
                     checkOverlapsPMT);
 #endif
               // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
@@ -4752,7 +4752,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
                     pmtname, // its name 
                     logicCapAssembly,         // its mother volume
                     false,                 // no boolean os
-                    icopy,               // every PMT need a unique id.
+                    copyNo++,               // every PMT need a unique id.
                     checkOverlapsPMT);
 #endif          
 

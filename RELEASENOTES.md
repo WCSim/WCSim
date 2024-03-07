@@ -7,6 +7,25 @@ Recent updates
 
 
 *************************************************************
+31/01/2024: Notes for v1.12.9
+*************************************************************
+
+Minor release after updates to mPMT aluminium photon propagation & WCTE PMT rotations
+
+Update
+* Pull request #419 #420 @tdealtry: Add new HK FD geometry size to MakeKin.py
+* Pull request #416 #418 @nickwp: Update the rotations of WCTE PMTs
+
+Bug fix
+* Pull request #413 @arturof: Fix the units of the input when using a RooTracker file
+* Pull request #417 @kmtsui: Fix PMT copy numbers being duplicated in some circumstances (using non-replic geomtries without a PMT position table)
+* Pull request #418 @kmtsui @nickwp: Set small absorption length for Cherenkov photons in aluminium, to prevent Cherenkov photons being killed due to no refractive index being defined. Not defining the refractive index, as this is complex in reality & non-trivial to implement this in Geant without photons travelling faster than `c`, causing the event to be aborted
+
+Documentation
+* Pull request #411 @tdealtry: Add extra clarification about geometry options
+* Pull request #412 @tdealtry: Fix description of how to control dark noise options for "second ID PMT type" (mPMTs in FD geometry)
+
+*************************************************************
 31/01/2024: Notes for v1.12.8
 *************************************************************
 
