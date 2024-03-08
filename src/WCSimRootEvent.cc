@@ -869,6 +869,7 @@ bool WCSimRootTrack::CompareAllVariables(const WCSimRootTrack * c) const
   failed = (!ComparisonPassedVec(boundaryKEs, c->GetBoundaryKEs(), typeid(*this).name(), __func__, "boundaryKEs")) || failed;
   failed = (!ComparisonPassedVec(boundaryTimes, c->GetBoundaryTimes(), typeid(*this).name(), __func__, "boundaryTimes")) || failed;
   failed = (!ComparisonPassedVec(boundaryTypes, c->GetBoundaryTypes(), typeid(*this).name(), __func__, "boundaryTypes")) || failed;
+  failed = (!ComparisonPassed(fCreatorProcess, c->GetCreatorProcess(), typeid(*this).name(), __func__, "CreatorProcess")) || failed;
 
   return !failed;
 }

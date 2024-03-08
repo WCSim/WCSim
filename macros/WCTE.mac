@@ -29,7 +29,6 @@
 #/WCSim/BGOPlacement true
 # Note that /WCSim/BGOPlacement *must* be set before /WCSim/Construct
 
-
 # - /WCSim/SaveCapture & /process/inactivate nKiller: Default not set.
 # Also specially needed for AmBe calibration. The first command makes sure the Capture processes
 # are being saved. The second one ensures Geant4 is not killing neutrons too early in the run,
@@ -110,10 +109,6 @@
 /DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
-
-# Neutron Capture Commands
-/WCSim/SaveCapture true
-/physics_engine/neutron/timeLimit 1000000 ns
 
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute macros/visOGLSX.mac
