@@ -33,6 +33,9 @@
 # Also specially needed for AmBe calibration. The first command makes sure the Capture processes
 # are being saved. The second one ensures Geant4 is not killing neutrons too early in the run,
 # so we can have neutronCapture at any time in the run.
+# Note that if you use an HP Physics List you'll encounter a problem with nKiller command
+# since the HP physics list does not have the neutron tracking cut. Actually, it may be better for
+# neutron simulation, but more computing resources consuming.
 #/WCSim/SaveCapture true
 #/process/inactivate nKiller
 
