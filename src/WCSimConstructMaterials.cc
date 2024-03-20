@@ -975,7 +975,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
 
   WlsPlasticMPT->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
-#if 0 // make plate non-reemitting, purely passive
+#if 1 // turn to 0 to make plate non-reemitting, purely passive
   WlsPlasticMPT->AddProperty("WLSABSLENGTH",WLSProps->GetPhotonEnergy_ABS(),WLSProps->GetAbs(),WLSProps->GetNumEntries_ABS());
   WlsPlasticMPT->AddProperty("WLSCOMPONENT",WLSProps->GetPhotonEnergy_EM(),WLSProps->GetEm(),WLSProps->GetNumEntries_EM());
 #endif
