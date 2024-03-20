@@ -1,4 +1,4 @@
-name: Build & Physics CI (old) 
+name: Build & Physics CI (old)
 
 on:
   push:
