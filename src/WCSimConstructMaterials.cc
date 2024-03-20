@@ -823,21 +823,53 @@ void WCSimDetectorConstruction::ConstructMaterials()
   // ##### TYVEK ##### //
   ///////////////////////
 
-  OpWaterTySurfaceInWall =
-      new G4OpticalSurface("WaterTyCellSurfaceInWall");
+  OpWaterTySurfaceInWallTop =
+      new G4OpticalSurface("WaterTyCellSurfaceInWallTop");
 
-  OpWaterTySurfaceInWall->SetType(dielectric_metal); // Only absorption and reflection
-  OpWaterTySurfaceInWall->SetModel(unified);
-  OpWaterTySurfaceInWall->SetFinish(ground); // ground surface with tyvek
-  OpWaterTySurfaceInWall->SetSigmaAlpha(0.2);
+  OpWaterTySurfaceInWallTop->SetType(dielectric_metal); // Only absorption and reflection
+  OpWaterTySurfaceInWallTop->SetModel(unified);
+  OpWaterTySurfaceInWallTop->SetFinish(ground); // ground surface with tyvek
+  OpWaterTySurfaceInWallTop->SetSigmaAlpha(0.2);
 
-  OpWaterTySurfaceOutWall =
-    new G4OpticalSurface("WaterTyCellSurfaceOutWall");
+  OpWaterTySurfaceInWallBarrel =
+      new G4OpticalSurface("WaterTyCellSurfaceInWallBarrel");
+
+  OpWaterTySurfaceInWallBarrel->SetType(dielectric_metal); // Only absorption and reflection
+  OpWaterTySurfaceInWallBarrel->SetModel(unified);
+  OpWaterTySurfaceInWallBarrel->SetFinish(ground); // ground surface with tyvek
+  OpWaterTySurfaceInWallBarrel->SetSigmaAlpha(0.2);
+
+  OpWaterTySurfaceInWallBottom =
+      new G4OpticalSurface("WaterTyCellSurfaceInWallBottom");
+
+  OpWaterTySurfaceInWallBottom->SetType(dielectric_metal); // Only absorption and reflection
+  OpWaterTySurfaceInWallBottom->SetModel(unified);
+  OpWaterTySurfaceInWallBottom->SetFinish(ground); // ground surface with tyvek
+  OpWaterTySurfaceInWallBottom->SetSigmaAlpha(0.2);
+
+  OpWaterTySurfaceOutWallTop =
+    new G4OpticalSurface("WaterTyCellSurfaceOutWallTop");
   
-  OpWaterTySurfaceOutWall->SetType(dielectric_metal); // Only absorption and reflection
-  OpWaterTySurfaceOutWall->SetModel(unified);
-  OpWaterTySurfaceOutWall->SetFinish(ground); // ground surface with tyvek
-  OpWaterTySurfaceOutWall->SetSigmaAlpha(0.2);
+  OpWaterTySurfaceOutWallTop->SetType(dielectric_metal); // Only absorption and reflection
+  OpWaterTySurfaceOutWallTop->SetModel(unified);
+  OpWaterTySurfaceOutWallTop->SetFinish(ground); // ground surface with tyvek
+  OpWaterTySurfaceOutWallTop->SetSigmaAlpha(0.2);
+
+  OpWaterTySurfaceOutWallBarrel =
+    new G4OpticalSurface("WaterTyCellSurfaceOutWallBarrel");
+  
+  OpWaterTySurfaceOutWallBarrel->SetType(dielectric_metal); // Only absorption and reflection
+  OpWaterTySurfaceOutWallBarrel->SetModel(unified);
+  OpWaterTySurfaceOutWallBarrel->SetFinish(ground); // ground surface with tyvek
+  OpWaterTySurfaceOutWallBarrel->SetSigmaAlpha(0.2);
+
+  OpWaterTySurfaceOutWallBottom =
+    new G4OpticalSurface("WaterTyCellSurfaceOutWallBottom");
+  
+  OpWaterTySurfaceOutWallBottom->SetType(dielectric_metal); // Only absorption and reflection
+  OpWaterTySurfaceOutWallBottom->SetModel(unified);
+  OpWaterTySurfaceOutWallBottom->SetFinish(ground); // ground surface with tyvek
+  OpWaterTySurfaceOutWallBottom->SetSigmaAlpha(0.2);
 
 
   G4double RINDEX_tyvek[NUM] =
@@ -862,13 +894,25 @@ void WCSimDetectorConstruction::ConstructMaterials()
         3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
         4.27535*eV, 4.42804*eV};
 
-  double WCODTyvekReflectivityInWall = WCSimTuningParams->GetWCODTyvekReflectivityInWall();
-  G4double OD_tyvek_reflectivity_scaling_factor_inwall = WCODTyvekReflectivityInWall/0.97;
+  double WCODTyvekReflectivityInWallTop = WCSimTuningParams->GetWCODTyvekReflectivityInWallTop();
+  G4double OD_tyvek_reflectivity_scaling_factor_inwalltop = WCODTyvekReflectivityInWallTop/0.97;
 
-  double WCODTyvekReflectivityOutWall = WCSimTuningParams->GetWCODTyvekReflectivityOutWall();
-  G4double OD_tyvek_reflectivity_scaling_factor_outwall = WCODTyvekReflectivityOutWall/0.97;
+  double WCODTyvekReflectivityInWallBarrel = WCSimTuningParams->GetWCODTyvekReflectivityInWallBarrel();
+  G4double OD_tyvek_reflectivity_scaling_factor_inwallbarrel = WCODTyvekReflectivityInWallBarrel/0.97;
 
-  G4double TyREFLECTIVITY_INWALL[NUMENTRIES_TY] = // Tyvek refelctivity
+  double WCODTyvekReflectivityInWallBottom = WCSimTuningParams->GetWCODTyvekReflectivityInWallBottom();
+  G4double OD_tyvek_reflectivity_scaling_factor_inwallbottom = WCODTyvekReflectivityInWallBottom/0.97;
+
+  double WCODTyvekReflectivityOutWallTop = WCSimTuningParams->GetWCODTyvekReflectivityOutWallTop();
+  G4double OD_tyvek_reflectivity_scaling_factor_outwalltop = WCODTyvekReflectivityOutWallTop/0.97;
+
+  double WCODTyvekReflectivityOutWallBarrel = WCSimTuningParams->GetWCODTyvekReflectivityOutWallBarrel();
+  G4double OD_tyvek_reflectivity_scaling_factor_outwallbarrel = WCODTyvekReflectivityOutWallBarrel/0.97;
+
+  double WCODTyvekReflectivityOutWallBottom = WCSimTuningParams->GetWCODTyvekReflectivityOutWallBottom();
+  G4double OD_tyvek_reflectivity_scaling_factor_outwallbottom = WCODTyvekReflectivityOutWallBottom/0.97;
+
+  G4double TyREFLECTIVITY_INWALLTOP[NUMENTRIES_TY] = // Tyvek refelctivity
       { 0.97,
         0.97, 0.97, 0.97, 0.97, 0.97,
         0.97, 0.97, 0.97, 0.97, 0.97,
@@ -879,9 +923,9 @@ void WCSimDetectorConstruction::ConstructMaterials()
         0.89, 0.86};
 
   for(int i=0; i<NUMENTRIES_TY; i++)
-    TyREFLECTIVITY_INWALL[i] *= OD_tyvek_reflectivity_scaling_factor_inwall;
+    TyREFLECTIVITY_INWALLTOP[i] *= OD_tyvek_reflectivity_scaling_factor_inwalltop;
 
-  G4double TyREFLECTIVITY_OUTWALL[NUMENTRIES_TY] = // Tyvek refelctivity
+  G4double TyREFLECTIVITY_INWALLBARREL[NUMENTRIES_TY] = // Tyvek refelctivity
       { 0.97,
         0.97, 0.97, 0.97, 0.97, 0.97,
         0.97, 0.97, 0.97, 0.97, 0.97,
@@ -892,28 +936,112 @@ void WCSimDetectorConstruction::ConstructMaterials()
         0.89, 0.86};
 
   for(int i=0; i<NUMENTRIES_TY; i++)
-    TyREFLECTIVITY_OUTWALL[i] *= OD_tyvek_reflectivity_scaling_factor_outwall;
+    TyREFLECTIVITY_INWALLBARREL[i] *= OD_tyvek_reflectivity_scaling_factor_inwallbarrel;
+
+  G4double TyREFLECTIVITY_INWALLBOTTOM[NUMENTRIES_TY] = // Tyvek refelctivity
+      { 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.96, 0.96, 0.95, 0.95, 0.95,
+        0.94, 0.93, 0.92, 0.91, 0.90,
+        0.89, 0.86};
+
+  for(int i=0; i<NUMENTRIES_TY; i++)
+    TyREFLECTIVITY_INWALLBOTTOM[i] *= OD_tyvek_reflectivity_scaling_factor_inwallbottom;
+
+  G4double TyREFLECTIVITY_OUTWALLTOP[NUMENTRIES_TY] = // Tyvek refelctivity
+      { 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.96, 0.96, 0.95, 0.95, 0.95,
+        0.94, 0.93, 0.92, 0.91, 0.90,
+        0.89, 0.86};
+
+  for(int i=0; i<NUMENTRIES_TY; i++)
+    TyREFLECTIVITY_OUTWALLTOP[i] *= OD_tyvek_reflectivity_scaling_factor_outwalltop;
+
+  G4double TyREFLECTIVITY_OUTWALLBARREL[NUMENTRIES_TY] = // Tyvek refelctivity
+      { 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.96, 0.96, 0.95, 0.95, 0.95,
+        0.94, 0.93, 0.92, 0.91, 0.90,
+        0.89, 0.86};
+
+  for(int i=0; i<NUMENTRIES_TY; i++)
+    TyREFLECTIVITY_OUTWALLBARREL[i] *= OD_tyvek_reflectivity_scaling_factor_outwallbarrel;
+
+  G4double TyREFLECTIVITY_OUTWALLBOTTOM[NUMENTRIES_TY] = // Tyvek refelctivity
+      { 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.96, 0.96, 0.95, 0.95, 0.95,
+        0.94, 0.93, 0.92, 0.91, 0.90,
+        0.89, 0.86};
+
+  for(int i=0; i<NUMENTRIES_TY; i++)
+    TyREFLECTIVITY_OUTWALLBOTTOM[i] *= OD_tyvek_reflectivity_scaling_factor_outwallbottom;
 
   G4MaterialPropertiesTable *MPT_Tyvek = new G4MaterialPropertiesTable();
   // MPT_Tyvek->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
   // MPT_Tyvek->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
   Tyvek->SetMaterialPropertiesTable(MPT_Tyvek);
 
-  G4MaterialPropertiesTable *MPTWater_TyInWall = new G4MaterialPropertiesTable();
-  MPTWater_TyInWall->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
-  MPTWater_TyInWall->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
-  MPTWater_TyInWall->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
-  MPTWater_TyInWall->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
-  MPTWater_TyInWall->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY, TyREFLECTIVITY_INWALL, NUMENTRIES_TY);
-  OpWaterTySurfaceInWall->SetMaterialPropertiesTable(MPTWater_TyInWall);
+  G4MaterialPropertiesTable *MPTWater_TyInWallTop = new G4MaterialPropertiesTable();
+  MPTWater_TyInWallTop->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
+  MPTWater_TyInWallTop->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
+  MPTWater_TyInWallTop->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
+  MPTWater_TyInWallTop->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
+  MPTWater_TyInWallTop->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY, TyREFLECTIVITY_INWALLTOP, NUMENTRIES_TY);
+  OpWaterTySurfaceInWallTop->SetMaterialPropertiesTable(MPTWater_TyInWallTop);
 
-  G4MaterialPropertiesTable *MPTWater_TyOutWall = new G4MaterialPropertiesTable();
-  MPTWater_TyOutWall->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
-  MPTWater_TyOutWall->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
-  MPTWater_TyOutWall->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
-  MPTWater_TyOutWall->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
-  MPTWater_TyOutWall->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY, TyREFLECTIVITY_OUTWALL, NUMENTRIES_TY);
-  OpWaterTySurfaceOutWall->SetMaterialPropertiesTable(MPTWater_TyOutWall);
+  G4MaterialPropertiesTable *MPTWater_TyInWallBarrel = new G4MaterialPropertiesTable();
+  MPTWater_TyInWallBarrel->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
+  MPTWater_TyInWallBarrel->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
+  MPTWater_TyInWallBarrel->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
+  MPTWater_TyInWallBarrel->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
+  MPTWater_TyInWallBarrel->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY, TyREFLECTIVITY_INWALLBARREL, NUMENTRIES_TY);
+  OpWaterTySurfaceInWallBarrel->SetMaterialPropertiesTable(MPTWater_TyInWallBarrel);
+
+  G4MaterialPropertiesTable *MPTWater_TyInWallBottom = new G4MaterialPropertiesTable();
+  MPTWater_TyInWallBottom->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
+  MPTWater_TyInWallBottom->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
+  MPTWater_TyInWallBottom->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
+  MPTWater_TyInWallBottom->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
+  MPTWater_TyInWallBottom->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY, TyREFLECTIVITY_INWALLBOTTOM, NUMENTRIES_TY);
+  OpWaterTySurfaceInWallBottom->SetMaterialPropertiesTable(MPTWater_TyInWallBottom);
+
+  G4MaterialPropertiesTable *MPTWater_TyOutWallTop = new G4MaterialPropertiesTable();
+  MPTWater_TyOutWallTop->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
+  MPTWater_TyOutWallTop->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
+  MPTWater_TyOutWallTop->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
+  MPTWater_TyOutWallTop->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
+  MPTWater_TyOutWallTop->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY, TyREFLECTIVITY_OUTWALLTOP, NUMENTRIES_TY);
+  OpWaterTySurfaceOutWallTop->SetMaterialPropertiesTable(MPTWater_TyOutWallTop);
+
+  G4MaterialPropertiesTable *MPTWater_TyOutWallBarrel = new G4MaterialPropertiesTable();
+  MPTWater_TyOutWallBarrel->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
+  MPTWater_TyOutWallBarrel->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
+  MPTWater_TyOutWallBarrel->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
+  MPTWater_TyOutWallBarrel->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
+  MPTWater_TyOutWallBarrel->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY, TyREFLECTIVITY_OUTWALLBARREL, NUMENTRIES_TY);
+  OpWaterTySurfaceOutWallBarrel->SetMaterialPropertiesTable(MPTWater_TyOutWallBarrel);
+
+  G4MaterialPropertiesTable *MPTWater_TyOutWallBottom = new G4MaterialPropertiesTable();
+  MPTWater_TyOutWallBottom->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
+  MPTWater_TyOutWallBottom->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
+  MPTWater_TyOutWallBottom->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
+  MPTWater_TyOutWallBottom->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
+  MPTWater_TyOutWallBottom->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY, TyREFLECTIVITY_OUTWALLBOTTOM, NUMENTRIES_TY);
+  OpWaterTySurfaceOutWallBottom->SetMaterialPropertiesTable(MPTWater_TyOutWallBottom);
 
   //
   // ----

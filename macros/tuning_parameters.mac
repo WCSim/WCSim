@@ -13,7 +13,11 @@
 
 
 /WCSim/tuning/WCODWLSCladdingReflectivity 0.99
-/WCSim/tuning/WCODTyvekReflectivityInWall 0.90
-/WCSim/tuning/WCODTyvekReflectivityOutWall 0.90
+/WCSim/tuning/WCODTyvekReflectivityInWallTop 0.90
+/WCSim/tuning/WCODTyvekReflectivityInWallBarrel 0.90
+/WCSim/tuning/WCODTyvekReflectivityInWallBottom 0.90
+/WCSim/tuning/WCODTyvekReflectivityOutWallTop 0.90
+/WCSim/tuning/WCODTyvekReflectivityOutWallBarrel 0.90
+/WCSim/tuning/WCODTyvekReflectivityOutWallBottom 0.90
 
 

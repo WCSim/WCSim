@@ -219,8 +219,12 @@ private:
   G4OpticalSurface * OpGlassCathodeSurface;
 
   //Tyvek surface - jl145
-  G4OpticalSurface * OpWaterTySurfaceInWall;
-  G4OpticalSurface * OpWaterTySurfaceOutWall;
+  G4OpticalSurface * OpWaterTySurfaceInWallTop;
+  G4OpticalSurface * OpWaterTySurfaceInWallBarrel;
+  G4OpticalSurface * OpWaterTySurfaceInWallBottom;
+  G4OpticalSurface * OpWaterTySurfaceOutWallTop;
+  G4OpticalSurface * OpWaterTySurfaceOutWallBarrel;
+  G4OpticalSurface * OpWaterTySurfaceOutWallBottom;
 
   //WLS surface - jl145
   G4OpticalSurface * OpWaterWLSSurface;
