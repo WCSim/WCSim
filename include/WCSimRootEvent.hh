@@ -23,31 +23,42 @@
 
 class TDirectory;
 
+
+/**
+ * Class holding true track information.
+ *
+ * By default,
+ * - No Cherenkov photons are saved in the output file
+ * (in fact no photons are stored at all. The exception
+ * is what Geant terms as gammas - basically high energy photons)
+ * - Everything that creates a photon that creates a true PMT hit is saved,
+ * along with all its ancestors
+ */
 class WCSimRootTrack : public TObject {
 
 private:
 
   // See jhfNtuple.h for the meaning of these data members:
-  Int_t   fIpnu;
-  Int_t   fFlag;
-  Float_t fM;
-  Float_t fP;
-  Float_t fE;
-  Int_t   fStartvol;
-  Int_t   fStopvol;
-  Float_t fDir[3];
-  Float_t fPdir[3];
-  Float_t fStop[3];
-  Float_t fStart[3];
-  Int_t fParenttype;
-  ProcessType_t fCreatorProcess;
-  Double_t fTime;
-  Int_t fId;
-  Int_t fParentId;
-  std::vector<std::vector<float>> boundaryPoints;
-  std::vector<float> boundaryKEs;
-  std::vector<double> boundaryTimes;
-  std::vector<int> boundaryTypes; // 1 = blacksheet, 2 = tyvek, 3 = cave
+  Int_t   fIpnu; //!< 
+  Int_t   fFlag; //!<
+  Float_t fM; //!< Particle mass (units: )
+  Float_t fP; //!< Particle momentum (units: )
+  Float_t fE; //!< Particle energy (units: )
+  Int_t   fStartvol; //!< Particle starting volume
+  Int_t   fStopvol; //!< Particle stopping volume
+  Float_t fDir[3]; //!< Particle direction. Unit vector in x,y,z
+  Float_t fPdir[3]; //!< Particle momentum. Vector in x,y,z
+  Float_t fStop[3]; //!< Particle stopping position. Vector in x,y,z
+  Float_t fStart[3]; //!< Particle starting position. Vector in x,y,z
+  Int_t fParenttype; //!< 
+  ProcessType_t fCreatorProcess; //!< The physics process that created the track
+  Double_t fTime; //!< Particle start time
+  Int_t fId; //!< 
+  Int_t fParentId; //!< 
+  std::vector<std::vector<float>> boundaryPoints; //!< The position (x,y,z) where the particle crossed the blacksheet/tyvek/cave
+  std::vector<float> boundaryKEs; //!< The particle kinetic energy as it crossed the blacksheet/tyvek/cave
+  std::vector<double> boundaryTimes; //!< The time as the particle crossed the blacksheet/tyvek/cave
+  std::vector<int> boundaryTypes; //!< The surface the particle has crossed. 1 = blacksheet, 2 = tyvek, 3 = cave. Note that all boundary* variables are in synch
 
 public:
   WCSimRootTrack() {}
@@ -102,14 +113,20 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
-
+/**
+ * Class holding true hit information.
+ *
+ * For each PMT that has at least 1 PMT hit,
+ * this class specifies the position of the detailed
+ * true hit information in the WCSimRootCherenkovHitTime array
+ */
 class WCSimRootCherenkovHit : public TObject {
 
 private:
-  Int_t fTubeID;
-  Int_t fmPMTID;
-  Int_t fmPMT_PMTID;
-  Int_t fTotalPe[2];
+  Int_t fTubeID; //!< PMT ID. Unique number across all PMT types (i.e. runs from 0 to NPMTs, where NPMTs = N20" + NOD + N3"inMPMT)
+  Int_t fmPMTID; //!< The mPMT number this 3" PMT is in (Equivlaent to fTubeID for 20" & OD PMTs)
+  Int_t fmPMT_PMTID; //!< The 3" PMT position ID inside this mPMT (runs from 1-19 for 3" PMTs inside mPMTs. Is 0 for 20" & OD PMTs)
+  Int_t fTotalPe[2]; //!< 0th element: position in the WCSimRootCherenkovHitTime array where this PMTs' true hits start in this event. 1st element: Number of true hits on this PMT in this event. 
 
 public:
   WCSimRootCherenkovHit() {}
@@ -133,18 +150,23 @@ public:
   ClassDef(WCSimRootCherenkovHit,2)  
 };
 
+/**
+ * Class holding true (Cherenkov) hit information
+ *
+ * There is one entry per hit.
+ */
 class WCSimRootCherenkovHitTime : public TObject {
 
 private:
   // See jhfNtuple.h for the meaning of these data members:
-  Double_t fTruetime;
-  Int_t   fParentSavedTrackID;
-  Float_t fPhotonStartTime;
-  Float_t fPhotonStartPos[3];
-  Float_t fPhotonEndPos[3];
-  Float_t fPhotonStartDir[3];
-  Float_t fPhotonEndDir[3];
-  ProcessType_t fPhotonCreatorProcess;
+  Double_t fTruetime; //!< True hit time (unit: )
+  Int_t   fParentSavedTrackID; //!< Truth matching. ID of the parent track that created the Cherenkov photon that created this hit. Note that this is not the position in the WCSimRootTrack array - you do need to loop and check the ID. Note that if you are running in non-default mode and you are saving photon tracks, this will be the ID of the photon track. Note: for dark noise, this number is -1
+  Float_t fPhotonStartTime; //!< Start time of the photon that created this hit (unit: )
+  Float_t fPhotonStartPos[3]; //!< Start position (x,y,z) of the photon that created this hit (unit: )
+  Float_t fPhotonEndPos[3]; //!< End position (x,y,z) of the photon that created this hit (unit: )
+  Float_t fPhotonStartDir[3]; //< Start direction unit vector (x,y,z) of the photon that created this hit
+  Float_t fPhotonEndDir[3]; //< End direction unit vector (x,y,z) of the photon that created this hit
+  ProcessType_t fPhotonCreatorProcess; //!< Process that created the photon that created this hit
 
 public:
   WCSimRootCherenkovHitTime() {}
@@ -173,14 +195,19 @@ public:
   ClassDef(WCSimRootCherenkovHitTime,2)
 };
 
-// Scattering and reflection history for each Cherenkov hit (photon)
+/**
+ * Class holding scattering and reflection history for each Cherenkov hit (photon)
+ *
+ * There is one entry per hit.
+ * Note that this information is not filled, unless WCSim is compiled with -DWCSIM_SAVE_PHOTON_HISTORY_FLAG=ON (default OFF)
+ */
 class WCSimRootCherenkovHitHistory : public TObject {
 
 private:
   
-  Int_t   fNRayScat;
-  Int_t   fNMieScat;
-  std::vector<ReflectionSurface_t> fReflec;
+  Int_t   fNRayScat; //!< Number of Rayliegh scatters the photon that created this hit underwent
+  Int_t   fNMieScat; //!< Number of Mie scatters the photon that created this hit underwent
+  std::vector<ReflectionSurface_t> fReflec; //!< Surfaces of reflections that the photon that created this hit underwent
 
 public:
   WCSimRootCherenkovHitHistory() {}
@@ -198,17 +225,21 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
-
+/**
+ * Class holding scattering and reflection history for each digitised hit
+ *
+ * There is one entry per digit
+ */
 class WCSimRootCherenkovDigiHit : public TObject {
 
 private:
   // See jhfNtuple.h for the meaning of these data members:
-  Float_t fQ;
-  Double_t fT;
-  Int_t fTubeId;
-  Int_t fmPMTId;
-  Int_t fmPMT_PMTId;
-  std::vector<int> fPhotonIds;
+  Float_t fQ; //!< Digitised charge
+  Double_t fT; //!< Digitised time, relative to the digit time (date in the WCSimRootEventHeader) (unit: )
+  Int_t fTubeID; //!< PMT ID. Unique number across all PMT types (i.e. runs from 0 to NPMTs, where NPMTs = N20" + NOD + N3"inMPMT)
+  Int_t fmPMTID; //!< The mPMT number this 3" PMT is in (Equivlaent to fTubeID for 20" & OD PMTs)
+  Int_t fmPMT_PMTID; //!< The 3" PMT position ID inside this mPMT (runs from 1-19 for 3" PMTs inside mPMTs. Is 0 for 20" & OD PMTs)
+  std::vector<int> fPhotonIds; //!< Truth matching. Position in the CherenkovHitTime array that contains the true hit(s) that created this digit
 
 public:
   WCSimRootCherenkovDigiHit() {}
@@ -234,13 +265,16 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
+/**
+ * Class containing header information for this trigger
+ */
 class WCSimRootEventHeader {
 
 private:
-  Int_t   fEvtNum;
-  Int_t   fRun;
-  int64_t fDate;
-  Int_t   fSubEvtNumber;
+  Int_t   fEvtNum; //!< Event number
+  Int_t   fRun; //!< Run number. Should be 0 for the first call of /run/beamOn, and increment for each subsequent call of /run/beamOn
+  int64_t fDate; //!< Time 
+  Int_t   fSubEvtNumber; //!< Trigger number. 0 for the first trigger (or if no trigger has been found), and increments for each subsequent trigger
 
 public:
   WCSimRootEventHeader() : fEvtNum(0), fRun(0), fDate(0), fSubEvtNumber(1) { }
@@ -259,14 +293,17 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
+/**
+ * Class storing information about pi0 decays TOCHECKALL
+ */
 class WCSimRootPi0 : public TObject {
     // this is a class used specifically for Pi0 events
 
 private:
-  Float_t fPi0Vtx[3];
-  Int_t   fGammaID[2];
-  Float_t fGammaE[2];
-  Float_t fGammaVtx[2][3];
+  Float_t fPi0Vtx[3]; //!< pi0 vertex (x,y,z)
+  Int_t   fGammaID[2]; //!< Truth matching. Track ID of each gamma
+  Float_t fGammaE[2]; //!< Starting energy of each gamma
+  Float_t fGammaVtx[2][3]; //!< Starting position of each gamma?
 
 public:
   WCSimRootPi0() {}
@@ -290,12 +327,15 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
+/**
+ * Information about gammas released from neutron capture TOCHECKALL
+ */
 class WCSimRootCaptureGamma : public TObject {
 
 private:
-  Int_t   fID;
-  Float_t fEnergy;
-  Float_t fDir[3];
+  Int_t   fID; //!<  Truth matching. Track ID of the gamma
+  Float_t fEnergy; //!< Energy of the gamma
+  Float_t fDir[3]; //!< Direction unit vector (x,y,z) of the gamma
 
 public:
   WCSimRootCaptureGamma() {}
@@ -316,18 +356,21 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
+/**
+ * Class used specifically for neutron capture events TOCHECKALL
+ */
 class WCSimRootCapture : public TObject {
-  // this is a class used specifically for neutron capture events
+
 
 private:
-  Int_t   	   fCaptureParent;
-  Float_t 	   fCaptureVtx[3];
-  Int_t   	   fNGamma;
-  Float_t 	   fTotalGammaE;
-  Float_t 	   fCaptureT;
-  Int_t          fCaptureNucleus;
-  TClonesArray * fGammas;
-  bool 	   IsZombie;
+  Int_t   	   fCaptureParent; //!< Track ID of the parent neutron
+  Float_t 	   fCaptureVtx[3]; //!< Position of the neutron capture (x,y,z)
+  Int_t   	   fNGamma; //!< Number of gammas produced by the neutron capture
+  Float_t 	   fTotalGammaE; //!< Total gamma energy produced by the neutron capture
+  Float_t 	   fCaptureT; //!< Time of the neutron capture
+  Int_t          fCaptureNucleus; //!< Nucleus the neutron captured on
+  TClonesArray * fGammas; //!< Array of WCSimRootCaptureGamma storing detailed information about individual gammas released from the neutron capture
+  bool 	   IsZombie; //!< Will be true if unfilled, false if filled
 
 public:
   WCSimRootCapture() {
@@ -362,49 +405,58 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
+/**
+ * Class storing trigger information
+ *
+ * Digitised hit information will be put in the WCSimRootTrigger it is associated with
+ * (if there are multiple overlapping trigger readout windows, digits will only be saved in the first
+ * trigger window they are associated with, to avoid double counting)
+ *
+ * True information (vertices, tracks, hits) are mostly put in the 0th WCSimRootTrigger
+ */
 class WCSimRootTrigger : public TObject {
 
 private:
-  WCSimRootEventHeader    fEvtHdr;  // The header
+  WCSimRootEventHeader    fEvtHdr;  //!< The header
   // See jhfNtuple.h for the meaning of these data members:
-  Int_t                fMode[MAX_N_VERTICES];
-  Int_t                fNvtxs;
-  Int_t                fVtxsvol[MAX_N_VERTICES];
-  Float_t              fVtxs[MAX_N_VERTICES][4];
-  Int_t                fVecRecNumber;       // "info event" number in inputvectorfile 
-  Int_t                fJmu;
-  Int_t                fJp;
+  Int_t                fMode[MAX_N_VERTICES]; //!<
+  Int_t                fNvtxs; //!< Number of true vertices in the event
+  Int_t                fVtxsvol[MAX_N_VERTICES]; //!< 
+  Float_t              fVtxs[MAX_N_VERTICES][4]; //!< True 4-position (x,y,z,t) of the vertex
+  Int_t                fVecRecNumber;       //!< "info event" number in inputvectorfile 
+  Int_t                fJmu; //!< 
+  Int_t                fJp; //!< 
 
-  WCSimRootPi0         fPi0;                // Pi0 info (default = not used)
+  WCSimRootPi0         fPi0;                //!< Pi0 info (default = not used)
 
-  TClonesArray         *fCaptures;           // Neutron capture info (default = not used)
-  Int_t                fNcaptures;           // Number of tracks in the array
+  TClonesArray         *fCaptures;           //!< Neutron capture info (default = not used)
+  Int_t                fNcaptures;           //!< Number of tracks in the neutron capture array
 
-  Int_t                fNpar;               // Number of particles
-  Int_t                fNtrack;             // Number of tracks in the array
-  Int_t                fNtrack_slots;       // Number of slots in the tracks array. This is potentially more than fNtrack (i.e. if any tracks have been removed that aren't at the very start/end)
-  TClonesArray         *fTracks;            //-> Array of WCSimRootTracks 
+  Int_t                fNpar;               //!< Number of particles ???
+  Int_t                fNtrack;             //!< Number of tracks in the WCSimRootTracks array
+  Int_t                fNtrack_slots;       //!< Number of slots in the WCSimRootTracks array. This is potentially more than fNtrack (i.e. if any tracks have been removed that aren't at the very start/end)
+  TClonesArray         *fTracks;            //!< Array of WCSimRootTracks 
 
-  Int_t                fNumTubesHit;         // Number of tubes hit
-  Int_t                fNcherenkovhits;      // Number of hits in the array
-  TClonesArray         *fCherenkovHits;      //-> Array of WCSimRootCherenkovHits
+  Int_t                fNumTubesHit;         //!< Number of tubes hit
+  Int_t                fNcherenkovhits;      //!< Number of hits in the array
+  TClonesArray         *fCherenkovHits;      //!< Array of WCSimRootCherenkovHits
 
-  Int_t                fCherenkovHitCounter;
-  Int_t                fNcherenkovhittimes;      // Number of hits in the array
-  TClonesArray         *fCherenkovHitTimes;      //-> Array of WCSimRootCherenkovHits
-  Int_t                fNcherenkovhithistories;      // Number of hits in the array
-  TClonesArray         *fCherenkovHitHistories;  //-> Array of WCSimRootCherenkovHitHistories
+  Int_t                fCherenkovHitCounter; //!< 
+  Int_t                fNcherenkovhittimes;      //!< Number of hits in the WCSimRootCherenkovHits array
+  TClonesArray         *fCherenkovHitTimes;      //!< Array of WCSimRootCherenkovHits
+  Int_t                fNcherenkovhithistories;      //!< Number of hits in the WCSimRootCherenkovHitHistories array. Should be identical to fNcherenkovhittimes
+  TClonesArray         *fCherenkovHitHistories;  //!< Array of WCSimRootCherenkovHitHistories
 
-  Int_t                fNumDigitizedTubes;  // Number of digitized tubes
-  Int_t                fNcherenkovdigihits;  // Number of digihits in the array
-  Int_t                fNcherenkovdigihits_slots;  // Number of slots in the digihits array. This is potentially more than fNcherenkovdigihits (i.e. if any digihits have been removed that aren't at the very start/end)
-  Float_t              fSumQ;
-  TClonesArray         *fCherenkovDigiHits;  //-> Array of WCSimRootCherenkovDigiHit's
+  Int_t                fNumDigitizedTubes;  //!< Number of digitized tubes
+  Int_t                fNcherenkovdigihits;  //!< Number of digihits in the WCSimRootCherenkovDigiHit array
+  Int_t                fNcherenkovdigihits_slots;  //!< Number of slots in the WCSimRootCherenkovDigiHit array. This is potentially more than fNcherenkovdigihits (i.e. if any digihits have been removed that aren't at the very start/end)
+  Float_t              fSumQ; //!< Sum of digitised hit charge in this trigger
+  TClonesArray         *fCherenkovDigiHits;  //!< Array of WCSimRootCherenkovDigiHit's
 
-  TriggerType_t        fTriggerType;         // Trigger algorithm that created this trigger
-  std::vector<Double_t> fTriggerInfo;         // Information about how it passed the trigger (e.g. how many hits in the NDigits window)
+  TriggerType_t        fTriggerType;         //!< Trigger algorithm that created this trigger
+  std::vector<Double_t> fTriggerInfo;         //!< Information about how it passed the trigger (e.g. how many hits in the NDigits window)
 
-  bool IsZombie;
+  bool IsZombie; //!< Will be true if unfilled, false if filled 
 
 public:
   WCSimRootTrigger();
@@ -540,7 +592,12 @@ public:
   ClassDef(WCSimRootTrigger,6) //WCSimRootEvent structure
 };
 
-
+/**
+ * Class containing event information
+ *
+ * Only events from a single PMT type (20" PMT OR 3" PMT in mPMT OR OD PMT) are available
+ * in a single WCSimRootEvent
+ */
 class WCSimRootEvent : public TObject {
 public:
   WCSimRootEvent();
@@ -600,7 +657,7 @@ public:
 
 private:
   //std::vector<WCSimRootTrigger*> fEventList;
-  TObjArray* fEventList;
+  TObjArray* fEventList; //!< Array of WCSimRootTrigger
   Int_t Current;                      //!               means transient, not writable to file
   ClassDef(WCSimRootEvent,3)
 
