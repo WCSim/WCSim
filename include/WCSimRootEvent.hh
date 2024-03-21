@@ -124,7 +124,7 @@ class WCSimRootCherenkovHit : public TObject {
 
 private:
   Int_t fTubeID; //!< PMT ID. Unique number across all PMT types (i.e. runs from 0 to NPMTs, where NPMTs = N20" + NOD + N3"inMPMT)
-  Int_t fmPMTID; //!< The mPMT number this 3" PMT is in (Equivlaent to fTubeID for 20" & OD PMTs)
+  Int_t fmPMTID; //!< The mPMT number this 3" PMT is in (Equivalent to fTubeID for 20" & OD PMTs)
   Int_t fmPMT_PMTID; //!< The 3" PMT position ID inside this mPMT (runs from 1-19 for 3" PMTs inside mPMTs. Is 0 for 20" & OD PMTs)
   Int_t fTotalPe[2]; //!< 0th element: position in the WCSimRootCherenkovHitTime array where this PMTs' true hits start in this event. 1st element: Number of true hits on this PMT in this event. 
 
@@ -236,9 +236,9 @@ private:
   // See jhfNtuple.h for the meaning of these data members:
   Float_t fQ; //!< Digitised charge
   Double_t fT; //!< Digitised time, relative to the digit time (date in the WCSimRootEventHeader) (unit: )
-  Int_t fTubeID; //!< PMT ID. Unique number across all PMT types (i.e. runs from 0 to NPMTs, where NPMTs = N20" + NOD + N3"inMPMT)
-  Int_t fmPMTID; //!< The mPMT number this 3" PMT is in (Equivlaent to fTubeID for 20" & OD PMTs)
-  Int_t fmPMT_PMTID; //!< The 3" PMT position ID inside this mPMT (runs from 1-19 for 3" PMTs inside mPMTs. Is 0 for 20" & OD PMTs)
+  Int_t fTubeId; //!< PMT ID. Unique number across all PMT types (i.e. runs from 0 to NPMTs, where NPMTs = N20" + NOD + N3"inMPMT)
+  Int_t fmPMTId; //!< The mPMT number this 3" PMT is in (Equivalent to fTubeId for 20" & OD PMTs)
+  Int_t fmPMT_PMTId; //!< The 3" PMT position ID inside this mPMT (runs from 1-19 for 3" PMTs inside mPMTs. Is 0 for 20" & OD PMTs)
   std::vector<int> fPhotonIds; //!< Truth matching. Position in the CherenkovHitTime array that contains the true hit(s) that created this digit
 
 public:
