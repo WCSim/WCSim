@@ -40,6 +40,7 @@ private:
   Float_t fStop[3];
   Float_t fStart[3];
   Int_t fParenttype;
+  ProcessType_t fCreatorProcess;
   Double_t fTime;
   Int_t fId;
   Int_t fParentId;
@@ -62,6 +63,7 @@ public:
 		 Double_t stop[3],
 		 Double_t start[3],
 		 Int_t parenttype,
+     ProcessType_t creatorProcess,
 		 Double_t time,
 		 Int_t id,
 		 Int_t idParent,
@@ -87,6 +89,8 @@ public:
   Double_t   GetTime() const { return fTime;}
   Int_t     GetId() const {return fId;}
   Int_t     GetParentId() const {return fParentId;}
+  ProcessType_t GetCreatorProcess() const {return fCreatorProcess;}
+  std::string   GetCreatorProcessName() const {return WCSimEnumerations::EnumAsString(fCreatorProcess);}
   std::vector<std::vector<float>> GetBoundaryPoints() const {return boundaryPoints;}
   std::vector<float> GetBoundaryKEs() const {return boundaryKEs;}
   std::vector<double> GetBoundaryTimes() const {return boundaryTimes;}
@@ -140,6 +144,7 @@ private:
   Float_t fPhotonEndPos[3];
   Float_t fPhotonStartDir[3];
   Float_t fPhotonEndDir[3];
+  ProcessType_t fPhotonCreatorProcess;
 
 public:
   WCSimRootCherenkovHitTime() {}
@@ -149,7 +154,8 @@ public:
 			    Float_t photonStartPos[3],
 			    Float_t photonEndPos[3],
 			    Float_t photonStartDir[3],
-			    Float_t photonEndDir[3]);
+			    Float_t photonEndDir[3],
+          ProcessType_t photonCreatorProcess);
   virtual ~WCSimRootCherenkovHitTime() { }
   bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 
@@ -161,6 +167,8 @@ public:
   Float_t   GetPhotonEndPos(int i) const { return (i<3) ? fPhotonEndPos[i] : 0; }
   Float_t   GetPhotonStartDir(int i) const { return (i<3) ? fPhotonStartDir[i] : 0; }
   Float_t   GetPhotonEndDir(int i) const { return (i<3) ? fPhotonEndDir[i] : 0; }
+  ProcessType_t GetPhotonCreatorProcess() const {return  fPhotonCreatorProcess;}
+  std::string   GetPhotonCreatorProcessName() const {return  WCSimEnumerations::EnumAsString(fPhotonCreatorProcess);}
 
   ClassDef(WCSimRootCherenkovHitTime,2)
 };
@@ -483,6 +491,7 @@ public:
 				   Double_t stop[3],
 				   Double_t start[3],
 				   Int_t parenttype,
+           ProcessType_t creatorProcess,
 				   Double_t time,
 				   Int_t id,
 				   Int_t idParent,
@@ -505,7 +514,9 @@ public:
 					   std::vector<TVector3>  photonStartPos,
 					   std::vector<TVector3>  photonEndPos,
 					   std::vector<TVector3>  photonStartDir,
-					   std::vector<TVector3>  photonEndDir);
+					   std::vector<TVector3>  photonEndDir,
+             std::vector<ProcessType_t> photonCreatorProcess);
+
   WCSimRootCherenkovHitHistory   *AddCherenkovHitHistory(Int_t nRayScat,
              Int_t nMieScat,
 					   std::vector<ReflectionSurface_t> reflec);

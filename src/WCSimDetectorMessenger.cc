@@ -114,6 +114,11 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   DopingConcentration->SetParameterName("DopingConcentration", false);
   DopingConcentration->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+  BGOPlacement = new G4UIcmdWithABool("/WCSim/BGOPlacement", this);
+  BGOPlacement->SetGuidance("Place BGO Scintillation Crystal Inside Detector");
+  BGOPlacement->SetParameterName("BGOPlacement", false);
+  BGOPlacement->AvailableForStates(G4State_PreInit, G4State_Idle);
+
   PMTSize = new G4UIcmdWithAString("/WCSim/WCPMTsize",this);
   PMTSize->SetGuidance("Set alternate PMT size for the WC (Must be entered after geometry details are set).");
   PMTSize->SetGuidance("Available options 20inch 10inch");
@@ -805,6 +810,17 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		G4cout << "Setting Gadolinium doping concentration: " << newValue << "percent" << G4endl;
             WCSimDetector->AddDopedWater(DopingConcentration->GetNewDoubleValue(newValue));
 	}
+  
+  if(command == BGOPlacement) {
+    if (BGOPlacement->GetNewBoolValue(newValue)) {
+      G4cout << "Placing BGO Scintillation Crystal" << G4endl;
+      WCSimDetector->SetPlaceBGOGeometry(true);
+    }
+    else {
+      G4cout << "Removing BGO Scintillation Crystal from Geometry" << G4endl; 
+      WCSimDetector->SetPlaceBGOGeometry(false);
+    }
+  }
 
 	if(command == PMTSize) {
 		G4cout << "SET PMT SIZE" << G4endl;

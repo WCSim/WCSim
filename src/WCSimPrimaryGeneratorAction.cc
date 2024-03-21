@@ -101,6 +101,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   messenger = new WCSimPrimaryGeneratorMessenger(this);
 
   useMulineEvt 		    = true;
+  useAmBeEvt          = false;
   useRootrackerEvt   	= false;
   useGunEvt    		    = false;
   useLaserEvt  		    = false;
@@ -213,7 +214,6 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
     file->Close();
   }
 }
-
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
 {
@@ -424,7 +424,23 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       particleGun->GeneratePrimaryVertex(anEvent);
     }//old muline format
   }//useMuLineEvt
+  
+  else if(useAmBeEvt){ // Diego Costas (diego.costas.rodriguez@usc.es) 2023
+    // Initialise the ambe generator once per sim
+    // This will get AmBe settings (position, direction, etc)
+    if ( !AmBeGen ){
+      AmBeGen = new WCSimAmBeGen();
+    }
 
+    if (!myDetector || !myDetector->IsBGOGeometrySet()) {
+        G4Exception("WCSimPrimaryGeneratorActino::GeneratePrimaries", "WCSimError", FatalException, 
+            "You are trying to run AmBeGen without having set the BGO geometry. Please configure it in your .mac file using /WCSim/BGOPlacement true");
+    }
+    else{
+      AmBeGen->GenerateNG(anEvent);
+    }
+  } 
+  
   else if (useRootrackerEvt)
     {
       if ( !fInputRootrackerFile->IsOpen() )
@@ -1552,6 +1568,8 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
 {
   if(useMulineEvt)
     return "muline";
+  if(useAmBeEvt)
+    return "ambeevt";
   else if(useGunEvt)
     return "gun";
   else if(useGPSEvt)

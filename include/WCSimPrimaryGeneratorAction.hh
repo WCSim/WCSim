@@ -10,6 +10,7 @@
 #include "WCSimRootOptions.hh"
 #include "WCSimGenerator_Radioactivity.hh"
 #include "WCSimLIGen.hh"
+#include "WCSimAmBeGen.hh"
 #include "WCSimEnumerations.hh"
 #include "jhfNtuple.h"
 
@@ -93,6 +94,7 @@ private:
   WCSimPrimaryGeneratorMessenger* messenger;
 
   // Variables set by the messenger
+  G4bool   useAmBeEvt;
   G4bool   useMulineEvt;
   G4bool   useRootrackerEvt;
   G4bool   useGunEvt;
@@ -106,12 +108,15 @@ private:
   G4bool   useRadonEvt; // G. Pronost: Radon flag
   G4bool   useLightInjectorEvt; // L. Kneale injector with profile from db
   G4bool   useMPMTledEvt;
-
+  
   std::fstream inputFile;
   std::fstream inputCosmicsFile;
   G4String vectorFileName;
   G4String cosmicsFileName = "data/MuonFlux-HyperK-ThetaPhi.dat";
   G4bool   GenerateVertexInRock;
+
+  // AmBe Generator 
+  WCSimAmBeGen* AmBeGen;
 
   // IBD generator
     // Database for spectra
@@ -211,6 +216,9 @@ private:
 
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
   inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
+
+  inline void SetAmBeEvtGenerator(G4bool choice) { useAmBeEvt = choice; }
+  inline G4bool IsUsingAmBeEvtGenerator()  { return useAmBeEvt; }
 
   inline TFile* GetInputRootrackerFile(){ return fInputRootrackerFile;}
   inline void SetRootrackerEvtGenerator(G4bool choice) { useRootrackerEvt = choice; }
@@ -312,6 +320,7 @@ private:
     r.IsotopeActivity = IsotopeActivity;
     radioactive_sources.push_back(r);
   }
+
   inline std::vector<struct radioactive_source> Radioactive_Sources()  { return radioactive_sources; }
 
   inline void SetRadioactiveEvtGenerator(G4bool choice) { useRadioactiveEvt = choice; }

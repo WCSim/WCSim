@@ -104,7 +104,7 @@ void WCSimPhysicsListFactory::ConstructProcess() {
         }
         G4cout << "Enabling RadCapture nCapture process" << G4endl;
         theCaptureProcess->RegisterMe(theNeutronRadCapture);
-    }
+    } 
 }
 
 void WCSimPhysicsListFactory::SetCuts()

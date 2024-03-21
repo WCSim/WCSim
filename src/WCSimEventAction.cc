@@ -373,6 +373,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       for (int pe = 0; pe < nPoisson; pe++) {
 	G4float time = G4RandGauss::shoot(0.0,10.);
 	G4ThreeVector dir(0, 0, 0);
+  ProcessType_t photcreatorproc = kUnknownProcess;
 	(*WCHC)[hitIndex]->AddPe(time);
   (*WCHC)[hitIndex]->AddTrackID(0);
 	(*WCHC)[hitIndex]->AddParentID(0); // Make parent a geantino (whatever that is)
@@ -380,6 +381,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 	(*WCHC)[hitIndex]->AddPhotonEndPos(pos);
 	(*WCHC)[hitIndex]->AddPhotonStartDir(dir);
 	(*WCHC)[hitIndex]->AddPhotonEndDir(dir);
+  (*WCHC)[hitIndex]->AddPhotonCreatorProcess(photcreatorproc);
 	(*WCHC)[hitIndex]->AddPhotonStartTime(time);
       }
 
@@ -1189,6 +1191,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     double pdir[3];
     double stop[3];
     double start[3];
+    ProcessType_t creatorP = kUnknownProcess;
     for (int l=0;l<3;l++)
     {
       dir[l]=injhfNtuple.dir[k][l];
@@ -1212,6 +1215,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 			      stop,
 			      start,
 			      injhfNtuple.parent[k],
+            creatorP,
 			      injhfNtuple.time[k],
                   0,
                   0,
@@ -1290,8 +1294,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       G4double ttime = trj->GetGlobalTime();
 
       G4int parentType;
-
-
+      ProcessType_t creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(trj->GetCreatorProcessName());
+      
       // Right now only secondaries whose parents are pi0's are stored
       // This may change later
       // M Fechner : dec 16, 2004 --> added decay e- from muons
@@ -1342,27 +1346,27 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
       }
 
-      wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
-      wcsimrootevent->AddTrack(ipnu,
-                               flag,
-                               mass,
-                               mommag,
-                               energy,
-                               startvol,
-                               stopvol,
-                               dir,
-                               pdir,
-                               stop,
-                               start,
-                               parentType,
-                               ttime,
-                               id,
-                               idPrnt,
-                               trj->GetBoundaryPoints(),
-                               trj->GetBoundaryKEs(),
-                               trj->GetBoundaryTimes(),
-                               trj->GetBoundaryTypesAsInt());
-
+          wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
+          wcsimrootevent->AddTrack(ipnu,
+                                   flag,
+                                   mass,
+                                   mommag,
+                                   energy,
+                                   startvol,
+                                   stopvol,
+                                   dir,
+                                   pdir,
+                                   stop,
+                                   start,
+                                   parentType,
+                                   creatorProcess,
+                                   ttime,
+                                   id,
+                                   idPrnt,
+                                   trj->GetBoundaryPoints(),
+                                   trj->GetBoundaryKEs(),
+                                   trj->GetBoundaryTimes(),
+                                   trj->GetBoundaryTypesAsInt());
 
       if (detectorConstructor->SavePi0Info())
       {
@@ -1433,6 +1437,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     std::vector<TVector3> photonEndPos;
     std::vector<TVector3> photonStartDir;
     std::vector<TVector3> photonEndDir;
+    std::vector<ProcessType_t> photonCreatorProcess;
 #ifdef _SAVE_RAW_HITS_VERBOSE
     double hit_time_smear;
 #endif
@@ -1443,6 +1448,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     TVector3 hit_photon_endpos;
     TVector3 hit_photon_startdir;
     TVector3 hit_photon_enddir;
+    ProcessType_t hit_photon_creatorprocess;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
@@ -1482,6 +1488,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[0],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[1],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[2]);
+  hit_photon_creatorprocess = (*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id);
+
 	truetime.push_back(hit_time_true);
 	parentSavedTrackID.push_back(hit_parentid);
 	photonStartTime.push_back(hit_photon_starttime);
@@ -1489,6 +1497,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	photonEndPos.push_back(hit_photon_endpos);
 	photonStartDir.push_back(hit_photon_startdir);
 	photonEndDir.push_back(hit_photon_enddir);
+  photonCreatorProcess.push_back(hit_photon_creatorprocess);
 #ifdef _SAVE_RAW_HITS_VERBOSE
 	hit_time_smear = (*WCDC_hits)[idigi]->GetTime(id);
 	smeartime.push_back(hit_time_smear);
@@ -1516,7 +1525,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				      photonStartPos,
 				      photonEndPos,
 				      photonStartDir,
-				      photonEndDir);
+				      photonEndDir,
+              photonCreatorProcess);
       smeartime.clear();
       truetime.clear();
       parentSavedTrackID.clear();
@@ -1525,6 +1535,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       photonEndPos.clear();
       photonStartDir.clear();
       photonEndDir.clear();
+      photonCreatorProcess.clear();
     }//idigi
   }//if(WCDC_hits)
 
@@ -1725,6 +1736,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     double pdir[3];
     double stop[3];
     double start[3];
+    ProcessType_t creatorP = kUnknownProcess;
     for (int l=0;l<3;l++)
     {
       dir[l]=injhfNtuple.dir[k][l];
@@ -1748,6 +1760,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 			      stop,
 			      start,
 			      injhfNtuple.parent[k],
+            creatorP,
 			     injhfNtuple.time[k],
                  0,
                  0,
@@ -1824,7 +1837,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       G4double ttime = trj->GetGlobalTime();
 
       G4int parentType;
-
+      ProcessType_t creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(trj->GetCreatorProcessName());
 
       // Right now only secondaries whose parents are pi0's are stored
       // This may change later
@@ -1872,28 +1885,29 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
           if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
           if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
 
-      }
+          }
 
-      wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
-      wcsimrootevent->AddTrack(ipnu,
-                               flag,
-                               mass,
-                               mommag,
-                               energy,
-                               startvol,
-                               stopvol,
-                               dir,
-                               pdir,
-                               stop,
-                               start,
-                               parentType,
-                               ttime,
-                               id,
-                               idPrnt,
-                               trj->GetBoundaryPoints(),
-                               trj->GetBoundaryKEs(),
-                               trj->GetBoundaryTimes(),
-                               trj->GetBoundaryTypesAsInt());
+          wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
+          wcsimrootevent->AddTrack(ipnu,
+                                   flag,
+                                   mass,
+                                   mommag,
+                                   energy,
+                                   startvol,
+                                   stopvol,
+                                   dir,
+                                   pdir,
+                                   stop,
+                                   start,
+                                   parentType,
+                                   creatorProcess,
+                                   ttime,
+                                   id,
+                                   idPrnt,
+                                   trj->GetBoundaryPoints(),
+                                   trj->GetBoundaryKEs(),
+                                   trj->GetBoundaryTimes(),
+                                   trj->GetBoundaryTypesAsInt());
 
       if (detectorConstructor->SavePi0Info())
       {
@@ -1965,6 +1979,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     std::vector<TVector3> photonEndPos;
     std::vector<TVector3> photonStartDir;
     std::vector<TVector3> photonEndDir;
+    std::vector<ProcessType_t> photonCreatorProcess;               // ADD A TEMPORARY VECTOR OF CREATOR PROCESSES
 #ifdef _SAVE_RAW_HITS_VERBOSE
     double hit_time_smear;
 #endif
@@ -1975,6 +1990,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     TVector3 hit_photon_endpos;
     TVector3 hit_photon_startdir;
     TVector3 hit_photon_enddir;
+    ProcessType_t hit_photon_creatorprocess;
     //loop over the DigitsCollection
     for(int idigi = 0; idigi < WCDC_hits->entries(); idigi++) {
       int digi_tubeid = (*WCDC_hits)[idigi]->GetTubeID();
@@ -1998,6 +2014,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
+  hit_photon_creatorprocess = (*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id);
 	hit_photon_startpos = TVector3(
 	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[0],
 	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[1],
@@ -2021,12 +2038,14 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	photonEndPos.push_back(hit_photon_endpos);
 	photonStartDir.push_back(hit_photon_startdir);
 	photonEndDir.push_back(hit_photon_enddir);
+  photonCreatorProcess.push_back(hit_photon_creatorprocess);                         // ADD A GENERIC PROCESS NAME
 #ifdef _SAVE_RAW_HITS_VERBOSE
 	hit_time_smear = (*WCDC_hits)[idigi]->GetTime(id);
 	smeartime.push_back(hit_time_smear);
 #endif
       }//id
 #ifdef _SAVE_RAW_HITS_VERBOSE
+  G4cout << "Hits CreatorProcess: " << photonCreatorProcess << G4endl;
       if(digi_tubeid < NPMTS_VERBOSE) {
 	G4cout << "Adding " << truetime.size()
 	       << " Cherenkov hits in tube " << digi_tubeid
@@ -2048,7 +2067,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				      photonStartPos,
 				      photonEndPos,
 				      photonStartDir,
-				      photonEndDir);
+				      photonEndDir,
+              photonCreatorProcess);         // INCLUDE THE VECTOR OF CREATOR PROCESSES
       smeartime.clear();
       truetime.clear();
       parentSavedTrackID.clear();
@@ -2057,6 +2077,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       photonEndPos.clear();
       photonStartDir.clear();
       photonEndDir.clear();
+      photonCreatorProcess.clear();                  // CLEAR THE TEMPORARY VECTOR
     }//idigi
   }//if(WCDC_hits)
 

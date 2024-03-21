@@ -56,21 +56,20 @@ public: // with description
    { return PDGEncoding; }
    inline G4ThreeVector GetInitialMomentum() const
    { return initialMomentum; }
-  inline G4String GetCreatorProcessName() const {
+   inline G4String GetCreatorProcessName() const {
     return creatorProcess;
-  }
-  
-  inline G4double GetGlobalTime() const
-  { return globalTime; }
-  inline G4bool GetSaveFlag() const { return SaveIt; }
-  inline void SetSaveFlag(G4bool value) { SaveIt = value; }
-  inline G4bool GetProducesHit() const { return producesHit; }
-  inline void SetProducesHit(G4bool value) { producesHit = value; }
-  inline G4bool GetSavePhotonTrack() const { return savePhotonTrack; }
-  inline void SetSavePhotonTrack(G4bool value) { savePhotonTrack = value; }
+   } 
+   inline G4double GetGlobalTime() const
+   { return globalTime; }
+   inline G4bool GetSaveFlag() const { return SaveIt; }
+   inline void SetSaveFlag(G4bool value) { SaveIt = value; }
+   inline G4bool GetProducesHit() const { return producesHit; }
+   inline void SetProducesHit(G4bool value) { producesHit = value; }
+   inline G4bool GetSavePhotonTrack() const { return savePhotonTrack; }
+   inline void SetSavePhotonTrack(G4bool value) { savePhotonTrack = value; }
 
-  inline WCSimTrajectory* GetParentTrajectory() const { return parentTrajectory; }
-  inline void SetParentTrajectory(WCSimTrajectory* trajectory) { parentTrajectory = trajectory; }
+   inline WCSimTrajectory* GetParentTrajectory() const { return parentTrajectory; }
+   inline void SetParentTrajectory(WCSimTrajectory* trajectory) { parentTrajectory = trajectory; }
 
 // New function we have added
    inline G4ThreeVector GetStoppingPoint() const

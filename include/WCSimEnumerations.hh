@@ -45,6 +45,22 @@ typedef enum EReflectionSurface {
   kPhotocathodeS
 } ReflectionSurface_t;
 
+typedef enum EProcessType { // Diego Costas 27/02/2024
+  kUnknownProcess,
+  kDarkNoise,
+  kHadElastic,
+  kNCapture,
+  kCompt,
+  kPhot,
+  kCCerenkov,
+  kSScintillation,
+  kEBrem,
+  kAnnihil,
+  kConv,
+  kEIoni,
+  kNeutronInelastic
+} ProcessType_t;
+
 class WCSimEnumerations
 {
 public:
@@ -54,6 +70,8 @@ public:
   static std::string EnumAsString(WCSimRandomGenerator_t r);
   static std::string EnumAsString(BoundaryType_t b);
   static std::string EnumAsString(ReflectionSurface_t r);
+  static std::string EnumAsString(ProcessType_t p);
+  static ProcessType_t ProcessTypeStringToEnum(const std::string& str);
   static TriggerType_t TriggerTypeFromString(std::string s);
 
 };

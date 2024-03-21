@@ -415,6 +415,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 					   Double_t stop[3],
 					   Double_t start[3],
 					   Int_t parenttype,
+					   ProcessType_t creatorProcess,
 					   Double_t time,
 					   Int_t id,
 					   Int_t idParent,
@@ -443,6 +444,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(Int_t ipnu,
 						stop,
 						start,
 						parenttype,
+						creatorProcess,
 						time,
 						id,
 						idParent,
@@ -485,6 +487,7 @@ WCSimRootTrack *WCSimRootTrigger::AddTrack(WCSimRootTrack * track)
 					  stop,
 					  start,
 					  track->GetParenttype(),
+            track->GetCreatorProcess(),
 					  track->GetTime(),
 					  track->GetId(),
 					  track->GetParentId(),
@@ -520,6 +523,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
 			       Double_t stop[3],
 			       Double_t start[3],
 			       Int_t parenttype,
+             ProcessType_t creatorProcess,
 			       Double_t time,
 			       Int_t id,
 			       Int_t idParent,
@@ -547,6 +551,7 @@ WCSimRootTrack::WCSimRootTrack(Int_t ipnu,
     fStart[i] = start[i];
   }
   fParenttype = parenttype;
+  fCreatorProcess = creatorProcess;
   fTime = time;
   fId = id;
   fParentId = idParent;
@@ -567,7 +572,8 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
 							 std::vector<TVector3> photonStartPos,
 							 std::vector<TVector3> photonEndPos,
 							 std::vector<TVector3> photonStartDir,
-							 std::vector<TVector3> photonEndDir)
+							 std::vector<TVector3> photonEndDir,
+               std::vector<ProcessType_t> photonCreatorProcess)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -585,10 +591,13 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
       startDir[j] = photonStartDir[i][j];
       endDir[j] = photonEndDir[i][j];
     }
+    
+    ProcessType_t creatorProcess = photonCreatorProcess[i]; // Get the creator process for this p.e. 
+
     //WCSimRootCherenkovHitTime *cherenkovhittime =
     new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],parentSavedTrackID[i],
 									    photonStartTime[i], startPos, endPos,
-									    startDir, endDir);
+									    startDir, endDir, creatorProcess);
   }
   
 #ifdef DEBUG
@@ -656,12 +665,14 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
 						     Float_t photonStartPos[3],
 						     Float_t photonEndPos[3],
 						     Float_t photonStartDir[3],
-						     Float_t photonEndDir[3])
+						     Float_t photonEndDir[3],
+                 ProcessType_t photonCreatorProcess)
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
   fTruetime        = truetime;
   fParentSavedTrackID = parentSavedTrackID;
   fPhotonStartTime = photonStartTime;
+  fPhotonCreatorProcess = photonCreatorProcess;
   for (int i=0;i<3;i++) {
     fPhotonStartPos[i] = photonStartPos[i];
     fPhotonEndPos[i] = photonEndPos[i];
@@ -858,6 +869,7 @@ bool WCSimRootTrack::CompareAllVariables(const WCSimRootTrack * c) const
   failed = (!ComparisonPassedVec(boundaryKEs, c->GetBoundaryKEs(), typeid(*this).name(), __func__, "boundaryKEs")) || failed;
   failed = (!ComparisonPassedVec(boundaryTimes, c->GetBoundaryTimes(), typeid(*this).name(), __func__, "boundaryTimes")) || failed;
   failed = (!ComparisonPassedVec(boundaryTypes, c->GetBoundaryTypes(), typeid(*this).name(), __func__, "boundaryTypes")) || failed;
+  failed = (!ComparisonPassed(fCreatorProcess, c->GetCreatorProcess(), typeid(*this).name(), __func__, "CreatorProcess")) || failed;
 
   return !failed;
 }
@@ -885,6 +897,7 @@ bool WCSimRootCherenkovHitTime::CompareAllVariables(const WCSimRootCherenkovHitT
   failed = (!ComparisonPassed(fTruetime, c->GetTruetime(), typeid(*this).name(), __func__, "Truetime")) || failed;
   failed = (!ComparisonPassed(fParentSavedTrackID, c->GetParentID(), typeid(*this).name(), __func__, "ParentSavedTrackID")) || failed;
   failed = (!ComparisonPassed(fPhotonStartTime, c->GetPhotonStartTime(), typeid(*this).name(), __func__, "PhotonStartTime")) || failed;
+  failed = (!ComparisonPassed(fPhotonCreatorProcess, c->GetPhotonCreatorProcess(), typeid(*this).name(), __func__, "PhotonCreatorProcess")) || failed;
   for(int i = 0; i < 3; i++) {
     failed = (!ComparisonPassed(fPhotonStartPos[i], c->GetPhotonStartPos(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonStartPos", i))) || failed;
     failed = (!ComparisonPassed(fPhotonEndPos[i], c->GetPhotonEndPos(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonEndPos", i))) || failed;

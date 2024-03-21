@@ -97,6 +97,9 @@ public:
   void SetDefaultNuPrismGeometry();
   void SetIWCDGeometry(); // IWCD with mPMTs, updated geometry as of 20230630
   void SetIWCD_WithOD_Geometry(); // Same as above with OD
+  void SetPlaceBGOGeometry(G4bool placeBGO) { placeBGOGeometry=placeBGO; } // Diego Costas, 26/02/2024
+  G4bool IsBGOGeometrySet() const { return placeBGOGeometry; } // Diego Costas, 26/02/2024
+  
   /**
      Dump the values of many variables used to define geometries including
      - radii, heights, name, etc. of the detector
@@ -176,6 +179,9 @@ public:
       WCDetCentre[1] = y;
       WCDetCentre[2] = z;
   }
+  
+  // BGO
+  G4Material* BGO;
 
   // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
@@ -730,6 +736,8 @@ private:
   // amb79: to universally make changes in structure and geometry
   bool isUpright;
 
+  // BGO Placement
+  G4bool placeBGOGeometry;
 
   // Add bool to indicate whether we load nuPRISM geometry  
   G4bool isNuPrism;
