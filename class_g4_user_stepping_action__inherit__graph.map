@@ -1,3 +1,0 @@
-<map id="G4UserSteppingAction" name="G4UserSteppingAction">
-<area shape="rect" id="node2" href="$class_w_c_sim_stepping_action.html" title="{WCSimSteppingAction\n|&#45; runAction\l&#45; det\l&#45; ret\l|+ WCSimSteppingAction()\l+ ~WCSimSteppingAction()\l+ UserSteppingAction()\l+ G4ThreeVectorToWireTime()\l+ Distortion()\l+ FieldLines()\l+ GetRunAction()\l}" alt="" coords="5,131,224,325"/>
-</map>

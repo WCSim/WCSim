@@ -1,5 +1,0 @@
-<map id="WCSimPhysicsListFactoryMessenger" name="WCSimPhysicsListFactoryMessenger">
-<area shape="rect" id="node4" href="$class_w_c_sim_physics_list_factory.html" title="{WCSimPhysicsListFactory\n||+ WCSimPhysicsListFactory()\l+ ~WCSimPhysicsListFactory()\l+ SetList()\l+ InitializeList()\l+ ConstructParticle()\l+ ConstructProcess()\l+ SetCuts()\l+ SaveOptionsToOutput()\l}" alt="" coords="300,334,524,514"/>
-<area shape="rect" id="node2" href="$class_g4_u_imessenger.html" title="{G4UImessenger\n||}" alt="" coords="119,5,245,83"/>
-<area shape="rect" id="node5" href="$class_g4_v_modular_physics_list.html" title="{G4VModularPhysicsList\n||}" alt="" coords="475,169,648,247"/>
-</map>

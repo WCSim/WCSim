@@ -1,4 +1,0 @@
-<map id="WCSimTuningMessenger" name="WCSimTuningMessenger">
-<area shape="rect" id="node4" href="$class_w_c_sim_tuning_parameters.html" title="{WCSimTuningParameters\n||+ WCSimTuningParameters()\l+ ~WCSimTuningParameters()\l+ GetRayff()\l+ SetRayff()\l+ GetBsrff()\l+ SetBsrff()\l+ GetAbwff()\l+ SetAbwff()\l+ GetRgcff()\l+ SetRgcff()\l+ GetMieff()\l+ SetMieff()\l+ GetTVSpacing()\l+ SetTVSpacing()\l+ GetTopVeto()\l+ SetTopVeto()\l+ SaveOptionsToOutput()\l+ GetWCODWLSCladdingReflectivity()\l+ SetWCODWLSCladdingReflectivity()\l+ GetWCODTyvekReflectivity()\l+ SetWCODTyvekReflectivity()\l}" alt="" coords="197,536,467,907"/>
-<area shape="rect" id="node2" href="$class_g4_u_imessenger.html" title="{G4UImessenger\n||}" alt="" coords="97,5,223,83"/>
-</map>

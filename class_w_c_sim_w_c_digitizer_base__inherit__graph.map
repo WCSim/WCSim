@@ -1,4 +1,0 @@
-<map id="WCSimWCDigitizerBase" name="WCSimWCDigitizerBase">
-<area shape="rect" id="node3" href="$class_w_c_sim_w_c_digitizer_s_k_i.html" title="{WCSimWCDigitizerSKI\n||+ WCSimWCDigitizerSKI()\l+ ~WCSimWCDigitizerSKI()\l+ DigitizeHits()\l&#45; GetDefaultDeadTime()\l&#45; GetDefaultIntegrationWindow()\l&#45; GetDefaultTimingPrecision()\l&#45; GetDefaultPEPrecision()\l&#45; Threshold()\l}" alt="" coords="11,667,245,847"/>
-<area shape="rect" id="node2" href="$class_g4_v_digitizer_module.html" title="{G4VDigitizerModule\n||}" alt="" coords="53,5,203,83"/>
-</map>

@@ -1,6 +1,0 @@
-<map id="WCSimWCTriggerBase" name="WCSimWCTriggerBase">
-<area shape="rect" id="node3" href="$class_w_c_sim_w_c_trigger_n_digits.html" title="A simple NDigits trigger class. " alt="" coords="5,1181,229,1405"/>
-<area shape="rect" id="node4" href="$class_w_c_sim_w_c_trigger_n_digits2.html" title="An (incomplete) example of running two trigger algorithms, one after the other. " alt="" coords="253,1181,480,1405"/>
-<area shape="rect" id="node5" href="$class_w_c_sim_w_c_trigger_no_trigger.html" title="{WCSimWCTriggerNoTrigger\n||+ WCSimWCTriggerNoTrigger()\l+ ~WCSimWCTriggerNoTrigger()\l&#45; DoTheWork()\l&#45; GetDefaultMultiDigitsPer\lTrigger()\l&#45; GetDefaultNDigitsWindow()\l&#45; GetDefaultNDigitsThreshold()\l&#45; GetDefaultNDigitsPreTrigger\lWindow()\l&#45; GetDefaultNDigitsPostTrigger\lWindow()\l}" alt="" coords="505,1181,737,1405"/>
-<area shape="rect" id="node2" href="$class_g4_v_digitizer_module.html" title="{G4VDigitizerModule\n||}" alt="" coords="291,5,441,83"/>
-</map>
