@@ -168,7 +168,7 @@ void WCSimTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
     if(nSeco>0)
     {
       for(size_t i=0;i<nSeco;i++)
-      { 
+      {
         WCSimTrackInformation* infoSec = new WCSimTrackInformation();
         infoSec->SetParentTrajectory(anInfo->GetMyTrajectory());
         (*secondaries)[i]->SetUserInformation(infoSec);

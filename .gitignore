@@ -54,3 +54,6 @@ geofile*.txt
 data_solar/
 include/WCSimGenerator_Solar.hh
 src/WCSimGenerator_Solar.cc
+
+## Ignore DS_STORE file
+.DS_STORE

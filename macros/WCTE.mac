@@ -19,6 +19,28 @@
 
 # True --> default replica method to place PMTs. False --> new placement method 
 /WCSim/PMT/ReplicaPlacement false
+
+##################
+# AmBe CALIBRATION SOURCE
+##################
+# - BGO Placement: Default in source code is false. If set to true, you'll place the BGO inside
+# the detector geometry at (0,0,0) position. This is only supported if you use ambeevt generator
+# so you can see the tag scintillation light for the AmBe source.
+#/WCSim/BGOPlacement true
+# Note that /WCSim/BGOPlacement *must* be set before /WCSim/Construct
+
+# - /WCSim/SaveCapture & /process/inactivate nKiller: Default not set.
+# Also specially needed for AmBe calibration. The first command makes sure the Capture processes
+# are being saved. The second one ensures Geant4 is not killing neutrons too early in the run,
+# so we can have neutronCapture at any time in the run.
+# Note that the nKiller process is not defined in the FTFP_BERT_HP
+#  (can be turned on via /WCSim/physics/list FTFP_BERT_HP in jobOptions.mac)
+# and so will cause a fatal crash.
+# When using FTFP_BERT_HP, neutrons are not killed and so you just have
+# to set /WCSim/SaveCapture true
+#/WCSim/SaveCapture true
+#/process/inactivate nKiller
+
 ############################################################################################
 ##These comments are only useful when using /WCSim/PMT/ReplicaPlacement false
 # Apply random fluctuation to PMT placement. Argument specifies the Gaussian 1 sigma value
@@ -142,7 +164,31 @@
 #/gps/ang/minphi 0 deg
 #/gps/ang/maxphi 360 deg
 
-##### NEW
+# Or you can use the AmBe Calibration Source Generator.
+# This launches two primary particles in a random direction from the (0,0,0): one neutron and one gamma.
+# The energy of the gamma can be:
+# - 4.4 MeV 65% of the time.
+# - 7.7 MeV 8%  of the time.
+# - 0.0 MeV 26% of the time.
+# Neutron Energy is taken from a simulated realistic AmBe Spectrum depending on the Gamma Energy.
+# In order to run this correctly, the AmBe source must be in the geometry & neutron capture must be activated - for details see the "AmBe CALIBRATION SOURCE" section above
+#/mygen/generator ambeevt
+
+##################
+# TRACKING
+##################
+## Commands to control which true particle tracks are tracked and saved to the output file:
+## By default, save all tracks in the chain from primaries to those that produce Cherenkov photons that produce hits
+## To disable this behaviour and only save tracks of particular creation processes and particle types, set to false
+/Tracking/saveHitProducingTracks true
+## By default, all electrons, muons, pions, kaons, protons and neutrons are saved, and particles created by Decay, conv,
+## nCapture or OpWLS processes
+## Add additional PDG codes of particle types or additional Geant4 process names of creation processes of tracks to save
+## Note that optical photons have PDG code 0 in Geant4
+#/Tracking/trackParticle 0
+#/Tracking/trackProcess Cerenkov
+## Due to the typically very large number of optical photons, a fraction can be tracked by setting the percentage to randomly draw
+## Note that the value is a percentage from 0.0 to 100.0, not fraction 0.0 to 1.0
 /Tracking/fractionOpticalPhotonsToDraw 0.0
 
 ## change the name of the output root file, default = wcsim.root
@@ -157,3 +203,4 @@
 
 /run/beamOn 1
 #exit
+

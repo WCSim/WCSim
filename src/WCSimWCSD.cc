@@ -76,26 +76,31 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4TouchableHandle  theTouchable = preStepPoint->GetTouchableHandle();
   G4VPhysicalVolume* thePhysical  = theTouchable->GetVolume();
 
-
   //XQ 3/30/11 try to get the local position try to add the position and direction
-  G4ThreeVector worldPosition = preStepPoint->GetPosition();
-  G4ThreeVector localPosition = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
+  G4ThreeVector worldPosition  = preStepPoint->GetPosition();
+  G4ThreeVector localPosition  = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
   G4ThreeVector worldDirection = preStepPoint->GetMomentumDirection();
   G4ThreeVector localDirection = theTouchable->GetHistory()->GetTopTransform().TransformAxis(worldDirection);
 
-
   WCSimTrackInformation* trackinfo 
     = (WCSimTrackInformation*)(aStep->GetTrack()->GetUserInformation());
-  
+
   G4int parentSavedTrackID = -1;
-  G4float photonStartTime;
+  G4float       photonStartTime;
   G4ThreeVector photonStartPos;
   G4ThreeVector photonStartDir;
-  parentSavedTrackID = aStep->GetTrack()->GetParentID();
-  photonStartTime = aStep->GetTrack()->GetGlobalTime() - aStep->GetTrack()->GetLocalTime(); // current time minus elapsed time of track
-  photonStartPos = aStep->GetTrack()->GetVertexPosition();
-  photonStartDir = aStep->GetTrack()->GetVertexMomentumDirection();
-
+  
+  parentSavedTrackID   = aStep->GetTrack()->GetParentID();
+  photonStartTime      = aStep->GetTrack()->GetGlobalTime() - aStep->GetTrack()->GetLocalTime(); // current time minus elapsed time of track
+  photonStartPos       = aStep->GetTrack()->GetVertexPosition();
+  photonStartDir       = aStep->GetTrack()->GetVertexMomentumDirection();
+ 
+  // Need to create a NONE string in case the Hit has no creatorProcess, such a Dark Noise Hit.
+  const G4VProcess* process = aStep->GetTrack()->GetCreatorProcess();
+  ProcessType_t photonCreatorProcess(kUnknownProcess);
+  if (process) {
+    photonCreatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(process->GetProcessName());
+  }
 
   G4int    trackID           = aStep->GetTrack()->GetTrackID();
   G4String volumeName        = aStep->GetTrack()->GetVolume()->GetName();
@@ -250,6 +255,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
+     (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(photonCreatorProcess);
 	   
 	   //     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
 	   //       newHit->Print();
@@ -264,6 +270,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
+   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(photonCreatorProcess);
 	 
        }
      }

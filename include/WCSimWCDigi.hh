@@ -1,6 +1,8 @@
 #ifndef WCSimWCDigi_h
 #define WCSimWCDigi_h 1
 
+#include "WCSimEnumerations.hh"
+
 #include "G4VDigi.hh"
 #include "G4TDigiCollection.hh"
 #include "G4Allocator.hh"
@@ -63,13 +65,14 @@ private:
    *  The second digit is made up of photons: 10,11,13,14
    */
   std::map<int, std::vector<int> > fDigiComp;
-  std::map<int, G4int>            trackID; // TrackID of the photon of the Hit (do not use for Digits)
-  std::map<int, G4int>    parentSavedTrackID; ///< Primary parent ID of the Hit (do not use for Digits)
-  std::map<int, G4float>    photonStartTime; ///< Primary parent ID of the Hit (do not use for Digits)
-  std::map<int, G4ThreeVector>    photonStartPos; ///< Start point of the photon of the Hit (do not use for Digits)
-  std::map<int, G4ThreeVector>    photonEndPos; ///< End point of the photon of the Hit (do not use for Digits)
-  std::map<int, G4ThreeVector>    photonStartDir; ///< Start dir of the photon of the Hit (do not use for Digits)
-  std::map<int, G4ThreeVector>    photonEndDir; ///< End dir of the photon of the Hit (do not use for Digits)
+  std::map<int, G4int>             trackID;              ///< TrackID of the photon of the Hit (do not use for Digits)
+  std::map<int, G4int>             parentSavedTrackID;   ///< Primary parent ID of the Hit (do not use for Digits)
+  std::map<int, G4float>           photonStartTime;      ///< Primary parent ID of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>     photonStartPos;       ///< Start point of the photon of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>     photonEndPos;         ///< End point of the photon of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>     photonStartDir;       ///< Start dir of the photon of the Hit (do not use for Digits)
+  std::map<int, G4ThreeVector>     photonEndDir;         ///< End dir of the photon of the Hit (do not use for Digits)
+  std::map<int, ProcessType_t>     photonCreatorProcess; ///< Process which created the photon of the Hit (Diego Costas)
 
   //integrated hit/digit parameters
   G4int                 totalPe;
@@ -96,6 +99,7 @@ public:
   inline void SetPhotonEndPos(G4int gate, const G4ThreeVector &position) { photonEndPos[gate] = position; };
   inline void SetPhotonStartDir(G4int gate, const G4ThreeVector &direction) { photonStartDir[gate] = direction; };
   inline void SetPhotonEndDir(G4int gate, const G4ThreeVector &direction) { photonEndDir[gate] = direction; };
+  inline void SetPhotonCreatorProcess(G4int gate, ProcessType_t creatorProcess) { photonCreatorProcess[gate] = creatorProcess; };
 
   // Add a digit number and unique photon number to fDigiComp
   inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
@@ -115,6 +119,7 @@ public:
   inline G4ThreeVector  GetPhotonEndPos(int gate)    { return photonEndPos[gate];};
   inline G4ThreeVector  GetPhotonStartDir(int gate)    { return photonStartDir[gate];};
   inline G4ThreeVector  GetPhotonEndDir(int gate)    { return photonEndDir[gate];};
+  inline ProcessType_t  GetPhotonCreatorProcess(int gate) { return photonCreatorProcess[gate];};
   inline G4double GetGateTime(int gate) { return TriggerTimes[gate];}
   inline G4int   GetTubeID() {return tubeID;};
   inline G4String   GetTubeType() {return tubeType;};
@@ -187,6 +192,7 @@ public:
     G4ThreeVector index_photonendpos;
     G4ThreeVector index_photonstartdir;
     G4ThreeVector index_photonenddir;
+    ProcessType_t      index_photoncreatorprocess;
     bool sort_digi_compositions = (fDigiComp.size()==time.size());
     // SortDigiMapsByHitTime is called by WCSimWCDigitizerSKI::DigitizeHits to sort the WCRawPMTSignalCollection.
     // Each entry in WCRawPMTSignalCollection represents the set of photon hits on a PMT.
@@ -195,17 +201,18 @@ public:
 
     for (i = 1; i < (int) time.size(); ++i)
       {
-        index_time  = time.at(i);
-        index_timepresmear  = time_presmear.at(i);
-        index_pe = pe.at(i);
+        index_time         = time.at(i);
+        index_timepresmear = time_presmear.at(i);
+        index_pe           = pe.at(i);
         if(sort_digi_compositions) index_digicomp = fDigiComp.at(i);
-        index_trackID = trackID.at(i);
-        index_parentSavedTrackID = parentSavedTrackID.at(i);
-	index_photonstarttime = photonStartTime[i];
-	index_photonstartpos = photonStartPos[i];
-	index_photonendpos = photonEndPos[i];
-	index_photonstartdir = photonStartDir[i];
-	index_photonenddir = photonEndDir[i];
+        index_trackID              = trackID.at(i);
+        index_parentSavedTrackID   = parentSavedTrackID.at(i);
+        index_photonstarttime      = photonStartTime[i];
+        index_photonstartpos       = photonStartPos[i];
+        index_photonendpos         = photonEndPos[i];
+        index_photonstartdir       = photonStartDir[i];
+        index_photonenddir         = photonEndDir[i];
+        index_photoncreatorprocess = photonCreatorProcess[i];
         for (j = i; j > 0 && time.at(j-1) > index_time; j--) {
           time.at(j) = time.at(j-1);
           time_presmear.at(j) = time_presmear.at(j-1);
@@ -213,11 +220,12 @@ public:
           if(sort_digi_compositions) fDigiComp.at(j) = fDigiComp.at(j-1);
           trackID.at(j) = trackID.at(j-1);
           parentSavedTrackID.at(j) = parentSavedTrackID.at(j-1);
-	  photonStartTime.at(j) = photonStartTime.at(j-1);
-	  photonStartPos.at(j) = photonStartPos.at(j-1);
-	  photonEndPos.at(j) = photonEndPos.at(j-1);
-	  photonStartDir.at(j) = photonStartDir.at(j-1);
-	  photonEndDir.at(j) = photonEndDir.at(j-1);
+          photonStartTime.at(j) = photonStartTime.at(j-1);
+          photonStartPos.at(j) = photonStartPos.at(j-1);
+          photonEndPos.at(j) = photonEndPos.at(j-1);
+          photonStartDir.at(j) = photonStartDir.at(j-1);
+          photonEndDir.at(j) = photonEndDir.at(j-1);
+          photonCreatorProcess.at(j) = photonCreatorProcess.at(j-1);
           //G4cout <<"swapping "<<time.at(j-1)<<" "<<index_time<<G4endl;
         }
         time.at(j) = index_time;
@@ -226,12 +234,13 @@ public:
         if(sort_digi_compositions) fDigiComp.at(j) = index_digicomp;
         trackID.at(j) = index_trackID;
         parentSavedTrackID.at(j) = index_parentSavedTrackID;
-	photonStartTime.at(j) = index_photonstarttime;
-	photonStartPos.at(j) = index_photonstartpos;
-	photonEndPos.at(j) = index_photonendpos;
-	photonStartDir.at(j) = index_photonstartdir;
-	photonEndDir.at(j) = index_photonenddir;
-      }
+        photonStartTime.at(j) = index_photonstarttime;
+        photonStartPos.at(j) = index_photonstartpos;
+        photonEndPos.at(j) = index_photonendpos;
+        photonStartDir.at(j) = index_photonstartdir;
+        photonEndDir.at(j) = index_photonenddir;
+        photonCreatorProcess.at(j) = index_photoncreatorprocess;
+    }
   }
   
   void insertionSort(int a[], int array_size)

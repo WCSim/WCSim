@@ -1,6 +1,8 @@
 #ifndef WCSimWCHit_h
 #define WCSimWCHit_h 1
 
+#include "WCSimEnumerations.hh"
+
 #include "G4VHit.hh"
 #include "G4THitsCollection.hh"
 #include "G4Allocator.hh"
@@ -43,6 +45,8 @@ class WCSimWCHit : public G4VHit
   void AddPhotonEndPos  (const G4ThreeVector &photEndPos) { photonEndPos.push_back(photEndPos); }
   void AddPhotonStartDir  (const G4ThreeVector &photStartDir) { photonStartDir.push_back(photStartDir); }
   void AddPhotonEndDir  (const G4ThreeVector &photEndDir) { photonEndDir.push_back(photEndDir); }
+  void AddPhotonCreatorProcess (const ProcessType_t creatorProcess) { photonCreatorProcess.push_back(creatorProcess); }
+
   void SetTubeType     (G4String tube_type)          { tubeType = tube_type; }; //Added by B.Quilain to transmit on which PMT type the hit happened. For detectors with several PMT types in ID.
 
   
@@ -73,6 +77,7 @@ class WCSimWCHit : public G4VHit
   G4ThreeVector GetPhotonEndPos(int i) { return photonEndPos[i];};
   G4ThreeVector GetPhotonStartDir(int i) { return photonStartDir[i];};
   G4ThreeVector GetPhotonEndDir(int i) { return photonEndDir[i];};
+  ProcessType_t GetPhotonCreatorProcess(int i) {return photonCreatorProcess[i]; };
   
   G4LogicalVolume* GetLogicalVolume() {return pLogV;};
 
@@ -157,6 +162,7 @@ class WCSimWCHit : public G4VHit
   std::vector<G4ThreeVector> photonEndPos;
   std::vector<G4ThreeVector> photonStartDir;
   std::vector<G4ThreeVector> photonEndDir;
+  std::vector<ProcessType_t>   photonCreatorProcess;
   G4int                 totalPeInGate;
 };
 

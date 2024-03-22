@@ -5,9 +5,13 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+New features
+* Pull request #387 @DiegoCostas97: Add (optional) AmBe source geometry
+* Pull request #387 @DiegoCostas97: New AmBe primary generator, simulating gamma + photon
+* Pull request #387 @DiegoCostas97: Addition of creator process to WCSimRootTrack & WCSimRootCherenkovHitTime
 
 *************************************************************
-31/01/2024: Notes for v1.12.9
+05/03/2024: Notes for v1.12.9
 *************************************************************
 
 Minor release after updates to mPMT aluminium photon propagation & WCTE PMT rotations
@@ -26,7 +30,7 @@ Documentation
 * Pull request #412 @tdealtry: Fix description of how to control dark noise options for "second ID PMT type" (mPMTs in FD geometry)
 
 *************************************************************
-31/01/2024: Notes for v1.12.8
+02/02/2024: Notes for v1.12.8
 *************************************************************
 
 Minor release after updates to WCTE geometry
