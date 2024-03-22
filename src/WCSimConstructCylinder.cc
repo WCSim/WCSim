@@ -28,6 +28,7 @@
 #include "G4ReflectionFactory.hh"
 #include "G4GeometryTolerance.hh"
 #include "G4GeometryManager.hh"
+#include "G4MultiUnion.hh"
 
 #include "WCSimTuningParameters.hh" //jl145
 
@@ -2973,64 +2974,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
                                                    annulusBlackSheetRmin,
                                                    annulusBlackSheetRmax);
 
-  G4LogicalVolume* logicWCBarrelAnnulusBlackSheet =
-    new G4LogicalVolume(solidWCBarrelBlackSheet,
-                        G4Material::GetMaterial("Blacksheet"),
-                        "WCBarrelAnnulusBlackSheet",
-                          0,0,0);
-
-   G4VPhysicalVolume* physiWCBarrelAnnulusBlackSheet =
-    new G4PVPlacement(0,
-                      G4ThreeVector(0.,0.,0.),
-                      logicWCBarrelAnnulusBlackSheet,
-                      "WCBarrelAnnulusBlackSheet",
-                      logicWCBarrelAnnulus,
-                      false,
-                      0,
-                      checkOverlaps);
-
-   
-   //G4LogicalBorderSurface * WaterBSBarrelSurface =
-	  new G4LogicalBorderSurface("WaterBSBarrelAnnulusSurface",
-								  physiWCBarrelAnnulus,
-								  physiWCBarrelAnnulusBlackSheet, 
-								  OpWaterBSSurface);
-   
-   new G4LogicalSkinSurface("BSBarrelAnnulusSkinSurface",logicWCBarrelAnnulusBlackSheet,
-							BSSkinSurface);
-
-  // Change made here to have the if statement contain the !debugmode to be consistent
-  // This code gives the Blacksheet its color. 
-
-  if (Vis_Choice == "RayTracer"){
-
-    G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
-      = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
-    WCBarrelBlackSheetCellVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
-	  WCBarrelBlackSheetCellVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
-    if(!debugMode)
-    {
-      logicWCBarrelAnnulusBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
-    }
-    else
-    {
-      logicWCBarrelAnnulusBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
-    }
-  }
-
-  else {
-
-    G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
-      = new G4VisAttributes(G4Colour(0.2,0.9,0.2));
-    if(!debugMode)
-    {
-      logicWCBarrelAnnulusBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
-    }
-    else
-    {
-      logicWCBarrelAnnulusBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
-    }
-  }
+  // delay blacksheet placement to create holes for intruding PMT if necessary
 
   //-----------------------------------------------------------
   // add extra tower if necessary
@@ -3081,7 +3025,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 			  G4Material::GetMaterial(water),
 			  "WCExtraTower",
 			  0,0,0);
-    G4VPhysicalVolume* physiWCExtraTower = 
+    //G4VPhysicalVolume* physiWCExtraTower = 
       new G4PVPlacement(0,
 			G4ThreeVector(0.,0.,0.),
 			logicWCExtraTower,
@@ -3101,68 +3045,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
       towerBSRmin[i] = annulusBlackSheetRmin[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
       towerBSRmax[i] = annulusBlackSheetRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
     }
-    G4Polyhedra* solidWCTowerBlackSheet = new G4Polyhedra("WCExtraTowerBlackSheet",
-			   totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
-			   2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
-		     1, //NPhi-gon
-			   WCBarrelNRings-1,
-			   mainAnnulusZ,
-			   towerBSRmin,
-			   towerBSRmax);
-    //G4cout << * solidWCTowerBlackSheet << G4endl;
-    G4LogicalVolume* logicWCTowerBlackSheet =
-      new G4LogicalVolume(solidWCTowerBlackSheet,
-			  G4Material::GetMaterial("Blacksheet"),
-			  "WCExtraTowerBlackSheet",
-			    0,0,0);
 
-    G4VPhysicalVolume* physiWCTowerBlackSheet =
-      new G4PVPlacement(0,
-			G4ThreeVector(0.,0.,0.),
-			logicWCTowerBlackSheet,
-			"WCExtraTowerBlackSheet",
-			logicWCExtraTower,
-			false,
-			0,
-			checkOverlaps);
-
-
-    //G4LogicalBorderSurface * WaterBSTowerCellSurface = 
-    new G4LogicalBorderSurface("WaterBSBarrelCellSurface",
-                    physiWCExtraTower,
-                    physiWCTowerBlackSheet, 
-                    OpWaterBSSurface);
-
-    new G4LogicalSkinSurface("BSTowerSkinSurface",logicWCTowerBlackSheet,
-                  BSSkinSurface);
-
-    // These lines add color to the blacksheet in the extratower. If using RayTracer, comment the first chunk and use the second. The Blacksheet should be green.
-  
-    if (Vis_Choice == "RayTracer"){
-    
-      G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
-        = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
-      WCBarrelBlackSheetCellVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
-      WCBarrelBlackSheetCellVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
-
-      if(!debugMode)
-        logicWCTowerBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
-      else
-        logicWCTowerBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
-    }
-
-    else {
-
-      G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
-        = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
-
-      if(!debugMode)
-        {logicWCTowerBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);}
-      else
-        {logicWCTowerBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);}
-    }
-  
-
+    // delay blacksheet placement to create holes for intruding PMT if necessary
   }
 
   //jl145------------------------------------------------
@@ -3400,6 +3284,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   //
   //jl145------------------------------------------------
 
+  // Union of PMT solids to resolve overlap
+  G4MultiUnion* pmt_solid = new G4MultiUnion("UnitedPMTs_Barrel");
 
   ///////////////   Barrel PMT placement
 
@@ -3470,6 +3356,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
         // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
         // this is still the case.
         copyNo++;
+
+        G4VSolid* solidNode = (hybrid && pmtType[i]==2) ? logicWCPMT2->GetSolid() :
+                                                          logicWCPMT->GetSolid() ;
+        G4Transform3D tr(PMTRotation->inverse(), PMTPosition);
+        pmt_solid->AddNode( *solidNode, tr );
       }
     }
     else // Use auto-positioning algorithm
@@ -3538,6 +3429,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
               // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
               // this is still the case.
 
+              G4VSolid* solidNode = (i==j && hybrid && WCPMTPercentCoverage2!=0) ? logicWCPMT2->GetSolid() :
+                                                          logicWCPMT->GetSolid() ;
+              G4Transform3D tr(PMTRotation->inverse(), PMTPosition);
+              pmt_solid->AddNode( *solidNode, tr );
+
             }
           }
         }
@@ -3604,6 +3500,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
                 // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
                 // daughter volumes to the PMTs (e.g. a acryl cover) you have to check, if
                 // this is still the case.
+
+              G4VSolid* solidNode = (i==j && hybrid && WCPMTPercentCoverage2!=0) ? logicWCPMT2->GetSolid() :
+                                                          logicWCPMT->GetSolid() ;
+              G4Transform3D tr(WCExtraPMTRotation->inverse(), PMTPosition);
+              pmt_solid->AddNode( *solidNode, tr );
             }
           }
 
@@ -3611,6 +3512,141 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
       }
     }
   }//end if placeBarrelPMTs
+
+  // create holes in blacksheet and do placement
+  pmt_solid -> Voxelize();
+
+  G4SubtractionSolid *solidWCBarrelBlackSheet_wHole = new G4SubtractionSolid("solidWCBarrelBlackSheet_wHole", solidWCBarrelBlackSheet, pmt_solid, 0, 
+                                                                          G4ThreeVector(0.,0.,0));
+
+  G4LogicalVolume* logicWCBarrelAnnulusBlackSheet =
+    new G4LogicalVolume(solidWCBarrelBlackSheet_wHole,
+                        G4Material::GetMaterial("Blacksheet"),
+                        "WCBarrelAnnulusBlackSheet",
+                          0,0,0);
+
+  G4VPhysicalVolume* physiWCBarrelAnnulusBlackSheet =
+    new G4PVPlacement(0,
+                      G4ThreeVector(0.,0.,0.),
+                      logicWCBarrelAnnulusBlackSheet,
+                      "WCBarrelAnnulusBlackSheet",
+                      logicWCBarrelAnnulus,
+                      false,
+                      0,
+                      checkOverlaps);
+
+   
+   //G4LogicalBorderSurface * WaterBSBarrelSurface =
+	  new G4LogicalBorderSurface("WaterBSBarrelAnnulusSurface",
+								  physiWCBarrelAnnulus,
+								  physiWCBarrelAnnulusBlackSheet, 
+								  OpWaterBSSurface);
+   
+  new G4LogicalSkinSurface("BSBarrelAnnulusSkinSurface",logicWCBarrelAnnulusBlackSheet,
+							BSSkinSurface);
+
+  // Change made here to have the if statement contain the !debugmode to be consistent
+  // This code gives the Blacksheet its color. 
+
+  if (Vis_Choice == "RayTracer"){
+
+    G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
+      = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
+    WCBarrelBlackSheetCellVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
+	  WCBarrelBlackSheetCellVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
+    if(!debugMode)
+    {
+      logicWCBarrelAnnulusBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
+    }
+    else
+    {
+      logicWCBarrelAnnulusBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
+    }
+  }
+
+  else {
+
+    G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
+      = new G4VisAttributes(G4Colour(0.2,0.9,0.2));
+    if(!debugMode)
+    {
+      logicWCBarrelAnnulusBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
+    }
+    else
+    {
+      logicWCBarrelAnnulusBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
+    }
+  }
+
+  if(!(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal))
+  {
+    logicWCExtraTower->SetVisAttributes(G4VisAttributes::Invisible);
+
+    G4Polyhedra* solidWCTowerBlackSheet = new G4Polyhedra("WCExtraTowerBlackSheet",
+			   totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
+			   2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
+		     1, //NPhi-gon
+			   WCBarrelNRings-1,
+			   mainAnnulusZ,
+			   towerBSRmin,
+			   towerBSRmax);
+    //G4cout << * solidWCTowerBlackSheet << G4endl;
+
+    G4SubtractionSolid *solidWCTowerBlackSheet_wHole = new G4SubtractionSolid("solidWCTowerBlackSheet_wHole", solidWCTowerBlackSheet, pmt_solid, 0, 
+                                                                          G4ThreeVector(0.,0.,0));
+
+    G4LogicalVolume* logicWCTowerBlackSheet =
+      new G4LogicalVolume(solidWCTowerBlackSheet_wHole,
+			  G4Material::GetMaterial("Blacksheet"),
+			  "WCExtraTowerBlackSheet",
+			    0,0,0);
+
+    //G4VPhysicalVolume* physiWCTowerBlackSheet =
+      new G4PVPlacement(0,
+			G4ThreeVector(0.,0.,0.),
+			logicWCTowerBlackSheet,
+			"WCExtraTowerBlackSheet",
+			logicWCExtraTower,
+			false,
+			0,
+			checkOverlaps);
+
+
+    //G4LogicalBorderSurface * WaterBSTowerCellSurface = 
+    // new G4LogicalBorderSurface("WaterBSBarrelCellSurface",
+    //                 physiWCExtraTower,
+    //                 physiWCTowerBlackSheet, 
+    //                 OpWaterBSSurface);
+
+    new G4LogicalSkinSurface("BSTowerSkinSurface",logicWCTowerBlackSheet,
+                  BSSkinSurface);
+
+    // These lines add color to the blacksheet in the extratower. If using RayTracer, comment the first chunk and use the second. The Blacksheet should be green.
+  
+    if (Vis_Choice == "RayTracer"){
+    
+      G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
+        = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
+      WCBarrelBlackSheetCellVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
+      WCBarrelBlackSheetCellVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
+
+      if(!debugMode)
+        logicWCTowerBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
+      else
+        logicWCTowerBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
+    }
+
+    else {
+
+      G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
+        = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
+
+      if(!debugMode)
+        {logicWCTowerBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);}
+      else
+        {logicWCTowerBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);}
+    }
+  }
 
   // # -------------------------------------- #
   // ##########################################
@@ -4197,61 +4233,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
                                                    borderAnnulusZ,
                                                    annulusBlackSheetRmin,
                                                    annulusBlackSheetRmax);
-
-  G4LogicalVolume* logicWCBarrelBorderBlackSheet =
-    new G4LogicalVolume(solidWCBarrelBlackSheet,
-                        G4Material::GetMaterial("Blacksheet"),
-                        bbbsname,
-                        0,0,0);
-
-  //G4VPhysicalVolume* physiWCBarrelBorderBlackSheet =
-    new G4PVPlacement(0,
-                      G4ThreeVector(0.,0.,(capAssemblyHeight/2.- barrelCellHeight/2.)*zflip),
-                      logicWCBarrelBorderBlackSheet,
-                      bbbsname,
-                      logicCapAssembly,
-                      false,
-                      0,
-                      checkOverlaps);
-   
-  new G4LogicalSkinSurface("BSBarrelBorderSkinSurface",logicWCBarrelBorderBlackSheet,
-							BSSkinSurface);
-
-  // Change made here to have the if statement contain the !debugmode to be consistent
-  // This code gives the Blacksheet its color. 
-
-  if (Vis_Choice == "RayTracer"){
-
-    G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
-      = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
-    WCBarrelBlackSheetCellVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
-	  WCBarrelBlackSheetCellVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
-    if(!debugMode)
-    {
-      logicWCBarrelBorderBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
-    }
-    else
-    {
-      logicWCBarrelBorderBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
-    }
-  }
-
-  else {
-
-    G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
-      = new G4VisAttributes(G4Colour(0.2,0.9,0.2));
-    if(!debugMode)
-    {
-      logicWCBarrelBorderBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
-    }
-    else
-    {
-      logicWCBarrelBorderBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
-    }
-  }
+  // delay blacksheet placement to create holes for intruding PMT if necessary
 
   const G4String etbcname = G4String("WCExtraTower") + oristr +
         G4String("BorderCell");      // "WCExtraTower[Top|Bot]]BorderCell"
+  const G4String etbcbsname = etbcname +
+        G4String("BlackSheet");      // "WCExtraTower[Top|Bot]]BorderCellBlackSheet"
   G4double towerBSRmin[3];
   G4double towerBSRmax[3];
   if(!(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal)){
@@ -4268,62 +4255,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
       towerBSRmin[i] = annulusBlackSheetRmin[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
       towerBSRmax[i] = annulusBlackSheetRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.);
     }
-    const G4String etbcbsname = etbcname +
-        G4String("BlackSheet");      // "WCExtraTower[Top|Bot]]BorderCellBlackSheet"
-    G4Polyhedra* solidWCExtraBorderBlackSheet = 
-      new G4Polyhedra(etbcbsname,
-			   totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
-			   2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
-		     1, //NPhi-gon
-			   3,
-			   borderAnnulusZ,
-			   towerBSRmin,
-			   towerBSRmax);
-    G4LogicalVolume* logicWCExtraBorderBlackSheet =
-      new G4LogicalVolume(solidWCExtraBorderBlackSheet,
-			  G4Material::GetMaterial("Blacksheet"),
-			  etbcbsname,
-			    0,0,0);
-
-    // G4VPhysicalVolume* physiWCExtraBorderBlackSheet =
-      new G4PVPlacement(0,
-			G4ThreeVector(0.,0.,(capAssemblyHeight/2.- barrelCellHeight/2.)*zflip),
-			logicWCExtraBorderBlackSheet,
-			etbcbsname,
-			logicCapAssembly,
-			false,
-			0,
-			checkOverlaps);
-
-    new G4LogicalSkinSurface("BSExtraBorderSkinSurface",logicWCExtraBorderBlackSheet,
-                  BSSkinSurface);
-
-    // These lines add color to the blacksheet in the extratower. If using RayTracer, comment the first chunk and use the second. The Blacksheet should be green.
-  
-    if (Vis_Choice == "RayTracer"){
-    
-      G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
-        = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
-      WCBarrelBlackSheetCellVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
-      WCBarrelBlackSheetCellVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
-
-      if(!debugMode)
-        logicWCExtraBorderBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
-      else
-        logicWCExtraBorderBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
-    }
-
-    else {
-
-      G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
-        = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
-
-      if(!debugMode)
-        {logicWCExtraBorderBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);}
-      else
-        {logicWCExtraBorderBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);}
-    }
-
+    // delay blacksheet placement to create holes for intruding PMT if necessary
   }
  //------------------------------------------------------------
  // add caps
@@ -4405,46 +4337,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     solidWCCapBlackSheet =
       new G4UnionSolid(capbsname, mainPart, extraSlice);
   }
-  G4LogicalVolume* logicWCCapBlackSheet =
-    new G4LogicalVolume(solidWCCapBlackSheet,
-			G4Material::GetMaterial("Blacksheet"),
-			capbsname,
-			0,0,0);
-  //G4VPhysicalVolume* physiWCCapBlackSheet =
-    new G4PVPlacement(0,
-                      G4ThreeVector(0.,0.,(-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness)*zflip),
-                      logicWCCapBlackSheet,
-                      capbsname,
-                      logicCapAssembly,
-                      false,
-                      0,
-					  checkOverlaps);
-  
-  new G4LogicalSkinSurface(capbsname + G4String("BSSkinSurface"),logicWCCapBlackSheet,
-						   BSSkinSurface);
-      
-  // used for OGLSX
-  if (Vis_Choice == "OGLSX"){
-
-    G4VisAttributes* WCCapBlackSheetVisAtt 
-    = new G4VisAttributes(G4Colour(0.9,0.2,0.2));
-  
-    if(!debugMode)
-          logicWCCapBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
-      else
-          logicWCCapBlackSheet->SetVisAttributes(WCCapBlackSheetVisAtt);}
-
-  // used for RayTracer (makes the caps blacksheet yellow)
-  if (Vis_Choice == "RayTracer"){
-
-    G4VisAttributes* WCCapBlackSheetVisAtt 
-    = new G4VisAttributes(G4Colour(1.0,1.0,0.0));
-
-    if(!debugMode)
-        //logicWCCapBlackSheet->SetVisAttributes(G4VisAttributes::Invisible); //Use this line if you want to make the blacksheet on the caps invisible to view through
-      logicWCCapBlackSheet->SetVisAttributes(WCCapBlackSheetVisAtt);
-      else
-          logicWCCapBlackSheet->SetVisAttributes(WCCapBlackSheetVisAtt);}
+  // delay blacksheet placement to create holes for intruding PMT if necessary
 
   //---------------------------------------------------------
   // Add top and bottom PMTs
@@ -4460,6 +4353,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   }
 
   G4String pmtname = "WCMultiPMT";
+
+  // Union of PMT solids to resolve overlap
+  G4MultiUnion* pmt_solid = new G4MultiUnion("UnitedPMTs_Cap");
 
   // unique copy number for auto placement
   G4int copyNo = 0;
@@ -4523,6 +4419,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
         // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
         // this is still the case.
         copyNo++;
+
+        G4VSolid* solidNode = (hybrid && pmtType[i]==2) ? logicWCPMT2->GetSolid() :
+                                                          logicWCPMT->GetSolid() ;
+        G4Transform3D tr(PMTRotation->inverse(), PMTPosition);
+        pmt_solid->AddNode( *solidNode, tr );
       }
     }
     else
@@ -4582,6 +4483,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
             // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
             // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
             // this is still the case.
+
+            G4VSolid* solidNode = (i==j && hybrid && WCPMTPercentCoverage2!=0) ? logicWCPMT2->GetSolid() :
+                                                          logicWCPMT->GetSolid() ;
+            G4Transform3D tr(PMTRotation->inverse(), PMTPosition);
+            pmt_solid->AddNode( *solidNode, tr );
           }
         }
       }
@@ -4644,6 +4550,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
               // logicWCPMT->GetDaughter(0),physiCapPMT is the glass face. If you add more 
               // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
               // this is still the case.
+            
+            G4VSolid* solidNode = (i==j && hybrid && WCPMTPercentCoverage2!=0) ? logicWCPMT2->GetSolid() :
+                                                          logicWCPMT->GetSolid() ;
+            G4Transform3D tr(PMTRotation->inverse(), PMTPosition);
+            pmt_solid->AddNode( *solidNode, tr );
           }
         }
       
@@ -4699,6 +4610,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
         // daugter volumes to the PMTs (e.g. a acryl cover) you have to check, if
         // this is still the case.
         icopy++;
+
+        G4VSolid* solidNode = (hybrid && pmtType[i]==2) ? logicWCPMT2->GetSolid() :
+                                                          logicWCPMT->GetSolid() ;
+        G4Transform3D tr(WCCapPMTRotation->inverse(), cellpos);
+        pmt_solid->AddNode( *solidNode, tr );
       }
     }
     else
@@ -4761,6 +4677,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
             // this is still the case.
 
             icopy++;
+
+            G4VSolid* solidNode = ((horizontalModulo == verticalModulo) && hybrid && WCPMTPercentCoverage2!=0) ? logicWCPMT2->GetSolid() :
+                                                          logicWCPMT->GetSolid() ;
+            G4Transform3D tr(WCCapPMTRotation->inverse(), cellpos);
+            pmt_solid->AddNode( *solidNode, tr );
           }
         }
       }
@@ -4770,6 +4691,169 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     G4cout << "total on cap: " << icopy << "\n";
     G4cout << "Coverage was calculated to be: " << (icopy*WCPMTRadius*WCPMTRadius/(WCIDRadius*WCIDRadius)) << "\n";
   }//end if placeCapPMTs
+
+  // create holes in blacksheet and do placement
+  pmt_solid -> Voxelize();
+
+  G4SubtractionSolid *solidWCBarrelBlackSheet_wHole = new G4SubtractionSolid("solidWCBarrelBlackSheet_wHole", solidWCBarrelBlackSheet, pmt_solid, 0, 
+                                                                          G4ThreeVector(0.,0.,-(capAssemblyHeight/2.- barrelCellHeight/2.)*zflip));
+
+  G4LogicalVolume* logicWCBarrelBorderBlackSheet =
+    new G4LogicalVolume(solidWCBarrelBlackSheet_wHole,
+                        G4Material::GetMaterial("Blacksheet"),
+                        bbbsname,
+                        0,0,0);
+
+  //G4VPhysicalVolume* physiWCBarrelBorderBlackSheet =
+    new G4PVPlacement(0,
+                      G4ThreeVector(0.,0.,(capAssemblyHeight/2.- barrelCellHeight/2.)*zflip),
+                      logicWCBarrelBorderBlackSheet,
+                      bbbsname,
+                      logicCapAssembly,
+                      false,
+                      0,
+                      checkOverlaps);
+   
+  new G4LogicalSkinSurface("BSBarrelBorderSkinSurface",logicWCBarrelBorderBlackSheet,
+							BSSkinSurface);
+
+  // Change made here to have the if statement contain the !debugmode to be consistent
+  // This code gives the Blacksheet its color. 
+
+  if (Vis_Choice == "RayTracer"){
+
+    G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
+      = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
+    WCBarrelBlackSheetCellVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
+	  WCBarrelBlackSheetCellVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
+    if(!debugMode)
+    {
+      logicWCBarrelBorderBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
+    }
+    else
+    {
+      logicWCBarrelBorderBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
+    }
+  }
+
+  else {
+
+    G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
+      = new G4VisAttributes(G4Colour(0.2,0.9,0.2));
+    if(!debugMode)
+    {
+      logicWCBarrelBorderBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
+    }
+    else
+    {
+      logicWCBarrelBorderBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
+    }
+  }
+
+  if(!(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal))
+  {
+    G4Polyhedra* solidWCExtraBorderBlackSheet = 
+      new G4Polyhedra(etbcbsname,
+			   totalAngle-2.*pi+barrelPhiOffset,//+dPhi/2., // phi start
+			   2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //phi end
+		     1, //NPhi-gon
+			   3,
+			   borderAnnulusZ,
+			   towerBSRmin,
+			   towerBSRmax);
+
+    G4SubtractionSolid *solidWCExtraBorderBlackSheet_wHole = new G4SubtractionSolid("solidWCExtraBorderBlackSheet_wHole", solidWCExtraBorderBlackSheet, pmt_solid, 0, 
+                                                                          G4ThreeVector(0.,0.,-(capAssemblyHeight/2.- barrelCellHeight/2.)*zflip));
+
+    G4LogicalVolume* logicWCExtraBorderBlackSheet =
+      new G4LogicalVolume(solidWCExtraBorderBlackSheet_wHole,
+			  G4Material::GetMaterial("Blacksheet"),
+			  etbcbsname,
+			    0,0,0);
+
+    // G4VPhysicalVolume* physiWCExtraBorderBlackSheet =
+      new G4PVPlacement(0,
+			G4ThreeVector(0.,0.,(capAssemblyHeight/2.- barrelCellHeight/2.)*zflip),
+			logicWCExtraBorderBlackSheet,
+			etbcbsname,
+			logicCapAssembly,
+			false,
+			0,
+			checkOverlaps);
+
+    new G4LogicalSkinSurface("BSExtraBorderSkinSurface",logicWCExtraBorderBlackSheet,
+                  BSSkinSurface);
+
+    // These lines add color to the blacksheet in the extratower. If using RayTracer, comment the first chunk and use the second. The Blacksheet should be green.
+  
+    if (Vis_Choice == "RayTracer"){
+    
+      G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
+        = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
+      WCBarrelBlackSheetCellVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
+      WCBarrelBlackSheetCellVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
+
+      if(!debugMode)
+        logicWCExtraBorderBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
+      else
+        logicWCExtraBorderBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);
+    }
+
+    else {
+
+      G4VisAttributes* WCBarrelBlackSheetCellVisAtt 
+        = new G4VisAttributes(G4Colour(0.2,0.9,0.2)); // green color
+
+      if(!debugMode)
+        {logicWCExtraBorderBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);}
+      else
+        {logicWCExtraBorderBlackSheet->SetVisAttributes(WCBarrelBlackSheetCellVisAtt);}
+    }
+  }
+
+  G4SubtractionSolid *solidWCCapBlackSheet_wHole = new G4SubtractionSolid("solidWCCapBlackSheet_wHole", solidWCCapBlackSheet, pmt_solid, 0, 
+                                                                          G4ThreeVector(0.,0.,-(-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness)*zflip));
+
+  G4LogicalVolume* logicWCCapBlackSheet =
+    new G4LogicalVolume(solidWCCapBlackSheet_wHole,
+      G4Material::GetMaterial("Blacksheet"),
+      capbsname,
+      0,0,0);
+  //G4VPhysicalVolume* physiWCCapBlackSheet =
+    new G4PVPlacement(0,
+                      G4ThreeVector(0.,0.,(-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness)*zflip),
+                      logicWCCapBlackSheet,
+                      capbsname,
+                      logicCapAssembly,
+                      false,
+                      0,
+            checkOverlaps);
+
+  new G4LogicalSkinSurface(capbsname + G4String("BSSkinSurface"),logicWCCapBlackSheet,
+						   BSSkinSurface);
+      
+  // used for OGLSX
+  if (Vis_Choice == "OGLSX"){
+
+    G4VisAttributes* WCCapBlackSheetVisAtt 
+    = new G4VisAttributes(G4Colour(0.9,0.2,0.2));
+
+    if(!debugMode)
+      logicWCCapBlackSheet->SetVisAttributes(G4VisAttributes::Invisible);
+    else
+      logicWCCapBlackSheet->SetVisAttributes(WCCapBlackSheetVisAtt);}
+
+  // used for RayTracer (makes the caps blacksheet yellow)
+  if (Vis_Choice == "RayTracer"){
+
+    G4VisAttributes* WCCapBlackSheetVisAtt 
+    = new G4VisAttributes(G4Colour(1.0,1.0,0.0));
+
+    if(!debugMode)
+      //logicWCCapBlackSheet->SetVisAttributes(G4VisAttributes::Invisible); //Use this line if you want to make the blacksheet on the caps invisible to view through
+      logicWCCapBlackSheet->SetVisAttributes(WCCapBlackSheetVisAtt);
+    else
+      logicWCCapBlackSheet->SetVisAttributes(WCCapBlackSheetVisAtt);}
 
   // # -------------------------------------- #
   // ##########################################
