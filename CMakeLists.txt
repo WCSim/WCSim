@@ -120,6 +120,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
       	${PROJECT_SOURCE_DIR}/data/LightInjectors.json
       	${PROJECT_SOURCE_DIR}/data/LI_OD_laser_ball_photon_positions.csv
         ${PROJECT_SOURCE_DIR}/data/mPMT_Position_WCTE.txt
+        ${PROJECT_SOURCE_DIR}/data/mPMT_Position_WCTE_CDS.txt
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
