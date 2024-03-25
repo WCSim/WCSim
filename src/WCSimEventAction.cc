@@ -956,19 +956,23 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCSimRootEvent * wcsimrootsuperevent2  = GetRunAction()->GetRootEvent("tankPMT2");
     WCSimRootTrigger * wcsimrootevent2 = wcsimrootsuperevent2->GetTrigger(0);
 
+    bool skipFillingTracks = false;
     FillRootEventHybrid(event_id,
 			jhfNtuple,
 			trajectoryContainer,
 			WCDC_hits,
 			WCDC,
-			"tank",wcsimrootsuperevent,wcsimrootevent);
+			"tank",wcsimrootsuperevent,wcsimrootevent,
+			skipFillingTracks);
+    skipFillingTracks = true;
     if(detectorConstructor->GetHybridPMT()){
       FillRootEventHybrid(event_id,
 			  jhfNtuple,
 			  trajectoryContainer,
 			  WCDC_hits2,
 			  WCDC2,
-			  "tankPMT2",wcsimrootsuperevent2,wcsimrootevent2);
+			  "tankPMT2",wcsimrootsuperevent2,wcsimrootevent2,
+			  skipFillingTracks);
     }
 
     if(detectorConstructor->GetIsODConstructed()){
@@ -977,7 +981,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 		    trajectoryContainer,
 		    WCDC_hits_OD,
 		    WCDC_OD,
-		    "OD");
+		    "OD",
+		    skipFillingTracks);
     }
     runAction->incrementEventsGenerated(); // Increment after filling branches
 
@@ -1114,7 +1119,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				     G4TrajectoryContainer* TC,
 				     WCSimWCDigitsCollection* WCDC_hits,
 				     WCSimWCTriggeredDigitsCollection* WCDC,
-				     G4String detectorElement)
+				     G4String detectorElement,
+				     bool skipFillingTracks)
 {
   // Fill up a Root event with stuff from the ntuple
 
@@ -1168,246 +1174,247 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   // Fill other info for this event
 
   wcsimrootevent->SetNvtxs(injhfNtuple.nvtxs);
-  for( Int_t u=0; u<injhfNtuple.nvtxs; u++ ){
-    wcsimrootevent->SetVtxsvol(u,injhfNtuple.vtxsvol[u]);
-    for (int j=0;j<4;j++)
-      {
-       wcsimrootevent->SetVtxs(u,j,injhfNtuple.vtxs[u][j]);
-      }
-      wcsimrootevent->SetMode(u,injhfNtuple.mode[u]);
-  }
-  wcsimrootevent->SetJmu(injhfNtuple.jmu);           //TF: undefined and only for Nuance
-  wcsimrootevent->SetJp(injhfNtuple.jp);             //TF: undefined and only for Nuance
-  wcsimrootevent->SetNpar(injhfNtuple.npar);         //TF: undefined
-  wcsimrootevent->SetVecRecNumber(injhfNtuple.vecRecNumber);  //TF: undefined and only for Nuance
-
-  // Add the tracks with the particle information
-  // First two tracks come from injhfNtuple, as they are special
-
-  int k;
-  for (k=0;k<injhfNtuple.npar;k++) // should be just 2
-  {
-    double dir[3];
-    double pdir[3];
-    double stop[3];
-    double start[3];
-    ProcessType_t creatorP = kUnknownProcess;
-    for (int l=0;l<3;l++)
-    {
-      dir[l]=injhfNtuple.dir[k][l];
-      pdir[l]=injhfNtuple.pdir[k][l];
-      stop[l]=injhfNtuple.stop[k][l];
-      start[l]=injhfNtuple.start[k][l];
-      //G4cout<< "start[" << k << "][" << l <<"]: "<< injhfNtuple.start[k][l] <<G4endl;
-      //G4cout<< "stop[" << k << "][" << l <<"]: "<< injhfNtuple.stop[k][l] <<G4endl;
-    }
-
-    // Add the track to the TClonesArray
-    wcsimrootevent->AddTrack(injhfNtuple.ipnu[k],
-			      injhfNtuple.flag[k],
-			      injhfNtuple.m[k],
-			      injhfNtuple.p[k],
-			      injhfNtuple.E[k],
-			      injhfNtuple.startvol[k],
-			      injhfNtuple.stopvol[k],
-			      dir,
-			      pdir,
-			      stop,
-			      start,
-			      injhfNtuple.parent[k],
-            creatorP,
-			      injhfNtuple.time[k],
-                  0,
-                  0,
-                  std::vector<std::vector<float>>(),
-                  std::vector<float>(),
-                  std::vector<double>(),
-                  std::vector<int>());
-  }
-
-  // the rest of the tracks come from WCSimTrajectory
-
-  std::set<int> pizeroList;
-  // added by M Fechner, dec 16th, 2004
-  std::set<int> muonList;
-  std::set<int> antimuonList;
-  // same, april 7th 2005
-  std::set<int> pionList;
-  std::set<int> antipionList;
-  std::set<int> primaryList;
-
-  // Pi0 specific variables
-  Double_t pi0Vtx[3];
-  Int_t   gammaID[2];
-  Double_t gammaE[2];
-  Double_t gammaVtx[2][3];
-  Int_t   r = 0;
-
-  G4int n_trajectories = 0;
-  if (TC)
-    n_trajectories = TC->entries();
-
-  // M Fechner : removed this limit to get to the primaries...
-  //if (n_trajectories>50)  // there is no need for this limit, but it has
-  //n_trajectories=50;    // existed in previous versions of the code.  It also
-                          // makes the ROOT file smaller.
-
-  std::map<int,int> trajMap; // mapping of trackID and index
-  for (int i=0; i <n_trajectories; i++)
-  {
-    WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[i];
-
-    // If this track is a pizero remember it for later
-    if ( trj->GetPDGEncoding() == 111)
-      pizeroList.insert(trj->GetTrackID());
-    // If it is a mu+/mu- also remember it
-    if ( trj->GetPDGEncoding() == 13 ) muonList.insert(trj->GetTrackID());
-    if ( trj->GetPDGEncoding() == -13 ) antimuonList.insert(trj->GetTrackID());
-    if ( trj->GetPDGEncoding() == 211 ) pionList.insert(trj->GetTrackID());
-    if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
-    if ( trj->GetParentID() == 0 ) primaryList.insert(trj->GetTrackID());
-
-    trajMap[trj->GetTrackID()] = i;
-
-    // Process primary tracks or the secondaries from pizero or muons...
-
-    if ( trj->GetSaveFlag() || trj->GetProducesHit() )
-    {
-      // initial point of the trajectory
-      G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
-
-      G4int         ipnu   = trj->GetPDGEncoding();
-      G4int         id     = trj->GetTrackID();
-      G4int         idPrnt = trj->GetParentID();
-      G4int         flag   = 0;    // will be set later
-      G4double      mass   = trj->GetParticleDefinition()->GetPDGMass();
-      G4ThreeVector mom    = trj->GetInitialMomentum();
-      G4double      mommag = mom.mag();
-      G4double      energy = sqrt(mom.mag2() + mass*mass);
-      G4ThreeVector Stop   = trj->GetStoppingPoint();
-      G4ThreeVector Start  = aa->GetPosition();
-
-      G4String stopVolumeName = trj->GetStoppingVolume()->GetName();
-      G4int    stopvol     = WCSimEventFindStoppingVolume(stopVolumeName);
-      G4int    startvol    = WCSimEventFindStartingVolume(Start);
-
-      G4double ttime = trj->GetGlobalTime();
-
-      G4int parentType;
-      ProcessType_t creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(trj->GetCreatorProcessName());
-      
-      // Right now only secondaries whose parents are pi0's are stored
-      // This may change later
-      // M Fechner : dec 16, 2004 --> added decay e- from muons
-      if (trj->GetParentID() == 0){
-	parentType = 0;
-      } else if (pizeroList.count(trj->GetParentID())   ) {
-	parentType = 111;
-      } else if (muonList.count(trj->GetParentID())     ) {
-	parentType = 13;
-      } else if (antimuonList.count(trj->GetParentID()) ) {
-	parentType = -13;
-      } else if (antipionList.count(trj->GetParentID()) ) {
-	parentType = -211;
-      } else if (pionList.count(trj->GetParentID()) ) {
-	parentType = 211;
-      } else if (primaryList.count(trj->GetParentID()) ) {
-	parentType = 1;
-      } else {  // no identified parent, but not a primary
-	parentType = 999;
-      }
-
-      // G4cout << parentType << " " << ipnu << " "
-      //      << id << " " << energy << "\n";
-
-      // fill ntuple
-      double dir[3];
-      double pdir[3];
-      double stop[3];
-      double start[3];
-      for (int l=0;l<3;l++)
-      {
-	dir[l]= mom[l]/mommag; // direction
-	pdir[l]=mom[l];        // momentum-vector
-	stop[l]=Stop[l]/cm; // stopping point
-	start[l]=Start[l]/cm; // starting point
-	//G4cout<<"part 2 start["<<l<<"]: "<< start[l] <<G4endl;
-	//G4cout<<"part 2 stop["<<l<<"]: "<< stop[l] <<G4endl;
-      }
-
-      // Add the track to the TClonesArray, watching out for times
-      int choose_event = 0;
-
-      if (ngates) {
-
-          if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
-          if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
-          if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
-
-      }
-
-          wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
-          wcsimrootevent->AddTrack(ipnu,
-                                   flag,
-                                   mass,
-                                   mommag,
-                                   energy,
-                                   startvol,
-                                   stopvol,
-                                   dir,
-                                   pdir,
-                                   stop,
-                                   start,
-                                   parentType,
-                                   creatorProcess,
-                                   ttime,
-                                   id,
-                                   idPrnt,
-                                   trj->GetBoundaryPoints(),
-                                   trj->GetBoundaryKEs(),
-                                   trj->GetBoundaryTimes(),
-                                   trj->GetBoundaryTypesAsInt());
-
-      if (detectorConstructor->SavePi0Info())
-      {
-#ifdef SAVE_DIGITS_VERBOSE
-	G4cout<<"Pi0 parentType: " << parentType <<G4endl;
-#endif
-	if (parentType == 111)
+  if(!skipFillingTracks) {
+    for( Int_t u=0; u<injhfNtuple.nvtxs; u++ ){
+      wcsimrootevent->SetVtxsvol(u,injhfNtuple.vtxsvol[u]);
+      for (int j=0;j<4;j++)
 	{
-	  if (r>1)
-	    G4cout<<"WARNING: more than 2 primary gammas found"<<G4endl;
-	  else
-	  {
+	  wcsimrootevent->SetVtxs(u,j,injhfNtuple.vtxs[u][j]);
+	}
+      wcsimrootevent->SetMode(u,injhfNtuple.mode[u]);
+    }
+    wcsimrootevent->SetJmu(injhfNtuple.jmu);           //TF: undefined and only for Nuance
+    wcsimrootevent->SetJp(injhfNtuple.jp);             //TF: undefined and only for Nuance
+    wcsimrootevent->SetNpar(injhfNtuple.npar);         //TF: undefined
+    wcsimrootevent->SetVecRecNumber(injhfNtuple.vecRecNumber);  //TF: undefined and only for Nuance
 
-	    for (int y=0;y<3;y++)
-	    {
-	      pi0Vtx[y] = start[y];
-	      gammaVtx[r][y] = stop[y];
+    // Add the tracks with the particle information
+    // First two tracks come from injhfNtuple, as they are special
+
+    for (int k=0;k<injhfNtuple.npar;k++) // should be just 2
+      {
+	double dir[3];
+	double pdir[3];
+	double stop[3];
+	double start[3];
+	ProcessType_t creatorP = kUnknownProcess;
+	for (int l=0;l<3;l++)
+	  {
+	    dir[l]=injhfNtuple.dir[k][l];
+	    pdir[l]=injhfNtuple.pdir[k][l];
+	    stop[l]=injhfNtuple.stop[k][l];
+	    start[l]=injhfNtuple.start[k][l];
+	    //G4cout<< "start[" << k << "][" << l <<"]: "<< injhfNtuple.start[k][l] <<G4endl;
+	    //G4cout<< "stop[" << k << "][" << l <<"]: "<< injhfNtuple.stop[k][l] <<G4endl;
+	  }
+
+	// Add the track to the TClonesArray
+	wcsimrootevent->AddTrack(injhfNtuple.ipnu[k],
+				 injhfNtuple.flag[k],
+				 injhfNtuple.m[k],
+				 injhfNtuple.p[k],
+				 injhfNtuple.E[k],
+				 injhfNtuple.startvol[k],
+				 injhfNtuple.stopvol[k],
+				 dir,
+				 pdir,
+				 stop,
+				 start,
+				 injhfNtuple.parent[k],
+				 creatorP,
+				 injhfNtuple.time[k],
+				 0,
+				 0,
+				 std::vector<std::vector<float>>(),
+				 std::vector<float>(),
+				 std::vector<double>(),
+				 std::vector<int>());
+      }
+
+    // the rest of the tracks come from WCSimTrajectory
+
+    std::set<int> pizeroList;
+    // added by M Fechner, dec 16th, 2004
+    std::set<int> muonList;
+    std::set<int> antimuonList;
+    // same, april 7th 2005
+    std::set<int> pionList;
+    std::set<int> antipionList;
+    std::set<int> primaryList;
+
+    // Pi0 specific variables
+    Double_t pi0Vtx[3];
+    Int_t   gammaID[2];
+    Double_t gammaE[2];
+    Double_t gammaVtx[2][3];
+    Int_t   r = 0;
+
+    G4int n_trajectories = 0;
+    if (TC)
+      n_trajectories = TC->entries();
+
+    // M Fechner : removed this limit to get to the primaries...
+    //if (n_trajectories>50)  // there is no need for this limit, but it has
+    //n_trajectories=50;    // existed in previous versions of the code.  It also
+    // makes the ROOT file smaller.
+
+    std::map<int,int> trajMap; // mapping of trackID and index
+    for (int i=0; i <n_trajectories; i++)
+      {
+	WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[i];
+
+	// If this track is a pizero remember it for later
+	if ( trj->GetPDGEncoding() == 111)
+	  pizeroList.insert(trj->GetTrackID());
+	// If it is a mu+/mu- also remember it
+	if ( trj->GetPDGEncoding() == 13 ) muonList.insert(trj->GetTrackID());
+	if ( trj->GetPDGEncoding() == -13 ) antimuonList.insert(trj->GetTrackID());
+	if ( trj->GetPDGEncoding() == 211 ) pionList.insert(trj->GetTrackID());
+	if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
+	if ( trj->GetParentID() == 0 ) primaryList.insert(trj->GetTrackID());
+
+	trajMap[trj->GetTrackID()] = i;
+
+	// Process primary tracks or the secondaries from pizero or muons...
+
+	if ( trj->GetSaveFlag() || trj->GetProducesHit() )
+	  {
+	    // initial point of the trajectory
+	    G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
+
+	    G4int         ipnu   = trj->GetPDGEncoding();
+	    G4int         id     = trj->GetTrackID();
+	    G4int         idPrnt = trj->GetParentID();
+	    G4int         flag   = 0;    // will be set later
+	    G4double      mass   = trj->GetParticleDefinition()->GetPDGMass();
+	    G4ThreeVector mom    = trj->GetInitialMomentum();
+	    G4double      mommag = mom.mag();
+	    G4double      energy = sqrt(mom.mag2() + mass*mass);
+	    G4ThreeVector Stop   = trj->GetStoppingPoint();
+	    G4ThreeVector Start  = aa->GetPosition();
+
+	    G4String stopVolumeName = trj->GetStoppingVolume()->GetName();
+	    G4int    stopvol     = WCSimEventFindStoppingVolume(stopVolumeName);
+	    G4int    startvol    = WCSimEventFindStartingVolume(Start);
+
+	    G4double ttime = trj->GetGlobalTime();
+
+	    G4int parentType;
+	    ProcessType_t creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(trj->GetCreatorProcessName());
+      
+	    // Right now only secondaries whose parents are pi0's are stored
+	    // This may change later
+	    // M Fechner : dec 16, 2004 --> added decay e- from muons
+	    if (trj->GetParentID() == 0){
+	      parentType = 0;
+	    } else if (pizeroList.count(trj->GetParentID())   ) {
+	      parentType = 111;
+	    } else if (muonList.count(trj->GetParentID())     ) {
+	      parentType = 13;
+	    } else if (antimuonList.count(trj->GetParentID()) ) {
+	      parentType = -13;
+	    } else if (antipionList.count(trj->GetParentID()) ) {
+	      parentType = -211;
+	    } else if (pionList.count(trj->GetParentID()) ) {
+	      parentType = 211;
+	    } else if (primaryList.count(trj->GetParentID()) ) {
+	      parentType = 1;
+	    } else {  // no identified parent, but not a primary
+	      parentType = 999;
 	    }
 
-	    gammaID[r] = id;
-	    gammaE[r] = energy;
-	    r++;
+	    // G4cout << parentType << " " << ipnu << " "
+	    //      << id << " " << energy << "\n";
 
-	    //amb79
-		G4cout<<"Pi0 data: " << id <<G4endl;
-		wcsimrootevent->SetPi0Info(pi0Vtx, gammaID, gammaE, gammaVtx);
-	  }
-	}
-      }
+	    // fill ntuple
+	    double dir[3];
+	    double pdir[3];
+	    double stop[3];
+	    double start[3];
+	    for (int l=0;l<3;l++)
+	      {
+		dir[l]= mom[l]/mommag; // direction
+		pdir[l]=mom[l];        // momentum-vector
+		stop[l]=Stop[l]/cm; // stopping point
+		start[l]=Start[l]/cm; // starting point
+		//G4cout<<"part 2 start["<<l<<"]: "<< start[l] <<G4endl;
+		//G4cout<<"part 2 stop["<<l<<"]: "<< stop[l] <<G4endl;
+	      }
 
-      if (detectorConstructor->SaveCaptureInfo() && trj->GetCreatorProcessName()=="nCapture"){
-          G4cout << "Capture particle: " << trj->GetParticleName()
-                 << " Parent: " << trj->GetParentID()
-                 << " T:" << ttime
-                 << " vtx:(" << start[0] << "," << start[1] << "," << start[2]
-                 << ") dir:(" << dir[0] << "," << dir[1] << "," << dir[2]
-                 << ") E:" << energy << G4endl;
-          wcsimrootevent->SetCaptureParticle(trj->GetParentID(), ipnu, ttime, start, dir, energy, id);
-      }
-    }
-  }
+	    // Add the track to the TClonesArray, watching out for times
+	    int choose_event = 0;
+
+	    if (ngates) {
+
+	      if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
+	      if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
+	      if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
+
+	    }
+
+	    wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
+	    wcsimrootevent->AddTrack(ipnu,
+				     flag,
+				     mass,
+				     mommag,
+				     energy,
+				     startvol,
+				     stopvol,
+				     dir,
+				     pdir,
+				     stop,
+				     start,
+				     parentType,
+				     creatorProcess,
+				     ttime,
+				     id,
+				     idPrnt,
+				     trj->GetBoundaryPoints(),
+				     trj->GetBoundaryKEs(),
+				     trj->GetBoundaryTimes(),
+				     trj->GetBoundaryTypesAsInt());
+
+	    if (detectorConstructor->SavePi0Info())
+	      {
+#ifdef SAVE_DIGITS_VERBOSE
+		G4cout<<"Pi0 parentType: " << parentType <<G4endl;
+#endif
+		if (parentType == 111)
+		  {
+		    if (r>1)
+		      G4cout<<"WARNING: more than 2 primary gammas found"<<G4endl;
+		    else
+		      {
+
+			for (int y=0;y<3;y++)
+			  {
+			    pi0Vtx[y] = start[y];
+			    gammaVtx[r][y] = stop[y];
+			  }
+
+			gammaID[r] = id;
+			gammaE[r] = energy;
+			r++;
+
+			//amb79
+			G4cout<<"Pi0 data: " << id <<G4endl;
+			wcsimrootevent->SetPi0Info(pi0Vtx, gammaID, gammaE, gammaVtx);
+		      }
+		  }
+	      }
+
+	    if (detectorConstructor->SaveCaptureInfo() && trj->GetCreatorProcessName()=="nCapture"){
+	      G4cout << "Capture particle: " << trj->GetParticleName()
+		     << " Parent: " << trj->GetParentID()
+		     << " T:" << ttime
+		     << " vtx:(" << start[0] << "," << start[1] << "," << start[2]
+		     << ") dir:(" << dir[0] << "," << dir[1] << "," << dir[2]
+		     << ") E:" << energy << G4endl;
+	      wcsimrootevent->SetCaptureParticle(trj->GetParentID(), ipnu, ttime, start, dir, energy, id);
+	    }
+	  }//if this trajectory should be saved
+      }//end loop i over n_trajectories
+  }//!skipFillingTracks
 
   // Add the Cherenkov hits
   wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
@@ -1558,7 +1565,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	G4double gatestart;
 	int countdigihits = 0;
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
-	for (k=0;k<WCDC->entries();k++)
+	for (int k=0;k<WCDC->entries();k++)
 	  {
 	    if ( (*WCDC)[k]->HasHitsInGate(index)) {
 	      std::vector<double> vec_pe                  = (*WCDC)[k]->GetPe(index);
@@ -1664,7 +1671,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				       WCSimWCTriggeredDigitsCollection* WCDC,
 				       G4String detectorElement,
 				       WCSimRootEvent * wcsimrootsuperevent,
-				       WCSimRootTrigger * wcsimrootevent)
+					   WCSimRootTrigger * wcsimrootevent,
+					   bool skipFillingTracks)
  {
   wcsimrootsuperevent->ReInitialize();
   // start with the first "sub-event"
@@ -1713,72 +1721,73 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   // Fill other info for this event
 
   wcsimrootevent->SetNvtxs(injhfNtuple.nvtxs);
-  for( Int_t u=0; u<injhfNtuple.nvtxs; u++ ){
-    wcsimrootevent->SetVtxsvol(u,injhfNtuple.vtxsvol[u]);
-    for (int j=0;j<4;j++)
-      {
-	wcsimrootevent->SetVtxs(u,j,injhfNtuple.vtxs[u][j]);
-      }
-    wcsimrootevent->SetMode(u,injhfNtuple.mode[u]);
-  }
-  wcsimrootevent->SetJmu(injhfNtuple.jmu);           //TF: undefined and only for Nuance
-  wcsimrootevent->SetJp(injhfNtuple.jp);             //TF: undefined and only for Nuance
-  wcsimrootevent->SetNpar(injhfNtuple.npar);         //TF: undefined
-  wcsimrootevent->SetVecRecNumber(injhfNtuple.vecRecNumber);  //TF: undefined and only for Nuance
 
-  // Add the tracks with the particle information
-  // First two tracks come from injhfNtuple, as they are special
-
-  int k;
-  for (k=0;k<2;k++) // should be just 2
-  {
-    double dir[3];
-    double pdir[3];
-    double stop[3];
-    double start[3];
-    ProcessType_t creatorP = kUnknownProcess;
-    for (int l=0;l<3;l++)
-    {
-      dir[l]=injhfNtuple.dir[k][l];
-      pdir[l]=injhfNtuple.pdir[k][l];
-      stop[l]=injhfNtuple.stop[k][l];
-      start[l]=injhfNtuple.start[k][l];
-      //G4cout<< "start[" << k << "][" << l <<"]: "<< injhfNtuple.start[k][l] <<G4endl;
-      //G4cout<< "stop[" << k << "][" << l <<"]: "<< injhfNtuple.stop[k][l] <<G4endl;
+  if(!skipFillingTracks) {
+    for( Int_t u=0; u<injhfNtuple.nvtxs; u++ ){
+      wcsimrootevent->SetVtxsvol(u,injhfNtuple.vtxsvol[u]);
+      for (int j=0;j<4;j++)
+	{
+	  wcsimrootevent->SetVtxs(u,j,injhfNtuple.vtxs[u][j]);
+	}
+      wcsimrootevent->SetMode(u,injhfNtuple.mode[u]);
     }
+    wcsimrootevent->SetJmu(injhfNtuple.jmu);           //TF: undefined and only for Nuance
+    wcsimrootevent->SetJp(injhfNtuple.jp);             //TF: undefined and only for Nuance
+    wcsimrootevent->SetNpar(injhfNtuple.npar);         //TF: undefined
+    wcsimrootevent->SetVecRecNumber(injhfNtuple.vecRecNumber);  //TF: undefined and only for Nuance
 
-    // Add the track to the TClonesArray
-    wcsimrootevent->AddTrack(injhfNtuple.ipnu[k],
-			      injhfNtuple.flag[k],
-			      injhfNtuple.m[k],
-			      injhfNtuple.p[k],
-			      injhfNtuple.E[k],
-			      injhfNtuple.startvol[k],
-			      injhfNtuple.stopvol[k],
-			      dir,
-			      pdir,
-			      stop,
-			      start,
-			      injhfNtuple.parent[k],
-            creatorP,
-			     injhfNtuple.time[k],
-                 0,
-                 0,
-                 std::vector<std::vector<float>>(),
-                 std::vector<float>(),
-                 std::vector<double>(),
-                 std::vector<int>());
-  }
+    // Add the tracks with the particle information
+    // First two tracks come from injhfNtuple, as they are special
 
-  // the rest of the tracks come from WCSimTrajectory
+    for (int k=0;k<2;k++) // should be just 2
+      {
+	double dir[3];
+	double pdir[3];
+	double stop[3];
+	double start[3];
+	ProcessType_t creatorP = kUnknownProcess;
+	for (int l=0;l<3;l++)
+	  {
+	    dir[l]=injhfNtuple.dir[k][l];
+	    pdir[l]=injhfNtuple.pdir[k][l];
+	    stop[l]=injhfNtuple.stop[k][l];
+	    start[l]=injhfNtuple.start[k][l];
+	    //G4cout<< "start[" << k << "][" << l <<"]: "<< injhfNtuple.start[k][l] <<G4endl;
+	    //G4cout<< "stop[" << k << "][" << l <<"]: "<< injhfNtuple.stop[k][l] <<G4endl;
+	  }
 
-  std::set<int> pizeroList;
-  // added by M Fechner, dec 16th, 2004
-  std::set<int> muonList;
-  std::set<int> antimuonList;
-  // same, april 7th 2005
-  std::set<int> pionList;
-  std::set<int> antipionList;
+	// Add the track to the TClonesArray
+	wcsimrootevent->AddTrack(injhfNtuple.ipnu[k],
+				 injhfNtuple.flag[k],
+				 injhfNtuple.m[k],
+				 injhfNtuple.p[k],
+				 injhfNtuple.E[k],
+				 injhfNtuple.startvol[k],
+				 injhfNtuple.stopvol[k],
+				 dir,
+				 pdir,
+				 stop,
+				 start,
+				 injhfNtuple.parent[k],
+				 creatorP,
+				 injhfNtuple.time[k],
+				 0,
+				 0,
+				 std::vector<std::vector<float>>(),
+				 std::vector<float>(),
+				 std::vector<double>(),
+				 std::vector<int>());
+      }
+
+    // the rest of the tracks come from WCSimTrajectory
+
+    std::set<int> pizeroList;
+    // added by M Fechner, dec 16th, 2004
+    std::set<int> muonList;
+    std::set<int> antimuonList;
+    // same, april 7th 2005
+    std::set<int> pionList;
+    std::set<int> antipionList;
 
     // Pi0 specific variables
     Double_t pi0Vtx[3];
@@ -1788,168 +1797,169 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     Int_t   r = 0;
 
     G4int n_trajectories = 0;
-  if (TC)
-    n_trajectories = TC->entries();
+    if (TC)
+      n_trajectories = TC->entries();
 
-  // M Fechner : removed this limit to get to the primaries...
-  //if (n_trajectories>50)  // there is no need for this limit, but it has
-  //n_trajectories=50;    // existed in previous versions of the code.  It also
-                          // makes the ROOT file smaller.
+    // M Fechner : removed this limit to get to the primaries...
+    //if (n_trajectories>50)  // there is no need for this limit, but it has
+    //n_trajectories=50;    // existed in previous versions of the code.  It also
+    // makes the ROOT file smaller.
 
-  std::map<int,int> trajMap; // mapping of trackID and index
-  for (int i=0; i <n_trajectories; i++)
-  {
-    WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[i];
-
-    // If this track is a pizero remember it for later
-    if ( trj->GetPDGEncoding() == 111)
-      pizeroList.insert(trj->GetTrackID());
-    // If it is a mu+/mu- also remember it
-    if ( trj->GetPDGEncoding() == 13 ) muonList.insert(trj->GetTrackID());
-    if ( trj->GetPDGEncoding() == -13 ) antimuonList.insert(trj->GetTrackID());
-    if ( trj->GetPDGEncoding() == 211 ) pionList.insert(trj->GetTrackID());
-    if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
-
-    trajMap[trj->GetTrackID()] = i;
-
-    // Process primary tracks or the secondaries from pizero or muons...
-
-    if ( trj->GetSaveFlag() || trj->GetProducesHit() )
-    {
-      // initial point of the trajectory
-      G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
-
-      G4int         ipnu   = trj->GetPDGEncoding();
-      G4int         id     = trj->GetTrackID();
-      G4int         idPrnt = trj->GetParentID();
-      G4int         flag   = 0;    // will be set later
-      G4double      mass   = trj->GetParticleDefinition()->GetPDGMass();
-      G4ThreeVector mom    = trj->GetInitialMomentum();
-      G4double      mommag = mom.mag();
-      G4double      energy = sqrt(mom.mag2() + mass*mass);
-      G4ThreeVector Stop   = trj->GetStoppingPoint();
-      G4ThreeVector Start  = aa->GetPosition();
-
-      G4String stopVolumeName = trj->GetStoppingVolume()->GetName();
-      G4int    stopvol     = WCSimEventFindStoppingVolume(stopVolumeName);
-      G4int    startvol    = WCSimEventFindStartingVolume(Start);
-
-      G4double ttime = trj->GetGlobalTime();
-
-      G4int parentType;
-      ProcessType_t creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(trj->GetCreatorProcessName());
-
-      // Right now only secondaries whose parents are pi0's are stored
-      // This may change later
-      // M Fechner : dec 16, 2004 --> added decay e- from muons
-      if (trj->GetParentID() == 0){
-	parentType = 0;
-      } else if (pizeroList.count(trj->GetParentID())   ) {
-	parentType = 111;
-      } else if (muonList.count(trj->GetParentID())     ) {
-	parentType = 13;
-      } else if (antimuonList.count(trj->GetParentID()) ) {
-	parentType = -13;
-      } else if (antipionList.count(trj->GetParentID()) ) {
-	parentType = -211;
-      } else if (pionList.count(trj->GetParentID()) ) {
-	parentType = 211;
-      } else {  // no identified parent, but not a primary
-	parentType = 999;
-      }
-
-      // G4cout << parentType << " " << ipnu << " "
-      //      << id << " " << energy << "\n";
-
-      // fill ntuple
-      double dir[3];
-      double pdir[3];
-      double stop[3];
-      double start[3];
-      for (int l=0;l<3;l++)
+    std::map<int,int> trajMap; // mapping of trackID and index
+    for (int i=0; i <n_trajectories; i++)
       {
-	dir[l]= mom[l]/mommag; // direction
-	pdir[l]=mom[l];        // momentum-vector
-	stop[l]=Stop[l]/cm; // stopping point
-	start[l]=Start[l]/cm; // starting point
-	//G4cout<<"part 2 start["<<l<<"]: "<< start[l] <<G4endl;
-	//G4cout<<"part 2 stop["<<l<<"]: "<< stop[l] <<G4endl;
-      }
+	WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[i];
 
-      // Add the track to the TClonesArray, watching out for times
-      int choose_event = 0;
+	// If this track is a pizero remember it for later
+	if ( trj->GetPDGEncoding() == 111)
+	  pizeroList.insert(trj->GetTrackID());
+	// If it is a mu+/mu- also remember it
+	if ( trj->GetPDGEncoding() == 13 ) muonList.insert(trj->GetTrackID());
+	if ( trj->GetPDGEncoding() == -13 ) antimuonList.insert(trj->GetTrackID());
+	if ( trj->GetPDGEncoding() == 211 ) pionList.insert(trj->GetTrackID());
+	if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
 
-      if (ngates) {
+	trajMap[trj->GetTrackID()] = i;
 
-          if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
-          if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
-          if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
+	// Process primary tracks or the secondaries from pizero or muons...
 
-          }
-
-          wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
-          wcsimrootevent->AddTrack(ipnu,
-                                   flag,
-                                   mass,
-                                   mommag,
-                                   energy,
-                                   startvol,
-                                   stopvol,
-                                   dir,
-                                   pdir,
-                                   stop,
-                                   start,
-                                   parentType,
-                                   creatorProcess,
-                                   ttime,
-                                   id,
-                                   idPrnt,
-                                   trj->GetBoundaryPoints(),
-                                   trj->GetBoundaryKEs(),
-                                   trj->GetBoundaryTimes(),
-                                   trj->GetBoundaryTypesAsInt());
-
-      if (detectorConstructor->SavePi0Info())
-      {
-#ifdef SAVE_DIGITS_VERBOSE
-	G4cout<<"Pi0 parentType: " << parentType <<G4endl;
-#endif
-	if (parentType == 111)
-	{
-	  if (r>1)
-	    G4cout<<"WARNING: more than 2 primary gammas found"<<G4endl;
-	  else
+	if ( trj->GetSaveFlag() || trj->GetProducesHit() )
 	  {
+	    // initial point of the trajectory
+	    G4TrajectoryPoint* aa =   (G4TrajectoryPoint*)trj->GetPoint(0) ;
 
-	    for (int y=0;y<3;y++)
-	    {
-	      pi0Vtx[y] = start[y];
-	      gammaVtx[r][y] = stop[y];
+	    G4int         ipnu   = trj->GetPDGEncoding();
+	    G4int         id     = trj->GetTrackID();
+	    G4int         idPrnt = trj->GetParentID();
+	    G4int         flag   = 0;    // will be set later
+	    G4double      mass   = trj->GetParticleDefinition()->GetPDGMass();
+	    G4ThreeVector mom    = trj->GetInitialMomentum();
+	    G4double      mommag = mom.mag();
+	    G4double      energy = sqrt(mom.mag2() + mass*mass);
+	    G4ThreeVector Stop   = trj->GetStoppingPoint();
+	    G4ThreeVector Start  = aa->GetPosition();
+
+	    G4String stopVolumeName = trj->GetStoppingVolume()->GetName();
+	    G4int    stopvol     = WCSimEventFindStoppingVolume(stopVolumeName);
+	    G4int    startvol    = WCSimEventFindStartingVolume(Start);
+
+	    G4double ttime = trj->GetGlobalTime();
+
+	    G4int parentType;
+	    ProcessType_t creatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(trj->GetCreatorProcessName());
+
+	    // Right now only secondaries whose parents are pi0's are stored
+	    // This may change later
+	    // M Fechner : dec 16, 2004 --> added decay e- from muons
+	    if (trj->GetParentID() == 0){
+	      parentType = 0;
+	    } else if (pizeroList.count(trj->GetParentID())   ) {
+	      parentType = 111;
+	    } else if (muonList.count(trj->GetParentID())     ) {
+	      parentType = 13;
+	    } else if (antimuonList.count(trj->GetParentID()) ) {
+	      parentType = -13;
+	    } else if (antipionList.count(trj->GetParentID()) ) {
+	      parentType = -211;
+	    } else if (pionList.count(trj->GetParentID()) ) {
+	      parentType = 211;
+	    } else {  // no identified parent, but not a primary
+	      parentType = 999;
 	    }
 
-	    gammaID[r] = id;
-	    gammaE[r] = energy;
-	    r++;
+	    // G4cout << parentType << " " << ipnu << " "
+	    //      << id << " " << energy << "\n";
 
-	    //amb79
-		G4cout<<"Pi0 data: " << id <<G4endl;
-		wcsimrootevent->SetPi0Info(pi0Vtx, gammaID, gammaE, gammaVtx);
-	  }
-	}
-      }
+	    // fill ntuple
+	    double dir[3];
+	    double pdir[3];
+	    double stop[3];
+	    double start[3];
+	    for (int l=0;l<3;l++)
+	      {
+		dir[l]= mom[l]/mommag; // direction
+		pdir[l]=mom[l];        // momentum-vector
+		stop[l]=Stop[l]/cm; // stopping point
+		start[l]=Start[l]/cm; // starting point
+		//G4cout<<"part 2 start["<<l<<"]: "<< start[l] <<G4endl;
+		//G4cout<<"part 2 stop["<<l<<"]: "<< stop[l] <<G4endl;
+	      }
 
-      if (detectorConstructor->SaveCaptureInfo() && trj->GetCreatorProcessName()=="nCapture"){
-          G4cout << "Capture particle: " << trj->GetParticleName()
-                 << " Parent: " << trj->GetParentID()
-                 << " T:" << ttime
-                 << " vtx:(" << start[0] << "," << start[1] << "," << start[2]
-                 << ") dir:(" << dir[0] << "," << dir[1] << "," << dir[2]
-                 << ") E:" << energy << G4endl;
-          wcsimrootevent->SetCaptureParticle(trj->GetParentID(), ipnu, ttime, start, dir, energy, id);
-      }
-    }
-  }
+	    // Add the track to the TClonesArray, watching out for times
+	    int choose_event = 0;
 
+	    if (ngates) {
+
+	      if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
+	      if (ttime > WCTM->GetTriggerTime(1) + 950. && WCTM->GetTriggerTime(2) + 950. > ttime) choose_event = 2;
+	      if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
+
+	    }
+
+	    wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
+	    wcsimrootevent->AddTrack(ipnu,
+				     flag,
+				     mass,
+				     mommag,
+				     energy,
+				     startvol,
+				     stopvol,
+				     dir,
+				     pdir,
+				     stop,
+				     start,
+				     parentType,
+				     creatorProcess,
+				     ttime,
+				     id,
+				     idPrnt,
+				     trj->GetBoundaryPoints(),
+				     trj->GetBoundaryKEs(),
+				     trj->GetBoundaryTimes(),
+				     trj->GetBoundaryTypesAsInt());
+
+	    if (detectorConstructor->SavePi0Info())
+	      {
+#ifdef SAVE_DIGITS_VERBOSE
+		G4cout<<"Pi0 parentType: " << parentType <<G4endl;
+#endif
+		if (parentType == 111)
+		  {
+		    if (r>1)
+		      G4cout<<"WARNING: more than 2 primary gammas found"<<G4endl;
+		    else
+		      {
+
+			for (int y=0;y<3;y++)
+			  {
+			    pi0Vtx[y] = start[y];
+			    gammaVtx[r][y] = stop[y];
+			  }
+
+			gammaID[r] = id;
+			gammaE[r] = energy;
+			r++;
+
+			//amb79
+			G4cout<<"Pi0 data: " << id <<G4endl;
+			wcsimrootevent->SetPi0Info(pi0Vtx, gammaID, gammaE, gammaVtx);
+		      }
+		  }
+	      }
+
+	    if (detectorConstructor->SaveCaptureInfo() && trj->GetCreatorProcessName()=="nCapture"){
+	      G4cout << "Capture particle: " << trj->GetParticleName()
+		     << " Parent: " << trj->GetParentID()
+		     << " T:" << ttime
+		     << " vtx:(" << start[0] << "," << start[1] << "," << start[2]
+		     << ") dir:(" << dir[0] << "," << dir[1] << "," << dir[2]
+		     << ") E:" << energy << G4endl;
+	      wcsimrootevent->SetCaptureParticle(trj->GetParentID(), ipnu, ttime, start, dir, energy, id);
+	    }
+	  }//if track should be saved
+      }//end loop i over n_trajectories
+  }//!skipFillingTracks
+  
   // Add the Cherenkov hits
   wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
 
@@ -2100,7 +2110,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	G4double gatestart;
 	int countdigihits = 0;
 	wcsimrootevent = wcsimrootsuperevent->GetTrigger(index);
-	for (k=0;k<WCDC->entries();k++)
+	for (int k=0;k<WCDC->entries();k++)
 	  {
 	    if ( (*WCDC)[k]->HasHitsInGate(index)) {
 	      std::vector<double> vec_pe                  = (*WCDC)[k]->GetPe(index);
