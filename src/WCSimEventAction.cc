@@ -1344,6 +1344,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	    // Add the track to the TClonesArray, watching out for times
 	    int choose_event = 0;
 
+	    /*
+	    //Keep all tracks in the 0th trigger. Otherwise it is very confusing
 	    if (ngates) {
 
 	      if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
@@ -1351,6 +1353,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	      if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
 
 	    }
+	    */
 
 	    wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
 	    wcsimrootevent->AddTrack(ipnu,
@@ -1888,6 +1891,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	    // Add the track to the TClonesArray, watching out for times
 	    int choose_event = 0;
 
+	    /*
+	    //Keep all tracks in the 0th trigger. Otherwise it is very confusing
 	    if (ngates) {
 
 	      if (ttime > WCTM->GetTriggerTime(0) + 950. && WCTM->GetTriggerTime(1) + 950. > ttime) choose_event = 1;
@@ -1895,6 +1900,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	      if (choose_event >= ngates) choose_event = ngates - 1; // do not overflow the number of events
 
 	    }
+	    */
 
 	    wcsimrootevent = wcsimrootsuperevent->GetTrigger(choose_event);
 	    wcsimrootevent->AddTrack(ipnu,
