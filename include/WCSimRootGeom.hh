@@ -15,17 +15,19 @@
 
 class TDirectory;
 
-//////////////////////////////////////////////////////////////////////////
+/** \class WCSimRootPMT
+ *  \brief PMT geometry information
+ */
 
 class WCSimRootPMT : public TObject {
 
 private:
-  Int_t fTubeNo;
-  Int_t fmPMTNo;
-  Int_t fmPMT_PMTNo;
-  Int_t fCylLoc;  // endcap1, wall, endcap2
-  Float_t fOrientation[3];
-  Float_t fPosition[3];
+  Int_t fTubeNo; //!< PMT tube ID. Unique number across all PMT types (i.e. runs from 0 to NPMTs, where NPMTs = N20" + NOD + N3"inMPMT)
+  Int_t fmPMTNo; //!< The mPMT number this 3" PMT is in (Equivalent to fTubeID for 20" & OD PMTs)
+  Int_t fmPMT_PMTNo; //!< The 3" PMT position ID inside this mPMT (runs from 1-19 for 3" PMTs inside mPMTs. Is 0 for 20" & OD PMTs)
+  Int_t fCylLoc;  //!< Distinguishes between PMT position p (top cap = 0, wall = 1, bottom cap = 2) & PMT type t (20" PMT in FD or 3" in mPMT in IWCD = 0, mPMT in FD = 2 / OD = 1). CylLoc = 3 * t + p
+  Float_t fOrientation[3]; //!< PMT direction unit vector pointing out of the glass into the detector volume
+  Float_t fPosition[3]; //!< PMT position vector. The position is defined as the ??? part of the PMT. Units: cm
 
 public:
   WCSimRootPMT();
@@ -55,28 +57,37 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
+/** \class WCSimRootGeom
+ *  \brief Detector geometry information (also containing PMT information arrays)
+ *
+ * PMT information is stored based on the PMT type
+ * - ID PMTs of the first type are 20" (HK FD) or 3" PMTs inside mPMTs (IWCD)
+ * - ID PMTs of the second type are 3" PMTs inside mPMTs (HK FD)
+ * - OD PMTs are OD PMTs
+ */
+
 class WCSimRootGeom : public TObject {
 
 private:
 
-  Float_t                fWCCylRadius;  // Radius of WC tank
-  Float_t                fWCCylLength;  // Length of WC tank
+  Float_t                fWCCylRadius;  //!< Radius of WC tank. Units: cm
+  Float_t                fWCCylLength;  //!< Length of WC tank. Units: cm
 
-  Int_t                  fgeo_type;  // mailbox or cylinder?
+  Int_t                  fgeo_type;  //!< UNUSED mailbox or cylinder?
 
-  Float_t                fWCPMTRadius; // Radius of PMT
-  Float_t                fWCPMTRadius2; // Radius of PMT, hybrid case
-  Int_t                  fWCNumPMT;   // Number of PMTs
-  Int_t                  fWCNumPMT2;   // Number of PMTs, hybrid case
-  Float_t                fODWCPMTRadius; // Radius of OD PMT
+  Float_t                fWCPMTRadius; //!< Radius of ID PMT of the first type. Units: cm
+  Float_t                fWCPMTRadius2; // Radius of ID PMT of the second type. Units: cm
+  Int_t                  fWCNumPMT;   // Number of ID PMTs of the first type
+  Int_t                  fWCNumPMT2;   // Number of ID PMTs of the second type
+  Float_t                fODWCPMTRadius; // Radius of OD PMT. Units: cm
   Int_t                  fODWCNumPMT; // Number of OD PMTs
   Float_t                fWCOffset[3]; // Offset of barrel center in global coords
 
-  Int_t                  fOrientation; //Orientation o detector, 0 is 2km horizontal, 1 is Upright
+  Int_t                  fOrientation; //!< UNUSED Orientation of detector, 0 is 2km horizontal, 1 is Upright
 
-  TClonesArray           *fPMTArray;
-  TClonesArray           *fPMTArray2;
-  TClonesArray           *fODPMTArray;
+  TClonesArray           *fPMTArray; //!< Array of ID PMTs of the first type
+  TClonesArray           *fPMTArray2; //!< Array of ID PMTs of the second type
+  TClonesArray           *fODPMTArray; //!< Array of OD PMTs
 
 public:
 
