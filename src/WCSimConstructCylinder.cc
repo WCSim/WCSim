@@ -2668,9 +2668,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 	else
 	  innerAnnulusRadius = WCIDRadius - (mPMT_vessel_cyl_height + mPMT_vessel_radius) -1.*mm;
   }
+  // shift innerAnnulusRadius and outerAnnulusRadius if PMT is placed behind blacksheet
+  innerAnnulusRadius += pmt_blacksheet_offset;
 
   //TF: need to add a Polyhedra on the other side of the outerAnnulusRadius for the OD
-  outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm;//+ Stealstructure etc.
+  outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm + pmt_blacksheet_offset;//+ Stealstructure etc.
   if(isODConstructed){
     const G4double sphereRadius =
 	  (WCPMTODExposeHeight*WCPMTODExposeHeight+ WCPMTODRadius*WCPMTODRadius)/(2*WCPMTODExposeHeight);
@@ -2697,7 +2699,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
   //BQ: Updated with new HK OD size (2020/12/06). Simply assume no tyvek thickness or dead space.
-  WCLength    = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness + 1*mm);
+  WCLength    = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness + 1*mm + pmt_blacksheet_offset);
   WCRadius    = (outerAnnulusRadius + WCODLateralWaterDepth)/cos(dPhi/2.) ;
 #ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
   G4cout
@@ -3331,6 +3333,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
         // ID radius is changed
         G4double newZ = pmtPos[i].z() + G4RandGauss::shoot(0,pmtPosVar);
         G4double newR = annulusBlackSheetRmin[iz]+(annulusBlackSheetRmin[iz+1]-annulusBlackSheetRmin[iz])*(newZ-mainAnnulusZ[iz])/(mainAnnulusZ[iz+1]-mainAnnulusZ[iz]);
+        newR += pmt_blacksheet_offset;
         G4double newPhi = pmtPhi-phi_offset;
         G4ThreeVector PMTPosition =  G4ThreeVector(newR,
                     newR*tan(newPhi) + G4RandGauss::shoot(0,pmtPosVar),
@@ -3409,6 +3412,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
               // ID radius is changed
               G4double newR = annulusBlackSheetRmin[iz]+(annulusBlackSheetRmin[iz+1]-annulusBlackSheetRmin[iz])*(PMTPosition.z()-mainAnnulusZ[iz])/(mainAnnulusZ[iz+1]-mainAnnulusZ[iz]);
+              newR += pmt_blacksheet_offset;
               PMTPosition.setX(newR);
 
               PMTPosition.rotateZ(phi_offset);  // align with the symmetry 
@@ -3483,6 +3487,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
                         -barrelCellHeight/2.+(j+0.5)*verticalSpacing+z_offset + G4RandGauss::shoot(0,pmtPosVar));
 
               G4double newR = towerBSRmin[iz]+(towerBSRmin[iz+1]-towerBSRmin[iz])*(PMTPosition.z()-mainAnnulusZ[iz])/(mainAnnulusZ[iz+1]-mainAnnulusZ[iz]);
+              newR += pmt_blacksheet_offset;
               PMTPosition.setX(newR);
 
               PMTPosition.rotateZ(-(2*pi-totalAngle)/2.+barrelPhiOffset); // align with the symmetry axes of the cell 
@@ -4170,7 +4175,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   const G4String bbstr  = G4String("Barrel") +
                 oristr + G4String("Border");   // "Barrel[Top|Bot]Border"
 
-  capAssemblyHeight = (WCIDHeight-mainAnnulusHeight)/2+1*mm+WCBlackSheetThickness;
+  capAssemblyHeight = (WCIDHeight-mainAnnulusHeight)/2+1*mm+WCBlackSheetThickness+pmt_blacksheet_offset;
 
   const G4String caname = capstr + G4String("Assembly");  // "[Top|Bot]CapAssembly"
   G4Tubs* solidCapAssembly = new G4Tubs(caname,
@@ -4394,6 +4399,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 
         G4double newZ = pmtPos[i].z() + (mainAnnulusHeight/2.+barrelCellHeight/2.)*zflip + G4RandGauss::shoot(0,pmtPosVar);
         G4double newR = annulusBlackSheetRmin[1]+(annulusBlackSheetRmin[2]-annulusBlackSheetRmin[1])*(newZ-borderAnnulusZ[1])/(borderAnnulusZ[2]-borderAnnulusZ[1]);
+        newR += pmt_blacksheet_offset;
         G4double newPhi = pmtPhi-phi_offset;
 
         G4ThreeVector PMTPosition =  G4ThreeVector(newR,
@@ -4462,6 +4468,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
                   (-barrelCellHeight/2.+(j+0.5)*verticalSpacing)*zflip + G4RandGauss::shoot(0,pmtPosVar));
 
             G4double newR = annulusBlackSheetRmin[1]+(annulusBlackSheetRmin[2]-annulusBlackSheetRmin[1])*(PMTPosition.z()-borderAnnulusZ[1])/(borderAnnulusZ[2]-borderAnnulusZ[1]);
+            newR += pmt_blacksheet_offset;
             PMTPosition.setX(newR);
             PMTPosition.setZ(PMTPosition.z()+(capAssemblyHeight/2.- barrelCellHeight/2.)*zflip);
 
@@ -4529,6 +4536,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
                       (-barrelCellHeight/2.+(j+0.5)*verticalSpacing)*zflip + G4RandGauss::shoot(0,pmtPosVar));
 
             G4double newR = towerBSRmin[1]+(towerBSRmin[2]-towerBSRmin[1])*(PMTPosition.z()-borderAnnulusZ[1])/(borderAnnulusZ[2]-borderAnnulusZ[1]);
+            newR += pmt_blacksheet_offset;
             PMTPosition.setX(newR);
             PMTPosition.setZ(PMTPosition.z()+(capAssemblyHeight/2.- barrelCellHeight/2.)*zflip);
 
@@ -4811,8 +4819,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     }
   }
 
-  G4SubtractionSolid *solidWCCapBlackSheet_wHole = new G4SubtractionSolid("solidWCCapBlackSheet_wHole", solidWCCapBlackSheet, pmt_solid, 0, 
-                                                                          G4ThreeVector(0.,0.,-(-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness)*zflip));
+  G4SubtractionSolid *solidWCCapBlackSheet_wHole = 
+    new G4SubtractionSolid("solidWCCapBlackSheet_wHole", solidWCCapBlackSheet, pmt_solid, 0, G4ThreeVector(0.,0.,-(-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness+pmt_blacksheet_offset)*zflip)) ;
 
   G4LogicalVolume* logicWCCapBlackSheet =
     new G4LogicalVolume(solidWCCapBlackSheet_wHole,
@@ -4821,7 +4829,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
       0,0,0);
   //G4VPhysicalVolume* physiWCCapBlackSheet =
     new G4PVPlacement(0,
-                      G4ThreeVector(0.,0.,(-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness)*zflip),
+                      G4ThreeVector(0.,0.,(-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness+pmt_blacksheet_offset)*zflip),
                       logicWCCapBlackSheet,
                       capbsname,
                       logicCapAssembly,
@@ -5130,7 +5138,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     shape_CDS->SetScale(1);
     double cds_z_offset = -mainAnnulusHeight/2.-capAssemblyHeight/2.; // logicBottomCapAssembly placement
     cds_z_offset += 2*(-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness); // logicWCCap placement
-    cds_z_offset += 132.25*mm + 145*mm + 45.9225*mm; // ad-hoc value to place CDS close to endcap but not overlapping
+    cds_z_offset += 132.25*mm + 145*mm + 45.9225*mm + pmt_blacksheet_offset; // ad-hoc value to place CDS close to endcap blacksheet but not overlapping
     G4ThreeVector posCDS = G4ThreeVector(0*m, 0*m,cds_z_offset);
     
     // make new shape a solid

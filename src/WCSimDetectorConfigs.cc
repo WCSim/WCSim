@@ -1436,6 +1436,8 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
 
   // default for this geometry is to rotate the barrel by half a tower
   rotateBarrelHalfTower = true;
+  // to place PMT behind the blacksheet
+  pmt_blacksheet_offset = 36.3045*CLHEP::mm;
 }
 
 
