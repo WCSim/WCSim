@@ -17,6 +17,8 @@ class TDirectory;
 
 /** \class WCSimRootPMT
  *  \brief PMT geometry information
+ *
+ * See the macro sample-root-scripts/read_number_of_PMTs.C for an example of using this class
  */
 
 class WCSimRootPMT : public TObject {
@@ -64,6 +66,8 @@ public:
  * - ID PMTs of the first type are 20" (HK FD) or 3" PMTs inside mPMTs (IWCD)
  * - ID PMTs of the second type are 3" PMTs inside mPMTs (HK FD)
  * - OD PMTs are OD PMTs
+ *
+ * See the macro sample-root-scripts/read_number_of_PMTs.C for an example of using this class
  */
 
 class WCSimRootGeom : public TObject {
