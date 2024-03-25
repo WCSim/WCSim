@@ -9,7 +9,7 @@ echo " (it requires dot (part of graphvis), which isn't on every system by defau
 cp -f ../WCSim_doxygen_config .
 
 echo "Running doxygen"
-make doxy
+doxygen WCSim_doxygen_config
 
 echo "Getting current develop hash"
 git rev-parse HEAD > hash
