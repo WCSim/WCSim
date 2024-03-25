@@ -9,6 +9,7 @@
 #include "TSystem.h"
 #include "TCanvas.h"
 #include "TFile.h"
+#include "TString.h"
 
 #include "WCSimRootOptions.hh"
 #include "WCSimRootGeom.hh"
@@ -18,10 +19,17 @@
 //#define WCSIM_SAVE_PHOTON_HISTORY
 
 // Simple example of reading a generated Root file
-int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
+int sample_readfile(const char *filename="../wcsim.root", TString events_tree_name="wcsimrootevent", bool verbose=false)
 {
   // Clear global scope
   //gROOT->Reset();
+
+  if(!events_tree_name.EqualTo("wcsimrootevent") &&
+     !events_tree_name.EqualTo("wcsimrootevent2") &&
+     !events_tree_name.EqualTo("wcsimrootevent_OD")) {
+    cerr << "Second argument events_tree_name MUST equal one of: wcsimrootevent wcsimrootevent2 wcsimrootevent_OD" << endl;
+    return -1;
+  }
 
   // Open the file
   TFile * file = new TFile(filename,"read");
@@ -41,11 +49,11 @@ int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
   WCSimRootEvent* wcsimrootsuperevent = new WCSimRootEvent();
 
   // Set the branch address for reading from the tree
-  TBranch *branch = tree->GetBranch("wcsimrootevent");
+  TBranch *branch = tree->GetBranch(events_tree_name);
   branch->SetAddress(&wcsimrootsuperevent);
 
   // Force deletion to prevent memory leak 
-  tree->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
+  tree->GetBranch(events_tree_name)->SetAutoDelete(kTRUE);
 
   // Geometry tree - only need 1 "event"
   TTree *geotree = (TTree*)file->Get("wcsimGeoT");
