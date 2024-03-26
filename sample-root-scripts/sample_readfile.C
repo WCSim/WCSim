@@ -30,6 +30,7 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
     cerr << "Second argument events_tree_name MUST equal one of: wcsimrootevent wcsimrootevent2 wcsimrootevent_OD" << endl;
     return -1;
   }
+  const bool true_tracks_expected = events_tree_name.EqualTo("wcsimrootevent");
 
   // Open the file
   TFile * file = new TFile(filename,"read");
@@ -103,28 +104,36 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
       printf("Interaction Nuance Code: %d\n", wcsimrootevent->GetMode());
       printf("Number of Delayed Triggers (sub events): %d\n",
        wcsimrootsuperevent->GetNumberOfSubEvents());
-      
-      printf("Neutrino Vertex Geometry Volume Code: %d\n", wcsimrootevent->GetVtxvol());
-      printf("Neutrino Vertex Location [cm]: %f %f %f\n", wcsimrootevent->GetVtx(0),
-       wcsimrootevent->GetVtx(1),wcsimrootevent->GetVtx(2));
+
+      if(true_tracks_expected) {
+	printf("Neutrino Vertex Geometry Volume Code: %d\n", wcsimrootevent->GetVtxvol());
+	printf("Neutrino Vertex Location [cm]: %f %f %f\n", wcsimrootevent->GetVtx(0),
+	       wcsimrootevent->GetVtx(1),wcsimrootevent->GetVtx(2));
+	printf("Index of muon in WCSimRootTracks %d\n", wcsimrootevent->GetJmu());
+	printf("Number of final state particles %d\n", wcsimrootevent->GetNpar());
+      }
     }
     hvtxX->Fill(wcsimrootevent->GetVtx(0));
     hvtxY->Fill(wcsimrootevent->GetVtx(1));
     hvtxZ->Fill(wcsimrootevent->GetVtx(2));
-
-    if(verbose){
-      printf("Index of muon in WCSimRootTracks %d\n", wcsimrootevent->GetJmu());
-      printf("Number of final state particles %d\n", wcsimrootevent->GetNpar());
-    }
 
     // Now read the tracks in the event
     
     // Get the number of tracks
     const int ntrack = wcsimrootevent->GetNtrack();
     const int ntrack_slots = wcsimrootevent->GetNtrack_slots();
-    if(verbose)
+    if(verbose) {
       cout << "SAVED TRACKS" << endl
 	   << "Number of Saved WCSimRootTracks: " << ntrack << endl;
+      if(!true_tracks_expected)
+	cout << "No saved true tracks in branch: " << events_tree_name
+	     << ". You can find them in: wcsimrootevent" << endl;
+    }
+    if(ntrack && !true_tracks_expected) {
+      cerr << ntrack << " true tracks found in branch: " << events_tree_name
+	   << ". There should be none here. Don't trust them. You can find them in: wcsimrootevent" << endl;
+    }
+      
     // Loop through elements in the TClonesArray of WCSimTracks
     for (int itrack=0; itrack<ntrack_slots; itrack++)
     {
