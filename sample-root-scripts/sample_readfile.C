@@ -19,7 +19,7 @@
 //#define WCSIM_SAVE_PHOTON_HISTORY
 
 // Simple example of reading a generated Root file
-int sample_readfile(const char *filename="../wcsim.root", TString events_tree_name="wcsimrootevent", bool verbose=false)
+int sample_readfile(const char *filename="../wcsim.root", TString events_tree_name="wcsimrootevent", const int verbose=0)
 {
   // Clear global scope
   //gROOT->Reset();
@@ -142,7 +142,7 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
 	continue;
       WCSimRootTrack *wcsimroottrack = dynamic_cast<WCSimRootTrack*>(element);
 
-      if(verbose){
+      if(verbose > 1){
         cout<<"Track: "<<itrack<<endl << "  ";
         int trackflag = wcsimroottrack->GetFlag();
         if(trackflag==-1) cout<<"Primary neutrino track"<<endl;
@@ -219,14 +219,14 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
       totalPe += peForTube;
      
       if ( itruepmt < 10 ) { // Only print first XX=10 tubes
-	if(verbose) printf("photon hits on tube %d : %d, times: ( ",tubeNumber,peForTube);
+	if(verbose > 1) printf("photon hits on tube %d : %d, times: ( ",tubeNumber,peForTube);
 	for (int itruehit = timeArrayIndex; itruehit < timeArrayIndex + peForTube; itruehit++) {
 	  WCSimRootCherenkovHitTime* HitTime = 
 	    dynamic_cast<WCSimRootCherenkovHitTime*>(timeArray->At(itruehit));
     
-	  if(verbose) printf("%6.2f ", HitTime->GetTruetime() );
+	  if(verbose > 1) printf("%6.2f ", HitTime->GetTruetime() );
 	}//itruehit
-	if(verbose) cout << ")" << endl;
+	if(verbose > 1) cout << ")" << endl;
       }//itruepmt < 10
 
     } // itruepmt // End of loop over Cherenkov hits
@@ -258,7 +258,7 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
         WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = 
           dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
         
-        if(verbose){
+        if(verbose > 1){
           if ( idigi < 10 ){ // Only print first XX=10 tubes
             printf("idigi, q [p.e.], time+950 [ns], tubeid: %d %f %f %d \n",idigi,wcsimrootcherenkovdigihit->GetQ(),
               wcsimrootcherenkovdigihit->GetT(),wcsimrootcherenkovdigihit->GetTubeId());
@@ -277,14 +277,13 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
 		    <<", parent TrackID: "<<thehittimeobject->GetParentID()<<";";
 	      }
 #ifdef WCSIM_SAVE_PHOTON_HISTORY
-        // use the same index as WCSimRootCherenkovHitTime
-        WCSimRootCherenkovHitHistory *thehithistoryobject =  dynamic_cast<WCSimRootCherenkovHitHistory*>(historyArray->At(thephotonsid));
-	      if(thehithistoryobject)
-        {
-          // Number of scattering, and types of reflection surface (WCSimEnumerations)
-          cout<<" Rayleigh Scattering: "<<thehithistoryobject->GetNRayScatters()<<", Mie Scattering: "<<thehithistoryobject->GetNMieScatters()<<", Reflection: ";
-          for (auto r: thehithistoryobject->GetReflectionSurfaces()) cout<<WCSimEnumerations::EnumAsString(r)<<" ";
-          cout<<";";
+	      // use the same index as WCSimRootCherenkovHitTime
+	      WCSimRootCherenkovHitHistory *thehithistoryobject =  dynamic_cast<WCSimRootCherenkovHitHistory*>(historyArray->At(thephotonsid));
+	      if(thehithistoryobject) {
+		// Number of scattering, and types of reflection surface (WCSimEnumerations)
+		cout<<" Rayleigh Scattering: "<<thehithistoryobject->GetNRayScatters()<<", Mie Scattering: "<<thehithistoryobject->GetNMieScatters()<<", Reflection: ";
+		for (auto r: thehithistoryobject->GetReflectionSurfaces()) cout<<WCSimEnumerations::EnumAsString(r)<<" ";
+		cout<<";";
 	      }
 #endif
 	      cout<<endl;
