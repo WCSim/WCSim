@@ -1173,8 +1173,11 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 
   // Fill other info for this event
 
-  wcsimrootevent->SetNvtxs(injhfNtuple.nvtxs);
-  if(!skipFillingTracks) {
+  if(skipFillingTracks) {
+    wcsimrootevent->SetNvtxs(0);
+  }
+  else {
+    wcsimrootevent->SetNvtxs(injhfNtuple.nvtxs);
     for( Int_t u=0; u<injhfNtuple.nvtxs; u++ ){
       wcsimrootevent->SetVtxsvol(u,injhfNtuple.vtxsvol[u]);
       for (int j=0;j<4;j++)
@@ -1723,9 +1726,12 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 
   // Fill other info for this event
 
-  wcsimrootevent->SetNvtxs(injhfNtuple.nvtxs);
 
-  if(!skipFillingTracks) {
+  if(skipFillingTracks) {
+    wcsimrootevent->SetNvtxs(0);
+  }
+  else {
+    wcsimrootevent->SetNvtxs(injhfNtuple.nvtxs);
     for( Int_t u=0; u<injhfNtuple.nvtxs; u++ ){
       wcsimrootevent->SetVtxsvol(u,injhfNtuple.vtxsvol[u]);
       for (int j=0;j<4;j++)
