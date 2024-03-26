@@ -51,6 +51,7 @@
 #include "G4Orb.hh"
 #include "G4Types.hh"
 #include "geomdefs.hh"
+#include "G4Version.hh"
 
 using namespace std;
 
@@ -146,7 +147,11 @@ void G4Voxelizer_v1051::BuildVoxelLimits(std::vector<G4VSolid*>& solids,
       G4Transform3D transform = transforms[i];
       G4ThreeVector min, max;
 
+#if G4VERSION_NUMBER < 1040
       solid.Extent(min, max);
+#else
+      solid.BoundingLimits(min, max);
+#endif
       if (solid.GetEntityType() == "G4Orb")
       {
         G4Orb& orb = *(G4Orb*) &solid;

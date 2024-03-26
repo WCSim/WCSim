@@ -48,6 +48,7 @@
 #include "HepPolyhedronProcessor.h"
 
 #include "G4AutoLock.hh"
+#include "G4Version.hh"
 
 namespace
 {
@@ -560,7 +561,11 @@ void G4MultiUnion_v1051::Extent(EAxis aAxis, G4double& aMin, G4double& aMax) con
   {
     G4VSolid& solid = *fSolids[i];
     G4Transform3D transform = GetTransformation(i);
+#if G4VERSION_NUMBER < 1040
     solid.Extent(min, max);
+#else
+    solid.BoundingLimits(min, max);
+#endif
    
     TransformLimits(min, max, transform);
     
