@@ -122,7 +122,7 @@ Useful cmake commands:
 #### WCSim cmake build options
 * `-DWCSim_Geometry_Overlaps_CHECK=<ON|OFF>` If ON, turns on geometry overlap checking (slow, but important when setting new detector geometry options). Default: OFF
 * `-DWCSim_DEBUG_COMPILE_FLAG=<ON|OFF>` If ON, turns on the gcc debug compiler flag `-g`. Default: OFF
-* `-DWCSim_DEBUG_COMPILE_FLAG=<ON|OFF>` If ON, turns on photon scattering/reflection history saving. The data class `WCSimRootCherenkovHitHistory` is used in a similar way as `WCSimRootCherenkovHitTime`. Default: OFF
+* `-DWCSIM_SAVE_PHOTON_HISTORY_FLAG=<ON|OFF>` If ON, turns on photon scattering/reflection history saving. The data class `WCSimRootCherenkovHitHistory` is used in a similar way as `WCSimRootCherenkovHitTime`. Default: OFF
 
 #### Build with CMake on sukap:
 
