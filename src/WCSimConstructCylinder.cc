@@ -28,7 +28,12 @@
 #include "G4ReflectionFactory.hh"
 #include "G4GeometryTolerance.hh"
 #include "G4GeometryManager.hh"
+#include "G4Version.hh"
+#if G4VERSION_NUMBER < 1040
+#include "G4MultiUnion_v1051.hh" //old version does not support G4MultiUnion naively, so use custom class
+#else
 #include "G4MultiUnion.hh"
+#endif
 
 #include "WCSimTuningParameters.hh" //jl145
 
@@ -3287,7 +3292,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   //jl145------------------------------------------------
 
   // Union of PMT solids to resolve overlap
+#if G4VERSION_NUMBER < 1040
+  G4MultiUnion_v1051* pmt_solid = new G4MultiUnion_v1051("UnitedPMTs_Barrel");
+#else
   G4MultiUnion* pmt_solid = new G4MultiUnion("UnitedPMTs_Barrel");
+#endif
 
   ///////////////   Barrel PMT placement
 
@@ -4360,7 +4369,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   G4String pmtname = "WCMultiPMT";
 
   // Union of PMT solids to resolve overlap
+#if G4VERSION_NUMBER < 1040
+  G4MultiUnion_v1051* pmt_solid = new G4MultiUnion_v1051("UnitedPMTs_Cap");
+#else
   G4MultiUnion* pmt_solid = new G4MultiUnion("UnitedPMTs_Cap");
+#endif
 
   // unique copy number for auto placement
   G4int copyNo = 0;
