@@ -5,10 +5,23 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+*************************************************************
+27/03/2024: Notes for v1.12.10
+*************************************************************
+
+Minor release after #427, removing the superfluous copies of true track information in the output file
+Also picking up mac file fixes in WCSim/Validation - so the HK FD CI checks will be really from the HK FD geometry (has been SK since v1.12.8
+
 New features
 * Pull request #387 @DiegoCostas97: Add (optional) AmBe source geometry
 * Pull request #387 @DiegoCostas97: New AmBe primary generator, simulating gamma + photon
 * Pull request #387 @DiegoCostas97: Addition of creator process to WCSimRootTrack & WCSimRootCherenkovHitTime
+* Pull request #427 @tdealtry: `sample_readfile.C` has option to select which PMT branch to analyse
+
+Update
+* Pull request #421 @tdealtry: Remove the old build & physics test CI action (calling bash scripts) in favour of the new python version
+* Pull request #426 @tdealtry: Turn off creation of the (unfilled) flat tree output file by default
+* Pull request #427 @tdealtry: Only store true track information in the 0th trigger of the first PMT type (previously was saved across multiple triggers, and copied into every active PMT branch)
 
 *************************************************************
 05/03/2024: Notes for v1.12.9

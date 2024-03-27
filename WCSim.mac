@@ -441,6 +441,11 @@
 ## change the name of the output root file, default = wcsim.root
 /WCSimIO/RootFile wcsim_output.root
 
+## save in a flat tree format, with multiple trees for different elements (vertices, tracks, true hits, digits, etc.)
+## Currently the trees are created, but unfilled, if you turn this option on
+## (The code needs finessing by someone, if there is a desire to bring this format back)
+#/WCSimIO/WriteFlatRootFile true
+
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false
 
