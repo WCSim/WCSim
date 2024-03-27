@@ -23,7 +23,8 @@ using std::map;
 
 /**
  * \struct WCSimDarkNoiseOptions
- * Class to hold information about the chosen dark noise options.
+ * \brief Class to hold information about the chosen dark noise options.
+ *
  * There will be one copy of this class for each active PMT type in the output file.
  */
 struct WCSimDarkNoiseOptions {
@@ -43,8 +44,12 @@ struct WCSimDarkNoiseOptions {
 
 /** 
  * \class WCSimRootOptions
- * List of WCSim running options.
- * Note that not all options are currently included in this class
+ * \brief List of WCSim running options.
+ *
+ * Note that not all options are currently included in this class.
+ *
+ * When looking up the values, it is recommended to use the Print() function (examples in multiple macros).
+ * Values can also be accessed progammatically with the getters
  */
 class WCSimRootOptions : public TObject {
 
