@@ -23,7 +23,7 @@ You can follow issues/requests etc by watching the GitHub respository.
 
 ## Validation Webpage
 
-WCSim uses Travis CI to perform build and physics tests for each pull request and commit.
+WCSim uses GitHub Actions CI to perform build and physics tests for each pull request and commit.
 The scripts it runs can be found at https://github.com/WCSim/Validation
 
 The output can be found at: https://wcsim.github.io/Validation/
@@ -33,9 +33,26 @@ The output can be found at: https://wcsim.github.io/Validation/
 More detailed information about the simulation is available in
 `doc/DetectorDocumentation.pdf`
 
-doxygen documentation can be built by running
-`cd $WCSIMDIR/doc && make`
-Additionally, doxygen documentation is available at https://wcsim.github.io/WCSim/inherits.html
+Additionally, doxygen documentation is available at https://wcsim.github.io/WCSim/annotated.html
+Note that most of the code has no doxygen comments, but all output class member variables are documented. See the WCSimRoot* classes
+
+doxygen documentation can be built locally by running
+```bash
+cd $WCSIMDIR/ && doxygen WCSim_doxygen_config
+```
+
+For admin: A more featured doxygen build can be done & pushed using an alternative doxygen config file (requires `dot` from `graphviz`)
+```bash
+git clone -b gh-pages --single-branch git@github.com:WCSim/WCSim.git WCSim-dox
+cd WCSim-dox
+./get_dox.sh
+```
+You can also make this featured version locally by
+```bash
+cd $WCSIMDIR
+git clone -b gh-pages --single-branch git@github.com:WCSim/WCSim.git WCSim-dox
+doxygen WCSim-dox/WCSim_doxygen_config
+```
 
 ## Build Instructions
 
