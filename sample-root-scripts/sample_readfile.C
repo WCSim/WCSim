@@ -149,7 +149,8 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
         else if(trackflag==-2) cout<<"Neutrino target nucleus track"<<endl;
         else cout<<"Final state particle track"<<endl;
         printf("  Track ipnu (PDG code): %d\n",wcsimroottrack->GetIpnu());
-        printf("  PDG code of parent particle (0 for primary): %d\n",wcsimroottrack->GetParenttype());
+        printf("  PDG code of parent particle (0 for primary, 999 for parent PDG code not found in the specific logic used): %d\n",wcsimroottrack->GetParenttype());
+	printf("  Track ID of parent particle (0 for primary): %d\n",wcsimroottrack->GetParentId());
             
         cout<<"  Track initial dir [unit 3-vector]: ("
             <<wcsimroottrack->GetDir(0)<<", "
