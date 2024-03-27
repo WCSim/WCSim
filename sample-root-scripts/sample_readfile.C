@@ -9,6 +9,7 @@
 #include "TSystem.h"
 #include "TCanvas.h"
 #include "TFile.h"
+#include "TString.h"
 
 #include "WCSimRootOptions.hh"
 #include "WCSimRootGeom.hh"
@@ -18,10 +19,18 @@
 //#define WCSIM_SAVE_PHOTON_HISTORY
 
 // Simple example of reading a generated Root file
-int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
+int sample_readfile(const char *filename="../wcsim.root", TString events_tree_name="wcsimrootevent", const int verbose=0)
 {
   // Clear global scope
   //gROOT->Reset();
+
+  if(!events_tree_name.EqualTo("wcsimrootevent") &&
+     !events_tree_name.EqualTo("wcsimrootevent2") &&
+     !events_tree_name.EqualTo("wcsimrootevent_OD")) {
+    cerr << "Second argument events_tree_name MUST equal one of: wcsimrootevent wcsimrootevent2 wcsimrootevent_OD" << endl;
+    return -1;
+  }
+  const bool true_tracks_expected = events_tree_name.EqualTo("wcsimrootevent");
 
   // Open the file
   TFile * file = new TFile(filename,"read");
@@ -41,11 +50,11 @@ int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
   WCSimRootEvent* wcsimrootsuperevent = new WCSimRootEvent();
 
   // Set the branch address for reading from the tree
-  TBranch *branch = tree->GetBranch("wcsimrootevent");
+  TBranch *branch = tree->GetBranch(events_tree_name);
   branch->SetAddress(&wcsimrootsuperevent);
 
   // Force deletion to prevent memory leak 
-  tree->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
+  tree->GetBranch(events_tree_name)->SetAutoDelete(kTRUE);
 
   // Geometry tree - only need 1 "event"
   TTree *geotree = (TTree*)file->Get("wcsimGeoT");
@@ -95,28 +104,36 @@ int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
       printf("Interaction Nuance Code: %d\n", wcsimrootevent->GetMode());
       printf("Number of Delayed Triggers (sub events): %d\n",
        wcsimrootsuperevent->GetNumberOfSubEvents());
-      
-      printf("Neutrino Vertex Geometry Volume Code: %d\n", wcsimrootevent->GetVtxvol());
-      printf("Neutrino Vertex Location [cm]: %f %f %f\n", wcsimrootevent->GetVtx(0),
-       wcsimrootevent->GetVtx(1),wcsimrootevent->GetVtx(2));
+
+      if(true_tracks_expected) {
+	printf("Neutrino Vertex Geometry Volume Code: %d\n", wcsimrootevent->GetVtxvol());
+	printf("Neutrino Vertex Location [cm]: %f %f %f\n", wcsimrootevent->GetVtx(0),
+	       wcsimrootevent->GetVtx(1),wcsimrootevent->GetVtx(2));
+	printf("Index of muon in WCSimRootTracks %d\n", wcsimrootevent->GetJmu());
+	printf("Number of final state particles %d\n", wcsimrootevent->GetNpar());
+      }
     }
     hvtxX->Fill(wcsimrootevent->GetVtx(0));
     hvtxY->Fill(wcsimrootevent->GetVtx(1));
     hvtxZ->Fill(wcsimrootevent->GetVtx(2));
-
-    if(verbose){
-      printf("Index of muon in WCSimRootTracks %d\n", wcsimrootevent->GetJmu());
-      printf("Number of final state particles %d\n", wcsimrootevent->GetNpar());
-    }
 
     // Now read the tracks in the event
     
     // Get the number of tracks
     const int ntrack = wcsimrootevent->GetNtrack();
     const int ntrack_slots = wcsimrootevent->GetNtrack_slots();
-    if(verbose)
+    if(verbose) {
       cout << "SAVED TRACKS" << endl
 	   << "Number of Saved WCSimRootTracks: " << ntrack << endl;
+      if(!true_tracks_expected)
+	cout << "No saved true tracks in branch: " << events_tree_name
+	     << ". You can find them in: wcsimrootevent" << endl;
+    }
+    if(ntrack && !true_tracks_expected) {
+      cerr << ntrack << " true tracks found in branch: " << events_tree_name
+	   << ". There should be none here. Don't trust them. You can find them in: wcsimrootevent" << endl;
+    }
+      
     // Loop through elements in the TClonesArray of WCSimTracks
     for (int itrack=0; itrack<ntrack_slots; itrack++)
     {
@@ -125,7 +142,7 @@ int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
 	continue;
       WCSimRootTrack *wcsimroottrack = dynamic_cast<WCSimRootTrack*>(element);
 
-      if(verbose){
+      if(verbose > 1){
         cout<<"Track: "<<itrack<<endl << "  ";
         int trackflag = wcsimroottrack->GetFlag();
         if(trackflag==-1) cout<<"Primary neutrino track"<<endl;
@@ -202,14 +219,14 @@ int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
       totalPe += peForTube;
      
       if ( itruepmt < 10 ) { // Only print first XX=10 tubes
-	if(verbose) printf("photon hits on tube %d : %d, times: ( ",tubeNumber,peForTube);
+	if(verbose > 1) printf("photon hits on tube %d : %d, times: ( ",tubeNumber,peForTube);
 	for (int itruehit = timeArrayIndex; itruehit < timeArrayIndex + peForTube; itruehit++) {
 	  WCSimRootCherenkovHitTime* HitTime = 
 	    dynamic_cast<WCSimRootCherenkovHitTime*>(timeArray->At(itruehit));
     
-	  if(verbose) printf("%6.2f ", HitTime->GetTruetime() );
+	  if(verbose > 1) printf("%6.2f ", HitTime->GetTruetime() );
 	}//itruehit
-	if(verbose) cout << ")" << endl;
+	if(verbose > 1) cout << ")" << endl;
       }//itruepmt < 10
 
     } // itruepmt // End of loop over Cherenkov hits
@@ -241,7 +258,7 @@ int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
         WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = 
           dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
         
-        if(verbose){
+        if(verbose > 1){
           if ( idigi < 10 ){ // Only print first XX=10 tubes
             printf("idigi, q [p.e.], time+950 [ns], tubeid: %d %f %f %d \n",idigi,wcsimrootcherenkovdigihit->GetQ(),
               wcsimrootcherenkovdigihit->GetT(),wcsimrootcherenkovdigihit->GetTubeId());
@@ -260,14 +277,13 @@ int sample_readfile(const char *filename="../wcsim.root", bool verbose=false)
 		    <<", parent TrackID: "<<thehittimeobject->GetParentID()<<";";
 	      }
 #ifdef WCSIM_SAVE_PHOTON_HISTORY
-        // use the same index as WCSimRootCherenkovHitTime
-        WCSimRootCherenkovHitHistory *thehithistoryobject =  dynamic_cast<WCSimRootCherenkovHitHistory*>(historyArray->At(thephotonsid));
-	      if(thehithistoryobject)
-        {
-          // Number of scattering, and types of reflection surface (WCSimEnumerations)
-          cout<<" Rayleigh Scattering: "<<thehithistoryobject->GetNRayScatters()<<", Mie Scattering: "<<thehithistoryobject->GetNMieScatters()<<", Reflection: ";
-          for (auto r: thehithistoryobject->GetReflectionSurfaces()) cout<<WCSimEnumerations::EnumAsString(r)<<" ";
-          cout<<";";
+	      // use the same index as WCSimRootCherenkovHitTime
+	      WCSimRootCherenkovHitHistory *thehithistoryobject =  dynamic_cast<WCSimRootCherenkovHitHistory*>(historyArray->At(thephotonsid));
+	      if(thehithistoryobject) {
+		// Number of scattering, and types of reflection surface (WCSimEnumerations)
+		cout<<" Rayleigh Scattering: "<<thehithistoryobject->GetNRayScatters()<<", Mie Scattering: "<<thehithistoryobject->GetNMieScatters()<<", Reflection: ";
+		for (auto r: thehithistoryobject->GetReflectionSurfaces()) cout<<WCSimEnumerations::EnumAsString(r)<<" ";
+		cout<<";";
 	      }
 #endif
 	      cout<<endl;
