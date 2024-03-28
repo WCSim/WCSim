@@ -1171,10 +1171,23 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0); // will be set later.
 
+  std::map<int,int> trajMap; // mapping of trackID and index
+
   // Fill other info for this event
 
   if(skipFillingTracks) {
     wcsimrootevent->SetNvtxs(0);
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
+    // still need the trackID mapping
+    G4int n_trajectories = 0;
+    if (TC)
+      n_trajectories = TC->entries();
+    for (int i=0; i <n_trajectories; i++)
+    {
+	    WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[i];
+      trajMap[trj->GetTrackID()] = i;
+    }
+#endif  
   }
   else {
     wcsimrootevent->SetNvtxs(injhfNtuple.nvtxs);
@@ -1261,7 +1274,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     //n_trajectories=50;    // existed in previous versions of the code.  It also
     // makes the ROOT file smaller.
 
-    std::map<int,int> trajMap; // mapping of trackID and index
     for (int i=0; i <n_trajectories; i++)
       {
 	WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[i];
@@ -1276,7 +1288,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
 	if ( trj->GetParentID() == 0 ) primaryList.insert(trj->GetTrackID());
 
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
 	trajMap[trj->GetTrackID()] = i;
+#endif
 
 	// Process primary tracks or the secondaries from pizero or muons...
 
@@ -1724,11 +1738,24 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   wcsimrootevent = wcsimrootsuperevent->GetTrigger(0);
   wcsimrootevent->SetHeader(event_id, GetRunAction()->GetRunID(), 0); // will be set later.
 
+  std::map<int,int> trajMap; // mapping of trackID and index
+
   // Fill other info for this event
 
 
   if(skipFillingTracks) {
     wcsimrootevent->SetNvtxs(0);
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
+    // still need the trackID mapping
+    G4int n_trajectories = 0;
+    if (TC)
+      n_trajectories = TC->entries();
+    for (int i=0; i <n_trajectories; i++)
+    {
+	    WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[i];
+      trajMap[trj->GetTrackID()] = i;
+    }
+#endif  
   }
   else {
     wcsimrootevent->SetNvtxs(injhfNtuple.nvtxs);
@@ -1814,7 +1841,6 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     //n_trajectories=50;    // existed in previous versions of the code.  It also
     // makes the ROOT file smaller.
 
-    std::map<int,int> trajMap; // mapping of trackID and index
     for (int i=0; i <n_trajectories; i++)
       {
 	WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[i];
@@ -1828,7 +1854,9 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	if ( trj->GetPDGEncoding() == 211 ) pionList.insert(trj->GetTrackID());
 	if ( trj->GetPDGEncoding() == -211 ) antipionList.insert(trj->GetTrackID());
 
+#ifdef WCSIM_SAVE_PHOTON_HISTORY
 	trajMap[trj->GetTrackID()] = i;
+#endif
 
 	// Process primary tracks or the secondaries from pizero or muons...
 
