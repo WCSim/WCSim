@@ -763,6 +763,8 @@ private:
   std::vector<G4double> pmtRotaton;
   std::string pmtPositionFile;
   void ReadGeometryTableFromFile();
+  // distance by which PMT goes behind black sheet
+  G4double pmt_blacksheet_offset;
 
   // *** Begin egg-shaped HyperK Geometry ***
 
