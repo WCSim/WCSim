@@ -1385,14 +1385,14 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_mPMTGeometry()
 // WCTE with mPMTs (M.Shinoki)
 void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
 {
-    WCDetectorName = "NuPRISMBeamTest_16cShort_mPMT";
-    WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
+  WCDetectorName = "NuPRISMBeamTest_16cShort_mPMT";
+  WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
 	mPMT_ID_PMT = "PMT3inchR12199_02";    //can be changed in macro through mPMT settings.
 	mPMT_OD_PMT = "PMT3inchR12199_02";
-    WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
-    WCPMTName = PMT->GetPMTName();
-    WCPMTExposeHeight = PMT->GetExposeHeight();
-    WCPMTRadius = PMT->GetRadius();
+  WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
+  WCPMTName = PMT->GetPMTName();
+  WCPMTExposeHeight = PMT->GetExposeHeight();
+  WCPMTRadius = PMT->GetRadius();
 
 	//mPMT params go first because detector depends on it:
 	mPMT_vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
@@ -1416,24 +1416,28 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
 	nID_PMTs = 19;
 	config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring_WCTE.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
 
-	WCIDHeight               = 2.830845*CLHEP::m;
-	WCIDDiameter             = 3.192536*CLHEP::m;
+	// WCIDHeight               = 2.830845*CLHEP::m;
+	// WCIDDiameter             = 3.192536*CLHEP::m;
+  WCIDHeight               = 2.758236*CLHEP::m;
+  WCIDDiameter             = 3.119927*CLHEP::m;
 	WCIDVerticalPosition     = 0.;
 	
-	WCBarrelPMTOffset     = 300.*CLHEP::mm;
-    WCPMTperCellHorizontal = 1.0; // 1 per phi
-    WCPMTperCellVertical   = 1.0;
+	WCBarrelPMTOffset     = 291.*CLHEP::mm;
+  WCPMTperCellHorizontal = 1.0; // 1 per phi
+  WCPMTperCellVertical   = 1.0;
 
-    WCBarrelNumPMTHorizontal = 16;
-    WCBarrelNRings        = 4;
-    //WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
-    WCCapPMTSpacing       = 0.58*CLHEP::m;
-    WCCapEdgeLimit        = 1.551*m; 
-    WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
-    WCAddGd               = false;
+  WCBarrelNumPMTHorizontal = 16;
+  WCBarrelNRings        = 4;
+  //WCCapPMTSpacing       = (pi*WCIDDiameter/WCBarrelNumPMTHorizontal);
+  WCCapPMTSpacing       = 0.58*CLHEP::m;
+  WCCapEdgeLimit        = 1.551*m; 
+  WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
+  WCAddGd               = false;
 
-    // default for this geometry is to rotate the barrel by half a tower
-    rotateBarrelHalfTower = true;
+  // default for this geometry is to rotate the barrel by half a tower
+  rotateBarrelHalfTower = true;
+  // to place PMT behind the blacksheet
+  pmt_blacksheet_offset = 36.3045*CLHEP::mm;
 }
 
 
