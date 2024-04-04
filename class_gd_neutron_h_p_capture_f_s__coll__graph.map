@@ -1,0 +1,5 @@
+<map id="GdNeutronHPCaptureFS" name="GdNeutronHPCaptureFS">
+<area shape="rect" id="node2" href="$class_g4_neutron_h_p_final_state.html" title="{G4NeutronHPFinalState\n||}" alt="" coords="5,255,180,333"/>
+<area shape="rect" id="node4" href="$class_g4double.html" title="{G4double\n||}" alt="" coords="320,255,404,333"/>
+<area shape="rect" id="node8" href="$class_gd_capture_gammas.html" title="{GdCaptureGammas\n||+ GdCaptureGammas()\l+ ~GdCaptureGammas()\l+ GetGammas()\l+ Initialize()\l+ CapGad155()\l+ CapGad157()\l+ casca1Gd155()\l+ casca2Gd155()\l+ casca1Gd157()\l+ casca2Gd157()\l+ casca3Gd157()\l+ continuum()\l+ cumule()\l+ intc()\l}" alt="" coords="959,160,1146,428"/>
+</map>

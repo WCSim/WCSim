@@ -70,24 +70,24 @@ $(function() {
 <p><a href="https://github.com/WCSim/WCSim">https://github.com/WCSim/WCSim</a></p>
 <p>Tutorials and information about the branches and WCSim development model can be found on the wiki:</p>
 <p><a href="https://github.com/WCSim/WCSim/wiki">https://github.com/WCSim/WCSim/wiki</a></p>
-<p>WCSim has very few external dependencies. It relies on only <a class="el" href="namespace_r_o_o_t.html">ROOT</a> and Geant4.</p>
+<p>WCSim has very few external dependencies. It relies on only ROOT and Geant4.</p>
 <p>There is a mailing list which will send you GitHub push/checkin notifications here:</p>
 <p><a href="https://lists.phy.duke.edu/mailman/listinfo/wcsim-git">https://lists.phy.duke.edu/mailman/listinfo/wcsim-git</a></p>
 <p>You can follow issues/requests etc by watching the GitHub respository.</p>
 <h2>Validation Webpage</h2>
-<p>WCSim uses Travis CI to perform build and physics tests for each pull request and commit. The scripts it runs can be found at <a href="https://github.com/WCSim/Validation">https://github.com/WCSim/Validation</a></p>
+<p>WCSim uses GitHub Actions CI to perform build and physics tests for each pull request and commit. The scripts it runs can be found at <a href="https://github.com/WCSim/Validation">https://github.com/WCSim/Validation</a></p>
 <p>The output can be found at: <a href="https://wcsim.github.io/Validation/">https://wcsim.github.io/Validation/</a></p>
 <h2>Documentation</h2>
 <p>More detailed information about the simulation is available in <code>doc/DetectorDocumentation.pdf</code></p>
-<p>doxygen documentation can be built by running <code>cd $WCSIMDIR/doc &amp;&amp; make</code> Additionally, doxygen documentation is available at <a href="https://wcsim.github.io/WCSim/inherits.html">https://wcsim.github.io/WCSim/inherits.html</a></p>
-<h2>Build Instructions</h2>
+<p>Additionally, doxygen documentation is available at <a href="https://wcsim.github.io/WCSim/annotated.html">https://wcsim.github.io/WCSim/annotated.html</a> Note that most of the code has no doxygen comments, but all output class member variables are documented. See the WCSimRoot* classes</p>
+<p>doxygen documentation can be built locally by running </p><div class="fragment"><div class="line">cd $WCSIMDIR/ &amp;&amp; doxygen WCSim_doxygen_config</div></div><!-- fragment --><p>For admin: A more featured doxygen build can be done &amp; pushed using an alternative doxygen config file (requires <code>dot</code> from <code>graphviz</code>) </p><div class="fragment"><div class="line">git clone -b gh-pages --single-branch git@github.com:WCSim/WCSim.git WCSim-dox</div><div class="line">cd WCSim-dox</div><div class="line">./get_dox.sh</div></div><!-- fragment --><p> You can also make this featured version locally by </p><div class="fragment"><div class="line">cd $WCSIMDIR</div><div class="line">git clone -b gh-pages --single-branch git@github.com:WCSim/WCSim.git WCSim-dox</div><div class="line">doxygen WCSim-dox/WCSim_doxygen_config</div></div><!-- fragment --><h2>Build Instructions</h2>
 <ul>
 <li>The environment variable <code>$WCSIMDIR</code> should be defined as your WCSim code directory (not the build one). ``<code>bash export WCSIMDIR=</code>pwd<code> </code>``</li>
 </ul>
 <h3>Prerequisites</h3>
 <p>The automated building testing is currently performed inside the hk-software docker container with the prerequisites:</p><ul>
 <li>Geant4 10.3.3</li>
-<li><a class="el" href="namespace_r_o_o_t.html">ROOT</a> 6.26/04</li>
+<li>ROOT 6.26/04</li>
 <li>gcc 8.5.0</li>
 <li>cmake 3.20.2</li>
 </ul>
@@ -98,7 +98,7 @@ $(function() {
 <li>All of the G4 data files are also required to be installed, include hadron xsec, etc.</li>
 </ul>
 </li>
-<li><a class="el" href="namespace_r_o_o_t.html">ROOT</a><ul>
+<li>ROOT<ul>
 <li>ROOT5 (e.g. v5r34p36 or v5r34p38, or potentially any v5r34) can potentially be made to work. You may need to modify <code>$WCSIM_BUILD_DIR/src/cmake_install.cmake</code> to take account of ROOT5 not producing <code>.pcm</code> files</li>
 <li>ROOT6 has been tested on an older version than above (6.20/04)</li>
 </ul>
@@ -110,21 +110,21 @@ $(function() {
 </li>
 </ul>
 <h3>Build Instructions using CMake:</h3>
-<p>CMake is cross-platform software for managing the build process in a compiler-independent way (cmake.org). It is required to build <a class="el" href="namespace_r_o_o_t.html">ROOT</a> and GEANT4 also through CMake. <b>Cmake 3.1+ is required.</b> Using cmake, builds and source code need to well separated and make it easier to build many versions of the same software.</p>
+<p>CMake is cross-platform software for managing the build process in a compiler-independent way (cmake.org). It is required to build ROOT and GEANT4 also through CMake. <b>Cmake 3.1+ is required.</b> Using cmake, builds and source code need to well separated and make it easier to build many versions of the same software.</p>
 <p>A recommended way to set up the directory structure in your own preferred <code>WCSIM_HOME</code>:</p><ul>
 <li><code>${WCSIM_HOME}/WCSim</code> : contains the src dir, typically the cloned or unzipped code from GitHub</li>
 <li><code>${WCSIM_HOME}/WCSim_build</code> : contains directories for each build, eg. for each branch you want to test or for different releases, comparing debugged versions, etc. Each subdirectory like <code>WCSim_dev</code> or <code>WCSim_v1.2</code> would contain the intermediate files produced during compilation and not the finale ones</li>
-<li><code>${WCSIM_HOME}/WCSim_install</code> : contains directories for each build, eg. for each branch you want to test or for different releases, comparing debugged versions, etc. Each subdirectory like <code>WCSim_dev</code> or <code>WCSim_v1.2</code> will contain the final executable and libraries, the example macros and library for <a class="el" href="namespace_r_o_o_t.html">ROOT</a>.</li>
+<li><code>${WCSIM_HOME}/WCSim_install</code> : contains directories for each build, eg. for each branch you want to test or for different releases, comparing debugged versions, etc. Each subdirectory like <code>WCSim_dev</code> or <code>WCSim_v1.2</code> will contain the final executable and libraries, the example macros and library for ROOT.</li>
 </ul>
 <p>To compile you need to have <code>CMakeLists.txt</code> in the WCSim source dir.</p><ul>
 <li><code>mkdir -p ${WCSIM_HOME}/WCSim_build/mydir ; cd ${WCSIM_HOME}/WCSim_build/mydir</code></li>
 <li>Set up the environment variables <div class="fragment"><div class="line">#WCSim things</div><div class="line">export WCSIMDIR=/${WCSIM_HOME}/WCSim</div><div class="line">export G4WORKDIR=$WCSIMDIR/exe</div><div class="line">#Geant4 things</div><div class="line">export G4INSTALLDIR=/path/to/geant4/install/dir/</div><div class="line">source $G4INSTALLDIR/bin/geant4.sh</div><div class="line">source $G4INSTALLDIR/share/Geant4-10.3.3/geant4make/geant4make.sh</div></div><!-- fragment --></li>
-<li><code>cmake3 ../../WCSim</code> : this executes the commands in <code>CMakeLists.txt</code> and generates the Makefiles for both the <a class="el" href="namespace_r_o_o_t.html">ROOT</a> library as the main executable.<ul>
+<li><code>cmake3 ../../WCSim</code> : this executes the commands in <code>CMakeLists.txt</code> and generates the Makefiles for both the ROOT library as the main executable.<ul>
 <li>For some OS, <code>cmake3</code> is just <code>cmake</code></li>
 </ul>
 </li>
 <li><code>make clean</code> : if necessary</li>
-<li><code>make -j3 install</code> : will first compile the libWCSimRoot.so and libWCSimCore.so which you need for using the <a class="el" href="namespace_r_o_o_t.html">ROOT</a> Dict from WCSim (e.g. to read the output files) and then compile WCSim.</li>
+<li><code>make -j3 install</code> : will first compile the libWCSimRoot.so and libWCSimCore.so which you need for using the ROOT Dict from WCSim (e.g. to read the output files) and then compile WCSim.</li>
 <li><code>source bin/this_wcsim.sh</code> : will setup the environment variables such that you can run WCSim</li>
 </ul>
 <p>To recompile:</p><ul>
@@ -140,7 +140,7 @@ $(function() {
 <ul>
 <li><code>-DWCSim_Geometry_Overlaps_CHECK=&lt;ON|OFF&gt;</code> If ON, turns on geometry overlap checking (slow, but important when setting new detector geometry options). Default: OFF</li>
 <li><code>-DWCSim_DEBUG_COMPILE_FLAG=&lt;ON|OFF&gt;</code> If ON, turns on the gcc debug compiler flag <code>-g</code>. Default: OFF</li>
-<li><code>-DWCSIM_SAVE_PHOTON_HISTORY_FLAG=&lt;ON|OFF&gt;</code> If ON, turns on photon scattering/reflection history saving. The data class <code><a class="el" href="class_w_c_sim_root_cherenkov_hit_history.html">WCSimRootCherenkovHitHistory</a></code> is used in a similar way as <code><a class="el" href="class_w_c_sim_root_cherenkov_hit_time.html">WCSimRootCherenkovHitTime</a></code>. Default: OFF</li>
+<li><code>-DWCSIM_SAVE_PHOTON_HISTORY_FLAG=&lt;ON|OFF&gt;</code> If ON, turns on photon scattering/reflection history saving. The data class <code><a class="el" href="class_w_c_sim_root_cherenkov_hit_history.html" title="Class holding scattering and reflection history for each true hit (Cherenkov photon; dark noise are a...">WCSimRootCherenkovHitHistory</a></code> is used in a similar way as <code><a class="el" href="class_w_c_sim_root_cherenkov_hit_time.html" title="Class holding true (Cherenkov photon + dark noise) hit information. ">WCSimRootCherenkovHitTime</a></code>. Default: OFF</li>
 </ul>
 <h4>Build with CMake on sukap:</h4>
 <p>A script allowing to build WCSim with CMake on sukap is available: </p><div class="fragment"><div class="line">cd $WCSIMDIR</div><div class="line">./setup/env_sukap.sh</div><div class="line">./make.sh</div></div><!-- fragment --><p> Note that <code>./make.sh</code> should also work on other systems.</p>
@@ -184,7 +184,7 @@ $(function() {
 <div class="fragment"><div class="line">WCSim development is supported by the United States National Science Foundation.</div></div><!-- fragment --> </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 21 2024 17:36:32 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 4 2024 10:20:04 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

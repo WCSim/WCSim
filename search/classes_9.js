@@ -53,6 +53,7 @@ var searchData=
   ['is_5fdefault_5fconstructible_3c_20const_20std_3a_3atuple_3c_20ts_2e_2e_2e_20_3e_20_3e',['is_default_constructible&lt; const std::tuple&lt; Ts... &gt; &gt;',['../structdetail_1_1is__default__constructible_3_01const_01std_1_1tuple_3_01_ts_8_8_8_01_4_01_4.html',1,'detail']]],
   ['is_5fdefault_5fconstructible_3c_20std_3a_3apair_3c_20t1_2c_20t2_20_3e_20_3e',['is_default_constructible&lt; std::pair&lt; T1, T2 &gt; &gt;',['../structdetail_1_1is__default__constructible_3_01std_1_1pair_3_01_t1_00_01_t2_01_4_01_4.html',1,'detail']]],
   ['is_5fdefault_5fconstructible_3c_20std_3a_3atuple_3c_20ts_2e_2e_2e_20_3e_20_3e',['is_default_constructible&lt; std::tuple&lt; Ts... &gt; &gt;',['../structdetail_1_1is__default__constructible_3_01std_1_1tuple_3_01_ts_8_8_8_01_4_01_4.html',1,'detail']]],
+  ['is_5fdetected',['is_detected',['../classis__detected.html',1,'']]],
   ['is_5fdetected_5flazy',['is_detected_lazy',['../structdetail_1_1is__detected__lazy.html',1,'detail']]],
   ['is_5fgetable',['is_getable',['../structdetail_1_1is__getable.html',1,'detail']]],
   ['is_5fiterator_5fof_5fmultibyte',['is_iterator_of_multibyte',['../structdetail_1_1is__iterator__of__multibyte.html',1,'detail']]],

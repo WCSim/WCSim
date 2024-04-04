@@ -1,0 +1,4 @@
+<map id="CADMesh::File::STLReader" name="CADMesh::File::STLReader">
+<area shape="rect" id="node2" href="$class_c_a_d_mesh_1_1_file_1_1_reader.html" title="{CADMesh::File::Reader\n||+ Reader()\l+ ~Reader()\l+ Read()\l+ CanRead()\l+ GetName()\l+ GetMesh()\l+ GetMesh()\l+ GetMesh()\l+ GetNumberOfMeshes()\l+ GetMeshes()\l# AddMesh()\l# SetMeshes()\l}" alt="" coords="33,160,220,399"/>
+<area shape="rect" id="node3" href="$class_g4_string.html" title="{G4String\n||}" alt="" coords="18,13,97,90"/>
+</map>

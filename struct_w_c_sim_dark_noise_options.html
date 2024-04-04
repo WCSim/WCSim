@@ -70,7 +70,17 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>Class to hold information about the chosen dark noise options.  
+ <a href="struct_w_c_sim_dark_noise_options.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for WCSimDarkNoiseOptions:</div>
+<div class="dyncontent">
+<div class="center"><img src="struct_w_c_sim_dark_noise_options__coll__graph.png" border="0" usemap="#_w_c_sim_dark_noise_options_coll__map" alt="Collaboration graph"/></div>
+<map name="_w_c_sim_dark_noise_options_coll__map" id="_w_c_sim_dark_noise_options_coll__map">
+</map>
+</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -80,21 +90,29 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a2a582b55e8deca10e484649014cce9c7"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_w_c_sim_dark_noise_options.html#a2a582b55e8deca10e484649014cce9c7">PMTDarkRate</a></td></tr>
+<tr class="memdesc:a2a582b55e8deca10e484649014cce9c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dark rate for this PMT type (unit: kHz)  <a href="#a2a582b55e8deca10e484649014cce9c7">More...</a><br /></td></tr>
 <tr class="separator:a2a582b55e8deca10e484649014cce9c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada00bce4244c8443f402f4a256cb8428"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_w_c_sim_dark_noise_options.html#ada00bce4244c8443f402f4a256cb8428">ConvRate</a></td></tr>
+<tr class="memdesc:ada00bce4244c8443f402f4a256cb8428"><td class="mdescLeft">&#160;</td><td class="mdescRight">Conversion factor used to ensure that the dark rate is as requested. More true dark hits are generated, such that the final digitised dark noise rate is correct (hits are reduced due to thresholds, integration, etc. in the PMT &amp; electronics simulation)  <a href="#ada00bce4244c8443f402f4a256cb8428">More...</a><br /></td></tr>
 <tr class="separator:ada00bce4244c8443f402f4a256cb8428"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58da6060075e820d7a84be91a50bd3e9"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_w_c_sim_dark_noise_options.html#a58da6060075e820d7a84be91a50bd3e9">DarkHigh</a></td></tr>
+<tr class="memdesc:a58da6060075e820d7a84be91a50bd3e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">In dark mode 0, the end time of the fixed dark noise window (unit: ns)  <a href="#a58da6060075e820d7a84be91a50bd3e9">More...</a><br /></td></tr>
 <tr class="separator:a58da6060075e820d7a84be91a50bd3e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee935520f5883a1c420f50e79499a162"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_w_c_sim_dark_noise_options.html#aee935520f5883a1c420f50e79499a162">DarkLow</a></td></tr>
+<tr class="memdesc:aee935520f5883a1c420f50e79499a162"><td class="mdescLeft">&#160;</td><td class="mdescRight">In dark mode 0, the start time of the fixed dark noise window (unit: ns)  <a href="#aee935520f5883a1c420f50e79499a162">More...</a><br /></td></tr>
 <tr class="separator:aee935520f5883a1c420f50e79499a162"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb9a7506b011bc4a6ede2c18edd031a5"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_w_c_sim_dark_noise_options.html#adb9a7506b011bc4a6ede2c18edd031a5">DarkWindow</a></td></tr>
+<tr class="memdesc:adb9a7506b011bc4a6ede2c18edd031a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">In dark mode 1, dark hits are added to a window of size ±DarkWindow/2 around true physics hits (unit: ns)  <a href="#adb9a7506b011bc4a6ede2c18edd031a5">More...</a><br /></td></tr>
 <tr class="separator:adb9a7506b011bc4a6ede2c18edd031a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a156d5776d53ba35af92b5628d37dcac4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_w_c_sim_dark_noise_options.html#a156d5776d53ba35af92b5628d37dcac4">DarkMode</a></td></tr>
+<tr class="memdesc:a156d5776d53ba35af92b5628d37dcac4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mode 0: add dark noise in a fixed window. Mode 1: add dark noise around true physics hits.  <a href="#a156d5776d53ba35af92b5628d37dcac4">More...</a><br /></td></tr>
 <tr class="separator:a156d5776d53ba35af92b5628d37dcac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00024">24</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
+<div class="textblock"><p>Class to hold information about the chosen dark noise options. </p>
+<p>There will be one copy of this class for each active PMT type in the output file. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00030">30</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1563db9821178e0af92002c2dc84e268"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1563db9821178e0af92002c2dc84e268">&#9670;&nbsp;</a></span>WCSimDarkNoiseOptions()</h2>
@@ -119,7 +137,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00031">31</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00037">37</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
 
 </div>
 </div>
@@ -136,7 +154,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00026">26</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
+<p>Conversion factor used to ensure that the dark rate is as requested. More true dark hits are generated, such that the final digitised dark noise rate is correct (hits are reduced due to thresholds, integration, etc. in the PMT &amp; electronics simulation) </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00032">32</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
 
 </div>
 </div>
@@ -152,7 +172,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00027">27</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
+<p>In dark mode 0, the end time of the fixed dark noise window (unit: ns) </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00033">33</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
 
 </div>
 </div>
@@ -168,7 +190,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00028">28</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
+<p>In dark mode 0, the start time of the fixed dark noise window (unit: ns) </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00034">34</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
 
 </div>
 </div>
@@ -184,7 +208,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00030">30</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
+<p>Mode 0: add dark noise in a fixed window. Mode 1: add dark noise around true physics hits. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00036">36</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
 
 </div>
 </div>
@@ -200,7 +226,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00029">29</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
+<p>In dark mode 1, dark hits are added to a window of size ±DarkWindow/2 around true physics hits (unit: ns) </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00035">35</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
 
 </div>
 </div>
@@ -216,7 +244,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00025">25</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
+<p>Dark rate for this PMT type (unit: kHz) </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_options_8hh_source.html#l00031">31</a> of file <a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>.</p>
 
 </div>
 </div>
@@ -226,7 +256,7 @@ Public Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 21 2024 17:36:32 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 4 2024 10:20:04 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

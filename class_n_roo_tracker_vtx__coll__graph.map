@@ -1,0 +1,5 @@
+<map id="NRooTrackerVtx" name="NRooTrackerVtx">
+<area shape="rect" id="node2" href="$class_j_nu_beam_flux.html" title="{JNuBeamFlux\n|+ NuCospibm\l+ NuNorm\l+ NuRnu\l+ NuXnu\l+ NuGamom0\l+ NuGcosbm\l+ NuGv\l+ NuAnorm\l+ NuGdistal\l+ NuGdistti\l+ NuGdistfe\l+ NuVersion\l+ NuTuneid\l+ NuPint\l+ NuBtilt\l+ NuEmit\l+ NuAlpha\l|+ JNuBeamFlux()\l+ ~JNuBeamFlux()\l+ Reset()\l+ Copy()\l+ ClassDef()\l}" alt="" coords="374,448,519,819"/>
+<area shape="rect" id="node3" href="$class_roo_tracker_vtx_base.html" title="{RooTrackerVtxBase\n||+ RooTrackerVtxBase()\l+ ~RooTrackerVtxBase()\l+ ClassDef()\l}" alt="" coords="386,132,569,239"/>
+<area shape="rect" id="node4" href="$class_t_object.html" title="{TObject\n||}" alt="" coords="441,5,513,83"/>
+</map>

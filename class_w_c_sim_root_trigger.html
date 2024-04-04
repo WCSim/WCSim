@@ -71,15 +71,28 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>Class storing trigger information.  
+ <a href="class_w_c_sim_root_trigger.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for WCSimRootTrigger:</div>
 <div class="dyncontent">
- <div class="center">
-  <img src="class_w_c_sim_root_trigger.png" usemap="#WCSimRootTrigger_map" alt=""/>
-  <map id="WCSimRootTrigger_map" name="WCSimRootTrigger_map">
+<div class="center"><img src="class_w_c_sim_root_trigger__inherit__graph.png" border="0" usemap="#_w_c_sim_root_trigger_inherit__map" alt="Inheritance graph"/></div>
+<map name="_w_c_sim_root_trigger_inherit__map" id="_w_c_sim_root_trigger_inherit__map">
+<area shape="rect" id="node2" href="class_t_object.html" title="{TObject\n||}" alt="" coords="80,5,152,83"/>
 </map>
- </div></div>
+</div>
+<div class="dynheader">
+Collaboration diagram for WCSimRootTrigger:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_w_c_sim_root_trigger__coll__graph.png" border="0" usemap="#_w_c_sim_root_trigger_coll__map" alt="Collaboration graph"/></div>
+<map name="_w_c_sim_root_trigger_coll__map" id="_w_c_sim_root_trigger_coll__map">
+<area shape="rect" id="node2" href="class_t_object.html" title="{TObject\n||}" alt="" coords="5,5,77,83"/>
+<area shape="rect" id="node6" href="class_w_c_sim_root_pi0.html" title="Class storing information about pi0 decays. " alt="" coords="75,182,258,362"/>
+<area shape="rect" id="node3" href="class_w_c_sim_root_event_header.html" title="Class containing header information for this trigger. " alt="" coords="605,175,824,369"/>
+</map>
+</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -235,39 +248,43 @@ Private Attributes</h2></td></tr>
 <tr class="memdesc:aca4d510d3aa951ee06ed564edb1518d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">The header.  <a href="#aca4d510d3aa951ee06ed564edb1518d3">More...</a><br /></td></tr>
 <tr class="separator:aca4d510d3aa951ee06ed564edb1518d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31650bdc948fd2ecd41522b382026497"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a31650bdc948fd2ecd41522b382026497">fMode</a> [<a class="el" href="jhf_ntuple_8h.html#ad6ce2ba75ba13d21fcdc7995c30737e3">MAX_N_VERTICES</a>]</td></tr>
+<tr class="memdesc:a31650bdc948fd2ecd41522b382026497"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interaction mode for each vertex. Only set for the muline generator.  <a href="#a31650bdc948fd2ecd41522b382026497">More...</a><br /></td></tr>
 <tr class="separator:a31650bdc948fd2ecd41522b382026497"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab38557aa88f863444f28b24a056c2bc1"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#ab38557aa88f863444f28b24a056c2bc1">fNvtxs</a></td></tr>
 <tr class="memdesc:ab38557aa88f863444f28b24a056c2bc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of true vertices in the event.  <a href="#ab38557aa88f863444f28b24a056c2bc1">More...</a><br /></td></tr>
 <tr class="separator:ab38557aa88f863444f28b24a056c2bc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a446aff9acd6a28aec1f4d8975519a0d9"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a446aff9acd6a28aec1f4d8975519a0d9">fVtxsvol</a> [<a class="el" href="jhf_ntuple_8h.html#ad6ce2ba75ba13d21fcdc7995c30737e3">MAX_N_VERTICES</a>]</td></tr>
+<tr class="memdesc:a446aff9acd6a28aec1f4d8975519a0d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">The detector volume this vertex occured in.  <a href="#a446aff9acd6a28aec1f4d8975519a0d9">More...</a><br /></td></tr>
 <tr class="separator:a446aff9acd6a28aec1f4d8975519a0d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59ac230d3d315acaa0024399367b1eaf"><td class="memItemLeft" align="right" valign="top">Float_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a59ac230d3d315acaa0024399367b1eaf">fVtxs</a> [<a class="el" href="jhf_ntuple_8h.html#ad6ce2ba75ba13d21fcdc7995c30737e3">MAX_N_VERTICES</a>][4]</td></tr>
 <tr class="memdesc:a59ac230d3d315acaa0024399367b1eaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">True 4-position (x,y,z,t) of the vertex.  <a href="#a59ac230d3d315acaa0024399367b1eaf">More...</a><br /></td></tr>
 <tr class="separator:a59ac230d3d315acaa0024399367b1eaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87f7ab3438fa7e14e0dc97695468bc14"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a87f7ab3438fa7e14e0dc97695468bc14">fVecRecNumber</a></td></tr>
-<tr class="memdesc:a87f7ab3438fa7e14e0dc97695468bc14"><td class="mdescLeft">&#160;</td><td class="mdescRight">"info event" number in inputvectorfile  <a href="#a87f7ab3438fa7e14e0dc97695468bc14">More...</a><br /></td></tr>
+<tr class="memdesc:a87f7ab3438fa7e14e0dc97695468bc14"><td class="mdescLeft">&#160;</td><td class="mdescRight">"info event" number in inputvectorfile. Only set for the muline generator  <a href="#a87f7ab3438fa7e14e0dc97695468bc14">More...</a><br /></td></tr>
 <tr class="separator:a87f7ab3438fa7e14e0dc97695468bc14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a302ea623965c26a20803d34fd7bf8ff4"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a302ea623965c26a20803d34fd7bf8ff4">fJmu</a></td></tr>
+<tr class="memdesc:a302ea623965c26a20803d34fd7bf8ff4"><td class="mdescLeft">&#160;</td><td class="mdescRight">LEGACY VARIABLE MAY BE INACCURATE IN SOME RUNNING SCENARIOS. Index of the muon.  <a href="#a302ea623965c26a20803d34fd7bf8ff4">More...</a><br /></td></tr>
 <tr class="separator:a302ea623965c26a20803d34fd7bf8ff4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64b246015f78912548d046200833ddfd"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a64b246015f78912548d046200833ddfd">fJp</a></td></tr>
+<tr class="memdesc:a64b246015f78912548d046200833ddfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">LEGACY VARIABLE MAY BE INACCURATE IN SOME RUNNING SCENARIOS. Index of the proton.  <a href="#a64b246015f78912548d046200833ddfd">More...</a><br /></td></tr>
 <tr class="separator:a64b246015f78912548d046200833ddfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac037965e0ce1cd190c0684f005c7a74e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_w_c_sim_root_pi0.html">WCSimRootPi0</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#ac037965e0ce1cd190c0684f005c7a74e">fPi0</a></td></tr>
 <tr class="memdesc:ac037965e0ce1cd190c0684f005c7a74e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pi0 info (default = not used)  <a href="#ac037965e0ce1cd190c0684f005c7a74e">More...</a><br /></td></tr>
 <tr class="separator:ac037965e0ce1cd190c0684f005c7a74e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adcaac7f10fda37b6fe6a3c2c5dd303be"><td class="memItemLeft" align="right" valign="top">TClonesArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#adcaac7f10fda37b6fe6a3c2c5dd303be">fCaptures</a></td></tr>
-<tr class="memdesc:adcaac7f10fda37b6fe6a3c2c5dd303be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Neutron capture info (default = not used)  <a href="#adcaac7f10fda37b6fe6a3c2c5dd303be">More...</a><br /></td></tr>
+<tr class="memdesc:adcaac7f10fda37b6fe6a3c2c5dd303be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Neutron capture info.  <a href="#adcaac7f10fda37b6fe6a3c2c5dd303be">More...</a><br /></td></tr>
 <tr class="separator:adcaac7f10fda37b6fe6a3c2c5dd303be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab64ed792198d438056818570a26b3f50"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#ab64ed792198d438056818570a26b3f50">fNcaptures</a></td></tr>
 <tr class="memdesc:ab64ed792198d438056818570a26b3f50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of tracks in the neutron capture array.  <a href="#ab64ed792198d438056818570a26b3f50">More...</a><br /></td></tr>
 <tr class="separator:ab64ed792198d438056818570a26b3f50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6089fcde32f1b9a64c0c08f0ce0d4569"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a6089fcde32f1b9a64c0c08f0ce0d4569">fNpar</a></td></tr>
-<tr class="memdesc:a6089fcde32f1b9a64c0c08f0ce0d4569"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of particles ???  <a href="#a6089fcde32f1b9a64c0c08f0ce0d4569">More...</a><br /></td></tr>
+<tr class="memdesc:a6089fcde32f1b9a64c0c08f0ce0d4569"><td class="mdescLeft">&#160;</td><td class="mdescRight">LEGACY VARIABLE MAY BE INACCURATE IN SOME RUNNING SCENARIOS. Index Number of tracks in the event (not all will be saved in the <a class="el" href="class_w_c_sim_root_track.html" title="Class holding true track information. ">WCSimRootTrack</a> array)  <a href="#a6089fcde32f1b9a64c0c08f0ce0d4569">More...</a><br /></td></tr>
 <tr class="separator:a6089fcde32f1b9a64c0c08f0ce0d4569"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cc7bf49d02b48bfb22656f720269507"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a8cc7bf49d02b48bfb22656f720269507">fNtrack</a></td></tr>
-<tr class="memdesc:a8cc7bf49d02b48bfb22656f720269507"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of tracks in the WCSimRootTracks array.  <a href="#a8cc7bf49d02b48bfb22656f720269507">More...</a><br /></td></tr>
+<tr class="memdesc:a8cc7bf49d02b48bfb22656f720269507"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of tracks in the <a class="el" href="class_w_c_sim_root_track.html" title="Class holding true track information. ">WCSimRootTrack</a> array.  <a href="#a8cc7bf49d02b48bfb22656f720269507">More...</a><br /></td></tr>
 <tr class="separator:a8cc7bf49d02b48bfb22656f720269507"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69fad6049f9fb2ac05f0c93d31dccb67"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a69fad6049f9fb2ac05f0c93d31dccb67">fNtrack_slots</a></td></tr>
-<tr class="memdesc:a69fad6049f9fb2ac05f0c93d31dccb67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of slots in the WCSimRootTracks array. This is potentially more than fNtrack (i.e. if any tracks have been removed that aren't at the very start/end)  <a href="#a69fad6049f9fb2ac05f0c93d31dccb67">More...</a><br /></td></tr>
+<tr class="memdesc:a69fad6049f9fb2ac05f0c93d31dccb67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of slots in the <a class="el" href="class_w_c_sim_root_track.html" title="Class holding true track information. ">WCSimRootTrack</a> array. This is potentially more than fNtrack (i.e. if any tracks have been removed that aren't at the very start/end)  <a href="#a69fad6049f9fb2ac05f0c93d31dccb67">More...</a><br /></td></tr>
 <tr class="separator:a69fad6049f9fb2ac05f0c93d31dccb67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34963065baa89d1a78c3dd755d31f2db"><td class="memItemLeft" align="right" valign="top">TClonesArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a34963065baa89d1a78c3dd755d31f2db">fTracks</a></td></tr>
 <tr class="memdesc:a34963065baa89d1a78c3dd755d31f2db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of WCSimRootTracks.  <a href="#a34963065baa89d1a78c3dd755d31f2db">More...</a><br /></td></tr>
@@ -282,6 +299,7 @@ Private Attributes</h2></td></tr>
 <tr class="memdesc:ab1599831e56017ed0d072b671c194246"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of WCSimRootCherenkovHits.  <a href="#ab1599831e56017ed0d072b671c194246">More...</a><br /></td></tr>
 <tr class="separator:ab1599831e56017ed0d072b671c194246"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0927119d81f2ec28581ce7cd87d84a36"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a0927119d81f2ec28581ce7cd87d84a36">fCherenkovHitCounter</a></td></tr>
+<tr class="memdesc:a0927119d81f2ec28581ce7cd87d84a36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Incremented with every call of <a class="el" href="class_w_c_sim_root_trigger.html#a66575ed786125181b557d629b924ff26">WCSimRootTrigger::AddCherenkovHit()</a>. Not initialised to 0. Not used. Inaccessible publicly. Avoid.  <a href="#a0927119d81f2ec28581ce7cd87d84a36">More...</a><br /></td></tr>
 <tr class="separator:a0927119d81f2ec28581ce7cd87d84a36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c088ae31635b8566ffbe0642f159bc9"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a9c088ae31635b8566ffbe0642f159bc9">fNcherenkovhittimes</a></td></tr>
 <tr class="memdesc:a9c088ae31635b8566ffbe0642f159bc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of hits in the WCSimRootCherenkovHits array.  <a href="#a9c088ae31635b8566ffbe0642f159bc9">More...</a><br /></td></tr>
@@ -299,16 +317,16 @@ Private Attributes</h2></td></tr>
 <tr class="memdesc:aab11dcbd9041a22c54286b93237d3fbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of digitized tubes.  <a href="#aab11dcbd9041a22c54286b93237d3fbe">More...</a><br /></td></tr>
 <tr class="separator:aab11dcbd9041a22c54286b93237d3fbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59e57396eca226dbc8d4bdacdf534377"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a59e57396eca226dbc8d4bdacdf534377">fNcherenkovdigihits</a></td></tr>
-<tr class="memdesc:a59e57396eca226dbc8d4bdacdf534377"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of digihits in the <a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html">WCSimRootCherenkovDigiHit</a> array.  <a href="#a59e57396eca226dbc8d4bdacdf534377">More...</a><br /></td></tr>
+<tr class="memdesc:a59e57396eca226dbc8d4bdacdf534377"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of digihits in the <a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html" title="Class holding digitised hit (aka digit or digi) information (after PMT &amp; electronics simulation + tri...">WCSimRootCherenkovDigiHit</a> array.  <a href="#a59e57396eca226dbc8d4bdacdf534377">More...</a><br /></td></tr>
 <tr class="separator:a59e57396eca226dbc8d4bdacdf534377"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28b5f198d21eaaf332bc72ce3f0c1ed2"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#a28b5f198d21eaaf332bc72ce3f0c1ed2">fNcherenkovdigihits_slots</a></td></tr>
-<tr class="memdesc:a28b5f198d21eaaf332bc72ce3f0c1ed2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of slots in the <a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html">WCSimRootCherenkovDigiHit</a> array. This is potentially more than fNcherenkovdigihits (i.e. if any digihits have been removed that aren't at the very start/end)  <a href="#a28b5f198d21eaaf332bc72ce3f0c1ed2">More...</a><br /></td></tr>
+<tr class="memdesc:a28b5f198d21eaaf332bc72ce3f0c1ed2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of slots in the <a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html" title="Class holding digitised hit (aka digit or digi) information (after PMT &amp; electronics simulation + tri...">WCSimRootCherenkovDigiHit</a> array. This is potentially more than fNcherenkovdigihits (i.e. if any digihits have been removed that aren't at the very start/end)  <a href="#a28b5f198d21eaaf332bc72ce3f0c1ed2">More...</a><br /></td></tr>
 <tr class="separator:a28b5f198d21eaaf332bc72ce3f0c1ed2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aacfb7719575d20451102e52383b938d1"><td class="memItemLeft" align="right" valign="top">Float_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#aacfb7719575d20451102e52383b938d1">fSumQ</a></td></tr>
 <tr class="memdesc:aacfb7719575d20451102e52383b938d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sum of digitised hit charge in this trigger.  <a href="#aacfb7719575d20451102e52383b938d1">More...</a><br /></td></tr>
 <tr class="separator:aacfb7719575d20451102e52383b938d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8178dc8ce8c5d3f14721a3c7228dc14"><td class="memItemLeft" align="right" valign="top">TClonesArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#ad8178dc8ce8c5d3f14721a3c7228dc14">fCherenkovDigiHits</a></td></tr>
-<tr class="memdesc:ad8178dc8ce8c5d3f14721a3c7228dc14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of <a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html">WCSimRootCherenkovDigiHit</a>'s.  <a href="#ad8178dc8ce8c5d3f14721a3c7228dc14">More...</a><br /></td></tr>
+<tr class="memdesc:ad8178dc8ce8c5d3f14721a3c7228dc14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of <a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html" title="Class holding digitised hit (aka digit or digi) information (after PMT &amp; electronics simulation + tri...">WCSimRootCherenkovDigiHit</a>'s.  <a href="#ad8178dc8ce8c5d3f14721a3c7228dc14">More...</a><br /></td></tr>
 <tr class="separator:ad8178dc8ce8c5d3f14721a3c7228dc14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadba1b5c99c484bfd5ef74b19bebf53a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_w_c_sim_enumerations_8hh.html#a7733d05887dfa581c996c68923693871">TriggerType_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_trigger.html#aadba1b5c99c484bfd5ef74b19bebf53a">fTriggerType</a></td></tr>
 <tr class="memdesc:aadba1b5c99c484bfd5ef74b19bebf53a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trigger algorithm that created this trigger.  <a href="#aadba1b5c99c484bfd5ef74b19bebf53a">More...</a><br /></td></tr>
@@ -321,11 +339,11 @@ Private Attributes</h2></td></tr>
 <tr class="separator:aa46c44439896d3e48f86b66acd51c611"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class storing trigger information</p>
-<p>Digitised hit information will be put in the <a class="el" href="class_w_c_sim_root_trigger.html">WCSimRootTrigger</a> it is associated with (if there are multiple overlapping trigger readout windows, digits will only be saved in the first trigger window they are associated with, to avoid double counting)</p>
-<p>True information (vertices, tracks, hits) are mostly put in the 0th <a class="el" href="class_w_c_sim_root_trigger.html">WCSimRootTrigger</a> </p>
+<div class="textblock"><p>Class storing trigger information. </p>
+<p>Digitised hit information will be put in the <a class="el" href="class_w_c_sim_root_trigger.html" title="Class storing trigger information. ">WCSimRootTrigger</a> it is associated with (if there are multiple overlapping trigger readout windows, digits will only be saved in the first trigger window they are associated with, to avoid double counting)</p>
+<p>True information (vertices, tracks, hits) are mostly put in the 0th <a class="el" href="class_w_c_sim_root_trigger.html" title="Class storing trigger information. ">WCSimRootTrigger</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00417">417</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00427">427</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac062c9ba8184ac4fef89cda5e6aacefa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac062c9ba8184ac4fef89cda5e6aacefa">&#9670;&nbsp;</a></span>WCSimRootTrigger() <span class="overload">[1/2]</span></h2>
@@ -828,7 +846,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00515">515</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00525">525</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -855,7 +873,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00590">590</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00600">600</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -882,7 +900,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00588">588</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00598">598</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -909,7 +927,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00577">577</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00587">587</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -936,7 +954,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00575">575</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00585">585</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -963,7 +981,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00576">576</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00586">586</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -990,7 +1008,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00503">503</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00513">513</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1017,7 +1035,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00504">504</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00514">514</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1044,7 +1062,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00517">517</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00527">527</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1071,7 +1089,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00518">518</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00528">528</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1098,7 +1116,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00507">507</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00517">517</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1126,7 +1144,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00508">508</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00518">518</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1153,7 +1171,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00523">523</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00533">533</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1180,7 +1198,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00528">528</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00538">538</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1207,7 +1225,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00529">529</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00539">539</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1234,7 +1252,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00527">527</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00537">537</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1261,7 +1279,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00525">525</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00535">535</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1288,7 +1306,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00526">526</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00536">536</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1315,7 +1333,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00519">519</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00529">529</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1342,7 +1360,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00522">522</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00532">532</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1369,7 +1387,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00524">524</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00534">534</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1396,7 +1414,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00521">521</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00531">531</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1423,7 +1441,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00520">520</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00530">530</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1450,7 +1468,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00512">512</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00522">522</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1477,7 +1495,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00505">505</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00515">515</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1504,7 +1522,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00506">506</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00516">516</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1531,7 +1549,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00530">530</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00540">540</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1558,7 +1576,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00558">558</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00568">568</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1585,7 +1603,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00532">532</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00542">542</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1612,7 +1630,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00531">531</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00541">541</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1639,7 +1657,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00516">516</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00526">526</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1667,7 +1685,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00511">511</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00521">521</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1695,7 +1713,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00510">510</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00520">520</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1733,7 +1751,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00514">514</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00524">524</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1761,7 +1779,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00513">513</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00523">523</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1788,7 +1806,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00509">509</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00519">519</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -1834,7 +1852,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00475">475</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00485">485</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2052,7 +2070,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00484">484</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00494">494</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2080,7 +2098,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00485">485</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00495">495</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2108,7 +2126,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00476">476</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00486">486</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2146,7 +2164,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00477">477</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00487">487</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2174,7 +2192,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00486">486</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00496">496</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2202,7 +2220,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00489">489</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00499">499</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2230,7 +2248,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00487">487</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00497">497</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2258,7 +2276,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00478">478</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00488">488</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2328,7 +2346,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00488">488</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00498">498</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2386,7 +2404,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00483">483</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00493">493</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2424,7 +2442,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00481">481</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00491">491</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2468,7 +2486,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00482">482</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00492">492</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2506,7 +2524,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00480">480</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00490">490</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2534,7 +2552,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00479">479</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00489">489</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2559,9 +2577,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Neutron capture info (default = not used) </p>
+<p>Neutron capture info. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00432">432</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00442">442</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2585,9 +2603,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Array of <a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html">WCSimRootCherenkovDigiHit</a>'s. </p>
+<p>Array of <a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html" title="Class holding digitised hit (aka digit or digi) information (after PMT &amp; electronics simulation + tri...">WCSimRootCherenkovDigiHit</a>'s. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00454">454</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00464">464</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2611,7 +2629,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00444">444</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p>Incremented with every call of <a class="el" href="class_w_c_sim_root_trigger.html#a66575ed786125181b557d629b924ff26">WCSimRootTrigger::AddCherenkovHit()</a>. Not initialised to 0. Not used. Inaccessible publicly. Avoid. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00454">454</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2637,7 +2657,7 @@ Private Attributes</h2></td></tr>
 
 <p>Array of WCSimRootCherenkovHitHistories. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00448">448</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00458">458</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2663,7 +2683,7 @@ Private Attributes</h2></td></tr>
 
 <p>Array of WCSimRootCherenkovHits. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00442">442</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00452">452</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2689,7 +2709,7 @@ Private Attributes</h2></td></tr>
 
 <p>Array of WCSimRootCherenkovHits. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00446">446</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00456">456</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2715,7 +2735,7 @@ Private Attributes</h2></td></tr>
 
 <p>The header. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00420">420</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00430">430</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2739,7 +2759,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00427">427</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p>LEGACY VARIABLE MAY BE INACCURATE IN SOME RUNNING SCENARIOS. Index of the muon. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00437">437</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2763,7 +2785,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00428">428</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p>LEGACY VARIABLE MAY BE INACCURATE IN SOME RUNNING SCENARIOS. Index of the proton. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00438">438</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2787,7 +2811,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00422">422</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p>Interaction mode for each vertex. Only set for the muline generator. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00432">432</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2813,7 +2839,7 @@ Private Attributes</h2></td></tr>
 
 <p>Number of tracks in the neutron capture array. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00433">433</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00443">443</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2837,9 +2863,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Number of digihits in the <a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html">WCSimRootCherenkovDigiHit</a> array. </p>
+<p>Number of digihits in the <a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html" title="Class holding digitised hit (aka digit or digi) information (after PMT &amp; electronics simulation + tri...">WCSimRootCherenkovDigiHit</a> array. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00451">451</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00461">461</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2863,9 +2889,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Number of slots in the <a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html">WCSimRootCherenkovDigiHit</a> array. This is potentially more than fNcherenkovdigihits (i.e. if any digihits have been removed that aren't at the very start/end) </p>
+<p>Number of slots in the <a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html" title="Class holding digitised hit (aka digit or digi) information (after PMT &amp; electronics simulation + tri...">WCSimRootCherenkovDigiHit</a> array. This is potentially more than fNcherenkovdigihits (i.e. if any digihits have been removed that aren't at the very start/end) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00452">452</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00462">462</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2891,7 +2917,7 @@ Private Attributes</h2></td></tr>
 
 <p>Number of hits in the WCSimRootCherenkovHitHistories array. Should be identical to fNcherenkovhittimes. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00447">447</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00457">457</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2917,7 +2943,7 @@ Private Attributes</h2></td></tr>
 
 <p>Number of hits in the array. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00441">441</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00451">451</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2943,7 +2969,7 @@ Private Attributes</h2></td></tr>
 
 <p>Number of hits in the WCSimRootCherenkovHits array. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00445">445</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00455">455</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2967,9 +2993,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Number of particles ??? </p>
+<p>LEGACY VARIABLE MAY BE INACCURATE IN SOME RUNNING SCENARIOS. Index Number of tracks in the event (not all will be saved in the <a class="el" href="class_w_c_sim_root_track.html" title="Class holding true track information. ">WCSimRootTrack</a> array) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00435">435</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00445">445</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -2993,9 +3019,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Number of tracks in the WCSimRootTracks array. </p>
+<p>Number of tracks in the <a class="el" href="class_w_c_sim_root_track.html" title="Class holding true track information. ">WCSimRootTrack</a> array. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00436">436</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00446">446</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3019,9 +3045,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Number of slots in the WCSimRootTracks array. This is potentially more than fNtrack (i.e. if any tracks have been removed that aren't at the very start/end) </p>
+<p>Number of slots in the <a class="el" href="class_w_c_sim_root_track.html" title="Class holding true track information. ">WCSimRootTrack</a> array. This is potentially more than fNtrack (i.e. if any tracks have been removed that aren't at the very start/end) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00437">437</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00447">447</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3047,7 +3073,7 @@ Private Attributes</h2></td></tr>
 
 <p>Number of digitized tubes. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00450">450</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00460">460</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3073,7 +3099,7 @@ Private Attributes</h2></td></tr>
 
 <p>Number of tubes hit. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00440">440</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00450">450</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3099,7 +3125,7 @@ Private Attributes</h2></td></tr>
 
 <p>Number of true vertices in the event. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00423">423</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00433">433</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3125,7 +3151,7 @@ Private Attributes</h2></td></tr>
 
 <p>Pi0 info (default = not used) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00430">430</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00440">440</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3151,7 +3177,7 @@ Private Attributes</h2></td></tr>
 
 <p>Sum of digitised hit charge in this trigger. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00453">453</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00463">463</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3177,7 +3203,7 @@ Private Attributes</h2></td></tr>
 
 <p>Array of WCSimRootTracks. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00438">438</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00448">448</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3203,7 +3229,7 @@ Private Attributes</h2></td></tr>
 
 <p>Information about how it passed the trigger (e.g. how many hits in the NDigits window) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00457">457</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00467">467</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3229,7 +3255,7 @@ Private Attributes</h2></td></tr>
 
 <p>Trigger algorithm that created this trigger. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00456">456</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00466">466</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3253,9 +3279,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>"info event" number in inputvectorfile </p>
+<p>"info event" number in inputvectorfile. Only set for the muline generator </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00426">426</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00436">436</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3281,7 +3307,7 @@ Private Attributes</h2></td></tr>
 
 <p>True 4-position (x,y,z,t) of the vertex. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00425">425</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00435">435</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3305,7 +3331,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00424">424</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p>The detector volume this vertex occured in. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00434">434</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3331,7 +3359,7 @@ Private Attributes</h2></td></tr>
 
 <p>Will be true if unfilled, false if filled. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00459">459</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00469">469</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -3342,7 +3370,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 21 2024 17:36:32 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 4 2024 10:20:05 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

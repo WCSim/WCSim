@@ -80,7 +80,7 @@ var searchData=
   ['mpmtledidcmd1',['mPMTLEDIdCmd1',['../class_w_c_sim_primary_generator_messenger.html#a4b8fa87cb64750c057a1b4b19229b1eb',1,'WCSimPrimaryGeneratorMessenger']]],
   ['mpmtledidcmd2',['mPMTLEDIdCmd2',['../class_w_c_sim_primary_generator_messenger.html#aec75923241f875658903d584a5f63991',1,'WCSimPrimaryGeneratorMessenger']]],
   ['mpmtodmap',['mPMTODMap',['../class_w_c_sim_detector_construction.html#aa84f5bfec68276c9d85f4d5a2f81ad0e',1,'WCSimDetectorConstruction']]],
-  ['multidigitspertrigger',['MultiDigitsPerTrigger',['../class_w_c_sim_root_options.html#acdf3e2fad46a9e45bdf2706107e750f3',1,'WCSimRootOptions::MultiDigitsPerTrigger()'],['../class_w_c_sim_w_c_d_a_q_messenger.html#ad4cd8c2a190fe78e7e421cb86d87c4ef',1,'WCSimWCDAQMessenger::MultiDigitsPerTrigger()'],['../class_w_c_sim_w_c_trigger_base.html#ab833a1c9650495c2ce16bd1d49cf435d',1,'WCSimWCTriggerBase::multiDigitsPerTrigger()']]],
+  ['multidigitspertrigger',['multiDigitsPerTrigger',['../class_w_c_sim_w_c_trigger_base.html#ab833a1c9650495c2ce16bd1d49cf435d',1,'WCSimWCTriggerBase::multiDigitsPerTrigger()'],['../class_w_c_sim_root_options.html#acdf3e2fad46a9e45bdf2706107e750f3',1,'WCSimRootOptions::MultiDigitsPerTrigger()'],['../class_w_c_sim_w_c_d_a_q_messenger.html#ad4cd8c2a190fe78e7e421cb86d87c4ef',1,'WCSimWCDAQMessenger::MultiDigitsPerTrigger()']]],
   ['multidigitspertriggerset',['MultiDigitsPerTriggerSet',['../class_w_c_sim_w_c_d_a_q_messenger.html#a0f60e8be854abe37e431697b7d912020',1,'WCSimWCDAQMessenger']]],
   ['myaction',['myAction',['../class_w_c_sim_primary_generator_messenger.html#a7bd1e46c16e83201d23c5cd217b5dbef',1,'WCSimPrimaryGeneratorMessenger']]],
   ['myambegun',['myAmBeGun',['../class_w_c_sim_am_be_gen.html#a8448df84d7ae0b8141978d908077c1db',1,'WCSimAmBeGen']]],

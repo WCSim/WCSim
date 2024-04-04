@@ -1,10 +1,7 @@
 var searchData=
 [
-  ['publishing_20doxygen',['Publishing doxygen',['../md__webpage__r_e_a_d_m_e.html',1,'']]],
   ['p',['p',['../structevent_ntuple.html#a2ecd06f740272a2b8d61b51808b32446',1,'eventNtuple::p()'],['../structntuple_struct.html#a458aeae345f0e49e2de258dc1b9efaa7',1,'ntupleStruct::p()'],['../loadincs_8_c.html#a6bc6b007533335efe02bafff799ec64c',1,'p():&#160;loadincs.C']]],
   ['pair_5for_5fsingle',['pair_or_single',['../namespace_make_kin.html#a3fbbbef3ab3d5bfcc1224112111d75fd',1,'MakeKin']]],
-  ['pairlestringcowcsimdarknoiseoptionsgr_5fdictionary',['pairlEstringcOWCSimDarkNoiseOptionsgR_Dictionary',['../namespace_r_o_o_t.html#a02617c7eced64fb5487589cddddbaf89',1,'ROOT']]],
-  ['pairlestringcowcsimdarknoiseoptionsgr_5ftclassmanip',['pairlEstringcOWCSimDarkNoiseOptionsgR_TClassManip',['../namespace_r_o_o_t.html#ab51a4f4a5ddf89e8a256d0e090b862e2',1,'ROOT']]],
   ['parent',['parent',['../struct_c_a_d_mesh_1_1_file_1_1_item.html#a0d870c3bc54f048246bf28c7f5cb116b',1,'CADMesh::File::Item::parent()'],['../structevent_ntuple.html#ad420a657ed1979a8f47574ee94175871',1,'eventNtuple::parent()'],['../structntuple_struct.html#a14eaef3355516db23c908215d5c1ea7e',1,'ntupleStruct::parent()'],['../classjson__pointer.html#a1fa1e6f1f590e0e5a22d452b2ff3b2c7',1,'json_pointer::parent()']]],
   ['parent_5fitem_5f',['parent_item_',['../class_c_a_d_mesh_1_1_file_1_1_lexer.html#aad41ad4a9b01bd004d0e5276dd0e54f9',1,'CADMesh::File::Lexer']]],
   ['parent_5fpointer',['parent_pointer',['../classjson__pointer.html#aa03c0c1206e171342d27a4583258858b',1,'json_pointer']]],
@@ -74,7 +71,6 @@ var searchData=
   ['placeborderpmts',['placeBorderPMTs',['../class_w_c_sim_detector_construction.html#ad137ae621f75b8616732e889aca01d36',1,'WCSimDetectorConstruction']]],
   ['placecappmts',['placeCapPMTs',['../class_w_c_sim_detector_construction.html#aeabe25e8c6db79bc6eb537b8ec89ccbe',1,'WCSimDetectorConstruction']]],
   ['planck',['planck',['../_w_c_sim_w_l_s_properties_8cc.html#a14c90d71ef3e38b32f3b313bec6d27d2',1,'WCSimWLSProperties.cc']]],
-  ['platform_5fid',['PLATFORM_ID',['../_c_make_c_compiler_id_8c.html#adbc5372f40838899018fadbc89bd588b',1,'PLATFORM_ID():&#160;CMakeCCompilerId.c'],['../_c_make_c_x_x_compiler_id_8cpp.html#adbc5372f40838899018fadbc89bd588b',1,'PLATFORM_ID():&#160;CMakeCXXCompilerId.cpp']]],
   ['plogv',['pLogV',['../class_w_c_sim_w_c_digi.html#a734e0925a3d9d755e7b12ebd72a705bc',1,'WCSimWCDigi::pLogV()'],['../class_w_c_sim_w_c_hit.html#ac8f89ed8d21dcc342f0cd9f13219a8e7',1,'WCSimWCHit::pLogV()']]],
   ['plot_5fpmts',['plot_pmts',['../plot__pmts_8_c.html#ab13b0c82b20de45c3cd55bded41c7a21',1,'plot_pmts.C']]],
   ['plot_5fpmts_2ec',['plot_pmts.C',['../plot__pmts_8_c.html',1,'']]],

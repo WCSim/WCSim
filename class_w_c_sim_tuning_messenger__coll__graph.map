@@ -1,0 +1,6 @@
+<map id="WCSimTuningMessenger" name="WCSimTuningMessenger">
+<area shape="rect" id="node4" href="$class_w_c_sim_tuning_parameters.html" title="{WCSimTuningParameters\n|&#45; qeff\l|+ WCSimTuningParameters()\l+ ~WCSimTuningParameters()\l+ GetRayff()\l+ SetRayff()\l+ GetBsrff()\l+ SetBsrff()\l+ GetAbwff()\l+ SetAbwff()\l+ GetRgcff()\l+ SetRgcff()\l+ GetQeff()\l+ SetQeff()\l+ GetMieff()\l+ SetMieff()\l+ GetPMTSurfType()\l+ SetPMTSurfType()\l+ GetCathodePara()\l+ SetCathodePara()\l+ GetTtsff()\l+ SetTtsff()\l+ GetPMTSatur()\l+ SetPMTSatur()\l+ GetTVSpacing()\l+ SetTVSpacing()\l+ GetTopVeto()\l+ SetTopVeto()\l+ SaveOptionsToOutput()\l+ GetWCODWLSCladdingReflectivity()\l+ SetWCODWLSCladdingReflectivity()\l+ GetWCODTyvekReflectivity()\l+ SetWCODTyvekReflectivity()\l}" alt="" coords="243,623,513,1140"/>
+<area shape="rect" id="node2" href="$class_g4_u_imessenger.html" title="{G4UImessenger\n||}" alt="" coords="47,5,173,83"/>
+<area shape="rect" id="node5" href="$class_g4double.html" title="{G4double\n||}" alt="" coords="5,321,89,399"/>
+<area shape="rect" id="node7" href="$class_g4int.html" title="{G4int\n||}" alt="" coords="349,321,407,399"/>
+</map>

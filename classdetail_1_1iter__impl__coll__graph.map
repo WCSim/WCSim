@@ -1,0 +1,5 @@
+<map id="detail::iter_impl&lt; BasicJsonType &gt;" name="detail::iter_impl&lt; BasicJsonType &gt;">
+<area shape="rect" id="node2" href="$structdetail_1_1internal__iterator.html" title="{detail::internal_iterator\l\&lt; typename std::remove\l_const\&lt; BasicJsonType \&gt;\l::type \&gt;\n||}" alt="" coords="282,660,469,781"/>
+<area shape="rect" id="node3" href="$classdetail_1_1primitive__iterator__t.html" title="{detail::primitive_iterator_t\n||+ get_value()\l+ set_begin()\l+ set_end()\l+ is_begin()\l+ is_end()\l+ operator+()\l+ operator++()\l+ operator++()\l+ operator&#45;&#45;()\l+ operator&#45;&#45;()\l+ operator+=()\l+ operator&#45;=()\l}" alt="" coords="504,175,697,413"/>
+<area shape="rect" id="node7" href="$structdetail_1_1internal__iterator.html" title="an iterator value " alt="" coords="289,476,461,568"/>
+</map>

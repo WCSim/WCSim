@@ -1,0 +1,7 @@
+<map id="WCSimWCDigi" name="WCSimWCDigi">
+<area shape="rect" id="node2" href="$class_g4_v_digi.html" title="{G4VDigi\n||}" alt="" coords="5,13,80,90"/>
+<area shape="rect" id="node6" href="$class_g4double.html" title="{G4double\n||}" alt="" coords="647,13,731,90"/>
+<area shape="rect" id="node7" href="$class_g4_three_vector.html" title="{G4ThreeVector\n||}" alt="" coords="755,13,874,90"/>
+<area shape="rect" id="node11" href="$class_g4_string.html" title="{G4String\n||}" alt="" coords="1411,13,1490,90"/>
+<area shape="rect" id="node13" href="$class_g4int.html" title="{G4int\n||}" alt="" coords="1694,13,1751,90"/>
+</map>

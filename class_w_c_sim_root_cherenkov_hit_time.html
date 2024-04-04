@@ -70,15 +70,26 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>Class holding true (Cherenkov photon + dark noise) hit information.  
+ <a href="class_w_c_sim_root_cherenkov_hit_time.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for WCSimRootCherenkovHitTime:</div>
 <div class="dyncontent">
- <div class="center">
-  <img src="class_w_c_sim_root_cherenkov_hit_time.png" usemap="#WCSimRootCherenkovHitTime_map" alt=""/>
-  <map id="WCSimRootCherenkovHitTime_map" name="WCSimRootCherenkovHitTime_map">
+<div class="center"><img src="class_w_c_sim_root_cherenkov_hit_time__inherit__graph.png" border="0" usemap="#_w_c_sim_root_cherenkov_hit_time_inherit__map" alt="Inheritance graph"/></div>
+<map name="_w_c_sim_root_cherenkov_hit_time_inherit__map" id="_w_c_sim_root_cherenkov_hit_time_inherit__map">
+<area shape="rect" id="node2" href="class_t_object.html" title="{TObject\n||}" alt="" coords="97,5,169,83"/>
 </map>
- </div></div>
+</div>
+<div class="dynheader">
+Collaboration diagram for WCSimRootCherenkovHitTime:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_w_c_sim_root_cherenkov_hit_time__coll__graph.png" border="0" usemap="#_w_c_sim_root_cherenkov_hit_time_coll__map" alt="Collaboration graph"/></div>
+<map name="_w_c_sim_root_cherenkov_hit_time_coll__map" id="_w_c_sim_root_cherenkov_hit_time_coll__map">
+<area shape="rect" id="node2" href="class_t_object.html" title="{TObject\n||}" alt="" coords="5,5,77,83"/>
+</map>
+</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -114,19 +125,19 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:aba9deb878ebc0adc33a5fdaf7d0bdb67"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_hit_time.html#aba9deb878ebc0adc33a5fdaf7d0bdb67">fTruetime</a></td></tr>
-<tr class="memdesc:aba9deb878ebc0adc33a5fdaf7d0bdb67"><td class="mdescLeft">&#160;</td><td class="mdescRight">True hit time (unit: )  <a href="#aba9deb878ebc0adc33a5fdaf7d0bdb67">More...</a><br /></td></tr>
+<tr class="memdesc:aba9deb878ebc0adc33a5fdaf7d0bdb67"><td class="mdescLeft">&#160;</td><td class="mdescRight">True hit time (unit: ns)  <a href="#aba9deb878ebc0adc33a5fdaf7d0bdb67">More...</a><br /></td></tr>
 <tr class="separator:aba9deb878ebc0adc33a5fdaf7d0bdb67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ad87616db18d3894fb3a96f4ec06622"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_hit_time.html#a3ad87616db18d3894fb3a96f4ec06622">fParentSavedTrackID</a></td></tr>
-<tr class="memdesc:a3ad87616db18d3894fb3a96f4ec06622"><td class="mdescLeft">&#160;</td><td class="mdescRight">Truth matching. ID of the parent track that created the Cherenkov photon that created this hit. Note that this is not the position in the <a class="el" href="class_w_c_sim_root_track.html">WCSimRootTrack</a> array - you do need to loop and check the ID. Note that if you are running in non-default mode and you are saving photon tracks, this will be the ID of the photon track. Note: for dark noise, this number is -1.  <a href="#a3ad87616db18d3894fb3a96f4ec06622">More...</a><br /></td></tr>
+<tr class="memdesc:a3ad87616db18d3894fb3a96f4ec06622"><td class="mdescLeft">&#160;</td><td class="mdescRight">Truth matching. ID of the parent track that created the Cherenkov photon that created this hit. Note that this is not the position in the <a class="el" href="class_w_c_sim_root_track.html" title="Class holding true track information. ">WCSimRootTrack</a> array - you do need to loop and check the ID. Note that if you are running in non-default mode and you are saving photon tracks, this will be the ID of the photon track. Note: for dark noise, this number is -1.  <a href="#a3ad87616db18d3894fb3a96f4ec06622">More...</a><br /></td></tr>
 <tr class="separator:a3ad87616db18d3894fb3a96f4ec06622"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa392bcf4de41f389d46342b9cbf2339b"><td class="memItemLeft" align="right" valign="top">Float_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_hit_time.html#aa392bcf4de41f389d46342b9cbf2339b">fPhotonStartTime</a></td></tr>
-<tr class="memdesc:aa392bcf4de41f389d46342b9cbf2339b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start time of the photon that created this hit (unit: )  <a href="#aa392bcf4de41f389d46342b9cbf2339b">More...</a><br /></td></tr>
+<tr class="memdesc:aa392bcf4de41f389d46342b9cbf2339b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start time of the photon that created this hit (unit: ns)  <a href="#aa392bcf4de41f389d46342b9cbf2339b">More...</a><br /></td></tr>
 <tr class="separator:aa392bcf4de41f389d46342b9cbf2339b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4838c03688aa526259d94334f41c9dec"><td class="memItemLeft" align="right" valign="top">Float_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_hit_time.html#a4838c03688aa526259d94334f41c9dec">fPhotonStartPos</a> [3]</td></tr>
-<tr class="memdesc:a4838c03688aa526259d94334f41c9dec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start position (x,y,z) of the photon that created this hit (unit: )  <a href="#a4838c03688aa526259d94334f41c9dec">More...</a><br /></td></tr>
+<tr class="memdesc:a4838c03688aa526259d94334f41c9dec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start position (x,y,z) of the photon that created this hit (unit: cm)  <a href="#a4838c03688aa526259d94334f41c9dec">More...</a><br /></td></tr>
 <tr class="separator:a4838c03688aa526259d94334f41c9dec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c4562e9ca5134efaded65fdfdd033c5"><td class="memItemLeft" align="right" valign="top">Float_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_hit_time.html#a9c4562e9ca5134efaded65fdfdd033c5">fPhotonEndPos</a> [3]</td></tr>
-<tr class="memdesc:a9c4562e9ca5134efaded65fdfdd033c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">End position (x,y,z) of the photon that created this hit (unit: )  <a href="#a9c4562e9ca5134efaded65fdfdd033c5">More...</a><br /></td></tr>
+<tr class="memdesc:a9c4562e9ca5134efaded65fdfdd033c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">End position (x,y,z) of the photon that created this hit (unit: cm)  <a href="#a9c4562e9ca5134efaded65fdfdd033c5">More...</a><br /></td></tr>
 <tr class="separator:a9c4562e9ca5134efaded65fdfdd033c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bf85c2755c158721dbf8fc0ed7de493"><td class="memItemLeft" align="right" valign="top">Float_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_hit_time.html#a0bf85c2755c158721dbf8fc0ed7de493">fPhotonStartDir</a> [3]</td></tr>
 <tr class="separator:a0bf85c2755c158721dbf8fc0ed7de493"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,10 +148,10 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a3ac08169e8d773fc4d8c5ec9a6d0ddb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class holding true (Cherenkov) hit information</p>
+<div class="textblock"><p>Class holding true (Cherenkov photon + dark noise) hit information. </p>
 <p>There is one entry per hit. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00158">158</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00161">161</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a4457961e23a71350df5579d4fd0d0017"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4457961e23a71350df5579d4fd0d0017">&#9670;&nbsp;</a></span>WCSimRootCherenkovHitTime() <span class="overload">[1/2]</span></h2>
@@ -165,7 +176,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00172">172</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00175">175</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -258,7 +269,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00181">181</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00184">184</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -306,7 +317,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00185">185</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00188">188</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -333,7 +344,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00186">186</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00189">189</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -360,7 +371,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00192">192</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00195">195</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -387,7 +398,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00193">193</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00196">196</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -415,7 +426,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00191">191</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00194">194</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -443,7 +454,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00189">189</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00192">192</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -471,7 +482,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00190">190</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00193">193</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -499,7 +510,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00188">188</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00191">191</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -526,7 +537,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00187">187</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00190">190</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -553,7 +564,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00184">184</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00187">187</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -578,9 +589,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Truth matching. ID of the parent track that created the Cherenkov photon that created this hit. Note that this is not the position in the <a class="el" href="class_w_c_sim_root_track.html">WCSimRootTrack</a> array - you do need to loop and check the ID. Note that if you are running in non-default mode and you are saving photon tracks, this will be the ID of the photon track. Note: for dark noise, this number is -1. </p>
+<p>Truth matching. ID of the parent track that created the Cherenkov photon that created this hit. Note that this is not the position in the <a class="el" href="class_w_c_sim_root_track.html" title="Class holding true track information. ">WCSimRootTrack</a> array - you do need to loop and check the ID. Note that if you are running in non-default mode and you are saving photon tracks, this will be the ID of the photon track. Note: for dark noise, this number is -1. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00163">163</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00166">166</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -606,7 +617,7 @@ Private Attributes</h2></td></tr>
 
 <p>Process that created the photon that created this hit. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00169">169</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00172">172</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -630,7 +641,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00168">168</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00171">171</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -654,9 +665,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>End position (x,y,z) of the photon that created this hit (unit: ) </p>
+<p>End position (x,y,z) of the photon that created this hit (unit: cm) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00166">166</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00169">169</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -680,7 +691,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00167">167</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00170">170</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -704,9 +715,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Start position (x,y,z) of the photon that created this hit (unit: ) </p>
+<p>Start position (x,y,z) of the photon that created this hit (unit: cm) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00165">165</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00168">168</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -730,9 +741,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Start time of the photon that created this hit (unit: ) </p>
+<p>Start time of the photon that created this hit (unit: ns) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00164">164</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00167">167</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -756,9 +767,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>True hit time (unit: ) </p>
+<p>True hit time (unit: ns) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00162">162</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00165">165</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -769,7 +780,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 21 2024 17:36:32 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 4 2024 10:20:05 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

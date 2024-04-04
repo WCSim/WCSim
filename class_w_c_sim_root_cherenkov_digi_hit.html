@@ -70,15 +70,26 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>Class holding digitised hit (aka digit or digi) information (after PMT &amp; electronics simulation + triggering)  
+ <a href="class_w_c_sim_root_cherenkov_digi_hit.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for WCSimRootCherenkovDigiHit:</div>
 <div class="dyncontent">
- <div class="center">
-  <img src="class_w_c_sim_root_cherenkov_digi_hit.png" usemap="#WCSimRootCherenkovDigiHit_map" alt=""/>
-  <map id="WCSimRootCherenkovDigiHit_map" name="WCSimRootCherenkovDigiHit_map">
+<div class="center"><img src="class_w_c_sim_root_cherenkov_digi_hit__inherit__graph.png" border="0" usemap="#_w_c_sim_root_cherenkov_digi_hit_inherit__map" alt="Inheritance graph"/></div>
+<map name="_w_c_sim_root_cherenkov_digi_hit_inherit__map" id="_w_c_sim_root_cherenkov_digi_hit_inherit__map">
+<area shape="rect" id="node2" href="class_t_object.html" title="{TObject\n||}" alt="" coords="94,5,166,83"/>
 </map>
- </div></div>
+</div>
+<div class="dynheader">
+Collaboration diagram for WCSimRootCherenkovDigiHit:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_w_c_sim_root_cherenkov_digi_hit__coll__graph.png" border="0" usemap="#_w_c_sim_root_cherenkov_digi_hit_coll__map" alt="Collaboration graph"/></div>
+<map name="_w_c_sim_root_cherenkov_digi_hit_coll__map" id="_w_c_sim_root_cherenkov_digi_hit_coll__map">
+<area shape="rect" id="node2" href="class_t_object.html" title="{TObject\n||}" alt="" coords="5,5,77,83"/>
+</map>
+</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -112,29 +123,29 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:af72033f33b680f3b2e5c218bad1986f7"><td class="memItemLeft" align="right" valign="top">Float_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html#af72033f33b680f3b2e5c218bad1986f7">fQ</a></td></tr>
-<tr class="memdesc:af72033f33b680f3b2e5c218bad1986f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Digitised charge.  <a href="#af72033f33b680f3b2e5c218bad1986f7">More...</a><br /></td></tr>
+<tr class="memdesc:af72033f33b680f3b2e5c218bad1986f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Digitised charge (unit: something like p.e.)  <a href="#af72033f33b680f3b2e5c218bad1986f7">More...</a><br /></td></tr>
 <tr class="separator:af72033f33b680f3b2e5c218bad1986f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2f4802e6ba4aefd900cae8442e98d35"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html#ad2f4802e6ba4aefd900cae8442e98d35">fT</a></td></tr>
-<tr class="memdesc:ad2f4802e6ba4aefd900cae8442e98d35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Digitised time, relative to the digit time (date in the <a class="el" href="class_w_c_sim_root_event_header.html">WCSimRootEventHeader</a>) (unit: )  <a href="#ad2f4802e6ba4aefd900cae8442e98d35">More...</a><br /></td></tr>
+<tr class="memdesc:ad2f4802e6ba4aefd900cae8442e98d35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Digitised time, relative to the digit time (date in the <a class="el" href="class_w_c_sim_root_event_header.html" title="Class containing header information for this trigger. ">WCSimRootEventHeader</a>) (unit: ns)  <a href="#ad2f4802e6ba4aefd900cae8442e98d35">More...</a><br /></td></tr>
 <tr class="separator:ad2f4802e6ba4aefd900cae8442e98d35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac67ccbc134553cf93c642ca9126cebfe"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html#ac67ccbc134553cf93c642ca9126cebfe">fTubeID</a></td></tr>
-<tr class="memdesc:ac67ccbc134553cf93c642ca9126cebfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">PMT ID. Unique number across all PMT types (i.e. runs from 0 to NPMTs, where NPMTs = N20" + NOD + N3"inMPMT)  <a href="#ac67ccbc134553cf93c642ca9126cebfe">More...</a><br /></td></tr>
-<tr class="separator:ac67ccbc134553cf93c642ca9126cebfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25be8de6cb0973446578082869f42dca"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html#a25be8de6cb0973446578082869f42dca">fmPMTID</a></td></tr>
-<tr class="memdesc:a25be8de6cb0973446578082869f42dca"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mPMT number this 3" PMT is in (Equivlaent to fTubeID for 20" &amp; OD PMTs)  <a href="#a25be8de6cb0973446578082869f42dca">More...</a><br /></td></tr>
-<tr class="separator:a25be8de6cb0973446578082869f42dca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57549e0d15f1b710a7115fa71595b37f"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html#a57549e0d15f1b710a7115fa71595b37f">fmPMT_PMTID</a></td></tr>
-<tr class="memdesc:a57549e0d15f1b710a7115fa71595b37f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The 3" PMT position ID inside this mPMT (runs from 1-19 for 3" PMTs inside mPMTs. Is 0 for 20" &amp; OD PMTs)  <a href="#a57549e0d15f1b710a7115fa71595b37f">More...</a><br /></td></tr>
-<tr class="separator:a57549e0d15f1b710a7115fa71595b37f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2098a03ead4e6047ac5e912b2dd52bbf"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html#a2098a03ead4e6047ac5e912b2dd52bbf">fTubeId</a></td></tr>
+<tr class="memdesc:a2098a03ead4e6047ac5e912b2dd52bbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">PMT ID. Unique number across all PMT types (i.e. runs from 0 to NPMTs, where NPMTs = N20" + NOD + N3"inMPMT)  <a href="#a2098a03ead4e6047ac5e912b2dd52bbf">More...</a><br /></td></tr>
+<tr class="separator:a2098a03ead4e6047ac5e912b2dd52bbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7578247f2479c96aedc10c86bbbab3a"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html#ae7578247f2479c96aedc10c86bbbab3a">fmPMTId</a></td></tr>
+<tr class="memdesc:ae7578247f2479c96aedc10c86bbbab3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mPMT number this 3" PMT is in (Equivalent to fTubeId for 20" &amp; OD PMTs)  <a href="#ae7578247f2479c96aedc10c86bbbab3a">More...</a><br /></td></tr>
+<tr class="separator:ae7578247f2479c96aedc10c86bbbab3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5e24e109d88c13668ad07dd4814a3c9"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html#aa5e24e109d88c13668ad07dd4814a3c9">fmPMT_PMTId</a></td></tr>
+<tr class="memdesc:aa5e24e109d88c13668ad07dd4814a3c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">The 3" PMT position ID inside this mPMT (runs from 1-19 for 3" PMTs inside mPMTs. Is 0 for 20" &amp; OD PMTs)  <a href="#aa5e24e109d88c13668ad07dd4814a3c9">More...</a><br /></td></tr>
+<tr class="separator:aa5e24e109d88c13668ad07dd4814a3c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa0eb5d5fb92686982cdd6713b6822d8"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html#aaa0eb5d5fb92686982cdd6713b6822d8">fPhotonIds</a></td></tr>
-<tr class="memdesc:aaa0eb5d5fb92686982cdd6713b6822d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Truth matching. Position in the CherenkovHitTime array that contains the true hit(s) that created this digit.  <a href="#aaa0eb5d5fb92686982cdd6713b6822d8">More...</a><br /></td></tr>
+<tr class="memdesc:aaa0eb5d5fb92686982cdd6713b6822d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Truth matching. Position(s) in the CherenkovHitTime array that contains the true hit(s) that created this digit.  <a href="#aaa0eb5d5fb92686982cdd6713b6822d8">More...</a><br /></td></tr>
 <tr class="separator:aaa0eb5d5fb92686982cdd6713b6822d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class holding scattering and reflection history for each digitised hit</p>
+<div class="textblock"><p>Class holding digitised hit (aka digit or digi) information (after PMT &amp; electronics simulation + triggering) </p>
 <p>There is one entry per digit </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00233">233</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00238">238</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3701dc74677067237a44e4687031130c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3701dc74677067237a44e4687031130c">&#9670;&nbsp;</a></span>WCSimRootCherenkovDigiHit() <span class="overload">[1/3]</span></h2>
@@ -159,7 +170,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00245">245</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00250">250</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -282,7 +293,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00249">249</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00254">254</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -330,7 +341,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00259">259</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00264">264</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -357,7 +368,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00258">258</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00263">263</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -384,7 +395,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00260">260</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00265">265</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -411,7 +422,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00255">255</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00260">260</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -438,7 +449,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00256">256</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00261">261</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -465,7 +476,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00257">257</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00262">262</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -493,7 +504,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00253">253</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00258">258</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -521,13 +532,13 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00252">252</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00257">257</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a57549e0d15f1b710a7115fa71595b37f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a57549e0d15f1b710a7115fa71595b37f">&#9670;&nbsp;</a></span>fmPMT_PMTID</h2>
+<a id="aa5e24e109d88c13668ad07dd4814a3c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5e24e109d88c13668ad07dd4814a3c9">&#9670;&nbsp;</a></span>fmPMT_PMTId</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -536,7 +547,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Int_t WCSimRootCherenkovDigiHit::fmPMT_PMTID</td>
+          <td class="memname">Int_t WCSimRootCherenkovDigiHit::fmPMT_PMTId</td>
         </tr>
       </table>
   </td>
@@ -548,12 +559,12 @@ Private Attributes</h2></td></tr>
 
 <p>The 3" PMT position ID inside this mPMT (runs from 1-19 for 3" PMTs inside mPMTs. Is 0 for 20" &amp; OD PMTs) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00241">241</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00246">246</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
-<a id="a25be8de6cb0973446578082869f42dca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25be8de6cb0973446578082869f42dca">&#9670;&nbsp;</a></span>fmPMTID</h2>
+<a id="ae7578247f2479c96aedc10c86bbbab3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7578247f2479c96aedc10c86bbbab3a">&#9670;&nbsp;</a></span>fmPMTId</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -562,7 +573,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Int_t WCSimRootCherenkovDigiHit::fmPMTID</td>
+          <td class="memname">Int_t WCSimRootCherenkovDigiHit::fmPMTId</td>
         </tr>
       </table>
   </td>
@@ -572,9 +583,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>The mPMT number this 3" PMT is in (Equivlaent to fTubeID for 20" &amp; OD PMTs) </p>
+<p>The mPMT number this 3" PMT is in (Equivalent to fTubeId for 20" &amp; OD PMTs) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00240">240</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00245">245</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -598,9 +609,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Truth matching. Position in the CherenkovHitTime array that contains the true hit(s) that created this digit. </p>
+<p>Truth matching. Position(s) in the CherenkovHitTime array that contains the true hit(s) that created this digit. </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00242">242</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00247">247</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -624,9 +635,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Digitised charge. </p>
+<p>Digitised charge (unit: something like p.e.) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00237">237</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00242">242</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -650,14 +661,14 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Digitised time, relative to the digit time (date in the <a class="el" href="class_w_c_sim_root_event_header.html">WCSimRootEventHeader</a>) (unit: ) </p>
+<p>Digitised time, relative to the digit time (date in the <a class="el" href="class_w_c_sim_root_event_header.html" title="Class containing header information for this trigger. ">WCSimRootEventHeader</a>) (unit: ns) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00238">238</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00243">243</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
-<a id="ac67ccbc134553cf93c642ca9126cebfe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac67ccbc134553cf93c642ca9126cebfe">&#9670;&nbsp;</a></span>fTubeID</h2>
+<a id="a2098a03ead4e6047ac5e912b2dd52bbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2098a03ead4e6047ac5e912b2dd52bbf">&#9670;&nbsp;</a></span>fTubeId</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -666,7 +677,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Int_t WCSimRootCherenkovDigiHit::fTubeID</td>
+          <td class="memname">Int_t WCSimRootCherenkovDigiHit::fTubeId</td>
         </tr>
       </table>
   </td>
@@ -678,7 +689,7 @@ Private Attributes</h2></td></tr>
 
 <p>PMT ID. Unique number across all PMT types (i.e. runs from 0 to NPMTs, where NPMTs = N20" + NOD + N3"inMPMT) </p>
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00239">239</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_event_8hh_source.html#l00244">244</a> of file <a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>.</p>
 
 </div>
 </div>
@@ -689,7 +700,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 21 2024 17:36:32 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 4 2024 10:20:05 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

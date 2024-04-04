@@ -1,0 +1,3 @@
+<map id="G4VUserTrackInformation" name="G4VUserTrackInformation">
+<area shape="rect" id="node2" href="$class_w_c_sim_track_information.html" title="{WCSimTrackInformation\n|&#45; saveit\l&#45; producesHit\l&#45; parentTrajectory\l&#45; myTrajectory\l|+ WCSimTrackInformation()\l+ ~WCSimTrackInformation()\l+ WCSimTrackInformation()\l+ isSaved()\l+ WillBeSaved()\l+ GetProducesHit()\l+ SetProducesHit()\l+ SetParentTrajectory()\l+ GetParentTrajectory()\l+ SetMyTrajectory()\l+ GetMyTrajectory()\l+ operator new()\l+ operator delete()\l+ operator==()\l+ Print()\l}" alt="" coords="5,131,220,457"/>
+</map>

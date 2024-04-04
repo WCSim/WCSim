@@ -1,0 +1,14 @@
+<map id="include/WCSimWCDigitizer.hh" name="include/WCSimWCDigitizer.hh">
+<area shape="rect" id="node2" href="$_w_c_sim_root_options_8hh.html" title="WCSimRootOptions.hh" alt="" coords="3419,304,3587,331"/>
+<area shape="rect" id="node7" href="$_w_c_sim_enumerations_8hh.html" title="WCSimEnumerations.hh" alt="" coords="2852,379,3031,405"/>
+<area shape="rect" id="node8" href="$_w_c_sim_dark_rate_messenger_8hh.html" title="WCSimDarkRateMessenger.hh" alt="" coords="960,304,1179,331"/>
+<area shape="rect" id="node11" href="$_w_c_sim_w_c_d_a_q_messenger_8hh.html" title="WCSimWCDAQMessenger.hh" alt="" coords="681,304,890,331"/>
+<area shape="rect" id="node17" href="$_w_c_sim_detector_construction_8hh.html" title="WCSimDetectorConstruction.hh" alt="" coords="3003,80,3229,107"/>
+<area shape="rect" id="node39" href="$_w_c_sim_w_c_digi_8hh.html" title="WCSimWCDigi.hh" alt="" coords="1855,155,1993,181"/>
+<area shape="rect" id="node48" href="$_w_c_sim_w_c_hit_8hh.html" title="WCSimWCHit.hh" alt="" coords="2017,155,2148,181"/>
+<area shape="rect" id="node18" href="$_w_c_sim_pmt_info_8hh.html" title="WCSimPmtInfo.hh" alt="" coords="3030,304,3170,331"/>
+<area shape="rect" id="node19" href="$_w_c_sim_p_m_t_object_8hh.html" title="WCSimPMTObject.hh" alt="" coords="3037,155,3195,181"/>
+<area shape="rect" id="node26" href="$_w_c_sim_w_l_s_properties_8hh.html" title="WCSimWLSProperties.hh" alt="" coords="4178,155,4361,181"/>
+<area shape="rect" id="node20" href="$_w_c_sim_tuning_parameters_8hh.html" title="WCSimTuningParameters.hh" alt="" coords="3309,229,3515,256"/>
+<area shape="rect" id="node21" href="$_w_c_sim_tuning_messenger_8hh.html" title="WCSimTuningMessenger.hh" alt="" coords="3195,304,3395,331"/>
+</map>

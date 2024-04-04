@@ -1,0 +1,8 @@
+<map id="include/WCSimTrajectory.hh" name="include/WCSimTrajectory.hh">
+<area shape="rect" id="node2" href="$_w_c_sim_track_information_8hh.html" title="include/WCSimTrackInformation.hh" alt="" coords="324,80,575,107"/>
+<area shape="rect" id="node4" href="$_w_c_sim_tracking_action_8cc.html" title="src/WCSimTrackingAction.cc" alt="" coords="5,155,211,181"/>
+<area shape="rect" id="node5" href="$_w_c_sim_trajectory_8cc.html" title="src/WCSimTrajectory.cc" alt="" coords="654,155,826,181"/>
+<area shape="rect" id="node7" href="$_w_c_sim_event_action_8cc.html" title="src/WCSimEventAction.cc" alt="" coords="650,80,838,107"/>
+<area shape="rect" id="node3" href="$_w_c_sim_track_information_8cc.html" title="src/WCSimTrackInformation.cc" alt="" coords="235,155,455,181"/>
+<area shape="rect" id="node6" href="$_w_c_sim_w_c_s_d_8cc.html" title="src/WCSimWCSD.cc" alt="" coords="479,155,630,181"/>
+</map>

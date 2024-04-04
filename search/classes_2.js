@@ -1,8 +1,11 @@
 var searchData=
 [
+  ['b',['B',['../class_b.html',1,'']]],
   ['basic_5fjson',['basic_json',['../classbasic__json.html',1,'']]],
   ['binary_5freader',['binary_reader',['../classdetail_1_1binary__reader.html',1,'detail']]],
   ['binary_5fwriter',['binary_writer',['../classdetail_1_1binary__writer.html',1,'detail']]],
+  ['binarytype',['BinaryType',['../class_binary_type.html',1,'']]],
+  ['bool_5fconstant',['bool_constant',['../classbool__constant.html',1,'']]],
   ['boundaries',['boundaries',['../structdetail_1_1dtoa__impl_1_1boundaries.html',1,'detail::dtoa_impl']]],
   ['boxandline12inchhqe',['BoxandLine12inchHQE',['../class_boxand_line12inch_h_q_e.html',1,'']]],
   ['boxandline20inchhqe',['BoxandLine20inchHQE',['../class_boxand_line20inch_h_q_e.html',1,'']]],

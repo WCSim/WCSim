@@ -1,0 +1,7 @@
+<map id="WCSimTrackingMessenger" name="WCSimTrackingMessenger">
+<area shape="rect" id="node4" href="$class_w_c_sim_tracking_action.html" title="{WCSimTrackingAction\n||+ WCSimTrackingAction()\l+ ~WCSimTrackingAction()\l+ PreUserTrackingAction()\l+ PostUserTrackingAction()\l+ SetFractionChPhotons()\l+ AddProcess()\l+ AddParticle()\l+ SetSaveHitProducingTracks()\l+ GetSaveHitProducingTracks()\l}" alt="" coords="684,359,911,553"/>
+<area shape="rect" id="node2" href="$class_g4_u_imessenger.html" title="{G4UImessenger\n||}" alt="" coords="770,5,897,83"/>
+<area shape="rect" id="node5" href="$class_g4_user_tracking_action.html" title="{G4UserTrackingAction\n||}" alt="" coords="5,160,171,237"/>
+<area shape="rect" id="node6" href="$class_g4double.html" title="{G4double\n||}" alt="" coords="195,160,279,237"/>
+<area shape="rect" id="node10" href="$class_g4int.html" title="{G4int\n||}" alt="" coords="967,160,1025,237"/>
+</map>

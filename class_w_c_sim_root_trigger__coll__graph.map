@@ -1,0 +1,5 @@
+<map id="WCSimRootTrigger" name="WCSimRootTrigger">
+<area shape="rect" id="node2" href="$class_t_object.html" title="{TObject\n||}" alt="" coords="5,5,77,83"/>
+<area shape="rect" id="node6" href="$class_w_c_sim_root_pi0.html" title="Class storing information about pi0 decays. " alt="" coords="75,182,258,362"/>
+<area shape="rect" id="node3" href="$class_w_c_sim_root_event_header.html" title="Class containing header information for this trigger. " alt="" coords="605,175,824,369"/>
+</map>

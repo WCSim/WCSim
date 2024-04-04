@@ -81,20 +81,33 @@ $(function() {
 <code>#include &quot;TSystem.h&quot;</code><br />
 <code>#include &quot;TCanvas.h&quot;</code><br />
 <code>#include &quot;TFile.h&quot;</code><br />
+<code>#include &quot;TString.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="_w_c_sim_root_options_8hh_source.html">WCSimRootOptions.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_w_c_sim_root_event_8hh_source.html">WCSimRootEvent.hh</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for sample_readfile.C:</div>
+<div class="dyncontent">
+<div class="center"><img src="sample__readfile_8_c__incl.png" border="0" usemap="#sample-root-scripts_2sample__readfile_8_c" alt=""/></div>
+<map name="sample-root-scripts_2sample__readfile_8_c" id="sample-root-scripts_2sample__readfile_8_c">
+<area shape="rect" id="node13" href="_w_c_sim_root_options_8hh.html" title="WCSimRootOptions.hh" alt="" coords="1101,95,1269,121"/>
+<area shape="rect" id="node19" href="_w_c_sim_root_geom_8hh.html" title="WCSimRootGeom.hh" alt="" coords="1293,95,1451,121"/>
+<area shape="rect" id="node20" href="_w_c_sim_root_event_8hh.html" title="WCSimRootEvent.hh" alt="" coords="1517,95,1672,121"/>
+<area shape="rect" id="node18" href="_w_c_sim_enumerations_8hh.html" title="WCSimEnumerations.hh" alt="" coords="1091,169,1269,196"/>
+<area shape="rect" id="node25" href="jhf_ntuple_8h.html" title="jhfNtuple.h" alt="" coords="2049,169,2143,196"/>
+</map>
+</div>
 </div>
 <p><a href="sample__readfile_8_c_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a2ab7a637daedf46d5a2b577cee2a40b1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sample__readfile_8_c.html#a2ab7a637daedf46d5a2b577cee2a40b1">sample_readfile</a> (const char *filename=&quot;../wcsim.root&quot;, bool verbose=false)</td></tr>
-<tr class="separator:a2ab7a637daedf46d5a2b577cee2a40b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0eb0126a529c4df7e3b82fc9c10df7d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sample__readfile_8_c.html#a0eb0126a529c4df7e3b82fc9c10df7d9">sample_readfile</a> (const char *filename=&quot;../wcsim.root&quot;, TString events_tree_name=&quot;wcsimrootevent&quot;, const int verbose=0)</td></tr>
+<tr class="separator:a0eb0126a529c4df7e3b82fc9c10df7d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a2ab7a637daedf46d5a2b577cee2a40b1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2ab7a637daedf46d5a2b577cee2a40b1">&#9670;&nbsp;</a></span>sample_readfile()</h2>
+<a id="a0eb0126a529c4df7e3b82fc9c10df7d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0eb0126a529c4df7e3b82fc9c10df7d9">&#9670;&nbsp;</a></span>sample_readfile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -108,8 +121,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>verbose</em> = <code>false</code>&#160;</td>
+          <td class="paramtype">TString&#160;</td>
+          <td class="paramname"><em>events_tree_name</em> = <code>&quot;wcsimrootevent&quot;</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>verbose</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -119,14 +138,14 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sample__readfile_8_c_source.html#l00021">21</a> of file <a class="el" href="sample__readfile_8_c_source.html">sample_readfile.C</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sample__readfile_8_c_source.html#l00022">22</a> of file <a class="el" href="sample__readfile_8_c_source.html">sample_readfile.C</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 21 2024 17:36:32 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 4 2024 10:20:04 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

@@ -82,6 +82,16 @@ $(function() {
  <a href="classdetail_1_1iter__impl.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="json_8hpp_source.html">json.hpp</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for detail::iter_impl&lt; BasicJsonType &gt;:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdetail_1_1iter__impl__coll__graph.png" border="0" usemap="#detail_1_1iter__impl_3_01_basic_json_type_01_4_coll__map" alt="Collaboration graph"/></div>
+<map name="detail_1_1iter__impl_3_01_basic_json_type_01_4_coll__map" id="detail_1_1iter__impl_3_01_basic_json_type_01_4_coll__map">
+<area shape="rect" id="node2" href="structdetail_1_1internal__iterator.html" title="{detail::internal_iterator\l\&lt; typename std::remove\l_const\&lt; BasicJsonType \&gt;\l::type \&gt;\n||}" alt="" coords="282,660,469,781"/>
+<area shape="rect" id="node3" href="classdetail_1_1primitive__iterator__t.html" title="{detail::primitive_iterator_t\n||+ get_value()\l+ set_begin()\l+ set_end()\l+ is_begin()\l+ is_end()\l+ operator+()\l+ operator++()\l+ operator++()\l+ operator&#45;&#45;()\l+ operator&#45;&#45;()\l+ operator+=()\l+ operator&#45;=()\l}" alt="" coords="504,175,697,413"/>
+<area shape="rect" id="node7" href="structdetail_1_1internal__iterator.html" title="an iterator value " alt="" coords="289,476,461,568"/>
+</map>
+</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -93,10 +103,10 @@ Public Types</h2></td></tr>
 <tr class="memitem:a6d51e1372282929d1c240223aa973c6e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#a6d51e1372282929d1c240223aa973c6e">difference_type</a> = typename BasicJsonType::difference_type</td></tr>
 <tr class="memdesc:a6d51e1372282929d1c240223aa973c6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">a type to represent differences between iterators  <a href="#a6d51e1372282929d1c240223aa973c6e">More...</a><br /></td></tr>
 <tr class="separator:a6d51e1372282929d1c240223aa973c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8dd63c75410c2526f14481b2647e829"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#aa8dd63c75410c2526f14481b2647e829">pointer</a> = typename std::conditional&lt; std::is_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html#a96557c87bc9b3adf6aa0b1a6b6209525">value</a>, typename BasicJsonType::const_pointer, typename BasicJsonType::pointer &gt;::type</td></tr>
+<tr class="memitem:aa8dd63c75410c2526f14481b2647e829"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#aa8dd63c75410c2526f14481b2647e829">pointer</a> = typename std::conditional&lt; std::is_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html#a96557c87bc9b3adf6aa0b1a6b6209525">value</a>, typename BasicJsonType::const_pointer, typename BasicJsonType::pointer &gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a></td></tr>
 <tr class="memdesc:aa8dd63c75410c2526f14481b2647e829"><td class="mdescLeft">&#160;</td><td class="mdescRight">defines a pointer to the type iterated over (value_type)  <a href="#aa8dd63c75410c2526f14481b2647e829">More...</a><br /></td></tr>
 <tr class="separator:aa8dd63c75410c2526f14481b2647e829"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef4718cdd15a8743df34c4861c375144"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#aef4718cdd15a8743df34c4861c375144">reference</a> = typename std::conditional&lt; std::is_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html#a96557c87bc9b3adf6aa0b1a6b6209525">value</a>, typename BasicJsonType::const_reference, typename BasicJsonType::reference &gt;::type</td></tr>
+<tr class="memitem:aef4718cdd15a8743df34c4861c375144"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#aef4718cdd15a8743df34c4861c375144">reference</a> = typename std::conditional&lt; std::is_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html#a96557c87bc9b3adf6aa0b1a6b6209525">value</a>, typename BasicJsonType::const_reference, typename BasicJsonType::reference &gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a></td></tr>
 <tr class="memdesc:aef4718cdd15a8743df34c4861c375144"><td class="mdescLeft">&#160;</td><td class="mdescRight">defines a reference to the type iterated over (value_type)  <a href="#aef4718cdd15a8743df34c4861c375144">More...</a><br /></td></tr>
 <tr class="separator:aef4718cdd15a8743df34c4861c375144"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -119,10 +129,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a011164799450909c898607e86ff9ba4a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#a011164799450909c898607e86ff9ba4a">operator=</a> (const <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt; const <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt; &amp;other) noexcept</td></tr>
 <tr class="memdesc:a011164799450909c898607e86ff9ba4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">converting assignment  <a href="#a011164799450909c898607e86ff9ba4a">More...</a><br /></td></tr>
 <tr class="separator:a011164799450909c898607e86ff9ba4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26079f33eb8a16683577cf3782558f26"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#a26079f33eb8a16683577cf3782558f26">iter_impl</a> (const <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt; typename std::remove_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::type &gt; &amp;other) noexcept</td></tr>
+<tr class="memitem:a26079f33eb8a16683577cf3782558f26"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#a26079f33eb8a16683577cf3782558f26">iter_impl</a> (const <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt; typename std::remove_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a> &gt; &amp;other) noexcept</td></tr>
 <tr class="memdesc:a26079f33eb8a16683577cf3782558f26"><td class="mdescLeft">&#160;</td><td class="mdescRight">converting constructor  <a href="#a26079f33eb8a16683577cf3782558f26">More...</a><br /></td></tr>
 <tr class="separator:a26079f33eb8a16683577cf3782558f26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a725736089c0a4f8e71551be825d2d22c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#a725736089c0a4f8e71551be825d2d22c">operator=</a> (const <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt; typename std::remove_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::type &gt; &amp;other) noexcept</td></tr>
+<tr class="memitem:a725736089c0a4f8e71551be825d2d22c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#a725736089c0a4f8e71551be825d2d22c">operator=</a> (const <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt; typename std::remove_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a> &gt; &amp;other) noexcept</td></tr>
 <tr class="memdesc:a725736089c0a4f8e71551be825d2d22c"><td class="mdescLeft">&#160;</td><td class="mdescRight">converting assignment  <a href="#a725736089c0a4f8e71551be825d2d22c">More...</a><br /></td></tr>
 <tr class="separator:a725736089c0a4f8e71551be825d2d22c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3a9cbf054745890847c27896f636ecc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#ab3a9cbf054745890847c27896f636ecc">switch</a> (m_object-&gt;m_data.m_type)</td></tr>
@@ -199,13 +209,13 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ae146c1c7a0b8a46e353b1bbe181f7743"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a392b5af6ea3449fe31ab7aafa5db4774"><td class="memItemLeft" align="right" valign="top"><a class="el" href="json_8hpp.html#a2cf645f34610e7f7d6e09ab88a2ab917">JSON_PRIVATE_UNLESS_TESTED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#a392b5af6ea3449fe31ab7aafa5db4774">__pad1__</a>: <a class="el" href="classdetail_1_1iter__impl.html#aa8dd63c75410c2526f14481b2647e829">pointer</a> m_object = nullptr</td></tr>
 <tr class="separator:a392b5af6ea3449fe31ab7aafa5db4774"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79b7b8c6b778d9f7e76b086b45d9ea2e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdetail_1_1internal__iterator.html">internal_iterator</a>&lt; typename std::remove_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::type &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#a79b7b8c6b778d9f7e76b086b45d9ea2e">m_it</a> {}</td></tr>
+<tr class="memitem:a79b7b8c6b778d9f7e76b086b45d9ea2e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdetail_1_1internal__iterator.html">internal_iterator</a>&lt; typename std::remove_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#a79b7b8c6b778d9f7e76b086b45d9ea2e">m_it</a> {}</td></tr>
 <tr class="memdesc:a79b7b8c6b778d9f7e76b086b45d9ea2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">the actual iterator of the associated instance  <a href="#a79b7b8c6b778d9f7e76b086b45d9ea2e">More...</a><br /></td></tr>
 <tr class="separator:a79b7b8c6b778d9f7e76b086b45d9ea2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-types"></a>
 Private Types</h2></td></tr>
-<tr class="memitem:ac21fe851cf594824029bbd2a5570c9c8"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#ac21fe851cf594824029bbd2a5570c9c8">other_iter_impl</a> = <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt; typename std::conditional&lt; std::is_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html#a96557c87bc9b3adf6aa0b1a6b6209525">value</a>, typename std::remove_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::type, const <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::type &gt;</td></tr>
+<tr class="memitem:ac21fe851cf594824029bbd2a5570c9c8"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#ac21fe851cf594824029bbd2a5570c9c8">other_iter_impl</a> = <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt; typename std::conditional&lt; std::is_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html#a96557c87bc9b3adf6aa0b1a6b6209525">value</a>, typename std::remove_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a>, const <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a> &gt;</td></tr>
 <tr class="memdesc:ac21fe851cf594824029bbd2a5570c9c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">the iterator with BasicJsonType of different const-ness  <a href="#ac21fe851cf594824029bbd2a5570c9c8">More...</a><br /></td></tr>
 <tr class="separator:ac21fe851cf594824029bbd2a5570c9c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9eab8bed5aa8f072253dfa5d3c27b1a1"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1iter__impl.html#a9eab8bed5aa8f072253dfa5d3c27b1a1">object_t</a> = typename BasicJsonType::object_t</td></tr>
@@ -347,7 +357,7 @@ template&lt;typename BasicJsonType&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classdetail_1_1iter__impl.html">detail::iter_impl</a>&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html#ac21fe851cf594824029bbd2a5570c9c8">other_iter_impl</a> =  <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt;typename std::conditional&lt;std::is_const&lt;<a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a>&gt;::<a class="el" href="classdetail_1_1iter__impl.html#a96557c87bc9b3adf6aa0b1a6b6209525">value</a>, typename std::remove_const&lt;<a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a>&gt;::type, const <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a>&gt;::type&gt;</td>
+          <td class="memname">using <a class="el" href="classdetail_1_1iter__impl.html">detail::iter_impl</a>&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html#ac21fe851cf594824029bbd2a5570c9c8">other_iter_impl</a> =  <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt;typename std::conditional&lt;std::is_const&lt;<a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a>&gt;::<a class="el" href="classdetail_1_1iter__impl.html#a96557c87bc9b3adf6aa0b1a6b6209525">value</a>, typename std::remove_const&lt;<a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a>&gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a>, const <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a>&gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a>&gt;</td>
         </tr>
       </table>
   </td>
@@ -372,7 +382,7 @@ template&lt;typename BasicJsonType&gt; </div>
 template&lt;typename BasicJsonType&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classdetail_1_1iter__impl.html">detail::iter_impl</a>&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html#aa8dd63c75410c2526f14481b2647e829">pointer</a> =  typename std::conditional&lt;std::is_const&lt;<a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a>&gt;::<a class="el" href="classdetail_1_1iter__impl.html#a96557c87bc9b3adf6aa0b1a6b6209525">value</a>, typename BasicJsonType::const_pointer, typename BasicJsonType::pointer&gt;::type</td>
+          <td class="memname">using <a class="el" href="classdetail_1_1iter__impl.html">detail::iter_impl</a>&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html#aa8dd63c75410c2526f14481b2647e829">pointer</a> =  typename std::conditional&lt;std::is_const&lt;<a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a>&gt;::<a class="el" href="classdetail_1_1iter__impl.html#a96557c87bc9b3adf6aa0b1a6b6209525">value</a>, typename BasicJsonType::const_pointer, typename BasicJsonType::pointer&gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -392,7 +402,7 @@ template&lt;typename BasicJsonType&gt; </div>
 template&lt;typename BasicJsonType&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classdetail_1_1iter__impl.html">detail::iter_impl</a>&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html#aef4718cdd15a8743df34c4861c375144">reference</a> =  typename std::conditional&lt;std::is_const&lt;<a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a>&gt;::<a class="el" href="classdetail_1_1iter__impl.html#a96557c87bc9b3adf6aa0b1a6b6209525">value</a>, typename BasicJsonType::const_reference, typename BasicJsonType::reference&gt;::type</td>
+          <td class="memname">using <a class="el" href="classdetail_1_1iter__impl.html">detail::iter_impl</a>&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html#aef4718cdd15a8743df34c4861c375144">reference</a> =  typename std::conditional&lt;std::is_const&lt;<a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a>&gt;::<a class="el" href="classdetail_1_1iter__impl.html#a96557c87bc9b3adf6aa0b1a6b6209525">value</a>, typename BasicJsonType::const_reference, typename BasicJsonType::reference&gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -601,7 +611,7 @@ template&lt;typename BasicJsonType&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classdetail_1_1iter__impl.html">detail::iter_impl</a>&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a> </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt; typename std::remove_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::type &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt; typename std::remove_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>other</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1201,7 +1211,7 @@ template&lt;typename BasicJsonType&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&amp; <a class="el" href="classdetail_1_1iter__impl.html">detail::iter_impl</a>&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::operator= </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt; typename std::remove_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::type &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classdetail_1_1iter__impl.html">iter_impl</a>&lt; typename std::remove_const&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>other</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1623,7 +1633,7 @@ template&lt;typename BasicJsonType&gt; </div>
 template&lt;typename BasicJsonType&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structdetail_1_1internal__iterator.html">internal_iterator</a>&lt;typename std::remove_const&lt;<a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a>&gt;::type&gt; <a class="el" href="classdetail_1_1iter__impl.html">detail::iter_impl</a>&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::m_it {}</td>
+          <td class="memname"><a class="el" href="structdetail_1_1internal__iterator.html">internal_iterator</a>&lt;typename std::remove_const&lt;<a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a>&gt;::<a class="el" href="classstd_1_1conditional_1_1type.html">type</a>&gt; <a class="el" href="classdetail_1_1iter__impl.html">detail::iter_impl</a>&lt; <a class="el" href="classdetail_1_1iter__impl.html#ae3454e97904c65bf079e33cda4116b12">BasicJsonType</a> &gt;::m_it {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1668,7 +1678,7 @@ template&lt;typename BasicJsonType&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 21 2024 17:36:33 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 4 2024 10:20:05 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

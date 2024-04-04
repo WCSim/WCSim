@@ -68,10 +68,19 @@ $(function() {
 <div class="textblock"><p>This file contains the release notes for each version of WCSim. Release notes can also be found at <a href="https://github.com/WCSim/WCSim/tags">https://github.com/WCSim/WCSim/tags</a>.</p>
 <hr/>
 <p> Recent updates </p><hr/>
+<hr/>
+<p> 27/03/2024: Notes for v1.12.10 </p><hr/>
+<p>Minor release after #427, removing the superfluous copies of true track information in the output file Also picking up mac file fixes in WCSim/Validation - so the HK FD CI checks will be really from the HK FD geometry (has been SK since v1.12.8</p>
 <p>New features</p><ul>
 <li>Pull request #387 : Add (optional) AmBe source geometry</li>
 <li>Pull request #387 : New AmBe primary generator, simulating gamma + photon</li>
-<li>Pull request #387 : Addition of creator process to <a class="el" href="class_w_c_sim_root_track.html">WCSimRootTrack</a> &amp; <a class="el" href="class_w_c_sim_root_cherenkov_hit_time.html">WCSimRootCherenkovHitTime</a></li>
+<li>Pull request #387 : Addition of creator process to <a class="el" href="class_w_c_sim_root_track.html" title="Class holding true track information. ">WCSimRootTrack</a> &amp; <a class="el" href="class_w_c_sim_root_cherenkov_hit_time.html" title="Class holding true (Cherenkov photon + dark noise) hit information. ">WCSimRootCherenkovHitTime</a></li>
+<li>Pull request #427 : <code><a class="el" href="sample__readfile_8_c.html">sample_readfile.C</a></code> has option to select which PMT branch to analyse</li>
+</ul>
+<p>Update</p><ul>
+<li>Pull request #421 : Remove the old build &amp; physics test CI action (calling bash scripts) in favour of the new python version</li>
+<li>Pull request #426 : Turn off creation of the (unfilled) flat tree output file by default</li>
+<li>Pull request #427 : Only store true track information in the 0th trigger of the first PMT type (previously was saved across multiple triggers, and copied into every active PMT branch)</li>
 </ul>
 <hr/>
 <p> 05/03/2024: Notes for v1.12.9 </p><hr/>
@@ -224,12 +233,12 @@ For that I am sorry</p>
 <p>The main feature of this release is the addition of mPMTs (multiple 3" PMTs in a 20"-PMT-like vessel), and the creation of associated geometries for IWCD and the HK FD.</p>
 <p>Note that with this release, the recommended version of Geant4 is now 10.3.3</p>
 <p>Default output <code>.root</code> file changes</p><ul>
-<li><code>fTriggerInfo</code> in <code><a class="el" href="class_w_c_sim_root_trigger.html">WCSimRootTrigger</a></code> is now a <code>std::vector&lt;Double_t&gt;</code> (previously was a <code>std::vector&lt;Float_t&gt;</code>)</li>
-<li>Addition of <code>fParentId</code> to <code><a class="el" href="class_w_c_sim_root_track.html">WCSimRootTrack</a></code></li>
-<li>Addition of <code>fmPMTID</code> and <code>fmPMT_PMTID</code> to all of <code><a class="el" href="class_w_c_sim_root_cherenkov_hit.html">WCSimRootCherenkovHit</a></code>, <code><a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html">WCSimRootCherenkovDigiHit</a></code>, and <code><a class="el" href="class_w_c_sim_root_p_m_t.html">WCSimRootPMT</a></code></li>
-<li>Addition of <code>fPhotonStartTime</code>, <code>fPhotonStartPos[3]</code>, <code>fPhotonEndPos[3]</code>, <code>fPhotonStartDir[3]</code>, and fPhotonEndDir[3]<code>to</code><a class="el" href="class_w_c_sim_root_cherenkov_hit_time.html">WCSimRootCherenkovHitTime</a><code></code></li>
-<li><code>Addition of</code>TClonesArray<code>of</code>WCSimRootCapture&lt;tt&gt;(a new class) to<a class="el" href="class_w_c_sim_root_event.html">WCSimRootEvent</a><code> *</code><a class="el" href="class_w_c_sim_root_capture_gamma.html">WCSimRootCaptureGamma</a><code>is another new class stored within</code><a class="el" href="class_w_c_sim_root_capture.html">WCSimRootCapture</a><code></code></li>
-<li><code>Addition of two new</code>TClonesArray<code>of</code><a class="el" href="class_w_c_sim_root_p_m_t.html">WCSimRootPMT</a><code>in</code><a class="el" href="class_w_c_sim_root_geom.html">WCSimRootGeom</a><code> 1.</code>fPMTArray2<code>stores the second ID PMT type information (i.e. mPMT information in HK hybrid FD geometries) 2.</code>fODPMTArray<code>stores the OD PMT information (this used to be stored at the end of</code>fPMTArray`)</li>
+<li><code>fTriggerInfo</code> in <code><a class="el" href="class_w_c_sim_root_trigger.html" title="Class storing trigger information. ">WCSimRootTrigger</a></code> is now a <code>std::vector&lt;Double_t&gt;</code> (previously was a <code>std::vector&lt;Float_t&gt;</code>)</li>
+<li>Addition of <code>fParentId</code> to <code><a class="el" href="class_w_c_sim_root_track.html" title="Class holding true track information. ">WCSimRootTrack</a></code></li>
+<li>Addition of <code>fmPMTID</code> and <code>fmPMT_PMTID</code> to all of <code><a class="el" href="class_w_c_sim_root_cherenkov_hit.html" title="Class holding true (Cherenkov photon + dark noise) hit information. ">WCSimRootCherenkovHit</a></code>, <code><a class="el" href="class_w_c_sim_root_cherenkov_digi_hit.html" title="Class holding digitised hit (aka digit or digi) information (after PMT &amp; electronics simulation + tri...">WCSimRootCherenkovDigiHit</a></code>, and <code><a class="el" href="class_w_c_sim_root_p_m_t.html" title="PMT geometry information. ">WCSimRootPMT</a></code></li>
+<li>Addition of <code>fPhotonStartTime</code>, <code>fPhotonStartPos[3]</code>, <code>fPhotonEndPos[3]</code>, <code>fPhotonStartDir[3]</code>, and fPhotonEndDir[3]<code>to</code><a class="el" href="class_w_c_sim_root_cherenkov_hit_time.html" title="Class holding true (Cherenkov photon + dark noise) hit information. ">WCSimRootCherenkovHitTime</a><code></code></li>
+<li><code>Addition of</code>TClonesArray<code>of</code>WCSimRootCapture&lt;tt&gt;(a new class) to<a class="el" href="class_w_c_sim_root_event.html" title="Class containing event information. ">WCSimRootEvent</a><code> *</code><a class="el" href="class_w_c_sim_root_capture_gamma.html" title="Class storing information about gammas released from neutron capture. ">WCSimRootCaptureGamma</a><code>is another new class stored within</code><a class="el" href="class_w_c_sim_root_capture.html" title="Class used specifically for neutron capture events. ">WCSimRootCapture</a><code></code></li>
+<li><code>Addition of two new</code>TClonesArray<code>of</code><a class="el" href="class_w_c_sim_root_p_m_t.html" title="PMT geometry information. ">WCSimRootPMT</a><code>in</code><a class="el" href="class_w_c_sim_root_geom.html" title="Detector geometry information (also containing PMT information arrays) ">WCSimRootGeom</a><code> 1.</code>fPMTArray2<code>stores the second ID PMT type information (i.e. mPMT information in HK hybrid FD geometries) 2.</code>fODPMTArray<code>stores the OD PMT information (this used to be stored at the end of</code>fPMTArray`)</li>
 </ul>
 <p>New features</p><ul>
 <li>New script <code><a class="el" href="plot__pmts_8_c.html">plot_pmts.C</a></code> to plot the PMT distribution</li>
@@ -265,7 +274,7 @@ For that I am sorry</p>
 <li>Pull Request <a href="https://github.com/nuPRISM/WCSim/pull/45">nuPRISM/#45 </a>: Fix bug that was causing seg fault when accessing PDG code from NRooTracker</li>
 <li>Pull Request <a href="https://github.com/nuPRISM/WCSim/pull/44">nuPRISM/#44 </a>: Update the event generation to generate events right out to the edge of the E61 ID</li>
 <li>Pull Request <a href="https://github.com/bquilain/WCSim/pull/19">bquilain/#19 </a>: Use Flag instead of FirstTime value to determine if new FirstTime needs to be set. See all bquilain/#18</li>
-<li>Pull Request <a href="https://github.com/bquilain/WCSim/pull/13">bquilain/#13 </a>: Initialise <a class="el" href="namespace_r_o_o_t.html">ROOT</a> randomiser seed</li>
+<li>Pull Request <a href="https://github.com/bquilain/WCSim/pull/13">bquilain/#13 </a>: Initialise ROOT randomiser seed</li>
 </ul>
 <hr/>
 <p> 10/26/2021: Notes for v1.10.0 </p><hr/>
@@ -287,14 +296,14 @@ For that I am sorry</p>
 <p>Bug Fix</p><ul>
 <li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/247">#247</a>: Use <code>map</code> features, instead of array-style access/iteration, in <code><a class="el" href="class_w_c_sim_w_c_digi.html">WCSimWCDigi</a></code></li>
 <li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/298">#298</a>: Make NoTrigger trigger work for OD</li>
-<li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/312">#312</a>: <a class="el" href="namespace_r_o_o_t.html">ROOT</a> <code>TRandom3</code> randomizer initialisation</li>
+<li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/312">#312</a>: ROOT <code>TRandom3</code> randomizer initialisation</li>
 </ul>
 <hr/>
 <p> 04/12/2021: Notes for v1.9.4 </p><hr/>
-<p>This release includes an update to allow <code><a class="el" href="class_w_c_sim_root_trigger.html">WCSimRootTrigger</a></code>s with more than 150 entries, as well as updates to the Travis automatic validation system execution tests</p>
+<p>This release includes an update to allow <code><a class="el" href="class_w_c_sim_root_trigger.html" title="Class storing trigger information. ">WCSimRootTrigger</a></code>s with more than 150 entries, as well as updates to the Travis automatic validation system execution tests</p>
 <p>Update</p><ul>
 <li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/308">#308</a>: Update validation tests</li>
-<li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/309">#309</a>: Dynamically expand <code><a class="el" href="class_w_c_sim_root_trigger.html">WCSimRootTrigger</a></code>s <code>TObjArray</code></li>
+<li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/309">#309</a>: Dynamically expand <code><a class="el" href="class_w_c_sim_root_trigger.html" title="Class storing trigger information. ">WCSimRootTrigger</a></code>s <code>TObjArray</code></li>
 </ul>
 <hr/>
 <p> 12/02/2020: Notes for v1.9.3 <br />
@@ -373,7 +382,7 @@ For that I am sorry</p>
 <li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/204">#204</a>: New RootOptions included in the CMake build options.</li>
 <li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/207">#207</a>: Change the colour of mu- and mu+ in visualization and add background colour</li>
 <li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/258">#258</a>, <a href="https://github.com/WCSim/WCSim/pull/256">#256</a>: Allow the addition and deletion of Cherenkov digits in WCSimWCTrigger</li>
-<li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/257">#257</a>: Add assignment operators to <a class="el" href="class_w_c_sim_root_event.html">WCSimRootEvent</a> &amp; <a class="el" href="class_w_c_sim_root_trigger.html">WCSimRootTrigger</a></li>
+<li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/257">#257</a>: Add assignment operators to <a class="el" href="class_w_c_sim_root_event.html" title="Class containing event information. ">WCSimRootEvent</a> &amp; <a class="el" href="class_w_c_sim_root_trigger.html" title="Class storing trigger information. ">WCSimRootTrigger</a></li>
 <li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/264">#264</a>: Add how to run WCSim to the README</li>
 <li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/259">#259</a>: WCSimWCDigit::SortArrayByHitTime() to sort times_presmear too</li>
 <li>Pull Request <a href="https://github.com/WCSim/WCSim/pull/260">#260</a>: Allow the addition and deletion of tracks in WCSimWCTrigger</li>
@@ -383,7 +392,7 @@ For that I am sorry</p>
 <p> 04/27/2017: Notes for v1.7.0 <br />
 </p><hr/>
 <p> New Features</p><ul>
-<li>Pull Request #198: Run options (such as dark noise rate, electronics configuration, detector configuration, etc) is now saved in the output <a class="el" href="namespace_r_o_o_t.html">ROOT</a> file.</li>
+<li>Pull Request #198: Run options (such as dark noise rate, electronics configuration, detector configuration, etc) is now saved in the output ROOT file.</li>
 <li>Pull Request #212 (forked from Pull Request #202): WCSim now runs with Geant 4.10.1. Extensive validation was done to ensure the physics output matches what we expect. The custom physics list option was removed and the FTFP_BERT physics list is now the default.</li>
 </ul>
 <p>Bug Fixes</p><ul>
@@ -406,12 +415,12 @@ For that I am sorry</p>
 <li>Pull Request #170: Some improvements to <a class="el" href="verification___hits_charge_time_8_c.html">verification_HitsChargeTime.C</a>, including a check for the same number of events in the two files being compared.</li>
 </ul>
 <p>Bug Fixes</p><ul>
-<li>Pull Request #165: The raw (undigitized) hit times in the output <a class="el" href="namespace_r_o_o_t.html">ROOT</a> file were smeared since v1.5.0. This release returns the raw (undigitized) hit times back to their unsmeared times.</li>
+<li>Pull Request #165: The raw (undigitized) hit times in the output ROOT file were smeared since v1.5.0. This release returns the raw (undigitized) hit times back to their unsmeared times.</li>
 <li>Pull Request #165: There was a related bug that arose from matching the collection of unsmeared hit times to the smeared times, resulting in some wrong times &amp; parent IDs being saved. This release fixes that bug.</li>
 </ul>
 <p>Updates</p><ul>
-<li>Pull Requests #164 and #183: Swap the remaining instances of cout, cerr, endl for G4cout, G4cerr, G4endl and remove the iostream includes, except in <a class="el" href="class_w_c_sim_enumerations.html">WCSimEnumerations</a>, which is used to analyze the WCSim <a class="el" href="namespace_r_o_o_t.html">ROOT</a> files.</li>
-<li>Pull Request #174: Updated references to documentation of root file structure. The defunct link included in some of the sample <a class="el" href="namespace_r_o_o_t.html">ROOT</a> macros was changed to refer users to the WCSim DetectorDocumentation.pdf.</li>
+<li>Pull Requests #164 and #183: Swap the remaining instances of cout, cerr, endl for G4cout, G4cerr, G4endl and remove the iostream includes, except in <a class="el" href="class_w_c_sim_enumerations.html">WCSimEnumerations</a>, which is used to analyze the WCSim ROOT files.</li>
+<li>Pull Request #174: Updated references to documentation of root file structure. The defunct link included in some of the sample ROOT macros was changed to refer users to the WCSim DetectorDocumentation.pdf.</li>
 </ul>
 <hr/>
 <p> 04/11/2016: Notes for v1.5.1 <br />
@@ -433,7 +442,7 @@ For that I am sorry</p>
 <li>Hit PMTs were not being visualized after a change made in the last release. This was fixed.</li>
 <li>If you built the same detector configuration twice (for example, if you rebuilt the default configuration) then the program would seg fault. This has now been fixed.</li>
 <li>The smearing of the hit time is now applied in <a class="el" href="class_w_c_sim_w_c_p_m_t.html">WCSimWCPMT</a>, rather than in the digitizer after the trigger decisions have already been made.</li>
-<li>The Enumerations files (<a class="el" href="_w_c_sim_enumerations_8cc.html">WCSimEnumerations.cc</a> and <a class="el" href="_w_c_sim_enumerations_8hh.html">WCSimEnumerations.hh</a>) are now compiled with WCSim to allow for <a class="el" href="namespace_r_o_o_t.html">ROOT</a> scripts run in non-compiled mode to access that information.</li>
+<li>The Enumerations files (<a class="el" href="_w_c_sim_enumerations_8cc.html">WCSimEnumerations.cc</a> and <a class="el" href="_w_c_sim_enumerations_8hh.html">WCSimEnumerations.hh</a>) are now compiled with WCSim to allow for ROOT scripts run in non-compiled mode to access that information.</li>
 </ul>
 <p>Structural Changes</p><ul>
 <li>The digitizer, trigger, and dark noise are now separate pieces of code. Furthermore, the digitizer and trigger now inherit from base classes similar to how the PMTs were implemented in v1.2.0. As a result, users can add their own electronics easily.</li>
@@ -466,7 +475,7 @@ For that I am sorry</p>
 <p>Bug Fixes</p><ul>
 <li>The function used for the timing resolution was different from the fitted function for the &gt;20 p.e. region. The correct timing resolution function has now been implemented.</li>
 <li>PMTCollEff is now on by default</li>
-<li>A correction factor of 1/0.73 has been implemented for the Box and Line photosensors. Based on Hamamatsu simulations, the collection efficiency for the R3600 is 73%. We have factors in WCSim that suppress the pe output and so this makes the R3600 simulations correct, but since we now include other photosensors (ex. box and line), we need to correct by the new photosensors by the 1/0.73 factor. The new ratio we expect for the digitized output (Quantum efficiency x Collection efficiency x Hit Efficiency) of B&amp;L to R3600 is: (0.315x0.95x0.856/0.73)/(0.211x1.0x0.717)=2.32. This is a temporary solution until we can properly incorporate the R3600 collection efficiency and retune the factors in WCSim.</li>
+<li>A correction factor of 1/0.73 has been implemented for the Box and Line photosensors. Based on Hamamatsu simulations, the collection efficiency for the R3600 is 73%. We have factors in WCSim that suppress the pe output and so this makes the R3600 simulations correct, but since we now include other photosensors (ex. box and line), we need to correct by the new photosensors by the 1/0.73 factor. The new ratio we expect for the digitized output (Quantum efficiency x Collection efficiency x Hit Efficiency) of <a class="el" href="class_b.html">B</a>&amp;L to R3600 is: (0.315x0.95x0.856/0.73)/(0.211x1.0x0.717)=2.32. This is a temporary solution until we can properly incorporate the R3600 collection efficiency and retune the factors in WCSim.</li>
 </ul>
 <hr/>
 <p> 04/08/2015: Notes for v1.3.0 <br />
@@ -505,7 +514,7 @@ For that I am sorry</p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 21 2024 17:36:32 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 4 2024 10:20:04 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

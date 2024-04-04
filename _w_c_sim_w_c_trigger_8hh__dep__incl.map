@@ -1,0 +1,8 @@
+<map id="include/WCSimWCTrigger.hh" name="include/WCSimWCTrigger.hh">
+<area shape="rect" id="node2" href="$_w_c_sim_event_action_8hh.html" title="include/WCSimEventAction.hh" alt="" coords="151,80,370,107"/>
+<area shape="rect" id="node3" href="$_w_c_sim_event_action_8cc.html" title="src/WCSimEventAction.cc" alt="" coords="5,155,193,181"/>
+<area shape="rect" id="node4" href="$_w_c_sim_w_c_d_a_q_messenger_8cc.html" title="src/WCSimWCDAQMessenger.cc" alt="" coords="328,155,559,181"/>
+<area shape="rect" id="node6" href="$_w_c_sim_w_c_add_dark_noise_8cc.html" title="src/WCSimWCAddDarkNoise.cc" alt="" coords="445,80,671,107"/>
+<area shape="rect" id="node7" href="$_w_c_sim_w_c_trigger_8cc.html" title="src/WCSimWCTrigger.cc" alt="" coords="695,80,869,107"/>
+<area shape="rect" id="node5" href="$_w_c_sim_8cc.html" title="WCSim.cc" alt="" coords="217,155,304,181"/>
+</map>

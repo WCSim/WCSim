@@ -15,7 +15,7 @@ var searchData=
   ['rangen',['Rangen',['../class_w_c_sim_random_messenger.html#a1a2c196f6db636472f5a25c473195994',1,'WCSimRandomMessenger']]],
   ['ranges',['ranges',['../class_w_c_sim_w_c_add_dark_noise.html#aa1cd684c6df79d1df150af76f12b0877',1,'WCSimWCAddDarkNoise']]],
   ['ranseed',['Ranseed',['../class_w_c_sim_random_messenger.html#a17fa60201e3cf01bbd28d7f6f921fc21',1,'WCSimRandomMessenger']]],
-  ['rayff',['rayff',['../class_w_c_sim_tuning_parameters.html#aa51c2658da2901b4f40e48d826c3bc0a',1,'WCSimTuningParameters::rayff()'],['../class_w_c_sim_root_options.html#acfd14a999f6f9936de5969678e95e316',1,'WCSimRootOptions::Rayff()'],['../class_w_c_sim_tuning_messenger.html#a3906e970513f0ddc1721f2d054b06df1',1,'WCSimTuningMessenger::Rayff()']]],
+  ['rayff',['Rayff',['../class_w_c_sim_root_options.html#acfd14a999f6f9936de5969678e95e316',1,'WCSimRootOptions::Rayff()'],['../class_w_c_sim_tuning_messenger.html#a3906e970513f0ddc1721f2d054b06df1',1,'WCSimTuningMessenger::Rayff()'],['../class_w_c_sim_tuning_parameters.html#aa51c2658da2901b4f40e48d826c3bc0a',1,'WCSimTuningParameters::rayff()']]],
   ['reader_5f',['reader_',['../class_c_a_d_mesh_1_1_c_a_d_mesh_template.html#a1f893de622d0d1c4a07024f27650432a',1,'CADMesh::CADMeshTemplate']]],
   ['readfromtable',['readFromTable',['../class_w_c_sim_detector_construction.html#a7748e6563541e36474d46d2b7b067755',1,'WCSimDetectorConstruction']]],
   ['ref_5fstack',['ref_stack',['../classdetail_1_1json__sax__dom__parser.html#a7abe0305cc4bcfa1cee1bbe25a722e1a',1,'detail::json_sax_dom_parser::ref_stack()'],['../classdetail_1_1json__sax__dom__callback__parser.html#a86ef162619a50b28eccb9111b22f9563',1,'detail::json_sax_dom_callback_parser::ref_stack()']]],
@@ -43,7 +43,7 @@ var searchData=
   ['rootfilename',['RootFileName',['../class_w_c_sim_run_action.html#aa051face941cd29cb36d9bdb03068ef3',1,'WCSimRunAction']]],
   ['rootracker',['RooTracker',['../class_w_c_sim_run_action_messenger.html#a36f932e645b9bdaedc83cde4f473a3a7',1,'WCSimRunActionMessenger']]],
   ['rot',['rot',['../class_w_c_sim_w_c_digi.html#ad935024d7eb028ccf1f38860d8d5eaa9',1,'WCSimWCDigi::rot()'],['../class_w_c_sim_w_c_hit.html#aa7df038a173e1ac53d40c054f8304747',1,'WCSimWCHit::rot()']]],
-  ['rotatebarrelhalftower',['rotateBarrelHalfTower',['../class_w_c_sim_detector_construction.html#aff34a59c558ae749461fa6b8ff6947df',1,'WCSimDetectorConstruction::rotateBarrelHalfTower()'],['../class_w_c_sim_detector_messenger.html#aebf9bb91865d09069e098791ec1f5d25',1,'WCSimDetectorMessenger::RotateBarrelHalfTower()']]],
+  ['rotatebarrelhalftower',['RotateBarrelHalfTower',['../class_w_c_sim_detector_messenger.html#aebf9bb91865d09069e098791ec1f5d25',1,'WCSimDetectorMessenger::RotateBarrelHalfTower()'],['../class_w_c_sim_detector_construction.html#aff34a59c558ae749461fa6b8ff6947df',1,'WCSimDetectorConstruction::rotateBarrelHalfTower()']]],
   ['rowseperation',['RowSeperation',['../struct_realistic_placement_configuration.html#a4a69e46dbaa6957cdde8da9c3cca5cbb',1,'RealisticPlacementConfiguration']]],
   ['run',['run',['../class_w_c_sim_run_action.html#ab273cfa826997059e8bff3f30c42b974',1,'WCSimRunAction']]],
   ['runaction',['runAction',['../class_w_c_sim_event_action.html#a93a66187fa7a2d9b8cec99eca309b36b',1,'WCSimEventAction::runAction()'],['../class_w_c_sim_stepping_action.html#a5664a493f81661669b1cfe10b16964d7',1,'WCSimSteppingAction::runAction()']]]

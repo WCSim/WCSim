@@ -70,15 +70,26 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>Detector geometry information (also containing PMT information arrays)  
+ <a href="class_w_c_sim_root_geom.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for WCSimRootGeom:</div>
 <div class="dyncontent">
- <div class="center">
-  <img src="class_w_c_sim_root_geom.png" usemap="#WCSimRootGeom_map" alt=""/>
-  <map id="WCSimRootGeom_map" name="WCSimRootGeom_map">
+<div class="center"><img src="class_w_c_sim_root_geom__inherit__graph.png" border="0" usemap="#_w_c_sim_root_geom_inherit__map" alt="Inheritance graph"/></div>
+<map name="_w_c_sim_root_geom_inherit__map" id="_w_c_sim_root_geom_inherit__map">
+<area shape="rect" id="node2" href="class_t_object.html" title="{TObject\n||}" alt="" coords="61,5,133,83"/>
 </map>
- </div></div>
+</div>
+<div class="dynheader">
+Collaboration diagram for WCSimRootGeom:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_w_c_sim_root_geom__coll__graph.png" border="0" usemap="#_w_c_sim_root_geom_coll__map" alt="Collaboration graph"/></div>
+<map name="_w_c_sim_root_geom_coll__map" id="_w_c_sim_root_geom_coll__map">
+<area shape="rect" id="node2" href="class_t_object.html" title="{TObject\n||}" alt="" coords="5,5,77,83"/>
+</map>
+</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -146,12 +157,16 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a09bb1ce90e26f926f2ae75fc89d0283a"><td class="memItemLeft" align="right" valign="top">Float_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_geom.html#a09bb1ce90e26f926f2ae75fc89d0283a">fWCCylRadius</a></td></tr>
+<tr class="memdesc:a09bb1ce90e26f926f2ae75fc89d0283a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Radius of WC tank. Units: cm.  <a href="#a09bb1ce90e26f926f2ae75fc89d0283a">More...</a><br /></td></tr>
 <tr class="separator:a09bb1ce90e26f926f2ae75fc89d0283a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc6f29de0600c6447ff2b083a36a1418"><td class="memItemLeft" align="right" valign="top">Float_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_geom.html#adc6f29de0600c6447ff2b083a36a1418">fWCCylLength</a></td></tr>
+<tr class="memdesc:adc6f29de0600c6447ff2b083a36a1418"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of WC tank. Units: cm.  <a href="#adc6f29de0600c6447ff2b083a36a1418">More...</a><br /></td></tr>
 <tr class="separator:adc6f29de0600c6447ff2b083a36a1418"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bf004b80037bae50ca51dff08acdd2b"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_geom.html#a1bf004b80037bae50ca51dff08acdd2b">fgeo_type</a></td></tr>
+<tr class="memdesc:a1bf004b80037bae50ca51dff08acdd2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">UNUSED mailbox or cylinder?  <a href="#a1bf004b80037bae50ca51dff08acdd2b">More...</a><br /></td></tr>
 <tr class="separator:a1bf004b80037bae50ca51dff08acdd2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b984dccd7f4223843848c5f54d286dd"><td class="memItemLeft" align="right" valign="top">Float_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_geom.html#a8b984dccd7f4223843848c5f54d286dd">fWCPMTRadius</a></td></tr>
+<tr class="memdesc:a8b984dccd7f4223843848c5f54d286dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Radius of ID PMT of the first type. Units: cm.  <a href="#a8b984dccd7f4223843848c5f54d286dd">More...</a><br /></td></tr>
 <tr class="separator:a8b984dccd7f4223843848c5f54d286dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81fa5fc1f37b5db96ffb518f6fdbbb45"><td class="memItemLeft" align="right" valign="top">Float_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_geom.html#a81fa5fc1f37b5db96ffb518f6fdbbb45">fWCPMTRadius2</a></td></tr>
 <tr class="separator:a81fa5fc1f37b5db96ffb518f6fdbbb45"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,17 +181,28 @@ Private Attributes</h2></td></tr>
 <tr class="memitem:a7540739b3dd50efbf434355d2055bc42"><td class="memItemLeft" align="right" valign="top">Float_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_geom.html#a7540739b3dd50efbf434355d2055bc42">fWCOffset</a> [3]</td></tr>
 <tr class="separator:a7540739b3dd50efbf434355d2055bc42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a402a9cebc54ab2c5c171fde72e5c6f69"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_geom.html#a402a9cebc54ab2c5c171fde72e5c6f69">fOrientation</a></td></tr>
+<tr class="memdesc:a402a9cebc54ab2c5c171fde72e5c6f69"><td class="mdescLeft">&#160;</td><td class="mdescRight">UNUSED Orientation of detector, 0 is 2km horizontal, 1 is Upright.  <a href="#a402a9cebc54ab2c5c171fde72e5c6f69">More...</a><br /></td></tr>
 <tr class="separator:a402a9cebc54ab2c5c171fde72e5c6f69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf517ddc24d07a150bd7b3b50ef71b0c"><td class="memItemLeft" align="right" valign="top">TClonesArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_geom.html#abf517ddc24d07a150bd7b3b50ef71b0c">fPMTArray</a></td></tr>
+<tr class="memdesc:abf517ddc24d07a150bd7b3b50ef71b0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of ID PMTs of the first type.  <a href="#abf517ddc24d07a150bd7b3b50ef71b0c">More...</a><br /></td></tr>
 <tr class="separator:abf517ddc24d07a150bd7b3b50ef71b0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb4129f1c3b115881b6b82286cb3c826"><td class="memItemLeft" align="right" valign="top">TClonesArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_geom.html#acb4129f1c3b115881b6b82286cb3c826">fPMTArray2</a></td></tr>
+<tr class="memdesc:acb4129f1c3b115881b6b82286cb3c826"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of ID PMTs of the second type.  <a href="#acb4129f1c3b115881b6b82286cb3c826">More...</a><br /></td></tr>
 <tr class="separator:acb4129f1c3b115881b6b82286cb3c826"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a717edacd4be053aa3e775cafb7b6a08a"><td class="memItemLeft" align="right" valign="top">TClonesArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_w_c_sim_root_geom.html#a717edacd4be053aa3e775cafb7b6a08a">fODPMTArray</a></td></tr>
+<tr class="memdesc:a717edacd4be053aa3e775cafb7b6a08a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of OD PMTs.  <a href="#a717edacd4be053aa3e775cafb7b6a08a">More...</a><br /></td></tr>
 <tr class="separator:a717edacd4be053aa3e775cafb7b6a08a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00058">58</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<div class="textblock"><p>Detector geometry information (also containing PMT information arrays) </p>
+<p>PMT information is stored based on the PMT type</p><ul>
+<li>ID PMTs of the first type are 20" (HK FD) or 3" PMTs inside mPMTs (IWCD)</li>
+<li>ID PMTs of the second type are 3" PMTs inside mPMTs (HK FD)</li>
+<li>OD PMTs are OD PMTs</li>
+</ul>
+<p>See the macro <a class="el" href="read__number__of___p_m_ts_8_c.html">sample-root-scripts/read_number_of_PMTs.C</a> for an example of using this class </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00073">73</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a16275dd7c2bba1763c595d52957c340f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a16275dd7c2bba1763c595d52957c340f">&#9670;&nbsp;</a></span>WCSimRootGeom() <span class="overload">[1/2]</span></h2>
@@ -286,7 +312,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00114">114</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00129">129</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -314,7 +340,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00152">152</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00167">167</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -342,7 +368,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00153">153</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00168">168</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -369,7 +395,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00154">154</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00169">169</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -396,7 +422,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00122">122</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00137">137</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -423,7 +449,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00130">130</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00145">145</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -450,7 +476,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00132">132</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00147">147</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -488,7 +514,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00134">134</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00149">149</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -526,7 +552,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00140">140</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00155">155</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -554,7 +580,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00146">146</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00161">161</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -581,7 +607,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00112">112</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00127">127</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -608,7 +634,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00111">111</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00126">126</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -636,7 +662,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00116">116</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00131">131</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -664,7 +690,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00131">131</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00146">146</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -692,7 +718,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00124">124</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00139">139</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -720,7 +746,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00093">93</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00108">108</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -802,7 +828,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00101">101</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00116">116</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -830,7 +856,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00103">103</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00118">118</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -858,7 +884,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00109">109</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00124">124</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -958,7 +984,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00091">91</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00106">106</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -986,7 +1012,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00090">90</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00105">105</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1024,7 +1050,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00095">95</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00110">110</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1068,7 +1094,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00104">104</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00119">119</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1106,7 +1132,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00102">102</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00117">117</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1131,7 +1157,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00065">65</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p>UNUSED mailbox or cylinder? </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00080">80</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1155,7 +1183,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00079">79</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p>Array of OD PMTs. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00094">94</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1179,7 +1209,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00072">72</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00087">87</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1203,7 +1233,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00071">71</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00086">86</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1227,7 +1257,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00075">75</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p>UNUSED Orientation of detector, 0 is 2km horizontal, 1 is Upright. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00090">90</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1251,7 +1283,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00077">77</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p>Array of ID PMTs of the first type. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00092">92</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1275,7 +1309,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00078">78</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p>Array of ID PMTs of the second type. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00093">93</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1299,7 +1335,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00063">63</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p>Length of WC tank. Units: cm. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00078">78</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1323,7 +1361,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00062">62</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p>Radius of WC tank. Units: cm. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00077">77</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1347,7 +1387,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00069">69</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00084">84</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1371,7 +1411,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00070">70</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00085">85</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1395,7 +1435,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00073">73</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00088">88</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1419,7 +1459,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00067">67</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p>Radius of ID PMT of the first type. Units: cm. </p>
+
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00082">82</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1443,7 +1485,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00068">68</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_w_c_sim_root_geom_8hh_source.html#l00083">83</a> of file <a class="el" href="_w_c_sim_root_geom_8hh_source.html">WCSimRootGeom.hh</a>.</p>
 
 </div>
 </div>
@@ -1454,7 +1496,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 21 2024 17:36:32 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 4 2024 10:20:05 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

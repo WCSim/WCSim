@@ -1,0 +1,9 @@
+<map id="WCSimTrajectory" name="WCSimTrajectory">
+<area shape="rect" id="node2" href="$class_g4_v_trajectory.html" title="{G4VTrajectory\n||}" alt="" coords="5,556,119,633"/>
+<area shape="rect" id="node4" href="$class_g4_three_vector.html" title="{G4ThreeVector\n||}" alt="" coords="297,5,416,83"/>
+<area shape="rect" id="node9" href="$class_w_c_sim_op_boundary_process.html" title="{WCSimOpBoundaryProcess\n|&#45; thePhotonMomentum\l&#45; Rindex1\l&#45; Rindex2\l&#45; cost2\l&#45; theTransmittance\l&#45; prob_sl\l&#45; kCarTolerance\l&#45; fCoatedRindexIm\l|+ WCSimOpBoundaryProcess()\l+ ~WCSimOpBoundaryProcess()\l+ IsApplicable()\l+ GetMeanFreePath()\l+ PostStepDoIt()\l+ GetStatus()\l+ SetInvokeSD()\l&#45; WCSimOpBoundaryProcess()\l&#45; operator=()\l&#45; G4BooleanRand()\l&#45; GetFacetNormal()\l&#45; DielectricMetal()\l&#45; DielectricDielectric()\l&#45; DielectricLUT()\l&#45; DielectricLUTDAVIS()\l&#45; DielectricDichroic()\l&#45; ChooseReflection()\l&#45; DoAbsorption()\l&#45; DoReflection()\l&#45; GetIncidentAngle()\l&#45; GetReflectivity()\l&#45; CalculateReflectivity()\l&#45; CoatedDielectricDielectric\l_Model1()\l&#45; GetReflectivityThroughThin\lLayer()\l&#45; CoatedDielectricDielectric\l_Model2()\l&#45; BoundaryProcessVerbose()\l&#45; InvokeSD()\l}" alt="" coords="1110,292,1345,897"/>
+<area shape="rect" id="node5" href="$class_g4double.html" title="{G4double\n||}" alt="" coords="448,5,532,83"/>
+<area shape="rect" id="node7" href="$class_g4_string.html" title="{G4String\n||}" alt="" coords="843,556,921,633"/>
+<area shape="rect" id="node10" href="$class_g4_v_discrete_process.html" title="{G4VDiscreteProcess\n||}" alt="" coords="648,5,801,83"/>
+<area shape="rect" id="node15" href="$class_g4int.html" title="{G4int\n||}" alt="" coords="1487,5,1544,83"/>
+</map>

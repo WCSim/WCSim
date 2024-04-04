@@ -1,0 +1,23 @@
+<map id="include/WCSimRootGeom.hh" name="include/WCSimRootGeom.hh">
+<area shape="rect" id="node2" href="$_w_c_sim_event_action_8hh.html" title="include/WCSimEventAction.hh" alt="" coords="231,87,450,114"/>
+<area shape="rect" id="node6" href="$_w_c_sim_run_action_8hh.html" title="include/WCSimRunAction.hh" alt="" coords="593,87,798,114"/>
+<area shape="rect" id="node10" href="$_w_c_sim_run_action_8cc.html" title="src/WCSimRunAction.cc" alt="" coords="1107,169,1281,196"/>
+<area shape="rect" id="node12" href="$_analyze_w_s_hierarchy_8c.html" title="sample&#45;root&#45;scripts\l/AnalyzeWSHierarchy.c" alt="" coords="873,80,1043,121"/>
+<area shape="rect" id="node13" href="$plot__pmts_8_c.html" title="sample&#45;root&#45;scripts\l/plot_pmts.C" alt="" coords="1067,80,1217,121"/>
+<area shape="rect" id="node14" href="$pmtremove_8_c.html" title="sample&#45;root&#45;scripts\l/pmtremove.C" alt="" coords="1241,80,1390,121"/>
+<area shape="rect" id="node15" href="$read___l_i_gen___o_d__output_8_c.html" title="sample&#45;root&#45;scripts\l/read_LIGen_OD_output.C" alt="" coords="1415,80,1603,121"/>
+<area shape="rect" id="node16" href="$read__number__of___p_m_ts_8_c.html" title="sample&#45;root&#45;scripts\l/read_number_of_PMTs.C" alt="" coords="1627,80,1811,121"/>
+<area shape="rect" id="node17" href="$read___o_d_8_c.html" title="sample&#45;root&#45;scripts\l/read_OD.C" alt="" coords="1835,80,1985,121"/>
+<area shape="rect" id="node18" href="$sample__readfile_8_c.html" title="sample&#45;root&#45;scripts\l/sample_readfile.C" alt="" coords="2009,80,2158,121"/>
+<area shape="rect" id="node19" href="$testgeo_8_c.html" title="sample&#45;root&#45;scripts\l/testgeo.C" alt="" coords="2182,80,2331,121"/>
+<area shape="rect" id="node20" href="$_w_c_sim_root_geom_8cc.html" title="src/WCSimRootGeom.cc" alt="" coords="2355,87,2534,114"/>
+<area shape="rect" id="node21" href="$complete__comparison_8_c.html" title="verification&#45;test&#45;scripts\l/complete_comparison.C" alt="" coords="2559,80,2741,121"/>
+<area shape="rect" id="node22" href="$print_sizes_8_c.html" title="verification&#45;test&#45;scripts\l/printSizes.C" alt="" coords="2766,80,2939,121"/>
+<area shape="rect" id="node3" href="$_w_c_sim_event_action_8cc.html" title="src/WCSimEventAction.cc" alt="" coords="312,169,500,196"/>
+<area shape="rect" id="node4" href="$_w_c_sim_w_c_d_a_q_messenger_8cc.html" title="src/WCSimWCDAQMessenger.cc" alt="" coords="5,169,236,196"/>
+<area shape="rect" id="node5" href="$_w_c_sim_8cc.html" title="WCSim.cc" alt="" coords="480,244,567,271"/>
+<area shape="rect" id="node7" href="$_w_c_sim_stepping_action_8hh.html" title="include/WCSimSteppingAction.hh" alt="" coords="576,169,815,196"/>
+<area shape="rect" id="node11" href="$_w_c_sim_run_action_messenger_8cc.html" title="src/WCSimRunActionMessenger.cc" alt="" coords="839,169,1083,196"/>
+<area shape="rect" id="node8" href="$_w_c_sim_stepping_action_8cc.html" title="src/WCSimSteppingAction.cc" alt="" coords="591,244,799,271"/>
+<area shape="rect" id="node9" href="$_w_c_sim_w_c_s_d_8cc.html" title="src/WCSimWCSD.cc" alt="" coords="824,244,975,271"/>
+</map>

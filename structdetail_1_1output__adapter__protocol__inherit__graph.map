@@ -1,0 +1,5 @@
+<map id="detail::output_adapter_protocol&lt; CharType &gt;" name="detail::output_adapter_protocol&lt; CharType &gt;">
+<area shape="rect" id="node2" href="$classdetail_1_1output__stream__adapter.html" title="output adapter for output streams " alt="" coords="5,248,204,369"/>
+<area shape="rect" id="node3" href="$classdetail_1_1output__string__adapter.html" title="output adapter for basic_string " alt="" coords="228,248,419,369"/>
+<area shape="rect" id="node4" href="$classdetail_1_1output__vector__adapter.html" title="output adapter for byte vectors " alt="" coords="443,248,638,369"/>
+</map>

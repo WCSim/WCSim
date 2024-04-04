@@ -1,0 +1,8 @@
+<map id="include/WCSimOpticalPhysics.hh" name="include/WCSimOpticalPhysics.hh">
+<area shape="rect" id="node2" href="$_w_c_sim_physics_list_factory_8hh.html" title="include/WCSimPhysicsList\lFactory.hh" alt="" coords="265,80,457,121"/>
+<area shape="rect" id="node6" href="$_w_c_sim_optical_physics_8cc.html" title="src/WCSimOpticalPhysics.cc" alt="" coords="481,87,687,114"/>
+<area shape="rect" id="node7" href="$_w_c_sim_optical_physics_messenger_8cc.html" title="src/WCSimOpticalPhysicsMessenger.cc" alt="" coords="711,87,985,114"/>
+<area shape="rect" id="node3" href="$_w_c_sim_physics_list_factory_8cc.html" title="src/WCSimPhysicsListFactory.cc" alt="" coords="5,177,232,203"/>
+<area shape="rect" id="node4" href="$_w_c_sim_physics_list_factory_messenger_8cc.html" title="src/WCSimPhysicsListFactory\lMessenger.cc" alt="" coords="256,169,467,211"/>
+<area shape="rect" id="node5" href="$_w_c_sim_8cc.html" title="WCSim.cc" alt="" coords="491,177,578,203"/>
+</map>

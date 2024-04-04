@@ -1,0 +1,4 @@
+<map id="CADMesh::File::PLYReader" name="CADMesh::File::PLYReader">
+<area shape="rect" id="node2" href="$class_c_a_d_mesh_1_1_file_1_1_reader.html" title="{CADMesh::File::Reader\n||+ Reader()\l+ ~Reader()\l+ Read()\l+ CanRead()\l+ GetName()\l+ GetMesh()\l+ GetMesh()\l+ GetMesh()\l+ GetNumberOfMeshes()\l+ GetMeshes()\l# AddMesh()\l# SetMeshes()\l}" alt="" coords="21,160,207,399"/>
+<area shape="rect" id="node3" href="$class_g4_string.html" title="{G4String\n||}" alt="" coords="5,13,84,90"/>
+</map>

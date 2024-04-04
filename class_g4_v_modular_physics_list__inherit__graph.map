@@ -1,0 +1,3 @@
+<map id="G4VModularPhysicsList" name="G4VModularPhysicsList">
+<area shape="rect" id="node2" href="$class_w_c_sim_physics_list_factory.html" title="{WCSimPhysicsListFactory\n|&#45; PhysicsListName\l&#45; ValidListsString\l&#45; nCaptModelChoice\l&#45; PhysicsMessenger\l&#45; factory\l&#45; fOpticalPhysics\l|+ WCSimPhysicsListFactory()\l+ ~WCSimPhysicsListFactory()\l+ SetList()\l+ SetnCaptModel()\l+ InitializeList()\l+ ConstructParticle()\l+ ConstructProcess()\l+ SetCuts()\l+ SaveOptionsToOutput()\l}" alt="" coords="5,131,229,399"/>
+</map>
