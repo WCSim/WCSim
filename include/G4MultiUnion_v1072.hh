@@ -29,21 +29,20 @@
 // GEANT 4 class header file
 //
 // 
-// G4MultiUnion_v1051
+// G4MultiUnion_v1072
 //
 // Class description:
 //
-//   An instance of "G4MultiUnion_v1051" constitutes a grouping of several solids.
+//   An instance of "G4MultiUnion_v1072" constitutes a grouping of several solids.
 //   The constituent solids are stored with their respective location in an
-//   instance of "G4Node". An instance of "G4MultiUnion_v1051" is subsequently
+//   instance of "G4Node". An instance of "G4MultiUnion_v1072" is subsequently
 //   composed of one or several nodes.
 
-// History:
-// 06.04.17 G.Cosmo - Imported implementation in Geant4 for VecGeom migration
 // 19.10.12 M.Gayer - Original implementation from USolids module
+// 06.04.17 G.Cosmo - Adapted implementation in Geant4 for VecGeom migration
 // --------------------------------------------------------------------
-#ifndef G4MULTIUNION_V1051_HH
-#define G4MULTIUNION_V1051_HH
+#ifndef G4MULTIUNION_V1072_HH
+#define G4MULTIUNION_V1072_HH
 
 #include <vector>
 
@@ -53,25 +52,25 @@
 #include "G4Point3D.hh"
 #include "G4Vector3D.hh"
 #include "G4SurfBits.hh"
-#include "G4Voxelizer_v1051.hh"
+#include "G4Voxelizer_v1072.hh"
 
 class G4Polyhedron;
 
-class G4MultiUnion_v1051 : public G4VSolid
+class G4MultiUnion_v1072 : public G4VSolid
 {
-    friend class G4Voxelizer_v1051;
+    friend class G4Voxelizer_v1072;
 
   public:
 
-    G4MultiUnion_v1051() : G4VSolid("") {}
-    G4MultiUnion_v1051(const G4String& name);
-    ~G4MultiUnion_v1051();
+    G4MultiUnion_v1072() : G4VSolid("") {}
+    G4MultiUnion_v1072(const G4String& name);
+    ~G4MultiUnion_v1072();
 
     // Build the multiple union by adding nodes
     void AddNode(G4VSolid& solid, G4Transform3D& trans);
 
-    G4MultiUnion_v1051(const G4MultiUnion_v1051& rhs);
-    G4MultiUnion_v1051& operator=(const G4MultiUnion_v1051& rhs);
+    G4MultiUnion_v1072(const G4MultiUnion_v1072& rhs);
+    G4MultiUnion_v1072& operator=(const G4MultiUnion_v1072& rhs);
 
     // Accessors
     inline const G4Transform3D& GetTransformation(G4int index) const;
@@ -93,9 +92,9 @@ class G4MultiUnion_v1051 : public G4VSolid
                           const G4ThreeVector& aDirection) const;
     G4double DistanceToOut(const G4ThreeVector& aPoint,
                            const G4ThreeVector& aDirection,
-                           const G4bool calcNorm=false,
-                           G4bool *validNorm=0,
-                           G4ThreeVector *aNormalVector=0) const;
+                           const G4bool calcNorm = false,
+                           G4bool* validNorm = nullptr,
+                           G4ThreeVector* aNormalVector = nullptr) const;
 
     G4double DistanceToInNoVoxels(const G4ThreeVector& aPoint,
                                   const G4ThreeVector& aDirection) const;
@@ -124,14 +123,14 @@ class G4MultiUnion_v1051 : public G4VSolid
 
     G4VSolid* Clone() const ;
 
-    G4GeometryType GetEntityType() const { return "G4MultiUnion_v1051"; }
+    G4GeometryType GetEntityType() const { return "G4MultiUnion_v1072"; }
 
     void Voxelize();
       // Finalize and prepare for use. User MUST call it once before
       // navigation use.
 
     EInside InsideNoVoxels(const G4ThreeVector& aPoint) const;
-    inline G4Voxelizer_v1051& GetVoxels() const;
+    inline G4Voxelizer_v1072& GetVoxels() const;
 
     std::ostream& StreamInfo(std::ostream& os) const;
 
@@ -141,7 +140,7 @@ class G4MultiUnion_v1051 : public G4VSolid
     G4Polyhedron* CreatePolyhedron () const ;
     G4Polyhedron* GetPolyhedron () const;
 
-    G4MultiUnion_v1051(__void__&);
+    G4MultiUnion_v1072(__void__&);
       // Fake default constructor for usage restricted to direct object
       // persistency for clients requiring preallocation of memory for
       // persistifiable objects.
@@ -178,49 +177,49 @@ class G4MultiUnion_v1051 : public G4VSolid
 
     std::vector<G4VSolid*> fSolids;
     std::vector<G4Transform3D> fTransformObjs;
-    G4Voxelizer_v1051 fVoxels;           // Pointer to the vozelized solid
-    G4double       fCubicVolume;   // Cubic Volume
-    G4double       fSurfaceArea;   // Surface Area
-    G4double       kRadTolerance;  // Cached radial tolerance
-    mutable G4bool fAccurate;      // Accurate safety (off by default)
+    G4Voxelizer_v1072 fVoxels;              // Vozelizer for the solid
+    G4double fCubicVolume = 0.0;      // Cubic Volume
+    G4double fSurfaceArea = 0.0;      // Surface Area
+    G4double kRadTolerance;           // Cached radial tolerance
+    mutable G4bool fAccurate = false; // Accurate safety (off by default)
 
-    mutable G4bool fRebuildPolyhedron;
-    mutable G4Polyhedron* fpPolyhedron;
+    mutable G4bool fRebuildPolyhedron = false;
+    mutable G4Polyhedron* fpPolyhedron = nullptr;
 };
 
 //______________________________________________________________________________
-inline G4Voxelizer_v1051& G4MultiUnion_v1051::GetVoxels() const
+inline G4Voxelizer_v1072& G4MultiUnion_v1072::GetVoxels() const
 {
-  return (G4Voxelizer_v1051&)fVoxels;
+  return (G4Voxelizer_v1072&)fVoxels;
 }
 
 //______________________________________________________________________________
-inline const G4Transform3D& G4MultiUnion_v1051::GetTransformation(G4int index) const
+inline const G4Transform3D& G4MultiUnion_v1072::GetTransformation(G4int index) const
 {
   return fTransformObjs[index];
 }
 
 //______________________________________________________________________________
-inline G4VSolid* G4MultiUnion_v1051::GetSolid(G4int index) const
+inline G4VSolid* G4MultiUnion_v1072::GetSolid(G4int index) const
 {
   return fSolids[index];
 }
 
 //______________________________________________________________________________
-inline G4int G4MultiUnion_v1051::GetNumberOfSolids() const
+inline G4int G4MultiUnion_v1072::GetNumberOfSolids() const
 {
-  return fSolids.size();
+  return G4int(fSolids.size());
 }
 
 //______________________________________________________________________________
-inline void G4MultiUnion_v1051::SetAccurateSafety(G4bool flag)
+inline void G4MultiUnion_v1072::SetAccurateSafety(G4bool flag)
 {
   fAccurate = flag;
 }
 
 //______________________________________________________________________________
 inline
-G4ThreeVector G4MultiUnion_v1051::GetLocalPoint(const G4Transform3D& trans,
+G4ThreeVector G4MultiUnion_v1072::GetLocalPoint(const G4Transform3D& trans,
                                           const G4ThreeVector& global) const
 {
   // Returns local point coordinates converted from the global frame defined
@@ -232,7 +231,7 @@ G4ThreeVector G4MultiUnion_v1051::GetLocalPoint(const G4Transform3D& trans,
 
 //______________________________________________________________________________
 inline
-G4ThreeVector G4MultiUnion_v1051::GetLocalVector(const G4Transform3D& trans,
+G4ThreeVector G4MultiUnion_v1072::GetLocalVector(const G4Transform3D& trans,
                                            const G4ThreeVector& global) const
 {
   // Returns local point coordinates converted from the global frame defined
@@ -249,7 +248,7 @@ G4ThreeVector G4MultiUnion_v1051::GetLocalVector(const G4Transform3D& trans,
 
 //______________________________________________________________________________
 inline
-G4ThreeVector G4MultiUnion_v1051::GetGlobalPoint(const G4Transform3D& trans,
+G4ThreeVector G4MultiUnion_v1072::GetGlobalPoint(const G4Transform3D& trans,
                                            const G4ThreeVector& local) const
 {
   // Returns global point coordinates converted from the local frame defined
@@ -261,7 +260,7 @@ G4ThreeVector G4MultiUnion_v1051::GetGlobalPoint(const G4Transform3D& trans,
 
 //______________________________________________________________________________
 inline
-G4ThreeVector G4MultiUnion_v1051::GetGlobalVector(const G4Transform3D& trans,
+G4ThreeVector G4MultiUnion_v1072::GetGlobalVector(const G4Transform3D& trans,
                                             const G4ThreeVector& local) const
 {
   // Returns vector components converted from the local frame defined by the
