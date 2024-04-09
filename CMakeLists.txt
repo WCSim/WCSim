@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.1)
 # ##############################################################################
 
 set(PROJECT_NAME WCSim)
-set(PROJECT_VERSION 1.12.10)
+set(PROJECT_VERSION 1.12.11)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 
@@ -120,6 +120,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
       	${PROJECT_SOURCE_DIR}/data/LightInjectors.json
       	${PROJECT_SOURCE_DIR}/data/LI_OD_laser_ball_photon_positions.csv
         ${PROJECT_SOURCE_DIR}/data/mPMT_Position_WCTE.txt
+        ${PROJECT_SOURCE_DIR}/data/mPMT_Position_WCTE_CDS.txt
         ${PROJECT_SOURCE_DIR}/data/ground_state_spectrum.txt
         ${PROJECT_SOURCE_DIR}/data/first_excited_spectrum.txt
         ${PROJECT_SOURCE_DIR}/data/second_excited_spectrum.txt

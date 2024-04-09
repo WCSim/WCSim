@@ -5,12 +5,28 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+
+*************************************************************
+04/04/2024: Notes for v1.12.11
+*************************************************************
+
+Minor release after #424, after the WCTE geometry output changed
+
+Update
+* Pull request #424 @kmtsui: Allow light to propagate into PMT region that is behind the blacksheet radius. Activated for WCTE geometry only
+
+Bug fix
+* Pull request #428 @kmtsui: Fix output file saving of photon history (accessible with build option) which broke with #427
+
+Documentation
+* Pull request #423 @tdealtry: Document output file class data members
+
 *************************************************************
 27/03/2024: Notes for v1.12.10
 *************************************************************
 
 Minor release after #427, removing the superfluous copies of true track information in the output file
-Also picking up mac file fixes in WCSim/Validation - so the HK FD CI checks will be really from the HK FD geometry (has been SK since v1.12.8
+Also picking up mac file fixes in WCSim/Validation - so the HK FD CI checks will be really from the HK FD geometry (has been SK since v1.12.8)
 
 New features
 * Pull request #387 @DiegoCostas97: Add (optional) AmBe source geometry

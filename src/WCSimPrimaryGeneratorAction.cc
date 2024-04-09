@@ -1568,7 +1568,7 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
 {
   if(useMulineEvt)
     return "muline";
-  if(useAmBeEvt)
+  else if(useAmBeEvt)
     return "ambeevt";
   else if(useGunEvt)
     return "gun";
@@ -1584,6 +1584,18 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
     return "cosmics";
   else if (useMPMTledEvt)
     return "mPMT-LED";
+  else if(useIBDEvt)
+    return "IBD";
+  else if(useDataTableEvt)
+    return "data-table";
+  else if(useCosmics)
+    return "cosmics";
+  else if(useRadioactiveEvt)
+    return "radioactivity";
+  else if(useRadonEvt)
+    return "radon";
+  else if(useLightInjectorEvt)
+    return "light-injector";
   return "";
 }
 
