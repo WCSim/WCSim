@@ -1544,7 +1544,7 @@ void WCSimDetectorConstruction::SetIWCDGeometry()
 	hybrid = false;
 }
 
-// IWCD with mPMTs, updated geometry as of 20230630, plusu OD
+// IWCD with mPMTs, updated geometry as of 20240328, plusu OD
 void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
 {
   WCDetectorName = "IWCD_mPMT_WithOD";
@@ -1579,18 +1579,18 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
 	config_file = wcsimdir_path+"/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt"; // for smaller reflector, use: mPMTconfig_19_nuPrism.txt (hex)
 
 	WCIDHeight               = 8.0*CLHEP::m;
-  WCIDDiameter             = 6.6*CLHEP::m;
+  WCIDDiameter             = 7.0*CLHEP::m;
   WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = mPMT_vessel_tot_height + 1.*CLHEP::mm;
-  WCPMTperCellHorizontal = 3; // 2 per phi
+  WCPMTperCellHorizontal = 2; // 2 per phi
   WCPMTperCellVertical   = 1;
 
 	// Numbers below are based on R.Henderson's 832 module tank design
   WCBarrelNumPMTHorizontal = 30;
-  WCBarrelNRings        = 10;
+  WCBarrelNRings        = 9;
   WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal*1.2/1.1; // ad-hoc number to get 52 mPMTs on cap
-  WCCapEdgeLimit        = 3.1*m; 
+  WCCapEdgeLimit        = 3.3*m; 
   WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
   WCAddGd               = false;
 	hybrid = false;
@@ -1601,8 +1601,8 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   isODConstructed = true;
 
   // OD Dimensions //
-  WCODLateralWaterDepth    = 1.*m;
-  WCODHeightWaterDepth     = 1.*m;
+  WCODLateralWaterDepth    = 0.7*m;
+  WCODHeightWaterDepth     = 0.7*m;
   WCODDeadSpace            = 200.*mm;
   WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
   WCODWLSPlatesThickness   = 0.6*cm; //
@@ -1617,7 +1617,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   WCPMTODRadius         = PMTOD->GetRadius();
 
   // OD Coverage on barrel side //
-  WCPMTODperCellHorizontal = 3;
+  WCPMTODperCellHorizontal = 2;
   WCPMTODperCellVertical   = 1;
 
   // OD Coverage on caps //
