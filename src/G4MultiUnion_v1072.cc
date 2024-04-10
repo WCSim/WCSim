@@ -25,18 +25,16 @@
 //
 // This product includes software developed by Members of the Geant4 Collaboration (http://cern.ch/geant4).
 //
-// Implementation for G4MultiUnion_v1051 class
+// Implementation of G4MultiUnion_v1072 class
 //
-// History:
-//
-// 06.04.17 G.Cosmo - Imported implementation in Geant4 for VecGeom migration
-// 19.10.12 Marek Gayer - Original implementation from USolids module
+// 19.10.12 M.Gayer - Original implementation from USolids module
+// 06.04.17 G.Cosmo - Adapted implementation in Geant4 for VecGeom migration
 // --------------------------------------------------------------------
 
 #include <iostream>
 #include <sstream>
 
-#include "G4MultiUnion_v1051.hh"
+#include "G4MultiUnion_v1072.hh"
 #include "Randomize.hh"
 #include "G4GeometryTolerance.hh"
 #include "G4BoundingEnvelope.hh"
@@ -56,57 +54,52 @@ namespace
 }
 
 //______________________________________________________________________________
-G4MultiUnion_v1051::G4MultiUnion_v1051(const G4String& name)
-  : G4VSolid(name), fAccurate(false),
-    fRebuildPolyhedron(false), fpPolyhedron(0)
+G4MultiUnion_v1072::G4MultiUnion_v1072(const G4String& name)
+  : G4VSolid(name)
 {
   SetName(name);
   fSolids.clear();
   fTransformObjs.clear();
-  fCubicVolume = 0;
-  fSurfaceArea = 0;
   kRadTolerance = G4GeometryTolerance::GetInstance()->GetRadialTolerance();
 }
 
 //______________________________________________________________________________
-G4MultiUnion_v1051::~G4MultiUnion_v1051()
+G4MultiUnion_v1072::~G4MultiUnion_v1072()
 {
 }
 
 //______________________________________________________________________________
-void G4MultiUnion_v1051::AddNode(G4VSolid& solid, G4Transform3D& trans)
+void G4MultiUnion_v1072::AddNode(G4VSolid& solid, G4Transform3D& trans)
 {
   fSolids.push_back(&solid);
   fTransformObjs.push_back(trans);  // Store a local copy of transformations
 }
 
 //______________________________________________________________________________
-G4VSolid* G4MultiUnion_v1051::Clone() const
+G4VSolid* G4MultiUnion_v1072::Clone() const
 {
-  return new G4MultiUnion_v1051(*this);
+  return new G4MultiUnion_v1072(*this);
 }
 
 // Copy constructor
 //______________________________________________________________________________
-G4MultiUnion_v1051::G4MultiUnion_v1051(const G4MultiUnion_v1051& rhs)
-  : G4VSolid(rhs),fCubicVolume (rhs.fCubicVolume),
-    fSurfaceArea (rhs.fSurfaceArea),
-    kRadTolerance(rhs.kRadTolerance), fAccurate(false),
-    fRebuildPolyhedron(false), fpPolyhedron(0)
+G4MultiUnion_v1072::G4MultiUnion_v1072(const G4MultiUnion_v1072& rhs)
+  : G4VSolid(rhs), fCubicVolume(rhs.fCubicVolume),
+    fSurfaceArea(rhs.fSurfaceArea),
+    kRadTolerance(rhs.kRadTolerance), fAccurate(rhs.fAccurate)
 {
 }
 
 // Fake default constructor for persistency
 //______________________________________________________________________________
-G4MultiUnion_v1051::G4MultiUnion_v1051( __void__& a )
-  : G4VSolid(a), fCubicVolume (0.), fSurfaceArea (0.), kRadTolerance(0.),
-    fAccurate(false), fRebuildPolyhedron(false), fpPolyhedron(0)
+G4MultiUnion_v1072::G4MultiUnion_v1072( __void__& a )
+  : G4VSolid(a)
 {
 }
 
 // Assignment operator
 //______________________________________________________________________________
-G4MultiUnion_v1051& G4MultiUnion_v1051::operator = (const G4MultiUnion_v1051& rhs)
+G4MultiUnion_v1072& G4MultiUnion_v1072::operator = (const G4MultiUnion_v1072& rhs)
 {
   // Check assignment to self
   //
@@ -123,9 +116,9 @@ G4MultiUnion_v1051& G4MultiUnion_v1051::operator = (const G4MultiUnion_v1051& rh
 }
 
 //______________________________________________________________________________
-G4double G4MultiUnion_v1051::GetCubicVolume()
+G4double G4MultiUnion_v1072::GetCubicVolume()
 {
-  // Computes the cubic volume of the "G4MultiUnion_v1051" structure using
+  // Computes the cubic volume of the "G4MultiUnion_v1072" structure using
   // random points
 
   if (!fCubicVolume)
@@ -137,13 +130,13 @@ G4double G4MultiUnion_v1051::GetCubicVolume()
     p = (extentMax + extentMin) / 2.;
     G4ThreeVector left = p - d;
     G4ThreeVector length = d * 2;
-    for (generated = 0; generated < 10000; generated++)
+    for (generated = 0; generated < 10000; ++generated)
     {
       G4ThreeVector rvec(G4UniformRand(), G4UniformRand(), G4UniformRand());
       point = left + G4ThreeVector(length.x()*rvec.x(),
                                    length.y()*rvec.y(),
                                    length.z()*rvec.z());
-      if (Inside(point) != EInside::kOutside) inside++;
+      if (Inside(point) != EInside::kOutside) ++inside;
     }
     G4double vbox = (2 * d.x()) * (2 * d.y()) * (2 * d.z());
     fCubicVolume = inside * vbox / generated;
@@ -153,7 +146,7 @@ G4double G4MultiUnion_v1051::GetCubicVolume()
 
 //______________________________________________________________________________
 G4double
-G4MultiUnion_v1051::DistanceToInNoVoxels(const G4ThreeVector& aPoint,
+G4MultiUnion_v1072::DistanceToInNoVoxels(const G4ThreeVector& aPoint,
                                    const G4ThreeVector& aDirection) const
 {
   G4ThreeVector direction = aDirection.unit();
@@ -176,7 +169,7 @@ G4MultiUnion_v1051::DistanceToInNoVoxels(const G4ThreeVector& aPoint,
 }
 
 //______________________________________________________________________________
-G4double G4MultiUnion_v1051::DistanceToInCandidates(const G4ThreeVector& aPoint,
+G4double G4MultiUnion_v1072::DistanceToInCandidates(const G4ThreeVector& aPoint,
                                               const G4ThreeVector& direction,
                                               std::vector<G4int>& candidates,
                                               G4SurfBits& bits) const
@@ -212,7 +205,7 @@ G4double G4MultiUnion_v1051::DistanceToInCandidates(const G4ThreeVector& aPoint,
 // But if distance is smaller than the shift to next voxel, we can return
 // it immediately
 //______________________________________________________________________________
-G4double G4MultiUnion_v1051::DistanceToIn(const G4ThreeVector& aPoint,
+G4double G4MultiUnion_v1072::DistanceToIn(const G4ThreeVector& aPoint,
                                     const G4ThreeVector& aDirection) const
 {
   G4double minDistance = kInfinity;
@@ -246,7 +239,7 @@ G4double G4MultiUnion_v1051::DistanceToIn(const G4ThreeVector& aPoint,
 }
 
 //______________________________________________________________________________
-G4double G4MultiUnion_v1051::DistanceToOutNoVoxels(const G4ThreeVector& aPoint,
+G4double G4MultiUnion_v1072::DistanceToOutNoVoxels(const G4ThreeVector& aPoint,
                                              const G4ThreeVector& aDirection,
                                              G4ThreeVector* aNormal) const
 {
@@ -297,7 +290,7 @@ G4double G4MultiUnion_v1051::DistanceToOutNoVoxels(const G4ThreeVector& aPoint,
 }
 
 //______________________________________________________________________________
-G4double G4MultiUnion_v1051::DistanceToOut(const G4ThreeVector& aPoint,
+G4double G4MultiUnion_v1072::DistanceToOut(const G4ThreeVector& aPoint,
                                      const G4ThreeVector& aDirection,
                                      const G4bool /* calcNorm */,
                                      G4bool* /* validNorm */,
@@ -307,7 +300,7 @@ G4double G4MultiUnion_v1051::DistanceToOut(const G4ThreeVector& aPoint,
 }
 
 //______________________________________________________________________________
-G4double G4MultiUnion_v1051::DistanceToOutVoxels(const G4ThreeVector& aPoint,
+G4double G4MultiUnion_v1072::DistanceToOutVoxels(const G4ThreeVector& aPoint,
                                            const G4ThreeVector& aDirection,
                                            G4ThreeVector* aNormal) const
 {
@@ -318,7 +311,7 @@ G4double G4MultiUnion_v1051::DistanceToOutVoxels(const G4ThreeVector& aPoint,
   // o The proposed step is ignored.
   // o The normal vector to the crossed surface is always filled.
 
-  // In the case the considered point is located inside the G4MultiUnion_v1051
+  // In the case the considered point is located inside the G4MultiUnion_v1072
   // structure, the treatments are as follows:
   //      - investigation of the candidates for the passed point
   //      - progressive moving of the point towards the surface, along the
@@ -394,7 +387,7 @@ G4double G4MultiUnion_v1051::DistanceToOutVoxels(const G4ThreeVector& aPoint,
 
         distance += maxDistance;
         currentPoint += maxDistance * direction;
-        if(maxDistance == 0.) count++;
+        if(maxDistance == 0.) ++count;
 
         // the current component will be ignored
         exclusion.SetBitNumber(maxCandidate);
@@ -429,7 +422,7 @@ G4double G4MultiUnion_v1051::DistanceToOutVoxels(const G4ThreeVector& aPoint,
 }
 
 //______________________________________________________________________________
-EInside G4MultiUnion_v1051::InsideWithExclusion(const G4ThreeVector& aPoint,
+EInside G4MultiUnion_v1072::InsideWithExclusion(const G4ThreeVector& aPoint,
                                           G4SurfBits* exclusion) const
 {
   // Classify point location with respect to solid:
@@ -503,7 +496,7 @@ EInside G4MultiUnion_v1051::InsideWithExclusion(const G4ThreeVector& aPoint,
 }
 
 //______________________________________________________________________________
-EInside G4MultiUnion_v1051::Inside(const G4ThreeVector& aPoint) const
+EInside G4MultiUnion_v1072::Inside(const G4ThreeVector& aPoint) const
 {
   // Classify point location with respect to solid:
   //  o eInside       - inside the solid
@@ -523,7 +516,7 @@ EInside G4MultiUnion_v1051::Inside(const G4ThreeVector& aPoint) const
 }
 
 //______________________________________________________________________________
-EInside G4MultiUnion_v1051::InsideNoVoxels(const G4ThreeVector& aPoint) const
+EInside G4MultiUnion_v1072::InsideNoVoxels(const G4ThreeVector& aPoint) const
 {
   G4ThreeVector localPoint;
   EInside location = EInside::kOutside;
@@ -542,7 +535,7 @@ EInside G4MultiUnion_v1051::InsideNoVoxels(const G4ThreeVector& aPoint) const
     location = solid.Inside(localPoint);
 
     if (location == EInside::kSurface)
-      countSurface++;
+      ++countSurface;
 
     if (location == EInside::kInside) return EInside::kInside;
   }
@@ -551,7 +544,7 @@ EInside G4MultiUnion_v1051::InsideNoVoxels(const G4ThreeVector& aPoint) const
 }
 
 //______________________________________________________________________________
-void G4MultiUnion_v1051::Extent(EAxis aAxis, G4double& aMin, G4double& aMax) const
+void G4MultiUnion_v1072::Extent(EAxis aAxis, G4double& aMin, G4double& aMax) const
 {
   // Determines the bounding box for the considered instance of "UMultipleUnion"
   G4ThreeVector min, max;
@@ -620,7 +613,7 @@ void G4MultiUnion_v1051::Extent(EAxis aAxis, G4double& aMin, G4double& aMax) con
 }
 
 //______________________________________________________________________________
-void G4MultiUnion_v1051::BoundingLimits(G4ThreeVector& aMin,
+void G4MultiUnion_v1072::BoundingLimits(G4ThreeVector& aMin,
                                   G4ThreeVector& aMax) const
 {
    Extent(kXAxis, aMin[0], aMax[0]);
@@ -630,7 +623,7 @@ void G4MultiUnion_v1051::BoundingLimits(G4ThreeVector& aMin,
 
 //______________________________________________________________________________
 G4bool
-G4MultiUnion_v1051::CalculateExtent(const EAxis pAxis,
+G4MultiUnion_v1072::CalculateExtent(const EAxis pAxis,
                               const G4VoxelLimits& pVoxelLimit,
                               const G4AffineTransform& pTransform,
                                     G4double& pMin, G4double& pMax) const
@@ -646,7 +639,7 @@ G4MultiUnion_v1051::CalculateExtent(const EAxis pAxis,
 }
 
 //______________________________________________________________________________
-G4ThreeVector G4MultiUnion_v1051::SurfaceNormal(const G4ThreeVector& aPoint) const
+G4ThreeVector G4MultiUnion_v1072::SurfaceNormal(const G4ThreeVector& aPoint) const
 {
   // Computes the localNormal on a surface and returns it as a unit vector.
   // Must return a valid vector. (even if the point is not on the surface).
@@ -727,7 +720,7 @@ G4ThreeVector G4MultiUnion_v1051::SurfaceNormal(const G4ThreeVector& aPoint) con
 }
 
 //______________________________________________________________________________
-G4double G4MultiUnion_v1051::DistanceToOut(const G4ThreeVector& point) const
+G4double G4MultiUnion_v1072::DistanceToOut(const G4ThreeVector& point) const
 {
   // Estimates isotropic distance to the surface of the solid. This must
   // be either accurate or an underestimate.
@@ -764,7 +757,7 @@ G4double G4MultiUnion_v1051::DistanceToOut(const G4ThreeVector& point) const
 }
 
 //______________________________________________________________________________
-G4double G4MultiUnion_v1051::DistanceToIn(const G4ThreeVector& point) const
+G4double G4MultiUnion_v1072::DistanceToIn(const G4ThreeVector& point) const
 {
   // Estimates the isotropic safety from a point outside the current solid to
   // any of its surfaces. The algorithm may be accurate or should provide a fast
@@ -772,7 +765,7 @@ G4double G4MultiUnion_v1051::DistanceToIn(const G4ThreeVector& point) const
 
   if (!fAccurate)  { return fVoxels.DistanceToBoundingBox(point); }
 
-  const std::vector<G4VoxelBox_v1051>& boxes = fVoxels.GetBoxes();
+  const std::vector<G4VoxelBox_v1072>& boxes = fVoxels.GetBoxes();
   G4double safetyMin = kInfinity;
   G4ThreeVector localPoint;
 
@@ -784,14 +777,14 @@ G4double G4MultiUnion_v1051::DistanceToIn(const G4ThreeVector& point) const
     {
       const G4ThreeVector& pos = boxes[j].pos;
       const G4ThreeVector& hlen = boxes[j].hlen;
-      for (G4int i = 0; i <= 2; ++i)
+      for (auto i = 0; i <= 2; ++i)
         // distance to middle point - hlength => distance from point to border
         // of x,y,z
         if ((dxyz[i] = std::abs(point[i] - pos[i]) - hlen[i]) > safetyMin)
           continue;
 
       G4double d2xyz = 0.;
-      for (G4int i = 0; i <= 2; ++i)
+      for (auto i = 0; i <= 2; ++i)
         if (dxyz[i] > 0) d2xyz += dxyz[i] * dxyz[i];
 
       // minimal distance is at least this, but could be even higher. therefore,
@@ -815,7 +808,7 @@ G4double G4MultiUnion_v1051::DistanceToIn(const G4ThreeVector& point) const
 }
 
 //______________________________________________________________________________
-G4double G4MultiUnion_v1051::GetSurfaceArea()
+G4double G4MultiUnion_v1072::GetSurfaceArea()
 {
   if (!fSurfaceArea)
   {
@@ -825,20 +818,20 @@ G4double G4MultiUnion_v1051::GetSurfaceArea()
 }
 
 //______________________________________________________________________________
-void G4MultiUnion_v1051::Voxelize()
+void G4MultiUnion_v1072::Voxelize()
 {
   fVoxels.Voxelize(fSolids, fTransformObjs);
 }
 
 //______________________________________________________________________________
-G4int G4MultiUnion_v1051::SafetyFromOutsideNumberNode(const G4ThreeVector& aPoint,
+G4int G4MultiUnion_v1072::SafetyFromOutsideNumberNode(const G4ThreeVector& aPoint,
                                                 G4double& safetyMin) const
 {
   // Method returning the closest node from a point located outside a
-  // G4MultiUnion_v1051.
+  // G4MultiUnion_v1072.
   // This is used to compute the normal in the case no candidate has been found.
 
-  const std::vector<G4VoxelBox_v1051>& boxes = fVoxels.GetBoxes();
+  const std::vector<G4VoxelBox_v1072>& boxes = fVoxels.GetBoxes();
   safetyMin = kInfinity;
   G4int safetyNode = 0;
   G4ThreeVector localPoint;
@@ -875,7 +868,7 @@ G4int G4MultiUnion_v1051::SafetyFromOutsideNumberNode(const G4ThreeVector& aPoin
 }
 
 //______________________________________________________________________________
-void G4MultiUnion_v1051::TransformLimits(G4ThreeVector& min, G4ThreeVector& max,
+void G4MultiUnion_v1072::TransformLimits(G4ThreeVector& min, G4ThreeVector& max,
                                    const G4Transform3D& transformation) const
 {
   // The goal of this method is to convert the quantities min and max
@@ -919,13 +912,13 @@ void G4MultiUnion_v1051::TransformLimits(G4ThreeVector& min, G4ThreeVector& max,
 
 // Stream object contents to an output stream
 //______________________________________________________________________________
-std::ostream& G4MultiUnion_v1051::StreamInfo(std::ostream& os) const
+std::ostream& G4MultiUnion_v1072::StreamInfo(std::ostream& os) const
 {
   G4int oldprc = os.precision(16);
   os << "-----------------------------------------------------------\n"
      << "                *** Dump for solid - " << GetName() << " ***\n"
      << "                ===================================================\n"
-     << " Solid type: G4MultiUnion_v1051\n"
+     << " Solid type: G4MultiUnion_v1072\n"
      << " Parameters: \n";
      G4int numNodes = fSolids.size();
      for (G4int i = 0 ; i < numNodes ; ++i)
@@ -945,7 +938,7 @@ std::ostream& G4MultiUnion_v1051::StreamInfo(std::ostream& os) const
 }
 
 //______________________________________________________________________________
-G4ThreeVector G4MultiUnion_v1051::GetPointOnSurface() const
+G4ThreeVector G4MultiUnion_v1072::GetPointOnSurface() const
 {
   G4ThreeVector point;
 
@@ -966,13 +959,13 @@ G4ThreeVector G4MultiUnion_v1051::GetPointOnSurface() const
 
 //______________________________________________________________________________
 void 
-G4MultiUnion_v1051::DescribeYourselfTo ( G4VGraphicsScene& scene ) const 
+G4MultiUnion_v1072::DescribeYourselfTo ( G4VGraphicsScene& scene ) const 
 {
   scene.AddSolid (*this);
 }
 
 //______________________________________________________________________________
-G4Polyhedron* G4MultiUnion_v1051::CreatePolyhedron() const
+G4Polyhedron* G4MultiUnion_v1072::CreatePolyhedron() const
 {
   HepPolyhedronProcessor processor;
   HepPolyhedronProcessor::Operation operation = HepPolyhedronProcessor::UNION;
@@ -997,9 +990,9 @@ G4Polyhedron* G4MultiUnion_v1051::CreatePolyhedron() const
 }
 
 //______________________________________________________________________________
-G4Polyhedron* G4MultiUnion_v1051::GetPolyhedron() const
+G4Polyhedron* G4MultiUnion_v1072::GetPolyhedron() const
 {
-  if (!fpPolyhedron ||
+  if (fpPolyhedron == nullptr ||
       fRebuildPolyhedron ||
       fpPolyhedron->GetNumberOfRotationStepsAtTimeOfCreation() !=
       fpPolyhedron->GetNumberOfRotationSteps())

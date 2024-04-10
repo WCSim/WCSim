@@ -29,8 +29,8 @@
 #include "G4GeometryTolerance.hh"
 #include "G4GeometryManager.hh"
 #include "G4Version.hh"
-#if G4VERSION_NUMBER < 1040
-#include "G4MultiUnion_v1051.hh" //old version does not support G4MultiUnion naively, so use custom class
+#if G4VERSION_NUMBER < 1072
+#include "G4MultiUnion_v1072.hh" //old version does not support G4MultiUnion naively or is buggy, so use custom class
 #else
 #include "G4MultiUnion.hh"
 #endif
@@ -3292,8 +3292,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   //jl145------------------------------------------------
 
   // Union of PMT solids to resolve overlap
-#if G4VERSION_NUMBER < 1040
-  G4MultiUnion_v1051* pmt_solid = new G4MultiUnion_v1051("UnitedPMTs_Barrel");
+#if G4VERSION_NUMBER < 1072
+  G4MultiUnion_v1072* pmt_solid = new G4MultiUnion_v1072("UnitedPMTs_Barrel");
 #else
   G4MultiUnion* pmt_solid = new G4MultiUnion("UnitedPMTs_Barrel");
 #endif
@@ -4369,8 +4369,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   G4String pmtname = "WCMultiPMT";
 
   // Union of PMT solids to resolve overlap
-#if G4VERSION_NUMBER < 1040
-  G4MultiUnion_v1051* pmt_solid = new G4MultiUnion_v1051("UnitedPMTs_Cap");
+#if G4VERSION_NUMBER < 1072
+  G4MultiUnion_v1072* pmt_solid = new G4MultiUnion_v1072("UnitedPMTs_Cap");
 #else
   G4MultiUnion* pmt_solid = new G4MultiUnion("UnitedPMTs_Cap");
 #endif
