@@ -1548,7 +1548,7 @@ void WCSimDetectorConstruction::SetIWCDGeometry()
 	hybrid = false;
 }
 
-// IWCD with mPMTs, updated geometry as of 20240328, plusu OD
+// IWCD with mPMTs, updated geometry as of 20240411, plusu OD
 void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
 {
   WCDetectorName = "IWCD_mPMT_WithOD";
@@ -1591,9 +1591,9 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   WCPMTperCellVertical   = 1;
 
 	// Numbers below are based on R.Henderson's 832 module tank design
-  WCBarrelNumPMTHorizontal = 30;
-  WCBarrelNRings        = 9;
-  WCCapPMTSpacing       = pi*WCIDDiameter/WCBarrelNumPMTHorizontal*1.2/1.1; // ad-hoc number to get 52 mPMTs on cap
+  WCBarrelNumPMTHorizontal = 24;
+  WCBarrelNRings        = 11;
+  WCCapPMTSpacing       = 0.8*m;//pi*WCIDDiameter/WCBarrelNumPMTHorizontal/1.1*0.9; // ad-hoc number to get 52 mPMTs on cap
   WCCapEdgeLimit        = 3.3*m; 
   WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
   WCAddGd               = false;
@@ -1625,7 +1625,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   WCPMTODperCellVertical   = 1;
 
   // OD Coverage on caps //
-  WCPMTODPercentCoverage   = 0.76; // in percent
+  WCPMTODPercentCoverage   = 0.68; // in percent
   // NOTE : If you set WCPMTODperCellHorizontal=0 and WCPMTODperCellVertical=0,
   // then method ComputeWCODPMT() inside ConstructCylinder will automatically compute
   // the nb of PMTs to put on barrel side according to WCPMTODPercentCoverage
