@@ -1499,7 +1499,7 @@ void WCSimDetectorConstruction::SetNuPrismShort_mPMTGeometry()
 // IWCD with mPMTs, updated geometry as of 20230630
 void WCSimDetectorConstruction::SetIWCDGeometry()
 {
-  WCDetectorName = "IWCD_mPMT_WithOD";
+  WCDetectorName = "IWCD_mPMT";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
 	mPMT_ID_PMT = "PMT3inchR12199_02";    //can be changed in macro through mPMT settings.
 	mPMT_OD_PMT = "PMT3inchR12199_02";
