@@ -99,6 +99,7 @@ public:
   void SetIWCD_WithOD_Geometry(); // IWCD with mPMTs and OD, updated geometry as of 20240411
   void SetIWCD_WithOD_Geometry_OptionA(); // 24 * 12 in barrel, 40*2 at cap
   void SetIWCD_WithOD_Geometry_OptionC(); // 32 * 9 in barrel, 40*2 at cap
+  void SetIWCD_WithOD_Geometry_Old(); // Old geometry used from v1.12.5 to v1.12.11
   void SetPlaceBGOGeometry(G4bool placeBGO) { placeBGOGeometry=placeBGO; } // Diego Costas, 26/02/2024
   G4bool IsBGOGeometrySet() const { return placeBGOGeometry; } // Diego Costas, 26/02/2024
   
