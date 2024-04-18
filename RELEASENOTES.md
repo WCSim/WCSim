@@ -7,6 +7,18 @@ Recent updates
 
 
 *************************************************************
+18/04/2024: Notes for v1.12.12
+*************************************************************
+
+Minor release after #431, after the IWCD geometry change
+
+Update
+* Pull request #431 @kmtsui: Update to IWCD geometry to newly proposed size. 3 proposed options for PMT layout are available (A, B, C), with B being the nominal. The old IWCD geometry is also retained
+
+Bug fix
+* Pull request #430 @kmtsui: Use G4MultiUnion & G4Voxeliser from Geant4.10.7.2 instead of Geant4.10.5.1, to pickup some bug fixes related to geometry overlaps
+
+*************************************************************
 04/04/2024: Notes for v1.12.11
 *************************************************************
 
