@@ -5,6 +5,8 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+Bug fix
+* Pull request #432 @tdealtry: Use the same default dark rate time option for all PMT types in WCSim.mac
 
 *************************************************************
 18/04/2024: Notes for v1.12.12
