@@ -164,7 +164,7 @@
 ##################
 # AmBe CALIBRATION SOURCE
 ##################
-# - BGO Placement: Default in source code is false. If set to true, you'll place the BGO inside
+# - BGO Placement: Default in source code is false. If set to true, you'll place the BGO inside
 # the detector geometry at (0,0,0) position. This is only supported if you use ambeevt generator
 # so you can see the tag scintillation light for the AmBe source.
 #/WCSim/BGOPlacement
@@ -235,20 +235,20 @@
 /DarkRate/SetDarkMode 1
 /DarkRate/SetDarkWindow 4000
 
-#/DarkRate/SetDetectorElement OD
+/DarkRate/SetDetectorElement OD
 #/DarkRate/SetDarkRate 0 kHz
 #/DarkRate/SetDarkRate 1 kHz
 #/DarkRate/SetConvert 1.367 #for 8" PMTs in HK OD
-#/DarkRate/SetDarkMode 1
-#/DarkRate/SetDarkWindow 4000
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkWindow 4000
 
-#/DarkRate/SetDetectorElement tankPMT2
+/DarkRate/SetDetectorElement tankPMT2
 #/DarkRate/SetDarkRate 0 kHz
 #/DarkRate/SetDarkRate 1 kHz
 #/DarkRate/SetConvert 1.110 #for PMT3inchR14374 PMTs in HK mPMT
 #/DarkRate/SetConvert 1.126 #for PMT3inchR12199_02 PMTs in HK mPMT. WARNING value needs checking!
-#/DarkRate/SetDarkMode 1
-#/DarkRate/SetDarkWindow 4000
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkWindow 4000
 
 ##################
 # VISUALISATION
@@ -305,7 +305,7 @@
 ## This is similar to the nuance format option, though this uses datatable formatted files.
 ## Datatables are formatted as follows:
 ## | Index of particle in event | PDG code | Energy | X | Y | Z | Px | Py | Pz | Time |
-## Note that the column separators "|" are for clarity in describing the format, and should not be included in the file
+## Note that the column separators "|" are for clarity in describing the format, and should not be included in the file
 ## Note also that comments are allowed in the data table file by starting lines with a "#"
 #/mygen/generator datatable
 #/mygen/vecfile inputDataTableFile
