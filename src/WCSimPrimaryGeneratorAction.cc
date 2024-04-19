@@ -1527,38 +1527,50 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       // Get the next event from the reader
       hepmc3_reader->ReadEvent();
 
-      // Get the vector of particle momenta and PDGs
-      std::vector<std::pair<G4LorentzVector, int>> hepmc_particles = hepmc3_reader->GetMomentaAndPDGs();
+      // Loop over the particles
+      for (auto part : hepmc3_reader->event.particles()) {
 
-      // Get the particles and print their positions
-      hepmc3_reader->GetParticles();
-
-      G4cout << "Number of particles in the event: " << hepmc_particles.size() << G4endl;
-
-      // Loop over the particles and print out momenta
-      for (size_t i = 0; i < hepmc_particles.size(); i++) {
-        G4LorentzVector momentum = hepmc_particles[i].first;
-        int pdg = hepmc_particles[i].second;
-        G4cout << "Particle " << i << " has momentum: " << momentum << " and PDG: " << pdg << G4endl;
-      }
-
-      auto event = hepmc3_reader->event;
-
-      for (auto vert : event.vertices()) {
-        G4cout << "Vertex status is: " << vert->status() << G4endl;
-      }
-      for (size_t part_i = 0; part_i < event.particles().size(); part_i++) {
-        G4LorentzVector momentum = hepmc3_reader->GetLorentzVector(part_i);
-        if (event.particles()[part_i]->status() == 4) {
-          G4cout << "Particle " << part_i << " has PDG " << event.particles()[part_i]->pid() << " and momentum "
-                 << momentum.px() << ", " << momentum.py() << ", " << momentum.pz() << ", " << momentum.e()
-                 << " and status " << event.particles()[part_i]->status() << G4endl;
+        // Skip nuclear remnants
+        if (part->pid() == 2009900000) {
+          continue;
         }
-        hepmc3_reader->RotateEvent();
-        if (event.particles()[part_i]->status() == 4) {
-          G4cout << "Particle " << part_i << " has PDG " << event.particles()[part_i]->pid() << " and momentum "
-                 << momentum.px() << ", " << momentum.py() << ", " << momentum.pz() << ", " << momentum.e()
-                 << " and status " << event.particles()[part_i]->status() << G4endl;
+
+        // If particle has status 4 then it is a beam particle. This needs writing out, but not simulating
+        if (part->status() == 4) {
+          // Get direction (momentum) and normalise
+          G4ThreeVector dir(part->momentum().px(), part->momentum().py(), part->momentum().pz());
+          dir.set(dir.x() / dir.mag(), dir.y() / dir.mag(), dir.z() / dir.mag());
+
+          // Set write outs
+          SetBeamPDG(part->pdg_id(), 0);
+          SetBeamEnergy(part->momentum().e());
+          SetBeamDir(dir);
+        }
+
+        // If the particle status is 1 then the particle needs simulating and writing out.
+        int n_final_state = 0;
+        if (part->status() == 1) {
+          n_final_state++;
+
+          // Get direction (momentum) and normalise
+          G4ThreeVector dir(part->momentum().px(), part->momentum().py(), part->momentum().pz());
+          dir.set(dir.x() / dir.mag(), dir.y() / dir.mag(), dir.z() / dir.mag());
+
+          // Set write outs
+          SetBeamPDG(part->pdg_id(), n_final_state);
+          SetBeamEnergy(part->momentum().e());
+          SetBeamDir(dir);
+
+          // Get particle position
+          G4ThreeVector vtx(part->production_vertex()->position().x(), part->production_vertex()->position().y(),
+                            part->production_vertex()->position().z());
+          // Generate the final state particles with the particle gun
+          particleGun->SetParticlePosition(vtx);
+          particleGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle(part->pdg_id()));
+          particleGun->SetParticleEnergy(part->momentum().e());
+          particleGun->SetParticleMomentumDirection(dir);
+          particleGun->SetParticleTime(part->production_vertex()->position().t());
+          particleGun->GeneratePrimaryVertex(anEvent);
         }
       }
     }
