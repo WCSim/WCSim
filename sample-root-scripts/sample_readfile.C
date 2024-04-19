@@ -101,6 +101,8 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
       printf("Event Number (from loop): %ld\n", ievent);
       printf("Event Number (from WCSimRootEventHeader): %d\n", wcsimrootevent->GetHeader()->GetEvtNum());
       printf("Trigger Time [ns]: %ld\n", wcsimrootevent->GetHeader()->GetDate());
+      cout << "Trigger Type: " << wcsimrootevent->GetTriggerType()
+           << " " << WCSimEnumerations::EnumAsString(wcsimrootevent->GetTriggerType()) << endl;
       printf("Interaction Nuance Code: %d\n", wcsimrootevent->GetMode());
       printf("Number of Delayed Triggers (sub events): %d\n",
        wcsimrootsuperevent->GetNumberOfSubEvents());
