@@ -44,6 +44,12 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   fileNameCmdCosmics->SetParameterName("fileName",true);
   fileNameCmdCosmics->SetDefaultValue("data/MuonFlux-HyperK-ThetaPhi.dat");
 
+  fileNameCmdHepMC3 = new G4UIcmdWithAString("/mygen/hepmc3file",this);
+  fileNameCmdHepMC3->SetGuidance("Select the file of HepMC3.");
+  fileNameCmdHepMC3->SetGuidance(" Enter the file name of the HepMC3 file");
+  fileNameCmdHepMC3->SetParameterName("fileName",true);
+  fileNameCmdHepMC3->SetDefaultValue("inputhepmc3file");
+
   timeUnitCmd = new G4UIcmdWithAString("/mygen/time_unit",this);
   timeUnitCmd->SetGuidance("Define the units used for time in the input file.");
   timeUnitCmd->SetGuidance("Can be picosecond, ps, ns, nanosecond, ms, millisecond, s, sec or second");
@@ -591,6 +597,12 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
   {
     myAction->SetLightInjectorMode(lightInjectorModeCmd->GetNewIntValue(newValue));
   }
+
+  if (command == fileNameCmdHepMC3) {
+    myAction->SetHepMC3Filename(newValue);
+    G4cout << "HepMC3 file is set to " << newValue << G4endl;
+
+      }
 
   if (command == ibdDatabaseCmd)
     {
