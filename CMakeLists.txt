@@ -36,13 +36,11 @@ set(CMAKE_CXX_STANDARD 14) # Enable c++14 standard
 ########
 # HepMC3
 ########
-find_package(HepMC3)
-if (NOT HepMC3_FOUND)
+find_package(hepmc3 REQUIRED)
+if (NOT hepmc3_FOUND)
     message(FATAL "Unable to find HepMC3")
-endif (NOT HepMC3_FOUND)
-# Make a variable for the HepMC3 include directory
-set(HEPMC3_LIBS ${HEPMC3_INCLUDE_DIR})
-include_directories (${HEPMC3_LIBS})
+endif (NOT hepmc3_FOUND)
+include_directories (${HEPMC3_INCLUDE_DIR})
 LIST(APPEND PUBLIC_EXT_LIBS ${HEPMC3_LIBRARIES})
 
 ######
@@ -84,9 +82,11 @@ include(${Geant4_USE_FILE})  ## NOT needed for Dict
 #########
 
 if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.7)
-    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++11 -Wno-overloaded-virtual")
+    # set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++11 -Wno-overloaded-virtual")
+    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++11 -w")
 else()
-    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++0x")
+    # set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++0x")
+    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++0x -w")
 endif()
 
 # Set flag for git version to be used as c++ preprocessor macro
