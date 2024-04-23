@@ -4,6 +4,10 @@
 
 #include "G4Element.hh"
 #include "G4Box.hh"
+#include "G4Tubs.hh"
+#include "G4Material.hh"
+#include "G4MaterialTable.hh"
+#include "G4NistManager.hh"
 #include "G4LogicalVolume.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4PVPlacement.hh"
@@ -51,7 +55,6 @@ namespace {
   }
 }
 
-
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap;
 std::map<int, std::pair<int, int> > WCSimDetectorConstruction::mPMTIDMap;
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap2;
@@ -69,9 +72,12 @@ WCSimDetectorConstruction::tubeLocationMap2;
 std::unordered_map<std::string, int, std::hash<std::string> >
   WCSimDetectorConstruction::ODtubeLocationMap;
 
+
+
 WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
 						     WCSimTuningParameters* WCSimTuningPars):
   WCSimTuningParams(WCSimTuningPars),
+  placeBGOGeometry(false),
   totalNum_mPMTs(0),
   totalNum_mPMTs2(0)
 {
@@ -82,6 +88,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   isNuPrism  = false;
   isNuPrismBeamTest = false;
   isNuPrismBeamTest_16cShort = false;
+  addCDS = false;
 
   rotateBarrelHalfTower = false;
 
@@ -89,11 +96,15 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   pmtPosVar = 0;
   topRadiusChange = 0; midRadiusChange = 0; botRadiusChange = 0;
   readFromTable = false;
+  pmt_blacksheet_offset = 0;
 
   debugMode = false;
 
   isODConstructed = false;
   isCombinedPMTCollectionDefined = false;
+  odEdited = false;
+
+  isRealisticPlacement = false;
 
   myConfiguration = DetConfig;
 
@@ -195,7 +206,6 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   SetPMT_Coll_Eff(1);
   // set default visualizer to OGLSX
   SetVis_Choice("OGLSX");
-
 
   //----------------------------------------------------- 
   // Make the detector messenger to allow changing geometry
@@ -311,10 +321,11 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   G4LogicalVolume* logicWCBox;
 
   // Select between HyperK and cylinder
-  if (isEggShapedHyperK) logicWCBox = ConstructEggShapedHyperK();
+  if (isRealisticPlacement) logicWCBox = ConstructRealisticPlacement();
+  else if (isEggShapedHyperK) logicWCBox = ConstructEggShapedHyperK();
   else if (!useReplica) logicWCBox = ConstructCylinderNoReplica(); 
   else logicWCBox = ConstructCylinder(); 
-  
+    
   if(!logicWCBox){
     G4cerr << "Something went wrong in ConstructCylinder" << G4endl;
     return NULL;
@@ -353,6 +364,18 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 
   //   logicWCBox->SetVisAttributes(G4VisAttributes::Invisible);
   logicExpHall->SetVisAttributes(G4VisAttributes::Invisible);
+
+  //----------------------------------------------------------
+  //BGO Calling and Placement - Diego Costas 29/02/2024 
+  // Place BGO only if command is set to true
+  if (IsBGOGeometrySet()) {
+      G4cout << "Placing AmBe source in geometry at (0,0,0)" << G4endl;
+      G4Tubs* solidBGO = new G4Tubs("solidBGO", 0., 2.5*cm, 2.5*cm, 0., 360.*deg);
+      G4LogicalVolume* logicBGO = new G4LogicalVolume(solidBGO, BGO, "logicBGO");
+      new G4PVPlacement(0, G4ThreeVector(), logicBGO, "BGO", logicWCBox, false, 0, false); 
+  }
+  
+  //-----------------------------------------------------
 
   //-----------------------------------------------------
   // Create and place the physical Volumes

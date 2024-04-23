@@ -54,6 +54,8 @@ public:
   WCSimDetectorConstruction(G4int DetConfig,WCSimTuningParameters* WCSimTuningPars);
   ~WCSimDetectorConstruction();
 
+  G4LogicalVolume* ConstructRealisticPlacement();
+
   void SaveOptionsToOutput(WCSimRootOptions * wcopt);
 
   G4VPhysicalVolume* Construct();
@@ -85,14 +87,22 @@ public:
   void SetHyperK_HybridmPMT10PCGeometry();//B.Q, 2019/01/26
   void SetHyperK_HybridFakeGeometry();//B.Q, 2019/01/26
   void SetHyperK_HybridmPMT_WithOD_Geometry();
+  void SetHyperK_HybridmPMT_WithOD_Realistic_Geometry(); //P.S. 2023/12/19
+  void SetHyperK_HybridmPMT_IDonly_Realistic_Geometry(); //P.S. 2023/12/19
   void SetNuPrismGeometry(G4String PMTType, G4double PMTCoverage, G4double detectorHeight, G4double detectorDiameter, G4double verticalPosition);
   void SetNuPrism_mPMTGeometry();
   void SetNuPrismBeamTest_mPMTGeometry();
   void SetNuPrismBeamTest_16cShort_mPMTGeometry(); // Jul 02 2021 L.Anthony
   void SetNuPrismShort_mPMTGeometry();
   void SetDefaultNuPrismGeometry();
-  void SetIWCDGeometry(); // IWCD with mPMTs, updated geometry as of 20230630
-  void SetIWCD_WithOD_Geometry(); // Same as above with OD
+  void SetIWCDGeometry(); // IWCD with mPMTs, updated geometry as of 20240411
+  void SetIWCD_WithOD_Geometry(); // IWCD with mPMTs and OD, updated geometry as of 20240411
+  void SetIWCD_WithOD_Geometry_OptionA(); // 24 * 12 in barrel, 40*2 at cap
+  void SetIWCD_WithOD_Geometry_OptionC(); // 32 * 9 in barrel, 40*2 at cap
+  void SetIWCD_WithOD_Geometry_Old(); // Old geometry used from v1.12.5 to v1.12.11
+  void SetPlaceBGOGeometry(G4bool placeBGO) { placeBGOGeometry=placeBGO; } // Diego Costas, 26/02/2024
+  G4bool IsBGOGeometrySet() const { return placeBGOGeometry; } // Diego Costas, 26/02/2024
+  
   /**
      Dump the values of many variables used to define geometries including
      - radii, heights, name, etc. of the detector
@@ -172,6 +182,9 @@ public:
       WCDetCentre[1] = y;
       WCDetCentre[2] = z;
   }
+  
+  // BGO
+  G4Material* BGO;
 
   // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
@@ -351,6 +364,8 @@ public:
   void SetPMTPositionInput(G4String choice) {pmtPositionFile = choice; readFromTable = true;}
   G4String GetPMTPositionInput() {return pmtPositionFile;}
 
+  void SetCDSFile(G4String choice) { CDSFile = choice; addCDS = true; }
+
   void   SetPMTType(G4String type) {
     WCPMTType = type;
     //And update everything that is affected by a new PMT
@@ -469,6 +484,7 @@ private:
 
 
   // Tuning parameters
+  bool isRealisticPlacement;
 
   WCSimTuningParameters* WCSimTuningParams;
 
@@ -723,11 +739,15 @@ private:
   // amb79: to universally make changes in structure and geometry
   bool isUpright;
 
+  // BGO Placement
+  G4bool placeBGOGeometry;
 
   // Add bool to indicate whether we load nuPRISM geometry  
   G4bool isNuPrism;
   G4bool isNuPrismBeamTest;
   G4bool isNuPrismBeamTest_16cShort; // Jul 02 2021 L.Anthony
+  G4bool addCDS;
+  G4String CDSFile;
   G4String WCPMTType;
  // G4double WCPMTCoverage; //TF: already using this variable "WCPMTPercentCoverage
 
@@ -746,6 +766,8 @@ private:
   std::vector<G4double> pmtRotaton;
   std::string pmtPositionFile;
   void ReadGeometryTableFromFile();
+  // distance by which PMT goes behind black sheet
+  G4double pmt_blacksheet_offset;
 
   // *** Begin egg-shaped HyperK Geometry ***
 

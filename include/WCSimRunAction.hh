@@ -40,6 +40,8 @@ public:
   G4String GetRootFileName() { return RootFileName; }
   void SetOptionalRootFile(G4bool choice) { useDefaultROOTout = choice; }
   G4bool GetRootFileOption() { return useDefaultROOTout; }
+  void SetFlatRootFile(G4bool choice) { useFlatROOTout = choice; }
+  G4bool GetFlatRootFileOption() { return useFlatROOTout; }
   bool GetSaveRooTracker() { return SaveRooTracker; }
   void FillGeoTree();
   TTree* GetTree(){return WCSimTree;}
@@ -133,12 +135,16 @@ public:
 
   void SetUseTimer(bool use) { useTimer = use; }
 
+  int GetRunID() { return run; }
+  void SetRunID(int runID) { run = runID; }
+
  private:
   // MFechner : set by the messenger
   std::string RootFileName;
   // Only required for verification scripts and current fiTQun tuning
   // But making initialization very slow due to large TCloneArray init.
   G4bool useDefaultROOTout;
+  G4bool useFlatROOTout;
 
   //
   TTree* WCSimTree;

@@ -25,7 +25,9 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
 
   G4NistManager *nist_man = G4NistManager::Instance();
-
+  
+  //---BGO
+  BGO = nist_man->FindOrBuildMaterial("G4_BGO");
 
   //---Vacuum
 
@@ -1319,6 +1321,25 @@ void WCSimDetectorConstruction::ConstructMaterials()
   ///////////////////////
   // ###### END ###### //
   ///////////////////////
+  
+  G4MaterialPropertiesTable *BGO_mpt = new G4MaterialPropertiesTable();
+  G4double BGO_energy[3] = {1.9*eV, 2.6*eV, 3.3*eV};
+  G4double BGO_SCINT[3] = {0.1, 1., 0.1};
+  G4double BGO_RINDEX[3] = {2.15, 2.15, 2.15};
+  G4double BGO_ABSL[3] = {1.118*cm, 1.118*cm, 1.118*cm};
+
+  BGO_mpt->AddProperty("FASTCOMPONENT", BGO_energy, BGO_SCINT, 3);
+  BGO_mpt->AddProperty("SLOWCOMPONENT", BGO_energy, BGO_SCINT, 3);
+  BGO_mpt->AddProperty("RINDEX", BGO_energy, BGO_RINDEX, 3);
+  BGO_mpt->AddProperty("ABSLENGTH", BGO_energy, BGO_ABSL, 3);
+
+  BGO_mpt->AddConstProperty("SCINTILLATIONYIELD", 8000./MeV);
+  BGO_mpt->AddConstProperty("RESOLUTIONSCALE", 1.0);
+  BGO_mpt->AddConstProperty("FASTTIMECONSTANT", 300.*ns);
+  BGO_mpt->AddConstProperty("SLOWTIMECONSTANT", 300.*ns);
+  BGO_mpt->AddConstProperty("YIELDRATIO", 1.0);
+
+  BGO->SetMaterialPropertiesTable(BGO_mpt);
 
   G4MaterialPropertiesTable *myMPT1 = new G4MaterialPropertiesTable();
    // M Fechner : new   ; wider range for lambda
@@ -1384,6 +1405,13 @@ void WCSimDetectorConstruction::ConstructMaterials()
    AcrPropTable->AddProperty("ABSLENGTH", ENERGY_skAcrylic, ABSORPTION_skAcrylic, 306);
    Acrylic->SetMaterialPropertiesTable(AcrPropTable);
 
+   //Aluminum
+   //The ABSLENGTH property is added because there are rare occasions that photon is generated inside Al (reflector) material
+   //Using the RINDEX_Al defined above would cause high energy photon to move faster than c and abort the event
+   //This is a horrible hack to use the ABSLENGTH to kill the photons inside Al, and it should be fixed by adding a realistic refractive index
+   G4MaterialPropertiesTable *AlPropTable1 = new G4MaterialPropertiesTable();
+   AlPropTable1->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
+   Aluminum->SetMaterialPropertiesTable(AlPropTable1);
 
    //	------------- Surfaces --------------
 

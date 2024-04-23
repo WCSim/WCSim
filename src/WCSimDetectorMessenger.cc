@@ -35,6 +35,8 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			  "HyperKWithOD\n"
 			  "HyperK20pcWithOD\n"
  			  "HyperK_HybridmPMT_WithOD\n"
+        "HyperK_HybridmPMT_WithOD_Realistic\n"
+        "HyperK_HybridmPMT_IDonly_Realistic\n"
 			  "EggShapedHyperK\n"
 			  "EggShapedHyperK_withHPD\n"
                           "nuPRISM\n"
@@ -44,6 +46,9 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
     			  "nuPRISMShort_mPMT\n"
         "IWCD_mPMT\n"
         "IWCD_mPMT_WithOD\n"
+        "IWCD_mPMT_WithOD_OptionA\n"
+        "IWCD_mPMT_WithOD_OptionC\n"
+        "IWCD_mPMT_WithOD_Old\n"
 			  "Cylinder_60x74_3inchmPMT_14perCent\n"
 			  "Cylinder_60x74_3inchmPMT_40perCent\n"
 			  "Cylinder_60x74_3inch_14perCent\n"
@@ -71,6 +76,8 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			   "HyperKWithOD "
 			   "HyperK20pcWithOD "
 			   "HyperK_HybridmPMT_WithOD "
+			   "HyperK_HybridmPMT_WithOD_Realistic "
+			   "HyperK_HybridmPMT_IDonly_Realistic "
 			   "EggShapedHyperK "
 			   "EggShapedHyperK_withHPD "
                            "nuPRISM "
@@ -80,6 +87,9 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 			   "nuPRISMShort_mPMT "
          "IWCD_mPMT "
          "IWCD_mPMT_WithOD "
+         "IWCD_mPMT_WithOD_OptionA "
+         "IWCD_mPMT_WithOD_OptionC "
+         "IWCD_mPMT_WithOD_Old "
 			   "Cylinder_60x74_3inchmPMT_14perCent "
 			   "Cylinder_60x74_3inchmPMT_40perCent "
 			   "Cylinder_60x74_3inch_14perCent "
@@ -109,6 +119,11 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   DopingConcentration->SetGuidance("Set percentage concentration Gadolinium doping");
   DopingConcentration->SetParameterName("DopingConcentration", false);
   DopingConcentration->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  BGOPlacement = new G4UIcmdWithABool("/WCSim/BGOPlacement", this);
+  BGOPlacement->SetGuidance("Place BGO Scintillation Crystal Inside Detector");
+  BGOPlacement->SetParameterName("BGOPlacement", false);
+  BGOPlacement->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   PMTSize = new G4UIcmdWithAString("/WCSim/WCPMTsize",this);
   PMTSize->SetGuidance("Set alternate PMT size for the WC (Must be entered after geometry details are set).");
@@ -571,6 +586,11 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetPMTPositionInput = new G4UIcmdWithAString("/WCSim/PMT/PositionFile",this);
   SetPMTPositionInput->SetGuidance("Set filename for PMT position file");
   SetPMTPositionInput->SetParameterName("PMTPositionInput", true);
+
+  // Set CDS file input
+  SetCDSFile = new G4UIcmdWithAString("/WCSim/Geometry/SetCDSFile",this);
+  SetCDSFile->SetGuidance("Set filename for CDS model file");
+  SetCDSFile->SetParameterName("CDSFileInput", true);
 }
 
 WCSimDetectorMessenger::~WCSimDetectorMessenger()
@@ -605,6 +625,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete PMTPosVar;
   delete TankRadiusChange;
   delete SetPMTPositionInput;
+  delete SetCDSFile;
 }
 
 void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
@@ -655,6 +676,12 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		} else if ( newValue == "HyperK_HybridmPMT_WithOD") {
 		  WCSimDetector->SetHyperK_HybridmPMT_WithOD_Geometry();
 		  WCSimDetector->SetODEdited(false);
+    } else if ( newValue == "HyperK_HybridmPMT_WithOD_Realistic") {
+		  WCSimDetector->SetHyperK_HybridmPMT_WithOD_Realistic_Geometry();
+		  WCSimDetector->SetODEdited(false);
+    } else if ( newValue == "HyperK_HybridmPMT_IDonly_Realistic") {
+		  WCSimDetector->SetHyperK_HybridmPMT_IDonly_Realistic_Geometry();
+		  WCSimDetector->SetODEdited(false);
 		} else if ( newValue == "EggShapedHyperK") {
 		  WCSimDetector->SetIsEggShapedHyperK(true);
 		  WCSimDetector->SetEggShapedHyperKGeometry();
@@ -694,6 +721,18 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		} else if ( newValue == "IWCD_mPMT_WithOD") {
 		  WCSimDetector->SetIsNuPrism(true);
 		  WCSimDetector->SetIWCD_WithOD_Geometry();
+      WCSimDetector->SetODEdited(false);
+		} else if ( newValue == "IWCD_mPMT_WithOD_OptionA") {
+		  WCSimDetector->SetIsNuPrism(true);
+		  WCSimDetector->SetIWCD_WithOD_Geometry_OptionA();
+      WCSimDetector->SetODEdited(false);
+    } else if ( newValue == "IWCD_mPMT_WithOD_OptionC") {
+		  WCSimDetector->SetIsNuPrism(true);
+		  WCSimDetector->SetIWCD_WithOD_Geometry_OptionC();
+      WCSimDetector->SetODEdited(false);
+    } else if ( newValue == "IWCD_mPMT_WithOD_Old") {
+		  WCSimDetector->SetIsNuPrism(true);
+		  WCSimDetector->SetIWCD_WithOD_Geometry_Old();
       WCSimDetector->SetODEdited(false);
 		} else {
 		  G4cerr << "That geometry choice is not defined!" << G4endl;
@@ -789,6 +828,17 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 		G4cout << "Setting Gadolinium doping concentration: " << newValue << "percent" << G4endl;
             WCSimDetector->AddDopedWater(DopingConcentration->GetNewDoubleValue(newValue));
 	}
+  
+  if(command == BGOPlacement) {
+    if (BGOPlacement->GetNewBoolValue(newValue)) {
+      G4cout << "Placing BGO Scintillation Crystal" << G4endl;
+      WCSimDetector->SetPlaceBGOGeometry(true);
+    }
+    else {
+      G4cout << "Removing BGO Scintillation Crystal from Geometry" << G4endl; 
+      WCSimDetector->SetPlaceBGOGeometry(false);
+    }
+  }
 
 	if(command == PMTSize) {
 		G4cout << "SET PMT SIZE" << G4endl;
@@ -1055,6 +1105,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
 	if(command == SetPMTPositionInput){
 	  WCSimDetector->SetPMTPositionInput(newValue);
+	}
+
+  if(command == SetCDSFile){
+	  WCSimDetector->SetCDSFile(newValue);
 	}
 
 }

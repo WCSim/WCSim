@@ -23,7 +23,7 @@ You can follow issues/requests etc by watching the GitHub respository.
 
 ## Validation Webpage
 
-WCSim uses Travis CI to perform build and physics tests for each pull request and commit.
+WCSim uses GitHub Actions CI to perform build and physics tests for each pull request and commit.
 The scripts it runs can be found at https://github.com/WCSim/Validation
 
 The output can be found at: https://wcsim.github.io/Validation/
@@ -33,9 +33,26 @@ The output can be found at: https://wcsim.github.io/Validation/
 More detailed information about the simulation is available in
 `doc/DetectorDocumentation.pdf`
 
-doxygen documentation can be built by running
-`cd $WCSIMDIR/doc && make`
-Additionally, doxygen documentation is available at https://wcsim.github.io/WCSim/inherits.html
+Additionally, doxygen documentation is available at https://wcsim.github.io/WCSim/annotated.html
+Note that most of the code has no doxygen comments, but all output class member variables are documented. See the WCSimRoot* classes
+
+doxygen documentation can be built locally by running
+```bash
+cd $WCSIMDIR/ && doxygen WCSim_doxygen_config
+```
+
+For admin: A more featured doxygen build can be done & pushed using an alternative doxygen config file (requires `dot` from `graphviz`)
+```bash
+git clone -b gh-pages --single-branch git@github.com:WCSim/WCSim.git WCSim-dox
+cd WCSim-dox
+./get_dox.sh
+```
+You can also make this featured version locally by
+```bash
+cd $WCSIMDIR
+git clone -b gh-pages --single-branch git@github.com:WCSim/WCSim.git WCSim-dox
+doxygen WCSim-dox/WCSim_doxygen_config
+```
 
 ## Build Instructions
 
@@ -122,6 +139,7 @@ Useful cmake commands:
 #### WCSim cmake build options
 * `-DWCSim_Geometry_Overlaps_CHECK=<ON|OFF>` If ON, turns on geometry overlap checking (slow, but important when setting new detector geometry options). Default: OFF
 * `-DWCSim_DEBUG_COMPILE_FLAG=<ON|OFF>` If ON, turns on the gcc debug compiler flag `-g`. Default: OFF
+* `-DWCSIM_SAVE_PHOTON_HISTORY_FLAG=<ON|OFF>` If ON, turns on photon scattering/reflection history saving. The data class `WCSimRootCherenkovHitHistory` is used in a similar way as `WCSimRootCherenkovHitTime`. Default: OFF
 
 #### Build with CMake on sukap:
 
@@ -152,7 +170,7 @@ You can run `make clean` before `make install` by running `./make.sh clean`
 ### Build Instructions using GNUmakefile:
 `GNUmakefile`` is specifically only for use with ROOT5 and is not supported otherwise. All output that needs to be trusted must use cmake. To compile:
 ```
-make clean
+make clean_wcsim
 make rootcint
 make
 ```

@@ -15,6 +15,7 @@ class WCSimTrajectory;
 #include "G4Step.hh"
 
 #include "WCSimEnumerations.hh"
+#include "WCSimOpBoundaryProcess.hh"
 
 class G4Polyline;                   // Forward declaration.
 
@@ -55,19 +56,20 @@ public: // with description
    { return PDGEncoding; }
    inline G4ThreeVector GetInitialMomentum() const
    { return initialMomentum; }
-  inline G4String GetCreatorProcessName() const {
+   inline G4String GetCreatorProcessName() const {
     return creatorProcess;
-  }
-  
-  inline G4double GetGlobalTime() const
-  { return globalTime; }
-  inline G4bool GetSaveFlag() const { return SaveIt; }
-  inline void SetSaveFlag(G4bool value) { SaveIt = value; }
-  inline G4bool GetProducesHit() const { return producesHit; }
-  inline void SetProducesHit(G4bool value) { producesHit = value; }
+   } 
+   inline G4double GetGlobalTime() const
+   { return globalTime; }
+   inline G4bool GetSaveFlag() const { return SaveIt; }
+   inline void SetSaveFlag(G4bool value) { SaveIt = value; }
+   inline G4bool GetProducesHit() const { return producesHit; }
+   inline void SetProducesHit(G4bool value) { producesHit = value; }
+   inline G4bool GetSavePhotonTrack() const { return savePhotonTrack; }
+   inline void SetSavePhotonTrack(G4bool value) { savePhotonTrack = value; }
 
-  inline WCSimTrajectory* GetParentTrajectory() const { return parentTrajectory; }
-  inline void SetParentTrajectory(WCSimTrajectory* trajectory) { parentTrajectory = trajectory; }
+   inline WCSimTrajectory* GetParentTrajectory() const { return parentTrajectory; }
+   inline void SetParentTrajectory(WCSimTrajectory* trajectory) { parentTrajectory = trajectory; }
 
 // New function we have added
    inline G4ThreeVector GetStoppingPoint() const
@@ -112,6 +114,14 @@ public: // with description
     return bTypes;
   }
 
+// Functions to set/get photon history
+  inline void AddPhotonRayScatter(G4int val) { pRayScatter += val; }
+  inline void AddPhotonMieScatter(G4int val) { pMieScatter += val; }
+  inline void AddPhotonReflection(ReflectionSurface_t val) { pReflec.push_back(val); }
+  inline G4int GetPhotonRayScatter() const { return pRayScatter; }
+  inline G4int GetPhotonMieScatter() const { return pMieScatter; }
+  inline std::vector<ReflectionSurface_t> GetPhotonReflection() const { return pReflec; } 
+
 // Other member functions
    virtual void ShowTrajectory(std::ostream& os=G4cout) const;
    virtual void DrawTrajectory(/*G4int i_mode=0*/) const;
@@ -147,6 +157,7 @@ public: // with description
   G4bool producesHit;
   G4String creatorProcess;
   G4double                  globalTime;
+  G4bool savePhotonTrack;
 
   WCSimTrajectory* parentTrajectory;
 
@@ -155,6 +166,12 @@ public: // with description
   std::vector<G4float> boundaryKEs;
   std::vector<G4double> boundaryTimes;
   std::vector<BoundaryType_t> boundaryTypes; // kBlackSheet=1, kTyvek, kCave
+
+  // Photon reflection/scattering history
+  G4int pRayScatter;
+  G4int pMieScatter;
+  std::vector<ReflectionSurface_t> pReflec;
+  WCSimOpBoundaryProcess* fBoundary;
 };
 
 /***            TEMP  : M FECHNER ***********

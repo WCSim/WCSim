@@ -163,7 +163,7 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
       // Put the transform for this tube into the map keyed by its ID
       tubeIDMap[totalNumPMTs] = aTransform;
 
-      if (readFromTable) mPMTIDMap[totalNumPMTs] = std::make_pair(mPMTid,mPMT_pmtno);
+      if (!useReplica&&readFromTable) mPMTIDMap[totalNumPMTs] = std::make_pair(mPMTid,mPMT_pmtno);
       else mPMTIDMap[totalNumPMTs] = std::make_pair(totalNum_mPMTs,mPMT_pmtno);
     }//ID PMT 1
 
@@ -179,7 +179,7 @@ void WCSimDetectorConstruction::DescribeAndRegisterPMT(G4VPhysicalVolume* aPV ,i
       // Put the transform for this tube into the map keyed by its ID
       tubeIDMap2[totalNumPMTs2] = aTransform;
 
-      if (readFromTable) mPMTIDMap2[totalNumPMTs2] = std::make_pair(mPMTid,mPMT_pmtno);
+      if (!useReplica&&readFromTable) mPMTIDMap2[totalNumPMTs2] = std::make_pair(mPMTid,mPMT_pmtno);
       mPMTIDMap2[totalNumPMTs2] = std::make_pair(totalNum_mPMTs2,mPMT_pmtno);
     }//ID PMT 2
 

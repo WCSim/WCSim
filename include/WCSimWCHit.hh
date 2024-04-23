@@ -1,6 +1,8 @@
 #ifndef WCSimWCHit_h
 #define WCSimWCHit_h 1
 
+#include "WCSimEnumerations.hh"
+
 #include "G4VHit.hh"
 #include "G4THitsCollection.hh"
 #include "G4Allocator.hh"
@@ -31,18 +33,20 @@ class WCSimWCHit : public G4VHit
  public:
   
   void SetTubeID       (G4int tube)                 { tubeID = tube; };
-  void SetTrackID      (G4int track)                { trackID = track; };
   void SetEdep         (G4double de)                { edep = de; };
   void SetPos          (G4ThreeVector xyz)          { pos = xyz; };
   void SetOrientation  (G4ThreeVector xyz)          { orient = xyz; };
   void SetRot          (G4RotationMatrix rotMatrix) { rot = rotMatrix; };
   void SetLogicalVolume(G4LogicalVolume* logV)      { pLogV = logV;}
+  void AddTrackID      (G4int track)                { trackID.push_back(track); };
   void AddParentID     (G4int myParentSavedTrackID) { parentSavedTrackID.push_back(myParentSavedTrackID); }
   void AddPhotonStartTime (G4float photStartTime) { photonStartTime.push_back(photStartTime); }
   void AddPhotonStartPos  (const G4ThreeVector &photStartPos) { photonStartPos.push_back(photStartPos); }
   void AddPhotonEndPos  (const G4ThreeVector &photEndPos) { photonEndPos.push_back(photEndPos); }
   void AddPhotonStartDir  (const G4ThreeVector &photStartDir) { photonStartDir.push_back(photStartDir); }
   void AddPhotonEndDir  (const G4ThreeVector &photEndDir) { photonEndDir.push_back(photEndDir); }
+  void AddPhotonCreatorProcess (const ProcessType_t creatorProcess) { photonCreatorProcess.push_back(creatorProcess); }
+
   void SetTubeType     (G4String tube_type)          { tubeType = tube_type; }; //Added by B.Quilain to transmit on which PMT type the hit happened. For detectors with several PMT types in ID.
 
   
@@ -61,7 +65,7 @@ class WCSimWCHit : public G4VHit
   }
  
   G4int         GetTubeID()     { return tubeID; };
-  G4int         GetTrackID()    { return trackID; };
+  G4int         GetTrackID(int i)    { return trackID[i]; };
   G4ThreeVector GetPos()        { return pos; };
   G4ThreeVector GetOrientation()        { return orient; };
   G4int         GetTotalPe()    { return totalPe;};
@@ -73,6 +77,7 @@ class WCSimWCHit : public G4VHit
   G4ThreeVector GetPhotonEndPos(int i) { return photonEndPos[i];};
   G4ThreeVector GetPhotonStartDir(int i) { return photonStartDir[i];};
   G4ThreeVector GetPhotonEndDir(int i) { return photonEndDir[i];};
+  ProcessType_t GetPhotonCreatorProcess(int i) {return photonCreatorProcess[i]; };
   
   G4LogicalVolume* GetLogicalVolume() {return pLogV;};
 
@@ -136,7 +141,6 @@ class WCSimWCHit : public G4VHit
   void HSVtoRGB(double& fR, double& fG, double& fB, double& fH, double& fS, double& fV);
 
   G4int            tubeID;
-  G4int            trackID;
   G4double         edep;
   G4ThreeVector    pos;
   G4ThreeVector    orient;
@@ -151,12 +155,14 @@ class WCSimWCHit : public G4VHit
 
   G4int                 totalPe;
   std::vector<G4double> time;
+  std::vector<G4int>    trackID;
   std::vector<G4int>    parentSavedTrackID;
   std::vector<G4float>  photonStartTime;
   std::vector<G4ThreeVector> photonStartPos;
   std::vector<G4ThreeVector> photonEndPos;
   std::vector<G4ThreeVector> photonStartDir;
   std::vector<G4ThreeVector> photonEndDir;
+  std::vector<ProcessType_t>   photonCreatorProcess;
   G4int                 totalPeInGate;
 };
 

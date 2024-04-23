@@ -107,6 +107,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   messenger = new WCSimPrimaryGeneratorMessenger(this);
 
   useMulineEvt 		    = true;
+  useAmBeEvt          = false;
   useRootrackerEvt   	= false;
   useGunEvt    		    = false;
   useLaserEvt  		    = false;
@@ -163,7 +164,7 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
   // Create the relevant histograms to generate muons
   // according to SuperK flux extrapolated at HyperK site
 
-  altCosmics = 2*myDetector->GetWCIDHeight();
+  altCosmics = myDetector->GetWCIDHeight();
   G4cout << "altCosmics : " << altCosmics << G4endl;
   if (inputCosmicsFile.is_open()) inputCosmicsFile.close();
 
@@ -187,9 +188,11 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
     hFluxCosmics = new TH2D("hFluxCosmics","HK Flux", 180,0,360,100,0,1);
     hFluxCosmics->GetXaxis()->SetTitle("#phi (deg)");
     hFluxCosmics->GetYaxis()->SetTitle("cos #theta");
+    hFluxCosmics->SetDirectory(0);
     hEmeanCosmics = new TH2D("hEmeanCosmics","HK Flux", 180,0,360,100,0,1);
     hEmeanCosmics->GetXaxis()->SetTitle("#phi (deg)");
     hEmeanCosmics->GetYaxis()->SetTitle("cos #theta");
+    hEmeanCosmics->SetDirectory(0);
 
     while ( getline(inputCosmicsFile,line) ){
       token = tokenize(" $", line);
@@ -207,8 +210,8 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
       flux=(atof(token[8]));
       Emean=(atof(token[9]));
 
-      hFluxCosmics->SetBinContent(binPhi,binCos,flux);
-      hEmeanCosmics->SetBinContent(binPhi,binCos,Emean);
+      hFluxCosmics->SetBinContent(binPhi+1,binCos+1,flux);
+      hEmeanCosmics->SetBinContent(binPhi+1,binCos+1,Emean);
     }
 
     TFile *file = new TFile("cosmicflux.root","RECREATE");
@@ -217,7 +220,6 @@ void WCSimPrimaryGeneratorAction::Create_cosmics_histogram(){
     file->Close();
   }
 }
-
 
 WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
 {
@@ -428,7 +430,23 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       particleGun->GeneratePrimaryVertex(anEvent);
     }//old muline format
   }//useMuLineEvt
+  
+  else if(useAmBeEvt){ // Diego Costas (diego.costas.rodriguez@usc.es) 2023
+    // Initialise the ambe generator once per sim
+    // This will get AmBe settings (position, direction, etc)
+    if ( !AmBeGen ){
+      AmBeGen = new WCSimAmBeGen();
+    }
 
+    if (!myDetector || !myDetector->IsBGOGeometrySet()) {
+        G4Exception("WCSimPrimaryGeneratorActino::GeneratePrimaries", "WCSimError", FatalException, 
+            "You are trying to run AmBeGen without having set the BGO geometry. Please configure it in your .mac file using /WCSim/BGOPlacement true");
+    }
+    else{
+      AmBeGen->GenerateNG(anEvent);
+    }
+  } 
+  
   else if (useRootrackerEvt)
     {
       if ( !fInputRootrackerFile->IsOpen() )
@@ -457,22 +475,22 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	return;
       }
 
-      // Calculate offset from neutrino generation plane to centre of nuPRISM detector (in metres)
-      float z_offset = fNuPlanePos[2]/100.0;
+      // Calculate offset from neutrino generation plane to centre of nuPRISM detector
+      float z_offset = fNuPlanePos[2]*cm;
       float y_offset = 0;//(fNuPrismRadius/zDir)*yDir;
-      float x_offset = fNuPlanePos[0]/100.0;
+      float x_offset = fNuPlanePos[0]*cm;
 
       //Subtract offset to get interaction position in WCSim coordinates
-        xPos = fTmpRootrackerVtx->EvtVtx[0] - x_offset;
-        yPos = fTmpRootrackerVtx->EvtVtx[1] - y_offset;
-        zPos = fTmpRootrackerVtx->EvtVtx[2] - z_offset;
+        xPos = fTmpRootrackerVtx->EvtVtx[0]*cm - x_offset;
+        yPos = fTmpRootrackerVtx->EvtVtx[1]*cm - y_offset;
+        zPos = fTmpRootrackerVtx->EvtVtx[2]*cm - z_offset;
 
         //Check if event is outside detector; skip to next event if so; keep
         //loading events until one is found within the detector or there are
         //no more interaction to simulate for this event.
         //The current neut vector files do not correspond directly to the detector dimensions, so only keep those events within the detector
-        while (sqrt(pow(xPos,2)+pow(zPos,2))*m > (myDetector->GetWCIDDiameter()/2.) ||
-	       (abs(yPos*m - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2.))){
+        while (sqrt(pow(xPos,2)+pow(zPos,2)) > (myDetector->GetWCIDDiameter()/2.) ||
+	       (abs(yPos - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2.))){
             //Load another event
             if (fEvNum<fNEntries){
                 fRooTrackerTree->GetEntry(fEvNum);
@@ -484,16 +502,16 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		G4RunManager::GetRunManager()-> AbortRun();
                 return;
             }
-	    // Calculate offset from neutrino generation plane to centre of nuPRISM detector (in metres)
-	    z_offset = fNuPlanePos[2]/100.0;
+	    // Calculate offset from neutrino generation plane to centre of nuPRISM detector
+	    z_offset = fNuPlanePos[2]*cm;
 	    y_offset = 0;//(fNuPrismRadius/zDir)*yDir;
-	    x_offset = fNuPlanePos[0]/100.0;
+	    x_offset = fNuPlanePos[0]*cm;
 
             //Convert coordinates
 	    //Subtract offset to get interaction position in WCSim coordinates
-            xPos = fTmpRootrackerVtx->EvtVtx[0] - x_offset;
-            yPos = fTmpRootrackerVtx->EvtVtx[1] - y_offset;
-            zPos = fTmpRootrackerVtx->EvtVtx[2] - z_offset;
+            xPos = fTmpRootrackerVtx->EvtVtx[0]*cm - x_offset;
+            yPos = fTmpRootrackerVtx->EvtVtx[1]*cm - y_offset;
+            zPos = fTmpRootrackerVtx->EvtVtx[2]*cm - z_offset;
         }
 
 	//Generate particles
@@ -504,20 +522,19 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 	// First simulate the incoming neutrino
 	// Get the neutrino direction
-      xDir=fTmpRootrackerVtx->StdHepP4[0][0];
-      yDir=fTmpRootrackerVtx->StdHepP4[0][1];
-      zDir=fTmpRootrackerVtx->StdHepP4[0][2];
+      xDir=fTmpRootrackerVtx->StdHepP4[0][0]*GeV;
+      yDir=fTmpRootrackerVtx->StdHepP4[0][1]*GeV;
+      zDir=fTmpRootrackerVtx->StdHepP4[0][2]*GeV;
 
-      double momentumGeV=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir))*GeV;
       double momentum=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir));
 
-      G4ThreeVector vtx = G4ThreeVector(xPos*m, yPos*m, zPos*m);
+      G4ThreeVector vtx = G4ThreeVector(xPos, yPos, zPos);
       G4ThreeVector dir = G4ThreeVector(-xDir, -yDir, -zDir);
 
-      dir = dir*(momentumGeV/momentum);
+      dir = dir*(1./momentum);
 
       particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[0]));
-      double kin_energy = momentumGeV;//fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
+      double kin_energy = momentum;//fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
       particleGun->SetParticleEnergy(kin_energy);
       particleGun->SetParticlePosition(vtx);
       particleGun->SetParticleMomentumDirection(dir);
@@ -536,22 +553,21 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                 }
             }
 
-            xDir=fTmpRootrackerVtx->StdHepP4[i][0];
-            yDir=fTmpRootrackerVtx->StdHepP4[i][1];
-            zDir=fTmpRootrackerVtx->StdHepP4[i][2];
+            xDir=fTmpRootrackerVtx->StdHepP4[i][0]*GeV;
+            yDir=fTmpRootrackerVtx->StdHepP4[i][1]*GeV;
+            zDir=fTmpRootrackerVtx->StdHepP4[i][2]*GeV;
 
-            momentumGeV=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir))*GeV;
             momentum=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir));
 
-            vtx.setX(xPos*m);
-            vtx.setY(yPos*m);
-            vtx.setZ(zPos*m);
+            vtx.setX(xPos);
+            vtx.setY(yPos);
+            vtx.setZ(zPos);
 
             dir.setX(xDir);
             dir.setY(yDir);
             dir.setZ(zDir);
 
-            dir = dir*(momentumGeV/momentum);
+            dir = dir*(1./momentum);
 
             particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[i]));
 
@@ -822,7 +838,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4ThreeVector dir  = P.unit();
       G4double E         = std::sqrt((P.dot(P))+(mass*mass));
       G4cout << " GPS primary vertex (" << vtx.x() << ", " << vtx.y() << ", " << vtx.z() << "), dir ("
-	     << dir.x() << ", " << dir.y() << ", " << dir.z() << ") m " << m << " E "<< E << " pdg " << pdg << G4endl;
+	     << dir.x() << ", " << dir.y() << ", " << dir.z() << ") m " << mass << " E "<< E << " pdg " << pdg << G4endl;
 
       SetVtx(vtx);
       SetBeamEnergy(E);
@@ -1127,18 +1143,44 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4cout << "#############" << G4endl;
     //////////////////
 
+    // get muon direction
     double phiMuon, cosThetaMuon;
     energy = 0;
     while((int)(energy) == 0){
       hFluxCosmics->GetRandom2(phiMuon,cosThetaMuon);
-      energy = hEmeanCosmics->GetBinContent(hFluxCosmics->GetBin(phiMuon,cosThetaMuon))*GeV;
+      int phiMuonBin = hFluxCosmics->GetXaxis()->FindFixBin(phiMuon);
+      int cosThetaMuonBin = hFluxCosmics->GetYaxis()->FindFixBin(cosThetaMuon);
+      energy = hEmeanCosmics->GetBinContent(phiMuonBin,cosThetaMuonBin)*GeV;
     }
 
     G4ThreeVector dir(0,0,0);
     dir.setRThetaPhi(-1,acos(cosThetaMuon),phiMuon);
+
+    // generate point uniformly distributed inside the ID cylinder
+    double detHalfHeight = 0.5*myDetector->GetWCIDHeight();
+    double detRadius     = 0.5*myDetector->GetWCIDDiameter();
+    double posInCylR     = sqrt(gRandom->Uniform())*detRadius;
+    double posInCylPhi   = gRandom->Uniform(TMath::TwoPi());
+    double posInCylZ     = gRandom->Uniform(-1.*detHalfHeight,detHalfHeight);
+
+    G4ThreeVector posInCyl(0,0,0);
+    posInCyl.setX(posInCylR*cos(posInCylPhi));
+    posInCyl.setY(posInCylR*sin(posInCylPhi));
+    posInCyl.setZ(posInCylZ);
+
+    // generate muon at the intersection
+    // between an sphere with radius = altComics
+    // and a line made with the muon direction
+    // and the generated point inside the ID cylinder
+    double a = dir.mag2();
+    double b = -2.*posInCyl.dot(dir);
+    double c = posInCyl.mag2()-altCosmics*altCosmics;
+    double t = (sqrt(b*b-4.*c*a)-b)/(2.*a);
+
     G4ThreeVector vtx(0,0,0);
-    vtx = -dir;
-    vtx.setR(altCosmics);
+    vtx.setX(posInCyl.x()-t*dir.x());
+    vtx.setY(posInCyl.y()-t*dir.y());
+    vtx.setZ(posInCyl.z()-t*dir.z());
 
     int pdgid = 13; // MUON
     particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));
@@ -1589,6 +1631,8 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
 {
   if(useMulineEvt)
     return "muline";
+  else if(useAmBeEvt)
+    return "ambeevt";
   else if(useGunEvt)
     return "gun";
   else if(useGPSEvt)
@@ -1603,6 +1647,18 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
     return "cosmics";
   else if (useMPMTledEvt)
     return "mPMT-LED";
+  else if(useIBDEvt)
+    return "IBD";
+  else if(useDataTableEvt)
+    return "data-table";
+  else if(useCosmics)
+    return "cosmics";
+  else if(useRadioactiveEvt)
+    return "radioactivity";
+  else if(useRadonEvt)
+    return "radon";
+  else if(useLightInjectorEvt)
+    return "light-injector";
   return "";
 }
 

@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.1)
 # ##############################################################################
 
 set(PROJECT_NAME WCSim)
-set(PROJECT_VERSION 1.12.3)
+set(PROJECT_VERSION 1.12.12)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 
@@ -110,60 +110,72 @@ option(WCSim_Geometry_Overlaps_CHECK
 )
 set( WCSIM_CHECK_GEOMETRY_OVERLAPS $<IF:$<BOOL:${WCSim_Geometry_Overlaps_CHECK}>,true,false>)
 
+option(WCSIM_SAVE_PHOTON_HISTORY_FLAG
+  "Toggle WCSim to save photon scattering and reflection history"
+  OFF
+)
+if(WCSIM_SAVE_PHOTON_HISTORY_FLAG STREQUAL ON)
+  add_definitions(-DWCSIM_SAVE_PHOTON_HISTORY)
+endif()
+
 #########
 # copy extra data files
 #########
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/MuonFlux-HyperK-ThetaPhi.dat
-	${PROJECT_SOURCE_DIR}/data/biasprofile.dat
+      	${PROJECT_SOURCE_DIR}/data/biasprofile.dat
         ${PROJECT_SOURCE_DIR}/data/theta_cos15deg_FWHM.txt
         ${PROJECT_SOURCE_DIR}/data/DSNBFluxes.json
       	${PROJECT_SOURCE_DIR}/data/LightInjectors.json
       	${PROJECT_SOURCE_DIR}/data/LI_OD_laser_ball_photon_positions.csv
         ${PROJECT_SOURCE_DIR}/data/mPMT_Position_WCTE.txt
+        ${PROJECT_SOURCE_DIR}/data/mPMT_Position_WCTE_CDS.txt
+        ${PROJECT_SOURCE_DIR}/data/ground_state_spectrum.txt
+        ${PROJECT_SOURCE_DIR}/data/first_excited_spectrum.txt
+        ${PROJECT_SOURCE_DIR}/data/second_excited_spectrum.txt
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
-	#required macros
+	      #required macros
         ${PROJECT_SOURCE_DIR}/macros/jobOptions.mac
         ${PROJECT_SOURCE_DIR}/macros/tuning_parameters.mac
-	#options used as includes in WCSim.mac and dependents
+	      #options used as includes in WCSim.mac and dependents
         ${PROJECT_SOURCE_DIR}/macros/daq.mac
-	${PROJECT_SOURCE_DIR}/macros/geom_hk_mpmt_options.mac
-	${PROJECT_SOURCE_DIR}/macros/geom_hk_od_options.mac
-	${PROJECT_SOURCE_DIR}/macros/mPMT_37pmtHK.mac
-	${PROJECT_SOURCE_DIR}/macros/mPMT_interesting1.mac
-	${PROJECT_SOURCE_DIR}/macros/mPMT_interesting2_SKwCover.mac
-	${PROJECT_SOURCE_DIR}/macros/mPMT_nuPrism1.mac
-	${PROJECT_SOURCE_DIR}/macros/mPMT_nuPrism2.mac
+        ${PROJECT_SOURCE_DIR}/macros/geom_hk_mpmt_options.mac
+        ${PROJECT_SOURCE_DIR}/macros/geom_hk_od_options.mac
+        ${PROJECT_SOURCE_DIR}/macros/mPMT_37pmtHK.mac
+        ${PROJECT_SOURCE_DIR}/macros/mPMT_interesting1.mac
+        ${PROJECT_SOURCE_DIR}/macros/mPMT_interesting2_SKwCover.mac
+        ${PROJECT_SOURCE_DIR}/macros/mPMT_nuPrism1.mac
+        ${PROJECT_SOURCE_DIR}/macros/mPMT_nuPrism2.mac
         ${PROJECT_SOURCE_DIR}/macros/mPMT_radon_with_bias.mac
         ${PROJECT_SOURCE_DIR}/macros/mPMT_radon_without_bias.mac
-	#visualisation macros
+	      #visualisation macros
         ${PROJECT_SOURCE_DIR}/macros/visOGLSX.mac
         ${PROJECT_SOURCE_DIR}/macros/visRayTracer.mac
         ${PROJECT_SOURCE_DIR}/macros/visOGLQT.mac
         ${PROJECT_SOURCE_DIR}/macros/visOGLQT_2.mac
-	${PROJECT_SOURCE_DIR}/macros/visOGLQT-OD.mac
-	${PROJECT_SOURCE_DIR}/macros/vis_original.mac
-	#misc macros with different geometries
+        ${PROJECT_SOURCE_DIR}/macros/visOGLQT-OD.mac
+        ${PROJECT_SOURCE_DIR}/macros/vis_original.mac
+        #misc macros with different geometries
         # WCTE
         ${PROJECT_SOURCE_DIR}/macros/WCTE.mac
-	#nuprism
-	${PROJECT_SOURCE_DIR}/macros/NuPRISM.mac
+        #nuprism
+        ${PROJECT_SOURCE_DIR}/macros/NuPRISM.mac
         #WCTE
         ${PROJECT_SOURCE_DIR}/macros/WCTE.mac
-	#HK FD ID-only
-	${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid.mac
-	${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_injector.mac
-	${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_vectorfile.mac
-	${PROJECT_SOURCE_DIR}/macros/mPMT_radon_with_bias.mac
-	${PROJECT_SOURCE_DIR}/macros/mPMT_radon_without_bias.mac
-	#Old HK FD geometries
-	${PROJECT_SOURCE_DIR}/macros/OD.mac
-	${PROJECT_SOURCE_DIR}/macros/OD_10k.mac
-	${PROJECT_SOURCE_DIR}/macros/wcsim_temp.mac
-	${PROJECT_SOURCE_DIR}/macros/WCSim_1part_HK.mac
+        #HK FD ID-only
+        ${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid.mac
+        ${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_injector.mac
+        ${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_vectorfile.mac
+        ${PROJECT_SOURCE_DIR}/macros/mPMT_radon_with_bias.mac
+        ${PROJECT_SOURCE_DIR}/macros/mPMT_radon_without_bias.mac
+        #Old HK FD geometries
+        ${PROJECT_SOURCE_DIR}/macros/OD.mac
+        ${PROJECT_SOURCE_DIR}/macros/OD_10k.mac
+        ${PROJECT_SOURCE_DIR}/macros/wcsim_temp.mac
+        ${PROJECT_SOURCE_DIR}/macros/WCSim_1part_HK.mac
         ${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid.mac
         ${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_vectorfile.mac
         ${PROJECT_SOURCE_DIR}/macros/WCSim_hybrid_injector.mac
@@ -176,8 +188,8 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}
 
 pbuilder_install_files_executable(${CMAKE_INSTALL_PREFIX}/bin
         ${PROJECT_SOURCE_DIR}/rootwc/rootwc
-	${PROJECT_SOURCE_DIR}/sample-root-scripts/MakeKin.py
-	${PROJECT_SOURCE_DIR}/sample-root-scripts/KinSplitter.py
+        ${PROJECT_SOURCE_DIR}/sample-root-scripts/MakeKin.py
+        ${PROJECT_SOURCE_DIR}/sample-root-scripts/KinSplitter.py
         )
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/bin/rootwc-files

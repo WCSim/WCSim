@@ -1,7 +1,144 @@
 This file contains the release notes for each version of WCSim. Release notes can also be found at https://github.com/WCSim/WCSim/tags.
 
+
 *************************************************************
-13/10/2023: Notes for v1.12.3
+Recent updates
+*************************************************************
+
+Bug fix
+* Pull request #432 @tdealtry: Use the same default dark rate time option for all PMT types in WCSim.mac
+
+*************************************************************
+18/04/2024: Notes for v1.12.12
+*************************************************************
+
+Minor release after #431, after the IWCD geometry change
+
+Update
+* Pull request #431 @kmtsui: Update to IWCD geometry to newly proposed size. 3 proposed options for PMT layout are available (A, B, C), with B being the nominal. The old IWCD geometry is also retained
+
+Bug fix
+* Pull request #430 @kmtsui: Use G4MultiUnion & G4Voxeliser from Geant4.10.7.2 instead of Geant4.10.5.1, to pickup some bug fixes related to geometry overlaps
+
+*************************************************************
+04/04/2024: Notes for v1.12.11
+*************************************************************
+
+Minor release after #424, after the WCTE geometry output changed
+
+Update
+* Pull request #424 @kmtsui: Allow light to propagate into PMT region that is behind the blacksheet radius. Activated for WCTE geometry only
+
+Bug fix
+* Pull request #428 @kmtsui: Fix output file saving of photon history (accessible with build option) which broke with #427
+
+Documentation
+* Pull request #423 @tdealtry: Document output file class data members
+
+*************************************************************
+27/03/2024: Notes for v1.12.10
+*************************************************************
+
+Minor release after #427, removing the superfluous copies of true track information in the output file
+Also picking up mac file fixes in WCSim/Validation - so the HK FD CI checks will be really from the HK FD geometry (has been SK since v1.12.8)
+
+New features
+* Pull request #387 @DiegoCostas97: Add (optional) AmBe source geometry
+* Pull request #387 @DiegoCostas97: New AmBe primary generator, simulating gamma + photon
+* Pull request #387 @DiegoCostas97: Addition of creator process to WCSimRootTrack & WCSimRootCherenkovHitTime
+* Pull request #427 @tdealtry: `sample_readfile.C` has option to select which PMT branch to analyse
+
+Update
+* Pull request #421 @tdealtry: Remove the old build & physics test CI action (calling bash scripts) in favour of the new python version
+* Pull request #426 @tdealtry: Turn off creation of the (unfilled) flat tree output file by default
+* Pull request #427 @tdealtry: Only store true track information in the 0th trigger of the first PMT type (previously was saved across multiple triggers, and copied into every active PMT branch)
+
+*************************************************************
+05/03/2024: Notes for v1.12.9
+*************************************************************
+
+Minor release after updates to mPMT aluminium photon propagation & WCTE PMT rotations
+
+Update
+* Pull request #419 #420 @tdealtry: Add new HK FD geometry size to MakeKin.py
+* Pull request #416 #418 @nickwp: Update the rotations of WCTE PMTs
+
+Bug fix
+* Pull request #413 @arturof: Fix the units of the input when using a RooTracker file
+* Pull request #417 @kmtsui: Fix PMT copy numbers being duplicated in some circumstances (using non-replic geomtries without a PMT position table)
+* Pull request #418 @kmtsui @nickwp: Set small absorption length for Cherenkov photons in aluminium, to prevent Cherenkov photons being killed due to no refractive index being defined. Not defining the refractive index, as this is complex in reality & non-trivial to implement this in Geant without photons travelling faster than `c`, causing the event to be aborted
+
+Documentation
+* Pull request #411 @tdealtry: Add extra clarification about geometry options
+* Pull request #412 @tdealtry: Fix description of how to control dark noise options for "second ID PMT type" (mPMTs in FD geometry)
+
+*************************************************************
+02/02/2024: Notes for v1.12.8
+*************************************************************
+
+Minor release after updates to WCTE geometry
+
+New feature
+* Pull request #408 @kmtsui: Add option to include calibration deployment system (CDS) in WCTE geometry
+
+Bug fix
+* Pull request #409 @kmtsui: Add missing class to the old makefile build
+* Pull request #408 @kmtsui: Fix overlaps in WCTE geometry
+
+*************************************************************
+31/01/2024: Notes for v1.12.7
+*************************************************************
+
+Minor release after updates to WCTE geometry
+
+New feature
+* Pull request #401 @nickwp: Allow multiple runs of WCSim to be performed in a single WCSim job
+
+Update
+* Pull request #405 @nickwp: Update WCTE geometry (tank height, diameter, PMT positions)
+
+Bug fix
+* Pull request #402 @kmtsui: Make /WCSim/PMT/ReplicaPlacement=true work correctly when also using /WCSim/PMT/PositionFile
+* Pull request #403 @kmtsui @gondiaz: Initalise `odEdited` to `false` to prevent undefined behaviour
+
+*************************************************************
+11/01/2024: Notes for v1.12.6
+*************************************************************
+
+Minor release to provide tag for tuning new HK FD geometries
+
+New features
+* Pull request #399 @patrickstowell: Addition of realistic HK FD geometry (both w/ & w/o OD PMTs)
+* Pull request #397 @kmtsui: `-DWCSIM_SAVE_PHOTON_HISTORY_FLAG=ON` runs in mode with new output information about photon history (scatters, reflections)
+
+Bug fix
+* Pull request #398 @arturof: Fixes to make cosmic muon generator work correctly (off by 1 histogram binning errors, crashes due to simulating outside of world volume, incomplete detector coverage of muon trajectories)
+
+*************************************************************
+07/12/2023: Notes for v1.12.5
+*************************************************************
+
+Minor release to update the reference validation plots after #396
+
+Bug fix
+* Pull request #396 @kmtsui: Fix PMT overlap in IWCD geom
+
+*************************************************************
+29/11/2023: Notes for v1.12.4
+*************************************************************
+
+Minor release to update the reference validation plots after #394
+
+Update
+* Pull request #394 @kmtsui: Update default IWCD ID diameter from 7.0 to 6.6 m
+* Pull request #393 @kmtsui: Allow `WCSimOpticalPhysics` options to be controlled in `jobOptions.mac`
+
+Bug fix
+* Pull request #395 @gondiaz: Install `*.hpp` files
+* Pull request #392 @nickwp: Parent of the saved track now correctly saved in the true Cherenkov hit (previously erroneously ID of the photon track)
+
+*************************************************************
+15/11/2023: Notes for v1.12.3
 *************************************************************
 
 Minor release to update the reference validation plots after #390

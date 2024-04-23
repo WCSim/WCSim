@@ -38,10 +38,10 @@ jobs:
            username: ${{ github.actor }}
            password: ${{ secrets.CONTAINER_REPO }}
       env:
-        #TRAVIS_COMMIT: ${{ github.sha }}
-        TRAVIS_PULL_REQUEST: ${{ github.event.number }}
-        TRAVIS_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
-        TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        #GIT_COMMIT: ${{ github.sha }}
+        GIT_PULL_REQUEST: ${{ github.event.number }}
+        GIT_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
+        GIT_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
     steps:
@@ -69,7 +69,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout WCSim
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: ${{ steps.checkout_sha.outputs.value }}
           repository: ${{ steps.checkout_repo.outputs.value }}
@@ -100,7 +100,7 @@ jobs:
         run: |
           source /opt/setup.sh
           cd /opt/WCSim
-          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          export GIT_COMMIT=${{ steps.checkout_sha.outputs.value }}
           env
           pwd
           ls -a
@@ -109,15 +109,15 @@ jobs:
         run: |
           source /opt/setup.sh
           cd /opt/WCSim
-          /opt/Validation/build.sh
+          python3 /opt/Validation/build.py --option 0
           echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
       - name: Setup validation webpage
         run: |
           source /opt/setup.sh
           cd /opt/WCSim/install
-          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
-          /opt/Validation/SetupWebpages.sh
+          export GIT_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          python3 /opt/Validation/SetupWebpages.py
 
   physics:
     needs: build
@@ -137,10 +137,10 @@ jobs:
            username: ${{ github.actor }}
            password: ${{ secrets.CONTAINER_REPO }}
       env:
-        #TRAVIS_COMMIT: ${{ github.sha }}
-        TRAVIS_PULL_REQUEST: ${{ github.event.number }}
-        TRAVIS_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
-        TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        #GIT_COMMIT: ${{ github.sha }}
+        GIT_PULL_REQUEST: ${{ github.event.number }}
+        GIT_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
+        GIT_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
     steps:
@@ -162,7 +162,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout WCSim
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: ${{ steps.checkout_sha.outputs.value }}
           repository: ${{ steps.checkout_repo.outputs.value }}
@@ -193,7 +193,7 @@ jobs:
         run: |
           source /opt/setup.sh
           cd /opt/WCSim
-          /opt/Validation/build.sh 1
+          python3 /opt/Validation/build.py --option 1
           echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
       - name: Run physics
@@ -201,8 +201,8 @@ jobs:
           source /opt/setup.sh
           cd /opt/WCSim/install
           echo ${{ matrix.physics_job }}
-          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
-          /opt/Validation/RunTests.sh ${{ matrix.physics_job }}
+          export GIT_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          python3 /opt/Validation/RunTests.py --test_num ${{ matrix.physics_job }}
 
 
   finalise:
@@ -220,10 +220,10 @@ jobs:
            username: ${{ github.actor }}
            password: ${{ secrets.CONTAINER_REPO }}
       env:
-        #TRAVIS_COMMIT: ${{ github.sha }}
-        TRAVIS_PULL_REQUEST: ${{ github.event.number }}
-        TRAVIS_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
-        TRAVIS_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        #GIT_COMMIT: ${{ github.sha }}
+        GIT_PULL_REQUEST: ${{ github.event.number }}
+        GIT_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
+        GIT_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         GitHubToken: ${{ secrets.VALIDATION_PR }}
         ValidationPath: /opt/Validation/
     steps:
@@ -244,5 +244,5 @@ jobs:
       - name: Setup validation webpage
         run: |
           cd /opt/
-          export TRAVIS_COMMIT=${{ steps.checkout_sha.outputs.value }}
-          /opt/Validation/FinaliseWebpages.sh
+          export GIT_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          python3 /opt/Validation/FinaliseWebpages.py
