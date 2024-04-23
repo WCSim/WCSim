@@ -44,11 +44,19 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   fileNameCmdCosmics->SetParameterName("fileName",true);
   fileNameCmdCosmics->SetDefaultValue("data/MuonFlux-HyperK-ThetaPhi.dat");
 
-  fileNameCmdHepMC3 = new G4UIcmdWithAString("/mygen/hepmc3file",this);
-  fileNameCmdHepMC3->SetGuidance("Select the file of HepMC3.");
-  fileNameCmdHepMC3->SetGuidance(" Enter the file name of the HepMC3 file");
-  fileNameCmdHepMC3->SetParameterName("fileName",true);
-  fileNameCmdHepMC3->SetDefaultValue("inputhepmc3file");
+  hepmc3fileNameCmd= new G4UIcmdWithAString("/mygen/hepmc3file",this);
+  hepmc3fileNameCmd->SetGuidance("Select the file of HepMC3.");
+  hepmc3fileNameCmd->SetGuidance(" Enter the file name of the HepMC3 file");
+  hepmc3fileNameCmd->SetParameterName("fileName",true);
+  hepmc3fileNameCmd->SetDefaultValue("inputhepmc3file");
+
+  hepmc3positionGenCmd = new G4UIcmdWithABool("/mygen/hepmc3positionGen",this);
+  hepmc3positionGenCmd->SetGuidance("Set to generate isotope positions or read from file.");
+  hepmc3positionGenCmd->SetGuidance("true : generate positions, false : read from file");
+  hepmc3positionGenCmd->SetGuidance("Default if not set is false (read from file)");
+  hepmc3positionGenCmd->SetParameterName("positionGen",true);
+  hepmc3positionGenCmd->SetDefaultValue("false");
+  SetNewValue(hepmc3positionGenCmd, false);
 
   timeUnitCmd = new G4UIcmdWithAString("/mygen/time_unit",this);
   timeUnitCmd->SetGuidance("Define the units used for time in the input file.");
@@ -598,12 +606,16 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     myAction->SetLightInjectorMode(lightInjectorModeCmd->GetNewIntValue(newValue));
   }
 
-  if (command == fileNameCmdHepMC3) {
+  if (command == hepmc3fileNameCmd) {
     myAction->SetHepMC3Filename(newValue);
     G4cout << "HepMC3 file is set to " << newValue << G4endl;
 
       }
 
+  if (command == hepmc3positionGenCmd){
+    myAction->SetHepMC3PositionGen(hepmc3positionGenCmd->GetNewBoolValue(newValue));
+  }
+  //
   if (command == ibdDatabaseCmd)
     {
       myAction->SetIBDDatabase(newValue);

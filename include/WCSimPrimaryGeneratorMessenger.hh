@@ -59,7 +59,8 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithAString* ibdmodelCmd;
 
   // HepMC3 event generator
-  G4UIcmdWithAString *fileNameCmdHepMC3;
+  G4UIcmdWithAString *hepmc3fileNameCmd;
+  G4UIcmdWithABool *hepmc3positionGenCmd;
   
   // commands for the light injectors (profile from db)
   G4UIcmdWithAString* lightInjectorCmd;

@@ -127,6 +127,8 @@ private:
   G4String hepmc3_filename;
     // HepMC3 reader object
   WCSimNuHepMC3Reader* hepmc3_reader;
+    // Position generation bool
+  G4bool hepmc3_positionGen;
 
   // Variables for Radioactive and Radon generators
   std::vector<struct radioactive_source> radioactive_sources;
@@ -255,6 +257,8 @@ private:
   inline G4bool IsUsingHepMC3EvtGenerator()  { return useHepMC3Evt; }
   inline void SetHepMC3Filename(G4String choice) { hepmc3_filename = choice; }
   inline G4String GetHepMC3Filename()  { return hepmc3_filename; }
+  inline void SetHepMC3PositionGen(G4bool choice) { hepmc3_positionGen = choice; }
+  inline G4bool SetHepMC3DirectionGen(G4bool choice) { return hepmc3_positionGen;}
 
   // L. Kneale: light injector with profile from db
   inline void SetLightInjectorEvtGenerator(G4bool choice) {useLightInjectorEvt = choice; }
