@@ -22,7 +22,7 @@ class WCSimNuHepMC3Reader {
     ~WCSimNuHepMC3Reader();
 
     // Read the next event from the input file
-    bool ReadEvent();
+    bool ReadEvent(bool positionFlag);
 
     // Vector of particles in event
     std::vector<HepMC3::GenParticlePtr> particles;

@@ -1525,10 +1525,10 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
 
       // Get the next event from the reader
-      hepmc3_reader->ReadEvent();
+      hepmc3_reader->ReadEvent(hepmc3_positionGen);
 
       // Loop over the particles
-      for (auto part : hepmc3_reader->event.particles()) {
+      for (HepMC3::GenParticlePtr part : hepmc3_reader->event.particles()) {
 
         // Skip nuclear remnants
         if (part->pid() == 2009900000) {
