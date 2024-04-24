@@ -95,6 +95,10 @@ jobs:
           echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > /opt/setup.sh
           echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
           echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> /opt/setup.sh
+
+      - name: Install HepMC3
+        run: |
+          sudo yum install -y HepMC3 HepMC3-devel HepMC3-search HepMC3-search-devel HepMC3-interfaces-devel HepMC3-doc
   
       - name: Print environment
         run: |
@@ -188,6 +192,10 @@ jobs:
           echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > /opt/setup.sh
           echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
           echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> /opt/setup.sh
+
+      - name: Install HepMC3
+        run: |
+          sudo yum install -y HepMC3 HepMC3-devel HepMC3-search HepMC3-search-devel HepMC3-interfaces-devel HepMC3-doc
 
       - name: Build, with added geometry checks
         run: |
