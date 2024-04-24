@@ -108,7 +108,7 @@ private:
   G4bool   useRadioactiveEvt; // F. Nova: Radioactive flag
   G4bool   useRadonEvt; // G. Pronost: Radon flag
   G4bool   useLightInjectorEvt; // L. Kneale injector with profile from db
-  G4bool   useMPMTledEvt;r
+  G4bool   useMPMTledEvt;
   G4bool   useHepMC3Evt;
   
   std::fstream inputFile;
