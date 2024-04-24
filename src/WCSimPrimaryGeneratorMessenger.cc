@@ -52,7 +52,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   hepmc3fileNameCmd->SetDefaultValue("inputhepmc3file");
 
   hepmc3positionGenCmd = new G4UIcmdWithABool("/mygen/hepmc3positionGen",this);
-  hepmc3positionGenCmd->SetGuidance("Set to generate isotope positions or read from file.");
+  hepmc3positionGenCmd->SetGuidance("Set to generate isotropic positions or read from file.");
   hepmc3positionGenCmd->SetGuidance("true : generate positions, false : read from file");
   hepmc3positionGenCmd->SetGuidance("Default if not set is false (read from file)");
   hepmc3positionGenCmd->SetParameterName("positionGen",true);
