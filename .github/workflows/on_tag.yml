@@ -84,7 +84,7 @@ jobs:
 
       - name: Install HepMC3
         run: |
-          sudo yum install -y HepMC3 HepMC3-devel HepMC3-search HepMC3-search-devel HepMC3-interfaces-devel HepMC3-doc
+          yum install -y HepMC3 HepMC3-devel HepMC3-search HepMC3-search-devel HepMC3-interfaces-devel HepMC3-doc
 
       - name: Print environment
         run: |
@@ -179,7 +179,7 @@ jobs:
 
       - name: Install HepMC3
         run: |
-          sudo yum install -y HepMC3 HepMC3-devel HepMC3-search HepMC3-search-devel HepMC3-interfaces-devel HepMC3-doc
+          yum install -y HepMC3 HepMC3-devel HepMC3-search HepMC3-search-devel HepMC3-interfaces-devel HepMC3-doc
 
       - name: Build
         run: |
