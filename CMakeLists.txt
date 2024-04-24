@@ -36,10 +36,10 @@ set(CMAKE_CXX_STANDARD 14) # Enable c++14 standard
 ########
 # HepMC3
 ########
-find_package(hepmc3 REQUIRED)
-if (NOT hepmc3_FOUND)
+find_package(HepMC3 REQUIRED)
+if (NOT HepMC3_FOUND)
     message(FATAL "Unable to find HepMC3")
-endif (NOT hepmc3_FOUND)
+endif (NOT HepMC3_FOUND)
 include_directories (${HEPMC3_INCLUDE_DIR})
 LIST(APPEND PUBLIC_EXT_LIBS ${HEPMC3_LIBRARIES})
 
