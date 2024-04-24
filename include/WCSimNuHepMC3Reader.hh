@@ -33,7 +33,7 @@ class WCSimNuHepMC3Reader {
     // Return Lorentz vector of a specific particle
     G4LorentzVector GetLorentzVector(int particle_index);
 
-    // Generate a random position in the detector construiction
+    // Generate a random position in the detector construction
     HepMC3::FourVector GenRandomPosition();
 
     // Generate a random direction
