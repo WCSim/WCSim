@@ -21,43 +21,43 @@ class WCSimNuHepMC3Reader {
     WCSimNuHepMC3Reader(std::string filename, WCSimDetectorConstruction *myDC);
     ~WCSimNuHepMC3Reader();
 
-    // Read the next event from the input file
+    /// Read the next event from the input file
     bool ReadEvent(bool positionFlag);
 
-    // Vector of particles in event
+    /// Vector of particles in event
     std::vector<HepMC3::GenParticlePtr> particles;
 
-    // Populate particles using event.particles()
+    /// Populate particles using event.particles()
     bool GetParticles();
 
-    // Return Lorentz vector of a specific particle
+    /// Return Lorentz vector of a specific particle
     G4LorentzVector GetLorentzVector(int particle_index);
 
-    // Generate a random position in the detector construction
+    /// Generate a random position in the detector construction
     HepMC3::FourVector GenRandomPosition();
 
-    // Generate a random direction
+    /// Generate a random direction
     HepMC3::FourVector GenRandomDirection();
 
-    // Rotate the event
+    /// Rotate the event
     void RotateEvent();
 
-    // Return a vector of momenta and PDGs
+    /// Return a vector of momenta and PDGs
     std::vector<std::pair<G4LorentzVector, int>> GetMomentaAndPDGs();
 
-    // void GenDirection(double energy);
+    /// void GenDirection(double energy);
 
-    // Reader object
+    /// Reader object
     std::shared_ptr<HepMC3::Reader> my_hepmc_reader;
 
-    // Event object
+    /// Event object
     HepMC3::GenEvent event;
 
   private:
-    // Event reader
+    /// Event reader
     int events_parsed = 0;
 
-    // Detector construction
+    /// Detector construction
     WCSimDetectorConstruction *myDetector;
 };
 

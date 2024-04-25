@@ -32,7 +32,7 @@ WCSimNuHepMC3Reader::WCSimNuHepMC3Reader(std::string filename, WCSimDetectorCons
 
 WCSimNuHepMC3Reader::~WCSimNuHepMC3Reader() {}
 
-// Read the next event from the input file
+/// Read the next event from the input file
 bool WCSimNuHepMC3Reader::ReadEvent(bool positionFlag) {
     // Read event
     my_hepmc_reader->read_event(event);
@@ -61,7 +61,7 @@ bool WCSimNuHepMC3Reader::ReadEvent(bool positionFlag) {
     return true;
 }
 
-// Get particles
+/// Get particles
 bool WCSimNuHepMC3Reader::GetParticles() {
     // Clear the vector of particles
     particles.clear();
@@ -77,7 +77,7 @@ bool WCSimNuHepMC3Reader::GetParticles() {
     return true;
 }
 
-// Return Lorentz vector of a specific particle
+/// Return Lorentz vector of a specific particle
 G4LorentzVector WCSimNuHepMC3Reader::GetLorentzVector(int particle_index) {
     // Get particle
     HepMC3::GenParticlePtr particle = particles[particle_index];
@@ -89,8 +89,8 @@ G4LorentzVector WCSimNuHepMC3Reader::GetLorentzVector(int particle_index) {
     return G4LorentzVector(momentum.px(), momentum.py(), momentum.pz(), momentum.e());
 }
 
-// Loop over particles in event and return a vector of momenta and PDGs.
-// This is used to fill the truth tree.
+/// Loop over particles in event and return a vector of momenta and PDGs.
+/// This is used to fill the truth tree.
 std::vector<std::pair<G4LorentzVector, int>> WCSimNuHepMC3Reader::GetMomentaAndPDGs() {
     // Vector of momenta and PDGs
     std::vector<std::pair<G4LorentzVector, int>> momenta_and_pdgs;
