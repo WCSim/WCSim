@@ -97,7 +97,9 @@
 #/random/setSeeds 2 1
 #/WCSim/random/seed 4
 
-
+# Note: SetDetectorElement **must** come before SetDarkRate, if not, changes in the 
+# DarkRate will not be applied
+#/DarkRate/SetDetectorElement tank
 # default dark noise frequency (and conversion factor) is PMT property (NEW), set in the code.
 # Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
 #/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
