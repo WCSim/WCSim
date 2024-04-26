@@ -37,14 +37,12 @@ public:
   void EndOfRunAction(const G4Run*);
   void SetRootFileName(G4String fname) { RootFileName = fname; }
   void SetSaveRooTracker(G4bool fsave) { SaveRooTracker = fsave; }
-  G4String GetRootFileName() { return RootFileName; }
+  G4String GetRootFileName() const { return RootFileName; }
   void SetOptionalRootFile(G4bool choice) { useDefaultROOTout = choice; }
-  G4bool GetRootFileOption() { return useDefaultROOTout; }
-  void SetFlatRootFile(G4bool choice) { useFlatROOTout = choice; }
-  G4bool GetFlatRootFileOption() { return useFlatROOTout; }
-  bool GetSaveRooTracker() { return SaveRooTracker; }
+  G4bool GetRootFileOption() const { return useDefaultROOTout; }
+  bool GetSaveRooTracker() const { return SaveRooTracker; }
   void FillGeoTree();
-  TTree* GetTree(){return WCSimTree;}
+  TTree* GetTree() const {return WCSimTree;}
   TBranch* GetBranch(G4String detectorElement = "tank"){
     if(detectorElement=="tank") return wcsimrooteventbranch;
     else if(detectorElement=="tankPMT2")  return wcsimrooteventbranch2;
@@ -52,52 +50,18 @@ public:
     else G4cout << "Unkown detector element: " << detectorElement << G4endl;
     return nullptr;
   }
-  TTree* GetFlatMasterTree(){return masterTree;}
-  TTree* GetGeoTree(){return geoTree;}
-  TTree* GetOptionsTree(){return optionsTree;}
-  WCSimRootGeom* GetRootGeom(){return wcsimrootgeom;}
-  WCSimRootEvent* GetRootEvent(G4String detectorElement = "tank"){
+  TTree* GetGeoTree() const {return geoTree;}
+  TTree* GetOptionsTree() const {return optionsTree;}
+  WCSimRootGeom* GetRootGeom() const {return wcsimrootgeom;}
+  WCSimRootEvent* GetRootEvent(G4String detectorElement = "tank") const{
     if(detectorElement=="tank") return wcsimrootsuperevent;
     else if(detectorElement=="tankPMT2") return wcsimrootsuperevent2;
     else if(detectorElement=="OD") return wcsimrootsuperevent_OD;
     else G4cout << "Unkown detector element: " << detectorElement << G4endl;
     return nullptr;
   }
-  WCSimRootOptions* GetRootOptions(){return wcsimrootoptions;}
+  WCSimRootOptions* GetRootOptions() const {return wcsimrootoptions;}
 
-  //Need to share with EventAction:
-  TTree *GetCherenkovHitsTree(){return cherenkovHitsTree;}
-  TTree *GetCherenkovDigiHitsTree(){return cherenkovDigiHitsTree;}
-  TTree *GetTracksTree(){return tracksTree;}
-  TTree *GetTriggerTree(){return triggerTree;}
-  TTree *GetEventInfoTree(){return eventInfoTree;}
-  TTree *GetFlatRooTrackerTree(){return flatRooTrackerTree;}
-
-  void SetEventHeaderNew(G4int run_id, G4int event_id, G4int subevent_id){
-    event = event_id;
-    run = run_id;
-    subevent = subevent_id;}
-
-  void SetTriggerInfoNew(TriggerType_t trigger_type,int trigger_info, /* std::vector<G4double> trigger_info, */
-			 G4double trigger_length, G4double trigger_start){
-    trig_type = trigger_type;
-    /*
-    for(size_t j = 0; j < trigger_info.size(); j++){
-      if(j < 10)
-	trig_info[j] = trigger_info[j];
-      else{
-	G4cerr << "Trigger Info too large for array" << G4endl;
-	break;
-      }
-      }*/
-    trig_info = trigger_info;
-    trig_length = trigger_length;
-    trig_start = trigger_start;
-    return;
-  }
-
-  eventNtuple * GetMyStruct(){return evNtup;}
-  NRooTrackerVtx * GetMyRooTracker(){return evNRooTracker;}
   void SetTree(TTree* tree){WCSimTree=tree;}
   void SetBranch(TBranch* branchin, G4String detectorElement = "tank"){
     if(detectorElement=="tank") wcsimrooteventbranch=branchin;
@@ -112,18 +76,11 @@ public:
   }
   void SetRootGeom(WCSimRootGeom* rgeom){wcsimrootgeom=rgeom;}
 
-  int  GetNumberOfEventsGenerated() { return numberOfEventsGenerated;}
-  int  GetNtuples(){return ntuples;}
+  int  GetNtuples() const {return ntuples;}
 
-  void incrementEventsGenerated() { numberOfEventsGenerated++;}
-  void incrementWaterTubeHits()   { numberOfTimesWaterTubeHit++;} 
-  void incrementFVWaterTubeHits() { numberOfTimesFVWaterTubeHit++;} 
-  void incrementCatcherHits()     { numberOfTimesCatcherHit++;}
   void SetNtuples(int ntup) {ntuples=ntup;}
   
   //New:
-  void FillFlatGeoTree();
-
   NRooTrackerVtx* GetRootrackerVertex();
   void FillRootrackerVertexTree() { 
     fRooTrackerOutputTree->Fill();
@@ -135,7 +92,7 @@ public:
 
   void SetUseTimer(bool use) { useTimer = use; }
 
-  int GetRunID() { return run; }
+  int GetRunID() const { return run; }
   void SetRunID(int runID) { run = runID; }
 
  private:
@@ -144,7 +101,8 @@ public:
   // Only required for verification scripts and current fiTQun tuning
   // But making initialization very slow due to large TCloneArray init.
   G4bool useDefaultROOTout;
-  G4bool useFlatROOTout;
+
+	int run;
 
   //
   TTree* WCSimTree;
@@ -160,11 +118,6 @@ public:
   WCSimRootOptions* wcsimrootoptions;
   WCSimDetectorConstruction* wcsimdetector;
   WCSimRandomParameters* wcsimrandomparameters;
-
-  int numberOfEventsGenerated;
-  int numberOfTimesWaterTubeHit;
-  int numberOfTimesFVWaterTubeHit;
-  int numberOfTimesCatcherHit;
 
   TClonesArray* fVertices;
   TTree* fRooTrackerOutputTree;
@@ -184,16 +137,6 @@ public:
 
   WCSimRunActionMessenger* messenger;
   int ntuples;  // 1 for ntuples to be written
-
-  //new: vars for FLAT Trees
-  TTree* masterTree;
-  TTree* geomTree;
-  TTree* cherenkovHitsTree;           //cfr. RecoHitSeriesMap
-  TTree* cherenkovDigiHitsTree;       //cfr. RecoHitSeriesMap
-  TTree* tracksTree;
-  TTree* triggerTree;
-  TTree* eventInfoTree;
-  TTree* flatRooTrackerTree;
 
   // GeoTree
   Char_t geo_type_string[20];   
@@ -229,23 +172,6 @@ public:
     BOTTOMCAP = 20
   } cylLocation[5000000];
   
-  //EventHeader
-  int run;
-  int event;
-  int subevent;
-
-  //TriggerTree
-  TriggerType_t trig_type;
-  int trig_info;              //double trig_info[100];
-  double trig_length;
-  double trig_start;
-  
-  //Event info: General, Tracks and Hits
-  eventNtuple *evNtup;
-
-  //NRooTracker
-  NRooTrackerVtx *evNRooTracker;
-    
   const G4Run* fG4Run;
 
   bool useTimer; ///< Use the timer? Set by Messenger.

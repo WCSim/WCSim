@@ -24,11 +24,6 @@ WCSimRunActionMessenger::WCSimRunActionMessenger(WCSimRunAction* WCSimRA)
   WriteDefaultRootFile->SetParameterName("WriteDefaultFile",true);
   WriteDefaultRootFile->SetDefaultValue(true);  //ToDo: memo: default = FALSE !! Move to novis.mac!
 
-  WriteFlatRootFile = new G4UIcmdWithABool("/WCSimIO/WriteFlatRootFile",this);
-  WriteFlatRootFile->SetGuidance("Do you want to write out the flat ROOT file format");
-  WriteFlatRootFile->SetParameterName("WriteFlatFile",true);
-  WriteFlatRootFile->SetDefaultValue(false);
-
   RooTracker = new G4UIcmdWithABool("/WCSimIO/SaveRooTracker",this);
   RooTracker->SetGuidance("Save the input NEUT Rootracker objects to the output file");
   RooTracker->SetGuidance("Enter a boolean to save or drop the NEUT RooTracker information");
@@ -44,7 +39,6 @@ WCSimRunActionMessenger::WCSimRunActionMessenger(WCSimRunAction* WCSimRA)
 WCSimRunActionMessenger::~WCSimRunActionMessenger()
 {
   delete WriteDefaultRootFile;
-  delete WriteFlatRootFile;
   delete RootFile;
   delete RooTracker;
   delete UseTimer;
@@ -66,13 +60,7 @@ void WCSimRunActionMessenger::SetNewValue(G4UIcommand* command,G4String newValue
       G4cout << "You chose to write out the standard ROOT file: " << WriteDefaultRootFile->GetNewBoolValue(newValue) << G4endl;
     }
 
-  else if (command == WriteFlatRootFile )
-    {
-      WCSimRun->SetFlatRootFile(WriteFlatRootFile->GetNewBoolValue(newValue));
-      G4cout << "You chose to write out the flat ROOT file: " << WriteFlatRootFile->GetNewBoolValue(newValue) << G4endl;
-    }
-
-  if ( command == RooTracker)
+  else if ( command == RooTracker)
     {
       WCSimRun->SetSaveRooTracker(RooTracker->GetNewBoolValue(newValue));
       if(newValue) G4cout << "Saving NEUT RooTracker information to output file"  << G4endl;

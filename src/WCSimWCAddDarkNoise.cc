@@ -36,7 +36,7 @@
 #endif
 
 WCSimWCAddDarkNoise::WCSimWCAddDarkNoise(G4String name,
-                                         WCSimDetectorConstruction* inDetector,
+                                         const WCSimDetectorConstruction* inDetector,
                                          G4String inDetectorElement)
   :G4VDigitizerModule(name), fCalledAddDarkNoise(false), myDetector(inDetector), detectorElement(inDetectorElement)
 {
@@ -205,11 +205,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     }
 
     // Get the info for pmt positions
-    std::vector<WCSimPmtInfo*> *pmts;
-    if(detectorElement=="tank") pmts = myDetector->Get_Pmts();
-    else if(detectorElement=="tankPMT2")pmts = myDetector->Get_Pmts2();
-    else if(detectorElement=="OD")pmts = myDetector->Get_ODPmts();
-    else G4cout << "### detectorElement undefined ..." << G4endl;
+    const std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts_By_Type(detectorElement);
 
     // It works out that the pmts here are ordered !
     // pmts->at(i) has tubeid i+1

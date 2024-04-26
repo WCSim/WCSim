@@ -30,6 +30,8 @@ WCSimTuningParameters::WCSimTuningParameters()
  WCODWLSCladdingReflectivity   = 0.90; //
  WCODTyvekReflectivity   = 0.90; //
 
+
+ G4cout << "Finished WCSimTuningParameters constructor" << G4endl;
 }
 
 WCSimTuningParameters::~WCSimTuningParameters()

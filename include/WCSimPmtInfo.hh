@@ -33,16 +33,16 @@ public:
   
   virtual ~WCSimPmtInfo();
 
-  Int_t Get_cylocation(){return cylocation;}
-  Double_t Get_transx() {return trans_x;}
-  Double_t Get_transy() {return trans_y;}
-  Double_t Get_transz() {return trans_z;}
-  Double_t Get_orienx() {return orien_x;}
-  Double_t Get_orieny() {return orien_y;}
-  Double_t Get_orienz() {return orien_z;}
-  Int_t Get_tubeid(){return tube;}
-  Int_t Get_mPMTid(){return mPMT;}
-  Int_t Get_mPMT_pmtid(){return mPMT_pmt;}
+  Int_t Get_cylocation()const {return cylocation;}
+  Double_t Get_transx() const {return trans_x;}
+  Double_t Get_transy() const {return trans_y;}
+  Double_t Get_transz() const {return trans_z;}
+  Double_t Get_orienx() const {return orien_x;}
+  Double_t Get_orieny() const {return orien_y;}
+  Double_t Get_orienz() const {return orien_z;}
+  Int_t Get_tubeid() const {return tube;}
+  Int_t Get_mPMTid() const {return mPMT;}
+  Int_t Get_mPMT_pmtid() const {return mPMT_pmt;}
 
   ClassDef(WCSimPmtInfo,2);
 };

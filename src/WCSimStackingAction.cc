@@ -16,7 +16,7 @@
 
 //class WCSimDetectorConstruction;
 
-WCSimStackingAction::WCSimStackingAction(WCSimDetectorConstruction* myDet):DetConstruct(myDet) {;}
+WCSimStackingAction::WCSimStackingAction(const WCSimDetectorConstruction* myDet):DetConstruct(myDet) {;}
 WCSimStackingAction::~WCSimStackingAction(){;}
 
 

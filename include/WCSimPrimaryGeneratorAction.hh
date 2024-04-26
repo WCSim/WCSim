@@ -38,7 +38,7 @@ struct radioactive_source {
 class WCSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
 public:
-  WCSimPrimaryGeneratorAction(WCSimDetectorConstruction*);
+  WCSimPrimaryGeneratorAction(const WCSimDetectorConstruction*);
   ~WCSimPrimaryGeneratorAction();
 
   void GeneratePrimaries(G4Event* anEvent);
@@ -46,8 +46,8 @@ public:
   // RooTracker related functions
   void SetupBranchAddresses(NRooTrackerVtx* nrootrackervtx);
   void OpenRootrackerFile(G4String fileName);
-  void CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx);
-  bool GetIsRooTrackerFileFinished(){return (fEvNum==fNEntries);}
+  void CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx) const;
+  bool GetIsRooTrackerFileFinished() const {return (fEvNum==fNEntries);}
 
   // Gun, laser & gps setting calls these functions to fill jhfNtuple and Root tree
   void SetVtx(G4ThreeVector i)     { vtxs[0] = i; nvtxs = 1; };
@@ -58,37 +58,37 @@ public:
   void SetVtxs(G4int i, G4ThreeVector v)     { vtxs[i] = v; };
 
   // These go with jhfNtuple
-  G4int GetVecRecNumber(){return vecRecNumber;}
-  G4int GetMode(int vertex = 0){return mode[vertex];};
+  G4int GetVecRecNumber() const {return vecRecNumber;}
+  G4int GetMode(int vertex = 0) const {return mode[vertex];};
   //InteractionType_t GetMode(int vertex = 0) {return mode[vertex];};
-  G4int GetNvtxs() {return nvtxs;};
-  G4int GetVtxVol(G4int n = 0) {return vtxsvol[n];};
-  G4ThreeVector GetVtx(G4int n = 0) {return vtxs[n];}
-  G4double GetVertexTime(G4int n = 0){return vertexTimes[n];}
-  G4int GetNpar() {return npar;};
-  G4int GetBeamPDG(G4int n = 0) {return beampdgs[n];};
-  G4double GetBeamEnergy(G4int n = 0) {return beamenergies[n];};
-  G4ThreeVector GetBeamDir(G4int n = 0) {return beamdirs[n];};
-  G4int GetTargetPDG(G4int n = 0) {return targetpdgs[n];};
-  G4double GetTargetEnergy(G4int n = 0) {return targetenergies[n];};
-  G4ThreeVector GetTargetDir(G4int n = 0) {return targetdirs[n];};
+  G4int GetNvtxs() const {return nvtxs;};
+  G4int GetVtxVol(G4int n = 0) const {return vtxsvol[n];};
+  G4ThreeVector GetVtx(G4int n = 0) const {return vtxs[n];}
+  G4double GetVertexTime(G4int n = 0) const {return vertexTimes[n];}
+  G4int GetNpar() const {return npar;};
+  G4int GetBeamPDG(G4int n = 0) const {return beampdgs[n];};
+  G4double GetBeamEnergy(G4int n = 0) const {return beamenergies[n];};
+  G4ThreeVector GetBeamDir(G4int n = 0) const {return beamdirs[n];};
+  G4int GetTargetPDG(G4int n = 0) const {return targetpdgs[n];};
+  G4double GetTargetEnergy(G4int n = 0) const {return targetenergies[n];};
+  G4ThreeVector GetTargetDir(G4int n = 0) const {return targetdirs[n];};
 
   // older ...
-  G4double GetNuEnergy() {return nuEnergy;};
-  G4double GetEnergy() {return energy;};
-  G4double GetXPos() {return xPos;};
-  G4double GetYPos() {return yPos;};
-  G4double GetZPos() {return zPos;};
-  G4double GetXDir() {return xDir;};
-  G4double GetYDir() {return yDir;};
-  G4double GetZDir() {return zDir;};
+  G4double GetNuEnergy() const {return nuEnergy;};
+  G4double GetEnergy() const {return energy;};
+  G4double GetXPos() const {return xPos;};
+  G4double GetYPos() const {return yPos;};
+  G4double GetZPos() const {return zPos;};
+  G4double GetXDir() const {return xDir;};
+  G4double GetYDir() const {return yDir;};
+  G4double GetZDir() const {return zDir;};
 
-  G4String GetGeneratorTypeString();
+  G4String GetGeneratorTypeString() const;
 
-  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt) const;
 
 private:
-  WCSimDetectorConstruction*      myDetector;
+  const WCSimDetectorConstruction*      myDetector;
   G4ParticleGun*                  particleGun;
   G4GeneralParticleSource*        MyGPS;  //T. Akiri: GPS to run Laser
   WCSimPrimaryGeneratorMessenger* messenger;
@@ -215,24 +215,24 @@ private:
  public:
 
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
-  inline G4bool IsUsingMulineEvtGenerator() { return useMulineEvt; }
+  inline G4bool IsUsingMulineEvtGenerator() const { return useMulineEvt; }
 
   inline void SetAmBeEvtGenerator(G4bool choice) { useAmBeEvt = choice; }
-  inline G4bool IsUsingAmBeEvtGenerator()  { return useAmBeEvt; }
+  inline G4bool IsUsingAmBeEvtGenerator() const { return useAmBeEvt; }
 
   inline TFile* GetInputRootrackerFile(){ return fInputRootrackerFile;}
   inline void SetRootrackerEvtGenerator(G4bool choice) { useRootrackerEvt = choice; }
-  inline G4bool IsUsingRootrackerEvtGenerator() { return useRootrackerEvt; }
+  inline G4bool IsUsingRootrackerEvtGenerator() const { return useRootrackerEvt; }
 
   inline void SetGunEvtGenerator(G4bool choice) { useGunEvt = choice; }
-  inline G4bool IsUsingGunEvtGenerator()  { return useGunEvt; }
+  inline G4bool IsUsingGunEvtGenerator() const { return useGunEvt; }
 
   //T. Akiri: Addition of function for the laser flag
   inline void SetLaserEvtGenerator(G4bool choice) { useLaserEvt = choice; }
-  inline G4bool IsUsingLaserEvtGenerator()  { return useLaserEvt; }
+  inline G4bool IsUsingLaserEvtGenerator() const { return useLaserEvt; }
 
   inline void SetGPSEvtGenerator(G4bool choice) { useGPSEvt = choice; }
-  inline G4bool IsUsingGPSEvtGenerator()  { return useGPSEvt; }
+  inline G4bool IsUsingGPSEvtGenerator() const { return useGPSEvt; }
 
   // K.M.Tsui: addition of injector events
   inline void SetInjectorEvtGenerator(G4bool choice) { useInjectorEvt = choice; }
@@ -310,7 +310,7 @@ private:
     }
   }
 
-  inline G4bool IsGeneratingVertexInRock() { return GenerateVertexInRock; }
+  inline G4bool IsGeneratingVertexInRock() const { return GenerateVertexInRock; }
   inline void SetGenerateVertexInRock(G4bool choice) { GenerateVertexInRock = choice; }
 
   inline void AddRadioactiveSource(G4String IsotopeName, G4String IsotopeLocation, G4double IsotopeActivity){
@@ -324,32 +324,32 @@ private:
   inline std::vector<struct radioactive_source> Radioactive_Sources()  { return radioactive_sources; }
 
   inline void SetRadioactiveEvtGenerator(G4bool choice) { useRadioactiveEvt = choice; }
-  inline G4bool IsUsingRadioactiveEvtGenerator() 	{ return useRadioactiveEvt; }
+  inline G4bool IsUsingRadioactiveEvtGenerator() const	{ return useRadioactiveEvt; }
 
   inline void SetRadioactiveTimeWindow(G4double choice) { radioactive_time_window = choice; }
-  inline G4double GetRadioactiveTimeWindow()  		{ return radioactive_time_window; }
+  inline G4double GetRadioactiveTimeWindow() const 		{ return radioactive_time_window; }
 
   inline void SetRadonEvtGenerator(G4bool choice) 	{ useRadonEvt = choice; }
-  inline G4bool IsUsingRadonEvtGenerator()  		{ return useRadonEvt; }
+  inline G4bool IsUsingRadonEvtGenerator() const  	{ return useRadonEvt; }
 
   inline void SetRadonScenario(G4int choice) 		{ fRnScenario = choice; }
-  inline G4int GetRadonScenario() 			{ return fRnScenario; }
+  inline G4int GetRadonScenario() const			{ return fRnScenario; }
 
   inline void SetRadonSymmetry(G4int choice) 		{ fRnSymmetry = choice; }
-  inline G4int GetRadonSymmetry() 			{ return fRnSymmetry; }
+  inline G4int GetRadonSymmetry() const			{ return fRnSymmetry; }
 
   inline void SetPoissonPMT(G4bool choice) { usePoissonPMT = choice; }
-  inline G4bool IsUsingPoissonPMT(){ return usePoissonPMT; }
+  inline G4bool IsUsingPoissonPMT() const { return usePoissonPMT; }
 
   inline void SetPoissonPMTMean(G4double val){ poissonPMTMean = val; }
-  inline G4double GetPoissonPMTMean(){ return poissonPMTMean; }
+  inline G4double GetPoissonPMTMean() const { return poissonPMTMean; }
 
-  inline bool IsConversionFound(){ return foundConversion; }
+  inline bool IsConversionFound() const { return foundConversion; }
   inline void FoundConversion(){ foundConversion = true; }
   inline void SetConversionProductParticle(int i, const G4ParticleDefinition *p) { conversionProductParticle[i] = p; }
   inline void SetConversionProductMomentum(int i, const G4ThreeVector& p) { conversionProductMomentum[i] = p; }
   inline void SetNeedConversion(bool choice) { needConversion = choice; foundConversion = !choice; }
-  inline bool NeedsConversion() { return needConversion; }
+  inline bool NeedsConversion() const { return needConversion; }
 
   //static const HepDouble nanosecond  = 1.;
   //static const HepDouble second      = 1.e+9 *nanosecond;
@@ -371,7 +371,7 @@ private:
     else
       fTimeUnit=CLHEP::nanosecond;
   }
-  inline G4double GetTimeUnit()       { return fTimeUnit; }
+  inline G4double GetTimeUnit() const { return fTimeUnit; }
 
 };
 
