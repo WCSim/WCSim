@@ -1,4 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$class_g4_v_user_track_information.html" title="G4VUserTrackInformation" alt="" coords="5,5,195,32"/>
-<area shape="rect" id="node2" href="$class_w_c_sim_track_information.html" title="WCSimTrackInformation" alt="" coords="243,5,421,32"/>
+<area shape="rect" id="node1" href="$class_g4_v_p_v_parameterisation.html" title="G4VPVParameterisation" alt="" coords="5,5,183,32"/>
+<area shape="rect" id="node2" href="$class_w_c_sim_multi_p_m_t_parameterisation.html" title="WCSimMultiPMTParameterisation" alt="" coords="231,5,469,32"/>
 </map>

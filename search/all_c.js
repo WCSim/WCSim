@@ -47,6 +47,7 @@ var searchData=
   ['kphot',['kPhot',['../_w_c_sim_enumerations_8hh.html#ad0e846b4dccfdd2a91843a288c361ad3ab99c1cc3fcac79c17272699c00180a70',1,'WCSimEnumerations.hh']]],
   ['kphotocathodes',['kPhotocathodeS',['../_w_c_sim_enumerations_8hh.html#a5aa9a682c3c8c0b09003d020c365d73aa6f6aefe835b57371c7ead5b985952345',1,'WCSimEnumerations.hh']]],
   ['kprecision',['kPrecision',['../structdetail_1_1dtoa__impl_1_1diyfp.html#a80cf8cc846a7bf96362d3b11886994e3',1,'detail::dtoa_impl::diyfp']]],
+  ['kradtolerance',['kRadTolerance',['../class_g4_multi_union__v1072.html#adb1395a43687888365b7bf9421a3be67',1,'G4MultiUnion_v1072']]],
   ['kreflectors',['kReflectorS',['../_w_c_sim_enumerations_8hh.html#a5aa9a682c3c8c0b09003d020c365d73aab9d42c68579277236bafcfaf5b9f13fc',1,'WCSimEnumerations.hh']]],
   ['ks_5fcharge',['ks_charge',['../verification___hits_charge_time_8_c.html#ae3a47ac57c106d79a23546252a8791a0',1,'verification_HitsChargeTime.C']]],
   ['ks_5fhits',['ks_hits',['../verification___hits_charge_time_8_c.html#abb7291f315fd0af01d097709505a0e86',1,'verification_HitsChargeTime.C']]],

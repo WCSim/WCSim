@@ -7,6 +7,7 @@ var searchData=
   ['unget',['unget',['../classdetail_1_1lexer.html#af15c2d2e743728d99bb6d749a03e5555',1,'detail::lexer']]],
   ['until',['Until',['../class_c_a_d_mesh_1_1_file_1_1_lexer.html#ac7a2a632ee84d3e90c80c2683d55ca35',1,'CADMesh::File::Lexer']]],
   ['update',['update',['../classbasic__json.html#a3819f393e82396782ccc22785575b01d',1,'basic_json::update(const_reference j, bool merge_objects=false)'],['../classbasic__json.html#a4ea2b8cef5e4aba5b92d14e6ebe25936',1,'basic_json::update(const_iterator first, const_iterator last, bool merge_objects=false)']]],
+  ['updatecurrentvoxel',['UpdateCurrentVoxel',['../class_g4_voxelizer__v1072.html#a9f5b598d121152ae761998aebf4e5bd8',1,'G4Voxelizer_v1072']]],
   ['updategeometry',['UpdateGeometry',['../class_w_c_sim_detector_construction.html#a168538eb9ae193915274a5c39dbc3044',1,'WCSimDetectorConstruction']]],
   ['updatenucleus',['UpdateNucleus',['../class_gd_neutron_h_p_capture_f_s.html#a0d9ed1babf319bdd3ccf310b4482b823',1,'GdNeutronHPCaptureFS']]],
   ['updateodgeo',['UpdateODGeo',['../class_w_c_sim_detector_construction.html#a5dc1783b42d42aded8b6d5007733b4be',1,'WCSimDetectorConstruction']]],

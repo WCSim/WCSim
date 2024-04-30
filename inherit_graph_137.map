@@ -1,4 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$class_g4_v_user_primary_generator_action.html" title="G4VUserPrimaryGeneratorAction" alt="" coords="5,5,241,32"/>
-<area shape="rect" id="node2" href="$class_w_c_sim_primary_generator_action.html" title="WCSimPrimaryGeneratorAction" alt="" coords="289,5,516,32"/>
+<area shape="rect" id="node1" href="$class_g4_v_physics_constructor.html" title="G4VPhysicsConstructor" alt="" coords="5,5,179,32"/>
+<area shape="rect" id="node2" href="$class_w_c_sim_optical_physics.html" title="WCSimOpticalPhysics" alt="" coords="227,5,391,32"/>
 </map>

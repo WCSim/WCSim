@@ -8,6 +8,8 @@ var searchData=
   ['_7edata',['~data',['../classbasic__json.html#acdc878691d825f4376b4e177b2818b59',1,'basic_json']]],
   ['_7eeljenej286',['~EljenEJ286',['../class_eljen_e_j286.html#a256c326cd5771d1bfbe0d1ecc27bc4b9',1,'EljenEJ286']]],
   ['_7efile_5finput_5fadapter',['~file_input_adapter',['../classdetail_1_1file__input__adapter.html#a92b4c69e2b38288418ea8b15d8948051',1,'detail::file_input_adapter']]],
+  ['_7eg4multiunion_5fv1072',['~G4MultiUnion_v1072',['../class_g4_multi_union__v1072.html#ac0fafe57eb379d11024472033d4c331f',1,'G4MultiUnion_v1072']]],
+  ['_7eg4voxelizer_5fv1072',['~G4Voxelizer_v1072',['../class_g4_voxelizer__v1072.html#a7d8f7269c7941b6d6d4173b29e41c16a',1,'G4Voxelizer_v1072']]],
   ['_7egdcapturegammas',['~GdCaptureGammas',['../class_gd_capture_gammas.html#a9800f163e3905c9e026305763d9a7a3c',1,'GdCaptureGammas']]],
   ['_7egdneutronhpcapture',['~GdNeutronHPCapture',['../class_gd_neutron_h_p_capture.html#ac9d07d3ef6ace34c80dfb81429995a40',1,'GdNeutronHPCapture']]],
   ['_7egdneutronhpcapturefs',['~GdNeutronHPCaptureFS',['../class_gd_neutron_h_p_capture_f_s.html#a1d1a8ff213b5dca13463c6efb2458109',1,'GdNeutronHPCaptureFS']]],

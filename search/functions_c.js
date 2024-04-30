@@ -20,6 +20,7 @@ var searchData=
   ['mesh',['Mesh',['../class_c_a_d_mesh_1_1_mesh.html#ad6ddb3943c56e868fcaf08e2b7cff6e8',1,'CADMesh::Mesh']]],
   ['meshnotfound',['MeshNotFound',['../namespace_c_a_d_mesh_1_1_exceptions.html#ade0361f5f4ea3e9a83d4d165dd56d033',1,'CADMesh::Exceptions::MeshNotFound(G4String origin, size_t index)'],['../namespace_c_a_d_mesh_1_1_exceptions.html#aea69ef2eb558fc80afbd6cd389f918df',1,'CADMesh::Exceptions::MeshNotFound(G4String origin, G4String name)']]],
   ['meta',['meta',['../classbasic__json.html#a7b435c2ed2db99cb1daa78ae3c6c4580',1,'basic_json']]],
+  ['mindistancetobox',['MinDistanceToBox',['../class_g4_voxelizer__v1072.html#a82e338c4e1f231b7758c22bf5add0ad8',1,'G4Voxelizer_v1072']]],
   ['moved_5for_5fcopied',['moved_or_copied',['../classdetail_1_1json__ref.html#ad37b535229db57173a6cd57aadba9662',1,'detail::json_ref']]],
   ['mul',['mul',['../structdetail_1_1dtoa__impl_1_1diyfp.html#a046c61f2c13411677eedfb5b9b7a8226',1,'detail::dtoa_impl::diyfp']]]
 ];

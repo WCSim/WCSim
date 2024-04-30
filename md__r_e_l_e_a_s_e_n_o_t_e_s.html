@@ -68,9 +68,33 @@ $(function() {
 <div class="textblock"><p>This file contains the release notes for each version of WCSim. Release notes can also be found at <a href="https://github.com/WCSim/WCSim/tags">https://github.com/WCSim/WCSim/tags</a>.</p>
 <hr/>
 <p> Recent updates </p><hr/>
+<p>Bug fix</p><ul>
+<li>Pull request #432 : Use the same default dark rate time option for all PMT types in WCSim.mac</li>
+</ul>
+<hr/>
+<p> 18/04/2024: Notes for v1.12.12 </p><hr/>
+<p>Minor release after #431, after the IWCD geometry change</p>
+<p>Update</p><ul>
+<li>Pull request #431 : Update to IWCD geometry to newly proposed size. 3 proposed options for PMT layout are available (A, <a class="el" href="class_b.html">B</a>, C), with <a class="el" href="class_b.html">B</a> being the nominal. The old IWCD geometry is also retained</li>
+</ul>
+<p>Bug fix</p><ul>
+<li>Pull request #430 : Use G4MultiUnion &amp; G4Voxeliser from Geant4.10.7.2 instead of Geant4.10.5.1, to pickup some bug fixes related to geometry overlaps</li>
+</ul>
+<hr/>
+<p> 04/04/2024: Notes for v1.12.11 </p><hr/>
+<p>Minor release after #424, after the WCTE geometry output changed</p>
+<p>Update</p><ul>
+<li>Pull request #424 : Allow light to propagate into PMT region that is behind the blacksheet radius. Activated for WCTE geometry only</li>
+</ul>
+<p>Bug fix</p><ul>
+<li>Pull request #428 : Fix output file saving of photon history (accessible with build option) which broke with #427</li>
+</ul>
+<p>Documentation</p><ul>
+<li>Pull request #423 : Document output file class data members</li>
+</ul>
 <hr/>
 <p> 27/03/2024: Notes for v1.12.10 </p><hr/>
-<p>Minor release after #427, removing the superfluous copies of true track information in the output file Also picking up mac file fixes in WCSim/Validation - so the HK FD CI checks will be really from the HK FD geometry (has been SK since v1.12.8</p>
+<p>Minor release after #427, removing the superfluous copies of true track information in the output file Also picking up mac file fixes in WCSim/Validation - so the HK FD CI checks will be really from the HK FD geometry (has been SK since v1.12.8)</p>
 <p>New features</p><ul>
 <li>Pull request #387 : Add (optional) AmBe source geometry</li>
 <li>Pull request #387 : New AmBe primary generator, simulating gamma + photon</li>
@@ -514,7 +538,7 @@ For that I am sorry</p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 4 2024 10:20:04 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 30 2024 12:34:00 for WCSim by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

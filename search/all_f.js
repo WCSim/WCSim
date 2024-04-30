@@ -70,7 +70,7 @@ var searchData=
   ['newmomentum',['NewMomentum',['../class_w_c_sim_op_boundary_process.html#a89431e6b9cefb7d582fe2e579012c251',1,'WCSimOpBoundaryProcess']]],
   ['newpolarization',['NewPolarization',['../class_w_c_sim_op_boundary_process.html#a9f8986274fda423336316c2fd6092d6d',1,'WCSimOpBoundaryProcess']]],
   ['newstage',['NewStage',['../class_w_c_sim_stacking_action.html#ae6254ed9a1344f6d8d97ec55d38a6131',1,'WCSimStackingAction']]],
-  ['next',['Next',['../class_c_a_d_mesh_1_1_file_1_1_lexer.html#aa4f8e67092f72e8c50e6ba8ad7146416',1,'CADMesh::File::Lexer::Next()'],['../_c_a_d_mesh_8hh.html#a70e65de5b095a45141c2b9c863b4fb98',1,'Next():&#160;CADMesh.hh']]],
+  ['next',['Next',['../class_c_a_d_mesh_1_1_file_1_1_lexer.html#aa4f8e67092f72e8c50e6ba8ad7146416',1,'CADMesh::File::Lexer::Next()'],['../struct_g4_voxel_info__v1072.html#a031a5e0d3b349fc1fc0acec58cc8f3ba',1,'G4VoxelInfo_v1072::next()'],['../_c_a_d_mesh_8hh.html#a70e65de5b095a45141c2b9c863b4fb98',1,'Next():&#160;CADMesh.hh']]],
   ['next_5fbyte_5fin_5frange',['next_byte_in_range',['../classdetail_1_1lexer.html#a505c0c6842a668fc4e9f07dca49b91e9',1,'detail::lexer']]],
   ['next_5fevent_5fstart',['next_event_start',['../namespace_kin_splitter.html#a8ea976b3c58f53efe9683625f4147025',1,'KinSplitter']]],
   ['next_5funget',['next_unget',['../classdetail_1_1lexer.html#a943e132f61f26a85de9075b457ba56a3',1,'detail::lexer']]],

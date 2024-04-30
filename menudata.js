@@ -219,7 +219,15 @@ var menudata={children:[
 {text:"v",url:"functions_type_v.html#index_v"}]},
 {text:"Enumerations",url:"functions_enum.html"},
 {text:"Enumerator",url:"functions_eval.html"},
-{text:"Related Functions",url:"functions_rela.html"}]}]},
+{text:"Related Functions",url:"functions_rela.html",children:[
+{text:":",url:"functions_rela.html#index_0x3a"},
+{text:"b",url:"functions_rela.html#index_b"},
+{text:"d",url:"functions_rela.html#index_d"},
+{text:"g",url:"functions_rela.html#index_g"},
+{text:"j",url:"functions_rela.html#index_j"},
+{text:"o",url:"functions_rela.html#index_o"},
+{text:"s",url:"functions_rela.html#index_s"},
+{text:"w",url:"functions_rela.html#index_w"}]}]}]},
 {text:"Files",url:"files.html",children:[
 {text:"File List",url:"files.html"},
 {text:"File Members",url:"globals.html",children:[

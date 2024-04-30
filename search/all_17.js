@@ -62,6 +62,7 @@ var searchData=
   ['vniclocal',['vNiCLocal',['../class_w_c_sim_multi_p_m_t_parameterisation.html#a3cd127ed8181afda3303d655f15b2636',1,'WCSimMultiPMTParameterisation']]],
   ['void',['void',['../namespacedetail.html#af35a0fd8336e885df74b1a0100d2ec20',1,'detail']]],
   ['void_5ft',['void_t',['../namespacedetail.html#a138aa0af34e28b5a1032f00c712d376b',1,'detail']]],
+  ['voxelize',['Voxelize',['../class_g4_multi_union__v1072.html#aeb89683bcb30a26239a278defbf53a01',1,'G4MultiUnion_v1072::Voxelize()'],['../class_g4_voxelizer__v1072.html#a935600af9226c3de08b962c6453b0c33',1,'G4Voxelizer_v1072::Voxelize(std::vector&lt; G4VSolid *&gt; &amp;solids, std::vector&lt; G4Transform3D &gt; &amp;transforms)'],['../class_g4_voxelizer__v1072.html#a66522a213e84926293cde742d49a6322',1,'G4Voxelizer_v1072::Voxelize(std::vector&lt; G4VFacet *&gt; &amp;facets)']]],
   ['vparam_5fr2',['vParam_R2',['../class_w_c_sim_generator___radioactivity.html#a71939e4df91b3c425530b402ecd3bd1a',1,'WCSimGenerator_Radioactivity::vParam_R2()'],['../_rn_model___fit___params_8hh.html#aab3c3512aa7c4fabeed6f7bc7f80c7b6',1,'vParam_R2():&#160;RnModel_Fit_Params.hh']]],
   ['vparam_5fz',['vParam_Z',['../class_w_c_sim_generator___radioactivity.html#ae2f05a9dc1eb9b8429900a0909e2cd06',1,'WCSimGenerator_Radioactivity::vParam_Z()'],['../_rn_model___fit___params_8hh.html#a89d2f2b153b3adaf84809ca94a75eb58',1,'vParam_Z():&#160;RnModel_Fit_Params.hh']]],
   ['vpmtorient',['vPMTorient',['../class_w_c_sim_multi_p_m_t_parameterisation.html#a491c515637076555fcd35f8a0dcdad7b',1,'WCSimMultiPMTParameterisation']]],

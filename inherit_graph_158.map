@@ -1,3 +1,20 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$class_w_c_sim_generator___radioactivity.html" title="WCSimGenerator_Radioactivity" alt="" coords="5,5,232,32"/>
+<area shape="rect" id="node1" href="$class_t_object.html" title="TObject" alt="" coords="5,360,77,387"/>
+<area shape="rect" id="node2" href="$class_roo_tracker_vtx_base.html" title="RooTrackerVtxBase" alt="" coords="169,5,316,32"/>
+<area shape="rect" id="node5" href="$class_w_c_sim_pmt_info.html" title="WCSimPmtInfo" alt="" coords="183,56,303,83"/>
+<area shape="rect" id="node6" href="$class_w_c_sim_root_capture.html" title="Class used specifically for neutron capture events. " alt="" coords="168,107,317,133"/>
+<area shape="rect" id="node7" href="$class_w_c_sim_root_capture_gamma.html" title="Class storing information about gammas released from neutron capture. " alt="" coords="142,157,343,184"/>
+<area shape="rect" id="node8" href="$class_w_c_sim_root_cherenkov_digi_hit.html" title="Class holding digitised hit (aka digit or digi) information (after PMT &amp; electronics simulation + tri..." alt="" coords="136,208,349,235"/>
+<area shape="rect" id="node9" href="$class_w_c_sim_root_cherenkov_hit.html" title="Class holding true (Cherenkov photon + dark noise) hit information. " alt="" coords="149,259,336,285"/>
+<area shape="rect" id="node10" href="$class_w_c_sim_root_cherenkov_hit_history.html" title="Class holding scattering and reflection history for each true hit (Cherenkov photon; dark noise are a..." alt="" coords="125,309,360,336"/>
+<area shape="rect" id="node11" href="$class_w_c_sim_root_cherenkov_hit_time.html" title="Class holding true (Cherenkov photon + dark noise) hit information. " alt="" coords="133,360,353,387"/>
+<area shape="rect" id="node12" href="$class_w_c_sim_root_event.html" title="Class containing event information. " alt="" coords="175,411,310,437"/>
+<area shape="rect" id="node13" href="$class_w_c_sim_root_geom.html" title="Detector geometry information (also containing PMT information arrays) " alt="" coords="174,461,311,488"/>
+<area shape="rect" id="node14" href="$class_w_c_sim_root_options.html" title="List of WCSim running options. " alt="" coords="169,512,317,539"/>
+<area shape="rect" id="node15" href="$class_w_c_sim_root_pi0.html" title="Class storing information about pi0 decays. " alt="" coords="183,563,302,589"/>
+<area shape="rect" id="node16" href="$class_w_c_sim_root_p_m_t.html" title="PMT geometry information. " alt="" coords="180,613,305,640"/>
+<area shape="rect" id="node17" href="$class_w_c_sim_root_track.html" title="Class holding true track information. " alt="" coords="177,664,309,691"/>
+<area shape="rect" id="node18" href="$class_w_c_sim_root_trigger.html" title="Class storing trigger information. " alt="" coords="171,715,314,741"/>
+<area shape="rect" id="node3" href="$class_j_nu_beam_flux.html" title="JNuBeamFlux" alt="" coords="408,5,517,32"/>
+<area shape="rect" id="node4" href="$class_n_roo_tracker_vtx.html" title="NRooTrackerVtx" alt="" coords="565,5,691,32"/>
 </map>

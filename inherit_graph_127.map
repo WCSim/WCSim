@@ -1,5 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$class_g4_v_digi.html" title="G4VDigi" alt="" coords="5,31,80,57"/>
-<area shape="rect" id="node2" href="$class_w_c_sim_w_c_digi.html" title="WCSimWCDigi" alt="" coords="150,5,267,32"/>
-<area shape="rect" id="node3" href="$class_w_c_sim_w_c_digi_trigger.html" title="WCSimWCDigiTrigger" alt="" coords="128,56,289,83"/>
+<area shape="rect" id="node1" href="$class_g4_user_tracking_action.html" title="G4UserTrackingAction" alt="" coords="5,5,171,32"/>
+<area shape="rect" id="node2" href="$class_w_c_sim_tracking_action.html" title="WCSimTrackingAction" alt="" coords="219,5,383,32"/>
 </map>

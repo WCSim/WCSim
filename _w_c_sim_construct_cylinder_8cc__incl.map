@@ -1,11 +1,13 @@
 <map id="src/WCSimConstructCylinder.cc" name="src/WCSimConstructCylinder.cc">
-<area shape="rect" id="node2" href="$_w_c_sim_detector_construction_8hh.html" title="WCSimDetectorConstruction.hh" alt="" coords="1296,80,1523,107"/>
-<area shape="rect" id="node6" href="$_w_c_sim_tuning_parameters_8hh.html" title="WCSimTuningParameters.hh" alt="" coords="779,229,984,256"/>
-<area shape="rect" id="node56" href="$_c_a_d_mesh_8hh.html" title="CADMesh.hh" alt="" coords="2704,80,2808,107"/>
-<area shape="rect" id="node3" href="$_w_c_sim_pmt_info_8hh.html" title="WCSimPmtInfo.hh" alt="" coords="1383,304,1523,331"/>
-<area shape="rect" id="node5" href="$_w_c_sim_p_m_t_object_8hh.html" title="WCSimPMTObject.hh" alt="" coords="1213,155,1371,181"/>
-<area shape="rect" id="node10" href="$_w_c_sim_root_options_8hh.html" title="WCSimRootOptions.hh" alt="" coords="1140,304,1308,331"/>
-<area shape="rect" id="node18" href="$_w_c_sim_w_l_s_properties_8hh.html" title="WCSimWLSProperties.hh" alt="" coords="94,155,277,181"/>
-<area shape="rect" id="node7" href="$_w_c_sim_tuning_messenger_8hh.html" title="WCSimTuningMessenger.hh" alt="" coords="781,304,981,331"/>
-<area shape="rect" id="node14" href="$_w_c_sim_enumerations_8hh.html" title="WCSimEnumerations.hh" alt="" coords="1212,379,1391,405"/>
+<area shape="rect" id="node2" href="$_w_c_sim_detector_construction_8hh.html" title="WCSimDetectorConstruction.hh" alt="" coords="1057,80,1283,107"/>
+<area shape="rect" id="node6" href="$_w_c_sim_tuning_parameters_8hh.html" title="WCSimTuningParameters.hh" alt="" coords="370,229,575,256"/>
+<area shape="rect" id="node53" href="$_g4_multi_union__v1072_8hh.html" title="G4MultiUnion_v1072.hh" alt="" coords="2545,80,2723,107"/>
+<area shape="rect" id="node63" href="$_c_a_d_mesh_8hh.html" title="CADMesh.hh" alt="" coords="5727,80,5831,107"/>
+<area shape="rect" id="node3" href="$_w_c_sim_pmt_info_8hh.html" title="WCSimPmtInfo.hh" alt="" coords="5,304,145,331"/>
+<area shape="rect" id="node5" href="$_w_c_sim_p_m_t_object_8hh.html" title="WCSimPMTObject.hh" alt="" coords="760,155,919,181"/>
+<area shape="rect" id="node10" href="$_w_c_sim_root_options_8hh.html" title="WCSimRootOptions.hh" alt="" coords="170,304,338,331"/>
+<area shape="rect" id="node18" href="$_w_c_sim_w_l_s_properties_8hh.html" title="WCSimWLSProperties.hh" alt="" coords="553,155,736,181"/>
+<area shape="rect" id="node7" href="$_w_c_sim_tuning_messenger_8hh.html" title="WCSimTuningMessenger.hh" alt="" coords="362,304,562,331"/>
+<area shape="rect" id="node14" href="$_w_c_sim_enumerations_8hh.html" title="WCSimEnumerations.hh" alt="" coords="337,379,515,405"/>
+<area shape="rect" id="node58" href="$_g4_voxelizer__v1072_8hh.html" title="G4Voxelizer_v1072.hh" alt="" coords="2908,155,3075,181"/>
 </map>

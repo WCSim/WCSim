@@ -43,7 +43,7 @@ var searchData=
   ['rootfilename',['RootFileName',['../class_w_c_sim_run_action.html#aa051face941cd29cb36d9bdb03068ef3',1,'WCSimRunAction']]],
   ['rootracker',['RooTracker',['../class_w_c_sim_run_action_messenger.html#a36f932e645b9bdaedc83cde4f473a3a7',1,'WCSimRunActionMessenger']]],
   ['rot',['rot',['../class_w_c_sim_w_c_digi.html#ad935024d7eb028ccf1f38860d8d5eaa9',1,'WCSimWCDigi::rot()'],['../class_w_c_sim_w_c_hit.html#aa7df038a173e1ac53d40c054f8304747',1,'WCSimWCHit::rot()']]],
-  ['rotatebarrelhalftower',['RotateBarrelHalfTower',['../class_w_c_sim_detector_messenger.html#aebf9bb91865d09069e098791ec1f5d25',1,'WCSimDetectorMessenger::RotateBarrelHalfTower()'],['../class_w_c_sim_detector_construction.html#aff34a59c558ae749461fa6b8ff6947df',1,'WCSimDetectorConstruction::rotateBarrelHalfTower()']]],
+  ['rotatebarrelhalftower',['rotateBarrelHalfTower',['../class_w_c_sim_detector_construction.html#aff34a59c558ae749461fa6b8ff6947df',1,'WCSimDetectorConstruction::rotateBarrelHalfTower()'],['../class_w_c_sim_detector_messenger.html#aebf9bb91865d09069e098791ec1f5d25',1,'WCSimDetectorMessenger::RotateBarrelHalfTower()']]],
   ['rowseperation',['RowSeperation',['../struct_realistic_placement_configuration.html#a4a69e46dbaa6957cdde8da9c3cca5cbb',1,'RealisticPlacementConfiguration']]],
   ['run',['run',['../class_w_c_sim_run_action.html#ab273cfa826997059e8bff3f30c42b974',1,'WCSimRunAction']]],
   ['runaction',['runAction',['../class_w_c_sim_event_action.html#a93a66187fa7a2d9b8cec99eca309b36b',1,'WCSimEventAction::runAction()'],['../class_w_c_sim_stepping_action.html#a5664a493f81661669b1cfe10b16964d7',1,'WCSimSteppingAction::runAction()']]]

@@ -1,11 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$class_g4_v_digitizer_module.html" title="G4VDigitizerModule" alt="" coords="5,81,156,108"/>
-<area shape="rect" id="node2" href="$class_w_c_sim_w_c_add_dark_noise.html" title="WCSimWCAddDarkNoise" alt="" coords="204,5,388,32"/>
-<area shape="rect" id="node3" href="$class_w_c_sim_w_c_digitizer_base.html" title="WCSimWCDigitizerBase" alt="" coords="207,56,385,83"/>
-<area shape="rect" id="node5" href="$class_w_c_sim_w_c_p_m_t.html" title="WCSimWCPMT" alt="" coords="237,107,355,133"/>
-<area shape="rect" id="node6" href="$class_w_c_sim_w_c_trigger_base.html" title="The base class for WCSim triggering algorithms. " alt="" coords="213,157,379,184"/>
-<area shape="rect" id="node4" href="$class_w_c_sim_w_c_digitizer_s_k_i.html" title="WCSimWCDigitizerSKI" alt="" coords="451,56,618,83"/>
-<area shape="rect" id="node7" href="$class_w_c_sim_w_c_trigger_n_digits.html" title="A simple NDigits trigger class. " alt="" coords="443,107,626,133"/>
-<area shape="rect" id="node8" href="$class_w_c_sim_w_c_trigger_n_digits2.html" title="An (incomplete) example of running two trigger algorithms, one after the other. " alt="" coords="439,157,630,184"/>
-<area shape="rect" id="node9" href="$class_w_c_sim_w_c_trigger_no_trigger.html" title="WCSimWCTriggerNoTrigger" alt="" coords="436,208,633,235"/>
+<area shape="rect" id="node1" href="$class_g4_v_digi.html" title="G4VDigi" alt="" coords="5,31,80,57"/>
+<area shape="rect" id="node2" href="$class_w_c_sim_w_c_digi.html" title="WCSimWCDigi" alt="" coords="150,5,267,32"/>
+<area shape="rect" id="node3" href="$class_w_c_sim_w_c_digi_trigger.html" title="WCSimWCDigiTrigger" alt="" coords="128,56,289,83"/>
 </map>

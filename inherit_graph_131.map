@@ -1,4 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$class_g4_v_modular_physics_list.html" title="G4VModularPhysicsList" alt="" coords="5,5,179,32"/>
-<area shape="rect" id="node2" href="$class_w_c_sim_physics_list_factory.html" title="WCSimPhysicsListFactory" alt="" coords="227,5,415,32"/>
+<area shape="rect" id="node1" href="$class_g4_v_hit.html" title="G4VHit" alt="" coords="5,5,73,32"/>
+<area shape="rect" id="node2" href="$class_w_c_sim_w_c_hit.html" title="WCSimWCHit" alt="" coords="121,5,232,32"/>
 </map>

@@ -1,4 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$class_g4_user_tracking_action.html" title="G4UserTrackingAction" alt="" coords="5,5,171,32"/>
-<area shape="rect" id="node2" href="$class_w_c_sim_tracking_action.html" title="WCSimTrackingAction" alt="" coords="219,5,383,32"/>
+<area shape="rect" id="node1" href="$class_g4_user_stepping_action.html" title="G4UserSteppingAction" alt="" coords="5,5,173,32"/>
+<area shape="rect" id="node2" href="$class_w_c_sim_stepping_action.html" title="WCSimSteppingAction" alt="" coords="221,5,388,32"/>
 </map>
