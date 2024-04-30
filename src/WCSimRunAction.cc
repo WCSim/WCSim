@@ -25,7 +25,7 @@
 int pawc_[500000];                // Declare the PAWC common
 struct ntupleStruct jhfNtuple;    // global, ToDo: why not use and set the class member?
 
-WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test, WCSimRandomParameters* rand)
+WCSimRunAction::WCSimRunAction(const WCSimDetectorConstruction* test, WCSimRandomParameters* rand)
   : wcsimrandomparameters(rand), useTimer(false)
 {
   ntuples = 1;

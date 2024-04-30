@@ -29,7 +29,7 @@ class WCSimRunActionMessenger;
 class WCSimRunAction : public G4UserRunAction
 {
 public:
-  WCSimRunAction(WCSimDetectorConstruction*, WCSimRandomParameters*);
+  WCSimRunAction(const WCSimDetectorConstruction*, WCSimRandomParameters*);
   ~WCSimRunAction();
 
 public:
@@ -116,7 +116,7 @@ public:
   WCSimRootEvent* wcsimrootsuperevent_OD;
   WCSimRootGeom* wcsimrootgeom;
   WCSimRootOptions* wcsimrootoptions;
-  WCSimDetectorConstruction* wcsimdetector;
+  const WCSimDetectorConstruction* wcsimdetector;
   WCSimRandomParameters* wcsimrandomparameters;
 
   TClonesArray* fVertices;

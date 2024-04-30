@@ -56,7 +56,7 @@ public:
 
   G4LogicalVolume* ConstructRealisticPlacement();
 
-  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt) const;
 
   G4VPhysicalVolume* Construct();
 
