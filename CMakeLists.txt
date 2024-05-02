@@ -6,6 +6,18 @@ cmake_minimum_required(VERSION 3.1)
 # ##############################################################################
 
 set(PROJECT_NAME WCSim)
+
+# Add a WCSimRoot library installation (simpler dependencies, used in fitqun)
+option (WCSim_WCSimRoot_only
+        "Allows to only install the WCSimROOT library (file format); no need for G4!"
+        OFF
+)
+MESSAGE(STATUS "WCSim_WCSimRoot_only: ${WCSim_WCSimRoot_only}")
+if (${WCSim_WCSimRoot_only})
+    MESSAGE(STATUS "Will install only WCSimRoot library; disabling Geant4 package search!")
+    set(PROJECT_NAME WCSimRoot)
+endif ()
+
 set(PROJECT_VERSION 1.12.12)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
@@ -32,15 +44,6 @@ pbuilder_prepare_project()
 
 set(CMAKE_CXX_STANDARD 14) # Enable c++14 standard
 
-# Add a WCSimRoot library installation (simpler dependencies, used in fitqun)
-option (WCSim_WCSimRoot_only
-        "Allows to only install the WCSimROOT library (file format); no need for G4!"
-        OFF
-)
-MESSAGE(STATUS "WCSim_WCSimRoot_only: ${WCSim_WCSimRoot_only}")
-if (${WCSim_WCSimRoot_only})
-    MESSAGE(STATUS "Will install only WCSimRoot library; disabling Geant4 package search!")
-endif ()
 
 ######
 # ROOT
@@ -227,7 +230,11 @@ add_subdirectory (src)
 # Configure package and final installation files
 #########
 
+if (NOT ${WCSim_WCSimRoot_only})
 configure_file(${PROJECT_SOURCE_DIR}/cmake/WCSimConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/WCSimConfig.cmake @ONLY)
+else ()
+    configure_file(${PROJECT_SOURCE_DIR}/cmake/WCSimRootConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/WCSimRootConfig.cmake @ONLY)
+endif()
 pbuilder_do_package_config()
 
 configure_file(cmake/this_wcsim.sh.in this_wcsim.sh)
