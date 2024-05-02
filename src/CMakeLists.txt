@@ -3,24 +3,30 @@
 # Date: Jul 27, 2022
 
 # Core library
-
+#
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers 
-        ${PROJECT_SOURCE_DIR}/include/*.hh 
+file(GLOB headers
+        ${PROJECT_SOURCE_DIR}/include/*.hh
         ${PROJECT_SOURCE_DIR}/include/*.h
         ${PROJECT_SOURCE_DIR}/include/*.hpp)
 
-# ###########
-# # Library #
-# ###########
+## ###########
+## # Library #
+## ###########
 
-pbuilder_library(
-        TARGET WCSimCore
-        SOURCES ${sources}
-        PROJECT_LIBRARIES WCSimRoot
-        PUBLIC_EXTERNAL_LIBRARIES ${PUBLIC_EXT_LIBS}
-        PRIVATE_EXTERNAL_LIBRARIES ${PRIVATE_EXT_LIBS}
-)
+set ( WCSIM_LIBS_TO_EXPORT )
+
+if (NOT ${WCSim_WCSimRoot_only})
+	pbuilder_library(
+			TARGET WCSimCore
+			SOURCES ${sources}
+			PROJECT_LIBRARIES WCSimRoot
+			PUBLIC_EXTERNAL_LIBRARIES ${PUBLIC_EXT_LIBS}
+			PRIVATE_EXTERNAL_LIBRARIES ${PRIVATE_EXT_LIBS}
+	)
+	LIST(APPEND WCSIM_LIBS_TO_EXPORT WCSimCore)
+
+endif()
 
 
 # WCSimRoot library
@@ -64,49 +70,56 @@ pbuilder_library(
         PUBLIC_EXTERNAL_LIBRARIES ${PUBLIC_EXT_LIBS}
         PRIVATE_EXTERNAL_LIBRARIES ${PRIVATE_EXT_LIBS}
 )
+LIST(APPEND WCSIM_LIBS_TO_EXPORT WCSimRoot)
 
 
 
 pbuilder_component_install_and_export(
         COMPONENT Library
-        LIBTARGETS WCSimCore WCSimRoot
+        LIBTARGETS  ${WCSIM_LIBS_TO_EXPORT}
 )
 
-pbuilder_install_headers(${headers})
+if (${WCSim_WCSimRoot_only})
+	pbuilder_install_headers(${dict_headers})
+else ()
+	pbuilder_install_headers(${headers})
+endif ()
 
 
-##############
-# Executable
-##############
+###############
+## Executable
+###############
 
-set (exe_sources
-        ${PROJECT_SOURCE_DIR}/WCSim.cc
-        )
-set(exe_libraries
-        WCSimCore WCSimRoot
-        )
+if (NOT ${WCSim_WCSimRoot_only})
+	set (exe_sources
+			${PROJECT_SOURCE_DIR}/WCSim.cc
+			)
+	set(exe_libraries
+			WCSimCore WCSimRoot
+			)
 
-MESSAGE(${PUBLIC_EXT_LIBS})
+	MESSAGE(${PUBLIC_EXT_LIBS})
 
-pbuilder_executables(
-        SOURCES ${exe_sources}
-        TARGETS_VAR programs
-        PROJECT_LIBRARIES ${exe_libraries}
-        PUBLIC_EXTERNAL_LIBRARIES ${PUBLIC_EXT_LIBS}
-        PRIVATE_EXTERNAL_LIBRARIES ${PRIVATE_EXT_LIBS}
-)
+	pbuilder_executables(
+			SOURCES ${exe_sources}
+			TARGETS_VAR programs
+			PROJECT_LIBRARIES ${exe_libraries}
+			PUBLIC_EXTERNAL_LIBRARIES ${PUBLIC_EXT_LIBS}
+			PRIVATE_EXTERNAL_LIBRARIES ${PRIVATE_EXT_LIBS}
+	)
 
-pbuilder_component_install_and_export(
-        COMPONENT Executables
-        EXETARGETS ${programs}
-)
-##############
-# WCSim compilation options
-##############
+	pbuilder_component_install_and_export(
+			COMPONENT Executables
+			EXETARGETS ${programs}
+	)
+	##############
+	# WCSim compilation options
+	##############
 
-target_compile_definitions(WCSimCore PRIVATE
-        WCSIM_CHECK_GEOMETRY_OVERLAPS=${WCSIM_CHECK_GEOMETRY_OVERLAPS}
-)
-target_compile_definitions(WCSim PRIVATE
-        WCSIM_CHECK_GEOMETRY_OVERLAPS=${WCSIM_CHECK_GEOMETRY_OVERLAPS}
-)
+	target_compile_definitions(WCSimCore PRIVATE
+			WCSIM_CHECK_GEOMETRY_OVERLAPS=${WCSIM_CHECK_GEOMETRY_OVERLAPS}
+	)
+	target_compile_definitions(WCSim PRIVATE
+			WCSIM_CHECK_GEOMETRY_OVERLAPS=${WCSIM_CHECK_GEOMETRY_OVERLAPS}
+	)
+endif()
