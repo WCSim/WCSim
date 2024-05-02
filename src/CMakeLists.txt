@@ -32,6 +32,7 @@ endif()
 # WCSimRoot library
 
 set (dict_headers
+		${PROJECT_SOURCE_DIR}/include/jhfNtuple.h
         ${PROJECT_SOURCE_DIR}/include/WCSimRootEvent.hh
         ${PROJECT_SOURCE_DIR}/include/WCSimRootGeom.hh
         ${PROJECT_SOURCE_DIR}/include/WCSimPmtInfo.hh
