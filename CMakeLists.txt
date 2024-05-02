@@ -30,8 +30,6 @@ include(PackageBuilder)
 
 pbuilder_prepare_project()
 
-set(CMAKE_CXX_STANDARD 14) # Enable c++14 standard
-
 
 
 ######
@@ -49,6 +47,23 @@ include(${ROOT_USE_FILE})
 include_directories (${ROOT_INCLUDE_DIR})
 LIST(APPEND PUBLIC_EXT_LIBS ${ROOT_LIBRARIES})
 
+# Manual way to set the CXX standard if ROOT uses c++17 standard
+# Not very gracious...
+cmake_policy(SET CMP0057 NEW)
+string(REPLACE " " ";" TMP_ROOT_FLAGS ${ROOT_CXX_FLAGS})
+if("-std=c++20" IN_LIST TMP_ROOT_FLAGS)
+    set(CMAKE_CXX_STANDARD 20)
+elseif ("-std=c++17" IN_LIST TMP_ROOT_FLAGS)
+    set(CMAKE_CXX_STANDARD 17)
+elseif("-std=c++14" IN_LIST TMP_ROOT_FLAGS)
+    set(CMAKE_CXX_STANDARD 14)
+elseif("-std=c++11" IN_LIST TMP_ROOT_FLAGS)
+    set(CMAKE_CXX_STANDARD 11)
+else()
+    set(CMAKE_CXX_STANDARD 17)
+endif ()
+
+MESSAGE(STATUS "Current CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
