@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
 
-  build:
+  build_wcsim:
     runs-on: ubuntu-latest
     #This should mean that only one "build" job runs at a time
     # Meaning there should be no webpage clashes if multiple CI runs are triggered
