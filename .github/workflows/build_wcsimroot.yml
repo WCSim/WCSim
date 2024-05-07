@@ -73,15 +73,13 @@ jobs:
         with:
           ref: ${{ steps.checkout_sha.outputs.value }}
           repository: ${{ steps.checkout_repo.outputs.value }}
+          
+      - name: Setup prerequisites setup script
+        run: |
+          cd /opt/
+          echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
 
       - name: Build
-        shell: bash
         run: |
-          echo $PATH
-          cat /usr/local/hk/hk-pilot/setup.sh
-          export PATH=/root/.local/bin:$PATH
-          echo $PATH
-          . /usr/local/hk/hk-pilot/setup.sh
-          pwd
-          hkp install .
+          source /opt/setup.sh
 
