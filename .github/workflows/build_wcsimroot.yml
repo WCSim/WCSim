@@ -33,7 +33,7 @@ jobs:
         working-directory: /opt/
     #run inside a container that has the prerequisites already installed
     container:
-      image: docker://ghcr.io/hyperk/wcsimroot
+      image: docker://ghcr.io/hyperk/wcsimroot:main
       credentials:
            username: ${{ github.actor }}
            password: ${{ secrets.CONTAINER_REPO }}
