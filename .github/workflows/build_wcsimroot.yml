@@ -77,6 +77,8 @@ jobs:
       - name: Build
         shell: bash
         run: |
+          echo $PATH
+          cat /usr/local/hk/hk-pilot/setup.sh
           source /usr/local/hk/hk-pilot/setup.sh
           pwd
           hkp install .
