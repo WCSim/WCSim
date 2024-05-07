@@ -51,13 +51,13 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   hepmc3fileNameCmd->SetParameterName("fileName",true);
   hepmc3fileNameCmd->SetDefaultValue("inputhepmc3file");
 
-  hepmc3positionGenCmd = new G4UIcmdWithABool("/mygen/hepmc3positionGen",this);
-  hepmc3positionGenCmd->SetGuidance("Set to generate isotropic positions or read from file.");
-  hepmc3positionGenCmd->SetGuidance("true : generate positions, false : read from file");
-  hepmc3positionGenCmd->SetGuidance("Default if not set is false (read from file)");
-  hepmc3positionGenCmd->SetParameterName("positionGen",true);
-  hepmc3positionGenCmd->SetDefaultValue("false");
-  SetNewValue(hepmc3positionGenCmd, false);
+  hepmc3positionGenModeCmd = new G4UIcmdWithABool("/mygen/hepmc3positionGenMode",this);
+  hepmc3positionGenModeCmd->SetGuidance("Set to generate isotropic positions or read from file.");
+  hepmc3positionGenModeCmd->SetGuidance("true : generate positions randomly inside ID, false : read from file");
+  hepmc3positionGenModeCmd->SetGuidance("Default if not set is false (read from file)");
+  hepmc3positionGenModeCmd->SetParameterName("positionGen",true);
+  hepmc3positionGenModeCmd->SetDefaultValue("false");
+  SetNewValue(hepmc3positionGenModeCmd, false);
 
   timeUnitCmd = new G4UIcmdWithAString("/mygen/time_unit",this);
   timeUnitCmd->SetGuidance("Define the units used for time in the input file.");
@@ -644,8 +644,8 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
 
       }
 
-  if (command == hepmc3positionGenCmd){
-    myAction->SetHepMC3PositionGen(hepmc3positionGenCmd->GetNewBoolValue(newValue));
+  if (command == hepmc3positionGenModeCmd){
+    myAction->SetHepMC3PositionGen(hepmc3positionGenModeCmd->GetNewBoolValue(newValue));
   }
   //
   if (command == ibdDatabaseCmd)
