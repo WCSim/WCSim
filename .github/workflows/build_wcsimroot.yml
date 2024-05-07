@@ -75,7 +75,7 @@ jobs:
           repository: ${{ steps.checkout_repo.outputs.value }}
 
       - name: Build
-        shell: bash --login -c
+        shell: bash --login -c -e {0}
         run: |
           echo $PATH
           cat /usr/local/hk/hk-pilot/setup.sh
