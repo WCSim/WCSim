@@ -75,6 +75,7 @@ jobs:
           repository: ${{ steps.checkout_repo.outputs.value }}
 
       - name: Build
+        shell: bash
         run: |
           source /usr/local/hk/hk-pilot/setup.sh
           pwd
