@@ -1445,7 +1445,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
 
    G4double EFFICIENCY_glasscath[NUM] =
-     { 0.0, 0.0 };
+     { 1.0, 1.0 };
 
    // Coated surface properties for new photocathode physics (see WCSimOpBoundaryProcess.cc)
    // Allows frustrated transmission through photocathode film or not, only meaningful for Model 1
