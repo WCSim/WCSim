@@ -81,7 +81,7 @@ jobs:
           cat /usr/local/hk/hk-pilot/setup.sh
           export PATH=/root/.local/bin:$PATH
           echo $PATH
-          source /usr/local/hk/hk-pilot/setup.sh
+          . /usr/local/hk/hk-pilot/setup.sh
           pwd
           hkp install .
 
