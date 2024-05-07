@@ -74,6 +74,11 @@ jobs:
           ref: ${{ steps.checkout_sha.outputs.value }}
           repository: ${{ steps.checkout_repo.outputs.value }}
 
+      - name: Link WCSim directory
+        run: |
+          mkdir /opt/WCSim/
+          ln -s ${GITHUB_WORKSPACE}/ /opt/WCSim/src
+
       # We source hk-pilot in order to get the HK_SYSTEM variable
       - name: Setup prerequisites setup script
         run: |
