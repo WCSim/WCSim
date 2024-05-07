@@ -115,6 +115,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   useGPSEvt      		  = false;
   useDataTableEvt     = false;
   useIBDEvt           = false;
+  useHepMC3Evt        = false;
   useCosmics          = false;
   useRadioactiveEvt   = false;
   useRadonEvt         = false;
@@ -1622,6 +1623,8 @@ void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
 {
   if(useMulineEvt)
     wcopt->SetVectorFileName(vectorFileName);
+  else if (useHepMC3Evt)
+    wcopt->SetVectorFileName(hepmc3_filename);
   else
     wcopt->SetVectorFileName("");
   wcopt->SetGeneratorType(GetGeneratorTypeString());
@@ -1649,6 +1652,8 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
     return "mPMT-LED";
   else if(useIBDEvt)
     return "IBD";
+  else if(useHepMC3Evt)
+    return "hepmc3";
   else if(useDataTableEvt)
     return "data-table";
   else if(useCosmics)
