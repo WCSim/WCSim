@@ -33,10 +33,10 @@ jobs:
         working-directory: /opt/
     #run inside a container that has the prerequisites already installed
     container:
-      image: ghcr.io/hyperk/wcsimroot:main
-#      credentials:
-#           username: ${{ github.actor }}
-#           password: ${{ secrets.CONTAINER_REPO }}
+      image: docker://ghcr.io/hyperk/hk-software:0.0.2
+      credentials:
+           username: ${{ github.actor }}
+           password: ${{ secrets.CONTAINER_REPO }}
       env:
         #GIT_COMMIT: ${{ github.sha }}
         GIT_PULL_REQUEST: ${{ github.event.number }}
