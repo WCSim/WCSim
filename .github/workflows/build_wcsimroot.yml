@@ -75,10 +75,12 @@ jobs:
           repository: ${{ steps.checkout_repo.outputs.value }}
 
       - name: Build
-        shell: bash --login -c -e {0}
+        shell: bash
         run: |
           echo $PATH
           cat /usr/local/hk/hk-pilot/setup.sh
+          export PATH=/root/.local/bin:$PATH
+          echo $PATH
           source /usr/local/hk/hk-pilot/setup.sh
           pwd
           hkp install .
