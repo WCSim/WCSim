@@ -6,6 +6,18 @@ cmake_minimum_required(VERSION 3.1)
 # ##############################################################################
 
 set(PROJECT_NAME WCSim)
+
+# Add a WCSimRoot library installation (simpler dependencies, used in fitqun)
+option (WCSim_WCSimRoot_only
+        "Allows to only install the WCSimROOT library (file format); no need for G4!"
+        OFF
+)
+MESSAGE(STATUS "WCSim_WCSimRoot_only: ${WCSim_WCSimRoot_only}")
+if (${WCSim_WCSimRoot_only})
+    MESSAGE(STATUS "Will install only WCSimRoot library; disabling Geant4 package search!")
+    set(PROJECT_NAME WCSimRoot)
+endif ()
+
 set(PROJECT_VERSION 1.12.12)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
@@ -29,7 +41,6 @@ list(APPEND CMAKE_MODULE_PATH
 include(PackageBuilder)
 
 pbuilder_prepare_project()
-
 
 
 ######
@@ -65,24 +76,27 @@ endif ()
 
 MESSAGE(STATUS "Current CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
-#----------------------------------------------------------------------------
-# Find Geant4 package, activating all available UI and Vis drivers by default
-# You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
-# to build a batch mode only executable
-#
-option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
-if(WITH_GEANT4_UIVIS)
-    find_package(Geant4 REQUIRED ui_all vis_all)
-else()
-    find_package(Geant4 REQUIRED)
-endif()
-LIST(APPEND PUBLIC_EXT_LIBS ${Geant4_LIBRARIES})
 
-#----------------------------------------------------------------------------
-# Setup Geant4 include directories and compile definitions
-# Setup include directory for this project
-#
-include(${Geant4_USE_FILE})  ## NOT needed for Dict
+
+if (NOT ${WCSim_WCSimRoot_only}) # only looking for G4 if WCSim_WCSimRoot_only is false
+    #----------------------------------------------------------------------------
+    # Find Geant4 package, activating all available UI and Vis drivers by default
+    # You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
+    # to build a batch mode only executable
+    option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
+    if(WITH_GEANT4_UIVIS)
+        find_package(Geant4 REQUIRED ui_all vis_all)
+    else()
+        find_package(Geant4 REQUIRED)
+    endif()
+    LIST(APPEND PUBLIC_EXT_LIBS ${Geant4_LIBRARIES})
+    #----------------------------------------------------------------------------
+    # Setup Geant4 include directories and compile definitions
+    # Setup include directory for this project
+    #
+    include(${Geant4_USE_FILE})  ## NOT needed for Dict
+endif()
+
 
 #########
 # C++ Standard and flags
@@ -231,7 +245,11 @@ add_subdirectory (src)
 # Configure package and final installation files
 #########
 
+if (NOT ${WCSim_WCSimRoot_only})
 configure_file(${PROJECT_SOURCE_DIR}/cmake/WCSimConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/WCSimConfig.cmake @ONLY)
+else ()
+    configure_file(${PROJECT_SOURCE_DIR}/cmake/WCSimRootConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/WCSimRootConfig.cmake @ONLY)
+endif()
 pbuilder_do_package_config()
 
 configure_file(cmake/this_wcsim.sh.in this_wcsim.sh)

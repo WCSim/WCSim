@@ -69,6 +69,8 @@ The automated building testing is currently performed inside the hk-software doc
 * gcc 8.5.0
 * cmake 3.20.2
 
+If you just need to read WCSim output files, you can do this without the G4 dependency using the `WCSim_WCSimRoot_only` CMake option (see [here](#wcsim-cmake-build-options)).
+
 And as such this is the most supported version of the software (it is guaranteed to work)
 
 Other versions of prerequisite software can be tried, but aren't guaranteed to work. 
@@ -140,6 +142,7 @@ Useful cmake commands:
 * `-DWCSim_Geometry_Overlaps_CHECK=<ON|OFF>` If ON, turns on geometry overlap checking (slow, but important when setting new detector geometry options). Default: OFF
 * `-DWCSim_DEBUG_COMPILE_FLAG=<ON|OFF>` If ON, turns on the gcc debug compiler flag `-g`. Default: OFF
 * `-DWCSIM_SAVE_PHOTON_HISTORY_FLAG=<ON|OFF>` If ON, turns on photon scattering/reflection history saving. The data class `WCSimRootCherenkovHitHistory` is used in a similar way as `WCSimRootCherenkovHitTime`. Default: OFF
+* `-DWCSim_WCSimRoot_only=<ON|OFF>` If ON, only builds the WCSimRoot library (ignoring the WCSimCore one). This is useful if one wants only to read the WCSim output files (for e.g. reconstruction) and not running any simulation.
 
 #### Build with CMake on sukap:
 

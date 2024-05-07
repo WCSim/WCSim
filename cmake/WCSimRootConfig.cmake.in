@@ -1,0 +1,15 @@
+# WCSimRootConfig.cmake
+
+get_filename_component( WCSimRoot_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH )
+
+include( CMakeFindDependencyMacro )
+find_dependency( ROOT REQUIRED )
+
+include("${WCSimRoot_CMAKE_DIR}/WCSimRoot_Library_Targets.cmake")
+
+find_library(WCSimRoot_LIBRARIES REQUIRED
+        NAMES WCSimRoot
+        HINTS @CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_SUBDIR@)
+
+list(APPEND WCSimRoot_LIBRARIES
+        ${WCSimRoot_LIBRARIES})
