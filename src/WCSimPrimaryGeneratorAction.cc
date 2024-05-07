@@ -1585,8 +1585,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
           // Set write outs
           SetBeamPDG(part->pdg_id(), 0);
-          SetBeamEnergy(part->momentum().e());
-          SetBeamDir(dir);
+          SetBeamEnergy(part->momentum().e(), 0);
+          SetBeamDir(dir, 0);
         }
 
         // If the particle status is 1 then the particle needs simulating and writing out.
