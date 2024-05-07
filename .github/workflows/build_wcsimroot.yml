@@ -74,9 +74,11 @@ jobs:
           ref: ${{ steps.checkout_sha.outputs.value }}
           repository: ${{ steps.checkout_repo.outputs.value }}
 
+      # We source hk-pilot in order to get the HK_SYSTEM variable
       - name: Setup prerequisites setup script
         run: |
           cd /opt/
+          source /usr/local/hk/hk-pilot/setup.sh
           echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
           echo source /usr/local/hk/ROOT/install-$HK_SYSTEM/setup.sh >> /opt/setup.sh
 
