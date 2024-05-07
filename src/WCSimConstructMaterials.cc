@@ -1706,7 +1706,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    // No ABSLENGTH here in order to have actual photon propagation
    G4MaterialPropertiesTable *myMPT2_Air1 = new G4MaterialPropertiesTable();
    myMPT2_Air1->AddProperty("RINDEX", ENERGY_water, RINDEX_air, NUMENTRIES_water);
-   myMPT2_Air1->AddProperty("RAYLEIGH",ENERGY_water, RAYLEIGH_air, NUMENTRIES_water);
+   //myMPT2_Air1->AddProperty("RAYLEIGH",ENERGY_water, RAYLEIGH_air, NUMENTRIES_water);
    Air1->SetMaterialPropertiesTable(myMPT2_Air1);
    
    G4MaterialPropertiesTable *myMPT3 = new G4MaterialPropertiesTable();
