@@ -11,11 +11,6 @@
 #include "HepMC3/ReaderAscii.h"
 #include "WCSimDetectorConstruction.hh"
 
-namespace HepMC3 {
-class Reader;
-typedef std::shared_ptr<Reader> ReaderPtr;
-} // namespace HepMC3
-
 class WCSimNuHepMC3Reader {
   public:
     WCSimNuHepMC3Reader(std::string filename, WCSimDetectorConstruction *myDC);

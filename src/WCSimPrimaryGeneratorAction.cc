@@ -1568,7 +1568,10 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
 
       // Get the next event from the reader
-      hepmc3_reader->ReadEvent(hepmc3_positionGen);
+      if (!hepmc3_reader->ReadEvent(hepmc3_positionGen)) {
+        G4cout << "No more events in HepMC3 file" << G4endl;
+        G4RunManager::GetRunManager()->AbortRun();
+      }
 
       // Loop over the particles
       for (HepMC3::GenParticlePtr part : hepmc3_reader->event.particles()) {
