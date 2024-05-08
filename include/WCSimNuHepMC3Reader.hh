@@ -22,8 +22,8 @@ class WCSimNuHepMC3Reader {
     /// Vector of particles in event
     std::vector<HepMC3::GenParticlePtr> particles;
 
-    /// Populate particles using event.particles()
-    bool GetParticles();
+    /// Extract particles from event.particles and populate the particles vector
+    bool ExtractParticlesFromEvent();
 
     /// Return Lorentz vector of a specific particle
     G4LorentzVector GetLorentzVector(int particle_index);

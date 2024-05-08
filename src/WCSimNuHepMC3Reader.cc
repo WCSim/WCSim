@@ -32,7 +32,8 @@ WCSimNuHepMC3Reader::WCSimNuHepMC3Reader(std::string filename, WCSimDetectorCons
 
 WCSimNuHepMC3Reader::~WCSimNuHepMC3Reader() {}
 
-/// Read the next event from the input file
+/// Read the next event from the input file. Also calls get particles to clear and then repopulate the particles
+/// vector
 bool WCSimNuHepMC3Reader::ReadEvent(bool positionFlag) {
     // Read event
     my_hepmc_reader->read_event(event);
@@ -53,7 +54,7 @@ bool WCSimNuHepMC3Reader::ReadEvent(bool positionFlag) {
         }
     }
 
-    if (!GetParticles()) {
+    if (!ExtractParticlesFromEvent()) {
         return false;
     };
 
@@ -61,8 +62,9 @@ bool WCSimNuHepMC3Reader::ReadEvent(bool positionFlag) {
     return true;
 }
 
-/// Get particles
-bool WCSimNuHepMC3Reader::GetParticles() {
+/// Extract particles from event.particles amd populate the particles vector. Also checks whether there are any
+/// particles in the event. If not returns false
+bool WCSimNuHepMC3Reader::ExtractParticlesFromEvent() {
     // Clear the vector of particles
     particles.clear();
 
