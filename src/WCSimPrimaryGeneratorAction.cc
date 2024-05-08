@@ -1601,18 +1601,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         }
 
         // If the particle status is 1 then the particle needs simulating and writing out.
-        int n_final_state = 0;
         if (part->status() == 1) {
-          n_final_state++;
 
           // Get direction (momentum) and normalise
           G4ThreeVector dir(part->momentum().px(), part->momentum().py(), part->momentum().pz());
           dir.set(dir.x() / dir.mag(), dir.y() / dir.mag(), dir.z() / dir.mag());
 
-          // Set write outs
-          SetBeamPDG(part->pdg_id(), n_final_state);
-          SetBeamEnergy(part->momentum().e());
-          SetBeamDir(dir);
 
           // Get particle position
           G4ThreeVector vtx(part->production_vertex()->position().x(), part->production_vertex()->position().y(),
