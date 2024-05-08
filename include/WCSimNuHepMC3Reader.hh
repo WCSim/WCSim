@@ -40,8 +40,6 @@ class WCSimNuHepMC3Reader {
     /// Return a vector of momenta and PDGs
     std::vector<std::pair<G4LorentzVector, int>> GetMomentaAndPDGs();
 
-    /// void GenDirection(double energy);
-
     /// Reader object
     std::shared_ptr<HepMC3::Reader> my_hepmc_reader;
 
