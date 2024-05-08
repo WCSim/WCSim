@@ -93,7 +93,7 @@ jobs:
           cd /opt/WCSim
           mkdir build install
           cd build
-          cmake .. \
+          cmake ../src \
             -D CMAKE_INSTALL_PREFIX=../install \
             -D WCSim_WCSimRoot_only=ON
           make -j4
