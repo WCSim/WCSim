@@ -4,7 +4,7 @@ Meaning of each column is:
 Type is used to specify which PMT to be placed:     1 = PMT1 (nominal),
                                                     2 = PMT2 in hybrid configuration,
                                                     3 = Ex-situ mPMT in WCTE,
-                                                    4 = Ib-situ mPMT in WCTE (not yet implemented)
+                                                    4 = In-situ mPMT in WCTE (not yet implemented)
 ==================================================================================================
 mPMTId: custom ID to override the default numbering scheme
 ==================================================================================================
