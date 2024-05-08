@@ -91,7 +91,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
 						      G4ThreeVector(0,0,-277.6*mm));
 
   G4LogicalVolume *logicWCPMT = new G4LogicalVolume(solidWCPMT,
-						    G4Material::GetMaterial("SilGel_WCTE"),
+						    G4Material::GetMaterial("Air1"),
 						    "WCPMT");
 
   //////////////////////////
