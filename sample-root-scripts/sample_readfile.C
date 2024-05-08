@@ -263,8 +263,22 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
         
         if(verbose > 1){
           if ( idigi < 10 ){ // Only print first XX=10 tubes
-            printf("idigi, q [p.e.], time+950 [ns], tubeid: %d %f %f %d \n",idigi,wcsimrootcherenkovdigihit->GetQ(),
-              wcsimrootcherenkovdigihit->GetT(),wcsimrootcherenkovdigihit->GetTubeId());
+	    WCSimRootPMT pmt;
+	    const int tubeId = wcsimrootcherenkovdigihit->GetTubeId();
+	    if(events_tree_name.EqualTo("wcsimrootevent"))
+	      pmt = geo->GetPMT(tubeId - 1, false);
+	    else if(events_tree_name.EqualTo("wcsimrootevent2"))
+	      pmt = geo->GetPMT(tubeId - 1, true);
+	    else if(events_tree_name.EqualTo("wcsimrootevent_OD"))
+	      pmt = geo->GetODPMT(tubeId - 1);
+	    //ensure you have the correct PMT
+	    assert(tubeId == pmt.GetTubeNo());
+
+	    const float x = pmt.GetPosition(0);
+	    const float y = pmt.GetPosition(1);
+	    const float z = pmt.GetPosition(2);
+            printf("idigi, q [p.e.], time+950 [ns], tubeid (x,y,z): %d %f %f %d (%f, %f, %f) \n",idigi,wcsimrootcherenkovdigihit->GetQ(),
+		   wcsimrootcherenkovdigihit->GetT(), tubeId, x, y, z);
             
             // print the parents of each photon in the digit
 	    // retrieve the indices of the photons in this digit within the HitTimes array
