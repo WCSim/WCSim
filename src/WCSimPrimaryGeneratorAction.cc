@@ -1593,6 +1593,13 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
           SetBeamDir(dir, 0);
         }
 
+        // If the particle status is 20 then we have a target particle. This needs writing out, but not simulating
+        if (part->status() == 20){
+          targetpdgs[0] = part->pdg_id();
+          targetenergies[0] = part->momentum().e();
+          targetdirs[0] = G4ThreeVector(part->momentum().px(), part->momentum().py(), part->momentum().pz());
+        }
+
         // If the particle status is 1 then the particle needs simulating and writing out.
         int n_final_state = 0;
         if (part->status() == 1) {
