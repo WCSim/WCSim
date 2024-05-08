@@ -349,8 +349,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
 			     OpGlassCathodeSurface);
 
   // Gel above PMT glass
-  // In principle don't need an explicit placement since logicWCPMT is already made of gel,
-  // but just put here as a reference
   G4Sphere *gelSolid = new G4Sphere("GelSolid",
                                     311.95*mm,
                                     332.*mm,
