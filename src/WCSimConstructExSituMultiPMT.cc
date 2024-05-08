@@ -22,8 +22,9 @@
 #include  "WCSimMultiPMTParameterisation.hh"
 #include  "G4PVParameterised.hh"
 
-//ex-situ mPMT logical volume construction.
-//A function of the WCSimDetectorConstruction class
+// ex-situ mPMT logical volume construction.
+// A function of the WCSimDetectorConstruction class
+// dimensions are measured from actual mPMT construction and hard-coded
 
 // 3-inch PMT construction
 G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName, G4String CollectionName, G4String detectorElement)

@@ -143,7 +143,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   Air->AddElement(elN, 70.*perCent);
   Air->AddElement(elO, 30.*perCent);
 
-  G4Material* Air1 // with realistic attenuation length
+  G4Material* Air1 // with realistic attenuation length, for WCTE mPMT construction
     = new G4Material("Air1",density,2);
   Air1->AddElement(elN, 70.*perCent);
   Air1->AddElement(elO, 30.*perCent);
@@ -156,7 +156,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   Plastic->AddElement(elC, 1);
   Plastic->AddElement(elH, 2);
 
-  //---Poron between PMT and matrix in mPMT
+  //---Poron between PMT and matrix in mPMT, for WCTE mPMT construction
   density = 0.2403*g/cm3;
   
   G4Material* poron
@@ -201,7 +201,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
     = new G4Material("SilGel",density,1);
   SilGel->AddElement(elSi, 1);
 
-  G4Material *SilGel_WCTE
+  G4Material *SilGel_WCTE // for WCTE mPMT construction
     = new G4Material("SilGel_WCTE",density,1);
   SilGel_WCTE->AddElement(elSi, 1);
 
@@ -209,7 +209,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   G4Material* Acrylic 
     = nist_man->FindOrBuildMaterial("G4_PLEXIGLASS");
 
-  //---Absorber: artificial material to absorb all photons 
+  //---Absorber: artificial material to absorb all photons, for WCTE mPMT construction
   density = 0.96*g/cm3;
   G4Material *absorberMaterial = new G4Material("customAbsorber", density, 2);
   absorberMaterial->AddElement(elC, 1);
@@ -301,7 +301,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   //Glass->AddMaterial(Al2O3, 2.3*perCent);  
   //Put in 2.3 percent if the other 4 materials = 0.1 percent
 
-  G4Material* GlassWCTE = new G4Material("GlassWCTE",density,4);
+  G4Material* GlassWCTE = new G4Material("GlassWCTE",density,4); // for WCTE mPMT construction
   GlassWCTE->AddMaterial(SiO2, 80.6*perCent);
   GlassWCTE->AddMaterial(B2O3, 13.0*perCent);
   GlassWCTE->AddMaterial(Na2O, 4.0*perCent);
@@ -691,7 +691,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
        1.0e9*cm,1.0e9*cm,1.0e9*cm,1.0e9*cm,1.0e9*cm,1.0e9*cm,1.0e9*cm,
        1.0e9*cm, 1.0e9*cm };
 
-   G4double ENERGY_glasswcte[45]=
+   // for WCTE mPMT construction
+   G4double ENERGY_glasswcte[45]= 
      {4.95937*eV, 4.76862*eV, 4.59201*eV, 4.42801*eV, 4.27532*eV,
       4.13281*eV, 3.99949*eV, 3.87451*eV, 3.7571*eV, 3.64659*eV,
       3.54241*eV, 3.44401*eV, 3.35092*eV, 3.26274*eV, 3.17908*eV,
@@ -880,7 +881,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
        0.9,0.9,0.9,0.9,0.9,0.9,
        0.9,0.9,0.9,0.9,0.9,0.9};
 
-   const G4int NUMENTRIES_reflector = 501;
+  // for WCTE mPMT construction
+  const G4int NUMENTRIES_reflector = 501;
   
   G4double ENERGY_reflector[NUMENTRIES_reflector] = 
     { 1.7712*eV, 1.77374*eV, 1.77628*eV, 1.77883*eV, 1.78138*eV, 1.78395*eV,
@@ -1236,7 +1238,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
       1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 
       1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404, 1.404};
 
-    G4double RINDEX_SilGel_WCTE[87] = 
+    G4double RINDEX_SilGel_WCTE[87] = // for WCTE mPMT construction
        {1.608013009, 1.591127095, 1.575602811, 1.561337877, 1.548237552,
 				1.536214093, 1.52518625, 1.515078789, 1.505822046, 1.497351509,
 				1.489607425, 1.482534437, 1.476081242, 1.470200274, 1.464847411,
@@ -1266,7 +1268,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 				       .876*m, .844*m, .786*m, .727*m,  .674*m,
 				       .566*m, .485*m, .360*m, .220*m, .220*m, 0*m };
 
-    G4double ENERGY_SilGel_WCTE[87] = 
+    G4double ENERGY_SilGel_WCTE[87] = // for WCTE mPMT construction
        {4.678776674*eV, 4.592027283*eV, 4.508478709*eV, 4.427958491*eV, 4.35030587*eV,
 				4.275369924*eV, 4.202452758*eV, 4.13256199*eV, 4.064996939*eV, 3.999137915*eV,
 				3.935906953*eV, 3.87420652*eV, 3.814907862*eV, 3.756987416*eV, 3.700835849*eV,
@@ -1377,7 +1379,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    BSSkinSurface->SetFinish(groundfrontpainted);
    BSSkinSurface->SetSigmaAlpha(0.1);
 
-   PoronSkinSurface = new G4OpticalSurface("PoronSurface");
+   PoronSkinSurface = new G4OpticalSurface("PoronSurface"); // for WCTE mPMT construction
    PoronSkinSurface->SetType(dielectric_dielectric);
    PoronSkinSurface->SetModel(unified); 
    PoronSkinSurface->SetFinish(groundfrontpainted);
@@ -1386,7 +1388,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    poron_foam->AddProperty("REFLECTIVITY", ENERGY_water, REFLECTIVITY_poron, NUMENTRIES_water);
    PoronSkinSurface->SetMaterialPropertiesTable(poron_foam);
 
-   AbsorberSkinSurface = new G4OpticalSurface("AbsorberSurface");
+   AbsorberSkinSurface = new G4OpticalSurface("AbsorberSurface"); // for WCTE mPMT construction
    AbsorberSkinSurface->SetType(dielectric_metal);
    AbsorberSkinSurface->SetModel(unified);
    AbsorberSkinSurface->SetFinish(polished);
@@ -1443,9 +1445,9 @@ void WCSimDetectorConstruction::ConstructMaterials()
      //{ 0.0, 0.0 };
      { 1.0*RGCFF, 1.0*RGCFF };
 
-
+   // Set to 1 to trigger WCSimOpBoundaryProcess::InvokeSD()
    G4double EFFICIENCY_glasscath[NUM] =
-     { 1.0, 1.0 };
+     { 1.0, 1.0 }; 
 
    // Coated surface properties for new photocathode physics (see WCSimOpBoundaryProcess.cc)
    // Allows frustrated transmission through photocathode film or not, only meaningful for Model 1

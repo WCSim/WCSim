@@ -505,16 +505,16 @@ private:
 
   //Reflector skin surface -tf
   G4OpticalSurface * ReflectorSkinSurface;
-  G4OpticalSurface * ReflectorSkinSurfaceWCTE;
+  G4OpticalSurface * ReflectorSkinSurfaceWCTE; // for WCTE mPMT construction
 
   //Foam for mPMT: Gel - absorbing support structure -tf
   G4OpticalSurface * OpGelFoamSurface;
 
   //Poron skin surface: filling between PMT and matrix in mPMT
-  G4OpticalSurface * PoronSkinSurface;
+  G4OpticalSurface * PoronSkinSurface; // for WCTE mPMT construction
 
   //Absorber skin surface: artificial material to absorb all photons
-  G4OpticalSurface * AbsorberSkinSurface;
+  G4OpticalSurface * AbsorberSkinSurface; // for WCTE mPMT construction
 
   //TF fix for blacksheet errors "missing refractive index"
   // or "photon travelling faster than c_light" when trying to refract
@@ -540,6 +540,7 @@ private:
   G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank",bool WLS=false);
   G4LogicalVolume* ConstructPMTAndWLSPlate(G4String,G4String,G4String detectorElement="OD");
 
+  // for WCTE mPMT construction
   G4LogicalVolume* ConstructExSituPMT(G4String,G4String,G4String detectorElement="tank");
   G4LogicalVolume* ConstructExSituMultiPMT(G4String,G4String,G4String detectorElement="tank");
 
