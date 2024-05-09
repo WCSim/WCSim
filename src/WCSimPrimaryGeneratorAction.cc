@@ -1569,7 +1569,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       // Get the next event from the reader
       if (!hepmc3_reader->ReadEvent(hepmc3_positionGen)) {
-        G4cout << "No more events in HepMC3 file" << G4endl;
+        G4cout << "NuHepMC3Reader: \033[1m[INFO]\033[0m end of file reached. Run terminated." << G4endl;
         G4RunManager::GetRunManager()->AbortRun();
       }
 
