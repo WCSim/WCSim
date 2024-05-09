@@ -4,11 +4,13 @@
 #include "HepMC3/Print.h"
 #include "HepMC3/ReaderFactory.h"
 
+#include <cmath>
+
 #include <CLHEP/Random/Random.h>
+
 #include <G4Types.hh>
 #include <G4ios.hh>
 #include <Randomize.hh>
-#include <cmath>
 
 WCSimNuHepMC3Reader::WCSimNuHepMC3Reader(std::string filename, WCSimDetectorConstruction *myDC)
     : myDetector(myDC) {
