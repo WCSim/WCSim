@@ -41,7 +41,7 @@ bool WCSimNuHepMC3Reader::ReadEvent(bool positionFlag) {
     // Check if the reading failed
     if (my_hepmc_reader->failed()) {
         G4cout << "NuHepMC3Reader: \033[31m[ERROR]\033[0m Failed to read event " << events_parsed << G4endl;
-        // return false;
+        return false;
     }
 
     // Set the positon of the vertex to a random position in the detector
