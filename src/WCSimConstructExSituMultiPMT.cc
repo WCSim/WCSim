@@ -67,6 +67,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
                                                                                                                            
   G4double domeInnerRadius = 332.*mm;
   G4double domeOuterRadius = 347.*mm;
+  G4double domeOffset = -277.627*mm;
 
   G4Sphere *domeSphere = new G4Sphere("DomeSphere",
                                       domeInnerRadius,
@@ -88,7 +89,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
 						      solidPMTCyliner,
 						      domeSolid,
 						      0,
-						      G4ThreeVector(0,0,-277.6*mm));
+						      G4ThreeVector(0,0,domeOffset));
 
   G4LogicalVolume *logicWCPMT = new G4LogicalVolume(solidWCPMT,
 						    G4Material::GetMaterial("Air1"),
@@ -373,7 +374,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
                                                   "logicGel");
 
   new G4PVPlacement(0,                                                                 
-                    G4ThreeVector(0.,0.,-277.627*mm),   
+                    G4ThreeVector(0.,0.,domeOffset),   
                     gelLogic,                                            
                     "Gel",                 
                     logicWCPMT,
@@ -556,7 +557,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituMultiPMT(G4String PMT
   G4double domeCut = 235*mm;
 
   G4double vessel_cylinder_height = 77.785*2*mm;
-  G4double vessel_inner_radius = 225.6*mm;
+  G4double vessel_inner_radius = 227.1*mm;
   G4double vessel_outer_radius = 254.*mm;
   G4double vessel_cap_height = domeOuterRadius - domeCut;
 
@@ -736,38 +737,27 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituMultiPMT(G4String PMT
   
   G4LogicalVolume* logicWCPMT = ConstructExSituPMT(PMTName, CollectionName,detectorElement);
   
-  G4double xArray[19] ={0.*mm, 84.43*mm, 42.21*mm, -42.21*mm, -84.43*mm, -42.21*mm, 42.21*mm, 155.109*mm, 134.32*mm, 77.55*mm, 0.*mm, -77.55*mm, -134.32*mm, -155.109*mm, -134.32*mm, -77.55*mm, 0.*mm, 77.55*mm, 134.32*mm};
-
-  G4double yArray[19] = {0.*mm, 0.*mm, -73.125*mm, -73.125*mm, 0.*mm, 73.125*mm, 73.125*mm, 0.*mm, -77.55*mm, -134.32*mm, -155.109*mm, -134.32*mm, -77.55*mm, 0.*mm, 77.55*mm, 134.32*mm, 155.109*mm, 134.32*mm, 77.55*mm};
-
-  G4double zArray[19] = {0.*mm, -13.91*mm, -13.91*mm, -13.91*mm, -13.91*mm, -13.91*mm, -13.91*mm, -50.88*mm, -50.88*mm, -50.88*mm, -50.88*mm, -50.88*mm, -50.88*mm, -50.88*mm, -50.88*mm, -50.88*mm, -50.88*mm, -50.88*mm, -50.88*mm};
-
-  G4double xthetaArray[19] = {0.*deg, 0.*deg, 16.24*deg, 16.24*deg, 0.*deg, -16.24*deg, -16.24*deg, 0.*deg, 19.861*deg, 32.03*deg, 35.846*deg, 32.03*deg, 19.861*deg, 0.*deg, -19.861*deg, -32.03*deg, -35.846*deg, -32.03*deg, -19.861*deg};
-
-  G4double ythetaArray[19] = {0.*deg, 18.59*deg, 9.54*deg, -9.54*deg, -18.59*deg, -9.54*deg, 9.54*deg, 35.84*deg, 32.03*deg, 19.861*deg, 0.*deg, -19.861*deg, -32.03*deg, -35.846*deg, -32.03*deg, -19.861*deg, 0.*deg, 19.861*deg, 32.03*deg};
-
+  G4double thetaArray[19] =  {0.*deg, 18.59*deg, 18.59*deg, 18.59*deg, 18.59*deg, 18.59*deg, 18.59*deg,
+                              35.84*deg, 35.84*deg, 35.84*deg, 35.84*deg, 35.84*deg, 35.84*deg, 
+                              35.84*deg, 35.84*deg, 35.84*deg, 35.84*deg, 35.84*deg, 35.84*deg, };
   G4double phiArray[19] = {0.*deg, 0.*deg, -60.*deg, -120.*deg, 180.*deg, 120.*deg, 60*deg, 0.*deg, -30.*deg, -60.*deg, -90.*deg, -120.*deg, -150.*deg, 180.*deg, 150.*deg, 120.*deg, 90.*deg, 60.*deg, 30.*deg};
 
+  double distanceToCenter = 277.627*mm;
+  double zoffset = -distanceToCenter + 0.027*mm + offsetFromBox;
 
   for (int i = 0; i < nIDPMTs; i++) {
-    G4double x = xArray[i];
-    G4double y = yArray[i];
-    G4double z = zArray[i] + offsetFromBox ;
 
-    G4double xtheta = xthetaArray[i];
-    G4double ytheta = ythetaArray[i];
-    G4double phi = phiArray[i];
+    G4ThreeVector PMTPosition = {0,0,0};
+    PMTPosition.setRThetaPhi(distanceToCenter,thetaArray[i],phiArray[i]);  
+    PMTPosition.setZ(PMTPosition.getZ()+zoffset);
 
-    G4RotationMatrix* rot = new G4RotationMatrix();
-    rot->rotateX(-xtheta);
-    rot->rotateY(-ytheta);
-    rot->rotateZ(phi);
-
-    G4ThreeVector translation(x,y,z);
+    G4RotationMatrix* PMTRotation = new G4RotationMatrix;
+    PMTRotation->rotateZ(-phiArray[i]);
+    PMTRotation->rotateY(-thetaArray[i]);
     
     // Create and place the PMT copy                                                                                    
-    new G4PVPlacement(rot,
-                      translation,
+    new G4PVPlacement(PMTRotation,
+                      PMTPosition,
                       logicWCPMT,
                       "pmt",
                       logicWCMultiPMT,
