@@ -66,6 +66,7 @@ export WCSIMDIR=`pwd`
 The automated building testing is currently performed inside the hk-software docker container with the prerequisites:
 * Geant4 10.3.3
 * ROOT 6.26/04
+* HepMC3 3.2.6
 * gcc 8.5.0
 * cmake 3.20.2
 
@@ -80,6 +81,9 @@ Other versions of prerequisite software can be tried, but aren't guaranteed to w
 * ROOT
   * ROOT5 (e.g. v5r34p36 or v5r34p38, or potentially any v5r34) can potentially be made to work. You may need to modify `$WCSIM_BUILD_DIR/src/cmake_install.cmake` to take account of ROOT5 not producing `.pcm` files
   * ROOT6 has been tested on an older version than above (6.20/04)
+* HepMC3
+  * HepMC3 version 3.2.6 is supported and any minor versions below/above this should also work.
+  * It is possible that older versions (<=3.1.x) will also work, though this is not guaranteed.
 * cmake 3.1 and above are required by `CMakeLists.txt`, but not all old versions have been tested
 * The compiler should support `-std=c++11` (or `-std=c++0x`) e.g. gcc 4.8.5
   * You may need to modify `CMakeLists.txt` to change the `CMAKE_CXX_STANDARD` to another version (e.g. from 14 to 17). I *think* this is dependent on what your prerequisties have been compiled with
