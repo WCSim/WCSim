@@ -114,11 +114,9 @@ endif()
 #########
 
 if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.7)
-    # set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++11 -Wno-overloaded-virtual")
-    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++11 -w")
+    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++11 -Wno-overloaded-virtual")
 else()
-    # set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++0x")
-    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++0x -w")
+    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++0x")
 endif()
 
 # Set flag for git version to be used as c++ preprocessor macro
