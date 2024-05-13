@@ -76,7 +76,7 @@ And as such this is the most supported version of the software (it is guaranteed
 
 Other versions of prerequisite software can be tried, but aren't guaranteed to work. 
 * Geant 4.10.03p3
-  * If using a newer version of Geant, it is your responsiblity to assess whether Geant physics changes are significant, relative to the officially supported 4.10.03p3
+  * If using a newer version of Geant, it is your responsibility to assess whether Geant physics changes are significant, relative to the officially supported 4.10.03p3
   * All of the G4 data files are also required to be installed, include hadron xsec, etc.
 * ROOT
   * ROOT5 (e.g. v5r34p36 or v5r34p38, or potentially any v5r34) can potentially be made to work. You may need to modify `$WCSIM_BUILD_DIR/src/cmake_install.cmake` to take account of ROOT5 not producing `.pcm` files
@@ -86,7 +86,7 @@ Other versions of prerequisite software can be tried, but aren't guaranteed to w
   * It is possible that older versions (<=3.1.x) will also work, though this is not guaranteed.
 * cmake 3.1 and above are required by `CMakeLists.txt`, but not all old versions have been tested
 * The compiler should support `-std=c++11` (or `-std=c++0x`) e.g. gcc 4.8.5
-  * You may need to modify `CMakeLists.txt` to change the `CMAKE_CXX_STANDARD` to another version (e.g. from 14 to 17). I *think* this is dependent on what your prerequisties have been compiled with
+  * You may need to modify `CMakeLists.txt` to change the `CMAKE_CXX_STANDARD` to another version (e.g. from 14 to 17). I *think* this is dependent on what your prerequisites have been compiled with
 
 ### Build Instructions using CMake:
 
