@@ -5,8 +5,22 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+New feature
+* Pull request #438 @guiguem: Adds `-DWCSim_WCSimRoot_only=ON` cmake option to compile lighter-weight WCSimRoot library without Geant4 dependency, for just reading WCSim files
+
+Update
+* Pull request #439 @guiguem: Use the same C++ standard as was used to compile ROOT
+
 Bug fix
+* Pull request #443 @tdealtry: Set the true beam track information for the 0th vertex in events with multiple vertices, for muline files
+* Pull request #435 @DiegoCostas97: Set the dark rate options correctly in WCTE.mac
 * Pull request #432 @tdealtry: Use the same default dark rate time option for all PMT types in WCSim.mac
+
+Documentation
+* Pull request #436 @tdealtry: Improve documentation on finding the PMT that created a digitised or true hit
+
+CI
+* Pull request #440 #441 @guiguem: Add CI build test for the WCSimRoot library
 
 *************************************************************
 18/04/2024: Notes for v1.12.12
