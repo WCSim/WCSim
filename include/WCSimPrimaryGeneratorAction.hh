@@ -266,7 +266,7 @@ private:
   inline void SetHepMC3Filename(G4String choice) { hepmc3_filename = choice; }
   inline G4String GetHepMC3Filename()  { return hepmc3_filename; }
   inline void SetHepMC3PositionGen(G4bool choice) { hepmc3_positionGen = choice; }
-  inline G4bool SetHepMC3DirectionGen(G4bool choice) { return hepmc3_positionGen;}
+  inline G4bool GetHepMC3PositionGen() { return hepmc3_positionGen;}
 
   // L. Kneale: light injector with profile from db
   inline void SetLightInjectorEvtGenerator(G4bool choice) {useLightInjectorEvt = choice; }
