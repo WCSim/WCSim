@@ -9,6 +9,7 @@ New feature
 * Pull request #438 @guiguem: Adds `-DWCSim_WCSimRoot_only=ON` cmake option to compile lighter-weight WCSimRoot library without Geant4 dependency, for just reading WCSim files
 
 Update
+* Pull request #446 @tdealtry: Hard exit when using a PMT QE method other than SensitiveDetector_Only
 * Pull request #439 @guiguem: Use the same C++ standard as was used to compile ROOT
 
 Bug fix
