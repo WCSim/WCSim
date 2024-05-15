@@ -731,6 +731,32 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituMultiPMT(G4String PMT
 
   new G4LogicalSkinSurface("flangeSkinSurface", flangeLogic, BSSkinSurface); // assume same as blacksheet
 
+  // Seal the bottom with blacksheet
+  G4Tubs *solidBS = new G4Tubs("solidBS",
+                                0*mm,
+                                vessel_inner_radius,
+                                1.*mm,
+                                0.*deg, 360.*deg);
+
+  G4LogicalVolume *logicBS = new G4LogicalVolume(solidBS,
+						                                     G4Material::GetMaterial("Blacksheet"),
+                                                 "logicBS");
+
+  new G4PVPlacement(0,
+                    G4ThreeVector(0.,0.,1.*mm),
+                    logicBS,
+                    "physExsituMPMTBS",
+                    logicWCMultiPMT,
+                    false,
+                    0,
+                    checkOverlaps);
+
+  new G4LogicalSkinSurface("exsituMPMTBSSkinSurface", logicBS, BSSkinSurface); 
+
+  G4VisAttributes* VisAttRed = new G4VisAttributes(G4Colour(1.0,0.,0.));
+  VisAttRed->SetForceSolid(true); 
+  logicBS->SetVisAttributes(VisAttRed);
+
   /////////////////////////////////////////////////////
   /// 4) Fill the mPMT mpmt_vessel with single (ID) PMTs ///
   /////////////////////////////////////////////////////
