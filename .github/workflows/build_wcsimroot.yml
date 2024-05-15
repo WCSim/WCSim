@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
 
-  build_wcsim:
+  build_wcsimroot:
     runs-on: ubuntu-latest
     #This should mean that only one "build" job runs at a time
     # Meaning there should be no webpage clashes if multiple CI runs are triggered
@@ -74,6 +74,10 @@ jobs:
           ref: ${{ steps.checkout_sha.outputs.value }}
           repository: ${{ steps.checkout_repo.outputs.value }}
 
+      - name: Install HepMC3
+        run: |
+          yum install -y HepMC3 HepMC3-devel HepMC3-search HepMC3-search-devel HepMC3-interfaces-devel HepMC3-doc
+
       - name: Link WCSim directory
         run: |
           mkdir /opt/WCSim/
@@ -93,7 +97,7 @@ jobs:
           cd /opt/WCSim
           mkdir build install
           cd build
-          cmake .. \
+          cmake ../src \
             -D CMAKE_INSTALL_PREFIX=../install \
             -D WCSim_WCSimRoot_only=ON
           make -j4

@@ -6,17 +6,12 @@ ROOTLIBS     	:= $(shell root-config --libs)
 ROOTGLIBS    	:= $(shell root-config --glibs)
 CXXFLAGS	+= $(ROOTCFLAGS)
 
-#LIB = /home/bquilain/CC0pi_XS/MC/ingmc_IngridRevReWeightFinal/lib_New
-LIB = lib_New_r34
-#lib
-#export WCSIMDIR=/disk01/usr5/bquilain/WCSim_hybridPMT_official
-LIBS 		= $(ROOTGLIBS) $(WCSIMDIR)/libWCSimRoot.so -lMinuit
-#LIBS 		= $(ROOTGLIBS) /disk01/usr5/bquilain/WCSim_hybridPMT_official/libWCSimRoot.so -lMinuit
+LIBS 		= $(ROOTGLIBS) -L$(WCSIM_BUILD_DIR)/lib -lWCSimRoot -lMinuit
 
-INC = $(WCSIMDIR)/include
+INC = $(WCSIM_BUILD_DIR)/include/WCSim
 SRC= $(WCSIMDIR)/src
 
-CXXFLAGS += -I$(LIB) -I$(SRC) -I$(INC) 
+CXXFLAGS += -I$(INC)
 
 TARGET= AnalyzeWSHierarchy
 

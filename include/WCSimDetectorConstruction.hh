@@ -206,7 +206,22 @@ public:
   G4bool SaveCaptureInfo()              {return captureInfo_isSaved;}
   void   SaveCaptureInfo(G4bool choice) {captureInfo_isSaved=choice;}
 
-  void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
+  void   SetPMT_QE_Method(G4int choice){
+    switch(choice) {
+    case 3:
+    case 4:
+      PMT_QE_Method = choice;
+      break;
+    default:
+      G4cerr << G4endl << "******************************" << G4endl
+	     << "PMT QE method must be set to one of:" << G4endl
+	     << " 3 (SensitiveDetector_Only)" << G4endl
+	     << " 4 (DoNotApplyQE)" << G4endl
+	     << "Other methods are not fully tested" << G4endl
+	     << "Exiting..." << G4endl;
+      exit(-1);
+    }
+  }
   void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
   void   SetVis_Choice(G4String choice){Vis_Choice = choice;}
   G4String GetVis_Choice() {return Vis_Choice;}
