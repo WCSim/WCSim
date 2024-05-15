@@ -6,7 +6,7 @@ ROOTLIBS     	:= $(shell root-config --libs)
 ROOTGLIBS    	:= $(shell root-config --glibs)
 CXXFLAGS	+= $(ROOTCFLAGS)
 
-LIBS 		= $(ROOTGLIBS) $(WCSIM_BUILD_DIR)/lib/libWCSimRoot.so -lMinuit
+LIBS 		= $(ROOTGLIBS) -L$(WCSIM_BUILD_DIR)/lib -lWCSimRoot -lMinuit
 
 INC = $(WCSIM_BUILD_DIR)/include/WCSim
 SRC= $(WCSIMDIR)/src
