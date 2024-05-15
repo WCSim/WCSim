@@ -1499,7 +1499,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
       1.34, 1.44, 1.50, 1.53, 1.71,
       1.69, 1.69, 1.69
     };
-   G4double COATEDTHICKNESS_glasscath_KCsCb = 20.0*nm;
+   G4double COATEDTHICKNESS_glasscath_KCsCb = 15.5*nm;//20.0*nm;
 
    G4double COATEDRINDEX_glasscath_RbCsCb[NUMWAV] =
     { 
