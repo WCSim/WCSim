@@ -557,7 +557,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituMultiPMT(G4String PMT
   G4double domeCut = 235*mm;
 
   G4double vessel_cylinder_height = 77.785*2*mm;
-  G4double vessel_inner_radius = 227.1*mm;
+  G4double vessel_inner_radius = 227.2*mm;
   G4double vessel_outer_radius = 254.*mm;
   G4double vessel_cap_height = domeOuterRadius - domeCut;
 
