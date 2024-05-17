@@ -47,10 +47,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
   G4double pmtConeHeight = 20.0*mm;
   G4double pmtGlassCut = 34.597*mm;
 
-  G4double reflectorHeight = 6.2*mm*2;
+  G4double reflectorHeight = 5.765*mm*2;
   G4double reflectorThickness = 0.25*mm;
-  G4double reflectorR1 = 43.775*mm;
-  G4double reflectorR2 = 45.38*mm;
+  G4double reflectorR1 = 43.505*mm;
+  G4double reflectorR2 = 45.13*mm;
 
   G4cout << "========================================================" << G4endl;
   G4cout << "Ex-situ PMT construction: " << G4endl;
@@ -408,11 +408,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
   new G4LogicalSkinSurface("PMTCupSkinSurface",logicCup, BSSkinSurface); // just use blacksheet surface properties
 
   G4Cons *solidReflectorCup = new G4Cons("solidReflectorCup",
-                                          reflectorR1,
-                                          reflectorR1+reflectorThickness,
-                                          reflectorR2,
-                                          reflectorR2+reflectorThickness,
-                                          reflectorHeight/2.,
+                                          43.775*mm,
+                                          44.025*mm,
+                                          45.38*mm,
+                                          45.63*mm,
+                                          6.2*mm,
                                           0.*deg, 360.*deg);
                                   
   G4LogicalVolume *logicReflectorCup = new G4LogicalVolume( solidReflectorCup,                                              
@@ -437,11 +437,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
 
   // Top Reflector
   G4Cons *reflectorSolid = new G4Cons("solidReflector",
-                                      43.505*mm,
-                                      43.775*mm,
-                                      45.13*mm,
-                                      45.38*mm,
-                                      5.765*mm,
+                                      reflectorR1,
+                                      reflectorR1+reflectorThickness,
+                                      reflectorR2,
+                                      reflectorR2+reflectorThickness,
+                                      reflectorHeight/2.,
                                       0.*deg, 360.*deg);
 
   G4LogicalVolume *reflectorLogic = new G4LogicalVolume(reflectorSolid,
