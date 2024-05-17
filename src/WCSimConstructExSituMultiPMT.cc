@@ -47,11 +47,17 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
   G4double pmtConeHeight = 20.0*mm;
   G4double pmtGlassCut = 34.597*mm;
 
+  G4double reflectorHeight = 6.2*mm*2;
+  G4double reflectorThickness = 0.25*mm;
+  G4double reflectorR1 = 43.775*mm;
+  G4double reflectorR2 = 45.38*mm;
+
   G4cout << "========================================================" << G4endl;
   G4cout << "Ex-situ PMT construction: " << G4endl;
   G4cout << "Glass radius for PMT " << CollectionName << " : " << pmtGlassRadius/mm << " mm" << G4endl;
   G4cout << "Expose height : " << (pmtGlassRadius-pmtGlassCut)/mm << " mm" << G4endl;
   G4cout << "Cylinder radius : " << pmtCylRadius/mm << " mm" << G4endl;
+  G4cout << "Reflector height, R1, R2 : " << reflectorHeight/mm << " " << reflectorR1/mm << " " << reflectorR2/mm << " mm" << G4endl;
   G4cout << "========================================================" << G4endl;
 
   ///////////////////////////////Defining PMT Volume/////////////////////////////////
@@ -181,22 +187,22 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
   layerAttributes->SetForceSolid(true);
   logicLayer->SetVisAttributes(layerAttributes);
                   
-  // artifical absorber at the bottom of glass tube to kill all photons
+  // artificial absorber at the bottom of glass tube to kill all photons
   G4double absorberThickness = 1.0*mm;
   G4double absorberheight = absorberThickness/2.;
   G4Cons* solidAbsorber = new G4Cons("solidAbsorber", 
-				     0.0, 
-				     pmtTubeRadius, 
-				     0.0, 
-				     pmtTubeRadius, 
-				     absorberheight, 
-				     0.0, 360.0*deg);
+                                      0.0, 
+                                      pmtTubeRadius, 
+                                      0.0, 
+                                      pmtTubeRadius, 
+                                      absorberheight, 
+                                      0.0, 360.0*deg);
 
   G4ThreeVector absorberPosition(0.,0.,-pmtConeHeight/2.-absorberheight+zoffset);
   
-  G4LogicalVolume *logicabsorber = new G4LogicalVolume(solidAbsorber, 
-				      G4Material::GetMaterial("customAbsorber"),
-				      "logicabsorber");
+  G4LogicalVolume *logicabsorber = new G4LogicalVolume( solidAbsorber, 
+                                                        G4Material::GetMaterial("customAbsorber"),
+                                                        "logicabsorber");
   
   new G4PVPlacement(0, 
                     absorberPosition, 
@@ -222,27 +228,27 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
                                   pmtGlassCut);
 
   G4Sphere *pmtGlassSolid = new G4Sphere("pmtglass", 
-					 pmtGlassRadius-pmtGlassThickness, 
-					 pmtGlassRadius, 
-					 0.0*deg, 360.0*deg, 
-					 0.0, 90*deg);  
+                                          pmtGlassRadius-pmtGlassThickness, 
+                                          pmtGlassRadius, 
+                                          0.0*deg, 360.0*deg, 
+                                          0.0, 90*deg);  
   
-  G4SubtractionSolid *solidGlassFaceWCPMT = new G4SubtractionSolid(CollectionName,                                       
-						       pmtGlassSolid,                                   
-						       solidCutOff);
+  G4SubtractionSolid *solidGlassFaceWCPMT = new G4SubtractionSolid( CollectionName,                                       
+                                                                    pmtGlassSolid,                                   
+                                                                    solidCutOff);
 
-  G4LogicalVolume *logicGlassFaceWCPMT = new G4LogicalVolume(solidGlassFaceWCPMT, 
-				      G4Material::GetMaterial("GlassWCTE"),
-				      CollectionName);
+  G4LogicalVolume *logicGlassFaceWCPMT = new G4LogicalVolume( solidGlassFaceWCPMT, 
+                                                              G4Material::GetMaterial("GlassWCTE"),
+                                                              CollectionName);
   
-  G4VPhysicalVolume *physiGlassFaceWCPMT = new G4PVPlacement(0, 
-						   G4ThreeVector(0.,0.,-pmtGlassCut+pmtConeHeight/2.+pmtCylHeight+zoffset), 
-						   logicGlassFaceWCPMT, 
-						   CollectionName, 
-						   logicWCPMT, 
-						   false, 
-						   0, 
-						   checkOverlaps);
+  G4VPhysicalVolume *physiGlassFaceWCPMT = new G4PVPlacement( 0, 
+                                                              G4ThreeVector(0.,0.,-pmtGlassCut+pmtConeHeight/2.+pmtCylHeight+zoffset), 
+                                                              logicGlassFaceWCPMT, 
+                                                              CollectionName, 
+                                                              logicWCPMT, 
+                                                              false, 
+                                                              0, 
+                                                              checkOverlaps);
 
   if (Vis_Choice == "RayTracer"){
     // Blue wireframe visual style
@@ -267,33 +273,38 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
   }
 
   // air below photocathode
-  G4Sphere *pmtInnerGlassSolid = new G4Sphere("pmtInnerglassSolid",
+  G4Sphere *pmtInnerGlassSolid = 
+  new G4Sphere("pmtInnerglassSolid",
 					      0.*mm,
 					      pmtGlassRadius-pmtGlassThickness,
 					      0.0*deg, 360.0*deg,
 					      0.0, 90*deg);
-  G4Box *boxCutOff = new G4Box("cutOffTubs",                                                                            
+  G4Box *boxCutOff = 
+  new G4Box("cutOffTubs",                                                                            
 			       pmtGlassRadius+1.*cm,                                                    
 			       pmtGlassRadius+1.*cm,                                             
 			       pmtGlassCut);
 
 
-  G4SubtractionSolid *solidInteriorWCPMT = new G4SubtractionSolid("InteriorWCPMT",     
-							     pmtInnerGlassSolid,
-							     boxCutOff); 
+  G4SubtractionSolid *solidInteriorWCPMT = 
+  new G4SubtractionSolid("InteriorWCPMT",     
+                          pmtInnerGlassSolid,
+                          boxCutOff); 
 
-  G4LogicalVolume *logicInteriorWCPMT = new G4LogicalVolume(solidInteriorWCPMT,
-					  G4Material::GetMaterial("Air1"),
-					   "InteriorWCPMT");
+  G4LogicalVolume *logicInteriorWCPMT = 
+  new G4LogicalVolume(solidInteriorWCPMT,
+                      G4Material::GetMaterial("Air1"),
+                      "InteriorWCPMT");
   
-  G4VPhysicalVolume *physiInteriorWCPMT = new G4PVPlacement(0,
-							G4ThreeVector(0.,0.,-pmtGlassCut+pmtConeHeight/2.+pmtCylHeight+zoffset),
-							logicInteriorWCPMT,
-							"InteriorWCPMT",
-							logicWCPMT,
-							false,
-							0,
-							checkOverlaps);
+  G4VPhysicalVolume *physiInteriorWCPMT = 
+  new G4PVPlacement(0,
+                    G4ThreeVector(0.,0.,-pmtGlassCut+pmtConeHeight/2.+pmtCylHeight+zoffset),
+                    logicInteriorWCPMT,
+                    "InteriorWCPMT",
+                    logicWCPMT,
+                    false,
+                    0,
+                    checkOverlaps);
 
   if (Vis_Choice == "RayTracer"){
     // Adding color and forcing the inner portion of the PMT's to be viewed
@@ -309,14 +320,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
 
   //Add Logical Border Surface
   new G4LogicalBorderSurface("GlassCathodeSurface",
-			     physiGlassFaceWCPMT,
-			     physiInteriorWCPMT,
-			     OpGlassCathodeSurface);
+                              physiGlassFaceWCPMT,
+                              physiInteriorWCPMT,
+                              OpGlassCathodeSurface);
   // now it is possible for photons to travel from air to cathode
   new G4LogicalBorderSurface("AirCathodeSurface",
-			     physiInteriorWCPMT,
-           physiGlassFaceWCPMT,
-			     OpGlassCathodeSurface);
+                              physiInteriorWCPMT,
+                              physiGlassFaceWCPMT,
+                              OpGlassCathodeSurface);
 
   // Gel above PMT glass
   G4Sphere *gelSolid = new G4Sphere("GelSolid",
@@ -333,10 +344,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
 
   G4Transform3D transform1(G4Translate3D(0,0,(324.03*mm - pmtGlassRadius)));
 
-  G4SubtractionSolid *pmtInnerGelSolid = new G4SubtractionSolid("solidGel",
-								gelSolid,                                        
-								pmtGelSolid,
-								transform1);
+  G4SubtractionSolid *pmtInnerGelSolid = 
+  new G4SubtractionSolid("solidGel",
+                          gelSolid,                                        
+                          pmtGelSolid,
+                          transform1);
 
   G4LogicalVolume *gelLogic = new G4LogicalVolume(pmtInnerGelSolid,
                                                   G4Material::GetMaterial("SilGel_WCTE"),
@@ -358,7 +370,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
   gelLogic->SetVisAttributes(gelAttributes);
 
   // assume a perfecet smooth surface, so don't need OpGelFoamSurface
-  // G4LogicalSkinSurface* gelLogSkinSurface = new G4LogicalSkinSurface("gelLogSkinSurface",gelLogic,OpGelFoamSurface);
+  // new G4LogicalSkinSurface("gelLogSkinSurface",gelLogic,OpGelFoamSurface);
 
   // Plastic cup 
   G4double cupConeHeight = 10.*mm*2;
@@ -396,12 +408,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
   new G4LogicalSkinSurface("PMTCupSkinSurface",logicCup, BSSkinSurface); // just use blacksheet surface properties
 
   G4Cons *solidReflectorCup = new G4Cons("solidReflectorCup",
-                                  43.775*mm,
-                                  44.025*mm,
-                                  45.38*mm,
-                                  45.63*mm,
-                                  6.2*mm,
-                                  0.*deg, 360.*deg);
+                                          reflectorR1,
+                                          reflectorR1+reflectorThickness,
+                                          reflectorR2,
+                                          reflectorR2+reflectorThickness,
+                                          reflectorHeight/2.,
+                                          0.*deg, 360.*deg);
                                   
   G4LogicalVolume *logicReflectorCup = new G4LogicalVolume( solidReflectorCup,                                              
                                                             G4Material::GetMaterial("Plastic"),
@@ -423,7 +435,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
   logicCup->SetVisAttributes(cupAttributes);
   logicReflectorCup->SetVisAttributes(cupAttributes);
 
-  // Cup Reflector
+  // Top Reflector
   G4Cons *reflectorSolid = new G4Cons("solidReflector",
                                       43.505*mm,
                                       43.775*mm,
@@ -515,8 +527,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituMultiPMT(G4String PMT
 
   G4bool showme = true;
 
-  G4cout<<"Ex-situ mPMT: Collection Name = "<<CollectionName<<G4endl;
-
   //unique key for mPMT object. 
   G4String keyname =  mPMT_ID_PMT + "_ExSitu-mPMT";
   PMTKey_t key(keyname,CollectionName);
@@ -526,6 +536,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituMultiPMT(G4String PMT
   if (it != PMTLogicalVolumes.end()) {
     return it->second;
   }
+
+  G4cout << "========================================================" << G4endl;
+  G4cout<<"Ex-situ mPMT: Collection Name = "<<CollectionName<<G4endl;
+  G4cout << "========================================================" << G4endl;
 
   G4double domeInnerRadius = 332.*mm;
   G4double domeOuterRadius = 347.*mm;
@@ -554,9 +568,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituMultiPMT(G4String PMT
   /// 1) Outer logical volume: fill with air     ///
   ////////////////////////////////////////////////////
   G4double mPMT_zRange_outer[2] = {0,                         // start from zero for easier placement in ID
-				   vessel_cylinder_height};
+				                           vessel_cylinder_height};
   G4double mPMT_RRange_outer[2] = {vessel_outer_radius, 
-				   vessel_outer_radius};
+				                           vessel_outer_radius};
   G4double mPMT_rRange_outer[2] = {0., 0.};
 
   // Although G4Tubs is more natural, Polycone is used to be in control of z position
@@ -601,11 +615,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituMultiPMT(G4String PMT
   ////////////////////////////////////////////////
   /// 2)Top acrylic + shell of the mPMT vessel ///
   ////////////////////////////////////////////////
-  G4Sphere *domeSphere = new G4Sphere("DomeSphere",
-				      domeInnerRadius,
-				      domeOuterRadius,
-				      0.0*deg, 360.0*deg,
-				      0.0, 90.*deg);
+  G4Sphere *domeSphere = 
+  new G4Sphere("DomeSphere",
+                domeInnerRadius,
+                domeOuterRadius,
+                0.0*deg, 360.0*deg,
+                0.0, 90.*deg);
 
   G4VSolid *domeSolid = new G4SubtractionSolid("domeSolid",
                                                domeSphere,
