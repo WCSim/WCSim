@@ -243,6 +243,9 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 {
 
   if(evt->IsAborted() || evt->GetEventID() < 0){
+		G4cout << "Exiting at start of the EndOfEventAction "
+					 << (evt->IsAborted() ? "Aborted" : "Not Aborted")
+					 << " ID " << evt->GetEventID() << G4endl;
       return;
   }	
   // ----------------------------------------------------------------------
@@ -1029,6 +1032,8 @@ G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
 
   G4VPhysicalVolume* tmpVolume = tmpNavigator->LocateGlobalPointAndSetup(vtx);
   //  G4String       vtxVolumeName = tmpVolume->GetName();
+	if(tmpVolume == nullptr)
+		return vtxvol;
   vtxVolumeName = tmpVolume->GetName();                  //TF: class member now
 
 

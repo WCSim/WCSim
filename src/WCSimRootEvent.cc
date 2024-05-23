@@ -1083,16 +1083,26 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c, bool deep
     bool thisfailed = !((WCSimRootCherenkovHit *)this->GetCherenkovHits()->At(i))->CompareAllVariables((WCSimRootCherenkovHit *)c->GetCherenkovHits()->At(i));
     failed = thisfailed || failed;
 
+		// The hit history isn't always filled (depends on build options)
+		// So need to have additional check
+		int nhist_this = this->GetCherenkovHitHistories()->GetEntries();
+		int nhist_c = c->GetCherenkovHitHistories()->GetEntries();
+		bool nhist_failed = nhist_this != nhist_c;
+		int nhist_max = TMath::Max(nhist_this, nhist_c);
+		failed = nhist_failed || failed;
+
     if(!thisfailed) {
       //"hit" compared, now check the "hit times" for the same PMT
       int timepos = ((WCSimRootCherenkovHit *)this->GetCherenkovHits()->At(i))->GetTotalPe(0);
       int totalpe = ((WCSimRootCherenkovHit *)this->GetCherenkovHits()->At(i))->GetTotalPe(1);
       for(int j = timepos; j < timepos + totalpe; j++) {
 #ifdef VERBOSE_COMPARISON
-	cout << "Hit Time " << j << endl;
+				cout << "Hit Time " << j << endl;
 #endif
-	failed = !((WCSimRootCherenkovHitTime *)this->GetCherenkovHitTimes()->At(i))->CompareAllVariables((WCSimRootCherenkovHitTime *)c->GetCherenkovHitTimes()->At(i)) || failed;
-  failed = !((WCSimRootCherenkovHitHistory *)this->GetCherenkovHitHistories()->At(i))->CompareAllVariables((WCSimRootCherenkovHitHistory *)c->GetCherenkovHitHistories()->At(i)) || failed;
+				failed = !((WCSimRootCherenkovHitTime *)this->GetCherenkovHitTimes()->At(j))->CompareAllVariables((WCSimRootCherenkovHitTime *)c->GetCherenkovHitTimes()->At(j)) || failed;
+				if(j < nhist_max) {
+					failed = !((WCSimRootCherenkovHitHistory *)this->GetCherenkovHitHistories()->At(j))->CompareAllVariables((WCSimRootCherenkovHitHistory *)c->GetCherenkovHitHistories()->At(j)) || failed;
+				}//history present in both
       }//j (WCSimRootCherenkovHitTime)
     }
   }//i (WCSimRootCherenkovHit)
@@ -1193,7 +1203,7 @@ bool WCSimRootTrigger::CompareAllVariables(const WCSimRootTrigger * c, bool deep
   ComparisonPassed(fNtrack_slots, c->GetNtrack_slots(), typeid(*this).name(), __func__, "Ntrack_slots (shouldn't necessarily be equal)");
   failed = (!ComparisonPassed(fNcherenkovhits, c->GetNcherenkovhits(), typeid(*this).name(), __func__, "Ncherenkovhits")) || failed;
   failed = (!ComparisonPassed(fNcherenkovhittimes, c->GetNcherenkovhittimes(), typeid(*this).name(), __func__, "Ncherenkovhittimes")) || failed;
-  failed = (!ComparisonPassed(fNcherenkovhithistories, c->GetNcherenkovhittimes(), typeid(*this).name(), __func__, "Ncherenkovhithistories")) || failed;
+  failed = (!ComparisonPassed(fNcherenkovhithistories, c->GetNcherenkovhithistories(), typeid(*this).name(), __func__, "Ncherenkovhithistories")) || failed;
   failed = (!ComparisonPassed(fNcherenkovdigihits, c->GetNcherenkovdigihits(), typeid(*this).name(), __func__, "Ncherenkovdigihits")) || failed;
   //don't expect this to pass in general, so don't affect failed
   ComparisonPassed(fNcherenkovdigihits_slots, c->GetNcherenkovdigihits_slots(), typeid(*this).name(), __func__, "Ncherenkovdigihits_slots (shouldn't necessarily be equal)");
