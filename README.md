@@ -157,7 +157,7 @@ Note that by default, just `make install` is run.
 You can run `make clean` before `make install` by running `./make.sh clean`
 
 ### Build Instructions using GNUmakefile
-> [!WARNING]
+> [!CAUTION]
 > `GNUmakefile` is specifically only for use with ROOT5 and is not supported otherwise.
 >
 > All output that needs to be trusted must use cmake. To discourage you from using this, the GNUmakefile is hidden in a different branch
