@@ -157,8 +157,17 @@ Note that by default, just `make install` is run.
 You can run `make clean` before `make install` by running `./make.sh clean`
 
 ### Build Instructions using GNUmakefile
-`GNUmakefile`` is specifically only for use with ROOT5 and is not supported otherwise. All output that needs to be trusted must use cmake. To compile:
+> [!WARNING]
+> `GNUmakefile` is specifically only for use with ROOT5 and is not supported otherwise.
+>
+> All output that needs to be trusted must use cmake. To discourage you from using this, the GNUmakefile is hidden in a different branch
+>
+> The result of a build using the `GNUmakefile` will be different to the result of a CMake build. If you are using WCSim as a dependency for other packages, you will have to update their build paths to find WCSim includes/libraries
 ```
+export WCSIMDIR=/path/to/WCSim/
+cd $WCSIMDIR
+git clone --depth 1 https://github.com/WCSim/WCSim.git -b makefile --single-branch makefiledir
+cp makefiledir/GNUmakefile .
 make clean_wcsim
 make rootcint
 make
