@@ -281,6 +281,11 @@
 # define units used for time in kin file
 #/mygen/time_unit ns
 
+## Or you can use a rootracker-formated generator file
+## (e.g. from NEUT)
+#/mygen/generator rootracker
+#/mygen/vecfile vector_neg_1e22_HK_Tochibora_LBL2019Mar_0099.root
+
 ## Or you can use the G4 Particle Gun
 ## for a full list of /gun/ commands see:
 ## http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
