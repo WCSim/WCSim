@@ -6,7 +6,7 @@ void trigger_OD(char *filename=NULL) {
   /* A simple script to plot aspects of phototube hits 
    * 
    * I like to run this macro as 
-   * $ $WCSIMDIR/rootwc/rootwc -l -x 'trigger_OD.C("OD.root")'
+   * $ rootwc -l -x 'trigger_OD.C("OD.root")'
    */
 
   gROOT->Reset();

@@ -322,8 +322,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	  beamdirs[iVertex] = G4ThreeVector(atof(token[3]),
 					    atof(token[4]),
 					    atof(token[5]));
-	  SetBeamEnergy(beamenergies[iVertex]);
-	  SetBeamDir(beamdirs[iVertex]);
 	  G4cout << "Neutrino generated is = "<< beampdgs[iVertex]<<", Enu = " << beamenergies[iVertex] << " and interacts through mode = " << mode[iVertex] << G4endl;
 
 	  // Now read the target line
