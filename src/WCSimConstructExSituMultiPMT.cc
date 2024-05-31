@@ -63,8 +63,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
   ///////////////////////////////Defining PMT Volume/////////////////////////////////
   G4double pmtVolumeHeight = 20.2*mm+54.4*mm;
   G4double domeInnerRadius = 332.*mm;
-  G4double zoffset = domeInnerRadius-54.4*mm+0.027*mm;
-  G4double openingAngle = 8.22*deg;
+  G4double zoffset = domeInnerRadius-54.4*mm;
+  G4double openingAngle = 8.221*deg;
 
   G4Sphere *solidWCPMT = new G4Sphere("WCPMT",
                                       domeInnerRadius-pmtVolumeHeight,
@@ -342,7 +342,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
                                         0.0*deg, 360.0*deg,
                                         0.0, 90.*deg);
 
-  G4Transform3D transform1(G4Translate3D(0,0,(324.03*mm - pmtGlassRadius)));
+  G4Transform3D transform1(G4Translate3D(0,0,-pmtGlassCut+pmtConeHeight/2.+pmtCylHeight+zoffset));
 
   G4SubtractionSolid *pmtInnerGelSolid = 
   new G4SubtractionSolid("solidGel",
