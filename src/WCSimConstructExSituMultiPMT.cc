@@ -189,23 +189,20 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
                   
   // artificial absorber at the bottom of glass tube to kill all photons
   G4double absorberThickness = 1.0*mm;
-  G4double absorberheight = absorberThickness/2.;
   G4Cons* solidAbsorber = new G4Cons("solidAbsorber", 
                                       0.0, 
                                       pmtTubeRadius, 
                                       0.0, 
                                       pmtTubeRadius, 
-                                      absorberheight, 
+                                      absorberThickness/2., 
                                       0.0, 360.0*deg);
-
-  G4ThreeVector absorberPosition(0.,0.,-pmtConeHeight/2.-absorberheight+zoffset);
   
   G4LogicalVolume *logicabsorber = new G4LogicalVolume( solidAbsorber, 
                                                         G4Material::GetMaterial("customAbsorber"),
                                                         "logicabsorber");
   
   new G4PVPlacement(0, 
-                    absorberPosition, 
+                    G4ThreeVector(0.,0.,-pmtConeHeight/2.-absorberThickness/2.+zoffset),
                     logicabsorber, 
                     "absorber", 
                     logicWCPMT, 
@@ -479,7 +476,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
 						    "logicPoron");
     
   new G4PVPlacement(0,
-                    G4ThreeVector(0.,0.,-pmtConeHeight/2.-absorberheight-poronHeight+zoffset),  
+                    G4ThreeVector(0.,0.,-pmtConeHeight/2.-absorberThickness/2.-poronHeight+zoffset),  
                     poronLogic,                                                                  
                     "Poron",                                                                     
                     logicWCPMT,                  
@@ -633,7 +630,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituMultiPMT(G4String PMT
   new G4PVPlacement(0,
                     G4ThreeVector(0.,0.,vessel_cylinder_height-domeCut),
                     domeLogic,
-                    "physDome",
+                    "physExsituDome",
                     logicWCMultiPMT,
                     false,
                     0,
@@ -658,7 +655,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituMultiPMT(G4String PMT
   new G4PVPlacement(0,
                     G4ThreeVector(0.,0.,vessel_cylinder_height/2),
                     cylinderLogic,
-                    "physCylinder",
+                    "physExsituCylinder",
                     logicWCMultiPMT,
                     false,
                     0,

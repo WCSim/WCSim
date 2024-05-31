@@ -494,7 +494,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructInSituMultiPMT(G4String PMT
   new G4PVPlacement(0,
                     G4ThreeVector(0.,0.,vessel_cylinder_height-domeCut),
                     domeLogic,
-                    "physDome",
+                    "physInsituDome",
                     logicWCMultiPMT,
                     false,
                     0,
@@ -519,7 +519,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructInSituMultiPMT(G4String PMT
   new G4PVPlacement(0,
                     G4ThreeVector(0.,0.,vessel_cylinder_height/2),
                     logicCylinder,
-                    "physCylinder",
+                    "physInsituCylinder",
                     logicWCMultiPMT,
                     false,
                     0,
@@ -620,7 +620,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructInSituMultiPMT(G4String PMT
                     0,
                     checkOverlaps);
 
-  new G4LogicalSkinSurface("exsituMPMTBSSkinSurface", logicBS, BSSkinSurface); 
+  new G4LogicalSkinSurface("insituMPMTBSSkinSurface", logicBS, BSSkinSurface); 
 
   G4VisAttributes* VisAttRed = new G4VisAttributes(G4Colour(1.0,0.,0.));
   VisAttRed->SetForceSolid(true); 
@@ -637,6 +637,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructInSituMultiPMT(G4String PMT
                               35.3149*deg, 35.3149*deg, 35.3149*deg, 35.3149*deg, 35.3149*deg, 35.3149*deg };
   G4double phiArray[19] = {0.*deg, 0.*deg, -60.*deg, -120.*deg, 180.*deg, 120.*deg, 60*deg, 0.*deg, -30.*deg, -60.*deg, -90.*deg, -120.*deg, -150.*deg, 180.*deg, 150.*deg, 120.*deg, 90.*deg, 60.*deg, 30.*deg};
 
+  // Place the PMTs inside matrix
   for (int i = 0; i < nIDPMTs; i++) {
 
     G4ThreeVector PMTPosition = {0,0,0};
@@ -657,6 +658,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructInSituMultiPMT(G4String PMT
     
   }  
  
+  // Finally place the matrix
   new G4PVPlacement(0,
                     G4ThreeVector(0.,0., vessel_cylinder_height-domeCut+gelRmin-matrixRmax+matrixUpshift),
                     logicMatrix,
