@@ -541,6 +541,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructInSituMultiPMT(G4String PMT
   // Matrix, where PMTs are placed as daughters
   G4double matrixRmin = 263.003*mm;
   G4double matrixRmax = 325.603*mm;
+  G4double matrixUpshift = 5.7*mm;
   G4Sphere *solidMatrix = 
   new G4Sphere("solidMatrix",
 				       matrixRmin,
@@ -557,7 +558,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructInSituMultiPMT(G4String PMT
   new G4LogicalSkinSurface("matrixSkinSurface", logicMatrix, BSSkinSurface); // assume same as blacksheet
 
   // Gel
-  G4double gelRmin = 300.*mm;
+  G4double gelRmin = 323.5*mm;
   G4Sphere *solidGelSphere = new G4Sphere("solidGelSphere",
                                           gelRmin,
                                           domeInnerRadius,
@@ -567,7 +568,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructInSituMultiPMT(G4String PMT
   G4Box *solidGelCutOut = new G4Box("BoxGelCutOut",
                                     domeInnerRadius+1.*cm,
                                     domeInnerRadius+1.*cm,
-                                    217.54*mm);
+                                    241.04*mm);
 
   G4VSolid *solidGelSphereCut = 
   new G4SubtractionSolid("solidGelSphereCut",
@@ -578,7 +579,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructInSituMultiPMT(G4String PMT
                                               solidGelSphereCut,
                                               solidMatrix,
                                               0,
-                                              G4ThreeVector(0.,0.,gelRmin-matrixRmax));
+                                              G4ThreeVector(0.,0.,gelRmin-matrixRmax+matrixUpshift));
 
   G4LogicalVolume *logicGel = new G4LogicalVolume(solidGel,
                                                   G4Material::GetMaterial("SilGel_WCTE"),
@@ -657,7 +658,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructInSituMultiPMT(G4String PMT
   }  
  
   new G4PVPlacement(0,
-                    G4ThreeVector(0.,0., vessel_cylinder_height-domeCut+gelRmin-matrixRmax),
+                    G4ThreeVector(0.,0., vessel_cylinder_height-domeCut+gelRmin-matrixRmax+matrixUpshift),
                     logicMatrix,
                     "physMatrix",
                     logicWCMultiPMT,
