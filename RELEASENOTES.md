@@ -13,11 +13,14 @@ Update
 * Pull request #439 @guiguem: Use the same C++ standard as was used to compile ROOT
 
 Bug fix
+* Pull request #447 #448 #449 @tdealtry: Analysis macros now load library from `$WCSIM_BUILD_DIR/lib/` instead of `$WCSIMDIR/`
 * Pull request #443 @tdealtry: Set the true beam track information for the 0th vertex in events with multiple vertices, for muline files
 * Pull request #435 @DiegoCostas97: Set the dark rate options correctly in WCTE.mac
 * Pull request #432 @tdealtry: Use the same default dark rate time option for all PMT types in WCSim.mac
 
 Documentation
+* Pull request #449 @tdealtry: Improve documentation formatting for the nuance file format
+* Pull request #449 @tdealtry: Fix links to G4 information on gun & gps commands
 * Pull request #436 @tdealtry: Improve documentation on finding the PMT that created a digitised or true hit
 
 CI
