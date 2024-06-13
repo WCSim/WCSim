@@ -154,6 +154,18 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     return false;
   
 
+  G4StepPoint        *postStepPoint = aStep->GetPostStepPoint();
+  G4VPhysicalVolume  *postVol = postStepPoint->GetPhysicalVolume();
+  //if (thePhysical)  G4cout << " thePrePV:  " << thePhysical->GetName()  << G4endl;
+  //if (postVol) G4cout << " thePostPV: " << postVol->GetName() << G4endl;
+
+  //Optical Photon must pass through glass into PMT interior!
+  // What about the other way around? 
+  // TF: current interior won't keep photons alive like in reality
+  // Not an issue yet, because then interior needs to be a sensitive detector, when postStepPoint is the glass.
+  if(postVol->GetName() != "InteriorWCPMT")
+    return false;
+
   //  if ( particleDefinition ==  G4OpticalPhoton::OpticalPhotonDefinition() ) 
   // G4cout << volumeName << " hit by optical Photon! " << G4endl;
     
