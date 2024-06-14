@@ -579,7 +579,7 @@ void WCSimDetectorConstruction::DescribeAndDescendGeometry
 
 
 
-G4double WCSimDetectorConstruction::GetGeo_Dm(G4int i){
+G4double WCSimDetectorConstruction::GetGeo_Dm(G4int i) const{
   if (i>=0&&i<=2){
     return WCCylInfo[i];
   }else if(i==3){

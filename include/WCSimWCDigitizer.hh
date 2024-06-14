@@ -24,7 +24,7 @@ class WCSimWCDigitizerBase : public G4VDigitizerModule
 {
 public:
   
-  WCSimWCDigitizerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, DigitizerType_t, G4String detectorElement);
+  WCSimWCDigitizerBase(G4String name, const WCSimDetectorConstruction*, WCSimWCDAQMessenger*, DigitizerType_t, G4String detectorElement);
   virtual ~WCSimWCDigitizerBase();
   
   bool AddNewDigit(int tube, int gate, double digihittime, double peSmeared, std::vector<int> digi_comp);
@@ -52,7 +52,7 @@ public:
 protected:
   void ReInitialize() { DigiStoreHitMap.clear(); }
 
-  WCSimDetectorConstruction* myDetector; ///< Get the geometry information
+  const WCSimDetectorConstruction* myDetector; ///< Get the geometry information
   WCSimWCDAQMessenger* DAQMessenger;     ///< Get the /DAQ/ .mac options
   G4String detectorElement; //to identify which hit collection the trigger is associated: OD, ID, ID PMT type 2(for hybrid)
 
@@ -88,7 +88,7 @@ class WCSimWCDigitizerSKI : public WCSimWCDigitizerBase
 {
 public:
   
-  WCSimWCDigitizerSKI(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
+  WCSimWCDigitizerSKI(G4String name, const WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
   ~WCSimWCDigitizerSKI();
 
   void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);

@@ -25,16 +25,16 @@ class G4Event;
 class WCSimEventAction : public G4UserEventAction
 {
 private:
-  WCSimRunAction* runAction;
-  WCSimPrimaryGeneratorAction* generatorAction;
-  WCSimDetectorConstruction*   detectorConstructor;
+  const WCSimRunAction* runAction;
+  const WCSimPrimaryGeneratorAction* generatorAction;
+  const WCSimDetectorConstruction*   detectorConstructor;
 
   TRandom3 * randGen;
   WCSimWCDAQMessenger* DAQMessenger;
   
 public:
-  WCSimEventAction(WCSimRunAction*, WCSimDetectorConstruction*,
-		   WCSimPrimaryGeneratorAction*);
+  WCSimEventAction(const WCSimRunAction*, const WCSimDetectorConstruction*,
+									 const WCSimPrimaryGeneratorAction*);
   ~WCSimEventAction();
   
 public:
@@ -56,17 +56,10 @@ public:
 			   WCSimRootEvent*,
 			   WCSimRootTrigger*,
 			   bool skipFillingTracks);
-  WCSimRunAction* GetRunAction(){return runAction;}
+  const WCSimRunAction* GetRunAction() const {return runAction;}
   void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
   void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
   void SetRelativeDigitizedHitTime (bool val) { RelativeHitTime = val;       }
-
-  void FillFlatTree(G4int,
-		    const struct ntupleStruct&, 
-		    G4TrajectoryContainer*,
-		    WCSimWCDigitsCollection*,
-		    WCSimWCTriggeredDigitsCollection*,
-		    G4String detectorElement);
 
 private:
   G4int WCSimEventFindStartingVolume( G4ThreeVector vtx);

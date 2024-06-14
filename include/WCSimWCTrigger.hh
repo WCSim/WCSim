@@ -36,7 +36,7 @@ class WCSimWCTriggerBase : public G4VDigitizerModule
 public:
 
   ///Create WCSimWCTriggerBase instance with knowledge of the detector and DAQ options
-  WCSimWCTriggerBase(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String);
+  WCSimWCTriggerBase(G4String name, const WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String);
 
   virtual ~WCSimWCTriggerBase();
 
@@ -44,15 +44,15 @@ public:
   void Digitize();
 
   ///Returns the number of trigger gates in the event (i.e. the number of triggers passed)
-  int NumberOfGatesInThisEvent() { return TriggerTimes.size(); }
+  int NumberOfGatesInThisEvent() const { return TriggerTimes.size(); }
   ///Get the time of the ith trigger
-  Double_t             GetTriggerTime(int i) { return TriggerTimes[i];}
+  Double_t             GetTriggerTime(int i) const { return TriggerTimes[i];}
   ///Get the trigger type of the ith trigger
-  TriggerType_t        GetTriggerType(int i) { return TriggerTypes[i];}
+  TriggerType_t        GetTriggerType(int i) const { return TriggerTypes[i];}
   ///Get the additional trigger information associated with the ith trigger
-  std::vector<Double_t> GetTriggerInfo(int i) { return TriggerInfos[i];}
+  std::vector<Double_t> GetTriggerInfo(int i) const { return TriggerInfos[i];}
   ///Get the trigger class name
-  G4String GetTriggerClassName(){ return triggerClassName; }
+  G4String GetTriggerClassName() const { return triggerClassName; }
 
   //
   // Trigger algorithm option set methods
@@ -60,7 +60,7 @@ public:
 
   ///Set whether to allow the number of digits per PMT per trigger to go > 1
   void SetMultiDigitsPerTrigger(G4bool allow_multi) { multiDigitsPerTrigger = allow_multi; }
-  G4bool GetMultiDigitsPerTrigger() { return multiDigitsPerTrigger; }
+  G4bool GetMultiDigitsPerTrigger() const { return multiDigitsPerTrigger; }
 
   // NDigits options
   ///Set the threshold for the NDigits trigger
@@ -102,17 +102,17 @@ protected:
   void GetVariables();
 
   ///Set the default trigger class specific decision of whether to save multiple digits per PMT per trigger (overridden by .mac)
-  virtual bool GetDefaultMultiDigitsPerTrigger()   { return true; }
+  virtual bool GetDefaultMultiDigitsPerTrigger() const  { return true; }
   ///Set the default trigger class specific NDigits window (in ns) (overridden by .mac)
-  virtual int GetDefaultNDigitsWindow()            { return 200; }
+  virtual int GetDefaultNDigitsWindow() const           { return 200; }
   ///Set the default trigger class specific NDigits threshold (in ns) (overridden by .mac)
-  virtual int GetDefaultNDigitsThreshold()         { return 25; } //Default
+  virtual int GetDefaultNDigitsThreshold() const        { return 25; } //Default
   ///Set the default trigger class specific NDigits pretrigger window (in ns) (overridden by .mac)
-  virtual int GetDefaultNDigitsPreTriggerWindow()  { return -400; }
+  virtual int GetDefaultNDigitsPreTriggerWindow() const { return -400; }
   ///Set the default trigger class specific NDigits posttrigger window (in ns) (overridden by .mac)
-  virtual int GetDefaultNDigitsPostTriggerWindow() { return 950; }
+  virtual int GetDefaultNDigitsPostTriggerWindow() const{ return 950; }
   ///Set the default trigger class specific NDigits posttrigger window (in ns) (overridden by .mac)
-  virtual int GetDefaultTriggerOffset() { return 950; }
+  virtual int GetDefaultTriggerOffset() const{ return 950; }
 
   ///Get the pretrigger window for a given trigger algorithm
   double GetPreTriggerWindow(TriggerType_t t);
@@ -147,7 +147,7 @@ protected:
   std::vector< std::vector<Double_t> > TriggerInfos; ///< Additional information associated with each trigger
 
   WCSimWCDAQMessenger*       DAQMessenger; ///< Get the options from the .mac file
-  WCSimDetectorConstruction* myDetector;   ///< Know about the detector, so can add appropriate PMT time smearing
+  const WCSimDetectorConstruction* myDetector;   ///< Know about the detector, so can add appropriate PMT time smearing
   G4String detectorElement;
   
   /// Clear the Trigger* vectors and DigiHitMap
@@ -244,7 +244,7 @@ public:
     digi_comp.clear();
   }
 
-  inline G4int   GetTubeID() {return tubeID;}
+  inline G4int   GetTubeID() const{return tubeID;}
   inline std::vector<G4double> GetPe      (int gate) { return FindInMultimap(gate, pe); }
   inline std::vector<G4double> GetTime    (int gate) { return FindInMultimap(gate, time); }
   std::vector<std::vector<int> > GetDigiCompositionInfo(int gate)
@@ -258,8 +258,8 @@ public:
     return v;
   }
 
-  inline int NumberOfGates()     { return Gates.size();      }
-  inline int NumberOfSubEvents() { return Gates.size() - 1;  }
+  inline int NumberOfGates() const    { return Gates.size();      }
+  inline int NumberOfSubEvents() const{ return Gates.size() - 1;  }
   inline bool HasHitsInGate(int gate) { return Gates.count(gate) > 0; }
 
 private:
@@ -321,7 +321,7 @@ class WCSimWCTriggerNDigits : public WCSimWCTriggerBase
 public:
 
   ///Create WCSimWCTriggerNDigits instance with knowledge of the detector and DAQ options
-  WCSimWCTriggerNDigits(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
+  WCSimWCTriggerNDigits(G4String name, const WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
 
   ~WCSimWCTriggerNDigits();
   
@@ -329,13 +329,13 @@ private:
   ///Calls the workhorse of this class: AlgNDigits
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
-  bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
-  int  GetDefaultNDigitsWindow()            { return 200;   } ///< SK max light travel time ~200 ns
-  //  int  GetDefaultNDigitsThreshold()         { return 25;    } ///< SK NDigits threshold ~25 
-  int  GetDefaultNDigitsThreshold()         { return 20;    } ///< SK NDigits threshold ~25 B.Q
-  int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
-  int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
-  int  GetDefaultTriggerOffset() { return 950;   } 
+  bool GetDefaultMultiDigitsPerTrigger() const   { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
+  int  GetDefaultNDigitsWindow() const           { return 200;   } ///< SK max light travel time ~200 ns
+  //  int  GetDefaultNDigitsThreshold() const        { return 25;    } ///< SK NDigits threshold ~25 
+  int  GetDefaultNDigitsThreshold() const        { return 20;    } ///< SK NDigits threshold ~25 B.Q
+  int  GetDefaultNDigitsPreTriggerWindow() const { return -400;  } ///< SK SLE trigger window ~-400
+  int  GetDefaultNDigitsPostTriggerWindow() const{ return 950;   } ///< SK SLE trigger window ~+950
+  int  GetDefaultTriggerOffset() const{ return 950;   } 
 };
 
 class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
@@ -343,7 +343,7 @@ class WCSimWCTriggerNoTrigger : public WCSimWCTriggerBase
 public:
   
   ///Create WCSimWCTriggerNoTrigger instance with knowledge of the detector and DAQ options
-  WCSimWCTriggerNoTrigger(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*,  G4String detectorElement);
+  WCSimWCTriggerNoTrigger(G4String name, const WCSimDetectorConstruction*, WCSimWCDAQMessenger*,  G4String detectorElement);
   
   ~WCSimWCTriggerNoTrigger();
   
@@ -351,11 +351,11 @@ private:
   ///Calls the workhorse of this class: AlgNoTrigger
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
   
-  bool GetDefaultMultiDigitsPerTrigger()    { return true;  } ///< We want to save everything
-  int  GetDefaultNDigitsWindow()            { return 0;     } ///< This is not an NDigits trigger
-  int  GetDefaultNDigitsThreshold()         { return 0;     } ///< This is not an NDigits trigger
-  int  GetDefaultNDigitsPreTriggerWindow()  { return 0;     } ///< This is not an NDigits trigger
-  int  GetDefaultNDigitsPostTriggerWindow() { return 0;     } ///< This is not an NDigits trigger
+  bool GetDefaultMultiDigitsPerTrigger() const   { return true;  } ///< We want to save everything
+  int  GetDefaultNDigitsWindow() const           { return 0;     } ///< This is not an NDigits trigger
+  int  GetDefaultNDigitsThreshold() const        { return 0;     } ///< This is not an NDigits trigger
+  int  GetDefaultNDigitsPreTriggerWindow() const { return 0;     } ///< This is not an NDigits trigger
+  int  GetDefaultNDigitsPostTriggerWindow() const{ return 0;     } ///< This is not an NDigits trigger
 };
 
 /**
@@ -370,19 +370,19 @@ class WCSimWCTriggerNDigits2 : public WCSimWCTriggerBase
 public:
 
   //not recommended to override these methods
-  WCSimWCTriggerNDigits2(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
+  WCSimWCTriggerNDigits2(G4String name, const WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
   ~WCSimWCTriggerNDigits2();
   
 private:
   void DoTheWork(WCSimWCDigitsCollection* WCDCPMT);
 
-  bool GetDefaultMultiDigitsPerTrigger()    { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
-  int  GetDefaultNDigitsWindow()            { return 200;   } ///< SK max light travel time ~200 ns
-  //  int  GetDefaultNDigitsThreshold()         { return 50;    } ///< 2 * SK NDigits threshold ~25
-  int  GetDefaultNDigitsThreshold()         { return 40;    } ///< 2 * SK NDigits threshold ~25 B.Q
-  int  GetDefaultNDigitsPreTriggerWindow()  { return -400;  } ///< SK SLE trigger window ~-400
-  int  GetDefaultNDigitsPostTriggerWindow() { return 950;   } ///< SK SLE trigger window ~+950
-  int  GetDefaultTriggerOffset() { return 950;   }
+  bool GetDefaultMultiDigitsPerTrigger() const   { return false; } ///< SKI saves only earliest digit on a PMT in the trigger window
+  int  GetDefaultNDigitsWindow() const           { return 200;   } ///< SK max light travel time ~200 ns
+  //  int  GetDefaultNDigitsThreshold() const        { return 50;    } ///< 2 * SK NDigits threshold ~25
+  int  GetDefaultNDigitsThreshold() const        { return 40;    } ///< 2 * SK NDigits threshold ~25 B.Q
+  int  GetDefaultNDigitsPreTriggerWindow() const { return -400;  } ///< SK SLE trigger window ~-400
+  int  GetDefaultNDigitsPostTriggerWindow() const { return 950;   } ///< SK SLE trigger window ~+950
+  int  GetDefaultTriggerOffset() const { return 950;   }
 };
 
 

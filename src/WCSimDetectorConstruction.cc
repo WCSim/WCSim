@@ -514,7 +514,7 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
   return PMT;
 }
 
-void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+void WCSimDetectorConstruction::SaveOptionsToOutput(WCSimRootOptions * wcopt) const
 {
   wcopt->SetGeomHasOD(false);
   wcopt->SetDetectorName(WCDetectorName);

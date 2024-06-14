@@ -56,7 +56,7 @@ public:
 
   G4LogicalVolume* ConstructRealisticPlacement();
 
-  void SaveOptionsToOutput(WCSimRootOptions * wcopt);
+  void SaveOptionsToOutput(WCSimRootOptions * wcopt) const;
 
   G4VPhysicalVolume* Construct();
 
@@ -118,38 +118,38 @@ public:
   {
 	  LCType=LightCollectorType;
   };
-  G4int GetLCType(){return LCType;};
+  G4int GetLCType() const {return LCType;};
 
-  G4String GetDetectorName()      {return WCDetectorName;}
-  G4double GetWaterTubeLength()   {return WCLength;}
-  G4double GetWaterTubePosition() {return WCPosition;}
-  G4double GetPMTSize()           {return WCPMTRadius;}
-  G4double GetODPMTSize()         {return WCPMTODRadius;}
-  G4String GetPMTName()			  {return WCPMTName;}
-  G4int    GetMyConfiguration()   {return myConfiguration;}
-  G4double GetGeo_Dm(G4int);
-  G4int    GetTotalNumPmts() {return totalNumPMTs;}
-  G4int    GetTotalNum_mPmts() {return totalNum_mPMTs;}         
-  G4int    GetTotalNumPmts2() {return totalNumPMTs2;}//For the hybrid config
-  G4int    GetTotalNum_mPmts2() {return totalNum_mPMTs2;}//For the hybrid config         
-  G4int    GetTotalNumODPmts() {return totalNumODPMTs;}
+  G4String GetDetectorName() const      {return WCDetectorName;}
+  G4double GetWaterTubeLength() const   {return WCLength;}
+  G4double GetWaterTubePosition() const {return WCPosition;}
+  G4double GetPMTSize()           const {return WCPMTRadius;}
+  G4double GetODPMTSize()         const {return WCPMTODRadius;}
+  G4String GetPMTName()			   const {return WCPMTName;}
+  G4int    GetMyConfiguration() const  {return myConfiguration;}
+  G4double GetGeo_Dm(G4int) const;
+  G4int    GetTotalNumPmts() const {return totalNumPMTs;}
+  G4int    GetTotalNum_mPmts() const {return totalNum_mPMTs;}         
+  G4int    GetTotalNumPmts2() const {return totalNumPMTs2;}//For the hybrid config
+  G4int    GetTotalNum_mPmts2() const {return totalNum_mPMTs2;}//For the hybrid config         
+  G4int    GetTotalNumODPmts() const {return totalNumODPMTs;}
 
-  G4int    GetPMT_QE_Method(){return PMT_QE_Method;}
-  G4double GetwaterTank_Length() {return waterTank_Length;} 
+  G4int    GetPMT_QE_Method() const {return PMT_QE_Method;}
+  G4double GetwaterTank_Length() const {return waterTank_Length;} 
   G4int    UsePMT_Coll_Eff(){return PMT_Coll_Eff;}
 
-  G4double GetPMTSize1() {return WCPMTSize;}
+  G4double GetPMTSize1() const {return WCPMTSize;}
 
-  G4double GetPMTQE(G4String,G4double, G4int, G4double, G4double, G4double);
-  G4double GetPMTCollectionEfficiency(G4double theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
-  G4double GetStackingPMTQE(G4double PhotonWavelength, G4int flag, G4double low_wl, G4double high_wl, G4double ratio);
+  G4double GetPMTQE(G4String,G4double, G4int, G4double, G4double, G4double) const ;
+  G4double GetPMTCollectionEfficiency(G4double theta_angle, G4String CollectionName) const { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
+  G4double GetStackingPMTQE(G4double PhotonWavelength, G4int flag, G4double low_wl, G4double high_wl, G4double ratio) const;
 
   WCSimPMTObject *CreatePMTObject(G4String, G4String);
 
   void CreateCombinedPMTQE(const std::vector<G4String> &);
   WCSimBasicPMTObject *BasicPMT;
   void SetBasicPMTObject(WCSimBasicPMTObject *PMT){BasicPMT=PMT;}
-  WCSimBasicPMTObject* GetBasicPMTObject(){ return BasicPMT;}
+  WCSimBasicPMTObject* GetBasicPMTObject() const { return BasicPMT;}
 
   std::map<G4String, WCSimPMTObject*>  CollectionNameMap; 
   WCSimPMTObject * PMTptr;
@@ -158,24 +158,24 @@ public:
     CollectionNameMap[CollectionName] = PMT;
   }
 
-  WCSimPMTObject* GetPMTPointer(G4String CollectionName){
-    PMTptr = CollectionNameMap[CollectionName];
-    if (PMTptr == NULL) {G4cout << CollectionName << " is not a recognized hit collection. Exiting WCSim." << G4endl; exit(1);}
-    return PMTptr;
+  WCSimPMTObject* GetPMTPointer(G4String CollectionName) const{
+    auto it = CollectionNameMap.find(CollectionName);
+    if (it == CollectionNameMap.end()) {G4cout << CollectionName << " is not a recognized hit collection. Exiting WCSim." << G4endl; exit(1);}
+    return it->second;
   }
 
   WCSimWLSProperties *CreateWLSObject(G4String);
   WCSimWLSProperties *WLSptr;
   void SetWLSPointer(WCSimWLSProperties *WLS){WLSptr=WLS;}
-  WCSimWLSProperties* GetWLSPointer(){
+  WCSimWLSProperties* GetWLSPointer() const {
     return WLSptr;
   }
 
-  G4ThreeVector GetWCOffset(){return WCOffset;}
-  G4ThreeVector GetWCXRotation(){return WCXRotation;}
-  G4ThreeVector GetWCYRotation(){return WCYRotation;}
-  G4ThreeVector GetWCZRotation(){return WCZRotation;}
-  G4ThreeVector GetWCDetCentre(){return WCDetCentre;}
+  G4ThreeVector GetWCOffset() const{return WCOffset;}
+  G4ThreeVector GetWCXRotation() const {return WCXRotation;}
+  G4ThreeVector GetWCYRotation() const {return WCYRotation;}
+  G4ThreeVector GetWCZRotation() const {return WCZRotation;}
+  G4ThreeVector GetWCDetCentre() const {return WCDetCentre;}
 
   void SetWCDetCentre(double x, double y, double z){
       WCDetCentre[0] = x;
@@ -199,11 +199,11 @@ public:
   static G4Transform3D GetODTubeTransform(int tubeNo){return ODtubeIDMap[tubeNo];}
 
   // Related to Pi0 analysis
-  G4bool SavePi0Info()              {return pi0Info_isSaved;}
+  G4bool SavePi0Info() const        {return pi0Info_isSaved;}
   void   SavePi0Info(G4bool choice) {pi0Info_isSaved=choice;}
 
   // Related to neutron capture analysis
-  G4bool SaveCaptureInfo()              {return captureInfo_isSaved;}
+  G4bool SaveCaptureInfo() const        {return captureInfo_isSaved;}
   void   SaveCaptureInfo(G4bool choice) {captureInfo_isSaved=choice;}
 
   void   SetPMT_QE_Method(G4int choice){
@@ -224,18 +224,18 @@ public:
   }
   void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
   void   SetVis_Choice(G4String choice){Vis_Choice = choice;}
-  G4String GetVis_Choice() {return Vis_Choice;}
+  G4String GetVis_Choice() const {return Vis_Choice;}
   //Set PMT coverage of first PMT type
  void   SetPMTCoverage(G4double cover) {
     WCPMTPercentCoverage = cover;
   }
-  G4double GetPMTCoverage() {return WCPMTPercentCoverage;}
+  G4double GetPMTCoverage() const {return WCPMTPercentCoverage;}
  
   //Set PMT coverage of second PMT type
  void   SetPMTCoverage2(G4double cover) {
     WCPMTPercentCoverage2 = cover;
   }
-  G4double GetPMTCoverage2() {return WCPMTPercentCoverage2;}
+  G4double GetPMTCoverage2() const {return WCPMTPercentCoverage2;}
  
   //Partition Length
   void SetwaterTank_Length(G4double length){waterTank_Length = length;}
@@ -246,7 +246,7 @@ public:
   // *** Begin Egg-Shaped HyperK Geometry ***
 
   void   SetIsEggShapedHyperK(G4bool choice) {isEggShapedHyperK = choice;}
-  G4bool GetIsEggShapedHyperK() {return isEggShapedHyperK;}
+  G4bool GetIsEggShapedHyperK() const {return isEggShapedHyperK;}
 
   void SetEggShapedHyperKGeometry();
   void SetEggShapedHyperKGeometry_withHPD();
@@ -319,10 +319,10 @@ public:
   void SetmPMT_nID2(G4int nPMTs){nID_PMTs2 = nPMTs;}//Added by B.Quilain for the second type of photosensor in the hybrid version
   void SetmPMT_Config(G4String inputfile){config_file = inputfile;}
 
-  int GetmPMT_nID(void){return nID_PMTs;};
-  int GetmPMT_nID2(void){return nID_PMTs2;};//Added by B.Quilain for the second type of photosensor in the hybrid version
-  G4String GetPMTtype_ID(void){return mPMT_ID_PMT;};
-  G4String GetPMTtype_OD(void){return mPMT_OD_PMT;};   //might want to replace the name mPMT by general var name
+  int GetmPMT_nID(void) const {return nID_PMTs;};
+  int GetmPMT_nID2(void) const {return nID_PMTs2;};//Added by B.Quilain for the second type of photosensor in the hybrid version
+  G4String GetPMTtype_ID(void) const {return mPMT_ID_PMT;};
+  G4String GetPMTtype_OD(void) const {return mPMT_OD_PMT;};   //might want to replace the name mPMT by general var name
 
   void SetmPMT_MaterialPMTassembly(G4String material){mPMT_material_pmtAssembly = material;}
   void SetmPMT_FixModules(G4bool fix){fix_nModules = fix;}
@@ -341,7 +341,7 @@ public:
 
   // Set if nuPRISM
   void   SetIsNuPrism(G4bool choice) {isNuPrism = choice;}
-  G4bool GetIsNuPrism() {return isNuPrism;}
+  G4bool GetIsNuPrism() const {return isNuPrism;}
 
   //Set if hybrid detector
   void   SetHybridPMT(G4bool choice) {hybrid = choice;}
@@ -349,12 +349,12 @@ public:
   // Set if nuPRISM for WCTE (NuPRISMBeamTest)
   // M.Shinoki added Jun.04,2020
   void   SetIsNuPrismBeamTest(G4bool choice) {isNuPrismBeamTest = choice;}
-  G4bool GetIsNuPrismBeamTest() {return isNuPrismBeamTest;}
+  G4bool GetIsNuPrismBeamTest() const {return isNuPrismBeamTest;}
 
   //Set if nuPRISM for WCTE (NuPRISMBeamTest 16cShort)
   // L.Anthony added Jul 02 2021
   void   SetIsNuPrismBeamTest_16cShort(G4bool choice) {isNuPrismBeamTest_16cShort = choice;}
-  G4bool GetIsNuPrismBeamTest_16cShort() {return isNuPrismBeamTest_16cShort;}
+  G4bool GetIsNuPrismBeamTest_16cShort() const {return isNuPrismBeamTest_16cShort;}
   
   // Set if rotate barrel by half a tower
   void   SetRotateBarrelHalfTower(G4bool choice) {rotateBarrelHalfTower = choice;}
@@ -395,8 +395,8 @@ public:
     WCCapEdgeLimit        = WCIDDiameter/2.0 - WCPMTRadius;
     
   }
-  bool GetHybridPMT() {return hybrid;}
-  G4String GetPMTType() {return WCPMTType;}
+  bool GetHybridPMT() const {return hybrid;}
+  G4String GetPMTType() const {return WCPMTType;}
 
   /*
   void   SetPMTCoverage(G4double cover) {
@@ -417,19 +417,26 @@ public:
   void SetDopedWater(G4bool dopedWater){WCAddGd = dopedWater; }
   void AddDopedWater(G4double percentGd = 0.1);
 
-  std::vector<WCSimPmtInfo*>* Get_Pmts() {return &fpmts;}
-  std::vector<WCSimPmtInfo*>* Get_Pmts2() {return &fpmts2;}//For the hybrid config
-  std::vector<WCSimPmtInfo*>* Get_ODPmts() {return &fODpmts;}
-
+  const std::vector<WCSimPmtInfo*>* Get_Pmts() const {return &fpmts;}
+  const std::vector<WCSimPmtInfo*>* Get_Pmts2() const {return &fpmts2;}//For the hybrid config
+  const std::vector<WCSimPmtInfo*>* Get_ODPmts() const {return &fODpmts;}
+	const std::vector<WCSimPmtInfo*>* Get_Pmts_By_Type(const G4String detectorElement) const {
+		if(detectorElement=="tank") return &fpmts;
+    else if(detectorElement=="tankPMT2") return &fpmts2;
+    else if(detectorElement=="OD") return &fODpmts;
+		G4cerr << "### detectorElement: " << detectorElement << " undefined ..." << G4endl;
+		return nullptr;
+	}
+	
   void   SetDetectorHeight(G4double height) {
     WCIDHeight = height;
     // Affects Number of Barrel rings:
     WCBarrelNRings        = std::lround((WCBarrelNumPMTHorizontal*((WCIDHeight-2*WCBarrelPMTOffset)/(CLHEP::pi*WCIDDiameter)))/WCPMTperCellVertical);
   }
-  G4double GetWCIDHeight(){ return WCIDHeight; }
+  G4double GetWCIDHeight() const { return WCIDHeight; }
 
   void   SetDetectorVerticalPosition(G4double position) {WCIDVerticalPosition = position;}
-  G4double GetWCIDVerticalPosition(){ return WCIDVerticalPosition; }
+  G4double GetWCIDVerticalPosition() const { return WCIDVerticalPosition; }
 
   void   SetDetectorDiameter(G4double diameter) {
     WCIDDiameter = diameter;
@@ -447,18 +454,18 @@ public:
     
 
 }
-  G4double GetWCIDDiameter(){ return WCIDDiameter; }
+  G4double GetWCIDDiameter() const { return WCIDDiameter; }
 
-  G4String GetIDCollectionName(){return WCIDCollectionName;}
-  G4String GetIDCollectionName2(){return WCIDCollectionName2;}//Added by B.Quilain for hybrid PMT configuration
-  G4String GetODCollectionName(){return WCODCollectionName;}
-  WCSimTuningParameters* GetParameters(){return WCSimTuningParams;}//Added by TD to set up a parameter on PMT TTS uncertainty and use it in WCSimWCPMT
+  G4String GetIDCollectionName() const {return WCIDCollectionName;}
+  G4String GetIDCollectionName2() const {return WCIDCollectionName2;}//Added by B.Quilain for hybrid PMT configuration
+  G4String GetODCollectionName() const {return WCODCollectionName;}
+  WCSimTuningParameters* GetParameters() const {return WCSimTuningParams;}//Added by TD to set up a parameter on PMT TTS uncertainty and use it in WCSimWCPMT
   
-  G4double GetIDRadius()     {return WCIDRadius;}
-  G4double GetIDHeight()     {return WCIDHeight;}
+  G4double GetIDRadius() const {return WCIDRadius;}
+  G4double GetIDHeight() const {return WCIDHeight;}
 
-  bool GetIsODConstructed(){return isODConstructed;}
-  bool GetIsCombinedPMTCollectionDefined(){return isCombinedPMTCollectionDefined;}
+  bool GetIsODConstructed() const {return isODConstructed;}
+  bool GetIsCombinedPMTCollectionDefined() const {return isCombinedPMTCollectionDefined;}
 
   ///////////////////////////////
   // MESSENGER methods for OD ///
@@ -486,7 +493,7 @@ public:
   void SetODEdited(G4bool val){odEdited = val;}
   void SetIsWLSFilled(G4bool val){isWLSFilled = val;}
   void SetBuildODWLSCladding(G4bool val){BuildODWLSCladding = val;}
-  G4bool GetODEdited(){return odEdited;}
+  G4bool GetODEdited() const {return odEdited;}
 
   ////////// END OD /////////////
   ///////////////////////////////

@@ -200,6 +200,195 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   initialised = true;
 }
 
+WCSimWCDAQMessenger::WCSimWCDAQMessenger() :
+  WCSimEvent(nullptr), NDigitsPreWindowSetByUser(false)
+{
+  initialiseString = " (this is a default set; it may be overwritten by user commands)";
+  initialised = false;
+
+  WCSimDAQDir = new G4UIdirectory("/DAQ/");
+  WCSimDAQDir->SetGuidance("Commands to select DAQ options");
+
+  G4String defaultDigitizer = "SKI";
+  DigitizerChoice = new G4UIcmdWithAString("/DAQ/Digitizer", this);
+  DigitizerChoice->SetGuidance("Set the Digitizer type");
+  DigitizerChoice->SetGuidance("Available choices are:\n"
+			       "SKI\n"
+			       );
+  DigitizerChoice->SetParameterName("Digitizer", false);
+  DigitizerChoice->SetCandidates(
+				 "SKI "
+				 );
+  DigitizerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
+  DigitizerChoice->SetDefaultValue(defaultDigitizer);
+  StoreDigitizerChoice = defaultDigitizer;
+  SetNewValue(DigitizerChoice, defaultDigitizer);
+
+  G4String defaultTrigger = "NDigits";
+  TriggerChoice = new G4UIcmdWithAString("/DAQ/Trigger", this);
+  TriggerChoice->SetGuidance("Set the Trigger type");
+  TriggerChoice->SetGuidance("Available choices are:\n"
+			     "NDigits\n"
+			     "NDigits2\n"
+			     "NoTrigger\n"
+			     );
+  TriggerChoice->SetParameterName("Trigger", false);
+  TriggerChoice->SetCandidates(
+			       "NDigits "
+			       "NDigits2 "
+			       "NoTrigger "
+			       );
+  TriggerChoice->AvailableForStates(G4State_PreInit, G4State_Idle);
+  TriggerChoice->SetDefaultValue(defaultTrigger);
+  StoreTriggerChoice = defaultTrigger;
+  SetNewValue(TriggerChoice, defaultTrigger);
+
+  bool defaultMultiDigitsPerTrigger = false;
+  MultiDigitsPerTrigger = new G4UIcmdWithABool("/DAQ/MultiDigitsPerTrigger", this);
+  MultiDigitsPerTrigger->SetGuidance("Allow the number of digits per PMT per trigger to be > 1?");
+  MultiDigitsPerTrigger->SetParameterName("MultiDigitsPerTrigger",true);
+  MultiDigitsPerTrigger->SetDefaultValue(defaultMultiDigitsPerTrigger);
+  StoreMultiDigitsPerTrigger = defaultMultiDigitsPerTrigger;
+  MultiDigitsPerTriggerSet = false; //this variable is bool & defaults are class specfic; use this to know if the default is overidden
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+  
+  bool defaultRelativeHitTime = false;
+  RelativeHitTime = new G4UIcmdWithABool("/DAQ/RelativeHitTime", this);
+  RelativeHitTime->SetGuidance("Set the digitized hit time relative to the first one");
+  RelativeHitTime->SetParameterName("RelativeHitTime",true);
+  RelativeHitTime->SetDefaultValue(defaultRelativeHitTime);
+  SetNewValue(RelativeHitTime, defaultRelativeHitTime);
+
+  //Generic digitizer specific options
+  DigitizerDir = new G4UIdirectory("/DAQ/DigitizerOpt/");
+  DigitizerDir->SetGuidance("Generic commands for digitizers");
+
+  int defaultDigitizerDeadTime = -99;
+  DigitizerDeadTime = new G4UIcmdWithAnInteger("/DAQ/DigitizerOpt/DeadTime", this);
+  DigitizerDeadTime->SetGuidance("The deadtime for the digitizer (in ns)");
+  DigitizerDeadTime->SetParameterName("DigitizerDeadTime",true);
+  DigitizerDeadTime->SetDefaultValue(defaultDigitizerDeadTime);
+  StoreDigitizerDeadTime = defaultDigitizerDeadTime;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
+  int defaultDigitizerIntegrationWindow = -99;
+  DigitizerIntegrationWindow = new G4UIcmdWithAnInteger("/DAQ/DigitizerOpt/IntegrationWindow", this);
+  DigitizerIntegrationWindow->SetGuidance("The integration window for the digitizer (in ns)");
+  DigitizerIntegrationWindow->SetParameterName("DigitizerIntegrationWindow",true);
+  DigitizerIntegrationWindow->SetDefaultValue(defaultDigitizerIntegrationWindow);
+  StoreDigitizerIntegrationWindow = defaultDigitizerIntegrationWindow;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
+  double defaultDigitizerTimingPrecision = -99;
+  DigitizerTimingPrecision = new G4UIcmdWithADouble("/DAQ/DigitizerOpt/TimingPrecision", this);
+  DigitizerTimingPrecision->SetGuidance("The timing resolution for the digitizer (in ns)");
+  DigitizerTimingPrecision->SetParameterName("DigitizerTimingPrecision",true);
+  DigitizerTimingPrecision->SetDefaultValue(defaultDigitizerTimingPrecision);
+  StoreDigitizerTimingPrecision = defaultDigitizerTimingPrecision;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
+  double defaultDigitizerPEPrecision = -99;
+  DigitizerPEPrecision = new G4UIcmdWithADouble("/DAQ/DigitizerOpt/PEPrecision", this);
+  DigitizerPEPrecision->SetGuidance("The charge resolution for the digitizer (in p.e.)");
+  DigitizerPEPrecision->SetParameterName("DigitizerPEPrecision",true);
+  DigitizerPEPrecision->SetDefaultValue(defaultDigitizerPEPrecision);
+  StoreDigitizerPEPrecision = defaultDigitizerPEPrecision;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
+
+  //Save failure trigger specific options
+  SaveFailuresTriggerDir = new G4UIdirectory("/DAQ/TriggerSaveFailures/");
+  SaveFailuresTriggerDir->SetGuidance("Commands specific to the Save Failures trigger");
+
+  int defaultSaveFailuresTriggerMode = 0;
+  SaveFailuresTriggerMode = new G4UIcmdWithAnInteger("/DAQ/TriggerSaveFailures/Mode", this);
+  SaveFailuresTriggerMode->SetGuidance("0: save only triggered events; 1: save both triggered and failed events; 2: save only failed events");
+  SaveFailuresTriggerMode->SetParameterName("SaveFailuresMode",true);
+  SaveFailuresTriggerMode->SetDefaultValue(defaultSaveFailuresTriggerMode);
+  StoreSaveFailuresMode = defaultSaveFailuresTriggerMode;
+  SetNewValue(SaveFailuresTriggerMode, G4UIcommand::ConvertToString(defaultSaveFailuresTriggerMode));
+
+  double defaultSaveFailuresTriggerTime = 100;
+  SaveFailuresTriggerTime = new G4UIcmdWithADouble("/DAQ/TriggerSaveFailures/TriggerTime", this);
+  SaveFailuresTriggerTime->SetGuidance("The trigger time for the events which failed other triggers");
+  SaveFailuresTriggerTime->SetParameterName("SaveFailuresTime",true);
+  SaveFailuresTriggerTime->SetDefaultValue(defaultSaveFailuresTriggerTime);
+  StoreSaveFailuresTime = defaultSaveFailuresTriggerTime;
+  SetNewValue(SaveFailuresTriggerTime, G4UIcommand::ConvertToString(defaultSaveFailuresTriggerTime));
+
+  int defaultSaveFailuresPreTriggerWindow = -400;
+  SaveFailuresPreTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerSaveFailures/PreTriggerWindow", this);
+  SaveFailuresPreTriggerWindow->SetGuidance("Set the SaveFailures pretrigger window (in ns)");
+  SaveFailuresPreTriggerWindow->SetParameterName("SaveFailuresPreTriggerWindow",false);
+  SaveFailuresPreTriggerWindow->SetDefaultValue(defaultSaveFailuresPreTriggerWindow);
+  StoreSaveFailuresPreWindow = defaultSaveFailuresPreTriggerWindow;
+  SetNewValue(SaveFailuresPreTriggerWindow, G4UIcommand::ConvertToString(defaultSaveFailuresPreTriggerWindow));
+
+  int defaultSaveFailuresPostTriggerWindow = 950;
+  SaveFailuresPostTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerSaveFailures/PostTriggerWindow", this);
+  SaveFailuresPostTriggerWindow->SetGuidance("Set the SaveFailures posttrigger window (in ns)");
+  SaveFailuresPostTriggerWindow->SetParameterName("SaveFailuresPostTriggerWindow",false);
+  SaveFailuresPostTriggerWindow->SetDefaultValue(defaultSaveFailuresPostTriggerWindow);
+  StoreSaveFailuresPostWindow = defaultSaveFailuresPostTriggerWindow;
+  SetNewValue(SaveFailuresPostTriggerWindow, G4UIcommand::ConvertToString(defaultSaveFailuresPostTriggerWindow));
+
+
+  //NDigits trigger specifc options
+  NDigitsTriggerDir = new G4UIdirectory("/DAQ/TriggerNDigits/");
+  NDigitsTriggerDir->SetGuidance("Commands specific to the NDigits trigger");
+  
+  int defaultNDigitsTriggerThreshold = -99;
+  NDigitsTriggerThreshold = new G4UIcmdWithAnInteger("/DAQ/TriggerNDigits/Threshold", this);
+  NDigitsTriggerThreshold->SetGuidance("Set the NDigits trigger threshold");
+  NDigitsTriggerThreshold->SetParameterName("NDigitsThreshold",false);
+  NDigitsTriggerThreshold->SetDefaultValue(defaultNDigitsTriggerThreshold);
+  StoreNDigitsThreshold = defaultNDigitsTriggerThreshold;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
+  double defaultTriggerOffset = 950.;
+  TriggerOffset = new G4UIcmdWithADouble("/DAQ/TriggerOffset", this);
+  TriggerOffset->SetGuidance("Set the trigger timing offset");
+  TriggerOffset->SetParameterName("TriggerOffset",false);
+  TriggerOffset->SetDefaultValue(defaultTriggerOffset);
+  StoreTriggerOffset = defaultTriggerOffset;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
+  int defaultNDigitsTriggerWindow = -99;
+  NDigitsTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNDigits/Window", this);
+  NDigitsTriggerWindow->SetGuidance("Set the NDigits trigger window (in ns)");
+  NDigitsTriggerWindow->SetParameterName("NDigitsWindow",false);
+  NDigitsTriggerWindow->SetDefaultValue(defaultNDigitsTriggerWindow);
+  StoreNDigitsWindow = defaultNDigitsTriggerWindow;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
+  bool defaultNDigitsTriggerAdjustForNoise = true;
+  NDigitsTriggerAdjustForNoise = new G4UIcmdWithABool("/DAQ/TriggerNDigits/AdjustForNoise", this);
+  NDigitsTriggerAdjustForNoise->SetGuidance("Adjust the NDigits trigger threshold automatically dependent on the average noise rate");
+  NDigitsTriggerAdjustForNoise->SetParameterName("NDigitsAdjustForNoise",true);
+  NDigitsTriggerAdjustForNoise->SetDefaultValue(defaultNDigitsTriggerAdjustForNoise);
+  StoreNDigitsAdjustForNoise = defaultNDigitsTriggerAdjustForNoise;
+  SetNewValue(NDigitsTriggerAdjustForNoise, G4UIcommand::ConvertToString(defaultNDigitsTriggerAdjustForNoise));
+
+  int defaultNDigitsPreTriggerWindow = -99;
+  NDigitsPreTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNDigits/PreTriggerWindow", this);
+  NDigitsPreTriggerWindow->SetGuidance("Set the NDigits pretrigger window (in ns)");
+  NDigitsPreTriggerWindow->SetParameterName("NDigitsPreTriggerWindow",false);
+  NDigitsPreTriggerWindow->SetDefaultValue(defaultNDigitsPreTriggerWindow);
+  StoreNDigitsPreWindow = defaultNDigitsPreTriggerWindow;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
+  int defaultNDigitsPostTriggerWindow = -99;
+  NDigitsPostTriggerWindow = new G4UIcmdWithAnInteger("/DAQ/TriggerNDigits/PostTriggerWindow", this);
+  NDigitsPostTriggerWindow->SetGuidance("Set the NDigits posttrigger window (in ns)");
+  NDigitsPostTriggerWindow->SetParameterName("NDigitsPostTriggerWindow",false);
+  NDigitsPostTriggerWindow->SetDefaultValue(defaultNDigitsPostTriggerWindow);
+  StoreNDigitsPostWindow = defaultNDigitsPostTriggerWindow;
+  //don't SetNewValue -> defaults class-specific and taken from GetDefault*()
+
+  initialiseString = "";
+  initialised = true;
+}
+
 WCSimWCDAQMessenger::~WCSimWCDAQMessenger()
 {
   delete SaveFailuresTriggerDir;
@@ -238,12 +427,14 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
   if (command == DigitizerChoice) {
     G4cout << "Digitizer choice set to " << newValue << initialiseString.c_str() << G4endl;
-    WCSimEvent->SetDigitizerChoice(newValue);
+		if(WCSimEvent != nullptr)
+			WCSimEvent->SetDigitizerChoice(newValue);
     StoreDigitizerChoice = newValue;
   }
   else if (command == TriggerChoice) {
     G4cout << "Trigger choice set to " << newValue << initialiseString.c_str() << G4endl;
-    WCSimEvent->SetTriggerChoice(newValue);
+		if(WCSimEvent != nullptr)
+			WCSimEvent->SetTriggerChoice(newValue);
     StoreTriggerChoice = newValue;
   }
   else if (command == MultiDigitsPerTrigger) {
@@ -257,7 +448,8 @@ void WCSimWCDAQMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   }
   else if ( command == RelativeHitTime ) {
     // Relative HitTime
-    WCSimEvent->SetRelativeDigitizedHitTime(RelativeHitTime->GetNewBoolValue(newValue));
+		if(WCSimEvent != nullptr)
+			WCSimEvent->SetRelativeDigitizedHitTime(RelativeHitTime->GetNewBoolValue(newValue));
   }
 
   //Generic digitizer options

@@ -53,7 +53,7 @@ G4double WCSimGenerator_Radioactivity::vLayer_MaxR2_Z[RNMODEL_BIN_R_MAX]	= {};
 G4double WCSimGenerator_Radioactivity::vLayer_MinZ_R2[RNMODEL_BIN_Z_MAX]	= {};
 G4double WCSimGenerator_Radioactivity::vLayer_MaxZ_R2[RNMODEL_BIN_Z_MAX]	= {};
 
-WCSimGenerator_Radioactivity::WCSimGenerator_Radioactivity(WCSimDetectorConstruction* myDC) {
+WCSimGenerator_Radioactivity::WCSimGenerator_Radioactivity(const WCSimDetectorConstruction* myDC) {
 	myDetector = myDC;
 	this->Initialize();
 }

@@ -10,7 +10,7 @@
 class WCSimIBDGen {
 
   public:
-    WCSimIBDGen(G4String spectrum_database, G4String ibd_model, WCSimDetectorConstruction *myDC);
+    WCSimIBDGen(G4String spectrum_database, G4String ibd_model, const WCSimDetectorConstruction *myDC);
     ~WCSimIBDGen();
 
     // Read the spectrum from database
@@ -66,7 +66,7 @@ class WCSimIBDGen {
     float flux_max;
 
     // Detector
-    WCSimDetectorConstruction *myDetector;
+    const WCSimDetectorConstruction *myDetector;
 
     // Cross section constants
     // See equation 2. Note, the paper refers to M_av as "M". Labelled here as M_av (average mass of proton and

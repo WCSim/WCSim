@@ -17,7 +17,7 @@
 // Set json to nlohmann::json
 using json = nlohmann::json;
 
-WCSimIBDGen::WCSimIBDGen(G4String spectrum_database, G4String ibd_model, WCSimDetectorConstruction *myDC)
+WCSimIBDGen::WCSimIBDGen(G4String spectrum_database, G4String ibd_model, const WCSimDetectorConstruction *myDC)
     : myDetector(myDC) {
 
     // Read model from database
