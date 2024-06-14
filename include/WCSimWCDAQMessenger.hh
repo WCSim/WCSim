@@ -18,6 +18,7 @@ class WCSimWCDAQMessenger: public G4UImessenger
 {
 public:
   WCSimWCDAQMessenger(WCSimEventAction*);
+  WCSimWCDAQMessenger();
 
   ~WCSimWCDAQMessenger();
 
