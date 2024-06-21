@@ -3360,6 +3360,216 @@ G4int PMT3inchR14374::GetNbOfQEDefined(){
   return factor;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+// PMT 3" for WCTE
+//
+PMT3inchWCTE::PMT3inchWCTE(){}
+PMT3inchWCTE::~PMT3inchWCTE(){}
+
+G4String PMT3inchWCTE::GetPMTName() {G4String PMTName = "PMT3inchWCTE"; return PMTName;}
+G4double PMT3inchWCTE::GetExposeHeight() {return 0.02*m;} 
+G4double PMT3inchWCTE::GetRadius() {return 0.04*m;} 
+G4double PMT3inchWCTE::GetPMTGlassThickness() {return 0.1*cm;}     
+
+
+// Currently based on 8" (instead of 20")
+// But shifted to requirements (2ns TTS FWHM) for 1 pe
+double PMT3inchWCTE::HitTimeSmearing(double Q, double TTSFF=1.0) {
+  double timingConstant = 1.890;
+  double timingResolution;
+  double Smearing_factor;
+
+  timingResolution = 0.5*(0.33 + sqrt(timingConstant/Q));//factor 0.5 for expected improvement and required TTS
+  timingResolution *= TTSFF;
+  // looking at SK's jitter function for 20" tubes
+  if (timingResolution < 0.58) timingResolution=0.58;
+  Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  return Smearing_factor;
+    
+}
+
+// TD 2019.07.16
+double PMT3inchWCTE::SaturFactor(double Q, double threshold=-1) {
+  if (threshold == -1) return 1; //no saturation case
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
+}
+
+
+// To Add!!
+G4double* PMT3inchWCTE::Getqpe()
+{
+  static G4double qpe0[501]= {
+    // 1
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000001, 0.000001, 0.000002, 0.000004,
+    0.000008, 0.000014, 0.000025, 0.000044, 0.000486,
+    // 2
+    0.007195, 0.019406, 0.031920, 0.044503, 0.057189,
+    0.070020, 0.083060, 0.096388, 0.110108, 0.124351,
+    0.139276, 0.155072, 0.171956, 0.190167, 0.209961,
+    0.231594, 0.255310, 0.281319, 0.309777, 0.340762,
+    0.374259, 0.410142, 0.448167, 0.487976, 0.529101,
+    0.570993, 0.613041, 0.654608, 0.695067, 0.733833,
+    0.770390, 0.804317, 0.835304, 0.863151, 0.887777,
+    0.909203, 0.927543, 0.942987, 0.955778, 0.966198,
+    0.974543, 0.981116, 0.986205, 0.990078, 0.992974,
+    0.995104, 0.996642, 0.997734, 0.998495, 0.999017,
+    // 3
+    0.999369, 0.999601, 0.999752, 0.999848, 0.999909,
+    0.999946, 0.999969, 0.999982, 0.999990, 0.999994,
+    0.999997, 0.999998, 0.999999, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 4
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 5
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 6
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 7
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 8
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 9
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 10
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // Dummy element for noticing if the loop reached the end of the array                        
+    0.0  };
+  return qpe0;
+
+}
+
+
+// TF: Used WebPlotDigitizer on Fig.2a from VLVnT13 proceedings, red curve (average)
+G4double* PMT3inchWCTE::GetQEWavelength(){
+
+  //TEST: make QE same!!
+  //static G4double wavelength_value[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
+  static G4double wavelength_value[21] = { 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660., 680., 700.};
+  return wavelength_value;
+}
+
+G4double* PMT3inchWCTE::GetQE(){
+  G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  // TF: While the main reason is the 20" SK PMT, this correction factor has been applied
+  // to the B&L PMT. Therefore all PMTs have to corrected in a similar way, unfortunately.
+  
+  static G4double QE[21] =
+    { .0787*correctionFactor, .1838*correctionFactor, .2401*correctionFactor, .2521*correctionFactor, .2695*correctionFactor, .2676*correctionFactor, .2593*correctionFactor, .2472*correctionFactor, .2276*correctionFactor,
+      .1970*correctionFactor,  .1777*correctionFactor, .1547*correctionFactor, .1033*correctionFactor, .0727*correctionFactor, .0587*correctionFactor, .0470*correctionFactor, .0372*correctionFactor, .0285*correctionFactor, .0220*correctionFactor, .0130*correctionFactor, .0084*correctionFactor};
+  return QE;
+}
+
+G4double PMT3inchWCTE::GetmaxQE(){
+  G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+
+  // TEST: make QE the same!!
+  const G4double maxQE = 0.271*correctionFactor; //red curve from VLVnT13 proc on R12199-02.
+  //const G4double maxQE = 0.315*correctionFactor;
+  return maxQE;
+}
+
+G4double* PMT3inchWCTE::GetCollectionEfficiencyArray(){  
+  static G4double CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
+  return CE;
+}
+
+G4double PMT3inchWCTE::GetDarkRate(){
+  // Realistic/Optimistic value from published (proceedings) measurements.
+  // ToDo : update this value
+  const G4float rate = 1.0*CLHEP::kilohertz;
+  return rate;
+}
+
+// Arbitrary at the moment
+G4double  PMT3inchWCTE::GetDarkRateConversionFactor(){
+  const G4double factor = 1.126;
+  return factor;
+}
+
+G4int PMT3inchWCTE::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // COMBINED PMTS CLASS
 // Goal is to instantiate purely virtual WCSimPMTObject Classes to contained an extended
