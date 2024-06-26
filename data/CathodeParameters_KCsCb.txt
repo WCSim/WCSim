@@ -6,7 +6,7 @@
 # "2" is implemented based on https://arxiv.org/abs/physics/0408075v1
 # Model the alloy as a thin layer with real and imaginary refractive indices, then calculate absorption, reflection and transmission probability
 # cathode_thickness: unit = nm
-# number_of_cathode_points: number of points to read refractive indices
+# number_of_cathode_points: number of points to read refractive indices (limited to <=100)
 # each subsequent line is: photon_energy_in_eV refractive_index_real refractive_index_imaginary
 
 #DATASTART
