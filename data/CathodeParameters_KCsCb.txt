@@ -1,0 +1,36 @@
+# First line is: photocathode_model_choice cathode_thickness number_of_cathode_points
+# photocathode_model_choice: 0 = default model, 1 or 2 = new models
+# "1" is copied from geant4.11, which is based on https://ieeexplore.ieee.org/document/9875513
+# Model the alloy as a thin layer with real refractive index, then calculate reflection and transmission probability
+# Cannot handle total internal reflection when n1<n2
+# "2" is implemented based on https://arxiv.org/abs/physics/0408075v1
+# Model the alloy as a thin layer with real and imaginary refractive indices, then calculate absorption, reflection and transmission probability
+# cathode_thickness: unit = nm
+# number_of_cathode_points: number of points to read refractive indices
+# each subsequent line is: photon_energy_in_eV refractive_index_real refractive_index_imaginary
+
+#DATASTART
+2 20.0 23
+1.000 2.96 0.33
+1.823 2.96 0.33
+1.864 2.95 0.34
+1.907 2.95 0.34
+1.953 2.95 0.35
+2.000 2.96 0.37
+2.049 2.98 0.38
+2.101 3.01 0.42
+2.156 3.06 0.46
+2.214 3.12 0.53
+2.275 3.20 0.63
+2.339 3.26 0.86
+2.407 3.09 1.05
+2.480 3.00 1.06
+2.556 3.00 1.11
+2.638 3.00 1.34
+2.725 2.87 1.44
+2.818 2.70 1.50
+2.917 2.61 1.53
+3.024 2.38 1.71
+3.139 2.18 1.69
+3.263 1.92 1.69
+9.000 1.92 1.69
