@@ -188,7 +188,7 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   else if (command == PMTCathodePara) {
     WCSimTuningParams->ReadCathodeParaTable(newValue);
     G4cout << "Setting PMT photocathode surface optical model as Model " << WCSimTuningParams->GetPMTSurfType() << " (0 means default dielectric model)," << G4endl;
-    G4cout << " cahtode thickness = " << WCSimTuningParams->GetCathodeThickness() << " nm, nCathodePara = " << WCSimTuningParams->GetNCathodePara() << G4endl;
+    G4cout << " cathode thickness = " << WCSimTuningParams->GetCathodeThickness() << " nm, nCathodePara = " << WCSimTuningParams->GetNCathodePara() << G4endl;
   }
 
   else if(command == TVSpacing) {
