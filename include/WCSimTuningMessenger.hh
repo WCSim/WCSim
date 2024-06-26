@@ -12,7 +12,6 @@ class G4UIdirectory;
 class G4UIcommand;
 class G4UIcmdWithADouble;
 class G4UIcmdWithABool; //jl145
-class G4UIcmdWithAnInteger;
 class G4UIcmdWithAString;
 
 

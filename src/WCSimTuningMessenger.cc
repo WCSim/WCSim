@@ -6,7 +6,6 @@
 #include "G4UIparameter.hh"
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithABool.hh" //jl145
-#include "G4UIcmdWithAnInteger.hh"
 #include "G4UIcmdWithAString.hh"
 
 
