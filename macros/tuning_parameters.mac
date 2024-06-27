@@ -14,10 +14,6 @@
 # Input file to set photocathode parameters
 /WCSim/tuning/PMTCathodePara data/CathodeParameters.txt
 
-# Recommendation for WCTE simulation
-#/WCSim/tuning/pmtsurftype 2
-#/WCSim/tuning/cathodepara 1
-
 /WCSim/tuning/WCODWLSCladdingReflectivity 0.90
 /WCSim/tuning/WCODTyvekReflectivity 0.90
 
