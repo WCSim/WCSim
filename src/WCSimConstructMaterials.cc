@@ -882,7 +882,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
       { 0.0, 0.0 };
   // Lambertian prob is therefore 0.25
 
-#define NUMENTRIES_TY 33 // Number of bins of wavelength to be used for the Tyvek reflectivity
+#define NUMENTRIES_TY 36 // Number of bins of wavelength to be used for the Tyvek reflectivity
 
   G4double PP_TyREFLECTIVITY[NUMENTRIES_TY] = //Tyvek reflectivity wavelength bins
       { 2.06642*eV,
@@ -892,100 +892,76 @@ void WCSimDetectorConstruction::ConstructMaterials()
         2.81784*eV, 2.88338*eV, 2.95203*eV, 3.02403*eV, 3.09963*eV,
         3.17911*eV, 3.26277*eV, 3.35095*eV, 3.44403*eV, 3.54243*eV,
         3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
-        4.27535*eV, 4.42804*eV};
+        4.27535*eV, 4.42804*eV, 4.6*eV, 4.8*eV, 5.0*eV};
 
   double WCODTyvekReflectivityInWallTop = WCSimTuningParams->GetWCODTyvekReflectivityInWallTop();
-  G4double OD_tyvek_reflectivity_scaling_factor_inwalltop = WCODTyvekReflectivityInWallTop/0.97;
+  G4double OD_tyvek_reflectivity_scaling_factor_inwalltop = WCODTyvekReflectivityInWallTop/0.95;
 
   double WCODTyvekReflectivityInWallBarrel = WCSimTuningParams->GetWCODTyvekReflectivityInWallBarrel();
-  G4double OD_tyvek_reflectivity_scaling_factor_inwallbarrel = WCODTyvekReflectivityInWallBarrel/0.97;
+  G4double OD_tyvek_reflectivity_scaling_factor_inwallbarrel = WCODTyvekReflectivityInWallBarrel/0.95;
 
   double WCODTyvekReflectivityInWallBottom = WCSimTuningParams->GetWCODTyvekReflectivityInWallBottom();
-  G4double OD_tyvek_reflectivity_scaling_factor_inwallbottom = WCODTyvekReflectivityInWallBottom/0.97;
+  G4double OD_tyvek_reflectivity_scaling_factor_inwallbottom = WCODTyvekReflectivityInWallBottom/0.95;
 
   double WCODTyvekReflectivityOutWallTop = WCSimTuningParams->GetWCODTyvekReflectivityOutWallTop();
-  G4double OD_tyvek_reflectivity_scaling_factor_outwalltop = WCODTyvekReflectivityOutWallTop/0.97;
+  G4double OD_tyvek_reflectivity_scaling_factor_outwalltop = WCODTyvekReflectivityOutWallTop/0.87;
 
   double WCODTyvekReflectivityOutWallBarrel = WCSimTuningParams->GetWCODTyvekReflectivityOutWallBarrel();
-  G4double OD_tyvek_reflectivity_scaling_factor_outwallbarrel = WCODTyvekReflectivityOutWallBarrel/0.97;
+  G4double OD_tyvek_reflectivity_scaling_factor_outwallbarrel = WCODTyvekReflectivityOutWallBarrel/0.87;
 
   double WCODTyvekReflectivityOutWallBottom = WCSimTuningParams->GetWCODTyvekReflectivityOutWallBottom();
-  G4double OD_tyvek_reflectivity_scaling_factor_outwallbottom = WCODTyvekReflectivityOutWallBottom/0.97;
+  G4double OD_tyvek_reflectivity_scaling_factor_outwallbottom = WCODTyvekReflectivityOutWallBottom/0.87;
 
   G4double TyREFLECTIVITY_INWALLTOP[NUMENTRIES_TY] = // Tyvek refelctivity
-      { 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.96, 0.96, 0.95, 0.95, 0.95,
-        0.94, 0.93, 0.92, 0.91, 0.90,
-        0.89, 0.86};
+    { 0.94, // 600 nm
+      0.941, 0.942, 0.943, 0.944, 0.945, // 590-550
+      0.946, 0.947, 0.948, 0.949, 0.95, // 540-500
+      0.95, 0.95, 0.95, 0.95, 0.95, // 490-450
+      0.95, 0.95, 0.95, 0.95, 0.95, // 440-400
+      0.948, 0.946, 0.944, 0.942, 0.94, // 390-350
+      0.93, 0.92, 0.91, 0.89, 0.86, // 340-300
+      0.80, 0.76, 0.70, 0.65, 0.55}; // 290-250
+
+  G4double TyREFLECTIVITY_INWALLBARREL[NUMENTRIES_TY];
+  for(int i=0; i<NUMENTRIES_TY; i++)
+    TyREFLECTIVITY_INWALLBARREL[i] = TyREFLECTIVITY_INWALLTOP[i];
+
+  G4double TyREFLECTIVITY_INWALLBOTTOM[NUMENTRIES_TY];
+  for(int i=0; i<NUMENTRIES_TY; i++)
+    TyREFLECTIVITY_INWALLBOTTOM[i] = TyREFLECTIVITY_INWALLTOP[i];
 
   for(int i=0; i<NUMENTRIES_TY; i++)
     TyREFLECTIVITY_INWALLTOP[i] *= OD_tyvek_reflectivity_scaling_factor_inwalltop;
 
-  G4double TyREFLECTIVITY_INWALLBARREL[NUMENTRIES_TY] = // Tyvek refelctivity
-      { 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.96, 0.96, 0.95, 0.95, 0.95,
-        0.94, 0.93, 0.92, 0.91, 0.90,
-        0.89, 0.86};
-
   for(int i=0; i<NUMENTRIES_TY; i++)
     TyREFLECTIVITY_INWALLBARREL[i] *= OD_tyvek_reflectivity_scaling_factor_inwallbarrel;
-
-  G4double TyREFLECTIVITY_INWALLBOTTOM[NUMENTRIES_TY] = // Tyvek refelctivity
-      { 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.96, 0.96, 0.95, 0.95, 0.95,
-        0.94, 0.93, 0.92, 0.91, 0.90,
-        0.89, 0.86};
 
   for(int i=0; i<NUMENTRIES_TY; i++)
     TyREFLECTIVITY_INWALLBOTTOM[i] *= OD_tyvek_reflectivity_scaling_factor_inwallbottom;
 
   G4double TyREFLECTIVITY_OUTWALLTOP[NUMENTRIES_TY] = // Tyvek refelctivity
-      { 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.96, 0.96, 0.95, 0.95, 0.95,
-        0.94, 0.93, 0.92, 0.91, 0.90,
-        0.89, 0.86};
+  { 0.86, // 600 nm
+      0.86, 0.86, 0.86, 0.86, 0.861, // 590-550
+      0.862, 0.863, 0.864, 0.865, 0.866, // 540-500
+      0.867, 0.868, 0.869, 0.87, 0.87, // 490-450
+      0.868, 0.866, 0.864, 0.862, 0.86, // 440-400
+      0.85, 0.84, 0.83, 0.81, 0.79, // 390-350
+      0.75, 0.72, 0.70, 0.68, 0.67, // 340-300
+      0.65, 0.62, 0.61, 0.59, 0.56}; // 290-250
+
+  G4double TyREFLECTIVITY_OUTWALLBARREL[NUMENTRIES_TY];
+  for(int i=0; i<NUMENTRIES_TY; i++)
+    TyREFLECTIVITY_OUTWALLBARREL[i] = TyREFLECTIVITY_OUTWALLTOP[i];
+
+  G4double TyREFLECTIVITY_OUTWALLBOTTOM[NUMENTRIES_TY];
+  for(int i=0; i<NUMENTRIES_TY; i++)
+    TyREFLECTIVITY_OUTWALLBOTTOM[i] = TyREFLECTIVITY_OUTWALLTOP[i];
 
   for(int i=0; i<NUMENTRIES_TY; i++)
     TyREFLECTIVITY_OUTWALLTOP[i] *= OD_tyvek_reflectivity_scaling_factor_outwalltop;
 
-  G4double TyREFLECTIVITY_OUTWALLBARREL[NUMENTRIES_TY] = // Tyvek refelctivity
-      { 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.96, 0.96, 0.95, 0.95, 0.95,
-        0.94, 0.93, 0.92, 0.91, 0.90,
-        0.89, 0.86};
-
   for(int i=0; i<NUMENTRIES_TY; i++)
     TyREFLECTIVITY_OUTWALLBARREL[i] *= OD_tyvek_reflectivity_scaling_factor_outwallbarrel;
-
-  G4double TyREFLECTIVITY_OUTWALLBOTTOM[NUMENTRIES_TY] = // Tyvek refelctivity
-      { 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.96, 0.96, 0.95, 0.95, 0.95,
-        0.94, 0.93, 0.92, 0.91, 0.90,
-        0.89, 0.86};
 
   for(int i=0; i<NUMENTRIES_TY; i++)
     TyREFLECTIVITY_OUTWALLBOTTOM[i] *= OD_tyvek_reflectivity_scaling_factor_outwallbottom;
