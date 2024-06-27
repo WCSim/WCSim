@@ -153,6 +153,10 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/ground_state_spectrum.txt
         ${PROJECT_SOURCE_DIR}/data/first_excited_spectrum.txt
         ${PROJECT_SOURCE_DIR}/data/second_excited_spectrum.txt
+        ${PROJECT_SOURCE_DIR}/data/CathodeParameters.txt
+        ${PROJECT_SOURCE_DIR}/data/CathodeParameters_SK.txt
+        ${PROJECT_SOURCE_DIR}/data/CathodeParameters_KCsCb.txt
+        ${PROJECT_SOURCE_DIR}/data/CathodeParameters_RbCsCb.txt
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
