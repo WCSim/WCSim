@@ -2,7 +2,7 @@
 # For a description of the format of this file, see $WCSIMDIR/doc/CathodeParameterFormat.md
 
 #DATASTART
-2 20.0 23
+2 15.5 23
 1.000 2.96 0.33
 1.823 2.96 0.33
 1.864 2.95 0.34
