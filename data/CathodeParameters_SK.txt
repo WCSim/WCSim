@@ -1,0 +1,11 @@
+# Model 2 with SK-like parameters
+# For a description of the format of this file, see $WCSIMDIR/doc/CathodeParameterFormat.md
+
+#DATASTART
+2 11.5 6
+1.000 3.4 1.7
+2.786 3.4 1.7
+3.061 3.1 1.6
+3.306 2.8 1.5
+3.679 2.4 1.4
+9.000 2.4 1.4

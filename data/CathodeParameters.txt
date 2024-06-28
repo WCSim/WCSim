@@ -1,0 +1,5 @@
+# Default photocathode model in WCSim
+# For a description of the format of this file, see $WCSIMDIR/doc/CathodeParameterFormat.md
+
+#DATASTART
+0 0 0

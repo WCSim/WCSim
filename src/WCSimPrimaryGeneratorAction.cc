@@ -1160,6 +1160,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     posInCyl.setY(posInCylR*sin(posInCylPhi));
     posInCyl.setZ(posInCylZ);
 
+    if (myDetector->GetIsNuPrism())
+    {
+      dir.rotateX(-90.*deg);
+      posInCyl.rotateX(-90.*deg);
+    }
+
     // generate muon at the intersection
     // between an sphere with radius = altComics
     // and a line made with the muon direction
