@@ -181,6 +181,9 @@ Docker allows you to use WCSim without compiling in an OS independant way. The D
 > Automated WCSim Dockerfile builds have stopped working. There have been no requests (yet) to restore them.
 >
 > In the meantime, if you are a Hyper-K collaborator you can use the hk-software image. (This is what the CI uses)
+>
+> Alternatively, the old `Dockerfile`s are still available in this repository. You are free to use/modify them to build a newer version of WCSim for your use.
+> If you do, please share your `Dockerfile` changes via a pull request.
 
 1) Install Docker cross platform instructions can be found at https://www.docker.com/
 2) Get the latest HK container image docker pull ghcr.io/hyperk/hk-software:main
