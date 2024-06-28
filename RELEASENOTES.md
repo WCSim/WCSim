@@ -5,6 +5,8 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+Documentation
+* Pull request #454 @tdealtry: Remove some outdated documentation files (README.ROOT, Readme_features.txt)
 
 *************************************************************
 27/06/2024: Notes for v1.12.13
