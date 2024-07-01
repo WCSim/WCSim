@@ -42,7 +42,8 @@ bool WCSimNuHepMC3Reader::ReadEvent(bool positionFlag) {
 
     // Check if the reading failed
     if (my_hepmc_reader->failed()) {
-        G4cout << "NuHepMC3Reader: \033[31m[ERROR]\033[0m Failed to read event " << events_parsed << G4endl;
+        G4cout << "\033[31mNuHepMC3Reader: [INFO] Failed to read event " << events_parsed
+               << ". Possibly reached end of file. See next printout.\033[0m" << G4endl;
         return false;
     }
 
@@ -50,7 +51,7 @@ bool WCSimNuHepMC3Reader::ReadEvent(bool positionFlag) {
     if (positionFlag) {
         HepMC3::FourVector position = GenRandomPosition();
         for (HepMC3::GenParticlePtr part : event.particles()) {
-            if (part->status() == 1) {
+            if (part->status() == 1 || part->status() == 20) {
                 part->production_vertex()->set_position(position);
             }
         }

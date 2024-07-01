@@ -1583,39 +1583,80 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         if (part->status() == 4) {
           // Get direction (momentum) and normalise
           G4ThreeVector dir(part->momentum().px(), part->momentum().py(), part->momentum().pz());
-          dir.set(dir.x() / dir.mag(), dir.y() / dir.mag(), dir.z() / dir.mag());
 
           // Set write outs
           SetBeamPDG(part->pdg_id(), 0);
           SetBeamEnergy(part->momentum().e(), 0);
           SetBeamDir(dir, 0);
+
+          // For a beam particle we want the end vertex
+          G4ThreeVector vtx(part->end_vertex()->position().x(), part->end_vertex()->position().y(),
+                            part->end_vertex()->position().z());
+
+          SetVtx(vtx);
+
+          continue;
         }
 
         // If the particle status is 20 then we have a target particle. This needs writing out, but not simulating
-        if (part->status() == 20){
+        if (part->status() == 20) {
           targetpdgs[0] = part->pdg_id();
           targetenergies[0] = part->momentum().e();
           targetdirs[0] = G4ThreeVector(part->momentum().px(), part->momentum().py(), part->momentum().pz());
+          continue;
         }
 
         // If the particle status is 1 then the particle needs simulating and writing out.
         if (part->status() == 1) {
 
+          // Print in green
+          std::cout << "\033[32m";
+
+          // Print out info line with particle information
+          std::cout << "\
+NuHepMC3Reader: [INFO] Particle ID: "
+                    << part->pdg_id() << "\
+\n                       Status: "
+                    << part->status() << "\
+\n                       Momentum: "
+                    << part->momentum().px() << " " << part->momentum().py() << " " << part->momentum().pz() << "\
+\n                       Energy: "
+                    << part->momentum().e() << "\
+\n                       Position: "
+                    << part->production_vertex()->position().x() << " "
+                    << part->production_vertex()->position().y() << " "
+                    << part->production_vertex()->position().z() << "\
+\n                       Time: "
+                    << part->production_vertex()->position().t() << "\
+\n                       Direction: "
+                    << part->momentum().px() << " " << part->momentum().py() << " " << part->momentum().pz() << "\
+\n                       Momentum mag: "
+                    << part->momentum().p3mod() << std::endl;
+
+          // Print in default colour
+          std::cout << "\033[0m";
+
           // Get direction (momentum) and normalise
           G4ThreeVector dir(part->momentum().px(), part->momentum().py(), part->momentum().pz());
-          dir.set(dir.x() / dir.mag(), dir.y() / dir.mag(), dir.z() / dir.mag());
-
 
           // Get particle position
           G4ThreeVector vtx(part->production_vertex()->position().x(), part->production_vertex()->position().y(),
                             part->production_vertex()->position().z());
+          // Set the vertex
+          SetVtx(vtx);
+
+          // Set the number of vertices
+          SetNvtxs(1);
+
           // Generate the final state particles with the particle gun
           particleGun->SetParticlePosition(vtx);
           particleGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle(part->pdg_id()));
           particleGun->SetParticleEnergy(part->momentum().e());
+          particleGun->SetParticleMomentum(part->momentum().p3mod());
           particleGun->SetParticleMomentumDirection(dir);
           particleGun->SetParticleTime(part->production_vertex()->position().t());
           particleGun->GeneratePrimaryVertex(anEvent);
+          continue;
         }
       }
     }
