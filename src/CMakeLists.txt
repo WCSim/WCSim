@@ -32,7 +32,18 @@ endif()
 # WCSimRoot library
 
 set (dict_headers
-		${PROJECT_SOURCE_DIR}/include/jhfNtuple.h
+        jhfNtuple.h
+        WCSimRootEvent.hh
+        WCSimRootGeom.hh
+        WCSimPmtInfo.hh
+        WCSimEnumerations.hh
+        WCSimRootOptions.hh
+        WCSimRootTools.hh
+        TJNuBeamFlux.hh
+        TNRooTrackerVtx.hh )
+
+set (dict_headers_to_install
+        ${PROJECT_SOURCE_DIR}/include/jhfNtuple.h
         ${PROJECT_SOURCE_DIR}/include/WCSimRootEvent.hh
         ${PROJECT_SOURCE_DIR}/include/WCSimRootGeom.hh
         ${PROJECT_SOURCE_DIR}/include/WCSimPmtInfo.hh
@@ -43,7 +54,7 @@ set (dict_headers
         ${PROJECT_SOURCE_DIR}/include/TNRooTrackerVtx.hh )
 
 set( linkdef_header
-        ${PROJECT_SOURCE_DIR}/include/WCSimRootLinkDef.hh )
+        WCSimRootLinkDef.hh )
 set(sources_root
         WCSimRootEvent.cc
         WCSimRootGeom.cc
@@ -81,7 +92,7 @@ pbuilder_component_install_and_export(
 )
 
 if (${WCSim_WCSimRoot_only})
-	pbuilder_install_headers(${dict_headers})
+	pbuilder_install_headers(${dict_headers_to_install})
 else ()
 	pbuilder_install_headers(${headers})
 endif ()
