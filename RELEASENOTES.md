@@ -6,6 +6,7 @@ Recent updates
 *************************************************************
 
 Documentation
+* Pull request #456 @tdealtry: Prevent absolute path to header files being included in the WCSimRoot library
 * Pull request #454 @tdealtry: Remove some outdated documentation files (README.ROOT, Readme_features.txt)
 
 *************************************************************
