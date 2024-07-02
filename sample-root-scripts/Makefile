@@ -9,7 +9,7 @@ CXXFLAGS	+= $(ROOTCFLAGS)
 LIBS 		= $(ROOTGLIBS) -L$(WCSIM_BUILD_DIR)/lib -lWCSimRoot -lMinuit
 
 INC = $(WCSIM_BUILD_DIR)/include/WCSim
-SRC= $(WCSIMDIR)/src
+SRC= $(WCSIM_SOURCE_DIR)/src
 
 CXXFLAGS += -I$(INC)
 

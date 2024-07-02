@@ -162,7 +162,7 @@ void HKGeometryNoLongerUsed(G4String & DetectorName)
 		 << "If you really want to use " << DetectorName
 		 << " then you can comment out the call to HKGeometryNoLongerUsed() in the method "
 		 << "WCSimDetectorConstruction::" << DetectorName << "()"
-		 << " in the file $WCSIMDIR/src/WCSimDetectorConfigs.cc and recompile, "
+		 << " in the file $WCSIM_SOURCE_DIR/src/WCSimDetectorConfigs.cc and recompile, "
 		 << "but be careful if comparing to official HK geometries that the number of PMTs are consistent" << G4endl
 		 << "Exiting..." << G4endl;
   exit(-1);

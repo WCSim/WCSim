@@ -1,5 +1,5 @@
 # Model 2 with parameters of alloy KCsCb in the paper
-# For a description of the format of this file, see $WCSIMDIR/doc/CathodeParameterFormat.md
+# For a description of the format of this file, see $WCSIM_SOURCE_DIR/doc/CathodeParameterFormat.md
 
 #DATASTART
 2 15.5 23
