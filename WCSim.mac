@@ -340,6 +340,13 @@
 #/mygen/ibd_database DatabasePath
 #/mygen/ibd_model ModelName (see ./data/DSNBFluxes.json for models)
 
+## Or you can use the hepmc3 generator to read nuhepmc3 files
+## The option hepmc3positionGenMode will either generate random, isotropic positions in the ID (true) or will read positions from the file (false)
+#/mygen/generator hepmc3
+#/mygen/hepmc3file HepMC3Filepath
+#/mygen/hepmc3positionGenMode true/false
+
+
 ## Radioactive option
 ## Generate radioactive decay in the water or on the PMTs
 #/mygen/generator radioactive
