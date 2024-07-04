@@ -235,6 +235,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/bin/rootwc-files
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/mPMT-configfiles
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_19_nuPrism.txt
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring_WCTE.txt
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_30_13_3.txt
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_33_13_1.txt
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_33_50.txt
