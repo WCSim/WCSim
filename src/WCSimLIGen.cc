@@ -1,6 +1,4 @@
 #include "WCSimLIGen.hh"
-#include "WCSimPrimaryGeneratorMessenger.hh"
-#include "WCSimPrimaryGeneratorAction.hh"
 
 #include "json.hpp"
 

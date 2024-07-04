@@ -61,6 +61,7 @@ The automated building testing is currently performed inside the hk-software doc
 * Geant4 10.3.3 (installed via CMake)
   * All of the G4 data files are also required to be installed, include hadron xsec, etc.
 * ROOT 6.26/04 (installed via CMake)
+* HepMC3 3.2.6
 * gcc 8.5.0
 * CMake 3.20.2
 
@@ -75,6 +76,9 @@ Other versions of prerequisite software can be tried, but aren't guaranteed to w
 * ROOT
   * ROOT5 (e.g. v5r34p36 or v5r34p38, or potentially any v5r34) can potentially be made to work. You may need to modify `$WCSIM_BUILD_DIR/src/cmake_install.cmake` to take account of ROOT5 not producing `.pcm` files
   * ROOT6 has been tested on an older version than above (6.20/04)
+* HepMC3
+  * HepMC3 version 3.2.6 is supported and any minor versions below/above this should also work.
+  * It is possible that older versions (<=3.1.x) will also work, though this is not guaranteed.
 * CMake 3.1 and above are required by `CMakeLists.txt`, but not all old versions have been tested
 * The compiler should support `-std=c++11` (or `-std=c++0x`) e.g. gcc 4.8.5
   * The WCSim CMake step should set your C++ standard to be the same as what was used by the installation of ROOT you are building against
