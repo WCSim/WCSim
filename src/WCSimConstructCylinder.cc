@@ -3219,6 +3219,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
     }
   }
 
+  G4LogicalVolume* logicWCExSituMPMT = ConstructExSituMultiPMT(WCPMTName, WCIDCollectionName,"tank");
+  G4LogicalVolume* logicWCInSituMPMT = nullptr; // place holder
+
+  std::vector<G4LogicalVolume*> vlogicWCPMT(4);
+  vlogicWCPMT[0] = logicWCPMT;
+  vlogicWCPMT[1] = logicWCPMT2;
+  vlogicWCPMT[2] = logicWCExSituMPMT;
+  vlogicWCPMT[3] = logicWCInSituMPMT;
+
   //G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName);
   G4String pmtname = "WCMultiPMT";
 
@@ -3357,7 +3366,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
         //G4VPhysicalVolume* physiWCBarrelPMT =
         new G4PVPlacement(PMTRotation,              // its rotation
               PMTPosition, 
-              (hybrid && pmtType[i]==2)?logicWCPMT2:logicWCPMT,                // its logical volume
+              vlogicWCPMT[pmtType[i]-1],                // its logical volume
               pmtname,//"WCPMT",             // its name
               !inExtraTower ? logicWCBarrelAnnulus : logicWCExtraTower,         // its mother volume
               false,                     // no boolean operations
@@ -3369,8 +3378,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
         // this is still the case.
         copyNo++;
 
-        G4VSolid* solidNode = (hybrid && pmtType[i]==2) ? logicWCPMT2->GetSolid() :
-                                                          logicWCPMT->GetSolid() ;
+        G4VSolid* solidNode = vlogicWCPMT[pmtType[i]-1]->GetSolid();
         G4Transform3D tr(PMTRotation->inverse(), PMTPosition);
         pmt_solid->AddNode( *solidNode, tr );
       }
@@ -4365,6 +4373,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     if(nID_PMTs2<=1) logicWCPMT2 = ConstructPMT(WCPMTName2, WCIDCollectionName2,"tankPMT2",nID_PMTs2);
     else logicWCPMT2 = ConstructMultiPMT(WCPMTName2, WCIDCollectionName2,"tankPMT2",nID_PMTs2);
   }
+  
+  G4LogicalVolume* logicWCExSituMPMT = ConstructExSituMultiPMT(WCPMTName, WCIDCollectionName,"tank");
+  G4LogicalVolume* logicWCInSituMPMT = nullptr; // place holder
+
+  std::vector<G4LogicalVolume*> vlogicWCPMT(4);
+  vlogicWCPMT[0] = logicWCPMT;
+  vlogicWCPMT[1] = logicWCPMT2;
+  vlogicWCPMT[2] = logicWCExSituMPMT;
+  vlogicWCPMT[3] = logicWCInSituMPMT;
 
   G4String pmtname = "WCMultiPMT";
 
@@ -4427,7 +4444,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
         //G4VPhysicalVolume* physiWCBarrelBorderPMT =
         new G4PVPlacement(PMTRotation,                      // its rotation
                 PMTPosition,
-                (hybrid && pmtType[i]==2)?logicWCPMT2:logicWCPMT,                // its logical volume
+                vlogicWCPMT[pmtType[i]-1],                // its logical volume
                 pmtname,             // its name
                 logicCapAssembly,         // its mother volume
                 false,                     // no boolean operations
@@ -4439,8 +4456,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
         // this is still the case.
         copyNo++;
 
-        G4VSolid* solidNode = (hybrid && pmtType[i]==2) ? logicWCPMT2->GetSolid() :
-                                                          logicWCPMT->GetSolid() ;
+        G4VSolid* solidNode = vlogicWCPMT[pmtType[i]-1]->GetSolid() ;
         G4Transform3D tr(PMTRotation->inverse(), PMTPosition);
         pmt_solid->AddNode( *solidNode, tr );
       }
@@ -4620,7 +4636,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
         //G4VPhysicalVolume* physiCapPMT =
         new G4PVPlacement(WCCapPMTRotation,
                 cellpos,                   // its position
-                (hybrid && pmtType[i]==2)?logicWCPMT2:logicWCPMT,                // its logical volume
+                vlogicWCPMT[pmtType[i]-1],                // its logical volume
                 pmtname, // its name 
                 logicCapAssembly,         // its mother volume
                 false,                 // no boolean os
@@ -4632,8 +4648,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
         // this is still the case.
         icopy++;
 
-        G4VSolid* solidNode = (hybrid && pmtType[i]==2) ? logicWCPMT2->GetSolid() :
-                                                          logicWCPMT->GetSolid() ;
+        G4VSolid* solidNode = vlogicWCPMT[pmtType[i]-1]->GetSolid() ;
         G4Transform3D tr(WCCapPMTRotation->inverse(), cellpos);
         pmt_solid->AddNode( *solidNode, tr );
       }

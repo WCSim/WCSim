@@ -12,7 +12,7 @@ class G4UIdirectory;
 class G4UIcommand;
 class G4UIcmdWithADouble;
 class G4UIcmdWithABool; //jl145
-class G4UIcmdWithAnInteger;
+class G4UIcmdWithAString;
 
 
 class WCSimTuningMessenger: public G4UImessenger
@@ -39,8 +39,7 @@ private:
   //G4UIcmdWithADouble* Qoiff; //TD 2019.6.26
   //G4UIcmdWithADouble* NLTinfo; //TD 2019.6.26
 
-  G4UIcmdWithAnInteger* PMTSurfType;
-  G4UIcmdWithAnInteger* CathodePara;
+  G4UIcmdWithAString* PMTCathodePara;
 
   //For Top Veto - jl145
   G4UIcmdWithADouble* TVSpacing;

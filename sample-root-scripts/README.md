@@ -10,13 +10,14 @@
   - A general example macro to show how to access some (but not all) information stored in the output file
   - See `$WCSIMDIR/include/WCSimRoot*.hh` for how to access other information that is not shown in this example
   - Note: there are three arguments in `sample_readfile.C`
-    1. The input root filename
+	1. The input root filename
 	2. The branch you want to use (defaults to `wcsimrootevent`, which stores information for the main PMT type)
 	3. Verbose (`true` or `false`). Verbose is `false` by default.
 - `read_number_of_PMTs.C`
   - Simply prints how many PMTs, of each type
 - `read_PMT.C`
 - `testgeo.C`
+  - Prints out various quantities in the geometry tree.
 - `MakeKin.py`
   - Used to create `.kin` files for input. Useful for creating complicated particle guns (e.g. with position, energy, direction with a distribution) when the Geant GPS settings would be too complicated
 - `hadd_wcsim_compileMe.C` and `hadd_wcsim_macro.C`
