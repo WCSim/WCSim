@@ -37,7 +37,7 @@ Note that most of the code has no doxygen comments, but all output class member 
 
 doxygen documentation can be built locally by running
 ```bash
-cd $WCSIMDIR/ && doxygen WCSim_doxygen_config
+cd $WCSIM_SOURCE_DIR/ && doxygen WCSim_doxygen_config
 ```
 
 For admin: A more featured doxygen build can be performed & pushed using an alternative doxygen config file (requires `dot` from `graphviz`)
@@ -48,7 +48,7 @@ cd WCSim-dox
 ```
 You can also make this featured version locally by
 ```bash
-cd $WCSIMDIR
+cd $WCSIM_SOURCE_DIR
 git clone -b gh-pages --single-branch git@github.com:WCSim/WCSim.git WCSim-dox
 doxygen WCSim-dox/WCSim_doxygen_config
 ```
@@ -61,6 +61,7 @@ The automated building testing is currently performed inside the hk-software doc
 * Geant4 10.3.3 (installed via CMake)
   * All of the G4 data files are also required to be installed, include hadron xsec, etc.
 * ROOT 6.26/04 (installed via CMake)
+* HepMC3 3.2.6
 * gcc 8.5.0
 * CMake 3.20.2
 
@@ -75,6 +76,9 @@ Other versions of prerequisite software can be tried, but aren't guaranteed to w
 * ROOT
   * ROOT5 (e.g. v5r34p36 or v5r34p38, or potentially any v5r34) can potentially be made to work. You may need to modify `$WCSIM_BUILD_DIR/src/cmake_install.cmake` to take account of ROOT5 not producing `.pcm` files
   * ROOT6 has been tested on an older version than above (6.20/04)
+* HepMC3
+  * HepMC3 version 3.2.6 is supported and any minor versions below/above this should also work.
+  * It is possible that older versions (<=3.1.x) will also work, though this is not guaranteed.
 * CMake 3.1 and above are required by `CMakeLists.txt`, but not all old versions have been tested
 * The compiler should support `-std=c++11` (or `-std=c++0x`) e.g. gcc 4.8.5
   * The WCSim CMake step should set your C++ standard to be the same as what was used by the installation of ROOT you are building against
@@ -134,7 +138,7 @@ Useful cmake commands:
 
 A script allowing to build WCSim with CMake on sukap is available:
 ```bash
-cd $WCSIMDIR
+cd $WCSIM_SOURCE_DIR
 ./setup/env_sukap.sh
 ./make.sh
 ```
@@ -164,8 +168,8 @@ You can run `make clean` before `make install` by running `./make.sh clean`
 >
 > The result of a build using the `GNUmakefile` will be different to the result of a CMake build. If you are using WCSim as a dependency for other packages, you will have to update their build paths to find WCSim includes/libraries
 ```
-export WCSIMDIR=/path/to/WCSim/
-cd $WCSIMDIR
+export WCSIM_BUILD_DIR=/path/to/WCSim/
+cd $WCSIM_BUILD_DIR
 git clone --depth 1 https://github.com/WCSim/WCSim.git -b makefile --single-branch makefiledir
 cp makefiledir/GNUmakefile .
 make clean_wcsim
@@ -181,6 +185,9 @@ Docker allows you to use WCSim without compiling in an OS independant way. The D
 > Automated WCSim Dockerfile builds have stopped working. There have been no requests (yet) to restore them.
 >
 > In the meantime, if you are a Hyper-K collaborator you can use the hk-software image. (This is what the CI uses)
+>
+> Alternatively, the old `Dockerfile`s are still available in this repository. You are free to use/modify them to build a newer version of WCSim for your use.
+> If you do, please share your `Dockerfile` changes via a pull request.
 
 1) Install Docker cross platform instructions can be found at https://www.docker.com/
 2) Get the latest HK container image docker pull ghcr.io/hyperk/hk-software:main
@@ -189,7 +196,7 @@ Docker allows you to use WCSim without compiling in an OS independant way. The D
   * To save data from inside your docker image mount a local folder in the docker image at runtime and then anything placed in that directory will be available in that folder after exit. To do that run the following `docker run --name=WCSim -it -v local_folder_path:docker_mount_path ghcr.io/hyperk/hk-software:main`
 4) The WCSim version in the container will probably be out of date. Let's update it
   ```bash
-  cd $WCSIMDIR
+  cd $WCSIM_SOURCE_DIR
   git pull origin develop
   cd ../build-Linux_x86_64-gcc_8-python_3.8.13
   make -j`nproc` install
@@ -209,7 +216,7 @@ Extra docker commands:
 
 Singularity is a similar container tool with different philosophies. The most important being that you can't run as root. This means that it may be installed and available to use on your local cluster.
 
-You should be able to run the docker container with singularity without any problems. Just to note that `$WCSIMDIR` and `$WCSIM_BUILD_DIR` will be read-only, therefore you should clone, build, and run a new version of WCSim elsewhere (if you forget you'll see a nasty seg fault when running WCSim - this is just because of the read-only directory).
+You should be able to run the docker container with singularity without any problems. Just to note that `$WCSIM_SOURCE_DIR` and `$WCSIM_BUILD_DIR` will be read-only, therefore you should clone, build, and run a new version of WCSim elsewhere (if you forget you'll see a nasty seg fault when running WCSim - this is just because of the read-only directory).
 
 ## Running WCSim
 

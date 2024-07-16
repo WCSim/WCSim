@@ -592,7 +592,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
 	G4cerr << "The extra tower is not correctly implemented. It causes geometry overlaps," << G4endl
 		   << " which lead to killed tracks and the incorrect number of hits." << G4endl
-		   << "You are strongly recommended to use $WCSIMDIR/sample-root-scripts/calcPhotoCoverage.C" << G4endl
+		   << "You are strongly recommended to use $WCSIM_SOURCE_DIR/sample-root-scripts/calcPhotoCoverage.C" << G4endl
 		   << " in order to produce a photocoverage that will give you a valid geometry." << G4endl
 		   << "Also be warned that, due to how PMTs are laid out in WCSim, you should be careful" << G4endl
 		   << " when using a new geometry, especially if it is a HK hybrid geometry with" << G4endl
@@ -2994,7 +2994,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
 	  G4cerr << "The extra tower is not correctly implemented. It causes geometry overlaps," << G4endl
 		   << " which lead to killed tracks and the incorrect number of hits." << G4endl
-		   << "You are strongly recommended to use $WCSIMDIR/sample-root-scripts/calcPhotoCoverage.C" << G4endl
+		   << "You are strongly recommended to use $WCSIM_SOURCE_DIR/sample-root-scripts/calcPhotoCoverage.C" << G4endl
 		   << " in order to produce a photocoverage that will give you a valid geometry." << G4endl
 		   << "Also be warned that, due to how PMTs are laid out in WCSim, you should be careful" << G4endl
 		   << " when using a new geometry, especially if it is a HK hybrid geometry with" << G4endl

@@ -213,11 +213,11 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
 
   messenger = new WCSimDetectorMessenger(this);
 
-  // Get WCSIMDIR
-  const char *wcsimdirenv = std::getenv("WCSIMDIR");
+  // Get WCSIM_BUILD_DIR
+  const char *wcsimdirenv = std::getenv("WCSIM_BUILD_DIR");
   if (!(wcsimdirenv && wcsimdirenv[0])) { // make sure it's non-empty
-    wcsimdirenv = "."; // the "default" value
-    G4cout << "Note: WCSIMDIR not set, assuming: " << wcsimdirenv << G4endl;
+    G4cout << "Note: WCSIM_BUILD_DIR not set. Exiting" << G4endl;
+    exit(-1);
   }
   wcsimdir_path = wcsimdirenv;
 }

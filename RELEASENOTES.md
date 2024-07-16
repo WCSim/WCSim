@@ -5,6 +5,18 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+WCSim now requires HepMC3 to be installed when compiling with the default option: `-DWCSim_WCSimRoot_only=ON`.
+
+New feature
+* Pull request #433 @JackFannon: NuHepMC Reader and Generator
+
+Update
+* Pull request #458 @tdealtry: Remove HepMC3 dependency when using build option `-DWCSim_WCSimRoot_only=OFF`
+* Pull request #457 @tdealtry: Favour use of `$WCSIM_BUILD_DIR`. Rename `$WCSIMDIR` to `$WCSIM_SOURCE_DIR` and only use it for referencing where documentation/scripts are
+* Pull request #456 @tdealtry: Prevent absolute path to header files being included in the WCSimRoot library
+
+Documentation
+* Pull request #454 @tdealtry: Remove some outdated documentation files (README.ROOT, Readme_features.txt)
 
 *************************************************************
 27/06/2024: Notes for v1.12.13
