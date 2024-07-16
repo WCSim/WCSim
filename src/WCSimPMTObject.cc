@@ -3364,8 +3364,26 @@ G4int PMT3inchR14374::GetNbOfQEDefined(){
 ///////////////////////////////////////////////////////////////////////////////
 // PMT 3" for WCTE
 //
-PMT3inchWCTE::PMT3inchWCTE(){}
-PMT3inchWCTE::~PMT3inchWCTE(){}
+PMT3inchWCTE::PMT3inchWCTE()
+{
+  double charge[14] = 
+  {
+      0.2, 0.4, 0.6, 0.8, 1.0,
+      1.2, 1.4, 1.6, 1.8, 2.0,
+      2.5, 3.0, 3.5, 4.0
+  };
+  double resol[14] =
+  {
+      1.1654, 0.61088, 0.4186, 0.32532, 0.26484,
+      0.23084, 0.20969, 0.19297, 0.17716, 0.17046,
+      0.15455, 0.1427, 0.13699, 0.13229
+  };
+  gTResol = new TGraph(14,charge,resol);
+}
+PMT3inchWCTE::~PMT3inchWCTE()
+{
+  delete gTResol;
+}
 
 G4String PMT3inchWCTE::GetPMTName() {G4String PMTName = "PMT3inchWCTE"; return PMTName;}
 G4double PMT3inchWCTE::GetExposeHeight() {return 0.02*m;} 
@@ -3375,18 +3393,12 @@ G4double PMT3inchWCTE::GetPMTGlassThickness() {return 0.1*cm;}
 
 // Currently based on 8" (instead of 20")
 // But shifted to requirements (2ns TTS FWHM) for 1 pe
-double PMT3inchWCTE::HitTimeSmearing(double Q, double TTSFF=1.0) {
-  double timingConstant = 1.890;
-  double timingResolution;
-  double Smearing_factor;
-
-  timingResolution = 0.5*(0.33 + sqrt(timingConstant/Q));//factor 0.5 for expected improvement and required TTS
+double PMT3inchWCTE::HitTimeSmearing(double Q, double TTSFF=1.0) {    
+  double pmt_tts = 1.5;
+  double val = gTResol->Eval(Q,0,"S");
+  double timingResolution = sqrt(pmt_tts*pmt_tts+val*val)/2.355;
   timingResolution *= TTSFF;
-  // looking at SK's jitter function for 20" tubes
-  if (timingResolution < 0.58) timingResolution=0.58;
-  Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
-  return Smearing_factor;
-    
+  return G4RandGauss::shoot(0.0,timingResolution);
 }
 
 // TD 2019.07.16

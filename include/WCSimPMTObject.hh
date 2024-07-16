@@ -483,6 +483,8 @@ public:
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
+private:
+  TGraph  *gTResol = nullptr;
 protected:
   G4double* GetCollectionEfficiencyArray();
 };

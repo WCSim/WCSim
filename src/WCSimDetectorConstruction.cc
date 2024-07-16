@@ -505,6 +505,9 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
   else if (PMTType == "PMT5inch"){
     PMT = new PMT5inch;
   }
+  else if (PMTType == "PMT3inchWCTE"){
+    PMT = new PMT3inchWCTE;
+  }
 
   if(PMT == nullptr) {
     G4cout << PMTType << " is not a recognized PMT Type. Exiting WCSim." << G4endl;
