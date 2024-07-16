@@ -3220,7 +3220,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   }
 
   G4LogicalVolume* logicWCExSituMPMT = ConstructExSituMultiPMT(WCPMTName, WCIDCollectionName,"tank");
-  G4LogicalVolume* logicWCInSituMPMT = nullptr; // place holder
+  G4LogicalVolume* logicWCInSituMPMT = ConstructInSituMultiPMT(WCPMTName, WCIDCollectionName,"tank");
 
   std::vector<G4LogicalVolume*> vlogicWCPMT(4);
   vlogicWCPMT[0] = logicWCPMT;
@@ -4375,7 +4375,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   }
   
   G4LogicalVolume* logicWCExSituMPMT = ConstructExSituMultiPMT(WCPMTName, WCIDCollectionName,"tank");
-  G4LogicalVolume* logicWCInSituMPMT = nullptr; // place holder
+  G4LogicalVolume* logicWCInSituMPMT = ConstructInSituMultiPMT(WCPMTName, WCIDCollectionName,"tank");
 
   std::vector<G4LogicalVolume*> vlogicWCPMT(4);
   vlogicWCPMT[0] = logicWCPMT;
