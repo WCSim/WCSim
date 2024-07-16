@@ -123,44 +123,5 @@ private:
   }
 };
 
-// WCTE digitizer class
-class WCSimWCDigitizerWCTE : public WCSimWCDigitizerBase 
-{
-public:
-  
-  WCSimWCDigitizerWCTE(G4String name, WCSimDetectorConstruction*, WCSimWCDAQMessenger*, G4String detectorElement);
-  ~WCSimWCDigitizerWCTE();
-
-  void DigitizeHits(WCSimWCDigitsCollection* WCHCPMT);
-
-private:
-  int GetDefaultDeadTime()          { return 0; }   ///< SKI digitizer deadtime is 0 ns
-  int GetDefaultIntegrationWindow() { return 200; } ///< 
-  double GetDefaultTimingPrecision()   { return 0.4; } ///< SKI digitizer timing precision is 0.4 ns (SK NIM Sec 5.1)
-  double GetDefaultPEPrecision()       { return 0;   } ///< SKI digitizer charge precision is 0.2 pC (SK NIM Sec 5.1), but conversion to PE not specified
-
-  static void Threshold(double& pe,int& iflag){
-    //   CLHEP::HepRandom::setTheSeed(pe+2014);
-    double x = pe+0.1; iflag=0;
-    double thr; double RDUMMY,err;
-    if ( x<1.1) {
-      thr = std::min(1.0,
-		     -0.06374+x*(3.748+x*(-63.23+x*(452.0+x*(-1449.0+x*(2513.0
-									+x*(-2529.+x*(1472.0+x*(-452.2+x*(51.34+x*2.370))))))))));
-    } else {
-      thr = 1.0;
-    }
-    RDUMMY = G4UniformRand();
-    if (thr < RDUMMY) {
-      pe = 0.0;
-      iflag = 1;
-    }
-    else {
-      err = G4RandGauss::shoot(0.0,0.03);
-      /////      call rngaus(0.0, 0.03, err);
-      pe = pe+err;
-    }
-  }
-};
 
 #endif //WCSimWCDigitizer_h
