@@ -162,7 +162,7 @@ void HKGeometryNoLongerUsed(G4String & DetectorName)
 		 << "If you really want to use " << DetectorName
 		 << " then you can comment out the call to HKGeometryNoLongerUsed() in the method "
 		 << "WCSimDetectorConstruction::" << DetectorName << "()"
-		 << " in the file $WCSIMDIR/src/WCSimDetectorConfigs.cc and recompile, "
+		 << " in the file $WCSIM_SOURCE_DIR/src/WCSimDetectorConfigs.cc and recompile, "
 		 << "but be careful if comparing to official HK geometries that the number of PMTs are consistent" << G4endl
 		 << "Exiting..." << G4endl;
   exit(-1);
@@ -1395,7 +1395,8 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
   WCPMTRadius = PMT->GetRadius();
 
 	//mPMT params go first because detector depends on it:
-	mPMT_vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
+	// mPMT_vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
+  mPMT_vessel_cyl_height = 77.785*2*CLHEP::mm; // from actual mPMT measurement
 	mPMT_vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
 	mPMT_vessel_radius = 254.*CLHEP::mm;
 	dist_pmt_vessel = 8*CLHEP::mm;      
@@ -1422,7 +1423,7 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
   WCIDDiameter             = 3.119927*CLHEP::m;
 	WCIDVerticalPosition     = 0.;
 	
-	WCBarrelPMTOffset     = 291.*CLHEP::mm;
+	WCBarrelPMTOffset     = 288.*CLHEP::mm;
   WCPMTperCellHorizontal = 1.0; // 1 per phi
   WCPMTperCellVertical   = 1.0;
 
@@ -1437,7 +1438,8 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
   // default for this geometry is to rotate the barrel by half a tower
   rotateBarrelHalfTower = true;
   // to place PMT behind the blacksheet
-  pmt_blacksheet_offset = 36.3045*CLHEP::mm;
+  pmt_blacksheet_offset = (77.7865*2+347-235    // total mPMT height
+                            - 94.5)*CLHEP::mm;  // height above blacksheet
 }
 
 

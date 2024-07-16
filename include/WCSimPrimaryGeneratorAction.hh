@@ -13,6 +13,7 @@
 #include "WCSimAmBeGen.hh"
 #include "WCSimEnumerations.hh"
 #include "jhfNtuple.h"
+#include "WCSimNuHepMC3Reader.hh"
 
 #include <G4String.hh>
 #include <fstream>
@@ -108,6 +109,7 @@ private:
   G4bool   useRadonEvt; // G. Pronost: Radon flag
   G4bool   useLightInjectorEvt; // L. Kneale injector with profile from db
   G4bool   useMPMTledEvt;
+  G4bool   useHepMC3Evt;
   
   std::fstream inputFile;
   std::fstream inputCosmicsFile;
@@ -125,6 +127,13 @@ private:
   G4String ibd_model;
     // IBD generator object
   WCSimIBDGen* IBDGen;
+
+  // HepMC3 reader
+  G4String hepmc3_filename;
+    // HepMC3 reader object
+  WCSimNuHepMC3Reader* hepmc3_reader;
+    // Position generation bool
+  G4bool hepmc3_positionGen;
 
   // Variables for Radioactive and Radon generators
   std::vector<struct radioactive_source> radioactive_sources;
@@ -250,6 +259,14 @@ private:
   inline G4String GetIBDDatabase()  { return ibd_database; }
   inline void SetIBDModel(G4String choice) { ibd_model = choice; }
   inline G4String GetIBDModel()  { return ibd_model; }
+
+  // HEPMC3 reader
+  inline void SetHepMC3EvtGenerator(G4bool choice) { useHepMC3Evt = choice; }
+  inline G4bool IsUsingHepMC3EvtGenerator()  { return useHepMC3Evt; }
+  inline void SetHepMC3Filename(G4String choice) { hepmc3_filename = choice; }
+  inline G4String GetHepMC3Filename()  { return hepmc3_filename; }
+  inline void SetHepMC3PositionGen(G4bool choice) { hepmc3_positionGen = choice; }
+  inline G4bool GetHepMC3PositionGen() { return hepmc3_positionGen;}
 
   // L. Kneale: light injector with profile from db
   inline void SetLightInjectorEvtGenerator(G4bool choice) {useLightInjectorEvt = choice; }

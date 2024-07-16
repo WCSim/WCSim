@@ -76,6 +76,9 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4TouchableHandle  theTouchable = preStepPoint->GetTouchableHandle();
   G4VPhysicalVolume* thePhysical  = theTouchable->GetVolume();
 
+  // Triggered by photons from InteriorWCPMT hitting photocathode 
+  if (thePhysical->GetName()=="InteriorWCPMT") return ProcessHits_boundary(aStep,0);
+
   //XQ 3/30/11 try to get the local position try to add the position and direction
   G4ThreeVector worldPosition  = preStepPoint->GetPosition();
   G4ThreeVector localPosition  = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
@@ -274,6 +277,161 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	 
        }
      }
+  }
+
+  return true;
+}
+
+G4bool WCSimWCSD::ProcessHits_boundary(G4Step* aStep, G4TouchableHistory*)
+{ 
+  G4StepPoint*       preStepPoint = aStep->GetPreStepPoint();
+  G4StepPoint*       postStepPoint = aStep->GetPostStepPoint();
+  G4TouchableHandle  theTouchable = postStepPoint->GetTouchableHandle();
+  G4VPhysicalVolume* thePhysical  = theTouchable->GetVolume();
+
+  //XQ 3/30/11 try to get the local position try to add the position and direction
+  G4ThreeVector worldPosition  = postStepPoint->GetPosition();
+  G4ThreeVector localPosition  = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
+  G4ThreeVector worldDirection = preStepPoint->GetMomentumDirection();
+
+  WCSimTrackInformation* trackinfo 
+    = (WCSimTrackInformation*)(aStep->GetTrack()->GetUserInformation());
+
+  G4int parentSavedTrackID = -1;
+  G4float       photonStartTime;
+  G4ThreeVector photonStartPos;
+  G4ThreeVector photonStartDir;
+  
+  parentSavedTrackID   = aStep->GetTrack()->GetParentID();
+  photonStartTime      = aStep->GetTrack()->GetGlobalTime() - aStep->GetTrack()->GetLocalTime(); // current time minus elapsed time of track
+  photonStartPos       = aStep->GetTrack()->GetVertexPosition();
+  photonStartDir       = aStep->GetTrack()->GetVertexMomentumDirection();
+ 
+  // Need to create a NONE string in case the Hit has no creatorProcess, such a Dark Noise Hit.
+  const G4VProcess* process = aStep->GetTrack()->GetCreatorProcess();
+  ProcessType_t photonCreatorProcess(kUnknownProcess);
+  if (process) {
+    photonCreatorProcess = WCSimEnumerations::ProcessTypeStringToEnum(process->GetProcessName());
+  }
+
+  G4int    trackID           = aStep->GetTrack()->GetTrackID();
+  G4String volumeName        = thePhysical->GetName();
+  
+  G4double energyDeposition  = aStep->GetTotalEnergyDeposit();
+  G4double hitTime           = postStepPoint->GetGlobalTime();
+
+  G4ParticleDefinition *particleDefinition = 
+    aStep->GetTrack()->GetDefinition();
+
+  if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition())
+    return false;
+
+  G4String WCCollectionName;
+  if(detectorElement=="tank") WCCollectionName = fdet->GetIDCollectionName();
+  else if (detectorElement=="tankPMT2") WCCollectionName = fdet->GetIDCollectionName2();
+  else if (detectorElement=="OD") WCCollectionName = fdet->GetODCollectionName();
+
+  std::stringstream tubeTag;
+
+  for (G4int i = theTouchable->GetHistoryDepth()-1 ; i >= 0; i--){
+    tubeTag << ":" << theTouchable->GetVolume(i)->GetName();
+    tubeTag << "-" << theTouchable->GetCopyNumber(i);
+  }
+
+  // Debug:
+  // G4cout << "================================================" << G4endl;
+  // G4cout << tubeTag.str() << G4endl;
+  // G4cout << "================================================" << G4endl;
+
+  // Get the tube ID from the tubeTag
+  G4int replicaNumber;
+  if(detectorElement=="tank") replicaNumber = WCSimDetectorConstruction::GetTubeID(tubeTag.str());
+  else if(detectorElement=="tankPMT2") replicaNumber = WCSimDetectorConstruction::GetTubeID2(tubeTag.str());
+  else if(detectorElement=="OD") replicaNumber = WCSimDetectorConstruction::GetODTubeID(tubeTag.str());
+  else G4cout << "detectorElement not defined..." << G4endl;
+
+  G4double theta_angle = 0.;
+  G4double effectiveAngularEfficiency = 0.;
+
+  //XQ Add the wavelength there
+  G4double  wavelength = (2.0*M_PI*197.3)/( aStep->GetTrack()->GetTotalEnergy()/eV);
+  G4double ratio = 1.;
+  G4double maxQE = 0.;
+  G4double photonQE = 0.;
+  if (fdet->GetPMT_QE_Method()==1 || fdet->GetPMT_QE_Method() == 4){
+    photonQE = 1.1;
+  }else if (fdet->GetPMT_QE_Method()==2){
+    maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,240,660,ratio);
+    photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
+    photonQE = photonQE/maxQE;
+  }else if (fdet->GetPMT_QE_Method() == 3){
+    ratio = 1./(1.-0.25);
+    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,240,660,ratio);
+  }
+  
+  if (G4UniformRand() <= photonQE)
+  {
+    G4double local_x = localPosition.x();
+    G4double local_y = localPosition.y();
+    G4double local_z = localPosition.z();
+    theta_angle = acos(fabs(local_z)/sqrt(pow(local_x,2)+pow(local_y,2)+pow(local_z,2)))/3.1415926*180.;
+    effectiveAngularEfficiency = fdet->GetPMTCollectionEfficiency(theta_angle, volumeName);
+
+    if (G4UniformRand() <= effectiveAngularEfficiency || fdet->UsePMT_Coll_Eff()==0)
+    {
+      //Retrieve the pointer to the appropriate hit collection. 
+      //Since volumeName is the same as the SD name, this works. 
+      G4SDManager* SDman = G4SDManager::GetSDMpointer();
+      G4RunManager* Runman = G4RunManager::GetRunManager();
+      G4int collectionID = SDman->GetCollectionID(volumeName);
+      const G4Event* currentEvent = Runman->GetCurrentEvent();
+      G4HCofThisEvent* HCofEvent = currentEvent->GetHCofThisEvent();
+      hitsCollection = (WCSimWCHitsCollection*)(HCofEvent->GetHC(collectionID));
+
+      // mark the track as having produced a hit
+      if(!trackinfo)
+          trackinfo = new WCSimTrackInformation();
+      trackinfo->SetProducesHit(true);
+
+      // If this tube hasn't been hit add it to the collection
+      if (PMTHitMap[replicaNumber] == 0)
+      {
+        WCSimWCHit* newHit = new WCSimWCHit();
+        newHit->SetTubeID(replicaNumber);
+        newHit->SetEdep(energyDeposition); 
+        newHit->SetLogicalVolume(thePhysical->GetLogicalVolume());
+        
+        G4AffineTransform aTrans = theTouchable->GetHistory()->GetTopTransform();
+        newHit->SetRot(aTrans.NetRotation());
+        
+        aTrans.Invert();
+        newHit->SetPos(aTrans.NetTranslation());
+        // Set the hitMap value to the collection hit number
+        PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(photonCreatorProcess);
+      }
+      else 
+      {
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(photonCreatorProcess);
+        
+      }
+    }
   }
 
   return true;

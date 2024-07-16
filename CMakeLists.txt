@@ -18,7 +18,7 @@ if (${WCSim_WCSimRoot_only})
     set(PROJECT_NAME WCSimRoot)
 endif ()
 
-set(PROJECT_VERSION 1.12.12)
+set(PROJECT_VERSION 1.12.13)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 
@@ -42,11 +42,24 @@ include(PackageBuilder)
 
 pbuilder_prepare_project()
 
+set(CMAKE_CXX_STANDARD 14) # Enable c++14 standard
+
+
+########
+# HepMC3
+########
+if (NOT ${WCSim_WCSimRoot_only}) # only looking for HepMC3 if WCSim_WCSimRoot_only is false
+  find_package(HepMC3 REQUIRED)
+  if (NOT HepMC3_FOUND)
+    message(FATAL "Unable to find HepMC3")
+  endif (NOT HepMC3_FOUND)
+  include_directories (${HEPMC3_INCLUDE_DIR})
+  LIST(APPEND PUBLIC_EXT_LIBS ${HEPMC3_LIBRARIES})
+endif ()
 
 ######
 # ROOT
 ######
-
 find_package(ROOT COMPONENTS CONFIG REQUIRED)
 if (ROOT_FOUND)
 
@@ -153,6 +166,10 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/ground_state_spectrum.txt
         ${PROJECT_SOURCE_DIR}/data/first_excited_spectrum.txt
         ${PROJECT_SOURCE_DIR}/data/second_excited_spectrum.txt
+        ${PROJECT_SOURCE_DIR}/data/CathodeParameters.txt
+        ${PROJECT_SOURCE_DIR}/data/CathodeParameters_SK.txt
+        ${PROJECT_SOURCE_DIR}/data/CathodeParameters_KCsCb.txt
+        ${PROJECT_SOURCE_DIR}/data/CathodeParameters_RbCsCb.txt
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
@@ -220,6 +237,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/bin/rootwc-files
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/mPMT-configfiles
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_19_nuPrism.txt
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring.txt
+        ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_19_nuPrism_3ring_WCTE.txt
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_30_13_3.txt
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_33_13_1.txt
         ${PROJECT_SOURCE_DIR}/mPMT-configfiles/mPMTconfig_33_50.txt

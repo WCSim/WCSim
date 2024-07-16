@@ -127,15 +127,15 @@ int main(int argc,char** argv)
 
   // Currently, default physics list is set to FTFP_BERT
   // The custom WCSim physics list option is removed in versions later than WCSim1.6.0
-  const char *WCSIMDIR = std::getenv("WCSIMDIR");
-  if (!(WCSIMDIR && WCSIMDIR[0])) { // make sure it's non-empty
-    WCSIMDIR = "."; // the "default" value
-    G4cout << "Note: WCSIMDIR not set, assuming: " << WCSIMDIR << G4endl;
-  }
-  G4cout << "B.Q: Read" << Form("/control/execute %s/macros/jobOptions.mac",WCSIMDIR) << G4endl;
-  if(!file_exists(Form("%s/macros/jobOptions.mac",WCSIMDIR)))
+  const char *WCSIM_BUILD_DIR = std::getenv("WCSIM_BUILD_DIR");
+  if (!(WCSIM_BUILD_DIR && WCSIM_BUILD_DIR[0])) { // make sure it's non-empty
+    G4cout << "Note: WCSIM_BUILD_DIR not set. Exiting" << G4endl;
     return -1;
-  UI->ApplyCommand(Form("/control/execute %s/macros/jobOptions.mac",WCSIMDIR));
+  }
+  G4cout << "B.Q: Read" << Form("/control/execute %s/macros/jobOptions.mac",WCSIM_BUILD_DIR) << G4endl;
+  if(!file_exists(Form("%s/macros/jobOptions.mac",WCSIM_BUILD_DIR)))
+    return -1;
+  UI->ApplyCommand(Form("/control/execute %s/macros/jobOptions.mac",WCSIM_BUILD_DIR));
 
   // Initialize the physics factory to register the selected physics.
   physFactory->InitializeList();
