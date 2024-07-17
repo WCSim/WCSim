@@ -3390,13 +3390,10 @@ G4double PMT3inchWCTE::GetExposeHeight() {return 0.02*m;}
 G4double PMT3inchWCTE::GetRadius() {return 0.04*m;} 
 G4double PMT3inchWCTE::GetPMTGlassThickness() {return 0.1*cm;}     
 
-
-// Currently based on 8" (instead of 20")
-// But shifted to requirements (2ns TTS FWHM) for 1 pe
 double PMT3inchWCTE::HitTimeSmearing(double Q, double TTSFF=1.0) {    
   double pmt_tts = 1.5;
   double val = gTResol->Eval(Q,0,"S");
-  double timingResolution = sqrt(pmt_tts*pmt_tts+val*val)/2.355;
+  double timingResolution = sqrt(pmt_tts*pmt_tts+val*val)/2.355; // conversion from FWHM to sigma
   timingResolution *= TTSFF;
   return G4RandGauss::shoot(0.0,timingResolution);
 }
@@ -3408,8 +3405,6 @@ double PMT3inchWCTE::SaturFactor(double Q, double threshold=-1) {
   return saturFactor;
 }
 
-
-// To Add!!
 G4double* PMT3inchWCTE::Getqpe()
 {
   static G4double qpe0[501]= {
