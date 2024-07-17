@@ -24,6 +24,7 @@
 
 #include <string>
 #include <sstream>
+#include <unistd.h>
 
 namespace {     // Anonymous namespace for local helper functions and classes
   enum class WCSimExeMode {Batch, Interactive, Unknown};

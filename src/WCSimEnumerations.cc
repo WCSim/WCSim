@@ -66,6 +66,9 @@ std::string WCSimEnumerations::EnumAsString(BoundaryType_t b)
   case (kBlackSheet) :
     return "Blacksheet";
     break;
+  case (kMPMT) :
+    return "mPMT";
+    break;
   case (kTyvek) :
     return "Tyvek";
     break;

@@ -558,6 +558,8 @@ private:
   // for WCTE mPMT construction
   G4LogicalVolume* ConstructExSituPMT(G4String,G4String,G4String detectorElement="tank");
   G4LogicalVolume* ConstructExSituMultiPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructInSituPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructInSituMultiPMT(G4String,G4String,G4String detectorElement="tank");
 
   G4LogicalVolume* ConstructCaps(G4bool);
 
