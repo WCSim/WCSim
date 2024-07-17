@@ -461,13 +461,13 @@ protected:
   G4double* GetCollectionEfficiencyArray();
 };
 
-class PMT3inchWCTE : public WCSimPMTObject
+class PMT3inchR14374_WCTE : public WCSimPMTObject
 {
 
 public:
   
-  PMT3inchWCTE();
-  ~PMT3inchWCTE();
+  PMT3inchR14374_WCTE();
+  ~PMT3inchR14374_WCTE();
  
 public:
   G4String GetPMTName() ;

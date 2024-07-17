@@ -3364,7 +3364,7 @@ G4int PMT3inchR14374::GetNbOfQEDefined(){
 ///////////////////////////////////////////////////////////////////////////////
 // PMT 3" for WCTE
 //
-PMT3inchWCTE::PMT3inchWCTE()
+PMT3inchR14374_WCTE::PMT3inchR14374_WCTE()
 {
   double charge[14] = 
   {
@@ -3380,17 +3380,17 @@ PMT3inchWCTE::PMT3inchWCTE()
   };
   gTResol = new TGraph(14,charge,resol);
 }
-PMT3inchWCTE::~PMT3inchWCTE()
+PMT3inchR14374_WCTE::~PMT3inchR14374_WCTE()
 {
   delete gTResol;
 }
 
-G4String PMT3inchWCTE::GetPMTName() {G4String PMTName = "PMT3inchWCTE"; return PMTName;}
-G4double PMT3inchWCTE::GetExposeHeight() {return 0.02*m;} 
-G4double PMT3inchWCTE::GetRadius() {return 0.04*m;} 
-G4double PMT3inchWCTE::GetPMTGlassThickness() {return 0.1*cm;}     
+G4String PMT3inchR14374_WCTE::GetPMTName() {G4String PMTName = "PMT3inchR14374_WCTE"; return PMTName;}
+G4double PMT3inchR14374_WCTE::GetExposeHeight() {return 0.02*m;} 
+G4double PMT3inchR14374_WCTE::GetRadius() {return 0.04*m;} 
+G4double PMT3inchR14374_WCTE::GetPMTGlassThickness() {return 0.1*cm;}     
 
-double PMT3inchWCTE::HitTimeSmearing(double Q, double TTSFF=1.0) {    
+double PMT3inchR14374_WCTE::HitTimeSmearing(double Q, double TTSFF=1.0) {    
   double pmt_tts = 1.5;
   double val = gTResol->Eval(Q,0,"S");
   double timingResolution = sqrt(pmt_tts*pmt_tts+val*val)/2.355; // conversion from FWHM to sigma
@@ -3399,13 +3399,13 @@ double PMT3inchWCTE::HitTimeSmearing(double Q, double TTSFF=1.0) {
 }
 
 // TD 2019.07.16
-double PMT3inchWCTE::SaturFactor(double Q, double threshold=-1) {
+double PMT3inchR14374_WCTE::SaturFactor(double Q, double threshold=-1) {
   if (threshold == -1) return 1; //no saturation case
   double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
   return saturFactor;
 }
 
-G4double* PMT3inchWCTE::Getqpe()
+G4double* PMT3inchR14374_WCTE::Getqpe()
 {
   static G4double qpe0[501]= {
     // 1
@@ -3526,7 +3526,7 @@ G4double* PMT3inchWCTE::Getqpe()
 
 
 // TF: Used WebPlotDigitizer on Fig.2a from VLVnT13 proceedings, red curve (average)
-G4double* PMT3inchWCTE::GetQEWavelength(){
+G4double* PMT3inchR14374_WCTE::GetQEWavelength(){
 
   //TEST: make QE same!!
   //static G4double wavelength_value[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
@@ -3534,7 +3534,7 @@ G4double* PMT3inchWCTE::GetQEWavelength(){
   return wavelength_value;
 }
 
-G4double* PMT3inchWCTE::GetQE(){
+G4double* PMT3inchR14374_WCTE::GetQE(){
   G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
   // TF: While the main reason is the 20" SK PMT, this correction factor has been applied
   // to the B&L PMT. Therefore all PMTs have to corrected in a similar way, unfortunately.
@@ -3545,7 +3545,7 @@ G4double* PMT3inchWCTE::GetQE(){
   return QE;
 }
 
-G4double PMT3inchWCTE::GetmaxQE(){
+G4double PMT3inchR14374_WCTE::GetmaxQE(){
   G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
 
   // TEST: make QE the same!!
@@ -3554,12 +3554,12 @@ G4double PMT3inchWCTE::GetmaxQE(){
   return maxQE;
 }
 
-G4double* PMT3inchWCTE::GetCollectionEfficiencyArray(){  
+G4double* PMT3inchR14374_WCTE::GetCollectionEfficiencyArray(){  
   static G4double CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
   return CE;
 }
 
-G4double PMT3inchWCTE::GetDarkRate(){
+G4double PMT3inchR14374_WCTE::GetDarkRate(){
   // Realistic/Optimistic value from published (proceedings) measurements.
   // ToDo : update this value
   const G4float rate = 1.0*CLHEP::kilohertz;
@@ -3567,12 +3567,12 @@ G4double PMT3inchWCTE::GetDarkRate(){
 }
 
 // Arbitrary at the moment
-G4double  PMT3inchWCTE::GetDarkRateConversionFactor(){
+G4double  PMT3inchR14374_WCTE::GetDarkRateConversionFactor(){
   const G4double factor = 1.126;
   return factor;
 }
 
-G4int PMT3inchWCTE::GetNbOfQEDefined(){
+G4int PMT3inchR14374_WCTE::GetNbOfQEDefined(){
   const G4int factor = 20;
   return factor;
 }
