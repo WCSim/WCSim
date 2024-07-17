@@ -57,6 +57,9 @@
 #/WCSim/SaveCapture true
 #/process/inactivate nKiller
 
+# Default PMT object which controls the 1pe charge response, timing resolution, QE, etc.
+/WCSim/mPMT/PMTtype_inner PMT3inchR14374_WCTE
+
 # Set Gadolinium doping (concentration is in percent)
 #/WCSim/DopingConcentration 0.1
 #/WCSim/DopedWater true
