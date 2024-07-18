@@ -108,6 +108,10 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
 
   myConfiguration = DetConfig;
 
+  BGOX = 0.; BGOY = 0.; BGOZ = 0.;
+
+  G4cout << "First BGO Coord: " << BGOX << BGOY << BGOZ << G4endl;
+
   //-----------------------------------------------------
   // Create Materials
   //-----------------------------------------------------
@@ -369,10 +373,12 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   //BGO Calling and Placement - Diego Costas 29/02/2024 
   // Place BGO only if command is set to true
   if (IsBGOGeometrySet()) {
-      G4cout << "Placing AmBe source in geometry at (0,0,0)" << G4endl;
+      G4cout << "Placing AmBe source in geometry at (" << BGOX << ", " << BGOY << ", " << BGOZ << ")" << G4endl;
       G4Tubs* solidBGO = new G4Tubs("solidBGO", 0., 2.5*cm, 2.5*cm, 0., 360.*deg);
       G4LogicalVolume* logicBGO = new G4LogicalVolume(solidBGO, BGO, "logicBGO");
-      new G4PVPlacement(0, G4ThreeVector(), logicBGO, "BGO", logicWCBox, false, 0, false); 
+      new G4PVPlacement(0, G4ThreeVector(BGOX, BGOY, BGOZ), logicBGO, "BGO", logicWCBox, false, 0, false); 
+
+  G4cout << "Third BGO Coords: " << BGOX << BGOY << BGOZ << G4endl;
   }
   
   //-----------------------------------------------------

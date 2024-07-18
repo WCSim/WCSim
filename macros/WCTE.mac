@@ -28,6 +28,10 @@
 # so you can see the tag scintillation light for the AmBe source.
 #/WCSim/BGOPlacement true
 # Note that /WCSim/BGOPlacement *must* be set before /WCSim/Construct
+#
+# - BGO Position: Place the source in a different position using X, Y and Z coordinates
+#/WCSim/BGOPosition 0 0 0 m
+
 
 # - /WCSim/SaveCapture & /process/inactivate nKiller: Default not set.
 # Also specially needed for AmBe calibration. The first command makes sure the Capture processes

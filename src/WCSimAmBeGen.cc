@@ -64,7 +64,8 @@ void WCSimAmBeGen::Initialise(){
     nEnergyDistSE->ArbInterpolate("Lin");
     nEnergyDistSE->SetBiasRndm(rGen);
    
-    vtx = G4ThreeVector(0., 0., 0.);
+    vtx = G4ThreeVector(BGOX, BGOY, BGOZ);
+    G4cout << "Fourth BGO Coords (ParticleGun): " << vtx << G4endl;
     time = 0.;
     epsilon = 1e-6;
 }

@@ -1,6 +1,8 @@
 #ifndef WCSimAmBeGen_h
 #define WCSimAmBeGen_h
 
+#include "WCSimDetectorMessenger.hh"
+
 #include "G4SPSEneDistribution.hh"
 #include "G4SPSRandomGenerator.hh"
 #include "G4RandomDirection.hh"
@@ -28,6 +30,7 @@ class WCSimAmBeGen
     G4double NeutronEnergy();
     G4double GammaEnergy();
     void GenerateNG(G4Event* anEvent);
+    void SetPositionBGOGeometry(G4double X, G4double Y, G4double Z) { BGOX=X, BGOY=Y, BGOZ=Z; }
 
   private:
     G4ParticleGun*        myAmBeGun;
@@ -46,6 +49,7 @@ class WCSimAmBeGen
     G4double time;
     G4ThreeVector dir;
     G4double epsilon;
+    G4double BGOX, BGOY, BGOZ;
 
     // Variables for reading in the file
     string wcsimdir;
