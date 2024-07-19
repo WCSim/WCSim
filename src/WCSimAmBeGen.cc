@@ -21,7 +21,7 @@ G4double WCSimAmBeGen::gammaProbabilities[3] = {0.26, 0.65, 0.08};
 G4double WCSimAmBeGen::gammaEnergies[3] = {0.0, 4.4, 7.7};
 G4int    WCSimAmBeGen::pdgids[2] = {2112, 22};
 
-WCSimAmBeGen::WCSimAmBeGen(){
+WCSimAmBeGen::WCSimAmBeGen(WCSimDetectorConstruction* detector) : myDetector(detector) {
   wcsimdir = string(getenv("WCSIMDIR"))+"data/";
 
   gs_path = wcsimdir + "ground_state_spectrum.txt";
@@ -64,8 +64,6 @@ void WCSimAmBeGen::Initialise(){
     nEnergyDistSE->ArbInterpolate("Lin");
     nEnergyDistSE->SetBiasRndm(rGen);
    
-    vtx = G4ThreeVector(BGOX, BGOY, BGOZ);
-    G4cout << "Fourth BGO Coords (ParticleGun): " << vtx << G4endl;
     time = 0.;
     epsilon = 1e-6;
 }
@@ -129,9 +127,11 @@ void WCSimAmBeGen::GenerateNG(G4Event* anEvent){
       }
 
       dir = G4RandomDirection();
+      pos = myDetector->GetPositionBGOGeometry();
+      G4cout << "Fourth BGO Position (Particle Gun): " << pos << G4endl;
 
       // Configure the final properties of the particle
-      myAmBeGun->SetParticlePosition(vtx);
+      myAmBeGun->SetParticlePosition(pos);
       myAmBeGun->SetParticleTime(time);
       myAmBeGun->SetParticleMomentumDirection(dir);
 

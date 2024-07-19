@@ -120,7 +120,8 @@ public:
 	  LCType=LightCollectorType;
   };
   G4int GetLCType(){return LCType;};
-
+  
+  G4ThreeVector GetPositionBGOGeometry()   {return G4ThreeVector(BGOX, BGOY, BGOZ);}
   G4String GetDetectorName()      {return WCDetectorName;}
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
