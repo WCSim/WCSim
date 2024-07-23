@@ -128,7 +128,6 @@ void WCSimAmBeGen::GenerateNG(G4Event* anEvent){
 
       dir = G4RandomDirection();
       pos = myDetector->GetPositionBGOGeometry();
-      G4cout << "Fourth BGO Position (Particle Gun): " << pos << G4endl;
 
       // Configure the final properties of the particle
       myAmBeGun->SetParticlePosition(pos);

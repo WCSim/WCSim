@@ -852,8 +852,6 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
   if(command == BGOPosition) {
     G4ThreeVector BGOvec = BGOPosition->GetNew3VectorValue(newValue);
-    G4cout << "Second BGO Coords: ";
-    G4cout << "Set X, Y and Z position of the BGO at " << BGOvec.x() << ", " << BGOvec.y() << ", " << BGOvec.z() << "mm" << G4endl;
     WCSimDetector->SetPositionBGOGeometry(BGOvec.x(),BGOvec.y(),BGOvec.z());
 
   }
