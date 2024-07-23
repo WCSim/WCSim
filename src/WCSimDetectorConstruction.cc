@@ -14,6 +14,7 @@
 #include "G4ThreeVector.hh"
 #include "globals.hh"
 #include "G4VisAttributes.hh"
+#include "G4VisExtent.hh"
 
 #include "G4RunManager.hh"
 #include "G4PhysicalVolumeStore.hh"
@@ -349,6 +350,13 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   G4cout << " expHallLength = " << expHallLength / m << G4endl;
   G4double expHallHalfLength = 0.5*expHallLength;
 
+  // Increase hall size if necessary
+  G4VisExtent extent = logicWCBox->GetSolid()->GetExtent();
+  G4double max_extent = std::max({fabs(extent.GetXmin()),fabs(extent.GetXmax()),
+                                  fabs(extent.GetYmin()),fabs(extent.GetYmax()),
+                                  fabs(extent.GetZmin()),fabs(extent.GetZmax())});
+  if (expHallHalfLength<max_extent) expHallHalfLength = max_extent;
+
   G4Box* solidExpHall = new G4Box("expHall",
 				  expHallHalfLength + fabs(position.x()),
 				  expHallHalfLength + fabs(position.y()),
@@ -411,6 +419,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 		      "WCBox",
 		      logicExpHall,
 		      false,
+          0,
 		      checkOverlaps);
 
   // Reset the tubeID and tubeLocation maps before refilling them
