@@ -79,9 +79,9 @@
 # Good for the low energy running.
 # 4. Switch off the QE, ie. set it at 100%
 
-/WCSim/PMTQEMethod     Stacking_Only
+#/WCSim/PMTQEMethod     Stacking_Only
 #/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
-#/WCSim/PMTQEMethod     SensitiveDetector_Only
+/WCSim/PMTQEMethod     SensitiveDetector_Only
 #/WCSim/PMTQEMethod     DoNotApplyQE
 
 #turn on or off the collection efficiency
