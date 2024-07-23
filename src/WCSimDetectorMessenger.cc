@@ -635,7 +635,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete SetCDSFile;
 
   delete BGOPlacement;
-  //delete BGOPosition;
+  delete BGOPosition;
 }
 
 void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
