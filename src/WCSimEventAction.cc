@@ -1030,6 +1030,7 @@ G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
 
   G4VPhysicalVolume* tmpVolume = tmpNavigator->LocateGlobalPointAndSetup(vtx);
   //  G4String       vtxVolumeName = tmpVolume->GetName();
+  if (!tmpVolume) return vtxvol; // cannot find volume from invalid vtx
   vtxVolumeName = tmpVolume->GetName();                  //TF: class member now
 
 
