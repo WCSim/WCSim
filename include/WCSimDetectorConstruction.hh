@@ -102,6 +102,7 @@ public:
   void SetIWCD_WithOD_Geometry_Old(); // Old geometry used from v1.12.5 to v1.12.11
   void SetPlaceBGOGeometry(G4bool placeBGO) { placeBGOGeometry=placeBGO; } // Diego Costas, 26/02/2024
   G4bool IsBGOGeometrySet() const { return placeBGOGeometry; } // Diego Costas, 26/02/2024
+  void SetPositionBGOGeometry(G4double X, G4double Y, G4double Z) { BGOX=X, BGOY=Y, BGOZ=Z; } // Diego Costas, 18/07/2024
   
   /**
      Dump the values of many variables used to define geometries including
@@ -119,7 +120,8 @@ public:
 	  LCType=LightCollectorType;
   };
   G4int GetLCType(){return LCType;};
-
+  
+  G4ThreeVector GetPositionBGOGeometry()   {return G4ThreeVector(BGOX, BGOY, BGOZ);}
   G4String GetDetectorName()      {return WCDetectorName;}
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
@@ -769,6 +771,9 @@ private:
 
   // BGO Placement
   G4bool placeBGOGeometry;
+
+  // BGO Position
+  G4double BGOX, BGOY, BGOZ;
 
   // Add bool to indicate whether we load nuPRISM geometry  
   G4bool isNuPrism;
