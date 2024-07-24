@@ -22,8 +22,7 @@ G4double WCSimAmBeGen::gammaEnergies[3] = {0.0, 4.4, 7.7};
 G4int    WCSimAmBeGen::pdgids[2] = {2112, 22};
 
 WCSimAmBeGen::WCSimAmBeGen(WCSimDetectorConstruction* detector) : myDetector(detector) {
-  wcsimdir = string(getenv("WCSIMDIR"))+"data/";
-
+  wcsimdir = string(getenv("WCSIMDIR_BUILD_DIR"))+"data/";
   gs_path = wcsimdir + "ground_state_spectrum.txt";
   fe_path = wcsimdir + "first_excited_spectrum.txt";
   se_path = wcsimdir + "second_excited_spectrum.txt";

@@ -1,4 +1,9 @@
 #include "WCSimPrimaryGeneratorAction.hh"
+#include "HepMC3/FourVector.h"
+#include "HepMC3/GenParticle.h"
+#include "HepMC3/GenParticle_fwd.h"
+#include "HepMC3/GenVertex.h"
+#include "HepMC3/GenVertex_fwd.h"
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPrimaryGeneratorMessenger.hh"
 #include "G4RunManager.hh"
@@ -13,6 +18,7 @@
 #include "G4Vector3D.hh"
 #include "G4EventManager.hh"
 #include "globals.hh"
+#include <G4LorentzVector.hh>
 #include <G4Types.hh>
 #include <G4ios.hh>
 #include "Randomize.hh"
@@ -109,6 +115,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   useGPSEvt      		  = false;
   useDataTableEvt     = false;
   useIBDEvt           = false;
+  useHepMC3Evt        = false;
   useCosmics          = false;
   useRadioactiveEvt   = false;
   useRadonEvt         = false;
@@ -1160,6 +1167,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     posInCyl.setY(posInCylR*sin(posInCylPhi));
     posInCyl.setZ(posInCylZ);
 
+    if (myDetector->GetIsNuPrism())
+    {
+      dir.rotateX(-90.*deg);
+      posInCyl.rotateX(-90.*deg);
+    }
+
     // generate muon at the intersection
     // between an sphere with radius = altComics
     // and a line made with the muon direction
@@ -1550,6 +1563,108 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamDir(dir);
       SetBeamPDG(pdg);
 
+    } else if (useHepMC3Evt) {
+
+      G4cout << "Using HepMC3 event" << G4endl;
+      // Check if the WCSimNuHepMC3Reader object has been initiaited yet
+      if (!hepmc3_reader) {
+        hepmc3_reader = new WCSimNuHepMC3Reader(hepmc3_filename, myDetector);
+      }
+
+      // Get the next event from the reader
+      if (!hepmc3_reader->ReadEvent(hepmc3_positionGen)) {
+        G4cout << "NuHepMC3Reader: \033[1m[INFO]\033[0m end of file reached. Run terminated." << G4endl;
+        G4RunManager::GetRunManager()->AbortRun();
+      }
+
+      // Loop over the particles
+      for (HepMC3::GenParticlePtr part : hepmc3_reader->event.particles()) {
+
+        // Skip nuclear remnants
+        if (part->pid() == 2009900000) {
+          continue;
+        }
+
+        // If particle has status 4 then it is a beam particle. This needs writing out, but not simulating
+        if (part->status() == 4) {
+          // Get direction (momentum) and normalise
+          G4ThreeVector dir(part->momentum().px(), part->momentum().py(), part->momentum().pz());
+
+          // Set write outs
+          SetBeamPDG(part->pdg_id(), 0);
+          SetBeamEnergy(part->momentum().e(), 0);
+          SetBeamDir(dir, 0);
+
+          // For a beam particle we want the end vertex
+          G4ThreeVector vtx(part->end_vertex()->position().x(), part->end_vertex()->position().y(),
+                            part->end_vertex()->position().z());
+
+          SetVtx(vtx);
+
+          continue;
+        }
+
+        // If the particle status is 20 then we have a target particle. This needs writing out, but not simulating
+        if (part->status() == 20) {
+          targetpdgs[0] = part->pdg_id();
+          targetenergies[0] = part->momentum().e();
+          targetdirs[0] = G4ThreeVector(part->momentum().px(), part->momentum().py(), part->momentum().pz());
+          continue;
+        }
+
+        // If the particle status is 1 then the particle needs simulating and writing out.
+        if (part->status() == 1) {
+
+          // Print in green
+          std::cout << "\033[32m";
+
+          // Print out info line with particle information
+          std::cout << "\
+NuHepMC3Reader: [INFO] Particle ID: "
+                    << part->pdg_id() << "\
+\n                       Status: "
+                    << part->status() << "\
+\n                       Momentum: "
+                    << part->momentum().px() << " " << part->momentum().py() << " " << part->momentum().pz() << "\
+\n                       Energy: "
+                    << part->momentum().e() << "\
+\n                       Position: "
+                    << part->production_vertex()->position().x() << " "
+                    << part->production_vertex()->position().y() << " "
+                    << part->production_vertex()->position().z() << "\
+\n                       Time: "
+                    << part->production_vertex()->position().t() << "\
+\n                       Direction: "
+                    << part->momentum().px() << " " << part->momentum().py() << " " << part->momentum().pz() << "\
+\n                       Momentum mag: "
+                    << part->momentum().p3mod() << std::endl;
+
+          // Print in default colour
+          std::cout << "\033[0m";
+
+          // Get direction (momentum) and normalise
+          G4ThreeVector dir(part->momentum().px(), part->momentum().py(), part->momentum().pz());
+
+          // Get particle position
+          G4ThreeVector vtx(part->production_vertex()->position().x(), part->production_vertex()->position().y(),
+                            part->production_vertex()->position().z());
+          // Set the vertex
+          SetVtx(vtx);
+
+          // Set the number of vertices
+          SetNvtxs(1);
+
+          // Generate the final state particles with the particle gun
+          particleGun->SetParticlePosition(vtx);
+          particleGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle(part->pdg_id()));
+          particleGun->SetParticleEnergy(part->momentum().e());
+          particleGun->SetParticleMomentum(part->momentum().p3mod());
+          particleGun->SetParticleMomentumDirection(dir);
+          particleGun->SetParticleTime(part->production_vertex()->position().t());
+          particleGun->GeneratePrimaryVertex(anEvent);
+          continue;
+        }
+      }
     }
 }
 
@@ -1557,6 +1672,8 @@ void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
 {
   if(useMulineEvt)
     wcopt->SetVectorFileName(vectorFileName);
+  else if (useHepMC3Evt)
+    wcopt->SetVectorFileName(hepmc3_filename);
   else
     wcopt->SetVectorFileName("");
   wcopt->SetGeneratorType(GetGeneratorTypeString());
@@ -1584,6 +1701,8 @@ G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
     return "mPMT-LED";
   else if(useIBDEvt)
     return "IBD";
+  else if(useHepMC3Evt)
+    return "hepmc3";
   else if(useDataTableEvt)
     return "data-table";
   else if(useCosmics)

@@ -208,7 +208,22 @@ public:
   G4bool SaveCaptureInfo()              {return captureInfo_isSaved;}
   void   SaveCaptureInfo(G4bool choice) {captureInfo_isSaved=choice;}
 
-  void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
+  void   SetPMT_QE_Method(G4int choice){
+    switch(choice) {
+    case 3:
+    case 4:
+      PMT_QE_Method = choice;
+      break;
+    default:
+      G4cerr << G4endl << "******************************" << G4endl
+	     << "PMT QE method must be set to one of:" << G4endl
+	     << " 3 (SensitiveDetector_Only)" << G4endl
+	     << " 4 (DoNotApplyQE)" << G4endl
+	     << "Other methods are not fully tested" << G4endl
+	     << "Exiting..." << G4endl;
+      exit(-1);
+    }
+  }
   void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
   void   SetVis_Choice(G4String choice){Vis_Choice = choice;}
   G4String GetVis_Choice() {return Vis_Choice;}
@@ -507,9 +522,16 @@ private:
 
   //Reflector skin surface -tf
   G4OpticalSurface * ReflectorSkinSurface;
+  G4OpticalSurface * ReflectorSkinSurfaceWCTE; // for WCTE mPMT construction
 
   //Foam for mPMT: Gel - absorbing support structure -tf
   G4OpticalSurface * OpGelFoamSurface;
+
+  //Poron skin surface: filling between PMT and matrix in mPMT
+  G4OpticalSurface * PoronSkinSurface; // for WCTE mPMT construction
+
+  //Absorber skin surface: artificial material to absorb all photons
+  G4OpticalSurface * AbsorberSkinSurface; // for WCTE mPMT construction
 
   //TF fix for blacksheet errors "missing refractive index"
   // or "photon travelling faster than c_light" when trying to refract
@@ -534,6 +556,12 @@ private:
 
   G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank",bool WLS=false);
   G4LogicalVolume* ConstructPMTAndWLSPlate(G4String,G4String,G4String detectorElement="OD");
+
+  // for WCTE mPMT construction
+  G4LogicalVolume* ConstructExSituPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructExSituMultiPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructInSituPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructInSituMultiPMT(G4String,G4String,G4String detectorElement="tank");
 
   G4LogicalVolume* ConstructCaps(G4bool);
 
@@ -917,6 +945,7 @@ private:
   G4double id_reflector_angle;
   G4int nID_PMTs;  // number of PMTs per mPMT module (1 for non-mPMT PMT e.g. standard 20")
   G4int nID_PMTs2; // number of PMTs per mPMT module (1 for non-mPMT PMT e.g. standard 20")
+  ///Points to $WCSIM_BUILD_DIR (environment variable)
   G4String wcsimdir_path;
   G4String config_file;
   G4String mPMT_ID_PMT; //or ToDo: ideally ENUM

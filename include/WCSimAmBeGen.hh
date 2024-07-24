@@ -53,6 +53,7 @@ class WCSimAmBeGen
     G4double BGOX, BGOY, BGOZ;
 
     // Variables for reading in the file
+    /// Points to $WCSIM_BUILD_DIR/data/
     string wcsimdir;
     string gs_path;
     string fe_path;

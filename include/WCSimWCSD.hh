@@ -17,6 +17,7 @@ class WCSimWCSD : public G4VSensitiveDetector
   void   Initialize(G4HCofThisEvent*);
 
   G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+  G4bool ProcessHits_boundary(G4Step*, G4TouchableHistory*); // to handle photons from InteriorWCPMT hitting photocathode
   void   EndOfEvent(G4HCofThisEvent*);
   
  private:

@@ -1,6 +1,4 @@
 #include "WCSimLIGen.hh"
-#include "WCSimPrimaryGeneratorMessenger.hh"
-#include "WCSimPrimaryGeneratorAction.hh"
 
 #include "json.hpp"
 
@@ -33,7 +31,7 @@ void WCSimLIGen::Initialise(){
 
     // myMessenger, myDetector
     photonMode = 0;
-    wcsimdir = string(getenv("WCSIMDIR"))+"/data/";
+    wcsimdir = string(getenv("WCSIM_BUILD_DIR"))+"/data/";
     // Use particle gun to generate a point source
     myLIGun = new G4ParticleGun();
 } 

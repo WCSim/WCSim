@@ -6,7 +6,7 @@
 #include "G4UIparameter.hh"
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithABool.hh" //jl145
-#include "G4UIcmdWithAnInteger.hh"
+#include "G4UIcmdWithAString.hh"
 
 
 WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):WCSimTuningParams(WCTuningPars) { 
@@ -43,15 +43,10 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   Mieff->SetGuidance("Set the Mie scattering parameter");
   Mieff->SetParameterName("Mieff",true);
   Mieff->SetDefaultValue(0.0);
-  PMTSurfType = new G4UIcmdWithAnInteger("/WCSim/tuning/pmtsurftype",this);
-  PMTSurfType->SetGuidance("Set the PMT photocathode surface optical model");
-  PMTSurfType->SetParameterName("PMTSurfType",true);
-  PMTSurfType->SetDefaultValue(0);
-  
-  CathodePara = new G4UIcmdWithAnInteger("/WCSim/tuning/cathodepara",this);
-  CathodePara->SetGuidance("Set the PMT photocathode surface parameters");
-  CathodePara->SetParameterName("CathodePara",true);
-  CathodePara->SetDefaultValue(0);
+
+  PMTCathodePara = new G4UIcmdWithAString("/WCSim/tuning/PMTCathodePara",this);
+  PMTCathodePara->SetGuidance("Input file for PMT cathode parameters");
+  PMTCathodePara->SetParameterName("PMTCathodePara",false);
 
   //TD 2019.06.22
   Ttsff = new G4UIcmdWithADouble("/WCSim/tuning/ttsff",this);
@@ -106,8 +101,7 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
   delete Rgcff;
   delete Qeff;//B.Q
   delete Mieff;
-  delete PMTSurfType;
-  delete CathodePara;
+  delete PMTCathodePara;
   delete Ttsff;
   delete PMTSatur;//TD 2019.7.16
   //delete Qoiff; //TD 2019.6.26
@@ -190,14 +184,11 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     WCSimTuningParams->SetMieff(Mieff->GetNewDoubleValue(newValue));
     G4cout << "Setting Mie scattering parameter " << Mieff->GetNewDoubleValue(newValue) << G4endl;
   }
-  else if(command == PMTSurfType) {
-    WCSimTuningParams->SetPMTSurfType(PMTSurfType->GetNewIntValue(newValue));
-    G4cout << "Setting PMT photocathode surface optical model as Model " << PMTSurfType->GetNewIntValue(newValue) << " (0 means default dielectric model)" << G4endl;
-  }
 
-  else if(command == CathodePara) {
-    WCSimTuningParams->SetCathodePara(CathodePara->GetNewIntValue(newValue));
-    G4cout << "Setting PMT photocathode surface parameters as Choice " << CathodePara->GetNewIntValue(newValue) << " (0 = SK, 1 = KCsRb, 2 = RbCsCb)" << G4endl;
+  else if (command == PMTCathodePara) {
+    WCSimTuningParams->ReadCathodeParaTable(newValue);
+    G4cout << "Setting PMT photocathode surface optical model as Model " << WCSimTuningParams->GetPMTSurfType() << " (0 means default dielectric model)," << G4endl;
+    G4cout << " cathode thickness = " << WCSimTuningParams->GetCathodeThickness() << " nm, nCathodePara = " << WCSimTuningParams->GetNCathodePara() << G4endl;
   }
 
   else if(command == TVSpacing) {

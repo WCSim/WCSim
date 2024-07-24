@@ -3,8 +3,10 @@
 /run/verbose 1
 /tracking/verbose 0
 /hits/verbose 0
-#/control/execute vis.mac
-#/vis/open OGLSQt
+
+###############
+# GEOMETRY
+###############
 
 ## select the geometry
 # Default config if you do nothing is currently SuperK
@@ -12,13 +14,27 @@
 
 
 #Use mPMTs settings and beam test geometry 
-#/WCSim/WCgeom nuPRISMBeamTest_mPMT ## this is 18c5r from the original design
 /WCSim/WCgeom nuPRISMBeamTest_16cShort_mPMT ## this is 16c4r from CAD
 # Rotate barrel by half a tower (needed for correct WCTE geometry)
 /WCSim/Geometry/RotateBarrelHalfTower true
 
 # True --> default replica method to place PMTs. False --> new placement method 
 /WCSim/PMT/ReplicaPlacement false
+
+############################################################################################
+##These comments are only useful when using /WCSim/PMT/ReplicaPlacement false
+# Apply random fluctuation to PMT placement. Argument specifies the Gaussian 1 sigma value
+/WCSim/PMT/PositionVariation 0 mm
+# Change the ID radius at top, middle and bottom for PMT placement
+/WCSim/PMT/TankRadiusChange 0 0 0 mm
+# Read PMT positions, ID, orientation from input file. This overrides the auto positioning
+/WCSim/PMT/PositionFile data/mPMT_Position_WCTE.txt
+# To import CDS into simulation
+# 1. Downland the CDS CAD model from WCTE webpage (https://wcte.hyperk.ca/wg/calibration/cds-system/cds-arm-cad-for-physics-simulation/arm-for-simulation-ascii-v2.zip/view), unzip it and set the path
+# 2. Use the following PMT position file where mPMT id 90 and 96 are disabled 
+#/WCSim/Geometry/SetCDSFile path_to_CDS_file
+#/WCSim/PMT/PositionFile data/mPMT_Position_WCTE_CDS.txt
+############################################################################################
 
 ##################
 # AmBe CALIBRATION SOURCE
@@ -45,42 +61,19 @@
 #/WCSim/SaveCapture true
 #/process/inactivate nKiller
 
-############################################################################################
-##These comments are only useful when using /WCSim/PMT/ReplicaPlacement false
-# Apply random fluctuation to PMT placement. Argument specifies the Gaussian 1 sigma value
-/WCSim/PMT/PositionVariation 0 mm
-# Change the ID radius at top, middle and bottom for PMT placement
-/WCSim/PMT/TankRadiusChange 0 0 0 mm
-# Read PMT positions, ID, orientation from input file. This overrides the auto positioning
-/WCSim/PMT/PositionFile data/mPMT_Position_WCTE.txt
-# To import CDS into simulation
-# 1. Downland the CDS CAD model from WCTE webpage (https://wcte.hyperk.ca/wg/calibration/cds-system/cds-arm-cad-for-physics-simulation/arm-for-simulation-ascii-v2.zip/view), unzip it and set the path
-# 2. Use the following PMT position file where mPMT id 90 and 96 are disabled 
-#/WCSim/Geometry/SetCDSFile path_to_CDS_file
-#/WCSim/PMT/PositionFile data/mPMT_Position_WCTE_CDS.txt
-############################################################################################
-
 # Set Gadolinium doping (concentration is in percent)
 #/WCSim/DopingConcentration 0.1
-#/WCSim/DopedWater false
+#/WCSim/DopedWater true
 /WCSim/Construct
-## OR for single mPMT mode or updating mPMT parameters:
-#/control/execute macros/mPMT_nuPrism1.mac         ## mPMT options: mPMT_nuPrism1.mac and 2.mac
+
+##################
+# MISCELLANEOUS
+##################
 
 #Added for the PMT QE option 08/17/10 (XQ)
-# 1. Stacking only mean when the photon is generated
-# the QE is applied to reduce the total number of photons
-# 2. Stacking and sensitivity detector
-# In the stacking part, the maximum QE is applied to reduce
-# the total number of photons
-# On the detector side, the rest of QE are applied according to QE/QE_max
-# distribution. This option is in particular important for the WLS
-# 3. The third option means all the QE are applied at the detector
-# Good for the low energy running.
-# 4. Switch off the QE, ie. set it at 100%
+# SensitiveDetector_Only: all the QE are applied at the detector. Good for the low energy running.
+# DoNotApplyQE: Switch off the QE, ie. set it at 100%
 
-#/WCSim/PMTQEMethod     Stacking_Only
-#/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
 /WCSim/PMTQEMethod     SensitiveDetector_Only
 #/WCSim/PMTQEMethod     DoNotApplyQE
 
@@ -90,9 +83,13 @@
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 /WCSim/SavePi0 false
 
+##################
+# DIGITISER & TRIGGER
+##################
 #choose the Trigger & Digitizer type (and options)
 /DAQ/Digitizer SKI
 /DAQ/Trigger NDigits
+#/DAQ/Trigger NoTrigger
 
 #grab the other DAQ options (thresholds, timing windows, etc.)
 /control/execute macros/daq.mac
@@ -101,6 +98,9 @@
 #/random/setSeeds 2 1
 #/WCSim/random/seed 4
 
+##################
+# DARK NOISE
+##################
 # Note: SetDetectorElement **must** come before all /DarkRate/ options (e.g. /DarkRate/SetDarkRate), if not, changes specified
 # (e.g. in the DarkRate) will not be applied
 # (Technically they will be applied to the OD PMT dark parameters, which don't exist in WCTE = no effect is seen)
@@ -122,10 +122,19 @@
 /DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
 
+##################
+# VISUALISATION
+##################
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute macros/visOGLSX.mac
 #/control/execute macros/visRayTracer.mac
 #/control/execute macros/visOGLQT.mac             ## NEW
+
+##################
+# PHYSICS
+##################
+## It should be noted that only one /mygen/generator can be run
+## at once.
 
 ## select the input nuance-formatted vector file
 ## you can of course use your own
@@ -136,7 +145,7 @@
 
 # Or you can use the G4 Particle Gun
 # for a full list of /gun/ commands see:
-# http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
+# https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_gun_.html
 #/mygen/generator gun
 #/gun/particle e-
 #/gun/particle pi0
@@ -147,7 +156,8 @@
 # Or you can use the G4 General Particle Source
 # you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
 # for a full list of /gps/ commands see:
-# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+# https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/GettingStarted/generalParticleSource.html
+# https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_gps_.html
 /mygen/generator gps
 /gps/particle e-
 /gps/energy 500 MeV
@@ -156,8 +166,7 @@
 
 # Or you can use the laser option
 # This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
-# for a full list of /gps/ commands see:
-# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+# for a full list of /gps/ commands see the links above
 # It is used for laser calibration simulation
 #/mygen/generator laser
 #/gps/particle opticalphoton
@@ -198,6 +207,9 @@
 ## Note that the value is a percentage from 0.0 to 100.0, not fraction 0.0 to 1.0
 /Tracking/fractionOpticalPhotonsToDraw 0.0
 
+##################
+# OUTPUT
+##################
 ## change the name of the output root file, default = wcsim.root
 /WCSimIO/RootFile wcsim.root
 
@@ -208,6 +220,7 @@
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false
 
+#/WCSim/random/seed 20230628
 /run/beamOn 1
 #exit
 

@@ -44,7 +44,7 @@
 #   (Check this via the std error stream)
 #   This can cause tracks to get stuck & be killed
 # - Is the layout of the ID PMTs (20" + OD) sensible?
-#   (Plot the position of each PMT. See $WCSIMDIR/sample-root-scripts/plot_pmts.C)
+#   (Plot the position of each PMT. See $WCSIM_SOURCE_DIR/sample-root-scripts/plot_pmts.C)
 #   When there is e.g. a low number of mPMTs
 #   unrealistic stripes of mPMTs are produced
 #   that may cause odd output
@@ -276,7 +276,7 @@
 
 ## select the input nuance-formatted vector file
 ## This can be from a generator (e.g. NEUT, sntools)
-## or your own (see $WCSIMDIR/sample-root-scripts/MakeKin.py for a script to make such files)
+## or your own (see $WCSIM_SOURCE_DIR/sample-root-scripts/MakeKin.py for a script to make such files)
 #/mygen/generator muline
 #/mygen/vecfile inputvectorfile
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
@@ -286,7 +286,7 @@
 
 ## Or you can use the G4 Particle Gun
 ## for a full list of /gun/ commands see:
-## http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
+## https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_gun_.html
 /mygen/generator gun
 /gun/particle e-
 #/gun/particle pi0
@@ -297,7 +297,8 @@
 ## Or you can use the G4 General Particle Source
 ## you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
 ## for a full list of /gps/ commands see:
-## https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+## https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/GettingStarted/generalParticleSource.html
+## https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_gps_.html
 #/mygen/generator gps
 #/gps/particle e-
 #/gps/energy 500 MeV
@@ -315,8 +316,7 @@
 
 ## Or you can use the laser option
 ## This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
-## for a full list of /gps/ commands see:
-## https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+## for a full list of /gps/ commands see the links above
 ## It is used for laser calibration simulation
 #/mygen/generator laser
 #/gps/particle opticalphoton
@@ -342,6 +342,13 @@
 #/mygen/generator ibd
 #/mygen/ibd_database DatabasePath
 #/mygen/ibd_model ModelName (see ./data/DSNBFluxes.json for models)
+
+## Or you can use the hepmc3 generator to read nuhepmc3 files
+## The option hepmc3positionGenMode will either generate random, isotropic positions in the ID (true) or will read positions from the file (false)
+#/mygen/generator hepmc3
+#/mygen/hepmc3file HepMC3Filepath
+#/mygen/hepmc3positionGenMode true/false
+
 
 ## Radioactive option
 ## Generate radioactive decay in the water or on the PMTs

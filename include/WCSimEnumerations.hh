@@ -34,6 +34,7 @@ typedef enum ERandomGeneratorType {
 typedef enum EBoundaryType {
   kNull=0,
   kBlackSheet,
+  kMPMT,
   kTyvek,
   kCave
 } BoundaryType_t;

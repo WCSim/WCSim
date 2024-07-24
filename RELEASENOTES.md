@@ -5,18 +5,46 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+WCSim now requires HepMC3 to be installed when compiling with the default option: `-DWCSim_WCSimRoot_only=ON`.
+
 New feature
+* Pull request #433 @JackFannon: NuHepMC Reader and Generator
+
+Update
+* Pull request #458 @tdealtry: Remove HepMC3 dependency when using build option `-DWCSim_WCSimRoot_only=OFF`
+* Pull request #457 @tdealtry: Favour use of `$WCSIM_BUILD_DIR`. Rename `$WCSIMDIR` to `$WCSIM_SOURCE_DIR` and only use it for referencing where documentation/scripts are
+* Pull request #456 @tdealtry: Prevent absolute path to header files being included in the WCSimRoot library
+
+Documentation
+* Pull request #454 @tdealtry: Remove some outdated documentation files (README.ROOT, Readme_features.txt)
+
+*************************************************************
+27/06/2024: Notes for v1.12.13
+*************************************************************
+Release after changes to WCTE output after #442 adds mPMT geometry behind the radius of the blacksheet
+
+New feature
+* Pull request #453 @kmtsui: Allow PMT photocathode tuning parameters & geometry material refractive indices via mac file
 * Pull request #438 @guiguem: Adds `-DWCSim_WCSimRoot_only=ON` cmake option to compile lighter-weight WCSimRoot library without Geant4 dependency, for just reading WCSim files
 
 Update
+* Pull Request #450 @tdealtry: Removes the `Makefile` from the `develop` branch (if you **need** it, it is available on a separate branch, but it is **not recommended**)
+* Pull request #446 @tdealtry: Hard exit when using a PMT QE method other than SensitiveDetector_Only
+* Pull request #442 @kmtsui: Adds mPMT geometry behind the radius of the blacksheet (currently used in WCTE geometry only)
 * Pull request #439 @guiguem: Use the same C++ standard as was used to compile ROOT
 
 Bug fix
+* Pull request #452 @tdealtry: Fix install of HepMC3 via yum (CentOS8 stream is now EOL)
+* Pull request #451 @kmtsui: Fix rotation in cosmic muon generator direction/position for IWCD/WCTE geometries
+* Pull request #447 #448 #449 @tdealtry: Analysis macros now load library from `$WCSIM_BUILD_DIR/lib/` instead of `$WCSIMDIR/`
 * Pull request #443 @tdealtry: Set the true beam track information for the 0th vertex in events with multiple vertices, for muline files
 * Pull request #435 @DiegoCostas97: Set the dark rate options correctly in WCTE.mac
 * Pull request #432 @tdealtry: Use the same default dark rate time option for all PMT types in WCSim.mac
 
 Documentation
+* Pull Request #450 @tdealtry: Improve installation instructions
+* Pull request #449 @tdealtry: Improve documentation formatting for the nuance file format
+* Pull request #449 @tdealtry: Fix links to G4 information on gun & gps commands
 * Pull request #436 @tdealtry: Improve documentation on finding the PMT that created a digitised or true hit
 
 CI
