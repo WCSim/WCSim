@@ -1419,8 +1419,8 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
 
 	// WCIDHeight               = 2.830845*CLHEP::m;
 	// WCIDDiameter             = 3.192536*CLHEP::m;
-  WCIDHeight               = 2.758236*CLHEP::m;
-  WCIDDiameter             = 3.119927*CLHEP::m;
+  WCIDHeight               = 2.714235*CLHEP::m; // 1955+1105.475-173.12*2 mm
+  WCIDDiameter             = 3.075926*CLHEP::m; // (1711.083-173.12)*2 mm
 	WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = 288.*CLHEP::mm;
