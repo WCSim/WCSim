@@ -1387,7 +1387,7 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
 {
   WCDetectorName = "NuPRISMBeamTest_16cShort_mPMT";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-	mPMT_ID_PMT = "PMT3inchR12199_02";    //can be changed in macro through mPMT settings.
+	mPMT_ID_PMT = "PMT3inchR14374_WCTE";    //can be changed in macro through mPMT settings.
 	mPMT_OD_PMT = "PMT3inchR12199_02";
   WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
   WCPMTName = PMT->GetPMTName();
