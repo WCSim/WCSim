@@ -1424,6 +1424,9 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
 	WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = 288.*CLHEP::mm;
+  WCBarrelPMTTopOffset  = 62.355*CLHEP::mm; // 235.475-173.12
+  WCBarrelPMTBotOffset  = 331.88*CLHEP::mm; // 505.-173.12
+
   WCPMTperCellHorizontal = 1.0; // 1 per phi
   WCPMTperCellVertical   = 1.0;
 

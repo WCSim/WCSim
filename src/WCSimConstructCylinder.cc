@@ -2649,10 +2649,17 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   else
     barrelPhiOffset = 0.;
 
+  // Use asymmetric offset only if both top and bot offsets are valid
+  if (WCBarrelPMTTopOffset<0 || WCBarrelPMTBotOffset<0)
+  {
+    WCBarrelPMTTopOffset = WCBarrelPMTOffset;
+    WCBarrelPMTBotOffset = WCBarrelPMTOffset;
+  }
+  
   // it's height:
-  barrelCellHeight  = (WCIDHeight-2.*WCBarrelPMTOffset)/WCBarrelNRings;
+  barrelCellHeight  = (WCIDHeight-WCBarrelPMTTopOffset-WCBarrelPMTBotOffset)/WCBarrelNRings;
   // the height of all regular cells together:
-  mainAnnulusHeight = WCIDHeight -2.*WCBarrelPMTOffset -2.*barrelCellHeight;
+  mainAnnulusHeight = WCIDHeight -WCBarrelPMTTopOffset-WCBarrelPMTBotOffset -2.*barrelCellHeight;
   
   //TF: has to change for mPMT vessel:
 
@@ -2902,9 +2909,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   G4double mainAnnulusZ[nLayers];
   G4double mainAnnulusRmin[nLayers];
   G4double mainAnnulusRmax[nLayers];
+  G4double mainAnnulusMinZ = -WCIDHeight/2. + WCBarrelPMTBotOffset + barrelCellHeight;
   for (int i=0;i<(G4int)WCBarrelNRings-1;i++)
   {
-    mainAnnulusZ[i] =  -mainAnnulusHeight/2 + mainAnnulusHeight*i/((G4int)WCBarrelNRings-2.);
+    mainAnnulusZ[i] = mainAnnulusMinZ + mainAnnulusHeight*i/((G4int)WCBarrelNRings-2.);
     G4double dr = GetRadiusChange(mainAnnulusZ[i]); // radius change at end-point
     mainAnnulusRmin[i] = innerAnnulusRadius+dr;
     mainAnnulusRmax[i] = outerAnnulusRadius+dr;
@@ -2964,8 +2972,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
     annulusBlackSheetRmin[i] = WCIDRadius+dr;
     annulusBlackSheetRmax[i] = WCIDRadius+WCBlackSheetThickness+dr;
   }
+  G4cout << "Geometry dimension printout: " << G4endl;
   G4cout << WCIDRadius << ", " << WCBlackSheetThickness << ", " << barrelCellHeight/2. << G4endl;
-  G4cout << WCIDHeight << ", " << WCBarrelPMTOffset << ", " << WCBarrelNRings << G4endl;
+  G4cout << WCIDHeight << ", " << WCBarrelPMTTopOffset << ", " <<WCBarrelPMTBotOffset << ", " << WCBarrelNRings << G4endl;
   G4cout << dPhi << ", " << G4endl;
   for (int i=0;i<(G4int)WCBarrelNRings-1;i++)
   {
@@ -3341,7 +3350,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
         PMTRotation->rotateX(-phi_offset);//align the PMT with the Cell
 
         // inclined barrel wall
-        G4int iz = (pmtPos[i].z()+mainAnnulusHeight/2.)/barrelCellHeight;
+        G4int iz = (pmtPos[i].z()-mainAnnulusMinZ)/barrelCellHeight;
         G4double dth = atan((annulusBlackSheetRmin[iz+1]-annulusBlackSheetRmin[iz])/(mainAnnulusZ[iz+1]-mainAnnulusZ[iz]));
         if(orientation == PERPENDICULAR)
           PMTRotation->rotateY(-dth); 
@@ -3387,7 +3396,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
     {
       for (int iz=0;iz<(G4int)WCBarrelNRings-2;iz++)
       {
-        G4double z_offset = -mainAnnulusHeight/2.+barrelCellHeight*(iz+0.5);
+        G4double z_offset = mainAnnulusMinZ+barrelCellHeight*(iz+0.5);
 
         // slight different cell width at different z
         G4double barrelCellWidth = (annulusBlackSheetRmin[iz+1]+annulusBlackSheetRmin[iz])*tan(dPhi/2.);
@@ -3475,7 +3484,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
         copyNo = 0;
         for (int iz=0;iz<WCBarrelNRings-2;iz++)
         {
-          G4double z_offset = -mainAnnulusHeight/2.+barrelCellHeight*(iz+0.5);
+          G4double z_offset = mainAnnulusMinZ+barrelCellHeight*(iz+0.5);
 
           G4double towerWidth = (annulusBlackSheetRmin[iz+1]+annulusBlackSheetRmin[iz])/2.*tan(2*pi-totalAngle);
           G4double horizontalSpacingExtra   = towerWidth/(WCBarrelNumPMTHorizontal-WCBarrelRingNPhi*WCPMTperCellHorizontal);
@@ -3693,12 +3702,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
     G4VSolid* solidWCODBotCapTyvek = nullptr;
 
     G4double odTopCapZ[4] = {
-      (-WCODDeadSpace+1*mm+WCBlackSheetThickness),
+      (-WCODDeadSpace+1*mm+WCBlackSheetThickness+pmt_blacksheet_offset),
       -.5*(WCODTyvekSheetThickness),
       -.5*(WCODTyvekSheetThickness),
       .5*(WCODTyvekSheetThickness)};
     G4double odBotCapZ[4] = {
-      -(-WCODDeadSpace+1*mm+WCBlackSheetThickness),
+      -(-WCODDeadSpace+1*mm+WCBlackSheetThickness+pmt_blacksheet_offset),
       .5*(WCODTyvekSheetThickness),
       .5*(WCODTyvekSheetThickness),
       -.5*(WCODTyvekSheetThickness)};
@@ -3843,7 +3852,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
     //-------------------------------------------------------------
     // OD Tyvek Barrel side
     // ------------------------------------------------------------
-    G4double annulusZ[2] = {-mainAnnulusHeight/2., mainAnnulusHeight/2};
+    G4double annulusZ[2] = {mainAnnulusMinZ, mainAnnulusMinZ+mainAnnulusHeight};
     G4double annulusODTyvekRmax[2] = {(WCODRadius),
                                       WCODRadius};
     G4double annulusODTyvekRmin[2] = {(WCODRadius-WCODTyvekSheetThickness),
@@ -3941,7 +3950,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
     G4int odcopyNo = 0;
     for (int iz=0;iz<(G4int)WCBarrelNRings-2;iz++)
     {
-      G4double z_offset = -mainAnnulusHeight/2.+barrelCellHeight*(iz+0.5);
+      G4double z_offset = mainAnnulusMinZ+barrelCellHeight*(iz+0.5);
 
       for (int iphi=0;iphi<WCBarrelRingNPhi;iphi++)
       {
@@ -4046,7 +4055,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
       odcopyNo = 0;
       for (int iz=0;iz<(G4int)WCBarrelNRings-2;iz++)
       {
-        G4double z_offset = -mainAnnulusHeight/2.+barrelCellHeight*(iz+0.5);
+        G4double z_offset = mainAnnulusMinZ+barrelCellHeight*(iz+0.5);
         for(G4long i = 0; i < (WCPMTODperCellHorizontalExtra); i++){
           for(G4long j = 0; j < WCPMTODperCellVertical; j++){
             G4cout << "Adding OD PMT in iz = "<< iz << " cell " << i << ", " << j << G4endl;
@@ -4143,6 +4152,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
   } // END if isODConstructed
 
+  topCapAssemblyHeight = WCBarrelPMTTopOffset+barrelCellHeight+1*mm+WCBlackSheetThickness+pmt_blacksheet_offset;
+  botCapAssemblyHeight = WCBarrelPMTBotOffset+barrelCellHeight+1*mm+WCBlackSheetThickness+pmt_blacksheet_offset;
   G4LogicalVolume* logicTopCapAssembly = ConstructCapsNoReplica(true);
   G4LogicalVolume* logicBottomCapAssembly = ConstructCapsNoReplica(false);
 
@@ -4158,7 +4169,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
   //G4VPhysicalVolume* physiTopCapAssembly =
   new G4PVPlacement(0,
-                  G4ThreeVector(0.,0.,(mainAnnulusHeight/2.+capAssemblyHeight/2.)),
+                  G4ThreeVector(0.,0.,(mainAnnulusMinZ+mainAnnulusHeight+topCapAssemblyHeight/2.)),
                   logicTopCapAssembly,
                   "TopCapAssembly",
                   logicWCBarrel,
@@ -4167,7 +4178,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
   //G4VPhysicalVolume* physiBottomCapAssembly =
   new G4PVPlacement(0,
-                  G4ThreeVector(0.,0.,(-mainAnnulusHeight/2.-capAssemblyHeight/2.)),
+                  G4ThreeVector(0.,0.,(mainAnnulusMinZ-botCapAssemblyHeight/2.)),
                   logicBottomCapAssembly,
                   "BottomCapAssembly",
                   logicWCBarrel,
@@ -4192,13 +4203,16 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   const G4String bbstr  = G4String("Barrel") +
                 oristr + G4String("Border");   // "Barrel[Top|Bot]Border"
 
-  capAssemblyHeight = (WCIDHeight-mainAnnulusHeight)/2+1*mm+WCBlackSheetThickness+pmt_blacksheet_offset;
+  capAssemblyHeight = flipz ? topCapAssemblyHeight : botCapAssemblyHeight;
+  G4double capAssemblyZEdge = flipz ? WCIDHeight/2-WCBarrelPMTTopOffset-barrelCellHeight :
+                                     -WCIDHeight/2+WCBarrelPMTBotOffset+barrelCellHeight ;
+  G4double CapBarrelPMTOffset = flipz ? WCBarrelPMTTopOffset : WCBarrelPMTBotOffset ;
 
   const G4String caname = capstr + G4String("Assembly");  // "[Top|Bot]CapAssembly"
   G4Tubs* solidCapAssembly = new G4Tubs(caname,
 							0.0*m,
               // use the largest radius in cap region
-							(outerAnnulusRadius+std::max(GetRadiusChange(-zflip*WCIDHeight/2),GetRadiusChange(-zflip*mainAnnulusHeight/2)))/cos(dPhi/2.), 
+							(outerAnnulusRadius+std::max(GetRadiusChange(-zflip*WCIDHeight/2),GetRadiusChange(capAssemblyZEdge)))/cos(dPhi/2.), 
 							capAssemblyHeight/2,
 							0.*deg,
 							360.*deg);
@@ -4216,13 +4230,16 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   //----------------------------------------------------
   // extra rings for the top and bottom of the annulus
   //---------------------------------------------------
-  G4double borderAnnulusZ[3] = {(-barrelCellHeight/2.-(WCIDRadius-innerAnnulusRadius))*zflip, 
+  G4double borderAnnulusZ[3] = {(-barrelCellHeight/2.)*zflip, 
 								-barrelCellHeight/2.*zflip,
 								barrelCellHeight/2.*zflip};
+  G4double borderAnnulusGloblaZ[3] = {capAssemblyZEdge-zflip*(barrelCellHeight),
+                                      capAssemblyZEdge-zflip*barrelCellHeight,
+                                      capAssemblyZEdge};
   // Get the radius at global z 
-  G4double borderAnnulusRmin[3] = { WCIDRadius + GetRadiusChange(-zflip*(mainAnnulusHeight/2+barrelCellHeight+(WCIDRadius-innerAnnulusRadius))),
-                                    innerAnnulusRadius + GetRadiusChange(-zflip*(mainAnnulusHeight/2+barrelCellHeight)), 
-                                    innerAnnulusRadius + GetRadiusChange(-zflip*(mainAnnulusHeight/2)) };
+  G4double borderAnnulusRmin[3] = { WCIDRadius + GetRadiusChange(borderAnnulusGloblaZ[0]),
+                                    innerAnnulusRadius + GetRadiusChange(borderAnnulusGloblaZ[1]), 
+                                    innerAnnulusRadius + GetRadiusChange(borderAnnulusGloblaZ[2]) };
 
   if(std::abs(borderAnnulusZ[2] - borderAnnulusZ[0]) > capAssemblyHeight - WCBlackSheetThickness) {
     G4cerr << "IMPOSSIBLE GEOMETRY:  capAssemblyHeight (" 
@@ -4240,12 +4257,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   // add blacksheet to the border cells.
   // ---------------------------------------------------------
   // the part between the barrel ring and cap was missing before
-  G4double annulusBlackSheetRmax[3] = { WCIDRadius + GetRadiusChange(-zflip*(mainAnnulusHeight/2+barrelCellHeight+(WCIDRadius-innerAnnulusRadius))) + WCBlackSheetThickness,
-                                        WCIDRadius + GetRadiusChange(-zflip*(mainAnnulusHeight/2+barrelCellHeight)) + WCBlackSheetThickness,
-                                        WCIDRadius + GetRadiusChange(-zflip*(mainAnnulusHeight/2)) + WCBlackSheetThickness};
-  G4double annulusBlackSheetRmin[3] = { WCIDRadius + GetRadiusChange(-zflip*(mainAnnulusHeight/2+barrelCellHeight+(WCIDRadius-innerAnnulusRadius))),
-                                        WCIDRadius + GetRadiusChange(-zflip*(mainAnnulusHeight/2+barrelCellHeight)),
-                                        WCIDRadius + GetRadiusChange(-zflip*(mainAnnulusHeight/2))};
+  G4double annulusBlackSheetRmax[3] = { WCIDRadius + GetRadiusChange(borderAnnulusGloblaZ[0]) + WCBlackSheetThickness,
+                                        WCIDRadius + GetRadiusChange(borderAnnulusGloblaZ[1]) + WCBlackSheetThickness,
+                                        WCIDRadius + GetRadiusChange(borderAnnulusGloblaZ[2]) + WCBlackSheetThickness};
+  G4double annulusBlackSheetRmin[3] = { WCIDRadius + GetRadiusChange(borderAnnulusGloblaZ[0]),
+                                        WCIDRadius + GetRadiusChange(borderAnnulusGloblaZ[1]),
+                                        WCIDRadius + GetRadiusChange(borderAnnulusGloblaZ[2])};
   const G4String bbbsname = bbrname + G4String("BlackSheet");    // "WCBarrel[Top|Bot]BorderBlackSheet"                                      
   G4Polyhedra* solidWCBarrelBlackSheet = new G4Polyhedra(bbbsname,
                                                    barrelPhiOffset, // phi start
@@ -4285,22 +4302,22 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   const G4String capname = G4String("WC") + capstr;    // "WC[Top|Bot]Cap"
 
 #ifdef DEBUG
-  G4cout << "B.Q Cap: " << totalAngle << ", " << WCBarrelRingNPhi << ", " << outerAnnulusRadius << ", " << innerAnnulusRadius << ", " << WCBlackSheetThickness << ", " << zflip << ", " << WCBarrelPMTOffset << G4endl;
+  G4cout << "B.Q Cap: " << totalAngle << ", " << WCBarrelRingNPhi << ", " << outerAnnulusRadius << ", " << innerAnnulusRadius << ", " << WCBlackSheetThickness << ", " << zflip << ", " << CapBarrelPMTOffset << G4endl;
 #endif
 
   //---------------------------------------------------------------------
   // add cap blacksheet
   // -------------------------------------------------------------------
   
-  G4double capBlackSheetZ[4] = {-WCBlackSheetThickness*zflip, 0., 0., (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius)) *zflip};
+  G4double capBlackSheetZ[4] = {-WCBlackSheetThickness*zflip, 0., 0., (CapBarrelPMTOffset) *zflip};
   G4double capBlackSheetRmin[4] = { 0., 
                                     0., 
                                     WCIDRadius + GetRadiusChange(-zflip*WCIDHeight/2), 
-                                    WCIDRadius + GetRadiusChange(-zflip*(WCIDHeight/2-(WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))))};
+                                    WCIDRadius + GetRadiusChange(-zflip*(WCIDHeight/2-(CapBarrelPMTOffset)))};
   G4double capBlackSheetRmax[4] = { WCIDRadius+WCBlackSheetThickness + GetRadiusChange(-zflip*WCIDHeight/2), 
                                     WCIDRadius+WCBlackSheetThickness + GetRadiusChange(-zflip*WCIDHeight/2),
 								                    WCIDRadius+WCBlackSheetThickness + GetRadiusChange(-zflip*WCIDHeight/2),
-								                    WCIDRadius+WCBlackSheetThickness + GetRadiusChange(-zflip*(WCIDHeight/2-(WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius))))};
+								                    WCIDRadius+WCBlackSheetThickness + GetRadiusChange(-zflip*(WCIDHeight/2-(CapBarrelPMTOffset)))};
   const G4String capbsname = capname + G4String("BlackSheet");
 
   if(capBlackSheetZ[0] * capBlackSheetZ[3] > 0.) {
@@ -4427,7 +4444,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
         else if(orientation == VERTICAL)
           PMTRotation->rotateY(-dth); 
 
-        G4double newZ = pmtPos[i].z() + (mainAnnulusHeight/2.+barrelCellHeight/2.)*zflip + G4RandGauss::shoot(0,pmtPosVar);
+        G4double newZ = pmtPos[i].z() - capAssemblyZEdge + (barrelCellHeight/2.)*zflip + G4RandGauss::shoot(0,pmtPosVar);
         G4double newR = annulusBlackSheetRmin[1]+(annulusBlackSheetRmin[2]-annulusBlackSheetRmin[1])*(newZ-borderAnnulusZ[1])/(borderAnnulusZ[2]-borderAnnulusZ[1]);
         newR += pmt_blacksheet_offset;
         G4double newPhi = pmtPhi-phi_offset;
@@ -4957,7 +4974,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     G4VSolid* solidWCODCapTyvek = nullptr;
     G4double odCapZ[2] = {
       (-WCBlackSheetThickness-1.*mm)*zflip,
-      (WCBarrelPMTOffset - (WCIDRadius-innerAnnulusRadius)) *zflip};
+      (CapBarrelPMTOffset + pmt_blacksheet_offset) *zflip};
     if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal){
       solidWCODCapTyvek
       = new G4Polyhedra(capname + G4String("Tyvek"),
@@ -5164,9 +5181,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 
     // set scale
     shape_CDS->SetScale(1);
-    double cds_z_offset = -mainAnnulusHeight/2.-capAssemblyHeight/2.; // logicBottomCapAssembly placement
-    cds_z_offset += 2*(-capAssemblyHeight/2.+1*mm+WCBlackSheetThickness); // logicWCCap placement
-    cds_z_offset += 132.25*mm + 145*mm + 45.9225*mm + pmt_blacksheet_offset; // ad-hoc value to place CDS close to endcap blacksheet but not overlapping
+    double cds_z_offset = capAssemblyZEdge-capAssemblyHeight/2.; // logicBottomCapAssembly placement
+    cds_z_offset += -capAssemblyHeight/2.+1*mm+WCBlackSheetThickness + pmt_blacksheet_offset; // logicWCCap placement
+    cds_z_offset += -94*mm; // ad-hoc value to place CDS close to endcap blacksheet but not overlapping
     G4ThreeVector posCDS = G4ThreeVector(0*m, 0*m,cds_z_offset);
     
     // make new shape a solid

@@ -98,6 +98,8 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   topRadiusChange = 0; midRadiusChange = 0; botRadiusChange = 0;
   readFromTable = false;
   pmt_blacksheet_offset = 0;
+  WCBarrelPMTTopOffset = -1;
+  WCBarrelPMTBotOffset = -1;
 
   debugMode = false;
 
