@@ -5196,7 +5196,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     // rotate if necessary
     G4RotationMatrix* CDS_rot = new G4RotationMatrix; // Rotates X and Z axes only
     CDS_rot->rotateX(270*deg);                 
-    CDS_rot->rotateY(315*deg);
+    CDS_rot->rotateY(135*deg);
     
     new G4PVPlacement(CDS_rot,                       //rotation
               posCDS,                    //at position
