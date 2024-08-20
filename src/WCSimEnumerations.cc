@@ -152,6 +152,15 @@ std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
   case (kDecay) :
     return "Decay";
     break;
+  case (kRadioactiveDecay) :
+    return "RadioactiveDecay";
+    break;
+  case (kPhotonNuclear) :
+    return "photonNuclear";
+    break;
+  case (kOpticalPhotonWavelengthShifting) :
+    return "OpWLS";
+    break;
   case (kInitialParticle) :
     return "initial";
     break;
@@ -193,6 +202,12 @@ ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str)
     return kMuIoni;
   } else if (str == "Decay") {
     return kDecay;
+  } else if (str == "RadioactiveDecay") {
+    return kRadioactiveDecay;
+  } else if (str == "photonNuclear") {
+    return kPhotonNuclear;
+  } else if (str == "OpWLS") {
+    return kOpticalPhotonWavelengthShifting;
   } else if (str == "initial") {
     return kInitialParticle;
   } else {
