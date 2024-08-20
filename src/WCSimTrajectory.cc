@@ -67,8 +67,10 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
       const G4VProcess* tempproc = aTrack->GetCreatorProcess();
       creatorProcess = tempproc->GetProcessName();
     }
-  else 
-    creatorProcess = "";
+  else {
+    // must be a primary particle
+    creatorProcess = "initial";
+  }
   savePhotonTrack = false;
 
   boundaryPoints.clear();

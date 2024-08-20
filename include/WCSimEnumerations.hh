@@ -46,6 +46,11 @@ typedef enum EReflectionSurface {
   kPhotocathodeS
 } ReflectionSurface_t;
 
+/*!
+ * The process that directly created an object.
+ * Used in the output files for true tracks and true hits.
+ * This is a rather catch all `enum`, e.g. `kTarget` is not truly a process
+ */
 typedef enum EProcessType { // Diego Costas 27/02/2024
   kUnknownProcess,
   kDarkNoise,
@@ -59,7 +64,11 @@ typedef enum EProcessType { // Diego Costas 27/02/2024
   kAnnihil,
   kConv,
   kEIoni,
-  kNeutronInelastic
+  kNeutronInelastic,
+  kMuMinusCaptureAtRest,
+  kMuIoni,
+  kDecay,
+  kInitialParticle,
 } ProcessType_t;
 
 class WCSimEnumerations

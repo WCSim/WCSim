@@ -143,6 +143,18 @@ std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
   case (kNeutronInelastic) :
     return "neutronInelastic";
     break;
+  case (kMuMinusCaptureAtRest) :
+    return "kMuMinusCaptureAtRest";
+    break;
+  case (kMuIoni) :
+    return "muIoni";
+    break;
+  case (kDecay) :
+    return "Decay";
+    break;
+  case (kInitialParticle) :
+    return "initial";
+    break;
   default: 
     return "";
     break;
@@ -175,7 +187,21 @@ ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str)
     return kEIoni;
   } else if (str == "neutronInelastic") {
     return kNeutronInelastic;
+  } else if (str == "muMinusCaptureAtRest") {
+    return kMuMinusCaptureAtRest;
+  } else if (str == "muIoni") {
+    return kMuIoni;
+  } else if (str == "Decay") {
+    return kDecay;
+  } else if (str == "initial") {
+    return kInitialParticle;
   } else {
+    std::cerr << "UNKNOWN PROCESS TYPE: " << str << std::endl
+	      << "You've encountered a new ProcessType_t!"
+	      << "Other people will also need to use this, so please put in a pull request,"
+	      << "where you add this to WCSimEnumerations (both in the .cc & .hh files)"
+	      << "Thank you in advance" << std::endl;
+    exit(-1);
     // Default value in case of unknown string
     return kUnknownProcess;
   }
