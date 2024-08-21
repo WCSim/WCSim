@@ -149,6 +149,9 @@ std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
   case (kMuIoni) :
     return "muIoni";
     break;
+  case (kHIoni) :
+    return "hIoni";
+    break;
   case (kDecay) :
     return "Decay";
     break;
@@ -158,8 +161,17 @@ std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
   case (kPhotonNuclear) :
     return "photonNuclear";
     break;
+  case (kElectronNuclear) :
+    return "electronNuclear";
+    break;
   case (kOpticalPhotonWavelengthShifting) :
     return "OpWLS";
+    break;
+  case (kHBertiniCaptureAtRest) :
+    return "hBertiniCaptureAtRest";
+    break;
+  case (kProtonInelastic) :
+    return "protonInelastic";
     break;
   case (kInitialParticle) :
     return "initial";
@@ -200,14 +212,22 @@ ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str)
     return kMuMinusCaptureAtRest;
   } else if (str == "muIoni") {
     return kMuIoni;
+  } else if (str == "hIoni") {
+    return kHIoni;
   } else if (str == "Decay") {
     return kDecay;
   } else if (str == "RadioactiveDecay") {
     return kRadioactiveDecay;
   } else if (str == "photonNuclear") {
     return kPhotonNuclear;
+  } else if (str == "electronNuclear") {
+    return kElectronNuclear;
   } else if (str == "OpWLS") {
     return kOpticalPhotonWavelengthShifting;
+  } else if (str == "hBertiniCaptureAtRest") {
+    return kHBertiniCaptureAtRest;
+  } else if (str == "protonInelastic") {
+    return kProtonInelastic;
   } else if (str == "initial") {
     return kInitialParticle;
   } else {

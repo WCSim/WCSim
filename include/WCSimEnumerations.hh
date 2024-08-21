@@ -67,10 +67,14 @@ typedef enum EProcessType { // Diego Costas 27/02/2024
   kNeutronInelastic,
   kMuMinusCaptureAtRest,
   kMuIoni,
+  kHIoni,
   kDecay,
   kRadioactiveDecay,
   kPhotonNuclear,
+  kElectronNuclear,
   kOpticalPhotonWavelengthShifting,
+  kHBertiniCaptureAtRest,
+  kProtonInelastic,
   kInitialParticle,
 } ProcessType_t;
 
