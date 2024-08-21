@@ -12,6 +12,8 @@
 # Default config if you do nothing is currently SuperK
 # Nominal geometry for WCTE is nuPRISMBeamTest_16cShort_mPMT which is uncommented
 
+# Default PMT object which controls the 1pe charge response, timing resolution, QE, etc.
+/WCSim/mPMT/PMTtype_inner PMT3inchR14374_WCTE
 
 #Use mPMTs settings and beam test geometry 
 /WCSim/WCgeom nuPRISMBeamTest_16cShort_mPMT ## this is 16c4r from CAD
@@ -31,7 +33,7 @@
 /WCSim/PMT/PositionFile data/mPMT_Position_WCTE.txt
 # To import CDS into simulation
 # 1. Downland the CDS CAD model from WCTE webpage (https://wcte.hyperk.ca/wg/calibration/cds-system/cds-arm-cad-for-physics-simulation/arm-for-simulation-ascii-v2.zip/view), unzip it and set the path
-# 2. Use the following PMT position file where mPMT id 90 and 96 are disabled 
+# 2. Use the following PMT position file where 8 mPMTs are removed 
 #/WCSim/Geometry/SetCDSFile path_to_CDS_file
 #/WCSim/PMT/PositionFile data/mPMT_Position_WCTE_CDS.txt
 ############################################################################################
@@ -60,9 +62,6 @@
 # to set /WCSim/SaveCapture true
 #/WCSim/SaveCapture true
 #/process/inactivate nKiller
-
-# Default PMT object which controls the 1pe charge response, timing resolution, QE, etc.
-/WCSim/mPMT/PMTtype_inner PMT3inchR14374_WCTE
 
 # Set Gadolinium doping (concentration is in percent)
 #/WCSim/DopingConcentration 0.1
