@@ -112,7 +112,7 @@ To compile you need to have `CMakeLists.txt` in the WCSim source dir.
   the Makefiles for both the ROOT library as the main executable.
   * For some OS, `cmake3` is just `cmake`
 * `make clean` : if necessary
-* `make -j\`nproc\` install` : will
+* `` make -j`nproc` install `` : will
   * first compile `libWCSimRoot.so` which you need for using the ROOT Dict from WCSim (e.g. to read the output files)
   * compile WCSim (`libWCSimCore.so` and the executable `WCSim`)
   * install the software in the build directory (copies things into `bin/`, `include/`, etc.)
