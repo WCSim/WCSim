@@ -575,6 +575,9 @@ private:
   G4LogicalVolume* logicWCODWLSPlateCladding;
 
   G4double capAssemblyHeight;
+  // for asymmetric cap construction
+  G4double topCapAssemblyHeight;
+  G4double botCapAssemblyHeight;
 
   G4bool WCAddGd;
 
@@ -662,6 +665,10 @@ private:
   G4double WCPMTRadius;
   G4double WCPMTExposeHeight;
   G4double WCBarrelPMTOffset;
+
+  // for asymmetric cap construction
+  G4double WCBarrelPMTTopOffset;
+  G4double WCBarrelPMTBotOffset;
 
   G4double WCPMTRadius2;//B. Quilain: for Hybrid configuration
   G4double WCPMTExposeHeight2;//B. Quilain: for Hybrid configuration

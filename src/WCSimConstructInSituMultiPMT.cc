@@ -635,7 +635,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructInSituMultiPMT(G4String PMT
   G4double thetaArray[19] =  {0.*deg, 18.1345*deg, 18.1345*deg, 18.1345*deg, 18.1345*deg, 18.1345*deg, 18.1345*deg, 
                               35.3149*deg, 35.3149*deg, 35.3149*deg, 35.3149*deg, 35.3149*deg, 35.3149*deg, 
                               35.3149*deg, 35.3149*deg, 35.3149*deg, 35.3149*deg, 35.3149*deg, 35.3149*deg };
-  G4double phiArray[19] = {0.*deg, 0.*deg, -60.*deg, -120.*deg, 180.*deg, 120.*deg, 60*deg, 0.*deg, -30.*deg, -60.*deg, -90.*deg, -120.*deg, -150.*deg, 180.*deg, 150.*deg, 120.*deg, 90.*deg, 60.*deg, 30.*deg};
+  G4double phiArray[19] = {0.*deg, 0.*deg, 60.*deg, 120.*deg, 180.*deg, -120.*deg, -60*deg, 0.*deg, 30.*deg, 60.*deg, 90.*deg, 120.*deg, 150.*deg, 180.*deg, -150.*deg, -120.*deg, -90.*deg, -60.*deg, -30.*deg};
 
   // Place the PMTs inside matrix
   for (int i = 0; i < nIDPMTs; i++) {
