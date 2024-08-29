@@ -144,7 +144,7 @@ std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
     return "neutronInelastic";
     break;
   case (kMuMinusCaptureAtRest) :
-    return "kMuMinusCaptureAtRest";
+    return "muMinusCaptureAtRest";
     break;
   case (kMuIoni) :
     return "muIoni";
