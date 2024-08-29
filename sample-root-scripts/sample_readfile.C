@@ -162,6 +162,7 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
         printf("  Track initial momentum magnitude [MeV/c]: %f\n", wcsimroottrack->GetP());
         printf("  Track mass [MeV/c2]: %f\n", wcsimroottrack->GetM());
         printf("  Track ID: %d\n", wcsimroottrack->GetId());
+	printf("  Track creator process: %s\n", wcsimroottrack->GetCreatorProcessName().c_str());
         printf("  Number of ID/OD crossings: %zu\n", wcsimroottrack->GetBoundaryPoints().size());
         if (wcsimroottrack->GetBoundaryPoints().size()>0)
           printf("  First crossing position [mm]: (%f %f %f), KE [MeV]: %f, time [ns]: %f, type: %d\n", 
