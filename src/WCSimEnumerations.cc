@@ -555,7 +555,7 @@ ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str)
     return kChargeExchangeProcess;
   } else if (str == "anti_protonInelastic") {
     return kAntiProtonInelasticProcess;
-  } else if (str == "he3Inelastic") {
+  } else if (str == "he3Inelastic" || str == "He3Inelastic") {
     return kHe3InelasticProcess;
   } else if (str == "ionInelastic") {
     return kIonInelasticProcess;
@@ -695,11 +695,11 @@ ProcessType_t WCSimEnumerations::ProcessTypeStringToEnum(const std::string& str)
     return kInitialParticle;
   } else {
     std::cerr << "UNKNOWN PROCESS TYPE: " << str << std::endl
-	      << "You've encountered a new ProcessType_t!"
-	      << "Other people will also need to use this, so please put in a pull request,"
-	      << "where you add this to WCSimEnumerations (both in the .cc & .hh files)"
+	      << "You've encountered a new ProcessType_t! "
+	      << "Other people will also need to use this, so please put in a pull request, "
+	      << "where you add this to WCSimEnumerations (both in the .cc & .hh files) "
 	      << "Thank you in advance" << std::endl;
-    exit(-1);
+    //exit(-1);
     // Default value in case of unknown string
     return kUnknownProcess;
   }
