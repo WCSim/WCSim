@@ -57,7 +57,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   hepmc3positionGenModeCmd->SetGuidance("Default if not set is false (read from file)");
   hepmc3positionGenModeCmd->SetParameterName("positionGen",true);
   hepmc3positionGenModeCmd->SetDefaultValue("false");
-  SetNewValue(hepmc3positionGenModeCmd, false);
+  SetNewValue(hepmc3positionGenModeCmd, "false");
 
   timeUnitCmd = new G4UIcmdWithAString("/mygen/time_unit",this);
   timeUnitCmd->SetGuidance("Define the units used for time in the input file.");
