@@ -58,6 +58,10 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithAString* ibdDatabaseCmd;
   G4UIcmdWithAString* ibdmodelCmd;
 
+  // Start line for datatable generator
+  G4UIcmdWithAnInteger* dataTableStartEventCmd;
+  G4UIcmdWithAnInteger* dataTableNEventsCmd;
+
   // HepMC3 event generator
   G4UIcmdWithAString *hepmc3fileNameCmd;
   G4UIcmdWithABool *hepmc3positionGenModeCmd;

@@ -1020,116 +1020,164 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         particleGun->SetParticleTime(0.);
         particleGun->GeneratePrimaryVertex(anEvent);
 
-    } else if (useDataTableEvt) {
-    // Setup local variables to store the data table values
-    G4int index;
-    G4int pdgid;
-    G4double ene;
-    G4ThreeVector pos;
-    G4ThreeVector dir;
-    G4double t;
-
-    // Check if the input file is open
-    if (!inputFile.is_open()) {
-      G4cout << "Error: Input file is not open" << G4endl;
-      G4cout << "Set a vector file using the command /mygen/vecfile <FILENAME>"
-             << G4endl;
-      exit(-1);
     }
+    else if (useDataTableEvt) {
 
-    // Flag for first event
-    G4bool firstParticle = true;
+        // Check if the event limit has been reached
+        if (event_n >= dataTableNEvents + dataTableStartEvent && dataTableNEvents != -1) {
+            // Print in yellow
+            G4cout << "\033[1;33m";
+            G4cout << "Datatable reader: [INFO] Event limit of " << dataTableNEvents << " reached - run terminated..."
+                   << G4endl;
+            // Reset the colour
+            G4cout << "\033[0m";
+            G4RunManager::GetRunManager()->AbortRun();
+            return;
+        }
 
-    // Line position before the next particle
-    std::streampos lastLinePos;
+        // Setup local variables to store the data table values
+        G4int index = 0;
+        G4int pdgid;
+        G4double ene;
+        G4ThreeVector pos;
+        G4ThreeVector dir;
+        G4double t;
 
-    // Counter for the number of particles per event
-    G4int nParticles = 0;
+        // Check if the input file is open
+        if (!inputFile.is_open()) {
+            G4cout << "Error: Input file is not open" << G4endl;
+            G4cout << "Set a vector file using the command /mygen/vecfile <FILENAME>" << G4endl;
+            exit(-1);
+        }
 
-    // Read the data table
-    std::string line;
+        // Flag for first event
+        G4bool firstParticle = true;
 
-    // Skip any lines that start with a #
-    while (std::getline(inputFile, line)) {
-      if (line.empty() || line[0] == '#') {
-        continue;
-      }
+        // Line position before the next particle
+        std::streampos lastLinePos;
 
-      // If we've reached the end of the file before beamOn events have been reached then we need to stop
-      if (inputFile.eof()) {
-        G4cout << "End of datatable file - run terminated..." << G4endl;
-        G4RunManager::GetRunManager()->AbortRun();
-      }
+        // Counter for the number of particles per event
+        G4int nParticles = 0;
 
-      if(nParticles > MAX_N_VERTICES){
-        G4cout << "CANNOT DEAL WITH MORE THAN " << MAX_N_VERTICES << " VERTICES" << G4endl;
-        exit(-1);
-      }
+        // Read the data table
+        std::string line;
 
-      // Buffer to convert between string and other variables
-      std::istringstream buffer(line);
+        // Skip any lines that start with a #
+        while (std::getline(inputFile, line)) {
 
-      // Load information into local variables
-      buffer >> index >> pdgid >> ene >> pos[0] >> pos[1] >> pos[2] >> dir[0] >>
-          dir[1] >> dir[2] >> t;
+            // Buffer to convert between string and other variables
+            std::istringstream buffer(line);
 
-      // We've reached the end of the event N that we're generating and have also read the first line of event
-      // N + 1. We need to rewind to the start of event N + 1 so that the first particle of N + 1 is not missed when
-      // this function is called again for the next event.
-      if (index == 0 && firstParticle == false) {
-        // Go back a line
-        inputFile.seekg(lastLinePos);
-        break;
-      }
+            // Load information into local variables
+            buffer >> index >> pdgid >> ene >> pos[0] >> pos[1] >> pos[2] >> dir[0] >> dir[1] >> dir[2] >> t;
 
-      // Buffer the position of the current line in the file
-      lastLinePos = inputFile.tellg();
 
-      // Set values to save to output
-      SetBeamEnergy(ene, nParticles);
-      SetBeamDir(dir, nParticles);
-      SetBeamPDG(pdgid, nParticles);
-      SetVtxs(nParticles, pos);
+            if (event_n < dataTableStartEvent) {
+                // Dont simulate any events before the start event
+                if (index == 0 && line_n > 0) {
+                    event_n++;
+                }
+                // If the event number is still less than the start event then do not simulate
+                if (event_n < dataTableStartEvent) {
+                    line_n++;
+                    continue;
+                }
+                // Otherwise we can carry on and simulate
+            }
 
-      nParticles++;
+            line_n++;
 
-      // Print out the first three particles in the event to be generated
-      if (index < 3) {
-        // Use the kinetic energy, not total
-        G4cout << G4endl
-               << "=====================================================\n"
-               << "Generating particle " << index << " with id = " << pdgid
-               << "\n    with kinetic energy = " << ene
-               << "\n    MeV, position = " << pos[0] << ", " << pos[1] << ", "
-               << pos[2] << ",\n    and direction = " << dir[0] << ", "
-               << dir[1] << ", " << dir[2]
-               << "\n====================================================="
-               << G4endl;
-      }
+            // If we've reached the end of the file before beamOn events have been reached then we need to stop
+            if (inputFile.eof() == 1) {
+                // Print in yellow
+                G4cout << "\033[1;33m";
+                G4cout << "Datatable reader: [INFO] End of datatable file - run terminated..." << G4endl;
+                // Reset the colour
+                G4cout << "\033[0m";
+                G4RunManager::GetRunManager()->AbortRun();
+                return;
+            }
+            if (line.empty() || line[0] == '#') {
+                continue;
+            }
+            if (nParticles > MAX_N_VERTICES) {
+                G4cout << "CANNOT DEAL WITH MORE THAN " << MAX_N_VERTICES << " VERTICES" << G4endl;
+                exit(-1);
+            }
 
-      // No longer on the first particle
-      firstParticle = false;
+            // We've reached the end of the event N that we're generating and have also read the first line of event
+            // N + 1. We need to rewind to the start of event N + 1 so that the first particle of N + 1 is not missed
+            // when this function is called again for the next event.
+            if (index == 0 && firstParticle == false) {
+                // Go back a line
+                inputFile.seekg(lastLinePos);
+                break;
+            }
 
-      // Set the particle gun
-      // Particle type
-      particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));
-      // Position
-      particleGun->SetParticlePosition(pos);
-      // Direction
-      particleGun->SetParticleMomentumDirection(dir);
-      // Energy
-      particleGun->SetParticleEnergy(ene);
-      // Time
-      particleGun->SetParticleTime(t);
-      // Set the event
-      particleGun->GeneratePrimaryVertex(anEvent);
-    }
+            // Buffer the position of the current line in the file
+            lastLinePos = inputFile.tellg();
 
-    G4cout << "Number of particles generated for this event: " << nParticles << G4endl;
+            // Set values to save to output
+            SetBeamEnergy(ene, nParticles);
+            SetBeamDir(dir, nParticles);
+            SetBeamPDG(pdgid, nParticles);
+            SetVtxs(nParticles, pos);
 
-    // Set the number of particles in this event
-    SetNvtxs(nParticles);
+            nParticles++;
 
+            // Print out the first three particles in the event to be generated
+            if (index < 3) {
+                if (index == 0) {
+                }
+                // Print in green
+                G4cout << "\033[1;32m";
+                // Use the kinetic energy, not total
+                G4cout << G4endl << "=====================================================\n"
+                       << "Generating particle " << index << " with id = " << pdgid
+                       << "\n    with kinetic energy = " << ene << " MeV"
+                       << "\n    position = " << pos[0] << ", " << pos[1] << ", " << pos[2] << ","
+                       << "\n    and direction = " << dir[0] << ", " << dir[1] << ", " << dir[2]
+                       << "\n=====================================================" << G4endl << G4endl;
+                // Reset the colour
+                G4cout << "\033[0m";
+            }
+
+            // No longer on the first particle
+            firstParticle = false;
+
+            // Set the particle gun
+            // Particle type
+            particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));
+            // Position
+            particleGun->SetParticlePosition(pos);
+            // Direction
+            particleGun->SetParticleMomentumDirection(dir);
+            // Energy
+            particleGun->SetParticleEnergy(ene);
+            // Time
+            particleGun->SetParticleTime(t);
+            // Set the event
+            particleGun->GeneratePrimaryVertex(anEvent);
+        }
+
+        // Increment event counter
+        event_n++;
+
+        G4cout << "Number of particles generated for this event: " << nParticles << G4endl;
+
+        // Set the number of particles in this event
+        SetNvtxs(nParticles);
+
+        // If we've reached the end of the file before beamOn events have been reached then we need to stop
+        if (inputFile.eof() == 1) {
+            // Print in yellow
+            G4cout << "\033[1;33m";
+            G4cout << "Datatable reader: [INFO] End of datatable file - run terminated..." << G4endl;
+            // Reset the colour
+            G4cout << "\033[0m";
+            G4RunManager::GetRunManager()->AbortRun();
+            return;
+        }
   } else if (useCosmics) {
 
     if (hFluxCosmics == nullptr) 

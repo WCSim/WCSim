@@ -110,6 +110,16 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   ibdmodelCmd->SetDefaultValue("Flat");
   SetNewValue(ibdmodelCmd, "Flat");
 
+  dataTableStartEventCmd = new G4UIcmdWithAnInteger("/mygen/dataTableStartEvent",this);
+  dataTableStartEventCmd->SetGuidance("Set the event to start simulating from in the data table");
+  dataTableStartEventCmd->SetParameterName("dataTableStartEvent", true);
+  SetNewValue(dataTableStartEventCmd, "0");
+
+  dataTableNEventsCmd = new G4UIcmdWithAnInteger("/mygen/dataTableNEvents",this);
+  dataTableNEventsCmd->SetGuidance("Set the event to stop simulating at in the data table. Set to -1 as default to simulate all events.");
+  dataTableNEventsCmd->SetParameterName("dataTableNEvents", true);
+  SetNewValue(dataTableNEventsCmd, "-1");
+
   // Options for alternative light injector (collimator,diffuser, laser ball)
   // Set the light injector type, index (placeholders)
   // retrieves position, direction and profile from DB
@@ -669,6 +679,18 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       G4cout << "mPMT-LED: LED id set to " << (G4int)mPMTLEDIdCmd2->GetNew3VectorValue(newValue).x() 
              << ", dTheta = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).y() << " deg" 
              << ", dPhi = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).z() << " deg" << G4endl;
+    }
+
+  if ( command == dataTableStartEventCmd )
+    {
+      myAction->SetDataTableStartEvent(dataTableStartEventCmd->GetNewIntValue(newValue));
+      G4cout << "Data table start event set to " << dataTableStartEventCmd->GetNewIntValue(newValue) << G4endl;
+    }
+
+  if (command == dataTableNEventsCmd)
+    {
+      myAction->SetDataTableNEvents(dataTableNEventsCmd->GetNewIntValue(newValue));
+      G4cout << "Data table end event set to " << dataTableNEventsCmd->GetNewIntValue(newValue) << G4endl;
     }
 
 }
