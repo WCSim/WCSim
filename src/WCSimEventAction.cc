@@ -373,15 +373,15 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
       for (int pe = 0; pe < nPoisson; pe++) {
 	G4float time = G4RandGauss::shoot(0.0,10.);
 	G4ThreeVector dir(0, 0, 0);
-  ProcessType_t photcreatorproc = kUnknownProcess;
+	ProcessType_t photcreatorproc = kDarkNoise;
 	(*WCHC)[hitIndex]->AddPe(time);
-  (*WCHC)[hitIndex]->AddTrackID(0);
+	(*WCHC)[hitIndex]->AddTrackID(0);
 	(*WCHC)[hitIndex]->AddParentID(0); // Make parent a geantino (whatever that is)
 	(*WCHC)[hitIndex]->AddPhotonStartPos(pos);
 	(*WCHC)[hitIndex]->AddPhotonEndPos(pos);
 	(*WCHC)[hitIndex]->AddPhotonStartDir(dir);
 	(*WCHC)[hitIndex]->AddPhotonEndDir(dir);
-  (*WCHC)[hitIndex]->AddPhotonCreatorProcess(photcreatorproc);
+	(*WCHC)[hitIndex]->AddPhotonCreatorProcess(photcreatorproc);
 	(*WCHC)[hitIndex]->AddPhotonStartTime(time);
       }
 
@@ -1030,6 +1030,7 @@ G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
 
   G4VPhysicalVolume* tmpVolume = tmpNavigator->LocateGlobalPointAndSetup(vtx);
   //  G4String       vtxVolumeName = tmpVolume->GetName();
+  if (!tmpVolume) return vtxvol; // cannot find volume from invalid vtx
   vtxVolumeName = tmpVolume->GetName();                  //TF: class member now
 
 
@@ -1213,7 +1214,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	double pdir[3];
 	double stop[3];
 	double start[3];
-	ProcessType_t creatorP = kUnknownProcess;
+	ProcessType_t creatorP = kInitialParticle;
 	for (int l=0;l<3;l++)
 	  {
 	    dir[l]=injhfNtuple.dir[k][l];
@@ -1781,7 +1782,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	double pdir[3];
 	double stop[3];
 	double start[3];
-	ProcessType_t creatorP = kUnknownProcess;
+	ProcessType_t creatorP = kInitialParticle;
 	for (int l=0;l<3;l++)
 	  {
 	    dir[l]=injhfNtuple.dir[k][l];

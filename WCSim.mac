@@ -44,7 +44,7 @@
 #   (Check this via the std error stream)
 #   This can cause tracks to get stuck & be killed
 # - Is the layout of the ID PMTs (20" + OD) sensible?
-#   (Plot the position of each PMT. See $WCSIMDIR/sample-root-scripts/plot_pmts.C)
+#   (Plot the position of each PMT. See $WCSIM_SOURCE_DIR/sample-root-scripts/plot_pmts.C)
 #   When there is e.g. a low number of mPMTs
 #   unrealistic stripes of mPMTs are produced
 #   that may cause odd output
@@ -169,6 +169,9 @@
 # so you can see the tag scintillation light for the AmBe source.
 #/WCSim/BGOPlacement
 # Note that /WCSim/BGOPlacement *must* be set before /WCSim/Construct
+#
+# - BGO Position: Place the source in a different position using X, Y and Z coordinates
+#/WCSim/BGOPosition 1 1 1 m
 
 
 # - /WCSim/SaveCapture & /process/inactivate nKiller: Default not set.
@@ -273,7 +276,7 @@
 
 ## select the input nuance-formatted vector file
 ## This can be from a generator (e.g. NEUT, sntools)
-## or your own (see $WCSIMDIR/sample-root-scripts/MakeKin.py for a script to make such files)
+## or your own (see $WCSIM_SOURCE_DIR/sample-root-scripts/MakeKin.py for a script to make such files)
 #/mygen/generator muline
 #/mygen/vecfile inputvectorfile
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin

@@ -12,6 +12,8 @@
 # Default config if you do nothing is currently SuperK
 # Nominal geometry for WCTE is nuPRISMBeamTest_16cShort_mPMT which is uncommented
 
+# Default PMT object which controls the 1pe charge response, timing resolution, QE, etc.
+/WCSim/mPMT/PMTtype_inner PMT3inchR14374_WCTE
 
 #Use mPMTs settings and beam test geometry 
 /WCSim/WCgeom nuPRISMBeamTest_16cShort_mPMT ## this is 16c4r from CAD
@@ -31,7 +33,7 @@
 /WCSim/PMT/PositionFile data/mPMT_Position_WCTE.txt
 # To import CDS into simulation
 # 1. Downland the CDS CAD model from WCTE webpage (https://wcte.hyperk.ca/wg/calibration/cds-system/cds-arm-cad-for-physics-simulation/arm-for-simulation-ascii-v2.zip/view), unzip it and set the path
-# 2. Use the following PMT position file where mPMT id 90 and 96 are disabled 
+# 2. Use the following PMT position file where 8 mPMTs are removed 
 #/WCSim/Geometry/SetCDSFile path_to_CDS_file
 #/WCSim/PMT/PositionFile data/mPMT_Position_WCTE_CDS.txt
 ############################################################################################
@@ -44,6 +46,10 @@
 # so you can see the tag scintillation light for the AmBe source.
 #/WCSim/BGOPlacement true
 # Note that /WCSim/BGOPlacement *must* be set before /WCSim/Construct
+#
+# - BGO Position: Place the source in a different position using X, Y and Z coordinates
+#/WCSim/BGOPosition 0 0 0 m
+
 
 # - /WCSim/SaveCapture & /process/inactivate nKiller: Default not set.
 # Also specially needed for AmBe calibration. The first command makes sure the Capture processes
@@ -141,7 +147,7 @@
 
 # Or you can use the G4 Particle Gun
 # for a full list of /gun/ commands see:
-# http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
+# https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_gun_.html
 #/mygen/generator gun
 #/gun/particle e-
 #/gun/particle pi0
@@ -152,7 +158,8 @@
 # Or you can use the G4 General Particle Source
 # you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
 # for a full list of /gps/ commands see:
-# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+# https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/GettingStarted/generalParticleSource.html
+# https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_gps_.html
 /mygen/generator gps
 /gps/particle e-
 /gps/energy 500 MeV
@@ -161,8 +168,7 @@
 
 # Or you can use the laser option
 # This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
-# for a full list of /gps/ commands see:
-# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+# for a full list of /gps/ commands see the links above
 # It is used for laser calibration simulation
 #/mygen/generator laser
 #/gps/particle opticalphoton

@@ -102,7 +102,7 @@ jobs:
         run: |
           source /opt/setup.sh
           cd /opt/WCSim
-          /opt/Validation/build.sh
+          python3 /opt/Validation/build.py --option 0
           echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
       - name: Setup branch
@@ -187,11 +187,11 @@ jobs:
           sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
           yum install -y HepMC3 HepMC3-devel HepMC3-search HepMC3-search-devel HepMC3-interfaces-devel HepMC3-doc
 
-      - name: Build
+      - name: Build, with added geometry checks
         run: |
           source /opt/setup.sh
           cd /opt/WCSim
-          /opt/Validation/build.sh
+          python3 /opt/Validation/build.py --option 1
           echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
 
       - name: Run physics

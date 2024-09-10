@@ -125,6 +125,13 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   BGOPlacement->SetParameterName("BGOPlacement", false);
   BGOPlacement->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+  BGOPosition = new G4UIcmdWith3VectorAndUnit("/WCSim/BGOPosition", this);
+  BGOPosition->SetGuidance("Set BGO position inside the tank (unit: mm cm m). Default will be 0 0 0 mm");
+  BGOPosition->SetParameterName("X", "Y", "Z", false);
+  BGOPosition->SetDefaultValue(G4ThreeVector(0,0,0));
+  BGOPosition->SetUnitCategory("Length");
+  BGOPosition->SetDefaultUnit("mm");
+
   PMTSize = new G4UIcmdWithAString("/WCSim/WCPMTsize",this);
   PMTSize->SetGuidance("Set alternate PMT size for the WC (Must be entered after geometry details are set).");
   PMTSize->SetGuidance("Available options 20inch 10inch");
@@ -392,6 +399,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
 				    "PMT3inchR14374 "
+            "PMT3inchR14374_WCTE "
 				    "PMT3inch_ETEL9302B "
 				    "PMT4inchR12199_02 "
 				    "PMT5inchR12199_02 "
@@ -411,6 +419,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
 				    "PMT3inchR14374 "
+            "PMT3inchR14374_WCTE "
 				    "PMT3inch_ETEL9302B "
 				    "PMT4inchR12199_02 "
 				    "PMT5inchR12199_02 "
@@ -515,6 +524,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "PMT3inchGT\n"
           "PMT3inchR12199_02\n"
           "PMT3inchR14374\n"
+          "PMT3inchR14374_WCTE\n"
 	  "PMT3inch_ETEL9302B\n"
           "PMT5inch\n"
           "PMT8inch\n"
@@ -524,7 +534,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "HPD20inchHQE\n"
           "PMT20inch\n");
   SetPMTType->SetParameterName("PMTType", false);
-  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT3inchR14374 PMT3inch_ETEL9302B PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
+  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT3inchR14374 PMT3inchR14374_WCTE PMT3inch_ETEL9302B PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
   SetPMTType->SetDefaultValue("PMT10inch");
 
   // Set the vertical position of the nuPRISM-lite detector
@@ -626,6 +636,9 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete TankRadiusChange;
   delete SetPMTPositionInput;
   delete SetCDSFile;
+
+  delete BGOPlacement;
+  delete BGOPosition;
 }
 
 void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
@@ -838,6 +851,12 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       G4cout << "Removing BGO Scintillation Crystal from Geometry" << G4endl; 
       WCSimDetector->SetPlaceBGOGeometry(false);
     }
+  }
+
+  if(command == BGOPosition) {
+    G4ThreeVector BGOvec = BGOPosition->GetNew3VectorValue(newValue);
+    WCSimDetector->SetPositionBGOGeometry(BGOvec.x(),BGOvec.y(),BGOvec.z());
+
   }
 
 	if(command == PMTSize) {

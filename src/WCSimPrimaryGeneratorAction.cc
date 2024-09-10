@@ -434,7 +434,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     // Initialise the ambe generator once per sim
     // This will get AmBe settings (position, direction, etc)
     if ( !AmBeGen ){
-      AmBeGen = new WCSimAmBeGen();
+      AmBeGen = new WCSimAmBeGen(myDetector);
     }
 
     if (!myDetector || !myDetector->IsBGOGeometrySet()) {

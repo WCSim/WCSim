@@ -162,7 +162,7 @@ void HKGeometryNoLongerUsed(G4String & DetectorName)
 		 << "If you really want to use " << DetectorName
 		 << " then you can comment out the call to HKGeometryNoLongerUsed() in the method "
 		 << "WCSimDetectorConstruction::" << DetectorName << "()"
-		 << " in the file $WCSIMDIR/src/WCSimDetectorConfigs.cc and recompile, "
+		 << " in the file $WCSIM_SOURCE_DIR/src/WCSimDetectorConfigs.cc and recompile, "
 		 << "but be careful if comparing to official HK geometries that the number of PMTs are consistent" << G4endl
 		 << "Exiting..." << G4endl;
   exit(-1);
@@ -1387,7 +1387,7 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
 {
   WCDetectorName = "NuPRISMBeamTest_16cShort_mPMT";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-	mPMT_ID_PMT = "PMT3inchR12199_02";    //can be changed in macro through mPMT settings.
+	mPMT_ID_PMT = "PMT3inchR14374_WCTE";    //can be changed in macro through mPMT settings.
 	mPMT_OD_PMT = "PMT3inchR12199_02";
   WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
   WCPMTName = PMT->GetPMTName();
@@ -1419,11 +1419,14 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
 
 	// WCIDHeight               = 2.830845*CLHEP::m;
 	// WCIDDiameter             = 3.192536*CLHEP::m;
-  WCIDHeight               = 2.758236*CLHEP::m;
-  WCIDDiameter             = 3.119927*CLHEP::m;
+  WCIDHeight               = 2.714235*CLHEP::m; // 1955+1105.475-173.12*2 mm
+  WCIDDiameter             = 3.075926*CLHEP::m; // (1711.083-173.12)*2 mm
 	WCIDVerticalPosition     = 0.;
 	
 	WCBarrelPMTOffset     = 288.*CLHEP::mm;
+  WCBarrelPMTTopOffset  = 62.355*CLHEP::mm; // 235.475-173.12
+  WCBarrelPMTBotOffset  = 331.88*CLHEP::mm; // 505.-173.12
+
   WCPMTperCellHorizontal = 1.0; // 1 per phi
   WCPMTperCellVertical   = 1.0;
 

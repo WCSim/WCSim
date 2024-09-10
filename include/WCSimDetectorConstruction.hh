@@ -102,6 +102,7 @@ public:
   void SetIWCD_WithOD_Geometry_Old(); // Old geometry used from v1.12.5 to v1.12.11
   void SetPlaceBGOGeometry(G4bool placeBGO) { placeBGOGeometry=placeBGO; } // Diego Costas, 26/02/2024
   G4bool IsBGOGeometrySet() const { return placeBGOGeometry; } // Diego Costas, 26/02/2024
+  void SetPositionBGOGeometry(G4double X, G4double Y, G4double Z) { BGOX=X, BGOY=Y, BGOZ=Z; } // Diego Costas, 18/07/2024
   
   /**
      Dump the values of many variables used to define geometries including
@@ -119,7 +120,8 @@ public:
 	  LCType=LightCollectorType;
   };
   G4int GetLCType(){return LCType;};
-
+  
+  G4ThreeVector GetPositionBGOGeometry()   {return G4ThreeVector(BGOX, BGOY, BGOZ);}
   G4String GetDetectorName()      {return WCDetectorName;}
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
@@ -558,6 +560,8 @@ private:
   // for WCTE mPMT construction
   G4LogicalVolume* ConstructExSituPMT(G4String,G4String,G4String detectorElement="tank");
   G4LogicalVolume* ConstructExSituMultiPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructInSituPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructInSituMultiPMT(G4String,G4String,G4String detectorElement="tank");
 
   G4LogicalVolume* ConstructCaps(G4bool);
 
@@ -571,6 +575,9 @@ private:
   G4LogicalVolume* logicWCODWLSPlateCladding;
 
   G4double capAssemblyHeight;
+  // for asymmetric cap construction
+  G4double topCapAssemblyHeight;
+  G4double botCapAssemblyHeight;
 
   G4bool WCAddGd;
 
@@ -658,6 +665,10 @@ private:
   G4double WCPMTRadius;
   G4double WCPMTExposeHeight;
   G4double WCBarrelPMTOffset;
+
+  // for asymmetric cap construction
+  G4double WCBarrelPMTTopOffset;
+  G4double WCBarrelPMTBotOffset;
 
   G4double WCPMTRadius2;//B. Quilain: for Hybrid configuration
   G4double WCPMTExposeHeight2;//B. Quilain: for Hybrid configuration
@@ -767,6 +778,9 @@ private:
 
   // BGO Placement
   G4bool placeBGOGeometry;
+
+  // BGO Position
+  G4double BGOX, BGOY, BGOZ;
 
   // Add bool to indicate whether we load nuPRISM geometry  
   G4bool isNuPrism;
@@ -938,6 +952,7 @@ private:
   G4double id_reflector_angle;
   G4int nID_PMTs;  // number of PMTs per mPMT module (1 for non-mPMT PMT e.g. standard 20")
   G4int nID_PMTs2; // number of PMTs per mPMT module (1 for non-mPMT PMT e.g. standard 20")
+  ///Points to $WCSIM_BUILD_DIR (environment variable)
   G4String wcsimdir_path;
   G4String config_file;
   G4String mPMT_ID_PMT; //or ToDo: ideally ENUM

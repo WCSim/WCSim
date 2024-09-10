@@ -5,8 +5,49 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+*************************************************************
+29/08/2024: Notes for v1.12.15
+*************************************************************
+
+New release due to updated geometry for WCTE
+
+New feature
+* Pull request #470 @kmtsui: Allow asymmetric construction of top and bottom CapAssembly, only for NoReplica detector construction
+
+Update
+* Pull request #470 @kmtsui: Update WCTE geometry (tank dimensions, (m)PMT positions)
+* Pull request #469 @tdealtry: Add some extra processes, to prevent `kUnknownProcess` in the output file for tracks
+
+Documentation
+* Pull request #471 @nickwp: Fix formatting of README.md
+
+*************************************************************
+26/07/2024: Notes for v1.12.14
+*************************************************************
+
+WCSim now requires HepMC3 to be installed when compiling with the default option: `-DWCSim_WCSimRoot_only=ON`.
+
+New release due to fixing the bounding box for WCTE, inclusion of in-situ mPMTs for WCTE, and inclusion of realistic 3" PMT model for WCTE
+
+New feature
+* Pull request #465 #466 @DiegoCostas97: Allow BGO calibration source geometry & generator to be positioned at arbitrary points via config file
+* Pull request #462 @kmtsui: Implementation of WCTE's 3" PMTs (that go into mPMTs) based on lab measurements
+* Pull request #459 @kmtsui: Implementation of in-situ mPMT model for WCTE
+* Pull request #433 @JackFannon: NuHepMC Reader and Generator
+
+Update
+* Pull request #458 @tdealtry: Remove HepMC3 dependency when using build option `-DWCSim_WCSimRoot_only=OFF`
+* Pull request #457 @tdealtry: Favour use of `$WCSIM_BUILD_DIR`. Rename `$WCSIMDIR` to `$WCSIM_SOURCE_DIR` and only use it for referencing where documentation/scripts are
+* Pull request #456 @tdealtry: Prevent absolute path to header files being included in the WCSimRoot library
+
+Bug fix
+* Pull request #464 @kmtsui: Fix WCBox overlap in WCTE geometry
+
 Documentation
 * Pull request #454 @tdealtry: Remove some outdated documentation files (README.ROOT, Readme_features.txt)
+
+OS support
+* Pull request #460 @gondiaz: Include `<unistd.h>` for MacOS support
 
 *************************************************************
 27/06/2024: Notes for v1.12.13

@@ -51,6 +51,7 @@ class WCSimLIGen
         G4double energy;
 
 	// Variables for reading in injector profile or photon list
+	///Points to $WCSIM_BUILD_DIR/data/
 	string wcsimdir;
 	G4String photonsFilename;
         G4bool photonMode;
