@@ -1120,6 +1120,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       // Print out the first three particles in the event to be generated
       if (index < 3) {
         // Use the kinetic energy, not total
+        G4cout << "\033[1;32m";
         G4cout << G4endl
                << "=====================================================\n"
                << "Generating particle " << index << " with id = " << pdgid
@@ -1129,6 +1130,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                << dir[1] << ", " << dir[2]
                << "\n====================================================="
                << G4endl;
+        G4cout << "\033[0m";
       }
 
       // No longer on the first particle
@@ -1149,7 +1151,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       particleGun->GeneratePrimaryVertex(anEvent);
     }
 
-    G4cout << "Number of particles generated for this event: " << nParticles << G4endl;
+    // Increment the event counter
+    event_n++;
+
+    G4cout << "\033[1;32m";
+    G4cout << "Datatable reader: [INFO] Number of particles generated for this event: " << nParticles << G4endl;
+    G4cout << "\033[0m";
 
     // Set the number of particles in this event
     SetNvtxs(nParticles);
