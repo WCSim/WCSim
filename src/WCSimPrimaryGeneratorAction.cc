@@ -1162,16 +1162,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4RunManager::GetRunManager()->AbortRun();
     }
 
-        // If we've reached the end of the file before beamOn events have been reached then we need to stop
-        if (inputFile.eof() == 1) {
-            // Print in yellow
-            G4cout << "\033[1;33m";
-            G4cout << "Datatable reader: [INFO] End of datatable file - run terminated..." << G4endl;
-            // Reset the colour
-            G4cout << "\033[0m";
-            G4RunManager::GetRunManager()->AbortRun();
-            return;
-        }
   } else if (useCosmics) {
 
     if (hFluxCosmics == nullptr) 
