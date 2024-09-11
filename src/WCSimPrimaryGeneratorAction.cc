@@ -1151,6 +1151,17 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       particleGun->GeneratePrimaryVertex(anEvent);
     }
 
+    // Check if event_n is still less than the start event
+    if (event_n < dataTableStartEvent) {
+      // There has been an error if we reach this point.
+      // Start event has possibly been set to a value greater than the number of events in the file
+      G4cout << "\033[1;31m";
+      G4cout << "Datatable reader: [ERROR] Start event (/mygen/dataTableStartEvent " << dataTableStartEvent
+             << ") could not be reached. The start event may be set higher than the number of events in the datatable - exiting..." << G4endl;
+      G4cout << "\033[0m";
+      exit(-1);
+    }
+
     // Increment the event counter
     event_n++;
 
