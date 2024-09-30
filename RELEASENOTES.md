@@ -6,6 +6,22 @@ Recent updates
 *************************************************************
 
 *************************************************************
+30/09/2024: Notes for v1.12.16
+*************************************************************
+
+New release due to updated geometry for WCTE
+
+Update
+* Pull request #472 @kmtsui: Update WCTE PMT table
+* Pull request #474 @tdealtry: Remove hard exit in `WCSimEnumerations::ProcessTypeStringToEnum()`
+* Pull request #479 @kmtsui: Update ex-situ 3" PMT design: include a collar
+* Pull request #479 @kmtsui: WCTE geometry update: use in-situ mPMTs for the 4 FD mPMT slots
+
+Bug fix
+* Pull request #475 @tdealtry: Fix bug seen in `WCSimPrimaryGeneratorMessenger` constructor which errors on a modern compiler
+* Pull request #472 @DiegoCostas97: Fix bug in `WCSimAmBeGen` constructor getting `$WCSIM_BUILD_DIR` incorrectly
+
+*************************************************************
 29/08/2024: Notes for v1.12.15
 *************************************************************
 
