@@ -64,7 +64,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
   G4double pmtVolumeHeight = 20.2*mm+54.4*mm;
   G4double domeInnerRadius = 332.*mm;
   G4double zoffset = domeInnerRadius-54.4*mm;
-  G4double openingAngle = 8.221*deg;
+  G4double openingAngle = 8.233*deg;
 
   G4Sphere *solidWCPMT = new G4Sphere("WCPMT",
                                       domeInnerRadius-pmtVolumeHeight,
@@ -411,8 +411,22 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
                                           45.63*mm,
                                           6.2*mm,
                                           0.*deg, 360.*deg);
+
+  G4Cons *solidCollar = new G4Cons("solidCollar",
+                                    44.7*mm,
+                                    44.99*mm,
+                                    46.7*mm,
+                                    46.99*mm,
+                                    8.4*mm,
+                                    0.*deg, 360.*deg);
+
+  G4UnionSolid *solidReflectorCollar = new G4UnionSolid("ReflectorColloar",
+                                                        solidReflectorCup,
+                                                        solidCollar,
+                                                        0,
+                                                        G4ThreeVector(0.,0.,8.4*mm));
                                   
-  G4LogicalVolume *logicReflectorCup = new G4LogicalVolume( solidReflectorCup,                                              
+  G4LogicalVolume *logicReflectorCup = new G4LogicalVolume( solidReflectorCollar,                                              
                                                             G4Material::GetMaterial("Plastic"),
                                                             "logicReflectorCup");
   new G4PVPlacement(0,                                                                         
