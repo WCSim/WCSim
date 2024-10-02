@@ -3392,6 +3392,7 @@ G4double PMT3inchR14374_WCTE::GetPMTGlassThickness() {return 0.1*cm;}
 
 double PMT3inchR14374_WCTE::HitTimeSmearing(double Q, double TTSFF=1.0) {    
   double pmt_tts = 1.5;
+  if (Q>4.0) Q = 4.0; // limit Q to valid range
   double val = gTResol->Eval(Q,0,"S");
   double timingResolution = sqrt(pmt_tts*pmt_tts+val*val)/2.355; // conversion from FWHM to sigma
   timingResolution *= TTSFF;
