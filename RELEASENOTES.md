@@ -6,6 +6,14 @@ Recent updates
 *************************************************************
 
 *************************************************************
+01/10/2024: Notes for v1.12.17
+*************************************************************
+New release due to updated hit times for WCTE
+
+Bug fix
+* Pull request #480 @kmtsui: Bug fix for WCTE PMTs: for high charge PMT hit, HitTimeSmearing evaluation by TSpline was invalid, now set an upper limit on Q based on the input data range
+
+*************************************************************
 30/09/2024: Notes for v1.12.16
 *************************************************************
 
