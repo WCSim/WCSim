@@ -17,7 +17,6 @@ class WCSimWCAddDarkNoise : public G4VDigitizerModule
 {
 public:
   
-  // WCSimWCAddDarkNoise(G4String name, WCSimDetectorConstruction*);
   WCSimWCAddDarkNoise(G4String name, WCSimDetectorConstruction*, G4String);
   ~WCSimWCAddDarkNoise();
   
@@ -31,8 +30,11 @@ public:
   double GetDarkRate() { return PMTDarkRate; }
   void SetConversion(double iconvrate){ ConvRate = iconvrate; }
   void SetDarkMode(int imode){DarkMode = imode;}
+  int GetDarkMode(){return DarkMode;}
   void SetDarkHigh(double idarkhigh){DarkHigh = idarkhigh;}
+  double GetDarkHigh(){return DarkHigh;}
   void SetDarkLow(double idarklow){DarkLow = idarklow;}
+  double GetDarkLow(){return DarkLow;}
   void SetDarkWindow(int idarkwindow){DarkWindow = idarkwindow;}
   int GetDarkWindow(){return (int)(DarkWindow);}
   void SaveOptionsToOutput(WCSimRootOptions * wcopt, string tag);

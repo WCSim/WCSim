@@ -34,8 +34,14 @@ fi
 
 
 if [ -d ${build_directory} ]; then
-	make clean
-	make -j7 install
+        if [ "$1" = "clean" ]; then
+	    make clean
+	fi
+	make -j`nproc` install
 	
 	cd ${wcsim_directory}
 fi	
+
+echo
+echo Now run the following in order to run this version of WCSim
+echo source ${install_directory}/bin/this_wcsim.sh

@@ -354,13 +354,13 @@ void EljenEJ286::SetgAbs(){
   }
   gAbs = new TGraph(nEntries_abslength_eljen);
 
-  // std::cout << "Creating Stacking graph objects for WLS" << std::endl;
-  // std::cout << "WLS ABS" << std::endl;
+  // G4cout << "Creating Stacking graph objects for WLS" << G4endl;
+  // G4cout << "WLS ABS" << G4endl;
   // Then fill with point there is data
   for(int i=nEntries_abslength_eljen-1; i>0; i--){
     //    gAbs->SetPoint(i,round(hWL(GetPhotonEnergy_ABS()[i]))*nm,AbsAmp[i]);
     gAbs->SetPoint(i,round(hWL(GetPhotonEnergy_ABS()[i]))*nm,1. - exp(-1.2*cm/GetAbs()[i]));
-    // std::cout << round(hWL(GetPhotonEnergy_ABS()[i]))*nm << "nm -> " << AbsAmp[i] << std::endl;
+    // G4cout << round(hWL(GetPhotonEnergy_ABS()[i]))*nm << "nm -> " << AbsAmp[i] << G4endl;
   }
 
 }
@@ -373,12 +373,12 @@ void EljenEJ286::SetgEm(){
   }
   gEm = new TGraph(nEntries_eljen_component);
 
-  // std::cout << "Creating Stacking graph objects for WLS" << std::endl;
-  // std::cout << "WLS EM" << std::endl;
+  // G4cout << "Creating Stacking graph objects for WLS" << G4endl;
+  // G4cout << "WLS EM" << G4endl;
   // Then fill with point there is data
   for(int i=nEntries_eljen_component-1; i>0; i--){
     gEm->SetPoint(i,round(hWL(GetPhotonEnergy_EM()[i]))*nm,GetEm()[i]);
-    // std::cout << round(hWL(GetPhotonEnergy_EM()[i]))*nm << "nm -> " << GetEm()[i] << std::endl;
+    // G4cout << round(hWL(GetPhotonEnergy_EM()[i]))*nm << "nm -> " << GetEm()[i] << G4endl;
   }
 
 }

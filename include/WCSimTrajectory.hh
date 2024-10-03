@@ -14,6 +14,9 @@ class WCSimTrajectory;
 #include "G4Track.hh"
 #include "G4Step.hh"
 
+#include "WCSimEnumerations.hh"
+#include "WCSimOpBoundaryProcess.hh"
+
 class G4Polyline;                   // Forward declaration.
 
 typedef std::vector<G4VTrajectoryPoint*>  TrajectoryPointContainer;
@@ -53,14 +56,20 @@ public: // with description
    { return PDGEncoding; }
    inline G4ThreeVector GetInitialMomentum() const
    { return initialMomentum; }
-  inline G4String GetCreatorProcessName() const {
+   inline G4String GetCreatorProcessName() const {
     return creatorProcess;
-  }
-  
-  inline G4double GetGlobalTime() const
-  { return globalTime; }
-  inline G4bool GetSaveFlag() const { return SaveIt; }
-  inline void SetSaveFlag(G4bool value) { SaveIt = value; }
+   } 
+   inline G4double GetGlobalTime() const
+   { return globalTime; }
+   inline G4bool GetSaveFlag() const { return SaveIt; }
+   inline void SetSaveFlag(G4bool value) { SaveIt = value; }
+   inline G4bool GetProducesHit() const { return producesHit; }
+   inline void SetProducesHit(G4bool value) { producesHit = value; }
+   inline G4bool GetSavePhotonTrack() const { return savePhotonTrack; }
+   inline void SetSavePhotonTrack(G4bool value) { savePhotonTrack = value; }
+
+   inline WCSimTrajectory* GetParentTrajectory() const { return parentTrajectory; }
+   inline void SetParentTrajectory(WCSimTrajectory* trajectory) { parentTrajectory = trajectory; }
 
 // New function we have added
    inline G4ThreeVector GetStoppingPoint() const
@@ -72,10 +81,50 @@ public: // with description
    inline void SetStoppingVolume(G4VPhysicalVolume* currentVolume)
    { stoppingVolume = currentVolume;}
 
+// Functions to Set/Get boundary points
+  inline void SetBoundaryPoints(std::vector<std::vector<G4float>> bPs,
+                                std::vector<G4float> bKEs,
+                                std::vector<G4double> bTimes,
+                                std::vector<BoundaryType_t> bTypes)
+  {
+    boundaryPoints = bPs;
+    boundaryKEs = bKEs;
+    boundaryTimes = bTimes;
+    boundaryTypes = bTypes;
+  }
+  inline void AddBoundaryPoint(std::vector<G4float> bPs,
+                               G4float bKEs,
+                               G4double bTimes,
+                               BoundaryType_t bTypes)
+  {
+    boundaryPoints.push_back(bPs);
+    boundaryKEs.push_back(bKEs);
+    boundaryTimes.push_back(bTimes);
+    boundaryTypes.push_back(bTypes);
+  }
+  inline std::vector<std::vector<G4float>> GetBoundaryPoints() {return boundaryPoints;}
+  inline std::vector<G4float> GetBoundaryKEs() {return boundaryKEs;}
+  inline std::vector<G4double> GetBoundaryTimes() {return boundaryTimes;}
+  inline std::vector<BoundaryType_t> GetBoundaryTypes() {return boundaryTypes;}
+  inline std::vector<int> GetBoundaryTypesAsInt() 
+  {
+    std::vector<int> bTypes;
+    for (auto t : boundaryTypes)
+      bTypes.push_back((int)t);
+    return bTypes;
+  }
+
+// Functions to set/get photon history
+  inline void AddPhotonRayScatter(G4int val) { pRayScatter += val; }
+  inline void AddPhotonMieScatter(G4int val) { pMieScatter += val; }
+  inline void AddPhotonReflection(ReflectionSurface_t val) { pReflec.push_back(val); }
+  inline G4int GetPhotonRayScatter() const { return pRayScatter; }
+  inline G4int GetPhotonMieScatter() const { return pMieScatter; }
+  inline std::vector<ReflectionSurface_t> GetPhotonReflection() const { return pReflec; } 
 
 // Other member functions
    virtual void ShowTrajectory(std::ostream& os=G4cout) const;
-   virtual void DrawTrajectory(G4int i_mode=0) const;
+   virtual void DrawTrajectory(/*G4int i_mode=0*/) const;
    virtual void AppendStep(const G4Step* aStep);
    virtual int GetPointEntries() const { return positionRecord->size(); }
    virtual G4VTrajectoryPoint* GetPoint(G4int i) const 
@@ -105,8 +154,24 @@ public: // with description
 
   // M Fechner : new saving mechanism
   G4bool SaveIt;
+  G4bool producesHit;
   G4String creatorProcess;
   G4double                  globalTime;
+  G4bool savePhotonTrack;
+
+  WCSimTrajectory* parentTrajectory;
+
+  // Boundary points;
+  std::vector<std::vector<G4float>> boundaryPoints;
+  std::vector<G4float> boundaryKEs;
+  std::vector<G4double> boundaryTimes;
+  std::vector<BoundaryType_t> boundaryTypes; // kBlackSheet=1, kTyvek, kCave
+
+  // Photon reflection/scattering history
+  G4int pRayScatter;
+  G4int pMieScatter;
+  std::vector<ReflectionSurface_t> pReflec;
+  WCSimOpBoundaryProcess* fBoundary;
 };
 
 /***            TEMP  : M FECHNER ***********

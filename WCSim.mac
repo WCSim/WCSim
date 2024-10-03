@@ -1,60 +1,140 @@
 # Sample setup macro with no visualization
 
-/run/verbose 0
+/run/verbose 1
 /tracking/verbose 0
 /hits/verbose 0
 /grdm/verbose 0
 
+
+###############
+# GEOMETRY
+###############
+
 ## select the geometry
 # Default config if you do nothing is currently SuperK
-#
-# The tube size is fixed for SK to 20 inch
-# These are fixed geometries for validation
-#/WCSim/WCgeom SuperK
+# If you do use a geometry other than SuperK, then you *must*
+#  uncomment the line /WCSim/Construct after the chosen geometry
+#  and all other geometry related commands
+#  or you'll get a seg fault or wrong results
 
-# Some other SuperK options:
+#some geometries can be tuned by config file options
+# it is important to do things in the correct order
+#/WCSim/WCGeom GEOM to set the defaults
+#/WCSim/commands to modify the defaults
+#/WCSim/Construct
+
+#Use the standard SK geometry
+# no extra commands required
+
+
+#Use the nuPRISM geometry w/ mPMTs DEPRECATED (use IWCD_mPMT_WithOD below)
+#/WCSim/WCgeom nuPRISMShort_mPMT
+#then set options
+#/WCSim/Construct
+## OR for single mPMT mode or updating mPMT parameters:
+#/control/execute macros/mPMT_nuPrism1.mac
+#/control/execute macros/mPMT_nuPrism2.mac
+
+#Note that whilst you can change the number of PMTs
+# in the HK FD ID using these photocoverage parameters,
+# it is up to you to verify that you have produced
+# a valid geometry.
+#Suggestions of things to check
+# - Has an extra tower of PMTs been built?
+#   (Check this via the std error stream)
+#   This can cause tracks to get stuck & be killed
+# - Is the layout of the ID PMTs (20" + OD) sensible?
+#   (Plot the position of each PMT. See $WCSIM_SOURCE_DIR/sample-root-scripts/plot_pmts.C)
+#   When there is e.g. a low number of mPMTs
+#   unrealistic stripes of mPMTs are produced
+#   that may cause odd output
+# - Is the number of hits consistent with expectation?
+#   For example, compare the number of hits per PMT
+#   using the default geometry with your geometry
+#   using e.g. a particle gun with sufficient statistics
+
+#Use the HK FD ID-only geometry DEPRECATED (use HyperK_HybridmPMT_NoOD_Realistic)
+#/WCSim/SetPMTPercentCoverage  20.2150576375662
+#/WCSim/SetPMTPercentCoverage2 10.1075288187831
+#/WCSim/WCgeom HyperK_HybridmPMT
+#/WCSim/Construct
+
+
+#Use the HK FD ID + OD geometry DEPRECATED (use HyperK_HybridmPMT_WithOD_Realistic below)
+#/WCSim/SetPMTPercentCoverage  20.2150576375662
+#/WCSim/SetPMTPercentCoverage2 10.1075288187831
+#/WCSim/WCgeom HyperK_HybridmPMT_WithOD
+#/control/execute macros/geom_hk_mpmt_options.mac
+#/control/execute macros/geom_hk_od_options.mac
+#/WCSim/Construct
+
+
+#Use the HK FD Realistic ID + OD geometry
+#/WCSim/WCgeom HyperK_HybridmPMT_WithOD_Realistic
+#/WCSim/Construct
+
+
+#Use the HK FD Realistic IDonly geometry
+# Note that the difference between this & the realisitc ID + OD geometry above is
+# that the OD PMTs are not placed in the geometry.
+# All other aspects of the OD geometry are there (ID/OD deadspace, tyvek, etc.)
+# This means that you get a speed win in terms of hit stuff (e.g. PMT & electronics simulation, triggering)
+# which is thought to be a small fraction of running time compared with the Geant4 particle propagation
+#/WCSim/WCgeom HyperK_HybridmPMT_IDonly_Realistic
+#/WCSim/Construct
+
+
+# Some other SuperK options (different to the default 20" 40% case)
 #/WCSim/WCgeom SuperK_20inchPMT_20perCent # Note: the actual coverage is 20.27%
 #/WCSim/WCgeom SuperK_20inchBandL_20perCent # Note: the actual coverage is 20.27%
 #/WCSim/WCgeom SuperK_12inchBandL_15perCent # Note: the actual coverage is 14.59%
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
+#/WCSim/Construct
 
-# HyperK (one cylindrical tank with a height of 54.8 m, a diameter of 70.8 m and 40% coverage with 20 inch B&L PMTs)
-#/WCSim/WCgeom HyperK
-#/WCSim/WCgeom HyperKWithOD # To use the OD, please see $WCSIMDIR/macros/OD.mac for the latest design, and the complete set of OD geometry options
+# This is the updated IWCD geometry as of 20230630
+#/WCSim/WCgeom IWCD_mPMT
+#/WCSim/Construct
 
+# This is the updated IWCD geometry as of 20230630, plus OD
+#/WCSim/WCgeom IWCD_mPMT_WithOD
+#/WCSim/Construct
 
-# Another option of HyperK
-#/WCSim/WCgeom HyperK_20perCent # Note: the coverage is set to 20.0%.
+# Use the WCTE geometry (16c4r from CAD)
+#/WCSim/WCgeom nuPRISMBeamTest_16cShort_mPMT
+# Rotate barrel by half a tower (needed for correct WCTE geometry)
+#/WCSim/Geometry/RotateBarrelHalfTower true
+#/WCSim/Construct
 
-# Cylindrical detector with a height of 60 m and a diameter of 74 m
-#/WCSim/WCgeom Cylinder_60x74_20inchBandL_14perCent # Note: the actual coverage is 13.51%
-#/WCSim/WCgeom Cylinder_60x74_20inchBandL_40perCent
+# true --> default (old) replica method to place PMTs. 
+# false --> new placement method, does not use replica in construction, place PMT one by one
+#/WCSim/PMT/ReplicaPlacement true
+############################################################################################
+##These comments are only useful when using 
+#/WCSim/PMT/ReplicaPlacement false
+# Apply random fluctuation to PMT placement. Argument specifies the Gaussian 1 sigma value in 1D
+# The fluctuation is applied at the last step of position calculation
+#/WCSim/PMT/PositionVariation 0 mm
+# Change the ID radius at top, middle and bottom for PMT placement
+# The PMT positions and directions are calculated such that the PMTs are always touching
+# and perpendicular to the ID wall in the same (z,theta) coordinates 
+#/WCSim/PMT/TankRadiusChange 0 0 0 mm
+# Read PMT positions from input file. This overrides the auto positioning algorithm
+# The (z,theta) coordinates are calculated from the input, and r is auto-tuned as above
+# This table corresponds to the nuPRISMBeamTest_16cShort geometry
+#/WCSim/PMT/PositionFile data/mPMT_Position_WCTE.txt
+############################################################################################
+#/WCSim/Construct
 
+# Set Gadolinium doping (concentration is in percent)
+# Default is no Gd doping
+#WARNING This is in the wrong place. If you want to turn it on in your detector
+#it must go between /WCSim/WCgeom & /WCSim/Construct
+#/WCSim/DopingConcentration 0.1
+#/WCSim/DopedWater false
 
-# Generic cylindrical detector with a height of 100m and a
-# diameter of 69m with 12" HPD and 14.59% photocoverage
-
-#/WCSim/WCgeom Cylinder_12inchHPD_15perCent # Note: the actual coverage is 14.59%
-
-# Previous, egg-shaped HyperK design:
-#/WCSim/WCgeom EggShapedHyperK #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
-#/WCSim/WCgeom EggShapedHyperK_withHPD #default length is 49500 mm unless changed in /WCSim/HK/waterTankLength below.
-
-#Changes the length of the simulated volume. Is currently only set up for the egg-shaped HyperK design.
-#/WCSim/EggShapedHyperK/waterTank_Length 24750. mm # Equivalent length for 10 partitions
-#/WCSim/EggShapedHyperK/waterTank_Length 49500. mm # Equivalent length for 5 partitions (default)
-#/WCSim/EggShapedHyperK/waterTank_Length 61875. mm # Equivalent length for 4 partitions
-#/WCSim/EggShapedHyperK/waterTank_Length 82500. mm # Equivalent length for 3 partitions
-#/WCSim/EggShapedHyperK/waterTank_Length 123750. mm # Equivalent length for 2 partitions
-#/WCSim/EggShapedHyperK/waterTank_Length 247500. mm # Equivalent length for 1 partition
-
-# LCConfig is for setting the light collector. To be used with WCSim/Construct.
-# Default is No_Mirror.
-#/WCSim/LCConfig No_Mirror
-#/WCSim/LCConfig Mirror_OldLC # Mirror design in a branch of archive/LightCone at 2011.
-#/WCSim/LCConfig Mirror_2018Oct # A short mirror design.
-
-#/WCSim/Construct # This must be uncommented in order to construct a new detector configuration.
+##################
+# MISCELLANEOUS
+##################
 
 #Added for the PMT QE option 08/17/10 (XQ)
 # 1. Stacking only mean when the photon is generated
@@ -66,10 +146,13 @@
 # distribution. This option is in particular important for the WLS
 # 3. The third option means all the QE are applied at the detector
 # Good for the low energy running.
-# 4. Switch off the QE complety, ie. set it at 100%
-/WCSim/PMTQEMethod     Stacking_Only
+# 4. Switch off the QE, ie. set it at 100%
+#
+# Studies in ~2022 suggest that SensitiveDetector_Only is the most correct
+
+#/WCSim/PMTQEMethod     Stacking_Only
 #/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
-#/WCSim/PMTQEMethod     SensitiveDetector_Only
+/WCSim/PMTQEMethod     SensitiveDetector_Only
 #/WCSim/PMTQEMethod     DoNotApplyQE
 
 #turn on or off the collection efficiency
@@ -78,8 +161,36 @@
 # command to choose save or not save the pi0 info 07/03/10 (XQ)
 /WCSim/SavePi0 false
 
+##################
+# AmBe CALIBRATION SOURCE
+##################
+# - BGO Placement: Default in source code is false. If set to true, you'll place the BGO inside
+# the detector geometry at (0,0,0) position. This is only supported if you use ambeevt generator
+# so you can see the tag scintillation light for the AmBe source.
+#/WCSim/BGOPlacement
+# Note that /WCSim/BGOPlacement *must* be set before /WCSim/Construct
+#
+# - BGO Position: Place the source in a different position using X, Y and Z coordinates
+#/WCSim/BGOPosition 1 1 1 m
 
-#choose the Trigger & Digitizer type (and options)
+
+# - /WCSim/SaveCapture & /process/inactivate nKiller: Default not set.
+# Also specially needed for AmBe calibration. The first command makes sure the Capture processes
+# are being saved. The second one ensures Geant4 is not killing neutrons too early in the run,
+# so we can have neutronCapture at any time in the run.
+# Note that the nKiller process is not defined in the FTFP_BERT_HP
+#  (can be turned on via /WCSim/physics/list FTFP_BERT_HP in jobOptions.mac)
+# and so will cause a fatal crash.
+# When using FTFP_BERT_HP, neutrons are not killed an so you just have
+# to set /WCSim/SaveCapture true
+#/WCSim/SaveCapture true
+#/process/inactivate nKiller
+
+##################
+# DIGITISER & TRIGGER
+##################
+
+#choose the Trigger & Digitizer type
 /DAQ/Digitizer SKI
 /DAQ/Trigger NDigits
 #/DAQ/Trigger NoTrigger
@@ -87,48 +198,85 @@
 #grab the other DAQ options (thresholds, timing windows, etc.)
 /control/execute macros/daq.mac
 
+##################
+# DARK NOISE
+##################
 
-# default dark noise frequency (and conversion factor) is PMT property (NEW), set in the code.
+#There is an independent messenger class instance for each PMT type
+# tank is the default one & is present in all geometries
+# tankPMT2 is for the second ID PMT type (i.e. mPMTs in HK FD)
+# OD is for the OD
+#In typical use, it is important that all PMT types are setup with the same dark noise time windows
+
+# default dark noise frequency (and conversion factor) is a PMT property, set in the code.
+#  The default is ON
 # Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
+/DarkRate/SetDetectorElement tank
 #/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
 #/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
 #/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
 
-# command to multiply the dark rate.
-# Convert dark noise frequency before digitization to after digitization by setting suitable factor
-# Again, this is now a PMT property and can be overridden here
+#It is more user friendly if the dark rate above is the requested digitised hit dark rate
+#Since dark hits are created in "true" space, more true hits are required to be simulated,
+# as hits are reduced by PMT/digitiser thresholds & integration
+#The dark rate conversion factor is the multiplicative factor in order to do this
+# This is now a PMT property and can be overridden here
+#WARNING the default values need checking for all but the following types:
+#  BoxandLine20inchHQE, PMT3inchR14374, PMT8inch
 #/DarkRate/SetConvert 1.367  #For Normal PMT
 #/DarkRate/SetConvert 1.119 #For HPDs
-#/DarkRate/SetConvert 1.126 #For Box and Line PMTs
+#/DarkRate/SetConvert 1.110 #For Box and Line PMTs
 
 # Select which time window(s) to add dark noise to
 #/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
 #/DarkRate/SetDarkLow to /DarkRate/SetDarkHigh [time in ns]
 #/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
 #width /DarkRate/SetDarkWindow [time in ns] around each hit
-#i.e. hit time ± (/DarkRate/SetDarkWindow) / 2
+#i.e. hit time +- (/DarkRate/SetDarkWindow) / 2
 /DarkRate/SetDetectorElement tank
 /DarkRate/SetDarkMode 1
-/DarkRate/SetDarkHigh 100000
-/DarkRate/SetDarkLow 0
 /DarkRate/SetDarkWindow 4000
 
-#/DarkRate/SetDetectorElement OD
-#/DarkRate/SetDarkMode 1
-#/DarkRate/SetDarkHigh 100000
-#/DarkRate/SetDarkLow 0
-#/DarkRate/SetDarkWindow 4000
+/DarkRate/SetDetectorElement OD
+#/DarkRate/SetDarkRate 0 kHz
+#/DarkRate/SetDarkRate 1 kHz
+#/DarkRate/SetConvert 1.367 #for 8" PMTs in HK OD
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkWindow 4000
 
+/DarkRate/SetDetectorElement tankPMT2
+#/DarkRate/SetDarkRate 0 kHz
+#/DarkRate/SetDarkRate 1 kHz
+#/DarkRate/SetConvert 1.110 #for PMT3inchR14374 PMTs in HK mPMT
+#/DarkRate/SetConvert 1.126 #for PMT3inchR12199_02 PMTs in HK mPMT. WARNING value needs checking!
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkWindow 4000
+
+##################
+# VISUALISATION
+##################
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute macros/visOGLSX.mac
 #/control/execute macros/visRayTracer.mac
 #/control/execute macros/visOGLQt.mac
 
+##################
+# OPTICAL PHYSICS
+##################
+## The WCSimOpticalPhysics class uses the same Messenger commands as G4OpticalPhysics (need to set macros/jobOptions.mac)
+## New photocathode models can be used for PMT photon detection. See macros/tuning_parameters.mac
 
+
+##################
+# PHYSICS
+##################
+## It should be noted that only one /mygen/generator can be run
+## at once.
 
 ## select the input nuance-formatted vector file
-## you can of course use your own
+## This can be from a generator (e.g. NEUT, sntools)
+## or your own (see $WCSIM_SOURCE_DIR/sample-root-scripts/MakeKin.py for a script to make such files)
 #/mygen/generator muline
 #/mygen/vecfile inputvectorfile
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
@@ -136,31 +284,40 @@
 # define units used for time in kin file
 #/mygen/time_unit ns
 
-# Or you can use the G4 Particle Gun
-# for a full list of /gun/ commands see:
-# http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
+## Or you can use the G4 Particle Gun
+## for a full list of /gun/ commands see:
+## https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_gun_.html
 /mygen/generator gun
 /gun/particle e-
 #/gun/particle pi0
-/gun/energy 500 MeV
-/gun/direction 1 0 0 
+/gun/energy 5 MeV
+/gun/direction 1 0 0
 /gun/position 0 0 0  
 
-# Or you can use the G4 General Particle Source
-# you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
-# for a full list of /gps/ commands see:
-# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+## Or you can use the G4 General Particle Source
+## you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
+## for a full list of /gps/ commands see:
+## https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/GettingStarted/generalParticleSource.html
+## https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_gps_.html
 #/mygen/generator gps
 #/gps/particle e-
 #/gps/energy 500 MeV
 #/gps/direction 1 0 0
 #/gps/position 0 0 0
 
-# Or you can use the laser option
-# This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
-# for a full list of /gps/ commands see:
-# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
-# It is used for laser calibration simulation
+## Or you can use the datatable option
+## This is similar to the nuance format option, though this uses datatable formatted files.
+## Datatables are formatted as follows:
+## | Index of particle in event | PDG code | Energy | X | Y | Z | Px | Py | Pz | Time |
+## Note that the column separators "|" are for clarity in describing the format, and should not be included in the file
+## Note also that comments are allowed in the data table file by starting lines with a "#"
+#/mygen/generator datatable
+#/mygen/vecfile inputDataTableFile
+
+## Or you can use the laser option
+## This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
+## for a full list of /gps/ commands see the links above
+## It is used for laser calibration simulation
 #/mygen/generator laser
 #/gps/particle opticalphoton
 #/gps/energy 2.505 eV
@@ -173,56 +330,152 @@
 #/gps/ang/minphi 0 deg
 #/gps/ang/maxphi 360 deg
 
-# Or you can use a cosmics generator
-# Based on the SuperK flux extrapolated at HyperK site in Mozumi
-# Muons are generated according to this flux and their position is extrapolated outside the tank
-# Useful to study muons tracks in both OD and ID
+## Or you can use a cosmics generator
+## Based on the SuperK flux extrapolated at HyperK site in Mozumi
+## Muons are generated according to this flux and their position is extrapolated outside the tank
+## Useful to study muons tracks in both OD and ID
 #/mygen/generator cosmics
 #/mygen/cosmicsfile data/MuonFlux-HyperK-ThetaPhi.dat
 
-# Radioactive option
-# IMPORTANT: You need to compile WCSim with cmake in order to use the radioactive decays
-# Generate radioactive decay in the water or on the PMTs
+## Or you can use an IBD generator
+## This requires a spectrum file to generate events weighted by fluxes across an energy spectrum
+#/mygen/generator ibd
+#/mygen/ibd_database DatabasePath
+#/mygen/ibd_model ModelName (see ./data/DSNBFluxes.json for models)
+
+## Or you can use the hepmc3 generator to read nuhepmc3 files
+## The option hepmc3positionGenMode will either generate random, isotropic positions in the ID (true) or will read positions from the file (false)
+#/mygen/generator hepmc3
+#/mygen/hepmc3file HepMC3Filepath
+#/mygen/hepmc3positionGenMode true/false
+
+
+## Radioactive option
+## Generate radioactive decay in the water or on the PMTs
 #/mygen/generator radioactive
-# This window should match the one in biasprofile.dat (see below)
+## This window should match the one in biasprofile.dat (see below)
 #/mygen/radioactive_time_window 1.e-4
-# The following list the different isotope to take into account, where they decay, 
-# and what are their activities in the full ID detector (for Water) or in the PMT (for PMT)
+## The following list the different isotope to take into account, where they decay,
+## and what are their activities in the full ID detector (for Water) or in the PMT (for PMT)
 #/mygen/isotope Tl208 PMT 2.8
 #/mygen/isotope Bi214 PMT 27.
 #/mygen/isotope K40 PMT 94.
 #/mygen/isotope Bi214 water 264. ### HK
-#Clear the source and tell GPS to make multiple vertices
+##Clear the source and tell GPS to make multiple vertices
 #/gps/source/clear
 
-# Radon option
-# IMPORTANT: You need to compile WCSim with cmake in order to use the radioactive decays
-# Generate Bi214 decay in the water following a Model extracted from SK-IV solar data
+## Radon option
+## Generate Bi214 decay in the water following a Model extracted from SK-IV solar data
 #/mygen/generator radon
-# This window should match the one in biasprofile.dat if time bias is used (see below)
+## This window should match the one in biasprofile.dat if time bias is used (see below)
 #/mygen/radioactive_time_window 1.e-4
-# Needed if time bias is not used, in order to keep timing below one sec.
+## Needed if time bias is not used, in order to keep timing below one sec.
 #/DAQ/RelativeHitTime true
-# The following set which scenario is used to scale SK model to HK
+## The following set which scenario is used to scale SK model to HK
 #/mygen/radon_scaling A # 	Relative scaling with respect to full ID volume (Pessimistic, should be default for now)
 #/mygen/radon_scaling B #	Absolute scaling with respect to ID border (Optimistic)
-#/mygen/radon_scaling 0 #	Uniform distribution 
+#/mygen/radon_scaling 0 #	Uniform distribution
 #/mygen/radon_symmetry 1 #	Divide the detector in x slices using the theta symmetry
-#Clear the source and tell GPS to make multiple vertices
+##Clear the source and tell GPS to make multiple vertices
 #/gps/source/clear
 
-# Needed to prevent other decay than Bi-214
+## Needed to prevent other decay than Bi-214
 /grdm/nucleusLimits 214 214 83 83 
-# if you need to use time bias
-#/grdm/decayBiasProfile biasprofile.dat
+## if you need to use time bias
+#/grdm/decayBiasProfile data/biasprofile.dat
 #/grdm/analogueMC 0
 #/grdm/BRbias 0
 
+## Gamma-conversion option
+## Use GPS commands to specify the the gamma energy, direction, etc.
+## The GPS vertex position corresponds to the point of gamma-conversion
+#/mygen/generator gamma-conversion
+#/gps/particle gamma
+#/gps/energy 10 MeV
+#/gps/direction 1 0 0
+#/gps/position 0 0 0
+
+# Or you can use the AmBe Calibration Source Generator.
+# This launches two primary particles in a random direction from the (0,0,0): one neutron and one gamma.
+# The energy of the gamma can be:
+# - 4.4 MeV 65% of the time.
+# - 7.7 MeV 8%  of the time.
+# - 0.0 MeV 26% of the time.
+# Neutron Energy is taken from a simulated realistic AmBe Spectrum depending on the Gamma Energy.
+# In order to run this correctly, the AmBe source must be in the geometry & neutron capture must be activated - for details see the "AmBe CALIBRATION SOURCE" section above
+#/mygen/generator ambeevt
+
+# Or inject photon from mPMT LED
+# (Note that these are LEDs positioned in the standard mPMT modules.
+#  They are not LEDs in the LED-mPMT modules)
+#/mygen/generator mPMT-LED
+# Use PMTid (from 1 to totalNum_mPMTs) to specify source mPMT
+# Use LEDid (from 0 to 11) to specify LED position, theta and phi directional change from nominal direction
+#/mPMTLED/PMTid 1
+#/mPMTLED/LEDid 0 0 0
+# Use GPS commands to define photon energy, number and angular distribution
+#/gps/energy 2.505 eV
+#/gps/number 100000
+# Specify a cos(theta) Gaussian profile with 15 deg FWHM
+#/gps/ang/type user
+#/gps/ang/user_coor true
+#/gps/ang/surfnorm false
+#/gps/hist/type theta
+#/control/execute data/theta_cos15deg_FWHM.txt
+
+##################
+# TRACKING
+##################
+## Commands to control which true particle tracks are tracked and saved to the output file:
+## By default, save all tracks in the chain from primaries to those that produce Cherenkov photons that produce hits
+## To disable this behaviour and only save tracks of particular creation processes and particle types, set to false
+#/Tracking/saveHitProducingTracks false
+## By default, all electrons, muons, pions, kaons, protons and neutrons are saved, and particles created by Decay, conv,
+## nCapture or OpWLS processes
+## Add additional PDG codes of particle types or additional Geant4 process names of creation processes of tracks to save
+## Note that optical photons have PDG code 0 in Geant4
+#/Tracking/trackParticle 0
+#/Tracking/trackProcess Cerenkov
+## Due to the typically very large number of optical photons, a fraction can be tracked by setting the percentage to randomly draw
+## Note that the value is a percentage from 0.0 to 100.0, not fraction 0.0 to 1.0
+/Tracking/fractionOpticalPhotonsToDraw 0.0
+
+
+##################
+# OUTPUT
+##################
+## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
+## a NEUT vector file as input
+/WCSimIO/SaveRooTracker 0
+
 ## change the name of the output root file, default = wcsim.root
-/WCSimIO/RootFile wcsim.root
+/WCSimIO/RootFile wcsim_output.root
+
+## save in a flat tree format, with multiple trees for different elements (vertices, tracks, true hits, digits, etc.)
+## Currently the trees are created, but unfilled, if you turn this option on
+## (The code needs finessing by someone, if there is a desire to bring this format back)
+#/WCSimIO/WriteFlatRootFile true
 
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false
 
+##################
+# NUMBER OF EVENTS TO RUN
+##################
+# It is possible to perform multiple runs of WCSim in a single process
+# The benefit of this is to reduce the time spent on WCSim initialisation
+# in a use case e.g. simulating events at multiple source positions
+# In order to do this, you can repeat the /run/beamOn command e.g.
+# /gun/direction -1 0 0
+# /run/beamOn 2
+# /gun/direction 1 0 0
+# /run/beamOn 3
+# However, be warned that you cannot change all options between runs
+# - All parameters in tuning_parameters.mac and jobOptions.mac changed will have no effect
+# - Some parameters in WCSim.mac may not have an effect (e.g. geometry)
+# - It is up to you to perform the bookkeeping of which events were run with which options, but to help with this:
+# -- The options tree will be filled with one entry for each run
+# -- The EventHeader has a run number that specifies the run (and corresponding options tree entry) for a given event
+# It is therefore your responsibility to confirm that the options you are changing work as expected in multi-run mode
 /run/beamOn 10
 #exit

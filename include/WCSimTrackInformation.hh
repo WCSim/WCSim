@@ -6,28 +6,37 @@
 #include "G4Track.hh"
 #include "G4Allocator.hh"
 #include "G4VUserTrackInformation.hh"
+#include "WCSimTrajectory.hh"
 
 // Maximilien Fechner, december 2004
 // Information class for flagging the secondaries
 // I'm interested in (namely gammas from pi0s and secondaries
-// from muon decay
+// from muon decay 
+// TF: Also gamma's from neutron capture and oxygen de-excitation and 
+// electrons from pion decay are very relevant!!
 class WCSimTrackInformation : public G4VUserTrackInformation {
 private:
-  G4bool saveit; 
-  G4int  primaryParentID;
+  G4bool saveit;
+  G4bool producesHit;
+  WCSimTrajectory* parentTrajectory;
+  WCSimTrajectory* myTrajectory;
 
 public:
-  WCSimTrackInformation() : saveit(false), primaryParentID(-1) {}
-  WCSimTrackInformation(const WCSimTrackInformation* aninfo) 
-  { saveit = aninfo->saveit; primaryParentID = aninfo->primaryParentID;}
+  WCSimTrackInformation() : saveit(false), producesHit(false), parentTrajectory(0), myTrajectory(0) {}  //TF: initialize to value with NO meaning instead of DN
   virtual ~WCSimTrackInformation() {}
   WCSimTrackInformation(const G4Track* );
   
   G4bool isSaved() { return saveit;}
   void WillBeSaved(G4bool choice) { saveit = choice;}
 
-  void SetPrimaryParentID(G4int i) { primaryParentID = i;}
-  G4int GetPrimaryParentID() {return primaryParentID;}
+  G4bool GetProducesHit() { return producesHit;}
+  void SetProducesHit(G4bool choice) { producesHit = choice;}
+
+  void SetParentTrajectory(WCSimTrajectory* trajectory) {parentTrajectory = trajectory;}
+  WCSimTrajectory* GetParentTrajectory() {return parentTrajectory;}
+
+  void SetMyTrajectory(WCSimTrajectory* trajectory) {myTrajectory = trajectory;}
+  WCSimTrajectory* GetMyTrajectory() {return myTrajectory;}
 
   inline void *operator new(size_t);
   inline void operator delete(void *aTrackInfo);

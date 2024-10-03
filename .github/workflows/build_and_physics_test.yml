@@ -1,0 +1,262 @@
+name: Build & Physics CI
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request_target: #runs on the PR branch, rather than the merge branch. But is required for access to secrets
+    branches: [ develop ]
+  release:
+  
+concurrency:
+  #When a PR is pushed too multiple times in a short period, this would usually trigger multiple CI runs
+  #This setting cancels any in-progress CI when a new push is performed
+  #But we can have multiple jobs testing different things
+  # It should be that
+  # * Each push to a PR cancels any in progress PR CI
+  # * Each push to develop cancels any in progress develop push-triggered CI
+  # * It seems that PR merges to develop don't get cancelled. This is actually a good thing
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    #This should mean that only one "build" job runs at a time
+    # Meaning there should be no webpage clashes if multiple CI runs are triggered
+    # in a short period
+    concurrency:
+      group: wcsim_build_and_setup_webpage
+      cancel-in-progress: false
+    defaults:
+      run:
+        working-directory: /opt/
+    #run inside a container that has the prerequisites already installed
+    container:
+      image: docker://ghcr.io/hyperk/hk-software:0.0.2
+      credentials:
+           username: ${{ github.actor }}
+           password: ${{ secrets.CONTAINER_REPO }}
+      env:
+        #GIT_COMMIT: ${{ github.sha }}
+        GIT_PULL_REQUEST: ${{ github.event.number }}
+        GIT_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
+        GIT_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        GitHubToken: ${{ secrets.VALIDATION_PR }}
+        ValidationPath: /opt/Validation/
+    steps:
+      # Print all the info about the action
+      - name: Logging
+        run: |
+          echo "Test print"
+        #echo "${{toJSON(github)}}"
+    
+      - name: Get repo to checkout
+        id: checkout_repo
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ github.event_name == 'pull_request_target' }}
+          if_true: ${{ github.event.pull_request.head.repo.full_name }}
+          if_false: ${{ github.repository }}
+          
+      - name: Get SHA to checkout
+        id: checkout_sha
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ github.event_name == 'pull_request_target' }}
+          if_true: ${{ github.event.pull_request.head.sha }}
+          if_false: ${{ github.sha }}
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout WCSim
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.checkout_sha.outputs.value }}
+          repository: ${{ steps.checkout_repo.outputs.value }}
+          
+      - name: Link WCSim directory
+        run: |
+          mkdir /opt/WCSim/
+          ln -s ${GITHUB_WORKSPACE}/ /opt/WCSim/src
+
+      - name: Checkout WCSim/Validation
+        run: |
+          cd /opt/
+          git clone --depth 1 https://github.com/WCSim/Validation.git -b master --single-branch
+
+      - name: Hack hk-software setup (waiting for new release)
+        run: |
+          cd /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/
+          sed -i -e 's/LD_LIBRARY_PATH=LD_LIBRARY_PATH/LD_LIBRARY_PATH=$LD_LIBRARY_PATH/' setup.sh
+
+      - name: Setup prerequisites setup script
+        run: |
+          cd /opt/
+          echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > /opt/setup.sh
+          echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
+          echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> /opt/setup.sh
+
+      - name: Install HepMC3
+        run: |
+          cd /etc/yum.repos.d/
+          sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+          sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+          yum install -y HepMC3 HepMC3-devel HepMC3-search HepMC3-search-devel HepMC3-interfaces-devel HepMC3-doc
+  
+      - name: Print environment
+        run: |
+          source /opt/setup.sh
+          cd /opt/WCSim
+          export GIT_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          env
+          pwd
+          ls -a
+
+      - name: Test build
+        run: |
+          source /opt/setup.sh
+          cd /opt/WCSim
+          python3 /opt/Validation/build.py --option 0
+          echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
+
+      - name: Setup validation webpage
+        run: |
+          source /opt/setup.sh
+          cd /opt/WCSim/install
+          export GIT_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          python3 /opt/Validation/SetupWebpages.py
+
+  physics:
+    needs: build
+    continue-on-error: true
+    strategy:
+      matrix:
+        physics_job: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /opt/
+    #run inside a container that has the prerequisites already installed
+    container:
+      image: docker://ghcr.io/hyperk/hk-software:0.0.2
+      credentials:
+           username: ${{ github.actor }}
+           password: ${{ secrets.CONTAINER_REPO }}
+      env:
+        #GIT_COMMIT: ${{ github.sha }}
+        GIT_PULL_REQUEST: ${{ github.event.number }}
+        GIT_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
+        GIT_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        GitHubToken: ${{ secrets.VALIDATION_PR }}
+        ValidationPath: /opt/Validation/
+    steps:
+      - name: Get repo to checkout
+        id: checkout_repo
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ github.event_name == 'pull_request_target' }}
+          if_true: ${{ github.event.pull_request.head.repo.full_name }}
+          if_false: ${{ github.repository }}
+
+      - name: Get SHA to checkout
+        id: checkout_sha
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ github.event_name == 'pull_request_target' }}
+          if_true: ${{ github.event.pull_request.head.sha }}
+          if_false: ${{ github.sha }}
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout WCSim
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.checkout_sha.outputs.value }}
+          repository: ${{ steps.checkout_repo.outputs.value }}
+
+      - name: Link WCSim directory
+        run: |
+          mkdir /opt/WCSim/
+          ln -s ${GITHUB_WORKSPACE}/ /opt/WCSim/src
+
+      - name: Checkout WCSim/Validation
+        run: |
+          cd /opt/
+          git clone --depth 1 https://github.com/WCSim/Validation.git -b master --single-branch
+
+      - name: Hack hk-software setup (waiting for new release)
+        run: |
+          cd /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/
+          sed -i -e 's/LD_LIBRARY_PATH=LD_LIBRARY_PATH/LD_LIBRARY_PATH=$LD_LIBRARY_PATH/' setup.sh
+
+      - name: Setup prerequisites setup script
+        run: |
+          cd /opt/
+          echo source /usr/local/hk/Geant4/install-Linux_x86_64-gcc_8-python_3.8.13/bin/geant4.sh > /opt/setup.sh
+          echo source /usr/local/hk/hk-pilot/setup.sh >> /opt/setup.sh
+          echo source /usr/local/hk/hk-software/install-Linux_x86_64-gcc_8-python_3.8.13/setup.sh >> /opt/setup.sh
+
+      - name: Install HepMC3
+        run: |
+          cd /etc/yum.repos.d/
+          sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+          sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+          yum install -y HepMC3 HepMC3-devel HepMC3-search HepMC3-search-devel HepMC3-interfaces-devel HepMC3-doc
+
+      - name: Build, with added geometry checks
+        run: |
+          source /opt/setup.sh
+          cd /opt/WCSim
+          python3 /opt/Validation/build.py --option 1
+          echo source /opt/WCSim/install/bin/this_wcsim.sh >> /opt/setup.sh
+
+      - name: Run physics
+        run: |
+          source /opt/setup.sh
+          cd /opt/WCSim/install
+          echo ${{ matrix.physics_job }}
+          export GIT_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          python3 /opt/Validation/RunTests.py --test_num ${{ matrix.physics_job }}
+
+
+  finalise:
+    needs: physics
+    continue-on-error: true
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /opt/
+    #run inside a container that has the prerequisites already installed
+    container:
+      image: docker://ghcr.io/hyperk/hk-software:0.0.2
+      credentials:
+           username: ${{ github.actor }}
+           password: ${{ secrets.CONTAINER_REPO }}
+      env:
+        #GIT_COMMIT: ${{ github.sha }}
+        GIT_PULL_REQUEST: ${{ github.event.number }}
+        GIT_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
+        GIT_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        GitHubToken: ${{ secrets.VALIDATION_PR }}
+        ValidationPath: /opt/Validation/
+    steps:
+
+      - name: Get SHA to checkout
+        id: checkout_sha
+        uses: haya14busa/action-cond@v1
+        with:
+          cond: ${{ github.event_name == 'pull_request_target' }}
+          if_true: ${{ github.event.pull_request.head.sha }}
+          if_false: ${{ github.sha }}
+
+      - name: Checkout WCSim/Validation
+        run: |
+          cd /opt/
+          git clone --depth 1 https://github.com/WCSim/Validation.git -b master --single-branch
+
+      - name: Setup validation webpage
+        run: |
+          cd /opt/
+          export GIT_COMMIT=${{ steps.checkout_sha.outputs.value }}
+          python3 /opt/Validation/FinaliseWebpages.py

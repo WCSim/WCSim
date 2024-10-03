@@ -11,6 +11,8 @@
 # Set top veto PMT spacing in cm.
 /WCSim/tuning/tvspacing 100
 
+# Input file to set photocathode parameters
+/WCSim/tuning/PMTCathodePara data/CathodeParameters.txt
 
 /WCSim/tuning/WCODWLSCladdingReflectivity 0.99
 /WCSim/tuning/WCODTyvekReflectivityInWallTop 0.95

@@ -1,5 +1,12 @@
-## Stolen from T.Feusseul nuPRISM visu of mPMTs
-
+#
+# Macro file for the initialization phase of "exampleN02.cc"
+# when runing in interactive mode
+#
+# Sets some default verbose
+#
+###########
+# from example N04L definitely works!
+#
 # Use this open statement to create an OpenGL view:
 /vis/open OGLSQt
 
@@ -15,7 +22,7 @@
 /vis/viewer/set/viewpointThetaPhi 90. 180.
 #
 # Specify zoom value:
-#/vis/viewer/zoom 1.4
+/vis/viewer/zoom 1.4
 #
 # Specify style (surface or wireframe):
 #/vis/viewer/set/style wireframe
@@ -32,7 +39,7 @@
 # (if too many tracks cause core dump => /tracking/storeTrajectory 0)
 #
 # Draw hits at end of event:
-#/vis/scene/add/hits
+/vis/scene/add/hits
 #
 # To draw only gammas:
 #/vis/filtering/trajectories/create/particleFilter

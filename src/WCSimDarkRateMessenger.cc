@@ -45,13 +45,12 @@ void WCSimDarkRateMessenger::Initialize()
   SetFrequency->SetDefaultUnit("kHz");
   SetFrequency->SetUnitCandidates("Hz kHz MHz GHz");
  
-
   double defaultConvRate = 1;
   if(SetConversionRate==0){ SetConversionRate = new G4UIcmdWithADouble("/DarkRate/SetConvert",this);}
   SetConversionRate->SetGuidance("Calibrate the frequency of dark noise before applying the threshold (typically 0.25pe)"); 
   SetConversionRate->SetParameterName("DigiCorr",false);
   SetConversionRate->SetDefaultValue(defaultConvRate);
- 
+
   //Mode 0 - Add dark rate in window defined by /DarkRate/SetDarkLow and /DarkRate/SetDarkHigh
   //If not set default is 0 and 100000ns
   //Mode 1 - Add dark rate to a window of size /DarkRate/SetDarkWindow around each hit
@@ -160,7 +159,7 @@ void WCSimDarkRateMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     if(darknoiseptrs.count(newValue)>0){
       WCSimAddDarkNoise=darknoiseptrs[newValue];
       G4cout << "Setting detectorElement value " << newValue
-             << initaliseString.c_str() << G4endl;
+	     << initaliseString.c_str() << G4endl;
     }
   }
 }

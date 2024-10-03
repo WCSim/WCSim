@@ -1,12 +1,17 @@
 #ifndef JHFNTUPLE_H
 #define JHFNTUPLE_H
+
+//#include "WCSimEnumerations.hh"
+
 static const int MAX_N_VERTICES = 900;
 static const int MAX_N_PRIMARIES = 900;
 static const int MAX_N_ACTIVE_TUBES = 2000;
 static const int MAX_N_HITS_PER_TUBE = 90;
+
 struct ntupleStruct
 {
   int mode[MAX_N_VERTICES];             // interaction mode
+  //InteractionType_t mode[MAX_N_VERTICES; // interaction mode
   int nvtxs;           // number of vertices
   int vtxsvol[MAX_N_VERTICES];           // volume of vertices
   double vtxs[MAX_N_VERTICES][4];        // interaction vertices
@@ -53,7 +58,8 @@ struct ntupleStruct
 };
 
 extern struct ntupleStruct jhfNtuple;
-/*
+
+/* Not used:
 static const char* ntDesc =
 "mode:I,"
 "nvtxs[0,MAX_N_PRIMARIES]:I,"
@@ -76,14 +82,14 @@ static const char* ntDesc =
 "startpos(3,npar):R,"
 "parent(npar):I,"
 "time(npar):R,"
-"numTubesHit[0,MAX_N_ACTIVE_TUBES]:I,"        
+"numTubesHit[0,MAX_N_ACTIVE_TUBES]:I,"
 "totalPe(numTubesHit):I,"
 "truetime(MAX_N_HITS_PER_TUBE,numTubesHit):R,"
 "numDigTubes[0,MAX_N_ACTIVE_TUBES]:I,"
 "q(numDigTubes):R,"            
 "t(numDigTubes):R,"
 "tubeid(numDigTubes):I"
-"fvnumTubesHit[0,MAX_N_ACTIVE_TUBES]:I,"        
+"fvnumTubesHit[0,MAX_N_ACTIVE_TUBES]:I,"
 "fvtotalPe(fvnumTubesHit):I,"
 "fvtruetime(MAX_N_HITS_PER_TUBE,fvnumTubesHit):R,"
 "fvnumDigTubes[0,MAX_N_ACTIVE_TUBES]:I,"
@@ -91,6 +97,4 @@ static const char* ntDesc =
 "fvt(fvnumDigTubes):R,"
 "fvtubeid(fvnumDigTubes):I";
 */
-#endif
-
-
+#endif //JHFNTUPLE_H

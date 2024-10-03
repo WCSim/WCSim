@@ -10,6 +10,7 @@ G4Allocator<WCSimWCDigi> WCSimWCDigiAllocator;
 WCSimWCDigi::WCSimWCDigi()
 {
   tubeID = 0; 
+  tubeType = ""; 
   Gates.clear();
   TriggerTimes.clear();
   //  TriggerTimes.reserve(10);
@@ -31,6 +32,7 @@ WCSimWCDigi::WCSimWCDigi(const WCSimWCDigi& right)
   // in principle assignment = is defined for containers...
   Gates = right.Gates;
   tubeID = right.tubeID; 
+  tubeType = right.tubeType; 
   pe     = right.pe;
   time   = right.time;
   time_presmear = right.time_presmear;
@@ -40,6 +42,7 @@ const WCSimWCDigi& WCSimWCDigi::operator=(const WCSimWCDigi& right)
 {
   TriggerTimes = right.TriggerTimes;
   tubeID = right.tubeID; 
+  tubeType = right.tubeType; 
   pe     = right.pe;
   time   = right.time;
   time_presmear = right.time_presmear;
@@ -51,14 +54,15 @@ int WCSimWCDigi::operator==(const WCSimWCDigi& right) const
 { 
  return ( (tubeID==right.tubeID) && (pe==right.pe) && (time==right.time) 
 	  && (time_presmear==right.time_presmear)
-	  && (TriggerTimes==right.TriggerTimes) && (tubeID==right.tubeID) ); 
+	  && (TriggerTimes==right.TriggerTimes) && (tubeID==right.tubeID) && (tubeType==right.tubeType) ); 
 }
 
 void WCSimWCDigi::Draw() {;}
 
 void WCSimWCDigi::Print()
 {
-  G4cout << "TubeID: " << tubeID 
+  G4cout << "TubeID: " << tubeID
+	 << "Tube type: " << tubeType 
 	 <<"Number of Gates " << NumberOfGates();
   for (unsigned int i = 0 ; i < pe.size() ; i++) {
     G4cout  << "Gate = " << i 
@@ -100,8 +104,8 @@ void WCSimWCDigi::RemoveDigitizedGate(G4int gate)
   if(fDigiComp.find(gate) != fDigiComp.end())
     fDigiComp.erase(gate);
   //parent id
-  if(primaryParentID.find(gate) != primaryParentID.end())
-    primaryParentID.erase(gate);
+  if(parentSavedTrackID.find(gate) != parentSavedTrackID.end())
+    parentSavedTrackID.erase(gate);
   if(wavelength.find(gate) != wavelength.end())
     wavelength.erase(gate);
 
@@ -109,21 +113,20 @@ void WCSimWCDigi::RemoveDigitizedGate(G4int gate)
   totalPe--;
 }
 
-
 // G. Pronost:	
 // Sort function by Hit Time
 bool WCSimWCDigi::SortFunctor_Hit::operator() (
 		const WCSimWCDigi * const &a,
-		const WCSimWCDigi * const &b) const {
-	
+		const WCSimWCDigi * const &b) const
+{
 	G4double ta, tb;
-	if ( a->time_double.size() > 0 )
+	if ( a->time_double.size() > 0 ) 	
 		ta = a->time_double[0];
 	else return false;
-	
+
 	if ( b->time_double.size() > 0 )
 		tb = b->time_double[0];
 	else return true;
-	
+
 	return ta < tb;
 }

@@ -109,15 +109,15 @@ void t2k_style()
 
 void rootwc()
 {   
-    TString script_dir = gSystem->Getenv("WCSIMDIR");
-    script_dir += "/rootwc/";
+    TString script_dir = gSystem->Getenv("WCSIM_BUILD_DIR");
+    script_dir += "/bin/rootwc/";
 
     TString curr_dir = gSystem->pwd();
 
     gSystem->cd(script_dir.Data());
 
-    gROOT->ProcessLine(".x $WCSIMDIR/rootwc/loadincs.C");    
-    gROOT->ProcessLine(".x $WCSIMDIR/rootwc/loadlibs.C");    
+    gROOT->ProcessLine(".x $WCSIM_BUILD_DIR/bin/rootwc-files/loadincs.C");
+    gROOT->ProcessLine(".x $WCSIM_BUILD_DIR/bin/rootwc-files/loadlibs.C");
 
     gSystem->cd(curr_dir.Data());
 
