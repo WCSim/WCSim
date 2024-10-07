@@ -1912,10 +1912,10 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myST3->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
    myST3->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
    myST3->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
-   myST3->AddProperty("REFLECTIVITY", PP, TyREFLECTIVITY, NUM);
+   myST3->AddProperty("REFLECTIVITY", PP, PP_TyREFLECTIVITY, NUM);
    myST3->AddProperty("EFFICIENCY", PP, EFFICIENCY_blacksheet, NUM);
    //use same efficiency as blacksheet, which is 0
-   OpWaterTySurface->SetMaterialPropertiesTable(myST3);
+   OpWaterTySurfaceInWallBarrel->SetMaterialPropertiesTable(myST3);
 
 
    // Surfaces for Al, Ag and future combinations:

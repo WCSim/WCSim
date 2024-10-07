@@ -951,17 +951,23 @@ G4double* PMT3inch::Getqpe() //currently uses the same as 20inch
   return qpe0;
 }
 
-//Currenly the PMT QE info is the same as 20 inch.
 G4double* PMT3inch::GetQE(){
-  static G4double QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
+  static G4double QE[20] = { 0.00, .005, .09, .21, .28, .30, .29, .28, .26, .24, .22, .18, .13, .075, .04, .02, .008, 0.00, 0.00, 0.00};
   return QE;
 }
-G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
+G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[20] = { 260., 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640.};
   return wavelength;}
-
 G4double  PMT3inch::GetmaxQE(){
-  const G4double maxQE = 0.211;
+  const G4double maxQE = 0.30;
   return maxQE;
+}
+G4int PMT3inch::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+G4double* PMT3inch::GetCollectionEfficiencyArray(){
+  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
+  return CE;
 }
 
 G4double PMT3inch::GetDarkRate(){
@@ -971,11 +977,6 @@ G4double PMT3inch::GetDarkRate(){
 
 G4double PMT3inch::GetDarkRateConversionFactor(){
   const G4double factor = 1.367;
-  return factor;
-}
-
-G4int PMT3inch::GetNbOfQEDefined(){
-  const G4int factor = 20;
   return factor;
 }
 
@@ -3302,42 +3303,42 @@ G4double* PMT3inchR14374::Getqpe()
 
 #if 0 // from ETEL
 //PMT QE Info extrapolated from ETEL datasheet
-G4double* PMT3inch::GetQE(){
+G4double* PMT3inchR14374::GetQE(){
   static G4double QE[20] = { 0.00, .005, .09, .21, .28, .30, .29, .28, .26, .24, .22, .18, .13, .075, .04, .02, .008, 0.00, 0.00, 0.00};
   return QE;
 }
-G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[20] = { 260., 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640.};
+G4double* PMT3inchR14374::GetQEWavelength(){static G4double wavelength[20] = { 260., 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640.};
   return wavelength;}
-G4double  PMT3inch::GetmaxQE(){
+G4double  PMT3inchR14374::GetmaxQE(){
   const G4double maxQE = 0.30;
   return maxQE;
 }
-G4int PMT3inch::GetNbOfQEDefined(){
+G4int PMT3inchR14374::GetNbOfQEDefined(){
   const G4int factor = 20;
   return factor;
 }
-G4double* PMT3inch::GetCollectionEfficiencyArray(){
+G4double* PMT3inchR14374::GetCollectionEfficiencyArray(){
   static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
   return CE;
 }
 #endif
 
 #if 1 // from Hamamatsu
-G4double* PMT3inch::GetQE(){
+G4double* PMT3inchR14374::GetQE(){
   static G4double QE[37] = {0., 7.333448596/100., 13.41850844/100., 18.85388087/100., 22.58789628/100., 24.83751724/100., 25.90372483/100., 26.09567109/100., 26.68416596/100., 27.11242269/100., 27.37569687/100., 27.15690678/100., 26.8828067/100., 26.78047372/100., 26.11524001/100., 25.44085118/100., 24.21266344/100., 23.28276282/100., 21.83662063/100., 20.62874459/100., 19.73618418/100., 18.59231943/100., 16.61159424/100., 13.50310127/100., 11.01111366/100., 9.511755535/100., 8.430844444/100., 7.428469476/100., 6.525186832/100., 5.512680184/100., 4.649601092/100., 3.720048567/100., 2.936519188/100., 2.188881819/100., 1.48734368/100., 0.934955148/100., 0.};
   return QE;
 }
-G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[37] = { 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650 };
+G4double* PMT3inchR14374::GetQEWavelength(){static G4double wavelength[37] = { 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650 };
   return wavelength;}
-G4double  PMT3inch::GetmaxQE(){
+G4double  PMT3inchR14374::GetmaxQE(){
   const G4double maxQE = 0.27;
   return maxQE;
 }
-G4int PMT3inch::GetNbOfQEDefined(){
+G4int PMT3inchR14374::GetNbOfQEDefined(){
   const G4int factor = 37;
   return factor;
 }
-G4double* PMT3inch::GetCollectionEfficiencyArray(){
+G4double* PMT3inchR14374::GetCollectionEfficiencyArray(){
   static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
   return CE;
 }
@@ -3345,21 +3346,21 @@ G4double* PMT3inch::GetCollectionEfficiencyArray(){
 
 
 #if 0 // from NNVT
-G4double* PMT3inch::GetQE(){
+G4double* PMT3inchR14374::GetQE(){
   static G4double QE[37] = {0., 0.187399331/100., 1.83797986/100., 6.849267609/100., 14.53596403/100., 20.98046045/100., 24.82708625/100., 27.78453786/100., 28.88106058/100., 28.43121586/100., 28.69331522/100., 27.73683132/100., 25.45433263/100., 23.61911783/100., 21.52790058/100., 19.75096978/100., 18.09367601/100., 16.15956243/100., 14.08033797/100., 12.56868349/100., 11.86649274/100., 10.84294965/100., 9.909833721/100., 8.010004769/100., 6.253118113/100., 5.124670521/100., 4.433686592/100., 3.878838981/100., 3.267511401/100., 2.919435288/100., 2.392315593/100., 1.889523401/100., 1.500014957/100., 1.00341673/100., 0.718883368/100., 0.386247086/100., 0.};
   return QE;
 }
-G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[37] = { 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650 };
+G4double* PMT3inchR14374::GetQEWavelength(){static G4double wavelength[37] = { 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650 };
   return wavelength;}
-G4double  PMT3inch::GetmaxQE(){
+G4double  PMT3inchR14374::GetmaxQE(){
   const G4double maxQE = 0.29;
   return maxQE;
 }
-G4int PMT3inch::GetNbOfQEDefined(){
+G4int PMT3inchR14374::GetNbOfQEDefined(){
   const G4int factor = 37;
   return factor;
 }
-G4double* PMT3inch::GetCollectionEfficiencyArray(){
+G4double* PMT3inchR14374::GetCollectionEfficiencyArray(){
 /// for NNVT, reduced collection efficiency at large angles
   static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 70., 70., 70., 70.};
   return CE;
@@ -3368,31 +3369,26 @@ G4double* PMT3inch::GetCollectionEfficiencyArray(){
 
 
 #if 0 // flat in energy range
-G4double* PMT3inch::GetQE(){
+G4double* PMT3inchR14374::GetQE(){
   static G4double QE[4] = {0., 1., 1., 0.};
   return QE;
 }
-G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[4] = { 649, 650, 700, 701}; // set here energy range
+G4double* PMT3inchR14374::GetQEWavelength(){static G4double wavelength[4] = { 649, 650, 700, 701}; // set here energy range
   return wavelength;}
-G4double  PMT3inch::GetmaxQE(){
+G4double  PMT3inchR14374::GetmaxQE(){
   const G4double maxQE = 1.;
   return maxQE;
 }
-G4int PMT3inch::GetNbOfQEDefined(){
+G4int PMT3inchR14374::GetNbOfQEDefined(){
   const G4int factor = 4;
   return factor;
 }
-G4double* PMT3inch::GetCollectionEfficiencyArray(){
+G4double* PMT3inchR14374::GetCollectionEfficiencyArray(){
   static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
   return CE;
 }
 #endif
  
-
-G4double* PMT3inchR14374::GetCollectionEfficiencyArray(){
-  static G4double CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
-  return CE;
-}
 
 G4double PMT3inchR14374::GetDarkRate(){
   // Realistic/Optimistic value from published (proceedings) measurements.

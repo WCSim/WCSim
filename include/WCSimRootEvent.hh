@@ -181,7 +181,8 @@ public:
 			    Float_t photonEndPos[3],
 			    Float_t photonStartDir[3],
 			    Float_t photonEndDir[3],
-          ProcessType_t photonCreatorProcess);
+			    ProcessType_t photonCreatorProcess,
+			    Double_t wavelength);
   virtual ~WCSimRootCherenkovHitTime() { }
   bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 

@@ -43,7 +43,8 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
       // XQ: get the maximum QE and multiply it by the ratio
       // only work for the range between 240 nm and 660 nm for now 
       // Even with WLS
-      G4double wavelengthQE = 0;
+	G4double wavelengthQE = 0;
+	G4double ratio = 1./(1.0-0.25);
       if(aTrack->GetCreatorProcess()==NULL) {
 	if(!DetConstruct->GetIsCombinedPMTCollectionDefined())
 	  wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,200,800,ratio);
