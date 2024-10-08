@@ -271,9 +271,10 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
     }//loop over Digits
   }//loop over PMTs
   long long window_start_time = firsthit;
-  window_start_time -= window_start_time % 5;
+  if (window_start_time>0) window_start_time -= window_start_time % window_step_size;
+  else window_start_time -= window_step_size - abs(window_start_time) % window_step_size;
   long long window_end_time   = lasthit - ndigitsWindow + window_step_size;
-  window_end_time += window_end_time % 5;
+  window_end_time += abs(window_end_time) % window_step_size;
   if (window_end_time<window_start_time) window_end_time = window_start_time;
 #ifdef WCSIMWCTRIGGER_VERBOSE
   G4cout << "WCSimWCTriggerBase::AlgNDigits. Found first/last hits. Looping from "
@@ -327,7 +328,8 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
       //The trigger time is the time of the first hit above threshold
       std::sort(digit_times.begin(), digit_times.end());
       triggertime = digit_times[this_ndigitsThreshold];
-      triggertime -= (int)triggertime % 5;
+      if (triggertime>0) triggertime -= (int)triggertime % window_step_size;
+      else triggertime -= window_step_size - abs(window_start_time) % window_step_size;
       TriggerTimes.push_back(triggertime);
       TriggerTypes.push_back(this_triggerType);
       TriggerInfos.push_back(std::vector<Double_t>(1, n_digits));
@@ -350,7 +352,8 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
       if (window_start_time<next_hit_time)
       {
         window_start_time = next_hit_time;
-        window_start_time -= window_start_time % 5;
+        if (window_start_time>0) window_start_time -= window_start_time % window_step_size;
+        else window_start_time -= window_step_size - abs(window_start_time) % window_step_size;
       }
     }
   }
