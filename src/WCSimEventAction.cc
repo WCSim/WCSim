@@ -1673,7 +1673,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   //G4cout <<"WCFV digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";
   //  }
 
-  /*
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
   if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
@@ -1681,7 +1680,6 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       generatorAction->CopyRootrackerVertex(GetRunAction()->GetRootrackerVertex()); //will increment NVtx
       GetRunAction()->FillRootrackerVertexTree();
   }
-  */
 
 }
 
@@ -2233,7 +2231,6 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   //G4cout <<"WCFV digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";
   //  }
 
-  /*
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
   if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
@@ -2241,7 +2238,6 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       generatorAction->CopyRootrackerVertex(GetRunAction()->GetRootrackerVertex()); //will increment NVtx
       GetRunAction()->FillRootrackerVertexTree();
   }
-  */
 }
 
 
