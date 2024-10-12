@@ -910,7 +910,8 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       WCSimDetector->SetODEdited(true);
       G4cout << "Set OD PMT size " << newValue << " ";
       if (newValue == "3inch"){
-        WCSimDetector->SetWCPMTODSize("PMT3inch_ETEL9302B");
+	//        WCSimDetector->SetWCPMTODSize("PMT3inch_ETEL9302B");
+        WCSimDetector->SetWCPMTODSize("PMT3inchR14374");
       }else if (newValue == "5inch"){
         WCSimDetector->SetWCPMTODSize("PMT5inch");
       }else if (newValue == "8inch"){
