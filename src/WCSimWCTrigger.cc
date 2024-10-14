@@ -349,9 +349,9 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
     }//triggerfound
     else {
       window_start_time += window_step_size;
-      if (window_start_time<(int)next_hit_time)
+      if (window_start_time<next_hit_time)
       {
-        window_start_time = (int)next_hit_time;
+        window_start_time = next_hit_time;
         if (window_start_time>0) window_start_time -= window_start_time % window_step_size;
         else window_start_time -= window_step_size - abs(window_start_time) % window_step_size;
       }
