@@ -311,8 +311,13 @@
 ## | Index of particle in event | PDG code | Energy | X | Y | Z | Px | Py | Pz | Time |
 ## Note that the column separators "|" are for clarity in describing the format, and should not be included in the file
 ## Note also that comments are allowed in the data table file by starting lines with a "#"
+## Here you can also set the event to simulate from (StartEvent) and the number of
+## events to simulate from this point (NEvents). If NEvents is set to -1 then all events in the file will
+## be simulated
 #/mygen/generator datatable
 #/mygen/vecfile inputDataTableFile
+#/mygen/dataTableStartEvent startevent (default 0)
+#/mygen/dataTableNEvents nevents (default -1)
 
 ## Or you can use the laser option
 ## This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
