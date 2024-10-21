@@ -3363,7 +3363,7 @@ G4int PMT3inchR14374::GetNbOfQEDefined(){
 G4double* PMT3inchR14374::GetCollectionEfficiencyArray(){
 /// for NNVT, reduced collection efficiency at large angles
 //  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 70., 70., 70., 70.};
-  static G4double CE[10] = { 96.1, 96.4, 97.5, 99.6, 95,6, 100, 89.7, 21.3, 0., 0.};
+  static G4double CE[10] = { 96.1, 96.4, 97.5, 99.6, 95.6, 100, 89.7, 21.3, 0., 0.};
   return CE;
 }
 #endif
