@@ -544,6 +544,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "PMT3inchGT\n"
           "PMT3inchR12199_02\n"
           "PMT3inchR14374\n"
+	  "PMT3inchR14374_WCTE\n"
 	  "PMT3inch_ETEL9302B\n"
           "PMT5inch\n"
           "PMT8inch\n"
