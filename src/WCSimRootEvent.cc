@@ -573,7 +573,8 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
 							 std::vector<TVector3> photonEndPos,
 							 std::vector<TVector3> photonStartDir,
 							 std::vector<TVector3> photonEndDir,
-               std::vector<ProcessType_t> photonCreatorProcess)
+							 std::vector<ProcessType_t> photonCreatorProcess,
+							 std::vector<double> wavelength)
 {
   // Add a new Cherenkov hit to the list of Cherenkov hits
   TClonesArray &cherenkovhittimes = *fCherenkovHitTimes;
@@ -597,7 +598,8 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
     //WCSimRootCherenkovHitTime *cherenkovhittime =
     new(cherenkovhittimes[fNcherenkovhittimes++]) WCSimRootCherenkovHitTime(truetime[i],parentSavedTrackID[i],
 									    photonStartTime[i], startPos, endPos,
-									    startDir, endDir, creatorProcess);
+									    startDir, endDir, creatorProcess,
+									    wavelength[i]);
   }
   
 #ifdef DEBUG
@@ -666,7 +668,8 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
 						     Float_t photonEndPos[3],
 						     Float_t photonStartDir[3],
 						     Float_t photonEndDir[3],
-                 ProcessType_t photonCreatorProcess)
+						     ProcessType_t photonCreatorProcess,
+						     Double_t wavelength)
 {
   // Create a WCSimRootCherenkovHit object and fill it with stuff
   fTruetime        = truetime;
@@ -679,6 +682,7 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
     fPhotonStartDir[i] = photonStartDir[i];
     fPhotonEndDir[i] = photonEndDir[i];
   }
+  fWavelength = wavelength;
 }
 
 WCSimRootCherenkovHitHistory::WCSimRootCherenkovHitHistory(Int_t nRayScat, Int_t nMieScat, std::vector<ReflectionSurface_t> refle)
@@ -904,6 +908,7 @@ bool WCSimRootCherenkovHitTime::CompareAllVariables(const WCSimRootCherenkovHitT
     failed = (!ComparisonPassed(fPhotonStartDir[i], c->GetPhotonStartDir(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonStartDir", i))) || failed;
     failed = (!ComparisonPassed(fPhotonEndDir[i], c->GetPhotonEndDir(i), typeid(*this).name(), __func__, TString::Format("%s[%d]", "PhotonEndDir", i))) || failed;
   }//i
+  failed = (!ComparisonPassed(fWavelength, c->GetWavelength(), typeid(*this).name(), __func__, "Wavelength")) || failed;
 
   return !failed;
 }

@@ -425,6 +425,9 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   // NOTE : If you set WCPMTODperCellHorizontal=0 and WCPMTODperCellVertical=0,
   // then method ComputeWCODPMT() inside ConstructCylinder will automatically compute
   // the nb of PMTs to put on barrel side according to WCPMTODPercentCoverage
+  WCPMTODPercentCoverageTop   = 0; //default 0
+  WCPMTODPercentCoverageBottom   = 0; //default 0
+  WCPMTODPercentCoverageBarrel   = 0; //default 0
 
   // Shift between PMTs inside a cell //
   WCODPMTShift = 0.*cm;
@@ -433,16 +436,24 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   // WCODCapPMTSpacing = 100*cm;
   WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
   WCODCapEdgeLimit = WCIDDiameter/2.0 - WCODWLSPlatesLength/2;
+  WCODCapPMTSpacingTop  = 0;
+  WCODCapPMTSpacingBottom  = 0;
 
+  // F. Nova 2022/05/13 remove combine pmt qe
   // TEST combined PMT collection for stacking action
-  std::vector<G4String> WCColName;
-  WCColName.push_back(WCIDCollectionName);
-  WCColName.push_back(WCODCollectionName);
-  CreateCombinedPMTQE(WCColName);
-  isCombinedPMTCollectionDefined=true;
+  // std::vector<G4String> WCColName;
+  // WCColName.push_back(WCIDCollectionName);
+  // WCColName.push_back(WCODCollectionName);
+  // CreateCombinedPMTQE(WCColName);
+  // isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
+#if 0
   G4String WLSType = "EljenEJ286";
+#else
+  G4String WLSType = "Kuraray";
+  //G4String WLSType = "Inr";
+#endif
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -864,6 +875,9 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Geometry()
   // NOTE : If you set WCPMTODperCellHorizontal=0 and WCPMTODperCellVertical=0,
   // then method ComputeWCODPMT() inside ConstructCylinder will automatically compute
   // the nb of PMTs to put on barrel side according to WCPMTODPercentCoverage
+  WCPMTODPercentCoverageTop   = 0; //default 0
+  WCPMTODPercentCoverageBottom   = 0; //default 0
+  WCPMTODPercentCoverageBarrel   = 0; //default 0
 
   // Shift between PMTs inside a cell //
   WCODPMTShift = 0.*cm;
@@ -873,16 +887,21 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Geometry()
   WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
   WCODCapEdgeLimit = WCIDDiameter/2.0 - WCODWLSPlatesLength/2;
 
+  // F. Nova 2022/05/13 remove combine pmt qe
   // TEST combined PMT collection for stacking action
-  std::vector<G4String> WCColName;
-  WCColName.push_back(WCIDCollectionName);
-  WCColName.push_back(WCODCollectionName);
-  WCColName.push_back(WCIDCollectionName2);
-  CreateCombinedPMTQE(WCColName);
-  isCombinedPMTCollectionDefined=true;
+  // std::vector<G4String> WCColName;
+  // WCColName.push_back(WCIDCollectionName);
+  // WCColName.push_back(WCODCollectionName);
+  // CreateCombinedPMTQE(WCColName);
+  // isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
+#if 0
   G4String WLSType = "EljenEJ286";
+#else
+  G4String WLSType = "Kuraray";
+  //G4String WLSType = "Inr";
+#endif
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);

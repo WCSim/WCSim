@@ -170,6 +170,7 @@ private:
   Float_t fPhotonStartDir[3]; //< Start direction unit vector (x,y,z) of the photon that created this hit
   Float_t fPhotonEndDir[3]; //< End direction unit vector (x,y,z) of the photon that created this hit
   ProcessType_t fPhotonCreatorProcess; //!< Process that created the photon that created this hit
+  Double_t fWavelength; // photon wavelength
 
 public:
   WCSimRootCherenkovHitTime() {}
@@ -180,7 +181,8 @@ public:
 			    Float_t photonEndPos[3],
 			    Float_t photonStartDir[3],
 			    Float_t photonEndDir[3],
-          ProcessType_t photonCreatorProcess);
+			    ProcessType_t photonCreatorProcess,
+			    Double_t wavelength);
   virtual ~WCSimRootCherenkovHitTime() { }
   bool CompareAllVariables(const WCSimRootCherenkovHitTime * c) const;
 
@@ -194,6 +196,7 @@ public:
   Float_t   GetPhotonEndDir(int i) const { return (i<3) ? fPhotonEndDir[i] : 0; }
   ProcessType_t GetPhotonCreatorProcess() const {return  fPhotonCreatorProcess;}
   std::string   GetPhotonCreatorProcessName() const {return  WCSimEnumerations::EnumAsString(fPhotonCreatorProcess);}
+  Double_t GetWavelength() const  { return fWavelength; };
 
   ClassDef(WCSimRootCherenkovHitTime,2)
 };
@@ -577,7 +580,8 @@ public:
 					   std::vector<TVector3>  photonEndPos,
 					   std::vector<TVector3>  photonStartDir,
 					   std::vector<TVector3>  photonEndDir,
-             std::vector<ProcessType_t> photonCreatorProcess);
+					   std::vector<ProcessType_t> photonCreatorProcess,
+					   std::vector<Double_t> wavelength);
 
   WCSimRootCherenkovHitHistory   *AddCherenkovHitHistory(Int_t nRayScat,
              Int_t nMieScat,

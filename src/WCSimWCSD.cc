@@ -202,12 +202,12 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
     // maxQE = fdet->GetPMTQE(WCIDCollectionName,wavelength,0,200,700,ratio);
-    maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,240,660,ratio);
-    photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
+    maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,200,660,ratio);
+    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,200,660,ratio);
     photonQE = photonQE/maxQE;
   }else if (fdet->GetPMT_QE_Method() == 3){
     ratio = 1./(1.-0.25);
-    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,240,660,ratio);
+    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,200,660,ratio);
   }
   
   if (G4UniformRand() <= photonQE){
@@ -251,14 +251,15 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	   // Set the hitMap value to the collection hit number
 	   PMTHitMap[replicaNumber] = hitsCollection->insert( newHit );
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
-     (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
-     (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(photonCreatorProcess);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(photonCreatorProcess);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddWavelength(wavelength);
 	   
 	   //     if ( particleDefinition != G4OpticalPhoton::OpticalPhotonDefinition() )
 	   //       newHit->Print();
@@ -266,14 +267,15 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	 }
        else {
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPe(hitTime);
-   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
-   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(photonCreatorProcess);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(photonCreatorProcess);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddWavelength(wavelength);
 	 
        }
      }

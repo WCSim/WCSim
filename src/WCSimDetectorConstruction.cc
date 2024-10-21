@@ -553,6 +553,10 @@ void WCSimDetectorConstruction::UpdateODGeo()
   WCODDiameter = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
 
   WCODCapPMTSpacing  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverage)/(10.0*WCPMTODRadius))));
+  if( WCPMTODPercentCoverageTop )
+    WCODCapPMTSpacingTop  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverageTop)/(10.0*WCPMTODRadius))));
+  if( WCPMTODPercentCoverageBottom )
+    WCODCapPMTSpacingBottom  = (pi*WCIDDiameter/(round(WCIDDiameter*sqrt(pi*WCPMTODPercentCoverageBottom)/(10.0*WCPMTODRadius))));
   WCODCapEdgeLimit = std::min(WCIDDiameter/2.0 - WCPMTODRadius, WCIDDiameter/2.0 - WCODWLSPlatesLength/2);
 
   std::vector<G4String> WCColName;
@@ -651,6 +655,14 @@ WCSimWLSProperties *WCSimDetectorConstruction::CreateWLSObject(G4String WLSType)
 
   if (WLSType == "EljenEJ286"){
     WCSimWLSProperties* WLS = new EljenEJ286;
+    WCSimDetectorConstruction::SetWLSPointer(WLS);
+    return WLS;
+  }else if (WLSType == "Kuraray"){
+    WCSimWLSProperties* WLS = new Kuraray;
+    WCSimDetectorConstruction::SetWLSPointer(WLS);
+    return WLS;
+  }else if (WLSType == "Inr"){
+    WCSimWLSProperties* WLS = new Inr;
     WCSimDetectorConstruction::SetWLSPointer(WLS);
     return WLS;
   }

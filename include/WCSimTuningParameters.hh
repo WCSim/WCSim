@@ -66,8 +66,23 @@ public:
   G4double GetWCODWLSCladdingReflectivity() {return WCODWLSCladdingReflectivity;}
   void SetWCODWLSCladdingReflectivity(G4double tparam) {WCODWLSCladdingReflectivity=tparam;}
 
-  G4double GetWCODTyvekReflectivity() {return WCODTyvekReflectivity;}
-  void SetWCODTyvekReflectivity(G4double tparam) {WCODTyvekReflectivity=tparam;}
+  G4double GetWCODTyvekReflectivityInWallTop() {return WCODTyvekReflectivityInWallTop;}
+  void SetWCODTyvekReflectivityInWallTop(G4double tparam) {WCODTyvekReflectivityInWallTop=tparam;}
+
+  G4double GetWCODTyvekReflectivityInWallBarrel() {return WCODTyvekReflectivityInWallBarrel;}
+  void SetWCODTyvekReflectivityInWallBarrel(G4double tparam) {WCODTyvekReflectivityInWallBarrel=tparam;}
+
+  G4double GetWCODTyvekReflectivityInWallBottom() {return WCODTyvekReflectivityInWallBottom;}
+  void SetWCODTyvekReflectivityInWallBottom(G4double tparam) {WCODTyvekReflectivityInWallBottom=tparam;}
+
+  G4double GetWCODTyvekReflectivityOutWallTop() {return WCODTyvekReflectivityOutWallTop;}
+  void SetWCODTyvekReflectivityOutWallTop(G4double tparam) {WCODTyvekReflectivityOutWallTop=tparam;}
+
+  G4double GetWCODTyvekReflectivityOutWallBarrel() {return WCODTyvekReflectivityOutWallBarrel;}
+  void SetWCODTyvekReflectivityOutWallBarrel(G4double tparam) {WCODTyvekReflectivityOutWallBarrel=tparam;}
+
+  G4double GetWCODTyvekReflectivityOutWallBottom() {return WCODTyvekReflectivityOutWallBottom;}
+  void SetWCODTyvekReflectivityOutWallBottom(G4double tparam) {WCODTyvekReflectivityOutWallBottom=tparam;}
 
 private:
 
@@ -99,7 +114,12 @@ private:
   G4bool topveto;
 
   G4double WCODWLSCladdingReflectivity;
-  G4double WCODTyvekReflectivity;
+  G4double WCODTyvekReflectivityInWallTop;
+  G4double WCODTyvekReflectivityInWallBarrel;
+  G4double WCODTyvekReflectivityInWallBottom;
+  G4double WCODTyvekReflectivityOutWallTop;
+  G4double WCODTyvekReflectivityOutWallBarrel;
+  G4double WCODTyvekReflectivityOutWallBottom;
 
 };
 

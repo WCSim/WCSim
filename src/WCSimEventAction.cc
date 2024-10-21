@@ -382,6 +382,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 	(*WCHC)[hitIndex]->AddPhotonStartDir(dir);
 	(*WCHC)[hitIndex]->AddPhotonEndDir(dir);
 	(*WCHC)[hitIndex]->AddPhotonCreatorProcess(photcreatorproc);
+	(*WCHC)[hitIndex]->AddWavelength(0.);
 	(*WCHC)[hitIndex]->AddPhotonStartTime(time);
       }
 
@@ -1471,6 +1472,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 #endif
     double hit_time_true;
     int hit_parentid;
+    std::vector<double> wavelength;
+    double hit_wavelength;
     float hit_photon_starttime;
     TVector3 hit_photon_startpos;
     TVector3 hit_photon_endpos;
@@ -1499,6 +1502,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 #endif
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
+	hit_wavelength = (*WCDC_hits)[idigi]->GetWavelength(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
 	hit_photon_startpos = TVector3(
 	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[0],
@@ -1516,7 +1520,7 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[0],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[1],
 	        (*WCDC_hits)[idigi]->GetPhotonEndDir(id)[2]);
-  hit_photon_creatorprocess = (*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id);
+	hit_photon_creatorprocess = (*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id);
 
 	truetime.push_back(hit_time_true);
 	parentSavedTrackID.push_back(hit_parentid);
@@ -1525,7 +1529,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	photonEndPos.push_back(hit_photon_endpos);
 	photonStartDir.push_back(hit_photon_startdir);
 	photonEndDir.push_back(hit_photon_enddir);
-  photonCreatorProcess.push_back(hit_photon_creatorprocess);
+	photonCreatorProcess.push_back(hit_photon_creatorprocess);
+	wavelength.push_back(hit_wavelength);
+
 #ifdef _SAVE_RAW_HITS_VERBOSE
 	hit_time_smear = (*WCDC_hits)[idigi]->GetTime(id);
 	smeartime.push_back(hit_time_smear);
@@ -1554,7 +1560,9 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				      photonEndPos,
 				      photonStartDir,
 				      photonEndDir,
-              photonCreatorProcess);
+				      photonCreatorProcess,
+				      wavelength);
+      wavelength.clear();
       smeartime.clear();
       truetime.clear();
       parentSavedTrackID.clear();
@@ -2036,6 +2044,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 #endif
     double hit_time_true;
     int hit_parentid;
+    std::vector<double> wavelength;
+    double hit_wavelength;
     float hit_photon_starttime;
     TVector3 hit_photon_startpos;
     TVector3 hit_photon_endpos;
@@ -2064,8 +2074,9 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 #endif
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
+	hit_wavelength = (*WCDC_hits)[idigi]->GetWavelength(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
-  hit_photon_creatorprocess = (*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id);
+	hit_photon_creatorprocess = (*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id);
 	hit_photon_startpos = TVector3(
 	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[0],
 	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[1],
@@ -2089,7 +2100,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	photonEndPos.push_back(hit_photon_endpos);
 	photonStartDir.push_back(hit_photon_startdir);
 	photonEndDir.push_back(hit_photon_enddir);
-  photonCreatorProcess.push_back(hit_photon_creatorprocess);                         // ADD A GENERIC PROCESS NAME
+	photonCreatorProcess.push_back(hit_photon_creatorprocess);                         // ADD A GENERIC PROCESS NAME
+	wavelength.push_back(hit_wavelength);
 #ifdef _SAVE_RAW_HITS_VERBOSE
 	hit_time_smear = (*WCDC_hits)[idigi]->GetTime(id);
 	smeartime.push_back(hit_time_smear);
@@ -2119,7 +2131,9 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				      photonEndPos,
 				      photonStartDir,
 				      photonEndDir,
-              photonCreatorProcess);         // INCLUDE THE VECTOR OF CREATOR PROCESSES
+				      photonCreatorProcess,
+				      wavelength);
+      wavelength.clear();
       smeartime.clear();
       truetime.clear();
       parentSavedTrackID.clear();

@@ -40,35 +40,31 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
 	
 	G4double photonWavelength = (2.0*M_PI*197.3)/(aTrack->GetTotalEnergy()/eV);
 
-	// MF : translated from skdetsim : better to increase the number of photons
-	// than to throw in a global factor  at Digitization time !
-	G4double ratio = 1./(1.0-0.25);
-
-	// XQ: get the maximum QE and multiply it by the ratio
-	// only work for the range between 240 nm and 660 nm for now 
-	// Even with WLS
+      // XQ: get the maximum QE and multiply it by the ratio
+      // only work for the range between 240 nm and 660 nm for now 
+      // Even with WLS
 	G4double wavelengthQE = 0;
-
-	//G4String volumeName        = aTrack->GetVolume()->GetName();
-
-	if(!DetConstruct->GetIsCombinedPMTCollectionDefined()) {
-	  //Geometry without OD
-	  if (DetConstruct->GetPMT_QE_Method()==1){
-	    wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,240,660,ratio);
-	    //wavelengthQE  = DetConstruct->GetPMTQE(volumeName,photonWavelength,1,240,660,ratio);
-	  }else if (DetConstruct->GetPMT_QE_Method()==2){
-	    wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,0,240,660,ratio);
-	    //wavelengthQE  = DetConstruct->GetPMTQE(volumeName,photonWavelength,0,240,660,ratio);
-	  }else if (DetConstruct->GetPMT_QE_Method()==3 || DetConstruct->GetPMT_QE_Method() == 4){
-	    wavelengthQE = 1.1;
-	  }
-	}//Geometry without OD
-	else {
-	  //Geometry with OD
+	G4double ratio = 1./(1.0-0.25);
+      if(aTrack->GetCreatorProcess()==NULL) {
+	if(!DetConstruct->GetIsCombinedPMTCollectionDefined())
+	  wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,200,660,ratio);
+	else
+	  wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,1,200,660,ratio);
+	if( G4UniformRand() > wavelengthQE )
+	  classification = fKill;
+      }
+      else if (((G4VProcess*)(aTrack->GetCreatorProcess()))->GetProcessType()!=3)
+	{
 	  if (DetConstruct->GetPMT_QE_Method() == 1){
-	    wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,1,240,660,ratio);
+	    if(!DetConstruct->GetIsCombinedPMTCollectionDefined())
+	      wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,200,660,ratio);
+	    else
+	      wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,1,200,660,ratio);
 	  }else if (DetConstruct->GetPMT_QE_Method() == 2){
-	    wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,0,240,660,ratio);
+	    if(!DetConstruct->GetIsCombinedPMTCollectionDefined())
+	      wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,0,200,660,ratio);
+	    else
+	      wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,0,200,660,ratio);
 	  }else if (DetConstruct->GetPMT_QE_Method() == 3 || DetConstruct->GetPMT_QE_Method() == 4){
 	    wavelengthQE = 1.1;
 	  }
