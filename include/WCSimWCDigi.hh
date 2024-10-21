@@ -210,6 +210,7 @@ public:
         index_pe           = pe.at(i);
         if(sort_digi_compositions) index_digicomp = fDigiComp.at(i);
         index_trackID              = trackID.at(i);
+	index_wavelength           = wavelength.at(i);
         index_parentSavedTrackID   = parentSavedTrackID.at(i);
         index_photonstarttime      = photonStartTime[i];
         index_photonstartpos       = photonStartPos[i];
