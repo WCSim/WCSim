@@ -419,6 +419,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
 				    "PMT3inchR14374 "
+				    "PMT3inchR14374_WCTE "
 				    "PMT3inch_ETEL9302B "
 				    "PMT4inchR12199_02 "
 				    "PMT5inchR12199_02 "
