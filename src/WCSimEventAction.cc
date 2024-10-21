@@ -2132,7 +2132,7 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				      photonStartDir,
 				      photonEndDir,
 				      photonCreatorProcess,
-				      wavelength);         // INCLUDE THE VECTOR OF CREATOR PROCESSES
+				      wavelength);
       wavelength.clear();
       smeartime.clear();
       truetime.clear();
