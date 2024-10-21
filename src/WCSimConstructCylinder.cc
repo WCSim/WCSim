@@ -275,7 +275,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					  false,
 					  checkOverlaps);
 
-    G4LogicalSkinSurface *TyvekCaveBarrelSurface = new G4LogicalSkinSurface("TyvekCaveBarrelSurface", logicCaveTyvek, OpWaterTySurfaceOutWallBarrel);
+    new G4LogicalSkinSurface("TyvekCaveBarrelSurface", logicCaveTyvek, OpWaterTySurfaceOutWallBarrel);
 
     G4VisAttributes *showTyvekCave = new G4VisAttributes(green);
     showTyvekCave->SetForceWireframe(true);// This line is used to give definition to the rings in OGLSX Visualizer
@@ -312,8 +312,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 								"CaveCapTyvek",
 								0, 0, 0);
 
-    G4LogicalSkinSurface *TyvekCaveTopSurface = new G4LogicalSkinSurface("TyvekCaveTopSurface", logicCaveCapsTyvekTop, OpWaterTySurfaceOutWallTop);
-    G4LogicalSkinSurface *TyvekCaveBottomSurface = new G4LogicalSkinSurface("TyvekCaveBottomSurface", logicCaveCapsTyvekBottom, OpWaterTySurfaceOutWallBottom);
+    new G4LogicalSkinSurface("TyvekCaveTopSurface", logicCaveCapsTyvekTop, OpWaterTySurfaceOutWallTop);
+    new G4LogicalSkinSurface("TyvekCaveBottomSurface", logicCaveCapsTyvekBottom, OpWaterTySurfaceOutWallBottom);
 
     G4VisAttributes *CapsCaveTyvekVisAttTop = new G4VisAttributes(yellow);
     CapsCaveTyvekVisAttTop->SetForceWireframe(true);
@@ -326,7 +326,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
     G4ThreeVector CaveTyvekPosition(0., 0., WCLength / 2);
 
-    G4VPhysicalVolume *physiTopCaveTyvek =
         new G4PVPlacement(0,
                           CaveTyvekPosition,
 						  logicCaveCapsTyvekTop,
@@ -338,7 +337,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 
     CaveTyvekPosition.setZ(-CaveTyvekPosition.getZ());
 
-    G4VPhysicalVolume *physiBottomCaveTyvek =
         new G4PVPlacement(0,
                           CaveTyvekPosition,
 						  logicCaveCapsTyvekBottom,
@@ -840,9 +838,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 						false,0,
 						checkOverlaps);
 
-          G4LogicalSkinSurface *WaterTyTVSurfaceBot = new G4LogicalSkinSurface("WaterTyTVSurfaceBot", logicWCTVTyvek, OpWaterTySurfaceInWallBottom);
+	new G4LogicalSkinSurface("WaterTyTVSurfaceBot", logicWCTVTyvek, OpWaterTySurfaceInWallBottom);
 	  //Top
-	  G4VPhysicalVolume* physiWCTVTyvekTop =
 			new G4PVPlacement(	0,
 		                  		G4ThreeVector(0.,0.,0.5*m
 													+WCTyvekThickness/2),
@@ -878,7 +875,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 						false,0,
 						checkOverlaps);
 
-          G4LogicalSkinSurface *WaterTyTVSurfaceSurface = new G4LogicalSkinSurface("WaterTyTVSurfaceSide", logicWCTVTyvekSide, OpWaterTySurfaceInWallBarrel);
+	new G4LogicalSkinSurface("WaterTyTVSurfaceSide", logicWCTVTyvekSide, OpWaterTySurfaceInWallBarrel);
   }
 
   //
@@ -1261,7 +1258,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 						0,
 						checkOverlaps);
 
-    G4LogicalSkinSurface *WaterTySurfaceTop =
         new G4LogicalSkinSurface("WaterTySurfaceTop", logicWCODTopCapTyvek, OpWaterTySurfaceInWallTop);
 
     CapTyvekPosition.setZ(-CapTyvekPosition.getZ());
@@ -1313,7 +1309,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
     logicWCBarrelCellODTyvek->SetVisAttributes(WCBarrelODTyvekCellVisAtt);
 
 
-    G4VPhysicalVolume* physiWCBarrelCellODTyvek =
         new G4PVPlacement(0,
                           G4ThreeVector(0.,0.,0.),
                           logicWCBarrelCellODTyvek,
@@ -1321,7 +1316,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
                           logicWCBarrelCell,
                           false,
                           0,true);
-    G4LogicalSkinSurface *WaterTySurfaceSide =
         new G4LogicalSkinSurface("WaterTySurfaceSide", logicWCBarrelCellODTyvek, OpWaterTySurfaceInWallBarrel);
 
     //-------------------------------------------------------------
@@ -1439,7 +1433,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 							"WCExtraTowerODTyvek",
 							0,0,0);
 
-      G4LogicalSkinSurface *WaterExtraTySurfaceSide =
           new G4LogicalSkinSurface("WaterExtraTySurfaceSide", logicWCTowerODTyvek, OpWaterTySurfaceInWallBarrel);
 
 
@@ -1537,7 +1530,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 		  //		  std::cout << " qqqq cap i " << i << " of " << CapNCellTop << " j " << j << " of " << CapNCellTop << " Container (" << topWLSpos.x() << ", " << topWLSpos.y()
 		  //					<< ", " << topWLSpos.z() << ") r " << sqrt(pow(topWLSpos.x(),2) + pow(topWLSpos.y(),2)) << " WCODCapPMTSpacing " << WCODCapPMTSpacing << std::endl;
 
-			G4VPhysicalVolume* physiTopCapWLSPlate =
 					new G4PVPlacement(0,                   // its rotation
 									  topWLSpos,
 									  logicWCODWLSAndPMT,   // its logical volume
