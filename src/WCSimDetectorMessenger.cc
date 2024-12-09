@@ -216,11 +216,13 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTODRadius->SetGuidance("Set the size of OD PMTs (only for Hyper-K Geom atm)");
   PMTODRadius->SetGuidance("Available options are:\n"
 						  "3inch\n"
+						  "3inchNNVT\n"
 						  "5inch\n"
 						  "8inch\n"
 			                          "BoxandLine20inchHQE\n");
   PMTODRadius->SetParameterName("PMTODRadius", false);
   PMTODRadius->SetCandidates("3inch "
+			     "3inchNNVT "
 			     "5inch "
                              "8inch "
 			     "BoxandLine20inchHQE ");
@@ -419,6 +421,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
 				    "PMT3inchR14374 "
+				    "PMT3inchNNVT "
 				    "PMT3inchR14374_WCTE "
 				    "PMT3inch_ETEL9302B "
 				    "PMT4inchR12199_02 "
@@ -439,6 +442,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
 				    "PMT3inchR14374 "
+				    "PMT3inchNNVT "
 				    "PMT3inchR14374_WCTE "
 				    "PMT3inch_ETEL9302B "
 				    "PMT4inchR12199_02 "
@@ -544,6 +548,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "PMT3inchGT\n"
           "PMT3inchR12199_02\n"
           "PMT3inchR14374\n"
+          "PMT3inchNNVT\n"
 	  "PMT3inchR14374_WCTE\n"
 	  "PMT3inch_ETEL9302B\n"
           "PMT5inch\n"
@@ -554,7 +559,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "HPD20inchHQE\n"
           "PMT20inch\n");
   SetPMTType->SetParameterName("PMTType", false);
-  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT3inchR14374 PMT3inchR14374_WCTE PMT3inch_ETEL9302B PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
+  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT3inchR14374 PMT3inchNNVT PMT3inchR14374_WCTE PMT3inch_ETEL9302B PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
   SetPMTType->SetDefaultValue("PMT10inch");
 
   // Set the vertical position of the nuPRISM-lite detector
@@ -915,6 +920,8 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       if (newValue == "3inch"){
 	//        WCSimDetector->SetWCPMTODSize("PMT3inch_ETEL9302B");
         WCSimDetector->SetWCPMTODSize("PMT3inchR14374");
+      }else if (newValue == "3inchNNVT"){
+        WCSimDetector->SetWCPMTODSize("PMT3inchNNVT");
       }else if (newValue == "5inch"){
         WCSimDetector->SetWCPMTODSize("PMT5inch");
       }else if (newValue == "8inch"){
