@@ -1527,16 +1527,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
         if (((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTODRadius) < WCODCapEdgeLimit) ) {
 
 
-		  //		  std::cout << " qqqq cap i " << i << " of " << CapNCellTop << " j " << j << " of " << CapNCellTop << " Container (" << topWLSpos.x() << ", " << topWLSpos.y()
-		  //					<< ", " << topWLSpos.z() << ") r " << sqrt(pow(topWLSpos.x(),2) + pow(topWLSpos.y(),2)) << " WCODCapPMTSpacing " << WCODCapPMTSpacing << std::endl;
-
 					new G4PVPlacement(0,                   // its rotation
 									  topWLSpos,
 									  logicWCODWLSAndPMT,   // its logical volume
 									  "WCTopCapContainerOD",// its name
 									  logicWCBarrel,       // its mother volume
 									  false,               // no boolean operations
-									  icopy);
+									  icopy,
+									  checkOverlapsPMT);
 
 
 			icopy++;
