@@ -61,6 +61,9 @@ public:
   G4bool GetTopVeto() {return topveto;}
   void SetTopVeto(G4double tparam) {topveto=tparam;}
 
+  G4bool GetIsWlsActive() {return isWlsActive;}
+  void SetIsWlsActive(G4double tparam) {isWlsActive=tparam;}
+
   void SaveOptionsToOutput(WCSimRootOptions * wcopt);
 
   G4double GetWCODWLSCladdingReflectivity() {return WCODWLSCladdingReflectivity;}
@@ -121,6 +124,8 @@ private:
   G4double WCODTyvekReflectivityOutWallBarrel;
   G4double WCODTyvekReflectivityOutWallBottom;
 
+  G4bool isWlsActive;
+  
 };
 
 #endif

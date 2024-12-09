@@ -30,6 +30,7 @@ WCSimTuningParameters::WCSimTuningParameters()
  //jl145 - For Top Veto
  tvspacing = 100.0;
  topveto = false;
+ isWlsActive = true;
 
  WCODWLSCladdingReflectivity   = 0.90; //
  WCODTyvekReflectivityInWallTop   = 0.90; //
@@ -61,6 +62,7 @@ void WCSimTuningParameters::SaveOptionsToOutput(WCSimRootOptions * wcopt)
   wcopt->SetPMTSatur(pmtsatur);
   wcopt->SetTvspacing(tvspacing);
   wcopt->SetTopveto(topveto);
+  wcopt->SetIsWlsActive(isWlsActive);
 }
 
 void WCSimTuningParameters::ReadCathodeParaTable(std::string fname)

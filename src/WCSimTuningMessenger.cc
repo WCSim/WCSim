@@ -81,6 +81,11 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   TopVeto->SetParameterName("TopVeto",true);
   TopVeto->SetDefaultValue(0);
 
+  IsWlsActive = new G4UIcmdWithABool("/WCSim/tuning/isWlsActive",this);
+  IsWlsActive->SetGuidance("WLS plates are active or purely passive");
+  IsWlsActive->SetParameterName("IsWlsActive",true);
+  IsWlsActive->SetDefaultValue(0);
+
   CommandWCODWLSCladdingReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODWLSCladdingReflectivity",this);
   CommandWCODWLSCladdingReflectivity->SetGuidance("Set OD WLS plate cladding reflectivity");
   CommandWCODWLSCladdingReflectivity->SetParameterName("WCODWLSCladdingReflectivity",true);
@@ -134,6 +139,7 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
   //jl145 - for Top Veto
   delete TVSpacing;
   delete TopVeto;
+  delete IsWlsActive;
 
   delete CommandWCODWLSCladdingReflectivity;
   delete CommandWCODTyvekReflectivityInWallTop;
@@ -233,6 +239,15 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       G4cout << "Setting Top Veto On" << G4endl;
     else
       G4cout << "Setting Top Veto Off" << G4endl;
+  }
+
+  else if(command == IsWlsActive) {
+    // Set WLS plates active or purely passive
+    WCSimTuningParams->SetIsWlsActive(IsWlsActive->GetNewBoolValue(newValue));
+    if(IsWlsActive->GetNewBoolValue(newValue))
+      G4cout << "Setting WLS plates active" << G4endl;
+    else
+      G4cout << "Setting WLS plates passive" << G4endl;
   }
 
   else if(command == CommandWCODWLSCladdingReflectivity) {

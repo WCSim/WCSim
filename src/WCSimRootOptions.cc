@@ -82,6 +82,7 @@ void WCSimRootOptions::Print(Option_t *) const
 	 << "\tPMTSatur:" << PmtSatur << endl
 	 << "\tTvspacing: " << Tvspacing << endl
 	 << "\tTopveto: " << Topveto << endl
+	 << "\tIsWlsActive: " << IsWlsActive << endl
 
 	 << "Physics List Factory:" << endl
 	 << "\tPhysicsListName: " << PhysicsListName << endl
