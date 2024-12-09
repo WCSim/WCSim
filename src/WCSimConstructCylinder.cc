@@ -1374,7 +1374,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
       ComputeWCODPMT((G4int)NPMTODByCell,WCPMTODperCellHorizontal,WCPMTODperCellVertical);
     }
 
-	std::cout << " NPMTODByCell " << NPMTODByCell << " WCPMTODperCellHorizontal " << WCPMTODperCellHorizontal << " WCPMTODperCellVertical " << WCPMTODperCellVertical << std::endl;
+	G4cout << " NPMTODByCell " << NPMTODByCell << " WCPMTODperCellHorizontal " << WCPMTODperCellHorizontal << " WCPMTODperCellVertical " << WCPMTODperCellVertical << G4endl;
 
     G4double horizontalODSpacing = barrelODCellWidth/WCPMTODperCellHorizontal;
     G4double verticalODSpacing   = barrelODCellHeight/WCPMTODperCellVertical;
