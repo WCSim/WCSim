@@ -846,7 +846,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 								logicWCTVTyvek,
 		               			"WCTVTyvekTop",
 		          				logicWCTopVeto,
-				 				false,0,true);
+				 				false,0,checkOverlaps);
 
 
 	//Side
