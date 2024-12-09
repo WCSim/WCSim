@@ -332,7 +332,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
                           "CaveTopTyvek",
 						  logicWCBarrel,
                           false,
-                          0);
+                          checkOverlaps);
 
 
     CaveTyvekPosition.setZ(-CaveTyvekPosition.getZ());
@@ -343,7 +343,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
                           "CaveBottomTyvek",
 						  logicWCBarrel,
                           false,
-                          0);
+                          checkOverlaps);
 
 
   } // END Tyvek cave
