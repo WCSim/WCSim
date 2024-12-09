@@ -554,7 +554,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "HPD20inchHQE\n"
           "PMT20inch\n");
   SetPMTType->SetParameterName("PMTType", false);
-  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT3inchR14374 PMT3inch_ETEL9302B PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
+  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT3inchR14374 PMT3inchR14374_WCTE PMT3inch_ETEL9302B PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
   SetPMTType->SetDefaultValue("PMT10inch");
 
   // Set the vertical position of the nuPRISM-lite detector
