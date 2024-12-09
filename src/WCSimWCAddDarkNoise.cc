@@ -317,15 +317,15 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPe(PMTindex[noise_pmt],pe);
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTime(PMTindex[noise_pmt],current_time);
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPreSmearTime(PMTindex[noise_pmt],current_time); //presmear==postsmear for dark noise
+	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetWavelength(PMTindex[noise_pmt],-1);
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTrackID(PMTindex[noise_pmt],-1);
-    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetParentID(PMTindex[noise_pmt],-1);
+	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetParentID(PMTindex[noise_pmt],-1);
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartTime(PMTindex[noise_pmt],current_time);
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartPos(PMTindex[noise_pmt],(*WCHCPMT)[ list[noise_pmt]-1 ]->GetPos());
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonEndPos(PMTindex[noise_pmt],(*WCHCPMT)[ list[noise_pmt]-1 ]->GetPos());
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartDir(PMTindex[noise_pmt],-(*WCHCPMT)[ list[noise_pmt]-1 ]->GetOrientation());
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonEndDir(PMTindex[noise_pmt],-(*WCHCPMT)[ list[noise_pmt]-1 ]->GetOrientation());
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonCreatorProcess(PMTindex[noise_pmt],kDarkNoise);
-	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetWavelength(PMTindex[noise_pmt],-1);
 	  PMTindex[noise_pmt]++;
 #ifdef WCSIMWCADDDARKNOISE_VERBOSE
 	  if(noise_pmt < NPMTS_VERBOSE)

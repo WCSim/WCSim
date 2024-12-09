@@ -127,6 +127,8 @@ public:
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
+protected:
+  G4double* GetCollectionEfficiencyArray();
 };
 
 class PMT3inch_ETEL9302B : public WCSimPMTObject
@@ -407,6 +409,35 @@ protected:
   G4double* GetCollectionEfficiencyArray();
 };
 
+
+class PMT3inchR14374_WCTE : public WCSimPMTObject
+{
+
+public:
+  
+  PMT3inchR14374_WCTE();
+  ~PMT3inchR14374_WCTE();
+ 
+public:
+  G4String GetPMTName() ;
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double, double);
+  double    SaturFactor(double, double); //TD 2019.07.16
+  G4double GetPMTGlassThickness();
+  G4double  GetDarkRate();
+  G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
+private:
+  TGraph  *gTResol = nullptr; // timing resolution
+protected:
+  G4double* GetCollectionEfficiencyArray();
+};
+
 // ToDo: make object of classes instead of infinite cp-pastes
 class PMT4inchR12199_02 : public WCSimPMTObject
 {
@@ -461,33 +492,6 @@ protected:
   G4double* GetCollectionEfficiencyArray();
 };
 
-class PMT3inchR14374_WCTE : public WCSimPMTObject
-{
-
-public:
-  
-  PMT3inchR14374_WCTE();
-  ~PMT3inchR14374_WCTE();
- 
-public:
-  G4String GetPMTName() ;
-  G4double GetExposeHeight();
-  G4double GetRadius();
-  G4double* Getqpe();
-  G4double* GetQE();
-  G4double* GetQEWavelength();
-  G4double  GetmaxQE();
-  double    HitTimeSmearing(double, double);
-  double    SaturFactor(double, double); //TD 2019.07.16
-  G4double GetPMTGlassThickness();
-  G4double  GetDarkRate();
-  G4double  GetDarkRateConversionFactor();
-  G4int    GetNbOfQEDefined();
-private:
-  TGraph  *gTResol = nullptr; // timing resolution
-protected:
-  G4double* GetCollectionEfficiencyArray();
-};
 
 class WCSimBasicPMTObject
 {

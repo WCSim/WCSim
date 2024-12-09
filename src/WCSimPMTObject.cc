@@ -951,17 +951,23 @@ G4double* PMT3inch::Getqpe() //currently uses the same as 20inch
   return qpe0;
 }
 
-//Currenly the PMT QE info is the same as 20 inch.
 G4double* PMT3inch::GetQE(){
-  static G4double QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
+  static G4double QE[20] = { 0.00, .005, .09, .21, .28, .30, .29, .28, .26, .24, .22, .18, .13, .075, .04, .02, .008, 0.00, 0.00, 0.00};
   return QE;
 }
-G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
+G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[20] = { 260., 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640.};
   return wavelength;}
-
 G4double  PMT3inch::GetmaxQE(){
-  const G4double maxQE = 0.211;
+  const G4double maxQE = 0.30;
   return maxQE;
+}
+G4int PMT3inch::GetNbOfQEDefined(){
+  const G4int factor = 20;
+  return factor;
+}
+G4double* PMT3inch::GetCollectionEfficiencyArray(){
+  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
+  return CE;
 }
 
 G4double PMT3inch::GetDarkRate(){
@@ -971,11 +977,6 @@ G4double PMT3inch::GetDarkRate(){
 
 G4double PMT3inch::GetDarkRateConversionFactor(){
   const G4double factor = 1.367;
-  return factor;
-}
-
-G4int PMT3inch::GetNbOfQEDefined(){
-  const G4int factor = 20;
   return factor;
 }
 
@@ -3302,42 +3303,42 @@ G4double* PMT3inchR14374::Getqpe()
 
 #if 0 // from ETEL
 //PMT QE Info extrapolated from ETEL datasheet
-G4double* PMT3inch::GetQE(){
+G4double* PMT3inchR14374::GetQE(){
   static G4double QE[20] = { 0.00, .005, .09, .21, .28, .30, .29, .28, .26, .24, .22, .18, .13, .075, .04, .02, .008, 0.00, 0.00, 0.00};
   return QE;
 }
-G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[20] = { 260., 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640.};
+G4double* PMT3inchR14374::GetQEWavelength(){static G4double wavelength[20] = { 260., 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640.};
   return wavelength;}
-G4double  PMT3inch::GetmaxQE(){
+G4double  PMT3inchR14374::GetmaxQE(){
   const G4double maxQE = 0.30;
   return maxQE;
 }
-G4int PMT3inch::GetNbOfQEDefined(){
+G4int PMT3inchR14374::GetNbOfQEDefined(){
   const G4int factor = 20;
   return factor;
 }
-G4double* PMT3inch::GetCollectionEfficiencyArray(){
+G4double* PMT3inchR14374::GetCollectionEfficiencyArray(){
   static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
   return CE;
 }
 #endif
 
 #if 1 // from Hamamatsu
-G4double* PMT3inch::GetQE(){
+G4double* PMT3inchR14374::GetQE(){
   static G4double QE[37] = {0., 7.333448596/100., 13.41850844/100., 18.85388087/100., 22.58789628/100., 24.83751724/100., 25.90372483/100., 26.09567109/100., 26.68416596/100., 27.11242269/100., 27.37569687/100., 27.15690678/100., 26.8828067/100., 26.78047372/100., 26.11524001/100., 25.44085118/100., 24.21266344/100., 23.28276282/100., 21.83662063/100., 20.62874459/100., 19.73618418/100., 18.59231943/100., 16.61159424/100., 13.50310127/100., 11.01111366/100., 9.511755535/100., 8.430844444/100., 7.428469476/100., 6.525186832/100., 5.512680184/100., 4.649601092/100., 3.720048567/100., 2.936519188/100., 2.188881819/100., 1.48734368/100., 0.934955148/100., 0.};
   return QE;
 }
-G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[37] = { 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650 };
+G4double* PMT3inchR14374::GetQEWavelength(){static G4double wavelength[37] = { 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650 };
   return wavelength;}
-G4double  PMT3inch::GetmaxQE(){
+G4double  PMT3inchR14374::GetmaxQE(){
   const G4double maxQE = 0.27;
   return maxQE;
 }
-G4int PMT3inch::GetNbOfQEDefined(){
+G4int PMT3inchR14374::GetNbOfQEDefined(){
   const G4int factor = 37;
   return factor;
 }
-G4double* PMT3inch::GetCollectionEfficiencyArray(){
+G4double* PMT3inchR14374::GetCollectionEfficiencyArray(){
   static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
   return CE;
 }
@@ -3345,54 +3346,50 @@ G4double* PMT3inch::GetCollectionEfficiencyArray(){
 
 
 #if 0 // from NNVT
-G4double* PMT3inch::GetQE(){
+G4double* PMT3inchR14374::GetQE(){
   static G4double QE[37] = {0., 0.187399331/100., 1.83797986/100., 6.849267609/100., 14.53596403/100., 20.98046045/100., 24.82708625/100., 27.78453786/100., 28.88106058/100., 28.43121586/100., 28.69331522/100., 27.73683132/100., 25.45433263/100., 23.61911783/100., 21.52790058/100., 19.75096978/100., 18.09367601/100., 16.15956243/100., 14.08033797/100., 12.56868349/100., 11.86649274/100., 10.84294965/100., 9.909833721/100., 8.010004769/100., 6.253118113/100., 5.124670521/100., 4.433686592/100., 3.878838981/100., 3.267511401/100., 2.919435288/100., 2.392315593/100., 1.889523401/100., 1.500014957/100., 1.00341673/100., 0.718883368/100., 0.386247086/100., 0.};
   return QE;
 }
-G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[37] = { 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650 };
+G4double* PMT3inchR14374::GetQEWavelength(){static G4double wavelength[37] = { 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650 };
   return wavelength;}
-G4double  PMT3inch::GetmaxQE(){
+G4double  PMT3inchR14374::GetmaxQE(){
   const G4double maxQE = 0.29;
   return maxQE;
 }
-G4int PMT3inch::GetNbOfQEDefined(){
+G4int PMT3inchR14374::GetNbOfQEDefined(){
   const G4int factor = 37;
   return factor;
 }
-G4double* PMT3inch::GetCollectionEfficiencyArray(){
+G4double* PMT3inchR14374::GetCollectionEfficiencyArray(){
 /// for NNVT, reduced collection efficiency at large angles
-  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 70., 70., 70., 70.};
+//  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 70., 70., 70., 70.};
+  static G4double CE[10] = { 96.1, 96.4, 97.5, 99.6, 95.6, 100, 89.7, 21.3, 0., 0.};
   return CE;
 }
 #endif
 
 
 #if 0 // flat in energy range
-G4double* PMT3inch::GetQE(){
+G4double* PMT3inchR14374::GetQE(){
   static G4double QE[4] = {0., 1., 1., 0.};
   return QE;
 }
-G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[4] = { 649, 650, 700, 701}; // set here energy range
+G4double* PMT3inchR14374::GetQEWavelength(){static G4double wavelength[4] = { 649, 650, 700, 701}; // set here energy range
   return wavelength;}
-G4double  PMT3inch::GetmaxQE(){
+G4double  PMT3inchR14374::GetmaxQE(){
   const G4double maxQE = 1.;
   return maxQE;
 }
-G4int PMT3inch::GetNbOfQEDefined(){
+G4int PMT3inchR14374::GetNbOfQEDefined(){
   const G4int factor = 4;
   return factor;
 }
-G4double* PMT3inch::GetCollectionEfficiencyArray(){
+G4double* PMT3inchR14374::GetCollectionEfficiencyArray(){
   static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
   return CE;
 }
 #endif
  
-
-G4double* PMT3inchR14374::GetCollectionEfficiencyArray(){
-  static G4double CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
-  return CE;
-}
 
 G4double PMT3inchR14374::GetDarkRate(){
   // Realistic/Optimistic value from published (proceedings) measurements.
@@ -3404,6 +3401,223 @@ G4double PMT3inchR14374::GetDarkRate(){
 // Arbitrary at the moment
 G4double  PMT3inchR14374::GetDarkRateConversionFactor(){
   const G4double factor = 1.110;
+  return factor;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// PMT 3" for WCTE
+//
+PMT3inchR14374_WCTE::PMT3inchR14374_WCTE()
+{
+  double charge[14] = 
+  {
+      0.2, 0.4, 0.6, 0.8, 1.0,
+      1.2, 1.4, 1.6, 1.8, 2.0,
+      2.5, 3.0, 3.5, 4.0
+  };
+  double resol[14] =
+  {
+      1.1654, 0.61088, 0.4186, 0.32532, 0.26484,
+      0.23084, 0.20969, 0.19297, 0.17716, 0.17046,
+      0.15455, 0.1427, 0.13699, 0.13229
+  };
+  gTResol = new TGraph(14,charge,resol);
+}
+PMT3inchR14374_WCTE::~PMT3inchR14374_WCTE()
+{
+  delete gTResol;
+}
+
+G4String PMT3inchR14374_WCTE::GetPMTName() {G4String PMTName = "PMT3inchR14374_WCTE"; return PMTName;}
+G4double PMT3inchR14374_WCTE::GetExposeHeight() {return 0.02*m;} 
+G4double PMT3inchR14374_WCTE::GetRadius() {return 0.04*m;} 
+G4double PMT3inchR14374_WCTE::GetPMTGlassThickness() {return 0.1*cm;}     
+
+double PMT3inchR14374_WCTE::HitTimeSmearing(double Q, double TTSFF=1.0) {    
+  double pmt_tts = 1.5;
+  if (Q>4.0) Q = 4.0; // limit Q to valid range
+  double val = gTResol->Eval(Q,0,"S");
+  double timingResolution = sqrt(pmt_tts*pmt_tts+val*val)/2.355; // conversion from FWHM to sigma
+  timingResolution *= TTSFF;
+  return G4RandGauss::shoot(0.0,timingResolution);
+}
+
+// TD 2019.07.16
+double PMT3inchR14374_WCTE::SaturFactor(double Q, double threshold=-1) {
+  if (threshold == -1) return 1; //no saturation case
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
+}
+
+G4double* PMT3inchR14374_WCTE::Getqpe()
+{
+  static G4double qpe0[501]= {
+    // 1
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    // 2
+    0.000381, 0.002359, 0.006956, 0.014050, 0.021470,
+    0.029045, 0.036750, 0.044913, 0.053878, 0.063897,
+    0.075367, 0.089078, 0.105693, 0.126747, 0.152918,
+    0.184803, 0.223584, 0.268127, 0.317283, 0.367630,
+    0.417750, 0.466039, 0.512878, 0.557372, 0.598186,
+    0.636186, 0.671044, 0.701999, 0.730782, 0.757566,
+    0.782031, 0.804206, 0.824292, 0.842793, 0.859734,
+    0.875207, 0.889501, 0.902172, 0.913244, 0.923582,
+    0.932835, 0.940867, 0.947906, 0.954192, 0.959824,
+    0.964409, 0.968364, 0.971983, 0.975084, 0.977725,
+    // 3
+    0.979961, 0.982130, 0.984062, 0.985578, 0.986994,
+    0.988236, 0.989201, 0.990078, 0.990896, 0.991671,
+    0.992372, 0.992994, 0.993539, 0.994000, 0.994403,
+    0.994807, 0.995191, 0.995541, 0.995831, 0.996070,
+    0.996275, 0.996491, 0.996711, 0.996929, 0.997135,
+    0.997340, 0.997542, 0.997677, 0.997806, 0.997960,
+    0.998096, 0.998204, 0.998276, 0.998337, 0.998383,
+    0.998410, 0.998456, 0.998514, 0.998578, 0.998642,
+    0.998703, 0.998759, 0.998797, 0.998825, 0.998852,
+    0.998885, 0.998926, 0.998979, 0.999029, 0.999073,
+    // 4
+    0.999111, 0.999162, 0.999223, 0.999272, 0.999309,
+    0.999343, 0.999407, 0.999451, 0.999469, 0.999534,
+    0.999593, 0.999619, 0.999633, 0.999653, 0.999688,
+    0.999705, 0.999714, 0.999724, 0.999733, 0.999739,
+    0.999739, 0.999757, 0.999782, 0.999800, 0.999824,
+    0.999852, 0.999879, 0.999901, 0.999915, 0.999916,
+    0.999916, 0.999916, 0.999916, 0.999916, 0.999918,
+    0.999926, 0.999940, 0.999957, 0.999968, 0.999977,
+    0.999986, 0.999995, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 5
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 6
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 7
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 8
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 9
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 10
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // Dummy element for noticing if the loop reached the end of the array                        
+    0.0  };
+  return qpe0;
+
+}
+
+
+// TF: Used WebPlotDigitizer on Fig.2a from VLVnT13 proceedings, red curve (average)
+G4double* PMT3inchR14374_WCTE::GetQEWavelength(){
+
+  //TEST: make QE same!!
+  //static G4double wavelength_value[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
+  static G4double wavelength_value[21] = { 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660., 680., 700.};
+  return wavelength_value;
+}
+
+G4double* PMT3inchR14374_WCTE::GetQE(){
+  G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  // TF: While the main reason is the 20" SK PMT, this correction factor has been applied
+  // to the B&L PMT. Therefore all PMTs have to corrected in a similar way, unfortunately.
+  
+  static G4double QE[21] =
+    { .0787*correctionFactor, .1838*correctionFactor, .2401*correctionFactor, .2521*correctionFactor, .2695*correctionFactor, .2676*correctionFactor, .2593*correctionFactor, .2472*correctionFactor, .2276*correctionFactor,
+      .1970*correctionFactor,  .1777*correctionFactor, .1547*correctionFactor, .1033*correctionFactor, .0727*correctionFactor, .0587*correctionFactor, .0470*correctionFactor, .0372*correctionFactor, .0285*correctionFactor, .0220*correctionFactor, .0130*correctionFactor, .0084*correctionFactor};
+  return QE;
+}
+
+G4double PMT3inchR14374_WCTE::GetmaxQE(){
+  G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+
+  // TEST: make QE the same!!
+  const G4double maxQE = 0.271*correctionFactor; //red curve from VLVnT13 proc on R12199-02.
+  //const G4double maxQE = 0.315*correctionFactor;
+  return maxQE;
+}
+
+G4double* PMT3inchR14374_WCTE::GetCollectionEfficiencyArray(){  
+  static G4double CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
+  return CE;
+}
+
+G4double PMT3inchR14374_WCTE::GetDarkRate(){
+  // Realistic/Optimistic value from published (proceedings) measurements.
+  // ToDo : update this value
+  const G4float rate = 1.0*CLHEP::kilohertz;
+  return rate;
+}
+
+// Arbitrary at the moment
+G4double  PMT3inchR14374_WCTE::GetDarkRateConversionFactor(){
+  const G4double factor = 1.126;
+  return factor;
+}
+
+G4int PMT3inchR14374_WCTE::GetNbOfQEDefined(){
+  const G4int factor = 20;
   return factor;
 }
 
