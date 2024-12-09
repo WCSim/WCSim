@@ -166,6 +166,9 @@ public:
     return PMTptr;
   }
 
+  double GetPMTMinWavelength(){return 200.;};
+  double GetPMTMaxWavelength(){return 660.;};
+
   WCSimWLSProperties *CreateWLSObject(G4String);
   WCSimWLSProperties *WLSptr;
   void SetWLSPointer(WCSimWLSProperties *WLS){WLSptr=WLS;}
