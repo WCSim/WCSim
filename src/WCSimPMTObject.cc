@@ -951,23 +951,17 @@ G4double* PMT3inch::Getqpe() //currently uses the same as 20inch
   return qpe0;
 }
 
+//Currenly the PMT QE info is the same as 20 inch.
 G4double* PMT3inch::GetQE(){
-  static G4double QE[20] = { 0.00, .005, .09, .21, .28, .30, .29, .28, .26, .24, .22, .18, .13, .075, .04, .02, .008, 0.00, 0.00, 0.00};
+  static G4double QE[20] = { 0.00, .0139, .0854, .169, .203, .206, .211, .202,.188, .167, .140, .116, .0806, .0432, .0265, .0146, .00756, .00508, .00158, 0.00};
   return QE;
 }
-G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[20] = { 260., 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640.};
+G4double* PMT3inch::GetQEWavelength(){static G4double wavelength[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
   return wavelength;}
+
 G4double  PMT3inch::GetmaxQE(){
-  const G4double maxQE = 0.30;
+  const G4double maxQE = 0.211;
   return maxQE;
-}
-G4int PMT3inch::GetNbOfQEDefined(){
-  const G4int factor = 20;
-  return factor;
-}
-G4double* PMT3inch::GetCollectionEfficiencyArray(){
-  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
-  return CE;
 }
 
 G4double PMT3inch::GetDarkRate(){
@@ -977,6 +971,11 @@ G4double PMT3inch::GetDarkRate(){
 
 G4double PMT3inch::GetDarkRateConversionFactor(){
   const G4double factor = 1.367;
+  return factor;
+}
+
+G4int PMT3inch::GetNbOfQEDefined(){
+  const G4int factor = 20;
   return factor;
 }
 

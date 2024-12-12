@@ -127,8 +127,6 @@ public:
   G4double  GetDarkRate();
   G4double  GetDarkRateConversionFactor();
   G4int    GetNbOfQEDefined();
-protected:
-  G4double* GetCollectionEfficiencyArray();
 };
 
 class PMT3inch_ETEL9302B : public WCSimPMTObject
