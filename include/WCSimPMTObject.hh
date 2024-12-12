@@ -410,6 +410,35 @@ protected:
 };
 
 
+//B.Q, 2019/01/18
+// ToDo: make object of classes instead of infinite cp-pastes
+class PMT3inchR14374_FDOD : public WCSimPMTObject
+{
+
+public:
+  
+  PMT3inchR14374_FDOD();
+  ~PMT3inchR14374_FDOD();
+ 
+public:
+  G4String GetPMTName() ;
+  G4double GetExposeHeight();
+  G4double GetRadius();
+  G4double* Getqpe();
+  G4double* GetQE();
+  G4double* GetQEWavelength();
+  G4double  GetmaxQE();
+  double    HitTimeSmearing(double, double);
+  double    SaturFactor(double, double); //TD 2019.07.16
+  G4double GetPMTGlassThickness();
+  G4double  GetDarkRate();
+  G4double  GetDarkRateConversionFactor();
+  G4int    GetNbOfQEDefined();
+protected:
+  G4double* GetCollectionEfficiencyArray();
+};
+
+
 class PMT3inchNNVT : public WCSimPMTObject
 {
 

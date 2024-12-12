@@ -421,6 +421,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
 				    "PMT3inchR14374 "
+				    "PMT3inchR14374_FDOD "
 				    "PMT3inchNNVT "
 				    "PMT3inchR14374_WCTE "
 				    "PMT3inch_ETEL9302B "
@@ -442,6 +443,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
 				    "PMT3inchR14374 "
+				    "PMT3inchR14374_FDOD "
 				    "PMT3inchNNVT "
 				    "PMT3inchR14374_WCTE "
 				    "PMT3inch_ETEL9302B "
@@ -548,6 +550,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "PMT3inchGT\n"
           "PMT3inchR12199_02\n"
           "PMT3inchR14374\n"
+          "PMT3inchR14374_FDOD\n"
           "PMT3inchNNVT\n"
 	  "PMT3inchR14374_WCTE\n"
 	  "PMT3inch_ETEL9302B\n"
@@ -559,7 +562,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "HPD20inchHQE\n"
           "PMT20inch\n");
   SetPMTType->SetParameterName("PMTType", false);
-  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT3inchR14374 PMT3inchNNVT PMT3inchR14374_WCTE PMT3inch_ETEL9302B PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
+  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT3inchR14374 PMT3inchR14374_FDOD PMT3inchNNVT PMT3inchR14374_WCTE PMT3inch_ETEL9302B PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
   SetPMTType->SetDefaultValue("PMT10inch");
 
   // Set the vertical position of the nuPRISM-lite detector
@@ -919,7 +922,7 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       G4cout << "Set OD PMT size " << newValue << " ";
       if (newValue == "3inch"){
 	//        WCSimDetector->SetWCPMTODSize("PMT3inch_ETEL9302B");
-        WCSimDetector->SetWCPMTODSize("PMT3inchR14374");
+        WCSimDetector->SetWCPMTODSize("PMT3inchR14374_FDOD");
       }else if (newValue == "3inchNNVT"){
         WCSimDetector->SetWCPMTODSize("PMT3inchNNVT");
       }else if (newValue == "5inch"){

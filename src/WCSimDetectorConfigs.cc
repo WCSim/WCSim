@@ -1757,7 +1757,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry_Old() // Old geometry us
 
   // OD PMTs //
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
-  WCSimPMTObject *PMTOD = CreatePMTObject("PMT3inchR14374", WCODCollectionName);
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT3inchR14374_FDOD", WCODCollectionName);
   WCPMTODName           = PMTOD->GetPMTName();
   WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
   WCPMTODRadius         = PMTOD->GetRadius();
