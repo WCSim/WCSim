@@ -419,6 +419,7 @@ G4bool WCSimWCSD::ProcessHits_boundary(G4Step* aStep, G4TouchableHistory*)
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(photonCreatorProcess);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddWavelength(wavelength);
       }
       else 
       {
@@ -431,6 +432,7 @@ G4bool WCSimWCSD::ProcessHits_boundary(G4Step* aStep, G4TouchableHistory*)
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndDir(worldDirection);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonCreatorProcess(photonCreatorProcess);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddWavelength(wavelength);
         
       }
     }
