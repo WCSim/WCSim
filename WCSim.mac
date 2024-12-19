@@ -213,7 +213,7 @@
 # Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
 /DarkRate/SetDetectorElement tank
 #/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
-#/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
+#/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM. This is the default value for HK FD 20" Box and Line PMTs that has been used in WCSim since 2020
 #/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
 

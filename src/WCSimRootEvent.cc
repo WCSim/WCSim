@@ -790,7 +790,9 @@ WCSimRootEvent::WCSimRootEvent()
   // it will be lost
   fEventList = 0;
   Current = 0;
-
+  
+  fNumberOfWCSimRootEventCreated++;
+  
   if(fNumberOfWCSimRootEventCreated % 1000 == 0) {
     std::cerr << std::endl << std::endl
 	      << "***********************************************************" << std::endl
@@ -798,7 +800,6 @@ WCSimRootEvent::WCSimRootEvent()
 	      << "***********************************************************" << std::endl
 	      << std::endl << std::endl;
   }
-  fNumberOfWCSimRootEventCreated++;
 }
 
 //_____________________________________________________________________________

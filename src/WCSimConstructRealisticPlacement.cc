@@ -160,6 +160,7 @@ struct RealisticPlacementConfiguration {
       G4cout << "-----------------------------------" << G4endl;
       G4cout << "HK FD Detector Configuration Table (units: mm)" << G4endl;
       G4cout << "-----------------------------------" << G4endl;
+      G4cout << "** Radii" << G4endl;
       G4cout << "BlackTyvekInnerRadius = " << BlackTyvekInnerRadius << G4endl;
       G4cout << "BlackTyvekOuterRadius = " << BlackTyvekOuterRadius << G4endl;
       G4cout << "DeadSpaceInnerRadius = " << DeadSpaceInnerRadius << G4endl;
@@ -169,8 +170,13 @@ struct RealisticPlacementConfiguration {
       G4cout << "WallTyvekInnerRadius = " << WallTyvekInnerRadius << G4endl;
       G4cout << "WallTyvekOuterRadius = " << WallTyvekOuterRadius << G4endl;
       G4cout << "MainWaterTankRadius = " << MainWaterTankRadius << G4endl;
-      G4cout << "MainWaterTankLength = " << MainWaterTankLength << G4endl;
       G4cout << "RockShellRadius = " << RockShellRadius << G4endl;
+      G4cout << "** Lengths" << G4endl;
+      G4cout << "BlackTyvekBarrelLength = " << BlackTyvekBarrelLength << G4endl;
+      G4cout << "DeadSpaceBarrelLength = " << DeadSpaceBarrelLength << G4endl;
+      G4cout << "WhiteTyvekBarrelLength = " << WhiteTyvekBarrelLength << G4endl;
+      G4cout << "WallTyvekBarrelLength = " << WallTyvekBarrelLength << G4endl;
+      G4cout << "MainWaterTankLength = " << MainWaterTankLength << G4endl;
       G4cout << "RockShellLength = " << RockShellLength << G4endl;
     }
 

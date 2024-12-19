@@ -3230,12 +3230,16 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
   G4LogicalVolume* logicWCExSituMPMT = ConstructExSituMultiPMT(WCPMTName, WCIDCollectionName,"tank");
   G4LogicalVolume* logicWCInSituMPMT = ConstructInSituMultiPMT(WCPMTName, WCIDCollectionName,"tank");
+  G4LogicalVolume* logicBeamPipe = ConstructBeamPipe(); // WCTE beam pipe
+  G4LogicalVolume* logicCH = ConstructCameraHousing(); // WCTE camera housing
 
-  std::vector<G4LogicalVolume*> vlogicWCPMT(4);
+  std::vector<G4LogicalVolume*> vlogicWCPMT(6);
   vlogicWCPMT[0] = logicWCPMT;
   vlogicWCPMT[1] = logicWCPMT2;
   vlogicWCPMT[2] = logicWCExSituMPMT;
   vlogicWCPMT[3] = logicWCInSituMPMT;
+  vlogicWCPMT[4] = logicBeamPipe;
+  vlogicWCPMT[5] = logicCH;
 
   //G4LogicalVolume* logicWCPMT = ConstructPMT(WCPMTName, WCIDCollectionName);
   G4String pmtname = "WCMultiPMT";
@@ -3376,7 +3380,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
         new G4PVPlacement(PMTRotation,              // its rotation
               PMTPosition, 
               vlogicWCPMT[pmtType[i]-1],                // its logical volume
-              pmtname,//"WCPMT",             // its name
+              pmtType[i]==5 ? "BeamPipe" : pmtname,             // its name
               !inExtraTower ? logicWCBarrelAnnulus : logicWCExtraTower,         // its mother volume
               false,                     // no boolean operations
               pmtmPMTId[i],
@@ -4393,12 +4397,16 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   
   G4LogicalVolume* logicWCExSituMPMT = ConstructExSituMultiPMT(WCPMTName, WCIDCollectionName,"tank");
   G4LogicalVolume* logicWCInSituMPMT = ConstructInSituMultiPMT(WCPMTName, WCIDCollectionName,"tank");
+  G4LogicalVolume* logicBeamPipe = ConstructBeamPipe(); // WCTE beam pipe
+  G4LogicalVolume* logicCH = ConstructCameraHousing(); // WCTE camera housing
 
-  std::vector<G4LogicalVolume*> vlogicWCPMT(4);
+  std::vector<G4LogicalVolume*> vlogicWCPMT(6);
   vlogicWCPMT[0] = logicWCPMT;
   vlogicWCPMT[1] = logicWCPMT2;
   vlogicWCPMT[2] = logicWCExSituMPMT;
   vlogicWCPMT[3] = logicWCInSituMPMT;
+  vlogicWCPMT[4] = logicBeamPipe;
+  vlogicWCPMT[5] = logicCH;
 
   G4String pmtname = "WCMultiPMT";
 
@@ -4446,13 +4454,19 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
 
         G4double newZ = pmtPos[i].z() - capAssemblyZEdge + (barrelCellHeight/2.)*zflip + G4RandGauss::shoot(0,pmtPosVar);
         G4double newR = annulusBlackSheetRmin[1]+(annulusBlackSheetRmin[2]-annulusBlackSheetRmin[1])*(newZ-borderAnnulusZ[1])/(borderAnnulusZ[2]-borderAnnulusZ[1]);
-        newR += pmt_blacksheet_offset;
+        if (pmtType[i]==6) // special treatment for camera housing
+        {
+          newR += -pmtDir[i].z()*mm; 
+          newZ = -zflip*(barrelCellHeight/2.+CapBarrelPMTOffset-pmtDir[i].y()*mm);
+        }
+        else newR += pmt_blacksheet_offset;
         G4double newPhi = pmtPhi-phi_offset;
 
         G4ThreeVector PMTPosition =  G4ThreeVector(newR,
               newR*tan(newPhi) + G4RandGauss::shoot(0,pmtPosVar),
               newZ+(capAssemblyHeight/2.- barrelCellHeight/2.)*zflip);
-        PMTRotation->rotateZ(pmtRotaton[i]); 
+        if (pmtType[i]==6) PMTRotation->rotateY(pmtRotaton[i]);
+        else PMTRotation->rotateZ(pmtRotaton[i]); 
         G4cout<<"Border ring PMT ID = "<<i<<", Position = "<<pmtPos[i].x()<<" "<<pmtPos[i].y()<<" "<<pmtPos[i].z()<<", Rotation = "<<pmtRotaton[i]<<G4endl;
 
         PMTPosition.rotateZ(phi_offset);  // align with the symmetry axes of the cell 
@@ -4462,7 +4476,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
         new G4PVPlacement(PMTRotation,                      // its rotation
                 PMTPosition,
                 vlogicWCPMT[pmtType[i]-1],                // its logical volume
-                pmtname,             // its name
+                pmtType[i]==6 ? "CameraHousing" : pmtname, // its name
                 logicCapAssembly,         // its mother volume
                 false,                     // no boolean operations
                 pmtmPMTId[i],
@@ -5206,7 +5220,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
               false,                   //no boolean operation
               0,                       //copy number
               checkOverlaps);          //overlaps checking
-    new G4LogicalSkinSurface("CDSSurface",CDS_logical,BSSkinSurface);
+    new G4LogicalSkinSurface("CDSSurface",CDS_logical,ReflectorSkinSurface);
   }
 
   return logicCapAssembly;

@@ -270,7 +270,7 @@ G4double G4MultiUnion_v1072::DistanceToOutNoVoxels(const G4ThreeVector& aPoint,
       if (location != EInside::kOutside)
       {
         G4double distance = solid.DistanceToOut(localPoint, localDirection,
-                                                aNormal);
+                                                false, 0, aNormal);
         if (distance < kInfinity)
         {
           if (resultDistToOut == kInfinity) resultDistToOut = 0;

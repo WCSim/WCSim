@@ -563,6 +563,11 @@ private:
   G4LogicalVolume* ConstructInSituPMT(G4String,G4String,G4String detectorElement="tank");
   G4LogicalVolume* ConstructInSituMultiPMT(G4String,G4String,G4String detectorElement="tank");
 
+  // for WCTE beam pipe construction
+  G4LogicalVolume* ConstructBeamPipe();
+  // for WCTE photogrammetry housing construction
+  G4LogicalVolume* ConstructCameraHousing();
+
   G4LogicalVolume* ConstructCaps(G4bool);
 
   G4LogicalVolume* ConstructCylinderNoReplica();
