@@ -148,6 +148,8 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   injectorType = "";
   injectorIdx = "";
   injectorFilename = "";
+  injectorDetails = "";
+  injectorDetector = "";
   photonMode = 0;
 
   mPMTLEDId1 = 1;
@@ -802,7 +804,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         if ( !LIGen ) {
             LIGen = new WCSimLIGen();
             LIGen->SetPhotonMode(photonMode);
-            LIGen->ReadFromDatabase(injectorType,injectorIdx,injectorFilename);
+            LIGen->ReadFromDatabase(injectorType,injectorIdx,injectorFilename,injectorDetails,injectorDetector);
         }
 
         // Generate the required number of photons with
