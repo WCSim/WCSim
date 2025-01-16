@@ -166,6 +166,9 @@ public:
     return PMTptr;
   }
 
+  double GetPMTMinWavelength(){return 200.;};
+  double GetPMTMaxWavelength(){return 660.;};
+
   WCSimWLSProperties *CreateWLSObject(G4String);
   WCSimWLSProperties *WLSptr;
   void SetWLSPointer(WCSimWLSProperties *WLS){WLSptr=WLS;}
@@ -467,7 +470,7 @@ public:
   ///////////////////////////////
 
   void SetWCPMTODSize(G4String WCPMTODSize){
-    if(WCPMTODSize == "PMT8inch" || WCPMTODSize == "PMT5inch" || WCPMTODSize == "PMT3inch_ETEL9302B"){
+    if(WCPMTODSize == "PMT8inch" || WCPMTODSize == "PMT5inch" || WCPMTODSize == "PMT3inch_ETEL9302B" || WCPMTODSize == "PMT3inchR14374" || WCPMTODSize == "PMT3inchNNVT"){
       WCSimPMTObject *PMTOD = CreatePMTObject(WCPMTODSize, WCODCollectionName);
       WCPMTODName           = PMTOD->GetPMTName();
       WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
@@ -484,6 +487,9 @@ public:
   void SetWCPMTODperCellHorizontal(G4long val){WCPMTODperCellHorizontal = val;}
   void SetWCPMTODperCellVertical(G4long val){WCPMTODperCellVertical = val;}
   void SetWCPMTODPercentCoverage(G4double val){WCPMTODPercentCoverage = val;}
+  void SetWCPMTODPercentCoverageTop(G4double val){WCPMTODPercentCoverageTop = val;}
+  void SetWCPMTODPercentCoverageBottom(G4double val){WCPMTODPercentCoverageBottom = val;}
+  void SetWCPMTODPercentCoverageBarrel(G4double val){WCPMTODPercentCoverageBarrel = val;}
   void SetWCODPMTShift(G4double val){WCODPMTShift = val;}
   void SetODEdited(G4bool val){odEdited = val;}
   void SetIsWLSFilled(G4bool val){isWLSFilled = val;}
@@ -518,7 +524,12 @@ private:
   G4OpticalSurface * OpGlassCathodeSurface;
 
   //Tyvek surface - jl145
-  G4OpticalSurface * OpWaterTySurface;
+  G4OpticalSurface * OpWaterTySurfaceInWallTop;
+  G4OpticalSurface * OpWaterTySurfaceInWallBarrel;
+  G4OpticalSurface * OpWaterTySurfaceInWallBottom;
+  G4OpticalSurface * OpWaterTySurfaceOutWallTop;
+  G4OpticalSurface * OpWaterTySurfaceOutWallBarrel;
+  G4OpticalSurface * OpWaterTySurfaceOutWallBottom;
 
   //Reflector skin surface -tf
   G4OpticalSurface * ReflectorSkinSurface;
@@ -726,7 +737,9 @@ private:
   G4long WCPMTODperCellHorizontal;
   G4long WCPMTODperCellVertical;
   G4double WCPMTODPercentCoverage;
-
+  G4double WCPMTODPercentCoverageTop;
+  G4double WCPMTODPercentCoverageBottom;
+  G4double WCPMTODPercentCoverageBarrel;
   G4double WCODLateralWaterDepth;
   G4double WCODHeightWaterDepth;
   G4double WCODDeadSpace;
@@ -736,6 +749,8 @@ private:
   G4double WCODWLSPlatesLength;
 
   G4double WCODCapPMTSpacing;
+  G4double WCODCapPMTSpacingTop;
+  G4double WCODCapPMTSpacingBottom;
   G4double WCODCapEdgeLimit;
 
   G4double WCODPMTShift;

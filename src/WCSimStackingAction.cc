@@ -54,11 +54,11 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
 	if(!DetConstruct->GetIsCombinedPMTCollectionDefined()) {
 	  //Geometry without OD
 	  if (DetConstruct->GetPMT_QE_Method()==1){
-	    wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,240,660,ratio);
-	    //wavelengthQE  = DetConstruct->GetPMTQE(volumeName,photonWavelength,1,240,660,ratio);
+	    wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,1,DetConstruct->GetPMTMinWavelength(),DetConstruct->GetPMTMaxWavelength(),ratio);
+	    //wavelengthQE  = DetConstruct->GetPMTQE(volumeName,photonWavelength,1,DetConstruct->GetPMTMinWavelength(),DetConstruct->GetPMTMaxWavelength(),ratio);
 	  }else if (DetConstruct->GetPMT_QE_Method()==2){
-	    wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,0,240,660,ratio);
-	    //wavelengthQE  = DetConstruct->GetPMTQE(volumeName,photonWavelength,0,240,660,ratio);
+	    wavelengthQE  = DetConstruct->GetPMTQE(WCIDCollectionName,photonWavelength,0,DetConstruct->GetPMTMinWavelength(),DetConstruct->GetPMTMaxWavelength(),ratio);
+	    //wavelengthQE  = DetConstruct->GetPMTQE(volumeName,photonWavelength,0,DetConstruct->GetPMTMinWavelength(),DetConstruct->GetPMTMaxWavelength(),ratio);
 	  }else if (DetConstruct->GetPMT_QE_Method()==3 || DetConstruct->GetPMT_QE_Method() == 4){
 	    wavelengthQE = 1.1;
 	  }
@@ -66,9 +66,9 @@ G4ClassificationOfNewTrack WCSimStackingAction::ClassifyNewTrack
 	else {
 	  //Geometry with OD
 	  if (DetConstruct->GetPMT_QE_Method() == 1){
-	    wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,1,240,660,ratio);
+	    wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,1,DetConstruct->GetPMTMinWavelength(),DetConstruct->GetPMTMaxWavelength(),ratio);
 	  }else if (DetConstruct->GetPMT_QE_Method() == 2){
-	    wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,0,240,660,ratio);
+	    wavelengthQE  = DetConstruct->GetStackingPMTQE(photonWavelength,0,DetConstruct->GetPMTMinWavelength(),DetConstruct->GetPMTMaxWavelength(),ratio);
 	  }else if (DetConstruct->GetPMT_QE_Method() == 3 || DetConstruct->GetPMT_QE_Method() == 4){
 	    wavelengthQE = 1.1;
 	  }

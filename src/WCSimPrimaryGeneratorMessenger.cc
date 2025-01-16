@@ -647,7 +647,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
   if (command == hepmc3positionGenModeCmd){
     myAction->SetHepMC3PositionGen(hepmc3positionGenModeCmd->GetNewBoolValue(newValue));
   }
-  //
+  
   if (command == ibdDatabaseCmd)
     {
       myAction->SetIBDDatabase(newValue);

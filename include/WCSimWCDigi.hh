@@ -73,6 +73,7 @@ private:
   std::map<int, G4ThreeVector>     photonStartDir;       ///< Start dir of the photon of the Hit (do not use for Digits)
   std::map<int, G4ThreeVector>     photonEndDir;         ///< End dir of the photon of the Hit (do not use for Digits)
   std::map<int, ProcessType_t>     photonCreatorProcess; ///< Process which created the photon of the Hit (Diego Costas)
+  std::map<int, G4double>    wavelength; 
 
   //integrated hit/digit parameters
   G4int                 totalPe;
@@ -100,6 +101,7 @@ public:
   inline void SetPhotonStartDir(G4int gate, const G4ThreeVector &direction) { photonStartDir[gate] = direction; };
   inline void SetPhotonEndDir(G4int gate, const G4ThreeVector &direction) { photonEndDir[gate] = direction; };
   inline void SetPhotonCreatorProcess(G4int gate, ProcessType_t creatorProcess) { photonCreatorProcess[gate] = creatorProcess; };
+  inline void SetWavelength(G4int gate, G4double w) { wavelength[gate] = w; };
 
   // Add a digit number and unique photon number to fDigiComp
   inline void AddPhotonToDigiComposition(int digi_number, int photon_number){
@@ -127,6 +129,7 @@ public:
   inline G4ThreeVector GetOrientation(){ return orient;};
   inline G4RotationMatrix GetRot(){ return rot;};
   inline G4double GetPe(int gate)     {return pe[gate];};
+  inline G4double   GetWavelength(int gate) { return wavelength.at(gate);};
   inline G4double GetTime(int gate)   {
     try {
       return time.at(gate);
@@ -186,6 +189,7 @@ public:
     double index_time,index_timepresmear,index_pe;
     int index_trackID;
     int index_parentSavedTrackID;
+    G4double index_wavelength;
     std::vector<int> index_digicomp;
     float index_photonstarttime;
     G4ThreeVector index_photonstartpos;
@@ -206,6 +210,7 @@ public:
         index_pe           = pe.at(i);
         if(sort_digi_compositions) index_digicomp = fDigiComp.at(i);
         index_trackID              = trackID.at(i);
+	index_wavelength           = wavelength.at(i);
         index_parentSavedTrackID   = parentSavedTrackID.at(i);
         index_photonstarttime      = photonStartTime[i];
         index_photonstartpos       = photonStartPos[i];
@@ -218,6 +223,7 @@ public:
           time_presmear.at(j) = time_presmear.at(j-1);
           pe.at(j) = pe.at(j-1);
           if(sort_digi_compositions) fDigiComp.at(j) = fDigiComp.at(j-1);
+          wavelength.at(j) = wavelength.at(j-1);
           trackID.at(j) = trackID.at(j-1);
           parentSavedTrackID.at(j) = parentSavedTrackID.at(j-1);
           photonStartTime.at(j) = photonStartTime.at(j-1);
@@ -233,6 +239,7 @@ public:
         pe.at(j) = index_pe;
         if(sort_digi_compositions) fDigiComp.at(j) = index_digicomp;
         trackID.at(j) = index_trackID;
+        wavelength.at(j) = index_wavelength;
         parentSavedTrackID.at(j) = index_parentSavedTrackID;
         photonStartTime.at(j) = index_photonstarttime;
         photonStartPos.at(j) = index_photonstartpos;

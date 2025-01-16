@@ -140,6 +140,7 @@ public:
   // void SetQoiff(double iQoiff) {Qoiff = iQoiff;}//TD 2019.06.26
   void SetTvspacing(double iTvspacing) {Tvspacing = iTvspacing;}
   void SetTopveto(bool iTopveto) {Topveto = iTopveto;}
+  void SetIsWlsActive(bool iIsWlsActive) {IsWlsActive = iIsWlsActive;}
   //WCSimTuningParameters gets
   double GetRayff() {return Rayff;}
   double GetBsrff() {return Bsrff;}
@@ -152,6 +153,7 @@ public:
   // double GetQoiff() {return Qoiff;}//TD 2019.06.26
   double GetTvspacing() {return Tvspacing;}
   bool   GetTopveto() {return Topveto;}
+  bool   GetIsWlsActive() {return IsWlsActive;}
   //WCSimPhysicsListFactory sets
   void SetPhysicsListName(string iPhysicsListName) {PhysicsListName = iPhysicsListName;}
   //WCSimPhysicsListFactory gets
@@ -215,6 +217,7 @@ private:
   double PmtSatur; //!< p.e. threshold where saturation starts to occur
   double Tvspacing; //!< Top veto PMT spacing
   bool   Topveto; //!< Is the top veto defined in the simulation?
+  bool   IsWlsActive; //!< Are WLS plates active or purely passive?
 
   //WCSimPhysicsListFactory
   string PhysicsListName; //!< The active physics list

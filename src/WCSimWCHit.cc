@@ -21,6 +21,7 @@ G4double avePe=0.0;
 WCSimWCHit::WCSimWCHit() 
 {
   totalPe = 0;
+  wavelength.clear();
 }
 
 WCSimWCHit::~WCSimWCHit() {}
