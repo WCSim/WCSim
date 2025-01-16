@@ -1510,8 +1510,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
     for ( int i = -CapNCellTop ; i <  CapNCellTop; i++) {
       for (int j = -CapNCellTop ; j <  CapNCellTop; j++) {
 
-		G4cout << "Adding OD PMT in top/bottom cap cell " << i << ", " << j << G4endl;
-
         xoffset = i*WCODCapPMTSpacing + WCODCapPMTSpacing*0.5;
         yoffset = j*WCODCapPMTSpacing + WCODCapPMTSpacing*0.5;
 
@@ -1523,6 +1521,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
         G4ThreeVector topWLSpos = G4ThreeVector(xoffset,
                                                 yoffset,
                                                 ((WCIDHeight + 2*WCODDeadSpace)/2)+WCODTyvekSheetThickness);
+
+		G4cout << "construct cylinder: adding OD PMT in top/bottom cap cell " << i << ", " << j << " pos " << topWLSpos.x() << ", " << topWLSpos.y() << ", " << topWLSpos.z() <<  G4endl;
 
         if (((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTODRadius) < WCODCapEdgeLimit) ) {
 
@@ -4145,8 +4145,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
     for ( int i = -CapNCell ; i <  CapNCell; i++) {
       for (int j = -CapNCell ; j <  CapNCell; j++) {
 
-		    G4cout << "Adding OD PMT in top/bottom cap cell " << i << ", " << j << G4endl;
-
         xoffset = i*WCODCapPMTSpacing + WCODCapPMTSpacing*0.5;
         yoffset = j*WCODCapPMTSpacing + WCODCapPMTSpacing*0.5;
 
@@ -4157,6 +4155,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
         G4ThreeVector bottomWLSpos = G4ThreeVector(xoffset,
                                                    yoffset,
                                                    -topWLSpos.getZ());
+
+		G4cout << "second time: adding OD PMT in top/bottom cap cell " << i << ", " << j  << " toppos " << topWLSpos.x() << ", " << topWLSpos.y() << ", " << topWLSpos.z() << " bottompos " << bottomWLSpos.x() << ", " << bottomWLSpos.y() << ", " << bottomWLSpos.z() << G4endl;
 
         if (((sqrt(xoffset*xoffset + yoffset*yoffset) + WCPMTODRadius) < WCODCapEdgeLimit) ) {
 
