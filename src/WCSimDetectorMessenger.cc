@@ -597,6 +597,11 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetPMTPositionInput->SetGuidance("Set filename for PMT position file");
   SetPMTPositionInput->SetParameterName("PMTPositionInput", true);
 
+  // Set the input file to read OD PMT positions
+  SetODPMTPositionInput = new G4UIcmdWithAString("/WCSim/PMT/ODPositionFile",this);
+  SetODPMTPositionInput->SetGuidance("Set filename for OD PMT position file");
+  SetODPMTPositionInput->SetParameterName("ODPMTPositionInput", true);
+
   // Set CDS file input
   SetCDSFile = new G4UIcmdWithAString("/WCSim/Geometry/SetCDSFile",this);
   SetCDSFile->SetGuidance("Set filename for CDS model file");
@@ -635,6 +640,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete PMTPosVar;
   delete TankRadiusChange;
   delete SetPMTPositionInput;
+  delete SetODPMTPositionInput;
   delete SetCDSFile;
 
   delete BGOPlacement;
@@ -1125,6 +1131,11 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	if(command == SetPMTPositionInput){
 	  WCSimDetector->SetPMTPositionInput(newValue);
 	}
+
+  if(command == SetODPMTPositionInput){
+	  WCSimDetector->SetODPMTPositionInput(newValue);
+	}
+
 
   if(command == SetCDSFile){
 	  WCSimDetector->SetCDSFile(newValue);
