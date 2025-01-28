@@ -2915,7 +2915,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
     mainAnnulusZ[i] = mainAnnulusMinZ + mainAnnulusHeight*i/((G4int)WCBarrelNRings-2.);
     G4double dr = GetRadiusChange(mainAnnulusZ[i]); // radius change at end-point
     mainAnnulusRmin[i] = innerAnnulusRadius+dr;
-    mainAnnulusRmax[i] = WCIDRadius + WCBlackSheetThickness + 1.*mm + pmt_blacksheet_offset + dr;//outerAnnulusRadius+dr;
+    mainAnnulusRmax[i] = WCIDRadius + WCBlackSheetThickness + 1.*mm + pmt_blacksheet_offset + dr; // decouple OD construction
   }
 
   G4Polyhedra* solidWCBarrelAnnulus = new G4Polyhedra("WCBarrelAnnulus",
@@ -3856,7 +3856,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
     //-------------------------------------------------------------
     // OD Tyvek Barrel side
     // ------------------------------------------------------------
-    G4double annulusZ[2] = {mainAnnulusMinZ-(barrelCellHeight+WCBarrelPMTBotOffset+pmt_blacksheet_offset+1*mm+WCBlackSheetThickness), 
+    G4double annulusZ[2] = {mainAnnulusMinZ-(barrelCellHeight+WCBarrelPMTBotOffset+pmt_blacksheet_offset+1*mm+WCBlackSheetThickness), // cover the whole barrel including the border ring
                             mainAnnulusMinZ+(barrelCellHeight+WCBarrelPMTTopOffset+pmt_blacksheet_offset+1*mm+WCBlackSheetThickness)+mainAnnulusHeight};
     G4double annulusODTyvekRmax[2] = {(WCODRadius),
                                       WCODRadius};
