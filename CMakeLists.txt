@@ -164,6 +164,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/mPMT_Position_WCTE.txt
         ${PROJECT_SOURCE_DIR}/data/mPMT_Position_WCTE_CDS.txt
         ${PROJECT_SOURCE_DIR}/data/mPMT_Position_IWCD.txt
+        ${PROJECT_SOURCE_DIR}/data/mPMT_Position_IWCD_OD.txt
         ${PROJECT_SOURCE_DIR}/data/mPMT_Position_IWCD_OptionA.txt
         ${PROJECT_SOURCE_DIR}/data/mPMT_Position_IWCD_OptionC.txt
         ${PROJECT_SOURCE_DIR}/data/ground_state_spectrum.txt
