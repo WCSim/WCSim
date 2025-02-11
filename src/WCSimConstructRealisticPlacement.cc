@@ -654,8 +654,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // Since assembly volumes just expand relative to their center point the means
     // all nested volumes will also have the PMT againt the tyvek.
 
-    G4ThreeVector pmt_central_position = G4ThreeVector(config.InnerDetectorOuterRadius-59.62*mm,0.0,0.0);
-    G4ThreeVector mpmt_central_position = G4ThreeVector(config.InnerDetectorOuterRadius-59.62*mm,0.0,0.0);
+    G4ThreeVector pmt_central_position = G4ThreeVector(config.InnerDetectorOuterRadius-2*mm,0.0,0.0);
+    G4ThreeVector mpmt_central_position = G4ThreeVector(config.InnerDetectorOuterRadius-2*mm,0.0,0.0);
     G4ThreeVector pmt_central_offset = G4ThreeVector(0.0,0.0,0.0); // -> Can be used for relative offset!
     G4RotationMatrix* pmt_central_rotation = new G4RotationMatrix;
     pmt_central_rotation->rotateX(90*deg);
@@ -666,11 +666,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     multipmt_central_rotation->rotateZ(270*deg);
 
     // For the OD PMT we instead need to make it face outwards from the white tyvek in the OD.
-    // Rotating with respect to ID PMT orientation
-    G4ThreeVector odpmt_central_position = G4ThreeVector(config.WhiteTyvekOuterRadius+2*cm,0.0,0.0);
-    G4RotationMatrix* pmtod_central_rotation = new G4RotationMatrix(*pmt_central_rotation);
-    pmtod_central_rotation->rotateX(180*deg);
-    pmtod_central_rotation->rotateY(180*deg);
+    // Bring closer to wall
+    G4ThreeVector odpmt_central_position = G4ThreeVector(config.WhiteTyvekOuterRadius+2*mm,0.0,0.0); 
+    G4RotationMatrix* pmtod_central_rotation = new G4RotationMatrix;
+    pmtod_central_rotation->rotateY(90*deg); // Same as ID but flipped 180 to be outwards
+    
 
     auto pmt20_offset_placement = new G4AssemblyVolume();
     pmt20_offset_placement->AddPlacedVolume(pmt20_dummy_logic, pmt_central_position, pmt_central_rotation);
@@ -1001,13 +1001,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // Now we can place the end caps, Top first.
     // -----------------
     G4ThreeVector topcappos = G4ThreeVector(0.0,0.0,config.InnerDetectorBarrelLength/2);
-    // pointing down
     G4RotationMatrix* topcaprot = new G4RotationMatrix();
     endcap_assembly->MakeImprint( InnerDetectorLogic, topcappos, topcaprot);
-    // pointing up
+
     G4ThreeVector topcapposod = G4ThreeVector(0.0,0.0,config.WhiteTyvekBarrelLength/2);
     G4RotationMatrix* topcaprotod = new G4RotationMatrix();
-    topcaprotod->rotateX(180*deg);
+    topcaprotod->rotateX(180*deg); // Remove this in corrected
     endcap_assembly_od->MakeImprint( OuterDetectorLogic, topcapposod, topcaprotod);
 
     int pmt20_count_barrel_and_top    = CountLogicalChildren(InnerDetectorLogic, pmt20_dummy_logic);
@@ -1020,14 +1019,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 
     // Now cap the other side
     // -----------------
-    // pointing down
     G4ThreeVector botcappos = G4ThreeVector(0.0,0.0,-config.InnerDetectorBarrelLength/2);
     G4RotationMatrix* botcaprot = new G4RotationMatrix();
     botcaprot->rotateX(180*deg);
     endcap_assembly->MakeImprint( InnerDetectorLogic, botcappos, botcaprot);
-    // pointing up
+
     G4ThreeVector botcapposod = G4ThreeVector(0.0,0.0,-config.WhiteTyvekBarrelLength/2);
     G4RotationMatrix* botcaprotod = new G4RotationMatrix();
+    botcaprotod->rotateX(180*deg+180*deg); // Flip again for OD
     endcap_assembly_od->MakeImprint( OuterDetectorLogic, botcapposod, botcaprotod);
 
     // Do some final sumation
@@ -1193,7 +1192,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // Reapeat the re-placement for the OD
     logicWCODWLSAndPMT = ConstructPMTAndWLSPlate(WCPMTODName, WCODCollectionName, "OD");
 
-    logicWCODWLSAndPMT->SetVisAttributes(pmtmulti_dummy_colour);        
+    SetNestedVisAttributes(logicWCODWLSAndPMT, invisible);
+    logicWCODWLSAndPMT->SetVisAttributes(pmtmulti_dummy_colour);
 
     copyno = 0;
     removed = 0;
