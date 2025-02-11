@@ -641,12 +641,12 @@ public:
     ++Current; 
 
     //Initialize() creates array with 10 entries.
-    // Using AddAtAndExpand() doubles the array size whenever
+    // TClonesArray expands the array size whenever
     // we hit the current array size.
     // This ensures we can keep adding entries,
     // even in the case of huge events
     // e.g. if we have a close SN
-    fEventList->AddAtAndExpand(new WCSimRootTrigger(num,Current),Current);
+    new((*fEventList)[Current]) WCSimRootTrigger(num,Current);
   }
   
   /*  void ReInitialize() { // need to remove all subevents at the end, or they just get added anyway...
@@ -660,7 +660,7 @@ public:
 
 private:
   //std::vector<WCSimRootTrigger*> fEventList;
-  TObjArray* fEventList; //!< Array of WCSimRootTrigger
+  TClonesArray* fEventList; //!< Array of WCSimRootTrigger
   Int_t Current;                      //!               means transient, not writable to file
 
   ClassDef(WCSimRootEvent,4)
