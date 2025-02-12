@@ -236,7 +236,6 @@ void WCSimEventAction::BeginOfEventAction(const G4Event*)
 
   }
   G4cout << "Starting event " << fEvNum << G4endl;
-  fEvNum++;
 }
 
 void WCSimEventAction::EndOfEventAction(const G4Event* evt)
@@ -1016,6 +1015,7 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     SavedOptions = true;
   }
   G4cout << "End of event " << fEvNum << G4endl << G4endl;
+  fEvNum++;
 }
 
 G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
