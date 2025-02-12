@@ -18,7 +18,7 @@ if (${WCSim_WCSimRoot_only})
     set(PROJECT_NAME WCSimRoot)
 endif ()
 
-set(PROJECT_VERSION 1.12.19)
+set(PROJECT_VERSION 1.12.20)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 

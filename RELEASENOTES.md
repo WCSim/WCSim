@@ -5,6 +5,23 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+
+*************************************************************
+12/02/2025: Notes for v1.12.20
+*************************************************************
+New release after IWCD geometry change in #501, and after output file format change in #503 (be careful reading old WCSim files with new WCSim & vice-versa!)
+
+New feature
+* Pull request #497 @tdealtry: New script that can be used to generate a matrix of mac files that can be used to 'image' the geometry
+* Pull request #501 @kmtsui: Allow IWCD OD PMT positions to be set via text file, in the same way as ID PMT positions
+
+Update
+* Pull request #501 @kmtsui: Update default IWCD PMT positions
+
+Bug fix
+* Pull request #503 @nickwp: Change TObjArray of triggers to TClonesArray in WCSimRootEvent output file class to fix memory leak
+* Pull request #504 @gondiaz: Fix inconsistent event number printouts
+
 *************************************************************
 22/11/2024: Notes for v1.12.19
 *************************************************************
