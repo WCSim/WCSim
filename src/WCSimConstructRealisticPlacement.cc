@@ -654,8 +654,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // Since assembly volumes just expand relative to their center point the means
     // all nested volumes will also have the PMT againt the tyvek.
 
-    G4ThreeVector pmt_central_position = G4ThreeVector(config.InnerDetectorOuterRadius-2*mm,0.0,0.0);
-    G4ThreeVector mpmt_central_position = G4ThreeVector(config.InnerDetectorOuterRadius-2*mm,0.0,0.0);
+    G4ThreeVector pmt_central_position = G4ThreeVector(config.InnerDetectorOuterRadius-59.62*mm,0.0,0.0);
+    G4ThreeVector mpmt_central_position = G4ThreeVector(config.InnerDetectorOuterRadius-59.62*mm,0.0,0.0);
     G4ThreeVector pmt_central_offset = G4ThreeVector(0.0,0.0,0.0); // -> Can be used for relative offset!
     G4RotationMatrix* pmt_central_rotation = new G4RotationMatrix;
     pmt_central_rotation->rotateX(90*deg);
