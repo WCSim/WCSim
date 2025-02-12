@@ -656,7 +656,6 @@ public:
   void Initialize();
 
   void ReInitialize();
-  static int fNumberOfWCSimRootEventCreated; //!< Count of the number of calls to the WCSimRootEvent constructor & ReInitalise()
 
 private:
   //std::vector<WCSimRootTrigger*> fEventList;
