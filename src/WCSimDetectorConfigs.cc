@@ -1551,6 +1551,10 @@ void WCSimDetectorConstruction::SetIWCDGeometry()
   WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
   WCAddGd               = false;
 	hybrid = false;
+
+  // Customize PMT positions
+  useReplica = false;
+  SetPMTPositionInput(wcsimdir_path+"/data/mPMT_Position_IWCD.txt");
 }
 
 // IWCD with mPMTs, updated geometry as of 20240411, plusu OD
@@ -1604,6 +1608,10 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   WCAddGd               = false;
 	hybrid = false;
 
+  // Customize PMT positions
+  useReplica = false;
+  SetPMTPositionInput(wcsimdir_path+"/data/mPMT_Position_IWCD.txt");
+
   ////////////////////////////////////
   // OD Parameters --- Beta version //
   ////////////////////////////////////
@@ -1655,6 +1663,9 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
+
+  // Customize OD PMT positions
+  SetODPMTPositionInput(wcsimdir_path+"/data/mPMT_Position_IWCD_OD.txt");
 }
 
 void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry_OptionA()

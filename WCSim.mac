@@ -91,11 +91,11 @@
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 #/WCSim/Construct
 
-# This is the updated IWCD geometry as of 20230630
+# This is the updated IWCD geometry as of 20250128
 #/WCSim/WCgeom IWCD_mPMT
 #/WCSim/Construct
 
-# This is the updated IWCD geometry as of 20230630, plus OD
+# This is the updated IWCD geometry as of 20250128, plus OD
 #/WCSim/WCgeom IWCD_mPMT_WithOD
 #/WCSim/Construct
 
