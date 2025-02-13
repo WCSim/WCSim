@@ -246,6 +246,7 @@ public:
 
   inline G4int   GetTubeID() {return tubeID;}
   inline std::vector<G4double> GetPe      (int gate) { return FindInMultimap(gate, pe); }
+  inline G4int GetTotalPe() { return totalPe; }
   inline std::vector<G4double> GetTime    (int gate) { return FindInMultimap(gate, time); }
   std::vector<std::vector<int> > GetDigiCompositionInfo(int gate)
   {
