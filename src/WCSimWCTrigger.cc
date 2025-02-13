@@ -492,7 +492,7 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 
 	  //we've found a digit on this PMT. If we're restricting to just 1 digit per trigger window (e.g. SKI)
 	  // then ignore later digits and break. This takes us to the next PMT
-	  if(!multiDigitsPerTrigger && triggertype != kTriggerNoTrig)
+	  if(!multiDigitsPerTrigger)
 	    break;
 	}//digits within trigger window
       }//loop over Digits
