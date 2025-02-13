@@ -648,7 +648,6 @@ WCSimWCTriggerNoTrigger::~WCSimWCTriggerNoTrigger()
 void WCSimWCTriggerNoTrigger::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   //Apply an NDigits trigger
   bool remove_hits = false;
-  SetMultiDigitsPerTrigger(true);
   SetSaveFailuresMode(0);
   AlgNoTrigger(WCDCPMT, remove_hits);
 }
