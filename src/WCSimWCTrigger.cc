@@ -498,7 +498,14 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
       }//loop over Digits
     }//loop over PMTs
   }//loop over Triggers
-  G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of entries in output digit collection: " << DigitsCollection->entries() << G4endl;
+  G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of entries (hit PMTs) in output digit collection: " << DigitsCollection->entries() << G4endl;
+#ifdef WCSIMWCTRIGGER_VERBOSE
+  int temp_total_digits = 0;
+  for(G4int i = 0; i < DigitsCollection->entries(); i++) {
+    temp_total_digits += (*DigitsCollection)[i]->GetTotalPe();
+  }
+  G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of digits in output digit collection: " << temp_total_digits << G4endl;
+#endif
 }
 
 void WCSimWCTriggerBase::AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits)
