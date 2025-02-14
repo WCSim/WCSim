@@ -234,6 +234,10 @@
 #/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
 #width /DarkRate/SetDarkWindow [time in ns] around each hit
 #i.e. hit time +- (/DarkRate/SetDarkWindow) / 2
+# WARNING: this DarkMode 1 "around physics hit window" is performed separately for each PMT type.
+# Therefore, if you have no physics hits on a PMT type in an event,
+# you will have no dark noise on that PMT type in that event
+# (only when running with DarkMode 1)
 /DarkRate/SetDetectorElement tank
 /DarkRate/SetDarkMode 1
 /DarkRate/SetDarkWindow 4000
