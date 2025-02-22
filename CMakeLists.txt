@@ -160,6 +160,12 @@ if(WCSIM_SAVE_PHOTON_HISTORY_FLAG STREQUAL ON)
   add_definitions(-DWCSIM_SAVE_PHOTON_HISTORY)
 endif()
 
+option(WCSIM_DEBUG_PMT_PLACEMENT_REDUCTION "Toggle ENV Checks for Placement Reduction" OFF)
+if(WCSIM_DEBUG_PMT_PLACEMENT_REDUCTION STREQUAL ON)
+  add_definitions(-DWCSIM_DEBUG_PMT_PLACEMENT_REDUCTION)
+endif()
+
+
 #########
 # copy extra data files
 #########

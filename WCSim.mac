@@ -266,6 +266,14 @@
 #/control/execute macros/visOGLQt.mac
 
 ##################
+# SCANNING TOOLSS
+##################
+#/WCSim/ScanGeometryBoundaryCenter -3185 0 0 cm
+#/WCSim/ScanGeometryBoundaryWidth 100 100 100 cm
+#/WCSim/ScanGeometryStepSize 1 1 1 cm
+#/WCSim/ScanGeometryToFile test_pointscan_barrel_edge.txt
+
+##################
 # OPTICAL PHYSICS
 ##################
 ## The WCSimOpticalPhysics class uses the same Messenger commands as G4OpticalPhysics (need to set macros/jobOptions.mac)
