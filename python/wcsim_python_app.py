@@ -68,53 +68,46 @@ cppyy.load_library("WCSimCore")
 cppyy.load_library("WCSimRoot")
 
 runManager = cppyy.gbl.G4RunManager()
-
 UI = cppyy.gbl.G4UImanager.GetUIpointer()
 
 tuningpars = cppyy.gbl.WCSimTuningParameters()
-
-UI.ApplyCommand("/control/execute tuning_parameters.mac")
+UI.ApplyCommand("/control/execute macros/tuning_parameters.mac")
 
 randomparameters = cppyy.gbl.WCSimRandomParameters()
 WCSimConfiguration = 2
-
 WCSimdetector = cppyy.gbl.WCSimDetectorConstruction(WCSimConfiguration,tuningpars)
-
 runManager.SetUserInitialization(WCSimdetector)
 
 physFactory = cppyy.gbl.WCSimPhysicsListFactory()
-
+UI.ApplyCommand("/control/execute macros/jobOptions.mac")
 physFactory.InitializeList()
 runManager.SetUserInitialization(physFactory)
 
-# visManager = cppyy.gbl.WCSimVisManager()
-# visManager.Initialize()
 
 myGeneratorAction = cppyy.gbl.WCSimPrimaryGeneratorAction(WCSimdetector)
 runManager.SetUserAction(myGeneratorAction)
 
 myRunAction = cppyy.gbl.WCSimRunAction(WCSimdetector, randomparameters)
-
-
-# print("FINISHEsD")
-
 tuningpars.SaveOptionsToOutput(myRunAction.GetRootOptions())
 physFactory.SaveOptionsToOutput(myRunAction.GetRootOptions())
-
 runManager.SetUserAction(myRunAction)
 
-runManager.SetUserAction(cppyy.gbl.WCSimEventAction(myRunAction, WCSimdetector,
-						 myGeneratorAction))
+eventaction = cppyy.gbl.WCSimEventAction(myRunAction, 
+                                         WCSimdetector,
+						 				 myGeneratorAction)
+runManager.SetUserAction(eventaction)
 
-track = cppyy.gbl.WCSimTrackingAction()
-runManager.SetUserAction(track)
+trackaction = cppyy.gbl.WCSimTrackingAction()
+runManager.SetUserAction(trackaction)
 
-stack = cppyy.gbl.WCSimStackingAction(WCSimdetector)
-runManager.SetUserAction(stack)
+stackaction = cppyy.gbl.WCSimStackingAction(WCSimdetector)
+runManager.SetUserAction(stackaction)
 
-step = cppyy.gbl.WCSimSteppingAction(myRunAction,WCSimdetector)
-runManager.SetUserAction(step)
+stepaction = cppyy.gbl.WCSimSteppingAction(myRunAction,WCSimdetector)
+runManager.SetUserAction(stepaction)
 
 runManager.Initialize()
 
-# UI.ApsplyCommand(execommand + G4String(argv[1]))
+UI.ApplyCommand("/control/execute WCSim.mac")
+
+print("FINISHED WITH MODEL")
