@@ -1,9 +1,13 @@
 #include "WCSimPrimaryGeneratorAction.hh"
+
+#ifdef WCSIM_HEPMC3_ENABLED
 #include "HepMC3/FourVector.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenParticle_fwd.h"
 #include "HepMC3/GenVertex.h"
 #include "HepMC3/GenVertex_fwd.h"
+#endif
+
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPrimaryGeneratorMessenger.hh"
 #include "G4RunManager.hh"
@@ -1563,6 +1567,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamDir(dir);
       SetBeamPDG(pdg);
 
+    #ifdef WCSIM_HEPMC3_ENABLED
     } else if (useHepMC3Evt) {
 
       G4cout << "Using HepMC3 event" << G4endl;
@@ -1665,6 +1670,7 @@ NuHepMC3Reader: [INFO] Particle ID: "
           continue;
         }
       }
+#endif // WCSISM_HEPMC3_ENABLED
     }
 }
 
