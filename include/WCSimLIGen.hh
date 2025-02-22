@@ -17,12 +17,12 @@ class G4Event;
 class WCSimLIGen
 {
 
-    public:
-        WCSimLIGen();
-        ~WCSimLIGen();
+public:
+  WCSimLIGen();
+  ~WCSimLIGen();
   
         // Initialise the light injector
-        void Initialise();
+  void Initialise();
   void ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector);
 
         // Set the vertices, etc of all photons in the pulse
@@ -33,9 +33,9 @@ class WCSimLIGen
         G4double GetPhotonEnergy();
         // Set whether to read in profile or photon list
         void SetPhotonMode(G4bool photonMode);
-        TH2D *hProfile = nullptr;
+
 private:
-  
+  TH2D *hProfile = nullptr;
   G4ParticleGun*                  myLIGun;
   
         // Variables for initialising light injector parameters

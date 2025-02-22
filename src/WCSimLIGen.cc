@@ -22,7 +22,7 @@ WCSimLIGen::WCSimLIGen(){
 WCSimLIGen::~WCSimLIGen(){
 
     // things to delete
-  //delete myLIGun;
+  delete myLIGun;
   //if(hProfile) delete hProfile;
 }
 
@@ -60,7 +60,7 @@ void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G
     }
 
     if (db_pos.empty()) {
-        db_pos = wcsimdir + "LightInjectorsLocation.json";
+        db_pos = wcsimdir + "LightInjectorsDetails.json";
     }
     else {
         db_pos = wcsimdir + injectorDetails;
