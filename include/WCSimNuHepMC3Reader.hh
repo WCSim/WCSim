@@ -1,6 +1,8 @@
 #ifndef WCSimNuHepMC3Reader_h
 #define WCSimNuHepMC3Reader_h
 
+#ifdef WCSIM_HEPMC3_ENABLED
+
 #include <G4LorentzVector.hh>
 #include <G4String.hh>
 #include <memory>
@@ -54,4 +56,5 @@ class WCSimNuHepMC3Reader {
     WCSimDetectorConstruction *myDetector;
 };
 
+#endif
 #endif

@@ -17,13 +17,13 @@ class G4Event;
 class WCSimLIGen
 {
 
-    public:
-        WCSimLIGen();
-        ~WCSimLIGen();
+public:
+  WCSimLIGen();
+  ~WCSimLIGen();
   
         // Initialise the light injector
-        void Initialise();
-        void ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename);
+  void Initialise();
+  void ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector);
 
         // Set the vertices, etc of all photons in the pulse
         void GeneratePhotons(G4Event* anEvent, G4int nphotons);
@@ -34,17 +34,18 @@ class WCSimLIGen
         // Set whether to read in profile or photon list
         void SetPhotonMode(G4bool photonMode);
 
-    private:
-
-        G4ParticleGun*                  myLIGun;
-
+private:
+  TH2D *hProfile = nullptr;
+  G4ParticleGun*                  myLIGun;
+  
         // Variables for initialising light injector parameters
         vector<double> injectorPosition;
         vector<double> injectorDirection;
         vector<double> thetaVals;
-        vector<double> phiVals;
-        vector<double> zVals;
-        vector<double> intensity;
+  int thetabins;
+  vector<double> phiVals;
+  vector<double> zVals;
+  vector<double> intensity;
         
         G4double injectorWavelength;
         G4double injectorOffset;
@@ -57,7 +58,7 @@ class WCSimLIGen
         G4bool photonMode;
 
         // Histogram for profile
-        TH2D *hProfile;
+  //TH2D *hProfile;
         void FillProfilePDF();
 
         // Struct for reading in photons list from file

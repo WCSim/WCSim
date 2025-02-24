@@ -1,5 +1,7 @@
 #include "WCSimNuHepMC3Reader.hh"
 
+#ifdef WCSIM_HEPMC3_ENABLED
+
 #include "HepMC3/FourVector.h"
 #include "HepMC3/Print.h"
 #include "HepMC3/ReaderFactory.h"
@@ -131,3 +133,5 @@ HepMC3::FourVector WCSimNuHepMC3Reader::GenRandomPosition() {
     HepMC3::FourVector position(x_nu, y_nu, z_nu, 0.0);
     return position;
 }
+
+#endif

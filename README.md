@@ -133,6 +133,7 @@ Useful cmake commands:
 * `-DWCSim_DEBUG_COMPILE_FLAG=<ON|OFF>` If ON, turns on the gcc debug compiler flag `-g`. Default: OFF
 * `-DWCSIM_SAVE_PHOTON_HISTORY_FLAG=<ON|OFF>` If ON, turns on photon scattering/reflection history saving. The data class `WCSimRootCherenkovHitHistory` is used in a similar way as `WCSimRootCherenkovHitTime`. Default: OFF
 * `-DWCSim_WCSimRoot_only=<ON|OFF>` If ON, only builds the WCSimRoot library (ignoring the WCSimCore one). This is useful if one wants only to read the WCSim output files (for e.g. reconstruction) and not running any simulation. Default: OFF
+* `-DWCSISM_HEPMC3_ENABLED=<ON|OFF>` If ON, attempts to build the HepMC3 interface. The CMAKE_PREFIX_PATH needs to be setup correctly to point towards the HepMC3 cmake config file to find this.
 
 #### Build with CMake on sukap:
 

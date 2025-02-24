@@ -22,8 +22,8 @@ WCSimLIGen::WCSimLIGen(){
 WCSimLIGen::~WCSimLIGen(){
 
     // things to delete
-    delete myLIGun;
-    if(hProfile) delete hProfile;
+  delete myLIGun;
+  //if(hProfile) delete hProfile;
 }
 
 
@@ -46,18 +46,28 @@ void WCSimLIGen::SetPhotonMode(G4bool photonmode){
 }
     
 
-void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename){
+void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector){
 
     // Define the database to read from
     string db = injectorFilename;
+    string db_pos = injectorDetails;
+    
     if (db.empty()) {
         db = wcsimdir + "LightInjectors.json";
     }
     else {
         db = wcsimdir + injectorFilename;
     }
+
+    if (db_pos.empty()) {
+        db_pos = wcsimdir + "LightInjectorsDetails.json";
+    }
+    else {
+        db_pos = wcsimdir + injectorDetails;
+    }
     
     ifstream fJson(db.c_str());
+    ifstream f2Json(db_pos.c_str());
     
     if (!fJson) {
         G4cerr << "LIGen: [ERROR] light injector db " << db << " not found" << G4endl;
@@ -65,30 +75,47 @@ void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G
     } else {
         G4cout << " LIGen: Light Injector db " << db << " opened" << G4endl;
     }
+    if (!f2Json) {
+        G4cerr << "LIGen: [ERROR] light injector db for positioning " << db\
+_pos << " not found" << G4endl;
+        exit(-1);
+    } else {
+        G4cout << " LIGen: Light Injector db for positioning " << db_pos <<\
+ " opened" << G4endl;
+    }
+
+    
     stringstream buffer;
     buffer << fJson.rdbuf();
 
+    stringstream buffer2;
+    buffer2 << f2Json.rdbuf();
+    
     // Read in position and direction of injector from database
     // and fill the histogram with the light injector profile
     json data = json::parse(buffer.str());
-    for (auto injector : data["injectors"]){
-        if ( injector["type"].get<string>()==injectorType && G4String(injector["idx"].get<string>())==injectorIdx ){
-
-            G4cout << "Simulating events from " << injector["type"].get<string>() << " " << injector["idx"].get<string>() << G4endl;
-            injectorWavelength = injector["wavelength"].get<double>();
-            injectorPosition = injector["position"].get<vector<double>>();
-            injectorDirection = injector["direction"].get<vector<double>>();
-            injectorOffset = injector["offset"].get<double>();
-            thetaVals = injector["theta"].get<vector<double>>();
-            phiVals = injector["phi"].get<vector<double>>();
-            intensity = injector["intensity"].get<vector<double>>(); 
-            if ( photonMode ){
-                photonsFilename = injector["photonsfile"].get<string>();
-            }
-        }
+    for (auto injector : data["profiles"]){
+      if ( injector["type"].get<string>()==injectorType && injector["detector"].get<string>()==injectorDetector){
+	thetaVals = injector["theta"].get<vector<double>>();
+	phiVals = injector["phi"].get<vector<double>>();
+	intensity = injector["intensity"].get<vector<double>>();
+      }
+    }
+    if ( injectorDetector == "ID" ) thetabins = 180;
+    else  thetabins = thetaVals.size();
     
-    }	
-    
+    json data2 = json::parse(buffer2.str());
+    for (auto injector2 : data2["injectors"]){
+      if ( injector2["type"].get<string>()==injectorType && G4String(injector2["idx"].get<string>())==injectorIdx && injector2["detector"].get<string>()==injectorDetector){
+	injectorWavelength = injector2["wavelength"].get<double>();
+	injectorPosition = injector2["position"].get<vector<double>>();
+	injectorDirection = injector2["direction"].get<vector<double>>();
+	injectorOffset = injector2["offset"].get<double>();
+	if ( photonMode ){
+	  photonsFilename = injector2["photonsfile"].get<string>();
+	}
+      }
+    }
     if ( photonMode ){
         LoadPhotonList();
     }
@@ -100,7 +127,7 @@ void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G
 void WCSimLIGen::LoadPhotonList(){
 
     string photonsFile = wcsimdir + photonsFilename;
-    G4cout << photonsFile << G4endl; 
+    G4cout << "photonsFile" << photonsFile << G4endl; 
     ifstream photondata(photonsFile.c_str());
     if ( ! photondata) {
         G4cerr << "WCSimLIGen [ERROR]: Failed to open " << photonsFilename << G4endl;
@@ -148,12 +175,18 @@ void WCSimLIGen::LoadProfilePDF(){
     float thetaMin = thetaVals[0];
     float phiMin = phiVals[0];
     int nbins = thetaVals.size();
+    unsigned int bins = thetabins;
     float thetaMax = thetaVals[nbins-1];
     float phiMax = phiVals[nbins-1];
 
-    hProfile = new TH2D("hProfile","hProfile",nbins,thetaMin,thetaMax,nbins,phiMin,phiMax);
-    for (auto i=0u;i<thetaVals.size();i++){
-        hProfile->Fill(thetaVals[i],phiVals[i]);
+    if (hProfile != NULL) {
+          delete hProfile;
+          hProfile = nullptr;
+    }
+    
+    hProfile = new TH2D("hProfile","hProfile",bins,thetaMin,thetaMax,bins,phiMin,phiMax);
+    for (auto i=0u;i<nbins;i++){
+      hProfile->Fill(thetaVals[i],phiVals[i]);
         int bin = hProfile->FindBin(thetaVals[i],phiVals[i]);
         hProfile->SetBinContent(bin, intensity[i]);
     }
@@ -216,7 +249,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
             double theta;
             double phi;
             hProfile->GetRandom2(theta,phi);
-            
+	    theta = theta - 90;
             // Calculate the direction of this photon wrt +z direction
             G4double costheta = cos(theta*deg);
             G4double sintheta = sqrt(1. - costheta*costheta);
@@ -229,14 +262,13 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
             // Rotate the photon direction wrt the injector axis using the
             // angle and axis of rotation calculated earlier
             G4ThreeVector dir = {px,py,pz};
-            dir.rotate(angle,axis);
+	    dir.rotate(angle,axis);
             
             // Now move the photon vtx to front edge of the injector to avoid 
             // issues with collimator geometries
             G4ThreeVector vtx = G4ThreeVector(injectorPosition[0]*cm,injectorPosition[1]*cm,injectorPosition[2]*cm);
             // Get the vtx at dr in the direction of the photon
-            vtx += dir*injectorOffset*cm;
-                          
+	    vtx += dir*injectorOffset*cm;
             // Set the gun with the photon parameters
             myLIGun->SetNumberOfParticles(1);
             myLIGun->SetParticleDefinition(G4OpticalPhoton::Definition());
