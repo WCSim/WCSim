@@ -160,6 +160,8 @@ private:
   G4String injectorType;
   G4String injectorIdx;
   G4String injectorFilename;
+  G4String injectorDetails;
+  G4String injectorDetector;
   G4bool photonMode;
 
   //
@@ -275,6 +277,8 @@ private:
   inline void SetLightInjectorIdx(G4String choice)        { injectorIdx = choice; }
   inline void SetLightInjectorNPhotons(G4int choice)      { nphotons=choice; }
   inline void SetLightInjectorFilename(G4String choice)   { injectorFilename = choice; }
+  inline void SetLightInjectorDetails(G4String choice)   { injectorDetails = choice; }
+  inline void SetLightInjectorDetector(G4String choice)   { injectorDetector = choice; }
   inline void SetLightInjectorMode(G4bool choice)         { photonMode = choice; }
 
   inline void SetDataTableEvtGenerator(G4bool choice) {
