@@ -381,6 +381,9 @@ public:
   void SetPMTPositionInput(G4String choice) {pmtPositionFile = choice; readFromTable = true;}
   G4String GetPMTPositionInput() {return pmtPositionFile;}
 
+  void SetODPMTPositionInput(G4String choice) {odpmtPositionFile = choice; readODFromTable = true;}
+  G4String GetODPMTPositionInput() {return odpmtPositionFile;}
+
   void SetCDSFile(G4String choice) { CDSFile = choice; addCDS = true; }
 
   void   SetPMTType(G4String type) {
@@ -799,7 +802,7 @@ private:
   G4bool rotateBarrelHalfTower;
 
   // New variables for PMT placement
-  G4bool useReplica, readFromTable;
+  G4bool useReplica, readFromTable, readODFromTable;
   G4double pmtPosVar;
   G4double topRadiusChange, midRadiusChange, botRadiusChange;
   G4int nPMTsRead;
@@ -810,7 +813,9 @@ private:
   std::vector<G4int> pmtmPMTId;
   std::vector<G4double> pmtRotaton;
   std::string pmtPositionFile;
+  std::string odpmtPositionFile;
   void ReadGeometryTableFromFile();
+  void ReadGeometryTableFromFile(std::string fname);
   // distance by which PMT goes behind black sheet
   G4double pmt_blacksheet_offset;
 

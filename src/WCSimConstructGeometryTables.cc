@@ -639,15 +639,20 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
   pmtSection.clear();
   pmtmPMTId.clear();
   nPMTsRead = 0;
-  if (!readFromTable) return;
-  std::ifstream Data(pmtPositionFile.c_str(),std::ios_base::in);
+  if (readFromTable) ReadGeometryTableFromFile(pmtPositionFile);
+  if (readODFromTable) ReadGeometryTableFromFile(odpmtPositionFile);
+}
+
+void WCSimDetectorConstruction::ReadGeometryTableFromFile(std::string fname)
+{
+  std::ifstream Data(fname.c_str(),std::ios_base::in);
   if (!Data)
   {
-    G4cout<<"PMT data file "<<pmtPositionFile<<" could not be opened --> Exiting..."<<G4endl;
+    G4cout<<"PMT data file "<<fname<<" could not be opened --> Exiting..."<<G4endl;
     exit(-1);
   }
   else
-    G4cout<<"PMT data file "<<pmtPositionFile<<" is opened to read positions"<<G4endl;
+    G4cout<<"PMT data file "<<fname<<" is opened to read positions"<<G4endl;
 
   std::string str, tmp;
 	G4int Column=0;
