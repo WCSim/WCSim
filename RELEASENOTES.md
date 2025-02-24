@@ -5,6 +5,16 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+Update
+* Pull request #512 @patrickstowell: Make hepmc3 dependency optional
+* Pull request #499 @menailj: Light injector (LI) primary generator extended to work for ID
+
+Bug fix
+* Pull request #509 @tdealtry: Allow the `multiDigitsPerTrigger=false` config option to work for the NoTrigger trigger
+
+Documentation
+* Pull request #510 @tdealtry: Clarify how dark mode 1 (around physics hits) works with multiple PMT types
+* Pull request #508 @tdealtry: Clarify printout in WCSimWCTrigger
 
 *************************************************************
 12/02/2025: Notes for v1.12.20
