@@ -13,7 +13,10 @@
 #include "WCSimAmBeGen.hh"
 #include "WCSimEnumerations.hh"
 #include "jhfNtuple.h"
+
+#ifdef WCSIM_HEPMC3_ENABLED
 #include "WCSimNuHepMC3Reader.hh"
+#endif
 
 #include <G4String.hh>
 #include <fstream>
@@ -131,7 +134,11 @@ private:
   // HepMC3 reader
   G4String hepmc3_filename;
     // HepMC3 reader object
+
+#ifdef WCSIM_HEPMC3_ENABLED
   WCSimNuHepMC3Reader* hepmc3_reader;
+#endif
+
     // Position generation bool
   G4bool hepmc3_positionGen;
 

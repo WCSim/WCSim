@@ -1,9 +1,13 @@
 #include "WCSimPrimaryGeneratorAction.hh"
+
+#ifdef WCSIM_HEPMC3_ENABLED
 #include "HepMC3/FourVector.h"
 #include "HepMC3/GenParticle.h"
 #include "HepMC3/GenParticle_fwd.h"
 #include "HepMC3/GenVertex.h"
 #include "HepMC3/GenVertex_fwd.h"
+#endif
+
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPrimaryGeneratorMessenger.hh"
 #include "G4RunManager.hh"
@@ -1566,7 +1570,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       SetBeamPDG(pdg);
 
     } else if (useHepMC3Evt) {
-
+    #ifdef WCSIM_HEPMC3_ENABLED
       G4cout << "Using HepMC3 event" << G4endl;
       // Check if the WCSimNuHepMC3Reader object has been initiaited yet
       if (!hepmc3_reader) {
@@ -1667,6 +1671,10 @@ NuHepMC3Reader: [INFO] Particle ID: "
           continue;
         }
       }
+    #else
+        std::cerr << "[WARNING] : HepMC3 events requested, but interface not compiled." << std::endl;
+        std::cerr << "          : Use -DWCSISM_HEPMC3_ENABLED=ON at compile time." << std::endl;
+    #endif // WCSISM_HEPMC3_ENABLED
     }
 }
 
