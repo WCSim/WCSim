@@ -3532,7 +3532,7 @@ G4int PMT3inchR14374_FDOD::GetNbOfQEDefined(){
   return factor;
 }
 G4double* PMT3inchR14374_FDOD::GetCollectionEfficiencyArray(){
-  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 100., 100., 100., 100.};
+  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 97.5, 95., 74., 0.};
   return CE;
 }
  
