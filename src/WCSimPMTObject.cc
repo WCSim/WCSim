@@ -3532,7 +3532,18 @@ G4int PMT3inchR14374_FDOD::GetNbOfQEDefined(){
   return factor;
 }
 G4double* PMT3inchR14374_FDOD::GetCollectionEfficiencyArray(){
-  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 97.5, 95., 74., 0.};
+  // MC angle | MC rad | MC l  | Hamamatsu angle | CE
+  // 0          0        20      0                 100
+  // 10         8.68     21.1    24.3              100
+  // 20         17.1     24.1    45.2              100
+  // 30         25       28.3    62.0              100
+  // 40         32.1     33.2    75.5              93
+  // 50         38.3     38.4    86.8              30
+  // 60         43.3     43.6
+  // 70         47.0     48.7
+  // 80         49.2     53.7
+  // 90         50       58.3
+  static G4double CE[10] = { 100., 100., 100., 100., 93., 30., 0., 0., 0., 0.};
   return CE;
 }
  
