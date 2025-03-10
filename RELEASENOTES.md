@@ -5,6 +5,11 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+*************************************************************
+12/02/2025: Notes for v1.12.21
+*************************************************************
+New release after #509 for use for HK machine learning reconstruction studies
+
 Update
 * Pull request #512 @patrickstowell: Make hepmc3 dependency optional
 * Pull request #499 @menailj: Light injector (LI) primary generator extended to work for ID
