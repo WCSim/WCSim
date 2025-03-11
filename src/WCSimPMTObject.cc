@@ -3366,7 +3366,7 @@ PMT3inchR14374_FDOD::PMT3inchR14374_FDOD(){}
 PMT3inchR14374_FDOD::~PMT3inchR14374_FDOD(){}
 
 G4String PMT3inchR14374_FDOD::GetPMTName() {G4String PMTName = "PMT3inchR14374_FDOD"; return PMTName;}
-G4double PMT3inchR14374_FDOD::GetExposeHeight() {return 0.02*m;}          //.0153*m;} //.0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
+G4double PMT3inchR14374_FDOD::GetExposeHeight() {return 0.018*m;}          //.0153*m;} //.0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
 G4double PMT3inchR14374_FDOD::GetRadius() {return 0.04*m;}            //0.036*m;} //.0400*m;}   //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
 G4double PMT3inchR14374_FDOD::GetPMTGlassThickness() {return 0.1*cm;}     // TF: from Hamamatsu Tech Sheet, photocathode >=36mm, so this yields in thickness <= 2.35mm. Currently will use 1mm (larger cathode)
                                                                         // until measured!
@@ -3567,7 +3567,7 @@ PMT3inchNNVT::PMT3inchNNVT(){}
 PMT3inchNNVT::~PMT3inchNNVT(){}
 
 G4String PMT3inchNNVT::GetPMTName() {G4String PMTName = "PMT3inchNNVT"; return PMTName;}
-G4double PMT3inchNNVT::GetExposeHeight() {return 0.02*m;}          //.0153*m;} //.0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
+G4double PMT3inchNNVT::GetExposeHeight() {return 0.0193*m;}          //.0153*m;} //.0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
 G4double PMT3inchNNVT::GetRadius() {return 0.04*m;}            //0.036*m;} //.0400*m;}   //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
 G4double PMT3inchNNVT::GetPMTGlassThickness() {return 0.1*cm;}     // TF: from Hamamatsu Tech Sheet, photocathode >=36mm, so this yields in thickness <= 2.35mm. Currently will use 1mm (larger cathode)
                                                                         // until measured!
