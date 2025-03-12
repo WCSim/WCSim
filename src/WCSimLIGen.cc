@@ -174,7 +174,7 @@ void WCSimLIGen::LoadProfilePDF(){
     // Creates histogram of light injector profile
     float thetaMin = thetaVals[0];
     float phiMin = phiVals[0];
-    int nbins = thetaVals.size();
+    unsigned int nbins = thetaVals.size();
     unsigned int bins = thetabins;
     float thetaMax = thetaVals[nbins-1];
     float phiMax = phiVals[nbins-1];
