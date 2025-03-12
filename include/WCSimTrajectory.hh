@@ -165,7 +165,7 @@ public: // with description
   std::vector<std::vector<G4float>> boundaryPoints;
   std::vector<G4float> boundaryKEs;
   std::vector<G4double> boundaryTimes;
-  std::vector<BoundaryType_t> boundaryTypes; // kBlackSheet=1, kTyvek, kCave
+  std::vector<BoundaryType_t> boundaryTypes; ///< kBlackSheet=1, kMPMT=2, kInnerTyvek=3, kOuterTyvek=4
 
   // Photon reflection/scattering history
   G4int pRayScatter;

@@ -59,7 +59,7 @@ private:
   std::vector<std::vector<float>> boundaryPoints; //!< The position (x,y,z) where the particle crossed the blacksheet/tyvek/cave (units: cm)
   std::vector<float> boundaryKEs; //!< The particle kinetic energy as it crossed the blacksheet/tyvek/cave (units: MeV)
   std::vector<double> boundaryTimes; //!< The time as the particle crossed the blacksheet/tyvek/cave (units: ns)
-  std::vector<int> boundaryTypes; //!< The surface the particle has crossed. 1 = blacksheet, 2 = tyvek, 3 = cave. Note that all boundary* variables are in synch
+  std::vector<int> boundaryTypes; //!< The surface the particle has crossed. 1 = blacksheet (boundary between ID & dead space), 2 = mPMT, 3 = inner tyvek (boundary between dead space and OD), 3 = outer tyvek (boundary between OD & rock wall). Note that all boundary* variables are in synch
 
 public:
   WCSimRootTrack() {}
