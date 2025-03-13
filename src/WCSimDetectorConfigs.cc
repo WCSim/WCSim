@@ -1622,7 +1622,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
 
   // OD Dimensions //
   WCODLateralWaterDepth    = 0.7*m;
-  WCODHeightWaterDepth     = 0.7*m;
+  WCODHeightWaterDepth     = 0.78*m;
   WCODDeadSpace            = 200.*mm;
   WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
   WCODWLSPlatesThickness   = 0.6*cm; //
@@ -1666,6 +1666,8 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
+
+  IWCD_BF_File = wcsimdir_path+"/data/BottomFrame_NoSMFrame_v6_meshlab.stl";
 
   // Customize OD PMT positions
   SetODPMTPositionInput(wcsimdir_path+"/data/mPMT_Position_IWCD_OD.txt");
