@@ -3853,7 +3853,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 						checkOverlaps);
 	  new G4LogicalSkinSurface("WaterTySurfaceBot", logicWCODBotCapTyvek, OpWaterTySurface);
 
-    if (WCDetectorName=="IWCD_mPMT_WithOD")
+    if (WCDetectorName=="IWCD_mPMT_WithOD" && addBF)
     {
       auto shape_BF = CADMesh::TessellatedMesh::FromSTL(IWCD_BF_File);
 

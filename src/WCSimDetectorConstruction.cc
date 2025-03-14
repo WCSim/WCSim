@@ -107,6 +107,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   isCombinedPMTCollectionDefined = false;
   odEdited = false;
   readODFromTable = false;
+  addBF = false;
 
   isRealisticPlacement = false;
 
