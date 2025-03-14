@@ -18,7 +18,7 @@ if (${WCSim_WCSimRoot_only})
     set(PROJECT_NAME WCSimRoot)
 endif ()
 
-set(PROJECT_VERSION 1.12.20)
+set(PROJECT_VERSION 1.12.21)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 
@@ -48,6 +48,9 @@ set(CMAKE_CXX_STANDARD 14) # Enable c++14 standard
 ########
 # HepMC3
 ########
+option(WCSIM_HEPMC3_ENABLED "HEPMC3 INTERFACE" OFF)
+if (WCSIM_HEPMC3_ENABLED)
+
 if (NOT ${WCSim_WCSimRoot_only}) # only looking for HepMC3 if WCSim_WCSimRoot_only is false
   find_package(HepMC3 REQUIRED)
   if (NOT HepMC3_FOUND)
@@ -56,6 +59,8 @@ if (NOT ${WCSim_WCSimRoot_only}) # only looking for HepMC3 if WCSim_WCSimRoot_on
   include_directories (${HEPMC3_INCLUDE_DIR})
   LIST(APPEND PUBLIC_EXT_LIBS ${HEPMC3_LIBRARIES})
 endif ()
+
+endif()
 
 ######
 # ROOT
@@ -86,6 +91,11 @@ elseif("-std=c++11" IN_LIST TMP_ROOT_FLAGS)
 else()
     set(CMAKE_CXX_STANDARD 17)
 endif ()
+
+option(FORCE_CXX_STANDARD "Flag to override root CXX standard checks" OFF)
+if (FORCE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD ${FORCE_CXX_STANDARD})
+endif()
 
 MESSAGE(STATUS "Current CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 

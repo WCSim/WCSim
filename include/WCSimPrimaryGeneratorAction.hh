@@ -13,7 +13,10 @@
 #include "WCSimAmBeGen.hh"
 #include "WCSimEnumerations.hh"
 #include "jhfNtuple.h"
+
+#ifdef WCSIM_HEPMC3_ENABLED
 #include "WCSimNuHepMC3Reader.hh"
+#endif
 
 #include <G4String.hh>
 #include <fstream>
@@ -131,7 +134,11 @@ private:
   // HepMC3 reader
   G4String hepmc3_filename;
     // HepMC3 reader object
+
+#ifdef WCSIM_HEPMC3_ENABLED
   WCSimNuHepMC3Reader* hepmc3_reader;
+#endif
+
     // Position generation bool
   G4bool hepmc3_positionGen;
 
@@ -160,6 +167,8 @@ private:
   G4String injectorType;
   G4String injectorIdx;
   G4String injectorFilename;
+  G4String injectorDetails;
+  G4String injectorDetector;
   G4bool photonMode;
 
   //
@@ -275,6 +284,8 @@ private:
   inline void SetLightInjectorIdx(G4String choice)        { injectorIdx = choice; }
   inline void SetLightInjectorNPhotons(G4int choice)      { nphotons=choice; }
   inline void SetLightInjectorFilename(G4String choice)   { injectorFilename = choice; }
+  inline void SetLightInjectorDetails(G4String choice)   { injectorDetails = choice; }
+  inline void SetLightInjectorDetector(G4String choice)   { injectorDetector = choice; }
   inline void SetLightInjectorMode(G4bool choice)         { photonMode = choice; }
 
   inline void SetDataTableEvtGenerator(G4bool choice) {
