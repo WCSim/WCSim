@@ -1667,7 +1667,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
 
-  addBF = true;
+  //addBF = true;
   IWCD_BF_File = wcsimdir_path+"/data/BottomFrame_NoSMFrame_v6_meshlab.stl";
 
   // Customize OD PMT positions
