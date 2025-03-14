@@ -3364,7 +3364,7 @@ G4int PMT3inchR14374::GetNbOfQEDefined(){
 
 PMT3inchR14374_FDOD::PMT3inchR14374_FDOD(){}
 PMT3inchR14374_FDOD::~PMT3inchR14374_FDOD(){}
-
+// sphere radius = 53 mm
 G4String PMT3inchR14374_FDOD::GetPMTName() {G4String PMTName = "PMT3inchR14374_FDOD"; return PMTName;}
 G4double PMT3inchR14374_FDOD::GetExposeHeight() {return 0.018*m;}          //.0153*m;} //.0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
 G4double PMT3inchR14374_FDOD::GetRadius() {return 0.04*m;}            //0.036*m;} //.0400*m;}   //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
@@ -3543,7 +3543,8 @@ G4double* PMT3inchR14374_FDOD::GetCollectionEfficiencyArray(){
   // 70         47.0     48.7
   // 80         49.2     53.7
   // 90         50       58.3
-  static G4double CE[10] = { 100., 100., 100., 100., 93., 30., 0., 0., 0., 0.};
+  static G4double CE[10] = { 100., 100., 99.9, 97.5, 91.0, 30., 0., 0., 0., 0.};
+    //{ 100., 100., 100., 100., 93., 30., 0., 0., 0., 0.};
   return CE;
 }
  
@@ -3566,6 +3567,7 @@ G4double  PMT3inchR14374_FDOD::GetDarkRateConversionFactor(){
 PMT3inchNNVT::PMT3inchNNVT(){}
 PMT3inchNNVT::~PMT3inchNNVT(){}
 
+//sphere radius = 51 mm
 G4String PMT3inchNNVT::GetPMTName() {G4String PMTName = "PMT3inchNNVT"; return PMTName;}
 G4double PMT3inchNNVT::GetExposeHeight() {return 0.0193*m;}          //.0153*m;} //.0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
 G4double PMT3inchNNVT::GetRadius() {return 0.04*m;}            //0.036*m;} //.0400*m;}   //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
@@ -3735,7 +3737,8 @@ G4int PMT3inchNNVT::GetNbOfQEDefined(){
 G4double* PMT3inchNNVT::GetCollectionEfficiencyArray(){
 /// for NNVT, reduced collection efficiency at large angles
 //  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 70., 70., 70., 70.};
-  static G4double CE[10] = { 96.1, 96.4, 97.5, 99.6, 95.6, 100, 89.7, 21.3, 0., 0.};
+  static G4double CE[10] = {96.25, 96.7, 97.6, 98.4, 89.7, 21.3, 0., 0., 0., 0.};
+    //{ 96.1, 96.4, 97.5, 99.6, 95.6, 100, 89.7, 21.3, 0., 0.};
   return CE;
 }
  
