@@ -1514,7 +1514,7 @@ void WCSimDetectorConstruction::SetIWCDGeometry()
   WCPMTRadius = PMT->GetRadius();
 
 	//mPMT params go first because detector depends on it:
-	mPMT_vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
+	mPMT_vessel_cyl_height = 77.785*2*CLHEP::mm; //38.*CLHEP::mm;    //option A, option B would be 277 mm
 	mPMT_vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
 	mPMT_vessel_radius = 254.*CLHEP::mm;
 	dist_pmt_vessel = 8*CLHEP::mm;      
@@ -1539,7 +1539,7 @@ void WCSimDetectorConstruction::SetIWCDGeometry()
   WCIDDiameter             = 7.0*CLHEP::m;
   WCIDVerticalPosition     = 0.;
 	
-	WCBarrelPMTOffset     = mPMT_vessel_tot_height + 1.*CLHEP::mm;
+	WCBarrelPMTOffset     = 95*CLHEP::mm;//mPMT_vessel_tot_height + 1.*CLHEP::mm;
   WCPMTperCellHorizontal = 2; // 2 per phi
   WCPMTperCellVertical   = 1;
 
@@ -1555,6 +1555,10 @@ void WCSimDetectorConstruction::SetIWCDGeometry()
   // Customize PMT positions
   useReplica = false;
   SetPMTPositionInput(wcsimdir_path+"/data/mPMT_Position_IWCD.txt");
+
+  // to place PMT behind the blacksheet
+  pmt_blacksheet_offset = (77.7865*2+347-235    // total mPMT height
+                           - 94.5)*CLHEP::mm;  // height above blacksheet
 }
 
 // IWCD with mPMTs, updated geometry as of 20240411, plusu OD
