@@ -42,7 +42,8 @@ include(PackageBuilder)
 
 pbuilder_prepare_project()
 
-set(CMAKE_CXX_STANDARD 14) # Enable c++14 standard
+set(CMAKE_CXX_STANDARD 17) # Enable c++14 standard
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 ########
@@ -168,6 +169,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/CathodeParameters_SK.txt
         ${PROJECT_SOURCE_DIR}/data/CathodeParameters_KCsCb.txt
         ${PROJECT_SOURCE_DIR}/data/CathodeParameters_RbCsCb.txt
+        ${PROJECT_SOURCE_DIR}/data/WCTE_cosmics.dat
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
