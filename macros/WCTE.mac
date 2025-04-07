@@ -193,10 +193,9 @@
 #/mygen/generator ambeevt
 
 ## Or you can use a cosmics generator
-## Based on Rheyna model for sea level cosmic muons
-## Takes only the MEAN energy of the reyna model, which is not the most 
+## Based on Reyna model for sea level cosmic muons
+## Takes only the MEAN energy of the reyna model, which is not the most common energy
 ## Muons are generated according to this flux and their position is extrapolated outside the tank
-## Useful to study muons tracks in both OD and ID
 #/mygen/generator cosmics
 #/mygen/cosmicsfile data/WCTE_cosmics.dat
 
