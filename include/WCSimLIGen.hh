@@ -4,6 +4,7 @@
 #include "G4ThreeVector.hh"
 #include "globals.hh"
 #include "jhfNtuple.h"
+#include <TGraph2D.h>
 #include <fstream>
 #include <vector>
 #include <TH2D.h>
@@ -36,12 +37,13 @@ public:
 
 private:
   TH2D *hProfile = nullptr;
+  TGraph2D *prof = nullptr;
   G4ParticleGun*                  myLIGun;
   
-        // Variables for initialising light injector parameters
-        vector<double> injectorPosition;
-        vector<double> injectorDirection;
-        vector<double> thetaVals;
+  // Variables for initialising light injector parameters
+  vector<double> injectorPosition;
+  vector<double> injectorDirection;
+  vector<double> thetaVals;
   int thetabins;
   vector<double> phiVals;
   vector<double> zVals;

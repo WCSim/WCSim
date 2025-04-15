@@ -1,7 +1,7 @@
 #include "WCSimLIGen.hh"
 
 #include "json.hpp"
-
+#include "TProfile2D.h"
 #include "G4ParticleGun.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4OpticalPhoton.hh"
@@ -23,7 +23,6 @@ WCSimLIGen::~WCSimLIGen(){
 
     // things to delete
   delete myLIGun;
-  //if(hProfile) delete hProfile;
 }
 
 
@@ -172,24 +171,40 @@ void WCSimLIGen::LoadProfilePDF(){
     G4cout << "Reading the injector profile from file" << G4endl;
 
     // Creates histogram of light injector profile
-    float thetaMin = thetaVals[0];
     float phiMin = phiVals[0];
     unsigned int nbins = thetaVals.size();
     unsigned int bins = thetabins;
-    float thetaMax = thetaVals[nbins-1];
     float phiMax = phiVals[nbins-1];
 
     if (hProfile != NULL) {
-          delete hProfile;
-          hProfile = nullptr;
+      delete hProfile;
+      hProfile = nullptr;
+    }
+    if (prof != NULL){
+      delete prof;
+      prof = nullptr;
     }
     
-    hProfile = new TH2D("hProfile","hProfile",bins,thetaMin,thetaMax,bins,phiMin,phiMax);
+    double cosTheta;
+    int pointIndex = 0;
+    
+    prof = new TGraph2D();
     for (auto i=0u;i<nbins;i++){
-      hProfile->Fill(thetaVals[i],phiVals[i]);
-        int bin = hProfile->FindBin(thetaVals[i],phiVals[i]);
-        hProfile->SetBinContent(bin, intensity[i]);
+      cosTheta = cos((thetaVals[i]-90)*deg);
+      prof->SetPoint(pointIndex,cosTheta,phiVals[i],intensity[i]);
+      pointIndex++;
     }
+    
+    hProfile = new TH2D("hProfile","hProfile",bins,0,1,bins,phiMin,phiMax);
+    for (int ix = 1; ix <= hProfile->GetNbinsX(); ++ix) {
+      for (int iy = 1; iy <= hProfile->GetNbinsY(); ++iy) {
+        double x = hProfile->GetXaxis()->GetBinCenter(ix);
+        double y = hProfile->GetYaxis()->GetBinCenter(iy);
+        double z = prof->Interpolate(x, y);
+        hProfile->SetBinContent(ix, iy, std::max(0.0, z));  // clip negatives
+      }
+    }
+
     G4cout << "Profile filled." << G4endl;
 }
 
@@ -248,10 +263,9 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
             // Get a random theta and phi from the LI profile
             double theta;
             double phi;
-            hProfile->GetRandom2(theta,phi);
-	    theta = theta - 90;
+	    hProfile->GetRandom2(theta,phi);
             // Calculate the direction of this photon wrt +z direction
-            G4double costheta = cos(theta*deg);
+            G4double costheta = theta;
             G4double sintheta = sqrt(1. - costheta*costheta);
             G4double sinphi = sin(phi*deg);
             G4double cosphi = cos(phi*deg);
