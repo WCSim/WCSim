@@ -1,7 +1,6 @@
 #include "WCSimLIGen.hh"
 
 #include "json.hpp"
-#include "TProfile2D.h"
 #include "G4ParticleGun.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4OpticalPhoton.hh"
