@@ -1,5 +1,5 @@
-# Minimum cmake verison 3.1 required for the variable CMAKE_CXX_STANDARD
-cmake_minimum_required(VERSION 3.1)
+# Minimum cmake verison 3.5 required for the variable CMAKE_CXX_STANDARD
+cmake_minimum_required(VERSION 3.5)
 
 # ##############################################################################
 # setup #
@@ -184,6 +184,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/CathodeParameters_SK.txt
         ${PROJECT_SOURCE_DIR}/data/CathodeParameters_KCsCb.txt
         ${PROJECT_SOURCE_DIR}/data/CathodeParameters_RbCsCb.txt
+	${PROJECT_SOURCE_DIR}/data/WCTE_cosmics.dat
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros

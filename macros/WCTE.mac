@@ -192,6 +192,13 @@
 # In order to run this correctly, the AmBe source must be in the geometry & neutron capture must be activated - for details see the "AmBe CALIBRATION SOURCE" section above
 #/mygen/generator ambeevt
 
+## Or you can use a cosmics generator
+## Based on Reyna model for sea level cosmic muons, see https://arxiv.org/abs/hep-ph/0604145 
+## Takes only the MEAN energy of the reyna model, which is not the most common energy
+## Muons are generated according to this flux and their position is extrapolated outside the tank
+#/mygen/generator cosmics
+#/mygen/cosmicsfile data/WCTE_cosmics.dat
+
 ##################
 # TRACKING
 ##################
