@@ -8,7 +8,6 @@
 		    "detector":"ID",
 		    "direction": [-1,0,0],
             "position": [3220,0,-2465.66],
-	    "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
 	},
@@ -19,7 +18,6 @@
 	    "detector":"ID",
             "direction": [0,-1,0],
             "position": [0,3220,-2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -30,7 +28,6 @@
 	    "detector":"ID",
             "direction": [1,0,0],
             "position": [-3220,0,-2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -41,7 +38,6 @@
 	    "detector":"ID",
             "direction": [0,1,0],
             "position": [0,-3220,-2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -52,7 +48,6 @@
 	    "detector":"ID",
             "direction": [-1,0,0],
             "position": [3220,0,-1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -63,7 +58,6 @@
 	    "detector":"ID",
             "direction": [0,-1,0],
             "position": [0,3220,0,-1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
 	},
@@ -74,7 +68,6 @@
 	    "detector":"ID",
             "direction": [1,0,0],
             "position": [-3220,0,-1643.78],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -85,7 +78,6 @@
 	    "detector":"ID",
 	    "direction": [0,1,0],
 	    "position": [0,-3220,-1643.78],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -96,7 +88,6 @@
 	    "detector":"ID",
 	    "direction": [-1,0,0],
 	    "position": [3220,0,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -107,7 +98,6 @@
 	    "detector":"ID",
 	    "direction": [0,-1,0],
 	    "position": [0,3220,0,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -118,7 +108,6 @@
 	    "detector":"ID",
 	    "direction": [1,0,0],
 	    "position": [-3220,0,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -129,7 +118,6 @@
 	    "detector": "ID",
 	    "direction": [0,1,0],
 	    "position": [0,-3220,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -140,7 +128,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -151,7 +138,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -162,7 +148,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile":""
         },
@@ -173,7 +158,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -184,7 +168,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -195,7 +178,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,0,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -206,7 +188,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -217,7 +198,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -228,7 +208,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -239,7 +218,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,0,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -250,7 +228,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -261,7 +238,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -272,7 +248,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -283,7 +258,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,0,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -294,7 +268,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -305,7 +278,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
 	},
@@ -316,7 +288,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [388.8,0,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -327,7 +298,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [0,388.8,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -338,7 +308,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [-388.8,0,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -349,7 +318,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [0,-388.8,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -360,7 +328,6 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [388.8,0,-3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -371,7 +338,6 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [0,388.8,-3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -382,7 +348,6 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [-388.8,0,-3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -393,7 +358,6 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [0,-388.8,-3267.55],
-	    "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -401,10 +365,9 @@
             "comment": "Barrel diffuser. Units cm, nm, deg.",
 	    "type": "diffuser",
 	    "idx": "0",
-		    "detector":"ID",
-		    "direction": [-1,0,0],
+	    "detector":"ID",
+	    "direction": [-1,0,0],
             "position": [3220,0,-2465.66],
-	    "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
 	},
@@ -415,7 +378,6 @@
 	    "detector":"ID",
             "direction": [0,-1,0],
             "position": [0,3220,-2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -426,7 +388,6 @@
 	    "detector":"ID",
             "direction": [1,0,0],
             "position": [-3220,0,-2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -437,7 +398,6 @@
 	    "detector":"ID",
             "direction": [0,1,0],
             "position": [0,-3220,-2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -448,7 +408,6 @@
 	    "detector":"ID",
             "direction": [-1,0,0],
             "position": [3220,0,-1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -459,7 +418,6 @@
 	    "detector":"ID",
             "direction": [0,-1,0],
             "position": [0,3220,0,-1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
 	},
@@ -470,7 +428,6 @@
 	    "detector":"ID",
             "direction": [1,0,0],
             "position": [-3220,0,-1643.78],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -481,7 +438,6 @@
 	    "detector":"ID",
 	    "direction": [0,1,0],
 	    "position": [0,-3220,-1643.78],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -492,7 +448,6 @@
 	    "detector":"ID",
 	    "direction": [-1,0,0],
 	    "position": [3220,0,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -503,7 +458,6 @@
 	    "detector":"ID",
 	    "direction": [0,-1,0],
 	    "position": [0,3220,0,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -514,7 +468,6 @@
 	    "detector":"ID",
 	    "direction": [1,0,0],
 	    "position": [-3220,0,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -525,7 +478,6 @@
 	    "detector": "ID",
 	    "direction": [0,1,0],
 	    "position": [0,-3220,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -536,7 +488,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -547,7 +498,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -558,7 +508,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile":""
         },
@@ -569,7 +518,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -580,7 +528,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -591,7 +538,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,0,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -602,7 +548,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -613,7 +558,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -624,7 +568,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -635,7 +578,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,0,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -646,7 +588,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -657,7 +598,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -668,7 +608,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -679,7 +618,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,0,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -690,7 +628,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -701,7 +638,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
 	},
@@ -712,7 +648,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [388.8,0,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -723,7 +658,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [0,388.8,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -734,7 +668,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [-388.8,0,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -745,7 +678,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [0,-388.8,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -756,7 +688,6 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [388.8,0,-3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -767,7 +698,6 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [0,388.8,-3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -778,7 +708,6 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [-388.8,0,-3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -789,147 +718,136 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [0,-388.8,-3267.55],
-	    "wavelength": 400,
-            "offset": 10,
+	    "offset": 10,
 	    "photonsfile": ""
         },
 	{
-                "comment": "Bottom OD collimator, facing in. Units: cm, nm, deg.",
-		"type": "collimator",
-		"idx": "0",
-		    "detector":"OD",
-		    "direction": [-3302.01,0,0],
-                "position": [3302.01,0,-3364.91],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		},
+            "comment": "Bottom OD collimator, facing in. Units: cm, nm, deg.",
+	    "type": "collimator",
+	    "idx": "0",
+	    "detector":"OD",
+	    "direction": [-3302.01,0,0],
+            "position": [3302.01,0,-3364.91],
+	    "offset": 10,
+            "photonsfile":""
+	},
 
-		{
-                "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
-		"type": "collimator",
-		    "idx": "1",
-		    "detector":"OD",
-		"direction": [0,0,1],
-                "position": [3314.91,0,-3352.01],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		},
+	{
+            "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
+	    "type": "collimator",
+	    "idx": "1",
+	    "detector":"OD",
+	    "direction": [0,0,1],
+            "position": [3314.91,0,-3352.01],
+	    "offset": 10,
+            "photonsfile":""
+	},
+	
+	{
+            "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
+            "comment1": "between PMTs and tank wall: x = 3314.91+50",
+	    "type": "collimator",
+	    "idx": "2",
+	    "detector":"OD",
+	    "direction": [0,0,1],
+            "position": [3364.91,0,-3352.01],
+	    "offset": 10,
+            "photonsfile":""
+	},
 
+	{
+            "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
+            "comment1": "near the tank wall: x = 3314.91+100-10",
+	    "type": "collimator",
+	    "idx": "3",
+	    "detector":"OD",
+	    "direction": [0,0,1],
+            "position": [3404.91,0,-3352.01],
+	    "offset": 10,
+            "photonsfile":""
+	},
 
-		{
-                "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
-                "comment1": "between PMTs and tank wall: x = 3314.91+50",
-		"type": "collimator",
-		    "idx": "2",
-		    "detector":"OD",
-		"direction": [0,0,1],
-                "position": [3364.91,0,-3352.01],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		},
+	{
+            "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
+            "comment1": "in the centre of the barrel OD",
+	    "type": "collimator",
+	    "idx": "4",
+	    "detector":"OD",
+	    "direction": [0,0,1],
+            "position": [3364.91,0,0],
+	    "offset": 10,
+            "photonsfile":""
+	},
+	
+        {
+            "comment": "Top OD collimator, facing down. Units: cm, nm, deg.",
+            "type": "collimator",
+            "idx": "5",
+	    "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [3200,0,3364.91],
+            "offset": 10,
+            "photonsfile": ""
+        },
+	{
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+	    "type": "diffuser",
+	    "idx": "0",
+	    "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [565.685,565.685,-3362.01],
+	    "offset": 10,
+            "photonsfile":""
+        },
 
-		{
-                "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
-                "comment1": "near the tank wall: x = 3314.91+100-10",
-		"type": "collimator",
-		    "idx": "3",
-		    "detector":"OD",
-		"direction": [0,0,1],
-                "position": [3404.91,0,-3352.01],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		},
+	{
+            "comment": "Barrel saturation OD diffuser, facing out. Units: cm, nm, deg",
+	    "type": "diffuser",
+	    "idx": "1",
+	    "detector":"OD",
+            "direction": [3225.361,774.341,0],
+            "position": [3225.361,774.341,60],
+	    "offset": 10,
+            "photonsfile":""
+	}, 
 
-		{
-                "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
-                "comment1": "in the centre of the barrel OD",
-		"type": "collimator",
-		    "idx": "4",
-		    "detector":"OD",
-		"direction": [0,0,1],
-                "position": [3364.91,0,0],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		},
-
-                {
-                "comment": "Top OD collimator, facing down. Units: cm, nm, deg.",
-                "type": "collimator",
-                    "idx": "5",
-		    "detector":"OD",
-                "direction": [0,0,-1],
-                "position": [3200,0,3364.91],
-                "wavelength": 400,
-                "offset": 10,
-                "photonsfile": ""
-                },
-		{
-                "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
-		"type": "diffuser",
-		    "idx": "0",
-		    "detector":"OD",
-                "direction": [0,0,-1],
-                "position": [565.685,565.685,-3362.01],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-                },
-
-		{
-                "comment": "Barrel saturation OD diffuser, facing out. Units: cm, nm, deg",
-		"type": "diffuser",
-		    "idx": "1",
-		    "detector":"OD",
-                "direction": [3225.361,774.341,0],
-                "position": [3225.361,774.341,60],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		}, 
-
-                {
-                "comment": "Top saturation OD diffuser, facing up. Units: cm, nm, deg",
-                "type": "diffuser",
-                    "idx": "2",
-		    "detector":"OD",
-                "direction": [0,0,1],
-                "position": [565.685,565.685,3362.01],
-                "wavelength": 400,
-                "photonsfile": "",
-                "offset": 10
-                },
-
-		{
-                "comment": "Bottom OD diffuser, facing in. Units: cm, nm, deg",
-		"type": "diffuser",
-		    "idx": "3",
-		    "detector":"OD",
-		"direction": [-3302.01,0,0],
-                "position": [3302.01,0,-3364.91],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		}, 
-
-                {"comment": "laser ball positioned in the centre of the detector",
-                 "todo": "generate theta, phi and z arrays using the csv file we have",
-                "type": "laserball",
-                 "idx": "0",
-		 "detector":"ID",
-                "direction": [0,0,1],
-                "position": [3315,0,0],
-                "wavelength": 401.9,
-                "theta": [-45,0,45],
-                "phi": [-180,0,180],
-                "intensity": [1,1,1,1,1,1,1,1,1],
-                "photonsfile": "LI_OD_laser_ball_photon_positions.csv",
-                "offset": 5
-                }
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units: cm, nm, deg",
+            "type": "diffuser",
+            "idx": "2",
+	    "detector":"OD",
+            "direction": [0,0,1],
+            "position": [565.685,565.685,3362.01],
+            "photonsfile": "",
+            "offset": 10
+        },
+	
+	{
+            "comment": "Bottom OD diffuser, facing in. Units: cm, nm, deg",
+	    "type": "diffuser",
+	    "idx": "3",
+	    "detector":"OD",
+	    "direction": [-3302.01,0,0],
+            "position": [3302.01,0,-3364.91],
+	    "offset": 10,
+            "photonsfile":""
+	}, 
+	
+        {
+	    "comment": "laser ball positioned in the centre of the detector",
+            "todo": "generate theta, phi and z arrays using the csv file we have",
+            "type": "laserball",
+            "idx": "0",
+	    "detector":"ID",
+            "direction": [0,0,1],
+            "position": [3315,0,0],
+            "wavelength": 401.9,
+            "theta": [-45,0,45],
+            "phi": [-180,0,180],
+            "intensity": [1,1,1,1,1,1,1,1,1],
+            "photonsfile": "LI_OD_laser_ball_photon_positions.csv",
+            "offset": 5
+        }
 
 
 	]

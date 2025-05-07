@@ -1,13 +1,124 @@
 #include "WCSimLIGen.hh"
 
+#include <chrono>
 #include "json.hpp"
 #include "G4ParticleGun.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4OpticalPhoton.hh"
 #include "G4RandomDirection.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4Event.hh"
 
 using json = nlohmann::json;
+
+// Linear search for index i such that x_vals[i] <= x < x_vals[i+1]
+int FindInterval(const std::vector<double>& vals, double x) {
+    auto it = std::upper_bound(vals.begin(), vals.end(), x);
+    int idx = std::max(0, int(it - vals.begin()) - 1);
+    if (idx >= int(vals.size()) - 1) idx = vals.size() - 2;
+    return idx;
+}
+
+// Compute finite difference slopes (delta)
+std::vector<double> ComputeDeltas(const std::vector<double>& x, const std::vector<double>& y) {
+    std::vector<double> deltas;
+    for (size_t i = 0; i + 1 < x.size(); ++i)
+        deltas.push_back((y[i+1] - y[i]) / (x[i+1] - x[i]));
+    return deltas;
+}
+
+// Compute monotonic slopes (m) using Fritsch–Carlson method
+std::vector<double> ComputeMonotonicSlopes(const std::vector<double>& x, const std::vector<double>& y) {
+    size_t n = x.size();
+    std::vector<double> ma(n);
+    std::vector<double> d = ComputeDeltas(x, y);
+
+    ma[0] = d[0];
+    ma[n-1] = d[n-2];
+
+    for (size_t i = 1; i < n - 1; ++i) {
+        if (d[i-1] * d[i] <= 0) {
+            ma[i] = 0;
+        } else {
+            double w1 = 2 * (x[i+1] - x[i]);
+            double w2 = 2 * (x[i] - x[i-1]);
+            ma[i] = (w1 + w2) / ((w1 / d[i-1]) + (w2 / d[i]));
+        }
+    }
+    return ma;
+}
+
+// Monotonic 1D interpolation at x in [x0, x1]
+double PCHIPInterpolate(double x, const std::vector<double>& xs, const std::vector<double>& ys, const std::vector<double>& mas) {
+    int i = FindInterval(xs, x);
+    double h = xs[i+1] - xs[i];
+    double t = (x - xs[i]) / h;
+
+    double t2 = t * t;
+    double t3 = t2 * t;
+
+    double h00 = 2*t3 - 3*t2 + 1;
+    double h10 = t3 - 2*t2 + t;
+    double h01 = -2*t3 + 3*t2;
+    double h11 = t3 - t2;
+
+    return h00 * ys[i] + h10 * h * mas[i] + h01 * ys[i+1] + h11 * h * mas[i+1];
+}
+
+double Monotonic2DInterpolate(const std::vector<double>& x_vals, const std::vector<double>& y_vals, const std::vector<std::vector<double>>& z_grid, const std::vector<std::vector<double>>& precomputed_slopes, double x, double y){
+    // Interpolate in x for fixed y (rows)
+    std::vector<double> z_interp_y;
+    for (size_t j = 0; j < y_vals.size(); ++j) {
+        const auto& z_row = z_grid[j];
+        const auto& slopes = precomputed_slopes[j];
+        double zx = PCHIPInterpolate(x, x_vals, z_row, slopes);
+        z_interp_y.push_back(zx);
+    }
+
+    // Interpolate the x-results along y
+    auto slopes_y = ComputeMonotonicSlopes(y_vals, z_interp_y);
+    double result = PCHIPInterpolate(y, y_vals, z_interp_y, slopes_y);
+
+    // Clamp to 0 to prevent negatives
+    return std::max(0.0, result);
+}
+
+std::vector<std::vector<double>> PrecomputeMonotonicSlopesAndRows(
+    const std::vector<double>& x_vals,
+    const std::vector<double>& y_vals,
+    const std::vector<std::vector<double>>& z_grid)
+{
+    std::vector<std::vector<double>> slopes_and_rows(y_vals.size());
+
+    for (size_t j = 0; j < y_vals.size(); ++j) {
+        const auto& z_row = z_grid[j];
+        auto slopes = ComputeMonotonicSlopes(x_vals, z_row);
+        slopes_and_rows[j] = slopes;  // Store precomputed slopes for each row
+    }
+    
+    return slopes_and_rows;
+}
+
+
+std::pair<double,double> SampleFromInterpolatedSurface(const std::vector<double>& x_vals,
+                                     const std::vector<double>& y_vals,
+                                     const std::vector<std::vector<double>>& z_grid,
+				     std::vector<std::vector<double>> slopes_and_rows,
+                                     double xMin, double xMax,
+                                     double yMin, double yMax,
+				     double zMax, TRandom3& rng) {
+  while (true) {
+    double x = rng.Uniform(xMin, xMax);
+    double y = rng.Uniform(yMin, yMax);
+    double z = Monotonic2DInterpolate(x_vals, y_vals, z_grid, slopes_and_rows, x, y);
+    double u = rng.Uniform(0.0, zMax);
+    //Accept x,y values if interpolated z is below a random value
+    if (u < z){
+      return {x, y};
+    }
+  }
+}
+
 
 WCSimLIGen::WCSimLIGen(){
 
@@ -44,8 +155,9 @@ void WCSimLIGen::SetPhotonMode(G4bool photonmode){
 }
     
 
-void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector){
+void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector, G4double injectorWavelength){
 
+  photonWavelength = injectorWavelength;
     // Define the database to read from
     string db = injectorFilename;
     string db_pos = injectorDetails;
@@ -105,7 +217,6 @@ _pos << " not found" << G4endl;
     json data2 = json::parse(buffer2.str());
     for (auto injector2 : data2["injectors"]){
       if ( injector2["type"].get<string>()==injectorType && G4String(injector2["idx"].get<string>())==injectorIdx && injector2["detector"].get<string>()==injectorDetector){
-	injectorWavelength = injector2["wavelength"].get<double>();
 	injectorPosition = injector2["position"].get<vector<double>>();
 	injectorDirection = injector2["direction"].get<vector<double>>();
 	injectorOffset = injector2["offset"].get<double>();
@@ -167,7 +278,7 @@ void WCSimLIGen::LoadPhotonList(){
 
 void WCSimLIGen::LoadProfilePDF(){
 
-    G4cout << "Reading the injector profile from file" << G4endl;
+  G4cout << "Reading the injector profile from file" << G4endl;
 
     // Creates histogram of light injector profile
     float phiMin = phiVals[0];
@@ -193,26 +304,70 @@ void WCSimLIGen::LoadProfilePDF(){
       prof->SetPoint(pointIndex,cosTheta,phiVals[i],intensity[i]);
       pointIndex++;
     }
+
+    std::map<std::pair<double, double>, double> intensity_map;
+    std::set<double> cosTheta_set;
+    std::set<double> phi_set;
+
+    //Setup set of possible cosTheta, phi and intensity values
+    for (int i = 0; i < prof->GetN(); ++i) {
+        double xi = prof->GetX()[i];
+        double yi = prof->GetY()[i];
+        double zi = prof->GetZ()[i];
+        cosTheta_set.insert(xi);
+        phi_set.insert(yi);
+        intensity_map[{xi, yi}] = zi;
+    }
+
+    cosTheta_vals.assign(cosTheta_set.begin(), cosTheta_set.end());
+    phi_vals.assign(phi_set.begin(), phi_set.end());
     
+    intensity_grid.resize(phi_vals.size(), std::vector<double>(cosTheta_vals.size()));
+    intensityMax = 0;
+    double total_intensity = 0;
+    
+    //Create vector of 2D histogram
+    for (size_t i = 0; i < phi_vals.size(); ++i) {
+      for (size_t j = 0; j < cosTheta_vals.size(); ++j) {
+        auto key = std::make_pair(cosTheta_vals[j], phi_vals[i]);
+        auto it = intensity_map.find(key);
+        if (it != intensity_map.end()) {
+	  intensity_grid[i][j] = it->second;
+	  if (it->second > intensityMax)
+	    intensityMax = it->second;
+        }
+	else {
+	  intensity_grid[i][j] = 0.0;
+        }
+	total_intensity += intensity_grid[i][j];
+      }
+    }
+    double sum = 0;
+    double minIntensity = 100;
     hProfile = new TH2D("hProfile","hProfile",bins,0,1,bins,phiMin,phiMax);
+    //Precompute the interpolated PDF
+    slopes_and_rows = PrecomputeMonotonicSlopesAndRows(cosTheta_vals, phi_vals, intensity_grid);
+    //Setup profile for visualisation, and determine minimum CosTheta value which was filled. 
     for (int ix = 1; ix <= hProfile->GetNbinsX(); ++ix) {
       for (int iy = 1; iy <= hProfile->GetNbinsY(); ++iy) {
         double x = hProfile->GetXaxis()->GetBinCenter(ix);
         double y = hProfile->GetYaxis()->GetBinCenter(iy);
-        double z = prof->Interpolate(x, y);
-        hProfile->SetBinContent(ix, iy, std::max(0.0, z));  // clip negatives
+	double z = Monotonic2DInterpolate(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows,x, y);
+	sum += z;
+	hProfile->SetBinContent(ix, iy, sum/total_intensity);
+	if (z > 0 && z < minIntensity){
+	  minIntensity = z;
+	  minCosTheta =  hProfile->GetXaxis()->GetBinCenter(ix);
+	}
       }
     }
-
     G4cout << "Profile filled." << G4endl;
 }
 
-
-
 void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
 
-    // Calculate photon energy now we have the wavelength
-    energy = PhotonEnergyFromWavelength(injectorWavelength);
+  // Calculate photon energy now we have the wavelength
+  energy = PhotonEnergyFromWavelength(photonWavelength);
 
     if (photonMode){
         // Get the position and direction from the photon list
@@ -239,7 +394,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
     }
 
     else {
-
+      
         // Find the angle and axis of rotation of injector axis (v) wrt to +z (u)
         // so that we can rotate the direction from the profile if we need to
         G4ThreeVector u = G4ThreeVector(0,0,1);
@@ -252,19 +407,18 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
         if (axis.mag()==0){
             axis = {1,0,0};
         }
-
         // Now generate the photon positions and directions
         for (int iphoton = 0; iphoton<nphotons; iphoton++){
  
             // Generate random time for this photon in 1 ns pulse window
             G4double time = G4RandFlat::shoot(20.0,21.0)*ns;
-         
-            // Get a random theta and phi from the LI profile
-            double theta;
-            double phi;
-	    hProfile->GetRandom2(theta,phi);
-            // Calculate the direction of this photon wrt +z direction
-            G4double costheta = theta;
+
+	    //Create unique random seed based on event ID and photon number
+	    TRandom3 rng(anEvent->GetEventID()*iphoton + iphoton);
+	    //Determine photon costheta and phi needed for the photon direction from interpolated PDF
+	    auto [costheta, phi] = SampleFromInterpolatedSurface(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows,minCosTheta, cosTheta_vals.back(), phi_vals.front(),phi_vals.back(), intensityMax, rng);
+
+	    // Calculate the direction of this photon wrt +z direction
             G4double sintheta = sqrt(1. - costheta*costheta);
             G4double sinphi = sin(phi*deg);
             G4double cosphi = cos(phi*deg);
@@ -319,5 +473,5 @@ G4ThreeVector WCSimLIGen::GetInjectorDirection(){
 
 G4double WCSimLIGen::GetPhotonEnergy(){
    
-    return PhotonEnergyFromWavelength(injectorWavelength);
+    return PhotonEnergyFromWavelength(photonWavelength);
 }

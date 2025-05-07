@@ -5,6 +5,12 @@
 #include "globals.hh"
 #include "jhfNtuple.h"
 #include <TGraph2D.h>
+#include <TGraph.h>
+#include <TSpline.h>
+#include <map>
+#include <set>
+#include <TRandom3.h>
+#include <utility> 
 #include <fstream>
 #include <vector>
 #include <TH2D.h>
@@ -24,7 +30,7 @@ public:
   
         // Initialise the light injector
   void Initialise();
-  void ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector);
+  void ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector, G4double injectorWavelength);
 
         // Set the vertices, etc of all photons in the pulse
         void GeneratePhotons(G4Event* anEvent, G4int nphotons);
@@ -34,7 +40,7 @@ public:
         G4double GetPhotonEnergy();
         // Set whether to read in profile or photon list
         void SetPhotonMode(G4bool photonMode);
-
+  
 private:
   TH2D *hProfile = nullptr;
   TGraph2D *prof = nullptr;
@@ -48,8 +54,15 @@ private:
   vector<double> phiVals;
   vector<double> zVals;
   vector<double> intensity;
-        
-        G4double injectorWavelength;
+  std::vector<std::vector<double>> slopes_and_rows;
+  
+  std::vector<double> cosTheta_vals;
+  std::vector<double> phi_vals;
+  std::vector<std::vector<double>> intensity_grid;
+  double intensityMax;
+  double minCosTheta;
+  
+  G4double photonWavelength;
         G4double injectorOffset;
         G4double energy;
 
