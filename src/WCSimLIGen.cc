@@ -1,6 +1,7 @@
 #include "WCSimLIGen.hh"
 
-#include <chrono>
+#include "TMath.h"
+#include "MonotonicInterpolator.hh"
 #include "json.hpp"
 #include "G4ParticleGun.hh"
 #include "G4PhysicalConstants.hh"
@@ -11,106 +12,15 @@
 
 using json = nlohmann::json;
 
-// Linear search for index i such that x_vals[i] <= x < x_vals[i+1]
-int FindInterval(const std::vector<double>& vals, double x) {
-    auto it = std::upper_bound(vals.begin(), vals.end(), x);
-    int idx = std::max(0, int(it - vals.begin()) - 1);
-    if (idx >= int(vals.size()) - 1) idx = vals.size() - 2;
-    return idx;
-}
 
-// Compute finite difference slopes (delta)
-std::vector<double> ComputeDeltas(const std::vector<double>& x, const std::vector<double>& y) {
-    std::vector<double> deltas;
-    for (size_t i = 0; i + 1 < x.size(); ++i)
-        deltas.push_back((y[i+1] - y[i]) / (x[i+1] - x[i]));
-    return deltas;
-}
-
-// Compute monotonic slopes (m) using Fritsch–Carlson method
-std::vector<double> ComputeMonotonicSlopes(const std::vector<double>& x, const std::vector<double>& y) {
-    size_t n = x.size();
-    std::vector<double> ma(n);
-    std::vector<double> d = ComputeDeltas(x, y);
-
-    ma[0] = d[0];
-    ma[n-1] = d[n-2];
-
-    for (size_t i = 1; i < n - 1; ++i) {
-        if (d[i-1] * d[i] <= 0) {
-            ma[i] = 0;
-        } else {
-            double w1 = 2 * (x[i+1] - x[i]);
-            double w2 = 2 * (x[i] - x[i-1]);
-            ma[i] = (w1 + w2) / ((w1 / d[i-1]) + (w2 / d[i]));
-        }
-    }
-    return ma;
-}
-
-// Monotonic 1D interpolation at x in [x0, x1]
-double PCHIPInterpolate(double x, const std::vector<double>& xs, const std::vector<double>& ys, const std::vector<double>& mas) {
-    int i = FindInterval(xs, x);
-    double h = xs[i+1] - xs[i];
-    double t = (x - xs[i]) / h;
-
-    double t2 = t * t;
-    double t3 = t2 * t;
-
-    double h00 = 2*t3 - 3*t2 + 1;
-    double h10 = t3 - 2*t2 + t;
-    double h01 = -2*t3 + 3*t2;
-    double h11 = t3 - t2;
-
-    return h00 * ys[i] + h10 * h * mas[i] + h01 * ys[i+1] + h11 * h * mas[i+1];
-}
-
-double Monotonic2DInterpolate(const std::vector<double>& x_vals, const std::vector<double>& y_vals, const std::vector<std::vector<double>>& z_grid, const std::vector<std::vector<double>>& precomputed_slopes, double x, double y){
-    // Interpolate in x for fixed y (rows)
-    std::vector<double> z_interp_y;
-    for (size_t j = 0; j < y_vals.size(); ++j) {
-        const auto& z_row = z_grid[j];
-        const auto& slopes = precomputed_slopes[j];
-        double zx = PCHIPInterpolate(x, x_vals, z_row, slopes);
-        z_interp_y.push_back(zx);
-    }
-
-    // Interpolate the x-results along y
-    auto slopes_y = ComputeMonotonicSlopes(y_vals, z_interp_y);
-    double result = PCHIPInterpolate(y, y_vals, z_interp_y, slopes_y);
-
-    // Clamp to 0 to prevent negatives
-    return std::max(0.0, result);
-}
-
-std::vector<std::vector<double>> PrecomputeMonotonicSlopesAndRows(
-    const std::vector<double>& x_vals,
-    const std::vector<double>& y_vals,
-    const std::vector<std::vector<double>>& z_grid)
-{
-    std::vector<std::vector<double>> slopes_and_rows(y_vals.size());
-
-    for (size_t j = 0; j < y_vals.size(); ++j) {
-        const auto& z_row = z_grid[j];
-        auto slopes = ComputeMonotonicSlopes(x_vals, z_row);
-        slopes_and_rows[j] = slopes;  // Store precomputed slopes for each row
-    }
-    
-    return slopes_and_rows;
-}
-
-
-std::pair<double,double> SampleFromInterpolatedSurface(const std::vector<double>& x_vals,
-                                     const std::vector<double>& y_vals,
-                                     const std::vector<std::vector<double>>& z_grid,
-				     std::vector<std::vector<double>> slopes_and_rows,
+std::pair<double,double> SampleFromInterpolatedSurface(MonotonicInterpolator spline, 
                                      double xMin, double xMax,
                                      double yMin, double yMax,
-				     double zMax, TRandom3& rng) {
+                                     double zMax, TRandom3& rng) {
   while (true) {
     double x = rng.Uniform(xMin, xMax);
     double y = rng.Uniform(yMin, yMax);
-    double z = Monotonic2DInterpolate(x_vals, y_vals, z_grid, slopes_and_rows, x, y);
+    double z = spline.Evaluate2D(x, y);
     double u = rng.Uniform(0.0, zMax);
     //Accept x,y values if interpolated z is below a random value
     if (u < z){
@@ -296,12 +206,20 @@ void WCSimLIGen::LoadProfilePDF(){
     }
     
     double cosTheta;
+    double cosThetaNorm;
     int pointIndex = 0;
     
     prof = new TGraph2D();
     for (auto i=0u;i<nbins;i++){
       cosTheta = cos((thetaVals[i]-90)*deg);
-      prof->SetPoint(pointIndex,cosTheta,phiVals[i],intensity[i]);
+      /*if (sqrt(1-cosTheta*cosTheta) == 0){
+	cosThetaNorm = 
+      }
+      else{*/
+      cosThetaNorm = cosTheta/sqrt(1-cosTheta*cosTheta);
+      //}
+      std::cout<<"costhetaNorm "<<cosThetaNorm<<std::endl;
+      prof->SetPoint(pointIndex,cosThetaNorm,phiVals[i],intensity[i]);
       pointIndex++;
     }
 
@@ -344,15 +262,18 @@ void WCSimLIGen::LoadProfilePDF(){
     }
     double sum = 0;
     double minIntensity = 100;
-    hProfile = new TH2D("hProfile","hProfile",bins,0,1,bins,phiMin,phiMax);
+    hProfile = new TH2D("hProfile","hProfile",bins,-TMath::Infinity(), TMath::Infinity(), bins,phiMin,phiMax);//0,1,bins,phiMin,phiMax);
     //Precompute the interpolated PDF
-    slopes_and_rows = PrecomputeMonotonicSlopesAndRows(cosTheta_vals, phi_vals, intensity_grid);
+    MonotonicInterpolator PrecomputedSplines(cosTheta_vals, phi_vals, intensity_grid);
+    slopes_and_rows = PrecomputedSplines.GetSlopes2D();
+    
     //Setup profile for visualisation, and determine minimum CosTheta value which was filled. 
+    MonotonicInterpolator Spline(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows);
     for (int ix = 1; ix <= hProfile->GetNbinsX(); ++ix) {
       for (int iy = 1; iy <= hProfile->GetNbinsY(); ++iy) {
         double x = hProfile->GetXaxis()->GetBinCenter(ix);
         double y = hProfile->GetYaxis()->GetBinCenter(iy);
-	double z = Monotonic2DInterpolate(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows,x, y);
+	double z = Spline.Evaluate2D(x, y);
 	sum += z;
 	hProfile->SetBinContent(ix, iy, sum/total_intensity);
 	if (z > 0 && z < minIntensity){
@@ -408,6 +329,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
             axis = {1,0,0};
         }
         // Now generate the photon positions and directions
+	MonotonicInterpolator spline(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows);
         for (int iphoton = 0; iphoton<nphotons; iphoton++){
  
             // Generate random time for this photon in 1 ns pulse window
@@ -416,8 +338,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
 	    //Create unique random seed based on event ID and photon number
 	    TRandom3 rng(anEvent->GetEventID()*iphoton + iphoton);
 	    //Determine photon costheta and phi needed for the photon direction from interpolated PDF
-	    auto [costheta, phi] = SampleFromInterpolatedSurface(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows,minCosTheta, cosTheta_vals.back(), phi_vals.front(),phi_vals.back(), intensityMax, rng);
-
+	    auto [costheta, phi] = SampleFromInterpolatedSurface(spline,minCosTheta, cosTheta_vals.back(), phi_vals.front(),phi_vals.back(), intensityMax, rng);
 	    // Calculate the direction of this photon wrt +z direction
             G4double sintheta = sqrt(1. - costheta*costheta);
             G4double sinphi = sin(phi*deg);

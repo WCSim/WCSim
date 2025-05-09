@@ -6,7 +6,6 @@
 #include "jhfNtuple.h"
 #include <TGraph2D.h>
 #include <TGraph.h>
-#include <TSpline.h>
 #include <map>
 #include <set>
 #include <TRandom3.h>
