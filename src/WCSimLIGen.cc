@@ -206,20 +206,12 @@ void WCSimLIGen::LoadProfilePDF(){
     }
     
     double cosTheta;
-    double cosThetaNorm;
     int pointIndex = 0;
     
     prof = new TGraph2D();
     for (auto i=0u;i<nbins;i++){
       cosTheta = cos((thetaVals[i]-90)*deg);
-      /*if (sqrt(1-cosTheta*cosTheta) == 0){
-	cosThetaNorm = 
-      }
-      else{*/
-      cosThetaNorm = cosTheta/sqrt(1-cosTheta*cosTheta);
-      //}
-      std::cout<<"costhetaNorm "<<cosThetaNorm<<std::endl;
-      prof->SetPoint(pointIndex,cosThetaNorm,phiVals[i],intensity[i]);
+      prof->SetPoint(pointIndex,cosTheta,phiVals[i],intensity[i]);
       pointIndex++;
     }
 
@@ -262,7 +254,7 @@ void WCSimLIGen::LoadProfilePDF(){
     }
     double sum = 0;
     double minIntensity = 100;
-    hProfile = new TH2D("hProfile","hProfile",bins,-TMath::Infinity(), TMath::Infinity(), bins,phiMin,phiMax);//0,1,bins,phiMin,phiMax);
+    hProfile = new TH2D("hProfile","hProfile",bins,0,1,bins,phiMin,phiMax);
     //Precompute the interpolated PDF
     MonotonicInterpolator PrecomputedSplines(cosTheta_vals, phi_vals, intensity_grid);
     slopes_and_rows = PrecomputedSplines.GetSlopes2D();
