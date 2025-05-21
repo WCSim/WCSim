@@ -3,6 +3,25 @@
 
 #include "WCSimEnumerations.hh"
 
+std::string WCSimEnumerations::EnumAsString(BoundaryWallType_t d)
+{
+  switch(d) {
+  case (kBoundaryWallIDBlacksheet) :
+    return "IDBlacksheet";
+    break;
+  case (kBoundaryWallODInnerTyvek) :
+    return "ODInnerTyvek";
+    break;
+  case (kBoundaryWallODOuterTyvek) :
+    return "ODOuterTyvek";
+    break;
+  default:
+    return "";
+    break;
+  }
+  return "";
+}
+
 std::string WCSimEnumerations::EnumAsString(DigitizerType_t d)
 {
   switch(d) {
