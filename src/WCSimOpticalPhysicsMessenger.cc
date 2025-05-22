@@ -129,7 +129,7 @@ WCSimOpticalPhysicsMessenger::WCSimOpticalPhysicsMessenger(
     G4UIparameter* par = new G4UIparameter("proc_name",'s',false);
     G4String candidates;
     for ( G4int i=0; i<kNoProcess; i++ ) {
-        candidates += G4OpticalProcessName(i);
+        candidates += WCSimOpticalProcessName(i);
         candidates += G4String(" ");
     }
     par->SetParameterCandidates(candidates);

@@ -45,7 +45,7 @@
 #define WCSimOpticalPhysicsMessenger_h 1
 
 #include "G4UImessenger.hh"
-#include "G4OpticalProcessIndex.hh"
+#include "WCSimOpticalProcessIndex.hh"
 
 #include "globals.hh"
 
@@ -92,7 +92,7 @@ private:
   G4UIdirectory*         fDir2;
 
   /// selected optical process
-  G4OpticalProcessIndex  fSelectedProcessIndex;
+  WCSimOpticalProcessIndex  fSelectedProcessIndex;
 
   /// selectOpProcess command
   G4UIcommand*           fActivateProcessCmd;

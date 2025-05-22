@@ -8,7 +8,7 @@
 #include "G4AttValue.hh"
 #include "G4UnitsTable.hh"
 #include "G4VProcess.hh"
-#include "G4OpProcessSubType.hh"
+#include "WCSimOpProcessSubType.hh"
 #include "G4ProcessManager.hh"
 
 #include "G4PhysicalConstants.hh"
