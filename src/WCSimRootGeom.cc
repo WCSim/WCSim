@@ -186,7 +186,7 @@ bool WCSimRootPMT::CompareAllVariables(const WCSimRootPMT * c) const
 //______________________________________________________________________________
 Float_t WCSimRootGeom::GetBoundaryWallRadius(BoundaryWallType_t s) const {
   auto it = fBoundaryWallDimensions.find(s);
-  if(it != fBoundaryWallDimensions.end()) {
+  if(it == fBoundaryWallDimensions.end()) {
     std::cerr << "Boundary type: " << WCSimEnumerations::EnumAsString(s) << " not found" << std::endl;
     return -999;
   }
@@ -195,7 +195,7 @@ Float_t WCSimRootGeom::GetBoundaryWallRadius(BoundaryWallType_t s) const {
 //______________________________________________________________________________
 Float_t WCSimRootGeom::GetBoundaryWallFullLength(BoundaryWallType_t s) const {
   auto it = fBoundaryWallDimensions.find(s);
-  if(it != fBoundaryWallDimensions.end()) {
+  if(it == fBoundaryWallDimensions.end()) {
     std::cerr << "Boundary type: " << WCSimEnumerations::EnumAsString(s) << " not found" << std::endl;
     return -999;
   }
