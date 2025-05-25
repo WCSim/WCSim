@@ -307,6 +307,18 @@ void SetNestedVisAttributes(G4LogicalVolume* logic, G4VisAttributes* vis){
   }
 }
 
+void SetDaughterVisAttributes(G4LogicalVolume* logic, G4VisAttributes* vis){
+
+  int ndaughters = logic->GetNoDaughters();
+    
+  // Iterate through all children limiting to max 3
+  for (int i = 0; i < ndaughters && i < 3; i++){
+    G4VPhysicalVolume* vol = logic->GetDaughter(i);
+    vol->GetLogicalVolume()->SetVisAttributes(vis);
+  }
+
+}
+
 
 G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 {
@@ -351,27 +363,33 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     config.RowSeperation = config.CellArcLength*2; // Each PMT 'row' is double height, so row seperation is 2xcell size
     config.NBlocksAround = 6; // Number of G4Assembly blocks that are stamped around the detector (rotating around phi)
 
+    // PS : 04/2025 Tyvek in the barrel was found to be too far back behind
+    //      the PMTS due to the PMT center position being on the wall
+    //      but the expose height being higher. 
+    // double TyvekElevationFix = 0.0*mm; // ORIGINAL NO FIX
+    double TyvekElevationFix = 59.62*mm; // SHIFTED Tyvek With Fix
+
     // Now we fill the configuration variables for all volumes
     config.InnerDetectorVis = new G4VisAttributes(true, G4Colour(0.0,0.0,1.0,1.0)); //BLUE
     config.InnerDetectorVis->SetForceSolid(1);
     config.InnerDetectorMaterial = G4Material::GetMaterial("Water");
     config.InnerDetectorInnerRadius = 0;
-    config.InnerDetectorOuterRadius = WCIDRadius;
+    config.InnerDetectorOuterRadius = WCIDRadius - TyvekElevationFix;
     config.InnerDetectorBarrelLength = WCIDHeight;
 
     config.BlackTyvekVis = new G4VisAttributes(true, G4Colour(0.0,1.0,0.0,1.0)); //GREEN
     config.BlackTyvekVis->SetLineWidth(2);
     config.BlackTyvekVis->SetForceAuxEdgeVisible(0);
     config.BlackTyvekMaterial = G4Material::GetMaterial("Tyvek");
-    config.BlackTyvekInnerRadius = WCIDRadius;
-    config.BlackTyvekOuterRadius = WCIDRadius + WCBlackSheetThickness;
+    config.BlackTyvekInnerRadius = WCIDRadius - TyvekElevationFix;
+    config.BlackTyvekOuterRadius = WCIDRadius - TyvekElevationFix + WCBlackSheetThickness;
     config.BlackTyvekBarrelLength = WCIDHeight + 2*WCBlackSheetThickness;
 
     config.DeadSpaceVis = new G4VisAttributes(true, G4Colour(0.0,0.0,0.0,1.0)); //BLACK
     config.DeadSpaceVis->SetForceSolid(1);
     config.DeadSpaceMaterial = G4Material::GetMaterial("Water");
     config.DeadSpaceInnerRadius = config.BlackTyvekOuterRadius;
-    config.DeadSpaceOuterRadius = config.BlackTyvekOuterRadius + WCODDeadSpace;
+    config.DeadSpaceOuterRadius = config.BlackTyvekOuterRadius + WCODDeadSpace + TyvekElevationFix;
     config.DeadSpaceBarrelLength = config.BlackTyvekBarrelLength + 2*WCODDeadSpace;
 
     config.WhiteTyvekVis = new G4VisAttributes(true, G4Colour(1.0,1.0,1.0,1.0)); //WHITE
@@ -665,8 +683,17 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // Since assembly volumes just expand relative to their center point the means
     // all nested volumes will also have the PMT againt the tyvek.
 
-    G4ThreeVector pmt_central_position = G4ThreeVector(config.InnerDetectorOuterRadius-59.62*mm,0.0,0.0);
-    G4ThreeVector mpmt_central_position = G4ThreeVector(config.InnerDetectorOuterRadius-59.62*mm,0.0,0.0);
+    // PS : 04/2025 Tyvek in the barrel was found to be too far back behind
+    //      the PMTS due to the PMT center position being on the wall
+    //      but the expose height being higher. 
+    // double TyvekElevationFixAltered = 59.62*mm; // ORIGINAL NO FIX
+    double TyvekElevationFixAltered = 1*mm; // SHIFTED Tyvek With Fix
+
+    G4ThreeVector pmt_central_position = \
+      G4ThreeVector(config.InnerDetectorOuterRadius-TyvekElevationFixAltered, 0.0, 0.0);
+    G4ThreeVector mpmt_central_position = \
+      G4ThreeVector(config.InnerDetectorOuterRadius-TyvekElevationFixAltered, 0.0, 0.0);
+
     G4ThreeVector pmt_central_offset = G4ThreeVector(0.0,0.0,0.0); // -> Can be used for relative offset!
     G4RotationMatrix* pmt_central_rotation = new G4RotationMatrix;
     pmt_central_rotation->rotateX(90*deg);
@@ -727,8 +754,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     int NSpacesInBlock = config.NSpacesInBlock;
     int NSegments = config.NBlocksAround * NSpacesInBlock;
     G4double phi_offset = twopi / float(NSegments);
-
-    G4cout << "PHI OFFSET : " << phi_offset/2 << G4endl;
 
     // First we build PMT_only_two_cell
     G4RotationMatrix* rotation_low = new G4RotationMatrix;
@@ -1083,34 +1108,48 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 
     G4String pmtname = "WCMultiPMT";
 
-    G4VisAttributes* invisible= new G4VisAttributes(G4Colour(0.0,1.0,0.0));
+    G4VisAttributes* invisible = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0));
     invisible->SetForceLineSegmentsPerCircle(24);
     invisible->SetForceAuxEdgeVisible(0);
     invisible->SetForceWireframe(1);
     invisible->SetVisibility(0);
     invisible->SetForceAuxEdgeVisible(0);
 
-    G4VisAttributes* colored= new G4VisAttributes(G4Colour(0.0,1.0,0.0));
-    colored->SetForceLineSegmentsPerCircle(24);
-    colored->SetForceAuxEdgeVisible(0);
+    G4VisAttributes* colored = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0));
+    colored->SetForceLineSegmentsPerCircle(8);
+    colored->SetForceAuxEdgeVisible(1);
     colored->SetForceWireframe(1);
     colored->SetVisibility(1);
-    colored->SetForceAuxEdgeVisible(0);
+    colored->SetForceAuxEdgeVisible(1);
     colored->SetDaughtersInvisible(1);
 
-    G4VisAttributes* colored2= new G4VisAttributes(G4Colour(1.0,0.0,0.0));
-    colored2->SetForceLineSegmentsPerCircle(24);
-    colored2->SetForceAuxEdgeVisible(0);
+    G4VisAttributes* colored2 = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
+    colored2->SetForceLineSegmentsPerCircle(8);
+    colored2->SetForceAuxEdgeVisible(1);
     colored2->SetForceWireframe(1);
     colored2->SetVisibility(1);
-    colored2->SetForceAuxEdgeVisible(0);
+    colored2->SetForceAuxEdgeVisible(1);
     colored2->SetDaughtersInvisible(1);
 
-    // SetNestedVisAttributes(logicWCPMT, invisible );
-    // SetNestedVisAttributes(logicWCPMT2, invisible );
+    G4VisAttributes* colored3 = new G4VisAttributes(G4Colour(0.0, 0.0, 1.0));
+    colored3->SetForceLineSegmentsPerCircle(8);
+    colored3->SetForceAuxEdgeVisible(0);
+    colored3->SetForceWireframe(1);
+    colored3->SetVisibility(1);
+    colored3->SetForceAuxEdgeVisible(0);
+    colored3->SetDaughtersInvisible(1);
 
-    logicWCPMT->SetVisAttributes(invisible);     
-    logicWCPMT2->SetVisAttributes(invisible);  
+    SetNestedVisAttributes(logicWCPMT, invisible);
+    SetNestedVisAttributes(logicWCPMT2, invisible);
+
+    logicWCPMT->GetDaughter(0)->GetLogicalVolume()->SetVisAttributes(colored);
+    logicWCPMT2->GetDaughter(0)->GetLogicalVolume()->SetVisAttributes(colored2);
+
+    int ndaughters = logicWCPMT->GetNoDaughters();
+    for (int i = 0; i < ndaughters; i++){
+      logicWCPMT->GetDaughter(i)->GetLogicalVolume()->SetVisAttributes(colored);
+    }
+
 
     // -------------------------------------
     // ID PMT Placement
@@ -1120,7 +1159,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // needs to update for each one.
 
   // Possibe the ordering?
-    int ndaughters = InnerDetectorLogic->GetNoDaughters();
+    ndaughters = InnerDetectorLogic->GetNoDaughters();
     int copyno = 0;
     std::vector<G4Transform3D> positions;
 
@@ -1206,11 +1245,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // OD PMT Creation and Placement
     // -------------------------------------
 
-    // Reapeat the re-placement for the OD
-    logicWCODWLSAndPMT = ConstructPMTAndWLSPlate(WCPMTODName, WCODCollectionName, "OD");
+    // Repeat the re-placement for the OD
+      logicWCODWLSAndPMT = ConstructPMTAndWLSPlate(WCPMTODName, WCODCollectionName, "OD");
+    SetNestedVisAttributes(logicWCODWLSAndPMT, invisible );
 
-    SetNestedVisAttributes(logicWCODWLSAndPMT, invisible);
-    logicWCODWLSAndPMT->SetVisAttributes(pmtmulti_dummy_colour);
+    ndaughters = logicWCODWLSAndPMT->GetNoDaughters();
+    for (int i = 0; i < ndaughters; i++){
+      logicWCODWLSAndPMT->GetDaughter(i)->GetLogicalVolume()->SetVisAttributes(pmtod_dummy_colour);
+    }
 
     copyno = 0;
     removed = 0;
