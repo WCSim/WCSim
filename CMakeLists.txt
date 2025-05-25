@@ -1,5 +1,5 @@
-# Minimum cmake verison 3.1 required for the variable CMAKE_CXX_STANDARD
-cmake_minimum_required(VERSION 3.1)
+# Minimum cmake verison 3.5 required for the variable CMAKE_CXX_STANDARD
+cmake_minimum_required(VERSION 3.5)
 
 # ##############################################################################
 # setup #
@@ -18,7 +18,7 @@ if (${WCSim_WCSimRoot_only})
     set(PROJECT_NAME WCSimRoot)
 endif ()
 
-set(PROJECT_VERSION 1.12.20)
+set(PROJECT_VERSION 1.12.21)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 
@@ -152,6 +152,13 @@ option(WCSim_Geometry_Overlaps_CHECK
 )
 set( WCSIM_CHECK_GEOMETRY_OVERLAPS $<IF:$<BOOL:${WCSim_Geometry_Overlaps_CHECK}>,true,false>)
 
+# Caution: setting a new default value to this variable requires the recompilation of the full package
+option(WCSim_Geometry_PMT_Overlaps_CHECK
+  "Toggle GEANT4 overlap checking when placing PMT geometry elements"
+  OFF
+)
+set( WCSIM_CHECK_GEOMETRY_PMT_OVERLAPS $<IF:$<BOOL:${WCSim_Geometry_PMT_Overlaps_CHECK}>,true,false>)
+
 option(WCSIM_SAVE_PHOTON_HISTORY_FLAG
   "Toggle WCSim to save photon scattering and reflection history"
   OFF
@@ -159,6 +166,12 @@ option(WCSIM_SAVE_PHOTON_HISTORY_FLAG
 if(WCSIM_SAVE_PHOTON_HISTORY_FLAG STREQUAL ON)
   add_definitions(-DWCSIM_SAVE_PHOTON_HISTORY)
 endif()
+
+option(WCSIM_DEBUG_PMT_PLACEMENT_REDUCTION "Toggle ENV Checks for Placement Reduction" OFF)
+if(WCSIM_DEBUG_PMT_PLACEMENT_REDUCTION STREQUAL ON)
+  add_definitions(-DWCSIM_DEBUG_PMT_PLACEMENT_REDUCTION)
+endif()
+
 
 #########
 # copy extra data files
@@ -184,6 +197,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/CathodeParameters_SK.txt
         ${PROJECT_SOURCE_DIR}/data/CathodeParameters_KCsCb.txt
         ${PROJECT_SOURCE_DIR}/data/CathodeParameters_RbCsCb.txt
+	${PROJECT_SOURCE_DIR}/data/WCTE_cosmics.dat
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros

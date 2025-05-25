@@ -261,8 +261,8 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
     BoundaryType_t ty = kNull;
     if (thePrePVName.contains("BlackSheet") || thePostPVName.contains("BlackSheet")) ty = kBlackSheet;
     else if (thePrePVName.contains("Dome") || thePostPVName.contains("Dome")) ty = kMPMT;
-    else if (thePrePVName.contains("Cave") || thePostPVName.contains("Cave")) ty = kCave;
-    else if (thePrePVName.contains("Tyvek") || thePostPVName.contains("Tyvek")) ty = kTyvek;
+    else if (thePrePVName.contains("Cave") || thePostPVName.contains("Cave")) ty = kOuterTyvek;
+    else if (thePrePVName.contains("Tyvek") || thePostPVName.contains("Tyvek")) ty = kInnerTyvek;
     if (ty!=kNull)
     {
       const G4Track* track       = aStep->GetTrack();
