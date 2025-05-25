@@ -2710,7 +2710,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   // Tell DetectorConstruction about boundary walls
   AddBoundaryWallCylinderDimensions(kBoundaryWallODInnerTyvek,
 									WCODRadius,
-									(WCIDHeight + 2*WCODDeadSpace)); //from CapTyvekPosition creation, without the /2 as we store the full length in the boundary wall variables
+									(WCIDHeight + 2*WCODDeadSpace + 2*WCODTyvekSheetThickness)); //from CapTyvekPosition creation, without the /2 as we store the full length in the boundary wall variables, including the OD tyvek thickness
 
 
   // the radii are measured to the center of the surfaces
