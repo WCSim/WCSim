@@ -317,7 +317,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
   // and light tight volumes. PMTs are then placed in the corresponding
   // volumes using G4Assembly classes.
 
-    bool checkOverlapsPMTRealistic = false;
     G4cout << "**** Building Realistic HK Placement Detector ****" << G4endl;
 
     // Instantiate NIST manager so we can use all the materials from
@@ -1147,7 +1146,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
               InnerDetectorLogic,       // its mother volume
               false,                    // no boolean operations
               copyno++,
-              checkOverlapsPMTRealistic
+              checkOverlapsPMT
           );   
 
         }
@@ -1180,7 +1179,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
                 InnerDetectorLogic,       // its mother volume
                 false,                    // no boolean operations
                 copyno++,
-                checkOverlapsPMTRealistic
+                checkOverlapsPMT
             );   
         } 
       }
@@ -1220,7 +1219,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
                 OuterDetectorLogic,       // its mother volume
                 false,                    // no boolean operations
                 copyno++,
-                checkOverlapsPMTRealistic
+                checkOverlapsPMT
             );   
           }
         }
