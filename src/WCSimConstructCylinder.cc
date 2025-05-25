@@ -3718,14 +3718,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
     G4double odTopCapZ[4] = {
       (-WCODDeadSpace+1*mm+WCBlackSheetThickness+pmt_blacksheet_offset),
-      -.5*(WCODTyvekSheetThickness),
-      -.5*(WCODTyvekSheetThickness),
-      .5*(WCODTyvekSheetThickness)};
+      WCBlackSheetThickness,
+      WCBlackSheetThickness,
+      1*(WCODTyvekSheetThickness)+WCBlackSheetThickness};
     G4double odBotCapZ[4] = {
       -(-WCODDeadSpace+1*mm+WCBlackSheetThickness+pmt_blacksheet_offset),
-      .5*(WCODTyvekSheetThickness),
-      .5*(WCODTyvekSheetThickness),
-      -.5*(WCODTyvekSheetThickness)};
+      -WCBlackSheetThickness,
+      -WCBlackSheetThickness,
+      -1*(WCODTyvekSheetThickness)-WCBlackSheetThickness};
     G4double odCapRmin[4] = {WCODRadius-WCODTyvekSheetThickness,
                 WCODRadius-WCODTyvekSheetThickness,
                 0,
