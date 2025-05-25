@@ -112,6 +112,11 @@ class WCSimDetectorMessenger: public G4UImessenger
   // build cladding around WLS
   G4UIcmdWithoutParameter* BuildODWLSCladding;
 
+  // Geometry Scanning Tools
+  G4UIcmdWith3VectorAndUnit* ScanGeometryStepSize;
+  G4UIcmdWithAString* ScanGeometryToFile;
+  G4UIcmdWith3VectorAndUnit* ScanGeometryBoundaryWidth;
+  G4UIcmdWith3VectorAndUnit* ScanGeometryBoundaryCenter;
 };
 
 #endif

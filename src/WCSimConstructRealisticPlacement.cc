@@ -1098,7 +1098,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     colored->SetForceAuxEdgeVisible(0);
     colored->SetDaughtersInvisible(1);
 
-     G4VisAttributes* colored2= new G4VisAttributes(G4Colour(1.0,0.0,0.0));
+    G4VisAttributes* colored2= new G4VisAttributes(G4Colour(1.0,0.0,0.0));
     colored2->SetForceLineSegmentsPerCircle(24);
     colored2->SetForceAuxEdgeVisible(0);
     colored2->SetForceWireframe(1);
@@ -1106,11 +1106,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     colored2->SetForceAuxEdgeVisible(0);
     colored2->SetDaughtersInvisible(1);
 
-    SetNestedVisAttributes(logicWCPMT, invisible );
-    SetNestedVisAttributes(logicWCPMT2, invisible );
+    // SetNestedVisAttributes(logicWCPMT, invisible );
+    // SetNestedVisAttributes(logicWCPMT2, invisible );
 
-    logicWCPMT->GetDaughter(0)->GetLogicalVolume()->SetVisAttributes(colored);     
-    logicWCPMT2->GetDaughter(0)->GetLogicalVolume()->SetVisAttributes(colored2);  
+    logicWCPMT->SetVisAttributes(invisible);     
+    logicWCPMT2->SetVisAttributes(invisible);  
 
     // -------------------------------------
     // ID PMT Placement
@@ -1125,9 +1125,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     std::vector<G4Transform3D> positions;
 
     // Option remove oof percantage of PMTs.
-    int odpmt_x_in_every_100 = 100; //atoi(std::string(getenv("ODPMT_IN_EVERY")).c_str());
-    int pmt20_x_in_every_100 = 100; //atoi(std::string(getenv("IDPMT_IN_EVERY")).c_str());
-    int mpmt_x_in_every_100 = 100; //atoi(std::string(getenv("MPMT_IN_EVERY")).c_str());
+#ifdef WCSIM_DEBUG_PMT_PLACEMENT_REDUCTION
+    int odpmt_x_in_every_100 = atoi(std::string(getenv("ODPMT_IN_EVERY")).c_str());
+    int pmt20_x_in_every_100 = atoi(std::string(getenv("IDPMT_IN_EVERY")).c_str());
+    int mpmt_x_in_every_100 = atoi(std::string(getenv("MPMT_IN_EVERY")).c_str());
+#else 
+    int odpmt_x_in_every_100 = 100;
+    int pmt20_x_in_every_100 = 100;
+    int mpmt_x_in_every_100 = 100;
+#endif
 
     int removed = 0;
     int pmt_throw_count = 0;
