@@ -652,7 +652,7 @@ private:
   G4String Vis_Choice;
   
 
-  /// Boundary wall (e.g. blacksheet/tyveks) dimensions
+  /// Boundary wall (e.g. blacksheet/tyveks) dimensions. Units: mm
   std::map<BoundaryWallType_t, std::vector<G4float> > fBoundaryWallDimensions;
 
   void AddBoundaryWallCylinderDimensions(BoundaryWallType_t s,

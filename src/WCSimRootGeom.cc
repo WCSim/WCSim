@@ -205,7 +205,7 @@ Float_t WCSimRootGeom::GetBoundaryWallFullLength(BoundaryWallType_t s) const {
 void WCSimRootGeom::PrintBoundaryWallInfo() const {
   std::cout << "Boundary wall information" << std::endl
 	    << "-----------------------------------------------" << std::endl
-	    << "Name         || Radius (cm) || Full length (cm)" << std::endl 
+	    << "Name         || Radius (mm) || Full length (mm)" << std::endl
 	    << "-----------------------------------------------" << std::endl;
   for(auto const& x : fBoundaryWallDimensions) {
     std::cout << WCSimEnumerations::EnumAsString(x.first) << " || "

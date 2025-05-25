@@ -78,7 +78,7 @@ class WCSimRootGeom : public TObject {
 
 private:
 
-  /// Boundary wall (e.g. blacksheet/tyveks) dimensions for each boundary type. Correspond to the radius & full length of the cylinder (the vector allows this to be expanded to use e.g. cuboids in the future). Units: cm
+  /// Boundary wall (e.g. blacksheet/tyveks) dimensions for each boundary type. Correspond to the radius & full length of the cylinder (the vector allows this to be expanded to use e.g. cuboids in the future). Units: mm
   std::map<BoundaryWallType_t, std::vector<float> > fBoundaryWallDimensions;
 
   Float_t                fWCCylRadius;  //!< Radius of WC tank. Based on maximum PMT position, so does not correspond to the full size of the tank (and is wildly inaccurate when your geometry has OD PMTs on the inner wall of the OD). Suggest to use GetBoundaryWallRadius() instead. Units: cm
