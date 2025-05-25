@@ -3,6 +3,12 @@
 
 #include <string>
 
+typedef enum EBoundaryWallType {
+  kBoundaryWallIDBlacksheet, //< Blacksheet on the outer wall of the ID
+  kBoundaryWallODInnerTyvek, //< Tyvek on the inner wall (dead-space side) of the OD
+  kBoundaryWallODOuterTyvek  //< Tyvek on the outer wall (cavern side) of the OD
+} BoundaryWallType_t;
+  
 typedef enum ETriggerType {
   kTriggerUndefined = -1,
   kTriggerNDigits,
@@ -35,8 +41,8 @@ typedef enum EBoundaryType {
   kNull=0,
   kBlackSheet,
   kMPMT,
-  kTyvek,
-  kCave
+  kInnerTyvek,
+  kOuterTyvek
 } BoundaryType_t;
 
 typedef enum EReflectionSurface {
@@ -175,6 +181,7 @@ class WCSimEnumerations
 {
 public:
 
+  static std::string EnumAsString(BoundaryWallType_t s);
   static std::string EnumAsString(DigitizerType_t d);
   static std::string EnumAsString(TriggerType_t t);
   static std::string EnumAsString(WCSimRandomGenerator_t r);

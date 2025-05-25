@@ -6,7 +6,7 @@
 # There is a ~30s load up time, so not suitable for production.
 
 _debug = False
-if (_debug): print("WCSIM Python")
+if (_debug): print("WCSim Python")
 
 # Import PYROOT
 if (_debug): print("- importing ROOT")
@@ -37,10 +37,24 @@ def _get_geant4_dir():
     except subprocess.CalledProcessError as e:
         print("Error calling geant4-config:", e)
         return None
-    
+
+def _get_geant4_lib_dir(g4dir):
+    """Returns the Geant4 lib directory"""
+    import os
+    for libdir in ['lib', 'lib64']:
+        ld = f'{g4dir}/{libdir}'
+        if os.path.isdir(ld):
+            return ld
+    print('Could not find Geant4 lib directory')
+    return None
+
 _GEANT4_DIR = _get_geant4_dir()
 if not _GEANT4_DIR:
     raise RuntimeError("Failed to find geant4-prefix dir! Is geant4-config available?")
+
+_GEANT4_LIB_DIR = _get_geant4_lib_dir(_GEANT4_DIR)
+if not _GEANT4_LIB_DIR:
+    raise RuntimeError("Failed to find geant4 lib dir!")
 
 # Load Minimal G4 Headers
 if (_debug): print("- loading G4 Includes")
@@ -85,7 +99,7 @@ except Exception as error:
 
 if (_debug): print("- loading G4 Libraries")
 try:
-    cppyy.add_library_path(_GEANT4_DIR + "/lib")
+    cppyy.add_library_path(_GEANT4_LIB_DIR)
     cppyy.load_library("G4OpenGL") 
     cppyy.load_library("G4gl2ps") 
     cppyy.load_library("G4Tree") 
@@ -118,8 +132,8 @@ try:
     cppyy.load_library("G4clhep") 
     cppyy.load_library("G4zlib")
 except Exception as error:
-    print("Failed to load GEANT4 libraries")
-    print("Looking inside ", _GEANT4_DIR + "/lib")
+    print("Looking inside ", _GEANT4_LIB_DIR)
+    print("Failed to load GEANT4 libraries. You may not have compiled with all expected visualisation libraries; If you don't need visualisation, you can comment out loading of e.g. G4OpenGL and G4gl2ps")
     raise(error)
 
 if (_debug): print("- loading WCSim Libraries")

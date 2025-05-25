@@ -1168,6 +1168,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  WCSimDetector->SetPMTPositionInput(newValue);
 	}
 
+	if(command == SetODPMTPositionInput){
+	  WCSimDetector->SetODPMTPositionInput(newValue);
+	}
+
         if(command == SetCDSFile){
 	  WCSimDetector->SetCDSFile(newValue);
 	}

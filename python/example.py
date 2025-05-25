@@ -1,4 +1,4 @@
-import WCSim as wc
+import pyWCSim as wc
 instance = wc.build_wcsim_instance()
 instance.execute("macros/tuning_parameters.mac")
 

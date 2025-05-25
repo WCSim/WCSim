@@ -96,6 +96,8 @@ void ScanGeometry(std::string filename) {
   G4ThreeVector scan_pos = G4ThreeVector(xlow, ylow, zlow);
   scan_pos[0] = xlow;
 
+  G4ThreeVector direction = G4ThreeVector(0,0,1);
+
   while (scan_pos.x() < xhigh) {
     std::cout << scan_pos.x() << ", "
           << scan_pos.y() << ", "
@@ -111,8 +113,9 @@ void ScanGeometry(std::string filename) {
       while (scan_pos.z() < zhigh) {
         scan_pos += G4ThreeVector(0, 0, zstep);
 
+
       G4VPhysicalVolume* scan_volume = (navigator
-      ->LocateGlobalPointAndSetup(scan_pos, 0, 0, 1));
+      ->LocateGlobalPointAndSetup(scan_pos, &direction, 1, 0));
       if (!scan_volume) continue;
 
       G4LogicalVolume* logical = scan_volume->GetLogicalVolume();
