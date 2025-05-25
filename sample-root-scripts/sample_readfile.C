@@ -69,6 +69,7 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
       exit(9);
   }
   geotree->GetEntry(0);
+  geo->PrintBoundaryWallInfo();
 
   // Options tree - only need 1 "event"
   TTree *opttree = (TTree*)file->Get("wcsimRootOptionsT");
@@ -85,12 +86,15 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  const float detR = geo->GetWCCylRadius();
-  const float detZ = geo->GetWCCylLength();
+  // Attempt to use the boundary wall information. This corresponds to the as-built radius/length of the blacksheet or tyvek
+  // Will fallback to the WCCyl methods, but these correspond to maximum PMT positions, and so are less intuitive to use
+  float temp_IDdetR = geo->GetBoundaryWallRadius(kBoundaryWallIDBlacksheet); // this will return -999 if not found
+  const float IDdetR = temp_IDdetR > 0 ? temp_IDdetR : geo->GetWCCylRadius();
+  const float IDdetZ = temp_IDdetR > 0 ? geo->GetBoundaryWallFullLength(kBoundaryWallIDBlacksheet) : geo->GetWCCylLength();
   TH1F *h1 = new TH1F("h1", "NDigits;NDigits in Trigger 0;Entries in bin", 8000, 0, 8000);
-  TH1F *hvtxX = new TH1F("hvtxX", "Event VTX X;True vertex X (cm);Entries in bin", 200, -detR, +detR);
-  TH1F *hvtxY = new TH1F("hvtxY", "Event VTX Y;True vertex Y (cm);Entries in bin", 200, -detR, +detR);
-  TH1F *hvtxZ = new TH1F("hvtxZ", "Event VTX Z;True vertex Z (cm);Entries in bin", 200, -detZ/2, +detZ/2);
+  TH1F *hvtxX = new TH1F("hvtxX", "Event VTX X;True vertex X (cm);Entries in bin", 200, -IDdetR, +IDdetR);
+  TH1F *hvtxY = new TH1F("hvtxY", "Event VTX Y;True vertex Y (cm);Entries in bin", 200, -IDdetR, +IDdetR);
+  TH1F *hvtxZ = new TH1F("hvtxZ", "Event VTX Z;True vertex Z (cm);Entries in bin", 200, -IDdetZ/2, +IDdetZ/2);
   
   int num_trig=0;
   

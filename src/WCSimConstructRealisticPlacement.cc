@@ -415,6 +415,17 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 
     config.Print();
 
+	// Tell DetectorConstruction about boundary walls
+	AddBoundaryWallCylinderDimensions(kBoundaryWallIDBlacksheet,
+									  config.InnerDetectorOuterRadius,
+									  config.InnerDetectorBarrelLength);
+	AddBoundaryWallCylinderDimensions(kBoundaryWallODInnerTyvek,
+									  config.OuterDetectorInnerRadius,
+									  config.WhiteTyvekBarrelLength);
+	AddBoundaryWallCylinderDimensions(kBoundaryWallODOuterTyvek,
+									  config.OuterDetectorOuterRadius,
+									  config.OuterDetectorBarrelLength);
+	
     // *************************
     // Shell Hierarchy Construction
     // *************************
