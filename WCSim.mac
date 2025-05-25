@@ -266,7 +266,13 @@
 #/control/execute macros/visOGLQt.mac
 
 ##################
-# SCANNING TOOLSS
+# GEOMETRY SCANNING TOOLS
+# Use to visualise the geometry by requesting the geometry material at regular test points in the detector, in order to check for misalignment, overlaps, gaps, etc.
+#
+# See macro sample-root-scripts/ for a way to visualise the result
+# (Macro not yet put in the WCSim codebase. In the meantime, please ask Patrick Stowell)
+#
+# These MUST be given after the geometry is fully setup
 ##################
 #/WCSim/ScanGeometryBoundaryCenter -3185 0 0 cm
 #/WCSim/ScanGeometryBoundaryWidth 100 100 100 cm
