@@ -466,7 +466,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     G4LogicalVolume* WallTyvekLogic;
     G4PVPlacement* WallTyvekPhysical;
     BuildAndPlace_SinglePolyhedraTank(
-      "WallTyvek",
+      "CaveWallTyvek",
       0.0,
       config.WallTyvekOuterRadius,
       config.WallTyvekBarrelLength,
@@ -530,7 +530,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     G4LogicalVolume* BlackTyvekLogic;
     G4PVPlacement* BlackTyvekPhysical;
     BuildAndPlace_SinglePolyhedraTank(
-      "BlackTyvek",
+      "BlackSheet",
       0.0,
       config.BlackTyvekOuterRadius,
       config.BlackTyvekBarrelLength,

@@ -35,8 +35,8 @@ typedef enum EBoundaryType {
   kNull=0,
   kBlackSheet,
   kMPMT,
-  kTyvek,
-  kCave
+  kInnerTyvek,
+  kOuterTyvek
 } BoundaryType_t;
 
 typedef enum EReflectionSurface {

@@ -130,6 +130,14 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   lightInjectorIdxCmd->SetParameterName("injectorIdx",true);
   lightInjectorIdxCmd->SetDefaultValue("0");
 
+  lightInjectorDetectorCmd = new G4UIcmdWithAString("/mygen/injectorDetector",this);
+  lightInjectorDetectorCmd->SetGuidance("Set the detector volume for the light injector you want to use");
+  lightInjectorDetectorCmd->SetGuidance("[usage] /mygen/injectorDetector injectorDetector");
+  lightInjectorDetectorCmd->SetGuidance(" injectorDetector : ID, OD");
+  lightInjectorDetectorCmd->SetParameterName("injectorDetector",true);
+  lightInjectorDetectorCmd->SetCandidates("ID OD");
+  lightInjectorDetectorCmd->SetDefaultValue("ID");
+  
   lightInjectorNPhotonsCmd = new G4UIcmdWithAnInteger("/mygen/nphotons", this);
   lightInjectorNPhotonsCmd->SetGuidance("Set the number of photons per pulse of the light injector");
   lightInjectorNPhotonsCmd->SetGuidance("[usage] /mygen/nphotons nphotons");
@@ -144,6 +152,13 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   lightInjectorFilenameCmd->SetGuidance(" datafile: lightInjectors.json");
   lightInjectorFilenameCmd->SetParameterName("injectorFilename",true);
   lightInjectorFilenameCmd->SetDefaultValue("");
+
+  lightInjectorDetailsCmd = new G4UIcmdWithAString("/mygen/injectorDetails", this);
+  lightInjectorDetailsCmd->SetGuidance("Set the file to read the injector profile from");
+  lightInjectorDetailsCmd->SetGuidance("[usage] /mygen/injectorFile datafile");
+  lightInjectorDetailsCmd->SetGuidance(" datafile: lightInjectorsDetails.json");
+  lightInjectorDetailsCmd->SetParameterName("injectorDetails",true);
+  lightInjectorDetailsCmd->SetDefaultValue("");
 
   lightInjectorModeCmd = new G4UIcmdWithAnInteger("/mygen/photonMode", this);
   lightInjectorModeCmd->SetGuidance("Set whether or not to simulate photons from a list");
@@ -214,6 +229,8 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete lightInjectorIdxCmd;
   delete lightInjectorNPhotonsCmd;
   delete lightInjectorFilenameCmd;
+  delete lightInjectorDetailsCmd;
+  delete lightInjectorDetectorCmd;
   delete lightInjectorModeCmd;
   delete mPMTLEDIdCmd1;
   delete mPMTLEDIdCmd2;
@@ -631,6 +648,16 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
   if ( command==lightInjectorFilenameCmd )
   {
     myAction->SetLightInjectorFilename(newValue);
+  }
+
+  if ( command==lightInjectorDetailsCmd )
+  {
+    myAction->SetLightInjectorDetails(newValue);
+  }
+
+  if ( command==lightInjectorDetectorCmd )
+  {
+    myAction->SetLightInjectorDetector(newValue);
   }
 
   if (command==lightInjectorModeCmd )

@@ -69,11 +69,11 @@ std::string WCSimEnumerations::EnumAsString(BoundaryType_t b)
   case (kMPMT) :
     return "mPMT";
     break;
-  case (kTyvek) :
-    return "Tyvek";
+  case (kInnerTyvek) :
+    return "InnerTyvek";
     break;
-  case (kCave) :
-    return "Cave";
+  case (kOuterTyvek) :
+    return "OuterTyvek";
     break;
   default:
     return "";
