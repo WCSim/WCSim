@@ -496,11 +496,13 @@ public:
   ////////// END OD /////////////
   ///////////////////////////////
 
+  std::map<BoundaryWallType_t, std::vector<G4float> > GetBoundaryWallDimensions() const {return fBoundaryWallDimensions;}
+
 private:
 
   // Overlap checking turned on and off with cmake option
   static constexpr G4bool checkOverlaps = WCSIM_CHECK_GEOMETRY_OVERLAPS;
-  static constexpr G4bool checkOverlapsPMT = WCSIM_CHECK_GEOMETRY_OVERLAPS;
+  static constexpr G4bool checkOverlapsPMT = WCSIM_CHECK_GEOMETRY_PMT_OVERLAPS;
 
 
   // Tuning parameters
@@ -650,6 +652,22 @@ private:
   G4String Vis_Choice;
   
 
+  /// Boundary wall (e.g. blacksheet/tyveks) dimensions. Units: mm
+  std::map<BoundaryWallType_t, std::vector<G4float> > fBoundaryWallDimensions;
+
+  void AddBoundaryWallCylinderDimensions(BoundaryWallType_t s,
+					 G4float radius,
+					 G4float full_length) {
+    auto it = fBoundaryWallDimensions.find(s);
+    if(it != fBoundaryWallDimensions.end()) {
+      G4cerr << "Boundary wall type " << WCSimEnumerations::EnumAsString(s)
+	     << " already exists inside fBoundaryWallDimensions. Replacing dimensions"
+	     << G4endl;
+    }
+    std::vector<G4float> dims = {radius, full_length};
+    fBoundaryWallDimensions[s] = dims;
+  }
+  
   G4double WCLength;
 
   G4double WCPosition;

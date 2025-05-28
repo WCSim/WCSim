@@ -2707,6 +2707,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 	<< "GEOMCHECK3 WCPMTODExposeHeight \t" << WCPMTODExposeHeight << G4endl
 	;
 #endif
+  // Tell DetectorConstruction about boundary walls
+  AddBoundaryWallCylinderDimensions(kBoundaryWallODInnerTyvek,
+									WCODRadius,
+									(WCIDHeight + 2*WCODDeadSpace + 2*WCODTyvekSheetThickness)); //from CapTyvekPosition creation, without the /2 as we store the full length in the boundary wall variables, including the OD tyvek thickness
+
 
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
@@ -2886,6 +2891,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 					  checkOverlaps);
 
 
+	// Tell DetectorConstruction about boundary walls
+	AddBoundaryWallCylinderDimensions(kBoundaryWallODOuterTyvek,
+									  WCRadius, WCLength);
   } // END Tyvek cave
   //-----------------------------------------------------
 
@@ -2980,6 +2988,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   {
     G4cout << mainAnnulusRmin[i] << ", " << mainAnnulusRmax[i] << ", " << mainAnnulusZ[i] << G4endl;
   }
+  // Tell DetectorConstruction about boundary walls
+  AddBoundaryWallCylinderDimensions(kBoundaryWallIDBlacksheet,
+									WCIDRadius, WCIDHeight);
 
   G4Polyhedra* solidWCBarrelBlackSheet = new G4Polyhedra("WCBarrelAnnulusBlackSheet",
                                                    barrelPhiOffset, // phi start

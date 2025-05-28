@@ -598,6 +598,7 @@ void WCSimRunAction::FillGeoTree(){
       wcsimrootgeom-> SetWCCylLength(cylinfo[2]);
   }
 
+  wcsimrootgeom->SetBoundaryWallDimensions(wcsimdetector->GetBoundaryWallDimensions());
 
   pmtradius = wcsimdetector->GetPMTSize1();
   pmtradius2 = 4.0;//B.Q debug, Temp wcsimdetector->GetPMTSize1();

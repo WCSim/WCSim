@@ -5,6 +5,8 @@
 #include "G4UIcommand.hh"
 #include "G4UIparameter.hh"
 
+#include "GeometryScan.hh"
+
 WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimDet)
 :WCSimDetector(WCSimDet)
 { 
@@ -606,6 +608,34 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetCDSFile = new G4UIcmdWithAString("/WCSim/Geometry/SetCDSFile",this);
   SetCDSFile->SetGuidance("Set filename for CDS model file");
   SetCDSFile->SetParameterName("CDSFileInput", true);
+
+  // Tool for scanning material
+
+  ScanGeometryBoundaryCenter = new G4UIcmdWith3VectorAndUnit("/WCSim/ScanGeometryBoundaryCenter",  this);
+  ScanGeometryBoundaryCenter->SetGuidance("Central Position for XYZ geo scan");
+  ScanGeometryBoundaryCenter->SetParameterName(
+    "center_x", "center_y", "center_z", false);
+  ScanGeometryBoundaryCenter->SetDefaultValue(G4ThreeVector(0, 0, 0));
+  ScanGeometryBoundaryCenter->SetUnitCategory("Length");
+  ScanGeometryBoundaryCenter->SetDefaultUnit("cm");
+  
+  ScanGeometryBoundaryWidth = new G4UIcmdWith3VectorAndUnit("/WCSim/ScanGeometryBoundaryWidth",  this);
+  ScanGeometryBoundaryWidth->SetGuidance("Lower bound for geometry scan");
+  ScanGeometryBoundaryWidth->SetParameterName("width_x", "width_y", "width_z", false);
+  ScanGeometryBoundaryWidth->SetDefaultValue(G4ThreeVector(100, 100, 100));
+  ScanGeometryBoundaryWidth->SetUnitCategory("Length");
+  ScanGeometryBoundaryWidth->SetDefaultUnit("cm");
+  
+  ScanGeometryStepSize = new G4UIcmdWith3VectorAndUnit("/WCSim/ScanGeometryStepSize",  this);
+  ScanGeometryStepSize->SetGuidance("Step size for geometry scan");
+  ScanGeometryStepSize->SetParameterName("step_x", "step_y", "step_z", false);
+  ScanGeometryStepSize->SetDefaultValue(G4ThreeVector(1, 1, 1));
+  ScanGeometryStepSize->SetUnitCategory("Length");
+  ScanGeometryStepSize->SetDefaultUnit("cm");
+
+  ScanGeometryToFile = new G4UIcmdWithAString("/WCSim/ScanGeometryToFile", this);
+  ScanGeometryToFile->SetGuidance("Start Geometry Scan");
+  ScanGeometryToFile->SetParameterName("Geometry Scan Output File", true);
 }
 
 WCSimDetectorMessenger::~WCSimDetectorMessenger()
@@ -645,6 +675,12 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
 
   delete BGOPlacement;
   delete BGOPosition;
+
+  delete ScanGeometryStepSize;
+  delete ScanGeometryToFile;
+  delete ScanGeometryBoundaryWidth;
+  delete ScanGeometryBoundaryCenter;
+  
 }
 
 void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
@@ -1132,13 +1168,32 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  WCSimDetector->SetPMTPositionInput(newValue);
 	}
 
-  if(command == SetODPMTPositionInput){
+	if(command == SetODPMTPositionInput){
 	  WCSimDetector->SetODPMTPositionInput(newValue);
 	}
 
-
-  if(command == SetCDSFile){
+        if(command == SetCDSFile){
 	  WCSimDetector->SetCDSFile(newValue);
 	}
+
+  // Geometry Scanning Tools
+  if (command == ScanGeometryStepSize){
+    G4ThreeVector vec = ScanGeometryStepSize->GetNew3VectorValue(newValue);
+    GeometryScan::SetScanGeometryStepSize(vec);
+  } 
+
+  if (command == ScanGeometryBoundaryCenter){
+    G4ThreeVector vec = ScanGeometryBoundaryCenter->GetNew3VectorValue(newValue);
+    GeometryScan::SetScanGeometryBoundaryCenter(vec);
+  }
+
+  if (command == ScanGeometryBoundaryWidth){
+    G4ThreeVector vec = ScanGeometryBoundaryWidth->GetNew3VectorValue(newValue);
+    GeometryScan::SetScanGeometryBoundaryWidth(vec);
+  }
+
+  if(command == ScanGeometryToFile){
+    GeometryScan::ScanGeometry(newValue);
+  }
 
 }

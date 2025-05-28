@@ -6,6 +6,25 @@ Recent updates
 *************************************************************
 
 *************************************************************
+25/05/2025: Notes for v1.12.22
+*************************************************************
+New release after #486, for use with HK IWCD+FD MC production
+
+New feature
+* Pull request #513 @patrickstowell: Adds geometry scanning tools to check for overlaps/misalignment based on `G4Navigator` itself
+* Pull request #514 @patrickstowell: Adds a python cppyy based version of WCSim which can be used to check geometry configuration options and run/edit macros within python
+* Pull request #515 @patrickstowell: Add optional third .mac file argument to WCSim exectuable, for easier visulisation command loading
+* Pull request #519 @hrubyfr: Add sea level cosmic muon file for WCTE
+* Pull request #522 @tdealtry: Save (black/tyvek) sheet dimensions in WCSimRootGeom output
+
+Update
+* Pull request #521 @guiguem: Update cmake minimum version
+
+Bug fix
+* Pull request #486 @ekneale @patrickstowell: Fix OD PMT orientation in HKFD realistic geometry
+* Pull request #517 @tdealtry: Fix boundary types for HK FD realistic geometry
+
+*************************************************************
 10/03/2025: Notes for v1.12.21
 *************************************************************
 New release after #509 for use for HK machine learning reconstruction studies

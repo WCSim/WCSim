@@ -27,7 +27,7 @@
 #include <unistd.h>
 
 namespace {     // Anonymous namespace for local helper functions and classes
-  enum class WCSimExeMode {Batch, Interactive, Unknown};
+  enum class WCSimExeMode {Batch, Interactive, Vis, Unknown};
 
   bool file_exists(const char * filename) {
     bool exists = access(filename, F_OK) != -1;
@@ -50,6 +50,12 @@ namespace {     // Anonymous namespace for local helper functions and classes
         << "    steering_macro:  name of main WCSim execution macro file\n"
         << "    tuning_par_macro:  name of a macro file containing only tuning parameter\n"
         << "        commands recognized by WCSimTuningMessenger\n";
+
+    msg << "vis usage: " << exename << " steering_macro tuning_par_macro vis_macro\n"
+      << "    steering_macro:  name of main WCSim execution macro file\n"
+      << "    tuning_par_macro:  name of a macro file containing only tuning parameter\n"
+      << "        commands recognized by WCSimTuningMessenger\n"
+      << "    vis_macro:  name of WCSim vis macro file\n";
 
     return msg.str();
   }
@@ -96,6 +102,19 @@ int main(int argc,char** argv)
         UI->ApplyCommand(execommand + G4String(argv[2]));
         break;
       }
+
+
+    // P.S. 02/2025 : Since no flags were setup for WCSim arguments, this is the simplest
+    // solution to enable visualisation directly by allowing someone to
+    // pass an additional argument : WCSim macro tuning_pars vis_macro.
+    // The proper way to do this would be to add a "-v" flag that enables
+    // the UI and a default vis.
+    case 4 : // Interactive mode with three command line arguments
+
+      exemode = WCSimExeMode::Vis;
+      G4cout << "Processing tuning parameter file " << argv[2] << G4endl;
+      UI->ApplyCommand(execommand + G4String(argv[2]));
+      break;
 
     // Otherwise proceed to default exit condition
     default:    // Unrecognized number of valid command line arguments
@@ -192,6 +211,26 @@ int main(int argc,char** argv)
 #endif
       break;
     }
+
+    // PS 02/2025: Added vis mode that runs first steering macro and vis command.
+    // e.g. : WCSim WCSim.mac macros/tuning_parameters.mac macros/visOGLQT.mac 
+    case WCSimExeMode::Vis : {
+#ifdef G4UI_USE
+
+      // Launch the interactive UI + vis macro
+      G4UIExecutive * ui = new G4UIExecutive(argc,argv);
+      UI->ApplyCommand(execommand + G4String(argv[1]));
+      UI->ApplyCommand(execommand + G4String(argv[3]));
+      ui->SessionStart();
+
+      // Clean it up on exit
+      delete ui;
+#else
+      G4cerr << "SOMETHING IS WRONG.  Attempt to execute in interactive mode without being built for interactive mode." << G4endl;
+#endif
+      break;
+    }
+
 
     case WCSimExeMode::Unknown : {
       G4cerr << "SOMETHING IS WRONG.  Attempt to execute in undefined mode." << G4endl;
