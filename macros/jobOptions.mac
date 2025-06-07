@@ -16,4 +16,5 @@
 #/WCSim/physics/list FTFP_BERT_HP
 /WCSim/physics/nCapture Default
 
-
+#Activate/deactivate optical process
+/process/optical/processActivation OpRaman false

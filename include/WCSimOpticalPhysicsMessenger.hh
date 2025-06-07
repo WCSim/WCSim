@@ -163,6 +163,7 @@ private:
 
   G4UIcmdWithAnInteger*  fAbsorptionVerbosityCmd;
   G4UIcmdWithAnInteger*  fRayleighVerbosityCmd;
+  G4UIcmdWithAnInteger*  fRamanVerbosityCmd;
   G4UIcmdWithAnInteger*  fMieVerbosityCmd;
 
 };
