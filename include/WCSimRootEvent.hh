@@ -210,16 +210,18 @@ class WCSimRootCherenkovHitHistory : public TObject {
 private:
   
   Int_t   fNRayScat; //!< Number of Rayliegh scatters the photon that created this hit underwent
+  Int_t   fNRamScat; //!< Number of Raman scatters the photon that created this hit underwent
   Int_t   fNMieScat; //!< Number of Mie scatters the photon that created this hit underwent
   std::vector<ReflectionSurface_t> fReflec; //!< Surfaces of reflections that the photon that created this hit underwent
 
 public:
   WCSimRootCherenkovHitHistory() {}
-  WCSimRootCherenkovHitHistory(Int_t nRayScat, Int_t nMieScat, std::vector<ReflectionSurface_t> refle);
+  WCSimRootCherenkovHitHistory(Int_t nRayScat, Int_t nRamScat, Int_t nMieScat, std::vector<ReflectionSurface_t> refle);
   virtual ~WCSimRootCherenkovHitHistory() { }
   bool CompareAllVariables(const WCSimRootCherenkovHitHistory * c) const;
 
   Int_t     GetNRayScatters() const { return fNRayScat; } // Get the number of Rayleigh scattering a photon experienced
+  Int_t     GetNRamScatters() const { return fNRamScat; } // Get the number of Raman scattering a photon experienced
   Int_t     GetNMieScatters() const { return fNMieScat; } // Get the number of Mie scattering a photon experienced
   std::vector<ReflectionSurface_t> GetReflectionSurfaces() const { return fReflec; } //  Get the vector of reflection surfaces a photon experienced
 
@@ -580,6 +582,7 @@ public:
              std::vector<ProcessType_t> photonCreatorProcess);
 
   WCSimRootCherenkovHitHistory   *AddCherenkovHitHistory(Int_t nRayScat,
+             Int_t nRamScat,
              Int_t nMieScat,
 					   std::vector<ReflectionSurface_t> reflec);
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}

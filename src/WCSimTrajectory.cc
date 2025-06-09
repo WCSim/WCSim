@@ -31,6 +31,7 @@ WCSimTrajectory::WCSimTrajectory()
   boundaryTypes.clear();
 
   pRayScatter = 0;
+  pRamScatter = 0;
   pMieScatter = 0;
   pReflec.clear();
 
@@ -79,6 +80,7 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
   boundaryTypes.clear();
 
   pRayScatter = 0;
+  pRamScatter = 0;
   pMieScatter = 0;
   pReflec.clear();
   fBoundary = NULL;
@@ -132,6 +134,7 @@ WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
 
 #ifdef WCSIM_SAVE_PHOTON_HISTORY
   pRayScatter = right.pRayScatter;
+  pRamScatter = right.pRamScatter;
   pMieScatter = right.pMieScatter;
   pReflec = right.pReflec;
   fBoundary = right.fBoundary;
@@ -284,6 +287,10 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
       {
         AddPhotonRayScatter(1);
       }
+      else if ( pds->GetProcessSubType() == fOpRaman )
+      {
+        AddPhotonRamScatter(1);
+      }
       else if ( pds->GetProcessSubType() == fOpMieHG )
       {
         AddPhotonMieScatter(1);
@@ -344,6 +351,7 @@ void WCSimTrajectory::MergeTrajectory(G4VTrajectory* secondTrajectory)
 
 #ifdef WCSIM_SAVE_PHOTON_HISTORY
   AddPhotonRayScatter(seco->GetPhotonRayScatter());
+  AddPhotonRamScatter(seco->GetPhotonRamScatter());
   AddPhotonMieScatter(seco->GetPhotonMieScatter());
   for (auto i: seco->GetPhotonReflection()) AddPhotonReflection(i);
 #endif

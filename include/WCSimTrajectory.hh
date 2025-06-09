@@ -116,9 +116,11 @@ public: // with description
 
 // Functions to set/get photon history
   inline void AddPhotonRayScatter(G4int val) { pRayScatter += val; }
+  inline void AddPhotonRamScatter(G4int val) { pRamScatter += val; }
   inline void AddPhotonMieScatter(G4int val) { pMieScatter += val; }
   inline void AddPhotonReflection(ReflectionSurface_t val) { pReflec.push_back(val); }
   inline G4int GetPhotonRayScatter() const { return pRayScatter; }
+  inline G4int GetPhotonRamScatter() const { return pRamScatter; }
   inline G4int GetPhotonMieScatter() const { return pMieScatter; }
   inline std::vector<ReflectionSurface_t> GetPhotonReflection() const { return pReflec; } 
 
@@ -169,6 +171,7 @@ public: // with description
 
   // Photon reflection/scattering history
   G4int pRayScatter;
+  G4int pRamScatter;
   G4int pMieScatter;
   std::vector<ReflectionSurface_t> pReflec;
   WCSimOpBoundaryProcess* fBoundary;
