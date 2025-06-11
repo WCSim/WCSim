@@ -266,6 +266,10 @@ WCSimOpRaman::CalculateRamanMeanFreePaths( const G4Material* material ) const
   G4MaterialPropertiesTable* materialProperties = 
                                        material->GetMaterialPropertiesTable();
 
+  // Calculation is valid only for "Water" or "Doped Water" (Water + Gadolinium)
+  if ( material->GetName() != "Water" && material->GetName() != "Doped Water" )
+    return NULL;
+
   // If the material doesn't have a RINDEX property vector then return
   G4MaterialPropertyVector* rIndex = materialProperties->GetProperty("RINDEX");
   if ( rIndex == NULL ) return NULL;
