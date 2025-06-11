@@ -118,7 +118,7 @@ WCSimOpRaman::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         const G4DynamicParticle* aParticle = aTrack.GetDynamicParticle();
 
         if (verboseLevel>0) {
-                G4cout << "Scattering Photon!" << G4endl;
+                G4cout << "Raman Scattering Photon!" << G4endl;
                 G4cout << "Old Momentum Direction: "
                        << aParticle->GetMomentumDirection() << G4endl;
                 G4cout << "Old Polarization: "
