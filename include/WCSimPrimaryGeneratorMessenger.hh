@@ -69,6 +69,7 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithAString* lightInjectorFilenameCmd;
   G4UIcmdWithAString* lightInjectorDetailsCmd;
   G4UIcmdWithAString* lightInjectorDetectorCmd;
+  G4UIcmdWithADouble* lightInjectorWavelengthCmd;
   G4UIcmdWithAnInteger* lightInjectorModeCmd;
   
   void IsotopeCommand(G4String newValue);

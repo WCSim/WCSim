@@ -154,6 +154,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   injectorFilename = "";
   injectorDetails = "";
   injectorDetector = "";
+  injectorWavelength = 400.;
   photonMode = 0;
 
   mPMTLEDId1 = 1;
@@ -808,9 +809,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         if ( !LIGen ) {
             LIGen = new WCSimLIGen();
             LIGen->SetPhotonMode(photonMode);
-            LIGen->ReadFromDatabase(injectorType,injectorIdx,injectorFilename,injectorDetails,injectorDetector);
+            LIGen->ReadFromDatabase(injectorType,injectorIdx,injectorFilename,injectorDetails,injectorDetector,injectorWavelength);
         }
-
         // Generate the required number of photons with
         // directions distributed as per the LI profile        
         // and populate the G4Event
@@ -820,14 +820,12 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         G4int pdg = 0;
         G4double E = LIGen->GetPhotonEnergy();
         LIGen->GeneratePhotons(anEvent,nphotons);
-
         // save injector properties
         G4cout << " Saving injector properties: " << vtx << ", " << E << ", " << dir << ", " << pdg << G4endl;
         SetVtx(vtx);
         SetBeamDir(dir);
         SetBeamEnergy(energy);
         SetBeamPDG(pdg);
-
     }
 
 

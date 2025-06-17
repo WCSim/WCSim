@@ -30,7 +30,6 @@ An example is shown below:
 "detector":"ID",
 "direction": [-1,0,0],
 "position": [3220,0,-2465.66],
-"wavelength": 400,
 "offset": 10,
 "photonsfile": ""
 ```
@@ -39,6 +38,5 @@ An example is shown below:
 * "detector" determines which detector volume the specified light injector corresponds to. This variable should link to corresponding option in the LightInjector.json file.
 * "direction" refers to the direction of the light injector in the simulated detector. It should be an array of 3 elements corresponding to the x, y and z direction respecitvely. Currently they are all simulated to be equally distributed across the tank with 4 light injector positions on the top of the tank, 4 on the bottom and 28 on the barrel. In future this should be updated to the realistic geometry of the tank.
 * "position" is the position of the light injector in the tank. It operates in a similar way to the direction variable. It is specified in units of cm
-* "wavelength" is the wavelength of the simulated light through the light injector. It is in units of nm.
 * "offset" corresponds to the offset of the simualted light injector relative to the tank frame, in cm.
 * "photonsfile" provides on option of simulating only photons as specified from a separate file rather than using the water profiles. 
