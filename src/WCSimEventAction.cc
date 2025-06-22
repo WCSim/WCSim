@@ -1461,6 +1461,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     std::vector<double> truetime, smeartime;
     std::vector<int>   parentSavedTrackID;
     std::vector<float> photonStartTime;
+    std::vector<float> photonStartEnergy;
+    std::vector<float> photonEndEnergy;
     std::vector<TVector3> photonStartPos;
     std::vector<TVector3> photonEndPos;
     std::vector<TVector3> photonStartDir;
@@ -1472,6 +1474,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
     double hit_time_true;
     int hit_parentid;
     float hit_photon_starttime;
+    float hit_photon_startenergy;
+    float hit_photon_endenergy;
     TVector3 hit_photon_startpos;
     TVector3 hit_photon_endpos;
     TVector3 hit_photon_startdir;
@@ -1502,6 +1506,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
+	hit_photon_startenergy = (*WCDC_hits)[idigi]->GetPhotonStartEnergy(id);
+	hit_photon_endenergy = (*WCDC_hits)[idigi]->GetPhotonEndEnergy(id);
 	hit_photon_startpos = TVector3(
 	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[0],
 	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[1],
@@ -1523,6 +1529,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 	truetime.push_back(hit_time_true);
 	parentSavedTrackID.push_back(hit_parentid);
 	photonStartTime.push_back(hit_photon_starttime);
+	photonStartEnergy.push_back(hit_photon_startenergy);
+	photonEndEnergy.push_back(hit_photon_endenergy);
 	photonStartPos.push_back(hit_photon_startpos);
 	photonEndPos.push_back(hit_photon_endpos);
 	photonStartDir.push_back(hit_photon_startdir);
@@ -1552,6 +1560,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				      truetime,
 				      parentSavedTrackID,
 				      photonStartTime,
+				      photonStartEnergy,
+				      photonEndEnergy,
 				      photonStartPos,
 				      photonEndPos,
 				      photonStartDir,
@@ -1561,6 +1571,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
       truetime.clear();
       parentSavedTrackID.clear();
       photonStartTime.clear();
+      photonStartEnergy.clear();
+      photonEndEnergy.clear();
       photonStartPos.clear();
       photonEndPos.clear();
       photonStartDir.clear();
@@ -2028,6 +2040,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     std::vector<double> truetime, smeartime;
     std::vector<int>   parentSavedTrackID;
     std::vector<float> photonStartTime;
+    std::vector<float> photonStartEnergy;
+    std::vector<float> photonEndEnergy;
     std::vector<TVector3> photonStartPos;
     std::vector<TVector3> photonEndPos;
     std::vector<TVector3> photonStartDir;
@@ -2039,6 +2053,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
     double hit_time_true;
     int hit_parentid;
     float hit_photon_starttime;
+    float hit_photon_startenergy;
+    float hit_photon_endenergy;
     TVector3 hit_photon_startpos;
     TVector3 hit_photon_endpos;
     TVector3 hit_photon_startdir;
@@ -2069,6 +2085,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
 	hit_photon_starttime = (*WCDC_hits)[idigi]->GetPhotonStartTime(id);
+	hit_photon_startenergy = (*WCDC_hits)[idigi]->GetPhotonStartEnergy(id);
+	hit_photon_endenergy = (*WCDC_hits)[idigi]->GetPhotonEndEnergy(id);
   hit_photon_creatorprocess = (*WCDC_hits)[idigi]->GetPhotonCreatorProcess(id);
 	hit_photon_startpos = TVector3(
 	        (*WCDC_hits)[idigi]->GetPhotonStartPos(id)[0],
@@ -2089,6 +2107,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 	truetime.push_back(hit_time_true);
 	parentSavedTrackID.push_back(hit_parentid);
 	photonStartTime.push_back(hit_photon_starttime);
+	photonStartEnergy.push_back(hit_photon_startenergy);
+	photonEndEnergy.push_back(hit_photon_endenergy);
 	photonStartPos.push_back(hit_photon_startpos);
 	photonEndPos.push_back(hit_photon_endpos);
 	photonStartDir.push_back(hit_photon_startdir);
@@ -2119,6 +2139,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				      truetime,
 				      parentSavedTrackID,
 				      photonStartTime,
+				      photonStartEnergy,
+				      photonEndEnergy,
 				      photonStartPos,
 				      photonEndPos,
 				      photonStartDir,
@@ -2128,6 +2150,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
       truetime.clear();
       parentSavedTrackID.clear();
       photonStartTime.clear();
+      photonStartEnergy.clear();
+      photonEndEnergy.clear();
       photonStartPos.clear();
       photonEndPos.clear();
       photonStartDir.clear();
