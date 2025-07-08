@@ -496,7 +496,5 @@
 # -- The EventHeader has a run number that specifies the run (and corresponding options tree entry) for a given event
 # It is therefore your responsibility to confirm that the options you are changing work as expected in multi-run mode
 
-# There is a memory leak when doing TTree::GetEntry() when reading files. It is also presumed that filling is leaky. It is strongly recommended not to generate or analyse O(1000) events in a single job
-
 /run/beamOn 10
 #exit

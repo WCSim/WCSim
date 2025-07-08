@@ -110,8 +110,9 @@
 /mygen/injectorType diffuser
 # Specify the injector index for this type of LI that corresponds to the 
 # device position and profile you wish to use
-/mygen/injectorIdx 0
+/mygen/injectorIdx 15
 /mygen/injectorDetector ID
+/mygen/injectorWavelength 400
 /mygen/injectorFilename LightInjectors.json
 /mygen/injectorDetails LightInjectorsDetails.json
 # Default /mygen/photonMode 0 generates photon directions using the LI profile
@@ -122,7 +123,7 @@
 
 ## change the name of the output root file, default = wcsim.root
 
-/WCSimIO/RootFile wcsim_LIGen_new.root
+/WCSimIO/RootFile wcsim_LIGen.root
 
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false

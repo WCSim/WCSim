@@ -137,6 +137,14 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   lightInjectorDetectorCmd->SetParameterName("injectorDetector",true);
   lightInjectorDetectorCmd->SetCandidates("ID OD");
   lightInjectorDetectorCmd->SetDefaultValue("ID");
+
+  lightInjectorWavelengthCmd = new G4UIcmdWithADouble("/mygen/injectorWavelength",this);
+  lightInjectorWavelengthCmd->SetGuidance("Set the photon wavelength for the light injector in nm");
+  lightInjectorWavelengthCmd->SetGuidance("[usage] /mygen/injectorWavelength injectorWavelength");
+  lightInjectorWavelengthCmd->SetGuidance(" injectorWavelength: 400");
+  lightInjectorWavelengthCmd->SetRange("injectorWavelength>0");
+  lightInjectorWavelengthCmd->SetParameterName("injectorWavelength",true);
+  lightInjectorWavelengthCmd->SetDefaultValue(400);
   
   lightInjectorNPhotonsCmd = new G4UIcmdWithAnInteger("/mygen/nphotons", this);
   lightInjectorNPhotonsCmd->SetGuidance("Set the number of photons per pulse of the light injector");
@@ -231,6 +239,7 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete lightInjectorFilenameCmd;
   delete lightInjectorDetailsCmd;
   delete lightInjectorDetectorCmd;
+  delete lightInjectorWavelengthCmd;
   delete lightInjectorModeCmd;
   delete mPMTLEDIdCmd1;
   delete mPMTLEDIdCmd2;
@@ -623,7 +632,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     {
       myAction->SetInjectorOpeningAngle(openingAngleCmd->GetNewDoubleValue(newValue));
     }
-
+  
   if ( command== injectorWavelengthCmd )
     {
       myAction->SetInjectorWavelength(injectorWavelengthCmd->GetNewDoubleValue(newValue));
@@ -659,7 +668,12 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
   {
     myAction->SetLightInjectorDetector(newValue);
   }
-
+  
+  if ( command==lightInjectorWavelengthCmd )
+  {
+    myAction->SetLightInjectorWavelength(lightInjectorWavelengthCmd->GetNewDoubleValue(newValue));
+  }
+  
   if (command==lightInjectorModeCmd )
   {
     myAction->SetLightInjectorMode(lightInjectorModeCmd->GetNewIntValue(newValue));
