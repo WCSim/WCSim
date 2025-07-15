@@ -425,7 +425,7 @@ G4bool WCSimWCSD::ProcessHits_boundary(G4Step* aStep, G4TouchableHistory*)
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartEnergy(photonStartEnergy);
-        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartEnergy(photonEndEnergy);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndEnergy(photonEndEnergy);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
@@ -439,7 +439,7 @@ G4bool WCSimWCSD::ProcessHits_boundary(G4Step* aStep, G4TouchableHistory*)
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartEnergy(photonStartEnergy);
-        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartEnergy(photonEndEnergy);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndEnergy(photonEndEnergy);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
