@@ -13,10 +13,11 @@
 using json = nlohmann::json;
 
 
-std::pair<double,double> SampleFromInterpolatedSurface(MonotonicInterpolator spline, 
-                                     double xMin, double xMax,
-                                     double yMin, double yMax,
-                                     double zMax, TRandom3& rng) {
+void SampleFromInterpolatedSurface(MonotonicInterpolator spline,
+				   double xMin, double xMax,
+				   double yMin, double yMax,
+				   double zMax, TRandom3& rng,
+				   double & costheta, double & phi) {
   while (true) {
     double x = rng.Uniform(xMin, xMax);
     double y = rng.Uniform(yMin, yMax);
@@ -24,7 +25,9 @@ std::pair<double,double> SampleFromInterpolatedSurface(MonotonicInterpolator spl
     double u = rng.Uniform(0.0, zMax);
     //Accept x,y values if interpolated z is below a random value
     if (u < z){
-      return {x, y};
+      costheta = x;
+      phi = y;
+      return;
     }
   }
 }
@@ -330,7 +333,8 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
 	    //Create unique random seed based on event ID and photon number
 	    TRandom3 rng(anEvent->GetEventID()*iphoton + iphoton);
 	    //Determine photon costheta and phi needed for the photon direction from interpolated PDF
-	    auto [costheta, phi] = SampleFromInterpolatedSurface(spline,minCosTheta, cosTheta_vals.back(), phi_vals.front(),phi_vals.back(), intensityMax, rng);
+	    double costheta = 0, phi = 0;
+	    SampleFromInterpolatedSurface(spline,minCosTheta, cosTheta_vals.back(), phi_vals.front(),phi_vals.back(), intensityMax, rng, costheta, phi);
 	    // Calculate the direction of this photon wrt +z direction
             G4double sintheta = sqrt(1. - costheta*costheta);
             G4double sinphi = sin(phi*deg);
