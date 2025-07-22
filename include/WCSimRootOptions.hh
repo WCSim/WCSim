@@ -233,7 +233,7 @@ private:
   int                    RandomSeed; //!< The initial seed for one of the random number generators
   WCSimRandomGenerator_t RandomGenerator; //!< The random number generator type
   
-  ClassDef(WCSimRootOptions,5)
+  ClassDef(WCSimRootOptions,6)
 };
 
 
