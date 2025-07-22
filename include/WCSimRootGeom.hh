@@ -79,7 +79,7 @@ class WCSimRootGeom : public TObject {
 private:
 
   /// Boundary wall (e.g. blacksheet/tyveks) dimensions for each boundary type. Correspond to the radius & full length of the cylinder (the vector allows this to be expanded to use e.g. cuboids in the future). Units: mm
-  std::map<BoundaryWallType_t, std::vector<float> > fBoundaryWallDimensions;
+  std::map<unsigned int, std::vector<float> > fBoundaryWallDimensions;
 
   Float_t                fWCCylRadius;  //!< Radius of WC tank. Based on maximum PMT position, so does not correspond to the full size of the tank (and is wildly inaccurate when your geometry has OD PMTs on the inner wall of the OD). Suggest to use GetBoundaryWallRadius() instead. Units: cm
   Float_t                fWCCylLength;  //!< Length of WC tank. Based on maximum PMT position, so does not correspond to the full size of the tank (and is wildly inaccurate when your geometry has OD PMTs on the inner wall of the OD). Suggest to use GetBoundaryWallFullLength() instead. Units: cm
@@ -108,8 +108,8 @@ public:
   bool CompareAllVariables(const WCSimRootGeom * c) const;
 
   // Sets and gets
-  void SetBoundaryWallDimensions(std::map<BoundaryWallType_t, std::vector<float> > dims) {fBoundaryWallDimensions = dims;}
-  
+  void SetBoundaryWallDimensions(std::map<BoundaryWallType_t, std::vector<float> > dims);
+
   void  SetWCCylRadius(Double_t f) {fWCCylRadius=f;}
   void  SetWCCylLength(Double_t f) {fWCCylLength=f;}
 
@@ -180,7 +180,7 @@ public:
   const WCSimRootPMT * GetODPMTPtr(Int_t i) const {return (WCSimRootPMT*)(fODPMTArray->At(i));}
   TClonesArray * GetODPMTs() {return fODPMTArray;}
 
-  ClassDef(WCSimRootGeom,2)  //WCSimRootEvent structure
+  ClassDef(WCSimRootGeom,3)  //WCSimRootEvent structure
 };
 
 
