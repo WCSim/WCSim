@@ -59,6 +59,10 @@ public:
   virtual ~WCSimRootOptions();
   void Print(Option_t *option = "") const;
 
+  //WCSim version gets
+  string GetWCSimVersion() {return WCSimVersion;}
+  //WCSim version sets
+  void SetWCSimVersion(string iWCSimVersion) {WCSimVersion = iWCSimVersion;}
   //WCSimDetector* gets
   void SetDetectorName(string iDetectorName) {DetectorName = iDetectorName;}
   void SetGeomHasOD(bool iGeomHasOD) {GeomHasOD = iGeomHasOD;}
@@ -170,6 +174,8 @@ public:
   WCSimRandomGenerator_t GetRandomGenerator() {return RandomGenerator;}
 
 private:
+  //WCSim version
+  string WCSimVersion; //!< WCSim version. Includes latest tag, number of commits since last tag, and git hash
   //WCSimDetector*
   string DetectorName; //!< Name of the detector geometry
   bool   GeomHasOD; //!< Does the detector contain active OD PMTs?
