@@ -6,6 +6,19 @@ Recent updates
 *************************************************************
 
 *************************************************************
+22/07/2025: Notes for v1.12.23
+*************************************************************
+New release after #528 & #529, for use with HK IWCD+FD MC production
+
+Update
+* Pull request #520 @menailj: Update LI code, better sampling
+* Pull request #528 @tdealtry: Make boundary wall WCSimRootGeom saving work with old ROOT
+* Pull request #529 @tdealtry: Make LI generator work with old C++ standard
+
+Documentation
+* Pull request #527 @tdealtry: Remove warning about WCSimRootEvent memory leak in WCSim.mac
+
+*************************************************************
 25/05/2025: Notes for v1.12.22
 *************************************************************
 New release after #486, for use with HK IWCD+FD MC production
