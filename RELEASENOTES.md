@@ -6,6 +6,14 @@ Recent updates
 *************************************************************
 
 *************************************************************
+23/07/2025: Notes for v1.12.24
+*************************************************************
+New release after #530, for use with HK IWCD+FD MC production
+
+New feature
+* Pull request #530 @tdealtry: Add WCSim version that was used to generate the file to WCSimRootOptions
+
+*************************************************************
 22/07/2025: Notes for v1.12.23
 *************************************************************
 New release after #528 & #529, for use with HK IWCD+FD MC production
