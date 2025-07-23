@@ -37,6 +37,10 @@ WCSimRunAction::WCSimRunAction(WCSimDetectorConstruction* test, WCSimRandomParam
   useDefaultROOTout = true;  //false;  TF: ToDo, make this false WHEN flat ROOT has RooTracker trees and when FiTQun can read that in.
   useFlatROOTout = false;
   wcsimrootoptions = new WCSimRootOptions();
+#ifdef GIT_HASH
+  const char* gitHash = GIT_HASH;
+  wcsimrootoptions->SetWCSimVersion(gitHash);
+#endif
 
   // By default do not try and save Rootracker interaction information
   SetSaveRooTracker(0);
