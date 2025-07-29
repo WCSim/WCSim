@@ -482,52 +482,52 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       }
 
       // Calculate offset from neutrino generation plane to centre of nuPRISM detector
-      float z_offset = fNuPlanePos[2]*cm;
-      float y_offset = 0;//(fNuPrismRadius/zDir)*yDir;
       float x_offset = fNuPlanePos[0]*cm;
-
+      float y_offset = fNuPlanePos[1]*cm;//0;//(fNuPrismRadius/zDir)*yDir;
+      float z_offset = fNuPlanePos[2]*cm;
+		 
       //Subtract offset to get interaction position in WCSim coordinates
-        xPos = fTmpRootrackerVtx->EvtVtx[0]*m - x_offset;
-        yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
-        zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
+      xPos = fTmpRootrackerVtx->EvtVtx[0]*m - x_offset;
+      yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
+      zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
 
-        //Check if event is outside detector; skip to next event if so; keep
-        //loading events until one is found within the detector or there are
-        //no more interaction to simulate for this event.
-        //The current neut vector files do not correspond directly to the detector dimensions, so only keep those events within the detector
-        while (sqrt(pow(xPos,2)+pow(zPos,2)) > (myDetector->GetWCIDDiameter()/2.) ||
-	       (abs(yPos - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2.))){
-            //Load another event
-            if (fEvNum<fNEntries){
-                fRooTrackerTree->GetEntry(fEvNum);
-                G4cout << "Skipped event# " << fEvNum - 1 << " (event vertex outside detector)" << G4endl;
-                fEvNum++;
-            }
-            else{
-		G4cout << "End of rootracker file - run terminated..."<< G4endl;
-		G4RunManager::GetRunManager()-> AbortRun();
-                return;
-            }
-	    // Calculate offset from neutrino generation plane to centre of nuPRISM detector
-	    z_offset = fNuPlanePos[2]*cm;
-	    y_offset = 0;//(fNuPrismRadius/zDir)*yDir;
-	    x_offset = fNuPlanePos[0]*cm;
-
-            //Convert coordinates
-	    //Subtract offset to get interaction position in WCSim coordinates
-            xPos = fTmpRootrackerVtx->EvtVtx[0]*m - x_offset;
-            yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
-            zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
+      //Check if event is outside detector; skip to next event if so; keep
+      //loading events until one is found within the detector or there are
+      //no more interaction to simulate for this event.
+      //The current neut vector files do not correspond directly to the detector dimensions, so only keep those events within the detector
+      while (sqrt(pow(xPos,2)+pow(zPos,2)) > (myDetector->GetWCIDDiameter()/2.) ||
+             (abs(yPos - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2.))){
+        //Load another event
+        if (fEvNum<fNEntries){
+          fRooTrackerTree->GetEntry(fEvNum);
+          G4cout << "Skipped event# " << fEvNum - 1 << " (event vertex outside detector)" << G4endl;
+          fEvNum++;
         }
+        else{
+      	  G4cout << "End of rootracker file - run terminated..."<< G4endl;
+      	  G4RunManager::GetRunManager()-> AbortRun();
+          return;
+        }
+        // Calculate offset from neutrino generation plane to centre of nuPRISM detector
+        float x_offset = fNuPlanePos[0]*cm;
+        float y_offset = fNuPlanePos[1]*cm;//0;//(fNuPrismRadius/zDir)*yDir;
+        float z_offset = fNuPlanePos[2]*cm;
 
-	//Generate particles
-	//i = 0 is the neutrino
-	//i = 1 is the target nucleus
-	//i = 2 is the target nucleon
-	//i > 2 are the outgoing particles
+          //Convert coordinates
+          //Subtract offset to get interaction position in WCSim coordinates
+          xPos = fTmpRootrackerVtx->EvtVtx[0]*m - x_offset;
+          yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
+          zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
+      }
 
-	// First simulate the incoming neutrino
-	// Get the neutrino direction
+      //Generate particles
+      //i = 0 is the neutrino
+      //i = 1 is the target nucleus
+      //i = 2 is the target nucleon
+      //i > 2 are the outgoing particles
+      
+      // First simulate the incoming neutrino
+      // Get the neutrino direction
       xDir=fTmpRootrackerVtx->StdHepP4[0][0]*GeV;
       yDir=fTmpRootrackerVtx->StdHepP4[0][1]*GeV;
       zDir=fTmpRootrackerVtx->StdHepP4[0][2]*GeV;
