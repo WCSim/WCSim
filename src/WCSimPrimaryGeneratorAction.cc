@@ -487,9 +487,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       float x_offset = fNuPlanePos[0]*cm;
 
       //Subtract offset to get interaction position in WCSim coordinates
-        xPos = fTmpRootrackerVtx->EvtVtx[0]*cm - x_offset;
-        yPos = fTmpRootrackerVtx->EvtVtx[1]*cm - y_offset;
-        zPos = fTmpRootrackerVtx->EvtVtx[2]*cm - z_offset;
+        xPos = fTmpRootrackerVtx->EvtVtx[0]*m - x_offset;
+        yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
+        zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
 
         //Check if event is outside detector; skip to next event if so; keep
         //loading events until one is found within the detector or there are
@@ -515,9 +515,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
             //Convert coordinates
 	    //Subtract offset to get interaction position in WCSim coordinates
-            xPos = fTmpRootrackerVtx->EvtVtx[0]*cm - x_offset;
-            yPos = fTmpRootrackerVtx->EvtVtx[1]*cm - y_offset;
-            zPos = fTmpRootrackerVtx->EvtVtx[2]*cm - z_offset;
+            xPos = fTmpRootrackerVtx->EvtVtx[0]*m - x_offset;
+            yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
+            zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
         }
 
 	//Generate particles
