@@ -496,7 +496,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       //no more interaction to simulate for this event.
       //The current neut vector files do not correspond directly to the detector dimensions, so only keep those events within the detector
       while (sqrt(pow(xPos,2)+pow(zPos,2)) > (myDetector->GetWCIDDiameter()/2.) ||
-             (abs(yPos - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2.))){
+             (abs(yPos) > (myDetector->GetWCIDHeight()/2.))){
         //Load another event
         if (fEvNum<fNEntries){
           fRooTrackerTree->GetEntry(fEvNum);
@@ -504,8 +504,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
           if(sqrt(pow(xPos,2)+pow(zPos,2)) > (myDetector->GetWCIDDiameter()/2.)){
              G4cout << "Outside radius:  " << sqrt(pow(xPos,2)+pow(zPos,2)) << " > " << (myDetector->GetWCIDDiameter()/2.) << G4endl;
           }
-          if(abs(yPos - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2.)){
-            G4cout << "Outside length:  " << abs(yPos - myDetector->GetWCIDVerticalPosition()) << " > " << (myDetector->GetWCIDHeight()/2.) << G4endl;
+          if(abs(yPos) > (myDetector->GetWCIDHeight()/2.)){
+            G4cout << "Outside length:  " << yPos << " outside +- " << (myDetector->GetWCIDHeight()/2.) << G4endl;
           }
                
 	  fEvNum++;
@@ -516,9 +516,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
           return;
         }
         // Calculate offset from neutrino generation plane to centre of nuPRISM detector
-        float x_offset = fNuPlanePos[0]*cm;
-        float y_offset = fNuPlanePos[1]*cm;//0;//(fNuPrismRadius/zDir)*yDir;
-        float z_offset = fNuPlanePos[2]*cm;
+        x_offset = fNuPlanePos[0]*cm;
+        y_offset = fNuPlanePos[1]*cm;//0;//(fNuPrismRadius/zDir)*yDir;
+        z_offset = fNuPlanePos[2]*cm;
 
           //Convert coordinates
           //Subtract offset to get interaction position in WCSim coordinates
