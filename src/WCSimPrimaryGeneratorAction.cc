@@ -520,11 +520,11 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         y_offset = fNuPlanePos[1]*cm;//0;//(fNuPrismRadius/zDir)*yDir;
         z_offset = fNuPlanePos[2]*cm;
 
-          //Convert coordinates
-          //Subtract offset to get interaction position in WCSim coordinates
-          xPos = fTmpRootrackerVtx->EvtVtx[0]*m - x_offset;
-          yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
-          zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
+        //Convert coordinates
+        //Subtract offset to get interaction position in WCSim coordinates
+        xPos = fTmpRootrackerVtx->EvtVtx[0]*m - x_offset;
+        yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
+        zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
       }
 
       //Generate particles
