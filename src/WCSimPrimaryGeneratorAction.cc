@@ -501,7 +501,14 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         if (fEvNum<fNEntries){
           fRooTrackerTree->GetEntry(fEvNum);
           G4cout << "Skipped event# " << fEvNum - 1 << " (event vertex outside detector)" << G4endl;
-          fEvNum++;
+          if(sqrt(pow(xPos,2)+pow(zPos,2)) > (myDetector->GetWCIDDiameter()/2.)){
+             G4cout << "Outside radius:  " << sqrt(pow(xPos,2)+pow(zPos,2)) << " > " << (myDetector->GetWCIDDiameter()/2.) << G4endl;
+          }
+          if(abs(yPos - myDetector->GetWCIDVerticalPosition()) > (myDetector->GetWCIDHeight()/2.)){
+            G4cout << "Outside length:  " << abs(yPos - myDetector->GetWCIDVerticalPosition()) << " > " << (myDetector->GetWCIDHeight()/2.) << G4endl;
+          }
+               
+	  fEvNum++;
         }
         else{
       	  G4cout << "End of rootracker file - run terminated..."<< G4endl;
