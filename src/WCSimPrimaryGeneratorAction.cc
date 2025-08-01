@@ -137,8 +137,9 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   // Radioactive and Radon generator variables:
   radioactive_sources.clear();
   myRn222Generator	= 0;
-  fRnScenario		= 0;
+  fRnScenario		= 1;
   fRnSymmetry		= 1;
+  fRnWaterConc		= 2.63;
 
   //injector related variables
   nPhotons = 1;
@@ -906,7 +907,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       // Idea: array of fitting graphes? (each new generators having a specific ID)
       if ( !myRn222Generator ) {
       	myRn222Generator = new WCSimGenerator_Radioactivity(myDetector);
-      	myRn222Generator->Configuration(fRnScenario);
+      	myRn222Generator->Configuration(fRnScenario, fRnWaterConc);
       }
 
       //G4cout << " Generate radon events " << G4endl;

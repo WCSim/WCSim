@@ -196,19 +196,27 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   radonScalingCmd = new G4UIcmdWithAString("/mygen/radon_scaling",this);
   radonScalingCmd->SetGuidance("Select scalling scenario, if scenario 0 is selected, Bi214 are generated uniformly");
   radonScalingCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
-  radonScalingCmd->SetGuidance("     SCENARIO : 0, A, B");
-  radonScalingCmd->SetCandidates("0 A B");
+  radonScalingCmd->SetGuidance("     SCENARIO : 0, 1");
+  radonScalingCmd->SetCandidates("0 1");
   param = new G4UIparameter("SCENARIO",'s',true);
-  param->SetDefaultValue("A");
+  param->SetDefaultValue("1");
   radonScalingCmd->SetParameter(param);
   
   radonGeoSymCmd = new G4UIcmdWithAnInteger("/mygen/radon_symmetry",this);
   radonGeoSymCmd->SetGuidance("Select scalling scenario");
-  radonGeoSymCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
+  radonGeoSymCmd->SetGuidance("[usage] /mygen/radon_symmetry SYMMETRY ");
   radonGeoSymCmd->SetGuidance("     SYMMETRY : 1 ... ");
   param = new G4UIparameter("SYMMETRY",'d',true);
   param->SetDefaultValue("1");
   radonGeoSymCmd->SetParameter(param);
+  
+  radonWaterConcCmd = new G4UIcmdWithADouble("/mygen/radon_water_concentration",this);
+  radonWaterConcCmd->SetGuidance("Select scalling scenario");
+  radonWaterConcCmd->SetGuidance("[usage] /mygen/radon_water_concentration WATCONC ");
+  radonWaterConcCmd->SetGuidance("     WATCONC : (double) activity in input water ");
+  param = new G4UIparameter("WATCONC",'f',true);
+  param->SetDefaultValue("2.63");
+  radonWaterConcCmd->SetParameter(param);
 
   mPMTLEDIdCmd1 = new G4UIcmdWithAnInteger("/mPMTLED/PMTid",this);
   mPMTLEDIdCmd1->SetGuidance("Set PMT id for mPMT LED source position. Defaults to 1.");
@@ -227,6 +235,7 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete mydetDirectory;
   delete radonScalingCmd;
   delete radonGeoSymCmd;
+  delete radonWaterConcCmd;
   delete radioactive_time_window_Cmd;
   delete nPhotonsCmd;
   delete injectorOnCmd;
@@ -577,6 +586,11 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     myAction->SetRadonSymmetry(radonGeoSymCmd->GetNewIntValue(newValue));
   }
 
+  if ( command==radonWaterConcCmd )
+  {
+    myAction->SetRadonWaterConcentration(radonWaterConcCmd->GetNewDoubleValue(newValue));
+  }
+
   if ( command==timeUnitCmd)
   {
     myAction->SetTimeUnit(newValue);
@@ -611,6 +625,11 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
   if ( command==radonGeoSymCmd ) 
     {
       myAction->SetRadonSymmetry(radonGeoSymCmd->GetNewIntValue(newValue));
+    }
+
+  if ( command==radonWaterConcCmd )
+    {
+      myAction->SetRadonWaterConcentration(radonWaterConcCmd->GetNewDoubleValue(newValue));
     }
   
   if ( command==nPhotonsCmd ) 
@@ -771,8 +790,7 @@ void WCSimPrimaryGeneratorMessenger::RadonScalingCommand(G4String newValue)
   G4String scenario = next();
   G4int iScenario = 0;
    
-  if ( scenario == "A" ) iScenario = 1; // Relative scaling with respect to full ID volume (Pessimistic)
-  if ( scenario == "B" ) iScenario = 2; // Relative scaling with respect to fiducial volume
+  if ( scenario == "A" ) iScenario = 1; // Relative scaling with respect to full ID volume 
    
   myAction->SetRadonScenario(iScenario);
 }

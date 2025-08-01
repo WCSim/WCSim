@@ -40,9 +40,10 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithAString* fileNameCmdCosmics;
   G4UIcmdWithAString* timeUnitCmd;
   G4UIcmdWithAString* isotopeCmd;
-  G4UIcmdWithAString* radonScalingCmd;
   G4UIcmdWithADouble* radioactive_time_window_Cmd;
+  G4UIcmdWithAString* radonScalingCmd;
   G4UIcmdWithAnInteger* radonGeoSymCmd;
+  G4UIcmdWithADouble* radonWaterConcCmd;
 
   // K.M.Tsui: addition of injector events
   G4UIcmdWithAnInteger* nPhotonsCmd;
