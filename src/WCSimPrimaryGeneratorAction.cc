@@ -139,7 +139,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   myRn222Generator	= 0;
   fRnScenario		= 1;
   fRnSymmetry		= 1;
-  fRnWaterConc		= 2.63;
+  fRnWaterConc		= 2.63; // mBq/m3 from SK
 
   //injector related variables
   nPhotons = 1;

@@ -193,8 +193,8 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   param->SetDefaultValue("0");
   isotopeCmd->SetParameter(param);
   
-  radonScalingCmd = new G4UIcmdWithAString("/mygen/radon_scaling",this);
-  radonScalingCmd->SetGuidance("Select scalling scenario, if scenario 0 is selected, Bi214 are generated uniformly");
+  radonScalingCmd = new G4UIcmdWithAnInteger("/mygen/radon_scaling",this);
+  radonScalingCmd->SetGuidance("Select scaling scenario, if scenario 0 is selected, Bi214 are generated uniformly");
   radonScalingCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
   radonScalingCmd->SetGuidance("     SCENARIO : 0, 1");
   radonScalingCmd->SetCandidates("0 1");
@@ -203,7 +203,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   radonScalingCmd->SetParameter(param);
   
   radonGeoSymCmd = new G4UIcmdWithAnInteger("/mygen/radon_symmetry",this);
-  radonGeoSymCmd->SetGuidance("Select scalling scenario");
+  radonGeoSymCmd->SetGuidance("Specify the symmetry value");
   radonGeoSymCmd->SetGuidance("[usage] /mygen/radon_symmetry SYMMETRY ");
   radonGeoSymCmd->SetGuidance("     SYMMETRY : 1 ... ");
   param = new G4UIparameter("SYMMETRY",'d',true);
@@ -211,9 +211,9 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   radonGeoSymCmd->SetParameter(param);
   
   radonWaterConcCmd = new G4UIcmdWithADouble("/mygen/radon_water_concentration",this);
-  radonWaterConcCmd->SetGuidance("Select scalling scenario");
+  radonWaterConcCmd->SetGuidance("Specify the input water concentration in mBq/m3");
   radonWaterConcCmd->SetGuidance("[usage] /mygen/radon_water_concentration WATCONC ");
-  radonWaterConcCmd->SetGuidance("     WATCONC : (double) activity in input water ");
+  radonWaterConcCmd->SetGuidance("     WATCONC : (double) activity in input water in mBq/m3 ");
   param = new G4UIparameter("WATCONC",'f',true);
   param->SetDefaultValue("2.63");
   radonWaterConcCmd->SetParameter(param);
@@ -578,7 +578,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
 
   if ( command==radonScalingCmd )
   {
-    RadonScalingCommand(newValue);
+    myAction->SetRadonScenario(radonScalingCmd->GetNewIntValue(newValue));
   }
 
   if ( command==radonGeoSymCmd )
@@ -612,26 +612,6 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       G4cout << "PoissonPMT mean set to: " << poisMeanCmd->GetNewDoubleValue(newValue) << G4endl;
     }
     
-  if( command==radioactive_time_window_Cmd )
-    {
-      myAction->SetRadioactiveTimeWindow(StoD(newValue));
-    }
-  
-  if ( command==radonScalingCmd ) 
-    {
-      RadonScalingCommand(newValue);
-    }
-  
-  if ( command==radonGeoSymCmd ) 
-    {
-      myAction->SetRadonSymmetry(radonGeoSymCmd->GetNewIntValue(newValue));
-    }
-
-  if ( command==radonWaterConcCmd )
-    {
-      myAction->SetRadonWaterConcentration(radonWaterConcCmd->GetNewDoubleValue(newValue));
-    }
-  
   if ( command==nPhotonsCmd ) 
     {
       myAction->SetInjectorBeamPhotons(nPhotonsCmd->GetNewIntValue(newValue));

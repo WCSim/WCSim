@@ -41,7 +41,7 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithAString* timeUnitCmd;
   G4UIcmdWithAString* isotopeCmd;
   G4UIcmdWithADouble* radioactive_time_window_Cmd;
-  G4UIcmdWithAString* radonScalingCmd;
+  G4UIcmdWithAnInteger* radonScalingCmd;
   G4UIcmdWithAnInteger* radonGeoSymCmd;
   G4UIcmdWithADouble* radonWaterConcCmd;
 
