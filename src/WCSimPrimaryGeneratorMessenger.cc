@@ -197,7 +197,6 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   radonScalingCmd->SetGuidance("Select scaling scenario, if scenario 0 is selected, Bi214 are generated uniformly");
   radonScalingCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
   radonScalingCmd->SetGuidance("     SCENARIO : 0, 1");
-  radonScalingCmd->SetCandidates("0 1");
   param = new G4UIparameter("SCENARIO",'s',true);
   param->SetDefaultValue("1");
   radonScalingCmd->SetParameter(param);
