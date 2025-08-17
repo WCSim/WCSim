@@ -74,7 +74,7 @@ public:
 
         G4VParticleChange* PostStepDoIt(const G4Track& aTrack,
                                        const G4Step&  aStep);
-        // This is the method implementing Rayleigh scattering.
+        // This is the method implementing Raman scattering.
 
         G4PhysicsTable* GetPhysicsTable() const;
         // Returns the address of the physics table.
