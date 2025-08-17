@@ -140,4 +140,4 @@ inline G4PhysicsTable* WCSimOpRaman::GetPhysicsTable() const
 }
 
 
-#endif /* G4OpRayleigh_h */
+#endif /* WCSimOpRaman_h */
