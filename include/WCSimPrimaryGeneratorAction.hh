@@ -150,6 +150,7 @@ private:
   WCSimGenerator_Radioactivity* myRn222Generator;
   G4int fRnScenario;
   G4int fRnSymmetry;
+  G4double fRnWaterConc;
 
   G4bool   usePoissonPMT;
   G4double poissonPMTMean;
@@ -367,6 +368,9 @@ private:
 
   inline void SetRadonSymmetry(G4int choice) 		{ fRnSymmetry = choice; }
   inline G4int GetRadonSymmetry() 			{ return fRnSymmetry; }
+
+  inline void SetRadonWaterConcentration(G4double choice) { fRnWaterConc = choice; }
+  inline G4double GetRadonWaterConcentration()		{ return fRnWaterConc; }
 
   inline void SetPoissonPMT(G4bool choice) { usePoissonPMT = choice; }
   inline G4bool IsUsingPoissonPMT(){ return usePoissonPMT; }

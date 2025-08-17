@@ -13,7 +13,8 @@ using std::endl;
 using std::cout;
 
 //______________________________________________________________________________
-WCSimRootOptions::WCSimRootOptions()
+WCSimRootOptions::WCSimRootOptions():
+  WCSimVersion("")
 {
   // Create a WCSimRootOptions object.
 
@@ -28,6 +29,7 @@ WCSimRootOptions::~WCSimRootOptions()
 void WCSimRootOptions::Print(Option_t *) const
 {
   cout
+    << "WCSim version: " << WCSimVersion << endl
     << "Detector construction:" << endl
     << "\tDetectorName: " << DetectorName << endl
     << "\tDetectorHasOD: " << (GeomHasOD ? "yes" : "no") << endl
