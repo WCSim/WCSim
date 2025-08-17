@@ -60,8 +60,8 @@ public:
         // Methods
         ////////////
 
+        /// Returns true -> 'is applicable' only for an optical photon.
         G4bool IsApplicable(const G4ParticleDefinition& aParticleType);
-        // Returns true -> 'is applicable' only for an optical photon.
 
         void BuildPhysicsTable(const G4ParticleDefinition& aParticleType);
         // Build thePhysicsTable at a right time
