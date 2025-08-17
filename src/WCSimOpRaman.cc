@@ -1,68 +1,6 @@
 // Modified copy of G4OpRayleigh.cc of geant4.10 to implement Raman scattering
 // Reference: APPLIED OPTICS / Vol. 37, No. 15 / 20 May 1998
 //
-// ********************************************************************
-// * License and Disclaimer                                           *
-// *                                                                  *
-// * The  Geant4 software  is  copyright of the Copyright Holders  of *
-// * the Geant4 Collaboration.  It is provided  under  the terms  and *
-// * conditions of the Geant4 Software License,  included in the file *
-// * LICENSE and available at  http://cern.ch/geant4/license .  These *
-// * include a list of copyright holders.                             *
-// *                                                                  *
-// * Neither the authors of this software system, nor their employing *
-// * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
-// * regarding  this  software system or assume any liability for its *
-// * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
-// *                                                                  *
-// * This  code  implementation is the result of  the  scientific and *
-// * technical work of the GEANT4 collaboration.                      *
-// * By using,  copying,  modifying or  distributing the software (or *
-// * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your *
-// * acceptance of all terms of the Geant4 Software license.          *
-// ********************************************************************
-//
-//
-// $Id: G4OpRayleigh.cc 92045 2015-08-14 07:21:23Z gcosmo $
-//
-// 
-////////////////////////////////////////////////////////////////////////
-// Optical Photon Rayleigh Scattering Class Implementation
-////////////////////////////////////////////////////////////////////////
-//
-// File:        G4OpRayleigh.cc
-// Description: Discrete Process -- Rayleigh scattering of optical
-//		photons
-// Version:     1.0
-// Created:     1996-05-31
-// Author:      Juliet Armstrong
-// Updated:     2014-10-10 -  This version calculates the Rayleigh scattering   
-//              length for more materials than just Water (although the Water
-//              default is kept). To do this the user would need to specify the
-//              ISOTHERMAL_COMPRESSIBILITY as a material property and
-//              optionally an RS_SCALE_LENGTH (useful for testing). Code comes
-//              from Philip Graham (Queen Mary University of London).
-//              2010-06-11 - Fix Bug 207; Thanks to Xin Qian
-//              (Kellogg Radiation Lab of Caltech)
-//              2005-07-28 - add G4ProcessType to constructor
-//              2001-10-18 by Peter Gumplinger
-//              eliminate unused variable warning on Linux (gcc-2.95.2)
-//              2001-09-18 by mma
-//		>numOfMaterials=G4Material::GetNumberOfMaterials() in BuildPhy
-//              2001-01-30 by Peter Gumplinger
-//              > allow for positiv and negative CosTheta and force the
-//              > new momentum direction to be in the same plane as the
-//              > new and old polarization vectors
-//              2001-01-29 by Peter Gumplinger
-//              > fix calculation of SinTheta (from CosTheta)
-//              1997-04-09 by Peter Gumplinger
-//              > new physics/tracking scheme
-// mail:        gum@triumf.ca
-//
-////////////////////////////////////////////////////////////////////////
 
 #include "WCSimOpRaman.hh"
 
