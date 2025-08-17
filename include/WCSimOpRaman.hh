@@ -23,7 +23,7 @@
 #include "G4PhysicsOrderedFreeVector.hh"
 
 // Class Description:
-// Discrete Process -- Rayleigh scattering of optical photons.
+// Discrete Process -- Raman scattering of optical photons.
 // Class inherits publicly from G4VDiscreteProcess.
 // Class Description - End:
 
@@ -63,24 +63,24 @@ public:
         /// Returns true -> 'is applicable' only for an optical photon.
         G4bool IsApplicable(const G4ParticleDefinition& aParticleType);
 
+        /// Build thePhysicsTable at a right time
         void BuildPhysicsTable(const G4ParticleDefinition& aParticleType);
-        // Build thePhysicsTable at a right time
 
+        /// Returns the mean free path for Raman scattering in water.
+        /// --- Not yet implemented for other materials! ---
         G4double GetMeanFreePath(const G4Track& aTrack,
 				 G4double ,
                                  G4ForceCondition* );
-        // Returns the mean free path for Raman scattering in water.
-        // --- Not yet implemented for other materials! ---
 
+        /// This is the method implementing Raman scattering.
         G4VParticleChange* PostStepDoIt(const G4Track& aTrack,
                                        const G4Step&  aStep);
-        // This is the method implementing Raman scattering.
 
+        /// Returns the address of the physics table.
         G4PhysicsTable* GetPhysicsTable() const;
-        // Returns the address of the physics table.
 
+        /// Prints the physics table.
         void DumpPhysicsTable() const;
-        // Prints the physics table.
 
 private:
 
@@ -102,10 +102,10 @@ private:
 
 protected:
 
+        ///  A Physics Table can be either a cross-sections table or
+        ///  an energy table (or can be used for other specific
+        ///  purposes).
         G4PhysicsTable* thePhysicsTable;
-        //  A Physics Table can be either a cross-sections table or
-        //  an energy table (or can be used for other specific
-        //  purposes).
 
 private:
 };
