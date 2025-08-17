@@ -69,7 +69,7 @@ public:
         G4double GetMeanFreePath(const G4Track& aTrack,
 				 G4double ,
                                  G4ForceCondition* );
-        // Returns the mean free path for Rayleigh scattering in water.
+        // Returns the mean free path for Raman scattering in water.
         // --- Not yet implemented for other materials! ---
 
         G4VParticleChange* PostStepDoIt(const G4Track& aTrack,
