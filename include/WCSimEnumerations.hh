@@ -146,6 +146,7 @@ typedef enum EProcessType { // Diego Costas 27/02/2024
   kOpMieHG,
   kOpAbsorption,
   kOpRayleigh,
+  kOpRaman,
   kOpBoundaryProcess,
   kHImpactIonisation,
   kPolarizedGammaConversion,

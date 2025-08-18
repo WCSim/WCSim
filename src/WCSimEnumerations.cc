@@ -387,6 +387,9 @@ std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
   case (kOpRayleigh) :
     return "OpRayleigh";
     break;
+  case (kOpRaman) :
+    return "OpRaman";
+    break;
   case (kOpBoundaryProcess) :
     return "OpBoundary";
     break;
