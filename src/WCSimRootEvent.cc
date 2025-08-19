@@ -626,11 +626,15 @@ WCSimRootCherenkovHit *WCSimRootTrigger::AddCherenkovHit(Int_t tubeID,
 WCSimRootCherenkovHitHistory *WCSimRootTrigger::AddCherenkovHitHistory(Int_t nRayScat,
              Int_t nRamScat,
              Int_t nMieScat,
-					   std::vector<ReflectionSurface_t> reflec)
+					   std::vector<ReflectionSurface_t> reflec,
+					   std::vector<Float_t> &x,
+					   std::vector<Float_t> &y,
+					   std::vector<Float_t> &z,
+					   std::vector<StepType_t> &type )
 {
   // Add a new Cherenkov hit history to the list of Cherenkov hit histories
   TClonesArray &cherenkovhithistories = *fCherenkovHitHistories;
-  WCSimRootCherenkovHitHistory* cherenkovhithistory = new(cherenkovhithistories[fNcherenkovhithistories++]) WCSimRootCherenkovHitHistory(nRayScat,nRamScat,nMieScat,reflec);
+  WCSimRootCherenkovHitHistory* cherenkovhithistory = new(cherenkovhithistories[fNcherenkovhithistories++]) WCSimRootCherenkovHitHistory(nRayScat,nRamScat,nMieScat,reflec,x,y,z,type);
   return cherenkovhithistory;
 }
 
@@ -688,13 +692,17 @@ WCSimRootCherenkovHitTime::WCSimRootCherenkovHitTime(Double_t truetime,
   }
 }
 
-WCSimRootCherenkovHitHistory::WCSimRootCherenkovHitHistory(Int_t nRayScat, Int_t nRamScat, Int_t nMieScat, std::vector<ReflectionSurface_t> refle)
+WCSimRootCherenkovHitHistory::WCSimRootCherenkovHitHistory(Int_t nRayScat,Int_t nRamScat, Int_t nMieScat, std::vector<ReflectionSurface_t> refle, std::vector<Float_t> &x, std::vector<Float_t> &y, std::vector<Float_t> &z, std::vector<StepType_t> & type)
 {
   // Create a WCSimRootCherenkovHitHistory object and fill it with stuff
   fNRayScat = nRayScat;
   fNRamScat = nRamScat;
   fNMieScat = nMieScat;
   fReflec = refle;
+  fStepsX = x;
+  fStepsY = y;
+  fStepsZ = z;
+  fStepsType = type;
 }
 
 //_____________________________________________________________________________
@@ -928,6 +936,10 @@ bool WCSimRootCherenkovHitHistory::CompareAllVariables(const WCSimRootCherenkovH
   failed = (!ComparisonPassed(fNRamScat, c->GetNRamScatters(), typeid(*this).name(), __func__, "RamanScattering")) || failed;
   failed = (!ComparisonPassed(fNMieScat, c->GetNMieScatters(), typeid(*this).name(), __func__, "MieScattering")) || failed;
   failed = (!ComparisonPassedVec(std::vector<int>(fReflec.begin(),fReflec.end()), std::vector<int>(c->GetReflectionSurfaces().begin(),c->GetReflectionSurfaces().end()), typeid(*this).name(), __func__, "Reflection")) || failed;
+  failed = (!ComparisonPassedVec(fStepsX, c->GetStepsX(), typeid(*this).name(), __func__, "StepsX")) || failed;
+  failed = (!ComparisonPassedVec(fStepsY, c->GetStepsY(), typeid(*this).name(), __func__, "StepsY")) || failed;
+  failed = (!ComparisonPassedVec(fStepsZ, c->GetStepsZ(), typeid(*this).name(), __func__, "StepsZ")) || failed;
+  failed = (!ComparisonPassedVec(std::vector<int>(fStepsType.begin(),fStepsType.end()), std::vector<int>(c->GetStepsType().begin(),c->GetStepsType().end()), typeid(*this).name(), __func__, "StepsType")) || failed;
 
   return !failed;
 }

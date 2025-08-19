@@ -219,10 +219,14 @@ private:
   Int_t   fNRamScat; //!< Number of Raman scatters the photon that created this hit underwent
   Int_t   fNMieScat; //!< Number of Mie scatters the photon that created this hit underwent
   std::vector<ReflectionSurface_t> fReflec; //!< Surfaces of reflections that the photon that created this hit underwent
+  std::vector<Float_t> fStepsX; //!< Positon X of steps in the path of the photon that created this hit
+  std::vector<Float_t> fStepsY; //!< Positon Y of steps in the path of the photon that created this hit
+  std::vector<Float_t> fStepsZ; //!< Positon Z of steps in the path of the photon that created this hit
+  std::vector<StepType_t> fStepsType; //!< Type of steps in the path of the photon that created this hit
 
 public:
   WCSimRootCherenkovHitHistory() {}
-  WCSimRootCherenkovHitHistory(Int_t nRayScat, Int_t nRamScat, Int_t nMieScat, std::vector<ReflectionSurface_t> refle);
+  WCSimRootCherenkovHitHistory(Int_t nRayScat, Int_t nRamScat, Int_t nMieScat, std::vector<ReflectionSurface_t> refle, std::vector<Float_t> &x, std::vector<Float_t> &y, std::vector<Float_t> &z, std::vector<StepType_t> & type);
   virtual ~WCSimRootCherenkovHitHistory() { }
   bool CompareAllVariables(const WCSimRootCherenkovHitHistory * c) const;
 
@@ -230,6 +234,10 @@ public:
   Int_t     GetNRamScatters() const { return fNRamScat; } // Get the number of Raman scattering a photon experienced
   Int_t     GetNMieScatters() const { return fNMieScat; } // Get the number of Mie scattering a photon experienced
   std::vector<ReflectionSurface_t> GetReflectionSurfaces() const { return fReflec; } //  Get the vector of reflection surfaces a photon experienced
+  std::vector<Float_t> GetStepsX() const { return fStepsX; } //  Get the vector of step positions X in the photon path
+  std::vector<Float_t> GetStepsY() const { return fStepsY; } //  Get the vector of step positions Y in the photon path
+  std::vector<Float_t> GetStepsZ() const { return fStepsZ; } //  Get the vector of step positions Z in the photon path
+  std::vector<StepType_t> GetStepsType() const { return fStepsType; } //  Get the vector of step types in the photon path
 
   ClassDef(WCSimRootCherenkovHitHistory,1)
 };
@@ -592,7 +600,11 @@ public:
   WCSimRootCherenkovHitHistory   *AddCherenkovHitHistory(Int_t nRayScat,
              Int_t nRamScat,
              Int_t nMieScat,
-					   std::vector<ReflectionSurface_t> reflec);
+					   std::vector<ReflectionSurface_t> reflec,
+					   std::vector<Float_t> &x,
+					   std::vector<Float_t> &y,
+					   std::vector<Float_t> &z,
+					   std::vector<StepType_t> &type );
   TClonesArray        *GetCherenkovHits() const {return fCherenkovHits;}
   TClonesArray        *GetCherenkovHitTimes() const {return fCherenkovHitTimes;}
   TClonesArray        *GetCherenkovHitHistories() const {return fCherenkovHitHistories;}

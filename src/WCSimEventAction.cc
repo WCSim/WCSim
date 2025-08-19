@@ -1493,6 +1493,10 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
         int hit_photon_RamScatter = 0;
         int hit_photon_MieScatter = 0;
         std::vector<ReflectionSurface_t> hit_photon_reflection = std::vector<ReflectionSurface_t>();
+        std::vector<float> hit_photon_step_x;
+        std::vector<float> hit_photon_step_y;
+        std::vector<float> hit_photon_step_z;
+        std::vector<StepType_t> hit_photon_step_type = std::vector<StepType_t>();
         if (trackID>0) // skip noise hit
         {
           WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[trajMap[trackID]];
@@ -1500,8 +1504,21 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
           hit_photon_RamScatter = trj->GetPhotonRamScatter();
           hit_photon_MieScatter = trj->GetPhotonMieScatter();
           hit_photon_reflection = trj->GetPhotonReflection();
+          for (unsigned int istep=0; istep<trj->GetPhotonStepPosition().size(); istep++) {
+            hit_photon_step_x.push_back(trj->GetPhotonStepPosition()[istep].x());
+            hit_photon_step_y.push_back(trj->GetPhotonStepPosition()[istep].y());
+            hit_photon_step_z.push_back(trj->GetPhotonStepPosition()[istep].z());
+            hit_photon_step_type.push_back(trj->GetPhotonStepType()[istep]);
+          }
         }
-        wcsimrootevent->AddCherenkovHitHistory(hit_photon_RayScatter,hit_photon_RamScatter,hit_photon_MieScatter,hit_photon_reflection);
+        wcsimrootevent->AddCherenkovHitHistory(hit_photon_RayScatter,
+                                               hit_photon_RamScatter,
+                                               hit_photon_MieScatter,
+                                               hit_photon_reflection,
+                                               hit_photon_step_x,
+                                               hit_photon_step_y,
+                                               hit_photon_step_z,
+                                               hit_photon_step_type);
 #endif
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);
@@ -2072,6 +2089,10 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
         int hit_photon_RamScatter = 0;
         int hit_photon_MieScatter = 0;
         std::vector<ReflectionSurface_t> hit_photon_reflection = std::vector<ReflectionSurface_t>();
+        std::vector<float> hit_photon_step_x;
+        std::vector<float> hit_photon_step_y;
+        std::vector<float> hit_photon_step_z;
+        std::vector<StepType_t> hit_photon_step_type = std::vector<StepType_t>();
         if (trackID>0) // skip noise hit
         {
           WCSimTrajectory* trj = (WCSimTrajectory*)(*TC)[trajMap[trackID]];
@@ -2079,8 +2100,21 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
           hit_photon_RamScatter = trj->GetPhotonRamScatter();
           hit_photon_MieScatter = trj->GetPhotonMieScatter();
           hit_photon_reflection = trj->GetPhotonReflection();
+          for (unsigned int istep=0; istep<trj->GetPhotonStepPosition().size(); istep++) {
+            hit_photon_step_x.push_back(trj->GetPhotonStepPosition()[istep].x());
+            hit_photon_step_y.push_back(trj->GetPhotonStepPosition()[istep].y());
+            hit_photon_step_z.push_back(trj->GetPhotonStepPosition()[istep].z());
+            hit_photon_step_type.push_back(trj->GetPhotonStepType()[istep]);
+          }
         }
-        wcsimrootevent->AddCherenkovHitHistory(hit_photon_RayScatter,hit_photon_RamScatter,hit_photon_MieScatter,hit_photon_reflection);
+        wcsimrootevent->AddCherenkovHitHistory(hit_photon_RayScatter,
+                                               hit_photon_RamScatter,
+                                               hit_photon_MieScatter,
+                                               hit_photon_reflection,
+                                               hit_photon_step_x,
+                                               hit_photon_step_y,
+                                               hit_photon_step_z,
+                                               hit_photon_step_type);
 #endif
 	hit_time_true  = (*WCDC_hits)[idigi]->GetPreSmearTime(id);
 	hit_parentid = (*WCDC_hits)[idigi]->GetParentID(id);

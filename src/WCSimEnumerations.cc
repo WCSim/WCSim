@@ -123,6 +123,31 @@ std::string WCSimEnumerations::EnumAsString(ReflectionSurface_t r)
   return "";
 }
  
+std::string WCSimEnumerations::EnumAsString(StepType_t s)
+{
+  switch(s) {
+  case (kOtherStep) :
+    return "OtherStep";
+    break;
+  case (kRayleighStep) :
+    return "RayleighStep";
+    break;
+  case (kRamanStep) :
+    return "RamanStep";
+    break;
+  case (kMieStep) :
+    return "MieStep";
+    break;
+  case (kReflectionStep) :
+    return "ReflectionStep";
+    break;
+  default:
+    return "";
+    break;
+  }
+  return "";
+}
+
 std::string WCSimEnumerations::EnumAsString(ProcessType_t p)
 {
   switch(p) {
