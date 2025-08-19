@@ -201,7 +201,7 @@ public:
   ProcessType_t GetPhotonCreatorProcess() const {return  fPhotonCreatorProcess;}
   std::string   GetPhotonCreatorProcessName() const {return  WCSimEnumerations::EnumAsString(fPhotonCreatorProcess);}
 
-  ClassDef(WCSimRootCherenkovHitTime,2)
+  ClassDef(WCSimRootCherenkovHitTime,3)
 };
 
 /**
@@ -239,7 +239,7 @@ public:
   std::vector<Float_t> GetStepsZ() const { return fStepsZ; } //  Get the vector of step positions Z in the photon path
   std::vector<StepType_t> GetStepsType() const { return fStepsType; } //  Get the vector of step types in the photon path
 
-  ClassDef(WCSimRootCherenkovHitHistory,1)
+  ClassDef(WCSimRootCherenkovHitHistory,2)
 };
 
 
