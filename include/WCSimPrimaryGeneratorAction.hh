@@ -131,6 +131,12 @@ private:
     // IBD generator object
   WCSimIBDGen* IBDGen;
 
+  // Data table reader
+  int event_n = 0;
+  int line_n = 0;
+  int dataTableStartEvent;
+  int dataTableNEvents;
+
   // HepMC3 reader
   G4String hepmc3_filename;
     // HepMC3 reader object
@@ -291,11 +297,15 @@ private:
   inline void SetLightInjectorWavelength(G4double choice)   { injectorWavelength = choice; }
   inline void SetLightInjectorMode(G4bool choice)         { photonMode = choice; }
 
+  // Data table reader
   inline void SetDataTableEvtGenerator(G4bool choice) {
     useDataTableEvt = choice;
   }
   inline G4bool IsUsingDataTableEvtGenerator() { return useDataTableEvt; }
-
+  inline void SetDataTableStartEvent(G4int choice) { dataTableStartEvent = choice; }
+  inline G4int GetDataTableStartEvent() { return dataTableStartEvent; }
+  inline void SetDataTableNEvents(G4int choice) { dataTableNEvents = choice; }
+  inline G4int GetDataTableNEvents() { return dataTableNEvents; }
 
   inline void SetmPMTledEvtGenerator(G4bool choice) { useMPMTledEvt = choice; }
   inline G4bool IsUsingmPMTledEvtGenerator()  { return useMPMTledEvt; }

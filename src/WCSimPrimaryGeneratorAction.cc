@@ -1026,6 +1026,18 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         particleGun->GeneratePrimaryVertex(anEvent);
 
     } else if (useDataTableEvt) {
+
+    // Check if the event limit has been reached
+    if (event_n >= dataTableNEvents + dataTableStartEvent && dataTableNEvents != -1) {
+      G4cout << "\033[1;33m";
+      G4cout << "Datatable reader: [INFO] Event limit of " << dataTableNEvents << " reached - run terminated..."
+             << G4endl;
+      G4cout << "\033[0m";
+      G4RunManager::GetRunManager()->AbortRun();
+      return;
+    }
+
+
     // Setup local variables to store the data table values
     G4int index;
     G4int pdgid;
@@ -1059,24 +1071,36 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       if (line.empty() || line[0] == '#') {
         continue;
       }
-
-      // If we've reached the end of the file before beamOn events have been reached then we need to stop
-      if (inputFile.eof()) {
-        G4cout << "End of datatable file - run terminated..." << G4endl;
-        G4RunManager::GetRunManager()->AbortRun();
-      }
-
-      if(nParticles > MAX_N_VERTICES){
-        G4cout << "CANNOT DEAL WITH MORE THAN " << MAX_N_VERTICES << " VERTICES" << G4endl;
-        exit(-1);
-      }
-
       // Buffer to convert between string and other variables
       std::istringstream buffer(line);
 
       // Load information into local variables
       buffer >> index >> pdgid >> ene >> pos[0] >> pos[1] >> pos[2] >> dir[0] >>
           dir[1] >> dir[2] >> t;
+
+      // Don't simulate if the event number is less than the start event number from the macro
+      if (event_n < dataTableStartEvent) {
+        // Dont simulate any events before the start event
+        if (index == 0 && line_n > 0) {
+          event_n++;
+        }
+        // If the event number is still less than the start event then do not simulate
+        if (event_n < dataTableStartEvent) {
+          line_n++;
+          continue;
+        }
+        // Otherwise we can carry on and simulate
+      }
+
+      // Increment the line number
+      line_n++;
+
+
+      if(nParticles > MAX_N_VERTICES){
+        G4cout << "CANNOT DEAL WITH MORE THAN " << MAX_N_VERTICES << " VERTICES" << G4endl;
+        exit(-1);
+      }
+
 
       // We've reached the end of the event N that we're generating and have also read the first line of event
       // N + 1. We need to rewind to the start of event N + 1 so that the first particle of N + 1 is not missed when
@@ -1101,6 +1125,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       // Print out the first three particles in the event to be generated
       if (index < 3) {
         // Use the kinetic energy, not total
+        G4cout << "\033[1;32m";
         G4cout << G4endl
                << "=====================================================\n"
                << "Generating particle " << index << " with id = " << pdgid
@@ -1110,6 +1135,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                << dir[1] << ", " << dir[2]
                << "\n====================================================="
                << G4endl;
+        G4cout << "\033[0m";
       }
 
       // No longer on the first particle
@@ -1130,10 +1156,34 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       particleGun->GeneratePrimaryVertex(anEvent);
     }
 
-    G4cout << "Number of particles generated for this event: " << nParticles << G4endl;
+    // Check if event_n is still less than the start event
+    if (event_n < dataTableStartEvent) {
+      // There has been an error if we reach this point.
+      // Start event has possibly been set to a value greater than the number of events in the file
+      G4cout << "\033[1;31m";
+      G4cout << "Datatable reader: [ERROR] Start event (/mygen/dataTableStartEvent " << dataTableStartEvent
+             << ") could not be reached. The start event may be set higher than the number of events in the datatable - exiting..." << G4endl;
+      G4cout << "\033[0m";
+      exit(-1);
+    }
+
+    // Increment the event counter
+    event_n++;
+
+    G4cout << "\033[1;32m";
+    G4cout << "Datatable reader: [INFO] Number of particles generated for this event: " << nParticles << G4endl;
+    G4cout << "\033[0m";
 
     // Set the number of particles in this event
     SetNvtxs(nParticles);
+
+    // If we've reached the end of the file before beamOn events have been reached then we need to stop
+    if (inputFile.eof()) {
+      G4cout << "\033[1;33m";
+      G4cout << "Datatable reader: [INFO] End of datatable file - run terminated..." << G4endl;
+      G4cout << "\033[0m";
+      G4RunManager::GetRunManager()->AbortRun();
+    }
 
   } else if (useCosmics) {
 
