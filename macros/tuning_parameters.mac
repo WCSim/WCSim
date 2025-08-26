@@ -1,4 +1,7 @@
 # Set tuning parameters
+# Set rayff>0 to scale the Rayleigh mean free path in water hard-coded in WCSimContructMaterials.cc, based on SK data
+# Set rayff<=0 to use the Rayleigh mean free path in water calculated by Geant4
+# If activating Raman scattering, using the Geant4 value is the current recommendation (the SK measurement of Rayleigh scattering may have a Raman effect)
 /WCSim/tuning/abwff 1.30
 /WCSim/tuning/rgcff 0.32
 /WCSim/tuning/rayff 0.75

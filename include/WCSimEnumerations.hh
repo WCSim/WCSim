@@ -52,6 +52,14 @@ typedef enum EReflectionSurface {
   kPhotocathodeS
 } ReflectionSurface_t;
 
+typedef enum EStepType {
+  kOtherStep=0,
+  kRayleighStep,
+  kMieStep,
+  kRamanStep,
+  kReflectionStep,
+} StepType_t;
+
 /*!
  * The process that directly created an object.
  * Used in the output files for true tracks and true hits.
@@ -146,6 +154,7 @@ typedef enum EProcessType { // Diego Costas 27/02/2024
   kOpMieHG,
   kOpAbsorption,
   kOpRayleigh,
+  kOpRaman,
   kOpBoundaryProcess,
   kHImpactIonisation,
   kPolarizedGammaConversion,
@@ -187,6 +196,7 @@ public:
   static std::string EnumAsString(WCSimRandomGenerator_t r);
   static std::string EnumAsString(BoundaryType_t b);
   static std::string EnumAsString(ReflectionSurface_t r);
+  static std::string EnumAsString(StepType_t r);
   //! These ProcessType_t strings must use the same naming convention as Geant4
   static std::string EnumAsString(ProcessType_t p);
   //! These ProcessType_t strings must use the same naming convention as Geant4
