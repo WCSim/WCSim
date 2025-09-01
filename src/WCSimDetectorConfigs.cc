@@ -445,7 +445,11 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
+#if 0
   G4String WLSType = "EljenEJ286";
+#else
+  G4String WLSType = "Kuraray";
+#endif
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -885,7 +889,11 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Geometry()
   isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
+#if 0
   G4String WLSType = "EljenEJ286";
+#else
+  G4String WLSType = "Kuraray";
+#endif  
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -997,7 +1005,11 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
   isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
+#if 0
   G4String WLSType = "EljenEJ286";
+#else
+  G4String WLSType = "Kuraray";
+#endif
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -1110,7 +1122,11 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_IDonly_Realistic_Geometry()
   isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
+#if 0
   G4String WLSType = "EljenEJ286";
+#else
+  G4String WLSType = "Kuraray";
+#endif
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
