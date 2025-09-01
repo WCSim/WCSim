@@ -230,7 +230,7 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   RegionCmd = new G4UIcmdWithAString("/mygen/region", this);
   RegionCmd->SetGuidance("Set region for accepting events from RooTracker input");
   RegionCmd->SetGuidance("[usage] /mygen/region REGION");
-  RegionCmd->SetGuidance("REGIONL  ID, OD_INNER, OD_OUTER");
+  RegionCmd->SetGuidance("REGION:  ID, OD_INNER, OD_OUTER");
   RegionCmd->SetParameterName("region", true);
   RegionCmd->SetCandidates("ID OD_INNER OD_OUTER");
   RegionCmd->SetDefaultValue(myAction->GetRegionString());
