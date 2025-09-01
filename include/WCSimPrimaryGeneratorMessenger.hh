@@ -75,6 +75,10 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   
   void IsotopeCommand(G4String newValue);
   void RadonScalingCommand(G4String newValue);
+
+  // Region to accept events for RooTracker input
+  G4UIcmdWithAString* RegionCmd = nullptr;
+
 };
 
 #endif

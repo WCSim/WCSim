@@ -255,6 +255,19 @@ WCSimPrimaryGeneratorAction::~WCSimPrimaryGeneratorAction()
   if(IBDGen) delete IBDGen;
 }
 
+// Region for accepting events when using RooTracker input
+G4String WCSimPrimaryGeneratorAction::GetRegionString() const {
+  switch (fRegion) {
+    case Region::kID:      return "ID";
+    case Region::kODInner: return "OD_INNER";
+    case Region::kODOuter: return "OD_OUTER";
+  }
+  G4Exception("WCSimPrimaryGeneratorAction::GetRegionString",
+              "WCSimBadRegion", FatalException,
+              "Unexpected Region enum value.");
+  return "INVALID";
+}
+
 void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   // We will need a particle table
@@ -484,7 +497,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       // Calculate offset from neutrino generation plane to centre of nuPRISM detector
       float x_offset = fNuPlanePos[0]*cm;
-      float y_offset = fNuPlanePos[1]*cm;//0;//(fNuPrismRadius/zDir)*yDir;
+      float y_offset = fNuPlanePos[1]*cm; //0;//(fNuPrismRadius/zDir)*yDir;
       float z_offset = fNuPlanePos[2]*cm;
 		 
       //Subtract offset to get interaction position in WCSim coordinates
@@ -492,30 +505,79 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
       zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
 
+
+      // Define the region in which we will accept events
+      vector<float> id_dims = myDetector->GetBoundaryWallDimensions()[kBoundaryWallIDBlacksheet];
+      double id_blacksheet_radius = id_dims[0];
+      double id_blacksheet_full_length = id_dims[1];
+      //G4cout<<"id_blacksheet_radius "<< id_blacksheet_radius << G4endl;
+      //G4cout<<"id_blacksheet_full_length "<< id_blacksheet_full_length << G4endl;
+
+      vector<float> od_inner_dims = myDetector->GetBoundaryWallDimensions()[kBoundaryWallODInnerTyvek];
+      double od_inner_blacksheet_radius = od_inner_dims[0];
+      double od_inner_blacksheet_full_length = od_inner_dims[1];
+      //G4cout<<"od_inner_radius "<< od_inner_blacksheet_radius << G4endl;
+      //G4cout<<"od_inner_full_length "<< od_inner_blacksheet_full_length << G4endl;
+
+      vector<float> od_outer_dims = myDetector->GetBoundaryWallDimensions()[kBoundaryWallODOuterTyvek];
+      double od_outer_blacksheet_radius = od_outer_dims[0];
+      double od_outer_blacksheet_full_length = od_outer_dims[1];
+      //G4cout<<"od_outer_radius "<< od_outer_blacksheet_radius << G4endl;
+      //G4cout<<"od_outer_full_length "<< od_outer_blacksheet_full_length << G4endl;
+
+      double vol_radius = 0.0;
+      double vol_height = 0.0;
+
+      switch (fRegion) {
+        case Region::kID:
+          vol_radius = id_blacksheet_radius;
+          vol_height = id_blacksheet_full_length;
+          break;
+        case Region::kODInner:
+          vol_radius = od_inner_blacksheet_radius;
+          vol_height = od_inner_blacksheet_full_length;
+          break;
+        case Region::kODOuter:
+          vol_radius = od_outer_blacksheet_radius;
+          vol_height = od_outer_blacksheet_full_length;
+          break;
+      }
+
+      G4cout << "RooTracker Region=" << GetRegionString()
+             << "  R=" << vol_radius << "  L=" << vol_height << G4endl;
+
+      
       //Check if event is outside detector; skip to next event if so; keep
       //loading events until one is found within the detector or there are
       //no more interaction to simulate for this event.
       //The current neut vector files do not correspond directly to the detector dimensions, so only keep those events within the detector
-      while (sqrt(pow(xPos,2)+pow(zPos,2)) > (myDetector->GetWCIDDiameter()/2.) ||
-             (abs(yPos) > (myDetector->GetWCIDHeight()/2.))){
-        //Load another event
+
+      //IWCD has radial coordinates x and z, and axiz y
+      //HKFD has radial coordinates x and y, and axis z
+      double *r2 = myDetector->GetIsNuPrism() ? &zPos : &yPos;  // pairs with x for radius
+      double *axial_coord    = myDetector->GetIsNuPrism() ? &yPos : &zPos;  // vertical
+
+      while (sqrt(pow(xPos,2)+pow(*r2,2)) > vol_radius ||
+            (abs(*axial_coord - myDetector->GetWCIDVerticalPosition()) > vol_height/2.)){
+          //Load another event
         if (fEvNum<fNEntries){
           fRooTrackerTree->GetEntry(fEvNum);
           G4cout << "Skipped event# " << fEvNum - 1 << " (event vertex outside detector)" << G4endl;
-          if(sqrt(pow(xPos,2)+pow(zPos,2)) > (myDetector->GetWCIDDiameter()/2.)){
-             G4cout << "Outside radius:  " << sqrt(pow(xPos,2)+pow(zPos,2)) << " > " << (myDetector->GetWCIDDiameter()/2.) << G4endl;
+          if(sqrt(pow(xPos,2)+pow(*r2,2)) > vol_radius){
+            G4cout << "Outside radius:  " << sqrt(pow(xPos,2)+pow(*r2,2)) << " > " << vol_radius << G4endl;
           }
-          if(abs(yPos) > (myDetector->GetWCIDHeight()/2.)){
-            G4cout << "Outside length:  " << yPos << " outside +- " << (myDetector->GetWCIDHeight()/2.) << G4endl;
+          if(abs(*axial_coord - myDetector->GetWCIDVerticalPosition()) > vol_height/2.){
+            G4cout << "Outside length:  " << abs(*axial_coord - myDetector->GetWCIDVerticalPosition()) << " > " << vol_height/2. << G4endl;
           }
-               
-	  fEvNum++;
+          fEvNum++;
         }
         else{
-      	  G4cout << "End of rootracker file - run terminated..."<< G4endl;
-      	  G4RunManager::GetRunManager()-> AbortRun();
+          G4cout << "End of rootracker file - run terminated..."<< G4endl;
+          G4RunManager::GetRunManager()-> AbortRun();
           return;
         }
+
+	  
         // Calculate offset from neutrino generation plane to centre of nuPRISM detector
         x_offset = fNuPlanePos[0]*cm;
         y_offset = fNuPlanePos[1]*cm;//0;//(fNuPrismRadius/zDir)*yDir;

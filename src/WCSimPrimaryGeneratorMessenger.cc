@@ -226,6 +226,15 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   mPMTLEDIdCmd2->SetGuidance("Set LED id for mPMT LED source position, dTheta and dPhi for LED direction. Defaults to 0, 0.0, 0.0 ");
   mPMTLEDIdCmd2->SetParameterName("mPMTLEDId2","mPMTLEDId2_dTheta","mPMTLEDId2_dPhi", true);
   mPMTLEDIdCmd2->SetDefaultValue(G4ThreeVector(0,0.0,0.0));
+
+  RegionCmd = new G4UIcmdWithAString("/mygen/region", this);
+  RegionCmd->SetGuidance("Set region for accepting events from RooTracker input");
+  RegionCmd->SetGuidance("[usage] /mygen/region REGION");
+  RegionCmd->SetGuidance("REGIONL  ID, OD_INNER, OD_OUTER");
+  RegionCmd->SetParameterName("region", true);
+  RegionCmd->SetCandidates("ID OD_INNER OD_OUTER");
+  RegionCmd->SetDefaultValue(myAction->GetRegionString());
+
 }
 
 WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
@@ -710,6 +719,20 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
              << ", dPhi = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).z() << " deg" << G4endl;
     }
 
+  // Region in which to accept events for nRooTracker input
+  if (command == RegionCmd) {
+    if      (newValue == "ID")
+      myAction->SetRegion(WCSimPrimaryGeneratorAction::Region::kID);
+    else if (newValue == "OD_INNER")
+      myAction->SetRegion(WCSimPrimaryGeneratorAction::Region::kODInner);
+    else if (newValue == "OD_OUTER")
+      myAction->SetRegion(WCSimPrimaryGeneratorAction::Region::kODOuter);
+    else
+      G4Exception("WCSimPrimaryGeneratorMessenger::SetNewValue",
+                  "WCSimBadRegion", FatalException,
+                  ("Unknown /mygen/region value: "+newValue).c_str());
+  }
+
 }
 
 G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
@@ -747,7 +770,11 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
     else if(myAction->IsUsingmPMTledEvtGenerator())
       { cv = "mPMT-LED"; }
   }
-  
+  // Region for accepting events from RooTracker input
+  if (command == RegionCmd) {
+    return myAction->GetRegionString();
+  }
+
   return cv;
 }
 
