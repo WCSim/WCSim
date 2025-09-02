@@ -1615,7 +1615,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myMPT1->AddProperty("RINDEX", ENERGY_water, RINDEX1, NUMENTRIES_water);
    myMPT1->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water, NUMENTRIES_water);
    // M Fechner: new, don't let G4 compute it.
-   myMPT1->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water);
+   if (RAYFF>0) myMPT1->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water);
 
   //  myMPT1->AddProperty("MIEHG",ENERGY_water,MIE_water,NUMENTRIES_water);
 //    myMPT1->AddConstProperty("MIEHG_FORWARD",MIE_water_const[0]);
@@ -1678,7 +1678,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    G4MaterialPropertiesTable *SilGelPropTable = new G4MaterialPropertiesTable();
    SilGelPropTable->AddProperty("RINDEX", ENERGY_water, RINDEX_SilGel, NUMENTRIES_water);
    SilGelPropTable->AddProperty("ABSLENGTH",ENERGY_SilGel, ABSORPTION_SilGel, 18); //ToDo: get measurement of optical properties of the optical gel. From slides: better than 40cm above 350nm.
-   SilGelPropTable->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water); //ToDo: get actual Rayleigh scattering in gel
+   if (RAYFF>0) SilGelPropTable->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water); //ToDo: get actual Rayleigh scattering in gel
    SilGel->SetMaterialPropertiesTable(SilGelPropTable);
 
    G4MaterialPropertiesTable *SilGelPropTableWCTE = new G4MaterialPropertiesTable();

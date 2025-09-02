@@ -90,11 +90,15 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   G4int parentSavedTrackID = -1;
   G4float       photonStartTime;
+  G4float       photonStartEnergy;
+  G4float       photonEndEnergy;
   G4ThreeVector photonStartPos;
   G4ThreeVector photonStartDir;
   
   parentSavedTrackID   = aStep->GetTrack()->GetParentID();
   photonStartTime      = aStep->GetTrack()->GetGlobalTime() - aStep->GetTrack()->GetLocalTime(); // current time minus elapsed time of track
+  photonStartEnergy    = aStep->GetTrack()->GetVertexKineticEnergy();
+  photonEndEnergy      = aStep->GetTrack()->GetKineticEnergy();
   photonStartPos       = aStep->GetTrack()->GetVertexPosition();
   photonStartDir       = aStep->GetTrack()->GetVertexMomentumDirection();
  
@@ -202,12 +206,12 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
     // maxQE = fdet->GetPMTQE(WCIDCollectionName,wavelength,0,200,700,ratio);
-    maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,240,660,ratio);
-    photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
+    maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,200,660,ratio);
+    photonQE = fdet->GetPMTQE(volumeName, wavelength,1,200,660,ratio);
     photonQE = photonQE/maxQE;
   }else if (fdet->GetPMT_QE_Method() == 3){
     ratio = 1./(1.-0.25);
-    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,240,660,ratio);
+    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,200,660,ratio);
   }
   
   if (G4UniformRand() <= photonQE){
@@ -254,6 +258,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
      (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartEnergy(photonStartEnergy);
+	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndEnergy(photonEndEnergy);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
 	   (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
@@ -269,6 +275,8 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
    (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartEnergy(photonStartEnergy);
+	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndEnergy(photonEndEnergy);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
 	 (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
@@ -299,11 +307,15 @@ G4bool WCSimWCSD::ProcessHits_boundary(G4Step* aStep, G4TouchableHistory*)
 
   G4int parentSavedTrackID = -1;
   G4float       photonStartTime;
+  G4float       photonStartEnergy;
+  G4float       photonEndEnergy;
   G4ThreeVector photonStartPos;
   G4ThreeVector photonStartDir;
   
   parentSavedTrackID   = aStep->GetTrack()->GetParentID();
   photonStartTime      = aStep->GetTrack()->GetGlobalTime() - aStep->GetTrack()->GetLocalTime(); // current time minus elapsed time of track
+  photonStartEnergy    = aStep->GetTrack()->GetVertexKineticEnergy();
+  photonEndEnergy      = aStep->GetTrack()->GetKineticEnergy();
   photonStartPos       = aStep->GetTrack()->GetVertexPosition();
   photonStartDir       = aStep->GetTrack()->GetVertexMomentumDirection();
  
@@ -361,12 +373,12 @@ G4bool WCSimWCSD::ProcessHits_boundary(G4Step* aStep, G4TouchableHistory*)
   if (fdet->GetPMT_QE_Method()==1 || fdet->GetPMT_QE_Method() == 4){
     photonQE = 1.1;
   }else if (fdet->GetPMT_QE_Method()==2){
-    maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,240,660,ratio);
-    photonQE = fdet->GetPMTQE(volumeName, wavelength,1,240,660,ratio);
+    maxQE = fdet->GetPMTQE(WCCollectionName,wavelength,0,200,660,ratio);
+    photonQE = fdet->GetPMTQE(volumeName, wavelength,1,200,660,ratio);
     photonQE = photonQE/maxQE;
   }else if (fdet->GetPMT_QE_Method() == 3){
     ratio = 1./(1.-0.25);
-    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,240,660,ratio);
+    photonQE = fdet->GetPMTQE(WCCollectionName, wavelength,1,200,660,ratio);
   }
   
   if (G4UniformRand() <= photonQE)
@@ -412,6 +424,8 @@ G4bool WCSimWCSD::ProcessHits_boundary(G4Step* aStep, G4TouchableHistory*)
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartEnergy(photonStartEnergy);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndEnergy(photonEndEnergy);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);
@@ -424,6 +438,8 @@ G4bool WCSimWCSD::ProcessHits_boundary(G4Step* aStep, G4TouchableHistory*)
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddTrackID(trackID);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddParentID(parentSavedTrackID);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartTime(photonStartTime);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartEnergy(photonStartEnergy);
+        (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndEnergy(photonEndEnergy);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartPos(photonStartPos);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonEndPos(worldPosition);
         (*hitsCollection)[PMTHitMap[replicaNumber]-1]->AddPhotonStartDir(photonStartDir);

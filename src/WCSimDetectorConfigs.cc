@@ -157,6 +157,9 @@ void HKGeometryNoLongerUsed(G4String & DetectorName)
   G4cerr << "**********************************" << G4endl
 		 << DetectorName << " is an obsolete HK geometry" << G4endl
 		 << "You should use one of:" << G4endl
+		 << " HyperK_HybridmPMT_WithOD_Realistic" << G4endl
+		 << " HyperK_HybridmPMT_IDonly_Realistic" << G4endl
+		 << "The following are also valid, but not recommended:" << G4endl
 		 << " HyperK_HybridmPMT_WithOD" << G4endl
 		 << " HyperK_HybridmPMT" << G4endl
 		 << "If you really want to use " << DetectorName

@@ -68,6 +68,8 @@ private:
   std::map<int, G4int>             trackID;              ///< TrackID of the photon of the Hit (do not use for Digits)
   std::map<int, G4int>             parentSavedTrackID;   ///< Primary parent ID of the Hit (do not use for Digits)
   std::map<int, G4float>           photonStartTime;      ///< Primary parent ID of the Hit (do not use for Digits)
+  std::map<int, G4float>           photonStartEnergy;    ///< Start energy of the photon of the Hit (do not use for Digits)
+  std::map<int, G4float>           photonEndEnergy;      ///< End energy of the photon of the Hit (do not use for Digits)
   std::map<int, G4ThreeVector>     photonStartPos;       ///< Start point of the photon of the Hit (do not use for Digits)
   std::map<int, G4ThreeVector>     photonEndPos;         ///< End point of the photon of the Hit (do not use for Digits)
   std::map<int, G4ThreeVector>     photonStartDir;       ///< Start dir of the photon of the Hit (do not use for Digits)
@@ -95,6 +97,8 @@ public:
   inline void SetTrackID(G4int gate, G4int track) { trackID[gate] = track; };
   inline void SetParentID(G4int gate, G4int parent) { parentSavedTrackID[gate] = parent; };
   inline void SetPhotonStartTime(G4int gate, G4float starttime) { photonStartTime[gate] = starttime; };
+  inline void SetPhotonStartEnergy(G4int gate, G4float startenergy) { photonStartEnergy[gate] = startenergy; };
+  inline void SetPhotonEndEnergy(G4int gate, G4float endenergy) { photonEndEnergy[gate] = endenergy; };
   inline void SetPhotonStartPos(G4int gate, const G4ThreeVector &position) { photonStartPos[gate] = position; };
   inline void SetPhotonEndPos(G4int gate, const G4ThreeVector &position) { photonEndPos[gate] = position; };
   inline void SetPhotonStartDir(G4int gate, const G4ThreeVector &direction) { photonStartDir[gate] = direction; };
@@ -115,6 +119,8 @@ public:
   inline G4int          GetTrackID(int gate)    { return trackID[gate];};
   inline G4int          GetParentID(int gate)    { return parentSavedTrackID[gate];};
   inline G4float        GetPhotonStartTime(int gate)    { return photonStartTime[gate];};
+  inline G4float        GetPhotonStartEnergy(int gate)    { return photonStartEnergy[gate];};
+  inline G4float        GetPhotonEndEnergy(int gate)    { return photonEndEnergy[gate];};
   inline G4ThreeVector  GetPhotonStartPos(int gate)    { return photonStartPos[gate];};
   inline G4ThreeVector  GetPhotonEndPos(int gate)    { return photonEndPos[gate];};
   inline G4ThreeVector  GetPhotonStartDir(int gate)    { return photonStartDir[gate];};
@@ -188,6 +194,8 @@ public:
     int index_parentSavedTrackID;
     std::vector<int> index_digicomp;
     float index_photonstarttime;
+    float index_photonstartenergy;
+    float index_photonendenergy;
     G4ThreeVector index_photonstartpos;
     G4ThreeVector index_photonendpos;
     G4ThreeVector index_photonstartdir;
@@ -208,6 +216,8 @@ public:
         index_trackID              = trackID.at(i);
         index_parentSavedTrackID   = parentSavedTrackID.at(i);
         index_photonstarttime      = photonStartTime[i];
+        index_photonstartenergy    = photonStartEnergy[i];
+        index_photonendenergy      = photonEndEnergy[i];
         index_photonstartpos       = photonStartPos[i];
         index_photonendpos         = photonEndPos[i];
         index_photonstartdir       = photonStartDir[i];
@@ -221,6 +231,8 @@ public:
           trackID.at(j) = trackID.at(j-1);
           parentSavedTrackID.at(j) = parentSavedTrackID.at(j-1);
           photonStartTime.at(j) = photonStartTime.at(j-1);
+          photonStartEnergy.at(j) = photonStartEnergy.at(j-1);
+          photonEndEnergy.at(j) = photonEndEnergy.at(j-1);
           photonStartPos.at(j) = photonStartPos.at(j-1);
           photonEndPos.at(j) = photonEndPos.at(j-1);
           photonStartDir.at(j) = photonStartDir.at(j-1);
@@ -235,6 +247,8 @@ public:
         trackID.at(j) = index_trackID;
         parentSavedTrackID.at(j) = index_parentSavedTrackID;
         photonStartTime.at(j) = index_photonstarttime;
+        photonStartEnergy.at(j) = index_photonstartenergy;
+        photonEndEnergy.at(j) = index_photonendenergy;
         photonStartPos.at(j) = index_photonstartpos;
         photonEndPos.at(j) = index_photonendpos;
         photonStartDir.at(j) = index_photonstartdir;

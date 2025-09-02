@@ -8,7 +8,7 @@
 #include "G4AttValue.hh"
 #include "G4UnitsTable.hh"
 #include "G4VProcess.hh"
-#include "G4OpProcessSubType.hh"
+#include "WCSimOpProcessSubType.hh"
 #include "G4ProcessManager.hh"
 
 #include "G4PhysicalConstants.hh"
@@ -31,8 +31,11 @@ WCSimTrajectory::WCSimTrajectory()
   boundaryTypes.clear();
 
   pRayScatter = 0;
+  pRamScatter = 0;
   pMieScatter = 0;
   pReflec.clear();
+  pStepPos.clear();
+  pStepType.clear();
 
   fBoundary = NULL;
 }
@@ -79,8 +82,11 @@ WCSimTrajectory::WCSimTrajectory(const G4Track* aTrack)
   boundaryTypes.clear();
 
   pRayScatter = 0;
+  pRamScatter = 0;
   pMieScatter = 0;
   pReflec.clear();
+  pStepPos.clear();
+  pStepType.clear();
   fBoundary = NULL;
 #ifdef WCSIM_SAVE_PHOTON_HISTORY
   // Only do search for optical photon
@@ -132,8 +138,11 @@ WCSimTrajectory::WCSimTrajectory(WCSimTrajectory & right):G4VTrajectory()
 
 #ifdef WCSIM_SAVE_PHOTON_HISTORY
   pRayScatter = right.pRayScatter;
+  pRamScatter = right.pRamScatter;
   pMieScatter = right.pMieScatter;
   pReflec = right.pReflec;
+  pStepPos = right.pStepPos;
+  pStepType = right.pStepType;
   fBoundary = right.fBoundary;
 #endif
 }
@@ -155,6 +164,8 @@ WCSimTrajectory::~WCSimTrajectory()
   boundaryTypes.clear();
 
   pReflec.clear();
+  pStepPos.clear();
+  pStepType.clear();
   fBoundary = NULL;
 }
 
@@ -278,15 +289,23 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
   {
     const G4VProcess* pds = thePostPoint->GetProcessDefinedStep();
     //G4cout<<"Having optical photon in AppendStep "<<pds->GetProcessName()<<G4endl;
+    StepType_t stepType = kOtherStep;
     if ( pds->GetProcessType() == fOptical )
     {
       if ( pds->GetProcessSubType() == fOpRayleigh )
       {
         AddPhotonRayScatter(1);
+        stepType = kRayleighStep;
+      }
+      else if ( pds->GetProcessSubType() == fOpRaman )
+      {
+        AddPhotonRamScatter(1);
+        stepType = kRamanStep;
       }
       else if ( pds->GetProcessSubType() == fOpMieHG )
       {
         AddPhotonMieScatter(1);
+        stepType = kMieStep;
       }
     }
     else
@@ -302,7 +321,13 @@ void WCSimTrajectory::AppendStep(const G4Step* aStep)
         else if (thePostPVName.contains("reflector")) rType = kReflectorS;
         else if (thePostPVName.contains("InteriorWCPMT")) rType = kPhotocathodeS;
         AddPhotonReflection(rType);
+        stepType = kReflectionStep;
       }
+    }
+    if (stepType!=kOtherStep)
+    {
+      AddPhotonStepType(stepType);
+      AddPhotonStepPosition(aStep->GetPostStepPoint()->GetPosition());
     }
   }
 #endif
@@ -344,8 +369,11 @@ void WCSimTrajectory::MergeTrajectory(G4VTrajectory* secondTrajectory)
 
 #ifdef WCSIM_SAVE_PHOTON_HISTORY
   AddPhotonRayScatter(seco->GetPhotonRayScatter());
+  AddPhotonRamScatter(seco->GetPhotonRamScatter());
   AddPhotonMieScatter(seco->GetPhotonMieScatter());
   for (auto i: seco->GetPhotonReflection()) AddPhotonReflection(i);
+  for (auto i: seco->GetPhotonStepPosition()) AddPhotonStepPosition(i);
+  for (auto i: seco->GetPhotonStepType()) AddPhotonStepType(i);
 #endif
 }
 

@@ -87,7 +87,7 @@
 
 #include "G4ios.hh"
 #include "G4PhysicalConstants.hh"
-#include "G4OpProcessSubType.hh"
+#include "WCSimOpProcessSubType.hh"
 
 #include "WCSimOpBoundaryProcess.hh"
 #include "G4GeometryTolerance.hh"
