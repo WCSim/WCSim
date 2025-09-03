@@ -2059,7 +2059,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
       = new G4Polyhedra(capbsname + G4String("ExtraSlice"),
 						totalAngle-2.*pi+barrelPhiOffset, // phi start
 						2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //
-						WCBarrelRingNPhi, //NPhi-gon
+						1, //NPhi-gon
 						4, //  z-planes
 						capBlackSheetZ, //position of the Z planes
 						extraBSRmin, // min radius at the z planes
@@ -4469,7 +4469,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     = new G4Polyhedra(capbsname + G4String("ExtraSlice"),
       totalAngle-2.*pi+barrelPhiOffset, // phi start
       2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //
-      WCBarrelRingNPhi, //NPhi-gon
+      1, //NPhi-gon
       4, //  z-planes
       capBlackSheetZ, //position of the Z planes
       extraBSRmin, // min radius at the z planes
