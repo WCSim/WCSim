@@ -274,6 +274,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					  "CaveBarrelTyvek",
 					  logicWCBarrel,
 					  false,
+            0,
 					  checkOverlaps);
 
 	//G4LogicalSkinSurface *TyvekCaveBarrelSurface =
@@ -318,6 +319,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					  "CaveTopTyvek",
 					  logicWCBarrel,
 					  false,
+            0,
 					  checkOverlaps);
 
 
@@ -330,6 +332,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinder()
 					  "CaveBottomTyvek",
 					  logicWCBarrel,
 					  false,
+            0,
 					  checkOverlaps);
 
 
@@ -2833,6 +2836,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
               "CaveBarrelTyvek",
               logicWCBarrel,
               false,
+              0,
               checkOverlaps);
 
     //G4LogicalSkinSurface *TyvekCaveBarrelSurface =
@@ -2877,6 +2881,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 					  "CaveTopTyvek",
 					  logicWCBarrel,
 					  false,
+            0,
 					  checkOverlaps);
 
 
@@ -2889,6 +2894,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 					  "CaveBottomTyvek",
 					  logicWCBarrel,
 					  false,
+            0,
 					  checkOverlaps);
 
 
