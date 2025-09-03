@@ -2686,12 +2686,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   //TF: need to add a Polyhedra on the other side of the outerAnnulusRadius for the OD
   outerAnnulusRadius = WCIDRadius + WCBlackSheetThickness + 1.*mm + pmt_blacksheet_offset;//+ Stealstructure etc.
   if(isODConstructed){
-    const G4double sphereRadius =
-	  (WCPMTODExposeHeight*WCPMTODExposeHeight+ WCPMTODRadius*WCPMTODRadius)/(2*WCPMTODExposeHeight);
+    // const G4double sphereRadius =
+	  // (WCPMTODExposeHeight*WCPMTODExposeHeight+ WCPMTODRadius*WCPMTODRadius)/(2*WCPMTODExposeHeight);
     WCODRadius = 
 	  WCIDRadius + WCBlackSheetThickness + WCODDeadSpace + // ID Structure
 	  WCODTyvekSheetThickness;  // Tyvek attached to structure
-    outerAnnulusRadius = WCODRadius + sphereRadius;
+    outerAnnulusRadius = WCODRadius; // + sphereRadius;
   }
 #ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
   G4cout
@@ -2699,7 +2699,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 	<< "GEOMCHECK3 WCBlackSheetThickness \t" << WCBlackSheetThickness << G4endl
 	<< "GEOMCHECK3 WCODDeadSpace \t" << WCODDeadSpace << G4endl
 	<< "GEOMCHECK3 WCODTyvekSheetThickness \t" << WCODTyvekSheetThickness << G4endl
-	<< "GEOMCHECK3 sphereRadius \t" << outerAnnulusRadius - WCODRadius << G4endl
+	// << "GEOMCHECK3 sphereRadius \t" << outerAnnulusRadius - WCODRadius << G4endl
 	<< "GEOMCHECK3 WCPMTODExposeHeight \t" << WCPMTODExposeHeight << G4endl
 	<< "GEOMCHECK3 WCPMTODExposeHeight \t" << WCPMTODExposeHeight << G4endl
 	<< "GEOMCHECK3 WCPMTODRadius \t" << WCPMTODRadius << G4endl
@@ -2710,14 +2710,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   // Tell DetectorConstruction about boundary walls
   AddBoundaryWallCylinderDimensions(kBoundaryWallODInnerTyvek,
 									WCODRadius,
-									(WCIDHeight + 2*WCODDeadSpace + 2*WCODTyvekSheetThickness)); //from CapTyvekPosition creation, without the /2 as we store the full length in the boundary wall variables, including the OD tyvek thickness
+									(WCIDHeight + 2*WCBlackSheetThickness + 2*WCODDeadSpace + 2*WCODTyvekSheetThickness)); //from CapTyvekPosition creation, without the /2 as we store the full length in the boundary wall variables, including the OD tyvek thickness
 
 
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
   //BQ: Updated with new HK OD size (2020/12/06). Simply assume no tyvek thickness or dead space.
   if (!isODConstructed) WCLength = WCIDHeight + 2*(WCBlackSheetThickness + 1*mm + pmt_blacksheet_offset);
-  else WCLength = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness + 1*mm);
+  else WCLength = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness);
   WCRadius    = (outerAnnulusRadius + WCODLateralWaterDepth)/cos(dPhi/2.) ;
 #ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
   G4cout
@@ -2788,7 +2788,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   G4Tubs* solidWCBarrel = new G4Tubs("WCBarrel",
 				     0.0*m,
 				     WCRadius+1.*m, // add a bit of extra space
-				     .5*WCLength,  //jl145 - per blueprint
+				     .5*WCLength+WCODTyvekSheetThickness,  //jl145 - per blueprint
 				     0.*deg,
 				     360.*deg);
   
@@ -2868,7 +2868,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
     logicCaveCapsTyvek->SetVisAttributes(CapsCaveTyvekVisAtt);
     //logicCaveCapsTyvek->SetVisAttributes(G4VisAttributes::Invisible); //amb79
 
-    G4ThreeVector CaveTyvekPosition(0., 0., WCLength / 2);
+    G4ThreeVector CaveTyvekPosition(0., 0., (WCLength+WCODTyvekSheetThickness) / 2);
 
     //G4VPhysicalVolume *physiTopCaveTyvek =
 	  new G4PVPlacement(0,
@@ -3719,14 +3719,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
     G4double odTopCapZ[4] = {
       (-WCODDeadSpace+1*mm+WCBlackSheetThickness+pmt_blacksheet_offset),
-      -.5*(WCODTyvekSheetThickness),
-      -.5*(WCODTyvekSheetThickness),
-      .5*(WCODTyvekSheetThickness)};
+      WCBlackSheetThickness,
+      WCBlackSheetThickness,
+      1*(WCODTyvekSheetThickness)+WCBlackSheetThickness};
     G4double odBotCapZ[4] = {
       -(-WCODDeadSpace+1*mm+WCBlackSheetThickness+pmt_blacksheet_offset),
-      .5*(WCODTyvekSheetThickness),
-      .5*(WCODTyvekSheetThickness),
-      -.5*(WCODTyvekSheetThickness)};
+      -WCBlackSheetThickness,
+      -WCBlackSheetThickness,
+      -1*(WCODTyvekSheetThickness)-WCBlackSheetThickness};
     G4double odCapRmin[4] = {WCODRadius-WCODTyvekSheetThickness,
                 WCODRadius-WCODTyvekSheetThickness,
                 0,
@@ -4160,7 +4160,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
       for (G4int i=0; i<nPMTsRead; i++ )
       {
         if (!pmtUse[i]) continue; // skip PMT
-        G4double zpos = ((WCIDHeight + 2*WCODDeadSpace)/2)+WCODTyvekSheetThickness;
+        G4double zpos = WCIDHeight/2. + WCBlackSheetThickness + WCODDeadSpace +WCODTyvekSheetThickness;
         G4RotationMatrix* WCCapPMTRotation = new G4RotationMatrix;
         // only place cap OD PMT
         if (pmtSection[i]==11)
@@ -4207,7 +4207,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 
           G4ThreeVector topWLSpos = G4ThreeVector(xoffset,
                                                   yoffset,
-                                                  ((WCIDHeight + 2*WCODDeadSpace)/2)+WCODTyvekSheetThickness);
+                                                  WCIDHeight/2. + WCBlackSheetThickness + WCODDeadSpace +WCODTyvekSheetThickness);
 
           G4ThreeVector bottomWLSpos = G4ThreeVector(xoffset,
                                                     yoffset,
