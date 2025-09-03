@@ -4313,13 +4313,55 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   G4double CapBarrelPMTOffset = flipz ? WCBarrelPMTTopOffset : WCBarrelPMTBotOffset ;
 
   const G4String caname = capstr + G4String("Assembly");  // "[Top|Bot]CapAssembly"
-  G4Tubs* solidCapAssembly = new G4Tubs(caname,
-							0.0*m,
-              // use the largest radius in cap region
-							(WCIDRadius + WCBlackSheetThickness + 1.*mm + pmt_blacksheet_offset +std::max(GetRadiusChange(-zflip*WCIDHeight/2),GetRadiusChange(capAssemblyZEdge)))/cos(dPhi/2.), 
-							capAssemblyHeight/2,
-							0.*deg,
-							360.*deg);
+  G4double capr = WCIDRadius + WCBlackSheetThickness + 1.*mm + pmt_blacksheet_offset +std::max(GetRadiusChange(-zflip*WCIDHeight/2),GetRadiusChange(capAssemblyZEdge));
+  G4VSolid* solidCapAssembly = nullptr;
+  G4double capAssemblyRmin[2] = {0,0};
+  G4double capAssemblyRmax[2] = {capr,capr}; 
+  G4double capAssemblyZ[2] = {-capAssemblyHeight/2,capAssemblyHeight/2}; 
+  if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal)
+  {
+    solidCapAssembly = 
+    new G4Polyhedra(caname,
+                    barrelPhiOffset, // phi start
+                    totalAngle, //total phi
+                    WCBarrelRingNPhi, //NPhi-gon
+                    2,
+                    capAssemblyZ,
+                    capAssemblyRmin,
+                    capAssemblyRmax);
+  } else 
+  { 
+    // same as for the cap volume
+    G4Polyhedra* mainPart
+      = new G4Polyhedra(caname + G4String("MainPart"),
+			barrelPhiOffset, // phi start
+			totalAngle, //phi end
+			WCBarrelRingNPhi, //NPhi-gon
+			2, //  z-planes
+			capAssemblyZ, //position of the Z planes
+			capAssemblyRmin, // min radius at the z planes
+			capAssemblyRmax// max radius at the Z planes
+			);
+    G4double extraRmin[2];
+    G4double extraRmax[2];
+    for(int i = 0; i < 2 ; i++){
+      extraRmin[i] = capAssemblyRmin[i] != 0. ? capAssemblyRmin[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.) : 0.;
+      extraRmax[i] = capAssemblyRmax[i] != 0. ? capAssemblyRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.) : 0.;
+    }
+    G4Polyhedra* extraSlice
+    = new G4Polyhedra(caname + G4String("ExtraSlice"),
+      totalAngle-2.*pi+barrelPhiOffset, // phi start
+      2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //
+      1, //NPhi-gon
+      2, //  z-planes
+      capAssemblyZ, //position of the Z planes
+      extraRmin, // min radius at the z planes
+      extraRmax// max radius at the Z planes
+      );
+  
+      solidCapAssembly =
+      new G4UnionSolid(caname, mainPart, extraSlice);
+  }
 
   G4LogicalVolume* logicCapAssembly =
     new G4LogicalVolume(solidCapAssembly,
