@@ -91,6 +91,12 @@ public:
 
   void SaveOptionsToOutput(WCSimRootOptions * wcopt);
 
+  // Region for accepting events when using RooTracker input
+  enum class Region { kID, kODInner, kODOuter };
+  void SetRegion(Region r) { fRegion = r; }
+  Region GetRegion() const { return fRegion; }
+  G4String GetRegionString() const;
+
 private:
   WCSimDetectorConstruction*      myDetector;
   G4ParticleGun*                  particleGun;
@@ -231,6 +237,9 @@ private:
   G4int mPMTLEDId2;
   G4double mPMTLED_dTheta;
   G4double mPMTLED_dPhi;
+
+  // Region to accept events when using RooTracker input 
+  Region fRegion = Region::kID;
 
  public:
 

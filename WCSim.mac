@@ -301,6 +301,8 @@
 #/mygen/vecfile mu+.out
 # define units used for time in kin file
 #/mygen/time_unit ns
+# For nRooTracker input, specify the region in which you wish to accept events: ID, OD_INNER, OD_OUTER
+#/mygen/region OD_OUTER
 
 ## Or you can use the G4 Particle Gun
 ## for a full list of /gun/ commands see:
