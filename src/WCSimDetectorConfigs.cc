@@ -1680,7 +1680,11 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
-  G4String WLSType = "EljenEJ286";
+  G4String WLSType="";
+  if( IWCD_OD_WLS_PLATE_TYPE == "EljenEJ286" )
+	WLSType = "EljenEJ286";
+  else if( IWCD_OD_WLS_PLATE_TYPE == "Kuraray" )
+	WLSType = "Kuraray";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -1801,7 +1805,11 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry_Old() // Old geometry us
   isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
-  G4String WLSType = "EljenEJ286";
+  G4String WLSType="";
+  if( IWCD_OD_WLS_PLATE_TYPE == "EljenEJ286" )
+	WLSType = "EljenEJ286";
+  else if( IWCD_OD_WLS_PLATE_TYPE == "Kuraray" )
+	WLSType = "Kuraray";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
