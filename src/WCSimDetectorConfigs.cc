@@ -4,6 +4,7 @@
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
+#include <Build.h>
 
 #include <cmath>
 
@@ -444,12 +445,13 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   CreateCombinedPMTQE(WCColName);
   isCombinedPMTCollectionDefined=true;
 
+  G4String WLSType="";
   // TEST WLS collection for stacking action
-#if 0
-  G4String WLSType = "EljenEJ286";
-#else
-  G4String WLSType = "Kuraray";
-#endif
+  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" )
+	WLSType = "EljenEJ286";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" )
+	WLSType = "Kuraray";
+
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -889,11 +891,11 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Geometry()
   isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
-#if 0
-  G4String WLSType = "EljenEJ286";
-#else
-  G4String WLSType = "Kuraray";
-#endif  
+  G4String WLSType="";
+  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" )
+	WLSType = "EljenEJ286";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" )
+	WLSType = "Kuraray";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -1005,11 +1007,11 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
   isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
-#if 0
-  G4String WLSType = "EljenEJ286";
-#else
-  G4String WLSType = "Kuraray";
-#endif
+  G4String WLSType="";
+  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" )
+	WLSType = "EljenEJ286";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" )
+	WLSType = "Kuraray";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -1122,11 +1124,11 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_IDonly_Realistic_Geometry()
   isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
-#if 0
-  G4String WLSType = "EljenEJ286";
-#else
-  G4String WLSType = "Kuraray";
-#endif
+  G4String WLSType="";
+  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" )
+	WLSType = "EljenEJ286";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" )
+	WLSType = "Kuraray";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);

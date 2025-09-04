@@ -15,6 +15,8 @@
 
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
+#include <Build.h>
+
 
 void WCSimDetectorConstruction::ConstructMaterials()
 {
@@ -1551,14 +1553,48 @@ void WCSimDetectorConstruction::ConstructMaterials()
   // OpWaterWLSSurface->SetSigmaAlpha(0.1); // TODO: What's this?
 
   // MATERIAL properties
-#if 0
-  EljenEJ286 *WLSProps = new EljenEJ286();
-#else
-  Kuraray *WLSProps = new Kuraray();
-#endif
+  G4double* WLSPhotonEnergy;
+  G4double* WLSTransmittance;
+  G4int WLSNumEntriesTransmittance;
+  G4double* WLSRIndex;
+  G4double* WLSPhotonEnergy_ABS;
+  G4double* WLSAbs;
+  G4int WLSNumEntries_ABS;
+  G4double* WLSPhotonEnergy_EM;
+  G4double* WLSEm;
+  G4int WLSNumEntries_EM;
+  G4int WLSNumEntries;
+  
+  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" ){
+    EljenEJ286 *WLSProps = new EljenEJ286();
+    WLSPhotonEnergy = WLSProps->GetPhotonEnergy();
+    WLSTransmittance = WLSProps->GetTransmittance();
+    WLSNumEntriesTransmittance = WLSProps->GetNumEntriesTransmittance();
+    WLSRIndex = WLSProps->GetRIndex();
+    WLSPhotonEnergy_ABS = WLSProps->GetPhotonEnergy_ABS();
+    WLSAbs = WLSProps->GetAbs();
+    WLSNumEntries_ABS = WLSProps->GetNumEntries_ABS();
+    WLSPhotonEnergy_EM = WLSProps->GetPhotonEnergy_EM();
+    WLSEm = WLSProps->GetEm();
+    WLSNumEntries_EM = WLSProps->GetNumEntries_EM();
+    WLSNumEntries = WLSProps->GetNumEntries();
+  } else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" ){
+    Kuraray *WLSProps = new Kuraray();
+    WLSPhotonEnergy = WLSProps->GetPhotonEnergy();
+    WLSTransmittance = WLSProps->GetTransmittance();
+    WLSNumEntriesTransmittance = WLSProps->GetNumEntriesTransmittance();
+    WLSRIndex = WLSProps->GetRIndex();
+    WLSPhotonEnergy_ABS = WLSProps->GetPhotonEnergy_ABS();
+    WLSAbs = WLSProps->GetAbs();
+    WLSNumEntries_ABS = WLSProps->GetNumEntries_ABS();
+    WLSPhotonEnergy_EM = WLSProps->GetPhotonEnergy_EM();
+    WLSEm = WLSProps->GetEm();
+    WLSNumEntries_EM = WLSProps->GetNumEntries_EM();
+    WLSNumEntries = WLSProps->GetNumEntries();
+  }
   // Define normal reflectivity from Fresnel equations
 
-  WlsPlasticMPT->AddProperty("TRANSMITTANCE", WLSProps->GetPhotonEnergy(), WLSProps->GetTransmittance(), WLSProps->GetNumEntriesTransmittance());
+  WlsPlasticMPT->AddProperty("TRANSMITTANCE", WLSPhotonEnergy, WLSTransmittance, WLSNumEntriesTransmittance);
 
 
   // Water -> WLS surface properties
@@ -1575,19 +1611,19 @@ void WCSimDetectorConstruction::ConstructMaterials()
   //     {1.-0.00207792,1.-0.00207792};
 
 
-  WlsPlasticMPT->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
-  WlsPlasticMPT->AddProperty("WLSABSLENGTH",WLSProps->GetPhotonEnergy_ABS(),WLSProps->GetAbs(),WLSProps->GetNumEntries_ABS());
-  WlsPlasticMPT->AddProperty("WLSCOMPONENT",WLSProps->GetPhotonEnergy_EM(),WLSProps->GetEm(),WLSProps->GetNumEntries_EM());
+  WlsPlasticMPT->AddProperty("RINDEX",WLSPhotonEnergy,WLSRIndex,WLSNumEntries);
+  WlsPlasticMPT->AddProperty("WLSABSLENGTH",WLSPhotonEnergy_ABS,WLSAbs,WLSNumEntries_ABS);
+  WlsPlasticMPT->AddProperty("WLSCOMPONENT",WLSPhotonEnergy_EM,WLSEm,WLSNumEntries_EM);
   WlsPlasticMPT->AddConstProperty("WLSTIMECONSTANT", 1.2*ns); // TODO: Need measurement
   WLS_PVT->SetMaterialPropertiesTable(WlsPlasticMPT);
 
   // G4MaterialPropertiesTable *MPTWLS_Water = new G4MaterialPropertiesTable();
-  // MPTWLS_Water->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
-  // MPTWLS_Water->AddProperty("TRANSMITTANCE", WLSProps->GetPhotonEnergy(), WLS_transmittance_vs_energy, nEntries_transmittance);
+  // MPTWLS_Water->AddProperty("RINDEX",WLSPhotonEnergy,WLSRIndex,WLSNumEntries);
+  // MPTWLS_Water->AddProperty("TRANSMITTANCE", WLSPhotonEnergy, WLS_transmittance_vs_energy, nEntries_transmittance);
   // OpWaterWLSSurface->SetMaterialPropertiesTable(MPTWLS_Water);
 
   // G4MaterialPropertiesTable *MPTWLS_Tyvek = new G4MaterialPropertiesTable();
-  // MPTWLS_Tyvek->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
+  // MPTWLS_Tyvek->AddProperty("RINDEX",WLSPhotonEnergy,WLSRIndex,WLSNumEntries);
   // MPTWLS_Tyvek->AddProperty("TRANSMITTANCE", PP, TransWLSTy, NUM);
   // OpWLSTySurface->SetMaterialPropertiesTable(MPTWLS_Tyvek);
 
