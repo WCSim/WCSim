@@ -2791,7 +2791,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   G4Tubs* solidWCBarrel = new G4Tubs("WCBarrel",
 				     0.0*m,
 				     WCRadius+1.*m, // add a bit of extra space
-				     isODConstructed ? .5*WCLength+WCODTyvekSheetThickness : 5*WCLength,  //jl145 - per blueprint
+				     isODConstructed ? .5*WCLength+WCODTyvekSheetThickness : .5*WCLength,  //jl145 - per blueprint
 				     0.*deg,
 				     360.*deg);
   
