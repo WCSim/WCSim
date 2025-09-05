@@ -772,7 +772,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
   G4String WLS_Material = "Water";
   G4String WLSCladding_Material = "Water";
   if(isWLSFilled){
-    WLS_Material = "WLS_PVT";
+    WLS_Material = isNuPrism ? "WLS_IWCD_PVT" : "WLS_PVT";
     WLSCladding_Material = "Tyvek";
   }
 
