@@ -5,6 +5,25 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+
+*************************************************************
+05/09/2025: Notes for v1.12.25
+*************************************************************
+New release after #536. Partially on the way for the HK FD MC production (but more changes to come)
+
+New feature
+* Pull request #536 @federiconova: Add Kurary OD WLS plate model
+* Pull request #536 @federiconova @tdealtry: Allow changing of OD WLS plates, for IWCD & HKFD independently. This is done at precompile time
+* Pull request #526 @arturof: Add optical process for Raman scattering in water. Turned off by default
+
+Update
+* Pull request #534 @federiconova: Extend wavelength range down to 200 nm (hard coded), a range that OD WLS plates are sensitive to
+* Pull request #532 @gpronost: Update radon event generator model
+
+Bug fix
+* Pull request #531 @sk1806: RooTracker generator position improvements & checks
+* Pull request #533 @tdealtry: Update recommended HK geometries in error message when trying to use an ancient HK geometry
+
 *************************************************************
 23/07/2025: Notes for v1.12.24
 *************************************************************
