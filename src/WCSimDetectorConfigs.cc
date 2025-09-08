@@ -451,6 +451,8 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
 	WLSType = "EljenEJ286";
   else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" )
 	WLSType = "Kuraray";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
+	WLSType = "Inr";
 
   isWLSFilled = true;
   BuildODWLSCladding = true;
@@ -896,6 +898,8 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Geometry()
 	WLSType = "EljenEJ286";
   else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" )
 	WLSType = "Kuraray";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
+	WLSType = "Inr";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -1012,6 +1016,8 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
 	WLSType = "EljenEJ286";
   else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" )
 	WLSType = "Kuraray";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
+	WLSType = "Inr";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -1129,6 +1135,8 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_IDonly_Realistic_Geometry()
 	WLSType = "EljenEJ286";
   else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" )
 	WLSType = "Kuraray";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
+	WLSType = "Inr";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -1685,6 +1693,8 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
 	WLSType = "EljenEJ286";
   else if( IWCD_OD_WLS_PLATE_TYPE == "Kuraray" )
 	WLSType = "Kuraray";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
+	WLSType = "Inr";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -1810,6 +1820,8 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry_Old() // Old geometry us
 	WLSType = "EljenEJ286";
   else if( IWCD_OD_WLS_PLATE_TYPE == "Kuraray" )
 	WLSType = "Kuraray";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
+	WLSType = "Inr";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);

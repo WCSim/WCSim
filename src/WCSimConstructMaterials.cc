@@ -1544,7 +1544,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
     { 1.*eV, 7*eV };
   G4double fake_passive_abslength_vs_energy[nEntries_fake_abslength] =
     {some_absorption,some_absorption};
-
+  //  acrylic data from https://arxiv.org/pdf/1310.6454.pdf
+  
   ///////////////////////
   // ###### WLS for IWCD ###### //
   ///////////////////////
@@ -1581,6 +1582,19 @@ void WCSimDetectorConstruction::ConstructMaterials()
     WLS_IWCD_NumEntries = WLS_IWCD_Props->GetNumEntries();    
   } else if( IWCD_OD_WLS_PLATE_TYPE == "Kuraray" ){
     Kuraray *WLS_IWCD_Props = new Kuraray();
+    WLS_IWCD_PhotonEnergy = WLS_IWCD_Props->GetPhotonEnergy();
+    WLS_IWCD_Transmittance = WLS_IWCD_Props->GetTransmittance();
+    WLS_IWCD_NumEntriesTransmittance = WLS_IWCD_Props->GetNumEntriesTransmittance();
+    WLS_IWCD_RIndex = WLS_IWCD_Props->GetRIndex();
+    WLS_IWCD_PhotonEnergy_ABS = WLS_IWCD_Props->GetPhotonEnergy_ABS();
+    WLS_IWCD_Abs = WLS_IWCD_Props->GetAbs();
+    WLS_IWCD_NumEntries_ABS = WLS_IWCD_Props->GetNumEntries_ABS();
+    WLS_IWCD_PhotonEnergy_EM = WLS_IWCD_Props->GetPhotonEnergy_EM();
+    WLS_IWCD_Em = WLS_IWCD_Props->GetEm();
+    WLS_IWCD_NumEntries_EM = WLS_IWCD_Props->GetNumEntries_EM();
+    WLS_IWCD_NumEntries = WLS_IWCD_Props->GetNumEntries();    
+  } else if( IWCD_OD_WLS_PLATE_TYPE == "Inr" ){
+    Inr *WLS_IWCD_Props = new Inr();
     WLS_IWCD_PhotonEnergy = WLS_IWCD_Props->GetPhotonEnergy();
     WLS_IWCD_Transmittance = WLS_IWCD_Props->GetTransmittance();
     WLS_IWCD_NumEntriesTransmittance = WLS_IWCD_Props->GetNumEntriesTransmittance();
@@ -1656,6 +1670,19 @@ void WCSimDetectorConstruction::ConstructMaterials()
     WLSNumEntries = WLSProps->GetNumEntries();
   } else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" ){
     Kuraray *WLSProps = new Kuraray();
+    WLSPhotonEnergy = WLSProps->GetPhotonEnergy();
+    WLSTransmittance = WLSProps->GetTransmittance();
+    WLSNumEntriesTransmittance = WLSProps->GetNumEntriesTransmittance();
+    WLSRIndex = WLSProps->GetRIndex();
+    WLSPhotonEnergy_ABS = WLSProps->GetPhotonEnergy_ABS();
+    WLSAbs = WLSProps->GetAbs();
+    WLSNumEntries_ABS = WLSProps->GetNumEntries_ABS();
+    WLSPhotonEnergy_EM = WLSProps->GetPhotonEnergy_EM();
+    WLSEm = WLSProps->GetEm();
+    WLSNumEntries_EM = WLSProps->GetNumEntries_EM();
+    WLSNumEntries = WLSProps->GetNumEntries();
+  } else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" ){
+    Inr *WLSProps = new Inr();
     WLSPhotonEnergy = WLSProps->GetPhotonEnergy();
     WLSTransmittance = WLSProps->GetTransmittance();
     WLSNumEntriesTransmittance = WLSProps->GetNumEntriesTransmittance();
