@@ -223,7 +223,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 						  "8inch\n");
   PMTODRadius->SetParameterName("PMTODRadius", false);
   PMTODRadius->SetCandidates("3inch "
-			     "3inchR14374"
+			     "3inchR14374 "
 			     "5inch "
                              "8inch ");
   PMTODRadius->AvailableForStates(G4State_PreInit, G4State_Idle);
