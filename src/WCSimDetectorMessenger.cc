@@ -218,11 +218,13 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTODRadius->SetGuidance("Set the size of OD PMTs (only for Hyper-K Geom atm)");
   PMTODRadius->SetGuidance("Available options are:\n"
 						  "3inch\n"
+			                          "3inchR14374\n"
 						  "5inch\n"
 						  "8inch\n");
   PMTODRadius->SetParameterName("PMTODRadius", false);
   PMTODRadius->SetCandidates("3inch "
-							 "5inch "
+			     "3inchR14374"
+			     "5inch "
                              "8inch ");
   PMTODRadius->AvailableForStates(G4State_PreInit, G4State_Idle);
 
