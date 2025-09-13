@@ -218,16 +218,20 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTODRadius->SetGuidance("Set the size of OD PMTs (only for Hyper-K Geom atm)");
   PMTODRadius->SetGuidance("Available options are:\n"
 						  "3inch\n"
-						  "3inchR14374_FDOD\n"
-						  "3inchNNVT\n"
 						  "5inch\n"
-						  "8inch\n");
+						  "8inch\n"
+			                          "3inch_ETEL9302B\n"
+						  "3inchR14374\n"
+						  "3inchR14374_FDOD\n"
+						  "3inchNNVT\n");
   PMTODRadius->SetParameterName("PMTODRadius", false);
   PMTODRadius->SetCandidates("3inch "
+			     "5inch "
+                             "8inch "
+			     "3inch_ETEL9302B "
+			     "3inchR14374 "
 			     "3inchR14374_FDOD "
-			     "3inchNNVT "
-							 "5inch "
-                             "8inch ");
+			     "3inchNNVT ");
   PMTODRadius->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   // OD Lateral water depth
@@ -941,15 +945,19 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       WCSimDetector->SetODEdited(true);
       G4cout << "Set OD PMT size " << newValue << " ";
       if (newValue == "3inch"){
-        WCSimDetector->SetWCPMTODSize("PMT3inch_ETEL9302B");
-      }else if (newValue == "3inchR14374_FDOD"){
-        WCSimDetector->SetWCPMTODSize("PMT3inchR14374_FDOD");
-      }else if (newValue == "3inchNNVT"){
-        WCSimDetector->SetWCPMTODSize("PMT3inchNNVT");
+        WCSimDetector->SetWCPMTODSize("PMT3inch");
       }else if (newValue == "5inch"){
         WCSimDetector->SetWCPMTODSize("PMT5inch");
       }else if (newValue == "8inch"){
         WCSimDetector->SetWCPMTODSize("PMT8inch");
+      }else if (newValue == "3inch_ETEL9302B"){
+        WCSimDetector->SetWCPMTODSize("PMT3inch_ETEL9302B");
+      }else if (newValue == "3inchR14374"){
+        WCSimDetector->SetWCPMTODSize("PMT3inchR14374");
+      }else if (newValue == "3inchR14374_FDOD"){
+        WCSimDetector->SetWCPMTODSize("PMT3inchR14374_FDOD");
+      }else if (newValue == "3inchNNVT"){
+        WCSimDetector->SetWCPMTODSize("PMT3inchNNVT");
       }
       G4cout << G4endl;
     }

@@ -3356,7 +3356,7 @@ G4double  PMT3inchR14374::GetDarkRateConversionFactor(){
 }
 
 G4int PMT3inchR14374::GetNbOfQEDefined(){
-  const G4int factor = 20;
+  const G4int factor = 21;
   return factor;
 }
 
