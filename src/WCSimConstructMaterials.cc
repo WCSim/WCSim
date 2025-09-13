@@ -1485,7 +1485,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
       { 0.0, 0.0 };
   // Lambertian prob is therefore 0.25
 
-#define NUMENTRIES_TY 33 // Number of bins of wavelength to be used for the Tyvek reflectivity
+#define NUMENTRIES_TY 36 // Number of bins of wavelength to be used for the Tyvek reflectivity
 
   G4double PP_TyREFLECTIVITY[NUMENTRIES_TY] = //Tyvek reflectivity wavelength bins
       { 2.06642*eV,
@@ -1495,20 +1495,20 @@ void WCSimDetectorConstruction::ConstructMaterials()
         2.81784*eV, 2.88338*eV, 2.95203*eV, 3.02403*eV, 3.09963*eV,
         3.17911*eV, 3.26277*eV, 3.35095*eV, 3.44403*eV, 3.54243*eV,
         3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
-        4.27535*eV, 4.42804*eV};
+        4.27535*eV, 4.42804*eV, 4.6*eV, 4.8*eV, 5.0*eV};
 
   double WCODTyvekReflectivity = WCSimTuningParams->GetWCODTyvekReflectivity();
-  G4double OD_tyvek_reflectivity_scaling_factor = WCODTyvekReflectivity/0.97;
+  G4double OD_tyvek_reflectivity_scaling_factor = WCODTyvekReflectivity/0.95;
 
   G4double TyREFLECTIVITY[NUMENTRIES_TY] = // Tyvek refelctivity
-      { 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.97, 0.97, 0.97, 0.97, 0.97,
-        0.96, 0.96, 0.95, 0.95, 0.95,
-        0.94, 0.93, 0.92, 0.91, 0.90,
-        0.89, 0.86};
+    { 0.94, // 600 nm
+      0.941, 0.942, 0.943, 0.944, 0.945, // 590-550
+      0.946, 0.947, 0.948, 0.949, 0.95, // 540-500
+      0.95, 0.95, 0.95, 0.95, 0.95, // 490-450
+      0.95, 0.95, 0.95, 0.95, 0.95, // 440-400
+      0.948, 0.946, 0.944, 0.942, 0.94, // 390-350
+      0.93, 0.92, 0.91, 0.89, 0.86, // 340-300
+      0.80, 0.76, 0.70, 0.65, 0.55}; // 290-250
 
   for(int i=0; i<NUMENTRIES_TY; i++)
     TyREFLECTIVITY[i] *= OD_tyvek_reflectivity_scaling_factor;
