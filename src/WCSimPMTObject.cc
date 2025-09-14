@@ -3518,17 +3518,39 @@ G4double* PMT3inchR14374_FDOD::Getqpe()
 }
 
 G4double* PMT3inchR14374_FDOD::GetQE(){
-  static G4double QE[37] = {0., 7.333448596/100., 13.41850844/100., 18.85388087/100., 22.58789628/100., 24.83751724/100., 25.90372483/100., 26.09567109/100., 26.68416596/100., 27.11242269/100., 27.37569687/100., 27.15690678/100., 26.8828067/100., 26.78047372/100., 26.11524001/100., 25.44085118/100., 24.21266344/100., 23.28276282/100., 21.83662063/100., 20.62874459/100., 19.73618418/100., 18.59231943/100., 16.61159424/100., 13.50310127/100., 11.01111366/100., 9.511755535/100., 8.430844444/100., 7.428469476/100., 6.525186832/100., 5.512680184/100., 4.649601092/100., 3.720048567/100., 2.936519188/100., 2.188881819/100., 1.48734368/100., 0.934955148/100., 0.};
+  G4double correctionFactor = 1./0.73;
+  static G4double QE[91] = {
+    0.0/100.*correctionFactor, 0.5/100.*correctionFactor, 1.0/100.*correctionFactor, 1.625/100.*correctionFactor, 2.25/100.*correctionFactor, 4.75/100.*correctionFactor, 7.25/100.*correctionFactor, 9.75/100.*correctionFactor, 12.25/100.*correctionFactor, 15.5/100.*correctionFactor,
+    18.75/100.*correctionFactor, 20.625/100.*correctionFactor, 22.5/100.*correctionFactor, 23.75/100.*correctionFactor, 25.0/100.*correctionFactor, 25.5/100.*correctionFactor, 26.0/100.*correctionFactor, 26.5/100.*correctionFactor, 27.0/100.*correctionFactor, 27.25/100.*correctionFactor,
+    27.5/100.*correctionFactor, 27.75/100.*correctionFactor, 28.0/100.*correctionFactor, 28.0/100.*correctionFactor, 28.0/100.*correctionFactor, 28.05/100.*correctionFactor, 28.1/100.*correctionFactor, 28.175/100.*correctionFactor, 28.25/100.*correctionFactor, 28.175/100.*correctionFactor,
+    28.1/100.*correctionFactor, 28.05/100.*correctionFactor, 28.0/100.*correctionFactor, 27.875/100.*correctionFactor, 27.75/100.*correctionFactor, 27.625/100.*correctionFactor, 27.5/100.*correctionFactor, 27.0/100.*correctionFactor, 26.5/100.*correctionFactor, 26.0/100.*correctionFactor,
+    25.5/100.*correctionFactor, 25.0/100.*correctionFactor, 24.5/100.*correctionFactor, 23.75/100.*correctionFactor, 23.0/100.*correctionFactor, 22.5/100.*correctionFactor, 22.0/100.*correctionFactor, 21.5/100.*correctionFactor, 21.0/100.*correctionFactor, 20.5/100.*correctionFactor,
+    20.0/100.*correctionFactor, 19.625/100.*correctionFactor, 19.25/100.*correctionFactor, 18.25/100.*correctionFactor, 17.25/100.*correctionFactor, 15.875/100.*correctionFactor, 14.5/100.*correctionFactor, 13.25/100.*correctionFactor, 12.0/100.*correctionFactor, 10.75/100.*correctionFactor,
+    9.5/100.*correctionFactor, 9.0/100.*correctionFactor, 8.5/100.*correctionFactor, 8.125/100.*correctionFactor, 7.75/100.*correctionFactor, 7.25/100.*correctionFactor, 6.75/100.*correctionFactor, 6.25/100.*correctionFactor, 5.75/100.*correctionFactor, 5.25/100.*correctionFactor,
+    4.75/100.*correctionFactor, 4.25/100.*correctionFactor, 3.75/100.*correctionFactor, 3.25/100.*correctionFactor, 2.75/100.*correctionFactor, 2.25/100.*correctionFactor, 1.75/100.*correctionFactor, 1.5/100.*correctionFactor, 1.25/100.*correctionFactor, 1.075/100.*correctionFactor,
+    0.9/100.*correctionFactor, 0.825/100.*correctionFactor, 0.75/100.*correctionFactor, 0.625/100.*correctionFactor, 0.5/100.*correctionFactor, 0.375/100.*correctionFactor, 0.25/100.*correctionFactor, 0.175/100.*correctionFactor, 0.1/100.*correctionFactor, 0.05/100.*correctionFactor,
+    0.0/100.*correctionFactor};
   return QE;
 }
-G4double* PMT3inchR14374_FDOD::GetQEWavelength(){static G4double wavelength[37] = { 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650 };
+G4double* PMT3inchR14374_FDOD::GetQEWavelength(){static G4double wavelength[91] = {
+    250, 255, 260, 265, 270, 275, 280, 285, 290, 295,
+    300, 305, 310, 315, 320, 325, 330, 335, 340, 345,
+    350, 355, 360, 365, 370, 375, 380, 385, 390, 395,
+    400, 405, 410, 415, 420, 425, 430, 435, 440, 445,
+    450, 455, 460, 465, 470, 475, 480, 485, 490, 495,
+    500, 505, 510, 515, 520, 525, 530, 535, 540, 545,
+    550, 555, 560, 565, 570, 575, 580, 585, 590, 595,
+    600, 605, 610, 615, 620, 625, 630, 635, 640, 645,
+    650, 655, 660, 665, 670, 675, 680, 685, 690, 695,
+    700 };
   return wavelength;}
 G4double  PMT3inchR14374_FDOD::GetmaxQE(){
-  const G4double maxQE = 0.27;
+  G4double correctionFactor = 1./0.73;
+  const G4double maxQE = 0.28*correctionFactor;
   return maxQE;
 }
 G4int PMT3inchR14374_FDOD::GetNbOfQEDefined(){
-  const G4int factor = 37;
+  const G4int factor = 91;
   return factor;
 }
 G4double* PMT3inchR14374_FDOD::GetCollectionEfficiencyArray(){
@@ -3721,17 +3743,40 @@ G4double* PMT3inchNNVT::Getqpe()
 }
 
 G4double* PMT3inchNNVT::GetQE(){
-  static G4double QE[37] = {0., 0.187399331/100., 1.83797986/100., 6.849267609/100., 14.53596403/100., 20.98046045/100., 24.82708625/100., 27.78453786/100., 28.88106058/100., 28.43121586/100., 28.69331522/100., 27.73683132/100., 25.45433263/100., 23.61911783/100., 21.52790058/100., 19.75096978/100., 18.09367601/100., 16.15956243/100., 14.08033797/100., 12.56868349/100., 11.86649274/100., 10.84294965/100., 9.909833721/100., 8.010004769/100., 6.253118113/100., 5.124670521/100., 4.433686592/100., 3.878838981/100., 3.267511401/100., 2.919435288/100., 2.392315593/100., 1.889523401/100., 1.500014957/100., 1.00341673/100., 0.718883368/100., 0.386247086/100., 0.};
+  G4double correctionFactor = 1./0.73;
+  static G4double QE[91] = {
+    0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.05/100.*correctionFactor,
+    0.1/100.*correctionFactor, 1.025/100.*correctionFactor, 1.95/100.*correctionFactor, 4.85/100.*correctionFactor, 7.75/100.*correctionFactor, 12.5/100.*correctionFactor, 17.25/100.*correctionFactor, 20.875/100.*correctionFactor, 24.5/100.*correctionFactor, 26.0/100.*correctionFactor,
+    27.5/100.*correctionFactor, 28.25/100.*correctionFactor, 29.0/100.*correctionFactor, 29.75/100.*correctionFactor, 30.5/100.*correctionFactor, 30.375/100.*correctionFactor, 30.25/100.*correctionFactor, 30.125/100.*correctionFactor, 30.0/100.*correctionFactor, 29.75/100.*correctionFactor,
+    29.5/100.*correctionFactor, 29.0/100.*correctionFactor, 28.5/100.*correctionFactor, 28.0/100.*correctionFactor, 27.5/100.*correctionFactor, 26.75/100.*correctionFactor, 26.0/100.*correctionFactor, 25.5/100.*correctionFactor, 25.0/100.*correctionFactor, 24.5/100.*correctionFactor,
+    24.0/100.*correctionFactor, 23.0/100.*correctionFactor, 22.0/100.*correctionFactor, 21.25/100.*correctionFactor, 20.5/100.*correctionFactor, 19.75/100.*correctionFactor, 19.0/100.*correctionFactor, 18.25/100.*correctionFactor, 17.5/100.*correctionFactor, 16.75/100.*correctionFactor,
+    16.0/100.*correctionFactor, 15.5/100.*correctionFactor, 15.0/100.*correctionFactor, 13.75/100.*correctionFactor, 12.5/100.*correctionFactor, 11.25/100.*correctionFactor, 10.0/100.*correctionFactor, 8.75/100.*correctionFactor, 7.5/100.*correctionFactor, 7.0/100.*correctionFactor,
+    6.5/100.*correctionFactor, 5.75/100.*correctionFactor, 5.0/100.*correctionFactor, 4.5/100.*correctionFactor, 4.0/100.*correctionFactor, 3.5/100.*correctionFactor, 3.0/100.*correctionFactor, 2.75/100.*correctionFactor, 2.5/100.*correctionFactor, 2.25/100.*correctionFactor,
+    2.0/100.*correctionFactor, 1.75/100.*correctionFactor, 1.5/100.*correctionFactor, 1.375/100.*correctionFactor, 1.25/100.*correctionFactor, 0.875/100.*correctionFactor, 0.5/100.*correctionFactor, 0.375/100.*correctionFactor, 0.25/100.*correctionFactor, 0.125/100.*correctionFactor,
+    0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor,
+    0.0/100.*correctionFactor
+  };
   return QE;
 }
-G4double* PMT3inchNNVT::GetQEWavelength(){static G4double wavelength[37] = { 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650 };
+G4double* PMT3inchNNVT::GetQEWavelength(){static G4double wavelength[91] = {
+    250, 255, 260, 265, 270, 275, 280, 285, 290, 295,
+    300, 305, 310, 315, 320, 325, 330, 335, 340, 345,
+    350, 355, 360, 365, 370, 375, 380, 385, 390, 395,
+    400, 405, 410, 415, 420, 425, 430, 435, 440, 445,
+    450, 455, 460, 465, 470, 475, 480, 485, 490, 495,
+    500, 505, 510, 515, 520, 525, 530, 535, 540, 545,
+    550, 555, 560, 565, 570, 575, 580, 585, 590, 595,
+    600, 605, 610, 615, 620, 625, 630, 635, 640, 645,
+    650, 655, 660, 665, 670, 675, 680, 685, 690, 695,
+    700 };
   return wavelength;}
 G4double  PMT3inchNNVT::GetmaxQE(){
-  const G4double maxQE = 0.29;
+  G4double correctionFactor = 1./0.73;
+  const G4double maxQE = 0.29*correctionFactor;
   return maxQE;
 }
 G4int PMT3inchNNVT::GetNbOfQEDefined(){
-  const G4int factor = 37;
+  const G4int factor = 91;
   return factor;
 }
 G4double* PMT3inchNNVT::GetCollectionEfficiencyArray(){
