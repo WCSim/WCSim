@@ -979,7 +979,7 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
   WCODDeadSpace            = 600.*mm;
   WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
   WCODWLSPlatesThickness   = 1.*cm; //
-  WCODWLSPlatesLength      = 60.*cm; //
+  WCODWLSPlatesLength      = 30.*cm; //
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
 
   // OD PMTs //
@@ -1097,7 +1097,7 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_IDonly_Realistic_Geometry()
   WCODDeadSpace            = 600.*mm;
   WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
   WCODWLSPlatesThickness   = 1.*cm; //
-  WCODWLSPlatesLength      = 60.*cm; //
+  WCODWLSPlatesLength      = 30.*cm; //
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
 
   // OD PMTs //
