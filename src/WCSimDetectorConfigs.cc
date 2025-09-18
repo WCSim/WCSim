@@ -979,12 +979,12 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
   WCODDeadSpace            = 600.*mm;
   WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
   WCODWLSPlatesThickness   = 1.*cm; //
-  WCODWLSPlatesLength      = 60.*cm; //
+  WCODWLSPlatesLength      = 30.*cm; //
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
 
   // OD PMTs //
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
-  WCSimPMTObject *PMTOD = CreatePMTObject("PMT8inch", WCODCollectionName);
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT3inchR14374_FDOD", WCODCollectionName);
   WCPMTODName           = PMTOD->GetPMTName();
   WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
   WCPMTODRadius         = PMTOD->GetRadius();
@@ -1097,12 +1097,12 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_IDonly_Realistic_Geometry()
   WCODDeadSpace            = 600.*mm;
   WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
   WCODWLSPlatesThickness   = 1.*cm; //
-  WCODWLSPlatesLength      = 60.*cm; //
+  WCODWLSPlatesLength      = 30.*cm; //
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
 
   // OD PMTs //
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
-  WCSimPMTObject *PMTOD = CreatePMTObject("PMT8inch", WCODCollectionName);
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT3inchR14374_FDOD", WCODCollectionName);
   WCPMTODName           = PMTOD->GetPMTName();
   WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
   WCPMTODRadius         = PMTOD->GetRadius();
