@@ -155,15 +155,19 @@ void WCSimGenerator_Radioactivity::GenerateRnFunction() {
 	int iBin_R2 = fR2_max / ( fMperBinsR * fMperBinsR );
 	int iBin_Z  = (fZ_max - fZ_min) / ( fMperBinsZ );
 	
-	std::cout << "DEBUG: Radiactivity volumne: R2=[0, " << fR2_max << "], Z=[" << fZ_min << ", " << fZ_max << "]" << std::endl;
+	std::cout << "DEBUG: Radiactivity volume: R2=[0, " << fR2_max << "], Z=[" << fZ_min << ", " << fZ_max << "]" << std::endl;
 	if ( tfRnFunction ) delete tfRnFunction;
-	tfRnFunction = new TF2("RndPos",RadonFormula,0.,fR2_max,fZ_min,fZ_max,0);
+	tfRnFunction = new TF2("RndPos",RadonFormula,0.,fR2_max,fZ_min,fZ_max,1);
 	tfRnFunction->SetParameter(0,fConcWater);
 	tfRnFunction->SetNpx(iBin_R2);
 	tfRnFunction->SetNpy(iBin_Z );
 	
-	fIntegral   = tfRnFunction->Integral(0,fR2_max,fZ_min,fZ_max);
-	fIntegralFV = tfRnFunction->Integral(0,pow(fR_max_FV,2.),fZ_min_FV,fZ_max_FV);
+	std::cout << "DEBUG: Radiactivity integral: R2=[0, " << fR2_max << "], Z=[" << fZ_min << ", " << fZ_max << "]" << std::endl;
+	fIntegral   = tfRnFunction->Integral(0,fR2_max,		fZ_min,		fZ_max);
+	std::cout << fIntegral << std::endl;
+	std::cout << "DEBUG: Radiactivity integral: R2=[0, " << fR2_max_FV << "], Z=[" << fZ_min_FV << ", " << fZ_max_FV << "]" << std::endl;
+	fIntegralFV = tfRnFunction->Integral(0,fR2_max_FV,	fZ_min_FV,	fZ_max_FV);
+	std::cout << fIntegralFV << std::endl;
 }
 
 G4ThreeVector WCSimGenerator_Radioactivity::GetRandomVertex(G4int tSymNumber) {
@@ -189,6 +193,8 @@ G4ThreeVector WCSimGenerator_Radioactivity::GetRandomVertex(G4int tSymNumber) {
 	G4double Y = sqrt(R2) * sin(theta);
 
 	G4ThreeVector vec(X * CLHEP::m, Y * CLHEP::m, Z * CLHEP::m);
+	
+	std::cout << "DEBUG: Random vertex: (" << X << " " << Y << " " << " " << Z << ")" << std::endl;
 
 	return vec;
 }
