@@ -5,6 +5,17 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+*************************************************************
+16/09/2025: Notes for v1.12.26
+*************************************************************
+New release after #540. Partially on the way for the HK FD MC production (but more changes to come)
+
+Update
+* Pull request #540 @federiconova: 30cm WLS plates w/ 3" (R14374_FDOD) is now the default HK OD setup
+
+New feature
+* Pull request #538 @federiconova: Initial model of INR WLS plate
+* Pull request #540 @federiconova: Addition of R14374_FDOD & NNVT PMT models (HKFD OD candidates)
 
 *************************************************************
 05/09/2025: Notes for v1.12.25
