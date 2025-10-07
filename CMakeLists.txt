@@ -18,7 +18,7 @@ if (${WCSim_WCSimRoot_only})
     set(PROJECT_NAME WCSimRoot)
 endif ()
 
-set(PROJECT_VERSION 1.12.26)
+set(PROJECT_VERSION 1.12.27)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 
@@ -204,7 +204,9 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
 	      #required macros
         ${PROJECT_SOURCE_DIR}/macros/jobOptions.mac
-        ${PROJECT_SOURCE_DIR}/macros/tuning_parameters.mac
+        ${PROJECT_SOURCE_DIR}/macros/tuning_parameters_hkfd.mac
+        ${PROJECT_SOURCE_DIR}/macros/tuning_parameters_hkfd_aged.mac
+        ${PROJECT_SOURCE_DIR}/macros/tuning_parameters_iwcd.mac
 	      #options used as includes in WCSim.mac and dependents
         ${PROJECT_SOURCE_DIR}/macros/daq.mac
         ${PROJECT_SOURCE_DIR}/macros/geom_hk_mpmt_options.mac

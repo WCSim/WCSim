@@ -978,8 +978,18 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
   WCODHeightWaterDepth     = 2.*m;
   WCODDeadSpace            = 600.*mm;
   WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
-  WCODWLSPlatesThickness   = 1.*cm; //
   WCODWLSPlatesLength      = 30.*cm; //
+  G4String WLSType="";
+  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" ){
+	WLSType = "EljenEJ286";
+	WCODWLSPlatesThickness   = 1.*cm; //
+  }else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" ){
+	WLSType = "Kuraray";
+	WCODWLSPlatesThickness   = 0.6*cm; //
+  }  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" ){
+	WLSType = "Inr";
+	WCODWLSPlatesThickness   = 0.7*cm; //
+  }
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
 
   // OD PMTs //
@@ -1010,14 +1020,6 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
   CreateCombinedPMTQE(WCColName);
   isCombinedPMTCollectionDefined=true;
 
-  // TEST WLS collection for stacking action
-  G4String WLSType="";
-  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" )
-	WLSType = "EljenEJ286";
-  else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" )
-	WLSType = "Kuraray";
-  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
-	WLSType = "Inr";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -1096,8 +1098,18 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_IDonly_Realistic_Geometry()
   WCODHeightWaterDepth     = 2.*m;
   WCODDeadSpace            = 600.*mm;
   WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
-  WCODWLSPlatesThickness   = 1.*cm; //
   WCODWLSPlatesLength      = 30.*cm; //
+  G4String WLSType="";
+  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" ){
+	WLSType = "EljenEJ286";
+	WCODWLSPlatesThickness   = 1.*cm; //
+  }else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" ){
+	WLSType = "Kuraray";
+	WCODWLSPlatesThickness   = 0.6*cm; //
+  }else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" ){
+	WLSType = "Inr";
+	WCODWLSPlatesThickness   = 0.7*cm; //
+  }
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
 
   // OD PMTs //
@@ -1129,14 +1141,6 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_IDonly_Realistic_Geometry()
   CreateCombinedPMTQE(WCColName);
   isCombinedPMTCollectionDefined=true;
 
-  // TEST WLS collection for stacking action
-  G4String WLSType="";
-  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" )
-	WLSType = "EljenEJ286";
-  else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" )
-	WLSType = "Kuraray";
-  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
-	WLSType = "Inr";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
