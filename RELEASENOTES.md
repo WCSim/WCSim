@@ -6,6 +6,19 @@ Recent updates
 *************************************************************
 
 *************************************************************
+07/10/2025: Notes for v1.12.27
+*************************************************************
+New release after #539 & #543
+
+Update
+* Pull request #543 @federiconova: Assign correct thickness to FD OD WLS plates
+* Pull request #540 @federiconova: Default HK FD OD WLS plate changed from Kurary to INR
+* Pull request #540 @federiconova: Updates to INR OD WLS plate model
+
+Bug fix
+* Pull request #544 @gpronost: Fix radon radioactivity generator function
+
+*************************************************************
 16/09/2025: Notes for v1.12.26
 *************************************************************
 New release after #540. Partially on the way for the HK FD MC production (but more changes to come)
