@@ -155,17 +155,17 @@ void WCSimGenerator_Radioactivity::GenerateRnFunction() {
 	int iBin_R2 = fR2_max / ( fMperBinsR * fMperBinsR );
 	int iBin_Z  = (fZ_max - fZ_min) / ( fMperBinsZ );
 	
-	std::cout << "DEBUG: Radiactivity volume: R2=[0, " << fR2_max << "], Z=[" << fZ_min << ", " << fZ_max << "]" << std::endl;
+	std::cout << "DEBUG: Radioactivity volume: R2=[0, " << fR2_max << "], Z=[" << fZ_min << ", " << fZ_max << "]" << std::endl;
 	if ( tfRnFunction ) delete tfRnFunction;
 	tfRnFunction = new TF2("RndPos",RadonFormula,0.,fR2_max,fZ_min,fZ_max,1);
 	tfRnFunction->SetParameter(0,fConcWater);
 	tfRnFunction->SetNpx(iBin_R2);
 	tfRnFunction->SetNpy(iBin_Z );
 	
-	std::cout << "DEBUG: Radiactivity integral: R2=[0, " << fR2_max << "], Z=[" << fZ_min << ", " << fZ_max << "]" << std::endl;
+	std::cout << "DEBUG: Radioactivity integral: R2=[0, " << fR2_max << "], Z=[" << fZ_min << ", " << fZ_max << "]" << std::endl;
 	fIntegral   = tfRnFunction->Integral(0,fR2_max,		fZ_min,		fZ_max);
 	std::cout << fIntegral << std::endl;
-	std::cout << "DEBUG: Radiactivity integral: R2=[0, " << fR2_max_FV << "], Z=[" << fZ_min_FV << ", " << fZ_max_FV << "]" << std::endl;
+	std::cout << "DEBUG: Radioactivity integral in FV: R2=[0, " << fR2_max_FV << "], Z=[" << fZ_min_FV << ", " << fZ_max_FV << "]" << std::endl;
 	fIntegralFV = tfRnFunction->Integral(0,fR2_max_FV,	fZ_min_FV,	fZ_max_FV);
 	std::cout << fIntegralFV << std::endl;
 }
