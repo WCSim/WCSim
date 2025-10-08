@@ -137,6 +137,14 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   lightInjectorDetectorCmd->SetParameterName("injectorDetector",true);
   lightInjectorDetectorCmd->SetCandidates("ID OD");
   lightInjectorDetectorCmd->SetDefaultValue("ID");
+
+  lightInjectorWavelengthCmd = new G4UIcmdWithADouble("/mygen/injectorWavelength",this);
+  lightInjectorWavelengthCmd->SetGuidance("Set the photon wavelength for the light injector in nm");
+  lightInjectorWavelengthCmd->SetGuidance("[usage] /mygen/injectorWavelength injectorWavelength");
+  lightInjectorWavelengthCmd->SetGuidance(" injectorWavelength: 400");
+  lightInjectorWavelengthCmd->SetRange("injectorWavelength>0");
+  lightInjectorWavelengthCmd->SetParameterName("injectorWavelength",true);
+  lightInjectorWavelengthCmd->SetDefaultValue(400);
   
   lightInjectorNPhotonsCmd = new G4UIcmdWithAnInteger("/mygen/nphotons", this);
   lightInjectorNPhotonsCmd->SetGuidance("Set the number of photons per pulse of the light injector");
@@ -185,22 +193,29 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   param->SetDefaultValue("0");
   isotopeCmd->SetParameter(param);
   
-  radonScalingCmd = new G4UIcmdWithAString("/mygen/radon_scaling",this);
-  radonScalingCmd->SetGuidance("Select scalling scenario, if scenario 0 is selected, Bi214 are generated uniformly");
+  radonScalingCmd = new G4UIcmdWithAnInteger("/mygen/radon_scaling",this);
+  radonScalingCmd->SetGuidance("Select scaling scenario, if scenario 0 is selected, Bi214 are generated uniformly");
   radonScalingCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
-  radonScalingCmd->SetGuidance("     SCENARIO : 0, A, B");
-  radonScalingCmd->SetCandidates("0 A B");
+  radonScalingCmd->SetGuidance("     SCENARIO : 0, 1");
   param = new G4UIparameter("SCENARIO",'s',true);
-  param->SetDefaultValue("A");
+  param->SetDefaultValue("1");
   radonScalingCmd->SetParameter(param);
   
   radonGeoSymCmd = new G4UIcmdWithAnInteger("/mygen/radon_symmetry",this);
-  radonGeoSymCmd->SetGuidance("Select scalling scenario");
-  radonGeoSymCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
+  radonGeoSymCmd->SetGuidance("Specify the symmetry value");
+  radonGeoSymCmd->SetGuidance("[usage] /mygen/radon_symmetry SYMMETRY ");
   radonGeoSymCmd->SetGuidance("     SYMMETRY : 1 ... ");
   param = new G4UIparameter("SYMMETRY",'d',true);
   param->SetDefaultValue("1");
   radonGeoSymCmd->SetParameter(param);
+  
+  radonWaterConcCmd = new G4UIcmdWithADouble("/mygen/radon_water_concentration",this);
+  radonWaterConcCmd->SetGuidance("Specify the input water concentration in mBq/m3");
+  radonWaterConcCmd->SetGuidance("[usage] /mygen/radon_water_concentration WATCONC ");
+  radonWaterConcCmd->SetGuidance("     WATCONC : (double) activity in input water in mBq/m3 ");
+  param = new G4UIparameter("WATCONC",'f',true);
+  param->SetDefaultValue("2.63");
+  radonWaterConcCmd->SetParameter(param);
 
   mPMTLEDIdCmd1 = new G4UIcmdWithAnInteger("/mPMTLED/PMTid",this);
   mPMTLEDIdCmd1->SetGuidance("Set PMT id for mPMT LED source position. Defaults to 1.");
@@ -211,6 +226,15 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   mPMTLEDIdCmd2->SetGuidance("Set LED id for mPMT LED source position, dTheta and dPhi for LED direction. Defaults to 0, 0.0, 0.0 ");
   mPMTLEDIdCmd2->SetParameterName("mPMTLEDId2","mPMTLEDId2_dTheta","mPMTLEDId2_dPhi", true);
   mPMTLEDIdCmd2->SetDefaultValue(G4ThreeVector(0,0.0,0.0));
+
+  RegionCmd = new G4UIcmdWithAString("/mygen/region", this);
+  RegionCmd->SetGuidance("Set region for accepting events from RooTracker input");
+  RegionCmd->SetGuidance("[usage] /mygen/region REGION");
+  RegionCmd->SetGuidance("REGION:  ID, OD_INNER, OD_OUTER");
+  RegionCmd->SetParameterName("region", true);
+  RegionCmd->SetCandidates("ID OD_INNER OD_OUTER");
+  RegionCmd->SetDefaultValue(myAction->GetRegionString());
+
 }
 
 WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
@@ -219,6 +243,7 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete mydetDirectory;
   delete radonScalingCmd;
   delete radonGeoSymCmd;
+  delete radonWaterConcCmd;
   delete radioactive_time_window_Cmd;
   delete nPhotonsCmd;
   delete injectorOnCmd;
@@ -231,6 +256,7 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete lightInjectorFilenameCmd;
   delete lightInjectorDetailsCmd;
   delete lightInjectorDetectorCmd;
+  delete lightInjectorWavelengthCmd;
   delete lightInjectorModeCmd;
   delete mPMTLEDIdCmd1;
   delete mPMTLEDIdCmd2;
@@ -560,12 +586,17 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
 
   if ( command==radonScalingCmd )
   {
-    RadonScalingCommand(newValue);
+    myAction->SetRadonScenario(radonScalingCmd->GetNewIntValue(newValue));
   }
 
   if ( command==radonGeoSymCmd )
   {
     myAction->SetRadonSymmetry(radonGeoSymCmd->GetNewIntValue(newValue));
+  }
+
+  if ( command==radonWaterConcCmd )
+  {
+    myAction->SetRadonWaterConcentration(radonWaterConcCmd->GetNewDoubleValue(newValue));
   }
 
   if ( command==timeUnitCmd)
@@ -589,21 +620,6 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       G4cout << "PoissonPMT mean set to: " << poisMeanCmd->GetNewDoubleValue(newValue) << G4endl;
     }
     
-  if( command==radioactive_time_window_Cmd )
-    {
-      myAction->SetRadioactiveTimeWindow(StoD(newValue));
-    }
-  
-  if ( command==radonScalingCmd ) 
-    {
-      RadonScalingCommand(newValue);
-    }
-  
-  if ( command==radonGeoSymCmd ) 
-    {
-      myAction->SetRadonSymmetry(radonGeoSymCmd->GetNewIntValue(newValue));
-    }
-  
   if ( command==nPhotonsCmd ) 
     {
       myAction->SetInjectorBeamPhotons(nPhotonsCmd->GetNewIntValue(newValue));
@@ -623,7 +639,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     {
       myAction->SetInjectorOpeningAngle(openingAngleCmd->GetNewDoubleValue(newValue));
     }
-
+  
   if ( command== injectorWavelengthCmd )
     {
       myAction->SetInjectorWavelength(injectorWavelengthCmd->GetNewDoubleValue(newValue));
@@ -659,7 +675,12 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
   {
     myAction->SetLightInjectorDetector(newValue);
   }
-
+  
+  if ( command==lightInjectorWavelengthCmd )
+  {
+    myAction->SetLightInjectorWavelength(lightInjectorWavelengthCmd->GetNewDoubleValue(newValue));
+  }
+  
   if (command==lightInjectorModeCmd )
   {
     myAction->SetLightInjectorMode(lightInjectorModeCmd->GetNewIntValue(newValue));
@@ -698,6 +719,20 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
              << ", dPhi = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).z() << " deg" << G4endl;
     }
 
+  // Region in which to accept events for nRooTracker input
+  if (command == RegionCmd) {
+    if      (newValue == "ID")
+      myAction->SetRegion(WCSimPrimaryGeneratorAction::Region::kID);
+    else if (newValue == "OD_INNER")
+      myAction->SetRegion(WCSimPrimaryGeneratorAction::Region::kODInner);
+    else if (newValue == "OD_OUTER")
+      myAction->SetRegion(WCSimPrimaryGeneratorAction::Region::kODOuter);
+    else
+      G4Exception("WCSimPrimaryGeneratorMessenger::SetNewValue",
+                  "WCSimBadRegion", FatalException,
+                  ("Unknown /mygen/region value: "+newValue).c_str());
+  }
+
 }
 
 G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
@@ -735,7 +770,11 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
     else if(myAction->IsUsingmPMTledEvtGenerator())
       { cv = "mPMT-LED"; }
   }
-  
+  // Region for accepting events from RooTracker input
+  if (command == RegionCmd) {
+    return myAction->GetRegionString();
+  }
+
   return cv;
 }
 
@@ -757,8 +796,7 @@ void WCSimPrimaryGeneratorMessenger::RadonScalingCommand(G4String newValue)
   G4String scenario = next();
   G4int iScenario = 0;
    
-  if ( scenario == "A" ) iScenario = 1; // Relative scaling with respect to full ID volume (Pessimistic)
-  if ( scenario == "B" ) iScenario = 2; // Relative scaling with respect to fiducial volume
+  if ( scenario == "A" ) iScenario = 1; // Relative scaling with respect to full ID volume 
    
   myAction->SetRadonScenario(iScenario);
 }

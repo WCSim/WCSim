@@ -1,14 +1,37 @@
 #include "WCSimLIGen.hh"
 
+#include "TMath.h"
+#include "MonotonicInterpolator.hh"
 #include "json.hpp"
-
 #include "G4ParticleGun.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4OpticalPhoton.hh"
 #include "G4RandomDirection.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4Event.hh"
 
 using json = nlohmann::json;
+
+
+void SampleFromInterpolatedSurface(MonotonicInterpolator spline,
+				   double xMin, double xMax,
+				   double yMin, double yMax,
+				   double zMax, TRandom3& rng,
+				   double & costheta, double & phi) {
+  while (true) {
+    double x = rng.Uniform(xMin, xMax);
+    double y = rng.Uniform(yMin, yMax);
+    double z = spline.Evaluate2D(x, y);
+    double u = rng.Uniform(0.0, zMax);
+    //Accept x,y values if interpolated z is below a random value
+    if (u < z){
+      costheta = x;
+      phi = y;
+      return;
+    }
+  }
+}
+
 
 WCSimLIGen::WCSimLIGen(){
 
@@ -23,7 +46,6 @@ WCSimLIGen::~WCSimLIGen(){
 
     // things to delete
   delete myLIGun;
-  //if(hProfile) delete hProfile;
 }
 
 
@@ -46,8 +68,9 @@ void WCSimLIGen::SetPhotonMode(G4bool photonmode){
 }
     
 
-void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector){
+void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector, G4double injectorWavelength){
 
+  photonWavelength = injectorWavelength;
     // Define the database to read from
     string db = injectorFilename;
     string db_pos = injectorDetails;
@@ -107,7 +130,6 @@ _pos << " not found" << G4endl;
     json data2 = json::parse(buffer2.str());
     for (auto injector2 : data2["injectors"]){
       if ( injector2["type"].get<string>()==injectorType && G4String(injector2["idx"].get<string>())==injectorIdx && injector2["detector"].get<string>()==injectorDetector){
-	injectorWavelength = injector2["wavelength"].get<double>();
 	injectorPosition = injector2["position"].get<vector<double>>();
 	injectorDirection = injector2["direction"].get<vector<double>>();
 	injectorOffset = injector2["offset"].get<double>();
@@ -169,36 +191,99 @@ void WCSimLIGen::LoadPhotonList(){
 
 void WCSimLIGen::LoadProfilePDF(){
 
-    G4cout << "Reading the injector profile from file" << G4endl;
+  G4cout << "Reading the injector profile from file" << G4endl;
 
     // Creates histogram of light injector profile
-    float thetaMin = thetaVals[0];
     float phiMin = phiVals[0];
     unsigned int nbins = thetaVals.size();
     unsigned int bins = thetabins;
-    float thetaMax = thetaVals[nbins-1];
     float phiMax = phiVals[nbins-1];
 
     if (hProfile != NULL) {
-          delete hProfile;
-          hProfile = nullptr;
+      delete hProfile;
+      hProfile = nullptr;
+    }
+    if (prof != NULL){
+      delete prof;
+      prof = nullptr;
     }
     
-    hProfile = new TH2D("hProfile","hProfile",bins,thetaMin,thetaMax,bins,phiMin,phiMax);
+    double cosTheta;
+    int pointIndex = 0;
+    
+    prof = new TGraph2D();
     for (auto i=0u;i<nbins;i++){
-      hProfile->Fill(thetaVals[i],phiVals[i]);
-        int bin = hProfile->FindBin(thetaVals[i],phiVals[i]);
-        hProfile->SetBinContent(bin, intensity[i]);
+      cosTheta = cos((thetaVals[i]-90)*deg);
+      prof->SetPoint(pointIndex,cosTheta,phiVals[i],intensity[i]);
+      pointIndex++;
+    }
+
+    std::map<std::pair<double, double>, double> intensity_map;
+    std::set<double> cosTheta_set;
+    std::set<double> phi_set;
+
+    //Setup set of possible cosTheta, phi and intensity values
+    for (int i = 0; i < prof->GetN(); ++i) {
+        double xi = prof->GetX()[i];
+        double yi = prof->GetY()[i];
+        double zi = prof->GetZ()[i];
+        cosTheta_set.insert(xi);
+        phi_set.insert(yi);
+        intensity_map[{xi, yi}] = zi;
+    }
+
+    cosTheta_vals.assign(cosTheta_set.begin(), cosTheta_set.end());
+    phi_vals.assign(phi_set.begin(), phi_set.end());
+    
+    intensity_grid.resize(phi_vals.size(), std::vector<double>(cosTheta_vals.size()));
+    intensityMax = 0;
+    double total_intensity = 0;
+    
+    //Create vector of 2D histogram
+    for (size_t i = 0; i < phi_vals.size(); ++i) {
+      for (size_t j = 0; j < cosTheta_vals.size(); ++j) {
+        auto key = std::make_pair(cosTheta_vals[j], phi_vals[i]);
+        auto it = intensity_map.find(key);
+        if (it != intensity_map.end()) {
+	  intensity_grid[i][j] = it->second;
+	  if (it->second > intensityMax)
+	    intensityMax = it->second;
+        }
+	else {
+	  intensity_grid[i][j] = 0.0;
+        }
+	total_intensity += intensity_grid[i][j];
+      }
+    }
+    double sum = 0;
+    double minIntensity = 100;
+    hProfile = new TH2D("hProfile","hProfile",bins,0,1,bins,phiMin,phiMax);
+    //Precompute the interpolated PDF
+    MonotonicInterpolator PrecomputedSplines(cosTheta_vals, phi_vals, intensity_grid);
+    slopes_and_rows = PrecomputedSplines.GetSlopes2D();
+    
+    //Setup profile for visualisation, and determine minimum CosTheta value which was filled. 
+    MonotonicInterpolator Spline(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows);
+    for (int ix = 1; ix <= hProfile->GetNbinsX(); ++ix) {
+      for (int iy = 1; iy <= hProfile->GetNbinsY(); ++iy) {
+        double x = hProfile->GetXaxis()->GetBinCenter(ix);
+        double y = hProfile->GetYaxis()->GetBinCenter(iy);
+	double z = Spline.Evaluate2D(x, y);
+	sum += z;
+	hProfile->SetBinContent(ix, iy, sum/total_intensity);
+	if (z > 0 && z < minIntensity){
+	  minIntensity = z;
+	  minCosTheta =  hProfile->GetXaxis()->GetBinCenter(ix);
+	}
+      }
     }
     G4cout << "Profile filled." << G4endl;
 }
 
-
-
 void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
 
-    // Calculate photon energy now we have the wavelength
-    energy = PhotonEnergyFromWavelength(injectorWavelength);
+  // Calculate photon energy now we have the wavelength
+  energy = PhotonEnergyFromWavelength(photonWavelength);
 
     if (photonMode){
         // Get the position and direction from the photon list
@@ -225,7 +310,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
     }
 
     else {
-
+      
         // Find the angle and axis of rotation of injector axis (v) wrt to +z (u)
         // so that we can rotate the direction from the profile if we need to
         G4ThreeVector u = G4ThreeVector(0,0,1);
@@ -238,20 +323,19 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
         if (axis.mag()==0){
             axis = {1,0,0};
         }
-
         // Now generate the photon positions and directions
+	MonotonicInterpolator spline(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows);
         for (int iphoton = 0; iphoton<nphotons; iphoton++){
  
             // Generate random time for this photon in 1 ns pulse window
             G4double time = G4RandFlat::shoot(20.0,21.0)*ns;
-         
-            // Get a random theta and phi from the LI profile
-            double theta;
-            double phi;
-            hProfile->GetRandom2(theta,phi);
-	    theta = theta - 90;
-            // Calculate the direction of this photon wrt +z direction
-            G4double costheta = cos(theta*deg);
+
+	    //Create unique random seed based on event ID and photon number
+	    TRandom3 rng(anEvent->GetEventID()*iphoton + iphoton);
+	    //Determine photon costheta and phi needed for the photon direction from interpolated PDF
+	    double costheta = 0, phi = 0;
+	    SampleFromInterpolatedSurface(spline,minCosTheta, cosTheta_vals.back(), phi_vals.front(),phi_vals.back(), intensityMax, rng, costheta, phi);
+	    // Calculate the direction of this photon wrt +z direction
             G4double sintheta = sqrt(1. - costheta*costheta);
             G4double sinphi = sin(phi*deg);
             G4double cosphi = cos(phi*deg);
@@ -306,5 +390,5 @@ G4ThreeVector WCSimLIGen::GetInjectorDirection(){
 
 G4double WCSimLIGen::GetPhotonEnergy(){
    
-    return PhotonEnergyFromWavelength(injectorWavelength);
+    return PhotonEnergyFromWavelength(photonWavelength);
 }

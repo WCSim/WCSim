@@ -43,7 +43,7 @@
 #ifndef WCSimOpticalPhysics_h
 #define WCSimOpticalPhysics_h 1
 
-#include "G4OpticalProcessIndex.hh"
+#include "WCSimOpticalProcessIndex.hh"
 #include "WCSimOpticalPhysicsMessenger.hh"
 #include "G4OpticalSurface.hh"
 
@@ -58,6 +58,7 @@ class G4Scintillation;
 class G4Cerenkov;
 class G4OpWLS;
 class G4OpRayleigh;
+class WCSimOpRaman;
 class G4OpMieHG;
 class WCSimOpBoundaryProcess;
 class G4OpAbsorption;
@@ -87,9 +88,9 @@ class WCSimOpticalPhysics : public G4VPhysicsConstructor
   public:
 
     // configure WCSimOpticalPhysics builder
-    void Configure(G4OpticalProcessIndex, G4bool );
+    void Configure(WCSimOpticalProcessIndex, G4bool );
 
-    void SetTrackSecondariesFirst(G4OpticalProcessIndex, G4bool );
+    void SetTrackSecondariesFirst(WCSimOpticalProcessIndex, G4bool );
 
     // Cerenkov
     void SetMaxNumPhotonsPerStep(G4int);
@@ -119,6 +120,7 @@ class WCSimOpticalPhysics : public G4VPhysicsConstructor
 
     void SetAbsorptionVerbosity(G4int);
     void SetRayleighVerbosity(G4int);
+    void SetRamanVerbosity(G4int);
     void SetMieVerbosity(G4int);
 
   private:
@@ -183,6 +185,9 @@ class WCSimOpticalPhysics : public G4VPhysicsConstructor
 
     static G4ThreadLocal G4OpRayleigh* fRayleighProcess;
     G4int                       fRayleighVerbosity;
+
+    static G4ThreadLocal WCSimOpRaman* fRamanProcess;
+    G4int                       fRamanVerbosity;
 
     static G4ThreadLocal G4OpMieHG*                  fMieProcess;
     G4int                       fMieVerbosity;

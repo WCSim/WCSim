@@ -6,6 +6,97 @@ Recent updates
 *************************************************************
 
 *************************************************************
+08/10/2025: Notes for v1.12.28
+*************************************************************
+New release after #541
+
+Update
+* Pull request #541 @federiconova: Update HK FD OD tyvek reflectivity, based on measurements
+
+*************************************************************
+07/10/2025: Notes for v1.12.27
+*************************************************************
+New release after #539 & #543
+
+Update
+* Pull request #543 @federiconova: Assign correct thickness to FD OD WLS plates
+* Pull request #540 @federiconova: Default HK FD OD WLS plate changed from Kurary to INR
+* Pull request #540 @federiconova: Updates to INR OD WLS plate model
+
+Bug fix
+* Pull request #544 @gpronost: Fix radon radioactivity generator function
+
+*************************************************************
+16/09/2025: Notes for v1.12.26
+*************************************************************
+New release after #540. Partially on the way for the HK FD MC production (but more changes to come)
+
+Update
+* Pull request #540 @federiconova: 30cm WLS plates w/ 3" (R14374_FDOD) is now the default HK OD setup
+
+New feature
+* Pull request #538 @federiconova: Initial model of INR WLS plate
+* Pull request #540 @federiconova: Addition of R14374_FDOD & NNVT PMT models (HKFD OD candidates)
+
+*************************************************************
+05/09/2025: Notes for v1.12.25
+*************************************************************
+New release after #536. Partially on the way for the HK FD MC production (but more changes to come)
+
+New feature
+* Pull request #536 @federiconova: Add Kurary OD WLS plate model
+* Pull request #536 @federiconova @tdealtry: Allow changing of OD WLS plates, for IWCD & HKFD independently. This is done at precompile time
+* Pull request #526 @arturof: Add optical process for Raman scattering in water. Turned off by default
+
+Update
+* Pull request #534 @federiconova: Extend wavelength range down to 200 nm (hard coded), a range that OD WLS plates are sensitive to
+* Pull request #532 @gpronost: Update radon event generator model
+
+Bug fix
+* Pull request #531 @sk1806: RooTracker generator position improvements & checks
+* Pull request #533 @tdealtry: Update recommended HK geometries in error message when trying to use an ancient HK geometry
+
+*************************************************************
+23/07/2025: Notes for v1.12.24
+*************************************************************
+New release after #530, for use with HK IWCD+FD MC production
+
+New feature
+* Pull request #530 @tdealtry: Add WCSim version that was used to generate the file to WCSimRootOptions
+
+*************************************************************
+22/07/2025: Notes for v1.12.23
+*************************************************************
+New release after #528 & #529, for use with HK IWCD+FD MC production
+
+Update
+* Pull request #520 @menailj: Update LI code, better sampling
+* Pull request #528 @tdealtry: Make boundary wall WCSimRootGeom saving work with old ROOT
+* Pull request #529 @tdealtry: Make LI generator work with old C++ standard
+
+Documentation
+* Pull request #527 @tdealtry: Remove warning about WCSimRootEvent memory leak in WCSim.mac
+
+*************************************************************
+25/05/2025: Notes for v1.12.22
+*************************************************************
+New release after #486, for use with HK IWCD+FD MC production
+
+New feature
+* Pull request #513 @patrickstowell: Adds geometry scanning tools to check for overlaps/misalignment based on `G4Navigator` itself
+* Pull request #514 @patrickstowell: Adds a python cppyy based version of WCSim which can be used to check geometry configuration options and run/edit macros within python
+* Pull request #515 @patrickstowell: Add optional third .mac file argument to WCSim exectuable, for easier visulisation command loading
+* Pull request #519 @hrubyfr: Add sea level cosmic muon file for WCTE
+* Pull request #522 @tdealtry: Save (black/tyvek) sheet dimensions in WCSimRootGeom output
+
+Update
+* Pull request #521 @guiguem: Update cmake minimum version
+
+Bug fix
+* Pull request #486 @ekneale @patrickstowell: Fix OD PMT orientation in HKFD realistic geometry
+* Pull request #517 @tdealtry: Fix boundary types for HK FD realistic geometry
+
+*************************************************************
 10/03/2025: Notes for v1.12.21
 *************************************************************
 New release after #509 for use for HK machine learning reconstruction studies

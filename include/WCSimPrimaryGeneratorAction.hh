@@ -91,6 +91,12 @@ public:
 
   void SaveOptionsToOutput(WCSimRootOptions * wcopt);
 
+  // Region for accepting events when using RooTracker input
+  enum class Region { kID, kODInner, kODOuter };
+  void SetRegion(Region r) { fRegion = r; }
+  Region GetRegion() const { return fRegion; }
+  G4String GetRegionString() const;
+
 private:
   WCSimDetectorConstruction*      myDetector;
   G4ParticleGun*                  particleGun;
@@ -150,6 +156,7 @@ private:
   WCSimGenerator_Radioactivity* myRn222Generator;
   G4int fRnScenario;
   G4int fRnSymmetry;
+  G4double fRnWaterConc;
 
   G4bool   usePoissonPMT;
   G4double poissonPMTMean;
@@ -169,6 +176,7 @@ private:
   G4String injectorFilename;
   G4String injectorDetails;
   G4String injectorDetector;
+  G4double injectorWavelength;
   G4bool photonMode;
 
   //
@@ -230,6 +238,9 @@ private:
   G4double mPMTLED_dTheta;
   G4double mPMTLED_dPhi;
 
+  // Region to accept events when using RooTracker input 
+  Region fRegion = Region::kID;
+
  public:
 
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
@@ -286,6 +297,7 @@ private:
   inline void SetLightInjectorFilename(G4String choice)   { injectorFilename = choice; }
   inline void SetLightInjectorDetails(G4String choice)   { injectorDetails = choice; }
   inline void SetLightInjectorDetector(G4String choice)   { injectorDetector = choice; }
+  inline void SetLightInjectorWavelength(G4double choice)   { injectorWavelength = choice; }
   inline void SetLightInjectorMode(G4bool choice)         { photonMode = choice; }
 
   inline void SetDataTableEvtGenerator(G4bool choice) {
@@ -365,6 +377,9 @@ private:
 
   inline void SetRadonSymmetry(G4int choice) 		{ fRnSymmetry = choice; }
   inline G4int GetRadonSymmetry() 			{ return fRnSymmetry; }
+
+  inline void SetRadonWaterConcentration(G4double choice) { fRnWaterConc = choice; }
+  inline G4double GetRadonWaterConcentration()		{ return fRnWaterConc; }
 
   inline void SetPoissonPMT(G4bool choice) { usePoissonPMT = choice; }
   inline G4bool IsUsingPoissonPMT(){ return usePoissonPMT; }

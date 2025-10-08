@@ -62,7 +62,7 @@
             "idx": "5",
 	    "detector":"ID",
             "direction": [0,-1,0],
-            "position": [0,3220,0,-1643.78],
+            "position": [0,3220,-1643.78],
             "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
@@ -106,7 +106,7 @@
 	    "idx": "9",
 	    "detector":"ID",
 	    "direction": [0,-1,0],
-	    "position": [0,3220,0,-821.888],
+	    "position": [0,3220,-821.888],
 	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
@@ -194,7 +194,7 @@
             "idx": "17",
 	    "detector": "ID",
             "direction": [0,-1,0],
-            "position": [0,3220,0,821.888],
+            "position": [0,3220,821.888],
             "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
@@ -238,7 +238,7 @@
             "idx": "21",
 	    "detector": "ID",
             "direction": [0,-1,0],
-            "position": [0,3220,0,1643.78],
+            "position": [0,3220,1643.78],
             "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
@@ -282,7 +282,7 @@
             "idx": "25",
 	    "detector": "ID",
             "direction": [0,-1,0],
-            "position": [0,3220,0,2465.66],
+            "position": [0,3220,2465.66],
             "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
@@ -458,7 +458,7 @@
             "idx": "5",
 	    "detector":"ID",
             "direction": [0,-1,0],
-            "position": [0,3220,0,-1643.78],
+            "position": [0,3220,-1643.78],
             "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
@@ -502,7 +502,7 @@
 	    "idx": "9",
 	    "detector":"ID",
 	    "direction": [0,-1,0],
-	    "position": [0,3220,0,-821.888],
+	    "position": [0,3220,-821.888],
 	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
@@ -590,7 +590,7 @@
             "idx": "17",
 	    "detector": "ID",
             "direction": [0,-1,0],
-            "position": [0,3220,0,821.888],
+            "position": [0,3220,821.888],
             "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
@@ -634,7 +634,7 @@
             "idx": "21",
 	    "detector": "ID",
             "direction": [0,-1,0],
-            "position": [0,3220,0,1643.78],
+            "position": [0,3220,1643.78],
             "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
@@ -678,7 +678,7 @@
             "idx": "25",
 	    "detector": "ID",
             "direction": [0,-1,0],
-            "position": [0,3220,0,2465.66],
+            "position": [0,3220,2465.66],
             "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""

@@ -18,7 +18,7 @@ if (${WCSim_WCSimRoot_only})
     set(PROJECT_NAME WCSimRoot)
 endif ()
 
-set(PROJECT_VERSION 1.12.21)
+set(PROJECT_VERSION 1.12.28)
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 
@@ -183,6 +183,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/theta_cos15deg_FWHM.txt
         ${PROJECT_SOURCE_DIR}/data/DSNBFluxes.json
       	${PROJECT_SOURCE_DIR}/data/LightInjectors.json
+	${PROJECT_SOURCE_DIR}/data/LightInjectorsDetails.json
       	${PROJECT_SOURCE_DIR}/data/LI_OD_laser_ball_photon_positions.csv
         ${PROJECT_SOURCE_DIR}/data/mPMT_Position_WCTE.txt
         ${PROJECT_SOURCE_DIR}/data/mPMT_Position_WCTE_CDS.txt
@@ -203,7 +204,9 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
 	      #required macros
         ${PROJECT_SOURCE_DIR}/macros/jobOptions.mac
-        ${PROJECT_SOURCE_DIR}/macros/tuning_parameters.mac
+        ${PROJECT_SOURCE_DIR}/macros/tuning_parameters_hkfd.mac
+        ${PROJECT_SOURCE_DIR}/macros/tuning_parameters_hkfd_aged.mac
+        ${PROJECT_SOURCE_DIR}/macros/tuning_parameters_iwcd.mac
 	      #options used as includes in WCSim.mac and dependents
         ${PROJECT_SOURCE_DIR}/macros/daq.mac
         ${PROJECT_SOURCE_DIR}/macros/geom_hk_mpmt_options.mac

@@ -301,6 +301,8 @@
 #/mygen/vecfile mu+.out
 # define units used for time in kin file
 #/mygen/time_unit ns
+# For nRooTracker input, specify the region in which you wish to accept events: ID, OD_INNER, OD_OUTER
+#/mygen/region OD_OUTER
 
 ## Or you can use the G4 Particle Gun
 ## for a full list of /gun/ commands see:
@@ -390,10 +392,10 @@
 ## Needed if time bias is not used, in order to keep timing below one sec.
 #/DAQ/RelativeHitTime true
 ## The following set which scenario is used to scale SK model to HK
-#/mygen/radon_scaling A # 	Relative scaling with respect to full ID volume (Pessimistic, should be default for now)
-#/mygen/radon_scaling B #	Absolute scaling with respect to ID border (Optimistic)
+#/mygen/radon_scaling 1 # 	Relative scaling with respect to full ID volume 
 #/mygen/radon_scaling 0 #	Uniform distribution
 #/mygen/radon_symmetry 1 #	Divide the detector in x slices using the theta symmetry
+#/mygen/radon_water_concentration 2.63 # Specify the input water Rn concentration (in mBq/m3)
 ##Clear the source and tell GPS to make multiple vertices
 #/gps/source/clear
 
@@ -495,8 +497,6 @@
 # -- The options tree will be filled with one entry for each run
 # -- The EventHeader has a run number that specifies the run (and corresponding options tree entry) for a given event
 # It is therefore your responsibility to confirm that the options you are changing work as expected in multi-run mode
-
-# There is a memory leak when doing TTree::GetEntry() when reading files. It is also presumed that filling is leaky. It is strongly recommended not to generate or analyse O(1000) events in a single job
 
 /run/beamOn 10
 #exit

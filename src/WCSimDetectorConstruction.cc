@@ -495,6 +495,12 @@ WCSimPMTObject *WCSimDetectorConstruction::CreatePMTObject(G4String PMTType, G4S
   else if (PMTType == "PMT3inchR14374"){
     PMT = new PMT3inchR14374;
   }
+  else if (PMTType == "PMT3inchR14374_FDOD"){
+    PMT = new PMT3inchR14374_FDOD;
+  }
+  else if (PMTType == "PMT3inchNNVT"){
+    PMT = new PMT3inchNNVT;
+  }
   else if (PMTType == "PMT10inch"){
     PMT = new PMT10inch;
   }
@@ -652,6 +658,14 @@ WCSimWLSProperties *WCSimDetectorConstruction::CreateWLSObject(G4String WLSType)
 
   if (WLSType == "EljenEJ286"){
     WCSimWLSProperties* WLS = new EljenEJ286;
+    WCSimDetectorConstruction::SetWLSPointer(WLS);
+    return WLS;
+  }else if (WLSType == "Kuraray"){
+    WCSimWLSProperties* WLS = new Kuraray;
+    WCSimDetectorConstruction::SetWLSPointer(WLS);
+    return WLS;
+  }else if (WLSType == "Inr"){
+    WCSimWLSProperties* WLS = new Inr;
     WCSimDetectorConstruction::SetWLSPointer(WLS);
     return WLS;
   }

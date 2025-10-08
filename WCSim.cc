@@ -160,10 +160,12 @@ int main(int argc,char** argv)
   // Initialize the physics factory to register the selected physics.
   physFactory->InitializeList();
   runManager->SetUserInitialization(physFactory);
-
+  
+#ifdef G4VIS_USE
   // Visualization
   G4VisManager* visManager = new WCSimVisManager;
   visManager->Initialize();
+#endif
 
   // Set user action classes
   WCSimPrimaryGeneratorAction* myGeneratorAction = new 
@@ -237,7 +239,9 @@ int main(int argc,char** argv)
     }
   }
 
+#ifdef G4VIS_USE
   delete visManager;
+#endif
 
   delete runManager;
   return 0;
