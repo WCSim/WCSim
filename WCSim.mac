@@ -44,7 +44,7 @@
 #   (Check this via the std error stream)
 #   This can cause tracks to get stuck & be killed
 # - Is the layout of the ID PMTs (20" + OD) sensible?
-#   (Plot the position of each PMT. See $WCSIMDIR/sample-root-scripts/plot_pmts.C)
+#   (Plot the position of each PMT. See $WCSIM_SOURCE_DIR/sample-root-scripts/plot_pmts.C)
 #   When there is e.g. a low number of mPMTs
 #   unrealistic stripes of mPMTs are produced
 #   that may cause odd output
@@ -91,11 +91,11 @@
 #/WCSim/WCgeom SuperK_20inchBandL_14perCent # Note: the actual coverage is 13.51%
 #/WCSim/Construct
 
-# This is the updated IWCD geometry as of 20230630
+# This is the updated IWCD geometry as of 20250128
 #/WCSim/WCgeom IWCD_mPMT
 #/WCSim/Construct
 
-# This is the updated IWCD geometry as of 20230630, plus OD
+# This is the updated IWCD geometry as of 20250128, plus OD
 #/WCSim/WCgeom IWCD_mPMT_WithOD
 #/WCSim/Construct
 
@@ -164,11 +164,14 @@
 ##################
 # AmBe CALIBRATION SOURCE
 ##################
-# - BGO Placement: Default in source code is false. If set to true, you'll place the BGO inside
+# - BGO Placement: Default in source code is false. If set to true, you'll place the BGO inside
 # the detector geometry at (0,0,0) position. This is only supported if you use ambeevt generator
 # so you can see the tag scintillation light for the AmBe source.
 #/WCSim/BGOPlacement
 # Note that /WCSim/BGOPlacement *must* be set before /WCSim/Construct
+#
+# - BGO Position: Place the source in a different position using X, Y and Z coordinates
+#/WCSim/BGOPosition 1 1 1 m
 
 
 # - /WCSim/SaveCapture & /process/inactivate nKiller: Default not set.
@@ -210,7 +213,7 @@
 # Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
 /DarkRate/SetDetectorElement tank
 #/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
-#/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM.
+#/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM. This is the default value for HK FD 20" Box and Line PMTs that has been used in WCSim since 2020
 #/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
 
@@ -231,24 +234,28 @@
 #/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
 #width /DarkRate/SetDarkWindow [time in ns] around each hit
 #i.e. hit time +- (/DarkRate/SetDarkWindow) / 2
+# WARNING: this DarkMode 1 "around physics hit window" is performed separately for each PMT type.
+# Therefore, if you have no physics hits on a PMT type in an event,
+# you will have no dark noise on that PMT type in that event
+# (only when running with DarkMode 1)
 /DarkRate/SetDetectorElement tank
 /DarkRate/SetDarkMode 1
 /DarkRate/SetDarkWindow 4000
 
-#/DarkRate/SetDetectorElement OD
+/DarkRate/SetDetectorElement OD
 #/DarkRate/SetDarkRate 0 kHz
 #/DarkRate/SetDarkRate 1 kHz
 #/DarkRate/SetConvert 1.367 #for 8" PMTs in HK OD
-#/DarkRate/SetDarkMode 1
-#/DarkRate/SetDarkWindow 4000
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkWindow 4000
 
-#/DarkRate/SetDetectorElement tankPMT2
+/DarkRate/SetDetectorElement tankPMT2
 #/DarkRate/SetDarkRate 0 kHz
 #/DarkRate/SetDarkRate 1 kHz
 #/DarkRate/SetConvert 1.110 #for PMT3inchR14374 PMTs in HK mPMT
 #/DarkRate/SetConvert 1.126 #for PMT3inchR12199_02 PMTs in HK mPMT. WARNING value needs checking!
-#/DarkRate/SetDarkMode 1
-#/DarkRate/SetDarkWindow 4000
+/DarkRate/SetDarkMode 1
+/DarkRate/SetDarkWindow 4000
 
 ##################
 # VISUALISATION
@@ -257,6 +264,20 @@
 #/control/execute macros/visOGLSX.mac
 #/control/execute macros/visRayTracer.mac
 #/control/execute macros/visOGLQt.mac
+
+##################
+# GEOMETRY SCANNING TOOLS
+# Use to visualise the geometry by requesting the geometry material at regular test points in the detector, in order to check for misalignment, overlaps, gaps, etc.
+#
+# See macro sample-root-scripts/ for a way to visualise the result
+# (Macro not yet put in the WCSim codebase. In the meantime, please ask Patrick Stowell)
+#
+# These MUST be given after the geometry is fully setup
+##################
+#/WCSim/ScanGeometryBoundaryCenter -3185 0 0 cm
+#/WCSim/ScanGeometryBoundaryWidth 100 100 100 cm
+#/WCSim/ScanGeometryStepSize 1 1 1 cm
+#/WCSim/ScanGeometryToFile test_pointscan_barrel_edge.txt
 
 ##################
 # OPTICAL PHYSICS
@@ -273,17 +294,19 @@
 
 ## select the input nuance-formatted vector file
 ## This can be from a generator (e.g. NEUT, sntools)
-## or your own (see $WCSIMDIR/sample-root-scripts/MakeKin.py for a script to make such files)
+## or your own (see $WCSIM_SOURCE_DIR/sample-root-scripts/MakeKin.py for a script to make such files)
 #/mygen/generator muline
 #/mygen/vecfile inputvectorfile
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
 #/mygen/vecfile mu+.out
 # define units used for time in kin file
 #/mygen/time_unit ns
+# For nRooTracker input, specify the region in which you wish to accept events: ID, OD_INNER, OD_OUTER
+#/mygen/region OD_OUTER
 
 ## Or you can use the G4 Particle Gun
 ## for a full list of /gun/ commands see:
-## http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Control/UIcommands/_gun_.html
+## https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_gun_.html
 /mygen/generator gun
 /gun/particle e-
 #/gun/particle pi0
@@ -294,7 +317,8 @@
 ## Or you can use the G4 General Particle Source
 ## you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
 ## for a full list of /gps/ commands see:
-## https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+## https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/GettingStarted/generalParticleSource.html
+## https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_gps_.html
 #/mygen/generator gps
 #/gps/particle e-
 #/gps/energy 500 MeV
@@ -305,15 +329,14 @@
 ## This is similar to the nuance format option, though this uses datatable formatted files.
 ## Datatables are formatted as follows:
 ## | Index of particle in event | PDG code | Energy | X | Y | Z | Px | Py | Pz | Time |
-## Note that the column separators "|" are for clarity in describing the format, and should not be included in the file
+## Note that the column separators "|" are for clarity in describing the format, and should not be included in the file
 ## Note also that comments are allowed in the data table file by starting lines with a "#"
 #/mygen/generator datatable
 #/mygen/vecfile inputDataTableFile
 
 ## Or you can use the laser option
 ## This is equivalent to the gps command, except that the gps particle energies are saved ignoring their mass
-## for a full list of /gps/ commands see:
-## https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+## for a full list of /gps/ commands see the links above
 ## It is used for laser calibration simulation
 #/mygen/generator laser
 #/gps/particle opticalphoton
@@ -340,6 +363,13 @@
 #/mygen/ibd_database DatabasePath
 #/mygen/ibd_model ModelName (see ./data/DSNBFluxes.json for models)
 
+## Or you can use the hepmc3 generator to read nuhepmc3 files
+## The option hepmc3positionGenMode will either generate random, isotropic positions in the ID (true) or will read positions from the file (false)
+#/mygen/generator hepmc3
+#/mygen/hepmc3file HepMC3Filepath
+#/mygen/hepmc3positionGenMode true/false
+
+
 ## Radioactive option
 ## Generate radioactive decay in the water or on the PMTs
 #/mygen/generator radioactive
@@ -362,10 +392,10 @@
 ## Needed if time bias is not used, in order to keep timing below one sec.
 #/DAQ/RelativeHitTime true
 ## The following set which scenario is used to scale SK model to HK
-#/mygen/radon_scaling A # 	Relative scaling with respect to full ID volume (Pessimistic, should be default for now)
-#/mygen/radon_scaling B #	Absolute scaling with respect to ID border (Optimistic)
+#/mygen/radon_scaling 1 # 	Relative scaling with respect to full ID volume 
 #/mygen/radon_scaling 0 #	Uniform distribution
 #/mygen/radon_symmetry 1 #	Divide the detector in x slices using the theta symmetry
+#/mygen/radon_water_concentration 2.63 # Specify the input water Rn concentration (in mBq/m3)
 ##Clear the source and tell GPS to make multiple vertices
 #/gps/source/clear
 
@@ -467,5 +497,5 @@
 # -- The options tree will be filled with one entry for each run
 # -- The EventHeader has a run number that specifies the run (and corresponding options tree entry) for a given event
 # It is therefore your responsibility to confirm that the options you are changing work as expected in multi-run mode
-#/run/beamOn 10
+/run/beamOn 10
 #exit

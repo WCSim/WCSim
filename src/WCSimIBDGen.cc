@@ -1,13 +1,9 @@
 #include "WCSimIBDGen.hh"
 #include "WCSimDetectorConstruction.hh"
-#include "WCSimPrimaryGeneratorAction.hh"
-#include "WCSimPrimaryGeneratorMessenger.hh"
 
 #include "json.hpp"
 
-#include <CLHEP/Units/PhysicalConstants.h>
 #include <CLHEP/Units/SystemOfUnits.h>
-#include <G4ThreeVector.hh>
 #include <G4Types.hh>
 #include <G4ios.hh>
 #include <algorithm>
@@ -42,7 +38,8 @@ void WCSimIBDGen::ReadSpectrumFromDB(G4String spectrum_database, std::string mod
 
     // Check that the database has been found
     if (!spectrum_json.is_open()) {
-        G4cerr << "IBDGen: [ERROR] spectrum database " << spectrum_database << " not found." << G4endl;
+        G4cerr << "IBDGen: \033[31m[ERROR]\033[0m spectrum database " << spectrum_database << " not found."
+               << G4endl;
         exit(-1);
     }
 

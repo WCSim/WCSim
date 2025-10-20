@@ -102,6 +102,7 @@ public:
   void SetIWCD_WithOD_Geometry_Old(); // Old geometry used from v1.12.5 to v1.12.11
   void SetPlaceBGOGeometry(G4bool placeBGO) { placeBGOGeometry=placeBGO; } // Diego Costas, 26/02/2024
   G4bool IsBGOGeometrySet() const { return placeBGOGeometry; } // Diego Costas, 26/02/2024
+  void SetPositionBGOGeometry(G4double X, G4double Y, G4double Z) { BGOX=X, BGOY=Y, BGOZ=Z; } // Diego Costas, 18/07/2024
   
   /**
      Dump the values of many variables used to define geometries including
@@ -133,6 +134,8 @@ public:
   G4int    GetTotalNumPmts2() const {return totalNumPMTs2;}//For the hybrid config
   G4int    GetTotalNum_mPmts2() const {return totalNum_mPMTs2;}//For the hybrid config         
   G4int    GetTotalNumODPmts() const {return totalNumODPMTs;}
+  
+  G4ThreeVector GetPositionBGOGeometry() const {return G4ThreeVector(BGOX, BGOY, BGOZ);}
 
   G4int    GetPMT_QE_Method() const {return PMT_QE_Method;}
   G4double GetwaterTank_Length() const {return waterTank_Length;} 
@@ -206,7 +209,22 @@ public:
   G4bool SaveCaptureInfo() const        {return captureInfo_isSaved;}
   void   SaveCaptureInfo(G4bool choice) {captureInfo_isSaved=choice;}
 
-  void   SetPMT_QE_Method(G4int choice){PMT_QE_Method = choice;}
+  void   SetPMT_QE_Method(G4int choice){
+    switch(choice) {
+    case 3:
+    case 4:
+      PMT_QE_Method = choice;
+      break;
+    default:
+      G4cerr << G4endl << "******************************" << G4endl
+	     << "PMT QE method must be set to one of:" << G4endl
+	     << " 3 (SensitiveDetector_Only)" << G4endl
+	     << " 4 (DoNotApplyQE)" << G4endl
+	     << "Other methods are not fully tested" << G4endl
+	     << "Exiting..." << G4endl;
+      exit(-1);
+    }
+  }
   void   SetPMT_Coll_Eff(G4int choice){PMT_Coll_Eff = choice;}
   void   SetVis_Choice(G4String choice){Vis_Choice = choice;}
   G4String GetVis_Choice() const {return Vis_Choice;}
@@ -364,6 +382,9 @@ public:
   void SetPMTPositionInput(G4String choice) {pmtPositionFile = choice; readFromTable = true;}
   G4String GetPMTPositionInput() {return pmtPositionFile;}
 
+  void SetODPMTPositionInput(G4String choice) {odpmtPositionFile = choice; readODFromTable = true;}
+  G4String GetODPMTPositionInput() {return odpmtPositionFile;}
+
   void SetCDSFile(G4String choice) { CDSFile = choice; addCDS = true; }
 
   void   SetPMTType(G4String type) {
@@ -457,7 +478,7 @@ public:
   ///////////////////////////////
 
   void SetWCPMTODSize(G4String WCPMTODSize){
-    if(WCPMTODSize == "PMT8inch" || WCPMTODSize == "PMT5inch" || WCPMTODSize == "PMT3inch_ETEL9302B"){
+    if(WCPMTODSize == "PMT3inch" || WCPMTODSize == "PMT5inch" || WCPMTODSize == "PMT8inch" || WCPMTODSize == "PMT3inch_ETEL9302B" || WCPMTODSize == "3inchR14374" || WCPMTODSize == "3inchR14374_FDOD" || WCPMTODSize == "3inchNNVT" ){
       WCSimPMTObject *PMTOD = CreatePMTObject(WCPMTODSize, WCODCollectionName);
       WCPMTODName           = PMTOD->GetPMTName();
       WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
@@ -483,11 +504,13 @@ public:
   ////////// END OD /////////////
   ///////////////////////////////
 
+  std::map<BoundaryWallType_t, std::vector<G4float> > GetBoundaryWallDimensions() const {return fBoundaryWallDimensions;}
+
 private:
 
   // Overlap checking turned on and off with cmake option
   static constexpr G4bool checkOverlaps = WCSIM_CHECK_GEOMETRY_OVERLAPS;
-  static constexpr G4bool checkOverlapsPMT = WCSIM_CHECK_GEOMETRY_OVERLAPS;
+  static constexpr G4bool checkOverlapsPMT = WCSIM_CHECK_GEOMETRY_PMT_OVERLAPS;
 
 
   // Tuning parameters
@@ -512,9 +535,16 @@ private:
 
   //Reflector skin surface -tf
   G4OpticalSurface * ReflectorSkinSurface;
+  G4OpticalSurface * ReflectorSkinSurfaceWCTE; // for WCTE mPMT construction
 
   //Foam for mPMT: Gel - absorbing support structure -tf
   G4OpticalSurface * OpGelFoamSurface;
+
+  //Poron skin surface: filling between PMT and matrix in mPMT
+  G4OpticalSurface * PoronSkinSurface; // for WCTE mPMT construction
+
+  //Absorber skin surface: artificial material to absorb all photons
+  G4OpticalSurface * AbsorberSkinSurface; // for WCTE mPMT construction
 
   //TF fix for blacksheet errors "missing refractive index"
   // or "photon travelling faster than c_light" when trying to refract
@@ -540,6 +570,17 @@ private:
   G4LogicalVolume* ConstructPMT(G4String,G4String,G4String detectorElement="tank",bool WLS=false);
   G4LogicalVolume* ConstructPMTAndWLSPlate(G4String,G4String,G4String detectorElement="OD");
 
+  // for WCTE mPMT construction
+  G4LogicalVolume* ConstructExSituPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructExSituMultiPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructInSituPMT(G4String,G4String,G4String detectorElement="tank");
+  G4LogicalVolume* ConstructInSituMultiPMT(G4String,G4String,G4String detectorElement="tank");
+
+  // for WCTE beam pipe construction
+  G4LogicalVolume* ConstructBeamPipe();
+  // for WCTE photogrammetry housing construction
+  G4LogicalVolume* ConstructCameraHousing();
+
   G4LogicalVolume* ConstructCaps(G4bool);
 
   G4LogicalVolume* ConstructCylinderNoReplica();
@@ -552,6 +593,9 @@ private:
   G4LogicalVolume* logicWCODWLSPlateCladding;
 
   G4double capAssemblyHeight;
+  // for asymmetric cap construction
+  G4double topCapAssemblyHeight;
+  G4double botCapAssemblyHeight;
 
   G4bool WCAddGd;
 
@@ -616,6 +660,22 @@ private:
   G4String Vis_Choice;
   
 
+  /// Boundary wall (e.g. blacksheet/tyveks) dimensions. Units: mm
+  std::map<BoundaryWallType_t, std::vector<G4float> > fBoundaryWallDimensions;
+
+  void AddBoundaryWallCylinderDimensions(BoundaryWallType_t s,
+					 G4float radius,
+					 G4float full_length) {
+    auto it = fBoundaryWallDimensions.find(s);
+    if(it != fBoundaryWallDimensions.end()) {
+      G4cerr << "Boundary wall type " << WCSimEnumerations::EnumAsString(s)
+	     << " already exists inside fBoundaryWallDimensions. Replacing dimensions"
+	     << G4endl;
+    }
+    std::vector<G4float> dims = {radius, full_length};
+    fBoundaryWallDimensions[s] = dims;
+  }
+  
   G4double WCLength;
 
   G4double WCPosition;
@@ -639,6 +699,10 @@ private:
   G4double WCPMTRadius;
   G4double WCPMTExposeHeight;
   G4double WCBarrelPMTOffset;
+
+  // for asymmetric cap construction
+  G4double WCBarrelPMTTopOffset;
+  G4double WCBarrelPMTBotOffset;
 
   G4double WCPMTRadius2;//B. Quilain: for Hybrid configuration
   G4double WCPMTExposeHeight2;//B. Quilain: for Hybrid configuration
@@ -749,6 +813,9 @@ private:
   // BGO Placement
   G4bool placeBGOGeometry;
 
+  // BGO Position
+  G4double BGOX, BGOY, BGOZ;
+
   // Add bool to indicate whether we load nuPRISM geometry  
   G4bool isNuPrism;
   G4bool isNuPrismBeamTest;
@@ -761,7 +828,7 @@ private:
   G4bool rotateBarrelHalfTower;
 
   // New variables for PMT placement
-  G4bool useReplica, readFromTable;
+  G4bool useReplica, readFromTable, readODFromTable;
   G4double pmtPosVar;
   G4double topRadiusChange, midRadiusChange, botRadiusChange;
   G4int nPMTsRead;
@@ -772,7 +839,9 @@ private:
   std::vector<G4int> pmtmPMTId;
   std::vector<G4double> pmtRotaton;
   std::string pmtPositionFile;
+  std::string odpmtPositionFile;
   void ReadGeometryTableFromFile();
+  void ReadGeometryTableFromFile(std::string fname);
   // distance by which PMT goes behind black sheet
   G4double pmt_blacksheet_offset;
 
@@ -919,6 +988,7 @@ private:
   G4double id_reflector_angle;
   G4int nID_PMTs;  // number of PMTs per mPMT module (1 for non-mPMT PMT e.g. standard 20")
   G4int nID_PMTs2; // number of PMTs per mPMT module (1 for non-mPMT PMT e.g. standard 20")
+  ///Points to $WCSIM_BUILD_DIR (environment variable)
   G4String wcsimdir_path;
   G4String config_file;
   G4String mPMT_ID_PMT; //or ToDo: ideally ENUM

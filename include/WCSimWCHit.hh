@@ -41,6 +41,8 @@ class WCSimWCHit : public G4VHit
   void AddTrackID      (G4int track)                { trackID.push_back(track); };
   void AddParentID     (G4int myParentSavedTrackID) { parentSavedTrackID.push_back(myParentSavedTrackID); }
   void AddPhotonStartTime (G4float photStartTime) { photonStartTime.push_back(photStartTime); }
+  void AddPhotonStartEnergy  (G4float photStartEnergy) { photonStartEnergy.push_back(photStartEnergy); }
+  void AddPhotonEndEnergy  (G4float photEndEnergy) { photonEndEnergy.push_back(photEndEnergy); }
   void AddPhotonStartPos  (const G4ThreeVector &photStartPos) { photonStartPos.push_back(photStartPos); }
   void AddPhotonEndPos  (const G4ThreeVector &photEndPos) { photonEndPos.push_back(photEndPos); }
   void AddPhotonStartDir  (const G4ThreeVector &photStartDir) { photonStartDir.push_back(photStartDir); }
@@ -73,6 +75,8 @@ class WCSimWCHit : public G4VHit
   G4int         GetParentID(int i) { return parentSavedTrackID[i];};
   G4String         GetTubeType()     { return tubeType; };
   G4float       GetPhotonStartTime(int i) { return photonStartTime[i];};
+  G4float       GetPhotonStartEnergy(int i) { return photonStartEnergy[i];};
+  G4float       GetPhotonEndEnergy(int i) { return photonEndEnergy[i];};
   G4ThreeVector GetPhotonStartPos(int i) { return photonStartPos[i];};
   G4ThreeVector GetPhotonEndPos(int i) { return photonEndPos[i];};
   G4ThreeVector GetPhotonStartDir(int i) { return photonStartDir[i];};
@@ -158,6 +162,8 @@ class WCSimWCHit : public G4VHit
   std::vector<G4int>    trackID;
   std::vector<G4int>    parentSavedTrackID;
   std::vector<G4float>  photonStartTime;
+  std::vector<G4float>  photonStartEnergy;
+  std::vector<G4float>  photonEndEnergy;
   std::vector<G4ThreeVector> photonStartPos;
   std::vector<G4ThreeVector> photonEndPos;
   std::vector<G4ThreeVector> photonStartDir;

@@ -271,9 +271,10 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
     }//loop over Digits
   }//loop over PMTs
   long long window_start_time = firsthit;
-  window_start_time -= window_start_time % 5;
+  if (window_start_time>=0) window_start_time -= window_start_time % window_step_size;
+  else window_start_time -= window_step_size - abs(window_start_time) % window_step_size;
   long long window_end_time   = lasthit - ndigitsWindow + window_step_size;
-  window_end_time += window_end_time % 5;
+  window_end_time += abs(window_end_time) % window_step_size;
   if (window_end_time<window_start_time) window_end_time = window_start_time;
 #ifdef WCSIMWCTRIGGER_VERBOSE
   G4cout << "WCSimWCTriggerBase::AlgNDigits. Found first/last hits. Looping from "
@@ -327,7 +328,8 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
       //The trigger time is the time of the first hit above threshold
       std::sort(digit_times.begin(), digit_times.end());
       triggertime = digit_times[this_ndigitsThreshold];
-      triggertime -= (int)triggertime % 5;
+      if (triggertime>=0) triggertime -= (int)triggertime % window_step_size;
+      else triggertime -= window_step_size - abs(window_start_time) % window_step_size;
       TriggerTimes.push_back(triggertime);
       TriggerTypes.push_back(this_triggerType);
       TriggerInfos.push_back(std::vector<Double_t>(1, n_digits));
@@ -350,7 +352,8 @@ void WCSimWCTriggerBase::AlgNDigits(WCSimWCDigitsCollection* WCDCPMT, bool remov
       if (window_start_time<next_hit_time)
       {
         window_start_time = next_hit_time;
-        window_start_time -= window_start_time % 5;
+        if (window_start_time>=0) window_start_time -= window_start_time % window_step_size;
+        else window_start_time -= window_step_size - abs(window_start_time) % window_step_size;
       }
     }
   }
@@ -489,13 +492,20 @@ void WCSimWCTriggerBase::FillDigitsCollection(WCSimWCDigitsCollection* WCDCPMT, 
 
 	  //we've found a digit on this PMT. If we're restricting to just 1 digit per trigger window (e.g. SKI)
 	  // then ignore later digits and break. This takes us to the next PMT
-	  if(!multiDigitsPerTrigger && triggertype != kTriggerNoTrig)
+	  if(!multiDigitsPerTrigger)
 	    break;
 	}//digits within trigger window
       }//loop over Digits
     }//loop over PMTs
   }//loop over Triggers
-  G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of entries in output digit collection: " << DigitsCollection->entries() << G4endl;
+  G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of entries (hit PMTs) in output digit collection: " << DigitsCollection->entries() << G4endl;
+#ifdef WCSIMWCTRIGGER_VERBOSE
+  int temp_total_digits = 0;
+  for(G4int i = 0; i < DigitsCollection->entries(); i++) {
+    temp_total_digits += (*DigitsCollection)[i]->GetTotalPe();
+  }
+  G4cout << "WCSimWCTriggerBase::FillDigitsCollection. Number of digits in output digit collection: " << temp_total_digits << G4endl;
+#endif
 }
 
 void WCSimWCTriggerBase::AlgNoTrigger(WCSimWCDigitsCollection* WCDCPMT, bool remove_hits)
@@ -645,7 +655,6 @@ WCSimWCTriggerNoTrigger::~WCSimWCTriggerNoTrigger()
 void WCSimWCTriggerNoTrigger::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
   //Apply an NDigits trigger
   bool remove_hits = false;
-  SetMultiDigitsPerTrigger(true);
   SetSaveFailuresMode(0);
   AlgNoTrigger(WCDCPMT, remove_hits);
 }

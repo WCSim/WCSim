@@ -37,6 +37,7 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithAString* WCVisChoice;
   G4UIcmdWithAString* PMTGeomDetails;
   G4UIcmdWithABool*   BGOPlacement;
+  G4UIcmdWith3VectorAndUnit* BGOPosition;
   G4UIcmdWithAString* PMTSize;
   G4UIcmdWithAString* PMTSize2;
   G4UIcmdWithAString* SavePi0;
@@ -91,6 +92,7 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithADoubleAndUnit* PMTPosVar;
   G4UIcmdWith3VectorAndUnit* TankRadiusChange;
   G4UIcmdWithAString* SetPMTPositionInput;
+  G4UIcmdWithAString* SetODPMTPositionInput;
   // OD Geometry
   G4UIcmdWithADoubleAndUnit* ODLateralWaterDepth;
   G4UIcmdWithADoubleAndUnit* ODHeightWaterDepth;
@@ -110,6 +112,11 @@ class WCSimDetectorMessenger: public G4UImessenger
   // build cladding around WLS
   G4UIcmdWithoutParameter* BuildODWLSCladding;
 
+  // Geometry Scanning Tools
+  G4UIcmdWith3VectorAndUnit* ScanGeometryStepSize;
+  G4UIcmdWithAString* ScanGeometryToFile;
+  G4UIcmdWith3VectorAndUnit* ScanGeometryBoundaryWidth;
+  G4UIcmdWith3VectorAndUnit* ScanGeometryBoundaryCenter;
 };
 
 #endif

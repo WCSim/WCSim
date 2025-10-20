@@ -57,6 +57,9 @@ cd "$pwd"
 # WCSim
 ############################
 export BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-export WCSIMDIR=$(pwd)-build/ROOT5/$BRANCH_NAME
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WCSIMDIR
+
+# These lines are no longer required. They will be set correctly after sourcing this_wcsim.sh,
+#  which is created by the build
+#export WCSIM_SOURCE_DIR=$(pwd)-build/ROOT5/$BRANCH_NAME
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WCSIM_SOURCE_DIR
 

@@ -660,9 +660,9 @@ int main(int argc, char **argv){
   // Load the library with class dictionary info
   // (create with "gmake shared")
   //char* wcsimdirenv;
-  //wcsimdirenv = getenv ("WCSIMDIR");
+  //wcsimdirenv = getenv ("WCSIM_BUILD_DIR");
   //if(wcsimdirenv !=  NULL){
-  //gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
+  //gSystem->Load("${WCSIM_BUILD_DIR}/lib/libWCSimRoot.so");
   //}else{
       //gSystem->Load("../libWCSimRoot.so");
     //}

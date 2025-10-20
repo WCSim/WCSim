@@ -21,7 +21,7 @@
 /*
 *How to run:
 *
-* enter in the terminal $WCSIMDIR/rootwc/rootwc -l 'read_OD.C("WCSim.root","outputFile.root",false)' to run the code
+* enter in the terminal rootwc -l 'read_OD.C("WCSim.root","outputFile.root",false)' to run the code
 * where you replace WCSim.root with your file name and outputfile with the name you wish to save it under
 */
 

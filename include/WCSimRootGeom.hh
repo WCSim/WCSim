@@ -10,8 +10,12 @@
 //     WC info
 //////////////////////////////////////////////////////////////////////////
 
+#include "WCSimEnumerations.hh"
+
 #include "TObject.h"
 #include "TClonesArray.h"
+
+#include <map>
 
 class TDirectory;
 
@@ -74,8 +78,11 @@ class WCSimRootGeom : public TObject {
 
 private:
 
-  Float_t                fWCCylRadius;  //!< Radius of WC tank. Units: cm
-  Float_t                fWCCylLength;  //!< Length of WC tank. Units: cm
+  /// Boundary wall (e.g. blacksheet/tyveks) dimensions for each boundary type. Correspond to the radius & full length of the cylinder (the vector allows this to be expanded to use e.g. cuboids in the future). Units: mm
+  std::map<unsigned int, std::vector<float> > fBoundaryWallDimensions;
+
+  Float_t                fWCCylRadius;  //!< Radius of WC tank. Based on maximum PMT position, so does not correspond to the full size of the tank (and is wildly inaccurate when your geometry has OD PMTs on the inner wall of the OD). Suggest to use GetBoundaryWallRadius() instead. Units: cm
+  Float_t                fWCCylLength;  //!< Length of WC tank. Based on maximum PMT position, so does not correspond to the full size of the tank (and is wildly inaccurate when your geometry has OD PMTs on the inner wall of the OD). Suggest to use GetBoundaryWallFullLength() instead. Units: cm
 
   Int_t                  fgeo_type;  //!< UNUSED mailbox or cylinder?
 
@@ -101,6 +108,7 @@ public:
   bool CompareAllVariables(const WCSimRootGeom * c) const;
 
   // Sets and gets
+  void SetBoundaryWallDimensions(std::map<BoundaryWallType_t, std::vector<float> > dims);
 
   void  SetWCCylRadius(Double_t f) {fWCCylRadius=f;}
   void  SetWCCylLength(Double_t f) {fWCCylLength=f;}
@@ -123,6 +131,10 @@ public:
   void  SetPMT(Int_t i, Int_t tubeno, Int_t mPMTNo, Int_t mPMT_PMTno, Int_t cyl_loc, Double_t rot[3], Double_t pos[3], bool expand=true, bool hybridsecondtype=false);
   void  SetOrientation(Int_t o) {fOrientation = o;}
 
+  void    PrintBoundaryWallInfo() const;
+  Float_t GetBoundaryWallRadius(BoundaryWallType_t s) const;
+  Float_t GetBoundaryWallFullLength(BoundaryWallType_t s) const;
+  
   Float_t GetWCCylRadius() const {return fWCCylRadius;}
   Float_t GetWCCylLength() const {return fWCCylLength;}
 
@@ -168,7 +180,7 @@ public:
   const WCSimRootPMT * GetODPMTPtr(Int_t i) const {return (WCSimRootPMT*)(fODPMTArray->At(i));}
   TClonesArray * GetODPMTs() {return fODPMTArray;}
 
-  ClassDef(WCSimRootGeom,2)  //WCSimRootEvent structure
+  ClassDef(WCSimRootGeom,3)  //WCSimRootEvent structure
 };
 
 

@@ -4,6 +4,12 @@
 #include "G4ThreeVector.hh"
 #include "globals.hh"
 #include "jhfNtuple.h"
+#include <TGraph2D.h>
+#include <TGraph.h>
+#include <map>
+#include <set>
+#include <TRandom3.h>
+#include <utility> 
 #include <fstream>
 #include <vector>
 #include <TH2D.h>
@@ -17,13 +23,13 @@ class G4Event;
 class WCSimLIGen
 {
 
-    public:
-        WCSimLIGen();
-        ~WCSimLIGen();
+public:
+  WCSimLIGen();
+  ~WCSimLIGen();
   
         // Initialise the light injector
-        void Initialise();
-        void ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename);
+  void Initialise();
+  void ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector, G4double injectorWavelength);
 
         // Set the vertices, etc of all photons in the pulse
         void GeneratePhotons(G4Event* anEvent, G4int nphotons);
@@ -33,30 +39,40 @@ class WCSimLIGen
         G4double GetPhotonEnergy();
         // Set whether to read in profile or photon list
         void SetPhotonMode(G4bool photonMode);
-
-    private:
-
-        G4ParticleGun*                  myLIGun;
-
-        // Variables for initialising light injector parameters
-        vector<double> injectorPosition;
-        vector<double> injectorDirection;
-        vector<double> thetaVals;
-        vector<double> phiVals;
-        vector<double> zVals;
-        vector<double> intensity;
-        
-        G4double injectorWavelength;
+  
+private:
+  TH2D *hProfile = nullptr;
+  TGraph2D *prof = nullptr;
+  G4ParticleGun*                  myLIGun;
+  
+  // Variables for initialising light injector parameters
+  vector<double> injectorPosition;
+  vector<double> injectorDirection;
+  vector<double> thetaVals;
+  int thetabins;
+  vector<double> phiVals;
+  vector<double> zVals;
+  vector<double> intensity;
+  std::vector<std::vector<double>> slopes_and_rows;
+  
+  std::vector<double> cosTheta_vals;
+  std::vector<double> phi_vals;
+  std::vector<std::vector<double>> intensity_grid;
+  double intensityMax;
+  double minCosTheta;
+  
+  G4double photonWavelength;
         G4double injectorOffset;
         G4double energy;
 
 	// Variables for reading in injector profile or photon list
+	///Points to $WCSIM_BUILD_DIR/data/
 	string wcsimdir;
 	G4String photonsFilename;
         G4bool photonMode;
 
         // Histogram for profile
-        TH2D *hProfile;
+  //TH2D *hProfile;
         void FillProfilePDF();
 
         // Struct for reading in photons list from file

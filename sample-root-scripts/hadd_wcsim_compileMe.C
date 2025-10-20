@@ -10,6 +10,9 @@
 
 // Compile Me
 // g++ -o hadd_wcsim.exe hadd_wcsim_compileMe.C `root-config --cflags --libs`
+//
+// Then run with
+//./hadd_wcsim.exe  wcsim.list  wcsim_hadd.root
 
 using namespace std;
  
@@ -35,12 +38,12 @@ int main(int argc , char* argv[]){
   }  
   gROOT->Reset();
   char* wcsimdirenv;
-  wcsimdirenv = getenv ("WCSIMDIR");
+  wcsimdirenv = getenv ("WCSIM_BUILD_DIR");
   if(wcsimdirenv !=  NULL){
-    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
+    gSystem->Load("${WCSIM_BUILD_DIR}/lib/libWCSimRoot.so");
   } 
   else{
-    cout<<"Must set WCSIMDIR" << std::endl;
+    cout<<"Must set WCSIM_BUILD_DIR" << std::endl;
   }
 
   std::cout<<"Run hadd function"<< std::endl;

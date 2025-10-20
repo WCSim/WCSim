@@ -41,6 +41,10 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
   
   // Get the a pointer to the tree from the file
   TTree *tree = (TTree*)file->Get("wcsimT");
+  tree->SetBranchStatus("wcsimrootevent", 0);
+  tree->SetBranchStatus("wcsimrootevent2", 0);
+  tree->SetBranchStatus("wcsimrootevent_OD", 0);
+  tree->SetBranchStatus(events_tree_name, 1);
   
   // Get the number of events
   const long nevent = tree->GetEntries();
@@ -65,6 +69,7 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
       exit(9);
   }
   geotree->GetEntry(0);
+  geo->PrintBoundaryWallInfo();
 
   // Options tree - only need 1 "event"
   TTree *opttree = (TTree*)file->Get("wcsimRootOptionsT");
@@ -81,12 +86,15 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
   // and always exists.
   WCSimRootTrigger* wcsimrootevent;
 
-  const float detR = geo->GetWCCylRadius();
-  const float detZ = geo->GetWCCylLength();
+  // Attempt to use the boundary wall information. This corresponds to the as-built radius/length of the blacksheet or tyvek
+  // Will fallback to the WCCyl methods, but these correspond to maximum PMT positions, and so are less intuitive to use
+  float temp_IDdetR = geo->GetBoundaryWallRadius(kBoundaryWallIDBlacksheet); // this will return -999 if not found
+  const float IDdetR = temp_IDdetR > 0 ? temp_IDdetR : geo->GetWCCylRadius();
+  const float IDdetZ = temp_IDdetR > 0 ? geo->GetBoundaryWallFullLength(kBoundaryWallIDBlacksheet) : geo->GetWCCylLength();
   TH1F *h1 = new TH1F("h1", "NDigits;NDigits in Trigger 0;Entries in bin", 8000, 0, 8000);
-  TH1F *hvtxX = new TH1F("hvtxX", "Event VTX X;True vertex X (cm);Entries in bin", 200, -detR, +detR);
-  TH1F *hvtxY = new TH1F("hvtxY", "Event VTX Y;True vertex Y (cm);Entries in bin", 200, -detR, +detR);
-  TH1F *hvtxZ = new TH1F("hvtxZ", "Event VTX Z;True vertex Z (cm);Entries in bin", 200, -detZ/2, +detZ/2);
+  TH1F *hvtxX = new TH1F("hvtxX", "Event VTX X;True vertex X (cm);Entries in bin", 200, -IDdetR, +IDdetR);
+  TH1F *hvtxY = new TH1F("hvtxY", "Event VTX Y;True vertex Y (cm);Entries in bin", 200, -IDdetR, +IDdetR);
+  TH1F *hvtxZ = new TH1F("hvtxZ", "Event VTX Z;True vertex Z (cm);Entries in bin", 200, -IDdetZ/2, +IDdetZ/2);
   
   int num_trig=0;
   
@@ -101,6 +109,8 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
       printf("Event Number (from loop): %ld\n", ievent);
       printf("Event Number (from WCSimRootEventHeader): %d\n", wcsimrootevent->GetHeader()->GetEvtNum());
       printf("Trigger Time [ns]: %ld\n", wcsimrootevent->GetHeader()->GetDate());
+      cout << "Trigger Type: " << wcsimrootevent->GetTriggerType()
+           << " " << WCSimEnumerations::EnumAsString(wcsimrootevent->GetTriggerType()) << endl;
       printf("Interaction Nuance Code: %d\n", wcsimrootevent->GetMode());
       printf("Number of Delayed Triggers (sub events): %d\n",
        wcsimrootsuperevent->GetNumberOfSubEvents());
@@ -160,6 +170,7 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
         printf("  Track initial momentum magnitude [MeV/c]: %f\n", wcsimroottrack->GetP());
         printf("  Track mass [MeV/c2]: %f\n", wcsimroottrack->GetM());
         printf("  Track ID: %d\n", wcsimroottrack->GetId());
+	printf("  Track creator process: %s\n", wcsimroottrack->GetCreatorProcessName().c_str());
         printf("  Number of ID/OD crossings: %zu\n", wcsimroottrack->GetBoundaryPoints().size());
         if (wcsimroottrack->GetBoundaryPoints().size()>0)
           printf("  First crossing position [mm]: (%f %f %f), KE [MeV]: %f, time [ns]: %f, type: %d\n", 
@@ -261,8 +272,22 @@ int sample_readfile(const char *filename="../wcsim.root", TString events_tree_na
         
         if(verbose > 1){
           if ( idigi < 10 ){ // Only print first XX=10 tubes
-            printf("idigi, q [p.e.], time+950 [ns], tubeid: %d %f %f %d \n",idigi,wcsimrootcherenkovdigihit->GetQ(),
-              wcsimrootcherenkovdigihit->GetT(),wcsimrootcherenkovdigihit->GetTubeId());
+	    WCSimRootPMT pmt;
+	    const int tubeId = wcsimrootcherenkovdigihit->GetTubeId();
+	    if(events_tree_name.EqualTo("wcsimrootevent"))
+	      pmt = geo->GetPMT(tubeId - 1, false);
+	    else if(events_tree_name.EqualTo("wcsimrootevent2"))
+	      pmt = geo->GetPMT(tubeId - 1, true);
+	    else if(events_tree_name.EqualTo("wcsimrootevent_OD"))
+	      pmt = geo->GetODPMT(tubeId - 1);
+	    //ensure you have the correct PMT
+	    assert(tubeId == pmt.GetTubeNo());
+
+	    const float x = pmt.GetPosition(0);
+	    const float y = pmt.GetPosition(1);
+	    const float z = pmt.GetPosition(2);
+            printf("idigi, q [p.e.], time+950 [ns], tubeid (x,y,z): %d %f %f %d (%f, %f, %f) \n",idigi,wcsimrootcherenkovdigihit->GetQ(),
+		   wcsimrootcherenkovdigihit->GetT(), tubeId, x, y, z);
             
             // print the parents of each photon in the digit
 	    // retrieve the indices of the photons in this digit within the HitTimes array

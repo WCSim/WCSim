@@ -288,6 +288,8 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	    ahit->SetPos(pmt_position);
 	    ahit->SetTime(PMTindex[noise_pmt],current_time);
 	    ahit->SetPhotonStartTime(PMTindex[noise_pmt],current_time);
+	    ahit->SetPhotonStartEnergy(PMTindex[noise_pmt],0);
+	    ahit->SetPhotonEndEnergy(PMTindex[noise_pmt],0);
 	    ahit->SetPhotonStartPos(PMTindex[noise_pmt], pmt_position);
 	    ahit->SetPhotonEndPos(PMTindex[noise_pmt], pmt_position);
 	    ahit->SetPhotonStartDir(PMTindex[noise_pmt], -pmt_orientation);
@@ -316,6 +318,8 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTrackID(PMTindex[noise_pmt],-1);
     (*WCHCPMT)[ list[noise_pmt]-1 ]->SetParentID(PMTindex[noise_pmt],-1);
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartTime(PMTindex[noise_pmt],current_time);
+	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartEnergy(PMTindex[noise_pmt],0);
+	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonEndEnergy(PMTindex[noise_pmt],0);
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartPos(PMTindex[noise_pmt],(*WCHCPMT)[ list[noise_pmt]-1 ]->GetPos());
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonEndPos(PMTindex[noise_pmt],(*WCHCPMT)[ list[noise_pmt]-1 ]->GetPos());
 	  (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartDir(PMTindex[noise_pmt],-(*WCHCPMT)[ list[noise_pmt]-1 ]->GetOrientation());

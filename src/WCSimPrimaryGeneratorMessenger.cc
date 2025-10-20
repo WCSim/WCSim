@@ -14,10 +14,11 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
 
   genCmd = new G4UIcmdWithAString("/mygen/generator",this);
   genCmd->SetGuidance("Select primary generator.");
-  genCmd->SetGuidance(" Available generators : muline, ambeevt, gun, laser, gps, ibd, datatable, cosmics, radioactive, rootracker, radon, injector, lightinjector, gamma-conversion, mPMT-LED");
+
+  genCmd->SetGuidance(" Available generators : muline, ambeevt, gun, laser, gps, ibd, hepmc3, datatable, cosmics, radioactive, rootracker, radon, injector, lightinjector, gamma-conversion, mPMT-LED");
   genCmd->SetParameterName("generator",true);
   genCmd->SetDefaultValue("muline");
-  genCmd->SetCandidates("muline ambeevt gun laser gps ibd datatable cosmics radioactive rootracker radon injector lightinjector gamma-conversion mPMT-LED");
+  genCmd->SetCandidates("muline ambeevt gun laser gps ibd hepmc3 datatable cosmics radioactive rootracker radon injector lightinjector gamma-conversion mPMT-LED");
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
   fileNameCmd->SetGuidance("Select the file of vectors.");
@@ -43,6 +44,20 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   fileNameCmdCosmics->SetGuidance(" Enter the file name of the cosmics file");
   fileNameCmdCosmics->SetParameterName("fileName",true);
   fileNameCmdCosmics->SetDefaultValue("data/MuonFlux-HyperK-ThetaPhi.dat");
+
+  hepmc3fileNameCmd= new G4UIcmdWithAString("/mygen/hepmc3file",this);
+  hepmc3fileNameCmd->SetGuidance("Select the file of HepMC3.");
+  hepmc3fileNameCmd->SetGuidance(" Enter the file name of the HepMC3 file");
+  hepmc3fileNameCmd->SetParameterName("fileName",true);
+  hepmc3fileNameCmd->SetDefaultValue("inputhepmc3file");
+
+  hepmc3positionGenModeCmd = new G4UIcmdWithABool("/mygen/hepmc3positionGenMode",this);
+  hepmc3positionGenModeCmd->SetGuidance("Set to generate isotropic positions or read from file.");
+  hepmc3positionGenModeCmd->SetGuidance("true : generate positions randomly inside ID, false : read from file");
+  hepmc3positionGenModeCmd->SetGuidance("Default if not set is false (read from file)");
+  hepmc3positionGenModeCmd->SetParameterName("positionGen",true);
+  hepmc3positionGenModeCmd->SetDefaultValue("false");
+  SetNewValue(hepmc3positionGenModeCmd, "false");
 
   timeUnitCmd = new G4UIcmdWithAString("/mygen/time_unit",this);
   timeUnitCmd->SetGuidance("Define the units used for time in the input file.");
@@ -115,6 +130,22 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   lightInjectorIdxCmd->SetParameterName("injectorIdx",true);
   lightInjectorIdxCmd->SetDefaultValue("0");
 
+  lightInjectorDetectorCmd = new G4UIcmdWithAString("/mygen/injectorDetector",this);
+  lightInjectorDetectorCmd->SetGuidance("Set the detector volume for the light injector you want to use");
+  lightInjectorDetectorCmd->SetGuidance("[usage] /mygen/injectorDetector injectorDetector");
+  lightInjectorDetectorCmd->SetGuidance(" injectorDetector : ID, OD");
+  lightInjectorDetectorCmd->SetParameterName("injectorDetector",true);
+  lightInjectorDetectorCmd->SetCandidates("ID OD");
+  lightInjectorDetectorCmd->SetDefaultValue("ID");
+
+  lightInjectorWavelengthCmd = new G4UIcmdWithADouble("/mygen/injectorWavelength",this);
+  lightInjectorWavelengthCmd->SetGuidance("Set the photon wavelength for the light injector in nm");
+  lightInjectorWavelengthCmd->SetGuidance("[usage] /mygen/injectorWavelength injectorWavelength");
+  lightInjectorWavelengthCmd->SetGuidance(" injectorWavelength: 400");
+  lightInjectorWavelengthCmd->SetRange("injectorWavelength>0");
+  lightInjectorWavelengthCmd->SetParameterName("injectorWavelength",true);
+  lightInjectorWavelengthCmd->SetDefaultValue(400);
+  
   lightInjectorNPhotonsCmd = new G4UIcmdWithAnInteger("/mygen/nphotons", this);
   lightInjectorNPhotonsCmd->SetGuidance("Set the number of photons per pulse of the light injector");
   lightInjectorNPhotonsCmd->SetGuidance("[usage] /mygen/nphotons nphotons");
@@ -129,6 +160,13 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   lightInjectorFilenameCmd->SetGuidance(" datafile: lightInjectors.json");
   lightInjectorFilenameCmd->SetParameterName("injectorFilename",true);
   lightInjectorFilenameCmd->SetDefaultValue("");
+
+  lightInjectorDetailsCmd = new G4UIcmdWithAString("/mygen/injectorDetails", this);
+  lightInjectorDetailsCmd->SetGuidance("Set the file to read the injector profile from");
+  lightInjectorDetailsCmd->SetGuidance("[usage] /mygen/injectorFile datafile");
+  lightInjectorDetailsCmd->SetGuidance(" datafile: lightInjectorsDetails.json");
+  lightInjectorDetailsCmd->SetParameterName("injectorDetails",true);
+  lightInjectorDetailsCmd->SetDefaultValue("");
 
   lightInjectorModeCmd = new G4UIcmdWithAnInteger("/mygen/photonMode", this);
   lightInjectorModeCmd->SetGuidance("Set whether or not to simulate photons from a list");
@@ -155,22 +193,29 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   param->SetDefaultValue("0");
   isotopeCmd->SetParameter(param);
   
-  radonScalingCmd = new G4UIcmdWithAString("/mygen/radon_scaling",this);
-  radonScalingCmd->SetGuidance("Select scalling scenario, if scenario 0 is selected, Bi214 are generated uniformly");
+  radonScalingCmd = new G4UIcmdWithAnInteger("/mygen/radon_scaling",this);
+  radonScalingCmd->SetGuidance("Select scaling scenario, if scenario 0 is selected, Bi214 are generated uniformly");
   radonScalingCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
-  radonScalingCmd->SetGuidance("     SCENARIO : 0, A, B");
-  radonScalingCmd->SetCandidates("0 A B");
+  radonScalingCmd->SetGuidance("     SCENARIO : 0, 1");
   param = new G4UIparameter("SCENARIO",'s',true);
-  param->SetDefaultValue("A");
+  param->SetDefaultValue("1");
   radonScalingCmd->SetParameter(param);
   
   radonGeoSymCmd = new G4UIcmdWithAnInteger("/mygen/radon_symmetry",this);
-  radonGeoSymCmd->SetGuidance("Select scalling scenario");
-  radonGeoSymCmd->SetGuidance("[usage] /mygen/radon SCENARIO ");
+  radonGeoSymCmd->SetGuidance("Specify the symmetry value");
+  radonGeoSymCmd->SetGuidance("[usage] /mygen/radon_symmetry SYMMETRY ");
   radonGeoSymCmd->SetGuidance("     SYMMETRY : 1 ... ");
   param = new G4UIparameter("SYMMETRY",'d',true);
   param->SetDefaultValue("1");
   radonGeoSymCmd->SetParameter(param);
+  
+  radonWaterConcCmd = new G4UIcmdWithADouble("/mygen/radon_water_concentration",this);
+  radonWaterConcCmd->SetGuidance("Specify the input water concentration in mBq/m3");
+  radonWaterConcCmd->SetGuidance("[usage] /mygen/radon_water_concentration WATCONC ");
+  radonWaterConcCmd->SetGuidance("     WATCONC : (double) activity in input water in mBq/m3 ");
+  param = new G4UIparameter("WATCONC",'f',true);
+  param->SetDefaultValue("2.63");
+  radonWaterConcCmd->SetParameter(param);
 
   mPMTLEDIdCmd1 = new G4UIcmdWithAnInteger("/mPMTLED/PMTid",this);
   mPMTLEDIdCmd1->SetGuidance("Set PMT id for mPMT LED source position. Defaults to 1.");
@@ -181,6 +226,15 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   mPMTLEDIdCmd2->SetGuidance("Set LED id for mPMT LED source position, dTheta and dPhi for LED direction. Defaults to 0, 0.0, 0.0 ");
   mPMTLEDIdCmd2->SetParameterName("mPMTLEDId2","mPMTLEDId2_dTheta","mPMTLEDId2_dPhi", true);
   mPMTLEDIdCmd2->SetDefaultValue(G4ThreeVector(0,0.0,0.0));
+
+  RegionCmd = new G4UIcmdWithAString("/mygen/region", this);
+  RegionCmd->SetGuidance("Set region for accepting events from RooTracker input");
+  RegionCmd->SetGuidance("[usage] /mygen/region REGION");
+  RegionCmd->SetGuidance("REGION:  ID, OD_INNER, OD_OUTER");
+  RegionCmd->SetParameterName("region", true);
+  RegionCmd->SetCandidates("ID OD_INNER OD_OUTER");
+  RegionCmd->SetDefaultValue(myAction->GetRegionString());
+
 }
 
 WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
@@ -189,6 +243,7 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete mydetDirectory;
   delete radonScalingCmd;
   delete radonGeoSymCmd;
+  delete radonWaterConcCmd;
   delete radioactive_time_window_Cmd;
   delete nPhotonsCmd;
   delete injectorOnCmd;
@@ -199,6 +254,9 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete lightInjectorIdxCmd;
   delete lightInjectorNPhotonsCmd;
   delete lightInjectorFilenameCmd;
+  delete lightInjectorDetailsCmd;
+  delete lightInjectorDetectorCmd;
+  delete lightInjectorWavelengthCmd;
   delete lightInjectorModeCmd;
   delete mPMTLEDIdCmd1;
   delete mPMTLEDIdCmd2;
@@ -237,6 +295,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -254,6 +313,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -271,6 +331,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -288,6 +349,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -305,6 +367,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -322,6 +385,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(true);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -339,6 +403,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(true);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetNeedConversion(false);	    
       myAction->SetCosmicsGenerator(false);
@@ -356,8 +421,26 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetInjectorEvtGenerator(false);
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetIBDEvtGenerator(true);
       myAction->SetNeedConversion(false);
+      myAction->SetCosmicsGenerator(false);
+      myAction->SetRadioactiveEvtGenerator(false);
+      myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
+    }
+    else if (newValue == "hepmc3")
+    {
+      myAction->SetMulineEvtGenerator(false);
+      myAction->SetGunEvtGenerator(false);
+      myAction->SetRootrackerEvtGenerator(false);
+      myAction->SetLaserEvtGenerator(false);
+      myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
+      myAction->SetGPSEvtGenerator(false);
+      myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(true);
+      myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
@@ -374,6 +457,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(true);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -391,6 +475,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(true);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -408,6 +493,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(true);
@@ -425,6 +511,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetLightInjectorEvtGenerator(false);
       myAction->SetGPSEvtGenerator(false);
       myAction->SetIBDEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
@@ -442,6 +529,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetGPSEvtGenerator(true);
       myAction->SetIBDEvtGenerator(false);
       myAction->SetDataTableEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetNeedConversion(true);
       myAction->SetmPMTledEvtGenerator(false);
     }	  
@@ -459,6 +547,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetDataTableEvtGenerator(false);
       myAction->SetCosmicsGenerator(false);
       myAction->SetRadioactiveEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
       myAction->SetmPMTledEvtGenerator(true);
     }
@@ -497,12 +586,17 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
 
   if ( command==radonScalingCmd )
   {
-    RadonScalingCommand(newValue);
+    myAction->SetRadonScenario(radonScalingCmd->GetNewIntValue(newValue));
   }
 
   if ( command==radonGeoSymCmd )
   {
     myAction->SetRadonSymmetry(radonGeoSymCmd->GetNewIntValue(newValue));
+  }
+
+  if ( command==radonWaterConcCmd )
+  {
+    myAction->SetRadonWaterConcentration(radonWaterConcCmd->GetNewDoubleValue(newValue));
   }
 
   if ( command==timeUnitCmd)
@@ -526,21 +620,6 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       G4cout << "PoissonPMT mean set to: " << poisMeanCmd->GetNewDoubleValue(newValue) << G4endl;
     }
     
-  if( command==radioactive_time_window_Cmd )
-    {
-      myAction->SetRadioactiveTimeWindow(StoD(newValue));
-    }
-  
-  if ( command==radonScalingCmd ) 
-    {
-      RadonScalingCommand(newValue);
-    }
-  
-  if ( command==radonGeoSymCmd ) 
-    {
-      myAction->SetRadonSymmetry(radonGeoSymCmd->GetNewIntValue(newValue));
-    }
-  
   if ( command==nPhotonsCmd ) 
     {
       myAction->SetInjectorBeamPhotons(nPhotonsCmd->GetNewIntValue(newValue));
@@ -560,7 +639,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     {
       myAction->SetInjectorOpeningAngle(openingAngleCmd->GetNewDoubleValue(newValue));
     }
-
+  
   if ( command== injectorWavelengthCmd )
     {
       myAction->SetInjectorWavelength(injectorWavelengthCmd->GetNewDoubleValue(newValue));
@@ -587,11 +666,36 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     myAction->SetLightInjectorFilename(newValue);
   }
 
+  if ( command==lightInjectorDetailsCmd )
+  {
+    myAction->SetLightInjectorDetails(newValue);
+  }
+
+  if ( command==lightInjectorDetectorCmd )
+  {
+    myAction->SetLightInjectorDetector(newValue);
+  }
+  
+  if ( command==lightInjectorWavelengthCmd )
+  {
+    myAction->SetLightInjectorWavelength(lightInjectorWavelengthCmd->GetNewDoubleValue(newValue));
+  }
+  
   if (command==lightInjectorModeCmd )
   {
     myAction->SetLightInjectorMode(lightInjectorModeCmd->GetNewIntValue(newValue));
   }
 
+  if (command == hepmc3fileNameCmd) {
+    myAction->SetHepMC3Filename(newValue);
+    G4cout << "HepMC3 file is set to " << newValue << G4endl;
+
+      }
+
+  if (command == hepmc3positionGenModeCmd){
+    myAction->SetHepMC3PositionGen(hepmc3positionGenModeCmd->GetNewBoolValue(newValue));
+  }
+  //
   if (command == ibdDatabaseCmd)
     {
       myAction->SetIBDDatabase(newValue);
@@ -614,6 +718,20 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
              << ", dTheta = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).y() << " deg" 
              << ", dPhi = " << mPMTLEDIdCmd2->GetNew3VectorValue(newValue).z() << " deg" << G4endl;
     }
+
+  // Region in which to accept events for nRooTracker input
+  if (command == RegionCmd) {
+    if      (newValue == "ID")
+      myAction->SetRegion(WCSimPrimaryGeneratorAction::Region::kID);
+    else if (newValue == "OD_INNER")
+      myAction->SetRegion(WCSimPrimaryGeneratorAction::Region::kODInner);
+    else if (newValue == "OD_OUTER")
+      myAction->SetRegion(WCSimPrimaryGeneratorAction::Region::kODOuter);
+    else
+      G4Exception("WCSimPrimaryGeneratorMessenger::SetNewValue",
+                  "WCSimBadRegion", FatalException,
+                  ("Unknown /mygen/region value: "+newValue).c_str());
+  }
 
 }
 
@@ -652,7 +770,11 @@ G4String WCSimPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
     else if(myAction->IsUsingmPMTledEvtGenerator())
       { cv = "mPMT-LED"; }
   }
-  
+  // Region for accepting events from RooTracker input
+  if (command == RegionCmd) {
+    return myAction->GetRegionString();
+  }
+
   return cv;
 }
 
@@ -674,8 +796,7 @@ void WCSimPrimaryGeneratorMessenger::RadonScalingCommand(G4String newValue)
   G4String scenario = next();
   G4int iScenario = 0;
    
-  if ( scenario == "A" ) iScenario = 1; // Relative scaling with respect to full ID volume (Pessimistic)
-  if ( scenario == "B" ) iScenario = 2; // Relative scaling with respect to fiducial volume
+  if ( scenario == "A" ) iScenario = 1; // Relative scaling with respect to full ID volume 
    
   myAction->SetRadonScenario(iScenario);
 }

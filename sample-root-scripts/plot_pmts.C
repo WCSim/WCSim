@@ -35,7 +35,7 @@ Output
 
 Running
 From the command line, something like
-root -b -q $WCSIMDIR/sample-root-scripts/plot_pmts.C+g'(1,"wcsim.root")'
+root -b -q $WCSIM_SOURCE_DIR/sample-root-scripts/plot_pmts.C+g'(1,"wcsim.root")'
 or however you prefer to run your root macros
 */
 

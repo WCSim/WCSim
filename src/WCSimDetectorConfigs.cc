@@ -4,6 +4,7 @@
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
+#include <Build.h>
 
 #include <cmath>
 
@@ -157,12 +158,15 @@ void HKGeometryNoLongerUsed(G4String & DetectorName)
   G4cerr << "**********************************" << G4endl
 		 << DetectorName << " is an obsolete HK geometry" << G4endl
 		 << "You should use one of:" << G4endl
+		 << " HyperK_HybridmPMT_WithOD_Realistic" << G4endl
+		 << " HyperK_HybridmPMT_IDonly_Realistic" << G4endl
+		 << "The following are also valid, but not recommended:" << G4endl
 		 << " HyperK_HybridmPMT_WithOD" << G4endl
 		 << " HyperK_HybridmPMT" << G4endl
 		 << "If you really want to use " << DetectorName
 		 << " then you can comment out the call to HKGeometryNoLongerUsed() in the method "
 		 << "WCSimDetectorConstruction::" << DetectorName << "()"
-		 << " in the file $WCSIMDIR/src/WCSimDetectorConfigs.cc and recompile, "
+		 << " in the file $WCSIM_SOURCE_DIR/src/WCSimDetectorConfigs.cc and recompile, "
 		 << "but be careful if comparing to official HK geometries that the number of PMTs are consistent" << G4endl
 		 << "Exiting..." << G4endl;
   exit(-1);
@@ -441,8 +445,15 @@ void WCSimDetectorConstruction::SetHyperKWithODGeometry()
   CreateCombinedPMTQE(WCColName);
   isCombinedPMTCollectionDefined=true;
 
+  G4String WLSType="";
   // TEST WLS collection for stacking action
-  G4String WLSType = "EljenEJ286";
+  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" )
+	WLSType = "EljenEJ286";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" )
+	WLSType = "Kuraray";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
+	WLSType = "Inr";
+
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -882,7 +893,13 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Geometry()
   isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
-  G4String WLSType = "EljenEJ286";
+  G4String WLSType="";
+  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" )
+	WLSType = "EljenEJ286";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" )
+	WLSType = "Kuraray";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
+	WLSType = "Inr";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -961,13 +978,23 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
   WCODHeightWaterDepth     = 2.*m;
   WCODDeadSpace            = 600.*mm;
   WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
-  WCODWLSPlatesThickness   = 1.*cm; //
-  WCODWLSPlatesLength      = 60.*cm; //
+  WCODWLSPlatesLength      = 30.*cm; //
+  G4String WLSType="";
+  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" ){
+	WLSType = "EljenEJ286";
+	WCODWLSPlatesThickness   = 1.*cm; //
+  }else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" ){
+	WLSType = "Kuraray";
+	WCODWLSPlatesThickness   = 0.6*cm; //
+  }  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" ){
+	WLSType = "Inr";
+	WCODWLSPlatesThickness   = 0.7*cm; //
+  }
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
 
   // OD PMTs //
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
-  WCSimPMTObject *PMTOD = CreatePMTObject("PMT8inch", WCODCollectionName);
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT3inchR14374_FDOD", WCODCollectionName);
   WCPMTODName           = PMTOD->GetPMTName();
   WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
   WCPMTODRadius         = PMTOD->GetRadius();
@@ -993,8 +1020,6 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
   CreateCombinedPMTQE(WCColName);
   isCombinedPMTCollectionDefined=true;
 
-  // TEST WLS collection for stacking action
-  G4String WLSType = "EljenEJ286";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -1073,13 +1098,23 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_IDonly_Realistic_Geometry()
   WCODHeightWaterDepth     = 2.*m;
   WCODDeadSpace            = 600.*mm;
   WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
-  WCODWLSPlatesThickness   = 1.*cm; //
-  WCODWLSPlatesLength      = 60.*cm; //
+  WCODWLSPlatesLength      = 30.*cm; //
+  G4String WLSType="";
+  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" ){
+	WLSType = "EljenEJ286";
+	WCODWLSPlatesThickness   = 1.*cm; //
+  }else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" ){
+	WLSType = "Kuraray";
+	WCODWLSPlatesThickness   = 0.6*cm; //
+  }else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" ){
+	WLSType = "Inr";
+	WCODWLSPlatesThickness   = 0.7*cm; //
+  }
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
 
   // OD PMTs //
   WCODCollectionName = WCDetectorName + "-glassFaceWCPMT_OD";
-  WCSimPMTObject *PMTOD = CreatePMTObject("PMT8inch", WCODCollectionName);
+  WCSimPMTObject *PMTOD = CreatePMTObject("PMT3inchR14374_FDOD", WCODCollectionName);
   WCPMTODName           = PMTOD->GetPMTName();
   WCPMTODExposeHeight   = PMTOD->GetExposeHeight();
   WCPMTODRadius         = PMTOD->GetRadius();
@@ -1106,8 +1141,6 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_IDonly_Realistic_Geometry()
   CreateCombinedPMTQE(WCColName);
   isCombinedPMTCollectionDefined=true;
 
-  // TEST WLS collection for stacking action
-  G4String WLSType = "EljenEJ286";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
@@ -1387,7 +1420,7 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
 {
   WCDetectorName = "NuPRISMBeamTest_16cShort_mPMT";
   WCIDCollectionName = WCDetectorName +"-glassFaceWCPMT";
-	mPMT_ID_PMT = "PMT3inchR12199_02";    //can be changed in macro through mPMT settings.
+	mPMT_ID_PMT = "PMT3inchR14374_WCTE";    //can be changed in macro through mPMT settings.
 	mPMT_OD_PMT = "PMT3inchR12199_02";
   WCSimPMTObject * PMT = CreatePMTObject(mPMT_ID_PMT, WCIDCollectionName);
   WCPMTName = PMT->GetPMTName();
@@ -1395,7 +1428,8 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
   WCPMTRadius = PMT->GetRadius();
 
 	//mPMT params go first because detector depends on it:
-	mPMT_vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
+	// mPMT_vessel_cyl_height = 38.*CLHEP::mm;    //option A, option B would be 277 mm
+  mPMT_vessel_cyl_height = 77.785*2*CLHEP::mm; // from actual mPMT measurement
 	mPMT_vessel_radius_curv = 342.*CLHEP::mm;  //needs to include the vessel thickness, as we construct from outside inwards.
 	mPMT_vessel_radius = 254.*CLHEP::mm;
 	dist_pmt_vessel = 8*CLHEP::mm;      
@@ -1418,11 +1452,14 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
 
 	// WCIDHeight               = 2.830845*CLHEP::m;
 	// WCIDDiameter             = 3.192536*CLHEP::m;
-  WCIDHeight               = 2.758236*CLHEP::m;
-  WCIDDiameter             = 3.119927*CLHEP::m;
+  WCIDHeight               = 2.714235*CLHEP::m; // 1955+1105.475-173.12*2 mm
+  WCIDDiameter             = 3.075926*CLHEP::m; // (1711.083-173.12)*2 mm
 	WCIDVerticalPosition     = 0.;
 	
-	WCBarrelPMTOffset     = 291.*CLHEP::mm;
+	WCBarrelPMTOffset     = 288.*CLHEP::mm;
+  WCBarrelPMTTopOffset  = 62.355*CLHEP::mm; // 235.475-173.12
+  WCBarrelPMTBotOffset  = 331.88*CLHEP::mm; // 505.-173.12
+
   WCPMTperCellHorizontal = 1.0; // 1 per phi
   WCPMTperCellVertical   = 1.0;
 
@@ -1437,7 +1474,8 @@ void WCSimDetectorConstruction::SetNuPrismBeamTest_16cShort_mPMTGeometry()
   // default for this geometry is to rotate the barrel by half a tower
   rotateBarrelHalfTower = true;
   // to place PMT behind the blacksheet
-  pmt_blacksheet_offset = 36.3045*CLHEP::mm;
+  pmt_blacksheet_offset = (77.7865*2+347-235    // total mPMT height
+                            - 94.5)*CLHEP::mm;  // height above blacksheet
 }
 
 
@@ -1546,6 +1584,10 @@ void WCSimDetectorConstruction::SetIWCDGeometry()
   WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
   WCAddGd               = false;
 	hybrid = false;
+
+  // Customize PMT positions
+  useReplica = false;
+  SetPMTPositionInput(wcsimdir_path+"/data/mPMT_Position_IWCD.txt");
 }
 
 // IWCD with mPMTs, updated geometry as of 20240411, plusu OD
@@ -1599,6 +1641,10 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   WCAddGd               = false;
 	hybrid = false;
 
+  // Customize PMT positions
+  useReplica = false;
+  SetPMTPositionInput(wcsimdir_path+"/data/mPMT_Position_IWCD.txt");
+
   ////////////////////////////////////
   // OD Parameters --- Beta version //
   ////////////////////////////////////
@@ -1646,10 +1692,19 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
-  G4String WLSType = "EljenEJ286";
+  G4String WLSType="";
+  if( IWCD_OD_WLS_PLATE_TYPE == "EljenEJ286" )
+	WLSType = "EljenEJ286";
+  else if( IWCD_OD_WLS_PLATE_TYPE == "Kuraray" )
+	WLSType = "Kuraray";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
+	WLSType = "Inr";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
+
+  // Customize OD PMT positions
+  SetODPMTPositionInput(wcsimdir_path+"/data/mPMT_Position_IWCD_OD.txt");
 }
 
 void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry_OptionA()
@@ -1764,7 +1819,13 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry_Old() // Old geometry us
   isCombinedPMTCollectionDefined=true;
 
   // TEST WLS collection for stacking action
-  G4String WLSType = "EljenEJ286";
+  G4String WLSType="";
+  if( IWCD_OD_WLS_PLATE_TYPE == "EljenEJ286" )
+	WLSType = "EljenEJ286";
+  else if( IWCD_OD_WLS_PLATE_TYPE == "Kuraray" )
+	WLSType = "Kuraray";
+  else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
+	WLSType = "Inr";
   isWLSFilled = true;
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);

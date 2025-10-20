@@ -31,9 +31,8 @@ class WCSimGenerator_Radioactivity
 		// Initialize the Model
 		void Initialize();
 
-		// Set the Scenario, allow to modify the Rn lifetime (in sec)
-		// DON'T MODIFY THE LIFETIME IF YOU DON'T KNOW WHAT YOU ARE DOING!
-		void Configuration(G4int iScenario, G4double dLifeTime=0);
+		// Set the Scenario, allow to modify the input concentration water (in sec)
+		void Configuration(G4int iScenario, G4double dConcWater);
 
 		// Get a Random vertex for a Rn decay in the detector
 		// if tSymNumber is not 1, the detector is divided in tSymNumber radial sector.
@@ -55,22 +54,7 @@ class WCSimGenerator_Radioactivity
 		// val[0] is R^{2}
 		// val[1] is Z
 		// par[0] is the lambda of the radioisotope
-		// This function calculate the R2 and Z layers for a given (R2,Z) position and interpolates the results from RadonFormulaR and RadonFormulaZ
 		static double RadonFormula(double *val, double *par);
-
-		// R2 Concentration function
-		// val[0] is R^{2}
-		// val[1] is Z
-		// par is vParam_R2[x]
-		static double RadonFormulaR(double* val, double* par);
-
-		// R2 Concentration function
-		// val[0] is Z
-		// val[1] is R^{2}
-		// par is vParam_Z[x]
-		static double RadonFormulaZ(double* val, double* par);
-
-		// Diffusion functions
 		static double DiffusionZ(double x, double origin, double factor);
 		static double DiffusionR(double x, double origin, double factor);
 
@@ -85,50 +69,25 @@ class WCSimGenerator_Radioactivity
 		G4double fConcentrationID; // in ID
 		G4double fConcentrationFV; // in FV
 
-		// Configuration function to set the Scenario:
-		//	iScenario = 0 -> Uniform concentration in ID
-		//	iScenario = 1 -> Scenario A (Relative scaling, Pessimistic, should be default)
-		//	iScenario = 2 -> Scenario B (Absolute scaling, Optimistic)
 		// This function compute all the intermediary Concentration values and set up the Rn model
-		void SetScenario(G4int iScenario);
-
-
+		void GenerateRnFunction();
+		
 		// Holder for Detector construction
 		const WCSimDetectorConstruction*      myDetector;
 
 		// Constant
-		G4int    fScenario; 			// Scenario holder
+		G4int fScenario; 			// Scenario holder
 		static G4double fRnDiffusion_Coef;	// Constant Rn diffusion coefficient value
-		static G4double fRnLambda_Global;	// Constant Rn Lambda
-		G4double fRnLambda;
+		static G4double fRnLambda;		// Constant Rn Lambda
 
+		// Parameters:
+		G4int fNBins;
+		G4double fMperBinsZ;
+		G4double fMperBinsR;
+		
 		static G4double fRn_PerPMT;		// Average Rn emanation per PMT
 		static G4double fRn_Border;		// Average Rn concentration at the PMT wall
-
-		// Parameter for fit, computed from the fit parameters:
-		G4double fConc_Middle;
-		G4double fConc_Int_R2_6;
-		G4double fConc_Int_R2_7;
-		G4double fConc_Int_R2_8;
-		G4double fConc_Int_R2_9;
-
-		// Parameter array declaration:
-		static G4double vParam_Z [RNMODEL_BIN_R_MAX][7];
-		static G4double vParam_R2[RNMODEL_BIN_Z_MAX][7];
-
-		// Min and Max R2 values for each R2 layer
-		static G4double vLayer_MinR2_Z[RNMODEL_BIN_R_MAX];
-		static G4double vLayer_MaxR2_Z[RNMODEL_BIN_R_MAX];
-
-		// Min and Max Z values for each Z layer
-		static G4double vLayer_MinZ_R2[RNMODEL_BIN_Z_MAX];
-		static G4double vLayer_MaxZ_R2[RNMODEL_BIN_Z_MAX];
-
-		// WCSim detector limits:
-		static G4double fCurrentDetector_Z_min;
-		static G4double fCurrentDetector_Z_max;
-		static G4double fCurrentDetector_R_max;
-		static G4double fCurrentDetector_R2_max;
+		G4double fConcWater;			// Average Rn concentration in input water
 
 		// SK detector limits:
 		static G4double fSK_Z_min;
@@ -136,7 +95,7 @@ class WCSimGenerator_Radioactivity
 		static G4double fSK_R_max;
 		static G4double fSK_R2_max;
 
-		// Detector limits used by the model (normally = WCSim detector limits)
+		// Detector limits used by the model
 		static G4double fZ_min;
 		static G4double fZ_max;
 		static G4double fR_max;

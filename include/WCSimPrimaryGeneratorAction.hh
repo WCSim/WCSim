@@ -14,6 +14,10 @@
 #include "WCSimEnumerations.hh"
 #include "jhfNtuple.h"
 
+#ifdef WCSIM_HEPMC3_ENABLED
+#include "WCSimNuHepMC3Reader.hh"
+#endif
+
 #include <G4String.hh>
 #include <fstream>
 
@@ -87,6 +91,12 @@ public:
 
   void SaveOptionsToOutput(WCSimRootOptions * wcopt) const;
 
+  // Region for accepting events when using RooTracker input
+  enum class Region { kID, kODInner, kODOuter };
+  void SetRegion(Region r) { fRegion = r; }
+  Region GetRegion() const { return fRegion; }
+  G4String GetRegionString() const;
+
 private:
   const WCSimDetectorConstruction*      myDetector;
   G4ParticleGun*                  particleGun;
@@ -108,6 +118,7 @@ private:
   G4bool   useRadonEvt; // G. Pronost: Radon flag
   G4bool   useLightInjectorEvt; // L. Kneale injector with profile from db
   G4bool   useMPMTledEvt;
+  G4bool   useHepMC3Evt;
   
   std::fstream inputFile;
   std::fstream inputCosmicsFile;
@@ -126,6 +137,17 @@ private:
     // IBD generator object
   WCSimIBDGen* IBDGen;
 
+  // HepMC3 reader
+  G4String hepmc3_filename;
+    // HepMC3 reader object
+
+#ifdef WCSIM_HEPMC3_ENABLED
+  WCSimNuHepMC3Reader* hepmc3_reader;
+#endif
+
+    // Position generation bool
+  G4bool hepmc3_positionGen;
+
   // Variables for Radioactive and Radon generators
   std::vector<struct radioactive_source> radioactive_sources;
   G4double radioactive_time_window;
@@ -134,6 +156,7 @@ private:
   WCSimGenerator_Radioactivity* myRn222Generator;
   G4int fRnScenario;
   G4int fRnSymmetry;
+  G4double fRnWaterConc;
 
   G4bool   usePoissonPMT;
   G4double poissonPMTMean;
@@ -151,6 +174,9 @@ private:
   G4String injectorType;
   G4String injectorIdx;
   G4String injectorFilename;
+  G4String injectorDetails;
+  G4String injectorDetector;
+  G4double injectorWavelength;
   G4bool photonMode;
 
   //
@@ -212,6 +238,9 @@ private:
   G4double mPMTLED_dTheta;
   G4double mPMTLED_dPhi;
 
+  // Region to accept events when using RooTracker input 
+  Region fRegion = Region::kID;
+
  public:
 
   inline void SetMulineEvtGenerator(G4bool choice) { useMulineEvt = choice; }
@@ -251,6 +280,14 @@ private:
   inline void SetIBDModel(G4String choice) { ibd_model = choice; }
   inline G4String GetIBDModel()  { return ibd_model; }
 
+  // HEPMC3 reader
+  inline void SetHepMC3EvtGenerator(G4bool choice) { useHepMC3Evt = choice; }
+  inline G4bool IsUsingHepMC3EvtGenerator()  { return useHepMC3Evt; }
+  inline void SetHepMC3Filename(G4String choice) { hepmc3_filename = choice; }
+  inline G4String GetHepMC3Filename()  { return hepmc3_filename; }
+  inline void SetHepMC3PositionGen(G4bool choice) { hepmc3_positionGen = choice; }
+  inline G4bool GetHepMC3PositionGen() { return hepmc3_positionGen;}
+
   // L. Kneale: light injector with profile from db
   inline void SetLightInjectorEvtGenerator(G4bool choice) {useLightInjectorEvt = choice; }
   inline G4bool IsUsingLightInjectorEvtGenerator()        {return useLightInjectorEvt; }
@@ -258,6 +295,9 @@ private:
   inline void SetLightInjectorIdx(G4String choice)        { injectorIdx = choice; }
   inline void SetLightInjectorNPhotons(G4int choice)      { nphotons=choice; }
   inline void SetLightInjectorFilename(G4String choice)   { injectorFilename = choice; }
+  inline void SetLightInjectorDetails(G4String choice)   { injectorDetails = choice; }
+  inline void SetLightInjectorDetector(G4String choice)   { injectorDetector = choice; }
+  inline void SetLightInjectorWavelength(G4double choice)   { injectorWavelength = choice; }
   inline void SetLightInjectorMode(G4bool choice)         { photonMode = choice; }
 
   inline void SetDataTableEvtGenerator(G4bool choice) {
@@ -337,6 +377,9 @@ private:
 
   inline void SetRadonSymmetry(G4int choice) 		{ fRnSymmetry = choice; }
   inline G4int GetRadonSymmetry() const			{ return fRnSymmetry; }
+
+  inline void SetRadonWaterConcentration(G4double choice) { fRnWaterConc = choice; }
+  inline G4double GetRadonWaterConcentration()		{ return fRnWaterConc; }
 
   inline void SetPoissonPMT(G4bool choice) { usePoissonPMT = choice; }
   inline G4bool IsUsingPoissonPMT() const { return usePoissonPMT; }

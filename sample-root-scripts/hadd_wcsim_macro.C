@@ -8,10 +8,12 @@
 #include "Riostream.h"
 #include <TROOT.h>
 
-// Usage
+// Usage from the ROOT command line
 // root [1] .L hadd_wcsim_macro.C 
-// root [2] hadd("wcsim.list", "wcsim_hadd.root")
-
+// root [2] hadd_wcsim_macro("wcsim.list", "wcsim_hadd.root")
+//
+// OR from the command line
+// root -b -q /path/to/hadd_wcsim_macro.C+'("wcsim.list","wcsim_hadd.root")'
 
 using namespace std;
  
@@ -20,16 +22,16 @@ TFile *Target;
  
 void MergeRootfile( TDirectory *target, TList *sourcelist );
 
-void hadd(const char* list, const char* out){
+void hadd_wcsim_macro(const char* list, const char* out){
 
   gROOT->Reset();
   char* wcsimdirenv;
-  wcsimdirenv = getenv ("WCSIMDIR");
+  wcsimdirenv = getenv ("WCSIM_BUILD_DIR");
   if(wcsimdirenv !=  NULL){
-    gSystem->Load("${WCSIMDIR}/libWCSimRoot.so");
+    gSystem->Load("${WCSIM_BUILD_DIR}/lib/libWCSimRoot.so");
   }
   else{
-    cout<<"Must set WCSIMDIR" << std::endl;
+    cout<<"Must set WCSIM_BUILD_DIR" << std::endl;
   } 
   Target = TFile::Open( out , "RECREATE" );
 

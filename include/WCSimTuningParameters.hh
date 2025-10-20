@@ -34,8 +34,11 @@ public:
   G4int GetPMTSurfType() {return pmtsurftype;}
   void SetPMTSurfType(G4double rparam) {pmtsurftype=rparam;}
 
-  G4int GetCathodePara() {return cathodepara;}
-  void SetCathodePara(G4double rparam) {cathodepara=rparam;}
+  void ReadCathodeParaTable(std::string);
+  G4double GetCathodeThickness() {return cathodeThickness;}
+  G4int GetNCathodePara() {return nCathodePara;}
+  std::vector<std::vector<G4double>> GetCathodeParaTable() {return cathodeparaTable;}
+
   //Added by TD 2019/06/22
   G4double GetTtsff() {return ttsff;}
   void SetTtsff(G4double rparam) {ttsff=rparam;}
@@ -87,7 +90,9 @@ private:
 
   // PMT photocathode surface properties
   G4int pmtsurftype;
-  G4int cathodepara;
+  G4double cathodeThickness;
+  G4int nCathodePara;
+  std::vector<std::vector<G4double>>  cathodeparaTable;
 
   //For Top Veto - jl145
   G4double tvspacing;

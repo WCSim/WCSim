@@ -55,3 +55,19 @@ You can also use this test to compare any two files from any two directories. To
 * `root` 
 * `.x printSizes.C("/path/to/first_file", "/path/to/second_file",verbose)`
 
+
+## `scan.py`
+It can sometimes be useful to generate lots of similar mac files with physics starting at different positions (e.g. to find geometry overlaps/gaps).
+This script allows you to do so, by setting up multiple mac files that scan
+* Particle pointed into the barrel wall (towall == dwall) for various `r` and `theta`
+* Particle pointed into the cap, with lines in a star, going across lines of `x=0`, `y=0`, `x=y`, `x=-y`, for both top & bottom caps
+* Particle pointed at an angle into the "corner" between cap & barrel, for various azimuthal angles
+
+### Usage
+* Setup `base.mac` to include the physics you want (e.g. particle type & energy)
+  * You may want to setup `base.mac` to include all options (geometry, dark rate, trigger, electronics, number of events to simulate, etc.)
+  * Otherwise, your "main" `.mac` file should include a line like `/control/execute path/to/physics.mac`
+* Read `scan.py`. Pay particular note to
+  * `det_half_z`, `det_r`, and the `extreme` versions - these tell you the starting positions; make sure they are appropriate for your detector (currently setup for potentially old HK FD dimensions)
+  * `nz`, `nr`, `ntheta` specify the resolution of the *imaging*
+  * Add additional loops if required

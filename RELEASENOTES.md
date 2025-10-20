@@ -5,6 +5,260 @@ This file contains the release notes for each version of WCSim. Release notes ca
 Recent updates
 *************************************************************
 
+*************************************************************
+09/10/2025: Notes for v1.12.29
+*************************************************************
+New release after #525
+
+Update
+* Pull request #525 @patrickstowell: Changed bottom barrel OD PMT row in HK FD to match updated layouts
+
+*************************************************************
+08/10/2025: Notes for v1.12.28
+*************************************************************
+New release after #541
+
+Update
+* Pull request #541 @federiconova: Update HK FD OD tyvek reflectivity, based on measurements
+
+*************************************************************
+07/10/2025: Notes for v1.12.27
+*************************************************************
+New release after #539 & #543
+
+Update
+* Pull request #543 @federiconova: Assign correct thickness to FD OD WLS plates
+* Pull request #540 @federiconova: Default HK FD OD WLS plate changed from Kurary to INR
+* Pull request #540 @federiconova: Updates to INR OD WLS plate model
+
+Bug fix
+* Pull request #544 @gpronost: Fix radon radioactivity generator function
+
+*************************************************************
+16/09/2025: Notes for v1.12.26
+*************************************************************
+New release after #540. Partially on the way for the HK FD MC production (but more changes to come)
+
+Update
+* Pull request #540 @federiconova: 30cm WLS plates w/ 3" (R14374_FDOD) is now the default HK OD setup
+
+New feature
+* Pull request #538 @federiconova: Initial model of INR WLS plate
+* Pull request #540 @federiconova: Addition of R14374_FDOD & NNVT PMT models (HKFD OD candidates)
+
+*************************************************************
+05/09/2025: Notes for v1.12.25
+*************************************************************
+New release after #536. Partially on the way for the HK FD MC production (but more changes to come)
+
+New feature
+* Pull request #536 @federiconova: Add Kurary OD WLS plate model
+* Pull request #536 @federiconova @tdealtry: Allow changing of OD WLS plates, for IWCD & HKFD independently. This is done at precompile time
+* Pull request #526 @arturof: Add optical process for Raman scattering in water. Turned off by default
+
+Update
+* Pull request #534 @federiconova: Extend wavelength range down to 200 nm (hard coded), a range that OD WLS plates are sensitive to
+* Pull request #532 @gpronost: Update radon event generator model
+
+Bug fix
+* Pull request #531 @sk1806: RooTracker generator position improvements & checks
+* Pull request #533 @tdealtry: Update recommended HK geometries in error message when trying to use an ancient HK geometry
+
+*************************************************************
+23/07/2025: Notes for v1.12.24
+*************************************************************
+New release after #530, for use with HK IWCD+FD MC production
+
+New feature
+* Pull request #530 @tdealtry: Add WCSim version that was used to generate the file to WCSimRootOptions
+
+*************************************************************
+22/07/2025: Notes for v1.12.23
+*************************************************************
+New release after #528 & #529, for use with HK IWCD+FD MC production
+
+Update
+* Pull request #520 @menailj: Update LI code, better sampling
+* Pull request #528 @tdealtry: Make boundary wall WCSimRootGeom saving work with old ROOT
+* Pull request #529 @tdealtry: Make LI generator work with old C++ standard
+
+Documentation
+* Pull request #527 @tdealtry: Remove warning about WCSimRootEvent memory leak in WCSim.mac
+
+*************************************************************
+25/05/2025: Notes for v1.12.22
+*************************************************************
+New release after #486, for use with HK IWCD+FD MC production
+
+New feature
+* Pull request #513 @patrickstowell: Adds geometry scanning tools to check for overlaps/misalignment based on `G4Navigator` itself
+* Pull request #514 @patrickstowell: Adds a python cppyy based version of WCSim which can be used to check geometry configuration options and run/edit macros within python
+* Pull request #515 @patrickstowell: Add optional third .mac file argument to WCSim exectuable, for easier visulisation command loading
+* Pull request #519 @hrubyfr: Add sea level cosmic muon file for WCTE
+* Pull request #522 @tdealtry: Save (black/tyvek) sheet dimensions in WCSimRootGeom output
+
+Update
+* Pull request #521 @guiguem: Update cmake minimum version
+
+Bug fix
+* Pull request #486 @ekneale @patrickstowell: Fix OD PMT orientation in HKFD realistic geometry
+* Pull request #517 @tdealtry: Fix boundary types for HK FD realistic geometry
+
+*************************************************************
+10/03/2025: Notes for v1.12.21
+*************************************************************
+New release after #509 for use for HK machine learning reconstruction studies
+
+Update
+* Pull request #512 @patrickstowell: Make hepmc3 dependency optional
+* Pull request #499 @menailj: Light injector (LI) primary generator extended to work for ID
+
+Bug fix
+* Pull request #509 @tdealtry: Allow the `multiDigitsPerTrigger=false` config option to work for the NoTrigger trigger
+
+Documentation
+* Pull request #510 @tdealtry: Clarify how dark mode 1 (around physics hits) works with multiple PMT types
+* Pull request #508 @tdealtry: Clarify printout in WCSimWCTrigger
+
+*************************************************************
+12/02/2025: Notes for v1.12.20
+*************************************************************
+New release after IWCD geometry change in #501, and after output file format change in #503 (be careful reading old WCSim files with new WCSim & vice-versa!)
+
+New feature
+* Pull request #497 @tdealtry: New script that can be used to generate a matrix of mac files that can be used to 'image' the geometry
+* Pull request #501 @kmtsui: Allow IWCD OD PMT positions to be set via text file, in the same way as ID PMT positions
+
+Update
+* Pull request #501 @kmtsui: Update default IWCD PMT positions
+
+Bug fix
+* Pull request #503 @nickwp: Change TObjArray of triggers to TClonesArray in WCSimRootEvent output file class to fix memory leak
+* Pull request #504 @gondiaz: Fix inconsistent event number printouts
+
+*************************************************************
+22/11/2024: Notes for v1.12.19
+*************************************************************
+New release after WCTE geometry change in #491
+
+New feature
+* Pull request #491 @kmtsui: Add the beam pipe & camera housing to the WCTE geometry
+* Pull request #490 @tdealtry: New CI for testing running with Geant4.10.5.1
+
+Documentation
+* Pull request #492 @tdealtry: Make it clear that the default dark rate for the HK FD 20" Box & Line PMTs is 4.2 kHz
+
+*************************************************************
+30/10/2024: Notes for v1.12.18
+*************************************************************
+New release after #488. No physics output change, just a difference in the geofile/WCSimRootGeom output
+
+Bug fix
+* Pull request #481 #482 @kmtsui: Bug fix for trigger algorithm when encountering negative hit times
+* Pull request #488 @kmtsui: Fix cylLocation for WCTE & nuPRISM detectors
+
+Documentation
+* Pull request #483 @tdealtry #489 @gondiaz: There is a memory leak when reading WCSim files. Warn people not to produce or analyse more than O(1000) events per job
+
+*************************************************************
+01/10/2024: Notes for v1.12.17
+*************************************************************
+New release due to updated hit times for WCTE
+
+Bug fix
+* Pull request #480 @kmtsui: Bug fix for WCTE PMTs: for high charge PMT hit, HitTimeSmearing evaluation by TSpline was invalid, now set an upper limit on Q based on the input data range
+
+*************************************************************
+30/09/2024: Notes for v1.12.16
+*************************************************************
+
+New release due to updated geometry for WCTE
+
+Update
+* Pull request #472 @kmtsui: Update WCTE PMT table
+* Pull request #474 @tdealtry: Remove hard exit in `WCSimEnumerations::ProcessTypeStringToEnum()`
+* Pull request #479 @kmtsui: Update ex-situ 3" PMT design: include a collar
+* Pull request #479 @kmtsui: WCTE geometry update: use in-situ mPMTs for the 4 FD mPMT slots
+
+Bug fix
+* Pull request #475 @tdealtry: Fix bug seen in `WCSimPrimaryGeneratorMessenger` constructor which errors on a modern compiler
+* Pull request #472 @DiegoCostas97: Fix bug in `WCSimAmBeGen` constructor getting `$WCSIM_BUILD_DIR` incorrectly
+
+*************************************************************
+29/08/2024: Notes for v1.12.15
+*************************************************************
+
+New release due to updated geometry for WCTE
+
+New feature
+* Pull request #470 @kmtsui: Allow asymmetric construction of top and bottom CapAssembly, only for NoReplica detector construction
+
+Update
+* Pull request #470 @kmtsui: Update WCTE geometry (tank dimensions, (m)PMT positions)
+* Pull request #469 @tdealtry: Add some extra processes, to prevent `kUnknownProcess` in the output file for tracks
+
+Documentation
+* Pull request #471 @nickwp: Fix formatting of README.md
+
+*************************************************************
+26/07/2024: Notes for v1.12.14
+*************************************************************
+
+WCSim now requires HepMC3 to be installed when compiling with the default option: `-DWCSim_WCSimRoot_only=ON`.
+
+New release due to fixing the bounding box for WCTE, inclusion of in-situ mPMTs for WCTE, and inclusion of realistic 3" PMT model for WCTE
+
+New feature
+* Pull request #465 #466 @DiegoCostas97: Allow BGO calibration source geometry & generator to be positioned at arbitrary points via config file
+* Pull request #462 @kmtsui: Implementation of WCTE's 3" PMTs (that go into mPMTs) based on lab measurements
+* Pull request #459 @kmtsui: Implementation of in-situ mPMT model for WCTE
+* Pull request #433 @JackFannon: NuHepMC Reader and Generator
+
+Update
+* Pull request #458 @tdealtry: Remove HepMC3 dependency when using build option `-DWCSim_WCSimRoot_only=OFF`
+* Pull request #457 @tdealtry: Favour use of `$WCSIM_BUILD_DIR`. Rename `$WCSIMDIR` to `$WCSIM_SOURCE_DIR` and only use it for referencing where documentation/scripts are
+* Pull request #456 @tdealtry: Prevent absolute path to header files being included in the WCSimRoot library
+
+Bug fix
+* Pull request #464 @kmtsui: Fix WCBox overlap in WCTE geometry
+
+Documentation
+* Pull request #454 @tdealtry: Remove some outdated documentation files (README.ROOT, Readme_features.txt)
+
+OS support
+* Pull request #460 @gondiaz: Include `<unistd.h>` for MacOS support
+
+*************************************************************
+27/06/2024: Notes for v1.12.13
+*************************************************************
+Release after changes to WCTE output after #442 adds mPMT geometry behind the radius of the blacksheet
+
+New feature
+* Pull request #453 @kmtsui: Allow PMT photocathode tuning parameters & geometry material refractive indices via mac file
+* Pull request #438 @guiguem: Adds `-DWCSim_WCSimRoot_only=ON` cmake option to compile lighter-weight WCSimRoot library without Geant4 dependency, for just reading WCSim files
+
+Update
+* Pull Request #450 @tdealtry: Removes the `Makefile` from the `develop` branch (if you **need** it, it is available on a separate branch, but it is **not recommended**)
+* Pull request #446 @tdealtry: Hard exit when using a PMT QE method other than SensitiveDetector_Only
+* Pull request #442 @kmtsui: Adds mPMT geometry behind the radius of the blacksheet (currently used in WCTE geometry only)
+* Pull request #439 @guiguem: Use the same C++ standard as was used to compile ROOT
+
+Bug fix
+* Pull request #452 @tdealtry: Fix install of HepMC3 via yum (CentOS8 stream is now EOL)
+* Pull request #451 @kmtsui: Fix rotation in cosmic muon generator direction/position for IWCD/WCTE geometries
+* Pull request #447 #448 #449 @tdealtry: Analysis macros now load library from `$WCSIM_BUILD_DIR/lib/` instead of `$WCSIMDIR/`
+* Pull request #443 @tdealtry: Set the true beam track information for the 0th vertex in events with multiple vertices, for muline files
+* Pull request #435 @DiegoCostas97: Set the dark rate options correctly in WCTE.mac
+* Pull request #432 @tdealtry: Use the same default dark rate time option for all PMT types in WCSim.mac
+
+Documentation
+* Pull Request #450 @tdealtry: Improve installation instructions
+* Pull request #449 @tdealtry: Improve documentation formatting for the nuance file format
+* Pull request #449 @tdealtry: Fix links to G4 information on gun & gps commands
+* Pull request #436 @tdealtry: Improve documentation on finding the PMT that created a digitised or true hit
+
+CI
+* Pull request #440 #441 @guiguem: Add CI build test for the WCSimRoot library
 
 *************************************************************
 18/04/2024: Notes for v1.12.12

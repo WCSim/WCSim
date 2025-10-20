@@ -116,11 +116,17 @@ public: // with description
 
 // Functions to set/get photon history
   inline void AddPhotonRayScatter(G4int val) { pRayScatter += val; }
+  inline void AddPhotonRamScatter(G4int val) { pRamScatter += val; }
   inline void AddPhotonMieScatter(G4int val) { pMieScatter += val; }
   inline void AddPhotonReflection(ReflectionSurface_t val) { pReflec.push_back(val); }
+  inline void AddPhotonStepPosition(G4ThreeVector val) { pStepPos.push_back(val); }
+  inline void AddPhotonStepType(StepType_t val) { pStepType.push_back(val); }
   inline G4int GetPhotonRayScatter() const { return pRayScatter; }
+  inline G4int GetPhotonRamScatter() const { return pRamScatter; }
   inline G4int GetPhotonMieScatter() const { return pMieScatter; }
   inline std::vector<ReflectionSurface_t> GetPhotonReflection() const { return pReflec; } 
+  inline std::vector<G4ThreeVector> GetPhotonStepPosition() const { return pStepPos; }
+  inline std::vector<StepType_t> GetPhotonStepType() const { return pStepType; }
 
 // Other member functions
    virtual void ShowTrajectory(std::ostream& os=G4cout) const;
@@ -165,12 +171,15 @@ public: // with description
   std::vector<std::vector<G4float>> boundaryPoints;
   std::vector<G4float> boundaryKEs;
   std::vector<G4double> boundaryTimes;
-  std::vector<BoundaryType_t> boundaryTypes; // kBlackSheet=1, kTyvek, kCave
+  std::vector<BoundaryType_t> boundaryTypes; ///< kBlackSheet=1, kMPMT=2, kInnerTyvek=3, kOuterTyvek=4
 
   // Photon reflection/scattering history
   G4int pRayScatter;
+  G4int pRamScatter;
   G4int pMieScatter;
   std::vector<ReflectionSurface_t> pReflec;
+  std::vector<G4ThreeVector> pStepPos;
+  std::vector<StepType_t> pStepType;
   WCSimOpBoundaryProcess* fBoundary;
 };
 

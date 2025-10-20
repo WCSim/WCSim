@@ -3,6 +3,12 @@
 
 #include <string>
 
+typedef enum EBoundaryWallType {
+  kBoundaryWallIDBlacksheet, //< Blacksheet on the outer wall of the ID
+  kBoundaryWallODInnerTyvek, //< Tyvek on the inner wall (dead-space side) of the OD
+  kBoundaryWallODOuterTyvek  //< Tyvek on the outer wall (cavern side) of the OD
+} BoundaryWallType_t;
+  
 typedef enum ETriggerType {
   kTriggerUndefined = -1,
   kTriggerNDigits,
@@ -34,8 +40,9 @@ typedef enum ERandomGeneratorType {
 typedef enum EBoundaryType {
   kNull=0,
   kBlackSheet,
-  kTyvek,
-  kCave
+  kMPMT,
+  kInnerTyvek,
+  kOuterTyvek
 } BoundaryType_t;
 
 typedef enum EReflectionSurface {
@@ -45,6 +52,19 @@ typedef enum EReflectionSurface {
   kPhotocathodeS
 } ReflectionSurface_t;
 
+typedef enum EStepType {
+  kOtherStep=0,
+  kRayleighStep,
+  kMieStep,
+  kRamanStep,
+  kReflectionStep,
+} StepType_t;
+
+/*!
+ * The process that directly created an object.
+ * Used in the output files for true tracks and true hits.
+ * This is a rather catch all `enum`, e.g. `kTarget` is not truly a process
+ */
 typedef enum EProcessType { // Diego Costas 27/02/2024
   kUnknownProcess,
   kDarkNoise,
@@ -58,19 +78,128 @@ typedef enum EProcessType { // Diego Costas 27/02/2024
   kAnnihil,
   kConv,
   kEIoni,
-  kNeutronInelastic
+  kNeutronInelastic,
+  kMuMinusCaptureAtRest,
+  kMuIoni,
+  kHIoni,
+  kDecay,
+  kRadioactiveDecay,
+  kPhotonNuclear,
+  kElectronNuclear,
+  kOpticalPhotonWavelengthShifting,
+  kHBertiniCaptureAtRest,
+  kProtonInelastic,
+  kMuonMinusAtomicCapture,
+  kHadronStoppingProcess,
+  kEplusPolarizedAnnihilation,
+  kEPolarizedIonisation,
+  kEPolarizedBremsstrahlung,
+  kEeToHadrons,
+  kHhIonisation,
+  kIonIonisation,
+  kAlphaIonisation,
+  kCoulombScattering,
+  kHadronicProcess,
+  kHMultipleScattering,
+  kNuclearStopping,
+  kAdjointhMultipleScattering,
+  kForwardXrayTR,
+  kMuMultipleScattering,
+  kDecayWithSpin,
+  kUnknownDecay,
+  kMuonicAtomDecay,
+  kStepLimiter,
+  kNeutronKiller,
+  kUserSpecialCuts,
+  kChargeExchangeProcess,
+  kAntiProtonInelasticProcess,
+  kHe3InelasticProcess,
+  kIonInelasticProcess,
+  kSigmaMinusInelasticProcess,
+  kLambdaInelasticProcess,
+  kAntiAlphaInelasticProcess,
+  kSigmaPlusInelasticProcess,
+  kUCNLoss,
+  kHadronFissionProcess,
+  kUCNBoundaryProcess,
+  kAntiOmegaMinusInelasticProcess,
+  kKaonZeroSInelasticProcess,
+  kTritonInelasticProcess,
+  kKaonMinusInelasticProcess,
+  kMuonNuclearProcess,
+  kAntiLambdaInelasticProcess,
+  kPhotoCaptureProcess,
+  kUCNMultiScattering,
+  kXiZeroInelasticProcess,
+  kPionMinusInelasticProcess,
+  kKaonPlusInelasticProcess,
+  kPionPlusInelasticProcess,
+  kPhotoFissionProcess,
+  kUCNAbsorption,
+  kPositronNuclearProcess,
+  kAntiSigmaMinusInelasticProcess,
+  kAntiTritonInelasticProcess,
+  kAntiHe3InelasticProcess,
+  kAntiXiZeroInelasticProcess,
+  kAntiNeutronInelasticProcess,
+  kAntiDeuteronInelasticProcess,
+  kXiMinusInelasticProcess,
+  kKaonZeroLInelasticProcess,
+  kDeuteronInelasticProcess,
+  kAntiXiMinusInelasticProcess,
+  kAntiSigmaPlusInelasticProcess,
+  kOmegaMinusInelasticProcess,
+  kAlphaInelasticProcess,
+  kAntiNeutronAnnihilationAtRest,
+  kOpMieHG,
+  kOpAbsorption,
+  kOpRayleigh,
+  kOpRaman,
+  kOpBoundaryProcess,
+  kHImpactIonisation,
+  kPolarizedGammaConversion,
+  kPolarizedPhotoElectricEffect,
+  kPolarizedCompton,
+  kMicroElecInelastic,
+  kMuElecInelastic,
+  kMuElecElastic,
+  kRayleighScattering,
+  kMicroElecElastic,
+  kAnnihiToMuPair,
+  kHPairProduction,
+  kHBremsstrahlung,
+  kEMultipleScattering,
+  kEAdjointMultipleScattering,
+  kVTransitionRadiation,
+  kTransitionRadiation,
+  kLEPTSAttachmentModel,
+  kErrorEnergyLoss,
+  kMuBremsstrahlung,
+  kMuPairProduction,
+  kEPairProduction,
+  kPhononDownconversion,
+  kPhononScattering,
+  kPhononReflection,
+  kFastSimulationManagerProcess,
+  kMuonMinusCapture,
+  kHadronicAbsorptionFritiof,
+  kInitialParticle
 } ProcessType_t;
 
 class WCSimEnumerations
 {
 public:
 
+  static std::string EnumAsString(BoundaryWallType_t s);
   static std::string EnumAsString(DigitizerType_t d);
   static std::string EnumAsString(TriggerType_t t);
   static std::string EnumAsString(WCSimRandomGenerator_t r);
   static std::string EnumAsString(BoundaryType_t b);
   static std::string EnumAsString(ReflectionSurface_t r);
+  static std::string EnumAsString(StepType_t r);
+  //! These ProcessType_t strings must use the same naming convention as Geant4
   static std::string EnumAsString(ProcessType_t p);
+  //! These ProcessType_t strings must use the same naming convention as Geant4
   static ProcessType_t ProcessTypeStringToEnum(const std::string& str);
   static TriggerType_t TriggerTypeFromString(std::string s);
 

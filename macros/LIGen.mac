@@ -7,7 +7,7 @@
 /WCSim/random/seed 3254
 
 # HyperK
-/WCSim/WCgeom HyperK_HybridmPMT_WithOD
+/WCSim/WCgeom HyperK_HybridmPMT_WithOD_Realistic
 
 # HyperK Outer Detector
 /WCSim/HyperKOD/PMTODRadius 3inch
@@ -91,7 +91,7 @@
 #/DarkRate/SetDarkLow 0
 #/DarkRate/SetDarkHigh 100000
 /DarkRate/SetDarkWindow 4000
-/DarkRate/SetDarkRate 0.4 kHz
+/DarkRate/SetDarkRate 0 kHz
 
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute macros/visOGLQT-OD.mac
@@ -107,15 +107,19 @@
 # with random times between 20 and 21 ns.
 /mygen/nphotons 10000
 # Specify the injector type: collimator, diffuser or laser ball
-/mygen/injectorType collimator
+/mygen/injectorType diffuser
 # Specify the injector index for this type of LI that corresponds to the 
 # device position and profile you wish to use
-/mygen/injectorIdx 1
-#/mygen/injectorFile somefile.json
+/mygen/injectorIdx 15
+/mygen/injectorDetector ID
+/mygen/injectorWavelength 400
+/mygen/injectorFilename LightInjectors.json
+/mygen/injectorDetails LightInjectorsDetails.json
 # Default /mygen/photonMode 0 generates photon directions using the LI profile
 # Set /mygen/photonMode 1 to read pre-generated photon positions and directions 
 # from the 'photonsfile' specified in the injector file.
-#/mygen/photonMode 1
+# /mygen/photonMode 1
+
 
 ## change the name of the output root file, default = wcsim.root
 
@@ -125,5 +129,5 @@
 #/WCSimIO/Timer false
 
 # set the number of pulses (events) to simulate for this LI
-/run/beamOn 10000
+/run/beamOn 100
 #exit

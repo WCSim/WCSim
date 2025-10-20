@@ -182,3 +182,45 @@ bool WCSimRootPMT::CompareAllVariables(const WCSimRootPMT * c) const
   }//i
   return !failed;
 }
+
+//______________________________________________________________________________
+Float_t WCSimRootGeom::GetBoundaryWallRadius(BoundaryWallType_t s) const {
+  const unsigned int is = static_cast<unsigned int>(s);
+  auto it = fBoundaryWallDimensions.find(is);
+  if(it == fBoundaryWallDimensions.end()) {
+    std::cerr << "Boundary type: " << WCSimEnumerations::EnumAsString(s) << " not found" << std::endl;
+    return -999;
+  }
+  return fBoundaryWallDimensions.at(is).at(0); //0 = radius
+}
+//______________________________________________________________________________
+Float_t WCSimRootGeom::GetBoundaryWallFullLength(BoundaryWallType_t s) const {
+  const unsigned int is = static_cast<unsigned int>(s);
+  auto it = fBoundaryWallDimensions.find(is);
+  if(it == fBoundaryWallDimensions.end()) {
+    std::cerr << "Boundary type: " << WCSimEnumerations::EnumAsString(s) << " not found" << std::endl;
+    return -999;
+  }
+  return fBoundaryWallDimensions.at(is).at(1); //1 = full length
+}
+//______________________________________________________________________________
+void WCSimRootGeom::SetBoundaryWallDimensions(std::map<BoundaryWallType_t, std::vector<float> > dims) {
+  for(auto const& x : dims) {
+    fBoundaryWallDimensions[static_cast<int>(x.first)] = x.second;
+  }
+}
+//______________________________________________________________________________
+void WCSimRootGeom::PrintBoundaryWallInfo() const {
+  std::cout << "Boundary wall information" << std::endl
+	    << "-----------------------------------------------" << std::endl
+	    << "Name         || Radius (mm) || Full length (mm)" << std::endl
+	    << "-----------------------------------------------" << std::endl;
+  for(auto const& x : fBoundaryWallDimensions) {
+    std::cout << WCSimEnumerations::EnumAsString(static_cast<BoundaryWallType_t>(x.first)) << " || "
+	      << x.second.at(0) << "       || "
+	      << x.second.at(1) << std::endl;
+  }
+  std::cout << "-----------------------------------------------" << std::endl;
+}
+//______________________________________________________________________________
+

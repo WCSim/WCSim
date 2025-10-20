@@ -36,6 +36,10 @@ WCSimRunAction::WCSimRunAction(const WCSimDetectorConstruction* test, WCSimRando
 
   useDefaultROOTout = true;
   wcsimrootoptions = new WCSimRootOptions();
+#ifdef GIT_HASH
+  const char* gitHash = GIT_HASH;
+  wcsimrootoptions->SetWCSimVersion(gitHash);
+#endif
 
   // By default do not try and save Rootracker interaction information
   SetSaveRooTracker(0);
@@ -270,6 +274,7 @@ void WCSimRunAction::FillGeoTree(){
       wcsimrootgeom-> SetWCCylLength(cylinfo[2]);
   }
 
+  wcsimrootgeom->SetBoundaryWallDimensions(wcsimdetector->GetBoundaryWallDimensions());
 
   pmtradius = wcsimdetector->GetPMTSize1();
   pmtradius2 = 4.0;//B.Q debug, Temp wcsimdetector->GetPMTSize1();

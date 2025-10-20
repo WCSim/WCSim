@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <libgen.h>
 
-void trigger_OD(char *filename=NULL) {
+int trigger_OD(char *filename=NULL) {
   /* A simple script to plot aspects of phototube hits 
    * 
    * I like to run this macro as 
-   * $ $WCSIMDIR/rootwc/rootwc -l -x 'trigger_OD.C("OD.root")'
+   * $ rootwc -l -x 'trigger_OD.C("OD.root")'
    */
 
   gROOT->Reset();
@@ -16,13 +16,8 @@ void trigger_OD(char *filename=NULL) {
   TFile *f;
   char fTest[128];
   if (filename==NULL){
-    std::cout << "Please provide filename in option" << std::endl;
-    std::cout << "Will load auto wcsim.root in WCSIMDIR ..." << std::endl;
-    char* name = "wcsim.root";
-    strncpy(fTest, wcsimdirenv, sizeof(fTest));
-    strncat(fTest, "/", (sizeof(fTest) - strlen(fTest)) );
-    strncat(fTest, name, (sizeof(fTest) - strlen(fTest)) );
-    f = new TFile(fTest);
+    std::cout << "Please provide filename as the first argument" << std::endl;
+    return -1;
   }else{
     f = new TFile(filename);
   }
@@ -190,4 +185,5 @@ void trigger_OD(char *filename=NULL) {
   grEffVSThres->Write();
   grMultVSThres->Write();
 
+  return 0;
 } // END MACRO

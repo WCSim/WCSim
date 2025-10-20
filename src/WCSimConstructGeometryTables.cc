@@ -281,6 +281,8 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     // Get tube orientation vector
     G4Vector3D nullOrient = G4Vector3D(0,0,1);
     G4Vector3D pmtOrientation = newTransform * nullOrient;
+    // for WCTE type mPMT, center PMT has ID=1
+    G4Vector3D pmtOrientation2 = mPMTIDMap[tubeID].second == nID_PMTs ? tubeIDMap[tubeID-nID_PMTs+1] * nullOrient : pmtOrientation ;
     //cyl_location cylLocation = tubeCylLocation[tubeID];
 
     // Figure out if pmt is on top/bottom or barrel
@@ -288,12 +290,24 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     if(mPMTIDMap[tubeID].second == 0 || mPMTIDMap[tubeID].second == nID_PMTs) {
       //this only works for non-mPMT (0)
       // or if the highest numbered tube of mPMT is at centre of mPMT module (e.g. on cap points in ±z direction)
-      if (pmtOrientation.z()==1.0)//bottom
-	{cylLocation=2;}
-      else if (pmtOrientation.z()==-1.0)//top
-	{cylLocation=0;}
-      else // barrel
-	{cylLocation=1;}
+      if (!isNuPrism)
+      {
+        if (pmtOrientation.z()==1.0 || pmtOrientation2.z()==1.0)//bottom
+          {cylLocation=2;}
+        else if (pmtOrientation.z()==-1.0 || pmtOrientation2.z()==-1.0)//top
+          {cylLocation=0;}
+        else // barrel
+          {cylLocation=1;}
+      }
+      else // y-axis=vertical axis for nuPrism type detector
+      {
+        if (pmtOrientation.y()==1.0 || pmtOrientation2.y()==1.0)//bottom
+          {cylLocation=2;}
+        else if (pmtOrientation.y()==-1.0 || pmtOrientation2.y()==-1.0)//top
+          {cylLocation=0;}
+        else // barrel
+          {cylLocation=1;}
+      }
     }
 
     geoFile.precision(9);
@@ -340,6 +354,8 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     // Get tube orientation vector
     G4Vector3D nullOrient = G4Vector3D(0,0,1);
     G4Vector3D pmtOrientation = newTransform * nullOrient;
+    // for WCTE type mPMT, center PMT has ID=1
+    G4Vector3D pmtOrientation2 = mPMTIDMap2[tubeID].second == nID_PMTs2 ? tubeIDMap2[tubeID-nID_PMTs2+1] * nullOrient : pmtOrientation ;
     //cyl_location cylLocation = tubeCylLocation[tubeID];
 
     // Figure out if pmt is on top/bottom or barrel
@@ -348,13 +364,25 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
       //this only works for non-mPMT (0)
       // or if the highest numbered tube of mPMT is at centre of mPMT module (e.g. on cap points in ±z direction)
       if (pmtOrientation*newTransform.getTranslation() > 0)//veto pmt
-	{cylLocation=10;}
-      else if (pmtOrientation.z()==1.0)//bottom
-	{cylLocation=8;}
-      else if (pmtOrientation.z()==-1.0)//top
-	{cylLocation=6;}
-      else // barrel
-	{cylLocation=7;}
+	      {cylLocation=10;}
+      else if (!isNuPrism)
+      {
+        if (pmtOrientation.z()==1.0|| pmtOrientation2.z()==1.0)//bottom
+          {cylLocation=8;}
+        else if (pmtOrientation.z()==-1.0 || pmtOrientation2.z()==-1.0)//top
+          {cylLocation=6;}
+        else // barrel
+          {cylLocation=7;}
+      }
+      else // y-axis=vertical axis for nuPrism type detector
+      {
+        if (pmtOrientation.y()==1.0|| pmtOrientation2.y()==1.0)//bottom
+          {cylLocation=8;}
+        else if (pmtOrientation.y()==-1.0 || pmtOrientation2.y()==-1.0)//top
+          {cylLocation=6;}
+        else // barrel
+          {cylLocation=7;}
+      }
     }
     
 
@@ -407,12 +435,24 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
     // 3-topOD, 4-barrelOD, 5-bottomOD
     if(mPMTODMap[tubeID].second == 0 || mPMTODMap[tubeID].second == 19) {
       //this only works for non-mPMT (0) or centre tube of mPMT (19)
-      if (pmtOrientation.z()==1.0) //top OD
-	{cylLocation=5;}
-      else if (pmtOrientation.z()==-1.0) //bottom OD
-	{cylLocation=3;}
-      else // barrel OD
-	{cylLocation=4;}
+      if (!isNuPrism)
+      {
+        if (pmtOrientation.z()==1.0) //top OD
+          {cylLocation=5;}
+        else if (pmtOrientation.z()==-1.0) //bottom OD
+          {cylLocation=3;}
+        else // barrel OD
+          {cylLocation=4;}
+      }
+      else // y-axis=vertical axis for nuPrism type detector
+      {
+        if (pmtOrientation.y()==1.0) //top OD
+          {cylLocation=5;}
+        else if (pmtOrientation.y()==-1.0) //bottom OD
+          {cylLocation=3;}
+        else // barrel OD
+          {cylLocation=4;}
+      }
     }
 
     geoFile.precision(9);
@@ -599,15 +639,20 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(){
   pmtSection.clear();
   pmtmPMTId.clear();
   nPMTsRead = 0;
-  if (!readFromTable) return;
-  std::ifstream Data(pmtPositionFile.c_str(),std::ios_base::in);
+  if (readFromTable) ReadGeometryTableFromFile(pmtPositionFile);
+  if (readODFromTable) ReadGeometryTableFromFile(odpmtPositionFile);
+}
+
+void WCSimDetectorConstruction::ReadGeometryTableFromFile(std::string fname)
+{
+  std::ifstream Data(fname.c_str(),std::ios_base::in);
   if (!Data)
   {
-    G4cout<<"PMT data file "<<pmtPositionFile<<" could not be opened --> Exiting..."<<G4endl;
+    G4cout<<"PMT data file "<<fname<<" could not be opened --> Exiting..."<<G4endl;
     exit(-1);
   }
   else
-    G4cout<<"PMT data file "<<pmtPositionFile<<" is opened to read positions"<<G4endl;
+    G4cout<<"PMT data file "<<fname<<" is opened to read positions"<<G4endl;
 
   std::string str, tmp;
 	G4int Column=0;

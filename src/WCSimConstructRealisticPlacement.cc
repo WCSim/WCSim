@@ -160,6 +160,7 @@ struct RealisticPlacementConfiguration {
       G4cout << "-----------------------------------" << G4endl;
       G4cout << "HK FD Detector Configuration Table (units: mm)" << G4endl;
       G4cout << "-----------------------------------" << G4endl;
+      G4cout << "** Radii" << G4endl;
       G4cout << "BlackTyvekInnerRadius = " << BlackTyvekInnerRadius << G4endl;
       G4cout << "BlackTyvekOuterRadius = " << BlackTyvekOuterRadius << G4endl;
       G4cout << "DeadSpaceInnerRadius = " << DeadSpaceInnerRadius << G4endl;
@@ -169,8 +170,13 @@ struct RealisticPlacementConfiguration {
       G4cout << "WallTyvekInnerRadius = " << WallTyvekInnerRadius << G4endl;
       G4cout << "WallTyvekOuterRadius = " << WallTyvekOuterRadius << G4endl;
       G4cout << "MainWaterTankRadius = " << MainWaterTankRadius << G4endl;
-      G4cout << "MainWaterTankLength = " << MainWaterTankLength << G4endl;
       G4cout << "RockShellRadius = " << RockShellRadius << G4endl;
+      G4cout << "** Lengths" << G4endl;
+      G4cout << "BlackTyvekBarrelLength = " << BlackTyvekBarrelLength << G4endl;
+      G4cout << "DeadSpaceBarrelLength = " << DeadSpaceBarrelLength << G4endl;
+      G4cout << "WhiteTyvekBarrelLength = " << WhiteTyvekBarrelLength << G4endl;
+      G4cout << "WallTyvekBarrelLength = " << WallTyvekBarrelLength << G4endl;
+      G4cout << "MainWaterTankLength = " << MainWaterTankLength << G4endl;
       G4cout << "RockShellLength = " << RockShellLength << G4endl;
     }
 
@@ -409,6 +415,17 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 
     config.Print();
 
+	// Tell DetectorConstruction about boundary walls
+	AddBoundaryWallCylinderDimensions(kBoundaryWallIDBlacksheet,
+									  config.InnerDetectorOuterRadius,
+									  config.InnerDetectorBarrelLength);
+	AddBoundaryWallCylinderDimensions(kBoundaryWallODInnerTyvek,
+									  config.OuterDetectorInnerRadius,
+									  config.WhiteTyvekBarrelLength);
+	AddBoundaryWallCylinderDimensions(kBoundaryWallODOuterTyvek,
+									  config.OuterDetectorOuterRadius,
+									  config.OuterDetectorBarrelLength);
+	
     // *************************
     // Shell Hierarchy Construction
     // *************************
@@ -459,7 +476,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     G4LogicalVolume* WallTyvekLogic;
     G4PVPlacement* WallTyvekPhysical;
     BuildAndPlace_SinglePolyhedraTank(
-      "WallTyvek",
+      "CaveWallTyvek",
       0.0,
       config.WallTyvekOuterRadius,
       config.WallTyvekBarrelLength,
@@ -523,7 +540,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     G4LogicalVolume* BlackTyvekLogic;
     G4PVPlacement* BlackTyvekPhysical;
     BuildAndPlace_SinglePolyhedraTank(
-      "BlackTyvek",
+      "BlackSheet",
       0.0,
       config.BlackTyvekOuterRadius,
       config.BlackTyvekBarrelLength,
@@ -660,9 +677,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     multipmt_central_rotation->rotateZ(270*deg);
 
     // For the OD PMT we instead need to make it face outwards from the white tyvek in the OD.
-    G4ThreeVector odpmt_central_position = G4ThreeVector(config.WhiteTyvekOuterRadius+2*cm,0.0,0.0);
+    // Bring closer to wall
+    G4ThreeVector odpmt_central_position = G4ThreeVector(config.WhiteTyvekOuterRadius+2*mm,0.0,0.0); 
     G4RotationMatrix* pmtod_central_rotation = new G4RotationMatrix;
-    pmtod_central_rotation->rotateY(270*deg);
+    pmtod_central_rotation->rotateY(90*deg); // Same as ID but flipped 180 to be outwards
+    
 
     auto pmt20_offset_placement = new G4AssemblyVolume();
     pmt20_offset_placement->AddPlacedVolume(pmt20_dummy_logic, pmt_central_position, pmt_central_rotation);
@@ -888,8 +907,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
       if (i == 1) odblock_bottom->AddPlacedAssembly(block_row_odoffsetindex, block_pos, block_rot);
       if (i == 2) odblock_bottom->AddPlacedAssembly(block_row_odzeroindex, block_pos, block_rot);
       if (i == 3) odblock_bottom->AddPlacedAssembly(block_row_odfourindex, block_pos, block_rot);
-      if (i == 4) odblock_bottom->AddPlacedAssembly(block_row_odoffsetindex, block_pos, block_rot);
-      if (i == 5) odblock_bottom->AddPlacedAssembly(block_row_odfourindex, block_pos, block_rot);
+      // PS : 05/2025 Fix to integration diagram update for bottom row.
+      // if (i == 4) odblock_bottom->AddPlacedAssembly(block_row_odoffsetindex, block_pos, block_rot);
+      // if (i == 5) odblock_bottom->AddPlacedAssembly(block_row_odfourindex, block_pos, block_rot);
+      if (i == 4) odblock_bottom->AddPlacedAssembly(block_row_odzeroindex, block_pos, block_rot);
+      if (i == 5) odblock_bottom->AddPlacedAssembly(block_row_odoffsetindex, block_pos, block_rot);
 
     }
 
@@ -998,6 +1020,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 
     G4ThreeVector topcapposod = G4ThreeVector(0.0,0.0,config.WhiteTyvekBarrelLength/2);
     G4RotationMatrix* topcaprotod = new G4RotationMatrix();
+    topcaprotod->rotateX(180*deg); // Remove this in corrected
     endcap_assembly_od->MakeImprint( OuterDetectorLogic, topcapposod, topcaprotod);
 
     int pmt20_count_barrel_and_top    = CountLogicalChildren(InnerDetectorLogic, pmt20_dummy_logic);
@@ -1017,7 +1040,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
 
     G4ThreeVector botcapposod = G4ThreeVector(0.0,0.0,-config.WhiteTyvekBarrelLength/2);
     G4RotationMatrix* botcaprotod = new G4RotationMatrix();
-    botcaprotod->rotateX(180*deg);
+    botcaprotod->rotateX(180*deg+180*deg); // Flip again for OD
     endcap_assembly_od->MakeImprint( OuterDetectorLogic, botcapposod, botcaprotod);
 
     // Do some final sumation
@@ -1078,7 +1101,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     colored->SetForceAuxEdgeVisible(0);
     colored->SetDaughtersInvisible(1);
 
-     G4VisAttributes* colored2= new G4VisAttributes(G4Colour(1.0,0.0,0.0));
+    G4VisAttributes* colored2= new G4VisAttributes(G4Colour(1.0,0.0,0.0));
     colored2->SetForceLineSegmentsPerCircle(24);
     colored2->SetForceAuxEdgeVisible(0);
     colored2->SetForceWireframe(1);
@@ -1086,11 +1109,11 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     colored2->SetForceAuxEdgeVisible(0);
     colored2->SetDaughtersInvisible(1);
 
-    SetNestedVisAttributes(logicWCPMT, invisible );
-    SetNestedVisAttributes(logicWCPMT2, invisible );
+    // SetNestedVisAttributes(logicWCPMT, invisible );
+    // SetNestedVisAttributes(logicWCPMT2, invisible );
 
-    logicWCPMT->GetDaughter(0)->GetLogicalVolume()->SetVisAttributes(colored);     
-    logicWCPMT2->GetDaughter(0)->GetLogicalVolume()->SetVisAttributes(colored2);  
+    logicWCPMT->SetVisAttributes(invisible);     
+    logicWCPMT2->SetVisAttributes(invisible);  
 
     // -------------------------------------
     // ID PMT Placement
@@ -1105,9 +1128,15 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     std::vector<G4Transform3D> positions;
 
     // Option remove oof percantage of PMTs.
-    int odpmt_x_in_every_100 = 100; //atoi(std::string(getenv("ODPMT_IN_EVERY")).c_str());
-    int pmt20_x_in_every_100 = 100; //atoi(std::string(getenv("IDPMT_IN_EVERY")).c_str());
-    int mpmt_x_in_every_100 = 100; //atoi(std::string(getenv("MPMT_IN_EVERY")).c_str());
+#ifdef WCSIM_DEBUG_PMT_PLACEMENT_REDUCTION
+    int odpmt_x_in_every_100 = atoi(std::string(getenv("ODPMT_IN_EVERY")).c_str());
+    int pmt20_x_in_every_100 = atoi(std::string(getenv("IDPMT_IN_EVERY")).c_str());
+    int mpmt_x_in_every_100 = atoi(std::string(getenv("MPMT_IN_EVERY")).c_str());
+#else 
+    int odpmt_x_in_every_100 = 100;
+    int pmt20_x_in_every_100 = 100;
+    int mpmt_x_in_every_100 = 100;
+#endif
 
     int removed = 0;
     int pmt_throw_count = 0;
@@ -1183,7 +1212,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // Reapeat the re-placement for the OD
     logicWCODWLSAndPMT = ConstructPMTAndWLSPlate(WCPMTODName, WCODCollectionName, "OD");
 
-    logicWCODWLSAndPMT->SetVisAttributes(pmtmulti_dummy_colour);        
+    SetNestedVisAttributes(logicWCODWLSAndPMT, invisible);
+    logicWCODWLSAndPMT->SetVisAttributes(pmtmulti_dummy_colour);
 
     copyno = 0;
     removed = 0;

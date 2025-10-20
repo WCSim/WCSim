@@ -40,9 +40,10 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithAString* fileNameCmdCosmics;
   G4UIcmdWithAString* timeUnitCmd;
   G4UIcmdWithAString* isotopeCmd;
-  G4UIcmdWithAString* radonScalingCmd;
   G4UIcmdWithADouble* radioactive_time_window_Cmd;
+  G4UIcmdWithAnInteger* radonScalingCmd;
   G4UIcmdWithAnInteger* radonGeoSymCmd;
+  G4UIcmdWithADouble* radonWaterConcCmd;
 
   // K.M.Tsui: addition of injector events
   G4UIcmdWithAnInteger* nPhotonsCmd;
@@ -57,16 +58,27 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   // IBD event generator spectrum file
   G4UIcmdWithAString* ibdDatabaseCmd;
   G4UIcmdWithAString* ibdmodelCmd;
+
+  // HepMC3 event generator
+  G4UIcmdWithAString *hepmc3fileNameCmd;
+  G4UIcmdWithABool *hepmc3positionGenModeCmd;
   
   // commands for the light injectors (profile from db)
   G4UIcmdWithAString* lightInjectorCmd;
   G4UIcmdWithAString* lightInjectorIdxCmd;
   G4UIcmdWithAnInteger* lightInjectorNPhotonsCmd;
   G4UIcmdWithAString* lightInjectorFilenameCmd;
+  G4UIcmdWithAString* lightInjectorDetailsCmd;
+  G4UIcmdWithAString* lightInjectorDetectorCmd;
+  G4UIcmdWithADouble* lightInjectorWavelengthCmd;
   G4UIcmdWithAnInteger* lightInjectorModeCmd;
   
   void IsotopeCommand(G4String newValue);
   void RadonScalingCommand(G4String newValue);
+
+  // Region to accept events for RooTracker input
+  G4UIcmdWithAString* RegionCmd = nullptr;
+
 };
 
 #endif

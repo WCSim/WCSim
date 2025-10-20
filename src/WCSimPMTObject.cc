@@ -3356,6 +3356,666 @@ G4double  PMT3inchR14374::GetDarkRateConversionFactor(){
 }
 
 G4int PMT3inchR14374::GetNbOfQEDefined(){
+  const G4int factor = 21;
+  return factor;
+}
+
+
+
+PMT3inchR14374_FDOD::PMT3inchR14374_FDOD(){}
+PMT3inchR14374_FDOD::~PMT3inchR14374_FDOD(){}
+// sphere radius = 53 mm
+G4String PMT3inchR14374_FDOD::GetPMTName() {G4String PMTName = "PMT3inchR14374_FDOD"; return PMTName;}
+G4double PMT3inchR14374_FDOD::GetExposeHeight() {return 0.018*m;}          //.0153*m;} //.0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
+G4double PMT3inchR14374_FDOD::GetRadius() {return 0.04*m;}            //0.036*m;} //.0400*m;}   //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
+G4double PMT3inchR14374_FDOD::GetPMTGlassThickness() {return 0.1*cm;}     // TF: from Hamamatsu Tech Sheet, photocathode >=36mm, so this yields in thickness <= 2.35mm. Currently will use 1mm (larger cathode)
+                                                                        // until measured!
+
+
+// Currently based on 8" (instead of 20")
+// But shifted to requirements (2ns TTS FWHM) for 1 pe
+// Implementation of pure-virtual base-class method
+//   double WCSimPMTObject::HitTimeSmearing(double, double)
+// The first argument is usually a charge, Q, but that quantity is not used
+// in this implementation.  The unused first argument is anonymous to prevent
+// compiler warnings about unused arguments.
+double PMT3inchR14374_FDOD::HitTimeSmearing(double, double TTSFF=1.0) {
+  //double timingConstant = 0.75;//B. Quilain, to match the TTS = 1.4ns (sigma at 0.6) measured at 1 p.e. 
+  double timingResolution = 0.6;//B. Quilain, to match the TTS = 1.4ns (sigma at 0.6) measured at 1 p.e. 
+  timingResolution *= TTSFF;
+  //0.5*(0.33 + sqrt(timingConstant/Q));  //factor 0.5 for expected improvement and required TTS
+  // looking at SK's jitter function for 20" tubes
+  //if (timingResolution < 0.58) timingResolution=0.58;
+  double Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  return Smearing_factor;
+}
+
+// TD 2019.07.16
+double PMT3inchR14374_FDOD::SaturFactor(double Q, double threshold=-1) {
+  if (threshold == -1) return 1; //no saturation case
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
+}
+
+// To Add!!
+G4double* PMT3inchR14374_FDOD::Getqpe()
+{
+  static G4double qpe0[501]= {
+    // 1
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000001, 0.000001, 0.000002, 0.000004,
+    0.000008, 0.000014, 0.000025, 0.000044, 0.000486,
+    // 2
+    0.007195, 0.019406, 0.031920, 0.044503, 0.057189,
+    0.070020, 0.083060, 0.096388, 0.110108, 0.124351,
+    0.139276, 0.155072, 0.171956, 0.190167, 0.209961,
+    0.231594, 0.255310, 0.281319, 0.309777, 0.340762,
+    0.374259, 0.410142, 0.448167, 0.487976, 0.529101,
+    0.570993, 0.613041, 0.654608, 0.695067, 0.733833,
+    0.770390, 0.804317, 0.835304, 0.863151, 0.887777,
+    0.909203, 0.927543, 0.942987, 0.955778, 0.966198,
+    0.974543, 0.981116, 0.986205, 0.990078, 0.992974,
+    0.995104, 0.996642, 0.997734, 0.998495, 0.999017,
+    // 3
+    0.999369, 0.999601, 0.999752, 0.999848, 0.999909,
+    0.999946, 0.999969, 0.999982, 0.999990, 0.999994,
+    0.999997, 0.999998, 0.999999, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 4
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 5
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 6
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 7
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 8
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 9
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 10
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // Dummy element for noticing if the loop reached the end of the array
+    0.0  };
+  return qpe0;
+
+}
+
+G4double* PMT3inchR14374_FDOD::GetQE(){
+  G4double correctionFactor = 1./0.73;
+  static G4double QE[91] = {
+    0.0/100.*correctionFactor, 0.5/100.*correctionFactor, 1.0/100.*correctionFactor, 1.625/100.*correctionFactor, 2.25/100.*correctionFactor, 4.75/100.*correctionFactor, 7.25/100.*correctionFactor, 9.75/100.*correctionFactor, 12.25/100.*correctionFactor, 15.5/100.*correctionFactor,
+    18.75/100.*correctionFactor, 20.625/100.*correctionFactor, 22.5/100.*correctionFactor, 23.75/100.*correctionFactor, 25.0/100.*correctionFactor, 25.5/100.*correctionFactor, 26.0/100.*correctionFactor, 26.5/100.*correctionFactor, 27.0/100.*correctionFactor, 27.25/100.*correctionFactor,
+    27.5/100.*correctionFactor, 27.75/100.*correctionFactor, 28.0/100.*correctionFactor, 28.0/100.*correctionFactor, 28.0/100.*correctionFactor, 28.05/100.*correctionFactor, 28.1/100.*correctionFactor, 28.175/100.*correctionFactor, 28.25/100.*correctionFactor, 28.175/100.*correctionFactor,
+    28.1/100.*correctionFactor, 28.05/100.*correctionFactor, 28.0/100.*correctionFactor, 27.875/100.*correctionFactor, 27.75/100.*correctionFactor, 27.625/100.*correctionFactor, 27.5/100.*correctionFactor, 27.0/100.*correctionFactor, 26.5/100.*correctionFactor, 26.0/100.*correctionFactor,
+    25.5/100.*correctionFactor, 25.0/100.*correctionFactor, 24.5/100.*correctionFactor, 23.75/100.*correctionFactor, 23.0/100.*correctionFactor, 22.5/100.*correctionFactor, 22.0/100.*correctionFactor, 21.5/100.*correctionFactor, 21.0/100.*correctionFactor, 20.5/100.*correctionFactor,
+    20.0/100.*correctionFactor, 19.625/100.*correctionFactor, 19.25/100.*correctionFactor, 18.25/100.*correctionFactor, 17.25/100.*correctionFactor, 15.875/100.*correctionFactor, 14.5/100.*correctionFactor, 13.25/100.*correctionFactor, 12.0/100.*correctionFactor, 10.75/100.*correctionFactor,
+    9.5/100.*correctionFactor, 9.0/100.*correctionFactor, 8.5/100.*correctionFactor, 8.125/100.*correctionFactor, 7.75/100.*correctionFactor, 7.25/100.*correctionFactor, 6.75/100.*correctionFactor, 6.25/100.*correctionFactor, 5.75/100.*correctionFactor, 5.25/100.*correctionFactor,
+    4.75/100.*correctionFactor, 4.25/100.*correctionFactor, 3.75/100.*correctionFactor, 3.25/100.*correctionFactor, 2.75/100.*correctionFactor, 2.25/100.*correctionFactor, 1.75/100.*correctionFactor, 1.5/100.*correctionFactor, 1.25/100.*correctionFactor, 1.075/100.*correctionFactor,
+    0.9/100.*correctionFactor, 0.825/100.*correctionFactor, 0.75/100.*correctionFactor, 0.625/100.*correctionFactor, 0.5/100.*correctionFactor, 0.375/100.*correctionFactor, 0.25/100.*correctionFactor, 0.175/100.*correctionFactor, 0.1/100.*correctionFactor, 0.05/100.*correctionFactor,
+    0.0/100.*correctionFactor};
+  return QE;
+}
+G4double* PMT3inchR14374_FDOD::GetQEWavelength(){static G4double wavelength[91] = {
+    250, 255, 260, 265, 270, 275, 280, 285, 290, 295,
+    300, 305, 310, 315, 320, 325, 330, 335, 340, 345,
+    350, 355, 360, 365, 370, 375, 380, 385, 390, 395,
+    400, 405, 410, 415, 420, 425, 430, 435, 440, 445,
+    450, 455, 460, 465, 470, 475, 480, 485, 490, 495,
+    500, 505, 510, 515, 520, 525, 530, 535, 540, 545,
+    550, 555, 560, 565, 570, 575, 580, 585, 590, 595,
+    600, 605, 610, 615, 620, 625, 630, 635, 640, 645,
+    650, 655, 660, 665, 670, 675, 680, 685, 690, 695,
+    700 };
+  return wavelength;}
+G4double  PMT3inchR14374_FDOD::GetmaxQE(){
+  G4double correctionFactor = 1./0.73;
+  const G4double maxQE = 0.28*correctionFactor;
+  return maxQE;
+}
+G4int PMT3inchR14374_FDOD::GetNbOfQEDefined(){
+  const G4int factor = 91;
+  return factor;
+}
+G4double* PMT3inchR14374_FDOD::GetCollectionEfficiencyArray(){
+  // MC angle | MC rad | MC l  | Hamamatsu angle | CE
+  // 0          0        20      0                 100
+  // 10         8.68     21.1    24.3              100
+  // 20         17.1     24.1    45.2              100
+  // 30         25       28.3    62.0              100
+  // 40         32.1     33.2    75.5              93
+  // 50         38.3     38.4    86.8              30
+  // 60         43.3     43.6
+  // 70         47.0     48.7
+  // 80         49.2     53.7
+  // 90         50       58.3
+  static G4double CE[10] = { 100., 100., 99.9, 97.5, 91.0, 30., 0., 0., 0., 0.};
+    //{ 100., 100., 100., 100., 93., 30., 0., 0., 0., 0.};
+  return CE;
+}
+ 
+
+G4double PMT3inchR14374_FDOD::GetDarkRate(){
+  // Realistic/Optimistic value from published (proceedings) measurements.
+  // ToDo : update this value
+  const G4double rate = 600.*CLHEP::hertz;//100*CLHEP::hertz;
+  return rate;
+}
+
+// Arbitrary at the moment
+G4double  PMT3inchR14374_FDOD::GetDarkRateConversionFactor(){
+  const G4double factor = 1.110;
+  return factor;
+}
+
+
+
+PMT3inchNNVT::PMT3inchNNVT(){}
+PMT3inchNNVT::~PMT3inchNNVT(){}
+
+//sphere radius = 51 mm
+G4String PMT3inchNNVT::GetPMTName() {G4String PMTName = "PMT3inchNNVT"; return PMTName;}
+G4double PMT3inchNNVT::GetExposeHeight() {return 0.0193*m;}          //.0153*m;} //.0200*m;}  //from TechSheet for 3in (only photocathode would be 15.3mm h, for a radius as photocathode of 36 mm)
+G4double PMT3inchNNVT::GetRadius() {return 0.04*m;}            //0.036*m;} //.0400*m;}   //radius at z = exposeheight of photocathode. In ConstructPMT, we use sphereRadius for the radius of curvature
+G4double PMT3inchNNVT::GetPMTGlassThickness() {return 0.1*cm;}     // TF: from Hamamatsu Tech Sheet, photocathode >=36mm, so this yields in thickness <= 2.35mm. Currently will use 1mm (larger cathode)
+                                                                        // until measured!
+
+
+// Currently based on 8" (instead of 20")
+// But shifted to requirements (2ns TTS FWHM) for 1 pe
+// Implementation of pure-virtual base-class method
+//   double WCSimPMTObject::HitTimeSmearing(double, double)
+// The first argument is usually a charge, Q, but that quantity is not used
+// in this implementation.  The unused first argument is anonymous to prevent
+// compiler warnings about unused arguments.
+double PMT3inchNNVT::HitTimeSmearing(double, double TTSFF=1.0) {
+  //double timingConstant = 0.75;//B. Quilain, to match the TTS = 1.4ns (sigma at 0.6) measured at 1 p.e. 
+  double timingResolution = 0.6;//B. Quilain, to match the TTS = 1.4ns (sigma at 0.6) measured at 1 p.e. 
+  timingResolution *= TTSFF;
+  //0.5*(0.33 + sqrt(timingConstant/Q));  //factor 0.5 for expected improvement and required TTS
+  // looking at SK's jitter function for 20" tubes
+  //if (timingResolution < 0.58) timingResolution=0.58;
+  double Smearing_factor = G4RandGauss::shoot(0.0,timingResolution);
+  return Smearing_factor;
+}
+
+// TD 2019.07.16
+double PMT3inchNNVT::SaturFactor(double Q, double threshold=-1) {
+  if (threshold == -1) return 1; //no saturation case
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
+}
+
+// To Add!!
+G4double* PMT3inchNNVT::Getqpe()
+{
+  static G4double qpe0[501]= {
+    // 1
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000001, 0.000001, 0.000002, 0.000004,
+    0.000008, 0.000014, 0.000025, 0.000044, 0.000486,
+    // 2
+    0.007195, 0.019406, 0.031920, 0.044503, 0.057189,
+    0.070020, 0.083060, 0.096388, 0.110108, 0.124351,
+    0.139276, 0.155072, 0.171956, 0.190167, 0.209961,
+    0.231594, 0.255310, 0.281319, 0.309777, 0.340762,
+    0.374259, 0.410142, 0.448167, 0.487976, 0.529101,
+    0.570993, 0.613041, 0.654608, 0.695067, 0.733833,
+    0.770390, 0.804317, 0.835304, 0.863151, 0.887777,
+    0.909203, 0.927543, 0.942987, 0.955778, 0.966198,
+    0.974543, 0.981116, 0.986205, 0.990078, 0.992974,
+    0.995104, 0.996642, 0.997734, 0.998495, 0.999017,
+    // 3
+    0.999369, 0.999601, 0.999752, 0.999848, 0.999909,
+    0.999946, 0.999969, 0.999982, 0.999990, 0.999994,
+    0.999997, 0.999998, 0.999999, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 4
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 5
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 6
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 7
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 8
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 9
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 10
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // Dummy element for noticing if the loop reached the end of the array
+    0.0  };
+  return qpe0;
+
+}
+
+G4double* PMT3inchNNVT::GetQE(){
+  G4double correctionFactor = 1./0.73;
+  static G4double QE[91] = {
+    0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.05/100.*correctionFactor,
+    0.1/100.*correctionFactor, 1.025/100.*correctionFactor, 1.95/100.*correctionFactor, 4.85/100.*correctionFactor, 7.75/100.*correctionFactor, 12.5/100.*correctionFactor, 17.25/100.*correctionFactor, 20.875/100.*correctionFactor, 24.5/100.*correctionFactor, 26.0/100.*correctionFactor,
+    27.5/100.*correctionFactor, 28.25/100.*correctionFactor, 29.0/100.*correctionFactor, 29.75/100.*correctionFactor, 30.5/100.*correctionFactor, 30.375/100.*correctionFactor, 30.25/100.*correctionFactor, 30.125/100.*correctionFactor, 30.0/100.*correctionFactor, 29.75/100.*correctionFactor,
+    29.5/100.*correctionFactor, 29.0/100.*correctionFactor, 28.5/100.*correctionFactor, 28.0/100.*correctionFactor, 27.5/100.*correctionFactor, 26.75/100.*correctionFactor, 26.0/100.*correctionFactor, 25.5/100.*correctionFactor, 25.0/100.*correctionFactor, 24.5/100.*correctionFactor,
+    24.0/100.*correctionFactor, 23.0/100.*correctionFactor, 22.0/100.*correctionFactor, 21.25/100.*correctionFactor, 20.5/100.*correctionFactor, 19.75/100.*correctionFactor, 19.0/100.*correctionFactor, 18.25/100.*correctionFactor, 17.5/100.*correctionFactor, 16.75/100.*correctionFactor,
+    16.0/100.*correctionFactor, 15.5/100.*correctionFactor, 15.0/100.*correctionFactor, 13.75/100.*correctionFactor, 12.5/100.*correctionFactor, 11.25/100.*correctionFactor, 10.0/100.*correctionFactor, 8.75/100.*correctionFactor, 7.5/100.*correctionFactor, 7.0/100.*correctionFactor,
+    6.5/100.*correctionFactor, 5.75/100.*correctionFactor, 5.0/100.*correctionFactor, 4.5/100.*correctionFactor, 4.0/100.*correctionFactor, 3.5/100.*correctionFactor, 3.0/100.*correctionFactor, 2.75/100.*correctionFactor, 2.5/100.*correctionFactor, 2.25/100.*correctionFactor,
+    2.0/100.*correctionFactor, 1.75/100.*correctionFactor, 1.5/100.*correctionFactor, 1.375/100.*correctionFactor, 1.25/100.*correctionFactor, 0.875/100.*correctionFactor, 0.5/100.*correctionFactor, 0.375/100.*correctionFactor, 0.25/100.*correctionFactor, 0.125/100.*correctionFactor,
+    0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor, 0.0/100.*correctionFactor,
+    0.0/100.*correctionFactor
+  };
+  return QE;
+}
+G4double* PMT3inchNNVT::GetQEWavelength(){static G4double wavelength[91] = {
+    250, 255, 260, 265, 270, 275, 280, 285, 290, 295,
+    300, 305, 310, 315, 320, 325, 330, 335, 340, 345,
+    350, 355, 360, 365, 370, 375, 380, 385, 390, 395,
+    400, 405, 410, 415, 420, 425, 430, 435, 440, 445,
+    450, 455, 460, 465, 470, 475, 480, 485, 490, 495,
+    500, 505, 510, 515, 520, 525, 530, 535, 540, 545,
+    550, 555, 560, 565, 570, 575, 580, 585, 590, 595,
+    600, 605, 610, 615, 620, 625, 630, 635, 640, 645,
+    650, 655, 660, 665, 670, 675, 680, 685, 690, 695,
+    700 };
+  return wavelength;}
+G4double  PMT3inchNNVT::GetmaxQE(){
+  G4double correctionFactor = 1./0.73;
+  const G4double maxQE = 0.29*correctionFactor;
+  return maxQE;
+}
+G4int PMT3inchNNVT::GetNbOfQEDefined(){
+  const G4int factor = 91;
+  return factor;
+}
+G4double* PMT3inchNNVT::GetCollectionEfficiencyArray(){
+/// for NNVT, reduced collection efficiency at large angles
+//  static G4double CE[10] = { 100., 100., 100., 100., 100., 100., 70., 70., 70., 70.};
+  static G4double CE[10] = {96.25, 96.7, 97.6, 98.4, 89.7, 21.3, 0., 0., 0., 0.};
+    //{ 96.1, 96.4, 97.5, 99.6, 95.6, 100, 89.7, 21.3, 0., 0.};
+  return CE;
+}
+ 
+
+G4double PMT3inchNNVT::GetDarkRate(){
+  // Realistic/Optimistic value from published (proceedings) measurements.
+  // ToDo : update this value
+  const G4double rate = 600.*CLHEP::hertz;//100*CLHEP::hertz;
+  return rate;
+}
+
+// Arbitrary at the moment
+G4double  PMT3inchNNVT::GetDarkRateConversionFactor(){
+  const G4double factor = 1.110;
+  return factor;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// PMT 3" for WCTE
+//
+PMT3inchR14374_WCTE::PMT3inchR14374_WCTE()
+{
+  double charge[14] = 
+  {
+      0.2, 0.4, 0.6, 0.8, 1.0,
+      1.2, 1.4, 1.6, 1.8, 2.0,
+      2.5, 3.0, 3.5, 4.0
+  };
+  double resol[14] =
+  {
+      1.1654, 0.61088, 0.4186, 0.32532, 0.26484,
+      0.23084, 0.20969, 0.19297, 0.17716, 0.17046,
+      0.15455, 0.1427, 0.13699, 0.13229
+  };
+  gTResol = new TGraph(14,charge,resol);
+}
+PMT3inchR14374_WCTE::~PMT3inchR14374_WCTE()
+{
+  delete gTResol;
+}
+
+G4String PMT3inchR14374_WCTE::GetPMTName() {G4String PMTName = "PMT3inchR14374_WCTE"; return PMTName;}
+G4double PMT3inchR14374_WCTE::GetExposeHeight() {return 0.02*m;} 
+G4double PMT3inchR14374_WCTE::GetRadius() {return 0.04*m;} 
+G4double PMT3inchR14374_WCTE::GetPMTGlassThickness() {return 0.1*cm;}     
+
+double PMT3inchR14374_WCTE::HitTimeSmearing(double Q, double TTSFF=1.0) {    
+  double pmt_tts = 1.5;
+  if (Q>4.0) Q = 4.0; // limit Q to valid range
+  double val = gTResol->Eval(Q,0,"S");
+  double timingResolution = sqrt(pmt_tts*pmt_tts+val*val)/2.355; // conversion from FWHM to sigma
+  timingResolution *= TTSFF;
+  return G4RandGauss::shoot(0.0,timingResolution);
+}
+
+// TD 2019.07.16
+double PMT3inchR14374_WCTE::SaturFactor(double Q, double threshold=-1) {
+  if (threshold == -1) return 1; //no saturation case
+  double saturFactor = (Q < threshold) ? 1 : (100+0.008632*(threshold-Q))/100; //expression found for SK 20inch PMT, assumed to be correct for other types
+  return saturFactor;
+}
+
+G4double* PMT3inchR14374_WCTE::Getqpe()
+{
+  static G4double qpe0[501]= {
+    // 1
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
+    // 2
+    0.000381, 0.002359, 0.006956, 0.014050, 0.021470,
+    0.029045, 0.036750, 0.044913, 0.053878, 0.063897,
+    0.075367, 0.089078, 0.105693, 0.126747, 0.152918,
+    0.184803, 0.223584, 0.268127, 0.317283, 0.367630,
+    0.417750, 0.466039, 0.512878, 0.557372, 0.598186,
+    0.636186, 0.671044, 0.701999, 0.730782, 0.757566,
+    0.782031, 0.804206, 0.824292, 0.842793, 0.859734,
+    0.875207, 0.889501, 0.902172, 0.913244, 0.923582,
+    0.932835, 0.940867, 0.947906, 0.954192, 0.959824,
+    0.964409, 0.968364, 0.971983, 0.975084, 0.977725,
+    // 3
+    0.979961, 0.982130, 0.984062, 0.985578, 0.986994,
+    0.988236, 0.989201, 0.990078, 0.990896, 0.991671,
+    0.992372, 0.992994, 0.993539, 0.994000, 0.994403,
+    0.994807, 0.995191, 0.995541, 0.995831, 0.996070,
+    0.996275, 0.996491, 0.996711, 0.996929, 0.997135,
+    0.997340, 0.997542, 0.997677, 0.997806, 0.997960,
+    0.998096, 0.998204, 0.998276, 0.998337, 0.998383,
+    0.998410, 0.998456, 0.998514, 0.998578, 0.998642,
+    0.998703, 0.998759, 0.998797, 0.998825, 0.998852,
+    0.998885, 0.998926, 0.998979, 0.999029, 0.999073,
+    // 4
+    0.999111, 0.999162, 0.999223, 0.999272, 0.999309,
+    0.999343, 0.999407, 0.999451, 0.999469, 0.999534,
+    0.999593, 0.999619, 0.999633, 0.999653, 0.999688,
+    0.999705, 0.999714, 0.999724, 0.999733, 0.999739,
+    0.999739, 0.999757, 0.999782, 0.999800, 0.999824,
+    0.999852, 0.999879, 0.999901, 0.999915, 0.999916,
+    0.999916, 0.999916, 0.999916, 0.999916, 0.999918,
+    0.999926, 0.999940, 0.999957, 0.999968, 0.999977,
+    0.999986, 0.999995, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 5
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 6
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 7
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 8
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 9
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // 10
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+    // Dummy element for noticing if the loop reached the end of the array                        
+    0.0  };
+  return qpe0;
+
+}
+
+
+// TF: Used WebPlotDigitizer on Fig.2a from VLVnT13 proceedings, red curve (average)
+G4double* PMT3inchR14374_WCTE::GetQEWavelength(){
+
+  //TEST: make QE same!!
+  //static G4double wavelength_value[20] = { 280., 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660.};
+  static G4double wavelength_value[21] = { 300., 320., 340., 360., 380., 400., 420., 440., 460., 480., 500., 520., 540., 560., 580., 600., 620., 640., 660., 680., 700.};
+  return wavelength_value;
+}
+
+G4double* PMT3inchR14374_WCTE::GetQE(){
+  G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+  // TF: While the main reason is the 20" SK PMT, this correction factor has been applied
+  // to the B&L PMT. Therefore all PMTs have to corrected in a similar way, unfortunately.
+  
+  static G4double QE[21] =
+    { .0787*correctionFactor, .1838*correctionFactor, .2401*correctionFactor, .2521*correctionFactor, .2695*correctionFactor, .2676*correctionFactor, .2593*correctionFactor, .2472*correctionFactor, .2276*correctionFactor,
+      .1970*correctionFactor,  .1777*correctionFactor, .1547*correctionFactor, .1033*correctionFactor, .0727*correctionFactor, .0587*correctionFactor, .0470*correctionFactor, .0372*correctionFactor, .0285*correctionFactor, .0220*correctionFactor, .0130*correctionFactor, .0084*correctionFactor};
+  return QE;
+}
+
+G4double PMT3inchR14374_WCTE::GetmaxQE(){
+  G4double correctionFactor = 1./0.73;//Correction factor added in July 2015 to scale the output of B&L PDs to 2.27 times the 20" PMTS based on Hamamatsu simulation. This was done in Pull Request #98 and will be removed once a more permanent solution is found.
+
+  // TEST: make QE the same!!
+  const G4double maxQE = 0.271*correctionFactor; //red curve from VLVnT13 proc on R12199-02.
+  //const G4double maxQE = 0.315*correctionFactor;
+  return maxQE;
+}
+
+G4double* PMT3inchR14374_WCTE::GetCollectionEfficiencyArray(){  
+  static G4double CE[10] = { 95., 95., 95., 95., 95., 95., 95., 95., 95., 95.};
+  return CE;
+}
+
+G4double PMT3inchR14374_WCTE::GetDarkRate(){
+  // Realistic/Optimistic value from published (proceedings) measurements.
+  // ToDo : update this value
+  const G4float rate = 1.0*CLHEP::kilohertz;
+  return rate;
+}
+
+// Arbitrary at the moment
+G4double  PMT3inchR14374_WCTE::GetDarkRateConversionFactor(){
+  const G4double factor = 1.126;
+  return factor;
+}
+
+G4int PMT3inchR14374_WCTE::GetNbOfQEDefined(){
   const G4int factor = 20;
   return factor;
 }

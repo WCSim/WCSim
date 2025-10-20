@@ -5,6 +5,8 @@
 #include "G4UIcommand.hh"
 #include "G4UIparameter.hh"
 
+#include "GeometryScan.hh"
+
 WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimDet)
 :WCSimDetector(WCSimDet)
 { 
@@ -125,6 +127,13 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   BGOPlacement->SetParameterName("BGOPlacement", false);
   BGOPlacement->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+  BGOPosition = new G4UIcmdWith3VectorAndUnit("/WCSim/BGOPosition", this);
+  BGOPosition->SetGuidance("Set BGO position inside the tank (unit: mm cm m). Default will be 0 0 0 mm");
+  BGOPosition->SetParameterName("X", "Y", "Z", false);
+  BGOPosition->SetDefaultValue(G4ThreeVector(0,0,0));
+  BGOPosition->SetUnitCategory("Length");
+  BGOPosition->SetDefaultUnit("mm");
+
   PMTSize = new G4UIcmdWithAString("/WCSim/WCPMTsize",this);
   PMTSize->SetGuidance("Set alternate PMT size for the WC (Must be entered after geometry details are set).");
   PMTSize->SetGuidance("Available options 20inch 10inch");
@@ -209,12 +218,21 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   PMTODRadius->SetGuidance("Set the size of OD PMTs (only for Hyper-K Geom atm)");
   PMTODRadius->SetGuidance("Available options are:\n"
 						  "3inch\n"
+			                          "3inchR14374\n"
 						  "5inch\n"
-						  "8inch\n");
+						  "8inch\n"
+			                          "3inch_ETEL9302B\n"
+						  "3inchR14374\n"
+						  "3inchR14374_FDOD\n"
+						  "3inchNNVT\n");
   PMTODRadius->SetParameterName("PMTODRadius", false);
   PMTODRadius->SetCandidates("3inch "
-							 "5inch "
-                             "8inch ");
+			     "5inch "
+                             "8inch "
+			     "3inch_ETEL9302B "
+			     "3inchR14374 "
+			     "3inchR14374_FDOD "
+			     "3inchNNVT ");
   PMTODRadius->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   // OD Lateral water depth
@@ -392,6 +410,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
 				    "PMT3inchR14374 "
+            "PMT3inchR14374_WCTE "
 				    "PMT3inch_ETEL9302B "
 				    "PMT4inchR12199_02 "
 				    "PMT5inchR12199_02 "
@@ -411,6 +430,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
 				    "BoxandLine12inchHQE "
 				    "PMT3inchR12199_02 "
 				    "PMT3inchR14374 "
+            "PMT3inchR14374_WCTE "
 				    "PMT3inch_ETEL9302B "
 				    "PMT4inchR12199_02 "
 				    "PMT5inchR12199_02 "
@@ -515,6 +535,9 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "PMT3inchGT\n"
           "PMT3inchR12199_02\n"
           "PMT3inchR14374\n"
+          "PMT3inchR14374_FDOD\n"
+          "PMT3inchNNVT\n"
+	  "PMT3inchR14374_WCTE\n"
 	  "PMT3inch_ETEL9302B\n"
           "PMT5inch\n"
           "PMT8inch\n"
@@ -524,7 +547,7 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
           "HPD20inchHQE\n"
           "PMT20inch\n");
   SetPMTType->SetParameterName("PMTType", false);
-  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT3inchR14374 PMT3inch_ETEL9302B PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
+  SetPMTType->SetCandidates("PMT3inch PMT3inchGT PMT3inchR12199_02 PMT3inchR14374 PMT3inchR14374_FDOD PMT3inchNNVT PMT3inchR14374_WCTE PMT3inch_ETEL9302B PMT5inch PMT8inch PMT10inchHQE PMT10inch PMT12inchHQE HPD20inchHQE PMT20inch");
   SetPMTType->SetDefaultValue("PMT10inch");
 
   // Set the vertical position of the nuPRISM-lite detector
@@ -587,10 +610,43 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetPMTPositionInput->SetGuidance("Set filename for PMT position file");
   SetPMTPositionInput->SetParameterName("PMTPositionInput", true);
 
+  // Set the input file to read OD PMT positions
+  SetODPMTPositionInput = new G4UIcmdWithAString("/WCSim/PMT/ODPositionFile",this);
+  SetODPMTPositionInput->SetGuidance("Set filename for OD PMT position file");
+  SetODPMTPositionInput->SetParameterName("ODPMTPositionInput", true);
+
   // Set CDS file input
   SetCDSFile = new G4UIcmdWithAString("/WCSim/Geometry/SetCDSFile",this);
   SetCDSFile->SetGuidance("Set filename for CDS model file");
   SetCDSFile->SetParameterName("CDSFileInput", true);
+
+  // Tool for scanning material
+
+  ScanGeometryBoundaryCenter = new G4UIcmdWith3VectorAndUnit("/WCSim/ScanGeometryBoundaryCenter",  this);
+  ScanGeometryBoundaryCenter->SetGuidance("Central Position for XYZ geo scan");
+  ScanGeometryBoundaryCenter->SetParameterName(
+    "center_x", "center_y", "center_z", false);
+  ScanGeometryBoundaryCenter->SetDefaultValue(G4ThreeVector(0, 0, 0));
+  ScanGeometryBoundaryCenter->SetUnitCategory("Length");
+  ScanGeometryBoundaryCenter->SetDefaultUnit("cm");
+  
+  ScanGeometryBoundaryWidth = new G4UIcmdWith3VectorAndUnit("/WCSim/ScanGeometryBoundaryWidth",  this);
+  ScanGeometryBoundaryWidth->SetGuidance("Lower bound for geometry scan");
+  ScanGeometryBoundaryWidth->SetParameterName("width_x", "width_y", "width_z", false);
+  ScanGeometryBoundaryWidth->SetDefaultValue(G4ThreeVector(100, 100, 100));
+  ScanGeometryBoundaryWidth->SetUnitCategory("Length");
+  ScanGeometryBoundaryWidth->SetDefaultUnit("cm");
+  
+  ScanGeometryStepSize = new G4UIcmdWith3VectorAndUnit("/WCSim/ScanGeometryStepSize",  this);
+  ScanGeometryStepSize->SetGuidance("Step size for geometry scan");
+  ScanGeometryStepSize->SetParameterName("step_x", "step_y", "step_z", false);
+  ScanGeometryStepSize->SetDefaultValue(G4ThreeVector(1, 1, 1));
+  ScanGeometryStepSize->SetUnitCategory("Length");
+  ScanGeometryStepSize->SetDefaultUnit("cm");
+
+  ScanGeometryToFile = new G4UIcmdWithAString("/WCSim/ScanGeometryToFile", this);
+  ScanGeometryToFile->SetGuidance("Start Geometry Scan");
+  ScanGeometryToFile->SetParameterName("Geometry Scan Output File", true);
 }
 
 WCSimDetectorMessenger::~WCSimDetectorMessenger()
@@ -625,7 +681,17 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete PMTPosVar;
   delete TankRadiusChange;
   delete SetPMTPositionInput;
+  delete SetODPMTPositionInput;
   delete SetCDSFile;
+
+  delete BGOPlacement;
+  delete BGOPosition;
+
+  delete ScanGeometryStepSize;
+  delete ScanGeometryToFile;
+  delete ScanGeometryBoundaryWidth;
+  delete ScanGeometryBoundaryCenter;
+  
 }
 
 void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
@@ -840,6 +906,12 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     }
   }
 
+  if(command == BGOPosition) {
+    G4ThreeVector BGOvec = BGOPosition->GetNew3VectorValue(newValue);
+    WCSimDetector->SetPositionBGOGeometry(BGOvec.x(),BGOvec.y(),BGOvec.z());
+
+  }
+
 	if(command == PMTSize) {
 		G4cout << "SET PMT SIZE" << G4endl;
 		if ( newValue == "20inch"){
@@ -874,11 +946,19 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       WCSimDetector->SetODEdited(true);
       G4cout << "Set OD PMT size " << newValue << " ";
       if (newValue == "3inch"){
-        WCSimDetector->SetWCPMTODSize("PMT3inch_ETEL9302B");
+        WCSimDetector->SetWCPMTODSize("PMT3inch");
       }else if (newValue == "5inch"){
         WCSimDetector->SetWCPMTODSize("PMT5inch");
       }else if (newValue == "8inch"){
         WCSimDetector->SetWCPMTODSize("PMT8inch");
+      }else if (newValue == "3inch_ETEL9302B"){
+        WCSimDetector->SetWCPMTODSize("PMT3inch_ETEL9302B");
+      }else if (newValue == "3inchR14374"){
+        WCSimDetector->SetWCPMTODSize("PMT3inchR14374");
+      }else if (newValue == "3inchR14374_FDOD"){
+        WCSimDetector->SetWCPMTODSize("PMT3inchR14374_FDOD");
+      }else if (newValue == "3inchNNVT"){
+        WCSimDetector->SetWCPMTODSize("PMT3inchNNVT");
       }
       G4cout << G4endl;
     }
@@ -1107,8 +1187,32 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 	  WCSimDetector->SetPMTPositionInput(newValue);
 	}
 
-  if(command == SetCDSFile){
+	if(command == SetODPMTPositionInput){
+	  WCSimDetector->SetODPMTPositionInput(newValue);
+	}
+
+        if(command == SetCDSFile){
 	  WCSimDetector->SetCDSFile(newValue);
 	}
+
+  // Geometry Scanning Tools
+  if (command == ScanGeometryStepSize){
+    G4ThreeVector vec = ScanGeometryStepSize->GetNew3VectorValue(newValue);
+    GeometryScan::SetScanGeometryStepSize(vec);
+  } 
+
+  if (command == ScanGeometryBoundaryCenter){
+    G4ThreeVector vec = ScanGeometryBoundaryCenter->GetNew3VectorValue(newValue);
+    GeometryScan::SetScanGeometryBoundaryCenter(vec);
+  }
+
+  if (command == ScanGeometryBoundaryWidth){
+    G4ThreeVector vec = ScanGeometryBoundaryWidth->GetNew3VectorValue(newValue);
+    GeometryScan::SetScanGeometryBoundaryWidth(vec);
+  }
+
+  if(command == ScanGeometryToFile){
+    GeometryScan::ScanGeometry(newValue);
+  }
 
 }

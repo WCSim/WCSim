@@ -231,6 +231,8 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	    int parent_id = (*WCHC)[i]->GetParentID(ip);
 
 	    float photon_starttime = (*WCHC)[i]->GetPhotonStartTime(ip);
+	    float photon_startenergy = (*WCHC)[i]->GetPhotonStartEnergy(ip);
+	    float photon_endenergy = (*WCHC)[i]->GetPhotonEndEnergy(ip);
 	    G4ThreeVector photon_startpos = (*WCHC)[i]->GetPhotonStartPos(ip);
 	    G4ThreeVector photon_endpos = (*WCHC)[i]->GetPhotonEndPos(ip);
 	    G4ThreeVector photon_startdir = (*WCHC)[i]->GetPhotonStartDir(ip);
@@ -251,6 +253,8 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      Digi->SetPreSmearTime(ip,time_true);
 	      Digi->SetParentID(ip,parent_id);
 	      Digi->SetPhotonStartTime(ip,photon_starttime);
+	      Digi->SetPhotonStartEnergy(ip,photon_startenergy);
+	      Digi->SetPhotonEndEnergy(ip,photon_endenergy);
 	      Digi->SetPhotonStartPos(ip,photon_startpos);
 	      Digi->SetPhotonEndPos(ip,photon_endpos);
 	      Digi->SetPhotonStartDir(ip,photon_startdir);
@@ -272,6 +276,8 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPreSmearTime(ip,time_true);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetParentID(ip,parent_id);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonStartTime(ip,photon_starttime);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonStartEnergy(ip,photon_startenergy);
+	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonEndEnergy(ip,photon_endenergy);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonStartPos(ip,photon_startpos);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonEndPos(ip,photon_endpos);
 	      (*DigitsCollection)[DigiHitMapPMT[tube]-1]->SetPhotonStartDir(ip,photon_startdir);
