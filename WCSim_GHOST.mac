@@ -295,8 +295,8 @@
 ## select the input nuance-formatted vector file
 ## This can be from a generator (e.g. NEUT, sntools)
 ## or your own (see $WCSIM_SOURCE_DIR/sample-root-scripts/MakeKin.py for a script to make such files)
-/mygen/generator muline
-/mygen/vecfile /usr/local/hk/hk-ToolApp/eminus_10.0MeV_center_4pi_SuperK_000.kin
+#/mygen/generator muline
+#/mygen/vecfile /usr/local/hk/hk-ToolApp/eminus_10.0MeV_center_4pi_SuperK_000.kin
 #/mygen/vecfile inputvectorfile
 #/mygen/vecfile h2o.2km.001-009x3_G4.kin
 #/mygen/vecfile mu+.out
@@ -498,5 +498,5 @@
 # -- The options tree will be filled with one entry for each run
 # -- The EventHeader has a run number that specifies the run (and corresponding options tree entry) for a given event
 # It is therefore your responsibility to confirm that the options you are changing work as expected in multi-run mode
-/run/beamOn 10
+#/run/beamOn 10
 #exit

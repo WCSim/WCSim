@@ -251,6 +251,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}
         ${PROJECT_SOURCE_DIR}/WCSim.mac
+        ${PROJECT_SOURCE_DIR}/WCSim_GHOST.mac
         )
 
 pbuilder_install_files_executable(${CMAKE_INSTALL_PREFIX}/bin
