@@ -663,7 +663,7 @@ void Kuraray::SetgAbs(){
   //       0.71, 0.54, 0, 0, // 300 --- 250
   //       0, 0, 0, 0, 0}; // 250 --- 200
   gAbs = new TGraph();
-  const int step = 10;
+  //const int step = 10;
   // std::cout << "Creating Stacking graph objects for WLS" << std::endl;
   // std::cout << "WLS ABS" << std::endl;
   // Then fill with point there is data
@@ -675,7 +675,7 @@ void Kuraray::SetgAbs(){
 }
 void Kuraray::SetgEm(){
   gEm = new TGraph();
-  const int step = 10;
+  //const int step = 10;
   // std::cout << "Creating Stacking graph objects for WLS" << std::endl;
   // std::cout << "WLS EM" << std::endl;
   // Then fill with point there is data
@@ -936,7 +936,7 @@ void Inr::SetgAbs(){
   //       0.71, 0.54, 0, 0, // 300 --- 250
   //       0, 0, 0, 0, 0}; // 250 --- 200
   gAbs = new TGraph();
-  const int step = 10;
+  //const int step = 10;
   // std::cout << "Creating Stacking graph objects for WLS" << std::endl;
   // std::cout << "WLS ABS" << std::endl;
   // Then fill with point there is data
@@ -948,7 +948,7 @@ void Inr::SetgAbs(){
 }
 void Inr::SetgEm(){
   gEm = new TGraph();
-  const int step = 10;
+  //const int step = 10;
   // std::cout << "Creating Stacking graph objects for WLS" << std::endl;
   // std::cout << "WLS EM" << std::endl;
   // Then fill with point there is data
