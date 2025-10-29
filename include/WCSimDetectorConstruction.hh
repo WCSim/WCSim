@@ -523,7 +523,14 @@ private:
   G4OpticalSurface * OpGlassCathodeSurface;
 
   //Tyvek surface - jl145
-  G4OpticalSurface * OpWaterTySurface;
+  G4OpticalSurface * OpWaterTySurface; // single surface used in ConstructCylinder()
+  // Multiple surfaces used in RealisticPlacement()
+  G4OpticalSurface * OpWaterTyInnerTopCapSurface;
+  G4OpticalSurface * OpWaterTyInnerBarrelSurface;
+  G4OpticalSurface * OpWaterTyInnerBottomCapSurface;
+  G4OpticalSurface * OpWaterTyOuterTopCapSurface;
+  G4OpticalSurface * OpWaterTyOuterBarrelSurface;
+  G4OpticalSurface * OpWaterTyOuterBottomCapSurface;
 
   //Reflector skin surface -tf
   G4OpticalSurface * ReflectorSkinSurface;

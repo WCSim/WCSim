@@ -32,8 +32,15 @@ WCSimTuningParameters::WCSimTuningParameters()
  topveto = false;
 
  WCODWLSCladdingReflectivity   = 0.99; //
- WCODTyvekReflectivity   = 0.90; //
 
+ UsingNuPrismTyvekReflectivityModel = false;
+ WCODDefaultTyvekReflectivity   = 0.90; //
+ WCODInnerTopCapTyvekReflectivity   = 0.90; //
+ WCODInnerBarrelTyvekReflectivity   = 0.90; //
+ WCODInnerBottomCapTyvekReflectivity   = 0.90; //
+ WCODOuterTopCapTyvekReflectivity   = 0.90; //
+ WCODOuterBarrelTyvekReflectivity   = 0.90; //
+ WCODOuterBottomCapTyvekReflectivity   = 0.90; //
 }
 
 WCSimTuningParameters::~WCSimTuningParameters()

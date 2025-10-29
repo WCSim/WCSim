@@ -66,9 +66,27 @@ public:
   G4double GetWCODWLSCladdingReflectivity() {return WCODWLSCladdingReflectivity;}
   void SetWCODWLSCladdingReflectivity(G4double tparam) {WCODWLSCladdingReflectivity=tparam;}
 
-  G4double GetWCODTyvekReflectivity() {return WCODTyvekReflectivity;}
-  void SetWCODTyvekReflectivity(G4double tparam) {WCODTyvekReflectivity=tparam;}
-
+  bool GetUsingNuPrismTyvekReflectivityModel() {return UsingNuPrismTyvekReflectivityModel;}
+  void SetUsingNuPrismTyvekReflectivityModel(G4bool tparam) {UsingNuPrismTyvekReflectivityModel = tparam;}
+  // default. Only used in ConstructCylinder() (e.g. for IWCD)
+  G4double GetWCODDefaultTyvekReflectivity() {return WCODDefaultTyvekReflectivity;}
+  void SetWCODDefaultTyvekReflectivity(G4double tparam) {WCODDefaultTyvekReflectivity=tparam;}
+  // Specific surfaces. Only used in RealisticPlacement (i.e. for HKFD)
+  //inner-wall tyvek
+  G4double GetWCODInnerTopCapTyvekReflectivity() {return WCODInnerTopCapTyvekReflectivity;}
+  void SetWCODInnerTopCapTyvekReflectivity(G4double tparam) {WCODInnerTopCapTyvekReflectivity=tparam;}
+  G4double GetWCODInnerBarrelTyvekReflectivity() {return WCODInnerBarrelTyvekReflectivity;}
+  void SetWCODInnerBarrelTyvekReflectivity(G4double tparam) {WCODInnerBarrelTyvekReflectivity=tparam;}
+  G4double GetWCODInnerBottomCapTyvekReflectivity() {return WCODInnerBottomCapTyvekReflectivity;}
+  void SetWCODInnerBottomCapTyvekReflectivity(G4double tparam) {WCODInnerBottomCapTyvekReflectivity=tparam;}
+  //outer-wall tyvek
+  G4double GetWCODOuterTopCapTyvekReflectivity() {return WCODOuterTopCapTyvekReflectivity;}
+  void SetWCODOuterTopCapTyvekReflectivity(G4double tparam) {WCODOuterTopCapTyvekReflectivity=tparam;}
+  G4double GetWCODOuterBarrelTyvekReflectivity() {return WCODOuterBarrelTyvekReflectivity;}
+  void SetWCODOuterBarrelTyvekReflectivity(G4double tparam) {WCODOuterBarrelTyvekReflectivity=tparam;}
+  G4double GetWCODOuterBottomCapTyvekReflectivity() {return WCODOuterBottomCapTyvekReflectivity;}
+  void SetWCODOuterBottomCapTyvekReflectivity(G4double tparam) {WCODOuterBottomCapTyvekReflectivity=tparam;}
+  
 private:
 
   // The messenger
@@ -99,8 +117,15 @@ private:
   G4bool topveto;
 
   G4double WCODWLSCladdingReflectivity;
-  G4double WCODTyvekReflectivity;
 
+  G4bool   UsingNuPrismTyvekReflectivityModel;
+  G4double WCODDefaultTyvekReflectivity;
+  G4double WCODInnerTopCapTyvekReflectivity;
+  G4double WCODInnerBarrelTyvekReflectivity;
+  G4double WCODInnerBottomCapTyvekReflectivity;
+  G4double WCODOuterTopCapTyvekReflectivity;
+  G4double WCODOuterBarrelTyvekReflectivity;
+  G4double WCODOuterBottomCapTyvekReflectivity;
 };
 
 #endif

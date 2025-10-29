@@ -86,11 +86,45 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   CommandWCODWLSCladdingReflectivity->SetParameterName("WCODWLSCladdingReflectivity",true);
   CommandWCODWLSCladdingReflectivity->SetDefaultValue(0.90);
 
-  CommandWCODTyvekReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODTyvekReflectivity",this);
-  CommandWCODTyvekReflectivity->SetGuidance("Set OD tyvek cladding reflectivity");
-  CommandWCODTyvekReflectivity->SetParameterName("WCODTyvekReflectivity",true);
-  CommandWCODTyvekReflectivity->SetDefaultValue(0.90);
+  CommandWCODTyvekReflectivityNuPrismModel = new G4UIcmdWithABool("/WCSim/tuning/UseNuPrismTyvekReflectivityModel",this);
+  CommandWCODTyvekReflectivityNuPrismModel->SetGuidance("Use IWCD model for tyvek reflectivity?");
+  CommandWCODTyvekReflectivityNuPrismModel->SetParameterName("UseNuPrismTyvekReflectivityModel",true);
+  CommandWCODTyvekReflectivityNuPrismModel->SetDefaultValue(0);
+    
+  CommandWCODDefaultTyvekReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODDefaultTyvekReflectivity",this);
+  CommandWCODDefaultTyvekReflectivity->SetGuidance("Set OD cladding reflectivity. Only used in ConstructCylinder() (e.g. for IWCD)");
+  CommandWCODDefaultTyvekReflectivity->SetParameterName("WCODDefaultTyvekReflectivity",true);
+  CommandWCODDefaultTyvekReflectivity->SetDefaultValue(0.90);
 
+  CommandWCODInnerTopCapTyvekReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODInnerTopCapTyvekReflectivity",this);
+  CommandWCODInnerTopCapTyvekReflectivity->SetGuidance("Set OD inner-wall top-cap tyvek cladding reflectivity");
+  CommandWCODInnerTopCapTyvekReflectivity->SetParameterName("WCODInnerTopCapTyvekReflectivity",true);
+  CommandWCODInnerTopCapTyvekReflectivity->SetDefaultValue(0.90);
+
+  CommandWCODInnerBarrelTyvekReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODInnerBarrelTyvekReflectivity",this);
+  CommandWCODInnerBarrelTyvekReflectivity->SetGuidance("Set OD inner-wall barrel tyvek cladding reflectivity");
+  CommandWCODInnerBarrelTyvekReflectivity->SetParameterName("WCODInnerBarrelTyvekReflectivity",true);
+  CommandWCODInnerBarrelTyvekReflectivity->SetDefaultValue(0.90);
+
+  CommandWCODInnerBottomCapTyvekReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODInnerBottomCapTyvekReflectivity",this);
+  CommandWCODInnerBottomCapTyvekReflectivity->SetGuidance("Set OD inner-wall bottom-cap tyvek cladding reflectivity");
+  CommandWCODInnerBottomCapTyvekReflectivity->SetParameterName("WCODInnerBottomCapTyvekReflectivity",true);
+  CommandWCODInnerBottomCapTyvekReflectivity->SetDefaultValue(0.90);
+
+  CommandWCODOuterTopCapTyvekReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODOuterTopCapTyvekReflectivity",this);
+  CommandWCODOuterTopCapTyvekReflectivity->SetGuidance("Set OD outer-wall top-cap tyvek cladding reflectivity");
+  CommandWCODOuterTopCapTyvekReflectivity->SetParameterName("WCODOuterTopCapTyvekReflectivity",true);
+  CommandWCODOuterTopCapTyvekReflectivity->SetDefaultValue(0.90);
+
+  CommandWCODOuterBarrelTyvekReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODOuterBarrelTyvekReflectivity",this);
+  CommandWCODOuterBarrelTyvekReflectivity->SetGuidance("Set OD outer-wall barrel tyvek cladding reflectivity");
+  CommandWCODOuterBarrelTyvekReflectivity->SetParameterName("WCODOuterBarrelTyvekReflectivity",true);
+  CommandWCODOuterBarrelTyvekReflectivity->SetDefaultValue(0.90);
+
+  CommandWCODOuterBottomCapTyvekReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODOuterBottomCapTyvekReflectivity",this);
+  CommandWCODOuterBottomCapTyvekReflectivity->SetGuidance("Set OD outer-wall bottom-cap tyvek cladding reflectivity");
+  CommandWCODOuterBottomCapTyvekReflectivity->SetParameterName("WCODOuterBottomCapTyvekReflectivity",true);
+  CommandWCODOuterBottomCapTyvekReflectivity->SetDefaultValue(0.90);
 }
 
 WCSimTuningMessenger::~WCSimTuningMessenger()
@@ -112,7 +146,15 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
   delete TopVeto;
 
   delete CommandWCODWLSCladdingReflectivity;
-  delete CommandWCODTyvekReflectivity;
+
+  delete CommandWCODTyvekReflectivityNuPrismModel;
+  delete CommandWCODDefaultTyvekReflectivity;
+  delete CommandWCODInnerTopCapTyvekReflectivity;
+  delete CommandWCODInnerBarrelTyvekReflectivity;
+  delete CommandWCODInnerBottomCapTyvekReflectivity;
+  delete CommandWCODOuterTopCapTyvekReflectivity;
+  delete CommandWCODOuterBarrelTyvekReflectivity;
+  delete CommandWCODOuterBottomCapTyvekReflectivity;
 
   delete WCSimDir;
 }
@@ -207,14 +249,44 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   }
 
   else if(command == CommandWCODWLSCladdingReflectivity) {
-    // Set the Top Veto PMT Spacing
     WCSimTuningParams->SetWCODWLSCladdingReflectivity(CommandWCODWLSCladdingReflectivity->GetNewDoubleValue(newValue));
     G4cout << "Setting OD WLS plate cladding reflectivity " << CommandWCODWLSCladdingReflectivity->GetNewDoubleValue(newValue) << G4endl;
   }
 
-  else if(command == CommandWCODTyvekReflectivity) {
-    // Set the Top Veto PMT Spacing
-    WCSimTuningParams->SetWCODTyvekReflectivity(CommandWCODTyvekReflectivity->GetNewDoubleValue(newValue));
-    G4cout << "Setting OD tyvek reflectivity " << CommandWCODTyvekReflectivity->GetNewDoubleValue(newValue) << G4endl;
+  else if(command == CommandWCODTyvekReflectivityNuPrismModel) {
+    WCSimTuningParams->SetUsingNuPrismTyvekReflectivityModel(CommandWCODTyvekReflectivityNuPrismModel->GetNewBoolValue(newValue));
+    if(CommandWCODTyvekReflectivityNuPrismModel->GetNewBoolValue(newValue))
+      G4cout << "Using IWCD tyvek reflectivity model" << G4endl;
+    else
+      G4cout << "Using HKFD tyvek reflectivity model" << G4endl;
+  }
+
+  else if(command == CommandWCODDefaultTyvekReflectivity) {
+    WCSimTuningParams->SetWCODDefaultTyvekReflectivity(CommandWCODDefaultTyvekReflectivity->GetNewDoubleValue(newValue));
+    G4cout << "Setting OD inner-wall top-cap tyvek reflectivity (only used in ConstructCylinder e.g. for IWCD) " << CommandWCODDefaultTyvekReflectivity->GetNewDoubleValue(newValue) << G4endl;
+  }
+  else if(command == CommandWCODInnerTopCapTyvekReflectivity) {
+    WCSimTuningParams->SetWCODInnerTopCapTyvekReflectivity(CommandWCODInnerTopCapTyvekReflectivity->GetNewDoubleValue(newValue));
+    G4cout << "Setting OD inner-wall top-cap tyvek reflectivity (only used in RealisticPlacement i.e. for HKFD) " << CommandWCODInnerTopCapTyvekReflectivity->GetNewDoubleValue(newValue) << G4endl;
+  }
+  else if(command == CommandWCODInnerBarrelTyvekReflectivity) {
+    WCSimTuningParams->SetWCODInnerBarrelTyvekReflectivity(CommandWCODInnerBarrelTyvekReflectivity->GetNewDoubleValue(newValue));
+    G4cout << "Setting inner-wall barrel tyvek reflectivity (only used in RealisticPlacement i.e. for HKFD) " << CommandWCODInnerBarrelTyvekReflectivity->GetNewDoubleValue(newValue) << G4endl;
+  }
+  else if(command == CommandWCODInnerBottomCapTyvekReflectivity) {
+    WCSimTuningParams->SetWCODInnerBottomCapTyvekReflectivity(CommandWCODInnerBottomCapTyvekReflectivity->GetNewDoubleValue(newValue));
+    G4cout << "Setting inner-wall bottom-cap tyvek reflectivity (only used in RealisticPlacement i.e. for HKFD) " << CommandWCODInnerBottomCapTyvekReflectivity->GetNewDoubleValue(newValue) << G4endl;
+  }
+  else if(command == CommandWCODOuterTopCapTyvekReflectivity) {
+    WCSimTuningParams->SetWCODOuterTopCapTyvekReflectivity(CommandWCODOuterTopCapTyvekReflectivity->GetNewDoubleValue(newValue));
+    G4cout << "Setting OD outer-wall top-cap tyvek reflectivity (only used in RealisticPlacement i.e. for HKFD) " << CommandWCODOuterTopCapTyvekReflectivity->GetNewDoubleValue(newValue) << G4endl;
+  }
+  else if(command == CommandWCODOuterBarrelTyvekReflectivity) {
+    WCSimTuningParams->SetWCODOuterBarrelTyvekReflectivity(CommandWCODOuterBarrelTyvekReflectivity->GetNewDoubleValue(newValue));
+    G4cout << "Setting outer-wall barrel tyvek reflectivity (only used in RealisticPlacement i.e. for HKFD) " << CommandWCODOuterBarrelTyvekReflectivity->GetNewDoubleValue(newValue) << G4endl;
+  }
+  else if(command == CommandWCODOuterBottomCapTyvekReflectivity) {
+    WCSimTuningParams->SetWCODOuterBottomCapTyvekReflectivity(CommandWCODOuterBottomCapTyvekReflectivity->GetNewDoubleValue(newValue));
+    G4cout << "Setting outer-wall bottom-cap tyvek reflectivity (only used in RealisticPlacement i.e. for HKFD) " << CommandWCODOuterBottomCapTyvekReflectivity->GetNewDoubleValue(newValue) << G4endl;
   }
 }

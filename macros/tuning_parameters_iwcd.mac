@@ -18,6 +18,19 @@
 /WCSim/tuning/PMTCathodePara data/CathodeParameters.txt
 
 /WCSim/tuning/WCODWLSCladdingReflectivity 0.90
-/WCSim/tuning/WCODTyvekReflectivity 0.90
+
+# Use the IWCD tyvek reflectivity model
+/WCSim/tuning/UseNuPrismTyvekReflectivityModel 1
+
+# Used by ConstructCylinder only (e.g. for IWCD)
+/WCSim/tuning/WCODDefaultTyvekReflectivity 0.90
+
+# Used by RealisticPlacement only (i.e. for HKFD)
+/WCSim/tuning/WCODInnerTopCapTyvekReflectivity 0.90
+/WCSim/tuning/WCODInnerBarrelTyvekReflectivity 0.90
+/WCSim/tuning/WCODInnerBottomCapTyvekReflectivity 0.90
+/WCSim/tuning/WCODOuterTopCapTyvekReflectivity 0.90
+/WCSim/tuning/WCODOuterBarrelTyvekReflectivity 0.90
+/WCSim/tuning/WCODOuterBottomCapTyvekReflectivity 0.90
 
 
