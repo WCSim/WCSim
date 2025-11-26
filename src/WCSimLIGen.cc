@@ -124,8 +124,7 @@ _pos << " not found" << G4endl;
 	intensity = injector["intensity"].get<vector<double>>();
       }
     }
-    if ( injectorDetector == "ID" ) thetabins = 180;
-    else  thetabins = thetaVals.size();
+    thetabins = 180;
     
     json data2 = json::parse(buffer2.str());
     for (auto injector2 : data2["injectors"]){
@@ -288,8 +287,10 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
     if (photonMode){
         // Get the position and direction from the photon list
         for (int iphoton=0;iphoton<nphotons;iphoton++){
-            // Generate random time for this photon in 1 ns pulse window
-            G4double time = G4RandFlat::shoot(20.0,21.0)*ns;
+            // Generate random time for this photon assuming
+            // Gaussian pulse width with given FWHM pulse width in ns
+            // and 20 ns offset to avoid negative times
+            G4double time = G4RandGauss::shoot(20.0,injectorPulseWidth/2.355)*ns;
 
             G4ThreeVector vtx = {myPhotons[iphoton].x,myPhotons[iphoton].y,myPhotons[iphoton].z};
             G4ThreeVector dir = {myPhotons[iphoton].px,myPhotons[iphoton].py,myPhotons[iphoton].pz};
@@ -327,9 +328,10 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
 	MonotonicInterpolator spline(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows);
         for (int iphoton = 0; iphoton<nphotons; iphoton++){
  
-            // Generate random time for this photon in 1 ns pulse window
-            G4double time = G4RandFlat::shoot(20.0,21.0)*ns;
-
+            // Generate random time for this photon assuming
+            // Gaussian pulse width with given FWHM pulse width in ns
+            // and 20 ns offset to avoid negative times
+            G4double time = G4RandGauss::shoot(20.0,injectorPulseWidth/2.355)*ns;
 	    //Create unique random seed based on event ID and photon number
 	    TRandom3 rng(anEvent->GetEventID()*iphoton + iphoton);
 	    //Determine photon costheta and phi needed for the photon direction from interpolated PDF
