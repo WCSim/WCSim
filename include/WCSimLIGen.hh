@@ -27,18 +27,18 @@ public:
   WCSimLIGen();
   ~WCSimLIGen();
   
-        // Initialise the light injector
+  // Initialise the light injector
   void Initialise();
-  void ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector, G4double injectorWavelength);
+  void ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector, G4double injectorWavelength, G4double injectorPulseWidth);
 
-        // Set the vertices, etc of all photons in the pulse
-        void GeneratePhotons(G4Event* anEvent, G4int nphotons);
-        // Get injector properties
-        G4ThreeVector GetInjectorPosition();  
-        G4ThreeVector GetInjectorDirection();
-        G4double GetPhotonEnergy();
-        // Set whether to read in profile or photon list
-        void SetPhotonMode(G4bool photonMode);
+  // Set the vertices, etc of all photons in the pulse
+  void GeneratePhotons(G4Event* anEvent, G4int nphotons);
+  // Get injector properties
+  G4ThreeVector GetInjectorPosition();  
+  G4ThreeVector GetInjectorDirection();
+  G4double GetPhotonEnergy();
+  // Set whether to read in profile or photon list
+  void SetPhotonMode(G4bool photonMode);
   
 private:
   TH2D *hProfile = nullptr;
@@ -62,35 +62,35 @@ private:
   double minCosTheta;
   
   G4double photonWavelength;
-        G4double injectorOffset;
-        G4double energy;
+  G4double pulseWidth;
+  G4double injectorOffset;
+  G4double energy;
 
-	// Variables for reading in injector profile or photon list
-	///Points to $WCSIM_BUILD_DIR/data/
-	string wcsimdir;
-	G4String photonsFilename;
-        G4bool photonMode;
+  // Variables for reading in injector profile or photon list
+  ///Points to $WCSIM_BUILD_DIR/data/
+  string wcsimdir;
+  G4String photonsFilename;
+  G4bool photonMode;
 
-        // Histogram for profile
-  //TH2D *hProfile;
-        void FillProfilePDF();
+  // Histogram for profile
+  void FillProfilePDF();
 
-        // Struct for reading in photons list from file
-        struct Photon
-        {
-            double x;
-            double y;
-            double z;
-            double px;
-            double py;
-            double pz;
-        };
-        vector<Photon> myPhotons;
+  // Struct for reading in photons list from file
+  struct Photon
+  {
+    double x;
+    double y;
+    double z;
+    double px;
+    double py;
+    double pz;
+  };
+  vector<Photon> myPhotons;
 
-	// Functions
-        G4double PhotonEnergyFromWavelength(G4double wavelength);
-        void LoadPhotonList();
-        void LoadProfilePDF();
+  // Functions
+  G4double PhotonEnergyFromWavelength(G4double wavelength);
+  void LoadPhotonList();
+  void LoadProfilePDF();
 
   };
 

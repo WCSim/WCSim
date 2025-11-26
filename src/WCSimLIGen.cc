@@ -68,9 +68,11 @@ void WCSimLIGen::SetPhotonMode(G4bool photonmode){
 }
     
 
-void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector, G4double injectorWavelength){
+void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector, G4double injectorWavelength, G4double injectorPulseWidth){
 
-  photonWavelength = injectorWavelength;
+    photonWavelength = injectorWavelength;
+    pulseWidth = injectorPulseWidth;
+
     // Define the database to read from
     string db = injectorFilename;
     string db_pos = injectorDetails;
@@ -290,7 +292,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
             // Generate random time for this photon assuming
             // Gaussian pulse width with given FWHM pulse width in ns
             // and 20 ns offset to avoid negative times
-            G4double time = G4RandGauss::shoot(20.0,injectorPulseWidth/2.355)*ns;
+            G4double time = G4RandGauss::shoot(20.0,pulseWidth/2.355)*ns;
 
             G4ThreeVector vtx = {myPhotons[iphoton].x,myPhotons[iphoton].y,myPhotons[iphoton].z};
             G4ThreeVector dir = {myPhotons[iphoton].px,myPhotons[iphoton].py,myPhotons[iphoton].pz};
@@ -331,7 +333,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
             // Generate random time for this photon assuming
             // Gaussian pulse width with given FWHM pulse width in ns
             // and 20 ns offset to avoid negative times
-            G4double time = G4RandGauss::shoot(20.0,injectorPulseWidth/2.355)*ns;
+            G4double time = G4RandGauss::shoot(20.0,pulseWidth/2.355)*ns;
 	    //Create unique random seed based on event ID and photon number
 	    TRandom3 rng(anEvent->GetEventID()*iphoton + iphoton);
 	    //Determine photon costheta and phi needed for the photon direction from interpolated PDF

@@ -138,6 +138,14 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   lightInjectorDetectorCmd->SetCandidates("ID OD");
   lightInjectorDetectorCmd->SetDefaultValue("ID");
 
+  lightInjectorPulseWidthCmd = new G4UIcmdWithADouble("/mygen/injectorPulseWidth",this);
+  lightInjectorPulseWidthCmd->SetGuidance("Set the photon FWHM pulsewidth for the light injector in ns");
+  lightInjectorPulseWidthCmd->SetGuidance("[usage] /mygen/injectorPulseWidth injectorPulseWidth");
+  lightInjectorPulseWidthCmd->SetGuidance(" injectorPulseWidth: 10");
+  lightInjectorPulseWidthCmd->SetRange("injectorPulseWidth>0");
+  lightInjectorPulseWidthCmd->SetParameterName("injectorPulseWidth",true);
+  lightInjectorPulseWidthCmd->SetDefaultValue(10.);
+
   lightInjectorWavelengthCmd = new G4UIcmdWithADouble("/mygen/injectorWavelength",this);
   lightInjectorWavelengthCmd->SetGuidance("Set the photon wavelength for the light injector in nm");
   lightInjectorWavelengthCmd->SetGuidance("[usage] /mygen/injectorWavelength injectorWavelength");
@@ -257,6 +265,7 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete lightInjectorDetailsCmd;
   delete lightInjectorDetectorCmd;
   delete lightInjectorWavelengthCmd;
+  delete lightInjectorPulseWidthCmd;
   delete lightInjectorModeCmd;
   delete mPMTLEDIdCmd1;
   delete mPMTLEDIdCmd2;
@@ -674,6 +683,11 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
   if ( command==lightInjectorDetectorCmd )
   {
     myAction->SetLightInjectorDetector(newValue);
+  }
+
+  if ( command==lightInjectorPulseWidthCmd )
+  {
+    myAction->SetLightInjectorPulseWidth(lightInjectorPulseWidthCmd->GetNewDoubleValue(newValue));
   }
   
   if ( command==lightInjectorWavelengthCmd )
