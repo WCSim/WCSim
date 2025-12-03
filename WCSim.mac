@@ -369,6 +369,29 @@
 #/mygen/hepmc3file HepMC3Filepath
 #/mygen/hepmc3positionGenMode true/false
 
+# Or you can use the light injector generator to run a single LI device
+# Each LI is defined in the injector file (e.g. data/LightInjectorsDetails.json)
+# by a combination of the injector type and injector idx. These correspond to
+# positions and directions specific to each combination. Details of the LI device for
+# each combination is provided in the comments.
+#/mygen/generator lightinjector
+# Set the number of photons per pulse for this LI to generate nphotons per pulse
+#/mygen/nphotons 100000
+# Specify the injector type: collimator, diffuser or laser ball
+#/mygen/injectorType diffuser
+# Specify the injector index for this type of LI that corresponds to the
+# device position and profile you wish to use
+#/mygen/injectorIdx 15
+#/mygen/injectorDetector ID
+#/mygen/injectorWavelength 400
+#/mygen/injectorFilename LightInjectors.json
+#/mygen/injectorDetails LightInjectorsDetails.json
+# Photon times are Gaussian-distributed around a mean of 20 ns with a FWHM pulse width (ns).
+#/mygen/injectorPulseWidth 10
+# Default /mygen/photonMode 0 generates photon directions using the LI profile
+# Set /mygen/photonMode 1 to read pre-generated photon positions and directions
+# from the 'photonsfile' specified in the injector file.
+# /mygen/photonMode 0
 
 ## Radioactive option
 ## Generate radioactive decay in the water or on the PMTs
