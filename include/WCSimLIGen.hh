@@ -49,7 +49,6 @@ private:
   vector<double> injectorPosition;
   vector<double> injectorDirection;
   vector<double> thetaVals;
-  int thetabins;
   vector<double> phiVals;
   vector<double> zVals;
   vector<double> intensity;

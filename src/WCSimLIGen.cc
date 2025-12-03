@@ -126,7 +126,6 @@ _pos << " not found" << G4endl;
 	intensity = injector["intensity"].get<vector<double>>();
       }
     }
-    thetabins = 180;
     
     json data2 = json::parse(buffer2.str());
     for (auto injector2 : data2["injectors"]){
@@ -195,10 +194,32 @@ void WCSimLIGen::LoadProfilePDF(){
   G4cout << "Reading the injector profile from file" << G4endl;
 
     // Creates histogram of light injector profile
-    float phiMin = phiVals[0];
+    // number of bins depends on the profile
     unsigned int nbins = thetaVals.size();
-    unsigned int bins = thetabins;
-    float phiMax = phiVals[nbins-1];
+    
+    float thetaMax = *std::max_element(thetaVals.begin(), thetaVals.end());
+    float thetaMin = *std::min_element(thetaVals.begin(), thetaVals.end());
+    // The next two lines assume that the first and second thetaVals are 
+    // different, as per the current data
+    float thetaStep = thetaVals.at(1)-thetaVals.at(0);
+    int thetabins = (int)((thetaMax-thetaMin)/thetaStep);
+    float phiMax = *std::max_element(phiVals.begin(), phiVals.end());
+    float phiMin = *std::min_element(phiVals.begin(), phiVals.end());
+    // The first and second phi vals are not different so we 
+    // have to find the first different value to calculate the step
+    float first_val = phiVals.at(0);
+    auto it = std::find_if(phiVals.begin(),phiVals.end(),[first_val](int element){
+        return element!= first_val;
+    });
+    float phiStep=0;
+    if (it != phiVals.end()){
+        phiStep = *it - phiVals.at(0);
+    } else {
+        G4cerr << "LIGen [ERROR]: All phi values are the same!" << G4endl;
+	exit(-1);
+    }
+    int phibins = (int)((phiMax-phiMin)/phiStep);
+    G4cout << "theta bins, phi bins: " << thetabins << ", " << phibins << G4endl;
 
     if (hProfile != NULL) {
       delete hProfile;
@@ -234,6 +255,8 @@ void WCSimLIGen::LoadProfilePDF(){
     }
 
     cosTheta_vals.assign(cosTheta_set.begin(), cosTheta_set.end());
+    float cosThetaMin = *std::min_element(cosTheta_vals.begin(),cosTheta_vals.end());
+    float cosThetaMax = *std::max_element(cosTheta_vals.begin(),cosTheta_vals.end());
     phi_vals.assign(phi_set.begin(), phi_set.end());
     
     intensity_grid.resize(phi_vals.size(), std::vector<double>(cosTheta_vals.size()));
@@ -258,7 +281,7 @@ void WCSimLIGen::LoadProfilePDF(){
     }
     double sum = 0;
     double minIntensity = 100;
-    hProfile = new TH2D("hProfile","hProfile",bins,0,1,bins,phiMin,phiMax);
+    hProfile = new TH2D("hProfile","hProfile",thetabins,cosThetaMin,cosThetaMax,phibins,phiMin,phiMax);
     //Precompute the interpolated PDF
     MonotonicInterpolator PrecomputedSplines(cosTheta_vals, phi_vals, intensity_grid);
     slopes_and_rows = PrecomputedSplines.GetSlopes2D();
