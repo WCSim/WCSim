@@ -68,6 +68,7 @@ class WCSimPrimaryGeneratorMessenger: public G4UImessenger
   G4UIcmdWithAString* lightInjectorIdxCmd;
   G4UIcmdWithAnInteger* lightInjectorNPhotonsCmd;
   G4UIcmdWithAString* lightInjectorFilenameCmd;
+  G4UIcmdWithAString* lightInjectorProfileFormatCmd;
   G4UIcmdWithAString* lightInjectorDetailsCmd;
   G4UIcmdWithAString* lightInjectorDetectorCmd;
   G4UIcmdWithADouble* lightInjectorPulseWidthCmd;

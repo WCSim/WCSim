@@ -13,7 +13,6 @@
 #include <fstream>
 #include <vector>
 #include <TH2D.h>
-#include <TH3D.h>
 
 using namespace std;
 
@@ -29,7 +28,7 @@ public:
   
   // Initialise the light injector
   void Initialise();
-  void ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector, G4double injectorWavelength, G4double injectorPulseWidth);
+  void ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorProfileFormat, G4String injectorDetector, G4double injectorWavelength, G4double injectorPulseWidth);
 
   // Set the vertices, etc of all photons in the pulse
   void GeneratePhotons(G4Event* anEvent, G4int nphotons);
@@ -42,8 +41,10 @@ public:
   
 private:
   TH2D *hProfile = nullptr;
+  TH2D *hProfileSampled = nullptr;
   TGraph2D *prof = nullptr;
-  G4ParticleGun*                  myLIGun;
+  G4ParticleGun* myLIGun;
+  G4String profileFormat;
   
   // Variables for initialising light injector parameters
   vector<double> injectorPosition;

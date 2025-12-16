@@ -174,6 +174,7 @@ private:
   G4String injectorType;
   G4String injectorIdx;
   G4String injectorFilename;
+  G4String injectorProfileFormat;
   G4String injectorDetails;
   G4String injectorDetector;
   G4double injectorWavelength;
@@ -289,18 +290,19 @@ private:
   inline void SetHepMC3PositionGen(G4bool choice) { hepmc3_positionGen = choice; }
   inline G4bool GetHepMC3PositionGen() { return hepmc3_positionGen;}
 
-  // L. Kneale: light injector with profile from db
-  inline void SetLightInjectorEvtGenerator(G4bool choice) {useLightInjectorEvt = choice; }
-  inline G4bool IsUsingLightInjectorEvtGenerator()        {return useLightInjectorEvt; }
-  inline void SetLightInjectorType(G4String choice)       { injectorType = choice; }
-  inline void SetLightInjectorIdx(G4String choice)        { injectorIdx = choice; }
-  inline void SetLightInjectorNPhotons(G4int choice)      { nphotons=choice; }
-  inline void SetLightInjectorFilename(G4String choice)   { injectorFilename = choice; }
-  inline void SetLightInjectorDetails(G4String choice)   { injectorDetails = choice; }
-  inline void SetLightInjectorDetector(G4String choice)   { injectorDetector = choice; }
-  inline void SetLightInjectorPulseWidth(G4double choice)   { injectorPulseWidth = choice; }
-  inline void SetLightInjectorWavelength(G4double choice)   { injectorWavelength = choice; }
-  inline void SetLightInjectorMode(G4bool choice)         { photonMode = choice; }
+  // Light injector with profile from db
+  inline void SetLightInjectorEvtGenerator(G4bool choice)     {useLightInjectorEvt = choice; }
+  inline G4bool IsUsingLightInjectorEvtGenerator()            {return useLightInjectorEvt; }
+  inline void SetLightInjectorType(G4String choice)           { injectorType = choice; }
+  inline void SetLightInjectorIdx(G4String choice)            { injectorIdx = choice; }
+  inline void SetLightInjectorNPhotons(G4int choice)          { nphotons=choice; }
+  inline void SetLightInjectorFilename(G4String choice)       { injectorFilename = choice; }
+  inline void SetLightInjectorProfileFormat(G4String choice)  { injectorProfileFormat = choice; }
+  inline void SetLightInjectorDetails(G4String choice)        { injectorDetails = choice; }
+  inline void SetLightInjectorDetector(G4String choice)       { injectorDetector = choice; }
+  inline void SetLightInjectorPulseWidth(G4double choice)     { injectorPulseWidth = choice; }
+  inline void SetLightInjectorWavelength(G4double choice)     { injectorWavelength = choice; }
+  inline void SetLightInjectorMode(G4bool choice)             { photonMode = choice; }
 
   inline void SetDataTableEvtGenerator(G4bool choice) {
     useDataTableEvt = choice;

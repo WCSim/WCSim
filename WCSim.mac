@@ -386,6 +386,7 @@
 #/mygen/injectorWavelength 400
 #/mygen/injectorFilename LightInjectors.json
 #/mygen/injectorDetails LightInjectorsDetails.json
+#/mygen/injectorProfileFormat xyAngle
 # Photon times are Gaussian-distributed around a mean of 20 ns with a FWHM pulse width (ns).
 #/mygen/injectorPulseWidth 10
 # Default /mygen/photonMode 0 generates photon directions using the LI profile
