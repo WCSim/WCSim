@@ -291,29 +291,20 @@ void WCSimLIGen::LoadProfilePDF(){
     else if (profileFormat == "xyAngle"){
         G4cout << "LIGen: [INFO] Using an x-y angular tilt profile" << G4endl;
         // Convert the tilt in the x and y axes to distances
-        std::transform(thetaVals.begin(), thetaVals.end(), thetaVals.begin(),
+	std::vector<double> xVals(thetaVals.size());
+	std::vector<double> yVals(phiVals.size());
+        std::transform(thetaVals.begin(), thetaVals.end(), xVals.begin(),
                    [](double n) { return sin((n-90)*deg); });
-        std::transform(phiVals.begin(), phiVals.end(), phiVals.begin(),
+        std::transform(phiVals.begin(), phiVals.end(), yVals.begin(),
                    [](double n) { return sin(n*deg); });
-	// Now project these planar values onto a sphere of radius 1
-	std::vector<double> xVals;
-	std::vector<double> yVals;
-	for (size_t i = 0; i < thetaVals.size(); i++){
-            double x = thetaVals[i];
-            double y = phiVals[i];
-            double x_sphere = 2*x/(1+pow(x,2)+pow(y,2));
-            double y_sphere = 2*y/(1+pow(x,2)+pow(y,2));
-            xVals.push_back(x_sphere);
-            yVals.push_back(y_sphere);
-	}
-        // Now fill the profile to be sampled with the stereographic projection
+        // Now fill the profile to be sampled
 	float xMin = *std::min_element(xVals.begin(),xVals.end());
 	float xMax = *std::max_element(xVals.begin(),xVals.end());
 	float yMin = *std::min_element(yVals.begin(),yVals.end());
 	float yMax = *std::max_element(yVals.begin(),yVals.end());
         hProfile = new TH2D("hProfile","hProfile",thetabins,xMin,xMax,phibins,yMin,yMax);
-        hProfileSampled = new TH2D("hProfileSampled","hProfileSampled",thetabins,xMin,xMax,phibins,yMin,yMax);
 	for (size_t i = 0; i<xVals.size(); i++){
+            // Fill first, before weighting with intensity (for speed)
             hProfile->Fill(xVals[i],yVals[i]);
 	    int bin = hProfile->FindBin(xVals[i],yVals[i]);
 	    hProfile->SetBinContent(bin,intensity[i]);
@@ -428,10 +419,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
 		G4double px;
 		G4double py;
                 hProfile->GetRandom2(px,py);
-                float x = sin(px);
-                float y = sin(py);
-                G4double pz = (1-pow(px,2)-pow(py,2))/(1+pow(px,2)+pow(py,2));
-		hProfileSampled->Fill(px,py);
+                G4double pz = sqrt(1-pow(px,2)-pow(py,2));
                 // Rotate the photon direction wrt the injector axis using the
                 // angle and axis of rotation calculated earlier
                 G4ThreeVector dir = {px,py,pz};
@@ -454,9 +442,6 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                     myLIGun->GeneratePrimaryVertex(anEvent);
                 }
             }
-	    TCanvas *c1 = new TCanvas("c1","c1",900,900);
-	    hProfileSampled->Draw("colz");
-	    c1->SaveAs("hProfileSampled.png");
         }
 	else{ 
             G4cerr << "LIGen: [ERROR] There is currently no method to handle this profile format" << G4endl;

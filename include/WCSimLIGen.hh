@@ -41,7 +41,6 @@ public:
   
 private:
   TH2D *hProfile = nullptr;
-  TH2D *hProfileSampled = nullptr;
   TGraph2D *prof = nullptr;
   G4ParticleGun* myLIGun;
   G4String profileFormat;
