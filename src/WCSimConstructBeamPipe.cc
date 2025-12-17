@@ -1,5 +1,7 @@
 #include "WCSimDetectorConstruction.hh"
 
+#include "G4Box.hh"
+#include "G4NistManager.hh"
 #include "G4LogicalVolume.hh"
 #include "G4VisAttributes.hh"
 #include "G4Material.hh"
@@ -103,8 +105,66 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructBeamPipe()
                     0,
                     checkOverlaps);
 
+  //////////////////////////////////////////////////
+  /// 3) T5 TOF Scintillator                     ///
+  //////////////////////////////////////////////////
+
+  // Get EJ-228 Material (Polyvinyltoluene based)
+  G4NistManager* nist = G4NistManager::Instance();
+  G4Material* scintMaterial = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
+  
+  // Dimensions
+  const G4int nBars = 8;
+  G4double barHeight = 16.25 * mm;
+  G4double barThick  = 6.4 * mm;
+  G4double barLengths[nBars] = {41*mm, 94*mm, 112*mm, 123*mm, 123*mm, 112*mm, 94*mm, 41*mm};
+
+  // Visual Attributes for Scintillator (Cyan)
+  G4VisAttributes *scintAttributes = new G4VisAttributes(G4Colour::Cyan());
+  scintAttributes->SetVisibility(true);
+  scintAttributes->SetForceSolid(true);
+
+  // Positioning
+  // Calculate total height to center the stack in Y
+  G4double totalStackHeight = nBars * barHeight; 
+  G4double startY = -totalStackHeight / 2.0;
+
+  // Z Position: Place it inside the air volume, slightly upstream of the beam window.
+  // The air volume ends at (pmt_blacksheet_offset + window_blacksheet_distance).
+  // We place it 10mm upstream of the window to avoid overlaps.
+  G4double t5_z_position = (pmt_blacksheet_offset + window_blacksheet_distance) - 10.0*mm - (barThick/2.0);
+
+  for(G4int i=0; i<nBars; i++) {
+      G4String barName = "T5_Bar_" + std::to_string(i+1);
+      
+      // G4Box takes half-dimensions
+      G4Box* solidBar = new G4Box(barName + "_Solid", 
+                                  barLengths[i]/2.0, 
+                                  barHeight/2.0, 
+                                  barThick/2.0);
+
+      G4LogicalVolume* logicBar = new G4LogicalVolume(solidBar, 
+                                                      scintMaterial, 
+                                                      barName + "_Logic");
+      
+      logicBar->SetVisAttributes(scintAttributes);
+
+      // Calculate Y position for this specific bar
+      // i=0 is the bottom-most bar (most negative Y)
+      G4double yPos = startY + (i * barHeight) + (barHeight / 2.0);
+
+      new G4PVPlacement(0,
+                        G4ThreeVector(0, yPos, t5_z_position),
+                        logicBar,
+                        barName + "_Phys",
+                        logicPipeInterior, // Place inside the air volume
+                        false,
+                        i,                 // Copy number matches bar index
+                        checkOverlaps);
+  }
+
   //////////////////////////////
-  /// 3) Beam window         ///
+  /// 4) Beam window         ///
   //////////////////////////////
   G4double window_zRange_outer[6] = { pmt_blacksheet_offset+window_blacksheet_distance,                       
                                       pmt_blacksheet_offset+window_blacksheet_distance+windowThickness };
