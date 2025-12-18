@@ -134,6 +134,18 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   BGOPosition->SetUnitCategory("Length");
   BGOPosition->SetDefaultUnit("mm");
 
+  NiCfPlacement = new G4UIcmdWithABool("/WCSim/NiCfPlacement", this);
+  NiCfPlacement->SetGuidance("Place NiCf Calibration Ball Inside Detector");
+  NiCfPlacement->SetParameterName("NiCfPlacement", false);
+  NiCfPlacement->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  NiCfPosition = new G4UIcmdWith3VectorAndUnit("/WCSim/NiCfPosition", this);
+  NiCfPosition->SetGuidance("Set NiCf position inside the tank (unit: mm cm m). Default will be 0 0 0 cm");
+  NiCfPosition->SetParameterName("X", "Y", "Z", false);
+  NiCfPosition->SetDefaultValue(G4ThreeVector(0,0,0));
+  NiCfPosition->SetUnitCategory("Length");
+  NiCfPosition->SetDefaultUnit("cm");
+
   PMTSize = new G4UIcmdWithAString("/WCSim/WCPMTsize",this);
   PMTSize->SetGuidance("Set alternate PMT size for the WC (Must be entered after geometry details are set).");
   PMTSize->SetGuidance("Available options 20inch 10inch");
@@ -687,6 +699,9 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete BGOPlacement;
   delete BGOPosition;
 
+  delete NiCfPlacement;
+  delete NiCfPosition;
+
   delete ScanGeometryStepSize;
   delete ScanGeometryToFile;
   delete ScanGeometryBoundaryWidth;
@@ -909,7 +924,22 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   if(command == BGOPosition) {
     G4ThreeVector BGOvec = BGOPosition->GetNew3VectorValue(newValue);
     WCSimDetector->SetPositionBGOGeometry(BGOvec.x(),BGOvec.y(),BGOvec.z());
+  }
 
+  if(command == NiCfPlacement) {
+    if (NiCfPlacement->GetNewBoolValue(newValue)) {
+      G4cout << "Placing NiCf Calibration Ball" << G4endl;
+      WCSimDetector->SetPlaceNiCfGeometry(true);
+    }
+    else {
+      G4cout << "Removing NiCf Calibration Ball from Geometry" << G4endl; 
+      WCSimDetector->SetPlaceNiCfGeometry(false);
+    }
+  }
+
+  if(command == NiCfPosition) {
+    G4ThreeVector NiCfvec = NiCfPosition->GetNew3VectorValue(newValue);
+    WCSimDetector->SetPositionNiCfGeometry(NiCfvec.x(),NiCfvec.y(),NiCfvec.z());
   }
 
 	if(command == PMTSize) {

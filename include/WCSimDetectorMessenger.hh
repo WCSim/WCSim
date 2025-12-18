@@ -38,6 +38,8 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWithAString* PMTGeomDetails;
   G4UIcmdWithABool*   BGOPlacement;
   G4UIcmdWith3VectorAndUnit* BGOPosition;
+  G4UIcmdWithABool*   NiCfPlacement;
+  G4UIcmdWith3VectorAndUnit* NiCfPosition;
   G4UIcmdWithAString* PMTSize;
   G4UIcmdWithAString* PMTSize2;
   G4UIcmdWithAString* SavePi0;
