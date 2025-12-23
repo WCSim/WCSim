@@ -956,14 +956,17 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
     WCSimRootTrigger * wcsimrootevent2 = wcsimrootsuperevent2->GetTrigger(0);
 
     bool skipFillingTracks = false;
+    bool skipFillingRooTracker = false;
     FillRootEventHybrid(event_id,
 			jhfNtuple,
 			trajectoryContainer,
 			WCDC_hits,
 			WCDC,
 			"tank",wcsimrootsuperevent,wcsimrootevent,
-			skipFillingTracks);
+			skipFillingTracks,
+			skipFillingRooTracker);
     skipFillingTracks = true;
+    skipFillingRooTracker = true;
     if(detectorConstructor->GetHybridPMT()){
       FillRootEventHybrid(event_id,
 			  jhfNtuple,
@@ -971,7 +974,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 			  WCDC_hits2,
 			  WCDC2,
 			  "tankPMT2",wcsimrootsuperevent2,wcsimrootevent2,
-			  skipFillingTracks);
+			  skipFillingTracks,
+			  skipFillingRooTracker);
     }
 
     if(detectorConstructor->GetIsODConstructed()){
@@ -981,7 +985,8 @@ void WCSimEventAction::EndOfEventAction(const G4Event* evt)
 		    WCDC_hits_OD,
 		    WCDC_OD,
 		    "OD",
-		    skipFillingTracks);
+		    skipFillingTracks,
+		    skipFillingRooTracker);
     }
     runAction->incrementEventsGenerated(); // Increment after filling branches
 
@@ -1121,7 +1126,8 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
 				     WCSimWCDigitsCollection* WCDC_hits,
 				     WCSimWCTriggeredDigitsCollection* WCDC,
 				     G4String detectorElement,
-				     bool skipFillingTracks)
+				     bool skipFillingTracks,
+				     bool skipFillingRooTracker)
 {
   // Fill up a Root event with stuff from the ntuple
 
@@ -1704,15 +1710,13 @@ void WCSimEventAction::FillRootEvent(G4int event_id,
   //G4cout <<"WCFV digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";
   //  }
 
-  /*
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
-  if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
+  if(!skipFillingRooTracker && GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
       GetRunAction()->ClearRootrackerVertexArray();
       generatorAction->CopyRootrackerVertex(GetRunAction()->GetRootrackerVertex()); //will increment NVtx
       GetRunAction()->FillRootrackerVertexTree();
   }
-  */
 
 }
 
@@ -1724,7 +1728,8 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
 				       G4String detectorElement,
 				       WCSimRootEvent * wcsimrootsuperevent,
 					   WCSimRootTrigger * wcsimrootevent,
-					   bool skipFillingTracks)
+					   bool skipFillingTracks,
+					   bool skipFillingRooTracker)
  {
   wcsimrootsuperevent->ReInitialize();
   // start with the first "sub-event"
@@ -2295,15 +2300,13 @@ void WCSimEventAction::FillRootEventHybrid(G4int event_id,
   //G4cout <<"WCFV digi sumQ:"<<std::setw(4)<<wcsimrootevent->GetSumQ()<<"  ";
   //  }
 
-  /*
   // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
   // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
-  if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
+  if(!skipFillingRooTracker && GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
       GetRunAction()->ClearRootrackerVertexArray();
       generatorAction->CopyRootrackerVertex(GetRunAction()->GetRootrackerVertex()); //will increment NVtx
       GetRunAction()->FillRootrackerVertexTree();
   }
-  */
 }
 
 

@@ -129,8 +129,8 @@ public:
     fRooTrackerOutputTree->Fill();
   }
   void ClearRootrackerVertexArray() { 
-      fVertices->Clear(); 
-      fNVtx = 0;
+    //fVertices->Clear(); 
+    //fNVtx = 0;
   }
 
   void SetUseTimer(bool use) { useTimer = use; }

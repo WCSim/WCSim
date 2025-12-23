@@ -164,12 +164,14 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
       //Setup rooTracker tree
       if (SaveRooTracker) {
 	//Setup TClonesArray to store Rootracker truth info
-	fVertices = new TClonesArray("NRooTrackerVtx", 10);
-	fVertices->Clear();
+	//fVertices = new TClonesArray("NRooTrackerVtx", 10);
+	//fVertices->Clear();
 	fNVtx = 0;
+	evNRooTracker = new NRooTrackerVtx;
 	fRooTrackerOutputTree = new TTree("fRooTrackerOutputTree", "Event Vertex Truth Array");
-	fRooTrackerOutputTree->Branch("NVtx", &fNVtx, "NVtx/I");
-	fRooTrackerOutputTree->Branch("NRooTrackerVtx", "TClonesArray", &fVertices);
+	//fRooTrackerOutputTree->Branch("NVtx", &fNVtx, "NVtx/I");
+	//fRooTrackerOutputTree->Branch("NRooTrackerVtx", "TClonesArray", &fVertices);
+	fRooTrackerOutputTree->Branch("NRooTrackerVtx", &evNRooTracker);
       }
     }
     else{
@@ -818,9 +820,9 @@ void WCSimRunAction::FillFlatGeoTree(){
 }
 
 NRooTrackerVtx* WCSimRunAction::GetRootrackerVertex(){
-
-  NRooTrackerVtx* currRootrackerVtx = new((*fVertices)[fNVtx])NRooTrackerVtx();
-  fNVtx += 1;
-  return currRootrackerVtx;
+  return evNRooTracker;
+  //NRooTrackerVtx* currRootrackerVtx = new((*fVertices)[fNVtx])NRooTrackerVtx();
+  //fNVtx += 1;
+  //return currRootrackerVtx;
 }
 

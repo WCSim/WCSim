@@ -235,18 +235,23 @@ void NRooTrackerVtx::Print(const Option_t*) const
     cout << "  --> EvtDXSec      = " << EvtDXSec << endl;
     cout << "  --> EvtWght       = " << EvtWght << endl;
     cout << "  --> EvtProb       = " << EvtProb << endl;
+    cout << "  --> EvtVtx = ";
+    for(int i = 0; i < 4; i++) {
+      cout << EvtVtx[i] << ", ";
+    }
+    cout << endl;
     cout << "  --> TruthVertexID = " << TruthVertexID << endl;
 
 
-    cout << "NRooTrackerStdHep:" << endl;
+    cout << "NRooTrackerStdHep: " << StdHepN << " values" << endl;
 
     for(int i=0; i<StdHepN; i++) {
         cout 
             << setfill(' ') << setw(4)  << i 
             << " -> pdgc: " 
-            << " / ist: " 
+            << " / status: " 
             << setfill(' ') << setw(3) << StdHepStatus[i] 
-            << " / mom: "
+            << " / mother: "
             << setfill(' ') << setw(3) << StdHepFm[i]   
             << " / daughters: (" 
             << setfill(' ') << setw(3) << StdHepFd[i] 
