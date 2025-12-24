@@ -480,9 +480,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       //Load event from file
       if(fEvNum == 0){
-	fSettingsTree->SetBranchAddress("NuBeamAng",&fNuBeamAng);
-	fSettingsTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
-	fSettingsTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
 	fSettingsTree->GetEntry(0);
       }
       if (fEvNum<fNEntries){
@@ -1829,7 +1826,6 @@ void WCSimPrimaryGeneratorAction::OpenRootrackerFile(G4String fileName)
   }
 
   fRooTrackerTree = (TTree*) fInputRootrackerFile->Get("nRooTracker");
-  fSettingsTree = (TTree*) fInputRootrackerFile->Get("Settings");
   if (!fRooTrackerTree){
     G4cout << "File: " << fileName << " does not contain a Rootracker nRooTracker tree - please check you intend to process Rootracker events" << G4endl;
     exit(1);
@@ -1839,10 +1835,24 @@ void WCSimPrimaryGeneratorAction::OpenRootrackerFile(G4String fileName)
   fTmpRootrackerVtx = new NRooTrackerVtx();
   SetupBranchAddresses(fTmpRootrackerVtx); //link fTmpRootrackerVtx and current input file
 
-  fSettingsTree->SetBranchAddress("NuBeamAng",&fNuBeamAng);
-  fSettingsTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
-  fSettingsTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
-
+  // Different names across NEUT versions
+  fSettingsTree = (TTree*) fInputRootrackerFile->Get("Settings");
+  if (fSettingsTree)
+  {
+    fSettingsTree->SetBranchAddress("NuBeamAng",&fNuBeamAng);
+    fSettingsTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
+    fSettingsTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
+  }
+  else 
+  {
+    fSettingsTree = (TTree*) fInputRootrackerFile->Get("settings");
+    if (!fSettingsTree) 
+    {
+      G4cout << "Error: Could not find 'Settings' or 'settings' tree in file!" << G4endl;
+      exit(1);
+    }
+    fSettingsTree->SetBranchAddress("NuIdfdPosGeomCoord", fNuPlanePos);
+  }
 }
 
 void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrackervtx){
