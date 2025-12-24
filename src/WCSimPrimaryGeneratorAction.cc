@@ -516,7 +516,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       //G4cout<<"od_inner_radius "<< od_inner_blacksheet_radius << G4endl;
       //G4cout<<"od_inner_full_length "<< od_inner_blacksheet_full_length << G4endl;
 
-      vector<float> od_outer_dims = myDetector->GetBoundaryWallDimensions()[kBoundaryWallODOuterTyvek];
+      vector<float> od_outer_dims = od_inner_dims;
+      // OuterTyvek may not exist
+      if (myDetector->GetBoundaryWallDimensions().count(kBoundaryWallODOuterTyvek)) myDetector->GetBoundaryWallDimensions()[kBoundaryWallODOuterTyvek];
       double od_outer_blacksheet_radius = od_outer_dims[0];
       double od_outer_blacksheet_full_length = od_outer_dims[1];
       //G4cout<<"od_outer_radius "<< od_outer_blacksheet_radius << G4endl;
