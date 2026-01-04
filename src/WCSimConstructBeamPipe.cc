@@ -108,58 +108,150 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructBeamPipe()
   //////////////////////////////////////////////////
   /// 3) T5 TOF Scintillator                     ///
   //////////////////////////////////////////////////
-
-  // Get EJ-228 Material (Polyvinyltoluene based)
-  G4NistManager* nist = G4NistManager::Instance();
-  G4Material* scintMaterial = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
   
-  // Dimensions
+  // -- Materials --
+  G4NistManager* nist = G4NistManager::Instance();
+  G4Material* scintMaterial = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); // EJ-228 equivalent
+  G4Material* vinylMaterial = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE"); // PVC
+  G4Material* mylarMaterial = nist->FindOrBuildMaterial("G4_MYLAR");
+  G4Material* airMaterial   = G4Material::GetMaterial("Air1"); // For the gaps inside the assembly
+
+  // -- Dummy materials properties
+  // T5 TOF Materials Properties
+  G4double dummy_energy[3] = {1.9*eV, 2.6*eV, 3.3*eV};
+  
+  // Scintillator (EJ-228 equivalent)
+  if(scintMaterial) {
+      G4MaterialPropertiesTable *scint_mpt = new G4MaterialPropertiesTable();
+      G4double scint_rindex[3] = {1.58, 1.58, 1.58}; 
+      G4double scint_absl[3]   = {380.*cm, 380.*cm, 380.*cm}; // ~EJ-228 attenuation length
+      scint_mpt->AddProperty("RINDEX", dummy_energy, scint_rindex, 3);
+      scint_mpt->AddProperty("ABSLENGTH", dummy_energy, scint_absl, 3);
+      scintMaterial->SetMaterialPropertiesTable(scint_mpt);
+  }
+
+  // Vinyl (PVC)
+  if(vinylMaterial) {
+      G4MaterialPropertiesTable *vinyl_mpt = new G4MaterialPropertiesTable();
+      G4double vinyl_rindex[3] = {1.53, 1.53, 1.53}; 
+      G4double vinyl_absl[3]   = {1.*mm, 1.*mm, 1.*mm}; // Opaque
+      vinyl_mpt->AddProperty("RINDEX", dummy_energy, vinyl_rindex, 3);
+      vinyl_mpt->AddProperty("ABSLENGTH", dummy_energy, vinyl_absl, 3);
+      vinylMaterial->SetMaterialPropertiesTable(vinyl_mpt);
+  }
+
+  // Mylar
+  if(mylarMaterial) {
+      G4MaterialPropertiesTable *mylar_mpt = new G4MaterialPropertiesTable();
+      G4double mylar_rindex[3] = {1.65, 1.65, 1.65}; 
+      G4double mylar_absl[3]   = {100.*cm, 100.*cm, 100.*cm}; 
+      mylar_mpt->AddProperty("RINDEX", dummy_energy, mylar_rindex, 3);
+      mylar_mpt->AddProperty("ABSLENGTH", dummy_energy, mylar_absl, 3);
+      mylarMaterial->SetMaterialPropertiesTable(mylar_mpt);
+  }
+
+  // -- Dimensions (Layers) --
+  // Stack along Z: Vinyl(3mm) + Air(15.75mm) + Mylar(0.05mm) + Scint(6.4mm) + Mylar(0.05mm) + Air(14.75mm) + Vinyl(3mm)
+  G4double t_vinyl  = 3.0 * mm;
+  G4double t_gap1   = 15.75 * mm;
+  G4double t_mylar  = 0.05 * mm;
+  G4double t_scint  = 6.4 * mm;
+  G4double t_gap2   = 14.75 * mm;
+
+  G4double totalAssemblyThickness = (2*t_vinyl) + t_gap1 + (2*t_mylar) + t_scint + t_gap2; // Should be 43.0 mm
+  
+  // -- Bar Dimensions (X/Y) --
   const G4int nBars = 8;
-  G4double barHeight = 16.25 * mm;
-  G4double barThick  = 6.4 * mm;
-  G4double barLengths[nBars] = {41*mm, 94*mm, 112*mm, 123*mm, 123*mm, 112*mm, 94*mm, 41*mm};
+  G4double barHeight = 16.25 * mm; // Y dimension
+  G4double barLengths[nBars] = {41*mm, 94*mm, 112*mm, 123*mm, 123*mm, 112*mm, 94*mm, 41*mm}; // X dimension
 
-  // Visual Attributes for Scintillator (Cyan)
-  G4VisAttributes *scintAttributes = new G4VisAttributes(G4Colour::Cyan());
-  scintAttributes->SetVisibility(true);
-  scintAttributes->SetForceSolid(true);
+  // -- Visualization Attributes --
+  G4VisAttributes *visScint = new G4VisAttributes(G4Colour::Cyan());
+  visScint->SetVisibility(true); visScint->SetForceSolid(true);
 
-  // Positioning
-  // Calculate total height to center the stack in Y
+  G4VisAttributes *visVinyl = new G4VisAttributes(G4Colour::Gray());
+  visVinyl->SetVisibility(true); visVinyl->SetForceSolid(true);
+
+  G4VisAttributes *visMylar = new G4VisAttributes(G4Colour::Magenta());
+  visMylar->SetVisibility(true); visMylar->SetForceSolid(true);
+
+  // -- Positioning Logic --
+  // Starts in Z at: 5 mm from the start of the pipe
+  // The start of the beam pipe volume is at z=0 in this Polycone construction.
+  G4double z_assembly_start = 5.0 * mm;
+  G4double z_assembly_center = z_assembly_start + (totalAssemblyThickness / 2.0);
+
+  // Calculate Start Y to center the stack vertically
   G4double totalStackHeight = nBars * barHeight; 
   G4double startY = -totalStackHeight / 2.0;
 
-  // Z Position: Place it inside the air volume, slightly upstream of the beam window.
-  // The air volume ends at (pmt_blacksheet_offset + window_blacksheet_distance).
-  // We place it 10mm upstream of the window to avoid overlaps.
-  G4double t5_z_position = (pmt_blacksheet_offset + window_blacksheet_distance) - 10.0*mm - (barThick/2.0);
+  // -- Calculate local Z positions for components inside the assembly --
+  // Center of assembly is Z=0. Start is -totalAssemblyThickness/2.
+  G4double z0 = -totalAssemblyThickness / 2.0;
 
+  G4double z_pos_vinyl1 = z0 + (t_vinyl/2.0);
+  G4double z_pos_mylar1 = z0 + t_vinyl + t_gap1 + (t_mylar/2.0);
+  G4double z_pos_scint  = z0 + t_vinyl + t_gap1 + t_mylar + (t_scint/2.0);
+  G4double z_pos_mylar2 = z0 + t_vinyl + t_gap1 + t_mylar + t_scint + (t_mylar/2.0);
+  G4double z_pos_vinyl2 = z0 + t_vinyl + t_gap1 + t_mylar + t_scint + t_mylar + t_gap2 + (t_vinyl/2.0);
+
+
+  // -- Loop to construct each bar --
   for(G4int i=0; i<nBars; i++) {
-      G4String barName = "T5_Bar_" + std::to_string(i+1);
+      G4String suffix = "_Bar" + std::to_string(i+1);
       
-      // G4Box takes half-dimensions
-      G4Box* solidBar = new G4Box(barName + "_Solid", 
-                                  barLengths[i]/2.0, 
-                                  barHeight/2.0, 
-                                  barThick/2.0);
+      G4double halfLenX = barLengths[i] / 2.0;
+      G4double halfHgtY = barHeight / 2.0;
 
-      G4LogicalVolume* logicBar = new G4LogicalVolume(solidBar, 
-                                                      scintMaterial, 
-                                                      barName + "_Logic");
-      
-      logicBar->SetVisAttributes(scintAttributes);
+      // 1. Create Container Volume (Air)
+      G4Box* solidAssembly = new G4Box("T5_AssemblySolid" + suffix, 
+                                       halfLenX, 
+                                       halfHgtY, 
+                                       totalAssemblyThickness/2.0);
 
-      // Calculate Y position for this specific bar
-      // i=0 is the bottom-most bar (most negative Y)
-      G4double yPos = startY + (i * barHeight) + (barHeight / 2.0);
+      G4LogicalVolume* logicAssembly = new G4LogicalVolume(solidAssembly, 
+                                                           airMaterial, 
+                                                           "T5_AssemblyLogic" + suffix);
+      logicAssembly->SetVisAttributes(G4VisAttributes::Invisible); // Hide container
+
+      // 2. Create Component Solids (All share X/Y dimensions of the container)
+      G4Box* sVinyl = new G4Box("T5_Vinyl"+suffix, halfLenX, halfHgtY, t_vinyl/2.0);
+      G4Box* sMylar = new G4Box("T5_Mylar"+suffix, halfLenX, halfHgtY, t_mylar/2.0);
+      G4Box* sScint = new G4Box("T5_Scint"+suffix, halfLenX, halfHgtY, t_scint/2.0);
+
+      // 3. Create Component Logicals
+      G4LogicalVolume* lVinyl = new G4LogicalVolume(sVinyl, vinylMaterial, "T5_Vinyl_Log"+suffix);
+      lVinyl->SetVisAttributes(visVinyl);
+
+      G4LogicalVolume* lMylar = new G4LogicalVolume(sMylar, mylarMaterial, "T5_Mylar_Log"+suffix);
+      lMylar->SetVisAttributes(visMylar);
+
+      G4LogicalVolume* lScint = new G4LogicalVolume(sScint, scintMaterial, "T5_Scint_Log"+suffix);
+      lScint->SetVisAttributes(visScint);
+
+      // 4. Place Components inside Assembly
+      // Vinyl 1
+      new G4PVPlacement(0, G4ThreeVector(0,0,z_pos_vinyl1), lVinyl, "T5_Vinyl1_Phys"+suffix, logicAssembly, false, 0, checkOverlaps);
+      // Mylar 1
+      new G4PVPlacement(0, G4ThreeVector(0,0,z_pos_mylar1), lMylar, "T5_Mylar1_Phys"+suffix, logicAssembly, false, 0, checkOverlaps);
+      // Scintillator
+      new G4PVPlacement(0, G4ThreeVector(0,0,z_pos_scint),  lScint, "T5_Scint_Phys"+suffix,  logicAssembly, false, 0, checkOverlaps);
+      // Mylar 2
+      new G4PVPlacement(0, G4ThreeVector(0,0,z_pos_mylar2), lMylar, "T5_Mylar2_Phys"+suffix, logicAssembly, false, 1, checkOverlaps);
+      // Vinyl 2
+      new G4PVPlacement(0, G4ThreeVector(0,0,z_pos_vinyl2), lVinyl, "T5_Vinyl2_Phys"+suffix, logicAssembly, false, 1, checkOverlaps);
+
+      // 5. Place Assembly in Beam Pipe
+      // Calculate Y position for this bar (i=0 is bottom)
+      G4double yPos = startY + (i * barHeight) + halfHgtY;
 
       new G4PVPlacement(0,
-                        G4ThreeVector(0, yPos, t5_z_position),
-                        logicBar,
-                        barName + "_Phys",
-                        logicPipeInterior, // Place inside the air volume
+                        G4ThreeVector(0, yPos, z_assembly_center),
+                        logicAssembly,
+                        "T5_Assembly_Phys" + suffix,
+                        logicPipeInterior, 
                         false,
-                        i,                 // Copy number matches bar index
+                        i,
                         checkOverlaps);
   }
 
