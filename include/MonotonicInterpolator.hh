@@ -20,6 +20,7 @@ public:
   double Interpolate1D(double xval) const;
   double Interpolate2D(double xval, double yval) const;
   std::vector<std::vector<double>> GetSlopes2D() const {return m2d_;};
+  std::vector<double> GetSlopes1D() const {return m1d_;};
   double Evaluate1D(double xval);
   double Evaluate2D(double xval, double yval);
   
