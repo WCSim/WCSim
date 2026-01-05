@@ -15,6 +15,8 @@
 
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
+#include <Build.h>
+
 
 void WCSimDetectorConstruction::ConstructMaterials()
 {
@@ -240,6 +242,12 @@ void WCSimDetectorConstruction::ConstructMaterials()
   WLS_PVT->AddElement(elC, 9); // PVT
   WLS_PVT->AddElement(elH, 10);
 
+  // Setup same material for IWCD, so we can use a different photon model if required
+  density = 1.023*g/cm3;  // at 20deg
+  G4Material* WLS_IWCD_PVT
+      = new G4Material("WLS_IWCD_PVT",density,2);
+  WLS_IWCD_PVT->AddElement(elC, 9); // PVT
+  WLS_IWCD_PVT->AddElement(elH, 10);  
 
   //** OD WLS cladding properties
   const G4int wls_od_cladding_num = 2;
@@ -1477,9 +1485,12 @@ void WCSimDetectorConstruction::ConstructMaterials()
       { 0.0, 0.0 };
   // Lambertian prob is therefore 0.25
 
-#define NUMENTRIES_TY 33 // Number of bins of wavelength to be used for the Tyvek reflectivity
+#define NUMENTRIES_TY_FDOD 36 // Number of bins of wavelength to be used for the Tyvek reflectivity
+#define NUMENTRIES_TY_IWCD 33 
 
-  G4double PP_TyREFLECTIVITY[NUMENTRIES_TY] = //Tyvek reflectivity wavelength bins
+  double WCODTyvekReflectivity = WCSimTuningParams->GetWCODTyvekReflectivity();
+
+  G4double PP_TyREFLECTIVITY_FDOD[NUMENTRIES_TY_FDOD] = //Tyvek reflectivity wavelength bins
       { 2.06642*eV,
         2.10144*eV, 2.13768*eV, 2.17518*eV, 2.21402*eV, 2.25428*eV,
         2.29602*eV, 2.33934*eV, 2.38433*eV, 2.43108*eV, 2.4797*eV,
@@ -1487,12 +1498,37 @@ void WCSimDetectorConstruction::ConstructMaterials()
         2.81784*eV, 2.88338*eV, 2.95203*eV, 3.02403*eV, 3.09963*eV,
         3.17911*eV, 3.26277*eV, 3.35095*eV, 3.44403*eV, 3.54243*eV,
         3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
+        4.27535*eV, 4.42804*eV, 4.6*eV, 4.8*eV, 5.0*eV};
+
+  G4double OD_tyvek_reflectivity_scaling_factor_FDOD = WCODTyvekReflectivity/0.95; // this should be the maximum of the reflectivity values
+
+  G4double TyREFLECTIVITY_FDOD[NUMENTRIES_TY_FDOD] = // Tyvek refelctivity
+    { 0.94, // 600 nm
+      0.941, 0.942, 0.943, 0.944, 0.945, // 590-550
+      0.946, 0.947, 0.948, 0.949, 0.95, // 540-500
+      0.95, 0.95, 0.95, 0.95, 0.95, // 490-450
+      0.95, 0.95, 0.95, 0.95, 0.95, // 440-400
+      0.948, 0.946, 0.944, 0.942, 0.94, // 390-350
+      0.93, 0.92, 0.91, 0.89, 0.86, // 340-300
+      0.80, 0.76, 0.70, 0.65, 0.55}; // 290-250
+
+ for(int i=0; i<NUMENTRIES_TY_FDOD; i++)
+    TyREFLECTIVITY_FDOD[i] *= OD_tyvek_reflectivity_scaling_factor_FDOD;
+
+
+  G4double PP_TyREFLECTIVITY_IWCD[NUMENTRIES_TY_IWCD] = //Tyvek reflectivity wavelength bins
+      { 2.06642*eV,
+        2.10144*eV, 2.13768*eV, 2.17518*eV, 2.21402*eV, 2.25428*eV,
+        2.29602*eV, 2.33934*eV, 2.38433*eV, 2.43108*eV, 2.4797*eV,
+        2.53031*eV, 2.58302*eV, 2.63798*eV, 2.69533*eV, 2.75523*eV,
+	2.81784*eV, 2.88338*eV, 2.95203*eV, 3.02403*eV, 3.09963*eV,
+        3.17911*eV, 3.26277*eV, 3.35095*eV, 3.44403*eV, 3.54243*eV,
+        3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
         4.27535*eV, 4.42804*eV};
 
-  double WCODTyvekReflectivity = WCSimTuningParams->GetWCODTyvekReflectivity();
-  G4double OD_tyvek_reflectivity_scaling_factor = WCODTyvekReflectivity/0.97;
+  G4double OD_tyvek_reflectivity_scaling_factor_IWCD = WCODTyvekReflectivity/0.97; 
 
-  G4double TyREFLECTIVITY[NUMENTRIES_TY] = // Tyvek refelctivity
+  G4double TyREFLECTIVITY_IWCD[NUMENTRIES_TY_IWCD] = // Tyvek refelctivity
       { 0.97,
         0.97, 0.97, 0.97, 0.97, 0.97,
         0.97, 0.97, 0.97, 0.97, 0.97,
@@ -1502,8 +1538,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
         0.94, 0.93, 0.92, 0.91, 0.90,
         0.89, 0.86};
 
-  for(int i=0; i<NUMENTRIES_TY; i++)
-    TyREFLECTIVITY[i] *= OD_tyvek_reflectivity_scaling_factor;
+ for(int i=0; i<NUMENTRIES_TY_IWCD; i++)
+    TyREFLECTIVITY_IWCD[i] *= OD_tyvek_reflectivity_scaling_factor_IWCD;
 
   G4MaterialPropertiesTable *MPT_Tyvek = new G4MaterialPropertiesTable();
   // MPT_Tyvek->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
@@ -1515,17 +1551,18 @@ void WCSimDetectorConstruction::ConstructMaterials()
   MPTWater_Ty->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
   MPTWater_Ty->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
   MPTWater_Ty->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
-  MPTWater_Ty->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY, TyREFLECTIVITY, NUMENTRIES_TY);
+  if( isNuPrism )
+    MPTWater_Ty->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY_IWCD, TyREFLECTIVITY_IWCD, NUMENTRIES_TY_IWCD);
+  else
+    MPTWater_Ty->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY_FDOD, TyREFLECTIVITY_FDOD, NUMENTRIES_TY_FDOD);
   OpWaterTySurface->SetMaterialPropertiesTable(MPTWater_Ty);
   //
   // ----
 
   ///////////////////////
-  // ###### WLS ###### //
+  // ###### WLS common variables ###### //
   ///////////////////////
-
-  G4MaterialPropertiesTable *WlsPlasticMPT = new G4MaterialPropertiesTable();
-
+  
   //double no_absorption = 1000.*m;
   //double immediate_absorption = 0.*m;
   double some_absorption = 1.*m;
@@ -1538,6 +1575,92 @@ void WCSimDetectorConstruction::ConstructMaterials()
     { 1.*eV, 7*eV };
   G4double fake_passive_abslength_vs_energy[nEntries_fake_abslength] =
     {some_absorption,some_absorption};
+  //  acrylic data from https://arxiv.org/pdf/1310.6454.pdf
+  
+  ///////////////////////
+  // ###### WLS for IWCD ###### //
+  ///////////////////////
+
+  G4MaterialPropertiesTable *WlsPlasticMPT_IWCD = new G4MaterialPropertiesTable();
+
+  WlsPlasticMPT_IWCD->AddProperty("ABSLENGTH",fake_energy_for_abslength,fake_passive_abslength_vs_energy,nEntries_fake_abslength);
+
+  // MATERIAL properties
+  G4double* WLS_IWCD_PhotonEnergy;
+  G4double* WLS_IWCD_Transmittance;
+  G4int WLS_IWCD_NumEntriesTransmittance;
+  G4double* WLS_IWCD_RIndex;
+  G4double* WLS_IWCD_PhotonEnergy_ABS;
+  G4double* WLS_IWCD_Abs;
+  G4int WLS_IWCD_NumEntries_ABS;
+  G4double* WLS_IWCD_PhotonEnergy_EM;
+  G4double* WLS_IWCD_Em;
+  G4int WLS_IWCD_NumEntries_EM;
+  G4int WLS_IWCD_NumEntries;
+  
+  if( IWCD_OD_WLS_PLATE_TYPE == "EljenEJ286" ){
+    EljenEJ286 *WLS_IWCD_Props = new EljenEJ286();
+    WLS_IWCD_PhotonEnergy = WLS_IWCD_Props->GetPhotonEnergy();
+    WLS_IWCD_Transmittance = WLS_IWCD_Props->GetTransmittance();
+    WLS_IWCD_NumEntriesTransmittance = WLS_IWCD_Props->GetNumEntriesTransmittance();
+    WLS_IWCD_RIndex = WLS_IWCD_Props->GetRIndex();
+    WLS_IWCD_PhotonEnergy_ABS = WLS_IWCD_Props->GetPhotonEnergy_ABS();
+    WLS_IWCD_Abs = WLS_IWCD_Props->GetAbs();
+    WLS_IWCD_NumEntries_ABS = WLS_IWCD_Props->GetNumEntries_ABS();
+    WLS_IWCD_PhotonEnergy_EM = WLS_IWCD_Props->GetPhotonEnergy_EM();
+    WLS_IWCD_Em = WLS_IWCD_Props->GetEm();
+    WLS_IWCD_NumEntries_EM = WLS_IWCD_Props->GetNumEntries_EM();
+    WLS_IWCD_NumEntries = WLS_IWCD_Props->GetNumEntries();    
+  } else if( IWCD_OD_WLS_PLATE_TYPE == "Kuraray" ){
+    Kuraray *WLS_IWCD_Props = new Kuraray();
+    WLS_IWCD_PhotonEnergy = WLS_IWCD_Props->GetPhotonEnergy();
+    WLS_IWCD_Transmittance = WLS_IWCD_Props->GetTransmittance();
+    WLS_IWCD_NumEntriesTransmittance = WLS_IWCD_Props->GetNumEntriesTransmittance();
+    WLS_IWCD_RIndex = WLS_IWCD_Props->GetRIndex();
+    WLS_IWCD_PhotonEnergy_ABS = WLS_IWCD_Props->GetPhotonEnergy_ABS();
+    WLS_IWCD_Abs = WLS_IWCD_Props->GetAbs();
+    WLS_IWCD_NumEntries_ABS = WLS_IWCD_Props->GetNumEntries_ABS();
+    WLS_IWCD_PhotonEnergy_EM = WLS_IWCD_Props->GetPhotonEnergy_EM();
+    WLS_IWCD_Em = WLS_IWCD_Props->GetEm();
+    WLS_IWCD_NumEntries_EM = WLS_IWCD_Props->GetNumEntries_EM();
+    WLS_IWCD_NumEntries = WLS_IWCD_Props->GetNumEntries();    
+  } else if( IWCD_OD_WLS_PLATE_TYPE == "Inr" ){
+    Inr *WLS_IWCD_Props = new Inr();
+    WLS_IWCD_PhotonEnergy = WLS_IWCD_Props->GetPhotonEnergy();
+    WLS_IWCD_Transmittance = WLS_IWCD_Props->GetTransmittance();
+    WLS_IWCD_NumEntriesTransmittance = WLS_IWCD_Props->GetNumEntriesTransmittance();
+    WLS_IWCD_RIndex = WLS_IWCD_Props->GetRIndex();
+    WLS_IWCD_PhotonEnergy_ABS = WLS_IWCD_Props->GetPhotonEnergy_ABS();
+    WLS_IWCD_Abs = WLS_IWCD_Props->GetAbs();
+    WLS_IWCD_NumEntries_ABS = WLS_IWCD_Props->GetNumEntries_ABS();
+    WLS_IWCD_PhotonEnergy_EM = WLS_IWCD_Props->GetPhotonEnergy_EM();
+    WLS_IWCD_Em = WLS_IWCD_Props->GetEm();
+    WLS_IWCD_NumEntries_EM = WLS_IWCD_Props->GetNumEntries_EM();
+    WLS_IWCD_NumEntries = WLS_IWCD_Props->GetNumEntries();    
+  } else {
+    G4cerr << "Unknown IWCD_OD_WLS_PLATE_TYPE " << IWCD_OD_WLS_PLATE_TYPE << G4endl;
+    throw;
+  }
+  
+  // Define normal reflectivity from Fresnel equations
+
+  WlsPlasticMPT_IWCD->AddProperty("TRANSMITTANCE", WLS_IWCD_PhotonEnergy, WLS_IWCD_Transmittance, WLS_IWCD_NumEntriesTransmittance);
+
+  WlsPlasticMPT_IWCD->AddProperty("RINDEX",WLS_IWCD_PhotonEnergy,WLS_IWCD_RIndex,WLS_IWCD_NumEntries);
+  WlsPlasticMPT_IWCD->AddProperty("WLSABSLENGTH",WLS_IWCD_PhotonEnergy_ABS,WLS_IWCD_Abs,WLS_IWCD_NumEntries_ABS);
+  WlsPlasticMPT_IWCD->AddProperty("WLSCOMPONENT",WLS_IWCD_PhotonEnergy_EM,WLS_IWCD_Em,WLS_IWCD_NumEntries_EM);
+  WlsPlasticMPT_IWCD->AddConstProperty("WLSTIMECONSTANT", 1.2*ns); // TODO: Need measurement
+  WLS_IWCD_PVT->SetMaterialPropertiesTable(WlsPlasticMPT_IWCD);
+
+  ///////////////////////
+  // ###### END ###### //
+  ///////////////////////
+  
+  ///////////////////////
+  // ###### WLS for FD ###### //
+  ///////////////////////
+
+  G4MaterialPropertiesTable *WlsPlasticMPT = new G4MaterialPropertiesTable();
 
   WlsPlasticMPT->AddProperty("ABSLENGTH",fake_energy_for_abslength,fake_passive_abslength_vs_energy,nEntries_fake_abslength);
 
@@ -1551,10 +1674,64 @@ void WCSimDetectorConstruction::ConstructMaterials()
   // OpWaterWLSSurface->SetSigmaAlpha(0.1); // TODO: What's this?
 
   // MATERIAL properties
-  EljenEJ286 *WLSProps = new EljenEJ286();
+  G4double* WLSPhotonEnergy;
+  G4double* WLSTransmittance;
+  G4int WLSNumEntriesTransmittance;
+  G4double* WLSRIndex;
+  G4double* WLSPhotonEnergy_ABS;
+  G4double* WLSAbs;
+  G4int WLSNumEntries_ABS;
+  G4double* WLSPhotonEnergy_EM;
+  G4double* WLSEm;
+  G4int WLSNumEntries_EM;
+  G4int WLSNumEntries;
+  
+  if( HKFD_OD_WLS_PLATE_TYPE == "EljenEJ286" ){
+    EljenEJ286 *WLSProps = new EljenEJ286();
+    WLSPhotonEnergy = WLSProps->GetPhotonEnergy();
+    WLSTransmittance = WLSProps->GetTransmittance();
+    WLSNumEntriesTransmittance = WLSProps->GetNumEntriesTransmittance();
+    WLSRIndex = WLSProps->GetRIndex();
+    WLSPhotonEnergy_ABS = WLSProps->GetPhotonEnergy_ABS();
+    WLSAbs = WLSProps->GetAbs();
+    WLSNumEntries_ABS = WLSProps->GetNumEntries_ABS();
+    WLSPhotonEnergy_EM = WLSProps->GetPhotonEnergy_EM();
+    WLSEm = WLSProps->GetEm();
+    WLSNumEntries_EM = WLSProps->GetNumEntries_EM();
+    WLSNumEntries = WLSProps->GetNumEntries();
+  } else if( HKFD_OD_WLS_PLATE_TYPE == "Kuraray" ){
+    Kuraray *WLSProps = new Kuraray();
+    WLSPhotonEnergy = WLSProps->GetPhotonEnergy();
+    WLSTransmittance = WLSProps->GetTransmittance();
+    WLSNumEntriesTransmittance = WLSProps->GetNumEntriesTransmittance();
+    WLSRIndex = WLSProps->GetRIndex();
+    WLSPhotonEnergy_ABS = WLSProps->GetPhotonEnergy_ABS();
+    WLSAbs = WLSProps->GetAbs();
+    WLSNumEntries_ABS = WLSProps->GetNumEntries_ABS();
+    WLSPhotonEnergy_EM = WLSProps->GetPhotonEnergy_EM();
+    WLSEm = WLSProps->GetEm();
+    WLSNumEntries_EM = WLSProps->GetNumEntries_EM();
+    WLSNumEntries = WLSProps->GetNumEntries();
+  } else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" ){
+    Inr *WLSProps = new Inr();
+    WLSPhotonEnergy = WLSProps->GetPhotonEnergy();
+    WLSTransmittance = WLSProps->GetTransmittance();
+    WLSNumEntriesTransmittance = WLSProps->GetNumEntriesTransmittance();
+    WLSRIndex = WLSProps->GetRIndex();
+    WLSPhotonEnergy_ABS = WLSProps->GetPhotonEnergy_ABS();
+    WLSAbs = WLSProps->GetAbs();
+    WLSNumEntries_ABS = WLSProps->GetNumEntries_ABS();
+    WLSPhotonEnergy_EM = WLSProps->GetPhotonEnergy_EM();
+    WLSEm = WLSProps->GetEm();
+    WLSNumEntries_EM = WLSProps->GetNumEntries_EM();
+    WLSNumEntries = WLSProps->GetNumEntries();
+  } else {
+    G4cerr << "Unknown HKFD_OD_WLS_PLATE_TYPE " << HKFD_OD_WLS_PLATE_TYPE << G4endl;
+    throw;
+  }
   // Define normal reflectivity from Fresnel equations
 
-  WlsPlasticMPT->AddProperty("TRANSMITTANCE", WLSProps->GetPhotonEnergy(), WLSProps->GetTransmittance(), WLSProps->GetNumEntriesTransmittance());
+  WlsPlasticMPT->AddProperty("TRANSMITTANCE", WLSPhotonEnergy, WLSTransmittance, WLSNumEntriesTransmittance);
 
 
   // Water -> WLS surface properties
@@ -1571,19 +1748,19 @@ void WCSimDetectorConstruction::ConstructMaterials()
   //     {1.-0.00207792,1.-0.00207792};
 
 
-  WlsPlasticMPT->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
-  WlsPlasticMPT->AddProperty("WLSABSLENGTH",WLSProps->GetPhotonEnergy_ABS(),WLSProps->GetAbs(),WLSProps->GetNumEntries_ABS());
-  WlsPlasticMPT->AddProperty("WLSCOMPONENT",WLSProps->GetPhotonEnergy_EM(),WLSProps->GetEm(),WLSProps->GetNumEntries_EM());
+  WlsPlasticMPT->AddProperty("RINDEX",WLSPhotonEnergy,WLSRIndex,WLSNumEntries);
+  WlsPlasticMPT->AddProperty("WLSABSLENGTH",WLSPhotonEnergy_ABS,WLSAbs,WLSNumEntries_ABS);
+  WlsPlasticMPT->AddProperty("WLSCOMPONENT",WLSPhotonEnergy_EM,WLSEm,WLSNumEntries_EM);
   WlsPlasticMPT->AddConstProperty("WLSTIMECONSTANT", 1.2*ns); // TODO: Need measurement
   WLS_PVT->SetMaterialPropertiesTable(WlsPlasticMPT);
 
   // G4MaterialPropertiesTable *MPTWLS_Water = new G4MaterialPropertiesTable();
-  // MPTWLS_Water->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
-  // MPTWLS_Water->AddProperty("TRANSMITTANCE", WLSProps->GetPhotonEnergy(), WLS_transmittance_vs_energy, nEntries_transmittance);
+  // MPTWLS_Water->AddProperty("RINDEX",WLSPhotonEnergy,WLSRIndex,WLSNumEntries);
+  // MPTWLS_Water->AddProperty("TRANSMITTANCE", WLSPhotonEnergy, WLS_transmittance_vs_energy, nEntries_transmittance);
   // OpWaterWLSSurface->SetMaterialPropertiesTable(MPTWLS_Water);
 
   // G4MaterialPropertiesTable *MPTWLS_Tyvek = new G4MaterialPropertiesTable();
-  // MPTWLS_Tyvek->AddProperty("RINDEX",WLSProps->GetPhotonEnergy(),WLSProps->GetRIndex(),WLSProps->GetNumEntries());
+  // MPTWLS_Tyvek->AddProperty("RINDEX",WLSPhotonEnergy,WLSRIndex,WLSNumEntries);
   // MPTWLS_Tyvek->AddProperty("TRANSMITTANCE", PP, TransWLSTy, NUM);
   // OpWLSTySurface->SetMaterialPropertiesTable(MPTWLS_Tyvek);
 
@@ -1615,7 +1792,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myMPT1->AddProperty("RINDEX", ENERGY_water, RINDEX1, NUMENTRIES_water);
    myMPT1->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water, NUMENTRIES_water);
    // M Fechner: new, don't let G4 compute it.
-   myMPT1->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water);
+   if (RAYFF>0) myMPT1->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water);
 
   //  myMPT1->AddProperty("MIEHG",ENERGY_water,MIE_water,NUMENTRIES_water);
 //    myMPT1->AddConstProperty("MIEHG_FORWARD",MIE_water_const[0]);
@@ -1678,7 +1855,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    G4MaterialPropertiesTable *SilGelPropTable = new G4MaterialPropertiesTable();
    SilGelPropTable->AddProperty("RINDEX", ENERGY_water, RINDEX_SilGel, NUMENTRIES_water);
    SilGelPropTable->AddProperty("ABSLENGTH",ENERGY_SilGel, ABSORPTION_SilGel, 18); //ToDo: get measurement of optical properties of the optical gel. From slides: better than 40cm above 350nm.
-   SilGelPropTable->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water); //ToDo: get actual Rayleigh scattering in gel
+   if (RAYFF>0) SilGelPropTable->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water); //ToDo: get actual Rayleigh scattering in gel
    SilGel->SetMaterialPropertiesTable(SilGelPropTable);
 
    G4MaterialPropertiesTable *SilGelPropTableWCTE = new G4MaterialPropertiesTable();
@@ -1768,7 +1945,10 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myST3->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
    myST3->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
    myST3->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
-   myST3->AddProperty("REFLECTIVITY", PP, TyREFLECTIVITY, NUM);
+   if( isNuPrism )
+     myST3->AddProperty("REFLECTIVITY", PP_TyREFLECTIVITY_IWCD, TyREFLECTIVITY_IWCD, NUMENTRIES_TY_IWCD);
+   else
+     myST3->AddProperty("REFLECTIVITY", PP_TyREFLECTIVITY_FDOD, TyREFLECTIVITY_FDOD, NUMENTRIES_TY_FDOD);
    myST3->AddProperty("EFFICIENCY", PP, EFFICIENCY_blacksheet, NUM);
    //use same efficiency as blacksheet, which is 0
    OpWaterTySurface->SetMaterialPropertiesTable(myST3);

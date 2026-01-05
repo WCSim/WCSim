@@ -16,4 +16,8 @@
 #/WCSim/physics/list FTFP_BERT_HP
 /WCSim/physics/nCapture Default
 
-
+# Activate/deactivate optical processes
+# (Cerenkov, Scintillation, OpAbsorption, OpRayleigh, OpRaman, OpMieHG, OpBoundary, OpWLS)
+# All processes are activated by default
+# Deactivate OpRaman until it is fully validated
+/process/optical/processActivation OpRaman false

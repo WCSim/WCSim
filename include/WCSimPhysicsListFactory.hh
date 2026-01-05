@@ -5,7 +5,7 @@
 #include "G4VModularPhysicsList.hh"
 #include "G4PhysListFactory.hh"
 #include "G4UnitsTable.hh"
-#include "G4OpticalPhysics.hh"
+#include "WCSimOpticalPhysics.hh"
 #include "G4RadioactiveDecayPhysics.hh" 
 
 #include "WCSimPhysicsListFactoryMessenger.hh"
