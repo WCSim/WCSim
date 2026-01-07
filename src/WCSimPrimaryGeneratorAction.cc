@@ -1914,6 +1914,46 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
   fRooTrackerTree->SetBranchAddress("NuGmec",           (nrootrackervtx->NuGmec));
   fRooTrackerTree->SetBranchAddress("NuGdistc",         (nrootrackervtx->NuGdistc));
   fRooTrackerTree->SetBranchAddress("NuGdistal",        (nrootrackervtx->NuGdistal));
+
+  // Nucleon FSI information
+  bool fHaveNFBranches = (fRooTrackerTree->SetBranchAddress("NFnvert", &(nrootrackervtx->NFnvert)) == 0);
+  if (fHaveNFBranches)
+  {
+    fRooTrackerTree->SetBranchAddress("NFiflag", (nrootrackervtx->NFiflagTEMP));
+    fRooTrackerTree->SetBranchAddress("NFx", (nrootrackervtx->NFxTEMP));
+    fRooTrackerTree->SetBranchAddress("NFy", (nrootrackervtx->NFyTEMP));
+    fRooTrackerTree->SetBranchAddress("NFz", (nrootrackervtx->NFzTEMP));
+    fRooTrackerTree->SetBranchAddress("NFpx", (nrootrackervtx->NFpxTEMP));
+    fRooTrackerTree->SetBranchAddress("NFpy", (nrootrackervtx->NFpyTEMP));
+    fRooTrackerTree->SetBranchAddress("NFpz", (nrootrackervtx->NFpzTEMP));
+    fRooTrackerTree->SetBranchAddress("NFe", (nrootrackervtx->NFeTEMP));
+    fRooTrackerTree->SetBranchAddress("PCascProb", &(nrootrackervtx->PCascProb));
+
+    fRooTrackerTree->SetBranchAddress("NFfirststep",
+                                      (nrootrackervtx->NFfirststepTEMP));
+    fRooTrackerTree->SetBranchAddress("NFnstep", &(nrootrackervtx->NFnstep));
+    fRooTrackerTree->SetBranchAddress("NFecms2", (nrootrackervtx->NFecms2TEMP));
+    fRooTrackerTree->SetBranchAddress("Prob", (nrootrackervtx->ProbTEMP));
+    fRooTrackerTree->SetBranchAddress("VertFlagStep", (nrootrackervtx->VertFlagStepTEMP));
+    fRooTrackerTree->SetBranchAddress("VertFsiRhon", (nrootrackervtx->VertFsiRhonTEMP));
+    fRooTrackerTree->SetBranchAddress("StepPel", (nrootrackervtx->StepPelTEMP));
+    fRooTrackerTree->SetBranchAddress("StepPsp", (nrootrackervtx->StepPspTEMP));
+    fRooTrackerTree->SetBranchAddress("StepPdp", (nrootrackervtx->StepPdpTEMP));
+    // These two are missing in NEUT 5.6.4 vectors in /hyperk.org/beta-production/iwcd/prod2/neut564_cnev2.0/neut564_cnge2.0/rnge
+    fRooTrackerTree->SetBranchAddress("StepScaleFactor", (nrootrackervtx->StepScaleFactorTEMP));
+    fRooTrackerTree->SetBranchAddress("StepEkin", (nrootrackervtx->StepEkinTEMP));
+
+    // Do these two exist in old nRooTracker tree? 
+    fRooTrackerTree->SetBranchAddress("SPIDelta", &(nrootrackervtx->SPIDelta));
+    fRooTrackerTree->SetBranchAddress("IRadCorrPht", &(nrootrackervtx->IRadCorrPht));
+  }
+  else
+  {
+    G4cout << "=======================================================================================."<< G4endl;
+    G4cout << "WCSimPrimaryGeneratorAction::SetupBranchAddresses() : Passthrough tree doesn't contain" << G4endl;
+    G4cout << " nucleon FSI tracking information, these branches will remain off." << G4endl;
+    G4cout << "=======================================================================================."<< G4endl;
+  }
 }
 
 void WCSimPrimaryGeneratorAction::CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx){
