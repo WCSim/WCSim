@@ -9,10 +9,10 @@ public:
   // 1D constructor
   MonotonicInterpolator(const std::vector<double>& x_axis, const std::vector<double>& y_axis);
 
+    MonotonicInterpolator(const std::vector<double>& x_axis, const std::vector<double>& y_axis, const std::vector<double>& slopes);
+  
   // 2D constructor
   MonotonicInterpolator(const std::vector<double>& x_axis, const std::vector<double>& y_axis, const std::vector<std::vector<double>>& z_matrix);
-
-  MonotonicInterpolator(const std::vector<double>& x_axis, std::vector<double>& slopes);
   
   MonotonicInterpolator(const std::vector<double>& x_axis, const std::vector<double>& y_axis, const std::vector<std::vector<double>>& z_grid, std::vector<std::vector<double>>& slopes);
  
