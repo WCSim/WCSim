@@ -1940,10 +1940,9 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
     fRooTrackerTree->SetBranchAddress("StepPsp", (nrootrackervtx->StepPspTEMP));
     fRooTrackerTree->SetBranchAddress("StepPdp", (nrootrackervtx->StepPdpTEMP));
     // These two are missing in NEUT 5.6.4 vectors in /hyperk.org/beta-production/iwcd/prod2/neut564_cnev2.0/neut564_cnge2.0/rnge
-    fRooTrackerTree->SetBranchAddress("StepScaleFactor", (nrootrackervtx->StepScaleFactorTEMP));
-    fRooTrackerTree->SetBranchAddress("StepEkin", (nrootrackervtx->StepEkinTEMP));
+    // fRooTrackerTree->SetBranchAddress("StepScaleFactor", (nrootrackervtx->StepScaleFactorTEMP));
+    // fRooTrackerTree->SetBranchAddress("StepEkin", (nrootrackervtx->StepEkinTEMP));
 
-    // Do these two exist in old nRooTracker tree? 
     fRooTrackerTree->SetBranchAddress("SPIDelta", &(nrootrackervtx->SPIDelta));
     fRooTrackerTree->SetBranchAddress("IRadCorrPht", &(nrootrackervtx->IRadCorrPht));
   }
@@ -1959,8 +1958,8 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
 void WCSimPrimaryGeneratorAction::CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx){
   //fTmpRootrackerVtx->Print();
   nrootrackervtx->Copy(fTmpRootrackerVtx);
-  nrootrackervtx->TruthVertexID = -999;
-  nrootrackervtx->NuParentPdg = 1234567;
-  fRooTrackerTree->Show(0);
-  nrootrackervtx->Print();
+  // nrootrackervtx->TruthVertexID = -999;
+  // nrootrackervtx->NuParentPdg = 1234567;
+  // fRooTrackerTree->Show(0);
+  // nrootrackervtx->Print();
 }
