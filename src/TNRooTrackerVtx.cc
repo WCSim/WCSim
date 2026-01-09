@@ -35,6 +35,44 @@ NRooTrackerVtx::~NRooTrackerVtx() {
     delete OrigTreeName;
     OrigTreeName = NULL;
   }
+
+  if (StdHepPdg) delete [] StdHepPdg;
+  if (StdHepStatus) delete [] StdHepStatus;
+  if (StdHepFd) delete [] StdHepFd;
+  if (StdHepLd) delete [] StdHepLd;
+  if (StdHepFm) delete [] StdHepFm;
+  if (StdHepLm) delete [] StdHepLm;
+
+  if (NEipvc) delete [] NEipvc;
+  if (NEiorgvc) delete [] NEiorgvc;
+  if (NEiflgvc) delete [] NEiflgvc;
+  if (NEicrnvc) delete [] NEicrnvc;
+
+  if (NEiflgvert) delete [] NEiflgvert;
+  if (NEabspvert) delete [] NEabspvert;
+  if (NEabstpvert) delete [] NEabstpvert;
+  if (NEipvert) delete [] NEipvert;
+  if (NEiverti) delete [] NEiverti;
+  if (NEivertf) delete [] NEivertf;
+
+  if (NFiflag) delete [] NFiflag;
+  if (NFx) delete [] NFx;
+  if (NFy) delete [] NFy;
+  if (NFz) delete [] NFz;
+  if (NFpx) delete [] NFpx;
+  if (NFpy) delete [] NFpy;
+  if (NFpz) delete [] NFpz;
+  if (NFe) delete [] NFe;
+  if (NFfirststep) delete [] NFfirststep;
+  if (NFecms2) delete [] NFecms2;
+  if (Prob) delete [] Prob;
+  if (VertFlagStep) delete [] VertFlagStep;
+  if (VertFsiRhon) delete [] VertFsiRhon;
+  if (StepPel) delete [] StepPel;
+  if (StepPsp) delete [] StepPsp;
+  if (StepPdp) delete [] StepPdp;
+  if (StepScaleFactor) delete [] StepScaleFactor;
+  if (StepEkin) delete [] StepEkin;
 }
 void NRooTrackerVtx::Copy(const NRooTrackerVtx* event) {
   GeomPath->SetString(event->GeomPath->GetString());
@@ -66,11 +104,17 @@ void NRooTrackerVtx::Copy(const NRooTrackerVtx* event) {
   StdHepN = event->StdHepN;
 
   // Allocate the arrays which will be saved
+  if (StdHepPdg) delete [] StdHepPdg;
   StdHepPdg = new int[StdHepN];
+  if (StdHepStatus) delete [] StdHepStatus;
   StdHepStatus = new int[StdHepN];
+  if (StdHepFd) delete [] StdHepFd;
   StdHepFd = new int[StdHepN];
+  if (StdHepLd) delete [] StdHepLd;
   StdHepLd = new int[StdHepN];
+  if (StdHepFm) delete [] StdHepFm;
   StdHepFm = new int[StdHepN];
+  if (StdHepLm) delete [] StdHepLm;
   StdHepLm = new int[StdHepN];
 
   for (int i = 0; i < StdHepN; i++) {
@@ -94,9 +138,13 @@ void NRooTrackerVtx::Copy(const NRooTrackerVtx* event) {
   NEnvc = event->NEnvc;
 
   // Allocate the arrays which will be saved
+  if (NEipvc) delete [] NEipvc;
   NEipvc = new int[NEnvc];
+  if (NEiorgvc) delete [] NEiorgvc;
   NEiorgvc = new int[NEnvc];
+  if (NEiflgvc) delete [] NEiflgvc;
   NEiflgvc = new int[NEnvc];
+  if (NEicrnvc) delete [] NEicrnvc;
   NEicrnvc = new int[NEnvc];
 
   for (int i = 0; i < NEnvc; i++) {
@@ -115,6 +163,7 @@ void NRooTrackerVtx::Copy(const NRooTrackerVtx* event) {
   NEcrsphi = event->NEcrsphi;
   NEnvert = event->NEnvert;
 
+  if (NEiflgvert) delete [] NEiflgvert;
   NEiflgvert = new int[NEnvert];
   for (int i = 0; i < NEnvert; i++) {
     NEiflgvert[i] = event->NEiflgvertTemp[i];
@@ -126,10 +175,15 @@ void NRooTrackerVtx::Copy(const NRooTrackerVtx* event) {
   NEnvcvert = event->NEnvcvert;
 
   // define the dynamic arrays
+  if (NEabspvert) delete [] NEabspvert;
   NEabspvert = new float[NEnvcvert];
+  if (NEabstpvert) delete [] NEabstpvert;
   NEabstpvert = new float[NEnvcvert];
+  if (NEipvert) delete [] NEipvert;
   NEipvert = new int[NEnvcvert];
+  if (NEiverti) delete [] NEiverti;
   NEiverti = new int[NEnvcvert];
+  if (NEivertf) delete [] NEivertf;
   NEivertf = new int[NEnvcvert];
 
   for (int i = 0; i < NEnvcvert; i++) {
@@ -146,14 +200,23 @@ void NRooTrackerVtx::Copy(const NRooTrackerVtx* event) {
   /**** START Nucleon FSI PASSTHROUGH ******/
 
   NFnvert = event->NFnvert;
+  if (NFiflag) delete [] NFiflag;
   NFiflag = new int[NFnvert];
+  if (NFx) delete [] NFx;
   NFx = new float[NFnvert];
+  if (NFy) delete [] NFy;
   NFy = new float[NFnvert];
+  if (NFz) delete [] NFz;
   NFz = new float[NFnvert];
+  if (NFpx) delete [] NFpx;
   NFpx = new float[NFnvert];
+  if (NFpy) delete [] NFpy;
   NFpy = new float[NFnvert];
+  if (NFpz) delete [] NFpz;
   NFpz = new float[NFnvert];
+  if (NFe) delete [] NFe;
   NFe = new float[NFnvert];
+  if (NFfirststep) delete [] NFfirststep;
   NFfirststep = new int[NFnvert];
 
   for (int i = 0; i < NFnvert; i++) {
@@ -171,14 +234,23 @@ void NRooTrackerVtx::Copy(const NRooTrackerVtx* event) {
   NFnstep = event->NFnstep;
 
   if(NFnstep!=0){
+    if (NFecms2) delete [] NFecms2;
     NFecms2 = new float[NFnstep];
+    if (Prob) delete [] Prob;
     Prob = new float[NFnstep];
+    if (VertFlagStep) delete [] VertFlagStep;
     VertFlagStep = new float[NFnstep];
+    if (VertFsiRhon) delete [] VertFsiRhon;
     VertFsiRhon = new float[NFnstep];
+    if (StepPel) delete [] StepPel;
     StepPel = new float[NFnstep];
+    if (StepPsp) delete [] StepPsp;
     StepPsp = new float[NFnstep];
+    if (StepPdp) delete [] StepPdp;
     StepPdp = new float[NFnstep];
+    if (StepScaleFactor) delete [] StepScaleFactor;
     StepScaleFactor = new float[NFnstep];
+    if (StepEkin) delete [] StepEkin;
     StepEkin = new float[NFnstep];
     
     for (int k = 0; k < NFnstep; k++) {
@@ -316,6 +388,46 @@ void NRooTrackerVtx::Reset() {
   IRadCorrPht = -999;
 }
 void NRooTrackerVtx::Init() {
+  StdHepPdg = 0;
+  StdHepStatus = 0;
+  StdHepFd = 0;
+  StdHepLd = 0;
+  StdHepFm = 0;
+  StdHepLm = 0;
+
+  NEipvc = 0;
+  NEiorgvc = 0;
+  NEiflgvc = 0;
+  NEicrnvc = 0;
+
+  NEiflgvert = 0;
+
+  NEabspvert = 0;
+  NEabstpvert = 0;
+  NEipvert = 0;
+  NEiverti = 0;
+  NEivertf = 0;
+
+  NFiflag = 0;
+  NFx = 0;
+  NFy = 0;
+  NFz = 0;
+  NFpx = 0;
+  NFpy = 0;
+  NFpz = 0;
+  NFe = 0;
+  NFfirststep = 0;
+
+  NFecms2 = 0;
+  Prob = 0;
+  VertFlagStep = 0;
+  VertFsiRhon = 0;
+  StepPel = 0;
+  StepPsp = 0;
+  StepPdp = 0;
+  StepScaleFactor = 0;
+  StepEkin = 0;
+
   GeomPath = new TObjString("");
   GeneratorName = new TObjString("");
   EvtCode = new TObjString("");
