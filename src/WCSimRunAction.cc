@@ -72,9 +72,24 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
     if(GetSaveRooTracker()){
       //Setup settings tree
       // Assume the NEUT file is open.
+      // Old NEUT
       fSettingsInputTree = (TTree*) gDirectory->Get("Settings");
-      fSettingsInputTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
-      fSettingsInputTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
+      if (fSettingsInputTree)
+      {
+        fSettingsInputTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
+        fSettingsInputTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
+      }
+      else
+      {
+        // NEUT 5.6.4
+        fSettingsInputTree = (TTree*) gDirectory->Get("settings");
+        if (!fSettingsInputTree) 
+        {
+          G4cout << "Error: Could not find 'Settings' or 'settings' tree in file!" << G4endl;
+          exit(1);
+        }
+        fSettingsInputTree->SetBranchAddress("NuIdfdPosGeomCoord", fNuPlanePos);
+      }
     }
   }
 
