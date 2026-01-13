@@ -25,9 +25,9 @@
 #pragma link C++ class WCSimEnumerations+;
 #pragma link C++ class WCSimRootOptions+;
 
-#pragma link C++ class RooTrackerVtxBase+;
-#pragma link C++ class JNuBeamFlux+;
-#pragma link C++ class NRooTrackerVtx+;
+#pragma link C++ class ND::RooTrackerVtxBase+;
+#pragma link C++ class ND::JNuBeamFlux+;
+#pragma link C++ class ND::NRooTrackerVtx+;
 
 #pragma link C++ struct WCSimDarkNoiseOptions+;
 #pragma link C++ class std::pair<std::string, WCSimDarkNoiseOptions>+;

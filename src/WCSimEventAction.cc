@@ -2699,7 +2699,7 @@ void WCSimEventAction::FillFlatTree(G4int event_id,
     // Check we are supposed to be saving the NEUT vertex and that the generator was given a NEUT vector file to process
     // If there is no NEUT vector file an empty NEUT vertex will be written to the output file
     if(GetRunAction()->GetSaveRooTracker() && generatorAction->IsUsingRootrackerEvtGenerator()){
-      NRooTrackerVtx *thisRooTracker = GetRunAction()->GetMyRooTracker();
+      ND::NRooTrackerVtx *thisRooTracker = GetRunAction()->GetMyRooTracker();
       generatorAction->CopyRootrackerVertex(thisRooTracker);
 
       G4cout << "Test: " << thisRooTracker->NuParentDecMode << G4endl;

@@ -13,6 +13,7 @@
 
 using std::ostream;
 
+namespace ND {
 
 const int kNStdHepNPmax = 100;
 const int kNStdHepIdxPx = 0;
@@ -363,4 +364,5 @@ class NRooTrackerVtx : public JNuBeamFlux {
   ClassDef(NRooTrackerVtx, 3);
 };
 
+}
 #endif

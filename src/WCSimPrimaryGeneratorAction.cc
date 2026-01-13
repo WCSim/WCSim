@@ -1834,7 +1834,7 @@ void WCSimPrimaryGeneratorAction::OpenRootrackerFile(G4String fileName)
   }
   fNEntries=fRooTrackerTree->GetEntries();
 
-  fTmpRootrackerVtx = new NRooTrackerVtx();
+  fTmpRootrackerVtx = new ND::NRooTrackerVtx();
   SetupBranchAddresses(fTmpRootrackerVtx); //link fTmpRootrackerVtx and current input file
 
   // Different names across NEUT versions
@@ -1857,7 +1857,7 @@ void WCSimPrimaryGeneratorAction::OpenRootrackerFile(G4String fileName)
   }
 }
 
-void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrackervtx){
+void WCSimPrimaryGeneratorAction::SetupBranchAddresses(ND::NRooTrackerVtx* nrootrackervtx){
 
   // Set up branch address for rooTrackerVertex tree in nuPRISM files
   fRooTrackerTree->SetBranchAddress("EvtCode",        &(nrootrackervtx->EvtCode) );
@@ -1955,7 +1955,7 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
   }
 }
 
-void WCSimPrimaryGeneratorAction::CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx){
+void WCSimPrimaryGeneratorAction::CopyRootrackerVertex(ND::NRooTrackerVtx* nrootrackervtx){
   //fTmpRootrackerVtx->Print();
   nrootrackervtx->Copy(fTmpRootrackerVtx);
   // nrootrackervtx->TruthVertexID = -999;

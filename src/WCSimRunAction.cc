@@ -182,7 +182,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
 	//fVertices = new TClonesArray("NRooTrackerVtx", 10);
 	//fVertices->Clear();
 	fNVtx = 0;
-	evNRooTracker = new NRooTrackerVtx;
+	evNRooTracker = new ND::NRooTrackerVtx;
 	fRooTrackerOutputTree = new TTree("fRooTrackerOutputTree", "Event Vertex Truth Array");
 	//fRooTrackerOutputTree->Branch("NVtx", &fNVtx, "NVtx/I");
 	//fRooTrackerOutputTree->Branch("NRooTrackerVtx", "TClonesArray", &fVertices);
@@ -375,7 +375,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
       //fVertices = new TClonesArray("NRooTrackerVtx", 10);
       //fVertices->Clear();
       //fNVtx = 0;
-      evNRooTracker = new NRooTrackerVtx();   // should be an array? Not clear where in WCSim NVtx > 1
+      evNRooTracker = new ND::NRooTrackerVtx();   // should be an array? Not clear where in WCSim NVtx > 1
       flatRooTrackerTree = new TTree("RooTracker","Event Vertex Truth Array");
       flatRooTrackerTree->Branch("Run",&run,"Run/I");
       flatRooTrackerTree->Branch("Event",&event,"Event/I");
@@ -834,10 +834,9 @@ void WCSimRunAction::FillFlatGeoTree(){
   flatfile->Write(); 
 }
 
-NRooTrackerVtx* WCSimRunAction::GetRootrackerVertex(){
+ND::NRooTrackerVtx* WCSimRunAction::GetRootrackerVertex(){
   return evNRooTracker;
   //NRooTrackerVtx* currRootrackerVtx = new((*fVertices)[fNVtx])NRooTrackerVtx();
   //fNVtx += 1;
   //return currRootrackerVtx;
 }
-

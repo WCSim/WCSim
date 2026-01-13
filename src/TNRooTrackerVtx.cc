@@ -10,6 +10,8 @@ using std::setprecision;
 using std::setfill;
 using std::ios;
 
+using namespace ND;
+
 ClassImp(NRooTrackerVtx)
 
 NRooTrackerVtx::NRooTrackerVtx() : JNuBeamFlux() { this->Init(); }

@@ -10,6 +10,8 @@
 /// 11a version of pass-through info.
 ///
 
+namespace ND {
+
 const int kNgmax = 12; 
 
 // This is the base class for all RooTracker type objects. For now
@@ -19,7 +21,7 @@ class RooTrackerVtxBase : public TObject {
     public:
         RooTrackerVtxBase();
         virtual ~RooTrackerVtxBase(){}
-        ClassDef(RooTrackerVtxBase, 1);
+        ClassDef(ND::RooTrackerVtxBase, 1);
 };
 
 class JNuBeamFlux : public RooTrackerVtxBase {
@@ -99,7 +101,8 @@ class JNuBeamFlux : public RooTrackerVtxBase {
         int         NuRand;             ///< Random seed
         //    int         NuRseed[2];         // Random seed
 
-        ClassDef(JNuBeamFlux, 1);
+        ClassDef(ND::JNuBeamFlux, 1);
 };
 
+}
 #endif
