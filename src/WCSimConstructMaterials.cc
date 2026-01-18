@@ -1985,6 +1985,49 @@ void WCSimDetectorConstruction::ConstructMaterials()
    OpGelFoamSurface->SetMaterialPropertiesTable(myST1); //TF: same as water-blacksheet for now
 
 
+  // -------------------------------------------------
+  // J. Renner: materials for WCTE T5 TOF scintillator
+  
+  // Scintillator (EJ-228 equivalent)
+  G4Material* scintMaterial = nist_man->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); // EJ-228 equivalent
+  if(scintMaterial) {
+      G4MaterialPropertiesTable *scint_mpt = new G4MaterialPropertiesTable();
+      const G4int nEntries = 3;
+      G4double scint_energy[nEntries] = {1.9*eV, 2.6*eV, 3.3*eV}; 
+      G4double scint_rindex[nEntries] = {1.58, 1.58, 1.58}; 
+      G4double scint_absl[nEntries]   = {380.*cm, 380.*cm, 380.*cm}; // ~EJ-228 attenuation length
+      scint_mpt->AddProperty("RINDEX", scint_energy, scint_rindex, nEntries);
+      scint_mpt->AddProperty("ABSLENGTH", scint_energy, scint_absl, nEntries);
+      scintMaterial->SetMaterialPropertiesTable(scint_mpt);
+  }
+
+  // Vinyl (PVC)
+  G4Material* vinylMaterial = nist_man->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE"); // PVC
+  if(vinylMaterial) {
+      G4MaterialPropertiesTable *vinyl_mpt = new G4MaterialPropertiesTable();
+      const G4int nEntries = 3;
+      G4double vinyl_energy[nEntries] = {1.9*eV, 2.6*eV, 3.3*eV};
+      G4double vinyl_rindex[nEntries] = {1.53, 1.53, 1.53}; 
+      G4double vinyl_absl[nEntries]   = {1.*mm, 1.*mm, 1.*mm}; // Opaque
+      vinyl_mpt->AddProperty("RINDEX", vinyl_energy, vinyl_rindex, nEntries);
+      vinyl_mpt->AddProperty("ABSLENGTH", vinyl_energy, vinyl_absl, nEntries);
+      vinylMaterial->SetMaterialPropertiesTable(vinyl_mpt);
+  }
+
+  // Mylar
+  G4Material* mylarMaterial = nist_man->FindOrBuildMaterial("G4_MYLAR");
+  if(mylarMaterial) {
+      G4MaterialPropertiesTable *mylar_mpt = new G4MaterialPropertiesTable();
+      const G4int nEntries = 3;
+      G4double mylar_energy[nEntries] = {1.9*eV, 2.6*eV, 3.3*eV};
+      G4double mylar_rindex[nEntries] = {1.65, 1.65, 1.65}; 
+      G4double mylar_absl[nEntries]   = {100.*cm, 100.*cm, 100.*cm}; 
+      mylar_mpt->AddProperty("RINDEX", mylar_energy, mylar_rindex, nEntries);
+      mylar_mpt->AddProperty("ABSLENGTH", mylar_energy, mylar_absl, nEntries);
+      mylarMaterial->SetMaterialPropertiesTable(mylar_mpt);
+  }
+  // -------------------------------------------------
+
 
    //ToDo:
    //G4MaterialPropertiesTable *AgPropTable = new G4MaterialPropertiesTable();

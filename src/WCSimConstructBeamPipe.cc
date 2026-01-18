@@ -111,43 +111,14 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructBeamPipe()
   
   // -- Materials --
   G4NistManager* nist = G4NistManager::Instance();
-  G4Material* scintMaterial = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); // EJ-228 equivalent
-  G4Material* vinylMaterial = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE"); // PVC
-  G4Material* mylarMaterial = nist->FindOrBuildMaterial("G4_MYLAR");
+  G4Material* scintMaterial = G4Material::GetMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); // EJ-228 equivalent
+  G4Material* vinylMaterial = G4Material::GetMaterial("G4_POLYVINYL_CHLORIDE"); // PVC
+  G4Material* mylarMaterial = G4Material::GetMaterial("G4_MYLAR");
   G4Material* airMaterial   = G4Material::GetMaterial("Air1"); // For the gaps inside the assembly
 
-  // -- Dummy materials properties
-  // T5 TOF Materials Properties
-  G4double dummy_energy[3] = {1.9*eV, 2.6*eV, 3.3*eV};
-  
-  // Scintillator (EJ-228 equivalent)
-  if(scintMaterial) {
-      G4MaterialPropertiesTable *scint_mpt = new G4MaterialPropertiesTable();
-      G4double scint_rindex[3] = {1.58, 1.58, 1.58}; 
-      G4double scint_absl[3]   = {380.*cm, 380.*cm, 380.*cm}; // ~EJ-228 attenuation length
-      scint_mpt->AddProperty("RINDEX", dummy_energy, scint_rindex, 3);
-      scint_mpt->AddProperty("ABSLENGTH", dummy_energy, scint_absl, 3);
-      scintMaterial->SetMaterialPropertiesTable(scint_mpt);
-  }
-
-  // Vinyl (PVC)
-  if(vinylMaterial) {
-      G4MaterialPropertiesTable *vinyl_mpt = new G4MaterialPropertiesTable();
-      G4double vinyl_rindex[3] = {1.53, 1.53, 1.53}; 
-      G4double vinyl_absl[3]   = {1.*mm, 1.*mm, 1.*mm}; // Opaque
-      vinyl_mpt->AddProperty("RINDEX", dummy_energy, vinyl_rindex, 3);
-      vinyl_mpt->AddProperty("ABSLENGTH", dummy_energy, vinyl_absl, 3);
-      vinylMaterial->SetMaterialPropertiesTable(vinyl_mpt);
-  }
-
-  // Mylar
-  if(mylarMaterial) {
-      G4MaterialPropertiesTable *mylar_mpt = new G4MaterialPropertiesTable();
-      G4double mylar_rindex[3] = {1.65, 1.65, 1.65}; 
-      G4double mylar_absl[3]   = {100.*cm, 100.*cm, 100.*cm}; 
-      mylar_mpt->AddProperty("RINDEX", dummy_energy, mylar_rindex, 3);
-      mylar_mpt->AddProperty("ABSLENGTH", dummy_energy, mylar_absl, 3);
-      mylarMaterial->SetMaterialPropertiesTable(mylar_mpt);
+  // Check to ensure materials exist
+  if (!scintMaterial || !vinylMaterial || !mylarMaterial) {
+      G4cerr << "ERROR: T5 TOF Materials not defined in WCSimConstructMaterials.cc!" << G4endl;
   }
 
   // -- Dimensions (Layers) --
