@@ -1599,7 +1599,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         LEDphi = CLHEP::pi/12 + (mPMTLEDId2-6)*CLHEP::pi/3;
       }
 
-      G4double distToPMT = 5.8*cm; // ad-hoc value to start photons in acrylic
+      G4double distToPMT = 5.9*cm; // ad-hoc value to start photons in acrylic
       G4Vector3D LEDdir = sin(LEDth)*(cos(LEDphi)*x_axis+sin(LEDphi)*y_axis)+cos(LEDth)*z_axis;
       G4double xpos = pmtOrigin.x() + LEDdir.x()*(distFromOriginToPMT+distToPMT);
       G4double ypos = pmtOrigin.y() + LEDdir.y()*(distFromOriginToPMT+distToPMT);
