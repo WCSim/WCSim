@@ -2,13 +2,21 @@
 #include <G4Neutron.hh>
 #include <G4NeutronHPCapture.hh>
 #include <G4NeutronHPCaptureData.hh>
-#include <G4HadronCaptureProcess.hh>
 #include <G4NeutronRadCapture.hh>
 #include <G4NeutronCaptureXS.hh>
 #include <G4CrossSectionDataSetRegistry.hh>
 #include <G4HadronicInteractionRegistry.hh>
 #include <G4RadioactiveDecayPhysics.hh>
 #include "WCSimPhysicsListFactory.hh"
+
+// https://github.com/Geant4/geant4/blob/master/source/physics_lists/lists/History
+#include "G4Utils.hh"
+#if G4VERSION_IS_GREATER_EQUAL(11,2,0)
+#include <G4NeutronCaptureProcess.hh>
+using G4HadronCaptureProcess = G4NeutronCaptureProcess;
+#else
+#include <G4HadronCaptureProcess.hh>
+#endif
 
 #include "GdNeutronHPCapture.hh"
 
