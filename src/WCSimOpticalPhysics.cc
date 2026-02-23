@@ -39,6 +39,8 @@
 
 #include "WCSimOpticalPhysics.hh"
 
+#include "G4Utils.hh"
+
 //#include "G4OpticalPhoton.hh"
 #include "G4OpAbsorption.hh"
 #include "G4OpRayleigh.hh"
@@ -215,8 +217,8 @@ void WCSimOpticalPhysics::ConstructProcess()
   }
 
   fScintillationProcess = new G4Scintillation();
-  fScintillationProcess->SetScintillationYieldFactor(fYieldFactor);
-  fScintillationProcess->SetScintillationExcitationRatio(fExcitationRatio);
+  this->SetScintillationYieldFactor(fYieldFactor);
+  this->SetScintillationExcitationRatio(fExcitationRatio);
   fScintillationProcess->SetFiniteRiseTime(fFiniteRiseTime);
   fScintillationProcess->SetScintillationByParticleType(fScintillationByParticleType);
 #if G4VERSION_NUMBER > 1023
@@ -287,7 +289,11 @@ void WCSimOpticalPhysics::SetScintillationYieldFactor(G4double val)
 {
    fYieldFactor = val;
    if (fScintillationProcess) {
-    fScintillationProcess->SetScintillationYieldFactor(fYieldFactor);
+     // @nadrino: water have no scintillation processes so these methods aren't used
+#if G4VERSION_IS_GREATER_EQUAL(11,2,0)
+#else
+     fScintillationProcess->SetScintillationYieldFactor(fYieldFactor);
+#endif
   }
 }
 
@@ -295,7 +301,11 @@ void WCSimOpticalPhysics::SetScintillationExcitationRatio(G4double val)
 {
   fExcitationRatio = val;
   if (fScintillationProcess) {
+     // @nadrino: same here
+#if G4VERSION_IS_GREATER_EQUAL(11,2,0)
+#else
     fScintillationProcess->SetScintillationExcitationRatio(fExcitationRatio);
+#endif
   }
 }
 
