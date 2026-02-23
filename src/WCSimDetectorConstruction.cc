@@ -2,6 +2,7 @@
 #include "WCSimDetectorMessenger.hh"
 #include "WCSimTuningParameters.hh"
 
+#include "G4Utils.hh"
 #include "G4Element.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
@@ -375,8 +376,8 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 
   // Now set the visualization attributes of the logical volumes.
 
-  //   logicWCBox->SetVisAttributes(G4VisAttributes::Invisible);
-  logicExpHall->SetVisAttributes(G4VisAttributes::Invisible);
+  //   logicWCBox->SetVisAttributes(G4Utils::GetInvisible());
+  logicExpHall->SetVisAttributes(G4Utils::GetInvisible());
 
   //----------------------------------------------------------
   //BGO Calling and Placement - Diego Costas 29/02/2024 

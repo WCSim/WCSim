@@ -3,6 +3,7 @@
 #include "WCSimWCDigitizer.hh"
 #include "WCSimWCTrigger.hh"
 
+#include "G4Utils.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIcommand.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"

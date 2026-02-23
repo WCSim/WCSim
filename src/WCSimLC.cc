@@ -194,10 +194,5 @@ G4double WCSimLC::Tsukada_z_from_r (double radius)
 
 void WCSimLC::SetInvisible()
 {
-#if G4VERSION_IS_GREATER_EQUAL(11, 0, 0)
-	this->SetVisAttributes(G4VisAttributes::GetInvisible());
-#else
-	this->SetVisAttributes(G4VisAttributes::Invisible);
-#endif
-
+	this->SetVisAttributes(G4Utils::GetInvisible());
 }

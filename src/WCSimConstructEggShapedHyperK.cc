@@ -1,6 +1,7 @@
 //  -*- mode:c++; tab-width:4;  -*-
 #include "WCSimDetectorConstruction.hh"
 
+#include "G4Utils.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
 #include "G4RotationMatrix.hh"
@@ -59,7 +60,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructEggShapedHyperK()
                                     waterTank_Length/2.+blackSheetThickness),
                                     FindMaterial("G4_AIR"),
                                     "EggShapedHyperK");
-  eggShapedHyperKLV->SetVisAttributes(G4VisAttributes::Invisible);
+  eggShapedHyperKLV->SetVisAttributes(G4Utils::GetInvisible());
 
   new G4LogicalSkinSurface("WaterBSSurface",eggShapedHyperKLV,OpWaterBSSurface);
 
@@ -109,7 +110,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructEggShapedHyperK()
 
   waterTankLV 
     = new G4LogicalVolume(waterTank_union,FindMaterial("G4_WATER"),"Tank");
-  waterTankLV->SetVisAttributes(G4VisAttributes::Invisible);
+  waterTankLV->SetVisAttributes(G4Utils::GetInvisible());
 
   new G4PVPlacement(0,G4ThreeVector(0,waterTank_Height/4.,0),
                     waterTankLV,"Tank",eggShapedHyperKLV,false,0,checkOverlaps);
@@ -405,7 +406,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRadialPMT(G4bool top,
                                      -phi/2.,phi),
                           FindMaterial("G4_WATER"),
                           "PMTAnnulus");
-  pmtAnnulusLV->SetVisAttributes(G4VisAttributes::Invisible);
+  pmtAnnulusLV->SetVisAttributes(G4Utils::GetInvisible());
 
   G4LogicalVolume* blackSheetALV = NULL;
   if (inner) {
@@ -427,7 +428,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRadialPMT(G4bool top,
                                      -phi/2.,phi),
                           FindMaterial("G4_WATER"),
                           "PMTRings");
-  pmtRingLV->SetVisAttributes(G4VisAttributes::Invisible);
+  pmtRingLV->SetVisAttributes(G4Utils::GetInvisible());
 
   G4LogicalVolume* pmtCellLV
     = new G4LogicalVolume(new G4Tubs("PMTCell",
@@ -436,7 +437,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRadialPMT(G4bool top,
                                      -dphi/2.,dphi),
                           FindMaterial("G4_WATER"),
                           "PMTCell");
-  pmtCellLV->SetVisAttributes(G4VisAttributes::Invisible);
+  pmtCellLV->SetVisAttributes(G4Utils::GetInvisible());
 
 //-----------------------------------------------------------------
 //
@@ -515,7 +516,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructEndWallPMT()
                                     innerPMT_Apitch/2.),
                           FindMaterial("G4_WATER"),
                           "PMTCell");
-  pmtCellLV->SetVisAttributes(G4VisAttributes::Invisible);
+  pmtCellLV->SetVisAttributes(G4Utils::GetInvisible());
 
   G4RotationMatrix* rotm = new G4RotationMatrix();
   rotm->rotateY(180.*degree);
@@ -576,7 +577,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructEndWallPMT()
                                       innerPMT_Apitch/2.),
                             FindMaterial("G4_WATER"),
                             "PMTSlab");
-    pmtSlabLV->SetVisAttributes(G4VisAttributes::Invisible);
+    pmtSlabLV->SetVisAttributes(G4Utils::GetInvisible());
 
     new G4PVReplica("PMTCell",
                     pmtCellLV,
@@ -635,7 +636,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCeilingPMT(G4bool top,
                                       zlength/2.),
                             FindMaterial("G4_WATER"),
                             "PMTSlab");
-  pmtSlabLV->SetVisAttributes(G4VisAttributes::Invisible);
+  pmtSlabLV->SetVisAttributes(G4Utils::GetInvisible());
 
   G4LogicalVolume* blackSheetYLV = NULL;
   if (inner) {
@@ -657,7 +658,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCeilingPMT(G4bool top,
                                       pitch/2.),
                             FindMaterial("G4_WATER"),
                             "PMTSlab");
-  pmtSliceLV->SetVisAttributes(G4VisAttributes::Invisible);
+  pmtSliceLV->SetVisAttributes(G4Utils::GetInvisible());
 
   G4LogicalVolume* pmtCellLV
     = new G4LogicalVolume(new G4Box("PMTCell",
@@ -666,7 +667,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCeilingPMT(G4bool top,
                                     pitch/2.),
                           FindMaterial("G4_WATER"),
                           "PMTCell");
-  pmtCellLV->SetVisAttributes(G4VisAttributes::Invisible);
+  pmtCellLV->SetVisAttributes(G4Utils::GetInvisible());
 
   G4VPhysicalVolume* pmtSlicePV
     = new G4PVReplica("PMTSlice",
