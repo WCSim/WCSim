@@ -11,7 +11,7 @@
 
 // https://github.com/Geant4/geant4/blob/master/source/physics_lists/lists/History
 #include "G4Utils.hh"
-#if G4VERSION_IS_GREATER_EQUAL(11,2,0)
+#if G4VERSION_IS_GREATER_EQUAL(10,7,4)
 #include <G4NeutronCaptureProcess.hh>
 using G4HadronCaptureProcess = G4NeutronCaptureProcess;
 #else
