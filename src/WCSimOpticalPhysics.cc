@@ -290,6 +290,13 @@ void WCSimOpticalPhysics::SetScintillationYieldFactor(G4double val)
    fYieldFactor = val;
    if (fScintillationProcess) {
      // @nadrino: water have no scintillation processes so these methods aren't used
+     // In Geant4, the scintillation yield and excitation ratio are applied
+     // as multiplicative factors to material scintillation properties
+     // (e.g. SCINTILLATIONYIELD and YIELDRATIO in the Material Properties Table).
+     // If the material (e.g. pure water in WCSim) does not define any
+     // scintillation properties, the G4Scintillation process has nothing
+     // to act on. Therefore these setters are effectively inert in this
+     // configuration and do not modify the physics outcome.
 #if G4VERSION_IS_GREATER_EQUAL(11,2,0)
 #else
      fScintillationProcess->SetScintillationYieldFactor(fYieldFactor);
