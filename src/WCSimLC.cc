@@ -1,6 +1,7 @@
 #include "G4UnitsTable.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4Utils.hh"
 
 #include "WCSimLC.hh"
 
@@ -17,9 +18,10 @@
 #include "G4VisAttributes.hh"
 
 #include <vector>
+
 using namespace std;
 
-G4OpticalSurface * WCSimLC::OpLCMirrorSurface = NULL;
+G4OpticalSurface * WCSimLC::OpLCMirrorSurface = nullptr;
 
 WCSimLC::WCSimLC(
 		const G4String &name, 
@@ -192,6 +194,10 @@ G4double WCSimLC::Tsukada_z_from_r (double radius)
 
 void WCSimLC::SetInvisible()
 {
+#if G4VERSION_IS_GREATER_EQUAL(11, 2, 0)
+	this->SetVisAttributes(G4VisAttributes::GetInvisible());
+#else
 	this->SetVisAttributes(G4VisAttributes::Invisible);
+#endif
 
 }
