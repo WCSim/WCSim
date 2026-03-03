@@ -1467,14 +1467,6 @@ void WCSimDetectorConstruction::ConstructMaterials()
   // ##### TYVEK ##### //
   ///////////////////////
 
-  OpWaterTySurface =
-      new G4OpticalSurface("WaterTyCellSurface");
-
-  OpWaterTySurface->SetType(dielectric_metal); // Only absorption and reflection
-  OpWaterTySurface->SetModel(unified);
-  OpWaterTySurface->SetFinish(ground); // ground surface with tyvek
-  OpWaterTySurface->SetSigmaAlpha(0.2);
-
   G4double RINDEX_tyvek[NUM] =
       { 1.5, 1.5 }; // polyethylene permittivity is ~2.25
   G4double TySPECULARLOBECONSTANT[NUM] =
@@ -1488,7 +1480,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 #define NUMENTRIES_TY_FDOD 36 // Number of bins of wavelength to be used for the Tyvek reflectivity
 #define NUMENTRIES_TY_IWCD 33 
 
-  double WCODTyvekReflectivity = WCSimTuningParams->GetWCODTyvekReflectivity();
+  //double WCODTyvekReflectivity = WCSimTuningParams->GetWCODTyvekReflectivity();
 
   G4double PP_TyREFLECTIVITY_FDOD[NUMENTRIES_TY_FDOD] = //Tyvek reflectivity wavelength bins
       { 2.06642*eV,
@@ -1500,7 +1492,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
         3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
         4.27535*eV, 4.42804*eV, 4.6*eV, 4.8*eV, 5.0*eV};
 
-  G4double OD_tyvek_reflectivity_scaling_factor_FDOD = WCODTyvekReflectivity/0.95; // this should be the maximum of the reflectivity values
+  //G4double OD_tyvek_reflectivity_scaling_factor_FDOD = WCODTyvekReflectivity/0.95; // this should be the maximum of the reflectivity values
+  G4double OD_tyvek_reflectivity_scaling_factor_denominator_FDOD = 0.95; // this should be the maximum of the reflectivity values
 
   G4double TyREFLECTIVITY_FDOD[NUMENTRIES_TY_FDOD] = // Tyvek refelctivity
     { 0.94, // 600 nm
@@ -1512,9 +1505,10 @@ void WCSimDetectorConstruction::ConstructMaterials()
       0.93, 0.92, 0.91, 0.89, 0.86, // 340-300
       0.80, 0.76, 0.70, 0.65, 0.55}; // 290-250
 
+  /*
  for(int i=0; i<NUMENTRIES_TY_FDOD; i++)
     TyREFLECTIVITY_FDOD[i] *= OD_tyvek_reflectivity_scaling_factor_FDOD;
-
+  */
 
   G4double PP_TyREFLECTIVITY_IWCD[NUMENTRIES_TY_IWCD] = //Tyvek reflectivity wavelength bins
       { 2.06642*eV,
@@ -1526,7 +1520,8 @@ void WCSimDetectorConstruction::ConstructMaterials()
         3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
         4.27535*eV, 4.42804*eV};
 
-  G4double OD_tyvek_reflectivity_scaling_factor_IWCD = WCODTyvekReflectivity/0.97; 
+  //G4double OD_tyvek_reflectivity_scaling_factor_IWCD = WCODTyvekReflectivity/0.97;
+  G4double OD_tyvek_reflectivity_scaling_factor_denominator_IWCD = 0.97;
 
   G4double TyREFLECTIVITY_IWCD[NUMENTRIES_TY_IWCD] = // Tyvek refelctivity
       { 0.97,
@@ -1537,15 +1532,16 @@ void WCSimDetectorConstruction::ConstructMaterials()
         0.96, 0.96, 0.95, 0.95, 0.95,
         0.94, 0.93, 0.92, 0.91, 0.90,
         0.89, 0.86};
-
+  /*
  for(int i=0; i<NUMENTRIES_TY_IWCD; i++)
     TyREFLECTIVITY_IWCD[i] *= OD_tyvek_reflectivity_scaling_factor_IWCD;
-
+  */
   G4MaterialPropertiesTable *MPT_Tyvek = new G4MaterialPropertiesTable();
   // MPT_Tyvek->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
   // MPT_Tyvek->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
   Tyvek->SetMaterialPropertiesTable(MPT_Tyvek);
 
+  /*
   G4MaterialPropertiesTable *MPTWater_Ty = new G4MaterialPropertiesTable();
   MPTWater_Ty->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
   MPTWater_Ty->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
@@ -1556,6 +1552,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   else
     MPTWater_Ty->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY_FDOD, TyREFLECTIVITY_FDOD, NUMENTRIES_TY_FDOD);
   OpWaterTySurface->SetMaterialPropertiesTable(MPTWater_Ty);
+  */
   //
   // ----
 
@@ -1945,13 +1942,124 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myST3->AddProperty("SPECULARLOBECONSTANT", PP, TySPECULARLOBECONSTANT, NUM);
    myST3->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
    myST3->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
-   if( isNuPrism )
-     myST3->AddProperty("REFLECTIVITY", PP_TyREFLECTIVITY_IWCD, TyREFLECTIVITY_IWCD, NUMENTRIES_TY_IWCD);
-   else
-     myST3->AddProperty("REFLECTIVITY", PP_TyREFLECTIVITY_FDOD, TyREFLECTIVITY_FDOD, NUMENTRIES_TY_FDOD);
-   myST3->AddProperty("EFFICIENCY", PP, EFFICIENCY_blacksheet, NUM);
    //use same efficiency as blacksheet, which is 0
-   OpWaterTySurface->SetMaterialPropertiesTable(myST3);
+   myST3->AddProperty("EFFICIENCY", PP, EFFICIENCY_blacksheet, NUM);
+
+   // Different tyvek for different surfaces, each with different reflectivity
+   std::array<std::string, 5> properties_to_copy = {"RINDEX", "SPECULARLOBECONSTANT", "SPECULARSPIKECONSTANT", "BACKSCATTERCONSTANT", "EFFICIENCY"};
+   const bool isNuPrismTyvekModel = WCSimTuningParams->GetUsingNuPrismTyvekReflectivityModel();
+   const int n_tyvek_reflectivity_entries = isNuPrismTyvekModel ? NUMENTRIES_TY_IWCD : NUMENTRIES_TY_FDOD;
+   const G4double * tyvek_reflectivity_base_array = isNuPrismTyvekModel ? TyREFLECTIVITY_IWCD : TyREFLECTIVITY_FDOD;
+   G4double * tyvek_reflectivity_energy_array = isNuPrismTyvekModel ? PP_TyREFLECTIVITY_IWCD : PP_TyREFLECTIVITY_FDOD;
+   const G4double OD_tyvek_reflectivity_scaling_factor_denominator = isNuPrismTyvekModel ? OD_tyvek_reflectivity_scaling_factor_denominator_IWCD : OD_tyvek_reflectivity_scaling_factor_denominator_FDOD;
+   G4cout << "I'm setting up tyvek assuming nuprism? " << isNuPrismTyvekModel << G4endl;
+   // DEFAULT SURFACE - USED BY CONSTRUCT CYLINDER
+   std::vector<G4double> TyREFLECTIVITY_Default(n_tyvek_reflectivity_entries);
+   for(int i = 0; i < n_tyvek_reflectivity_entries; i++)
+     TyREFLECTIVITY_Default[i] = tyvek_reflectivity_base_array[i] * WCSimTuningParams->GetWCODDefaultTyvekReflectivity() / OD_tyvek_reflectivity_scaling_factor_denominator;
+   G4MaterialPropertiesTable *myST3_Default = new G4MaterialPropertiesTable();
+   for(const auto & property : properties_to_copy)
+     myST3_Default->AddProperty(property.c_str(), myST3->GetProperty(property.c_str()));
+   myST3_Default->AddProperty("REFLECTIVITY", tyvek_reflectivity_energy_array, TyREFLECTIVITY_Default.data(), n_tyvek_reflectivity_entries);
+   OpWaterTySurface =
+     new G4OpticalSurface("WaterTyCellSurface");
+   OpWaterTySurface->SetType(dielectric_metal); // Only absorption and reflection
+   OpWaterTySurface->SetModel(unified);
+   OpWaterTySurface->SetFinish(ground); // ground surface with tyvek
+   OpWaterTySurface->SetSigmaAlpha(0.2);
+   OpWaterTySurface->SetMaterialPropertiesTable(myST3_Default);
+
+   // SPECIFIC SURFACES - USED BY REALISTIC PLACEMENT
+   // INNER WALL TOP CAP
+   std::vector<G4double> TyREFLECTIVITY_InnerTopCap(n_tyvek_reflectivity_entries);
+   for(int i = 0; i < n_tyvek_reflectivity_entries; i++)
+     TyREFLECTIVITY_InnerTopCap[i] = tyvek_reflectivity_base_array[i] * WCSimTuningParams->GetWCODInnerTopCapTyvekReflectivity() / OD_tyvek_reflectivity_scaling_factor_denominator;
+   G4MaterialPropertiesTable *myST3_InnerTopCap = new G4MaterialPropertiesTable();
+   for(const auto & property : properties_to_copy)
+     myST3_InnerTopCap->AddProperty(property.c_str(), myST3->GetProperty(property.c_str()));
+   myST3_InnerTopCap->AddProperty("REFLECTIVITY", tyvek_reflectivity_energy_array, TyREFLECTIVITY_InnerTopCap.data(), n_tyvek_reflectivity_entries);
+   OpWaterTyInnerTopCapSurface =
+     new G4OpticalSurface("WaterTyInnerTopCapCellSurface");
+   OpWaterTyInnerTopCapSurface->SetType(dielectric_metal); // Only absorption and reflection
+   OpWaterTyInnerTopCapSurface->SetModel(unified);
+   OpWaterTyInnerTopCapSurface->SetFinish(ground); // ground surface with tyvek
+   OpWaterTyInnerTopCapSurface->SetSigmaAlpha(0.2);
+   OpWaterTyInnerTopCapSurface->SetMaterialPropertiesTable(myST3_InnerTopCap);
+   // INNER WALL BARREL
+   std::vector<G4double> TyREFLECTIVITY_InnerBarrel(n_tyvek_reflectivity_entries);
+   for(int i = 0; i < n_tyvek_reflectivity_entries; i++)
+     TyREFLECTIVITY_InnerBarrel[i] = tyvek_reflectivity_base_array[i] * WCSimTuningParams->GetWCODInnerBarrelTyvekReflectivity() / OD_tyvek_reflectivity_scaling_factor_denominator;
+   G4MaterialPropertiesTable *myST3_InnerBarrel = new G4MaterialPropertiesTable();
+   for(const auto & property : properties_to_copy)
+     myST3_InnerBarrel->AddProperty(property.c_str(), myST3->GetProperty(property.c_str()));
+   myST3_InnerBarrel->AddProperty("REFLECTIVITY", tyvek_reflectivity_energy_array, TyREFLECTIVITY_InnerBarrel.data(), n_tyvek_reflectivity_entries);
+   OpWaterTyInnerBarrelSurface =
+     new G4OpticalSurface("WaterTyInnerBarrelCellSurface");
+   OpWaterTyInnerBarrelSurface->SetType(dielectric_metal); // Only absorption and reflection
+   OpWaterTyInnerBarrelSurface->SetModel(unified);
+   OpWaterTyInnerBarrelSurface->SetFinish(ground); // ground surface with tyvek
+   OpWaterTyInnerBarrelSurface->SetSigmaAlpha(0.2);
+   OpWaterTyInnerBarrelSurface->SetMaterialPropertiesTable(myST3_InnerBarrel);
+   // INNER WALL BOTTOM CAP
+   std::vector<G4double> TyREFLECTIVITY_InnerBottomCap(n_tyvek_reflectivity_entries);
+   for(int i = 0; i < n_tyvek_reflectivity_entries; i++)
+     TyREFLECTIVITY_InnerBottomCap[i] = tyvek_reflectivity_base_array[i] * WCSimTuningParams->GetWCODInnerBottomCapTyvekReflectivity() / OD_tyvek_reflectivity_scaling_factor_denominator;
+   G4MaterialPropertiesTable *myST3_InnerBottomCap = new G4MaterialPropertiesTable();
+   for(const auto & property : properties_to_copy)
+     myST3_InnerBottomCap->AddProperty(property.c_str(), myST3->GetProperty(property.c_str()));
+   myST3_InnerBottomCap->AddProperty("REFLECTIVITY", tyvek_reflectivity_energy_array, TyREFLECTIVITY_InnerBottomCap.data(), n_tyvek_reflectivity_entries);
+   OpWaterTyInnerBottomCapSurface =
+     new G4OpticalSurface("WaterTyInnerBottomCapCellSurface");
+   OpWaterTyInnerBottomCapSurface->SetType(dielectric_metal); // Only absorption and reflection
+   OpWaterTyInnerBottomCapSurface->SetModel(unified);
+   OpWaterTyInnerBottomCapSurface->SetFinish(ground); // ground surface with tyvek
+   OpWaterTyInnerBottomCapSurface->SetSigmaAlpha(0.2);
+   OpWaterTyInnerBottomCapSurface->SetMaterialPropertiesTable(myST3_InnerBottomCap);
+   // OUTER WALL TOP CAP
+   std::vector<G4double> TyREFLECTIVITY_OuterTopCap(n_tyvek_reflectivity_entries);
+   for(int i = 0; i < n_tyvek_reflectivity_entries; i++)
+     TyREFLECTIVITY_OuterTopCap[i] = tyvek_reflectivity_base_array[i] * WCSimTuningParams->GetWCODOuterTopCapTyvekReflectivity() / OD_tyvek_reflectivity_scaling_factor_denominator;
+   G4MaterialPropertiesTable *myST3_OuterTopCap = new G4MaterialPropertiesTable();
+   for(const auto & property : properties_to_copy)
+     myST3_OuterTopCap->AddProperty(property.c_str(), myST3->GetProperty(property.c_str()));
+   myST3_OuterTopCap->AddProperty("REFLECTIVITY", tyvek_reflectivity_energy_array, TyREFLECTIVITY_OuterTopCap.data(), n_tyvek_reflectivity_entries);
+   OpWaterTyOuterTopCapSurface =
+     new G4OpticalSurface("WaterTyOuterTopCapCellSurface");
+   OpWaterTyOuterTopCapSurface->SetType(dielectric_metal); // Only absorption and reflection
+   OpWaterTyOuterTopCapSurface->SetModel(unified);
+   OpWaterTyOuterTopCapSurface->SetFinish(ground); // ground surface with tyvek
+   OpWaterTyOuterTopCapSurface->SetSigmaAlpha(0.2);
+   OpWaterTyOuterTopCapSurface->SetMaterialPropertiesTable(myST3_OuterTopCap);
+   // OUTER WALL BARREL
+   std::vector<G4double> TyREFLECTIVITY_OuterBarrel(n_tyvek_reflectivity_entries);
+   for(int i = 0; i < n_tyvek_reflectivity_entries; i++)
+     TyREFLECTIVITY_OuterBarrel[i] = tyvek_reflectivity_base_array[i] * WCSimTuningParams->GetWCODOuterBarrelTyvekReflectivity() / OD_tyvek_reflectivity_scaling_factor_denominator;
+   G4MaterialPropertiesTable *myST3_OuterBarrel = new G4MaterialPropertiesTable();
+   for(const auto & property : properties_to_copy)
+     myST3_OuterBarrel->AddProperty(property.c_str(), myST3->GetProperty(property.c_str()));
+   myST3_OuterBarrel->AddProperty("REFLECTIVITY", tyvek_reflectivity_energy_array, TyREFLECTIVITY_OuterBarrel.data(), n_tyvek_reflectivity_entries);
+   OpWaterTyOuterBarrelSurface =
+     new G4OpticalSurface("WaterTyOuterBarrelCellSurface");
+   OpWaterTyOuterBarrelSurface->SetType(dielectric_metal); // Only absorption and reflection
+   OpWaterTyOuterBarrelSurface->SetModel(unified);
+   OpWaterTyOuterBarrelSurface->SetFinish(ground); // ground surface with tyvek
+   OpWaterTyOuterBarrelSurface->SetSigmaAlpha(0.2);
+   OpWaterTyOuterBarrelSurface->SetMaterialPropertiesTable(myST3_OuterBarrel);
+   // OUTER WALL BOTTOM CAP
+   std::vector<G4double> TyREFLECTIVITY_OuterBottomCap(n_tyvek_reflectivity_entries);
+   for(int i = 0; i < n_tyvek_reflectivity_entries; i++)
+     TyREFLECTIVITY_OuterBottomCap[i] = tyvek_reflectivity_base_array[i] * WCSimTuningParams->GetWCODOuterBottomCapTyvekReflectivity() / OD_tyvek_reflectivity_scaling_factor_denominator;
+   G4MaterialPropertiesTable *myST3_OuterBottomCap = new G4MaterialPropertiesTable();
+   for(const auto & property : properties_to_copy)
+     myST3_OuterBottomCap->AddProperty(property.c_str(), myST3->GetProperty(property.c_str()));
+   myST3_OuterBottomCap->AddProperty("REFLECTIVITY", tyvek_reflectivity_energy_array, TyREFLECTIVITY_OuterBottomCap.data(), n_tyvek_reflectivity_entries);
+   OpWaterTyOuterBottomCapSurface =
+     new G4OpticalSurface("WaterTyOuterBottomCapCellSurface");
+   OpWaterTyOuterBottomCapSurface->SetType(dielectric_metal); // Only absorption and reflection
+   OpWaterTyOuterBottomCapSurface->SetModel(unified);
+   OpWaterTyOuterBottomCapSurface->SetFinish(ground); // ground surface with tyvek
+   OpWaterTyOuterBottomCapSurface->SetSigmaAlpha(0.2);
+   OpWaterTyOuterBottomCapSurface->SetMaterialPropertiesTable(myST3_OuterBottomCap);
 
 
    // Surfaces for Al, Ag and future combinations:
