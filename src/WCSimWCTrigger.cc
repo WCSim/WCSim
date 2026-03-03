@@ -38,7 +38,7 @@ const double WCSimWCTriggerBase::LongTime = 40E9; // ns = 40s. loooong time for 
 
 
 WCSimWCTriggerBase::WCSimWCTriggerBase(G4String name,
-				       WCSimDetectorConstruction* inDetector,
+				       const WCSimDetectorConstruction* inDetector,
 				       WCSimWCDAQMessenger* myMessenger,
 				       G4String inDetectorElement)
   :G4VDigitizerModule(name), DAQMessenger(myMessenger), myDetector(inDetector), detectorElement(inDetectorElement), triggerClassName("")
@@ -611,7 +611,7 @@ void WCSimWCDigiTrigger::Print()
 // *******************************************
 
 WCSimWCTriggerNDigits::WCSimWCTriggerNDigits(G4String name,
-					     WCSimDetectorConstruction* inDetector,
+					     const WCSimDetectorConstruction* inDetector,
 					     WCSimWCDAQMessenger* myMessenger,
 					     G4String inDetectorElement)
   :WCSimWCTriggerBase(name, inDetector, myMessenger, inDetectorElement)
@@ -639,7 +639,7 @@ void WCSimWCTriggerNDigits::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
 
 
 WCSimWCTriggerNoTrigger::WCSimWCTriggerNoTrigger(G4String name,
-						 WCSimDetectorConstruction* inDetector,
+						 const WCSimDetectorConstruction* inDetector,
 						 WCSimWCDAQMessenger* myMessenger,
 						 G4String inDetectorElement)
   :WCSimWCTriggerBase(name, inDetector, myMessenger, inDetectorElement)
@@ -665,7 +665,7 @@ void WCSimWCTriggerNoTrigger::DoTheWork(WCSimWCDigitsCollection* WCDCPMT) {
 // *******************************************
 
 WCSimWCTriggerNDigits2::WCSimWCTriggerNDigits2(G4String name,
-					       WCSimDetectorConstruction* inDetector,
+					       const WCSimDetectorConstruction* inDetector,
 					       WCSimWCDAQMessenger* myMessenger,
 					       G4String inDetectorElement)
   :WCSimWCTriggerBase(name, inDetector, myMessenger, inDetectorElement)

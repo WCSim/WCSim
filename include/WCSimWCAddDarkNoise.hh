@@ -17,7 +17,7 @@ class WCSimWCAddDarkNoise : public G4VDigitizerModule
 {
 public:
   
-  WCSimWCAddDarkNoise(G4String name, WCSimDetectorConstruction*, G4String);
+  WCSimWCAddDarkNoise(G4String name, const WCSimDetectorConstruction*, G4String);
   ~WCSimWCAddDarkNoise();
   
 public:
@@ -52,7 +52,7 @@ private:
   int DarkMode;
   bool fCalledAddDarkNoise;
 
-  WCSimDetectorConstruction* myDetector;
+  const WCSimDetectorConstruction* myDetector;
   G4String detectorElement;
 
   std::vector<std::pair<double, double> > ranges;

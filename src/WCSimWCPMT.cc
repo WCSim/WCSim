@@ -31,7 +31,7 @@ G4double WCSimWCPMT::fFirst_Time = 0 ;
 G4bool WCSimWCPMT::fFirst_Time_Flag = false;
 
 WCSimWCPMT::WCSimWCPMT(G4String name,
-                       WCSimDetectorConstruction* inDetector,
+                       const WCSimDetectorConstruction* inDetector,
                        G4String inDetectorElement)
   :G4VDigitizerModule(name), detectorElement(inDetectorElement)
 {
@@ -131,25 +131,22 @@ void WCSimWCPMT::MakePeCorrection(WCSimWCHitsCollection* WCHC)
   std::sort(WCHC->GetVector()->begin(), WCHC->GetVector()->end(), WCSimWCHit::SortFunctor_Hit());
   
   // Get the info for pmt positions
-  std::vector<WCSimPmtInfo*> *pmts;
+  const std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts_By_Type(detectorElement);
 
   //Get the PMT info for hit time smearing
   G4String WCCollectionName;
   if(detectorElement=="tank"){
     WCCollectionName = myDetector->GetIDCollectionName();
-    pmts  = myDetector->Get_Pmts();
     // It works out that the pmts here are ordered !
     // pmts->at(i) has tubeid i+1
   }
   else if(detectorElement=="tankPMT2"){
     WCCollectionName = myDetector->GetIDCollectionName2();
-    pmts  = myDetector->Get_Pmts2();
   // It works out that the pmts here are ordered !
   // pmts->at(i) has tubeid i+1
   }
   else if(detectorElement=="OD"){
     WCCollectionName = myDetector->GetODCollectionName();
-    pmts = myDetector->Get_ODPmts();
   }
 
 #ifdef HYPER_VERBOSITY

@@ -19,7 +19,7 @@ class G4Event;
 class WCSimAmBeGen
 {
   public:
-    WCSimAmBeGen(WCSimDetectorConstruction* detector);
+    WCSimAmBeGen(const WCSimDetectorConstruction* detector);
     ~WCSimAmBeGen();
 
     // Initialise the AmBe generator
@@ -38,7 +38,7 @@ class WCSimAmBeGen
     G4SPSEneDistribution* nEnergyDistGS;
     G4SPSEneDistribution* nEnergyDistFE;
     G4SPSEneDistribution* nEnergyDistSE;
-    WCSimDetectorConstruction *myDetector;
+    const WCSimDetectorConstruction *myDetector;
     
     // Variables for the initialisation of AmBe generator parameters
     G4double gEnergy;

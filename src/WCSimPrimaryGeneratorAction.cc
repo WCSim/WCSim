@@ -74,7 +74,7 @@ inline double atof( const string& str ) {return std::atof( str.c_str() );}
 inline int    atoi( const string& str ) {return std::atoi( str.c_str() );}
 
 WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
-							 WCSimDetectorConstruction* myDC)
+							 const WCSimDetectorConstruction* myDC)
   :myDetector(myDC), vectorFileName("")
 {
   //T. Akiri: Initialize GPS to allow for the laser use
@@ -1296,10 +1296,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       MyGPS->SetMultipleVertex(true);
 
-      std::vector<WCSimPmtInfo*> *pmts=NULL;
-
       std::vector<struct radioactive_source>::iterator it;
 
+			const std::vector<WCSimPmtInfo*> *pmts = myDetector->Get_Pmts();
       for ( it = radioactive_sources.begin(); it != radioactive_sources.end(); it++ ){
       	G4String IsotopeName = it->IsotopeName;
       	G4String IsotopeLocation = it->IsotopeLocation;
@@ -1307,7 +1306,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       	double average= IsotopeActivity * GetRadioactiveTimeWindow();
       	if (IsotopeLocation.compareTo("PMT") == 0){
-      		pmts = myDetector->Get_Pmts();
       		average *= pmts->size();
       	}
 
@@ -1434,7 +1432,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	  else if (IsotopeLocation.compareTo("PMT") == 0){
 	    int npmts = pmts->size();
 	    int random_pmt_id = CLHEP::RandFlat::shootInt(1,npmts);
-	    WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( random_pmt_id - 1 );
+	    const WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( random_pmt_id - 1 );
 	    G4ThreeVector random_pmt_center(pmtinfo->Get_transx()*CLHEP::cm, pmtinfo->Get_transy()*CLHEP::cm, pmtinfo->Get_transz()*CLHEP::cm);
 	    double random_cos_theta = CLHEP::RandFlat::shoot(0., 1.);
 	    double random_sin_theta = sqrt(1. - pow(random_cos_theta,2));
@@ -1746,7 +1744,7 @@ NuHepMC3Reader: [INFO] Particle ID: "
     }
 }
 
-void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
+void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt) const
 {
   if(useMulineEvt)
     wcopt->SetVectorFileName(vectorFileName);
@@ -1757,7 +1755,7 @@ void WCSimPrimaryGeneratorAction::SaveOptionsToOutput(WCSimRootOptions * wcopt)
   wcopt->SetGeneratorType(GetGeneratorTypeString());
 }
 
-G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString()
+G4String WCSimPrimaryGeneratorAction::GetGeneratorTypeString() const
 {
   if(useMulineEvt)
     return "muline";
@@ -1916,7 +1914,7 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
 
 }
 
-void WCSimPrimaryGeneratorAction::CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx){
+void WCSimPrimaryGeneratorAction::CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx) const {
   nrootrackervtx->Copy(fTmpRootrackerVtx);
   nrootrackervtx->TruthVertexID = -999;
 }

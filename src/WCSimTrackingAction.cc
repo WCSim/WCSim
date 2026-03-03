@@ -98,8 +98,11 @@ void WCSimTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
       if (aTrack->GetCreatorProcess()->GetProcessName() == "conv") {
           primaryGenerator->FoundConversion();
       }
+			/*
+			// NEED TO REIMPLEMENT THIS WHEN IMPLEMENTING A CONVERSION GENERATOR IN GHOST. The IsConversionFound() needs to come from the DataModel 
       G4EventManager::GetEventManager()->AbortCurrentEvent();
       G4EventManager::GetEventManager()->GetNonconstCurrentEvent()->SetEventAborted();
+			*/
     }
   }
 

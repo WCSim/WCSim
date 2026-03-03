@@ -25,7 +25,7 @@ class WCSimDetectorConstruction;
 class WCSimGenerator_Radioactivity
 {
 	public:
-		WCSimGenerator_Radioactivity(WCSimDetectorConstruction* myDC);
+		WCSimGenerator_Radioactivity(const WCSimDetectorConstruction* myDC);
 		~WCSimGenerator_Radioactivity();
 
 		// Initialize the Model
@@ -73,7 +73,7 @@ class WCSimGenerator_Radioactivity
 		void GenerateRnFunction();
 		
 		// Holder for Detector construction
-		WCSimDetectorConstruction*      myDetector;
+		const WCSimDetectorConstruction*      myDetector;
 
 		// Constant
 		G4int fScenario; 			// Scenario holder

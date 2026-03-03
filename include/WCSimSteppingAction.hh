@@ -25,11 +25,11 @@ typedef struct {
 class WCSimSteppingAction : public G4UserSteppingAction
 {
  private:
-  WCSimRunAction* runAction;
-  WCSimDetectorConstruction* det;
+  const WCSimRunAction* runAction;
+  const WCSimDetectorConstruction* det;
 
 public:
-  WCSimSteppingAction(WCSimRunAction*,WCSimDetectorConstruction*);
+  WCSimSteppingAction(const WCSimRunAction*, const WCSimDetectorConstruction*);
 
   ~WCSimSteppingAction()
   { };
@@ -54,7 +54,7 @@ public:
   static G4int n_photons_on_blacksheet;
   static G4int n_photons_on_smallPMT;
 
-  WCSimRunAction* GetRunAction(){return runAction;}
+  const WCSimRunAction* GetRunAction() const {return runAction;}
 
 private:
 

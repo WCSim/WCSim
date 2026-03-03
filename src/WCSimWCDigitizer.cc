@@ -31,7 +31,7 @@
 // *******************************************
 
 WCSimWCDigitizerBase::WCSimWCDigitizerBase(G4String name,
-					   WCSimDetectorConstruction* inDetector,
+					   const WCSimDetectorConstruction* inDetector,
 					   WCSimWCDAQMessenger* myMessenger,
 					   DigitizerType_t digitype,
 					   G4String inDetectorElement)
@@ -197,7 +197,7 @@ void WCSimWCDigitizerBase::SaveOptionsToOutput(WCSimRootOptions * wcopt)
 // *******************************************
 
 WCSimWCDigitizerSKI::WCSimWCDigitizerSKI(G4String name,
-					 WCSimDetectorConstruction* inDetector,
+					 const WCSimDetectorConstruction* inDetector,
 					 WCSimWCDAQMessenger* myMessenger,
 					 G4String inDetectorElement)
   : WCSimWCDigitizerBase(name, inDetector, myMessenger, kDigitizerSKI, inDetectorElement)

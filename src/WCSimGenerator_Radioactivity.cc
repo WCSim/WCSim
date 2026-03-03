@@ -37,7 +37,7 @@ G4double WCSimGenerator_Radioactivity::fZ_max_FV			= 0.;
 G4double WCSimGenerator_Radioactivity::fR_max_FV			= 0.;
 G4double WCSimGenerator_Radioactivity::fR2_max_FV			= 0.;
 
-WCSimGenerator_Radioactivity::WCSimGenerator_Radioactivity(WCSimDetectorConstruction* myDC) {
+WCSimGenerator_Radioactivity::WCSimGenerator_Radioactivity(const WCSimDetectorConstruction* myDC) {
 	myDetector = myDC;
 	this->Initialize();
 }

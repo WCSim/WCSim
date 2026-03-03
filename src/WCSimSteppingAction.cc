@@ -28,7 +28,7 @@ G4int WCSimSteppingAction::n_photons_on_smallPMT = 0;
 ///////////////////////////////////////////////
 
 
-WCSimSteppingAction::WCSimSteppingAction(WCSimRunAction *myRun, WCSimDetectorConstruction *myDet) : runAction(myRun), det(myDet) {
+WCSimSteppingAction::WCSimSteppingAction(const WCSimRunAction *myRun, const WCSimDetectorConstruction *myDet) : runAction(myRun), det(myDet) {
 
 }
 

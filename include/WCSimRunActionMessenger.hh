@@ -27,7 +27,6 @@ class WCSimRunActionMessenger: public G4UImessenger
   G4UIcmdWithAString* RootFile;
 
   G4UIcmdWithABool* WriteDefaultRootFile;
-  G4UIcmdWithABool* WriteFlatRootFile;
   G4UIcmdWithABool* RooTracker;
 
   G4UIcmdWithABool*   UseTimer;
