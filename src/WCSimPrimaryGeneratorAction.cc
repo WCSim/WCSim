@@ -480,9 +480,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       //Load event from file
       if(fEvNum == 0){
-	fSettingsTree->SetBranchAddress("NuBeamAng",&fNuBeamAng);
-	fSettingsTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
-	fSettingsTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
+	//fSettingsTree->SetBranchAddress("NuBeamAng",&fNuBeamAng);
+	//fSettingsTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
+	fSettingsTree->SetBranchAddress("NuIdfdPosFluxCoord",fNuPlanePos);
 	fSettingsTree->GetEntry(0);
       }
       if (fEvNum<fNEntries){
@@ -495,15 +495,22 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	return;
       }
 
+      // No longer needed since moving to t2k neutgeom merge
+      // Leave it here temporarily since we still have nuPRISM geom vectors people look at
+      //
       // Calculate offset from neutrino generation plane to centre of nuPRISM detector
-      float x_offset = fNuPlanePos[0]*cm;
-      float y_offset = fNuPlanePos[1]*cm; //0;//(fNuPrismRadius/zDir)*yDir;
-      float z_offset = fNuPlanePos[2]*cm;
-		 
-      //Subtract offset to get interaction position in WCSim coordinates
-      xPos = fTmpRootrackerVtx->EvtVtx[0]*m - x_offset;
-      yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
-      zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
+      //float x_offset = fNuPlanePos[0]*cm;
+      //float y_offset = fNuPlanePos[1]*cm; //0;//(fNuPrismRadius/zDir)*yDir;
+      //float z_offset = fNuPlanePos[2]*cm;
+      ////Subtract offset to get interaction position in WCSim coordinates
+      //xPos = fTmpRootrackerVtx->EvtVtx[0]*m - x_offset;
+      //yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
+      //zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
+      //
+      // t2k neutgeom merge is already in the detector coordinate system
+      xPos = fTmpRootrackerVtx->EvtVtx[0]*m;
+      yPos = fTmpRootrackerVtx->EvtVtx[1]*m;
+      zPos = fTmpRootrackerVtx->EvtVtx[2]*m;
 
 
       // Define the region in which we will accept events
@@ -577,17 +584,24 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
           return;
         }
 
-	  
+        // No longer needed since moving to t2k neutgeom merge
+        // Leave it here temporarily since we still have nuPRISM geom vectors people look at
+        //
         // Calculate offset from neutrino generation plane to centre of nuPRISM detector
-        x_offset = fNuPlanePos[0]*cm;
-        y_offset = fNuPlanePos[1]*cm;//0;//(fNuPrismRadius/zDir)*yDir;
-        z_offset = fNuPlanePos[2]*cm;
+        //x_offset = fNuPlanePos[0]*cm;
+        //y_offset = fNuPlanePos[1]*cm;//0;//(fNuPrismRadius/zDir)*yDir;
+        //z_offset = fNuPlanePos[2]*cm;
+        ////Convert coordinates
+        ////Subtract offset to get interaction position in WCSim coordinates
+        //xPos = fTmpRootrackerVtx->EvtVtx[0]*m - x_offset;
+        //yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
+        //zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
+        //
+        // t2k neutgeom merge is already in the detector coordinate system
+        xPos = fTmpRootrackerVtx->EvtVtx[0]*m;
+        yPos = fTmpRootrackerVtx->EvtVtx[1]*m;
+        zPos = fTmpRootrackerVtx->EvtVtx[2]*m;
 
-        //Convert coordinates
-        //Subtract offset to get interaction position in WCSim coordinates
-        xPos = fTmpRootrackerVtx->EvtVtx[0]*m - x_offset;
-        yPos = fTmpRootrackerVtx->EvtVtx[1]*m - y_offset;
-        zPos = fTmpRootrackerVtx->EvtVtx[2]*m - z_offset;
       }
 
       //Generate particles
@@ -1840,7 +1854,7 @@ void WCSimPrimaryGeneratorAction::OpenRootrackerFile(G4String fileName)
   }
 
   fRooTrackerTree = (TTree*) fInputRootrackerFile->Get("nRooTracker");
-  fSettingsTree = (TTree*) fInputRootrackerFile->Get("Settings");
+  fSettingsTree = (TTree*) fInputRootrackerFile->Get("settings");
   if (!fRooTrackerTree){
     G4cout << "File: " << fileName << " does not contain a Rootracker nRooTracker tree - please check you intend to process Rootracker events" << G4endl;
     exit(1);
@@ -1850,9 +1864,9 @@ void WCSimPrimaryGeneratorAction::OpenRootrackerFile(G4String fileName)
   fTmpRootrackerVtx = new NRooTrackerVtx();
   SetupBranchAddresses(fTmpRootrackerVtx); //link fTmpRootrackerVtx and current input file
 
-  fSettingsTree->SetBranchAddress("NuBeamAng",&fNuBeamAng);
-  fSettingsTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
-  fSettingsTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
+  //fSettingsTree->SetBranchAddress("NuBeamAng",&fNuBeamAng);
+  //fSettingsTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
+  fSettingsTree->SetBranchAddress("NuIdfdPosFluxCoord",fNuPlanePos);
 
 }
 

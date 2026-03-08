@@ -72,9 +72,9 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
     if(GetSaveRooTracker()){
       //Setup settings tree
       // Assume the NEUT file is open.
-      fSettingsInputTree = (TTree*) gDirectory->Get("Settings");
-      fSettingsInputTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
-      fSettingsInputTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
+      fSettingsInputTree = (TTree*) gDirectory->Get("settings");
+      fSettingsInputTree->SetBranchAddress("NuIdfdPosFluxCoord",fNuPlanePos);
+      //fSettingsInputTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
     }
   }
 
