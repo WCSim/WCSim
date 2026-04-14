@@ -135,6 +135,9 @@ public:
   G4int    GetTotalNumPmts2() {return totalNumPMTs2;}//For the hybrid config
   G4int    GetTotalNum_mPmts2() {return totalNum_mPMTs2;}//For the hybrid config         
   G4int    GetTotalNumODPmts() {return totalNumODPMTs;}
+  G4int    GetnPMTsRead() {return nPMTsRead;}
+  std::vector<G4int> GetpmtId() {return pmtId;}
+  std::vector<G4double> GetpmtDarkRate() {return pmtDarkRate;}
 
   G4int    GetPMT_QE_Method(){return PMT_QE_Method;}
   G4double GetwaterTank_Length() {return waterTank_Length;} 
@@ -383,6 +386,9 @@ public:
 
   void SetODPMTPositionInput(G4String choice) {odpmtPositionFile = choice; readODFromTable = true;}
   G4String GetODPMTPositionInput() {return odpmtPositionFile;}
+
+  void SetPMTDarkRateInput(G4String choice) {pmtDarkRateFile = choice; readFromTable = true;}
+  G4String GetPMTDarkRateInput() {return pmtDarkRateFile;}
 
   void SetCDSFile(G4String choice) { CDSFile = choice; addCDS = true; }
 
@@ -832,8 +838,13 @@ private:
   std::vector<G4double> pmtRotaton;
   std::string pmtPositionFile;
   std::string odpmtPositionFile;
+  std::vector<G4int> pmtId;
+  std::vector<G4double> pmtDarkRate;
+  std::string pmtDarkRateFile;
   void ReadGeometryTableFromFile();
   void ReadGeometryTableFromFile(std::string fname);
+  void ReadDarkRateTableFromFile();
+  void ReadDarkRateTableFromFile(std::string fname);
   // distance by which PMT goes behind black sheet
   G4double pmt_blacksheet_offset;
 

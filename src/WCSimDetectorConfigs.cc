@@ -1024,6 +1024,7 @@ void WCSimDetectorConstruction::SetHyperK_HybridmPMT_WithOD_Realistic_Geometry()
   BuildODWLSCladding = true;
   CreateWLSObject(WLSType);
   isRealisticPlacement=true;
+  SetPMTDarkRateInput(wcsimdir_path+"/data/PMT_darkrate.txt");
 }
 
 void WCSimDetectorConstruction::SetHyperK_HybridmPMT_IDonly_Realistic_Geometry()

@@ -318,6 +318,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
   // volumes using G4Assembly classes.
 
     G4cout << "**** Building Realistic HK Placement Detector ****" << G4endl;
+  ReadDarkRateTableFromFile();
 
     // Instantiate NIST manager so we can use all the materials from
     // WCSimConstructMaterials
