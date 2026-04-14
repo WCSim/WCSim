@@ -694,7 +694,7 @@ void WCSimDetectorConstruction::ReadDarkRateTableFromFile(){
   pmtId.clear();
   pmtDarkRate.clear();
   nPMTsRead = 0;
-  if (readFromTable) ReadDarkRateTableFromFile(pmtDarkRateFile);
+  if (readDarkRateFromTable) ReadDarkRateTableFromFile(pmtDarkRateFile);
 }
 
 void WCSimDetectorConstruction::ReadDarkRateTableFromFile(std::string fname)
