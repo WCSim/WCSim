@@ -187,7 +187,11 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     const G4int number_pmts = thenum_pmts;
     int *PMTindex = new int [number_pmts+1];
 
-    std::cout << " qqqqqqqqq detectorElement " << detectorElement << " number_pmts " << number_pmts << "  nPMTsRead " << myDetector->GetnPMTsRead() << std::endl;
+    G4int    nPMTsRead = myDetector->GetnPMTsRead();
+    std::vector<G4int> pmtId = myDetector->GetpmtId();
+    std::vector<G4double> pmtDarkRate = myDetector->GetpmtDarkRate();
+
+    std::cout << " qqqqqqqqq detectorElement " << detectorElement << " number_pmts " << number_pmts << "  nPMTsRead " << nPMTsRead << " size " << pmtId.size() << " other " << pmtDarkRate.size() <<  std::endl;
 
     //initialize PMTindex
     for (int l=0; l<number_pmts+1; l++){

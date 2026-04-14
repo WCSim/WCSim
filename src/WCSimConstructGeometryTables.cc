@@ -734,7 +734,11 @@ void WCSimDetectorConstruction::ReadDarkRateTableFromFile(std::string fname)
     pmtId.push_back(pmtid);
     nPMTsRead++;
   }
-  if( nPMTsRead ) nPMTsRead--;
+  if( nPMTsRead ){
+    nPMTsRead--;
+    pmtId.pop_back();
+    pmtDarkRate.pop_back();
+  }
   Data.close();
   std::cout << " qqqqqqqqqqqqqqqqq nPMTsRead " << nPMTsRead << std::endl;
 }
