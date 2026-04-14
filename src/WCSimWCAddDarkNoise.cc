@@ -191,7 +191,7 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     std::vector<G4int> pmtId = myDetector->GetpmtId();
     std::vector<G4double> pmtDarkRate = myDetector->GetpmtDarkRate();
 
-    if( myDetector->GetreadDarkRateFromTable() ){
+    if( myDetector->GetreadDarkRateFromTable() && detectorElement=="tank" ){
       std::cout << " qqqqqqqqq detectorElement " << detectorElement << " number_pmts " << number_pmts << "  nPMTsRead " << nPMTsRead << " size " << pmtId.size() << " other " << pmtDarkRate.size() <<  std::endl;
     }
     
