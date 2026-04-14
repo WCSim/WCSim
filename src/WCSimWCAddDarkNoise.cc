@@ -187,14 +187,6 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     const G4int number_pmts = thenum_pmts;
     int *PMTindex = new int [number_pmts+1];
 
-    G4int    nPMTsRead = myDetector->GetnPMTsRead();
-    std::vector<G4int> pmtId = myDetector->GetpmtId();
-    std::vector<G4double> pmtDarkRate = myDetector->GetpmtDarkRate();
-
-    if( myDetector->GetreadDarkRateFromTable() && detectorElement=="tank" ){
-      std::cout << " qqqqqqqqq detectorElement " << detectorElement << " number_pmts " << number_pmts << "  nPMTsRead " << nPMTsRead << " size " << pmtId.size() << " other " << pmtDarkRate.size() <<  std::endl;
-    }
-    
     //initialize PMTindex
     for (int l=0; l<number_pmts+1; l++){
       PMTindex[l] =0;
@@ -245,6 +237,93 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     
     WCSimWCPMT* WCPMT = (WCSimWCPMT*)DMman->FindDigitizerModule(thewcpmtname);
    
+    if( myDetector->GetreadDarkRateFromTable() && detectorElement=="tank" ){
+      G4int    nPMTsRead = myDetector->GetnPMTsRead();
+      std::vector<G4int> pmtId = myDetector->GetpmtId();
+      std::vector<G4double> pmtDarkRate = myDetector->GetpmtDarkRate();
+      std::cout << " qqqqqqqqq detectorElement " << detectorElement << " number_pmts " << number_pmts << "  nPMTsRead " << nPMTsRead << " size " << pmtId.size() << " other " << pmtDarkRate.size() << " old dark rate " << this->PMTDarkRate << " window " << windowsize << std::endl;
+
+      for(G4int ipmt=0; ipmt<number_pmts; ipmt++){
+
+	int noise_pmt = ipmt + 1; //so that pmt numbers runs from 1 to Npmt
+	double ave = pmtDarkRate[ipmt] * this->ConvRate * windowsize * 1E-9;
+	int nnoisehits = CLHEP::RandPoisson::shoot(ave);
+	
+	for( int i = 0; i < nnoisehits; i++ ){
+	  //time of noise hit to be generated
+	  //A time from t=num1 to num2
+	  current_time = num1 + G4UniformRand()*windowsize;
+	  
+	  
+	  if( list[ noise_pmt ] == 0 ){
+	    //PMT has no hits yet. Create a new WCSimWCDigi
+	    WCSimWCDigi* ahit = new WCSimWCDigi();
+	    ahit->SetTubeID( noise_pmt);
+	    if(detectorElement=="tank") ahit->SetLogicalVolume(G4LogicalVolumeStore::GetInstance()->GetVolume(myDetector->GetDetectorName()+"-glassFaceWCPMT"));
+	    else if(detectorElement=="tankPMT2") ahit->SetLogicalVolume(G4LogicalVolumeStore::GetInstance()->GetVolume(myDetector->GetDetectorName()+"-glassFaceWCPMT2"));
+	    else if(detectorElement=="OD")ahit->SetLogicalVolume(G4LogicalVolumeStore::GetInstance()->GetVolume(myDetector->GetDetectorName()+"-glassFaceWCPMT_OD"));
+	    else G4cout << "### detectorElement undefined ..." << G4endl;
+	    ahit->SetTrackID(PMTindex[noise_pmt],-1);
+	    ahit->SetParentID(PMTindex[noise_pmt], -1);
+	    
+	    // Set the position and rotation of the pmt
+	    Double_t hit_pos[3];
+	    Double_t hit_rot[3];
+	    
+	    WCSimPmtInfo* pmtinfo = (WCSimPmtInfo*)pmts->at( noise_pmt -1 );
+	    hit_pos[0] = 10*pmtinfo->Get_transx()/CLHEP::cm;
+	    hit_pos[1] = 10*pmtinfo->Get_transy()/CLHEP::cm;
+	    hit_pos[2] = 10*pmtinfo->Get_transz()/CLHEP::cm;
+	    hit_rot[0] = pmtinfo->Get_orienx();
+	    hit_rot[1] = pmtinfo->Get_orieny();
+	    hit_rot[2] = pmtinfo->Get_orienz();
+	    G4ThreeVector pmt_orientation(hit_rot[0], hit_rot[1], hit_rot[2]);
+	    G4ThreeVector pmt_position(hit_pos[0], hit_pos[1], hit_pos[2]);
+	    ahit->SetOrientation(pmt_orientation);
+	    ahit->SetPos(pmt_position);
+	    ahit->SetTime(PMTindex[noise_pmt],current_time);
+	    ahit->SetPhotonStartTime(PMTindex[noise_pmt],current_time);
+	    ahit->SetPhotonStartEnergy(PMTindex[noise_pmt],0);
+	    ahit->SetPhotonEndEnergy(PMTindex[noise_pmt],0);
+	    ahit->SetPhotonStartPos(PMTindex[noise_pmt], pmt_position);
+	    ahit->SetPhotonEndPos(PMTindex[noise_pmt], pmt_position);
+	    ahit->SetPhotonStartDir(PMTindex[noise_pmt], -pmt_orientation);
+	    ahit->SetPhotonEndDir(PMTindex[noise_pmt], -pmt_orientation);
+	    ahit->SetPhotonCreatorProcess(PMTindex[noise_pmt],kDarkNoise);
+	    ahit->SetPreSmearTime(PMTindex[noise_pmt],current_time); //presmear==postsmear for dark noise
+	    pe = WCPMT->rn1pe();
+	    ahit->SetPe(PMTindex[noise_pmt],pe);
+	    ahit->AddPe(current_time);
+	    WCHCPMT->insert(ahit);
+	    PMTindex[noise_pmt]++;
+	    number_entries ++;
+	    list[ noise_pmt ] = number_entries; // Add this PMT to the end of the list
+	  }
+	  else {
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->AddPe(current_time);
+	    pe = WCPMT->rn1pe();
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPe(PMTindex[noise_pmt],pe);
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTime(PMTindex[noise_pmt],current_time);
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPreSmearTime(PMTindex[noise_pmt],current_time); //presmear==postsmear for dark noise
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetTrackID(PMTindex[noise_pmt],-1);
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetParentID(PMTindex[noise_pmt],-1);
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartTime(PMTindex[noise_pmt],current_time);
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartEnergy(PMTindex[noise_pmt],0);
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonEndEnergy(PMTindex[noise_pmt],0);
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartPos(PMTindex[noise_pmt],(*WCHCPMT)[ list[noise_pmt]-1 ]->GetPos());
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonEndPos(PMTindex[noise_pmt],(*WCHCPMT)[ list[noise_pmt]-1 ]->GetPos());
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonStartDir(PMTindex[noise_pmt],-(*WCHCPMT)[ list[noise_pmt]-1 ]->GetOrientation());
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonEndDir(PMTindex[noise_pmt],-(*WCHCPMT)[ list[noise_pmt]-1 ]->GetOrientation());
+	    (*WCHCPMT)[ list[noise_pmt]-1 ]->SetPhotonCreatorProcess(PMTindex[noise_pmt],kDarkNoise);
+	    PMTindex[noise_pmt]++;
+	  }
+	  
+	}//i (number of noise hits to add)
+      }
+	
+      delete [] PMTindex;
+      return;
+    }   
     //average number of PMTs with noise
     double ave = number_pmts * this->PMTDarkRate * this->ConvRate * windowsize * 1E-6;
 
