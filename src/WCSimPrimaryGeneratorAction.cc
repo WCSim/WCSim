@@ -480,9 +480,6 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       //Load event from file
       if(fEvNum == 0){
-	fSettingsTree->SetBranchAddress("NuBeamAng",&fNuBeamAng);
-	fSettingsTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
-	fSettingsTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
 	fSettingsTree->GetEntry(0);
       }
       if (fEvNum<fNEntries){
@@ -519,7 +516,9 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       //G4cout<<"od_inner_radius "<< od_inner_blacksheet_radius << G4endl;
       //G4cout<<"od_inner_full_length "<< od_inner_blacksheet_full_length << G4endl;
 
-      vector<float> od_outer_dims = myDetector->GetBoundaryWallDimensions()[kBoundaryWallODOuterTyvek];
+      vector<float> od_outer_dims = od_inner_dims;
+      // OuterTyvek may not exist
+      if (myDetector->GetBoundaryWallDimensions().count(kBoundaryWallODOuterTyvek)) myDetector->GetBoundaryWallDimensions()[kBoundaryWallODOuterTyvek];
       double od_outer_blacksheet_radius = od_outer_dims[0];
       double od_outer_blacksheet_full_length = od_outer_dims[1];
       //G4cout<<"od_outer_radius "<< od_outer_blacksheet_radius << G4endl;
@@ -596,38 +595,24 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       //i = 2 is the target nucleon
       //i > 2 are the outgoing particles
       
-      // First simulate the incoming neutrino
-      // Get the neutrino direction
-      xDir=fTmpRootrackerVtx->StdHepP4[0][0]*GeV;
-      yDir=fTmpRootrackerVtx->StdHepP4[0][1]*GeV;
-      zDir=fTmpRootrackerVtx->StdHepP4[0][2]*GeV;
-
-      double momentum=sqrt((xDir*xDir)+(yDir*yDir)+(zDir*zDir));
-
-      G4ThreeVector vtx = G4ThreeVector(xPos, yPos, zPos);
-      G4ThreeVector dir = G4ThreeVector(-xDir, -yDir, -zDir);
-
-      dir = dir*(1./momentum);
-
-      particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[0]));
-      double kin_energy = momentum;//fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
-      particleGun->SetParticleEnergy(kin_energy);
-      particleGun->SetParticlePosition(vtx);
-      particleGun->SetParticleMomentumDirection(dir);
-      // Will want to include some beam time structure at some point, but not needed at the moment since we only simulate 1 interaction per events
-      // particleGun->SetParticleTime(time);
-      particleGun->GeneratePrimaryVertex(anEvent);  //Place vertex in stack
+      double momentum;
+      G4ThreeVector vtx;
+      G4ThreeVector dir;
+      double kin_energy;
 
         // Now simulate the outgoing particles
         for (int i = 0; i < fTmpRootrackerVtx->StdHepN; i++){
 
             // Skip the initial neutrino, target nucleus and target nucleon
-            if( i < 3){
-                int pdg = abs(fTmpRootrackerVtx->StdHepPdgTemp[i]);
-                if(pdg > 100000 || pdg == 12 || pdg == 14 || pdg == 2112 || pdg == 2212){
-                    continue;
-                }
-            }
+	  int abspdg = abs(fTmpRootrackerVtx->StdHepPdgTemp[i]);
+	  if( i < 3){
+	    if(abspdg > 100000 || abspdg == 2112 || abspdg == 2212){
+	      continue;
+	    }
+	  }
+	  if(abspdg == 12 || abspdg == 14 || abspdg == 16) {
+	    continue;
+	  }
 
             xDir=fTmpRootrackerVtx->StdHepP4[i][0]*GeV;
             yDir=fTmpRootrackerVtx->StdHepP4[i][1]*GeV;
@@ -655,8 +640,11 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
             // Will want to include some beam time structure at some point, but not needed at the moment since we only simulate 1 interaction per events
             // particleGun->SetParticleTime(time);
             particleGun->GeneratePrimaryVertex(anEvent);  //Place vertex in stack
-        }
-    }
+	    G4cout << "ROOTRACKER: created particle gun with KinEnergy/PDG/Position/Direction: "
+		   << kin_energy << "/" << fTmpRootrackerVtx->StdHepPdgTemp[i]
+		   << "/" << vtx << "/" << dir << " i = " << i << G4endl;
+        }//loop over RooTracker particles
+    }//useRooTracker
 
   else if (useGunEvt)
     {      // manual gun operation
@@ -1840,23 +1828,36 @@ void WCSimPrimaryGeneratorAction::OpenRootrackerFile(G4String fileName)
   }
 
   fRooTrackerTree = (TTree*) fInputRootrackerFile->Get("nRooTracker");
-  fSettingsTree = (TTree*) fInputRootrackerFile->Get("Settings");
   if (!fRooTrackerTree){
     G4cout << "File: " << fileName << " does not contain a Rootracker nRooTracker tree - please check you intend to process Rootracker events" << G4endl;
     exit(1);
   }
   fNEntries=fRooTrackerTree->GetEntries();
 
-  fTmpRootrackerVtx = new NRooTrackerVtx();
+  fTmpRootrackerVtx = new ND::NRooTrackerVtx();
   SetupBranchAddresses(fTmpRootrackerVtx); //link fTmpRootrackerVtx and current input file
 
-  fSettingsTree->SetBranchAddress("NuBeamAng",&fNuBeamAng);
-  fSettingsTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
-  fSettingsTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
-
+  // Different names across NEUT versions
+  fSettingsTree = (TTree*) fInputRootrackerFile->Get("Settings");
+  if (fSettingsTree)
+  {
+    fSettingsTree->SetBranchAddress("NuBeamAng",&fNuBeamAng);
+    fSettingsTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
+    fSettingsTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
+  }
+  else 
+  {
+    fSettingsTree = (TTree*) fInputRootrackerFile->Get("settings");
+    if (!fSettingsTree) 
+    {
+      G4cout << "Error: Could not find 'Settings' or 'settings' tree in file!" << G4endl;
+      exit(1);
+    }
+    fSettingsTree->SetBranchAddress("NuIdfdPosGeomCoord", fNuPlanePos);
+  }
 }
 
-void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrackervtx){
+void WCSimPrimaryGeneratorAction::SetupBranchAddresses(ND::NRooTrackerVtx* nrootrackervtx){
 
   // Set up branch address for rooTrackerVertex tree in nuPRISM files
   fRooTrackerTree->SetBranchAddress("EvtCode",        &(nrootrackervtx->EvtCode) );
@@ -1914,9 +1915,51 @@ void WCSimPrimaryGeneratorAction::SetupBranchAddresses(NRooTrackerVtx* nrootrack
   fRooTrackerTree->SetBranchAddress("NuGdistc",         (nrootrackervtx->NuGdistc));
   fRooTrackerTree->SetBranchAddress("NuGdistal",        (nrootrackervtx->NuGdistal));
 
+  // Nucleon FSI information
+  bool fHaveNFBranches = (fRooTrackerTree->SetBranchAddress("NFnvert", &(nrootrackervtx->NFnvert)) == 0);
+  if (fHaveNFBranches)
+  {
+    fRooTrackerTree->SetBranchAddress("NFiflag", (nrootrackervtx->NFiflagTEMP));
+    fRooTrackerTree->SetBranchAddress("NFx", (nrootrackervtx->NFxTEMP));
+    fRooTrackerTree->SetBranchAddress("NFy", (nrootrackervtx->NFyTEMP));
+    fRooTrackerTree->SetBranchAddress("NFz", (nrootrackervtx->NFzTEMP));
+    fRooTrackerTree->SetBranchAddress("NFpx", (nrootrackervtx->NFpxTEMP));
+    fRooTrackerTree->SetBranchAddress("NFpy", (nrootrackervtx->NFpyTEMP));
+    fRooTrackerTree->SetBranchAddress("NFpz", (nrootrackervtx->NFpzTEMP));
+    fRooTrackerTree->SetBranchAddress("NFe", (nrootrackervtx->NFeTEMP));
+    fRooTrackerTree->SetBranchAddress("PCascProb", &(nrootrackervtx->PCascProb));
+
+    fRooTrackerTree->SetBranchAddress("NFfirststep",
+                                      (nrootrackervtx->NFfirststepTEMP));
+    fRooTrackerTree->SetBranchAddress("NFnstep", &(nrootrackervtx->NFnstep));
+    fRooTrackerTree->SetBranchAddress("NFecms2", (nrootrackervtx->NFecms2TEMP));
+    fRooTrackerTree->SetBranchAddress("Prob", (nrootrackervtx->ProbTEMP));
+    fRooTrackerTree->SetBranchAddress("VertFlagStep", (nrootrackervtx->VertFlagStepTEMP));
+    fRooTrackerTree->SetBranchAddress("VertFsiRhon", (nrootrackervtx->VertFsiRhonTEMP));
+    fRooTrackerTree->SetBranchAddress("StepPel", (nrootrackervtx->StepPelTEMP));
+    fRooTrackerTree->SetBranchAddress("StepPsp", (nrootrackervtx->StepPspTEMP));
+    fRooTrackerTree->SetBranchAddress("StepPdp", (nrootrackervtx->StepPdpTEMP));
+    // These two are missing in NEUT 5.6.4 vectors in /hyperk.org/beta-production/iwcd/prod2/neut564_cnev2.0/neut564_cnge2.0/rnge
+    // fRooTrackerTree->SetBranchAddress("StepScaleFactor", (nrootrackervtx->StepScaleFactorTEMP));
+    // fRooTrackerTree->SetBranchAddress("StepEkin", (nrootrackervtx->StepEkinTEMP));
+
+    fRooTrackerTree->SetBranchAddress("SPIDelta", &(nrootrackervtx->SPIDelta));
+    fRooTrackerTree->SetBranchAddress("IRadCorrPht", &(nrootrackervtx->IRadCorrPht));
+  }
+  else
+  {
+    G4cout << "=======================================================================================."<< G4endl;
+    G4cout << "WCSimPrimaryGeneratorAction::SetupBranchAddresses() : Passthrough tree doesn't contain" << G4endl;
+    G4cout << " nucleon FSI tracking information, these branches will remain off." << G4endl;
+    G4cout << "=======================================================================================."<< G4endl;
+  }
 }
 
-void WCSimPrimaryGeneratorAction::CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx){
+void WCSimPrimaryGeneratorAction::CopyRootrackerVertex(ND::NRooTrackerVtx* nrootrackervtx){
+  //fTmpRootrackerVtx->Print();
   nrootrackervtx->Copy(fTmpRootrackerVtx);
-  nrootrackervtx->TruthVertexID = -999;
+  // nrootrackervtx->TruthVertexID = -999;
+  // nrootrackervtx->NuParentPdg = 1234567;
+  // fRooTrackerTree->Show(0);
+  // nrootrackervtx->Print();
 }

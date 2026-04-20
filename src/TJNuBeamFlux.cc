@@ -1,5 +1,7 @@
 #include "TJNuBeamFlux.hh"
 
+using namespace ND;
+
 //_______________________________________________________________________________________
 RooTrackerVtxBase::RooTrackerVtxBase() :
     TObject()

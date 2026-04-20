@@ -45,8 +45,9 @@ public:
 		     G4TrajectoryContainer*,
 		     WCSimWCDigitsCollection*,
 		     WCSimWCTriggeredDigitsCollection*,
-		     G4String detectorElement="tank",
-		     bool skipFillingTracks=false);
+		     G4String detectorElement,
+		     bool skipFillingTracks,
+		     bool skipFillingRooTracker);
   void FillRootEventHybrid(G4int, 
 			   const struct ntupleStruct&, 
 			   G4TrajectoryContainer*,
@@ -55,7 +56,8 @@ public:
 			   G4String,
 			   WCSimRootEvent*,
 			   WCSimRootTrigger*,
-			   bool skipFillingTracks);
+			   bool skipFillingTracks,
+			   bool skipFillingRooTracker);
   WCSimRunAction* GetRunAction(){return runAction;}
   void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
   void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
