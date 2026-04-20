@@ -693,7 +693,7 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(std::string fname)
 void WCSimDetectorConstruction::ReadDarkRateTableFromFile(){
   pmtId.clear();
   pmtDarkRate.clear();
-  nPMTsRead = 0;
+  nPMTsReadForDarkRate = 0;
   if (readDarkRateFromTable) ReadDarkRateTableFromFile(pmtDarkRateFile);
 }
 
@@ -732,13 +732,12 @@ void WCSimDetectorConstruction::ReadDarkRateTableFromFile(std::string fname)
     Data>>pmtid>>darkrate;
     pmtDarkRate.push_back(darkrate);
     pmtId.push_back(pmtid);
-    nPMTsRead++;
+    nPMTsReadForDarkRate++;
   }
-  if( nPMTsRead ){
-    nPMTsRead--;
+  if( nPMTsReadForDarkRate ){
+    nPMTsReadForDarkRate--;
     pmtId.pop_back();
     pmtDarkRate.pop_back();
   }
   Data.close();
-  std::cout << " qqqqqqqqqqqqqqqqq nPMTsRead " << nPMTsRead << std::endl;
 }

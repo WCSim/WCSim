@@ -136,7 +136,7 @@ public:
   G4int    GetTotalNum_mPmts2() {return totalNum_mPMTs2;}//For the hybrid config         
   G4int    GetTotalNumODPmts() {return totalNumODPMTs;}
   G4bool   GetreadDarkRateFromTable() {return readDarkRateFromTable;}
-  G4int    GetnPMTsRead() {return nPMTsRead;}
+  G4int    GetnPMTsReadForDarkRate() {return nPMTsReadForDarkRate;}
   std::vector<G4int> GetpmtId() {return pmtId;}
   std::vector<G4double> GetpmtDarkRate() {return pmtDarkRate;}
 
@@ -840,6 +840,7 @@ private:
   std::string pmtPositionFile;
   std::string odpmtPositionFile;
   G4bool readDarkRateFromTable;
+  G4int nPMTsReadForDarkRate;
   std::vector<G4int> pmtId;
   std::vector<G4double> pmtDarkRate;
   std::string pmtDarkRateFile;
