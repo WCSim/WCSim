@@ -48,9 +48,9 @@ public:
   void GeneratePrimaries(G4Event* anEvent);
 
   // RooTracker related functions
-  void SetupBranchAddresses(NRooTrackerVtx* nrootrackervtx);
+  void SetupBranchAddresses(ND::NRooTrackerVtx* nrootrackervtx);
   void OpenRootrackerFile(G4String fileName);
-  void CopyRootrackerVertex(NRooTrackerVtx* nrootrackervtx);
+  void CopyRootrackerVertex(ND::NRooTrackerVtx* nrootrackervtx);
   bool GetIsRooTrackerFileFinished(){return (fEvNum==fNEntries);}
 
   // Gun, laser & gps setting calls these functions to fill jhfNtuple and Root tree
@@ -212,7 +212,7 @@ private:
   // Temporary vertex that is saved if desired, according to WCSimIO macro option
   TTree* fRooTrackerTree;
   TTree* fSettingsTree;
-  NRooTrackerVtx* fTmpRootrackerVtx;
+  ND::NRooTrackerVtx* fTmpRootrackerVtx;
   float fNuPrismRadius;
   float fNuBeamAng;
   float fNuPlanePos[3];
