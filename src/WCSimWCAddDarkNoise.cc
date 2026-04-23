@@ -237,10 +237,10 @@ void WCSimWCAddDarkNoise::AddDarkNoiseBeforeDigi(WCSimWCDigitsCollection* WCHCPM
     
     WCSimWCPMT* WCPMT = (WCSimWCPMT*)DMman->FindDigitizerModule(thewcpmtname);
    
-    if( myDetector->GetreadDarkRateFromTable() && detectorElement=="tank" ){
-      G4int    nPMTsReadForDarkRate = myDetector->GetnPMTsReadForDarkRate();
-      std::vector<G4int> pmtId = myDetector->GetpmtId();
-      std::vector<G4double> pmtDarkRate = myDetector->GetpmtDarkRate();
+    if( myDetector->Get_readDarkRateFromTable() && detectorElement=="tank" ){
+      G4int    nPMTsReadForDarkRate = myDetector->Get_nPMTsReadForDarkRate();
+      std::vector<G4int> pmtId = myDetector->Get_pmtId();
+      std::vector<G4double> pmtDarkRate = myDetector->Get_pmtDarkRate();
 
       for(G4int ipmt=0; ipmt<number_pmts; ipmt++){
 

@@ -135,10 +135,10 @@ public:
   G4int    GetTotalNumPmts2() {return totalNumPMTs2;}//For the hybrid config
   G4int    GetTotalNum_mPmts2() {return totalNum_mPMTs2;}//For the hybrid config         
   G4int    GetTotalNumODPmts() {return totalNumODPMTs;}
-  G4bool   GetreadDarkRateFromTable() {return readDarkRateFromTable;}
-  G4int    GetnPMTsReadForDarkRate() {return nPMTsReadForDarkRate;}
-  std::vector<G4int> GetpmtId() {return pmtId;}
-  std::vector<G4double> GetpmtDarkRate() {return pmtDarkRate;}
+  G4bool   Get_readDarkRateFromTable() {return readDarkRateFromTable;}
+  G4int    Get_nPMTsReadForDarkRate() {return nPMTsReadForDarkRate;}
+  std::vector<G4int> Get_pmtId() {return pmtId;}
+  std::vector<G4double> Get_pmtDarkRate() {return pmtDarkRate;}
 
   G4int    GetPMT_QE_Method(){return PMT_QE_Method;}
   G4double GetwaterTank_Length() {return waterTank_Length;} 
