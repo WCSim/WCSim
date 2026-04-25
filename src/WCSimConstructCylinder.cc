@@ -2070,7 +2070,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCaps(G4bool flipz)
       = new G4Polyhedra(capbsname + G4String("ExtraSlice"),
 						totalAngle-2.*pi+barrelPhiOffset, // phi start
 						2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //
-						WCBarrelRingNPhi, //NPhi-gon
+						1, //NPhi-gon
 						4, //  z-planes
 						capBlackSheetZ, //position of the Z planes
 						extraBSRmin, // min radius at the z planes
@@ -2727,7 +2727,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
   // the radii are measured to the center of the surfaces
   // (tangent distance). Thus distances between the corner and the center are bigger.
   //BQ: Updated with new HK OD size (2020/12/06). Simply assume no tyvek thickness or dead space.
-  WCLength    = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness + 1*mm + pmt_blacksheet_offset);
+  if (!isODConstructed) WCLength = WCIDHeight + 2*(WCBlackSheetThickness + 1*mm + pmt_blacksheet_offset);
+  else WCLength = WCIDHeight + 2*(WCODHeightWaterDepth + WCBlackSheetThickness + WCODDeadSpace + WCODTyvekSheetThickness + 1*mm);
   WCRadius    = (outerAnnulusRadius + WCODLateralWaterDepth)/cos(dPhi/2.) ;
 #ifdef WCSIMCONSTRUCTCYLINDER_VERBOSE
   G4cout
@@ -3874,6 +3875,36 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCylinderNoReplica()
 						checkOverlaps);
 	  new G4LogicalSkinSurface("WaterTySurfaceBot", logicWCODBotCapTyvek, OpWaterTySurface);
 
+    if (WCDetectorName=="IWCD_mPMT_WithOD" && addBF)
+    {
+      auto shape_BF = CADMesh::TessellatedMesh::FromSTL(IWCD_BF_File);
+
+      // set scale
+      shape_BF->SetScale(1);
+      G4double zpos = ((WCIDHeight + 2*WCODDeadSpace)/2)+WCODTyvekSheetThickness+WCODDeadSpace+WCODHeightWaterDepth-18*cm;
+      G4ThreeVector posBF = G4ThreeVector(0*m, 0*m,zpos);
+      
+      // make new shape a solid
+      G4VSolid* solid_BF = shape_BF->GetSolid();
+      
+      G4LogicalVolume* BF_logical =                                   //logic name
+      new G4LogicalVolume(solid_BF,                                 //solid name
+                G4Material::GetMaterial("StainlessSteel"),          //material
+                "BottomFrame");                                     //objects name
+      // rotate if necessary
+      G4RotationMatrix* BF_rot = new G4RotationMatrix; // Rotates X and Z axes only
+      BF_rot->rotateX(180*deg);                 
+      
+      new G4PVPlacement(BF_rot,                       //rotation
+                posBF,                    //at position
+                BF_logical,           //its logical volume
+                "BottomFrame",                //its name
+                logicWCBarrel,                //its mother  volume
+                false,                   //no boolean operation
+                0,                       //copy number
+                checkOverlaps);          //overlaps checking
+      new G4LogicalSkinSurface("BottomFrameSurface",BF_logical,OpWaterTySurface);
+    }
 
     //-------------------------------------------------------------
     // OD Tyvek Barrel side
@@ -4323,13 +4354,62 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
   G4double CapBarrelPMTOffset = flipz ? WCBarrelPMTTopOffset : WCBarrelPMTBotOffset ;
 
   const G4String caname = capstr + G4String("Assembly");  // "[Top|Bot]CapAssembly"
-  G4Tubs* solidCapAssembly = new G4Tubs(caname,
-							0.0*m,
-              // use the largest radius in cap region
-							(WCIDRadius + WCBlackSheetThickness + 1.*mm + pmt_blacksheet_offset +std::max(GetRadiusChange(-zflip*WCIDHeight/2),GetRadiusChange(capAssemblyZEdge)))/cos(dPhi/2.), 
-							capAssemblyHeight/2,
-							0.*deg,
-							360.*deg);
+  G4double capr = WCIDRadius + WCBlackSheetThickness + 1.*mm + pmt_blacksheet_offset +std::max(GetRadiusChange(-zflip*WCIDHeight/2),GetRadiusChange(capAssemblyZEdge));
+  G4VSolid* solidCapAssembly = nullptr;
+  G4double capAssemblyRmin[2] = {0,0};
+  G4double capAssemblyRmax[2] = {capr,capr}; 
+  G4double capAssemblyZ[2] = {-capAssemblyHeight/2,capAssemblyHeight/2}; 
+  if(WCBarrelRingNPhi*WCPMTperCellHorizontal == WCBarrelNumPMTHorizontal)
+  {
+    solidCapAssembly = 
+    new G4Polyhedra(caname,
+                    barrelPhiOffset, // phi start
+                    totalAngle, //total phi
+                    WCBarrelRingNPhi, //NPhi-gon
+                    2,
+                    capAssemblyZ,
+                    capAssemblyRmin,
+                    capAssemblyRmax);
+  } else 
+  { 
+    // same as for the cap volume
+    G4Polyhedra* mainPart
+      = new G4Polyhedra(caname + G4String("MainPart"),
+			barrelPhiOffset, // phi start
+			totalAngle, //phi end
+			WCBarrelRingNPhi, //NPhi-gon
+			2, //  z-planes
+			capAssemblyZ, //position of the Z planes
+			capAssemblyRmin, // min radius at the z planes
+			capAssemblyRmax// max radius at the Z planes
+			);
+    G4double extraRmin[2];
+    G4double extraRmax[2];
+    for(int i = 0; i < 2 ; i++){
+      extraRmin[i] = capAssemblyRmin[i] != 0. ? capAssemblyRmin[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.) : 0.;
+      extraRmax[i] = capAssemblyRmax[i] != 0. ? capAssemblyRmax[i]/cos(dPhi/2.)*cos((2.*pi-totalAngle)/2.) : 0.;
+    }
+    G4Polyhedra* extraSlice
+    = new G4Polyhedra(caname + G4String("ExtraSlice"),
+      totalAngle-2.*pi+barrelPhiOffset, // phi start
+      2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //
+      1, //NPhi-gon
+      2, //  z-planes
+      capAssemblyZ, //position of the Z planes
+      extraRmin, // min radius at the z planes
+      extraRmax// max radius at the Z planes
+      );
+  
+      solidCapAssembly =
+      new G4UnionSolid(caname, mainPart, extraSlice);
+  }
+  // G4Tubs* solidCapAssembly = new G4Tubs(caname,
+	// 						0.0*m,
+  //             // use the largest radius in cap region
+	// 						capr, 
+	// 						capAssemblyHeight/2,
+	// 						0.*deg,
+	// 						360.*deg);
 
   G4LogicalVolume* logicCapAssembly =
     new G4LogicalVolume(solidCapAssembly,
@@ -4480,7 +4560,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructCapsNoReplica(G4bool flipz)
     = new G4Polyhedra(capbsname + G4String("ExtraSlice"),
       totalAngle-2.*pi+barrelPhiOffset, // phi start
       2.*pi -  totalAngle -G4GeometryTolerance::GetInstance()->GetSurfaceTolerance()/(10.*m), //
-      WCBarrelRingNPhi, //NPhi-gon
+      1, //NPhi-gon
       4, //  z-planes
       capBlackSheetZ, //position of the Z planes
       extraBSRmin, // min radius at the z planes

@@ -815,6 +815,8 @@ private:
   G4bool addCDS;
   G4String CDSFile;
   G4String WCPMTType;
+  G4bool addBF;
+  G4String IWCD_BF_File;
  // G4double WCPMTCoverage; //TF: already using this variable "WCPMTPercentCoverage
 
   G4bool rotateBarrelHalfTower;
