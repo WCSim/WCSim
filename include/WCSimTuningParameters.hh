@@ -69,6 +69,9 @@ public:
   G4double GetWCODTyvekReflectivity() {return WCODTyvekReflectivity;}
   void SetWCODTyvekReflectivity(G4double tparam) {WCODTyvekReflectivity=tparam;}
 
+  G4double GetWCODTyvekOutwallReflectivity() {return WCODTyvekOutwallReflectivity;}
+  void SetWCODTyvekOutwallReflectivity(G4double tparam) {WCODTyvekOutwallReflectivity=tparam;}
+
 private:
 
   // The messenger
@@ -100,6 +103,7 @@ private:
 
   G4double WCODWLSCladdingReflectivity;
   G4double WCODTyvekReflectivity;
+  G4double WCODTyvekOutwallReflectivity;
 
 };
 

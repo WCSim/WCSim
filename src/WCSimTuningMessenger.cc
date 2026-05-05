@@ -89,7 +89,12 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   CommandWCODTyvekReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODTyvekReflectivity",this);
   CommandWCODTyvekReflectivity->SetGuidance("Set OD tyvek cladding reflectivity");
   CommandWCODTyvekReflectivity->SetParameterName("WCODTyvekReflectivity",true);
-  CommandWCODTyvekReflectivity->SetDefaultValue(0.90);
+  CommandWCODTyvekReflectivity->SetDefaultValue(0.95);
+
+  CommandWCODTyvekOutwallReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODTyvekOutwallReflectivity",this);
+  CommandWCODTyvekOutwallReflectivity->SetGuidance("Set OD tyvek outer wall cladding reflectivity");
+  CommandWCODTyvekOutwallReflectivity->SetParameterName("WCODTyvekOutwallReflectivity",true);
+  CommandWCODTyvekOutwallReflectivity->SetDefaultValue(0.87);
 
 }
 
@@ -113,6 +118,7 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
 
   delete CommandWCODWLSCladdingReflectivity;
   delete CommandWCODTyvekReflectivity;
+  delete CommandWCODTyvekOutwallReflectivity;
 
   delete WCSimDir;
 }
@@ -213,8 +219,14 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   }
 
   else if(command == CommandWCODTyvekReflectivity) {
-    // Set the Top Veto PMT Spacing
+    // Set Inwall OD Tyvek Reflectivity
     WCSimTuningParams->SetWCODTyvekReflectivity(CommandWCODTyvekReflectivity->GetNewDoubleValue(newValue));
     G4cout << "Setting OD tyvek reflectivity " << CommandWCODTyvekReflectivity->GetNewDoubleValue(newValue) << G4endl;
+  }
+
+  else if(command == CommandWCODTyvekOutwallReflectivity) {
+    // Set Outwall OD Tyvek Reflectivity
+    WCSimTuningParams->SetWCODTyvekOutwallReflectivity(CommandWCODTyvekOutwallReflectivity->GetNewDoubleValue(newValue));
+    G4cout << "Setting OD tyvek outwall reflectivity " << CommandWCODTyvekOutwallReflectivity->GetNewDoubleValue(newValue) << G4endl;
   }
 }

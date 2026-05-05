@@ -46,6 +46,7 @@ private:
   G4UIcmdWithABool* TopVeto;
   G4UIcmdWithADouble* CommandWCODWLSCladdingReflectivity;
   G4UIcmdWithADouble* CommandWCODTyvekReflectivity;
+  G4UIcmdWithADouble* CommandWCODTyvekOutwallReflectivity;
 
 };
 
