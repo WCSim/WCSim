@@ -43,7 +43,7 @@ void format_histogram(TH2D* h, std::string title ,std::string xtitle, std::strin
 	h->GetYaxis()->SetTitle( ytitle.c_str() );
 }
 
-void read_LIGen_OD_output(std::string inFileName, std::string outFileName, bool verbosity=0){
+void read_LIGen_diffuser_pulses(std::string inFileName, std::string outFileName, bool verbosity=0){
 
 
 	// Some nicely formatted text options
@@ -105,10 +105,24 @@ void read_LIGen_OD_output(std::string inFileName, std::string outFileName, bool 
 	// Create an output file
 	TFile *outFile = new TFile(outFileName.c_str(), "RECREATE");
 	TTree *outBranch = new TTree("simulation", "simulation");
+        // Save the geometry to the output file
+        geoTree->CloneTree()->Write();
 
 	// Detector geometry details
 	int MAXPMT = geo->GetWCNumPMT(); // Get the maximum number of PMTs in the ID
 	int MAXPMTA = geo->GetODWCNumPMT(); // Get the maximum number of PMTs in the OD
+        int barrel_pmts=0;
+        int topcap_pmts=0;
+        int bottom_pmts=0;
+        for (int ipmt=0;ipmt<MAXPMTA;ipmt++){
+            WCSimRootPMT pmt2 = geo->GetODPMT(ipmt);
+            if (pmt2.GetCylLoc()==4) barrel_pmts++;
+            if (pmt2.GetCylLoc()==3) topcap_pmts++;
+            if (pmt2.GetCylLoc()==5) bottom_pmts++;
+        }
+        std::cout << barrel_pmts << " barrel pmts" << std::endl;
+        std::cout << topcap_pmts << " topcap pmts" << std::endl;
+        std::cout << bottom_pmts << " bottom pmts" << std::endl;
 
 	// Injector variables to read in from the root file
 	float injectorVtxX, injectorVtxY, injectorVtxZ; // injector location
@@ -127,45 +141,45 @@ void read_LIGen_OD_output(std::string inFileName, std::string outFileName, bool 
 	int numPMTsDigiHitMPMT; // Number of PMTs with digihits
 
         // Variables to read in from the root file - OD only for OD LI
-	float pmtX;
-        float pmtY;
-        float pmtZ;
-        int cylLoc;
-        int tubeNumber;
-        float digiTime;
-        float digiCharge;
+	std::vector<float> pmtX;
+        std::vector<float> pmtY;
+        std::vector<float> pmtZ;
+        std::vector<int> cylLoc;
+        std::vector<int> tubeNumber;
+        std::vector<float> digiTime;
+        std::vector<float> digiCharge;
 
 	// other variables
 	int event, trigger;
 
 	// Set the branches to be saved.
-	outBranch->Branch("event", &event, "event/I");
-	outBranch->Branch("trigger", &trigger, "trigger/I");
-	outBranch->Branch("injectorVtxX", &injectorVtxX, "injectorVtxX/F");
-	outBranch->Branch("injectorVtxY", &injectorVtxY, "injectorVtxY/F");
-	outBranch->Branch("injectorVtxZ", &injectorVtxZ, "injectorVtxZ/F");
-	outBranch->Branch("injectorDirX", &injectorDirX, "injectorDirX/F");
-	outBranch->Branch("injectorDirY", &injectorDirY, "injectorDirY/F");
-	outBranch->Branch("injectorDirZ", &injectorDirZ, "injectorDirZ/F");
-	outBranch->Branch("rawHitsID", &rawHitsID, "rawHitsID/F");
-	outBranch->Branch("digiHitsID", &digiHitsID, "digiHitsID/F");
-	outBranch->Branch("numPMTsHitID", &numPMTsHitID, "numPMTsHitID/I");
-	outBranch->Branch("numPMTsDigiHitID", &numPMTsDigiHitID, "numPMTsDigiHitID/I");
-	outBranch->Branch("rawHitsMPMT", &rawHitsMPMT, "rawHitsMPMT/F");
-	outBranch->Branch("digiHitsMPMT", &digiHitsMPMT, "digiHitsMPMT/F");
-	outBranch->Branch("numPMTsHitMPMT", &numPMTsHitMPMT, "numPMTsHitMPMT/I");
-	outBranch->Branch("numPMTsDigiHitMPMT", &numPMTsDigiHitMPMT, "numPMTsDigiHitMPMT/I");
-	outBranch->Branch("rawHitsOD", &rawHitsOD, "rawHitsOD/F");
-	outBranch->Branch("digiHitsOD", &digiHitsOD, "digiHitsOD/F");
-	outBranch->Branch("numPMTsHitOD", &numPMTsHitOD, "numPMTsHitOD/I");
-	outBranch->Branch("numPMTsDigiHitOD", &numPMTsDigiHitOD, "numPMTsDigiHitOD/I");
-        outBranch->Branch("cylLoc",&cylLoc,"cylLoc/I");
-        outBranch->Branch("tubeNumber",&tubeNumber,"tubeNumber/I");
-        outBranch->Branch("pmtX",&pmtX,"pmtX/F");
-        outBranch->Branch("pmtY",&pmtY,"pmtY/F");
-        outBranch->Branch("pmtZ",&pmtZ,"pmtZ/F");
-        outBranch->Branch("digiTime",&digiTime,"digiTime/F");
-        outBranch->Branch("digiCharge",&digiCharge,"digiCharge/F");
+	outBranch->Branch("event", &event);
+	outBranch->Branch("trigger", &trigger);
+	outBranch->Branch("injectorVtxX", &injectorVtxX);
+	outBranch->Branch("injectorVtxY", &injectorVtxY);
+	outBranch->Branch("injectorVtxZ", &injectorVtxZ);
+	outBranch->Branch("injectorDirX", &injectorDirX);
+	outBranch->Branch("injectorDirY", &injectorDirY);
+	outBranch->Branch("injectorDirZ", &injectorDirZ);
+	outBranch->Branch("rawHitsID", &rawHitsID);
+	outBranch->Branch("digiHitsID", &digiHitsID);
+	outBranch->Branch("numPMTsHitID", &numPMTsHitID);
+	outBranch->Branch("numPMTsDigiHitID", &numPMTsDigiHitID);
+	outBranch->Branch("rawHitsMPMT", &rawHitsMPMT);
+	outBranch->Branch("digiHitsMPMT", &digiHitsMPMT);
+	outBranch->Branch("numPMTsHitMPMT", &numPMTsHitMPMT);
+	outBranch->Branch("numPMTsDigiHitMPMT", &numPMTsDigiHitMPMT);
+	outBranch->Branch("rawHitsOD", &rawHitsOD);
+	outBranch->Branch("digiHitsOD", &digiHitsOD);
+	outBranch->Branch("numPMTsHitOD", &numPMTsHitOD);
+	outBranch->Branch("numPMTsDigiHitOD", &numPMTsDigiHitOD);
+        outBranch->Branch("cylLoc",&cylLoc);
+        outBranch->Branch("tubeNumber",&tubeNumber);
+        outBranch->Branch("pmtX",&pmtX);
+        outBranch->Branch("pmtY",&pmtY);
+        outBranch->Branch("pmtZ",&pmtZ);
+        outBranch->Branch("digiTime",&digiTime);
+        outBranch->Branch("digiCharge",&digiCharge);
 
 	// Declare histograms
 	// number of hit PMTs
@@ -198,11 +212,21 @@ void read_LIGen_OD_output(std::string inFileName, std::string outFileName, bool 
 	format_histogram(numRawHitsODHist, "" , "Number of OD hits [pe]", "");
 	format_histogram(numDigiHitsODHist, "" , "Number of OD hits [pe]", "");
 
-	// Event Analysis
+	// Event Analysis - each event is a single light injector pulse
 	for (int ev = 0; ev < nEvent; ev++){ // Loop over events
+
+                // clear the vectors at the start of each pulse
+		pmtX.clear();
+                pmtY.clear();
+                pmtZ.clear();
+                cylLoc.clear();
+                tubeNumber.clear();
+                digiTime.clear();
+                digiCharge.clear();
 
 		std::string command;
 		wcsimTree->GetEntry(ev);
+	        // Start with the main trigger as it always exists and contains most of the info
 		wcsimTriggerID = wcsimRootID->GetTrigger(0);
 		int numTriggersID = wcsimRootID->GetNumberOfEvents();
 		int numSubTriggersID = wcsimRootID->GetNumberOfSubEvents();
@@ -215,13 +239,13 @@ void read_LIGen_OD_output(std::string inFileName, std::string outFileName, bool 
 		int numTriggersMPMT = wcsimRootMPMT->GetNumberOfEvents();
 		int numSubTriggersMPMT = wcsimRootMPMT->GetNumberOfSubEvents();
 		event = ev;
-
+                
 		for (int nTrig = 0; nTrig < numTriggersID; nTrig++){
 
 			trigger = nTrig;
 
 			// ID
-			wcsimTriggerID = wcsimRootID->GetTrigger(nTrig);
+			wcsimTriggerID = wcsimRootID->GetTrigger(0);
 			int numTracksID = wcsimTriggerID->GetNtrack();
 			WCSimRootTrack * trackID = (WCSimRootTrack*) wcsimTriggerID->GetTracks()->At(nTrig);
                         
@@ -230,10 +254,11 @@ void read_LIGen_OD_output(std::string inFileName, std::string outFileName, bool 
 			injectorVtxX = wcsimTriggerID->GetVtx(0);
 			injectorVtxY = wcsimTriggerID->GetVtx(1);
 			injectorVtxZ = wcsimTriggerID->GetVtx(2);
-			injectorDirX = trackID->GetDir(0);
-			injectorDirY = trackID->GetDir(1);
-			injectorDirZ = trackID->GetDir(2);
-
+			if (nTrig==0){
+				injectorDirX = trackID->GetDir(0);
+				injectorDirY = trackID->GetDir(1);
+				injectorDirZ = trackID->GetDir(2);
+                        }
 			rawHitsID = 0;
 			digiHitsID = 0;
 
@@ -254,6 +279,23 @@ void read_LIGen_OD_output(std::string inFileName, std::string outFileName, bool 
 
 				digiHitsID += tmpDigiHitsID;
 			} // End of for loop working out number of digitized hits in PMTs
+
+        		int ncherenkovdigihits_slots = wcsimTriggerID->GetNcherenkovdigihits_slots();
+                        
+			// Loop through elements in the TClonesArray of WCSimRootCherenkovHits
+			for (int i=0; i< ncherenkovdigihits_slots; i++){
+				TObject *Digi = (wcsimTriggerID->GetCherenkovDigiHits())->At(i);
+				if(!Digi) continue;
+				WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = dynamic_cast<WCSimRootCherenkovDigiHit*>(Digi);
+				tubeNumber.push_back(wcsimrootcherenkovdigihit->GetTubeId());
+				digiCharge.push_back(wcsimrootcherenkovdigihit->GetQ());
+				digiTime.push_back(wcsimrootcherenkovdigihit->GetT());
+				WCSimRootPMT pmt = geo->GetPMT(wcsimrootcherenkovdigihit->GetTubeId()-1);
+				pmtX.push_back(pmt.GetPosition(0));
+				pmtY.push_back(pmt.GetPosition(1));
+				pmtZ.push_back(pmt.GetPosition(2));
+				cylLoc.push_back(pmt.GetCylLoc());
+			} // end of loop over the ID digitised hits
                 } // END OF loop over ID triggers
 
 		for (int nTrig = 0; nTrig < numTriggersMPMT; nTrig++){
@@ -287,8 +329,8 @@ void read_LIGen_OD_output(std::string inFileName, std::string outFileName, bool 
                 } // END OF loop over MPMT triggers
 
 		// OD 
+                std::cout << numTriggersOD << std::endl;
                 for (int nTrigOD = 0; nTrigOD < numTriggersOD; nTrigOD++){
-
 			wcsimTriggerOD = wcsimRootOD->GetTrigger(nTrigOD);
 			int numTracksOD = wcsimTriggerOD->GetNtrack();
 			WCSimRootTrack * trackOD = (WCSimRootTrack*) wcsimTriggerOD->GetTracks()->At(nTrigOD);
@@ -299,7 +341,7 @@ void read_LIGen_OD_output(std::string inFileName, std::string outFileName, bool 
 			event = ev;
 
 			numPMTsHitOD = wcsimTriggerOD->GetNcherenkovhits(); //number of PMTs with a true hit (photon or dark noise) (QE applied)
-			numPMTsDigiHitOD = wcsimTriggerOD->GetNcherenkovdigihits(); // number of PMTs with a true hit (photon or dark noise) (QE applied)
+			numPMTsDigiHitOD = wcsimTriggerOD->GetNcherenkovdigihits(); // number of PMTs with a digitised hit
                         // Work out the number of photons that hit the OD PMTs
 			for (int i = 0; i < numPMTsHitOD; i++){
 				WCSimRootCherenkovHit *cherenkovHitOD = (WCSimRootCherenkovHit*) wcsimTriggerOD->GetCherenkovHits()->At(i);
@@ -320,21 +362,17 @@ void read_LIGen_OD_output(std::string inFileName, std::string outFileName, bool 
 			// Loop through elements in the TClonesArray of WCSimRootCherenkovHits
 			for (int i=0; i< ncherenkovdigihits_slots; i++){
 				TObject *Digi = (wcsimTriggerOD->GetCherenkovDigiHits())->At(i);
-				if(!Digi)
-				continue;
-				WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit =
-				dynamic_cast<WCSimRootCherenkovDigiHit*>(Digi);
-				tubeNumber = wcsimrootcherenkovdigihit->GetTubeId();
-				digiCharge = wcsimrootcherenkovdigihit->GetQ();
-				digiTime = wcsimrootcherenkovdigihit->GetT();
-				WCSimRootPMT pmt = geo->GetODPMT(tubeNumber-1);
-				pmtX = pmt.GetPosition(0);
-				pmtY = pmt.GetPosition(1);
-				pmtZ = pmt.GetPosition(2);
-				cylLoc = pmt.GetCylLoc();
-				outBranch->Fill(); // fill the tree with events
+				if(!Digi) continue;
+				WCSimRootCherenkovDigiHit *wcsimrootcherenkovdigihit = dynamic_cast<WCSimRootCherenkovDigiHit*>(Digi);
+				tubeNumber.push_back(wcsimrootcherenkovdigihit->GetTubeId());
+				digiCharge.push_back(wcsimrootcherenkovdigihit->GetQ());
+				digiTime.push_back(wcsimrootcherenkovdigihit->GetT());
+				WCSimRootPMT pmt = geo->GetODPMT(wcsimrootcherenkovdigihit->GetTubeId()-1);
+				pmtX.push_back(pmt.GetPosition(0));
+				pmtY.push_back(pmt.GetPosition(1));
+				pmtZ.push_back(pmt.GetPosition(2));
+				cylLoc.push_back(pmt.GetCylLoc());
 			} // end of loop over the OD digitised hits
-
 
 
 			if (verbosity){
@@ -369,6 +407,7 @@ void read_LIGen_OD_output(std::string inFileName, std::string outFileName, bool 
 
 
 		} // End of loop over OD triggers
+		outBranch->Fill(); // fill the tree with events
 
 
 	} // End of loop over events
