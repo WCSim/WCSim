@@ -1496,7 +1496,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
 #define NUMENTRIES_TY_FDOD 36 // Number of bins of wavelength to be used for the Tyvek reflectivity
 #define NUMENTRIES_TY_IWCD 33 
 
-  double WCODTyvekReflectivity = WCSimTuningParams->GetWCODTyvekReflectivity();
+  double WCODTyvekInwallReflectivity = WCSimTuningParams->GetWCODTyvekInwallReflectivity();
 
   G4double PP_TyREFLECTIVITY_FDOD_INWALL[NUMENTRIES_TY_FDOD] = //Tyvek reflectivity wavelength bins
       { 2.06642*eV,
@@ -1508,7 +1508,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
         3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
         4.27535*eV, 4.42804*eV, 4.6*eV, 4.8*eV, 5.0*eV};
 
-  G4double OD_tyvek_inwall_reflectivity_scaling_factor_FDOD = WCODTyvekReflectivity/0.95; // this should be the maximum of the reflectivity values
+  G4double OD_tyvek_inwall_reflectivity_scaling_factor_FDOD = WCODTyvekInwallReflectivity/0.95; // this should be the maximum of the reflectivity values
 
   G4double TyREFLECTIVITY_FDOD_INWALL[NUMENTRIES_TY_FDOD] = // Tyvek refelctivity
     { 0.94, // 600 nm
@@ -1562,9 +1562,10 @@ void WCSimDetectorConstruction::ConstructMaterials()
         3.64662*eV, 3.75713*eV, 3.87454*eV, 3.99952*eV, 4.13284*eV,
         4.27535*eV, 4.42804*eV};
 
-  G4double OD_tyvek_reflectivity_scaling_factor_IWCD = WCODTyvekReflectivity/0.97; 
+  G4double OD_tyvek_reflectivity_scaling_factor_IWCD_inwall = WCODTyvekInwallReflectivity/0.97; 
+  G4double OD_tyvek_reflectivity_scaling_factor_IWCD_outwall = WCODTyvekOutwallReflectivity/0.97; 
 
-  G4double TyREFLECTIVITY_IWCD[NUMENTRIES_TY_IWCD] = // Tyvek refelctivity
+  G4double TyREFLECTIVITY_IWCD_INWALL[NUMENTRIES_TY_IWCD] = // Tyvek refelctivity
       { 0.97,
         0.97, 0.97, 0.97, 0.97, 0.97,
         0.97, 0.97, 0.97, 0.97, 0.97,
@@ -1575,7 +1576,20 @@ void WCSimDetectorConstruction::ConstructMaterials()
         0.89, 0.86};
 
  for(int i=0; i<NUMENTRIES_TY_IWCD; i++)
-    TyREFLECTIVITY_IWCD[i] *= OD_tyvek_reflectivity_scaling_factor_IWCD;
+    TyREFLECTIVITY_IWCD_INWALL[i] *= OD_tyvek_reflectivity_scaling_factor_IWCD_inwall;
+
+  G4double TyREFLECTIVITY_IWCD_OUTWALL[NUMENTRIES_TY_IWCD] = // Tyvek refelctivity
+      { 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.97, 0.97, 0.97, 0.97, 0.97,
+        0.96, 0.96, 0.95, 0.95, 0.95,
+        0.94, 0.93, 0.92, 0.91, 0.90,
+        0.89, 0.86};
+
+ for(int i=0; i<NUMENTRIES_TY_IWCD; i++)
+    TyREFLECTIVITY_IWCD_OUTWALL[i] *= OD_tyvek_reflectivity_scaling_factor_IWCD_outwall;
 
   G4MaterialPropertiesTable *MPT_Tyvek = new G4MaterialPropertiesTable();
   // MPT_Tyvek->AddProperty("RINDEX", PP, RINDEX_tyvek, NUM);
@@ -1588,7 +1602,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   MPTWater_TyInwall->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
   MPTWater_TyInwall->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
   if( isNuPrism )
-    MPTWater_TyInwall->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY_IWCD, TyREFLECTIVITY_IWCD, NUMENTRIES_TY_IWCD);
+    MPTWater_TyInwall->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY_IWCD, TyREFLECTIVITY_IWCD_INWALL, NUMENTRIES_TY_IWCD);
   else
     MPTWater_TyInwall->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY_FDOD_INWALL, TyREFLECTIVITY_FDOD_INWALL, NUMENTRIES_TY_FDOD);
   OpWaterTyInwallSurface->SetMaterialPropertiesTable(MPTWater_TyInwall);
@@ -1599,7 +1613,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
   MPTWater_TyOutwall->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
   MPTWater_TyOutwall->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
   if( isNuPrism )
-    MPTWater_TyOutwall->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY_IWCD, TyREFLECTIVITY_IWCD, NUMENTRIES_TY_IWCD);
+    MPTWater_TyOutwall->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY_IWCD, TyREFLECTIVITY_IWCD_OUTWALL, NUMENTRIES_TY_IWCD);
   else
     MPTWater_TyOutwall->AddProperty("REFLECTIVITY",  PP_TyREFLECTIVITY_FDOD_OUTWALL, TyREFLECTIVITY_FDOD_OUTWALL, NUMENTRIES_TY_FDOD);
   OpWaterTyOutwallSurface->SetMaterialPropertiesTable(MPTWater_TyOutwall);
@@ -1993,7 +2007,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myST3_Inwall->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
    myST3_Inwall->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
    if( isNuPrism )
-     myST3_Inwall->AddProperty("REFLECTIVITY", PP_TyREFLECTIVITY_IWCD, TyREFLECTIVITY_IWCD, NUMENTRIES_TY_IWCD);
+     myST3_Inwall->AddProperty("REFLECTIVITY", PP_TyREFLECTIVITY_IWCD, TyREFLECTIVITY_IWCD_INWALL, NUMENTRIES_TY_IWCD);
    else
      myST3_Inwall->AddProperty("REFLECTIVITY", PP_TyREFLECTIVITY_FDOD_INWALL, TyREFLECTIVITY_FDOD_INWALL, NUMENTRIES_TY_FDOD);
    myST3_Inwall->AddProperty("EFFICIENCY", PP, EFFICIENCY_blacksheet, NUM);
@@ -2007,7 +2021,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    myST3_Outwall->AddProperty("SPECULARSPIKECONSTANT", PP, TySPECULARSPIKECONSTANT, NUM);
    myST3_Outwall->AddProperty("BACKSCATTERCONSTANT", PP, TyBACKSCATTERCONSTANT, NUM);
    if( isNuPrism )
-     myST3_Outwall->AddProperty("REFLECTIVITY", PP_TyREFLECTIVITY_IWCD, TyREFLECTIVITY_IWCD, NUMENTRIES_TY_IWCD);
+     myST3_Outwall->AddProperty("REFLECTIVITY", PP_TyREFLECTIVITY_IWCD, TyREFLECTIVITY_IWCD_OUTWALL, NUMENTRIES_TY_IWCD);
    else
      myST3_Outwall->AddProperty("REFLECTIVITY", PP_TyREFLECTIVITY_FDOD_OUTWALL, TyREFLECTIVITY_FDOD_OUTWALL, NUMENTRIES_TY_FDOD);
    myST3_Outwall->AddProperty("EFFICIENCY", PP, EFFICIENCY_blacksheet, NUM);

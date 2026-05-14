@@ -45,7 +45,7 @@ private:
   G4UIcmdWithADouble* TVSpacing;
   G4UIcmdWithABool* TopVeto;
   G4UIcmdWithADouble* CommandWCODWLSCladdingReflectivity;
-  G4UIcmdWithADouble* CommandWCODTyvekReflectivity;
+  G4UIcmdWithADouble* CommandWCODTyvekInwallReflectivity;
   G4UIcmdWithADouble* CommandWCODTyvekOutwallReflectivity;
 
 };
