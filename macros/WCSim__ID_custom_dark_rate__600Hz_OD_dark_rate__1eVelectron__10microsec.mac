@@ -6,6 +6,7 @@
 /grdm/verbose 0
 
 
+
 ###############
 # GEOMETRY
 ###############
@@ -71,6 +72,12 @@
 
 #Use the HK FD Realistic ID + OD geometry
 /WCSim/WCgeom HyperK_HybridmPMT_WithOD_Realistic
+# Use the /WCSim/PMT/DarkRateFile command to specify a text file containing the dark rate for each PMT type in the "tank" (e.g. 20" in HKFD)
+# When using this, /DarkRate/SetDarkRate will not work for the "tank" element, other than setting it to 0
+# e.g. if you specify /DarkRate/SetDarkRate 0, dark noise is turned off for all tank PMTs, independent of values in your DarkRateFile
+# e.g. if you specify /DarkRate/SetDarkRate 0.1 Hz or /DarkRate/SetDarkRate 1 MHz (or leave it uncommented), these values will be ignored & dark noise will be added according to your DarkRateFile
+# This command *must* come between your /WCSim/WCgeom command and /WCSim/Construct
+/WCSim/PMT/DarkRateFile data/PMT_darkrate.txt
 /WCSim/Construct
 
 
@@ -202,8 +209,6 @@
 # DARK NOISE
 ##################
 
-# Read PMT dark rates from input file
-/WCSim/PMT/DarkRateFile data/PMT_darkrate.txt
 
 #There is an independent messenger class instance for each PMT type
 # tank is the default one & is present in all geometries
