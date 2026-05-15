@@ -1637,7 +1637,7 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   WCBarrelNRings        = 11;
   WCCapPMTSpacing       = 0.8*m;//pi*WCIDDiameter/WCBarrelNumPMTHorizontal/1.1*0.9; // ad-hoc number to get 52 mPMTs on cap
   WCCapEdgeLimit        = WCIDDiameter/2 - mPMT_vessel_radius; 
-  WCBlackSheetThickness = 2.0*cm;    // deprecate soon.
+  WCBlackSheetThickness = 1.0*mm;    // deprecate soon.
   WCAddGd               = false;
 	hybrid = false;
 
@@ -1651,12 +1651,12 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
   isODConstructed = true;
 
   // OD Dimensions //
-  WCODLateralWaterDepth    = 0.7*m;
-  WCODHeightWaterDepth     = 0.7*m;
-  WCODDeadSpace            = 200.*mm;
+  WCODLateralWaterDepth    = 0.65*m;
+  WCODHeightWaterDepth     = 0.75*m;
+  WCODDeadSpace            = 250.*mm;
   WCODTyvekSheetThickness  = 1.*mm; // Quite standard I guess
-  WCODWLSPlatesThickness   = 0.6*cm; //
-  WCODWLSPlatesLength      = 20.*cm; //
+  WCODWLSPlatesThickness   = 0.7*cm; //
+  WCODWLSPlatesLength      = 30.*cm; //
   WCODDiameter             = WCIDDiameter + 2*(WCBlackSheetThickness+WCODDeadSpace+WCODTyvekSheetThickness+WCODWLSPlatesThickness);
 
   // OD PMTs //
@@ -1697,6 +1697,8 @@ void WCSimDetectorConstruction::SetIWCD_WithOD_Geometry()
 	WLSType = "EljenEJ286";
   else if( IWCD_OD_WLS_PLATE_TYPE == "Kuraray" )
 	WLSType = "Kuraray";
+  else if( IWCD_OD_WLS_PLATE_TYPE == "Inr" )
+	WLSType = "Inr";
   else if( HKFD_OD_WLS_PLATE_TYPE == "Inr" )
 	WLSType = "Inr";
   isWLSFilled = true;

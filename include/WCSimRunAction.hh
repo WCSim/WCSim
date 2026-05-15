@@ -97,7 +97,7 @@ public:
   }
 
   eventNtuple * GetMyStruct(){return evNtup;}
-  NRooTrackerVtx * GetMyRooTracker(){return evNRooTracker;}
+  ND::NRooTrackerVtx * GetMyRooTracker(){return evNRooTracker;}
   void SetTree(TTree* tree){WCSimTree=tree;}
   void SetBranch(TBranch* branchin, G4String detectorElement = "tank"){
     if(detectorElement=="tank") wcsimrooteventbranch=branchin;
@@ -124,13 +124,13 @@ public:
   //New:
   void FillFlatGeoTree();
 
-  NRooTrackerVtx* GetRootrackerVertex();
+  ND::NRooTrackerVtx* GetRootrackerVertex();
   void FillRootrackerVertexTree() { 
     fRooTrackerOutputTree->Fill();
   }
   void ClearRootrackerVertexArray() { 
-      fVertices->Clear(); 
-      fNVtx = 0;
+    //fVertices->Clear(); 
+    //fNVtx = 0;
   }
 
   void SetUseTimer(bool use) { useTimer = use; }
@@ -244,7 +244,7 @@ public:
   eventNtuple *evNtup;
 
   //NRooTracker
-  NRooTrackerVtx *evNRooTracker;
+  ND::NRooTrackerVtx *evNRooTracker;
     
   const G4Run* fG4Run;
 

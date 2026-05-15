@@ -3,8 +3,8 @@
 //Monotonic Spline code using Fritsch–Carlson method
 
 //Constructor for a 1D monotonic spline 
-MonotonicInterpolator::MonotonicInterpolator(const std::vector<double>& x, const std::vector<double>& y){
-  m1d_ = ComputeMonotonicSlopes(x, y);
+MonotonicInterpolator::MonotonicInterpolator(const std::vector<double>& x, const std::vector<double>& y) : x_(x), y_(y){
+  m1d_ = ComputeMonotonicSlopes(x_, y_);
 }
 
 //Constructor for a 2D monotonic spline
@@ -13,9 +13,9 @@ MonotonicInterpolator::MonotonicInterpolator(const std::vector<double>& x, const
   m2d_ = PreComputeSlopes2D();
 }
 
-//Constructor for a 1D monotonic spline with predetermined slopes
-MonotonicInterpolator::MonotonicInterpolator(const std::vector<double>& x_axis,std::vector<double>& slopes)
-  : x_(x_axis), m1d_(slopes)
+// Constructor that uses predetermined slopes
+MonotonicInterpolator::MonotonicInterpolator(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double>& slopes)
+  : x_(x), y_(y), m1d_(slopes)
 {}
 
 //Constructor for a 2D monotonic spline with predetermined slopes

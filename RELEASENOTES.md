@@ -6,6 +6,28 @@ Recent updates
 *************************************************************
 
 *************************************************************
+12/05/2026: Notes for v1.12.31
+*************************************************************
+New release after #559
+
+Update
+* Pull request #559 @ryom2020: Update IWCD OD geomety (size, WLS plate, sheet thickness)
+* Pull request #547 @ekneale: Update sampling for light injection generators
+* Pull request #552 @menailj: Add slope get/set for 1D in MonotonicInterpolator
+
+*************************************************************
+21/04/2026: Notes for v1.12.30
+*************************************************************
+New release after #548, #556. Ready for use with NEUT 5.6.4 for HK MC production
+
+Update
+* Pull request #548 @kmtsui: Addition of TOF (T5) scintillator to WCTE beam pipe
+* Pull request #551 @kmtsui: Compatibility update for NEUT 5.6.4
+* Pull request #553 @kmtsui: Fix position of LEDs inside mPMTs
+* Pull request #555 @sk1806: Compatibility update for T2K neutgeom & nuPRISMGeom merge
+* Pull request #556 @tdealtry: Save all Michel electrons from the muMinusCaptureAtRest process
+
+*************************************************************
 09/10/2025: Notes for v1.12.29
 *************************************************************
 New release after #525

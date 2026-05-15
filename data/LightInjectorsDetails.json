@@ -5,10 +5,9 @@
             "comment": "Barrel collimator. Units cm, nm, deg.",
 	    "type": "collimator",
 	    "idx": "0",
-		    "detector":"ID",
-		    "direction": [-1,0,0],
+            "detector":"ID",
+            "direction": [-1,0,0],
             "position": [3220,0,-2465.66],
-	    "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
 	},
@@ -19,7 +18,6 @@
 	    "detector":"ID",
             "direction": [0,-1,0],
             "position": [0,3220,-2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -30,7 +28,6 @@
 	    "detector":"ID",
             "direction": [1,0,0],
             "position": [-3220,0,-2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -41,7 +38,6 @@
 	    "detector":"ID",
             "direction": [0,1,0],
             "position": [0,-3220,-2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -52,7 +48,6 @@
 	    "detector":"ID",
             "direction": [-1,0,0],
             "position": [3220,0,-1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -63,7 +58,6 @@
 	    "detector":"ID",
             "direction": [0,-1,0],
             "position": [0,3220,-1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
 	},
@@ -74,7 +68,6 @@
 	    "detector":"ID",
             "direction": [1,0,0],
             "position": [-3220,0,-1643.78],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -85,7 +78,6 @@
 	    "detector":"ID",
 	    "direction": [0,1,0],
 	    "position": [0,-3220,-1643.78],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -96,7 +88,6 @@
 	    "detector":"ID",
 	    "direction": [-1,0,0],
 	    "position": [3220,0,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -107,7 +98,6 @@
 	    "detector":"ID",
 	    "direction": [0,-1,0],
 	    "position": [0,3220,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -118,7 +108,6 @@
 	    "detector":"ID",
 	    "direction": [1,0,0],
 	    "position": [-3220,0,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -129,7 +118,6 @@
 	    "detector": "ID",
 	    "direction": [0,1,0],
 	    "position": [0,-3220,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -140,7 +128,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -151,7 +138,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -162,7 +148,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile":""
         },
@@ -173,7 +158,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -184,7 +168,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -195,7 +178,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -206,7 +188,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -217,7 +198,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -228,7 +208,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -239,7 +218,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -250,7 +228,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -261,7 +238,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -272,7 +248,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -283,7 +258,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -294,7 +268,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -305,7 +278,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
 	},
@@ -316,7 +288,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [388.8,0,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -327,7 +298,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [0,388.8,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -338,7 +308,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [-388.8,0,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -349,7 +318,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [0,-388.8,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -360,7 +328,6 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [388.8,0,-3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -371,7 +338,6 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [0,388.8,-3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -382,7 +348,6 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [-388.8,0,-3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -393,7 +358,6 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [0,-388.8,-3267.55],
-	    "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -404,7 +368,6 @@
 		    "detector":"ID",
 		    "direction": [-1,0,0],
             "position": [3220,0,-2465.66],
-	    "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
 	},
@@ -415,7 +378,6 @@
 	    "detector":"ID",
             "direction": [0,-1,0],
             "position": [0,3220,-2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -426,7 +388,6 @@
 	    "detector":"ID",
             "direction": [1,0,0],
             "position": [-3220,0,-2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -437,7 +398,6 @@
 	    "detector":"ID",
             "direction": [0,1,0],
             "position": [0,-3220,-2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -448,7 +408,6 @@
 	    "detector":"ID",
             "direction": [-1,0,0],
             "position": [3220,0,-1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -459,7 +418,6 @@
 	    "detector":"ID",
             "direction": [0,-1,0],
             "position": [0,3220,-1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
 	},
@@ -470,7 +428,6 @@
 	    "detector":"ID",
             "direction": [1,0,0],
             "position": [-3220,0,-1643.78],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -481,7 +438,6 @@
 	    "detector":"ID",
 	    "direction": [0,1,0],
 	    "position": [0,-3220,-1643.78],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -492,7 +448,6 @@
 	    "detector":"ID",
 	    "direction": [-1,0,0],
 	    "position": [3220,0,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -503,7 +458,6 @@
 	    "detector":"ID",
 	    "direction": [0,-1,0],
 	    "position": [0,3220,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -514,7 +468,6 @@
 	    "detector":"ID",
 	    "direction": [1,0,0],
 	    "position": [-3220,0,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -525,7 +478,6 @@
 	    "detector": "ID",
 	    "direction": [0,1,0],
 	    "position": [0,-3220,-821.888],
-	    "wavelength": 400,
 	    "offset": 10,
 	    "photonsfile": ""
 	},
@@ -536,7 +488,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -547,7 +498,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -558,7 +508,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile":""
         },
@@ -569,7 +518,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,0],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -580,7 +528,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -591,7 +538,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -602,7 +548,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -613,7 +558,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,821.888],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -624,7 +568,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -635,7 +578,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -646,7 +588,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -657,7 +598,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,1643.78],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -668,7 +608,6 @@
 	    "detector": "ID",
             "direction": [-1,0,0],
             "position": [3220,0,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -679,7 +618,6 @@
 	    "detector": "ID",
             "direction": [0,-1,0],
             "position": [0,3220,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -690,7 +628,6 @@
 	    "detector": "ID",
             "direction": [1,0,0],
             "position": [-3220,0,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -701,7 +638,6 @@
 	    "detector": "ID",
             "direction": [0,1,0],
             "position": [0,-3220,2465.66],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
 	},
@@ -712,7 +648,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [388.8,0,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -723,7 +658,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [0,388.8,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -734,7 +668,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [-388.8,0,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -745,7 +678,6 @@
 	    "detector": "ID",
             "direction": [0,0,-1],
             "position": [0,-388.8,3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -753,12 +685,11 @@
             "comment": "Endcap diffuser. Units cm, nm, deg.",
             "type": "diffuser",
             "idx": "32",
-	    "detector": "ID",
+	        "detector": "ID",
             "direction": [0,0,1],
             "position": [388.8,0,-3267.55],
-            "wavelength": 400,
             "offset": 10,
-	    "photonsfile": ""
+	        "photonsfile": ""
         },
         {
             "comment": "Endcap diffuser. Units cm, nm, deg.",
@@ -767,7 +698,6 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [0,388.8,-3267.55],
-            "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
@@ -775,12 +705,11 @@
             "comment": "Endcap diffuser. Units cm, nm, deg.",
             "type": "diffuser",
             "idx": "34",
-	    "detector": "ID",
+	        "detector": "ID",
             "direction": [0,0,1],
             "position": [-388.8,0,-3267.55],
-            "wavelength": 400,
             "offset": 10,
-	    "photonsfile": ""
+	        "photonsfile": ""
         },
         {
             "comment": "Endcap diffuser. Units cm, nm, deg.",
@@ -789,147 +718,1281 @@
 	    "detector": "ID",
             "direction": [0,0,1],
             "position": [0,-388.8,-3267.55],
-	    "wavelength": 400,
             "offset": 10,
 	    "photonsfile": ""
         },
 	{
-                "comment": "Bottom OD collimator, facing in. Units: cm, nm, deg.",
-		"type": "collimator",
-		"idx": "0",
-		    "detector":"OD",
-		    "direction": [-3302.01,0,0],
-                "position": [3302.01,0,-3364.91],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		},
-
-		{
-                "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
-		"type": "collimator",
-		    "idx": "1",
-		    "detector":"OD",
-		"direction": [0,0,1],
-                "position": [3314.91,0,-3352.01],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		},
-
-
-		{
-                "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
-                "comment1": "between PMTs and tank wall: x = 3314.91+50",
-		"type": "collimator",
-		    "idx": "2",
-		    "detector":"OD",
-		"direction": [0,0,1],
-                "position": [3364.91,0,-3352.01],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		},
-
-		{
-                "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
-                "comment1": "near the tank wall: x = 3314.91+100-10",
-		"type": "collimator",
-		    "idx": "3",
-		    "detector":"OD",
-		"direction": [0,0,1],
-                "position": [3404.91,0,-3352.01],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		},
-
-		{
-                "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
-                "comment1": "in the centre of the barrel OD",
-		"type": "collimator",
-		    "idx": "4",
-		    "detector":"OD",
-		"direction": [0,0,1],
-                "position": [3364.91,0,0],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		},
-
-                {
-                "comment": "Top OD collimator, facing down. Units: cm, nm, deg.",
-                "type": "collimator",
-                    "idx": "5",
-		    "detector":"OD",
-                "direction": [0,0,-1],
-                "position": [3200,0,3364.91],
-                "wavelength": 400,
-                "offset": 10,
-                "photonsfile": ""
-                },
-		{
-                "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
-		"type": "diffuser",
-		    "idx": "0",
-		    "detector":"OD",
-                "direction": [0,0,-1],
-                "position": [565.685,565.685,-3362.01],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-                },
-
-		{
-                "comment": "Barrel saturation OD diffuser, facing out. Units: cm, nm, deg",
-		"type": "diffuser",
-		    "idx": "1",
-		    "detector":"OD",
-                "direction": [3225.361,774.341,0],
-                "position": [3225.361,774.341,60],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		}, 
-
-                {
-                "comment": "Top saturation OD diffuser, facing up. Units: cm, nm, deg",
-                "type": "diffuser",
-                    "idx": "2",
-		    "detector":"OD",
-                "direction": [0,0,1],
-                "position": [565.685,565.685,3362.01],
-                "wavelength": 400,
-                "photonsfile": "",
-                "offset": 10
-                },
-
-		{
-                "comment": "Bottom OD diffuser, facing in. Units: cm, nm, deg",
-		"type": "diffuser",
-		    "idx": "3",
-		    "detector":"OD",
-		"direction": [-3302.01,0,0],
-                "position": [3302.01,0,-3364.91],
-		"wavelength": 400,
-                "offset": 10,
-                "photonsfile":""
-		}, 
-
-                {"comment": "laser ball positioned in the centre of the detector",
-                 "todo": "generate theta, phi and z arrays using the csv file we have",
-                "type": "laserball",
-                 "idx": "0",
-		 "detector":"ID",
-                "direction": [0,0,1],
-                "position": [3315,0,0],
-                "wavelength": 401.9,
-                "theta": [-45,0,45],
-                "phi": [-180,0,180],
-                "intensity": [1,1,1,1,1,1,1,1,1],
-                "photonsfile": "LI_OD_laser_ball_photon_positions.csv",
-                "offset": 5
-                }
+            "comment": "Bottom OD collimator, facing in. Units: cm, nm, deg.",
+            "type": "collimator",
+            "idx": "0",
+            "detector": "OD",
+            "direction": [-3302.01,0,0],
+            "position": [3302.01,0,-3364.91],
+            "offset": 10,
+            "photonsfile":""
+    	},
+    	{
+            "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
+            "type": "collimator",
+            "idx": "10",
+            "detector": "OD_10",
+            "direction": [0,0,1],
+            "position": [3314.91,0,-3352.01],
+            "offset": 10,
+            "photonsfile":""
+	},
+	{
+            "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
+            "type": "collimator",
+            "idx": "13",
+            "detector": "OD_13",
+	    "direction": [0,0,1],
+            "position": [3314.91,0,-3352.01],
+            "offset": 10,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top OD collimator, facing down. Units: cm, nm, deg.",
+            "type": "collimator",
+            "idx": "5",
+            "detector": "OD",
+            "direction": [0,0,-1],
+            "position": [3200,0,3364.91],
+            "offset": 10,
+            "photonsfile": ""
+        },
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "0",
+            "detector":"OD",
+            "direction": [467.14,3272.09,0],
+            "position": [467.14,3272.09,-2536.45],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "1",
+            "detector":"OD",
+            "direction": [2040.60,2600.14,0],
+            "position": [2040.60,2600.14,-2536.45],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "2",
+            "detector":"OD",
+            "direction": [3067.29,1231.49,0],
+            "position": [3067.29,1231.49,-2536.45],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "3",
+            "detector":"OD",
+            "direction": [3272.09,-467.14,0],
+            "position": [3272.09,-467.14,-2536.45],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "4",
+            "detector":"OD",
+            "direction": [2600.14,-2040.60,0],
+            "position": [2600.14,-2040.60,-2536.45],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "5",
+            "detector":"OD",
+            "direction": [1231.49,-3067.29,0],
+            "position": [1231.49,-3067.29,-2536.45],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "6",
+            "detector":"OD",
+            "direction": [-467.14,-3272.09,0],
+            "position": [-467.14,-3272.09,-2536.45],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "7",
+            "detector":"OD",
+            "direction": [-2040.60,-2600.14,0],
+            "position": [-2040.60,-2600.14,-2536.45],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "8",
+            "detector":"OD",
+            "direction": [-3067.29,-1231.49,0],
+            "position": [-3067.29,-1231.49,-2536.45],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "9",
+            "detector":"OD",
+            "direction": [-3272.09,467.14,0],
+            "position": [-3272.09,467.14,-2536.45],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "10",
+            "detector":"OD",
+            "direction": [-2600.14,2040.60,0],
+            "position": [-2600.14,2040.60,-2536.45],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "11",
+            "detector":"OD",
+            "direction": [-1231.49,3067.29,0],
+            "position": [-1231.49,3067.29,-2536.45],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "12",
+            "detector":"OD",
+            "direction": [1298.11,3039.69,0],
+            "position": [1298.11,3039.69,-1688.05],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "13",
+            "detector":"OD",
+            "direction": [2644.04,1983.40,0],
+            "position": [2644.04,1983.40,-1688.05],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "14",
+            "detector":"OD",
+            "direction": [3281.50,395.65,0],
+            "position": [3281.50,395.65,-1688.05],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "15",
+            "detector":"OD",
+            "direction": [3039.69,-1364.1,0],
+            "position": [3039.69,-1364.1,-1688.05],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "16",
+            "detector":"OD",
+            "direction": [1983.40,-2644.04,0],
+            "position": [1983.40,-2644.04,-1688.05],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "17",
+            "detector":"OD",
+            "direction": [395.65,-3281.50,0],
+            "position": [395.65,-3281.50,-1688.05],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "18",
+            "detector":"OD",
+            "direction": [-1298.11,-3039.69,0],
+            "position": [-1298.11,-3039.69,-1688.05],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "19",
+            "detector":"OD",
+            "direction": [-2644.04,-1983.40,0],
+            "position": [-2644.04,-1983.40,-1688.05],
+            "offset": 0,
+            "photonsfile":""
+        },        
+	{
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "20",
+            "detector":"OD",
+            "direction": [-3281.50,-395.65,0],
+            "position": [-3281.50,-395.65,-1688.05],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "21",
+            "detector":"OD",
+            "direction": [-3039.69,1298.11,0],
+            "position": [-3039.69,1298.11,-1688.05],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "22",
+            "detector":"OD",
+            "direction": [-1983.40,2644.04,0],
+            "position": [-1983.40,2644.04,-1688.05],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "23",
+            "detector":"OD",
+            "direction": [-395.65,3281.50,0],
+            "position": [-395.65,3281.50,-1688.05],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "24",
+            "detector":"OD",
+            "direction": [467.14,3272.09,0],
+            "position": [467.14,3272.09,-839.65],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "25",
+            "detector":"OD",
+            "direction": [2040.60,2600.14,0],
+            "position": [2040.60,2600.14,-839.65],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "26",
+            "detector":"OD",
+            "direction": [3067.29,1231.49,0],
+            "position": [3067.29,1231.49,-839.65],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "27",
+            "detector":"OD",
+            "direction": [3272.09,-467.14,0],
+            "position": [3272.09,-467.14,-839.65],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "28",
+            "detector":"OD",
+            "direction": [2600.14,-2040.60,0],
+            "position": [2600.14,-2040.60,-839.65],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "29",
+            "detector":"OD",
+            "direction": [1231.49,-3067.29,0],
+            "position": [1231.49,-3067.29,-839.65],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "30",
+            "detector":"OD",
+            "direction": [-467.14,-3272.09,0],
+            "position": [-467.14,-3272.09,-839.65],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "31",
+            "detector":"OD",
+            "direction": [-2040.60,-2600.14,0],
+            "position": [-2040.60,-2600.14,-839.65],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "32",
+            "detector":"OD",
+            "direction": [-3067.29,-1231.49,0],
+            "position": [-3067.29,-1231.49,-839.65],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "33",
+            "detector":"OD",
+            "direction": [-3272.09,467.14,0],
+            "position": [-3272.09,467.14,-839.65],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "34",
+            "detector":"OD",
+            "direction": [-2600.14,2040.60,0],
+            "position": [-2600.14,2040.60,-839.65],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "35",
+            "detector":"OD",
+            "direction": [-1231.49,3067.29,0],
+            "position": [-1231.49,3067.29,-839.65],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "36",
+            "detector":"OD",
+            "direction": [1298.11,3039.69,0],
+            "position": [1298.11,3039.69,8.75],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "37",
+            "detector":"OD",
+            "direction": [2644.04,1983.40,0],
+            "position": [2644.04,1983.40,8.75],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "38",
+            "detector":"OD",
+            "direction": [3281.50,395.65,0],
+            "position": [3281.50,395.65,8.75],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "39",
+            "detector":"OD",
+            "direction": [3039.69,-1364.1,0],
+            "position": [3039.69,-1364.1,8.75],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "40",
+            "detector":"OD",
+            "direction": [1983.40,-2644.04,0],
+            "position": [1983.40,-2644.04,8.75],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "41",
+            "detector":"OD",
+            "direction": [395.65,-3281.50,0],
+            "position": [395.65,-3281.50,8.75],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "42",
+            "detector":"OD",
+            "direction": [-1298.11,-3039.69,0],
+            "position": [-1298.11,-3039.69,8.75],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "43",
+            "detector":"OD",
+            "direction": [-2644.04,-1983.40,0],
+            "position": [-2644.04,-1983.40,8.75],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "44",
+            "detector":"OD",
+            "direction": [-3281.50,-395.65,0],
+            "position": [-3281.50,-395.65,8.75],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "45",
+            "detector":"OD",
+            "direction": [-3039.69,1298.11,0],
+            "position": [-3039.69,1298.11,8.75],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "46",
+            "detector":"OD",
+            "direction": [-1983.40,2644.04,0],
+            "position": [-1983.40,2644.04,8.75],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "47",
+            "detector":"OD",
+            "direction": [-395.65,3281.50,0],
+            "position": [-395.65,3281.50,8.75],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "48",
+            "detector":"OD",
+            "direction": [467.14,3272.09,0],
+            "position": [467.14,3272.09,857.15],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "49",
+            "detector":"OD",
+            "direction": [2040.60,2600.14,0],
+            "position": [2040.60,2600.14,857.15],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "50",
+            "detector":"OD",
+            "direction": [3067.29,1231.49,0],
+            "position": [3067.29,1231.49,857.15],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "51",
+            "detector":"OD",
+            "direction": [3272.09,-467.14,0],
+            "position": [3272.09,-467.14,857.15],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "52",
+            "detector":"OD",
+            "direction": [2600.14,-2040.60,0],
+            "position": [2600.14,-2040.60,857.15],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "53",
+            "detector":"OD",
+            "direction": [1231.49,-3067.29,0],
+            "position": [1231.49,-3067.29,857.15],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "54",
+            "detector":"OD",
+            "direction": [-467.14,-3272.09,0],
+            "position": [-467.14,-3272.09,857.15],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "55",
+            "detector":"OD",
+            "direction": [-2040.60,-2600.14,0],
+            "position": [-2040.60,-2600.14,857.15],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "56",
+            "detector":"OD",
+            "direction": [-3067.29,-1231.49,0],
+            "position": [-3067.29,-1231.49,857.15],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "57",
+            "detector":"OD",
+            "direction": [-3272.09,467.14,0],
+            "position": [-3272.09,467.14,857.15],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "58",
+            "detector":"OD",
+            "direction": [-2600.14,2040.60,0],
+            "position": [-2600.14,2040.60,857.15],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "59",
+            "detector":"OD",
+            "direction": [-1231.49,3067.29,0],
+            "position": [-1231.49,3067.29,857.15],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "60",
+            "detector":"OD",
+            "direction": [1298.11,3039.69,0],
+            "position": [1298.11,3039.69,1705.55],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "61",
+            "detector":"OD",
+            "direction": [2644.04,1983.40,0],
+            "position": [2644.04,1983.40,1705.55],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "62",
+            "detector":"OD",
+            "direction": [3281.50,395.65,0],
+            "position": [3281.50,395.65,1705.55],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "63",
+            "detector":"OD",
+            "direction": [3039.69,-1364.1,0],
+            "position": [3039.69,-1364.1,1705.55],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "64",
+            "detector":"OD",
+            "direction": [1983.40,-2644.04,0],
+            "position": [1983.40,-2644.04,1705.55],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "65",
+            "detector":"OD",
+            "direction": [395.65,-3281.50,0],
+            "position": [395.65,-3281.50,1705.55],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "66",
+            "detector":"OD",
+            "direction": [-1298.11,-3039.69,0],
+            "position": [-1298.11,-3039.69,1705.55],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "67",
+            "detector":"OD",
+            "direction": [-2644.04,-1983.40,0],
+            "position": [-2644.04,-1983.40,1705.55],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "68",
+            "detector":"OD",
+            "direction": [-3281.50,-395.65,0],
+            "position": [-3281.50,-395.65,1705.55],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "69",
+            "detector":"OD",
+            "direction": [-3039.69,1298.11,0],
+            "position": [-3039.69,1298.11,1705.55],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "70",
+            "detector":"OD",
+            "direction": [-1983.40,2644.04,0],
+            "position": [-1983.40,2644.04,1705.55],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "71",
+            "detector":"OD",
+            "direction": [-395.65,3281.50,0],
+            "position": [-395.65,3281.50,1705.55],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "72",
+            "detector":"OD",
+            "direction": [467.14,3272.09,0],
+            "position": [467.14,3272.09,2553.95],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "73",
+            "detector":"OD",
+            "direction": [2040.60,2600.14,0],
+            "position": [2040.60,2600.14,2553.95],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "74",
+            "detector":"OD",
+            "direction": [3067.29,1231.49,0],
+            "position": [3067.29,1231.49,2553.95],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "75",
+            "detector":"OD",
+            "direction": [3272.09,-467.14,0],
+            "position": [3272.09,-467.14,2553.95],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "76",
+            "detector":"OD",
+            "direction": [2600.14,-2040.60,0],
+            "position": [2600.14,-2040.60,2553.95],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "77",
+            "detector":"OD",
+            "direction": [1231.49,-3067.29,0],
+            "position": [1231.49,-3067.29,2553.95],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "78",
+            "detector":"OD",
+            "direction": [-467.14,-3272.09,0],
+            "position": [-467.14,-3272.09,2553.95],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "79",
+            "detector":"OD",
+            "direction": [-2040.60,-2600.14,0],
+            "position": [-2040.60,-2600.14,2553.95],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "80",
+            "detector":"OD",
+            "direction": [-3067.29,-1231.49,0],
+            "position": [-3067.29,-1231.49,2553.95],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "81",
+            "detector":"OD",
+            "direction": [-3272.09,467.14,0],
+            "position": [-3272.09,467.14,2553.95],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "82",
+            "detector":"OD",
+            "direction": [-2600.14,2040.60,0],
+            "position": [-2600.14,2040.60,2553.95],
+            "offset": 0,
+            "photonsfile":""
+        },        
+        {
+            "comment": "Barrel saturation OD diffuser, facing out. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "83",
+            "detector":"OD",
+            "direction": [-1231.49,3067.29,0],
+            "position": [-1231.49,3067.29,2553.95],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "84",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [-1177.8,2050.3,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "85",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [-97.3,2050.3,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "86",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [1175.3,2050.3,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "87",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [-1838.2,1157.8,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "88",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [-707,1157.8,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "89",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [707,968.2,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "90",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [1838.2,968.2,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "91",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [-2333.1,-97.3,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "92",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [-1201.9,-97.3,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "93",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [-70.7,-97.3,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "94",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [1201.9,-97.3,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "95",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [2333.1,-97.3,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "96",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [-1838.2,-968.2,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "97",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [-707,-968.2,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "98",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [707,-1157.8,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "99",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [1838.2,-1157.8,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "100",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [-1175.3,-2191.7,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "101",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [-97.3,-2191.7,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Top saturation OD diffuser, facing up. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "102",
+            "detector":"OD",
+            "direction": [0,0,1],
+            "position": [1175.3,-2191.7,3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "103",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [-1175.3,2050.3,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "104",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [-97.3,2050.3,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "105",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [1175.3,2050.3,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "106",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [-1838.2,1157.8,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "107",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [-707,1157.8,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "108",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [707,968.2,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "109",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [1838.2,968.2,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+	{
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "110",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [-2333.1,-97.3,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "111",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [-1201.9,-97.3,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "112",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [-70.7,-97.3,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "113",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [1201.9,-97.3,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+	{
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "114",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [2333.1,-97.3,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+	{
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "115",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [-1838.2,-968.2,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "116",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [-707,-968.2,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "117",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [707,-1157.8,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "118",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [1838.2,-1157.8,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+	{
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "119",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [-1175.3,-2191.7,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "120",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [-97.3,-2191.7,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "Bottom saturation OD diffuser, facing down. Units cm, nm, deg.",
+            "type": "diffuser",
+            "idx": "121",
+            "detector":"OD",
+            "direction": [0,0,-1],
+            "position": [1175.3,-2191.7,-3350.82],
+            "offset": 0,
+            "photonsfile":""
+        },
+        {
+            "comment": "laser ball positioned in the centre of the detector",
+            "todo": "generate theta, phi and z arrays using the csv file we have",
+            "type": "laserball",
+            "idx": "0",
+   	    "detector":"ID",
+            "direction": [0,0,1],
+            "position": [0,0,1500],
+            "photonsfile": "LI_OD_laser_ball_photon_positions.csv",
+            "offset": 5
+        }
 
 
 	]
