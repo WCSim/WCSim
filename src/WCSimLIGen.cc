@@ -1,7 +1,6 @@
 #include "WCSimLIGen.hh"
 
 #include "TMath.h"
-#include "MonotonicInterpolator.hh"
 #include "json.hpp"
 #include "G4ParticleGun.hh"
 #include "G4PhysicalConstants.hh"
@@ -9,6 +8,8 @@
 #include "G4RandomDirection.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4Event.hh"
+#include "TCanvas.h"
+#include "MonotonicInterpolator.hh"
 
 using json = nlohmann::json;
 
@@ -68,9 +69,12 @@ void WCSimLIGen::SetPhotonMode(G4bool photonmode){
 }
     
 
-void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorDetector, G4double injectorWavelength){
+void WCSimLIGen::ReadFromDatabase(G4String injectorType, G4String injectorIdx, G4String injectorFilename, G4String injectorDetails, G4String injectorProfileFormat, G4String injectorDetector, G4double injectorWavelength, G4double injectorPulseWidth){
 
-  photonWavelength = injectorWavelength;
+    photonWavelength = injectorWavelength;
+    pulseWidth = injectorPulseWidth;
+    profileFormat = injectorProfileFormat;
+
     // Define the database to read from
     string db = injectorFilename;
     string db_pos = injectorDetails;
@@ -124,8 +128,6 @@ _pos << " not found" << G4endl;
 	intensity = injector["intensity"].get<vector<double>>();
       }
     }
-    if ( injectorDetector == "ID" ) thetabins = 180;
-    else  thetabins = thetaVals.size();
     
     json data2 = json::parse(buffer2.str());
     for (auto injector2 : data2["injectors"]){
@@ -194,88 +196,123 @@ void WCSimLIGen::LoadProfilePDF(){
   G4cout << "Reading the injector profile from file" << G4endl;
 
     // Creates histogram of light injector profile
-    float phiMin = phiVals[0];
+    // number of bins depends on the profile
     unsigned int nbins = thetaVals.size();
-    unsigned int bins = thetabins;
-    float phiMax = phiVals[nbins-1];
+    
+    int thetabins = (int)std::set<double>( thetaVals.begin(), thetaVals.end() ).size();
+    float phiMax = *std::max_element(phiVals.begin(), phiVals.end());
+    float phiMin = *std::min_element(phiVals.begin(), phiVals.end());
+    int phibins = (int)std::set<double>( phiVals.begin(), phiVals.end() ).size();
 
     if (hProfile != NULL) {
       delete hProfile;
       hProfile = nullptr;
     }
-    if (prof != NULL){
-      delete prof;
-      prof = nullptr;
-    }
-    
-    double cosTheta;
-    int pointIndex = 0;
-    
-    prof = new TGraph2D();
-    for (auto i=0u;i<nbins;i++){
-      cosTheta = cos((thetaVals[i]-90)*deg);
-      prof->SetPoint(pointIndex,cosTheta,phiVals[i],intensity[i]);
-      pointIndex++;
-    }
 
-    std::map<std::pair<double, double>, double> intensity_map;
-    std::set<double> cosTheta_set;
-    std::set<double> phi_set;
-
-    //Setup set of possible cosTheta, phi and intensity values
-    for (int i = 0; i < prof->GetN(); ++i) {
-        double xi = prof->GetX()[i];
-        double yi = prof->GetY()[i];
-        double zi = prof->GetZ()[i];
-        cosTheta_set.insert(xi);
-        phi_set.insert(yi);
-        intensity_map[{xi, yi}] = zi;
-    }
-
-    cosTheta_vals.assign(cosTheta_set.begin(), cosTheta_set.end());
-    phi_vals.assign(phi_set.begin(), phi_set.end());
-    
-    intensity_grid.resize(phi_vals.size(), std::vector<double>(cosTheta_vals.size()));
-    intensityMax = 0;
-    double total_intensity = 0;
-    
-    //Create vector of 2D histogram
-    for (size_t i = 0; i < phi_vals.size(); ++i) {
-      for (size_t j = 0; j < cosTheta_vals.size(); ++j) {
-        auto key = std::make_pair(cosTheta_vals[j], phi_vals[i]);
-        auto it = intensity_map.find(key);
-        if (it != intensity_map.end()) {
-	  intensity_grid[i][j] = it->second;
-	  if (it->second > intensityMax)
-	    intensityMax = it->second;
+    if (profileFormat=="thetaPhi"){
+        G4cout << "LIGen: [INFO] Using a theta-phi profile" << G4endl;
+        if (prof != NULL){
+          delete prof;
+          prof = nullptr;
         }
-	else {
-	  intensity_grid[i][j] = 0.0;
+        
+        double cosTheta;
+        int pointIndex = 0;
+        
+        prof = new TGraph2D();
+        for (auto i=0u;i<nbins;i++){
+          cosTheta = cos((thetaVals[i]-90)*deg);
+          prof->SetPoint(pointIndex,cosTheta,phiVals[i],intensity[i]);
+          pointIndex++;
         }
-	total_intensity += intensity_grid[i][j];
-      }
+ 
+        std::map<std::pair<double, double>, double> intensity_map;
+        std::set<double> cosTheta_set;
+        std::set<double> phi_set;
+ 
+        //Setup set of possible cosTheta, phi and intensity values
+        for (int i = 0; i < prof->GetN(); ++i) {
+            double xi = prof->GetX()[i];
+            double yi = prof->GetY()[i];
+            double zi = prof->GetZ()[i];
+            cosTheta_set.insert(xi);
+            phi_set.insert(yi);
+            intensity_map[{xi, yi}] = zi;
+        }
+ 
+        cosTheta_vals.assign(cosTheta_set.begin(), cosTheta_set.end());
+        float cosThetaMin = *std::min_element(cosTheta_vals.begin(),cosTheta_vals.end());
+        float cosThetaMax = *std::max_element(cosTheta_vals.begin(),cosTheta_vals.end());
+        phi_vals.assign(phi_set.begin(), phi_set.end());
+        
+        intensity_grid.resize(phi_vals.size(), std::vector<double>(cosTheta_vals.size()));
+        intensityMax = 0;
+        double total_intensity = 0;
+        
+        //Create vector of 2D histogram
+        for (size_t i = 0; i < phi_vals.size(); ++i) {
+          for (size_t j = 0; j < cosTheta_vals.size(); ++j) {
+            auto key = std::make_pair(cosTheta_vals[j], phi_vals[i]);
+            auto it = intensity_map.find(key);
+            if (it != intensity_map.end()) {
+              intensity_grid[i][j] = it->second;
+              if (it->second > intensityMax)
+                intensityMax = it->second;
+            }
+            else {
+              intensity_grid[i][j] = 0.0;
+            }
+            total_intensity += intensity_grid[i][j];
+          }
+        }
+        double sum = 0;
+        double minIntensity = 100;
+        hProfile = new TH2D("hProfile","hProfile",thetabins,cosThetaMin,cosThetaMax,phibins,phiMin,phiMax);
+        //Precompute the interpolated PDF
+        MonotonicInterpolator PrecomputedSplines(cosTheta_vals, phi_vals, intensity_grid);
+        slopes_and_rows = PrecomputedSplines.GetSlopes2D();
+        
+        //Setup profile for visualisation, and determine minimum CosTheta value which was filled. 
+        MonotonicInterpolator Spline(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows);
+        for (int ix = 1; ix <= hProfile->GetNbinsX(); ++ix) {
+          for (int iy = 1; iy <= hProfile->GetNbinsY(); ++iy) {
+            double x = hProfile->GetXaxis()->GetBinCenter(ix);
+            double y = hProfile->GetYaxis()->GetBinCenter(iy);
+            double z = Spline.Evaluate2D(x, y);
+            sum += z;
+            hProfile->SetBinContent(ix, iy, sum/total_intensity);
+            if (z > 0 && z < minIntensity){
+              minIntensity = z;
+              minCosTheta =  hProfile->GetXaxis()->GetBinCenter(ix);
+            }
+          }
+        }
     }
-    double sum = 0;
-    double minIntensity = 100;
-    hProfile = new TH2D("hProfile","hProfile",bins,0,1,bins,phiMin,phiMax);
-    //Precompute the interpolated PDF
-    MonotonicInterpolator PrecomputedSplines(cosTheta_vals, phi_vals, intensity_grid);
-    slopes_and_rows = PrecomputedSplines.GetSlopes2D();
-    
-    //Setup profile for visualisation, and determine minimum CosTheta value which was filled. 
-    MonotonicInterpolator Spline(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows);
-    for (int ix = 1; ix <= hProfile->GetNbinsX(); ++ix) {
-      for (int iy = 1; iy <= hProfile->GetNbinsY(); ++iy) {
-        double x = hProfile->GetXaxis()->GetBinCenter(ix);
-        double y = hProfile->GetYaxis()->GetBinCenter(iy);
-	double z = Spline.Evaluate2D(x, y);
-	sum += z;
-	hProfile->SetBinContent(ix, iy, sum/total_intensity);
-	if (z > 0 && z < minIntensity){
-	  minIntensity = z;
-	  minCosTheta =  hProfile->GetXaxis()->GetBinCenter(ix);
-	}
-      }
+    else if (profileFormat == "xyAngle"){
+        G4cout << "LIGen: [INFO] Using an x-y angular tilt profile" << G4endl;
+        // Convert the tilt in the x and y axes to distances
+	std::vector<double> xVals(thetaVals.size());
+	std::vector<double> yVals(phiVals.size());
+        std::transform(thetaVals.begin(), thetaVals.end(), xVals.begin(),
+                   [](double n) { return sin((n-90)*deg); });
+        std::transform(phiVals.begin(), phiVals.end(), yVals.begin(),
+                   [](double n) { return sin(n*deg); });
+        // Now fill the profile to be sampled
+	float xMin = *std::min_element(xVals.begin(),xVals.end());
+	float xMax = *std::max_element(xVals.begin(),xVals.end());
+	float yMin = *std::min_element(yVals.begin(),yVals.end());
+	float yMax = *std::max_element(yVals.begin(),yVals.end());
+        hProfile = new TH2D("hProfile","hProfile",thetabins,xMin,xMax,phibins,yMin,yMax);
+	for (size_t i = 0; i<xVals.size(); i++){
+            // Fill first, before weighting with intensity (for speed)
+            hProfile->Fill(xVals[i],yVals[i]);
+	    int bin = hProfile->FindBin(xVals[i],yVals[i]);
+	    hProfile->SetBinContent(bin,intensity[i]);
+        }
+    }
+    else{
+        G4cerr << "LIGen: [ERROR] There is currently no method to handle this profile format" << G4endl;
+        exit(-1);
     }
     G4cout << "Profile filled." << G4endl;
 }
@@ -288,8 +325,10 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
     if (photonMode){
         // Get the position and direction from the photon list
         for (int iphoton=0;iphoton<nphotons;iphoton++){
-            // Generate random time for this photon in 1 ns pulse window
-            G4double time = G4RandFlat::shoot(20.0,21.0)*ns;
+            // Generate random time for this photon assuming
+            // Gaussian pulse width with given FWHM pulse width in ns
+            // and 20 ns offset to avoid negative times
+            G4double time = G4RandGauss::shoot(20.0,pulseWidth/2.355)*ns;
 
             G4ThreeVector vtx = {myPhotons[iphoton].x,myPhotons[iphoton].y,myPhotons[iphoton].z};
             G4ThreeVector dir = {myPhotons[iphoton].px,myPhotons[iphoton].py,myPhotons[iphoton].pz};
@@ -324,48 +363,91 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
             axis = {1,0,0};
         }
         // Now generate the photon positions and directions
-	MonotonicInterpolator spline(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows);
-        for (int iphoton = 0; iphoton<nphotons; iphoton++){
+	if (profileFormat == "thetaPhi"){
+            G4cout << "LIGen: [INFO] Generating photons from profile measured in theta and phi" << G4endl;
+            MonotonicInterpolator spline(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows);
+            for (int iphoton = 0; iphoton<nphotons; iphoton++){
  
-            // Generate random time for this photon in 1 ns pulse window
-            G4double time = G4RandFlat::shoot(20.0,21.0)*ns;
-
-	    //Create unique random seed based on event ID and photon number
-	    TRandom3 rng(anEvent->GetEventID()*iphoton + iphoton);
-	    //Determine photon costheta and phi needed for the photon direction from interpolated PDF
-	    double costheta = 0, phi = 0;
-	    SampleFromInterpolatedSurface(spline,minCosTheta, cosTheta_vals.back(), phi_vals.front(),phi_vals.back(), intensityMax, rng, costheta, phi);
-	    // Calculate the direction of this photon wrt +z direction
-            G4double sintheta = sqrt(1. - costheta*costheta);
-            G4double sinphi = sin(phi*deg);
-            G4double cosphi = cos(phi*deg);
-            G4double px = sintheta*cosphi;
-            G4double py = sintheta*sinphi;
-            G4double pz = costheta;
-            	   
-            // Rotate the photon direction wrt the injector axis using the
-            // angle and axis of rotation calculated earlier
-            G4ThreeVector dir = {px,py,pz};
-	    dir.rotate(angle,axis);
-            
-            // Now move the photon vtx to front edge of the injector to avoid 
-            // issues with collimator geometries
-            G4ThreeVector vtx = G4ThreeVector(injectorPosition[0]*cm,injectorPosition[1]*cm,injectorPosition[2]*cm);
-            // Get the vtx at dr in the direction of the photon
-	    vtx += dir*injectorOffset*cm;
-            // Set the gun with the photon parameters
-            myLIGun->SetNumberOfParticles(1);
-            myLIGun->SetParticleDefinition(G4OpticalPhoton::Definition());
-            myLIGun->SetParticleTime(time);		
-            myLIGun->SetParticlePosition(vtx);
-            myLIGun->SetParticleMomentumDirection(dir);
-            myLIGun->SetParticleEnergy(energy);
-            myLIGun->SetParticlePolarization(G4RandomDirection());
-            // Fill the event
-            if (anEvent){
-                myLIGun->GeneratePrimaryVertex(anEvent);
+                // Generate random time for this photon assuming
+                // Gaussian pulse width with given FWHM pulse width in ns
+                // and 20 ns offset to avoid negative times
+                G4double time = G4RandGauss::shoot(20.0,pulseWidth/2.355)*ns;
+ 
+                //Create unique random seed based on event ID and photon number
+                TRandom3 rng(anEvent->GetEventID()*iphoton + iphoton);
+                //Determine photon costheta and phi needed for the photon direction from interpolated PDF
+                double costheta = 0, phi = 0;
+                SampleFromInterpolatedSurface(spline,minCosTheta, cosTheta_vals.back(), phi_vals.front(),phi_vals.back(), intensityMax, rng, costheta, phi);
+                // Calculate the direction of this photon wrt +z direction
+                G4double sintheta = sqrt(1. - costheta*costheta);
+                G4double sinphi = sin(phi*deg);
+                G4double cosphi = cos(phi*deg);
+                G4double px = sintheta*cosphi;
+                G4double py = sintheta*sinphi;
+                G4double pz = costheta;
+                // Rotate the photon direction wrt the injector axis using the
+                // angle and axis of rotation calculated earlier
+                G4ThreeVector dir = {px,py,pz};
+                dir.rotate(angle,axis);
+                
+                // Now move the photon vtx to front edge of the injector to avoid 
+                // issues with collimator geometries
+                G4ThreeVector vtx = G4ThreeVector(injectorPosition[0]*cm,injectorPosition[1]*cm,injectorPosition[2]*cm);
+                // Get the vtx at dr in the direction of the photon
+                vtx += dir*injectorOffset*cm;
+                // Set the gun with the photon parameters
+                myLIGun->SetNumberOfParticles(1);
+                myLIGun->SetParticleDefinition(G4OpticalPhoton::Definition());
+                myLIGun->SetParticleTime(time);		
+                myLIGun->SetParticlePosition(vtx);
+                myLIGun->SetParticleMomentumDirection(dir);
+                myLIGun->SetParticleEnergy(energy);
+                myLIGun->SetParticlePolarization(G4RandomDirection());
+                // Fill the event
+                if (anEvent){
+                    myLIGun->GeneratePrimaryVertex(anEvent);
+                }
             }
         }
+	else if (profileFormat == "xyAngle"){
+            G4cout << "LIGen: [INFO] Generating photons from profile measured in the x and y angular tilt" << G4endl;
+            for (int iphoton = 0; iphoton<nphotons; iphoton++){
+                // Generate random time for this photon assuming
+                // Gaussian pulse width with given FWHM pulse width in ns
+                // and 20 ns offset to avoid negative times
+                G4double time = G4RandGauss::shoot(20.0,pulseWidth/2.355)*ns;
+		G4double px;
+		G4double py;
+                hProfile->GetRandom2(px,py);
+                G4double pz = sqrt(1-pow(px,2)-pow(py,2));
+                // Rotate the photon direction wrt the injector axis using the
+                // angle and axis of rotation calculated earlier
+                G4ThreeVector dir = {px,py,pz};
+                dir.rotate(angle,axis);
+                // Now move the photon vtx to front edge of the injector to avoid 
+                // issues with collimator geometries
+                G4ThreeVector vtx = G4ThreeVector(injectorPosition[0]*cm,injectorPosition[1]*cm,injectorPosition[2]*cm);
+                // Get the vtx at dr in the direction of the photon
+                vtx += dir*injectorOffset*cm;
+                // Set the gun with the photon parameters
+                myLIGun->SetNumberOfParticles(1);
+                myLIGun->SetParticleDefinition(G4OpticalPhoton::Definition());
+                myLIGun->SetParticleTime(time);		
+                myLIGun->SetParticlePosition(vtx);
+                myLIGun->SetParticleMomentumDirection(dir);
+                myLIGun->SetParticleEnergy(energy);
+                myLIGun->SetParticlePolarization(G4RandomDirection());
+                // Fill the event
+                if (anEvent){
+                    myLIGun->GeneratePrimaryVertex(anEvent);
+                }
+            }
+        }
+	else{ 
+            G4cerr << "LIGen: [ERROR] There is currently no method to handle this profile format" << G4endl;
+            exit(-1);
+        }
+
     }
 }
 
