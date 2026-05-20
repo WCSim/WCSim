@@ -401,10 +401,11 @@
 #/mygen/radioactive_time_window 1.e-4
 ## The following list the different isotope to take into account, where they decay,
 ## and what are their activities in the full ID detector (for Water) or in the PMT (for PMT)
-#/mygen/isotope Tl208 PMT 2.8
-#/mygen/isotope Bi214 PMT 27.
-#/mygen/isotope K40 PMT 94.
-#/mygen/isotope Bi214 water 264. ### HK
+## Numbers updated based on HK PMT radioactivity measurements as of 12/25 
+#/mygen/isotope Tl208 PMT 1.8
+#/mygen/isotope Bi214 PMT 14.82
+#/mygen/isotope K40 PMT 5.28
+#/mygen/isotope Bi214 water 6296. ### HK
 ##Clear the source and tell GPS to make multiple vertices
 #/gps/source/clear
 
