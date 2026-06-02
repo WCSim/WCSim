@@ -89,12 +89,12 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   CommandWCODTyvekInwallReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODTyvekInwallReflectivity",this);
   CommandWCODTyvekInwallReflectivity->SetGuidance("Set OD tyvek inner wall cladding reflectivity");
   CommandWCODTyvekInwallReflectivity->SetParameterName("WCODTyvekInwallReflectivity",true);
-  CommandWCODTyvekInwallReflectivity->SetDefaultValue(0.95);
+  CommandWCODTyvekInwallReflectivity->SetDefaultValue(0.9);
 
   CommandWCODTyvekOutwallReflectivity = new G4UIcmdWithADouble("/WCSim/tuning/WCODTyvekOutwallReflectivity",this);
   CommandWCODTyvekOutwallReflectivity->SetGuidance("Set OD tyvek outer wall cladding reflectivity");
   CommandWCODTyvekOutwallReflectivity->SetParameterName("WCODTyvekOutwallReflectivity",true);
-  CommandWCODTyvekOutwallReflectivity->SetDefaultValue(0.87);
+  CommandWCODTyvekOutwallReflectivity->SetDefaultValue(0.9);
 
 }
 
