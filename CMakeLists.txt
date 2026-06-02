@@ -199,6 +199,7 @@ pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/data
         ${PROJECT_SOURCE_DIR}/data/CathodeParameters_KCsCb.txt
         ${PROJECT_SOURCE_DIR}/data/CathodeParameters_RbCsCb.txt
 	${PROJECT_SOURCE_DIR}/data/WCTE_cosmics.dat
+	${PROJECT_SOURCE_DIR}/data/PMT_darkrate.txt
 	)
 
 pbuilder_install_files(${CMAKE_INSTALL_PREFIX}/macros
