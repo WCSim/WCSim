@@ -6,6 +6,17 @@ Recent updates
 *************************************************************
 
 *************************************************************
+03/06/2026: Notes for v1.12.32
+*************************************************************
+New release after #558
+
+Update
+* Pull request #558 @federiconova: Allow for separate tyvek refelectivities on the inner & outer OD walls
+
+New feature
+* Pull request #557 @federiconova: Ability to give a different dark rate to individual PMTs
+
+*************************************************************
 12/05/2026: Notes for v1.12.31
 *************************************************************
 New release after #559
