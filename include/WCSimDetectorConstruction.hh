@@ -530,7 +530,8 @@ private:
   G4OpticalSurface * OpGlassCathodeSurface;
 
   //Tyvek surface - jl145
-  G4OpticalSurface * OpWaterTySurface;
+  G4OpticalSurface * OpWaterTyInwallSurface;
+  G4OpticalSurface * OpWaterTyOutwallSurface;
 
   //Reflector skin surface -tf
   G4OpticalSurface * ReflectorSkinSurface;

@@ -1259,8 +1259,8 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // propogation is handled correctly.
     
     // Nested structure means we should just need one skinsurfaces for all the tyveks.
-    new G4LogicalSkinSurface("WallTyvekSurface",WallTyvekLogic,OpWaterTySurface);
-    new G4LogicalSkinSurface("WhiteTyvekSurface",WhiteTyvekLogic,OpWaterTySurface);
+    new G4LogicalSkinSurface("WallTyvekSurface",WallTyvekLogic,OpWaterTyOutwallSurface);
+    new G4LogicalSkinSurface("WhiteTyvekSurface",WhiteTyvekLogic,OpWaterTyInwallSurface);
     new G4LogicalSkinSurface("BlackTyvekSurface",BlackTyvekLogic,OpWaterBSSurface);
 
     new G4LogicalBorderSurface("WaterBSBarrelCellSurface",
@@ -1271,12 +1271,12 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     new G4LogicalBorderSurface("WaterBSBarrelCellSurface2",
                 OuterDetectorPhysical,
                 WhiteTyvekPhysical, 
-                OpWaterTySurface);
+                OpWaterTyInwallSurface);
 
     new G4LogicalBorderSurface("WaterBSBarrelCellSurface3",
                 OuterDetectorPhysical,
                 WallTyvekPhysical, 
-                OpWaterTySurface);
+                OpWaterTyOutwallSurface);
     
     int pmt20_count_final    = CountLogicalChildren(InnerDetectorLogic, pmt20_dummy_logic);
     int pmtmulti_count_final = CountLogicalChildren(InnerDetectorLogic, pmtmulti_dummy_logic);

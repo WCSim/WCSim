@@ -18,6 +18,6 @@
 /WCSim/tuning/PMTCathodePara data/CathodeParameters.txt
 
 /WCSim/tuning/WCODWLSCladdingReflectivity 0.99
-/WCSim/tuning/WCODTyvekReflectivity 0.90
-
+/WCSim/tuning/WCODTyvekInwallReflectivity 0.90
+/WCSim/tuning/WCODTyvekOutwallReflectivity 0.90
 
