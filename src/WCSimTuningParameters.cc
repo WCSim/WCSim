@@ -32,8 +32,8 @@ WCSimTuningParameters::WCSimTuningParameters()
  topveto = false;
 
  WCODWLSCladdingReflectivity   = 0.99; //
- WCODTyvekInwallReflectivity   = 0.90; //
- WCODTyvekOutwallReflectivity   = 0.90; //
+ WCODTyvekInwallReflectivity   = 0.95; //
+ WCODTyvekOutwallReflectivity   = 0.87; //
 
 }
 
