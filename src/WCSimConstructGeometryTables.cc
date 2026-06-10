@@ -62,6 +62,7 @@ void WCSimDetectorConstruction::GetWCGeom
     // AH Need to store this in CM for it to be understood by SK code
     WCPMTSize = WCPMTRadius/cm;// I think this is just a variable no if needed
     WCPMTSize2 = WCPMTRadius2/cm;// I think this is just a variable no if needed
+    WCPMTSizeOD = WCPMTODRadius/cm;// I think this is just a variable no if needed
 
     // Note WC can be off-center... get both extremities
     static G4double zmin=100000,zmax=-100000.;
@@ -252,7 +253,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   
   geoFile << "OD PMT number & size        "
 	  << setw(10)<<totalNumODPMTs
-	  << setw(8)<<WCPMTODRadius << setw(4)  <<G4endl;
+	  << setw(8)<<WCPMTSizeOD << setw(4)  <<G4endl;
 
   geoFile << "Centre offset "
 	  << setw(8) << WCOffset(0)
