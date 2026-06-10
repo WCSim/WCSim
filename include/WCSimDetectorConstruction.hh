@@ -145,6 +145,8 @@ public:
   G4int    UsePMT_Coll_Eff(){return PMT_Coll_Eff;}
 
   G4double GetPMTSize1() {return WCPMTSize;}
+  G4double GetPMTSize2() {return WCPMTSize2;}
+  G4double GetPMTSizeOD() {return WCPMTSizeOD;}
 
   G4double GetPMTQE(G4String,G4double, G4int, G4double, G4double, G4double);
   G4double GetPMTCollectionEfficiency(G4double theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
@@ -936,8 +938,9 @@ private:
   G4int totalNumODPMTs=0;      // The number of OD PMTs for this configuration
 
   G4double WCCylInfo[3];    // Info for the geometry tree: radius & length or mail box, length, width and depth
-  G4double WCPMTSize;       // Info for the geometry tree: pmt size
-  G4double WCPMTSize2;       // Info for the geometry tree: pmt size
+  G4double WCPMTSize;       // Info for the geometry tree: ID pmt size in cm
+  G4double WCPMTSize2;       // Info for the geometry tree: ID pmt of the second type size in cm
+  G4double WCPMTSizeOD;      // Info for the geometry tree: OD pmt size in cm
   G4ThreeVector WCOffset;   // Info for the geometry tree: WC center offset
   G4ThreeVector WCXRotation;   // Info for the geometry tree: WC detector local X axis in the global coordinate system 
   G4ThreeVector WCYRotation;   // Info for the geometry tree: WC detector local Y axis in the global coordinate system 

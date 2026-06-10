@@ -622,8 +622,8 @@ void WCSimRunAction::FillGeoTree(){
   wcsimrootgeom->SetBoundaryWallDimensions(wcsimdetector->GetBoundaryWallDimensions());
 
   pmtradius = wcsimdetector->GetPMTSize1();
-  pmtradius2 = 4.0;//B.Q debug, Temp wcsimdetector->GetPMTSize1();
-  pmtradiusOD = wcsimdetector->GetODPMTSize();
+  pmtradius2 = wcsimdetector->GetPMTSize2(); //B.Q debug, Temp wcsimdetector->GetPMTSize1();
+  pmtradiusOD = wcsimdetector->GetPMTSizeOD();
   numpmt = wcsimdetector->GetTotalNumPmts();
   numpmt2 = wcsimdetector->GetTotalNumPmts2();//Hybrid configuration
   numpmtOD = wcsimdetector->GetTotalNumODPmts();
