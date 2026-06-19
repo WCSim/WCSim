@@ -1,14 +1,6 @@
 {
 	"profiles": [
 	    {
-                "comment": "ID collimator",
-                "type": "collimator",
-		"detector":"ID",
-                "theta": [-2.0,0.0,2.0,-2.0,0.0,2.0],
-                "phi": [0,0,0,360,360,360],
-                "intensity": [1,1,1,1,1,1]
-                },
-	    {
                 "comment": "OD collimator 10",
 		"type": "collimator",
 		"detector":"OD_10",
