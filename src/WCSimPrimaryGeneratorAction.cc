@@ -909,7 +909,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         G4ThreeVector dir = LIGen->GetInjectorDirection();
         G4int pdg = 0;
         G4double E = LIGen->GetPhotonEnergy();
-        LIGen->GeneratePhotons(anEvent,nphotons);
+	G4int nPhotons_gauss_fluct = std::max(0, static_cast<int>(std::lround(gRandom->Gaus(nphotons, injectornPhotonWidth))));
+        LIGen->GeneratePhotons(anEvent,nPhotons_gauss_fluct);
         // save injector properties
         G4cout << " Saving injector properties: " << vtx << ", " << E << ", " << dir << ", " << pdg << G4endl;
         SetVtx(vtx);

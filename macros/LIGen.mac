@@ -115,6 +115,10 @@
 /mygen/injectorWavelength 400
 /mygen/injectorFilename LightInjectors.json
 /mygen/injectorDetails LightInjectorsDetails.json
+#thetaPhi typically used for diffusers and occasionally xyAngle. Always xyAngle for collimator
+/mygen/injectorProfileFormat thetaPhi
+# Can set random variation in number of photons generated per event, default is randomly choosing from Gaussian of width 10
+# /mygen/injectornPhotonWidth 10.
 # Default /mygen/photonMode 0 generates photon directions using the LI profile
 # Set /mygen/photonMode 1 to read pre-generated photon positions and directions 
 # from the 'photonsfile' specified in the injector file.
