@@ -658,11 +658,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                 }
                 // Now store target nucleon info
                 else if(abs(pdg) == 2112 || abs(pdg) == 2212){
-                    double pmass = particleTable->FindParticle(pdg)->GetPDGMass();
-                    kin_energy = fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - pmass;
-
                     targetpdgs[0] = pdg;
-                    targetenergies[0] = kin_energy;
+                    targetenergies[0] = fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV;
                     targetdirs[0] = dir;
                 }
             }
