@@ -72,9 +72,24 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
     if(GetSaveRooTracker()){
       //Setup settings tree
       // Assume the NEUT file is open.
+      // Old NEUT
       fSettingsInputTree = (TTree*) gDirectory->Get("Settings");
-      fSettingsInputTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
-      fSettingsInputTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
+      if (fSettingsInputTree)
+      {
+        fSettingsInputTree->SetBranchAddress("NuIdfdPos",fNuPlanePos);
+        fSettingsInputTree->SetBranchAddress("DetRadius",&fNuPrismRadius);
+      }
+      else
+      {
+        // NEUT 5.6.4
+        fSettingsInputTree = (TTree*) gDirectory->Get("settings");
+        if (!fSettingsInputTree) 
+        {
+          G4cout << "Error: Could not find 'Settings' or 'settings' tree in file!" << G4endl;
+          exit(1);
+        }
+        fSettingsInputTree->SetBranchAddress("NuIdfdPosGeomCoord", fNuPlanePos);
+      }
     }
   }
 
@@ -164,12 +179,14 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
       //Setup rooTracker tree
       if (SaveRooTracker) {
 	//Setup TClonesArray to store Rootracker truth info
-	fVertices = new TClonesArray("NRooTrackerVtx", 10);
-	fVertices->Clear();
+	//fVertices = new TClonesArray("NRooTrackerVtx", 10);
+	//fVertices->Clear();
 	fNVtx = 0;
+	evNRooTracker = new ND::NRooTrackerVtx;
 	fRooTrackerOutputTree = new TTree("fRooTrackerOutputTree", "Event Vertex Truth Array");
-	fRooTrackerOutputTree->Branch("NVtx", &fNVtx, "NVtx/I");
-	fRooTrackerOutputTree->Branch("NRooTrackerVtx", "TClonesArray", &fVertices);
+	//fRooTrackerOutputTree->Branch("NVtx", &fNVtx, "NVtx/I");
+	//fRooTrackerOutputTree->Branch("NRooTrackerVtx", "TClonesArray", &fVertices);
+	fRooTrackerOutputTree->Branch("NRooTrackerVtx", &evNRooTracker);
       }
     }
     else{
@@ -358,7 +375,7 @@ void WCSimRunAction::BeginOfRunAction(const G4Run* aRun)
       //fVertices = new TClonesArray("NRooTrackerVtx", 10);
       //fVertices->Clear();
       //fNVtx = 0;
-      evNRooTracker = new NRooTrackerVtx();   // should be an array? Not clear where in WCSim NVtx > 1
+      evNRooTracker = new ND::NRooTrackerVtx();   // should be an array? Not clear where in WCSim NVtx > 1
       flatRooTrackerTree = new TTree("RooTracker","Event Vertex Truth Array");
       flatRooTrackerTree->Branch("Run",&run,"Run/I");
       flatRooTrackerTree->Branch("Event",&event,"Event/I");
@@ -605,8 +622,8 @@ void WCSimRunAction::FillGeoTree(){
   wcsimrootgeom->SetBoundaryWallDimensions(wcsimdetector->GetBoundaryWallDimensions());
 
   pmtradius = wcsimdetector->GetPMTSize1();
-  pmtradius2 = 4.0;//B.Q debug, Temp wcsimdetector->GetPMTSize1();
-  pmtradiusOD = wcsimdetector->GetODPMTSize();
+  pmtradius2 = wcsimdetector->GetPMTSize2(); //B.Q debug, Temp wcsimdetector->GetPMTSize1();
+  pmtradiusOD = wcsimdetector->GetPMTSizeOD();
   numpmt = wcsimdetector->GetTotalNumPmts();
   numpmt2 = wcsimdetector->GetTotalNumPmts2();//Hybrid configuration
   numpmtOD = wcsimdetector->GetTotalNumODPmts();
@@ -817,10 +834,9 @@ void WCSimRunAction::FillFlatGeoTree(){
   flatfile->Write(); 
 }
 
-NRooTrackerVtx* WCSimRunAction::GetRootrackerVertex(){
-
-  NRooTrackerVtx* currRootrackerVtx = new((*fVertices)[fNVtx])NRooTrackerVtx();
-  fNVtx += 1;
-  return currRootrackerVtx;
+ND::NRooTrackerVtx* WCSimRunAction::GetRootrackerVertex(){
+  return evNRooTracker;
+  //NRooTrackerVtx* currRootrackerVtx = new((*fVertices)[fNVtx])NRooTrackerVtx();
+  //fNVtx += 1;
+  //return currRootrackerVtx;
 }
-

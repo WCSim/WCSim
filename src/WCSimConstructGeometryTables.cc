@@ -62,6 +62,7 @@ void WCSimDetectorConstruction::GetWCGeom
     // AH Need to store this in CM for it to be understood by SK code
     WCPMTSize = WCPMTRadius/cm;// I think this is just a variable no if needed
     WCPMTSize2 = WCPMTRadius2/cm;// I think this is just a variable no if needed
+    WCPMTSizeOD = WCPMTODRadius/cm;// I think this is just a variable no if needed
 
     // Note WC can be off-center... get both extremities
     static G4double zmin=100000,zmax=-100000.;
@@ -252,7 +253,7 @@ void WCSimDetectorConstruction::DumpGeometryTableToFile()
   
   geoFile << "OD PMT number & size        "
 	  << setw(10)<<totalNumODPMTs
-	  << setw(8)<<WCPMTODRadius << setw(4)  <<G4endl;
+	  << setw(8)<<WCPMTSizeOD << setw(4)  <<G4endl;
 
   geoFile << "Centre offset "
 	  << setw(8) << WCOffset(0)
@@ -685,6 +686,59 @@ void WCSimDetectorConstruction::ReadGeometryTableFromFile(std::string fname)
     pmtmPMTId.push_back(mpmtid);
     pmtRotaton.push_back(angle*deg);
     nPMTsRead++;
+  }
+  Data.close();
+}
+
+// Read PMT positions from file
+void WCSimDetectorConstruction::ReadDarkRateTableFromFile(){
+  pmtId.clear();
+  pmtDarkRate.clear();
+  nPMTsReadForDarkRate = 0;
+  if (readDarkRateFromTable) ReadDarkRateTableFromFile(pmtDarkRateFile);
+}
+
+void WCSimDetectorConstruction::ReadDarkRateTableFromFile(std::string fname)
+{
+  std::ifstream Data(fname.c_str(),std::ios_base::in);
+  if (!Data)
+  {
+    G4cout<<"PMT data file "<<fname<<" could not be opened --> Exiting..."<<G4endl;
+    exit(-1);
+  }
+  else
+    G4cout<<"PMT data file "<<fname<<" is opened to read positions"<<G4endl;
+
+  std::string str, tmp;
+	G4int Column=0;
+	while (std::getline(Data, str)) {
+		if (str=="#DATASTART") break;
+	}
+	std::ifstream::pos_type SavePoint = Data.tellg();
+	std::getline(Data, str);
+	std::istringstream stream(str);
+	while (std::getline(stream,tmp,' ')) Column++;
+	if (Column!=2)
+  {
+    G4cerr<<"Number of column = "<<Column<<" which is not equal to 2. "<<G4endl;
+    G4cerr<<"Inappropriate input --> Exiting..."<<G4endl;
+    exit(-1);
+  }
+  Data.seekg(SavePoint);
+
+  double darkrate;
+  int pmtid;
+  while (!Data.eof())
+  {
+    Data>>pmtid>>darkrate;
+    pmtDarkRate.push_back(darkrate);
+    pmtId.push_back(pmtid);
+    nPMTsReadForDarkRate++;
+  }
+  if( nPMTsReadForDarkRate ){
+    nPMTsReadForDarkRate--;
+    pmtId.pop_back();
+    pmtDarkRate.pop_back();
   }
   Data.close();
 }

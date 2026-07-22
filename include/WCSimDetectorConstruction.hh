@@ -135,12 +135,18 @@ public:
   G4int    GetTotalNumPmts2() {return totalNumPMTs2;}//For the hybrid config
   G4int    GetTotalNum_mPmts2() {return totalNum_mPMTs2;}//For the hybrid config         
   G4int    GetTotalNumODPmts() {return totalNumODPMTs;}
+  G4bool   Get_readDarkRateFromTable() {return readDarkRateFromTable;}
+  G4int    Get_nPMTsReadForDarkRate() {return nPMTsReadForDarkRate;}
+  std::vector<G4int> Get_pmtId() {return pmtId;}
+  std::vector<G4double> Get_pmtDarkRate() {return pmtDarkRate;}
 
   G4int    GetPMT_QE_Method(){return PMT_QE_Method;}
   G4double GetwaterTank_Length() {return waterTank_Length;} 
   G4int    UsePMT_Coll_Eff(){return PMT_Coll_Eff;}
 
   G4double GetPMTSize1() {return WCPMTSize;}
+  G4double GetPMTSize2() {return WCPMTSize2;}
+  G4double GetPMTSizeOD() {return WCPMTSizeOD;}
 
   G4double GetPMTQE(G4String,G4double, G4int, G4double, G4double, G4double);
   G4double GetPMTCollectionEfficiency(G4double theta_angle, G4String CollectionName) { return GetPMTPointer(CollectionName)->GetCollectionEfficiency(theta_angle); };
@@ -384,6 +390,9 @@ public:
   void SetODPMTPositionInput(G4String choice) {odpmtPositionFile = choice; readODFromTable = true;}
   G4String GetODPMTPositionInput() {return odpmtPositionFile;}
 
+  void SetPMTDarkRateInput(G4String choice) {pmtDarkRateFile = choice; readDarkRateFromTable = true;}
+  G4String GetPMTDarkRateInput() {return pmtDarkRateFile;}
+
   void SetCDSFile(G4String choice) { CDSFile = choice; addCDS = true; }
 
   void   SetPMTType(G4String type) {
@@ -523,7 +532,8 @@ private:
   G4OpticalSurface * OpGlassCathodeSurface;
 
   //Tyvek surface - jl145
-  G4OpticalSurface * OpWaterTySurface;
+  G4OpticalSurface * OpWaterTyInwallSurface;
+  G4OpticalSurface * OpWaterTyOutwallSurface;
 
   //Reflector skin surface -tf
   G4OpticalSurface * ReflectorSkinSurface;
@@ -832,8 +842,15 @@ private:
   std::vector<G4double> pmtRotaton;
   std::string pmtPositionFile;
   std::string odpmtPositionFile;
+  G4bool readDarkRateFromTable;
+  G4int nPMTsReadForDarkRate;
+  std::vector<G4int> pmtId;
+  std::vector<G4double> pmtDarkRate;
+  std::string pmtDarkRateFile;
   void ReadGeometryTableFromFile();
   void ReadGeometryTableFromFile(std::string fname);
+  void ReadDarkRateTableFromFile();
+  void ReadDarkRateTableFromFile(std::string fname);
   // distance by which PMT goes behind black sheet
   G4double pmt_blacksheet_offset;
 
@@ -921,8 +938,9 @@ private:
   G4int totalNumODPMTs=0;      // The number of OD PMTs for this configuration
 
   G4double WCCylInfo[3];    // Info for the geometry tree: radius & length or mail box, length, width and depth
-  G4double WCPMTSize;       // Info for the geometry tree: pmt size
-  G4double WCPMTSize2;       // Info for the geometry tree: pmt size
+  G4double WCPMTSize;       // Info for the geometry tree: ID pmt size in cm
+  G4double WCPMTSize2;       // Info for the geometry tree: ID pmt of the second type size in cm
+  G4double WCPMTSizeOD;      // Info for the geometry tree: OD pmt size in cm
   G4ThreeVector WCOffset;   // Info for the geometry tree: WC center offset
   G4ThreeVector WCXRotation;   // Info for the geometry tree: WC detector local X axis in the global coordinate system 
   G4ThreeVector WCYRotation;   // Info for the geometry tree: WC detector local Y axis in the global coordinate system 

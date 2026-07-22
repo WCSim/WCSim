@@ -6,6 +6,7 @@
 /grdm/verbose 0
 
 
+
 ###############
 # GEOMETRY
 ###############
@@ -70,8 +71,14 @@
 
 
 #Use the HK FD Realistic ID + OD geometry
-#/WCSim/WCgeom HyperK_HybridmPMT_WithOD_Realistic
-#/WCSim/Construct
+/WCSim/WCgeom HyperK_HybridmPMT_WithOD_Realistic
+# Use the /WCSim/PMT/DarkRateFile command to specify a text file containing the dark rate for each PMT type in the "tank" (e.g. 20" in HKFD)
+# When using this, /DarkRate/SetDarkRate will not work for the "tank" element, other than setting it to 0
+# e.g. if you specify /DarkRate/SetDarkRate 0, dark noise is turned off for all tank PMTs, independent of values in your DarkRateFile
+# e.g. if you specify /DarkRate/SetDarkRate 0.1 Hz or /DarkRate/SetDarkRate 1 MHz (or leave it uncommented), these values will be ignored & dark noise will be added according to your DarkRateFile
+# This command *must* come between your /WCSim/WCgeom command and /WCSim/Construct
+/WCSim/PMT/DarkRateFile data/PMT_darkrate.txt
+/WCSim/Construct
 
 
 #Use the HK FD Realistic IDonly geometry
@@ -192,8 +199,8 @@
 
 #choose the Trigger & Digitizer type
 /DAQ/Digitizer SKI
-/DAQ/Trigger NDigits
-#/DAQ/Trigger NoTrigger
+#/DAQ/Trigger NDigits
+/DAQ/Trigger NoTrigger
 
 #grab the other DAQ options (thresholds, timing windows, etc.)
 /control/execute macros/daq.mac
@@ -201,6 +208,7 @@
 ##################
 # DARK NOISE
 ##################
+
 
 #There is an independent messenger class instance for each PMT type
 # tank is the default one & is present in all geometries
@@ -212,7 +220,7 @@
 #  The default is ON
 # Below gives possibility to overwrite nominal values, eg. to switch OFF the Dark Noise.
 /DarkRate/SetDetectorElement tank
-#/DarkRate/SetDarkRate 0 kHz   #Turn dark noise off
+/DarkRate/SetDarkRate 10 kHz   #Turn dark noise off
 #/DarkRate/SetDarkRate 4.2 kHz #This is the value for SKI set in SKDETSIM. This is the default value for HK FD 20" Box and Line PMTs that has been used in WCSim since 2020
 #/DarkRate/SetDarkRate 8.4 kHz #For 20 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
 #/DarkRate/SetDarkRate 3.0 kHz #For 12 inch HPDs and Box and Line PMTs, based on High QE 20 inch R3600 dark rate from EGADS nov 2014
@@ -228,29 +236,32 @@
 #/DarkRate/SetConvert 1.119 #For HPDs
 #/DarkRate/SetConvert 1.110 #For Box and Line PMTs
 
-# Select which time window(s) to add dark noise to
-#/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
-#/DarkRate/SetDarkLow to /DarkRate/SetDarkHigh [time in ns]
 #/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
 #width /DarkRate/SetDarkWindow [time in ns] around each hit
+#/DarkRate/SetDarkWindow 4000
 #i.e. hit time +- (/DarkRate/SetDarkWindow) / 2
 # WARNING: this DarkMode 1 "around physics hit window" is performed separately for each PMT type.
 # Therefore, if you have no physics hits on a PMT type in an event,
 # you will have no dark noise on that PMT type in that event
 # (only when running with DarkMode 1)
 /DarkRate/SetDetectorElement tank
-/DarkRate/SetDarkMode 1
-/DarkRate/SetDarkWindow 4000
+/DarkRate/SetDarkMode 0
+# Select which time window(s) to add dark noise to
+/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at [time in ns]
+/DarkRate/SetDarkLow 0
+/DarkRate/SetDarkHigh 10000
 
 /DarkRate/SetDetectorElement OD
 #/DarkRate/SetDarkRate 0 kHz
-#/DarkRate/SetDarkRate 1 kHz
+/DarkRate/SetDarkRate 0.6 kHz
 #/DarkRate/SetConvert 1.367 #for 8" PMTs in HK OD
-/DarkRate/SetDarkMode 1
-/DarkRate/SetDarkWindow 4000
+/DarkRate/SetDarkMode 0
+#/DarkRate/SetDarkWindow 4000
+/DarkRate/SetDarkLow 0
+/DarkRate/SetDarkHigh 10000
 
 /DarkRate/SetDetectorElement tankPMT2
-#/DarkRate/SetDarkRate 0 kHz
+/DarkRate/SetDarkRate 0 kHz
 #/DarkRate/SetDarkRate 1 kHz
 #/DarkRate/SetConvert 1.110 #for PMT3inchR14374 PMTs in HK mPMT
 #/DarkRate/SetConvert 1.126 #for PMT3inchR12199_02 PMTs in HK mPMT. WARNING value needs checking!
@@ -292,6 +303,17 @@
 ## It should be noted that only one /mygen/generator can be run
 ## at once.
 
+/mygen/generator gps
+/gps/particle e-
+/gps/time 3000
+/gps/energy 0.000001 MeV
+/gps/pos/type Volume
+/gps/pos/shape Cylinder
+/gps/pos/centre 0. 0. 0.
+/gps/pos/radius 3400
+/gps/pos/halfz 3500
+/gps/ang/type iso
+
 ## select the input nuance-formatted vector file
 ## This can be from a generator (e.g. NEUT, sntools)
 ## or your own (see $WCSIM_SOURCE_DIR/sample-root-scripts/MakeKin.py for a script to make such files)
@@ -301,18 +323,16 @@
 #/mygen/vecfile mu+.out
 # define units used for time in kin file
 #/mygen/time_unit ns
-# For nRooTracker input, specify the region in which you wish to accept events: ID, OD_INNER, OD_OUTER
-#/mygen/region OD_OUTER
 
 ## Or you can use the G4 Particle Gun
 ## for a full list of /gun/ commands see:
 ## https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_gun_.html
-/mygen/generator gun
-/gun/particle e-
-#/gun/particle pi0
-/gun/energy 5 MeV
-/gun/direction 1 0 0
-/gun/position 0 0 0  
+# /mygen/generator gun
+# /gun/particle e-
+# #/gun/particle pi0
+# /gun/energy 2.2 MeV
+# /gun/direction 1 0 0
+# /gun/position 0 0 0  
 
 ## Or you can use the G4 General Particle Source
 ## you can do a lot more with this than a monoenergetic, monodirectional, single-particle gun
@@ -369,30 +389,6 @@
 #/mygen/hepmc3file HepMC3Filepath
 #/mygen/hepmc3positionGenMode true/false
 
-# Or you can use the light injector generator to run a single LI device
-# Each LI is defined in the injector file (e.g. data/LightInjectorsDetails.json)
-# by a combination of the injector type and injector idx. These correspond to
-# positions and directions specific to each combination. Details of the LI device for
-# each combination is provided in the comments.
-#/mygen/generator lightinjector
-# Set the number of photons per pulse for this LI to generate nphotons per pulse
-#/mygen/nphotons 100000
-# Specify the injector type: collimator, diffuser or laser ball
-#/mygen/injectorType diffuser
-# Specify the injector index for this type of LI that corresponds to the
-# device position and profile you wish to use
-#/mygen/injectorIdx 15
-#/mygen/injectorDetector ID
-#/mygen/injectorWavelength 400
-#/mygen/injectorFilename LightInjectors.json
-#/mygen/injectorDetails LightInjectorsDetails.json
-#/mygen/injectorProfileFormat xyAngle
-# Photon times are Gaussian-distributed around a mean of 20 ns with a FWHM pulse width (ns).
-#/mygen/injectorPulseWidth 10
-# Default /mygen/photonMode 0 generates photon directions using the LI profile
-# Set /mygen/photonMode 1 to read pre-generated photon positions and directions
-# from the 'photonsfile' specified in the injector file.
-# /mygen/photonMode 0
 
 ## Radioactive option
 ## Generate radioactive decay in the water or on the PMTs
@@ -416,10 +412,10 @@
 ## Needed if time bias is not used, in order to keep timing below one sec.
 #/DAQ/RelativeHitTime true
 ## The following set which scenario is used to scale SK model to HK
-#/mygen/radon_scaling 1 # 	Relative scaling with respect to full ID volume 
+#/mygen/radon_scaling A # 	Relative scaling with respect to full ID volume (Pessimistic, should be default for now)
+#/mygen/radon_scaling B #	Absolute scaling with respect to ID border (Optimistic)
 #/mygen/radon_scaling 0 #	Uniform distribution
 #/mygen/radon_symmetry 1 #	Divide the detector in x slices using the theta symmetry
-#/mygen/radon_water_concentration 2.63 # Specify the input water Rn concentration (in mBq/m3)
 ##Clear the source and tell GPS to make multiple vertices
 #/gps/source/clear
 
@@ -453,7 +449,7 @@
 # (Note that these are LEDs positioned in the standard mPMT modules.
 #  They are not LEDs in the LED-mPMT modules)
 #/mygen/generator mPMT-LED
-# Use PMTid (second value in geofile) to specify source mPMT
+# Use PMTid (from 1 to totalNum_mPMTs) to specify source mPMT
 # Use LEDid (from 0 to 11) to specify LED position, theta and phi directional change from nominal direction
 #/mPMTLED/PMTid 1
 #/mPMTLED/LEDid 0 0 0
@@ -522,5 +518,5 @@
 # -- The EventHeader has a run number that specifies the run (and corresponding options tree entry) for a given event
 # It is therefore your responsibility to confirm that the options you are changing work as expected in multi-run mode
 
-/run/beamOn 10
+/run/beamOn 10000
 #exit

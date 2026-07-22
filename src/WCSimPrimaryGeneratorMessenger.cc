@@ -135,8 +135,16 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   lightInjectorDetectorCmd->SetGuidance("[usage] /mygen/injectorDetector injectorDetector");
   lightInjectorDetectorCmd->SetGuidance(" injectorDetector : ID, OD");
   lightInjectorDetectorCmd->SetParameterName("injectorDetector",true);
-  lightInjectorDetectorCmd->SetCandidates("ID OD");
+  lightInjectorDetectorCmd->SetCandidates("ID OD OD_10 OD_13");
   lightInjectorDetectorCmd->SetDefaultValue("ID");
+
+  lightInjectorPulseWidthCmd = new G4UIcmdWithADouble("/mygen/injectorPulseWidth",this);
+  lightInjectorPulseWidthCmd->SetGuidance("Set the photon FWHM pulsewidth for the light injector in ns");
+  lightInjectorPulseWidthCmd->SetGuidance("[usage] /mygen/injectorPulseWidth injectorPulseWidth");
+  lightInjectorPulseWidthCmd->SetGuidance(" injectorPulseWidth: 10");
+  lightInjectorPulseWidthCmd->SetRange("injectorPulseWidth>0");
+  lightInjectorPulseWidthCmd->SetParameterName("injectorPulseWidth",true);
+  lightInjectorPulseWidthCmd->SetDefaultValue(10.);
 
   lightInjectorWavelengthCmd = new G4UIcmdWithADouble("/mygen/injectorWavelength",this);
   lightInjectorWavelengthCmd->SetGuidance("Set the photon wavelength for the light injector in nm");
@@ -167,6 +175,13 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   lightInjectorDetailsCmd->SetGuidance(" datafile: lightInjectorsDetails.json");
   lightInjectorDetailsCmd->SetParameterName("injectorDetails",true);
   lightInjectorDetailsCmd->SetDefaultValue("");
+  
+  lightInjectorProfileFormatCmd = new G4UIcmdWithAString("/mygen/injectorProfileFormat", this);
+  lightInjectorProfileFormatCmd->SetGuidance("Set the format of the injector profile");
+  lightInjectorProfileFormatCmd->SetGuidance("[usage] /mygen/injectorProfileFormat format");
+  lightInjectorProfileFormatCmd->SetGuidance(" format: thetaPhi xyAngle");
+  lightInjectorProfileFormatCmd->SetParameterName("injectorProfileFormat",true);
+  lightInjectorProfileFormatCmd->SetDefaultValue("");
 
   lightInjectorModeCmd = new G4UIcmdWithAnInteger("/mygen/photonMode", this);
   lightInjectorModeCmd->SetGuidance("Set whether or not to simulate photons from a list");
@@ -255,8 +270,10 @@ WCSimPrimaryGeneratorMessenger::~WCSimPrimaryGeneratorMessenger()
   delete lightInjectorNPhotonsCmd;
   delete lightInjectorFilenameCmd;
   delete lightInjectorDetailsCmd;
+  delete lightInjectorProfileFormatCmd;
   delete lightInjectorDetectorCmd;
   delete lightInjectorWavelengthCmd;
+  delete lightInjectorPulseWidthCmd;
   delete lightInjectorModeCmd;
   delete mPMTLEDIdCmd1;
   delete mPMTLEDIdCmd2;
@@ -374,7 +391,7 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetRadonEvtGenerator(false);
       myAction->SetmPMTledEvtGenerator(false);
     }
-    else if ( newValue == "lightinjector")   // L.Kneale: injector profile from db
+    else if ( newValue == "lightinjector")   // injector profile from db
     {
       myAction->SetMulineEvtGenerator(false);
       myAction->SetAmBeEvtGenerator(false);
@@ -671,9 +688,19 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
     myAction->SetLightInjectorDetails(newValue);
   }
 
+  if ( command==lightInjectorProfileFormatCmd )
+  {
+    myAction->SetLightInjectorProfileFormat(newValue);
+  }
+
   if ( command==lightInjectorDetectorCmd )
   {
     myAction->SetLightInjectorDetector(newValue);
+  }
+
+  if ( command==lightInjectorPulseWidthCmd )
+  {
+    myAction->SetLightInjectorPulseWidth(lightInjectorPulseWidthCmd->GetNewDoubleValue(newValue));
   }
   
   if ( command==lightInjectorWavelengthCmd )

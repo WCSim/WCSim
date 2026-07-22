@@ -6,6 +6,7 @@
 #include "G4VDigitizerModule.hh"
 #include "WCSimWCDigi.hh"
 #include "WCSimWCHit.hh"
+#include "WCSimWCPMT.hh"
 #include "WCSimRootOptions.hh"
 #include "globals.hh"
 #include "Randomize.hh"
@@ -38,6 +39,7 @@ public:
   void SetDarkWindow(int idarkwindow){DarkWindow = idarkwindow;}
   int GetDarkWindow(){return (int)(DarkWindow);}
   void SaveOptionsToOutput(WCSimRootOptions * wcopt, string tag);
+  WCSimWCDigi* make_dark_noise_hit(int noise_pmt, G4String detectorElement, int *PMTindex, std::vector<WCSimPmtInfo*> *pmts, double current_time, WCSimWCPMT* WCPMT );
   
 private:
   void ReInitialize() { ranges.clear(); result.clear();}
