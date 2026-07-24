@@ -15,10 +15,10 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   genCmd = new G4UIcmdWithAString("/mygen/generator",this);
   genCmd->SetGuidance("Select primary generator.");
 
-  genCmd->SetGuidance(" Available generators : muline, ambeevt, gun, laser, gps, ibd, hepmc3, datatable, cosmics, radioactive, rootracker, radon, injector, lightinjector, gamma-conversion, mPMT-LED");
+  genCmd->SetGuidance(" Available generators : muline, ambeevt, gun, laser, gps, ibd, hepmc3, datatable, cosmics, radioactive, rootracker, radon, injector, lightinjector, gamma-conversion, mPMT-LED, custom");
   genCmd->SetParameterName("generator",true);
   genCmd->SetDefaultValue("muline");
-  genCmd->SetCandidates("muline ambeevt gun laser gps ibd hepmc3 datatable cosmics radioactive rootracker radon injector lightinjector gamma-conversion mPMT-LED");
+  genCmd->SetCandidates("muline ambeevt gun laser gps ibd hepmc3 datatable cosmics radioactive rootracker radon injector lightinjector gamma-conversion mPMT-LED, custom");
 
   fileNameCmd = new G4UIcmdWithAString("/mygen/vecfile",this);
   fileNameCmd->SetGuidance("Select the file of vectors.");
@@ -567,6 +567,25 @@ void WCSimPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String 
       myAction->SetHepMC3EvtGenerator(false);
       myAction->SetRadonEvtGenerator(false);
       myAction->SetmPMTledEvtGenerator(true);
+    }
+    else if (newValue == "custom")
+    {
+      myAction->SetMulineEvtGenerator(false);
+      myAction->SetAmBeEvtGenerator(false);
+      myAction->SetGunEvtGenerator(false);
+      myAction->SetRootrackerEvtGenerator(false);
+      myAction->SetLaserEvtGenerator(false);
+      myAction->SetInjectorEvtGenerator(false);
+      myAction->SetLightInjectorEvtGenerator(false);
+      myAction->SetGPSEvtGenerator(false);
+      myAction->SetIBDEvtGenerator(false);
+      myAction->SetDataTableEvtGenerator(false);
+      myAction->SetCosmicsGenerator(false);
+      myAction->SetRadioactiveEvtGenerator(false);
+      myAction->SetHepMC3EvtGenerator(false);
+      myAction->SetRadonEvtGenerator(false);
+      myAction->SetmPMTledEvtGenerator(false);
+      myAction->SetCustomEvtGenerator(true);
     }
   }
 

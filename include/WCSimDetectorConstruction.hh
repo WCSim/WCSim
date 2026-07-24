@@ -103,6 +103,9 @@ public:
   void SetPlaceBGOGeometry(G4bool placeBGO) { placeBGOGeometry=placeBGO; } // Diego Costas, 26/02/2024
   G4bool IsBGOGeometrySet() const { return placeBGOGeometry; } // Diego Costas, 26/02/2024
   void SetPositionBGOGeometry(G4double X, G4double Y, G4double Z) { BGOX=X, BGOY=Y, BGOZ=Z; } // Diego Costas, 18/07/2024
+  void SetPlaceNiCfGeometry(G4bool placeNiCf) { placeNiCfGeometry=placeNiCf; }
+  G4bool IsNiCfGeometrySet() const { return placeNiCfGeometry; }
+  void SetPositionNiCfGeometry(G4double X, G4double Y, G4double Z) { NiCfX=X, NiCfY=Y, NiCfZ=Z; }
   
   /**
      Dump the values of many variables used to define geometries including
@@ -122,6 +125,7 @@ public:
   G4int GetLCType(){return LCType;};
   
   G4ThreeVector GetPositionBGOGeometry()   {return G4ThreeVector(BGOX, BGOY, BGOZ);}
+  G4ThreeVector GetPositionNiCfGeometry() {return G4ThreeVector(NiCfX, NiCfY, NiCfZ);}
   G4String GetDetectorName()      {return WCDetectorName;}
   G4double GetWaterTubeLength()   {return WCLength;}
   G4double GetWaterTubePosition() {return WCPosition;}
@@ -193,6 +197,9 @@ public:
   
   // BGO
   G4Material* BGO;
+
+  // NiCf Material
+  G4Material* Ni_Ball_mat;
 
   // Related to the WC tube IDs
   static G4int GetTubeID(std::string tubeTag){return tubeLocationMap[tubeTag];}
@@ -817,6 +824,12 @@ private:
 
   // BGO Position
   G4double BGOX, BGOY, BGOZ;
+
+  // NiCf Placement
+  G4bool placeNiCfGeometry;
+  // NiCf Parameters
+  G4double NiCfSourceRadius;
+  G4double NiCfX, NiCfY, NiCfZ;
 
   // Add bool to indicate whether we load nuPRISM geometry  
   G4bool isNuPrism;

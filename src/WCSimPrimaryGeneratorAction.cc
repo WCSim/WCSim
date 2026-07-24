@@ -9,6 +9,7 @@
 #endif
 
 #include "WCSimDetectorConstruction.hh"
+#include "WCSimDetectorMessenger.hh"
 #include "WCSimPrimaryGeneratorMessenger.hh"
 #include "G4RunManager.hh"
 #include "G4Event.hh"
@@ -125,6 +126,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(
   useRadonEvt         = false;
   useLightInjectorEvt = false;
   useMPMTledEvt       = false;
+  useCustomEvt        = false;
 
   //rootracker related variables
   fEvNum = 0;
@@ -280,6 +282,100 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4bool useNuanceTextFormat = true;
 
   // Do for every event
+    if(useCustomEvt)
+  {
+
+    // Ensure the vector file has been set.
+    if ( !inputFile.is_open() ) {
+      G4cout << "Set a vector file using the command /mygen/vecfile name"
+	     << G4endl;
+      exit(-1);
+    }
+
+    // Set up variables for reading an event from the custom event file.
+    const int lineSize = 200;
+  	char      inBuf[lineSize];
+  	vector<string> token(1);
+
+    // Read the initial line, which should be: EVENT (#)
+  	token = readInLine(inputFile, lineSize, inBuf);
+    if(token.size() == 0) {
+      G4cout << "End of custom event file" << G4endl;
+    }
+    else if(token[0] != "EVENT") {
+      G4cout << "Error reading custom event" << G4endl;
+    }
+    else {
+
+      int nparticles_in_event = 0;
+
+      // Read all particles until END is reached or too many particles are read.
+      bool evt_end = false;
+      const int MAX_PARTICLES = 1000000;
+      int nparticles = 0;
+      while(!evt_end && (nparticles < MAX_PARTICLES)) {
+
+        // Read the particle line.
+        token = readInLine(inputFile, lineSize, inBuf);
+
+        // If the line begins with END, this event is over.
+        if(token[0] == "END") {
+          evt_end = true;
+        }
+        else {
+
+          // Create a vertex for the specified particle assuming line format:
+          // PARTICLE x y z t p dx dy dz
+          G4int pdgid = atoi(token[1]);
+          WCSimDetectorConstruction* myDet = (WCSimDetectorConstruction*) G4RunManager::GetRunManager()->GetUserDetectorConstruction();
+          G4ThreeVector vtx = myDet->GetPositionNiCfGeometry();
+          G4double time = 0;
+          G4double momentum = atof(token[2]);
+	        G4String particleName;
+
+  		    G4ThreeVector dir = G4ThreeVector(atof(token[3]),
+  						      atof(token[4]),
+  						      atof(token[5]));
+
+  		    if(pdgid == 22){
+			      if(momentum < 100*eV){
+				      particleGun->SetParticleDefinition(particleTable->FindParticle(particleName="opticalphoton"));
+			      }
+			      else {
+				      particleGun->SetParticleDefinition(particleTable->FindParticle(particleName="gamma"));
+		    	  }
+		      }
+		      else {
+			      particleGun->SetParticleDefinition(particleTable->FindParticle(pdgid));
+		      }
+
+  		    G4double mass = particleGun->GetParticleDefinition()->GetPDGMass();
+
+          G4double energy = sqrt(momentum*momentum + mass*mass);
+  		    G4double ekin = energy - mass;
+
+  		    particleGun->SetParticleEnergy(ekin);
+  		    G4cout << "Particle: " << pdgid << " KE: " << ekin << G4endl;
+  		    particleGun->SetParticlePosition(vtx);
+          particleGun->SetParticleTime(time);
+  		    particleGun->SetParticleMomentumDirection(dir);
+  		    particleGun->GeneratePrimaryVertex(anEvent);
+
+          nparticles_in_event++;
+
+          // Count the particle.
+          nparticles++;
+          if(nparticles >= MAX_PARTICLES) {
+            G4cout << "Error: read too many particles..." << G4endl;
+          }
+        }
+      }
+      if(nparticles_in_event == 0) {
+        G4cout << "Skipping empty event" << G4endl;
+      }
+    }
+  }
+
   if (useMulineEvt) {
     if ( !inputFile.is_open() ) {
       G4cout << "Set a vector file using the command /mygen/vecfile name"

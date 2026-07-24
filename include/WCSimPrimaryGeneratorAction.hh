@@ -119,6 +119,7 @@ private:
   G4bool   useLightInjectorEvt; // L. Kneale injector with profile from db
   G4bool   useMPMTledEvt;
   G4bool   useHepMC3Evt;
+  G4bool   useCustomEvt;
   
   std::fstream inputFile;
   std::fstream inputCosmicsFile;
@@ -264,6 +265,9 @@ private:
 
   inline void SetGPSEvtGenerator(G4bool choice) { useGPSEvt = choice; }
   inline G4bool IsUsingGPSEvtGenerator()  { return useGPSEvt; }
+
+  inline void SetCustomEvtGenerator(G4bool choice) { useCustomEvt = choice; }
+  inline G4bool IsUsingCustomEvtGenerator()  { return useCustomEvt; }
 
   // K.M.Tsui: addition of injector events
   inline void SetInjectorEvtGenerator(G4bool choice) { useInjectorEvt = choice; }

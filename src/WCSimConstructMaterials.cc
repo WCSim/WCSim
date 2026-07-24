@@ -31,6 +31,50 @@ void WCSimDetectorConstruction::ConstructMaterials()
   //---BGO
   BGO = nist_man->FindOrBuildMaterial("G4_BGO");
 
+    //---Material for NiCf Source
+  nist_man->FindOrBuildMaterial("G4_AIR");
+
+  // --- Elements ---
+G4Element* C = nist_man->FindOrBuildElement("C");
+G4Element* O = nist_man->FindOrBuildElement("O");
+G4Element* N = nist_man->FindOrBuildElement("N");
+G4Element* Ni = nist_man->FindOrBuildElement("Ni");
+G4Element* H  = new G4Element("Hydrogen", "H", 1., 1.0079*g/mole);
+
+// --- Resins ---
+G4Material* AY103 = new G4Material("AY103", 1.1*g/cm3, 3);
+AY103->AddElement(C,21);
+AY103->AddElement(H,24);
+AY103->AddElement(O,4);
+
+G4Material* HY956 = new G4Material("HY956", 1.1*g/cm3, 3);
+HY956->AddElement(C,12);
+HY956->AddElement(H,22);
+HY956->AddElement(N,2);
+
+G4Material* Araldite = new G4Material("Araldite", 1.1*g/cm3, 2);
+Araldite->AddMaterial(AY103, 80*perCent);
+Araldite->AddMaterial(HY956, 20*perCent);
+
+// --- HDPE ---
+G4Material* HDPE = new G4Material("HDPE", 0.95*g/cm3, 2);
+HDPE->AddElement(C,2);
+HDPE->AddElement(H,4);
+
+// --- Ni compounds ---
+G4Material* NiO = new G4Material("NiO", 6.67*g/cm3, 2);
+NiO->AddElement(Ni,1);
+NiO->AddElement(O,1);
+
+G4Material* NiO_pellet = new G4Material("NiO_pellet", 4.67*g/cm3, 2);
+NiO_pellet->AddMaterial(NiO,  65*perCent);
+NiO_pellet->AddMaterial(HDPE, 35*perCent);
+
+// --- Final Ni ball material (member pointer!) ---
+Ni_Ball_mat = new G4Material("Ni_Ball_mat", 1.575*g/cm3, 2);
+Ni_Ball_mat->AddMaterial(NiO_pellet, 70.4*perCent);
+Ni_Ball_mat->AddMaterial(Araldite,   29.6*perCent);
+
   //---Vacuum
 
   density     = universe_mean_density;              //from PhysicalConstants.h

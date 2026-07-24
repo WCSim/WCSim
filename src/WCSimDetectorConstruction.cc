@@ -5,6 +5,7 @@
 #include "G4Element.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
+#include "G4Sphere.hh"
 #include "G4Material.hh"
 #include "G4MaterialTable.hh"
 #include "G4NistManager.hh"
@@ -79,6 +80,7 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
 						     WCSimTuningParameters* WCSimTuningPars):
   WCSimTuningParams(WCSimTuningPars),
   placeBGOGeometry(false),
+  placeNiCfGeometry(false),
   totalNum_mPMTs(0),
   totalNum_mPMTs2(0)
 {
@@ -114,6 +116,9 @@ WCSimDetectorConstruction::WCSimDetectorConstruction(G4int DetConfig,
   myConfiguration = DetConfig;
 
   BGOX = 0.; BGOY = 0.; BGOZ = 0.;
+
+  NiCfSourceRadius = 6.75*cm;
+  NiCfX = 5*cm; NiCfY = -100.*cm; NiCfZ = 70*cm;
 
   //-----------------------------------------------------
   // Create Materials
@@ -393,6 +398,22 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
         BGOpos.setZ(-BGOY);
       }
       new G4PVPlacement(0, BGOpos, logicBGO, "BGO", logicWCBox, false, 0, false);
+  }
+
+    //-----------------------------------------------------
+    // Create and place NiCf Source inside tank
+    if (IsNiCfGeometrySet()) {
+    G4cout << "Placing NiCf source in geometry at (" << NiCfX << " mm, " << NiCfY << " mm, " << NiCfZ << ") mm, Y being the vertical axis" << G4endl;
+    G4Sphere* solidNiCf = new G4Sphere("solidNiCf", 0., 6.75*cm, 0., 360.*deg, 0., 180.*deg);
+    G4cout << "NiCf source radius = " << NiCfSourceRadius << "mm" << G4endl;
+
+    G4LogicalVolume* logicNiCf = new G4LogicalVolume(solidNiCf, Ni_Ball_mat, "logicNiCf");
+    G4ThreeVector NiCfPos(NiCfX, NiCfY, NiCfZ);
+    if(isNuPrism){
+      NiCfPos.setY(NiCfZ);
+      NiCfPos.setZ(-NiCfY);
+    }
+    new G4PVPlacement(0, NiCfPos, logicNiCf, "NiCf", logicWCBox, false, 2, true);
   }
   
   //-----------------------------------------------------
