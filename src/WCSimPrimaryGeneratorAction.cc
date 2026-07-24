@@ -616,19 +616,14 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       G4ThreeVector dir;
       double kin_energy;
 
+        // Add interaction mode details
+        TObjString* code = fTmpRootrackerVtx->EvtCode;
+        mode[0] = code->String().Atoi();
+
         // Now simulate the outgoing particles
         for (int i = 0; i < fTmpRootrackerVtx->StdHepN; i++){
 
-            // Skip the initial neutrino, target nucleus and target nucleon
-	  int abspdg = abs(fTmpRootrackerVtx->StdHepPdgTemp[i]);
-	  if( i < 3){
-	    if(abspdg > 100000 || abspdg == 2112 || abspdg == 2212){
-	      continue;
-	    }
-	  }
-	  if(abspdg == 12 || abspdg == 14 || abspdg == 16) {
-	    continue;
-	  }
+            int pdg = fTmpRootrackerVtx->StdHepPdgTemp[i];
 
             xDir=fTmpRootrackerVtx->StdHepP4[i][0]*GeV;
             yDir=fTmpRootrackerVtx->StdHepP4[i][1]*GeV;
@@ -646,19 +641,42 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
             dir = dir*(1./momentum);
 
-            particleGun->SetParticleDefinition(particleTable->FindParticle(fTmpRootrackerVtx->StdHepPdgTemp[i]));
+            kin_energy = 0;
 
-            kin_energy = fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
+            // Tag the neutrino and target particles. These aren't simulated in the detector but we need their kinematic info
+            if(abs(pdg) == 12 || abs(pdg) == 14 || abs(pdg) == 16) {
+                kin_energy = fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV;
+                SetVtx(vtx);
+                SetBeamEnergy(kin_energy);
+                SetBeamDir(dir);
+                SetBeamPDG(pdg);
+            }
+            else if( i < 3){
+                // These are target nuclei / nucleons.  Nuclei have zero kinetic energy
+                if(abs(pdg) > 100000){
+                    kin_energy = 0;
+                }
+                // Now store target nucleon info
+                else if(abs(pdg) == 2112 || abs(pdg) == 2212){
+                    targetpdgs[0] = pdg;
+                    targetenergies[0] = fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV;
+                    targetdirs[0] = dir;
+                }
+            }
+            else{
+                particleGun->SetParticleDefinition(particleTable->FindParticle(pdg));
+                kin_energy = fabs(fTmpRootrackerVtx->StdHepP4[i][3])*GeV - particleGun->GetParticleDefinition()->GetPDGMass();
 
-            particleGun->SetParticleEnergy(kin_energy);
-            particleGun->SetParticlePosition(vtx);
-            particleGun->SetParticleMomentumDirection(dir);
-            // Will want to include some beam time structure at some point, but not needed at the moment since we only simulate 1 interaction per events
-            // particleGun->SetParticleTime(time);
-            particleGun->GeneratePrimaryVertex(anEvent);  //Place vertex in stack
-	    G4cout << "ROOTRACKER: created particle gun with KinEnergy/PDG/Position/Direction: "
-		   << kin_energy << "/" << fTmpRootrackerVtx->StdHepPdgTemp[i]
-		   << "/" << vtx << "/" << dir << " i = " << i << G4endl;
+                particleGun->SetParticleEnergy(kin_energy);
+                particleGun->SetParticlePosition(vtx);
+                particleGun->SetParticleMomentumDirection(dir);
+                // Will want to include some beam time structure at some point, but not needed at the moment since we only simulate 1 interaction per events
+                // particleGun->SetParticleTime(time);
+                particleGun->GeneratePrimaryVertex(anEvent);  //Place vertex in stack
+                G4cout << "ROOTRACKER: created particle gun with KinEnergy/PDG/Position/Direction: "
+                    << kin_energy << "/" << fTmpRootrackerVtx->StdHepPdgTemp[i]
+                    << "/" << vtx << "/" << dir << " i = " << i << G4endl;
+            }
         }//loop over RooTracker particles
     }//useRooTracker
 
