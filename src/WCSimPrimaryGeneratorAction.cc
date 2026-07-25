@@ -123,7 +123,7 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(WCSimDetectorConstructi
     useLightInjectorEvt = false;
     useMPMTledEvt       = false;
 
-    //rootracker related variables
+    // Rootracker related variables
     fEvNum = 0;
     fInputRootrackerFile = NULL;
     fNEntries = 1;
@@ -138,14 +138,14 @@ WCSimPrimaryGeneratorAction::WCSimPrimaryGeneratorAction(WCSimDetectorConstructi
     fRnSymmetry      = 1;
     fRnWaterConc     = 2.63; // mBq/m3 from SK
 
-    //injector related variables
+    // Injector related variables
     nPhotons = 1;
     injectorOnIdx = 0;
     twindow = 0.;
     openangle = 0.;
     wavelength = 435.;
 
-    //Light injector generator variables (LIGen)
+    // Light injector generator variables (LIGen)
     LIGen = 0;
     injectorType = "";
     injectorIdx = "";
