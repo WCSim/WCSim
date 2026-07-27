@@ -3,8 +3,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <WCSimRootEvent.hh>
-#include <G4SIunits.hh>
 #include <G4OpticalPhoton.hh>
+
+#include "G4Utils.hh"
+#if G4VERSION_IS_GREATER_EQUAL(11,2,0)
+#include <G4SystemOfUnits.hh>
+#else
+#include <G4SIunits.hh>
+#endif
 
 #include "G4Track.hh"
 #include "G4VProcess.hh"

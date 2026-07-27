@@ -6,6 +6,7 @@
 #include "TDirectory.h"
 #include "TProcessID.h"
 #include "TClonesArray.h"
+#include "TMath.h"
 
 #include "WCSimRootGeom.hh"
 #include "WCSimRootTools.hh"

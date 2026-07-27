@@ -14,9 +14,20 @@
 #include "GdNeutronHPCapture.hh"
 /////////#include "OtherHPCaptureFS.hh"
 //#include "G4NeutronHPCaptureFS2.hh"
-#include "G4NeutronHPDeExGammas.hh"
 #include "G4ParticleTable.hh"
 #include "G4IonTable.hh"
+
+#include "G4Utils.hh"
+#if G4VERSION_IS_GREATER_EQUAL(11,2,0)
+#include "G4ParticleHPDeExGammas.hh"
+#include "G4ParticleHPManager.hh"
+using G4NeutronHPDeExGammas = G4ParticleHPDeExGammas;
+using G4NeutronHPManager = G4ParticleHPManager;
+#else
+#include "G4NeutronHPDeExGammas.hh"
+#include "G4NeutronHPManager.hh"
+#endif
+
 
 #include "GdNeutronHPCaptureFS.hh"
 
