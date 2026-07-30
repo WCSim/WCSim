@@ -191,129 +191,26 @@ void WCSimLIGen::LoadPhotonList(){
 
 }
 
+
 void WCSimLIGen::LoadProfilePDF(){
 
   G4cout << "Reading the injector profile from file" << G4endl;
 
     // Creates histogram of light injector profile
     // number of bins depends on the profile
-    unsigned int nbins = thetaVals.size();
-    
-    int thetabins = (int)std::set<double>( thetaVals.begin(), thetaVals.end() ).size();
-    float phiMax = *std::max_element(phiVals.begin(), phiVals.end());
-    float phiMin = *std::min_element(phiVals.begin(), phiVals.end());
-    int phibins = (int)std::set<double>( phiVals.begin(), phiVals.end() ).size();
 
     if (hProfile != NULL) {
       delete hProfile;
       hProfile = nullptr;
     }
 
-    if (profileFormat=="thetaPhi"){
-        G4cout << "LIGen: [INFO] Using a theta-phi profile" << G4endl;
-        if (prof != NULL){
-          delete prof;
-          prof = nullptr;
-        }
-        
-        double cosTheta;
-        int pointIndex = 0;
-        
-        prof = new TGraph2D();
-        for (auto i=0u;i<nbins;i++){
-          cosTheta = cos((thetaVals[i]-90)*deg);
-          prof->SetPoint(pointIndex,cosTheta,phiVals[i],intensity[i]);
-          pointIndex++;
-        }
- 
-        std::map<std::pair<double, double>, double> intensity_map;
-        std::set<double> cosTheta_set;
-        std::set<double> phi_set;
- 
-        //Setup set of possible cosTheta, phi and intensity values
-        for (int i = 0; i < prof->GetN(); ++i) {
-            double xi = prof->GetX()[i];
-            double yi = prof->GetY()[i];
-            double zi = prof->GetZ()[i];
-            cosTheta_set.insert(xi);
-            phi_set.insert(yi);
-            intensity_map[{xi, yi}] = zi;
-        }
- 
-        cosTheta_vals.assign(cosTheta_set.begin(), cosTheta_set.end());
-        float cosThetaMin = *std::min_element(cosTheta_vals.begin(),cosTheta_vals.end());
-        float cosThetaMax = *std::max_element(cosTheta_vals.begin(),cosTheta_vals.end());
-        phi_vals.assign(phi_set.begin(), phi_set.end());
-        
-        intensity_grid.resize(phi_vals.size(), std::vector<double>(cosTheta_vals.size()));
-        intensityMax = 0;
-        double total_intensity = 0;
-        
-        //Create vector of 2D histogram
-        for (size_t i = 0; i < phi_vals.size(); ++i) {
-          for (size_t j = 0; j < cosTheta_vals.size(); ++j) {
-            auto key = std::make_pair(cosTheta_vals[j], phi_vals[i]);
-            auto it = intensity_map.find(key);
-            if (it != intensity_map.end()) {
-              intensity_grid[i][j] = it->second;
-              if (it->second > intensityMax)
-                intensityMax = it->second;
-            }
-            else {
-              intensity_grid[i][j] = 0.0;
-            }
-            total_intensity += intensity_grid[i][j];
-          }
-        }
-        double sum = 0;
-        double minIntensity = 100;
-        hProfile = new TH2D("hProfile","hProfile",thetabins,cosThetaMin,cosThetaMax,phibins,phiMin,phiMax);
-        //Precompute the interpolated PDF
-        MonotonicInterpolator PrecomputedSplines(cosTheta_vals, phi_vals, intensity_grid);
-        slopes_and_rows = PrecomputedSplines.GetSlopes2D();
-        
-        //Setup profile for visualisation, and determine minimum CosTheta value which was filled. 
-        MonotonicInterpolator Spline(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows);
-        for (int ix = 1; ix <= hProfile->GetNbinsX(); ++ix) {
-          for (int iy = 1; iy <= hProfile->GetNbinsY(); ++iy) {
-            double x = hProfile->GetXaxis()->GetBinCenter(ix);
-            double y = hProfile->GetYaxis()->GetBinCenter(iy);
-            double z = Spline.Evaluate2D(x, y);
-            sum += z;
-            hProfile->SetBinContent(ix, iy, sum/total_intensity);
-            if (z > 0 && z < minIntensity){
-              minIntensity = z;
-              minCosTheta =  hProfile->GetXaxis()->GetBinCenter(ix);
-            }
-          }
-        }
-    }
-    else if (profileFormat == "xyAngle"){
-        G4cout << "LIGen: [INFO] Using an x-y angular tilt profile" << G4endl;
-        // Convert the tilt in the x and y axes to distances
-	std::vector<double> xVals(thetaVals.size());
-	std::vector<double> yVals(phiVals.size());
-        std::transform(thetaVals.begin(), thetaVals.end(), xVals.begin(),
-                   [](double n) { return sin((n-90)*deg); });
-        std::transform(phiVals.begin(), phiVals.end(), yVals.begin(),
-                   [](double n) { return sin(n*deg); });
-        // Now fill the profile to be sampled
-	float xMin = *std::min_element(xVals.begin(),xVals.end());
-	float xMax = *std::max_element(xVals.begin(),xVals.end());
-	float yMin = *std::min_element(yVals.begin(),yVals.end());
-	float yMax = *std::max_element(yVals.begin(),yVals.end());
-        hProfile = new TH2D("hProfile","hProfile",thetabins,xMin,xMax,phibins,yMin,yMax);
-	for (size_t i = 0; i<xVals.size(); i++){
-            // Fill first, before weighting with intensity (for speed)
-            hProfile->Fill(xVals[i],yVals[i]);
-	    int bin = hProfile->FindBin(xVals[i],yVals[i]);
-	    hProfile->SetBinContent(bin,intensity[i]);
-        }
-    }
+    if(profileFormat=="thetaPhi" || profileFormat=="xyAngle")
+      SetupObjectsForSplines(profileFormat,thetaVals,phiVals);
+
     else{
         G4cerr << "LIGen: [ERROR] There is currently no method to handle this profile format" << G4endl;
         exit(-1);
-    }
+	}
     G4cout << "Profile filled." << G4endl;
 }
 
@@ -365,7 +262,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
         // Now generate the photon positions and directions
 	if (profileFormat == "thetaPhi"){
             G4cout << "LIGen: [INFO] Generating photons from profile measured in theta and phi" << G4endl;
-            MonotonicInterpolator spline(cosTheta_vals, phi_vals, intensity_grid, slopes_and_rows);
+            MonotonicInterpolator spline(xobj_vals, yobj_vals, intensity_grid, slopes_and_rows);
             for (int iphoton = 0; iphoton<nphotons; iphoton++){
  
                 // Generate random time for this photon assuming
@@ -377,8 +274,8 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                 TRandom3 rng(anEvent->GetEventID()*iphoton + iphoton);
                 //Determine photon costheta and phi needed for the photon direction from interpolated PDF
                 double costheta = 0, phi = 0;
-                SampleFromInterpolatedSurface(spline,minCosTheta, cosTheta_vals.back(), phi_vals.front(),phi_vals.back(), intensityMax, rng, costheta, phi);
-                // Calculate the direction of this photon wrt +z direction
+                SampleFromInterpolatedSurface(spline,xobjMin, xobj_vals.back(), yobj_vals.front(),yobj_vals.back(), intensityMax, rng, costheta, phi);
+		// Calculate the direction of this photon wrt +z direction
                 G4double sintheta = sqrt(1. - costheta*costheta);
                 G4double sinphi = sin(phi*deg);
                 G4double cosphi = cos(phi*deg);
@@ -403,6 +300,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                 myLIGun->SetParticleMomentumDirection(dir);
                 myLIGun->SetParticleEnergy(energy);
                 myLIGun->SetParticlePolarization(G4RandomDirection());
+
                 // Fill the event
                 if (anEvent){
                     myLIGun->GeneratePrimaryVertex(anEvent);
@@ -410,16 +308,22 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
             }
         }
 	else if (profileFormat == "xyAngle"){
-            G4cout << "LIGen: [INFO] Generating photons from profile measured in the x and y angular tilt" << G4endl;
+
+	  G4cout << "LIGen: [INFO] Generating photons from profile measured in the x and y angular tilt" << G4endl;
+            MonotonicInterpolator spline(xobj_vals, yobj_vals, intensity_grid, slopes_and_rows);
             for (int iphoton = 0; iphoton<nphotons; iphoton++){
                 // Generate random time for this photon assuming
                 // Gaussian pulse width with given FWHM pulse width in ns
                 // and 20 ns offset to avoid negative times
                 G4double time = G4RandGauss::shoot(20.0,pulseWidth/2.355)*ns;
-		G4double px;
-		G4double py;
-                hProfile->GetRandom2(px,py);
+		G4double px = 0;
+		G4double py = 0;
+                //hProfile->GetRandom2(px,py);
+		TRandom3 rng(anEvent->GetEventID()*iphoton + iphoton);
+		SampleFromInterpolatedSurface(spline,xobj_vals.front(), xobj_vals.back(), yobj_vals.front(),yobj_vals.back(), intensityMax, rng, px, py);
+		
                 G4double pz = sqrt(1-pow(px,2)-pow(py,2));
+		
                 // Rotate the photon direction wrt the injector axis using the
                 // angle and axis of rotation calculated earlier
                 G4ThreeVector dir = {px,py,pz};
@@ -432,11 +336,12 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                 // Set the gun with the photon parameters
                 myLIGun->SetNumberOfParticles(1);
                 myLIGun->SetParticleDefinition(G4OpticalPhoton::Definition());
-                myLIGun->SetParticleTime(time);		
+                myLIGun->SetParticleTime(time);
                 myLIGun->SetParticlePosition(vtx);
                 myLIGun->SetParticleMomentumDirection(dir);
                 myLIGun->SetParticleEnergy(energy);
                 myLIGun->SetParticlePolarization(G4RandomDirection());
+
                 // Fill the event
                 if (anEvent){
                     myLIGun->GeneratePrimaryVertex(anEvent);
@@ -451,6 +356,110 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
     }
 }
 
+void WCSimLIGen::SetupObjectsForSplines(G4String injectorProfileFormat, std::vector<double> xObj, std::vector<double> yObj){
+
+  if (prof != NULL){
+    delete prof;
+    prof = nullptr;
+  }
+
+  if (injectorProfileFormat == "thetaPhi"){
+    xVals = xObj;
+    yVals = yObj;
+  }
+  else if (injectorProfileFormat == "xyAngle"){
+    xVals.resize(xObj.size());
+    yVals.resize(yObj.size());
+    std::transform(xObj.begin(), xObj.end(), xVals.begin(),
+		   [](double n) { return sin((n-90)*deg); });
+    std::transform(phiVals.begin(), phiVals.end(), yVals.begin(),
+		   [](double n) { return sin(n*deg); });
+  }
+  
+  unsigned int nxbins = xVals.size();
+  float yobjMax = *std::max_element(yVals.begin(), yVals.end());
+  float yobjMin = *std::min_element(yVals.begin(), yVals.end());
+  int nybins = (int)std::set<double>( yVals.begin(), yVals.end() ).size();
+    
+  
+  int pointIndex = 0;
+  prof = new TGraph2D();
+  
+  for (auto i=0u;i<nxbins;i++){
+    double cosTheta = cos((xVals[i]-90)*deg);
+    double x = -999;
+    if (injectorProfileFormat == "thetaPhi")
+      x = cosTheta;
+    else if (injectorProfileFormat == "xyAngle")
+      x = xVals[i];
+    prof->SetPoint(pointIndex,x,yVals[i],intensity[i]);
+    pointIndex++;
+  }
+
+  std::map<std::pair<double, double>, double> intensity_map;
+  std::set<double> xobj_set;
+  std::set<double> yobj_set;
+ 
+  //Setup set of possible cosTheta, phi and intensity values
+  for (int i = 0; i < prof->GetN(); ++i) {
+    double xi = prof->GetX()[i];
+    double yi = prof->GetY()[i];
+    double zi = prof->GetZ()[i];
+    xobj_set.insert(xi);
+    yobj_set.insert(yi);
+    intensity_map[{xi, yi}] = zi;
+  }
+ 
+  xobj_vals.assign(xobj_set.begin(), xobj_set.end());
+  xobjMin = *std::min_element(xobj_vals.begin(),xobj_vals.end());
+  float xobjMax = *std::max_element(xobj_vals.begin(),xobj_vals.end());
+  yobj_vals.assign(yobj_set.begin(), yobj_set.end());
+        
+  intensity_grid.resize(yobj_vals.size(), std::vector<double>(xobj_vals.size()));
+  intensityMax = 0;
+  double total_intensity = 0;
+
+  //Create vector of 2D histogram
+  for (size_t i = 0; i < yobj_vals.size(); ++i) {
+    for (size_t j = 0; j < xobj_vals.size(); ++j) {
+      auto key = std::make_pair(xobj_vals[j], yobj_vals[i]);
+      auto it = intensity_map.find(key);
+      if (it != intensity_map.end()) {
+	intensity_grid[i][j] = it->second;
+	if (it->second > intensityMax)
+	  intensityMax = it->second;
+      }
+      else {
+	intensity_grid[i][j] = 0.0;
+      }
+      total_intensity += intensity_grid[i][j];
+    }
+  }
+  double sum = 0;
+  double minIntensity = 100;
+  hProfile = new TH2D("hProfile","hProfile",nxbins,xobjMin,xobjMax,nybins,yobjMin,yobjMax);
+  //Precompute the interpolated PDF
+  MonotonicInterpolator PrecomputedSplines(xobj_vals, yobj_vals, intensity_grid);
+  slopes_and_rows = PrecomputedSplines.GetSlopes2D();
+  //Setup profile for visualisation, and determine minimum CosTheta value which was filled. 
+  MonotonicInterpolator Spline(xobj_vals, yobj_vals, intensity_grid, slopes_and_rows);
+  for (int ix = 1; ix <= hProfile->GetNbinsX(); ++ix) {
+    for (int iy = 1; iy <= hProfile->GetNbinsY(); ++iy) {
+      double x = hProfile->GetXaxis()->GetBinCenter(ix);
+      double y = hProfile->GetYaxis()->GetBinCenter(iy);
+      double z = Spline.Evaluate2D(x, y);
+      sum += z;
+      if(injectorProfileFormat == "thetaPhi")
+	hProfile->SetBinContent(ix, iy, sum/total_intensity);
+      else if (injectorProfileFormat == "xyAngle")
+	hProfile->SetBinContent(ix, iy, z);
+      if (z > 0 && z < minIntensity){
+	minIntensity = z;
+	xobjMin =  hProfile->GetXaxis()->GetBinCenter(ix);
+      }
+    }
+  }
+}
 
 G4double WCSimLIGen::PhotonEnergyFromWavelength(G4double wavelength){
 
