@@ -1,5 +1,6 @@
 #include "WCSimPrimaryGeneratorAction.hh"
 
+
 #ifdef WCSIM_HEPMC3_ENABLED
 #include "HepMC3/FourVector.h"
 #include "HepMC3/GenParticle.h"
