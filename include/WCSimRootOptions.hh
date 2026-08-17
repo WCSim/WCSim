@@ -100,8 +100,8 @@ public:
   string GetDigitizerClassName() {return DigitizerClassName;}
   int    GetDigitizerDeadTime() {return DigitizerDeadTime;}
   int    GetDigitizerIntegrationWindow() {return DigitizerIntegrationWindow;}
-  int    GetDigitizerTimingPrecision() {return DigitizerTimingPrecision;}
-  int    GetDigitizerPEPrecision() {return DigitizerPEPrecision;}
+  float  GetDigitizerTimingPrecision() {return DigitizerTimingPrecision;}
+  float  GetDigitizerPEPrecision() {return DigitizerPEPrecision;}
   //WCSimWCTrigger* sets
   void SetTriggerClassName(string itriggerClassName) {TriggerClassName = itriggerClassName;};
   void SetMultiDigitsPerTrigger(bool imultiDigitsPerTrigger) {MultiDigitsPerTrigger = imultiDigitsPerTrigger;};
@@ -190,8 +190,8 @@ private:
   string DigitizerClassName; //!< The active digitiser
   int    DigitizerDeadTime; //!< The digitiser dead time (digitiser cannot integrate hits for this duration after a hit) (unit: ns)
   int    DigitizerIntegrationWindow; //!< The digitiser integration time (unit: ns)
-  int    DigitizerTimingPrecision; //!< The digitiser timing precision. Hit times are truncated to this level (unit: ns)
-  int    DigitizerPEPrecision; //!< The digitiser charge precision. Hit charges are truncated to this level (unit: same as digitised charge (p.e.?))
+  float  DigitizerTimingPrecision; //!< The digitiser timing precision. Hit times are truncated to this level (unit: ns)
+  float  DigitizerPEPrecision; //!< The digitiser charge precision. Hit charges are truncated to this level (unit: same as digitised charge (p.e.?))
 
   //WCSimWCTrigger*
   string TriggerClassName; //!< The active trigger
