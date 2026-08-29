@@ -304,6 +304,11 @@
 # For nRooTracker input, specify the region in which you wish to accept events: ID, OD_INNER, OD_OUTER
 #/mygen/region OD_OUTER
 
+## Or you can use a rootracker-formated generator file
+## (e.g. from NEUT)
+#/mygen/generator rootracker
+#/mygen/vecfile vector_neg_1e22_HK_Tochibora_LBL2019Mar_0099.root
+
 ## Or you can use the G4 Particle Gun
 ## for a full list of /gun/ commands see:
 ## https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_gun_.html
