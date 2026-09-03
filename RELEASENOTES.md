@@ -6,6 +6,16 @@ Recent updates
 *************************************************************
 
 *************************************************************
+03/09/2026: Notes for v1.12.36
+*************************************************************
+New release after #565 for HK MC production
+
+Note: v1.12.35 is a tag-only release, without the update to the release notes or WCSim version number
+
+Bug fix
+* Pull request #565 @mscott201: Fix passthrough of nRooTracker truth variables
+
+*************************************************************
 11/06/2026: Notes for v1.12.34
 *************************************************************
 New release after #564
