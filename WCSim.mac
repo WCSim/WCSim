@@ -19,9 +19,9 @@
 
 #some geometries can be tuned by config file options
 # it is important to do things in the correct order
-#/WCSim/WCGeom GEOM to set the defaults
+/WCSim/WCGeom GEOM to set the defaults
 #/WCSim/commands to modify the defaults
-#/WCSim/Construct
+/WCSim/Construct
 
 #Use the standard SK geometry
 # no extra commands required
@@ -70,8 +70,8 @@
 
 
 #Use the HK FD Realistic ID + OD geometry
-#/WCSim/WCgeom HyperK_HybridmPMT_WithOD_Realistic
-#/WCSim/Construct
+/WCSim/WCgeom HyperK_HybridmPMT_WithOD_Realistic
+/WCSim/Construct
 
 
 #Use the HK FD Realistic IDonly geometry
@@ -263,7 +263,7 @@
 #Uncomment one of the lines below if you want to use the OGLSX or RayTracer visualizer
 #/control/execute macros/visOGLSX.mac
 #/control/execute macros/visRayTracer.mac
-#/control/execute macros/visOGLQt.mac
+/control/execute macros/visOGLQt.mac
 
 ##################
 # GEOMETRY SCANNING TOOLS
@@ -522,5 +522,5 @@
 # -- The EventHeader has a run number that specifies the run (and corresponding options tree entry) for a given event
 # It is therefore your responsibility to confirm that the options you are changing work as expected in multi-run mode
 
-/run/beamOn 10
+/run/beamOn 100
 #exit

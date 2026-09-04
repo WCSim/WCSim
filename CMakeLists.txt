@@ -58,6 +58,7 @@ if (NOT ${WCSim_WCSimRoot_only}) # only looking for HepMC3 if WCSim_WCSimRoot_on
   endif (NOT HepMC3_FOUND)
   include_directories (${HEPMC3_INCLUDE_DIR})
   LIST(APPEND PUBLIC_EXT_LIBS ${HEPMC3_LIBRARIES})
+  add_definitions(-DWCSIM_HEPMC3_ENABLED)
 endif ()
 
 endif()
