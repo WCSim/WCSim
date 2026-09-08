@@ -582,7 +582,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    G4cout << "MIEFF: " << MIEFF << G4endl;
 
    //Values extracted from Skdetsim
-   /*
+   
    G4double MIE_water[NUMENTRIES_water] = {
      7790020*cm*MIEFF, 7403010*cm*MIEFF, 7030610*cm*MIEFF, 6672440*cm*MIEFF, 6328120*cm*MIEFF, 
      5997320*cm*MIEFF, 5679650*cm*MIEFF, 5374770*cm*MIEFF, 5082340*cm*MIEFF, 4802000*cm*MIEFF, 
@@ -597,7 +597,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
       141456*cm*MIEFF,  122931*cm*MIEFF,  106288*cm*MIEFF, 91395.2*cm*MIEFF,   78125*cm*MIEFF, 
      66355.2*cm*MIEFF, 55968.2*cm*MIEFF, 46851.2*cm*MIEFF, 38896.2*cm*MIEFF,   32000*cm*MIEFF
    };
-   */
+   
 
    //Mie scattering length values when assuming 10 times larger than Rayleigh scattering. 
    /*G4double MIE_water[NUMENTRIES_water] = {
@@ -616,7 +616,7 @@ void WCSimDetectorConstruction::ConstructMaterials()
    };
    */
 
-   //G4double MIE_water_const[3]={0.4,0.,1};// gforward, gbackward, forward backward ratio
+   G4double MIE_water_const[3]={0.4,0.,1};// gforward, gbackward, forward backward ratio
 
 
    //From SKDETSIM
@@ -1855,10 +1855,10 @@ void WCSimDetectorConstruction::ConstructMaterials()
    // M Fechner: new, don't let G4 compute it.
    if (RAYFF>0) myMPT1->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water,NUMENTRIES_water);
 
-  //  myMPT1->AddProperty("MIEHG",ENERGY_water,MIE_water,NUMENTRIES_water);
-//    myMPT1->AddConstProperty("MIEHG_FORWARD",MIE_water_const[0]);
-//    myMPT1->AddConstProperty("MIEHG_BACKWARD",MIE_water_const[1]);
-//    myMPT1->AddConstProperty("MIEHG_FORWARD_RATIO",MIE_water_const[2]);
+   myMPT1->AddProperty("MIEHG",ENERGY_water,MIE_water,NUMENTRIES_water);
+   myMPT1->AddConstProperty("MIEHG_FORWARD",MIE_water_const[0]);
+   myMPT1->AddConstProperty("MIEHG_BACKWARD",MIE_water_const[1]);
+   myMPT1->AddConstProperty("MIEHG_FORWARD_RATIO",MIE_water_const[2]);
 
 
    Water->SetMaterialPropertiesTable(myMPT1);
