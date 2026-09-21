@@ -39,7 +39,7 @@ class WCSimGenerator_Radioactivity
 		G4ThreeVector GetRandomVertex(G4int tSymNumber=1);
 
 		// Get the Mean Rn Activity in ID
-		G4double GetMeanActivity()		{ return fConcentrationID; }
+		G4double GetMeanActivity()		{ return fConcentrationID * GetIDVolume(); }
 
 		// Get the Mean Rn Activity in FV
 		G4double GetMeanActivityFV()		{ return fConcentrationFV; }
