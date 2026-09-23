@@ -924,7 +924,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     // Inprint Columns first then rings
     for (int i = 0; i < 5; i++){
       G4RotationMatrix* imprint_rot = new G4RotationMatrix();
-      G4ThreeVector imprint_pos = G4ThreeVector(0.0,0.0,-i*imprint_spacing + WCIDHeight/2-70*cm);
+      G4ThreeVector imprint_pos = \
+        G4ThreeVector(0.0, 0.0, -i*imprint_spacing + WCIDHeight/2 - RowSeperation/4);
+
       for (int j = 0; j < config.NBlocksPerRing; j++){
         block_assembly->MakeImprint(InnerDetectorLogic, imprint_pos, imprint_rot);
         odblock_assembly->MakeImprint(OuterDetectorLogic, imprint_pos, imprint_rot);
@@ -933,7 +935,9 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructRealisticPlacement()
     }
 
     G4RotationMatrix* imprint_rot_bottom = new G4RotationMatrix();
-    G4ThreeVector imprint_pos_bottom = G4ThreeVector(0.0,0.0,-5*imprint_spacing + WCIDHeight/2-70*cm);
+    G4ThreeVector imprint_pos_bottom = \
+      G4ThreeVector(0.0, 0.0, -5*imprint_spacing + WCIDHeight/2 - RowSeperation/4);
+      
     for (int j = 0; j < config.NBlocksPerRing; j++){
       block_bottom->MakeImprint(InnerDetectorLogic, imprint_pos_bottom, imprint_rot_bottom);
       odblock_bottom->MakeImprint(OuterDetectorLogic, imprint_pos_bottom, imprint_rot_bottom);
