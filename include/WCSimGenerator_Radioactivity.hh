@@ -42,10 +42,13 @@ class WCSimGenerator_Radioactivity
 		G4double GetMeanActivity()		{ return fConcentrationID * GetIDVolume(); }
 
 		// Get the Mean Rn Activity in FV
-		G4double GetMeanActivityFV()		{ return fConcentrationFV; }
+		G4double GetMeanActivityFV()		{ return fConcentrationFV * GetFVVolume(); }
 
 		// Get the ID Volume used by the model
 		G4double GetIDVolume()			{ return (fR_max*fR_max*TMath::Pi()*fZ_max*2.); }
+
+		// Get the FV Volume used by the model
+		G4double GetFVVolume()			{ return (TMath::Pi() * fR2_max_FV * (fZ_max_FV - fZ_min_FV)); }
 
 
 	private:
