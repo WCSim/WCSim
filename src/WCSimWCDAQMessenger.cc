@@ -3,6 +3,7 @@
 #include "WCSimWCDigitizer.hh"
 #include "WCSimWCTrigger.hh"
 
+#include "G4Utils.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIcommand.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
@@ -68,7 +69,7 @@ WCSimWCDAQMessenger::WCSimWCDAQMessenger(WCSimEventAction* eventaction) :
   RelativeHitTime->SetGuidance("Set the digitized hit time relative to the first one");
   RelativeHitTime->SetParameterName("RelativeHitTime",true);
   RelativeHitTime->SetDefaultValue(defaultRelativeHitTime);
-  SetNewValue(RelativeHitTime, defaultRelativeHitTime);
+  SetNewValue(RelativeHitTime, std::to_string(defaultRelativeHitTime));
 
   //Generic digitizer specific options
   DigitizerDir = new G4UIdirectory("/DAQ/DigitizerOpt/");

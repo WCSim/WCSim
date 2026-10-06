@@ -19,14 +19,26 @@
 #define GdNeutronHPCaptureFS_h 1
 
 #include "globals.hh"
+#include "G4Utils.hh"
 #include "G4HadProjectile.hh"
 #include "G4HadFinalState.hh"
-#include "G4NeutronHPFinalState.hh"
 #include "G4ReactionProductVector.hh"
-#include "G4NeutronHPNames.hh"
-#include "G4NeutronHPPhotonDist.hh"
 #include "G4Nucleus.hh"
 #include "G4Fragment.hh"
+
+#if G4VERSION_IS_GREATER_EQUAL(11, 2, 0)
+#include "G4ParticleHPFinalState.hh"
+#include "G4ParticleHPNames.hh"
+#include "G4ParticleHPPhotonDist.hh"
+
+using G4NeutronHPFinalState = G4ParticleHPFinalState;
+using G4NeutronHPNames = G4ParticleHPNames;
+using G4NeutronHPPhotonDist = G4ParticleHPPhotonDist;
+#else
+#include "G4NeutronHPFinalState.hh"
+#include "G4NeutronHPNames.hh"
+#include "G4NeutronHPPhotonDist.hh"
+#endif
 
 #include "GdCaptureGammas.hh"
 
@@ -43,6 +55,14 @@ class GdNeutronHPCaptureFS : public G4NeutronHPFinalState
   ~GdNeutronHPCaptureFS()
   {
   }
+
+#if G4VERSION_IS_GREATER_EQUAL(11, 2, 0)
+  void Init(G4double A, G4double Z, G4int M, const G4String& dirName, const G4String& aFSType,
+    G4ParticleDefinition* p) override {
+    this->SetA_Z(A, Z, M);
+    this->SetProjectile(p);
+  }
+#endif
   
   void   UpdateNucleus( const G4Fragment* , G4double );
   void Init (G4double A, G4double Z, G4int M, G4String & dirName, G4String & aFSType);
