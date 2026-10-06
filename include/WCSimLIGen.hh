@@ -38,6 +38,7 @@ public:
   G4double GetPhotonEnergy();
   // Set whether to read in profile or photon list
   void SetPhotonMode(G4bool photonMode);
+  void SetupObjectsForSplines(G4String injectorProfileFormat, std::vector<double> xObj, std::vector<double> yObj);
   
 private:
   TH2D *hProfile = nullptr;
@@ -54,11 +55,19 @@ private:
   vector<double> intensity;
   std::vector<std::vector<double>> slopes_and_rows;
   
-  std::vector<double> cosTheta_vals;
-  std::vector<double> phi_vals;
+  std::vector<double> xobj_vals;
+  std::vector<double> yobj_vals;
   std::vector<std::vector<double>> intensity_grid;
   double intensityMax;
-  double minCosTheta;
+  float xobjMin;
+
+  std::vector<double> xVals;
+  std::vector<double> yVals;
+  
+  std::vector<double> x_vals;
+  std::vector<double> y_vals;
+
+  double minX;
   
   G4double photonWavelength;
   G4double pulseWidth;
