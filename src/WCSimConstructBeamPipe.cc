@@ -110,7 +110,6 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructBeamPipe()
   //////////////////////////////////////////////////
   
   // -- Materials --
-  G4NistManager* nist = G4NistManager::Instance();
   G4Material* scintMaterial = G4Material::GetMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); // EJ-228 equivalent
   G4Material* vinylMaterial = G4Material::GetMaterial("G4_POLYVINYL_CHLORIDE"); // PVC
   G4Material* mylarMaterial = G4Material::GetMaterial("G4_MYLAR");
@@ -147,10 +146,10 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructBeamPipe()
   visMylar->SetVisibility(true); visMylar->SetForceSolid(true);
 
   // -- Positioning Logic --
-  // Starts in Z at: 5 mm from the start of the pipe
+  // Ends in Z at 5 mm from the beam window
   // The start of the beam pipe volume is at z=0 in this Polycone construction.
-  G4double z_assembly_start = 5.0 * mm;
-  G4double z_assembly_center = z_assembly_start + (totalAssemblyThickness / 2.0);
+  G4double z_assembly_end = pmt_blacksheet_offset + window_blacksheet_distance - 5.0 * mm;
+  G4double z_assembly_center = z_assembly_end - (totalAssemblyThickness / 2.0);
 
   // Calculate Start Y to center the stack vertically
   G4double totalStackHeight = nBars * barHeight; 
