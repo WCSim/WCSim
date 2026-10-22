@@ -6,6 +6,43 @@ Recent updates
 *************************************************************
 
 *************************************************************
+03/09/2026: Notes for v1.12.36
+*************************************************************
+New release after #565 for HK MC production
+
+Note: v1.12.35 is a tag-only release, without the update to the release notes or WCSim version number
+
+Bug fix
+* Pull request #565 @mscott201: Fix passthrough of nRooTracker truth variables
+
+*************************************************************
+11/06/2026: Notes for v1.12.34
+*************************************************************
+New release after #564
+
+Bug fix
+* Pull request #564 @tdealtry: Use consistent units for PMT radii in output files
+
+*************************************************************
+09/06/2026: Notes for v1.12.33
+*************************************************************
+New release after #563
+
+Update
+* Pull request #563 @federiconova: Update default tyvek reflectivity values for HKFD
+
+*************************************************************
+03/06/2026: Notes for v1.12.32
+*************************************************************
+New release after #558
+
+Update
+* Pull request #558 @federiconova: Allow for separate tyvek refelectivities on the inner & outer OD walls
+
+New feature
+* Pull request #557 @federiconova: Ability to give a different dark rate to individual PMTs
+
+*************************************************************
 12/05/2026: Notes for v1.12.31
 *************************************************************
 New release after #559

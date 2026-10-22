@@ -615,6 +615,11 @@ WCSimDetectorMessenger::WCSimDetectorMessenger(WCSimDetectorConstruction* WCSimD
   SetODPMTPositionInput->SetGuidance("Set filename for OD PMT position file");
   SetODPMTPositionInput->SetParameterName("ODPMTPositionInput", true);
 
+  // Set the input file to read PMT dark rates
+  SetPMTDarkRateInput = new G4UIcmdWithAString("/WCSim/PMT/DarkRateFile",this);
+  SetPMTDarkRateInput->SetGuidance("Set filename for PMT dark rates file");
+  SetPMTDarkRateInput->SetParameterName("PMTDarkRateInput", true);
+
   // Set CDS file input
   SetCDSFile = new G4UIcmdWithAString("/WCSim/Geometry/SetCDSFile",this);
   SetCDSFile->SetGuidance("Set filename for CDS model file");
@@ -682,6 +687,7 @@ WCSimDetectorMessenger::~WCSimDetectorMessenger()
   delete TankRadiusChange;
   delete SetPMTPositionInput;
   delete SetODPMTPositionInput;
+  delete SetPMTDarkRateInput;
   delete SetCDSFile;
 
   delete BGOPlacement;
@@ -1189,6 +1195,10 @@ void WCSimDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
 	if(command == SetODPMTPositionInput){
 	  WCSimDetector->SetODPMTPositionInput(newValue);
+	}
+
+	if(command == SetPMTDarkRateInput){
+	  WCSimDetector->SetPMTDarkRateInput(newValue);
 	}
 
         if(command == SetCDSFile){

@@ -73,6 +73,7 @@ jobs:
         with:
           ref: ${{ steps.checkout_sha.outputs.value }}
           repository: ${{ steps.checkout_repo.outputs.value }}
+          allow-unsafe-pr-checkout: true
           
       - name: Link WCSim directory
         run: |
@@ -173,6 +174,7 @@ jobs:
         with:
           ref: ${{ steps.checkout_sha.outputs.value }}
           repository: ${{ steps.checkout_repo.outputs.value }}
+          allow-unsafe-pr-checkout: true
 
       - name: Link WCSim directory
         run: |
@@ -265,6 +267,7 @@ jobs:
         with:
           ref: ${{ steps.checkout_sha.outputs.value }}
           repository: ${{ steps.checkout_repo.outputs.value }}
+          allow-unsafe-pr-checkout: true
 
       - name: Link WCSim directory
         run: |

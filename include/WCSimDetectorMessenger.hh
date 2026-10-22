@@ -93,6 +93,7 @@ class WCSimDetectorMessenger: public G4UImessenger
   G4UIcmdWith3VectorAndUnit* TankRadiusChange;
   G4UIcmdWithAString* SetPMTPositionInput;
   G4UIcmdWithAString* SetODPMTPositionInput;
+  G4UIcmdWithAString* SetPMTDarkRateInput;
   // OD Geometry
   G4UIcmdWithADoubleAndUnit* ODLateralWaterDepth;
   G4UIcmdWithADoubleAndUnit* ODHeightWaterDepth;
