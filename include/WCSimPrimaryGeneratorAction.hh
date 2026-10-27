@@ -179,7 +179,7 @@ private:
   G4String injectorDetector;
   G4double injectorWavelength;
   G4double injectorPulseWidth;
-  G4double injectornPhotonWidth;
+  G4double injectorNPhotonWidth;
   G4bool photonMode;
 
   //
@@ -304,8 +304,8 @@ private:
   inline void SetLightInjectorPulseWidth(G4double choice)     { injectorPulseWidth = choice; }
   inline void SetLightInjectorWavelength(G4double choice)     { injectorWavelength = choice; }
   inline void SetLightInjectorMode(G4bool choice)             { photonMode = choice; }
-  inline void SetLightInjectornPhotonWidth(G4double choice)
-  { injectornPhotonWidth = choice; }
+  inline void SetLightInjectorNPhotonWidth(G4double choice)
+  { injectorNPhotonWidth = choice; }
 
   inline void SetDataTableEvtGenerator(G4bool choice) {
     useDataTableEvt = choice;
