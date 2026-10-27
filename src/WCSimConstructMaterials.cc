@@ -57,42 +57,6 @@ void WCSimDetectorConstruction::ConstructMaterials()
   Water->AddElement(elH, 2);
   Water->AddElement(elO, 1);
 
-  G4Material* WaterLayer1 
-    = new G4Material("WaterLayer1",density,2);
-  WaterLayer1->AddElement(elH, 2);
-  WaterLayer1->AddElement(elO, 1);
-
-  G4Material* WaterLayer2 
-    = new G4Material("WaterLayer2",density,2);
-  WaterLayer2->AddElement(elH, 2);
-  WaterLayer2->AddElement(elO, 1);
-  
-  G4Material* WaterLayer3 
-    = new G4Material("WaterLayer3",density,2);
-  WaterLayer3->AddElement(elH, 2);
-  WaterLayer3->AddElement(elO, 1);
-
-    G4Material* WaterLayer4 
-    = new G4Material("WaterLayer4",density,2);
-  WaterLayer4->AddElement(elH, 2);
-  WaterLayer4->AddElement(elO, 1);
-
-    G4Material* WaterLayer5 
-    = new G4Material("WaterLayer5",density,2);
-  WaterLayer5->AddElement(elH, 2);
-  WaterLayer5->AddElement(elO, 1);
-
-    G4Material* WaterLayer6 
-    = new G4Material("WaterLayer6",density,2);
-  WaterLayer6->AddElement(elH, 2);
-  WaterLayer6->AddElement(elO, 1);
-
-    G4Material* WaterLayer7 
-    = new G4Material("WaterLayer7",density,2);
-  WaterLayer7->AddElement(elH, 2);
-  WaterLayer7->AddElement(elO, 1);
-
-  
  //---Ice 
  
  density = 0.92*g/cm3;//Ice
@@ -1898,89 +1862,11 @@ void WCSimDetectorConstruction::ConstructMaterials()
 
 
    Water->SetMaterialPropertiesTable(myMPT1);
-
-   G4MaterialPropertiesTable *myMPT1Layer1 = new G4MaterialPropertiesTable();
-   G4double ABSORPTION_water_layer1[NUMENTRIES_water];
-   G4double RAYLEIGH_water_layer1[NUMENTRIES_water];
-   G4double ABSORPTION_water_layer2[NUMENTRIES_water];
-   G4double RAYLEIGH_water_layer2[NUMENTRIES_water];
-   G4double ABSORPTION_water_layer3[NUMENTRIES_water];
-   G4double RAYLEIGH_water_layer3[NUMENTRIES_water];
-   G4double ABSORPTION_water_layer4[NUMENTRIES_water];
-   G4double RAYLEIGH_water_layer4[NUMENTRIES_water];
-   G4double ABSORPTION_water_layer5[NUMENTRIES_water];
-   G4double RAYLEIGH_water_layer5[NUMENTRIES_water];
-   G4double ABSORPTION_water_layer6[NUMENTRIES_water];
-   G4double RAYLEIGH_water_layer6[NUMENTRIES_water];
-   G4double ABSORPTION_water_layer7[NUMENTRIES_water];
-   G4double RAYLEIGH_water_layer7[NUMENTRIES_water];
-   
-   for (int i=0;i<NUMENTRIES_water;i++){
-     RAYLEIGH_water_layer1[i] = RAYLEIGH_water[i] * 0.7;
-     ABSORPTION_water_layer1[i] = ABSORPTION_water[i] * 0.7;
-     RAYLEIGH_water_layer2[i] = RAYLEIGH_water[i] * 0.1;
-     ABSORPTION_water_layer2[i] = ABSORPTION_water[i] * 0.1;
-     RAYLEIGH_water_layer3[i] = RAYLEIGH_water[i] * 0.9;
-     ABSORPTION_water_layer3[i] = ABSORPTION_water[i] * 0.9;
-     RAYLEIGH_water_layer4[i] = RAYLEIGH_water[i] * 1.0;
-     ABSORPTION_water_layer4[i] = ABSORPTION_water[i] * 1.0;
-     RAYLEIGH_water_layer5[i] = RAYLEIGH_water[i] * 1.1;
-     ABSORPTION_water_layer5[i] = ABSORPTION_water[i] * 1.1;
-     RAYLEIGH_water_layer6[i] = RAYLEIGH_water[i] * 1.2;
-     ABSORPTION_water_layer6[i] = ABSORPTION_water[i] * 1.2;
-     RAYLEIGH_water_layer7[i] = RAYLEIGH_water[i] * 1.3;
-     ABSORPTION_water_layer7[i] = ABSORPTION_water[i] * 1.3;
-
-   }
-   // M Fechner : new   ; wider range for lambda
-   myMPT1Layer1->AddProperty("RINDEX", ENERGY_water, RINDEX1, NUMENTRIES_water);
-   myMPT1Layer1->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water_layer1, NUMENTRIES_water);
-   // M Fechner: new, don't let G4 compute it.
-   myMPT1Layer1->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water_layer1,NUMENTRIES_water);
-
-   G4MaterialPropertiesTable *myMPT1Layer2 = new G4MaterialPropertiesTable();
-   myMPT1Layer2->AddProperty("RINDEX", ENERGY_water, RINDEX1, NUMENTRIES_water);
-   myMPT1Layer2->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water_layer2, NUMENTRIES_water);
-   myMPT1Layer2->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water_layer2,NUMENTRIES_water);
-
-      G4MaterialPropertiesTable *myMPT1Layer3 = new G4MaterialPropertiesTable();
-   myMPT1Layer3->AddProperty("RINDEX", ENERGY_water, RINDEX1, NUMENTRIES_water);
-   myMPT1Layer3->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water_layer3, NUMENTRIES_water);
-   myMPT1Layer3->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water_layer3,NUMENTRIES_water);
-
-      G4MaterialPropertiesTable *myMPT1Layer4 = new G4MaterialPropertiesTable();
-   myMPT1Layer4->AddProperty("RINDEX", ENERGY_water, RINDEX1, NUMENTRIES_water);
-   myMPT1Layer4->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water_layer4, NUMENTRIES_water);
-   myMPT1Layer4->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water_layer4,NUMENTRIES_water);
-
-      G4MaterialPropertiesTable *myMPT1Layer5 = new G4MaterialPropertiesTable();
-   myMPT1Layer5->AddProperty("RINDEX", ENERGY_water, RINDEX1, NUMENTRIES_water);
-   myMPT1Layer5->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water_layer5, NUMENTRIES_water);
-   myMPT1Layer5->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water_layer5,NUMENTRIES_water);
-
-      G4MaterialPropertiesTable *myMPT1Layer6 = new G4MaterialPropertiesTable();
-   myMPT1Layer6->AddProperty("RINDEX", ENERGY_water, RINDEX1, NUMENTRIES_water);
-   myMPT1Layer6->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water_layer6, NUMENTRIES_water);
-   myMPT1Layer6->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water_layer6,NUMENTRIES_water);
-
-      G4MaterialPropertiesTable *myMPT1Layer7 = new G4MaterialPropertiesTable();
-   myMPT1Layer7->AddProperty("RINDEX", ENERGY_water, RINDEX1, NUMENTRIES_water);
-   myMPT1Layer7->AddProperty("ABSLENGTH",ENERGY_water, ABSORPTION_water_layer7, NUMENTRIES_water);
-   myMPT1Layer7->AddProperty("RAYLEIGH",ENERGY_water,RAYLEIGH_water_layer7,NUMENTRIES_water);
-
-   
-   WaterLayer1->SetMaterialPropertiesTable(myMPT1Layer1);
-   WaterLayer2->SetMaterialPropertiesTable(myMPT1Layer2);
-   WaterLayer3->SetMaterialPropertiesTable(myMPT1Layer3);
-   WaterLayer4->SetMaterialPropertiesTable(myMPT1Layer4);
-   WaterLayer5->SetMaterialPropertiesTable(myMPT1Layer5);
-   WaterLayer6->SetMaterialPropertiesTable(myMPT1Layer6);
-   WaterLayer7->SetMaterialPropertiesTable(myMPT1Layer7);
-
    // myMPT1->DumpTable();
    
    G4MaterialPropertiesTable *myMPT2 = new G4MaterialPropertiesTable();
    myMPT2->AddProperty("RINDEX", ENERGY_water, RINDEX_air, NUMENTRIES_water);
+   // M Fechner : what is that ?????
    myMPT2->AddProperty("ABSLENGTH", ENERGY_water, BLACKABS_blacksheet, NUMENTRIES_water);
    myMPT2->AddProperty("RAYLEIGH",ENERGY_water, RAYLEIGH_air, NUMENTRIES_water);
 
