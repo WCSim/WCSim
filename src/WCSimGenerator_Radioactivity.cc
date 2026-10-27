@@ -143,8 +143,8 @@ void WCSimGenerator_Radioactivity::Configuration(G4int iScenario, G4double dConc
 		G4cout << " PMT number: " << myDetector->Get_Pmts()->size() << G4endl;
 		G4cout << " Detector radius: " << fR_max << " ; Detector height: " << fZ_max * 2. << G4endl;
 		G4cout << " Surface: " << (2. * TMath::Pi() * fR2_max + 2. * TMath::Pi() * fR_max * (fZ_max - fZ_min) ) << G4endl;
-		G4cout << " Mean activity in the full ID:   "         << fIntegral   << " mBq  ( Concentration: " << fConcentrationID << " mBq / m^3 ) " <<  G4endl;
-		G4cout << " Mean activity in the fiducial volume:   " << fIntegralFV << " mBq  ( Concentration: " << fConcentrationFV << " mBq / m^3 ) " <<  G4endl;
+		G4cout << " Mean activity in the full ID:   "         << GetMeanActivity() << " mBq  ( Concentration: " << fConcentrationID << " mBq / m^3 ) " <<  G4endl;
+		G4cout << " Mean activity in the fiducial volume:   " << GetMeanActivityFV() << " mBq  ( Concentration: " << fConcentrationFV << " mBq / m^3 ) " <<  G4endl;
 	}
 	G4cout << " ========================================================================== " << G4endl;
 }
