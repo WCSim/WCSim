@@ -913,6 +913,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       LIGen->GeneratePhotons(anEvent,nPhotons_gauss_fluct);
       // save injector properties
       G4cout << " Saving injector properties: " << vtx << ", " << E << ", " << dir << ", " << pdg << G4endl;
+      G4cout << "N Photons generated "<<nphotons << G4endl;
+      
       SetVtx(vtx);
       SetBeamDir(dir);
       SetBeamEnergy(energy);
@@ -924,7 +926,7 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	int injectorIndex = std::stoi(injectorIdx);
 	LITree->Branch("injectorIndex",&injectorIndex,"injectorIndex/I");
 	LITree->Branch("injectorPulseWidth",&injectorPulseWidth,"injectorPulseWidth/D");
-
+	LITree->Branch("injectorNPhotons",&nphotons,"injectorNPhotons/I");
 	LITree->Fill();
 	LITree->Write();
       }	
