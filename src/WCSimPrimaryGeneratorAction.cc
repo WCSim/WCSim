@@ -893,29 +893,42 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     else if (useLightInjectorEvt)
     {
 
-        // Initialise the light injector once per sim.
-        // This will get LI settings (position, direction, etc) from the db
-        // and produce a 3D histogram of the LI profile.
-        if ( !LIGen ) {
-            LIGen = new WCSimLIGen();
-            LIGen->SetPhotonMode(photonMode);
-            LIGen->ReadFromDatabase(injectorType,injectorIdx,injectorFilename,injectorDetails,injectorProfileFormat,injectorDetector,injectorWavelength,injectorPulseWidth);
-        }
-        // Generate the required number of photons with
-        // directions distributed as per the LI profile
-        // and populate the G4Event
+      // Initialise the light injector once per sim. 
+      // This will get LI settings (position, direction, etc) from the db
+      // and produce a 3D histogram of the LI profile.
+      if ( !LIGen ) {
+	LIGen = new WCSimLIGen();
+	LIGen->SetPhotonMode(photonMode);
+	LIGen->ReadFromDatabase(injectorType,injectorIdx,injectorFilename,injectorDetails,injectorProfileFormat,injectorDetector,injectorWavelength,injectorPulseWidth);
+      }
+      // Generate the required number of photons with
+      // directions distributed as per the LI profile        
+      // and populate the G4Event
 
-        G4ThreeVector vtx = LIGen->GetInjectorPosition();
-        G4ThreeVector dir = LIGen->GetInjectorDirection();
-        G4int pdg = 0;
-        G4double E = LIGen->GetPhotonEnergy();
-        LIGen->GeneratePhotons(anEvent,nphotons);
-        // save injector properties
-        G4cout << " Saving injector properties: " << vtx << ", " << E << ", " << dir << ", " << pdg << G4endl;
-        SetVtx(vtx);
-        SetBeamDir(dir);
-        SetBeamEnergy(energy);
-        SetBeamPDG(pdg);
+      G4ThreeVector vtx = LIGen->GetInjectorPosition();
+      G4ThreeVector dir = LIGen->GetInjectorDirection();
+      G4int pdg = 0;
+      G4double E = LIGen->GetPhotonEnergy();
+      G4int nPhotons_gauss_fluct = std::max(0, static_cast<int>(std::lround(gRandom->Gaus(nphotons, injectorNPhotonWidth))));
+      LIGen->GeneratePhotons(anEvent,nPhotons_gauss_fluct);
+      // save injector properties
+      G4cout << " Saving injector properties: " << vtx << ", " << E << ", " << dir << ", " << pdg << G4endl;
+      
+      SetVtx(vtx);
+      SetBeamDir(dir);
+      SetBeamEnergy(energy);
+      SetBeamPDG(pdg);
+      
+      if(anEvent->GetEventID() == 0){
+	TTree *LITree = new TTree("wcsimLITree","LI WCSim Tree");
+	LITree->Branch("photonWavelength",&injectorWavelength,"photonwavelength/D");
+	int injectorIndex = std::stoi(injectorIdx);
+	LITree->Branch("injectorIndex",&injectorIndex,"injectorIndex/I");
+	LITree->Branch("injectorPulseWidth",&injectorPulseWidth,"injectorPulseWidth/D");
+	LITree->Branch("injectorNPhotons",&nphotons,"injectorNPhotons/I");
+	LITree->Fill();
+	LITree->Write();
+      }	
     }
 
 
