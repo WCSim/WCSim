@@ -17,16 +17,21 @@
 #define GdNeutronHPCapture_h 1
 
 #include "globals.hh"
-#include "G4NeutronHPChannel.hh"
+#include "G4Utils.hh"
 #include "G4HadronicInteraction.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4NeutronHPCaptureFS.hh"
-#include "G4NeutronHPDeExGammas.hh"
 #include "G4ParticleTable.hh"
 #include "G4IonTable.hh"
-#include "G4NeutronHPManager.hh"
 #include "GdNeutronHPCaptureFS.hh"
+
+#if G4VERSION_IS_GREATER_EQUAL(11, 2, 0)
+#include "G4ParticleHPChannel.hh"
+using G4NeutronHPChannel = G4ParticleHPChannel;
+#else
+#include "G4NeutronHPChannel.hh"
+#endif
 
 class GdNeutronHPCapture : public G4HadronicInteraction
 {

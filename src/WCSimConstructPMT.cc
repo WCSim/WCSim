@@ -1,5 +1,6 @@
 #include "WCSimDetectorConstruction.hh"
 
+#include "G4Utils.hh"
 #include "G4Box.hh"
 #include "G4Sphere.hh"
 #include "G4Tubs.hh"
@@ -204,7 +205,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
       // Makes the volume containg the PMT invisible for normal visualization
       G4VisAttributes* WCPMTVisAttGrey = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
       WCPMTVisAttGrey->SetForceSolid(true);
-      logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+      logicWCPMT->SetVisAttributes(G4Utils::GetInvisible());
       logicWCPMT->SetVisAttributes(WCPMTVisAttGrey);                   //TF debug overlaps with this volume
     }
   }
@@ -263,7 +264,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     logicInteriorWCPMT->SetVisAttributes(WCPMTVisAtt);
   } else {
     // Making the inner portion of the detector invisible for OGLSX visualization
-    logicInteriorWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    logicInteriorWCPMT->SetVisAttributes(G4Utils::GetInvisible());
   }
 
   /////////////////////////////
@@ -306,7 +307,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
       // used in OGLSX visualizer
       G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
       WCPMTVisAtt->SetForceWireframe(true);
-      //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+      //logicGlassFaceWCPMT->SetVisAttributes(G4Utils::GetInvisible());
       logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
 
   if (Vis_Choice == "RayTracer"){
@@ -315,7 +316,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
     WCPMTVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
     WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
-    //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    //logicGlassFaceWCPMT->SetVisAttributes(G4Utils::GetInvisible());
 
     logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
   } else {
@@ -326,7 +327,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     //WCPMTVisAtt->SetForceWireframe(true);
     G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0)); //better for seeing geometry
     WCPMTVisAtt->SetForceSolid(true);
-    //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    //logicGlassFaceWCPMT->SetVisAttributes(G4Utils::GetInvisible());
     logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
 
   }
@@ -601,7 +602,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
   else{
     // Makes the volume containg the PMT invisible for normal visualization
-    logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);}
+    logicWCPMT->SetVisAttributes(G4Utils::GetInvisible());}
 
 
   //Create PMT Interior
@@ -644,7 +645,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
 
   else {
     // Making the inner portion of the detector invisible for OGLSX visualization
-    logicInteriorWCPMT->SetVisAttributes(G4VisAttributes::Invisible);}
+    logicInteriorWCPMT->SetVisAttributes(G4Utils::GetInvisible());}
 
 
   //Create PMT Glass Face
@@ -703,13 +704,13 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     if(detectorElement == "OD") WCPMTVisAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
     else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
     WCPMTVisAtt->SetForceWireframe(true);
-    //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    //logicGlassFaceWCPMT->SetVisAttributes(G4Utils::GetInvisible());
     logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
     G4VisAttributes* WCLCVisAtt = new G4VisAttributes(G4Colour(.3,.3,0.));
     WCLCVisAtt->SetForceWireframe(true);
     WCLCVisAtt->SetForceAuxEdgeVisible(true);
     //WCLCVisAtt->SetForceSolid(true);
-    //logicLightCone->SetVisAttributes(G4VisAttributes::Invisible);
+    //logicLightCone->SetVisAttributes(G4Utils::GetInvisible());
     if (logicLightCone!=NULL)
       logicLightCone->SetVisAttributes(WCLCVisAtt);
   }
@@ -720,7 +721,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
     G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
     WCPMTVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
     WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
-    //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    //logicGlassFaceWCPMT->SetVisAttributes(G4Utils::GetInvisible());
 
     logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
 
@@ -732,7 +733,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4Str
       else WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
       WCPMTVisAtt->SetForceWireframe(true);
       WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
-      //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+      //logicGlassFaceWCPMT->SetVisAttributes(G4Utils::GetInvisible());
       logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
 
   // Instantiate a new sensitive detector
@@ -822,7 +823,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
       = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0));
   visContainer->SetForceWireframe(true);
 
-  logicContainer->SetVisAttributes(G4VisAttributes::Invisible);
+  logicContainer->SetVisAttributes(G4Utils::GetInvisible());
   //// Uncomment following for WLS visualization
   logicContainer->SetVisAttributes(visContainer);
 
@@ -887,7 +888,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
       = new G4VisAttributes(G4Colour(0.0, 1.0, 1.0));
   visWLS->SetForceSolid(true);
 
-  logicWCODWLSPlate->SetVisAttributes(G4VisAttributes::Invisible);
+  logicWCODWLSPlate->SetVisAttributes(G4Utils::GetInvisible());
   //// Uncomment following for WLS visualization
   logicWCODWLSPlate->SetVisAttributes(visWLS);
 
@@ -903,7 +904,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructPMTAndWLSPlate(G4String PMT
       = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));
   visWLSCladding->SetForceSolid(true);
 
-  logicWCODWLSPlateCladding->SetVisAttributes(G4VisAttributes::Invisible);
+  logicWCODWLSPlateCladding->SetVisAttributes(G4Utils::GetInvisible());
   //// Uncomment following for WLS visualization
   logicWCODWLSPlateCladding->SetVisAttributes(visWLSCladding);
 
