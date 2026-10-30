@@ -82,6 +82,7 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   //XQ 3/30/11 try to get the local position try to add the position and direction
   G4ThreeVector worldPosition  = preStepPoint->GetPosition();
   G4ThreeVector localPosition  = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
+  worldPosition /= cm;
   G4ThreeVector worldDirection = preStepPoint->GetMomentumDirection();
   G4ThreeVector localDirection = theTouchable->GetHistory()->GetTopTransform().TransformAxis(worldDirection);
 
@@ -99,9 +100,9 @@ G4bool WCSimWCSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   photonStartTime      = aStep->GetTrack()->GetGlobalTime() - aStep->GetTrack()->GetLocalTime(); // current time minus elapsed time of track
   photonStartEnergy    = aStep->GetTrack()->GetVertexKineticEnergy();
   photonEndEnergy      = aStep->GetTrack()->GetKineticEnergy();
-  photonStartPos       = aStep->GetTrack()->GetVertexPosition();
+  photonStartPos       = aStep->GetTrack()->GetVertexPosition() / cm;
   photonStartDir       = aStep->GetTrack()->GetVertexMomentumDirection();
- 
+
   // Need to create a NONE string in case the Hit has no creatorProcess, such a Dark Noise Hit.
   const G4VProcess* process = aStep->GetTrack()->GetCreatorProcess();
   ProcessType_t photonCreatorProcess(kUnknownProcess);
@@ -300,6 +301,7 @@ G4bool WCSimWCSD::ProcessHits_boundary(G4Step* aStep, G4TouchableHistory*)
   //XQ 3/30/11 try to get the local position try to add the position and direction
   G4ThreeVector worldPosition  = postStepPoint->GetPosition();
   G4ThreeVector localPosition  = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
+  worldPosition /= cm;
   G4ThreeVector worldDirection = preStepPoint->GetMomentumDirection();
 
   WCSimTrackInformation* trackinfo 
@@ -316,9 +318,9 @@ G4bool WCSimWCSD::ProcessHits_boundary(G4Step* aStep, G4TouchableHistory*)
   photonStartTime      = aStep->GetTrack()->GetGlobalTime() - aStep->GetTrack()->GetLocalTime(); // current time minus elapsed time of track
   photonStartEnergy    = aStep->GetTrack()->GetVertexKineticEnergy();
   photonEndEnergy      = aStep->GetTrack()->GetKineticEnergy();
-  photonStartPos       = aStep->GetTrack()->GetVertexPosition();
+  photonStartPos       = aStep->GetTrack()->GetVertexPosition() / cm;
   photonStartDir       = aStep->GetTrack()->GetVertexMomentumDirection();
- 
+
   // Need to create a NONE string in case the Hit has no creatorProcess, such a Dark Noise Hit.
   const G4VProcess* process = aStep->GetTrack()->GetCreatorProcess();
   ProcessType_t photonCreatorProcess(kUnknownProcess);

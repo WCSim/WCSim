@@ -734,27 +734,17 @@
     	{
             "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
             "type": "collimator",
-            "idx": "10",
-            "detector": "OD_10",
+            "idx": "1",
+            "detector": "OD",
             "direction": [0,0,1],
             "position": [3314.91,0,-3352.01],
             "offset": 10,
             "photonsfile":""
 	},
-	{
-            "comment": "Barrel OD collimator, facing up. Units: cm, nm, deg.",
-            "type": "collimator",
-            "idx": "13",
-            "detector": "OD_13",
-	    "direction": [0,0,1],
-            "position": [3314.91,0,-3352.01],
-            "offset": 10,
-            "photonsfile":""
-        },
         {
             "comment": "Top OD collimator, facing down. Units: cm, nm, deg.",
             "type": "collimator",
-            "idx": "5",
+            "idx": "2",
             "detector": "OD",
             "direction": [0,0,-1],
             "position": [3200,0,3364.91],
