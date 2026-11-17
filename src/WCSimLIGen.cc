@@ -14,6 +14,24 @@
 using json = nlohmann::json;
 
 
+G4ThreeVector SetRandomOpticalPolarization(G4ThreeVector direction)
+{
+    G4ThreeVector k = direction.unit();
+    G4ThreeVector ref;
+    if (std::abs(k.z()) < 0.9)
+        ref = G4ThreeVector(0., 0., 1.);
+    else
+        ref = G4ThreeVector(0., 1., 0.);
+    G4ThreeVector e1 = k.cross(ref).unit();
+    G4ThreeVector e2 = k.cross(e1).unit();
+
+    G4double phi = G4UniformRand() * 2.0 * CLHEP::pi;
+    G4ThreeVector polarization =
+        std::cos(phi) * e1 + std::sin(phi) * e2;
+
+    return polarization;
+}
+
 void SampleFromInterpolatedSurface(MonotonicInterpolator spline,
 				   double xMin, double xMax,
 				   double yMin, double yMax,
@@ -237,7 +255,8 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
             myLIGun->SetParticlePosition(vtx);
             myLIGun->SetParticleMomentumDirection(dir);
             myLIGun->SetParticleEnergy(energy);
-            myLIGun->SetParticlePolarization(G4RandomDirection());
+	    G4ThreeVector polarization = SetRandomOpticalPolarization(dir);
+	    myLIGun->SetParticlePolarization(polarization);
             if (anEvent){
                 // Fill the event
                 myLIGun->GeneratePrimaryVertex(anEvent);
@@ -299,8 +318,9 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                 myLIGun->SetParticlePosition(vtx);
                 myLIGun->SetParticleMomentumDirection(dir);
                 myLIGun->SetParticleEnergy(energy);
-                myLIGun->SetParticlePolarization(G4RandomDirection());
-
+		G4ThreeVector polarization = SetRandomOpticalPolarization(dir);
+		myLIGun->SetParticlePolarization(polarization);
+		
                 // Fill the event
                 if (anEvent){
                     myLIGun->GeneratePrimaryVertex(anEvent);
@@ -340,7 +360,9 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                 myLIGun->SetParticlePosition(vtx);
                 myLIGun->SetParticleMomentumDirection(dir);
                 myLIGun->SetParticleEnergy(energy);
-                myLIGun->SetParticlePolarization(G4RandomDirection());
+		G4ThreeVector polarization = SetRandomOpticalPolarization(dir);
+		myLIGun->SetParticlePolarization(polarization);
+
 
                 // Fill the event
                 if (anEvent){
