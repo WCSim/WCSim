@@ -190,6 +190,15 @@ WCSimPrimaryGeneratorMessenger::WCSimPrimaryGeneratorMessenger(WCSimPrimaryGener
   lightInjectorModeCmd->SetGuidance(" bool: 0 or 1");
   lightInjectorModeCmd->SetParameterName("photonMode",true);
   lightInjectorModeCmd->SetDefaultValue(0);
+
+  lightInjectorNPhotonWidthCmd = new G4UIcmdWithADouble("/mygen/nphotonWidth", this);
+  lightInjectorNPhotonWidthCmd->SetGuidance("Set the width of the number of photons simulated");
+  lightInjectorNPhotonWidthCmd->SetGuidance("Will set to 10 photons by default");
+  lightInjectorNPhotonWidthCmd->SetGuidance("[usage] /mygen/nphotonWidth double");
+  lightInjectorNPhotonWidthCmd->SetParameterName("nphotonWidth",true);
+  lightInjectorNPhotonWidthCmd->SetDefaultValue(10.);
+  
+
   
   isotopeCmd = new G4UIcmdWithAString("/mygen/isotope",this);
   isotopeCmd->SetGuidance("Select properties of radioactive isotope");
