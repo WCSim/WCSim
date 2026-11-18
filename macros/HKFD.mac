@@ -1,0 +1,162 @@
+# Hyper-Kamiokande far detector mac file for 2024-5 MC production
+# For more detailed documentation about the parameters, see WCSim.mac
+
+/run/verbose 1
+/tracking/verbose 0
+/hits/verbose 0
+/grdm/verbose 0
+
+###############
+# GEOMETRY
+###############
+
+#Use the HK FD Realistic ID + OD geometry
+/WCSim/WCgeom HyperK_HybridmPMT_WithOD_Realistic
+/WCSim/Construct
+
+##################
+# MISCELLANEOUS
+##################
+
+# SensitiveDetector_Only all the QE are applied at the detector
+# Good for the low energy running.
+# Studies in ~2022 suggest that SensitiveDetector_Only is the most correct
+/WCSim/PMTQEMethod     SensitiveDetector_Only
+
+#turn on or off the collection efficiency
+/WCSim/PMTCollEff on
+
+# command to choose save or not save the pi0 info 07/03/10 (XQ)
+/WCSim/SavePi0 false
+
+##################
+# DIGITISER & TRIGGER
+##################
+
+# NOTES!
+# All PMT types (20"/mPMT/OD) use the separate instances of the digitiser & trigger classes with the SAME options!
+#
+# Additionally, triggers are INDEPENDENT. This means that only 20" digitised hits are saved following a 20" trigger
+# (unless the mPMT/OD triggers also trigger)
+
+#choose the Trigger & Digitizer type
+/DAQ/Digitizer SKI
+/DAQ/Trigger NDigits
+#/DAQ/Trigger NoTrigger # use NoTrigger if you are performing triggering in TriggerApp or MDT instead of WCSim
+
+# how long is the digitizer dead before a new hit on the same PMT can be recorded (ns)?
+/DAQ/DigitizerOpt/DeadTime 560 ns
+# how long does the digitizer integrate for (ns)?
+/DAQ/DigitizerOpt/IntegrationWindow 200 ns
+#The timing resolution for the digitizer (in ns)
+/DAQ/DigitizerOpt/TimingPrecision 0.1 ns #TBD
+#The charge resolution for the digitizer (in p.e.)
+/DAQ/DigitizerOpt/PEPrecision 0.3 #TBD
+
+# allow the number of digits per PMT per trigger to be > 1?
+/DAQ/MultiDigitsPerTrigger true
+
+# Save only triggered events (mode 0)
+/DAQ/TriggerSaveFailures/Mode 0
+
+# control the NDigits trigger threshold
+/DAQ/TriggerNDigits/Threshold 25 #TBD
+# automatically adjust the NDigits threshold depending on the average noise occupancy during the trigger window
+/DAQ/TriggerNDigits/AdjustForNoise true
+# the trigger counts digits (looking for threshold) in this window (ns)
+# SK use a value linked to the maximum light travel time in the ID (~220 ns, neglects scatters/reflections) rounded to 200 ns
+# If you're using a different geometry, you may wish to change this value (e.g. HK ID max travel distance is ~400 ns)
+/DAQ/TriggerNDigits/Window 200 ns #TBD
+# the digits in which range around the trigger time (ns) should be saved with the event
+/DAQ/TriggerNDigits/PreTriggerWindow  -400 ns #TBD
+/DAQ/TriggerNDigits/PostTriggerWindow +950 ns #TBD
+
+##################
+# DARK NOISE
+##################
+
+# Select which time window(s) to add dark noise to
+#/DarkRate/SetDarkMode 0 to add dark noise to a time window starting at
+#/DarkRate/SetDarkLow to /DarkRate/SetDarkHigh [time in ns]
+#/DarkRate/SetDarkMode 1 adds dark noise hits to a window of
+#width /DarkRate/SetDarkWindow [time in ns] around each hit
+#i.e. hit time +- (/DarkRate/SetDarkWindow) / 2
+
+# 20 inch ID PMTs
+/DarkRate/SetDetectorElement tank
+/DarkRate/SetDarkRate 4.2 kHz #TBD
+/DarkRate/SetDarkMode 1 #PHYSICS-DEPENDENT
+/DarkRate/SetDarkWindow 4000 #PHYSICS-DEPENDENT
+
+# 3 inch OD PMTs
+/DarkRate/SetDetectorElement OD
+/DarkRate/SetDarkRate 1 kHz #TBD
+/DarkRate/SetDarkMode 1 #PHYSICS-DEPENDENT
+/DarkRate/SetDarkWindow 4000 #PHYSICS-DEPENDENT
+
+# 3 inch PMTs inside mPMT modules
+/DarkRate/SetDetectorElement tankPMT2
+/DarkRate/SetDarkRate 1 kHz #TBD
+/DarkRate/SetDarkMode 1 #PHYSICS-DEPENDENT
+/DarkRate/SetDarkWindow 4000 #PHYSICS-DEPENDENT
+
+##################
+# PHYSICS
+##################
+## It should be noted that only one /mygen/generator can be run
+## at once.
+
+## Simulate events throughout the detector
+## (Note that the blacksheet is a 48-sided polygon, not a true cylinder as the gps option produces.
+## There could be some consequences for your analysis)
+/mygen/generator gps
+/gps/particle e-
+/gps/energy 5 MeV
+# Direction: a sphere
+/gps/ang/type iso
+# Position: a cylinder
+/gps/pos/shape Cylinder
+# Simulate events throughtout ID, right up to the blacksheet
+/gps/pos/halfz 32.9 m
+/gps/pos/radius 32.4 m
+# If instead you want to simulate events also in the deadspace & OD region, right up to the outer tyvek
+#/gps/pos/halfz 35.5 m
+#/gps/pos/radius 34.03 m
+
+##################
+# TRACKING
+##################
+## Commands to control which true particle tracks are tracked and saved to the output file:
+## By default, save all tracks in the chain from primaries to those that produce Cherenkov photons that produce hits
+## To disable this behaviour and only save tracks of particular creation processes and particle types, set to false
+#/Tracking/saveHitProducingTracks false
+## By default, all electrons, muons, pions, kaons, protons and neutrons are saved, and particles created by Decay, conv,
+## nCapture or OpWLS processes
+## Add additional PDG codes of particle types or additional Geant4 process names of creation processes of tracks to save
+## Note that optical photons have PDG code 0 in Geant4
+#/Tracking/trackParticle 0
+#/Tracking/trackProcess Cerenkov
+## Due to the typically very large number of optical photons, a fraction can be tracked by setting the percentage to randomly draw
+## Note that the value is a percentage from 0.0 to 100.0, not fraction 0.0 to 1.0
+/Tracking/fractionOpticalPhotonsToDraw 0.0
+
+##################
+# OUTPUT
+##################
+## Boolean to select whether to save the NEUT RooTracker vertices in the output file, provided you used
+## a NEUT vector file as input
+/WCSimIO/SaveRooTracker 0
+
+## change the name of the output root file, default = wcsim.root
+/WCSimIO/RootFile wcsim_hkfd_output.root
+
+## set a timer running on WCSimRunAction
+#/WCSimIO/Timer false
+
+##################
+# NUMBER OF EVENTS TO RUN
+##################
+# There is a memory leak when doing TTree::GetEntry() when reading files. It is also presumed that filling is leaky. It is strongly recommended not to generate or analyse O(1000) events in a single job
+
+/run/beamOn 10
+#exit
