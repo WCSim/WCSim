@@ -8,7 +8,12 @@
 
 #include "G4Navigator.hh"
 #include "G4TransportationManager.hh"
-#include "G4SIunits.hh"
+#include "G4Utils.hh"
+#if G4VERSION_IS_GREATER_EQUAL(11,2,0)
+#include <G4SystemOfUnits.hh>
+#else
+#include <G4SIunits.hh>
+#endif
 
 /// @brief GeometryScanning Utility Namespace
 namespace GeometryScan {

@@ -1,5 +1,6 @@
 #include "WCSimDetectorConstruction.hh"
 
+#include "G4Utils.hh"
 #include "G4Box.hh"
 #include "G4Sphere.hh"
 #include "G4Cons.hh"
@@ -90,7 +91,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
   } else{
     G4VisAttributes* WCPMTVisAttGrey = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
     WCPMTVisAttGrey->SetForceSolid(true);
-    logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    logicWCPMT->SetVisAttributes(G4Utils::GetInvisible());
     logicWCPMT->SetVisAttributes(WCPMTVisAttGrey);                   
   }
 
@@ -253,7 +254,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
     G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
     WCPMTVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
     WCPMTVisAtt->SetForceAuxEdgeVisible(true); // force auxiliary edges to be shown
-    //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    //logicGlassFaceWCPMT->SetVisAttributes(G4Utils::GetInvisible());
 
     logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
   } else {
@@ -264,7 +265,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
     //WCPMTVisAtt->SetForceWireframe(true);
     G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0)); //better for seeing geometry
     WCPMTVisAtt->SetForceSolid(true);
-    //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    //logicGlassFaceWCPMT->SetVisAttributes(G4Utils::GetInvisible());
     logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);
 
   }
@@ -312,7 +313,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructExSituPMT(G4String PMTName,
     logicInteriorWCPMT->SetVisAttributes(WCPMTVisAtt);
   } else {
     // Making the inner portion of the detector invisible for OGLSX visualization
-    logicInteriorWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
+    logicInteriorWCPMT->SetVisAttributes(G4Utils::GetInvisible());
   }
 
   //Add Logical Border Surface

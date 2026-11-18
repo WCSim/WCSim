@@ -1,5 +1,6 @@
 #include "WCSimDetectorConstruction.hh"
 
+#include "G4Utils.hh"
 #include "G4Box.hh"
 #include "G4NistManager.hh"
 #include "G4LogicalVolume.hh"
@@ -183,7 +184,7 @@ G4LogicalVolume* WCSimDetectorConstruction::ConstructBeamPipe()
       G4LogicalVolume* logicAssembly = new G4LogicalVolume(solidAssembly, 
                                                            airMaterial, 
                                                            "T5_AssemblyLogic" + suffix);
-      logicAssembly->SetVisAttributes(G4VisAttributes::Invisible); // Hide container
+      logicAssembly->SetVisAttributes(G4Utils::GetInvisible()); // Hide container
 
       // 2. Create Component Solids (All share X/Y dimensions of the container)
       G4Box* sVinyl = new G4Box("T5_Vinyl"+suffix, halfLenX, halfHgtY, t_vinyl/2.0);

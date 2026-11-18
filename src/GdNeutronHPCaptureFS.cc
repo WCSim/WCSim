@@ -22,9 +22,17 @@
 #include "G4Nucleus.hh"
 #include "G4PhotonEvaporation.hh"
 #include "G4Fragment.hh"
-#include "G4ParticleTable.hh" 
-#include "G4NeutronHPDataUsed.hh"
+#include "G4ParticleTable.hh"
 #include "G4SystemOfUnits.hh"
+
+#include "G4Utils.hh"
+
+#if G4VERSION_IS_GREATER_EQUAL(11, 2, 0)
+#include "G4ParticleHPDataUsed.hh"
+#else
+#include "G4NeutronHPDataUsed.hh"
+#endif
+
 
 
 
@@ -188,7 +196,7 @@ void GdNeutronHPCaptureFS::UpdateNucleus( const G4Fragment* gamma , G4double eGa
   {
     G4String tString = "/FS";
     G4bool dbool;
-    G4NeutronHPDataUsed aFile = theNames.GetName(static_cast<G4int>(A), static_cast<G4int>(Z), M, dirName, tString, dbool);
+    G4ParticleHPDataUsed aFile = theNames.GetName(static_cast<G4int>(A), static_cast<G4int>(Z), M, dirName, tString, dbool);
 
     G4String filename = aFile.GetName();
     theBaseA = A;
