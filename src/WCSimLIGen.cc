@@ -326,11 +326,8 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                 myLIGun->SetParticleMomentumDirection(dir);
                 myLIGun->SetParticleEnergy(energy);
 		G4ThreeVector polarization = SetRandomOpticalPolarization(dir);
-		//myLIGun->SetParticlePolarization(polarization);
-		myLIGun->SetParticlePolarization(G4RandomDirection());
-		
-
-		
+		myLIGun->SetParticlePolarization(polarization);
+				
                 // Fill the event
                 if (anEvent){
                     myLIGun->GeneratePrimaryVertex(anEvent);
@@ -373,9 +370,8 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                 myLIGun->SetParticleMomentumDirection(dir);
                 myLIGun->SetParticleEnergy(energy);
 		G4ThreeVector polarization = SetRandomOpticalPolarization(dir);
-		//myLIGun->SetParticlePolarization(polarization);
-		myLIGun->SetParticlePolarization(G4RandomDirection());
-
+		myLIGun->SetParticlePolarization(polarization);
+		
 
                 // Fill the event
                 if (anEvent){
