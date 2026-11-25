@@ -74,6 +74,8 @@ private:
   G4double injectorOffset;
   G4double energy;
 
+  TRandom3 rng;
+  
   // Variables for reading in injector profile or photon list
   ///Points to $WCSIM_BUILD_DIR/data/
   string wcsimdir;

@@ -278,6 +278,11 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
         if (axis.mag()==0){
             axis = {1,0,0};
         }
+	
+	//Setup seed that incorporates simulation, event and photon IDs.
+	uint32_t LIseed = CLHEP::HepRandom::getTheSeed();
+	LIseed = LIseed * 31 + anEvent->GetEventID();
+	
         // Now generate the photon positions and directions
 	if (profileFormat == "thetaPhi"){
             G4cout << "LIGen: [INFO] Generating photons from profile measured in theta and phi" << G4endl;
@@ -289,8 +294,10 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                 // and 20 ns offset to avoid negative times
                 G4double time = G4RandGauss::shoot(20.0,pulseWidth/2.355)*ns;
  
-                //Create unique random seed based on event ID and photon number
-                TRandom3 rng(anEvent->GetEventID()*iphoton + iphoton);
+                //Create unique random seed based on photon number
+		LIseed = LIseed * 31 + iphoton;
+		if (LIseed == 0) LIseed = 1;
+                rng.SetSeed(LIseed);
                 //Determine photon costheta and phi needed for the photon direction from interpolated PDF
                 double costheta = 0, phi = 0;
                 SampleFromInterpolatedSurface(spline,xobjMin, xobj_vals.back(), yobj_vals.front(),yobj_vals.back(), intensityMax, rng, costheta, phi);
@@ -320,7 +327,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                 myLIGun->SetParticleEnergy(energy);
 		G4ThreeVector polarization = SetRandomOpticalPolarization(dir);
 		myLIGun->SetParticlePolarization(polarization);
-		
+				
                 // Fill the event
                 if (anEvent){
                     myLIGun->GeneratePrimaryVertex(anEvent);
@@ -339,7 +346,9 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
 		G4double px = 0;
 		G4double py = 0;
                 //hProfile->GetRandom2(px,py);
-		TRandom3 rng(anEvent->GetEventID()*iphoton + iphoton);
+		LIseed = LIseed * 31 + iphoton;
+		if (LIseed == 0) LIseed = 1;
+		rng.SetSeed(LIseed);
 		SampleFromInterpolatedSurface(spline,xobj_vals.front(), xobj_vals.back(), yobj_vals.front(),yobj_vals.back(), intensityMax, rng, px, py);
 		
                 G4double pz = sqrt(1-pow(px,2)-pow(py,2));
@@ -362,7 +371,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                 myLIGun->SetParticleEnergy(energy);
 		G4ThreeVector polarization = SetRandomOpticalPolarization(dir);
 		myLIGun->SetParticlePolarization(polarization);
-
+		
 
                 // Fill the event
                 if (anEvent){
