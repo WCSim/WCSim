@@ -297,7 +297,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                 //Create unique random seed based on photon number
 		LIseed = LIseed * 31 + iphoton;
 		if (LIseed == 0) LIseed = 1;
-                TRandom3 rng(LIseed);
+                rng.SetSeed(LIseed);
                 //Determine photon costheta and phi needed for the photon direction from interpolated PDF
                 double costheta = 0, phi = 0;
                 SampleFromInterpolatedSurface(spline,xobjMin, xobj_vals.back(), yobj_vals.front(),yobj_vals.back(), intensityMax, rng, costheta, phi);
@@ -348,7 +348,7 @@ void WCSimLIGen::GeneratePhotons(G4Event* anEvent,G4int nphotons){
                 //hProfile->GetRandom2(px,py);
 		LIseed = LIseed * 31 + iphoton;
 		if (LIseed == 0) LIseed = 1;
-		TRandom3 rng(LIseed);
+		rng.SetSeed(LIseed);
 		SampleFromInterpolatedSurface(spline,xobj_vals.front(), xobj_vals.back(), yobj_vals.front(),yobj_vals.back(), intensityMax, rng, px, py);
 		
                 G4double pz = sqrt(1-pow(px,2)-pow(py,2));
